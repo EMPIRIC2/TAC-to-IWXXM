@@ -1,5 +1,36 @@
 # Evolve Decisions
 
+## Cycle EV-080 — US_FAA_NWS VOR reference geometry (#919 M9) (EV-080-us-vor-geometry)
+
+**Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-080-us-vor-geometry`  
+**Preset:** Full · **Documenting→Implementing gate:** open · **Issue:** [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)  
+**Parent:** #912 · **Prior:** EV-079 merged to `stage` @ `d2749cd5`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV080-goal | M9 — `ReferencePointGeometryParser` for US SIGMET VOR/airport reference geometry |
+| D-EV080-in | `geometry/reference_point.py`; VOR table; SIGMET fixtures; TC-EV080 |
+| D-EV080-out | Promote; CA_ECCC; M10–M14; FE |
+| D-EV080-vor-table | Bundled `vor_reference_points.json` (EED, BZA, TRM); `UnknownVOR` on missing id |
+| D-EV080-gate | **open** — parser + fixtures + regression gate |
+
+### Delivered (M9 slice)
+
+| Area | Change |
+|------|--------|
+| Parser | `ReferencePointGeometryParser` + `parse_vor_reference_geometry` wired in `sigmet_airmet.py` |
+| Data | `vor_reference_points.json` (FAA-published CONUS VORTAC coords) |
+| Fixtures | +2 valid SIGMET VOR cases + 1 invalid unknown VOR |
+| Tests | TC-EV080-001..005 (`test_tc_ev080_us_vor_geometry.py`) |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles §US_FAA_NWS] [Corpus: tests]
+
+---
+
 ## Cycle EV-079 — US_FAA_NWS SIGMET/AIRMET national layer (#919 M8) (EV-079-us-sigmet-airmet)
 
 **Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-079-us-sigmet-airmet`  

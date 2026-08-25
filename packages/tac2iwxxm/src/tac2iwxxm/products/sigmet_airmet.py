@@ -5,6 +5,8 @@ from __future__ import annotations
 import re
 from typing import Any, cast
 
+from tac2iwxxm.geometry.reference_point import parse_vor_reference_geometry
+
 _SIGMET = re.compile(
     r"^(?P<fir>[A-Z]{4})\s+SIGMET\s+(?P<seq>\d+)\s+VALID\s+"
     r"(?P<from>\d{6})/(?P<to>\d{6})\s+(?P<mwo>[A-Z]{4})\s*-\s*(?P<body>.*)$",
@@ -354,6 +356,11 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
 
     if ir.get("no_va_exp"):
         # Forecast absence of ash — no geometry ring (V1 / #739).
+        return
+
+    vor_geometry = parse_vor_reference_geometry(body)
+    if vor_geometry is not None:
+        ir["geometry"] = vor_geometry
         return
 
     # TC SIGMET: name + centre PSN + WI nnNM OF TC CENTRE (+ optional FCST centre).

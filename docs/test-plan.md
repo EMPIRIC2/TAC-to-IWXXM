@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-24 (EV-079 — US SIGMET/AIRMET national layer slice)
+> **Last updated**: 2026-08-24 (EV-080 — US SIGMET VOR reference geometry M9)
 
 ## Scope
 
@@ -3203,6 +3203,47 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: `US_FAA_NWS` convert matches profile goldens; `iwxxm-us` namespace present
 - **Pass criteria**: `test_tc_ev079_004_*`
 - **Source**: EV-079 REQ-EV079-004
+
+### EV-080 / #919 — US_FAA_NWS SIGMET VOR reference geometry (M9)
+
+- **Mode**: `ReferencePointGeometryParser` + bundled VOR table + fixture pack
+- **Pass criteria**: AC in evolve-decisions §EV-080; TC-EV080-*
+- **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); EV-079 M8 prior
+
+### TC-EV080-001: VOR offset math
+
+- **Level**: T1
+- **Objective**: `offset_nm` moves point north/east as expected
+- **Pass criteria**: `test_tc_ev080_001_*`
+- **Source**: EV-080 REQ-EV080-003
+
+### TC-EV080-002: VOR chain parse
+
+- **Level**: T1
+- **Objective**: `FROM` chain yields closed polygon + `reference_points` audit
+- **Pass criteria**: `test_tc_ev080_002_*`
+- **Source**: EV-080 REQ-EV080-001
+
+### TC-EV080-003: Unknown VOR fails closed
+
+- **Level**: T1
+- **Objective**: `UnknownVOR` raised for absent id
+- **Pass criteria**: `test_tc_ev080_003_*`
+- **Source**: EV-080 REQ-EV080-002
+
+### TC-EV080-004: VOR fixture convert goldens
+
+- **Level**: T1
+- **Objective**: manifest rows convert to profile goldens
+- **Pass criteria**: `test_tc_ev080_004_*`
+- **Source**: EV-080 REQ-EV080-005
+
+### TC-EV080-005: Bundled VOR table
+
+- **Level**: T1
+- **Objective**: EED/BZA/TRM resolve within CONUS bounds
+- **Pass criteria**: `test_tc_ev080_005_*`
+- **Source**: EV-080 REQ-EV080-002
 
 ### EV-078 / #916 — CA_ECCC P1 closeout audit
 

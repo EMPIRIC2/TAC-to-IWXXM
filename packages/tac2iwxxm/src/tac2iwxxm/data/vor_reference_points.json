@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "description": "CONUS VOR/VORTAC reference points for US SIGMET FROM-chain geometry (EV-080 / #919 M9). Coords from FAA NASR / AirNav navaid publications.",
+  "points": {
+    "BZA": {
+      "lat": 32.768108,
+      "lon": -114.602946,
+      "name": "BARD VORTAC"
+    },
+    "EED": {
+      "lat": 34.766004,
+      "lon": -114.47326,
+      "name": "NEEDLES VORTAC"
+    },
+    "TRM": {
+      "lat": 33.627431,
+      "lon": -116.160194,
+      "name": "THERMAL VORTAC"
+    }
+  }
+}
