@@ -237,6 +237,20 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("taf", "ca_eccc", "manair", "nclws"),
     ),
     _row(
+        "US_TAF_BECMG_FORBIDDEN",
+        "error",
+        "{product} BECMG change group is forbidden under US_FAA_NWS",
+        product="TAF",
+        tags=("taf", "iwxxm_us", "us_faa_nws"),
+    ),
+    _row(
+        "US_TAF_TEMPO_MAX_4H",
+        "error",
+        "{product} TEMPO change group exceeds 4-hour US_FAA_NWS maximum",
+        product="TAF",
+        tags=("taf", "iwxxm_us", "us_faa_nws"),
+    ),
+    _row(
         "CA_AIRMET_GFA",
         "info",
         "{product} encodes MANAIR GFA compound phenomenon — ca_eccc profile awareness",

@@ -2,8 +2,8 @@
 # Corpus: domain-profiles · ADR-036 §7
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 1
-cycle: EV-079
-updated: "2026-08-24"
+cycle: EV-081
+updated: "2026-08-25"
 
 priority_legend:
   P0: "Baseline — implemented or default exchange overlay (F35)"
@@ -90,8 +90,11 @@ profiles:
       - Full FMH-1 RMK matrix beyond AO/SLP/PK/T/P free-text (#919 deepen) — M7 done
       - M7 fixture pack: `fixtures/profiles/US_FAA_NWS/METAR/valid/` (15 RMK rows)
       - M8 SIGMET/AIRMET slice: `fixtures/profiles/US_FAA_NWS/{SIGMET,AIRMET}/valid/` (EV-079)
-      - iwxxm-us SIGMETWeatherHazards / AIRMETWeatherHazards emit — deferred
-      - VOR ReferencePointGeometryParser — deferred (#919)
+      - VOR ReferencePointGeometryParser — implemented (EV-080 M9)
+      - iwxxm-us SIGMETWeatherHazards / AIRMETWeatherHazards emit — implemented (EV-081 M10)
+      - Convective SIGMET (WST) — implemented (EV-081 M11)
+      - Structured visibility (sector/tower/var) — verified via M7 goldens (EV-081 M12)
+      - US TAF lint (BECMG forbidden, TEMPO max 4h) under iwxxm_us — implemented (EV-081 M13)
       - codes.nws.noaa.gov/FMH-1 registry probe timed out 2026-07-14
 
   - id: CA_ECCC

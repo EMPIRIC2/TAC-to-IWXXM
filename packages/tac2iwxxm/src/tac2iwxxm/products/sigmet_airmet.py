@@ -50,6 +50,17 @@ _MOV = re.compile(
     r"\bMOV\s+(?P<dir>N|NE|E|SE|S|SW|W|NW)\s+(?P<spd>\d+)\s*KT\b",
     re.IGNORECASE,
 )
+_AREA_TS_MOV = re.compile(
+    r"\bAREA\s+TS\s+MOV\s+FROM\s+(?P<dir>\d{3})(?P<spd>\d{2,3})KT\b",
+    re.IGNORECASE,
+)
+_CONVECTIVE_SIGMET = re.compile(
+    r"^(?:(?P<unit>[A-Z]{4})\s+)?CONVECTIVE\s+SIGMET\s+(?P<tag>\S+)\s+VALID\s+UNTIL\s+"
+    r"(?P<until>\d{4,6})Z\s+(?P<states>(?:[A-Z]{2}\s*)+?)\s+FROM\s+(?P<body>.*)$",
+    re.DOTALL | re.IGNORECASE,
+)
+_NWS_HAZARD_IFR = "http://nws.weather.gov/codes/NWSI10-811/HazardTypes/IFR"
+_NWS_SIGMET_AREA_TS = "https://codes.nws.noaa.gov/NWSI-10-811/SIGMETWeatherPhenomena/AreaTS"
 _TOP_FL = re.compile(r"\bTOP\s+(?:ABV\s+|BLW\s+)?FL(?P<fl>\d{2,3})\b", re.IGNORECASE)
 _SE_BOX = re.compile(
     r"\bS OF N(?P<lat>\d{1,2})\s+AND E OF W(?P<lon>\d{1,3})\b",
@@ -435,6 +446,86 @@ def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
     _enrich_hazard_body(ir, body)
 
 
+def _parse_until_token(until: str) -> tuple[int, int, int]:
+    """Parse ``VALID UNTIL`` token (``hhmm`` or ``ddhhmm``) into day/hour/minute."""
+    if len(until) >= 6:
+        return int(until[0:2]), int(until[2:4]), int(until[4:6])
+    hour = int(until[0:2])
+    minute = int(until[2:4])
+    return 9, hour, minute
+
+
+def _attach_us_airmet_hazard(ir: dict[str, Any]) -> None:
+    """Map parsed AIRMET phenomenon to iwxxm-us ``AIRMETWeatherHazards`` when required."""
+    phen = ir.get("phenomenon")
+    if phen == "SFC_VIS":
+        ir["us_airmet_hazard"] = {
+            "href": _NWS_HAZARD_IFR,
+            "causing_ifr_conditions": True,
+        }
+
+
+def _parse_convective_sigmet(text: str) -> dict[str, Any] | None:
+    """Parse US ``CONVECTIVE SIGMET`` body (WST / #919 M11)."""
+    match = _CONVECTIVE_SIGMET.match(text)
+    if match is None:
+        return None
+    body = match.group("body")
+    tag = match.group("tag").upper()
+    unit = (match.group("unit") or "MKCC").upper()
+    to_d, to_h, to_m = _parse_until_token(match.group("until"))
+    # Active period ends at UNTIL; issue ~2h earlier (NWS convective convention).
+    from_h = to_h - 2
+    from_d = to_d
+    from_m = to_m
+    if from_h < 0:
+        from_h += 24
+        from_d = max(1, from_d - 1)
+    states = " ".join(match.group("states").upper().split())
+    ir: dict[str, Any] = {
+        "ir_version": 1,
+        "product": "SIGMET",
+        "fir": unit,
+        "mwo": "KKCI",
+        "sequence": 0,
+        "valid_from_day": from_d,
+        "valid_from_hour": from_h,
+        "valid_from_minute": from_m,
+        "valid_to_day": to_d,
+        "valid_to_hour": to_h,
+        "valid_to_minute": to_m,
+        "convective": True,
+        "convective_tag": tag,
+        "affected_states": states,
+        "fir_name": f"{unit} FIC",
+        "raw": text,
+        "us_sigmet_hazard": {
+            "href": _NWS_SIGMET_AREA_TS,
+            "tag": tag,
+        },
+    }
+    area_mov = _AREA_TS_MOV.search(body)
+    if area_mov is not None:
+        ir["motion_dir_deg"] = int(area_mov.group("dir"))
+        ir["motion_speed_kt"] = int(area_mov.group("spd"))
+    top = _TOP_FL.search(body)
+    if top is not None:
+        ir["top_fl"] = int(top.group("fl"))
+        if "ABV" in top.group(0).upper():
+            ir["top_qualifier"] = "ABV"
+        elif "BLW" in top.group(0).upper():
+            ir["top_qualifier"] = "BLW"
+    elif re.search(r"\bTOPS\s+TO\s+FL(?P<fl>\d{2,3})\b", body, re.I):
+        fl_m = re.search(r"\bTOPS\s+TO\s+FL(?P<fl>\d{2,3})\b", body, re.I)
+        if fl_m is not None:
+            ir["top_fl"] = int(fl_m.group("fl"))
+            ir["top_qualifier"] = "TO"
+    vor_geometry = parse_vor_reference_geometry(f"FROM {body.split('AREA', 1)[0]}")
+    if vor_geometry is not None:
+        ir["geometry"] = vor_geometry
+    return ir
+
+
 def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     """
     Parse a SIGMET TAC into IR.
@@ -463,6 +554,11 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
         body_tac = raw_in[ahl_match.end() :]
 
     text = _normalize(body_tac)
+    conv = _parse_convective_sigmet(text)
+    if conv is not None:
+        if ahl_tt is not None:
+            conv["ahl_tt"] = ahl_tt
+        return conv
     match = _SIGMET.match(text)
     if match is None:
         raise ValueError("unable to parse SIGMET header")
@@ -570,6 +666,7 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
     if chart is not None:
         ir["gfa_chart_id"] = chart.group(1).upper()
     _enrich_hazard_body(ir, body)
+    _attach_us_airmet_hazard(ir)
     return ir
 
 

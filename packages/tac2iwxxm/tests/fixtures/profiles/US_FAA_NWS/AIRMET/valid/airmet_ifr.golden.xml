@@ -75,7 +75,13 @@
               </iwxxm:geometry>
               <iwxxm:directionOfMotion uom="deg" xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/inapplicable"/>
               <iwxxm:speedOfMotion uom="[kn_i]">0</iwxxm:speedOfMotion>
-        </iwxxm:AIRMETEvolvingCondition>
+                  <iwxxm:extension>
+            <iwxxm-us:AIRMETWeatherHazards causingIFRConditions="true">
+              <iwxxm-us:weatherPhenomenon xlink:href="http://nws.weather.gov/codes/NWSI10-811/HazardTypes/IFR"/>
+            </iwxxm-us:AIRMETWeatherHazards>
+          </iwxxm:extension>
+
+            </iwxxm:AIRMETEvolvingCondition>
       </iwxxm:member>
     </iwxxm:AIRMETEvolvingConditionCollection>
   </iwxxm:analysis>

@@ -1,7 +1,7 @@
 # TAC lint issue catalog
 
 > **Source**: generated from tac_validate.issue_registry + PROVENANCE_MAP  
-> **Generated**: 2026-08-24 via `make catalog-regen`  
+> **Generated**: 2026-08-25 via `make catalog-regen`  
 > **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015 / F23 / EV-019 / EV-040
 
 Public `code` values are stable. Default severities may tighten in minor releases.
@@ -109,6 +109,8 @@ Source attribution joins `PROVENANCE_MAP` (WMO / ICAO / IWXXM citations — no A
 | `TX_TN_PRESENT` | `info` | {product} includes TX/TN temperature forecast groups on the base forecast. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase. | taf | temperature, taf, t3 | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — App 5 / Table A5-1 |
 | `UNKNOWN_PRODUCT` | `error` | Unknown product {product!r}; expected one of {expected} | — | parse_gate | codes-wmo-int — access:N/A — https://codes.wmo.int/ — Intentional bare root — not a registry notation check |
 | `UNKNOWN_WMO_MEMBERSHIP` | `error` | {product} token {token!r} not in WMO register ({family}) | — | membership, wmo, ev050, weather, cloud, phenomenon | codes-wmo-int — https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf — Validated: tac-validate membership gate vs harvested wmo_membership.json |
+| `US_TAF_BECMG_FORBIDDEN` | `error` | {product} BECMG change group is forbidden under US_FAA_NWS | TAF | taf, iwxxm_us, us_faa_nws | fmh-1 — https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html — US TAF does not use BECMG change groups (FAA GEN 1.7 / national overlay) |
+| `US_TAF_TEMPO_MAX_4H` | `error` | {product} TEMPO change group exceeds 4-hour US_FAA_NWS maximum | TAF | taf, iwxxm_us, us_faa_nws | fmh-1 — https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html — US TAF TEMPO groups limited to 4 hours (national overlay) |
 | `VAA_FCST_NO_VA_EXP` | `info` | VAA forecast NO VA EXP — status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1) | vaa | forecast, no_va_exp, vaa, v1, f26 | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — App 2 A2-1/A2-2 |
 | `VAA_NO_FURTHER_ADVISORIES` | `info` | VAA NXT ADVISORY NO FURTHER ADVISORIES — next time inapplicable (F26 theme V1) | vaa | next_advisory, vaa, v1, f26 | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — App 2 A2-1/A2-2 |
 | `VAA_RMK_NIL` | `info` | VAA RMK NIL — remarks inapplicable (F26 theme V1) | vaa | remarks, nil, vaa, v1, f26 | icao-annex-3 — access:paywall — https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 — App 2 A2-1/A2-2 |

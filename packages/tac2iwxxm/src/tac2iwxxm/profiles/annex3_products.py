@@ -888,8 +888,119 @@ def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
       </iwxxm:forecastPositionAnalysis>"""
 
 
+def emit_convective_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """Emit US ``CONVECTIVE SIGMET`` (WST) with iwxxm-us analysis shape (#919 M11)."""
+    ns = _ns(iwxxm_version)
+    fir = str(ir["fir"])
+    mwo = str(ir["mwo"])
+    issue, begin, end = _hazard_stamp(ir, "sigmet")
+    gml_id = f"sigmet.conv.{fir.lower()}"
+    active_end = (
+        f"2012-08-{int(ir['valid_to_day']):02d}T{int(ir['valid_to_hour']):02d}:{int(ir['valid_to_minute']):02d}:00Z"
+    )
+    geometry = _sigmet_geometry_xml(ir, fir=fir)
+    motion = _sigmet_motion_xml(ir)
+    states = str(ir.get("affected_states", "")).strip()
+    states_xml = ""
+    if states:
+        states_xml = f"""
+              <aixm:extension>
+                <iwxxm-us:AffectedStates gml:id="states.{fir.lower()}">
+                  <iwxxm-us:stateIDs>{escape(states)}</iwxxm-us:stateIDs>
+                </iwxxm-us:AffectedStates>
+              </aixm:extension>"""
+    units = f"""<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:SIGMET xmlns:iwxxm="{ns}"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:iwxxm-us="http://www.weather.gov/iwxxm-us/3.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="{gml_id}"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>{issue}</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:issuingAirTrafficServicesUnit>
+    <aixm:Unit gml:id="unit.atsu.{fir.lower()}">
+      <aixm:timeSlice>
+        <aixm:UnitTimeSlice gml:id="unit.atsu.ts.{fir.lower()}">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:name>{escape(str(ir.get("fir_name", f"{fir} FIC")))}</aixm:name>
+          <aixm:type>FIC</aixm:type>
+          <aixm:designator>{escape(fir)}</aixm:designator>
+        </aixm:UnitTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Unit>
+  </iwxxm:issuingAirTrafficServicesUnit>
+  <iwxxm:originatingMeteorologicalWatchOffice>
+    <aixm:Unit gml:id="unit.mwo.{mwo.lower()}">
+      <aixm:timeSlice>
+        <aixm:UnitTimeSlice gml:id="unit.mwo.ts.{mwo.lower()}">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:name>{escape(mwo)} MWO</aixm:name>
+          <aixm:type>MWO</aixm:type>
+          <aixm:designator>{escape(mwo)}</aixm:designator>
+        </aixm:UnitTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Unit>
+  </iwxxm:originatingMeteorologicalWatchOffice>
+  <iwxxm:issuingAirTrafficServicesRegion>
+    <aixm:Airspace gml:id="as.{fir.lower()}">
+      <aixm:timeSlice>
+        <aixm:AirspaceTimeSlice gml:id="as.ts.{fir.lower()}">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:type>OTHER:FIR_UIR</aixm:type>
+          <aixm:designator>{escape(fir)}</aixm:designator>
+          <aixm:name>{escape(str(ir.get("fir_name", f"{fir} FIC")))}</aixm:name>
+        </aixm:AirspaceTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Airspace>
+  </iwxxm:issuingAirTrafficServicesRegion>
+  <iwxxm:sequenceNumber nilReason="http://codes.wmo.int/common/nil/missing"/>
+  <iwxxm:validPeriod>
+    <gml:TimePeriod gml:id="t.valid">
+      <gml:beginPosition>{begin}</gml:beginPosition>
+      <gml:endPosition>{end}</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:validPeriod>
+  <iwxxm:phenomenon nilReason="http://codes.wmo.int/common/nil/template"/>
+  <iwxxm:analysis>
+    <iwxxm:SIGMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="FORECAST">
+      <iwxxm:phenomenonTime>
+        <gml:TimePeriod gml:id="t.active.{fir.lower()}">
+          <gml:beginPosition>{issue}</gml:beginPosition>
+          <gml:endPosition>{active_end}</gml:endPosition>
+        </gml:TimePeriod>
+      </iwxxm:phenomenonTime>
+      <iwxxm:member>
+        <iwxxm:SIGMETEvolvingCondition gml:id="cond.{fir.lower()}">{geometry}{motion}
+        </iwxxm:SIGMETEvolvingCondition>
+      </iwxxm:member>
+    </iwxxm:SIGMETEvolvingConditionCollection>
+  </iwxxm:analysis>
+</iwxxm:SIGMET>
+"""
+    # Inject AffectedStates inside AirspaceVolume when geometry present.
+    if states_xml and "<aixm:AirspaceVolume" in units:
+        units = units.replace(
+            "</aixm:horizontalProjection>",
+            f"</aixm:horizontalProjection>{states_xml}",
+            1,
+        )
+    return units
+
+
 def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     """Emit an IWXXM SIGMET / VolcanicAshSIGMET / TropicalCycloneSIGMET document."""
+    if ir.get("convective"):
+        return emit_convective_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])
     issue, begin, end = _hazard_stamp(ir, "sigmet")

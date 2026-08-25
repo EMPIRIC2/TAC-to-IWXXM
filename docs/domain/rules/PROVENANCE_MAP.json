@@ -1525,6 +1525,26 @@
       "note": "Intentional bare root — not a registry notation check"
     },
     {
+      "code": "US_TAF_BECMG_FORBIDDEN",
+      "status": "ok",
+      "source_id": "fmh-1",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919",
+      "note": "US TAF does not use BECMG change groups (FAA GEN 1.7 / national overlay)"
+    },
+    {
+      "code": "US_TAF_TEMPO_MAX_4H",
+      "status": "ok",
+      "source_id": "fmh-1",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919",
+      "note": "US TAF TEMPO groups limited to 4 hours (national overlay)"
+    },
+    {
       "code": "VAA_FCST_NO_VA_EXP",
       "status": "paywall",
       "source_id": "icao-annex-3",
