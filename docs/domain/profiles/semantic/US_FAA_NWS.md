@@ -42,7 +42,7 @@ grammar, encoded with **IWXXM-US** extension XSDs alongside core IWXXM.
 
 - Full FMH-1 RMK matrix beyond AO/SLP/PK/T/P free-text — **M7 done** (15 rows)
 - **SIGMET/AIRMET national layer** — **M8 done** (EV-079): phenomenon tokens + fixtures; **M9 VOR geometry** (EV-080): `ReferencePointGeometryParser` + `FROM` chain fixtures; **M10–M11** (EV-081): `SIGMETWeatherHazards` / `AIRMETWeatherHazards` emit + convective SIGMET (WST)
-- iwxxm-us weather-hazard extensions — **M10 done** (EV-081); outlook / multi-area AIRMET sub-periods remain backlog
+- iwxxm-us weather-hazard extensions — **M10 done** (EV-081); **M15–M16 outlook / multi-area** (EV-082); FRZLVL-only sections remain backlog
 - Structured visibility (sector/tower/variable) — **M12 verify** (EV-081): M7 goldens remain in manifest
 - US TAF lint — **M13 done** (EV-081): `US_TAF_BECMG_FORBIDDEN`, `US_TAF_TEMPO_MAX_4H` under `iwxxm_us`
 - `codes.nws.noaa.gov/FMH-1` machine registry — probe timed out 2026-07-14

@@ -1141,6 +1141,56 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     )
 
 
+def _airmet_evolving_member_xml(
+    area_ir: dict[str, Any],
+    *,
+    fir: str,
+    member_suffix: str,
+    inner_extension: str = "",
+) -> str:
+    """Emit one ``AIRMETEvolvingCondition`` member."""
+    intensity = str(area_ir.get("intensity_change", "NO_CHANGE"))
+    geometry = _sigmet_geometry_xml(
+        area_ir,
+        fir=fir,
+        gid=f"cond.{fir.lower()}.{member_suffix}",
+    )
+    motion = _sigmet_motion_xml(area_ir)
+    return f"""      <iwxxm:member>
+        <iwxxm:AIRMETEvolvingCondition gml:id="cond.{fir.lower()}.{member_suffix}" intensityChange="{escape(intensity)}">{geometry}{motion}{inner_extension}
+        </iwxxm:AIRMETEvolvingCondition>
+      </iwxxm:member>"""
+
+
+def _airmet_analysis_collection_xml(
+    ir: dict[str, Any],
+    *,
+    fir: str,
+    collection_suffix: str,
+    time_indicator: str,
+    areas: list[dict[str, Any]],
+    member_extension_for: dict[str, str] | None = None,
+) -> str:
+    """Emit one ``AIRMETEvolvingConditionCollection`` for the given area fragments."""
+    member_extension_for = member_extension_for or {}
+    members = "\n".join(
+        _airmet_evolving_member_xml(
+            area,
+            fir=fir,
+            member_suffix=f"{collection_suffix}.{index}",
+            inner_extension=member_extension_for.get(str(index), ""),
+        )
+        for index, area in enumerate(areas, start=1)
+    )
+    return f"""  <iwxxm:analysis>
+    <iwxxm:AIRMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}.{collection_suffix}" timeIndicator="{escape(time_indicator)}">
+      <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
+{members}
+    </iwxxm:AIRMETEvolvingConditionCollection>
+  </iwxxm:analysis>
+"""
+
+
 def emit_airmet_annex3(
     ir: dict[str, Any],
     *,
@@ -1245,15 +1295,25 @@ def emit_airmet_annex3(
         )
 
     phenom = phenomenon_href or _AIR_PHENOM_HREF.format(code=ir["phenomenon"])
-    intensity = str(ir.get("intensity_change", "NO_CHANGE"))
     time_indicator = str(ir.get("time_indicator", "OBSERVATION"))
-    geometry = _sigmet_geometry_xml(ir, fir=fir)
-    motion = _sigmet_motion_xml(ir)
+    outlook_raw = ir.get("outlook")
+    area_list_raw = ir.get("areas")
+    outlook_ir: dict[str, Any] | None = cast(dict[str, Any], outlook_raw) if isinstance(outlook_raw, dict) else None
+    area_list: list[dict[str, Any]] = []
+    if isinstance(area_list_raw, list):
+        area_list = [cast(dict[str, Any], item) for item in area_list_raw if isinstance(item, dict)]
+    has_multi = len(area_list) > 1
+    has_outlook = outlook_ir is not None
+    if area_list:
+        obs_areas = area_list
+    else:
+        obs_areas = [ir]
 
-    return (
-        units.format(cancel_attr="")
-        + f"""  <iwxxm:phenomenon xlink:href="{escape(phenom)}"/>
-  <iwxxm:analysis>
+    if not has_multi and not has_outlook:
+        intensity = str(ir.get("intensity_change", "NO_CHANGE"))
+        geometry = _sigmet_geometry_xml(ir, fir=fir)
+        motion = _sigmet_motion_xml(ir)
+        obs_analysis = f"""  <iwxxm:analysis>
     <iwxxm:AIRMETEvolvingConditionCollection gml:id="evolving.{fir.lower()}" timeIndicator="{escape(time_indicator)}">
       <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
       <iwxxm:member>
@@ -1262,7 +1322,30 @@ def emit_airmet_annex3(
       </iwxxm:member>
     </iwxxm:AIRMETEvolvingConditionCollection>
   </iwxxm:analysis>
-</iwxxm:AIRMET>
+"""
+        outlook_analysis = ""
+    else:
+        obs_analysis = _airmet_analysis_collection_xml(
+            ir,
+            fir=fir,
+            collection_suffix="obs",
+            time_indicator=time_indicator,
+            areas=obs_areas,
+        )
+        outlook_analysis = ""
+        if has_outlook:
+            outlook_analysis = _airmet_analysis_collection_xml(
+                ir,
+                fir=fir,
+                collection_suffix="outlook",
+                time_indicator="FORECAST",
+                areas=[outlook_ir],
+            )
+
+    return (
+        units.format(cancel_attr="")
+        + f"""  <iwxxm:phenomenon xlink:href="{escape(phenom)}"/>
+{obs_analysis}{outlook_analysis}</iwxxm:AIRMET>
 """
     )
 

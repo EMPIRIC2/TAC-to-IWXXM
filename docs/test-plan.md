@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-25 (EV-081 — US_FAA_NWS M10–M13 weather hazards / WST / TAF lint)
+> **Last updated**: 2026-08-25 (EV-082 — US_FAA_NWS M15–M16 outlook / multi-area AIRMET)
 
 ## Scope
 
@@ -3285,6 +3285,33 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: M7 `rmk_sector_vis` / `rmk_tower_vis` / `rmk_var_vis` remain in US_FAA_NWS manifest
 - **Pass criteria**: `test_tc_ev081_005_*`
 - **Source**: EV-081 REQ-EV081-005
+
+### EV-082 / #919 — US_FAA_NWS M15–M16 (outlook / multi-area AIRMET)
+
+- **Mode**: `OTLK VALID` outlook parse/emit + AND-joined multi-area members
+- **Pass criteria**: AC in evolve-decisions §EV-082; TC-EV082-*
+- **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); NWSI 10-811 §7.3 item 10; EV-081 prior
+
+### TC-EV082-001: AIRMET outlook sub-period
+
+- **Level**: T1
+- **Objective**: Outlook emits forecast analysis + `validTimeSubPeriod` extension
+- **Pass criteria**: `test_tc_ev082_001_*`
+- **Source**: EV-082 REQ-EV082-001..005
+
+### TC-EV082-002: Multi-area AIRMET
+
+- **Level**: T1
+- **Objective**: AND-joined areas emit multiple `AIRMETEvolvingCondition` members
+- **Pass criteria**: `test_tc_ev082_002_*`
+- **Source**: EV-082 REQ-EV082-006..007
+
+### TC-EV082-003: EV-081 regression pack
+
+- **Level**: T1
+- **Objective**: EV-079..081 SIGMET/AIRMET manifest rows remain green
+- **Pass criteria**: `test_tc_ev082_003_*`
+- **Source**: EV-082 REQ-EV082-008
 
 ### EV-078 / #916 — CA_ECCC P1 closeout audit
 

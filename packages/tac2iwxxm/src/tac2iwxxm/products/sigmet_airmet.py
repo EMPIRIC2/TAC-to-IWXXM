@@ -155,6 +155,14 @@ _INTENSITY = {
     "INTSF": "INTENSIFY",
     "NC": "NO_CHANGE",
 }
+_OTLK_VALID = re.compile(
+    r"\bOTLK\s+VALID\s+(?P<from>\d{4})[-/](?P<to>\d{4})Z?",
+    re.IGNORECASE,
+)
+_AIR_AREA_BOUNDARY = re.compile(
+    r"\s+AND\s+(?=(?:MOD|ISOL|OCNL|FRQ|MT|MTN|IFR)\s+)",
+    re.IGNORECASE,
+)
 
 
 def _normalize(tac: str) -> str:
@@ -465,6 +473,53 @@ def _attach_us_airmet_hazard(ir: dict[str, Any]) -> None:
         }
 
 
+def _split_airmet_main_and_outlook(body: str) -> tuple[str, str | None]:
+    """Split AIRMET body into active and optional ``OTLK VALID`` outlook subsection."""
+    match = re.search(r"\bOTLK\b", body, flags=re.IGNORECASE)
+    if match is None:
+        return body, None
+    return body[: match.start()].strip(), body[match.start() :].strip()
+
+
+def _split_airmet_areas(body: str) -> list[str]:
+    """Split AND-joined multi-area AIRMET bodies (NWSI 10-811 §7.3)."""
+    segments = [segment.strip() for segment in _AIR_AREA_BOUNDARY.split(body) if segment.strip()]
+    return segments if len(segments) > 1 else [body]
+
+
+def _airmet_area_ir(segment: str, *, default_phenomenon: str | None = None) -> dict[str, Any]:
+    """Parse one geographic AIRMET subsection into a minimal IR fragment."""
+    area: dict[str, Any] = {
+        "phenomenon": default_phenomenon or _detect_phenomenon(segment, _AIR_PHENOMENA),
+    }
+    _enrich_hazard_body(area, segment)
+    return area
+
+
+def _parse_airmet_outlook(outlook_text: str, *, default_phenomenon: str) -> dict[str, Any]:
+    """Parse ``OTLK VALID`` outlook block (CONUS/Hawaii AIRMET bulletin §7.3 item 10)."""
+    match = _OTLK_VALID.search(outlook_text)
+    if match is None:
+        raise ValueError("unable to parse AIRMET outlook valid period")
+    from_hhmm = match.group("from")
+    to_hhmm = match.group("to")
+    tail = outlook_text[match.end() :].strip()
+    if tail.startswith("..."):
+        tail = tail[3:].strip()
+    outlook = _airmet_area_ir(tail, default_phenomenon=default_phenomenon)
+    outlook["valid_from_hour"] = int(from_hhmm[0:2])
+    outlook["valid_from_minute"] = int(from_hhmm[2:4])
+    outlook["valid_to_hour"] = int(to_hhmm[0:2])
+    outlook["valid_to_minute"] = int(to_hhmm[2:4])
+    return outlook
+
+
+def _apply_airmet_area_to_ir(ir: dict[str, Any], area: dict[str, Any]) -> None:
+    """Merge parsed area fields onto the root AIRMET IR."""
+    for key, value in area.items():
+        ir[key] = value
+
+
 def _parse_convective_sigmet(text: str) -> dict[str, Any] | None:
     """Parse US ``CONVECTIVE SIGMET`` body (WST / #919 M11)."""
     match = _CONVECTIVE_SIGMET.match(text)
@@ -636,6 +691,7 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
         raise ValueError("unable to parse AIRMET header")
 
     body = match.group("body")
+    main_body, outlook_body = _split_airmet_main_and_outlook(body)
     from_d, from_h, from_m = _parse_valid(match.group("from"))
     to_d, to_h, to_m = _parse_valid(match.group("to"))
     ir: dict[str, Any] = {
@@ -650,22 +706,39 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
         "valid_to_day": to_d,
         "valid_to_hour": to_h,
         "valid_to_minute": to_m,
-        "phenomenon": _detect_phenomenon(body, _AIR_PHENOMENA),
+        "phenomenon": _detect_phenomenon(main_body, _AIR_PHENOMENA),
         "fir_name": "SHANLON FIR" if "SHANLON" in body.upper() else match.group("fir").upper(),
         "raw": text,
     }
     if ahl_tt is not None:
         ir["ahl_tt"] = ahl_tt
-    gfa_code = _detect_ca_gfa_phenomenon(body)
+    gfa_code = _detect_ca_gfa_phenomenon(main_body)
     if gfa_code is not None:
         ir["ca_gfa_phenomenon"] = gfa_code
-        structured = _parse_ca_gfa_structured(body, gfa_code)
+        structured = _parse_ca_gfa_structured(main_body, gfa_code)
         if structured is not None:
             ir["ca_gfa_structured"] = structured
-    chart = _GFA_CHART.search(body)
+    chart = _GFA_CHART.search(main_body)
     if chart is not None:
         ir["gfa_chart_id"] = chart.group(1).upper()
-    _enrich_hazard_body(ir, body)
+    area_segments = _split_airmet_areas(main_body)
+    if len(area_segments) > 1:
+        areas = [_airmet_area_ir(segment, default_phenomenon=str(ir["phenomenon"])) for segment in area_segments]
+        ir["areas"] = areas
+        _apply_airmet_area_to_ir(ir, areas[0])
+    else:
+        _enrich_hazard_body(ir, main_body)
+    if outlook_body is not None:
+        outlook = _parse_airmet_outlook(outlook_body, default_phenomenon=str(ir["phenomenon"]))
+        outlook["valid_from_day"] = from_d
+        if outlook["valid_to_hour"] < outlook["valid_from_hour"] or (
+            outlook["valid_to_hour"] == outlook["valid_from_hour"]
+            and outlook["valid_to_minute"] < outlook["valid_from_minute"]
+        ):
+            outlook["valid_to_day"] = to_d + 1
+        else:
+            outlook["valid_to_day"] = to_d
+        ir["outlook"] = outlook
     _attach_us_airmet_hazard(ir)
     return ir
 

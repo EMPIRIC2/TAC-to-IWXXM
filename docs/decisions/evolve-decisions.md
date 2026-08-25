@@ -1,10 +1,37 @@
 # Evolve Decisions
 
+## Cycle EV-082 — US_FAA_NWS M15–M16 (#919) (EV-082-us-airmet-outlook)
+
+**Opened:** 2026-08-25 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-082-us-airmet-outlook`  
+**Preset:** Standard · **Documenting→Implementing gate:** open · **Issue:** [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)  
+**Parent:** #912 · **Prior:** EV-081 merged to `stage` @ `386a9676`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV082-goal | M15–M16 — AIRMET outlook (`OTLK VALID`) + multi-area sub-periods |
+| D-EV082-in | Outlook parse/emit; `validTimeSubPeriod`; multi-member collections; fixtures |
+| D-EV082-out | Promote; #1025; CONUS `UPDT` header; FRZLVL-only sections |
+| D-EV082-gate | **open** — operator chose outlook slice after EV-081 closeout |
+
+### Delivered
+
+| Milestone | Scope |
+|-----------|--------|
+| M15 | `OTLK VALID` outlook → forecast analysis + `AIRMETEvolvingConditionExtension` |
+| M16 | AND-joined multi-area bodies → multiple evolving members |
+
+**Tests:** TC-EV082-001..003 · **1032 passed** · **97.39%** cov · per-file gate OK  
+**Branch:** `evolve/EV-082-us-airmet-outlook` · **PR:** [#1070](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1070) → `stage`
+
+---
+
 ## Cycle EV-081 — US_FAA_NWS M10–M13 (#919) (EV-081-us-m10-m13)
 
 **Opened:** 2026-08-25 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-081-us-m10-m13`  
 **Preset:** Standard · **Documenting→Implementing gate:** catchup_verify (code landed; verify after spec catch-up) · **Issue:** [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)  
-**Parent:** #912 · **Prior:** EV-080 merged to `stage` @ `079339e6`
+**Parent:** #912 · **Prior:** EV-080 merged to `stage` @ `079339e6` · **Merged:** [#1069](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1069) @ `386a9676`
 
 ### Locked intake
 
