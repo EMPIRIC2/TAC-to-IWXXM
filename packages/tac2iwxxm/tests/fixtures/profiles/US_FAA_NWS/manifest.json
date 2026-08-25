@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "EV-063 M7 + EV-079 M8 — US_FAA_NWS FMH-1 RMK matrix (#919) + SIGMET/AIRMET national layer slice",
+  "description": "EV-063 M7 + EV-079 M8 + EV-080 M9 — US_FAA_NWS RMK matrix (#919) + SIGMET/AIRMET tokens + VOR geometry",
   "profile": "US_FAA_NWS",
   "cases": [
     {
@@ -121,6 +121,20 @@
       "tac": "SIGMET/valid/sigmet_sev_ice.tac",
       "golden": "SIGMET/valid/sigmet_sev_ice.golden.xml",
       "rule_id": "US.SIGMET.PHEN.SEV_ICE"
+    },
+    {
+      "id": "sigmet_vor_chain",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_vor_chain.tac",
+      "golden": "SIGMET/valid/sigmet_vor_chain.golden.xml",
+      "rule_id": "US.SIGMET.GEOM.VOR"
+    },
+    {
+      "id": "sigmet_vor_single",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_vor_single.tac",
+      "golden": "SIGMET/valid/sigmet_vor_single.golden.xml",
+      "rule_id": "US.SIGMET.GEOM.VOR"
     },
     {
       "id": "airmet_isol_ts",
