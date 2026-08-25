@@ -23,7 +23,7 @@
 | M16 | AND-joined multi-area bodies → multiple evolving members |
 
 **Tests:** TC-EV082-001..003 · **1032 passed** · **97.39%** cov · per-file gate OK  
-**Branch:** `evolve/EV-082-us-airmet-outlook` (local, uncommitted) · **PR:** pending operator `commit + PR`
+**Branch:** `evolve/EV-082-us-airmet-outlook` · **PR:** [#1070](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1070) → `stage`
 
 ---
 
