@@ -4,7 +4,7 @@
 
 **Opened:** 2026-08-25 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-082-us-airmet-outlook`  
 **Preset:** Standard · **Documenting→Implementing gate:** open · **Issue:** [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)  
-**Parent:** #912 · **Prior:** EV-081 merged to `stage` @ `386a9676`
+**Parent:** #912 · **Prior:** EV-081 merged to `stage` @ `386a9676` · **Merged:** [#1070](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1070) @ `9e7e125c`
 
 ### Locked intake
 
