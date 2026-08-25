@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-24 (EV-080 — US SIGMET VOR reference geometry M9)
+> **Last updated**: 2026-08-25 (EV-081 — US_FAA_NWS M10–M13 weather hazards / WST / TAF lint)
 
 ## Scope
 
@@ -3244,6 +3244,47 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: EED/BZA/TRM resolve within CONUS bounds
 - **Pass criteria**: `test_tc_ev080_005_*`
 - **Source**: EV-080 REQ-EV080-002
+
+### EV-081 / #919 — US_FAA_NWS M10–M13 (hazards, WST, VIS, TAF lint)
+
+- **Mode**: iwxxm-us hazard emit + convective SIGMET parse/emit + M7 VIS assert + TAF overlay lint
+- **Pass criteria**: AC in evolve-decisions §EV-081; TC-EV081-*
+- **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); EV-080 M9 prior
+
+### TC-EV081-001: AIRMET IFR weather hazards
+
+- **Level**: T1
+- **Objective**: IFR AIRMET emits `AIRMETWeatherHazards` with `causingIFRConditions`
+- **Pass criteria**: `test_tc_ev081_001_*`
+- **Source**: EV-081 REQ-EV081-001
+
+### TC-EV081-002: Convective SIGMET (WST)
+
+- **Level**: T1
+- **Objective**: `CONVECTIVE SIGMET` parses and emits `SIGMETWeatherHazards` `AreaTS`
+- **Pass criteria**: `test_tc_ev081_002_*`
+- **Source**: EV-081 REQ-EV081-002
+
+### TC-EV081-003: US TAF BECMG forbidden
+
+- **Level**: T1
+- **Objective**: `iwxxm_us` lint emits `US_TAF_BECMG_FORBIDDEN` for BECMG groups
+- **Pass criteria**: `test_tc_ev081_003_*`
+- **Source**: EV-081 REQ-EV081-006
+
+### TC-EV081-004: US TAF TEMPO max 4h
+
+- **Level**: T1
+- **Objective**: `iwxxm_us` lint emits `US_TAF_TEMPO_MAX_4H` when TEMPO window > 4h
+- **Pass criteria**: `test_tc_ev081_004_*`
+- **Source**: EV-081 REQ-EV081-007
+
+### TC-EV081-005: Structured visibility fixtures present
+
+- **Level**: T1
+- **Objective**: M7 `rmk_sector_vis` / `rmk_tower_vis` / `rmk_var_vis` remain in US_FAA_NWS manifest
+- **Pass criteria**: `test_tc_ev081_005_*`
+- **Source**: EV-081 REQ-EV081-005
 
 ### EV-078 / #916 — CA_ECCC P1 closeout audit
 

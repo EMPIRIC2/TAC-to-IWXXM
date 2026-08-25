@@ -1,5 +1,34 @@
 # Evolve Decisions
 
+## Cycle EV-081 — US_FAA_NWS M10–M13 (#919) (EV-081-us-m10-m13)
+
+**Opened:** 2026-08-25 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-081-us-m10-m13`  
+**Preset:** Standard · **Documenting→Implementing gate:** catchup_verify (code landed; verify after spec catch-up) · **Issue:** [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)  
+**Parent:** #912 · **Prior:** EV-080 merged to `stage` @ `079339e6`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV081-goal | M10–M13 — weather hazards, convective SIGMET (WST), structured VIS verify, US TAF lint |
+| D-EV081-in | `iwxxm_us.py` hazard emit; WST parse/emit + fixture; M7 VIS assert; TAF lint codes |
+| D-EV081-out | Promote; M14 / #1025; outlook AIRMET; FE; CA_ECCC |
+| D-EV081-scale | Standard evolve angles |
+| D-EV081-gate | Operator chose **catchup_verify** (2026-08-25) — no commit/PR until asked |
+
+### Delivered
+
+| Milestone | Scope |
+|-----------|--------|
+| M10 | `AIRMETWeatherHazards` / `SIGMETWeatherHazards` emit in `iwxxm_us.py` |
+| M11 | `CONVECTIVE SIGMET` parse + `emit_convective_sigmet_annex3` + WST fixture |
+| M12 | Structured VIS — verified via existing M7 sector/tower/var goldens (TC-EV081-005) |
+| M13 | `US_TAF_BECMG_FORBIDDEN` + `US_TAF_TEMPO_MAX_4H` lint under `iwxxm_us` |
+
+**Tests:** TC-EV081-001..005 · **Branch:** `evolve/EV-081-us-m10-m13`
+
+---
+
 ## Cycle EV-080 — US_FAA_NWS VOR reference geometry (#919 M9) (EV-080-us-vor-geometry)
 
 **Opened:** 2026-08-24 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-080-us-vor-geometry`  

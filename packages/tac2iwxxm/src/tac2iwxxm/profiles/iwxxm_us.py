@@ -776,6 +776,58 @@ def _with_us_namespace(xml: str) -> str:
     return xml.replace("xmlns:iwxxm=", f"{_US_NS}\n    xmlns:iwxxm=", 1)
 
 
+def _inject_evolving_extension(xml: str, extension: str, closing_tag: str) -> str:
+    """Insert an ``iwxxm:extension`` block before the evolving-condition close tag."""
+    if not extension or closing_tag not in xml:
+        return xml
+    return xml.replace(closing_tag, f"{extension}\n            {closing_tag}", 1)
+
+
+def _airmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
+    """Serialize ``iwxxm-us:AIRMETWeatherHazards`` when IR carries US hazard metadata."""
+    hazard = ir.get("us_airmet_hazard")
+    if not isinstance(hazard, dict):
+        return ""
+    href = hazard.get("href")
+    if not isinstance(href, str) or not href.strip():
+        return ""
+    attrs: list[str] = []
+    if hazard.get("causing_ifr_conditions"):
+        attrs.append('causingIFRConditions="true"')
+    if hazard.get("causing_llws_conditions"):
+        attrs.append('causingLLWSConditions="true"')
+    attr_txt = f" {' '.join(attrs)}" if attrs else ""
+    return f"""          <iwxxm:extension>
+            <iwxxm-us:AIRMETWeatherHazards{attr_txt}>
+              <iwxxm-us:weatherPhenomenon xlink:href="{escape(href)}"/>
+            </iwxxm-us:AIRMETWeatherHazards>
+          </iwxxm:extension>
+"""
+
+
+def _sigmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
+    """Serialize ``iwxxm-us:SIGMETWeatherHazards`` when IR carries US hazard metadata."""
+    hazard = ir.get("us_sigmet_hazard")
+    if not isinstance(hazard, dict):
+        return ""
+    href = hazard.get("href")
+    if not isinstance(href, str) or not href.strip():
+        return ""
+    attrs: list[str] = []
+    tag = hazard.get("tag")
+    if isinstance(tag, str) and tag.strip():
+        attrs.append(f'tag="{escape(tag.strip())}"')
+    if hazard.get("is_severe") is True:
+        attrs.append('isSevere="true"')
+    attr_txt = f" {' '.join(attrs)}" if attrs else ""
+    return f"""              <iwxxm:extension>
+                <iwxxm-us:SIGMETWeatherHazards{attr_txt}>
+                  <iwxxm-us:weatherPhenomenon xlink:href="{escape(href)}"/>
+                </iwxxm-us:SIGMETWeatherHazards>
+              </iwxxm:extension>
+"""
+
+
 def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     """
     Emit TAF annex3 body plus optional ``MeteorologicalAerodromeForecastExtension``.
@@ -810,21 +862,26 @@ def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def emit_sigmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit SIGMET annex3 body with IWXXM-US namespace (thin F6.d US surface)."""
+    """Emit SIGMET annex3 body with IWXXM-US namespace and weather-hazard extensions."""
     from tac2iwxxm.profiles.annex3_products import emit_sigmet_annex3
 
     xml = emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
     xml = _with_us_namespace(xml)
-    return xml.replace('gml:id="sigmet.basic.', 'gml:id="sigmet.us.', 1)
+    for prefix in ("basic", "conv", "va", "tc", "cnl"):
+        xml = xml.replace(f'gml:id="sigmet.{prefix}.', 'gml:id="sigmet.us.', 1)
+    ext = _sigmet_weather_hazards_extension(ir)
+    return _inject_evolving_extension(xml, ext, "</iwxxm:SIGMETEvolvingCondition>")
 
 
 def emit_airmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit AIRMET annex3 body with IWXXM-US namespace (thin F6.d US surface)."""
+    """Emit AIRMET annex3 body with IWXXM-US namespace and weather-hazard extensions."""
     from tac2iwxxm.profiles.annex3_products import emit_airmet_annex3
 
     xml = emit_airmet_annex3(ir, iwxxm_version=iwxxm_version)
     xml = _with_us_namespace(xml)
-    return xml.replace('gml:id="airmet.basic.', 'gml:id="airmet.us.', 1)
+    xml = xml.replace('gml:id="airmet.basic.', 'gml:id="airmet.us.', 1)
+    ext = _airmet_weather_hazards_extension(ir)
+    return _inject_evolving_extension(xml, ext, "</iwxxm:AIRMETEvolvingCondition>")
 
 
 __all__ = [

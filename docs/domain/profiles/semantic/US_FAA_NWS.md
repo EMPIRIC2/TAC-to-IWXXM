@@ -14,7 +14,7 @@ grammar, encoded with **IWXXM-US** extension XSDs alongside core IWXXM.
 | TAC parse / normalize | FMH-1 Ch.12 body order + RMK §12.7 |
 | SPECI criteria | FMH-1 §2.5.2 (US statute miles / feet thresholds) |
 | IWXXM extensions | `iwxxm-us` 3.0 — RMK → `extension` blocks, US-specific elements |
-| Products | **METAR, SPECI** (primary); SIGMET national layer out of FMH-1 scope |
+| Products | **METAR, SPECI** (primary); **SIGMET/AIRMET** national layer (M8–M11); **TAF** lint overlay (M13, `iwxxm_us`) |
 
 ## Authoritative sources
 
@@ -41,7 +41,9 @@ grammar, encoded with **IWXXM-US** extension XSDs alongside core IWXXM.
 ## Gaps (#919 deepen)
 
 - Full FMH-1 RMK matrix beyond AO/SLP/PK/T/P free-text — **M7 done** (15 rows)
-- **SIGMET/AIRMET national layer** — **M8 done** (EV-079): phenomenon tokens + fixtures; **M9 VOR geometry** (EV-080): `ReferencePointGeometryParser` + `FROM` chain fixtures
-- iwxxm-us weather-hazard extensions — deferred (M10)
+- **SIGMET/AIRMET national layer** — **M8 done** (EV-079): phenomenon tokens + fixtures; **M9 VOR geometry** (EV-080): `ReferencePointGeometryParser` + `FROM` chain fixtures; **M10–M11** (EV-081): `SIGMETWeatherHazards` / `AIRMETWeatherHazards` emit + convective SIGMET (WST)
+- iwxxm-us weather-hazard extensions — **M10 done** (EV-081); outlook / multi-area AIRMET sub-periods remain backlog
+- Structured visibility (sector/tower/variable) — **M12 verify** (EV-081): M7 goldens remain in manifest
+- US TAF lint — **M13 done** (EV-081): `US_TAF_BECMG_FORBIDDEN`, `US_TAF_TEMPO_MAX_4H` under `iwxxm_us`
 - `codes.nws.noaa.gov/FMH-1` machine registry — probe timed out 2026-07-14
 - US examples must **not** mix into WMO-only sample catalog (UJ-039 policy)

@@ -1505,7 +1505,67 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
             profile=profile,
         )
     )
+    issues.extend(
+        _check_us_faa_nws_taf(
+            tokens,
+            product=product,
+            core=core,
+            body_start=start,
+            body_end=end,
+            profile=profile,
+        )
+    )
 
+    return issues
+
+
+def _check_us_faa_nws_taf(
+    tokens: list[str],
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    profile: str = "annex3",
+) -> list[Issue]:
+    """US_FAA_NWS TAF overlay rules for ``profile=iwxxm_us`` (#919 M13)."""
+    if profile != "iwxxm_us" or product != "TAF":
+        return []
+    issues: list[Issue] = []
+    if "BECMG" in tokens:
+        issues.append(
+            _issue(
+                "US_TAF_BECMG_FORBIDDEN",
+                f"{product} BECMG is forbidden under US_FAA_NWS — FMH-1 / FAA GEN 1.7",
+                start=body_start,
+                end=body_end,
+                location="change_group",
+            )
+        )
+    for i, tok in enumerate(tokens):
+        if tok != "TEMPO":
+            continue
+        window = tokens[i + 1] if i + 1 < len(tokens) else ""
+        duration_h: int | None = None
+        m = re.fullmatch(r"(\d{2})(\d{2})/(\d{2})(\d{2})", window)
+        if m is not None:
+            start_h = int(m.group(2))
+            end_h = int(m.group(4))
+            duration_h = (end_h - start_h) if end_h >= start_h else (24 - start_h + end_h)
+        elif _TAF_TL.fullmatch(window):
+            # TL-only TEMPO without explicit window — cannot compute duration here.
+            duration_h = None
+        if duration_h is not None and duration_h > 4:
+            issues.append(
+                _issue(
+                    "US_TAF_TEMPO_MAX_4H",
+                    f"{product} TEMPO exceeds 4h maximum under US_FAA_NWS — FMH-1",
+                    start=body_start,
+                    end=body_end,
+                    location="change_group",
+                )
+            )
+        break
     return issues
 
 

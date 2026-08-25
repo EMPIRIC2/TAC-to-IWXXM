@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "EV-063 M7 + EV-079 M8 + EV-080 M9 — US_FAA_NWS RMK matrix (#919) + SIGMET/AIRMET tokens + VOR geometry",
+  "description": "EV-063 M7 + EV-079 M8 + EV-080 M9 + EV-081 M10–M13 — US_FAA_NWS (#919)",
   "profile": "US_FAA_NWS",
   "cases": [
     {
@@ -135,6 +135,13 @@
       "tac": "SIGMET/valid/sigmet_vor_single.tac",
       "golden": "SIGMET/valid/sigmet_vor_single.golden.xml",
       "rule_id": "US.SIGMET.GEOM.VOR"
+    },
+    {
+      "id": "sigmet_conv_wst",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_conv_wst.tac",
+      "golden": "SIGMET/valid/sigmet_conv_wst.golden.xml",
+      "rule_id": "US.SIGMET.CONV.WST"
     },
     {
       "id": "airmet_isol_ts",

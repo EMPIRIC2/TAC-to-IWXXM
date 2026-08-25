@@ -16,6 +16,26 @@
       "lat": 33.627431,
       "lon": -116.160194,
       "name": "THERMAL VORTAC"
+    },
+    "FSD": {
+      "lat": 43.582,
+      "lon": -96.7419,
+      "name": "Sioux Falls Regional"
+    },
+    "OBH": {
+      "lat": 42.4708,
+      "lon": -98.6887,
+      "name": "O'Neill Municipal"
+    },
+    "SNY": {
+      "lat": 41.1013,
+      "lon": -102.9852,
+      "name": "Sidney-Richland Municipal"
+    },
+    "ANW": {
+      "lat": 42.5793,
+      "lon": -99.9931,
+      "name": "Ainsworth Regional"
     }
   }
 }

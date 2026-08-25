@@ -43,7 +43,7 @@
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire |
-| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US SIGMET/AIRMET M8 (EV-079)**; **#916 CA_ECCC P1 closed (EV-078)**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived |
+| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US M8–M13 (EV-079..081)**; **#916 CA_ECCC P1 closed (EV-078)**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1815,7 +1815,10 @@
   6. **EV-076 / #1061:** SIGMET exchange output emit closed on `stage`
   7. **EV-077:** VAA validate-first via Montreal VAAC TAC (`D-EV074-vaa-waiver-tac`); +2 AIRMET ops fixtures
   8. **EV-078 / #916:** P1 closeout verified — VAA exchange *emit* waived (`D-EV074-vaa-follow`); re-harvest when VAAC publishes ≥2
-- **Out of scope**: Thin packs #920; AU/NZ unless reprioritized; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork)
+  9. **EV-079 / #919 M8:** US SIGMET/AIRMET phenomenon tokens + fixtures
+  10. **EV-080 / #919 M9:** VOR reference geometry parser + fixtures
+  11. **EV-081 / #919 M10–M13:** weather-hazard emit, convective SIGMET (WST), structured VIS verify, US TAF lint
+- **Out of scope**: Thin packs #920; AU/NZ unless reprioritized; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   **CA_ECCC** option in EV-064 Build slice
 - **Source**: Epic [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912); EV-063; EV-064;
