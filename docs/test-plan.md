@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-25 (EV-083 — US_FAA_NWS M17–M18 CONUS UPDT + FRZLVL forecast)
+> **Last updated**: 2026-08-25 (EV-084 — US_FAA_NWS M19 WAUS multi-section AIRMET)
 
 ## Scope
 
@@ -3339,6 +3339,33 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: EV-079..082 US_FAA_NWS SIGMET/AIRMET manifest rows remain green
 - **Pass criteria**: `test_tc_ev083_003_*`
 - **Source**: EV-083 REQ-EV083-008
+
+### EV-084 / #919 — US_FAA_NWS M19 (WAUS multi-section AIRMET)
+
+- **Mode**: Full bulletin ICE + VOR `FROM` geometry + inline FRZLVL + `OTLK VALID` + FRZLVL subsection
+- **Pass criteria**: AC in evolve-decisions §EV-084; TC-EV084-*
+- **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); NWSI 10-811; EV-083 prior
+
+### TC-EV084-001: WAUS multi-section convert golden
+
+- **Level**: T1
+- **Objective**: One bulletin emits polygon geometry, outlook member, and `FreezingLevelForecast`
+- **Pass criteria**: `test_tc_ev084_001_*`
+- **Source**: EV-084 REQ-EV084-001..004
+
+### TC-EV084-002: VOR TO-chain parser
+
+- **Level**: T1
+- **Objective**: `FROM … TO …` chains and missing WSW cardinal coverage
+- **Pass criteria**: `test_tc_ev084_002_*`
+- **Source**: EV-084 REQ-EV084-005
+
+### TC-EV084-003: EV-083 regression pack
+
+- **Level**: T1
+- **Objective**: EV-079..083 manifest rows remain green (incl. updated `airmet_zulu_updt_ice` geometry)
+- **Pass criteria**: `test_tc_ev084_003_*`
+- **Source**: EV-084 REQ-EV084-006
 
 ### EV-078 / #916 — CA_ECCC P1 closeout audit
 
