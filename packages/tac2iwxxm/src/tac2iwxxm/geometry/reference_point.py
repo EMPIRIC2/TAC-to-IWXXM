@@ -27,12 +27,16 @@ _CARDINAL_BEARING_DEG: dict[str, float] = {
     "NNW": 337.5,
 }
 
+_CARDINAL_DIRS = "|".join(sorted(_CARDINAL_BEARING_DEG.keys(), key=len, reverse=True))
 _SEGMENT = re.compile(
-    r"^(?P<dist>\d{1,3})(?P<dir>NNE|NNW|ENE|ESE|SSE|SSW|NW|NE|SW|SE|N|S|E|W)\s+(?P<vor>[A-Z]{3})$",
+    rf"^(?P<dist>\d{{1,3}})(?P<dir>{_CARDINAL_DIRS})\s+(?P<vor>[A-Z]{{3}})$",
     re.IGNORECASE,
 )
+_BARE_VOR = re.compile(r"^(?P<vor>[A-Z]{3})$", re.IGNORECASE)
 _FROM_CHAIN = re.compile(
-    r"\bFROM\s+(?P<chain>[A-Z0-9/\s-]+?)(?=\s+AREA\b|\s+MOV\b|\s+TOP\b|\s+TOPS\b|\s+STNR\b|\s+NC\b|\s+WKN\b|\s+INTSF\b|=|$)",
+    r"\bFROM\s+(?P<chain>[A-Z0-9/\s-]+?)"
+    r"(?=\s+AREA\b|\s+MOV\b|\s+TOP\b|\s+TOPS\b|\s+STNR\b|\s+NC\b|\s+WKN\b|\s+INTSF\b"
+    r"|\s+MOD\b|\s+BTN\b|\s+CONDS\b|\s+OTLK\b|\s+FRZLVL\.\.\.|=|$)",
     re.IGNORECASE,
 )
 
@@ -117,20 +121,29 @@ class ReferencePointGeometryParser:
         chain = match.group("chain").strip()
         if not chain:
             return None
-        segments = [part.strip() for part in chain.split("-") if part.strip()]
+        if re.search(r"\s+TO\s+", chain, flags=re.IGNORECASE):
+            segments = [part.strip() for part in re.split(r"\s+TO\s+", chain, flags=re.IGNORECASE) if part.strip()]
+        else:
+            segments = [part.strip() for part in chain.split("-") if part.strip()]
         vertices: list[tuple[float, float]] = []
         refs: list[dict[str, Any]] = []
         for segment in segments:
             seg_match = _SEGMENT.match(segment)
-            if seg_match is None:
+            bare_match = None if seg_match is not None else _BARE_VOR.match(segment)
+            if seg_match is not None:
+                dist = int(seg_match.group("dist"))
+                direction = seg_match.group("dir").upper()
+                vor_id = seg_match.group("vor").upper()
+                base_lat, base_lon = resolve_vor(vor_id, self._vor_table)
+                lat, lon = offset_nm(base_lat, base_lon, dist, direction)
+                refs.append({"vor": vor_id, "nm": dist, "dir": direction})
+            elif bare_match is not None:
+                vor_id = bare_match.group("vor").upper()
+                lat, lon = resolve_vor(vor_id, self._vor_table)
+                refs.append({"vor": vor_id, "nm": 0, "dir": "AT"})
+            else:
                 raise ValueError(f"unable to parse VOR reference segment: {segment!r}")
-            dist = int(seg_match.group("dist"))
-            direction = seg_match.group("dir").upper()
-            vor_id = seg_match.group("vor").upper()
-            base_lat, base_lon = resolve_vor(vor_id, self._vor_table)
-            lat, lon = offset_nm(base_lat, base_lon, dist, direction)
             vertices.append((lat, lon))
-            refs.append({"vor": vor_id, "nm": dist, "dir": direction})
         if not vertices:
             return None
         if len(vertices) == 1:

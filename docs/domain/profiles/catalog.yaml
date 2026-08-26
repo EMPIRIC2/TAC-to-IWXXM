@@ -2,7 +2,7 @@
 # Corpus: domain-profiles · ADR-036 §7
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 1
-cycle: EV-083
+cycle: EV-084
 updated: "2026-08-25"
 
 priority_legend:
@@ -99,6 +99,7 @@ profiles:
       - Multi-area AIRMET (AND-joined) — implemented (EV-082 M16)
       - CONUS/Hawaii AIRMET UPDT header — implemented (EV-083 M17)
       - FRZLVL subsection + FreezingLevelForecast — implemented (EV-083 M18)
+      - WAUS multi-section AIRMET bulletin — implemented (EV-084 M19)
       - codes.nws.noaa.gov/FMH-1 registry probe timed out 2026-07-14
 
   - id: CA_ECCC

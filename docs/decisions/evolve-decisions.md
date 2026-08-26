@@ -1,5 +1,30 @@
 # Evolve Decisions
 
+## Cycle EV-084 — US_FAA_NWS M19 (#919) (EV-084-us-waus-multisection)
+
+**Opened:** 2026-08-25 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-084-us-waus-multisection`  
+**Preset:** Standard · **Documenting→Implementing gate:** open · **Issue:** [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)  
+**Parent:** #912 · **Prior:** EV-083 merged to `stage` @ `0e3e3919`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV084-goal | M19 — full WAUS multi-section bulletin (ICE + OTLK + FRZLVL + VOR FROM) |
+| D-EV084-in | `FROM … TO …` VOR chains; FRZLVL after OTLK; multisection fixture/golden |
+| D-EV084-out | M14 / #1025 alias cutover (Oct 2026) |
+| D-EV084-gate | **open** — operator chose M19-only |
+
+### Delivered (local)
+
+| Milestone | Scope |
+|-----------|--------|
+| M19 | WAUS bulletin: CONUS ICE + polygon geometry + inline FRZLVL + outlook + `FreezingLevelForecast` |
+
+**Branch:** `evolve/EV-084-us-waus-multisection` (local, uncommitted)
+
+---
+
 ## Cycle EV-083 — US_FAA_NWS M17–M18 (#919) (EV-083-us-airmet-updt-frzlvl)
 
 **Opened:** 2026-08-25 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-083-us-airmet-updt-frzlvl`  

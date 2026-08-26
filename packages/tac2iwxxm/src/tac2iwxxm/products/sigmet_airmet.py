@@ -846,7 +846,13 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
             "raw": text,
         }
     main_body, outlook_body = _split_airmet_main_and_outlook(body)
-    hazard_body, frzlvl_body = _split_frzlvl_section(main_body)
+    hazard_body, frzlvl_from_main = _split_frzlvl_section(main_body)
+    frzlvl_body = frzlvl_from_main
+    if outlook_body is not None:
+        outlook_hazard, frzlvl_from_outlook = _split_frzlvl_section(outlook_body)
+        if frzlvl_from_outlook is not None:
+            frzlvl_body = frzlvl_from_outlook
+            outlook_body = outlook_hazard
     if ahl_tt is not None:
         ir["ahl_tt"] = ahl_tt
     gfa_code = _detect_ca_gfa_phenomenon(hazard_body)
