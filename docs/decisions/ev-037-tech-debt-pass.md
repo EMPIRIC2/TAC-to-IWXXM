@@ -36,8 +36,32 @@
 - Deleted legacy backend validator unit tests; coverage in `packages/iwxxm-validate/tests`
 - Updated `docs/domain/validation/COMPREHENSIVE_VALIDATION.md`
 
+## Merge (2026-08-26)
+
+- **PR #1074** → `stage` (squash merge `cf2c721d`)
+- CI green: lint, typecheck, backend/iwxxm-validate/tac2iwxxm tests, E2E smoke, Schemathesis
+- Staging gate skipped (PR targets `stage`, not `main`)
+
 ## Backlog (deferred slices)
 
 P2: api.py router split · product_rules split · annex3 split  
 P3: shared xsdata move · FileConverter decomposition · edge API retirement  
 P4: GIFTs naming · .archive delete · doc hygiene
+
+## TD-2 (2026-08-26)
+
+| Slice | Status | Notes |
+|-------|--------|-------|
+| annex3_products split | ✅ | `profiles/annex3_emit/` per-product modules; shim in `annex3_products.py` |
+| product_rules split | ✅ | `product_rules_pkg/` per-family modules; dispatcher in `product_rules.py` |
+| api.py router split | deferred | Route move breaks `src.api.*` monkeypatch sites (~200 unit tests); retry with wire-only helper extraction first |
+
+## TD-2b — api.py wire helper extraction (2026-08-26)
+
+| Item | Status | Notes |
+|------|--------|-------|
+| `api_wire.py` | ✅ | CORS helpers, multipart/validate wire, bulletin split mapper (~630 lines) |
+| `api.py` | ✅ | Routes unchanged; re-exports wire names for `src.api.*` patches |
+| Route router split | still deferred | All **1391** backend unit tests pass with wire-only extraction |
+
+**Patch contract:** `_call_iwxxm_validate` resolves `iwxxm_validate_fn` via lazy `api` lookup so tests patching `src.api.iwxxm_validate_fn` still work.
