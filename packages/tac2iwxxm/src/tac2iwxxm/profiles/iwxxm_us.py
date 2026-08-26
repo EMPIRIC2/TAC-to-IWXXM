@@ -792,6 +792,11 @@ def _airmet_subperiod_extension(parent_ir: dict[str, Any], outlook: dict[str, An
         f"{year_month}-{from_day:02d}T{int(outlook['valid_from_hour']):02d}:{int(outlook['valid_from_minute']):02d}:00Z"
     )
     end = f"{year_month}-{to_day:02d}T{int(outlook['valid_to_hour']):02d}:{int(outlook['valid_to_minute']):02d}:00Z"
+    freezing_levels = ""
+    inline_lo = outlook.get("inline_frzlvl_lo")
+    inline_hi = outlook.get("inline_frzlvl_hi")
+    if inline_lo is not None and inline_hi is not None:
+        freezing_levels = _inline_freezing_levels_xml(int(inline_lo), int(inline_hi), prefix="outlook")
     return f"""              <iwxxm:extension>
                 <iwxxm-us:AIRMETEvolvingConditionExtension>
                   <iwxxm-us:validTimeSubPeriod>
@@ -799,10 +804,107 @@ def _airmet_subperiod_extension(parent_ir: dict[str, Any], outlook: dict[str, An
                       <gml:beginPosition>{begin}</gml:beginPosition>
                       <gml:endPosition>{end}</gml:endPosition>
                     </gml:TimePeriod>
-                  </iwxxm-us:validTimeSubPeriod>
+                  </iwxxm-us:validTimeSubPeriod>{freezing_levels}
                 </iwxxm-us:AIRMETEvolvingConditionExtension>
               </iwxxm:extension>
 """
+
+
+def _flight_level_layer_xml(alt: str, gml_id: str) -> str:
+    """Serialize ``iwxxm-us:flightLevel`` for a freezing-level isopleth."""
+    if alt.upper() == "SFC":
+        return f"""                    <aixm:AirspaceLayer gml:id="{gml_id}">
+                      <aixm:lowerLimit>GND</aixm:lowerLimit>
+                      <aixm:lowerLimitReference>SFC</aixm:lowerLimitReference>
+                    </aixm:AirspaceLayer>"""
+    fl = int(alt)
+    return f"""                    <aixm:AirspaceLayer gml:id="{gml_id}">
+                      <aixm:upperLimit uom="FL">{fl}</aixm:upperLimit>
+                      <aixm:upperLimitReference>STD</aixm:upperLimitReference>
+                    </aixm:AirspaceLayer>"""
+
+
+def _inline_freezing_levels_xml(lo: int, hi: int, *, prefix: str) -> str:
+    """Serialize inline ``FRZLVL lo-hi`` tokens inside an evolving extension."""
+    return f"""
+                  <iwxxm-us:freezingLevel>
+                    <iwxxm-us:flightLevel>
+{_flight_level_layer_xml(str(lo), f"fl.{prefix}.lo")}
+                    </iwxxm-us:flightLevel>
+                    <iwxxm-us:multipleLevels>true</iwxxm-us:multipleLevels>
+                  </iwxxm-us:freezingLevel>
+                  <iwxxm-us:freezingLevel>
+                    <iwxxm-us:flightLevel>
+{_flight_level_layer_xml(str(hi), f"fl.{prefix}.hi")}
+                    </iwxxm-us:flightLevel>
+                    <iwxxm-us:multipleLevels>true</iwxxm-us:multipleLevels>
+                  </iwxxm-us:freezingLevel>"""
+
+
+def _freezing_level_isopleth_xml(isopleth: dict[str, Any], idx: int, *, multiple: bool) -> str:
+    """Serialize one ``iwxxm-us:FreezingLevel`` isopleth member."""
+    alt = str(isopleth["alt"])
+    return f"""          <iwxxm-us:isopleth>
+            <iwxxm-us:FreezingLevel>
+              <iwxxm-us:flightLevel>
+{_flight_level_layer_xml(alt, f"fl.isopleth.{idx}")}
+              </iwxxm-us:flightLevel>
+              <iwxxm-us:multipleLevels>{str(multiple).lower()}</iwxxm-us:multipleLevels>
+            </iwxxm-us:FreezingLevel>
+          </iwxxm-us:isopleth>"""
+
+
+def _airmet_freezing_level_forecast_extension(ir: dict[str, Any]) -> str:
+    """Serialize ``iwxxm-us:FreezingLevelForecast`` for standalone FRZLVL subsection."""
+    section_raw = ir.get("frzlvl_section")
+    if not isinstance(section_raw, dict):
+        return ""
+    section = cast(dict[str, Any], section_raw)
+    isopleths = section.get("isopleths")
+    if not isinstance(isopleths, list) or not isopleths:
+        return ""
+    year_month = "2014-05"
+    begin = (
+        f"{year_month}-{int(ir['valid_from_day']):02d}T"
+        f"{int(ir['valid_from_hour']):02d}:{int(ir['valid_from_minute']):02d}:00Z"
+    )
+    end = (
+        f"{year_month}-{int(ir['valid_to_day']):02d}T"
+        f"{int(ir['valid_to_hour']):02d}:{int(ir['valid_to_minute']):02d}:00Z"
+    )
+    multiple = bool(section.get("multiple_levels"))
+    typed_isopleths: list[dict[str, Any]] = [cast(dict[str, Any], item) for item in isopleths if isinstance(item, dict)]
+    members = "\n".join(
+        _freezing_level_isopleth_xml(item, idx, multiple=multiple) for idx, item in enumerate(typed_isopleths, start=1)
+    )
+    return f"""  <iwxxm:extension>
+    <iwxxm-us:FreezingLevelForecast>
+      <iwxxm-us:validTimeSubPeriod>
+        <gml:TimePeriod gml:id="t.frzlvl">
+          <gml:beginPosition>{begin}</gml:beginPosition>
+          <gml:endPosition>{end}</gml:endPosition>
+        </gml:TimePeriod>
+      </iwxxm-us:validTimeSubPeriod>
+{members}
+    </iwxxm-us:FreezingLevelForecast>
+  </iwxxm:extension>
+"""
+
+
+def _inject_first_evolving_extension(xml: str, inner: str) -> str:
+    """Insert evolving-condition ``iwxxm-us`` extension before the first member close tag."""
+    if not inner:
+        return xml
+    wrapped = f"""              <iwxxm:extension>
+                <iwxxm-us:AIRMETEvolvingConditionExtension>{inner}
+                </iwxxm-us:AIRMETEvolvingConditionExtension>
+              </iwxxm:extension>
+"""
+    token = "</iwxxm:AIRMETEvolvingCondition>"
+    idx = xml.find(token)
+    if idx == -1:
+        return xml
+    return xml[:idx] + wrapped + xml[idx:]
 
 
 def _airmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
@@ -904,6 +1006,11 @@ def emit_airmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     xml = xml.replace('gml:id="airmet.basic.', 'gml:id="airmet.us.', 1)
     ext = _airmet_weather_hazards_extension(ir)
     xml = _inject_evolving_extension(xml, ext, "</iwxxm:AIRMETEvolvingCondition>")
+    inline_lo = ir.get("inline_frzlvl_lo")
+    inline_hi = ir.get("inline_frzlvl_hi")
+    if inline_lo is not None and inline_hi is not None:
+        inline_ext = _inline_freezing_levels_xml(int(inline_lo), int(inline_hi), prefix="obs")
+        xml = _inject_first_evolving_extension(xml, inline_ext)
     outlook_raw = ir.get("outlook")
     if isinstance(outlook_raw, dict):
         outlook_ir = cast(dict[str, Any], outlook_raw)
@@ -914,6 +1021,9 @@ def emit_airmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
             start = xml.index(member_token)
             close_idx = xml.index("</iwxxm:AIRMETEvolvingCondition>", start)
             xml = xml[:close_idx] + subperiod + xml[close_idx:]
+    frzlvl_ext = _airmet_freezing_level_forecast_extension(ir)
+    if frzlvl_ext and "</iwxxm:AIRMET>" in xml:
+        xml = xml.replace("</iwxxm:AIRMET>", f"{frzlvl_ext}</iwxxm:AIRMET>", 1)
     return xml
 
 

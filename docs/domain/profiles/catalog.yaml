@@ -2,7 +2,7 @@
 # Corpus: domain-profiles · ADR-036 §7
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 1
-cycle: EV-082
+cycle: EV-083
 updated: "2026-08-25"
 
 priority_legend:
@@ -97,6 +97,8 @@ profiles:
       - US TAF lint (BECMG forbidden, TEMPO max 4h) under iwxxm_us — implemented (EV-081 M13)
       - AIRMET outlook (OTLK VALID) + validTimeSubPeriod — implemented (EV-082 M15)
       - Multi-area AIRMET (AND-joined) — implemented (EV-082 M16)
+      - CONUS/Hawaii AIRMET UPDT header — implemented (EV-083 M17)
+      - FRZLVL subsection + FreezingLevelForecast — implemented (EV-083 M18)
       - codes.nws.noaa.gov/FMH-1 registry probe timed out 2026-07-14
 
   - id: CA_ECCC

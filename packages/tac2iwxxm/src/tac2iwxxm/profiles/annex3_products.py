@@ -575,6 +575,18 @@ def _sigmet_geometry_xml(
               <aixm:lowerLimitReference>SFC</aixm:lowerLimitReference>
               <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
               <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+        elif ir.get("lower_surface") == "FRZLVL" and upper_fl is not None:
+            inline_lo = ir.get("inline_frzlvl_lo")
+            if inline_lo is not None:
+                limits = f"""
+              <aixm:lowerLimit uom="FL">{int(inline_lo)}</aixm:lowerLimit>
+              <aixm:lowerLimitReference>STD</aixm:lowerLimitReference>
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
+            else:
+                limits = f"""
+              <aixm:upperLimit uom="FL">{int(upper_fl)}</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>"""
         elif lower_fl is not None and upper_fl is not None:
             limits = f"""
               <aixm:lowerLimit uom="FL">{int(lower_fl)}</aixm:lowerLimit>

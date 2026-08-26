@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-25 (EV-082 — US_FAA_NWS M15–M16 outlook / multi-area AIRMET)
+> **Last updated**: 2026-08-25 (EV-083 — US_FAA_NWS M17–M18 CONUS UPDT + FRZLVL forecast)
 
 ## Scope
 
@@ -3312,6 +3312,33 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: EV-079..081 SIGMET/AIRMET manifest rows remain green
 - **Pass criteria**: `test_tc_ev082_003_*`
 - **Source**: EV-082 REQ-EV082-008
+
+### EV-083 / #919 — US_FAA_NWS M17–M18 (CONUS UPDT + FRZLVL forecast)
+
+- **Mode**: CONUS `UPDT` header parse + standalone `FRZLVL...` subsection emit
+- **Pass criteria**: AC in evolve-decisions §EV-083; TC-EV083-*
+- **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); NWSI 10-811 Appendix A2.1; EV-082 prior
+
+### TC-EV083-001: CONUS UPDT header + inline FRZLVL
+
+- **Level**: T1
+- **Objective**: `AIRMET ZULU UPDT` header populates IR; `BTN FRZLVL` + inline levels emit
+- **Pass criteria**: `test_tc_ev083_001_*`
+- **Source**: EV-083 REQ-EV083-001..004
+
+### TC-EV083-002: FRZLVL-only subsection
+
+- **Level**: T1
+- **Objective**: Standalone `FRZLVL...` emits `FreezingLevelForecast`
+- **Pass criteria**: `test_tc_ev083_002_*`
+- **Source**: EV-083 REQ-EV083-005..007
+
+### TC-EV083-003: EV-082 regression pack
+
+- **Level**: T1
+- **Objective**: EV-079..082 US_FAA_NWS SIGMET/AIRMET manifest rows remain green
+- **Pass criteria**: `test_tc_ev083_003_*`
+- **Source**: EV-083 REQ-EV083-008
 
 ### EV-078 / #916 — CA_ECCC P1 closeout audit
 

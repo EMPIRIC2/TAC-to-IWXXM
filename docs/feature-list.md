@@ -1819,6 +1819,7 @@
   10. **EV-080 / #919 M9:** VOR reference geometry parser + fixtures
   11. **EV-081 / #919 M10–M13:** weather-hazard emit, convective SIGMET (WST), structured VIS verify, US TAF lint
   12. **EV-082 / #919 M15–M16:** AIRMET outlook (`OTLK VALID`) + multi-area sub-periods
+  13. **EV-083 / #919 M17–M18:** CONUS `UPDT` header + FRZLVL `FreezingLevelForecast`
 - **Out of scope**: Thin packs #920; AU/NZ unless reprioritized; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   **CA_ECCC** option in EV-064 Build slice

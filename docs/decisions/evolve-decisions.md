@@ -1,5 +1,32 @@
 # Evolve Decisions
 
+## Cycle EV-083 — US_FAA_NWS M17–M18 (#919) (EV-083-us-airmet-updt-frzlvl)
+
+**Opened:** 2026-08-25 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-083-us-airmet-updt-frzlvl`  
+**Preset:** Standard · **Documenting→Implementing gate:** open · **Issue:** [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)  
+**Parent:** #912 · **Prior:** EV-082 merged to `stage` @ `9e7e125c`
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV083-goal | M17–M18 — CONUS `UPDT` header + FRZLVL-only subsection / `FreezingLevelForecast` |
+| D-EV083-in | CONUS/Hawaii product line parse; `BTN FRZLVL`; standalone FRZLVL section emit |
+| D-EV083-out | Promote; #1025 M14; full WAUS bulletin stack |
+| D-EV083-gate | **open** — operator chose M17+M18 after EV-082 closeout |
+
+### Delivered (local)
+
+| Milestone | Scope |
+|-----------|--------|
+| M17 | `AIRMET <series> UPDT` header + FAA `ZONE WA` issue time + inline FRZLVL vertical |
+| M18 | `FRZLVL...` subsection → `iwxxm-us:FreezingLevelForecast` |
+
+**Tests:** TC-EV083-001..005 · **1037 passed** · **97.25%** cov · per-file gate OK  
+**Branch:** `evolve/EV-083-us-airmet-updt-frzlvl` (local, uncommitted)
+
+---
+
 ## Cycle EV-082 — US_FAA_NWS M15–M16 (#919) (EV-082-us-airmet-outlook)
 
 **Opened:** 2026-08-25 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-082-us-airmet-outlook`  
