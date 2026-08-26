@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "EV-063 M7 + EV-079 M8 + EV-080 M9 + EV-081 M10–M13 + EV-082 M15–M16 — US_FAA_NWS (#919)",
+  "description": "EV-063 M7 + EV-079 M8 + EV-080 M9 + EV-081 M10–M13 + EV-082 M15–M16 + EV-083 M17–M18 — US_FAA_NWS (#919)",
   "profile": "US_FAA_NWS",
   "cases": [
     {
@@ -177,6 +177,20 @@
       "tac": "AIRMET/valid/airmet_mod_turb_multi.tac",
       "golden": "AIRMET/valid/airmet_mod_turb_multi.golden.xml",
       "rule_id": "US.AIRMET.AREA.MULTI"
+    },
+    {
+      "id": "airmet_zulu_updt_ice",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_zulu_updt_ice.tac",
+      "golden": "AIRMET/valid/airmet_zulu_updt_ice.golden.xml",
+      "rule_id": "US.AIRMET.HEADER.CONUS_UPDT"
+    },
+    {
+      "id": "airmet_frzlvl_section",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_frzlvl_section.tac",
+      "golden": "AIRMET/valid/airmet_frzlvl_section.golden.xml",
+      "rule_id": "US.AIRMET.FRZLVL.SECTION"
     }
   ]
 }

@@ -163,6 +163,28 @@ _AIR_AREA_BOUNDARY = re.compile(
     r"\s+AND\s+(?=(?:MOD|ISOL|OCNL|FRQ|MT|MTN|IFR)\s+)",
     re.IGNORECASE,
 )
+# CONUS/Hawaii bulletin product line (NWSI 10-811 Appendix A2.1).
+_CONUS_AIRMET = re.compile(
+    r"^(?:W[A-Z]{3}\d{2}\s+(?P<wmo_cccc>[A-Z]{4})\s+(?P<wmo_time>\d{6})\s+)?"
+    r"(?:(?P<faa_zone>[A-Z]{4})\s+WA\s+(?P<issue>\d{6})\s+)?"
+    r"AIRMET\s+(?P<series>[A-Z]+)\s+(?:UPDT|UPDATE)\s+(?P<upd>\d+)\s+"
+    r"FOR\s+(?P<for_text>.+?)\s+VALID\s+UNTIL\s+(?P<until>\d{4,6})\s+(?P<body>.*)$",
+    re.IGNORECASE | re.DOTALL,
+)
+_FRZLVL_SECTION = re.compile(r"\bFRZLVL\.\.\.", re.IGNORECASE)
+_FRZLVL_RANGING = re.compile(
+    r"FRZLVL\.\.\.RANGING FROM (?P<from>SFC|\d{3})-(?P<to>\d{3})\s+ACRS AREA",
+    re.IGNORECASE,
+)
+_MULT_FRZLVL = re.compile(r"MULT FRZLVL (?P<lo>\d{3})-(?P<hi>\d{3})", re.IGNORECASE)
+_FRZLVL_ALG = re.compile(
+    r"(?P<alt>SFC|\d{3})\s+ALG\s+(?P<boundary>[A-Z0-9][A-Z0-9\s\-]*?)"
+    r"(?=\s+(?:\d{3}|SFC)\s+ALG|\s*\.|\s*=|$)",
+    re.IGNORECASE,
+)
+_FRZLVL_BAND = re.compile(r"\bBTN\s+FRZLVL\s+AND\s+FL(?P<fl>\d{2,3})\b", re.IGNORECASE)
+_INLINE_FRZLVL = re.compile(r"\bFRZLVL\s+(?P<lo>\d{3})-(?P<hi>\d{3})\b", re.IGNORECASE)
+_CONUS_AIR_LEAD = re.compile(r"^AIRMET\s+[A-Z]+\.\.\.", re.IGNORECASE)
 
 
 def _normalize(tac: str) -> str:
@@ -361,6 +383,14 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
         ir["lower_surface"] = "SFC"
         ir["upper_fl"] = int(sfc_fl.group("fl"))
     else:
+        frzlvl_band = _FRZLVL_BAND.search(body)
+        if frzlvl_band is not None:
+            ir["lower_surface"] = "FRZLVL"
+            ir["upper_fl"] = int(frzlvl_band.group("fl"))
+        inline_frz = _INLINE_FRZLVL.search(body)
+        if inline_frz is not None:
+            ir["inline_frzlvl_lo"] = int(inline_frz.group("lo"))
+            ir["inline_frzlvl_hi"] = int(inline_frz.group("hi"))
         band = _FL_BAND.search(body)
         if band is not None:
             ir["lower_fl"] = int(band.group("lo"))
@@ -479,6 +509,102 @@ def _split_airmet_main_and_outlook(body: str) -> tuple[str, str | None]:
     if match is None:
         return body, None
     return body[: match.start()].strip(), body[match.start() :].strip()
+
+
+def _split_frzlvl_section(body: str) -> tuple[str, str | None]:
+    """Split optional standalone ``FRZLVL...`` subsection from the hazard body."""
+    match = _FRZLVL_SECTION.search(body)
+    if match is None:
+        return body, None
+    return body[: match.start()].strip(), body[match.start() :].strip()
+
+
+def _strip_conus_airmet_lead(body: str) -> str:
+    """Remove ``AIRMET ICE...`` phenomenon lead from a CONUS product body."""
+    if not _CONUS_AIR_LEAD.match(body):
+        return body
+    from_match = re.search(r"\bFROM\b", body, flags=re.IGNORECASE)
+    if from_match is not None:
+        return body[from_match.start() :].strip()
+    bounded = re.search(r"\bBOUNDED BY\b", body, flags=re.IGNORECASE)
+    if bounded is not None:
+        return body[bounded.start() :].strip()
+    mod_match = re.search(r"\bMOD\s+", body, flags=re.IGNORECASE)
+    if mod_match is not None:
+        return body[mod_match.start() :].strip()
+    return body
+
+
+def _phenomenon_from_conus_for_text(for_text: str) -> str:
+    """Map CONUS ``FOR …`` clause tokens to IWXXM phenomenon codes."""
+    upper = for_text.upper()
+    if "ICE" in upper:
+        return "MOD_ICE"
+    if "TURB" in upper:
+        return "MOD_TURB"
+    if "IFR" in upper or "VIS" in upper:
+        return "SFC_VIS"
+    if "MTN" in upper and "OBSC" in upper:
+        return "MT_OBSC"
+    return _detect_phenomenon(for_text, _AIR_PHENOMENA)
+
+
+def _parse_frzlvl_section(text: str) -> dict[str, Any]:
+    """Parse standalone ``FRZLVL...`` subsection into structured IR."""
+    section: dict[str, Any] = {"isopleths": []}
+    ranging = _FRZLVL_RANGING.search(text)
+    if ranging is not None:
+        section["ranging_from"] = ranging.group("from").upper()
+        section["ranging_to"] = int(ranging.group("to"))
+    multi = _MULT_FRZLVL.search(text)
+    if multi is not None:
+        section["multiple_levels"] = True
+        section["multi_lo"] = int(multi.group("lo"))
+        section["multi_hi"] = int(multi.group("hi"))
+    else:
+        section["multiple_levels"] = False
+    for match in _FRZLVL_ALG.finditer(text):
+        section["isopleths"].append(
+            {
+                "alt": match.group("alt").upper(),
+                "boundary": match.group("boundary").strip(),
+            }
+        )
+    return section
+
+
+def _try_parse_conus_airmet(text: str) -> dict[str, Any] | None:
+    """Parse CONUS/Hawaii ``AIRMET <series> UPDT`` bulletin when ICAO header absent."""
+    match = _CONUS_AIRMET.match(text)
+    if match is None:
+        return None
+    until_day, until_hour, until_minute = _parse_until_token(match.group("until"))
+    issue_day, issue_hour, issue_minute = until_day, until_hour, until_minute
+    if match.group("issue"):
+        issue_day, issue_hour, issue_minute = _parse_valid(match.group("issue"))
+    elif match.group("wmo_time"):
+        issue_day, issue_hour, issue_minute = _parse_valid(match.group("wmo_time"))
+    fir = (match.group("faa_zone") or match.group("wmo_cccc") or "KKCI").upper()
+    mwo = (match.group("wmo_cccc") or "KKCI").upper()
+    body = _strip_conus_airmet_lead(match.group("body").strip())
+    return {
+        "fir": fir,
+        "mwo": mwo,
+        "sequence": int(match.group("upd")),
+        "valid_from_day": issue_day,
+        "valid_from_hour": issue_hour,
+        "valid_from_minute": issue_minute,
+        "valid_to_day": until_day,
+        "valid_to_hour": until_hour,
+        "valid_to_minute": until_minute,
+        "phenomenon": _phenomenon_from_conus_for_text(match.group("for_text")),
+        "fir_name": fir,
+        "conus_series": match.group("series").upper(),
+        "conus_update": int(match.group("upd")),
+        "conus_for_text": match.group("for_text").strip(),
+        "header_style": "conus_updt",
+        "body": body,
+    }
 
 
 def _split_airmet_areas(body: str) -> list[str]:
@@ -686,58 +812,71 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
         body_tac = raw_in[ahl_match.end() :]
 
     text = _normalize(body_tac)
-    match = _AIRMET.match(text)
-    if match is None:
-        raise ValueError("unable to parse AIRMET header")
+    conus = _try_parse_conus_airmet(text)
+    if conus is not None:
+        body = conus.pop("body")
+        ir: dict[str, Any] = {
+            "ir_version": 1,
+            "product": "AIRMET",
+            "raw": text,
+            **conus,
+        }
+    else:
+        match = _AIRMET.match(text)
+        if match is None:
+            raise ValueError("unable to parse AIRMET header")
 
-    body = match.group("body")
+        body = match.group("body")
+        from_d, from_h, from_m = _parse_valid(match.group("from"))
+        to_d, to_h, to_m = _parse_valid(match.group("to"))
+        ir = {
+            "ir_version": 1,
+            "product": "AIRMET",
+            "fir": match.group("fir").upper(),
+            "mwo": match.group("mwo").upper(),
+            "sequence": int(match.group("seq")),
+            "valid_from_day": from_d,
+            "valid_from_hour": from_h,
+            "valid_from_minute": from_m,
+            "valid_to_day": to_d,
+            "valid_to_hour": to_h,
+            "valid_to_minute": to_m,
+            "phenomenon": _detect_phenomenon(body, _AIR_PHENOMENA),
+            "fir_name": "SHANLON FIR" if "SHANLON" in body.upper() else match.group("fir").upper(),
+            "raw": text,
+        }
     main_body, outlook_body = _split_airmet_main_and_outlook(body)
-    from_d, from_h, from_m = _parse_valid(match.group("from"))
-    to_d, to_h, to_m = _parse_valid(match.group("to"))
-    ir: dict[str, Any] = {
-        "ir_version": 1,
-        "product": "AIRMET",
-        "fir": match.group("fir").upper(),
-        "mwo": match.group("mwo").upper(),
-        "sequence": int(match.group("seq")),
-        "valid_from_day": from_d,
-        "valid_from_hour": from_h,
-        "valid_from_minute": from_m,
-        "valid_to_day": to_d,
-        "valid_to_hour": to_h,
-        "valid_to_minute": to_m,
-        "phenomenon": _detect_phenomenon(main_body, _AIR_PHENOMENA),
-        "fir_name": "SHANLON FIR" if "SHANLON" in body.upper() else match.group("fir").upper(),
-        "raw": text,
-    }
+    hazard_body, frzlvl_body = _split_frzlvl_section(main_body)
     if ahl_tt is not None:
         ir["ahl_tt"] = ahl_tt
-    gfa_code = _detect_ca_gfa_phenomenon(main_body)
+    gfa_code = _detect_ca_gfa_phenomenon(hazard_body)
     if gfa_code is not None:
         ir["ca_gfa_phenomenon"] = gfa_code
-        structured = _parse_ca_gfa_structured(main_body, gfa_code)
+        structured = _parse_ca_gfa_structured(hazard_body, gfa_code)
         if structured is not None:
             ir["ca_gfa_structured"] = structured
-    chart = _GFA_CHART.search(main_body)
+    chart = _GFA_CHART.search(hazard_body)
     if chart is not None:
         ir["gfa_chart_id"] = chart.group(1).upper()
-    area_segments = _split_airmet_areas(main_body)
+    area_segments = _split_airmet_areas(hazard_body)
     if len(area_segments) > 1:
         areas = [_airmet_area_ir(segment, default_phenomenon=str(ir["phenomenon"])) for segment in area_segments]
         ir["areas"] = areas
         _apply_airmet_area_to_ir(ir, areas[0])
     else:
-        _enrich_hazard_body(ir, main_body)
+        _enrich_hazard_body(ir, hazard_body)
+    if frzlvl_body is not None:
+        ir["frzlvl_section"] = _parse_frzlvl_section(frzlvl_body)
     if outlook_body is not None:
         outlook = _parse_airmet_outlook(outlook_body, default_phenomenon=str(ir["phenomenon"]))
-        outlook["valid_from_day"] = from_d
+        outlook["valid_from_day"] = ir["valid_from_day"]
         if outlook["valid_to_hour"] < outlook["valid_from_hour"] or (
             outlook["valid_to_hour"] == outlook["valid_from_hour"]
             and outlook["valid_to_minute"] < outlook["valid_from_minute"]
         ):
-            outlook["valid_to_day"] = to_d + 1
+            outlook["valid_to_day"] = ir["valid_to_day"] + 1
         else:
-            outlook["valid_to_day"] = to_d
+            outlook["valid_to_day"] = ir["valid_to_day"]
         ir["outlook"] = outlook
     _attach_us_airmet_hazard(ir)
     return ir
