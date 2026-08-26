@@ -251,6 +251,20 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("taf", "iwxxm_us", "us_faa_nws"),
     ),
     _row(
+        "US_SWXA_SATCOM_NOT_ISSUED",
+        "error",
+        "{product} SATCOM space weather is not issued under US_FAA_NWS",
+        product="SWXA",
+        tags=("swxa", "iwxxm_us", "us_faa_nws", "satcom"),
+    ),
+    _row(
+        "US_TCA_OBSERVED_CB_NOT_PROVIDED",
+        "error",
+        "{product} observed CB must be NIL under US_FAA_NWS — observed CB not provided",
+        product="TCA",
+        tags=("tca", "iwxxm_us", "us_faa_nws", "cb"),
+    ),
+    _row(
         "CA_AIRMET_GFA",
         "info",
         "{product} encodes MANAIR GFA compound phenomenon — ca_eccc profile awareness",

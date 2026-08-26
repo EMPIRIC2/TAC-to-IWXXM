@@ -1,7 +1,7 @@
 # US_FAA_NWS — United States semantic overlay
 
 > **Profile id**: `US_FAA_NWS` · **Legacy alias**: `iwxxm_us` (deprecation window → [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025))  
-> **Kind**: semantic · **Priority**: P0 · **Status**: implemented (F35); deepen [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)  
+> **Kind**: semantic · **Priority**: P0 · **Status**: implemented — #919 closed (EV-085)  
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 United States national semantic overlay on the ICAO baseline: FMH-1 METAR/SPECI body and RMK
@@ -14,7 +14,7 @@ grammar, encoded with **IWXXM-US** extension XSDs alongside core IWXXM.
 | TAC parse / normalize | FMH-1 Ch.12 body order + RMK §12.7 |
 | SPECI criteria | FMH-1 §2.5.2 (US statute miles / feet thresholds) |
 | IWXXM extensions | `iwxxm-us` 3.0 — RMK → `extension` blocks, US-specific elements |
-| Products | **METAR, SPECI** (primary); **SIGMET/AIRMET** national layer (M8–M11); **TAF** lint overlay (M13, `iwxxm_us`) |
+| Products | **METAR, SPECI** (primary); **SIGMET/AIRMET** national layer (M8–M19); **TAF** lint overlay (M13); **SWXA/TCA** thin US validation policy (M22) |
 
 ## Authoritative sources
 
@@ -36,14 +36,22 @@ grammar, encoded with **IWXXM-US** extension XSDs alongside core IWXXM.
 | Registry | `packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py` |
 | Emitter | `packages/tac2iwxxm/src/tac2iwxxm/profiles/iwxxm_us.py` |
 | Vendor pin | `vendor/manifest.json` → `iwxxm-us` **3.0** |
-| Golden fixtures | `packages/tac2iwxxm/tests/fixtures/iwxxm_us_golden/` |
+| Profile fixtures | `packages/tac2iwxxm/tests/fixtures/profiles/US_FAA_NWS/` |
+| Legacy goldens | `packages/tac2iwxxm/tests/fixtures/iwxxm_us_golden/` |
 
-## Gaps (#919 deepen)
+## Delivered (#919 EV-079..085)
 
-- Full FMH-1 RMK matrix beyond AO/SLP/PK/T/P free-text — **M7 done** (15 rows)
-- **SIGMET/AIRMET national layer** — **M8 done** (EV-079): phenomenon tokens + fixtures; **M9 VOR geometry** (EV-080): `ReferencePointGeometryParser` + `FROM` chain fixtures; **M10–M11** (EV-081): `SIGMETWeatherHazards` / `AIRMETWeatherHazards` emit + convective SIGMET (WST)
-- iwxxm-us weather-hazard extensions — **M10 done** (EV-081); **M15–M16 outlook / multi-area** (EV-082); **M17–M18 CONUS UPDT + FRZLVL forecast** (EV-083); **M19 WAUS multi-section bulletin** (EV-084)
-- Structured visibility (sector/tower/variable) — **M12 verify** (EV-081): M7 goldens remain in manifest
-- US TAF lint — **M13 done** (EV-081): `US_TAF_BECMG_FORBIDDEN`, `US_TAF_TEMPO_MAX_4H` under `iwxxm_us`
-- `codes.nws.noaa.gov/FMH-1` machine registry — probe timed out 2026-07-14
-- US examples must **not** mix into WMO-only sample catalog (UJ-039 policy)
+- **M7** — 15 FMH-1 §12.7 structured RMK rows + goldens (EV-063)
+- **M8–M11** — SIGMET/AIRMET phenomenon tokens, VOR geometry, weather-hazard emit, WST (EV-079..081)
+- **M12–M13** — structured VIS verify; US TAF lint (`US_TAF_BECMG_FORBIDDEN`, `US_TAF_TEMPO_MAX_4H`)
+- **M15–M19** — AIRMET outlook, multi-area, CONUS UPDT, FRZLVL, WAUS multi-section (EV-082..084)
+- **M20–M22** — acceptance audit manifest + negative cases; SWXA/TCA thin policy (EV-085)
+
+## Residual gaps (explicit)
+
+| Gap | Disposition |
+|-----|-------------|
+| FMH-1 §12.7.2 additive RMK (T/P/6/7/$, ice accretion, `$` maintenance) | Post-#919 — no mined profile-pack fixtures (EV-085 M21) |
+| M14 alias cutover `iwxxm_us` → `US_FAA_NWS` | Deferred [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025) → 2026-10-31 |
+| `codes.nws.noaa.gov/FMH-1` machine registry | Probe timed out 2026-07-14 — retry when reachable |
+| US examples in WMO-only sample catalog | UJ-039 policy — US samples stay in profile pack only |

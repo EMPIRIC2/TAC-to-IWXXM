@@ -43,7 +43,7 @@
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire |
-| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US M8–M13 (EV-079..081)**; **#916 CA_ECCC P1 closed (EV-078)**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived |
+| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1806,7 +1806,7 @@
   1. ≥1 P1 national issue (#916) **In Progress** with fixtures started
   2. #913 catalog row per targeted profile id in [Corpus: domain-profiles]
 - **Acceptance (Build)**:
-  1. `US_FAA_NWS` deepened per #919 scope (RMK matrix / SIGMET national layer as ticketed)
+  1. `US_FAA_NWS` deepened per #919 scope — **closed EV-085** (RMK M7, SIGMET/AIRMET M8–M19, TAF lint M13, SWXA/TCA thin M22; M14 alias waived)
   2. `CA_ECCC` — EV-064 / #916: vendor `iwxxm-ca` + IWXXM 3.0.0 pin; METAR/SPECI/TAF/AIRMET
      convert + validate paths; API + FE picker; fixtures under `profiles/CA_ECCC/`
   3. One exchange overlay path (`GLOBAL_AFS` minimum) exercised in packaging tests — **EV-065**: `APAC_ROBEX` P0 stub added
@@ -1821,6 +1821,7 @@
   12. **EV-082 / #919 M15–M16:** AIRMET outlook (`OTLK VALID`) + multi-area sub-periods
   13. **EV-083 / #919 M17–M18:** CONUS `UPDT` header + FRZLVL `FreezingLevelForecast`
   14. **EV-084 / #919 M19:** WAUS multi-section AIRMET bulletin (ICE + OTLK + FRZLVL + VOR FROM)
+  15. **EV-085 / #919 closeout:** acceptance audit (M20), SWXA/TCA thin US lint (M22); #919 closed with M14 + §12.7.2 additive RMK waivers
 - **Out of scope**: Thin packs #920; AU/NZ unless reprioritized; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   **CA_ECCC** option in EV-064 Build slice

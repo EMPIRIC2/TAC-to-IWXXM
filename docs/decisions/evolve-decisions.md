@@ -1,10 +1,40 @@
 # Evolve Decisions
 
+## Cycle EV-085 — US_FAA_NWS #919 closeout (EV-085-us-919-closeout)
+
+**Opened:** 2026-08-26 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-085-us-919-closeout`  
+**Preset:** Standard · **Documenting→Implementing gate:** open · **Issue:** [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)  
+**Parent:** #912 · **Prior:** EV-084 merged to `stage` @ `a0b85366` ([#1072](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1072))
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV085-goal | Close #919 acceptance + F36 Build item 1 |
+| D-EV085-in | M20 audit; M21 if mined fixtures; M22 SWXA/TCA thin rules; docs; TC-EV085-* |
+| D-EV085-out | M14 / #1025 alias cutover (Oct 2026); #921; stage→main promote |
+| D-EV085-accept | Close #919 with waivers for M14 + §12.7.2 additive RMK |
+| D-EV085-gate | **open** |
+
+### Delivered
+
+| Milestone | Scope |
+|-----------|--------|
+| M20 | Manifest audit + `negative_cases`; catalog + stub sync; TC-EV085-001..005 |
+| M21 | No additional §12.7 rows — documented residual (no mined fixtures) |
+| M22 | `US_SWXA_SATCOM_NOT_ISSUED`, `US_TCA_OBSERVED_CB_NOT_PROVIDED` + profile negatives |
+
+**Branch:** `evolve/EV-085-us-919-closeout`
+
+[Corpus: product §F36] [Corpus: domain-profiles §US_FAA_NWS] [Corpus: tests]
+
+---
+
 ## Cycle EV-084 — US_FAA_NWS M19 (#919) (EV-084-us-waus-multisection)
 
 **Opened:** 2026-08-25 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-084-us-waus-multisection`  
 **Preset:** Standard · **Documenting→Implementing gate:** open · **Issue:** [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)  
-**Parent:** #912 · **Prior:** EV-083 merged to `stage` @ `0e3e3919`
+**Parent:** #912 · **Prior:** EV-083 merged to `stage` @ `0e3e3919` · **Merged:** [#1072](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1072) @ `a0b85366`
 
 ### Locked intake
 

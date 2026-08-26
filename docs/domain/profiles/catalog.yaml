@@ -2,8 +2,8 @@
 # Corpus: domain-profiles · ADR-036 §7
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 1
-cycle: EV-084
-updated: "2026-08-25"
+cycle: EV-085
+updated: "2026-08-26"
 
 priority_legend:
   P0: "Baseline — implemented or default exchange overlay (F35)"
@@ -87,20 +87,16 @@ profiles:
       - docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md
     stub: semantic/US_FAA_NWS.md
     gaps:
-      - Full FMH-1 RMK matrix beyond AO/SLP/PK/T/P free-text (#919 deepen) — M7 done
-      - M7 fixture pack: `fixtures/profiles/US_FAA_NWS/METAR/valid/` (15 RMK rows)
-      - M8 SIGMET/AIRMET slice: `fixtures/profiles/US_FAA_NWS/{SIGMET,AIRMET}/valid/` (EV-079)
-      - VOR ReferencePointGeometryParser — implemented (EV-080 M9)
-      - iwxxm-us SIGMETWeatherHazards / AIRMETWeatherHazards emit — implemented (EV-081 M10)
-      - Convective SIGMET (WST) — implemented (EV-081 M11)
-      - Structured visibility (sector/tower/var) — verified via M7 goldens (EV-081 M12)
-      - US TAF lint (BECMG forbidden, TEMPO max 4h) under iwxxm_us — implemented (EV-081 M13)
-      - AIRMET outlook (OTLK VALID) + validTimeSubPeriod — implemented (EV-082 M15)
-      - Multi-area AIRMET (AND-joined) — implemented (EV-082 M16)
-      - CONUS/Hawaii AIRMET UPDT header — implemented (EV-083 M17)
-      - FRZLVL subsection + FreezingLevelForecast — implemented (EV-083 M18)
-      - WAUS multi-section AIRMET bulletin — implemented (EV-084 M19)
+      - FMH-1 §12.7.2 additive RMK (T/P/6/7/$, ice accretion, sensor status) — post-#919; no profile-pack fixtures (EV-085 M21 waived)
+      - M14 / #1025 `iwxxm_us` → `US_FAA_NWS` alias cutover — deferred 2026-10-31
       - codes.nws.noaa.gov/FMH-1 registry probe timed out 2026-07-14
+    acceptance:
+      issue: "#919"
+      status: closed
+      cycle: EV-085
+      waived:
+        - M14 alias cutover (#1025 → 2026-10-31)
+        - FMH-1 §12.7.2 full additive RMK matrix (no mined fixtures)
 
   - id: CA_ECCC
     kind: semantic
