@@ -18,7 +18,7 @@ try:
     from .services.validation_orchestrator import get_validation_orchestrator
     from .services.webhooks import webhook_service
     from .utilities.conversion import convert_metar_tac_with_metadata
-except ImportError:
+except ImportError:  # pragma: no cover - Docker/local import path mirror
     from config.icao_opmet import get_icao_region, get_translation_centre_info
     from msgspec_http import msgspec_json_response
     from services.statistics import statistics_service
@@ -32,7 +32,7 @@ from tac2iwxxm import split_bulletin as tac2iwxxm_split_bulletin
 
 try:
     from . import api_wire
-except ImportError:
+except ImportError:  # pragma: no cover - Docker/local import path mirror
     import api_wire
 
 read_uploaded_text = api_wire.read_uploaded_text

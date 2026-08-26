@@ -67,3 +67,15 @@ def test_iwxxm_validate_lazy_lookup_uses_api_reexport(monkeypatch: pytest.Monkey
 
     monkeypatch.setattr(api_module, "iwxxm_validate_fn", fake_sdk)
     assert api_wire._iwxxm_validate_fn() is fake_sdk
+
+
+def test_api_deps_symbols_are_objects() -> None:
+    """Every patch-surface name is bound on api_deps (import path coverage)."""
+    for name in PATCH_SURFACE:
+        value = getattr(api_deps, name)
+        if name == "ValidationService":
+            assert isinstance(value, type)
+        elif name in {"statistics_service", "webhook_service"}:
+            assert value is not None
+        else:
+            assert callable(value)

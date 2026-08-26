@@ -22,11 +22,14 @@ from fastapi.responses import Response, StreamingResponse
 try:
     # Try relative imports first (when run as module in Docker)
     from .routers import (
+        conversion_meta,
         dissemination,
         evaluation,
+        health,
         icao_opmet,
         mass_ingest,
         quality_metrics,
+        tac_quality,
         validation,
         work_sessions,
     )
@@ -38,21 +41,14 @@ try:
         ConversionResult,
         ErrorDetail,
         FailedSpan,
-        HealthResponse,
     )
     from .schemas.icao_opmet import TranslationStatus
     from .schemas.validation import (
         BulletinMetaModel,
         BulletinReportResultModel,
         ConvertBulletinResponse,
-        DecodeResidualModel,
-        DecodeSegmentModel,
-        DecodeTacResponse,
         LintFixModel,
-        LintIssueCatalogEntryModel,
-        LintIssueCatalogResponse,
         LintIssueModel,
-        LintTacResponse,
         ValidateRequest,
         ValidateResponse,
         ValidationLayer,
@@ -79,11 +75,14 @@ try:
 except ImportError:
     # Fall back to direct imports (when sys.path is set for local development)
     from routers import (
+        conversion_meta,
         dissemination,
         evaluation,
+        health,
         icao_opmet,
         mass_ingest,
         quality_metrics,
+        tac_quality,
         validation,
         work_sessions,
     )
@@ -95,21 +94,14 @@ except ImportError:
         ConversionResult,
         ErrorDetail,
         FailedSpan,
-        HealthResponse,
     )
     from schemas.icao_opmet import TranslationStatus
     from schemas.validation import (
         BulletinMetaModel,
         BulletinReportResultModel,
         ConvertBulletinResponse,
-        DecodeResidualModel,
-        DecodeSegmentModel,
-        DecodeTacResponse,
         LintFixModel,
-        LintIssueCatalogEntryModel,
-        LintIssueCatalogResponse,
         LintIssueModel,
-        LintTacResponse,
         ValidateRequest,
         ValidateResponse,
         ValidationLayer,
@@ -137,9 +129,7 @@ except ImportError:
 # Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033 / F13)
 from dissemination.packaging import apply_exchange_packaging
 from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
-from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 from tac_validate import lint as tac_lint_fn
-from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
 
 setup_logging("backend")
 logger = logging.getLogger(__name__)
@@ -416,6 +406,14 @@ try:
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include quality_metrics router: {e}", exc_info=True)
 
+try:
+    app.include_router(health.router)
+    app.include_router(conversion_meta.router)
+    app.include_router(tac_quality.router)
+    logger.info("DEBUG: included health/conversion_meta/tac_quality routers successfully")
+except Exception as e:  # pragma: no cover - defensive
+    logger.error(f"DEBUG: Failed to include TD-3b routers: {e}", exc_info=True)
+
 # Auth routers restored (F31 / ADR-033) — JWKS-only Supabase Auth; no /admin.
 try:
     from metar_auth import create_auth_router
@@ -435,397 +433,6 @@ logger.info(f"DEBUG: total routes = {len(app.routes)}")
 
 
 # Custom dependency to handle optional file uploads (filters out empty strings from Swagger UI)
-
-
-@app.get("/health", response_model=HealthResponse, tags=["Health"])
-def health() -> HealthResponse:
-    """Check API health and conversion availability.
-
-    Verifies that the API is running and tac2iwxxm can convert a sample METAR.
-    Returns overall status and version information.
-
-    ## Response
-    - **status** (string): "healthy" or "degraded"
-    - **version** (string): API version
-    - **tac2iwxxm_available** (boolean): Whether tac2iwxxm convert works
-    """
-    try:
-        test_metar = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
-        _ = convert_metar_tac_with_metadata(test_metar, validate=False)
-        tac2iwxxm_available = True
-        status = "healthy"
-    except Exception:
-        tac2iwxxm_available = False
-        status = "degraded"
-    return HealthResponse(status=status, version="0.1.0", tac2iwxxm_available=tac2iwxxm_available)
-
-
-@app.get("/api/v1/versions", tags=["Conversion"])
-def get_supported_versions():
-    """Get list of supported IWXXM versions.
-
-    Returns information about all supported IWXXM versions including
-    version strings, release dates, and status (latest, previous, legacy).
-
-    ## Response
-    ```json
-    {
-      "default_version": "2025-2",
-      "supported_versions": [
-        {
-          "version": "2025-2",
-          "name": "IWXXM 2025-2",
-          "status": "latest",
-          "release_date": "2025-11-25",
-          "wmo_amendment": 82
-        },
-        {
-          "version": "2023-1",
-          "name": "IWXXM 2023-1",
-          "status": "previous",
-          "release_date": "2023-06-02",
-          "wmo_amendment": 78
-        }
-      ],
-      "notes": {
-        "2025-1": "Version 2025-1 does not exist; requests are remapped to 2025-2"
-      },
-      "deprecated_versions": [
-        "2021-2",
-        "2018",
-        "2016",
-        "3.0",
-        "2.1",
-        "2.0",
-        "1.1"
-      ]
-    }
-    ```
-    """
-    try:
-        from .config.iwxxm_versions import DEFAULT_VERSION, DEPRECATED_VERSIONS, SUPPORTED_VERSIONS
-    except ImportError:
-        from config.iwxxm_versions import DEFAULT_VERSION, DEPRECATED_VERSIONS, SUPPORTED_VERSIONS
-
-    versions_list = []
-    for version, config in SUPPORTED_VERSIONS.items():
-        versions_list.append(
-            {
-                "version": version,
-                "name": config.get("name", ""),
-                "status": config.get("status", ""),
-                "release_date": config.get("release_date", ""),
-                "wmo_amendment": config.get("wmo_amendment", 0),
-            }
-        )
-
-    return {
-        "default_version": DEFAULT_VERSION,
-        "supported_versions": sorted(versions_list, key=lambda x: x["release_date"], reverse=True),
-        "notes": {"2025-1": "Version 2025-1 does not exist; requests are auto-remapped to 2025-2"},
-        "deprecated_versions": list(DEPRECATED_VERSIONS.keys()),
-    }
-
-
-@app.get("/api/v1/schema-status", tags=["Conversion"])
-def get_schema_status():
-    """Get comprehensive schema status including RC versions and mirroring info.
-
-    Returns detailed information about all IWXXM schema versions including:
-    - Stable releases and Release Candidates (RC)
-    - Discovery dates and source URLs
-    - Mirroring status
-    - Channel classification
-
-    ## Response
-    ```json
-    {
-      "stable": ["2025-2", "2023-1"],
-      "rc": ["2025-2RC1"],
-      "all": ["2025-2", "2025-2RC1", "2023-1"],
-      "default": "2025-2",
-      "metadata": {
-        "2025-2": {
-          "name": "IWXXM 2025-2",
-          "channel": "stable",
-          "status": "latest",
-          "discovered": "2025-11-25T00:00:00Z",
-          "source_url": "https://github.com/wmo-im/iwxxm/tree/v2025-2",
-          "mirrored": true
-        },
-        "2025-2RC1": {
-          "name": "IWXXM 2025-2 RC1",
-          "channel": "rc",
-          "status": "rc",
-          "discovered": "2026-02-10T00:00:00Z",
-          "source_url": "https://schemas.wmo.int/iwxxm/2025-2RC1/",
-          "mirrored": false,
-          "promoted_to_stable": null
-        }
-      }
-    }
-    ```
-    """
-    try:
-        from .config.iwxxm_versions import DEFAULT_VERSION, get_all_versions_with_metadata, get_versions_by_channel
-    except ImportError:
-        from config.iwxxm_versions import DEFAULT_VERSION, get_all_versions_with_metadata, get_versions_by_channel
-
-    stable_versions = get_versions_by_channel("stable")
-    rc_versions = get_versions_by_channel("rc")
-    all_versions = get_versions_by_channel("all")
-    all_metadata = get_all_versions_with_metadata()
-
-    # Build metadata summary
-    metadata_summary = {}
-    for version, data in all_metadata.items():
-        discovery_meta = data.get("discovery_metadata", {})
-        metadata_summary[version] = {
-            "name": data.get("name", f"IWXXM {version}"),
-            "channel": discovery_meta.get("channel", "stable"),
-            "status": data.get("status", "unknown"),
-            "discovered": discovery_meta.get("discovered", ""),
-            "source_url": discovery_meta.get("source_url", ""),
-            "mirrored": discovery_meta.get("mirrored", False),
-        }
-
-        # Add RC-specific fields
-        if "RC" in version.upper():
-            metadata_summary[version]["promoted_to_stable"] = data.get("promoted_to_stable")
-
-    try:
-        from iwxxm_validate.ca_eccc_bundle import (
-            CA_ECCC_IWXXM_VERSION,
-            ca_eccc_bundle_available,
-        )
-    except ImportError:
-        CA_ECCC_IWXXM_VERSION = "3.0.0"
-
-        def ca_eccc_bundle_available(
-            *,
-            iwxxm_version: str = CA_ECCC_IWXXM_VERSION,
-            extension_tag: str = "3.0",
-        ) -> bool:
-            return False
-
-    return {
-        "stable": stable_versions,
-        "rc": rc_versions,
-        "all": all_versions,
-        "default": DEFAULT_VERSION,
-        "metadata": metadata_summary,
-        "profile_pins": {
-            "ca_eccc": {
-                "iwxxm_version": CA_ECCC_IWXXM_VERSION,
-                "extension_bundle_available": ca_eccc_bundle_available(),
-            },
-        },
-    }
-
-
-@app.get(
-    "/api/v1/lint-issue-catalog",
-    tags=["Validation"],
-    response_model=LintIssueCatalogResponse,
-    responses={},
-)
-async def lint_issue_catalog(
-    product: Optional[str] = None,
-    family: Optional[str] = None,
-    issue_type: Optional[str] = None,
-    source_access: Optional[str] = None,
-) -> Response:
-    """Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page."""
-    from tac_validate.catalog_attribution import attribution_for
-    from tac_validate.issue_catalog_meta import classify_issue_type
-
-    from src.services.iwxxm_validation_catalog import iwxxm_validation_catalog_rows
-
-    family_key = (family or "").strip().lower() or None
-    if family_key is not None and family_key not in {"lint", "iwxxm"}:
-        family_key = None
-    issue_type_key = (issue_type or "").strip().lower() or None
-    source_access_key = (source_access or "").strip().lower() or None
-
-    issues: list[LintIssueCatalogEntryModel] = []
-
-    if family_key in (None, "lint"):
-        entries = tac_catalog_entries(product=product)
-        for spec in entries:
-            attr = attribution_for(spec.code)
-            issues.append(
-                LintIssueCatalogEntryModel(
-                    code=spec.code,
-                    severity=spec.severity,
-                    message_template=spec.message_template,
-                    product=spec.product,
-                    tags=list(spec.tags),
-                    source_id=attr.get("source_id"),
-                    source_url=attr.get("source_url"),
-                    source_attribution=attr.get("source_attribution"),
-                    family=attr.get("family") or "lint",
-                    source_type=attr.get("source_type"),
-                    status=attr.get("status"),
-                    semantic_identifier=attr.get("semantic_identifier"),
-                    last_verified=attr.get("last_verified"),
-                    replacement_url=attr.get("replacement_url"),
-                    issue_type=classify_issue_type(
-                        code=spec.code,
-                        tags=spec.tags,
-                        family="lint",
-                    ),
-                    source_locator=attr.get("source_locator"),
-                    source_access=attr.get("source_access"),
-                )
-            )
-
-    if family_key in (None, "iwxxm"):
-        # IWXXM validation rows are product-agnostic; always include unless
-        # family=lint. Product filter does not drop them.
-        for row in iwxxm_validation_catalog_rows():
-            issues.append(LintIssueCatalogEntryModel(**row))
-
-    if issue_type_key or source_access_key:
-        filtered: list[LintIssueCatalogEntryModel] = []
-        for row in issues:
-            if issue_type_key and (row.issue_type or "").lower() != issue_type_key:
-                continue
-            if source_access_key and (row.source_access or "").lower() != source_access_key:
-                continue
-            filtered.append(row)
-        issues = filtered
-
-    return msgspec_json_response(LintIssueCatalogResponse(issues=issues))
-
-
-@app.post(
-    "/api/v1/lint-tac",
-    tags=["Validation"],
-    response_model=LintTacResponse,
-    responses={
-        415: {"description": "Unsupported Media Type — multipart/form-data required"},
-    },
-)
-async def lint_tac(
-    request: Request,
-    manual_text: str = Form(default="", description="TAC or IWXXM XML to lint"),
-    product: str = Form(
-        default="METAR",
-        description="Product type, or iwxxm for XML lint (default METAR)",
-    ),
-    files: Optional[List[UploadFile]] = File(None),
-) -> Response:
-    """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only — Q8=A)."""
-    content_type = (request.headers.get("content-type") or "").lower()
-    if "multipart/form-data" not in content_type:
-        raise HTTPException(
-            status_code=415,
-            detail="POST /api/v1/lint-tac requires multipart/form-data",
-        )
-
-    tac_text = manual_text or ""
-    if files:
-        joined, err = await read_upload_files_text(files)
-        if err:
-            raise HTTPException(status_code=400, detail={"code": "upload_rejected", "message": err})
-        if joined:
-            tac_text = joined
-
-    product_u = normalize_api_product(product, default="METAR")
-    if product_u == "IWXXM":
-        report = lint_iwxxm_pass_through(tac_text)
-        return msgspec_json_response(
-            LintTacResponse(
-                ok=report.ok,
-                product=report.product,
-                issues=[
-                    LintIssueModel(
-                        severity=i.severity,
-                        code=i.code,
-                        message=i.message,
-                        location=i.location,
-                        start=i.start,
-                        end=i.end,
-                    )
-                    for i in report.issues
-                ],
-                fixes=[],
-            )
-        )
-    report = tac_lint_fn(tac_text, product=product_u)
-    return msgspec_json_response(
-        LintTacResponse(
-            ok=report.ok,
-            product=report.product,
-            issues=[
-                LintIssueModel(
-                    severity=i.severity,
-                    code=i.code,
-                    message=i.message,
-                    location=i.location,
-                    start=getattr(i, "start", None),
-                    end=getattr(i, "end", None),
-                )
-                for i in report.issues
-            ],
-            fixes=[LintFixModel(code=f.code, message=f.message, replacement=f.replacement) for f in report.fixes],
-        )
-    )
-
-
-@app.post(
-    "/api/v1/decode-tac",
-    tags=["Conversion"],
-    response_model=DecodeTacResponse,
-    responses={
-        415: {"description": "Unsupported Media Type — multipart/form-data required"},
-        422: {"description": "Missing required product field"},
-    },
-)
-async def decode_tac_endpoint(
-    request: Request,
-    product: str = Form(..., description="TAC product (required)"),
-    manual_text: str = Form(default="", description="TAC text to decode"),
-    files: Optional[List[UploadFile]] = File(None),
-) -> Response:
-    """Decode TAC into annotated segments and a plain-language summary.
-
-    Multi-report abbreviated-heading bulletins are split so each report is decoded
-    independently; the heading is a bulletin-framing row, not a leftover dump.
-    """
-    content_type = (request.headers.get("content-type") or "").lower()
-    if "multipart/form-data" not in content_type:
-        raise HTTPException(
-            status_code=415,
-            detail="POST /api/v1/decode-tac requires multipart/form-data",
-        )
-
-    tac_text = manual_text or ""
-    if files:
-        joined, err = await read_upload_files_text(files)
-        if err:
-            raise HTTPException(status_code=400, detail={"code": "upload_rejected", "message": err})
-        if joined:
-            tac_text = joined
-
-    product_u = normalize_api_product(product, default=None)
-    result = tac2iwxxm_decode_tac(tac_text, product=product_u)
-    return msgspec_json_response(
-        DecodeTacResponse(
-            product=result.product,
-            segments=[
-                DecodeSegmentModel(
-                    start=s.start,
-                    end=s.end,
-                    code=s.code,
-                    explanation=s.explanation,
-                )
-                for s in result.segments
-            ],
-            residuals=[DecodeResidualModel(start=r.start, end=r.end, text=r.text) for r in result.residuals],
-            summary=result.summary,
-        )
-    )
 
 
 @app.post(
@@ -3412,5 +3019,13 @@ async def convert_zip(
         headers={"Content-Disposition": f"attachment; filename=iwxxm_batch_{stamp}.zip"},
     )
 
+
+# EV-037 TD-3b: re-export moved handlers for tests that introspect ``src.api`` by name.
+health = health.health
+get_supported_versions = conversion_meta.get_supported_versions
+get_schema_status = conversion_meta.get_schema_status
+lint_issue_catalog = tac_quality.lint_issue_catalog
+lint_tac = tac_quality.lint_tac
+decode_tac_endpoint = tac_quality.decode_tac_endpoint
 
 __all__ = ["app"]

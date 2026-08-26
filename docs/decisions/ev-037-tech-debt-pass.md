@@ -71,7 +71,7 @@ P4: GIFTs naming · .archive delete · doc hygiene
 | Phase | Status | Notes |
 |-------|--------|-------|
 | TD-3a `api_deps.py` | ✅ | Centralized 14 patchable symbols; `api` re-exports preserve monkeypatch contract |
-| TD-3b router extraction | pending | Move 11 routes from `api.py` → domain routers |
+| TD-3b router extraction | in progress | health, versions, schema-status, lint/decode/catalog → routers; convert* still in api.py |
 | TD-3c test migration | optional | `api_module.X` → `api_deps.X`; remove re-exports later |
 
 **Blocker resolved by TD-3a:** 225 `monkeypatch.setattr(api_module, …)` sites across 30 test files. Router move (TD-3b) is safe only after handlers resolve collaborators through `api_deps` at call time.

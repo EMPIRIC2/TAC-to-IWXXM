@@ -22,7 +22,7 @@ try:
     )
     from .utilities.observability import record_profile_wire_metrics
     from .utilities.profile_wire import WireProfileSelection, resolve_route_profiles
-except ImportError:
+except ImportError:  # pragma: no cover - Docker/local import path mirror
     from schemas.conversion import ConversionIssue, ConversionIssueSeverity, ErrorDetail
     from utilities.extension_wire import (
         ca_eccc_validate_product,
@@ -42,7 +42,7 @@ def _iwxxm_validate_fn():
     """Resolve the patchable SDK alias from ``api`` (TC-F6-033 / F11)."""
     try:
         from . import api as api_mod
-    except ImportError:
+    except ImportError:  # pragma: no cover - Docker/local import path mirror
         import api as api_mod
 
     return api_mod.iwxxm_validate_fn

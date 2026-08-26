@@ -73,9 +73,6 @@ export interface paths {
         /**
          * Decode Tac Endpoint
          * @description Decode TAC into annotated segments and a plain-language summary.
-         *
-         *     Multi-report abbreviated-heading bulletins are split so each report is decoded
-         *     independently; the heading is a bulletin-framing row, not a leftover dump.
          */
         post: operations["decode_tac_endpoint_api_v1_decode_tac_post"];
         delete?: never;
@@ -335,41 +332,6 @@ export interface paths {
         /**
          * Get Schema Status
          * @description Get comprehensive schema status including RC versions and mirroring info.
-         *
-         *     Returns detailed information about all IWXXM schema versions including:
-         *     - Stable releases and Release Candidates (RC)
-         *     - Discovery dates and source URLs
-         *     - Mirroring status
-         *     - Channel classification
-         *
-         *     ## Response
-         *     ```json
-         *     {
-         *       "stable": ["2025-2", "2023-1"],
-         *       "rc": ["2025-2RC1"],
-         *       "all": ["2025-2", "2025-2RC1", "2023-1"],
-         *       "default": "2025-2",
-         *       "metadata": {
-         *         "2025-2": {
-         *           "name": "IWXXM 2025-2",
-         *           "channel": "stable",
-         *           "status": "latest",
-         *           "discovered": "2025-11-25T00:00:00Z",
-         *           "source_url": "https://github.com/wmo-im/iwxxm/tree/v2025-2",
-         *           "mirrored": true
-         *         },
-         *         "2025-2RC1": {
-         *           "name": "IWXXM 2025-2 RC1",
-         *           "channel": "rc",
-         *           "status": "rc",
-         *           "discovered": "2026-02-10T00:00:00Z",
-         *           "source_url": "https://schemas.wmo.int/iwxxm/2025-2RC1/",
-         *           "mirrored": false,
-         *           "promoted_to_stable": null
-         *         }
-         *       }
-         *     }
-         *     ```
          */
         get: operations["get_schema_status_api_v1_schema_status_get"];
         put?: never;
@@ -886,44 +848,6 @@ export interface paths {
         /**
          * Get Supported Versions
          * @description Get list of supported IWXXM versions.
-         *
-         *     Returns information about all supported IWXXM versions including
-         *     version strings, release dates, and status (latest, previous, legacy).
-         *
-         *     ## Response
-         *     ```json
-         *     {
-         *       "default_version": "2025-2",
-         *       "supported_versions": [
-         *         {
-         *           "version": "2025-2",
-         *           "name": "IWXXM 2025-2",
-         *           "status": "latest",
-         *           "release_date": "2025-11-25",
-         *           "wmo_amendment": 82
-         *         },
-         *         {
-         *           "version": "2023-1",
-         *           "name": "IWXXM 2023-1",
-         *           "status": "previous",
-         *           "release_date": "2023-06-02",
-         *           "wmo_amendment": 78
-         *         }
-         *       ],
-         *       "notes": {
-         *         "2025-1": "Version 2025-1 does not exist; requests are remapped to 2025-2"
-         *       },
-         *       "deprecated_versions": [
-         *         "2021-2",
-         *         "2018",
-         *         "2016",
-         *         "3.0",
-         *         "2.1",
-         *         "2.0",
-         *         "1.1"
-         *       ]
-         *     }
-         *     ```
          */
         get: operations["get_supported_versions_api_v1_versions_get"];
         put?: never;
@@ -1058,14 +982,6 @@ export interface paths {
         /**
          * Health
          * @description Check API health and conversion availability.
-         *
-         *     Verifies that the API is running and tac2iwxxm can convert a sample METAR.
-         *     Returns overall status and version information.
-         *
-         *     ## Response
-         *     - **status** (string): "healthy" or "degraded"
-         *     - **version** (string): API version
-         *     - **tac2iwxxm_available** (boolean): Whether tac2iwxxm convert works
          */
         get: operations["health_health_get"];
         put?: never;
