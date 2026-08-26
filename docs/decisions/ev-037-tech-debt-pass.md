@@ -65,3 +65,17 @@ P4: GIFTs naming · .archive delete · doc hygiene
 | Route router split | still deferred | All **1391** backend unit tests pass with wire-only extraction |
 
 **Patch contract:** `_call_iwxxm_validate` resolves `iwxxm_validate_fn` via lazy `api` lookup so tests patching `src.api.iwxxm_validate_fn` still work.
+
+## TD-3 — api_deps adapter + router split (scoped 2026-08-26)
+
+| Phase | Status | Notes |
+|-------|--------|-------|
+| TD-3a `api_deps.py` | ✅ | Centralized 14 patchable symbols; `api` re-exports preserve monkeypatch contract |
+| TD-3b router extraction | pending | Move 11 routes from `api.py` → domain routers |
+| TD-3c test migration | optional | `api_module.X` → `api_deps.X`; remove re-exports later |
+
+**Blocker resolved by TD-3a:** 225 `monkeypatch.setattr(api_module, …)` sites across 30 test files. Router move (TD-3b) is safe only after handlers resolve collaborators through `api_deps` at call time.
+
+**PR #1075** (TD-1 + TD-2) → `stage`. TD-3 can land as follow-up commits on same branch or post-merge slice.
+
+Full scope: session `reports/td-3-scope.md`.

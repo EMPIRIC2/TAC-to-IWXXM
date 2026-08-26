@@ -21,8 +21,6 @@ from fastapi.responses import Response, StreamingResponse
 
 try:
     # Try relative imports first (when run as module in Docker)
-    from .config.icao_opmet import get_icao_region, get_translation_centre_info
-    from .msgspec_http import msgspec_json_response
     from .routers import (
         dissemination,
         evaluation,
@@ -60,17 +58,13 @@ try:
         ValidationLayer,
     )
     from .services.database import database_lifespan
-    from .services.statistics import statistics_service
     from .services.validation import ValidationError as ValidationServiceError
-    from .services.validation import ValidationService
-    from .services.validation_orchestrator import get_validation_orchestrator
-    from .services.webhooks import webhook_service
     from .utilities.abuse_controls import install_abuse_controls
     from .utilities.ca_exchange_wire import (
         apply_ca_eccc_collect_output,
         ca_eccc_output_spec_for_request,
     )
-    from .utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from .utilities.conversion import ConversionError
     from .utilities.extension_wire import IWXXM_CA_TOKEN
     from .utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
     from .utilities.iwxxm_readable_decode import decode_for_validate
@@ -84,8 +78,6 @@ try:
     from .utilities.tac_parser import extract_airport_code
 except ImportError:
     # Fall back to direct imports (when sys.path is set for local development)
-    from config.icao_opmet import get_icao_region, get_translation_centre_info
-    from msgspec_http import msgspec_json_response
     from routers import (
         dissemination,
         evaluation,
@@ -123,17 +115,13 @@ except ImportError:
         ValidationLayer,
     )
     from services.database import database_lifespan
-    from services.statistics import statistics_service
     from services.validation import ValidationError as ValidationServiceError
-    from services.validation import ValidationService
-    from services.validation_orchestrator import get_validation_orchestrator
-    from services.webhooks import webhook_service
     from utilities.abuse_controls import install_abuse_controls
     from utilities.ca_exchange_wire import (
         apply_ca_eccc_collect_output,
         ca_eccc_output_spec_for_request,
     )
-    from utilities.conversion import ConversionError, convert_metar_tac_with_metadata
+    from utilities.conversion import ConversionError
     from utilities.extension_wire import IWXXM_CA_TOKEN
     from utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
     from utilities.iwxxm_readable_decode import decode_for_validate
@@ -147,12 +135,9 @@ except ImportError:
     from utilities.tac_parser import extract_airport_code
 
 # Package thin-wrapper aliases (patchable in unit tests; ADR-015 / TC-F6-033 / F13)
-# Prefer validate_iwxxm (Rust hot path + lxml fallback) over legacy lxml-only validate.
 from dissemination.packaging import apply_exchange_packaging
-from iwxxm_validate import validate_iwxxm as iwxxm_validate_fn  # noqa: F401 — patch surface (TC-F6-033)
 from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
-from tac2iwxxm import split_bulletin as tac2iwxxm_split_bulletin
 from tac_validate import lint as tac_lint_fn
 from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
 
@@ -256,15 +241,11 @@ _coerce_form_str = api_wire._coerce_form_str
 _resolve_request_extensions = api_wire._resolve_request_extensions
 _package_issue_payload = api_wire._package_issue_payload
 _package_stages_payload = api_wire._package_stages_payload
-_call_iwxxm_validate = api_wire._call_iwxxm_validate
 _resolve_request_profiles = api_wire._resolve_request_profiles
 _is_multiline_template_product = api_wire._is_multiline_template_product
 split_manual_entries = api_wire.split_manual_entries
 manual_entries_with_offsets = api_wire.manual_entries_with_offsets
-read_uploaded_text = api_wire.read_uploaded_text
-read_upload_files_text = api_wire.read_upload_files_text
 is_xml_input = api_wire.is_xml_input
-classify_and_validate_upload_content = api_wire.classify_and_validate_upload_content
 normalize_code = api_wire.normalize_code
 parse_optional_bulletin_id = api_wire.parse_optional_bulletin_id
 parse_optional_issuing_center = api_wire.parse_optional_issuing_center
@@ -273,6 +254,27 @@ _product_uses_metar_tac_layers = api_wire._product_uses_metar_tac_layers
 parse_optional_files = api_wire.parse_optional_files
 bulletin_split_http_error = api_wire.bulletin_split_http_error
 MAX_BULLETIN_REPORTS = api_wire.MAX_BULLETIN_REPORTS
+
+# EV-037 TD-3a: patchable collaborators; re-export on ``api`` for monkeypatch contract.
+try:
+    from . import api_deps
+except ImportError:
+    import api_deps
+
+ValidationService = api_deps.ValidationService
+_call_iwxxm_validate = api_deps._call_iwxxm_validate
+classify_and_validate_upload_content = api_deps.classify_and_validate_upload_content
+convert_metar_tac_with_metadata = api_deps.convert_metar_tac_with_metadata
+get_icao_region = api_deps.get_icao_region
+get_translation_centre_info = api_deps.get_translation_centre_info
+get_validation_orchestrator = api_deps.get_validation_orchestrator
+iwxxm_validate_fn = api_deps.iwxxm_validate_fn  # noqa: F401 — patch surface (TC-F6-033)
+msgspec_json_response = api_deps.msgspec_json_response
+read_upload_files_text = api_deps.read_upload_files_text
+read_uploaded_text = api_deps.read_uploaded_text
+statistics_service = api_deps.statistics_service
+tac2iwxxm_split_bulletin = api_deps.tac2iwxxm_split_bulletin
+webhook_service = api_deps.webhook_service
 
 # Configure CORS with dynamic allowed origins from environment
 
