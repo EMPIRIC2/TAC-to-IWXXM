@@ -49,14 +49,18 @@ def _convert(client: TestClient, log_level: str, headers: dict[str, str] | None 
 
 
 def test_tc_ev060_1004_001_debug_emits_more_than_error(client: TestClient, caplog: pytest.LogCaptureFixture) -> None:
-    with caplog.at_level(logging.DEBUG, logger="src.api"):
+    with caplog.at_level(logging.DEBUG, logger="src.routers.conversion"):
         error_resp = _convert(client, "ERROR")
         assert error_resp.status_code == 200, error_resp.text[:400]
-        error_records = [r for r in caplog.records if r.name.startswith("src.api")]
+        error_records = [
+            r for r in caplog.records if r.name.startswith("src.routers.conversion") and r.levelno >= logging.ERROR
+        ]
         caplog.clear()
         debug_resp = _convert(client, "DEBUG")
         assert debug_resp.status_code == 200, debug_resp.text[:400]
-        debug_records = [r for r in caplog.records if r.name.startswith("src.api")]
+        debug_records = [
+            r for r in caplog.records if r.name.startswith("src.routers.conversion") and r.levelno <= logging.DEBUG
+        ]
     assert len(debug_records) > len(error_records)
 
 

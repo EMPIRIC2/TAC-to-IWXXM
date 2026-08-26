@@ -227,6 +227,11 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
     )
 
     fake_router_module = _stub_module("router_mod", router=object())
+    fake_mass_ingest_router = _stub_module(
+        "router_mod",
+        router=object(),
+        ingest_collect=lambda **_kwargs: None,
+    )
     fake_health_router = _stub_module(
         "router_mod",
         router=object(),
@@ -256,14 +261,28 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         lint_tac=lambda **_kwargs: types.SimpleNamespace(),
         decode_tac_endpoint=lambda **_kwargs: types.SimpleNamespace(),
     )
+    fake_conversion_router = _stub_module(
+        "router_mod",
+        router=object(),
+        convert_bulletin=lambda **_kwargs: None,
+        convert=lambda **_kwargs: None,
+        convert_zip=lambda **_kwargs: None,
+    )
+    fake_comprehensive_validation_router = _stub_module(
+        "router_mod",
+        router=object(),
+        validate_comprehensive=lambda **_kwargs: None,
+    )
     fake_routers = _stub_module(
         "routers",
+        comprehensive_validation=fake_comprehensive_validation_router,
+        conversion=fake_conversion_router,
         conversion_meta=fake_conversion_meta_router,
         dissemination=fake_router_module,
         evaluation=fake_router_module,
         health=fake_health_router,
         icao_opmet=fake_router_module,
-        mass_ingest=fake_router_module,
+        mass_ingest=fake_mass_ingest_router,
         quality_metrics=fake_router_module,
         tac_quality=fake_tac_quality_router,
         validation=fake_router_module,

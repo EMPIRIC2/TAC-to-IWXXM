@@ -4247,6 +4247,7 @@
         },
         "summary": "Convert",
         "tags": [
+          "Conversion",
           "Conversion"
         ]
       }
@@ -4288,6 +4289,7 @@
         },
         "summary": "Convert Bulletin",
         "tags": [
+          "Conversion",
           "Conversion"
         ]
       }
@@ -4321,6 +4323,7 @@
         },
         "summary": "Convert Zip",
         "tags": [
+          "Conversion",
           "Conversion"
         ]
       }
@@ -4672,6 +4675,7 @@
         },
         "summary": "Ingest Collect",
         "tags": [
+          "mass-ingest",
           "Conversion"
         ]
       }
@@ -5284,6 +5288,7 @@
         },
         "summary": "Validate Comprehensive",
         "tags": [
+          "Validation",
           "Validation"
         ]
       }
