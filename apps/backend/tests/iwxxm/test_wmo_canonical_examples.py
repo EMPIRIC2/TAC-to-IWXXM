@@ -86,21 +86,21 @@ class TestWMOCanonicalExamplesValidation:
     @pytest.mark.parametrize("version,example", WMO_EXAMPLES)
     def test_example_xsd_validation(self, version: str, example: WMOExample):
         """Verify example passes XSD schema validation."""
-        from src.utilities.xsd_validator import validate_iwxxm_xml
+        from src.services.iwxxm_validation_adapter import validate_xml_schema
 
         xml_content = example.xml_path.read_text()
-        result = validate_iwxxm_xml(xml_content, version=version)
+        result = validate_xml_schema(xml_content, version=version)
 
-        assert result.is_valid, f"XSD validation failed for {example.example_id}:\n{result.error_message}"
+        assert result.is_valid, f"XSD validation failed for {example.example_id}:\n{[i.message for i in result.issues]}"
 
     @pytest.mark.parametrize("version,example", WMO_EXAMPLES)
     @pytest.mark.skip(reason="Schematron validator enhancement pending")
     def test_example_schematron_validation(self, version: str, example: WMOExample):
         """Verify example passes Schematron validation with local RDF codelists."""
-        from src.utilities.schematron_validator import validate_with_schematron
+        from src.services.iwxxm_validation_adapter import validate_schematron
 
         xml_content = example.xml_path.read_text()
-        result = validate_with_schematron(xml_content, version=version)
+        result = validate_schematron(xml_content, version=version)
 
         # Translation-failed examples are expected to fail
         if example.is_translation_failed:
@@ -114,10 +114,12 @@ class TestWMOCanonicalExamplesValidation:
     @pytest.mark.parametrize("version,example", WMO_EXAMPLES)
     def test_example_gml_validation(self, version: str, example: WMOExample):
         """Verify example passes GML validation (internal + external references)."""
-        from src.utilities.gml_validator import validate_gml_references
+        from src.schemas.validation import GMLValidationResult
+        from src.services.iwxxm_validation_adapter import validate_gml_references
 
         xml_content = example.xml_path.read_text()
-        result = validate_gml_references(xml_content, version=version)
+        is_valid, issues = validate_gml_references(xml_content, version=version)
+        result = GMLValidationResult(is_valid=is_valid, issues=issues)
 
         # Translation-failed examples are expected to fail
         if example.is_translation_failed:

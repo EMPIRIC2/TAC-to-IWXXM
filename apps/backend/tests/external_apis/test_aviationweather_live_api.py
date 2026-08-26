@@ -16,9 +16,8 @@ import pytest
 from lxml import etree
 
 from src.schemas.validation import ValidationLevel
+from src.services.iwxxm_validation_adapter import validate_schematron, validate_xml_schema
 from src.utilities.conversion import convert_metar_tac_with_metadata
-from src.utilities.schematron_validator import validate_schematron
-from src.utilities.xsd_validator import validate_xml_schema
 
 # Major airports with known good coverage
 TEST_AIRPORTS = [

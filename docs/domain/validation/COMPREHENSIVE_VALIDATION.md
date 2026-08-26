@@ -68,6 +68,28 @@ return soft failures during transitional `xslt2` skip — do not treat skip warn
 
 ## Architecture Components
 
+Layers 3–7 (XML well-formed through WMO codelists) delegate to **`packages/iwxxm-validate`**
+via the backend adapter **`apps/backend/src/services/iwxxm_validation_adapter.py`**. The
+orchestrator no longer calls legacy `utilities/{xsd,schematron,gml}_validator` modules.
+
+```
+validation_orchestrator (layers 3–7)
+        │
+        ▼
+iwxxm_validation_adapter  ──►  validate_iwxxm()  (packages/iwxxm-validate)
+        │                              ├── wellformed (lxml)
+        │                              ├── xsd
+        │                              ├── schematron
+        │                              ├── gml
+        │                              └── codelists
+
+POST /api/v1/validate  ──►  validate_iwxxm()  (F11 SDK wire unchanged)
+```
+
+Layer result dataclasses (`XSDValidationResult`, `SchematronValidationResult`,
+`GMLValidationResult`, `CodelistValidationResult`) live in
+`apps/backend/src/schemas/validation.py`.
+
 ### 1. Version Detection (`version_detector.py`)
 
 Detects available IWXXM versions from git submodule tags and identifies upgrade opportunities.
@@ -93,85 +115,41 @@ print(report)
 python -m backend --check-versions
 ```
 
-### 2. XSD Schema Validator (`xsd_validator.py`)
+### 2. IWXXM validation package (`packages/iwxxm-validate`)
 
-Validates IWXXM XML against official WMO XSD schemas using lxml.
+Single entrypoint for XSD, Schematron, GML reference, and offline WMO codelist checks.
 
-**Key Features**:
-- Per-version schema compilation and caching
-- Resolves XSD paths via `SchemaRegistry`
-- Detailed error reporting with line/column numbers
-- Singleton pattern for efficiency
+**Key modules**:
+- `validate_iwxxm.py` — layered `validate_iwxxm(..., levels=...)`
+- `xsd.py`, `schematron.py`, `gml.py`, `codelists.py` — layer implementations
+- `ca_eccc_validate.py` — CA_ECCC layered reports (`stages` preserved)
 
-**Usage**:
+**Usage (backend adapter)**:
 ```python
-from utilities.xsd_validator import validate_xml_schema
+from src.services.iwxxm_validation_adapter import (
+    validate_xml_schema,
+    validate_schematron,
+    validate_gml_references,
+    validate_wmo_codelists,
+)
 
-result = validate_xml_schema(xml_content, version="2025-2")
-
-if not result.is_valid:
-    for issue in result.issues:
-        print(f"Line {issue.details['line']}: {issue.message}")
+xsd_result = validate_xml_schema(xml_content, version="2025-2")
+sch_result = validate_schematron(xml_content, version="2025-2")
+gml_ok, gml_issues = validate_gml_references(xml_content, version="2025-2")
 ```
 
-**Schema Sources**:
-- `schemas/iwxxm/IWXXM/iwxxm.xsd` - Main IWXXM schema
-- `schemas/iwxxm/IWXXM/metarSpeci.xsd` - METAR/SPECI specific
-- `schemas/iwxxm/externalSchema/` - GML, OGC, ISO dependencies
+**Schema sources** (runtime):
+- `vendor/schemas/iwxxm/<pin>/IWXXM/*.xsd`
+- `vendor/schemas/iwxxm/<pin>/IWXXM/rule/iwxxm.sch`
+- `vendor/schemas/iwxxm/<pin>/IWXXM/rule/*.rdf`
 
-### 3. Schematron Validator (`schematron_validator.py`)
+### 3. Legacy backend validators (removed)
 
-Validates IWXXM XML against official WMO Schematron business rules using lxml.isoschematron.
+`utilities/xsd_validator.py`, `utilities/schematron_validator.py`, and
+`utilities/gml_validator.py` were removed in EV-037 TD-1. Do not reintroduce duplicate
+IWXXM layer logic in `apps/backend` — extend `packages/iwxxm-validate` instead.
 
-**Key Features**:
-- Pure Python implementation (no Java/CRUX dependency)
-- Per-version Schematron compilation and caching
-- Automatic RDF codelist file setup for `document()` function
-- SVRL (Schematron Validation Report Language) parsing
-- Working directory management for RDF dependencies
-
-**Usage**:
-```python
-from utilities.schematron_validator import validate_schematron
-
-result = validate_schematron(xml_content, version="2025-2")
-
-if not result.is_valid:
-    for issue in result.issues:
-        print(f"{issue.details['pattern_id']}: {issue.message}")
-```
-
-**Schematron Sources**:
-- `schemas/iwxxm/IWXXM/rule/iwxxm.sch` - 867 lines, 100+ business rules
-- RDF codelists: `schemas/iwxxm/IWXXM/rule/*.rdf` (referenced via `document()`)
-
-**Example Rules**:
-- METAR_SPECI.MeteorologicalAerodromeObservationReport-7: Automated station must be flagged when clouds not detected
-- METAR_SPECI.AerodromeRunwayVisualRange-1: RVR must be in metres
-- METAR_SPECI.AerodromeSeaState-1: Sea state and wave height are mutually exclusive
-
-### 4. GML Reference Validator (`gml_validator.py`)
-
-Validates GML internal references (xlink:href="#id") against gml:id attributes.
-
-**Key Features**:
-- Builds ID registry from all `gml:id` attributes
-- Validates all `xlink:href="#..."` internal references
-- Detects duplicate `gml:id` values
-- XPath-based error reporting
-
-**Usage**:
-```python
-from utilities.gml_validator import validate_gml_references
-
-result = validate_gml_references(xml_content)
-
-if not result.is_valid:
-    print(f"Found {result.broken_references} broken references")
-    print(f"Total IDs: {result.total_ids}, Total refs: {result.total_references}")
-```
-
-### 5. Code List Validator (`codelist_parser.py`)
+### 4. Code List Parser (`codelist_parser.py`) — TAC / RDF utilities
 
 Validates code list references against official WMO RDF codelists.
 
@@ -199,7 +177,7 @@ result = parser.validate_xml_codelists(xml_content)
 - `schemas/iwxxm/IWXXM/rule/codes.wmo.int-common-nil.rdf`
 - 20+ additional RDF files
 
-### 6. Validation Orchestrator (`validation_orchestrator.py`)
+### 5. Validation Orchestrator (`validation_orchestrator.py`)
 
 Coordinates all 7 validation layers with proper sequencing and error handling.
 
@@ -328,10 +306,10 @@ curl -X POST http://localhost:8001/api/v1/convert \
    }
    ```
 
-4. **Test New Version**:
+4. **Test new version**:
    ```bash
-   pytest tests/test_xsd_validator.py -k "2026-1"
-   pytest tests/test_schematron_validator.py -k "2026-1"
+   uv run pytest packages/iwxxm-validate/tests -k "2026-1" -v
+   uv run pytest apps/backend/tests/validation -k "orchestrator" -v
    ```
 
 5. **Update Default Version** (if needed):
@@ -343,31 +321,18 @@ curl -X POST http://localhost:8001/api/v1/convert \
 
 ## Testing
 
-### Run All Validation Tests
+### Run validation tests
 
 ```bash
-cd backend
+# Package layer tests (XSD, Schematron, GML, codelists)
+uv run pytest packages/iwxxm-validate/tests -v
 
-# XSD validation tests
-pytest tests/test_xsd_validator.py -v
+# Backend orchestrator + adapter
+uv run pytest apps/backend/tests/unit/test_validation_orchestrator_unit.py -v
+uv run pytest apps/backend/tests/validation/test_validation_orchestrator.py -v
 
-# Schematron validation tests  
-pytest tests/test_schematron_validator.py -v
-
-# GML validation tests
-pytest tests/test_gml_validator.py -v
-
-# Codelist validation tests
-pytest tests/test_codelist_validator.py -v
-
-# Orchestrator tests
-pytest tests/test_validation_orchestrator.py -v
-
-# Version detection tests
-pytest tests/test_version_detector.py -v
-
-# All validation tests
-pytest tests/test_*validator*.py tests/test_validation_orchestrator.py -v
+# Full backend unit suite
+make test-unit
 ```
 
 ### Integration Tests
@@ -380,15 +345,12 @@ pytest tests/ -m integration -v
 pytest tests/ -m slow -v
 ```
 
-### Test Coverage
+### Test coverage (post TD-1)
 
-Expected coverage from validation implementation:
-- `version_detector.py`: 100%
-- `xsd_validator.py`: 95%+
-- `schematron_validator.py`: 95%+
-- `gml_validator.py`: 98%+
-- `codelist_parser.py` (XML validation): 92%+
-- `validation_orchestrator.py`: 90%+
+- `packages/iwxxm-validate`: XSD, Schematron, GML, codelists, CA bundle
+- `iwxxm_validation_adapter.py`: backend ↔ package mapping
+- `validation_orchestrator.py`: layer sequencing and aggregation
+- `codelist_parser.py`: RDF parse helpers (layer 7 overlap with package)
 
 ---
 
@@ -396,12 +358,8 @@ Expected coverage from validation implementation:
 
 ### Caching
 
-All validators implement caching for performance:
-
-1. **XSD Validator**: Compiled schemas cached per version
-2. **Schematron Validator**: Compiled Schematron cached per version
-3. **Code List Parser**: Parsed RDF files cached per version
-4. **Schema Registry**: File paths cached with LRU decorator
+Layer caching is owned by **`packages/iwxxm-validate`** (compiled XSD/Schematron, RDF
+codelist indexes). The backend adapter is stateless.
 
 ### Parallel Execution
 
@@ -410,11 +368,10 @@ Layers 5-7 (Schematron, GML, Codelists) run in parallel:
 - 30-second timeout per validator
 - Errors in one validator don't block others
 
-### Working Directories
+### Working directories
 
-Schematron validator creates temporary working directories:
-- Copies RDF files for `document()` function
-- Cleaned up on validator destruction or explicit `.clear_cache()`
+Schematron RDF `document()` resolution is handled inside **`packages/iwxxm-validate`**
+(offline bundled RDF under `vendor/schemas/iwxxm/.../rule/`).
 
 ---
 
@@ -498,6 +455,6 @@ Ensure `get_codelists_dir()` returns valid path with `.rdf` files.
 
 ---
 
-**Last Updated**: 2026-02-11  
-**Implementation Version**: Phase 2 Complete  
-**Status**: ✅ Production Ready
+**Last Updated**: 2026-08-26  
+**Implementation Version**: EV-037 TD-1 (validation stack consolidation)  
+**Status**: ✅ Production Ready — layers 3–7 in `packages/iwxxm-validate`

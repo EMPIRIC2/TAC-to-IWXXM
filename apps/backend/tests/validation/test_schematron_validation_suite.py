@@ -113,15 +113,16 @@ class TestSchematronValidationSuite:
             pytest.fail(f"Failed to import validation wrapper: {e}")
 
     def test_schematron_script_exists(self):
-        """Test that schematron_validator.py was moved to utilities."""
-        # File was moved from root to src/utilities during reorganization
-        # The production code now uses src/utilities/schematron_validator.py
-        from src.utilities import schematron_validator
+        """Test that IWXXM Schematron validation delegates to ``packages/iwxxm-validate``."""
+        from iwxxm_validate import validate_iwxxm
 
-        assert hasattr(schematron_validator, "validate_schematron"), "validate_schematron function not found"
-        assert hasattr(schematron_validator, "SchematronValidationResult"), "SchematronValidationResult class not found"
+        assert callable(validate_iwxxm), "validate_iwxxm entrypoint not found"
 
-        print("✓ Schematron validator module exists at src/utilities/schematron_validator.py")
+        from src.services import iwxxm_validation_adapter
+
+        assert hasattr(iwxxm_validation_adapter, "validate_schematron"), "adapter validate_schematron not found"
+
+        print("✓ Schematron validation via packages/iwxxm-validate + iwxxm_validation_adapter")
 
     def test_dockerfile_valid(self):
         """Test that Dockerfile.schematron exists in docker/ directory."""

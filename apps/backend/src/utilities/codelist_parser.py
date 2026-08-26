@@ -10,7 +10,6 @@ Supports both offline (RDF files) and online (codes.wmo.int) validation.
 
 import logging
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
@@ -27,19 +26,9 @@ except ImportError:
     logger = logging.getLogger(__name__)
     logger.warning("requests library not available, online validation disabled")
 
-from ..schemas.validation import ValidationIssue, ValidationLayer, ValidationSeverity
+from ..schemas.validation import CodelistValidationResult, ValidationIssue, ValidationLayer, ValidationSeverity
 
 logger = logging.getLogger(__name__)
-
-
-@dataclass
-class CodelistValidationResult:
-    """Result of codelist validation."""
-
-    is_valid: bool
-    issues: List[ValidationIssue]
-    total_references: int = 0
-    invalid_references: int = 0
 
 
 class CodeListParser:
