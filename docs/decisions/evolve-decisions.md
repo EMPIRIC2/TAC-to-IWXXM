@@ -4,7 +4,7 @@
 
 **Opened:** 2026-08-25 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-083-us-airmet-updt-frzlvl`  
 **Preset:** Standard · **Documenting→Implementing gate:** open · **Issue:** [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)  
-**Parent:** #912 · **Prior:** EV-082 merged to `stage` @ `9e7e125c`
+**Parent:** #912 · **Prior:** EV-082 merged to `stage` @ `9e7e125c` · **Merged:** [#1071](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1071) @ `0e3e3919`
 
 ### Locked intake
 
@@ -15,7 +15,7 @@
 | D-EV083-out | Promote; #1025 M14; full WAUS bulletin stack |
 | D-EV083-gate | **open** — operator chose M17+M18 after EV-082 closeout |
 
-### Delivered (local)
+### Delivered
 
 | Milestone | Scope |
 |-----------|--------|
@@ -23,7 +23,7 @@
 | M18 | `FRZLVL...` subsection → `iwxxm-us:FreezingLevelForecast` |
 
 **Tests:** TC-EV083-001..005 · **1037 passed** · **97.25%** cov · per-file gate OK  
-**Branch:** `evolve/EV-083-us-airmet-updt-frzlvl` (local, uncommitted)
+**Merged:** [#1071](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1071) → `stage` @ `0e3e3919` · **Staging smoke:** green ([CI run](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/32914128391))
 
 ---
 
