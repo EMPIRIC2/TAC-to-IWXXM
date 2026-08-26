@@ -2,13 +2,20 @@
 
 from dataclasses import dataclass
 
+import pytest
+
 from src.schemas.validation import (
+    CodelistValidationResult,
+    GMLValidationResult,
+    SchematronValidationResult,
     ValidationIssue,
     ValidationLayer,
     ValidationResult,
     ValidationSeverity,
+    XSDValidationResult,
 )
 from src.services import validation_orchestrator as orchestrator_module
+from src.services.iwxxm_validation_adapter import pkg_issue_to_backend
 from src.services.validation_orchestrator import (
     ComprehensiveValidationResult,
     ValidationOrchestrator,
@@ -93,24 +100,19 @@ class TestValidationOrchestratorBranches:
         assert result.layer == ValidationLayer.XML_WELLFORMED
         assert result.issues == []
 
-    def test_validate_xml_schema_helper_delegates_to_xsd_validator(self, monkeypatch):
-        """Schema helper should delegate directly to the XSD validator."""
-        force_legacy_xml_validators(monkeypatch)
+    def test_validate_xml_schema_helper_delegates_to_adapter(self, monkeypatch):
+        """Schema helper should delegate to iwxxm_validation_adapter."""
         orchestrator = ValidationOrchestrator()
-        captured = {}
-        expected = DummyValidationOutcome(True, [])
+        expected = XSDValidationResult(is_valid=True, issues=[], schema_version="2025-2")
 
-        def _validate(xml_content, version):
-            captured["xml_content"] = xml_content
-            captured["version"] = version
-            return expected
-
-        monkeypatch.setattr(orchestrator.xsd_validator, "validate", _validate)
+        monkeypatch.setattr(
+            "src.services.iwxxm_validation_adapter.validate_xml_schema",
+            lambda _xml, _version, **kwargs: expected,
+        )
 
         result = orchestrator.validate_xml_schema(SAMPLE_XML, "2025-2")
 
         assert result is expected
-        assert captured == {"xml_content": SAMPLE_XML, "version": "2025-2"}
 
     def test_validate_complete_defaults_to_all_layers(self, monkeypatch):
         """Omitting layers should run the full validation sequence."""
@@ -134,24 +136,25 @@ class TestValidationOrchestratorBranches:
         monkeypatch.setattr(
             orchestrator,
             "validate_xml_schema",
-            lambda _xml, _version: make_result(ValidationLayer.XML_SCHEMA),
+            lambda _xml, _version: XSDValidationResult(is_valid=True, issues=[], schema_version="2025-2"),
         )
-
-        class _PassingValidator:
-            def __init__(self, layer):
-                self.layer = layer
-
-            def validate(self, *_args, **_kwargs):
-                return make_result(self.layer)
-
-        class _PassingParser:
-            def validate_xml_codelists(self, _xml_content):
-                return DummyValidationOutcome(True, [])
-
-        monkeypatch.setattr(orchestrator, "schematron_validator", _PassingValidator(ValidationLayer.SCHEMATRON))
-        monkeypatch.setattr(orchestrator, "gml_validator", _PassingValidator(ValidationLayer.GML_REFERENCES))
-        monkeypatch.setattr(orchestrator.schema_registry, "get_codelists_dir", lambda _version: "/tmp")
-        monkeypatch.setattr(orchestrator_module, "get_codelist_parser", lambda _v, _d: _PassingParser())
+        monkeypatch.setattr(
+            orchestrator,
+            "_validate_schematron",
+            lambda _xml, _version: SchematronValidationResult(
+                is_valid=True, issues=[], schema_version="2025-2", rules_evaluated=0
+            ),
+        )
+        monkeypatch.setattr(
+            orchestrator,
+            "_run_gml_layer",
+            staticmethod(lambda _xml, _version: GMLValidationResult(is_valid=True, issues=[])),
+        )
+        monkeypatch.setattr(
+            orchestrator,
+            "_run_codelist_layer",
+            staticmethod(lambda _xml, _version: CodelistValidationResult(is_valid=True, issues=[])),
+        )
 
         result = orchestrator.validate_complete(
             tac_text=SAMPLE_TAC,
@@ -337,16 +340,39 @@ class TestValidationOrchestratorBranches:
         assert ValidationLayer.SCHEMATRON not in result.layers_run
 
     def test_parallel_layer_warning_paths(self, monkeypatch):
-        """Setup warnings for parallel layers should not fail entire run."""
-        force_legacy_xml_validators(monkeypatch)
+        """Parallel layers with setup warnings still complete via package adapter."""
         orchestrator = ValidationOrchestrator()
+        warn_issue = make_issue(ValidationLayer.SCHEMATRON, "SCHEMATRON_SETUP_WARNING")
 
-        monkeypatch.setattr(orchestrator, "schematron_validator", None)
-        monkeypatch.setattr(orchestrator, "gml_validator", None)
         monkeypatch.setattr(
-            orchestrator.schema_registry,
-            "get_codelists_dir",
-            lambda _version: (_ for _ in ()).throw(FileNotFoundError("missing")),
+            orchestrator,
+            "_validate_schematron",
+            lambda *_a, **_k: SchematronValidationResult(
+                is_valid=True,
+                issues=[warn_issue],
+                schema_version="2025-2",
+                rules_evaluated=0,
+            ),
+        )
+        monkeypatch.setattr(
+            orchestrator,
+            "_run_gml_layer",
+            staticmethod(
+                lambda *_a, **_k: GMLValidationResult(
+                    is_valid=True,
+                    issues=[make_issue(ValidationLayer.GML_REFERENCES, "GML_SETUP_WARNING")],
+                )
+            ),
+        )
+        monkeypatch.setattr(
+            orchestrator,
+            "_run_codelist_layer",
+            staticmethod(
+                lambda *_a, **_k: CodelistValidationResult(
+                    is_valid=True,
+                    issues=[make_issue(ValidationLayer.WMO_CODELISTS, "WMO_CODELISTS_SETUP_WARNING")],
+                )
+            ),
         )
 
         result = orchestrator.validate_complete(
@@ -375,14 +401,12 @@ class TestValidationOrchestratorBranches:
 
     def test_parallel_layer_runtime_error_adds_validation_error(self, monkeypatch):
         """Runtime failures from parallel futures should mark the layer as failed."""
-        force_legacy_xml_validators(monkeypatch)
         orchestrator = ValidationOrchestrator()
 
-        class _BoomValidator:
-            def validate(self, *_args, **_kwargs):
-                raise RuntimeError("boom")
+        def _boom(*_args, **_kwargs):
+            raise RuntimeError("boom")
 
-        monkeypatch.setattr(orchestrator, "schematron_validator", _BoomValidator())
+        monkeypatch.setattr(orchestrator, "_validate_schematron", _boom)
 
         result = orchestrator.validate_complete(
             tac_text=SAMPLE_TAC,
@@ -572,21 +596,23 @@ class TestValidationOrchestratorBranches:
     def test_parallel_layers_all_pass(self, monkeypatch):
         orchestrator = ValidationOrchestrator()
 
-        class _PassingValidator:
-            def __init__(self, layer):
-                self.layer = layer
-
-            def validate(self, *_args, **_kwargs):
-                return ValidationResult(passed=True, layer=self.layer, issues=[])
-
-        class _PassingParser:
-            def validate_xml_codelists(self, _xml_content):
-                return DummyValidationOutcome(passed=True, issues=[])
-
-        monkeypatch.setattr(orchestrator, "schematron_validator", _PassingValidator(ValidationLayer.SCHEMATRON))
-        monkeypatch.setattr(orchestrator, "gml_validator", _PassingValidator(ValidationLayer.GML_REFERENCES))
-        monkeypatch.setattr(orchestrator.schema_registry, "get_codelists_dir", lambda _version: "/tmp")
-        monkeypatch.setattr(orchestrator_module, "get_codelist_parser", lambda _v, _d: _PassingParser())
+        monkeypatch.setattr(
+            orchestrator,
+            "_validate_schematron",
+            lambda *_a, **_k: SchematronValidationResult(
+                is_valid=True, issues=[], schema_version="2025-2", rules_evaluated=0
+            ),
+        )
+        monkeypatch.setattr(
+            orchestrator,
+            "_run_gml_layer",
+            staticmethod(lambda *_a, **_k: GMLValidationResult(is_valid=True, issues=[])),
+        )
+        monkeypatch.setattr(
+            orchestrator,
+            "_run_codelist_layer",
+            staticmethod(lambda *_a, **_k: CodelistValidationResult(is_valid=True, issues=[])),
+        )
 
         result = orchestrator.validate_complete(
             tac_text=SAMPLE_TAC,
@@ -683,14 +709,14 @@ class TestValidationOrchestratorBranches:
         assert result.stopped_at_layer is None
 
     def test_parallel_gml_only_skips_schematron_check(self, monkeypatch):
-        """GML-only parallel run skips SCHEMATRON branch (covers 303->324)."""
+        """GML-only parallel run skips SCHEMATRON branch."""
         orchestrator = ValidationOrchestrator()
 
-        class _PassGML:
-            def validate(self, *_args, **_kwargs):
-                return ValidationResult(passed=True, layer=ValidationLayer.GML_REFERENCES, issues=[])
-
-        monkeypatch.setattr(orchestrator, "gml_validator", _PassGML())
+        monkeypatch.setattr(
+            orchestrator,
+            "_run_gml_layer",
+            staticmethod(lambda *_a, **_k: GMLValidationResult(is_valid=True, issues=[])),
+        )
 
         result = orchestrator.validate_complete(
             tac_text=SAMPLE_TAC,
@@ -704,18 +730,20 @@ class TestValidationOrchestratorBranches:
         assert ValidationLayer.SCHEMATRON not in result.layers_run
 
     def test_parallel_future_result_with_issues_and_failure(self, monkeypatch):
-        """Parallel future returning issues+failure covers lines 374-375 and 380."""
-        force_legacy_xml_validators(monkeypatch)
+        """Parallel future returning issues+failure covers failure branch."""
         orchestrator = ValidationOrchestrator()
-
         issue = make_issue(ValidationLayer.SCHEMATRON, "SCH_FAIL")
-        failing_result = ValidationResult(passed=False, layer=ValidationLayer.SCHEMATRON, issues=[issue])
 
-        class _FailingWithIssues:
-            def validate(self, *_args, **_kwargs):
-                return failing_result
-
-        monkeypatch.setattr(orchestrator, "schematron_validator", _FailingWithIssues())
+        monkeypatch.setattr(
+            orchestrator,
+            "_validate_schematron",
+            lambda *_a, **_k: SchematronValidationResult(
+                is_valid=False,
+                issues=[issue],
+                schema_version="2025-2",
+                rules_evaluated=1,
+            ),
+        )
 
         result = orchestrator.validate_complete(
             tac_text=SAMPLE_TAC,
@@ -785,26 +813,34 @@ class _PkgReport:
 
 def test_pkg_issue_to_backend_maps_error_and_warning():
     """Native Issue severity maps to ValidationSeverity (TC-EV055 / Gate C CI)."""
-    err = ValidationOrchestrator._pkg_issue_to_backend(
-        _PkgIssue(severity="error", message="bad", location="L1", code="E1"),
+    from iwxxm_validate.models import Issue
+
+    err = pkg_issue_to_backend(
+        Issue(severity="error", code="E1", message="bad", layer="xsd", location="L1"),
         layer=ValidationLayer.XML_SCHEMA,
     )
-    warn = ValidationOrchestrator._pkg_issue_to_backend(
-        _PkgIssue(severity="warning", message="soft", code="W1"),
+    warn = pkg_issue_to_backend(
+        Issue(severity="warning", code="W1", message="soft", layer="schematron"),
         layer=ValidationLayer.SCHEMATRON,
+    )
+    info = pkg_issue_to_backend(
+        Issue(severity="info", code="I1", message="note", layer="gml"),
     )
     assert err.level == ValidationSeverity.ERROR
     assert err.code == "E1"
     assert warn.level == ValidationSeverity.WARNING
     assert warn.layer == ValidationLayer.SCHEMATRON
+    assert info.level == ValidationSeverity.INFO
+    assert info.layer == ValidationLayer.GML_REFERENCES
 
 
 def test_validate_xml_schema_native_path(monkeypatch):
-    """When rust_available, XSD uses validate_iwxxm levels=('xsd',)."""
-    orchestrator = ValidationOrchestrator()
+    """Adapter XSD path uses validate_iwxxm levels=('xsd',)."""
+    from iwxxm_validate.models import Issue, ValidationReport
+
     called: dict = {}
 
-    def _validate_iwxxm(xml, *, iwxxm_version, profile, levels):
+    def _validate_iwxxm(xml, *, iwxxm_version, profile, levels, product=None):
         called.update(
             {
                 "xml": xml,
@@ -813,15 +849,18 @@ def test_validate_xml_schema_native_path(monkeypatch):
                 "levels": levels,
             }
         )
-        return _PkgReport(
+        return ValidationReport(
             ok=False,
-            issues=[_PkgIssue(severity="error", message="xsd fail", code="XSD_E")],
+            iwxxm_version=iwxxm_version,
+            profile=profile,
+            issues=[
+                Issue(severity="error", code="XSD_E", message="xsd fail", layer="xsd"),
+            ],
         )
 
-    monkeypatch.setattr("iwxxm_validate.rust_available", lambda: True)
-    monkeypatch.setattr("iwxxm_validate.validate_iwxxm", _validate_iwxxm)
+    monkeypatch.setattr("src.services.iwxxm_validation_adapter.validate_iwxxm", _validate_iwxxm)
 
-    result = orchestrator.validate_xml_schema("<r/>", "2025-2")
+    result = ValidationOrchestrator().validate_xml_schema("<r/>", "2025-2")
     assert called["levels"] == ("xsd",)
     assert called["version"] == "2025-2"
     assert result.is_valid is False
@@ -829,72 +868,113 @@ def test_validate_xml_schema_native_path(monkeypatch):
     assert result.schema_version == "2025-2"
 
 
-def test_validate_xml_schema_native_exception_falls_back(monkeypatch):
-    """Native XSD exceptions fall back to lxml xsd_validator."""
-    orchestrator = ValidationOrchestrator()
-    monkeypatch.setattr("iwxxm_validate.rust_available", lambda: True)
+def test_validate_xml_schema_includes_wmo_xsd_issues(monkeypatch):
+    """Adapter XSD path collects issues tagged layer=wmo_xsd."""
+    from iwxxm_validate.models import Issue, ValidationReport
 
-    def _boom(*_a, **_k):
-        raise RuntimeError("native xsd down")
+    def _validate_iwxxm(*_a, **_k):
+        return ValidationReport(
+            ok=False,
+            iwxxm_version="2025-2",
+            profile="annex3",
+            issues=[
+                Issue(severity="error", code="WMO_XSD", message="wmo xsd", layer="wmo_xsd"),
+            ],
+        )
 
-    monkeypatch.setattr("iwxxm_validate.validate_iwxxm", _boom)
+    monkeypatch.setattr("src.services.iwxxm_validation_adapter.validate_iwxxm", _validate_iwxxm)
 
-    class _Legacy:
-        def validate(self, xml, version):
-            return type("R", (), {"is_valid": True, "issues": [], "schema_version": version})()
+    from src.services.iwxxm_validation_adapter import validate_xml_schema
 
-    monkeypatch.setattr(orchestrator, "xsd_validator", _Legacy())
-    result = orchestrator.validate_xml_schema("<r/>", "2023-1")
-    assert result.is_valid is True
-    assert result.schema_version == "2023-1"
+    result = validate_xml_schema("<r/>", "2025-2")
+    assert result.is_valid is False
+    assert result.issues[0].code == "WMO_XSD"
+    assert result.issues[0].layer == ValidationLayer.XML_SCHEMA
+
+
+def test_validate_wellformed_malformed_xml():
+    """Adapter well-formed check surfaces parse errors."""
+    from src.services.iwxxm_validation_adapter import validate_wellformed
+
+    result = validate_wellformed("<not-closed")
+    assert result.passed is False
+    assert result.layer == ValidationLayer.XML_WELLFORMED
+    assert result.issues
+
+
+def test_adapter_gml_and_codelist_layers(monkeypatch):
+    """Adapter GML and codelist helpers delegate to validate_iwxxm."""
+    from iwxxm_validate.models import Issue, ValidationReport
+
+    from src.services.iwxxm_validation_adapter import validate_gml_references, validate_wmo_codelists
+
+    levels_seen: list[tuple[str, ...]] = []
+
+    def _validate_iwxxm(_xml, *, iwxxm_version, profile, levels, product=None):
+        levels_seen.append(tuple(levels))
+        layer = levels[0]
+        return ValidationReport(
+            ok=True,
+            iwxxm_version=iwxxm_version,
+            profile=profile,
+            issues=[Issue(severity="warning", code=f"{layer}_W", message="warn", layer=layer)],
+        )
+
+    monkeypatch.setattr("src.services.iwxxm_validation_adapter.validate_iwxxm", _validate_iwxxm)
+
+    gml_ok, gml_issues = validate_gml_references("<r/>", "2025-2")
+    code_ok, code_issues = validate_wmo_codelists("<r/>", "2025-2")
+
+    assert levels_seen == [("gml",), ("codelists",)]
+    assert gml_ok is True
+    assert code_ok is True
+    assert gml_issues[0].layer == ValidationLayer.GML_REFERENCES
+    assert code_issues[0].layer == ValidationLayer.WMO_CODELISTS
+
+
+def test_validate_xml_schema_native_exception_propagates(monkeypatch):
+    """Package validation exceptions propagate from adapter (no legacy fallback)."""
+    monkeypatch.setattr(
+        "src.services.iwxxm_validation_adapter.validate_iwxxm",
+        lambda *_a, **_k: (_ for _ in ()).throw(RuntimeError("native xsd down")),
+    )
+
+    with pytest.raises(RuntimeError, match="native xsd down"):
+        ValidationOrchestrator().validate_xml_schema("<r/>", "2023-1")
 
 
 def test_validate_schematron_native_path(monkeypatch):
-    """When rust_available, Schematron uses validate_iwxxm levels=('schematron',)."""
-    orchestrator = ValidationOrchestrator()
+    """Adapter Schematron path uses validate_iwxxm levels=('schematron',)."""
+    from iwxxm_validate.models import Issue, ValidationReport
+
     called: dict = {}
 
-    def _validate_iwxxm(xml, *, iwxxm_version, profile, levels):
+    def _validate_iwxxm(xml, *, iwxxm_version, profile, levels, product=None):
         called["levels"] = levels
-        return _PkgReport(
+        return ValidationReport(
             ok=True,
-            issues=[_PkgIssue(severity="warning", message="sch warn", code="SCH_W")],
+            iwxxm_version=iwxxm_version,
+            profile=profile,
+            issues=[
+                Issue(severity="warning", code="SCH_W", message="sch warn", layer="schematron"),
+            ],
         )
 
-    monkeypatch.setattr("iwxxm_validate.rust_available", lambda: True)
-    monkeypatch.setattr("iwxxm_validate.validate_iwxxm", _validate_iwxxm)
+    monkeypatch.setattr("src.services.iwxxm_validation_adapter.validate_iwxxm", _validate_iwxxm)
 
-    result = orchestrator._validate_schematron("<r/>", "2025-2")
+    result = ValidationOrchestrator()._validate_schematron("<r/>", "2025-2")
     assert called["levels"] == ("schematron",)
     assert result.is_valid is True
     assert result.issues[0].code == "SCH_W"
     assert result.rules_evaluated == 1
 
 
-def test_validate_schematron_native_exception_falls_back(monkeypatch):
-    """Native Schematron exceptions fall back to lxml schematron_validator."""
-    orchestrator = ValidationOrchestrator()
-    monkeypatch.setattr("iwxxm_validate.rust_available", lambda: True)
+def test_validate_schematron_native_exception_propagates(monkeypatch):
+    """Package Schematron exceptions propagate from adapter."""
+    monkeypatch.setattr(
+        "src.services.iwxxm_validation_adapter.validate_iwxxm",
+        lambda *_a, **_k: (_ for _ in ()).throw(RuntimeError("native sch down")),
+    )
 
-    def _boom(*_a, **_k):
-        raise RuntimeError("native sch down")
-
-    monkeypatch.setattr("iwxxm_validate.validate_iwxxm", _boom)
-
-    class _Legacy:
-        def validate(self, xml, version):
-            return type(
-                "R",
-                (),
-                {
-                    "is_valid": True,
-                    "issues": [],
-                    "schema_version": version,
-                    "rules_evaluated": 0,
-                },
-            )()
-
-    monkeypatch.setattr(orchestrator, "schematron_validator", _Legacy())
-    result = orchestrator._validate_schematron("<r/>", "2025-2")
-    assert result.is_valid is True
-    assert result.schema_version == "2025-2"
+    with pytest.raises(RuntimeError, match="native sch down"):
+        ValidationOrchestrator()._validate_schematron("<r/>", "2025-2")

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from datetime import UTC, datetime
 from enum import Enum
 from typing import List, Optional
@@ -98,6 +99,46 @@ class ValidationResult(BaseModel):
         self.issues.append(issue)
         if level in (ValidationLevel.CRITICAL, ValidationLevel.ERROR):
             self.passed = False
+
+
+@dataclass
+class XSDValidationResult:
+    """Result of XSD schema validation (layer 4)."""
+
+    is_valid: bool
+    issues: List[ValidationIssue]
+    schema_version: str
+
+
+@dataclass
+class SchematronValidationResult:
+    """Result of Schematron validation (layer 5)."""
+
+    is_valid: bool
+    issues: List[ValidationIssue]
+    schema_version: str
+    rules_evaluated: int = 0
+
+
+@dataclass
+class GMLValidationResult:
+    """Result of GML reference validation (layer 6)."""
+
+    is_valid: bool
+    issues: List[ValidationIssue]
+    total_ids: int = 0
+    total_references: int = 0
+    broken_references: int = 0
+
+
+@dataclass
+class CodelistValidationResult:
+    """Result of WMO codelist validation (layer 7)."""
+
+    is_valid: bool
+    issues: List[ValidationIssue]
+    total_references: int = 0
+    invalid_references: int = 0
 
 
 class AggregatedValidationResult(BaseModel):
