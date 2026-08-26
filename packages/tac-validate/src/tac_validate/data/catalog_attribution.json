@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-08-25",
+  "generated": "2026-08-26",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -696,6 +696,13 @@
       "note": "Validated: tac-validate membership gate vs harvested wmo_membership.json",
       "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 Validated: tac-validate membership gate vs harvested wmo_membership.json"
     },
+    "US_SWXA_SATCOM_NOT_ISSUED": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
+    },
     "US_TAF_BECMG_FORBIDDEN": {
       "source_id": "fmh-1",
       "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html",
@@ -709,6 +716,13 @@
       "status": "ok",
       "note": "US TAF TEMPO groups limited to 4 hours (national overlay)",
       "source_attribution": "fmh-1 \u2014 https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html \u2014 US TAF TEMPO groups limited to 4 hours (national overlay)"
+    },
+    "US_TCA_OBSERVED_CB_NOT_PROVIDED": {
+      "source_id": null,
+      "source_url": null,
+      "status": null,
+      "note": null,
+      "source_attribution": null
     },
     "VAA_FCST_NO_VA_EXP": {
       "source_id": "icao-annex-3",

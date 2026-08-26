@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "EV-063 M7 + EV-079 M8 + EV-080 M9 + EV-081 M10–M13 + EV-082 M15–M16 + EV-083 M17–M18 + EV-084 M19 — US_FAA_NWS (#919)",
+  "description": "EV-063 M7 + EV-079 M8 + EV-080 M9 + EV-081 M10–M13 + EV-082 M15–M16 + EV-083 M17–M18 + EV-084 M19 + EV-085 M20–M22 — US_FAA_NWS (#919)",
   "profile": "US_FAA_NWS",
   "cases": [
     {
@@ -198,6 +198,43 @@
       "tac": "AIRMET/valid/airmet_waus_multisection.tac",
       "golden": "AIRMET/valid/airmet_waus_multisection.golden.xml",
       "rule_id": "US.AIRMET.BULLETIN.MULTISECTION"
+    }
+  ],
+  "negative_cases": [
+    {
+      "id": "sigmet_vor_unknown",
+      "product": "SIGMET",
+      "tac": "SIGMET/invalid/sigmet_vor_unknown.tac",
+      "rule_id": "US.SIGMET.GEOM.VOR",
+      "expect": "parse_error"
+    },
+    {
+      "id": "taf_becmg",
+      "product": "TAF",
+      "tac": "TAF/invalid/taf_becmg.tac",
+      "rule_id": "US.TAF.BECMG_FORBIDDEN",
+      "lint_codes": ["US_TAF_BECMG_FORBIDDEN"]
+    },
+    {
+      "id": "taf_tempo_over_4h",
+      "product": "TAF",
+      "tac": "TAF/invalid/taf_tempo_over_4h.tac",
+      "rule_id": "US.TAF.TEMPO_MAX_4H",
+      "lint_codes": ["US_TAF_TEMPO_MAX_4H"]
+    },
+    {
+      "id": "swxa_satcom",
+      "product": "SWXA",
+      "tac": "SWXA/invalid/swxa_satcom.tac",
+      "rule_id": "US.SWXA.SATCOM_NOT_ISSUED",
+      "lint_codes": ["US_SWXA_SATCOM_NOT_ISSUED"]
+    },
+    {
+      "id": "tca_observed_cb",
+      "product": "TCA",
+      "tac": "TCA/invalid/tca_observed_cb.tac",
+      "rule_id": "US.TCA.OBSERVED_CB_NOT_PROVIDED",
+      "lint_codes": ["US_TCA_OBSERVED_CB_NOT_PROVIDED"]
     }
   ]
 }
