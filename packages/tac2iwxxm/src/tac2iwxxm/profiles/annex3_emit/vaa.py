@@ -227,6 +227,11 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     <iwxxm:eruptionDetails>{escape(str(ir.get("eruption_details", "")))}</iwxxm:eruptionDetails>{observation}{"".join(forecast_blocks)}{remarks_xml}{next_xml}
 </iwxxm:VolcanicAshAdvisory>
 """
+    return _assert_vaa_advisory_xml(xml)
+
+
+def _assert_vaa_advisory_xml(xml: str) -> str:
+    """Reject XML that is missing the VAA root or smuggles a VA SIGMET root."""
     if "<iwxxm:VolcanicAshAdvisory " not in xml:
         raise ValueError("VAA emitter product/root guard: missing VolcanicAshAdvisory root")
     if "<iwxxm:VolcanicAshSIGMET " in xml or "iwxxm:VolcanicAshSIGMET" in xml:

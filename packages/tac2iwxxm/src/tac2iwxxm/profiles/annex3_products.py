@@ -25,6 +25,7 @@ from tac2iwxxm.profiles.annex3_emit.sigmet import (
 from tac2iwxxm.profiles.annex3_emit.swxa import _assert_swxa_advisory_xml, _swxa_analysis_xml
 from tac2iwxxm.profiles.annex3_emit.taf import _fmt_taf_speed
 from tac2iwxxm.profiles.annex3_emit.tca import _assert_tca_advisory_xml
+from tac2iwxxm.profiles.annex3_emit.vaa import _assert_vaa_advisory_xml
 from tac2iwxxm.profiles.annex3_emit.vona import (
     _assert_vona_xml,
     _vona_ash_movement_token,
@@ -33,6 +34,7 @@ from tac2iwxxm.profiles.annex3_emit.vona import (
 __all__ = [
     "_assert_swxa_advisory_xml",
     "_assert_tca_advisory_xml",
+    "_assert_vaa_advisory_xml",
     "_assert_vona_xml",
     "_fmt_taf_speed",
     "_is_wmo_sigmet_multi_location_va_yudd",
