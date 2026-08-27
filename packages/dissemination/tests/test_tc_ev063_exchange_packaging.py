@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from dissemination.collect_namespaces import is_collect_bulletin
 from dissemination.exchange_registry import (
     DEFAULT_EXCHANGE_PROFILE_ID,
@@ -81,7 +80,7 @@ def test_apply_exchange_packaging_global_afs() -> None:
 
 
 def test_apply_exchange_packaging_apac_robex_collect_wrap() -> None:
-    """TC-EV065-002 — APAC_ROBEX P0 stub uses GLOBAL_AFS COLLECT baseline."""
+    """TC-EV065-002 - APAC_ROBEX P0 stub uses GLOBAL_AFS COLLECT baseline."""
     packaged = apply_exchange_packaging(
         _MEMBER_XML,
         exchange_profile="APAC_ROBEX",

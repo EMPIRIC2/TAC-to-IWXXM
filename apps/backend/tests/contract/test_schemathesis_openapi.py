@@ -1,14 +1,14 @@
-"""TC-F34-001 — Schemathesis OpenAPI property suite against backend ASGI (F34 / #727).
+"""TC-F34-001 - Schemathesis OpenAPI property suite against backend ASGI (F34 / #727).
 
 Loads the live FastAPI OpenAPI document in-process (no network). Auth-protected
 product routes use ``verify_supabase_token`` dependency override (published OpenAPI
-intentionally has no Bearer scheme — F21 / ADR-031). Hypothesis budget:
+intentionally has no Bearer scheme - F21 / ADR-031). Hypothesis budget:
 ``max_examples`` ≤ 25 (``D-S069-01-budget`` / TC-F34-007).
 
-Exclusions (explicit — not silent large skips):
-- ``/api/v1/work-sessions*`` — needs Postgres session store
-- ``/api/v1/eval/*`` — needs job/persistence store
-- ``/auth/*`` — needs live Supabase Auth proxy
+Exclusions (explicit - not silent large skips):
+- ``/api/v1/work-sessions*`` - needs Postgres session store
+- ``/api/v1/eval/*`` - needs job/persistence store
+- ``/auth/*`` - needs live Supabase Auth proxy
 
 Those surfaces stay covered by unit/integration tests.
 """
@@ -25,10 +25,10 @@ from schemathesis import checks as st_checks
 # Before importing the app (statistics / CORS side effects).
 os.environ.setdefault("ENABLE_STATISTICS", "false")
 
-from src.api import app  # noqa: E402
-from src.utilities.security import verify_supabase_token  # noqa: E402
+from src.api import app
+from src.utilities.security import verify_supabase_token
 
-# TC-F34-007 / AC7 — do not raise without AskQuestion.
+# TC-F34-007 / AC7 - do not raise without AskQuestion.
 _MAX_EXAMPLES = int(os.environ.get("SCHEMATHESIS_MAX_EXAMPLES", "25"))
 if _MAX_EXAMPLES > 25:
     raise RuntimeError(

@@ -1,4 +1,4 @@
-"""Product rules — taf."""
+"""Product rules - taf."""
 
 # pyright: reportWildcardImportFromLibrary=false, reportUnusedFunction=false
 
@@ -11,7 +11,7 @@ from tac_validate.product_rules_pkg._common import *
 
 
 def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
-    """TAF checklist — A5-1 template gates + F20 T1 NIL/CNL/AMD/COR."""
+    """TAF checklist - A5-1 template gates + F20 T1 NIL/CNL/AMD/COR."""
     # ruff: noqa: F403, F405
     start, end, body = _body_span(tac)
     upper = body.upper()
@@ -25,7 +25,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_CCCC",
-                "TAF missing ICAO location (CCCC) — A5-1 #2",
+                "TAF missing ICAO location (CCCC) - A5-1 #2",
                 start=start,
                 end=end,
                 location="station",
@@ -36,20 +36,20 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_ISSUE_TIME",
-                "TAF missing issue time ddhhmmZ — A5-1 #3",
+                "TAF missing issue time ddhhmmZ - A5-1 #3",
                 start=start,
                 end=end,
                 location="time",
             )
         )
 
-    # T1 NIL: missing forecast ends the message (A5-1 #4) — skip validity body gates.
+    # T1 NIL: missing forecast ends the message (A5-1 #4) - skip validity body gates.
     if "NIL" in tokens:
         if "AMD" in tokens:
             _emit_token_info(
                 issues,
                 code="AMD_PRESENT",
-                message=f"{product} AMD modifier present — research T1",
+                message=f"{product} AMD modifier present - research T1",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -59,7 +59,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="COR_PRESENT",
-                message=f"{product} COR modifier present — research T1",
+                message=f"{product} COR modifier present - research T1",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -70,7 +70,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="INVALID_NIL",
-                message=f"{product} NIL must not include body groups — research T1",
+                message=f"{product} NIL must not include body groups - research T1",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -80,7 +80,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="NIL_REPORT",
-                message=f"{product} NIL report — research T1",
+                message=f"{product} NIL report - research T1",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -92,7 +92,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_VALIDITY",
-                "TAF missing validity period ddhh/ddhh — A5-1 #5",
+                "TAF missing validity period ddhh/ddhh - A5-1 #5",
                 start=start,
                 end=end,
                 location="validity",
@@ -103,7 +103,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         _emit_token_info(
             issues,
             code="AMD_PRESENT",
-            message=f"{product} AMD modifier present — research T1",
+            message=f"{product} AMD modifier present - research T1",
             core=core,
             body_start=start,
             body_end=end,
@@ -113,7 +113,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         _emit_token_info(
             issues,
             code="COR_PRESENT",
-            message=f"{product} COR modifier present — research T1",
+            message=f"{product} COR modifier present - research T1",
             core=core,
             body_start=start,
             body_end=end,
@@ -128,7 +128,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="INVALID_CNL_SHAPE",
-                message="TAF CNL must end the message — A5-1 #6",
+                message="TAF CNL must end the message - A5-1 #6",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -138,7 +138,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="CNL_REPORT",
-                message=f"{product} CNL cancel report — research T1",
+                message=f"{product} CNL cancel report - research T1",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -146,7 +146,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
             )
         return issues
 
-    # T2 change groups — FM / BECMG / TEMPO / PROB + TL / AT (App 5 §1.4 / A5-2).
+    # T2 change groups - FM / BECMG / TEMPO / PROB + TL / AT (App 5 §1.4 / A5-2).
     _check_taf_change_groups(
         issues,
         tokens=tokens,
@@ -155,7 +155,7 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         body_start=start,
         body_end=end,
     )
-    # T3 — TX/TN base-only; CAVOK / NSC / NSW / VV/// (Guidance exceptional).
+    # T3 - TX/TN base-only; CAVOK / NSC / NSW / VV/// (Guidance exceptional).
     _check_taf_t3_elements(
         issues,
         tokens=tokens,
@@ -205,7 +205,7 @@ def _check_us_faa_nws_taf(
         issues.append(
             _issue(
                 "US_TAF_BECMG_FORBIDDEN",
-                f"{product} BECMG is forbidden under US_FAA_NWS — FMH-1 / FAA GEN 1.7",
+                f"{product} BECMG is forbidden under US_FAA_NWS - FMH-1 / FAA GEN 1.7",
                 start=body_start,
                 end=body_end,
                 location="change_group",
@@ -222,13 +222,13 @@ def _check_us_faa_nws_taf(
             end_h = int(m.group(4))
             duration_h = (end_h - start_h) if end_h >= start_h else (24 - start_h + end_h)
         elif _TAF_TL.fullmatch(window):
-            # TL-only TEMPO without explicit window — cannot compute duration here.
+            # TL-only TEMPO without explicit window - cannot compute duration here.
             duration_h = None
         if duration_h is not None and duration_h > 4:
             issues.append(
                 _issue(
                     "US_TAF_TEMPO_MAX_4H",
-                    f"{product} TEMPO exceeds 4h maximum under US_FAA_NWS — FMH-1",
+                    f"{product} TEMPO exceeds 4h maximum under US_FAA_NWS - FMH-1",
                     start=body_start,
                     end=body_end,
                     location="change_group",
@@ -265,7 +265,7 @@ def _check_taf_t3_elements(
             _emit_token_info(
                 issues,
                 code="INVALID_TX_TN",
-                message=f"{product} TX/TN allowed on base forecast only — research T3",
+                message=f"{product} TX/TN allowed on base forecast only - research T3",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -275,7 +275,7 @@ def _check_taf_t3_elements(
             _emit_token_info(
                 issues,
                 code="TX_TN_PRESENT",
-                message=f"{product} TX/TN temperature forecasts on base — research T3",
+                message=f"{product} TX/TN temperature forecasts on base - research T3",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -286,7 +286,7 @@ def _check_taf_t3_elements(
         _emit_token_info(
             issues,
             code="CAVOK_PRESENT",
-            message=f"{product} CAVOK present — research T3 / S1",
+            message=f"{product} CAVOK present - research T3 / S1",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -296,7 +296,7 @@ def _check_taf_t3_elements(
         _emit_token_info(
             issues,
             code="NSC_PRESENT",
-            message=f"{product} NSC present — research T3 / S1",
+            message=f"{product} NSC present - research T3 / S1",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -314,7 +314,7 @@ def _check_taf_t3_elements(
         _emit_token_info(
             issues,
             code="NSW_PRESENT",
-            message=f"{product} NSW present — research T3 / S1",
+            message=f"{product} NSW present - research T3 / S1",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -324,7 +324,7 @@ def _check_taf_t3_elements(
         _emit_token_info(
             issues,
             code="VV_OMIT",
-            message=f"{product} VV/// — omit verticalVisibility without nilReason — research T3",
+            message=f"{product} VV/// - omit verticalVisibility without nilReason - research T3",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -347,7 +347,7 @@ def _check_taf_change_groups(
         _emit_token_info(
             issues,
             code="FM_PRESENT",
-            message=f"{product} FM change group present — research T2",
+            message=f"{product} FM change group present - research T2",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -357,7 +357,7 @@ def _check_taf_change_groups(
         _emit_token_info(
             issues,
             code="BECMG_PRESENT",
-            message=f"{product} BECMG change group present — research T2",
+            message=f"{product} BECMG change group present - research T2",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -367,7 +367,7 @@ def _check_taf_change_groups(
         _emit_token_info(
             issues,
             code="TEMPO_PRESENT",
-            message=f"{product} TEMPO change group present — research T2",
+            message=f"{product} TEMPO change group present - research T2",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -379,7 +379,7 @@ def _check_taf_change_groups(
         _emit_token_info(
             issues,
             code="TL_PRESENT",
-            message=f"{product} TL time group present — research T2",
+            message=f"{product} TL time group present - research T2",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -390,7 +390,7 @@ def _check_taf_change_groups(
         _emit_token_info(
             issues,
             code="AT_PRESENT",
-            message=f"{product} AT time group present — research T2",
+            message=f"{product} AT time group present - research T2",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -408,7 +408,7 @@ def _check_taf_change_groups(
             _emit_token_info(
                 issues,
                 code="INVALID_PROB",
-                message=(f"{product} invalid PROB (only 30|40; must not qualify BECMG/FM) — App 5 §1.4 / research T2"),
+                message=(f"{product} invalid PROB (only 30|40; must not qualify BECMG/FM) - App 5 §1.4 / research T2"),
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -418,7 +418,7 @@ def _check_taf_change_groups(
             _emit_token_info(
                 issues,
                 code="PROB_PRESENT",
-                message=f"{product} PROB30/40 change group present — research T2",
+                message=f"{product} PROB30/40 change group present - research T2",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,

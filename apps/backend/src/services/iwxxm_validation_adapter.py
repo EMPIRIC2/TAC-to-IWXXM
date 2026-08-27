@@ -1,8 +1,8 @@
-"""Thin backend adapter — all IWXXM validation delegates to ``packages/iwxxm-validate``."""
+"""Thin backend adapter - all IWXXM validation delegates to ``packages/iwxxm-validate``."""
 
 from __future__ import annotations
 
-from typing import Sequence
+from collections.abc import Sequence
 
 from iwxxm_validate import validate_iwxxm
 from iwxxm_validate.models import Issue, ValidationReport
@@ -59,7 +59,7 @@ def call_validate_iwxxm(
     levels: Sequence[str] | None = None,
     product: str | None = None,
 ) -> ValidationReport:
-    """Invoke ``validate_iwxxm`` — single package entrypoint for backend IWXXM checks."""
+    """Invoke ``validate_iwxxm`` - single package entrypoint for backend IWXXM checks."""
     return validate_iwxxm(
         xml_content,
         iwxxm_version=iwxxm_version,
@@ -70,7 +70,7 @@ def call_validate_iwxxm(
 
 
 def validate_wellformed(xml_content: str) -> ValidationResult:
-    """Layer 3 — XML well-formedness via package lxml check (stable operator messages)."""
+    """Layer 3 - XML well-formedness via package lxml check (stable operator messages)."""
     from iwxxm_validate.wellformed import run_wellformed_lxml
 
     issues = [
@@ -89,7 +89,7 @@ def validate_xml_schema(
     *,
     profile: str = "annex3",
 ) -> XSDValidationResult:
-    """Layer 4 — XSD validation via package."""
+    """Layer 4 - XSD validation via package."""
     report = call_validate_iwxxm(
         xml_content,
         iwxxm_version=version,
@@ -110,7 +110,7 @@ def validate_schematron(
     *,
     profile: str = "annex3",
 ) -> SchematronValidationResult:
-    """Layer 5 — Schematron validation via package."""
+    """Layer 5 - Schematron validation via package."""
     report = call_validate_iwxxm(
         xml_content,
         iwxxm_version=version,
@@ -132,7 +132,7 @@ def validate_gml_references(
     *,
     profile: str = "annex3",
 ) -> tuple[bool, list[ValidationIssue]]:
-    """Layer 6 — GML reference validation via package."""
+    """Layer 6 - GML reference validation via package."""
     report = call_validate_iwxxm(
         xml_content,
         iwxxm_version=version,
@@ -150,7 +150,7 @@ def validate_wmo_codelists(
     *,
     profile: str = "annex3",
 ) -> tuple[bool, list[ValidationIssue]]:
-    """Layer 7 — WMO codelist validation via package."""
+    """Layer 7 - WMO codelist validation via package."""
     report = call_validate_iwxxm(
         xml_content,
         iwxxm_version=version,

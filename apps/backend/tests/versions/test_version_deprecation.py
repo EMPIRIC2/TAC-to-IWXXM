@@ -6,7 +6,6 @@ and only 2025-2 and 2023-1 are supported.
 """
 
 import pytest
-
 from src.config.iwxxm_versions import (
     DEPRECATED_VERSIONS,
     SUPPORTED_VERSIONS,
@@ -46,7 +45,7 @@ class TestVersionDeprecation:
 
     def test_deprecated_versions_have_dates(self):
         """All deprecated versions must have deprecation_date"""
-        for version, info in DEPRECATED_VERSIONS.items():
+        for info in DEPRECATED_VERSIONS.values():
             assert "deprecated_date" in info
             assert "reason" in info
             assert info["deprecated_date"] == "2026-02-13"
@@ -111,7 +110,7 @@ class TestVersionDeprecation:
 
     def test_unknown_version_raises_value_error_not_deprecation(self):
         """Unknown versions should raise ValueError, not VersionDeprecatedError"""
-        with pytest.raises(ValueError) as exc_info:
+        with pytest.raises(ValueError, match=r".*") as exc_info:
             get_version_config("2024-1")  # Non-existent version
 
         # Should NOT be a VersionDeprecatedError
@@ -149,13 +148,8 @@ class TestVersionDeprecationErrorHandling:
 
     def test_deprecation_error_can_be_caught_as_value_error(self):
         """VersionDeprecatedError should be catchable as ValueError"""
-        try:
+        with pytest.raises(VersionDeprecatedError):
             get_version_config("2021-2")
-        except ValueError as e:
-            # Should catch both ValueError and VersionDeprecatedError
-            assert isinstance(e, VersionDeprecatedError)
-        else:
-            pytest.fail("Should have raised VersionDeprecatedError")
 
     def test_error_message_format_consistent(self):
         """All deprecation errors should have consistent message format"""

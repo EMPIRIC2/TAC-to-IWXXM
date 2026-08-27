@@ -9,7 +9,6 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from lxml import etree
-
 from src.utilities import codelist_parser as cp
 from src.utilities.codelist_parser import (
     CodeListParser,

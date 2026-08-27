@@ -1,4 +1,4 @@
-"""TC-F29-003 / T1.3 — METAR/SPECI lint pilot matrices (fill or needs-fixture)."""
+"""TC-F29-003 / T1.3 - METAR/SPECI lint pilot matrices (fill or needs-fixture)."""
 
 from __future__ import annotations
 
@@ -86,7 +86,7 @@ def test_pilot_lint_each_rule_has_20_slots() -> None:
 
 
 def test_pilot_lint_no_silent_gaps() -> None:
-    """Every slot is ready, needs-fixture, or oos — never missing status."""
+    """Every slot is ready, needs-fixture, or oos - never missing status."""
     for case in _lint_cases():
         assert case.status in {"ready", "needs-fixture", "oos"}
 

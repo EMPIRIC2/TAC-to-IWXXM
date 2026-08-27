@@ -1,4 +1,4 @@
-"""TC-EV063-008 — CA_ECCC fixture pack registry (EV-063 M8 / #916).
+"""TC-EV063-008 - CA_ECCC fixture pack registry (EV-063 M8 / #916).
 
 EV-064 superseded the stub encoder; this module keeps the EV-063 manifest gate and
 version fail-closed checks. Golden equality lives in ``test_tc_ev064_002_ca_eccc_goldens``.

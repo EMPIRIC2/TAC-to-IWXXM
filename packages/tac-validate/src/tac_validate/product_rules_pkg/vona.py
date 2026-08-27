@@ -1,4 +1,4 @@
-"""Product rules — vona."""
+"""Product rules - vona."""
 
 # pyright: reportWildcardImportFromLibrary=false, reportUnusedFunction=false
 
@@ -9,7 +9,7 @@ from tac_validate.product_rules_pkg._common import *
 
 
 def _check_vona(tac: str) -> list[Issue]:
-    """F32 theme V1 — VONA template gates + ONSET/DUR NIL info (#741)."""
+    """F32 theme V1 - VONA template gates + ONSET/DUR NIL info (#741)."""
     # ruff: noqa: F403, F405
     start, end, body = _body_span(tac)
     issues: list[Issue] = []
@@ -17,7 +17,7 @@ def _check_vona(tac: str) -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_DTG",
-                "VONA missing DTG: template field — A7-1",
+                "VONA missing DTG: template field - A7-1",
                 start=start,
                 end=end,
                 location="dtg",
@@ -27,7 +27,7 @@ def _check_vona(tac: str) -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_SVO",
-                "VONA missing SVO: template field — F32 theme V1 / A7-1",
+                "VONA missing SVO: template field - F32 theme V1 / A7-1",
                 start=start,
                 end=end,
                 location="svo",
@@ -38,7 +38,7 @@ def _check_vona(tac: str) -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_VONA_VOLCANO",
-                "VONA missing VOLCANO: template field — F32 theme V1 / A7-1",
+                "VONA missing VOLCANO: template field - F32 theme V1 / A7-1",
                 start=start,
                 end=end,
                 location="volcano",
@@ -49,7 +49,7 @@ def _check_vona(tac: str) -> list[Issue]:
         issues.append(
             _issue(
                 "VONA_ONSET_NIL",
-                "VONA ONSET NIL — onsetTime omitted (F32 theme V1)",
+                "VONA ONSET NIL - onsetTime omitted (F32 theme V1)",
                 start=onset_m.start(1),
                 end=onset_m.end(1),
                 location="onset",
@@ -60,7 +60,7 @@ def _check_vona(tac: str) -> list[Issue]:
         issues.append(
             _issue(
                 "VONA_DUR_NIL",
-                "VONA DUR NIL — duration omitted (F32 theme V1)",
+                "VONA DUR NIL - duration omitted (F32 theme V1)",
                 start=dur_m.start(1),
                 end=dur_m.end(1),
                 location="duration",

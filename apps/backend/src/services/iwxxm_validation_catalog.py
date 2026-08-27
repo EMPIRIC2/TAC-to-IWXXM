@@ -36,7 +36,7 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "severity": "error",
             "message_template": (
                 "Malformed XML cannot be parsed or validated further. Error: fix "
-                "well-formedness before XSD or Schematron checks can run — downstream "
+                "well-formedness before XSD or Schematron checks can run - downstream "
                 "systems reject unreadable documents outright."
             ),
             "product": None,
@@ -44,7 +44,7 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "family": "iwxxm",
             "source_id": "wmo-im-iwxxm",
             "source_url": _WMO_IM,
-            "source_attribution": f"wmo-im-iwxxm — {_WMO_IM}",
+            "source_attribution": f"wmo-im-iwxxm - {_WMO_IM}",
             "source_type": "tier1",
             "status": "verified",
             "semantic_identifier": None,
@@ -52,7 +52,7 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "replacement_url": None,
             "issue_type": "iwxxm_schema",
             "source_access": "public",
-            "source_locator": "WMO IWXXM repository — XML well-formedness requirements",
+            "source_locator": "WMO IWXXM repository - XML well-formedness requirements",
         },
         {
             "code": "XML_SCHEMA",
@@ -67,7 +67,7 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "family": "iwxxm",
             "source_id": "wmo-im-iwxxm",
             "source_url": _WMO_IM,
-            "source_attribution": f"wmo-im-iwxxm — {_WMO_IM}",
+            "source_attribution": f"wmo-im-iwxxm - {_WMO_IM}",
             "source_type": "tier1",
             "status": "verified",
             "semantic_identifier": None,
@@ -90,7 +90,7 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "family": "iwxxm",
             "source_id": "wmo-im-iwxxm",
             "source_url": _RELEASE_NOTES,
-            "source_attribution": f"wmo-im-iwxxm — {_RELEASE_NOTES}",
+            "source_attribution": f"wmo-im-iwxxm - {_RELEASE_NOTES}",
             "source_type": "tier1",
             "status": "verified",
             "semantic_identifier": None,
@@ -98,7 +98,7 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "replacement_url": None,
             "issue_type": "iwxxm_schema",
             "source_access": "public",
-            "source_locator": "ReleaseNotes-IWXXM.txt — Schematron rule changes",
+            "source_locator": "ReleaseNotes-IWXXM.txt - Schematron rule changes",
         },
         {
             "code": "GML_REFERENCES",
@@ -113,7 +113,7 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "family": "iwxxm",
             "source_id": "wmo-im-iwxxm",
             "source_url": _WMO_IM,
-            "source_attribution": f"wmo-im-iwxxm — {_WMO_IM}",
+            "source_attribution": f"wmo-im-iwxxm - {_WMO_IM}",
             "source_type": "tier1",
             "status": "verified",
             "semantic_identifier": None,
@@ -121,7 +121,7 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "replacement_url": None,
             "issue_type": "iwxxm_schema",
             "source_access": "public",
-            "source_locator": "WMO IWXXM repository — GML / xlink reference rules",
+            "source_locator": "WMO IWXXM repository - GML / xlink reference rules",
         },
         {
             "code": "WMO_CODELISTS",
@@ -136,7 +136,7 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "family": "iwxxm",
             "source_id": "codes-wmo-int",
             "source_url": _CODES_GUIDE,
-            "source_attribution": f"codes-wmo-int — {_CODES_GUIDE}",
+            "source_attribution": f"codes-wmo-int - {_CODES_GUIDE}",
             "source_type": "tier3",
             "status": "verified",
             "semantic_identifier": "https://codes.wmo.int/",
@@ -159,7 +159,7 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "family": "iwxxm",
             "source_id": "nws-iwxxm-us",
             "source_url": _IWXXM_US,
-            "source_attribution": f"nws-iwxxm-us — {_IWXXM_US}",
+            "source_attribution": f"nws-iwxxm-us - {_IWXXM_US}",
             "source_type": "tier2",
             "status": "verified",
             "semantic_identifier": None,

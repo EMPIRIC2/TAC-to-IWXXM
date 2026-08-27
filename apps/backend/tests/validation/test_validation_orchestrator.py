@@ -3,7 +3,6 @@ Tests for Validation Orchestrator
 """
 
 import pytest
-
 from src.schemas.validation import ValidationIssue, ValidationLayer, ValidationSeverity
 from src.services.validation_orchestrator import (
     ComprehensiveValidationResult,
@@ -131,7 +130,7 @@ class TestValidationOrchestrator:
         assert isinstance(result.issues_by_layer, dict)
 
         # Each key should be a ValidationLayer enum
-        for layer in result.issues_by_layer.keys():
+        for layer in result.issues_by_layer:
             assert isinstance(layer, ValidationLayer)
 
     def test_parallel_layer_execution(self):

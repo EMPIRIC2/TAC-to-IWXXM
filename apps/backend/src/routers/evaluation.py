@@ -1,7 +1,7 @@
 """Evaluation endpoints for METAR conversion validation."""
 
 from datetime import UTC, datetime
-from typing import Optional
+from typing import Any
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
 
@@ -35,7 +35,7 @@ from ..utilities.station_sampler import StationSampler
 router = APIRouter()
 
 
-async def run_evaluation_job(job_id: str, request: EvaluationRequest):
+async def run_evaluation_job(job_id: str, request: EvaluationRequest) -> None:
     """Background task to run evaluation job."""
     try:
         await update_job_status(job_id, "running")
@@ -61,7 +61,7 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest):
             metar_data = await client.fetch_metar_batch(stations, request.hours)
 
         evaluation_service = EvaluationService()
-        results = []
+        results: list[Any] = []
         passed_count = 0
         failed_count = 0
         error_count = 0
@@ -76,9 +76,9 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest):
                 try:
                     our_iwxxm = convert_metar_tac(raw_tac)
                 except ConversionError as e:
-                    errors.append(f"Conversion error: {str(e)}")
+                    errors.append(f"Conversion error: {e!s}")
                 except Exception as e:
-                    errors.append(f"Unexpected error: {str(e)}")
+                    errors.append(f"Unexpected error: {e!s}")
             else:
                 errors.append("No raw TAC data from API")
 
@@ -101,7 +101,7 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest):
                     else:
                         failed_count += 1
                 except Exception as e:
-                    errors.append(f"Comparison error: {str(e)}")
+                    errors.append(f"Comparison error: {e!s}")
                     error_count += 1
             elif errors:
                 error_count += 1
@@ -145,7 +145,7 @@ async def run_evaluation_job(job_id: str, request: EvaluationRequest):
 async def create_evaluation_job(
     request: EvaluationRequest,
     background_tasks: BackgroundTasks,
-):
+) -> object:
     """Create a new evaluation job."""
     if request.mode == EvaluationMode.SINGLE and not request.station_ids:
         raise HTTPException(status_code=400, detail="station_ids required for single mode")
@@ -185,7 +185,7 @@ async def create_evaluation_job(
 )
 async def get_job_status(
     job_id: str,
-):
+) -> object:
     """Get the status of an evaluation job."""
     job = await get_job_for_user(job_id, "anonymous")
     if job is None:
@@ -222,8 +222,8 @@ async def get_job_results(
     job_id: str,
     page: int = Query(1, ge=1),
     per_page: int = Query(50, ge=1, le=100),
-    status_filter: Optional[ComparisonStatus] = None,
-):
+    status_filter: ComparisonStatus | None = None,
+) -> object:
     """Get evaluation results for a job (paginated)."""
     job = await get_job_for_user(job_id, "anonymous")
     if job is None:
@@ -237,7 +237,7 @@ async def get_job_results(
         status_filter=status_filter.value if status_filter else None,
     )
 
-    results = []
+    results: list[Any] = []
     for row in results_data:
         created = row["created_at"]
         results.append(
@@ -269,12 +269,12 @@ async def get_job_results(
     tags=["Evaluation"],
     responses={},
 )
-async def list_user_jobs(page: int = Query(1, ge=1), per_page: int = Query(20, ge=1, le=100)):
+async def list_user_jobs(page: int = Query(1, ge=1), per_page: int = Query(20, ge=1, le=100)) -> object:
     """List all evaluation jobs for the current user."""
     offset = (page - 1) * per_page
     jobs_data, total_count = await list_jobs_for_user("anonymous", per_page, offset)
 
-    jobs = []
+    jobs: list[Any] = []
     for job in jobs_data:
         summary = job.get("summary_stats")
         created = job["created_at"]

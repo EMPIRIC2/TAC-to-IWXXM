@@ -4,15 +4,16 @@ Pure functions for clipping an injected FIR boundary ring against relative
 phrases (``S OF``, ``N OF``, ``E OF``, ``W OF``, ``ENTIRE FIR``) and for
 preferring explicit ``WI`` polygon TAC when both styles appear.
 
-Full Tropical-cyclone SIGMET product quality remains on issue #738 — these
+Full Tropical-cyclone SIGMET product quality remains on issue #738 - these
 helpers are the shared F6 deepen surface coordinated with that backlog.
 """
 
 from __future__ import annotations
 
 import re
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Any, Literal, Sequence
+from typing import Any, Literal
 
 _WI_BLOCK = re.compile(
     r"\bWI\b(?P<body>.*?)(?=\bSFC/|\bTOP\b|\bMOV\b|\bSTNR\b|\bNC\b|\bWKN\b|\bINTSF\b|"
@@ -182,7 +183,7 @@ def _clip_ring_one(
     ring: Sequence[tuple[float, float]],
     constraint: RelativeConstraint,
 ) -> list[tuple[float, float]]:
-    """Sutherland–Hodgman clip of a closed ring against one half-plane."""
+    """Sutherland-Hodgman clip of a closed ring against one half-plane."""
     if not ring:
         return []
     pts = list(ring)

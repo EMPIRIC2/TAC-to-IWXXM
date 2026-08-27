@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 from locust import events
-
 from tests.load.config import load_profile
-from tests.load.metrics import on_locust_init, on_locust_request  # noqa: F401
+from tests.load.metrics import on_locust_init, on_locust_request
 
 
 @events.test_start.add_listener

@@ -5,7 +5,6 @@ from __future__ import annotations
 from unittest.mock import patch
 
 import pytest
-
 from tac_validate import membership
 from tac_validate.api import lint
 from tac_validate.models import Issue
@@ -102,7 +101,7 @@ def test_airmet_cnl_short_circuits_families() -> None:
 
 
 def test_us_faa_nws_taf_overlay_rules() -> None:
-    tokens = "TAF KJFK 231730Z 2318/2418 24008KT 9999 BKN020 BECMG 2322/2400 24015KT".split()
+    tokens = ["TAF", "KJFK", "231730Z", "2318/2418", "24008KT", "9999", "BKN020", "BECMG", "2322/2400", "24015KT"]
     becmg = _check_us_faa_nws_taf(
         tokens,
         product="TAF",
@@ -114,7 +113,19 @@ def test_us_faa_nws_taf_overlay_rules() -> None:
     assert any(i.code == "US_TAF_BECMG_FORBIDDEN" for i in becmg)
     assert _check_us_faa_nws_taf(tokens, product="TAF", core="", body_start=0, body_end=10, profile="annex3") == []
 
-    tempo_tokens = "TAF KJFK 231730Z 2318/2418 24008KT 9999 BKN020 TEMPO 1606/1612 4000 -RA".split()
+    tempo_tokens = [
+        "TAF",
+        "KJFK",
+        "231730Z",
+        "2318/2418",
+        "24008KT",
+        "9999",
+        "BKN020",
+        "TEMPO",
+        "1606/1612",
+        "4000",
+        "-RA",
+    ]
     tempo = _check_us_faa_nws_taf(
         tempo_tokens,
         product="TAF",

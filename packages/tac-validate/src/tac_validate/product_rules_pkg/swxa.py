@@ -1,4 +1,4 @@
-"""Product rules — swxa."""
+"""Product rules - swxa."""
 
 # pyright: reportWildcardImportFromLibrary=false, reportUnusedFunction=false, reportPrivateUsage=false
 
@@ -67,7 +67,7 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_DTG",
-                "SWXA missing DTG: template field — A2-3",
+                "SWXA missing DTG: template field - A2-3",
                 start=start,
                 end=end,
                 location="dtg",
@@ -77,14 +77,14 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "MISSING_SWXC",
-                "SWXA missing SWXC: template field — F28 theme SX1 / A2-3",
+                "SWXA missing SWXC: template field - F28 theme SX1 / A2-3",
                 start=start,
                 end=end,
                 location="swxc",
             )
         )
     issues.extend(_check_swxa_spacewx_membership(body, start=start))
-    # F28 theme SX1 — exceptional remarks / forecast / next-advisory cues (#740).
+    # F28 theme SX1 - exceptional remarks / forecast / next-advisory cues (#740).
     rmk_m = _RMK_LINE.search(body)
     if rmk_m:
         rmk_val = rmk_m.group(1).strip().rstrip("=").upper()
@@ -92,7 +92,7 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
             issues.append(
                 _issue(
                     "SWXA_RMK_NIL",
-                    "SWXA RMK NIL — remarks inapplicable (F28 theme SX1)",
+                    "SWXA RMK NIL - remarks inapplicable (F28 theme SX1)",
                     start=rmk_m.start(1),
                     end=rmk_m.end(1),
                     location="remarks",
@@ -103,7 +103,7 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "SWXA_FCST_NO_SWX_EXP",
-                "SWXA forecast NO SWX EXP — no space weather expected (F28 theme SX1)",
+                "SWXA forecast NO SWX EXP - no space weather expected (F28 theme SX1)",
                 start=no_swx.start(),
                 end=no_swx.end(),
                 location="forecast",
@@ -114,7 +114,7 @@ def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
         issues.append(
             _issue(
                 "SWXA_NO_FURTHER_ADVISORIES",
-                "SWXA NXT ADVISORY NO FURTHER ADVISORIES — next time inapplicable (F28 theme SX1)",
+                "SWXA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable (F28 theme SX1)",
                 start=nxt_m.start(1),
                 end=nxt_m.end(1),
                 location="next_advisory",

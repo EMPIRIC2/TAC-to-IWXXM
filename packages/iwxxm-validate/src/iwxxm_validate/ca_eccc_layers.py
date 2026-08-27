@@ -1,7 +1,7 @@
 """CA_ECCC layered validation stages (EV-068 / #1035).
 
 Stage ids align with ``docs/domain/profiles/catalog.yaml`` ``validation_stages``.
-M1 scaffold: bundle resolution + stage registry; full pipeline wired EV-068–069.
+M1 scaffold: bundle resolution + stage registry; full pipeline wired EV-068-069.
 """
 
 from __future__ import annotations
@@ -54,7 +54,7 @@ CA_PRODUCT_XSD: dict[str, str] = {
 # Products with MSC exchange-output contract (EV-071..073 aerodrome; EV-076 / #1061 SIGMET).
 CA_EXCHANGE_OUTPUT_PRODUCTS: frozenset[str] = frozenset({"METAR", "SPECI", "TAF", "AIRMET", "SIGMET"})
 
-# EV-068: layers 1–4; EV-069: layers 5–6 (#1033 / #1032).
+# EV-068: layers 1-4; EV-069: layers 5-6 (#1033 / #1032).
 IMPLEMENTED_CA_STAGES: frozenset[str] = frozenset(
     {
         STAGE_WELLFORMED,
@@ -113,9 +113,9 @@ def pending_ca_stages() -> tuple[str, ...]:
 
 
 __all__ = [
+    "CA_EXCHANGE_OUTPUT_PRODUCTS",
     "CA_EXTENSION_TAG",
     "CA_IWXXM_VERSION",
-    "CA_EXCHANGE_OUTPUT_PRODUCTS",
     "CA_PRODUCT_XSD",
     "CA_STAGE_LABELS",
     "CA_VALIDATION_STAGES",

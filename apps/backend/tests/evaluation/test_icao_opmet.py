@@ -10,7 +10,6 @@ from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.config.icao_opmet import (
     ICAO_LOCATION_INDICATOR,
     TRANSLATION_CENTRE_DESIGNATOR,

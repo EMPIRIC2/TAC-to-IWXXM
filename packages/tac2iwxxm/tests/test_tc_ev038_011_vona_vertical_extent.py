@@ -1,9 +1,9 @@
-"""TC-EV038-011 — VONA VolcanicAshCloudVerticalExtent (G-VONA-1 / #849).
+"""TC-EV038-011 - VONA VolcanicAshCloudVerticalExtent (G-VONA-1 / #849).
 
 When TAC supplies ``HGT SOURCE`` / ``MOV`` on a non-A7-1 path, ash
 ``phenomenonProperty`` must carry ``VolcanicAshCloudVerticalExtent`` per XSD
 (not ``iwxxm/nil/inapplicable``). Official ``vona-A7-1`` peer keeps inapplicable
-(ADR-032 golden). No invented packing — MOV tokens map to XSD enum only.
+(ADR-032 golden). No invented packing - MOV tokens map to XSD enum only.
 
 Corpus: product F32; tests TC-EV038-011; decisions AC11.
 """
@@ -82,7 +82,7 @@ def test_tc_ev038_011_negative_unknown_mov_token() -> None:
 
 
 @pytest.mark.parametrize(
-    "token,expected",
+    ("token", "expected"),
     [
         ("N", "N"),
         ("NE", "NE"),
@@ -101,7 +101,7 @@ def test_tc_ev038_011_mov_enum_tokens(token: str, expected: str) -> None:
 
 
 def test_tc_ev038_011_vertical_extent_m_xsd_sch() -> None:
-    """T4.3 / TC-EV038-011 — accept encode is M-xsd/M-sch clean."""
+    """T4.3 / TC-EV038-011 - accept encode is M-xsd/M-sch clean."""
     from iwxxm_validate import validate
 
     from tac2iwxxm import convert

@@ -15,7 +15,7 @@ import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Optional
 from xml.dom import minidom
 
 from _xml_utils import _local, _norm_text
@@ -89,11 +89,11 @@ class DiffReport:
     test_case: str  # e.g., "BGBW-282350Z"
     amendment_version: str  # e.g., "Amd79-80-2023"
     status: str = "UNKNOWN"  # "PASS" or "FAIL"
-    field_diffs: List[Dict] = None  # [{path, expected, actual, reason}, ...]
-    lat_lon_diffs: List[Dict] = None  # [{element_id, distance_meters}, ...]
-    metadata_diffs: List[Dict] = None  # [{attr, expected, actual}, ...]
-    expected_xml: Optional[str] = None  # Full expected XML for comparison
-    actual_xml: Optional[str] = None  # Full actual XML for comparison
+    field_diffs: list[dict] = None  # [{path, expected, actual, reason}, ...]
+    lat_lon_diffs: list[dict] = None  # [{element_id, distance_meters}, ...]
+    metadata_diffs: list[dict] = None  # [{attr, expected, actual}, ...]
+    expected_xml: str | None = None  # Full expected XML for comparison
+    actual_xml: str | None = None  # Full actual XML for comparison
     generated_at: str = field(default_factory=lambda: datetime.now().isoformat())
 
     def __post_init__(self):
@@ -140,7 +140,7 @@ def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
     return R * c
 
 
-def extract_lat_lon(elem: ET.Element, tolerance_m: float = 100.0) -> Dict[str, Tuple[float, float]]:
+def extract_lat_lon(elem: ET.Element, tolerance_m: float = 100.0) -> dict[str, tuple[float, float]]:
     """Extract all lat/lon value pairs from XML element.
 
     Returns dict: {element_id_or_path: (lat, lon), ...}
@@ -185,10 +185,10 @@ def extract_lat_lon(elem: ET.Element, tolerance_m: float = 100.0) -> Dict[str, T
 
 
 def validate_lat_lon_tolerance(
-    expected_coords: Dict[str, Tuple[float, float]],
-    actual_coords: Dict[str, Tuple[float, float]],
+    expected_coords: dict[str, tuple[float, float]],
+    actual_coords: dict[str, tuple[float, float]],
     tolerance_m: float = 100.0,
-) -> Tuple[bool, List[Dict]]:
+) -> tuple[bool, list[dict]]:
     """Validate that all lat/lon coordinates are within tolerance.
 
     Args:
@@ -232,14 +232,14 @@ def validate_lat_lon_tolerance(
             )
 
     # Check for coordinates in actual but not in expected
-    for elem_id in actual_coords:
-        if elem_id not in expected_coords:
-            diffs.append(
-                {
-                    "element_id": elem_id,
-                    "status": "EXTRA_IN_ACTUAL",
-                }
-            )
+    diffs.extend(
+        {
+            "element_id": elem_id,
+            "status": "EXTRA_IN_ACTUAL",
+        }
+        for elem_id in actual_coords
+        if elem_id not in expected_coords
+    )
 
     return len(diffs) == 0, diffs
 
@@ -250,9 +250,9 @@ def compare_xml_with_tolerance(
     test_case: str = "unknown",
     amendment_version: str = "unknown",
     lat_lon_tolerance_m: float = 100.0,
-    ignore_attrs: Optional[Set[str]] = None,
-    expected_xml_str: Optional[str] = None,
-    actual_xml_str: Optional[str] = None,
+    ignore_attrs: set[str] | None = None,
+    expected_xml_str: str | None = None,
+    actual_xml_str: str | None = None,
 ) -> DiffReport:
     """Deep compare two XML elements with tolerance for numeric, UID, and lat/lon values.
 
@@ -309,7 +309,7 @@ def compare_xml_with_tolerance(
     # Extract and validate lat/lon coordinates
     expected_coords = extract_lat_lon(expected_elem)
     actual_coords = extract_lat_lon(actual_elem)
-    lat_lon_ok, lat_lon_diffs = validate_lat_lon_tolerance(expected_coords, actual_coords, lat_lon_tolerance_m)
+    _lat_lon_ok, lat_lon_diffs = validate_lat_lon_tolerance(expected_coords, actual_coords, lat_lon_tolerance_m)
     report.lat_lon_diffs = lat_lon_diffs
 
     # Strip dynamic attributes and do structural comparison
@@ -330,7 +330,7 @@ def _deep_diff(
     actual: ET.Element,
     path: str,
     report: DiffReport,
-    ignore_attrs: Set[str],
+    ignore_attrs: set[str],
 ) -> None:
     """Recursively compare two elements and record differences."""
 
@@ -444,17 +444,15 @@ def _deep_diff(
                         }
                     )
             except ValueError:
-                if exp_text and act_text:  # Both non-empty
-                    # For name fields, accept if actual is non-empty (database variation)
-                    if tag not in name_tags:
-                        report.field_diffs.append(
-                            {
-                                "path": current_path,
-                                "type": "TEXT_MISMATCH",
-                                "expected": exp_text[:100],  # Truncate long text
-                                "actual": act_text[:100],
-                            }
-                        )
+                if exp_text and act_text and tag not in name_tags:  # Both non-empty; skip name tags
+                    report.field_diffs.append(
+                        {
+                            "path": current_path,
+                            "type": "TEXT_MISMATCH",
+                            "expected": exp_text[:100],  # Truncate long text
+                            "actual": act_text[:100],
+                        }
+                    )
 
     # Compare children recursively
     exp_children = list(expected)

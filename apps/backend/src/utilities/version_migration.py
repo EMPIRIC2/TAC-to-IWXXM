@@ -7,7 +7,7 @@ especially for data transformation from older versions to newer ones.
 
 import logging
 import xml.etree.ElementTree as ET
-from typing import Dict, List, Optional, Tuple
+from typing import Any
 
 from src.config.iwxxm_versions import get_breaking_changes
 
@@ -17,13 +17,13 @@ logger = logging.getLogger(__name__)
 class VersionMigrationWarning:
     """Represents a breaking change that was handled during migration."""
 
-    def __init__(self, element: str, xpath: str, action: str, reason: str):
+    def __init__(self, element: str, xpath: str, action: str, reason: str) -> None:
         self.element = element
         self.xpath = xpath
         self.action = action
         self.reason = reason
 
-    def to_dict(self) -> Dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for API response."""
         return {"element": self.element, "xpath": self.xpath, "action": self.action, "reason": self.reason}
 
@@ -36,15 +36,15 @@ class VersionMigrator:
     with automatic removal of breaking change elements.
     """
 
-    def __init__(self):
-        self.warnings: List[VersionMigrationWarning] = []
+    def __init__(self) -> None:
+        self.warnings: list[VersionMigrationWarning] = []
         self.xml_namespaces = {
             "iwxxm": "http://icao.int/iwxxm",
             "gml": "http://www.opengis.net/gml/3.2",
             "aixm": "http://www.aixm.aero/schema/5.1.1",
         }
 
-    def migrate(self, xml_content: str, from_version: str, to_version: str) -> Tuple[str, List[Dict]]:
+    def migrate(self, xml_content: str, from_version: str, to_version: str) -> tuple[str, list[dict[str, Any]]]:
         """
         Migrate IWXXM XML from one version to another.
 
@@ -78,7 +78,7 @@ class VersionMigrator:
             # Parse XML
             root = ET.fromstring(xml_content)
         except ET.ParseError as e:
-            raise ET.ParseError(f"Invalid XML: {e}")
+            raise ET.ParseError(f"Invalid XML: {e}") from e
 
         # Apply each breaking change
         for change in changes:
@@ -95,7 +95,7 @@ class VersionMigrator:
 
         return migrated_xml, warnings_list
 
-    def _remove_elements(self, root: ET.Element, change: Dict) -> None:
+    def _remove_elements(self, root: ET.Element, change: dict[str, Any]) -> None:
         """
         Remove elements matching the specified XPath and register warning.
 
@@ -148,17 +148,13 @@ class VersionMigrator:
 
         # Extract prefix and local name
         if ":" in tag:
-            prefix, localname = tag.split(":", 1)
+            _prefix, localname = tag.split(":", 1)
         else:
             localname = tag
 
         # Traverse tree and remove matching elements
         for parent in root.iter():
-            children_to_remove = []
-            for child in parent:
-                # Check both prefixed and unprefixed names
-                if self._tag_matches(child.tag, localname):
-                    children_to_remove.append(child)
+            children_to_remove = [child for child in parent if self._tag_matches(child.tag, localname)]
 
             for child in children_to_remove:
                 parent.remove(child)
@@ -185,7 +181,7 @@ class VersionMigrator:
 
 
 # Global instance
-_migrator_instance: Optional[VersionMigrator] = None
+_migrator_instance: VersionMigrator | None = None
 
 
 def get_migrator() -> VersionMigrator:
@@ -196,7 +192,7 @@ def get_migrator() -> VersionMigrator:
     return _migrator_instance
 
 
-def migrate_xml(xml_content: str, from_version: str, to_version: str) -> Tuple[str, List[Dict]]:
+def migrate_xml(xml_content: str, from_version: str, to_version: str) -> tuple[str, list[dict[str, Any]]]:
     """
     Migrate IWXXM XML from one version to another.
 

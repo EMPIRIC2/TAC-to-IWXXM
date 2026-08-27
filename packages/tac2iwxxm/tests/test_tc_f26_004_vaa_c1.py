@@ -1,11 +1,11 @@
-"""TC-F26-004 — F26 theme C1 + translation-failed adjacency (S027 / EV-021 T2.4).
+"""TC-F26-004 - F26 theme C1 + translation-failed adjacency (S027 / EV-021 T2.4).
 
 Common-rule coverage for VAA: ``reportStatus`` / ``permissibleUsage`` on the WMO golden,
 V1 negatives still emit registry diagnostics, and ``va-advisory-translation-failed`` is not a
 happy-path golden and must not silent-swap product/root with SIGMET/VA SIGMET.
 
-Convert-only (no TAC lint surface) — CRS attrs, ``translationFailedTAC`` emission, COLLECT
-packing — documented for matrix note (F23 C1 pattern).
+Convert-only (no TAC lint surface) - CRS attrs, ``translationFailedTAC`` emission, COLLECT
+packing - documented for matrix note (F23 C1 pattern).
 """
 
 from __future__ import annotations
@@ -73,11 +73,13 @@ def test_tc_f26_004_negatives_emit_registry_codes(case: dict[str, Any]) -> None:
     assert expected in codes, f"expected {expected} in {sorted(codes)}"
     if case.get("require_spans"):
         matched = [i for i in report.issues if i.code == expected]
-        assert matched and matched[0].start is not None and matched[0].end is not None
+        assert matched
+        assert matched[0].start is not None
+        assert matched[0].end is not None
 
 
 def test_tc_f26_004_golden_has_report_status_and_usage() -> None:
-    """C1 — reportStatus / permissibleUsage present on default convert of A7-2."""
+    """C1 - reportStatus / permissibleUsage present on default convert of A7-2."""
     tac = (ANNEX3 / "vaa_a7_2.tac").read_text(encoding="utf-8")
     result = convert(tac, product="VAA", profile=_PROFILE, iwxxm_version=_VERSION)
     assert result.ok is True
@@ -101,7 +103,7 @@ def test_tc_f26_004_translation_failed_keeps_vaa_root() -> None:
     assert "VA ADVISORY" in tac.upper()
     assert "INVALID" in tac.upper()
     result = convert(tac, product="VAA", profile=_PROFILE, iwxxm_version=_VERSION)
-    # Convert may soft-succeed; adjacency requires VAA root — never SIGMET/VA SIGMET swap.
+    # Convert may soft-succeed; adjacency requires VAA root - never SIGMET/VA SIGMET swap.
     assert result.product == "VAA"
     assert result.xml
     assert "<iwxxm:VolcanicAshAdvisory" in result.xml

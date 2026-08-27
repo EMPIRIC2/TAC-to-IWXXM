@@ -5,7 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from iwxxm_validate.ca_eccc_layers import (
     CA_IWXXM_VERSION,
     CA_PRODUCT_XSD,
@@ -44,13 +43,15 @@ class TestTcEv068001CaEcccBundle:
     def test_ca_product_xsd_map_resolves_taf_and_airmet(self) -> None:
         taf = ca_product_xsd_path("TAF")
         airmet = ca_product_xsd_path("airmet")
-        assert taf is not None and taf.name == "taf-ca.xsd"
-        assert airmet is not None and airmet.name == "airmet-ca.xsd"
+        assert taf is not None
+        assert taf.name == "taf-ca.xsd"
+        assert airmet is not None
+        assert airmet.name == "airmet-ca.xsd"
 
     def test_layered_stage_registry_matches_catalog(self) -> None:
         assert CA_IWXXM_VERSION == "3.0.0"
         assert CA_VALIDATION_STAGES[:3] == ("wellformed", "wmo_xsd", "wmo_schematron")
-        assert IMPLEMENTED_CA_STAGES == frozenset(CA_VALIDATION_STAGES)
+        assert frozenset(CA_VALIDATION_STAGES) == IMPLEMENTED_CA_STAGES
         assert pending_ca_stages() == ()
 
     def test_ca_eccc_bundle_unavailable_when_extension_missing(self, monkeypatch: pytest.MonkeyPatch) -> None:

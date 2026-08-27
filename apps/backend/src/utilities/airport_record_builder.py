@@ -10,7 +10,7 @@ Source hierarchy:
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Any, cast
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class AirportRecordBuilder:
     """Builder for complete airport records from multiple sources."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize builder and load all data sources."""
         # Try to find the data directory
         base_path = Path(__file__).parent
@@ -35,7 +35,7 @@ class AirportRecordBuilder:
         self._vertical_datum_map = self._load_json("vertical_datum_map.json")
         self._airports_json = self._load_json("airports.json")
 
-    def _load_json(self, filename: str) -> dict:
+    def _load_json(self, filename: str) -> dict[str, Any]:
         """Load JSON data file."""
         file_path = self.data_dir / filename
         if not file_path.exists():
@@ -44,18 +44,23 @@ class AirportRecordBuilder:
 
         try:
             with open(file_path) as f:
-                data = json.load(f)
-
-                # airports.json is an array, convert to dict keyed by ICAO
-                if filename == "airports.json" and isinstance(data, list):
-                    return {item.get("icao"): item for item in data if item.get("icao")}
-
-                return data if isinstance(data, dict) else {}
+                raw = json.load(f)
+            if filename == "airports.json" and isinstance(raw, list):
+                airports_list = cast(list[dict[str, Any]], raw)
+                return {str(item.get("icao")): item for item in airports_list if item.get("icao")}
+            if isinstance(raw, dict):
+                return cast(dict[str, Any], raw)
+            return {}
         except Exception as e:
             logger.error(f"Failed to load {filename}: {e}")
             return {}
 
-    def build_record(self, icao: str, openaip_data: Optional[Dict] = None, airport_validator=None) -> Dict:
+    def build_record(
+        self,
+        icao: str,
+        openaip_data: dict[str, Any] | None = None,
+        airport_validator: object | None = None,
+    ) -> dict[str, Any]:
         """
         Build a complete airport record.
 
@@ -82,7 +87,7 @@ class AirportRecordBuilder:
             - _override: bool indicating if data was overridden from defaults
         """
         icao = icao.upper().strip()
-        record = {
+        record: dict[str, Any] = {
             "icao": icao,
             "name": None,
             "iata": None,
@@ -147,7 +152,13 @@ class AirportRecordBuilder:
         # 4. Try airport validator if available
         if airport_validator:
             try:
-                validator_record = airport_validator.get_airport_info(icao)
+                get_airport_info = getattr(airport_validator, "get_airport_info", None)
+                validator_record: dict[str, Any] | None = None
+                if get_airport_info is not None:
+                    validator_record = cast(
+                        dict[str, Any] | None,
+                        get_airport_info(icao),
+                    )
                 if validator_record:
                     logger.info(f"Found {icao} in airport validator")
                     record.update(self._extract_fields(validator_record))
@@ -162,9 +173,9 @@ class AirportRecordBuilder:
         logger.warning(f"Airport {icao} not found in any data source")
         return record
 
-    def _extract_fields(self, data: Dict) -> Dict:
+    def _extract_fields(self, data: dict[str, Any]) -> dict[str, Any]:
         """Extract relevant fields from airport data."""
-        extracted = {}
+        extracted: dict[str, Any] = {}
 
         # Name
         if name := data.get("name"):
@@ -185,7 +196,7 @@ class AirportRecordBuilder:
         coords = None
         if coord_dict := data.get("coordinates"):
             if isinstance(coord_dict, dict) and all(k in coord_dict for k in ["latitude", "longitude"]):
-                coords = coord_dict
+                coords = cast(dict[str, Any], coord_dict)
         elif "latitude" in data and "longitude" in data:
             coords = {"latitude": data["latitude"], "longitude": data["longitude"]}
 
@@ -205,7 +216,7 @@ class AirportRecordBuilder:
 
         return extracted
 
-    def get_gifts_format(self, record: Dict) -> str:
+    def get_gifts_format(self, record: dict[str, Any]) -> str:
         """
         Convert airport record to GIFTs geoLocationsDB format.
 

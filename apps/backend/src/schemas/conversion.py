@@ -1,13 +1,13 @@
 """Pydantic schemas for METAR conversion API responses."""
 
 from datetime import UTC, datetime
-from enum import Enum
-from typing import List, Optional
+from enum import StrEnum
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class ConversionIssueSeverity(str, Enum):
+class ConversionIssueSeverity(StrEnum):
     """Severity level for conversion and validation issues."""
 
     ERROR = "error"
@@ -24,12 +24,12 @@ class ConversionIssue(BaseModel):
         examples=["manual_input", "EGLL_231750Z.txt"],
     )
     message: str = Field(..., description="Human-readable issue message", min_length=1)
-    hint: Optional[str] = Field(
+    hint: str | None = Field(
         default=None,
         description="Concise suggested fix for the user",
         examples=["Start the report with METAR or SPECI and a valid ICAO code"],
     )
-    code: Optional[str] = Field(
+    code: str | None = Field(
         default=None,
         description="Machine-readable issue code",
         examples=["MISSING_KEYWORD", "INVALID_ICAO_FORMAT"],
@@ -38,22 +38,22 @@ class ConversionIssue(BaseModel):
         default=ConversionIssueSeverity.ERROR,
         description="Issue severity",
     )
-    layer: Optional[str] = Field(
+    layer: str | None = Field(
         default=None,
         description="Validation layer associated with the issue",
         examples=["airport_icao", "tac_syntax"],
     )
-    location: Optional[str] = Field(
+    location: str | None = Field(
         default=None,
         description="Optional location context from parser/validator",
         examples=["line 1, column 12"],
     )
-    start: Optional[int] = Field(
+    start: int | None = Field(
         default=None,
         description="Optional inclusive character offset into the source TAC",
         ge=0,
     )
-    end: Optional[int] = Field(
+    end: int | None = Field(
         default=None,
         description="Optional exclusive character offset into the source TAC",
         ge=0,
@@ -68,23 +68,23 @@ class ProfileOutputSpecModel(BaseModel):
     wmo_header_designator: str = Field(..., description="WMO AHL designator prefix for the product")
     distribution_path_template: str = Field(..., description="HTTPS distribution path template")
     iwxxm_version_pin: str = Field(..., description="Pinned IWXXM version for this profile line")
-    suggested_filename: Optional[str] = Field(
+    suggested_filename: str | None = Field(
         default=None,
         description="Suggested MSC filename when AHL context is known",
     )
-    wmo_ahl_header: Optional[str] = Field(
+    wmo_ahl_header: str | None = Field(
         default=None,
         description="Formatted WMO AHL header when bulletin context is known",
     )
-    distribution_path: Optional[str] = Field(
+    distribution_path: str | None = Field(
         default=None,
         description="Expanded distribution path when computable",
     )
-    translation_centre_designator: Optional[str] = Field(
+    translation_centre_designator: str | None = Field(
         default=None,
         description="Configured translation centre designator",
     )
-    translation_centre_name: Optional[str] = Field(
+    translation_centre_name: str | None = Field(
         default=None,
         description="Configured translation centre name",
     )
@@ -95,8 +95,8 @@ class FailedSpan(BaseModel):
 
     start: int = Field(..., ge=0, description="Inclusive character offset into source TAC")
     end: int = Field(..., ge=0, description="Exclusive character offset into source TAC")
-    code: Optional[str] = Field(default=None, description="Machine-readable failure code")
-    message: Optional[str] = Field(default=None, description="Human-readable failure message")
+    code: str | None = Field(default=None, description="Machine-readable failure code")
+    message: str | None = Field(default=None, description="Human-readable failure message")
 
 
 class ConversionResult(BaseModel):
@@ -121,7 +121,7 @@ class ConversionResult(BaseModel):
         description="Complete IWXXM XML document as UTF-8 text",
         min_length=1,
     )
-    tac_input: Optional[str] = Field(
+    tac_input: str | None = Field(
         default=None,
         description="Original TAC input that produced this IWXXM output",
         examples=["METAR FAOR 101200Z COR 33003KT CAVOK 04/M00 Q1023="],
@@ -163,11 +163,11 @@ class ConversionResponse(BaseModel):
         }
     )
 
-    results: List[ConversionResult] = Field(
+    results: list[ConversionResult] = Field(
         default_factory=list, description="Successfully converted IWXXM XML documents"
     )
-    errors: List[str] = Field(default_factory=list, description="Error messages for failed conversions")
-    issues: List[ConversionIssue] = Field(
+    errors: list[str] = Field(default_factory=list, description="Error messages for failed conversions")
+    issues: list[ConversionIssue] = Field(
         default_factory=list,
         description="Structured issues (errors/warnings/info) for failed or partial conversions",
     )
@@ -176,15 +176,15 @@ class ConversionResponse(BaseModel):
     )
     successful: int = Field(..., ge=0, description="Number of successful conversions", examples=[2, 4])
     failed: int = Field(..., ge=0, description="Number of failed conversions", examples=[0, 1])
-    metadata: dict = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict,
         description="Echoed request metadata such as bulletin_id, issuing_center, and validation options",
     )
-    ok: Optional[bool] = Field(
+    ok: bool | None = Field(
         default=None,
         description="Soft-preview envelope flag; set when preview=true",
     )
-    failed_spans: List[FailedSpan] = Field(
+    failed_spans: list[FailedSpan] = Field(
         default_factory=list,
         description="Soft-preview failed character spans; empty when preview omitted/false",
     )
@@ -194,8 +194,8 @@ class ErrorDetail(BaseModel):
     """Detailed error response."""
 
     message: str
-    errors: List[str] = Field(default_factory=list)
-    issues: List[ConversionIssue] = Field(default_factory=list)
+    errors: list[str] = Field(default_factory=list)
+    issues: list[ConversionIssue] = Field(default_factory=list)
     total_errors: int = Field(..., ge=0)
 
 
@@ -226,7 +226,7 @@ class ConversionRequest(BaseModel):
         }
     )
 
-    metars: List[str] = Field(
+    metars: list[str] = Field(
         default_factory=list,
         description="Optional list of METAR message strings to convert",
         max_length=1000,
@@ -235,18 +235,18 @@ class ConversionRequest(BaseModel):
     version: str = Field(
         default="2025-2", description="Target IWXXM version", pattern=r"^\d{4}-\d+$", examples=["2025-2", "2023-1"]
     )
-    validation_level: Optional[str] = Field(
+    validation_level: str | None = Field(
         default="basic",
         description="Validation depth: 'basic', 'schema', 'schematron', 'icao_opmet', 'comprehensive'",
         examples=["basic", "comprehensive"],
     )
     stop_on_error: bool = Field(default=False, description="Stop processing on first error")
-    bulletin_id: Optional[str] = Field(
+    bulletin_id: str | None = Field(
         default=None,
         description="Optional bulletin identifier to associate with the request",
         examples=["SAAA00"],
     )
-    issuing_center: Optional[str] = Field(
+    issuing_center: str | None = Field(
         default=None,
         description="Optional issuing centre ICAO location indicator",
         examples=["KWBC"],
@@ -255,28 +255,28 @@ class ConversionRequest(BaseModel):
         default=False,
         description="Soft-preview: best-effort IWXXM with failure spans on partial convert",
     )
-    product: Optional[str] = Field(
+    product: str | None = Field(
         default=None,
         description="TAC product id (METAR, SPECI, TAF, …); defaults to form/auto-detect when omitted",
     )
-    profile: Optional[str] = Field(
+    profile: str | None = Field(
         default=None,
-        description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)",
+        description="Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)",
     )
-    semantic_profile: Optional[str] = Field(
+    semantic_profile: str | None = Field(
         default=None,
         description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC)",
     )
-    exchange_profile: Optional[str] = Field(
+    exchange_profile: str | None = Field(
         default=None,
         description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only",
     )
-    extensions: Optional[List[str]] = Field(
+    extensions: list[str] | None = Field(
         default=None,
         description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
         examples=[["IWXXM_CA"]],
     )
-    exchange_output: Optional[bool] = Field(
+    exchange_output: bool | None = Field(
         default=None,
         description=("When true with semantic_profile=CA_ECCC, wrap convert output in MSC COLLECT envelope"),
     )

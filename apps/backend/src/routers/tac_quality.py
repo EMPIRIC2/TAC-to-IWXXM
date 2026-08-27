@@ -2,11 +2,8 @@
 
 from __future__ import annotations
 
-from typing import List, Optional
-
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response
-from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 from tac_validate import lint as tac_lint_fn
 from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
 
@@ -22,6 +19,7 @@ from src.schemas.validation import (
     LintTacResponse,
 )
 from src.utilities.iwxxm_pass_through import lint_iwxxm_pass_through
+from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 
 router = APIRouter(prefix="/api/v1", tags=["Validation"])
 
@@ -32,10 +30,10 @@ router = APIRouter(prefix="/api/v1", tags=["Validation"])
     responses={},
 )
 async def lint_issue_catalog(
-    product: Optional[str] = None,
-    family: Optional[str] = None,
-    issue_type: Optional[str] = None,
-    source_access: Optional[str] = None,
+    product: str | None = None,
+    family: str | None = None,
+    issue_type: str | None = None,
+    source_access: str | None = None,
 ) -> Response:
     """Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page."""
     from tac_validate.catalog_attribution import attribution_for
@@ -82,9 +80,7 @@ async def lint_issue_catalog(
             )
 
     if family_key in (None, "iwxxm"):
-        for row in iwxxm_validation_catalog_rows():
-            issues.append(LintIssueCatalogEntryModel(**row))
-
+        issues.extend(LintIssueCatalogEntryModel(**row) for row in iwxxm_validation_catalog_rows())
     if issue_type_key or source_access_key:
         filtered: list[LintIssueCatalogEntryModel] = []
         for row in issues:
@@ -102,7 +98,7 @@ async def lint_issue_catalog(
     "/lint-tac",
     response_model=LintTacResponse,
     responses={
-        415: {"description": "Unsupported Media Type — multipart/form-data required"},
+        415: {"description": "Unsupported Media Type - multipart/form-data required"},
     },
 )
 async def lint_tac(
@@ -112,9 +108,9 @@ async def lint_tac(
         default="METAR",
         description="Product type, or iwxxm for XML lint (default METAR)",
     ),
-    files: Optional[List[UploadFile]] = File(None),
+    files: list[UploadFile] | None = File(None),
 ) -> Response:
-    """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only — Q8=A)."""
+    """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A)."""
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -177,7 +173,7 @@ async def lint_tac(
     tags=["Conversion"],
     response_model=DecodeTacResponse,
     responses={
-        415: {"description": "Unsupported Media Type — multipart/form-data required"},
+        415: {"description": "Unsupported Media Type - multipart/form-data required"},
         422: {"description": "Missing required product field"},
     },
 )
@@ -185,7 +181,7 @@ async def decode_tac_endpoint(
     request: Request,
     product: str = Form(..., description="TAC product (required)"),
     manual_text: str = Form(default="", description="TAC text to decode"),
-    files: Optional[List[UploadFile]] = File(None),
+    files: list[UploadFile] | None = File(None),
 ) -> Response:
     """Decode TAC into annotated segments and a plain-language summary."""
     content_type = (request.headers.get("content-type") or "").lower()

@@ -1,4 +1,4 @@
-"""TC-EV080 — US_FAA_NWS SIGMET VOR reference geometry (EV-080 / #919 M9).
+"""TC-EV080 - US_FAA_NWS SIGMET VOR reference geometry (EV-080 / #919 M9).
 
 [Corpus: product §F36] [Corpus: tests §TC-EV080] [Corpus: domain-profiles §US_FAA_NWS]
 """
@@ -10,9 +10,6 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-from metar_shared.xml_canonical import canonicalize_xml
-
-from tac2iwxxm import convert
 from tac2iwxxm.geometry.reference_point import (
     ReferencePointGeometryParser,
     UnknownVOR,
@@ -21,6 +18,9 @@ from tac2iwxxm.geometry.reference_point import (
     resolve_vor,
 )
 from tac2iwxxm.products.sigmet_airmet import parse_sigmet
+
+from metar_shared.xml_canonical import canonicalize_xml
+from tac2iwxxm import convert
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "US_FAA_NWS"
 MANIFEST_PATH = FIXTURES / "manifest.json"
@@ -59,7 +59,7 @@ def test_tc_ev080_002_vor_chain_parse_vertices() -> None:
     geom = ir["geometry"]
     assert geom["kind"] == "polygon"
     verts = geom["pos_list"].split()
-    assert len(verts) >= 8  # 4 points × lat/lon
+    assert len(verts) >= 8  # 4 points x lat/lon
     assert len(geom.get("reference_points", [])) == 3
 
 

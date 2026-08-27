@@ -1,13 +1,28 @@
-"""METAR TAC → IWXXM conversion utilities (tac2iwxxm cutover — ADR-014 / T4.7)."""
+"""METAR TAC → IWXXM conversion utilities (tac2iwxxm cutover - ADR-014 / T4.7)."""
 
 from __future__ import annotations
 
 import logging
 import re
-from typing import TYPE_CHECKING, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from ..services.validation_orchestrator import ComprehensiveValidationResult
+    from .metar_normalizer import (
+        normalize_recent_weather_for_tac,
+        normalize_recent_weather_tokens,
+    )
+else:
+    try:
+        from .metar_normalizer import (
+            normalize_recent_weather_for_tac,
+            normalize_recent_weather_tokens,
+        )
+    except ImportError:  # pragma: no cover - flat layout fallback
+        from metar_normalizer import (  # type: ignore[import-not-found]
+            normalize_recent_weather_for_tac,
+            normalize_recent_weather_tokens,
+        )
 
 try:
     from .tac_parser import extract_airport_code
@@ -63,7 +78,7 @@ class ConversionError(Exception):
     pass
 
 
-def _extract_icao_from_tac(tac_text: str) -> Optional[str]:
+def _extract_icao_from_tac(tac_text: str) -> str | None:
     """Extract ICAO code from METAR/SPECI TAC text."""
     icao = extract_airport_code(tac_text)
     if icao:
@@ -85,26 +100,15 @@ def _detect_product(tac_text: str, default: str = "METAR") -> str:
     return default.upper()
 
 
-try:
-    from .metar_normalizer import (  # noqa: E402
-        normalize_recent_weather_for_tac,
-        normalize_recent_weather_tokens,
-    )
-except ImportError:  # pragma: no cover - flat layout fallback
-    from metar_normalizer import (  # type: ignore  # noqa: E402
-        normalize_recent_weather_for_tac,
-        normalize_recent_weather_tokens,
-    )
-
 __all__ = [
-    "convert_metar_tac",
     "ConversionError",
+    "convert_metar_tac",
     "convert_metar_tac_with_metadata",
     "normalize_recent_weather_tokens",
 ]
 
 
-def convert_metar_tac(tac_text: str, iwxxm_version: Optional[str] = None) -> str:
+def convert_metar_tac(tac_text: str, iwxxm_version: str | None = None) -> str:
     """
     Convert METAR/SPECI TAC text to IWXXM XML.
 
@@ -149,22 +153,22 @@ def _apply_recent_weather_normalization(
 
 def convert_metar_tac_with_metadata(
     tac_text: str,
-    iwxxm_version: Optional[str] = None,
-    reference_time: Optional[str] = None,
+    iwxxm_version: str | None = None,
+    reference_time: str | None = None,
     use_test_overrides: bool = False,
     validate: bool = True,
-    validation_layers: Optional[List[str]] = None,
+    validation_layers: list[str] | None = None,
     raise_on_validation_error: bool = False,
     lenient: bool = True,
-    product: Optional[str] = None,
+    product: str | None = None,
     profile: str = "annex3",
     preview: bool = False,
-    soft_preview_out: Optional[dict] = None,
+    soft_preview_out: dict[str, Any] | None = None,
     emit_translation_centre: bool = False,
     translation_centre_designator: str = "",
     translation_centre_name: str = "",
-    report_status: Optional[str] = None,
-) -> Tuple[str, Optional[ComprehensiveValidationResult]]:
+    report_status: str | None = None,
+) -> tuple[str, ComprehensiveValidationResult | None]:
     """
     Convert TAC to IWXXM via ``tac2iwxxm`` and optionally validate.
 
@@ -197,7 +201,7 @@ def convert_metar_tac_with_metadata(
         Optional mutable dict. When ``preview=True``, filled with ``ok`` and
         ``failed_spans``. On any successful convert, also filled with
         ``convert_issues`` (tac2iwxxm non-fatal issues such as ``REMARKS_EXCLUDED``)
-        when the caller passes a dict — including hard convert (EV-013 / #667).
+        when the caller passes a dict - including hard convert (EV-013 / #667).
     emit_translation_centre :
         When ``True``, emit ``translationCentre*`` on successful convert (E23-T2).
     translation_centre_designator :
@@ -305,14 +309,15 @@ def convert_metar_tac_with_metadata(
                 ]
 
             layer_values = validation_layers or []
-            mapped_layers: List[ValidationLayer] | None = None
+            mapped_layers: list[ValidationLayer] | None = None
             if layer_values:
-                mapped_layers = []
+                mapped: list[ValidationLayer] = []
                 for layer_name in layer_values:
                     if isinstance(layer_name, ValidationLayer):
-                        mapped_layers.append(layer_name)
+                        mapped.append(layer_name)
                     else:
-                        mapped_layers.append(ValidationLayer(str(layer_name).lower()))
+                        mapped.append(ValidationLayer(str(layer_name).lower()))
+                mapped_layers = mapped
 
             validation_result = orchestrator.validate_complete(
                 tac_text=tac_text,

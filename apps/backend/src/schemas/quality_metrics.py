@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -48,7 +48,7 @@ class QualityMetricsDetailResponse(BaseModel):
     product: str
     tier: str
     deferred: bool = False
-    deferral_reason: Optional[str] = None
+    deferral_reason: str | None = None
     tac: str = ""
     official_xml: str = ""
     converted_xml: str = ""

@@ -1,4 +1,4 @@
-"""Shared sink adapter Protocol for F16–F19 dissemination (E14-05 / ADR-030).
+"""Shared sink adapter Protocol for F16-F19 dissemination (E14-05 / ADR-030).
 
 Concrete sinks (DB, WIS2, EDIS, F19 staging stubs) expose the same preflight/send
 shape so the drawer and thin backend routers can dispatch by ``sink_type``.
@@ -6,7 +6,7 @@ shape so the drawer and thin backend routers can dispatch by ``sink_type``.
 
 from __future__ import annotations
 
-from typing import Any, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from dissemination.allowlist import Allowlist
 from dissemination.models import PreflightResponse, SendResponse, SinkType
@@ -28,7 +28,7 @@ class SinkAdapter(Protocol):
     async def preflight(
         self,
         *,
-        params: Any,
+        params: object,
         allowlist: Allowlist,
     ) -> PreflightResponse:
         """
@@ -45,7 +45,7 @@ class SinkAdapter(Protocol):
     async def send(
         self,
         *,
-        params: Any,
+        params: object,
         allowlist: Allowlist,
         iwxxm_xml: str | bytes | None = None,
         tac_text: str | None = None,

@@ -1,4 +1,4 @@
-"""EV-030 / #829 — TC SIGMET accept + negatives (TC-EV030-004).
+"""EV-030 / #829 - TC SIGMET accept + negatives (TC-EV030-004).
 
 Peer to ``test_tc_f23_v1_va_sigmet.py`` (VA theme V1). T2.1 pack + T2.2 registry
 codes ``TC_CYCLONE_IDENTITY`` / ``TC_CB_GEOMETRY`` / ``MISSING_TC_IDENTITY``.
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 
@@ -112,7 +111,7 @@ def test_tc_a6_2_allows_six_hour_validity() -> None:
 
 
 def test_tc_stnr_in_scope_and_geometry_oos_documented() -> None:
-    """T2.3 / S02.M2 — STNR covered on TC bodies; exceptional geometry OOS with cite."""
+    """T2.3 / S02.M2 - STNR covered on TC bodies; exceptional geometry OOS with cite."""
     oos_note = (
         Path(__file__).resolve().parents[3]
         / "docs"

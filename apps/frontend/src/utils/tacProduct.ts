@@ -74,7 +74,7 @@ export function detectTacProduct(
   if (!match) {
     return defaultProduct;
   }
-  const token = match[1].toUpperCase().replace(/\s+/g, ' ');
+  const token = (match[1] ?? '').toUpperCase().replace(/\s+/g, ' ');
   if (token.startsWith('VOLCANIC')) {
     return 'VAA';
   }

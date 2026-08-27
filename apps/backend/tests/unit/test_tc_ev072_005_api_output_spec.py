@@ -1,13 +1,13 @@
-"""TC-EV072-005 — API convert exposes CA_ECCC output spec per aerodrome product (EV-072 M1)."""
+"""TC-EV072-005 - API convert exposes CA_ECCC output spec per aerodrome product (EV-072 M1)."""
 
 from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-from tac2iwxxm import parse_ahl
+from src import api as api_module
 from tac2iwxxm.exchange_output import ca_msc_filename, format_ca_wmo_ahl, issued_at_from_yygggg
 
-from src import api as api_module
+from tac2iwxxm import parse_ahl
 
 _PRODUCT_CASES = (
     pytest.param(

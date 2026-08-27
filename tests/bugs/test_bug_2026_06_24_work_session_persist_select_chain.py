@@ -1,4 +1,4 @@
-"""BUG-2026-06-24 — F5 work-session persist 502 on production.
+"""BUG-2026-06-24 - F5 work-session persist 502 on production.
 
 User report: after admin login, console shows
 ``[useWorkSessionSync] persist failed: Error: Work session database error``.
@@ -29,7 +29,7 @@ SERVICE_FILE = BACKEND_ROOT / "src" / "services" / "work_session_service.py"
 
 if not SERVICE_FILE.is_file():
     pytest.skip(
-        "work_session_service.py missing — BUG-2026-06-24 N/A",
+        "work_session_service.py missing - BUG-2026-06-24 N/A",
         allow_module_level=True,
     )
 
@@ -65,7 +65,7 @@ ROW = {
     reason="F30/EV-031: WorkSessionService uses SQLAlchemy, not supabase-py client"
 )
 def test_work_session_mutations_must_not_chain_select_on_insert() -> None:
-    """Historical supabase-py 2.28 ``.select()`` chain repro — superseded by SQLAlchemy."""
+    """Historical supabase-py 2.28 ``.select()`` chain repro - superseded by SQLAlchemy."""
     _ = (ROW, USER_ID, SESSION_ID, NOW)
 
 

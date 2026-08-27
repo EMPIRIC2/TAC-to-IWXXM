@@ -57,7 +57,7 @@ def _load_rdf_elements(rdf_path: Path, cache: dict[str, set[str]]) -> set[str]:
                 elements.add(about.split("#", 1)[1] if "#" in about else about)
         cache[key] = elements
         return elements
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.warning("Failed to parse RDF %s: %s", rdf_path, exc)
         return set()
 

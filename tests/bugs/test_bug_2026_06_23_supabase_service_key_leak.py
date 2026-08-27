@@ -1,4 +1,4 @@
-"""BUG-2026-06-23 — Supabase service role key hardcoded in admin script.
+"""BUG-2026-06-23 - Supabase service role key hardcoded in admin script.
 
 GitHub Secret Scanning alert #1 flagged a Supabase ``service_role`` JWT committed
 in ``scripts/create_admin_user.py``. The script was refactored to read the secret

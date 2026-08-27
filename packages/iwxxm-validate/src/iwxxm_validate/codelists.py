@@ -58,7 +58,7 @@ def _load_codelist_cache(codelists_dir: Path) -> dict[str, set[str]]:
                 for label in concept.findall("skos:prefLabel", _RDF_NS):
                     if label.text:
                         codes.add(label.text)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.warning("Failed to parse codelist RDF %s: %s", rdf_file.name, exc)
             continue
         if codes:

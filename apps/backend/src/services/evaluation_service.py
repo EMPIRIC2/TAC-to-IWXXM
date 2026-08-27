@@ -2,7 +2,7 @@
 
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -12,10 +12,10 @@ class ComparisonResult:
     passed: bool
     our_elements: int
     their_elements: int
-    missing_elements: List[str]
-    extra_elements: List[str]
-    value_mismatches: List[Dict[str, str]]
-    error_message: Optional[str] = None
+    missing_elements: list[str]
+    extra_elements: list[str]
+    value_mismatches: list[dict[str, str]]
+    error_message: str | None = None
 
 
 class EvaluationService:
@@ -29,7 +29,7 @@ class EvaluationService:
         return tag
 
     @staticmethod
-    def _norm_text(t: Optional[str]) -> str:
+    def _norm_text(t: str | None) -> str:
         """Normalize text by collapsing whitespace."""
         if t is None:
             return ""
@@ -71,7 +71,7 @@ class EvaluationService:
                 missing_elements=[],
                 extra_elements=[],
                 value_mismatches=[],
-                error_message=f"XML parse error: {str(e)}",
+                error_message=f"XML parse error: {e!s}",
             )
 
         # Strip dynamic attributes before comparison
@@ -106,9 +106,9 @@ class EvaluationService:
             error_message=None,
         )
 
-    def _collect_element_paths(self, root: ET.Element, prefix: str = "") -> List[str]:
+    def _collect_element_paths(self, root: ET.Element, prefix: str = "") -> list[str]:
         """Collect all element paths in the tree."""
-        paths = []
+        paths: list[str] = []
         local_tag = self._local(root.tag)
         current_path = f"{prefix}/{local_tag}" if prefix else local_tag
         paths.append(current_path)
@@ -120,9 +120,9 @@ class EvaluationService:
 
     def _find_value_mismatches(
         self, our_tree: ET.Element, their_tree: ET.Element, path: str = ""
-    ) -> List[Dict[str, str]]:
+    ) -> list[dict[str, str]]:
         """Find value mismatches between trees."""
-        mismatches = []
+        mismatches: list[Any] = []
 
         our_tag = self._local(our_tree.tag)
         their_tag = self._local(their_tree.tag)

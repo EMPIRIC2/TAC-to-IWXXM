@@ -27,4 +27,4 @@ PRODUCT_KEYWORDS: dict[str, tuple[str, ...]] = {
     "VONA": ("VONA",),
 }
 
-__all__ = ["PRODUCT_KEYWORDS", "PRODUCTS"]
+__all__ = ["PRODUCTS", "PRODUCT_KEYWORDS"]

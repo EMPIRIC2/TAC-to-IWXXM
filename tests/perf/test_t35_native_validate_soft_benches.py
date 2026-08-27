@@ -126,7 +126,7 @@ def test_soft_bench_native_vs_lxml_xsd() -> None:
 
 
 def test_soft_bench_native_vs_lxml_schematron() -> None:
-    """Soft: native Schematron p95 <= 0.85x lxml Schematron p95 (may warn — real SCH vs skip)."""
+    """Soft: native Schematron p95 <= 0.85x lxml Schematron p95 (may warn - real SCH vs skip)."""
     if not rust_available():
         pytest.skip("iwxxm_validate._rust not built (make build-iwxxm-validate-native)")
 
@@ -144,7 +144,7 @@ def test_soft_bench_native_vs_lxml_schematron() -> None:
 
     lxml_p95 = _p95(lxml_sch)
     native_p95 = _p95(native_sch)
-    # lxml often hits SCHEMATRON_SKIPPED (cheap); native evaluates real rules — soft warn expected.
+    # lxml often hits SCHEMATRON_SKIPPED (cheap); native evaluates real rules - soft warn expected.
     check = check_ratio(
         native_p95, lxml_p95, ratio=0.85, label="native_schematron_vs_lxml"
     )
@@ -199,7 +199,7 @@ def test_soft_bench_vs_committed_lib_path_ceiling() -> None:
         )
 
     native_p95 = _p95(native_all)
-    # Composed lib_path baseline includes lint+convert; validate-only is a subset —
+    # Composed lib_path baseline includes lint+convert; validate-only is a subset -
     # still soft-check against the hard ceiling as an early signal for T6.6.
     check = check_ratio(
         native_p95,

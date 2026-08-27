@@ -17,11 +17,11 @@ class ExpectedResidual:
     doc_intent: str  # e.g. "F9 G4" / "ADR-025"
     issue: str
     residual_text: str | None = None  # exact match when set
-    allow_any: bool = False  # G4 best-effort — any residual text permitted
+    allow_any: bool = False  # G4 best-effort - any residual text permitted
 
 
-# Doc-intentional G4 peers — fuller advisory decode tracked separately.
-# EV-030 T3.2–T3.3: official ``vaa_a7_2`` / ``tca_a2_2`` reach residuals == []
+# Doc-intentional G4 peers - fuller advisory decode tracked separately.
+# EV-030 T3.2-T3.3: official ``vaa_a7_2`` / ``tca_a2_2`` reach residuals == []
 # under structured field (+ AHL) decode; allow_any entries removed.
 EXPECTED_RESIDUALS: tuple[ExpectedResidual, ...] = (
     ExpectedResidual(

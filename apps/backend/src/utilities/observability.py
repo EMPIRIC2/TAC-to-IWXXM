@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import contextvars
 import json
 import logging
@@ -11,6 +12,7 @@ import re
 import threading
 import time
 from collections import defaultdict
+from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
 from typing import TYPE_CHECKING, Any
 
@@ -113,7 +115,7 @@ class JsonLogFormatter(logging.Formatter):
 class LokiHandler(logging.Handler):
     """Pushes logs to Loki using HTTP API."""
 
-    def __init__(self, service_name: str):
+    def __init__(self, service_name: str) -> None:
         super().__init__()
         self.service_name = service_name
         self.push_url = os.getenv("LOKI_PUSH_URL", "").strip()
@@ -222,10 +224,8 @@ class LokiHandler(logging.Handler):
                     batch.clear()
 
         if batch:
-            try:
+            with contextlib.suppress(Exception):
                 self._send_batch(batch)
-            except Exception:
-                pass
 
     def _build_loki_entry(self, record: logging.LogRecord) -> dict[str, Any]:
         ts_ns = str(int(record.created * 1_000_000_000))
@@ -358,7 +358,10 @@ def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
     """Install metrics middleware and /metrics endpoint into FastAPI app."""
 
     @app.middleware("http")
-    async def prometheus_http_metrics(request: Request, call_next):
+    async def prometheus_http_metrics(
+        request: Request,
+        call_next: Callable[[Request], Awaitable[Response]],
+    ) -> Response:
         start = time.perf_counter()
         try:
             response = await call_next(request)
@@ -398,7 +401,7 @@ _REQUEST_LOG_LEVEL: contextvars.ContextVar[int | None] = contextvars.ContextVar(
 _ALLOWED_LOG_LEVELS = frozenset({"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"})
 _JWT_RE = re.compile(r"eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+")
 _AUTH_RE = re.compile(r"(?i)(authorization\s*[:=]\s*)(\S+)")
-_FILTERS_INSTALLED = False
+_filters_installed = False
 
 
 class RequestLogLevelFilter(logging.Filter):
@@ -429,8 +432,8 @@ class SecretRedactFilter(logging.Filter):
 
 def ensure_request_log_filters() -> None:
     """Attach request-level and secret filters once (safe for tests)."""
-    global _FILTERS_INSTALLED
-    if _FILTERS_INSTALLED:
+    global _filters_installed
+    if _filters_installed:
         return
     level_filter = RequestLogLevelFilter()
     redact_filter = SecretRedactFilter()
@@ -439,7 +442,7 @@ def ensure_request_log_filters() -> None:
         target = logging.getLogger(name)
         target.addFilter(level_filter)
         target.addFilter(redact_filter)
-    _FILTERS_INSTALLED = True
+    _filters_installed = True
 
 
 _REQUEST_LOGGERS = ("src", "src.api", "tac2iwxxm", "tac_validate", "iwxxm_validate")
@@ -473,12 +476,10 @@ def set_request_log_level(request: Request, level_name: str | None) -> str:
 def _reset_request_log_level(request: Request) -> None:
     token = getattr(request.state, "convert_log_level_token", None)
     if token is not None:
-        try:
+        with contextlib.suppress(ValueError):
             _REQUEST_LOG_LEVEL.reset(token)
-        except ValueError:
             # Starlette BaseHTTPMiddleware runs the route in a different Context
             # than dispatch(); Token.reset is invalid across contexts.
-            pass
         request.state.convert_log_level_token = None
     previous = getattr(request.state, "convert_log_level_prev", None)
     if previous:

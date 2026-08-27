@@ -1,4 +1,4 @@
-"""msgspec request/response models for dissemination preflight/send (F16–F19)."""
+"""msgspec request/response models for dissemination preflight/send (F16-F19)."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ SinkType = Literal[
     "afs",
 ]
 
-# Drawer chooser order — keep FE enums aligned (T5.2 / E14-05 / E14-10).
+# Drawer chooser order - keep FE enums aligned (T5.2 / E14-05 / E14-10).
 DRAWER_SINK_TYPES: tuple[SinkType, ...] = (
     "postgres",
     "mysql",

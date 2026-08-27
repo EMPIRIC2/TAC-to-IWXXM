@@ -15,12 +15,13 @@ _ENV_PY = (
 def _load_normalize():
     """Load ``_normalize_sync_url`` without running Alembic online migrations."""
     spec = importlib.util.spec_from_file_location("alembic_env_under_test", _ENV_PY)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     # Avoid executing module top-level (would connect). Import by compiling helpers only.
     source = _ENV_PY.read_text(encoding="utf-8")
     ns: dict = {}
     # Execute only the helper function definition block via isolated eval of the file
-    # after stubbing alembic/sqlalchemy side effects — simpler: exec file with stubs.
+    # after stubbing alembic/sqlalchemy side effects - simpler: exec file with stubs.
     import sys
     import types
 

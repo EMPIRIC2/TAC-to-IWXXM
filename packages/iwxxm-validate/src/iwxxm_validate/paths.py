@@ -27,10 +27,9 @@ def packaged_schemas_root() -> Path | None:
     published wheel. ``MANIFEST.json`` alone does not count as materialised.
     """
     iwxxm = _PACKAGE_SCHEMAS / "iwxxm"
-    if iwxxm.is_dir() and any(iwxxm.iterdir()):
+    if iwxxm.is_dir() and any(iwxxm.iterdir()) and any((iwxxm / child).is_dir() for child in iwxxm.iterdir()):
         # Require at least one version tree (not only empty placeholder).
-        if any((iwxxm / child).is_dir() for child in iwxxm.iterdir()):
-            return _PACKAGE_SCHEMAS
+        return _PACKAGE_SCHEMAS
     return None
 
 

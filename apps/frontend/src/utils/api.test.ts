@@ -916,7 +916,7 @@ describe('API Utils', () => {
         accessToken: 'tok',
       });
       expect(result.issues).toHaveLength(1);
-      expect(result.issues[0].code).toBe('MISSING_TERMINATOR');
+      expect(result.issues[0]!.code).toBe('MISSING_TERMINATOR');
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringMatching(/\/lint-issue-catalog\?product=metar$/),
         expect.objectContaining({

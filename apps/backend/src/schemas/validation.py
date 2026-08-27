@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import UTC, datetime
-from enum import Enum
-from typing import List, Optional
+from enum import StrEnum
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class ValidationLevel(str, Enum):
+class ValidationLevel(StrEnum):
     """Severity level for validation issues."""
 
     CRITICAL = "critical"
@@ -23,7 +23,7 @@ class ValidationLevel(str, Enum):
 ValidationSeverity = ValidationLevel
 
 
-class ValidationLayer(str, Enum):
+class ValidationLayer(StrEnum):
     """Validation layer identifiers."""
 
     AIRPORT_ICAO = "airport_icao"
@@ -53,9 +53,9 @@ class ValidationIssue(BaseModel):
     layer: ValidationLayer = Field(..., description="Validation layer that found this issue")
     level: ValidationLevel = Field(..., description="Severity level")
     message: str = Field(..., description="Human-readable error message", min_length=1)
-    location: Optional[str] = Field(default=None, description="Location in document")
-    code: Optional[str] = Field(default=None, description="Machine-readable error code")
-    suggestion: Optional[str] = Field(default=None, description="Suggested fix")
+    location: str | None = Field(default=None, description="Location in document")
+    code: str | None = Field(default=None, description="Machine-readable error code")
+    suggestion: str | None = Field(default=None, description="Suggested fix")
 
 
 class ValidationResult(BaseModel):
@@ -74,18 +74,18 @@ class ValidationResult(BaseModel):
 
     passed: bool = Field(..., description="Whether validation passed")
     layer: ValidationLayer = Field(..., description="Validation layer")
-    issues: List[ValidationIssue] = Field(default_factory=list, description="List of issues")
-    execution_time_ms: Optional[float] = Field(default=None, description="Execution time in ms", ge=0)
+    issues: list[ValidationIssue] = Field(default_factory=list, description="List of issues")
+    execution_time_ms: float | None = Field(default=None, description="Execution time in ms", ge=0)
     validated_at: datetime = Field(default_factory=lambda: datetime.now(UTC).replace(tzinfo=None))
-    metadata: Optional[dict] = Field(default=None, description="Layer-specific metadata")
+    metadata: dict[str, Any] | None = Field(default=None, description="Layer-specific metadata")
 
     def add_issue(
         self,
         level: ValidationLevel,
         message: str,
-        location: Optional[str] = None,
-        code: Optional[str] = None,
-        suggestion: Optional[str] = None,
+        location: str | None = None,
+        code: str | None = None,
+        suggestion: str | None = None,
     ) -> None:
         """Add a validation issue."""
         issue = ValidationIssue(
@@ -106,7 +106,7 @@ class XSDValidationResult:
     """Result of XSD schema validation (layer 4)."""
 
     is_valid: bool
-    issues: List[ValidationIssue]
+    issues: list[ValidationIssue]
     schema_version: str
 
 
@@ -115,7 +115,7 @@ class SchematronValidationResult:
     """Result of Schematron validation (layer 5)."""
 
     is_valid: bool
-    issues: List[ValidationIssue]
+    issues: list[ValidationIssue]
     schema_version: str
     rules_evaluated: int = 0
 
@@ -125,7 +125,7 @@ class GMLValidationResult:
     """Result of GML reference validation (layer 6)."""
 
     is_valid: bool
-    issues: List[ValidationIssue]
+    issues: list[ValidationIssue]
     total_ids: int = 0
     total_references: int = 0
     broken_references: int = 0
@@ -136,7 +136,7 @@ class CodelistValidationResult:
     """Result of WMO codelist validation (layer 7)."""
 
     is_valid: bool
-    issues: List[ValidationIssue]
+    issues: list[ValidationIssue]
     total_references: int = 0
     invalid_references: int = 0
 
@@ -180,14 +180,14 @@ class AggregatedValidationResult(BaseModel):
     )
 
     passed: bool = Field(..., description="Whether all layers passed")
-    layers_validated: List[ValidationLayer] = Field(..., description="Layers validated")
+    layers_validated: list[ValidationLayer] = Field(..., description="Layers validated")
     total_issues: int = Field(0, description="Total issues", ge=0)
-    results: List[ValidationResult] = Field(default_factory=list)
+    results: list[ValidationResult] = Field(default_factory=list)
     execution_time_ms: float = Field(0, ge=0)
     validated_at: datetime = Field(default_factory=lambda: datetime.now(UTC).replace(tzinfo=None))
 
     @classmethod
-    def from_results(cls, results: List[ValidationResult]) -> AggregatedValidationResult:
+    def from_results(cls, results: list[ValidationResult]) -> AggregatedValidationResult:
         """Create aggregated result from individual layer results."""
         passed = all(r.passed for r in results)
         total_issues = sum(len(r.issues) for r in results)
@@ -203,7 +203,7 @@ class AggregatedValidationResult(BaseModel):
         )
 
 
-class TaskStatus(str, Enum):
+class TaskStatus(StrEnum):
     """Status of async validation task."""
 
     PENDING = "pending"
@@ -218,11 +218,11 @@ class ValidationTask(BaseModel):
 
     task_id: str = Field(..., description="Unique task ID")
     status: TaskStatus = Field(..., description="Current status")
-    result: Optional[AggregatedValidationResult] = Field(None)
-    error: Optional[str] = Field(None)
+    result: AggregatedValidationResult | None = Field(None)
+    error: str | None = Field(None)
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC).replace(tzinfo=None))
-    completed_at: Optional[datetime] = Field(None)
-    expires_at: Optional[datetime] = Field(None)
+    completed_at: datetime | None = Field(None)
+    expires_at: datetime | None = Field(None)
 
 
 class ValidationRequest(BaseModel):
@@ -248,8 +248,8 @@ class ValidationRequest(BaseModel):
     content_type: str = Field(
         "tac", description="Content type: 'tac' (METAR TAC) or 'xml' (IWXXM XML)", examples=["tac", "xml"]
     )
-    layers: Optional[List[ValidationLayer]] = Field(None, description="Specific layers to validate (None = all layers)")
-    iwxxm_version: Optional[str] = Field(None, description="IWXXM version for validation context", examples=["3.0.1"])
+    layers: list[ValidationLayer] | None = Field(None, description="Specific layers to validate (None = all layers)")
+    iwxxm_version: str | None = Field(None, description="IWXXM version for validation context", examples=["3.0.1"])
 
 
 class ValidateRequest(BaseModel):
@@ -275,7 +275,7 @@ class ValidateRequest(BaseModel):
     version: str = Field(
         default="2025-2", description="Target IWXXM version", pattern=r"^\d{4}-\d+$", examples=["2025-2", "2023-1"]
     )
-    validation_level: Optional[str] = Field(
+    validation_level: str | None = Field(
         default="comprehensive",
         description="Validation depth: 'basic', 'schema', 'schematron', 'icao_opmet', 'comprehensive'",
         examples=["basic", "comprehensive"],
@@ -283,25 +283,25 @@ class ValidateRequest(BaseModel):
     stop_on_error: bool = Field(default=False, description="Stop processing on first error")
     profile: str = Field(
         default="",
-        description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)",
+        description="Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)",
         examples=["annex3", "iwxxm_us"],
     )
-    semantic_profile: Optional[str] = Field(
+    semantic_profile: str | None = Field(
         default=None,
         description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC)",
         examples=["ICAO_2025", "US_FAA_NWS", "CA_ECCC"],
     )
-    exchange_profile: Optional[str] = Field(
+    exchange_profile: str | None = Field(
         default=None,
         description="Exchange packaging profile (e.g. GLOBAL_AFS)",
         examples=["GLOBAL_AFS"],
     )
-    extensions: Optional[List[str]] = Field(
+    extensions: list[str] | None = Field(
         default=None,
         description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
         examples=[["IWXXM_CA"]],
     )
-    product: Optional[str] = Field(
+    product: str | None = Field(
         default=None,
         description="TAC product for Canadian extension XSD selection when extensions include IWXXM_CA",
         examples=["METAR", "TAF"],
@@ -314,9 +314,9 @@ class LintIssueModel(BaseModel):
     severity: str
     code: str
     message: str
-    location: Optional[str] = None
-    start: Optional[int] = Field(default=None, description="Inclusive character offset")
-    end: Optional[int] = Field(default=None, description="Exclusive character offset")
+    location: str | None = None
+    start: int | None = Field(default=None, description="Inclusive character offset")
+    end: int | None = Field(default=None, description="Exclusive character offset")
 
 
 class LintFixModel(BaseModel):
@@ -331,9 +331,9 @@ class LintTacResponse(BaseModel):
     """Response for POST /api/v1/lint-tac."""
 
     ok: bool
-    issues: List[LintIssueModel] = Field(default_factory=list)
-    fixes: List[LintFixModel] = Field(default_factory=list)
-    product: Optional[str] = None
+    issues: list[LintIssueModel] = Field(default_factory=list)
+    fixes: list[LintFixModel] = Field(default_factory=list)
+    product: str | None = None
 
 
 class LintIssueCatalogEntryModel(BaseModel):
@@ -342,46 +342,46 @@ class LintIssueCatalogEntryModel(BaseModel):
     code: str
     severity: str
     message_template: str
-    product: Optional[str] = None
-    tags: List[str] = Field(default_factory=list)
-    source_id: Optional[str] = None
-    source_url: Optional[str] = None
-    source_attribution: Optional[str] = None
+    product: str | None = None
+    tags: list[str] = Field(default_factory=list)
+    source_id: str | None = None
+    source_url: str | None = None
+    source_attribution: str | None = None
     # Additive EV-061 / #1014 (optional; older clients ignore).
-    family: Optional[str] = Field(
+    family: str | None = Field(
         default=None,
         description="lint (TAC registry) or iwxxm (validation checks)",
     )
-    source_type: Optional[str] = Field(
+    source_type: str | None = Field(
         default=None,
         description="tier1, tier2, or tier3 source policy",
     )
-    status: Optional[str] = Field(
+    status: str | None = Field(
         default=None,
         description="verified, legacy_alias, or semantic_only",
     )
-    semantic_identifier: Optional[str] = Field(
+    semantic_identifier: str | None = Field(
         default=None,
         description="Vocabulary concept path when href is a verified landing",
     )
-    last_verified: Optional[str] = Field(
+    last_verified: str | None = Field(
         default=None,
         description="ISO date of last HTTP check for operator source_url",
     )
-    replacement_url: Optional[str] = Field(
+    replacement_url: str | None = Field(
         default=None,
         description="Verified landing when source_url is a legacy alias",
     )
     # Additive EV-062 / #1017 (optional; older clients ignore).
-    issue_type: Optional[str] = Field(
+    issue_type: str | None = Field(
         default=None,
         description="Closed vocabulary: presence, structure, content, consistency, iwxxm_schema, other",
     )
-    source_locator: Optional[str] = Field(
+    source_locator: str | None = Field(
         default=None,
         description="Section/table/page locator for the cited source",
     )
-    source_access: Optional[str] = Field(
+    source_access: str | None = Field(
         default=None,
         description="Operator access tier: public, paywall, login, semantic_only",
     )
@@ -390,7 +390,7 @@ class LintIssueCatalogEntryModel(BaseModel):
 class LintIssueCatalogResponse(BaseModel):
     """Response for GET /api/v1/lint-issue-catalog."""
 
-    issues: List[LintIssueCatalogEntryModel] = Field(default_factory=list)
+    issues: list[LintIssueCatalogEntryModel] = Field(default_factory=list)
 
 
 class DecodeSegmentModel(BaseModel):
@@ -403,7 +403,7 @@ class DecodeSegmentModel(BaseModel):
 
 
 class DecodeResidualModel(BaseModel):
-    """HTTP DTO for an undecoded TAC span (explicit residuals — G4)."""
+    """HTTP DTO for an undecoded TAC span (explicit residuals - G4)."""
 
     start: int
     end: int
@@ -414,8 +414,8 @@ class DecodeTacResponse(BaseModel):
     """Response for POST /api/v1/decode-tac."""
 
     product: str
-    segments: List[DecodeSegmentModel] = Field(default_factory=list)
-    residuals: List[DecodeResidualModel] = Field(default_factory=list)
+    segments: list[DecodeSegmentModel] = Field(default_factory=list)
+    residuals: list[DecodeResidualModel] = Field(default_factory=list)
     summary: str = Field(
         default="",
         description="Deterministic plain-language paragraph of the report",
@@ -428,10 +428,10 @@ class PackageIssueModel(BaseModel):
     layer: str
     severity: str
     message: str
-    location: Optional[str] = None
-    code: Optional[str] = None
-    start: Optional[int] = Field(default=None, description="Inclusive offset when known")
-    end: Optional[int] = Field(default=None, description="Exclusive offset when known")
+    location: str | None = None
+    code: str | None = None
+    start: int | None = Field(default=None, description="Inclusive offset when known")
+    end: int | None = Field(default=None, description="Exclusive offset when known")
 
 
 class PackageStageModel(BaseModel):
@@ -440,7 +440,7 @@ class PackageStageModel(BaseModel):
     stage: str
     label: str
     ok: bool
-    issues: List[PackageIssueModel] = Field(default_factory=list)
+    issues: list[PackageIssueModel] = Field(default_factory=list)
 
 
 class ValidateIssueModel(BaseModel):
@@ -449,10 +449,10 @@ class ValidateIssueModel(BaseModel):
     layer: str
     level: str
     message: str
-    location: Optional[str] = None
-    code: Optional[str] = None
-    start: Optional[int] = Field(default=None, description="Inclusive offset when known")
-    end: Optional[int] = Field(default=None, description="Exclusive offset when known")
+    location: str | None = None
+    code: str | None = None
+    start: int | None = Field(default=None, description="Inclusive offset when known")
+    end: int | None = Field(default=None, description="Exclusive offset when known")
 
 
 class ValidateLayerIssueModel(BaseModel):
@@ -460,8 +460,8 @@ class ValidateLayerIssueModel(BaseModel):
 
     level: str
     message: str
-    location: Optional[str] = None
-    code: Optional[str] = None
+    location: str | None = None
+    code: str | None = None
 
 
 class ValidateResponse(BaseModel):
@@ -470,33 +470,33 @@ class ValidateResponse(BaseModel):
     is_valid: bool
     version: str
     profile: str = "annex3"
-    layers_run: List[str] = Field(default_factory=list)
-    layers_passed: List[str] = Field(default_factory=list)
-    layers_failed: List[str] = Field(default_factory=list)
+    layers_run: list[str] = Field(default_factory=list)
+    layers_passed: list[str] = Field(default_factory=list)
+    layers_failed: list[str] = Field(default_factory=list)
     total_issues: int = 0
-    issues: List[ValidateIssueModel] = Field(default_factory=list)
-    issues_by_layer: dict[str, List[ValidateLayerIssueModel]] = Field(default_factory=dict)
-    stopped_at_layer: Optional[str] = None
+    issues: list[ValidateIssueModel] = Field(default_factory=list)
+    issues_by_layer: dict[str, list[ValidateLayerIssueModel]] = Field(default_factory=dict)
+    stopped_at_layer: str | None = None
     package_ok: bool = True
-    package_issues: List[PackageIssueModel] = Field(default_factory=list)
-    package_stages: Optional[List[PackageStageModel]] = Field(
+    package_issues: list[PackageIssueModel] = Field(default_factory=list)
+    package_stages: list[PackageStageModel] | None = Field(
         default=None,
         description=(
             "Optional per-stage breakdown from iwxxm-validate when profile=ca_eccc and extensions include IWXXM_CA"
         ),
     )
-    extensions: Optional[List[str]] = Field(
+    extensions: list[str] | None = Field(
         default=None,
         description="Resolved national extension tokens from the request (when supplied)",
     )
-    segments: Optional[List[DecodeSegmentModel]] = Field(
+    segments: list[DecodeSegmentModel] | None = Field(
         default=None,
         description=(
             "Optional item-by-item decode rows (code and explanation) when a readable decode exists. "
             "Omitted when there is no decode."
         ),
     )
-    summary: Optional[str] = Field(
+    summary: str | None = Field(
         default=None,
         description=(
             "Optional plain-language paragraph of the decoded report when a readable decode exists. "
@@ -514,8 +514,8 @@ class BulletinMetaModel(BaseModel):
     aa: str
     cccc: str
     yygggg: str
-    bbb: Optional[str] = None
-    report_status: Optional[str] = None
+    bbb: str | None = None
+    report_status: str | None = None
 
 
 class BulletinReportResultModel(BaseModel):
@@ -524,17 +524,17 @@ class BulletinReportResultModel(BaseModel):
     report_index: int
     ok: bool
     tac_input: str
-    xml: Optional[str] = None
-    issues: List[LintIssueModel] = Field(default_factory=list)
-    fixes: List[LintFixModel] = Field(default_factory=list)
+    xml: str | None = None
+    issues: list[LintIssueModel] = Field(default_factory=list)
+    fixes: list[LintFixModel] = Field(default_factory=list)
 
 
 class ConvertBulletinResponse(BaseModel):
     """Response for POST /api/v1/convert-bulletin."""
 
     bulletin_meta: BulletinMetaModel
-    exchange_profile: Optional[str] = Field(
+    exchange_profile: str | None = Field(
         default=None,
         description="Resolved exchange packaging profile (default GLOBAL_AFS on this route)",
     )
-    results: List[BulletinReportResultModel] = Field(default_factory=list)
+    results: list[BulletinReportResultModel] = Field(default_factory=list)

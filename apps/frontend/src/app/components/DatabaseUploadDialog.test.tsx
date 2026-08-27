@@ -87,7 +87,7 @@ describe('DatabaseUploadDialog', () => {
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalled();
     });
-    const init = vi.mocked(global.fetch).mock.calls[0][1] as RequestInit;
+    const init = vi.mocked(global.fetch).mock.calls[0]![1] as RequestInit;
     expect(
       (init.headers as Record<string, string> | undefined)?.Authorization,
     ).toBeUndefined();

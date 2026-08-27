@@ -1,4 +1,4 @@
-"""TC-EV055-005: SCHEMA_IMPORT_WARNING fixed for IWXXM 2025-2 (hard — native path).
+"""TC-EV055-005: SCHEMA_IMPORT_WARNING fixed for IWXXM 2025-2 (hard - native path).
 
 Spec: docs/test-plan.md TC-EV055-005; AC5; #979; D-S064-xsd-hard=1.
 Root cause: lxml XMLSchema cannot resolve GML ``AbstractFeature`` substitutionGroup

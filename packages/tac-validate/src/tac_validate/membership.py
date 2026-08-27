@@ -21,7 +21,7 @@ _ARTIFACT = _PACKAGE_DIR / "data" / "wmo_membership.json"
 
 _CONCEPT_ABOUT = re.compile(r'<skos:Concept rdf:about="([^"]+)"')
 
-# v1 families — D-S059-families=1a (+ SpaceWxPhenomena for AC4 fixtures).
+# v1 families - D-S059-families=1a (+ SpaceWxPhenomena for AC4 fixtures).
 FAMILY_CSV: Final[dict[str, str]] = {
     "weather_306_4678": "CSV/306/4678/4678_entity.csv",
     "present_or_forecast_weather": (
@@ -238,6 +238,4 @@ def is_member_normalized(
     if is_member(family, notation, sets=table):
         return True
     normalized = normalize_register_notation(notation)
-    if normalized != notation and is_member(family, normalized, sets=table):
-        return True
-    return False
+    return bool(normalized != notation and is_member(family, normalized, sets=table))

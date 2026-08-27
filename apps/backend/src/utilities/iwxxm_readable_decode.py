@@ -218,7 +218,7 @@ def readable_decode_from_iwxxm(xml: str) -> ReadableDecode:
             add("CAVOK", "Cloud and visibility OK")
 
         for child in list(elem):
-            walk(child, parents + (elem,))
+            walk(child, (*parents, elem))
 
     walk(root)
 

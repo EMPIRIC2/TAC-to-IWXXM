@@ -37,13 +37,13 @@ _NSC = re.compile(r"\bNSC\b")
 _NCD = re.compile(r"\bNCD\b")
 _VV_NOT_OBS = re.compile(r"\bVV///(?![A-Z0-9/])")
 _WIND_SECTOR = re.compile(r"\b(?P<ccw>\d{3})V(?P<cw>\d{3})\b")
-# Variable RVR (US / FMH-1): R04L/1100V2300FT — try before simple RVR.
+# Variable RVR (US / FMH-1): R04L/1100V2300FT - try before simple RVR.
 _RVR_VAR = re.compile(
     r"\bR(?P<rwy>\d{2}[LCR]?)/(?P<min_op>[PM])?(?P<min>\d{4})V(?P<max_op>[PM])?(?P<max>\d{4})"
     r"(?P<tend>[UDN])?(?P<ft>FT)?\b"
 )
 _RVR = re.compile(r"\bR(?P<rwy>\d{2}[LCR]?)/(?P<op>[PM])?(?P<val>\d{4})(?P<tend>[UDN])?(?P<ft>FT)?\b")
-# Minimum visibility with compass sector (e.g. 1200NE) — after prevailing metres.
+# Minimum visibility with compass sector (e.g. 1200NE) - after prevailing metres.
 _VIS_MIN = re.compile(r"\b(?P<vis>\d{4})(?P<dir>N|NE|E|SE|S|SW|W|NW)\b")
 _COMPASS_DEG = {
     "N": 360,
@@ -97,7 +97,7 @@ _CONTRAILS = re.compile(r"\bCONTRAILS?\b")
 _AURORA = re.compile(r"\bAURORA\b")
 _NOSPECI = re.compile(r"\bNOSPECI\b")
 _MAINTENANCE = re.compile(r"(?:^|\s)\$(?=\s|$)")
-# FMH-1 precip/TS begin/end remarks (e.g. RAB28E32, TSB13) — require B and/or E.
+# FMH-1 precip/TS begin/end remarks (e.g. RAB28E32, TSB13) - require B and/or E.
 _RECENT_WX = re.compile(
     r"\b(?P<wx>FZRA|FZDZ|SHRA|SHSN|SHGR|SHGS|TS|DZ|RA|SN|SG|IC|PL|GR|GS|UP)"
     r"(?:B(?P<b>\d{2,4})(?:E(?P<e>\d{2,4}))?|E(?P<e_only>\d{2,4}))\b"
@@ -182,7 +182,7 @@ _SENSOR_NO_CODES = {
 }
 _SENSOR_NO = re.compile(r"\b(?P<tok>" + "|".join(_SENSOR_NO_CODES) + r")\b")
 _SNOW_ELEMENT_HREF = "https://codes.nws.noaa.gov/FMH-1/StatisticallyProcessedWeatherElement/SNOW"
-# GRIB2 Code Table 4.10 entry 1 — accumulation (iwxxm-us PDF SnowIncrease / precip samples).
+# GRIB2 Code Table 4.10 entry 1 - accumulation (iwxxm-us PDF SnowIncrease / precip samples).
 _STAT_ACCUM_HREF = "http://codes.wmo.int/grib2/codeflag/4.10/1"
 _BUFR_CLOUD_HREF = "http://codes.wmo.int/bufr4/codeflag/0-20-012/{code}"
 _NIL_NOT_OBSERVABLE = "http://codes.wmo.int/common/nil/notObservable"
@@ -200,7 +200,7 @@ _CONVECTIVE_DIST_CODES = {
     "OVHD": "OVERHEAD",
 }
 # Structured tokens removed before free-text retain (AO/SLP/PK/WSHFT/LTG/SNINCR/8/conv/
-# hail/sensor/1·2·4 max-min/P·6·7 precip — hourly T… stays for never-drop).
+# hail/sensor/1·2·4 max-min/P·6·7 precip - hourly T… stays for never-drop).
 _CONSUMED_REMARK = re.compile(
     r"\bAO[12]\b|\bSLP\d{3}\b|\bPK\s+WND\s+\d{3}\d{2,3}/\d{4}\b|"
     r"\bWSHFT\s+\d{4}(?:\s+FROPA)?\b|"
@@ -253,7 +253,7 @@ def _sm_to_m(sm: int) -> tuple[int, bool]:
     metres, above
         ``above`` is True when SM ≥ 10 (IWXXM ABOVE operator for 10SM+).
     """
-    metres = int(round(sm * 1609.344))
+    metres = round(sm * 1609.344)
     if sm >= 10:
         return 10000, True
     return metres, False
@@ -448,12 +448,12 @@ def _parse_sm_fraction(token: str) -> float:
 
 def _sm_float_to_m(sm: float) -> int:
     """Convert fractional statute miles to metres (rounded)."""
-    return int(round(sm * 1609.344))
+    return round(sm * 1609.344)
 
 
 def _sm_float_to_ft(sm: float) -> int:
     """Convert fractional statute miles to feet (rounded)."""
-    return int(round(sm * 5280.0))
+    return round(sm * 5280.0)
 
 
 def _rwy_location_description(loc: str) -> str:
@@ -566,7 +566,7 @@ def _sky_level_field(token: str, base: int) -> dict[str, str]:
     """
     Map one FMH-1 ``8/`` etage digit to CharacterOfTheSky IR.
 
-    Digit ``0``–``9`` → BUFR ``0-20-012`` code ``base+digit``; ``/`` → notObservable.
+    Digit ``0``-``9`` → BUFR ``0-20-012`` code ``base+digit``; ``/`` → notObservable.
     """
     if token == "/":
         return {"nil_reason": _NIL_NOT_OBSERVABLE}
@@ -680,7 +680,7 @@ def _precip_quantity(hundredths: int, *, period: str) -> dict[str, Any]:
         "uom": "[in_i]",
     }
     if hundredths == 0:
-        # FMH P0000 / 60000 / 70000 — less than 0.01" (PDF BELOW sample).
+        # FMH P0000 / 60000 / 70000 - less than 0.01" (PDF BELOW sample).
         row["processed_value"] = 0.01
         row["qualifier"] = "BELOW"
     else:
@@ -733,9 +733,7 @@ def _product_matches_rtype(product: str, rtype: str) -> bool:
     if product_u == rtype_u:
         return True
     # CA_ECCC: API product METAR/SPECI accepts MANOBS LWIS/SAWR TAC leads (#1039).
-    if product_u in {"METAR", "SPECI"} and rtype_u in {"LWIS", "SAWR"}:
-        return True
-    return False
+    return bool(product_u in {"METAR", "SPECI"} and rtype_u in {"LWIS", "SAWR"})
 
 
 def _parse_ca_remarks(remarks: str, ir: dict[str, Any]) -> None:
@@ -992,7 +990,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         "auto": bool(_AUTO.search(rest)) or is_lwis,
     }
     if ca_root in _CA_SURFACE_TYPES:
-        # National report variant for CA_ECCC emit — see catalog.yaml metar_family_variants.
+        # National report variant for CA_ECCC emit - see catalog.yaml metar_family_variants.
         ir["ca_iwxxm_root"] = ca_root
     if is_lwis:
         ir["ca_minimal_observation"] = True
@@ -1012,12 +1010,12 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     ir["wind_speed_kt"] = int(wind.group("spd"))
     if wind.group("uom") == "MPS":
         ir["wind_speed_mps"] = int(wind.group("spd"))
-        ir["wind_speed_kt"] = int(round(int(wind.group("spd")) * 1.94384))
+        ir["wind_speed_kt"] = round(int(wind.group("spd")) * 1.94384)
     if wind.group("gust"):
         gust_raw = int(wind.group("gust"))
         if wind.group("uom") == "MPS":
             ir["wind_gust_mps"] = gust_raw
-            ir["wind_gust_kt"] = int(round(gust_raw * 1.94384))
+            ir["wind_gust_kt"] = round(gust_raw * 1.94384)
         else:
             ir["wind_gust_kt"] = gust_raw
 
@@ -1131,7 +1129,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     if _NOSIG.search(body_for_wx):
         ir["nosig"] = True
     if _NSC.search(obs_body):
-        # FAQ §14.3 / TC-EV023-001: NSC is exclusive — drop any FEW/SCT/… layers.
+        # FAQ §14.3 / TC-EV023-001: NSC is exclusive - drop any FEW/SCT/… layers.
         ir["nsc"] = True
         ir["clouds"] = []
         ir.pop("cloud_amount", None)
@@ -1151,8 +1149,8 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         min_raw = int(rvr_var.group("min"))
         max_raw = int(rvr_var.group("max"))
         if rvr_var.group("ft"):
-            min_m = int(round(min_raw * 0.3048))
-            max_m = int(round(max_raw * 0.3048))
+            min_m = round(min_raw * 0.3048)
+            max_m = round(max_raw * 0.3048)
         else:
             min_m = min_raw
             max_m = max_raw
@@ -1170,10 +1168,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         if rvr is not None:
             val = int(rvr.group("val"))
             # US FT → metres; ICAO metre groups stay as-is.
-            if rvr.group("ft"):
-                metres = int(round(val * 0.3048))
-            else:
-                metres = val
+            metres = round(val * 0.3048) if rvr.group("ft") else val
             ir["rvr"] = {
                 "runway": rvr.group("rwy"),
                 "mean_m": metres,

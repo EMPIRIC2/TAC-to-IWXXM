@@ -11,7 +11,6 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -77,7 +76,8 @@ def test_convert_preview_partial_failure_returns_200_failed_spans_and_xml(
     results = payload.get("results") or []
     assert results, "soft-preview must return best-effort XML in results"
     xml = results[0].get("content") or ""
-    assert "<" in xml and "iwxxm" in xml.lower(), "best-effort body must look like IWXXM XML"
+    assert "<" in xml
+    assert "iwxxm" in xml.lower(), "best-effort body must look like IWXXM XML"
 
 
 def test_convert_without_preview_unreliable_tac_quarantines(client: TestClient) -> None:
@@ -148,7 +148,7 @@ def test_convert_preview_success_ok_true(client: TestClient) -> None:
 
 
 def test_convert_preview_layer12_spans_copied(client: TestClient, monkeypatch) -> None:
-    """When Layer 1–2 issues carry offsets, soft-preview copies them into failed_spans."""
+    """When Layer 1-2 issues carry offsets, soft-preview copies them into failed_spans."""
     from types import SimpleNamespace
 
     from src.services import validation as validation_mod

@@ -1,4 +1,4 @@
-"""TC-EV073-001..005 — CA_ECCC COLLECT envelope packaging (EV-073 M1).
+"""TC-EV073-001..005 - CA_ECCC COLLECT envelope packaging (EV-073 M1).
 
 [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: tests §TC-EV073]
 """
@@ -10,11 +10,11 @@ from pathlib import Path
 
 import lxml.etree as etree
 import pytest
-
-from tac2iwxxm import convert, parse_ahl
 from tac2iwxxm.ca_collect_packaging import is_ca_collect_bulletin, wrap_ca_eccc_collect
 from tac2iwxxm.ca_ops_corpus import extract_iwxxm_from_collect, load_ops_manifest, ops_fixture_root
 from tac2iwxxm.exchange_output import ca_msc_filename, issued_at_from_yygggg
+
+from tac2iwxxm import convert, parse_ahl
 
 _REPO = Path(__file__).resolve().parents[3]
 FIXTURES = ops_fixture_root(_REPO)
@@ -98,7 +98,8 @@ def test_tc_ev073_004_ops_fixture_shell_parity(case: dict) -> None:
     assert len(ops_infos) >= 1
     wrap_bid = wrap_root.find(f"{{{_COLLECT_NS}}}bulletinIdentifier")
     ops_bid = ops_root.find(f"{{{_COLLECT_NS}}}bulletinIdentifier")
-    assert wrap_bid is not None and ops_bid is not None
+    assert wrap_bid is not None
+    assert ops_bid is not None
     assert wrap_bid.text.lower() == ops_bid.text.lower()
 
 

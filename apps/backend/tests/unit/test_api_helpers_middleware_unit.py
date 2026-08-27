@@ -6,7 +6,6 @@ from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 
 
@@ -20,7 +19,7 @@ class _FakeUploadFile:
 
 
 @pytest.mark.parametrize(
-    "manual_text,expected",
+    ("manual_text", "expected"),
     [
         ("", []),
         ("  ", []),
@@ -57,7 +56,7 @@ def test_split_manual_entries_sigmet_airmet_keep_multiline() -> None:
 
 
 @pytest.mark.parametrize(
-    "value,max_length,expected",
+    ("value", "max_length", "expected"),
     [
         (None, 4, None),
         ("", 4, None),
@@ -71,7 +70,7 @@ def test_normalize_code_cases(value: str | None, max_length: int, expected: str 
 
 
 @pytest.mark.parametrize(
-    "value,expected",
+    ("value", "expected"),
     [
         (None, "basic"),
         ("schema", "schema"),
@@ -85,7 +84,7 @@ def test_normalize_validation_level_cases(value: str | None, expected: str) -> N
 
 
 @pytest.mark.parametrize(
-    "filename,content,expected",
+    ("filename", "content", "expected"),
     [
         ("sample.xml", "text", True),
         ("SAMPLE.XML", "text", True),
@@ -127,21 +126,24 @@ async def test_read_uploaded_text_cases() -> None:
     gz_ok = gzip.compress(b"METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=")
     content, error = await api_module.read_uploaded_text(_FakeUploadFile(gz_ok, filename="metar.txt.gz"))
     assert error is None
-    assert content is not None and content.startswith("METAR KJFK")
+    assert content is not None
+    assert content.startswith("METAR KJFK")
 
     # High-ratio bomb: tiny gzip that expands past 10 MiB → reject via max_length
     bomb = gzip.compress(b"A" * (11 * 1024 * 1024), compresslevel=9)
     assert len(bomb) < 10 * 1024 * 1024
     content, error = await api_module.read_uploaded_text(_FakeUploadFile(bomb, filename="bomb.gz"))
     assert content is None
-    assert error is not None and "decompressed file too large" in error
+    assert error is not None
+    assert "decompressed file too large" in error
 
 
 @pytest.mark.asyncio
 async def test_read_uploaded_text_corrupt_gzip() -> None:
     content, error = await api_module.read_uploaded_text(_FakeUploadFile(b"\x1f\x8bCorruptNotGzip", filename="bad.gz"))
     assert content is None
-    assert error is not None and "gzip decompress failed" in error
+    assert error is not None
+    assert "gzip decompress failed" in error
 
 
 def test_manual_entries_with_offsets_crlf() -> None:

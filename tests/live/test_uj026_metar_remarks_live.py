@@ -1,4 +1,4 @@
-"""Live UJ-026 / #667 — annex3 REMARKS_EXCLUDED + iwxxm_us humanReadableText.
+"""Live UJ-026 / #667 - annex3 REMARKS_EXCLUDED + iwxxm_us humanReadableText.
 
 Requires LIVE_API_URL (or STAGING_API_URL) and ADMIN_EMAIL / ADMIN_PASSWORD.
 """

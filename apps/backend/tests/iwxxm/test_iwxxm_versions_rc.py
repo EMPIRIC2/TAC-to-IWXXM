@@ -5,7 +5,6 @@ Tests RC channel support, version discovery metadata, and channel filtering.
 """
 
 import pytest
-
 from src.config.iwxxm_versions import (
     ALL_VERSIONS,
     RC_VERSIONS,

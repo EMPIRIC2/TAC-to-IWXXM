@@ -242,6 +242,7 @@ export function DisseminationDrawer({
     (files: FileList | null) => {
       if (!files?.length) return;
       const file = files[0];
+      if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
         const text = String(reader.result ?? '');

@@ -1,4 +1,4 @@
-"""Auth package coverage gate — fail_under=95 in packages/auth pyproject (EV-047)."""
+"""Auth package coverage gate - fail_under=95 in packages/auth pyproject (EV-047)."""
 
 from __future__ import annotations
 

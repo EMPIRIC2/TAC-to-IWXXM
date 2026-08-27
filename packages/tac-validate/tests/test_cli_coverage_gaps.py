@@ -1,4 +1,4 @@
-"""CLI coverage gaps — OSError path, issue spans, ``__main__`` entry."""
+"""CLI coverage gaps - OSError path, issue spans, ``__main__`` entry."""
 
 from __future__ import annotations
 
@@ -9,7 +9,6 @@ from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
 import pytest
-
 from tac_validate.cli import main
 from tac_validate.models import Issue, LintReport
 

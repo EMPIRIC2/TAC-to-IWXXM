@@ -1,4 +1,4 @@
-"""BUG-2026-08-03 — Render deploy hook imgURL 500 must fall back to REST.
+"""BUG-2026-08-03 - Render deploy hook imgURL 500 must fall back to REST.
 
 Main CI Deploy failed on merge ``8bd111c`` when ``curl …&imgURL=`` returned HTTP 500
 after GHCR push. Guard: resilient trigger script + CI must not use bare curl imgURL.
@@ -22,7 +22,8 @@ def _load_mod():
 
     name = "trigger_render_image_deploy"
     spec = importlib.util.spec_from_file_location(name, SCRIPT)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     mod = importlib.util.module_from_spec(spec)
     sys.modules[name] = mod
     spec.loader.exec_module(mod)
@@ -71,7 +72,8 @@ def test_bug_2026_08_03_hook_500_falls_back_to_rest() -> None:
         if method == "POST" and "/deploys" in url:
             assert body is not None
             assert b"imageUrl" in body
-            assert headers is not None and "Bearer" in headers.get("Authorization", "")
+            assert headers is not None
+            assert "Bearer" in headers.get("Authorization", "")
             return 201, '{"id":"dep-test"}'
         return 404, "unexpected"
 

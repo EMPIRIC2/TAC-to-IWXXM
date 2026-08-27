@@ -3,7 +3,6 @@
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
-
 from src.api import app
 from src.utilities.conversion import ConversionError
 
@@ -36,7 +35,7 @@ class TestConvertEndpointErrorHandling:
     """Test /api/v1/convert endpoint error scenarios."""
 
     def test_convert_without_auth_succeeds(self):
-        """F21 Amended / TC-EV031-003 — convert stays public (no JWT required)."""
+        """F21 Amended / TC-EV031-003 - convert stays public (no JWT required)."""
         response = client.post(
             "/api/v1/convert", data={"manual_text": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005"}
         )

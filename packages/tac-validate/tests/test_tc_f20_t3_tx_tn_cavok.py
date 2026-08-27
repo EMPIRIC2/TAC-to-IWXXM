@@ -1,4 +1,4 @@
-"""F20 / T3 — TAF TX/TN, CAVOK, NSC, NSW, VV/// (TC-F20-004).
+"""F20 / T3 - TAF TX/TN, CAVOK, NSC, NSW, VV/// (TC-F20-004).
 
 HARD theme T3 from taf-speci-research-catalog.md / #735.
 T1.5 fixtures; T1.6 encodes registry + rules.
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

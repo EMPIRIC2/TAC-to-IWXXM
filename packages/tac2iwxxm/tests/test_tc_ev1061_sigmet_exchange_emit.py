@@ -1,4 +1,4 @@
-"""TC-EV1061 — CA_ECCC SIGMET exchange output emit (#1061 / EV-076).
+"""TC-EV1061 - CA_ECCC SIGMET exchange output emit (#1061 / EV-076).
 
 [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: tests §TC-EV1061]
 """
@@ -8,7 +8,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from tac2iwxxm.ca_ops_corpus import extract_iwxxm_from_collect, load_ops_manifest, ops_fixture_root
 from tac2iwxxm.exchange_output import (
     build_ca_eccc_output_spec,

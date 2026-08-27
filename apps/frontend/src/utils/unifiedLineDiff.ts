@@ -47,11 +47,13 @@ export function unifiedLineDiff(left: string, right: string): UnifiedDiffLine[] 
     Array.from({ length: m + 1 }, () => 0),
   );
   for (let i = n - 1; i >= 0; i -= 1) {
+    const row = dp[i]!;
+    const rowBelow = dp[i + 1]!;
     for (let j = m - 1; j >= 0; j -= 1) {
       if (a[i] === b[j]) {
-        dp[i][j] = dp[i + 1][j + 1] + 1;
+        row[j] = (rowBelow[j + 1] ?? 0) + 1;
       } else {
-        dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+        row[j] = Math.max(rowBelow[j] ?? 0, row[j + 1] ?? 0);
       }
     }
   }
@@ -73,7 +75,7 @@ export function unifiedLineDiff(left: string, right: string): UnifiedDiffLine[] 
       j += 1;
       leftLine += 1;
       rightLine += 1;
-    } else if (dp[i + 1][j] >= dp[i][j + 1]) {
+    } else if ((dp[i + 1]?.[j] ?? 0) >= (dp[i]?.[j + 1] ?? 0)) {
       out.push({
         op: 'remove',
         text: a[i] ?? '',

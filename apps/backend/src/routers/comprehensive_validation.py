@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, List, Optional
+from typing import Any
 
 from fastapi import APIRouter, Form, HTTPException
 
@@ -24,18 +24,18 @@ router = APIRouter(prefix="/api/v1", tags=["Validation"])
     responses={},
 )
 async def validate_comprehensive(
-    request_body: Optional[ValidateRequest] = None,
+    request_body: ValidateRequest | None = None,
     manual_text: str = Form(default="", description="METAR TAC text to validate"),
     xml_content: str = Form(
         default="", description="Optional XML to validate (if omitted, TAC will be converted first)"
     ),
     iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version"),
-    layers: List[str] = Form(
+    layers: list[str] = Form(
         default=["ALL"],
         description="Validation layers to run (ALL, or specific: AIRPORT_ICAO, TAC_SYNTAX, XML_WELLFORMED, XML_SCHEMA, SCHEMATRON, GML_REFERENCES, WMO_CODELISTS)",
     ),
     stop_on_error: bool = Form(default=True, description="Stop at first blocking layer failure"),
-    profile: str = Form(default="", description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
+    profile: str = Form(default="", description="Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
     semantic_profile: str = Form(
         default="",
         description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)",
@@ -44,7 +44,7 @@ async def validate_comprehensive(
         default="",
         description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on validate-only paths",
     ),
-    extensions: List[str] = Form(
+    extensions: list[str] = Form(
         default=[],
         description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
     ),
@@ -52,7 +52,7 @@ async def validate_comprehensive(
         default="METAR",
         description="TAC product for Canadian extension XSD when extensions include IWXXM_CA",
     ),
-):
+) -> object:
     """Perform comprehensive 7-layer IWXXM validation.
 
     Validates METAR TAC input through all 7 validation layers:
@@ -151,7 +151,7 @@ async def validate_comprehensive(
         try:
             get_version_config_for_emit_profile(iwxxm_version, profile)
         except ValueError as e:
-            raise HTTPException(status_code=400, detail=str(e))
+            raise HTTPException(status_code=400, detail=str(e)) from e
 
         # Convert TAC to XML if not provided (forward profile; validate afterward)
         if not xml_content:
@@ -163,7 +163,7 @@ async def validate_comprehensive(
                     profile=profile or "annex3",
                 )
             except ConversionError as e:
-                raise HTTPException(status_code=400, detail=f"Failed to convert TAC to XML: {str(e)}")
+                raise HTTPException(status_code=400, detail=f"Failed to convert TAC to XML: {e!s}") from e
 
         # Thin wrapper: always invoke packages/iwxxm-validate (TC-F6-033 / ADR-015)
         validation_level_name = ""
@@ -187,7 +187,7 @@ async def validate_comprehensive(
         )
 
         # Parse layer selection
-        selected_layers = []
+        selected_layers: list[Any] = []
         if "ALL" in layers:
             selected_layers = list(ValidationLayer)
         else:
@@ -200,7 +200,7 @@ async def validate_comprehensive(
                         status_code=400,
                         detail=f"Invalid validation layer: {layer_name}. "
                         f"Valid options: {[l.name for l in ValidationLayer]}",
-                    )
+                    ) from KeyError
 
         # F11.4 / T3.8: skip orchestrator XSD+Schematron when the package SDK already ran them.
         skip_heavy: set[ValidationLayer] = set()
@@ -279,4 +279,4 @@ async def validate_comprehensive(
         raise
     except Exception as e:
         logger.error(f"Validation error: {e}", exc_info=True)
-        raise HTTPException(status_code=500, detail=f"Validation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Validation failed: {e!s}") from e

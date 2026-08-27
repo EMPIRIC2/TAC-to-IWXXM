@@ -1,4 +1,4 @@
-"""Layered ``ca_eccc`` validation pipeline with per-stage reporting (EV-068 M3–M4)."""
+"""Layered ``ca_eccc`` validation pipeline with per-stage reporting (EV-068 M3-M4)."""
 
 from __future__ import annotations
 

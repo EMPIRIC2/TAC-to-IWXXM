@@ -1,13 +1,13 @@
 """TAC decode/annotate segments for the operator decode panel (F7 / #702).
 
 Produces ordered ``code`` | explanation segments with character offsets, plus
-explicit residuals for undecoded spans (VAA/TCA may be residual-heavy — G4).
+explicit residuals for undecoded spans (VAA/TCA may be residual-heavy - G4).
 """
 
 from __future__ import annotations
 
 import re
-from typing import Callable
+from collections.abc import Callable
 
 import msgspec
 
@@ -22,7 +22,7 @@ _SUPPORTED = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA
 _WIND = re.compile(r"^(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<unit>KT|MPS)$")
 _VIS_SM = re.compile(r"^(?P<mod>[PM])?(?P<val>\d{1,2})SM$")
 _VIS_M = re.compile(r"^\d{4}$")
-# Minimum visibility with compass sector (e.g. 1200NE) — after prevailing metres.
+# Minimum visibility with compass sector (e.g. 1200NE) - after prevailing metres.
 _VIS_MIN = re.compile(r"^(?P<vis>\d{4})(?P<dir>N|NE|E|SE|S|SW|W|NW)$")
 _CLOUD = re.compile(r"^(?P<amt>FEW|SCT|BKN|OVC|SKC|CLR|NSC|NCD)(?P<hgt>\d{3})?(?P<ctype>CB|TCU)?$")
 _TEMP = re.compile(r"^(?P<t>M?\d{2})/(?P<td>M?\d{2})$")
@@ -33,16 +33,16 @@ _STATION = re.compile(r"^[A-Z][A-Z0-9]{3}$")
 _TAF_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})$")
 _TAF_FM = re.compile(r"^FM(?P<dd>\d{2})(?P<hh>\d{2})(?P<mm>\d{2})$")
 _TAF_PROB = re.compile(r"^PROB(?P<pct>\d{2})$")
-# METAR/SPECI trend time indicators (TL/AT/FM + HHMM) — distinct from TAF FMDDHHMM.
+# METAR/SPECI trend time indicators (TL/AT/FM + HHMM) - distinct from TAF FMDDHHMM.
 _TREND_TIME = re.compile(r"^(?P<kind>TL|AT|FM)(?P<hh>\d{2})(?P<mm>\d{2})$")
 _SIG_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})(?P<m1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})(?P<m2>\d{2})$")
 _SIG_FL = re.compile(r"^FL(?P<fl>\d{2,3})$")
-# Vertical layer — ``SFC/FL550`` or ``FL250/370``.
+# Vertical layer - ``SFC/FL550`` or ``FL250/370``.
 _SIG_FL_LAYER = re.compile(r"^(?:SFC/FL(?P<sfc>\d{2,3})|FL(?P<a>\d{2,3})/(?:FL)?(?P<b>\d{2,3}))$")
 _SIG_SPEED_KT = re.compile(r"^(?P<spd>\d{1,3})KT$")
 _SIG_LAT = re.compile(r"^(?P<hemi>[NS])(?P<deg>\d{1,2})(?P<min>\d{2})?$")
 _SIG_LON = re.compile(r"^(?P<hemi>[EW])(?P<deg>\d{1,3})(?P<min>\d{2})?$")
-# Observation/forecast clock ``1600Z`` (hhmmZ) — distinct from METAR ``ddhhmmZ``.
+# Observation/forecast clock ``1600Z`` (hhmmZ) - distinct from METAR ``ddhhmmZ``.
 _SIG_HHMMZ = re.compile(r"^(?P<hh>\d{2})(?P<mm>\d{2})Z$")
 _SIG_DIR = frozenset({"N", "NE", "E", "SE", "S", "SW", "W", "NW"})
 _SIG_DIR_NAME = {
@@ -66,7 +66,7 @@ _WX = re.compile(
     r"(?P<desc>MI|PR|BC|DR|BL|SH|TS|FZ)?"
     r"(?P<phen>(?:DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+)$"
 )
-# Runway visual range — R{rw}/{vis}{U|D|N}? (e.g. R12/1000U).
+# Runway visual range - R{rw}/{vis}{U|D|N}? (e.g. R12/1000U).
 _RVR = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<vis>[MP]?\d{4})(?P<trend>[UDN])?$")
 
 _WX_INTENSITY = {"+": "heavy", "-": "light", "VC": "in the vicinity"}
@@ -126,7 +126,7 @@ def _fmt_wind(m: re.Match[str], *, label: str) -> str:
     speed = int(m.group("spd"))
     unit = "kt" if m.group("unit") == "KT" else "m/s"
     origin = "variable in direction" if direction == "VRB" else f"from {int(direction)}°"
-    text = f"{label} — {origin} at {speed} {unit}"
+    text = f"{label} - {origin} at {speed} {unit}"
     gust = m.group("gust")
     if gust:
         text += f", gusting {int(gust)} {unit}"
@@ -134,7 +134,7 @@ def _fmt_wind(m: re.Match[str], *, label: str) -> str:
 
 
 def _fmt_time(m: re.Match[str], *, label: str) -> str:
-    return f"{label} — day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
+    return f"{label} - day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
 
 
 def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
@@ -168,7 +168,7 @@ def _fmt_wx(m: re.Match[str], *, forecast: bool) -> str:
     parts.extend(_WX_PHENOMENON[phen[i : i + 2]] for i in range(0, len(phen), 2))
     phrase = " ".join(parts)
     label = "Forecast weather" if forecast else "Weather"
-    return f"{label} — {phrase[0].upper()}{phrase[1:]}" if phrase else f"{label} group"
+    return f"{label} - {phrase[0].upper()}{phrase[1:]}" if phrase else f"{label} group"
 
 
 class DecodeSegment(msgspec.Struct, frozen=True):
@@ -181,7 +181,7 @@ class DecodeSegment(msgspec.Struct, frozen=True):
 
 
 class DecodeResidual(msgspec.Struct, frozen=True):
-    """Undecoded character span (explicit residuals — G4)."""
+    """Undecoded character span (explicit residuals - G4)."""
 
     start: int
     end: int
@@ -226,7 +226,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return "Temporary fluctuations expected during the following period"
     if upper == "BECMG":
         seen["in_trend"] = 1
-        return "Becoming — gradual change during the following period"
+        return "Becoming - gradual change during the following period"
     if upper == "NSW":
         return "No significant weather"
     if upper == "RMK":
@@ -260,7 +260,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return f"{label} {int(upper)} m"
     if m := _TREND_TIME.match(upper):
         kind = m.group("kind")
-        return f"Trend time — {_TREND_TIME_LABEL[kind]} {m.group('hh')}:{m.group('mm')} UTC"
+        return f"Trend time - {_TREND_TIME_LABEL[kind]} {m.group('hh')}:{m.group('mm')} UTC"
     if m := _CLOUD.match(upper):
         return _fmt_cloud(m, forecast=bool(seen.get("in_trend")))
     if m := _TEMP.match(upper):
@@ -308,7 +308,7 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         return _fmt_time(m, label="Issue time")
     if m := _TAF_VALID.match(upper):
         return (
-            f"Validity — day {int(m.group('d1'))} {m.group('h1')}:00 UTC"
+            f"Validity - day {int(m.group('d1'))} {m.group('h1')}:00 UTC"
             f" to day {int(m.group('d2'))} {m.group('h2')}:00 UTC"
         )
     if m := _WIND.match(upper):
@@ -326,12 +326,12 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
     if m := _TAF_FM.match(upper):
         return (
             f"From day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
-            " — rapid change to new prevailing conditions"
+            " - rapid change to new prevailing conditions"
         )
     if upper == "TEMPO":
         return "Temporary fluctuations expected during the following period"
     if upper == "BECMG":
-        return "Becoming — gradual change during the following period"
+        return "Becoming - gradual change during the following period"
     if m := _TAF_PROB.match(upper):
         return f"{int(m.group('pct'))}% probability of the following conditions"
     if upper.startswith(("FM", "TEMPO", "BECMG", "PROB")):
@@ -549,7 +549,7 @@ def _iter_ahl_heading(tac: str) -> list[tuple[int, int, str, str]]:
     else:
         start, end = m.start(), m.end()
     code = tac[start:end]
-    explanation = f"WMO abbreviated heading — {m.group('ahl')} from {m.group('cccc')} at day-time {m.group('yygggg')}"
+    explanation = f"WMO abbreviated heading - {m.group('ahl')} from {m.group('cccc')} at day-time {m.group('yygggg')}"
     return [(start, end, code, explanation)]
 
 
@@ -602,7 +602,7 @@ def _iter_advisory_fields(
         end = value_start + trim
         value_text = " ".join(tac[value_start:end].split())
         title = _advisory_field_title(code, title_template, match)
-        explanation = f"{title} — {value_text}" if value_text else title
+        explanation = f"{title} - {value_text}" if value_text else title
         out.append((start, end, code, explanation))
     return out
 
@@ -693,8 +693,8 @@ def _sentence_from_segment(seg: DecodeSegment) -> str | None:
     if "station location" in lower or "location indicator" in lower:
         return f"station {seg.code.upper()}"
     # Prefer the value-bearing half after an em dash when present.
-    if " — " in text:
-        left, right = text.split(" — ", 1)
+    if " - " in text:
+        left, right = text.split(" - ", 1)
         if left.lower().startswith("report type"):
             return text.rstrip(".")
         return right.rstrip(".")
@@ -888,7 +888,7 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
     """
     product_u = product.upper()
     if product_u not in _SUPPORTED:
-        # Entire body residual — unknown product still returns a well-formed shape.
+        # Entire body residual - unknown product still returns a well-formed shape.
         text = tac
         residuals = [DecodeResidual(start=0, end=len(text), text=text)] if text else []
         summary = _build_summary(product_u, [], residuals)

@@ -1,4 +1,4 @@
-"""TC-EV067-001 — CA_ECCC metar-speci-ca extensions (EV-067 / #1039).
+"""TC-EV067-001 - CA_ECCC metar-speci-ca extensions (EV-067 / #1039).
 
 [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: tests]
 """
@@ -9,9 +9,9 @@ import json
 from pathlib import Path
 
 import pytest
-from metar_shared.xml_canonical import canonicalize_xml
-
 from tac2iwxxm.convert import convert
+
+from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "CA_ECCC"
 MANIFEST_PATH = FIXTURES / "manifest.json"

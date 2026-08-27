@@ -1,7 +1,7 @@
-"""T5.3 / TC-F23-005 — SIGMET (+ VA) lint/convert + catalog GET smoke (H3-shaped).
+"""T5.3 / TC-F23-005 - SIGMET (+ VA) lint/convert + catalog GET smoke (H3-shaped).
 
 Spec: docs/test-plan.md TC-F23-005; docs/api-contract.md §lint-issue-catalog;
-execution-plan T5.3. In-process client (CI); live H3/H4–H5 reuse paths.
+execution-plan T5.3. In-process client (CI); live H3/H4-H5 reuse paths.
 """
 
 from __future__ import annotations
@@ -11,10 +11,9 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-from tac_validate.issue_registry import ISSUES
-
 from src.api import app
 from src.utilities.security import verify_supabase_token
+from tac_validate.issue_registry import ISSUES
 
 pytestmark = [pytest.mark.integration, pytest.mark.smoke]
 

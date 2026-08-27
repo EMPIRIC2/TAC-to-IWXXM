@@ -9,7 +9,7 @@ _FIELD_LINE = re.compile(r"^(?P<key>[A-Z0-9 /+]+?):\s*(?P<val>.*)$")
 _DTG_SHORT = re.compile(r"(?P<yyyy>\d{4})(?P<mm>\d{2})(?P<dd>\d{2})/(?P<hh>\d{2})(?P<mi>\d{2})Z")
 _PSN = re.compile(r"(?P<ns>[NS])(?P<lat>\d{4,5})\s+(?P<ew>[EW])(?P<lon>\d{5,6})")
 
-# G-VONA-2: originatingCentre AIXM designator is not in TAC — fixture/registry map.
+# G-VONA-2: originatingCentre AIXM designator is not in TAC - fixture/registry map.
 _SVO_DESIGNATORS: dict[str, str] = {
     "KVERT": "UHPP",
 }

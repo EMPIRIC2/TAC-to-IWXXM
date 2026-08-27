@@ -1,4 +1,4 @@
-"""Annex-3 profile XML writers — swxa."""
+"""Annex-3 profile XML writers - swxa."""
 
 # pyright: reportWildcardImportFromLibrary=false
 # ruff: noqa: F403, F405
@@ -194,10 +194,7 @@ def emit_swxa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     advisory_number = str(ir.get("advisory_number") or "")
 
     override = ir.get("report_status")
-    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
-        report_status = str(override)
-    else:
-        report_status = "NORMAL"
+    report_status = str(override) if override in {"NORMAL", "AMENDMENT", "CORRECTION"} else "NORMAL"
 
     replaced_xml = ""
     for num in list(ir.get("replaced_advisory_numbers") or []):

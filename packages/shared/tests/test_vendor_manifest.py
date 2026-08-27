@@ -366,7 +366,7 @@ def test_verify_manifest_integrity_passes_for_matching_tree(tmp_path: Path) -> N
         _bundle_local_path("iwxxm-3.0.0"),
         tree_sha256=compute_tree_sha256(profile_root),
     )
-    # Profile line is nested under iwxxm — re-hash parent after subtree materialises.
+    # Profile line is nested under iwxxm - re-hash parent after subtree materialises.
     iwxxm_root = _bundle_tree_root(tmp_path, "iwxxm")
     bundles["iwxxm"] = _sample_for_bundle(
         "iwxxm",

@@ -95,7 +95,7 @@ test.describe('TAC File Upload to Database', () => {
       'No TAC fixture files available for upload E2E coverage.',
     );
 
-    const testFile = tacFiles[0];
+    const testFile = tacFiles[0]!;
     await loginAndOpenConverter(page);
 
     await page.route('**/functions/v1/**/database/upload', async (route) => {
@@ -132,7 +132,7 @@ test.describe('TAC File Upload to Database', () => {
       'No TAC fixture files available for upload E2E coverage.',
     );
 
-    const testFile = tacFiles[0];
+    const testFile = tacFiles[0]!;
     await loginAndOpenConverter(page);
 
     await page.route('**/functions/v1/**/database/upload', async (route) => {

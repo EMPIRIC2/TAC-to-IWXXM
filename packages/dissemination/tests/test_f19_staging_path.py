@@ -1,4 +1,4 @@
-"""TC-F19-001..003 — staging/test path green per F19 adapter (T5.3 / E14-09).
+"""TC-F19-001..003 - staging/test path green per F19 adapter (T5.3 / E14-09).
 
 One case per AMHS / SWIM / AFS adapter with mocked (no-live) transport via the
 staging stubs. Live F19 demos remain optional at cycle close (S-EV014-M2).
@@ -9,7 +9,6 @@ from __future__ import annotations
 from unittest.mock import patch
 
 import pytest
-
 from dissemination.allowlist import parse_allowlist
 from dissemination.f19_stubs import F19Params, get_staging_sink
 

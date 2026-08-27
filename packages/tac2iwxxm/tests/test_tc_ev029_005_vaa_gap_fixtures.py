@@ -25,7 +25,7 @@ ACCEPT_VAA = Path(__file__).resolve().parents[2] / "tac-validate" / "tests" / "f
 IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
 
-# Body has no COR/AMD keyword — status must come from AHL BBB (T9.2).
+# Body has no COR/AMD keyword - status must come from AHL BBB (T9.2).
 _BBB_CASES = (
     ("vaa_ahl_normal.txt", None, "NORMAL"),
     ("vaa_ahl_rra.txt", "RRA", "NORMAL"),

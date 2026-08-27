@@ -1,4 +1,4 @@
-"""TC-F9-002 §1–3 — deterministic plain-language ``summary`` (S013 / EV-009, F9).
+"""TC-F9-002 §1-3 - deterministic plain-language ``summary`` (S013 / EV-009, F9).
 
 ``DecodeResult.summary`` is a single flowing paragraph built from decoded values.
 Residuals append a trailing "Not decoded: …" clause. Sparse products (SIGMET/AIRMET/
@@ -10,7 +10,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from tac2iwxxm.decode import DecodeResult, decode_tac
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "product_matrix"
@@ -28,10 +27,10 @@ PRODUCT_FILES = {
 METAR_GOLDEN = "METAR KJFK 121251Z 18004KT 10SM FEW250 24/18 A3011="
 
 
-# --- TC-F9-002 §1 — summary present for all seven products ---
+# --- TC-F9-002 §1 - summary present for all seven products ---
 
 
-@pytest.mark.parametrize("product,filename", list(PRODUCT_FILES.items()))
+@pytest.mark.parametrize(("product", "filename"), list(PRODUCT_FILES.items()))
 def test_summary_present_for_all_products(product: str, filename: str) -> None:
     tac = (FIXTURES / filename).read_text(encoding="utf-8").strip()
     result = decode_tac(tac, product=product)
@@ -40,7 +39,7 @@ def test_summary_present_for_all_products(product: str, filename: str) -> None:
     assert result.summary.strip()
 
 
-# --- TC-F9-002 §2 — flowing paragraph from decoded values ---
+# --- TC-F9-002 §2 - flowing paragraph from decoded values ---
 
 
 def test_metar_summary_is_one_flowing_paragraph() -> None:
@@ -61,7 +60,7 @@ def test_summary_deterministic_across_calls() -> None:
     assert a == b
 
 
-# --- TC-F9-002 §3 — residual clause + sparse-product wording ---
+# --- TC-F9-002 §3 - residual clause + sparse-product wording ---
 
 
 def test_summary_residual_clause() -> None:

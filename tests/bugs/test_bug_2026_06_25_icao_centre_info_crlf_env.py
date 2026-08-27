@@ -1,4 +1,4 @@
-"""BUG-2026-06-25 — /api/v1/translation/centre-info 500 on CRLF .env values.
+"""BUG-2026-06-25 - /api/v1/translation/centre-info 500 on CRLF .env values.
 
 A CRLF-encoded ``.env`` leaves a trailing carriage return on every value
 (e.g. ``SERVICE_ONLINE_SINCE='2026-01-01T00:00:00Z\\r'``). The router parsed it

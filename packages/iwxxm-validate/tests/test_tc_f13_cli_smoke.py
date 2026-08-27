@@ -24,7 +24,7 @@ def test_cli_module_main_exits_zero_on_example(monkeypatch: pytest.MonkeyPatch) 
 
     Some runners hit xmloxide ``SCHEMA_PARSE_ERROR`` on IWXXM+GML/OM includes
     (same soft gap as TC-F13-001 lxml baseline). In that case exit 1 with only
-    schema-layer errors is acceptable for this smoke — garbage XML still fails
+    schema-layer errors is acceptable for this smoke - garbage XML still fails
     in ``test_cli_module_main_exits_nonzero_on_garbage``.
     """
     import io

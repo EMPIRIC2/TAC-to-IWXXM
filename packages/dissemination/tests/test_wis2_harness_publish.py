@@ -1,4 +1,4 @@
-"""TC-F17-001 — staging wis2box harness publish (T3.4 / UJ-028).
+"""TC-F17-001 - staging wis2box harness publish (T3.4 / UJ-028).
 
 Requires the Compose wis2box profile (MQTT + HTTP dataset). Started by
 ``scripts/ci/run_wis2box_harness.sh`` or by the module fixture when Docker is available.
@@ -18,7 +18,6 @@ from contextlib import contextmanager
 from pathlib import Path
 
 import pytest
-
 from dissemination.allowlist import parse_allowlist
 from dissemination.transports import AiomqttClient, HttpxDatasetClient
 from dissemination.wis2 import Wis2Params, wis2_preflight, wis2_publish
@@ -84,20 +83,19 @@ def _ensure_wis2box_harness() -> Iterator[None]:
             pytest.fail("wis2box harness did not become healthy after compose up")
         yield
     finally:
-        if os.environ.get("WIS2BOX_HARNESS_EXTERNAL") == "1":
-            return
-        subprocess.run(
-            [*compose, "stop", "wis2box"],
-            check=False,
-            cwd=_ROOT,
-            timeout=60,
-        )
-        subprocess.run(
-            [*compose, "rm", "-f", "wis2box"],
-            check=False,
-            cwd=_ROOT,
-            timeout=60,
-        )
+        if os.environ.get("WIS2BOX_HARNESS_EXTERNAL") != "1":
+            subprocess.run(
+                [*compose, "stop", "wis2box"],
+                check=False,
+                cwd=_ROOT,
+                timeout=60,
+            )
+            subprocess.run(
+                [*compose, "rm", "-f", "wis2box"],
+                check=False,
+                cwd=_ROOT,
+                timeout=60,
+            )
 
 
 @pytest.fixture

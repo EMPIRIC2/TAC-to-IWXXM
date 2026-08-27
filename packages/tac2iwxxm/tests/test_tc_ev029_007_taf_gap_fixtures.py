@@ -23,7 +23,7 @@ ANNEX3 = FIXTURES / "annex3_golden"
 IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
 
-# Body has no COR/AMD keyword — status must come from AHL BBB (T4.2).
+# Body has no COR/AMD keyword - status must come from AHL BBB (T4.2).
 _BBB_CASES = (
     ("taf_ahl_normal.txt", None, "NORMAL", "FC", "LC"),
     ("taf_ahl_rra.txt", "RRA", "NORMAL", "FC", "LC"),
@@ -93,7 +93,8 @@ def test_taf_ahl_bbb_applied_to_converted_xml(
     """AHL BBB must drive @reportStatus even when TAC body has no COR/AMD (T4.2)."""
     from tac2iwxxm import convert, parse_ahl, split_bulletin
 
-    assert tac_tt in {"FC", "FT"} and iwxxm_tt in {"LC", "LT"}
+    assert tac_tt in {"FC", "FT"}
+    assert iwxxm_tt in {"LC", "LT"}
     split = split_bulletin(_read_taf(fixture), product="TAF")
     parts = parse_ahl(split.meta.ahl)
     assert parts.report_status == status

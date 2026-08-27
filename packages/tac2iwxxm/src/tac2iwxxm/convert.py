@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Callable, cast
+from collections.abc import Callable
+from datetime import UTC
+from typing import Any, cast
 from xml.sax.saxutils import escape
 
 from tac2iwxxm.exchange_output import default_ca_translation_centre
@@ -170,14 +172,14 @@ def _quarantine_xml(product: str, tac: str, iwxxm_version: str) -> str:
     str
         Quarantine IWXXM document (no operational observation/baseForecast).
     """
-    from datetime import datetime, timezone
+    from datetime import datetime
     from xml.sax.saxutils import escape
 
     root = _QUARANTINE_ROOT.get(product, product)
     ns = _PREVIEW_NS.get(iwxxm_version, _PREVIEW_NS["2025-2"])
     gml_id = f"{product.lower()}.translation.failed"
     failed_tac = escape(" ".join(tac.split()))
-    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
     station_m = _STATION_AFTER_PRODUCT.search(tac)
     station = station_m.group("station").upper() if station_m else "YUDO"
     aerodrome = ""
@@ -357,7 +359,7 @@ def convert(
     product :
         One of the F6 products or ``SWXA`` (F28).
     profile :
-        ``annex3`` (default) or ``iwxxm_us`` (METAR/SPECI US extensions; others T5.4–T5.5).
+        ``annex3`` (default) or ``iwxxm_us`` (METAR/SPECI US extensions; others T5.4-T5.5).
     iwxxm_version :
         Target IWXXM release line.
     preview :
@@ -463,7 +465,7 @@ def convert(
 
     try:
         if _UNRELIABLE_TAC.search(tac):
-            raise ValueError("unreliable TAC marked INVALID — quarantine")
+            raise ValueError("unreliable TAC marked INVALID - quarantine")
         ir = _parse(product_u, tac)
         if status_override is not None:
             ir = {**ir, "report_status": status_override}

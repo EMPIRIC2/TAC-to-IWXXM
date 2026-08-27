@@ -7,7 +7,6 @@ from types import SimpleNamespace
 
 import httpx
 import pytest
-
 from src.config import iwxxm_versions
 from src.services import schema_discovery_poller as sdp
 from src.services.schema_discovery_poller import SchemaDiscoveryPoller

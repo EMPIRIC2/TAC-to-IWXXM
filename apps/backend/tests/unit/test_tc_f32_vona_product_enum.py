@@ -1,4 +1,4 @@
-"""T2.7 / TC-F32-006 — runtime ``product=vona`` enum (S040 / EV-032 / S02.M1).
+"""T2.7 / TC-F32-006 - runtime ``product=vona`` enum (S040 / EV-032 / S02.M1).
 
 Accepts ``vona`` (case-insensitive) on lint/decode/convert; rejects unknown
 aliases with ``unknown_product`` 400 per api-contract.
@@ -12,7 +12,6 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -95,7 +94,7 @@ def test_convert_accepts_product_vona(client: TestClient) -> None:
     assert "SpaceWeatherAdvisory" not in xml
 
 
-@pytest.mark.parametrize("bad", ("volcano", "VON", "notaproduct"))
+@pytest.mark.parametrize("bad", ["volcano", "VON", "notaproduct"])
 def test_convert_rejects_unknown_product_alias(client: TestClient, bad: str) -> None:
     response = _multipart(
         client,

@@ -56,7 +56,8 @@ def test_fe_pickers_render_options_from_sot_module() -> None:
     assert "generated/iwxxm_versions.json" in util
     assert "IWXXM_VERSION_OPTIONS" in util
     assert "iwxxmVersionOptionsForProfile" in util
-    assert "Latest" in util and "Previous" in util
+    assert "Latest" in util
+    assert "Previous" in util
 
     for path in _FE_PICKER_FILES:
         text = path.read_text(encoding="utf-8")

@@ -6,7 +6,6 @@ Contract version ``1`` targets table ``iwxxm_reports`` used by multi-DB upload s
 from __future__ import annotations
 
 from enum import StrEnum
-from typing import Any
 
 import msgspec
 from sqlalchemy import inspect, text
@@ -114,7 +113,7 @@ async def apply_writer_contract(
 
 
 async def _diff_on_connection(conn: AsyncConnection, *, dialect: str) -> list[SchemaDiff]:
-    def _inspect(sync_conn: Any) -> list[SchemaDiff]:
+    def _inspect(sync_conn: object) -> list[SchemaDiff]:
         insp = inspect(sync_conn)
         if not insp.has_table(CONTRACT_TABLE):
             return [
@@ -126,16 +125,16 @@ async def _diff_on_connection(conn: AsyncConnection, *, dialect: str) -> list[Sc
             ]
         cols = {c["name"].lower() for c in insp.get_columns(CONTRACT_TABLE)}
         out: list[SchemaDiff] = []
-        for required in REQUIRED_COLUMNS:
-            if required not in cols:
-                out.append(
-                    SchemaDiff(
-                        kind=DiffKind.MISSING_COLUMN,
-                        table=CONTRACT_TABLE,
-                        column=required,
-                        detail=f"column {required!r} missing on {CONTRACT_TABLE}",
-                    )
-                )
+        out.extend(
+            SchemaDiff(
+                kind=DiffKind.MISSING_COLUMN,
+                table=CONTRACT_TABLE,
+                column=required,
+                detail=f"column {required!r} missing on {CONTRACT_TABLE}",
+            )
+            for required in REQUIRED_COLUMNS
+            if required not in cols
+        )
         return out
 
     return await conn.run_sync(_inspect)

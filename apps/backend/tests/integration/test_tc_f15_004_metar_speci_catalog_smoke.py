@@ -1,4 +1,4 @@
-"""T5.5 / TC-F15-004 — METAR + SPECI lint/convert + catalog GET smoke (H3-shaped).
+"""T5.5 / TC-F15-004 - METAR + SPECI lint/convert + catalog GET smoke (H3-shaped).
 
 Spec: docs/test-plan.md TC-F15-004; docs/api-contract.md §lint-issue-catalog;
 execution-plan T5.5. In-process authenticated client (CI); live H3 reuses same paths.
@@ -11,10 +11,9 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-from tac_validate.issue_registry import ISSUES
-
 from src.api import app
 from src.utilities.security import verify_supabase_token
+from tac_validate.issue_registry import ISSUES
 
 pytestmark = [pytest.mark.integration, pytest.mark.smoke]
 

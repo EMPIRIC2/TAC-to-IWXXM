@@ -1,4 +1,4 @@
-"""M8 API Dockerfile gate — deploy.md §Docker Build Context, T8.1."""
+"""M8 API Dockerfile gate - deploy.md §Docker Build Context, T8.1."""
 
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ class TestM8ApiDockerfileMonorepoContext:
         assert "COPY auth/" not in dockerfile_text
 
     def test_dockerfile_copies_config_tree(self, dockerfile_text: str) -> None:
-        """S003 — API image must bake config/prod.json for METAR_CONFIG_ENV=prod."""
+        """S003 - API image must bake config/prod.json for METAR_CONFIG_ENV=prod."""
         assert "COPY config" in dockerfile_text
 
     def test_dockerfile_does_not_reference_legacy_layout(

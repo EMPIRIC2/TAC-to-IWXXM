@@ -1,4 +1,4 @@
-"""T7.3 / TC-F30-006 — CORPUS + env-contract Auth-only Supabase (doc/contract gate).
+"""T7.3 / TC-F30-006 - CORPUS + env-contract Auth-only Supabase (doc/contract gate).
 
 Spec: docs/test-plan.md TC-F30-006; F30 AC6; ADR-033; #830.
 """

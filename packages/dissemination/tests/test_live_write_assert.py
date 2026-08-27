@@ -10,11 +10,10 @@ import uuid
 from pathlib import Path
 
 import pytest
-from sqlalchemy import text
-from sqlalchemy.ext.asyncio import create_async_engine
-
 from dissemination.live_write_assert import assert_live_write, count_iwxxm_rows, main
 from dissemination.writer_contract import CONTRACT_TABLE, apply_writer_contract
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import create_async_engine
 
 
 @pytest.mark.asyncio

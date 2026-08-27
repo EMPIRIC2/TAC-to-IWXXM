@@ -1,4 +1,4 @@
-"""TC-EV035-004 — encode / SCH / bulletin cite parity (full stack)."""
+"""TC-EV035-004 - encode / SCH / bulletin cite parity (full stack)."""
 
 from __future__ import annotations
 

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from src.services import schema_discovery_poller as sdp
 from src.services.schema_discovery_poller import SchemaDiscoveryPoller
 

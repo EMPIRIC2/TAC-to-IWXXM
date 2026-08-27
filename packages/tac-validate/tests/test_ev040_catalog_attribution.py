@@ -1,4 +1,4 @@
-"""EV-040 — catalog_attribution join for lint issue source lines."""
+"""EV-040 - catalog_attribution join for lint issue source lines."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ import re
 from pathlib import Path
 
 import pytest
-
 import tac_validate.catalog_attribution as ca
 
 _INTERNAL_DOC_REF_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -113,7 +112,7 @@ def test_load_skips_non_dict_code_rows(tmp_path: Path, monkeypatch: pytest.Monke
     attr = ca.attribution_for("GOOD")
     assert attr["source_id"] == "codes-wmo-int"
     assert attr["source_url"] == "https://codes.wmo.int/"
-    assert attr["source_attribution"] == "codes-wmo-int — https://codes.wmo.int/"
+    assert attr["source_attribution"] == "codes-wmo-int - https://codes.wmo.int/"
 
 
 def test_attribution_includes_access_status_when_paywall(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -136,7 +135,7 @@ def test_attribution_includes_access_status_when_paywall(tmp_path: Path, monkeyp
     monkeypatch.setattr(ca, "_DATA", path)
     ca._load.cache_clear()
     attr = ca.attribution_for("X")
-    assert attr["source_attribution"] == ("icao-annex-3 — access:paywall — https://example.invalid/annex3 — Table A3-2")
+    assert attr["source_attribution"] == ("icao-annex-3 - access:paywall - https://example.invalid/annex3 - Table A3-2")
 
 
 def test_packaged_source_attribution_has_no_internal_doc_refs() -> None:
@@ -152,13 +151,11 @@ def test_packaged_source_attribution_has_no_internal_doc_refs() -> None:
             if not isinstance(text, str):
                 continue
             for name, pattern in _INTERNAL_DOC_REF_PATTERNS:
-                for match in pattern.finditer(text):
-                    hits.append(f"{code}.{key}: {name}={match.group(0)!r}")
+                hits.extend(f"{code}.{key}: {name}={match.group(0)!r}" for match in pattern.finditer(text))
         joined = ca.attribution_for(str(code)).get("source_attribution")
         if isinstance(joined, str):
             for name, pattern in _INTERNAL_DOC_REF_PATTERNS:
-                for match in pattern.finditer(joined):
-                    hits.append(f"{code}.joined: {name}={match.group(0)!r}")
+                hits.extend(f"{code}.joined: {name}={match.group(0)!r}" for match in pattern.finditer(joined))
     assert hits == [], "planning vocabulary in lint attribution:\n" + "\n".join(hits)
 
 
@@ -183,4 +180,4 @@ def test_attribution_omits_note_with_internal_doc_refs(tmp_path: Path, monkeypat
     monkeypatch.setattr(ca, "_DATA", path)
     ca._load.cache_clear()
     attr = ca.attribution_for("X")
-    assert attr["source_attribution"] == "codes-wmo-int — https://codes.wmo.int/49-2"
+    assert attr["source_attribution"] == "codes-wmo-int - https://codes.wmo.int/49-2"

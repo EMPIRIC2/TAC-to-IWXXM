@@ -15,7 +15,8 @@ SCRIPT = ROOT / "scripts" / "ci" / "collect_quality_pr_stats.py"
 
 def _load_module():
     spec = importlib.util.spec_from_file_location("collect_quality_pr_stats", SCRIPT)
-    assert spec and spec.loader
+    assert spec
+    assert spec.loader
     mod = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)

@@ -1,4 +1,4 @@
-"""Shared helpers for live API tests (H3 integration — DOKS primary after T6.5)."""
+"""Shared helpers for live API tests (H3 integration - DOKS primary after T6.5)."""
 
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ def wake_live_api(base_url: str | None = None) -> str:
     pytest.skip(
         f"Live API not reachable at {url} after {WAKE_ATTEMPTS} attempts: {last_error}"
     )
-    return url  # unreachable — satisfies type checker after skip
+    return url  # unreachable - satisfies type checker after skip
 
 
 def login_with_backoff(base_url: str, email: str, password: str) -> str:

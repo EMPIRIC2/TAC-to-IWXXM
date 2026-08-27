@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import pytest
 from fastapi import HTTPException
-
 from src.routers import validation as validation_router
 from src.schemas.validation import (
     AggregatedValidationResult,

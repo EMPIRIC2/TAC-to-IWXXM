@@ -1,4 +1,4 @@
-"""TC-EV025-004 / M4.1 — AerodromeWindShift (WSHFT / FROPA).
+"""TC-EV025-004 / M4.1 - AerodromeWindShift (WSHFT / FROPA).
 
 Asserts ``iwxxm-us:AerodromeWindShift`` under ``iwxxm:AerodromeSurfaceWind``
 extension for FMH-1 ``WSHFT hhmm`` and ``WSHFT hhmm FROPA``.
@@ -9,8 +9,9 @@ XML pins follow iwxxm-us 3.0 PDF sample instances
 
 from __future__ import annotations
 
-from tac2iwxxm import convert
 from tac2iwxxm.products.metar_speci import parse_metar_speci
+
+from tac2iwxxm import convert
 
 IWXXM_VERSION = "2025-2"
 PROFILE = "iwxxm_us"

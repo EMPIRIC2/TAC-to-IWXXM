@@ -2,20 +2,22 @@
 
 from __future__ import annotations
 
+from typing import Any
+
 from fastapi import APIRouter
 
 router = APIRouter(prefix="/api/v1", tags=["Conversion"])
 
 
 @router.get("/versions")
-def get_supported_versions():
+def get_supported_versions() -> object:
     """Get list of supported IWXXM versions."""
     try:
         from src.config.iwxxm_versions import DEFAULT_VERSION, DEPRECATED_VERSIONS, SUPPORTED_VERSIONS
     except ImportError:  # pragma: no cover - Docker/local import path mirror
         from config.iwxxm_versions import DEFAULT_VERSION, DEPRECATED_VERSIONS, SUPPORTED_VERSIONS
 
-    versions_list = []
+    versions_list: list[Any] = []
     for version, config in SUPPORTED_VERSIONS.items():
         versions_list.append(
             {
@@ -36,7 +38,7 @@ def get_supported_versions():
 
 
 @router.get("/schema-status")
-def get_schema_status():
+def get_schema_status() -> object:
     """Get comprehensive schema status including RC versions and mirroring info."""
     try:
         from src.config.iwxxm_versions import DEFAULT_VERSION, get_all_versions_with_metadata, get_versions_by_channel
@@ -48,7 +50,7 @@ def get_schema_status():
     all_versions = get_versions_by_channel("all")
     all_metadata = get_all_versions_with_metadata()
 
-    metadata_summary = {}
+    metadata_summary: dict[str, Any] = {}
     for version, data in all_metadata.items():
         discovery_meta = data.get("discovery_metadata", {})
         metadata_summary[version] = {
@@ -68,14 +70,16 @@ def get_schema_status():
             ca_eccc_bundle_available,
         )
     except ImportError:  # pragma: no cover - Docker/local import path mirror
-        CA_ECCC_IWXXM_VERSION = "3.0.0"
+        ca_eccc_iwxxm_version = "3.0.0"
 
         def ca_eccc_bundle_available(
             *,
-            iwxxm_version: str = CA_ECCC_IWXXM_VERSION,
+            iwxxm_version: str = ca_eccc_iwxxm_version,
             extension_tag: str = "3.0",
         ) -> bool:
             return False
+    else:
+        ca_eccc_iwxxm_version = CA_ECCC_IWXXM_VERSION
 
     return {
         "stable": stable_versions,
@@ -85,7 +89,7 @@ def get_schema_status():
         "metadata": metadata_summary,
         "profile_pins": {
             "ca_eccc": {
-                "iwxxm_version": CA_ECCC_IWXXM_VERSION,
+                "iwxxm_version": ca_eccc_iwxxm_version,
                 "extension_bundle_available": ca_eccc_bundle_available(),
             },
         },

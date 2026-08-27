@@ -766,7 +766,7 @@ describe('FileConverter Component', () => {
       // Find and change version
       const selects = container.querySelectorAll('select');
       if (selects.length > 0) {
-        await user.click(selects[0]);
+        await user.click(selects[0]!);
         // Would select different version
       }
     });

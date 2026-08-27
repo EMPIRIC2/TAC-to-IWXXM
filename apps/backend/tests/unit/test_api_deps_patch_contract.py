@@ -5,7 +5,6 @@ from __future__ import annotations
 import inspect
 
 import pytest
-
 from src import api as api_module
 from src import api_deps
 

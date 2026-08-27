@@ -1,4 +1,4 @@
-"""TC-EV078 — CA_ECCC #916 closeout audit (EV-078).
+"""TC-EV078 - CA_ECCC #916 closeout audit (EV-078).
 
 [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: tests §TC-EV078]
 """
@@ -51,7 +51,8 @@ def test_tc_ev078_002_vaa_vaac_tac_and_airmet_ops_regression() -> None:
 def test_tc_ev078_003_coverage_matrix_residuals_waived() -> None:
     """X6 SIGMET emit met; X7 VAA emit waived; S2 VAA TAC met EV-077."""
     text = _COVERAGE.read_text(encoding="utf-8")
-    assert "EV-076" in text and "SIGMET exchange" in text
+    assert "EV-076" in text
+    assert "SIGMET exchange" in text
     assert "D-EV074-vaa-follow" in text
     assert "EV-077" in text
 

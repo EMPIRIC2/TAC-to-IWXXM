@@ -7,7 +7,7 @@ and version-specific metadata for dynamic version switching.
 
 import os
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 
 # Custom exception for deprecated versions
@@ -87,7 +87,7 @@ PROJECT_ROOT = _detect_project_root()
 DEFAULT_VERSION = "2025-2"
 
 # Supported IWXXM versions (in priority order)
-SUPPORTED_VERSIONS: Dict[str, Dict[str, Any]] = {
+SUPPORTED_VERSIONS: dict[str, dict[str, Any]] = {
     "2025-2": {
         "name": "IWXXM 2025-2",
         "release_date": "2025-11-25",
@@ -136,7 +136,7 @@ SUPPORTED_VERSIONS: Dict[str, Dict[str, Any]] = {
 }
 
 # Deprecated versions (no longer supported)
-DEPRECATED_VERSIONS: Dict[str, Dict[str, str]] = {
+DEPRECATED_VERSIONS: dict[str, dict[str, str]] = {
     "2021-2": {"deprecated_date": "2026-02-13", "reason": "Pre-2023 versions no longer supported"},
     "2018": {"deprecated_date": "2026-02-13", "reason": "Pre-2023 versions no longer supported"},
     "2018-2": {"deprecated_date": "2026-02-13", "reason": "Pre-2023 versions no longer supported"},
@@ -146,8 +146,8 @@ DEPRECATED_VERSIONS: Dict[str, Dict[str, str]] = {
     "3.0-dev": {"deprecated_date": "2026-02-13", "reason": "Legacy 3.x versions no longer supported"},
 }
 
-# Profile-scoped IWXXM lines (EV-064 / CA_ECCC) — not in general version picker.
-PROFILE_SCOPED_VERSIONS: Dict[str, Dict[str, Any]] = {
+# Profile-scoped IWXXM lines (EV-064 / CA_ECCC) - not in general version picker.
+PROFILE_SCOPED_VERSIONS: dict[str, dict[str, Any]] = {
     "3.0.0": {
         "name": "IWXXM 3.0.0 (MSC operational)",
         "namespace_uri": "http://icao.int/iwxxm/3.0",
@@ -168,7 +168,7 @@ VERSION_REMAPPING = {
 }
 
 # RC (Release Candidate) versions - dynamically populated by discovery service
-RC_VERSIONS: Dict[str, Dict[str, Any]] = {
+RC_VERSIONS: dict[str, dict[str, Any]] = {
     "2025-2RC2": {
         "name": "IWXXM 2025-2 RC2",
         "release_date": "2026-02-15",  # Current date (detected)
@@ -206,7 +206,7 @@ RC_VERSIONS: Dict[str, Dict[str, Any]] = {
 }
 
 # Version discovery metadata (tracking when versions were discovered)
-VERSION_DISCOVERY_METADATA: Dict[str, Dict[str, Any]] = {
+VERSION_DISCOVERY_METADATA: dict[str, dict[str, Any]] = {
     "2025-2": {
         "discovered": "2025-11-25T00:00:00Z",
         "source": "wmo-im/iwxxm git repository",
@@ -238,20 +238,20 @@ VERSION_DISCOVERY_METADATA: Dict[str, Dict[str, Any]] = {
 }
 
 # Versions grouped by channel (stable, rc, all)
-SUPPORTED_VERSIONS_BY_CHANNEL: Dict[str, List[str]] = {
+SUPPORTED_VERSIONS_BY_CHANNEL: dict[str, list[str]] = {
     "stable": list(SUPPORTED_VERSIONS.keys()),
     "rc": list(RC_VERSIONS.keys()),
     "all": list(SUPPORTED_VERSIONS.keys()) + list(RC_VERSIONS.keys()),
 }
 
 # Combined version registry (stable + RC)
-ALL_VERSIONS: Dict[str, Dict[str, Any]] = {**SUPPORTED_VERSIONS, **RC_VERSIONS}
+ALL_VERSIONS: dict[str, dict[str, Any]] = {**SUPPORTED_VERSIONS, **RC_VERSIONS}
 
 # API endpoint constants
 VALID_VERSION_STRINGS = list(ALL_VERSIONS.keys())
 
 
-def get_version_config(version: str) -> Dict[str, Any]:
+def get_version_config(version: str) -> dict[str, Any]:
     """
     Get configuration for a specific IWXXM version.
 
@@ -293,7 +293,7 @@ def get_version_config(version: str) -> Dict[str, Any]:
     return ALL_VERSIONS[normalized]
 
 
-def get_version_config_for_emit_profile(version: str, emit_profile: str | None = None) -> Dict[str, Any]:
+def get_version_config_for_emit_profile(version: str, emit_profile: str | None = None) -> dict[str, Any]:
     """
     Resolve IWXXM version config, allowing profile-scoped lines when appropriate.
 
@@ -351,7 +351,7 @@ def normalize_version(version: str) -> str:
     return version
 
 
-def get_supported_versions() -> List[str]:
+def get_supported_versions() -> list[str]:
     """Get list of supported IWXXM versions in priority order."""
     return VALID_VERSION_STRINGS
 
@@ -407,7 +407,7 @@ def resolve_schema_file(version: str, file_type: str = "xsd") -> Path:
     return filepath
 
 
-def get_breaking_changes(from_version: str, to_version: str) -> List[Dict[str, Any]]:
+def get_breaking_changes(from_version: str, to_version: str) -> list[dict[str, Any]]:
     """
     Get list of breaking changes when migrating from one version to another.
 
@@ -477,7 +477,7 @@ def get_version_channel(version: str) -> str:
         return "unknown"
 
 
-def get_versions_by_channel(channel: str = "all") -> List[str]:
+def get_versions_by_channel(channel: str = "all") -> list[str]:
     """
     Get list of versions filtered by channel.
 
@@ -504,7 +504,7 @@ def get_version_discovery_date(version: str) -> str:
     return metadata.get("discovered", "")
 
 
-def register_rc_version(version: str, config: Dict[str, Any]) -> None:
+def register_rc_version(version: str, config: dict[str, Any]) -> None:
     """
     Register a newly discovered RC version.
 
@@ -520,18 +520,18 @@ def register_rc_version(version: str, config: Dict[str, Any]) -> None:
     SUPPORTED_VERSIONS_BY_CHANNEL["all"] = list(ALL_VERSIONS.keys())
 
     # Update valid version strings
-    global VALID_VERSION_STRINGS
-    VALID_VERSION_STRINGS = list(ALL_VERSIONS.keys())
+    VALID_VERSION_STRINGS.clear()
+    VALID_VERSION_STRINGS.extend(ALL_VERSIONS.keys())
 
 
-def get_all_versions_with_metadata() -> Dict[str, Dict[str, Any]]:
+def get_all_versions_with_metadata() -> dict[str, dict[str, Any]]:
     """
     Get all versions with their full configuration and discovery metadata.
 
     Returns:
         Dictionary mapping version strings to combined config + metadata
     """
-    result = {}
+    result: dict[str, Any] = {}
     for version, config in ALL_VERSIONS.items():
         result[version] = {**config, "discovery_metadata": VERSION_DISCOVERY_METADATA.get(version, {})}
     return result

@@ -1,4 +1,4 @@
-"""TC-F33-002/003 — mass ingest caps, sniff, zip-bomb (EV-042).
+"""TC-F33-002/003 - mass ingest caps, sniff, zip-bomb (EV-042).
 
 [Corpus: product §F33] [Corpus: tests]
 """
@@ -95,8 +95,10 @@ def test_tc_f33_002_rejects_mz_and_png_magic() -> None:
     assert jpeg.accepted is False
     assert nested_zip.accepted is False
     assert empty.accepted is True  # empty UTF-8 text is allowed
-    assert mz.reason is not None and "binary" in mz.reason.lower()
-    assert nested_zip.reason is not None and "binary" in nested_zip.reason.lower()
+    assert mz.reason is not None
+    assert "binary" in mz.reason.lower()
+    assert nested_zip.reason is not None
+    assert "binary" in nested_zip.reason.lower()
 
 
 def test_tc_f33_002_accepts_extensionless_and_rejects_dotfile() -> None:

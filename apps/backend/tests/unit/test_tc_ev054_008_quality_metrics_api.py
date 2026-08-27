@@ -1,4 +1,4 @@
-"""TC-EV054-008 — public quality-metrics HTTP API (+ TC-EV054-006 offline path)."""
+"""TC-EV054-008 - public quality-metrics HTTP API (+ TC-EV054-006 offline path)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,6 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.quality_metrics_store import clear_corpus_metrics_cache
 

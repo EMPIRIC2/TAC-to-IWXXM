@@ -1,11 +1,10 @@
-"""Unit tests for CatalogGenerator – 0% coverage target."""
+"""Unit tests for CatalogGenerator - 0% coverage target."""
 
 import json
 from pathlib import Path
 
 import pytest
 from lxml import etree as ET
-
 from src.services.catalog_generator import (
     CatalogGenerator,
     generate_all_catalogs,
@@ -38,7 +37,7 @@ class TestCatalogGeneratorGenerateCatalog:
 
     def test_generate_catalog_raises_when_dir_missing(self, tmp_path):
         gen = CatalogGenerator(schemas_base_path=tmp_path)
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FileNotFoundError, match=r".*"):
             gen.generate_catalog(version="9999-9", remote_base_url="https://example.com/")
 
     def test_generate_catalog_contains_rewrite_uri(self, tmp_path):
@@ -86,7 +85,7 @@ class TestCatalogGeneratorHelpers:
     def test_add_rewrite_uri_appends_element(self, tmp_path):
         gen = CatalogGenerator(schemas_base_path=tmp_path)
         CATALOG_NS = "urn:oasis:names:tc:entity:xmlns:xml:catalog"
-        catalog_elem = ET.Element("{%s}catalog" % CATALOG_NS)
+        catalog_elem = ET.Element(f"{{{CATALOG_NS}}}catalog")
         gen._add_rewrite_uri(catalog_elem, "https://example.com/", "file:///local/")
         children = list(catalog_elem)
         assert len(children) == 1

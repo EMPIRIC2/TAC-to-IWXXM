@@ -40,7 +40,7 @@ def generate_diverse_sample(generator: METARTestGenerator, count: int = 200):
     if api_key:
         print("   ✓ OpenAIP API key configured")
     else:
-        print("   ℹ OpenAIP API key not found (will use local data only)")
+        print("   i OpenAIP API key not found (will use local data only)")
 
     # Generate test cases
     test_cases = generator.diverse_sample(count=count, hours=3, use_cache=False)

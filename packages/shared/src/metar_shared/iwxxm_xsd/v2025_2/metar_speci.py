@@ -1060,7 +1060,7 @@ class MeteorologicalAerodromeObservationType(AbstractGmltype):
     cloud
         When no clouds are detected by the automatic observing system, it should be indicated by a missing cloud
         group with a nil reason of notDetectedByAutoSystem ("NCD" from TAC). When there are no clouds of operational
-        significance and no restriction on vertical visibility and “CAVOK” is not appropriate ("NSC") it should be
+        significance and no restriction on vertical visibility and "CAVOK" is not appropriate ("NSC") it should be
         indicated by a missing cloud group with a nil reason of nothingOfOperationalSignificance
     recent_weather
         Recent weather is one of the recent weather phenomena to be reported as supplementary information.

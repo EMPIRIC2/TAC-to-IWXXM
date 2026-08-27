@@ -1,4 +1,4 @@
-"""Allowlist / SSRF helpers — fail-closed + private/metadata deny (T1.3 / ADR-029)."""
+"""Allowlist / SSRF helpers - fail-closed + private/metadata deny (T1.3 / ADR-029)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,6 @@ import ipaddress
 from unittest.mock import patch
 
 import pytest
-
 from dissemination.allowlist import (
     AllowlistError,
     EgressDenied,
@@ -33,7 +32,7 @@ def test_load_allowlist_from_env_fail_closed_when_unset(monkeypatch: pytest.Monk
     monkeypatch.delenv("DISSEMINATION_EGRESS_ALLOWLIST", raising=False)
     al = load_allowlist_from_env()
     assert al.is_empty
-    with pytest.raises(EgressDenied, match="fail-closed|allowlist"):
+    with pytest.raises(EgressDenied, match=r"fail-closed|allowlist"):
         validate_egress_host("example.com", allowlist=al)
 
 
@@ -64,19 +63,21 @@ def test_validate_denies_host_not_on_allowlist() -> None:
 
 def test_validate_denies_cloud_metadata_even_if_allowlisted() -> None:
     al = parse_allowlist("169.254.169.254, metadata.google.internal")
-    with pytest.raises(EgressDenied, match="metadata|blocked"):
+    with pytest.raises(EgressDenied, match=r"metadata|blocked"):
         validate_egress_host("169.254.169.254", allowlist=al)
 
 
 def test_validate_denies_dns_rebinding_to_private_when_not_in_cidr() -> None:
     """Hostname allowlisted, but resolved A record is private and not in an allowlisted CIDR."""
     al = parse_allowlist("tricky.example.com")
-    with patch(
-        "dissemination.allowlist.socket.getaddrinfo",
-        return_value=[(None, None, None, None, ("10.1.2.3", 0))],
+    with (
+        patch(
+            "dissemination.allowlist.socket.getaddrinfo",
+            return_value=[(None, None, None, None, ("10.1.2.3", 0))],
+        ),
+        pytest.raises(EgressDenied, match=r"private|resolved"),
     ):
-        with pytest.raises(EgressDenied, match="private|resolved"):
-            validate_egress_host("tricky.example.com", allowlist=al)
+        validate_egress_host("tricky.example.com", allowlist=al)
 
 
 def test_validate_allows_private_ip_when_cidr_allowlisted() -> None:
@@ -125,19 +126,23 @@ def test_load_allowlist_from_env_parses_hosts(monkeypatch: pytest.MonkeyPatch) -
 
 def test_validate_denies_when_dns_returns_no_addresses() -> None:
     al = parse_allowlist("empty.example.com")
-    with patch("dissemination.allowlist.socket.getaddrinfo", return_value=[]):
-        with pytest.raises(EgressDenied, match="did not resolve"):
-            validate_egress_host("empty.example.com", allowlist=al)
+    with (
+        patch("dissemination.allowlist.socket.getaddrinfo", return_value=[]),
+        pytest.raises(EgressDenied, match="did not resolve"),
+    ):
+        validate_egress_host("empty.example.com", allowlist=al)
 
 
 def test_validate_denies_when_dns_raises_oserror() -> None:
     al = parse_allowlist("nx.example.com")
-    with patch(
-        "dissemination.allowlist.socket.getaddrinfo",
-        side_effect=OSError("name resolution failed"),
+    with (
+        patch(
+            "dissemination.allowlist.socket.getaddrinfo",
+            side_effect=OSError("name resolution failed"),
+        ),
+        pytest.raises(EgressDenied, match="did not resolve"),
     ):
-        with pytest.raises(EgressDenied, match="did not resolve"):
-            validate_egress_host("nx.example.com", allowlist=al)
+        validate_egress_host("nx.example.com", allowlist=al)
 
 
 def test_iter_allowlist_entries_and_default_env_load(

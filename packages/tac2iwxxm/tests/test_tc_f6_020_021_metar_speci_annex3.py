@@ -15,6 +15,7 @@ from pathlib import Path
 
 import msgspec
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
@@ -73,7 +74,7 @@ def test_annex3_golden_manifest_present(golden_manifest: dict) -> None:
         elif golden:
             assert (FIXTURES / str(golden)).is_file()
         else:
-            # Vendor-stem equality (TC-EV025-008 / #809) — no package golden; seed required.
+            # Vendor-stem equality (TC-EV025-008 / #809) - no package golden; seed required.
             assert case.get("seed"), f"case {case.get('id')!r} needs golden or seed"
         assert case["product"] in {
             "METAR",
@@ -149,7 +150,8 @@ def test_tc_f6_021_m_golden_annex3(case_id: str, golden_manifest: dict) -> None:
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     actual = canonicalize_xml(result.xml)
     assert actual == expected, (
         f"M-golden mismatch for {case_id}:\nexpected: {expected[:240]}...\nactual:   {actual[:240]}..."

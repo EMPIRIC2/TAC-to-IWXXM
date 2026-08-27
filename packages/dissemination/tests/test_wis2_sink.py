@@ -1,7 +1,7 @@
 """WIS2 sink adapter unit tests with mocked MQTT/HTTP (T3.1 / TC-F17-001 / E14-09).
 
 Exercises preflight + publish orchestration without a live broker or wis2box.
-Real Compose harness coverage lands in T3.3–T3.4.
+Real Compose harness coverage lands in T3.3-T3.4.
 """
 
 from __future__ import annotations
@@ -11,7 +11,6 @@ from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
-
 from dissemination.allowlist import EgressDenied, parse_allowlist
 from dissemination.wis2 import (
     Wis2Params,
@@ -196,7 +195,7 @@ async def test_wis2_preflight_dataset_ping_false(mqtt: AsyncMock, http: AsyncMoc
 @pytest.mark.asyncio
 async def test_wis2_preflight_transport_error_redacted(mqtt: AsyncMock, http: AsyncMock) -> None:
     mqtt.connect = AsyncMock(side_effect=RuntimeError("password=secret-token boom"))
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(ValueError, match=r".*") as excinfo:
         await wis2_preflight(
             _params(),
             allowlist=_allowlist("broker.example.test", "data.example.test"),

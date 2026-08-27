@@ -1,4 +1,4 @@
-"""T5.3 / TC-EV031-001 — migrate dry-run / apply helpers."""
+"""T5.3 / TC-EV031-001 - migrate dry-run / apply helpers."""
 
 from __future__ import annotations
 
@@ -39,7 +39,8 @@ def test_build_insert_sql_is_idempotent_on_conflict() -> None:
     assert 'INSERT INTO "tac_work_sessions"' in sql
     assert "ON CONFLICT" in sql
     assert "DO NOTHING" in sql
-    assert ":id" in sql and ":user_id" in sql
+    assert ":id" in sql
+    assert ":user_id" in sql
 
 
 @pytest.mark.unit

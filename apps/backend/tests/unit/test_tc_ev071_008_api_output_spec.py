@@ -1,13 +1,13 @@
-"""TC-EV071-008 — API convert exposes CA_ECCC output spec (EV-071 M2 / #1032)."""
+"""TC-EV071-008 - API convert exposes CA_ECCC output spec (EV-071 M2 / #1032)."""
 
 from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-from tac2iwxxm import parse_ahl
+from src import api as api_module
 from tac2iwxxm.exchange_output import ca_msc_filename, format_ca_wmo_ahl, issued_at_from_yygggg
 
-from src import api as api_module
+from tac2iwxxm import parse_ahl
 
 _BULLETIN = """\
 SAUL31 CYUL 231800

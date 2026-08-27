@@ -1,6 +1,6 @@
 """TC-EV069-001..003: CA_ECCC validation deepen (EV-069 / #1035 follow-on).
 
-Spec: docs/test-plan.md TC-EV069-*; layers 5–6 + TAF product XSD gate.
+Spec: docs/test-plan.md TC-EV069-*; layers 5-6 + TAF product XSD gate.
 Corpus: [Corpus: product §F2] [Corpus: product §F13] [Corpus: tests]
 """
 
@@ -9,7 +9,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from iwxxm_validate import rust_available, validate_iwxxm
 from iwxxm_validate.ca_eccc_bundle import CA_ECCC_IWXXM_VERSION
 from iwxxm_validate.ca_eccc_layers import pending_ca_stages
@@ -36,7 +35,7 @@ def test_tc_ev069_001_pending_stages_empty_after_ev069() -> None:
 
 @pytest.mark.unit
 def test_tc_ev069_002_taf_nclws_golden_passes_full_ca_stack() -> None:
-    """TAF NCLWS golden passes layers 2–6 including product ``taf-ca.xsd``."""
+    """TAF NCLWS golden passes layers 2-6 including product ``taf-ca.xsd``."""
     if not rust_available():
         pytest.skip("iwxxm_validate._rust not built (make build-iwxxm-validate-native)")
 

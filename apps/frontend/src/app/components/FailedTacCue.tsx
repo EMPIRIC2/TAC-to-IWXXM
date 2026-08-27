@@ -24,6 +24,9 @@ export function FailedTacCue({ failedSpans }: FailedTacCueProps) {
   }
 
   const primary = failedSpans[0];
+  if (!primary) {
+    return null;
+  }
   const extra = failedSpans.length > 1 ? failedSpans.length : null;
 
   return (

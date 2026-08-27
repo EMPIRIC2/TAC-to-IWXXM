@@ -1,4 +1,4 @@
-"""TC-EV027-001 / TC-EV027-002 — official WMO TAC inventory ↔ catalog ∪ gaps (#815)."""
+"""TC-EV027-001 / TC-EV027-002 - official WMO TAC inventory ↔ catalog U gaps (#815)."""
 
 from __future__ import annotations
 
@@ -32,8 +32,10 @@ def test_tc_ev027_001_deferred_have_rationale() -> None:
     for peer in OFFICIAL_TAC_PEERS:
         if peer.disposition != "deferred":
             continue
-        assert peer.deferral_reason and peer.deferral_reason.strip()
-        assert peer.issue and peer.issue.strip()
+        assert peer.deferral_reason
+        assert peer.deferral_reason.strip()
+        assert peer.issue
+        assert peer.issue.strip()
 
 
 def test_tc_ev027_002_registered_peers_have_annex3_mirrors() -> None:

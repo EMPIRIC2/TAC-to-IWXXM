@@ -5,7 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from src.utilities.station_sampler import StationSampler
 
 
@@ -79,7 +78,7 @@ def test_find_airports_csv_raises_when_no_candidate_exists(monkeypatch: pytest.M
 
     monkeypatch.setattr("src.utilities.station_sampler.pathlib.Path", _MissingPath)
 
-    with pytest.raises(FileNotFoundError, match="Could not find af-airports.csv"):
+    with pytest.raises(FileNotFoundError, match=r"Could not find af-airports.csv"):
         StationSampler._find_airports_csv()
 
 

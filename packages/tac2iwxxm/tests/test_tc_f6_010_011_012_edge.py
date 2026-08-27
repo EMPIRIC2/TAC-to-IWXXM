@@ -1,6 +1,6 @@
-"""TC-F6-010 / 011 / 012 edge cases (T5.6 / UJ-008–010).
+"""TC-F6-010 / 011 / 012 edge cases (T5.6 / UJ-008-010).
 
-Spec: docs/test-plan.md TC-F6-010–012; docs/user-journeys.md UJ-008–010.
+Spec: docs/test-plan.md TC-F6-010-012; docs/user-journeys.md UJ-008-010.
 """
 
 from __future__ import annotations
@@ -31,7 +31,8 @@ def test_tc_f6_011_iwxxm_us_pin_fail_closed(monkeypatch: pytest.MonkeyPatch) -> 
         product="METAR",
         profile="iwxxm_us",
     )
-    assert result.ok is True and result.xml
+    assert result.ok is True
+    assert result.xml
     # Convert itself still emits US XML; fail-closed is on validate path.
     monkeypatch.setattr(validate_api, "us_catalog_path", lambda: None)
     report = validate(result.xml, iwxxm_version="2025-2", profile="iwxxm_us")
@@ -45,7 +46,7 @@ def test_tc_f6_012_malformed_us_remarks_diagnostics() -> None:
     """UJ-010: malformed US REMARKS under iwxxm_us yield structured issues (not silent drop)."""
     from tac2iwxxm import convert
 
-    # AOX / SLPZZZ / PK WND without valid groups — should surface REMARKS diagnostics.
+    # AOX / SLPZZZ / PK WND without valid groups - should surface REMARKS diagnostics.
     result = convert(
         "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AOX SLPZZZ PK WND XXX=",
         product="METAR",

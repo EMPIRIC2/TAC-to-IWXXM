@@ -1,9 +1,9 @@
-"""F23 / C1 — common rules for SIGMET + VA (TC-F23-004 / matrix C1).
+"""F23 / C1 - common rules for SIGMET + VA (TC-F23-004 / matrix C1).
 
 HARD theme C1 from sigmet-research-catalog.md (#733/#739 common table).
 T4.3 seeded fixtures; T4.4 encodes MULTI_REPORT_BULLETIN for SIGMET, tags
 reportStatus/nil/COR codes with ``c1``, and asserts. CRS / translationFailedTAC /
-COLLECT packing remain convert-only (matrix note — F20 C1 pattern).
+COLLECT packing remain convert-only (matrix note - F20 C1 pattern).
 """
 
 from __future__ import annotations
@@ -13,7 +13,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 
@@ -50,7 +49,7 @@ _C1_ACCEPT = [c for c in _MANIFEST["accept"] if c.get("theme") == "C1" and c.get
 _C1_INFO = list(_MANIFEST.get("f23_c1_modifier_info", []))
 _C1_ERRORS = list(_MANIFEST.get("f23_c1_errors", []))
 
-# Convert-only (no TAC lint surface) — documented for matrix deferral.
+# Convert-only (no TAC lint surface) - documented for matrix deferral.
 _C1_CONVERT_ONLY = (
     "2-D CRS attrs (srsName / srsDimension / axisLabels)",
     "translationFailedTAC",

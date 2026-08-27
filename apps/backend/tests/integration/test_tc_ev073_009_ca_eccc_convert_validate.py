@@ -1,4 +1,4 @@
-"""TC-EV073-009 — CA_ECCC convert + validate with IWXXM_CA (EV-073 M2 / #1042)."""
+"""TC-EV073-009 - CA_ECCC convert + validate with IWXXM_CA (EV-073 M2 / #1042)."""
 
 from __future__ import annotations
 
@@ -9,9 +9,8 @@ import pytest
 from fastapi.testclient import TestClient
 from iwxxm_validate import rust_available
 from iwxxm_validate.ca_eccc_bundle import CA_ECCC_IWXXM_VERSION, ca_eccc_bundle_available
-from tac2iwxxm.ca_ops_corpus import extract_iwxxm_from_collect
-
 from src import api as api_module
+from tac2iwxxm.ca_ops_corpus import extract_iwxxm_from_collect
 
 REPO_ROOT = Path(__file__).resolve().parents[4]
 CA_FIXTURES = REPO_ROOT / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "profiles" / "CA_ECCC"

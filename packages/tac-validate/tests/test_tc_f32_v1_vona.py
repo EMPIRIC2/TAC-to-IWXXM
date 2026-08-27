@@ -1,4 +1,4 @@
-"""F32 theme V1 — VONA accept + negatives (TC-F32-001 / #741).
+"""F32 theme V1 - VONA accept + negatives (TC-F32-001 / #741).
 
 T2.2 fixtures (RED until T2.3 registry + product rules). Theme id **V1**.
 """
@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

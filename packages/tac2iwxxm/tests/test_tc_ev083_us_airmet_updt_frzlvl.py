@@ -1,4 +1,4 @@
-"""TC-EV083 — US_FAA_NWS M17–M18 (#919 CONUS UPDT header + FRZLVL subsection).
+"""TC-EV083 - US_FAA_NWS M17-M18 (#919 CONUS UPDT header + FRZLVL subsection).
 
 [Corpus: product §F36] [Corpus: tests] [Corpus: domain-profiles §US_FAA_NWS]
 """
@@ -9,10 +9,10 @@ import json
 from pathlib import Path
 
 import pytest
-from metar_shared.xml_canonical import canonicalize_xml
-
-from tac2iwxxm import convert
 from tac2iwxxm.products.sigmet_airmet import parse_airmet
+
+from metar_shared.xml_canonical import canonicalize_xml
+from tac2iwxxm import convert
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "US_FAA_NWS"
 MANIFEST_PATH = FIXTURES / "manifest.json"
@@ -30,7 +30,7 @@ def us_manifest() -> dict:
 
 
 def test_tc_ev083_001_airmet_zulu_updt_ice(us_manifest: dict) -> None:
-    """M17 — CONUS ``UPDT`` header + ``BTN FRZLVL`` vertical extent + inline FRZLVL."""
+    """M17 - CONUS ``UPDT`` header + ``BTN FRZLVL`` vertical extent + inline FRZLVL."""
     case = next(c for c in us_manifest["cases"] if c["id"] == "airmet_zulu_updt_ice")
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
     ir = parse_airmet(tac)
@@ -41,7 +41,8 @@ def test_tc_ev083_001_airmet_zulu_updt_ice(us_manifest: dict) -> None:
     assert ir.get("upper_fl") == 200
     assert ir.get("inline_frzlvl_lo") == 60
     result = convert(tac, product="AIRMET", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert "freezingLevel" in result.xml
     assert 'lowerLimit uom="FL">60</aixm:lowerLimit>' in result.xml
     expected = canonicalize_xml((FIXTURES / case["golden"]).read_text(encoding="utf-8"))
@@ -49,7 +50,7 @@ def test_tc_ev083_001_airmet_zulu_updt_ice(us_manifest: dict) -> None:
 
 
 def test_tc_ev083_002_airmet_frzlvl_section(us_manifest: dict) -> None:
-    """M18 — standalone ``FRZLVL...`` subsection emits ``FreezingLevelForecast``."""
+    """M18 - standalone ``FRZLVL...`` subsection emits ``FreezingLevelForecast``."""
     case = next(c for c in us_manifest["cases"] if c["id"] == "airmet_frzlvl_section")
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
     ir = parse_airmet(tac)
@@ -58,7 +59,8 @@ def test_tc_ev083_002_airmet_frzlvl_section(us_manifest: dict) -> None:
     assert section.get("ranging_to") == 120
     assert len(section.get("isopleths", [])) == 1
     result = convert(tac, product="AIRMET", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert "FreezingLevelForecast" in result.xml
     assert "isopleth" in result.xml
     expected = canonicalize_xml((FIXTURES / case["golden"]).read_text(encoding="utf-8"))

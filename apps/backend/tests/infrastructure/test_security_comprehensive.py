@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from src.utilities.security import DISABLE_AUTH, fetch_jwks, verify_supabase_token
 
 

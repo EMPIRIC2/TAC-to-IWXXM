@@ -1,4 +1,4 @@
-"""TC-F15-005 / R7 — METAR↔SPECI adjacency; no silent cross-product pass (T4.3)."""
+"""TC-F15-005 / R7 - METAR↔SPECI adjacency; no silent cross-product pass (T4.3)."""
 
 from __future__ import annotations
 

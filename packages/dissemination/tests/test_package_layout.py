@@ -27,7 +27,7 @@ def test_package_src_layout_exists() -> None:
 
 
 def test_package_has_no_fastapi_or_supabase_imports() -> None:
-    """ADR-030 — sinks live in the package; FastAPI/Supabase stay in apps/backend."""
+    """ADR-030 - sinks live in the package; FastAPI/Supabase stay in apps/backend."""
     forbidden = {"fastapi", "supabase"}
     py_files = list(PACKAGE_SRC.rglob("*.py"))
     assert py_files, "expected dissemination package sources"

@@ -1,4 +1,4 @@
-"""T3.7a / ADR-027 / F11 acc4: codegen regen smoke — importable + non-empty models."""
+"""T3.7a / ADR-027 / F11 acc4: codegen regen smoke - importable + non-empty models."""
 
 from __future__ import annotations
 
@@ -23,7 +23,8 @@ SMOKE_ENTRY = "metarSpeci.xsd"
 
 def _load_script():
     spec = importlib.util.spec_from_file_location("iwxxm_xsd_codegen_t37a", SCRIPT)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod

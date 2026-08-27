@@ -11,9 +11,9 @@ import inspect
 
 import pytest
 from fastapi.testclient import TestClient
-from metar_shared import METAR_CORS_ORIGINS_ENV
-
 from src import api as api_module
+
+from metar_shared import METAR_CORS_ORIGINS_ENV
 
 HIGH_CHURN_PATHS = (
     "/api/v1/convert",

@@ -1,4 +1,4 @@
-"""TC-M004: No Submodule References — test-plan.md §TC-M004, T11.1 gate."""
+"""TC-M004: No Submodule References - test-plan.md §TC-M004, T11.1 gate."""
 
 from __future__ import annotations
 

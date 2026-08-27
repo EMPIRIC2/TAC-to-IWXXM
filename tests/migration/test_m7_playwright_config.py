@@ -1,4 +1,4 @@
-"""M7 Playwright monorepo config — test-plan.md §E2E, deploy.md §Local."""
+"""M7 Playwright monorepo config - test-plan.md §E2E, deploy.md §Local."""
 
 from __future__ import annotations
 

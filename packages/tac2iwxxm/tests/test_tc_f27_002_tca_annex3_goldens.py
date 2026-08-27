@@ -1,10 +1,10 @@
-"""TC-F27-002 / TC-F27-003 — TCA annex3 golden (S027 / EV-021 T4.1–T4.2 / F27 theme T3).
+"""TC-F27-002 / TC-F27-003 - TCA annex3 golden (S027 / EV-021 T4.1-T4.2 / F27 theme T3).
 
 Asserts WMO ``tc-advisory-A2-2`` is in the annex3 pack, root
 ``iwxxm:TropicalCycloneAdvisory``, convert → M-xsd/M-sch under default
 settings, and ``canonicalize_xml`` equals vendor golden (ADR-032 / E21-2).
 
-Always write “F27 theme T3” (not F20 TAF T3) — D-S027-EV021-s02m1-1.
+Always write "F27 theme T3" (not F20 TAF T3) - D-S027-EV021-s02m1-1.
 """
 
 from __future__ import annotations
@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
@@ -110,8 +111,9 @@ def test_tc_f27_002_tca_m_golden(case_id: str) -> None:
 
 def test_tc_f27_002_tca_a2_2_content_signals() -> None:
     """GLORIA / YUFO seed: advisory root + cyclone identity under product=tca."""
-    from tac2iwxxm import convert
     from tac2iwxxm.products.vaa_tca import parse_tca
+
+    from tac2iwxxm import convert
 
     tac = (FIXTURES / "tca_a2_2.tac").read_text(encoding="utf-8")
     ir = parse_tca(tac, product="TCA")

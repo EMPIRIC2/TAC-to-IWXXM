@@ -1,4 +1,4 @@
-"""H5 runtime config gate — validates /config.json contract (ADR-010, S003)."""
+"""H5 runtime config gate - validates /config.json contract (ADR-010, S003)."""
 
 from __future__ import annotations
 
@@ -35,7 +35,7 @@ def test_config_profiles_have_required_runtime_keys(profile: str) -> None:
 
 
 def test_e2e_profile_omits_retired_disable_auth() -> None:
-    """F21 / T4.3 — ``api.disableAuth`` retired; public app needs no auth bypass flag."""
+    """F21 / T4.3 - ``api.disableAuth`` retired; public app needs no auth bypass flag."""
     cfg = _load_config_profile("e2e")
     api = cfg["api"]
     assert isinstance(api, dict)
@@ -43,7 +43,7 @@ def test_e2e_profile_omits_retired_disable_auth() -> None:
 
 
 def test_prod_profile_omits_retired_disable_auth() -> None:
-    """F21 / T4.3 — production profiles must not carry retired ``disableAuth``."""
+    """F21 / T4.3 - production profiles must not carry retired ``disableAuth``."""
     cfg = _load_config_profile("prod")
     api = cfg["api"]
     assert isinstance(api, dict)

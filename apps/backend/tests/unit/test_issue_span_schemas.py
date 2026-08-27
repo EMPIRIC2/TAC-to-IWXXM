@@ -1,4 +1,4 @@
-"""T2.1 — HTTP lint/validate issue models optional start/end (S011)."""
+"""T2.1 - HTTP lint/validate issue models optional start/end (S011)."""
 
 from __future__ import annotations
 

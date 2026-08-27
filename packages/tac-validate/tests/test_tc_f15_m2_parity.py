@@ -1,4 +1,4 @@
-"""M2 parity baseline — lint codes/severities must match the registry (TC-F12-001 / TC-F15-001).
+"""M2 parity baseline - lint codes/severities must match the registry (TC-F12-001 / TC-F15-001).
 
 Pinned before T2.2 migrates ``rules.py`` / ``product_rules.py`` onto ``issue_from``.
 Accept + negative fixture packs must stay green through that migration.
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

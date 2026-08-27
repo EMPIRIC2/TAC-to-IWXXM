@@ -2,7 +2,7 @@
 
 Operator waived live destination credentials (D-S019-EV014-Q15-mock-waive).
 Exercises Postgres stand-in (SQLite), WIS2 (mocked transports), and EDIS
-(mocked SMTP) with fixture-shaped params — no live egress.
+(mocked SMTP) with fixture-shaped params - no live egress.
 """
 
 from __future__ import annotations
@@ -13,14 +13,13 @@ from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from sqlalchemy.ext.asyncio import create_async_engine
-
 from dissemination.allowlist import parse_allowlist
 from dissemination.db_preflight import run_db_preflight
 from dissemination.edis import EdisParams, edis_preflight, edis_submit
 from dissemination.models import PreflightRequest
 from dissemination.wis2 import Wis2Params, wis2_preflight, wis2_publish
 from dissemination.writer_contract import apply_writer_contract, diff_writer_contract
+from sqlalchemy.ext.asyncio import create_async_engine
 
 _FIXTURES = (
     Path(__file__).resolve().parents[3]

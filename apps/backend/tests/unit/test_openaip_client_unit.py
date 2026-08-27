@@ -1,11 +1,10 @@
-"""Unit tests for OpenAIPClient – 0% coverage target."""
+"""Unit tests for OpenAIPClient - 0% coverage target."""
 
 import json
 from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-
 from src.clients.openaip_client import Airport, OpenAIPClient
 
 # ---------------------------------------------------------------------------

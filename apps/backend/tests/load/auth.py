@@ -4,10 +4,8 @@ from __future__ import annotations
 
 import threading
 from abc import ABC, abstractmethod
-from typing import Dict
 
 import requests
-
 from tests.load.config import LoadProfile
 
 
@@ -15,14 +13,14 @@ class AuthProvider(ABC):
     """Provides headers for protected API calls."""
 
     @abstractmethod
-    def headers(self) -> Dict[str, str]:
+    def headers(self) -> dict[str, str]:
         """Return request headers for authenticated requests."""
 
 
 class BypassAuthProvider(AuthProvider):
     """No-op auth provider for DISABLE_AUTH mode."""
 
-    def headers(self) -> Dict[str, str]:
+    def headers(self) -> dict[str, str]:
         return {}
 
 
@@ -34,7 +32,7 @@ class BearerAuthProvider(AuthProvider):
         self._access_token = ""
         self._lock = threading.Lock()
 
-    def headers(self) -> Dict[str, str]:
+    def headers(self) -> dict[str, str]:
         token = self._get_token()
         return {"Authorization": f"Bearer {token}"}
 

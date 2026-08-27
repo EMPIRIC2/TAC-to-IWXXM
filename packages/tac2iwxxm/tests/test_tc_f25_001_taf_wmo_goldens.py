@@ -1,4 +1,4 @@
-"""TC-F25-001 / TC-F25-002 — WMO TAF annex3 goldens (S026 / EV-020 T4.1–T4.3 / F25 W3).
+"""TC-F25-001 / TC-F25-002 - WMO TAF annex3 goldens (S026 / EV-020 T4.1-T4.3 / F25 W3).
 
 Asserts vendor ``taf-A5-1`` / ``taf-A5-2`` (AMD/CNL) are in the annex3 pack and
 ``canonicalize_xml(convert(...))`` equals vendor under defaults (ADR-032 / E20-E1).
@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"

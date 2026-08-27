@@ -6,7 +6,6 @@ CORS) live in ``test_f7_ui_connection_integration.py``.
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api import app
 from src.utilities.security import verify_supabase_token
 

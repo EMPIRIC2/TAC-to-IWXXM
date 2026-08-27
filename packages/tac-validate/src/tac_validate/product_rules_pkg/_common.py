@@ -1,6 +1,6 @@
 """Product-specific TAC checklist and template-gate rules (F12 / E10-21).
 
-Cite paraphrase tables in ``docs/domain/TAC_VALIDATION.md`` only — no Annex prose.
+Cite paraphrase tables in ``docs/domain/TAC_VALIDATION.md`` only - no Annex prose.
 """
 
 from __future__ import annotations
@@ -22,7 +22,7 @@ _VIS_BAD = re.compile(
     r"\b(\d+KM|\d+MILES|\d{5,})\b",
     re.IGNORECASE,
 )
-# R3: WMO 306 Table 4678 subset — intensity / descriptor / phenomenon grammar.
+# R3: WMO 306 Table 4678 subset - intensity / descriptor / phenomenon grammar.
 _WX_PHENOMENA = frozenset(
     {
         "DZ",
@@ -55,18 +55,18 @@ _WX_SPECIAL = frozenset({"UP", "//"})
 _RVR = re.compile(r"^R\d{2}")
 # R8: RVR runway visual range (simplified ICAO/US shapes).
 # ICAO tendency U|D|N may follow the value (and optional FT for US). EV-040: R12/1000U
-# from WMO A3-1 is valid — prior pattern only allowed bare N/FT, not U/D.
+# from WMO A3-1 is valid - prior pattern only allowed bare N/FT, not U/D.
 _RVR_OK = re.compile(r"^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT)?[UDN]?$")
-# WMO AHL heading: T1T2A1A2ii CCCC YYGGgg [BBB] — YYGGgg must not be treated as visibility.
+# WMO AHL heading: T1T2A1A2ii CCCC YYGGgg [BBB] - YYGGgg must not be treated as visibility.
 _AHL_HEADING_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{3})?\s*$")
 _WIND_TOKEN = re.compile(r"(?:KT|MPS)$|^CALM$")
 _CLOUD_START = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)")
 # R4: FEW|SCT|BKN|OVC + 3-digit height + optional CB|TCU; VV###|VV///; NSC|NCD|SKC|CLR.
 _CLOUD_OK = re.compile(r"^(?:(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$")
 _CLOUD_LIKE = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})")
-# Layered amounts only (NSC exclusivity / TC-EV023-001) — not VV/NSC/NCD/SKC/CLR.
+# Layered amounts only (NSC exclusivity / TC-EV023-001) - not VV/NSC/NCD/SKC/CLR.
 _LAYER_CLOUD_TOKEN = re.compile(r"^(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?$")
-# R5: US METAR remarks (iwxxm_us) — AO1/AO2, SLP###, P####, T########, PK WND dddss/tt.
+# R5: US METAR remarks (iwxxm_us) - AO1/AO2, SLP###, P####, T########, PK WND dddss/tt.
 _RMK_AO = frozenset({"AO1", "AO2"})
 _RMK_SLP_OK = re.compile(r"^SLP\d{3}$")
 _RMK_P_OK = re.compile(r"^P\d{4}$")
@@ -105,7 +105,7 @@ _SWXC_LINE = re.compile(r"(?m)^\s*SWXC\s*:", re.IGNORECASE)
 _SWX_EFFECT_LINE = re.compile(r"(?m)^\s*SWX\s+EFFECT\s*:\s*(.+?)\s*$", re.IGNORECASE)
 _OBS_SWX_LINE = re.compile(r"(?m)^\s*OBS\s+SWX\s*:\s*(.+)$", re.IGNORECASE)
 _NO_SWX_EXP = re.compile(r"\bNO\s+SWX\s+EXP\b", re.IGNORECASE)
-# SpaceWxPhenomena register prefixes (vendor CSV) — TAC EFFECT uses spaces.
+# SpaceWxPhenomena register prefixes (vendor CSV) - TAC EFFECT uses spaces.
 _SWX_EFFECT_PREFIX: dict[str, str] = {
     "HF COM": "HF_COM",
     "GNSS": "GNSS",
@@ -119,7 +119,7 @@ _DUR_LINE = re.compile(r"(?m)^\s*DUR\s*:\s*(.*)$", re.IGNORECASE)
 _TC_LINE = re.compile(r"(?m)^\s*TC\s*:\s*(.*)$", re.IGNORECASE)
 _CB_LINE = re.compile(r"(?m)^\s*CB\s*:\s*(.*)$", re.IGNORECASE)
 _NXT_MSG_LINE = re.compile(r"(?m)^\s*NXT\s+MSG\s*:\s*(.*)$", re.IGNORECASE)
-# F23 theme G1 — general SIGMET exceptional TAC shapes (#733).
+# F23 theme G1 - general SIGMET exceptional TAC shapes (#733).
 _SIGMET_POINT_COORD = re.compile(r"\b[NS]\d{4,5}\s+[EW]\d{5,7}\b")
 _SIGMET_LEVEL_RANGE = re.compile(
     r"\b(?:FL\d{3}/\d{3}|SFC/FL\d{3}|\d{4}/\d{4}FT)\b",
@@ -145,7 +145,7 @@ _SIGMET_VA_VOLCANO = re.compile(r"\bMT\b.+\bPSN\b|\bPSN\b.+\bMT\b")
 _SIGMET_VA_CLD = re.compile(r"\bVA\s+CLD\b")
 _SIGMET_NO_VA_EXP = re.compile(r"\bNO\s+VA\s+EXP\b")
 _SIGMET_CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b")
-# TC SIGMET — name/PSN identity vs OF TC CENTRE geometry (#829).
+# TC SIGMET - name/PSN identity vs OF TC CENTRE geometry (#829).
 _SIGMET_TC_IDENTITY = re.compile(r"\bTC\s+(?!CENTRE\b)([A-Z][A-Z0-9-]*)\s+PSN\b")
 _SIGMET_OF_TC_CENTRE = re.compile(r"\bOF\s+TC\s+CENTRE\b")
 _SIGMET_TC_NAME = re.compile(r"\bTC\s+(?!CENTRE\b)([A-Z][A-Z0-9-]*)\b")
@@ -153,7 +153,7 @@ _WS_MAX_VALIDITY_HOURS = 4.0
 _WV_MAX_VALIDITY_HOURS = 6.0
 _WC_MAX_VALIDITY_HOURS = 6.0
 
-# Phenomenon family markers (template+gate — not exhaustive Annex vocab).
+# Phenomenon family markers (template+gate - not exhaustive Annex vocab).
 # Underscore forms match vendor AirWx/SigWx notations (EV-050 / #959).
 _SIGMET_FAMILIES: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("TS", re.compile(r"\b(?:OBSC|EMBD|FRQ|SQL)?(?:\s+|_)?TS(?:GR)?\b")),
@@ -461,7 +461,7 @@ def _check_us_remarks(
             _append_remark_issue(
                 issues,
                 code="INVALID_REMARK",
-                message=f"{product} malformed remark {tok!r} (SLP needs 3 digits) — research R5 / iwxxm_us",
+                message=f"{product} malformed remark {tok!r} (SLP needs 3 digits) - research R5 / iwxxm_us",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -477,7 +477,7 @@ def _check_us_remarks(
             _append_remark_issue(
                 issues,
                 code="INVALID_REMARK",
-                message=f"{product} malformed remark {tok!r} (P precip needs 4 digits) — research R5 / iwxxm_us",
+                message=f"{product} malformed remark {tok!r} (P precip needs 4 digits) - research R5 / iwxxm_us",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -493,7 +493,7 @@ def _check_us_remarks(
             _append_remark_issue(
                 issues,
                 code="INVALID_REMARK",
-                message=f"{product} malformed remark {tok!r} (T tenths needs 8 digits) — research R5 / iwxxm_us",
+                message=f"{product} malformed remark {tok!r} (T tenths needs 8 digits) - research R5 / iwxxm_us",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -512,7 +512,7 @@ def _check_us_remarks(
             _append_remark_issue(
                 issues,
                 code="INVALID_REMARK",
-                message=f"{product} malformed remark PK WND (need dddss/tt) — research R5 / iwxxm_us",
+                message=f"{product} malformed remark PK WND (need dddss/tt) - research R5 / iwxxm_us",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -527,7 +527,7 @@ def _check_us_remarks(
             issues,
             code="REMARK_US_EXTENSION",
             message=(
-                f"{product} US remarks present (AO1/AO2/SLP/P/T/PK WND) — iwxxm_us profile awareness; research R5"
+                f"{product} US remarks present (AO1/AO2/SLP/P/T/PK WND) - iwxxm_us profile awareness; research R5"
             ),
             core=core,
             body_start=body_start,
@@ -555,7 +555,7 @@ def _check_ca_manobs(
         _emit_token_info(
             issues,
             code="CA_METAR_LWIS",
-            message=f"{product} Limited Weather Information System (LWIS) report — MANOBS CA overlay",
+            message=f"{product} Limited Weather Information System (LWIS) report - MANOBS CA overlay",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -565,7 +565,7 @@ def _check_ca_manobs(
         _emit_token_info(
             issues,
             code="CA_METAR_SAWR",
-            message=f"{product} Surface Aviation Weather Report (SAWR) — MANOBS CA overlay",
+            message=f"{product} Surface Aviation Weather Report (SAWR) - MANOBS CA overlay",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -578,7 +578,7 @@ def _check_ca_manobs(
                 _emit_token_info(
                     issues,
                     code="CA_STATUTE_MILE_VIS",
-                    message=f"{product} statute-mile visibility ({tok}) — MANOBS CA overlay",
+                    message=f"{product} statute-mile visibility ({tok}) - MANOBS CA overlay",
                     core=core,
                     body_start=body_start,
                     body_end=body_end,
@@ -590,7 +590,7 @@ def _check_ca_manobs(
         _emit_token_info(
             issues,
             code="CA_ALTIMETER_INHG",
-            message=f"{product} inch-of-mercury altimeter ({alt.group(0)}) — MANOBS CA overlay",
+            message=f"{product} inch-of-mercury altimeter ({alt.group(0)}) - MANOBS CA overlay",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -600,7 +600,7 @@ def _check_ca_manobs(
         _emit_token_info(
             issues,
             code="CA_ALTIMETER_NOT_OBS",
-            message=f"{product} altimeter not observable (A////) — MANOBS CA overlay",
+            message=f"{product} altimeter not observable (A////) - MANOBS CA overlay",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -619,7 +619,7 @@ def _check_ca_manobs(
             _append_remark_issue(
                 issues,
                 code="CA_REMARK_MANOBS",
-                message=f"{product} Canadian REMARKS (SLP/PRESFR/PRESRR) — ca_eccc profile awareness",
+                message=f"{product} Canadian REMARKS (SLP/PRESFR/PRESRR) - ca_eccc profile awareness",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -629,7 +629,7 @@ def _check_ca_manobs(
             _append_remark_issue(
                 issues,
                 code="CA_REMARK_PRESRR",
-                message=f"{product} MANOBS pressure rising rapidly (PRESRR) — ca_eccc profile awareness",
+                message=f"{product} MANOBS pressure rising rapidly (PRESRR) - ca_eccc profile awareness",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -639,7 +639,7 @@ def _check_ca_manobs(
             _append_remark_issue(
                 issues,
                 code="CA_REMARK_PRESFR",
-                message=f"{product} MANOBS pressure falling rapidly (PRESFR) — ca_eccc profile awareness",
+                message=f"{product} MANOBS pressure falling rapidly (PRESFR) - ca_eccc profile awareness",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -649,7 +649,7 @@ def _check_ca_manobs(
             _append_remark_issue(
                 issues,
                 code="CA_REMARK_NOSPECI",
-                message=f"{product} MANOBS no-specials remark (NOSPECI) — ca_eccc profile awareness",
+                message=f"{product} MANOBS no-specials remark (NOSPECI) - ca_eccc profile awareness",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -659,7 +659,7 @@ def _check_ca_manobs(
             _append_remark_issue(
                 issues,
                 code="CA_REMARK_SECTOR_VIS",
-                message=f"{product} MANOBS sector visibility ({sector_vis.group(0)}) — ca_eccc profile awareness",
+                message=f"{product} MANOBS sector visibility ({sector_vis.group(0)}) - ca_eccc profile awareness",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -686,7 +686,7 @@ def _check_ca_manair(
             _emit_token_info(
                 issues,
                 code="CA_TAF_NCLWS",
-                message=f"{product} MANAIR low-level wind shear ({tok}) — ca_eccc profile awareness",
+                message=f"{product} MANAIR low-level wind shear ({tok}) - ca_eccc profile awareness",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -697,7 +697,7 @@ def _check_ca_manair(
             _emit_token_info(
                 issues,
                 code="CA_STATUTE_MILE_VIS",
-                message=f"{product} statute-mile visibility ({tok}) — MANAIR CA overlay",
+                message=f"{product} statute-mile visibility ({tok}) - MANAIR CA overlay",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -723,7 +723,7 @@ def _check_ca_gfa_airmet(
         _emit_token_info(
             issues,
             code="CA_AIRMET_GFA",
-            message=f"{product} MANAIR GFA compound phenomenon ({phenom.group(0).strip()}) — ca_eccc profile awareness",
+            message=f"{product} MANAIR GFA compound phenomenon ({phenom.group(0).strip()}) - ca_eccc profile awareness",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -734,7 +734,7 @@ def _check_ca_gfa_airmet(
         _emit_token_info(
             issues,
             code="CA_AIRMET_GFA",
-            message=f"{product} GFA chart remark ({chart.group(0).strip()}) — ca_eccc profile awareness",
+            message=f"{product} GFA chart remark ({chart.group(0).strip()}) - ca_eccc profile awareness",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -801,7 +801,7 @@ def _emit_nsc_layer_exclusivity(
         issues.append(
             _issue(
                 "NSC_WITH_CLOUD_LAYERS",
-                f"{product} NSC with FEW/SCT/BKN/OVC in same group — FAQ §14.3 exclusivity (TC-EV023-001)",
+                f"{product} NSC with FEW/SCT/BKN/OVC in same group - FAQ §14.3 exclusivity (TC-EV023-001)",
                 start=start,
                 end=end,
                 location="cloud",
@@ -824,7 +824,7 @@ def _check_r8_pack(
         _emit_token_info(
             issues,
             code="AUTO_PRESENT",
-            message=f"{product} AUTO modifier present — research R8",
+            message=f"{product} AUTO modifier present - research R8",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -834,7 +834,7 @@ def _check_r8_pack(
         _emit_token_info(
             issues,
             code="COR_PRESENT",
-            message=f"{product} COR modifier present — research R8",
+            message=f"{product} COR modifier present - research R8",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -844,7 +844,7 @@ def _check_r8_pack(
         _emit_token_info(
             issues,
             code="NOSIG_PRESENT",
-            message=f"{product} NOSIG trend present — research R8",
+            message=f"{product} NOSIG trend present - research R8",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -854,7 +854,7 @@ def _check_r8_pack(
         _emit_token_info(
             issues,
             code="TEMPO_PRESENT",
-            message=f"{product} TEMPO trend present — research R8",
+            message=f"{product} TEMPO trend present - research R8",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -868,7 +868,7 @@ def _check_r8_pack(
             _emit_token_info(
                 issues,
                 code="RVR_PRESENT",
-                message=f"{product} RVR group {tok!r} present — research R8",
+                message=f"{product} RVR group {tok!r} present - research R8",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -878,7 +878,7 @@ def _check_r8_pack(
             _emit_token_info(
                 issues,
                 code="INVALID_RVR",
-                message=f"{product} invalid RVR token {tok!r} — research R8",
+                message=f"{product} invalid RVR token {tok!r} - research R8",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -892,7 +892,7 @@ def _check_r8_pack(
         _emit_token_info(
             issues,
             code="INVALID_WIND",
-            message=f"{product} invalid wind token {tok!r} — research R8",
+            message=f"{product} invalid wind token {tok!r} - research R8",
             core=core,
             body_start=body_start,
             body_end=body_end,
@@ -903,7 +903,7 @@ def _check_r8_pack(
             _emit_token_info(
                 issues,
                 code="WIND_VRB_OR_GUST",
-                message=f"{product} wind {tok!r} uses VRB and/or gust — research R8",
+                message=f"{product} wind {tok!r} uses VRB and/or gust - research R8",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -932,7 +932,7 @@ def _check_metar_speci_field_order(
         return None
     return _issue(
         "ODD_FIELD_ORDER",
-        f"{product} groups out of A3-2 order (CCCC → ddhhmmZ → wind) — research R1",
+        f"{product} groups out of A3-2 order (CCCC → ddhhmmZ → wind) - research R1",
         start=start,
         end=end,
         location="order",
@@ -957,7 +957,7 @@ def _check_c1_multi_report(tac: str, product: str) -> list[Issue]:
     return [
         _issue(
             "MULTI_REPORT_BULLETIN",
-            f"{product} bulletin has multiple TAC reports — one IWXXM report per TAC (Guidance C1)",
+            f"{product} bulletin has multiple TAC reports - one IWXXM report per TAC (Guidance C1)",
             start=start,
             end=end,
             location="bulletin",
@@ -966,128 +966,128 @@ def _check_c1_multi_report(tac: str, product: str) -> list[Issue]:
 
 
 __all__ = [
-    "_ICAO",
-    "_OBS_TIME",
-    "_WIND",
-    "_WIND_DIR_VAR",
-    "_VIS_OK",
-    "_VIS_BAD",
-    "_WX_PHENOMENA",
-    "_WX_DESCRIPTORS",
-    "_WX_STANDALONE",
-    "_WX_SPECIAL",
-    "_RVR",
-    "_RVR_OK",
     "_AHL_HEADING_LINE",
-    "_WIND_TOKEN",
-    "_CLOUD_START",
-    "_CLOUD_OK",
-    "_CLOUD_LIKE",
-    "_LAYER_CLOUD_TOKEN",
-    "_RMK_AO",
-    "_RMK_SLP_OK",
-    "_RMK_P_OK",
-    "_RMK_T_OK",
-    "_RMK_PK_VAL",
-    "_RMK_PRES_CA",
-    "_RMK_NOSPECI",
-    "_RMK_SECTOR_VIS_IN_TEXT",
-    "_NCLWS_TAC",
-    "_CA_GFA_PHENOM",
-    "_GFA_CHART",
-    "_TAF_VIS_SM",
+    "_AIRMET_FAMILIES",
+    "_AIRMET_NO_SEQ",
+    "_AIRMET_PHENOM_CANDIDATE",
+    "_AIRMET_SEQ",
     "_ALT_INHG_BODY",
     "_ALT_NOT_OBS_BODY",
-    "_WX_TOKEN_SHAPE",
-    "_TEMP",
+    "_CA_GFA_PHENOM",
+    "_CB_LINE",
+    "_CLOUD_LIKE",
+    "_CLOUD_OK",
+    "_CLOUD_START",
+    "_DTG_LINE",
+    "_DUR_LINE",
+    "_GFA_CHART",
+    "_ICAO",
+    "_LAYER_CLOUD_PARTS",
+    "_LAYER_CLOUD_TOKEN",
+    "_MAX_WIND_LINE",
+    "_METAR_SPECI_SKIP",
+    "_NCLWS_TAC",
+    "_NO_SWX_EXP",
+    "_NO_VA_EXP",
+    "_NXT_ADVISORY_LINE",
+    "_NXT_MSG_LINE",
+    "_OBS_SWX_LINE",
+    "_OBS_TIME",
+    "_ONSET_LINE",
     "_QNH",
     "_QNH_NOT_OBS",
-    "_TAF_VALIDITY",
-    "_TAF_FM",
-    "_TAF_PROB",
-    "_TAF_TL",
-    "_TAF_AT",
-    "_TAF_TX_TN",
-    "_VALID_PERIOD",
-    "_DTG_LINE",
-    "_VAAC_LINE",
-    "_VOLCANO_LINE",
+    "_RECENT_WX",
+    "_RMK_AO",
     "_RMK_LINE",
-    "_NXT_ADVISORY_LINE",
-    "_NO_VA_EXP",
+    "_RMK_NOSPECI",
+    "_RMK_PK_VAL",
+    "_RMK_PRES_CA",
+    "_RMK_P_OK",
+    "_RMK_SECTOR_VIS_IN_TEXT",
+    "_RMK_SLP_OK",
+    "_RMK_T_OK",
+    "_RVR",
+    "_RVR_OK",
+    "_SIGMET_CNL",
+    "_SIGMET_CNL_FIR_MOVED",
+    "_SIGMET_COR",
+    "_SIGMET_FAMILIES",
+    "_SIGMET_FIR_CTA",
+    "_SIGMET_INTENSITY",
+    "_SIGMET_LEVEL_RANGE",
+    "_SIGMET_MOV",
+    "_SIGMET_NO_SEQ",
+    "_SIGMET_NO_VA_EXP",
+    "_SIGMET_OBS_FCST",
+    "_SIGMET_OF_TC_CENTRE",
+    "_SIGMET_PHENOM_CANDIDATE",
+    "_SIGMET_POINT_COORD",
+    "_SIGMET_SEQ",
+    "_SIGMET_SINGLE_LEVEL",
+    "_SIGMET_STNR",
+    "_SIGMET_TC_IDENTITY",
+    "_SIGMET_TC_NAME",
+    "_SIGMET_TC_TOKEN",
+    "_SIGMET_TOP_ABV_BLW",
+    "_SIGMET_VALID_PAIR",
+    "_SIGMET_VA_CLD",
+    "_SIGMET_VA_TOKEN",
+    "_SIGMET_VA_VOLCANO",
+    "_SIGMET_WI",
+    "_SVO_LINE",
     "_SWXC_LINE",
     "_SWX_EFFECT_LINE",
-    "_OBS_SWX_LINE",
-    "_NO_SWX_EXP",
     "_SWX_EFFECT_PREFIX",
-    "_MAX_WIND_LINE",
-    "_SVO_LINE",
-    "_ONSET_LINE",
-    "_DUR_LINE",
+    "_TAF_AT",
+    "_TAF_FM",
+    "_TAF_PROB",
+    "_TAF_SKIP",
+    "_TAF_TL",
+    "_TAF_TX_TN",
+    "_TAF_VALIDITY",
+    "_TAF_VIS_SM",
     "_TC_LINE",
-    "_CB_LINE",
-    "_NXT_MSG_LINE",
-    "_SIGMET_POINT_COORD",
-    "_SIGMET_LEVEL_RANGE",
-    "_SIGMET_SINGLE_LEVEL",
-    "_SIGMET_TOP_ABV_BLW",
-    "_SIGMET_WI",
-    "_SIGMET_STNR",
-    "_SIGMET_MOV",
-    "_SIGMET_CNL",
-    "_SIGMET_COR",
-    "_SIGMET_SEQ",
-    "_SIGMET_NO_SEQ",
-    "_AIRMET_SEQ",
-    "_AIRMET_NO_SEQ",
-    "_SIGMET_VALID_PAIR",
-    "_SIGMET_FIR_CTA",
-    "_SIGMET_OBS_FCST",
-    "_SIGMET_INTENSITY",
-    "_SIGMET_VA_TOKEN",
-    "_SIGMET_TC_TOKEN",
-    "_SIGMET_VA_VOLCANO",
-    "_SIGMET_VA_CLD",
-    "_SIGMET_NO_VA_EXP",
-    "_SIGMET_CNL_FIR_MOVED",
-    "_SIGMET_TC_IDENTITY",
-    "_SIGMET_OF_TC_CENTRE",
-    "_SIGMET_TC_NAME",
+    "_TEMP",
+    "_VAAC_LINE",
+    "_VALID_PERIOD",
+    "_VIS_BAD",
+    "_VIS_OK",
+    "_VOLCANO_LINE",
+    "_WC_MAX_VALIDITY_HOURS",
+    "_WIND",
+    "_WIND_DIR_VAR",
+    "_WIND_TOKEN",
     "_WS_MAX_VALIDITY_HOURS",
     "_WV_MAX_VALIDITY_HOURS",
-    "_WC_MAX_VALIDITY_HOURS",
-    "_SIGMET_FAMILIES",
-    "_AIRMET_FAMILIES",
-    "_AIRMET_PHENOM_CANDIDATE",
-    "_SIGMET_PHENOM_CANDIDATE",
-    "_RECENT_WX",
-    "_LAYER_CLOUD_PARTS",
-    "_METAR_SPECI_SKIP",
-    "_TAF_SKIP",
-    "_issue",
-    "_body_span",
-    "_first_icao",
-    "_token_index",
-    "_first_icao_index",
-    "_consume_wx_descriptors",
-    "_is_valid_weather_token",
-    "_weather_candidate_tokens",
-    "_token_span_in_core",
-    "_is_valid_cloud_token",
-    "_membership_issue",
-    "_weather_in_register",
-    "_check_phenomenon_membership",
-    "_cloud_candidate_tokens",
+    "_WX_DESCRIPTORS",
+    "_WX_PHENOMENA",
+    "_WX_SPECIAL",
+    "_WX_STANDALONE",
+    "_WX_TOKEN_SHAPE",
     "_append_remark_issue",
-    "_check_us_remarks",
-    "_check_ca_manobs",
-    "_check_ca_manair",
-    "_check_ca_gfa_airmet",
-    "_emit_token_info",
-    "_forecast_or_obs_segments",
-    "_emit_nsc_layer_exclusivity",
-    "_check_r8_pack",
-    "_check_metar_speci_field_order",
-    "_report_segment_count",
+    "_body_span",
     "_check_c1_multi_report",
+    "_check_ca_gfa_airmet",
+    "_check_ca_manair",
+    "_check_ca_manobs",
+    "_check_metar_speci_field_order",
+    "_check_phenomenon_membership",
+    "_check_r8_pack",
+    "_check_us_remarks",
+    "_cloud_candidate_tokens",
+    "_consume_wx_descriptors",
+    "_emit_nsc_layer_exclusivity",
+    "_emit_token_info",
+    "_first_icao",
+    "_first_icao_index",
+    "_forecast_or_obs_segments",
+    "_is_valid_cloud_token",
+    "_is_valid_weather_token",
+    "_issue",
+    "_membership_issue",
+    "_report_segment_count",
+    "_token_index",
+    "_token_span_in_core",
+    "_weather_candidate_tokens",
+    "_weather_in_register",
 ]

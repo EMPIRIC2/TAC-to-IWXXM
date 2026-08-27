@@ -2,11 +2,10 @@
 Integration tests for Phase 2 statistics endpoints.
 """
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 from src.schemas.icao_opmet import TranslationStatus
 
 
@@ -158,8 +157,8 @@ class TestStatisticsService:
 
         with patch("src.services.statistics.get_db_session", return_value=mock_get_session_cm):
             service = StatisticsService()
-            start = datetime(2025, 2, 1, tzinfo=timezone.utc)
-            end = datetime(2025, 2, 10, tzinfo=timezone.utc)
+            start = datetime(2025, 2, 1, tzinfo=UTC)
+            end = datetime(2025, 2, 10, tzinfo=UTC)
 
             result = await service.get_statistics(start, end)
 
@@ -187,8 +186,8 @@ class TestStatisticsService:
 
         with patch("src.services.statistics.get_db_session", return_value=mock_get_session_cm):
             service = StatisticsService()
-            start = datetime(2025, 2, 1, tzinfo=timezone.utc)
-            end = datetime(2025, 2, 10, tzinfo=timezone.utc)
+            start = datetime(2025, 2, 1, tzinfo=UTC)
+            end = datetime(2025, 2, 10, tzinfo=UTC)
 
             result = await service.get_statistics_by_region(start, end)
 
@@ -204,15 +203,17 @@ class TestWebhookIntegration:
         """Test webhook fires on successful translation."""
         from src.services.webhooks import WebhookService
 
-        with patch("src.config.icao_opmet.should_send_webhooks", return_value=True):
-            with patch("src.config.icao_opmet.WEBHOOK_URLS", ["https://example.com/webhook"]):
-                service = WebhookService()
+        with (
+            patch("src.config.icao_opmet.should_send_webhooks", return_value=True),
+            patch("src.config.icao_opmet.WEBHOOK_URLS", ["https://example.com/webhook"]),
+        ):
+            service = WebhookService()
 
-                result = await service.send_webhook(
-                    event="translation.success", data={"translation_id": "123", "duration_ms": 125}
-                )
+            result = await service.send_webhook(
+                event="translation.success", data={"translation_id": "123", "duration_ms": 125}
+            )
 
-                assert isinstance(result, bool)
+            assert isinstance(result, bool)
 
     async def test_webhook_signature_verification(self):
         """Test webhook payloads are signed correctly."""

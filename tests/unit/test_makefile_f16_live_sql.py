@@ -1,4 +1,4 @@
-"""EV-039 / AC7 — Makefile F16 live SQL harness targets (T1.3).
+"""EV-039 / AC7 - Makefile F16 live SQL harness targets (T1.3).
 
 [Corpus: product §F16] [Corpus: tests] [Corpus: tech-spec]
 """
@@ -46,7 +46,7 @@ def test_makefile_declares_f16_live_sql_target() -> None:
 
 
 def test_f16_live_sql_defaults_off_in_ci() -> None:
-    """S05.M2 — CI must not force LIVE SQL; local default is on."""
+    """S05.M2 - CI must not force LIVE SQL; local default is on."""
     content = MAKEFILE.read_text(encoding="utf-8")
     # F16_LIVE_SQL ?= $(if $(CI),0,1)
     assert re.search(
@@ -71,7 +71,7 @@ def test_test_e2e_f16_live_sql_uses_compose_and_teardown() -> None:
 
 
 def test_compose_mock_byoc_up_can_skip_sqlserver() -> None:
-    """S05.L1 / T2.4 — omit byoc-sqlserver from --wait when F16_SKIP_SQLSERVER=1."""
+    """S05.L1 / T2.4 - omit byoc-sqlserver from --wait when F16_SKIP_SQLSERVER=1."""
     recipe = _makefile_recipe(
         MAKEFILE.read_text(encoding="utf-8"), "compose-mock-byoc-up"
     )

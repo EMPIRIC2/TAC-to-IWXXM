@@ -1,4 +1,4 @@
-"""TC-EV030-005 — #829 A6-2-TC catalog unlock (S037) → EV-032 `wmoPass` (#835).
+"""TC-EV030-005 - #829 A6-2-TC catalog unlock (S037) → EV-032 `wmoPass` (#835).
 
 Quality path + ADR-032 equality are green. Catalog tier is ``wmoPass`` after
 TC-EV032-003 / T1.4 (was ``wmoReference`` at EV-030 T2.4).
@@ -46,7 +46,7 @@ def test_tc_ev030_005_quality_path_green() -> None:
 
 
 def test_tc_ev030_005_adr032_equality_holds() -> None:
-    """#835 residual closed in EV-032 — keep a peer assert here for unlock gate."""
+    """#835 residual closed in EV-032 - keep a peer assert here for unlock gate."""
     from tac2iwxxm import convert
 
     tac = (FIXTURES / "sigmet_a6_2_tc.tac").read_text(encoding="utf-8")

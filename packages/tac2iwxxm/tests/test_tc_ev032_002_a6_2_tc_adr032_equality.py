@@ -1,4 +1,4 @@
-"""TC-EV032-002 — #835 A6-2-TC ADR-032 equality (S040 / EV-032 T1.1).
+"""TC-EV032-002 - #835 A6-2-TC ADR-032 equality (S040 / EV-032 T1.1).
 
 Strict bar (E32-T2): ``canonicalize_xml(convert(annex3 A6-2-TC))`` must equal
 vendor ``sigmet-A6-2-TC.xml`` under the default pin before catalog ``wmoPass``.
@@ -11,6 +11,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"

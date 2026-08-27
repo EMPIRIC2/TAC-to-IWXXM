@@ -8,9 +8,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
-import tac2iwxxm
-from tac2iwxxm import native
 from tac2iwxxm.bulletin import (
     AhlParts,
     BulletinSplitError,
@@ -42,6 +39,9 @@ from tac2iwxxm.products.swxa import parse_swxa
 from tac2iwxxm.products.taf import parse_taf
 from tac2iwxxm.profiles import annex3_products as ap
 
+import tac2iwxxm
+from tac2iwxxm import native
+
 
 def test_native_success_paths_with_fake_rust(monkeypatch: pytest.MonkeyPatch) -> None:
     fake = types.SimpleNamespace(scan_metar_tokens=lambda tac: tac.split())
@@ -56,7 +56,7 @@ def test_native_import_error_paths(monkeypatch: pytest.MonkeyPatch) -> None:
 
     real_import = builtins.__import__
 
-    def _import(name: str, globals=None, locals=None, fromlist=(), level=0):  # noqa: ANN001,ANN202
+    def _import(name: str, globals=None, locals=None, fromlist=(), level=0):
         mod = real_import(name, globals, locals, fromlist, level)
         if name == "tac2iwxxm" and fromlist and "_rust" in fromlist:
             raise ImportError("forced missing tac2iwxxm._rust")
@@ -103,10 +103,9 @@ def test_codelists_error_edges(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
 
     empty = tmp_path / "empty.rdf"
     empty.write_text("<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'/>", encoding="utf-8")
-    with pytest.raises(ValueError, match="no skos:Concept"):
-        ap  # keep import warm
-        from tac2iwxxm import codelists as cl
+    from tac2iwxxm import codelists as cl
 
+    with pytest.raises(ValueError, match="no skos:Concept"):
         cl._rdf_concept_members(
             empty,
             register_uri="http://codes.wmo.int/iwxxm/AviationColourCode",
@@ -118,9 +117,9 @@ def test_codelists_error_edges(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     )
     load_aviation_colour_members.cache_clear()
     load_nil_members.cache_clear()
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError, match=r".*"):
         load_aviation_colour_members("iwxxm", iwxxm_version="2025-2")
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError, match=r".*"):
         load_nil_members("common", iwxxm_version="2025-2")
 
 
@@ -259,7 +258,8 @@ def test_swxa_parser_edges() -> None:
     assert _fields("FOO: one\n\n  continued\n")["FOO"] == "one continued"
     assert _day_hhmm_to_iso("not-a-stamp", issue_iso="2016-11-08T01:00:00Z") is None
     groups = _parse_intensity_regions("HNH EQN")
-    assert groups and groups[0]["intensity"] == "MOD"
+    assert groups
+    assert groups[0]["intensity"] == "MOD"
 
     tac = """SWX ADVISORY
 DTG: 20161108/0100Z
@@ -296,7 +296,8 @@ def test_fir_geometry_edge_helpers() -> None:
     box = [(0.0, 0.0), (0.0, 20.0), (20.0, 20.0), (20.0, 0.0), (0.0, 0.0)]
     assert resolve_fir_relative_polygon("S OF N10 ENTIRE FIR", fir_boundary=None) is None
     got = resolve_fir_relative_polygon("ENTIRE FIR", fir_boundary=box)
-    assert got is not None and got["kind"] == "polygon"
+    assert got is not None
+    assert got["kind"] == "polygon"
 
 
 def test_sigmet_airmet_geometry_edges() -> None:

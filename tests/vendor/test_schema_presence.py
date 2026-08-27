@@ -1,4 +1,4 @@
-"""Vendor schema presence tests — test-plan.md §Vendor, M2 exit gate."""
+"""Vendor schema presence tests - test-plan.md §Vendor, M2 exit gate."""
 
 from __future__ import annotations
 

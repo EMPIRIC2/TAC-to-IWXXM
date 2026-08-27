@@ -1,4 +1,4 @@
-"""Annex-3 profile XML writers for TAF / SIGMET / AIRMET (F6.c–d)."""
+"""Annex-3 profile XML writers for TAF / SIGMET / AIRMET (F6.c-d)."""
 
 from __future__ import annotations
 

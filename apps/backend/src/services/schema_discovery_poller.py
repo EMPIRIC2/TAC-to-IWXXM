@@ -7,13 +7,18 @@ with automated breaking change detection.
 """
 
 import asyncio
+import inspect
 import logging
 import re
-from datetime import datetime, timezone
+from collections.abc import Callable
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Set
+from typing import Any, cast
 
 import httpx
+
+from ..services.schema_mirror_service import SchemaMirrorService
+from ..utilities.xmi_model_analyzer import XMIModelAnalyzer, analyze_xmi_versions
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +33,8 @@ VERSION_PATTERN = re.compile(r"(20\d{2})-(1|2)(?:RC\d+)?", re.IGNORECASE)
 
 # RC version specific pattern
 RC_PATTERN = re.compile(r"(20\d{2})-(1|2)(RC\d+)", re.IGNORECASE)
+
+VersionCallback = Callable[[str, str], Any]
 
 
 class SchemaDiscoveryPoller:
@@ -44,12 +51,12 @@ class SchemaDiscoveryPoller:
 
     def __init__(
         self,
-        poll_urls: Optional[List[str]] = None,
+        poll_urls: list[str] | None = None,
         timeout_seconds: int = 30,
-        mirror_service: Optional[Any] = None,
-        xmi_analyzer: Optional[Any] = None,
-        base_schema_path: Optional[Path] = None,
-    ):
+        mirror_service: SchemaMirrorService | None = None,
+        xmi_analyzer: XMIModelAnalyzer | None = None,
+        base_schema_path: Path | None = None,
+    ) -> None:
         """
         Initialize the discovery poller.
 
@@ -62,14 +69,14 @@ class SchemaDiscoveryPoller:
         """
         self.poll_urls = poll_urls or WMO_SCHEMA_DIRECTORIES
         self.timeout_seconds = timeout_seconds
-        self.discovered_versions: Set[str] = set()
-        self.last_poll_time: Optional[datetime] = None
+        self.discovered_versions: set[str] = set()
+        self.last_poll_time: datetime | None = None
         self.mirror_service = mirror_service
         self.xmi_analyzer = xmi_analyzer
         self.base_schema_path = base_schema_path or Path(__file__).parent.parent.parent / "schemas" / "iwxxm"
-        self.on_new_version_callbacks: List[Callable] = []
+        self.on_new_version_callbacks: list[VersionCallback] = []
 
-    async def poll_once(self) -> dict[str, object]:
+    async def poll_once(self) -> dict[str, Any]:
         """
         Execute a single poll cycle across all configured URLs.
 
@@ -78,10 +85,10 @@ class SchemaDiscoveryPoller:
         Returns:
             Dictionary with "new_stable" and "new_rc" lists of discovered versions
         """
-        logger.info(f"Starting schema discovery poll at {datetime.now(timezone.utc)}")
+        logger.info(f"Starting schema discovery poll at {datetime.now(UTC)}")
 
-        new_stable = []
-        new_rc = []
+        new_stable: list[Any] = []
+        new_rc: list[Any] = []
 
         for url in self.poll_urls:
             try:
@@ -104,7 +111,7 @@ class SchemaDiscoveryPoller:
                 logger.error(f"Error polling {url}: {e}")
                 continue
 
-        self.last_poll_time = datetime.now(timezone.utc)
+        self.last_poll_time = datetime.now(UTC)
 
         return {
             "new_stable": new_stable,
@@ -126,7 +133,7 @@ class SchemaDiscoveryPoller:
         # Call registered callbacks
         for callback in self.on_new_version_callbacks:
             try:
-                if asyncio.iscoroutinefunction(callback):
+                if inspect.iscoroutinefunction(callback):
                     await callback(version, source_url)
                 else:
                     callback(version, source_url)
@@ -234,7 +241,7 @@ class SchemaDiscoveryPoller:
                 return
 
             # Run analysis
-            report = self.xmi_analyzer.analyze_xmi_versions(old_xmi, new_xmi, prev_version, new_version)
+            report = analyze_xmi_versions(old_xmi, new_xmi, prev_version, new_version)
 
             logger.info(
                 f"Breaking change analysis: {report.get('total_changes', 0)} changes detected "
@@ -247,7 +254,9 @@ class SchemaDiscoveryPoller:
         except Exception as e:
             logger.warning(f"Failed to analyze breaking changes: {e}")
 
-    def _update_version_metadata(self, new_version: str, prior_version: str, breaking_changes_report: Dict) -> None:
+    def _update_version_metadata(
+        self, new_version: str, prior_version: str, breaking_changes_report: dict[str, Any]
+    ) -> None:
         """
         Update VERSION_DISCOVERY_METADATA with breaking changes.
 
@@ -265,16 +274,15 @@ class SchemaDiscoveryPoller:
                 return
 
             # Convert report to VERSION_DISCOVERY_METADATA format
-            breaking_changes = []
-            for change in breaking_changes_report.get("details", []):
-                breaking_changes.append(
-                    {
-                        "element": change.element,
-                        "xpath": change.xpath or f".//iwxxm:{change.element}",
-                        "action": "remove" if change.change_type == "removed" else "change",
-                        "reason": change.reason,
-                    }
-                )
+            breaking_changes = [
+                {
+                    "element": change.element,
+                    "xpath": change.xpath or f".//iwxxm:{change.element}",
+                    "action": "remove" if change.change_type == "removed" else "change",
+                    "reason": change.reason,
+                }
+                for change in breaking_changes_report.get("details", [])
+            ]
 
             # Update config
             if not config.get("breaking_changes_from_prior"):
@@ -290,7 +298,7 @@ class SchemaDiscoveryPoller:
         except Exception as e:
             logger.warning(f"Failed to update version metadata: {e}")
 
-    def register_new_version_callback(self, callback: Callable) -> None:
+    def register_new_version_callback(self, callback: VersionCallback) -> None:
         """
         Register a callback to be invoked when a new version is discovered.
 
@@ -304,7 +312,7 @@ class SchemaDiscoveryPoller:
         self.on_new_version_callbacks.append(callback)
         logger.debug(f"Registered callback: {callback.__name__}")
 
-    async def _poll_url(self, url: str) -> List[str]:
+    async def _poll_url(self, url: str) -> list[str]:
         """
         Poll a single URL for IWXXM version directories.
 
@@ -330,7 +338,7 @@ class SchemaDiscoveryPoller:
                 logger.error(f"HTTP error polling {url}: {e}")
                 raise
 
-    def _extract_versions_from_html(self, html_content: str) -> List[str]:
+    def _extract_versions_from_html(self, html_content: str) -> list[str]:
         """
         Extract IWXXM version strings from HTML directory listing.
 
@@ -340,29 +348,25 @@ class SchemaDiscoveryPoller:
         Returns:
             List of version strings found in links
         """
-        versions = []
+        versions: list[str] = []
 
         # Find all matches of version pattern in the HTML
-        matches = VERSION_PATTERN.findall(html_content)
+        matches = cast(list[tuple[str, str]], VERSION_PATTERN.findall(html_content))
 
         for match in matches:
-            # match is a tuple: (year, release, [rc_suffix])
-            if isinstance(match, tuple) and len(match) >= 2:
-                year, release = match[0], match[1]
-                version = f"{year}-{release}"
+            year, release = match[0], match[1]
+            version = f"{year}-{release}"
 
-                # Check if this is an RC version by looking for RC in surrounding text
-                # Search for full RC pattern
-                rc_matches = RC_PATTERN.findall(html_content)
-                for rc_match in rc_matches:
-                    if isinstance(rc_match, tuple) and len(rc_match) == 3:
-                        rc_year, rc_release, rc_suffix = rc_match
-                        if rc_year == year and rc_release == release:
-                            version = f"{year}-{release}{rc_suffix}"
-                            break
+            # Check if this is an RC version by looking for RC in surrounding text
+            rc_matches = cast(list[tuple[str, str, str]], RC_PATTERN.findall(html_content))
+            for rc_match in rc_matches:
+                rc_year, rc_release, rc_suffix = rc_match
+                if rc_year == year and rc_release == release:
+                    version = f"{year}-{release}{rc_suffix}"
+                    break
 
-                if version not in versions:
-                    versions.append(version)
+            if version not in versions:
+                versions.append(version)
 
         # Also look for directory-style links: <a href="2025-2RC1/">
         link_pattern = re.compile(r'href=["\']([^"\']*?(20\d{2}-[12](?:RC\d+)?)[^"\']*?)["\']', re.IGNORECASE)
@@ -388,7 +392,7 @@ class SchemaDiscoveryPoller:
         """
         return bool(RC_PATTERN.match(version))
 
-    async def poll_with_retry(self, max_retries: int = 3, retry_delay_seconds: int = 60) -> dict[str, object] | None:
+    async def poll_with_retry(self, max_retries: int = 3, retry_delay_seconds: int = 60) -> dict[str, Any] | None:
         """
         Poll with automatic retry on failure.
 
@@ -414,7 +418,7 @@ class SchemaDiscoveryPoller:
                     logger.error("All poll attempts failed")
                     raise
 
-    def get_discovered_versions(self, channel: Optional[str] = None) -> List[str]:
+    def get_discovered_versions(self, channel: str | None = None) -> list[str]:
         """
         Get all discovered versions, optionally filtered by channel.
 
@@ -432,7 +436,7 @@ class SchemaDiscoveryPoller:
             return list(self.discovered_versions)
 
 
-async def discover_schemas() -> dict[str, object]:
+async def discover_schemas() -> dict[str, Any]:
     """
     Convenience function to run a single discovery poll.
 
@@ -443,7 +447,7 @@ async def discover_schemas() -> dict[str, object]:
     return await poller.poll_once()
 
 
-async def discover_schemas_with_retry(max_retries: int = 3, retry_delay: int = 60) -> dict[str, object] | None:
+async def discover_schemas_with_retry(max_retries: int = 3, retry_delay: int = 60) -> dict[str, Any] | None:
     """
     Convenience function to run discovery with retry logic.
 
@@ -458,7 +462,7 @@ async def discover_schemas_with_retry(max_retries: int = 3, retry_delay: int = 6
     return await poller.poll_with_retry(max_retries, retry_delay)
 
 
-def extract_version_from_url(url: str) -> Optional[str]:
+def extract_version_from_url(url: str) -> str | None:
     """
     Extract IWXXM version from a schema URL.
 
