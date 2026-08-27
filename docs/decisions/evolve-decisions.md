@@ -33,9 +33,11 @@
 | D-EV080-m1 | **completed** inventory SoT + TC-EV080-001 (10 pass) + m1-gap-ranked |
 | D-EV080-m1-pr | [#1078](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1078) `[M1] EV-080 coverage inventory @ 100 floor` → stage @ `ba41b804` |
 | D-EV080-m2a | **completed** packages→100%: worker/shared/dissemination/iwxxm-validate/tac-validate/auth — [#1079](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1079) merged @ `cba32156` |
-| D-EV080-m2b | **in progress** tac2iwxxm + backend fills → flip fail_under/CI to 100 |
+| D-EV080-m2b | **completed** tac2iwxxm + backend fills + Python fail_under/CI flipped to 100 |
 | D-EV080-m2b-t22 | **completed** tac2iwxxm 100% line+branch (`test_coverage_gaps_ev080.py` + small testability/pragmas) |
 | D-EV080-m2b-t23 | **completed** backend 100% line+branch (`test_ev080_m2b_coverage_gaps.py` + unit extensions) |
+| D-EV080-m2b-t24 | **completed** fail_under / CI `--cov-fail-under` / per-file default → 100; `__init__.py` omit removed |
+| D-EV080-m2b-t25 | **completed** TC-EV080-002/003 + legacy gate asserts updated to 100 |
 
 ### Milestones (planned)
 

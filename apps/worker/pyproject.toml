@@ -47,5 +47,5 @@ branch = true
 source = ["src/metar_worker"]
 
 [tool.coverage.report]
-fail_under = 95
+fail_under = 100
 show_missing = true

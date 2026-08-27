@@ -110,14 +110,13 @@ filterwarnings = [
 branch = true
 source = ["apps", "packages"]
 omit = [
-  "**/__init__.py",
   "**/tests/**",
   # ADR-027 generated xsdata trees (T3.7)
   "*/iwxxm_xsd/v*/**",
 ]
 
 [tool.coverage.report]
-fail_under = 98
+fail_under = 100
 show_missing = true
 skip_covered = false
 

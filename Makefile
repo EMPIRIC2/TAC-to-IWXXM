@@ -226,7 +226,7 @@ test-unit-workspace-py:
 test-unit-shared-py:
 	$(UV) run pytest packages/shared/tests --cov=metar_shared \
 		--cov-config=packages/shared/pyproject.toml --cov-branch \
-		--cov-report=json:packages/shared/coverage.json --cov-fail-under=98 -v
+		--cov-report=json:packages/shared/coverage.json --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/shared/coverage.json
 
 test-unit-shared-js:
@@ -242,7 +242,7 @@ test-unit-backend:
 		--cov=src --cov-config=pyproject.toml --cov-branch \
 		--cov-report=xml:coverage.xml --cov-report=json:coverage.json \
 		--cov-report=term-missing \
-		--cov-fail-under=98 -v)
+		--cov-fail-under=100 -v)
 	$(UV) run python scripts/ci/check_per_file_coverage.py apps/backend/coverage.json
 
 # F34 / EV-059 / #727 — Schemathesis OpenAPI property suite (TC-F34-001..002 / TC-F34-007).
@@ -279,7 +279,7 @@ test-unit-auth:
 	$(UV) run pytest tests/unit/auth --cov=metar_auth \
 		--cov-config=packages/auth/pyproject.toml --cov-branch \
 		--cov-report=json:packages/auth/coverage.json \
-		--cov-report=term-missing --cov-fail-under=95 -v
+		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/auth/coverage.json
 
 # F30 / ADR-033 / TC-EV031-002 — Alembic against DATABASE_URL (idempotent upgrade head).
@@ -314,7 +314,7 @@ test-unit-tac2iwxxm:
 	$(UV) run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
 		--cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
 		--cov-report=json:packages/tac2iwxxm/coverage.json \
-		--cov-report=term-missing --cov-fail-under=95 -v
+		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/tac2iwxxm/coverage.json
 
 # Build optional PyO3 extension (requires rustc + maturin). ADR-017 / T4.3.
@@ -400,14 +400,14 @@ test-unit-iwxxm-validate:
 	$(UV) run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
 		--cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
 		--cov-report=json:packages/iwxxm-validate/coverage.json \
-		--cov-report=term-missing --cov-fail-under=95 -v
+		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/iwxxm-validate/coverage.json
 
 test-unit-tac-validate:
 	$(UV) run pytest packages/tac-validate/tests --cov=tac_validate \
 		--cov-config=packages/tac-validate/pyproject.toml --cov-branch \
 		--cov-report=json:packages/tac-validate/coverage.json \
-		--cov-report=term-missing --cov-fail-under=95 -v
+		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/tac-validate/coverage.json
 
 # F24/F25 / EV-020 — combined WMO quality pack (E20-F3=3): SIGMET keep-green + AIRMET + METAR/SPECI/TAF
@@ -554,7 +554,7 @@ test-unit-worker:
 	$(UV) run pytest apps/worker/tests -m unit \
 		--cov=metar_worker --cov-config=apps/worker/pyproject.toml --cov-branch \
 		--cov-report=term-missing --cov-report=json:apps/worker/coverage.json \
-		--cov-fail-under=95 -v
+		--cov-fail-under=100 -v
 	@if [ -f scripts/ci/check_per_file_coverage.py ]; then \
 		$(UV) run python scripts/ci/check_per_file_coverage.py apps/worker/coverage.json; \
 	fi

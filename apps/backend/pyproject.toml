@@ -93,9 +93,6 @@ concurrency = ["thread", "greenlet"]
 omit = [
     "src/**/__main__.py",
     "src/__main__.py",
-    "src/**/__init__.py",
-    "src/__init__.py",
-    "*/__init__.py",
     "*/test_*.py",
     "tests/*",
     "*/tests/*",
@@ -106,7 +103,7 @@ omit = [
 ]
 
 [tool.coverage.report]
-fail_under = 98
+fail_under = 100
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",

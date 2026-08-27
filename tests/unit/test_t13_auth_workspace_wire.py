@@ -32,7 +32,7 @@ class TestT13AuthWorkspaceWire:
         assert "auth," in workflow or "\n            auth," in workflow
         assert "matrix.package == 'auth'" in workflow
         assert "tests/unit/auth" in workflow
-        assert "--cov-fail-under=95" in workflow
+        assert "--cov-fail-under=100" in workflow
         assert "check_per_file_coverage.py" in workflow
         assert "worker," in workflow or "\n            worker," in workflow
 

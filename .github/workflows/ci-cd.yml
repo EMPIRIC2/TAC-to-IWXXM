@@ -198,7 +198,7 @@ jobs:
             --cov-config=packages/shared/pyproject.toml --cov-branch \
             --cov-report=xml:packages/shared/coverage.xml \
             --cov-report=json:packages/shared/coverage.json \
-            --cov-report=term-missing --cov-fail-under=98 -v
+            --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/shared/coverage.json
           pnpm --filter @metar/shared run test:coverage
 
@@ -210,7 +210,7 @@ jobs:
             --cov-report=xml:coverage.xml \
             --cov-report=json:coverage.json \
             --cov-report=term-missing \
-            --cov-fail-under=98 -v)
+            --cov-fail-under=100 -v)
           uv run python scripts/ci/check_per_file_coverage.py apps/backend/coverage.json
 
       # F31 / EV-047 — JWKS Auth units; package + per-file ≥95% (D-S056-cov95-scope=2).
@@ -221,7 +221,7 @@ jobs:
             --cov-config=packages/auth/pyproject.toml --cov-branch \
             --cov-report=xml:packages/auth/coverage.xml \
             --cov-report=json:packages/auth/coverage.json \
-            --cov-report=term-missing --cov-fail-under=95 -v
+            --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/auth/coverage.json
 
       # EV-023 / E23-T4=2: TC-EV023-005 Amd79 informative cases use xfail(strict=False);
@@ -241,7 +241,7 @@ jobs:
             --cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
             --cov-report=xml:packages/tac2iwxxm/coverage.xml \
             --cov-report=json:packages/tac2iwxxm/coverage.json \
-            --cov-report=term-missing --cov-fail-under=95 -v
+            --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/tac2iwxxm/coverage.json
 
       - name: Install Rust toolchain (iwxxm-validate native)
@@ -265,7 +265,7 @@ jobs:
             --cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
             --cov-report=xml:packages/iwxxm-validate/coverage.xml \
             --cov-report=json:packages/iwxxm-validate/coverage.json \
-            --cov-report=term-missing --cov-fail-under=95 -v
+            --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/iwxxm-validate/coverage.json
 
       - name: Run tac-validate unit tests with coverage
@@ -275,7 +275,7 @@ jobs:
             --cov-config=packages/tac-validate/pyproject.toml --cov-branch \
             --cov-report=xml:packages/tac-validate/coverage.xml \
             --cov-report=json:packages/tac-validate/coverage.json \
-            --cov-report=term-missing --cov-fail-under=95 -v
+            --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/tac-validate/coverage.json
 
       # F16–F19 / T0.1 — skips until packages/dissemination is scaffolded (T1.1/T1.2).
@@ -288,7 +288,7 @@ jobs:
         if: matrix.package == 'dissemination'
         run: make test-integration-dissemination
 
-      # F8 / EV-047 — worker unit + package/per-file ≥95%.
+      # F8 / EV-047 — worker unit + package/per-file ≥100%.
       - name: Run worker unit tests with coverage
         if: matrix.package == 'worker'
         run: make test-unit-worker
