@@ -39,6 +39,12 @@ def _normalize_icao_code(icao_airport_code: str | None) -> str:
     return _ICAO_FALLBACK_CODE
 
 
+def _translation_status_value(status: TranslationStatus | str) -> str:
+    if isinstance(status, TranslationStatus):
+        return status.value
+    return status
+
+
 class StatisticsService:
     """Service for logging and querying translation statistics."""
 
@@ -47,7 +53,7 @@ class StatisticsService:
         tac_message: str,
         iwxxm_version: str,
         icao_airport_code: str | None,
-        translation_status: TranslationStatus,
+        translation_status: TranslationStatus | str,
         translation_duration_ms: float | int,
         iwxxm_output: str | None = None,
         validation_layers_passed: Sequence[ValidationLayer | RuntimeValidationLayer | str] | None = None,
@@ -106,7 +112,7 @@ class StatisticsService:
                 for layer in (validation_layers_passed or [])
             ]
 
-            translation_status_value = translation_status.value
+            translation_status_value = _translation_status_value(translation_status)
 
             # Create ORM model instance
             record = TranslationStatisticsModel(
