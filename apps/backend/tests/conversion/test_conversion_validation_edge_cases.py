@@ -17,7 +17,6 @@ from io import StringIO
 
 import pytest
 from lxml import etree
-
 from src.utilities.conversion import convert_metar_tac_with_metadata
 
 
@@ -45,7 +44,7 @@ class TestEdgeCasesCavok:
         # Test CAVOK METAR
         cavok_metar = "METAR KJFK 231751Z 18012KT CAVOK 23/14 A3012 RMK AO2 SLP201"
 
-        iwxxm_xml, validation_result = convert_metar_tac_with_metadata(
+        iwxxm_xml, _validation_result = convert_metar_tac_with_metadata(
             tac_text=cavok_metar,
             iwxxm_version="2025-2",
             use_test_overrides=False,

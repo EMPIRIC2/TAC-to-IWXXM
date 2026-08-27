@@ -1,8 +1,8 @@
-"""T5.8 product regression smoke — F2–F4 post-move (REQ-016).
+"""T5.8 product regression smoke - F2-F4 post-move (REQ-016).
 
 Verifies IWXXM validation (F2), airport data services (F3), and IWXXM version
 handling (F4) remain functional after backend move to apps/backend/. Behavior
-parity only — no feature rewrites.
+parity only - no feature rewrites.
 """
 
 from __future__ import annotations
@@ -13,7 +13,6 @@ from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api import app
 from src.config.iwxxm_versions import get_namespace_uri, resolve_schema_file
 from src.schemas.airport import get_airport_validator
@@ -146,7 +145,8 @@ class TestF4VersionHandlingSmoke:
         payload = response.json()
         assert isinstance(payload, dict)
         results = payload.get("results")
-        assert isinstance(results, list) and results
+        assert isinstance(results, list)
+        assert results
         first = results[0]
         assert isinstance(first, dict)
         content = first.get("content")

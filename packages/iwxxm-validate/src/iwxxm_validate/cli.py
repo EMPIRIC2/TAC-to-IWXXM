@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import argparse
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 from iwxxm_validate.codec import json_encoder
 from iwxxm_validate.validate_iwxxm import validate_iwxxm

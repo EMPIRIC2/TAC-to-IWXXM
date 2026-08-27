@@ -71,6 +71,9 @@ export function EmailVerification({
 
   const maskEmail = (email: string) => {
     const [localPart, domain] = email.split('@');
+    if (!localPart || !domain) {
+      return email;
+    }
     if (localPart.length <= 3) {
       return `${localPart[0]}***@${domain}`;
     }

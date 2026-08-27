@@ -3,7 +3,6 @@
 from contextlib import asynccontextmanager
 
 import pytest
-
 from src.services import database as db
 
 
@@ -45,7 +44,7 @@ class _FakeEngine:
 
 
 @pytest.mark.parametrize(
-    "env_name,env_value,expected",
+    ("env_name", "env_value", "expected"),
     [
         ("DATABASE_URL", "postgresql+psycopg2://u:p@h:5432/db", "postgresql+asyncpg://u:p@h:5432/db"),
         ("SUPABASE_DB_URL", "postgresql+psycopg2://a:b@x:5432/y", "postgresql+asyncpg://a:b@x:5432/y"),

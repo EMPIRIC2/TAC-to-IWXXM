@@ -1,6 +1,6 @@
 """Lint profile constants for annex3 vs iwxxm_us (S059 / EV-050 / AC7).
 
-``iwxxm_us`` applicability mirrors ``tac2iwxxm.convert`` ``_US_PRODUCTS`` —
+``iwxxm_us`` applicability mirrors ``tac2iwxxm.convert`` ``_US_PRODUCTS`` -
 VAA/TCA/SWXA/VONA are **N/A** (not fail) for dual-profile compare.
 """
 
@@ -17,7 +17,7 @@ SUPPORTED_PROFILES: Final[frozenset[str]] = frozenset({PROFILE_ANNEX3, PROFILE_I
 # Products with a defined US profile overlay (L5 REMARKS / FMH-1 / iwxxm-us encode).
 IWXXM_US_PRODUCTS: Final[frozenset[str]] = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
 
-# Thin US national validation policy only (#919 M22) — no convert/dual-profile parity.
+# Thin US national validation policy only (#919 M22) - no convert/dual-profile parity.
 IWXXM_US_THIN_LINT_PRODUCTS: Final[frozenset[str]] = frozenset({"SWXA", "TCA"})
 
 IWXXM_US_LINT_PRODUCTS: Final[frozenset[str]] = IWXXM_US_PRODUCTS | IWXXM_US_THIN_LINT_PRODUCTS

@@ -5,7 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from iwxxm_validate.codelists import validate_codelist_references
 from iwxxm_validate.gml import validate_gml_references
 

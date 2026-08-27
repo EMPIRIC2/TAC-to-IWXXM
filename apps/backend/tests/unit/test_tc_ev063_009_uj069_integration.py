@@ -1,4 +1,4 @@
-"""UJ-069 / TC-EV063-009 — semantic convert → exchange package API path (EV-063 M9).
+"""UJ-069 / TC-EV063-009 - semantic convert → exchange package API path (EV-063 M9).
 
 [Corpus: journeys §UJ-069] [Corpus: tests §TC-EV063] [Corpus: api]
 """
@@ -10,7 +10,6 @@ from dissemination.collect_namespaces import is_collect_bulletin
 from dissemination.handles import default_handle_store
 from dissemination.rate_limit import DisseminationRateLimiter
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.routers import dissemination as diss_router
 from src.utilities.abuse_controls import get_limiter
@@ -87,5 +86,6 @@ def test_uj069_semantic_convert_then_exchange_package(
     package_body = package_resp.json()
     assert package_body["exchange_profile"] == "GLOBAL_AFS"
     xml = package_body["results"][0]["xml"]
-    assert xml and is_collect_bulletin(xml)
+    assert xml
+    assert is_collect_bulletin(xml)
     assert "iwxxm-us:Addendum" in xml or "iwxxm:METAR" in xml

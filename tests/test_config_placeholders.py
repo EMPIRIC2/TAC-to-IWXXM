@@ -29,9 +29,11 @@ def _scan_file(rel_path: str) -> list[str]:
         return []
     hits = []
     for lineno, line in enumerate(fpath.read_text().splitlines(), start=1):
-        for pattern in _PLACEHOLDER_PATTERNS:
-            if pattern.search(line):
-                hits.append(f"{rel_path}:{lineno}: {line.strip()}")
+        hits.extend(
+            f"{rel_path}:{lineno}: {line.strip()}"
+            for pattern in _PLACEHOLDER_PATTERNS
+            if pattern.search(line)
+        )
     return hits
 
 
@@ -40,7 +42,7 @@ def test_no_placeholder_supabase_url_in_ci_config():
     it should reference a secret instead."""
     hits = _scan_file(".github/workflows/ci-cd.yml")
     assert not hits, (
-        "Placeholder Supabase credentials found in CI config — "
+        "Placeholder Supabase credentials found in CI config - "
         "use ${{ secrets.FRONTEND_VITE_SUPABASE_URL }} instead:\n" + "\n".join(hits)
     )
 
@@ -50,7 +52,7 @@ def test_no_placeholder_supabase_url_in_render_yaml():
     use sync:false so the Render dashboard value is preserved."""
     hits = _scan_file("render.yaml")
     assert not hits, (
-        "Placeholder Supabase credentials found in render.yaml — "
+        "Placeholder Supabase credentials found in render.yaml - "
         "use 'sync: false' and set the correct value in the Render dashboard:\n"
         + "\n".join(hits)
     )

@@ -480,7 +480,7 @@ class LinearCs1(LinearCstype):
     gml:LinearCS is a one-dimensional coordinate system that consists of the points that lie on the single axis
     described.
 
-    The associated coordinate is the distance – with or without offset – from the specified datum to the point along
+    The associated coordinate is the distance - with or without offset - from the specified datum to the point along
     the axis. A LinearCS shall have one gml:axis property element.
     """
 

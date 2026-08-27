@@ -7,7 +7,6 @@ from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.schemas.validation import AggregatedValidationResult, ValidationLayer, ValidationResult
 from src.utilities.security import verify_supabase_token

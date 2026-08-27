@@ -1,4 +1,4 @@
-"""TC-EV064-002/006 — CA_ECCC METAR/TAF/AIRMET convert golden pack (EV-064 M3/M4/M5).
+"""TC-EV064-002/006 - CA_ECCC METAR/TAF/AIRMET convert golden pack (EV-064 M3/M4/M5).
 
 Spec: docs/test-plan.md TC-EV064-002, TC-EV064-006; domain/profiles/semantic/CA_ECCC.md
 """
@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "CA_ECCC"
@@ -114,7 +115,8 @@ def test_tc_ev064_002_validate_ca_eccc_metar_layers(case_id: str, golden_manifes
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
 
     report = validate(
         result.xml,
@@ -129,7 +131,7 @@ def test_tc_ev064_002_validate_ca_eccc_metar_layers(case_id: str, golden_manifes
     assert report.ok is True
 
 
-@pytest.mark.parametrize("case_id", (*TAF_CASE_IDS, *AIRMET_CASE_IDS))
+@pytest.mark.parametrize("case_id", [*TAF_CASE_IDS, *AIRMET_CASE_IDS])
 def test_tc_ev064_002_validate_ca_eccc_non_metar_attempt(case_id: str, golden_manifest: dict) -> None:
     """TC-EV064-002: TAF/AIRMET ca_eccc scaffold accepts profile (product XSD may gap)."""
     from iwxxm_validate import validate
@@ -145,7 +147,8 @@ def test_tc_ev064_002_validate_ca_eccc_non_metar_attempt(case_id: str, golden_ma
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
 
     report = validate(
         result.xml,
@@ -181,7 +184,8 @@ def test_tc_ev064_002_m_golden_ca_eccc(case_id: str, golden_manifest: dict) -> N
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert canonicalize_xml(result.xml) == canonicalize_xml(expected_xml)
 
 
@@ -257,7 +261,8 @@ def test_tc_ev064_006_m_golden_taf_ca_eccc(case_id: str, golden_manifest: dict) 
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert canonicalize_xml(result.xml) == canonicalize_xml(expected_xml)
 
 
@@ -311,7 +316,8 @@ def test_tc_ev064_006_m_golden_airmet_ca_eccc(case_id: str, golden_manifest: dic
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert canonicalize_xml(result.xml) == canonicalize_xml(expected_xml)
 
 

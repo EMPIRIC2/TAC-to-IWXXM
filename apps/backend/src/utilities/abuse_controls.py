@@ -1,10 +1,10 @@
 """
-F21 / ADR-031 abuse controls — rate limits (slowapi) + max request body.
+F21 / ADR-031 abuse controls - rate limits (slowapi) + max request body.
 
 Env knobs (env-contract):
 - ``RATE_LIMIT_PUBLIC_PER_MIN`` (default 60)
 - ``RATE_LIMIT_DISSEMINATION_PER_MIN`` (default 10)
-- ``RATE_LIMIT_MASS_INGEST_PER_MIN`` (default 10) — F33 / EV-042
+- ``RATE_LIMIT_MASS_INGEST_PER_MIN`` (default 10) - F33 / EV-042
 - ``MAX_REQUEST_BODY_BYTES`` (default 2097152)
 - ``MASS_INGEST_MAX_FILES`` / ``MASS_INGEST_MAX_FILE_BYTES`` / ``MASS_INGEST_MAX_TOTAL_BYTES``
 """
@@ -131,7 +131,7 @@ def create_limiter() -> Limiter:
         kwargs["storage_uri"] = redis_url
     else:
         logger.warning(
-            "REDIS_URL unset — slowapi using in-memory storage (not shared across replicas; set REDIS_URL for Upstash)"
+            "REDIS_URL unset - slowapi using in-memory storage (not shared across replicas; set REDIS_URL for Upstash)"
         )
     return Limiter(**kwargs)
 
@@ -214,12 +214,14 @@ def install_abuse_controls(app: FastAPI, limiter: Limiter | None = None) -> Limi
 
 def dissemination_limit(limiter: Limiter) -> Callable[..., Any]:
     """Decorator factory for stricter dissemination rate limits."""
-    return limiter.limit(dissemination_limit_string())
+    limiter_any = cast(Any, limiter)
+    return cast(Callable[..., Any], limiter_any.limit(dissemination_limit_string()))
 
 
 def mass_ingest_limit(limiter: Limiter) -> Callable[..., Any]:
     """Decorator factory for mass-ingest rate limits."""
-    return limiter.limit(mass_ingest_limit_string())
+    limiter_any = cast(Any, limiter)
+    return cast(Callable[..., Any], limiter_any.limit(mass_ingest_limit_string()))
 
 
 __all__ = [

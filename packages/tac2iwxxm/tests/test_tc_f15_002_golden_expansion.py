@@ -1,4 +1,4 @@
-"""TC-F15-002 — R6 golden pack expansion stubs (S015 / EV-011 T4.1).
+"""TC-F15-002 - R6 golden pack expansion stubs (S015 / EV-011 T4.1).
 
 Asserts annex3 + iwxxm_us manifests cover COR/AUTO/CAVOK/NIL themes required by
 HARD R6 / research catalog (convert fidelity deepened in T4.2).

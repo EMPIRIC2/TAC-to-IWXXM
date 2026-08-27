@@ -91,7 +91,7 @@ def _validate_against_schema(
 
     try:
         ok = bool(schema.validate(xml_doc))
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return [
             Issue(
                 severity="error",
@@ -104,17 +104,16 @@ def _validate_against_schema(
     if ok:
         return []
 
-    issues: list[Issue] = []
-    for err in schema.error_log:
-        issues.append(
-            Issue(
-                severity="error",
-                code="XSD_VALIDATION_ERROR",
-                message=str(err.message),
-                layer=layer,
-                location=f"line {err.line}, column {err.column}",
-            )
+    issues: list[Issue] = [
+        Issue(
+            severity="error",
+            code="XSD_VALIDATION_ERROR",
+            message=str(err.message),
+            layer=layer,
+            location=f"line {err.line}, column {err.column}",
         )
+        for err in schema.error_log
+    ]
     if not issues:
         issues.append(
             Issue(
@@ -171,7 +170,7 @@ def validate_xsd_at_path(
                 layer=layer,
             )
         ]
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return [
             Issue(
                 severity="error",
@@ -219,7 +218,7 @@ def validate_xsd(xml_content: str, iwxxm_version: str) -> list[Issue]:
                 layer=_XSD_LAYER_DEFAULT,
             )
         ]
-    except Exception as exc:  # noqa: BLE001 — surface as structured issue
+    except Exception as exc:
         return [
             Issue(
                 severity="error",

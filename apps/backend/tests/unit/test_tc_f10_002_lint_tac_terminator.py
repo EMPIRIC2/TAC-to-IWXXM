@@ -7,12 +7,11 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
 CLEAN_NO_EQ = "METAR KJFK 101851Z 24008KT 10SM FEW250 15/07 A3034"
-EXPECTED_COPY = "Reports in bulletins end with '=' — add it before publishing"
+EXPECTED_COPY = "Reports in bulletins end with '=' - add it before publishing"
 
 
 @pytest.fixture

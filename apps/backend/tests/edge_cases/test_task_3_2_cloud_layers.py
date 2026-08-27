@@ -8,7 +8,6 @@ Tests enhanced cloud layer validation with:
 """
 
 import pytest
-
 from src.validation.semantic_rules import (
     CloudLayerValidationRule,
     IssueSeverity,

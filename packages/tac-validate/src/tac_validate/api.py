@@ -62,9 +62,9 @@ def lint(
     profile_l = normalize_profile(profile)
     product_u = product.upper()
     if profile_l == "iwxxm_us" and not iwxxm_us_lint_applicable(product_u):
-        raise ValueError(f"profile iwxxm_us is not applicable for product {product_u!r} (N/A — use annex3)")
+        raise ValueError(f"profile iwxxm_us is not applicable for product {product_u!r} (N/A - use annex3)")
     if profile_l == "ca_eccc" and not ca_eccc_applicable(product_u):
-        raise ValueError(f"profile ca_eccc is not applicable for product {product_u!r} (N/A — use annex3)")
+        raise ValueError(f"profile ca_eccc is not applicable for product {product_u!r} (N/A - use annex3)")
 
     if looks_like_ahl(tac_text):
         return lint_ahl_bulletin(

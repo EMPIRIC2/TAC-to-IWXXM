@@ -1,4 +1,4 @@
-"""TC-EV063-001..003 — semantic profile canonical ids + aliases (EV-063 / F35)."""
+"""TC-EV063-001..003 - semantic profile canonical ids + aliases (EV-063 / F35)."""
 
 from __future__ import annotations
 
@@ -24,7 +24,8 @@ def test_tc_ev063_001_alias_annex3_equiv_icao_2025(profile_a: str, profile_b: st
     """Alias annex3 and canonical ICAO_2025 produce identical IWXXM."""
     result_a = convert(METAR_BASIC_TAC, product="METAR", profile=profile_a)
     result_b = convert(METAR_BASIC_TAC, product="METAR", profile=profile_b)
-    assert result_a.ok and result_b.ok
+    assert result_a.ok
+    assert result_b.ok
     assert result_a.xml == result_b.xml
     assert result_a.semantic_profile == "icao_2025"
     assert result_b.semantic_profile == "icao_2025"
@@ -48,7 +49,8 @@ def test_tc_ev063_001_alias_annex3_deprecation_signal() -> None:
 def test_tc_ev063_002_us_faa_nws_equiv_iwxxm_us(profile_a: str, profile_b: str) -> None:
     result_a = convert(US_RMK_TAC, product="METAR", profile=profile_a)
     result_b = convert(US_RMK_TAC, product="METAR", profile=profile_b)
-    assert result_a.ok and result_b.ok
+    assert result_a.ok
+    assert result_b.ok
     assert result_a.xml == result_b.xml
     assert result_a.semantic_profile == "us_faa_nws"
     assert "iwxxm-us:Addendum" in result_a.xml or "humanReadableText" in result_a.xml

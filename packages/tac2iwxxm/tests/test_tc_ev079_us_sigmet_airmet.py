@@ -1,4 +1,4 @@
-"""TC-EV079 — US_FAA_NWS SIGMET/AIRMET national layer slice (EV-079 / #919 M8).
+"""TC-EV079 - US_FAA_NWS SIGMET/AIRMET national layer slice (EV-079 / #919 M8).
 
 Manifest-driven goldens under ``fixtures/profiles/US_FAA_NWS/`` exercise US SIGMET/AIRMET
 phenomenon tokens and IWXXM-US namespace emit via canonical ``US_FAA_NWS``.
@@ -12,10 +12,10 @@ import json
 from pathlib import Path
 
 import pytest
-from metar_shared.xml_canonical import canonicalize_xml
-
-from tac2iwxxm import convert
 from tac2iwxxm.products.sigmet_airmet import parse_airmet, parse_sigmet
+
+from metar_shared.xml_canonical import canonicalize_xml
+from tac2iwxxm import convert
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "US_FAA_NWS"
 MANIFEST_PATH = FIXTURES / "manifest.json"
@@ -65,7 +65,7 @@ def test_tc_ev079_002_sigmet_phenomenon_tokens(case_id: str, us_manifest: dict) 
 
 
 @pytest.mark.parametrize(
-    "case_id,expected",
+    ("case_id", "expected"),
     [
         ("airmet_isol_ts", "ISOL_TS"),
         ("airmet_ifr", "SFC_VIS"),

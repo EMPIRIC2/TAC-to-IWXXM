@@ -273,7 +273,7 @@ export interface paths {
         put?: never;
         /**
          * Lint Tac
-         * @description Thin wrapper over ``packages/tac-validate`` (multipart/form-data only — Q8=A).
+         * @description Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A).
          */
         post: operations["lint_tac_api_v1_lint_tac_post"];
         delete?: never;
@@ -1235,7 +1235,7 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
              * @default
              */
             profile: string;
@@ -1317,7 +1317,7 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
              * @default
              */
             profile: string;
@@ -1444,7 +1444,7 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
              * @default
              */
             profile: string;
@@ -1770,7 +1770,7 @@ export interface components {
         };
         /**
          * DecodeResidualModel
-         * @description HTTP DTO for an undecoded TAC span (explicit residuals — G4).
+         * @description HTTP DTO for an undecoded TAC span (explicit residuals - G4).
          */
         DecodeResidualModel: {
             /** End */
@@ -2929,7 +2929,7 @@ export interface components {
             product?: string | null;
             /**
              * Profile
-             * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
              * @default
              * @example annex3
              * @example iwxxm_us
@@ -3455,14 +3455,14 @@ export interface operations {
                     "application/json": components["schemas"]["ConvertBulletinResponse"];
                 };
             };
-            /** @description Empty bulletin — no TAC reports after the abbreviated heading */
+            /** @description Empty bulletin - no TAC reports after the abbreviated heading */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            /** @description Unsupported Media Type — multipart/form-data required */
+            /** @description Unsupported Media Type - multipart/form-data required */
             415: {
                 headers: {
                     [name: string]: unknown;
@@ -3531,7 +3531,7 @@ export interface operations {
                     "application/json": components["schemas"]["DecodeTacResponse"];
                 };
             };
-            /** @description Unsupported Media Type — multipart/form-data required */
+            /** @description Unsupported Media Type - multipart/form-data required */
             415: {
                 headers: {
                     [name: string]: unknown;
@@ -3849,7 +3849,7 @@ export interface operations {
                     "application/json": components["schemas"]["LintTacResponse"];
                 };
             };
-            /** @description Unsupported Media Type — multipart/form-data required */
+            /** @description Unsupported Media Type - multipart/form-data required */
             415: {
                 headers: {
                     [name: string]: unknown;
@@ -3967,7 +3967,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             /** @description Validation Error */

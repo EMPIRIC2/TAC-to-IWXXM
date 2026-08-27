@@ -1,7 +1,7 @@
-"""T11.7 / TC-F28-005 — SWXA lint/convert + catalog GET smoke (UJ-043).
+"""T11.7 / TC-F28-005 - SWXA lint/convert + catalog GET smoke (UJ-043).
 
 Spec: docs/test-plan.md TC-F28-005; execution-plan T11.7 (S036 / EV-029).
-In-process client (CI); live H3/H4–H5 at 13 when FE Examples unlock ships.
+In-process client (CI); live H3/H4-H5 at 13 when FE Examples unlock ships.
 """
 
 from __future__ import annotations
@@ -11,10 +11,9 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-from tac_validate.issue_registry import ISSUES
-
 from src.api import app
 from src.utilities.security import verify_supabase_token
+from tac_validate.issue_registry import ISSUES
 
 pytestmark = [pytest.mark.integration, pytest.mark.smoke]
 

@@ -3,13 +3,13 @@
 Vendor ``sigmet-A6-2-TC`` quality path is green; FE catalog unlock is ``wmoReference``
 (TC-EV030-005 / EV-030 T2.4). ADR-032 equality remains a residual (coord/FIR/intensity).
 BBB→``reportStatus`` and WC→LY AHL mapping covered below.
-Root must be ``iwxxm:TropicalCycloneSIGMET`` — not general ``SIGMET``, not TCA
+Root must be ``iwxxm:TropicalCycloneSIGMET`` - not general ``SIGMET``, not TCA
 ``TropicalCycloneAdvisory``, not ``VolcanicAshSIGMET`` (#738).
 
 Product-order smoke (TC-EV029-007 pack seed for TC SIGMET) uses annex3
 ``sigmet_a6_2_tc`` (normalized WMO A6-2-TC + ``=`` terminator). BBB→``reportStatus``
 reuses ``convert(report_status=)`` with TC emitter honor (T7.2);
-``split_bulletin(product=\"SIGMET\")`` must accept WC AHL bodies (T7.2 — currently
+``split_bulletin(product=\"SIGMET\")`` must accept WC AHL bodies (T7.2 - currently
 WS/WV-only).
 """
 
@@ -27,7 +27,7 @@ ANNEX3 = FIXTURES / "annex3_golden"
 IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
 
-# Body has no COR/AMD keyword — status must come from AHL BBB (T7.2).
+# Body has no COR/AMD keyword - status must come from AHL BBB (T7.2).
 _BBB_CASES = (
     ("tc_sigmet_ahl_normal.txt", None, "NORMAL"),
     ("tc_sigmet_ahl_rra.txt", "RRA", "NORMAL"),
@@ -177,7 +177,7 @@ def test_tc_sigmet_ahl_cnl_split_and_convert() -> None:
     assert result.ok is True, result.issues
     assert result.xml is not None
     assert 'isCancelReport="true"' in result.xml
-    # WC AHL + CNL is TC family — root must not collapse to general SIGMET / VA / TCA.
+    # WC AHL + CNL is TC family - root must not collapse to general SIGMET / VA / TCA.
     _assert_tc_sigmet_root(result.xml)
 
 

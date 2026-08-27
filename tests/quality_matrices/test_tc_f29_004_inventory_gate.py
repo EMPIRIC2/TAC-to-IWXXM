@@ -1,4 +1,4 @@
-"""TC-F29-004 / TC-EV030-003 / T1.6 — inventory gate (no silent gaps)."""
+"""TC-F29-004 / TC-EV030-003 / T1.6 - inventory gate (no silent gaps)."""
 
 from __future__ import annotations
 

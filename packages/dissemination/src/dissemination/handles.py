@@ -19,7 +19,7 @@ class HandleRecord:
 
 
 class HandleStore:
-    """Process-local handle map — never persisted."""
+    """Process-local handle map - never persisted."""
 
     def __init__(self, *, ttl_seconds: float = 300.0) -> None:
         self.ttl_seconds = ttl_seconds

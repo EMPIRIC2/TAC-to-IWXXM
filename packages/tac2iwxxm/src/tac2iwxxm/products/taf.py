@@ -100,9 +100,7 @@ _CODE_CA_PRESENT_FORECAST_WEATHER = "https://dd.weather.gc.ca/today/aviation/iwx
 def _ca_forecast_weather_hrefs(wx_tokens: list[str]) -> list[str]:
     """Map MANAIR TAF weather groups to MSC ``present_and_forecast_weather`` hrefs."""
     hrefs: list[str] = []
-    for token in wx_tokens:
-        if token.upper() == "IC":
-            hrefs.append(f"{_CODE_CA_PRESENT_FORECAST_WEATHER}/IC")
+    hrefs.extend(f"{_CODE_CA_PRESENT_FORECAST_WEATHER}/IC" for token in wx_tokens if token.upper() == "IC")
     return hrefs
 
 

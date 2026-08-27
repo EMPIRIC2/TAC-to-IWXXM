@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import pytest
-from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
-
 from dissemination.writer_contract import (
     CONTRACT_VERSION,
     DiffKind,
@@ -13,6 +11,7 @@ from dissemination.writer_contract import (
     diff_writer_contract,
     writer_contract_ddl,
 )
+from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
 
 @pytest.fixture

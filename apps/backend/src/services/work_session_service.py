@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import logging
 import os
+from collections.abc import Sequence
 from datetime import UTC, datetime
-from typing import Any, NoReturn, Sequence
+from typing import Any, NoReturn
 from uuid import UUID, uuid4
 
 from fastapi import HTTPException, status
@@ -42,7 +43,7 @@ def _sync_database_url() -> str:
     if not raw:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Work session service unavailable — missing DATABASE_URL",
+            detail="Work session service unavailable - missing DATABASE_URL",
         )
     if raw.startswith("postgresql+asyncpg://"):
         url = "postgresql+psycopg://" + raw.removeprefix("postgresql+asyncpg://")
@@ -110,7 +111,7 @@ def _handle_db_error(exc: Exception) -> NoReturn:
     if TABLE in message and ("does not exist" in message.lower() or "42P01" in message):
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Work sessions unavailable — run `make db-migrate` (Alembic upgrade head)",
+            detail="Work sessions unavailable - run `make db-migrate` (Alembic upgrade head)",
         ) from exc
     logger.exception("Work session database error")
     raise HTTPException(

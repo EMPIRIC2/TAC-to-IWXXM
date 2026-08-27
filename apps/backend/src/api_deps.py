@@ -28,6 +28,7 @@ except ImportError:  # pragma: no cover - Docker/local import path mirror
     from utilities.conversion import convert_metar_tac_with_metadata
 
 from iwxxm_validate import validate_iwxxm as iwxxm_validate_fn
+
 from tac2iwxxm import split_bulletin as tac2iwxxm_split_bulletin
 
 try:
@@ -38,7 +39,7 @@ except ImportError:  # pragma: no cover - Docker/local import path mirror
 read_uploaded_text = api_wire.read_uploaded_text
 read_upload_files_text = api_wire.read_upload_files_text
 classify_and_validate_upload_content = api_wire.classify_and_validate_upload_content
-_call_iwxxm_validate = api_wire._call_iwxxm_validate
+_call_iwxxm_validate = api_wire._call_iwxxm_validate  # pyright: ignore[reportPrivateUsage]
 
 __all__ = [
     "ValidationService",

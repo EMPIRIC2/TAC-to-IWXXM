@@ -1,7 +1,7 @@
-"""T6.1 / TC-F24-005 + TC-F25-004 — AIRMET + WMO METAR/SPECI/TAF lint/convert/decode smoke.
+"""T6.1 / TC-F24-005 + TC-F25-004 - AIRMET + WMO METAR/SPECI/TAF lint/convert/decode smoke.
 
 Spec: docs/test-plan.md TC-F24-005 / TC-F25-004; execution-plan T6.1 (S026 / EV-020).
-In-process client (CI); live H3/H4–H5 reuse paths at 13-deploy-smoke.
+In-process client (CI); live H3/H4-H5 reuse paths at 13-deploy-smoke.
 """
 
 from __future__ import annotations
@@ -11,10 +11,9 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-from tac_validate.issue_registry import ISSUES
-
 from src.api import app
 from src.utilities.security import verify_supabase_token
+from tac_validate.issue_registry import ISSUES
 
 pytestmark = [pytest.mark.integration, pytest.mark.smoke]
 

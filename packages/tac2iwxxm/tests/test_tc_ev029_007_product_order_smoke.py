@@ -1,4 +1,4 @@
-"""TC-EV029-007 — Product-order regression smoke (T12.1 / M12).
+"""TC-EV029-007 - Product-order regression smoke (T12.1 / M12).
 
 One accept fixture per family in Phase B order:
 
@@ -23,7 +23,7 @@ IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
 
 # Phase B product order (verify-plan-audit / E29-3 / theme map TC-EV029-007).
-# family_id must stay unique and ordered — test_product_order_sequence locks it.
+# family_id must stay unique and ordered - test_product_order_sequence locks it.
 _PRODUCT_ORDER_CASES: tuple[tuple[str, str, str, str], ...] = (
     ("METAR", "METAR", "metar_basic.tac", "METAR"),
     ("SPECI", "SPECI", "speci_a3_2.tac", "SPECI"),

@@ -1,4 +1,4 @@
-"""TC-EV023-005 scaffold (T0.3) — informative Amd79 marker + vendor path gate.
+"""TC-EV023-005 scaffold (T0.3) - informative Amd79 marker + vendor path gate.
 
 Full TAC→2025-2→XSD+SCH cases land in T5.1 and use
 ``@pytest.mark.xfail(strict=False)`` so soft failures do not hard-fail PR CI (E23-T4=2).
@@ -34,7 +34,7 @@ def test_tc_ev023_005_amd79_product_trees_present(rel: str) -> None:
 
 
 def test_tc_ev023_005_nsc_seed_present() -> None:
-    """P0/P1 seed cited by theme map — EFHK SPECI NSC."""
+    """P0/P1 seed cited by theme map - EFHK SPECI NSC."""
     seed = _AMD79 / "metar" / "EFHK-290020Z.tac"
     assert seed.is_file()
     text = seed.read_text(encoding="utf-8")

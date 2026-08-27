@@ -1,4 +1,4 @@
-"""Unit tests for AirportRecordBuilder – 0% coverage target."""
+"""Unit tests for AirportRecordBuilder - 0% coverage target."""
 
 import json
 from pathlib import Path

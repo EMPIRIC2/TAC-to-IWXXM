@@ -1,4 +1,4 @@
-"""TC-EV025-004 / M4.4 — Variable CIG / SKY / VIS (UJ-040).
+"""TC-EV025-004 / M4.4 - Variable CIG / SKY / VIS (UJ-040).
 
 Asserts ``VariableCeilingHeight``, ``VariableSkyCondition``, and
 ``VariableVisibility`` under ``iwxxm_us``.
@@ -9,19 +9,20 @@ XML pins follow iwxxm-us 3.0 PDF sample shapes
 
 from __future__ import annotations
 
-from tac2iwxxm import convert
 from tac2iwxxm.products.metar_speci import parse_metar_speci
+
+from tac2iwxxm import convert
 
 IWXXM_VERSION = "2025-2"
 PROFILE = "iwxxm_us"
 
-# PDF VariableCeilingHeight: 300–800 ft.
+# PDF VariableCeilingHeight: 300-800 ft.
 _TAC_CIG = "METAR KJFK 231751Z 18008KT 2SM BR BKN005 14/13 A2995 RMK AO2 CIG 003V008="
 
 # PDF VariableSkyCondition: BKN ↔ OVC.
 _TAC_SKY = "METAR KJFK 231751Z 18008KT 2SM BR BKN014 14/13 A2995 RMK AO2 BKN V OVC="
 
-# PDF VariableVisibility: 1–3 SM → ~1609–4828 m (PDF uses 1600/4800).
+# PDF VariableVisibility: 1-3 SM → ~1609-4828 m (PDF uses 1600/4800).
 _TAC_VIS = "METAR KJFK 231751Z 18008KT 2SM BR BKN008 14/13 A2995 RMK AO2 VIS 1V3="
 
 # PDF VariableVisibility belowMinimum.

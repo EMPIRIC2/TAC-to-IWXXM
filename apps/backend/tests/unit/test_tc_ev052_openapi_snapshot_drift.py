@@ -1,5 +1,5 @@
 """
-TC-EV052-009 — committed OpenAPI snapshot must match FastAPI ``app.openapi()``.
+TC-EV052-009 - committed OpenAPI snapshot must match FastAPI ``app.openapi()``.
 
 EV-052 / M4 / D-S061-openapi-src: refresh via ``make openapi-refresh``.
 """
@@ -21,7 +21,7 @@ def test_openapi_snapshot_exists() -> None:
 
 
 def test_openapi_snapshot_matches_live_schema() -> None:
-    """Snapshot object must equal live OpenAPI — CI drift gate (ignore JSON whitespace)."""
+    """Snapshot object must equal live OpenAPI - CI drift gate (ignore JSON whitespace)."""
     live = api_module.app.openapi()
     loaded = json.loads(OPENAPI_SNAPSHOT.read_text(encoding="utf-8"))
     assert loaded == live, (

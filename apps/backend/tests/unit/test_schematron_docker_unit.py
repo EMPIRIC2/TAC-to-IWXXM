@@ -1,11 +1,10 @@
-"""Unit tests for SchematronValidatorDocker – 0% coverage target."""
+"""Unit tests for SchematronValidatorDocker - 0% coverage target."""
 
 import json
 import subprocess
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from src.utilities.schematron_validator_docker import (
     SchematronValidationResult,
     SchematronValidatorDocker,
@@ -38,7 +37,7 @@ class TestSchematronValidationResult:
 
 class TestSchematronValidatorDockerInit:
     def test_raises_when_schema_missing(self, tmp_path):
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FileNotFoundError, match=r".*"):
             SchematronValidatorDocker(schema_path=str(tmp_path / "missing.sch"))
 
     def test_init_success(self, tmp_path):

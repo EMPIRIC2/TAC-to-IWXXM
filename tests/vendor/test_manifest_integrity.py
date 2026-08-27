@@ -1,4 +1,4 @@
-"""TC-M002: Vendor Manifest Integrity — test-plan.md §TC-M002, UJ-DEV-002.
+"""TC-M002: Vendor Manifest Integrity - test-plan.md §TC-M002, UJ-DEV-002.
 
 Verifies ``vendor/manifest.json`` pins match checked-in schema tree checksums.
 """

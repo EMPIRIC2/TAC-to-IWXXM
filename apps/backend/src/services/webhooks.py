@@ -10,7 +10,8 @@ import hmac
 import json
 import logging
 from datetime import UTC, datetime
-from typing import Any, Dict, List, Optional
+from types import TracebackType
+from typing import Any
 
 import httpx
 
@@ -27,17 +28,22 @@ logger = logging.getLogger(__name__)
 class WebhookService:
     """Service for sending webhook notifications."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.client = None
         self.enabled = should_send_webhooks()
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> "WebhookService":
         """Async context manager entry."""
         if self.enabled:
             self.client = httpx.AsyncClient(timeout=10.0)
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
         """Async context manager exit."""
         if self.client:
             await self.client.aclose()
@@ -62,8 +68,8 @@ class WebhookService:
     async def send_webhook(
         self,
         event: str,
-        data: Dict[str, Any],
-        metadata: Optional[Dict[str, Any]] = None,
+        data: dict[str, Any],
+        metadata: dict[str, Any] | None = None,
     ) -> bool:
         """
         Send webhook notification to all configured endpoints.
@@ -104,11 +110,11 @@ class WebhookService:
         signature = self._generate_signature(payload_str)
 
         # Prepare headers
-        headers = {
+        headers: dict[str, str] = {
             "Content-Type": "application/json",
             "User-Agent": "METAR-to-IWXXM-Translation-Centre/1.0",
             "X-Webhook-Event": event,
-            "X-Webhook-Timestamp": payload["timestamp"],
+            "X-Webhook-Timestamp": str(payload["timestamp"]),
         }
 
         if signature:
@@ -128,7 +134,7 @@ class WebhookService:
         self,
         url: str,
         payload: str,
-        headers: Dict[str, str],
+        headers: dict[str, str],
     ) -> bool:
         """
         Send webhook to a single URL.
@@ -175,7 +181,7 @@ class WebhookService:
         iwxxm_version: str,
         file_size_bytes: int,
         duration_ms: float | int,
-    ):
+    ) -> None:
         """
         Send notification for completed translation.
 
@@ -195,7 +201,7 @@ class WebhookService:
                 "airport_code": airport_code,
                 "iwxxm_version": iwxxm_version,
                 "file_size_bytes": file_size_bytes,
-                "duration_ms": int(round(duration_ms)),
+                "duration_ms": round(duration_ms),
             },
         )
 
@@ -206,7 +212,7 @@ class WebhookService:
         icao_region: str,
         iwxxm_version: str,
         duration_ms: float | int,
-    ):
+    ) -> None:
         """
         Send notification for successful translation.
 
@@ -226,7 +232,7 @@ class WebhookService:
                 "airport_code": airport_code,
                 "icao_region": icao_region,
                 "iwxxm_version": iwxxm_version,
-                "duration_ms": int(round(duration_ms)),
+                "duration_ms": round(duration_ms),
             },
         )
 
@@ -236,7 +242,7 @@ class WebhookService:
         airport_code: str,
         error_type: str,
         error_message: str,
-    ):
+    ) -> None:
         """
         Send notification for failed translation.
 
@@ -262,9 +268,9 @@ class WebhookService:
         self,
         translation_id: str,
         airport_code: str,
-        failed_layers: List[str],
-        error_details: Dict[str, Any],
-    ):
+        failed_layers: list[str],
+        error_details: dict[str, Any],
+    ) -> None:
         """
         Send notification for validation failure.
 
@@ -293,7 +299,7 @@ class WebhookService:
         successful: int,
         failed: int,
         duration_ms: int,
-    ):
+    ) -> None:
         """
         Send notification for bulk conversion completion.
 

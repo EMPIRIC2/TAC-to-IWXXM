@@ -1,4 +1,4 @@
-"""TC-EV070-* — CA_ECCC TAF + AIRMET convert deepen (#1041)."""
+"""TC-EV070-* - CA_ECCC TAF + AIRMET convert deepen (#1041)."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "CA_ECCC"
@@ -61,7 +62,8 @@ def test_tc_ev070_005_validate_full_ca_stack(case_id: str, golden_manifest: dict
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
 
     report = validate(
         result.xml,
@@ -88,7 +90,8 @@ def test_tc_ev070_003_taf_ic_weather_href() -> None:
 
     tac = (FIXTURES / "TAF/valid/taf_ic_weather.tac").read_text(encoding="utf-8")
     result = convert(tac, product="TAF", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert "present_and_forecast_weather/IC" in result.xml
     assert "iwxxm-ca:weather" in result.xml
 
@@ -98,7 +101,8 @@ def test_tc_ev070_002_taf_amd_report_status() -> None:
 
     tac = (FIXTURES / "TAF/valid/taf_amd.tac").read_text(encoding="utf-8")
     result = convert(tac, product="TAF", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert 'reportStatus="AMENDMENT"' in result.xml
 
 
@@ -107,7 +111,8 @@ def test_tc_ev070_004_airmet_gfa_structured_fields() -> None:
 
     tac = (FIXTURES / "AIRMET/valid/airmet_gfa_sfc_vis.tac").read_text(encoding="utf-8")
     result = convert(tac, product="AIRMET", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert "SFC_VIS_and_BKN_CLD" in result.xml
     assert "iwxxm-ca:surfaceVisibility" in result.xml
     assert "iwxxm-ca:cloudBase" in result.xml

@@ -83,7 +83,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "MISSING_TERMINATOR",
         "info",
-        "Reports in bulletins end with '=' — add it before publishing",
+        "Reports in bulletins end with '=' - add it before publishing",
         tags=("terminator", "metar", "speci", "taf"),
     ),
     _row(
@@ -95,7 +95,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "MISSING_OBS_TIME",
         "error",
-        "{product} missing observation time ddhhmmZ — A3-2 #3",
+        "{product} missing observation time ddhhmmZ - A3-2 #3",
         tags=("time", "metar", "speci"),
     ),
     _row(
@@ -107,13 +107,13 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "MISSING_WIND",
         "error",
-        "{product} missing surface wind group — A3-2 #5",
+        "{product} missing surface wind group - A3-2 #5",
         tags=("wind", "metar", "speci"),
     ),
     _row(
         "MISSING_VISIBILITY",
         "error",
-        "{product} missing visibility or CAVOK — A3-2 #6",
+        "{product} missing visibility or CAVOK - A3-2 #6",
         tags=("visibility", "metar", "speci"),
     ),
     _row(
@@ -125,25 +125,25 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "INVALID_WEATHER",
         "error",
-        "{product} invalid present weather token {token!r} — A3-2 #8",
+        "{product} invalid present weather token {token!r} - A3-2 #8",
         tags=("weather", "metar", "speci", "r3"),
     ),
     _row(
         "MISSING_TEMP_DEWPOINT",
         "error",
-        "{product} missing temperature/dewpoint tt/td — A3-2 #10",
+        "{product} missing temperature/dewpoint tt/td - A3-2 #10",
         tags=("temperature", "metar", "speci"),
     ),
     _row(
         "MISSING_QNH",
         "error",
-        "{product} missing QNH/altimeter (Qnnnn/Annnn) — A3-2 #11",
+        "{product} missing QNH/altimeter (Qnnnn/Annnn) - A3-2 #11",
         tags=("pressure", "metar", "speci"),
     ),
     _row(
         "INVALID_CLOUD_TOKEN",
         "error",
-        "{product} invalid cloud/VV token {token!r} — A3-2 #9",
+        "{product} invalid cloud/VV token {token!r} - A3-2 #9",
         tags=("cloud", "metar", "speci", "r4"),
     ),
     _row(
@@ -155,7 +155,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "REMARK_US_EXTENSION",
         "info",
-        "{product} US remarks present — iwxxm_us profile awareness",
+        "{product} US remarks present - iwxxm_us profile awareness",
         tags=("remark", "metar", "speci", "r5", "iwxxm_us"),
     ),
     _row(
@@ -173,61 +173,61 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "CA_STATUTE_MILE_VIS",
         "info",
-        "{product} uses statute-mile visibility — MANOBS Canadian overlay",
+        "{product} uses statute-mile visibility - MANOBS Canadian overlay",
         tags=("visibility", "metar", "speci", "ca_eccc", "manobs"),
     ),
     _row(
         "CA_ALTIMETER_INHG",
         "info",
-        "{product} uses inch-of-mercury altimeter (A####) — MANOBS Canadian overlay",
+        "{product} uses inch-of-mercury altimeter (A####) - MANOBS Canadian overlay",
         tags=("pressure", "metar", "speci", "ca_eccc", "manobs"),
     ),
     _row(
         "CA_REMARK_MANOBS",
         "info",
-        "{product} Canadian REMARKS present — ca_eccc profile awareness",
+        "{product} Canadian REMARKS present - ca_eccc profile awareness",
         tags=("remark", "metar", "speci", "ca_eccc", "manobs"),
     ),
     _row(
         "CA_REMARK_PRESRR",
         "info",
-        "{product} MANOBS pressure rising rapidly (PRESRR) — ca_eccc profile awareness",
+        "{product} MANOBS pressure rising rapidly (PRESRR) - ca_eccc profile awareness",
         tags=("remark", "metar", "speci", "ca_eccc", "manobs", "presrr"),
     ),
     _row(
         "CA_REMARK_PRESFR",
         "info",
-        "{product} MANOBS pressure falling rapidly (PRESFR) — ca_eccc profile awareness",
+        "{product} MANOBS pressure falling rapidly (PRESFR) - ca_eccc profile awareness",
         tags=("remark", "metar", "speci", "ca_eccc", "manobs", "presfr"),
     ),
     _row(
         "CA_REMARK_NOSPECI",
         "info",
-        "{product} MANOBS no-specials remark (NOSPECI) — ca_eccc profile awareness",
+        "{product} MANOBS no-specials remark (NOSPECI) - ca_eccc profile awareness",
         tags=("remark", "metar", "speci", "ca_eccc", "manobs", "nospeci"),
     ),
     _row(
         "CA_REMARK_SECTOR_VIS",
         "info",
-        "{product} MANOBS sector visibility remark — ca_eccc profile awareness",
+        "{product} MANOBS sector visibility remark - ca_eccc profile awareness",
         tags=("remark", "metar", "speci", "ca_eccc", "manobs", "visibility"),
     ),
     _row(
         "CA_ALTIMETER_NOT_OBS",
         "info",
-        "{product} altimeter not observable (A////) — MANOBS Canadian overlay",
+        "{product} altimeter not observable (A////) - MANOBS Canadian overlay",
         tags=("pressure", "metar", "speci", "ca_eccc", "manobs"),
     ),
     _row(
         "CA_METAR_LWIS",
         "info",
-        "{product} Limited Weather Information System (LWIS) report — MANOBS CA overlay",
+        "{product} Limited Weather Information System (LWIS) report - MANOBS CA overlay",
         tags=("metar", "ca_eccc", "manobs", "lwis"),
     ),
     _row(
         "CA_METAR_SAWR",
         "info",
-        "{product} Surface Aviation Weather Report (SAWR) — MANOBS CA overlay",
+        "{product} Surface Aviation Weather Report (SAWR) - MANOBS CA overlay",
         tags=("metar", "ca_eccc", "manobs", "sawr"),
     ),
     _row(
@@ -260,14 +260,14 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "US_TCA_OBSERVED_CB_NOT_PROVIDED",
         "error",
-        "{product} observed CB must be NIL under US_FAA_NWS — observed CB not provided",
+        "{product} observed CB must be NIL under US_FAA_NWS - observed CB not provided",
         product="TCA",
         tags=("tca", "iwxxm_us", "us_faa_nws", "cb"),
     ),
     _row(
         "CA_AIRMET_GFA",
         "info",
-        "{product} encodes MANAIR GFA compound phenomenon — ca_eccc profile awareness",
+        "{product} encodes MANAIR GFA compound phenomenon - ca_eccc profile awareness",
         tags=("airmet", "ca_eccc", "manair", "gfa"),
     ),
     _row(
@@ -305,7 +305,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "MULTI_REPORT_BULLETIN",
         "info",
-        "{product} bulletin has multiple TAC reports — one IWXXM report per TAC (Guidance C1)",
+        "{product} bulletin has multiple TAC reports - one IWXXM report per TAC (Guidance C1)",
         tags=("bulletin", "metar", "speci", "taf", "sigmet", "airmet", "c1", "one_report"),
     ),
     _row(
@@ -329,7 +329,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "INVALID_RVR",
         "error",
-        "{product} has an invalid RVR token {token!r} that does not match allowed RVR syntax. Error: the TAC does not meet a required format or product rule and should be corrected. Source: No single RVR concept register — cite 49-2 family + grammar sources.",
+        "{product} has an invalid RVR token {token!r} that does not match allowed RVR syntax. Error: the TAC does not meet a required format or product rule and should be corrected. Source: No single RVR concept register - cite 49-2 family + grammar sources.",
         tags=("rvr", "metar", "speci", "r8"),
     ),
     _row(
@@ -347,21 +347,21 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "MISSING_ISSUE_TIME",
         "error",
-        "TAF missing issue time ddhhmmZ — A5-1 #3",
+        "TAF missing issue time ddhhmmZ - A5-1 #3",
         product="taf",
         tags=("time", "taf"),
     ),
     _row(
         "MISSING_VALIDITY",
         "error",
-        "TAF missing validity period ddhh/ddhh — A5-1 #5",
+        "TAF missing validity period ddhh/ddhh - A5-1 #5",
         product="taf",
         tags=("validity", "taf"),
     ),
     _row(
         "INVALID_CNL_SHAPE",
         "error",
-        "TAF CNL must end the message — A5-1 #6",
+        "TAF CNL must end the message - A5-1 #6",
         product="taf",
         tags=("cnl", "taf", "t1"),
     ),
@@ -436,7 +436,7 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "NSC_WITH_CLOUD_LAYERS",
         "warning",
-        "{product} combines NSC (no significant cloud) with FEW/SCT/BKN/OVC cloud layers in the same group — FAQ §14.3 exclusivity. Warning: conflicting cloud amounts may confuse downstream systems; review before dissemination. Source: ICAO Annex 3 FAQ §14.3. Full normative text may require purchase.",
+        "{product} combines NSC (no significant cloud) with FEW/SCT/BKN/OVC cloud layers in the same group - FAQ §14.3 exclusivity. Warning: conflicting cloud amounts may confuse downstream systems; review before dissemination. Source: ICAO Annex 3 FAQ §14.3. Full normative text may require purchase.",
         tags=("cloud", "metar", "speci", "taf", "t3", "s1", "c1", "ev023"),
     ),
     _row(
@@ -479,23 +479,23 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "MISSING_VALID",
         "error",
-        "{product} missing VALID ddhhmm/ddhhmm period — A6 identity",
+        "{product} missing VALID ddhhmm/ddhhmm period - A6 identity",
         tags=("valid", "sigmet", "airmet"),
     ),
     _row(
         "MULTIPLE_PHENOMENA",
         "error",
-        "{product} encodes multiple phenomenon families {hit} — A6 one-phenomenon gate",
+        "{product} encodes multiple phenomenon families {hit} - A6 one-phenomenon gate",
         tags=("phenomenon", "sigmet", "airmet"),
     ),
-    # S059 / EV-050 / #959 — offline WMO register membership (Validated)
+    # S059 / EV-050 / #959 - offline WMO register membership (Validated)
     _row(
         "UNKNOWN_WMO_MEMBERSHIP",
         "error",
         "{product} token {token!r} not in WMO register ({family})",
         tags=("membership", "wmo", "ev050", "weather", "cloud", "phenomenon"),
     ),
-    # F23 theme G1 — general SIGMET exceptional (#733 / research G1)
+    # F23 theme G1 - general SIGMET exceptional (#733 / research G1)
     _row(
         "SIGMET_CNL",
         "info",
@@ -559,7 +559,7 @@ ISSUES: tuple[IssueSpec, ...] = (
         product="sigmet",
         tags=("stnr", "movement", "sigmet", "airmet", "g1", "a2"),
     ),
-    # F23 theme G2 — sequence / validity / FIR / OBS·FCST / intensity (#733)
+    # F23 theme G2 - sequence / validity / FIR / OBS·FCST / intensity (#733)
     _row(
         "SIGMET_SEQUENCE",
         "info",
@@ -616,7 +616,7 @@ ISSUES: tuple[IssueSpec, ...] = (
         product="sigmet",
         tags=("obs", "fcst", "sigmet", "airmet", "g2", "a2"),
     ),
-    # F23 theme V1 — VA SIGMET (#739 / research V1)
+    # F23 theme V1 - VA SIGMET (#739 / research V1)
     _row(
         "VA_VOLCANO_IDENTITY",
         "info",
@@ -689,147 +689,147 @@ ISSUES: tuple[IssueSpec, ...] = (
     _row(
         "MISSING_VAAC",
         "error",
-        "VAA missing VAAC: template field — A2-1",
+        "VAA missing VAAC: template field - A2-1",
         product="vaa",
         tags=("vaac", "vaa"),
     ),
     _row(
         "MISSING_VOLCANO",
         "error",
-        "VAA missing VOLCANO: template field — F26 theme V1 / A2-1",
+        "VAA missing VOLCANO: template field - F26 theme V1 / A2-1",
         product="vaa",
         tags=("volcano", "vaa", "v1", "f26"),
     ),
     _row(
         "VAA_VOLCANO_UNKNOWN",
         "info",
-        "VAA VOLCANO UNKNOWN — exceptional name allowed (F26 theme V1)",
+        "VAA VOLCANO UNKNOWN - exceptional name allowed (F26 theme V1)",
         product="vaa",
         tags=("volcano", "unknown", "vaa", "v1", "f26"),
     ),
     _row(
         "VAA_VOLCANO_UNNAMED",
         "info",
-        "VAA VOLCANO UNNAMED — exceptional name allowed (F26 theme V1)",
+        "VAA VOLCANO UNNAMED - exceptional name allowed (F26 theme V1)",
         product="vaa",
         tags=("volcano", "unnamed", "vaa", "v1", "f26"),
     ),
     _row(
         "VAA_RMK_NIL",
         "info",
-        "VAA RMK NIL — remarks inapplicable (F26 theme V1)",
+        "VAA RMK NIL - remarks inapplicable (F26 theme V1)",
         product="vaa",
         tags=("remarks", "nil", "vaa", "v1", "f26"),
     ),
     _row(
         "VAA_FCST_NO_VA_EXP",
         "info",
-        "VAA forecast NO VA EXP — status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)",
+        "VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)",
         product="vaa",
         tags=("forecast", "no_va_exp", "vaa", "v1", "f26"),
     ),
     _row(
         "VAA_NO_FURTHER_ADVISORIES",
         "info",
-        "VAA NXT ADVISORY NO FURTHER ADVISORIES — next time inapplicable (F26 theme V1)",
+        "VAA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable (F26 theme V1)",
         product="vaa",
         tags=("next_advisory", "vaa", "v1", "f26"),
     ),
     _row(
         "MISSING_MAX_WIND",
         "error",
-        "TCA missing MAX WIND: template field — A2-2",
+        "TCA missing MAX WIND: template field - A2-2",
         product="tca",
         tags=("max_wind", "tca"),
     ),
     _row(
         "MISSING_TC",
         "error",
-        "TCA missing TC: template field — F27 theme T1 / A2-2",
+        "TCA missing TC: template field - F27 theme T1 / A2-2",
         product="tca",
         tags=("tropical_cyclone", "tca", "t1", "f27"),
     ),
     _row(
         "TCA_CYCLONE_UNNAMED",
         "info",
-        "TCA TC UNNAMED — exceptional name allowed (F27 theme T1)",
+        "TCA TC UNNAMED - exceptional name allowed (F27 theme T1)",
         product="tca",
         tags=("tropical_cyclone", "unnamed", "tca", "t1", "f27"),
     ),
     _row(
         "TCA_RMK_NIL",
         "info",
-        "TCA RMK NIL — remarks inapplicable (F27 theme T1)",
+        "TCA RMK NIL - remarks inapplicable (F27 theme T1)",
         product="tca",
         tags=("remarks", "nil", "tca", "t1", "f27"),
     ),
     _row(
         "TCA_NO_MSG_EXP",
         "info",
-        "TCA NXT MSG NO MSG EXP — next time inapplicable (F27 theme T1)",
+        "TCA NXT MSG NO MSG EXP - next time inapplicable (F27 theme T1)",
         product="tca",
         tags=("next_advisory", "tca", "t1", "f27"),
     ),
     _row(
         "TCA_CB_NIL",
         "info",
-        "TCA CB NIL — CB missing (F27 theme T1)",
+        "TCA CB NIL - CB missing (F27 theme T1)",
         product="tca",
         tags=("cb", "nil", "tca", "t1", "f27"),
     ),
     _row(
         "MISSING_SWXC",
         "error",
-        "SWXA missing SWXC: template field — F28 theme SX1 / A2-3",
+        "SWXA missing SWXC: template field - F28 theme SX1 / A2-3",
         product="swxa",
         tags=("swxc", "swxa", "sx1", "f28"),
     ),
     _row(
         "SWXA_RMK_NIL",
         "info",
-        "SWXA RMK NIL — remarks inapplicable (F28 theme SX1)",
+        "SWXA RMK NIL - remarks inapplicable (F28 theme SX1)",
         product="swxa",
         tags=("remarks", "nil", "swxa", "sx1", "f28"),
     ),
     _row(
         "SWXA_FCST_NO_SWX_EXP",
         "info",
-        "SWXA forecast NO SWX EXP — no space weather expected (F28 theme SX1)",
+        "SWXA forecast NO SWX EXP - no space weather expected (F28 theme SX1)",
         product="swxa",
         tags=("forecast", "no_swx_exp", "swxa", "sx1", "f28"),
     ),
     _row(
         "SWXA_NO_FURTHER_ADVISORIES",
         "info",
-        "SWXA NXT ADVISORY NO FURTHER ADVISORIES — next time inapplicable (F28 theme SX1)",
+        "SWXA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable (F28 theme SX1)",
         product="swxa",
         tags=("next_advisory", "swxa", "sx1", "f28"),
     ),
     _row(
         "MISSING_SVO",
         "error",
-        "VONA missing SVO: template field — F32 theme V1 / A7-1",
+        "VONA missing SVO: template field - F32 theme V1 / A7-1",
         product="vona",
         tags=("svo", "vona", "v1", "f32"),
     ),
     _row(
         "MISSING_VONA_VOLCANO",
         "error",
-        "VONA missing VOLCANO: template field — F32 theme V1 / A7-1",
+        "VONA missing VOLCANO: template field - F32 theme V1 / A7-1",
         product="vona",
         tags=("volcano", "vona", "v1", "f32"),
     ),
     _row(
         "VONA_ONSET_NIL",
         "info",
-        "VONA ONSET NIL — onsetTime omitted (F32 theme V1)",
+        "VONA ONSET NIL - onsetTime omitted (F32 theme V1)",
         product="vona",
         tags=("onset", "nil", "vona", "v1", "f32"),
     ),
     _row(
         "VONA_DUR_NIL",
         "info",
-        "VONA DUR NIL — duration omitted (F32 theme V1)",
+        "VONA DUR NIL - duration omitted (F32 theme V1)",
         product="vona",
         tags=("duration", "nil", "vona", "v1", "f32"),
     ),

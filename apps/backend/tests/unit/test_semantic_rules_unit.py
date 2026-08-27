@@ -1,4 +1,4 @@
-"""Unit tests for semantic_rules.py (validation) – 0% coverage target."""
+"""Unit tests for semantic_rules.py (validation) - 0% coverage target."""
 
 from src.validation.semantic_rules import (
     CloudLayerValidationRule,

@@ -14,7 +14,7 @@ import subprocess
 import tempfile
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -27,11 +27,11 @@ class SchematronValidationResult:
     status: str = "UNKNOWN"  # 'PASS' or 'FAIL'
     assertions_passed: int = 0
     assertions_failed: int = 0
-    failed_constraints: List[Dict] = field(default_factory=list)
-    passed_constraints: List[Dict] = field(default_factory=list)
-    errors: List[str] = field(default_factory=list)
+    failed_constraints: list[dict[str, Any]] = field(default_factory=list)
+    passed_constraints: list[dict[str, Any]] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
     def to_json(self) -> str:
@@ -41,7 +41,7 @@ class SchematronValidationResult:
 class SchematronValidatorDocker:
     """Schematron validator using Docker container with Saxon XSLT2 support."""
 
-    def __init__(self, schema_path: str, version: str = "2023-1"):
+    def __init__(self, schema_path: str, version: str = "2023-1") -> None:
         """
         Initialize Schematron validator.
 
@@ -157,9 +157,7 @@ class SchematronValidatorDocker:
             except json.JSONDecodeError as e:
                 self.logger.error(f"Failed to parse Docker output: {e}")
                 self.logger.debug(f"Output was: {result.stdout[:200]}")
-                return SchematronValidationResult(
-                    valid=False, status="ERROR", errors=[f"Invalid JSON output: {str(e)}"]
-                )
+                return SchematronValidationResult(valid=False, status="ERROR", errors=[f"Invalid JSON output: {e!s}"])
 
         except subprocess.TimeoutExpired:
             self.logger.error("Docker validation timeout (>60s)")

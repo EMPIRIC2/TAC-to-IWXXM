@@ -20,7 +20,6 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api import app
 from src.utilities.security import verify_supabase_token
 
@@ -567,10 +566,7 @@ class TestAdminRoleEnforcement:
         ]
 
         for url, method, json_data in endpoints:
-            if method == "POST":
-                response = client.post(url, json=json_data)
-            else:
-                response = client.get(url)
+            response = client.post(url, json=json_data) if method == "POST" else client.get(url)
 
             assert response.status_code == 403, f"Expected 403 for {method} {url}"
             assert "admin" in response.json()["detail"].lower()
@@ -601,9 +597,6 @@ class TestAdminRoleEnforcement:
         ]
 
         for url, method, json_data in endpoints:
-            if method == "POST":
-                response = admin_client.post(url, json=json_data)
-            else:
-                response = admin_client.get(url)
+            response = admin_client.post(url, json=json_data) if method == "POST" else admin_client.get(url)
 
             assert response.status_code == 200, f"Expected 200 for {method} {url}"

@@ -4,7 +4,6 @@ Tests validate meteorological consistency rules for METAR data.
 """
 
 import pytest
-
 from src.validation.semantic_rules import (
     CloudLayerValidationRule,
     IssueSeverity,
@@ -56,7 +55,7 @@ class TestTemperatureValidationRule:
         assert len(issues) >= 1
         assert any(i.severity == IssueSeverity.ERROR for i in issues)
 
-        error = [i for i in issues if i.severity == IssueSeverity.ERROR][0]
+        error = next(i for i in issues if i.severity == IssueSeverity.ERROR)
         assert "impossible" in error.message.lower()
         assert "10" in error.actual  # Temperature value
         assert "15" in error.actual  # Dewpoint value
@@ -312,7 +311,7 @@ class TestIntegrationWithTestData:
             temperature=-4.0,  # -04°C
             dewpoint=-17.0,  # -17°C
             cloud_layers=[
-                {"coverage": "FEW", "altitude_m": 7620}  # 250 × 30.48m
+                {"coverage": "FEW", "altitude_m": 7620}  # 250 x 30.48m
             ],
             visibility_meters=16000,  # 10 statute miles
             weather_phenomena=[],  # No weather
@@ -328,7 +327,7 @@ class TestIntegrationWithTestData:
             temperature=16.0,
             dewpoint=12.0,
             cloud_layers=[
-                {"coverage": "BKN", "altitude_m": 300}  # 10 × 30m
+                {"coverage": "BKN", "altitude_m": 300}  # 10 x 30m
             ],
             visibility_meters=3000,
             weather_phenomena=["RA", "SHRA"],  # Rain, rain showers

@@ -48,8 +48,5 @@ fail_under = 95
 show_missing = true
 
 [tool.ruff]
+extend = "../../ruff.toml"
 line-length = 120
-
-[tool.ruff.lint]
-select = ["E", "W", "F", "I"]
-ignore = ["E501"]

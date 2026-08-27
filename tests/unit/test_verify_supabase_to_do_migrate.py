@@ -1,4 +1,4 @@
-"""T5.2 / TC-EV031-001 — verify script row counts + sample checksums."""
+"""T5.2 / TC-EV031-001 - verify script row counts + sample checksums."""
 
 from __future__ import annotations
 

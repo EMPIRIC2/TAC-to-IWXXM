@@ -1,11 +1,10 @@
-"""T3.1 / ADR-031 — rate-limit (429) and max-body (413) unit tests."""
+"""T3.1 / ADR-031 - rate-limit (429) and max-body (413) unit tests."""
 
 from __future__ import annotations
 
 import pytest
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
-
 from utilities.abuse_controls import (
     MaxBodySizeMiddleware,
     create_limiter,

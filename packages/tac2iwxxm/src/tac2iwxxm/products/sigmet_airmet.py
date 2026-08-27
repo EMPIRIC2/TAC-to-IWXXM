@@ -404,7 +404,7 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
                 ir["upper_fl"] = fl
 
     if ir.get("no_va_exp"):
-        # Forecast absence of ash — no geometry ring (V1 / #739).
+        # Forecast absence of ash - no geometry ring (V1 / #739).
         return
 
     vor_geometry = parse_vor_reference_geometry(body)
@@ -642,8 +642,7 @@ def _parse_airmet_outlook(outlook_text: str, *, default_phenomenon: str) -> dict
 
 def _apply_airmet_area_to_ir(ir: dict[str, Any], area: dict[str, Any]) -> None:
     """Merge parsed area fields onto the root AIRMET IR."""
-    for key, value in area.items():
-        ir[key] = value
+    ir.update(area)
 
 
 def _parse_convective_sigmet(text: str) -> dict[str, Any] | None:

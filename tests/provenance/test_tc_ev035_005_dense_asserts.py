@@ -1,4 +1,4 @@
-"""TC-EV035-005 — dense behavioral asserts for revisited executable rules."""
+"""TC-EV035-005 - dense behavioral asserts for revisited executable rules."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""TC-EV025-001 / #810 — Variable RVR + meanRVR withheld (UJ-040).
+"""TC-EV025-001 / #810 - Variable RVR + meanRVR withheld (UJ-040).
 
 Asserts ``iwxxm-us:AerodromeVariableRVR`` and withheld meanRVR under ``profile=iwxxm_us``.
 """

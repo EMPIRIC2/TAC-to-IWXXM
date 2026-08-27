@@ -1,7 +1,7 @@
 """Exchange packaging overlays (F36 / #921 / GLOBAL_AFS).
 
 Post-convert hooks that wrap single-report IWXXM for AFS COLLECT bulletin
-exchange. Invoked on packaging paths only — not on convert-only routes.
+exchange. Invoked on packaging paths only - not on convert-only routes.
 """
 
 from __future__ import annotations

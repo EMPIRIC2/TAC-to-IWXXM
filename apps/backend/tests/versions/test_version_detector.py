@@ -5,7 +5,6 @@ Tests for IWXXM Version Detector
 from pathlib import Path
 
 import pytest
-
 from src.utilities.version_detector import VersionDetector, VersionInfo, check_for_updates, detect_available_versions
 
 

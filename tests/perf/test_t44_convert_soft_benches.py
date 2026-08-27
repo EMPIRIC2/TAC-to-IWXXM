@@ -1,6 +1,6 @@
 """T4.4: soft-fail sub-second benches for convert + lint→convert→validate (ADR-016 Q11=C).
 
-Soft until cutover — over-budget runs warn only; hard-fail is T4.5 / cutover gate.
+Soft until cutover - over-budget runs warn only; hard-fail is T4.5 / cutover gate.
 """
 
 from __future__ import annotations
@@ -30,7 +30,8 @@ def test_bench_convert_alone_soft() -> None:
     start = time.perf_counter()
     result = convert(METAR, product="METAR", profile="annex3", iwxxm_version="2025-2")
     elapsed = time.perf_counter() - start
-    assert result.ok is True and result.xml
+    assert result.ok is True
+    assert result.xml
     _soft_assert_under_budget(elapsed, "tac2iwxxm.convert")
 
 
@@ -40,7 +41,8 @@ def test_bench_lint_convert_validate_lib_path_soft() -> None:
     lint_report = lint(METAR, product="METAR")
     assert lint_report.ok is True
     conv = convert(METAR, product="METAR", profile="annex3", iwxxm_version="2025-2")
-    assert conv.ok and conv.xml
+    assert conv.ok
+    assert conv.xml
     val = validate(
         conv.xml,
         iwxxm_version="2025-2",

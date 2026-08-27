@@ -3,7 +3,7 @@
 Pipeline (ADR-035 / ``D-S064-c14n-volatile=1``):
 
 1. Strip volatile attributes (same local-name / UUID-href / ``codes.wmo.int`` href
-   rules as ADR-032 — duplicated here; do not import ``metar_shared``).
+   rules as ADR-032 - duplicated here; do not import ``metar_shared``).
 2. Remove whitespace-only text nodes.
 3. Apply **W3C Canonical XML 1.0** (lxml ``method='c14n'``).
 
@@ -68,13 +68,14 @@ def _is_volatile_attr(key: str, value: str) -> bool:
     norm_val = _norm_text(value)
     if _UUID_VALUE.match(norm_val):
         return True
-    if local == "href" and (
-        _UUID_HREF.match(norm_val)
-        or norm_val.startswith("http://codes.wmo.int/")
-        or norm_val.startswith("https://codes.wmo.int/")
-    ):
-        return True
-    return False
+    return bool(
+        local == "href"
+        and (
+            _UUID_HREF.match(norm_val)
+            or norm_val.startswith("http://codes.wmo.int/")
+            or norm_val.startswith("https://codes.wmo.int/")
+        )
+    )
 
 
 def _strip_volatile_attributes(node: Any) -> None:
@@ -109,7 +110,7 @@ def c14n_xml(xml_content: str) -> str:
     Returns
     -------
     str
-        Canonical XML 1.0 serialization (post–volatile strip + whitespace strip).
+        Canonical XML 1.0 serialization (post-volatile strip + whitespace strip).
 
     Raises
     ------

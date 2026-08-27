@@ -1,14 +1,14 @@
 """Pydantic schemas for F5/F7 unified TAC work session API (ADR-020)."""
 
 from datetime import datetime
-from enum import Enum
-from typing import Any, Optional
+from enum import StrEnum
+from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator
 
 
-class WorkSessionStatus(str, Enum):
+class WorkSessionStatus(StrEnum):
     """Lifecycle status for a user's TAC work session."""
 
     DRAFT = "draft"
@@ -17,7 +17,7 @@ class WorkSessionStatus(str, Enum):
     FAILED = "failed"
 
 
-class WorkSessionProduct(str, Enum):
+class WorkSessionProduct(StrEnum):
     """Product ids stored on ``tac_work_sessions.product`` (lowercase)."""
 
     AIRMET = "airmet"
@@ -46,15 +46,15 @@ def _normalize_product_value(value: object) -> object:
 class WorkSessionPayload(BaseModel):
     """Shared optional fields for create/update payloads (product declared on subclasses)."""
 
-    title: Optional[str] = None
+    title: str | None = None
     manual_tac: str = ""
     pending_files: list[PendingFilePayload] = Field(default_factory=list)
     converted_results: list[dict[str, Any]] = Field(default_factory=list)
     errors: list[str] = Field(default_factory=list)
     issues: list[dict[str, Any]] = Field(default_factory=list)
     conversion_params: dict[str, Any] = Field(default_factory=dict)
-    status: Optional[WorkSessionStatus] = None
-    kv_upload_key: Optional[str] = None
+    status: WorkSessionStatus | None = None
+    kv_upload_key: str | None = None
 
 
 class WorkSessionCreate(WorkSessionPayload):
@@ -71,7 +71,7 @@ class WorkSessionCreate(WorkSessionPayload):
 class WorkSessionUpdate(WorkSessionPayload):
     """Body for PATCH /api/v1/work-sessions/{id}."""
 
-    product: Optional[WorkSessionProduct] = None
+    product: WorkSessionProduct | None = None
 
     @field_validator("product", mode="before")
     @classmethod
@@ -93,8 +93,8 @@ class WorkSession(BaseModel):
     errors: list[str] = Field(default_factory=list)
     issues: list[dict[str, Any]] = Field(default_factory=list)
     conversion_params: dict[str, Any] = Field(default_factory=dict)
-    kv_upload_key: Optional[str] = None
-    deleted_at: Optional[datetime] = None
+    kv_upload_key: str | None = None
+    deleted_at: datetime | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -114,6 +114,6 @@ class WorkSessionListResponse(BaseModel):
 
 
 class AdminWorkSession(WorkSession):
-    """Deprecated admin list row (routes removed — schema retained for typing only)."""
+    """Deprecated admin list row (routes removed - schema retained for typing only)."""
 
-    user_email: Optional[str] = None
+    user_email: str | None = None

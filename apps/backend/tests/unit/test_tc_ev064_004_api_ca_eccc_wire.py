@@ -1,13 +1,14 @@
-"""TC-EV064-004 — API CA_ECCC semantic profile wire (EV-064 M6).
+"""TC-EV064-004 - API CA_ECCC semantic profile wire (EV-064 M6).
 
 Spec: docs/test-plan.md §TC-EV064-004; docs/api-contract.md §EV-063.
 """
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -54,7 +55,8 @@ def test_tc_ev064_004_semantic_profile_ca_eccc_forwards_emit_key(
         files=_convert_files(semantic_profile=(None, "CA_ECCC")),
     )
     assert response.status_code == 200, response.text[:500]
-    assert seen and seen[0].get("profile") == "ca_eccc"
+    assert seen
+    assert seen[0].get("profile") == "ca_eccc"
     assert seen[0].get("iwxxm_version") == _CA_IWXXM_VERSION
 
 
@@ -75,7 +77,8 @@ def test_tc_ev064_004_legacy_profile_ca_eccc_alias(
         files=_convert_files(profile=(None, "ca_eccc")),
     )
     assert response.status_code == 200, response.text[:500]
-    assert seen and seen[0].get("profile") == "ca_eccc"
+    assert seen
+    assert seen[0].get("profile") == "ca_eccc"
 
 
 def test_tc_ev064_004_ca_eccc_rejects_wrong_iwxxm_version(client: TestClient) -> None:
@@ -99,7 +102,7 @@ def test_tc_ev064_004_validate_accepts_ca_eccc_profile(
 
         class _Report:
             ok = True
-            issues = []
+            issues: ClassVar[list[object]] = []
 
         return _Report()
 

@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "iwxxm_us_golden"
@@ -112,7 +113,8 @@ def test_tc_f6_003_m_golden_iwxxm_us(case_id: str, golden_manifest: dict) -> Non
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     actual = canonicalize_xml(result.xml)
     assert actual == expected, (
         f"M-golden mismatch for {case_id}:\nexpected: {expected[:240]}...\nactual:   {actual[:240]}..."

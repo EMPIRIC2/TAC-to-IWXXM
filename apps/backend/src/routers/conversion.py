@@ -8,12 +8,11 @@ import logging
 import pathlib
 import time
 import zipfile
-from typing import Any, List, Optional
+from typing import Any, cast
 
 from dissemination.packaging import apply_exchange_packaging
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response, StreamingResponse
-from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 from tac_validate import lint as tac_lint_fn
 
 from src import api as api_surface
@@ -43,10 +42,21 @@ from src.utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_throu
 from src.utilities.metar_normalizer import normalize_recent_weather_tokens
 from src.utilities.observability import set_request_log_level
 from src.utilities.tac_parser import extract_airport_code
+from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1", tags=["Conversion"])
+
+
+def _wire_payload_dict(raw_obj: object) -> dict[str, Any]:
+    """Normalize tac2iwxxm issue/span payloads to plain dicts."""
+    model_dump = getattr(raw_obj, "model_dump", None)
+    if callable(model_dump):
+        return cast(dict[str, Any], model_dump())
+    if isinstance(raw_obj, dict):
+        return cast(dict[str, Any], raw_obj)
+    return {}
 
 
 @router.post(
@@ -54,8 +64,8 @@ router = APIRouter(prefix="/api/v1", tags=["Conversion"])
     tags=["Conversion"],
     response_model=ConvertBulletinResponse,
     responses={
-        400: {"description": "Empty bulletin — no TAC reports after the abbreviated heading"},
-        415: {"description": "Unsupported Media Type — multipart/form-data required"},
+        400: {"description": "Empty bulletin - no TAC reports after the abbreviated heading"},
+        415: {"description": "Unsupported Media Type - multipart/form-data required"},
         422: {
             "description": (
                 "Malformed abbreviated heading (INVALID_AHL) or missing required fields. "
@@ -67,7 +77,7 @@ router = APIRouter(prefix="/api/v1", tags=["Conversion"])
 async def convert_bulletin(
     request: Request,
     product: str = Form(..., description="TAC product, or iwxxm for XML pass-through"),
-    files: Optional[List[UploadFile]] = File(None),
+    files: list[UploadFile] | None = File(None),
     manual_text: str = Form(
         default="",
         description=(
@@ -76,7 +86,7 @@ async def convert_bulletin(
             "the heading TTAAii and CCCC."
         ),
     ),
-    profile: str = Form(default="", description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
+    profile: str = Form(default="", description="Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
     semantic_profile: str = Form(
         default="",
         description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)",
@@ -87,7 +97,7 @@ async def convert_bulletin(
     ),
     iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version"),
     lint: bool = Form(default=True, description="Run tac-validate before each report convert"),
-    extensions: List[str] = Form(
+    extensions: list[str] = Form(
         default=[],
         description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
     ),
@@ -104,7 +114,8 @@ async def convert_bulletin(
         exchange_profile=exchange_profile,
         for_packaging=True,
     )
-    profile = wire.emit_key
+    emit_profile: str = str(wire.emit_key)
+    profile = emit_profile
     api_surface._resolve_request_extensions(extensions, None)
 
     content_type = (request.headers.get("content-type") or "").lower()
@@ -238,7 +249,7 @@ async def convert_bulletin(
                     iwxxm_version=iwxxm_version,
                     validate=False,
                     product=product,
-                    profile=profile,
+                    profile=emit_profile,
                     report_status=split.meta.report_status,
                 )
             except ConversionError as exc:
@@ -297,7 +308,7 @@ async def convert_bulletin(
 )
 async def convert(
     request: Request,
-    files: Any = Depends(api_surface.parse_files),
+    files: list[UploadFile] | None = Depends(api_surface.parse_files),
     manual_text: str = Form(default="", description="Optional manual text input (METAR TAC format)"),
     iwxxm_version: str = Form(
         default="2025-2",
@@ -315,7 +326,7 @@ async def convert(
         default="METAR",
         description=("TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)"),
     ),
-    profile: str = Form(default="", description="Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
+    profile: str = Form(default="", description="Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
     semantic_profile: str = Form(
         default="",
         description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)",
@@ -331,7 +342,7 @@ async def convert(
             "(inner product validate paths unchanged)"
         ),
     ),
-    extensions: List[str] = Form(
+    extensions: list[str] = Form(
         default=[],
         description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
     ),
@@ -396,7 +407,7 @@ async def convert(
                     ],
                     total_errors=1,
                 ).model_dump(),
-            )
+            ) from e
 
         try:
             request_body = ConversionRequest(**body_data)
@@ -419,7 +430,7 @@ async def convert(
                     ],
                     total_errors=1,
                 ).model_dump(),
-            )
+            ) from e
     """Convert METAR/SPECI TAC text to IWXXM XML format.
 
     Converts one or more METAR TAC messages to IWXXM XML format. Supports:
@@ -547,7 +558,8 @@ async def convert(
         json_semantic_profile=json_semantic,
         json_exchange_profile=json_exchange,
     )
-    profile = wire.emit_key
+    emit_profile: str = str(wire.emit_key)
+    profile = emit_profile
 
     json_extensions = getattr(request_body, "extensions", None) if request_body is not None else None
     resolved_extensions = api_surface._resolve_request_extensions(extensions, json_extensions)
@@ -625,7 +637,7 @@ async def convert(
                     total_errors=len(issues),
                 ).model_dump(),
             )
-        pass_issues: List[ConversionIssue] = []
+        pass_issues: list[ConversionIssue] = []
         want_validate = bool(validate_output) or str(validation_level or "").lower() in {
             "comprehensive",
             "schematron",
@@ -644,17 +656,17 @@ async def convert(
                     product=product,
                 )
                 if not getattr(report, "ok", True):
-                    for issue in getattr(report, "issues", []) or []:
-                        pass_issues.append(
-                            ConversionIssue(
-                                source="manual",
-                                message=str(getattr(issue, "message", "") or "IWXXM validation issue"),
-                                severity=ConversionIssueSeverity.WARNING,
-                                code=str(getattr(issue, "code", None) or "IWXXM_VALIDATE"),
-                                location=getattr(issue, "location", None),
-                            )
+                    pass_issues.extend(
+                        ConversionIssue(
+                            source="manual",
+                            message=str(getattr(issue, "message", "") or "IWXXM validation issue"),
+                            severity=ConversionIssueSeverity.WARNING,
+                            code=str(getattr(issue, "code", None) or "IWXXM_VALIDATE"),
+                            location=getattr(issue, "location", None),
                         )
-            except Exception as exc:  # noqa: BLE001 — pass-through must not 500 on optional F2
+                        for issue in getattr(report, "issues", []) or []
+                    )
+            except Exception as exc:
                 logger.warning("[CONVERT] IWXXM pass-through validate_output failed: %s", exc)
                 pass_issues.append(
                     ConversionIssue(
@@ -691,7 +703,7 @@ async def convert(
             )
         )
 
-    # Q14=C: lint default on — echo tac-validate issues on the convert response (FR-L6).
+    # Q14=C: lint default on - echo tac-validate issues on the convert response (FR-L6).
     pre_convert_lint_report = None
     if lint:
         sample = manual_text.strip() if manual_text else ""
@@ -747,19 +759,21 @@ async def convert(
                 ],
                 total_errors=1,
             ).model_dump(),
-        )
+        ) from e
 
-    results: List[ConversionResult] = []
-    errors: List[str] = []
-    issues: List[ConversionIssue] = []
+    results: list[ConversionResult] = []
+    errors: list[str] = []
+    issues: list[ConversionIssue] = []
     total_inputs = 0
-    preview_failed_spans: List[FailedSpan] = []
+    preview_failed_spans: list[FailedSpan] = []
     preview_saw_soft_fail = False
+    soft_preview_buf: dict[str, Any] = {}
+    validation_errors_dict: dict[str, Any] = {}
 
-    def absorb_convert_issues(soft: dict, *, source: str) -> None:
+    def absorb_convert_issues(soft: dict[str, Any], *, source: str) -> None:
         """Echo tac2iwxxm non-fatal convert issues (e.g. REMARKS_EXCLUDED) to the client."""
-        for raw in soft.get("convert_issues") or []:
-            data = raw.model_dump() if hasattr(raw, "model_dump") else dict(raw)
+        for raw_obj in cast(list[object], soft.get("convert_issues") or []):
+            data = _wire_payload_dict(raw_obj)
             sev_raw = str(data.get("severity") or "info").strip().lower()
             if "." in sev_raw:
                 sev_raw = sev_raw.rsplit(".", 1)[-1]
@@ -779,7 +793,7 @@ async def convert(
                 location=data.get("location"),
             )
 
-    def absorb_soft_preview(soft: dict, *, base_offset: int = 0, source: str | None = None) -> None:
+    def absorb_soft_preview(soft: dict[str, Any], *, base_offset: int = 0, source: str | None = None) -> None:
         """Merge soft-preview envelope fields from convert_metar_tac_with_metadata.
 
         ``base_offset`` shifts entry-local span offsets into the original
@@ -795,8 +809,8 @@ async def convert(
             return
         if soft.get("ok") is False:
             preview_saw_soft_fail = True
-            for span in soft.get("failed_spans") or []:
-                data = span.model_dump() if hasattr(span, "model_dump") else dict(span)
+            for span in cast(list[object], soft.get("failed_spans") or []):
+                data = _wire_payload_dict(span)
                 if base_offset:
                     if data.get("start") is not None:
                         data["start"] = int(data["start"]) + base_offset
@@ -804,8 +818,10 @@ async def convert(
                         data["end"] = int(data["end"]) + base_offset
                 preview_failed_spans.append(FailedSpan(**data))
 
-    def record_preview_layer12_soft_fail(aggregated_result, tac_text: str = "", *, base_offset: int = 0) -> None:
-        """Mark soft-preview Layer 1–2 failure and copy spans when present (ADR-022)."""
+    def record_preview_layer12_soft_fail(
+        aggregated_result: object, tac_text: str = "", *, base_offset: int = 0
+    ) -> None:
+        """Mark soft-preview Layer 1-2 failure and copy spans when present (ADR-022)."""
         nonlocal preview_saw_soft_fail
         preview_saw_soft_fail = True
         before = len(preview_failed_spans)
@@ -830,7 +846,7 @@ async def convert(
                     start=base_offset,
                     end=base_offset + len(tac_text),
                     code="LAYER12_SOFT_FAIL",
-                    message="Input failed ICAO/TAC Layer 1–2 checks; soft-preview continuing",
+                    message="Input failed ICAO/TAC Layer 1-2 checks; soft-preview continuing",
                 )
             )
 
@@ -838,10 +854,10 @@ async def convert(
         source: str,
         message: str,
         severity: ConversionIssueSeverity = ConversionIssueSeverity.ERROR,
-        hint: Optional[str] = None,
-        code: Optional[str] = None,
-        layer: Optional[str] = None,
-        location: Optional[str] = None,
+        hint: str | None = None,
+        code: str | None = None,
+        layer: str | None = None,
+        location: str | None = None,
     ) -> None:
         issues.append(
             ConversionIssue(
@@ -855,7 +871,7 @@ async def convert(
             )
         )
 
-    def add_aggregated_validation_issues(source: str, aggregated_result) -> None:
+    def add_aggregated_validation_issues(source: str, aggregated_result: object) -> None:
         if not aggregated_result:  # pragma: no cover - defensive guard
             return
         for layer_result in getattr(aggregated_result, "results", []):
@@ -876,7 +892,7 @@ async def convert(
                     location=getattr(validation_issue, "location", None),
                 )
 
-    def emit_recent_wx_issues(source: str, norm_warnings: List[dict]) -> None:
+    def emit_recent_wx_issues(source: str, norm_warnings: list[dict[str, Any]]) -> None:
         """Emit structured conversion issues for recent-weather rewrites."""
         for warning in norm_warnings:
             add_issue(
@@ -902,14 +918,14 @@ async def convert(
     validation_orchestrator = api_surface.get_validation_orchestrator() if validate_output else None
 
     # Handle JSON request body with metars list
-    metars_list = []
+    metars_list: list[Any] = []
     if request_body is not None and request_body.metars:
         metars_list = request_body.metars
 
     manual_with_offsets = api_surface.manual_entries_with_offsets(manual_text or "", product=product)
     manual_entries = [entry for entry, _ in manual_with_offsets]
 
-    request_metadata = {
+    request_metadata: dict[str, Any] = {
         "bulletin_id": bulletin_id,
         "issuing_center": issuing_center,
         "validation_level": validation_level,
@@ -930,10 +946,11 @@ async def convert(
         request_metadata["output_spec"] = output_spec
 
     def _finalize_exchange_xml(xml: str, tac_input: str | None) -> str:
-        spec_filename = None
+        spec_filename: str | None = None
         meta_output_spec = request_metadata.get("output_spec")
         if isinstance(meta_output_spec, dict):
-            spec_filename = meta_output_spec.get("suggested_filename")
+            raw_name = cast(dict[str, Any], meta_output_spec).get("suggested_filename")
+            spec_filename = str(raw_name) if raw_name is not None else None
         return apply_ca_eccc_collect_output(
             xml,
             semantic_canonical=wire.semantic_canonical,
@@ -1044,7 +1061,7 @@ async def convert(
                 if preview:
                     record_preview_layer12_soft_fail(None, normalized_metar_text)
                 else:
-                    errors.append(f"{metar_name}: {str(ve)}")
+                    errors.append(f"{metar_name}: {ve!s}")
                     # Log validation error
                     try:
                         translation_id = await api_surface.statistics_service.log_translation(
@@ -1087,7 +1104,7 @@ async def convert(
                     iwxxm_version=iwxxm_version,
                     lenient=False,
                     product=product,
-                    profile=profile,
+                    profile=emit_profile,
                     preview=preview,
                     soft_preview_out=soft_preview_buf,
                     emit_translation_centre=emit_translation_centre,
@@ -1111,9 +1128,9 @@ async def convert(
                     pkg_out = api_surface._call_iwxxm_validate(
                         iwxxm_content,
                         iwxxm_version=iwxxm_version,
-                        profile=profile or "annex3",
+                        profile=emit_profile or "annex3",
                         levels=("xsd", "schematron"),
-                        emit_key=profile or "annex3",
+                        emit_key=emit_profile or "annex3",
                         extensions=resolved_extensions,
                         product=product,
                     )
@@ -1151,7 +1168,7 @@ async def convert(
                 # Log successful (or soft-preview partial) translation
                 try:
                     end_time = time.perf_counter()
-                    duration_ms = int(round((end_time - start_time) * 1000))
+                    duration_ms = round((end_time - start_time) * 1000)
                     soft_incomplete = bool(preview and soft_preview_buf.get("ok") is False)
 
                     translation_id = await api_surface.statistics_service.log_translation(
@@ -1185,7 +1202,7 @@ async def convert(
                     logger.error(f"Failed to log successful translation: {log_err}")
 
             except ConversionError as ce:
-                error_msg = f"{metar_name}: Conversion error - {str(ce)}"
+                error_msg = f"{metar_name}: Conversion error - {ce!s}"
                 errors.append(error_msg)
                 add_issue(
                     source=metar_name,
@@ -1197,7 +1214,7 @@ async def convert(
                 logger.error(error_msg)
                 try:
                     end_time = time.perf_counter()
-                    duration_ms = int(round((end_time - start_time) * 1000)) if start_time else 0
+                    duration_ms = round((end_time - start_time) * 1000) if start_time else 0
 
                     await api_surface.statistics_service.log_translation(
                         tac_message=metar_text.strip(),
@@ -1223,7 +1240,7 @@ async def convert(
                 if stop_on_error:
                     break
             except Exception as e:
-                error_msg = f"{metar_name}: Unexpected error - {str(e)}"
+                error_msg = f"{metar_name}: Unexpected error - {e!s}"
                 errors.append(error_msg)
                 add_issue(
                     source=metar_name,
@@ -1236,7 +1253,7 @@ async def convert(
                 if stop_on_error:
                     break
         except Exception as e:
-            error_msg = f"{metar_name}: Unhandled error - {str(e)}"
+            error_msg = f"{metar_name}: Unhandled error - {e!s}"
             errors.append(error_msg)
             add_issue(
                 source=metar_name,
@@ -1314,7 +1331,7 @@ async def convert(
                 if preview:
                     record_preview_layer12_soft_fail(None, _normalized_entry, base_offset=entry_offset)
                 else:
-                    errors.append(f"{manual_source}: {str(ve)}")
+                    errors.append(f"{manual_source}: {ve!s}")
                     try:
                         translation_id = await api_surface.statistics_service.log_translation(
                             tac_message=manual_entry,
@@ -1351,7 +1368,7 @@ async def convert(
                 validate=False,
                 lenient=False,  # normalization already applied above
                 product=product,
-                profile=profile,
+                profile=emit_profile,
                 preview=preview,
                 soft_preview_out=soft_preview_buf,
                 emit_translation_centre=emit_translation_centre,
@@ -1377,9 +1394,9 @@ async def convert(
                     pkg_out = api_surface._call_iwxxm_validate(
                         xml_text,
                         iwxxm_version=iwxxm_version,
-                        profile=profile or "annex3",
+                        profile=emit_profile or "annex3",
                         levels=("xsd", "schematron"),
-                        emit_key=profile or "annex3",
+                        emit_key=emit_profile or "annex3",
                         extensions=resolved_extensions,
                         product=product,
                     )
@@ -1584,7 +1601,7 @@ async def convert(
                     if preview:
                         record_preview_layer12_soft_fail(None, (data or "").strip())
                     else:
-                        errors.append(f"{uf.filename}: {str(ve)}")
+                        errors.append(f"{uf.filename}: {ve!s}")
                         try:
                             translation_id = await api_surface.statistics_service.log_translation(
                                 tac_message=(data or "").strip(),
@@ -1621,7 +1638,7 @@ async def convert(
                     iwxxm_version=iwxxm_version,
                     validate=False,
                     product=product,
-                    profile=profile,
+                    profile=emit_profile,
                     preview=preview,
                     soft_preview_out=soft_preview_buf,
                     emit_translation_centre=emit_translation_centre,
@@ -1852,7 +1869,7 @@ async def convert(
             ).model_dump(),
         )
 
-    envelope_ok: Optional[bool] = None
+    envelope_ok: bool | None = None
     if preview:
         envelope_ok = not preview_saw_soft_fail and len(errors) == 0
 
@@ -1879,7 +1896,7 @@ async def convert(
 )
 async def convert_zip(
     request: Request,
-    files: Any = Depends(api_surface.parse_files),
+    files: list[UploadFile] | None = Depends(api_surface.parse_files),
     manual_text: str = Form(default="", description="Optional manual text input (METAR TAC format)"),
     iwxxm_version: str = Form(
         default="2025-2",
@@ -1892,13 +1909,13 @@ async def convert_zip(
         try:
             body_data = await request.json()
         except Exception as e:
-            raise HTTPException(status_code=422, detail=f"Invalid JSON in request body: {str(e)}")
+            raise HTTPException(status_code=422, detail=f"Invalid JSON in request body: {e!s}") from e
 
         try:
             request_body = ConversionRequest(**body_data)
         except Exception as e:
             # Pydantic validation error - return 422
-            raise HTTPException(status_code=422, detail=f"Validation error: {str(e)}")
+            raise HTTPException(status_code=422, detail=f"Validation error: {e!s}") from e
     """Convert METAR/SPECI TAC inputs to a zipped archive of IWXXM XML files.
 
     Similar to `/api/v1/convert` but returns results as a ZIP archive instead of JSON.
@@ -1938,7 +1955,7 @@ async def convert_zip(
         manual_text = ""  # Override form input
         files = None  # Override file input
     else:
-        metars_list = []
+        metars_list: list[Any] = []
 
     manual_entries = api_surface.split_manual_entries(manual_text)
 
@@ -1974,11 +1991,11 @@ async def convert_zip(
         raise HTTPException(
             status_code=400,
             detail=ErrorDetail(message=f"Invalid IWXXM version: {e}", errors=[str(e)], total_errors=1).model_dump(),
-        )
+        ) from e
 
-    results: List[tuple[str, str]] = []
-    errors: List[str] = []
-    translation_ids: List[str] = []  # Track for bulk notification
+    results: list[tuple[str, str]] = []
+    errors: list[str] = []
+    translation_ids: list[str] = []  # Track for bulk notification
     validation_service = api_surface.ValidationService()
     validation_orchestrator = api_surface.get_validation_orchestrator()
 
@@ -2178,7 +2195,7 @@ async def convert_zip(
                         logger.error(f"Failed to log failed translation: {log_err}")
                     continue  # Skip to next METAR
             except ValidationServiceError as ve:
-                errors.append(f"{metar_name}: {str(ve)}")
+                errors.append(f"{metar_name}: {ve!s}")
                 # Log validation error
                 try:
                     translation_id = await api_surface.statistics_service.log_translation(
@@ -2300,7 +2317,7 @@ async def convert_zip(
             zf.writestr("errors.txt", "\n".join(errors))
     mem.seek(0)
 
-    stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    stamp = datetime.datetime.now(datetime.UTC).strftime("%Y%m%dT%H%M%SZ")
     return StreamingResponse(
         mem,
         media_type="application/zip",

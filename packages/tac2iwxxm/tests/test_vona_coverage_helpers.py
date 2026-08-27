@@ -5,10 +5,10 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
-from tac2iwxxm import convert, map_t1t2, parse_ahl, split_bulletin
 from tac2iwxxm.products.vona import parse_vona
 from tac2iwxxm.profiles.annex3_products import emit_vona_annex3
+
+from tac2iwxxm import convert, map_t1t2, parse_ahl, split_bulletin
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 A7 = FIXTURES / "annex3_golden" / "vona_a7_1.tac"
@@ -32,13 +32,13 @@ def test_parse_vona_rejects_wrong_product_and_missing_header() -> None:
 
 @pytest.mark.parametrize(
     ("patch", "needle"),
-    (
+    [
         ("DTG:\t\tBAD\n", "DTG"),
         ("VOLCANO:\t\t\n", "VOLCANO"),
         ("PSN:\t\tBAD\n", "PSN"),
         ("SVO:\t\t\n", "SVO"),
         ("CURRENT COLOUR CODE:\t\t\n", "CURRENT COLOUR"),
-    ),
+    ],
 )
 def test_parse_vona_required_field_errors(patch: str, needle: str) -> None:
     tac = A7.read_text(encoding="utf-8")

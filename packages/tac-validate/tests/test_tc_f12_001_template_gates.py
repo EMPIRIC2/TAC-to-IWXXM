@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import PRODUCTS, lint
 from tac_validate.product_rules import check_product_rules
 
@@ -67,5 +66,6 @@ def test_template_gate_diagnostics_are_actionable(case: dict[str, Any]) -> None:
     for code in case["expected_codes"]:
         hit = next(i for i in errors if i.code == code)
         assert hit.message
-        assert hit.start is not None and hit.end is not None
+        assert hit.start is not None
+        assert hit.end is not None
         assert hit.end > hit.start

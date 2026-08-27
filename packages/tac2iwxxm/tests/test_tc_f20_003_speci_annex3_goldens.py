@@ -1,4 +1,4 @@
-"""TC-F20-003 — SPECI annex3 golden expansion (S020 / EV-015 T3.5–T3.6 / S3).
+"""TC-F20-003 - SPECI annex3 golden expansion (S020 / EV-015 T3.5-T3.6 / S3).
 
 Asserts annex3 golden pack covers SPECI exceptional themes and convert →
 XSD+Schematron + M-golden (root ``iwxxm:SPECI``).
@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"

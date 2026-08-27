@@ -10,7 +10,6 @@ from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
-
 from dissemination.allowlist import EgressDenied, parse_allowlist
 from dissemination.edis import (
     EdisParams,
@@ -135,7 +134,7 @@ async def test_edis_submit_redacts_password_in_errors() -> None:
     params = _params()
     smtp = AsyncMock()
     smtp.connect = AsyncMock(side_effect=RuntimeError("auth failed secret-edis-token"))
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(ValueError, match=r".*") as excinfo:
         await edis_submit(
             params,
             tac_body="METAR KJFK 121151Z 18008KT=",
@@ -152,7 +151,7 @@ def test_format_wmo_ahl_unknown_tt_falls_back() -> None:
 
 
 def test_format_wmo_ahl_invalid_bbb_raises() -> None:
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         format_wmo_ahl(
             tt="SA",
             aa="US",

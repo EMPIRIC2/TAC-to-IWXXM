@@ -1,4 +1,4 @@
-"""TC-EV061-1015 — Stricter stage→main promote gate (S071 / EV-061 / #1015).
+"""TC-EV061-1015 - Stricter stage→main promote gate (S071 / EV-061 / #1015).
 
 Inventory + CI/ruleset contracts for D-S071-ci / UJ-DEV-009.
 """
@@ -75,7 +75,7 @@ def _job_by_name(jobs: dict[str, Any], name: str) -> tuple[str, dict[str, Any]]:
 
 @pytest.mark.unit
 class TestTcEv0611015001Inventory:
-    """TC-EV061-1015-001 — promote required-check inventory is documented + wired."""
+    """TC-EV061-1015-001 - promote required-check inventory is documented + wired."""
 
     def test_deploy_md_lists_promote_required_contexts(self) -> None:
         text = DEPLOY_MD.read_text(encoding="utf-8")
@@ -125,7 +125,7 @@ class TestTcEv0611015001Inventory:
 
 @pytest.mark.unit
 class TestTcEv0611015002CiAndRulesets:
-    """TC-EV061-1015-002 — CI jobs + ruleset script enforce the stricter set."""
+    """TC-EV061-1015-002 - CI jobs + ruleset script enforce the stricter set."""
 
     def test_lint_job_runs_make_lint(
         self, workflow_doc: dict[str, Any], workflow_text: str

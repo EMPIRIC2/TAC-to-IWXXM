@@ -177,6 +177,30 @@ describe('EmailVerification', () => {
     expect(screen.getByText(/check spam or junk folder/i)).toBeInTheDocument();
   });
 
+  it('masks four-character local-part emails at the third character boundary', () => {
+    render(
+      <EmailVerification
+        email="abcd@example.com"
+        onVerified={vi.fn()}
+        onBackToLogin={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText('Sent to abc***@example.com')).toBeInTheDocument();
+  });
+
+  it('shows unmasked invalid email addresses', () => {
+    render(
+      <EmailVerification
+        email="not-an-email"
+        onVerified={vi.fn()}
+        onBackToLogin={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText('Sent to not-an-email')).toBeInTheDocument();
+  });
+
   it('handles verify errors when toast.info throws', async () => {
     mockToast.info.mockImplementationOnce(() => {
       throw new Error('toast failure');

@@ -1,4 +1,4 @@
-"""TC-EV063-007 — US_FAA_NWS RMK matrix fixture pack (EV-063 M7 / #919 slice).
+"""TC-EV063-007 - US_FAA_NWS RMK matrix fixture pack (EV-063 M7 / #919 slice).
 
 Manifest-driven goldens under ``fixtures/profiles/US_FAA_NWS/`` exercise FMH-1 §12.7
 structured REMARKS groups via canonical ``US_FAA_NWS`` (extends TC-EV063-002).
@@ -12,8 +12,8 @@ import json
 from pathlib import Path
 
 import pytest
-from metar_shared.xml_canonical import canonicalize_xml
 
+from metar_shared.xml_canonical import canonicalize_xml
 from tac2iwxxm import convert
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "US_FAA_NWS"
@@ -101,6 +101,7 @@ def test_tc_ev063_007_alias_iwxxm_us_parity(case_id: str, rmk_manifest: dict) ->
         profile=ALIAS,
         iwxxm_version=IWXXM_VERSION,
     )
-    assert canonical.ok and alias.ok
+    assert canonical.ok
+    assert alias.ok
     assert canonical.xml == alias.xml
     assert alias.deprecated_alias_used

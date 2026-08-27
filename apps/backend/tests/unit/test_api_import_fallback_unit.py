@@ -73,6 +73,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         Form=lambda default=None, **_kwargs: default,
         HTTPException=_FakeHTTPException,
         Request=object,
+        Response=object,
         UploadFile=object,
     )
     fake_fastapi_middleware = _stub_module("fastapi.middleware")

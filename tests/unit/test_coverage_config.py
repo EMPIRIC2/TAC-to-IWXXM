@@ -40,7 +40,7 @@ class TestCoverageConfig:
         assert "metar-auth" in root
 
     def test_auth_and_worker_fail_under_95(self) -> None:
-        """EV-047 D-S056-cov95-scope=2 — auth + worker hard package floors."""
+        """EV-047 D-S056-cov95-scope=2 - auth + worker hard package floors."""
         auth = (ROOT / "packages/auth/pyproject.toml").read_text(encoding="utf-8")
         worker = (ROOT / "apps/worker/pyproject.toml").read_text(encoding="utf-8")
         assert "fail_under = 95" in auth

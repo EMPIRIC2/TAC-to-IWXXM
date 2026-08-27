@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import pytest
-
-from tac2iwxxm import ConvertError, convert
 from tac2iwxxm.products.metar_speci import parse_metar_speci
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
+
+from tac2iwxxm import ConvertError, convert
 
 
 def test_convert_error_is_value_error() -> None:
@@ -149,8 +149,9 @@ def test_scan_metar_tokens_raises_without_extension(monkeypatch: pytest.MonkeyPa
 
 
 def test_scan_metar_tokens_when_rust_available() -> None:
-    from tac2iwxxm import rust_available
     from tac2iwxxm.native import scan_metar_tokens
+
+    from tac2iwxxm import rust_available
 
     if not rust_available():
         pytest.skip("PyO3 extension not built in this environment")
@@ -165,7 +166,8 @@ def test_convert_vrb_omits_mean_wind_direction() -> None:
         "METAR KJFK 231751Z VRB03KT 5SM FEW010 15/07 A2992=",
         product="METAR",
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert 'variableWindDirection="true"' in result.xml
     assert "meanWindDirection" not in result.xml
     assert ">None<" not in result.xml
@@ -177,10 +179,11 @@ def test_convert_mps_gust_emitted_in_metres_per_second() -> None:
         "METAR KJFK 231751Z 24004G12MPS 5SM FEW010 15/07 A2992=",
         product="METAR",
     )
-    assert result.ok and result.ir is not None
+    assert result.ok
+    assert result.ir is not None
     assert result.ir["wind_speed_mps"] == 4
     assert result.ir["wind_gust_mps"] == 12
     # Knots still recorded on IR for decode / US consumers.
-    assert result.ir["wind_gust_kt"] == int(round(12 * 1.94384))
+    assert result.ir["wind_gust_kt"] == round(12 * 1.94384)
     assert 'meanWindSpeed uom="m/s">4.0</iwxxm:meanWindSpeed>' in (result.xml or "")
     assert 'windGustSpeed uom="m/s">12</iwxxm:windGustSpeed>' in (result.xml or "")

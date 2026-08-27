@@ -1,11 +1,11 @@
-"""TC-F32-002 / TC-F32-003 — VONA annex3 convert fixtures (S040 / EV-032 T2.4 / F32 theme V3).
+"""TC-F32-002 / TC-F32-003 - VONA annex3 convert fixtures (S040 / EV-032 T2.4 / F32 theme V3).
 
 Asserts WMO ``vona-A7-1`` is in the annex3 pack, root
 ``iwxxm:VolcanoObservatoryNoticeForAviation``, MetFeature volcano/ash +
 ``iwxxm/AviationColourCode`` vocabulary (TC-F32-003). ADR-032 golden / XSD+SCH
 are in ``test_tc_f32_004_vona_validate_golden.py`` (T2.6).
 
-Always write “F32 theme V3” (not F23 VA-SIGMET / F26 VAA V3) — #741.
+Always write "F32 theme V3" (not F23 VA-SIGMET / F26 VAA V3) - #741.
 """
 
 from __future__ import annotations
@@ -89,7 +89,7 @@ def test_tc_f32_002_vona_root_element(case_id: str) -> None:
 
 @pytest.mark.parametrize("case_id", VONA_CASE_IDS)
 def test_tc_f32_003_vona_metfeature_and_colour_codes(case_id: str) -> None:
-    """Soft shape asserts — MetFeature volcano/ash + iwxxm AviationColourCode (TC-F32-003)."""
+    """Soft shape asserts - MetFeature volcano/ash + iwxxm AviationColourCode (TC-F32-003)."""
     from tac2iwxxm import convert
 
     case = next(c for c in _load_manifest()["cases"] if c["id"] == case_id)
@@ -119,8 +119,9 @@ def test_tc_f32_003_vona_metfeature_and_colour_codes(case_id: str) -> None:
 
 
 def test_tc_f32_002_vona_a7_1_content_signals() -> None:
-    from tac2iwxxm import convert
     from tac2iwxxm.products.vona import parse_vona
+
+    from tac2iwxxm import convert
 
     tac = (FIXTURES / "vona_a7_1.tac").read_text(encoding="utf-8")
     ir = parse_vona(tac, product="VONA")

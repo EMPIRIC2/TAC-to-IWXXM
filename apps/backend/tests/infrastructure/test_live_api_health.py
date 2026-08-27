@@ -29,7 +29,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[4]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from tests.live_fixtures import live_api_base  # noqa: E402
+from tests.live_fixtures import live_api_base
 
 # Configuration
 LIVE_API_URL = live_api_base()
@@ -384,7 +384,7 @@ class TestLiveAPIMonitoring:
                 if response.status_code != 200:
                     failures.append(f"{name} ({endpoint}): Status {response.status_code}")
             except Exception as e:
-                failures.append(f"{name} ({endpoint}): {str(e)}")
+                failures.append(f"{name} ({endpoint}): {e!s}")
 
         assert len(failures) == 0, f"Critical path failures: {', '.join(failures)}"
 

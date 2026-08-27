@@ -1,4 +1,4 @@
-"""T6.1 / #712 — DOKS kustomize base covers API + FE + worker + Auth/DB secrets."""
+"""T6.1 / #712 - DOKS kustomize base covers API + FE + worker + Auth/DB secrets."""
 
 from __future__ import annotations
 
@@ -95,7 +95,7 @@ def test_worker_has_no_service_or_ingress() -> None:
 
 @pytest.mark.unit
 def test_t62_api_init_container_runs_idempotent_alembic() -> None:
-    """T6.2 — release path runs ``alembic upgrade head`` before API serves."""
+    """T6.2 - release path runs ``alembic upgrade head`` before API serves."""
     doc = yaml.safe_load(
         (DOKS_BASE / "deployment-api.yaml").read_text(encoding="utf-8")
     )

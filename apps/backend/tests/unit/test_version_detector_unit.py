@@ -1,4 +1,4 @@
-"""Unit tests for VersionDetector – 0% coverage target."""
+"""Unit tests for VersionDetector - 0% coverage target."""
 
 import subprocess
 from unittest.mock import MagicMock, patch

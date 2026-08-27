@@ -1,4 +1,4 @@
-"""M6 layout checks — migration-plan.md Step 3, spec.md §apps/frontend."""
+"""M6 layout checks - migration-plan.md Step 3, spec.md §apps/frontend."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""BUG-2026-07-20 — drop always-red Actions + fix Vendor Sync checksum order.
+"""BUG-2026-07-20 - drop always-red Actions + fix Vendor Sync checksum order.
 
 P0+P1: remove dead smoke/legacy workflows; disable E2E cron / Performance
 Benchmarks (legacy ``backend/``).
@@ -15,6 +15,7 @@ import shutil
 from pathlib import Path
 from unittest.mock import patch
 
+import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -25,7 +26,8 @@ SYNC_IWXXM = ROOT / "scripts" / "vendor" / "sync_iwxxm.py"
 
 def _load_module(path: Path, name: str):
     spec = importlib.util.spec_from_file_location(name, path)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod
@@ -187,20 +189,14 @@ def test_bug_2026_07_20_sync_rejects_stale_hash_without_no_verify(
     with (
         patch.object(sync, "_fetch_github_tree", side_effect=_fake_fetch),
         patch.object(sync, "GITHUB_BUNDLE_NAMES", ("iwxxm",)),
+        pytest.raises(ValueError, match="post-sync checksum mismatch"),
     ):
-        try:
-            sync.sync_from_manifest(
-                repo,
-                manifest_path,
-                prefer_legacy=False,
-                verify=True,
-            )
-            raised = False
-        except ValueError as exc:
-            raised = True
-            assert "post-sync checksum mismatch" in str(exc)
-
-    assert raised, "stale tree_sha256 must fail sync when verify=True"
+        sync.sync_from_manifest(
+            repo,
+            manifest_path,
+            prefer_legacy=False,
+            verify=True,
+        )
 
     data = json.loads(manifest_path.read_text(encoding="utf-8"))
     data["bundles"]["iwxxm"].pop("tree_sha256", None)

@@ -1,4 +1,4 @@
-"""T5.1 / TC-F15 — GET /api/v1/lint-issue-catalog (E11-31 / api-contract).
+"""T5.1 / TC-F15 - GET /api/v1/lint-issue-catalog (E11-31 / api-contract).
 
 Spec: docs/api-contract.md §Lint issue catalog; ADR-028; execution-plan T5.1.
 """
@@ -7,10 +7,9 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-from tac_validate.issue_registry import ISSUES, by_code
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
+from tac_validate.issue_registry import ISSUES, by_code
 
 
 @pytest.fixture
@@ -25,7 +24,7 @@ def client():
 
 
 def test_lint_issue_catalog_is_public() -> None:
-    """F21: catalog is public — no Authorization required."""
+    """F21: catalog is public - no Authorization required."""
     bare = TestClient(api_module.app)
     response = bare.get("/api/v1/lint-issue-catalog")
     assert response.status_code != 401

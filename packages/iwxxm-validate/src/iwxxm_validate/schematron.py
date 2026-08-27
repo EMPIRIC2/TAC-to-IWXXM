@@ -72,7 +72,7 @@ def validate_schematron(xml_content: str, iwxxm_version: str) -> list[Issue]:
     ``IWXXM_VALIDATE_SCHEMATRON_DOCKER=1`` (soft gate; not required for unit CI).
     """
     if os.environ.get("IWXXM_VALIDATE_SCHEMATRON_DOCKER", "").strip() in {"1", "true", "True"}:
-        # Soft/separate gate — Docker path is optional; fall through to lxml/skip
+        # Soft/separate gate - Docker path is optional; fall through to lxml/skip
         # until a dedicated runner module is wired in a later task.
         logger.info("Docker Schematron requested but not required for unit suite; using lxml path")
 
@@ -100,7 +100,7 @@ def validate_schematron(xml_content: str, iwxxm_version: str) -> list[Issue]:
                 layer="schematron",
             )
         ]
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         if "xslt2" in str(exc).lower():
             return [
                 Issue(
@@ -135,7 +135,7 @@ def validate_schematron(xml_content: str, iwxxm_version: str) -> list[Issue]:
 
     try:
         ok = bool(schematron.validate(xml_doc))
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         return [
             Issue(
                 severity="error",

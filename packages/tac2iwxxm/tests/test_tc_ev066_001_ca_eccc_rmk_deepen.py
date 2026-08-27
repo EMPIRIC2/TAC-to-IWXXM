@@ -1,4 +1,4 @@
-"""TC-EV066-001..003 — CA_ECCC MANOBS RMK + altimeter deepen (EV-066 / #916).
+"""TC-EV066-001..003 - CA_ECCC MANOBS RMK + altimeter deepen (EV-066 / #916).
 
 [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: tests §TC-EV066]
 """
@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "CA_ECCC"
@@ -65,7 +66,8 @@ def test_tc_ev066_001_m_golden_ca_eccc_rmk_deepen(case_id: str, golden_manifest:
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert canonicalize_xml(result.xml) == canonicalize_xml(expected_xml)
 
 
@@ -76,7 +78,8 @@ def test_tc_ev066_002_presrr_rising_indicator(golden_manifest: dict) -> None:
     case = next(c for c in golden_manifest["cases"] if c["id"] == "metar_rmk_presrr")
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
     result = convert(tac, product="METAR", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert "PressureChangingRapidly/RISING" in result.xml
 
 
@@ -87,7 +90,8 @@ def test_tc_ev066_002_altimeter_not_observable_nil_qnh(golden_manifest: dict) ->
     case = next(c for c in golden_manifest["cases"] if c["id"] == "metar_alt_not_obs")
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
     result = convert(tac, product="METAR", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert 'nilReason="http://codes.wmo.int/common/nil/notObservable"' in result.xml
     assert "1019." not in result.xml  # no spurious QNH value from A////
 
@@ -99,6 +103,7 @@ def test_tc_ev066_003_slp_and_hourly_t_addendum(golden_manifest: dict) -> None:
     case = next(c for c in golden_manifest["cases"] if c["id"] == "metar_rmk_slp_t")
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
     result = convert(tac, product="METAR", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert "<iwxxm-ca:seaLevelPressure" in result.xml
     assert "<iwxxm-ca:humanReadableText>T01230101</iwxxm-ca:humanReadableText>" in result.xml

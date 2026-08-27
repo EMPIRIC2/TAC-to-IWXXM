@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from src.utilities.conversion import (
     ConversionError,
     _detect_product,
@@ -44,7 +43,7 @@ def test_convert_metar_tac_with_metadata_ok() -> None:
 
 
 def test_convert_metar_tac_deprecated() -> None:
-    with pytest.warns(DeprecationWarning):
+    with pytest.warns(DeprecationWarning, match=r"."):
         xml = convert_metar_tac("METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=")
     assert "<?xml" in xml
 
@@ -68,7 +67,7 @@ def test_convert_tac2iwxxm_import_error(monkeypatch: pytest.MonkeyPatch) -> None
 
     real_import = builtins.__import__
 
-    def _boom(name, *args, **kwargs):  # noqa: ANN001
+    def _boom(name, *args, **kwargs):
         if name == "tac2iwxxm" or name.startswith("tac2iwxxm."):
             raise ImportError("no tac2iwxxm")
         return real_import(name, *args, **kwargs)
@@ -134,7 +133,7 @@ def test_convert_prepends_xml_declaration(monkeypatch: pytest.MonkeyPatch) -> No
 
     import tac2iwxxm
 
-    def _fake_convert(*_a, **_k):  # noqa: ANN001
+    def _fake_convert(*_a, **_k):
         return SimpleNamespace(ok=True, xml="<iwxxm:METAR/>", issues=[])
 
     monkeypatch.setattr(tac2iwxxm, "convert", _fake_convert)

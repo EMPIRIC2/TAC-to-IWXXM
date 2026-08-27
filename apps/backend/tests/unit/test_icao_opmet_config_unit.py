@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import pytest
-
 from src.config import icao_opmet as cfg
 
 
 @pytest.mark.parametrize(
-    "code,expected",
+    ("code", "expected"),
     [
         ("KJFK", "NAM"),
         ("CYVR", "NAM"),
@@ -26,12 +25,12 @@ def test_get_icao_region_known_prefixes(code, expected):
 
 @pytest.mark.parametrize("code", ["", "ABC", "ABCDE", None])
 def test_get_icao_region_rejects_invalid_codes(code):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         cfg.get_icao_region(code)
 
 
 @pytest.mark.parametrize(
-    "code,expected",
+    ("code", "expected"),
     [
         ("QZZZ", "NAM"),
         ("NZZZ", "APAC"),

@@ -93,12 +93,12 @@ def known_semantic_profile_ids() -> frozenset[str]:
 
 
 __all__ = [
+    "CANONICAL_CA_ECCC",
     "CANONICAL_ICAO_2025",
     "CANONICAL_US_FAA_NWS",
-    "CANONICAL_CA_ECCC",
     "EMIT_ANNEX3",
-    "EMIT_IWXXM_US",
     "EMIT_CA_ECCC",
+    "EMIT_IWXXM_US",
     "ResolvedSemanticProfile",
     "known_semantic_profile_ids",
     "normalize_profile_id",

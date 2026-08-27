@@ -31,14 +31,6 @@ from tac2iwxxm.profiles.annex3_emit.vona import (
 )
 
 __all__ = [
-    "emit_airmet_annex3",
-    "emit_convective_sigmet_annex3",
-    "emit_sigmet_annex3",
-    "emit_swxa_annex3",
-    "emit_taf_annex3",
-    "emit_tca_annex3",
-    "emit_vaa_annex3",
-    "emit_vona_annex3",
     "_assert_swxa_advisory_xml",
     "_assert_tca_advisory_xml",
     "_assert_vona_xml",
@@ -53,4 +45,12 @@ __all__ = [
     "_swxa_analysis_xml",
     "_vona_ash_movement_token",
     "_wmo_multi_location_va_pos_list",
+    "emit_airmet_annex3",
+    "emit_convective_sigmet_annex3",
+    "emit_sigmet_annex3",
+    "emit_swxa_annex3",
+    "emit_taf_annex3",
+    "emit_tca_annex3",
+    "emit_vaa_annex3",
+    "emit_vona_annex3",
 ]

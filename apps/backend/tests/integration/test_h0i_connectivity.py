@@ -1,4 +1,4 @@
-"""H0i connectivity gate — in-process cross-package integration (test-plan.md §H0i).
+"""H0i connectivity gate - in-process cross-package integration (test-plan.md §H0i).
 
 Verifies apps/backend wires packages/tac2iwxxm and CORS on one host with
 merged Auth (F31 / ADR-033) and public convert (F21 Amended). No docker-compose
@@ -11,7 +11,6 @@ from collections.abc import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api import app
 
 pytestmark = [pytest.mark.integration, pytest.mark.h0i]
@@ -83,7 +82,7 @@ class TestH0iCorsPreflight:
         ["/api/v1/lint-tac", "/api/v1/decode-tac"],
     )
     def test_options_f7_live_assist_allows_post(self, h0i_client: TestClient, path: str) -> None:
-        """F7 UI connection points — browser preflight for live lint/decode."""
+        """F7 UI connection points - browser preflight for live lint/decode."""
         response = h0i_client.options(
             path,
             headers={
@@ -96,7 +95,7 @@ class TestH0iCorsPreflight:
         assert "POST" in allow_methods.upper()
 
     def test_options_mass_ingest_allows_post(self, h0i_client: TestClient) -> None:
-        """F33 / UJ-051 — browser preflight for POST /api/v1/ingest/mass (H0i → H4)."""
+        """F33 / UJ-051 - browser preflight for POST /api/v1/ingest/mass (H0i → H4)."""
         response = h0i_client.options(
             "/api/v1/ingest/mass",
             headers={

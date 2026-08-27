@@ -1,4 +1,4 @@
-"""BUG/EV-033 — placeholder INGEST_POLLER_URL must fail closed (no silent loop).
+"""BUG/EV-033 - placeholder INGEST_POLLER_URL must fail closed (no silent loop).
 
 Regression for DOKS cutover where metar-worker-secrets kept
 ``REPLACE_ME_INGEST_POLLER_URL`` and the worker could not ingest.

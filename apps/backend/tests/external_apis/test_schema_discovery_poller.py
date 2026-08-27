@@ -7,7 +7,6 @@ Tests version detection, RC identification, and discovery polling logic.
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
-
 from src.services.schema_discovery_poller import (
     RC_PATTERN,
     VERSION_PATTERN,

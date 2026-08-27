@@ -72,6 +72,9 @@ function messageWithCodeTooltips(
       return <span key={index}>{part}</span>;
     }
     const code = match[1];
+    if (!code) {
+      return <span key={index}>{part}</span>;
+    }
     return (
       <span
         key={index}

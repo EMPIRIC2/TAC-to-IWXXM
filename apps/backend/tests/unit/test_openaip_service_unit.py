@@ -1,11 +1,10 @@
-"""Unit tests for OpenAIPService – 0% coverage target."""
+"""Unit tests for OpenAIPService - 0% coverage target."""
 
 import builtins
 import json
 from datetime import UTC, datetime, timedelta
 
 import pytest
-
 from src.services.openaip_service import OpenAIPService
 
 

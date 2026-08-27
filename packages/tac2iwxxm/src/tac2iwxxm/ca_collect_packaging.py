@@ -1,7 +1,7 @@
 """CA_ECCC MSC COLLECT envelope packaging (EV-073 M1 / #1032).
 
 Wrap single-report IWXXM 3.0.0 products in ``collect:MeteorologicalBulletin``
-for MSC datamart exchange. Post-convert hook only — convert SoT stays inner product.
+for MSC datamart exchange. Post-convert hook only - convert SoT stays inner product.
 
 [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC]
 """

@@ -76,8 +76,8 @@ exclude = [
   "packages/shared/src/metar_shared/iwxxm_xsd/v*",
 ]
 reportMissingTypeStubs = false
-reportUnknownMemberType = "warning"
-reportUnknownVariableType = "warning"
+reportUnknownMemberType = "error"
+reportUnknownVariableType = "error"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -111,6 +111,13 @@ describe('outputArchiveName', () => {
     );
   });
 
+  it('uses the timestamped converted_files fallback when firstTac is empty', () => {
+    const now = new Date(1_700_000_000_000);
+    expect(outputArchiveName('', { firstTac: '', now })).toBe(
+      `converted_files_${now.getTime()}.zip`,
+    );
+  });
+
   it('uses the timestamped converted_files fallback when no custom name and no firstTac', () => {
     const now = new Date(1_700_000_000_000);
     expect(outputArchiveName('', { now })).toBe(`converted_files_${now.getTime()}.zip`);

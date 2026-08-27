@@ -1,4 +1,4 @@
-"""TC-EV071-001/002 — CA_ECCC tac-validate lint pack (#1038 / EV-071 M1).
+"""TC-EV071-001/002 - CA_ECCC tac-validate lint pack (#1038 / EV-071 M1).
 
 [Corpus: product §F15] [Corpus: product §F36] [Corpus: tests §TC-EV071]
 """

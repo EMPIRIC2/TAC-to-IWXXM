@@ -1,4 +1,4 @@
-"""BUG-2026-08-07 — Supabase Sync must pin CLI; no Render frontend CORS leftovers.
+"""BUG-2026-08-07 - Supabase Sync must pin CLI; no Render frontend CORS leftovers.
 
 CLI 2.112.0 ``supabase link`` fails decoding Management API ``api-keys[].inserted_at``
 values that use a ``+00:00`` suffix (requires ``Z``). Pinning ``2.111.0`` is the

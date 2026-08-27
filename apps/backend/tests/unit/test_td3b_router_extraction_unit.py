@@ -7,10 +7,9 @@ from unittest.mock import MagicMock
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
-from starlette.responses import Response
-
 from src import api as api_module
 from src.routers import conversion_meta, health, tac_quality
+from starlette.responses import Response
 
 METAR_TAC = "METAR KJFK 101851Z 24008KT 10SM FEW250 15/07 A3034="
 

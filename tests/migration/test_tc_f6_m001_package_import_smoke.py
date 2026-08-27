@@ -1,4 +1,4 @@
-"""TC-F6-M001 — empty package import smoke for F6 validate workspace members.
+"""TC-F6-M001 - empty package import smoke for F6 validate workspace members.
 
 Spec: docs/test-plan.md §TC-F6-M001 (UJ-DEV-003b); execution-plan T1.1.
 """

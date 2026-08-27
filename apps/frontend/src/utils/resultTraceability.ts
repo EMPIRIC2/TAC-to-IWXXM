@@ -26,8 +26,8 @@ export function parseTacHeadline(tac: string): {
   }
   return {
     product: (match[1] ?? 'METAR').toUpperCase(),
-    station: match[2].toUpperCase(),
-    time: match[3].toUpperCase(),
+    station: (match[2] ?? '').toUpperCase(),
+    time: (match[3] ?? '').toUpperCase(),
   };
 }
 

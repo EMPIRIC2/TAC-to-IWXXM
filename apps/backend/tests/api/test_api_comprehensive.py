@@ -1,10 +1,10 @@
 """Tests for API module edge cases and error handling."""
 
 import os
+from typing import ClassVar
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
-
 from src.api import app, get_cors_origins
 from src.utilities.security import verify_supabase_token
 
@@ -12,7 +12,7 @@ from src.utilities.security import verify_supabase_token
 class TestCorsConfiguration:
     """Test CORS configuration."""
 
-    _MISSING_PROFILE = {"METAR_CONFIG_ENV": "__missing_cors_profile__"}
+    _MISSING_PROFILE: ClassVar[dict[str, object]] = {"METAR_CONFIG_ENV": "__missing_cors_profile__"}
 
     def test_cors_origins_from_environment(self):
         """Test deprecated METAR_CORS_ORIGINS fallback when config has no corsOrigins."""
@@ -293,7 +293,7 @@ class TestResponseHeaders:
         response = client.get("/health")
 
         # Should have a server header (could be Uvicorn or similar)
-        assert "server" in response.headers or True  # Optional header
+        assert True  # Optional header
 
     def test_cors_headers_present(self):
         """Test CORS headers in response."""

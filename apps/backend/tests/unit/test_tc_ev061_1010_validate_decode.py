@@ -1,4 +1,4 @@
-"""TC-EV061-1010 — Validate IWXXM item-by-item readable decode (#1010).
+"""TC-EV061-1010 - Validate IWXXM item-by-item readable decode (#1010).
 
 [Corpus: product §F2] [Corpus: product §F9] [Corpus: api] [Corpus: tests §TC-EV061-1010]
 UJ-064
@@ -9,7 +9,6 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 

@@ -6,7 +6,6 @@ import hashlib
 import json
 
 import pytest
-
 from src.services.schema_mirror_service import SchemaMirrorService, mirror_schema_version
 
 
@@ -105,7 +104,8 @@ async def test_download_xsd_tree_writes_file_and_processes_imports(monkeypatch, 
     local_file = tmp_path / "iwxxm" / "2025-2" / "iwxxm.xsd"
     assert local_file.exists()
     assert manifest[str(local_file.relative_to(tmp_path))]["size_bytes"] == len(xsd_content)
-    assert imports and imports[0][1] == "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd"
+    assert imports
+    assert imports[0][1] == "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd"
 
 
 @pytest.mark.asyncio

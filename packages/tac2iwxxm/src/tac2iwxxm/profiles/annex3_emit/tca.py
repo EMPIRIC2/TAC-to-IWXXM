@@ -1,4 +1,4 @@
-"""Annex-3 profile XML writers — tca."""
+"""Annex-3 profile XML writers - tca."""
 
 # pyright: reportWildcardImportFromLibrary=false
 
@@ -36,7 +36,7 @@ def _tca_format_pos(lat: float, lon: float) -> str:
 
 def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     """
-    Emit an IWXXM ``TropicalCycloneAdvisory`` document (F6.f / F27 themes T2–T3).
+    Emit an IWXXM ``TropicalCycloneAdvisory`` document (F6.f / F27 themes T2-T3).
 
     Product/root guard (TC-F27-006 / #737): under ``product=tca`` this emitter
     always opens ``iwxxm:TropicalCycloneAdvisory`` and never
@@ -232,10 +232,7 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         fallback = f"{pos}{pressure}{wind}"
 
     override = ir.get("report_status")
-    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
-        report_status = str(override)
-    else:
-        report_status = "NORMAL"
+    report_status = str(override) if override in {"NORMAL", "AMENDMENT", "CORRECTION"} else "NORMAL"
 
     xml = f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:TropicalCycloneAdvisory xmlns:iwxxm="{ns}"

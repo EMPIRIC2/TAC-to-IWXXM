@@ -1,4 +1,4 @@
-"""Research R5 / TC-F15-003 — US remarks AO1/AO2/SLP/P/T/PK WND (T3.9/T3.10).
+"""Research R5 / TC-F15-003 - US remarks AO1/AO2/SLP/P/T/PK WND (T3.9/T3.10).
 
 Accept cases keep body lint green with RMK present. Known US remark tokens emit
 ``REMARK_US_EXTENSION`` (info, iwxxm_us awareness). Malformed remark groups emit
@@ -12,7 +12,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 
@@ -65,7 +64,7 @@ def test_r5_accept_body_with_rmk_ok(case: dict[str, Any]) -> None:
 
 @pytest.mark.parametrize("case", _REMARK_INFO, ids=_case_ids(_REMARK_INFO))
 def test_r5_us_remark_emits_info(case: dict[str, Any]) -> None:
-    # REMARK_US_EXTENSION is L5 — only under profile=iwxxm_us (EV-050 / AC8).
+    # REMARK_US_EXTENSION is L5 - only under profile=iwxxm_us (EV-050 / AC8).
     report = lint(_read_tac(case["tac"]), product=case["product"], profile="iwxxm_us")
     assert report.ok is True
     matched = [i for i in report.issues if i.code == "REMARK_US_EXTENSION"]

@@ -1,4 +1,4 @@
-"""TC-F20-006 / S2 — SPECI↔METAR mis-classification guards (S020 / EV-015 T3.3).
+"""TC-F20-006 / S2 - SPECI↔METAR mis-classification guards (S020 / EV-015 T3.3).
 
 Deepens TC-F15-005 / R7 adjacency for #734 full AC: Auto-detect / product hint
 must never silent-swap SPECI↔METAR; lint + convert keep per-report identity.
@@ -18,7 +18,7 @@ from tac2iwxxm import convert
 ANNEX3 = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
 TAC_VALIDATE = Path(__file__).resolve().parents[2] / "tac-validate" / "tests" / "fixtures" / "accept"
 
-# S1 deepen fixtures (T3.1) — each must fail under the wrong product hint.
+# S1 deepen fixtures (T3.1) - each must fail under the wrong product hint.
 _S1_SPECI_ACCEPT = (
     "speci_s1_nil.tac",
     "speci_s1_cavok.tac",
@@ -36,12 +36,12 @@ def _read_speci_s1(name: str) -> str:
 
 
 def test_tc_f20_006_keyword_presence_for_auto_detect() -> None:
-    """TAC keyword is the auto-detect signal — SPECI… must not look like METAR-only."""
+    """TAC keyword is the auto-detect signal - SPECI… must not look like METAR-only."""
     speci = "SPECI KJFK 232045Z 18012KT 5SM BKN015 15/07 A3005="
     metar = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
     assert "SPECI" in speci.upper().split()[0]
     assert "METAR" in metar.upper().split()[0]
-    # Without an explicit product keyword, operators default to METAR — never SPECI.
+    # Without an explicit product keyword, operators default to METAR - never SPECI.
     bare = "KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
     assert not bare.upper().lstrip().startswith("SPECI")
     assert lint(bare, product="SPECI").ok is False
@@ -91,7 +91,9 @@ def test_tc_f20_006_bulletin_neighbors_no_silent_swap() -> None:
     assert lint(speci, product="METAR").ok is False
     m = convert(metar, product="METAR", profile="annex3", iwxxm_version="2025-2")
     s = convert(speci, product="SPECI", profile="annex3", iwxxm_version="2025-2")
-    assert m.ok and "iwxxm:METAR" in m.xml
-    assert s.ok and "iwxxm:SPECI" in s.xml
+    assert m.ok
+    assert "iwxxm:METAR" in m.xml
+    assert s.ok
+    assert "iwxxm:SPECI" in s.xml
     assert convert(speci, product="METAR", profile="annex3", iwxxm_version="2025-2").ok is False
     assert convert(metar, product="SPECI", profile="annex3", iwxxm_version="2025-2").ok is False

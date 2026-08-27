@@ -8,9 +8,9 @@ from .conversion import (
 from .security import fetch_jwks, verify_supabase_token
 
 __all__ = [
-    "convert_metar_tac",
     "ConversionError",
+    "convert_metar_tac",
     "convert_metar_tac_with_metadata",
-    "verify_supabase_token",
     "fetch_jwks",
+    "verify_supabase_token",
 ]

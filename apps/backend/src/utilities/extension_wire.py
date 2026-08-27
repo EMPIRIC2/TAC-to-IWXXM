@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Sequence
+from typing import Any, cast
 
 from fastapi import HTTPException
 
@@ -53,8 +54,8 @@ def parse_extension_tokens(values: Sequence[str] | None) -> list[str]:
                         "message": "extensions JSON must be an array of strings",
                     },
                 )
-            for item in parsed:
-                if not isinstance(item, str) or not item.strip():
+            for item_obj in cast(list[Any], parsed):
+                if not isinstance(item_obj, str) or not item_obj.strip():
                     raise HTTPException(
                         status_code=400,
                         detail={
@@ -62,7 +63,7 @@ def parse_extension_tokens(values: Sequence[str] | None) -> list[str]:
                             "message": "extensions JSON array entries must be non-empty strings",
                         },
                     )
-                tokens.append(_normalize_token(item))
+                tokens.append(_normalize_token(item_obj))
             continue
         tokens.append(_normalize_token(cleaned))
 

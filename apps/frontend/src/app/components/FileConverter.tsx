@@ -443,7 +443,7 @@ export function FileConverter({
       );
       setConvertedFiles(
         loadedWorkSession.converted_results.map((result, index) => {
-          const originalName = resultNames[index];
+          const originalName = resultNames[index] ?? `result-${index + 1}`;
           const originalContent = String(result.tac_input ?? '');
           const lineMeta = resolveManualLineMetaFromResult(
             originalName,
@@ -563,6 +563,7 @@ export function FileConverter({
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
+      if (!file) continue;
       try {
         let content: string;
         let displayName = file.name;

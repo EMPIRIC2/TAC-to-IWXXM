@@ -1,7 +1,7 @@
 """Egress allowlist and SSRF guards for dissemination destinations (ADR-029).
 
 ``DISSEMINATION_EGRESS_ALLOWLIST`` is a comma-separated list of hostnames and/or
-CIDRs. An empty allowlist is **fail-closed** — no user-host egress.
+CIDRs. An empty allowlist is **fail-closed** - no user-host egress.
 """
 
 from __future__ import annotations
@@ -9,12 +9,12 @@ from __future__ import annotations
 import ipaddress
 import os
 import socket
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable
 
 ENV_ALLOWLIST = "DISSEMINATION_EGRESS_ALLOWLIST"
 
-# Always blocked — cloud instance metadata / link-local IMDS style targets.
+# Always blocked - cloud instance metadata / link-local IMDS style targets.
 _BLOCKED_NETWORKS: tuple[ipaddress.IPv4Network | ipaddress.IPv6Network, ...] = (
     ipaddress.ip_network("169.254.0.0/16"),  # link-local / AWS IMDS
     ipaddress.ip_network("fe80::/10"),  # IPv6 link-local
@@ -137,7 +137,7 @@ def validate_egress_host(
         raise EgressDenied("empty host denied")
 
     if al.is_empty:
-        raise EgressDenied(f"egress fail-closed: {ENV_ALLOWLIST} is empty — no user-host egress")
+        raise EgressDenied(f"egress fail-closed: {ENV_ALLOWLIST} is empty - no user-host egress")
 
     if normalized in _BLOCKED_HOSTNAMES:
         raise EgressDenied(f"blocked metadata hostname: {normalized}")

@@ -1,4 +1,4 @@
-"""Annex-3 profile XML writers — sigmet."""
+"""Annex-3 profile XML writers - sigmet."""
 
 # pyright: reportWildcardImportFromLibrary=false
 
@@ -104,10 +104,7 @@ def _sigmet_header_units(
     mwo = str(ir["mwo"])
     root = _sigmet_root_local(ir)
     override = ir.get("report_status")
-    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
-        status = str(override)
-    else:
-        status = "NORMAL"
+    status = str(override) if override in {"NORMAL", "AMENDMENT", "CORRECTION"} else "NORMAL"
     # Default synthetic display names from designators; WMO VA-EGGX / multi-location
     # stems use long ATS/MWO names from the vendor examples (S02.M1 / #809 / #856).
     if _is_wmo_sigmet_multi_location_va_yudd(ir) or _is_wmo_sigmet_va_eggx(ir):
@@ -727,9 +724,9 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     locations_raw = ir.get("locations")
     locations: list[dict[str, Any]] = []
     if isinstance(locations_raw, list):
-        for item in cast(list[Any], locations_raw):
-            if isinstance(item, dict):
-                locations.append(cast(dict[str, Any], item))
+        locations.extend(
+            cast(dict[str, Any], item) for item in cast(list[Any], locations_raw) if isinstance(item, dict)
+        )
     use_locations = len(locations) >= 1
     is_tc = root == "TropicalCycloneSIGMET"
     eggx = _is_wmo_sigmet_va_eggx(ir)
@@ -769,18 +766,12 @@ def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     geometry = _sigmet_geometry_xml(ir, fir=fir)
     # Gen/VA single-location keep FORECAST (golden bar); TC uses OBSERVATION when OBS present.
-    if is_tc:
-        time_indicator = str(ir.get("time_indicator", "OBSERVATION"))
-    else:
-        time_indicator = "FORECAST"
+    time_indicator = str(ir.get("time_indicator", "OBSERVATION")) if is_tc else "FORECAST"
     tc_pos = _sigmet_tc_position_xml(ir, gid=f"tc.pos.{fir.lower()}") if is_tc else ""
     tc_fcst = _sigmet_tc_forecast_xml(ir, fir=fir, end=end) if is_tc else ""
     tc_name_xml = _sigmet_tropical_cyclone_xml(ir) if is_tc else ""
     # Vendor A6-2-TC omits intensityChange when NO_CHANGE (#835).
-    if is_tc and intensity == "NO_CHANGE":
-        intensity_attr = ""
-    else:
-        intensity_attr = f' intensityChange="{escape(intensity)}"'
+    intensity_attr = "" if is_tc and intensity == "NO_CHANGE" else f' intensityChange="{escape(intensity)}"'
     phenom_time = (
         f"""
           <iwxxm:phenomenonTime>

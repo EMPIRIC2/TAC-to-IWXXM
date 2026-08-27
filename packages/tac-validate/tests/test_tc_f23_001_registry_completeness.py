@@ -1,4 +1,4 @@
-"""TC-F23-001 — SIGMET/VA SIGMET registry completeness (UJ-034 / ADR-028).
+"""TC-F23-001 - SIGMET/VA SIGMET registry completeness (UJ-034 / ADR-028).
 
 Pass criteria (docs/test-plan.md §TC-F23-001):
 
@@ -15,7 +15,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import ISSUES, by_code, catalog_entries
 
@@ -47,9 +46,7 @@ def _case_lists(manifest: dict[str, Any]) -> list[tuple[str, list[dict[str, Any]
 def _sigmet_cases(manifest: dict[str, Any]) -> list[dict[str, Any]]:
     cases: list[dict[str, Any]] = []
     for _section, rows in _case_lists(manifest):
-        for case in rows:
-            if case.get("product") == "SIGMET":
-                cases.append(case)
+        cases.extend(case for case in rows if case.get("product") == "SIGMET")
     return cases
 
 
@@ -62,7 +59,7 @@ def _sigmet_registry_rows() -> list[Any]:
 
 
 def test_unknown_code_gate_rejects_unregistered_issue() -> None:
-    with pytest.raises(KeyError):
+    with pytest.raises(KeyError, match=r".*"):
         _assert_registered("NOT_REGISTERED_F23_XYZ")
 
 
@@ -107,8 +104,8 @@ def test_sigmet_product_registry_rows_appear_in_fixtures() -> None:
 
 def test_catalog_includes_sigmet_registry_rows() -> None:
     """ISSUE_CATALOG export lists every sigmet-tagged registry code (ADR-028)."""
-    assert CATALOG_JSON.is_file(), "missing ISSUE_CATALOG.json — run make catalog-regen"
-    assert CATALOG_MD.is_file(), "missing ISSUE_CATALOG.md — run make catalog-regen"
+    assert CATALOG_JSON.is_file(), "missing ISSUE_CATALOG.json - run make catalog-regen"
+    assert CATALOG_MD.is_file(), "missing ISSUE_CATALOG.md - run make catalog-regen"
 
     payload = json.loads(CATALOG_JSON.read_text(encoding="utf-8"))
     catalog_codes = {row["code"] for row in payload["issues"]}

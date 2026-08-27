@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import pytest
 from fastapi import HTTPException
-
 from src.utilities.extension_wire import (
     IWXXM_CA_TOKEN,
     ca_eccc_validate_product,

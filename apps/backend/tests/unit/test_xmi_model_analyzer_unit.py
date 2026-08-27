@@ -1,8 +1,7 @@
-"""Unit tests for XMIModelAnalyzer – 0% coverage target."""
+"""Unit tests for XMIModelAnalyzer - 0% coverage target."""
 
 import pytest
 from lxml import etree
-
 from src.utilities.xmi_model_analyzer import (
     BreakingChange,
     UMLElement,
@@ -85,7 +84,7 @@ class TestXMIModelAnalyzerLoadXmi:
 
     def test_load_missing_file_raises(self, tmp_path):
         analyzer = XMIModelAnalyzer()
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FileNotFoundError, match=r".*"):
             analyzer.load_xmi_model(tmp_path / "nonexistent.xmi")
 
     def test_load_invalid_xml_raises(self, tmp_path):

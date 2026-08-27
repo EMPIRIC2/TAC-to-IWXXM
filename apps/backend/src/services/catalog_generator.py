@@ -7,15 +7,15 @@ offline validation by mapping remote schema URLs to local file paths.
 
 import logging
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, TypedDict
 
-import lxml.etree as ET
+from ..utilities.xml_types import XmlElement, lxml_etree
 
 logger = logging.getLogger(__name__)
 
 # OASIS XML Catalog namespace
 CATALOG_NS = "urn:oasis:names:tc:entity:xmlns:xml:catalog"
-CATALOG_NS_MAP = {None: CATALOG_NS}
+CATALOG_NS_MAP: dict[str | None, str] = {None: CATALOG_NS}
 
 
 class CatalogGenerator:
@@ -26,7 +26,7 @@ class CatalogGenerator:
     XML validators to resolve imports without network access.
     """
 
-    def __init__(self, schemas_base_path: Path):
+    def __init__(self, schemas_base_path: Path) -> None:
         """
         Initialize catalog generator.
 
@@ -35,7 +35,7 @@ class CatalogGenerator:
         """
         self.schemas_base_path = Path(schemas_base_path)
 
-    def generate_catalog(self, version: str, remote_base_url: str, local_schema_dir: Optional[Path] = None) -> Path:
+    def generate_catalog(self, version: str, remote_base_url: str, local_schema_dir: Path | None = None) -> Path:
         """
         Generate OASIS XML Catalog for a specific IWXXM version.
 
@@ -56,7 +56,7 @@ class CatalogGenerator:
         logger.info(f"Generating catalog for IWXXM {version}")
 
         # Create catalog root element
-        catalog = ET.Element("{%s}catalog" % CATALOG_NS, nsmap=CATALOG_NS_MAP)
+        catalog = lxml_etree.Element(f"{{{CATALOG_NS}}}catalog", nsmap=CATALOG_NS_MAP)
 
         # Add rewriteURI for main IWXXM schema directory
         self._add_rewrite_uri(
@@ -68,13 +68,13 @@ class CatalogGenerator:
 
         # Write catalog file
         catalog_path = local_schema_dir / "catalog.xml"
-        tree = ET.ElementTree(catalog)
+        tree = lxml_etree.ElementTree(catalog)
         tree.write(str(catalog_path), encoding="utf-8", xml_declaration=True, pretty_print=True)
 
         logger.info(f"Generated catalog: {catalog_path}")
         return catalog_path
 
-    def _add_rewrite_uri(self, catalog_elem: ET.Element, uri_start_string: str, rewrite_prefix: str):
+    def _add_rewrite_uri(self, catalog_elem: XmlElement, uri_start_string: str, rewrite_prefix: str) -> None:
         """
         Add rewriteURI element to catalog.
 
@@ -83,11 +83,11 @@ class CatalogGenerator:
             uri_start_string: URL prefix to match
             rewrite_prefix: Local file:// prefix to rewrite to
         """
-        rewrite_uri = ET.SubElement(catalog_elem, "{%s}rewriteURI" % CATALOG_NS)
+        rewrite_uri = lxml_etree.SubElement(catalog_elem, f"{{{CATALOG_NS}}}rewriteURI")
         rewrite_uri.set("uriStartString", uri_start_string)
         rewrite_uri.set("rewritePrefix", rewrite_prefix)
 
-    def _add_common_dependencies(self, catalog_elem: ET.Element, local_schema_dir: Path):
+    def _add_common_dependencies(self, catalog_elem: XmlElement, local_schema_dir: Path) -> None:
         """
         Add rewrite rules for common schema dependencies.
 
@@ -95,8 +95,13 @@ class CatalogGenerator:
             catalog_elem: Catalog root element
             local_schema_dir: Local schema directory
         """
+
         # Check for common dependencies and add rewrites
-        dependencies = [
+        class _Dependency(TypedDict):
+            uri_start: str
+            local_path: Path
+
+        dependencies: list[_Dependency] = [
             {
                 "uri_start": "http://www.opengis.net/gml/3.2",
                 "local_path": local_schema_dir / "externalSchema" / "gml" / "3.2.1",
@@ -124,14 +129,14 @@ class CatalogGenerator:
                 )
                 logger.debug(f"Added catalog entry for: {dep['uri_start']}")
 
-    def generate_all_catalogs(self) -> List[Path]:
+    def generate_all_catalogs(self) -> list[Path]:
         """
         Generate catalogs for all mirrored schema versions.
 
         Returns:
             List of paths to generated catalog files
         """
-        catalog_paths = []
+        catalog_paths: list[Any] = []
 
         # Find all version directories
         for version_dir in self.schemas_base_path.iterdir():
@@ -174,16 +179,16 @@ class CatalogGenerator:
             True if catalog is valid, False otherwise
         """
         try:
-            tree = ET.parse(str(catalog_path))
+            tree = lxml_etree.parse(str(catalog_path))
             root = tree.getroot()
 
             # Check namespace
-            if root.tag != "{%s}catalog" % CATALOG_NS:
+            if root.tag != f"{{{CATALOG_NS}}}catalog":
                 logger.error(f"Invalid catalog root element: {root.tag}")
                 return False
 
             # Check for at least one rewriteURI
-            rewrite_uris = root.findall("{%s}rewriteURI" % CATALOG_NS)
+            rewrite_uris = root.findall(f"{{{CATALOG_NS}}}rewriteURI")
             if not rewrite_uris:
                 logger.error("Catalog has no rewriteURI elements")
                 return False
@@ -212,7 +217,7 @@ def generate_catalog_for_version(version: str, remote_base_url: str, schemas_bas
     return generator.generate_catalog(version, remote_base_url)
 
 
-def generate_all_catalogs(schemas_base_path: Path) -> List[Path]:
+def generate_all_catalogs(schemas_base_path: Path) -> list[Path]:
     """
     Convenience function to generate catalogs for all versions.
 

@@ -444,7 +444,7 @@ class TimeCalendar(TimeCalendarType):
 
 class TimeOrdinalReferenceSystem(TimeOrdinalReferenceSystemType):
     """
-    In some applications of geographic information — such as geology and archaeology — relative position in time is
+    In some applications of geographic information - such as geology and archaeology - relative position in time is
     known more precisely than absolute time or duration.
 
     The order of events in time can be well established, but the magnitude of the intervals between them cannot be

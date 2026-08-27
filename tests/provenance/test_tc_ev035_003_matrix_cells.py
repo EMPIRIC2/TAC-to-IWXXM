@@ -1,4 +1,4 @@
-"""TC-EV035-003 — coverage matrix cell ↔ source URL."""
+"""TC-EV035-003 - coverage matrix cell ↔ source URL."""
 
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ def test_tc_ev035_003_matrix_cell(product: str, role: str) -> None:
 
 
 def test_tc_ev035_003_vona_conversion_warn_with_ahl_cites() -> None:
-    """S02.M1 — VONA conversion stays ⚠ Guidance but cites AHL/FM205."""
+    """S02.M1 - VONA conversion stays ⚠ Guidance but cites AHL/FM205."""
     data = load_map()
     cell = next(
         c

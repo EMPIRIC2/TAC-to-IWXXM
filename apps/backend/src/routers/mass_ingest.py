@@ -1,4 +1,4 @@
-"""F33 secure mass file/folder ingest — JWT-gated (EV-042 / #897).
+"""F33 secure mass file/folder ingest - JWT-gated (EV-042 / #897).
 
 [Corpus: product §F33] [Corpus: api]
 """
@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, List, Optional
+from typing import Any
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile, status
 from fastapi.responses import JSONResponse
@@ -138,7 +138,7 @@ async def mass_ingest(
 )
 async def ingest_collect(
     request: Request,
-    files: Optional[List[UploadFile]] = File(None),
+    files: list[UploadFile] | None = File(None),
     manual_text: str = Form(default="", description="COLLECT IWXXM XML or inflated gzip text"),
     profile: str = Form(default="annex3"),
     iwxxm_version: str = Form(default="2025-2"),

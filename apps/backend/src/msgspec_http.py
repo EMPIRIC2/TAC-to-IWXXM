@@ -2,7 +2,7 @@
 
 Prefer encoding ``msgspec.Struct`` values. ``pydantic.BaseModel`` OpenAPI alias
 instances are accepted via ``model_dump(mode="json")`` then a single msgspec
-encode — **no** dual runtime validation.
+encode - **no** dual runtime validation.
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ __all__ = ["json_encoder", "msgspec_json_response"]
 
 
 def msgspec_json_response(
-    obj: Any,
+    obj: object,
     *,
     status_code: int = 200,
     media_type: str = "application/json",

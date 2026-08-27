@@ -5,7 +5,6 @@ Verifies that elevation values are formatted according to IWXXM version rules.
 """
 
 import pytest
-
 from src.config.version_formatting import ELEVATION_FORMAT, format_elevation, get_elevation_rounding
 from src.utilities.elevation_service import ElevationService
 
@@ -21,7 +20,7 @@ class TestElevationVersionFormatting:
     def test_elevation_service_accepts_version_parameter(self, elevation_service):
         """Verify that get_elevation_data accepts version parameter."""
         # This should not raise an exception
-        elevation_m, datum = elevation_service.get_elevation_data(
+        _elevation_m, datum = elevation_service.get_elevation_data(
             icao="BGBW", default_elevation_ft=124, version="2025-2"
         )
         assert datum == "EGM_96"
@@ -43,7 +42,7 @@ class TestElevationVersionFormatting:
 
     def test_elevation_rounding_rules_consistency(self):
         """Verify all versions have defined rounding rules."""
-        for version in ELEVATION_FORMAT.keys():
+        for version in ELEVATION_FORMAT:
             rounding = get_elevation_rounding(version)
             assert isinstance(rounding, int)
             assert 0 <= rounding <= 10
@@ -102,7 +101,7 @@ class TestElevationIntegration:
         service = ElevationService()
 
         # Should work without version parameter (uses default)
-        elev_m, datum = service.get_elevation_data(icao="BGBW", default_elevation_ft=124)
+        _elev_m, datum = service.get_elevation_data(icao="BGBW", default_elevation_ft=124)
 
         assert isinstance(datum, str)
         assert len(datum) > 0

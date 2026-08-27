@@ -140,7 +140,7 @@ def validate(
 
     if "xsd" in selected:
         issues.extend(validate_xsd(xml_content, iwxxm_version))
-        # Malformed XML already reported — skip Schematron
+        # Malformed XML already reported - skip Schematron
         if any(issue.code == "XML_SYNTAX_ERROR" for issue in issues):
             return ValidationReport(
                 ok=False,
@@ -149,10 +149,9 @@ def validate(
                 issues=issues,
             )
 
-    if "schematron" in selected:
+    if "schematron" in selected and not any(issue.code == "XML_SYNTAX_ERROR" for issue in issues):
         # Skip Schematron when XSD already failed hard on syntax
-        if not any(issue.code == "XML_SYNTAX_ERROR" for issue in issues):
-            issues.extend(validate_schematron(xml_content, iwxxm_version))
+        issues.extend(validate_schematron(xml_content, iwxxm_version))
 
     ok = not any(issue.severity == "error" for issue in issues)
     return ValidationReport(

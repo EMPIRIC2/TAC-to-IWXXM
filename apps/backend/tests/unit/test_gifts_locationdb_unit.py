@@ -1,4 +1,4 @@
-"""Unit tests for GiftsLocationDBAdapter – 0% coverage target."""
+"""Unit tests for GiftsLocationDBAdapter - 0% coverage target."""
 
 from unittest.mock import MagicMock, patch
 

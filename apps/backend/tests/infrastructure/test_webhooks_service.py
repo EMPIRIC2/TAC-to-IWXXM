@@ -5,7 +5,6 @@ Tests for the webhook notification service.
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 from src.services.webhooks import WebhookService
 
 
@@ -24,12 +23,14 @@ def webhook_service_config():
 def webhook_service(webhook_service_config):
     """Create a webhook service instance with test configuration."""
     # Patch at the point where the values are actually used (in the webhooks module)
-    with patch("src.services.webhooks.should_send_webhooks", return_value=webhook_service_config["enabled"]):
-        with patch("src.services.webhooks.WEBHOOK_URLS", webhook_service_config["urls"]):
-            with patch("src.services.webhooks.WEBHOOK_SECRET", webhook_service_config["secret"]):
-                with patch("src.services.webhooks.WEBHOOK_EVENTS", webhook_service_config["events"]):
-                    service = WebhookService()
-                    yield service
+    with (
+        patch("src.services.webhooks.should_send_webhooks", return_value=webhook_service_config["enabled"]),
+        patch("src.services.webhooks.WEBHOOK_URLS", webhook_service_config["urls"]),
+        patch("src.services.webhooks.WEBHOOK_SECRET", webhook_service_config["secret"]),
+        patch("src.services.webhooks.WEBHOOK_EVENTS", webhook_service_config["events"]),
+    ):
+        service = WebhookService()
+        yield service
 
 
 @pytest.fixture
@@ -109,13 +110,12 @@ class TestSendWebhook:
 
     async def test_send_webhook_disabled(self):
         """Test webhook sending when disabled."""
-        with patch.dict("os.environ", {"ENABLE_WEBHOOKS": "false"}):
+        with patch.dict("os.environ", {"ENABLE_WEBHOOKS": "false"}), patch("httpx.AsyncClient") as mock_client_class:
             # Test that disabled webhooks don't attempt delivery
-            with patch("httpx.AsyncClient") as mock_client_class:
-                # If HttpxClient is not instantiated, the test passes
-                mock_client_class.return_value = MagicMock()
-                # Should not fail even if webhooks disabled
-                assert True
+            # If HttpxClient is not instantiated, the test passes
+            mock_client_class.return_value = MagicMock()
+            # Should not fail even if webhooks disabled
+            assert True
 
     async def test_send_webhook_event_filtering(self, webhook_service):
         """Test that only enabled events are sent."""

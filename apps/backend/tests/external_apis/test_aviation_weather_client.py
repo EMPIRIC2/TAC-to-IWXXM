@@ -4,7 +4,6 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import httpx
 import pytest
-
 from src.clients.aviation_weather_client import AviationWeatherClient
 
 

@@ -1,4 +1,4 @@
-"""BUG-2026-06-20 — production login Failed to fetch (CORS).
+"""BUG-2026-06-20 - production login Failed to fetch (CORS).
 
 Browser symptom: TypeError: Failed to fetch on POST /auth/login from the
 production frontend origin. Root cause: deployed API missing METAR_CORS_ORIGINS.
@@ -26,7 +26,7 @@ PRODUCTION_FRONTEND = "https://metar-to-iwxxm-frontend-v4-web.onrender.com"
 def _require_env(name: str, default: str) -> str:
     value = os.environ.get(name, default).strip()
     if not value:
-        pytest.skip(f"{name} not set — skip live repro")
+        pytest.skip(f"{name} not set - skip live repro")
     return value
 
 

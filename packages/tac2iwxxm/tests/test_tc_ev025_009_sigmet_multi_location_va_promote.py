@@ -1,4 +1,4 @@
-"""TC-EV025-009 — #809 catalog promote to wmoPass (S033 / EV-026 T2.3).
+"""TC-EV025-009 - #809 catalog promote to wmoPass (S033 / EV-026 T2.3).
 
 Promote when ``canonicalize_xml`` equality holds under ADR-032 defaults
 (TC-EV025-008 green). Catalog tier ``wmoPass`` + FIXTURE_GAPS equality note cleared.

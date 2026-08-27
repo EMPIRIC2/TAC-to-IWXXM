@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import pytest
-
 from tac2iwxxm.profiles import ca_eccc as ca
 
 
 def test_ca_metar_family_variant_constants() -> None:
-    assert ca.CA_METAR_FAMILY_TAC_LEADS == frozenset({"METAR", "SPECI", "LWIS", "SAWR"})
-    assert ca.CA_IWXXM_CA_SUBSTITUTION_ROOTS == frozenset({"LWIS", "SAWR"})
+    assert frozenset({"METAR", "SPECI", "LWIS", "SAWR"}) == ca.CA_METAR_FAMILY_TAC_LEADS
+    assert frozenset({"LWIS", "SAWR"}) == ca.CA_IWXXM_CA_SUBSTITUTION_ROOTS
 
 
 def test_ca_gml_id_branches() -> None:
@@ -151,9 +150,9 @@ def test_inject_helpers_noop_when_needle_missing() -> None:
 
 def test_emit_wrong_version_raises() -> None:
     ir = {"station": "CYUL", "day": 23, "hour": 18, "minute": 0}
-    with pytest.raises(ValueError, match="3.0.0"):
+    with pytest.raises(ValueError, match=r"3.0.0"):
         ca.emit_metar_speci_ca_eccc(ir, product="METAR", iwxxm_version="2025-2")
-    with pytest.raises(ValueError, match="3.0.0"):
+    with pytest.raises(ValueError, match=r"3.0.0"):
         ca.emit_taf_ca_eccc(ir, iwxxm_version="2025-2")
-    with pytest.raises(ValueError, match="3.0.0"):
+    with pytest.raises(ValueError, match=r"3.0.0"):
         ca.emit_airmet_ca_eccc(ir, iwxxm_version="2025-2")

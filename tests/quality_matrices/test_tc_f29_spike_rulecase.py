@@ -1,4 +1,4 @@
-"""TC-F29-005 spike — YAML RuleCase load + node-id shape (S037 / EV-030 T0.3)."""
+"""TC-F29-005 spike - YAML RuleCase load + node-id shape (S037 / EV-030 T0.3)."""
 
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ def test_tc_f29_spike_load_yaml_rule_cases() -> None:
 
 
 @pytest.mark.parametrize(
-    "bucket,case_id,expected_node",
+    ("bucket", "case_id", "expected_node"),
     [
         ("happy", "01", "INVALID_VISIBILITY/happy/01"),
         ("sad", "01", "INVALID_VISIBILITY/sad/01"),

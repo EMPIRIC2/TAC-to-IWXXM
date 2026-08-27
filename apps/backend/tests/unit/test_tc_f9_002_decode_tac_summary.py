@@ -10,7 +10,6 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 

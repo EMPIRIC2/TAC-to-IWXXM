@@ -65,9 +65,8 @@ def test_tc_ev055_003_c14n_ignores_volatile_gml_id() -> None:
 
 def test_tc_ev055_003_c14n_strips_clark_uuid_and_codelist_hrefs() -> None:
     """Clark-notation ids, bare UUID attrs, and codes.wmo.int hrefs are volatile."""
-    from lxml import etree
-
     from iwxxm_validate.c14n import c14n_xml
+    from lxml import etree
 
     gml_id = "{http://www.opengis.net/gml/3.2}id"
     root_a = etree.fromstring(

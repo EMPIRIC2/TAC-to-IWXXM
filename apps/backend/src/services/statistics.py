@@ -8,8 +8,9 @@ Implements indefinite retention policy (User Decision 1).
 import logging
 import re
 import uuid
+from collections.abc import Sequence
 from datetime import UTC, datetime
-from typing import Any, Dict, Optional, Sequence, Union
+from typing import Any
 
 from sqlalchemy import Integer, and_, func, select
 
@@ -26,7 +27,7 @@ _ICAO_FALLBACK_CODE = "ZZZZ"
 _ICAO_PATTERN = re.compile(r"^[A-Z0-9]{4}$")
 
 
-def _normalize_icao_code(icao_airport_code: Optional[str]) -> str:
+def _normalize_icao_code(icao_airport_code: str | None) -> str:
     """Normalize ICAO airport code for persistence.
 
     Returns a guaranteed non-null 4-character placeholder when input is missing/invalid.
@@ -38,6 +39,12 @@ def _normalize_icao_code(icao_airport_code: Optional[str]) -> str:
     return _ICAO_FALLBACK_CODE
 
 
+def _translation_status_value(status: TranslationStatus | str) -> str:
+    if isinstance(status, TranslationStatus):
+        return status.value
+    return status
+
+
 class StatisticsService:
     """Service for logging and querying translation statistics."""
 
@@ -45,17 +52,17 @@ class StatisticsService:
     async def log_translation(
         tac_message: str,
         iwxxm_version: str,
-        icao_airport_code: Optional[str],
-        translation_status: TranslationStatus,
+        icao_airport_code: str | None,
+        translation_status: TranslationStatus | str,
         translation_duration_ms: float | int,
-        iwxxm_output: Optional[str] = None,
-        validation_layers_passed: Optional[Sequence[Union[ValidationLayer, RuntimeValidationLayer, str]]] = None,
-        validation_errors: Optional[Dict[str, Any]] = None,
-        user_id: Optional[str] = None,
-        session_id: Optional[str] = None,
-        bulletin_reception_time: Optional[datetime] = None,
-        bulletin_id: Optional[str] = None,
-    ) -> Optional[str]:
+        iwxxm_output: str | None = None,
+        validation_layers_passed: Sequence[ValidationLayer | RuntimeValidationLayer | str] | None = None,
+        validation_errors: dict[str, Any] | None = None,
+        user_id: str | None = None,
+        session_id: str | None = None,
+        bulletin_reception_time: datetime | None = None,
+        bulletin_id: str | None = None,
+    ) -> str | None:
         """
         Log a translation operation to the database.
 
@@ -105,6 +112,8 @@ class StatisticsService:
                 for layer in (validation_layers_passed or [])
             ]
 
+            translation_status_value = _translation_status_value(translation_status)
+
             # Create ORM model instance
             record = TranslationStatisticsModel(
                 translation_id=translation_id,
@@ -114,13 +123,11 @@ class StatisticsService:
                 tac_message=tac_message,
                 iwxxm_version=iwxxm_version,
                 iwxxm_output=iwxxm_output,
-                translation_status=translation_status.value
-                if isinstance(translation_status, TranslationStatus)
-                else translation_status,
+                translation_status=translation_status_value,
                 validation_layers_passed=validation_layer_strings if validation_layer_strings else None,
                 validation_errors=validation_errors,
-                translation_duration_ms=int(round(translation_duration_ms)),
-                user_id=uuid.UUID(user_id) if user_id and isinstance(user_id, str) and len(user_id) == 36 else user_id,
+                translation_duration_ms=round(translation_duration_ms),
+                user_id=uuid.UUID(user_id) if user_id and len(user_id) == 36 else user_id,
                 session_id=session_id,
                 bulletin_reception_time=bulletin_reception_time,
                 bulletin_id=bulletin_id,
@@ -137,18 +144,13 @@ class StatisticsService:
                 return None
 
             logger.info(
-                f"Logged translation {translation_id} for {normalized_icao_code} ({icao_region}, {translation_status})"
-            )
-            translation_status_value = (
-                translation_status.value
-                if isinstance(translation_status, TranslationStatus)
-                else str(translation_status)
+                f"Logged translation {translation_id} for {normalized_icao_code} ({icao_region}, {translation_status_value})"
             )
             record_translation_metric(
                 status=translation_status_value,
                 iwxxm_version=iwxxm_version,
                 icao_region=icao_region,
-                duration_ms=int(round(translation_duration_ms)),
+                duration_ms=round(translation_duration_ms),
             )
             return str(translation_id)
 
@@ -160,12 +162,12 @@ class StatisticsService:
     async def get_statistics(
         start_date: datetime,
         end_date: datetime,
-        icao_region: Optional[str] = None,
-        iwxxm_version: Optional[str] = None,
-        airport_code: Optional[str] = None,
+        icao_region: str | None = None,
+        iwxxm_version: str | None = None,
+        airport_code: str | None = None,
         include_airport_breakdown: bool = False,
         include_error_details: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Query aggregated translation statistics.
 
@@ -343,7 +345,7 @@ class StatisticsService:
     async def get_statistics_by_region(
         start_date: datetime,
         end_date: datetime,
-    ) -> Dict[str, Dict[str, Any]]:
+    ) -> dict[str, dict[str, Any]]:
         """
         Get translation statistics grouped by ICAO region.
 
@@ -378,7 +380,7 @@ class StatisticsService:
                 result = await session.execute(query)
                 rows = result.all()
 
-                result_dict = {}
+                result_dict: dict[str, Any] = {}
                 for row in rows:
                     total = row.total
                     successful = row.successful

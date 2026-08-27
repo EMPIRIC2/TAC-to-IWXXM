@@ -1,4 +1,4 @@
-"""TC-EV061-1012-001 — golden AHL multi-METAR decode rows (package).
+"""TC-EV061-1012-001 - golden AHL multi-METAR decode rows (package).
 
 [Corpus: product §F6] [Corpus: product §F9] [Corpus: tests §TC-EV061-1012-001] UJ-065 #1012
 """

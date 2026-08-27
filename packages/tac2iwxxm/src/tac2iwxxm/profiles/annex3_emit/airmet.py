@@ -1,4 +1,4 @@
-"""Annex-3 profile XML writers — airmet."""
+"""Annex-3 profile XML writers - airmet."""
 
 # pyright: reportWildcardImportFromLibrary=false, reportPrivateUsage=false
 
@@ -79,10 +79,7 @@ def emit_airmet_annex3(
     issue, begin, end = _hazard_stamp(ir, "airmet")
     cancel = bool(ir.get("cancel"))
     override = ir.get("report_status")
-    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
-        status = str(override)
-    else:
-        status = "NORMAL"
+    status = str(override) if override in {"NORMAL", "AMENDMENT", "CORRECTION"} else "NORMAL"
     gml_id = f"airmet.cnl.{fir.lower()}" if cancel else f"airmet.basic.{fir.lower()}"
 
     units = f"""<?xml version="1.0" encoding="UTF-8"?>
@@ -176,13 +173,12 @@ def emit_airmet_annex3(
     outlook_ir: dict[str, Any] | None = cast(dict[str, Any], outlook_raw) if isinstance(outlook_raw, dict) else None
     area_list: list[dict[str, Any]] = []
     if isinstance(area_list_raw, list):
-        area_list = [cast(dict[str, Any], item) for item in area_list_raw if isinstance(item, dict)]
+        area_list.extend(
+            cast(dict[str, Any], obj) for obj in cast(list[object], area_list_raw) if isinstance(obj, dict)
+        )
     has_multi = len(area_list) > 1
     has_outlook = outlook_ir is not None
-    if area_list:
-        obs_areas = area_list
-    else:
-        obs_areas = [ir]
+    obs_areas = area_list or [ir]
 
     if not has_multi and not has_outlook:
         intensity = str(ir.get("intensity_change", "NO_CHANGE"))

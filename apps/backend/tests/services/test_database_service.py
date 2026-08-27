@@ -5,7 +5,6 @@ Tests for the database connection service.
 from unittest.mock import AsyncMock, patch
 
 import pytest
-
 from src.services.database import (
     database_lifespan,
     get_database_url,
@@ -100,15 +99,17 @@ class TestInitDbEngine:
         db_module._engine = None
         db_module._async_session_maker = None
 
-        with patch("src.services.database.get_database_url", return_value="postgresql+asyncpg://localhost/test"):
-            with patch("src.services.database.create_async_engine") as mock_create:
-                mock_engine = AsyncMock()
-                mock_create.return_value = mock_engine
+        with (
+            patch("src.services.database.get_database_url", return_value="postgresql+asyncpg://localhost/test"),
+            patch("src.services.database.create_async_engine") as mock_create,
+        ):
+            mock_engine = AsyncMock()
+            mock_create.return_value = mock_engine
 
-                engine = await init_db_engine()
+            engine = await init_db_engine()
 
-                # Engine should be created
-                mock_create.assert_called_once()
+            # Engine should be created
+            mock_create.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -117,10 +118,12 @@ class TestGetDbSession:
 
     async def test_get_db_session_no_engine(self):
         """Test error when engine is not initialized."""
-        with patch("src.services.database._async_session_maker", None):
-            with pytest.raises(RuntimeError, match="Database engine not initialized"):
-                async with get_db_session():
-                    pass
+        with (
+            patch("src.services.database._async_session_maker", None),
+            pytest.raises(RuntimeError, match="Database engine not initialized"),
+        ):
+            async with get_db_session():
+                pass
 
 
 @pytest.mark.asyncio
@@ -129,21 +132,23 @@ class TestDatabaseLifespan:
 
     async def test_lifespan_startup(self):
         """Test database engine initialization on startup."""
-        with patch("src.services.database.init_db_engine", new_callable=AsyncMock) as mock_init:
-            with patch("src.services.database.close_db_engine", new_callable=AsyncMock) as mock_close:
-                with patch("src.services.database.create_tables", new_callable=AsyncMock) as mock_create:
-                    from fastapi import FastAPI
+        with (
+            patch("src.services.database.init_db_engine", new_callable=AsyncMock) as mock_init,
+            patch("src.services.database.close_db_engine", new_callable=AsyncMock) as mock_close,
+            patch("src.services.database.create_tables", new_callable=AsyncMock) as mock_create,
+        ):
+            from fastapi import FastAPI
 
-                    app = FastAPI()
+            app = FastAPI()
 
-                    # Execute lifespan
-                    async with database_lifespan(app):
-                        # Engine should be initialized
-                        mock_init.assert_called_once()
-                        mock_create.assert_called_once()
+            # Execute lifespan
+            async with database_lifespan(app):
+                # Engine should be initialized
+                mock_init.assert_called_once()
+                mock_create.assert_called_once()
 
-                    # close_db_engine should be called after exit
-                    mock_close.assert_called_once()
+            # close_db_engine should be called after exit
+            mock_close.assert_called_once()
 
 
 @pytest.mark.asyncio

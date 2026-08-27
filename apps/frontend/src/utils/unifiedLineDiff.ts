@@ -47,11 +47,13 @@ export function unifiedLineDiff(left: string, right: string): UnifiedDiffLine[] 
     Array.from({ length: m + 1 }, () => 0),
   );
   for (let i = n - 1; i >= 0; i -= 1) {
+    const row = dp[i]!;
+    const rowBelow = dp[i + 1]!;
     for (let j = m - 1; j >= 0; j -= 1) {
       if (a[i] === b[j]) {
-        dp[i][j] = dp[i + 1][j + 1] + 1;
+        row[j] = rowBelow[j + 1]! + 1;
       } else {
-        dp[i][j] = Math.max(dp[i + 1][j], dp[i][j + 1]);
+        row[j] = Math.max(rowBelow[j]!, row[j + 1]!);
       }
     }
   }
@@ -62,10 +64,12 @@ export function unifiedLineDiff(left: string, right: string): UnifiedDiffLine[] 
   let leftLine = 1;
   let rightLine = 1;
   while (i < n && j < m) {
-    if (a[i] === b[j]) {
+    const leftText = a[i]!;
+    const rightText = b[j]!;
+    if (leftText === rightText) {
       out.push({
         op: 'equal',
-        text: a[i] ?? '',
+        text: leftText,
         leftLine,
         rightLine,
       });
@@ -73,10 +77,10 @@ export function unifiedLineDiff(left: string, right: string): UnifiedDiffLine[] 
       j += 1;
       leftLine += 1;
       rightLine += 1;
-    } else if (dp[i + 1][j] >= dp[i][j + 1]) {
+    } else if (dp[i + 1]![j]! >= dp[i]![j + 1]!) {
       out.push({
         op: 'remove',
-        text: a[i] ?? '',
+        text: leftText,
         leftLine,
         rightLine: null,
       });
@@ -85,7 +89,7 @@ export function unifiedLineDiff(left: string, right: string): UnifiedDiffLine[] 
     } else {
       out.push({
         op: 'add',
-        text: b[j] ?? '',
+        text: rightText,
         leftLine: null,
         rightLine,
       });
@@ -96,7 +100,7 @@ export function unifiedLineDiff(left: string, right: string): UnifiedDiffLine[] 
   while (i < n) {
     out.push({
       op: 'remove',
-      text: a[i] ?? '',
+      text: a[i]!,
       leftLine,
       rightLine: null,
     });
@@ -106,7 +110,7 @@ export function unifiedLineDiff(left: string, right: string): UnifiedDiffLine[] 
   while (j < m) {
     out.push({
       op: 'add',
-      text: b[j] ?? '',
+      text: b[j]!,
       leftLine: null,
       rightLine,
     });

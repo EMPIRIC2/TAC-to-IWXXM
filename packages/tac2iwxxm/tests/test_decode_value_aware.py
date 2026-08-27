@@ -1,12 +1,14 @@
-"""TC-F9-001 — value-aware decode explanations (S013 / EV-009, F9).
+"""TC-F9-001 - value-aware decode explanations (S013 / EV-009, F9).
 
 Explanations must carry parsed values (wind direction/speed/gusts, temps,
-visibility, pressure, times, change groups) — not only group labels — while
+visibility, pressure, times, change groups) - not only group labels - while
 segment ``start``/``end`` offsets stay identical to pre-F9 behavior (additive
 contract; ADR-025).
 """
 
 from __future__ import annotations
+
+import itertools
 
 from tac2iwxxm.decode import decode_tac
 
@@ -21,7 +23,7 @@ def _explanation_for(tac: str, product: str, code: str) -> str:
     raise AssertionError(f"no segment for {code!r} in {product} decode of {tac!r}")
 
 
-# --- TC-F9-001 §1 — METAR golden fixture values ---
+# --- TC-F9-001 §1 - METAR golden fixture values ---
 
 
 def test_metar_wind_direction_and_speed() -> None:
@@ -58,7 +60,7 @@ def test_metar_cloud_amount_and_height() -> None:
     assert "25,000 ft" in text
 
 
-# --- TC-F9-001 §2 — negative temps, gusts, VRB, QNH, metre visibility ---
+# --- TC-F9-001 §2 - negative temps, gusts, VRB, QNH, metre visibility ---
 
 
 def test_negative_temperature_and_dewpoint() -> None:
@@ -103,7 +105,7 @@ def test_weather_group_value_aware() -> None:
     assert "snow" in text.lower()
 
 
-# --- TC-F9-001 §3 — TAF change groups carry parsed period/values ---
+# --- TC-F9-001 §3 - TAF change groups carry parsed period/values ---
 
 
 def test_taf_fm_group_parsed_time() -> None:
@@ -135,7 +137,7 @@ def test_taf_prob_percentage() -> None:
     assert "30%" in text
 
 
-# --- TC-F9-001 §4 — SIGMET/AIRMET/VAA/TCA best-effort values; residuals kept ---
+# --- TC-F9-001 §4 - SIGMET/AIRMET/VAA/TCA best-effort values; residuals kept ---
 
 
 def test_sigmet_validity_period_parsed() -> None:
@@ -155,7 +157,7 @@ def test_vaa_tca_best_effort_residuals_unchanged() -> None:
         assert vaa[res.start : res.end] == res.text
 
 
-# --- TC-F9-001 §5 — offsets unchanged (additive contract) ---
+# --- TC-F9-001 §5 - offsets unchanged (additive contract) ---
 
 
 def test_segment_offsets_slice_back_to_code() -> None:
@@ -165,7 +167,7 @@ def test_segment_offsets_slice_back_to_code() -> None:
     # Segments stay ordered and non-overlapping (editor span contract).
     spans = [(seg.start, seg.end) for seg in result.segments]
     assert spans == sorted(spans)
-    for (_, prev_end), (nxt_start, _) in zip(spans, spans[1:]):
+    for (_, prev_end), (nxt_start, _) in itertools.pairwise(spans):
         assert nxt_start >= prev_end
 
 

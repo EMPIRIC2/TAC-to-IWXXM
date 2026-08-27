@@ -1,4 +1,4 @@
-"""TC-EV085 — US_FAA_NWS #919 closeout (EV-085 M20–M22).
+"""TC-EV085 - US_FAA_NWS #919 closeout (EV-085 M20-M22).
 
 [Corpus: product §F36] [Corpus: tests] [Corpus: domain-profiles §US_FAA_NWS]
 """
@@ -10,11 +10,10 @@ from pathlib import Path
 
 import pytest
 import yaml
-from tac_validate import lint
-from tac_validate.profiles import PROFILE_ANNEX3, PROFILE_IWXXM_US
-
 from tac2iwxxm.geometry.reference_point import UnknownVOR
 from tac2iwxxm.products.sigmet_airmet import parse_sigmet
+from tac_validate import lint
+from tac_validate.profiles import PROFILE_ANNEX3, PROFILE_IWXXM_US
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "US_FAA_NWS"
 MANIFEST_PATH = FIXTURES / "manifest.json"
@@ -34,7 +33,7 @@ def us_manifest() -> dict:
 
 
 def test_tc_ev085_001_manifest_valid_cases_complete(us_manifest: dict) -> None:
-    """M20 — every valid manifest row has tac, golden, and rule_id on disk."""
+    """M20 - every valid manifest row has tac, golden, and rule_id on disk."""
     cases = us_manifest.get("cases", [])
     assert len(cases) >= 28
     for case in cases:
@@ -46,7 +45,7 @@ def test_tc_ev085_001_manifest_valid_cases_complete(us_manifest: dict) -> None:
 
 
 def test_tc_ev085_002_manifest_negative_cases(us_manifest: dict) -> None:
-    """M20 — negative_cases registered with lint or parse expectations."""
+    """M20 - negative_cases registered with lint or parse expectations."""
     negatives = us_manifest.get("negative_cases", [])
     assert len(negatives) >= 5
     ids = {c["id"] for c in negatives}
@@ -63,7 +62,7 @@ def test_tc_ev085_002_manifest_negative_cases(us_manifest: dict) -> None:
 
 
 @pytest.mark.parametrize(
-    "case_id,expected_codes",
+    ("case_id", "expected_codes"),
     [
         ("taf_becmg", {"US_TAF_BECMG_FORBIDDEN"}),
         ("taf_tempo_over_4h", {"US_TAF_TEMPO_MAX_4H"}),
@@ -76,7 +75,7 @@ def test_tc_ev085_003_us_lint_negative_cases(
     case_id: str,
     expected_codes: set[str],
 ) -> None:
-    """M20/M22 — US profile lint negatives fire only under iwxxm_us."""
+    """M20/M22 - US profile lint negatives fire only under iwxxm_us."""
     case = next(c for c in us_manifest["negative_cases"] if c["id"] == case_id)
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
     product = case["product"]
@@ -87,7 +86,7 @@ def test_tc_ev085_003_us_lint_negative_cases(
 
 
 def test_tc_ev085_004_sigmet_vor_unknown_parse_error(us_manifest: dict) -> None:
-    """M20 — unknown VOR invalid fixture fails closed at parse."""
+    """M20 - unknown VOR invalid fixture fails closed at parse."""
     case = next(c for c in us_manifest["negative_cases"] if c["id"] == "sigmet_vor_unknown")
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
     with pytest.raises(UnknownVOR):
@@ -95,7 +94,7 @@ def test_tc_ev085_004_sigmet_vor_unknown_parse_error(us_manifest: dict) -> None:
 
 
 def test_tc_ev085_005_catalog_us_faa_nws_row() -> None:
-    """M20 — catalog.yaml lists US_FAA_NWS #919 acceptance closed."""
+    """M20 - catalog.yaml lists US_FAA_NWS #919 acceptance closed."""
     data = yaml.safe_load(CATALOG_PATH.read_text(encoding="utf-8"))
     row = next(p for p in data["profiles"] if p["id"] == "US_FAA_NWS")
     assert row["implementation"]["deepen_issue"] == "#919"
@@ -105,7 +104,7 @@ def test_tc_ev085_005_catalog_us_faa_nws_row() -> None:
 
 
 def test_tc_ev085_006_tca_cb_nil_allowed_under_us() -> None:
-    """M22 — CB NIL remains valid under iwxxm_us (info, not US error)."""
+    """M22 - CB NIL remains valid under iwxxm_us (info, not US error)."""
     tac = (Path(__file__).resolve().parents[2] / "tac-validate/tests/fixtures/accept/tca_t1_cb_nil.tac").read_text(
         encoding="utf-8"
     )

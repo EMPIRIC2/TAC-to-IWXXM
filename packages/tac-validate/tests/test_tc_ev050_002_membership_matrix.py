@@ -1,9 +1,8 @@
-"""TC-EV050-002 / AC2 — membership happy + unknown/sad (S059 / EV-050)."""
+"""TC-EV050-002 / AC2 - membership happy + unknown/sad (S059 / EV-050)."""
 
 from __future__ import annotations
 
 import pytest
-
 from tac_validate import membership
 
 # (family, happy_notation, sad_notation)

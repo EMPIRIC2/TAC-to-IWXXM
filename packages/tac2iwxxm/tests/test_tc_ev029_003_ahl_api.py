@@ -71,11 +71,11 @@ def test_parse_ahl_and_map_t1t2_for_each_tac_designator(fixture: str, tac_tt: st
 
 @pytest.mark.parametrize(
     ("fixture", "bbb", "status"),
-    (
+    [
         ("sa_bbb_cca.txt", "CCA", "CORRECTION"),
         ("sa_bbb_aaa.txt", "AAA", "AMENDMENT"),
         ("sa_bbb_rra.txt", "RRA", "NORMAL"),
-    ),
+    ],
 )
 def test_bbb_prefix_families_map_to_report_status(fixture: str, bbb: str, status: str) -> None:
     """CCA→CORRECTION, AAA→AMENDMENT, RRA→NORMAL (absent/RRx)."""
@@ -98,11 +98,11 @@ def test_bbb_absent_is_normal() -> None:
 
 @pytest.mark.parametrize(
     "fixture",
-    (
+    [
         "sa_bbb_invalid_acr.txt",  # GIFTs-broad [ACR]{2}[A-Z] would accept
-        "sa_bbb_invalid_ccy.txt",  # third letter Y — outside A…X
+        "sa_bbb_invalid_ccy.txt",  # third letter Y - outside A…X
         "sa_bbb_invalid_bare_a.txt",
-    ),
+    ],
 )
 def test_invalid_bbb_rejected(fixture: str) -> None:
     """Reject over-broad / out-of-family BBB (AHL page v1.0.1 prefixes)."""
@@ -113,7 +113,7 @@ def test_invalid_bbb_rejected(fixture: str) -> None:
     assert exc_info.value.code in {"bulletin_split_failed", "invalid_bbb"}
 
 
-@pytest.mark.parametrize("bbb", ("CCY", "AAZ", "RRY", "PAA", "YYY"))
+@pytest.mark.parametrize("bbb", ["CCY", "AAZ", "RRY", "PAA", "YYY"])
 def test_bbb_third_letter_y_z_and_non_families_rejected(bbb: str) -> None:
     """Y/Z third letter and non AA/CC/RR families are not reportStatus BBB (doc fixture)."""
     from tac2iwxxm import BulletinSplitError, bbb_to_report_status
