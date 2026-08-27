@@ -298,7 +298,7 @@ class SchemaMirrorService:
                 parsed = urlparse(file_url)
                 filename = Path(parsed.path).name
 
-                await asyncio.to_thread(target_dir.mkdir, True, True)
+                await asyncio.to_thread(target_dir.mkdir, parents=True, exist_ok=True)
                 local_file = target_dir / filename
 
                 await asyncio.to_thread(local_file.write_bytes, content)

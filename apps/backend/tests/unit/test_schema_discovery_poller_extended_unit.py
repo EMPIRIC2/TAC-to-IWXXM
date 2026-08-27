@@ -130,6 +130,10 @@ async def test_analyze_breaking_changes_updates_metadata(tmp_path: Path, monkeyp
 
     analyzer = SimpleNamespace(analyze_xmi_versions=lambda *_args: report)
     poller.xmi_analyzer = analyzer
+    monkeypatch.setattr(
+        "src.services.schema_discovery_poller.analyze_xmi_versions",
+        lambda *_args: report,
+    )
 
     monkeypatch.setattr(
         iwxxm_versions,

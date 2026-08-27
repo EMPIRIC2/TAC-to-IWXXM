@@ -354,13 +354,17 @@ class SchemaDiscoveryPoller:
         matches = cast(list[tuple[str, str]], VERSION_PATTERN.findall(html_content))
 
         for match in matches:
+            if len(match) < 2:
+                continue
             year, release = match[0], match[1]
             version = f"{year}-{release}"
 
             # Check if this is an RC version by looking for RC in surrounding text
             rc_matches = cast(list[tuple[str, str, str]], RC_PATTERN.findall(html_content))
             for rc_match in rc_matches:
-                rc_year, rc_release, rc_suffix = rc_match
+                if len(rc_match) < 3:
+                    continue
+                rc_year, rc_release, rc_suffix = rc_match[0], rc_match[1], rc_match[2]
                 if rc_year == year and rc_release == release:
                     version = f"{year}-{release}{rc_suffix}"
                     break

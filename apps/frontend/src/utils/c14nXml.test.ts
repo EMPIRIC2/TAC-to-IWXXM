@@ -123,6 +123,27 @@ describe('c14nXml (TC-EV055-003)', () => {
     expect(c14nXml('<r a="1" b="2"><c/></r>')).toContain('<r');
   });
 
+  it('strips http codes.wmo.int href volatile attrs', () => {
+    expect(
+      c14nEqual(
+        '<r xmlns:xlink="http://www.w3.org/1999/xlink"><n xlink:href="http://codes.wmo.int/x"/></r>',
+        '<r xmlns:xlink="http://www.w3.org/1999/xlink"><n xlink:href="http://codes.wmo.int/y"/></r>',
+      ),
+    ).toBe(true);
+  });
+
+  it('strips bare id attributes as volatile metadata', () => {
+    expect(c14nEqual('<r id="a"><v>1</v></r>', '<r id="b"><v>1</v></r>')).toBe(true);
+  });
+
+  it('strips other volatile translation metadata attributes', () => {
+    const a =
+      '<r translationTime="2024-01-01T00:00:00Z" translationCentreName="Centre A"><v>1</v></r>';
+    const b =
+      '<r translationTime="2024-01-02T00:00:00Z" translationCentreName="Centre B"><v>1</v></r>';
+    expect(c14nEqual(a, b)).toBe(true);
+  });
+
   it('uses unknown when parsererror has empty textContent', () => {
     vi.spyOn(DOMParser.prototype, 'parseFromString').mockReturnValue({
       querySelector: () => ({ textContent: null }),

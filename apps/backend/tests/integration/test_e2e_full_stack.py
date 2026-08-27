@@ -240,7 +240,7 @@ def e2e_server(e2e_server_port):
                 except Exception as log_err:
                     print(f"\n❌ Could not read server logs: {log_err}")
                 raise RuntimeError(f"Server failed to start on {base_url}") from None
-            await asyncio.sleep(0.2)
+            time.sleep(0.2)
 
     yield base_url
 

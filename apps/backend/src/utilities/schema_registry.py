@@ -286,11 +286,4 @@ def clear_registry_cache() -> None:
     global _registry_instance
     if _registry_instance:
         _registry_instance._file_cache.clear()
-        for cached in (
-            _registry_instance.get_xsd_path,
-            _registry_instance.get_schematron_path,
-            _registry_instance.get_codelists_dir,
-        ):
-            cache_clear = getattr(cached, "cache_clear", None)
-            if callable(cache_clear):
-                cache_clear()
+        _registry_instance._version_cache.clear()

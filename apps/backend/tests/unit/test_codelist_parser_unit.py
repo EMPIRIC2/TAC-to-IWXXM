@@ -48,14 +48,10 @@ def test_load_codelists_already_loaded_short_circuits(tmp_path, monkeypatch):
 
 
 def test_init_uses_default_settings_when_validation_config_missing(monkeypatch, tmp_path):
-    original_import = builtins.__import__
+    def _missing_settings():
+        raise ImportError("missing validation config")
 
-    def _import(name, globals=None, locals=None, fromlist=(), level=0):
-        if name.endswith("config.validation"):
-            raise ImportError("missing validation config")
-        return original_import(name, globals, locals, fromlist, level)
-
-    monkeypatch.setattr(builtins, "__import__", _import)
+    monkeypatch.setattr(cp, "get_validation_settings", _missing_settings)
 
     parser = CodeListParser(tmp_path)
 

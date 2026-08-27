@@ -307,7 +307,7 @@
           },
           "profile": {
             "default": "",
-            "description": "Deprecated \u2014 use semantic_profile (legacy alias: annex3 or iwxxm_us)",
+            "description": "Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)",
             "title": "Profile",
             "type": "string"
           },
@@ -408,7 +408,7 @@
           },
           "profile": {
             "default": "",
-            "description": "Deprecated \u2014 use semantic_profile (legacy alias: annex3 or iwxxm_us)",
+            "description": "Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)",
             "title": "Profile",
             "type": "string"
           },
@@ -613,7 +613,7 @@
           },
           "profile": {
             "default": "",
-            "description": "Deprecated \u2014 use semantic_profile (legacy alias: annex3 or iwxxm_us)",
+            "description": "Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)",
             "title": "Profile",
             "type": "string"
           },
@@ -1188,7 +1188,7 @@
         "type": "object"
       },
       "DecodeResidualModel": {
-        "description": "HTTP DTO for an undecoded TAC span (explicit residuals \u2014 G4).",
+        "description": "HTTP DTO for an undecoded TAC span (explicit residuals - G4).",
         "properties": {
           "end": {
             "title": "End",
@@ -3273,7 +3273,7 @@
           },
           "profile": {
             "default": "",
-            "description": "Deprecated \u2014 use semantic_profile (legacy alias: annex3 or iwxxm_us)",
+            "description": "Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)",
             "examples": [
               "annex3",
               "iwxxm_us"
@@ -4278,10 +4278,10 @@
             "description": "Successful Response"
           },
           "400": {
-            "description": "Empty bulletin \u2014 no TAC reports after the abbreviated heading"
+            "description": "Empty bulletin - no TAC reports after the abbreviated heading"
           },
           "415": {
-            "description": "Unsupported Media Type \u2014 multipart/form-data required"
+            "description": "Unsupported Media Type - multipart/form-data required"
           },
           "422": {
             "description": "Malformed abbreviated heading (INVALID_AHL) or missing required fields. Engine split failures may include an alias of bulletin_split_failed."
@@ -4354,7 +4354,7 @@
             "description": "Successful Response"
           },
           "415": {
-            "description": "Unsupported Media Type \u2014 multipart/form-data required"
+            "description": "Unsupported Media Type - multipart/form-data required"
           },
           "422": {
             "description": "Missing required product field"
@@ -4375,7 +4375,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "title": "Response Dissemination Preflight Api V1 Dissemination Preflight Post"
+                }
               }
             },
             "description": "Successful Response"
@@ -4395,7 +4397,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "title": "Response Dissemination Send Api V1 Dissemination Send Post"
+                }
               }
             },
             "description": "Successful Response"
@@ -4825,7 +4829,7 @@
     },
     "/api/v1/lint-tac": {
       "post": {
-        "description": "Thin wrapper over ``packages/tac-validate`` (multipart/form-data only \u2014 Q8=A).",
+        "description": "Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A).",
         "operationId": "lint_tac_api_v1_lint_tac_post",
         "requestBody": {
           "content": {
@@ -4848,7 +4852,7 @@
             "description": "Successful Response"
           },
           "415": {
-            "description": "Unsupported Media Type \u2014 multipart/form-data required"
+            "description": "Unsupported Media Type - multipart/form-data required"
           },
           "422": {
             "content": {
@@ -4970,7 +4974,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "title": "Response Get Schema Status Api V1 Schema Status Get"
+                }
               }
             },
             "description": "Successful Response"
@@ -5001,7 +5007,11 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Get Airport Region Api V1 Translation Airport Region  Airport Code  Get",
+                  "type": "object"
+                }
               }
             },
             "description": "Successful Response"
@@ -5053,7 +5063,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "title": "Response Statistics Health Api V1 Translation Health Get"
+                }
               }
             },
             "description": "Successful Response"
@@ -5410,7 +5422,9 @@
           "200": {
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "title": "Response Get Supported Versions Api V1 Versions Get"
+                }
               }
             },
             "description": "Successful Response"

@@ -101,6 +101,8 @@ omit = [
     "*/tests/*",
     # Transitional gifts bridge retained for tests; not on F6 convert path (ADR-014 cutover).
     "src/utilities/gifts_locationdb_adapter.py",
+    # Protocol-only lxml typing boundary; runtime uses cast(lxml_etree).
+    "src/utilities/xml_types.py",
 ]
 
 [tool.coverage.report]

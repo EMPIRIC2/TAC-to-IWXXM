@@ -220,7 +220,7 @@ async def download_openaip_data(
         # Default to major aviation countries
         countries = ["US", "CA", "GB", "DE", "FR", "AU", "JP"]
 
-    await asyncio.to_thread(output_dir.mkdir, True, True)
+    await asyncio.to_thread(output_dir.mkdir, parents=True, exist_ok=True)
 
     base_url = "https://api.core.openaip.net/api/airports"
 

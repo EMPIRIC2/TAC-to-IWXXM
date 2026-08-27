@@ -106,6 +106,8 @@ class StatisticsService:
                 for layer in (validation_layers_passed or [])
             ]
 
+            translation_status_value = translation_status.value
+
             # Create ORM model instance
             record = TranslationStatisticsModel(
                 translation_id=translation_id,
@@ -115,7 +117,7 @@ class StatisticsService:
                 tac_message=tac_message,
                 iwxxm_version=iwxxm_version,
                 iwxxm_output=iwxxm_output,
-                translation_status=translation_status.value,
+                translation_status=translation_status_value,
                 validation_layers_passed=validation_layer_strings if validation_layer_strings else None,
                 validation_errors=validation_errors,
                 translation_duration_ms=round(translation_duration_ms),
@@ -136,9 +138,8 @@ class StatisticsService:
                 return None
 
             logger.info(
-                f"Logged translation {translation_id} for {normalized_icao_code} ({icao_region}, {translation_status})"
+                f"Logged translation {translation_id} for {normalized_icao_code} ({icao_region}, {translation_status_value})"
             )
-            translation_status_value = translation_status.value
             record_translation_metric(
                 status=translation_status_value,
                 iwxxm_version=iwxxm_version,
