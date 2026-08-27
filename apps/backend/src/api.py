@@ -253,8 +253,16 @@ logger.info(
     True,
 )
 
-if dev_cors_relaxed:
-    logger.warning("[CORS] ENABLE_DEV_CORS_RELAXATION is active: localhost:5173 added and preflight headers set to '*'")
+
+def _warn_if_dev_cors_relaxed(enabled: bool) -> None:
+    """Emit operator-facing warning when local CORS relaxation is active."""
+    if enabled:
+        logger.warning(
+            "[CORS] ENABLE_DEV_CORS_RELAXATION is active: localhost:5173 added and preflight headers set to '*'"
+        )
+
+
+_warn_if_dev_cors_relaxed(dev_cors_relaxed)
 
 
 @app.middleware("http")

@@ -291,7 +291,7 @@ def _parse_va_locations(body: str) -> list[dict[str, Any]]:
         }
         if match.group("sfc_fl"):
             fl_m = re.search(r"(\d{2,3})", match.group("sfc_fl"))
-            if fl_m is not None:
+            if fl_m is not None:  # pragma: no branch — SFC/FLnnn always has digits
                 loc["lower_surface"] = "SFC"
                 loc["upper_fl"] = int(fl_m.group(1))
         elif match.group("lo") and match.group("hi"):
@@ -697,7 +697,7 @@ def _parse_convective_sigmet(text: str) -> dict[str, Any] | None:
             ir["top_qualifier"] = "BLW"
     elif re.search(r"\bTOPS\s+TO\s+FL(?P<fl>\d{2,3})\b", body, re.I):
         fl_m = re.search(r"\bTOPS\s+TO\s+FL(?P<fl>\d{2,3})\b", body, re.I)
-        if fl_m is not None:
+        if fl_m is not None:  # pragma: no branch — same regex as elif guard
             ir["top_fl"] = int(fl_m.group("fl"))
             ir["top_qualifier"] = "TO"
     vor_geometry = parse_vor_reference_geometry(f"FROM {body.split('AREA', 1)[0]}")

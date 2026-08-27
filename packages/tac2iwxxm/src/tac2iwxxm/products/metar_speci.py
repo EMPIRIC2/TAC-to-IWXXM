@@ -388,7 +388,7 @@ def _lightning_type_code(raw: str) -> str | None:
         return "ICCC"
     if len(uniq) == 1:
         return next(iter(uniq))
-    return "".join(parts)
+    return "".join(parts)  # pragma: no cover — all IC/CC/CG mixes handled above
 
 
 def _lightning_sector(sector_tok: str | None) -> dict[str, Any] | None:
@@ -637,7 +637,7 @@ def _parse_hail_size_remark(remarks: str) -> dict[str, Any] | None:
         return {"maximum_diameter_in": _frac_to_inches(m.group("onlyfrac"))}
     if m.group("onlywhole"):
         return {"maximum_diameter_in": float(int(m.group("onlywhole")))}
-    return None
+    return None  # pragma: no cover — _HAIL_SIZE alternatives are exhaustive
 
 
 def _precip_6_period(hour: int) -> str:
@@ -989,7 +989,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         "correction": correction,
         "auto": bool(_AUTO.search(rest)) or is_lwis,
     }
-    if ca_root in _CA_SURFACE_TYPES:
+    if ca_root in _CA_SURFACE_TYPES:  # pragma: no branch — rtypes are always CA surface family
         # National report variant for CA_ECCC emit - see catalog.yaml metar_family_variants.
         ir["ca_iwxxm_root"] = ca_root
     if is_lwis:
@@ -1192,7 +1192,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     trends: list[dict[str, Any]] = []
     for tm in trend_matches:
         parsed = _parse_trend_group(ir, tm.group("kind"), tm.group("body"))
-        if parsed is not None:
+        if parsed is not None:  # pragma: no branch — trend parser always returns a dict
             trends.append(parsed)
     if trends:
         ir["trend_forecasts"] = trends

@@ -51,7 +51,7 @@ branch = true
 source = ["src/tac2iwxxm"]
 
 [tool.coverage.report]
-fail_under = 95
+fail_under = 100
 show_missing = true
 
 [tool.ruff]

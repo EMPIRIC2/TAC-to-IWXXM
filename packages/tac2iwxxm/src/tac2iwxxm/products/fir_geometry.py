@@ -202,6 +202,11 @@ def _clip_ring_one(
         elif not cur_in and nxt_in:
             output.append(_intersect(cur, nxt, constraint))
             output.append(nxt)
+    return _ensure_closed_ring(output)
+
+
+def _ensure_closed_ring(output: list[tuple[float, float]]) -> list[tuple[float, float]]:
+    """Return ``output`` closed (first point repeated), or ``[]`` when empty."""
     if not output:
         return []
     if output[0] != output[-1]:

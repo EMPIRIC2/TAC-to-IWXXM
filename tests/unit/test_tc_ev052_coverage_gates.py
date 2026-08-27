@@ -97,11 +97,11 @@ class TestTcEv052CoverageGates:
         below = [v for v in values if v < 95]
         assert not below, f"ci-cd.yml --cov-fail-under below 95: {below}"
 
-    def test_dissemination_script_enforces_95(self) -> None:
+    def test_dissemination_script_enforces_100(self) -> None:
         script = (ROOT / "scripts/ci/run_dissemination_coverage.sh").read_text(
             encoding="utf-8"
         )
-        assert "--cov-fail-under=95" in script
+        assert "--cov-fail-under=100" in script
 
     def test_no_soften_comments_excusing_sub_95_frontend(self) -> None:
         text = FRONTEND_VITEST.read_text(encoding="utf-8")

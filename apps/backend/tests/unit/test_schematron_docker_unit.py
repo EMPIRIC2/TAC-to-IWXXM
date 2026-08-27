@@ -209,3 +209,14 @@ class TestSchematronValidatorDockerHelpers:
         ):
             result = validate_against_schematron("<xml/>", str(schema))
         assert result.valid is True
+
+
+def test_validate_outer_exception_returns_error_result(tmp_path):
+    schema = tmp_path / "test.sch"
+    schema.write_text("<schema/>")
+    validator = SchematronValidatorDocker(schema_path=str(schema))
+    with patch.object(validator, "_run_docker_validation", side_effect=RuntimeError("boom")):
+        result = validator.validate("<xml/>")
+    assert result.valid is False
+    assert result.status == "ERROR"
+    assert "boom" in result.errors[0]

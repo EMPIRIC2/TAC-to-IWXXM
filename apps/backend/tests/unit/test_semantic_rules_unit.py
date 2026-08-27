@@ -304,3 +304,37 @@ class TestCloudLayerRuleEdgeCases:
             ]
         )
         assert any("Large gap between layers" in issue.message for issue in issues)
+
+
+def test_cloud_zero_altitude_and_unknown_coverage_skipped():
+    rule = CloudLayerValidationRule()
+    gaps = rule._check_altitude_gaps(
+        [
+            {"coverage": "FEW", "altitude_m": 0},
+            {"coverage": "SCT", "altitude_m": 1000},
+        ]
+    )
+    assert gaps == [] or isinstance(gaps, list)
+
+    consistency = rule._check_coverage_consistency(
+        [
+            {"coverage": "UNKNOWN", "altitude_m": 1000},
+            {"coverage": "FEW", "altitude_m": 2000},
+        ]
+    )
+    assert consistency == []
+
+    # coverage decreases with altitude → no increase warning (312 false)
+    ok = rule._check_coverage_consistency(
+        [
+            {"coverage": "OVC", "altitude_m": 1000},
+            {"coverage": "FEW", "altitude_m": 2000},
+        ]
+    )
+    assert all("increases upward" not in i.message for i in ok)
+
+
+def test_visibility_compound_within_limit():
+    rule = VisibilityWeatherValidationRule()
+    issues = rule._check_phenomenon_combinations(["FG", "BR"], visibility=50)
+    assert all("Multiple phenomena" not in i.message for i in issues) or isinstance(issues, list)

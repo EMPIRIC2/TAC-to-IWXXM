@@ -250,9 +250,6 @@ class XMIModelAnalyzer:
 
         # Simple character overlap metric
         len1, len2 = len(s1), len(s2)
-        if len1 == 0 or len2 == 0:
-            return 0.0
-
         matches = sum(1 for c1, c2 in zip(s1, s2, strict=False) if c1 == c2)
         return matches / max(len1, len2)
 

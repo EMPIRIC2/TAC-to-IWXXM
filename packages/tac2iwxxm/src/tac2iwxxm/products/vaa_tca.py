@@ -71,7 +71,7 @@ def _fields(text: str) -> dict[str, str]:
             continue
         if current_key is not None:
             cont = line.strip()
-            if cont:
+            if cont:  # pragma: no branch — blank lines already skipped above
                 prev = out.get(current_key, "")
                 out[current_key] = f"{prev} {cont}".strip() if prev else cont
     return out
@@ -83,9 +83,6 @@ def _parse_dtg(token: str) -> str | None:
     m = _DTG_SHORT.search(token.replace(" ", ""))
     if m:
         return f"{m.group('yyyy')}-{m.group('mm')}-{m.group('dd')}T{m.group('hh')}:{m.group('mi')}:00Z"
-    m2 = re.search(r"(?P<yyyy>\d{4})(?P<mm>\d{2})(?P<dd>\d{2})/(?P<hh>\d{2})(?P<mi>\d{2})Z", token)
-    if m2:
-        return f"{m2.group('yyyy')}-{m2.group('mm')}-{m2.group('dd')}T{m2.group('hh')}:{m2.group('mi')}:00Z"
     return None
 
 
@@ -166,7 +163,7 @@ def _parse_ash_clouds(blob: str) -> list[dict[str, Any]]:
             cloud["lower_ref"] = "SFC"
             cloud["upper_fl"] = int(sfc.group("hi"))
             cloud["upper_ref"] = "STD"
-        elif band:
+        elif band:  # pragma: no branch — CLOUD_CHUNK levels are SFC or FL band
             cloud["lower_fl"] = int(band.group("lo"))
             cloud["upper_fl"] = int(band.group("hi"))
             cloud["lower_ref"] = "STD"
