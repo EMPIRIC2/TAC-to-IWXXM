@@ -23,7 +23,11 @@ _FE_PICKER_FILES = (
     _REPO_ROOT / "apps" / "frontend" / "src" / "app" / "components" / "admin" / "SystemSettingsPanel.tsx",
     _REPO_ROOT / "apps" / "frontend" / "src" / "app" / "components" / "FileConverter.tsx",
 )
-_API_PY = _REPO_ROOT / "apps" / "backend" / "src" / "api.py"
+_API_SOURCES = (
+    _REPO_ROOT / "apps" / "backend" / "src" / "api.py",
+    _REPO_ROOT / "apps" / "backend" / "src" / "routers" / "conversion.py",
+    _REPO_ROOT / "apps" / "backend" / "src" / "routers" / "comprehensive_validation.py",
+)
 _FE_SOT_UTIL = _REPO_ROOT / "apps" / "frontend" / "src" / "utils" / "iwxxmVersions.ts"
 
 
@@ -66,8 +70,10 @@ def test_fe_pickers_render_options_from_sot_module() -> None:
 
 
 def test_api_form_default_matches_sot_default() -> None:
-    """Multipart ``iwxxm_version`` Form defaults in api.py must match DEFAULT_VERSION."""
-    text = _API_PY.read_text(encoding="utf-8")
-    defaults = set(re.findall(r'iwxxm_version:\s*str\s*=\s*Form\(\s*default="([^"]+)"', text))
-    assert defaults, "No iwxxm_version Form(default=...) found in api.py"
+    """Multipart ``iwxxm_version`` Form defaults in API routes must match DEFAULT_VERSION."""
+    defaults: set[str] = set()
+    for path in _API_SOURCES:
+        text = path.read_text(encoding="utf-8")
+        defaults.update(re.findall(r'iwxxm_version:\s*str\s*=\s*Form\(\s*default="([^"]+)"', text))
+    assert defaults, "No iwxxm_version Form(default=...) found in API route modules"
     assert defaults == {DEFAULT_VERSION}, f"Form defaults {defaults} != DEFAULT_VERSION {DEFAULT_VERSION}"

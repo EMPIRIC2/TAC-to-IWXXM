@@ -2,8 +2,11 @@
 
 from __future__ import annotations
 
+from unittest.mock import patch
+
 import pytest
 
+from tac_validate import membership
 from tac_validate.api import lint
 from tac_validate.models import Issue
 from tac_validate.product_rules import (
@@ -14,6 +17,9 @@ from tac_validate.product_rules import (
     _weather_candidate_tokens,
     check_product_rules,
 )
+from tac_validate.product_rules_pkg.swxa import _check_swxa_spacewx_membership
+from tac_validate.product_rules_pkg.taf import _check_us_faa_nws_taf
+from tac_validate.product_rules_pkg.tca import _check_us_faa_nws_swxa_overlay, _check_us_faa_nws_tca_overlay
 
 
 def test_body_span_whitespace_only() -> None:
@@ -93,3 +99,106 @@ def test_airmet_cnl_short_circuits_families() -> None:
     tac = "YUDD AIRMET 1 VALID 101200/101600 YUSO- YUDD FIR CNL="
     issues = check_product_rules(tac, "AIRMET")
     assert not any(i.code == "MULTIPLE_PHENOMENA" for i in issues)
+
+
+def test_us_faa_nws_taf_overlay_rules() -> None:
+    tokens = "TAF KJFK 231730Z 2318/2418 24008KT 9999 BKN020 BECMG 2322/2400 24015KT".split()
+    becmg = _check_us_faa_nws_taf(
+        tokens,
+        product="TAF",
+        core="",
+        body_start=0,
+        body_end=10,
+        profile="iwxxm_us",
+    )
+    assert any(i.code == "US_TAF_BECMG_FORBIDDEN" for i in becmg)
+    assert _check_us_faa_nws_taf(tokens, product="TAF", core="", body_start=0, body_end=10, profile="annex3") == []
+
+    tempo_tokens = "TAF KJFK 231730Z 2318/2418 24008KT 9999 BKN020 TEMPO 1606/1612 4000 -RA".split()
+    tempo = _check_us_faa_nws_taf(
+        tempo_tokens,
+        product="TAF",
+        core="",
+        body_start=0,
+        body_end=10,
+        profile="iwxxm_us",
+    )
+    assert any(i.code == "US_TAF_TEMPO_MAX_4H" for i in tempo)
+
+
+def test_metar_nil_auto_and_cor_emit_info() -> None:
+    tac = "METAR KJFK 101851Z AUTO COR NIL="
+    codes = {i.code for i in check_product_rules(tac, "METAR")}
+    assert {"AUTO_PRESENT", "COR_PRESENT"}.issubset(codes)
+
+
+def test_metar_present_weather_membership_and_invalid(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        "tac_validate.product_rules_pkg.metar_speci._weather_in_register",
+        lambda _token: False,
+    )
+    tac = "METAR KJFK 121255Z 18008KT 10SM TSRA SCT040 22/18 A2992="
+    membership_issues = [i for i in check_product_rules(tac, "METAR") if i.code == "UNKNOWN_WMO_MEMBERSHIP"]
+    assert membership_issues
+    assert any("present_or_forecast_weather" in i.message for i in membership_issues)
+
+    invalid_tac = "METAR KJFK 121255Z 18008KT 10SM ZZWX SCT040 22/18 A2992="
+    invalid = check_product_rules(invalid_tac, "METAR")
+    assert any(i.code == "INVALID_WEATHER" for i in invalid)
+
+
+def test_metar_cloud_membership_issues(monkeypatch: pytest.MonkeyPatch) -> None:
+    real_is_member = membership.is_member
+
+    def fake_is_member(family: str, token: str, sets=None) -> bool:
+        if family == "cloud_amount" and token == "BKN":
+            return False
+        if family == "cloud_type" and token == "CB":
+            return False
+        return real_is_member(family, token, sets=sets)
+
+    monkeypatch.setattr("tac_validate.product_rules_pkg.metar_speci.membership.is_member", fake_is_member)
+    amount_tac = "METAR KJFK 121255Z 18008KT 10SM BKN020 22/18 A2992="
+    amount_issues = [i for i in check_product_rules(amount_tac, "METAR") if i.code == "UNKNOWN_WMO_MEMBERSHIP"]
+    assert amount_issues
+
+    type_tac = "METAR KJFK 121255Z 18008KT 10SM BKN020CB 22/18 A2992="
+    type_issues = [i for i in check_product_rules(type_tac, "METAR") if i.code == "UNKNOWN_WMO_MEMBERSHIP"]
+    assert type_issues
+
+
+def test_us_faa_nws_tca_and_swxa_overlays() -> None:
+    tca_no_cb = "TC ADVISORY\nDTG: 20040925/1800Z\nTCAC: MIAMI\nTC: IDA\n"
+    assert _check_us_faa_nws_tca_overlay(tca_no_cb, profile="iwxxm_us") == []
+
+    tca_cb = "TC ADVISORY\nDTG: 20040925/1800Z\nTCAC: MIAMI\nTC: IDA\nCB: OBSERVED\n"
+    tca_issues = _check_us_faa_nws_tca_overlay(tca_cb, profile="iwxxm_us")
+    assert any(i.code == "US_TCA_OBSERVED_CB_NOT_PROVIDED" for i in tca_issues)
+
+    swxa_effect = "SWX ADVISORY\nDTG: 20201108/0100Z\nSWXC: DONLON\nSWX EFFECT: SATCOM\n"
+    effect_issues = _check_us_faa_nws_swxa_overlay(swxa_effect, start=0, profile="iwxxm_us")
+    assert any(i.code == "US_SWXA_SATCOM_NOT_ISSUED" for i in effect_issues)
+
+    swxa_obs = (
+        "SWX ADVISORY\nDTG: 20201108/0100Z\nSWXC: DONLON\nSWX EFFECT: HF COM\nOBS SWX: 08/0100Z SATCOM MOD IONOSPHERE\n"
+    )
+    obs_issues = _check_us_faa_nws_swxa_overlay(swxa_obs, start=0, profile="iwxxm_us")
+    assert any(i.code == "US_SWXA_SATCOM_NOT_ISSUED" for i in obs_issues)
+
+
+def test_swxa_spacewx_membership_branches() -> None:
+    assert _check_swxa_spacewx_membership("DTG: 20201108/0100Z\nSWXC: DONLON\n", start=0) == []
+
+    with patch.object(membership, "is_member", return_value=False):
+        issues = _check_swxa_spacewx_membership(
+            "DTG: 20201108/0100Z\nSWXC: DONLON\nSWX EFFECT: HF COM\nOBS SWX: 08/0100Z SEV HF COM\n",
+            start=0,
+        )
+    assert any(i.code == "UNKNOWN_WMO_MEMBERSHIP" for i in issues)
+
+
+def test_vona_onset_and_dur_non_nil_skip_info() -> None:
+    tac = "VONA ADVISORY\nDTG: 20201108/0100Z\nSVO: WASHINGTON\nVOLCANO: MOUNT TEST\nONSET: 20201108/0100Z\nDUR: 6 HR\n"
+    codes = {i.code for i in check_product_rules(tac, "VONA")}
+    assert "VONA_ONSET_NIL" not in codes
+    assert "VONA_DUR_NIL" not in codes

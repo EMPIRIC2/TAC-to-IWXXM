@@ -4247,6 +4247,7 @@
         },
         "summary": "Convert",
         "tags": [
+          "Conversion",
           "Conversion"
         ]
       }
@@ -4288,6 +4289,7 @@
         },
         "summary": "Convert Bulletin",
         "tags": [
+          "Conversion",
           "Conversion"
         ]
       }
@@ -4321,13 +4323,14 @@
         },
         "summary": "Convert Zip",
         "tags": [
+          "Conversion",
           "Conversion"
         ]
       }
     },
     "/api/v1/decode-tac": {
       "post": {
-        "description": "Decode TAC into annotated segments and a plain-language summary.\n\nMulti-report abbreviated-heading bulletins are split so each report is decoded\nindependently; the heading is a bulletin-framing row, not a leftover dump.",
+        "description": "Decode TAC into annotated segments and a plain-language summary.",
         "operationId": "decode_tac_endpoint_api_v1_decode_tac_post",
         "requestBody": {
           "content": {
@@ -4359,6 +4362,7 @@
         },
         "summary": "Decode Tac Endpoint",
         "tags": [
+          "Validation",
           "Conversion"
         ]
       }
@@ -4671,6 +4675,7 @@
         },
         "summary": "Ingest Collect",
         "tags": [
+          "mass-ingest",
           "Conversion"
         ]
       }
@@ -4959,7 +4964,7 @@
     },
     "/api/v1/schema-status": {
       "get": {
-        "description": "Get comprehensive schema status including RC versions and mirroring info.\n\nReturns detailed information about all IWXXM schema versions including:\n- Stable releases and Release Candidates (RC)\n- Discovery dates and source URLs\n- Mirroring status\n- Channel classification\n\n## Response\n```json\n{\n  \"stable\": [\"2025-2\", \"2023-1\"],\n  \"rc\": [\"2025-2RC1\"],\n  \"all\": [\"2025-2\", \"2025-2RC1\", \"2023-1\"],\n  \"default\": \"2025-2\",\n  \"metadata\": {\n    \"2025-2\": {\n      \"name\": \"IWXXM 2025-2\",\n      \"channel\": \"stable\",\n      \"status\": \"latest\",\n      \"discovered\": \"2025-11-25T00:00:00Z\",\n      \"source_url\": \"https://github.com/wmo-im/iwxxm/tree/v2025-2\",\n      \"mirrored\": true\n    },\n    \"2025-2RC1\": {\n      \"name\": \"IWXXM 2025-2 RC1\",\n      \"channel\": \"rc\",\n      \"status\": \"rc\",\n      \"discovered\": \"2026-02-10T00:00:00Z\",\n      \"source_url\": \"https://schemas.wmo.int/iwxxm/2025-2RC1/\",\n      \"mirrored\": false,\n      \"promoted_to_stable\": null\n    }\n  }\n}\n```",
+        "description": "Get comprehensive schema status including RC versions and mirroring info.",
         "operationId": "get_schema_status_api_v1_schema_status_get",
         "responses": {
           "200": {
@@ -5283,6 +5288,7 @@
         },
         "summary": "Validate Comprehensive",
         "tags": [
+          "Validation",
           "Validation"
         ]
       }
@@ -5398,7 +5404,7 @@
     },
     "/api/v1/versions": {
       "get": {
-        "description": "Get list of supported IWXXM versions.\n\nReturns information about all supported IWXXM versions including\nversion strings, release dates, and status (latest, previous, legacy).\n\n## Response\n```json\n{\n  \"default_version\": \"2025-2\",\n  \"supported_versions\": [\n    {\n      \"version\": \"2025-2\",\n      \"name\": \"IWXXM 2025-2\",\n      \"status\": \"latest\",\n      \"release_date\": \"2025-11-25\",\n      \"wmo_amendment\": 82\n    },\n    {\n      \"version\": \"2023-1\",\n      \"name\": \"IWXXM 2023-1\",\n      \"status\": \"previous\",\n      \"release_date\": \"2023-06-02\",\n      \"wmo_amendment\": 78\n    }\n  ],\n  \"notes\": {\n    \"2025-1\": \"Version 2025-1 does not exist; requests are remapped to 2025-2\"\n  },\n  \"deprecated_versions\": [\n    \"2021-2\",\n    \"2018\",\n    \"2016\",\n    \"3.0\",\n    \"2.1\",\n    \"2.0\",\n    \"1.1\"\n  ]\n}\n```",
+        "description": "Get list of supported IWXXM versions.",
         "operationId": "get_supported_versions_api_v1_versions_get",
         "responses": {
           "200": {
@@ -5958,7 +5964,7 @@
     },
     "/health": {
       "get": {
-        "description": "Check API health and conversion availability.\n\nVerifies that the API is running and tac2iwxxm can convert a sample METAR.\nReturns overall status and version information.\n\n## Response\n- **status** (string): \"healthy\" or \"degraded\"\n- **version** (string): API version\n- **tac2iwxxm_available** (boolean): Whether tac2iwxxm convert works",
+        "description": "Check API health and conversion availability.",
         "operationId": "health_health_get",
         "responses": {
           "200": {
