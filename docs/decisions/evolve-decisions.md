@@ -1,5 +1,47 @@
 # Evolve Decisions
 
+## Cycle EV-080 — Universal 100% unit coverage (EV-080-unit-coverage-100)
+
+**Opened:** 2026-08-27 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-080-unit-coverage-100`  
+**Preset:** Full · **Documenting→Implementing gate:** closed · **Issue:** [#1077](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1077)
+
+### Locked intake / requirements
+
+| ID | Outcome |
+|----|---------|
+| D-EV080-goal | 100% line+branch unit coverage; CI fail under 100 |
+| D-EV080-out | vendor; generated xsd/codegen; Playwright as unit surface |
+| D-EV080-scripts-py | All `scripts/**/*.py` cov ≥100% |
+| D-EV080-scripts-sh | bats-core test for **every** `scripts/**/*.sh` |
+| D-EV080-bats | **bats-core** in CI (not shunit2) |
+| D-EV080-fe-excludes | Remove executable FE Vitest coverage excludes |
+| D-EV080-init-omit | Remove `**/__init__.py` coverage omit |
+| D-EV080-manifest | Delta docs approved; skip config/api/deploy |
+| D-EV080-issue | #1077 |
+| D-EV080-gate | **open** (2026-08-27 Spec→Build) |
+| D-EV080-docs | draft-docs applied: ADR-007, typing-policy, test-plan TC-EV080-*, feature-list, dependency-inventory, spec component row, inventory YAML seed |
+| D-EV080-feasibility | **FEASIBLE** multi-PR; fill-before-flip; see session reports/feasibility.md |
+| D-TP080-1..7 | **approved** inventory path, bats tree, scripts cov make target, fill-before-flip, new TC-EV080 guards, sticky 100, base stage |
+| D-TP080-m2-split | **yes** M2a packages / M2b tac2iwxxm+backend+flip |
+| D-TP080-approved | tech-plan approved 2026-08-27 |
+| D-VT080-pass | verify-tech **PASS**; product↔tech PASS; connectivity N/A |
+| D-VT080-med-low | **Approve all** V-M1..V-M5, V-L1..V-L2 |
+| D-TT080-delta | tech-tooling: make targets + bats/scripts READMEs + rule floors + CI stub `if: false` |
+| D-TT080-hook | **coverage-advisory.sh** afterFileEdit |
+| D-EV080-doc-verify | documenting `bin/verify` **12/12 PASS** |
+| D-EV080-build-open | Gate open; branch `evolve/EV-080-unit-coverage-100`; M1 started |
+| D-EV080-m1 | **completed** inventory SoT + TC-EV080-001 (10 pass) + m1-gap-ranked |
+
+### Milestones (planned)
+
+M1 inventory → M2 Python 100% → M3 TS 100% → M4 scripts (py+bats) → M5 ADR/docs/CI closeout
+
+**Tests:** TC-EV080-001..010 · **Requirements:** session `requirements.md`
+
+[Corpus: adr/ADR-007] [Corpus: tests] [Corpus: tech-spec]
+
+---
+
 ## Cycle EV-085 — US_FAA_NWS #919 closeout (EV-085-us-919-closeout)
 
 **Opened:** 2026-08-26 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-085-us-919-closeout`  

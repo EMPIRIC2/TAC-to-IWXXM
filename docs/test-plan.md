@@ -185,9 +185,11 @@ notice + DOKS URLs — `D-S038-tp`). **H7** remains bulletin ingest path (not F8
 | CI | GitHub Actions | validate + test (matrix, incl. `bugs`) + e2e-smoke (Playwright) + deploy; path filters deferred (P2) | `.github/workflows/ci-cd.yml` | root |
 | Pre-commit | pre-commit framework | fast gates (format/lint/typecheck/secrets/yaml) | `.pre-commit-config.yaml` | root |
 
-**Coverage**: 95% on all packages and apps (ADR-007) — pytest for Python, Vitest for frontend.
-Python also enforces **per-file ≥95%** via `scripts/ci/check_per_file_coverage.py` (EV-047 /
-`D-S056-cov95-scope=2`), including auth and worker. **F34** adds Schemathesis (path-filtered
+**Coverage**: **100%** line+branch on all packages and apps (ADR-007 / EV-080 / #1077) —
+pytest for Python, Vitest for frontend/shared. Python also enforces **per-file ≥100%** via
+`scripts/ci/check_per_file_coverage.py --min-pct 100`. Scripts: Python cov ≥100% +
+**bats-core** for every `scripts/**/*.sh` (**TC-EV080-001..010**). Historical EV-052/053
+retained **95%** TCs as prior-bar evidence. **F34** adds Schemathesis (path-filtered
 required, tight budget) and mutation testing (nightly/manual only) — see **TC-F34-001..007** /
 EV-059.
 
@@ -1999,6 +2001,86 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Coverage report (json/html or per-file summary) shows FileConverter
   branches ≥95; documented in session verify report
 - **Source**: EV-053 AC5 (`D-S062-01-ac` Q3=2)
+
+### EV-080 / #1077 — Universal 100% unit coverage gate
+
+- **Level**: T0 / CI
+- **Objective**: Raise ADR-007 from ≥95% to **100%** line+branch for Python apps/packages,
+  Vitest unit surfaces, and repo scripts (Python cov + bats-core for every `.sh`)
+- **Pass criteria**: AC1–AC6 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-080;
+  **TC-EV080-001..010**
+- **Source**: EV-080; [#1077](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1077);
+  [Corpus: adr/ADR-007]
+
+### TC-EV080-001: Coverage surface inventory @ 100 floor
+
+- **Level**: T0
+- **Objective**: Document every coverage surface with `target_floor: 100` and approved omits only
+- **Pass criteria**: Inventory YAML lists apps/packages/scripts; no unapproved excludes
+- **Source**: EV-080 AC1; REQ-EV080-001
+
+### TC-EV080-002: Python fail_under 100 in configs + CI
+
+- **Level**: T0 / CI
+- **Objective**: Every pyproject + matrix job uses fail_under / `--cov-fail-under` **100**; `branch = true`
+- **Pass criteria**: Config + workflow grep/tests assert 100; `__init__.py` not omitted
+- **Source**: EV-080 AC2; REQ-EV080-002..003
+
+### TC-EV080-003: Python aggregate + per-file 100 green
+
+- **Level**: T0 / CI
+- **Objective**: Unit matrix green at 100%; per-file checker `--min-pct 100`
+- **Pass criteria**: CI package coverage jobs green; checker fails when any file &lt;100
+- **Source**: EV-080 AC2; REQ-EV080-004..005
+
+### TC-EV080-004: Vitest thresholds 100 + executable excludes purged
+
+- **Level**: T0
+- **Objective**: FE + shared Vitest lines/statements/functions/branches = **100**; no executable excludes
+- **Pass criteria**: vitest configs show 100; TacEditor/App/liveAssist/gunzip/etc. not excluded
+- **Source**: EV-080 AC3; REQ-EV080-006..008
+
+### TC-EV080-005: FE + shared coverage suites green
+
+- **Level**: T0 / CI
+- **Objective**: `pnpm … test:coverage` green under 100% thresholds
+- **Pass criteria**: frontend + `@metar/shared` coverage jobs green
+- **Source**: EV-080 AC3; REQ-EV080-009
+
+### TC-EV080-006: Scripts Python coverage 100
+
+- **Level**: T0 / CI
+- **Objective**: Dedicated job/make target covers `scripts/**/*.py` at ≥100% line+branch
+- **Pass criteria**: Job green; fail_under 100
+- **Source**: EV-080 AC4; REQ-EV080-010
+
+### TC-EV080-007: bats-core installed in CI
+
+- **Level**: T0 / CI
+- **Objective**: Workflow installs bats-core and runs bats suite
+- **Pass criteria**: CI step succeeds; bats binary available
+- **Source**: EV-080 AC5; REQ-EV080-011..012; D-EV080-bats
+
+### TC-EV080-008: Every `.sh` has bats coverage
+
+- **Level**: T0 / CI
+- **Objective**: Each `scripts/**/*.sh` mapped to ≥1 bats test
+- **Pass criteria**: Manifest count matches `find scripts -name '*.sh'`; bats job green
+- **Source**: EV-080 AC5; REQ-EV080-011
+
+### TC-EV080-009: Standing docs + ADR-007 at 100%
+
+- **Level**: T0
+- **Objective**: ADR-007, typing-policy, test-plan metrics cite **100%**
+- **Pass criteria**: Docs greppable for 100% gate; CORPUS cites valid
+- **Source**: EV-080 AC6; REQ-EV080-013
+
+### TC-EV080-010: No silent excludes remain
+
+- **Level**: T0
+- **Objective**: Audit inventory vs configs — zero unapproved measurement omits
+- **Pass criteria**: Diff/inventory audit passes in CI or unit guard test
+- **Source**: EV-080 AC6; REQ-EV080-014..015
 
 ### EV-054 / S063 — Quality metrics tab (#836 / F7.q)
 
@@ -4657,7 +4739,7 @@ comments-only, or `*.test.*` / pytest modules.
 
 | Metric | Threshold | Context |
 |--------|-----------|---------|
-| Backend unit coverage | **95% all packages/apps** + **per-file ≥95%** (Python) | ADR-007 / EV-047 |
+| Unit coverage (Python + TS + scripts) | **100% line+branch** all packages/apps + **per-file ≥100%** (Python); scripts `*.py` cov + bats for every `*.sh` | ADR-007 / EV-080 / #1077 |
 | E2E pass rate | 100% on T2 before merge | Big-bang gate |
 | Live E2E (T3) | Manual signoff before release | `make test-live` — not CI-gated |
 | Vendor sync PR | human review required | No auto-merge to main |

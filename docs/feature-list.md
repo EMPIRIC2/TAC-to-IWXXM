@@ -2013,6 +2013,27 @@
 - **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: adr/ADR-007]` ·
   `[Corpus: decisions §EV-052]` · `[Corpus: decisions §EV-053]`
 
+### M5 deepen (EV-080 / #1077 — Universal 100% unit coverage gate)
+
+- **Status note**: No new Fn. Raise ADR-007 from ≥95% to **100%** line+branch for all
+  Python apps/packages, Vitest unit surfaces, and repo scripts (Python coverage +
+  **bats-core** for every `scripts/**/*.sh`).
+- **Issues**: [#1077](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1077)
+- **What changes**:
+  1. Inventory all coverage surfaces @ `target_floor: 100`; approved omits only
+     (vendor / generated / fixtures)
+  2. Python `fail_under` + per-file `--min-pct 100`; remove `__init__.py` omit; fill tests
+  3. Vitest FE + shared thresholds **100**; remove executable coverage excludes; fill tests
+  4. Scripts: dedicated Python cov job + bats-core suite covering every `.sh`
+  5. Amend ADR-007 / typing-policy / test-plan; sticky PR coverage floors 100
+- **Acceptance**: AC1–AC6 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-080;
+  **TC-EV080-001..010**
+- **Out of scope**: Product features; promote; weaken F34/lint/typecheck; covering vendor/
+  generated; using Playwright to satisfy unit thresholds
+- **Journeys / UI**: N/A (CI / unit only; thin UJ-DEV-COV-001)
+- **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: tech-spec]` ·
+  `[Corpus: adr/ADR-007]` · `[Corpus: decisions §EV-080]`
+
 ## Platform Feature Details (Monorepo Migration)
 
 ### M1: Monorepo Layout

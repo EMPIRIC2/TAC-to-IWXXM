@@ -10,7 +10,7 @@
 | [ADR-004](ADR-004-manual-gifts-sync.md) | Manual GIFTs upstream merges | Deprecated (ADR-014) |
 | [ADR-005](ADR-005-runtime-toolchain-pins.md) | Runtime and toolchain pins (Python 3.12, Node 22) | Accepted |
 | [ADR-006](ADR-006-render-topology-simplification.md) | Render topology simplification (static frontend, no observability pservs) | Accepted |
-| [ADR-007](ADR-007-universal-coverage-gate.md) | Universal 95% coverage gate | Accepted |
+| [ADR-007](ADR-007-universal-coverage-gate.md) | Universal 100% coverage gate (amended EV-080) | Accepted |
 | [ADR-008](ADR-008-f3-airport-ui-exposure.md) | F3 airport UI exposure | Accepted |
 | [ADR-009](ADR-009-live-test-harness.md) | Live test harness (manual H3–H6, LIVE_* env) | Accepted |
 | [ADR-010](ADR-010-supabase-keys-config-split.md) | Supabase publishable/secret keys and runtime config split | Accepted |

@@ -54,6 +54,11 @@
         "timeout": 10
       },
       {
+        "command": "bash .cursor/hooks/coverage-advisory.sh",
+        "matcher": "Write|TabWrite",
+        "timeout": 10
+      },
+      {
         "command": "bash .cursor/hooks/fast-ci-check.sh",
         "matcher": "Write|TabWrite",
         "timeout": 60
