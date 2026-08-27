@@ -46,8 +46,18 @@ def test_weather_token_edge_cases() -> None:
     assert _is_valid_weather_token("FZDZ") is True
 
 
+def test_weather_token_rejects_sign_only_after_shape_gate(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_validate.product_rules_pkg import _common
+
+    fake_shape = type("_Shape", (), {"fullmatch": staticmethod(lambda _token: True)})()
+    monkeypatch.setattr(_common, "_WX_TOKEN_SHAPE", fake_shape)
+
+    assert _common._is_valid_weather_token("+") is False
+
+
 def test_weather_candidates_skip_without_wind() -> None:
     assert _weather_candidate_tokens(["METAR", "KJFK", "101200Z"]) == []
+    assert _weather_candidate_tokens(["18008KT"]) == []
 
 
 def test_sigmet_validity_hours_edges() -> None:
@@ -136,6 +146,25 @@ def test_us_faa_nws_taf_overlay_rules() -> None:
     )
     assert any(i.code == "US_TAF_TEMPO_MAX_4H" for i in tempo)
 
+    tl_only = _check_us_faa_nws_taf(
+        ["TAF", "TEMPO", "TL1200"],
+        product="TAF",
+        core="",
+        body_start=0,
+        body_end=10,
+        profile="iwxxm_us",
+    )
+    assert not any(i.code == "US_TAF_TEMPO_MAX_4H" for i in tl_only)
+    unknown_window = _check_us_faa_nws_taf(
+        ["TAF", "TEMPO", "UNKNOWN"],
+        product="TAF",
+        core="",
+        body_start=0,
+        body_end=10,
+        profile="iwxxm_us",
+    )
+    assert not any(i.code == "US_TAF_TEMPO_MAX_4H" for i in unknown_window)
+
 
 def test_metar_nil_auto_and_cor_emit_info() -> None:
     tac = "METAR KJFK 101851Z AUTO COR NIL="
@@ -185,10 +214,13 @@ def test_us_faa_nws_tca_and_swxa_overlays() -> None:
     tca_cb = "TC ADVISORY\nDTG: 20040925/1800Z\nTCAC: MIAMI\nTC: IDA\nCB: OBSERVED\n"
     tca_issues = _check_us_faa_nws_tca_overlay(tca_cb, profile="iwxxm_us")
     assert any(i.code == "US_TCA_OBSERVED_CB_NOT_PROVIDED" for i in tca_issues)
+    tca_nil_cb = "TC ADVISORY\nCB: NIL\n"
+    assert _check_us_faa_nws_tca_overlay(tca_nil_cb, profile="iwxxm_us") == []
 
     swxa_effect = "SWX ADVISORY\nDTG: 20201108/0100Z\nSWXC: DONLON\nSWX EFFECT: SATCOM\n"
     effect_issues = _check_us_faa_nws_swxa_overlay(swxa_effect, start=0, profile="iwxxm_us")
     assert any(i.code == "US_SWXA_SATCOM_NOT_ISSUED" for i in effect_issues)
+    assert _check_us_faa_nws_swxa_overlay("SWX ADVISORY\n", start=0, profile="iwxxm_us") == []
 
     swxa_obs = (
         "SWX ADVISORY\nDTG: 20201108/0100Z\nSWXC: DONLON\nSWX EFFECT: HF COM\nOBS SWX: 08/0100Z SATCOM MOD IONOSPHERE\n"
@@ -207,9 +239,98 @@ def test_swxa_spacewx_membership_branches() -> None:
         )
     assert any(i.code == "UNKNOWN_WMO_MEMBERSHIP" for i in issues)
 
+    with patch.object(membership, "is_member", return_value=True):
+        mod_issues = _check_swxa_spacewx_membership(
+            "SWX EFFECT: HF COM\nOBS SWX: 08/0100Z MOD HF COM\n",
+            start=0,
+        )
+    assert mod_issues == []
+    no_severity = _check_swxa_spacewx_membership(
+        "SWX EFFECT: HF COM\nOBS SWX: 08/0100Z HF COM\n",
+        start=0,
+    )
+    assert no_severity == []
+
 
 def test_vona_onset_and_dur_non_nil_skip_info() -> None:
     tac = "VONA ADVISORY\nDTG: 20201108/0100Z\nSVO: WASHINGTON\nVOLCANO: MOUNT TEST\nONSET: 20201108/0100Z\nDUR: 6 HR\n"
     codes = {i.code for i in check_product_rules(tac, "VONA")}
     assert "VONA_ONSET_NIL" not in codes
     assert "VONA_DUR_NIL" not in codes
+
+
+def test_common_helper_remaining_empty_and_fallback_paths(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_validate.product_rules_pkg import _common
+
+    ca_issues = _common._check_ca_manobs(
+        ["XSM", "P6SM", "RMK", "PRESFR"],
+        product="METAR",
+        core="XSM P6SM RMK PRESFR",
+        body_start=0,
+        body_end=20,
+        profile="ca_eccc",
+    )
+    assert {"CA_STATUTE_MILE_VIS", "CA_REMARK_PRESFR"}.issubset({issue.code for issue in ca_issues})
+
+    assert (
+        _common._check_ca_manair(
+            [],
+            product="TAF",
+            core="",
+            body_start=0,
+            body_end=0,
+            profile="ca_eccc",
+        )
+        == []
+    )
+    assert (
+        _common._check_ca_gfa_airmet(
+            product="AIRMET",
+            core="",
+            body_start=0,
+            body_end=0,
+            profile="ca_eccc",
+        )
+        == []
+    )
+    assert _common._forecast_or_obs_segments(["TEMPO"]) == [["TEMPO"]]
+    assert _common._forecast_or_obs_segments([]) == []
+
+    monkeypatch.setattr(_common, "_token_span_in_core", lambda *_args: None)
+    issues: list[Issue] = []
+    _common._emit_nsc_layer_exclusivity(
+        issues,
+        product="METAR",
+        tokens=["NSC", "BKN020"],
+        core="unrelated",
+        body_start=3,
+        body_end=12,
+    )
+    assert issues[0].start == 3
+    assert issues[0].end == 12
+
+    assert _common._check_metar_speci_field_order(["METAR"], product="METAR", start=0, end=5) is None
+
+
+def test_sigmet_airmet_remaining_noop_paths() -> None:
+    from tac_validate.product_rules_pkg import sigmet_airmet
+
+    g2 = sigmet_airmet._check_sigmet_g2(start=0, end=4, upper="TEST")
+    assert not any(issue.code in {"SIGMET_SEQUENCE", "MISSING_SEQUENCE"} for issue in g2)
+    airmet = sigmet_airmet._check_airmet_a1(start=0, end=6, upper="AIRMET")
+    assert not any(issue.code in {"SIGMET_SEQUENCE", "MISSING_SEQUENCE"} for issue in airmet)
+    assert not any(issue.code == "FIR_OR_CTA" for issue in airmet)
+
+    no_intensity = sigmet_airmet._check_airmet_a2(start=0, end=6, upper="AIRMET OBS STNR")
+    assert not any(issue.code == "INTENSITY_CHANGE" for issue in no_intensity)
+
+    assert sigmet_airmet._check_sigmet_v1(start=0, end=4, upper="TEST") == []
+    cancelled_va = sigmet_airmet._check_sigmet_v1(start=0, end=20, upper="SIGMET VA CNL")
+    assert not any(issue.code == "MISSING_VA_VOLCANO" for issue in cancelled_va)
+
+    assert sigmet_airmet._check_sigmet_tc(start=0, end=4, upper="TEST") == []
+    bare_tc = sigmet_airmet._check_sigmet_tc(start=0, end=8, upper="SIGMET TC")
+    assert bare_tc == []
+
+    other_product = sigmet_airmet._check_sigmet_airmet("TEST=", "VAA")
+    assert isinstance(other_product, list)

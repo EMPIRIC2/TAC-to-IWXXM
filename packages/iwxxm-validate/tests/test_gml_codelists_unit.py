@@ -58,6 +58,29 @@ def test_gml_external_rdf_reference(tmp_path: Path) -> None:
     assert validate_gml_references(no_hash_xml, codelists_dir=tmp_path) == []
 
 
+def test_gml_rdf_cache_and_about_without_fragment(tmp_path: Path) -> None:
+    from iwxxm_validate.gml import _load_rdf_elements
+
+    rdf = tmp_path / "plain.rdf"
+    rdf.write_text(
+        """<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <rdf:Description/>
+  <rdf:Description rdf:about="PLAIN"/>
+</rdf:RDF>""",
+        encoding="utf-8",
+    )
+    cache: dict[str, set[str]] = {}
+
+    assert _load_rdf_elements(rdf, cache) == {"PLAIN"}
+    assert _load_rdf_elements(rdf, cache) == {"PLAIN"}
+
+
+def test_gml_skips_empty_id() -> None:
+    xml = _minimal_gml_doc(body='<gml:Point gml:id=""/>')
+
+    assert validate_gml_references(xml) == []
+
+
 def test_gml_unparseable_rdf_file(tmp_path: Path) -> None:
     bad_rdf = tmp_path / "codes.wmo.int-bad.rdf"
     bad_rdf.write_text("not xml", encoding="utf-8")
@@ -114,6 +137,18 @@ def test_codelists_skips_unparseable_rdf(tmp_path: Path) -> None:
     xml = _minimal_gml_doc(body='<gml:Point xlink:href="http://codes.wmo.int/49-2/Broken/X"/>')
     issues = validate_codelist_references(xml, codelists_dir=tmp_path)
     assert any(i.code == "CODELIST_NOT_FOUND" for i in issues)
+
+
+def test_codelists_ignores_concepts_without_values(tmp_path: Path) -> None:
+    (tmp_path / "Empty.rdf").write_text(
+        """<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#">
+  <skos:Concept><skos:prefLabel /></skos:Concept>
+</rdf:RDF>""",
+        encoding="utf-8",
+    )
+
+    assert validate_codelist_references(_minimal_gml_doc(body=""), codelists_dir=tmp_path) == []
 
 
 def test_validate_iwxxm_gml_and_codelist_levels() -> None:

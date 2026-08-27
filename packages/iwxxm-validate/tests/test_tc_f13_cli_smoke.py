@@ -145,3 +145,15 @@ def test_console_script_on_path() -> None:
     )
     assert proc.returncode == 0
     assert "iwxxm-validate" in proc.stdout.lower() or "iwxxm" in proc.stdout.lower()
+
+
+def test_cli_module_guard_invokes_main(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    import runpy
+
+    missing = tmp_path / "missing.xml"
+    monkeypatch.setattr(sys, "argv", ["iwxxm_validate.cli", str(missing)])
+
+    with pytest.raises(SystemExit) as exc_info:
+        runpy.run_module("iwxxm_validate.cli", run_name="__main__")
+
+    assert exc_info.value.code == 1

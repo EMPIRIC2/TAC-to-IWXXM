@@ -181,3 +181,13 @@ def test_attribution_omits_note_with_internal_doc_refs(tmp_path: Path, monkeypat
     ca._load.cache_clear()
     attr = ca.attribution_for("X")
     assert attr["source_attribution"] == "codes-wmo-int - https://codes.wmo.int/49-2"
+
+
+def test_semantic_identifier_recognizes_codes_ui_landing() -> None:
+    assert (
+        ca._semantic_identifier(
+            "another-source",
+            "https://codes.wmo.int/ui/resources/Weather",
+        )
+        == "https://codes.wmo.int/"
+    )

@@ -32,6 +32,7 @@
 | D-EV080-build-open | Gate open; branch `evolve/EV-080-unit-coverage-100`; M1 started |
 | D-EV080-m1 | **completed** inventory SoT + TC-EV080-001 (10 pass) + m1-gap-ranked |
 | D-EV080-m1-pr | [#1078](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1078) `[M1] EV-080 coverage inventory @ 100 floor` → stage @ `ba41b804` |
+| D-EV080-m2a | **in progress** packages→100%: worker/shared/dissemination/iwxxm-validate/tac-validate/auth |
 
 ### Milestones (planned)
 
