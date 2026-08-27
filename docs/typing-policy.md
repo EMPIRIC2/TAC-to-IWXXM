@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter  
 > **Last updated**: 2026-08-27 (EV-strict-lint-typecheck)  
-> **Source**: execution plan §Tech Stack, ADR-005, ADR-007
+> **Source**: execution plan §Tech Stack, ADR-005, ADR-007 (amended EV-080 / #1077 — 100%)
 
 ## Python
 
@@ -96,13 +96,16 @@ cd apps/frontend && pnpm exec eslint src
 cd apps/frontend && pnpm exec tsc --noEmit
 ```
 
-## Coverage gate (ADR-007 / EV-047)
+## Coverage gate (ADR-007 / EV-080 / #1077)
 
-**95%** line/branch coverage on all workspace members — pytest for Python, Vitest for frontend.
-Configured in root `pyproject.toml` `[tool.coverage.report]` and per-package overrides
-(Phase 1 T1.9). **EV-047 / D-S056-cov95-scope=2:** every measured Python source file must
-also be ≥95% (`scripts/ci/check_per_file_coverage.py` after package unit jobs); auth and
-worker use hard `fail_under = 95` (no longer soft-report-only).
+**100%** line and branch coverage on all workspace members — pytest for Python, Vitest for
+frontend/shared. Configured in root `pyproject.toml` `[tool.coverage.report]` and
+per-package overrides (`fail_under = 100`, `branch = true`). **Per-file ≥100%** via
+`scripts/ci/check_per_file_coverage.py --min-pct 100` after package unit jobs.
+
+**Scripts (EV-080):** all `scripts/**/*.py` under a dedicated coverage job (≥100%); every
+`scripts/**/*.sh` exercised by ≥1 **bats-core** test in CI. Approved omits only:
+`vendor/**`, generated XSD/codegen, non-executable fixtures — see ADR-007.
 
 ## References
 

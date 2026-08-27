@@ -59,7 +59,8 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
 	test-e2e-f16-live-sql \
 	test-live-connectivity test-live-connectivity-doks-provisional test-live-topology-doks-provisional test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live \
-	test-integration coverage coverage-backend coverage-frontend coverage-shared \
+	test-integration test-coverage-scripts test-bats \
+	coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
 	install-hooks pre-commit-run pre-push-run ci-prepush \
@@ -557,6 +558,37 @@ test-unit-worker:
 	@if [ -f scripts/ci/check_per_file_coverage.py ]; then \
 		$(UV) run python scripts/ci/check_per_file_coverage.py apps/worker/coverage.json; \
 	fi
+
+# EV-080 / #1077 — scripts Python coverage (D-TP080-3). Scaffold: exits 0 until
+# tests/scripts/ has collected tests (Build M4 T4.1–T4.2). Then fail_under 100.
+test-coverage-scripts:
+	@set -e; \
+	if ! find tests/scripts -type f \( -name 'test_*.py' -o -name '*_test.py' \) 2>/dev/null | grep -q .; then \
+		echo "[test-coverage-scripts] scaffold pending — no tests under tests/scripts/ yet (EV-080 M4)."; \
+		echo "  Planned: pytest tests/scripts --cov=scripts --cov-branch --cov-fail-under=100 + per-file check."; \
+		exit 0; \
+	fi; \
+	$(UV) run pytest tests/scripts \
+		--cov=scripts --cov-branch \
+		--cov-report=term-missing \
+		--cov-report=json:scripts/coverage.json \
+		--cov-fail-under=100 -v; \
+	$(UV) run python scripts/ci/check_per_file_coverage.py scripts/coverage.json --min-pct 100
+
+# EV-080 / #1077 — bats-core for every scripts/**/*.sh (D-TP080-2). Scaffold: exits 0
+# until *.bats exist (Build M4 T4.3–T4.4). Prefers `bats` on PATH.
+test-bats:
+	@set -e; \
+	if ! find tests/bats -type f -name '*.bats' 2>/dev/null | grep -q .; then \
+		echo "[test-bats] scaffold pending — no *.bats under tests/bats/ yet (EV-080 M4)."; \
+		echo "  Planned: bats tests/bats (tree mirrors scripts/); install bats-core in CI."; \
+		exit 0; \
+	fi; \
+	if ! command -v bats >/dev/null 2>&1; then \
+		echo "[test-bats] error: bats not on PATH — install bats-core (brew/apt) or enable CI install step." >&2; \
+		exit 1; \
+	fi; \
+	bats tests/bats
 
 test-bugs:
 	$(UV) run pytest tests/bugs -m "not live and not live_api" --no-cov -v

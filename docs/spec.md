@@ -95,6 +95,7 @@ metar-to-IWXXM/
 | Vendor schemas | Authoritative IWXXM SoT | `vendor/schemas/*` | wmo-im + iwxxm-us snapshots |
 | Work history (F5/F31) | Guest IndexedDB + logged-in DO Postgres sessions | FE IndexedDB + `tac_work_sessions` on DO | F7.i / F31; Auth JWT |
 | Worker (F8) | Near-RT ingest poller → store/quarantine | `apps/worker/` | `DATABASE_URL` → DO Postgres (F30) |
+| Coverage gate harness (EV-080) | Unit coverage enforcement: pytest-cov + Vitest + per-file checker + scripts Python cov + bats-core | `scripts/ci/`, `tests/bats/` (planned), CI matrix | ADR-007 / #1077 |
 
 ## Component Details
 
