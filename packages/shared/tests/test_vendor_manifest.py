@@ -279,10 +279,39 @@ def test_archive_sha256_rejects_non_hex() -> None:
     assert any("archive_sha256 must be 64 hex chars" in err for err in errors)
 
 
-def test_verify_manifest_integrity_reports_invalid_json(tmp_path: Path) -> None:
+def test_verify_manifest_integrity_reports_non_object_bundles(tmp_path: Path) -> None:
+    """``bundles`` as a non-object skips tree checks (EV-080 M2a branch 252→277)."""
     manifest_path = tmp_path / "vendor" / "manifest.json"
     manifest_path.parent.mkdir(parents=True)
-    manifest_path.write_text("{not-json", encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "schema_version": MANIFEST_SCHEMA_VERSION,
+                "bundles": [],
+            }
+        ),
+        encoding="utf-8",
+    )
+    result = verify_manifest_integrity(tmp_path, manifest_path=manifest_path)
+    assert not result.ok
+    assert any("bundles must be an object" in err for err in result.errors)
+
+
+def test_verify_manifest_integrity_reports_oserror_from_load(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """OSError from ``load_manifest`` maps to invalid-manifest result (EV-080 M2a)."""
+    manifest_path = tmp_path / "vendor" / "manifest.json"
+    manifest_path.parent.mkdir(parents=True)
+    manifest_path.write_text("{}", encoding="utf-8")
+
+    def _boom(_path: Path) -> dict[str, object]:
+        raise OSError("permission denied")
+
+    monkeypatch.setattr(
+        "metar_shared.vendor_manifest.load_manifest",
+        _boom,
+    )
     result = verify_manifest_integrity(tmp_path, manifest_path=manifest_path)
     assert not result.ok
     assert result.errors[0].startswith("invalid manifest:")

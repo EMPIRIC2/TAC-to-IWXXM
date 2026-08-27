@@ -271,8 +271,6 @@ def _is_valid_weather_token(token: str) -> bool:
         return True
     if not _WX_TOKEN_SHAPE.fullmatch(token):
         return False
-    if token.endswith(("+", "-")):
-        return False
     rest = token
     if rest and rest[0] in "-+":
         if len(rest) > 1 and rest[1] in "-+":
@@ -281,6 +279,8 @@ def _is_valid_weather_token(token: str) -> bool:
             return False
         rest = rest[1:]
     if not rest:
+        return False
+    if rest.endswith(("+", "-")):
         return False
     rest = _consume_wx_descriptors(rest)
     if not rest:

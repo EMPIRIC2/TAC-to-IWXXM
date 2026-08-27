@@ -47,6 +47,32 @@ def test_cli_prints_issue_spans(tmp_path: Path, monkeypatch: pytest.MonkeyPatch)
     assert "[0:5]" in out.getvalue()
 
 
+def test_cli_omits_incomplete_issue_span(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    tac = tmp_path / "x.tac"
+    tac.write_text("METAR KJFK=\n", encoding="utf-8")
+    report = LintReport(
+        ok=False,
+        product="METAR",
+        issues=[
+            Issue(
+                severity="error",
+                code="MISSING_CCCC",
+                message="missing",
+                start=0,
+                end=None,
+            )
+        ],
+    )
+    monkeypatch.setattr("tac_validate.cli.lint", lambda *_a, **_k: report)
+    out = io.StringIO()
+
+    with redirect_stdout(out):
+        code = main(["--product", "METAR", str(tac)])
+
+    assert code == 1
+    assert "[0:" not in out.getvalue()
+
+
 def test_cli_module_main_guard(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(sys, "argv", ["tac-validate", "--help"])
     with pytest.raises(SystemExit) as excinfo:

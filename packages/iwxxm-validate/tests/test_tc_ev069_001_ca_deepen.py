@@ -189,3 +189,73 @@ def test_tc_ev069_007_exchange_validate_error_paths() -> None:
     assert any(issue.code == "CA_EXCHANGE_TRANSLATION_CENTRE" for issue in centre_issues)
 
     assert validate_ca_exchange_packaging(golden) == []
+
+
+@pytest.mark.unit
+def test_exchange_validate_accepts_matching_header_and_translation_centre() -> None:
+    """Optional exchange checks accept matching values without findings."""
+    xml = """<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/3.0"
+        xmlns:gml="http://www.opengis.net/gml/3.2"
+        gml:id="metar-1" reportStatus="NORMAL" permissibleUsage="OPERATIONAL"
+        translationCentreDesignator="CWAO" translationCentreName="MSC"/>"""
+
+    issues = validate_ca_exchange_packaging(
+        xml,
+        product="METAR",
+        ahl_header="A_LACN31 CWAO 271800",
+        require_translation_centre=True,
+    )
+
+    assert issues == []
+
+
+@pytest.mark.unit
+def test_ca_extension_extraction_skips_non_ca_children() -> None:
+    from iwxxm_validate.ca_eccc_validate import _extract_ca_extension_blocks
+
+    xml = """<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/3.0">
+      <iwxxm:extension><other xmlns="http://example.test"/></iwxxm:extension>
+    </iwxxm:METAR>"""
+
+    assert _extract_ca_extension_blocks(xml) == []
+
+
+@pytest.mark.unit
+def test_validate_first_product_marks_ca_and_exchange_not_applicable(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    from iwxxm_validate.ca_eccc_bundle import CaEcccSchemaBundle
+    from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
+
+    schema = tmp_path / "schema.xsd"
+    schematron = tmp_path / "rules.sch"
+    schema.write_text("<schema/>", encoding="utf-8")
+    schematron.write_text("<schema/>", encoding="utf-8")
+    bundle = CaEcccSchemaBundle(
+        iwxxm_version="3.0.0",
+        core_xsd=schema,
+        schematron=schematron,
+        extension_root=tmp_path,
+        aggregate_ca_xsd=None,
+    )
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.resolve_ca_eccc_bundle", lambda **_: bundle)
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.ca_eccc_catalog_roots", lambda _version: [])
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.rust_available", lambda: False)
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.validate_xsd", lambda _xml, _version: [])
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.validate_code_ca_membership", lambda _xml: [])
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.ca_product_has_national_xsd", lambda _product: False)
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.ca_product_has_exchange_output", lambda _product: False)
+
+    report = validate_ca_eccc_layered(
+        '<iwxxm:AIRMET xmlns:iwxxm="http://icao.int/iwxxm/3.0"/>',
+        iwxxm_version="3.0.0",
+        product="AIRMET",
+        levels=("xsd",),
+    )
+
+    assert report.ok is True
+    assert {issue.code for issue in report.issues} == {
+        "CA_XSD_NOT_APPLICABLE",
+        "CA_EXCHANGE_NOT_APPLICABLE",
+    }

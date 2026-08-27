@@ -179,6 +179,21 @@ def test_parse_allowlist_rejects_bad_hostname_labels() -> None:
         parse_allowlist("a.." + ("x" * 64))
     with pytest.raises(AllowlistError):
         parse_allowlist("empty..label.example.com")
+    with pytest.raises(AllowlistError):
+        parse_allowlist("bad_underscore.example.com")
+
+
+def test_is_hostname_empty_labels_and_invalid_chars() -> None:
+    """Edge branches in ``_is_hostname`` (EV-080 M2a)."""
+    from dissemination.allowlist import _is_hostname
+
+    class _EmptySplit(str):
+        def split(self, *_a: object, **_k: object) -> list[str]:
+            return []
+
+    assert _is_hostname(_EmptySplit("x")) is False
+    assert _is_hostname("ok-host.example.com") is True
+    assert _is_hostname("no_under.example.com") is False
 
 
 def test_validate_allows_ip_listed_as_hostname_entry() -> None:
