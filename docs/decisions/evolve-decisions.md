@@ -38,6 +38,7 @@
 | D-EV080-m2b-t23 | **completed** backend 100% line+branch (`test_ev080_m2b_coverage_gaps.py` + unit extensions) |
 | D-EV080-m2b-t24 | **completed** fail_under / CI `--cov-fail-under` / per-file default → 100; `__init__.py` omit removed |
 | D-EV080-m2b-t25 | **completed** TC-EV080-002/003 + legacy gate asserts updated to 100 |
+| D-EV080-m2b-pr | [#1080](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1080) `[M2b] EV-080 tac2iwxxm+backend → 100% + flip gates` → stage @ `28ed55d6` |
 
 ### Milestones (planned)
 
