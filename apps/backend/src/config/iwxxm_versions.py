@@ -392,10 +392,9 @@ def resolve_schema_file(version: str, file_type: str = "xsd") -> Path:
                 fallback_path = fallback_base / config["schema_file"]
             elif file_type == "schematron":
                 fallback_path = fallback_base / config["schematron_file"]
-            elif file_type == "codelists":
-                fallback_path = fallback_base / config["codelists_dir"]
             else:
-                fallback_path = filepath
+                # codelists (only remaining type after outer validation)
+                fallback_path = fallback_base / config["codelists_dir"]
 
             if fallback_path.exists():
                 return fallback_path

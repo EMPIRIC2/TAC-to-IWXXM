@@ -381,3 +381,50 @@ class TestAirportRecordBuilderInitPaths:
         builder = AirportRecordBuilder()
         assert builder._vertical_datum_map == {}
         assert "Data directory not found" in caplog.text
+
+
+def test_builder_merge_and_validator_branches(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+
+    data_dir = tmp_path / "data"
+    data_dir.mkdir()
+    (data_dir / "vertical_datum_map.json").write_text(
+        '{"airport_overrides": {"ZZZZ": {"name": "OverrideName"}}}',
+        encoding="utf-8",
+    )
+    (data_dir / "airports.json").write_text("[]", encoding="utf-8")
+
+    fake_file = tmp_path / "utilities" / "airport_record_builder.py"
+    fake_file.parent.mkdir(parents=True)
+    fake_file.write_text("#", encoding="utf-8")
+    monkeypatch.setattr("src.utilities.airport_record_builder.__file__", str(fake_file))
+    # Make parent/data resolve to our data_dir: utilities -> tmp_path, so parent/data = tmp_path/data
+    # fake_file.parent is utilities; parent.parent is tmp_path; we need data at utilities/../data = tmp_path/data — good
+
+    builder = AirportRecordBuilder()
+    # Partial override → merge openaip without overwriting name; has_override True skips source rewrite
+    rec = builder.build_record(
+        "ZZZZ",
+        openaip_data={
+            "name": "ShouldNotOverwrite",
+            "iata": "ZZ",
+            "designator": "ZULU",
+            "coordinates": {"latitude": 1.0, "longitude": 2.0},
+        },
+        airport_validator=SimpleNamespace(),  # no get_airport_info
+    )
+    assert rec["name"] == "OverrideName"
+    assert rec.get("iata") == "ZZ"
+
+    # airports.json path without override; validator get_airport_info returns None
+    builder._vertical_datum_map = {}
+    builder._airports_json = {
+        "AAAA": {
+            "name": "Alpha",
+            "iata": "AA",
+            "designator": "ALPHA",
+            "coordinates": {"latitude": 0.0, "longitude": 0.0},
+        }
+    }
+    rec2 = builder.build_record("AAAA", airport_validator=SimpleNamespace(get_airport_info=lambda _i: None))
+    assert rec2["source"] == "airports.json (legacy)"

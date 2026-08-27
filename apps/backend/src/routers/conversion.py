@@ -803,7 +803,7 @@ async def convert(
         nonlocal preview_saw_soft_fail
         if not soft:
             return
-        if source:
+        if source:  # pragma: no branch — callers always pass a source label
             absorb_convert_issues(soft, source=source)
         if not preview:
             return

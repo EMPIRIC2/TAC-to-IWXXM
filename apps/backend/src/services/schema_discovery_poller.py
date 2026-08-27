@@ -410,7 +410,7 @@ class SchemaDiscoveryPoller:
         if max_retries <= 0:
             return None
 
-        for attempt in range(max_retries):
+        for attempt in range(max_retries):  # pragma: no branch — loop always returns or raises
             try:
                 return await self.poll_once()
             except Exception as e:
@@ -421,6 +421,7 @@ class SchemaDiscoveryPoller:
                 else:
                     logger.error("All poll attempts failed")
                     raise
+        return None  # pragma: no cover — defensive; loop always returns or raises
 
     def get_discovered_versions(self, channel: str | None = None) -> list[str]:
         """

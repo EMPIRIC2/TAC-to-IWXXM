@@ -115,3 +115,16 @@ def test_get_all_major_airports_without_filters(airports_csv: Path) -> None:
     majors = sampler.get_all_major_airports(large_only=False, scheduled_service_only=False)
 
     assert sorted(majors) == ["KBOS", "KJFK", "KXYZ"]
+
+
+def test_sample_with_seed_none_and_scheduled_filter(airports_csv: Path) -> None:
+    sampler = StationSampler(csv_path=airports_csv)
+    sample = sampler.sample_random_stations(
+        count=10,
+        large_airports_only=False,
+        scheduled_service_only=False,
+        seed=None,
+    )
+    assert "KJFK" in sample
+    majors = sampler.get_all_major_airports(large_only=True, scheduled_service_only=True)
+    assert sorted(majors) == ["KBOS", "KJFK"]

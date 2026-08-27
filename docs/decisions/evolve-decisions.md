@@ -35,6 +35,7 @@
 | D-EV080-m2a | **completed** packages→100%: worker/shared/dissemination/iwxxm-validate/tac-validate/auth — [#1079](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1079) merged @ `cba32156` |
 | D-EV080-m2b | **in progress** tac2iwxxm + backend fills → flip fail_under/CI to 100 |
 | D-EV080-m2b-t22 | **completed** tac2iwxxm 100% line+branch (`test_coverage_gaps_ev080.py` + small testability/pragmas) |
+| D-EV080-m2b-t23 | **completed** backend 100% line+branch (`test_ev080_m2b_coverage_gaps.py` + unit extensions) |
 
 ### Milestones (planned)
 
