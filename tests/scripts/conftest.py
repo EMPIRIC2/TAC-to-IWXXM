@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import importlib
 import importlib.util
 import sys
 from pathlib import Path
@@ -11,6 +12,7 @@ from types import ModuleType
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+_INVENTORY_FIXTURES = REPO_ROOT / "packages" / "tac2iwxxm" / "tests" / "fixtures"
 
 _STUB_ROOTS = (
     "tac_validate",
@@ -37,6 +39,27 @@ def load_script(rel_path: str, module_name: str | None = None) -> ModuleType:
     return mod
 
 
+def _ensure_real_wmo_inventory() -> None:
+    """Rebind the fixture inventory module after stub teardown.
+
+    ``OfficialTacPeer`` remains alive after ``sys.modules`` stubs are removed.
+    xsdata's dataclass context then KeyErrors on ``wmo_official_tac_inventory``
+    during real codegen (``test_generate_version_success``).
+    """
+    name = "wmo_official_tac_inventory"
+    existing = sys.modules.get(name)
+    if existing is not None and getattr(existing, "__file__", None):
+        return
+    path = _INVENTORY_FIXTURES / f"{name}.py"
+    if not path.is_file():
+        return
+    fixtures = str(_INVENTORY_FIXTURES)
+    if fixtures not in sys.path:
+        sys.path.insert(0, fixtures)
+    sys.modules.pop(name, None)
+    importlib.import_module(name)
+
+
 def _purge_stub_modules() -> None:
     """Drop in-memory stub modules so later tests can import real packages."""
     for name in list(sys.modules):
@@ -57,6 +80,7 @@ def _purge_stub_modules() -> None:
         pkg_path = getattr(mod, "__path__", None)
         if pkg_path == []:
             del sys.modules[name]
+    _ensure_real_wmo_inventory()
 
 
 @pytest.fixture(autouse=True)

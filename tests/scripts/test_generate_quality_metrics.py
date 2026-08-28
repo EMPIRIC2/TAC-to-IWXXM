@@ -102,7 +102,7 @@ def test_generate_corpus_metrics_branches(
         OFFICIAL_TAC_PEERS=(deferred, active),
         annex3_path=_annex3_path,
     )
-    sys.modules.pop("wmo_official_tac_inventory", None)
+    # Use setitem only (no prior pop) so monkeypatch can restore the real module.
     monkeypatch.setitem(
         sys.modules,
         "wmo_official_tac_inventory",
@@ -266,7 +266,6 @@ def test_generate_corpus_metrics_golden_fallback_and_unequal(
         OFFICIAL_TAC_PEERS=(peer,),
         annex3_path=lambda _p: tac_file,
     )
-    sys.modules.pop("wmo_official_tac_inventory", None)
     monkeypatch.setitem(sys.modules, "wmo_official_tac_inventory", fake_inventory)
     monkeypatch.setitem(
         sys.modules,

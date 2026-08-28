@@ -122,8 +122,6 @@ def test_generate_version_errors(
 def test_generate_version_success(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    # Avoid suite pollution from stub inventory modules in other tests/scripts.
-    sys.modules.pop("wmo_official_tac_inventory", None)
     vendor_iwxxm = ROOT / "vendor" / "schemas" / "iwxxm"
     monkeypatch.setattr(mod, "VENDOR_IWXXM", vendor_iwxxm)
     monkeypatch.setattr(mod, "REPO_ROOT", ROOT)
