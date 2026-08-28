@@ -707,6 +707,33 @@ M1 inventory → M2 Python 100% → M3 TS 100% → M4 scripts (py+bats) → M5 A
 
 ---
 
+## Cycle EV-086 — EUR_RODEX + AFI + CAR_SAM stubs (#921) (EV-086-regional-exchange-overlays)
+
+**Opened:** 2026-08-28 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-086-regional-exchange-overlays`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Issue:** [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921)  
+**Parent:** EV-065 / F36 / [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912)
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV086-goal | Land `EUR_RODEX` + `AFI` + `CAR_SAM` exchange stubs (registry + COLLECT packaging + tests + catalog docs) |
+| D-EV086-in | `packages/dissemination` registry/packaging; standing docs; TC-EV086; API known-ids note |
+| D-EV086-out | Drawer UI (#898); ROBEX/RODEX handbook mining deepen (#913); semantic TAC decode; sink protocols |
+| D-EV086-overlay | All three P0 stubs = GLOBAL_AFS COLLECT baseline (same as APAC_ROBEX EV-065) |
+| D-EV086-scale | Standard; evolve default verifying angles; e2e skipped (no UI) |
+| D-EV086-fn | Deepen **F36** only |
+| D-EV086-sources | EUR handbook URL remains access:gap; AFI/CAR_SAM sources TBD via #913 — stubs still ship |
+| D-EV086-feasibility | **FEASIBLE** — EV-065 stub pattern; additive registry + COLLECT |
+| D-EV086-gate | **open** (`open_build` 2026-08-28) |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles] [Corpus: adr/ADR-036]
+[Corpus: api] [Corpus: tests] [Corpus: journeys §UJ-069]
+
+---
+
 ## Cycle EV-065 — GLOBAL_AFS + APAC_ROBEX (#921) (EV-065-global-afs)
 
 **Opened:** 2026-08-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-065-global-afs`  

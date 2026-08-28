@@ -10,11 +10,17 @@ from dataclasses import dataclass
 
 CANONICAL_GLOBAL_AFS = "global_afs"
 CANONICAL_APAC_ROBEX = "apac_robex"
+CANONICAL_EUR_RODEX = "eur_rodex"
+CANONICAL_AFI = "afi"
+CANONICAL_CAR_SAM = "car_sam"
 DEFAULT_EXCHANGE_PROFILE_ID = "GLOBAL_AFS"
 
 _CANONICAL_TO_WIRE: dict[str, str] = {
     CANONICAL_GLOBAL_AFS: DEFAULT_EXCHANGE_PROFILE_ID,
     CANONICAL_APAC_ROBEX: "APAC_ROBEX",
+    CANONICAL_EUR_RODEX: "EUR_RODEX",
+    CANONICAL_AFI: "AFI",
+    CANONICAL_CAR_SAM: "CAR_SAM",
 }
 
 _KNOWN_WIRE_IDS: frozenset[str] = frozenset(_CANONICAL_TO_WIRE) | frozenset(_CANONICAL_TO_WIRE.values())
@@ -83,7 +89,10 @@ def known_exchange_profile_ids() -> frozenset[str]:
 
 
 __all__ = [
+    "CANONICAL_AFI",
     "CANONICAL_APAC_ROBEX",
+    "CANONICAL_CAR_SAM",
+    "CANONICAL_EUR_RODEX",
     "CANONICAL_GLOBAL_AFS",
     "DEFAULT_EXCHANGE_PROFILE_ID",
     "ResolvedExchangeProfile",

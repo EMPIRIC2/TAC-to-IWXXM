@@ -312,7 +312,7 @@ profiles:
     stub: exchange/GLOBAL_AFS.md
     gaps:
       - FTBP filename generation from AHL deepen (beyond bulletinIdentifier placeholder)
-      - Regional overlays beyond APAC_ROBEX P0 stub
+      - Regional overlay deepen beyond COLLECT stubs (ROBEX/RODEX handbook rules — #913)
 
   - id: APAC_ROBEX
     kind: exchange
@@ -340,7 +340,10 @@ profiles:
   - id: EUR_RODEX
     kind: exchange
     priority: P2
-    status: deferred
+    status: stub
+    implementation:
+      issue: "#921"
+      note: EV-086 P0 — registry + COLLECT baseline; RODEX handbook rules deferred
     sources:
       - url: https://www.icao.int/EUR/EUR%20Documents/RODEX%20Handbook.pdf
         label: EUR RODEX Handbook (candidate)
@@ -348,25 +351,33 @@ profiles:
         proves: European regional exchange overlay
     mining_notes:
       - docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md
-    stub: null
+    stub: exchange/EUR_RODEX.md
     gaps:
       - RODEX handbook URL needs triage (redirect / edition pin)
-      - No implementation issue
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
 
   - id: AFI
     kind: exchange
     priority: P2
-    status: deferred
+    status: stub
+    implementation:
+      issue: "#921"
+      note: EV-086 P0 — registry + COLLECT baseline; regional rules deferred (#913 source TBD)
     sources: []
-    stub: null
+    stub: exchange/AFI.md
     gaps:
       - Authoritative AFI exchange rule source not listed in #913 initial mine
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
 
   - id: CAR_SAM
     kind: exchange
     priority: P2
-    status: deferred
+    status: stub
+    implementation:
+      issue: "#921"
+      note: EV-086 P0 — registry + COLLECT baseline; regional rules deferred (#913 source TBD)
     sources: []
-    stub: null
+    stub: exchange/CAR_SAM.md
     gaps:
       - Authoritative CAR/SAM exchange rule source not listed in #913 initial mine
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped

@@ -1822,6 +1822,7 @@
   13. **EV-083 / #919 M17–M18:** CONUS `UPDT` header + FRZLVL `FreezingLevelForecast`
   14. **EV-084 / #919 M19:** WAUS multi-section AIRMET bulletin (ICE + OTLK + FRZLVL + VOR FROM)
   15. **EV-085 / #919 closeout:** acceptance audit (M20), SWXA/TCA thin US lint (M22); #919 closed with M14 + §12.7.2 additive RMK waivers
+  16. **EV-086 / #921:** `EUR_RODEX`, `AFI`, `CAR_SAM` exchange stubs — registry + GLOBAL_AFS COLLECT baseline + catalog stubs + TC-EV086 (APAC_ROBEX P0 pattern); #921 stays open for #898 drawer + #913 mining deepen
 - **Out of scope**: Thin packs #920; AU/NZ unless reprioritized; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   **CA_ECCC** option in EV-064 Build slice

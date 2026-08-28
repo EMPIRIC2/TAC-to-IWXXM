@@ -11,7 +11,10 @@ import uuid
 
 from dissemination.collect_namespaces import COLLECT_NS, is_collect_bulletin
 from dissemination.exchange_registry import (
+    CANONICAL_AFI,
     CANONICAL_APAC_ROBEX,
+    CANONICAL_CAR_SAM,
+    CANONICAL_EUR_RODEX,
     CANONICAL_GLOBAL_AFS,
     resolve_exchange_profile,
 )
@@ -50,8 +53,14 @@ def apply_exchange_packaging(
     resolved = resolve_exchange_profile(exchange_profile)
     if resolved is None:
         raise ValueError(f"unknown exchange profile: {exchange_profile!r}")
-    if resolved.canonical in (CANONICAL_GLOBAL_AFS, CANONICAL_APAC_ROBEX):
-        # APAC_ROBEX P0: same COLLECT baseline as GLOBAL_AFS; regional ROBEX rules deepen later.
+    if resolved.canonical in (
+        CANONICAL_GLOBAL_AFS,
+        CANONICAL_APAC_ROBEX,
+        CANONICAL_EUR_RODEX,
+        CANONICAL_AFI,
+        CANONICAL_CAR_SAM,
+    ):
+        # Regional P0 stubs: same COLLECT baseline as GLOBAL_AFS; handbook rules deepen later.
         return wrap_global_afs_collect(xml, bulletin_identifier=bulletin_identifier)
     raise ValueError(f"exchange profile not implemented: {exchange_profile!r}")
 
