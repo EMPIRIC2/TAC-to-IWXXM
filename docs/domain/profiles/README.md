@@ -32,6 +32,9 @@ profiles/
   exchange/
     GLOBAL_AFS.md           # P0 implemented (EV-065 / #921)
     APAC_ROBEX.md           # P2 stub (EV-065 P0)
+    EUR_RODEX.md            # P2 stub (EV-086 P0)
+    AFI.md                  # P2 stub (EV-086 P0)
+    CAR_SAM.md              # P2 stub (EV-086 P0)
     ...
 ```
 

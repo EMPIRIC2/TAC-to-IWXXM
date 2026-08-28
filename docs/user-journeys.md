@@ -85,7 +85,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-066 | Product Type + Profile bars no-wrap / aligned | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
 | UJ-067 | Conversion parameter bar aligned with mode selects | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
 | UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014; **EV-062 / #1017** deepen) | T0 / T2 / **T3** / H4–H5 |
-| UJ-069 | Convert with semantic profile → package with exchange profile | API / library / optional UI (#1024) | F35+F36 (EV-063 / #912) | T2 / **T3** (API); H4–H5 if #1024 |
+| UJ-069 | Convert with semantic profile → package with exchange profile | API / library / optional UI (#1024) | F35+F36 (EV-063/EV-086 / #912) | T2 / **T3** (API); H4–H5 if #1024 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
@@ -1139,12 +1139,12 @@ during deprecation window), then prepare output for dissemination using an **exc
 
 1. Submit convert with `semantic_profile=ICAO_2025` (or alias `annex3`) and a supported product.
 2. Receive IWXXM matching pre-migration annex3 goldens; observe deprecation signal if alias used.
-3. Invoke packaging/disseminate-prep with `exchange_profile=GLOBAL_AFS` (or rely on default).
+3. Invoke packaging/disseminate-prep with `exchange_profile=GLOBAL_AFS` (or rely on default), or select a regional stub (`APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` — EV-065/EV-086 P0 COLLECT baseline).
 4. Confirm packaging hooks run deterministically in CI (no live sink push).
 5. Confirm F16–F19 BYOC credentials are not stored or implied by exchange profile selection.
 
-**Acceptance**: feature-list F35/F36; ADR-036; api-contract EV-063 section; TC-EV063-*.
-**Tier: T2 / T3 (API)**; H4–H5 if #1024 FE ships. [Corpus: product §F35] [Corpus: api] [Corpus: adr/ADR-036]
+**Acceptance**: feature-list F35/F36; ADR-036; api-contract EV-063 section; TC-EV063-*; TC-EV065-*; TC-EV086-*.
+**Tier: T2 / T3 (API)**; H4–H5 if #1024 FE ships. [Corpus: product §F35] [Corpus: product §F36] [Corpus: api] [Corpus: adr/ADR-036]
 
 ---
 

@@ -3560,6 +3560,40 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: HTTP 200; `exchange_profile` echoed; COLLECT root in result
 - **Source**: EV-065; UJ-069
 
+### EV-086 / #921 — EUR_RODEX + AFI + CAR_SAM stubs
+
+- **Mode**: delta deepen F36 exchange overlays
+- **Pass criteria**: TC-EV086-001..004; catalog + exchange stub docs
+- **Source**: [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921); EV-086
+
+### TC-EV086-001: Registry resolves regional stubs
+
+- **Level**: T0 / T2
+- **Objective**: `EUR_RODEX`, `AFI`, `CAR_SAM` resolve (wire + canonical)
+- **Pass criteria**: `known_exchange_profile_ids` contains all three; `resolve_exchange_profile` non-None
+- **Source**: EV-086; UJ-069
+
+### TC-EV086-002: Packaging COLLECT for each stub
+
+- **Level**: T0 / T2
+- **Objective**: Each stub COLLECT-wraps member IWXXM via GLOBAL_AFS baseline
+- **Pass criteria**: `is_collect_bulletin`; `bulletinIdentifier` preserved
+- **Source**: EV-086; FR-EV086-01
+
+### TC-EV086-003: Unknown exchange fail-closed
+
+- **Level**: T0 / T2
+- **Objective**: Garbage exchange id still rejected
+- **Pass criteria**: `ValueError` from packaging / API 400
+- **Source**: EV-086; ADR-036
+
+### TC-EV086-004: EV-065 regression
+
+- **Level**: T0 / T2
+- **Objective**: GLOBAL_AFS + APAC_ROBEX paths unchanged
+- **Pass criteria**: TC-EV065-001..002 green
+- **Source**: EV-086
+
 ### TC-EV061-1015-001: Promote PR required-check inventory
 
 - **Level**: Docs / CI
