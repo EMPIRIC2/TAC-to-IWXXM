@@ -174,7 +174,7 @@ surfaces:
     kind: scripts_pytest_cov
     target_min: 100
     enforced: true
-    script_py_file_count: 38
+    script_py_file_count: 43
     ci_job_or_make: "make test-coverage-scripts + CI job scripts-coverage"
 
   - id: scripts-shell-bats
