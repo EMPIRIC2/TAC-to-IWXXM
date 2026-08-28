@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * Per-stem Quality metrics detail — TAC/XML panes, diagnostics, XML diff.
  *
@@ -43,6 +44,11 @@ export const QUALITY_METRICS_DIFF_EXPAND_ALL = 'Show all unchanged lines';
 export const QUALITY_METRICS_DIFF_COLLAPSE_ALL = 'Hide distant unchanged lines';
 export const QUALITY_METRICS_BACK_TO_LIST = 'Back to list';
 export const QUALITY_METRICS_DIFF_HEADING = 'Line-by-line XML differences';
+
+/** Expand-control label for a collapsed equal-context hunk. */
+export function unchangedLinesExpandLabel(count: number): string {
+  return `Expand ${count} unchanged line${count === 1 ? '' : 's'}`;
+}
 export const QUALITY_METRICS_DIFF_LAYOUT_INLINE = 'Inline (unified)';
 export const QUALITY_METRICS_DIFF_LAYOUT_SIDE_BY_SIDE = 'Side-by-side';
 export const QUALITY_METRICS_DIFF_LAYOUT_LEGEND =
@@ -61,6 +67,26 @@ interface QualityMetricsDetailProps {
   onClose?: () => void;
   /** Label for the close / back control (default Close detail). */
   closeLabel?: string;
+}
+
+/** Toggle membership of a collapse key in the expanded set. */
+export function toggleKeyInSet(prev: Set<string>, key: string): Set<string> {
+  const next = new Set(prev);
+  if (next.has(key)) {
+    next.delete(key);
+  } else {
+    next.add(key);
+  }
+  return next;
+}
+
+/** Whether side-by-side scroll sync should no-op. */
+export function shouldSkipSideBySideScroll(
+  syncing: boolean,
+  from: HTMLElement | null,
+  to: HTMLElement | null,
+): boolean {
+  return syncing || !from || !to;
 }
 
 /**
@@ -117,7 +143,7 @@ export function QualityMetricsDetail({
   const sideBySideRows = useMemo(() => sideBySideFromUnified(diffLines), [diffLines]);
 
   const dispositionChips = useMemo(
-    () => validateDispositionChips(detail.validate_issues ?? []),
+    () => validateDispositionChips(detail.validate_issues || []),
     [detail.validate_issues],
   );
 
@@ -127,32 +153,21 @@ export function QualityMetricsDetail({
     `c-${segment.startIndex}-${segment.lines.length}`;
 
   const toggleCollapse = (key: string) => {
-    setExpandedCollapseKeys((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) {
-        next.delete(key);
-      } else {
-        next.add(key);
-      }
-      return next;
-    });
+    setExpandedCollapseKeys((prev) => toggleKeyInSet(prev, key));
   };
 
   /** Best-effort synced scroll between side-by-side panes (`D-S068-01-ac=2b`). */
   const onSideBySideScroll = (source: 'left' | 'right') => {
-    if (syncingScroll.current) {
-      return;
-    }
     const from =
       source === 'left' ? sideBySideLeftRef.current : sideBySideRightRef.current;
     const to =
       source === 'left' ? sideBySideRightRef.current : sideBySideLeftRef.current;
-    if (!from || !to) {
+    if (shouldSkipSideBySideScroll(syncingScroll.current, from, to)) {
       return;
     }
     syncingScroll.current = true;
-    to.scrollTop = from.scrollTop;
-    to.scrollLeft = from.scrollLeft;
+    to!.scrollTop = from!.scrollTop;
+    to!.scrollLeft = from!.scrollLeft;
     requestAnimationFrame(() => {
       syncingScroll.current = false;
     });
@@ -368,9 +383,7 @@ export function QualityMetricsDetail({
                   data-hidden-count={segment.lines.length}
                   onClick={() => toggleCollapse(key)}
                 >
-                  {`Expand ${segment.lines.length} unchanged line${
-                    segment.lines.length === 1 ? '' : 's'
-                  }`}
+                  {unchangedLinesExpandLabel(segment.lines.length)}
                 </button>
               );
             })}
@@ -383,19 +396,19 @@ export function QualityMetricsDetail({
           title="Residuals"
           help={QUALITY_METRICS_RESIDUALS_HELP}
           testId="quality-metrics-pane-residuals"
-          items={detail.residuals}
+          items={detail.residuals ?? []}
         />
         <DiagnosticsPane
           title="Lint issues"
           help={QUALITY_METRICS_LINT_HELP}
           testId="quality-metrics-pane-lint"
-          items={detail.lint_issues}
+          items={detail.lint_issues ?? []}
         />
         <DiagnosticsPane
           title="Validation issues"
           help={QUALITY_METRICS_VALIDATE_HELP}
           testId="quality-metrics-pane-validate"
-          items={detail.validate_issues}
+          items={detail.validate_issues ?? []}
         />
       </div>
     </section>
@@ -410,10 +423,10 @@ function TextPane({
 }: {
   title: string;
   testId: string;
-  value: string;
+  value: string | null | undefined;
   emptyLabel: string;
 }) {
-  const trimmed = value?.trim() ?? '';
+  const trimmed = (value ?? '').trim();
   return (
     <Card className="p-3" data-testid={testId}>
       <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">

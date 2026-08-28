@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * Quality metrics corpus browser — product filter, summary strip, file list, detail.
  *
@@ -36,6 +37,11 @@ interface QualityMetricsPageProps {
   onOpenDetailRoute?: (stem: string) => void;
   /** Return to list path (`/quality`). */
   onBackToList?: () => void;
+}
+
+/** Whether an in-flight detail fetch should still write React state. */
+export function shouldApplyDetailFetch(cancelled: boolean): boolean {
+  return !cancelled;
 }
 
 /**
@@ -104,18 +110,18 @@ export function QualityMetricsPage({
       setDetailError(null);
       try {
         const response = await fetchQualityMetricsDetail({ stem: selectedStem });
-        if (!cancelled) {
+        if (shouldApplyDetailFetch(cancelled)) {
           setDetail(response);
         }
       } catch (err: unknown) {
-        if (!cancelled) {
+        if (shouldApplyDetailFetch(cancelled)) {
           setDetail(null);
           setDetailError(
             err instanceof Error ? err.message : QUALITY_METRICS_DETAIL_LOAD_FAILED,
           );
         }
       } finally {
-        if (!cancelled) {
+        if (shouldApplyDetailFetch(cancelled)) {
           setDetailLoading(false);
         }
       }

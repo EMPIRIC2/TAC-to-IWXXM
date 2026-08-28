@@ -201,6 +201,16 @@ describe('UserApprovalPanel', () => {
     });
   });
 
+  it('treats a missing users field as an empty pending list', async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse({}));
+
+    render(<UserApprovalPanel accessToken={accessToken} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/no pending approvals/i)).toBeInTheDocument();
+    });
+  });
+
   it('approve button is disabled while processing', async () => {
     const user = userEvent.setup();
     const fetchMock = vi.mocked(fetch);

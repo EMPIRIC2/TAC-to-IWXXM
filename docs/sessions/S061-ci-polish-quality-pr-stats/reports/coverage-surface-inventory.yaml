@@ -51,13 +51,13 @@ surfaces:
     config_path: packages/shared/vitest.config.ts
     kind: vitest_thresholds
     target_min: 95
-    enforced: 98
+    enforced: 100
     ci_job_or_make: "ci-cd.yml matrix package=shared (pnpm @metar/shared test:coverage)"
     current_thresholds:
-      lines: 98
-      statements: 98
-      functions: 98
-      branches: 98
+      lines: 100
+      statements: 100
+      functions: 100
+      branches: 100
 
   - id: tac2iwxxm
     config_path: packages/tac2iwxxm/pyproject.toml
@@ -91,13 +91,13 @@ surfaces:
     config_path: apps/frontend/vitest.config.ts
     kind: vitest_thresholds
     target_min: 95
-    enforced: 95
+    enforced: 100
     ci_job_or_make: "ci-cd.yml matrix package=frontend (pnpm @metar/frontend test:coverage)"
     current_thresholds:
-      lines: 95
-      statements: 95
-      functions: 95
-      branches: 95
+      lines: 100
+      statements: 100
+      functions: 100
+      branches: 100
     soft_gate: false
     branch_waiver:
       decision: D-S061-cov-branches=3

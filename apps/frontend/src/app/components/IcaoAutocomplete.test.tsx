@@ -264,4 +264,18 @@ describe('IcaoAutocomplete', () => {
     expect(screen.queryByLabelText(/valid icao code/i)).not.toBeInTheDocument();
     expect(screen.queryByLabelText(/invalid icao code/i)).not.toBeInTheDocument();
   });
+
+  it('uses formatOnly regex path for valid ICAO', async () => {
+    const user = userEvent.setup();
+    function Harness() {
+      const [value, setValue] = useState('');
+      return (
+        <IcaoAutocomplete label="ICAO" value={value} onChange={setValue} formatOnly />
+      );
+    }
+    render(<Harness />);
+    await user.type(screen.getByLabelText('ICAO'), 'KJFK');
+    expect(screen.getByLabelText(/valid icao code/i)).toBeInTheDocument();
+    expect(mockIsValid).not.toHaveBeenCalled();
+  });
 });

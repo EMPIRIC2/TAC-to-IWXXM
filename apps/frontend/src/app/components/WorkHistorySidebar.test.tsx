@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { WorkSession } from '@metar/shared';
 import { WorkHistorySidebar } from './WorkHistorySidebar';
@@ -180,5 +180,47 @@ describe('WorkHistorySidebar', () => {
     await waitFor(() => {
       expect(screen.getByText('archived')).toBeInTheDocument();
     });
+  });
+
+  it('ignores late list results after unmount (cancelled path)', async () => {
+    let resolveList: ((v: unknown) => void) | undefined;
+    mockList.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveList = resolve;
+        }),
+    );
+    const { unmount } = render(
+      <WorkHistorySidebar onSelectSession={onSelectSession} />,
+    );
+    unmount();
+    await act(async () => {
+      resolveList?.({ items: [sampleSession()], total: 1, page: 1, limit: 5 });
+      await Promise.resolve();
+    });
+    expect(mockList).toHaveBeenCalled();
+  });
+
+  it('ignores late list errors after unmount', async () => {
+    let rejectList: ((e: unknown) => void) | undefined;
+    mockList.mockImplementation(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectList = reject;
+        }),
+    );
+    const { unmount } = render(
+      <WorkHistorySidebar onSelectSession={onSelectSession} />,
+    );
+    unmount();
+    rejectList?.(new Error('late'));
+    await Promise.resolve();
+    expect(mockList).toHaveBeenCalled();
+  });
+
+  it('shouldApplyHistoryResult covers cancelled and active arms', async () => {
+    const { shouldApplyHistoryResult } = await import('./WorkHistorySidebar');
+    expect(shouldApplyHistoryResult(false)).toBe(true);
+    expect(shouldApplyHistoryResult(true)).toBe(false);
   });
 });

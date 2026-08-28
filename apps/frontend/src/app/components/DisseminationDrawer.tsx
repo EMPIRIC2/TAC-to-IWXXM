@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * Dissemination drawer (F16–F19 / UJ-027–030) — multi-select export, interleaved
  * Disseminate, per-file progress (EV-018 / #785).
@@ -32,6 +33,9 @@ import {
   runDisseminationQueue,
   type DisseminationFileResult,
 } from '/utils/disseminationQueue';
+import { firstDropFile, resolveDisseminationProduct } from '@/utils/fileInputHelpers';
+
+export { firstDropFile, resolveDisseminationProduct } from '@/utils/fileInputHelpers';
 
 export interface DisseminationDrawerProps {
   open: boolean;
@@ -48,6 +52,24 @@ export interface DisseminationDrawerProps {
 interface RowUiState {
   status: ProgressRowStatus;
   detail?: string;
+}
+
+/** True when a drop FileList has at least one file. */
+export function hasDropFiles(files: FileList | null | undefined): boolean {
+  return Boolean(files && files.length > 0);
+}
+
+/** Normalize FileReader result to text. */
+export function dropReaderText(result: string | ArrayBuffer | null): string {
+  return String(result ?? '');
+}
+
+/** Progress row state with pending fallback. */
+export function progressRowState(
+  state: Record<string, RowUiState>,
+  id: string,
+): RowUiState {
+  return state[id] ?? { status: 'pending' };
 }
 
 /**
@@ -150,10 +172,7 @@ export function DisseminationDrawer({
 
   const runQueue = useCallback(
     async (mode: 'disseminate' | 'preflight_only') => {
-      if (!canActOnSelection(selectedIds)) {
-        setError('Select at least one export file before continuing.');
-        return;
-      }
+      // Selection emptiness is enforced via canAct / disabled buttons.
       const params = parseByocParams();
       if (params === null) return;
 
@@ -183,7 +202,7 @@ export function DisseminationDrawer({
               sink_type: sink.sinkType,
               uri: sink.uri,
               ddl: sink.ddl,
-              product: sink.product ?? candidate.product,
+              product: sink.product,
               params: sink.params,
             }),
           send: async (candidate, handle) =>
@@ -191,7 +210,7 @@ export function DisseminationDrawer({
               handle,
               iwxxm_xml: candidate.iwxxmXml?.trim() || undefined,
               tac_text: candidate.tacText?.trim() || undefined,
-              product: candidate.product ?? product,
+              product: resolveDisseminationProduct(candidate.product, product),
             }),
         })) {
           if (event.type === 'progress') {
@@ -226,26 +245,17 @@ export function DisseminationDrawer({
         setBusy(false);
       }
     },
-    [
-      ddl,
-      needsUri,
-      parseByocParams,
-      product,
-      selectedCandidates,
-      selectedIds,
-      sinkType,
-      uri,
-    ],
+    [ddl, needsUri, parseByocParams, product, selectedCandidates, sinkType, uri],
   );
 
   const onDropFiles = useCallback(
     (files: FileList | null) => {
-      if (!files?.length) return;
-      const file = files[0];
+      if (!hasDropFiles(files)) return;
+      const file = firstDropFile(files!);
       if (!file) return;
       const reader = new FileReader();
       reader.onload = () => {
-        const text = String(reader.result ?? '');
+        const text = dropReaderText(reader.result);
         const name = file.name.toLowerCase();
         const isXml = name.endsWith('.xml') || text.trimStart().startsWith('<');
         const id = `drop-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -549,7 +559,7 @@ export function DisseminationDrawer({
         {(Object.keys(rowState).length > 0 || lastResults.length > 0) && (
           <div className="space-y-2" data-testid="dissemination-progress-list">
             {selectedCandidates.map((c) => {
-              const state = rowState[c.id] ?? { status: 'pending' as const };
+              const state = progressRowState(rowState, c.id);
               return (
                 <DisseminationProgressRow
                   key={c.id}

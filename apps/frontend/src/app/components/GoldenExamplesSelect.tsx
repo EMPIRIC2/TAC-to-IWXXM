@@ -27,11 +27,14 @@ export interface GoldenExamplesSelectProps {
 
 function groupTacByProduct(): Map<string, GoldenExample[]> {
   const map = new Map<string, GoldenExample[]>();
-  for (const product of EXAMPLE_PRODUCTS) {
-    map.set(
-      product,
-      EXAMPLES.filter((ex) => ex.inputMode === 'tac' && ex.product === product),
-    );
+  for (const ex of EXAMPLES) {
+    if (ex.inputMode !== 'tac' || !ex.product) {
+      continue;
+    }
+    const product = ex.product;
+    const list = map.get(product) ?? [];
+    list.push(ex);
+    map.set(product, list);
   }
   return map;
 }
@@ -61,9 +64,7 @@ export function GoldenExamplesSelect({
       <Select
         disabled={disabled}
         onValueChange={(value) => {
-          if (value) {
-            onSelectExample(value);
-          }
+          onSelectExample(value);
         }}
       >
         <SelectTrigger
@@ -77,8 +78,8 @@ export function GoldenExamplesSelect({
         </SelectTrigger>
         <SelectContent>
           {EXAMPLE_PRODUCTS.map((product) => {
-            const items = byProduct.get(product) ?? [];
-            if (items.length === 0) {
+            const items = byProduct.get(product);
+            if (!items || items.length === 0) {
               return null;
             }
             return (

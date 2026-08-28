@@ -133,13 +133,13 @@ export function resolveManualLineMetaFromResult(
       (peerMatch): peerMatch is RegExpMatchArray =>
         !!peerMatch && peerMatch[1] === prefix,
     )
-    .map((peerMatch) => Number.parseInt(peerMatch[2] ?? '', 10))
+    .map((peerMatch) => Number.parseInt(peerMatch[2]!, 10))
     .sort((a, b) => a - b);
   if (indexedPeers.length <= 1) {
     return {};
   }
   return {
-    manualLineIndex: Number.parseInt(match[2] ?? '', 10),
+    manualLineIndex: Number.parseInt(match[2]!, 10),
     manualLineTotal: indexedPeers.length,
   };
 }

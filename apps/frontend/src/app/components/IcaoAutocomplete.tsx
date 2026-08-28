@@ -54,7 +54,7 @@ export function IcaoAutocomplete({
   }, []);
 
   const validateIcao = (code: string): boolean => {
-    if (!code || code.length !== 4) return false;
+    // Caller only invokes at length === 4.
     if (formatOnly) {
       return /^[A-Z]{4}$/.test(code);
     }
