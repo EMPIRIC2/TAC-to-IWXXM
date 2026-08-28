@@ -1,19 +1,18 @@
 # EV-080 / #1077 — coverage surface inventory (ADR-007 @ 100%)
 # Corpus: [Corpus: adr/ADR-007] [Corpus: tests] [Corpus: tech-spec]
 #
-# target_floor: universal minimum after EV-080. measured_* from branch tip 2026-08-27
-# (evolve/EV-080-unit-coverage-100). Fill-before-flip: do not raise fail_under until green.
+# target_floor: universal minimum after EV-080. measured_* updated M3 (2026-08-28).
 
 target_floor: 100
-generated: "2026-08-27"
+generated: "2026-08-28"
 issue: 1077
 cycle: EV-080
 branch: evolve/EV-080-unit-coverage-100
 prior_inventory: docs/sessions/S061-ci-polish-quality-pr-stats/reports/coverage-surface-inventory.yaml
 measurement_note: >
   Python totals from package coverage.json (branch=true). Frontend from
-  apps/frontend/coverage/coverage-final.json under *current* Vitest exclude set
-  (executable excludes still present until M3). Auth / shared-js already at 100%.
+  apps/frontend/coverage/coverage-final.json after M3 exclude purge + fills.
+  FE + shared-js Vitest thresholds enforced at 100.
 
 surfaces:
   - id: root-pyproject
@@ -76,10 +75,10 @@ surfaces:
     enforced: 100
     ci_job_or_make: "pnpm --filter @metar/shared run test:coverage"
     current_thresholds:
-      lines: 98
-      statements: 98
-      functions: 98
-      branches: 98
+      lines: 100
+      statements: 100
+      functions: 100
+      branches: 100
     measured_statements_pct: 100.0
     measured_branches_pct: 100.0
     measured_files_below_100: 0
@@ -136,14 +135,15 @@ surfaces:
     enforced: 100
     ci_job_or_make: "pnpm --filter @metar/frontend run test:coverage"
     current_thresholds:
-      lines: 95
-      statements: 95
-      functions: 95
-      branches: 95
-    measured_statements_pct: 98.77
-    measured_branches_pct: 95.05
-    measured_files_below_100: 33
+      lines: 100
+      statements: 100
+      functions: 100
+      branches: 100
+    measured_statements_pct: 100.0
+    measured_branches_pct: 100.0
+    measured_files_below_100: 0
     measured_artifact: apps/frontend/coverage/coverage-final.json
+    # Historical M3 purge list (TC-EV080-001); no longer present in vitest exclude.
     executable_excludes_to_remove:
       - src/utils/tacEditorSpans.ts
       - src/app/components/TacEditor.tsx
