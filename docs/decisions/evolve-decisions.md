@@ -43,7 +43,7 @@
 | D-EV080-m3-t31 | **completed** executable FE coverage.exclude purged (fixtures/generated kept) |
 | D-EV080-m3-fills | **completed** FE unit fills to 100% stmts/branches/funcs/lines (3817/3817, 2837/2837) |
 | D-EV080-m3-flip | **completed** Vitest thresholds FE+shared → 100; TC-EV080-004/005 |
-| D-EV080-m3-pr | _pending_ `[M3] EV-080 Vitest 100% + exclude purge` → stage |
+| D-EV080-m3-pr | [#1081](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1081) `[M3] EV-080 Vitest 100% + exclude purge` → stage @ `45b301d7` **open** |
 
 ### Milestones (planned)
 
