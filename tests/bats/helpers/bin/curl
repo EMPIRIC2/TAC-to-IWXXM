@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+# Stub curl — no live HTTP (NFR-EV080-006).
+set -euo pipefail
+args=("$@")
+url=""
+write_out=""
+output_file="/dev/null"
+method="GET"
+header_file=""
+data_body=""
+
+i=0
+while [[ $i -lt ${#args[@]} ]]; do
+  arg="${args[$i]}"
+  case "$arg" in
+    -w)
+      write_out="${args[$((i + 1))]}"
+      i=$((i + 2))
+      ;;
+    -o)
+      output_file="${args[$((i + 1))]}"
+      i=$((i + 2))
+      ;;
+    -X)
+      method="${args[$((i + 1))]}"
+      i=$((i + 2))
+      ;;
+    -D)
+      header_file="${args[$((i + 1))]}"
+      i=$((i + 2))
+      ;;
+    --data | --data-binary | --data-raw)
+      data_body="${args[$((i + 1))]}"
+      i=$((i + 2))
+      ;;
+    --max-time | --connect-timeout)
+      i=$((i + 2))
+      ;;
+    -H | -h | --header)
+      i=$((i + 2))
+      ;;
+    -[a-zA-Z]*)
+      i=$((i + 1))
+      ;;
+    --*)
+      i=$((i + 1))
+      ;;
+    *)
+      url="$arg"
+      i=$((i + 1))
+      ;;
+  esac
+done
+
+write_body() {
+  local target="$1"
+  [[ "$target" == "/dev/null" ]] && return 0
+  if [[ "$url" == *config.json* ]]; then
+    printf '%s' '{"api":{"baseUrl":"https://api.example.com"}}' >"$target"
+  elif [[ "$url" == *health* ]]; then
+    printf '%s' '{"status":"ok"}' >"$target"
+  elif [[ "$method" == "PUT" && -n "$data_body" ]]; then
+    printf '%s' "$data_body" >"$target"
+  else
+    printf '%s' 'ok' >"$target"
+  fi
+}
+
+if [[ "$method" == "OPTIONS" ]]; then
+  origin="http://app.example.com"
+  for ((j = 0; j < ${#args[@]}; j++)); do
+    if [[ "${args[$j]}" == "-H" || "${args[$j]}" == "--header" ]]; then
+      hdr="${args[$((j + 1))]}"
+      if [[ "$hdr" == Origin:* ]]; then
+        origin="${hdr#Origin: }"
+      fi
+    fi
+  done
+  headers_out=(
+    "HTTP/1.1 204 No Content"
+    "Access-Control-Allow-Origin: ${origin}"
+  )
+  if [[ "$header_file" == "-" ]]; then
+    printf '%s\n' "${headers_out[@]}"
+  elif [[ -n "$header_file" ]]; then
+    printf '%s\n' "${headers_out[@]}" >"$header_file"
+  else
+    printf '%s\n' "${headers_out[@]}"
+  fi
+  if [[ -n "$write_out" && "$write_out" == *http_code* ]]; then
+    echo "204"
+  fi
+  exit 0
+fi
+
+write_body "$output_file"
+
+if [[ -n "$write_out" && "$write_out" == *http_code* ]]; then
+  echo "200"
+  exit 0
+fi
+
+if [[ "$url" == *api.github.com* ]]; then
+  printf '%s' '{"check_runs":[{"name":"Staging smoke","status":"completed","conclusion":"success"}]}'
+  exit 0
+fi
+
+if [[ "$url" == *api.render.com* ]]; then
+  if [[ "$method" == "PUT" || "$method" == "POST" ]]; then
+    if [[ "$url" == *deploys* ]]; then
+      printf '%s' '{"id":"dep-test"}'
+    else
+      printf '%s' '{"key":"stub","value":"stub"}'
+    fi
+  elif [[ "$url" == *deploys* ]]; then
+    printf '%s' '{"id":"dep-test"}'
+  else
+    printf '%s' '[{"service":{"id":"srv-test","name":"metar-to-iwxxm-api"}}]'
+  fi
+  exit 0
+fi
+
+if [[ "$method" == "GET" && -n "$url" ]]; then
+  if [[ -n "$data_body" ]]; then
+    printf '%s' "$data_body"
+  elif [[ "$url" == *config.json* ]]; then
+    printf '%s' '{"api":{"baseUrl":"https://api.example.com"}}'
+  else
+    printf '%s' 'ok'
+  fi
+  exit 0
+fi
+
+exit 0

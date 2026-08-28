@@ -2,14 +2,11 @@
 
 [Corpus: adr/ADR-007] [Corpus: tests]
 
-**bats-core** tests for every `scripts/**/*.sh`. Layout mirrors `scripts/`
-(e.g. `tests/bats/ci/run_metar_quality.bats` → `scripts/ci/run_metar_quality.sh`).
+**bats-core** tests for every `scripts/**/*.sh`. Layout mirrors `scripts/`.
 
 ```bash
 make test-bats
 ```
 
-Until Build M4 adds `*.bats` files, the make target prints a scaffold notice and exits 0.
-Prefer `--help` / dry-run / mock env — no live credentials (NFR-EV080-006).
-
-Manifest / count guards: TC-EV080-007..008 (Build).
+Helpers/stubs: `tests/bats/helpers/bin/` (no live credentials — NFR-EV080-006).  
+Manifest: `tests/bats/MANIFEST.md` (TC-EV080-008).

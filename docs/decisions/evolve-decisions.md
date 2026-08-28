@@ -43,7 +43,26 @@
 | D-EV080-m3-t31 | **completed** executable FE coverage.exclude purged (fixtures/generated kept) |
 | D-EV080-m3-fills | **completed** FE unit fills to 100% stmts/branches/funcs/lines (3817/3817, 2837/2837) |
 | D-EV080-m3-flip | **completed** Vitest thresholds FE+shared → 100; TC-EV080-004/005 |
-| D-EV080-m3-pr | [#1081](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1081) `[M3] EV-080 Vitest 100% + exclude purge` → stage @ `45b301d7` **open** |
+| D-EV080-m3-pr | [#1081](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1081) `[M3] EV-080 Vitest 100% + exclude purge` → stage **merged** |
+| D-EV080-m4 | **completed** scripts Python cov 100% + bats for all 56 `.sh` + CI `scripts-coverage` enabled |
+| D-EV080-m4-t41 | **completed** `tests/scripts/` harness + `make test-coverage-scripts` fail_under 100 |
+| D-EV080-m4-t43 | **completed** `tests/bats/` mirrors `scripts/**/*.sh` + helpers stubs (NFR-006) |
+| D-EV080-m4-guards | **completed** TC-EV080-006..008 |
+| D-EV080-m4-pr | [#1082](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1082) `[M4] EV-080 scripts py cov 100% + bats-core` → stage |
+| D-EV080-m5 | **completed** TC-EV080-009 docs guard; sticky coverage comment cites 100% gate; TC-EV080-010 via inventory |
+
+### Delivered
+
+| Milestone | Scope | PR |
+|-----------|--------|-----|
+| M1 | Inventory @ floor 100 + TC-EV080-001 | [#1078](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1078) |
+| M2a | Packages → 100% | [#1079](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1079) |
+| M2b | tac2iwxxm + backend + flip gates | [#1080](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1080) |
+| M3 | Vitest FE + shared → 100% | [#1081](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1081) |
+| M4 | Scripts py cov + bats-core | [#1082](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1082) |
+| M5 | Docs/ADR audit + sticky 100 + closeout | (same #1082) |
+
+**Issue:** [#1077](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1077) — close after #1082 merges to `stage`.
 
 ### Milestones (planned)
 

@@ -54,6 +54,8 @@ __pypackages__/
 .venv/
 venv/
 env/
+!tests/bats/env/
+!tests/bats/env/**
 ENV/
 env.bak/
 venv.bak/

@@ -173,17 +173,17 @@ surfaces:
     config_path: tests/scripts/README.md
     kind: scripts_pytest_cov
     target_min: 100
-    enforced: scaffold
-    script_py_file_count: 38
-    ci_job_or_make: "make test-coverage-scripts (scaffold until M4; CI job scripts-coverage if:false)"
+    enforced: true
+    script_py_file_count: 43
+    ci_job_or_make: "make test-coverage-scripts + CI job scripts-coverage"
 
   - id: scripts-shell-bats
     config_path: tests/bats/README.md
     kind: bats_core
     target_min: 100_of_files
-    enforced: scaffold
+    enforced: true
     shell_file_count_at_inventory: 56
-    ci_job_or_make: "make test-bats (scaffold until M4; CI job scripts-coverage if:false)"
+    ci_job_or_make: "make test-bats + CI job scripts-coverage"
 
 intentional_non_surfaces:
   - id: vendor

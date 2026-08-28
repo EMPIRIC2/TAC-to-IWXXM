@@ -94,10 +94,12 @@ def main(argv: list[str]) -> int:
 
     lines = [
         MARKER,
-        "## Coverage summary (EV-036)",
+        "## Coverage summary (EV-036 / EV-080)",
         "",
         "Remote CI keeps the **unit matrix** with coverage gates; Compose/integration "
         "and `validate` run locally (pre-commit / pre-push).",
+        "",
+        "**Gate:** **100%** line + branch (ADR-007 / EV-080). Scripts: Python cov + bats.",
         "",
         "| Package | Lines | Branches |",
         "|---------|------:|---------:|",
