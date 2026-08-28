@@ -101,6 +101,14 @@ describe('AuthCallback', () => {
     });
   });
 
+  it('signup with neither onVerified nor onRegister still succeeds', async () => {
+    window.location.hash = '#access_token=abc123&type=signup';
+    render(<AuthCallback />);
+    await waitFor(() => {
+      expect(mockToast.success).toHaveBeenCalled();
+    });
+  });
+
   it('redirects to reset route for recovery type', async () => {
     window.location.hash = '#access_token=reset-token&type=recovery';
 

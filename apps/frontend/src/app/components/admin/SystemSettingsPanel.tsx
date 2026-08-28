@@ -105,10 +105,11 @@ export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
   };
 
   const handleReset = () => {
-    if (originalSettings) {
-      setSettings(originalSettings);
-      toast.info('Settings reset to last saved values');
+    if (!originalSettings) {
+      return;
     }
+    setSettings(originalSettings);
+    toast.info('Settings reset to last saved values');
   };
 
   const addIcaoCode = () => {

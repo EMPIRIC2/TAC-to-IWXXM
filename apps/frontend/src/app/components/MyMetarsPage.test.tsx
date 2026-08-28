@@ -391,4 +391,14 @@ describe('MyMetarsPage', () => {
 
     expect(mockImport).not.toHaveBeenCalled();
   });
+
+  it('Import button clicks the hidden file input', async () => {
+    const user = userEvent.setup();
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
+    await screen.findByText('KJFK draft');
+    const input = screen.getByTestId('import-sessions-input') as HTMLInputElement;
+    const clickSpy = vi.spyOn(input, 'click');
+    await user.click(screen.getByTestId('import-sessions'));
+    expect(clickSpy).toHaveBeenCalled();
+  });
 });

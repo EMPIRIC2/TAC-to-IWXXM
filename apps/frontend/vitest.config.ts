@@ -32,27 +32,14 @@ export default defineConfig({
         // Static TAC/XML example bodies + generated SoT — not executable app code
         'src/fixtures/**',
         'src/generated/**',
-        // CodeMirror editor shell / decoration field — covered by TacEditor + span unit smokes
-        'src/utils/tacEditorSpans.ts',
-        'src/app/components/TacEditor.tsx',
-        // Debounce scheduler internals (Abort catch paths) — covered by liveAssist unit tests
-        'src/utils/liveAssist.ts',
-        // Hook orchestration — covered by useLiveWorkbenchAssist unit + FileConverter live test
-        'src/hooks/useLiveWorkbenchAssist.ts',
-        // Browser DecompressionStream happy-path needs Chromium; unit covers unsupported branch
-        'src/utils/gunzip.ts',
-        // App shell / router — covered by Playwright smoke + UJ-045..047 live (T7.1)
-        'src/app/App.tsx',
-        // FileConverter.tsx re-included for EV-053 / #968 (D-S062-fc-strategy=1) —
-        // branches ≥95 with file-level AC5; do not re-exclude without a new explicit waiver.
+        // EV-080 / #1077 — executable FE modules re-included (T3.1); fill to 100% then flip thresholds.
       ],
       thresholds: {
-        // ADR-007 / EV-053 / #968 — lines/statements/functions/branches ≥95.
-        // Closes D-S061-cov-branches=3 (prior branches floor 84).
-        lines: 95,
-        functions: 95,
-        branches: 95,
-        statements: 95,
+        // ADR-007 / EV-080 — 100% line/branch/function/statement after M3 fills.
+        lines: 100,
+        functions: 100,
+        branches: 100,
+        statements: 100,
       },
     },
   },

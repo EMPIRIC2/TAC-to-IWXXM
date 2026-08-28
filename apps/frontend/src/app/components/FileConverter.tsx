@@ -120,8 +120,10 @@ import { readGuestConverterState } from '/utils/guestConverterState';
 import { OPERATOR_ONE_PAGER_URL } from '/utils/operatorHelp';
 import {
   ACCUMULATE_RESULT_CAP,
+  appendConvertedWithinCap,
   manualDownloadXmlName,
   manualOutputName,
+  nextFirstAccumulatedTac,
   outputArchiveName,
   sanitizeOutputFilename,
 } from '/utils/outputFilename';
@@ -150,6 +152,22 @@ import {
   type OperatorInputMode,
 } from '/utils/inputKind';
 import { inflateGzipToText, isGzipFileName } from '/utils/gunzip';
+import {
+  applyWebkitDirectoryAttrs,
+  applyFocusedQueueContent,
+  ariaInvalidFromError,
+  caExtensionBundleAvailableFromStatus,
+  clearFileInputValue,
+  coalescePreviewXml,
+  firstTacForArchive,
+  focusedValidateErrorMessage,
+  forEachFileInList,
+  hydratedResultName,
+  isDropZoneActivateKey,
+  iwxxmValidationErrorMessage,
+  lintIssueCount,
+  queueResultOriginalName,
+} from '/utils/fileInputHelpers';
 
 interface ConvertedFile {
   id: string;
@@ -297,12 +315,14 @@ export function FileConverter({
   const massFolderInputRef = useRef<HTMLInputElement>(null);
   const massZipInputRef = useRef<HTMLInputElement>(null);
   const hydratedWorkSessionIdRef = useRef<string | null>(null);
+  const convertedFilesRef = useRef<ConvertedFile[]>([]);
 
   useEffect(() => {
-    const el = massFolderInputRef.current;
-    if (!el) return;
-    el.setAttribute('webkitdirectory', '');
-    el.setAttribute('directory', '');
+    convertedFilesRef.current = convertedFiles;
+  }, [convertedFiles]);
+
+  useEffect(() => {
+    applyWebkitDirectoryAttrs(massFolderInputRef.current);
   }, []);
 
   const buildSnapshot = (
@@ -403,14 +423,13 @@ export function FileConverter({
         if (cancelled) {
           return;
         }
-        setCaExtensionBundleAvailable(
-          status.profile_pins?.ca_eccc?.extension_bundle_available ?? null,
-        );
+        setCaExtensionBundleAvailable(caExtensionBundleAvailableFromStatus(status));
       })
       .catch(() => {
-        if (!cancelled) {
-          setCaExtensionBundleAvailable(null);
+        if (cancelled) {
+          return;
         }
+        setCaExtensionBundleAvailable(null);
       });
     return () => {
       cancelled = true;
@@ -439,11 +458,11 @@ export function FileConverter({
     );
     if (loadedWorkSession.converted_results?.length) {
       const resultNames = loadedWorkSession.converted_results.map((result, index) =>
-        String(result.name ?? `result-${index + 1}`),
+        hydratedResultName(result.name as string | undefined, index),
       );
       setConvertedFiles(
         loadedWorkSession.converted_results.map((result, index) => {
-          const originalName = resultNames[index] ?? `result-${index + 1}`;
+          const originalName = resultNames[index] as string;
           const originalContent = String(result.tac_input ?? '');
           const lineMeta = resolveManualLineMetaFromResult(
             originalName,
@@ -561,34 +580,34 @@ export function FileConverter({
     const newPendingFiles: PendingFile[] = [];
     let detectedMode: OperatorInputMode | null = null;
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      if (!file) continue;
-      try {
-        let content: string;
-        let displayName = file.name;
-        if (isGzipFileName(file.name)) {
-          content = await inflateGzipToText(file);
-          displayName = file.name.replace(/\.gz$/i, '').replace(/\.gzip$/i, '');
-          toast.info(`Decompressed ${file.name}`);
-        } else {
-          content = await file.text();
+    await Promise.all(
+      forEachFileInList(files, async (file, i) => {
+        try {
+          let content: string;
+          let displayName = file.name;
+          if (isGzipFileName(file.name)) {
+            content = await inflateGzipToText(file);
+            displayName = file.name.replace(/\.gz$/i, '').replace(/\.gzip$/i, '');
+            toast.info(`Decompressed ${file.name}`);
+          } else {
+            content = await file.text();
+          }
+          // Classify by decompressed display name + content (not raw .gz → kind "gzip")
+          const kind = detectInputKind(displayName, content);
+          detectedMode = kindToMode(kind);
+          newPendingFiles.push({
+            id: `${displayName}-${Date.now()}-${i}`,
+            name: displayName,
+            content,
+          });
+        } catch (error) {
+          console.error(`Error reading file ${file.name}:`, error);
+          toast.error(
+            error instanceof Error ? error.message : `Failed to read ${file.name}`,
+          );
         }
-        // Classify by decompressed display name + content (not raw .gz → kind "gzip")
-        const kind = detectInputKind(displayName, content);
-        detectedMode = kindToMode(kind);
-        newPendingFiles.push({
-          id: `${displayName}-${Date.now()}-${i}`,
-          name: displayName,
-          content,
-        });
-      } catch (error) {
-        console.error(`Error reading file ${file.name}:`, error);
-        toast.error(
-          error instanceof Error ? error.message : `Failed to read ${file.name}`,
-        );
-      }
-    }
+      }),
+    );
 
     if (detectedMode && detectedMode !== inputMode) {
       setInputMode(detectedMode);
@@ -681,8 +700,8 @@ export function FileConverter({
       });
     } finally {
       setIsMassIngesting(false);
-      if (massFolderInputRef.current) massFolderInputRef.current.value = '';
-      if (massZipInputRef.current) massZipInputRef.current.value = '';
+      clearFileInputValue(massFolderInputRef.current);
+      clearFileInputValue(massZipInputRef.current);
     }
   };
 
@@ -858,20 +877,19 @@ export function FileConverter({
         });
         const failed = bulletinResponse.results.filter((r) => !r.ok).length;
         if (newConvertedFiles.length > 0) {
-          let appended = false;
-          setConvertedFiles((prev) => {
-            if (prev.length + newConvertedFiles.length > ACCUMULATE_RESULT_CAP) {
-              toast.error(
-                `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
-              );
-              return prev;
-            }
-            appended = true;
-            return [...prev, ...newConvertedFiles];
-          });
-          if (appended) {
-            setFirstAccumulatedTac(
-              (stem) => stem ?? newConvertedFiles[0]?.originalContent ?? null,
+          const { files, overCap } = appendConvertedWithinCap(
+            convertedFilesRef.current,
+            newConvertedFiles,
+          );
+          if (overCap) {
+            toast.error(
+              `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
+            );
+          } else {
+            setConvertedFiles(files);
+            convertedFilesRef.current = files;
+            setFirstAccumulatedTac((stem) =>
+              nextFirstAccumulatedTac(stem, newConvertedFiles[0]?.originalContent),
             );
           }
         }
@@ -937,7 +955,7 @@ export function FileConverter({
           const pendingFile = queueFiles[fileIndex];
           const originalName = isManualResult
             ? manualOutputName(outputFilename, index, manualResultCount)
-            : (pendingFile?.name ?? result.name ?? 'unknown');
+            : queueResultOriginalName(pendingFile?.name, result.name);
           const originalContent = resolveOriginalTac(
             result.tac_input ?? undefined,
             manualLines[index],
@@ -987,8 +1005,9 @@ export function FileConverter({
         return null;
       }
 
-      const latestPreviewXml =
-        newConvertedFiles[newConvertedFiles.length - 1]?.convertedContent ?? '';
+      const latestPreviewXml = coalescePreviewXml(
+        newConvertedFiles[newConvertedFiles.length - 1]?.convertedContent,
+      );
       if (latestPreviewXml && (softPreview || softFail)) {
         setPreviewXml(latestPreviewXml);
         setPreviewMode('soft-preview');
@@ -1003,21 +1022,20 @@ export function FileConverter({
         }
       }
 
-      if (newConvertedFiles.length > 0) {
-        let appended = false;
-        setConvertedFiles((prev) => {
-          if (prev.length + newConvertedFiles.length > ACCUMULATE_RESULT_CAP) {
-            toast.error(
-              `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
-            );
-            return prev;
-          }
-          appended = true;
-          return [...prev, ...newConvertedFiles];
-        });
-        if (appended) {
-          setFirstAccumulatedTac(
-            (stem) => stem ?? newConvertedFiles[0]?.originalContent ?? null,
+      {
+        const { files, overCap } = appendConvertedWithinCap(
+          convertedFilesRef.current,
+          newConvertedFiles,
+        );
+        if (overCap) {
+          toast.error(
+            `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
+          );
+        } else {
+          setConvertedFiles(files);
+          convertedFilesRef.current = files;
+          setFirstAccumulatedTac((stem) =>
+            nextFirstAccumulatedTac(stem, newConvertedFiles[0]?.originalContent),
           );
         }
       }
@@ -1063,9 +1081,7 @@ export function FileConverter({
   };
 
   const handleValidateOnly = async () => {
-    if (isReadOnly) {
-      return;
-    }
+    // Read-only sessions cannot enter validate mode (mode buttons disabled).
     const xmlFromPaste = manualInput.trim();
     const xmlFiles = pendingFiles.filter((f) => f.name.toLowerCase().endsWith('.xml'));
     if (xmlFiles.length > 1) {
@@ -1096,8 +1112,7 @@ export function FileConverter({
         toast.warning('IWXXM validation reported failures');
       }
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : 'IWXXM validation failed';
+      const message = iwxxmValidationErrorMessage(error);
       setConversionStatus({ type: 'error', message });
       toast.error(message);
     } finally {
@@ -1305,7 +1320,10 @@ export function FileConverter({
     const a = document.createElement('a');
     a.href = url;
     a.download = outputArchiveName(outputFilename, {
-      firstTac: firstAccumulatedTac ?? convertedFiles[0]?.originalContent,
+      firstTac: firstTacForArchive(
+        firstAccumulatedTac,
+        convertedFiles[0]?.originalContent,
+      ),
     });
     document.body.appendChild(a);
     a.click();
@@ -1369,10 +1387,7 @@ export function FileConverter({
   const focusQueueItem = (index: number) => {
     const clamped = clampQueueIndex(index, pendingFiles.length);
     setQueueFocusIndex(clamped);
-    const item = pendingFiles[clamped];
-    if (item) {
-      setManualInput(item.content);
-    }
+    applyFocusedQueueContent(pendingFiles[clamped], setManualInput);
   };
 
   const handleQueueConvertFocused = async () => {
@@ -1406,16 +1421,15 @@ export function FileConverter({
       if (report.ok) {
         toast.success(`${focused.name}: lint OK`, { id: progressId });
       } else {
-        const issueCount = report.issues?.length ?? 0;
+        const issueCount = lintIssueCount(report.issues);
         toast.error(`${focused.name}: ${issueCount} lint issue(s)`, {
           id: progressId,
         });
       }
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : `Validate failed for ${focused.name}`,
-        { id: progressId },
-      );
+      toast.error(focusedValidateErrorMessage(error, focused.name), {
+        id: progressId,
+      });
     } finally {
       setIsBatchValidating(false);
     }
@@ -1476,7 +1490,7 @@ export function FileConverter({
   };
 
   const handleWorkQueueKeyDown = (e: React.KeyboardEvent) => {
-    if (pendingFiles.length === 0) return;
+    // Queue only mounts when pendingFiles.length > 0 (see JSX below).
     const focus = clampQueueIndex(queueFocusIndex, pendingFiles.length);
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -1539,14 +1553,10 @@ export function FileConverter({
 
   const liveIwxxmRunner = useCallback(
     async (signal: AbortSignal) => {
-      const text = manualInput.trim();
-      if (!text) {
-        return;
-      }
       setDecodeError(null);
       try {
         const response = await callBackendConversion({
-          manualText: text,
+          manualText: manualInput.trim(),
           product: liveAssistProduct,
           profile: conversionParams.profile,
           iwxxmVersion: conversionParams.iwxxmVersion,
@@ -2215,7 +2225,7 @@ export function FileConverter({
                 tabIndex={0}
                 data-testid="compact-file-drop-zone"
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (isDropZoneActivateKey(e.key)) {
                     e.preventDefault();
                     fileInputRef.current?.click();
                   }
@@ -2397,7 +2407,7 @@ export function FileConverter({
                     }}
                     placeholder="SAAA00"
                     maxLength={6}
-                    aria-invalid={bulletinFieldError ? true : undefined}
+                    aria-invalid={ariaInvalidFromError(bulletinFieldError)}
                     className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                   />
                   {bulletinFieldError ? (

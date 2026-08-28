@@ -112,4 +112,74 @@ describe('LiveAssistScheduler (T4.1 / UJ-017)', () => {
     expect(isAbortError(err)).toBe(true);
     expect(isAbortError(new Error('network'))).toBe(false);
   });
+
+  it('exposes activeController while a run is in flight', () => {
+    const scheduler = new LiveAssistScheduler();
+    const runner = vi.fn(
+      () =>
+        new Promise<void>(() => {
+          /* never settles */
+        }),
+    );
+    expect(scheduler.activeController).toBeNull();
+    scheduler.schedule(runner);
+    expect(scheduler.activeController).toBeNull();
+    vi.advanceTimersByTime(LIVE_ASSIST_DEBOUNCE_MS);
+    expect(scheduler.activeController).toBeInstanceOf(AbortController);
+  });
+
+  it('swallows AbortError from the runner', async () => {
+    const scheduler = new LiveAssistScheduler();
+    const abortErr = new DOMException('Aborted', 'AbortError');
+    const runner = vi.fn().mockRejectedValue(abortErr);
+
+    scheduler.schedule(runner);
+    vi.advanceTimersByTime(LIVE_ASSIST_DEBOUNCE_MS);
+    await vi.runAllTimersAsync();
+    expect(runner).toHaveBeenCalledTimes(1);
+  });
+
+  it('swallows non-abort errors when the signal was already aborted', async () => {
+    const scheduler = new LiveAssistScheduler();
+    let resolveHold: (() => void) | undefined;
+    const hold = new Promise<void>((resolve) => {
+      resolveHold = resolve;
+    });
+    const first = vi.fn(async (signal: AbortSignal) => {
+      await hold;
+      if (signal.aborted) {
+        throw new Error('late failure after abort');
+      }
+    });
+
+    scheduler.schedule(first);
+    vi.advanceTimersByTime(LIVE_ASSIST_DEBOUNCE_MS);
+    expect(first).toHaveBeenCalled();
+    scheduler.cancel();
+    resolveHold?.();
+    await Promise.resolve();
+    await Promise.resolve();
+  });
+
+  it('re-throws non-abort runner failures when not aborted', async () => {
+    const scheduler = new LiveAssistScheduler();
+    const boom = new Error('network');
+    const runner = vi.fn().mockRejectedValue(boom);
+    const unhandled: unknown[] = [];
+    const onUnhandled = (reason: unknown) => {
+      unhandled.push(reason);
+    };
+    process.on('unhandledRejection', onUnhandled);
+
+    scheduler.schedule(runner);
+    vi.advanceTimersByTime(LIVE_ASSIST_DEBOUNCE_MS);
+    await vi.runAllTimersAsync();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    process.off('unhandledRejection', onUnhandled);
+    expect(
+      unhandled.some((r) => r === boom || (r as Error)?.message === 'network'),
+    ).toBe(true);
+  });
 });

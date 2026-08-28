@@ -791,6 +791,25 @@ describe('DisseminationDrawer', () => {
     });
   });
 
+  it('shows Error.message for Error queue failures', async () => {
+    const user = userEvent.setup();
+    mockRunDisseminationQueue.mockImplementation(() => {
+      throw new Error('queue boom');
+    });
+
+    render(<DisseminationDrawer {...defaultProps} />);
+
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/queue-err.db',
+    );
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-error')).toHaveTextContent('queue boom');
+    });
+  });
+
   it('shows pending progress rows when results exist without row state', async () => {
     const user = userEvent.setup();
     mockRunDisseminationQueue.mockImplementation(async function* () {
@@ -833,5 +852,127 @@ describe('DisseminationDrawer', () => {
       'data-status',
       'pending',
     );
+  });
+
+  it('parses empty BYOC params JSON as an empty object', async () => {
+    const user = userEvent.setup();
+    render(<DisseminationDrawer {...defaultProps} />);
+    await user.selectOptions(screen.getByTestId('dissemination-sink-chooser'), 'wis2');
+    fireEvent.change(screen.getByTestId('dissemination-byoc-params'), {
+      target: { value: '' },
+    });
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+    });
+  });
+
+  it('reports failures without detail using the generic progress copy', async () => {
+    const user = userEvent.setup();
+    mockRunDisseminationQueue.mockImplementation(async function* () {
+      yield {
+        type: 'file_done',
+        result: {
+          candidateId: 'session-primary',
+          status: 'failed',
+          phase: 'send',
+        },
+      };
+    });
+
+    render(<DisseminationDrawer {...defaultProps} />);
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/nodetail.db',
+    );
+    await user.click(screen.getByTestId('dissemination-send-button'));
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-error')).toHaveTextContent(
+        /see progress below/i,
+      );
+    });
+  });
+
+  it('covers drop/progress helper branches', async () => {
+    const { dropReaderText, hasDropFiles, progressRowState } =
+      await import('./DisseminationDrawer');
+    expect(hasDropFiles(null)).toBe(false);
+    expect(hasDropFiles(undefined)).toBe(false);
+    expect(dropReaderText(null)).toBe('');
+    expect(dropReaderText('hi')).toBe('hi');
+    expect(progressRowState({}, 'x')).toEqual({ status: 'pending' });
+    expect(progressRowState({ x: { status: 'send', detail: 'd' } }, 'x')).toEqual({
+      status: 'send',
+      detail: 'd',
+    });
+  });
+
+  it('send path uses drawer product when candidate product is missing', async () => {
+    const { resolveDisseminationProduct } = await import('./DisseminationDrawer');
+    expect(resolveDisseminationProduct(undefined, 'taf')).toBe('taf');
+    expect(resolveDisseminationProduct('metar', 'taf')).toBe('metar');
+
+    const user = userEvent.setup();
+    let sawMissingProduct = false;
+    mockRunDisseminationQueue.mockImplementation(async function* (opts: {
+      send: (c: { product?: string }, h: string) => Promise<unknown>;
+      candidates: Array<{ id: string; product?: string }>;
+    }) {
+      for (const c of opts.candidates) {
+        if (c.product === undefined) {
+          sawMissingProduct = true;
+        }
+        await opts.send(c, 'h-fallback');
+        yield {
+          type: 'result' as const,
+          result: {
+            candidateId: c.id,
+            status: 'success' as const,
+          },
+        };
+      }
+    });
+
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: async () => ({ ok: true }),
+    } as Response);
+
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        product="taf"
+        sessionOutputs={[
+          {
+            id: 'no-product-send',
+            name: 'orphan.xml',
+            source: 'session',
+            iwxxmXml: '<taf/>',
+          },
+        ]}
+      />,
+    );
+
+    await user.click(screen.getByTestId('dissemination-select-all'));
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/send-product.db',
+    );
+    await user.click(screen.getByTestId('dissemination-send-button'));
+    await waitFor(() => {
+      expect(mockRunDisseminationQueue).toHaveBeenCalled();
+    });
+    expect(sawMissingProduct).toBe(true);
+  });
+
+  it('ignores drop FileList with empty first slot', () => {
+    render(<DisseminationDrawer {...defaultProps} />);
+    const dropzone = screen.getByTestId('dissemination-dropzone');
+    fireEvent.drop(dropzone, {
+      dataTransfer: {
+        files: { length: 1, 0: undefined } as unknown as FileList,
+      },
+    });
+    expect(screen.queryByText(/drop\.xml|drop\.tac/i)).not.toBeInTheDocument();
   });
 });

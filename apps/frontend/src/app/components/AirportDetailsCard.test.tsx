@@ -122,6 +122,26 @@ describe('AirportDetailsCard', () => {
     vi.useRealTimers();
   });
 
+  it('ignores region fetch errors after unmount', async () => {
+    vi.useFakeTimers();
+    mockFetchAirportRegion.mockImplementation(
+      () =>
+        new Promise((_, reject) => {
+          setTimeout(() => reject(new Error('region down')), 100);
+        }),
+    );
+
+    const { unmount } = render(<AirportDetailsCard icao="KJFK" />);
+    unmount();
+
+    await act(async () => {
+      vi.advanceTimersByTime(100);
+    });
+
+    expect(screen.queryByText(/region down/i)).not.toBeInTheDocument();
+    vi.useRealTimers();
+  });
+
   it('renders city-only location when country is absent', async () => {
     mockFindWhere.mockReturnValue({
       icao: 'KATL',

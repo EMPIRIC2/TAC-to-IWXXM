@@ -15,6 +15,30 @@ export const DEFAULT_OUTPUT_BASENAME = 'manual_input';
 /** Soft cap for accumulated convert results (F7.r / #903). */
 export const ACCUMULATE_RESULT_CAP = 200;
 
+/**
+ * Append converted results when under the accumulate cap.
+ *
+ * @returns overCap true when the append would exceed the cap (prev unchanged)
+ */
+export function appendConvertedWithinCap<T>(
+  prev: T[],
+  next: T[],
+  cap: number = ACCUMULATE_RESULT_CAP,
+): { files: T[]; overCap: boolean } {
+  if (prev.length + next.length > cap) {
+    return { files: prev, overCap: true };
+  }
+  return { files: [...prev, ...next], overCap: false };
+}
+
+/** Keep the first accumulated TAC stem once set. */
+export function nextFirstAccumulatedTac(
+  stem: string | null,
+  firstOriginal: string | null | undefined,
+): string | null {
+  return stem ?? firstOriginal ?? null;
+}
+
 /** Max length of the content-derived ZIP stem when custom name is empty. */
 export const ARCHIVE_TAC_STEM_LEN = 8;
 
@@ -37,7 +61,7 @@ export function sanitizeOutputFilename(raw: string | null | undefined): string {
   }
   let name = raw.trim();
   // Strip directories — keep the final path segment.
-  name = name.split(/[\\/]/).pop() ?? '';
+  name = name.split(/[\\/]/).pop() || '';
   // Drop a single trailing extension (e.g. ".xml", ".txt").
   name = name.replace(/\.[^.]+$/, '');
   // Remove illegal/control characters and re-trim.

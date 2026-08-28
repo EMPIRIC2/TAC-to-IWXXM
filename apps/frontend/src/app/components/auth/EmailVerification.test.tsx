@@ -2,7 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { EmailVerification } from './EmailVerification';
+import {
+  EmailVerification,
+  VerifyActionLabel,
+  ResendActionLabel,
+  verifyButtonAriaLabel,
+} from './EmailVerification';
 
 const mockToast = vi.hoisted(() => ({
   success: vi.fn(),
@@ -161,14 +166,27 @@ describe('EmailVerification', () => {
     expect(screen.getByText('Sent to a***@example.com')).toBeInTheDocument();
   });
 
-  it('shows verify button as loading while verifying', async () => {
-    vi.useFakeTimers();
-    render(<EmailVerification {...defaultProps} />);
+  it('shows verify button as loading while verifying', () => {
+    render(<VerifyActionLabel isVerifying />);
+    expect(screen.getByText(/checking\.\.\./i)).toBeInTheDocument();
+    expect(verifyButtonAriaLabel(true)).toMatch(/checking verification status/i);
+    expect(verifyButtonAriaLabel(false)).toMatch(/i've verified my email/i);
+  });
 
-    fireEvent.click(screen.getByRole('button', { name: /i've verified my email/i }));
+  it('shows resend button as loading while sending', () => {
+    render(<ResendActionLabel isResending canResend countdown={0} />);
+    expect(screen.getByText(/sending\.\.\./i)).toBeInTheDocument();
+  });
 
-    // After click, isVerifying=true briefly; emailStatus changes to verified immediately
-    expect(screen.getByText('Email Verified ✓')).toBeInTheDocument();
+  it('shows idle verify and resend labels', () => {
+    const { rerender } = render(<VerifyActionLabel isVerifying={false} />);
+    expect(screen.getByText(/i've verified my email/i)).toBeInTheDocument();
+    rerender(<ResendActionLabel isResending={false} canResend countdown={0} />);
+    expect(screen.getByText('Resend Email')).toBeInTheDocument();
+    rerender(
+      <ResendActionLabel isResending={false} canResend={false} countdown={42} />,
+    );
+    expect(screen.getByText('Resend in 42s')).toBeInTheDocument();
   });
 
   it('renders all help text items', () => {

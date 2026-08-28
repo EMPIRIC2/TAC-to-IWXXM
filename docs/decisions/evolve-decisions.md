@@ -38,7 +38,12 @@
 | D-EV080-m2b-t23 | **completed** backend 100% line+branch (`test_ev080_m2b_coverage_gaps.py` + unit extensions) |
 | D-EV080-m2b-t24 | **completed** fail_under / CI `--cov-fail-under` / per-file default → 100; `__init__.py` omit removed |
 | D-EV080-m2b-t25 | **completed** TC-EV080-002/003 + legacy gate asserts updated to 100 |
-| D-EV080-m2b-pr | [#1080](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1080) `[M2b] EV-080 tac2iwxxm+backend → 100% + flip gates` → stage @ `28ed55d6` |
+| D-EV080-m2b-pr | [#1080](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1080) `[M2b] EV-080 tac2iwxxm+backend → 100% + flip gates` → stage @ `693d7739` **merged** |
+| D-EV080-m3 | **completed** Vitest FE + shared → 100% (exclude purge + fills + thresholds) |
+| D-EV080-m3-t31 | **completed** executable FE coverage.exclude purged (fixtures/generated kept) |
+| D-EV080-m3-fills | **completed** FE unit fills to 100% stmts/branches/funcs/lines (3817/3817, 2837/2837) |
+| D-EV080-m3-flip | **completed** Vitest thresholds FE+shared → 100; TC-EV080-004/005 |
+| D-EV080-m3-pr | _pending_ `[M3] EV-080 Vitest 100% + exclude purge` → stage |
 
 ### Milestones (planned)
 
