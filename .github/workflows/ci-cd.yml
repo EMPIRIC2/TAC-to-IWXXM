@@ -329,12 +329,9 @@ jobs:
           if-no-files-found: ignore
 
   # EV-080 / #1077 — scripts Python cov + bats-core (D-TP080-2/3).
-  # Tech-tooling scaffold: job disabled until Build M4 lands tests/scripts + tests/bats.
-  # Flip `if:` to always() (or remove) and wire into required checks when T4.1–T4.5 green.
   scripts-coverage:
     runs-on: ubuntu-latest
     name: Scripts coverage (py + bats)
-    if: false
     steps:
       - uses: actions/checkout@v5
         with:

@@ -8,8 +8,7 @@ Unit tests for `scripts/**/*.py`. Run via:
 make test-coverage-scripts
 ```
 
-Until Build M4 adds collected `test_*.py` files here, the make target prints a scaffold
-notice and exits 0. After tests land: `--cov=scripts --cov-fail-under=100` +
-`check_per_file_coverage.py --min-pct 100`.
+Enforces `--cov=scripts` (plus hyphen-path files) at **100%** line+branch via
+`tests/scripts/coveragerc` and `check_per_file_coverage.py --min-pct 100`.
 
-Do not raise package/app `fail_under` floors in this tree — those flip in M2 after fills.
+Load hyphen-dir modules with `load_script()` from `conftest.py`.

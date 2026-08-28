@@ -43,7 +43,11 @@
 | D-EV080-m3-t31 | **completed** executable FE coverage.exclude purged (fixtures/generated kept) |
 | D-EV080-m3-fills | **completed** FE unit fills to 100% stmts/branches/funcs/lines (3817/3817, 2837/2837) |
 | D-EV080-m3-flip | **completed** Vitest thresholds FE+shared → 100; TC-EV080-004/005 |
-| D-EV080-m3-pr | [#1081](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1081) `[M3] EV-080 Vitest 100% + exclude purge` → stage @ `45b301d7` **open** |
+| D-EV080-m3-pr | [#1081](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1081) `[M3] EV-080 Vitest 100% + exclude purge` → stage **merged** |
+| D-EV080-m4 | **completed** scripts Python cov 100% + bats for all 56 `.sh` + CI `scripts-coverage` enabled |
+| D-EV080-m4-t41 | **completed** `tests/scripts/` harness + `make test-coverage-scripts` fail_under 100 |
+| D-EV080-m4-t43 | **completed** `tests/bats/` mirrors `scripts/**/*.sh` + helpers stubs (NFR-006) |
+| D-EV080-m4-guards | **completed** TC-EV080-006..008 |
 
 ### Milestones (planned)
 

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Stub kubectl — cluster-free smoke paths.
+set -euo pipefail
+joined="$*"
+
+if [[ "$joined" == *"get deploy metar-worker"* && "$joined" == *replicas* ]]; then
+  echo "0"
+  exit 0
+fi
+
+if [[ "$joined" == *"get secret"* && "$joined" == *INGEST_POLLER_URL* ]]; then
+  printf '%s' 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0VNUElSSUMyL1RBQy10by1JV1hYTS9tYWluL2FwcHMvd29ya2VyL3Rlc3RzL2ZpeHR1cmVzL2luZ2VzdF9mZWVkLmpzb24='
+  exit 0
+fi
+
+if [[ "$joined" == *"rollout status"* ]]; then
+  echo 'deployment "metar-worker" successfully rolled out'
+  exit 0
+fi
+
+exit 0
