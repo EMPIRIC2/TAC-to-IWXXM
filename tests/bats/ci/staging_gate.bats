@@ -11,6 +11,9 @@ load "${BATS_TEST_DIRNAME}/../helpers/load"
 }
 
 @test "scripts/ci/staging_gate.sh: fail closed without required GitHub env" {
-  run bash scripts/ci/staging_gate.sh
+  # Actions always sets GITHUB_*; clear so ${VAR:?} fail-closed is measurable.
+  run env -u GITHUB_REPOSITORY -u GITHUB_EVENT_NAME -u GITHUB_SHA \
+    -u GITHUB_BASE_REF -u GITHUB_HEAD_REF -u GITHUB_EVENT_PATH -u GITHUB_TOKEN \
+    bash scripts/ci/staging_gate.sh
   [ "$status" -ne 0 ]
 }

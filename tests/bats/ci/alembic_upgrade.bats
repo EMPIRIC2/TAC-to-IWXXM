@@ -4,7 +4,8 @@
 load "${BATS_TEST_DIRNAME}/../helpers/load"
 
 @test "scripts/ci/alembic_upgrade.sh: fail closed without DATABASE_URL" {
-  run bash scripts/ci/alembic_upgrade.sh
+  # CI often exports DATABASE_URL; clear both names so fail-closed is measurable.
+  run env -u DATABASE_URL -u ALEMBIC_DATABASE_URL bash scripts/ci/alembic_upgrade.sh
   [ "$status" -eq 1 ]
 }
 
