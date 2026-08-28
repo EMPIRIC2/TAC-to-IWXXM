@@ -65,9 +65,12 @@ def test_parse_summary_and_collect_rows(tmp_path: Path) -> None:
 
 
 def test_format_markdown_branches(monkeypatch: pytest.MonkeyPatch) -> None:
+    # CI sets GITHUB_RUN_ID; clear so the no-id branch of _run_url is covered.
+    monkeypatch.delenv("GITHUB_RUN_ID", raising=False)
     empty = mod.format_markdown({}, [])
     assert "no quality artifacts" in empty
     assert mod.MARKER in empty
+    assert "/actions/runs/" not in empty
 
     md = mod.format_markdown({("METAR", "annex3"): [1, 0, 0, 0]}, ["annex3-golden"])
     assert "**Sources:**" in md
