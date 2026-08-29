@@ -22,6 +22,9 @@
 | D-EV087-draft-docs | catalog P1, stubs, mining, F36, test-plan TC-EV087, api-contract ids |
 | D-EV087-gate | **open** (`open_build` 2026-08-28) |
 | D-EV087-build | M1–M5 implemented on `evolve/EV-087-au-nz-semantic-profiles`; TC-EV087-001..006 green |
+| D-EV087-pr | [PR #1085](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1085) → `stage`; tip `aa1f3e90`; CI green |
+| D-EV087-verify-build | 08 PASS — `reports/verification-report.md` |
+| D-EV087-qa | 09 PASS — `reports/qa-report.md` (no UI; H4–H5 N/A) |
 
 ### Corpus
 
