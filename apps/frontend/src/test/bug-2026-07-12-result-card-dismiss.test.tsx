@@ -8,9 +8,14 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '@/app/components/FileConverter';
+
+/** Avoid per-keystroke delays — full coverage suite otherwise times out at 20s. */
+async function setInputValue(el: HTMLElement, value: string) {
+  fireEvent.change(el, { target: { value } });
+}
 
 const mockConvertMetarToIwxxm = vi.hoisted(() => vi.fn());
 const mockPersistSession = vi.hoisted(() => vi.fn().mockResolvedValue(null));
@@ -129,13 +134,16 @@ describe('BUG-2026-07-12 result card dismiss', () => {
   });
 
   it('Clear dismisses the conversion results Card (manual_input.txt)', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     const { container } = render(
       <FileConverter {...defaultProps} accessToken="token" />,
     );
 
     const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-    await user.type(textarea, 'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018');
+    await setInputValue(
+      textarea,
+      'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018',
+    );
     await user.click(screen.getByTestId('convert-button'));
 
     await waitFor(() => {
@@ -154,7 +162,7 @@ describe('BUG-2026-07-12 result card dismiss', () => {
   });
 
   it('Remove stays dismissed when a stale work-session update rehydrates', async () => {
-    const user = userEvent.setup();
+    const user = userEvent.setup({ delay: null });
     const baseSession = {
       id: 'sess-stuck-card',
       status: 'wip' as const,

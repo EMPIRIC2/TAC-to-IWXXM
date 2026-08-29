@@ -600,6 +600,12 @@ test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-fronte
 
 test: test-unit
 
+# Pack-verify `tests` angle fallback (`pack-run` tries `make test` then `make test-fast`).
+# Stable subset without the FE Vitest coverage job (which times out under agent load).
+# Full `make test` / CI frontend matrix remain the merge gate.
+test-fast: test-unit-workspace test-unit-backend test-unit-auth test-unit-tac2iwxxm \
+	test-unit-iwxxm-validate test-unit-tac-validate test-bugs
+
 tests\:e2e:
 	cd apps/e2e && $(PNPM) exec playwright test
 

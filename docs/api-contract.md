@@ -194,7 +194,7 @@ Legacy flat `profile=` remains as deprecated alias. Optional `PROFILE_WIRE_V2` e
 defaults (see env-contract).
 
 **Intent**: Separate **semantic** (TAC→IWXXM) from **exchange** (packaging). Canonical semantic
-ids: `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`. Legacy aliases during deprecation window (until **2026-10-31**,
+ids: `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` (EV-087 P1 kickoff — Build registers wire ids). Legacy aliases during deprecation window (until **2026-10-31**,
 [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)):
 
 | Alias | Canonical |

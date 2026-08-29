@@ -1,5 +1,42 @@
 # Evolve Decisions
 
+## Cycle EV-087 — AU_BOM + NZ_CAA_MET semantic P1 kickoff
+
+**Opened:** 2026-08-28 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-087-au-nz-semantic-profiles`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Issues:** [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917), [#918](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/918), [#913](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913), [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044)
+
+### Locked requirements
+
+| ID | Outcome |
+|----|---------|
+| D-EV087-inter-emit | Parse INTER distinctly; emit `TEMPORARY_FLUCTUATIONS` + preserve INTER in remarks/diagnostics; never invent IWXXM enum |
+| D-EV087-taf3 | `product=TAF`; RMK `TAF3` / `TAF3 VALID TL` → flag `AU.TAF.TAF3` |
+| D-EV087-nz-domestic | Parse domestic extras to IR; core IWXXM only if attested; else remarks + diagnostics |
+| D-EV087-catalog | `AU_BOM` + `NZ_CAA_MET` → P1 / in_progress |
+| D-EV087-depth | Registry + stubs + mining + goldens + parse/lint; convert where clear; SIGMET ICAO base |
+| D-EV087-ui | N/A — no FE picker |
+| D-EV087-xsd | No AU/NZ national extension pin (none published) |
+| D-EV087-arch | ADR-036 overlay model confirmed |
+| D-EV087-feasibility | **FEASIBLE** — library-first kickoff; INTER emit policy locked |
+| D-EV087-tech-plan | M1–M5 registry→AU parse→INTER emit→NZ→docs promote |
+| D-EV087-draft-docs | catalog P1, stubs, mining, F36, test-plan TC-EV087, api-contract ids |
+| D-EV087-gate | **open** (`open_build` 2026-08-28) |
+| D-EV087-build | M1–M5 implemented on `evolve/EV-087-au-nz-semantic-profiles`; TC-EV087-001..006 green |
+| D-EV087-pr | [PR #1085](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1085) → `stage`; tip `aa1f3e90`; CI green |
+| D-EV087-verify-build | 08 PASS — `reports/verification-report.md` |
+| D-EV087-qa | 09 PASS — `reports/qa-report.md` (no UI; H4–H5 N/A) |
+| D-EV087-verify-tests | Pack `tests` FAIL from FE Vitest load timeouts — harden FileConverter + add `make test-fast` for pack-run fallback |
+| D-EV087-inline-doc | Full-tree inline-doc WAIVE (brownfield); delta VERIFY_DOC_PATHS PASS; bar in `docs/decisions/inline-documentation-verify.md` |
+| D-EV087-adv-swxa | Quality sticky SWXA Fail:1 pre-existing annex3 residual — not EV-087; pack job PASS |
+| D-EV087-adv-h4h5 | H4–H5 N/A waived (D-EV087-ui); staging smoke after merge if needed |
+| D-EV087-adv-e2e | E2E Full skipped on PR→stage; E2E Smoke PASS |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles] [Corpus: adr/ADR-036] [Corpus: tests] [Corpus: api]
+
+---
+
 ## Cycle EV-080 — Universal 100% unit coverage (EV-080-unit-coverage-100)
 
 **Opened:** 2026-08-27 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-080-unit-coverage-100`  

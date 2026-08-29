@@ -2,8 +2,8 @@
 # Corpus: domain-profiles · ADR-036 §7
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 1
-cycle: EV-085
-updated: "2026-08-26"
+cycle: EV-087
+updated: "2026-08-28"
 
 priority_legend:
   P0: "Baseline — implemented or default exchange overlay (F35)"
@@ -245,44 +245,67 @@ profiles:
 
   - id: AU_BOM
     kind: semantic
-    priority: P2
-    status: deferred
+    priority: P1
+    status: in_progress
+    emit_key: au_bom
     implementation:
       issue: "#917"
-    products: [TAF, METAR]
+      package: packages/tac2iwxxm
+      cycle: EV-087
+    products: [TAF, METAR, SPECI]
+    # TAF3 is an RMK service marker under product=TAF (D-EV087-taf3) — not a separate API product enum.
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no AU national extension published)
     sources:
       - url: https://www.bom.gov.au/aviation/forecasts/international-taf/
         label: BoM International TAF guidance
         access: public
-        proves: INTER, TAF3, RMK T/Q extensions
+        proves: INTER examples, RMK T/Q context
+      - url: http://www.bom.gov.au/aviation/data/education/taf-metar-speci-reference-card.pdf
+        label: BoM TAF and METAR/SPECI reference card
+        access: public
+        proves: INTER vs TEMPO durations; T/Q RMK; TAF3 marker; AUTO NCD/UP/solidi
+      - url: https://www.bom.gov.au/aviation/taf3/index.shtml
+        label: BoM TAF3 Implementation
+        access: public
+        proves: TAF3 service definition
       - url: https://www.icao.int/APAC/meetingdocs?fid=38396
         label: ICAO APAC — Australian TAF extensions WP
         access: public
         proves: Regional TAF extension context
     mining_notes:
+      - docs/domain/mining/au-bom-tac-mining-notes.md
       - docs/domain/mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md
-    stub: null
+    stub: semantic/AU_BOM.md
     gaps:
-      - INTER/TAF3/RMK T/Q authoritative refs not fully triaged
-      - No implementation issue started (#917 deferred)
+      - No published AU IWXXM extension XSD (core-only emit)
+      - INTER → IWXXM uses TEMPORARY_FLUCTUATIONS + provenance (D-EV087-inter-emit); no native INTER enum
+      - Full BoM category A/B issuance schedule deepen optional
 
   - id: NZ_CAA_MET
     kind: semantic
-    priority: P2
-    status: deferred
+    priority: P1
+    status: in_progress
+    emit_key: nz_caa_met
     implementation:
       issue: "#918"
-    products: [TAF, METAR]
+      package: packages/tac2iwxxm
+      cycle: EV-087
+    products: [TAF, METAR, SPECI]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no NZ national extension published)
     sources:
       - url: https://www.aviation.govt.nz/airspace-and-aerodromes/meteorology/aviation-weather-products/
         label: NZ CAA aviation weather products
         access: public
         proves: Domestic vs international TAF; METAR AUTO policy
-    mining_notes: []
-    stub: null
+    mining_notes:
+      - docs/domain/mining/nz-caa-met-tac-mining-notes.md
+    stub: semantic/NZ_CAA_MET.md
     gaps:
-      - Domestic vs international TAF refs not mined
-      - No implementation issue started (#918 deferred)
+      - No published NZ IWXXM extension XSD (core-only emit)
+      - Domestic 2000FT WIND / QNH MNM/MAX → remarks unless core mapping attested (D-EV087-nz-domestic)
+      - Additional CAA/AIP PDF durable URLs to harden after local PDF harvest
 
   # --- Exchange (packaging / routing — not TAC grammar) ---
 

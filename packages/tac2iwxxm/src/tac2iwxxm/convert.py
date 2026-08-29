@@ -18,8 +18,10 @@ from tac2iwxxm.products.vaa_tca import parse_tca, parse_vaa
 from tac2iwxxm.products.vona import parse_vona
 from tac2iwxxm.profile_registry import (
     EMIT_ANNEX3,
+    EMIT_AU_BOM,
     EMIT_CA_ECCC,
     EMIT_IWXXM_US,
+    EMIT_NZ_CAA_MET,
     resolve_semantic_profile,
 )
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
@@ -43,6 +45,8 @@ from tac2iwxxm.profiles.iwxxm_us import (
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
 _US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
 _CA_ECCC_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "AIRMET"})
+_AU_BOM_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
+_NZ_CAA_MET_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
 _REPORT_STATUSES = frozenset({"NORMAL", "AMENDMENT", "CORRECTION"})
 
 # Map MALFORMED_REMARKS message needles → token regexes for editor spans (S011 T2.2).
@@ -282,6 +286,7 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
             return emit_taf_iwxxm_us(ir, iwxxm_version=iwxxm_version)
         if profile == EMIT_CA_ECCC:
             return emit_taf_ca_eccc(ir, iwxxm_version=iwxxm_version)
+        # AU_BOM / NZ_CAA_MET / annex3 — core IWXXM only (D-EV087-xsd).
         return emit_taf_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "SIGMET":
         if profile == "iwxxm_us":
@@ -448,6 +453,16 @@ def convert(
             "UNSUPPORTED_PROFILE",
             f"profile ca_eccc not supported yet for product {product_u!r}",
         )
+    if profile_l == EMIT_AU_BOM and product_u not in _AU_BOM_PRODUCTS:
+        return _fail(
+            "UNSUPPORTED_PROFILE",
+            f"profile au_bom not supported yet for product {product_u!r}",
+        )
+    if profile_l == EMIT_NZ_CAA_MET and product_u not in _NZ_CAA_MET_PRODUCTS:
+        return _fail(
+            "UNSUPPORTED_PROFILE",
+            f"profile nz_caa_met not supported yet for product {product_u!r}",
+        )
     if profile_l == EMIT_CA_ECCC and iwxxm_version != CA_IWXXM_VERSION:
         return _fail(
             "INVALID_IWXXM_VERSION",
@@ -503,6 +518,21 @@ def convert(
                 severity="info",
                 code="DEPRECATED_PROFILE_ALIAS",
                 message=f"profile alias {profile!r} is deprecated; use canonical id {semantic_profile!r}",
+            )
+        )
+    # D-EV087-inter-emit / national remark provenance (AU INTER, TAF3, NZ domestic extras).
+    national_tokens = ir.get("national_remark_tokens")
+    if isinstance(national_tokens, list) and national_tokens:
+        joined = ", ".join(str(t) for t in cast(list[object], national_tokens))
+        issues.append(
+            ConvertIssue(
+                severity="info",
+                code="NATIONAL_TAC_PROVENANCE",
+                message=(
+                    f"National TAC tokens preserved for diagnostics/remarks "
+                    f"(IWXXM core has no dedicated enum): {joined}"
+                ),
+                location="remarks",
             )
         )
     if profile_l == EMIT_ANNEX3 and product_u in {"METAR", "SPECI"} and ir.get("remarks_present"):
