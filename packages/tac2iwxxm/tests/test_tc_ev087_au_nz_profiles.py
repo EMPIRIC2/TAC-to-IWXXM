@@ -117,6 +117,34 @@ def test_tc_ev087_006_unknown_semantic_still_fail_closed() -> None:
     assert resolve_semantic_profile("CA_ECCC") is not None
 
 
+def test_tc_ev087_007_unsupported_product_for_au_nz() -> None:
+    """SIGMET is out of P1 product set for AU_BOM / NZ_CAA_MET."""
+    for profile in ("AU_BOM", "NZ_CAA_MET"):
+        bad = convert(
+            "YMMM SIGMET A1 VALID 010000/010400 YMMC-\nYMMM MELBOURNE FIR SEV TURB FCST WI N3000 E15000 - N3100 E15100 FL180/350=",
+            product="SIGMET",
+            profile=profile,
+        )
+        assert not bad.ok, profile
+        assert any(i.code == "UNSUPPORTED_PROFILE" for i in bad.issues), profile
+
+
+def test_tc_ev087_008_nz_2000ft_wind_vrb_and_gust() -> None:
+    """Domestic 2000FT WIND covers VRB and gust branches."""
+    vrb = parse_taf("TAF NZAA 192313Z 2000/2012 01015KT 30KM NSW SCT020\n2000FT WIND VRB15KT\nQNH MNM 1010 MAX 1020=")
+    assert vrb.get("nz_2000ft_wind", {}).get("wind_variable") is True
+    assert vrb["nz_2000ft_wind"]["wind_speed_kt"] == 15
+    assert "wind_dir_deg" not in vrb["nz_2000ft_wind"]
+
+    gust = parse_taf(
+        "TAF NZAA 192313Z 2000/2012 01015KT 30KM NSW SCT020\n2000FT WIND 27025G35KT\nQNH MNM 1010 MAX 1020="
+    )
+    wind = gust.get("nz_2000ft_wind") or {}
+    assert wind.get("wind_dir_deg") == 270
+    assert wind.get("wind_speed_kt") == 25
+    assert wind.get("wind_gust_kt") == 35
+
+
 @pytest.mark.parametrize(
     ("root", "profile"),
     [

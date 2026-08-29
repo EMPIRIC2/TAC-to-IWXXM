@@ -345,11 +345,10 @@ def parse_taf(tac: str, *, product: str = "TAF") -> dict[str, Any]:
         ir["forecast_altimeter_inhg"] = int(alt.group("alt")) / 100.0
 
     # AU BoM RMK T/Q + TAF3 (D-EV087-taf3) — scanned on full body including RMK.
-    if _TAF3_MARKER.search(body):
+    m_taf3 = _TAF3_MARKER.search(body)
+    if m_taf3 is not None:
         ir["au_taf3"] = True
-        m_taf3 = _TAF3_MARKER.search(body)
-        if m_taf3 is not None:
-            ir["au_taf3_token"] = m_taf3.group(0)
+        ir["au_taf3_token"] = m_taf3.group(0)
     t_series = _RMK_T_SERIES.search(body)
     if t_series is not None:
         ir["au_rmk_temperatures_c"] = t_series.group(1).split()
