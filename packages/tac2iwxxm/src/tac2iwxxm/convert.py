@@ -523,7 +523,7 @@ def convert(
     # D-EV087-inter-emit / national remark provenance (AU INTER, TAF3, NZ domestic extras).
     national_tokens = ir.get("national_remark_tokens")
     if isinstance(national_tokens, list) and national_tokens:
-        joined = ", ".join(str(t) for t in national_tokens)
+        joined = ", ".join(str(t) for t in cast(list[object], national_tokens))
         issues.append(
             ConvertIssue(
                 severity="info",

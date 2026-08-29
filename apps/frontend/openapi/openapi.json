@@ -313,7 +313,7 @@
           },
           "semantic_profile": {
             "default": "",
-            "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)",
+            "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, or NZ_CAA_MET; aliases annex3 / iwxxm_us accepted)",
             "title": "Semantic Profile",
             "type": "string"
           },
@@ -414,7 +414,7 @@
           },
           "semantic_profile": {
             "default": "",
-            "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)",
+            "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, or NZ_CAA_MET; aliases annex3 / iwxxm_us accepted)",
             "title": "Semantic Profile",
             "type": "string"
           }
@@ -629,7 +629,7 @@
           },
           "semantic_profile": {
             "default": "",
-            "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)",
+            "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, or NZ_CAA_MET; aliases annex3 / iwxxm_us accepted)",
             "title": "Semantic Profile",
             "type": "string"
           },
@@ -3290,7 +3290,7 @@
                 "type": "null"
               }
             ],
-            "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC)",
+            "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, or NZ_CAA_MET)",
             "examples": [
               "ICAO_2025",
               "US_FAA_NWS",
