@@ -25,6 +25,11 @@
 | D-EV087-pr | [PR #1085](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1085) → `stage`; tip `aa1f3e90`; CI green |
 | D-EV087-verify-build | 08 PASS — `reports/verification-report.md` |
 | D-EV087-qa | 09 PASS — `reports/qa-report.md` (no UI; H4–H5 N/A) |
+| D-EV087-verify-tests | Pack `tests` FAIL from FE Vitest load timeouts — harden FileConverter + add `make test-fast` for pack-run fallback |
+| D-EV087-inline-doc | Full-tree inline-doc WAIVE (brownfield); delta VERIFY_DOC_PATHS PASS; bar in `docs/decisions/inline-documentation-verify.md` |
+| D-EV087-adv-swxa | Quality sticky SWXA Fail:1 pre-existing annex3 residual — not EV-087; pack job PASS |
+| D-EV087-adv-h4h5 | H4–H5 N/A waived (D-EV087-ui); staging smoke after merge if needed |
+| D-EV087-adv-e2e | E2E Full skipped on PR→stage; E2E Smoke PASS |
 
 ### Corpus
 
