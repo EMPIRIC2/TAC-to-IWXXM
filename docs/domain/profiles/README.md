@@ -64,17 +64,17 @@ access tier, vendor pins, gaps, and mining-note cross-refs.
 | Priority | Semantic | Exchange |
 |----------|----------|----------|
 | **P0** | `ICAO_2025`, `US_FAA_NWS` | `GLOBAL_AFS` (default) |
-| **P1** | `CA_ECCC` | — |
-| **P2** | `AU_BOM`, `NZ_CAA_MET` | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
+| **P1** | `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` | — |
+| **P2** | Thin/compat (#920) | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
 
 ## Open gaps (#913 deepen)
 
 - [x] `catalog.yaml` with URL + access tier + gap status per profile id  
 - [x] Semantic stubs for `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`  
 - [ ] CA MANOBS/MANAIR section-level rule stubs for `CA_ECCC` (#916 / EV-064 in progress)  
-- [ ] AU TAF INTER/TAF3/RMK T/Q refs for `AU_BOM`  
-- [ ] NZ domestic vs international TAF refs for `NZ_CAA_MET`  
-- [ ] Regional exchange rule sources for ROBEX/RODEX variants (P2)  
+- [x] AU TAF INTER/TAF3/RMK T/Q refs for `AU_BOM` (EV-087 mining kickoff)  
+- [x] NZ domestic vs international TAF refs for `NZ_CAA_MET` (EV-087 mining kickoff)  
+- [ ] Regional exchange rule sources for ROBEX/RODEX variants (P2)
 
 ## References
 

@@ -11,10 +11,14 @@ from dataclasses import dataclass
 CANONICAL_ICAO_2025 = "icao_2025"
 CANONICAL_US_FAA_NWS = "us_faa_nws"
 CANONICAL_CA_ECCC = "ca_eccc"
+CANONICAL_AU_BOM = "au_bom"
+CANONICAL_NZ_CAA_MET = "nz_caa_met"
 
 EMIT_ANNEX3 = "annex3"
 EMIT_IWXXM_US = "iwxxm_us"
 EMIT_CA_ECCC = "ca_eccc"
+EMIT_AU_BOM = "au_bom"
+EMIT_NZ_CAA_MET = "nz_caa_met"
 
 _ALIAS_TO_CANONICAL: dict[str, str] = {
     EMIT_ANNEX3: CANONICAL_ICAO_2025,
@@ -25,6 +29,8 @@ _CANONICAL_TO_EMIT: dict[str, str] = {
     CANONICAL_ICAO_2025: EMIT_ANNEX3,
     CANONICAL_US_FAA_NWS: EMIT_IWXXM_US,
     CANONICAL_CA_ECCC: EMIT_CA_ECCC,
+    CANONICAL_AU_BOM: EMIT_AU_BOM,
+    CANONICAL_NZ_CAA_MET: EMIT_NZ_CAA_MET,
 }
 
 _KNOWN_WIRE_IDS: frozenset[str] = frozenset(_ALIAS_TO_CANONICAL) | frozenset(_CANONICAL_TO_EMIT)
@@ -93,12 +99,16 @@ def known_semantic_profile_ids() -> frozenset[str]:
 
 
 __all__ = [
+    "CANONICAL_AU_BOM",
     "CANONICAL_CA_ECCC",
     "CANONICAL_ICAO_2025",
+    "CANONICAL_NZ_CAA_MET",
     "CANONICAL_US_FAA_NWS",
     "EMIT_ANNEX3",
+    "EMIT_AU_BOM",
     "EMIT_CA_ECCC",
     "EMIT_IWXXM_US",
+    "EMIT_NZ_CAA_MET",
     "ResolvedSemanticProfile",
     "known_semantic_profile_ids",
     "normalize_profile_id",

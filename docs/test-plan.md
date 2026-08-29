@@ -3594,6 +3594,54 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: TC-EV065-001..002 green
 - **Source**: EV-086
 
+### EV-087 / #917+#918 — AU_BOM + NZ_CAA_MET P1 kickoff
+
+- **Mode**: delta deepen F36 semantic nationals
+- **Pass criteria**: TC-EV087-001..006; catalog P1 + stubs + mining notes; D-EV087-* locked
+- **Source**: [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917), [#918](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/918); EV-087; ADR-036
+
+### TC-EV087-001: Registry resolves AU_BOM and NZ_CAA_MET
+
+- **Level**: T0 / T2
+- **Objective**: Canonical wire ids resolve to emit keys `au_bom` / `nz_caa_met`
+- **Pass criteria**: `resolve_semantic_profile` non-None; `known_semantic_profile_ids` contains both
+- **Source**: FR-EV087-01; UJ-069
+
+### TC-EV087-002: AU INTER parsed distinct from TEMPO
+
+- **Level**: T0 / T2
+- **Objective**: Under `AU_BOM`, `INTER` is a distinct IR change-group
+- **Pass criteria**: Fixture with INTER does not collapse to TEMPO-only AST; `rule_id` AU.TAF.INTER
+- **Source**: FR-EV087-02; D-EV087-inter-emit
+
+### TC-EV087-003: AU INTER emit policy (no invented enum)
+
+- **Level**: T0 / T2
+- **Objective**: Converted IWXXM uses `TEMPORARY_FLUCTUATIONS` and preserves INTER provenance
+- **Pass criteria**: No `changeIndicator="INTER"`; remarks/diagnostics/humanReadable retain INTER; XSD-valid under core pin
+- **Source**: FR-EV087-03; D-EV087-inter-emit
+
+### TC-EV087-004: AU TAF3 RMK flag
+
+- **Level**: T0 / T2
+- **Objective**: `TAF3` / `TAF3 VALID TL` detected under `product=TAF`
+- **Pass criteria**: Profile flag / IR field set; API product remains TAF
+- **Source**: FR-EV087-04; D-EV087-taf3
+
+### TC-EV087-005: NZ domestic vs international TAF fixtures
+
+- **Level**: T0 / T2
+- **Objective**: Domestic extras parsed; international path remains Annex 3-shaped
+- **Pass criteria**: ≥1 domestic + ≥1 international fixture; extras in IR and/or remarks
+- **Source**: FR-EV087-06..07; D-EV087-nz-domestic
+
+### TC-EV087-006: Unknown semantic profile fail-closed
+
+- **Level**: T0 / T2
+- **Objective**: Garbage semantic id still rejected after AU/NZ registration
+- **Pass criteria**: API 400 / library reject; ICAO/US/CA paths unchanged
+- **Source**: FR-EV087-01; ADR-036
+
 ### TC-EV061-1015-001: Promote PR required-check inventory
 
 - **Level**: Docs / CI

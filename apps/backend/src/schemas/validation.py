@@ -288,7 +288,7 @@ class ValidateRequest(BaseModel):
     )
     semantic_profile: str | None = Field(
         default=None,
-        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC)",
+        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, or NZ_CAA_MET)",
         examples=["ICAO_2025", "US_FAA_NWS", "CA_ECCC"],
     )
     exchange_profile: str | None = Field(
