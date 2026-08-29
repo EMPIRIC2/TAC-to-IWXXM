@@ -117,10 +117,16 @@ Constraints from EV-063 intake:
   `profiles/<id>/<product>/{valid,invalid,expected-*}`.
 - **#1024**: Light operator picker (deferred unless Spec→Build pulls FE).
 - Amend ADR-013 cross-reference when F35 Build completes (profile plugin path naming).
+- **National onboarding (EV-088 / #1044):** Repeatable semantic-profile playbook and copy
+  stubs live under [NATIONAL_PROFILE_PLAYBOOK.md](../domain/profiles/NATIONAL_PROFILE_PLAYBOOK.md)
+  and [`docs/domain/profiles/_template/`](../domain/profiles/_template/). New nationals
+  follow thin vs full paths there; `CA_ECCC` remains the reference implementation. Exchange
+  overlays stay on #921 (out of playbook scope).
 
 ## References
 
 - [feature-list.md §F35](../feature-list.md), [feature-list.md §F36](../feature-list.md)
 - [api-contract.md §EV-063 proposed wire](../api-contract.md)
 - [domain/profiles/README.md](../domain/profiles/README.md)
+- [NATIONAL_PROFILE_PLAYBOOK.md](../domain/profiles/NATIONAL_PROFILE_PLAYBOOK.md) (#1044)
 - Epic [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912), architecture [#914](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/914)

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "description": "Template — copy to packages/tac2iwxxm/tests/fixtures/profiles/<PROFILE_ID>/manifest.json",
+  "profile": "PLACEHOLDER_ID",
+  "cases": [
+    {
+      "id": "example_valid",
+      "product": "METAR",
+      "tac": "METAR/valid/example_valid.tac",
+      "rule_id": "XX.METAR.EXAMPLE",
+      "status": "active"
+    }
+  ]
+}
