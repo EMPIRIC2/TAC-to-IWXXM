@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "description": "EV-089 — IN_IMD compat pack fixtures",
+  "profile": "IN_IMD",
+  "cases": [
+    {
+      "id": "metar_vidp",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_vidp.tac",
+      "rule_id": "IN.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "speci_vidp",
+      "product": "SPECI",
+      "tac": "SPECI/valid/speci_vidp.tac",
+      "rule_id": "IN.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "taf_vidp",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_vidp.tac",
+      "rule_id": "IN.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "sigmet_basic",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_basic.tac",
+      "rule_id": "IN.BASE.ICAO",
+      "status": "active"
+    }
+  ]
+}

@@ -1,5 +1,30 @@
 # Evolve Decisions
 
+## Cycle EV-089 — Thin/compat national packs (#920)
+
+**Opened:** 2026-08-29 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-089-thin-compat-national-packs`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Issue:** [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920)
+
+| ID | Outcome |
+|----|---------|
+| D-EV089-order | UK → BR → KR → JP → IN → HK; one profile per PR |
+| D-EV089-china | Omit China |
+| D-EV089-gamet | Parse-only; BR fixtures only; no IWXXM emit; no convert enum |
+| D-EV089-jp-va | JP VAA yes; AIRMET no |
+| D-EV089-hk | HK SIGMET + VAA fixtures |
+| D-EV089-xsd | No invented national XSD |
+| D-EV089-path | Thin path C/N ±D (EV-088 playbook) |
+| D-EV089-exchange | SAM note on BR only; #921 packaging OOS |
+| D-EV089-ui | N/A — no FE picker |
+| D-EV089-child-issues | Spec does not open GH children |
+| D-EV089-req | R0–R4 recommended approved 2026-08-29 |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles] [Corpus: adr/ADR-036] [Corpus: tests] [Corpus: api]
+
+---
+
 ## Cycle EV-088 — Profile engineering enablement (#1044)
 
 **Opened:** 2026-08-29 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-088-profile-eng-enablement`  

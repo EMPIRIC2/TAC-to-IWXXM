@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "description": "EV-089 — BR_DECEA thin pack; GAMET ops fixtures are parse-only (no convert)",
+  "profile": "BR_DECEA",
+  "cases": [
+    {
+      "id": "metar_sbgr",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_sbgr.tac",
+      "rule_id": "BR.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "speci_sbgr",
+      "product": "SPECI",
+      "tac": "SPECI/valid/speci_sbgr.tac",
+      "rule_id": "BR.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "taf_sbgr",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_sbgr.tac",
+      "rule_id": "BR.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "sigmet_basic",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_basic.tac",
+      "rule_id": "BR.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "airmet_basic",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_basic.tac",
+      "rule_id": "BR.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "gamet_sample",
+      "product": "GAMET",
+      "tac": "GAMET/ops/gamet_sample.tac",
+      "rule_id": "BR.GAMET.PARSE",
+      "status": "parse_only"
+    }
+  ]
+}

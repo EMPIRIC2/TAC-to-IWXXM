@@ -3690,6 +3690,61 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Exit 2; stderr error
 - **Source**: EV-088 Build M2
 
+### EV-089 / #920 — Thin/compat national packs
+
+- **Mode**: delta F36 — thin/compat semantic packs via EV-088 playbook thin path
+- **Pass criteria**: TC-EV089-001..007; six catalog rows + stubs; GAMET parse-only spike; UK first Build PR
+- **Source**: [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920); EV-089; ADR-036; [GAMET-spike.md](domain/profiles/GAMET-spike.md)
+
+### TC-EV089-001: Catalog lists six #920 profile ids
+
+- **Level**: T0 / Docs
+- **Objective**: `catalog.yaml` contains UK_METOFFICE, BR_DECEA, KR_KMA, JP_JMA, IN_IMD, HK_HKO
+- **Pass criteria**: YAML loads; each id `kind: semantic` and `issue: "#920"`
+- **Source**: FR-EV089-01
+
+### TC-EV089-002: Semantic stubs present
+
+- **Level**: T0 / Docs
+- **Objective**: `docs/domain/profiles/semantic/<ID>.md` exists for each #920 id
+- **Pass criteria**: Six stub files on disk
+- **Source**: FR-EV089-02
+
+### TC-EV089-003: GAMET spike is parse-only
+
+- **Level**: T0 / Docs
+- **Objective**: Standing GAMET disposition forbids IWXXM emit
+- **Pass criteria**: `GAMET-spike.md` states parse-only; no convert product enum for GAMET
+- **Source**: D-EV089-gamet
+
+### TC-EV089-004: Scaffold accepts UK_METOFFICE dry-run
+
+- **Level**: T0
+- **Objective**: Scaffold checklist for first Build PR
+- **Pass criteria**: `scaffold_national_profile.py --id UK_METOFFICE --dry-run` exit 0
+- **Source**: EV-088 playbook; FR-EV089-04
+
+### TC-EV089-005: UK_METOFFICE registry + fixture smoke (Build)
+
+- **Level**: T0 / T2
+- **Objective**: First shippable thin pack converts METAR/SPECI/TAF under profile id
+- **Pass criteria**: Fixtures under `profiles/UK_METOFFICE/`; convert or fixture-load tests green; ICAO/US/CA/AU/NZ unchanged
+- **Source**: FR-EV089-02; FR-EV089-10
+
+### TC-EV089-006: Remaining #920 packs smoke (Build, per PR)
+
+- **Level**: T0 / T2
+- **Objective**: Each subsequent profile PR adds fixtures + allowlist for its v1 products
+- **Pass criteria**: Parameterized tests per id; BR excludes GAMET from convert allowlist
+- **Source**: FR-EV089-05; FR-EV089-06
+
+### TC-EV089-007: Unknown semantic id still rejected
+
+- **Level**: T0 / T2
+- **Objective**: Garbage semantic id rejected after #920 registration
+- **Pass criteria**: API 400 / library reject; existing profiles unchanged
+- **Source**: FR-EV089-10; ADR-036
+
 ### TC-EV061-1015-001: Promote PR required-check inventory
 
 - **Level**: Docs / CI

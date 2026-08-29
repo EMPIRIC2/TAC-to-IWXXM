@@ -89,7 +89,7 @@ async def convert_bulletin(
     profile: str = Form(default="", description="Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
     semantic_profile: str = Form(
         default="",
-        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, or NZ_CAA_MET; aliases annex3 / iwxxm_us accepted)",
+        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",
     ),
     exchange_profile: str = Form(
         default="",
@@ -329,7 +329,7 @@ async def convert(
     profile: str = Form(default="", description="Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
     semantic_profile: str = Form(
         default="",
-        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, or NZ_CAA_MET; aliases annex3 / iwxxm_us accepted)",
+        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",
     ),
     exchange_profile: str = Form(
         default="",

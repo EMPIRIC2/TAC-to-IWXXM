@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "description": "EV-089 — JP_JMA compat pack (VAA; no AIRMET)",
+  "profile": "JP_JMA",
+  "cases": [
+    {
+      "id": "metar_rjaa",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_rjaa.tac",
+      "rule_id": "JP.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "taf_rjaa",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_rjaa.tac",
+      "rule_id": "JP.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "sigmet_basic",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_basic.tac",
+      "rule_id": "JP.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "vaa_tokyo",
+      "product": "VAA",
+      "tac": "VAA/valid/vaa_tokyo.tac",
+      "rule_id": "JP.VAA.TOKYO",
+      "status": "active"
+    }
+  ]
+}
