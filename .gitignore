@@ -201,3 +201,6 @@ packages/shared/src/metar_shared/iwxxm_xsd/**/__pycache__/
 # Local DOKS kube/access secrets (never commit)
 deploy/doks/.env.access
 tmp/
+
+# EV-088 profile scaffold working copies (merge into catalog.yaml by hand)
+docs/domain/profiles/_scaffold_out/
