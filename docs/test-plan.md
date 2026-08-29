@@ -3717,11 +3717,11 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: `GAMET-spike.md` states parse-only; no convert product enum for GAMET
 - **Source**: D-EV089-gamet
 
-### TC-EV089-004: Scaffold accepts UK_METOFFICE dry-run
+### TC-EV089-004: Scaffold dry-run still works after #920 stubs
 
 - **Level**: T0
-- **Objective**: Scaffold checklist for first Build PR
-- **Pass criteria**: `scaffold_national_profile.py --id UK_METOFFICE --dry-run` exit 0
+- **Objective**: Scaffold checklist for a probe id that is not yet a standing stub
+- **Pass criteria**: `scaffold_national_profile.py --id ZZ_SCAFFOLD_PROBE --dry-run` exit 0; no stub written (TC-EV088-005)
 - **Source**: EV-088 playbook; FR-EV089-04
 
 ### TC-EV089-005: UK_METOFFICE registry + fixture smoke (Build)

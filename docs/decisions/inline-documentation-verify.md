@@ -51,3 +51,16 @@ EV-088 scaffold delta (when checker path available):
 VERIFY_DOC_PATHS="scripts/profiles/scaffold_national_profile.py" \
   python3 ~/.cursor/skills/bin/inline-doc-check.py .
 ```
+
+## EV-089 disposition
+
+| Item | Disposition |
+|------|-------------|
+| Delta paths (`profile_registry.py`, `convert.py`) | PASS under `VERIFY_DOC_PATHS` (missing=0) |
+| OpenAPI description string edits | No new public symbols |
+| Full-tree ~10k missing | **WAIVE** — brownfield baseline; same bar as EV-087/088 |
+
+```bash
+VERIFY_DOC_PATHS="packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py,packages/tac2iwxxm/src/tac2iwxxm/convert.py" \
+  python3 ~/.cursor/skills/bin/inline-doc-check.py .
+```

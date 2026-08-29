@@ -18,6 +18,8 @@
 | D-EV089-ui | N/A — no FE picker |
 | D-EV089-child-issues | Spec does not open GH children |
 | D-EV089-req | R0–R4 recommended approved 2026-08-29 |
+| D-EV089-gate | **open** (Build 2026-08-29) |
+| D-EV089-build | Registry + fixtures + TC-EV089 on `evolve/EV-089-thin-compat-national-packs` @ `519d319e` |
 
 ### Corpus
 
