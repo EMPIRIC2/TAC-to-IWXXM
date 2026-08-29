@@ -31,9 +31,23 @@ Full-tree `inline-doc-check.py` over this monorepo reports **thousands** of pre-
 | Full-tree ~10k missing | **WAIVE** — brownfield baseline; not in EV-087 scope |
 | Router `conversion.py` pre-existing undocumented handlers | Out of scope (description-only edits) |
 
+## EV-088 disposition
+
+| Item | Disposition |
+|------|-------------|
+| Delta path `scripts/profiles/scaffold_national_profile.py` | Documented (module + public helpers NumPy-style) in PR #1086 |
+| Full-tree ~10k missing | **WAIVE** — brownfield baseline; same bar as EV-087; not in EV-088 scope |
+
 ## How to re-check delta
 
 ```bash
 VERIFY_DOC_PATHS="packages/tac2iwxxm/src/tac2iwxxm/convert.py,packages/tac2iwxxm/src/tac2iwxxm/products/taf.py,packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py" \
+  python3 ~/.cursor/skills/bin/inline-doc-check.py .
+```
+
+EV-088 scaffold delta (when checker path available):
+
+```bash
+VERIFY_DOC_PATHS="scripts/profiles/scaffold_national_profile.py" \
   python3 ~/.cursor/skills/bin/inline-doc-check.py .
 ```

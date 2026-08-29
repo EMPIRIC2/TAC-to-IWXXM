@@ -1,5 +1,24 @@
 # Evolve Decisions
 
+## Cycle EV-088 — Profile engineering enablement (#1044)
+
+**Opened:** 2026-08-29 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-088-profile-eng-enablement`  
+**Preset:** Standard · **Documenting→Implementing gate:** open · **Issue:** [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044)
+
+| ID | Outcome |
+|----|---------|
+| D-EV088-req | Recommended AC — playbook, templates, scaffold, TC-EV088; waive full CA issue-body rewrite |
+| D-EV088-gate | **open** (Build 2026-08-29) |
+| D-EV088-ui | N/A — no FE |
+| D-EV088-pr | [PR #1086](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1086) → `stage`; CI green |
+| D-EV088-inline-doc | Full-tree WAIVE (brownfield); scaffold script documented; bar in `inline-documentation-verify.md` |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles] [Corpus: adr/ADR-036] [Corpus: tests]
+
+---
+
 ## Cycle EV-087 — AU_BOM + NZ_CAA_MET semantic P1 kickoff
 
 **Opened:** 2026-08-28 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-087-au-nz-semantic-profiles`  

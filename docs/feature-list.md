@@ -1826,9 +1826,13 @@
   15. **EV-085 / #919 closeout:** acceptance audit (M20), SWXA/TCA thin US lint (M22); #919 closed with M14 + §12.7.2 additive RMK waivers
   16. **EV-086 / #921:** `EUR_RODEX`, `AFI`, `CAR_SAM` exchange stubs — registry + GLOBAL_AFS COLLECT baseline + catalog stubs + TC-EV086 (APAC_ROBEX P0 pattern); #921 stays open for #898 drawer + #913 mining deepen
   17. **EV-087 / #917+#918:** `AU_BOM` + `NZ_CAA_MET` P1 kickoff — catalog P1, semantic stubs, mining notes; INTER emit = `TEMPORARY_FLUCTUATIONS` + provenance (D-EV087-inter-emit); TAF3 as RMK flag; NZ domestic extras → IR + remarks; core IWXXM only (no national XSD); TC-EV087-*
+  18. **EV-088 / #1044:** National profile **onboarding playbook** + `_template/` stubs + scaffold
+     script (engineering enablement) — thin vs full paths; A–P ↔ CA reference map; no #920/#921
+     feature content this cycle
 - **Out of scope**: Thin packs #920; exchange handbook deepen beyond stubs; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); inventing AU/NZ IWXXM enums/XSDs
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   **CA_ECCC** option in EV-064 Build slice
+- **Enablement**: [NATIONAL_PROFILE_PLAYBOOK.md](domain/profiles/NATIONAL_PROFILE_PLAYBOOK.md)
 - **Source**: Epic [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912); EV-063; EV-064;
   [Corpus: domain-profiles]
 

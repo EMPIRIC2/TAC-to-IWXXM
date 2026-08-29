@@ -3642,6 +3642,54 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: API 400 / library reject; ICAO/US/CA paths unchanged
 - **Source**: FR-EV087-01; ADR-036
 
+### EV-088 / #1044 — National profile onboarding playbook
+
+- **Mode**: engineering enablement (docs + scaffold; no #920/#921 feature content)
+- **Pass criteria**: TC-EV088-001..006; playbook + `_template/`; ADR-036/README links
+- **Source**: [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044); EV-088; ADR-036
+
+### TC-EV088-001: Playbook lists issue types A–P
+
+- **Level**: T0 / Docs
+- **Objective**: `NATIONAL_PROFILE_PLAYBOOK.md` documents child types A–P
+- **Pass criteria**: Each `| A |` … `| P |` row present
+- **Source**: #1044 §8
+
+### TC-EV088-002: Template stubs present
+
+- **Level**: T0 / Docs
+- **Objective**: `_template/` holds catalog-row, semantic, mining, manifest stubs
+- **Pass criteria**: Five required template files on disk
+- **Source**: #1044 deliverables
+
+### TC-EV088-003: Catalog YAML parses
+
+- **Level**: T0
+- **Objective**: `catalog.yaml` remains valid machine index
+- **Pass criteria**: YAML loads; `CA_ECCC` and `ICAO_2025` present
+- **Source**: [Corpus: domain-profiles]
+
+### TC-EV088-004: README and ADR-036 link playbook
+
+- **Level**: T0 / Docs
+- **Objective**: Standing docs discoverable from hub + ADR
+- **Pass criteria**: Playbook filename cited in README and ADR-036
+- **Source**: #1044 AC
+
+### TC-EV088-005: Scaffold dry-run
+
+- **Level**: T0
+- **Objective**: `scaffold_national_profile.py --dry-run` prints checklist without writes
+- **Pass criteria**: Exit 0; checklist mentions `profile_registry.py`; no new semantic stub file
+- **Source**: EV-088 Build M2
+
+### TC-EV088-006: Scaffold rejects bad id
+
+- **Level**: T0
+- **Objective**: Malformed `--id` fails closed
+- **Pass criteria**: Exit 2; stderr error
+- **Source**: EV-088 Build M2
+
 ### TC-EV061-1015-001: Promote PR required-check inventory
 
 - **Level**: Docs / CI

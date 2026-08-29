@@ -22,21 +22,24 @@ profiles. This directory is the standing SoT for profile *evidence*; implementat
 
 ```
 profiles/
-  README.md                 # this file
-  catalog.yaml              # machine index (URLs, gaps, priority) — P0/P1 rows
+  README.md                      # this file
+  NATIONAL_PROFILE_PLAYBOOK.md   # onboarding playbook (#1044 / EV-088)
+  _template/                     # copy stubs for new nationals
+  catalog.yaml                   # machine index (URLs, gaps, priority)
   semantic/
-    ICAO_2025.md            # P0 implemented
-    US_FAA_NWS.md           # P0 implemented (#919 deepen)
-    CA_ECCC.md              # P1 planned (#916)
+    ICAO_2025.md                 # P0 implemented
+    US_FAA_NWS.md                # P0 implemented (#919 deepen)
+    CA_ECCC.md                   # P1 implemented (#916) — reference impl
+    AU_BOM.md / NZ_CAA_MET.md    # P1 thin kickoff (EV-087)
     ...
   exchange/
-    GLOBAL_AFS.md           # P0 implemented (EV-065 / #921)
-    APAC_ROBEX.md           # P2 stub (EV-065 P0)
-    EUR_RODEX.md            # P2 stub (EV-086 P0)
-    AFI.md                  # P2 stub (EV-086 P0)
-    CAR_SAM.md              # P2 stub (EV-086 P0)
+    GLOBAL_AFS.md                # P0 implemented (EV-065 / #921)
+    APAC_ROBEX.md … CAR_SAM.md   # P2 stubs (EV-065/086)
     ...
 ```
+
+**New national?** Start with [NATIONAL_PROFILE_PLAYBOOK.md](NATIONAL_PROFILE_PLAYBOOK.md)
+and [`_template/`](_template/).
 
 Fixture goldens (implementation): `profiles/<id>/<product>/{valid,invalid,expected-*}` under
 package test trees — land with first heavy national profile (F36).
@@ -78,6 +81,7 @@ access tier, vendor pins, gaps, and mining-note cross-refs.
 
 ## References
 
+- [NATIONAL_PROFILE_PLAYBOOK.md](NATIONAL_PROFILE_PLAYBOOK.md) — [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044)
 - [ADR-036](../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 - [#913 Mine ticket](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913)
 - [#1025 Alias cutover](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)
