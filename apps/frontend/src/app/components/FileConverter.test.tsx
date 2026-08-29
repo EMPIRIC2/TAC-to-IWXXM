@@ -1002,7 +1002,7 @@ describe('FileConverter Component', () => {
 
   describe('Branch Path Coverage', () => {
     it('enables convert button when manual input is provided and converts successfully', async () => {
-      const user = userEvent.setup();
+      const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [{ iwxxm_xml: '<iwxxm>converted</iwxxm>' }],
       });
@@ -1012,7 +1012,10 @@ describe('FileConverter Component', () => {
       expect(convertBtn).toBeDisabled();
 
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-      await user.type(textarea, 'METAR KJFK 121651Z 18005KT 10SM FEW030 24/16 A2992');
+      // Instant set — per-keystroke type times out under full coverage load.
+      fireEvent.change(textarea, {
+        target: { value: 'METAR KJFK 121651Z 18005KT 10SM FEW030 24/16 A2992' },
+      });
       expect(convertBtn).toBeEnabled();
 
       await user.click(convertBtn);
@@ -1032,7 +1035,7 @@ describe('FileConverter Component', () => {
     });
 
     it('displays source TAC alongside converted XML when API returns tac_input', async () => {
-      const user = userEvent.setup();
+      const user = userEvent.setup({ delay: null });
       const tac = 'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018';
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [
@@ -1048,7 +1051,7 @@ describe('FileConverter Component', () => {
 
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-      await user.type(textarea, tac);
+      fireEvent.change(textarea, { target: { value: tac } });
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
@@ -1066,7 +1069,7 @@ describe('FileConverter Component', () => {
     });
 
     it('shows Source TAC from manual input when API omits tac_input (#655)', async () => {
-      const user = userEvent.setup();
+      const user = userEvent.setup({ delay: null });
       const tac = 'METAR KJFK 121251Z 18012KT 10SM FEW030 24/16 A2992';
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
         results: [
@@ -1081,7 +1084,7 @@ describe('FileConverter Component', () => {
 
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
-      await user.type(textarea, tac);
+      fireEvent.change(textarea, { target: { value: tac } });
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
