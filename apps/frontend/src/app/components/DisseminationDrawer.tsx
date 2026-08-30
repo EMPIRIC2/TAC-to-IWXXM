@@ -2,6 +2,9 @@
 /**
  * Dissemination drawer (F16–F19 / UJ-027–030) — multi-select export, interleaved
  * Disseminate, per-file progress (EV-018 / #785).
+ *
+ * EV-091 / #1089: exchange overlay select; TAC candidates convert with
+ * ``exchange_profile`` before send (parity with workbench light picker).
  */
 
 import { useCallback, useMemo, useState } from 'react';
@@ -34,6 +37,13 @@ import {
   type DisseminationFileResult,
 } from '/utils/disseminationQueue';
 import { firstDropFile, resolveDisseminationProduct } from '@/utils/fileInputHelpers';
+import { convertMetarToIwxxm } from '/utils/api';
+import {
+  coerceExchangeProfile,
+  DEFAULT_EXCHANGE_PROFILE,
+  EXCHANGE_PROFILE_OPTIONS,
+  type ExchangeProfileId,
+} from '/utils/exchangeProfile';
 
 export { firstDropFile, resolveDisseminationProduct } from '@/utils/fileInputHelpers';
 
@@ -47,6 +57,11 @@ export interface DisseminationDrawerProps {
   product?: string;
   /** Extra current-session outputs (beyond primary convert props). */
   sessionOutputs?: ExportCandidateInput[];
+  /**
+   * Initial exchange overlay (workbench light picker). Drawer keeps local state
+   * after open so operators can override without mutating convert params.
+   */
+  exchangeProfile?: ExchangeProfileId | string;
 }
 
 interface RowUiState {
@@ -73,6 +88,42 @@ export function progressRowState(
 }
 
 /**
+ * Resolve IWXXM XML for a candidate, converting TAC when needed.
+ *
+ * @param candidate - Export row (session or drop)
+ * @param product - Default product tag
+ * @param exchangeProfile - Exchange overlay wire id for convert FormData
+ * @returns IWXXM XML string
+ * @throws When convert fails or returns no XML
+ */
+export async function resolveCandidateIwxxmXml(
+  candidate: ExportCandidate,
+  product: string,
+  exchangeProfile: ExchangeProfileId,
+): Promise<string> {
+  const existing = candidate.iwxxmXml?.trim();
+  if (existing) return existing;
+  const tac = candidate.tacText?.trim();
+  if (!tac) {
+    throw new Error('Candidate has neither IWXXM XML nor TAC text');
+  }
+  const response = await convertMetarToIwxxm({
+    manualText: tac,
+    product: resolveDisseminationProduct(candidate.product, product).toUpperCase(),
+    exchangeProfile,
+  });
+  const xml =
+    response.results?.[0]?.iwxxm_xml?.trim() ||
+    (response.results?.[0] as { xml?: string } | undefined)?.xml?.trim() ||
+    (response.results?.[0] as { content?: string } | undefined)?.content?.trim() ||
+    '';
+  if (!xml) {
+    throw new Error('Convert returned no IWXXM XML for dissemination');
+  }
+  return xml;
+}
+
+/**
  * Drawer UI for BYOC dissemination with multi-file export selection.
  *
  * @param props.open - Whether the drawer panel is visible
@@ -81,6 +132,7 @@ export function progressRowState(
  * @param props.tacText - Optional TAC payload
  * @param props.product - Product tag for API (default metar)
  * @param props.sessionOutputs - Additional session candidates
+ * @param props.exchangeProfile - Initial exchange overlay from workbench
  */
 export function DisseminationDrawer({
   open,
@@ -89,6 +141,7 @@ export function DisseminationDrawer({
   tacText: propTac,
   product = 'metar',
   sessionOutputs = [],
+  exchangeProfile: exchangeProfileProp,
 }: DisseminationDrawerProps) {
   const [sinkType, setSinkType] = useState<SinkType>('postgres');
   const [uri, setUri] = useState('');
@@ -104,6 +157,9 @@ export function DisseminationDrawer({
   const [error, setError] = useState<string | null>(null);
   const [rowState, setRowState] = useState<Record<string, RowUiState>>({});
   const [lastResults, setLastResults] = useState<DisseminationFileResult[]>([]);
+  const [exchangeProfile, setExchangeProfile] = useState<ExchangeProfileId>(() =>
+    coerceExchangeProfile(exchangeProfileProp ?? DEFAULT_EXCHANGE_PROFILE),
+  );
 
   const primarySession: ExportCandidateInput[] = useMemo(() => {
     if (!propIwxxm?.trim() && !propTac?.trim()) return [];
@@ -205,13 +261,19 @@ export function DisseminationDrawer({
               product: sink.product,
               params: sink.params,
             }),
-          send: async (candidate, handle) =>
-            disseminationSend({
+          send: async (candidate, handle) => {
+            const iwxxmXml = await resolveCandidateIwxxmXml(
+              candidate,
+              product,
+              exchangeProfile,
+            );
+            return disseminationSend({
               handle,
-              iwxxm_xml: candidate.iwxxmXml?.trim() || undefined,
+              iwxxm_xml: iwxxmXml,
               tac_text: candidate.tacText?.trim() || undefined,
               product: resolveDisseminationProduct(candidate.product, product),
-            }),
+            });
+          },
         })) {
           if (event.type === 'progress') {
             setRowState((prev) => ({
@@ -245,7 +307,16 @@ export function DisseminationDrawer({
         setBusy(false);
       }
     },
-    [ddl, needsUri, parseByocParams, product, selectedCandidates, sinkType, uri],
+    [
+      ddl,
+      exchangeProfile,
+      needsUri,
+      parseByocParams,
+      product,
+      selectedCandidates,
+      sinkType,
+      uri,
+    ],
   );
 
   const onDropFiles = useCallback(
@@ -355,6 +426,35 @@ export function DisseminationDrawer({
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="dissemination-exchange-profile">Exchange profile</Label>
+          <select
+            id="dissemination-exchange-profile"
+            data-testid="dissemination-exchange-profile"
+            aria-label="Exchange profile"
+            className="w-full rounded border border-gray-300 bg-white px-2 py-2 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+            value={exchangeProfile}
+            onChange={(e) => {
+              setExchangeProfile(coerceExchangeProfile(e.target.value));
+              setLastResults([]);
+              setRowState({});
+            }}
+          >
+            {EXCHANGE_PROFILE_OPTIONS.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          <p
+            className="text-xs text-gray-500 dark:text-gray-400"
+            data-testid="dissemination-exchange-profile-help"
+          >
+            Used when converting TAC before send. Does not choose destinations or
+            credentials.
+          </p>
         </div>
 
         {needsUri ? (

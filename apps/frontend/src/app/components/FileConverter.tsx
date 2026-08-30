@@ -2987,7 +2987,7 @@ export function FileConverter({
         </div>
       </div>
 
-      {/* Database Upload Dialog — gated with destinations UI (EV-042 / #897; restore #898) */}
+      {/* Database Upload Dialog — restored with destinations UI (EV-091 / #898) */}
       {isOperatorDisseminationDestinationsEnabled() ? (
         <DatabaseUploadDialog
           convertedFiles={convertedFiles}
@@ -2998,11 +2998,15 @@ export function FileConverter({
 
       {isOperatorDisseminationDestinationsEnabled() ? (
         <DisseminationDrawer
+          key={
+            isDisseminationOpen ? `open-${conversionParams.exchangeProfile}` : 'closed'
+          }
           open={isDisseminationOpen}
           onOpenChange={setIsDisseminationOpen}
           iwxxmXml={convertedFiles[0]?.convertedContent}
           tacText={manualInput || undefined}
           product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
+          exchangeProfile={conversionParams.exchangeProfile}
         />
       ) : null}
 

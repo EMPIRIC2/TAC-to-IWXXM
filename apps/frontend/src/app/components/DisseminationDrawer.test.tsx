@@ -1,5 +1,5 @@
 /**
- * Dissemination drawer Vitest — F16 / TC-F16-001/004/005; UJ-027; EV-018.
+ * Dissemination drawer Vitest — F16 / TC-F16-001/004/005; UJ-027; EV-018; EV-091.
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
@@ -13,6 +13,7 @@ const mockRunDisseminationQueue = vi.hoisted(() => vi.fn());
 const actualRunDisseminationQueue = vi.hoisted(() => ({
   fn: null as typeof import('/utils/disseminationQueue').runDisseminationQueue | null,
 }));
+const mockConvertMetarToIwxxm = vi.hoisted(() => vi.fn());
 
 vi.mock('/utils/disseminationQueue', async (importOriginal) => {
   const actual = await importOriginal<typeof import('/utils/disseminationQueue')>();
@@ -21,6 +22,14 @@ vi.mock('/utils/disseminationQueue', async (importOriginal) => {
   return {
     ...actual,
     runDisseminationQueue: (...args: unknown[]) => mockRunDisseminationQueue(...args),
+  };
+});
+
+vi.mock('/utils/api', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('/utils/api')>();
+  return {
+    ...actual,
+    convertMetarToIwxxm: (...args: unknown[]) => mockConvertMetarToIwxxm(...args),
   };
 });
 
@@ -89,12 +98,47 @@ describe('DisseminationDrawer', () => {
   beforeEach(() => {
     mockRunDisseminationQueue.mockClear();
     mockRunDisseminationQueue.mockImplementation(actualRunDisseminationQueue.fn!);
+    mockConvertMetarToIwxxm.mockReset();
+    mockConvertMetarToIwxxm.mockResolvedValue({
+      results: [{ iwxxm_xml: '<iwxxm>from-convert</iwxxm>' }],
+    });
     vi.stubGlobal('fetch', vi.fn());
   });
 
   afterEach(() => {
     mockRunDisseminationQueue.mockImplementation(actualRunDisseminationQueue.fn!);
     vi.unstubAllGlobals();
+  });
+
+  it('renders exchange profile select defaulting to GLOBAL_AFS (TC-EV091-002 / #1089)', () => {
+    render(<DisseminationDrawer {...defaultProps} />);
+    const select = screen.getByTestId('dissemination-exchange-profile');
+    expect(select).toHaveValue('GLOBAL_AFS');
+    expect(
+      screen.getByTestId('dissemination-exchange-profile-help'),
+    ).toBeInTheDocument();
+  });
+
+  it('hydrates exchange profile from workbench prop when drawer opens', () => {
+    const { rerender } = render(
+      <DisseminationDrawer
+        key="closed"
+        {...defaultProps}
+        open={false}
+        exchangeProfile="EUR_RODEX"
+      />,
+    );
+    rerender(
+      <DisseminationDrawer
+        key="open-EUR_RODEX"
+        {...defaultProps}
+        open
+        exchangeProfile="EUR_RODEX"
+      />,
+    );
+    expect(screen.getByTestId('dissemination-exchange-profile')).toHaveValue(
+      'EUR_RODEX',
+    );
   });
 
   it('renders nothing when closed', () => {
@@ -251,6 +295,13 @@ describe('DisseminationDrawer', () => {
       expect(screen.getByTestId('dissemination-send-success')).toBeInTheDocument();
     });
 
+    expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        manualText: expect.stringContaining('METAR KJFK'),
+        exchangeProfile: 'GLOBAL_AFS',
+      }),
+    );
+
     const sendBody = JSON.parse(
       (
         global.fetch as unknown as {
@@ -259,7 +310,66 @@ describe('DisseminationDrawer', () => {
       ).mock.calls[1][1].body,
     );
     expect(sendBody.handle).toBe('drop-handle');
+    expect(sendBody.iwxxm_xml).toContain('from-convert');
     expect(sendBody.tac_text).toContain('METAR KJFK');
+  });
+
+  it('TC-EV091-002: selected exchange overlay is sent on convert-before-send (#1089)', async () => {
+    const user = userEvent.setup();
+    vi.mocked(global.fetch)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          ok: true,
+          connectivity_ok: true,
+          diffs: [],
+          handle: 'overlay-handle',
+        }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          ok: true,
+          kv_upload_key: 'kv:overlay:1',
+        }),
+      } as Response);
+
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        iwxxmXml={undefined}
+        tacText="METAR KJFK 010000Z 18004KT="
+      />,
+    );
+
+    await user.selectOptions(
+      screen.getByTestId('dissemination-exchange-profile'),
+      'APAC_ROBEX',
+    );
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'postgresql://u:p@db.example.com/wx',
+    );
+    await user.click(screen.getByTestId('dissemination-send-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-send-success')).toBeInTheDocument();
+    });
+
+    expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        exchangeProfile: 'APAC_ROBEX',
+        manualText: expect.stringContaining('METAR KJFK'),
+      }),
+    );
+    const sendBody = JSON.parse(
+      (
+        global.fetch as unknown as {
+          mock: { calls: [unknown, [string, { body: string }]] };
+        }
+      ).mock.calls[1][1].body,
+    );
+    expect(sendBody.iwxxm_xml).toContain('from-convert');
   });
 
   it('allows preflight without auth token (F21 public)', async () => {
