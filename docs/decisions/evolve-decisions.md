@@ -15,6 +15,7 @@
 | D-EV091-uj053 | Invert UJ-053 / TC-EV042-001 to destinations **visible** (TC-EV091-001); restore UJ-027–030 operator UI |
 | D-EV091-scale | standard |
 | D-EV091-gate | **open** (Build 2026-08-30) — implement T1–T7 |
+| D-EV091-build | Commits `c1f5321f` / `cefc123d` / `e4eb50a6` on `evolve/EV-091-dissemination-drawer-restore` |
 
 ### Corpus
 
