@@ -64,3 +64,18 @@ VERIFY_DOC_PATHS="scripts/profiles/scaffold_national_profile.py" \
 VERIFY_DOC_PATHS="packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py,packages/tac2iwxxm/src/tac2iwxxm/convert.py" \
   python3 ~/.cursor/skills/bin/inline-doc-check.py .
 ```
+
+## EV-091 disposition
+
+| Item | Disposition |
+|------|-------------|
+| Delta paths (`DisseminationDrawer.tsx`, `FileConverter.tsx`, `operatorDisseminationUi.ts`) | PASS under `VERIFY_DOC_PATHS` (missing=0) after FileConverter TSDoc |
+| Full-tree scan (default paths) | **WAIVE** for EV-091 merge — same brownfield bar as EV-087–089 (`D-EV091-inline-doc`) |
+| Remaining ~107 true gaps (after pack checker false-negative / codegen exclusions) | [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090) tech-debt cycle |
+
+```bash
+VERIFY_DOC_PATHS="apps/frontend/src/app/components/DisseminationDrawer.tsx,apps/frontend/src/app/components/FileConverter.tsx,apps/frontend/src/utils/operatorDisseminationUi.ts" \
+  python3 ~/.cursor/skills/pack/bin/inline-doc-check.py .
+```
+
+**Note:** Pack checker improvements (multi-line TSDoc lookback; skip `iwxxm_xsd/`, `generated/`, `*.d.ts`, `docker/`, `supabase/functions/`; skip `Protocol`/`TypedDict` method bodies) reduced apparent misses from ~10k → ~107. Land those in the pack repo as part of [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090).

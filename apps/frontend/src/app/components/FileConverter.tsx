@@ -237,6 +237,22 @@ interface ConversionParams {
   logLevel: LogLevel;
 }
 
+/**
+ * Operator workbench: TAC queue, convert, validate, and dissemination entry points.
+ *
+ * @param props.accessToken - Bearer token for authenticated API calls (empty for guest)
+ * @param props.userEmail - Display email in the header
+ * @param props.isGuest - When true, guest-mode limits apply
+ * @param props.onLogout - Sign-out handler
+ * @param props.onRequestLogin - Opens sign-in when a gated action needs auth
+ * @param props.onOpenHistory - Opens F5 work-session history
+ * @param props.onLoadWorkSession - Loads a saved work session into the workbench
+ * @param props.onNewMetar - Clears toward a new METAR/SPECI draft
+ * @param props.onSessionUpdated - Notifies parent after autosave / session mutate
+ * @param props.onActiveSessionIdChange - Reports the active F5 session id
+ * @param props.activeWorkSessionId - Current F5 session id when known
+ * @param props.loadedWorkSession - Hydration payload for the active session
+ */
 export function FileConverter({
   accessToken,
   userEmail = 'Guest',

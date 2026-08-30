@@ -16,10 +16,12 @@
 | D-EV091-scale | standard |
 | D-EV091-gate | **open** (Build 2026-08-30) — implement T1–T7 |
 | D-EV091-build | Commits `c1f5321f` / `cefc123d` / `e4eb50a6` on `evolve/EV-091-dissemination-drawer-restore` |
+| D-EV091-inline-doc | Full-tree **WAIVE** — delta `VERIFY_DOC_PATHS` PASS (DisseminationDrawer / FileConverter / operatorDisseminationUi); remaining ~107 → [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090). Bar: `docs/decisions/inline-documentation-verify.md` |
+| D-EV091-tech-debt | [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090) — pack checker harden + remaining inline-doc fill; does not block #898/#1089 PR |
 
 ### Corpus
 
-[Corpus: product §F16–F19] [Corpus: product §F36] [Corpus: adr/ADR-021] [Corpus: adr/ADR-029] [Corpus: adr/ADR-030] [Corpus: adr/ADR-036] [Corpus: journeys] [Corpus: tests] [Corpus: api]
+[Corpus: product §F16–F19] [Corpus: product §F36] [Corpus: adr/ADR-021] [Corpus: adr/ADR-029] [Corpus: adr/ADR-030] [Corpus: adr/ADR-036] [Corpus: journeys] [Corpus: tests] [Corpus: api] [Corpus: verifier]
 
 ---
 
