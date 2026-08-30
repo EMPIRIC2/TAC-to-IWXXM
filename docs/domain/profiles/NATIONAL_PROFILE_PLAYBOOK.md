@@ -206,7 +206,11 @@ After copying `_template/` into place:
 
 This playbook does **not** define regional exchange overlays. Exchange IDs live under
 `exchange/*.md` and `packages/dissemination` registries. Semantic onboarding may *reference*
-a default `exchange.profile` in catalog metadata; packaging deepen stays on #921.
+a default `exchange.profile` in catalog metadata; packaging deepen stays on #921 / EV-090.
+
+**Operator UI:** light **Exchange profile** picker is [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024)
+(EV-090) — separate from semantic Type N wiring. Dissemination drawer overlay selection remains
+[#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
 
 ---
 
@@ -216,8 +220,8 @@ a default `exchange.profile` in catalog metadata; packaging deepen stays on #921
 |--------|--------------------|
 | [#913](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913) | §2 promotion path for mined URLs |
 | [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920) | Thin path + A–P subset |
-| [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921) | Boundary only; TC-EV086 harness pattern |
-| [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) | Type N wiring pattern from #1042 |
+| [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921) | Exchange stubs + EV-090 mining/picker; TC-EV086/TC-EV090 |
+| [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) | Type N wiring pattern from #1042; exchange light picker EV-090 |
 | [#924](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/924) | §7 field map |
 | [#1050](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1050) | Report variants stay catalog/IR (see CA LWIS/SAWR) until API deepen |
 

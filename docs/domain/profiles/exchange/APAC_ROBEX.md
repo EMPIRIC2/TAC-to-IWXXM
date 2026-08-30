@@ -1,6 +1,6 @@
 # APAC_ROBEX — APAC regional exchange overlay
 
-> **Profile id**: `APAC_ROBEX` · **Kind**: exchange · **Priority**: P2 · **Status**: **stub** (EV-065 P0 / [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921))  
+> **Profile id**: `APAC_ROBEX` · **Kind**: exchange · **Priority**: P2 · **Status**: **stub** (EV-065 P0 / EV-090 mining promote / [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921))  
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 Regional **exchange** overlay for APAC ROBEX / IWXXM OPMET practice. P0 stub
@@ -24,11 +24,13 @@ and packaging hook. ROBEX-specific filename or routing rules deepen on backlog.
 
 | Source | Access | Proves |
 |--------|--------|--------|
+| [OPMET IWXXM Exchange Guidelines (5th Ed.)](https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf) | public | Shared COLLECT / FTBP / AFS baseline |
 | [APAC IWXXM FAQs (3rd Ed.)](https://www.icao.int/sites/default/files/APAC/Documents/edocs/MET/2025-03_IWXXM-FAQs_3rd-Ed.pdf) | public | COLLECT mandate; translation centre policy |
-| [ICAO APAC electronic documents](https://www.icao.int/APAC/apac-electronic-documents) | public | ROBEX handbook pointer |
+| [ICAO APAC electronic documents](https://www.icao.int/APAC/apac-electronic-documents) | public | ROBEX handbook pointer (durable file not yet pinned) |
 
 ## Mining notes
 
+- [`OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md`](../../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md)
 - [`icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md`](../../mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md)
 
 ## Implementation (EV-065 P0)

@@ -1111,14 +1111,16 @@ describe('API Utils', () => {
         files: [file],
         product: 'metar',
         profile: 'annex3',
+        exchangeProfile: 'EUR_RODEX',
         lint: false,
         accessToken: 'tok',
       });
       expect(result.bulletin_meta.cccc).toBe('KZNY');
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/convert-bulletin'),
-        expect.objectContaining({ method: 'POST' }),
-      );
+      const [, init] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0] as [
+        string,
+        { body: FormData },
+      ];
+      expect(init.body.get('exchange_profile')).toBe('EUR_RODEX');
     });
 
     it('throws on convert-bulletin HTTP error with detail.message', async () => {

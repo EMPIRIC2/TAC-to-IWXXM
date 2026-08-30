@@ -159,6 +159,8 @@ export async function convertMetarToIwxxm(params: {
   preview?: boolean;
   extensions?: string[];
   exchangeOutput?: boolean;
+  /** Exchange packaging profile (ignored on convert-only; used when packaging). */
+  exchangeProfile?: string;
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<ConversionResponse> {
@@ -177,6 +179,9 @@ export async function convertMetarToIwxxm(params: {
   // F6.e — product required by API; default METAR when caller omits (legacy callers)
   formData.append('product', (params.product || 'METAR').toUpperCase());
   formData.append('profile', params.profile || 'annex3');
+  if (params.exchangeProfile?.trim()) {
+    formData.append('exchange_profile', params.exchangeProfile.trim());
+  }
 
   // Add IWXXM version (default to 2025-2)
   formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
@@ -257,6 +262,8 @@ export async function convertBulletin(params: {
   files?: File[];
   product: string;
   profile?: string;
+  /** Exchange packaging overlay (default GLOBAL_AFS on API when omitted). */
+  exchangeProfile?: string;
   iwxxmVersion?: string;
   lint?: boolean;
   accessToken?: string;
@@ -271,6 +278,9 @@ export async function convertBulletin(params: {
   }
   formData.append('product', params.product.toUpperCase());
   formData.append('profile', params.profile || 'annex3');
+  if (params.exchangeProfile?.trim()) {
+    formData.append('exchange_profile', params.exchangeProfile.trim());
+  }
   formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
   formData.append('lint', params.lint === false ? 'false' : 'true');
 

@@ -1,5 +1,28 @@
 # Evolve Decisions
 
+## Cycle EV-090 — Exchange overlay deepen + light picker (#921 / #913 / #1024)
+
+**Opened:** 2026-08-30 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-090-exchange-overlay-deepen`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Issues:** [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921), [#913](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913), [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024)
+
+| ID | Outcome |
+|----|---------|
+| D-EV090-intake | Option 3 — mining deepen + light picker; drawer #898 out |
+| D-EV090-routing | Standard band + e2e for picker; gate closed until documenting verify |
+| D-EV090-req | R1 recommended: 1a no local UI preview; 2a promote existing mining notes; 3a workbench Exchange select (default `GLOBAL_AFS`, all registered ids, ignored on convert-only); 4b close #921 when mining+picker land and spawn child for drawer |
+| D-EV090-packaging | No new packaging rules this cycle — COLLECT baseline retained; gaps documented only |
+| D-EV090-ui | Light Exchange control beside semantic Profile (`profile-type-select` pattern); plain-language copy; no destinations/credentials |
+| D-EV090-tests | TC-EV090-* (catalog/provenance + FE unit + H4–H5 e2e); preserve TC-EV063/065/086 |
+| D-EV090-adr | ADR-036 cite-only (no amend unless Build finds boundary gap) |
+| D-EV090-kg | Cross-project Neo4j checkpoint (F107): session-open retrieve sparse — **adopt** verification-gate discipline; **keep-local** prior #921 / EV-065 / EV-086 product history; no Pattern to waive |
+| D-EV090-gate | **open** (Build 2026-08-30) |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: product §F7] [Corpus: domain-profiles] [Corpus: domain] [Corpus: adr/ADR-036] [Corpus: tests] [Corpus: api] [Corpus: journeys]
+
+---
+
 ## Cycle EV-089 — Thin/compat national packs (#920)
 
 **Opened:** 2026-08-29 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-089-thin-compat-national-packs`  

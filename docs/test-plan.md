@@ -124,7 +124,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-065 | F6/F7 deepen (EV-061) | AHL decode + convert-bulletin (#1012) | **H4–H5 required** | TC-EV061-1012-001..004 |
 | UJ-066 / UJ-067 | F7.u (EV-061) | Product/Profile + param bars aligned (#1013) | **H4–H5 required** | TC-EV061-1013-001..003 |
 | UJ-068 | F7.v/F15 (EV-061; EV-062) | Validation Issues Catalog (#1014; #1017 deepen) | **H4–H5 required** | TC-EV061-1014-001..004; TC-EV062-001..006 |
-| UJ-069 | F35/F36 (EV-063) | Semantic convert → exchange package (`GLOBAL_AFS`) | T2 / **T3** (API); H4–H5 if #1024 FE | TC-EV063-001..006 |
+| UJ-069 | F35/F36 (EV-063/EV-090) | Semantic convert → exchange package (`GLOBAL_AFS`) | T2 / **T3** (API); **H4–H5** (#1024 FE / EV-090) | TC-EV063-001..006; TC-EV090-* |
 | UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
 | LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
@@ -3593,6 +3593,47 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: GLOBAL_AFS + APAC_ROBEX paths unchanged
 - **Pass criteria**: TC-EV065-001..002 green
 - **Source**: EV-086
+
+### EV-090 / #921+#913+#1024 — Exchange mining deepen + light picker
+
+- **Mode**: delta deepen F36 exchange overlays + F7 light UI
+- **Pass criteria**: TC-EV090-001..005; catalog/stub provenance deltas; UJ-069 FE steps
+- **Source**: [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921), [#913](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913), [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024); EV-090; ADR-036
+
+### TC-EV090-001: Catalog provenance for regional exchange stubs
+
+- **Level**: T0
+- **Objective**: Each exchange id (`GLOBAL_AFS`, `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM`) has promoted mining_notes and/or shared OPMET Guidelines source; ROBEX handbook durable file remains an explicit gap if unpinned
+- **Pass criteria**: `catalog.yaml` + stub Owns/Gaps match; PROVENANCE_MAP digs where tickets apply
+- **Source**: EV-090; D-EV090-req 2a; #913
+
+### TC-EV090-002: Workbench Exchange profile control
+
+- **Level**: T0 / T2 (browser unit)
+- **Objective**: Labeled Exchange profile select lists registered ids; default `GLOBAL_AFS`; accessible name distinct from semantic Profile
+- **Pass criteria**: `data-testid` exchange select visible; options include regional stubs; plain-language help without internal doc refs
+- **Source**: EV-090; #1024; UJ-069; D-EV090-ui
+
+### TC-EV090-003: FE sends exchange_profile on package/bulletin path
+
+- **Level**: T0 / T2 (browser unit)
+- **Objective**: Selecting a non-default exchange id sends `exchange_profile` on convert-bulletin / packaging request; convert-only path does not invent credentials
+- **Pass criteria**: Form/JSON field matches API contract; unknown id rejected by API (existing fail-closed)
+- **Source**: EV-090; api-contract; UJ-069
+
+### TC-EV090-004: H4–H5 connectivity for exchange picker
+
+- **Level**: T3 / H4–H5
+- **Objective**: Live or staging workbench can select exchange overlay and complete package path without CORS failure
+- **Pass criteria**: Connectivity gate scripts / Playwright e2e green for UJ-069 FE
+- **Source**: EV-090; connectivity-gates; D-EV090-routing
+
+### TC-EV090-005: EV-086 packaging regression
+
+- **Level**: T0 / T2
+- **Objective**: COLLECT baseline for all regional stubs unchanged
+- **Pass criteria**: TC-EV086-001..004 green
+- **Source**: EV-090
 
 ### EV-087 / #917+#918 — AU_BOM + NZ_CAA_MET P1 kickoff
 

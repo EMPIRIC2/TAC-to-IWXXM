@@ -1,6 +1,6 @@
 # EUR_RODEX — European regional exchange overlay
 
-> **Profile id**: `EUR_RODEX` · **Kind**: exchange · **Priority**: P2 · **Status**: **stub** (EV-086 P0 / [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921))  
+> **Profile id**: `EUR_RODEX` · **Kind**: exchange · **Priority**: P2 · **Status**: **stub** (EV-086 P0 / EV-090 mining promote / [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921))  
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 Regional **exchange** overlay for EUR RODEX / IWXXM OPMET practice. P0 stub
@@ -24,7 +24,13 @@ and packaging hook. RODEX-specific filename or routing rules deepen on backlog.
 
 | Source | Access | Proves |
 |--------|--------|--------|
+| [OPMET IWXXM Exchange Guidelines (5th Ed.)](https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf) | public | Shared COLLECT / FTBP / AFS baseline |
 | EUR RODEX Handbook (candidate URL in catalog) | gap | European regional exchange overlay |
+
+## Mining notes
+
+- [`OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md`](../../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md)
+- [`icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md`](../../mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md) — EUR Docs 018/020 pointers for IWXXM/exchange detail
 
 ## Implementation (EV-086 P0)
 
