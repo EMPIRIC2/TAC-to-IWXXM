@@ -1129,7 +1129,7 @@ appear as semantic/legacy aliases without being the href. Paywall access is labe
 
 ### UJ-069: Semantic Convert → Exchange Package (EV-063 / #912)
 
-**Actor**: Library integrator or operator (API; optional UI via #1024)
+**Actor**: Library integrator or operator (API + workbench light picker via #1024 / EV-090)
 
 **Goal**: Convert TAC with a **semantic** profile (`ICAO_2025` or `US_FAA_NWS`, or legacy alias
 during deprecation window), then prepare output for dissemination using an **exchange** profile
@@ -1137,14 +1137,14 @@ during deprecation window), then prepare output for dissemination using an **exc
 
 **Steps**:
 
-1. Submit convert with `semantic_profile=ICAO_2025` (or alias `annex3`) and a supported product.
+1. Submit convert with `semantic_profile=ICAO_2025` (or alias `annex3`) and a supported product — or choose **Profile** in the workbench.
 2. Receive IWXXM matching pre-migration annex3 goldens; observe deprecation signal if alias used.
-3. Invoke packaging/disseminate-prep with `exchange_profile=GLOBAL_AFS` (or rely on default), or select a regional stub (`APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` — EV-065/EV-086 P0 COLLECT baseline).
-4. Confirm packaging hooks run deterministically in CI (no live sink push).
+3. Invoke packaging/disseminate-prep with `exchange_profile=GLOBAL_AFS` (or rely on default), or select a regional stub (`APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` — EV-065/EV-086 P0 COLLECT baseline). On the workbench, choose **Exchange profile** (default `GLOBAL_AFS`); confirm convert-only actions do not require or send a distinct exchange choice beyond API defaults.
+4. Confirm packaging hooks run deterministically in CI (no live sink push). Help text states exchange choice is not a destination or credential.
 5. Confirm F16–F19 BYOC credentials are not stored or implied by exchange profile selection.
 
-**Acceptance**: feature-list F35/F36; ADR-036; api-contract EV-063 section; TC-EV063-*; TC-EV065-*; TC-EV086-*.
-**Tier: T2 / T3 (API)**; H4–H5 if #1024 FE ships. [Corpus: product §F35] [Corpus: product §F36] [Corpus: api] [Corpus: adr/ADR-036]
+**Acceptance**: feature-list F35/F36; ADR-036; api-contract EV-063 section; TC-EV063-*; TC-EV065-*; TC-EV086-*; TC-EV090-*.
+**Tier: T2 / T3 (API)**; **H4–H5** when #1024 FE ships (EV-090). [Corpus: product §F35] [Corpus: product §F36] [Corpus: product §F7] [Corpus: api] [Corpus: adr/ADR-036]
 
 ---
 

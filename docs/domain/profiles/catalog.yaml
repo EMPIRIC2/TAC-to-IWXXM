@@ -526,8 +526,12 @@ profiles:
     status: stub
     implementation:
       issue: "#921"
-      note: EV-065 P0 — registry + COLLECT baseline; ROBEX handbook rules deferred
+      note: EV-065 P0 — registry + COLLECT baseline; EV-090 mining promote (OPMET Guidelines + APAC FAQs); ROBEX handbook durable file still gap
     sources:
+      - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
+        label: OPMET IWXXM Exchange Guidelines (5th Ed.)
+        access: public
+        proves: COLLECT / FTBP / AFS exchange baseline shared with GLOBAL_AFS
       - url: https://www.icao.int/APAC/apac-electronic-documents
         label: ICAO APAC electronic documents
         access: public
@@ -537,6 +541,7 @@ profiles:
         access: public
         proves: Regional exchange / COLLECT / translation practice
     mining_notes:
+      - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
       - docs/domain/mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md
     stub: exchange/APAC_ROBEX.md
     gaps:
@@ -549,13 +554,18 @@ profiles:
     status: stub
     implementation:
       issue: "#921"
-      note: EV-086 P0 — registry + COLLECT baseline; RODEX handbook rules deferred
+      note: EV-086 P0 — registry + COLLECT baseline; EV-090 mining promote (OPMET Guidelines + EUR Doc 14 notes); RODEX handbook URL triage remains gap
     sources:
+      - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
+        label: OPMET IWXXM Exchange Guidelines (5th Ed.)
+        access: public
+        proves: COLLECT / FTBP / AFS exchange baseline shared with GLOBAL_AFS
       - url: https://www.icao.int/EUR/EUR%20Documents/RODEX%20Handbook.pdf
         label: EUR RODEX Handbook (candidate)
         access: gap
         proves: European regional exchange overlay
     mining_notes:
+      - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
       - docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md
     stub: exchange/EUR_RODEX.md
     gaps:
@@ -568,11 +578,17 @@ profiles:
     status: stub
     implementation:
       issue: "#921"
-      note: EV-086 P0 — registry + COLLECT baseline; regional rules deferred (#913 source TBD)
-    sources: []
+      note: EV-086 P0 — registry + COLLECT baseline; EV-090 promotes shared OPMET Guidelines baseline; AFI-specific handbook still TBD
+    sources:
+      - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
+        label: OPMET IWXXM Exchange Guidelines (5th Ed.)
+        access: public
+        proves: COLLECT / AFS exchange baseline pending regional handbook
+    mining_notes:
+      - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
     stub: exchange/AFI.md
     gaps:
-      - Authoritative AFI exchange rule source not listed in #913 initial mine
+      - Authoritative AFI-specific exchange rule source not listed in #913 initial mine
       - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
 
   - id: CAR_SAM
@@ -581,9 +597,15 @@ profiles:
     status: stub
     implementation:
       issue: "#921"
-      note: EV-086 P0 — registry + COLLECT baseline; regional rules deferred (#913 source TBD)
-    sources: []
+      note: EV-086 P0 — registry + COLLECT baseline; EV-090 promotes shared OPMET Guidelines baseline; CAR/SAM-specific handbook still TBD
+    sources:
+      - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
+        label: OPMET IWXXM Exchange Guidelines (5th Ed.)
+        access: public
+        proves: COLLECT / AFS exchange baseline pending regional handbook
+    mining_notes:
+      - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
     stub: exchange/CAR_SAM.md
     gaps:
-      - Authoritative CAR/SAM exchange rule source not listed in #913 initial mine
+      - Authoritative CAR/SAM-specific exchange rule source not listed in #913 initial mine
       - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped

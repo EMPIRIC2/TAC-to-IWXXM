@@ -93,6 +93,12 @@ import {
   type TacProductSelection,
 } from '/utils/tacProduct';
 import {
+  coerceExchangeProfile,
+  DEFAULT_EXCHANGE_PROFILE,
+  EXCHANGE_PROFILE_OPTIONS,
+  type ExchangeProfileId,
+} from '/utils/exchangeProfile';
+import {
   CA_ECCC_EXTENSION_LABEL,
   CA_ECCC_SUPPORTED_PRODUCTS,
   exchangeOutputForProfile,
@@ -223,6 +229,7 @@ interface ConversionParams {
   issuingCenter: string;
   product: TacProductSelection;
   profile: IwxxmProfile;
+  exchangeProfile: ExchangeProfileId;
   iwxxmVersion: IWXXMVersion;
   strictValidation: boolean;
   includeNilReasons: boolean;
@@ -305,6 +312,7 @@ export function FileConverter({
     issuingCenter: '',
     product: 'auto',
     profile: 'annex3',
+    exchangeProfile: DEFAULT_EXCHANGE_PROFILE,
     iwxxmVersion: DEFAULT_IWXXM_VERSION,
     strictValidation: true,
     includeNilReasons: true,
@@ -401,6 +409,7 @@ export function FileConverter({
             issuingCenter: prefs.issuingCenter || 'KWBC',
             product: (prefs.product as TacProductSelection) || 'auto',
             profile,
+            exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
             iwxxmVersion,
             strictValidation: prefs.strictValidation ?? true,
             includeNilReasons: prefs.includeNilReasons ?? true,
@@ -523,6 +532,11 @@ export function FileConverter({
             next.iwxxmVersion = CA_ECCC_IWXXM_VERSION;
           }
         }
+        if (typeof params.exchange_profile === 'string') {
+          next.exchangeProfile = coerceExchangeProfile(params.exchange_profile);
+        } else if (typeof params.exchangeProfile === 'string') {
+          next.exchangeProfile = coerceExchangeProfile(params.exchangeProfile);
+        }
         return next;
       });
     }
@@ -561,6 +575,7 @@ export function FileConverter({
           issuingCenter: prefs.issuingCenter || 'KWBC',
           product: (prefs.product as TacProductSelection) || 'auto',
           profile,
+          exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
           iwxxmVersion,
           strictValidation: prefs.strictValidation ?? true,
           includeNilReasons: prefs.includeNilReasons ?? true,
@@ -839,6 +854,7 @@ export function FileConverter({
           files: filesToConvert.length > 0 ? filesToConvert : undefined,
           product: resolvedProduct,
           profile: conversionParams.profile,
+          exchangeProfile: conversionParams.exchangeProfile,
           iwxxmVersion: conversionParams.iwxxmVersion,
           lint: true,
         });
@@ -940,6 +956,7 @@ export function FileConverter({
         preview: softPreview,
         extensions: nationalExtensionsForProfile(conversionParams.profile),
         exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
+        exchangeProfile: conversionParams.exchangeProfile,
       });
 
       console.log('[FileConverter] Conversion response:', response);
@@ -1564,6 +1581,7 @@ export function FileConverter({
           preview: true,
           extensions: nationalExtensionsForProfile(conversionParams.profile),
           exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
+          exchangeProfile: conversionParams.exchangeProfile,
           signal,
         });
         if (signal.aborted) {
@@ -1608,6 +1626,7 @@ export function FileConverter({
       liveAssistProduct,
       conversionParams.profile,
       conversionParams.iwxxmVersion,
+      conversionParams.exchangeProfile,
     ],
   );
 
@@ -2058,6 +2077,40 @@ export function FileConverter({
                     <option value="iwxxm_us">IWXXM-US</option>
                     <option value="ca_eccc">Canada (ECCC)</option>
                   </select>
+                  <Label
+                    htmlFor="param-exchange-profile"
+                    className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                  >
+                    Exchange profile
+                  </Label>
+                  <select
+                    id="param-exchange-profile"
+                    aria-label="Exchange profile"
+                    data-testid="exchange-profile-select"
+                    value={conversionParams.exchangeProfile}
+                    disabled={isReadOnly}
+                    onChange={(e) => {
+                      const exchangeProfile = coerceExchangeProfile(e.target.value);
+                      setConversionParams((prev) => ({
+                        ...prev,
+                        exchangeProfile,
+                      }));
+                    }}
+                    className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  >
+                    {EXCHANGE_PROFILE_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                  <p
+                    className="basis-full text-xs text-gray-600 dark:text-gray-400 lg:basis-auto"
+                    data-testid="exchange-profile-help"
+                  >
+                    Used when packaging bulletins. Does not choose destinations or
+                    credentials.
+                  </p>
                   {conversionParams.profile === 'ca_eccc' && (
                     <div
                       className="mt-2 rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
