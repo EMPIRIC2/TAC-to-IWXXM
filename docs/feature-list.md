@@ -23,10 +23,10 @@
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980 |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725) |
 | F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators |
-| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 **UI-hide all destinations** (API retained; restore #898) |
-| F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; **S050 / EV-042** operator UI hidden with F16–F19 (restore #898) |
-| F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; **S050 / EV-042** operator UI hidden (restore #898) |
-| F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; **S050 / EV-042** operator UI hidden (restore #898) |
+| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 UI-hide (API retained); **restore** EV-091 / #898 + #1089 exchange overlay |
+| F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; S050 / EV-042 hide; **restore** EV-091 / #898 |
+| F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; S050 / EV-042 hide; **restore** EV-091 / #898 |
+| F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; S050 / EV-042 hide; **restore** EV-091 / #898 |
 | F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 |
 | F21 | Public convert + optional Auth for long-term storage | Amended | Product | S023 #783; **S038 / EV-031 / F31** amend; **deepen** S057 / EV-048 #951 OpenAPI/error copy hygiene |
 | F22 | Privacy preference center (Solution A + GPC) | Implemented | Product | S023 / EV-017; #783; **deepen** F31 storage gates |
@@ -1848,17 +1848,14 @@
 
 ### F7 / F16–F19 deepen (S050 / EV-042 — #897 destinations UI hide + churn)
 
-- **Status note**: F16–F19 remain **Done** (engines/APIs); **operator UI destinations temporarily
-  removed**. F7 remains **Planned** with churn deepen.
-- **Acceptance (EV-042 shared)**:
-  1. No Dissemination sink chooser / Convert&Send / **Upload to Database** in operator UI (**UJ-053**, **TC-EV042-001**)
-  2. Harness/tests can still call dissemination preflight/send (**TC-EV042-002**)
-  3. Queue + keyboard next/prev + Enter convert/validate; multi-select batch convert/validate (**UJ-052**, **TC-EV042-003**)
-  4. Mass progress toast + convert/validate keyboard shortcuts (**TC-EV042-004**)
-  5. #898 updated to restore **all** destinations (DB + F17–F19), including Upload to Database / Convert&Send
-- **Journeys / tests**: **UJ-051..053**; **TC-F33-001..006**; **TC-EV042-001..004**
-- **Out of scope**: Implementing #898; soft-deleting `packages/dissemination` adapters
-- **Source**: #897; evolve-decisions §EV-042
+- **Status note**: F16–F19 remain **Done** (engines/APIs). EV-042 temporarily hid operator
+  destinations; **EV-091 / #898** restores Convert&Send, Disseminate drawer, and Upload to
+  Database (URI-BYOC). **#1089** adds drawer exchange overlay (parity with EV-090 workbench picker).
+- **Acceptance (EV-042 historical)**: destinations hidden (**UJ-053**, **TC-EV042-001**); harness API retained (**TC-EV042-002**); queue/batch churn (**UJ-052**, **TC-EV042-003..004**)
+- **Acceptance (EV-091 restore)**: destinations visible (**TC-EV091-001**); drawer exchange overlay on convert-before-send (**TC-EV091-002**); UJ-027–030 operator UI; connection-first preflight retained
+- **Journeys / tests**: **UJ-027–030**, **UJ-051..053** (UJ-053 inverted by EV-091); **TC-F33-***; **TC-EV042-***; **TC-EV091-***
+- **Out of scope**: #896 connector; soft-deleting `packages/dissemination` adapters
+- **Source**: #897; #898; #1089; evolve-decisions §EV-042 / §EV-091
 
 ### F23 deepen (S040 / EV-032 — #835 A6-2-TC → wmoPass)
 

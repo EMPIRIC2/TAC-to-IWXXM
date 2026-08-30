@@ -108,7 +108,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-050 | F4+F7 deepen (EV-038) | IWXXM version picker Latest / Previous (#854) | H4–H5 when FE | TC-EV038-007 |
 | UJ-051 | F33 | Secure mass file/folder ingest (auth + caps) | **H4–H5 required** | TC-F33-001..006 |
 | UJ-052 | F7 deepen (EV-042) | Queue + keyboard/batch convert·validate | **H4–H5 required** | TC-EV042-003..004 |
-| UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
+| UJ-053 | F16–F19 deepen (EV-091) | Operator dissemination destinations visible | **H4–H5 required** | TC-EV091-001..002; TC-EV042-002 |
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
 | UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
 | UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056 / EV-058) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988); side-by-side vs inline XML diff (#983) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005; TC-EV058-001..005 |
@@ -4382,10 +4382,10 @@ No live `codes.wmo.int` HTML in PR CI.
 
 ## F33 / EV-042 — Mass ingest + destinations hide + churn (S050)
 
-> Operator Dissemination destinations (DB + WIS2/EDIS/AMHS/SWIM/AFS) and Convert&Send are
-> **UI-hidden** this cycle (`OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false`). Backend
-> `/api/v1/dissemination/*` retained for harness. Restore track: [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
-> Ops: [Corpus: ops] `docs/ops/operator-ui-runbook.md` §EV-042 destinations deferred.
+> Historical: Operator Dissemination destinations were **UI-hidden** under EV-042.
+> **EV-091 / #898** restores destinations (`destinationsEnabled=true`) with URI-BYOC and
+> connection-first preflight; #1089 adds drawer exchange overlay. Backend
+> `/api/v1/dissemination/*` unchanged. Ops: [Corpus: ops] `docs/ops/operator-ui-runbook.md` §EV-091.
 
 ### TC-F33-001: Authenticated mass ingest accepts TAC / zip (UJ-051)
 
@@ -4432,20 +4432,20 @@ No live `codes.wmo.int` HTML in PR CI.
   `test_t83_h4_cors_preflight_mass_ingest` / staging smoke; H5 `massIngestUrl` absent
 - **Source**: AC6; connectivity-gates H4–H5
 
-### TC-EV042-001: Operator UI has no dissemination destinations (UJ-053)
+### TC-EV042-001: Operator UI has no dissemination destinations (UJ-053) — **superseded**
 
-- **Level**: T2 / T3
+- **Level**: T2 / T3 (historical EV-042)
 - **Objective**: Convert&Send + Disseminate + **Upload to Database** absent; Convert/Validate remain
-- **Pass criteria**: Vitest + Playwright assert `convert-and-send-button` /
-  `open-dissemination-drawer` / `upload-to-database-button` count 0; convert still succeeds
-- **Source**: AC1; UJ-053; #897; 11-verify-impl amend (hide DatabaseUploadDialog)
+- **Pass criteria**: Vitest residual gate-off case still asserts hide when
+  `destinationsEnabled=false`; production default is **enabled** (EV-091)
+- **Source**: AC1; UJ-053; #897; superseded by **TC-EV091-001**
 
 ### TC-EV042-002: Dissemination API retained for harness (UJ-053)
 
 - **Level**: T0 / T2
 - **Objective**: `/api/v1/dissemination/preflight` + `/send` still mounted for tests/harness
 - **Pass criteria**: Existing dissemination API tests green; operator Playwright UJ-027–030
-  skipped until #898
+  restored under EV-091 / #898
 - **Source**: AC2; UJ-053
 
 ### TC-EV042-003: Work queue keyboard next/prev + Enter convert/validate (UJ-052)
@@ -4464,9 +4464,32 @@ No live `codes.wmo.int` HTML in PR CI.
 
 ### EV-042 verify gate
 
-- [ ] TC-F33-001..006 + TC-EV042-001..004 green (or explicit deferral)
-- [ ] H4–H5 mass route wired (H0i + live smoke + Playwright UJ-051..053)
-- [ ] Operator destinations restore tracked in #898
+- [x] TC-F33-001..006 + TC-EV042-001..004 green (or explicit deferral)
+- [x] H4–H5 mass route wired (H0i + live smoke + Playwright UJ-051..053)
+- [x] Operator destinations restore tracked in #898 → **delivered EV-091**
+
+### TC-EV091-001: Operator dissemination destinations visible (UJ-053 restore / #898)
+
+- **Level**: T2 / T3
+- **Objective**: Convert&Send + Disseminate + Upload to Database visible; Convert remains
+- **Pass criteria**: Vitest + Playwright assert `convert-and-send-button` /
+  `open-dissemination-drawer` / `upload-to-database-button` present; preflight still gates Send
+- **Source**: EV-091; #898; UJ-027–030 / UJ-053
+
+### TC-EV091-002: Drawer exchange overlay on convert-before-send (#1089)
+
+- **Level**: T2 / T3
+- **Objective**: Dissemination drawer Exchange profile select (default `GLOBAL_AFS`); TAC
+  candidates convert with `exchange_profile` before send
+- **Pass criteria**: Vitest selects `APAC_ROBEX` and asserts convert called with that id;
+  Playwright asserts select visible; Convert&Send continues to use workbench picker
+- **Source**: EV-091; #1089; [Corpus: product §F36]
+
+### EV-091 verify gate
+
+- [ ] TC-EV091-001..002 green
+- [ ] UJ-027–030 Playwright unskipped and green (stubbed BYOC)
+- [ ] SSRF / memory-only BYOC invariants unchanged
 
 ### TC-EV031-001: One-time migrate legacy Supabase → DO Postgres
 

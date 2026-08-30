@@ -209,8 +209,8 @@ This playbook does **not** define regional exchange overlays. Exchange IDs live 
 a default `exchange.profile` in catalog metadata; packaging deepen stays on #921 / EV-090.
 
 **Operator UI:** light **Exchange profile** picker is [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024)
-(EV-090) — separate from semantic Type N wiring. Dissemination drawer overlay selection remains
-[#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
+(EV-090) — separate from semantic Type N wiring. Dissemination drawer overlay selection is
+[#1089](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1089) (EV-091; shipped with #898 restore).
 
 ---
 

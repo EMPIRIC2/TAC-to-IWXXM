@@ -714,8 +714,10 @@ aliases only (E14-07=A / ADR-026). CORS: no new origins; reuse existing
 
 ### S050 / EV-042 — Operator UI destinations hidden
 
-Operator Dissemination drawer / Convert&Send destination path is **UI-hidden** (UJ-053).
-These `/dissemination/*` routes remain for **harness/tests** until [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898) restores destinations. No API deletion this cycle.
+Operator Dissemination drawer / Convert&Send destination path is **restored** (EV-091 / #898).
+These `/dissemination/*` routes serve operator UI and harness/tests. Drawer convert-before-send
+uses workbench/`exchange_profile` overlay (#1089); send body itself remains IWXXM/TAC payload
+without a separate exchange field.
 
 ## F33 Secure mass ingest (S050 / EV-042 / #897)
 

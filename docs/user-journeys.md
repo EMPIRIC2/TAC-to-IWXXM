@@ -42,10 +42,10 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-025 | Manual TAC Input modes (TAC / AHL / COLLECT) | apps/frontend | F7 (ADR-024) | T2 / **T3** / H6′ |
 | UJ-026 | METAR REMARKS retain / exclusion (#667) | UI / API / package | F6 | T0 / T2 |
-| UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) + multi-select | apps/frontend | F16 | T2 / **T3** / H6′ (+ **live local** Compose); **operator UI deferred EV-042** — harness only until #898 |
-| UJ-028 | Dissemination drawer — WIS2 publish | apps/frontend | F17 | T2 / **T3** / H6′; **operator UI deferred EV-042** until #898 |
-| UJ-029 | Dissemination drawer — EDIS → RTH Washington | apps/frontend | F18 | T2 / **T3**; **operator UI deferred EV-042** until #898 |
-| UJ-030 | Dissemination drawer — AMHS / SWIM / AFS | apps/frontend | F19 | T2 / **T3**; **operator UI deferred EV-042** until #898 |
+| UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) + multi-select | apps/frontend | F16 | T2 / **T3** / H6′ (+ **live local** Compose); **restored EV-091 / #898** (+ #1089 exchange overlay) |
+| UJ-028 | Dissemination drawer — WIS2 publish | apps/frontend | F17 | T2 / **T3** / H6′; **restored EV-091 / #898** |
+| UJ-029 | Dissemination drawer — EDIS → RTH Washington | apps/frontend | F18 | T2 / **T3**; **restored EV-091 / #898** |
+| UJ-030 | Dissemination drawer — AMHS / SWIM / AFS | apps/frontend | F19 | T2 / **T3**; **restored EV-091 / #898** |
 | UJ-031 | TAF + SPECI lint / convert→validate golden | UI / API / CI | F20 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-032 | Load golden example → convert / validate | apps/frontend | F7 (#780) | T0 / T2 / H4–H5 |
 | UJ-033 | Privacy notice + settings + GPC | apps/frontend | F22 | T0 / T2 / H4–H5 |
@@ -69,7 +69,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-050 | IWXXM version picker Latest / Previous labels | apps/frontend | F4+F7 deepen (EV-038 / #854) | T2 / **T3** / H4–H5 |
 | UJ-051 | Secure mass file/folder ingest (auth + caps) | apps/frontend | F33 | T2 / **T3** / H4–H5 |
 | UJ-052 | Operator queue + keyboard/batch convert·validate churn | apps/frontend | F7 deepen (EV-042) | T2 / **T3** / H4–H5 |
-| UJ-053 | Operator UI has no dissemination destinations | apps/frontend | F16–F19 deepen (EV-042) | T2 / **T3** / H4–H5 |
+| UJ-053 | Operator dissemination destinations visible (EV-091 restore; was hide under EV-042) | apps/frontend | F16–F19 deepen | T2 / **T3** / H4–H5 |
 | UJ-054 | Operator Help → one-pager / handbook | apps/frontend | F7 deepen (EV-047 / #956/#957) | T0 / T2 / **T3** |
 | UJ-055 | Operator UI + API docs free of internal planning vocabulary | apps/frontend / OpenAPI | F7+F21 deepen (EV-048 / #951) | T0 / T2 / **T3** |
 | UJ-056 | Browse official corpus Quality metrics tab | apps/frontend | F7.q deepen (EV-054 / #836; EV-055 / #982+#980+#979; EV-056 / #988; EV-058 / #983) | T0 / T2 / **T3** / H4–H5 |
@@ -1932,29 +1932,30 @@ per-file errors, under auth + size/count caps + sniff/zip-bomb guards.
 1. After convert or mass ingest, see a sticky result/queue list.
 2. Use next/prev keyboard shortcuts; Enter triggers convert or validate for the focused item.
 3. Multi-select items → batch convert and/or batch validate; progress visible.
-4. Confirm Convert&Send / Disseminate destination UI is absent (UJ-053).
+4. Confirm Convert&Send / Disseminate / Upload to Database destinations are available (UJ-053 restore / EV-091).
 
-**Acceptance**: TC-EV042-003..004.
+**Acceptance**: TC-EV042-003..004; TC-EV091-001.
 
 ---
 
-### UJ-053: No Operator Dissemination Destinations (S050 / EV-042)
+### UJ-053: Operator Dissemination Destinations Restored (EV-091 / #898)
 
 **Actor**: Operator
 
 **Goal**: Dissemination drawer sink chooser, Convert&Send destination path, and
-**Upload to Database** / `DatabaseUploadDialog` are not available (DB + WIS2/EDIS/AMHS/SWIM/AFS).
-Backend APIs remain for harness until #898.
+**Upload to Database** / `DatabaseUploadDialog` are available (DB URI-BYOC + WIS2/EDIS/AMHS/SWIM/AFS).
+Drawer includes **Exchange profile** overlay (#1089). Connection-first preflight remains required.
+Backend APIs continue for harness.
 
-**Feature**: **F16–F19** deepen — EV-042 / #897; restore [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898)
+**Feature**: **F16–F19** deepen — EV-091 / #898 / #1089 (supersedes EV-042 hide)
 
 **Steps**:
 
-1. Open workbench; confirm no sink chooser / Convert&Send / Upload to Database.
-2. Convert and validate still work (UJ-001/002/052).
-3. Harness/tests may still call `/api/v1/dissemination/*` outside the operator UI.
+1. Open workbench; confirm Convert&Send, Disseminate, and Upload to Database are visible.
+2. Open Dissemination drawer; select sink + optional Exchange profile; Preflight before Send.
+3. Convert and validate still work (UJ-001/002/052).
 
-**Acceptance**: TC-EV042-001..002.
+**Acceptance**: TC-EV091-001..002; TC-EV042-002 (API retained).
 
 ---
 
