@@ -160,4 +160,48 @@ describe('TC-EV090: Exchange profile light picker', () => {
       }),
     );
   });
+
+  it('hydrates exchange_profile snake_case from a stored session', () => {
+    render(
+      <FileConverter
+        accessToken="tok"
+        isGuest={false}
+        userEmail="op@example.com"
+        loadedWorkSession={
+          {
+            id: 'sess-ex-snake',
+            status: 'wip',
+            conversion_params: {
+              product: 'METAR',
+              profile: 'annex3',
+              exchange_profile: 'EUR_RODEX',
+            },
+          } as any
+        }
+      />,
+    );
+    expect(screen.getByTestId('exchange-profile-select')).toHaveValue('EUR_RODEX');
+  });
+
+  it('hydrates exchangeProfile camelCase from a stored session', () => {
+    render(
+      <FileConverter
+        accessToken="tok"
+        isGuest={false}
+        userEmail="op@example.com"
+        loadedWorkSession={
+          {
+            id: 'sess-ex-camel',
+            status: 'wip',
+            conversion_params: {
+              product: 'METAR',
+              profile: 'annex3',
+              exchangeProfile: 'AFI',
+            },
+          } as any
+        }
+      />,
+    );
+    expect(screen.getByTestId('exchange-profile-select')).toHaveValue('AFI');
+  });
 });

@@ -308,6 +308,26 @@ describe('API Utils', () => {
       expect(body.get('exchange_output')).toBe('true');
     });
 
+    it('appends exchange_profile on convert when provided (EV-090)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        profile: 'annex3',
+        exchangeProfile: 'CAR_SAM',
+      });
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('exchange_profile')).toBe('CAR_SAM');
+    });
+
     it('should throw error on conversion failure', async () => {
       mockFetchResponse({ detail: { message: 'Conversion failed' } }, false, 400);
 
