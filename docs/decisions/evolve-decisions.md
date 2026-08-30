@@ -16,6 +16,7 @@
 | D-EV090-adr | ADR-036 cite-only (no amend unless Build finds boundary gap) |
 | D-EV090-kg | Cross-project Neo4j checkpoint (F107): session-open retrieve sparse — **adopt** verification-gate discipline; **keep-local** prior #921 / EV-065 / EV-086 product history; no Pattern to waive |
 | D-EV090-gate | **open** (Build 2026-08-30) |
+| D-EV090-build | Commit `38161462` on `evolve/EV-090-exchange-overlay-deepen` |
 
 ### Corpus
 
