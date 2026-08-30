@@ -42,6 +42,12 @@ Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 | [manobs-manair-ca-mining-notes.md](./manobs-manair-ca-mining-notes.md) | EV-064 / #916 — MANOBS/MANAIR TAC rules for `CA_ECCC` |
 | [au-bom-tac-mining-notes.md](./au-bom-tac-mining-notes.md) | EV-087 / #917 — BoM TAF INTER/TAF3/RMK T/Q + AUTO METAR for `AU_BOM` |
 | [nz-caa-met-tac-mining-notes.md](./nz-caa-met-tac-mining-notes.md) | EV-087 / #918 — NZ domestic vs intl TAF + AUTO METAR for `NZ_CAA_MET` |
+| [uk-metoffice-tac-mining-notes.md](./uk-metoffice-tac-mining-notes.md) | EV-089 / #920 — CAP 746 thin pack `UK_METOFFICE` |
+| [br-decea-tac-mining-notes.md](./br-decea-tac-mining-notes.md) | EV-089 / #920 — DECEA thin + GAMET parse-only `BR_DECEA` |
+| [kr-kma-tac-mining-notes.md](./kr-kma-tac-mining-notes.md) | EV-089 / #920 — KMA compat `KR_KMA` |
+| [jp-jma-tac-mining-notes.md](./jp-jma-tac-mining-notes.md) | EV-089 / #920 — JMA/Tokyo VAAC compat `JP_JMA` |
+| [in-imd-tac-mining-notes.md](./in-imd-tac-mining-notes.md) | EV-089 / #920 — IMD compat `IN_IMD` |
+| [hk-hko-tac-mining-notes.md](./hk-hko-tac-mining-notes.md) | EV-089 / #920 — HKO APAC fixtures `HK_HKO` |
 | [eccc-iwxxm-ca-mining-notes.md](./eccc-iwxxm-ca-mining-notes.md) | EV-064 / #916 — ECCC IWXXM 3.0.0 + `*-ca.xsd` + code-ca + datamart |
 | [codes-wmo-int-aviation-mining-notes.md](./codes-wmo-int-aviation-mining-notes.md) | codes.wmo.int aviation registers (colour/nil/MetFeature 28 vs 27; 4678 CSV=402 vs HTML≈101; SCH RDF match) · #797 |
 | [vona-encode-remine-ev035-mining-notes.md](./vona-encode-remine-ev035-mining-notes.md) | S043/EV-035 remine — VONA Guidance silent; AHL WM/LM + FM205 promotes · #869 |

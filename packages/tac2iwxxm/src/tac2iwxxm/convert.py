@@ -19,9 +19,15 @@ from tac2iwxxm.products.vona import parse_vona
 from tac2iwxxm.profile_registry import (
     EMIT_ANNEX3,
     EMIT_AU_BOM,
+    EMIT_BR_DECEA,
     EMIT_CA_ECCC,
+    EMIT_HK_HKO,
+    EMIT_IN_IMD,
     EMIT_IWXXM_US,
+    EMIT_JP_JMA,
+    EMIT_KR_KMA,
     EMIT_NZ_CAA_MET,
+    EMIT_UK_METOFFICE,
     resolve_semantic_profile,
 )
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
@@ -47,6 +53,21 @@ _US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
 _CA_ECCC_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "AIRMET"})
 _AU_BOM_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
 _NZ_CAA_MET_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
+# EV-089 / #920 thin-compat packs — core IWXXM emit; GAMET never listed (D-EV089-gamet).
+_UK_METOFFICE_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
+_BR_DECEA_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
+_KR_KMA_PRODUCTS = frozenset({"METAR", "TAF", "SIGMET", "AIRMET"})
+_JP_JMA_PRODUCTS = frozenset({"METAR", "TAF", "SIGMET", "VAA"})
+_IN_IMD_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET"})
+_HK_HKO_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "VAA"})
+_THIN_COMPAT_PRODUCTS: dict[str, frozenset[str]] = {
+    EMIT_UK_METOFFICE: _UK_METOFFICE_PRODUCTS,
+    EMIT_BR_DECEA: _BR_DECEA_PRODUCTS,
+    EMIT_KR_KMA: _KR_KMA_PRODUCTS,
+    EMIT_JP_JMA: _JP_JMA_PRODUCTS,
+    EMIT_IN_IMD: _IN_IMD_PRODUCTS,
+    EMIT_HK_HKO: _HK_HKO_PRODUCTS,
+}
 _REPORT_STATUSES = frozenset({"NORMAL", "AMENDMENT", "CORRECTION"})
 
 # Map MALFORMED_REMARKS message needles → token regexes for editor spans (S011 T2.2).
@@ -286,7 +307,7 @@ def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) ->
             return emit_taf_iwxxm_us(ir, iwxxm_version=iwxxm_version)
         if profile == EMIT_CA_ECCC:
             return emit_taf_ca_eccc(ir, iwxxm_version=iwxxm_version)
-        # AU_BOM / NZ_CAA_MET / annex3 — core IWXXM only (D-EV087-xsd).
+        # AU/NZ + EV-089 thin/compat / annex3 — core IWXXM only (D-EV087-xsd / D-EV089-xsd).
         return emit_taf_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "SIGMET":
         if profile == "iwxxm_us":
@@ -462,6 +483,12 @@ def convert(
         return _fail(
             "UNSUPPORTED_PROFILE",
             f"profile nz_caa_met not supported yet for product {product_u!r}",
+        )
+    thin_products = _THIN_COMPAT_PRODUCTS.get(profile_l)
+    if thin_products is not None and product_u not in thin_products:
+        return _fail(
+            "UNSUPPORTED_PROFILE",
+            f"profile {profile_l} not supported yet for product {product_u!r}",
         )
     if profile_l == EMIT_CA_ECCC and iwxxm_version != CA_IWXXM_VERSION:
         return _fail(

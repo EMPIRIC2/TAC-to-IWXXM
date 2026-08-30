@@ -13,7 +13,7 @@ profiles. This directory is the standing SoT for profile *evidence*; implementat
 
 | Kind | Examples | Owns |
 |------|----------|------|
-| **Semantic** | `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` | TAC parse rules, RMK policy, national IWXXM extensions |
+| **Semantic** | `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, thin/compat (#920) | TAC parse rules, RMK policy, national IWXXM extensions |
 | **Exchange** | `GLOBAL_AFS`, `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` | Bulletin/filename/routing packaging — **not** TAC grammar |
 
 **Not here:** F16–F19 dissemination **destination** credentials (memory-only BYOC).
@@ -31,6 +31,7 @@ profiles/
     US_FAA_NWS.md                # P0 implemented (#919 deepen)
     CA_ECCC.md                   # P1 implemented (#916) — reference impl
     AU_BOM.md / NZ_CAA_MET.md    # P1 thin kickoff (EV-087)
+    UK_METOFFICE.md … HK_HKO.md  # P2 thin/compat (#920 / EV-089)
     ...
   exchange/
     GLOBAL_AFS.md                # P0 implemented (EV-065 / #921)
@@ -68,7 +69,7 @@ access tier, vendor pins, gaps, and mining-note cross-refs.
 |----------|----------|----------|
 | **P0** | `ICAO_2025`, `US_FAA_NWS` | `GLOBAL_AFS` (default) |
 | **P1** | `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` | — |
-| **P2** | Thin/compat (#920) | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
+| **P2** | `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO` (#920) | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
 
 ## Open gaps (#913 deepen)
 
@@ -77,11 +78,13 @@ access tier, vendor pins, gaps, and mining-note cross-refs.
 - [ ] CA MANOBS/MANAIR section-level rule stubs for `CA_ECCC` (#916 / EV-064 in progress)  
 - [x] AU TAF INTER/TAF3/RMK T/Q refs for `AU_BOM` (EV-087 mining kickoff)  
 - [x] NZ domestic vs international TAF refs for `NZ_CAA_MET` (EV-087 mining kickoff)  
+- [x] Thin/compat catalog + stubs for #920 ids (EV-089 Spec; Build fixtures/registry pending)  
 - [ ] Regional exchange rule sources for ROBEX/RODEX variants (P2)
 
 ## References
 
 - [NATIONAL_PROFILE_PLAYBOOK.md](NATIONAL_PROFILE_PLAYBOOK.md) — [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044)
+- [GAMET-spike.md](GAMET-spike.md) — EV-089 parse-only disposition
 - [ADR-036](../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 - [#913 Mine ticket](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913)
 - [#1025 Alias cutover](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)

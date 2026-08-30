@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "description": "EV-089 — HK_HKO APAC compat fixtures",
+  "profile": "HK_HKO",
+  "cases": [
+    {
+      "id": "metar_vhhh",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_vhhh.tac",
+      "rule_id": "HK.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "speci_vhhh",
+      "product": "SPECI",
+      "tac": "SPECI/valid/speci_vhhh.tac",
+      "rule_id": "HK.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "taf_vhhh",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_vhhh.tac",
+      "rule_id": "HK.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "sigmet_basic",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_basic.tac",
+      "rule_id": "HK.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "vaa_sample",
+      "product": "VAA",
+      "tac": "VAA/valid/vaa_sample.tac",
+      "rule_id": "HK.BASE.ICAO",
+      "status": "active"
+    }
+  ]
+}

@@ -2,8 +2,8 @@
 # Corpus: domain-profiles · ADR-036 §7
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 1
-cycle: EV-087
-updated: "2026-08-28"
+cycle: EV-089
+updated: "2026-08-29"
 
 priority_legend:
   P0: "Baseline — implemented or default exchange overlay (F35)"
@@ -306,6 +306,189 @@ profiles:
       - No published NZ IWXXM extension XSD (core-only emit)
       - Domestic 2000FT WIND / QNH MNM/MAX → remarks unless core mapping attested (D-EV087-nz-domestic)
       - Additional CAA/AIP PDF durable URLs to harden after local PDF harvest
+
+  # --- Thin/compat nationals (#920 / EV-089) — extend ICAO_2025; no national XSD ---
+
+  - id: UK_METOFFICE
+    kind: semantic
+    priority: P2
+    status: in_progress
+    emit_key: uk_metoffice
+    locale: [en]
+    issuing_body: UK Met Office / CAA
+    implementation:
+      issue: "#920"
+      package: packages/tac2iwxxm
+      cycle: EV-089
+      path: thin
+    products: [METAR, SPECI, TAF]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no UK national extension published)
+    sources:
+      - url: https://www.caa.co.uk/our-work/publications/documents/content/cap746/
+        label: UK CAA CAP 746 — Meteorological observations at aerodromes
+        access: public
+        proves: UK METAR/SPECI/TAF conventions vs Annex 3
+      - url: https://www.metoffice.gov.uk/services/transport/aviation
+        label: Met Office aviation services
+        access: public
+        proves: Operational UK aviation MET context
+    mining_notes:
+      - docs/domain/mining/uk-metoffice-tac-mining-notes.md
+    stub: semantic/UK_METOFFICE.md
+    gaps:
+      - No published UK IWXXM extension XSD (core-only emit)
+      - Registry + convert allowlist + kickoff fixtures landed (EV-089 Build)
+      - Local ATIS / special ATS deltas → fixtures only unless override evidence appears
+
+  - id: BR_DECEA
+    kind: semantic
+    priority: P2
+    status: in_progress
+    emit_key: br_decea
+    locale: [pt, en]
+    issuing_body: DECEA / ANAC (Brazil)
+    implementation:
+      issue: "#920"
+      package: packages/tac2iwxxm
+      cycle: EV-089
+      path: thin
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET]
+    # GAMET: parse-only fixtures only — not in convert product allowlist (D-EV089-gamet)
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no BR national extension published)
+    sources:
+      - url: https://www2.anac.gov.br/
+        label: ANAC (Brazil civil aviation authority)
+        access: public
+        proves: Institutional MET/AIM context
+      - url: https://aisweb.decea.mil.br/
+        label: DECEA AISWEB
+        access: public
+        proves: Brazilian AIP / AIS access for MET product policy
+    mining_notes:
+      - docs/domain/mining/br-decea-tac-mining-notes.md
+    stub: semantic/BR_DECEA.md
+    gaps:
+      - No published BR IWXXM extension XSD (core-only emit)
+      - GAMET TAC fixtures parse-only — no IWXXM emit (D-EV089-gamet)
+      - SAM / CAR_SAM exchange packaging deepen stays on #921 (note only here)
+
+  - id: KR_KMA
+    kind: semantic
+    priority: P2
+    status: in_progress
+    emit_key: kr_kma
+    locale: [ko, en]
+    issuing_body: Korea Meteorological Administration (KMA)
+    implementation:
+      issue: "#920"
+      package: packages/tac2iwxxm
+      cycle: EV-089
+      path: compat
+    products: [METAR, TAF, SIGMET, AIRMET]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no KR national extension published)
+    sources:
+      - url: https://www.kma.go.kr/eng/
+        label: KMA (English)
+        access: public
+        proves: National MET authority context
+    mining_notes:
+      - docs/domain/mining/kr-kma-tac-mining-notes.md
+    stub: semantic/KR_KMA.md
+    gaps:
+      - No published KR IWXXM extension XSD (core-only emit)
+      - AIP GEN 3.5 durable URL to harden after harvest
+      - Automated TAC→IWXXM claim (since ~2017) — verify vs fixtures; no override assumed
+
+  - id: JP_JMA
+    kind: semantic
+    priority: P2
+    status: in_progress
+    emit_key: jp_jma
+    locale: [ja, en]
+    issuing_body: Japan Meteorological Agency (JMA) / Tokyo VAAC
+    implementation:
+      issue: "#920"
+      package: packages/tac2iwxxm
+      cycle: EV-089
+      path: compat
+    products: [METAR, TAF, SIGMET, VAA]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no JP national extension published)
+    sources:
+      - url: https://www.jma.go.jp/jma/indexe.html
+        label: JMA (English)
+        access: public
+        proves: METAR/TAF/SIGMET issuance context
+      - url: https://www.data.jma.go.jp/svd/vaac/data/index.html
+        label: Tokyo VAAC
+        access: public
+        proves: Volcanic ash advisory (VAA) corpus
+    mining_notes:
+      - docs/domain/mining/jp-jma-tac-mining-notes.md
+    stub: semantic/JP_JMA.md
+    gaps:
+      - No published JP IWXXM extension XSD (core-only emit)
+      - AIRMET not in v1 allowlist (D-EV089-jp-va)
+      - VAA validate/convert depth follows existing ICAO_2025 VA paths — no national VA schema fork
+
+  - id: IN_IMD
+    kind: semantic
+    priority: P2
+    status: in_progress
+    emit_key: in_imd
+    locale: [en]
+    issuing_body: India Meteorological Department (IMD)
+    implementation:
+      issue: "#920"
+      package: packages/tac2iwxxm
+      cycle: EV-089
+      path: compat
+    products: [METAR, SPECI, TAF, SIGMET]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no IN national extension published)
+    sources:
+      - url: https://mausam.imd.gov.in/
+        label: IMD Mausam portal
+        access: public
+        proves: National MET / aviation forecast context
+    mining_notes:
+      - docs/domain/mining/in-imd-tac-mining-notes.md
+    stub: semantic/IN_IMD.md
+    gaps:
+      - No published IN IWXXM extension XSD (IMDIMET unpublished — do not invent)
+      - AIP GEN 3.5: TAF may omit forecast vis/temp — document as note/override candidate
+      - No AIRMET/GAMET in v1 (AIP: not issued)
+
+  - id: HK_HKO
+    kind: semantic
+    priority: P2
+    status: in_progress
+    emit_key: hk_hko
+    locale: [en, zh]
+    issuing_body: Hong Kong Observatory (HKO)
+    implementation:
+      issue: "#920"
+      package: packages/tac2iwxxm
+      cycle: EV-089
+      path: compat
+    products: [METAR, SPECI, TAF, SIGMET, VAA]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no HK national extension published)
+    sources:
+      - url: https://www.hko.gov.hk/en/index.html
+        label: Hong Kong Observatory
+        access: public
+        proves: METAR/TAF/SIGMET/VAA operational context
+    mining_notes:
+      - docs/domain/mining/hk-hko-tac-mining-notes.md
+    stub: semantic/HK_HKO.md
+    gaps:
+      - No published HK IWXXM extension XSD (core-only emit)
+      - APAC interoperability fixtures primary deliverable; overrides expected empty
+      - Chinese-language bulletin variants not required for v1 fixtures
 
   # --- Exchange (packaging / routing — not TAC grammar) ---
 

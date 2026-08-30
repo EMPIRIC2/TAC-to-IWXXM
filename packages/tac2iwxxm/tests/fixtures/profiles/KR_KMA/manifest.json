@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "description": "EV-089 — KR_KMA compat pack fixtures",
+  "profile": "KR_KMA",
+  "cases": [
+    {
+      "id": "metar_rksi",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_rksi.tac",
+      "rule_id": "KR.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "taf_rksi",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_rksi.tac",
+      "rule_id": "KR.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "sigmet_basic",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_basic.tac",
+      "rule_id": "KR.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "airmet_basic",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_basic.tac",
+      "rule_id": "KR.BASE.ICAO",
+      "status": "active"
+    }
+  ]
+}

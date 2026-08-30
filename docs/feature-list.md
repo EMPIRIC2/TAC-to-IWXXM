@@ -1793,15 +1793,16 @@
 
 ### F36: National semantic + regional exchange profile content — EV-063 / #912
 
-- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; EV-065/086 #921 exchange stubs; **EV-087** `AU_BOM` + `NZ_CAA_MET` P1 kickoff).
+- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; EV-065/086 #921 exchange stubs; **EV-087** `AU_BOM` + `NZ_CAA_MET` P1 kickoff; **EV-089** thin/compat #920 Spec in progress).
 - **What it does**: Implements profile **content** on top of F35 architecture: deepen
   `US_FAA_NWS` ([#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)), **`CA_ECCC`**
   ([#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) / EV-064), **`AU_BOM`**
   ([#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917) / EV-087), **`NZ_CAA_MET`**
-  ([#918](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/918) / EV-087), regional exchange
+  ([#918](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/918) / EV-087), thin/compat nationals
+  ([#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920) / EV-089), regional exchange
   overlays ([#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921)) as capacity allows.
   Data-driven rules mined from authoritative sources (#913 / parallel MANOBS/MANAIR notes).
-- **Priority spine**: #913 → #914 → #919 → #916 → #921 → **#917 / #918** (EV-087); defer #920 unless capacity.
+- **Priority spine**: #913 → #914 → #919 → #916 → #921 → **#917 / #918** (EV-087) → **#920** (EV-089 thin path; UK first).
 - **Fixture layout**: `profiles/<id>/<product>/{valid,invalid,expected-*}` with first heavy
   national profile.
 - **Acceptance (Spec close)**:
@@ -1828,8 +1829,12 @@
   17. **EV-087 / #917+#918:** `AU_BOM` + `NZ_CAA_MET` P1 kickoff — catalog P1, semantic stubs, mining notes; INTER emit = `TEMPORARY_FLUCTUATIONS` + provenance (D-EV087-inter-emit); TAF3 as RMK flag; NZ domestic extras → IR + remarks; core IWXXM only (no national XSD); TC-EV087-*
   18. **EV-088 / #1044:** National profile **onboarding playbook** + `_template/` stubs + scaffold
      script (engineering enablement) — thin vs full paths; A–P ↔ CA reference map; no #920/#921
-     feature content this cycle
-- **Out of scope**: Thin packs #920; exchange handbook deepen beyond stubs; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); inventing AU/NZ IWXXM enums/XSDs
+     feature content that cycle
+  19. **EV-089 / #920:** Thin/compat packs `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`,
+     `IN_IMD`, `HK_HKO` — catalog + semantic stubs + mining notes + fixtures + registry
+     (EV-088 thin path); ship UK first; GAMET **parse-only** (no IWXXM emit); no national XSD invent;
+     SAM packaging deepen stays #921
+- **Out of scope**: Exchange handbook deepen beyond stubs; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); inventing national IWXXM enums/XSDs; China unless public sources appear; GAMET→IWXXM conversion
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   **CA_ECCC** option in EV-064 Build slice
 - **Enablement**: [NATIONAL_PROFILE_PLAYBOOK.md](domain/profiles/NATIONAL_PROFILE_PLAYBOOK.md)

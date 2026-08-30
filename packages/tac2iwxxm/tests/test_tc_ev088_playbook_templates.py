@@ -68,19 +68,23 @@ def test_tc_ev088_004_readme_and_adr_link_playbook() -> None:
 def test_tc_ev088_005_scaffold_dry_run() -> None:
     """Scaffold CLI dry-run exits 0 and prints checklist without writes."""
     assert _SCAFFOLD.is_file(), f"missing scaffold script: {_SCAFFOLD}"
+    # Use a probe id that must not exist as a standing stub (UK_METOFFICE is real post-EV-089).
+    probe_id = "ZZ_SCAFFOLD_PROBE"
+    probe_stub = _PROFILES / "semantic" / f"{probe_id}.md"
+    assert not probe_stub.exists(), f"probe stub must not pre-exist: {probe_stub}"
     proc = subprocess.run(
-        [sys.executable, str(_SCAFFOLD), "--id", "UK_METOFFICE", "--dry-run"],
+        [sys.executable, str(_SCAFFOLD), "--id", probe_id, "--dry-run"],
         cwd=_REPO,
         capture_output=True,
         text=True,
         check=False,
     )
     assert proc.returncode == 0, proc.stderr
-    assert "UK_METOFFICE" in proc.stdout
+    assert probe_id in proc.stdout
     assert "Hand-edit checklist" in proc.stdout
     assert "profile_registry.py" in proc.stdout
     # dry-run must not create semantic stub
-    assert not (_PROFILES / "semantic" / "UK_METOFFICE.md").exists()
+    assert not probe_stub.exists()
 
 
 def test_tc_ev088_006_scaffold_rejects_bad_id() -> None:

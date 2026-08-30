@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "description": "EV-089 — UK_METOFFICE thin pack fixtures",
+  "profile": "UK_METOFFICE",
+  "cases": [
+    {
+      "id": "metar_egll",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_egll.tac",
+      "rule_id": "UK.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "speci_egll",
+      "product": "SPECI",
+      "tac": "SPECI/valid/speci_egll.tac",
+      "rule_id": "UK.BASE.ICAO",
+      "status": "active"
+    },
+    {
+      "id": "taf_egll",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_egll.tac",
+      "rule_id": "UK.BASE.ICAO",
+      "status": "active"
+    }
+  ]
+}
