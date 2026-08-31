@@ -889,3 +889,12 @@ ci-prepush: format-check typecheck lint test-unit-workspace test-unit-backend \
 ci: ci-prepush test-integration
 
 acci: ci test-e2e-playwright-smoke audit-frontend
+
+security-scan-install:
+	bash scripts/security/install-tools.sh
+
+security-scan:
+	bash scripts/security/run-all.sh
+
+check-exact-pins:
+	python3 scripts/ci/check-exact-pins.py
