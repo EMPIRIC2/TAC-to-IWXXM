@@ -81,6 +81,7 @@ class StagingSinkAdapter:
 
     @property
     def sink_type(self) -> SinkType:
+        """Drawer / API sink discriminator for this F19 staging adapter."""
         return self._sink_type
 
     async def preflight(

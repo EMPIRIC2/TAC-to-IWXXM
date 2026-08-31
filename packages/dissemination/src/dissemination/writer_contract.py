@@ -29,6 +29,8 @@ REQUIRED_COLUMNS: tuple[str, ...] = (
 
 
 class DiffKind(StrEnum):
+    """Writer-contract schema diff categories."""
+
     MISSING_TABLE = "missing_table"
     MISSING_COLUMN = "missing_column"
     TYPE_MISMATCH = "type_mismatch"

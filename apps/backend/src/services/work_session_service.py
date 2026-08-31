@@ -137,6 +137,28 @@ class WorkSessionService:
         page: int = 1,
         limit: int = 20,
     ) -> tuple[list[WorkSession], int]:
+        """Return paginated work sessions and total count for the service owner.
+
+        Parameters
+        ----------
+        status_filter : WorkSessionStatus or None
+            Optional status filter.
+        products : sequence of WorkSessionProduct or None
+            Optional product filter.
+        from_dt, to_dt : datetime or None
+            Optional updated-at range bounds.
+        include_deleted : bool
+            When True, include soft-deleted sessions.
+        page : int
+            One-based page index.
+        limit : int
+            Maximum rows per page.
+
+        Returns
+        -------
+        tuple[list[WorkSession], int]
+            Matching sessions and total count before pagination.
+        """
         table = _table()
         try:
             with _get_engine().connect() as conn:
@@ -165,6 +187,7 @@ class WorkSessionService:
             _handle_db_error(exc)
 
     def get_session(self, session_id: UUID) -> WorkSession:
+        """Return one owner-scoped session or raise HTTP 404."""
         table = _table()
         try:
             with _get_engine().connect() as conn:
@@ -185,6 +208,7 @@ class WorkSessionService:
         return _parse_row(dict(row))
 
     def create_session(self, user_id: str, payload: WorkSessionCreate) -> WorkSession:
+        """Insert a new work session row and return the persisted record."""
         table = _table()
         data = _payload_dict(payload, user_id=user_id)
         data.setdefault("id", uuid4())
@@ -202,6 +226,7 @@ class WorkSessionService:
             _handle_db_error(exc)
 
     def update_session(self, session_id: UUID, payload: WorkSessionUpdate) -> WorkSession:
+        """Apply partial updates to an existing owner-scoped session."""
         self.get_session(session_id)
         table = _table()
         data = _payload_dict(payload)
@@ -226,9 +251,11 @@ class WorkSessionService:
             _handle_db_error(exc)
 
     def soft_delete(self, session_id: UUID) -> WorkSession:
+        """Mark a session deleted without removing the row."""
         return self._set_deleted(session_id, deleted=True)
 
     def restore_session(self, session_id: UUID) -> WorkSession:
+        """Clear ``deleted_at`` on a previously soft-deleted session."""
         return self._set_deleted(session_id, deleted=False)
 
     def _set_deleted(self, session_id: UUID, *, deleted: bool) -> WorkSession:

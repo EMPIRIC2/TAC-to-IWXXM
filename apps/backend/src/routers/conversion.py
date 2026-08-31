@@ -374,6 +374,7 @@ async def convert(
         description="Minimum severity for conversion/validation/lint process issues echoed to the client",
     ),
 ) -> Response:
+    """Convert METAR/SPECI TAC text to IWXXM XML."""
     logger.info(
         "[CONVERT] Request received method=%s path=%s origin=%s content_type=%s has_auth_header=%s",
         request.method,
@@ -431,88 +432,6 @@ async def convert(
                     total_errors=1,
                 ).model_dump(),
             ) from e
-    """Convert METAR/SPECI TAC text to IWXXM XML format.
-
-    Converts one or more METAR TAC messages to IWXXM XML format. Supports:
-    - Manual text input via form field
-    - File uploads (text files)
-    - Batch processing (multiple files)
-    - Dynamic IWXXM version selection
-    - Input validation (ICAO code and TAC syntax)
-    - Optional output validation (full 7-layer IWXXM validation)
-
-    **Authentication**: Public (no login required)
-
-    **Request Parameters**:
-    - **files** (array): Optional uploaded text files containing METAR TAC
-    - **manual_text** (string): Optional manual text input
-    - **iwxxm_version** (string): Target IWXXM version (default: "2025-2")
-      - "2025-2": Latest IWXXM version (recommended)
-      - "2023-1": Previous stable release
-      - "2025-1": Auto-remaps to 2025-2
-      - Pre-2023 versions (2021-2, 2018, 2016, etc.) are deprecated and will be rejected
-    - **validate_output** (boolean): Enable full IWXXM validation after conversion (default: false)
-      - When true, runs layers 3-7 (XML wellformed, XSD schema, Schematron, GML, codelists)
-      - Validation issues are logged but don't prevent conversion results
-
-    **Validation**:
-    - **Input Validation (Always On)**:
-      - Layer 1: ICAO airport code validation
-      - Layer 2: TAC syntax validation
-    - **Output Validation (Optional)**:
-      - Layer 3: XML well-formedness
-      - Layer 4: XSD schema validation
-      - Layer 5: Schematron business rules
-      - Layer 6: GML reference validation
-      - Layer 7: WMO codelist validation
-
-    **Response**:
-    - **results** (array): Successfully converted IWXXM XML documents
-    - **errors** (array): Error messages for failed conversions
-    - **total_processed** (integer): Total inputs processed
-    - **successful** (integer): Number of successful conversions
-    - **failed** (integer): Number of failed conversions
-
-    **Example Success Response**:
-    ```json
-    {
-      "results": [
-        {
-          "name": "manual_input.txt",
-          "content": "<?xml version='1.0'?>...",
-          "source": "manual",
-          "size_bytes": 1452,
-          "iwxxm_version": "2025-2"
-        }
-      ],
-      "errors": [],
-      "total_processed": 1,
-      "successful": 1,
-      "failed": 0
-    }
-    ```
-
-    **Example Failure Response**:
-    ```json
-    {
-      "results": [
-        {
-          "name": "valid_file.txt",
-          "content": "<?xml version='1.0'?>...",
-          "source": "valid_file.txt",
-          "size_bytes": 1200,
-          "iwxxm_version": "2025-2"
-        }
-      ],
-      "errors": [
-        "invalid_file.txt: Unknown airport code: ZZZZ"
-      ],
-      "total_processed": 2,
-      "successful": 1,
-      "failed": 1
-    }
-    ```
-    """
     # Handle JSON request body (for metars list)
     if request_body is not None:
         metars = request_body.metars
@@ -574,6 +493,7 @@ async def convert(
                 iwxxm_version: str = "3.0.0",
                 extension_tag: str = "3.0",
             ) -> bool:
+                """Return False when the Canadian extension bundle cannot be imported."""
                 return False
 
         if not ca_eccc_bundle_available():
@@ -859,6 +779,7 @@ async def convert(
         layer: str | None = None,
         location: str | None = None,
     ) -> None:
+        """Append a structured conversion issue to the response accumulator."""
         issues.append(
             ConversionIssue(
                 source=source,
@@ -872,6 +793,7 @@ async def convert(
         )
 
     def add_aggregated_validation_issues(source: str, aggregated_result: object) -> None:
+        """Flatten multi-layer validation results into conversion issues."""
         if not aggregated_result:  # pragma: no cover - defensive guard
             return
         for layer_result in getattr(aggregated_result, "results", []):
@@ -1903,6 +1825,7 @@ async def convert_zip(
         description="Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)",
     ),
 ) -> StreamingResponse:
+    """Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files."""
     # Try to parse JSON body if Content-Type is application/json
     request_body = None
     if request.headers.get("content-type", "").startswith("application/json"):
@@ -1916,38 +1839,6 @@ async def convert_zip(
         except Exception as e:
             # Pydantic validation error - return 422
             raise HTTPException(status_code=422, detail=f"Validation error: {e!s}") from e
-    """Convert METAR/SPECI TAC inputs to a zipped archive of IWXXM XML files.
-
-    Similar to `/api/v1/convert` but returns results as a ZIP archive instead of JSON.
-    Useful for batch processing or downloading multiple converted files.
-
-    **Authentication**: Public (no login required)
-
-    **Request Parameters**:
-    - **files** (array): Optional uploaded text files containing METAR TAC
-    - **manual_text** (string): Optional manual text input
-    - **iwxxm_version** (string): Target IWXXM version (default: "2025-2")
-
-    **Response**:
-    - **Content Type**: `application/zip`
-    - **Content**: ZIP archive containing:
-      - One `.xml` file per successfully converted METAR
-      - `errors.txt` file (if any conversions failed)
-
-    **Example ZIP Contents**:
-    ```
-    iwxxm_batch_20260210T143000Z.zip
-    ├── manual_input.xml
-    ├── KJFK_231751Z.xml
-    ├── EGLL_231750Z.xml
-    └── errors.txt (if any failures)
-    ```
-
-    **Use Cases**:
-    - Batch conversion with file export
-    - Integration with external processing pipelines
-    - Offline processing and storage
-    """
     # Handle JSON request body (for metars list)
     if request_body is not None:
         metars_list = request_body.metars or []

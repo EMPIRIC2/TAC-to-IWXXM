@@ -77,6 +77,7 @@ def get_schema_status() -> object:
             iwxxm_version: str = ca_eccc_iwxxm_version,
             extension_tag: str = "3.0",
         ) -> bool:
+            """Return False when the Canadian extension bundle cannot be imported."""
             return False
     else:
         ca_eccc_iwxxm_version = CA_ECCC_IWXXM_VERSION

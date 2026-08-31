@@ -39,6 +39,12 @@ export function requireApiBaseUrl(): string {
   return base;
 }
 
+/**
+ * Build a fully qualified URL for an API v1 route.
+ *
+ * @param path - Route path; `/api/v1` prefix is added when absent.
+ * @returns Absolute URL against the configured API base.
+ */
 export function apiUrl(path: string): string {
   const base = getApiBaseUrl();
   if (path.startsWith('/api/v1')) {
@@ -48,6 +54,12 @@ export function apiUrl(path: string): string {
   return `${base}/api/v1${normalized}`;
 }
 
+/**
+ * Build a fully qualified URL for an auth route on the API host.
+ *
+ * @param path - Auth subpath; `/auth` prefix is added when absent.
+ * @returns Absolute auth URL against the configured API base.
+ */
 export function authUrl(path: string): string {
   const base = getApiBaseUrl();
   const normalized = path.startsWith('/auth')
@@ -56,6 +68,12 @@ export function authUrl(path: string): string {
   return `${base}${normalized}`;
 }
 
+/**
+ * Build a fully qualified URL for an admin route on the API host.
+ *
+ * @param path - Admin subpath; `/admin` prefix is added when absent.
+ * @returns Absolute admin URL against the configured API base.
+ */
 export function adminUrl(path: string): string {
   const base = getApiBaseUrl();
   const normalized = path.startsWith('/admin')

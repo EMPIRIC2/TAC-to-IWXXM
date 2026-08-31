@@ -17,6 +17,9 @@ interface DatabaseUploadDialogProps {
   onClose: () => void;
 }
 
+/**
+ * Modal dialog to upload converted files to a configured database destination.
+ */
 export function DatabaseUploadDialog({
   convertedFiles,
   isOpen,

@@ -17,6 +17,11 @@ export const operatorDisseminationUiConfig = {
   destinationsEnabled: false,
 };
 
+/**
+ * Whether operator dissemination and database upload UI is visible.
+ *
+ * @returns True when destination controls are enabled in the converter.
+ */
 export function isOperatorDisseminationDestinationsEnabled(): boolean {
   return operatorDisseminationUiConfig.destinationsEnabled;
 }

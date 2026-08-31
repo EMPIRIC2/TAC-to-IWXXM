@@ -99,6 +99,18 @@ class JsonLogFormatter(logging.Formatter):
     """Formats log records as JSON."""
 
     def format(self, record: logging.LogRecord) -> str:
+        """Serialize a log record as a single JSON line for structured logging.
+
+        Parameters
+        ----------
+        record : logging.LogRecord
+            Log record to format.
+
+        Returns
+        -------
+        str
+            JSON-encoded log payload.
+        """
         payload = {
             "timestamp": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
             "level": record.levelname,
@@ -151,6 +163,13 @@ class LokiHandler(logging.Handler):
         self._worker.start()
 
     def emit(self, record: logging.LogRecord) -> None:
+        """Enqueue a log record for asynchronous push to Loki.
+
+        Parameters
+        ----------
+        record : logging.LogRecord
+            Log record to ship when Loki is configured and level passes the filter.
+        """
         if not self.push_url or self._session is None:
             return
         if self.min_level and record.levelno < self.min_level:
@@ -165,6 +184,7 @@ class LokiHandler(logging.Handler):
             self.handleError(record)
 
     def close(self) -> None:
+        """Stop the background worker and close the HTTP session."""
         try:
             self._stop_event.set()
             if self._worker.is_alive():
@@ -362,6 +382,7 @@ def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
         request: Request,
         call_next: Callable[[Request], Awaitable[Response]],
     ) -> Response:
+        """Record Prometheus HTTP request counters and latency histograms."""
         start = time.perf_counter()
         try:
             response = await call_next(request)
@@ -390,6 +411,7 @@ def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
 
     @app.get("/metrics", include_in_schema=False)
     async def metrics_endpoint() -> Response:
+        """Expose Prometheus metrics in text exposition format."""
         data = generate_latest()
         return Response(content=data, media_type=CONTENT_TYPE_LATEST)
 
@@ -408,6 +430,7 @@ class RequestLogLevelFilter(logging.Filter):
     """Drop records below the per-request convert ``log_level`` ContextVar."""
 
     def filter(self, record: logging.LogRecord) -> bool:
+        """Allow records at or above the per-request convert log level."""
         minimum = _REQUEST_LOG_LEVEL.get()
         if minimum is None:
             return True
@@ -418,6 +441,7 @@ class SecretRedactFilter(logging.Filter):
     """Strip JWTs and Authorization header values from log records."""
 
     def filter(self, record: logging.LogRecord) -> bool:
+        """Redact JWTs and Authorization header values from log message text."""
         try:
             message = record.getMessage()
         except Exception:

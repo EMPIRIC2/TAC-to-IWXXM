@@ -85,6 +85,7 @@ def list_work_sessions(
     limit: int = Query(20, ge=1, le=100),
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSessionListResponse:
+    """List work sessions for the authenticated user with optional filters."""
     items, total = service.list_sessions(
         status_filter=status_filter,
         products=_parse_product_filter(product),
@@ -103,6 +104,7 @@ def create_work_session(
     user: dict[str, Any] = Depends(verify_supabase_token),
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSession:
+    """Create a new work session owned by the authenticated user."""
     return service.create_session(_user_id(user), payload)
 
 
@@ -111,6 +113,7 @@ def get_work_session(
     session_id: UUID,
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSession:
+    """Return a single work session by id."""
     return service.get_session(session_id)
 
 
@@ -120,6 +123,7 @@ def update_work_session(
     payload: WorkSessionUpdate,
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSession:
+    """Update mutable fields on an existing work session."""
     return service.update_session(session_id, payload)
 
 
@@ -128,6 +132,7 @@ def delete_work_session(
     session_id: UUID,
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSession:
+    """Soft-delete a work session (sets ``deleted_at``)."""
     return service.soft_delete(session_id)
 
 
@@ -136,6 +141,7 @@ def restore_work_session(
     session_id: UUID,
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSession:
+    """Restore a previously soft-deleted work session."""
     return service.restore_session(session_id)
 
 

@@ -9,6 +9,11 @@ interface AuthCallbackProps {
   onVerified?: () => void;
 }
 
+/**
+ * OAuth/email callback handler that parses tokens from the URL hash.
+ *
+ * Routes successful auth to login, register, or verification callbacks.
+ */
 export function AuthCallback({ onLogin, onRegister, onVerified }: AuthCallbackProps) {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [message, setMessage] = useState('Processing your request...');

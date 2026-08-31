@@ -237,6 +237,11 @@ interface ConversionParams {
   logLevel: LogLevel;
 }
 
+/**
+ * Main TAC-to-IWXXM converter workbench — input, conversion, validation, and session sync.
+ *
+ * Supports guest and authenticated modes with optional work-history hydration.
+ */
 export function FileConverter({
   accessToken,
   userEmail = 'Guest',
