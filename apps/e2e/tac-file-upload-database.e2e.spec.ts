@@ -64,15 +64,19 @@ function getTacFiles(): TacFixture[] {
     return [];
   }
 
-  return fs
-    .readdirSync(tacFilesDir)
-    .filter((fileName) => fileName.endsWith('.tac'))
-    .slice(0, 3)
-    .map((fileName) => ({
-      content: fs.readFileSync(`${tacFilesDir}/${fileName}`, 'utf-8').trim(),
-      name: fileName,
-      path: `${tacFilesDir}/${fileName}`,
-    }));
+  return (
+    fs
+      .readdirSync(tacFilesDir)
+      .filter((fileName) => fileName.endsWith('.tac'))
+      .map((fileName) => ({
+        content: fs.readFileSync(`${tacFilesDir}/${fileName}`, 'utf-8').trim(),
+        name: fileName,
+        path: `${tacFilesDir}/${fileName}`,
+      }))
+      // Prefer METAR — SPECI fixtures in this tree often encode as Failed-TAC.
+      .filter((file) => /^METAR\b/i.test(file.content))
+      .slice(0, 3)
+  );
 }
 
 test.describe('TAC File Upload to Database', () => {
@@ -85,13 +89,9 @@ test.describe('TAC File Upload to Database', () => {
   });
 
   test('single TAC file can be converted and sent with one click', async ({ page }) => {
-    const tacFiles = getTacFiles();
-    test.skip(
-      tacFiles.length === 0,
-      'No TAC fixture files available for upload E2E coverage.',
-    );
-
-    const testFile = tacFiles[0]!;
+    // Convert&Send refuses upload when conversion hasErrors (Failed-TAC). Use a
+    // clean METAR rather than WMO Amd79 SPECI fixtures that often soft-fail.
+    const cleanMetar = 'METAR KJFK 121251Z 24008KT 10SM FEW250 18/M03 A3016';
     await loginAndOpenConverter(page);
 
     await page.route('**/functions/v1/**/database/upload', async (route) => {
@@ -106,7 +106,11 @@ test.describe('TAC File Upload to Database', () => {
     });
 
     // Prefer aria-label — mass-ingest folder/zip inputs also match input[type=file].
-    await page.getByLabel('Select TAC files to upload').setInputFiles(testFile.path);
+    await page.getByLabel('Select TAC files to upload').setInputFiles({
+      name: 'kjfk-clean.tac',
+      mimeType: 'text/plain',
+      buffer: Buffer.from(`${cleanMetar}\n`, 'utf-8'),
+    });
     await page.getByTestId('convert-and-send-button').click();
 
     const resultsRegion = page.getByRole('region', { name: /conversion results/i });
