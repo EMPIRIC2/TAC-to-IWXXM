@@ -5,8 +5,8 @@
 
 Compat pack for IMD METAR/SPECI/TAF/SIGMET. Indian TAFs commonly omit TX/TN temperature
 extremes. EV-094 adds a **lint profile overlay** (`in_imd` / `IN_IMD`) that emits a
-registered **info** awareness code when TX/TN are absent — convert remains core IWXXM
-(no unpublished IMDIMET XSD). No AIRMET/GAMET in v1.
+registered **info** awareness code (`IN_TAF_TX_TN_OMITTED`) when TX/TN are absent —
+convert remains core IWXXM (no unpublished IMDIMET XSD). No AIRMET/GAMET in v1.
 
 ## Owns (target)
 
@@ -18,9 +18,10 @@ registered **info** awareness code when TX/TN are absent — convert remains cor
 
 ## Gaps
 
-- [ ] Attributed real TAC corpora (EV-094 / #1098)
-- [ ] Wire `in_imd` in `tac-validate` + registry code + TC-EV094-004
+- [x] Attributed VIDP METAR/TAF (AWC; EV-094 M5 / #1098) — SPECI/SIGMET still synthetic
+- [x] Wire `in_imd` in `tac-validate` + `IN_TAF_TX_TN_OMITTED` + TC-EV094-004
 - [ ] AIP GEN 3.5 durable URL when public pin found
+- [ ] Attributed SPECI / FIR SIGMET corpora
 
 ## References
 

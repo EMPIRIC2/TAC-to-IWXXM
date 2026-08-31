@@ -1,7 +1,7 @@
 # TAC lint issue catalog
 
 > **Source**: generated from tac_validate.issue_registry + PROVENANCE_MAP  
-> **Generated**: 2026-08-27 via `make catalog-regen`  
+> **Generated**: 2026-08-31 via `make catalog-regen`  
 > **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015 / F23 / EV-019 / EV-040
 
 Public `code` values are stable. Default severities may tighten in minor releases.
@@ -50,6 +50,7 @@ Source attribution joins `PROVENANCE_MAP` (WMO / ICAO / IWXXM citations — no A
 | `INVALID_VISIBILITY` | `error` | {product} invalid visibility token (use SM, meters, or CAVOK) | — | visibility, metar, speci, r2 | codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations |
 | `INVALID_WEATHER` | `error` | {product} invalid present weather token {token!r} - A3-2 #8 | — | weather, metar, speci, r3 | codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Prefer register landing + 306/4678 concept pattern over bare root |
 | `INVALID_WIND` | `error` | {product} has an invalid wind token {token!r}. Error: the TAC does not meet a required format or product rule and should be corrected. Source: Wind not in AerodromePresentWeather list. | — | wind, metar, speci, r8 | codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Wind not in AerodromePresentWeather list |
+| `IN_TAF_TX_TN_OMITTED` | `info` | {product} does not include TX/TN temperature forecast groups. Informational: India Meteorological Department TAFs often omit temperature extremes; this does not by itself block conversion. | TAF | taf, in_imd, temperature, tx_tn | imd-mausam - https://mausam.imd.gov.in/ - India IMD TAF often omits TX/TN temperature extremes |
 | `MISSING_CCCC` | `error` | {product} missing ICAO location (CCCC) | — | station, metar, speci, taf | icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1 |
 | `MISSING_DTG` | `error` | {product} missing DTG: template field | — | dtg, vaa, tca, swxa, vona | vona-ahl-fm205 - vendor:documentation/webpages/AHL.asciidoc - Guidance silent residual; AHL/FM205/XSD cites ok |
 | `MISSING_FIR_OR_CTA` | `error` | SIGMET/AIRMET missing FIR/CTA/UIR airspace identity. Error: the TAC does not meet a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion. | sigmet | fir, cta, sigmet, airmet, g2, a1 | icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion |

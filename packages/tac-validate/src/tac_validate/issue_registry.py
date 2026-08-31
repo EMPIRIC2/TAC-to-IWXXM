@@ -237,6 +237,13 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("taf", "ca_eccc", "manair", "nclws"),
     ),
     _row(
+        "IN_TAF_TX_TN_OMITTED",
+        "info",
+        "{product} does not include TX/TN temperature forecast groups. Informational: India Meteorological Department TAFs often omit temperature extremes; this does not by itself block conversion.",
+        product="TAF",
+        tags=("taf", "in_imd", "temperature", "tx_tn"),
+    ),
+    _row(
         "US_TAF_BECMG_FORBIDDEN",
         "error",
         "{product} BECMG change group is forbidden under US_FAA_NWS",

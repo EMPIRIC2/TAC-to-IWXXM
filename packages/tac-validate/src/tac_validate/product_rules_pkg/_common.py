@@ -706,6 +706,37 @@ def _check_ca_manair(
     return issues
 
 
+def _check_in_imd_taf(
+    tokens: list[str],
+    *,
+    product: str,
+    core: str,
+    body_start: int,
+    body_end: int,
+    profile: str = "annex3",
+) -> list[Issue]:
+    """IN_IMD overlay: info when TAF omits TX/TN (EV-094 M5 / #1098)."""
+    if profile != "in_imd" or product != "TAF":
+        return []
+    if any(_TAF_TX_TN.fullmatch(tok) for tok in tokens):
+        return []
+    issues: list[Issue] = []
+    issues.append(
+        _issue(
+            "IN_TAF_TX_TN_OMITTED",
+            (
+                f"{product} does not include TX/TN temperature forecast groups. "
+                "Informational: India Meteorological Department TAFs often omit temperature "
+                "extremes; this does not by itself block conversion."
+            ),
+            start=body_start,
+            end=body_end,
+            location="body",
+        )
+    )
+    return issues
+
+
 def _check_ca_gfa_airmet(
     *,
     product: str,
@@ -1070,6 +1101,7 @@ __all__ = [
     "_check_ca_gfa_airmet",
     "_check_ca_manair",
     "_check_ca_manobs",
+    "_check_in_imd_taf",
     "_check_metar_speci_field_order",
     "_check_phenomenon_membership",
     "_check_r8_pack",

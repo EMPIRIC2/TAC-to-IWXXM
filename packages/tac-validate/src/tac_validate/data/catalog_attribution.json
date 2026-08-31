@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-08-27",
+  "generated": "2026-08-31",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -282,6 +282,13 @@
       "status": "ok",
       "note": "Wind not in AerodromePresentWeather list",
       "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Wind not in AerodromePresentWeather list"
+    },
+    "IN_TAF_TX_TN_OMITTED": {
+      "source_id": "imd-mausam",
+      "source_url": "https://mausam.imd.gov.in/",
+      "status": "verified",
+      "note": "India IMD TAF often omits TX/TN temperature extremes",
+      "source_attribution": "imd-mausam - https://mausam.imd.gov.in/ - India IMD TAF often omits TX/TN temperature extremes"
     },
     "MISSING_CCCC": {
       "source_id": "icao-annex-3",

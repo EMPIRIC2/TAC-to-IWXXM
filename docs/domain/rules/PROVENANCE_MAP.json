@@ -769,6 +769,16 @@
       "note": "EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
+      "code": "IN_TAF_TX_TN_OMITTED",
+      "status": "verified",
+      "source_id": "imd-mausam",
+      "source_url": "https://mausam.imd.gov.in/",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/in-imd-tac-mining-notes.md",
+      "ticket": "#1098",
+      "note": "India IMD TAF often omits TX/TN temperature extremes"
+    },
+    {
       "code": "INVALID_AHL",
       "status": "ok",
       "source_id": "opmet-guidelines-5th",

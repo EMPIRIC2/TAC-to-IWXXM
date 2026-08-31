@@ -480,19 +480,29 @@ profiles:
         label: IMD Mausam portal
         access: public
         proves: National MET / aviation forecast context
+      - url: https://aviationweather.gov/api/data/metar?ids=VIDP&format=raw
+        label: AWC METAR API (VIDP)
+        access: public
+        proves: Attributed METAR corpus (EV-094 M5)
+      - url: https://aviationweather.gov/api/data/taf?ids=VIDP&format=raw
+        label: AWC TAF API (VIDP)
+        access: public
+        proves: Attributed TAF without TX/TN (EV-094 M5)
     mining_notes:
       - docs/domain/mining/in-imd-tac-mining-notes.md
     stub: semantic/IN_IMD.md
     gaps:
       - No published IN IWXXM extension XSD (IMDIMET unpublished — do not invent)
-      - AIP GEN 3.5 durable URL still gap; TAF often omits TX/TN — EV-094 lint overlay `in_imd` (D-EV094-in-taf)
+      - AIP GEN 3.5 durable URL still gap
       - No AIRMET/GAMET in v1 (AIP: not issued)
-      - Attributed real corpora deepen — EV-094 / #1098
+      - SPECI / FIR SIGMET attributed corpora still pending (synthetic_ev089)
+      - Catalog status stays in_progress until #1098 IN AC complete
     lint_profile:
       id: in_imd
       aliases: [IN_IMD]
       products: [TAF]
       intent: "Info awareness when TX/TN omitted (national practice); not a hard error waive"
+      registry_code: IN_TAF_TX_TN_OMITTED
       cycle: EV-094
       issue: "#1098"
 
