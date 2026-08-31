@@ -514,9 +514,10 @@ profiles:
     locale: [en, zh]
     issuing_body: Hong Kong Observatory (HKO)
     implementation:
-      issue: "#920"
+      issue: "#1098"
+      prior_issue: "#920"
       package: packages/tac2iwxxm
-      cycle: EV-089
+      cycle: EV-094
       path: compat
     products: [METAR, SPECI, TAF, SIGMET, VAA]
     vendor_pins:
@@ -526,13 +527,24 @@ profiles:
         label: Hong Kong Observatory
         access: public
         proves: METAR/TAF/SIGMET/VAA operational context
+      - url: https://aviationweather.gov/api/data/metar?ids=VHHH&format=raw
+        label: AWC METAR API (VHHH)
+        access: public
+        proves: Attributed METAR corpus (EV-094 M6)
+      - url: https://aviationweather.gov/api/data/taf?ids=VHHH&format=raw
+        label: AWC TAF API (VHHH)
+        access: public
+        proves: Attributed TAF with TX/TN (EV-094 M6) — empty overrides
     mining_notes:
       - docs/domain/mining/hk-hko-tac-mining-notes.md
     stub: semantic/HK_HKO.md
+    overrides: []
     gaps:
       - No published HK IWXXM extension XSD (core-only emit)
-      - APAC interoperability fixtures primary deliverable; overrides expected empty
+      - SPECI / Hong Kong FIR SIGMET / VAA attributed corpora still pending (synthetic_ev089)
+      - AIP GEN 3.5 durable URL still gap
       - Chinese-language bulletin variants not required for v1 fixtures
+      - Catalog status stays in_progress until #1098 HK AC complete
 
   # --- Exchange (packaging / routing — not TAC grammar) ---
 
