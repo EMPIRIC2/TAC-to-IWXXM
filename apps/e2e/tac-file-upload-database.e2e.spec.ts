@@ -109,10 +109,14 @@ test.describe('TAC File Upload to Database', () => {
     await page.getByLabel('Select TAC files to upload').setInputFiles(testFile.path);
     await page.getByTestId('convert-and-send-button').click();
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      { timeout: 10000 },
-    );
-    await expect(page.locator('pre').first()).toContainText(/iwxxm|metar:/i);
+    const resultsRegion = page.getByRole('region', { name: /conversion results/i });
+    await expect(resultsRegion).toBeVisible({ timeout: 10000 });
+    // Source TAC is the first <pre>; IWXXM XML is a later block in the same result.
+    await expect(
+      resultsRegion.locator('pre').filter({ hasText: /iwxxm/i }).first(),
+    ).toBeVisible({
+      timeout: 10000,
+    });
     await expect(page.getByText(/Files converted and sent successfully/i)).toBeVisible({
       timeout: 10000,
     });
@@ -146,10 +150,13 @@ test.describe('TAC File Upload to Database', () => {
     await page.getByLabel('Select TAC files to upload').setInputFiles(testFile.path);
     await page.getByTestId('convert-button').click();
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      { timeout: 10000 },
-    );
-    await expect(page.locator('pre').first()).toContainText(/iwxxm|metar:/i);
+    const resultsRegion = page.getByRole('region', { name: /conversion results/i });
+    await expect(resultsRegion).toBeVisible({ timeout: 10000 });
+    await expect(
+      resultsRegion.locator('pre').filter({ hasText: /iwxxm/i }).first(),
+    ).toBeVisible({
+      timeout: 10000,
+    });
 
     await page
       .getByRole('button', { name: /Upload 1 converted files to database/i })
