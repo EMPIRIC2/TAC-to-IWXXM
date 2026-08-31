@@ -1847,7 +1847,8 @@
   22. **EV-094 / #1098:** Deepen thin/compat packs (post-#920) — attributed real TAC corpora;
      durable catalog/mining URLs; **SPECI** on `KR_KMA` + `JP_JMA`; **`in_imd` lint overlay**
      for TAF TX/TN omission awareness (convert stays core IWXXM); GAMET parse-only reaffirm;
-     UK-first PRs; close #1098 on land (**do not reopen #920**).
+     UK-first PRs; catalog `status: implemented` for six packs; **close #1098** on land
+     (**do not reopen #920**).
 - **Out of scope**: Full ROBEX/RODEX packaging rule matrices beyond documented gaps; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); inventing national IWXXM enums/XSDs; China unless public sources appear; GAMET→IWXXM conversion; #933 ConversionProfile editor
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   semantic (**EV-093** canonical + nationals) + **exchange** control (EV-090 / drawer EV-091)

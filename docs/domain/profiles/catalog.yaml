@@ -312,7 +312,7 @@ profiles:
   - id: UK_METOFFICE
     kind: semantic
     priority: P2
-    status: in_progress
+    status: implemented
     emit_key: uk_metoffice
     locale: [en]
     issuing_body: UK Met Office / CAA
@@ -350,12 +350,11 @@ profiles:
       - No published UK IWXXM extension XSD (core-only emit)
       - Attributed real SPECI corpus pending (SPECI fixture remains synthetic_ev089)
       - Local ATIS / special ATS deltas → fixtures only unless override evidence appears
-      - Catalog status stays in_progress until #1098 UK AC complete
 
   - id: BR_DECEA
     kind: semantic
     priority: P2
-    status: in_progress
+    status: implemented
     emit_key: br_decea
     locale: [pt, en]
     issuing_body: DECEA / ANAC (Brazil)
@@ -394,19 +393,19 @@ profiles:
       - No published BR IWXXM extension XSD (core-only emit)
       - GAMET TAC fixtures parse-only — no IWXXM emit (D-EV094-gamet)
       - Attributed real SPECI / Brazilian FIR SIGMET / AIRMET corpora pending (synthetic_ev089)
-      - SAM / CAR_SAM exchange packaging deepen stays on #921 (note only here)
-      - Catalog status stays in_progress until #1098 BR AC complete
+      - "SAM / CAR_SAM exchange packaging deepen stays on #921 (note only here)"
   - id: KR_KMA
     kind: semantic
     priority: P2
-    status: in_progress
+    status: implemented
     emit_key: kr_kma
     locale: [ko, en]
     issuing_body: Korea Meteorological Administration (KMA)
     implementation:
-      issue: "#920"
+      issue: "#1098"
+      prior_issue: "#920"
       package: packages/tac2iwxxm
-      cycle: EV-089
+      cycle: EV-094
       path: compat
     products: [METAR, SPECI, TAF, SIGMET, AIRMET]
     vendor_pins:
@@ -416,6 +415,14 @@ profiles:
         label: KMA (English)
         access: public
         proves: National MET authority context
+      - url: https://aviationweather.gov/api/data/metar?ids=RKSI&format=raw
+        label: AWC METAR API (RKSI)
+        access: public
+        proves: Attributed METAR corpus (EV-094 M3)
+      - url: https://aviationweather.gov/api/data/taf?ids=RKSI&format=raw
+        label: AWC TAF API (RKSI)
+        access: public
+        proves: Attributed TAF corpus (EV-094 M3)
     mining_notes:
       - docs/domain/mining/kr-kma-tac-mining-notes.md
     stub: semantic/KR_KMA.md
@@ -424,19 +431,19 @@ profiles:
       - AIP GEN 3.5 durable URL to harden after harvest
       - Attributed real SPECI / Korean FIR SIGMET / AIRMET corpora pending (synthetic_ev089)
       - Automated TAC→IWXXM claim (since ~2017) — verify vs fixtures; no override assumed
-      - Catalog status stays in_progress until #1098 KR AC complete
 
   - id: JP_JMA
     kind: semantic
     priority: P2
-    status: in_progress
+    status: implemented
     emit_key: jp_jma
     locale: [ja, en]
     issuing_body: Japan Meteorological Agency (JMA) / Tokyo VAAC
     implementation:
-      issue: "#920"
+      issue: "#1098"
+      prior_issue: "#920"
       package: packages/tac2iwxxm
-      cycle: EV-089
+      cycle: EV-094
       path: compat
     products: [METAR, SPECI, TAF, SIGMET, VAA]
     vendor_pins:
@@ -450,6 +457,14 @@ profiles:
         label: Tokyo VAAC
         access: public
         proves: Volcanic ash advisory (VAA) corpus
+      - url: https://aviationweather.gov/api/data/metar?ids=RJTT&format=raw
+        label: AWC METAR API (RJTT)
+        access: public
+        proves: Attributed METAR corpus (EV-094 M4)
+      - url: https://aviationweather.gov/api/data/taf?ids=RJTT&format=raw
+        label: AWC TAF API (RJTT)
+        access: public
+        proves: Attributed TAF corpus (EV-094 M4)
     mining_notes:
       - docs/domain/mining/jp-jma-tac-mining-notes.md
     stub: semantic/JP_JMA.md
@@ -458,19 +473,19 @@ profiles:
       - AIRMET not in v1 allowlist (D-EV089-jp-va)
       - Attributed real SPECI / Japanese FIR SIGMET / Tokyo VAA corpora pending (synthetic_ev089)
       - VAA validate/convert depth follows existing ICAO_2025 VA paths — no national VA schema fork
-      - Catalog status stays in_progress until #1098 JP AC complete
 
   - id: IN_IMD
     kind: semantic
     priority: P2
-    status: in_progress
+    status: implemented
     emit_key: in_imd
     locale: [en]
     issuing_body: India Meteorological Department (IMD)
     implementation:
-      issue: "#920"
+      issue: "#1098"
+      prior_issue: "#920"
       package: packages/tac2iwxxm
-      cycle: EV-089
+      cycle: EV-094
       path: compat
     products: [METAR, SPECI, TAF, SIGMET]
     vendor_pins:
@@ -494,9 +509,8 @@ profiles:
     gaps:
       - No published IN IWXXM extension XSD (IMDIMET unpublished — do not invent)
       - AIP GEN 3.5 durable URL still gap
-      - No AIRMET/GAMET in v1 (AIP: not issued)
+      - "No AIRMET/GAMET in v1 (AIP: not issued)"
       - SPECI / FIR SIGMET attributed corpora still pending (synthetic_ev089)
-      - Catalog status stays in_progress until #1098 IN AC complete
     lint_profile:
       id: in_imd
       aliases: [IN_IMD]
@@ -509,7 +523,7 @@ profiles:
   - id: HK_HKO
     kind: semantic
     priority: P2
-    status: in_progress
+    status: implemented
     emit_key: hk_hko
     locale: [en, zh]
     issuing_body: Hong Kong Observatory (HKO)
@@ -544,7 +558,6 @@ profiles:
       - SPECI / Hong Kong FIR SIGMET / VAA attributed corpora still pending (synthetic_ev089)
       - AIP GEN 3.5 durable URL still gap
       - Chinese-language bulletin variants not required for v1 fixtures
-      - Catalog status stays in_progress until #1098 HK AC complete
 
   # --- Exchange (packaging / routing — not TAC grammar) ---
 

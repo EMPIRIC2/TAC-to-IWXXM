@@ -69,7 +69,7 @@ access tier, vendor pins, gaps, and mining-note cross-refs.
 |----------|----------|----------|
 | **P0** | `ICAO_2025`, `US_FAA_NWS` | `GLOBAL_AFS` (default) |
 | **P1** | `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` | — |
-| **P2** | `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO` (#920) | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
+| **P2** | `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO` (#920 kickoff; **#1098** / EV-094 deepen → `implemented`) | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
 
 ## Open gaps (#913 deepen)
 
@@ -79,7 +79,7 @@ access tier, vendor pins, gaps, and mining-note cross-refs.
 - [x] AU TAF INTER/TAF3/RMK T/Q refs for `AU_BOM` (EV-087 mining kickoff)  
 - [x] NZ domestic vs international TAF refs for `NZ_CAA_MET` (EV-087 mining kickoff)  
 - [x] Thin/compat catalog + stubs for #920 ids (EV-089 Spec; Build fixtures/registry pending)  
-- [ ] Thin/compat **deepen** corpora + KR/JP SPECI + `in_imd` lint overlay ([#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098) / EV-094)  
+- [x] Thin/compat **deepen** corpora + KR/JP SPECI + `in_imd` lint overlay ([#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098) / EV-094)  
 - [ ] Regional exchange rule sources for ROBEX/RODEX variants (P2)
 
 ## References
