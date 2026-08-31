@@ -31,8 +31,9 @@ Hard failures:
 - Fix branch: `fix/e2e-full-promote-1067` (#1108 merged)
 - Align E2E with Vitest; resolve vendor fixture path; commit Linux snapshot from CI actual
 
-## Follow-up (post-#1108 / #1109)
+## Follow-up (post-#1108 / #1109 / #1110)
 
-1. After #1108: **97/3** — remaining `input[type=file]` strict mode → fixed in #1109.
-2. After #1109: **98/2** — `pre.first()` is Source TAC (SPECI), not IWXXM → assert
-   IWXXM `<pre>` via `filter({ hasText: /iwxxm/i })` (`fix/e2e-tac-upload-iwxxm-pre-assert`).
+1. After #1108: **97/3** — `input[type=file]` strict → #1109.
+2. After #1109: **98/2** — `pre.first()` Source TAC → #1110.
+3. After #1110: **99/1** — Convert&Send skips upload on Failed-TAC SPECI BGBW →
+   use clean METAR for Convert&Send; prefer METAR fixtures in `getTacFiles`.
