@@ -47,13 +47,14 @@ BASELINE="${ROOT}/config/security/opengrep-baseline.txt"
 FILTER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/filter-opengrep-baseline.py"
 run_opengrep() {
   set +e
+  # Redirect noisy JSON stdout; keep summary on stderr via tool itself
   opengrep scan --severity=ERROR --config="${SEC_OPENGREP_CONFIG:-p/default}" \
     --exclude=vendor --exclude=node_modules --exclude=.tools --exclude=.venv \
     --exclude=.security-reports --exclude=dist --exclude=build --exclude=target \
-    --json --json-output="${REPORTS}/opengrep.json" "${ROOT}"
+    --json --json-output="${REPORTS}/opengrep.json" "${ROOT}" >/dev/null
   local og_rc=$?
   set -e
-  python3 "${FILTER}" "${REPORTS}/opengrep.json" "${BASELINE}" "${og_rc}"
+  python3 "${FILTER}" "${REPORTS}/opengrep.json" "${BASELINE}" "${og_rc}" "${ROOT}"
 }
 run OpenGrep run_opengrep
 
