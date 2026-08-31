@@ -215,6 +215,7 @@ class ConvertRequestLoggingMiddleware:
         )
 
         async def send_wrapper(message: Message) -> None:
+            """Log preflight response status before forwarding ASGI messages."""
             if message.get("type") == "http.response.start":
                 status_code = message.get("status")
                 logger.info(
@@ -288,6 +289,13 @@ async def add_translation_centre_headers(
 
 
 def custom_openapi() -> dict[str, Any]:
+    """Build OpenAPI schema without security schemes for public API docs.
+
+    Returns
+    -------
+    dict
+        Cached OpenAPI document for the FastAPI application.
+    """
     if app.openapi_schema:
         return app.openapi_schema
 

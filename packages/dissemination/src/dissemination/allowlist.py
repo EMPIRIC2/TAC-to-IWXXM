@@ -47,10 +47,12 @@ class Allowlist:
 
     @property
     def is_empty(self) -> bool:
+        """Return ``True`` when no hostnames or CIDR networks are configured."""
         return not self.hostnames and not self.networks
 
     @property
     def entries(self) -> tuple[str, ...]:
+        """Return sorted hostnames followed by CIDR strings for display/logging."""
         hosts = sorted(self.hostnames)
         nets = [str(n) for n in self.networks]
         return tuple(hosts + nets)

@@ -25,6 +25,11 @@ interface AirportSuggestion {
   country?: string;
 }
 
+/**
+ * ICAO code input with airport autocomplete suggestions.
+ *
+ * Validates four-letter codes and optionally accepts any CCCC format.
+ */
 export function IcaoAutocomplete({
   label,
   value,

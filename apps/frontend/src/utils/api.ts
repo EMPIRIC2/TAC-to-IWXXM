@@ -309,6 +309,9 @@ export async function convertBulletin(params: {
   return (await response.json()) as ConvertBulletinResponse;
 }
 
+/**
+ * Thrown when the backend returns HTTP 501 for a not-yet-implemented route.
+ */
 export class EndpointNotImplementedError extends Error {
   status: number;
   code: string;

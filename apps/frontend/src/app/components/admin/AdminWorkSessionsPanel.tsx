@@ -15,6 +15,9 @@ const STATUS_LABEL: Record<WorkSessionStatus, string> = {
   failed: 'Failed',
 };
 
+/**
+ * Admin read-only view of all users' work sessions.
+ */
 export function AdminWorkSessionsPanel({ accessToken }: AdminWorkSessionsPanelProps) {
   const [sessions, setSessions] = useState<WorkSession[]>([]);
   const [loading, setLoading] = useState(true);

@@ -56,6 +56,9 @@ export function ResendActionLabel({
   );
 }
 
+/**
+ * Post-registration email verification screen with resend and status polling.
+ */
 export function EmailVerification({
   email,
   onVerified,

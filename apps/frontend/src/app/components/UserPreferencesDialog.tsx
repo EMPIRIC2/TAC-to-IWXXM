@@ -66,6 +66,11 @@ export function PreferencesSaveLabel({ isSaving }: { isSaving: boolean }) {
   return <>Save preferences</>;
 }
 
+/**
+ * Modal dialog for display name and output file extension preferences.
+ *
+ * Persists slim user prefs to local storage.
+ */
 export function UserPreferencesDialog({
   isOpen,
   onClose,

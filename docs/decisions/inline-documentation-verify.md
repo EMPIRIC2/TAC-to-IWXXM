@@ -64,3 +64,26 @@ VERIFY_DOC_PATHS="scripts/profiles/scaffold_national_profile.py" \
 VERIFY_DOC_PATHS="packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py,packages/tac2iwxxm/src/tac2iwxxm/convert.py" \
   python3 ~/.cursor/skills/bin/inline-doc-check.py .
 ```
+
+## EV-091 disposition
+
+| Item | Disposition |
+|------|-------------|
+| Delta paths (dissemination drawer restore) | PASS under `VERIFY_DOC_PATHS` |
+| Full-tree scan | **WAIVE** for EV-091 merge (`D-EV091-inline-doc`) — brownfield; remaining true gaps → [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090) |
+
+## EV-092 disposition
+
+| Item | Disposition |
+|------|-------------|
+| Pack checker harden (multi-line TSDoc; skip `iwxxm_xsd/`/`generated/`/`*.d.ts`/`docker/`/`supabase/functions/`; Protocol/TypedDict) | **Landed** — pack `main` via EV-044 / [spec-dev-knowledge-graph#92](https://github.com/joseph-c-mcguire/spec-dev-knowledge-graph/pull/92) |
+| Full-tree after harden | **scanned=541 missing=107** |
+| Product NumPy/TSDoc backfill | **missing=0** |
+| Full-tree `inline-documentation` implementing twin | **PASS** — no WAIVE; `D-EV091-inline-doc` superseded for new merges |
+
+```bash
+python3 ~/.cursor/skills/pack/bin/inline-doc-check.py .
+# expect: missing=0
+```
+
+**Implementing twin (post EV-092):** Full-tree scan is **blocking** (not advisory) when the hardened pack checker is on PATH. Delta `VERIFY_DOC_PATHS` remains valid for non-fill evolves.

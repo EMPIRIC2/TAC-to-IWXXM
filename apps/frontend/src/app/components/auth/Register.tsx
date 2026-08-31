@@ -20,6 +20,9 @@ interface RegisterProps {
   onSwitchToLogin: () => void;
 }
 
+/**
+ * New account registration form.
+ */
 export function Register({ onRegister, onSwitchToLogin }: RegisterProps) {
   const [isLoading, setIsLoading] = useState(false);
   const {
