@@ -3,7 +3,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { loginAndOpenConverter } from './playwright-e2e-helpers';
 
-const DEFAULT_TAC_RELATIVE_PATH = 'data/iwxxm-translation/Amd79-80-2023/metar';
+/** Legacy layout (pre-monorepo) plus vendor pin path after M2. */
+const DEFAULT_TAC_RELATIVE_CANDIDATES = [
+  'vendor/schemas/iwxxm-translation/Amd79-80-2023/metar',
+  'data/iwxxm-translation/Amd79-80-2023/metar',
+] as const;
 const REQUIRE_TAC_FIXTURES =
   process.env.PLAYWRIGHT_REQUIRE_TAC_FIXTURES === '1' || process.env.CI === 'true';
 
@@ -18,26 +22,28 @@ function resolveTacFilesDir(): string | null {
     return configured;
   }
 
-  const candidateFromRepoRoot = path.resolve(process.cwd(), DEFAULT_TAC_RELATIVE_PATH);
-  if (fs.existsSync(candidateFromRepoRoot)) {
-    return candidateFromRepoRoot;
-  }
-
-  const candidateFromFrontendCwd = path.resolve(
+  // playwright.config / make test-e2e-* run with cwd = apps/e2e
+  const searchRoots = [
     process.cwd(),
-    '..',
-    DEFAULT_TAC_RELATIVE_PATH,
-  );
-  if (fs.existsSync(candidateFromFrontendCwd)) {
-    return candidateFromFrontendCwd;
+    path.resolve(process.cwd(), '..'),
+    path.resolve(process.cwd(), '../..'),
+  ];
+  const checked: string[] = [];
+  for (const root of searchRoots) {
+    for (const relative of DEFAULT_TAC_RELATIVE_CANDIDATES) {
+      const candidate = path.resolve(root, relative);
+      checked.push(candidate);
+      if (fs.existsSync(candidate)) {
+        return candidate;
+      }
+    }
   }
 
   if (REQUIRE_TAC_FIXTURES) {
     throw new Error(
       [
         'No TAC fixtures directory found for Playwright upload tests.',
-        `Checked: ${candidateFromRepoRoot}`,
-        `Checked: ${candidateFromFrontendCwd}`,
+        ...checked.map((p) => `Checked: ${p}`),
         'Set PLAYWRIGHT_TAC_FIXTURES_DIR or disable strict fixture requirement with PLAYWRIGHT_REQUIRE_TAC_FIXTURES=0 for local runs.',
       ].join(' '),
     );
