@@ -360,12 +360,13 @@ profiles:
     locale: [pt, en]
     issuing_body: DECEA / ANAC (Brazil)
     implementation:
-      issue: "#920"
+      issue: "#1098"
+      prior_issue: "#920"
       package: packages/tac2iwxxm
-      cycle: EV-089
+      cycle: EV-094
       path: thin
     products: [METAR, SPECI, TAF, SIGMET, AIRMET]
-    # GAMET: parse-only fixtures only — not in convert product allowlist (D-EV089-gamet)
+    # GAMET: parse-only fixtures only — not in convert product allowlist (D-EV094-gamet)
     vendor_pins:
       iwxxm: vendor/manifest.json → active core pin (no BR national extension published)
     sources:
@@ -377,14 +378,24 @@ profiles:
         label: DECEA AISWEB
         access: public
         proves: Brazilian AIP / AIS access for MET product policy
+      - url: https://aviationweather.gov/api/data/metar?ids=SBGR&format=raw
+        label: AWC METAR API — SBGR attributed fixture (EV-094 M2)
+        access: public
+        proves: Real civil METAR corpus for convert smoke
+      - url: https://aviationweather.gov/api/data/taf?ids=SBGR&format=raw
+        label: AWC TAF API — SBGR attributed fixture (EV-094 M2)
+        access: public
+        proves: Real civil TAF corpus for convert smoke
     mining_notes:
       - docs/domain/mining/br-decea-tac-mining-notes.md
     stub: semantic/BR_DECEA.md
+    overrides: []
     gaps:
       - No published BR IWXXM extension XSD (core-only emit)
-      - GAMET TAC fixtures parse-only — no IWXXM emit (D-EV089-gamet)
+      - GAMET TAC fixtures parse-only — no IWXXM emit (D-EV094-gamet)
+      - Attributed real SPECI / Brazilian FIR SIGMET / AIRMET corpora pending (synthetic_ev089)
       - SAM / CAR_SAM exchange packaging deepen stays on #921 (note only here)
-
+      - Catalog status stays in_progress until #1098 BR AC complete
   - id: KR_KMA
     kind: semantic
     priority: P2
