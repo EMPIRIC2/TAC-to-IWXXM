@@ -1,0 +1,24 @@
+# Temporary OpenGrep baseline for EV-049 consumer-gate land.
+# Format: check_id\tpath  (fail only on findings not listed here).
+# Clear entries as findings are fixed. [Corpus: adr-037]
+
+dockerfile.security.missing-user-entrypoint.missing-user-entrypoint	packages/dissemination/docker/wis2box-harness/Dockerfile
+dockerfile.security.missing-user.missing-user	apps/frontend/Dockerfile
+dockerfile.security.missing-user.missing-user	apps/worker/docker/Dockerfile
+dockerfile.security.missing-user.missing-user	packages/dissemination/docker/f19-harness/Dockerfile
+generic.secrets.security.detected-generic-api-key.detected-generic-api-key	docs/guides/OPENAIP_INTEGRATION_PLAN.md
+generic.secrets.security.detected-generic-api-key.detected-generic-api-key	docs/integration/OPENAIP.md
+generic.secrets.security.detected-jwt-token.detected-jwt-token	apps/frontend/utils/supabase/info.tsx
+python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac2iwxxm/src/tac2iwxxm/glossary.py
+python.lang.security.use-defused-xml-parse.use-defused-xml-parse	apps/backend/src/utilities/codelist_parser.py
+python.lang.security.use-defused-xml-parse.use-defused-xml-parse	packages/iwxxm-validate/src/iwxxm_validate/codelists.py
+python.lang.security.use-defused-xml-parse.use-defused-xml-parse	scripts/ci/format_coverage_pr_comment.py
+python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	apps/backend/src/routers/dissemination.py
+python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	apps/backend/src/services/evaluation_store.py
+python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	apps/worker/src/metar_worker/store.py
+python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	packages/dissemination/src/dissemination/live_write_assert.py
+python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	scripts/deploy/verify_mock_byoc_all_sinks.py
+python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	scripts/ops/run_supabase_to_do_migrate.py
+python.sqlalchemy.security.audit.avoid-sqlalchemy-text.avoid-sqlalchemy-text	scripts/ops/verify_supabase_to_do_migrate.py
+yaml.github-actions.security.github-script-injection.github-script-injection	.github/workflows/e2e-tests.yml
+yaml.github-actions.security.run-shell-injection.run-shell-injection	.github/workflows/e2e-tests.yml
