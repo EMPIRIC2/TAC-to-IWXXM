@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-22 (EV-063 semantic + exchange profiles — UJ-069)
+> **Last updated**: 2026-08-31 (EV-093 #1024 semantic picker deepen — UJ-069)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -85,7 +85,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-066 | Product Type + Profile bars no-wrap / aligned | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
 | UJ-067 | Conversion parameter bar aligned with mode selects | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
 | UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014; **EV-062 / #1017** deepen) | T0 / T2 / **T3** / H4–H5 |
-| UJ-069 | Convert with semantic profile → package with exchange profile | API / library / optional UI (#1024) | F35+F36 (EV-063/EV-086 / #912) | T2 / **T3** (API); H4–H5 if #1024 |
+| UJ-069 | Convert with semantic profile → package with exchange profile | API / library / workbench (#1024) | F35+F36 (EV-063/EV-090/EV-093 / #912) | T2 / **T3**; **H4–H5** (FE) |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
@@ -1127,24 +1127,35 @@ appear as semantic/legacy aliases without being the href. Paywall access is labe
 
 ---
 
-### UJ-069: Semantic Convert → Exchange Package (EV-063 / #912)
+### UJ-069: Semantic Convert → Exchange Package (EV-063 / #912 / EV-093)
 
-**Actor**: Library integrator or operator (API + workbench light picker via #1024 / EV-090)
+**Actor**: Library integrator or operator (API + workbench light picker via #1024 / EV-090 / EV-093)
 
-**Goal**: Convert TAC with a **semantic** profile (`ICAO_2025` or `US_FAA_NWS`, or legacy alias
-during deprecation window), then prepare output for dissemination using an **exchange** profile
-(default `GLOBAL_AFS`) without conflating profile choice with sink credentials.
+**Goal**: Convert TAC with a **semantic** profile (canonical uppercase ids such as `ICAO_2025`,
+`US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, thin packs, or legacy alias `annex3` /
+`iwxxm_us` during deprecation window), then prepare output for dissemination using an
+**exchange** profile (default `GLOBAL_AFS`) without conflating profile choice with sink
+credentials or editable overlays.
 
 **Steps**:
 
-1. Submit convert with `semantic_profile=ICAO_2025` (or alias `annex3`) and a supported product — or choose **Profile** in the workbench.
-2. Receive IWXXM matching pre-migration annex3 goldens; observe deprecation signal if alias used.
-3. Invoke packaging/disseminate-prep with `exchange_profile=GLOBAL_AFS` (or rely on default), or select a regional stub (`APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` — EV-065/EV-086 P0 COLLECT baseline). On the workbench, choose **Exchange profile** (default `GLOBAL_AFS`); confirm convert-only actions do not require or send a distinct exchange choice beyond API defaults.
-4. Confirm packaging hooks run deterministically in CI (no live sink push). Help text states exchange choice is not a destination or credential.
-5. Confirm F16–F19 BYOC credentials are not stored or implied by exchange profile selection.
+1. On the workbench, open **Profile** and choose a canonical id (default `ICAO_2025`) or a
+   legacy alias option; confirm help text that Profile is not destinations/credentials and does
+   not edit overlays. API clients may POST `semantic_profile=ICAO_2025` (or alias `annex3`) with
+   a supported product.
+2. Receive IWXXM matching pre-migration annex3 goldens for ICAO path; CA_ECCC keeps 3.0.0 pin /
+   extension behavior; observe deprecation signal if alias used.
+3. Invoke packaging/disseminate-prep with `exchange_profile=GLOBAL_AFS` (or rely on default), or
+   select a regional stub (`APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM`). On the workbench, choose
+   **Exchange profile** (default `GLOBAL_AFS`); convert-only actions do not invent credentials.
+4. Confirm packaging hooks run deterministically in CI (no live sink push). Exchange help states
+   choice is not a destination or credential.
+5. Confirm F16–F19 BYOC credentials are not stored or implied by semantic or exchange profile
+   selection (drawer overlay EV-091 unchanged).
 
-**Acceptance**: feature-list F35/F36; ADR-036; api-contract EV-063 section; TC-EV063-*; TC-EV065-*; TC-EV086-*; TC-EV090-*.
-**Tier: T2 / T3 (API)**; **H4–H5** when #1024 FE ships (EV-090). [Corpus: product §F35] [Corpus: product §F36] [Corpus: product §F7] [Corpus: api] [Corpus: adr/ADR-036]
+**Acceptance**: feature-list F35/F36; ADR-036; api-contract; TC-EV063-*; TC-EV065-*; TC-EV086-*;
+TC-EV090-*; **TC-EV093-***.
+**Tier: T2 / T3**; **H4–H5** (FE). [Corpus: product §F35] [Corpus: product §F36] [Corpus: product §F7] [Corpus: api] [Corpus: adr/ADR-036]
 
 ---
 

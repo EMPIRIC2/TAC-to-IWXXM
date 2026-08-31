@@ -1,5 +1,30 @@
 # Evolve Decisions
 
+## Cycle EV-093 — Light semantic + exchange profile picker deepen (#1024)
+
+**Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-093-light-profile-picker-deepen`  
+**Preset:** Standard · **Documenting→Implementing gate:** **open** · **Issue:** [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024)  
+**Prior:** EV-090 exchange picker · EV-091 drawer overlay
+
+| ID | Outcome |
+|----|---------|
+| D-EV093-intake | Option 2 deepen — G1–G5 after EV-090/091 partial ship |
+| D-EV093-g2 | **A1** — all registered canonicals in Profile select + legacy `annex3` / `iwxxm_us` |
+| D-EV093-wire | **B1** — Form `semantic_profile` + uppercase OpenAPI ids (`ICAO_2025`, …) |
+| D-EV093-req | R1 recommended — FR-01..08; AC 1–6; TC-EV093-001..006 |
+| D-EV093-ui-preview | **Yes** — local non-deployed preview before merge (not H4–H5 proof) |
+| D-EV093-trust | Profile help: not destinations/credentials; not editable overlays (#924 / #933) |
+| D-EV093-hygiene | After Build: close #1024; update #912 checklist |
+| D-EV093-scale | standard |
+| D-EV093-kg | Fail-open — peer retrieve skip; keep-local EV-090/091; adopt alias-window + verify gates |
+| D-EV093-gate | **Open Build** — implement M1–M5 on `evolve/EV-093-light-profile-picker-deepen` → PR `stage` |
+
+### Corpus
+
+[Corpus: product §F7] [Corpus: product §F35] [Corpus: product §F36] [Corpus: adr/ADR-036] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: domain-profiles]
+
+---
+
 ## Cycle EV-091 — Dissemination drawer restore (#898 / #1089)
 
 **Opened:** 2026-08-30 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-091-dissemination-drawer-restore`  

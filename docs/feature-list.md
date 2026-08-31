@@ -1793,7 +1793,7 @@
 
 ### F36: National semantic + regional exchange profile content — EV-063 / #912
 
-- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; EV-065/086 #921 exchange stubs; **EV-087** `AU_BOM` + `NZ_CAA_MET` P1 kickoff; **EV-089** thin/compat #920; **EV-090** #921 mining deepen + #1024 light exchange picker Spec).
+- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; EV-065/086/090 #921 exchange stubs + mining; **EV-087** `AU_BOM` + `NZ_CAA_MET`; **EV-089** thin/compat #920; **EV-090** exchange light picker; **EV-093** #1024 semantic picker deepen Spec).
 - **What it does**: Implements profile **content** on top of F35 architecture: deepen
   `US_FAA_NWS` ([#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)), **`CA_ECCC`**
   ([#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) / EV-064), **`AU_BOM`**
@@ -1839,9 +1839,13 @@
      light picker (default `GLOBAL_AFS`; wire `exchange_profile` on package/bulletin paths;
      ignored on convert-only). Close #921 on land; spawn child for #898 drawer overlay selector.
      No new COLLECT/FTBP packaging rules this cycle.
-- **Out of scope**: Full ROBEX/RODEX packaging rule matrices beyond documented gaps; #898 drawer restore; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); inventing national IWXXM enums/XSDs; China unless public sources appear; GAMET→IWXXM conversion
+  21. **EV-093 / #1024:** Semantic Profile light picker deepen — canonical uppercase
+     `semantic_profile` wire (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`,
+     thin packs); legacy `annex3`/`iwxxm_us` alias options through #1025 window; Profile trust
+     copy; local UI preview; close #1024 on land (exchange picker already EV-090/091).
+- **Out of scope**: Full ROBEX/RODEX packaging rule matrices beyond documented gaps; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); inventing national IWXXM enums/XSDs; China unless public sources appear; GAMET→IWXXM conversion; #933 ConversionProfile editor
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
-  semantic (**CA_ECCC** EV-064) + **exchange** control (EV-090)
+  semantic (**EV-093** canonical + nationals) + **exchange** control (EV-090 / drawer EV-091)
 - **Enablement**: [NATIONAL_PROFILE_PLAYBOOK.md](domain/profiles/NATIONAL_PROFILE_PLAYBOOK.md)
 - **Source**: Epic [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912); EV-063; EV-064;
   [Corpus: domain-profiles]
