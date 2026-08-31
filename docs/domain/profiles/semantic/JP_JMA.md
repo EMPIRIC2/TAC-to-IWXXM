@@ -4,7 +4,7 @@
 > **Path**: compat · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 Compat pack for JMA METAR/SPECI/TAF/SIGMET plus Tokyo VAAC **VAA**. AIRMET **excluded**
-(D-EV089-jp-va). **SPECI** added to convert allowlist in EV-094 (D-EV094-speci-expand).
+(D-EV089-jp-va). **SPECI** on convert allowlist (EV-094 M4 / D-EV094-speci-expand).
 Core IWXXM only — no national VA schema fork.
 
 ## Owns (target)
@@ -17,8 +17,9 @@ Core IWXXM only — no national VA schema fork.
 
 ## Gaps
 
-- [ ] Attributed real TAC corpora (EV-094 / #1098)
-- [ ] SPECI fixture + allowlist wire (Build)
+- [x] SPECI fixture + allowlist wire (Build M4)
+- [x] Attributed real METAR/TAF corpora (AWC RJTT) — EV-094 / #1098
+- [ ] Attributed real SPECI / FIR SIGMET / Tokyo VAA corpora (synthetic_ev089 gaps)
 
 ## References
 
