@@ -56,7 +56,7 @@ _NZ_CAA_MET_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
 # EV-089 / #920 thin-compat packs — core IWXXM emit; GAMET never listed (D-EV089-gamet).
 _UK_METOFFICE_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
 _BR_DECEA_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
-_KR_KMA_PRODUCTS = frozenset({"METAR", "TAF", "SIGMET", "AIRMET"})
+_KR_KMA_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
 _JP_JMA_PRODUCTS = frozenset({"METAR", "TAF", "SIGMET", "VAA"})
 _IN_IMD_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET"})
 _HK_HKO_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "VAA"})

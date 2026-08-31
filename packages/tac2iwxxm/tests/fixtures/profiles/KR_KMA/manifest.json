@@ -1,35 +1,58 @@
 {
   "schema_version": 1,
-  "description": "EV-089 — KR_KMA compat pack fixtures",
+  "description": "EV-094 M3 — KR_KMA deepen; SPECI on convert allowlist; METAR/TAF AWC-attributed",
   "profile": "KR_KMA",
+  "cycle": "EV-094",
+  "issue": "#1098",
   "cases": [
     {
       "id": "metar_rksi",
       "product": "METAR",
       "tac": "METAR/valid/metar_rksi.tac",
       "rule_id": "KR.BASE.ICAO",
-      "status": "active"
+      "status": "active",
+      "source_kind": "official",
+      "source_url": "https://aviationweather.gov/api/data/metar?ids=RKSI&format=raw",
+      "source_label": "Aviation Weather Center METAR API (RKSI)",
+      "observed_at_utc": "2026-08-31T14:30:00Z"
+    },
+    {
+      "id": "speci_rksi",
+      "product": "SPECI",
+      "tac": "SPECI/valid/speci_rksi.tac",
+      "rule_id": "KR.BASE.ICAO",
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed real SPECI corpus pending — catalog gap EV-094"
     },
     {
       "id": "taf_rksi",
       "product": "TAF",
       "tac": "TAF/valid/taf_rksi.tac",
       "rule_id": "KR.BASE.ICAO",
-      "status": "active"
+      "status": "active",
+      "source_kind": "official",
+      "source_url": "https://aviationweather.gov/api/data/taf?ids=RKSI&format=raw",
+      "source_label": "Aviation Weather Center TAF API (RKSI)",
+      "observed_at_utc": "2026-08-31T11:00:00Z"
     },
     {
       "id": "sigmet_basic",
       "product": "SIGMET",
       "tac": "SIGMET/valid/sigmet_basic.tac",
       "rule_id": "KR.BASE.ICAO",
-      "status": "active"
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed Korean FIR SIGMET corpus pending"
     },
     {
       "id": "airmet_basic",
       "product": "AIRMET",
       "tac": "AIRMET/valid/airmet_basic.tac",
       "rule_id": "KR.BASE.ICAO",
-      "status": "active"
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed Korean FIR AIRMET corpus pending"
     }
   ]
 }
