@@ -61,5 +61,6 @@ Cursor hooks provide the same guard when agents commit without pre-commit instal
 ## Related
 
 - `ci-after-push.mdc` — watch `ci-cd.yml` after push
+- `ci-recurring-footguns.mdc` — coverage / E2E Full / Mutation pnpm / vendor sync triage
 - `tdd.mdc` — bug repro test location under `tests/bugs/`
 - `Makefile` — `PY_TREES := apps packages tests`

@@ -1,5 +1,27 @@
 # Evolve Decisions
 
+## Cycle EV-096 — Harden Cursor rules/skills from CI footguns (#1096)
+
+**Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-096-ci-rules-skills-harden`  
+**Preset:** Standard · **Documenting→Implementing gate:** **open** · **Issue:** [#1096](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1096)
+
+| ID | Outcome |
+|----|---------|
+| D-EV096-scope | Process/DX only — no product Fn |
+| D-EV096-docs | test-plan delta + `ev-096-ci-rules-skills-harden.md`; skip Feature/Spec/Journeys/ADR |
+| D-EV096-top3 | FE 100% coverage · E2E Full on promote · Mutation pnpm pin |
+| D-EV096-mutation | Document + fix packageManager dual-spec this cycle |
+| D-EV096-vendor | Document only; no hand-edit `vendor/schemas` |
+| D-EV096-1095 | Verify-only existing home-path CI guard |
+| D-EV096-pr | PR into `stage` |
+| D-EV096-ux | No user-facing internal doc refs |
+
+### Corpus
+
+[Corpus: tests] [Corpus: decisions] [Corpus: deploy]
+
+---
+
 ## Cycle EV-094 — Thin/compat national deepen (#1098)
 
 **Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-094-thin-compat-national-deepen`  
