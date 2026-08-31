@@ -37,6 +37,15 @@ describe('semanticProfile (TC-EV093-001 / TC-EV093-003)', () => {
   it('keeps legacy aliases as distinct select values', () => {
     expect(coerceIwxxmProfile('annex3')).toBe('annex3');
     expect(coerceIwxxmProfile('iwxxm_us')).toBe('iwxxm_us');
+    // Mixed / hyphenated forms miss the exact alias set but normalize to aliases.
+    expect(coerceIwxxmProfile('ANNEX3')).toBe('annex3');
+    expect(coerceIwxxmProfile('IWXXM-US')).toBe('iwxxm_us');
+  });
+
+  it('defaults unknown profile strings to ICAO_2025', () => {
+    expect(coerceIwxxmProfile('not-a-profile')).toBe('ICAO_2025');
+    expect(coerceIwxxmProfile('')).toBe('ICAO_2025');
+    expect(coerceIwxxmProfile(null)).toBe('ICAO_2025');
   });
 
   it('hydrates aliases to canonical for prefs/sessions', () => {
