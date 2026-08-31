@@ -89,10 +89,34 @@ test.describe('TAC File Upload to Database', () => {
   });
 
   test('single TAC file can be converted and sent with one click', async ({ page }) => {
-    // Convert&Send refuses upload when conversion hasErrors (Failed-TAC). Use a
-    // clean METAR rather than WMO Amd79 SPECI fixtures that often soft-fail.
+    // Convert&Send skips upload when conversion returns issues/errors. Mock a clean
+    // convert so this exercises the upload chain (real convert often returns lint issues).
     const cleanMetar = 'METAR KJFK 121251Z 24008KT 10SM FEW250 18/M03 A3016';
     await loginAndOpenConverter(page);
+
+    await page.route('**/api/v1/convert', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          results: [
+            {
+              name: 'kjfk-clean.tac',
+              content:
+                '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2">ok</iwxxm:METAR>',
+              tac_input: cleanMetar,
+              source: 'file',
+              size_bytes: 64,
+            },
+          ],
+          errors: [],
+          issues: [],
+          total_processed: 1,
+          successful: 1,
+          failed: 0,
+        }),
+      });
+    });
 
     await page.route('**/functions/v1/**/database/upload', async (route) => {
       await route.fulfill({
