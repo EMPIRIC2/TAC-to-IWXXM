@@ -254,8 +254,31 @@ describe('API Utils', () => {
       const [, options] = (global.fetch as any).mock.calls[0];
       const body = options.body as FormData;
       expect(body.get('product')).toBe('TAF');
-      expect(body.get('profile')).toBe('iwxxm_us');
+      expect(body.get('semantic_profile')).toBe('iwxxm_us');
+      expect(body.get('profile')).toBeNull();
       expect(body.get('iwxxm_version')).toBe('2025-2');
+    });
+
+    it('appends semantic_profile uppercase for canonical ids (TC-EV093-002)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        product: 'METAR',
+        profile: 'ICAO_2025',
+        iwxxmVersion: '2025-2',
+      });
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('semantic_profile')).toBe('ICAO_2025');
+      expect(body.get('profile')).toBeNull();
     });
 
     it('appends validation, stop_on_error, bulletin, and issuing centre (ADR-023)', async () => {
@@ -1188,7 +1211,7 @@ describe('API Utils', () => {
       const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
       const body = options.body as FormData;
       expect(body.get('manual_text')).toBeNull();
-      expect(body.get('profile')).toBe('annex3');
+      expect(body.get('semantic_profile')).toBe('ICAO_2025');
       expect(body.get('lint')).toBe('true');
     });
 
@@ -1309,7 +1332,7 @@ describe('API Utils', () => {
       const body = options.body as FormData;
       expect(body.get('manual_text')).toBeNull();
       expect(body.get('product')).toBe('METAR');
-      expect(body.get('profile')).toBe('annex3');
+      expect(body.get('semantic_profile')).toBe('ICAO_2025');
       expect(body.get('validate_output')).toBe('false');
       expect(body.get('include_nil_reasons')).toBe('true');
       expect(body.get('preview')).toBeNull();

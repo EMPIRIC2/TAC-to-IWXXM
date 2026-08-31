@@ -80,7 +80,7 @@ export function coerceIwxxmVersion(value: unknown): IwxxmVersionId {
  * @returns Version options (CA_ECCC pins 3.0.0 only)
  */
 export function iwxxmVersionOptionsForProfile(profile: string) {
-  if (profile === 'ca_eccc') {
+  if (profile.trim().toLowerCase().replace(/-/g, '_') === 'ca_eccc') {
     return [
       {
         value: CA_ECCC_IWXXM_VERSION,

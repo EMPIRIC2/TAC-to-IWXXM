@@ -3592,7 +3592,7 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
           expect.objectContaining({
-            profile: 'iwxxm_us',
+            profile: 'US_FAA_NWS',
             includeNilReasons: true,
           }),
         );
@@ -5271,7 +5271,7 @@ describe('FileConverter Component', () => {
           }
         />,
       );
-      expect(screen.getByTestId('profile-type-select')).toHaveValue('ca_eccc');
+      expect(screen.getByTestId('profile-type-select')).toHaveValue('CA_ECCC');
     });
 
     it('reloads sparse ca_eccc preferences via dialog save', async () => {
@@ -5286,7 +5286,7 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(mockToast.info).toHaveBeenCalled();
       });
-      expect(screen.getByTestId('profile-type-select')).toHaveValue('ca_eccc');
+      expect(screen.getByTestId('profile-type-select')).toHaveValue('CA_ECCC');
     });
   });
 

@@ -1,22 +1,27 @@
 /**
- * TC-EV064-005 (browser unit): CA_ECCC profile picker sends ca_eccc on convert.
+ * TC-EV093-001..005 — Semantic Profile light picker deepen (#1024 / EV-093).
  *
- * Spec: docs/test-plan.md §TC-EV064-005; #1024 slice.
+ * Spec: docs/test-plan.md TC-EV093-*; UJ-069;
+ * [Corpus: product §F7] [Corpus: product §F35] [Corpus: tests].
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
+import {
+  CANONICAL_SEMANTIC_PROFILES,
+  LEGACY_SEMANTIC_ALIASES,
+} from '../utils/semanticProfile';
 
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
   vi.fn().mockResolvedValue({
     results: [
       {
         name: 'manual_input.txt',
-        content: '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/3.0"/>',
+        content: '<iwxxm:METAR>ev093</iwxxm:METAR>',
         source: 'manual_input',
-        size_bytes: 48,
+        size_bytes: 40,
       },
     ],
     errors: [],
@@ -47,10 +52,12 @@ vi.mock('/utils/api', () => ({
   decodeTac: vi
     .fn()
     .mockResolvedValue({ product: 'METAR', segments: [], residuals: [] }),
-  fetchAirportRegion: vi
-    .fn()
-    .mockResolvedValue({ airport_code: 'CYUL', icao_region: 'NAM' }),
-  validateIwxxm: vi.fn(),
+  fetchAirportRegion: vi.fn().mockResolvedValue(null),
+  validateIwxxm: vi.fn().mockResolvedValue({
+    ok: true,
+    layers: [],
+    issues: [],
+  }),
 }));
 
 vi.mock('../app/components/TacEditor', () => ({
@@ -77,6 +84,8 @@ vi.mock('sonner', () => ({
     warning: vi.fn(),
     loading: vi.fn(),
     dismiss: vi.fn(),
+    promise: vi.fn(),
+    info: vi.fn(),
   },
 }));
 
@@ -91,12 +100,12 @@ vi.mock('../app/components/IcaoAutocomplete', () => ({
   ),
 }));
 
-const CA_TAC = 'METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=';
+const TAC = 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=';
 
-describe('TC-EV064-005: CA_ECCC profile picker', () => {
+describe('TC-EV093 — semantic Profile picker deepen', () => {
   const defaultProps = {
     onLogout: vi.fn(),
-    userEmail: 'ca@example.com',
+    userEmail: 'ev093@example.com',
     accessToken: 'token',
     onSwitchToAdmin: vi.fn(),
   };
@@ -106,71 +115,52 @@ describe('TC-EV064-005: CA_ECCC profile picker', () => {
     localStorage.clear();
   });
 
-  it('lists Canada (ECCC) in the profile dropdown', () => {
+  it('TC-EV093-001 lists all canonicals + aliases; default ICAO_2025', () => {
     render(<FileConverter {...defaultProps} />);
     const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
     const values = Array.from(profile.options).map((o) => o.value);
-    expect(values).toEqual(expect.arrayContaining(['CA_ECCC']));
+    for (const id of CANONICAL_SEMANTIC_PROFILES) {
+      expect(values).toContain(id);
+    }
+    for (const alias of LEGACY_SEMANTIC_ALIASES) {
+      expect(values).toContain(alias);
+    }
+    expect(profile.value).toBe('ICAO_2025');
+    expect(profile).toHaveAccessibleName(/^profile$/i);
   });
 
-  it('sends CA_ECCC profile and 3.0.0 version on convert', async () => {
+  it('TC-EV093-003 sends legacy annex3 alias when selected', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
-
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+    await user.selectOptions(screen.getByTestId('profile-type-select'), 'annex3');
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
-      target: { value: CA_TAC },
+      target: { value: TAC },
     });
     await user.click(screen.getByTestId('convert-button'));
-
     await waitFor(() => {
       expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(1);
     });
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
-      expect.objectContaining({
-        profile: 'CA_ECCC',
-        iwxxmVersion: '3.0.0',
-      }),
+      expect.objectContaining({ profile: 'annex3' }),
     );
   });
 
-  it('resets IWXXM version to SoT default when leaving CA_ECCC profile', async () => {
+  it('TC-EV093-004 CA_ECCC still shows metadata and pins 3.0.0', async () => {
     const user = userEvent.setup();
-    const { container } = render(<FileConverter {...defaultProps} />);
+    render(<FileConverter {...defaultProps} />);
+    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+    expect(screen.getByTestId('ca-eccc-profile-metadata')).toBeVisible();
     await user.click(screen.getByLabelText(/expand parameters/i));
-
-    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
-    const version = container.querySelector(
-      '#param-iwxxm-version',
-    ) as HTMLSelectElement;
-
-    await user.selectOptions(profile, 'CA_ECCC');
+    const version = document.querySelector('#param-iwxxm-version') as HTMLSelectElement;
     expect(version.value).toBe('3.0.0');
-
-    await user.selectOptions(profile, 'ICAO_2025');
-    expect(version.value).not.toBe('3.0.0');
   });
 
-  it('hydrates CA_ECCC profile with pinned 3.0.0 from saved preferences', async () => {
-    localStorage.setItem(
-      'metar_converter_preferences',
-      JSON.stringify({
-        profile: 'ca_eccc',
-        iwxxmVersion: '2025-2',
-        bulletinIdExample: 'CYUL01',
-        issuingCenter: 'CYUL',
-      }),
-    );
-
-    const user = userEvent.setup();
-    const { container } = render(<FileConverter {...defaultProps} />);
-    await user.click(screen.getByLabelText(/expand parameters/i));
-
-    expect((screen.getByTestId('profile-type-select') as HTMLSelectElement).value).toBe(
-      'CA_ECCC',
-    );
-    expect(
-      (container.querySelector('#param-iwxxm-version') as HTMLSelectElement).value,
-    ).toBe('3.0.0');
+  it('TC-EV093-005 shows Profile trust copy without internal doc refs', () => {
+    render(<FileConverter {...defaultProps} />);
+    const help = screen.getByTestId('semantic-profile-help');
+    expect(help).toBeVisible();
+    expect(help.textContent).toMatch(/does not set destinations/i);
+    expect(help.textContent).toMatch(/does not make national overlays editable/i);
+    expect(help.textContent).not.toMatch(/ADR-|EV-|Corpus:|#\d{3,}/);
   });
 });

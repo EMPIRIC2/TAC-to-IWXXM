@@ -86,18 +86,22 @@ import { isAbortError } from '/utils/liveAssist';
 import {
   detectTacProduct,
   coerceIwxxmProfile,
+  hydrateSemanticProfile,
+  isCaEcccProfile,
   isConvertProductSelection,
   resolveConvertProduct,
   splitManualEntries,
+  DEFAULT_SEMANTIC_PROFILE,
+  SEMANTIC_PROFILE_OPTIONS,
   type IwxxmProfile,
   type TacProductSelection,
-} from '/utils/tacProduct';
+} from '@/utils/tacProduct';
 import {
   coerceExchangeProfile,
   DEFAULT_EXCHANGE_PROFILE,
   EXCHANGE_PROFILE_OPTIONS,
   type ExchangeProfileId,
-} from '/utils/exchangeProfile';
+} from '@/utils/exchangeProfile';
 import {
   CA_ECCC_EXTENSION_LABEL,
   CA_ECCC_SUPPORTED_PRODUCTS,
@@ -327,7 +331,7 @@ export function FileConverter({
     bulletinId: '',
     issuingCenter: '',
     product: 'auto',
-    profile: 'annex3',
+    profile: DEFAULT_SEMANTIC_PROFILE,
     exchangeProfile: DEFAULT_EXCHANGE_PROFILE,
     iwxxmVersion: DEFAULT_IWXXM_VERSION,
     strictValidation: true,
@@ -414,11 +418,10 @@ export function FileConverter({
         const stored = localStorage.getItem('metar_converter_preferences');
         if (stored) {
           const prefs = JSON.parse(stored);
-          const profile = coerceIwxxmProfile(prefs.profile);
-          const iwxxmVersion =
-            profile === 'ca_eccc'
-              ? CA_ECCC_IWXXM_VERSION
-              : coerceIwxxmVersion(prefs.iwxxmVersion);
+          const profile = hydrateSemanticProfile(prefs.profile);
+          const iwxxmVersion = isCaEcccProfile(profile)
+            ? CA_ECCC_IWXXM_VERSION
+            : coerceIwxxmVersion(prefs.iwxxmVersion);
 
           setConversionParams({
             bulletinId: prefs.bulletinIdExample || 'SAAA00',
@@ -538,13 +541,9 @@ export function FileConverter({
         if (typeof rawProduct === 'string' && isConvertProductSelection(rawProduct)) {
           next.product = rawProduct;
         }
-        if (
-          params.profile === 'iwxxm_us' ||
-          params.profile === 'annex3' ||
-          params.profile === 'ca_eccc'
-        ) {
-          next.profile = coerceIwxxmProfile(params.profile);
-          if (next.profile === 'ca_eccc') {
+        if (typeof params.profile === 'string') {
+          next.profile = hydrateSemanticProfile(params.profile);
+          if (isCaEcccProfile(next.profile)) {
             next.iwxxmVersion = CA_ECCC_IWXXM_VERSION;
           }
         }
@@ -580,11 +579,10 @@ export function FileConverter({
       const stored = localStorage.getItem('metar_converter_preferences');
       if (stored) {
         const prefs = JSON.parse(stored);
-        const profile = coerceIwxxmProfile(prefs.profile);
-        const iwxxmVersion =
-          profile === 'ca_eccc'
-            ? CA_ECCC_IWXXM_VERSION
-            : coerceIwxxmVersion(prefs.iwxxmVersion);
+        const profile = hydrateSemanticProfile(prefs.profile);
+        const iwxxmVersion = isCaEcccProfile(profile)
+          ? CA_ECCC_IWXXM_VERSION
+          : coerceIwxxmVersion(prefs.iwxxmVersion);
 
         setConversionParams({
           bulletinId: prefs.bulletinIdExample || 'SAAA00',
@@ -1572,7 +1570,7 @@ export function FileConverter({
   const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
   const hasConverted = convertedFiles.length > 0;
   const caProfileBlocked =
-    conversionParams.profile === 'ca_eccc' && caExtensionBundleAvailable === false;
+    isCaEcccProfile(conversionParams.profile) && caExtensionBundleAvailable === false;
   const convertDisabled = isBusy || !hasInput || isReadOnly || caProfileBlocked;
   const safeQueueFocusIndex = clampQueueIndex(queueFocusIndex, pendingFiles.length);
   const activeSelectedCount = pendingFiles.filter((f) =>
@@ -2079,20 +2077,28 @@ export function FileConverter({
                       setConversionParams((prev) => ({
                         ...prev,
                         profile,
-                        iwxxmVersion:
-                          profile === 'ca_eccc'
-                            ? CA_ECCC_IWXXM_VERSION
-                            : prev.iwxxmVersion === CA_ECCC_IWXXM_VERSION
-                              ? DEFAULT_IWXXM_VERSION
-                              : prev.iwxxmVersion,
+                        iwxxmVersion: isCaEcccProfile(profile)
+                          ? CA_ECCC_IWXXM_VERSION
+                          : prev.iwxxmVersion === CA_ECCC_IWXXM_VERSION
+                            ? DEFAULT_IWXXM_VERSION
+                            : prev.iwxxmVersion,
                       }));
                     }}
                     className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   >
-                    <option value="annex3">Annex 3</option>
-                    <option value="iwxxm_us">IWXXM-US</option>
-                    <option value="ca_eccc">Canada (ECCC)</option>
+                    {SEMANTIC_PROFILE_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
                   </select>
+                  <p
+                    className="basis-full text-xs text-gray-600 dark:text-gray-400 lg:basis-auto"
+                    data-testid="semantic-profile-help"
+                  >
+                    Selects encoding rules for conversion. Does not set destinations or
+                    credentials, and does not make national overlays editable.
+                  </p>
                   <Label
                     htmlFor="param-exchange-profile"
                     className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
@@ -2127,7 +2133,7 @@ export function FileConverter({
                     Used when packaging bulletins. Does not choose destinations or
                     credentials.
                   </p>
-                  {conversionParams.profile === 'ca_eccc' && (
+                  {isCaEcccProfile(conversionParams.profile) && (
                     <div
                       className="mt-2 rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
                       data-testid="ca-eccc-profile-metadata"
