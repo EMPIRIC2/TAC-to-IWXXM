@@ -422,9 +422,9 @@ profiles:
     gaps:
       - No published KR IWXXM extension XSD (core-only emit)
       - AIP GEN 3.5 durable URL to harden after harvest
-      - SPECI allowlist deepen — EV-094 / #1098 (D-EV094-speci-expand)
+      - Attributed real SPECI / Korean FIR SIGMET / AIRMET corpora pending (synthetic_ev089)
       - Automated TAC→IWXXM claim (since ~2017) — verify vs fixtures; no override assumed
-      - Attributed real corpora deepen — EV-094 / #1098
+      - Catalog status stays in_progress until #1098 KR AC complete
 
   - id: JP_JMA
     kind: semantic
