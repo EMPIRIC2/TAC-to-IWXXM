@@ -1842,7 +1842,8 @@
   21. **EV-093 / #1024:** Semantic Profile light picker deepen — canonical uppercase
      `semantic_profile` wire (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`,
      thin packs); legacy `annex3`/`iwxxm_us` alias options through #1025 window; Profile trust
-     copy; local UI preview; close #1024 on land (exchange picker already EV-090/091).
+     copy via compact bar layout (icons/tooltips + under-bar summary + collapsed details);
+     local UI preview; close #1024 on land (exchange picker already EV-090/091).
 - **Out of scope**: Full ROBEX/RODEX packaging rule matrices beyond documented gaps; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); inventing national IWXXM enums/XSDs; China unless public sources appear; GAMET→IWXXM conversion; #933 ConversionProfile editor
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   semantic (**EV-093** canonical + nationals) + **exchange** control (EV-090 / drawer EV-091)

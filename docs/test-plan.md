@@ -3674,9 +3674,9 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### TC-EV093-005: Profile trust copy
 
 - **Level**: T0 / T2
-- **Objective**: Plain-language help near Profile: not destinations/credentials; not editable overlays
-- **Pass criteria**: Visible help `data-testid`; no internal doc refs (EV-048)
-- **Source**: EV-093; FR-06; #924
+- **Objective**: Plain-language Profile/Exchange trust model without bloating the control bar: (A) help icons + tooltips on Profile and Exchange labels; (B) one short always-visible summary under the bar; (C) collapsed “What’s this?” details with full copy (not destinations/credentials; not editable overlays)
+- **Pass criteria**: `product-profile-bar` contains controls only (no help paragraphs); summary + details `data-testid`s present; full help visible after expand; no internal doc refs (EV-048)
+- **Source**: EV-093; FR-06; #924; D-EV093-trust-layout
 
 ### TC-EV093-006: H4–H5 / e2e UJ-069 semantic + exchange
 

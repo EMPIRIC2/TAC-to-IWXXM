@@ -155,8 +155,25 @@ describe('TC-EV093 — semantic Profile picker deepen', () => {
     expect(version.value).toBe('3.0.0');
   });
 
-  it('TC-EV093-005 shows Profile trust copy without internal doc refs', () => {
+  it('TC-EV093-005 shows Profile trust copy without internal doc refs', async () => {
+    const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+
+    const summary = screen.getByTestId('product-profile-bar-summary');
+    expect(summary).toBeVisible();
+    expect(summary.textContent).toMatch(/not destinations/i);
+    expect(summary.textContent).toMatch(/editable overlays/i);
+    expect(summary.textContent).not.toMatch(/ADR-|EV-|Corpus:|#\d{3,}/);
+
+    expect(screen.getByTestId('semantic-profile-help-icon')).toBeVisible();
+    expect(screen.getByTestId('exchange-profile-help-icon')).toBeVisible();
+
+    const bar = screen.getByTestId('product-profile-bar');
+    expect(bar).not.toContainElement(screen.getByTestId('semantic-profile-help'));
+    expect(bar).not.toContainElement(screen.getByTestId('exchange-profile-help'));
+    expect(bar).not.toContainElement(summary);
+
+    await user.click(screen.getByText(/what's this\?/i));
     const help = screen.getByTestId('semantic-profile-help');
     expect(help).toBeVisible();
     expect(help.textContent).toMatch(/does not set destinations/i);

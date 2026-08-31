@@ -14,6 +14,7 @@
 | D-EV093-req | R1 recommended — FR-01..08; AC 1–6; TC-EV093-001..006 |
 | D-EV093-ui-preview | **Yes** — local non-deployed preview before merge (not H4–H5 proof) |
 | D-EV093-trust | Profile help: not destinations/credentials; not editable overlays (#924 / #933) |
+| D-EV093-trust-layout | **A+B+C** — help icons/tooltips + one-line summary under bar + collapsed “What’s this?” details; controls-only `product-profile-bar` (no inline wrap) |
 | D-EV093-hygiene | After Build: close #1024; update #912 checklist |
 | D-EV093-scale | standard |
 | D-EV093-kg | Fail-open — peer retrieve skip; keep-local EV-090/091; adopt alias-window + verify gates |

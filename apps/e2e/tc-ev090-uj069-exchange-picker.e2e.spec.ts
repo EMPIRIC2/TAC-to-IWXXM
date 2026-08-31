@@ -55,6 +55,8 @@ test.describe('EV-090 — UJ-069 exchange profile picker', () => {
     await openPublicConverter(page);
     const exchange = page.getByTestId('exchange-profile-select');
     await expect(exchange).toBeVisible();
+    await expect(page.getByTestId('product-profile-bar-summary')).toBeVisible();
+    await page.getByTestId('product-profile-trust-details').locator('summary').click();
     await expect(page.getByTestId('exchange-profile-help')).toBeVisible();
     await exchange.selectOption('APAC_ROBEX');
     await page.getByTestId('input-mode-ahl_bulletin').click();

@@ -54,6 +54,8 @@ test.describe('EV-093 — UJ-069 semantic + exchange profile pickers', () => {
     await openPublicConverter(page);
     const profile = page.getByTestId('profile-type-select');
     await expect(profile).toBeVisible();
+    await expect(page.getByTestId('product-profile-bar-summary')).toBeVisible();
+    await page.getByTestId('product-profile-trust-details').locator('summary').click();
     await expect(page.getByTestId('semantic-profile-help')).toBeVisible();
     await profile.selectOption('AU_BOM');
     const exchange = page.getByTestId('exchange-profile-select');
