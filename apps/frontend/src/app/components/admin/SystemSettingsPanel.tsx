@@ -33,6 +33,9 @@ interface SystemSettingsPanelProps {
   accessToken: string;
 }
 
+/**
+ * Admin panel for global converter defaults and allowed ICAO codes.
+ */
 export function SystemSettingsPanel({ accessToken }: SystemSettingsPanelProps) {
   const [settings, setSettings] = useState<SystemSettings>({
     defaultBulletinId: 'SAAA00',

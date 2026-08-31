@@ -14,6 +14,11 @@ interface ErrorLogPanelProps {
   minLogLevel?: ConvertLogLevel;
 }
 
+/**
+ * Collapsible panel showing conversion errors and filtered validation issues.
+ *
+ * Respects the operator minimum log level when rendering issues.
+ */
 export function ErrorLogPanel({ log, minLogLevel = 'INFO' }: ErrorLogPanelProps) {
   const [expanded, setExpanded] = useState(true);
   // Errors always pass CRITICAL (same rank as ERROR); keep the full list.

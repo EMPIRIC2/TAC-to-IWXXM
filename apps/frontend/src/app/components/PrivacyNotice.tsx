@@ -13,6 +13,11 @@ export interface PrivacyNoticeProps {
   onOpenSettings: () => void;
 }
 
+/**
+ * First-visit privacy notice with dismiss and open-settings actions.
+ *
+ * Renders nothing when `open` is false.
+ */
 export function PrivacyNotice({ open, onDismiss, onOpenSettings }: PrivacyNoticeProps) {
   if (!open) {
     return null;

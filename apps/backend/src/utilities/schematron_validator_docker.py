@@ -32,9 +32,11 @@ class SchematronValidationResult:
     errors: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
+        """Return the validation result as a plain dictionary."""
         return asdict(self)
 
     def to_json(self) -> str:
+        """Return the validation result as a formatted JSON string."""
         return json.dumps(self.to_dict(), indent=2)
 
 

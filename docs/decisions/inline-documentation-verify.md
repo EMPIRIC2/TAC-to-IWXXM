@@ -70,12 +70,26 @@ VERIFY_DOC_PATHS="packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py,packages/
 | Item | Disposition |
 |------|-------------|
 | Delta paths (`DisseminationDrawer.tsx`, `FileConverter.tsx`, `operatorDisseminationUi.ts`) | PASS under `VERIFY_DOC_PATHS` (missing=0) after FileConverter TSDoc |
-| Full-tree scan (default paths) | **WAIVE** for EV-091 merge — same brownfield bar as EV-087–089 (`D-EV091-inline-doc`) |
-| Remaining ~107 true gaps (after pack checker false-negative / codegen exclusions) | [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090) tech-debt cycle |
+| Full-tree scan (default paths) | **WAIVE** for EV-091 merge — same brownfield bar as EV-087–089 (`D-EV091-inline-doc`); superseded by EV-092 for new merges |
+| Remaining ~107 true gaps (after pack checker exclusions) | Closed by [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090) / EV-092 |
 
 ```bash
 VERIFY_DOC_PATHS="apps/frontend/src/app/components/DisseminationDrawer.tsx,apps/frontend/src/app/components/FileConverter.tsx,apps/frontend/src/utils/operatorDisseminationUi.ts" \
   python3 ~/.cursor/skills/pack/bin/inline-doc-check.py .
 ```
 
-**Note:** Pack checker improvements (multi-line TSDoc lookback; skip `iwxxm_xsd/`, `generated/`, `*.d.ts`, `docker/`, `supabase/functions/`; skip `Protocol`/`TypedDict` method bodies) reduced apparent misses from ~10k → ~107. Land those in the pack repo as part of [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090).
+## EV-092 disposition
+
+| Item | Disposition |
+|------|-------------|
+| Pack checker harden (multi-line TSDoc; skip `iwxxm_xsd/`/`generated/`/`*.d.ts`/`docker/`/`supabase/functions/`; Protocol/TypedDict) | **Landed** — pack `main` via EV-044 / [spec-dev-knowledge-graph#92](https://github.com/joseph-c-mcguire/spec-dev-knowledge-graph/pull/92) |
+| Full-tree after harden | **scanned=541 missing=107** |
+| Product NumPy/TSDoc backfill | **missing=0** |
+| Full-tree `inline-documentation` implementing twin | **PASS** — no WAIVE; `D-EV091-inline-doc` superseded for new merges |
+
+```bash
+python3 ~/.cursor/skills/pack/bin/inline-doc-check.py .
+# expect: missing=0
+```
+
+**Implementing twin (post EV-092):** Full-tree scan is **blocking** (not advisory) when the hardened pack checker is on PATH. Delta `VERIFY_DOC_PATHS` remains valid for non-fill evolves.

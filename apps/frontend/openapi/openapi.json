@@ -4213,6 +4213,7 @@
   "paths": {
     "/api/v1/convert": {
       "post": {
+        "description": "Convert METAR/SPECI TAC text to IWXXM XML.",
         "operationId": "convert_api_v1_convert_post",
         "requestBody": {
           "content": {
@@ -4296,6 +4297,7 @@
     },
     "/api/v1/convert-zip": {
       "post": {
+        "description": "Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.",
         "operationId": "convert_zip_api_v1_convert_zip_post",
         "requestBody": {
           "content": {
@@ -5438,6 +5440,7 @@
     },
     "/api/v1/work-sessions": {
       "get": {
+        "description": "List work sessions for the authenticated user with optional filters.",
         "operationId": "list_work_sessions_api_v1_work_sessions_get",
         "parameters": [
           {
@@ -5575,6 +5578,7 @@
         ]
       },
       "post": {
+        "description": "Create a new work session owned by the authenticated user.",
         "operationId": "create_work_session_api_v1_work_sessions_post",
         "requestBody": {
           "content": {
@@ -5621,6 +5625,7 @@
     },
     "/api/v1/work-sessions/{session_id}": {
       "delete": {
+        "description": "Soft-delete a work session (sets ``deleted_at``).",
         "operationId": "delete_work_session_api_v1_work_sessions__session_id__delete",
         "parameters": [
           {
@@ -5667,6 +5672,7 @@
         ]
       },
       "get": {
+        "description": "Return a single work session by id.",
         "operationId": "get_work_session_api_v1_work_sessions__session_id__get",
         "parameters": [
           {
@@ -5713,6 +5719,7 @@
         ]
       },
       "patch": {
+        "description": "Update mutable fields on an existing work session.",
         "operationId": "update_work_session_api_v1_work_sessions__session_id__patch",
         "parameters": [
           {
@@ -5771,6 +5778,7 @@
     },
     "/api/v1/work-sessions/{session_id}/restore": {
       "post": {
+        "description": "Restore a previously soft-deleted work session.",
         "operationId": "restore_work_session_api_v1_work_sessions__session_id__restore_post",
         "parameters": [
           {

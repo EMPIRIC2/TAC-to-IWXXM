@@ -13,7 +13,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Convert */
+        /**
+         * Convert
+         * @description Convert METAR/SPECI TAC text to IWXXM XML.
+         */
         post: operations["convert_api_v1_convert_post"];
         delete?: never;
         options?: never;
@@ -53,7 +56,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Convert Zip */
+        /**
+         * Convert Zip
+         * @description Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.
+         */
         post: operations["convert_zip_api_v1_convert_zip_post"];
         delete?: never;
         options?: never;
@@ -865,10 +871,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List Work Sessions */
+        /**
+         * List Work Sessions
+         * @description List work sessions for the authenticated user with optional filters.
+         */
         get: operations["list_work_sessions_api_v1_work_sessions_get"];
         put?: never;
-        /** Create Work Session */
+        /**
+         * Create Work Session
+         * @description Create a new work session owned by the authenticated user.
+         */
         post: operations["create_work_session_api_v1_work_sessions_post"];
         delete?: never;
         options?: never;
@@ -883,15 +895,24 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get Work Session */
+        /**
+         * Get Work Session
+         * @description Return a single work session by id.
+         */
         get: operations["get_work_session_api_v1_work_sessions__session_id__get"];
         put?: never;
         post?: never;
-        /** Delete Work Session */
+        /**
+         * Delete Work Session
+         * @description Soft-delete a work session (sets ``deleted_at``).
+         */
         delete: operations["delete_work_session_api_v1_work_sessions__session_id__delete"];
         options?: never;
         head?: never;
-        /** Update Work Session */
+        /**
+         * Update Work Session
+         * @description Update mutable fields on an existing work session.
+         */
         patch: operations["update_work_session_api_v1_work_sessions__session_id__patch"];
         trace?: never;
     };
@@ -904,7 +925,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Restore Work Session */
+        /**
+         * Restore Work Session
+         * @description Restore a previously soft-deleted work session.
+         */
         post: operations["restore_work_session_api_v1_work_sessions__session_id__restore_post"];
         delete?: never;
         options?: never;

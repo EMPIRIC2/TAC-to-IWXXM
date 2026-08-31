@@ -35,6 +35,7 @@ def _detect_project_root() -> Path:
     """Detect project root across local/devcontainer and deployment layouts."""
 
     def has_versioned_schemas(root: Path) -> bool:
+        """Return True when ``root`` contains the 2025-2 IWXXM schema tree."""
         return _versioned_schema_dir(root, "2025-2").exists()
 
     env_project_root = os.getenv("IWXXM_PROJECT_ROOT")

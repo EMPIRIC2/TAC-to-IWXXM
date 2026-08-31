@@ -8,6 +8,8 @@ import lxml.etree as _lxml_etree
 
 
 class XmlElement(Protocol):
+    """Structural typing for lxml element nodes used in IWXXM XML handling."""
+
     tag: str
 
     def get(self, key: str) -> str | None: ...
@@ -22,10 +24,14 @@ class XmlElement(Protocol):
 
 
 class XmlRootTree(Protocol):
+    """Structural typing for lxml root trees that expose element XPath strings."""
+
     def getpath(self, element: XmlElement) -> str: ...
 
 
 class LxmlEtreeModule(Protocol):
+    """Structural typing for the ``lxml.etree`` module surface used by the backend."""
+
     XMLSyntaxError: type[Exception]
 
     def Element(self, tag: str, nsmap: dict[str | None, str] | None = ...) -> XmlElement: ...
@@ -40,6 +46,8 @@ class LxmlEtreeModule(Protocol):
 
 
 class XmlTree(Protocol):
+    """Structural typing for lxml element trees supporting serialize and root access."""
+
     def write(
         self,
         file: object,

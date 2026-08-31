@@ -337,6 +337,7 @@ def validate_ca_eccc_layered(
     all_issues: list[Issue] = []
 
     def append_stage(stage_id: str, issues: list[Issue]) -> None:
+        """Record one validation stage and merge its issues into the report."""
         stages.append(_stage_result(stage_id, issues))
         all_issues.extend(issues)
 

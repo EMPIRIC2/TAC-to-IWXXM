@@ -28,6 +28,14 @@ export interface UseWorkSessionSyncOptions {
   onSessionIdAssigned: (id: string) => void;
 }
 
+/**
+ * Debounced auto-save hook for converter work sessions in local IndexedDB.
+ *
+ * Respects privacy preferences and read-only finished sessions.
+ *
+ * @param options - Session id, status, and save callbacks.
+ * @returns Save indicator state and persist/schedule helpers.
+ */
 export function useWorkSessionSync({
   sessionId,
   sessionStatus,

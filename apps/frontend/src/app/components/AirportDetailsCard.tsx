@@ -73,6 +73,11 @@ function AirportDetailsCardContent({ icao }: { icao: string }) {
   );
 }
 
+/**
+ * Renders airport metadata and ICAO region lookup for a valid four-letter code.
+ *
+ * Returns null when the ICAO is missing or not in the local airport catalog.
+ */
 export function AirportDetailsCard({ icao }: AirportDetailsCardProps) {
   const normalized = icao.trim().toUpperCase();
   const isValidIcao = normalized.length === 4 && airports.isValid(normalized);
