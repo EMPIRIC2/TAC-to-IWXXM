@@ -3,3 +3,4 @@
 # Engine errors still fail. Tighten later by clearing ignores.
 # EV-049 migration: KICS defaults to --fail-on critical (HIGH backlog present).
 # Set SEC_KICS_FAIL_ON=high,critical when HIGH findings are remediated.
+# Grype defaults to --fail-on critical during EV-049 migration (SEC_GRYPE_FAIL_ON).

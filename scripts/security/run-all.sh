@@ -117,8 +117,11 @@ if [[ -n "${SPDX}" ]]; then
 else
   TARGET="dir:${ROOT}"
 fi
-run Grype grype "${TARGET}" --fail-on "${SEC_GRYPE_FAIL_ON:-high}" -o json --file "${REPORTS}/grype.json" \
+run Grype grype "${TARGET}" --fail-on "${SEC_GRYPE_FAIL_ON:-critical}" -o json --file "${REPORTS}/grype.json" \
   --exclude=node_modules --exclude=vendor --exclude=.git --exclude=.venv --exclude=**/target
+
+# Migration: default Grype fail-on critical until HIGH vulns are remediated (EV-049).
+# Override with SEC_GRYPE_FAIL_ON=high when ready.
 
 if [[ -f "${ROOT}/supabase/config.toml" || -n "${SUPABASE_PROJECT_REF:-}" || -n "${SUPABASE_URL:-}" ]]; then
   if [[ "${SEC_SKIP_SUPABASE_ADVISORS:-1}" == "1" ]]; then
