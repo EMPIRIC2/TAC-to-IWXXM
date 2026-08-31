@@ -1793,7 +1793,7 @@
 
 ### F36: National semantic + regional exchange profile content — EV-063 / #912
 
-- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; EV-065/086/090 #921 exchange stubs + mining; **EV-087** `AU_BOM` + `NZ_CAA_MET`; **EV-089** thin/compat #920; **EV-090** exchange light picker; **EV-093** #1024 semantic picker deepen Spec).
+- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; EV-065/086/090 #921 exchange stubs + mining; **EV-087** `AU_BOM` + `NZ_CAA_MET`; **EV-089** thin/compat #920; **EV-090** exchange light picker; **EV-093** #1024 semantic picker deepen; **EV-094** thin/compat deepen [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)).
 - **What it does**: Implements profile **content** on top of F35 architecture: deepen
   `US_FAA_NWS` ([#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)), **`CA_ECCC`**
   ([#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) / EV-064), **`AU_BOM`**
@@ -1844,6 +1844,10 @@
      thin packs); legacy `annex3`/`iwxxm_us` alias options through #1025 window; Profile trust
      copy via compact bar layout (icons/tooltips + under-bar summary + collapsed details);
      local UI preview; close #1024 on land (exchange picker already EV-090/091).
+  22. **EV-094 / #1098:** Deepen thin/compat packs (post-#920) — attributed real TAC corpora;
+     durable catalog/mining URLs; **SPECI** on `KR_KMA` + `JP_JMA`; **`in_imd` lint overlay**
+     for TAF TX/TN omission awareness (convert stays core IWXXM); GAMET parse-only reaffirm;
+     UK-first PRs; close #1098 on land (**do not reopen #920**).
 - **Out of scope**: Full ROBEX/RODEX packaging rule matrices beyond documented gaps; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); inventing national IWXXM enums/XSDs; China unless public sources appear; GAMET→IWXXM conversion; #933 ConversionProfile editor
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   semantic (**EV-093** canonical + nationals) + **exchange** control (EV-090 / drawer EV-091)

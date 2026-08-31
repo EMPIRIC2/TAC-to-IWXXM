@@ -2,8 +2,8 @@
 # Corpus: domain-profiles · ADR-036 §7
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 1
-cycle: EV-089
-updated: "2026-08-29"
+cycle: EV-094
+updated: "2026-08-31"
 
 priority_legend:
   P0: "Baseline — implemented or default exchange overlay (F35)"
@@ -317,9 +317,10 @@ profiles:
     locale: [en]
     issuing_body: UK Met Office / CAA
     implementation:
-      issue: "#920"
+      issue: "#1098"
+      prior_issue: "#920"
       package: packages/tac2iwxxm
-      cycle: EV-089
+      cycle: EV-094
       path: thin
     products: [METAR, SPECI, TAF]
     vendor_pins:
@@ -333,13 +334,23 @@ profiles:
         label: Met Office aviation services
         access: public
         proves: Operational UK aviation MET context
+      - url: https://aviationweather.gov/api/data/metar?ids=EGLL&format=raw
+        label: AWC METAR API — EGLL attributed fixture (EV-094 M1)
+        access: public
+        proves: Real civil METAR corpus for convert smoke
+      - url: https://aviationweather.gov/api/data/taf?ids=EGLL&format=raw
+        label: AWC TAF API — EGLL attributed fixture (EV-094 M1)
+        access: public
+        proves: Real civil TAF corpus for convert smoke
     mining_notes:
       - docs/domain/mining/uk-metoffice-tac-mining-notes.md
     stub: semantic/UK_METOFFICE.md
+    overrides: []
     gaps:
       - No published UK IWXXM extension XSD (core-only emit)
-      - Registry + convert allowlist + kickoff fixtures landed (EV-089 Build)
+      - Attributed real SPECI corpus pending (SPECI fixture remains synthetic_ev089)
       - Local ATIS / special ATS deltas → fixtures only unless override evidence appears
+      - Catalog status stays in_progress until #1098 UK AC complete
 
   - id: BR_DECEA
     kind: semantic
@@ -386,7 +397,7 @@ profiles:
       package: packages/tac2iwxxm
       cycle: EV-089
       path: compat
-    products: [METAR, TAF, SIGMET, AIRMET]
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET]
     vendor_pins:
       iwxxm: vendor/manifest.json → active core pin (no KR national extension published)
     sources:
@@ -400,7 +411,9 @@ profiles:
     gaps:
       - No published KR IWXXM extension XSD (core-only emit)
       - AIP GEN 3.5 durable URL to harden after harvest
+      - SPECI allowlist deepen — EV-094 / #1098 (D-EV094-speci-expand)
       - Automated TAC→IWXXM claim (since ~2017) — verify vs fixtures; no override assumed
+      - Attributed real corpora deepen — EV-094 / #1098
 
   - id: JP_JMA
     kind: semantic
@@ -414,7 +427,7 @@ profiles:
       package: packages/tac2iwxxm
       cycle: EV-089
       path: compat
-    products: [METAR, TAF, SIGMET, VAA]
+    products: [METAR, SPECI, TAF, SIGMET, VAA]
     vendor_pins:
       iwxxm: vendor/manifest.json → active core pin (no JP national extension published)
     sources:
@@ -432,7 +445,9 @@ profiles:
     gaps:
       - No published JP IWXXM extension XSD (core-only emit)
       - AIRMET not in v1 allowlist (D-EV089-jp-va)
+      - SPECI allowlist deepen — EV-094 / #1098 (D-EV094-speci-expand)
       - VAA validate/convert depth follows existing ICAO_2025 VA paths — no national VA schema fork
+      - Attributed real corpora deepen — EV-094 / #1098
 
   - id: IN_IMD
     kind: semantic
@@ -459,8 +474,16 @@ profiles:
     stub: semantic/IN_IMD.md
     gaps:
       - No published IN IWXXM extension XSD (IMDIMET unpublished — do not invent)
-      - AIP GEN 3.5: TAF may omit forecast vis/temp — document as note/override candidate
+      - AIP GEN 3.5 durable URL still gap; TAF often omits TX/TN — EV-094 lint overlay `in_imd` (D-EV094-in-taf)
       - No AIRMET/GAMET in v1 (AIP: not issued)
+      - Attributed real corpora deepen — EV-094 / #1098
+    lint_profile:
+      id: in_imd
+      aliases: [IN_IMD]
+      products: [TAF]
+      intent: "Info awareness when TX/TN omitted (national practice); not a hard error waive"
+      cycle: EV-094
+      issue: "#1098"
 
   - id: HK_HKO
     kind: semantic

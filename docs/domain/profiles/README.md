@@ -79,12 +79,14 @@ access tier, vendor pins, gaps, and mining-note cross-refs.
 - [x] AU TAF INTER/TAF3/RMK T/Q refs for `AU_BOM` (EV-087 mining kickoff)  
 - [x] NZ domestic vs international TAF refs for `NZ_CAA_MET` (EV-087 mining kickoff)  
 - [x] Thin/compat catalog + stubs for #920 ids (EV-089 Spec; Build fixtures/registry pending)  
+- [ ] Thin/compat **deepen** corpora + KR/JP SPECI + `in_imd` lint overlay ([#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098) / EV-094)  
 - [ ] Regional exchange rule sources for ROBEX/RODEX variants (P2)
 
 ## References
 
 - [NATIONAL_PROFILE_PLAYBOOK.md](NATIONAL_PROFILE_PLAYBOOK.md) — [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044)
-- [GAMET-spike.md](GAMET-spike.md) — EV-089 parse-only disposition
+- [GAMET-spike.md](GAMET-spike.md) — EV-089 parse-only; EV-094 reaffirm
 - [ADR-036](../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 - [#913 Mine ticket](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913)
+- [#1098 Thin/compat deepen](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)
 - [#1025 Alias cutover](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)

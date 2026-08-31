@@ -3781,6 +3781,54 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Exit 2; stderr error
 - **Source**: EV-088 Build M2
 
+### EV-094 / #1098 — Thin/compat national deepen
+
+- **Mode**: delta F36 — deepen EV-089 packs (fixtures, sources, SPECI KR/JP, IN lint overlay)
+- **Pass criteria**: TC-EV094-001..006; #1098 AC; #920 stays closed; GAMET parse-only held
+- **Source**: [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); EV-094; ADR-036; [GAMET-spike.md](domain/profiles/GAMET-spike.md)
+
+### TC-EV094-001: Catalog deepen hygiene
+
+- **Level**: T0 / Docs
+- **Objective**: Six thin/compat ids retain EV-089 products (plus SPECI on KR/JP); deepen gaps/sources updated
+- **Pass criteria**: `catalog.yaml` loads; KR/JP `products` include SPECI; `IN_IMD` notes lint overlay intent
+- **Source**: FR-EV094-02; FR-EV094-05; D-EV094-in-taf
+
+### TC-EV094-002: Attributed fixture corpora (Build)
+
+- **Level**: T0 / T2
+- **Objective**: ≥1 attributed real/archive TAC per convert product per shipped pack
+- **Pass criteria**: Manifest or mining cites source URL + UTC; convert smoke green; gaps explicit if missing
+- **Source**: FR-EV094-03
+
+### TC-EV094-003: KR/JP SPECI allowlist (Build)
+
+- **Level**: T0 / T2
+- **Objective**: `KR_KMA` and `JP_JMA` convert SPECI
+- **Pass criteria**: Allowlist + SPECI fixture convert OK; AIRMET still excluded for JP
+- **Source**: D-EV094-speci-expand
+
+### TC-EV094-004: IN_IMD TX/TN lint overlay (Build)
+
+- **Level**: T0 / T2
+- **Objective**: `lint(..., profile=in_imd|IN_IMD)` on TAF without TX/TN emits registered info awareness code; annex3 path unchanged for same TAC
+- **Pass criteria**: Registry row + fixture test; convert still core IWXXM; no national XSD
+- **Source**: D-EV094-in-taf; FR-EV094-04
+
+### TC-EV094-005: GAMET parse-only held
+
+- **Level**: T0 / Docs
+- **Objective**: EV-094 does not add GAMET emit
+- **Pass criteria**: `GAMET-spike.md` still parse-only; BR convert allowlist excludes GAMET
+- **Source**: D-EV094-gamet
+
+### TC-EV094-006: Must-not-break prior nationals
+
+- **Level**: T2
+- **Objective**: ICAO/US/CA/AU/NZ + EV-089 ids still resolve; unknown id rejected
+- **Pass criteria**: Existing TC-EV087/089 smoke still green on tip
+- **Source**: FR-EV094-10
+
 ### EV-089 / #920 — Thin/compat national packs
 
 - **Mode**: delta F36 — thin/compat semantic packs via EV-088 playbook thin path
