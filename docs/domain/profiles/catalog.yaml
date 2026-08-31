@@ -456,9 +456,9 @@ profiles:
     gaps:
       - No published JP IWXXM extension XSD (core-only emit)
       - AIRMET not in v1 allowlist (D-EV089-jp-va)
-      - SPECI allowlist deepen — EV-094 / #1098 (D-EV094-speci-expand)
+      - Attributed real SPECI / Japanese FIR SIGMET / Tokyo VAA corpora pending (synthetic_ev089)
       - VAA validate/convert depth follows existing ICAO_2025 VA paths — no national VA schema fork
-      - Attributed real corpora deepen — EV-094 / #1098
+      - Catalog status stays in_progress until #1098 JP AC complete
 
   - id: IN_IMD
     kind: semantic
