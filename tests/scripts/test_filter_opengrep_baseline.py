@@ -97,7 +97,6 @@ def test_filter_missing_baseline_file(filt, tmp_path: Path) -> None:
 @pytest.mark.unit
 def test_filter_main_entrypoint() -> None:
     path = REPO_ROOT / "scripts/security/filter-opengrep-baseline.py"
-    with patch.object(sys, "argv", [str(path)]):
-        with pytest.raises(SystemExit) as exc:
-            runpy.run_path(str(path), run_name="__main__")
+    with patch.object(sys, "argv", [str(path)]), pytest.raises(SystemExit) as exc:
+        runpy.run_path(str(path), run_name="__main__")
     assert exc.value.code == 2
