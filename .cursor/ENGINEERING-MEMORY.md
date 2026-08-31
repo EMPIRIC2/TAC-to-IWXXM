@@ -1,18 +1,20 @@
 # Engineering Memory — workspace install
 
-**Installed:** 2026-08-24 (EV-024)
+**Installed:** 2026-08-31 (EV-095 portable paths / [#1095](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1095))
 
 | Item | Path |
 |------|------|
-| Plugin (workspaceOpen) | `/Users/bigme/Documents/GitHub/spec-dev-knowledge-graph/cursor-plugin` |
-| MCP | `.cursor/mcp.json` → `engineering-memory` stdio server |
-| Pack symlink | `.cursor/pack` → plugin pack (orchestrators, spec-*, build-*, verify) |
+| Plugin (workspaceOpen) | `$EM_ENGINEERING_MEMORY_ROOT/cursor-plugin` (or sibling / in-repo; resolved at runtime) |
+| MCP | `.cursor/mcp.json` (prefer `${userHome}/...` when under `$HOME`) |
+| Pack symlink | `.cursor/pack` → plugin pack (re-created by install per machine) |
 | CLI | `.cursor/bin/` (`verify`, `session-store`, `memory-hook`) |
 | CLI symlinks | `.cursor/skills/bin/` → `../../bin/` |
-| Hook templates | `.cursor/hooks/pack/` (scope_check, feature_drift) |
+| Hook templates | `.cursor/hooks/pack/` (scope_check, feature_drift + lib) |
+| Bootstrap | `.cursor/hooks/pack/bootstrap-engineering-memory.sh` |
+| Cursor session hooks | `sessionStart` / `sessionEnd` → `.cursor/hooks/pack/cursor-session-*.sh` |
 | Hook config | `.cursor/hooks/config/` (TAC scope-map, feature-map) |
 | Plugin rules | Via `workspaceOpen` plugin — not copied to `.cursor/rules/` |
-| EM root (Neo4j venv) | `/Users/bigme/Documents/GitHub/spec-dev-knowledge-graph` |
+| EM root (Neo4j venv) | `$EM_ENGINEERING_MEMORY_ROOT` (default sibling or `~/Documents/GitHub/spec-dev-knowledge-graph`) |
 | Project id | `tac-to-iwxxm` (from `EMPIRIC2/TAC-to-IWXXM` git remote) |
 
 ## Project-only skills (kept local)
@@ -31,7 +33,7 @@ Pack duplicates and numbered `00–19` live under `.cursor/skills/_archive/`.
 
 ## Graph database access
 
-**Prerequisite:** Neo4j running in spec-dev-knowledge-graph (`docker compose up -d`).
+**Prerequisite:** Neo4j running in the engineering-memory repo (`docker compose up -d`).
 
 ### Health
 
@@ -64,31 +66,23 @@ Pack duplicates and numbered `00–19` live under `.cursor/skills/_archive/`.
 
 ### MCP tools (preferred in agent chat)
 
-After **Reload Window**, use Cursor MCP **engineering-memory**:
-
-| Tool | Use |
-|------|-----|
-| `health_check` | Neo4j connectivity |
-| `list_projects` | Confirm `tac-to-iwxxm` |
-| `retrieve_relevant_knowledge` | Ranked context for a query |
-| `get_recommendations` | Advisory recommendations + ambiguities |
-| `ingest_corpus` / `sync_repository` | Refresh graph from docs/git |
-| `record_session` | Close pack sessions into graph |
+After **Reload Window**, use Cursor MCP **engineering-memory** (see tools in MCP panel).
 
 ### Re-ingest corpus / git
 
 ```bash
-EM_ROOT="$HOME/Documents/GitHub/spec-dev-knowledge-graph"
+EM_ROOT="${EM_ENGINEERING_MEMORY_ROOT:-$HOME/Documents/GitHub/spec-dev-knowledge-graph}"
 PY="$EM_ROOT/packages/engineering-memory/.venv/bin/python"
-cd "$EM_ROOT" && export $(grep -v '^#' .env | xargs)
+cd "$EM_ROOT"
+# load EM .env without sourcing comments/special chars — see install docs
 
 "$PY" -m engineering_memory.cli ingest corpus \
   --project-id tac-to-iwxxm \
-  --docs-root "$PWD/../TAC-to-IWXXM/TAC-to-IWXXM/docs"
+  --docs-root "$OLDPWD/docs"
 
 "$PY" -m engineering_memory.cli ingest git \
   --project-id tac-to-iwxxm \
-  --repo-path "$PWD/../TAC-to-IWXXM/TAC-to-IWXXM" \
+  --repo-path "$OLDPWD" \
   --limit 100
 ```
 
@@ -97,16 +91,18 @@ cd "$EM_ROOT" && export $(grep -v '^#' .env | xargs)
 Token-overlap retrieval works without extras. For embedding search:
 
 ```bash
-cd "$EM_ROOT/packages/engineering-memory" && source .venv/bin/activate
+cd "${EM_ENGINEERING_MEMORY_ROOT:-$HOME/Documents/GitHub/spec-dev-knowledge-graph}/packages/engineering-memory"
+source .venv/bin/activate
 pip install sentence-transformers
 ```
 
 ## Re-install
 
 ```bash
-"$EM_ROOT/cursor-plugin/scripts/install-workspace.sh" "$PWD"
+EM_ENGINEERING_MEMORY_ROOT="${EM_ENGINEERING_MEMORY_ROOT:-$HOME/Documents/GitHub/spec-dev-knowledge-graph}"
+"$EM_ENGINEERING_MEMORY_ROOT/cursor-plugin/scripts/install-workspace.sh" "$PWD"
 ```
 
 Reload Cursor after pack/plugin updates.
 
-See [MIGRATED-TO-PLUGIN.md](MIGRATED-TO-PLUGIN.md) and [docs/decisions/ev-023-plugin-migration.md](../docs/decisions/ev-023-plugin-migration.md).
+See [MIGRATED-TO-PLUGIN.md](MIGRATED-TO-PLUGIN.md) and [docs/decisions/ev-023-plugin-migration.md](../docs/decisions/ev-023-plugin-migration.md). Portable-path policy: [docs/decisions/ev-095-em-portable-paths.md](../docs/decisions/ev-095-em-portable-paths.md).

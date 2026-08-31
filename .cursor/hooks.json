@@ -78,6 +78,19 @@
     "workspaceOpen": [
       {
         "command": ".cursor/hooks/register-workspace-plugins.sh"
+      },
+      {
+        "command": ".cursor/hooks/pack/bootstrap-engineering-memory.sh"
+      }
+    ],
+    "sessionStart": [
+      {
+        "command": ".cursor/hooks/pack/cursor-session-start.sh"
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": ".cursor/hooks/pack/cursor-session-end.sh"
       }
     ]
   }

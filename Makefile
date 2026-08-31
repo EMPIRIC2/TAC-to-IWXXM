@@ -69,6 +69,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	ca-ops-harvest ca-ops-check \
 	generate-quality-metrics \
 	issue-registry-guard \
+	cursor-no-home-paths-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
 
 # --- Monorepo workspace ---
@@ -143,6 +144,10 @@ issue-registry-guard:
 	ISSUE_REGISTRY_GUARD_STRICT=1 $(UV) run python scripts/ci/check_issue_registry_literals.py \
 		packages/tac-validate/src/tac_validate/rules.py \
 		packages/tac-validate/src/tac_validate/product_rules.py
+
+# EV-095 / #1095: no machine-local /Users/ or /home/<user>/ in tracked .cursor/
+cursor-no-home-paths-guard:
+	$(UV) run python scripts/ci/check_cursor_no_home_paths.py
 
 # --- Formatting ---
 
@@ -836,7 +841,7 @@ validate-yaml:
 	$(UV) run pre-commit run actionlint --all-files
 	$(UV) run pre-commit run yamllint --all-files
 
-validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check issue-registry-guard
+validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check issue-registry-guard cursor-no-home-paths-guard
 
 config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v
