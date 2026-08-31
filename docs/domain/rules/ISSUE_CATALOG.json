@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-08-27",
+  "generated": "2026-08-31",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -620,6 +620,21 @@
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Wind not in AerodromePresentWeather list"
+    },
+    {
+      "code": "IN_TAF_TX_TN_OMITTED",
+      "severity": "info",
+      "message_template": "{product} does not include TX/TN temperature forecast groups. Informational: India Meteorological Department TAFs often omit temperature extremes; this does not by itself block conversion.",
+      "product": "TAF",
+      "tags": [
+        "taf",
+        "in_imd",
+        "temperature",
+        "tx_tn"
+      ],
+      "source_id": "imd-mausam",
+      "source_url": "https://mausam.imd.gov.in/",
+      "source_attribution": "imd-mausam - https://mausam.imd.gov.in/ - India IMD TAF often omits TX/TN temperature extremes"
     },
     {
       "code": "MISSING_CCCC",

@@ -5,7 +5,13 @@ from __future__ import annotations
 from tac_validate.ahl import lint_ahl_bulletin, looks_like_ahl
 from tac_validate.models import LintReport
 from tac_validate.products import PRODUCTS
-from tac_validate.profiles import PROFILE_ANNEX3, ca_eccc_applicable, iwxxm_us_lint_applicable, normalize_profile
+from tac_validate.profiles import (
+    PROFILE_ANNEX3,
+    ca_eccc_applicable,
+    in_imd_applicable,
+    iwxxm_us_lint_applicable,
+    normalize_profile,
+)
 from tac_validate.rules import check_parse_gate, check_product_rules
 
 
@@ -42,11 +48,11 @@ def lint(
     product :
         One of AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA, SWXA, VONA.
     profile :
-        ``annex3`` (default) or ``iwxxm_us``. WMO L3 membership is shared; L5 US
-        overlay applies only under ``iwxxm_us`` where the product supports it.
-        ``SWXA`` and ``TCA`` accept ``iwxxm_us`` for thin US national lint only (#919 M22).
-        Calling ``iwxxm_us`` for other unsupported products raises ``ValueError``
-        (dual-profile harness treats those rows as N/A without calling lint).
+        ``annex3`` (default), ``iwxxm_us``, ``ca_eccc``, or ``in_imd``. WMO L3 membership
+        is shared; national overlays apply only under the matching profile where the
+        product supports it. ``SWXA`` and ``TCA`` accept ``iwxxm_us`` for thin US national
+        lint only (#919 M22). ``in_imd`` is TAF-only (TX/TN omission awareness). Calling
+        a national profile for an unsupported product raises ``ValueError``.
 
     Returns
     -------
@@ -65,6 +71,8 @@ def lint(
         raise ValueError(f"profile iwxxm_us is not applicable for product {product_u!r} (N/A - use annex3)")
     if profile_l == "ca_eccc" and not ca_eccc_applicable(product_u):
         raise ValueError(f"profile ca_eccc is not applicable for product {product_u!r} (N/A - use annex3)")
+    if profile_l == "in_imd" and not in_imd_applicable(product_u):
+        raise ValueError(f"profile in_imd is not applicable for product {product_u!r} (N/A - use annex3)")
 
     if looks_like_ahl(tac_text):
         return lint_ahl_bulletin(

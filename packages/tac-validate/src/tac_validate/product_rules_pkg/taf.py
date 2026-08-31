@@ -175,6 +175,16 @@ def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
         )
     )
     issues.extend(
+        _check_in_imd_taf(
+            tokens,
+            product=product,
+            core=core,
+            body_start=start,
+            body_end=end,
+            profile=profile,
+        )
+    )
+    issues.extend(
         _check_us_faa_nws_taf(
             tokens,
             product=product,
