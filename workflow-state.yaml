@@ -66396,6 +66396,37 @@ pr_review_cycles:
   notes:
   - AskQuestion UI unavailable; assumed full checklist + F connectivity + local 09-qa (CI Validate red on npm audit 410)
   - 'User emphasis: integration testing / solid before merge'
+- id: PRR-020
+  skill_id: 18-pr-review
+  session_id: EV-096-ci-rules-skills-harden
+  evolve_cycle_id: EV-096
+  pr_number: 1114
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1114
+  title: '[EV-096] Harden Cursor rules/skills from CI footguns (#1096)'
+  status: completed
+  started: '2026-08-31'
+  completed: '2026-08-31'
+  scope: full
+  head_ref: evolve/EV-096-ci-rules-skills-harden
+  base_ref: stage
+  head_sha: 063e8225bde6f298eed8ea7c3aa9c20e30f7b1f3
+  verdict: REQUEST_CHANGES
+  blockers: 1
+  advisories: 2
+  praise: 2
+  ci_status: success
+  gh_review_note: Self request-changes blocked; posted COMMENT with REQUEST_CHANGES recommendation + 2 inline comments
+  report: ~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-096-ci-rules-skills-harden/reports/pr-review.md
+  findings_summary:
+  - 🔴 check_pnpm_action_package_manager _VERSION_IN_STEP spans past next workflow step (false-positive validate-fast)
+  - 🟡 missing next-step version regression test
+  - 🟡 PR test-plan checkboxes stale (CI already green)
+  subagents:
+    bugbot: 1 medium confirmed as blocker
+    security: 0 medium+
+  notes:
+  - Full A→H; F connectivity N/A (process/meta)
+  - Do not merge until step-scoped regex + regression test land
 pr_remediation_cycles:
 - id: PRM-001
   pr_number: 679

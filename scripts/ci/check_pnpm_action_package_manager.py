@@ -13,9 +13,12 @@ import sys
 from pathlib import Path
 
 _ACTION = re.compile(r"uses:\s*pnpm/action-setup@[^\n]+", re.IGNORECASE)
-# ``version:`` under a pnpm/action-setup step (same step block before next ``- `` at indent)
+# ``version:`` only within the same step. Refuse any continuation line that is a new
+# YAML list item (``- ``), including when indent whitespace would otherwise backtrack.
 _VERSION_IN_STEP = re.compile(
-    r"uses:\s*pnpm/action-setup@[^\n]+\n(?:[ \t]+[^\n]*\n)*?[ \t]+version:\s*['\"]?[\d.]+",
+    r"uses:\s*pnpm/action-setup@[^\n]+\n"
+    r"(?:(?![ \t]*-\s)[ \t]+[^\n]*\n)*?"
+    r"[ \t]+version:\s*['\"]?[\d.]+",
     re.IGNORECASE,
 )
 

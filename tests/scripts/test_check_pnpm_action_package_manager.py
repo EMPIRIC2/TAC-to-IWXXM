@@ -40,6 +40,22 @@ def test_ok_when_action_setup_without_version(tmp_path: Path) -> None:
 
 
 @pytest.mark.unit
+def test_ok_when_later_step_has_version(tmp_path: Path) -> None:
+    """Next-step with.version must not count as pnpm dual-spec (PR #1114 review)."""
+    fake = tmp_path / "repo"
+    fake.mkdir()
+    _write_pkg(fake, package_manager="pnpm@9.15.4")
+    _write_workflow(
+        fake,
+        "x.yml",
+        "jobs:\n  j:\n    steps:\n      - uses: pnpm/action-setup@v4\n"
+        "      - uses: supabase/setup-cli@v1\n        with:\n          version: 2.0.0\n",
+    )
+    assert guard.find_dual_specs(fake) == []
+    assert guard.main(["prog", str(fake)]) == 0
+
+
+@pytest.mark.unit
 def test_fails_when_version_and_package_manager(tmp_path: Path) -> None:
     fake = tmp_path / "repo"
     fake.mkdir()
