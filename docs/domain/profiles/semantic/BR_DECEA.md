@@ -1,6 +1,6 @@
 # BR_DECEA — Brazil DECEA thin overlay (P2)
 
-> **Profile id**: `BR_DECEA` · **Kind**: semantic · **Priority**: P2 · **Status**: in_progress (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); prior EV-089 / #920 closed)  
+> **Profile id**: `BR_DECEA` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); prior EV-089 / #920 closed)  
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **Path**: thin · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 Brazil DECEA/ANAC semantic overlay extending `ICAO_2025` for METAR/SPECI/TAF/SIGMET/AIRMET.
@@ -33,7 +33,7 @@ GAMET: **parse-only** fixtures; no IWXXM emit (see [GAMET-spike.md](../GAMET-spi
 - [x] GAMET TAC fixtures (parse-only)
 - [x] ≥1 attributed METAR + TAF (EV-094 M2)
 - [ ] Attributed SPECI / Brazilian FIR SIGMET / AIRMET
-- [ ] Catalog `status: implemented` when #1098 BR AC met
+- [x] Catalog `status: implemented` (EV-094 M7 / #1098)
 
 ## References
 

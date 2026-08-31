@@ -1,6 +1,6 @@
 # UK_METOFFICE — UK Met Office / CAA thin overlay (P2)
 
-> **Profile id**: `UK_METOFFICE` · **Kind**: semantic · **Priority**: P2 · **Status**: in_progress (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); prior EV-089 / #920 closed)  
+> **Profile id**: `UK_METOFFICE` · **Kind**: semantic · **Priority**: P2 · **Status**: implemented (EV-094 deepen / [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); prior EV-089 / #920 closed)  
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **Path**: thin · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 UK national semantic overlay extending `ICAO_2025`: CAP 746 aerodrome MET conventions for
@@ -41,7 +41,7 @@ SPECI remains labeled `synthetic_ev089` until a real corpus is harvested.
 - [x] Registry + convert allowlist (EV-089)
 - [x] ≥1 attributed METAR + TAF (EV-094 M1)
 - [ ] Attributed real SPECI corpus
-- [ ] Catalog `status: implemented` when #1098 UK AC met
+- [x] Catalog `status: implemented` (EV-094 M7 / #1098)
 - [ ] Promote durable CAP 746 URLs into RULE_SOURCE_URLS when rules land
 
 ## References

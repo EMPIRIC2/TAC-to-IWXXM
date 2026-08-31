@@ -5,7 +5,7 @@
 **Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-094-thin-compat-national-deepen`  
 **Preset:** Standard · **Documenting→Implementing gate:** **open** · **Issue:** [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)  
 **Prior:** #920 closed (EV-089 / PR #1087) — do not reopen  
-**Build:** M1 UK deepen in progress (`evolve/EV-094-thin-compat-national-deepen`)
+**Build:** M1–M7 complete on stacked PRs (#1099–#1106 tip); catalog six packs `implemented`
 
 | ID | Outcome |
 |----|---------|
