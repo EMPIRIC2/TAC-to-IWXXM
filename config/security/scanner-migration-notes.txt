@@ -1,3 +1,5 @@
 # EV-049 migration: 2ms uses --ignore-on-exit results so pre-existing
 # secret-scanner noise in docs/tests does not block the gate.
 # Engine errors still fail. Tighten later by clearing ignores.
+# EV-049 migration: KICS defaults to --fail-on critical (HIGH backlog present).
+# Set SEC_KICS_FAIL_ON=high,critical when HIGH findings are remediated.

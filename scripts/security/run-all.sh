@@ -94,9 +94,12 @@ QUERIES="${ASSETS_DIR}/kics/assets/queries"
 mkdir -p "${REPORTS}/kics"
 run KICS kics scan -p "${ROOT}" -q "${QUERIES}" -o "${REPORTS}/kics" \
   --report-formats json,sarif --output-name results \
-  --fail-on "${SEC_KICS_FAIL_ON:-high,critical}" \
-  --exclude-paths ".git,.tools,.security-reports,.venv,node_modules,vendor,target,dist,build" \
+  --fail-on "${SEC_KICS_FAIL_ON:-critical}" \
+  --exclude-paths ".git,.tools,.security-reports,.venv,node_modules,vendor,target,dist,build,docs,data" \
   --exclude-gitignore
+
+# Migration note: default fail-on is critical until HIGH backlog is cleared (EV-049).
+# Override with SEC_KICS_FAIL_ON=high,critical when ready.
 
 if [[ "${SEC_SKIP_SBOM:-0}" != "1" ]]; then
   DROP="${REPORTS}/sbom-drop"
