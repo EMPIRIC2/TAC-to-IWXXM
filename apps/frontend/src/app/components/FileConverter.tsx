@@ -39,6 +39,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { DisseminationDrawer } from './DisseminationDrawer';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
@@ -86,18 +87,22 @@ import { isAbortError } from '/utils/liveAssist';
 import {
   detectTacProduct,
   coerceIwxxmProfile,
+  hydrateSemanticProfile,
+  isCaEcccProfile,
   isConvertProductSelection,
   resolveConvertProduct,
   splitManualEntries,
+  DEFAULT_SEMANTIC_PROFILE,
+  SEMANTIC_PROFILE_OPTIONS,
   type IwxxmProfile,
   type TacProductSelection,
-} from '/utils/tacProduct';
+} from '@/utils/tacProduct';
 import {
   coerceExchangeProfile,
   DEFAULT_EXCHANGE_PROFILE,
   EXCHANGE_PROFILE_OPTIONS,
   type ExchangeProfileId,
-} from '/utils/exchangeProfile';
+} from '@/utils/exchangeProfile';
 import {
   CA_ECCC_EXTENSION_LABEL,
   CA_ECCC_SUPPORTED_PRODUCTS,
@@ -327,7 +332,7 @@ export function FileConverter({
     bulletinId: '',
     issuingCenter: '',
     product: 'auto',
-    profile: 'annex3',
+    profile: DEFAULT_SEMANTIC_PROFILE,
     exchangeProfile: DEFAULT_EXCHANGE_PROFILE,
     iwxxmVersion: DEFAULT_IWXXM_VERSION,
     strictValidation: true,
@@ -414,11 +419,10 @@ export function FileConverter({
         const stored = localStorage.getItem('metar_converter_preferences');
         if (stored) {
           const prefs = JSON.parse(stored);
-          const profile = coerceIwxxmProfile(prefs.profile);
-          const iwxxmVersion =
-            profile === 'ca_eccc'
-              ? CA_ECCC_IWXXM_VERSION
-              : coerceIwxxmVersion(prefs.iwxxmVersion);
+          const profile = hydrateSemanticProfile(prefs.profile);
+          const iwxxmVersion = isCaEcccProfile(profile)
+            ? CA_ECCC_IWXXM_VERSION
+            : coerceIwxxmVersion(prefs.iwxxmVersion);
 
           setConversionParams({
             bulletinId: prefs.bulletinIdExample || 'SAAA00',
@@ -538,13 +542,9 @@ export function FileConverter({
         if (typeof rawProduct === 'string' && isConvertProductSelection(rawProduct)) {
           next.product = rawProduct;
         }
-        if (
-          params.profile === 'iwxxm_us' ||
-          params.profile === 'annex3' ||
-          params.profile === 'ca_eccc'
-        ) {
-          next.profile = coerceIwxxmProfile(params.profile);
-          if (next.profile === 'ca_eccc') {
+        if (typeof params.profile === 'string') {
+          next.profile = hydrateSemanticProfile(params.profile);
+          if (isCaEcccProfile(next.profile)) {
             next.iwxxmVersion = CA_ECCC_IWXXM_VERSION;
           }
         }
@@ -580,11 +580,10 @@ export function FileConverter({
       const stored = localStorage.getItem('metar_converter_preferences');
       if (stored) {
         const prefs = JSON.parse(stored);
-        const profile = coerceIwxxmProfile(prefs.profile);
-        const iwxxmVersion =
-          profile === 'ca_eccc'
-            ? CA_ECCC_IWXXM_VERSION
-            : coerceIwxxmVersion(prefs.iwxxmVersion);
+        const profile = hydrateSemanticProfile(prefs.profile);
+        const iwxxmVersion = isCaEcccProfile(profile)
+          ? CA_ECCC_IWXXM_VERSION
+          : coerceIwxxmVersion(prefs.iwxxmVersion);
 
         setConversionParams({
           bulletinId: prefs.bulletinIdExample || 'SAAA00',
@@ -1572,7 +1571,7 @@ export function FileConverter({
   const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
   const hasConverted = convertedFiles.length > 0;
   const caProfileBlocked =
-    conversionParams.profile === 'ca_eccc' && caExtensionBundleAvailable === false;
+    isCaEcccProfile(conversionParams.profile) && caExtensionBundleAvailable === false;
   const convertDisabled = isBusy || !hasInput || isReadOnly || caProfileBlocked;
   const safeQueueFocusIndex = clampQueueIndex(queueFocusIndex, pendingFiles.length);
   const activeSelectedCount = pendingFiles.filter((f) =>
@@ -2026,110 +2025,175 @@ export function FileConverter({
                     </div>
                   </div>
                 </div>
-                <div
-                  className="flex flex-col gap-2 overflow-x-auto rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-nowrap lg:items-center"
-                  data-testid="product-profile-bar"
-                >
-                  <Label
-                    htmlFor="param-product"
-                    className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                <div className="flex flex-col gap-1.5">
+                  <div
+                    className="flex flex-col gap-2 overflow-x-auto rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-nowrap lg:items-center"
+                    data-testid="product-profile-bar"
                   >
-                    Product type
-                  </Label>
-                  <select
-                    id="param-product"
-                    aria-label="Product"
-                    data-testid="product-type-select"
-                    value={conversionParams.product}
-                    disabled={isReadOnly}
-                    onChange={(e) =>
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        product: e.target.value as TacProductSelection,
-                      }))
-                    }
-                    className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                  >
-                    <option value="auto">Auto-detect</option>
-                    <option value="AIRMET">AIRMET</option>
-                    <option value="METAR">METAR</option>
-                    <option value="SIGMET">SIGMET</option>
-                    <option value="SPECI">SPECI</option>
-                    <option value="TAF">TAF</option>
-                    <option value="VAA">VAA</option>
-                    <option value="TCA">TCA</option>
-                    <option value="SWXA">SWXA</option>
-                    <option value="VONA">VONA</option>
-                    <option value="IWXXM">IWXXM</option>
-                  </select>
-                  <Label
-                    htmlFor="param-profile"
-                    className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                  >
-                    Profile
-                  </Label>
-                  <select
-                    id="param-profile"
-                    aria-label="Profile"
-                    data-testid="profile-type-select"
-                    value={conversionParams.profile}
-                    disabled={isReadOnly}
-                    onChange={(e) => {
-                      const profile = coerceIwxxmProfile(e.target.value);
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        profile,
-                        iwxxmVersion:
-                          profile === 'ca_eccc'
+                    <Label
+                      htmlFor="param-product"
+                      className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                    >
+                      Product type
+                    </Label>
+                    <select
+                      id="param-product"
+                      aria-label="Product"
+                      data-testid="product-type-select"
+                      value={conversionParams.product}
+                      disabled={isReadOnly}
+                      onChange={(e) =>
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          product: e.target.value as TacProductSelection,
+                        }))
+                      }
+                      className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    >
+                      <option value="auto">Auto-detect</option>
+                      <option value="AIRMET">AIRMET</option>
+                      <option value="METAR">METAR</option>
+                      <option value="SIGMET">SIGMET</option>
+                      <option value="SPECI">SPECI</option>
+                      <option value="TAF">TAF</option>
+                      <option value="VAA">VAA</option>
+                      <option value="TCA">TCA</option>
+                      <option value="SWXA">SWXA</option>
+                      <option value="VONA">VONA</option>
+                      <option value="IWXXM">IWXXM</option>
+                    </select>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <Label
+                        htmlFor="param-profile"
+                        className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                      >
+                        Profile
+                      </Label>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                            aria-label="About Profile"
+                            data-testid="semantic-profile-help-icon"
+                          >
+                            <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-xs text-balance">
+                          Encoding rules for conversion — not destinations, credentials,
+                          or editable overlays.
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <select
+                      id="param-profile"
+                      aria-label="Profile"
+                      aria-describedby="product-profile-bar-summary"
+                      data-testid="profile-type-select"
+                      value={conversionParams.profile}
+                      disabled={isReadOnly}
+                      onChange={(e) => {
+                        const profile = coerceIwxxmProfile(e.target.value);
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          profile,
+                          iwxxmVersion: isCaEcccProfile(profile)
                             ? CA_ECCC_IWXXM_VERSION
                             : prev.iwxxmVersion === CA_ECCC_IWXXM_VERSION
                               ? DEFAULT_IWXXM_VERSION
                               : prev.iwxxmVersion,
-                      }));
-                    }}
-                    className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                  >
-                    <option value="annex3">Annex 3</option>
-                    <option value="iwxxm_us">IWXXM-US</option>
-                    <option value="ca_eccc">Canada (ECCC)</option>
-                  </select>
-                  <Label
-                    htmlFor="param-exchange-profile"
-                    className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                  >
-                    Exchange profile
-                  </Label>
-                  <select
-                    id="param-exchange-profile"
-                    aria-label="Exchange profile"
-                    data-testid="exchange-profile-select"
-                    value={conversionParams.exchangeProfile}
-                    disabled={isReadOnly}
-                    onChange={(e) => {
-                      const exchangeProfile = coerceExchangeProfile(e.target.value);
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        exchangeProfile,
-                      }));
-                    }}
-                    className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                  >
-                    {EXCHANGE_PROFILE_OPTIONS.map((opt) => (
-                      <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </option>
-                    ))}
-                  </select>
+                        }));
+                      }}
+                      className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    >
+                      {SEMANTIC_PROFILE_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <Label
+                        htmlFor="param-exchange-profile"
+                        className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                      >
+                        Exchange profile
+                      </Label>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                            aria-label="About Exchange profile"
+                            data-testid="exchange-profile-help-icon"
+                          >
+                            <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-xs text-balance">
+                          Used when packaging bulletins — does not choose destinations
+                          or credentials.
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <select
+                      id="param-exchange-profile"
+                      aria-label="Exchange profile"
+                      aria-describedby="product-profile-bar-summary"
+                      data-testid="exchange-profile-select"
+                      value={conversionParams.exchangeProfile}
+                      disabled={isReadOnly}
+                      onChange={(e) => {
+                        const exchangeProfile = coerceExchangeProfile(e.target.value);
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          exchangeProfile,
+                        }));
+                      }}
+                      className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    >
+                      {EXCHANGE_PROFILE_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                    <GoldenExamplesSelect
+                      disabled={isReadOnly}
+                      onSelectExample={handleLoadGoldenExample}
+                    />
+                  </div>
                   <p
-                    className="basis-full text-xs text-gray-600 dark:text-gray-400 lg:basis-auto"
-                    data-testid="exchange-profile-help"
+                    id="product-profile-bar-summary"
+                    className="text-xs text-gray-600 dark:text-gray-400"
+                    data-testid="product-profile-bar-summary"
                   >
-                    Used when packaging bulletins. Does not choose destinations or
-                    credentials.
+                    Encoding and packaging rules only — not destinations, credentials,
+                    or editable overlays.
                   </p>
-                  {conversionParams.profile === 'ca_eccc' && (
+                  <details
+                    className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                    data-testid="product-profile-trust-details"
+                  >
+                    <summary className="cursor-pointer select-none font-medium text-gray-700 dark:text-gray-300">
+                      What&apos;s this?
+                    </summary>
+                    <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 dark:border-gray-700">
+                      <p data-testid="semantic-profile-help">
+                        Profile selects encoding rules for conversion. Does not set
+                        destinations or credentials, and does not make national overlays
+                        editable.
+                      </p>
+                      <p data-testid="exchange-profile-help">
+                        Exchange profile is used when packaging bulletins. Does not
+                        choose destinations or credentials.
+                      </p>
+                    </div>
+                  </details>
+                  {isCaEcccProfile(conversionParams.profile) && (
                     <div
-                      className="mt-2 rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
+                      className="rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
                       data-testid="ca-eccc-profile-metadata"
                       role="status"
                     >
@@ -2145,10 +2209,6 @@ export function FileConverter({
                       )}
                     </div>
                   )}
-                  <GoldenExamplesSelect
-                    disabled={isReadOnly}
-                    onSelectExample={handleLoadGoldenExample}
-                  />
                 </div>
               </div>
               {demoExampleLabel && (

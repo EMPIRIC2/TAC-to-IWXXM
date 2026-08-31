@@ -123,6 +123,9 @@ describe('TC-EV090: Exchange profile light picker', () => {
     const exchange = screen.getByTestId('exchange-profile-select') as HTMLSelectElement;
     expect(exchange).toBeVisible();
     expect(exchange).toHaveAccessibleName(/exchange profile/i);
+    expect(screen.getByTestId('product-profile-bar-summary')).toHaveTextContent(
+      /not destinations/i,
+    );
     expect(screen.getByTestId('exchange-profile-help')).toHaveTextContent(
       /does not choose destinations or credentials/i,
     );

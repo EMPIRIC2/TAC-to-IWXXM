@@ -208,7 +208,7 @@ package-only routes):
 
 | Field | Required | Default | Description |
 |-------|----------|---------|-------------|
-| `semantic_profile` | no | `ICAO_2025` (or alias `annex3` during window) | Semantic profile id |
+| `semantic_profile` | no | `ICAO_2025` (or alias `annex3` during window) | Semantic profile id. **EV-093 / #1024:** workbench Profile control submits this field with **uppercase** OpenAPI ids for all registered canonicals (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, thin packs); legacy alias option values `annex3` / `iwxxm_us` remain accepted through the #1025 window. Prefer this field over deprecated `profile`. |
 | `iwxxm_version` | no | SoT default | Unchanged — independent of semantic id |
 | `extensions` | no | `[]` | Optional national extension tokens (e.g. `IWXXM_US_3`, `IWXXM_CA`). **EV-068:** when `IWXXM_CA` is present with `semantic_profile=CA_ECCC`, triggers the full Canadian validation stack (layers 1–5 in [IWXXM_VALIDATION.md](domain/IWXXM_VALIDATION.md) §CA_ECCC validation stages). When omitted, `CA_ECCC` alone selects profile-pinned 3.0.0 core XSD+SCH scaffold (backward compatible). **EV-074:** for `product=SIGMET` or `VAA`, Canadian product XSD is not published — layer `ca_xsd` is skipped as not applicable (not an error); WMO 3.0.0 XSD+Schematron still run. |
 | `exchange_profile` | no | `GLOBAL_AFS` | Used when **packaging** / disseminate-prep invoked; ignored on convert-only. Known wire ids: `GLOBAL_AFS`, `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` (EV-065/EV-086 regional stubs share COLLECT baseline). **EV-090 / #1024:** workbench light Exchange control submits this field on package/bulletin paths. |

@@ -39,7 +39,14 @@ describe('iwxxmVersions SoT (#851 / #854)', () => {
     expect(coerceIwxxmVersion(null)).toBe(DEFAULT_IWXXM_VERSION);
   });
 
-  it('pins IWXXM 3.0.0 for ca_eccc profile only (EV-064)', () => {
+  it('pins IWXXM 3.0.0 for CA_ECCC profile only (EV-064 / EV-093)', () => {
+    expect(iwxxmVersionOptionsForProfile('CA_ECCC')).toEqual([
+      {
+        value: CA_ECCC_IWXXM_VERSION,
+        label: '3.0.0 (CA MSC operational)',
+        role: 'latest',
+      },
+    ]);
     expect(iwxxmVersionOptionsForProfile('ca_eccc')).toEqual([
       {
         value: CA_ECCC_IWXXM_VERSION,
@@ -47,6 +54,6 @@ describe('iwxxmVersions SoT (#851 / #854)', () => {
         role: 'latest',
       },
     ]);
-    expect(iwxxmVersionOptionsForProfile('annex3')).toEqual(IWXXM_VERSION_OPTIONS);
+    expect(iwxxmVersionOptionsForProfile('ICAO_2025')).toEqual(IWXXM_VERSION_OPTIONS);
   });
 });

@@ -1,10 +1,10 @@
 /**
- * Semantic profile wire helpers (EV-073 M2 / #1042).
+ * Semantic profile wire helpers (EV-073 M2 / #1042; EV-093 uppercase ids).
  *
  * Maps UI profile selection to API extension tokens and exchange packaging flags.
  */
 
-import type { IwxxmProfile } from '@/utils/tacProduct';
+import { isCaEcccProfile, type IwxxmProfile } from '@/utils/semanticProfile';
 
 /** National extension token for full Canadian XSD validation stack. */
 export const CA_ECCC_NATIONAL_EXTENSION = 'IWXXM_CA';
@@ -15,19 +15,19 @@ export const CA_ECCC_SUPPORTED_PRODUCTS = ['METAR', 'SPECI', 'TAF', 'AIRMET'] as
 /**
  * National extension tokens to send for the active profile.
  *
- * @param profile - UI semantic profile emit key
+ * @param profile - UI semantic profile id
  */
-export function nationalExtensionsForProfile(profile: IwxxmProfile): string[] {
-  return profile === 'ca_eccc' ? [CA_ECCC_NATIONAL_EXTENSION] : [];
+export function nationalExtensionsForProfile(profile: IwxxmProfile | string): string[] {
+  return isCaEcccProfile(profile) ? [CA_ECCC_NATIONAL_EXTENSION] : [];
 }
 
 /**
  * Whether convert should request MSC COLLECT exchange output wrapping.
  *
- * @param profile - UI semantic profile emit key
+ * @param profile - UI semantic profile id
  */
-export function exchangeOutputForProfile(profile: IwxxmProfile): boolean {
-  return profile === 'ca_eccc';
+export function exchangeOutputForProfile(profile: IwxxmProfile | string): boolean {
+  return isCaEcccProfile(profile);
 }
 
 /**

@@ -1,7 +1,8 @@
 /**
  * Exchange packaging profile ids (ADR-036 / F35–F36).
  *
- * Separate from semantic {@link IwxxmProfile} — do not coerce GLOBAL_AFS into annex3.
+ * Separate from semantic Profile (see semanticProfile.ts) — do not coerce GLOBAL_AFS
+ * into ICAO_2025 / annex3.
  *
  * [Corpus: product §F36] [Corpus: adr/ADR-036] [Corpus: api]
  */

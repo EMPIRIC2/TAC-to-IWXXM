@@ -124,7 +124,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-065 | F6/F7 deepen (EV-061) | AHL decode + convert-bulletin (#1012) | **H4–H5 required** | TC-EV061-1012-001..004 |
 | UJ-066 / UJ-067 | F7.u (EV-061) | Product/Profile + param bars aligned (#1013) | **H4–H5 required** | TC-EV061-1013-001..003 |
 | UJ-068 | F7.v/F15 (EV-061; EV-062) | Validation Issues Catalog (#1014; #1017 deepen) | **H4–H5 required** | TC-EV061-1014-001..004; TC-EV062-001..006 |
-| UJ-069 | F35/F36 (EV-063/EV-090) | Semantic convert → exchange package (`GLOBAL_AFS`) | T2 / **T3** (API); **H4–H5** (#1024 FE / EV-090) | TC-EV063-001..006; TC-EV090-* |
+| UJ-069 | F35/F36 (EV-063/EV-090/EV-093) | Semantic convert → exchange package (`GLOBAL_AFS`) | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-*; TC-EV093-* |
 | UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
 | LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
@@ -3634,6 +3634,56 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: COLLECT baseline for all regional stubs unchanged
 - **Pass criteria**: TC-EV086-001..004 green
 - **Source**: EV-090
+
+### EV-093 / #1024 — Semantic light picker deepen
+
+- **Mode**: delta deepen F7/F35 FE semantic Profile wire + nationals
+- **Pass criteria**: TC-EV093-001..006; UJ-069 FE semantic steps; preserve TC-EV060/064/090/091
+- **Source**: [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024); EV-093; ADR-036; D-EV093-*
+
+### TC-EV093-001: Profile options = all canonicals + aliases
+
+- **Level**: T0 / T2 (browser unit)
+- **Objective**: `profile-type-select` lists `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`,
+  `NZ_CAA_MET`, thin packs, plus legacy `annex3` / `iwxxm_us`; default `ICAO_2025`
+- **Pass criteria**: Options + default match FR-01/FR-02/FR-04; accessible name distinct from Exchange
+- **Source**: EV-093; D-EV093-g2; UJ-069
+
+### TC-EV093-002: FE sends semantic_profile uppercase
+
+- **Level**: T0 / T2
+- **Objective**: Convert / convert-bulletin FormData appends `semantic_profile` with uppercase
+  OpenAPI ids (e.g. `ICAO_2025`), not only deprecated `profile=`
+- **Pass criteria**: Client unit asserts field + value; API accepts
+- **Source**: EV-093; D-EV093-wire; api-contract
+
+### TC-EV093-003: Legacy aliases still convert
+
+- **Level**: T0 / T2
+- **Objective**: Selecting `annex3` or `iwxxm_us` resolves and converts; coerce helpers map stored prefs
+- **Pass criteria**: Alias options present; convert path green; no unknown-profile 400
+- **Source**: EV-093; #1025 window; FR-02
+
+### TC-EV093-004: CA_ECCC pin / metadata unchanged
+
+- **Level**: T0 / T2
+- **Objective**: Choosing `CA_ECCC` still pins IWXXM 3.0.0, sends `IWXXM_CA` extensions, shows metadata / block notice
+- **Pass criteria**: TC-EV064-005 behavior preserved under new option value
+- **Source**: EV-093; FR-05
+
+### TC-EV093-005: Profile trust copy
+
+- **Level**: T0 / T2
+- **Objective**: Plain-language Profile/Exchange trust model without bloating the control bar: (A) help icons + tooltips on Profile and Exchange labels; (B) one short always-visible summary under the bar; (C) collapsed “What’s this?” details with full copy (not destinations/credentials; not editable overlays)
+- **Pass criteria**: `product-profile-bar` contains controls only (no help paragraphs); summary + details `data-testid`s present; full help visible after expand; no internal doc refs (EV-048)
+- **Source**: EV-093; FR-06; #924; D-EV093-trust-layout
+
+### TC-EV093-006: H4–H5 / e2e UJ-069 semantic + exchange
+
+- **Level**: T3 / H4–H5
+- **Objective**: Playwright (or live connectivity) selects canonical Profile + Exchange and completes convert/package path
+- **Pass criteria**: Extend `tc-ev090-uj069-exchange-picker` or sibling TC-EV093 e2e green
+- **Source**: EV-093; connectivity-gates; UJ-069
 
 ### EV-087 / #917+#918 — AU_BOM + NZ_CAA_MET P1 kickoff
 

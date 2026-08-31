@@ -7,6 +7,7 @@
 
 import { apiUrl, getApiBaseUrl } from './apiBase';
 import { DEFAULT_IWXXM_VERSION } from './iwxxmVersions';
+import { wireSemanticProfile } from './semanticProfile';
 import type {
   BulletinMeta,
   BulletinReportResult,
@@ -178,7 +179,8 @@ export async function convertMetarToIwxxm(params: {
 
   // F6.e — product required by API; default METAR when caller omits (legacy callers)
   formData.append('product', (params.product || 'METAR').toUpperCase());
-  formData.append('profile', params.profile || 'annex3');
+  // EV-093 / #1024 — prefer semantic_profile (uppercase OpenAPI ids); drop deprecated profile=
+  formData.append('semantic_profile', wireSemanticProfile(params.profile));
   if (params.exchangeProfile?.trim()) {
     formData.append('exchange_profile', params.exchangeProfile.trim());
   }
@@ -277,7 +279,7 @@ export async function convertBulletin(params: {
     params.files.forEach((file) => formData.append('files', file));
   }
   formData.append('product', params.product.toUpperCase());
-  formData.append('profile', params.profile || 'annex3');
+  formData.append('semantic_profile', wireSemanticProfile(params.profile));
   if (params.exchangeProfile?.trim()) {
     formData.append('exchange_profile', params.exchangeProfile.trim());
   }
@@ -344,7 +346,7 @@ export async function ingestCollect(params: {
   if (params.files?.length) {
     params.files.forEach((file) => formData.append('files', file));
   }
-  formData.append('profile', params.profile || 'annex3');
+  formData.append('semantic_profile', wireSemanticProfile(params.profile));
   formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
 
   const response = await withTimeout(
@@ -448,7 +450,7 @@ export async function validateIwxxm(params: {
   if (params.xmlContent?.trim()) {
     formData.append('xml_content', params.xmlContent.trim());
   }
-  formData.append('profile', params.profile || 'annex3');
+  formData.append('semantic_profile', wireSemanticProfile(params.profile));
   formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
   formData.append('stop_on_error', params.stopOnError === false ? 'false' : 'true');
   const layers = params.layers?.length ? params.layers : ['ALL'];
