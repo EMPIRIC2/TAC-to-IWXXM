@@ -105,7 +105,8 @@ test.describe('TAC File Upload to Database', () => {
       });
     });
 
-    await page.locator('input[type="file"]').setInputFiles(testFile.path);
+    // Prefer aria-label — mass-ingest folder/zip inputs also match input[type=file].
+    await page.getByLabel('Select TAC files to upload').setInputFiles(testFile.path);
     await page.getByTestId('convert-and-send-button').click();
 
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
@@ -142,7 +143,7 @@ test.describe('TAC File Upload to Database', () => {
       });
     });
 
-    await page.locator('input[type="file"]').setInputFiles(testFile.path);
+    await page.getByLabel('Select TAC files to upload').setInputFiles(testFile.path);
     await page.getByTestId('convert-button').click();
 
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
@@ -171,7 +172,7 @@ test.describe('TAC File Upload to Database', () => {
     await loginAndOpenConverter(page);
 
     await page
-      .locator('input[type="file"]')
+      .getByLabel('Select TAC files to upload')
       .setInputFiles(tacFiles.slice(0, 2).map((file) => file.path));
     await page.getByTestId('convert-button').click();
 

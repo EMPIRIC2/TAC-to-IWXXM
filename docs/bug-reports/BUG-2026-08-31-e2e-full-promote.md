@@ -28,5 +28,12 @@ Hard failures:
 ## Repro / fix
 
 - Session: `HF-e2e-full-promote-1067`
-- Fix branch: `fix/e2e-full-promote-1067`
+- Fix branch: `fix/e2e-full-promote-1067` (#1108 merged)
 - Align E2E with Vitest; resolve vendor fixture path; commit Linux snapshot from CI actual
+
+## Follow-up (post-#1108)
+
+CI tip after #1108: **97 expected / 3 unexpected** — remaining failures are
+`tac-file-upload-database` strict-mode on `input[type="file"]` (mass-ingest
+folder/zip inputs also match). Fix: `getByLabel('Select TAC files to upload')`
+(`fix/e2e-tac-upload-file-input-strict`).
