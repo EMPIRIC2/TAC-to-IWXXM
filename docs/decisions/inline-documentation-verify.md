@@ -69,8 +69,14 @@ VERIFY_DOC_PATHS="packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py,packages/
 
 | Item | Disposition |
 |------|-------------|
-| Delta paths (dissemination drawer restore) | PASS under `VERIFY_DOC_PATHS` |
-| Full-tree scan | **WAIVE** for EV-091 merge (`D-EV091-inline-doc`) — brownfield; remaining true gaps → [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090) |
+| Delta paths (`DisseminationDrawer.tsx`, `FileConverter.tsx`, `operatorDisseminationUi.ts`) | PASS under `VERIFY_DOC_PATHS` (missing=0) after FileConverter TSDoc |
+| Full-tree scan (default paths) | **WAIVE** for EV-091 merge — same brownfield bar as EV-087–089 (`D-EV091-inline-doc`); superseded by EV-092 for new merges |
+| Remaining ~107 true gaps (after pack checker exclusions) | Closed by [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090) / EV-092 |
+
+```bash
+VERIFY_DOC_PATHS="apps/frontend/src/app/components/DisseminationDrawer.tsx,apps/frontend/src/app/components/FileConverter.tsx,apps/frontend/src/utils/operatorDisseminationUi.ts" \
+  python3 ~/.cursor/skills/pack/bin/inline-doc-check.py .
+```
 
 ## EV-092 disposition
 

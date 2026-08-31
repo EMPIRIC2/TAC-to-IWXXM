@@ -1,5 +1,30 @@
 # Evolve Decisions
 
+## Cycle EV-091 — Dissemination drawer restore (#898 / #1089)
+
+**Opened:** 2026-08-30 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-091-dissemination-drawer-restore`  
+**Preset:** Standard · **Documenting→Implementing gate:** open · **Issues:** [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898), [#1089](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1089)
+
+| ID | Outcome |
+|----|---------|
+| D-EV091-intake | Full #898 restore (Convert&Send + Disseminate + Upload to Database) + #1089 drawer exchange overlay |
+| D-EV091-db | URI-BYOC for F16 DBs; do **not** wait on #896 connector spike |
+| D-EV091-qol | Connection-first / per-sink schema checks retained (former #795) |
+| D-EV091-overlay | Drawer Exchange profile select; default `GLOBAL_AFS`; convert-before-send wires `exchange_profile` |
+| D-EV091-security | ADR-021/029/030 unchanged |
+| D-EV091-uj053 | Invert UJ-053 / TC-EV042-001 to destinations **visible** (TC-EV091-001); restore UJ-027–030 operator UI |
+| D-EV091-scale | standard |
+| D-EV091-gate | **open** (Build 2026-08-30) — implement T1–T7 |
+| D-EV091-build | Commits `c1f5321f` / `cefc123d` / `e4eb50a6` on `evolve/EV-091-dissemination-drawer-restore` |
+| D-EV091-inline-doc | Full-tree **WAIVE** — delta `VERIFY_DOC_PATHS` PASS (DisseminationDrawer / FileConverter / operatorDisseminationUi); remaining ~107 → [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090). Bar: `docs/decisions/inline-documentation-verify.md` |
+| D-EV091-tech-debt | [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090) — pack checker harden + remaining inline-doc fill; does not block #898/#1089 PR |
+
+### Corpus
+
+[Corpus: product §F16–F19] [Corpus: product §F36] [Corpus: adr/ADR-021] [Corpus: adr/ADR-029] [Corpus: adr/ADR-030] [Corpus: adr/ADR-036] [Corpus: journeys] [Corpus: tests] [Corpus: api] [Corpus: verifier]
+
+---
+
 ## Cycle EV-090 — Exchange overlay deepen + light picker (#921 / #913 / #1024)
 
 **Opened:** 2026-08-30 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-090-exchange-overlay-deepen`  

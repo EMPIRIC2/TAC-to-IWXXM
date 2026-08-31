@@ -155,7 +155,9 @@ describe('FileConverter F5 workflow', () => {
     );
 
     expect(screen.getByTestId('convert-button')).toBeDisabled();
-    expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();
+    // EV-091: Convert&Send is visible again when destinations are enabled, but still
+    // disabled for finished / read-only sessions (F5-R35).
+    expect(screen.getByTestId('convert-and-send-button')).toBeDisabled();
     expect(screen.getByText(/read-only/i)).toBeInTheDocument();
   });
 
@@ -198,8 +200,13 @@ describe('FileConverter F5 workflow', () => {
       onClick?.();
     };
 
-    invokeReactClick(screen.getByTestId('convert-button'));
-    expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();
+    const convertBtn = screen.getByTestId('convert-button');
+    const convertSendBtn = screen.getByTestId('convert-and-send-button');
+    convertBtn.removeAttribute('disabled');
+    convertSendBtn.removeAttribute('disabled');
+
+    invokeReactClick(convertBtn);
+    invokeReactClick(convertSendBtn);
 
     expect(mockConvert).not.toHaveBeenCalled();
     expect(mockUpload).not.toHaveBeenCalled();

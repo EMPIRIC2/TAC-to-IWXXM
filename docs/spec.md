@@ -241,8 +241,8 @@ metar-to-IWXXM/
 - **Purpose**: Public converter UI (product/profile/version), CodeMirror 6 workbench, decode
   panel, Failed-TAC / soft-preview UX, **IndexedDB** F5 My METARs + F7 multi-product sessions
   (F7.h), and F22 privacy notice/settings. **Done (F16–F19)**: Dissemination drawer + APIs
-  remain for harness. **S050 / EV-042 (#897)**: Operator Dissemination sink chooser /
-  Convert&Send **destination path UI-hidden** (UJ-053); restore on [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
+  remain for harness. **EV-091 / #898**: Operator Dissemination sink chooser /
+  Convert&Send / Upload to Database **restored** (UJ-053); drawer exchange overlay #1089.
   **F33**: Auth-gated mass file/folder ingest (caps 200 / 5 MiB / 50 MiB; sniff/zip-bomb).
   **F7 deepen EV-042**: Queue + keyboard + batch convert/validate (UJ-052). **No**
   AdminDashboard, `/admin/*` (F21 public convert; Auth optional for F31/F33 mass).
@@ -376,13 +376,14 @@ metar-to-IWXXM/
 - **Auth / F5**: Public dissemination (F21 — no operator JWT). Local session may record
   `kv_upload_key` on Finished in IndexedDB only; never store destination secrets.
 - **Status**: **Done** (EV-014 closed 2026-07-21; PR #771/#772). Multi-select deepen EV-018;
-  live local SQL e2e deepen S047 / EV-039. **S050 / EV-042**: Operator **UI destinations
-  temporarily hidden** (all sinks); APIs + `packages/dissemination` retained for harness;
-  restore tracked on [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
+  live local SQL e2e deepen S047 / EV-039. **EV-091 / #898**: Operator UI destinations
+  **restored** (URI-BYOC + F17–F19 sinks); #1089 drawer exchange overlay; APIs +
+  `packages/dissemination` unchanged; connection-first preflight retained.
 - **ADRs**: ADR-021 amend (destination paste); ADR-029 (SSRF / allowlist); ADR-030
   (`packages/dissemination` + sink/API/wis2box/EDIS).
 - **Source**: [feature-list.md](feature-list.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014;
-  **#785; evolve-decisions EV-018**; **S047 / evolve-decisions EV-039**; **S050 / EV-042 / #897**.
+  **#785; evolve-decisions EV-018**; **S047 / evolve-decisions EV-039**; **S050 / EV-042 / #897**;
+  **EV-091 / #898 / #1089**.
 
 ### F33 — Secure mass file/folder ingest (S050 / EV-042) — Planned
 

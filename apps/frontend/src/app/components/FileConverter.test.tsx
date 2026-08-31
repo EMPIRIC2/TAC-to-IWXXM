@@ -1344,7 +1344,17 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it('hides Convert&Send, Disseminate, and Upload to Database while destinations UI is off (TC-EV042-001 / #897)', () => {
+    it('shows Convert&Send, Disseminate, and Upload to Database when destinations UI is on (TC-EV091-001 / #898)', () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      render(<FileConverter {...defaultProps} />);
+      expect(screen.getByTestId('open-dissemination-drawer')).toBeInTheDocument();
+      expect(screen.getByTestId('convert-and-send-button')).toBeInTheDocument();
+      expect(screen.getByTestId('upload-to-database-button')).toBeInTheDocument();
+      expect(screen.getByTestId('convert-button')).toBeInTheDocument();
+    });
+
+    it('hides Convert&Send, Disseminate, and Upload to Database while destinations UI is off (TC-EV042-001 gate residual)', () => {
+      operatorDisseminationUiConfig.destinationsEnabled = false;
       render(<FileConverter {...defaultProps} />);
       expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();
       expect(screen.queryByTestId('convert-and-send-button')).not.toBeInTheDocument();

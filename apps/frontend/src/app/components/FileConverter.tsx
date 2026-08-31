@@ -238,9 +238,20 @@ interface ConversionParams {
 }
 
 /**
- * Main TAC-to-IWXXM converter workbench — input, conversion, validation, and session sync.
+ * Operator workbench: TAC queue, convert, validate, and dissemination entry points.
  *
- * Supports guest and authenticated modes with optional work-history hydration.
+ * @param props.accessToken - Bearer token for authenticated API calls (empty for guest)
+ * @param props.userEmail - Display email in the header
+ * @param props.isGuest - When true, guest-mode limits apply
+ * @param props.onLogout - Sign-out handler
+ * @param props.onRequestLogin - Opens sign-in when a gated action needs auth
+ * @param props.onOpenHistory - Opens F5 work-session history
+ * @param props.onLoadWorkSession - Loads a saved work session into the workbench
+ * @param props.onNewMetar - Clears toward a new METAR/SPECI draft
+ * @param props.onSessionUpdated - Notifies parent after autosave / session mutate
+ * @param props.onActiveSessionIdChange - Reports the active F5 session id
+ * @param props.activeWorkSessionId - Current F5 session id when known
+ * @param props.loadedWorkSession - Hydration payload for the active session
  */
 export function FileConverter({
   accessToken,
@@ -2992,7 +3003,7 @@ export function FileConverter({
         </div>
       </div>
 
-      {/* Database Upload Dialog — gated with destinations UI (EV-042 / #897; restore #898) */}
+      {/* Database Upload Dialog — restored with destinations UI (EV-091 / #898) */}
       {isOperatorDisseminationDestinationsEnabled() ? (
         <DatabaseUploadDialog
           convertedFiles={convertedFiles}
@@ -3003,11 +3014,15 @@ export function FileConverter({
 
       {isOperatorDisseminationDestinationsEnabled() ? (
         <DisseminationDrawer
+          key={
+            isDisseminationOpen ? `open-${conversionParams.exchangeProfile}` : 'closed'
+          }
           open={isDisseminationOpen}
           onOpenChange={setIsDisseminationOpen}
           iwxxmXml={convertedFiles[0]?.convertedContent}
           tacText={manualInput || undefined}
           product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
+          exchangeProfile={conversionParams.exchangeProfile}
         />
       ) : null}
 
