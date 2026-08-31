@@ -195,7 +195,10 @@ defaults (see env-contract).
 
 **Intent**: Separate **semantic** (TAC→IWXXM) from **exchange** (packaging). Canonical semantic
 ids: `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` (EV-087), thin/compat
-`UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO` (EV-089 / #920). Legacy aliases during deprecation window (until **2026-10-31**,
+`UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO` (EV-089 / #920; deepen EV-094 / #1098).
+**EV-094:** `KR_KMA` / `JP_JMA` convert allowlists gain **SPECI**; `IN_IMD` gains tac-validate lint
+profile `in_imd` (alias `IN_IMD`) for TAF TX/TN omission **info** awareness — convert stays core IWXXM.
+Legacy aliases during deprecation window (until **2026-10-31**,
 [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)):
 
 | Alias | Canonical |

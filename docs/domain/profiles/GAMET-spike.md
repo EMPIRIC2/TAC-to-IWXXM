@@ -31,7 +31,15 @@ conversion in the current WMO IWXXM pin set used by this repo.
 Reopen only when WMO publishes an IWXXM GAMET (or successor) schema and this project pins it
 via vendor sync — then a dedicated evolve cycle, not a silent #920 deepen.
 
+## EV-094 reaffirmation (2026-08-31)
+
+Deepen research (`EV-094…/evidence/deep-research-report-deepen.md`) found **no** GAMET /
+low-level area-forecast message type in current IWXXM releases. Disposition **unchanged**:
+parse-only; no convert enum; BR fixtures only (D-EV094-gamet).
+
 ## References
 
 - Session research: `EV-089…/evidence/deep-research-report-920.md`
+- Deepen research: `EV-094…/evidence/deep-research-report-deepen.md`
 - Playbook thin path: [NATIONAL_PROFILE_PLAYBOOK.md](NATIONAL_PROFILE_PLAYBOOK.md)
+- Tracking: [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)

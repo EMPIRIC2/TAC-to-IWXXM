@@ -1,5 +1,35 @@
 # Evolve Decisions
 
+## Cycle EV-094 — Thin/compat national deepen (#1098)
+
+**Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-094-thin-compat-national-deepen`  
+**Preset:** Standard · **Documenting→Implementing gate:** **open** · **Issue:** [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)  
+**Prior:** #920 closed (EV-089 / PR #1087) — do not reopen  
+**Build:** M1 UK deepen in progress (`evolve/EV-094-thin-compat-national-deepen`)
+
+| ID | Outcome |
+|----|---------|
+| D-EV094-products | Keep EV-089 allowlists (do not drop IN SIGMET or HK SIGMET/VAA) |
+| D-EV094-speci-expand | Add SPECI to `KR_KMA` and `JP_JMA` convert allowlists + fixtures |
+| D-EV094-in-taf | `IN_IMD` / `in_imd` **lint profile overlay**: TAF omit TX/TN → registered info awareness code; convert stays core IWXXM |
+| D-EV094-jp-airmet | Keep AIRMET out of JP allowlist |
+| D-EV094-uk-mil | Civil-only; military colour OOS |
+| D-EV094-fixtures | Official preferred; aggregator TAC OK with URL + UTC attribution |
+| D-EV094-order | UK → BR → KR → JP → IN → HK; one PR per pack; Spec all six then Build continuum |
+| D-EV094-gamet | Reaffirm parse-only |
+| D-EV094-china | Omit |
+| D-EV094-xsd | No national XSD invent |
+| D-EV094-exchange | #921 OOS |
+| D-EV094-issue | Tracking [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098) |
+| D-EV094-ui | N/A |
+| D-EV094-req | R0:2 · R1:1 · R2 overlay · R3:1 locked 2026-08-31 |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles] [Corpus: adr/ADR-036] [Corpus: tests] [Corpus: decisions]
+
+---
+
 ## Cycle EV-093 — Light semantic + exchange profile picker deepen (#1024)
 
 **Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-093-light-profile-picker-deepen`  

@@ -1,28 +1,40 @@
 {
   "schema_version": 1,
-  "description": "EV-089 — UK_METOFFICE thin pack fixtures",
+  "description": "EV-094 M1 — UK_METOFFICE deepen fixtures (attributed METAR/TAF; SPECI synthetic gap)",
   "profile": "UK_METOFFICE",
+  "cycle": "EV-094",
+  "issue": "#1098",
   "cases": [
     {
       "id": "metar_egll",
       "product": "METAR",
       "tac": "METAR/valid/metar_egll.tac",
       "rule_id": "UK.BASE.ICAO",
-      "status": "active"
+      "status": "active",
+      "source_kind": "official",
+      "source_url": "https://aviationweather.gov/api/data/metar?ids=EGLL&format=raw",
+      "source_label": "Aviation Weather Center METAR API (EGLL)",
+      "observed_at_utc": "2026-08-31T13:50:00Z"
     },
     {
       "id": "speci_egll",
       "product": "SPECI",
       "tac": "SPECI/valid/speci_egll.tac",
       "rule_id": "UK.BASE.ICAO",
-      "status": "active"
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed real SPECI corpus pending — catalog gap EV-094"
     },
     {
       "id": "taf_egll",
       "product": "TAF",
       "tac": "TAF/valid/taf_egll.tac",
       "rule_id": "UK.BASE.ICAO",
-      "status": "active"
+      "status": "active",
+      "source_kind": "official",
+      "source_url": "https://aviationweather.gov/api/data/taf?ids=EGLL&format=raw",
+      "source_label": "Aviation Weather Center TAF API (EGLL)",
+      "observed_at_utc": "2026-08-31T10:55:00Z"
     }
   ]
 }
