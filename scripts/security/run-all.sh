@@ -42,10 +42,20 @@ need kics
 need grype
 need sbom-tool
 
-run OpenGrep opengrep scan --error --severity=ERROR --config="${SEC_OPENGREP_CONFIG:-p/default}" \
-  --exclude=vendor --exclude=node_modules --exclude=.tools --exclude=.venv \
-  --exclude=.security-reports --exclude=dist --exclude=build --exclude=target \
-  --json --json-output="${REPORTS}/opengrep.json" "${ROOT}"
+# OpenGrep — write JSON; fail only on findings not in baseline (EV-049 migration).
+BASELINE="${ROOT}/config/security/opengrep-baseline.txt"
+FILTER="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/filter-opengrep-baseline.py"
+run_opengrep() {
+  set +e
+  opengrep scan --severity=ERROR --config="${SEC_OPENGREP_CONFIG:-p/default}" \
+    --exclude=vendor --exclude=node_modules --exclude=.tools --exclude=.venv \
+    --exclude=.security-reports --exclude=dist --exclude=build --exclude=target \
+    --json --json-output="${REPORTS}/opengrep.json" "${ROOT}"
+  local og_rc=$?
+  set -e
+  python3 "${FILTER}" "${REPORTS}/opengrep.json" "${BASELINE}" "${og_rc}"
+}
+run OpenGrep run_opengrep
 
 run 2ms 2ms filesystem --path "${ROOT}" \
   --report-path "${REPORTS}/2ms.json" --report-path "${REPORTS}/2ms.sarif" \
