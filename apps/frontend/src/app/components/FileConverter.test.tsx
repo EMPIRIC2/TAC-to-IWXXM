@@ -3220,7 +3220,7 @@ describe('FileConverter Component', () => {
           expect.objectContaining({
             bulletinId: 'SAAA00',
             issuingCenter: 'KWBC',
-            profile: 'annex3',
+            profile: 'ICAO_2025',
             includeNilReasons: false,
             logLevel: 'INFO',
           }),
