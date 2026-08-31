@@ -17,7 +17,7 @@
   "mcpServers": {
     "engineering-memory": {
       "type": "stdio",
-      "command": "/Users/bigme/Documents/GitHub/spec-dev-knowledge-graph/cursor-plugin/scripts/mcp-server.sh"
+      "command": "${userHome}/Documents/GitHub/spec-dev-knowledge-graph/cursor-plugin/scripts/mcp-server.sh"
     }
   }
 }

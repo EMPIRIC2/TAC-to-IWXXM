@@ -2,6 +2,20 @@
 
 > Stage: 01-requirements | Last updated: 2026-08-17 (S070 / EV-060)
 
+## EV-095 — Portable EM plugin/MCP paths (#1095)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-095 / refresh | Re-run `install-workspace.sh` | Upstream #106 portable template | confirmed |
+| EV-095 / mcp.json | Keep tracked + `${userHome}` | No gitignore overlay | confirmed |
+| EV-095 / missing | Empty `pluginPaths` + stderr | Fail-open workspaceOpen | confirmed |
+| EV-095 / guard | `scripts/ci/` + validate-fast/CI | Fail on `/Users/` `/home/<user>/` in tracked `.cursor` | confirmed |
+| EV-095 / docs | `ev-095-em-portable-paths.md` + ENGINEERING-MEMORY rewrite | No product CORPUS Fn | confirmed |
+| EV-095 / UI | N/A | DX tooling only | confirmed |
+
+[Corpus: decisions §EV-095]
+
+
 ## EV-060 / S070 — Converter operator bugs + IWXXM pass-through (#1000) (`D-S070-e9`)
 
 | Topic | Decision | Notes | Status |
