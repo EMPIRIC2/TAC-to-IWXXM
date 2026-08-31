@@ -6,7 +6,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { DisseminationDrawer } from './DisseminationDrawer';
+import { DisseminationDrawer, resolveCandidateIwxxmXml } from './DisseminationDrawer';
 import { DRAWER_SINK_TYPES, isPreflightGreen } from '/utils/dissemination';
 
 const mockRunDisseminationQueue = vi.hoisted(() => vi.fn());
@@ -91,6 +91,74 @@ describe('isPreflightGreen', () => {
         handle: 'mem-handle-1',
       }),
     ).toBe(true);
+  });
+});
+
+describe('resolveCandidateIwxxmXml', () => {
+  beforeEach(() => {
+    mockConvertMetarToIwxxm.mockReset();
+  });
+
+  it('returns existing IWXXM without converting', async () => {
+    await expect(
+      resolveCandidateIwxxmXml(
+        { id: 'c1', name: 'a', source: 'session', iwxxmXml: '  <iwxxm/>  ' },
+        'metar',
+        'GLOBAL_AFS',
+      ),
+    ).resolves.toBe('<iwxxm/>');
+    expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
+  });
+
+  it('throws when candidate has neither IWXXM nor TAC', async () => {
+    await expect(
+      resolveCandidateIwxxmXml(
+        { id: 'c1', name: 'empty', source: 'session' },
+        'metar',
+        'GLOBAL_AFS',
+      ),
+    ).rejects.toThrow(/neither IWXXM XML nor TAC/);
+  });
+
+  it('throws when convert returns no IWXXM XML', async () => {
+    mockConvertMetarToIwxxm.mockResolvedValue({ results: [{ name: 'x' }] });
+    await expect(
+      resolveCandidateIwxxmXml(
+        { id: 'c1', name: 'tac', source: 'session', tacText: 'METAR KJFK' },
+        'metar',
+        'GLOBAL_AFS',
+      ),
+    ).rejects.toThrow(/Convert returned no IWXXM XML/);
+  });
+
+  it('accepts xml / content fallbacks when iwxxm_xml is absent', async () => {
+    mockConvertMetarToIwxxm.mockResolvedValueOnce({
+      results: [{ xml: '  <from-xml/>  ' }],
+    });
+    await expect(
+      resolveCandidateIwxxmXml(
+        { id: 'c1', name: 'tac', source: 'session', tacText: 'METAR KJFK' },
+        'metar',
+        'APAC_ROBEX',
+      ),
+    ).resolves.toBe('<from-xml/>');
+
+    mockConvertMetarToIwxxm.mockResolvedValueOnce({
+      results: [{ content: '<from-content/>' }],
+    });
+    await expect(
+      resolveCandidateIwxxmXml(
+        {
+          id: 'c2',
+          name: 'tac',
+          source: 'session',
+          tacText: 'METAR KLAX',
+          product: 'speci',
+        },
+        'metar',
+        'GLOBAL_AFS',
+      ),
+    ).resolves.toBe('<from-content/>');
   });
 });
 
