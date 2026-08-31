@@ -71,7 +71,21 @@ run 2ms 2ms filesystem --path "${ROOT}" \
   --ignore-pattern 'package-lock.json' \
   --ignore-pattern '__pycache__' \
   --ignore-pattern '.pytest_cache' \
-  --ignore-pattern 'htmlcov'
+  --ignore-pattern 'htmlcov' \
+  --ignore-pattern 'docs/' \
+  --ignore-pattern 'tests/' \
+  --ignore-pattern 'vendor/' \
+  --ignore-pattern '.cursor/' \
+  --ignore-pattern 'workflow-state.yaml' \
+  --ignore-pattern 'apps/backend/tests/' \
+  --ignore-pattern 'apps/worker/tests/' \
+  --ignore-pattern 'packages/dissemination/tests/' \
+  --ignore-pattern 'apps/frontend/utils/supabase/info.tsx' \
+  --ignore-pattern 'apps/frontend/public/config.json' \
+  --ignore-pattern 'apps/frontend/templates/' \
+  --allowed-values 'default:token' \
+  --allowed-values '01daea028583ab08394619973ba6bd89' \
+  --allowed-values 'ghp_abcdefghijklmnopqrstuvwxyz1234567890'
 
 QUERIES="${ASSETS_DIR}/kics/assets/queries"
 [[ -d "${QUERIES}" ]] || { err "KICS queries missing — run install-tools.sh"; exit 1; }

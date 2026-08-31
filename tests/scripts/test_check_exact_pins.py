@@ -17,7 +17,9 @@ def pins() -> Any:
 
 
 @pytest.mark.unit
-def test_load_allowlist_missing(pins: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_load_allowlist_missing(
+    pins: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     monkeypatch.setattr(pins, "ALLOWLIST_PATH", tmp_path / "missing.txt")
     assert pins.load_allowlist() == set()
 
@@ -153,7 +155,10 @@ def test_check_pyproject_tomli_fallback(
 
 @pytest.mark.unit
 def test_main_pass_fail_and_skips(
-    pins: Any, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+    pins: Any,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
 ) -> None:
     (tmp_path / "config").mkdir()
     (tmp_path / "config" / "exact-pins-allowlist.txt").write_text("", encoding="utf-8")
@@ -176,7 +181,9 @@ def test_main_pass_fail_and_skips(
         encoding="utf-8",
     )
     monkeypatch.setattr(pins, "ROOT", tmp_path)
-    monkeypatch.setattr(pins, "ALLOWLIST_PATH", tmp_path / "config" / "exact-pins-allowlist.txt")
+    monkeypatch.setattr(
+        pins, "ALLOWLIST_PATH", tmp_path / "config" / "exact-pins-allowlist.txt"
+    )
     assert pins.main() == 0
     assert "PASS" in capsys.readouterr().out
 

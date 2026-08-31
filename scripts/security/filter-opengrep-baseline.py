@@ -4,6 +4,7 @@
 Baseline format (tab-separated): check_id\\tpath  (repo-relative path)
 [Corpus: adr-037]
 """
+
 from __future__ import annotations
 
 import json
@@ -30,8 +31,10 @@ def main() -> int:
     report = Path(sys.argv[1])
     baseline_path = Path(sys.argv[2])
     og_rc = int(sys.argv[3]) if len(sys.argv) > 3 else 0
-    root = Path(sys.argv[4]) if len(sys.argv) > 4 else Path(
-        os.environ.get("GITHUB_WORKSPACE") or Path.cwd()
+    root = (
+        Path(sys.argv[4])
+        if len(sys.argv) > 4
+        else Path(os.environ.get("GITHUB_WORKSPACE") or Path.cwd())
     )
 
     data: dict = {}

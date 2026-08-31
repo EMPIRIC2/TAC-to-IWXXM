@@ -14,7 +14,9 @@ from tests.scripts.conftest import REPO_ROOT, load_script
 
 @pytest.fixture
 def filt():
-    return load_script("security/filter-opengrep-baseline.py", "opengrep_baseline_filter")
+    return load_script(
+        "security/filter-opengrep-baseline.py", "opengrep_baseline_filter"
+    )
 
 
 @pytest.mark.unit
@@ -45,7 +47,9 @@ def test_filter_all_baselined(filt, tmp_path: Path) -> None:
     )
     baseline = tmp_path / "base.txt"
     baseline.write_text("# c\nr1\ta.py\nbadline\n", encoding="utf-8")
-    with patch.object(sys, "argv", ["x", str(report), str(baseline), "1", str(tmp_path)]):
+    with patch.object(
+        sys, "argv", ["x", str(report), str(baseline), "1", str(tmp_path)]
+    ):
         assert filt.main() == 0
 
 
@@ -58,7 +62,9 @@ def test_filter_new_finding(filt, tmp_path: Path) -> None:
     )
     baseline = tmp_path / "base.txt"
     baseline.write_text("r1\ta.py\n", encoding="utf-8")
-    with patch.object(sys, "argv", ["x", str(report), str(baseline), "0", str(tmp_path)]):
+    with patch.object(
+        sys, "argv", ["x", str(report), str(baseline), "0", str(tmp_path)]
+    ):
         assert filt.main() == 1
 
 
@@ -69,7 +75,9 @@ def test_filter_usage_and_tool_error(filt, tmp_path: Path) -> None:
     report = tmp_path / "missing.json"
     baseline = tmp_path / "base.txt"
     baseline.write_text("", encoding="utf-8")
-    with patch.object(sys, "argv", ["x", str(report), str(baseline), "3", str(tmp_path)]):
+    with patch.object(
+        sys, "argv", ["x", str(report), str(baseline), "3", str(tmp_path)]
+    ):
         assert filt.main() == 3
     with patch.object(sys, "argv", ["x", str(report), str(baseline)]):
         assert filt.main() == 0
@@ -80,7 +88,9 @@ def test_filter_missing_baseline_file(filt, tmp_path: Path) -> None:
     report = tmp_path / "og.json"
     report.write_text(json.dumps({"results": []}), encoding="utf-8")
     missing = tmp_path / "no-baseline.txt"
-    with patch.object(sys, "argv", ["x", str(report), str(missing), "0", str(tmp_path)]):
+    with patch.object(
+        sys, "argv", ["x", str(report), str(missing), "0", str(tmp_path)]
+    ):
         assert filt.main() == 0
 
 
