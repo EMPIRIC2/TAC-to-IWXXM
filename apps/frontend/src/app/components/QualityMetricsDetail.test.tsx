@@ -7,6 +7,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   QUALITY_METRICS_DIFF_EMPTY_LABEL,
+  QUALITY_METRICS_RESIDUALS_NOT_FOLDED,
   QUALITY_METRICS_XML_VIEW_NORMALIZED,
   QUALITY_METRICS_XML_VIEW_RAW,
   QualityMetricsDetail,
@@ -107,6 +108,9 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
     expect(
       screen.getByTestId('quality-metrics-validate-chip-schema-import'),
     ).toHaveTextContent(QUALITY_METRICS_SCHEMA_IMPORT_RESOLVED);
+    expect(
+      screen.getByTestId('quality-metrics-pane-residuals-fold-status'),
+    ).toHaveTextContent(QUALITY_METRICS_RESIDUALS_NOT_FOLDED);
   });
 
   it('toggle shows raw XML while unified diff stays on normalized peers', async () => {

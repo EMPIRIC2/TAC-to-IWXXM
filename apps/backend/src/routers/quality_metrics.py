@@ -83,6 +83,7 @@ async def get_quality_metrics_detail(stem: str) -> Response:
         converted_xml=str(detail.get("converted_xml", "")),
         match_status=str(detail.get("match_status", "")),
         residuals=list(detail.get("residuals") or []),
+        residuals_propagated_to_remarks=bool(detail.get("residuals_propagated_to_remarks", False)),
         lint_issues=list(detail.get("lint_issues") or []),
         validate_issues=list(detail.get("validate_issues") or []),
     )

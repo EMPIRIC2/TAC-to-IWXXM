@@ -55,6 +55,12 @@ export const QUALITY_METRICS_DIFF_LAYOUT_LEGEND =
   'Choose how to compare official vs converted XML. The default is a single inline (unified) diff.';
 export const QUALITY_METRICS_RESIDUALS_HELP =
   'TAC tokens left over after conversion (should usually be empty).';
+/** Plain-language fold status when leftover TAC was kept in remarks / human-readable text. */
+export const QUALITY_METRICS_RESIDUALS_FOLDED =
+  'Leftover TAC was kept in remarks / human-readable text for this example.';
+/** Plain-language fold status when leftovers stayed diagnostic-only. */
+export const QUALITY_METRICS_RESIDUALS_NOT_FOLDED =
+  'Leftover TAC stayed in diagnostics only (not folded into remarks).';
 export const QUALITY_METRICS_LINT_HELP =
   'TAC business-rule findings from the lint engine.';
 export const QUALITY_METRICS_VALIDATE_HELP =
@@ -397,6 +403,11 @@ export function QualityMetricsDetail({
           help={QUALITY_METRICS_RESIDUALS_HELP}
           testId="quality-metrics-pane-residuals"
           items={detail.residuals ?? []}
+          foldStatus={
+            detail.residuals_propagated_to_remarks
+              ? QUALITY_METRICS_RESIDUALS_FOLDED
+              : QUALITY_METRICS_RESIDUALS_NOT_FOLDED
+          }
         />
         <DiagnosticsPane
           title="Lint issues"
@@ -448,11 +459,13 @@ function DiagnosticsPane({
   help,
   testId,
   items,
+  foldStatus,
 }: {
   title: string;
   help: string;
   testId: string;
   items: Record<string, unknown>[];
+  foldStatus?: string;
 }) {
   return (
     <Card className="p-3" data-testid={testId}>
@@ -460,6 +473,14 @@ function DiagnosticsPane({
         {title}
       </h3>
       <p className="mb-2 text-xs text-gray-500 dark:text-gray-400">{help}</p>
+      {foldStatus ? (
+        <p
+          className="mb-2 text-xs text-gray-600 dark:text-gray-300"
+          data-testid={`${testId}-fold-status`}
+        >
+          {foldStatus}
+        </p>
+      ) : null}
       {items.length === 0 ? (
         <p
           className="text-sm text-gray-500 dark:text-gray-400"

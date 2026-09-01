@@ -54,5 +54,6 @@ class QualityMetricsDetailResponse(BaseModel):
     converted_xml: str = ""
     match_status: str
     residuals: list[dict[str, Any]] = Field(default_factory=list)
+    residuals_propagated_to_remarks: bool = False
     lint_issues: list[dict[str, Any]] = Field(default_factory=list)
     validate_issues: list[dict[str, Any]] = Field(default_factory=list)

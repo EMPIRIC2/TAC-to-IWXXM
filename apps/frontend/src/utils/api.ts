@@ -158,6 +158,8 @@ export async function convertMetarToIwxxm(params: {
   /** Filters conversion/validation/lint issue verbosity (sent when API accepts it). */
   logLevel?: string;
   preview?: boolean;
+  /** When true, fold decode residuals into remarks/HRT (omit for profile default). */
+  propagateResidualsToRemarks?: boolean;
   extensions?: string[];
   exchangeOutput?: boolean;
   /** Exchange packaging profile (ignored on convert-only; used when packaging). */
@@ -209,6 +211,12 @@ export async function convertMetarToIwxxm(params: {
 
   if (params.preview) {
     formData.append('preview', 'true');
+  }
+
+  if (params.propagateResidualsToRemarks === true) {
+    formData.append('propagate_residuals_to_remarks', 'true');
+  } else if (params.propagateResidualsToRemarks === false) {
+    formData.append('propagate_residuals_to_remarks', 'false');
   }
 
   if (params.extensions?.length) {
@@ -268,6 +276,8 @@ export async function convertBulletin(params: {
   exchangeProfile?: string;
   iwxxmVersion?: string;
   lint?: boolean;
+  /** When true, fold decode residuals into remarks/HRT (omit for profile default). */
+  propagateResidualsToRemarks?: boolean;
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<ConvertBulletinResponse> {
@@ -285,7 +295,11 @@ export async function convertBulletin(params: {
   }
   formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
   formData.append('lint', params.lint === false ? 'false' : 'true');
-
+  if (params.propagateResidualsToRemarks === true) {
+    formData.append('propagate_residuals_to_remarks', 'true');
+  } else if (params.propagateResidualsToRemarks === false) {
+    formData.append('propagate_residuals_to_remarks', 'false');
+  }
   const response = await withTimeout(
     fetch(apiUrl('/convert-bulletin'), {
       method: 'POST',
