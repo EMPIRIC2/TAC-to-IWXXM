@@ -280,3 +280,11 @@ class ConversionRequest(BaseModel):
         default=None,
         description=("When true with semantic_profile=CA_ECCC, wrap convert output in MSC COLLECT envelope"),
     )
+    propagate_residuals_to_remarks: bool | None = Field(
+        default=None,
+        description=(
+            "When true, append decode residual token text into remarks / humanReadableText "
+            "when the profile supports that emit path; annex3 documents no XML target. "
+            "Omitted uses the profile default (annex3 / ICAO_2025 off)."
+        ),
+    )

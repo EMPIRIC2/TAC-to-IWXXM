@@ -101,6 +101,14 @@ async def convert_bulletin(
         default=[],
         description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",
     ),
+    propagate_residuals_to_remarks: bool | None = Form(
+        default=None,
+        description=(
+            "When true, append decode residual token text into remarks / humanReadableText "
+            "when the profile supports that path; annex3 documents no XML target. "
+            "Omitted uses the profile default (annex3 / ICAO_2025 off)."
+        ),
+    ),
 ) -> Response:
     """Split a WMO AHL bulletin and convert each TAC report.
 
@@ -251,6 +259,7 @@ async def convert_bulletin(
                     product=product,
                     profile=emit_profile,
                     report_status=split.meta.report_status,
+                    propagate_residuals_to_remarks=propagate_residuals_to_remarks,
                 )
             except ConversionError as exc:
                 ok = False
@@ -373,6 +382,14 @@ async def convert(
         default="INFO",
         description="Minimum severity for conversion/validation/lint process issues echoed to the client",
     ),
+    propagate_residuals_to_remarks: bool | None = Form(
+        default=None,
+        description=(
+            "When true, append decode residual token text into remarks / humanReadableText "
+            "when the profile supports that path; annex3 documents no XML target. "
+            "Omitted uses the profile default (annex3 / ICAO_2025 off)."
+        ),
+    ),
 ) -> Response:
     """Convert METAR/SPECI TAC text to IWXXM XML."""
     logger.info(
@@ -441,6 +458,9 @@ async def convert(
         bulletin_id = request_body.bulletin_id or ""
         issuing_center = request_body.issuing_center or ""
         preview = bool(getattr(request_body, "preview", False))
+        body_prop = getattr(request_body, "propagate_residuals_to_remarks", None)
+        if body_prop is not None:
+            propagate_residuals_to_remarks = body_prop
         body_exchange_output = getattr(request_body, "exchange_output", None)
         if body_exchange_output is not None:
             exchange_output = bool(body_exchange_output)
@@ -1032,6 +1052,7 @@ async def convert(
                     emit_translation_centre=emit_translation_centre,
                     translation_centre_designator=translation_centre_designator,
                     translation_centre_name=translation_centre_name,
+                    propagate_residuals_to_remarks=propagate_residuals_to_remarks,
                 )
                 absorb_soft_preview(soft_preview_buf, source=metar_name)
                 if preview and soft_preview_buf.get("ok") is False:
@@ -1296,6 +1317,7 @@ async def convert(
                 emit_translation_centre=emit_translation_centre,
                 translation_centre_designator=translation_centre_designator,
                 translation_centre_name=translation_centre_name,
+                propagate_residuals_to_remarks=propagate_residuals_to_remarks,
             )
             absorb_soft_preview(soft_preview_buf, base_offset=entry_offset, source=manual_source)
             if preview and soft_preview_buf.get("ok") is False:
@@ -1566,6 +1588,7 @@ async def convert(
                     emit_translation_centre=emit_translation_centre,
                     translation_centre_designator=translation_centre_designator,
                     translation_centre_name=translation_centre_name,
+                    propagate_residuals_to_remarks=propagate_residuals_to_remarks,
                 )
                 absorb_soft_preview(soft_preview_buf, source=source_name)
                 if preview and soft_preview_buf.get("ok") is False:
@@ -1824,6 +1847,14 @@ async def convert_zip(
         default="2025-2",
         description="Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)",
     ),
+    propagate_residuals_to_remarks: bool | None = Form(
+        default=None,
+        description=(
+            "When true, append decode residual token text into remarks / humanReadableText "
+            "when the profile supports that path; annex3 documents no XML target. "
+            "Omitted uses the profile default (annex3 / ICAO_2025 off)."
+        ),
+    ),
 ) -> StreamingResponse:
     """Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files."""
     # Try to parse JSON body if Content-Type is application/json
@@ -1897,7 +1928,11 @@ async def convert_zip(
         try:
             start_time = time.perf_counter()
 
-            xml_text, _ = api_surface.convert_metar_tac_with_metadata(manual_entry, iwxxm_version=iwxxm_version)
+            xml_text, _ = api_surface.convert_metar_tac_with_metadata(
+                manual_entry,
+                iwxxm_version=iwxxm_version,
+                propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+            )
             duration_ms = int((time.perf_counter() - start_time) * 1000)
 
             results.append((manual_name, xml_text))
@@ -1970,7 +2005,11 @@ async def convert_zip(
 
                 start_time = time.perf_counter()
 
-                xml_text, _ = api_surface.convert_metar_tac_with_metadata(data or "", iwxxm_version=iwxxm_version)
+                xml_text, _ = api_surface.convert_metar_tac_with_metadata(
+                    data or "",
+                    iwxxm_version=iwxxm_version,
+                    propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+                )
 
                 # Calculate duration
                 duration_ms = int((time.perf_counter() - start_time) * 1000)
@@ -2115,7 +2154,11 @@ async def convert_zip(
 
             start_time = time.perf_counter()
 
-            xml_text, _ = api_surface.convert_metar_tac_with_metadata(metar_text.strip(), iwxxm_version=iwxxm_version)
+            xml_text, _ = api_surface.convert_metar_tac_with_metadata(
+                metar_text.strip(),
+                iwxxm_version=iwxxm_version,
+                propagate_residuals_to_remarks=propagate_residuals_to_remarks,
+            )
 
             # Calculate duration
             duration_ms = int((time.perf_counter() - start_time) * 1000)
