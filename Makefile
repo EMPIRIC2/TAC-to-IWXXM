@@ -70,6 +70,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	generate-quality-metrics \
 	issue-registry-guard \
 	cursor-no-home-paths-guard \
+	pnpm-action-package-manager-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
 
 # --- Monorepo workspace ---
@@ -148,6 +149,10 @@ issue-registry-guard:
 # EV-095 / #1095: no machine-local /Users/ or /home/<user>/ in tracked .cursor/
 cursor-no-home-paths-guard:
 	$(UV) run python scripts/ci/check_cursor_no_home_paths.py
+
+# EV-096 / #1096: no pnpm/action-setup with.version when packageManager is set
+pnpm-action-package-manager-guard:
+	$(UV) run python scripts/ci/check_pnpm_action_package_manager.py
 
 # --- Formatting ---
 
@@ -841,7 +846,7 @@ validate-yaml:
 	$(UV) run pre-commit run actionlint --all-files
 	$(UV) run pre-commit run yamllint --all-files
 
-validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check issue-registry-guard cursor-no-home-paths-guard
+validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check issue-registry-guard cursor-no-home-paths-guard pnpm-action-package-manager-guard
 
 config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v

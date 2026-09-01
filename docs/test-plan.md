@@ -3781,6 +3781,56 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Exit 2; stderr error
 - **Source**: EV-088 Build M2
 
+### EV-096 / #1096 — Harden Cursor rules/skills from CI footguns
+
+- **Mode**: process/DX delta — encode recurring CI failures into rules/skills (+ cheap guards);
+  not a product Fn fix
+- **Pass criteria**: TC-EV096-001..005; #1096 AC; triage note on issue; PR into `stage`
+- **Source**: [#1096](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1096); EV-096;
+  [Corpus: tests]; [Corpus: decisions]; related [#1095](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1095)
+
+### TC-EV096-001: Triage note (≥5 themes)
+
+- **Level**: T0 / Docs
+- **Objective**: Written triage of ≥5 recent failure/bug themes with concrete run or issue links
+- **Pass criteria**: Issue #1096 comment (or session report mirrored to issue) lists themes + links
+- **Source**: REQ-EV096-01; #1096 AC
+
+### TC-EV096-002: Rule + skill landed
+
+- **Level**: T0 / Docs
+- **Objective**: At least one Cursor rule and one skill/procedure update for these footguns
+- **Pass criteria**: `.cursor/rules/optional/ci-recurring-footguns.mdc` (or equivalent) +
+  `ci-after-push` / related skill note on tip; or explicit waiver with rationale
+- **Source**: REQ-EV096-02; REQ-EV096-03; #1096 AC
+
+### TC-EV096-003: Machine-local path class covered
+
+- **Level**: T0 / CI
+- **Objective**: #1095 portable EM paths remain guarded
+- **Pass criteria**: `make cursor-no-home-paths-guard` / `validate-fast` includes
+  `scripts/ci/check_cursor_no_home_paths.py`; rule cites verify-only path
+- **Source**: REQ-EV096-07; EV-095; #1095
+
+### TC-EV096-004: Stage→main vs evolve CI expectations
+
+- **Level**: T0 / Docs
+- **Objective**: Agents know promote vs evolve-branch CI differences
+- **Pass criteria**: `ci-after-push.mdc` (and/or footguns rule) states: feature/evolve PR →
+  `stage` first; promote `stage`→`main` requires E2E Full (not smoke-only); watch CI after push
+- **Source**: REQ-EV096-03; REQ-EV096-08; [Corpus: deploy] §Promote
+
+### TC-EV096-005: Frontend coverage / Mutation pnpm / Vendor sync documented
+
+- **Level**: T0 / Docs (+ optional CI guard)
+- **Objective**: If-you-see-X-do-Y for FE 100% coverage, Mutation `packageManager` dual-spec,
+  Vendor Schema Sync recurring fails
+- **Pass criteria**: Footguns rule covers all three; Mutation workflow fixed to packageManager-only
+  when dual-spec still present; vendor documented as non-blocking triage (no hand-edit
+  `vendor/schemas`)
+- **Source**: REQ-EV096-04..06; REQ-EV096-09; sample runs #33401453421, #33386557847,
+  #33393624607
+
 ### EV-094 / #1098 — Thin/compat national deepen
 
 - **Mode**: delta F36 — deepen EV-089 packs (fixtures, sources, SPECI KR/JP, IN lint overlay)
