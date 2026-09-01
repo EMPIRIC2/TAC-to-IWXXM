@@ -8,6 +8,7 @@ from datetime import UTC
 from typing import Any, cast
 from xml.sax.saxutils import escape
 
+from tac2iwxxm.decode import decode_tac
 from tac2iwxxm.exchange_output import default_ca_translation_centre
 from tac2iwxxm.models import ConvertIssue, ConvertResult
 from tac2iwxxm.products.metar_speci import parse_metar_speci
@@ -113,6 +114,120 @@ _STATION_AFTER_PRODUCT = re.compile(
     r"^\s*(?:METAR|SPECI|TAF)\s+(?:COR\s+)?(?P<station>[A-Z][A-Z0-9]{3})\b",
     re.IGNORECASE,
 )
+
+# Profiles that already emit remarks / humanReadableText (EV-981).
+_REMARKS_HRT_EMIT_PROFILES = frozenset({EMIT_IWXXM_US, EMIT_CA_ECCC})
+
+# Profile-default table for propagate_residuals_to_remarks (D-EV981-profile-wire).
+# Only annex3 / ICAO_2025 defined this cycle (= off). Missing keys → False.
+_PROPAGATE_RESIDUALS_DEFAULTS: dict[str, bool] = {
+    EMIT_ANNEX3: False,
+    "icao_2025": False,
+}
+
+
+def resolve_propagate_residuals_to_remarks(
+    profile: str,
+    value: bool | None,
+) -> bool:
+    """
+    Resolve the effective ``propagate_residuals_to_remarks`` flag.
+
+    Parameters
+    ----------
+    profile :
+        Emit key or semantic profile id (case-insensitive).
+    value :
+        Explicit override, or ``None`` to use the profile default table.
+
+    Returns
+    -------
+    bool
+        Effective flag. Omitted / unknown profiles default to ``False`` this cycle.
+    """
+    if value is not None:
+        return bool(value)
+    key = profile.strip().lower()
+    resolved = resolve_semantic_profile(profile)
+    if resolved is not None:
+        key = resolved.emit_key
+        canonical = resolved.canonical.lower()
+        if canonical in _PROPAGATE_RESIDUALS_DEFAULTS:
+            return _PROPAGATE_RESIDUALS_DEFAULTS[canonical]
+    return _PROPAGATE_RESIDUALS_DEFAULTS.get(key, False)
+
+
+def _residual_texts_to_append(
+    residual_texts: list[str],
+    *,
+    remarks_free_text: str,
+) -> list[str]:
+    """Return residual spans not already covered by remarks retain / free-text."""
+    existing = remarks_free_text.strip()
+    existing_upper = existing.upper()
+    out: list[str] = []
+    for text in residual_texts:
+        cleaned = text.strip()
+        if not cleaned:
+            continue
+        if cleaned.upper() in existing_upper:
+            continue
+        if existing and cleaned in existing:
+            continue
+        out.append(cleaned)
+    return out
+
+
+def _apply_propagate_residuals(
+    tac: str,
+    *,
+    product: str,
+    profile_l: str,
+    ir: dict[str, Any],
+) -> tuple[dict[str, Any], ConvertIssue | None]:
+    """
+    Fold decode residuals into remarks/HRT when the profile supports it.
+
+    annex3 has no XML remarks target — emit an info issue documenting that fact
+    without inventing free-text remarks (D-EV981-emit-target).
+    """
+    decoded = decode_tac(tac, product=product)
+    residual_texts = [r.text for r in decoded.residuals if r.text and r.text.strip()]
+    if not residual_texts:
+        return ir, None
+
+    if profile_l in _REMARKS_HRT_EMIT_PROFILES:
+        existing = str(ir.get("remarks_free_text") or "")
+        to_append = _residual_texts_to_append(residual_texts, remarks_free_text=existing)
+        if not to_append:
+            return ir, None
+        combined = f"{existing} {' '.join(to_append)}".strip() if existing else " ".join(to_append)
+        updated = {
+            **ir,
+            "remarks_free_text": combined,
+            "remarks_present": True,
+        }
+        joined = " ".join(to_append)
+        issue = ConvertIssue(
+            severity="info",
+            code="RESIDUALS_PROPAGATED_TO_REMARKS",
+            message=("Decode residual token text appended to remarks / humanReadableText: " + joined),
+            location="remarks",
+        )
+        return updated, issue
+
+    # annex3 (and other non-HRT profiles): document no XML target; do not invent remarks.
+    issue = ConvertIssue(
+        severity="info",
+        code="RESIDUALS_PROPAGATED_TO_REMARKS",
+        message=(
+            "propagate_residuals_to_remarks is enabled and decode residuals exist, "
+            "but this profile has no XML remarks / humanReadableText target "
+            "(no XML target on annex3); residuals remain diagnostic-only"
+        ),
+        location="remarks",
+    )
+    return ir, issue
 
 
 def _content_bounds(tac: str) -> tuple[int, int]:
@@ -374,6 +489,7 @@ def convert(
     translation_centre_designator: str = "",
     translation_centre_name: str = "",
     report_status: str | None = None,
+    propagate_residuals_to_remarks: bool | None = None,
 ) -> ConvertResult:
     """
     Convert a TAC report to IWXXM XML.
@@ -405,6 +521,10 @@ def convert(
         ``CORRECTION``). Used for AHL BBB→reportStatus when the TAC body has no
         COR/AMD keyword (EV-029 M2 / #823 B3). When omitted, emitters keep
         body-derived COR → CORRECTION behavior.
+    propagate_residuals_to_remarks :
+        When ``True``, fold decode residual token text into the profile remarks /
+        ``humanReadableText`` path (or document no XML target on annex3). When
+        ``None``, use the semantic-profile default (annex3 / ICAO_2025 → off).
 
     Returns
     -------
@@ -433,6 +553,7 @@ def convert(
     profile_l = resolved.emit_key
     semantic_profile = resolved.canonical
     deprecated_alias_used = resolved.alias_used
+    do_propagate = resolve_propagate_residuals_to_remarks(profile_l, propagate_residuals_to_remarks)
 
     def _fail(
         code: str,
@@ -505,12 +626,20 @@ def convert(
                 f"report_status {report_status!r} must be one of {sorted(_REPORT_STATUSES)}",
             )
 
+    propagate_issue: ConvertIssue | None = None
     try:
         if _UNRELIABLE_TAC.search(tac):
             raise ValueError("unreliable TAC marked INVALID - quarantine")
         ir = _parse(product_u, tac)
         if status_override is not None:
             ir = {**ir, "report_status": status_override}
+        if do_propagate:
+            ir, propagate_issue = _apply_propagate_residuals(
+                tac,
+                product=product_u,
+                profile_l=profile_l,
+                ir=ir,
+            )
         xml = _emit(product_u, profile_l, ir, iwxxm_version)
     except ValueError as exc:
         message = str(exc)
@@ -547,6 +676,8 @@ def convert(
                 message=f"profile alias {profile!r} is deprecated; use canonical id {semantic_profile!r}",
             )
         )
+    if propagate_issue is not None:
+        issues.append(propagate_issue)
     # D-EV087-inter-emit / national remark provenance (AU INTER, TAF3, NZ domestic extras).
     national_tokens = ir.get("national_remark_tokens")
     if isinstance(national_tokens, list) and national_tokens:
@@ -619,4 +750,4 @@ def convert(
     )
 
 
-__all__ = ["ConvertError", "convert"]
+__all__ = ["ConvertError", "convert", "resolve_propagate_residuals_to_remarks"]
