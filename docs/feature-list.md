@@ -196,6 +196,18 @@
 - **S018 / EV-013 delta (#667 REMARKS)**: `annex3` emits `REMARKS_EXCLUDED` (info) when `RMK`
   present; `iwxxm_us` retains unparsed RMK remainder as `humanReadableText` (AO2/SLP/PK WND
   structured emit unchanged; T/P parsed to IR + free-text). Closes UJ-026.
+- **EV-981 / #981 delta (propagate decode residuals → remarks / HRT)**: Opt-in convert flag
+  `propagate_residuals_to_remarks` (default **off**; omitted → profile default). When **on**
+  and the profile already emits remarks / `humanReadableText`, decode residual token text
+  (excluding spans already covered by remarks retain) is appended into that emit path with
+  info `ConvertIssue` `RESIDUALS_PROPAGATED_TO_REMARKS`. On **annex3**, do **not** invent
+  free-text remarks XML; flag-on + residuals still emit that issue documenting **no XML
+  target** (QM `residuals_propagated_to_remarks` stays false). When **off**, residuals remain
+  decode-panel / quality-metrics diagnostics only (UJ-026 unchanged). Profile-default hook is
+  wired; **annex3 / ICAO_2025 default stays off**; no other profile defaults enabled this
+  cycle. `/convert-zip` inherits the Form field. Does **not** flip F6 status; does **not**
+  implement UJ-040 structured remark codecs. See [Context: propagate-residuals-to-remarks](context/propagate-residuals-to-remarks.md);
+  UJ-070; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-981.
 - **Limitations**: US AIRMET/SIGMET docs thinner than METAR/TAF — may gate fixture depth inside
   F6.d; F5 not extended to other products in v1; exact AHL dialect coverage TBD in fixtures.
   Full FMH-1 remark catalog beyond AO/SLP/PK/T/P free-text is still scoped deepen work.
@@ -312,7 +324,7 @@
   | F7.g | #780 | Pre-loaded golden examples (convert + validate) — S021 / EV-016 |
   | F7.h | #783 | IndexedDB local sessions (all products); drop JWT session APIs — S023 / EV-017 |
   | F7.i | #842 / F31 | Hybrid: guest IndexedDB + logged-in DO Postgres; auto-upload on login — S038 / EV-031 |
-  | F7.q | #836 / #982 / #988 / #983 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055); dedicated detail route + collapsible diffs (S066 / EV-056); selectable side-by-side vs inline XML diff (S068 / EV-058) |
+  | F7.q | #836 / #982 / #988 / #983 / #981 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055); dedicated detail route + collapsible diffs (S066 / EV-056); selectable side-by-side vs inline XML diff (S068 / EV-058); **EV-981** residual fold indicator (`residuals_propagated_to_remarks`) |
   | F7.r | #903 | Accumulate back-to-back conversions → one ZIP (S067 / EV-057) |
   | F7.s | #838 | Validate existing IWXXM (paste / single `.xml` upload; no TAC) (S067 / EV-057) |
   | F7.t | #1003 | IWXXM as **product** pass-through (lint + F2 validate; no TAC convert) (S070 / EV-060); siblings #1001 AHL noise, #1002 profile picker, #1004 log_level, #1005 bulletin fields, #1006 Auth UAT |
@@ -457,6 +469,16 @@
   4. Layout preference persists in localStorage across visits.
   5. Raw TAC / diagnostics / collapsible unified equal-context remain; Vitest + Playwright
      cover both modes; H4–H5 via 13. Synced scroll is best-effort polish, not required to pass.
+- **EV-981 / #981 deepen (F7.q — residual fold hook)**: Quality metrics detail exposes
+  additive boolean `residuals_propagated_to_remarks` (fixture-backed; existing stems
+  **false** until regenerated). Residuals panel shows plain-language whether leftover TAC
+  was folded into remarks / human-readable text for that fixture. Does **not** rebuild the
+  corpus browser; does **not** live-fetch WMO; does **not** flip F7 → Implemented.
+- **Acceptance (EV-981 / #981 — F7.q hook)** — **approved** (`D-EV981-qm`):
+  1. Detail JSON includes `residuals_propagated_to_remarks`.
+  2. UI residuals panel reflects the field with operator-safe copy (no planning ids).
+  3. Default corpus fixtures remain `false` compatible with prior UJ-056 assertions.
+  4. TC-EV981-* + UJ-070 / UJ-056 deepen; H4–H5 after Build.
 - **S067 / EV-057 deepen (F7.r / #903 — accumulate conversions → one ZIP)**: Successful
   converts **append** to the current result set instead of wiping prior successes so operators
   can convert A→B→C and **Download all** as one ZIP. Default archive basename when custom
@@ -591,6 +613,9 @@
     decode panel via the existing 300 ms debounce path (UJ-017 infrastructure).
 - **Inputs**: TAC text; `product` (same enum as convert); JWT.
 - **Outputs**: Value-aware `segments[].explanation`; `summary` string; residuals unchanged.
+- **EV-981 / #981 note**: Decode residuals remain on the decode contract. Folding residual
+  text into IWXXM remarks / HRT is a **convert** opt-in (`propagate_residuals_to_remarks`)
+  under F6 — not a change to `/decode-tac` response shape.
 - **Out of scope**: LLM/AI-generated text; changing segment offsets contract; Layer 1–2 or
   Schematron semantics.
 - **Acceptance (F9 v1 done)**:

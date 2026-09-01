@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-31 (EV-093 #1024 semantic picker deepen — UJ-069)
+> **Last updated**: 2026-08-31 (EV-981 #981 propagate residuals → remarks — UJ-070)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -86,6 +86,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-067 | Conversion parameter bar aligned with mode selects | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
 | UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014; **EV-062 / #1017** deepen) | T0 / T2 / **T3** / H4–H5 |
 | UJ-069 | Convert with semantic profile → package with exchange profile | API / library / workbench (#1024) | F35+F36 (EV-063/EV-090/EV-093 / #912) | T2 / **T3**; **H4–H5** (FE) |
+| UJ-070 | Opt-in propagate decode residuals into remarks / HRT | UI / API / package / Quality metrics (#981) | F6+F9+F7.q (EV-981) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
@@ -346,6 +347,10 @@ partial success may encode recognized elements and retain remainder (UJ-026).
 **Deepen (S032 / EV-025)**: As dig ❌ types gain structured codecs (UJ-040), acceptance (2)
 expands to those types; any still-unparsed tokens remain in `humanReadableText` (never drop).
 
+**Fence (EV-981 / #981)**: With `propagate_residuals_to_remarks` **off** (default / annex3
+profile default), decode residuals must **not** appear in remarks / HRT solely because they
+were undecoded — UJ-026 and goldens stay unchanged. Flag-on behavior is **UJ-070**.
+
 **Automated tests**:
 - Package: `packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py`
 - API unit: `apps/backend/tests/unit/test_uj026_remarks_convert_issues.py`
@@ -353,6 +358,48 @@ expands to those types; any still-unparsed tokens remain in `humanReadableText` 
 - Playwright: `apps/e2e/uj026-metar-remarks.e2e.spec.ts`
 
 **Source**: S018 / EV-013
+
+---
+
+### UJ-070: Opt-in propagate decode residuals into remarks / HRT (#981)
+
+**Actor**: Meteorological operator / API client
+
+**Goal**: Optionally fold undecoded TAC residual spans into the remarks /
+`humanReadableText` retention path so leftover text is preserved in IWXXM when the operator
+opts in.
+
+**Feature**: F6 + F9 + F7.q (EV-981)
+
+**Steps**:
+
+1. Convert METAR/SPECI (or other product with residuals) with
+   `propagate_residuals_to_remarks=false` or omitted on annex3 → residuals only in decode /
+   quality-metrics diagnostics; annex3 `RMK` still yields `REMARKS_EXCLUDED` (UJ-026).
+2. Convert the same TAC with `propagate_residuals_to_remarks=true` on a profile that
+   emits remarks / `humanReadableText` (`iwxxm_us`, `ca_eccc`, …) → residual token text
+   appears in that emit path; response includes info `ConvertIssue`
+   `RESIDUALS_PROPAGATED_TO_REMARKS`. On **annex3**, flag-on does **not** invent free-text
+   remarks XML; the same issue code documents **no XML target** and QM fold stays false.
+3. Workbench: toggle labeled in plain language; reflects effective value (explicit override
+   vs profile default).
+4. Quality metrics detail for a stem shows `residuals_propagated_to_remarks` and the
+   residuals panel indicates fold status (fixtures precomputed; default corpus `false`).
+
+**Acceptance**:
+1. Default off preserves UJ-026 + existing goldens.
+2. Enabled path retains residual text in emitted remarks / HRT when the profile has that
+   emit path; annex3 documents no XML target without inventing remarks.
+3. Flag documented in API + UI without internal planning vocabulary.
+4. QM detail field + indicator present; no live WMO fetch.
+5. Profile-default hook present; annex3/ICAO_2025 default remains off; no other profile
+   defaults enabled this cycle.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EV981-001..005 (see test-plan)
+
+**Source**: EV-981 / #981; [Context: propagate-residuals-to-remarks](context/propagate-residuals-to-remarks.md)
 
 ---
 
@@ -869,12 +916,16 @@ residuals, lint, validate, with a unified XML diff vs our conversion.
    reflect enabled / fixed 2025-2 disposition without internal planning ids.
 7. Confirm a deferred / gap stem is labeled (not silently missing).
 8. Optional later: deep-link the same stem into the convert workbench.
+9. **EV-981**: in residuals panel, see whether leftover TAC was folded into remarks /
+   human-readable text for that fixture (`residuals_propagated_to_remarks`; default corpus
+   `false`).
 
 **Acceptance**: AC1–AC7 in evolve-decisions §EV-054 (tab shell) **and** AC1–AC7 in
 evolve-decisions §EV-055 (normalize + validate disposition) **and** AC1–AC5 in
 evolve-decisions §EV-056 (detail route + collapsible diffs) **and** AC1–AC5 in
-evolve-decisions §EV-058 (side-by-side vs inline); TC-EV054-001..008 +
-TC-EV055-001..007 + TC-EV056-001..005 + TC-EV058-001..005. Default view needs no
+evolve-decisions §EV-058 (side-by-side vs inline) **and** EV-981 QM hook (`D-EV981-qm`);
+TC-EV054-001..008 + TC-EV055-001..007 + TC-EV056-001..005 + TC-EV058-001..005 +
+TC-EV981-004. Default view needs no
 Supabase and no live upstream WMO fetch — metrics come from public
 `GET /api/v1/quality-metrics*` backed by precomputed fixtures (`D-S063-gateA=2`;
 regen under `D-S064-regen=1`).

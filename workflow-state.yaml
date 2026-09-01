@@ -66427,6 +66427,36 @@ pr_review_cycles:
   notes:
   - Full A→H; F connectivity N/A (process/meta)
   - Do not merge until step-scoped regex + regression test land
+- id: PRR-021
+  skill_id: 18-pr-review
+  session_id: EV-096-ci-rules-skills-harden
+  evolve_cycle_id: EV-096
+  pr_number: 1114
+  pr_url: https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1114
+  title: '[EV-096] Harden Cursor rules/skills from CI footguns (#1096)'
+  status: completed
+  started: '2026-08-31'
+  completed: '2026-08-31'
+  scope: full
+  pass: re-review
+  prior_review_cycle_note: PRR-020
+  head_ref: evolve/EV-096-ci-rules-skills-harden
+  base_ref: stage
+  head_sha: a25968333c8eefeca4ad1bd16b14be36df7adefd
+  verdict: APPROVE
+  blockers: 0
+  advisories: 1
+  praise: 2
+  ci_status: success
+  gh_review_note: Self-approve blocked; posted COMMENT with APPROVE recommendation
+  report: ~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-096-ci-rules-skills-harden/reports/pr-review-rereview.md
+  findings_summary:
+  - '🟡 residual PR body test-plan checkboxes (cosmetic)'
+  subagents:
+    bugbot: no bugs
+    security: 0 medium+
+  notes:
+  - Prior 🔴/🟡 from PRR-020 verified fixed on tip a2596833
 pr_remediation_cycles:
 - id: PRM-001
   pr_number: 679

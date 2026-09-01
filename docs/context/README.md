@@ -8,6 +8,7 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 
 | Slug | Topic | Status | Created | Linked features |
 |------|-------|--------|---------|-----------------|
+| [propagate-residuals-to-remarks](propagate-residuals-to-remarks.md) | #981 opt-in fold decode residuals into remarks/HRT + profile default + F7.q hooks (EV-981) | active | 2026-08-31 | F6, F9, F7.q |
 | [ev-080-unit-coverage-100](ev-080-unit-coverage-100.md) | Strict 100% line+branch unit coverage (Py/TS/scripts); ADR-007 uplift (EV-080) | active | 2026-08-27 | ADR-007, F34, M5/CI |
 | [wmo-aviation-registers-889](wmo-aviation-registers-889.md) | #889 codes.wmo.int aviation registers TAC present/cite/cover (S055/EV-046 Lean) | active | 2026-08-08 | F6, F12, F15, F20, F23, F24, F26, F27, F28, F32 |
 | [iwxxm-corpus-residuals-846](iwxxm-corpus-residuals-846.md) | #846 residuals #849–#861 (S046/EV-038) | active | 2026-08-05 | F2, F4, F6, F7, F32 |

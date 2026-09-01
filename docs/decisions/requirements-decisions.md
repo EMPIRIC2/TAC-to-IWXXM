@@ -1,6 +1,27 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-17 (S070 / EV-060)
+> Stage: 01-requirements | Last updated: 2026-08-31 (EV-981 / #981)
+
+## EV-981 — Propagate decode residuals into remarks / HRT (#981)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-981 / UI preview | Declined (A2) | Spec from docs only | confirmed |
+| EV-981 / Fn | Deepen F6 + F9 + F7.q | No new top-level Fn | confirmed |
+| EV-981 / flag | `propagate_residuals_to_remarks` | multipart convert + convert-bulletin | confirmed |
+| EV-981 / default | Off; omitted → profile default | annex3/ICAO_2025 default off | confirmed |
+| EV-981 / profiles | Wire only this cycle | No non-annex3 defaults enabled | confirmed |
+| EV-981 / journeys | UJ-026 fence + UJ-070 | Flag-on path | confirmed |
+| EV-981 / QM | `residuals_propagated_to_remarks` | Precomputed fixture field + UI | confirmed |
+| EV-981 / ADR | Skip unless feasibility requires | decisions log sufficient | confirmed |
+| EV-981 / connectivity | H4–H5 for FE toggle + QM | After Build gate | planned |
+| EV-981 / annex3 emit | Option 1 — no invented free-text; issue documents no XML target | tech-plan | confirmed |
+| EV-981 / dedup | Residuals not already in remarks retain path | tech-plan | confirmed |
+| EV-981 / convert-zip | Inherit Form field | tech-plan | confirmed |
+
+[Corpus: decisions §EV-981] [Corpus: product] [Corpus: api] [Corpus: journeys]
+
+
 
 ## EV-095 — Portable EM plugin/MCP paths (#1095)
 
