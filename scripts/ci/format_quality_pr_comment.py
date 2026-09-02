@@ -122,7 +122,8 @@ def format_markdown(
         "## Quality / golden outcomes",
         "",
         "Match / soft-diff / fail / skip by **product x profile** "
-        "(quality-matrix + annex3 / `iwxxm_us` goldens).",
+        "(ready quality-matrix slots + annex3 / `iwxxm_us` goldens; "
+        "inventory `needs-fixture`/`oos` omitted from Skip).",
         "",
         "| Product | Profile | Match | Soft-diff | Fail | Skip |",
         "|---------|---------|------:|----------:|-----:|-----:|",

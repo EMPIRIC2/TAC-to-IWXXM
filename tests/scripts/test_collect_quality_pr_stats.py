@@ -158,10 +158,11 @@ cases:
     )
     counts = mod.collect_quality_matrix_inventory(qm)
     assert counts[("METAR", "annex3")][0] >= 1
-    assert counts[("METAR", "annex3")][3] >= 1
+    # needs-fixture / oos / skipped are omitted (not Skip) for sticky PR comment.
+    assert ("TAF", "annex3") not in counts
+    assert ("SIGMET", "annex3") not in counts
+    assert counts.get(("METAR", "annex3"), [0, 0, 0, 0])[3] == 0
     assert counts[("SPECI", "iwxxm_us")][0] >= 1
-    assert counts[("TAF", "annex3")][3] >= 1
-    assert counts[("SIGMET", "annex3")][3] >= 1
     assert counts[("AIRMET", "annex3")][1] >= 1
     assert counts[("SWXA", "annex3")][1] >= 1
     assert counts[("VAA", "annex3")][2] >= 1
