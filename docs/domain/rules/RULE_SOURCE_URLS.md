@@ -1,7 +1,7 @@
 # Rule source URL catalog
 
 **Status:** living catalog (discovery from [#719](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/719)).  
-**Updated:** 2026-09-02 (EV-098 / #1031 MSC `doc/` PDF promote · prior #1028 datamart) · prior 2026-08-18 (EV-061 catalog source retarget — see mining/ev061-catalog-source-replacements-2026-08-18.md) (… · WMO-306 I.3 2019/upd-2021 dig **1–272 complete** · #798).  
+**Updated:** 2026-09-02 (EV-098 / #1029 MANOBS + #1030 MANAIR Amd15 · prior #1031 PDF · #1028 datamart) · prior 2026-08-18 (EV-061 catalog source retarget — see mining/ev061-catalog-source-replacements-2026-08-18.md) (… · WMO-306 I.3 2019/upd-2021 dig **1–272 complete** · #798).  
 **Vendor pin:** `vendor/manifest.json` → `iwxxm` **v2025-2** (app default), plus profile-scoped **`iwxxm-3.0.0`** + **`iwxxm-ca`** for `CA_ECCC`, `iwxxm-codelists` **49-2**, `iwxxm-us` **3.0**.
 
 **Inventory pass:** [mining/iwxxm-2025-2-reference-set-mining-notes.md](../mining/iwxxm-2025-2-reference-set-mining-notes.md)
@@ -656,15 +656,31 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 
 ### MANOBS — Manual of Surface Weather Observation Standards (Canada)
 
-- **Publisher:** Environment and Climate Change Canada
-- **URL:** https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html
-- **Access:** public
+- **Publisher:** Environment and Climate Change Canada / Meteorological Service of Canada
+- **Edition:** Eighth Edition, Amendment 2 (February 2023) — Canada.ca states the MSC-published version is official
+- **URL:** https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html  
+  PDF copy: https://publications.gc.ca/collections/collection_2023/eccc/En56-238-2-2022-1-eng.pdf
+- **Access:** public (section pointers + paraphrase only; no body dump)
 - **Applies to:** products=[METAR,SPECI]; profiles=[**ca_eccc**]; role=[validation, conversion]
-- **Gap vs GIFTs:** Canadian visibility (SM), altimeter (`A####`), AUTO types, RMK grammar, IWXXM dissemination shall
+- **Gap vs GIFTs:** Statute-mile `SM` visibility; `A`+four-digit altimeter; `AUTO`; Canadian RMK (`PRESRR`/`PRESFR`/`SLP`); LWIS; sector / variable VIS / variable RVR splits; dual IWXXM+TAC dissemination (§11.1)
 - **Consumer:** `tac-validate`, `tac2iwxxm`
-- **Label:** normative (national)
-- **Caveats:** Pair with [MANAIR](https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html) for forecasts. Dig: [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md)
-- **Mined:** 2026-08-22 (EV-064 / #916)
+- **Label:** normative-national
+- **Caveats:** Pair with MANAIR for forecasts. **EV-098 / #1029:** reaffirm `CA.METAR.VIS.SM` / `ALT.A` / `AUTO` / LWIS / pressure RMKs; **reopen** `CA.METAR.ALT.NOT_OBS` (`A////` vs MANOBS `A`+4 digits); SAWR provenance is **XSD** (`metar-speci-ca.xsd`), not MANOBS; do not promote monolithic Addendum as TAC; lightning TAC ≠ 1:1 `ObservedLightning`. Fixture backlog: repair `metar_basic.tac` `9999`; quarantine `A////` positive. Dig: [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md).
+- **Mined:** 2026-08-22 (EV-064 / #916) · deepened 2026-09-02 (EV-098 / #1029 Gate C)
+
+### MANAIR — Manual of Standards and Procedures for Aviation Weather Forecasts (Canada)
+
+- **Publisher:** Environment and Climate Change Canada / Meteorological Service of Canada
+- **Edition:** Eighth Edition, **Amendment 15** (July 2026; supersedes prior amendments effective 2026-07-09) — defer-to-latest vs older Amd 2 baselines
+- **URL:** https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html  
+  PDF copy: https://publications.gc.ca/collections/collection_2026/eccc/En58-29-15-2026-eng.pdf
+- **Access:** public (section pointers + paraphrase only)
+- **Applies to:** products=[TAF,AIRMET]; profiles=[**ca_eccc**]; role=[validation, conversion]
+- **Gap vs GIFTs:** NCLWS `WShhh/dddffKT` (§2.6.9); national WX (`SA` only with `BL`/`DR`; no `SHPL`); AIRMET↔GFA (§6.8.8); SFC wind >30 KT / VIS <3 SM / BKN·OVC <1000 ft; code-ca TCU/TS + VIS/cloud membership (positive-list only)
+- **Consumer:** `tac-validate`, `tac2iwxxm`
+- **Label:** normative-national
+- **Caveats:** §1.1 — incorporated by reference CAR 804.01(1)(b). Machine paths: local `taf-ca.xsd` / `airmet-ca.xsd` + dated `code-ca/` (datamart body may 403). Do not invent code-ca URIs. Exact QNames before new goldens. Dig: [mining/manobs-manair-ca-mining-notes.md](../mining/manobs-manair-ca-mining-notes.md).
+- **Mined:** 2026-09-02 (EV-098 / #1030 Gate C)
 
 ### Aviation Weather Center Data API (live fixtures)
 

@@ -66,9 +66,9 @@ Detail: [TAC_VALIDATION](../TAC_VALIDATION.md) · [IWXXM_CONVERSION](../IWXXM_CO
 | **SWXA** | ✅ Annex 3 App 2 Table **A2-3** (cite); SpaceWx registry (F28) | ✅ Guidance + `spacewx-A7-3` (+ A7-4/5 deferred); AHL `FN`→`LN` | ✅ `spaceWeatherAdvisory.xsd` + SCH | **F28 Done — S036/EV-029 M11** · #740/#823 **closed**; PR #828 |
 | **VONA** | ✅ Vendor `vona-A7-1` + PANS-MET cite (Doc 10157 paywall); AviationColourCode registry (F32) | ⚠ Guidance **silent** (non-blocking [#869](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/869)) — SoT = ICAO + FM205 + AHL `WM`→`LM` + XSD/SCH/`vona-A7-1`; cookbook **derived** ([remine dig](../mining/vona-encode-remine-ev035-mining-notes.md); [PROVENANCE_MAP](./PROVENANCE_MAP.md); S045/EV-037) | ✅ `vona.xsd` + SCH | **F32 Done — S040/EV-032 M2** · [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) **closed**; S045/EV-037 SoT disposition · children under #846 |
 | **METAR (US)** | ✅ FMH-1 Ch.12 + SPECI §2.5.2 ([dig](../mining/fmh1-2019-mining-notes.md)) + NWS FMH-1 registry | ✅ Body + RMK → iwxxm-us `extension` | ✅ WMO XSD · ✅ US XSD · ✅ WMO SCH · **N/A** official US Schematron (not published [#870](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/870)); semantic/fixtures separate ([PROVENANCE_MAP](./PROVENANCE_MAP.md); S045/EV-037) | GIFTs stripped REMARKS |
-| **METAR (CA)** | ✅ MANOBS + Annex 3 ([dig](../mining/manobs-manair-ca-mining-notes.md)) | ✅ IWXXM 3.0.0 + `iwxxm-ca` emitter (EV-064–067) | ✅ Layered `ca_eccc` validate (EV-068/069): WMO 3.0.0 XSD+SCH + `metar-speci-ca.xsd` + code-ca + exchange | **EV-071 M1 (#1038)** lint pack · **EV-098 / #1028** datamart: METAR ops path **redirected** (documented; harvest pending) |
-| **TAF (CA)** | ✅ MANAIR 8th Ed. ([dig](../mining/manobs-manair-ca-mining-notes.md)) | ✅ NCLWS + IC weather + AMD (EV-064/070) | ✅ WMO 3.0.0 XSD+SCH + `taf-ca.xsd` (EV-069) | **EV-098**: ops TAF archive **mined** (validation corpus candidate; TAC pair pending) |
-| **AIRMET (CA)** | ✅ MANAIR GFA | ✅ phenomenon + GFA structured fields (EV-064/070) | ✅ WMO 3.0.0 XSD+SCH + `airmet-ca.xsd` + code-ca (EV-069) | **EV-098**: ops AIRMET archive **mined** |
+| **METAR (CA)** | ✅ MANOBS Amd2 ([dig](../mining/manobs-manair-ca-mining-notes.md)) · **#1029** section deepen | ✅ IWXXM 3.0.0 + `iwxxm-ca` emitter (EV-064–067) | ✅ Layered `ca_eccc` validate (EV-068/069) | **EV-098 / #1029:** P0 reaffirm; `ALT.NOT_OBS` **reopen**; VIS.SECTOR/VAR + RVR.VAR stubs; SAWR=XSD provenance · #1028 datamart redirect |
+| **TAF (CA)** | ✅ MANAIR **Amd15** ([dig](../mining/manobs-manair-ca-mining-notes.md)) · **#1030** | ✅ NCLWS + IC weather + AMD (EV-064/070) | ✅ WMO 3.0.0 XSD+SCH + `taf-ca.xsd` (EV-069) | **EV-098 / #1030:** NCLWS deepen; WX national (`SA`+BL/DR; no SHPL); ops archive mined |
+| **AIRMET (CA)** | ✅ MANAIR Amd15 GFA + E.5 ([dig](../mining/manobs-manair-ca-mining-notes.md)) · **#1030** | ✅ phenomenon + GFA structured fields (EV-064/070) | ✅ WMO 3.0.0 XSD+SCH + `airmet-ca.xsd` + code-ca (EV-069) | **EV-098 / #1030:** GFA delta + SFC wind/VIS/cloud + six observed code-ca members; no invented URIs |
 | **SIGMET (CA)** | ✅ Annex 3 + ECCC headers ([datamart dig](../mining/eccc-iwxxm-ca-mining-notes.md)) | ⚠ exchange emit EV-076; no TAC convert overlay | ✅ WMO 3.0.0 XSD+SCH; **no** `sigmet-ca.xsd` (skip `ca_xsd`) | **EV-098**: ops SIGMET **mined** + filename sample; QVACI **gap** under 3.0.0 · **#1031** SIGMET PDF guide (partial anchors; conversion stubs held) |
 | **Bulletin / AHL** | ✅ WMO AHL page **v1.0.1** (fetched 2026-08-01) | ✅ AHL T1T2 TAC↔IWXXM + BBB prefixes + [OPMET Guidelines 5th](../mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md) (`A_…xml.gz`, COLLECT) | COLLECT / iwxxm-collect (vendor `externalSchema`; = `wmo-im/collect` 1.2) | **S036/EV-029 M1 closed** — shared `parse_ahl` / `map_t1t2` / BBB / `iwxxm_filename` in `tac2iwxxm` (+ dissemination thin wrap); body **split** still METAR/SPECI until per-family Ms; WIS2 ≠ COLLECT ([Tier B](../mining/wmo-im-tier-b-mining-notes.md)) |
 
@@ -227,16 +227,16 @@ TAF NCLWS, AIRMET GFA). Codes live in [ISSUE_CATALOG.md](./ISSUE_CATALOG.md) /
 
 | Theme | Lint (F12/F15/F36) | Convert (F6) | Validate / goldens | Status |
 |-------|--------------------|--------------|--------------------|--------|
-| **C1** Statute-mile visibility + altimeter (`A` / `A////`) | `CA_STATUTE_MILE_VIS` / `CA_ALTIMETER_INHG` / `CA_ALTIMETER_NOT_OBS` | `ca_eccc` emit (EV-064–067) | `metar-speci-ca.xsd` | ✅ closed M1 |
-| **C2** MANOBS RMK family (SLP/PRESFR/PRESRR/NOSPECI/sector vis) | `CA_REMARK_*` codes | Addendum emit | XSD | ✅ closed M1 |
-| **C3** National METAR leads LWIS / SAWR | `CA_METAR_LWIS` / `CA_METAR_SAWR` + parse gate | `iwxxm-ca` roots | layered validate | ✅ closed M1 |
-| **C4** TAF NCLWS | `CA_TAF_NCLWS` | NCLWS convert (EV-064/070) | `taf-ca.xsd` | ✅ closed M1 |
-| **C5** AIRMET GFA phenomenon | `CA_AIRMET_GFA` | GFA structured fields (EV-070) | `airmet-ca.xsd` | ✅ closed M1 |
+| **C1** Statute-mile visibility + altimeter (`A` + 4 digits) | `CA_STATUTE_MILE_VIS` / `CA_ALTIMETER_INHG` / `CA_ALTIMETER_NOT_OBS` | `ca_eccc` emit (EV-064–067) | `metar-speci-ca.xsd` | ✅ M1 closed · **EV-098/#1029:** `CA_ALTIMETER_NOT_OBS` **reopened** (MANOBS vs `A////`); fixture `9999` cleanup backlog |
+| **C2** MANOBS RMK family (SLP/PRESFR/PRESRR/NOSPECI/sector vis) | `CA_REMARK_*` codes | Addendum emit | XSD | ✅ closed M1 · #1029 deepen PRES*/SLP; split VIS.VAR / RVR.VAR stubs |
+| **C3** National METAR leads LWIS / SAWR | `CA_METAR_LWIS` / `CA_METAR_SAWR` + parse gate | `iwxxm-ca` roots | layered validate | ✅ closed M1 · #1029 SAWR provenance → XSD (not MANOBS) |
+| **C4** TAF NCLWS | `CA_TAF_NCLWS` | NCLWS convert (EV-064/070) | `taf-ca.xsd` | ✅ closed M1 · **#1030** MANAIR Amd15 §2.6.9 deepen |
+| **C5** AIRMET GFA phenomenon | `CA_AIRMET_GFA` (+ SFC / phenomena membership stubs) | GFA structured fields (EV-070) | `airmet-ca.xsd` + code-ca | ✅ closed M1 · **#1030** Amd15 §6.8.8 / E.5 deepen |
 | **C6** Profile isolation vs `iwxxm_us` | No cross-profile bleed | separate emit keys | — | ✅ closed M1 (TC-EV071-002) |
 | **C7** API pre-convert lint wire | `semantic_profile=CA_ECCC` on `/convert` | — | — | ✅ closed M1 (TC-EV071-003) |
 | **C8** Quality matrix + catalog links | `tests/quality_matrices/inventory/ca_eccc_lint.yml` | — | — | ✅ closed M1 (TC-EV071-004) |
 
-Residual MANOBS book rules (CONTRAILS/AURORA, AerodromeVariableRVR) remain P2 / #1039 — not silent omission.
+Residual MANOBS book rules (CONTRAILS/AURORA; variable RVR / VIS.VAR stubs from #1029; LTG TAC↔XML mapping) remain P2 / #1039 — not silent omission. **Held:** monolithic Addendum TAC rule; invented code-ca URIs; new goldens until local `taf-ca`/`airmet-ca` QName parse.
 
 Exchange-output packaging for aerodrome products is **closed** ([#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032) / EV-071..073). See table below.
 

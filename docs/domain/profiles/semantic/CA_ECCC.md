@@ -17,9 +17,9 @@ surface observations, MANAIR aviation forecasts, and Canadian IWXXM extension sc
 
 ## METAR-family national report variants
 
-Canada defines **four** MANOBS surface-report TAC leads. Only two are ICAO-standard; LWIS and
-SAWR are **Canadian national products** with their own IWXXM substitution-group roots in
-`metar-speci-ca.xsd`.
+Canada defines **four** surface-report TAC leads. Only two are ICAO-standard; LWIS is
+defined in MANOBS §11.3; SAWR is a **Canadian national product** modeled in
+`metar-speci-ca.xsd` (EV-098 / #1029: no MANOBS code-form match — cite schema, not MANOBS).
 
 | TAC lead | What it is | API `product` | IWXXM root | Fixture `rule_id` |
 |----------|------------|---------------|------------|-------------------|
@@ -62,8 +62,8 @@ free-text-only RMK). Catalogued in [`catalog.yaml`](../catalog.yaml) under
 
 | Source | Access | Proves |
 |--------|--------|--------|
-| [MANOBS](https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html) | public | Canadian surface observation standards |
-| [MANAIR 8th Ed.](https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html) | public | Canadian aviation forecast standards |
+| [MANOBS](https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html) | public | Canadian surface observation standards (8th Ed. Amd 2) |
+| [MANAIR 8th Ed. Amd 15](https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html) | public | Canadian aviation forecast standards (defer-to-latest Jul 2026) |
 | [MSC IWXXM-CA XSD](https://dd.weather.gc.ca/today/aviation/iwxxm/schema/) | public | National extension schema tree |
 | [MSC aviation IWXXM datamart](https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_fr/) | public | Operational IWXXM 3.0.0 + CA extensions |
 

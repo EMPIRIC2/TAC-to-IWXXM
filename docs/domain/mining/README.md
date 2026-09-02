@@ -39,7 +39,7 @@ Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 | [schemas-wmo-int-tsml-mining-notes.md](./schemas-wmo-int-tsml-mining-notes.md) | OGC TimeseriesML (TSML) 1.0 mirror at schemas.wmo.int/tsml — not on IWXXM F6 path |
 | [schemas-wmo-int-rule-mining-notes.md](./schemas-wmo-int-rule-mining-notes.md) | Centralized Schematron index at schemas.wmo.int/rule (1.0–1.2; not IWXXM pin path) |
 | [icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](./icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) | ICAO APAC IWXXM FAQs 3rd Ed. (Mar 2025) — translation/NSC/COLLECT gotchas · #797 |
-| [manobs-manair-ca-mining-notes.md](./manobs-manair-ca-mining-notes.md) | EV-064 / #916 — MANOBS/MANAIR TAC rules for `CA_ECCC` |
+| [manobs-manair-ca-mining-notes.md](./manobs-manair-ca-mining-notes.md) | EV-064 / #916; **EV-098 / #1029+#1030** — MANOBS Amd2 + MANAIR Amd15 digs for `CA_ECCC` |
 | [au-bom-tac-mining-notes.md](./au-bom-tac-mining-notes.md) | EV-087 / #917 — BoM TAF INTER/TAF3/RMK T/Q + AUTO METAR for `AU_BOM` |
 | [nz-caa-met-tac-mining-notes.md](./nz-caa-met-tac-mining-notes.md) | EV-087 / #918 — NZ domestic vs intl TAF + AUTO METAR for `NZ_CAA_MET` |
 | [uk-metoffice-tac-mining-notes.md](./uk-metoffice-tac-mining-notes.md) | EV-089 / #920 — CAP 746 thin pack `UK_METOFFICE` |

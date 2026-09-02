@@ -197,6 +197,21 @@ OOS converter: VONA (`WM`→`LM`) · QVACI · WAFS · SIGWX.
 repeated issuer; examples and ops samples use full **CCCC** (e.g. `CWAO`). Do not enforce
 width-3 — [RULE_SOURCE_URLS](rules/RULE_SOURCE_URLS.md) `CA-ECCC-FILENAME` · EV-098 / #1028.
 
+### Canada encode notes (`CA_ECCC`) — EV-098 / #1029–#1030
+
+| Topic | Encode stance |
+|-------|----------------|
+| Dual dissemination | MANOBS §11.1 — IWXXM **in addition to** TAC (provenance; not a TAC grammar rule) |
+| LWIS / SAWR roots | `iwxxm-ca:LWIS` / `iwxxm-ca:SAWR` substitution groups; SAWR provenance is schema |
+| Addendum | XML aggregate for Canadian parameters — map **field-by-field**; do not treat as TAC token |
+| Sector / variable VIS / variable RVR | Distinct XSD types (`SectorVisibility`, `VariableVisibility`, `AerodromeVariableRVR`) |
+| Lightning | TAC RMK frequency/type/direction ≠ assumed 1:1 `ObservedLightning` qualitative distance |
+| TAF NCLWS | `taf-ca` `NonConvectiveLowLevelWindShear` — QNames from **local** `taf-ca.xsd` |
+| AIRMET GFA / SFC / phenomena | `airmet-ca` + observed `code-ca/airmet_weather_phenomena` members only; no invented URIs |
+| Schema pin | Profile stays on IWXXM **3.0.0** + `iwxxm-ca` 3.0 (not silent bump to app `v2025-2`) |
+
+Dig: [mining/manobs-manair-ca-mining-notes.md](mining/manobs-manair-ca-mining-notes.md).
+
 ---
 
 ## Conversion highlights (all F6)
