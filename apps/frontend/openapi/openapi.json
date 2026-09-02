@@ -311,6 +311,18 @@
             "title": "Profile",
             "type": "string"
           },
+          "propagate_residuals_to_remarks": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).",
+            "title": "Propagate Residuals To Remarks"
+          },
           "semantic_profile": {
             "default": "",
             "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",
@@ -412,6 +424,18 @@
             "title": "Profile",
             "type": "string"
           },
+          "propagate_residuals_to_remarks": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).",
+            "title": "Propagate Residuals To Remarks"
+          },
           "semantic_profile": {
             "default": "",
             "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",
@@ -438,6 +462,18 @@
             "description": "Optional manual text input (METAR TAC format)",
             "title": "Manual Text",
             "type": "string"
+          },
+          "propagate_residuals_to_remarks": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).",
+            "title": "Propagate Residuals To Remarks"
           }
         },
         "title": "Body_convert_zip_api_v1_convert_zip_post",
@@ -2541,6 +2577,11 @@
             },
             "title": "Residuals",
             "type": "array"
+          },
+          "residuals_propagated_to_remarks": {
+            "default": false,
+            "title": "Residuals Propagated To Remarks",
+            "type": "boolean"
           },
           "stem": {
             "title": "Stem",

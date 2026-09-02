@@ -37,6 +37,7 @@ const FORMATTING_ONLY: QualityMetricsDetailResponse = {
   converted_xml: '<?xml version="1.0"?><root xmlns="urn:x"><v>1</v></root>',
   match_status: 'equal',
   residuals: [],
+  residuals_propagated_to_remarks: false,
   lint_issues: [],
   validate_issues: [],
 };
