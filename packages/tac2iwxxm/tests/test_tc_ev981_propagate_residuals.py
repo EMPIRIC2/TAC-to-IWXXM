@@ -108,3 +108,27 @@ def test_tc_ev981_002_dedup_skips_residual_already_in_remarks_free_text() -> Non
     assert result.xml
     free = str((result.ir or {}).get("remarks_free_text") or "")
     assert free.count("VIRGA NE") == 1
+
+
+def test_tc_ev981_resolve_semantic_alias_and_empty_residual_paths() -> None:
+    """Cover semantic-alias resolve fallthrough, blank residual skip, and no-residual fold."""
+    from tac2iwxxm.convert import _residual_texts_to_append
+
+    # Semantic id resolves emit_key but canonical is not in the defaults table.
+    assert resolve_propagate_residuals_to_remarks("US_FAA_NWS", None) is False
+    assert resolve_propagate_residuals_to_remarks("CA_ECCC", None) is False
+    # Unresolved emit key → defaults table miss (resolved is None).
+    assert resolve_propagate_residuals_to_remarks("unknown_profile_xyz", None) is False
+
+    assert _residual_texts_to_append(["  ", "\t", "KEEP"], remarks_free_text="") == ["KEEP"]
+    assert _residual_texts_to_append(["ZZZZ"], remarks_free_text="prefix ZZZZ suffix") == []
+
+    clean = convert(
+        _TAC_RMK_ONLY,
+        product="METAR",
+        profile="iwxxm_us",
+        iwxxm_version="2025-2",
+        propagate_residuals_to_remarks=True,
+    )
+    assert clean.ok
+    assert "RESIDUALS_PROPAGATED_TO_REMARKS" not in [i.code for i in clean.issues]

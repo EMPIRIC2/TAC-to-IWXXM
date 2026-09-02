@@ -172,8 +172,6 @@ def _residual_texts_to_append(
             continue
         if cleaned.upper() in existing_upper:
             continue
-        if existing and cleaned in existing:
-            continue
         out.append(cleaned)
     return out
 
