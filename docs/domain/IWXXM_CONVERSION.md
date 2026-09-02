@@ -193,6 +193,10 @@ OOS converter: VONA (`WM`→`LM`) · QVACI · WAFS · SIGWX.
 `A_T1T2A1A2iiCCCCYYGGgg[BBB]_C_CCCC_yyyyMMddhhmmss[_ffffff].xml[.gz]` — use **IWXXM**
 `T1T2` (L*), not TAC `T1T2`, in the filename segment.
 
+**Canada (`CA_ECCC`):** MSC documents the same shape with a `{CCC}` placeholder for the
+repeated issuer; examples and ops samples use full **CCCC** (e.g. `CWAO`). Do not enforce
+width-3 — [RULE_SOURCE_URLS](rules/RULE_SOURCE_URLS.md) `CA-ECCC-FILENAME` · EV-098 / #1028.
+
 ---
 
 ## Conversion highlights (all F6)

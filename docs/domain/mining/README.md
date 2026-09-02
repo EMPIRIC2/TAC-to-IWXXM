@@ -48,6 +48,7 @@ Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 | [jp-jma-tac-mining-notes.md](./jp-jma-tac-mining-notes.md) | EV-089 / #920 — JMA/Tokyo VAAC compat `JP_JMA` |
 | [in-imd-tac-mining-notes.md](./in-imd-tac-mining-notes.md) | EV-089 / #920 — IMD compat `IN_IMD` |
 | [hk-hko-tac-mining-notes.md](./hk-hko-tac-mining-notes.md) | EV-089 / #920 — HKO APAC fixtures `HK_HKO` |
-| [eccc-iwxxm-ca-mining-notes.md](./eccc-iwxxm-ca-mining-notes.md) | EV-064 / #916 — ECCC IWXXM 3.0.0 + `*-ca.xsd` + code-ca + datamart |
+| [eccc-iwxxm-ca-mining-notes.md](./eccc-iwxxm-ca-mining-notes.md) | EV-064 / #916; **EV-098 / #1028** deepen — datamart triage, naming, QVACI gap |
+| [eccc-iwxxm-doc-pdfs-mining-notes.md](./eccc-iwxxm-doc-pdfs-mining-notes.md) | EV-098 / #1031 — MSC `doc/` PDF inventory + AIRMET/SIGMET/TAF guides (partial anchors) |
 | [codes-wmo-int-aviation-mining-notes.md](./codes-wmo-int-aviation-mining-notes.md) | codes.wmo.int aviation registers (colour/nil/MetFeature 28 vs 27; 4678 CSV=402 vs HTML≈101; SCH RDF match) · #797 |
 | [vona-encode-remine-ev035-mining-notes.md](./vona-encode-remine-ev035-mining-notes.md) | S043/EV-035 remine — VONA Guidance silent; AHL WM/LM + FM205 promotes · #869 |

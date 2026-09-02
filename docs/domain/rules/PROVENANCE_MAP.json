@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "cycle": "EV-046",
-  "session": "S055-wmo-aviation-registers",
-  "generated": "2026-08-08",
+  "cycle": "EV-098",
+  "session": "EV-098-ca-eccc-mining",
+  "generated": "2026-09-02",
   "gap_report": "docs/sessions/S055-wmo-aviation-registers/reports/codes-wmo-int-coverage.md",
   "digs": [
     {
@@ -44,7 +44,7 @@
       "source_url": "https://github.com/wmo-im/iwxxm",
       "source_id": "opmet-guidelines-5th",
       "ticket": null,
-      "note": "Landing/cite — see RULE_SOURCE_URLS for exact PDF"
+      "note": "Landing/cite \u2014 see RULE_SOURCE_URLS for exact PDF"
     },
     {
       "path": "docs/domain/mining/PPT-02-IWXXM-Framework-WMO-mining-notes.md",
@@ -84,7 +84,7 @@
       "source_url": "https://library.wmo.int/",
       "source_id": "wmo-306-i3-2019",
       "ticket": null,
-      "note": "historical dig 1–272 complete · #798"
+      "note": "historical dig 1\u2013272 complete \u00b7 #798"
     },
     {
       "path": "docs/domain/mining/WMO-306-vI-3-2023-mining-notes.md",
@@ -183,7 +183,7 @@
       "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
       "source_id": "fmh-1",
       "ticket": null,
-      "note": "FMH-1 US national; URL may redirect — cite RULE_SOURCE_URLS"
+      "note": "FMH-1 US national; URL may redirect \u2014 cite RULE_SOURCE_URLS"
     },
     {
       "path": "docs/domain/mining/icao-annex-3-mining-notes.md",
@@ -328,7 +328,7 @@
       "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
       "source_id": "iwxxm-us",
       "ticket": null,
-      "note": "validate column ⚠ — no US SCH in pin · #870"
+      "note": "validate column \u26a0 \u2014 no US SCH in pin \u00b7 #870"
     },
     {
       "path": "docs/domain/mining/schemas-wmo-int-metce-mining-notes.md",
@@ -386,7 +386,7 @@
       "source_url": "https://schemas.wmo.int/rule/",
       "source_id": "schemas-rule-index",
       "ticket": null,
-      "note": "index only — pin uses vendor rule/iwxxm.sch"
+      "note": "index only \u2014 pin uses vendor rule/iwxxm.sch"
     },
     {
       "path": "docs/domain/mining/schemas-wmo-int-saf-mining-notes.md",
@@ -433,7 +433,7 @@
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
       "source_id": "vona-ahl-fm205",
       "ticket": null,
-      "note": "Guidance silent · #869; AHL WM/LM + FM205 promote"
+      "note": "Guidance silent \u00b7 #869; AHL WM/LM + FM205 promote"
     },
     {
       "path": "docs/domain/mining/wmo-im-iwxxm-IWXXM-tree-mining-notes.md",
@@ -524,6 +524,48 @@
       "source_id": "wmo-im-tier-b",
       "ticket": null,
       "note": null
+    },
+    {
+      "path": "docs/domain/mining/eccc-iwxxm-ca-mining-notes.md",
+      "date_mined": "2026-09-02",
+      "products": [
+        "METAR",
+        "SPECI",
+        "TAF",
+        "AIRMET",
+        "SIGMET",
+        "VAA",
+        "QVACI"
+      ],
+      "roles": [
+        "conversion",
+        "bulletin",
+        "iwxxm-validation"
+      ],
+      "status": "gap",
+      "source_url": "https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/",
+      "source_id": "eccc-iwxxm-ca",
+      "ticket": "#1028",
+      "note": "EV-098 Gate C: datamart triage; QVACI version gap; filename CCCC semantics; ops TAF/AIRMET/SIGMET mined"
+    },
+    {
+      "path": "docs/domain/mining/eccc-iwxxm-doc-pdfs-mining-notes.md",
+      "date_mined": "2026-09-02",
+      "products": [
+        "TAF",
+        "AIRMET",
+        "SIGMET"
+      ],
+      "roles": [
+        "conversion",
+        "bulletin",
+        "iwxxm-validation"
+      ],
+      "status": "gap",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/doc/",
+      "source_id": "eccc-iwxxm-doc-pdfs",
+      "ticket": "#1031",
+      "note": "EV-098 Gate C selective: PDF source URLs + AHL/CCCC reinforce; conversion stubs held pending direct PDF section verify"
     }
   ],
   "catalog_codes": [
@@ -705,7 +747,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/SigConvectiveCloudType · prior landing: https://codes.wmo.int/49-2/SigConvectiveCloudType",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/SigConvectiveCloudType \u00b7 prior landing: https://codes.wmo.int/49-2/SigConvectiveCloudType",
       "note": "CB/TCU convective type register"
     },
     {
@@ -796,7 +838,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome · prior landing: https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome \u00b7 prior landing: https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
       "note": "Cloud amount register landing"
     },
     {
@@ -856,8 +898,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (no dedicated RVR notation register; Annex 3 / FMH for grammar) · prior landing: https://codes.wmo.int/49-2",
-      "note": "No single RVR concept register — cite 49-2 family + grammar sources"
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 (no dedicated RVR notation register; Annex 3 / FMH for grammar) \u00b7 prior landing: https://codes.wmo.int/49-2",
+      "note": "No single RVR concept register \u2014 cite 49-2 family + grammar sources"
     },
     {
       "code": "INVALID_SIGMET_CNL",
@@ -917,7 +959,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (visibility grammar; WeatherCausingVisibilityReduction for obscuration codes) · prior landing: https://codes.wmo.int/49-2",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 (visibility grammar; WeatherCausingVisibilityReduction for obscuration codes) \u00b7 prior landing: https://codes.wmo.int/49-2",
       "note": "Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations"
     },
     {
@@ -928,7 +970,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather (concept IDs often http://codes.wmo.int/306/4678/{TAC}) · prior landing: https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather (concept IDs often http://codes.wmo.int/306/4678/{TAC}) \u00b7 prior landing: https://codes.wmo.int/49-2/AerodromePresentOrForecastWeather",
       "note": "Prefer register landing + 306/4678 concept pattern over bare root"
     },
     {
@@ -939,7 +981,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/959",
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (offline vendor CSV/RDF membership) · prior landing: https://codes.wmo.int/49-2",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 (offline vendor CSV/RDF membership) \u00b7 prior landing: https://codes.wmo.int/49-2",
       "note": "Validated: tac-validate membership gate vs harvested wmo_membership.json"
     },
     {
@@ -950,7 +992,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2 (wind group grammar; not a weather-notation list) · prior landing: https://codes.wmo.int/49-2",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2 (wind group grammar; not a weather-notation list) \u00b7 prior landing: https://codes.wmo.int/49-2",
       "note": "Wind not in AerodromePresentWeather list"
     },
     {
@@ -1221,7 +1263,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome · prior landing: https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome \u00b7 prior landing: https://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome",
       "note": "NCD cloud amount notation family"
     },
     {
@@ -1531,8 +1573,8 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/ (product routing N/A to aviation weather registers)",
-      "note": "Intentional bare root — not a registry notation check"
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ (product routing N/A to aviation weather registers)",
+      "note": "Intentional bare root \u2014 not a registry notation check"
     },
     {
       "code": "US_TAF_BECMG_FORBIDDEN",
@@ -1662,7 +1704,7 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable · prior landing: https://codes.wmo.int/common/nil",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil/notObservable \u00b7 prior landing: https://codes.wmo.int/common/nil",
       "note": "Vertical visibility missingness via nil"
     },
     {
@@ -1703,8 +1745,48 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
       "ticket": null,
-      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable (dual iwxxm/nil) · prior landing: https://codes.wmo.int/common/nil",
+      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/common/nil/notObservable (dual iwxxm/nil) \u00b7 prior landing: https://codes.wmo.int/common/nil",
       "note": "nilReason notObservable; prefer iwxxm/nil when pin policy says so"
+    },
+    {
+      "code": "CA-ECCC-FILENAME",
+      "status": "ok",
+      "source_id": "eccc-iwxxm-ca",
+      "source_url": "https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/",
+      "consumer": "bulletin",
+      "dig": "docs/domain/mining/eccc-iwxxm-ca-mining-notes.md",
+      "ticket": "#1028/#1031",
+      "note": "CCCC issuer; reinforced #1031 bulletin PDF + WMO AHL v1.0.1"
+    },
+    {
+      "code": "CA-ECCC-PRODUCT-AHL",
+      "status": "ok",
+      "source_id": "eccc-iwxxm-ca",
+      "source_url": "https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/",
+      "consumer": "bulletin",
+      "dig": "docs/domain/mining/eccc-iwxxm-ca-mining-notes.md",
+      "ticket": "#1028/#1031",
+      "note": "Product header families; WMO T1T2 corroboration #1031"
+    },
+    {
+      "code": "CA-ECCC-QVACI-VERSION-GAP",
+      "status": "gap",
+      "source_id": "eccc-iwxxm-ca",
+      "source_url": "https://community.wmo.int/iwxxm",
+      "consumer": "iwxxm-validate",
+      "dig": "docs/domain/mining/eccc-iwxxm-ca-mining-notes.md",
+      "ticket": "#1028",
+      "note": "ECCC lists qvaci under 3.0.0 declaration; WMO QVA first at 2025-2/1.0.0 \u2014 no CA 3.0 fixture"
+    },
+    {
+      "code": "CA-ECCC-FILENAME-SUBSET",
+      "status": "ok",
+      "source_id": "eccc-iwxxm-doc-pdfs",
+      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
+      "consumer": "bulletin",
+      "dig": "docs/domain/mining/eccc-iwxxm-doc-pdfs-mining-notes.md",
+      "ticket": "#1031",
+      "note": "MSC datamart filename is subset of WMO AHL; do not ban _ffffff/compression globally"
     }
   ],
   "matrix_cells": [
@@ -2048,6 +2130,24 @@
       "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
       "ticket": null,
       "note": "AHL T1T2 source OK ( / #872 closed as source-availability)"
+    },
+    {
+      "product": "QVACI",
+      "role": "iwxxm-validation",
+      "disposition": "gap",
+      "source_id": "eccc-iwxxm-ca",
+      "source_url": "https://community.wmo.int/iwxxm",
+      "ticket": "#1028",
+      "note": "CA-ECCC-QVACI-VERSION-GAP"
+    },
+    {
+      "product": "SIGMET",
+      "role": "bulletin",
+      "disposition": "ok",
+      "source_id": "eccc-iwxxm-ca",
+      "source_url": "https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/",
+      "ticket": "#1028",
+      "note": "CA filename/AHL; profile CA_ECCC (additive to opmet row)"
     }
   ],
   "full_stack_rules": [
@@ -2060,7 +2160,7 @@
       "status": "ok",
       "pin_version": "2025-2",
       "ticket": null,
-      "note": "WM→LM ok; #869 is Guidance silence tracker only"
+      "note": "WM\u2192LM ok; #869 is Guidance silence tracker only"
     },
     {
       "rule_id": "VONA_FM205_PACKAGE",
@@ -2081,7 +2181,7 @@
       "status": "N/A",
       "pin_version": "2025-2",
       "ticket": "#869",
-      "note": "Upstream Guidance silence — non-blocking encode; SoT hierarchy documented"
+      "note": "Upstream Guidance silence \u2014 non-blocking encode; SoT hierarchy documented"
     },
     {
       "rule_id": "IWXXM_SCH_PIN",
@@ -2102,7 +2202,7 @@
       "status": "N/A",
       "pin_version": "3.0",
       "ticket": "#870",
-      "note": "Official US Schematron not published — N/A artifact ()"
+      "note": "Official US Schematron not published \u2014 N/A artifact ()"
     },
     {
       "rule_id": "AHL_SPECI_SP_LP",
@@ -2113,7 +2213,51 @@
       "status": "ok",
       "pin_version": "2025-2",
       "ticket": null,
-      "note": "fixtures/ahl/sp_speci — matrix refresh may close #872"
+      "note": "fixtures/ahl/sp_speci \u2014 matrix refresh may close #872"
+    },
+    {
+      "rule_id": "CA-ECCC-FILENAME",
+      "role": "bulletin",
+      "source_id": "eccc-iwxxm-ca",
+      "source_url": "https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/",
+      "dig": "docs/domain/mining/eccc-iwxxm-ca-mining-notes.md",
+      "status": "ok",
+      "pin_version": "3.0.0",
+      "ticket": "#1028/#1031",
+      "note": "CCCC issuer semantics \u00b7 #1031 reinforce"
+    },
+    {
+      "rule_id": "CA-ECCC-PRODUCT-AHL",
+      "role": "bulletin",
+      "source_id": "eccc-iwxxm-ca",
+      "source_url": "https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/",
+      "dig": "docs/domain/mining/eccc-iwxxm-ca-mining-notes.md",
+      "status": "ok",
+      "pin_version": "3.0.0",
+      "ticket": "#1028/#1031",
+      "note": "Product header families \u00b7 #1031 reinforce"
+    },
+    {
+      "rule_id": "CA-ECCC-QVACI-VERSION-GAP",
+      "role": "iwxxm-validation",
+      "source_id": "eccc-iwxxm-ca",
+      "source_url": "https://community.wmo.int/iwxxm",
+      "dig": "docs/domain/mining/eccc-iwxxm-ca-mining-notes.md",
+      "status": "gap",
+      "pin_version": "3.0.0",
+      "ticket": "#1028",
+      "note": "Blocked under CA_ECCC IWXXM 3.0.0"
+    },
+    {
+      "rule_id": "CA-ECCC-FILENAME-SUBSET",
+      "role": "bulletin",
+      "source_id": "eccc-iwxxm-doc-pdfs",
+      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
+      "dig": "docs/domain/mining/eccc-iwxxm-doc-pdfs-mining-notes.md",
+      "status": "ok",
+      "pin_version": "3.0.0",
+      "ticket": "#1031",
+      "note": "MSC \u2282 WMO filename grammar"
     }
   ],
   "revisited_executable": [
@@ -2145,7 +2289,13 @@
       ]
     }
   ],
-  "gaps": [],
+  "gaps": [
+    {
+      "rule_id": "CA-ECCC-QVACI-VERSION-GAP",
+      "ticket": "#1028",
+      "note": "No IWXXM 3.0 QVA package; blocked for CA_ECCC strict 3.0.0 until version decision"
+    }
+  ],
   "prior_cycle": "EV-035",
   "ev037_dispositions": {
     "869": "VONA Guidance silence non-blocking; SoT hierarchy; cookbook derived",

@@ -183,6 +183,14 @@ Reusable artifact per [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/10
 - **Residual:** Re-harvest VAAC TAC when 31-day index publishes ≥2 bulletins
 - Docs aligned: `feature-list.md`, `COVERAGE_MATRIX.md`, `test-plan.md` §EV-078
 
+### EV-098 deepen (mining — in progress)
+
+- **Issues:** [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028)–[#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031)
+- **Path:** deep-research-domain-handoff (EV-097) → mine-domain-sources after gate C
+- **Targets:** datamart triage; MSC doc PDFs; MANOBS P0 TAC rules + fixtures; MANAIR TAF/AIRMET/GFA
+- **Decisions:** [ev-098-ca-eccc-mining.md](../../../decisions/ev-098-ca-eccc-mining.md)
+- **Tests:** TC-EV098-001..005
+
 ### EV-075 closeout (#1032 umbrella audit)
 
 - **Verified:** #1032 GitHub close correct — aerodrome exchange output (EV-071..072), COLLECT (EV-073), ops corpus (#1036), translation metadata (#1040) met on `stage`

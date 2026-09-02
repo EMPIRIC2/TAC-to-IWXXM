@@ -43,7 +43,7 @@
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire |
-| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived |
+| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -1818,7 +1818,7 @@
 
 ### F36: National semantic + regional exchange profile content — EV-063 / #912
 
-- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; EV-065/086/090 #921 exchange stubs + mining; **EV-087** `AU_BOM` + `NZ_CAA_MET`; **EV-089** thin/compat #920; **EV-090** exchange light picker; **EV-093** #1024 semantic picker deepen; **EV-094** thin/compat deepen [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)).
+- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; **EV-098** CA_ECCC deep mining [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028)–[#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031); EV-065/086/090 #921 exchange stubs + mining; **EV-087** `AU_BOM` + `NZ_CAA_MET`; **EV-089** thin/compat #920; **EV-090** exchange light picker; **EV-093** #1024 semantic picker deepen; **EV-094** thin/compat deepen [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)).
 - **What it does**: Implements profile **content** on top of F35 architecture: deepen
   `US_FAA_NWS` ([#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)), **`CA_ECCC`**
   ([#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) / EV-064), **`AU_BOM`**
@@ -1874,6 +1874,10 @@
      for TAF TX/TN omission awareness (convert stays core IWXXM); GAMET parse-only reaffirm;
      UK-first PRs; catalog `status: implemented` for six packs; **close #1098** on land
      (**do not reopen #920**).
+  23. **EV-098 / #1028–#1031:** CA_ECCC deep mining — datamart triage (#1028); MSC `doc/` PDFs
+     (#1031); MANOBS P0 TAC rules + fixtures (#1029); MANAIR TAF/AIRMET/GFA (#1030). Research via
+     deep-research-domain-handoff (EV-097); promote via mine-domain-sources after gate C.
+     No UI; no SIGMET national / VAA convert this cycle. **TC-EV098-***.
 - **Out of scope**: Full ROBEX/RODEX packaging rule matrices beyond documented gaps; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); inventing national IWXXM enums/XSDs; China unless public sources appear; GAMET→IWXXM conversion; #933 ConversionProfile editor
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   semantic (**EV-093** canonical + nationals) + **exchange** control (EV-090 / drawer EV-091)
