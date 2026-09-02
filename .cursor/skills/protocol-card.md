@@ -59,7 +59,8 @@ Browser-facing work: honor [connectivity-gates.md](connectivity-gates.md) tiers 
 
 | Skill | When |
 |-------|------|
-| `mine-domain-sources` | Domain mining → `docs/domain/` |
+| `deep-research-domain-handoff` | Evolve/operator deep-research handoff prompts + gates A/B/C (EV-097); promote via `mine-domain-sources` |
+| `mine-domain-sources` | Domain mining → `docs/domain/` (promote/conflict owner) |
 | `monorepo-migration-checklist` | ADR-003 monorepo migration |
 
 ---
