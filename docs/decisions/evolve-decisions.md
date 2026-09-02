@@ -1,5 +1,28 @@
 # Evolve Decisions
 
+## Cycle EV-097 — Deep-research domain handoff (skill + rule)
+
+**Opened:** 2026-09-02 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-097-deep-research-domain-handoff`  
+**Preset:** Standard · **Documenting→Implementing gate:** **open** · **Issue:** — (process/meta)
+
+| ID | Outcome |
+|----|---------|
+| D-EV097-skill | Project skill `deep-research-domain-handoff` — evolve-invokable handoff prompts |
+| D-EV097-rule | Optional `deep-research-domain-handoff.mdc` — AskQuestion gates; no silent promote |
+| D-EV097-promote | Promote/conflict via existing `mine-domain-sources` |
+| D-EV097-corpus | No new minimal CORPUS member; decisions + domain hub |
+| D-EV097-wire | protocol-card + skill-routing only (no pack evolve rewrite) |
+| D-EV097-pr | PR into `stage` |
+| D-EV097-scope | No mining pass / no product code this cycle |
+
+### Corpus
+
+[Corpus: decisions §EV-097] [Corpus: product] (process — no Fn)
+
+Detail: [ev-097-deep-research-domain-handoff.md](ev-097-deep-research-domain-handoff.md)
+
+---
+
 ## Cycle EV-981 — Optional propagate decode residuals into remarks / HRT (#981)
 
 **Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-981-feature-optional-propagate-decode-residuals-into`  

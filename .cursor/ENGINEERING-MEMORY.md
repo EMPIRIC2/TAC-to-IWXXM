@@ -21,6 +21,7 @@
 
 | Skill / ref | Purpose |
 |-------------|---------|
+| `deep-research-domain-handoff` | Evolve deep-research handoff prompts + user gates (EV-097) |
 | `mine-domain-sources` | Domain mining → `docs/domain/` |
 | `monorepo-migration-checklist` | ADR-003 monorepo migration |
 | `connectivity-gates.md` | H4–H6′ browser/API gates |
