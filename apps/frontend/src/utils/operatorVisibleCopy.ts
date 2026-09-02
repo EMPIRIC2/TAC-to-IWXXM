@@ -14,7 +14,9 @@ import {
   QUALITY_METRICS_DIFF_HEADING,
   QUALITY_METRICS_EMPTY_DIAGNOSTICS,
   QUALITY_METRICS_LINT_HELP,
+  QUALITY_METRICS_RESIDUALS_FOLDED,
   QUALITY_METRICS_RESIDUALS_HELP,
+  QUALITY_METRICS_RESIDUALS_NOT_FOLDED,
   QUALITY_METRICS_VALIDATE_HELP,
   QUALITY_METRICS_XML_VIEW_HELP,
   QUALITY_METRICS_XML_VIEW_NORMALIZED,
@@ -41,6 +43,10 @@ import {
   SOFT_PREVIEW_HELP,
   SOFT_PREVIEW_LABEL,
 } from '@/app/components/SoftPreviewControl';
+import {
+  PROPAGATE_RESIDUALS_HELP,
+  PROPAGATE_RESIDUALS_LABEL,
+} from '@/app/components/PropagateResidualsControl';
 import { GUEST_LOSS_OF_PROGRESS_MESSAGE } from '@/utils/guestLossNotice';
 import { OPERATOR_HANDBOOK_URL, OPERATOR_ONE_PAGER_URL } from '@/utils/operatorHelp';
 import { STORAGE_INVENTORY } from '@/utils/privacyPreferences';
@@ -65,6 +71,8 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
   const entries: OperatorVisibleCopyEntry[] = [
     { id: 'soft-preview.label', text: SOFT_PREVIEW_LABEL },
     { id: 'soft-preview.help', text: SOFT_PREVIEW_HELP },
+    { id: 'propagate-residuals.label', text: PROPAGATE_RESIDUALS_LABEL },
+    { id: 'propagate-residuals.help', text: PROPAGATE_RESIDUALS_HELP },
     { id: 'iwxxm-product.help', text: IWXXM_PRODUCT_HELP },
     { id: 'iwxxm-product.convert-label', text: IWXXM_PRODUCT_CONVERT_LABEL },
     { id: 'iwxxm-product.convert-aria', text: IWXXM_PRODUCT_CONVERT_ARIA },
@@ -103,6 +111,14 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
       text: QUALITY_METRICS_EMPTY_DIAGNOSTICS,
     },
     { id: 'quality-metrics.residuals-help', text: QUALITY_METRICS_RESIDUALS_HELP },
+    {
+      id: 'quality-metrics.residuals-folded',
+      text: QUALITY_METRICS_RESIDUALS_FOLDED,
+    },
+    {
+      id: 'quality-metrics.residuals-not-folded',
+      text: QUALITY_METRICS_RESIDUALS_NOT_FOLDED,
+    },
     { id: 'quality-metrics.lint-help', text: QUALITY_METRICS_LINT_HELP },
     { id: 'quality-metrics.validate-help', text: QUALITY_METRICS_VALIDATE_HELP },
     {

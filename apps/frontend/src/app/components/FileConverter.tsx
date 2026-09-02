@@ -12,6 +12,7 @@ import {
   type IwxxmPreviewStatus,
 } from './IwxxmPreviewPane';
 import { SoftPreviewControl } from './SoftPreviewControl';
+import { PropagateResidualsControl } from './PropagateResidualsControl';
 import { LiveIwxxmToggle } from './LiveIwxxmToggle';
 import { WorkbenchConsole } from './WorkbenchConsole';
 import { useLintIssueCatalog } from '@/hooks/useLintIssueCatalog';
@@ -286,6 +287,7 @@ export function FileConverter({
   const [manualInput, setManualInput] = useState('');
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [softPreview, setSoftPreview] = useState(false);
+  const [propagateResiduals, setPropagateResiduals] = useState(false);
   const [liveIwxxm, setLiveIwxxm] = useState(false);
   const [failedSpans, setFailedSpans] = useState<FailedSpan[]>([]);
   const [previewXml, setPreviewXml] = useState('');
@@ -969,6 +971,7 @@ export function FileConverter({
         includeNilReasons: conversionParams.includeNilReasons,
         logLevel: conversionParams.logLevel,
         preview: softPreview,
+        propagateResidualsToRemarks: propagateResiduals,
         extensions: nationalExtensionsForProfile(conversionParams.profile),
         exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
         exchangeProfile: conversionParams.exchangeProfile,
@@ -1594,6 +1597,7 @@ export function FileConverter({
           iwxxmVersion: conversionParams.iwxxmVersion,
           validateOutput: false,
           preview: true,
+          propagateResidualsToRemarks: propagateResiduals,
           extensions: nationalExtensionsForProfile(conversionParams.profile),
           exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
           exchangeProfile: conversionParams.exchangeProfile,
@@ -1642,6 +1646,7 @@ export function FileConverter({
       conversionParams.profile,
       conversionParams.iwxxmVersion,
       conversionParams.exchangeProfile,
+      propagateResiduals,
     ],
   );
 
@@ -2315,6 +2320,11 @@ export function FileConverter({
                 <SoftPreviewControl
                   checked={softPreview}
                   onChange={setSoftPreview}
+                  disabled={isReadOnly || isBusy}
+                />
+                <PropagateResidualsControl
+                  checked={propagateResiduals}
+                  onChange={setPropagateResiduals}
                   disabled={isReadOnly || isBusy}
                 />
                 <LiveIwxxmToggle

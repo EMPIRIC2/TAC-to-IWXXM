@@ -1,5 +1,37 @@
 # Evolve Decisions
 
+## Cycle EV-981 — Optional propagate decode residuals into remarks / HRT (#981)
+
+**Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-981-feature-optional-propagate-decode-residuals-into`  
+**Preset:** Standard · **Documenting→Implementing gate:** **closed** · **Issue:** [#981](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/981)  
+**Context:** [propagate-residuals-to-remarks](../context/propagate-residuals-to-remarks.md)
+
+| ID | Outcome |
+|----|---------|
+| D-EV981-fn | Deepen **F6** / **F9** / **F7.q** — no new top-level Fn |
+| D-EV981-flag | `propagate_residuals_to_remarks` on convert (+ convert-bulletin) |
+| D-EV981-default | Default off; omitted → profile default |
+| D-EV981-annex3 | annex3 / ICAO_2025 default **off** (must not silently retain residuals) |
+| D-EV981-profile-wire | Profile-default hook shipped; **no** other profile defaults enabled this cycle |
+| D-EV981-issue | When folded: info ConvertIssue e.g. `RESIDUALS_PROPAGATED_TO_REMARKS` + provenance |
+| D-EV981-uj | UJ-026 unchanged when off; **UJ-070** when on |
+| D-EV981-qm | Detail `residuals_propagated_to_remarks` + residuals-panel indicator (fixtures stay precomputed) |
+| D-EV981-adr | No ADR unless tech-plan forces standing policy |
+| D-EV981-pr | PR into `stage` |
+| D-EV981-ux | Plain-language operator copy; no internal doc refs |
+| D-EV981-feasible | Feasibility **FEASIBLE**; proceed tech-plan (2026-08-31) |
+| D-EV981-emit-target | Fold into XML only where profile already emits remarks/HRT; **annex3:** no invented free-text; flag-on + residuals → info `RESIDUALS_PROPAGATED_TO_REMARKS` message documents **no XML target**; QM fold bool stays false |
+| D-EV981-dedup | Append only residuals not already covered by remarks-retain / RMK→HRT |
+| D-EV981-zip | `/convert-zip` inherits same Form field + resolve semantics |
+| D-EV981-resolve | Omitted → profile default (annex3/`ICAO_2025` off); explicit override wins; no other profile defaults this cycle |
+
+### Corpus
+
+[Corpus: product §F6/F9/F7.q] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-981]
+
+---
+
+
 ## Cycle EV-096 — Harden Cursor rules/skills from CI footguns (#1096)
 
 **Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-096-ci-rules-skills-harden`  

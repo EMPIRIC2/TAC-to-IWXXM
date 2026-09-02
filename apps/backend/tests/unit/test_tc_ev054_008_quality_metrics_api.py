@@ -43,6 +43,8 @@ def test_tc_ev054_008_detail_and_unknown(client: TestClient) -> None:
     assert detail["official_xml"]
     assert detail["converted_xml"]
     assert "diff" not in detail
+    # EV-981 / TC-EV981-004 — additive field defaults false when fixture omits it
+    assert detail.get("residuals_propagated_to_remarks") is False
 
     missing = client.get("/api/v1/quality-metrics/not-a-real-stem")
     assert missing.status_code == 404

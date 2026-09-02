@@ -1264,6 +1264,11 @@ export interface components {
              */
             profile: string;
             /**
+             * Propagate Residuals To Remarks
+             * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
+             */
+            propagate_residuals_to_remarks?: boolean | null;
+            /**
              * Semantic Profile
              * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
              * @default
@@ -1346,6 +1351,11 @@ export interface components {
              */
             profile: string;
             /**
+             * Propagate Residuals To Remarks
+             * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
+             */
+            propagate_residuals_to_remarks?: boolean | null;
+            /**
              * Semantic Profile
              * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
              * @default
@@ -1366,6 +1376,11 @@ export interface components {
              * @default
              */
             manual_text: string;
+            /**
+             * Propagate Residuals To Remarks
+             * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
+             */
+            propagate_residuals_to_remarks?: boolean | null;
         };
         /** Body_decode_tac_endpoint_api_v1_decode_tac_post */
         Body_decode_tac_endpoint_api_v1_decode_tac_post: {
@@ -2530,6 +2545,11 @@ export interface components {
             residuals?: {
                 [key: string]: unknown;
             }[];
+            /**
+             * Residuals Propagated To Remarks
+             * @default false
+             */
+            residuals_propagated_to_remarks: boolean;
             /** Stem */
             stem: string;
             /**

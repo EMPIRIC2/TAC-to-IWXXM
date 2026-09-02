@@ -259,6 +259,38 @@ describe('API Utils', () => {
       expect(body.get('iwxxm_version')).toBe('2025-2');
     });
 
+    it('appends propagate_residuals_to_remarks when explicitly set (TC-EV981)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        propagateResidualsToRemarks: true,
+      });
+      let body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('propagate_residuals_to_remarks')).toBe('true');
+
+      (global.fetch as any).mockClear();
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        propagateResidualsToRemarks: false,
+      });
+      body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('propagate_residuals_to_remarks')).toBe('false');
+    });
+
     it('appends semantic_profile uppercase for canonical ids (TC-EV093-002)', async () => {
       mockFetchResponse({
         results: [],
@@ -1166,6 +1198,47 @@ describe('API Utils', () => {
       expect(init.body.get('exchange_profile')).toBe('EUR_RODEX');
     });
 
+    it('appends propagate_residuals_to_remarks on convert-bulletin (TC-EV981)', async () => {
+      mockFetchResponse({
+        bulletin_meta: {
+          ahl: 'SAUS31 KZNY 121200',
+          report_count: 0,
+          tt: 'SA',
+          aa: 'US',
+          cccc: 'KZNY',
+          yygggg: '121200',
+        },
+        results: [],
+      });
+      await convertBulletin({
+        product: 'METAR',
+        manualText: 'SAUS31',
+        propagateResidualsToRemarks: true,
+      });
+      let body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('propagate_residuals_to_remarks')).toBe('true');
+
+      (global.fetch as any).mockClear();
+      mockFetchResponse({
+        bulletin_meta: {
+          ahl: 'SAUS31 KZNY 121200',
+          report_count: 0,
+          tt: 'SA',
+          aa: 'US',
+          cccc: 'KZNY',
+          yygggg: '121200',
+        },
+        results: [],
+      });
+      await convertBulletin({
+        product: 'METAR',
+        manualText: 'SAUS31',
+        propagateResidualsToRemarks: false,
+      });
+      body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('propagate_residuals_to_remarks')).toBe('false');
+    });
+
     it('throws on convert-bulletin HTTP error with detail.message', async () => {
       mockFetchResponse({ detail: { message: 'bulletin too large' } }, false, 400);
       await expect(
@@ -1233,6 +1306,14 @@ describe('API Utils', () => {
           accessToken: 'tok',
         }),
       ).rejects.toBeInstanceOf(EndpointNotImplementedError);
+    });
+
+    it('constructs EndpointNotImplementedError with default status/code', () => {
+      const err = new EndpointNotImplementedError('placeholder');
+      expect(err).toBeInstanceOf(EndpointNotImplementedError);
+      expect(err.status).toBe(501);
+      expect(err.code).toBe('not_implemented');
+      expect(err.name).toBe('EndpointNotImplementedError');
     });
 
     it('uses COLLECT placeholder defaults when the 501 body has no details', async () => {

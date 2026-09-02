@@ -168,6 +168,7 @@ def convert_metar_tac_with_metadata(
     translation_centre_designator: str = "",
     translation_centre_name: str = "",
     report_status: str | None = None,
+    propagate_residuals_to_remarks: bool | None = None,
 ) -> tuple[str, ComprehensiveValidationResult | None]:
     """
     Convert TAC to IWXXM via ``tac2iwxxm`` and optionally validate.
@@ -210,6 +211,9 @@ def convert_metar_tac_with_metadata(
         Centre name when ``emit_translation_centre`` is true.
     report_status :
         Optional IWXXM ``reportStatus`` override (AHL BBB → reportStatus; EV-029 M2).
+    propagate_residuals_to_remarks :
+        When ``True``, fold decode residuals into remarks/HRT (or document no XML
+        target on annex3). When ``None``, use the profile default (annex3 off).
 
     Returns
     -------
@@ -244,6 +248,7 @@ def convert_metar_tac_with_metadata(
         translation_centre_designator=translation_centre_designator,
         translation_centre_name=translation_centre_name,
         report_status=report_status,
+        propagate_residuals_to_remarks=propagate_residuals_to_remarks,
     )
     if not result.ok or not result.xml:
         msgs = "; ".join(f"{i.code}: {i.message}" for i in result.issues) or "unknown convert failure"

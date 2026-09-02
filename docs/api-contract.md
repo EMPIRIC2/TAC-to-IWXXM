@@ -121,6 +121,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 | `issuing_center` | no | `""` | Optional issuing centre ICAO (4-letter) |
 | `include_nil_reasons` | no | `true` | Prefer emitting nilReason attributes (engine may still emit NIL shells) |
 | `log_level` | no | `INFO` | Minimum severity for process issues echoed to clients **and** backend/package logger verbosity (EV-060 / #1004). Must not log JWTs, passwords, or Authorization headers at DEBUG. |
+| `propagate_residuals_to_remarks` | no | *(profile default; annex3/ICAO_2025 → `false`)* | **EV-981 / #981**: when resolved `true` **and** the semantic profile already emits remarks / `humanReadableText` (`iwxxm_us`, `ca_eccc`, …), append decode residual token text (excluding spans already covered by remarks retain) into that emit path and emit info `ConvertIssue` `RESIDUALS_PROPAGATED_TO_REMARKS`. On **annex3**, there is no XML remarks/HRT target — do not invent free-text remarks; when flag is on and residuals exist, still emit info `RESIDUALS_PROPAGATED_TO_REMARKS` whose message documents **no XML target** (quality-metrics `residuals_propagated_to_remarks` remains false). When `false` or resolved off, residuals stay diagnostic-only (UJ-026 unchanged). Omitted → semantic-profile default (wire shipped; only annex3/ICAO_2025 defaults defined this cycle = off). Explicit `true`/`false` overrides profile default. Same field on `/convert-zip`. Operator UI: plain-language toggle (no planning ids). |
 
 \* At least one of `files` or `manual_text` required (unchanged).
 
@@ -268,6 +269,7 @@ TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/a
 | `profile` | no | `annex3` | `annex3` \| `iwxxm_us` — **legacy**; see [EV-063 / F35 proposed wire](#ev-063--f35-proposed-semantic--exchange-wire-not-implemented-until-build-gate) |
 | `iwxxm_version` | no | SoT default | Same enum as convert (`iwxxm_versions.json` / #851) |
 | `lint` | no | `true` | When true, run `tac-validate` before each report convert |
+| `propagate_residuals_to_remarks` | no | *(profile default; annex3/ICAO_2025 → `false`)* | Same semantics as `/convert` (EV-981 / #981) |
 
 * At least one of `files` or `manual_text` required.
 
@@ -560,10 +562,16 @@ free of internal doc refs (EV-048). Cycle hard requirements: Schematron enabled 
   "converted_xml": "<?xml …",
   "match_status": "equal",
   "residuals": [],
+  "residuals_propagated_to_remarks": false,
   "lint_issues": [],
   "validate_issues": []
 }
 ```
+
+**EV-981 / #981**: `residuals_propagated_to_remarks` is additive (boolean). Existing
+precomputed fixtures default **`false`** until regenerated under an enabled convert flag.
+Operator residuals panel must describe fold status in plain language (no planning ids).
+Does not imply live WMO fetch.
 
 **Errors**: `404` when stem unknown; `503` when precomputed artifact missing at runtime
 (misconfigured deploy) — operator-facing `detail` must stay free of internal doc refs
@@ -808,6 +816,9 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 
 ### Session changelog
 
+- EV-981 (2026-08-31): #981 — additive convert / convert-bulletin
+  `propagate_residuals_to_remarks`; quality-metrics detail
+  `residuals_propagated_to_remarks`; info issue `RESIDUALS_PROPAGATED_TO_REMARKS`.
 - S066 / EV-056 (2026-08-11): F7.q #988 — **no HTTP contract change**. FE shareable route
   `/quality/:stem` + collapsible equal-context hunks consume existing
   `GET /api/v1/quality-metrics` + `/{stem}` (pretty C14N panes from S065).

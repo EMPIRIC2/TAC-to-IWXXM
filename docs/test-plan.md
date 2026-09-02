@@ -111,7 +111,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-053 | F16–F19 deepen (EV-091) | Operator dissemination destinations visible | **H4–H5 required** | TC-EV091-001..002; TC-EV042-002 |
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
 | UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
-| UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056 / EV-058) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988); side-by-side vs inline XML diff (#983) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005; TC-EV058-001..005 |
+| UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056 / EV-058 / **EV-981**) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988); side-by-side vs inline XML diff (#983); residual fold indicator (#981) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005; TC-EV058-001..005; TC-EV981-004 |
 | UJ-057 | F7.r deepen (EV-057) | Accumulate conversions → Download all ZIP (#903) | **H4–H5 required** | TC-EV057-903-001..007 |
 | UJ-058 | F7.s deepen (EV-057) | Validate existing IWXXM paste/upload (#838) | **H4–H5 required** | TC-EV057-838-001..005 |
 | UJ-059 | F7/F6 deepen (EV-060) | AHL bulletin lint/validate without heading flood (#1001) | **H4–H5 required** | TC-EV060-1001-001..003 |
@@ -125,6 +125,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-066 / UJ-067 | F7.u (EV-061) | Product/Profile + param bars aligned (#1013) | **H4–H5 required** | TC-EV061-1013-001..003 |
 | UJ-068 | F7.v/F15 (EV-061; EV-062) | Validation Issues Catalog (#1014; #1017 deepen) | **H4–H5 required** | TC-EV061-1014-001..004; TC-EV062-001..006 |
 | UJ-069 | F35/F36 (EV-063/EV-090/EV-093) | Semantic convert → exchange package (`GLOBAL_AFS`) | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-*; TC-EV093-* |
+| UJ-070 | F6+F9+F7.q (EV-981 / #981) | Opt-in propagate decode residuals into remarks / HRT + QM indicator | **H4–H5 required** | TC-EV981-001..005 |
 | UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
 | LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
@@ -2315,6 +2316,56 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   collapse remain; C14N/`match_status` unchanged. Synced scroll best-effort only.
 - **Pass criteria**: Local Playwright green; H4–H5 after staging deploy (13)
 - **Source**: EV-058 AC5; UJ-056; `D-S068-01-ac=2b`
+
+### EV-981 — Propagate decode residuals into remarks / HRT (#981)
+
+- **Mode**: deepen F6 / F9 / F7.q; **UJ-070** (+ UJ-026 fence)
+- **Pass criteria**: AC in evolve-decisions §EV-981; TC-EV981-001..005
+- **Source**: [#981](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/981);
+  [Context: propagate-residuals-to-remarks](context/propagate-residuals-to-remarks.md);
+  [Corpus: product §F6/F9/F7.q]
+
+### TC-EV981-001: Default off preserves UJ-026 / goldens
+
+- **Level**: T0 / T2
+- **Objective**: Omitted / `false` `propagate_residuals_to_remarks` does not change annex3
+  `REMARKS_EXCLUDED` or existing convert goldens
+- **Pass criteria**: Existing UJ-026 package/API tests + goldens remain green without flag
+- **Source**: EV-981; UJ-026; `D-EV981-default`
+
+### TC-EV981-002: Flag on folds residuals into remarks / HRT
+
+- **Level**: T0 / T2
+- **Objective**: With flag `true` on a remarks/HRT-emitting profile, residual token text
+  appears in profile-aware remarks / `humanReadableText` and info
+  `RESIDUALS_PROPAGATED_TO_REMARKS` is emitted. On annex3, flag-on emits the same issue
+  documenting no XML target without inventing free-text remarks.
+- **Pass criteria**: Package + API unit assert XML/HRT contains residual text + issue code
+- **Source**: EV-981; UJ-070; `D-EV981-flag`
+
+### TC-EV981-003: Workbench toggle + plain-language copy
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Operator can enable/disable fold; copy has no planning ids; effective value
+  reflects override vs profile default
+- **Pass criteria**: Vitest + Playwright; operatorVisibleCopy / OpenAPI guard green
+- **Source**: EV-981; UJ-070; EV-048
+
+### TC-EV981-004: Quality metrics residual fold indicator
+
+- **Level**: T0 / T2 / H4–H5
+- **Objective**: Detail JSON includes `residuals_propagated_to_remarks`; UI residuals panel
+  reflects it; default fixtures `false`
+- **Pass criteria**: API unit + Vitest/Playwright on `/quality/:stem`
+- **Source**: EV-981; UJ-056 deepen; `D-EV981-qm`
+
+### TC-EV981-005: Profile default wire (annex3 off)
+
+- **Level**: T0 / T2
+- **Objective**: Omitted flag resolves via profile default; annex3/ICAO_2025 → off; explicit
+  override wins; no other profile defaults enabled this cycle
+- **Pass criteria**: Unit matrix for omit / true / false × annex3
+- **Source**: EV-981; `D-EV981-annex3` / `D-EV981-profile-wire`
 
 ### EV-059 / S069 — F34 Contract + mutation quality gates (#841 / #727 / #874)
 
