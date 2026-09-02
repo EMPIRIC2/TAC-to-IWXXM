@@ -3882,6 +3882,47 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Source**: REQ-EV096-04..06; REQ-EV096-09; sample runs #33401453421, #33386557847,
   #33393624607
 
+### EV-098 / #1028–#1031 — CA_ECCC deep mining
+
+- **Mode**: delta F36 — domain mining + P0 fixtures (no UI / H4–H5 waived)
+- **Pass criteria**: TC-EV098-001..005; REQs R1–R6; promote only after handoff gate C
+- **Source**: [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028)–[#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031); EV-098; [ev-098-ca-eccc-mining.md](decisions/ev-098-ca-eccc-mining.md); ADR-036
+
+### TC-EV098-001: Datamart triage complete (Docs)
+
+- **Level**: T0 / Docs
+- **Objective**: Every directory under MSC IWXXM datamart root classified mined | redirected | dead with promotion backlog rows
+- **Pass criteria**: `eccc-iwxxm-ca-mining-notes.md` section-level findings; backlog has `rule_id` / priority / status
+- **Source**: R1; #1028
+
+### TC-EV098-002: MSC doc PDF catalogue (Docs)
+
+- **Level**: T0 / Docs
+- **Objective**: All MSC `doc/` PDFs (EN primary) triaged into `eccc-iwxxm-doc-pdfs-mining-notes.md`
+- **Pass criteria**: Per-PDF durable citation + section index; no full copyrighted prose committed
+- **Source**: R2 / R5; #1031
+
+### TC-EV098-003: MANOBS P0 fixtures (Build)
+
+- **Level**: T0 / T2
+- **Objective**: P0 rules `CA.METAR.VIS.SM`, `CA.METAR.ALT.A`, `CA.METAR.AUTO` have valid/invalid fixture pairs under `profiles/CA_ECCC/`
+- **Pass criteria**: Catalog entries + fixture tests green after gate-C promote; COVERAGE_MATRIX METAR (CA) updated where promoted
+- **Source**: R3; #1029
+
+### TC-EV098-004: MANAIR TAF national extension (Build)
+
+- **Level**: T0 / T2
+- **Objective**: ≥1 TAF national extension rule promoted with golden IWXXM 3.0.0 + `taf-ca`
+- **Pass criteria**: Fixture under `profiles/CA_ECCC/TAF/`; MANAIR citation in mining notes
+- **Source**: R4; #1030
+
+### TC-EV098-005: AIRMET GFA phenomena ↔ code-ca (Build)
+
+- **Level**: T0 / T2
+- **Objective**: AIRMET GFA phenomena vocabulary membership checks wired to `code-ca`
+- **Pass criteria**: At least one `CA.AIRMET.PHENOMENA.*` stub or fixture; durable URL in PROVENANCE
+- **Source**: R4 / R5; #1030
+
 ### EV-094 / #1098 — Thin/compat national deepen
 
 - **Mode**: delta F36 — deepen EV-089 packs (fixtures, sources, SPECI KR/JP, IN lint overlay)

@@ -1,6 +1,6 @@
 # PROVENANCE_MAP — dig ↔ rule ↔ source
 
-**Cycle:** EV-037 / S045 (prior EV-035 / S043) · **Generated:** 2026-08-05 · **Twin:** [`PROVENANCE_MAP.json`](./PROVENANCE_MAP.json)
+**Cycle:** EV-037 / S045 (prior EV-035 / S043) · **Session:** EV-098-ca-eccc-mining · **Generated:** 2026-09-02 · **Twin:** [`PROVENANCE_MAP.json`](./PROVENANCE_MAP.json)
 
 Machine SoT is the JSON twin. This MD is the human index.
 
@@ -34,6 +34,9 @@ Machine SoT is the JSON twin. This MD is the human index.
 | [`wmo-im-org-mining-notes.md`](../mining/wmo-im-org-mining-notes.md) | 2026-07-11 | ok | wmo-im-org | METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA, SWXA, VONA | conversion, iwxxm-validation |
 | [`wmo-im-tier-a-mining-notes.md`](../mining/wmo-im-tier-a-mining-notes.md) | 2026-07-11 | ok | wmo-im-tier-a | METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA, SWXA, VONA | iwxxm-validation |
 | [`wmo-im-tier-b-mining-notes.md`](../mining/wmo-im-tier-b-mining-notes.md) | 2026-07-11 | ok | wmo-im-tier-b | METAR, SPECI, TAF, SIGMET, AIRMET | bulletin |
+| [`eccc-iwxxm-ca-mining-notes.md`](../mining/eccc-iwxxm-ca-mining-notes.md) | 2026-09-02 | gap | eccc-iwxxm-ca | METAR, SPECI, TAF, AIRMET, SIGMET, VAA, QVACI | conversion, bulletin, iwxxm-validation |
+| [`eccc-iwxxm-doc-pdfs-mining-notes.md`](../mining/eccc-iwxxm-doc-pdfs-mining-notes.md) | 2026-09-02 | gap | eccc-iwxxm-doc-pdfs | TAF, AIRMET, SIGMET | conversion, bulletin, iwxxm-validation |
+| [`manobs-manair-ca-mining-notes.md`](../mining/manobs-manair-ca-mining-notes.md) | 2026-09-02 | ok | manobs-manair-ca | METAR, SPECI, TAF, AIRMET | validation, conversion |
 
 ## ISSUE_CATALOG codes (TC-EV035-002) — 100 rows
 
@@ -59,6 +62,11 @@ See JSON `catalog_codes[]`. Status ∈ {ok, gap, paywall, N/A}. Umbrella for res
 | METAR_US | conversion | ok | iwxxm-2025-2-schemas | — |
 | METAR_US | iwxxm-validation | ok | iwxxm-us | #870 (US SCH N/A; WMO+US XSD OK) |
 | METAR_US | bulletin | ok | opmet-guidelines-5th | — |
+| QVACI | iwxxm-validation | gap | eccc-iwxxm-ca | #1028 (`CA-ECCC-QVACI-VERSION-GAP` — no IWXXM 3.0 package) |
+| METAR/SPECI/TAF/AIRMET/SIGMET/VAA (CA exchange) | bulletin | ok | eccc-iwxxm-ca | #1028 (`CA-ECCC-FILENAME` / `CA-ECCC-PRODUCT-AHL`) |
+| METAR (CA) | validation | ok | manobs-manair-ca | #1029 (MANOBS Amd2; `CA_ALTIMETER_NOT_OBS` gap) |
+| TAF (CA) | validation | ok | manobs-manair-ca | #1030 (MANAIR Amd15 NCLWS + WX) |
+| AIRMET (CA) | validation | ok | manobs-manair-ca | #1030 (GFA + SFC + phenomena membership) |
 
 _Full grid in JSON `matrix_cells[]`._
 
@@ -72,6 +80,14 @@ _Full grid in JSON `matrix_cells[]`._
 | `IWXXM_SCH_PIN` | iwxxm-validation | ok | — |
 | `US_SCH_ABSENT` | iwxxm-validation | **N/A** | #870 (official US SCH not published) |
 | `AHL_SPECI_SP_LP` | bulletin | ok | — |
+| `CA-ECCC-FILENAME` | bulletin | ok | #1028 / #1031 |
+| `CA-ECCC-PRODUCT-AHL` | bulletin | ok | #1028 / #1031 |
+| `CA-ECCC-FILENAME-SUBSET` | bulletin | ok | #1031 (MSC ⊂ WMO AHL) |
+| `CA-ECCC-QVACI-VERSION-GAP` | iwxxm-validation | **gap** | #1028 |
+| `CA_ALTIMETER_NOT_OBS` | validation | **gap** | #1029 (reopened vs MANOBS) |
+| `CA_TAF_NCLWS` | validation | ok | #1030 |
+| `CA_AIRMET_GFA` | conversion | ok | #1030 |
+| `CA_METAR_IWXXM_DUAL` | bulletin | ok | #1029 |
 
 ## Gaps raised (TC-EV035-006)
 

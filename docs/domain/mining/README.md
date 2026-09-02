@@ -39,7 +39,7 @@ Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 | [schemas-wmo-int-tsml-mining-notes.md](./schemas-wmo-int-tsml-mining-notes.md) | OGC TimeseriesML (TSML) 1.0 mirror at schemas.wmo.int/tsml — not on IWXXM F6 path |
 | [schemas-wmo-int-rule-mining-notes.md](./schemas-wmo-int-rule-mining-notes.md) | Centralized Schematron index at schemas.wmo.int/rule (1.0–1.2; not IWXXM pin path) |
 | [icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md](./icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md) | ICAO APAC IWXXM FAQs 3rd Ed. (Mar 2025) — translation/NSC/COLLECT gotchas · #797 |
-| [manobs-manair-ca-mining-notes.md](./manobs-manair-ca-mining-notes.md) | EV-064 / #916 — MANOBS/MANAIR TAC rules for `CA_ECCC` |
+| [manobs-manair-ca-mining-notes.md](./manobs-manair-ca-mining-notes.md) | EV-064 / #916; **EV-098 / #1029+#1030** — MANOBS Amd2 + MANAIR Amd15 digs for `CA_ECCC` |
 | [au-bom-tac-mining-notes.md](./au-bom-tac-mining-notes.md) | EV-087 / #917 — BoM TAF INTER/TAF3/RMK T/Q + AUTO METAR for `AU_BOM` |
 | [nz-caa-met-tac-mining-notes.md](./nz-caa-met-tac-mining-notes.md) | EV-087 / #918 — NZ domestic vs intl TAF + AUTO METAR for `NZ_CAA_MET` |
 | [uk-metoffice-tac-mining-notes.md](./uk-metoffice-tac-mining-notes.md) | EV-089 / #920 — CAP 746 thin pack `UK_METOFFICE` |
@@ -48,6 +48,7 @@ Local binaries / full extracts: `.local/reference/<slug>/` (gitignored).
 | [jp-jma-tac-mining-notes.md](./jp-jma-tac-mining-notes.md) | EV-089 / #920 — JMA/Tokyo VAAC compat `JP_JMA` |
 | [in-imd-tac-mining-notes.md](./in-imd-tac-mining-notes.md) | EV-089 / #920 — IMD compat `IN_IMD` |
 | [hk-hko-tac-mining-notes.md](./hk-hko-tac-mining-notes.md) | EV-089 / #920 — HKO APAC fixtures `HK_HKO` |
-| [eccc-iwxxm-ca-mining-notes.md](./eccc-iwxxm-ca-mining-notes.md) | EV-064 / #916 — ECCC IWXXM 3.0.0 + `*-ca.xsd` + code-ca + datamart |
+| [eccc-iwxxm-ca-mining-notes.md](./eccc-iwxxm-ca-mining-notes.md) | EV-064 / #916; **EV-098 / #1028** deepen — datamart triage, naming, QVACI gap |
+| [eccc-iwxxm-doc-pdfs-mining-notes.md](./eccc-iwxxm-doc-pdfs-mining-notes.md) | EV-098 / #1031 — MSC `doc/` PDF inventory + AIRMET/SIGMET/TAF guides (partial anchors) |
 | [codes-wmo-int-aviation-mining-notes.md](./codes-wmo-int-aviation-mining-notes.md) | codes.wmo.int aviation registers (colour/nil/MetFeature 28 vs 27; 4678 CSV=402 vs HTML≈101; SCH RDF match) · #797 |
 | [vona-encode-remine-ev035-mining-notes.md](./vona-encode-remine-ev035-mining-notes.md) | S043/EV-035 remine — VONA Guidance silent; AHL WM/LM + FM205 promotes · #869 |
