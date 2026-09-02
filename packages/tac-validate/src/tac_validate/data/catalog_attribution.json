@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-08-31",
+  "generated": "2026-09-02",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -41,86 +41,86 @@
     "CA_AIRMET_GFA": {
       "source_id": "manair-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
-      "status": "verified",
-      "note": "MANAIR GFA compound phenomenon",
-      "source_attribution": "manair-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html - MANAIR GFA compound phenomenon"
+      "status": "ok",
+      "note": "MANAIR AIRMET amends GFA when hazard not already in current GFA (Amendment 15)",
+      "source_attribution": "manair-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html - MANAIR AIRMET amends GFA when hazard not already in current GFA (Amendment 15)"
     },
     "CA_ALTIMETER_INHG": {
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "status": "verified",
-      "note": "MANOBS altimeter in inches of mercury",
-      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS altimeter in inches of mercury"
+      "status": "ok",
+      "note": "MANOBS altimeter A plus four digits (hundredths inHg)",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS altimeter A plus four digits (hundredths inHg)"
     },
     "CA_ALTIMETER_NOT_OBS": {
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "status": "verified",
-      "note": "MANOBS altimeter not observable",
-      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS altimeter not observable"
+      "status": "gap",
+      "note": "Reopened: MANOBS specifies A plus four digits and pressure fail-safe; A//// not confirmed as valid",
+      "source_attribution": "manobs-ca - access:gap - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - Reopened: MANOBS specifies A plus four digits and pressure fail-safe; A//// not confirmed as valid"
     },
     "CA_METAR_LWIS": {
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "status": "verified",
-      "note": "MANOBS LWIS national report lead",
-      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS LWIS national report lead"
+      "status": "ok",
+      "note": "MANOBS LWIS national report lead; metar-speci-ca LWIS substitution",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS LWIS national report lead; metar-speci-ca LWIS substitution"
     },
     "CA_METAR_SAWR": {
-      "source_id": "manobs-ca",
-      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "status": "verified",
-      "note": "MANOBS SAWR national report lead",
-      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS SAWR national report lead"
+      "source_id": "eccc-iwxxm-ca",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/schema/",
+      "status": "ok",
+      "note": "Schema-backed SAWR substitution in metar-speci-ca; not a MANOBS code form",
+      "source_attribution": "eccc-iwxxm-ca - https://dd.weather.gc.ca/today/aviation/iwxxm/schema/ - Schema-backed SAWR substitution in metar-speci-ca; not a MANOBS code form"
     },
     "CA_REMARK_MANOBS": {
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "status": "verified",
+      "status": "ok",
       "note": "MANOBS Canadian remarks",
       "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS Canadian remarks"
     },
     "CA_REMARK_NOSPECI": {
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "status": "verified",
+      "status": "ok",
       "note": "MANOBS NOSPECI remark",
       "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS NOSPECI remark"
     },
     "CA_REMARK_PRESFR": {
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "status": "verified",
-      "note": "MANOBS PRESFR remark",
-      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS PRESFR remark"
+      "status": "ok",
+      "note": "MANOBS Canadian rapid pressure fall remark PRESFR",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS Canadian rapid pressure fall remark PRESFR"
     },
     "CA_REMARK_PRESRR": {
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "status": "verified",
-      "note": "MANOBS PRESRR remark",
-      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS PRESRR remark"
+      "status": "ok",
+      "note": "MANOBS Canadian rapid pressure rise remark PRESRR",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS Canadian rapid pressure rise remark PRESRR"
     },
     "CA_REMARK_SECTOR_VIS": {
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "status": "verified",
-      "note": "MANOBS sector visibility remark",
-      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS sector visibility remark"
+      "status": "ok",
+      "note": "MANOBS sector visibility remark; distinct from variable VIS and variable RVR",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS sector visibility remark; distinct from variable VIS and variable RVR"
     },
     "CA_STATUTE_MILE_VIS": {
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "status": "verified",
-      "note": "MANOBS statute-mile visibility",
-      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS statute-mile visibility"
+      "status": "ok",
+      "note": "MANOBS Canadian land-station visibility uses statute miles with SM",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS Canadian land-station visibility uses statute miles with SM"
     },
     "CA_TAF_NCLWS": {
       "source_id": "manair-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
-      "status": "verified",
-      "note": "MANAIR NCLWS low-level wind shear",
-      "source_attribution": "manair-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html - MANAIR NCLWS low-level wind shear"
+      "status": "ok",
+      "note": "MANAIR non-convective LLWS group WShhh/dddffKT (Amendment 15)",
+      "source_attribution": "manair-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html - MANAIR non-convective LLWS group WShhh/dddffKT (Amendment 15)"
     },
     "CLOUD_CB_OR_TCU": {
       "source_id": "codes-wmo-int",
@@ -286,7 +286,7 @@
     "IN_TAF_TX_TN_OMITTED": {
       "source_id": "imd-mausam",
       "source_url": "https://mausam.imd.gov.in/",
-      "status": "verified",
+      "status": "ok",
       "note": "India IMD TAF often omits TX/TN temperature extremes",
       "source_attribution": "imd-mausam - https://mausam.imd.gov.in/ - India IMD TAF often omits TX/TN temperature extremes"
     },
@@ -706,9 +706,9 @@
     "US_SWXA_SATCOM_NOT_ISSUED": {
       "source_id": null,
       "source_url": null,
-      "status": null,
-      "note": null,
-      "source_attribution": null
+      "status": "gap",
+      "note": "Backfilled from ISSUE_CATALOG membership",
+      "source_attribution": "access:gap - Backfilled from ISSUE_CATALOG membership"
     },
     "US_TAF_BECMG_FORBIDDEN": {
       "source_id": "fmh-1",
@@ -727,9 +727,9 @@
     "US_TCA_OBSERVED_CB_NOT_PROVIDED": {
       "source_id": null,
       "source_url": null,
-      "status": null,
-      "note": null,
-      "source_attribution": null
+      "status": "gap",
+      "note": "Backfilled from ISSUE_CATALOG membership",
+      "source_attribution": "access:gap - Backfilled from ISSUE_CATALOG membership"
     },
     "VAA_FCST_NO_VA_EXP": {
       "source_id": "icao-annex-3",

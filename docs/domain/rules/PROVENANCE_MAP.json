@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "cycle": "EV-098",
+  "cycle": "EV-037",
   "session": "EV-098-ca-eccc-mining",
   "generated": "2026-09-02",
   "gap_report": "docs/sessions/S055-wmo-aviation-registers/reports/codes-wmo-int-coverage.md",
@@ -546,7 +546,7 @@
       "source_url": "https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/",
       "source_id": "eccc-iwxxm-ca",
       "ticket": "#1028",
-      "note": "EV-098 Gate C: datamart triage; QVACI version gap; filename CCCC semantics; ops TAF/AIRMET/SIGMET mined"
+      "note": "Datamart triage; QVACI version gap; filename CCCC semantics"
     },
     {
       "path": "docs/domain/mining/eccc-iwxxm-doc-pdfs-mining-notes.md",
@@ -565,7 +565,7 @@
       "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/doc/",
       "source_id": "eccc-iwxxm-doc-pdfs",
       "ticket": "#1031",
-      "note": "EV-098 Gate C selective: PDF source URLs + AHL/CCCC reinforce; conversion stubs held pending direct PDF section verify"
+      "note": "MSC doc PDF inventory; conversion stubs held pending page verify"
     },
     {
       "path": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
@@ -584,7 +584,111 @@
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
       "source_id": "manobs-manair-ca",
       "ticket": "#1029/#1030",
-      "note": "EV-098 Gate C: MANOBS Amd2 deepen + MANAIR Amd15; ALT.NOT_OBS reopen; SAWR=XSD provenance"
+      "note": "MANOBS Amendment 2 + MANAIR Amendment 15 deepen; ALT.NOT_OBS reopen; SAWR schema provenance"
+    },
+    {
+      "path": "docs/domain/mining/au-bom-tac-mining-notes.md",
+      "date_mined": "2026-09-02",
+      "products": [],
+      "roles": [
+        "validation"
+      ],
+      "status": "ok",
+      "source_url": null,
+      "source_id": "au-bom-tac",
+      "ticket": null,
+      "note": "Indexed for dig inventory completeness"
+    },
+    {
+      "path": "docs/domain/mining/br-decea-tac-mining-notes.md",
+      "date_mined": "2026-09-02",
+      "products": [],
+      "roles": [
+        "validation"
+      ],
+      "status": "ok",
+      "source_url": null,
+      "source_id": "br-decea-tac",
+      "ticket": null,
+      "note": "Indexed for dig inventory completeness"
+    },
+    {
+      "path": "docs/domain/mining/hk-hko-tac-mining-notes.md",
+      "date_mined": "2026-09-02",
+      "products": [],
+      "roles": [
+        "validation"
+      ],
+      "status": "ok",
+      "source_url": null,
+      "source_id": "hk-hko-tac",
+      "ticket": null,
+      "note": "Indexed for dig inventory completeness"
+    },
+    {
+      "path": "docs/domain/mining/in-imd-tac-mining-notes.md",
+      "date_mined": "2026-09-02",
+      "products": [],
+      "roles": [
+        "validation"
+      ],
+      "status": "ok",
+      "source_url": null,
+      "source_id": "in-imd-tac",
+      "ticket": null,
+      "note": "Indexed for dig inventory completeness"
+    },
+    {
+      "path": "docs/domain/mining/jp-jma-tac-mining-notes.md",
+      "date_mined": "2026-09-02",
+      "products": [],
+      "roles": [
+        "validation"
+      ],
+      "status": "ok",
+      "source_url": null,
+      "source_id": "jp-jma-tac",
+      "ticket": null,
+      "note": "Indexed for dig inventory completeness"
+    },
+    {
+      "path": "docs/domain/mining/kr-kma-tac-mining-notes.md",
+      "date_mined": "2026-09-02",
+      "products": [],
+      "roles": [
+        "validation"
+      ],
+      "status": "ok",
+      "source_url": null,
+      "source_id": "kr-kma-tac",
+      "ticket": null,
+      "note": "Indexed for dig inventory completeness"
+    },
+    {
+      "path": "docs/domain/mining/nz-caa-met-tac-mining-notes.md",
+      "date_mined": "2026-09-02",
+      "products": [],
+      "roles": [
+        "validation"
+      ],
+      "status": "ok",
+      "source_url": null,
+      "source_id": "nz-caa-met-tac",
+      "ticket": null,
+      "note": "Indexed for dig inventory completeness"
+    },
+    {
+      "path": "docs/domain/mining/uk-metoffice-tac-mining-notes.md",
+      "date_mined": "2026-09-02",
+      "products": [],
+      "roles": [
+        "validation"
+      ],
+      "status": "ok",
+      "source_url": null,
+      "source_id": "uk-metoffice-tac",
+      "ticket": null,
+      "note": "Indexed for dig inventory completeness"
     }
   ],
   "catalog_codes": [
@@ -629,46 +733,6 @@
       "note": "App 5 / Table A5-1"
     },
     {
-      "code": "CA-ECCC-FILENAME",
-      "status": "ok",
-      "source_id": "eccc-iwxxm-ca",
-      "source_url": "https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/",
-      "consumer": "bulletin",
-      "dig": "docs/domain/mining/eccc-iwxxm-ca-mining-notes.md",
-      "ticket": "#1028/#1031",
-      "note": "CCCC issuer; reinforced #1031 bulletin PDF + WMO AHL v1.0.1"
-    },
-    {
-      "code": "CA-ECCC-FILENAME-SUBSET",
-      "status": "ok",
-      "source_id": "eccc-iwxxm-doc-pdfs",
-      "source_url": "https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs",
-      "consumer": "bulletin",
-      "dig": "docs/domain/mining/eccc-iwxxm-doc-pdfs-mining-notes.md",
-      "ticket": "#1031",
-      "note": "MSC datamart filename is subset of WMO AHL; do not ban _ffffff/compression globally"
-    },
-    {
-      "code": "CA-ECCC-PRODUCT-AHL",
-      "status": "ok",
-      "source_id": "eccc-iwxxm-ca",
-      "source_url": "https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/",
-      "consumer": "bulletin",
-      "dig": "docs/domain/mining/eccc-iwxxm-ca-mining-notes.md",
-      "ticket": "#1028/#1031",
-      "note": "Product header families; WMO T1T2 corroboration #1031"
-    },
-    {
-      "code": "CA-ECCC-QVACI-VERSION-GAP",
-      "status": "gap",
-      "source_id": "eccc-iwxxm-ca",
-      "source_url": "https://community.wmo.int/iwxxm",
-      "consumer": "iwxxm-validate",
-      "dig": "docs/domain/mining/eccc-iwxxm-ca-mining-notes.md",
-      "ticket": "#1028",
-      "note": "ECCC lists qvaci under 3.0.0 declaration; WMO QVA first at 2025-2/1.0.0 — no CA 3.0 fixture"
-    },
-    {
       "code": "CAVOK_PRESENT",
       "status": "paywall",
       "source_id": "icao-annex-3",
@@ -680,53 +744,23 @@
     },
     {
       "code": "CA_AIRMET_GFA",
-      "status": "verified",
-      "source_id": "manair-ca",
-      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
-      "consumer": "tac-validate",
-      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
-      "ticket": "#1030",
-      "note": "MANAIR Amd15 §6.8.8 AIRMET amends GFA when hazard not in current GFA"
-    },
-    {
-      "code": "CA_AIRMET_PHENOMENA_MEMBERSHIP",
       "status": "ok",
       "source_id": "manair-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
       "ticket": "#1030",
-      "note": "Positive-list ECCC code-ca airmet_weather_phenomena (six observed members); no invented URIs"
-    },
-    {
-      "code": "CA_AIRMET_SFC_VIS_CLOUD",
-      "status": "ok",
-      "source_id": "manair-ca",
-      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
-      "consumer": "tac-validate",
-      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
-      "ticket": "#1030",
-      "note": "MANAIR §6.8.3.2 / E.5: VIS <3 SM and/or BKN/OVC <1000 ft AGL"
-    },
-    {
-      "code": "CA_AIRMET_SFC_WIND",
-      "status": "ok",
-      "source_id": "manair-ca",
-      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
-      "consumer": "tac-validate",
-      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
-      "ticket": "#1030",
-      "note": "MANAIR §6.8.3.2 / E.5: widespread mean surface wind >30 KT"
+      "note": "MANAIR AIRMET amends GFA when hazard not already in current GFA (Amendment 15)"
     },
     {
       "code": "CA_ALTIMETER_INHG",
-      "status": "verified",
+      "status": "ok",
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
       "ticket": "#1029",
-      "note": "MANOBS §§9.2 / 11.2.2.17 A+four digits (EV-098 deepen)"
+      "note": "MANOBS altimeter A plus four digits (hundredths inHg)"
     },
     {
       "code": "CA_ALTIMETER_NOT_OBS",
@@ -736,71 +770,31 @@
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
       "ticket": "#1029",
-      "note": "EV-098 reopen: mined MANOBS supports A+4 digits / fail-safe QC, not A//// as valid"
-    },
-    {
-      "code": "CA_METAR_IWXXM_DUAL",
-      "status": "ok",
-      "source_id": "manobs-ca",
-      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "consumer": "bulletin",
-      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
-      "ticket": "#1029",
-      "note": "MANOBS §11.1 dual IWXXM+TAC dissemination (provenance/exchange, not TAC grammar)"
-    },
-    {
-      "code": "CA_METAR_LTG",
-      "status": "gap",
-      "source_id": "manobs-ca",
-      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "consumer": "tac-validate",
-      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
-      "ticket": "#1029",
-      "note": "TAC RMK LTG held for conversion mapping to ObservedLightning"
+      "note": "Reopened: MANOBS specifies A plus four digits and pressure fail-safe; A//// not confirmed as valid"
     },
     {
       "code": "CA_METAR_LWIS",
-      "status": "verified",
-      "source_id": "manobs-ca",
-      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "consumer": "tac-validate",
-      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
-      "ticket": "#1029",
-      "note": "MANOBS §11.3 + metar-speci-ca LWIS (EV-098 reaffirm)"
-    },
-    {
-      "code": "CA_METAR_RVR_VAR",
       "status": "ok",
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
       "ticket": "#1029",
-      "note": "MANOBS §11.2.2.10.1 variable RVR; stub pending fixture promote"
+      "note": "MANOBS LWIS national report lead; metar-speci-ca LWIS substitution"
     },
     {
       "code": "CA_METAR_SAWR",
-      "status": "verified",
+      "status": "ok",
       "source_id": "eccc-iwxxm-ca",
       "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/schema/",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
       "ticket": "#1029",
-      "note": "Schema-backed SAWR substitution; no MANOBS code-form in #1029 dig"
-    },
-    {
-      "code": "CA_METAR_VIS_VAR",
-      "status": "ok",
-      "source_id": "manobs-ca",
-      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
-      "consumer": "tac-validate",
-      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
-      "ticket": "#1029",
-      "note": "MANOBS §4.5.2 variable prevailing visibility; stub pending fixture promote"
+      "note": "Schema-backed SAWR substitution in metar-speci-ca; not a MANOBS code form"
     },
     {
       "code": "CA_REMARK_MANOBS",
-      "status": "verified",
+      "status": "ok",
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
       "consumer": "tac-validate",
@@ -810,7 +804,7 @@
     },
     {
       "code": "CA_REMARK_NOSPECI",
-      "status": "verified",
+      "status": "ok",
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
       "consumer": "tac-validate",
@@ -820,63 +814,53 @@
     },
     {
       "code": "CA_REMARK_PRESFR",
-      "status": "verified",
+      "status": "ok",
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
       "ticket": "#1029",
-      "note": "MANOBS §9.2.1 / §10.2 (EV-098 deepen)"
+      "note": "MANOBS Canadian rapid pressure fall remark PRESFR"
     },
     {
       "code": "CA_REMARK_PRESRR",
-      "status": "verified",
+      "status": "ok",
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
       "ticket": "#1029",
-      "note": "MANOBS §9.2.1 / §10.2 (EV-098 deepen)"
+      "note": "MANOBS Canadian rapid pressure rise remark PRESRR"
     },
     {
       "code": "CA_REMARK_SECTOR_VIS",
-      "status": "verified",
+      "status": "ok",
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
       "ticket": "#1029",
-      "note": "MANOBS §4.5.1.3; distinct from VIS.VAR and RVR.VAR (EV-098)"
+      "note": "MANOBS sector visibility remark; distinct from variable VIS and variable RVR"
     },
     {
       "code": "CA_STATUTE_MILE_VIS",
-      "status": "verified",
+      "status": "ok",
       "source_id": "manobs-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
       "ticket": "#1029",
-      "note": "MANOBS §§4.5.1 / 11.2.2.9 SM (EV-098 deepen)"
+      "note": "MANOBS Canadian land-station visibility uses statute miles with SM"
     },
     {
       "code": "CA_TAF_NCLWS",
-      "status": "verified",
-      "source_id": "manair-ca",
-      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
-      "consumer": "tac-validate",
-      "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
-      "ticket": "#1030",
-      "note": "MANAIR Amd15 §2.6.9 WShhh/dddffKT; no gust; 3-digit >=100kt"
-    },
-    {
-      "code": "CA_TAF_WX_NATIONAL",
       "status": "ok",
       "source_id": "manair-ca",
       "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
       "consumer": "tac-validate",
       "dig": "docs/domain/mining/manobs-manair-ca-mining-notes.md",
       "ticket": "#1030",
-      "note": "MANAIR Amd15 §2.6.11: SA only with BL/DR; SHPL removed"
+      "note": "MANAIR non-convective LLWS group WShhh/dddffKT (Amendment 15)"
     },
     {
       "code": "CLOUD_CB_OR_TCU",
@@ -1115,7 +1099,7 @@
     },
     {
       "code": "IN_TAF_TX_TN_OMITTED",
-      "status": "verified",
+      "status": "ok",
       "source_id": "imd-mausam",
       "source_url": "https://mausam.imd.gov.in/",
       "consumer": "tac-validate",
@@ -1716,6 +1700,16 @@
       "note": "Validated: tac-validate membership gate vs harvested wmo_membership.json"
     },
     {
+      "code": "US_SWXA_SATCOM_NOT_ISSUED",
+      "status": "gap",
+      "source_id": null,
+      "source_url": null,
+      "consumer": "tac-validate",
+      "dig": null,
+      "ticket": "#871",
+      "note": "Backfilled from ISSUE_CATALOG membership"
+    },
+    {
       "code": "US_TAF_BECMG_FORBIDDEN",
       "status": "ok",
       "source_id": "fmh-1",
@@ -1734,6 +1728,16 @@
       "dig": "docs/domain/mining/fmh1-2019-mining-notes.md",
       "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919",
       "note": "US TAF TEMPO groups limited to 4 hours (national overlay)"
+    },
+    {
+      "code": "US_TCA_OBSERVED_CB_NOT_PROVIDED",
+      "status": "gap",
+      "source_id": null,
+      "source_url": null,
+      "consumer": "tac-validate",
+      "dig": null,
+      "ticket": "#871",
+      "note": "Backfilled from ISSUE_CATALOG membership"
     },
     {
       "code": "VAA_FCST_NO_VA_EXP",
@@ -2350,7 +2354,7 @@
       "status": "ok",
       "pin_version": "3.0.0",
       "ticket": "#1028/#1031",
-      "note": "CCCC issuer semantics · #1031 reinforce"
+      "note": "CCCC issuer semantics"
     },
     {
       "rule_id": "CA-ECCC-PRODUCT-AHL",
@@ -2361,7 +2365,7 @@
       "status": "ok",
       "pin_version": "3.0.0",
       "ticket": "#1028/#1031",
-      "note": "Product header families · #1031 reinforce"
+      "note": "Product header families"
     },
     {
       "rule_id": "CA-ECCC-QVACI-VERSION-GAP",
@@ -2394,7 +2398,7 @@
       "status": "gap",
       "pin_version": "3.0.0",
       "ticket": "#1029",
-      "note": "Reopened EV-098 — do not treat A//// as MANOBS-valid without stronger authority"
+      "note": "Reopened do not treat A//// as MANOBS-valid without stronger authority"
     },
     {
       "rule_id": "CA_TAF_NCLWS",
@@ -2459,13 +2463,7 @@
       ]
     }
   ],
-  "gaps": [
-    {
-      "rule_id": "CA-ECCC-QVACI-VERSION-GAP",
-      "ticket": "#1028",
-      "note": "No IWXXM 3.0 QVA package; blocked for CA_ECCC strict 3.0.0 until version decision"
-    }
-  ],
+  "gaps": [],
   "prior_cycle": "EV-035",
   "ev037_dispositions": {
     "869": "VONA Guidance silence non-blocking; SoT hierarchy; cookbook derived",

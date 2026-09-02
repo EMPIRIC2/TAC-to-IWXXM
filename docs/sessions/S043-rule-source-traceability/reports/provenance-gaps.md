@@ -68,3 +68,12 @@
 Parent epic: [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846).
 
 **Map:** [`docs/domain/rules/PROVENANCE_MAP.md`](../../../domain/rules/PROVENANCE_MAP.md) · CI: `make test-provenance-quality`
+
+## EV-098 follow-on gaps (2026-09-02)
+
+| Gap | Ticket | Note |
+|-----|--------|------|
+| `CA_ALTIMETER_NOT_OBS` reopen (`A////` vs MANOBS) | #1029 | Quarantine positive fixture; deepen authority before re-close |
+| `CA-ECCC-QVACI-VERSION-GAP` | #1028 | No IWXXM 3.0 QVA package under CA_ECCC strict 3.0.0 |
+| Fixture cleanup `metar_basic` `9999` | #1029 | Backlog — not a map `gaps[]` row |
+

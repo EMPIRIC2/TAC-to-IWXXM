@@ -1,6 +1,6 @@
 # PROVENANCE_MAP — dig ↔ rule ↔ source
 
-**Cycle:** EV-037 / S045 (prior EV-035 / S043) · **Generated:** 2026-08-05 · **Twin:** [`PROVENANCE_MAP.json`](./PROVENANCE_MAP.json)
+**Cycle:** EV-037 / S045 (prior EV-035 / S043) · **Session:** EV-098-ca-eccc-mining · **Generated:** 2026-09-02 · **Twin:** [`PROVENANCE_MAP.json`](./PROVENANCE_MAP.json)
 
 Machine SoT is the JSON twin. This MD is the human index.
 
