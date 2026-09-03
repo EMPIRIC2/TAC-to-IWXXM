@@ -1,5 +1,23 @@
 # Evolve Decisions
 
+## Cycle EV-925 — Canonical MET + staged validation (#925)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-925-canonical-met-staged-validation`  
+**Issues:** [#925](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/925), [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV925-ir | **Keep-in-place** — `ConvertResult.ir` dict in tac2iwxxm; no core package extract |
+| D-EV925-pipeline | **Accept** ADR-039 PipelineResult contract |
+| D-EV925-stages | Map ADR-036 stages; `ca_eccc` StageResult = reference |
+| D-EV925-canonical | Confirm one ICAO path + national overlays |
+| D-EV925-writeup | Session `reports/925-canonical-met-staged-validation.md` |
+
+[Corpus: product §F6] [Corpus: adr] ADR-036, ADR-039 [Corpus: decisions §EV-925]
+
+---
+
+
 ## Cycle EV-924 — ConversionProfile contract (#924)
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-924-conversion-profile-contract`  
