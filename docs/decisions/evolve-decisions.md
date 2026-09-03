@@ -1,5 +1,24 @@
 # Evolve Decisions
 
+## Cycle EV-927 — DisseminationGateway (#927)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-927-dissemination-gateway`  
+**Issues:** [#927](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/927), [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV927-package | **Extend dissemination** — no packages/afs or gateways |
+| D-EV927-gateway | **Accept** DisseminationGateway contract (ADR-041) over SinkAdapter |
+| D-EV927-plan | DisseminationPlan + DeliveryReceipt documented; runtime deferred |
+| D-EV927-edis | IWXXM not AFTN-safe raw; EDIS = AHL + ASCII TAC (#928) |
+| D-EV927-wis2 | BYOC + DMZ via backend egress (#929) |
+| D-EV927-writeup | Session `reports/927-dissemination-gateway.md` |
+
+[Corpus: product §F16–F19] [Corpus: adr] ADR-030, ADR-041 [Corpus: decisions §EV-927]
+
+---
+
+
 ## Cycle EV-926 — SQL adapters + mapping (#926)
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-926-sql-adapters-mapping`  
