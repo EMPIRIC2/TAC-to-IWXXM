@@ -1,5 +1,26 @@
 # Evolve Decisions
 
+## Cycle EV-924 — ConversionProfile contract (#924)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-924-conversion-profile-contract`  
+**Preset:** Standard · **Documenting→Implementing gate:** **closed** · **Issues:** [#924](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/924), [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV924-fn | No new Fn — contract spike under F6 |
+| D-EV924-contract | **Accept** normative ConversionProfile contract (ADR-038) |
+| D-EV924-loader | Defer runtime loader — code plugins + registries remain SoT |
+| D-EV924-overlays | Defer custom/operator packs to #933; v1 first-party catalog only |
+| D-EV924-e2e | Skip e2e |
+| D-EV924-writeup | Session `reports/924-conversion-profile-contract.md` |
+
+### Corpus
+
+[Corpus: product §F6] [Corpus: adr] ADR-013, ADR-036, ADR-038 [Corpus: api] [Corpus: decisions §EV-924]
+
+---
+
+
 ## Cycle EV-922 — Platform package layout (#922 / #923)
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-922-epic-modular-conversion-validation-integration-d`  

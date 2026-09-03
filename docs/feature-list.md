@@ -220,6 +220,16 @@
   `docs/context/realtime-tac-ingest.md`; S011 / EV-008; **S043 / EV-035** encode/AHL
   provenance deepen (see deepen section below)
 
+### F6 deepen (EV-924 — ConversionProfile contract / #924)
+
+- **Status note**: F6 remains **Implemented**; spike [#924](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/924)
+  accepts normative **ConversionProfile** contract ([ADR-038](adr/ADR-038-conversion-profile-contract.md))
+  mapped onto existing registries + plugins. **No new Fn.**
+- **Acceptance**: Gap matrix, contract recommendation, overlay trust deferral, ADR-038.
+- **Out of scope**: Runtime loader, browser packs, #933 UI.
+- **Source**: [Context: conversion-profile-contract-924](context/conversion-profile-contract-924.md);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-924
+
 ### F6 deepen (EV-922 — platform logical layers / #923)
 
 - **Status note**: F6 remains **Implemented**; epic [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)

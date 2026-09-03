@@ -41,6 +41,7 @@
 | [ADR-035](ADR-035-quality-metrics-c14n.md) | Quality metrics match/diff uses W3C C14N (not ADR-032 canonicalize) | **Accepted** |
 | [ADR-036](ADR-036-semantic-vs-exchange-profiles.md) | Semantic vs exchange profiles; canonical IDs + alias deprecation (#912) | **Accepted** (EV-063) |
 | [ADR-037](ADR-037-platform-logical-layers.md) | Platform logical layers — keep package layout (epic #922 / spike #923) | **Accepted** (EV-922) |
+| [ADR-038](ADR-038-conversion-profile-contract.md) | ConversionProfile executable contract (spike #924) | **Accepted** (EV-924) |
 
 ## Process
 
