@@ -4968,8 +4968,8 @@ No live `codes.wmo.int` HTML in PR CI.
 - [ ] TC-F17-001 staging wis2box green; TC-F17-002 live BYOC before cycle close
 - [ ] TC-F18-001 format green; TC-F18-002 live BYOC before cycle close
 - [ ] TC-F19-001..003 staging/test green; live F19 optional (evidence or waive id)
-- [ ] TC-F16-OPS-001..006 green when EV-936 Build ships (UJ-071 / H6′)
-- [ ] H4–H5 after API/FE dissemination routes ship; H0c on CORS/env changes; H6′ UJ-027–030 (+ UJ-071)
+- [x] TC-F16-OPS-001..006 green when EV-936 Build ships (UJ-071 / H6′) — M1–M3 unit/Vitest + M4 Playwright (`uj071-dissemination-ops.e2e.spec.ts` + drawer regression)
+- [ ] H4–H5 after API/FE dissemination routes ship; H0c on CORS/env changes; H6′ UJ-027–030 (+ UJ-071) — live H4–H5 deferred at EV-936 M4 intake (ops already on stage via #1134)
 - [ ] `DISSEMINATION_EGRESS_ALLOWLIST` in config-spec / env-contract / deploy / staging-secrets-matrix
       (S-EV014-L1 **resolved** at 04; matrix row added at 05-verify-tech)
 
