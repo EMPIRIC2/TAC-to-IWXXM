@@ -112,7 +112,13 @@ class DisseminationOpsService:
     """JWT owner-scoped persistence for plans, audit, and MappingConfig."""
 
     def __init__(self, user_id: str) -> None:
-        self.user_id = UUID(user_id)
+        try:
+            self.user_id = UUID(user_id)
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid user identity",
+            ) from exc
 
     def create_plan(self, payload: DisseminationPlanCreate) -> DisseminationPlanOut:
         _reject_secrets(payload.model_dump())

@@ -22,6 +22,12 @@ USER_ID = uuid4()
 NOW = datetime(2026, 9, 3, tzinfo=UTC)
 
 
+def test_invalid_user_id_raises_401() -> None:
+    with pytest.raises(HTTPException) as exc:
+        svc.DisseminationOpsService("not-a-uuid")
+    assert exc.value.status_code == 401
+
+
 class _Result:
     def __init__(self, row: dict[str, Any] | None = None, rows: list[dict[str, Any]] | None = None) -> None:
         self._row = row
