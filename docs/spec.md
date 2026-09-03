@@ -103,26 +103,27 @@ Epic [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922) describes a **l
 (**Core → Profiles → Validation → Adapters → Dissemination**). Spike [#923](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/923)
 and [ADR-037](adr/ADR-037-platform-logical-layers.md) **keep current package names** (Option C) and map
 epic layers onto the monorepo below. Physical renames/splits (Option B) require a later evolve cycle
-after contract spikes #924–#927 close.
+after contract spikes #924–#927 close — **those spikes are now closed (ADR-038–042, EV-922 synthesis 2026-09-03).**
 
-| Logical layer | Purpose | Current home(s) | Follow-on spike |
-|---------------|---------|-----------------|-----------------|
-| **Core** | Shared IR types, constants, vendor helpers | `packages/shared`; IR inside `packages/tac2iwxxm` | Document boundaries only (#923) |
-| **Profiles** | Semantic + exchange profile contracts + content | Code: `tac2iwxxm/profiles/*`, `tac_validate/profiles.py`, `dissemination/exchange_registry.py`; content: `docs/domain/profiles/` (ADR-036) | #912 content · #924 ConversionProfile |
-| **Conversion** | TAC→IWXXM encode/decode | `packages/tac2iwxxm` | #924 (exchange packaging split) |
-| **Validation** | Staged TAC then IWXXM | `packages/tac-validate` + `packages/iwxxm-validate` | ADR-039 PipelineResult contract; `ca_eccc` staged reference (#925) |
-| **Adapters** | SQL/DB symmetric source/sink mapping | `packages/dissemination` (`db_preflight`, `writer_contract`, `sink`) | ADR-040 MappingConfig; source adapter Planned (#926) |
-| **Gateways / AFS** | AFTN/AMHS/EDIS/WIS2box + plan/audit | `packages/dissemination` (`edis`, `wis2`, `transports`, `packaging`) | ADR-041 DisseminationGateway; `health()` Planned (#927) |
-| **Dissemination** | Policy, plan, retry, delivery audit | Same + FE drawer (`apps/frontend`) | DisseminationPlan documented (#927); runtime #936 |
-| **Workflows** | `execute(message, workflow)` | `packages/workflows` (Planned) + `workflows/*.yaml`; F8 hard-coded until cutover | ADR-042 contract (#931); runtime Planned |
-| **Auth** | JWT middleware | `packages/auth` | Out of MET platform layers |
-| **Apps** | HTTP / UI / worker / e2e | `apps/backend`, `frontend`, `worker`, `e2e` | Thin callers — no package move |
+| Logical layer | Purpose | Current home(s) | Contract (ADR) | Runtime gap |
+|---------------|---------|-----------------|----------------|-------------|
+| **Core** | Shared IR types, constants, vendor helpers | `packages/shared`; IR inside `packages/tac2iwxxm` | ADR-037 Option C | Document boundaries only |
+| **Profiles** | Semantic + exchange profile contracts + content | Code: `tac2iwxxm/profiles/*`, `tac_validate/profiles.py`, `dissemination/exchange_registry.py`; content: `docs/domain/profiles/` (ADR-036) | ADR-038 | Loader/resolver; #933 UI |
+| **Conversion** | TAC→IWXXM encode/decode | `packages/tac2iwxxm` | ADR-038 | Exchange packaging vs dissemination |
+| **Validation** | Staged TAC then IWXXM | `packages/tac-validate` + `packages/iwxxm-validate` | ADR-039 PipelineResult | Unified runtime; `ca_eccc` reference |
+| **Adapters** | SQL/DB symmetric source/sink mapping | `packages/dissemination` (`db_preflight`, `writer_contract`, `sink`) | ADR-040 MappingConfig | Source poll; sink mapping runtime (#896) |
+| **Gateways / AFS** | AFTN/AMHS/EDIS/WIS2box + plan/audit | `packages/dissemination` (`edis`, `wis2`, `transports`, `packaging`) | ADR-041 DisseminationGateway | Façade; `health()`; plan runtime (#936) |
+| **Dissemination** | Policy, plan, retry, delivery audit | Same + FE drawer (`apps/frontend`) | ADR-041 DisseminationPlan | Delivery audit persistence (#843) |
+| **Workflows** | `execute(message, workflow)` | `packages/workflows` (Planned) + `workflows/*.yaml`; F8 hard-coded until cutover | ADR-042 | Executor package + F8 cutover |
+| **Auth** | JWT middleware | `packages/auth` | — | Out of MET platform layers |
+| **Apps** | HTTP / UI / worker / e2e | `apps/backend`, `frontend`, `worker`, `e2e` | — | Thin callers — no package move |
 
-**Draft milestone sequence** (revise after #924–#927): Core → Profiles (#912/#924) → Validation (#925) →
-Adapters (#926) → Dissemination (#927) → Workflows (#931 ✅ ADR-042) → Platform UIs (#933–#938).
+**Approved milestone sequence** (epic #922 synthesis): Core → Profiles (#912/#924) → Validation (#925) →
+Adapters (#926) → Dissemination (#927) → Workflows (#931) → Platform UIs (#933–#938).
 
 **References:** [Context: platform-package-layout-923](context/platform-package-layout-923.md);
-EV-922 session `reports/923-platform-package-layout.md`.
+[Context: epic-922-synthesis](context/epic-922-synthesis.md);
+EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `reports/922-epic-synthesis.md`.
 
 ## Component Details
 

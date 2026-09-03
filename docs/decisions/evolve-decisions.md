@@ -1,5 +1,26 @@
 # Evolve Decisions
 
+## Cycle EV-922-synthesis — Epic #922 close-out
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-922-epic-synthesis`  
+**Issues:** [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV922SYN-accept | **Epic investigation band complete** — all six spikes have Accepted ADRs |
+| D-EV922SYN-matrix | Consolidated gap matrix: contract (ADR) vs runtime gap |
+| D-EV922SYN-sequence | **Final** milestone sequence approved (Core → … → UIs) |
+| D-EV922SYN-merge | PR stack #1125→#1130 merge order documented |
+| D-EV922SYN-close | Close #923–#931 + epic #922 when PRs land on `stage` |
+| D-EV922SYN-ui | Platform UIs #933–#938 unblocked after ADR merge (runtime deps noted) |
+| D-EV922SYN-next | Priority runtime: `packages/workflows` (ADR-042) |
+| D-EV922SYN-writeup | Session `reports/922-epic-synthesis.md` + [Context: epic-922-synthesis](../context/epic-922-synthesis.md) |
+
+[Corpus: system-spec] §Platform logical layers [Corpus: product §F6] [Corpus: adr] ADR-037–042 [Corpus: decisions §EV-922-synthesis]
+
+---
+
+
 ## Cycle EV-931 — Workflow definitions (#931)
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-931-spike-workflow-definitions-execute-message-workf`  
