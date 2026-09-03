@@ -50,6 +50,14 @@ def test_explain_advisory_abbreviation_and_label_tokens() -> None:
     tca = _explain_advisory("TCA", product="TCA", seen={})
     assert tca is not None
     assert "tropical" in tca.lower()
+    swxa = _explain_advisory("SWXA", product="SWXA", seen={})
+    assert swxa is not None
+    assert "space" in swxa.lower()
+    swxa_other = _explain_advisory("DONLON", product="SWXA", seen={})
+    assert swxa_other is not None
+    vona = _explain_advisory("VONA", product="VONA", seen={})
+    assert vona is not None
+    assert "volcano" in vona.lower()
     dtg = _explain_advisory("DTG:", product="VAA", seen={})
     assert dtg is not None
     # Second VA token is not special-cased (seen already); still glossary-backed.
@@ -58,8 +66,14 @@ def test_explain_advisory_abbreviation_and_label_tokens() -> None:
 
 
 def test_classify_unknown_product_returns_none_fn() -> None:
-    fn = _classify("SWXA")
+    fn = _classify("NOT_A_PRODUCT")
     assert fn("ANY", {}) is None
+
+
+def test_advisory_field_finder_unknown_product_empty() -> None:
+    from tac2iwxxm.decode import _advisory_field_finder
+
+    assert _advisory_field_finder("NOT_A_PRODUCT") == []
 
 
 def test_sentence_from_segment_empty_and_station() -> None:
