@@ -13,6 +13,9 @@ from dissemination.allowlist import (
     parse_allowlist,
     validate_egress_host,
 )
+from dissemination.gateway import DisseminationGateway, DisseminationMessage
+from dissemination.health import GatewayHealth, default_health_for_kind
+from dissemination.plan import DisseminationPlan, execute_plan
 from dissemination.writer_contract import (
     CONTRACT_TABLE,
     CONTRACT_VERSION,
@@ -31,11 +34,17 @@ __all__ = [
     "Allowlist",
     "AllowlistError",
     "DiffKind",
+    "DisseminationGateway",
+    "DisseminationMessage",
+    "DisseminationPlan",
     "EgressDenied",
+    "GatewayHealth",
     "SchemaDiff",
     "__version__",
     "apply_writer_contract",
+    "default_health_for_kind",
     "diff_writer_contract",
+    "execute_plan",
     "load_allowlist_from_env",
     "parse_allowlist",
     "validate_egress_host",
