@@ -1,5 +1,27 @@
 # Evolve Decisions
 
+## Cycle EV-1132 — Workflows runtime + F8 cutover (#1132)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1132-workflows-runtime`  
+**Issues:** [#1132](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1132) · contract [#931](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/931) / ADR-042  
+**Documenting→Implementing gate:** **open** (2026-09-03) · **Build:** Implemented
+
+| ID | Outcome |
+|----|---------|
+| D-EV1132-scope | MVP executor + F8 cutover; no UI/gateway/async/`/convert` replace |
+| D-EV1132-pkg | New `packages/workflows` (MIT); deps tac2iwxxm, tac-validate, iwxxm-validate, pyyaml |
+| D-EV1132-ports | Store/quarantine via injected StorePort — no SQL in package |
+| D-EV1132-parity | Preserve SCHEMATRON_SKIPPED soft-pass + process_job signature |
+| D-EV1132-e2e | Skip e2e (no UI) |
+| D-EV1132-skip-plan | Skip verify-plan/plan-tooling — ADR-042 is SoT |
+| D-EV1132-context | [Context: workflows-runtime-1132](../context/workflows-runtime-1132.md) |
+| D-EV1132-ship | `packages/workflows` + F8 `process_job` → `execute("f8-metar-ingest-default")` |
+
+[Corpus: product §F6] [Corpus: product §F8] [Corpus: adr] ADR-042 [Corpus: decisions §EV-1132]
+
+---
+
+
 ## Cycle EV-922-synthesis — Epic #922 close-out
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-922-epic-synthesis`  

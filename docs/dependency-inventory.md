@@ -29,7 +29,17 @@
 | iwxxm-validate | XSD + Schematron (F2) | MIT | workspace path |
 | gifts | ~~Conversion~~ | — | **Removed at F6 cutover** (ADR-014) |
 | dissemination | F16–F19 sinks | MIT | workspace path (ADR-030) |
+| workflows | Workflow YAML executor `execute(message, workflow)` (ADR-042 / #1132) | MIT | workspace path (EV-1132 Implemented) |
 | auth | Supabase Auth JWT verify + `/auth/*` (F31 restore) | MIT | workspace `packages/auth` (ADR-033) |
+
+### packages/workflows (EV-1132 / #1132 — Implemented)
+
+| Package | Purpose | License | Source |
+|---------|---------|---------|--------|
+| tac2iwxxm | convert-iwxxm stage | MIT | workspace path |
+| tac-validate | validate-tac stage | MIT | workspace path |
+| iwxxm-validate | validate-xsd / validate-schematron | MIT | workspace path |
+| pyyaml | WorkflowDefinition YAML load | MIT | PyPI (`>=6.0`; already used by tac2iwxxm) |
 
 ### packages/dissemination (S019 / EV-014 — M1)
 

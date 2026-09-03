@@ -627,9 +627,10 @@
   **S038 / EV-031 / F30** DO Postgres amend; [Context: platform-independence-842](context/platform-independence-842.md);
   [deploy/doks/README-worker-hardening.md](../deploy/doks/README-worker-hardening.md)
 - **Workflow contract (EV-931 / #931):** F8 pipeline is the reference hard-coded path; migrates to
-  `execute(message, workflow)` via ADR-042 + `workflows/f8-metar-ingest-default.yaml` when
-  `packages/workflows` runtime ships. Ingest path does **not** auto-disseminate (F16–F19 remain
-  operator-triggered).
+  `execute(message, workflow)` via ADR-042 + `workflows/f8-metar-ingest-default.yaml`.
+- **Runtime build (EV-1132 / #1132):** `packages/workflows` MVP executor + F8 cutover — **Implemented**
+  (ADR-042). Ingest path does **not** auto-disseminate (F16–F19 remain operator-triggered).
+  See [Context: workflows-runtime-1132](context/workflows-runtime-1132.md).
 
 ### F9: Value-Aware Live Decode + Plain-Language Summary
 

@@ -72,12 +72,16 @@ apps/worker/pyproject.toml:metar-shared
 apps/worker/pyproject.toml:tac2iwxxm
 apps/worker/pyproject.toml:tac-validate
 apps/worker/pyproject.toml:iwxxm-validate
+apps/worker/pyproject.toml:workflows
 apps/worker/pyproject.toml:httpx
 apps/worker/pyproject.toml:pydantic
 apps/worker/pyproject.toml:pydantic-settings
 apps/worker/pyproject.toml:sqlalchemy
 apps/worker/pyproject.toml:psycopg
 apps/worker/pyproject.toml:sentry-sdk
+packages/workflows/pyproject.toml:tac2iwxxm
+packages/workflows/pyproject.toml:tac-validate
+packages/workflows/pyproject.toml:iwxxm-validate
 packages/auth/pyproject.toml:fastapi
 packages/auth/pyproject.toml:httpx
 packages/auth/pyproject.toml:PyJWT

@@ -95,6 +95,7 @@ metar-to-IWXXM/
 | Vendor schemas | Authoritative IWXXM SoT | `vendor/schemas/*` | wmo-im + iwxxm-us snapshots |
 | Work history (F5/F31) | Guest IndexedDB + logged-in DO Postgres sessions | FE IndexedDB + `tac_work_sessions` on DO | F7.i / F31; Auth JWT |
 | Worker (F8) | Near-RT ingest poller → store/quarantine | `apps/worker/` | `DATABASE_URL` → DO Postgres (F30) |
+| Workflows | YAML executor `execute(message, workflow)` (ADR-042) | `packages/workflows/` | tac2iwxxm, tac-validate, iwxxm-validate, pyyaml (EV-1132) |
 | Coverage gate harness (EV-080) | Unit coverage enforcement: pytest-cov + Vitest + per-file checker + scripts Python cov + bats-core | `scripts/ci/`, `tests/bats/` (planned), CI matrix | ADR-007 / #1077 |
 
 ### Platform logical layers (#922 / #923)
@@ -114,7 +115,7 @@ after contract spikes #924–#927 close — **those spikes are now closed (ADR-0
 | **Adapters** | SQL/DB symmetric source/sink mapping | `packages/dissemination` (`db_preflight`, `writer_contract`, `sink`) | ADR-040 MappingConfig | Source poll; sink mapping runtime (#896) |
 | **Gateways / AFS** | AFTN/AMHS/EDIS/WIS2box + plan/audit | `packages/dissemination` (`edis`, `wis2`, `transports`, `packaging`) | ADR-041 DisseminationGateway | Façade; `health()`; plan runtime (#936) |
 | **Dissemination** | Policy, plan, retry, delivery audit | Same + FE drawer (`apps/frontend`) | ADR-041 DisseminationPlan | Delivery audit persistence (#843) |
-| **Workflows** | `execute(message, workflow)` | `packages/workflows` (Planned) + `workflows/*.yaml`; F8 hard-coded until cutover | ADR-042 | Executor package + F8 cutover |
+| **Workflows** | `execute(message, workflow)` | `packages/workflows` + `workflows/*.yaml`; F8 via `execute` | ADR-042 | EV-1132 Implemented |
 | **Auth** | JWT middleware | `packages/auth` | — | Out of MET platform layers |
 | **Apps** | HTTP / UI / worker / e2e | `apps/backend`, `frontend`, `worker`, `e2e` | — | Thin callers — no package move |
 
@@ -371,6 +372,18 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Non-goals (F8 worker path)**: public machine-ingest auth UX; **automatic** push of ingest
   results (operator dissemination sinks are **F16–F19**, not F8 auto-push).
 - **Source**: ADR-018; **F30**; [feature-list.md](feature-list.md) F8.
+- **EV-1132 / #1132**: Cut over to `packages/workflows.execute` + `workflows/f8-metar-ingest-default.yaml`
+  (ADR-042). See [Context: workflows-runtime-1132](context/workflows-runtime-1132.md).
+
+### packages/workflows (ADR-042 / EV-1132)
+
+- **Purpose**: Thin MET-lib workflow executor — load git `workflows/*.yaml`, run fixed stage
+  registry (`validate-tac` → `convert-iwxxm` → `validate-xsd` / `validate-schematron` for MVP),
+  return `WorkflowResult`. Apps remain thin callers.
+- **SoC**: **No** FastAPI, Supabase, or SQLAlchemy; store/quarantine via injected ports.
+- **Status**: **Implemented** (EV-1132 / #1132) — contract Accepted in ADR-042.
+- **Source**: [ADR-042](adr/ADR-042-workflow-definitions.md);
+  [Context: workflows-runtime-1132](context/workflows-runtime-1132.md).
 
 ### F30 — Platform independence (S038 / EV-031)
 

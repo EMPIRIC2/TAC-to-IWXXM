@@ -150,6 +150,7 @@ jobs:
             iwxxm-validate,
             tac-validate,
             dissemination,
+            workflows,
             worker,
             bugs,
           ]
@@ -287,6 +288,11 @@ jobs:
       - name: Run dissemination multi-DB integration tests
         if: matrix.package == 'dissemination'
         run: make test-integration-dissemination
+
+      # ADR-042 / EV-1132 — workflows executor unit + 100% coverage.
+      - name: Run workflows unit tests with coverage
+        if: matrix.package == 'workflows'
+        run: make test-unit-workflows
 
       # F8 / EV-047 — worker unit + package/per-file ≥100%.
       - name: Run worker unit tests with coverage
