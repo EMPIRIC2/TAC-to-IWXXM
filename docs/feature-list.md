@@ -1646,6 +1646,26 @@
   where feasible (F9 G4 best-effort intent preserved until closed).
 - **Acceptance**: #820 checkboxes; **TC-EV030-820-***; deepen UJ-042
 
+### F9 / F28 / F32 deepen (EV-099 — #1119 SWXA/VONA structured decode)
+
+- **Status**: **Planned** deepen (F9/F28/F32 remain **Done** for prior bars)
+- **Issues**: [#1119](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1119); related #740 / #741
+- **Session**: `EV-099-f9-swxa-vona-structured-decode`
+- **What it does**: Add **SWXA** and **VONA** to `decode_tac` `_SUPPORTED` with structured
+  `LABEL:` field spans (mirror VAA/TCA EV-030). Ends whole-TAC residual on quality peers
+  (`vona_a7_1`, `swxa_a7_3` / `_4` / `_5`) while convert annex3 peer XML stays **bit-identical**.
+- **Residual policy (D-EV099-residuals)**: Prefer empty residuals on official peers; **explicit
+  meaningful** leftover tokens may remain via exact allowlist rows (SIGMET-style). **Forbidden:**
+  `allow_any` / single residual spanning the entire TAC body.
+- **Acceptance**:
+  1. Structured field segments for major SWXA/VONA labels on unlocked peers
+  2. No whole-TAC residual; drop `allow_any` for `vona_a7_1` / `swxa_a7_3`
+  3. Convert/XSD/SCH unchanged green for those stems
+  4. Quality metrics UI/API reflects field-level residuals only
+  5. **TC-EV099-*** + SWXA/VONA quality packs green
+- **Out of scope**: Encode deepen (G-VONA-5 etc.); dissemination; FE redesign; CORS changes
+- **Source**: [evolve-decisions.md](decisions/evolve-decisions.md) §EV-099; ADR-025 G4
+
 ### F32: VONA Quality Bar — S040 / EV-032
 
 - **Status**: **Done** (M2 closed 2026-08-04; [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) closed).

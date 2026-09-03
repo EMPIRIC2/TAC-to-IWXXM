@@ -100,6 +100,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-042 | F25/F9/F7.g deepen | Official WMO TAC peers decode empty/allowlisted residuals | H4–H5 if FE | TC-EV027-001..005 |
 | UJ-043 | F28 + F6/F12/F2/F13/F15/F20/F23/F24/F26/F27 deepen | Eight-family lint/convert/validate + SWXA bar (#823) | H4–H5 if FE | TC-EV029-001..008; TC-F28-001..006 |
 | UJ-044 | F29 + F23/F12/F2/F13/F9/F26/F27 deepen | Rule matrices (#831) + TC SIGMET deepen (#829) + VAA/TCA decode (#820) | H4–H5 if FE | TC-EV030-001..006; TC-F29-001..007 |
+| UJ-044a | F9/F28/F32 deepen (EV-099) | SWXA/VONA structured decode — no whole-TAC residual on quality peers (#1119) | H4–H5 N/A (API); staging health | TC-EV099-001..004 |
 | UJ-045 | F31+F21 | Guest convert + persistent loss-of-progress notice + local history | **H4–H5 required** | TC-F31-001/002/006 |
 | UJ-046 | F31+F30 | Login → auto-upload drafts → DO Postgres sessions | **H4–H5 required** | TC-F31-003/004/006 |
 | UJ-047 | F22+F31 | Privacy prefs ↔ IndexedDB / Auth cookies | **H4–H5 required** | TC-F31-005; TC-F22-* deepen |
@@ -1488,6 +1489,36 @@ New **TC-EV027-001..005** (`E27-TC=1`). Ties **UJ-042**; deepens UJ-039 / UJ-020
 - **Objective**: Structured decode for major labels/forecast hours; shrink allowlist/matrix
 - **Pass criteria**: #820 AC met or child-issued with cite
 - **Source**: #820; F9/F26/F27 deepen
+
+## EV-099 — #1119 SWXA/VONA structured decode
+
+### TC-EV099-001: SWXA/VONA in decode `_SUPPORTED` with LABEL spans (UJ-044a)
+
+- **Level**: T0 / T2
+- **Objective**: `decode_tac` returns field segments for major SWXA/VONA labels (mirror VAA/TCA)
+- **Pass criteria**: Peers `vona_a7_1`, `swxa_a7_3`/`_4`/`_5` have ≥1 segment per known label family; product in `_SUPPORTED`
+- **Source**: #1119; [Corpus: product §F9]
+
+### TC-EV099-002: No whole-TAC residual (UJ-044a)
+
+- **Level**: T0 / T2
+- **Objective**: Residuals must not be a single span covering the entire TAC body
+- **Pass criteria**: No residual with `(start,end)==(0,len(tac))` on those peers; `allow_any` removed for `vona_a7_1` / `swxa_a7_3`
+- **Source**: #1119; D-EV099-residuals
+
+### TC-EV099-003: Explicit meaningful residuals only (UJ-044a)
+
+- **Level**: T0 / T2
+- **Objective**: Leftover tokens (if any) are exact allowlist rows with issue cite — not `allow_any`
+- **Pass criteria**: Residual matrix green; any leftover has `residual_text` + linked issue
+- **Source**: ADR-025 G4; D-EV099-residuals
+
+### TC-EV099-004: Convert peer XML bit-identical (UJ-044a)
+
+- **Level**: T2
+- **Objective**: Annex3 convert equality / F28+F32 quality packs unchanged for peers
+- **Pass criteria**: Golden/soft-compare still pass; no encode churn from decode-only change
+- **Source**: #1119; D-EV099-convert
 
 ### TC-F29-001: Harness recommendation written (UJ-044)
 

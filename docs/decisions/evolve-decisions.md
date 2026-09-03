@@ -1,5 +1,26 @@
 # Evolve Decisions
 
+## Cycle EV-099 — F9 SWXA/VONA structured decode (#1119)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-099-f9-swxa-vona-structured-decode`  
+**Preset:** Standard · **Documenting→Implementing gate:** **open** · **Issue:** [#1119](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1119)
+
+| ID | Outcome |
+|----|---------|
+| D-EV099-fn | Deepen **F9** (+ F28/F32 quality surfaces) — no new top-level Fn |
+| D-EV099-peers | Unlock peers: `vona_a7_1`, `swxa_a7_3`, `swxa_a7_4`, `swxa_a7_5` |
+| D-EV099-residuals | Meaningful explicit residuals OK; **no** whole-TAC / `allow_any` body dump |
+| D-EV099-convert | Convert annex3 peer XML must remain **bit-identical** |
+| D-EV099-pattern | Mirror VAA/TCA structured `LABEL:` decode (EV-030 / #820) |
+| D-EV099-e2e | Skip Playwright e2e this cycle — unit/integration + staging health |
+| D-EV099-pr | PR into `stage` |
+
+### Corpus
+
+[Corpus: product §F9] [Corpus: product §F28] [Corpus: product §F32] [Corpus: decisions §EV-099] [Corpus: adr] ADR-025
+
+---
+
 ## Cycle EV-097 — Deep-research domain handoff (skill + rule)
 
 **Opened:** 2026-09-02 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-097-deep-research-domain-handoff`  
