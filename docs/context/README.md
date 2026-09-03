@@ -13,6 +13,7 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 | [canonical-met-staged-validation-925](canonical-met-staged-validation-925.md) | #925 canonical IR + staged validation PipelineResult contract | active | 2026-09-03 | F2, F6, F15, ADR-039, EV-925 |
 | [sql-adapters-mapping-926](sql-adapters-mapping-926.md) | #926 SQL symmetric source/sink adapters + MappingConfig | active | 2026-09-03 | F16, ADR-030, ADR-040, EV-926 |
 | [dissemination-gateway-927](dissemination-gateway-927.md) | #927 DisseminationGateway + plan/audit (EDIS/WIS2/AFS) | active | 2026-09-03 | F16–F19, ADR-041, EV-927 |
+| [dissemination-ops-936](dissemination-ops-936.md) | #936 ops UI + Gateway runtime hooks (plan/audit/SQL/health) | active | 2026-09-03 | F16–F19, F7, ADR-041, EV-936 |
 | [workflow-definitions-931](workflow-definitions-931.md) | #931 execute(message, workflow) YAML DSL + packages/workflows | active | 2026-09-03 | F6, F8, ADR-042, EV-931 |
 | [ev-098-ca-eccc-mining](ev-098-ca-eccc-mining.md) | CA_ECCC deep mine #1028–#1031 (datamart, MSC PDFs, MANOBS, MANAIR) via EV-097 handoff | active | 2026-09-02 | F36, EV-098 |
 | [propagate-residuals-to-remarks](propagate-residuals-to-remarks.md) | #981 opt-in fold decode residuals into remarks/HRT + profile default + F7.q hooks (EV-981) | active | 2026-08-31 | F6, F9, F7.q |

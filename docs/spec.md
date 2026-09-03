@@ -113,8 +113,8 @@ after contract spikes #924–#927 close — **those spikes are now closed (ADR-0
 | **Conversion** | TAC→IWXXM encode/decode | `packages/tac2iwxxm` | ADR-038 | Exchange packaging vs dissemination |
 | **Validation** | Staged TAC then IWXXM | `packages/tac-validate` + `packages/iwxxm-validate` | ADR-039 PipelineResult | Unified runtime; `ca_eccc` reference |
 | **Adapters** | SQL/DB symmetric source/sink mapping | `packages/dissemination` (`db_preflight`, `writer_contract`, `sink`) | ADR-040 MappingConfig | Source poll; sink mapping runtime (#896) |
-| **Gateways / AFS** | AFTN/AMHS/EDIS/WIS2box + plan/audit | `packages/dissemination` (`edis`, `wis2`, `transports`, `packaging`) | ADR-041 DisseminationGateway | Façade; `health()`; plan runtime (#936) |
-| **Dissemination** | Policy, plan, retry, delivery audit | Same + FE drawer (`apps/frontend`) | ADR-041 DisseminationPlan | Delivery audit persistence (#843) |
+| **Gateways / AFS** | AFTN/AMHS/EDIS/WIS2box + plan/audit | `packages/dissemination` (`edis`, `wis2`, `transports`, `packaging`) | ADR-041 DisseminationGateway | **EV-936 Planned:** façade + `health()` + plan runtime (#936) |
+| **Dissemination** | Policy, plan, retry, delivery audit | Same + FE drawer + **ops surface** (`apps/frontend`) | ADR-041 DisseminationPlan | **EV-936 Planned:** audit on `DATABASE_URL` + ops UI (#936) |
 | **Workflows** | `execute(message, workflow)` | `packages/workflows` + `workflows/*.yaml`; F8 via `execute` | ADR-042 | EV-1132 Implemented |
 | **Auth** | JWT middleware | `packages/auth` | — | Out of MET platform layers |
 | **Apps** | HTTP / UI / worker / e2e | `apps/backend`, `frontend`, `worker`, `e2e` | — | Thin callers — no package move |
@@ -394,6 +394,17 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 
 - **Purpose**: Guest local + notice; logged-in DO sessions; auto-upload; F22 interplay.
 - **Source**: [feature-list.md](feature-list.md) F31.
+
+### F16–F19 deepen — Gateway hooks + ops UI (EV-936 / #936) — Planned
+
+- **Purpose**: Runtime **DisseminationGateway** façade (`validate` / `send` / `health`) over
+  existing sinks; **DisseminationPlan** execute + delivery audit on product Postgres; operator
+  **Dissemination ops** surface (plan/audit/SQL mapping/gateway health) alongside the destinations
+  drawer. JWT for ops/plan/audit/mapping/health; public preflight/send unchanged (F21).
+- **Non-goals**: #933/#934/#938; live AFTN/failover features; secrets in audit UI; new packages.
+- **Source**: [feature-list.md](feature-list.md) §F16–F19 deepen (EV-936);
+  [Context: dissemination-ops-936](context/dissemination-ops-936.md); ADR-041 / ADR-040;
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-936; UJ-071.
 
 ### F16–F19 — Dissemination epic (S019 / EV-014) — Done
 

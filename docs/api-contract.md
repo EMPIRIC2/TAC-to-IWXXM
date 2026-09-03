@@ -723,6 +723,24 @@ Encoding: **msgspec** request Struct validation + response encode; thin pydantic
 aliases only (E14-07=A / ADR-026). CORS: no new origins; reuse existing
 `METAR_CORS_ORIGINS` / `corsOrigins` (H4–H5 / H6′ for UJ-027–030).
 
+### EV-936 / #936 — Dissemination ops + Gateway hooks (JWT)
+
+Public `POST /dissemination/preflight` + `/send` **unchanged** (F21; memory-only BYOC).
+New **authenticated** routes (Bearer JWT — same posture as work-sessions):
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET`/`PUT` | `/api/v1/dissemination/plans/{plan_id}` | DisseminationPlan CRUD (policy, transforms, retry, destination refs — **no secrets**) |
+| `POST` | `/api/v1/dissemination/plans/{plan_id}/execute` | Execute/dry-run → `DeliveryReceipt[]`; writes audit |
+| `GET` | `/api/v1/dissemination/audit` | List/filter (product, station, profile, status); redacted |
+| `GET` | `/api/v1/dissemination/audit/{id}` | Detail; never returns BYOC secrets or connection URIs |
+| `GET`/`PUT` | `/api/v1/dissemination/mappings/{id}` | MappingConfig CRUD (ADR-040) |
+| `GET` | `/api/v1/dissemination/gateways/health` | Per-kind `GatewayHealth` (`ok`, `gateway`, `connectivity_ok`, `detail`) |
+
+**Auth**: JWT required → 401/403 without. **Storage**: audit + saved plans/mappings on product
+Postgres (`DATABASE_URL`) — not Supabase PostgREST. **Egress**: ADR-029 allowlist still applies
+when execute triggers send.
+
 ### S050 / EV-042 — Operator UI destinations hidden
 
 Operator Dissemination drawer / Convert&Send destination path is **restored** (EV-091 / #898).
@@ -846,6 +864,8 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
   **additive** `GET /api/v1/lint-issue-catalog` (E11-31) for FE tooltips/catalog panel
 - S019 / EV-014 (2026-07-21): Planned `POST /api/v1/dissemination/preflight` + `/send`
   (ADR-030); F16–F19 sinks; Batch 1 architecture locked (Q32=A)
+- EV-936 / #936 (2026-09-03): Additive JWT routes for plans/execute/audit/mappings/gateway
+  health; public preflight/send unchanged; audit on `DATABASE_URL`
 - S020 / EV-015 (2026-07-22): F20 TAF+SPECI quality — **full endpoint review**; no new routes;
   wire shapes unchanged. `product` enum already includes `taf` \| `speci` on convert /
   convert-bulletin / lint-tac / decode-tac. Registry codes for TAF (+ SPECI deepen) flow through

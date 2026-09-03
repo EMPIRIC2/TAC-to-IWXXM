@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-31 (EV-981 #981 propagate residuals → remarks — UJ-070)
+> **Last updated**: 2026-09-03 (EV-936 #936 dissemination ops + Gateway hooks — UJ-071)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -87,6 +87,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014; **EV-062 / #1017** deepen) | T0 / T2 / **T3** / H4–H5 |
 | UJ-069 | Convert with semantic profile → package with exchange profile | API / library / workbench (#1024) | F35+F36 (EV-063/EV-090/EV-093 / #912) | T2 / **T3**; **H4–H5** (FE) |
 | UJ-070 | Opt-in propagate decode residuals into remarks / HRT | UI / API / package / Quality metrics (#981) | F6+F9+F7.q (EV-981) | T0 / T2 / **T3** / H4–H5 |
+| UJ-071 | Dissemination ops — plan/audit/SQL mapping/gateway health | apps/frontend / API | F16–F19 deepen (EV-936 / #936) | T2 / **T3** / H6′ (+ H4–H5 when FE deploy) |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
@@ -400,6 +401,44 @@ opts in.
 **Automated tests**: TC-EV981-001..005 (see test-plan)
 
 **Source**: EV-981 / #981; [Context: propagate-residuals-to-remarks](context/propagate-residuals-to-remarks.md)
+
+---
+
+### UJ-071: Dissemination ops — plan / audit / SQL mapping / gateway health (EV-936 / #936)
+
+**Actor**: Authenticated meteorological operator (JWT)
+
+**Goal**: Configure DisseminationPlan + SQL MappingConfig, inspect redacted delivery audit,
+and check gateway health — without replacing one-shot destinations drawer send (UJ-027–030).
+
+**Feature**: F16–F19 deepen (EV-936)
+
+**Steps**:
+
+1. Sign in (F31). Open **Dissemination ops** (distinct from destinations drawer).
+2. **SQL mapping**: create/edit MappingConfig (message / station / timestamp / externalId);
+   source vs sink mode; no national MET schema prescribed.
+3. **Plan editor**: set validity policy + destination multi-select (no live credential paste in plan).
+4. **Execute plan** (or dry-run) for a sample message → audit row with `DeliveryReceipt` fields;
+   UI never shows BYOC secrets or connection URIs.
+5. **Audit list/detail**: filter by product/station/profile/status; open detail.
+6. **Gateway health**: view per-kind `GatewayHealth` (ok / connectivity_ok / operator-safe detail).
+7. Optionally complete one-shot Disseminate in the destinations drawer (UJ-027) — unchanged.
+
+**Acceptance**:
+1. Ops surface complements drawer; UJ-027–030 remain green.
+2. Audit on product Postgres (`DATABASE_URL`); JWT required for ops/plan/audit/mapping/health.
+3. Public `POST /dissemination/preflight` + `/send` unchanged (F21).
+4. No secrets/URIs in audit API or UI; no internal planning vocabulary on operator copy.
+5. H6′ smoke for UJ-071; H4–H5 when FE ops routes deploy.
+
+**Errors**: 401/403 without JWT; allowlist/connectivity failures as operator-safe messages.
+
+**Tier**: T2 / T3 / H6′ (+ H4–H5 when FE deploy)
+
+**Automated tests**: TC-F16-OPS-001..006 (see test-plan)
+
+**Source**: EV-936 / #936; ADR-041; ADR-040; [Context: dissemination-ops-936](context/dissemination-ops-936.md)
 
 ---
 
