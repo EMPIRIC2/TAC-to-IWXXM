@@ -1008,7 +1008,7 @@
 
 ### F16–F19 deepen (EV-936 — Gateway runtime hooks + dissemination ops / #936)
 
-- **Status**: **In progress** (EV-936 Build — M1 package façade done) — F16–F19 remain **Done** for drawer; this deepen
+- **Status**: **In progress** (EV-936 Build — M1–M3 done; PR pending) — F16–F19 remain **Done** for drawer; this deepen
   adds Gateway façade runtime + ops UI. **No new Fn.** Absorbs #935/#937 into #936.
 - **What it does**:
   1. **DisseminationGateway** thin registry in `packages/dissemination` (`validate`→preflight,
