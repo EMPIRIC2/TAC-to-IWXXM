@@ -113,13 +113,13 @@ after contract spikes #924–#927 close.
 | **Validation** | Staged TAC then IWXXM | `packages/tac-validate` + `packages/iwxxm-validate` | ADR-039 PipelineResult contract; `ca_eccc` staged reference (#925) |
 | **Adapters** | SQL/DB symmetric source/sink mapping | `packages/dissemination` (`db_preflight`, `writer_contract`, `sink`) | ADR-040 MappingConfig; source adapter Planned (#926) |
 | **Gateways / AFS** | AFTN/AMHS/EDIS/WIS2box + plan/audit | `packages/dissemination` (`edis`, `wis2`, `transports`, `packaging`) | ADR-041 DisseminationGateway; `health()` Planned (#927) |
-| **Dissemination** | Policy, plan, retry, delivery audit | Same + FE drawer (`apps/frontend`) | DisseminationPlan documented (#927); runtime #931 |
-| **Workflows** | `execute(message, workflow)` | Hard-coded paths in `apps/backend` | #931 |
+| **Dissemination** | Policy, plan, retry, delivery audit | Same + FE drawer (`apps/frontend`) | DisseminationPlan documented (#927); runtime #936 |
+| **Workflows** | `execute(message, workflow)` | `packages/workflows` (Planned) + `workflows/*.yaml`; F8 hard-coded until cutover | ADR-042 contract (#931); runtime Planned |
 | **Auth** | JWT middleware | `packages/auth` | Out of MET platform layers |
 | **Apps** | HTTP / UI / worker / e2e | `apps/backend`, `frontend`, `worker`, `e2e` | Thin callers — no package move |
 
 **Draft milestone sequence** (revise after #924–#927): Core → Profiles (#912/#924) → Validation (#925) →
-Adapters (#926) → Dissemination (#927) → Workflows (#931) → Platform UIs (#933–#938).
+Adapters (#926) → Dissemination (#927) → Workflows (#931 ✅ ADR-042) → Platform UIs (#933–#938).
 
 **References:** [Context: platform-package-layout-923](context/platform-package-layout-923.md);
 EV-922 session `reports/923-platform-package-layout.md`.

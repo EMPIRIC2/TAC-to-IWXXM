@@ -624,6 +624,10 @@
 - **Source**: [Context: realtime-tac-ingest](context/realtime-tac-ingest.md) R2–R15; ADR-018;
   **S038 / EV-031 / F30** DO Postgres amend; [Context: platform-independence-842](context/platform-independence-842.md);
   [deploy/doks/README-worker-hardening.md](../deploy/doks/README-worker-hardening.md)
+- **Workflow contract (EV-931 / #931):** F8 pipeline is the reference hard-coded path; migrates to
+  `execute(message, workflow)` via ADR-042 + `workflows/f8-metar-ingest-default.yaml` when
+  `packages/workflows` runtime ships. Ingest path does **not** auto-disseminate (F16–F19 remain
+  operator-triggered).
 
 ### F9: Value-Aware Live Decode + Plain-Language Summary
 
