@@ -989,6 +989,16 @@
 - **Source**: #729; S019 / EV-014; ADR-021 amend; ADR-029 (SSRF); ADR-030 (package/API);
   **#785; S024 / EV-018** (multi-select deepen); **S047 / EV-039** (live local SQL + teardown)
 
+### F16–F19 deepen (EV-927 — DisseminationGateway / #927)
+
+- **Status note**: F16–F19 remain **Done**; spike [#927](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/927)
+  documents **DisseminationGateway** + **DisseminationPlan** ([ADR-041](adr/ADR-041-dissemination-gateway.md))
+  over existing SinkAdapter modules. Absorbs #928/#929/#930. **No new Fn.**
+- **Acceptance**: Gateway gap table, package boundary, EDIS alphanumeric policy, WIS2 BYOC/DMZ sketch, plan/audit fields.
+- **Out of scope**: #909/#910/#911 features, #936 UI, `health()` implementation.
+- **Source**: [Context: dissemination-gateway-927](context/dissemination-gateway-927.md);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-927
+
 ### F17: WIS2 dissemination pathway — S019 / EV-014
 
 - **Status**: **Done** (EV-014 closed 2026-07-21; live destination BYOC waived via
