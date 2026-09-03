@@ -1,5 +1,30 @@
 # Evolve Decisions
 
+## Cycle EV-933 — ConversionProfile editor (#933)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-933-ui-conversionprofile-editor-rule-packs-executabl`  
+**Issues:** [#933](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/933) · contract [#924](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/924) / ADR-038 · absorbed #915  
+**Documenting→Implementing gate:** **closed**
+
+| ID | Outcome |
+|----|---------|
+| D-EV933-scope | Rule-pack + inspector + signed overlays (intake 3) |
+| D-EV933-scale | **full** |
+| D-EV933-users | Operator + admin |
+| D-EV933-store | JWT + product Postgres ownership (F30); Supabase Auth identity only |
+| D-EV933-fn | **F7.w** |
+| D-EV933-uj | **UJ-072** + TC-EV933-001..006 |
+| D-EV933-phase | M1 rule-pack/inspector → M2 overlays (same evolve) |
+| D-EV933-adr | ADR-038 amend Planned |
+| D-EV933-01-ac | Acceptance locked (feature-list F7.w) |
+| D-EV933-context | [Context: conversion-profile-editor-933](../context/conversion-profile-editor-933.md) |
+| D-EV933-must-not | #1024 picker; dissemination drawer; no credentials in profiles |
+| D-EV933-TP1..TP9 | **Confirmed** 2026-09-03 — S5–S8 + TP1..TP9 (HMAC; M1→M3; Alembic M1) |
+
+[Corpus: product §F7.w] [Corpus: api] [Corpus: journeys §UJ-072] [Corpus: adr] ADR-038 [Corpus: decisions §EV-933]
+
+---
+
 ## Cycle EV-936 — Dissemination ops + Gateway hooks (#936)
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-936-dissemination-ops-gateway-hooks`  

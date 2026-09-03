@@ -107,8 +107,17 @@ Exchange-only profiles (`GLOBAL_AFS`, …) use `kind: exchange` and omit convers
 - Contract fields not yet machine-validated against runtime — #933 or #925 may add loader
 - `appliesTo.stations` / state filters unimplemented — document as future
 
+### Amend (EV-933 / #933 — Planned)
+
+Operator-scoped **signed overlays** may be persisted server-side (product Postgres + JWT
+ownership) and applied on convert. First-party catalog entries remain the default trust
+root; unsigned browser-uploaded packs stay **rejected**. Full normative amend lands with
+EV-933 Build (see [Context: conversion-profile-editor-933](../context/conversion-profile-editor-933.md)).
+
 ## References
 
 - [Context: conversion-profile-contract-924](../context/conversion-profile-contract-924.md)
+- [Context: conversion-profile-editor-933](../context/conversion-profile-editor-933.md)
 - [ADR-037](ADR-037-platform-logical-layers.md) Profiles layer
 - EV-924 session report `924-conversion-profile-contract.md`
+- EV-933 / #933 F7.w / UJ-072

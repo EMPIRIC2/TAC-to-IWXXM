@@ -1,6 +1,22 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-09-03 (EV-936 / #936)
+> Stage: 01-requirements | Last updated: 2026-09-03 (EV-933 / #933)
+
+## EV-933 — ConversionProfile editor (#933)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-933 / UI preview | Accepted | Local `:18000` / `:18001` (non-deployed) | confirmed |
+| EV-933 / Fn | **F7.w** deepen | New F7 subfeature; coordinates F6/ADR-038 | confirmed |
+| EV-933 / users | Operator + admin | JWT | confirmed |
+| EV-933 / overlays | Signed + server-persisted | Product Postgres `DATABASE_URL` + JWT ownership (F30); Auth via Supabase JWT — not PostgREST | confirmed |
+| EV-933 / journeys | **UJ-072** | TC-EV933-001..006; #1024 / drawer must-not-break | confirmed |
+| EV-933 / phasing | M1 rule-pack+inspector → M2 overlays | Same evolve | confirmed |
+| EV-933 / ADR | ADR-038 amend (Planned) | Overlay trust | confirmed |
+| EV-933 / connectivity | H4–H5 when FE deploy | After Build gate | planned |
+
+[Corpus: decisions §EV-933] [Corpus: product §F7.w] [Corpus: api] [Corpus: journeys §UJ-072]
+
 
 ## EV-936 — Dissemination ops + Gateway hooks (#936)
 

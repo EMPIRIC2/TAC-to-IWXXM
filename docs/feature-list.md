@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
@@ -360,6 +360,9 @@
   | F7.r | #903 | Accumulate back-to-back conversions → one ZIP (S067 / EV-057) |
   | F7.s | #838 | Validate existing IWXXM (paste / single `.xml` upload; no TAC) (S067 / EV-057) |
   | F7.t | #1003 | IWXXM as **product** pass-through (lint + F2 validate; no TAC convert) (S070 / EV-060); siblings #1001 AHL noise, #1002 profile picker, #1004 log_level, #1005 bulletin fields, #1006 Auth UAT |
+  | F7.u | #1013 | Product/Profile bars no-wrap (S071 / EV-061) |
+  | F7.v | #1014 / #1017 | Validation Issues Catalog tab (S071 / EV-061; EV-062) |
+  | F7.w | #933 | ConversionProfile editor — rule packs + inspector + signed overlays (EV-933); UJ-072 |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
@@ -591,6 +594,22 @@
   source access/tier). Descriptions are natural-language **what / why / severity** with
   section-level citations or explicit **Source section unavailable**. Prefer public primary
   `source_url`; label paywall; expose `source_locator` + `source_access`. Distinct from #996.
+- **EV-933 deepen (F7.w / #933)**: **ConversionProfile editor** for operators and admins —
+  rule-pack CRUD (absorbed #915), read-only contract inspector (ADR-038 fields), then
+  **signed / operator-scoped overlays** persisted on product Postgres with JWT ownership
+  (F30; Auth via Supabase JWT — not PostgREST writes). Phased in-cycle: **M1** rule-pack +
+  inspector; **M2** overlay persist + apply on convert. Does **not** collapse #1024 light
+  picker; does **not** bake live AFTN/WIS2 routes or credentials into profiles (ADR-021/029).
+  ADR-038 amend for overlay trust. Journey **UJ-072**. Status: **Planned**.
+- **Acceptance (EV-933 / #933 — F7.w)** — **approved** (`D-EV933-01-ac=1`):
+  1. M1: rule-pack editor (id, profile, product, stage, severity, when, message,
+     standardReference) + share/export; inspector shows ADR-038 staged settings read-only
+     for catalog profiles (`ICAO_2025` / `US_FAA_NWS` / …).
+  2. M2: authenticated user can save signed overlay; fail-closed on unsigned/unknown;
+     overlay selectable on convert; admin can manage shared packs within ownership rules.
+  3. UJ-072 + TC-EV933-001..006; H4–H5 when FE routes deploy; no secrets in profile objects.
+  4. #1024 picker and dissemination drawer remain green; no internal planning vocabulary
+     on operator copy (EV-048).
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|

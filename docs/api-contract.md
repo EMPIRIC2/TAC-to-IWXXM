@@ -741,6 +741,23 @@ New **authenticated** routes (Bearer JWT — same posture as work-sessions):
 Postgres (`DATABASE_URL`) — not Supabase PostgREST. **Egress**: ADR-029 allowlist still applies
 when execute triggers send.
 
+### EV-933 / #933 — ConversionProfile editor + overlays (JWT)
+
+First-party catalog remains fail-closed (ADR-038). New **authenticated** routes for
+operator-scoped overlays and rule packs (Bearer JWT — same posture as work-sessions /
+dissemination ops). **Storage**: product Postgres (`DATABASE_URL`) with ownership filters —
+not Supabase PostgREST product writes (F30). Auth identity from Supabase JWT.
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET` | `/api/v1/profiles/catalog` | Read-only ConversionProfile / catalog projection (ADR-038 fields; no secrets) |
+| `GET`/`POST`/`PUT`/`DELETE` | `/api/v1/profiles/rule-packs/{id}` | Rule-pack CRUD; export-friendly body |
+| `GET`/`POST`/`PUT`/`DELETE` | `/api/v1/profiles/overlays/{id}` | Signed operator overlays; reject unsigned |
+| `POST` | `/api/v1/convert` (existing) | Optional overlay / rule-pack reference field (additive; OpenAPI plain language) |
+
+**Auth**: JWT required for pack/overlay mutate → 401/403. **Trust**: unsigned browser packs
+rejected. **Non-goals**: credentials / destination URIs in profile objects (ADR-021/029).
+
 ### S050 / EV-042 — Operator UI destinations hidden
 
 Operator Dissemination drawer / Convert&Send destination path is **restored** (EV-091 / #898).

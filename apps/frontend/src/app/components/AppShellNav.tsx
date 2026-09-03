@@ -10,7 +10,8 @@ export type ShellPrimaryView =
   | 'history'
   | 'quality'
   | 'catalog'
-  | 'dissemination-ops';
+  | 'dissemination-ops'
+  | 'profiles';
 
 export const SHELL_NAV_LABELS = {
   converter: 'Convert',
@@ -18,6 +19,7 @@ export const SHELL_NAV_LABELS = {
   quality: 'Quality metrics',
   catalog: 'Validation Issues Catalog',
   'dissemination-ops': 'Dissemination ops',
+  profiles: 'Conversion profiles',
 } as const;
 
 interface AppShellNavProps {
@@ -33,6 +35,7 @@ const TABS: ShellPrimaryView[] = [
   'quality',
   'catalog',
   'dissemination-ops',
+  'profiles',
 ];
 
 /**

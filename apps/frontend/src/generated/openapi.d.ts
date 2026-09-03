@@ -463,6 +463,80 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/profiles/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Catalog
+         * @description Read-only ConversionProfile catalog for the authenticated Profiles inspector.
+         *
+         *     Requires JWT so the inspector stays on the authenticated Profiles surface.
+         */
+        get: operations["get_catalog_api_v1_profiles_catalog_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/rule-packs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Rule Packs
+         * @description List rule packs owned by the caller.
+         */
+        get: operations["list_rule_packs_api_v1_profiles_rule_packs_get"];
+        put?: never;
+        /**
+         * Create Rule Pack
+         * @description Create a rule pack.
+         */
+        post: operations["create_rule_pack_api_v1_profiles_rule_packs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/rule-packs/{pack_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Rule Pack
+         * @description Fetch one rule pack.
+         */
+        get: operations["get_rule_pack_api_v1_profiles_rule_packs__pack_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Rule Pack
+         * @description Delete a rule pack.
+         */
+        delete: operations["delete_rule_pack_api_v1_profiles_rule_packs__pack_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Rule Pack
+         * @description Update a rule pack.
+         */
+        patch: operations["patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch"];
+        trace?: never;
+    };
     "/api/v1/quality-metrics": {
         parameters: {
             query?: never;
@@ -2963,6 +3037,44 @@ export interface components {
             receipts: components["schemas"]["DeliveryReceiptOut"][];
         };
         /**
+         * ProfileCatalogEntry
+         * @description Read-only ConversionProfile catalog entry for the inspector.
+         */
+        ProfileCatalogEntry: {
+            /** Emit Key */
+            emit_key?: string | null;
+            /** Id */
+            id: string;
+            /** Implementation */
+            implementation?: {
+                [key: string]: unknown;
+            };
+            /** Kind */
+            kind: string;
+            /** Legacy Alias */
+            legacy_alias?: string | null;
+            /** Priority */
+            priority?: string | null;
+            /** Products */
+            products?: string[];
+            /** Status */
+            status?: string | null;
+            /** Vendor Pins */
+            vendor_pins?: {
+                [key: string]: unknown;
+            };
+        };
+        /**
+         * ProfileCatalogResponse
+         * @description Catalog list response.
+         */
+        ProfileCatalogResponse: {
+            /** Profiles */
+            profiles: components["schemas"]["ProfileCatalogEntry"][];
+            /** Schema Version */
+            schema_version?: number | string | null;
+        };
+        /**
          * QualityMetricsDetailResponse
          * @description Response for GET /api/v1/quality-metrics/{stem}.
          */
@@ -3100,6 +3212,107 @@ export interface components {
              * @default 0
              */
             validate_fail: number;
+        };
+        /**
+         * RulePackCreate
+         * @description Create body for a rule pack.
+         */
+        RulePackCreate: {
+            /**
+             * Message
+             * @default
+             */
+            message: string;
+            /** Product */
+            product: string;
+            /** Profile */
+            profile: string;
+            /** Severity */
+            severity: string;
+            /** Slug */
+            slug: string;
+            /** Stage */
+            stage: string;
+            /**
+             * Standardreference
+             * @default
+             */
+            standardReference: string;
+            /**
+             * When
+             * @default
+             */
+            when: string;
+        };
+        /**
+         * RulePackListResponse
+         * @description List of rule packs for the caller.
+         */
+        RulePackListResponse: {
+            /** Items */
+            items: components["schemas"]["RulePackOut"][];
+        };
+        /**
+         * RulePackOut
+         * @description Persisted rule pack (owner-scoped).
+         */
+        RulePackOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Message */
+            message: string;
+            /** Product */
+            product: string;
+            /** Profile */
+            profile: string;
+            /** Severity */
+            severity: string;
+            /** Slug */
+            slug: string;
+            /** Stage */
+            stage: string;
+            /** Standardreference */
+            standardReference: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** When */
+            when: string;
+        };
+        /**
+         * RulePackUpdate
+         * @description Partial update for a rule pack.
+         */
+        RulePackUpdate: {
+            /** Message */
+            message?: string | null;
+            /** Product */
+            product?: string | null;
+            /** Profile */
+            profile?: string | null;
+            /** Severity */
+            severity?: string | null;
+            /** Stage */
+            stage?: string | null;
+            /** Standardreference */
+            standardReference?: string | null;
+            /** When */
+            when?: string | null;
         };
         /**
          * SessionResponse
@@ -4674,6 +4887,174 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_catalog_api_v1_profiles_catalog_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileCatalogResponse"];
+                };
+            };
+        };
+    };
+    list_rule_packs_api_v1_profiles_rule_packs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulePackListResponse"];
+                };
+            };
+        };
+    };
+    create_rule_pack_api_v1_profiles_rule_packs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RulePackCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulePackOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_rule_pack_api_v1_profiles_rule_packs__pack_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulePackOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_rule_pack_api_v1_profiles_rule_packs__pack_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RulePackUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulePackOut"];
+                };
             };
             /** @description Validation Error */
             422: {

@@ -3178,6 +3178,117 @@
         "title": "PlanExecuteResponse",
         "type": "object"
       },
+      "ProfileCatalogEntry": {
+        "description": "Read-only ConversionProfile catalog entry for the inspector.",
+        "properties": {
+          "emit_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Emit Key"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "implementation": {
+            "additionalProperties": true,
+            "title": "Implementation",
+            "type": "object"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "legacy_alias": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Alias"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          },
+          "products": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Products",
+            "type": "array"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "vendor_pins": {
+            "additionalProperties": true,
+            "title": "Vendor Pins",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "kind"
+        ],
+        "title": "ProfileCatalogEntry",
+        "type": "object"
+      },
+      "ProfileCatalogResponse": {
+        "description": "Catalog list response.",
+        "properties": {
+          "profiles": {
+            "items": {
+              "$ref": "#/components/schemas/ProfileCatalogEntry"
+            },
+            "title": "Profiles",
+            "type": "array"
+          },
+          "schema_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schema Version"
+          }
+        },
+        "required": [
+          "profiles"
+        ],
+        "title": "ProfileCatalogResponse",
+        "type": "object"
+      },
       "QualityMetricsDetailResponse": {
         "description": "Response for GET /api/v1/quality-metrics/{stem}.",
         "properties": {
@@ -3391,6 +3502,249 @@
           "product"
         ],
         "title": "QualityMetricsSummaryModel",
+        "type": "object"
+      },
+      "RulePackCreate": {
+        "description": "Create body for a rule pack.",
+        "properties": {
+          "message": {
+            "default": "",
+            "maxLength": 2048,
+            "title": "Message",
+            "type": "string"
+          },
+          "product": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Product",
+            "type": "string"
+          },
+          "profile": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Profile",
+            "type": "string"
+          },
+          "severity": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Severity",
+            "type": "string"
+          },
+          "slug": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          },
+          "stage": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Stage",
+            "type": "string"
+          },
+          "standardReference": {
+            "default": "",
+            "maxLength": 512,
+            "title": "Standardreference",
+            "type": "string"
+          },
+          "when": {
+            "default": "",
+            "maxLength": 2048,
+            "title": "When",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "profile",
+          "product",
+          "stage",
+          "severity"
+        ],
+        "title": "RulePackCreate",
+        "type": "object"
+      },
+      "RulePackListResponse": {
+        "description": "List of rule packs for the caller.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RulePackOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "RulePackListResponse",
+        "type": "object"
+      },
+      "RulePackOut": {
+        "description": "Persisted rule pack (owner-scoped).",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "product": {
+            "title": "Product",
+            "type": "string"
+          },
+          "profile": {
+            "title": "Profile",
+            "type": "string"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "stage": {
+            "title": "Stage",
+            "type": "string"
+          },
+          "standardReference": {
+            "title": "Standardreference",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          },
+          "when": {
+            "title": "When",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "slug",
+          "profile",
+          "product",
+          "stage",
+          "severity",
+          "when",
+          "message",
+          "standardReference",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "RulePackOut",
+        "type": "object"
+      },
+      "RulePackUpdate": {
+        "description": "Partial update for a rule pack.",
+        "properties": {
+          "message": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product"
+          },
+          "profile": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Severity"
+          },
+          "stage": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stage"
+          },
+          "standardReference": {
+            "anyOf": [
+              {
+                "maxLength": 512,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Standardreference"
+          },
+          "when": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "When"
+          }
+        },
+        "title": "RulePackUpdate",
         "type": "object"
       },
       "SessionResponse": {
@@ -6153,6 +6507,251 @@
         "summary": "Lint Tac",
         "tags": [
           "Validation"
+        ]
+      }
+    },
+    "/api/v1/profiles/catalog": {
+      "get": {
+        "description": "Read-only ConversionProfile catalog for the authenticated Profiles inspector.\n\nRequires JWT so the inspector stays on the authenticated Profiles surface.",
+        "operationId": "get_catalog_api_v1_profiles_catalog_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileCatalogResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Catalog",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/rule-packs": {
+      "get": {
+        "description": "List rule packs owned by the caller.",
+        "operationId": "list_rule_packs_api_v1_profiles_rule_packs_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RulePackListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Rule Packs",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "post": {
+        "description": "Create a rule pack.",
+        "operationId": "create_rule_pack_api_v1_profiles_rule_packs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RulePackCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RulePackOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Rule Pack",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/rule-packs/{pack_id}": {
+      "delete": {
+        "description": "Delete a rule pack.",
+        "operationId": "delete_rule_pack_api_v1_profiles_rule_packs__pack_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pack_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Pack Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Rule Pack",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "get": {
+        "description": "Fetch one rule pack.",
+        "operationId": "get_rule_pack_api_v1_profiles_rule_packs__pack_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pack_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Pack Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RulePackOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Rule Pack",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "patch": {
+        "description": "Update a rule pack.",
+        "operationId": "patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pack_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Pack Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RulePackUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RulePackOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Rule Pack",
+        "tags": [
+          "Conversion Profiles"
         ]
       }
     },
