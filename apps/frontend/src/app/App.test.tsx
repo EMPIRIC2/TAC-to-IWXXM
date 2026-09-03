@@ -350,6 +350,24 @@ vi.mock('./components/LintValidationCatalogPage', () => ({
   LintValidationCatalogPage: () => <div data-testid="lint-validation-catalog-page" />,
 }));
 
+vi.mock('./components/DisseminationOpsPage', () => ({
+  DisseminationOpsPage: ({
+    accessToken,
+    onRequestLogin,
+  }: {
+    accessToken?: string;
+    onRequestLogin?: () => void;
+  }) => (
+    <div data-testid="dissemination-ops-page" data-authed={accessToken ? '1' : '0'}>
+      {onRequestLogin ? (
+        <button type="button" data-testid="ops-request-login" onClick={onRequestLogin}>
+          Sign in
+        </button>
+      ) : null}
+    </div>
+  ),
+}));
+
 vi.mock('./components/ThemeProvider', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
@@ -474,6 +492,12 @@ describe('App Component (F31 optional Auth)', () => {
     await user.click(screen.getByTestId('shell-nav-catalog'));
     expect(screen.getByTestId('lint-validation-catalog-page')).toBeInTheDocument();
 
+    await user.click(screen.getByTestId('shell-nav-dissemination-ops'));
+    expect(screen.getByTestId('dissemination-ops-page')).toHaveAttribute(
+      'data-authed',
+      '0',
+    );
+
     await user.click(screen.getByTestId('shell-nav-quality'));
     await user.click(screen.getByTestId('open-quality-detail'));
     expect(screen.getByTestId('quality-metrics-page')).toHaveAttribute(
@@ -487,6 +511,19 @@ describe('App Component (F31 optional Auth)', () => {
 
     await user.click(screen.getByTestId('shell-nav-converter'));
     expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+  });
+
+  it('opens Dissemination ops as authenticated with JWT', async () => {
+    const user = userEvent.setup();
+    authMocks.isLoggedIn.mockReturnValue(true);
+    authMocks.getAccessToken.mockReturnValue('jwt-ops');
+    render(<App />);
+
+    await user.click(screen.getByTestId('shell-nav-dissemination-ops'));
+    expect(screen.getByTestId('dissemination-ops-page')).toHaveAttribute(
+      'data-authed',
+      '1',
+    );
   });
 
   it('boots on quality detail path from location', () => {

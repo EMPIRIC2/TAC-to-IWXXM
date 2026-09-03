@@ -1,17 +1,23 @@
 /**
  * Primary operator shell navigation — Convert | History | Quality metrics |
- * Validation Issues Catalog.
+ * Validation Issues Catalog | Dissemination ops.
  *
- * Peer tabs for F7 / F7.q / F7.v; not a FileConverter panel.
+ * Peer tabs for F7 / F7.q / F7.v / UJ-071; not a FileConverter panel.
  */
 
-export type ShellPrimaryView = 'converter' | 'history' | 'quality' | 'catalog';
+export type ShellPrimaryView =
+  | 'converter'
+  | 'history'
+  | 'quality'
+  | 'catalog'
+  | 'dissemination-ops';
 
 export const SHELL_NAV_LABELS = {
   converter: 'Convert',
   history: 'History',
   quality: 'Quality metrics',
   catalog: 'Validation Issues Catalog',
+  'dissemination-ops': 'Dissemination ops',
 } as const;
 
 interface AppShellNavProps {
@@ -21,10 +27,16 @@ interface AppShellNavProps {
   onNavigate: (view: ShellPrimaryView) => void;
 }
 
-const TABS: ShellPrimaryView[] = ['converter', 'history', 'quality', 'catalog'];
+const TABS: ShellPrimaryView[] = [
+  'converter',
+  'history',
+  'quality',
+  'catalog',
+  'dissemination-ops',
+];
 
 /**
- * Render Convert / History / Quality metrics / catalog primary tabs.
+ * Render Convert / History / Quality metrics / catalog / Dissemination ops tabs.
  *
  * @param props.activeView - Currently selected shell view
  * @param props.onNavigate - View change handler

@@ -56,6 +56,29 @@ import {
   QUALITY_METRICS_SCHEMATRON_EVALUATED,
   QUALITY_METRICS_SCHEMATRON_SKIPPED,
 } from '@/utils/validateDispositionChips';
+import {
+  DISSEMINATION_OPS_AUDIT_EMPTY,
+  DISSEMINATION_OPS_AUDIT_HEADING,
+  DISSEMINATION_OPS_AUDIT_LOADING,
+  DISSEMINATION_OPS_ERROR_PREFIX,
+  DISSEMINATION_OPS_HEALTH_EMPTY,
+  DISSEMINATION_OPS_HEALTH_HEADING,
+  DISSEMINATION_OPS_HEALTH_LOADING,
+  DISSEMINATION_OPS_LOGIN_REQUIRED,
+  DISSEMINATION_OPS_MAPPING_HEADING,
+  DISSEMINATION_OPS_MAPPING_MODE_LABEL,
+  DISSEMINATION_OPS_MAPPING_NAME_LABEL,
+  DISSEMINATION_OPS_MAPPING_SAVE,
+  DISSEMINATION_OPS_PLAN_DEST_LABEL,
+  DISSEMINATION_OPS_PLAN_DRY_RUN,
+  DISSEMINATION_OPS_PLAN_HEADING,
+  DISSEMINATION_OPS_PLAN_POLICY_LABEL,
+  DISSEMINATION_OPS_PLAN_SAVE,
+  DISSEMINATION_OPS_PLAN_SLUG_LABEL,
+  DISSEMINATION_OPS_SIGN_IN,
+  DISSEMINATION_OPS_SUBTITLE,
+  DISSEMINATION_OPS_TITLE,
+} from '@/utils/disseminationOpsCopy';
 
 export type OperatorVisibleCopyEntry = {
   id: string;
@@ -84,6 +107,77 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'shell.nav.convert', text: SHELL_NAV_LABELS.converter },
     { id: 'shell.nav.history', text: SHELL_NAV_LABELS.history },
     { id: 'shell.nav.quality', text: SHELL_NAV_LABELS.quality },
+    { id: 'shell.nav.catalog', text: SHELL_NAV_LABELS.catalog },
+    {
+      id: 'shell.nav.dissemination-ops',
+      text: SHELL_NAV_LABELS['dissemination-ops'],
+    },
+    { id: 'dissemination-ops.title', text: DISSEMINATION_OPS_TITLE },
+    { id: 'dissemination-ops.subtitle', text: DISSEMINATION_OPS_SUBTITLE },
+    {
+      id: 'dissemination-ops.login-required',
+      text: DISSEMINATION_OPS_LOGIN_REQUIRED,
+    },
+    { id: 'dissemination-ops.sign-in', text: DISSEMINATION_OPS_SIGN_IN },
+    {
+      id: 'dissemination-ops.health-heading',
+      text: DISSEMINATION_OPS_HEALTH_HEADING,
+    },
+    {
+      id: 'dissemination-ops.health-loading',
+      text: DISSEMINATION_OPS_HEALTH_LOADING,
+    },
+    {
+      id: 'dissemination-ops.health-empty',
+      text: DISSEMINATION_OPS_HEALTH_EMPTY,
+    },
+    {
+      id: 'dissemination-ops.audit-heading',
+      text: DISSEMINATION_OPS_AUDIT_HEADING,
+    },
+    {
+      id: 'dissemination-ops.audit-loading',
+      text: DISSEMINATION_OPS_AUDIT_LOADING,
+    },
+    { id: 'dissemination-ops.audit-empty', text: DISSEMINATION_OPS_AUDIT_EMPTY },
+    { id: 'dissemination-ops.plan-heading', text: DISSEMINATION_OPS_PLAN_HEADING },
+    {
+      id: 'dissemination-ops.plan-slug',
+      text: DISSEMINATION_OPS_PLAN_SLUG_LABEL,
+    },
+    {
+      id: 'dissemination-ops.plan-policy',
+      text: DISSEMINATION_OPS_PLAN_POLICY_LABEL,
+    },
+    {
+      id: 'dissemination-ops.plan-dest',
+      text: DISSEMINATION_OPS_PLAN_DEST_LABEL,
+    },
+    { id: 'dissemination-ops.plan-save', text: DISSEMINATION_OPS_PLAN_SAVE },
+    {
+      id: 'dissemination-ops.plan-dry-run',
+      text: DISSEMINATION_OPS_PLAN_DRY_RUN,
+    },
+    {
+      id: 'dissemination-ops.mapping-heading',
+      text: DISSEMINATION_OPS_MAPPING_HEADING,
+    },
+    {
+      id: 'dissemination-ops.mapping-name',
+      text: DISSEMINATION_OPS_MAPPING_NAME_LABEL,
+    },
+    {
+      id: 'dissemination-ops.mapping-mode',
+      text: DISSEMINATION_OPS_MAPPING_MODE_LABEL,
+    },
+    {
+      id: 'dissemination-ops.mapping-save',
+      text: DISSEMINATION_OPS_MAPPING_SAVE,
+    },
+    {
+      id: 'dissemination-ops.error-prefix',
+      text: DISSEMINATION_OPS_ERROR_PREFIX,
+    },
     { id: 'quality-metrics.title', text: QUALITY_METRICS_PAGE_TITLE },
     { id: 'quality-metrics.subtitle', text: QUALITY_METRICS_PAGE_SUBTITLE },
     { id: 'quality-metrics.deferred-label', text: QUALITY_METRICS_DEFERRED_LABEL },

@@ -9,6 +9,9 @@ Exclusions (explicit - not silent large skips):
 - ``/api/v1/work-sessions*`` - needs Postgres session store
 - ``/api/v1/eval/*`` - needs job/persistence store
 - ``/auth/*`` - needs live Supabase Auth proxy
+- Dissemination **ops** JWT/DB routes (plans / audit / mappings / gateways) —
+  need Postgres ``DATABASE_URL`` + UUID ``sub`` (EV-936). Public
+  ``/dissemination/preflight`` + ``/send`` stay in scope.
 
 Those surfaces stay covered by unit/integration tests.
 """
@@ -39,6 +42,10 @@ _EXCLUDED_PATH_PREFIXES: tuple[str, ...] = (
     "/api/v1/work-sessions",
     "/api/v1/eval",
     "/auth/",
+    "/api/v1/dissemination/plans",
+    "/api/v1/dissemination/audit",
+    "/api/v1/dissemination/mappings",
+    "/api/v1/dissemination/gateways",
 )
 
 
@@ -81,6 +88,10 @@ def api_schema(schemathesis_app: object) -> object:
         schema.exclude(path_regex=r"^/api/v1/work-sessions")
         .exclude(path_regex=r"^/api/v1/eval")
         .exclude(path_regex=r"^/auth")
+        .exclude(path_regex=r"^/api/v1/dissemination/plans")
+        .exclude(path_regex=r"^/api/v1/dissemination/audit")
+        .exclude(path_regex=r"^/api/v1/dissemination/mappings")
+        .exclude(path_regex=r"^/api/v1/dissemination/gateways")
     )
 
 

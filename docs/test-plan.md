@@ -127,6 +127,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-068 | F7.v/F15 (EV-061; EV-062) | Validation Issues Catalog (#1014; #1017 deepen) | **H4–H5 required** | TC-EV061-1014-001..004; TC-EV062-001..006 |
 | UJ-069 | F35/F36 (EV-063/EV-090/EV-093) | Semantic convert → exchange package (`GLOBAL_AFS`) | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-*; TC-EV093-* |
 | UJ-070 | F6+F9+F7.q (EV-981 / #981) | Opt-in propagate decode residuals into remarks / HRT + QM indicator | **H4–H5 required** | TC-EV981-001..005 |
+| UJ-071 | F16–F19 deepen (EV-936 / #936) | Dissemination ops — plan/audit/SQL mapping/gateway health | H6′; **H4–H5** when FE deploy | TC-F16-OPS-001..006 |
 | UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
 | LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
@@ -4945,6 +4946,20 @@ No live `codes.wmo.int` HTML in PR CI.
   is Postgres + WIS2 + EDIS only; S-EV014-M2)
 - **Source**: F19; Q20=D; 02-verify-plan Q28=A
 
+### TC-F16-OPS-001..006: Dissemination ops + Gateway hooks (UJ-071 / EV-936)
+
+| ID | Objective | Pass criteria |
+|----|-----------|---------------|
+| TC-F16-OPS-001 | Gateway façade `validate`/`send` maps to existing sink preflight/send | Unit tests; SinkAdapter HTTP v1 unchanged |
+| TC-F16-OPS-002 | `health()` per gateway kind returns operator-safe `GatewayHealth` | No secrets in `detail`; connectivity-only |
+| TC-F16-OPS-003 | Plan execute writes redacted `DeliveryReceipt` audit on `DATABASE_URL` | JWT required; no URI/secret columns |
+| TC-F16-OPS-004 | MappingConfig CRUD (source/sink) via authenticated API | ADR-040 fields; 401 without JWT |
+| TC-F16-OPS-005 | Ops UI: plan editor + audit list/detail + health (no secret render) | Vitest + Playwright H6′ |
+| TC-F16-OPS-006 | Drawer UJ-027–030 regression | Existing mocked H6′ suite stays green |
+
+- **Level**: T0 / T2 / T3 (H6′)
+- **Source**: F16–F19 deepen EV-936; #936; ADR-041; ADR-040; UJ-071
+
 ### F16–F19 verify/deploy gate
 
 - [ ] TC-F16-001..005 green (multi-DB + SSRF + drawer + multi-select)
@@ -4953,7 +4968,8 @@ No live `codes.wmo.int` HTML in PR CI.
 - [ ] TC-F17-001 staging wis2box green; TC-F17-002 live BYOC before cycle close
 - [ ] TC-F18-001 format green; TC-F18-002 live BYOC before cycle close
 - [ ] TC-F19-001..003 staging/test green; live F19 optional (evidence or waive id)
-- [ ] H4–H5 after API/FE dissemination routes ship; H0c on CORS/env changes; H6′ UJ-027–030
+- [ ] TC-F16-OPS-001..006 green when EV-936 Build ships (UJ-071 / H6′)
+- [ ] H4–H5 after API/FE dissemination routes ship; H0c on CORS/env changes; H6′ UJ-027–030 (+ UJ-071)
 - [ ] `DISSEMINATION_EGRESS_ALLOWLIST` in config-spec / env-contract / deploy / staging-secrets-matrix
       (S-EV014-L1 **resolved** at 04; matrix row added at 05-verify-tech)
 

@@ -1,5 +1,33 @@
 # Evolve Decisions
 
+## Cycle EV-936 — Dissemination ops + Gateway hooks (#936)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-936-dissemination-ops-gateway-hooks`  
+**Issues:** [#936](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/936) · absorbed #935/#937 · contract [#927](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/927) / ADR-041  
+**Documenting→Implementing gate:** **open** (2026-09-03)
+
+| ID | Outcome |
+|----|---------|
+| D-EV936-scope | Gateway runtime hooks + #936 ops UI MVP; defer #933/#934/#938 |
+| D-EV936-ui | Destinations drawer kept; new **Dissemination ops** surface |
+| D-EV936-audit | Persist delivery audit on **product Postgres** (`DATABASE_URL`) + JWT — amend interview “Supabase” shorthand to match F30 (no PostgREST product writes) |
+| D-EV936-api | JWT routes: plans, execute, audit, mappings, gateways/health; public preflight/send unchanged |
+| D-EV936-fn | Deepen F16–F19 only — **no new Fn** |
+| D-EV936-uj | **UJ-071** + TC-F16-OPS-001..006 (UJ-054 already Help handbook) |
+| D-EV936-connectivity | Local FE+API + H6′; H4–H5 when FE ops deploy |
+| D-EV936-context | [Context: dissemination-ops-936](../context/dissemination-ops-936.md) |
+| D-EV936-feasibility | **GO** — risks accepted for tech-plan mitigation |
+| D-EV936-TP1 | M1 façade/health → M2 API/DB → M3 FE ops → M4 H6′ |
+| D-EV936-TP2 | No new dependencies |
+| D-EV936-TP3 | No new ADR |
+| D-EV936-TP4 | No staging for Spec exit; H4–H5 when FE ops on stage |
+| D-EV936-gate | **Open Build** — M1 Gateway façade |
+
+[Corpus: product §F16–F19] [Corpus: api] [Corpus: journeys §UJ-071] [Corpus: adr] ADR-041, ADR-040 [Corpus: decisions §EV-936]
+
+---
+
+
 ## Cycle EV-1132 — Workflows runtime + F8 cutover (#1132)
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1132-workflows-runtime`  

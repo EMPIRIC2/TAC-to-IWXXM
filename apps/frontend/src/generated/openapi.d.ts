@@ -87,6 +87,181 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/dissemination/audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Audit
+         * @description List redacted delivery audit rows for the caller.
+         */
+        get: operations["list_audit_api_v1_dissemination_audit_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dissemination/audit/{audit_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Audit
+         * @description Fetch one audit row (owner-scoped).
+         */
+        get: operations["get_audit_api_v1_dissemination_audit__audit_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dissemination/gateways/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Gateways Health
+         * @description Connectivity-only health for known drawer gateway kinds.
+         *
+         *     AMHS, SWIM, and AFS kinds are staging-honest; others report no live probe
+         *     until registered.
+         */
+        get: operations["gateways_health_api_v1_dissemination_gateways_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dissemination/mappings/{mapping_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Mapping
+         * @description Fetch MappingConfig by id.
+         */
+        get: operations["get_mapping_api_v1_dissemination_mappings__mapping_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch Mapping
+         * @description Update MappingConfig fields.
+         */
+        patch: operations["patch_mapping_api_v1_dissemination_mappings__mapping_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/dissemination/mappings/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Upsert Mapping
+         * @description Create MappingConfig by name (unique per user).
+         */
+        put: operations["upsert_mapping_api_v1_dissemination_mappings__name__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dissemination/plans/{plan_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Plan
+         * @description Fetch one plan by id (owner-scoped).
+         */
+        get: operations["get_plan_api_v1_dissemination_plans__plan_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch Plan
+         * @description Update plan fields (no secrets).
+         */
+        patch: operations["patch_plan_api_v1_dissemination_plans__plan_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/dissemination/plans/{plan_id}/execute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Execute Plan Route
+         * @description Execute or dry-run a plan; persist redacted audit rows per receipt.
+         *
+         *     Default ``dry_run=true`` so operators can exercise audit without egress.
+         */
+        post: operations["execute_plan_route_api_v1_dissemination_plans__plan_id__execute_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dissemination/plans/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Upsert Plan By Slug
+         * @description Create a plan under ``slug`` (unique per user).
+         *
+         *     Path slug wins over body.slug when they differ.
+         */
+        put: operations["upsert_plan_by_slug_api_v1_dissemination_plans__slug__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/dissemination/preflight": {
         parameters: {
             query?: never;
@@ -1089,6 +1264,61 @@ export interface components {
             validated_at?: string;
         };
         /**
+         * AuditListResponse
+         * @description Paginated audit list.
+         */
+        AuditListResponse: {
+            /** Items */
+            items: components["schemas"]["AuditRecordOut"][];
+            /** Limit */
+            limit: number;
+            /** Page */
+            page: number;
+            /** Total */
+            total: number;
+        };
+        /**
+         * AuditRecordOut
+         * @description Persisted audit row — never includes BYOC secrets or URIs.
+         */
+        AuditRecordOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Destinations */
+            destinations?: {
+                [key: string]: unknown;
+            };
+            /** Detail */
+            detail?: string | null;
+            /** Gateway */
+            gateway: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Iwxxm Version */
+            iwxxm_version?: string | null;
+            /** Message Id */
+            message_id?: string | null;
+            /** Product */
+            product?: string | null;
+            /** Profile */
+            profile?: string | null;
+            /** Station */
+            station?: string | null;
+            /** Status */
+            status: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
          * AuthResponse
          * @description Login response.
          */
@@ -1852,6 +2082,104 @@ export interface components {
             summary: string;
         };
         /**
+         * DeliveryReceiptOut
+         * @description Redacted delivery receipt (API).
+         */
+        DeliveryReceiptOut: {
+            /**
+             * Attempt
+             * @default 1
+             */
+            attempt: number;
+            /** Completed At */
+            completed_at?: string | null;
+            /** Detail */
+            detail?: string | null;
+            /** Gateway */
+            gateway: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "DELIVERED" | "FAILED" | "SKIPPED";
+        };
+        /**
+         * DisseminationPlanCreate
+         * @description Body to create a DisseminationPlan (no secrets).
+         */
+        DisseminationPlanCreate: {
+            /** Destination Refs */
+            destination_refs?: string[];
+            /** Retry */
+            retry?: {
+                [key: string]: unknown;
+            } | null;
+            /** Slug */
+            slug: string;
+            /** Transforms */
+            transforms?: string[];
+            /**
+             * Validity Policy
+             * @default valid-only
+             * @enum {string}
+             */
+            validity_policy: "valid-only" | "warn-ok";
+        };
+        /**
+         * DisseminationPlanOut
+         * @description Persisted plan row.
+         */
+        DisseminationPlanOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Destination Refs */
+            destination_refs: string[];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Retry */
+            retry?: {
+                [key: string]: unknown;
+            } | null;
+            /** Slug */
+            slug: string;
+            /** Transforms */
+            transforms: string[];
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Validity Policy */
+            validity_policy: string;
+        };
+        /**
+         * DisseminationPlanUpdate
+         * @description Partial update for a DisseminationPlan.
+         */
+        DisseminationPlanUpdate: {
+            /** Destination Refs */
+            destination_refs?: string[] | null;
+            /** Retry */
+            retry?: {
+                [key: string]: unknown;
+            } | null;
+            /** Transforms */
+            transforms?: string[] | null;
+            /** Validity Policy */
+            validity_policy?: ("valid-only" | "warn-ok") | null;
+        };
+        /**
          * EvaluationJobResponse
          * @description Response when creating an evaluation job.
          * @example {
@@ -2123,6 +2451,28 @@ export interface components {
              * @description Inclusive character offset into source TAC
              */
             start: number;
+        };
+        /**
+         * GatewayHealthListResponse
+         * @description Health for registered gateway kinds.
+         */
+        GatewayHealthListResponse: {
+            /** Items */
+            items: components["schemas"]["GatewayHealthOut"][];
+        };
+        /**
+         * GatewayHealthOut
+         * @description Operator-safe gateway health row.
+         */
+        GatewayHealthOut: {
+            /** Connectivity Ok */
+            connectivity_ok: boolean;
+            /** Detail */
+            detail?: string | null;
+            /** Gateway */
+            gateway: string;
+            /** Ok */
+            ok: boolean;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -2451,6 +2801,69 @@ export interface components {
             scope?: string | null;
         };
         /**
+         * MappingConfigCreate
+         * @description Create a field mapping — no connection secrets.
+         */
+        MappingConfigCreate: {
+            /** Config */
+            config?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "source" | "sink";
+            /** Name */
+            name: string;
+        };
+        /**
+         * MappingConfigOut
+         * @description Persisted MappingConfig row.
+         */
+        MappingConfigOut: {
+            /** Config */
+            config: {
+                [key: string]: unknown;
+            };
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Mode */
+            mode: string;
+            /** Name */
+            name: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
+         * MappingConfigUpdate
+         * @description Partial MappingConfig update.
+         */
+        MappingConfigUpdate: {
+            /** Config */
+            config?: {
+                [key: string]: unknown;
+            } | null;
+            /** Mode */
+            mode?: ("source" | "sink") | null;
+        };
+        /**
          * Message
          * @description Simple success message.
          */
@@ -2510,6 +2923,44 @@ export interface components {
             content: string;
             /** Name */
             name: string;
+        };
+        /**
+         * PlanExecuteRequest
+         * @description Execute or dry-run a plan for a sample message.
+         */
+        PlanExecuteRequest: {
+            /**
+             * Dry Run
+             * @default true
+             */
+            dry_run: boolean;
+            /** Iwxxm Version */
+            iwxxm_version?: string | null;
+            /** Iwxxm Xml */
+            iwxxm_xml?: string | null;
+            /** Message Id */
+            message_id?: string | null;
+            /** Product */
+            product?: string | null;
+            /** Profile */
+            profile?: string | null;
+            /** Station */
+            station?: string | null;
+            /** Tac Text */
+            tac_text?: string | null;
+        };
+        /**
+         * PlanExecuteResponse
+         * @description Execute outcome with receipts.
+         */
+        PlanExecuteResponse: {
+            /**
+             * Plan Id
+             * Format: uuid
+             */
+            plan_id: string;
+            /** Receipts */
+            receipts: components["schemas"]["DeliveryReceiptOut"][];
         };
         /**
          * QualityMetricsDetailResponse
@@ -3588,6 +4039,330 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    list_audit_api_v1_dissemination_audit_get: {
+        parameters: {
+            query?: {
+                product?: string | null;
+                station?: string | null;
+                profile?: string | null;
+                status?: string | null;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_audit_api_v1_dissemination_audit__audit_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                audit_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditRecordOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    gateways_health_api_v1_dissemination_gateways_health_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GatewayHealthListResponse"];
+                };
+            };
+        };
+    };
+    get_mapping_api_v1_dissemination_mappings__mapping_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                mapping_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MappingConfigOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_mapping_api_v1_dissemination_mappings__mapping_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                mapping_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MappingConfigUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MappingConfigOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upsert_mapping_api_v1_dissemination_mappings__name__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MappingConfigCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MappingConfigOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_plan_api_v1_dissemination_plans__plan_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationPlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_plan_api_v1_dissemination_plans__plan_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisseminationPlanUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationPlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    execute_plan_route_api_v1_dissemination_plans__plan_id__execute_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanExecuteRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanExecuteResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upsert_plan_by_slug_api_v1_dissemination_plans__slug__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisseminationPlanCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationPlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };

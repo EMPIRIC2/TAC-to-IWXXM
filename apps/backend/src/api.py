@@ -126,6 +126,7 @@ try:
         conversion,
         conversion_meta,
         dissemination,
+        dissemination_ops,
         evaluation,
         health,
         icao_opmet,
@@ -141,6 +142,7 @@ except ImportError:
         conversion,
         conversion_meta,
         dissemination,
+        dissemination_ops,
         evaluation,
         health,
         icao_opmet,
@@ -350,6 +352,12 @@ try:
     logger.info("DEBUG: included dissemination router successfully")
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include dissemination router: {e}", exc_info=True)
+
+try:
+    app.include_router(dissemination_ops.router)
+    logger.info("DEBUG: included dissemination_ops router successfully")
+except Exception as e:  # pragma: no cover - defensive
+    logger.error(f"DEBUG: Failed to include dissemination_ops router: {e}", exc_info=True)
 
 try:
     app.include_router(mass_ingest.router)

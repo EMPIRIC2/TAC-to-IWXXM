@@ -1,6 +1,22 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-31 (EV-981 / #981)
+> Stage: 01-requirements | Last updated: 2026-09-03 (EV-936 / #936)
+
+## EV-936 — Dissemination ops + Gateway hooks (#936)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-936 / UI preview | Declined | Spec from docs/ADR only | confirmed |
+| EV-936 / Fn | Deepen F16–F19 | No new top-level Fn | confirmed |
+| EV-936 / journeys | **UJ-071** (not UJ-054 — taken by Help) | TC-F16-OPS-001..006; drawer UJ-027–030 unchanged | confirmed |
+| EV-936 / API | JWT plan/audit/mapping/health + execute | Public preflight/send unchanged | confirmed |
+| EV-936 / audit DB | Product Postgres `DATABASE_URL` | Amend C2 Supabase→DO Postgres per F30 | confirmed |
+| EV-936 / UI shape | Ops surface + drawer | Complements one-shot send | confirmed |
+| EV-936 / connectivity | H6′ now; H4–H5 on FE deploy | Staging ack optional later | planned |
+
+[Corpus: decisions §EV-936] [Corpus: product] [Corpus: api] [Corpus: journeys]
+
+
 
 ## EV-981 — Propagate decode residuals into remarks / HRT (#981)
 

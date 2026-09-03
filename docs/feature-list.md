@@ -1006,6 +1006,32 @@
 - **Source**: [Context: dissemination-gateway-927](context/dissemination-gateway-927.md);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-927
 
+### F16–F19 deepen (EV-936 — Gateway runtime hooks + dissemination ops / #936)
+
+- **Status**: **In progress** (EV-936 Build — M1–M3 done; PR pending) — F16–F19 remain **Done** for drawer; this deepen
+  adds Gateway façade runtime + ops UI. **No new Fn.** Absorbs #935/#937 into #936.
+- **What it does**:
+  1. **DisseminationGateway** thin registry in `packages/dissemination` (`validate`→preflight,
+     `send`→send, **`health()`** connectivity-only) per ADR-041 — SinkAdapter HTTP v1 unchanged
+  2. **DisseminationPlan** execute + **delivery audit** persisted on product Postgres
+     (`DATABASE_URL`), JWT-gated, secrets/URIs redacted at write
+  3. **SQL MappingConfig** configurator UI (ADR-040) — source vs sink; no prescribed national schema
+  4. **Dissemination ops** operator surface (plan editor, audit list/detail, mapping, gateway
+     health) — complements destinations drawer (#898); does not replace one-shot BYOC send
+- **Acceptance** (MVP):
+  1. Gateway façade unit tests for at least one DB + one non-DB kind; `health()` returns
+     operator-safe `GatewayHealth`
+  2. Plan execute writes `DeliveryReceipt` audit rows without BYOC secrets/URIs
+  3. Authenticated API: plan CRUD/execute, audit list/detail, mapping CRUD, gateway health
+  4. Ops UI MVP wired; drawer UJ-027–030 unchanged
+  5. **UJ-071** + **TC-F16-OPS-*** / H6′ proposed and mapped in test-plan
+- **Out of scope**: #933/#934/#938; live AFTN (#909)/failover (#910)/wis2box buffer (#911)
+  product features beyond façade; credential paste; re-split #935/#937; new top-level packages
+- **Source**: [#936](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/936);
+  [Context: dissemination-ops-936](context/dissemination-ops-936.md);
+  [ADR-041](adr/ADR-041-dissemination-gateway.md); [ADR-040](adr/ADR-040-sql-adapters-mapping-config.md);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-936
+
 ### F17: WIS2 dissemination pathway — S019 / EV-014
 
 - **Status**: **Done** (EV-014 closed 2026-07-21; live destination BYOC waived via
