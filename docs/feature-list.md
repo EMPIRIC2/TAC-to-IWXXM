@@ -220,6 +220,17 @@
   `docs/context/realtime-tac-ingest.md`; S011 / EV-008; **S043 / EV-035** encode/AHL
   provenance deepen (see deepen section below)
 
+### F6 deepen (EV-922 — platform logical layers / #923)
+
+- **Status note**: F6 remains **Implemented**; epic [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+  spike [#923](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/923) documents logical layer mapping
+  onto existing packages (**Option C** — no renames). **No new Fn.**
+- **Acceptance**: Gap matrix, Option C recommendation ([ADR-037](adr/ADR-037-platform-logical-layers.md)),
+  draft milestone sequence in `[Corpus: system-spec]` §Platform logical layers.
+- **Out of scope**: Package moves, PyPI renames, behavior change, migrate-now issues.
+- **Source**: [Context: platform-package-layout-923](context/platform-package-layout-923.md);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-922
+
 ### F6 deepen (S043 / EV-035 — rule-source provenance)
 
 - **Status note**: F6 remains **Implemented**; this cycle **re-links** encode + bulletin/AHL

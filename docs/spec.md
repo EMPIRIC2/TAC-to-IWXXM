@@ -97,6 +97,33 @@ metar-to-IWXXM/
 | Worker (F8) | Near-RT ingest poller → store/quarantine | `apps/worker/` | `DATABASE_URL` → DO Postgres (F30) |
 | Coverage gate harness (EV-080) | Unit coverage enforcement: pytest-cov + Vitest + per-file checker + scripts Python cov + bats-core | `scripts/ci/`, `tests/bats/` (planned), CI matrix | ADR-007 / #1077 |
 
+### Platform logical layers (#922 / #923)
+
+Epic [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922) describes a **logical** layering model
+(**Core → Profiles → Validation → Adapters → Dissemination**). Spike [#923](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/923)
+and [ADR-037](adr/ADR-037-platform-logical-layers.md) **keep current package names** (Option C) and map
+epic layers onto the monorepo below. Physical renames/splits (Option B) require a later evolve cycle
+after contract spikes #924–#927 close.
+
+| Logical layer | Purpose | Current home(s) | Follow-on spike |
+|---------------|---------|-----------------|-----------------|
+| **Core** | Shared IR types, constants, vendor helpers | `packages/shared`; IR inside `packages/tac2iwxxm` | Document boundaries only (#923) |
+| **Profiles** | Semantic + exchange profile contracts + content | Code: `tac2iwxxm/profiles/*`, `tac_validate/profiles.py`, `dissemination/exchange_registry.py`; content: `docs/domain/profiles/` (ADR-036) | #912 content · #924 ConversionProfile |
+| **Conversion** | TAC→IWXXM encode/decode | `packages/tac2iwxxm` | #924 (exchange packaging split) |
+| **Validation** | Staged TAC then IWXXM | `packages/tac-validate` + `packages/iwxxm-validate` | #925 staged pipeline result |
+| **Adapters** | SQL/DB symmetric source/sink mapping | `packages/dissemination` (`db_preflight`, `writer_contract`, `sink`) | #926 SQL adapters |
+| **Gateways / AFS** | AFTN/AMHS/EDIS/WIS2box + plan/audit | `packages/dissemination` (`edis`, `wis2`, `transports`, `packaging`) | #927 DisseminationGateway |
+| **Dissemination** | Policy, plan, retry, delivery audit | Same + FE drawer (`apps/frontend`) | #927 |
+| **Workflows** | `execute(message, workflow)` | Hard-coded paths in `apps/backend` | #931 |
+| **Auth** | JWT middleware | `packages/auth` | Out of MET platform layers |
+| **Apps** | HTTP / UI / worker / e2e | `apps/backend`, `frontend`, `worker`, `e2e` | Thin callers — no package move |
+
+**Draft milestone sequence** (revise after #924–#927): Core → Profiles (#912/#924) → Validation (#925) →
+Adapters (#926) → Dissemination (#927) → Workflows (#931) → Platform UIs (#933–#938).
+
+**References:** [Context: platform-package-layout-923](context/platform-package-layout-923.md);
+EV-922 session `reports/923-platform-package-layout.md`.
+
 ## Component Details
 
 ### apps/backend
