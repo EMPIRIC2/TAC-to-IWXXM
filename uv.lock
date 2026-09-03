@@ -3050,7 +3050,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "iwxxm-validate", editable = "packages/iwxxm-validate" },
-    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "pyyaml", specifier = "==6.0.3" },
     { name = "tac-validate", editable = "packages/tac-validate" },
     { name = "tac2iwxxm", editable = "packages/tac2iwxxm" },
 ]
