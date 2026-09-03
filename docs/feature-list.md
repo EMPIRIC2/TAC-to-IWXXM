@@ -242,13 +242,15 @@
 ### F6 deepen (EV-922 — platform logical layers / #923)
 
 - **Status note**: F6 remains **Implemented**; epic [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
-  spike [#923](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/923) documents logical layer mapping
-  onto existing packages (**Option C** — no renames). **No new Fn.**
-- **Acceptance**: Gap matrix, Option C recommendation ([ADR-037](adr/ADR-037-platform-logical-layers.md)),
-  draft milestone sequence in `[Corpus: system-spec]` §Platform logical layers.
-- **Out of scope**: Package moves, PyPI renames, behavior change, migrate-now issues.
+  investigation band **complete** (EV-922-synthesis 2026-09-03). Spikes #923–#931 closed with
+  ADR-037–042; Option C (no renames). **No new Fn.**
+- **Acceptance**: Gap matrix, Option C ([ADR-037](adr/ADR-037-platform-logical-layers.md)),
+  approved milestone sequence in `[Corpus: system-spec]` §Platform logical layers;
+  synthesis [Context: epic-922-synthesis](context/epic-922-synthesis.md).
+- **Out of scope**: Package moves, PyPI renames, behavior change; runtime + UIs are follow-on cycles.
 - **Source**: [Context: platform-package-layout-923](context/platform-package-layout-923.md);
-  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-922
+  [Context: epic-922-synthesis](context/epic-922-synthesis.md);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-922 · §EV-922-synthesis
 
 ### F6 deepen (S043 / EV-035 — rule-source provenance)
 

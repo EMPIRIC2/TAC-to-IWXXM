@@ -64,7 +64,7 @@ Investigate and validate the proposed platform layering (**Core → Profiles →
 Core → Profiles → Validation → Adapters → Dissemination
 ```
 
-Sibling spikes may revise: #924 ConversionProfile · #925 canonical MET · #926 SQL adapters · #927 DisseminationGateway · #931 workflows ✅ ADR-042 · Platform UIs #933–#938.
+Sibling spikes closed with ADR-038–042 (EV-922-synthesis). Platform UIs #933–#938 unblocked after PR merge — see [epic-922-synthesis](epic-922-synthesis.md).
 
 ## Resolutions (local)
 
