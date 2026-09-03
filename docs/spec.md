@@ -111,7 +111,7 @@ after contract spikes #924–#927 close.
 | **Profiles** | Semantic + exchange profile contracts + content | Code: `tac2iwxxm/profiles/*`, `tac_validate/profiles.py`, `dissemination/exchange_registry.py`; content: `docs/domain/profiles/` (ADR-036) | #912 content · #924 ConversionProfile |
 | **Conversion** | TAC→IWXXM encode/decode | `packages/tac2iwxxm` | #924 (exchange packaging split) |
 | **Validation** | Staged TAC then IWXXM | `packages/tac-validate` + `packages/iwxxm-validate` | ADR-039 PipelineResult contract; `ca_eccc` staged reference (#925) |
-| **Adapters** | SQL/DB symmetric source/sink mapping | `packages/dissemination` (`db_preflight`, `writer_contract`, `sink`) | #926 SQL adapters |
+| **Adapters** | SQL/DB symmetric source/sink mapping | `packages/dissemination` (`db_preflight`, `writer_contract`, `sink`) | ADR-040 MappingConfig; source adapter Planned (#926) |
 | **Gateways / AFS** | AFTN/AMHS/EDIS/WIS2box + plan/audit | `packages/dissemination` (`edis`, `wis2`, `transports`, `packaging`) | #927 DisseminationGateway |
 | **Dissemination** | Policy, plan, retry, delivery audit | Same + FE drawer (`apps/frontend`) | #927 |
 | **Workflows** | `execute(message, workflow)` | Hard-coded paths in `apps/backend` | #931 |

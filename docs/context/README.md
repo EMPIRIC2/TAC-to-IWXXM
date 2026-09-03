@@ -11,6 +11,7 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 | [platform-package-layout-923](platform-package-layout-923.md) | #923/#922 platform package layout gap matrix + Core→Dissemination milestone plan | active | 2026-09-03 | F6, F16–F19, ADR-030, EV-922 |
 | [conversion-profile-contract-924](conversion-profile-contract-924.md) | #924 executable ConversionProfile contract + overlay trust boundaries | active | 2026-09-03 | F6, ADR-013, ADR-036, EV-924 |
 | [canonical-met-staged-validation-925](canonical-met-staged-validation-925.md) | #925 canonical IR + staged validation PipelineResult contract | active | 2026-09-03 | F2, F6, F15, ADR-039, EV-925 |
+| [sql-adapters-mapping-926](sql-adapters-mapping-926.md) | #926 SQL symmetric source/sink adapters + MappingConfig | active | 2026-09-03 | F16, ADR-030, ADR-040, EV-926 |
 | [ev-098-ca-eccc-mining](ev-098-ca-eccc-mining.md) | CA_ECCC deep mine #1028–#1031 (datamart, MSC PDFs, MANOBS, MANAIR) via EV-097 handoff | active | 2026-09-02 | F36, EV-098 |
 | [propagate-residuals-to-remarks](propagate-residuals-to-remarks.md) | #981 opt-in fold decode residuals into remarks/HRT + profile default + F7.q hooks (EV-981) | active | 2026-08-31 | F6, F9, F7.q |
 | [ev-080-unit-coverage-100](ev-080-unit-coverage-100.md) | Strict 100% line+branch unit coverage (Py/TS/scripts); ADR-007 uplift (EV-080) | active | 2026-08-27 | ADR-007, F34, M5/CI |

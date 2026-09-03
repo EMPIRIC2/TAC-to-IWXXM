@@ -43,6 +43,7 @@
 | [ADR-037](ADR-037-platform-logical-layers.md) | Platform logical layers — keep package layout (epic #922 / spike #923) | **Accepted** (EV-922) |
 | [ADR-038](ADR-038-conversion-profile-contract.md) | ConversionProfile executable contract (spike #924) | **Accepted** (EV-924) |
 | [ADR-039](ADR-039-staged-validation-pipeline.md) | Staged validation pipeline + canonical IR boundary (spike #925) | **Accepted** (EV-925) |
+| [ADR-040](ADR-040-sql-adapters-mapping-config.md) | SQL symmetric adapters + MappingConfig (spike #926) | **Accepted** (EV-926) |
 
 ## Process
 
