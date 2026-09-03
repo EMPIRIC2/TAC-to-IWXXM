@@ -1,5 +1,27 @@
 # Evolve Decisions
 
+## Cycle EV-922 — Platform package layout (#922 / #923)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-922-epic-modular-conversion-validation-integration-d`  
+**Preset:** Standard · **Documenting→Implementing gate:** **closed** · **Issues:** [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922), [#923](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/923)
+
+| ID | Outcome |
+|----|---------|
+| D-EV922-fn | No new Fn — under F6 + F16–F19 architecture |
+| D-EV922-slice | Slice A = #923 only (layout + gap matrix + milestone) |
+| D-EV922-option | **Option C accepted** — logical layers only; defer Option B until #924–#927 (ADR-037) |
+| D-EV922-milestone | Draft Core→Profiles→Validation→Adapters→Dissemination; revise after #924–#927 |
+| D-EV922-issues | No migrate-now children until Option B/A approved |
+| D-EV922-e2e | Skip e2e |
+| D-EV922-writeup | Session `reports/923-platform-package-layout.md` |
+
+### Corpus
+
+[Corpus: product §F6] [Corpus: product §F16] [Corpus: system-spec] [Corpus: adr] ADR-013, ADR-030, ADR-036, ADR-037 [Corpus: decisions §EV-922]
+
+---
+
+
 ## Cycle EV-099 — F9 SWXA/VONA structured decode (#1119)
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-099-f9-swxa-vona-structured-decode`  
