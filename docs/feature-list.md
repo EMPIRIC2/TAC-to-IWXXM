@@ -220,6 +220,15 @@
   `docs/context/realtime-tac-ingest.md`; S011 / EV-008; **S043 / EV-035** encode/AHL
   provenance deepen (see deepen section below)
 
+### F6 deepen (EV-925 — canonical IR + staged validation / #925)
+
+- **Status note**: F6/F2 remain **Implemented**; spike [#925](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/925)
+  documents IR boundary (`ConvertResult.ir`) + ADR-039 PipelineResult contract. **No new Fn.**
+- **Acceptance**: Stage diagram, keep-in-place IR recommendation, multi-result contract, METAR-family gap list.
+- **Out of scope**: Typed IR package, unified runtime orchestrator, #938 UI.
+- **Source**: [Context: canonical-met-staged-validation-925](context/canonical-met-staged-validation-925.md);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-925
+
 ### F6 deepen (EV-924 — ConversionProfile contract / #924)
 
 - **Status note**: F6 remains **Implemented**; spike [#924](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/924)
