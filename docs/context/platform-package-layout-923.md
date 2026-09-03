@@ -64,7 +64,7 @@ Investigate and validate the proposed platform layering (**Core → Profiles →
 Core → Profiles → Validation → Adapters → Dissemination
 ```
 
-Sibling spikes may revise: #924 ConversionProfile · #925 canonical MET · #926 SQL adapters · #927 DisseminationGateway · then #931 workflows.
+Sibling spikes may revise: #924 ConversionProfile · #925 canonical MET · #926 SQL adapters · #927 DisseminationGateway · #931 workflows ✅ ADR-042 · Platform UIs #933–#938.
 
 ## Resolutions (local)
 

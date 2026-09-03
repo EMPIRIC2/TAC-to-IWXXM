@@ -1,5 +1,28 @@
 # Evolve Decisions
 
+## Cycle EV-931 — Workflow definitions (#931)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-931-spike-workflow-definitions-execute-message-workf`  
+**Issues:** [#931](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/931), [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV931-dsl | **Accept** declarative YAML WorkflowDefinition — reject BPMN/Temporal/Celery |
+| D-EV931-execute | **Accept** `execute(message, workflow) -> WorkflowResult` contract (ADR-042) |
+| D-EV931-package | **New** `packages/workflows` executor — apps remain thin callers |
+| D-EV931-files | v1 workflows in git `workflows/*.yaml`; DB-managed deferred (#934) |
+| D-EV931-secrets | No credentials in YAML — `${ENV:…}` / `secretRef:` only (ADR-021) |
+| D-EV931-convert | HTTP `/convert` stays library primitive — not replaced by execute |
+| D-EV931-mvp | Runtime MVP: tac→convert→xsd/sch → quarantine/archive only; gateways deferred |
+| D-EV931-plan | DisseminationPlan runtime remains #936 — workflow documents hooks only |
+| D-EV931-e2e | Skip e2e (no UI) |
+| D-EV931-writeup | Session `reports/931-workflow-definitions.md` |
+
+[Corpus: product §F6] [Corpus: product §F8] [Corpus: adr] ADR-037–042 [Corpus: decisions §EV-931]
+
+---
+
+
 ## Cycle EV-927 — DisseminationGateway (#927)
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-927-dissemination-gateway`  

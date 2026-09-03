@@ -45,6 +45,7 @@
 | [ADR-039](ADR-039-staged-validation-pipeline.md) | Staged validation pipeline + canonical IR boundary (spike #925) | **Accepted** (EV-925) |
 | [ADR-040](ADR-040-sql-adapters-mapping-config.md) | SQL symmetric adapters + MappingConfig (spike #926) | **Accepted** (EV-926) |
 | [ADR-041](ADR-041-dissemination-gateway.md) | DisseminationGateway + DisseminationPlan (spike #927) | **Accepted** (EV-927) |
+| [ADR-042](ADR-042-workflow-definitions.md) | Workflow definitions — execute(message, workflow) (spike #931) | **Accepted** (EV-931) |
 
 ## Process
 
