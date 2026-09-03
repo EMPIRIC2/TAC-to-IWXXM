@@ -84,6 +84,146 @@
         "title": "AggregatedValidationResult",
         "type": "object"
       },
+      "AuditListResponse": {
+        "description": "Paginated audit list.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/AuditRecordOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "limit": {
+            "title": "Limit",
+            "type": "integer"
+          },
+          "page": {
+            "title": "Page",
+            "type": "integer"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit"
+        ],
+        "title": "AuditListResponse",
+        "type": "object"
+      },
+      "AuditRecordOut": {
+        "description": "Persisted audit row \u2014 never includes BYOC secrets or URIs.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "destinations": {
+            "additionalProperties": true,
+            "title": "Destinations",
+            "type": "object"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "gateway": {
+            "title": "Gateway",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "iwxxm_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iwxxm Version"
+          },
+          "message_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message Id"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product"
+          },
+          "profile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile"
+          },
+          "station": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Station"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "status",
+          "gateway",
+          "created_at"
+        ],
+        "title": "AuditRecordOut",
+        "type": "object"
+      },
       "AuthResponse": {
         "description": "Login response.",
         "properties": {
@@ -1310,6 +1450,242 @@
         "title": "DecodeTacResponse",
         "type": "object"
       },
+      "DeliveryReceiptOut": {
+        "description": "Redacted delivery receipt (API).",
+        "properties": {
+          "attempt": {
+            "default": 1,
+            "title": "Attempt",
+            "type": "integer"
+          },
+          "completed_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Completed At"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "gateway": {
+            "title": "Gateway",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "DELIVERED",
+              "FAILED",
+              "SKIPPED"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "gateway"
+        ],
+        "title": "DeliveryReceiptOut",
+        "type": "object"
+      },
+      "DisseminationPlanCreate": {
+        "description": "Body to create a DisseminationPlan (no secrets).",
+        "properties": {
+          "destination_refs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Destination Refs",
+            "type": "array"
+          },
+          "retry": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retry"
+          },
+          "slug": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          },
+          "transforms": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Transforms",
+            "type": "array"
+          },
+          "validity_policy": {
+            "default": "valid-only",
+            "enum": [
+              "valid-only",
+              "warn-ok"
+            ],
+            "title": "Validity Policy",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug"
+        ],
+        "title": "DisseminationPlanCreate",
+        "type": "object"
+      },
+      "DisseminationPlanOut": {
+        "description": "Persisted plan row.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "destination_refs": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Destination Refs",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "retry": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retry"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "transforms": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Transforms",
+            "type": "array"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          },
+          "validity_policy": {
+            "title": "Validity Policy",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "slug",
+          "validity_policy",
+          "destination_refs",
+          "transforms",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "DisseminationPlanOut",
+        "type": "object"
+      },
+      "DisseminationPlanUpdate": {
+        "description": "Partial update for a DisseminationPlan.",
+        "properties": {
+          "destination_refs": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Destination Refs"
+          },
+          "retry": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retry"
+          },
+          "transforms": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Transforms"
+          },
+          "validity_policy": {
+            "anyOf": [
+              {
+                "enum": [
+                  "valid-only",
+                  "warn-ok"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Validity Policy"
+          }
+        },
+        "title": "DisseminationPlanUpdate",
+        "type": "object"
+      },
       "EvaluationJobResponse": {
         "description": "Response when creating an evaluation job.",
         "example": {
@@ -1746,6 +2122,58 @@
           "end"
         ],
         "title": "FailedSpan",
+        "type": "object"
+      },
+      "GatewayHealthListResponse": {
+        "description": "Health for registered gateway kinds.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/GatewayHealthOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "GatewayHealthListResponse",
+        "type": "object"
+      },
+      "GatewayHealthOut": {
+        "description": "Operator-safe gateway health row.",
+        "properties": {
+          "connectivity_ok": {
+            "title": "Connectivity Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "gateway": {
+            "title": "Gateway",
+            "type": "string"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "ok",
+          "gateway",
+          "connectivity_ok"
+        ],
+        "title": "GatewayHealthOut",
         "type": "object"
       },
       "HTTPValidationError": {
@@ -2390,6 +2818,119 @@
         "title": "LogoutRequest",
         "type": "object"
       },
+      "MappingConfigCreate": {
+        "description": "Create a field mapping \u2014 no connection secrets.",
+        "properties": {
+          "config": {
+            "additionalProperties": true,
+            "title": "Config",
+            "type": "object"
+          },
+          "mode": {
+            "enum": [
+              "source",
+              "sink"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "mode"
+        ],
+        "title": "MappingConfigCreate",
+        "type": "object"
+      },
+      "MappingConfigOut": {
+        "description": "Persisted MappingConfig row.",
+        "properties": {
+          "config": {
+            "additionalProperties": true,
+            "title": "Config",
+            "type": "object"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "mode": {
+            "title": "Mode",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "name",
+          "mode",
+          "config",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "MappingConfigOut",
+        "type": "object"
+      },
+      "MappingConfigUpdate": {
+        "description": "Partial MappingConfig update.",
+        "properties": {
+          "config": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Config"
+          },
+          "mode": {
+            "anyOf": [
+              {
+                "enum": [
+                  "source",
+                  "sink"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mode"
+          }
+        },
+        "title": "MappingConfigUpdate",
+        "type": "object"
+      },
       "Message": {
         "description": "Simple success message.",
         "properties": {
@@ -2523,6 +3064,118 @@
           "name"
         ],
         "title": "PendingFilePayload",
+        "type": "object"
+      },
+      "PlanExecuteRequest": {
+        "description": "Execute or dry-run a plan for a sample message.",
+        "properties": {
+          "dry_run": {
+            "default": true,
+            "title": "Dry Run",
+            "type": "boolean"
+          },
+          "iwxxm_version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iwxxm Version"
+          },
+          "iwxxm_xml": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iwxxm Xml"
+          },
+          "message_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message Id"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product"
+          },
+          "profile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile"
+          },
+          "station": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Station"
+          },
+          "tac_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tac Text"
+          }
+        },
+        "title": "PlanExecuteRequest",
+        "type": "object"
+      },
+      "PlanExecuteResponse": {
+        "description": "Execute outcome with receipts.",
+        "properties": {
+          "plan_id": {
+            "format": "uuid",
+            "title": "Plan Id",
+            "type": "string"
+          },
+          "receipts": {
+            "items": {
+              "$ref": "#/components/schemas/DeliveryReceiptOut"
+            },
+            "title": "Receipts",
+            "type": "array"
+          }
+        },
+        "required": [
+          "plan_id",
+          "receipts"
+        ],
+        "title": "PlanExecuteResponse",
         "type": "object"
       },
       "QualityMetricsDetailResponse": {
@@ -4407,6 +5060,595 @@
         "tags": [
           "Validation",
           "Conversion"
+        ]
+      }
+    },
+    "/api/v1/dissemination/audit": {
+      "get": {
+        "description": "List redacted delivery audit rows for the caller.",
+        "operationId": "list_audit_api_v1_dissemination_audit_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "product",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Product"
+            }
+          },
+          {
+            "in": "query",
+            "name": "station",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Station"
+            }
+          },
+          {
+            "in": "query",
+            "name": "profile",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Profile"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Status"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "required": false,
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "title": "Page",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "maximum": 100,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Audit",
+        "tags": [
+          "Dissemination Ops"
+        ]
+      }
+    },
+    "/api/v1/dissemination/audit/{audit_id}": {
+      "get": {
+        "description": "Fetch one audit row (owner-scoped).",
+        "operationId": "get_audit_api_v1_dissemination_audit__audit_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "audit_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Audit Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuditRecordOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Audit",
+        "tags": [
+          "Dissemination Ops"
+        ]
+      }
+    },
+    "/api/v1/dissemination/gateways/health": {
+      "get": {
+        "description": "Connectivity-only health for known drawer gateway kinds.\n\nAMHS, SWIM, and AFS kinds are staging-honest; others report no live probe\nuntil registered.",
+        "operationId": "gateways_health_api_v1_dissemination_gateways_health_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayHealthListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Gateways Health",
+        "tags": [
+          "Dissemination Ops"
+        ]
+      }
+    },
+    "/api/v1/dissemination/mappings/{mapping_id}": {
+      "get": {
+        "description": "Fetch MappingConfig by id.",
+        "operationId": "get_mapping_api_v1_dissemination_mappings__mapping_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "mapping_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Mapping Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MappingConfigOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Mapping",
+        "tags": [
+          "Dissemination Ops"
+        ]
+      },
+      "patch": {
+        "description": "Update MappingConfig fields.",
+        "operationId": "patch_mapping_api_v1_dissemination_mappings__mapping_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "mapping_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Mapping Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MappingConfigUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MappingConfigOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Mapping",
+        "tags": [
+          "Dissemination Ops"
+        ]
+      }
+    },
+    "/api/v1/dissemination/mappings/{name}": {
+      "put": {
+        "description": "Create MappingConfig by name (unique per user).",
+        "operationId": "upsert_mapping_api_v1_dissemination_mappings__name__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "title": "Name",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MappingConfigCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MappingConfigOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Upsert Mapping",
+        "tags": [
+          "Dissemination Ops"
+        ]
+      }
+    },
+    "/api/v1/dissemination/plans/{plan_id}": {
+      "get": {
+        "description": "Fetch one plan by id (owner-scoped).",
+        "operationId": "get_plan_api_v1_dissemination_plans__plan_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Plan Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisseminationPlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Plan",
+        "tags": [
+          "Dissemination Ops"
+        ]
+      },
+      "patch": {
+        "description": "Update plan fields (no secrets).",
+        "operationId": "patch_plan_api_v1_dissemination_plans__plan_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Plan Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisseminationPlanUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisseminationPlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Plan",
+        "tags": [
+          "Dissemination Ops"
+        ]
+      }
+    },
+    "/api/v1/dissemination/plans/{plan_id}/execute": {
+      "post": {
+        "description": "Execute or dry-run a plan; persist redacted audit rows per receipt.\n\nDefault ``dry_run=true`` so operators can exercise audit without egress.",
+        "operationId": "execute_plan_route_api_v1_dissemination_plans__plan_id__execute_post",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "plan_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Plan Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanExecuteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanExecuteResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Execute Plan Route",
+        "tags": [
+          "Dissemination Ops"
+        ]
+      }
+    },
+    "/api/v1/dissemination/plans/{slug}": {
+      "put": {
+        "description": "Create a plan under ``slug`` (unique per user).\n\nPath slug wins over body.slug when they differ.",
+        "operationId": "upsert_plan_by_slug_api_v1_dissemination_plans__slug__put",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slug",
+            "required": true,
+            "schema": {
+              "title": "Slug",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisseminationPlanCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisseminationPlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Upsert Plan By Slug",
+        "tags": [
+          "Dissemination Ops"
         ]
       }
     },

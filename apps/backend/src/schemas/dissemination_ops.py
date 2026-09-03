@@ -103,7 +103,7 @@ class AuditListResponse(BaseModel):
 
 
 class MappingConfigCreate(BaseModel):
-    """Create MappingConfig (ADR-040) — no connection secrets."""
+    """Create a field mapping — no connection secrets."""
 
     name: str = Field(min_length=1, max_length=128)
     mode: MappingMode

@@ -202,7 +202,8 @@ async def gateways_health(
     """
     Connectivity-only health for known drawer gateway kinds.
 
-    F19 kinds are staging-honest; others report no live probe until registered.
+    AMHS, SWIM, and AFS kinds are staging-honest; others report no live probe
+    until registered.
     """
     items = [
         GatewayHealthOut(
