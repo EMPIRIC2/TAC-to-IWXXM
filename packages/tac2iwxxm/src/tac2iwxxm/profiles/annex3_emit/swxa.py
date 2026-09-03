@@ -44,7 +44,6 @@ def _swxa_region_xml(loc: str, *, slug: str, idx: int) -> str:
     if code in _SWXA_CIRCLES:
         pos, radius = _SWXA_CIRCLES[code]
         surface = f"""
-# ruff: noqa: F403, F405
                                         <aixm:Surface gml:id="{rid}.sfc" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
                                             <gml:patches>
                                                 <gml:PolygonPatch>

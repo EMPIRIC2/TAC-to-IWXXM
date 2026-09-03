@@ -138,5 +138,5 @@ cases:
     )
     counts = mod.collect_quality_matrix_inventory(qm)
     assert counts[("METAR", "annex3")][0] == 1  # ready → match (inventory)
-    assert counts[("METAR", "annex3")][3] == 1  # needs-fixture → skip
-    assert counts[("SPECI", "iwxxm_us")][3] == 1  # oos → skip
+    assert counts[("METAR", "annex3")][3] == 0  # needs-fixture omitted (not Skip)
+    assert ("SPECI", "iwxxm_us") not in counts  # oos omitted
