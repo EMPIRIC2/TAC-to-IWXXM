@@ -23,19 +23,8 @@ class ExpectedResidual:
 # Doc-intentional G4 peers - fuller advisory decode tracked separately.
 # EV-030 T3.2-T3.3: official ``vaa_a7_2`` / ``tca_a2_2`` reach residuals == []
 # under structured field (+ AHL) decode; allow_any entries removed.
+# EV-099: SWXA/VONA structured LABEL decode — drop allow_any for vona_a7_1 / swxa_a7_3.
 EXPECTED_RESIDUALS: tuple[ExpectedResidual, ...] = (
-    ExpectedResidual(
-        catalog_id="swxa_a7_3",
-        doc_intent="F9 G4 / ADR-025 sparse best-effort (F28 SWXA unlock)",
-        issue="#740",
-        allow_any=True,
-    ),
-    ExpectedResidual(
-        catalog_id="vona_a7_1",
-        doc_intent="F9 G4 / ADR-025 sparse best-effort (F32 VONA unlock)",
-        issue="#741",
-        allow_any=True,
-    ),
     # TC SIGMET A6-2-TC catalog wmoPass (EV-032 / #835); decode still leaves
     # cyclone name / radius / CENTRE tokens until F9 TC deepen.
     ExpectedResidual(
