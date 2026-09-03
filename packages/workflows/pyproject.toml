@@ -9,7 +9,7 @@ dependencies = [
   "tac2iwxxm",
   "tac-validate",
   "iwxxm-validate",
-  "pyyaml>=6.0",
+  "pyyaml==6.0.3",
 ]
 
 [build-system]
