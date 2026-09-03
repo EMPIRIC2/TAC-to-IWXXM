@@ -1,5 +1,48 @@
 # Evolve Decisions
 
+## Cycle EV-1132 — Workflows runtime + F8 cutover (#1132)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1132-workflows-runtime`  
+**Issues:** [#1132](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1132) · contract [#931](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/931) / ADR-042  
+**Documenting→Implementing gate:** **open** (2026-09-03) · **Build:** Implemented
+
+| ID | Outcome |
+|----|---------|
+| D-EV1132-scope | MVP executor + F8 cutover; no UI/gateway/async/`/convert` replace |
+| D-EV1132-pkg | New `packages/workflows` (MIT); deps tac2iwxxm, tac-validate, iwxxm-validate, pyyaml |
+| D-EV1132-ports | Store/quarantine via injected StorePort — no SQL in package |
+| D-EV1132-parity | Preserve SCHEMATRON_SKIPPED soft-pass + process_job signature |
+| D-EV1132-e2e | Skip e2e (no UI) |
+| D-EV1132-skip-plan | Skip verify-plan/plan-tooling — ADR-042 is SoT |
+| D-EV1132-context | [Context: workflows-runtime-1132](../context/workflows-runtime-1132.md) |
+| D-EV1132-ship | `packages/workflows` + F8 `process_job` → `execute("f8-metar-ingest-default")` |
+
+[Corpus: product §F6] [Corpus: product §F8] [Corpus: adr] ADR-042 [Corpus: decisions §EV-1132]
+
+---
+
+
+## Cycle EV-922-synthesis — Epic #922 close-out
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-922-epic-synthesis`  
+**Issues:** [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV922SYN-accept | **Epic investigation band complete** — all six spikes have Accepted ADRs |
+| D-EV922SYN-matrix | Consolidated gap matrix: contract (ADR) vs runtime gap |
+| D-EV922SYN-sequence | **Final** milestone sequence approved (Core → … → UIs) |
+| D-EV922SYN-merge | PR stack #1125→#1130 merge order documented |
+| D-EV922SYN-close | Close #923–#931 + epic #922 when PRs land on `stage` |
+| D-EV922SYN-ui | Platform UIs #933–#938 unblocked after ADR merge (runtime deps noted) |
+| D-EV922SYN-next | Priority runtime: `packages/workflows` (ADR-042) |
+| D-EV922SYN-writeup | Session `reports/922-epic-synthesis.md` + [Context: epic-922-synthesis](../context/epic-922-synthesis.md) |
+
+[Corpus: system-spec] §Platform logical layers [Corpus: product §F6] [Corpus: adr] ADR-037–042 [Corpus: decisions §EV-922-synthesis]
+
+---
+
+
 ## Cycle EV-931 — Workflow definitions (#931)
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-931-spike-workflow-definitions-execute-message-workf`  

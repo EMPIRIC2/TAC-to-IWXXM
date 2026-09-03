@@ -1,12 +1,12 @@
-# F8 default ingest workflow — maps to metar_worker.pipeline.process_job (ADR-042)
-# Runtime: Planned — contract reference only until packages/workflows ships.
+# F8 default ingest workflow — packages/workflows.execute (ADR-042 / EV-1132)
+# Runtime: Implemented — F8 worker process_job calls execute(message, this id).
 
 id: f8-metar-ingest-default
 version: "1.0.0"
 description: Near-RT METAR/SPECI ingest — lint, convert, IWXXM validate, store or quarantine.
 
 profile:
-  # Resolved from worker env today (INGEST_PROFILE, IWXXM_VERSION)
+  # Resolved from worker env today (INGEST_PROFILE, IWXXM_VERSION); process_job overrides.
   id: ${ENV:INGEST_PROFILE}
   iwxxm_version: ${ENV:IWXXM_VERSION}
 

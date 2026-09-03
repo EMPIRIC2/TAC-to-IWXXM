@@ -30,6 +30,7 @@ dev = [
   "iwxxm-validate",
   "tac-validate",
   "dissemination",
+  "workflows",
   "metar-auth",
   "testcontainers[mysql,postgres]>=4.8",
   "schemathesis==4.24.3",
@@ -45,6 +46,7 @@ tac2iwxxm = { workspace = true }
 iwxxm-validate = { workspace = true }
 tac-validate = { workspace = true }
 dissemination = { workspace = true }
+workflows = { workspace = true }
 
 [tool.uv.workspace]
 members = [
@@ -54,6 +56,7 @@ members = [
   "packages/iwxxm-validate",
   "packages/tac-validate",
   "packages/dissemination",
+  "packages/workflows",
   "apps/backend",
   "apps/worker",
 ]

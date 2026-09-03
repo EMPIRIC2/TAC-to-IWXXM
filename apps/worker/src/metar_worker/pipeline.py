@@ -1,15 +1,20 @@
-"""Ingest pipeline: tac-validate → tac2iwxxm → iwxxm-validate (F8 / ADR-018)."""
+"""Ingest pipeline: workflows.execute (F8 / ADR-018 / ADR-042)."""
 
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Any
 
-from iwxxm_validate import validate as iwxxm_validate
-from tac_validate import lint as tac_lint
-
 from metar_worker.poller import IngestJob
-from tac2iwxxm import convert as tac2iwxxm_convert
+from workflows import WorkflowMessage, execute
+
+# Map ADR-042 stage ids → legacy PipelineResult.stage_failed / issue stage names.
+_LEGACY_STAGE = {
+    "validate-tac": "lint",
+    "convert-iwxxm": "convert",
+    "validate-xsd": "iwxxm_validate",
+    "validate-schematron": "iwxxm_validate",
+}
 
 
 @dataclass(slots=True)
@@ -32,7 +37,7 @@ class PipelineResult:
     issues :
         Structured diagnostics from any stage.
     stage_failed :
-        First failing stage name, if any.
+        First failing stage name, if any (legacy ids: lint / convert / iwxxm_validate).
     """
 
     job_id: str
@@ -50,104 +55,62 @@ def process_job(
     profile: str = "annex3",
     iwxxm_version: str = "2025-2",
     skip_lint: bool = False,
+    workflow_id: str = "f8-metar-ingest-default",
 ) -> PipelineResult:
     """
-    Run lint → convert → IWXXM validate for one job.
+    Run ``execute(message, workflow)`` for one job (ADR-042).
 
     Failures quarantine (caller writes quarantine row); success is store-ready.
+    ``profile`` / ``iwxxm_version`` override YAML when provided (worker Settings).
     """
+    from workflows.loader import load_workflow
+    from workflows.models import WorkflowDefinition
+
     product = job.product.upper()
     profile_l = profile.lower()
-    issues: list[dict[str, Any]] = []
+    skip = frozenset({"validate-tac"}) if skip_lint else frozenset()
 
-    if not skip_lint:
-        lint_report = tac_lint(job.tac, product=product)
-        for issue in lint_report.issues:
-            issues.append(
-                {
-                    "stage": "lint",
-                    "severity": issue.severity,
-                    "code": issue.code,
-                    "message": issue.message,
-                }
-            )
-        if not lint_report.ok:
-            return PipelineResult(
-                job_id=job.job_id,
-                ok=False,
-                product=product,
-                profile=profile_l,
-                issues=issues,
-                stage_failed="lint",
-            )
-
-    convert_result = tac2iwxxm_convert(
-        job.tac,
-        product=product,
-        profile=profile_l,
+    definition: WorkflowDefinition = load_workflow(workflow_id)
+    # Worker env overrides beat unresolved empty ${ENV:} defaults.
+    definition = WorkflowDefinition(
+        id=definition.id,
+        version=definition.version,
+        pipeline=list(definition.pipeline),
+        profile_id=profile_l,
         iwxxm_version=iwxxm_version,
+        description=definition.description,
+        on_valid_store=list(definition.on_valid_store),
+        on_invalid_store=list(definition.on_invalid_store),
+        raw=definition.raw,
     )
-    for issue in convert_result.issues:
-        issues.append(
-            {
-                "stage": "convert",
-                "severity": issue.severity,
-                "code": issue.code,
-                "message": issue.message,
-            }
-        )
-    if not convert_result.ok or not convert_result.xml:
-        return PipelineResult(
-            job_id=job.job_id,
-            ok=False,
-            product=product,
-            profile=profile_l,
-            issues=issues,
-            stage_failed="convert",
-        )
 
-    report = iwxxm_validate(
-        convert_result.xml,
-        iwxxm_version=iwxxm_version,
-        profile=profile_l,
-        levels=("xsd", "schematron"),
+    wf = execute(
+        WorkflowMessage(tac=job.tac, product=product, job_id=job.job_id),
+        definition,
+        skip_stages=skip,
     )
-    for issue in report.issues:
-        if issue.severity == "error" and issue.code in {"SCHEMATRON_SKIPPED"}:
-            continue
-        issues.append(
-            {
-                "stage": "iwxxm_validate",
-                "severity": issue.severity,
-                "code": issue.code,
-                "message": issue.message,
-            }
-        )
-    blocking = [
-        i
-        for i in report.issues
-        if i.severity == "error" and i.code not in {"SCHEMATRON_SKIPPED"}
+
+    issues = [
+        {
+            "stage": _LEGACY_STAGE.get(issue.stage, issue.stage),
+            "severity": issue.severity,
+            "code": issue.code,
+            "message": issue.message,
+        }
+        for issue in wf.issues
     ]
-    # Soft-pass when report.ok is False solely due to SCHEMATRON_SKIPPED.
-    if blocking:
-        return PipelineResult(
-            job_id=job.job_id,
-            ok=False,
-            product=product,
-            profile=profile_l,
-            xml=convert_result.xml,
-            issues=issues,
-            stage_failed="iwxxm_validate",
-        )
+    stage_failed = None
+    if wf.stage_failed is not None:
+        stage_failed = _LEGACY_STAGE.get(wf.stage_failed, wf.stage_failed)
 
     return PipelineResult(
         job_id=job.job_id,
-        ok=True,
+        ok=wf.ok,
         product=product,
         profile=profile_l,
-        xml=convert_result.xml,
+        xml=wf.xml,
         issues=issues,
-        stage_failed=None,
+        stage_failed=stage_failed,
     )
 
 

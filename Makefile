@@ -11,6 +11,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/iwxxm-validate/src packages/iwxxm-validate/tests \
 	packages/tac-validate/src packages/tac-validate/tests \
 	packages/dissemination/src packages/dissemination/tests \
+	packages/workflows/src packages/workflows/tests \
 	tests
 
 .PHONY: install test test-unit vendor-sync export-iwxxm-versions openapi-refresh tip-diff-iwxxm \
@@ -18,7 +19,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-auth test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
-	test-unit-dissemination test-unit-worker test-bugs \
+	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs \
 	test-schemathesis test-mutation test-mutation-poc test-mutation-python test-mutation-js \
 	build-tac2iwxxm-native build-iwxxm-validate-native \
 	test-tac2iwxxm-native test-iwxxm-validate-native rust-check \
@@ -517,6 +518,16 @@ test-iwxxm-translation-informative:
 test-unit-dissemination:
 	bash scripts/ci/run_dissemination_coverage.sh
 
+# ADR-042 / EV-1132 — packages/workflows coverage 100%.
+test-unit-workflows:
+	$(UV) run pytest packages/workflows/tests -m unit \
+		--cov=workflows --cov-config=packages/workflows/pyproject.toml --cov-branch \
+		--cov-report=term-missing --cov-report=json:packages/workflows/coverage.json \
+		--cov-fail-under=100 -v
+	@if [ -f scripts/ci/check_per_file_coverage.py ]; then \
+		$(UV) run python scripts/ci/check_per_file_coverage.py packages/workflows/coverage.json; \
+	fi
+
 # F16 / T2.5 — TC-F16-003 multi-DB (SQLite always; PG/MySQL via Testcontainers when Docker up).
 test-integration-dissemination:
 	$(UV) run pytest packages/dissemination/tests \
@@ -606,7 +617,7 @@ test-bugs:
 
 test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
-	test-unit-dissemination test-unit-worker test-bugs
+	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs
 
 test: test-unit
 
@@ -893,7 +904,7 @@ validate-ci: validate-fast validate-ci-medium
 # Use `make ci` / `make test-integration` when Docker ports 18000/18001 are free.
 ci-prepush: format-check typecheck lint test-unit-workspace test-unit-backend \
 	test-unit-frontend test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
-	test-unit-dissemination test-unit-worker test-bugs badge-audit
+	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs badge-audit
 
 # EV-036 long local gate (husky pre-push): units + Compose integration.
 ci: ci-prepush test-integration
