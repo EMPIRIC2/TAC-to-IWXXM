@@ -1,5 +1,24 @@
 # Evolve Decisions
 
+## Cycle EV-926 — SQL adapters + mapping (#926)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-926-sql-adapters-mapping`  
+**Issues:** [#926](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/926), [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV926-package | **Extend dissemination** — no new adapters package |
+| D-EV926-mapping | **Accept** MappingConfig contract (ADR-040) |
+| D-EV926-source | SourceAdapter protocol documented; runtime deferred |
+| D-EV926-oracle | **Defer** Oracle v1 |
+| D-EV926-896 | Hybrid URI connector + mapping (#896) |
+| D-EV926-writeup | Session `reports/926-sql-adapters-mapping.md` |
+
+[Corpus: product §F16] [Corpus: adr] ADR-030, ADR-040 [Corpus: decisions §EV-926]
+
+---
+
+
 ## Cycle EV-925 — Canonical MET + staged validation (#925)
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-925-canonical-met-staged-validation`  

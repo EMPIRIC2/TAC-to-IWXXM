@@ -898,6 +898,16 @@
 - **Status note**: F12 remains **Implemented** (PyPI `0.1.0`); this cycle routes METAR/**SPECI**
   rules through the F15 registry and expands accept/negative packs to full-depth checklist targets.
 
+### F16 deepen (EV-926 — SQL adapters + mapping / #926)
+
+- **Status note**: F16 remains **Done**; spike [#926](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/926)
+  documents **MappingConfig** + symmetric source/sink adapter contract ([ADR-040](adr/ADR-040-sql-adapters-mapping-config.md)).
+  **No new Fn** — extends dissemination architecture.
+- **Acceptance**: Mapping schema sketch, engine matrix, extend-`dissemination` recommendation, #896 hybrid.
+- **Out of scope**: Oracle v1, runtime source poll, #935 UI.
+- **Source**: [Context: sql-adapters-mapping-926](context/sql-adapters-mapping-926.md);
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-926
+
 ### F16: Dissemination drawer + multi-DB upload (BYOC URI) — S019 / EV-014
 
 - **Status**: **Done** (EV-014 closed 2026-07-21; #771/#772). **Deepen** S024 / EV-018 /
