@@ -752,8 +752,8 @@ not Supabase PostgREST product writes (F30). Auth identity from Supabase JWT.
 |--------|------|-------|
 | `GET` | `/api/v1/profiles/catalog` | Read-only ConversionProfile / catalog projection (ADR-038 fields; no secrets) |
 | `GET`/`POST`/`PUT`/`DELETE` | `/api/v1/profiles/rule-packs/{id}` | Rule-pack CRUD; export-friendly body |
-| `GET`/`POST`/`PUT`/`DELETE` | `/api/v1/profiles/overlays/{id}` | Signed operator overlays; reject unsigned |
-| `POST` | `/api/v1/convert` (existing) | Optional overlay / rule-pack reference field (additive; OpenAPI plain language) |
+| `GET`/`POST`/`PATCH`/`DELETE` | `/api/v1/profiles/overlays[/{id}]` | Server-HMAC signed overlays; reject unsigned/tampered |
+| `POST` | `/api/v1/convert` (existing) | Optional multipart `overlay_id` (JWT + ownership when set) |
 
 **Auth**: JWT required for pack/overlay mutate → 401/403. **Trust**: unsigned browser packs
 rejected. **Non-goals**: credentials / destination URIs in profile objects (ADR-021/029).

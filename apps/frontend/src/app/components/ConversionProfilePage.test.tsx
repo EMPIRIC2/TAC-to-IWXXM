@@ -10,11 +10,15 @@ import { ConversionProfilePage } from './ConversionProfilePage';
 const fetchProfileCatalog = vi.fn();
 const listRulePacks = vi.fn();
 const createRulePack = vi.fn();
+const listOverlays = vi.fn();
+const createOverlay = vi.fn();
 
 vi.mock('@/utils/conversionProfilesApi', () => ({
   fetchProfileCatalog: (...args: unknown[]) => fetchProfileCatalog(...args),
   listRulePacks: (...args: unknown[]) => listRulePacks(...args),
   createRulePack: (...args: unknown[]) => createRulePack(...args),
+  listOverlays: (...args: unknown[]) => listOverlays(...args),
+  createOverlay: (...args: unknown[]) => createOverlay(...args),
 }));
 
 const samplePack = {
@@ -28,6 +32,18 @@ const samplePack = {
   when: '',
   message: '',
   standardReference: '',
+  created_at: '',
+  updated_at: '',
+};
+
+const sampleOverlay = {
+  id: 'ov-1',
+  user_id: 'u',
+  slug: 'my-overlay',
+  baseProfileId: 'ICAO_2025',
+  body: {},
+  signature: 'sig',
+  shared: false,
   created_at: '',
   updated_at: '',
 };
@@ -57,6 +73,8 @@ describe('ConversionProfilePage', () => {
     });
     listRulePacks.mockResolvedValue({ items: [samplePack] });
     createRulePack.mockResolvedValue(samplePack);
+    listOverlays.mockResolvedValue({ items: [sampleOverlay] });
+    createOverlay.mockResolvedValue(sampleOverlay);
   });
 
   it('prompts sign-in when unauthenticated', async () => {
@@ -79,7 +97,9 @@ describe('ConversionProfilePage', () => {
     });
     expect(fetchProfileCatalog).toHaveBeenCalledWith('tok');
     expect(listRulePacks).toHaveBeenCalledWith('tok');
+    expect(listOverlays).toHaveBeenCalledWith('tok');
     expect(screen.getByTestId('conversion-profiles-pack-list')).toBeInTheDocument();
+    expect(screen.getByTestId('conversion-profiles-overlay-list')).toBeInTheDocument();
 
     await user.clear(screen.getByTestId('conversion-profiles-pack-slug'));
     await user.type(screen.getByTestId('conversion-profiles-pack-slug'), 'pack-a');
@@ -184,6 +204,105 @@ describe('ConversionProfilePage', () => {
     render(<ConversionProfilePage accessToken="tok" />);
     await waitFor(() => {
       expect(screen.getByTestId('conversion-profiles-export')).toBeDisabled();
+    });
+  });
+
+  it('saves a signed overlay', async () => {
+    const user = userEvent.setup();
+    const { fireEvent } = await import('@testing-library/react');
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-overlay-save'),
+      ).toBeInTheDocument();
+    });
+    await user.clear(screen.getByTestId('conversion-profiles-overlay-slug'));
+    await user.type(screen.getByTestId('conversion-profiles-overlay-slug'), 'ov-a');
+    await user.clear(screen.getByTestId('conversion-profiles-overlay-base'));
+    await user.type(
+      screen.getByTestId('conversion-profiles-overlay-base'),
+      'US_FAA_NWS',
+    );
+    fireEvent.change(screen.getByTestId('conversion-profiles-overlay-body'), {
+      target: { value: '{"lint":true}' },
+    });
+    await user.click(screen.getByTestId('conversion-profiles-overlay-save'));
+    await waitFor(() => {
+      expect(createOverlay).toHaveBeenCalled();
+    });
+    const args = createOverlay.mock.calls[0]?.[1] as
+      | { slug?: string; baseProfileId?: string; body?: Record<string, unknown> }
+      | undefined;
+    expect(args?.slug).toBe('ov-a');
+    expect(args?.baseProfileId).toBe('US_FAA_NWS');
+    expect(args?.body).toEqual({ lint: true });
+  });
+
+  it('rejects non-object overlay JSON', async () => {
+    const user = userEvent.setup();
+    const { fireEvent } = await import('@testing-library/react');
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-overlay-body'),
+      ).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('conversion-profiles-overlay-body'), {
+      target: { value: '[]' },
+    });
+    await user.click(screen.getByTestId('conversion-profiles-overlay-save'));
+    await waitFor(() => {
+      expect(screen.getByText(/Overlay JSON must be an object/)).toBeInTheDocument();
+    });
+    expect(createOverlay).not.toHaveBeenCalled();
+  });
+
+  it('rejects invalid overlay JSON syntax', async () => {
+    const user = userEvent.setup();
+    const { fireEvent } = await import('@testing-library/react');
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-overlay-body'),
+      ).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('conversion-profiles-overlay-body'), {
+      target: { value: '{not-json' },
+    });
+    await user.click(screen.getByTestId('conversion-profiles-overlay-save'));
+    await waitFor(() => {
+      expect(screen.getByText(/Overlay JSON must be valid/)).toBeInTheDocument();
+    });
+    expect(createOverlay).not.toHaveBeenCalled();
+  });
+
+  it('treats blank overlay body as empty object', async () => {
+    const user = userEvent.setup();
+    const { fireEvent } = await import('@testing-library/react');
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-overlay-save'),
+      ).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('conversion-profiles-overlay-body'), {
+      target: { value: '   ' },
+    });
+    await user.click(screen.getByTestId('conversion-profiles-overlay-save'));
+    await waitFor(() => {
+      expect(createOverlay).toHaveBeenCalled();
+    });
+    const args = createOverlay.mock.calls.at(-1)?.[1] as
+      | { body?: Record<string, unknown> }
+      | undefined;
+    expect(args?.body).toEqual({});
+  });
+
+  it('shows empty overlays list', async () => {
+    listOverlays.mockResolvedValue({ items: [] });
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByText(/No overlays yet/)).toBeInTheDocument();
     });
   });
 });

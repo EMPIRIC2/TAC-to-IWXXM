@@ -10,8 +10,9 @@ from uuid import uuid4
 import pytest
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-from src.schemas.conversion_profiles import RulePackCreate, RulePackUpdate
+from src.schemas.conversion_profiles import OverlayCreate, OverlayUpdate, RulePackCreate, RulePackUpdate
 from src.services import conversion_profiles_service as svc
+from src.services.profile_overlay import sign_overlay
 
 USER_ID = uuid4()
 PACK_ID = uuid4()
@@ -349,3 +350,259 @@ def test_get_engine_caches(monkeypatch: pytest.MonkeyPatch) -> None:
         assert e1 is e2
         ce.assert_called_once()
     svc._engine = None
+
+
+def test_overlay_crud(service: svc.ConversionProfilesService, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PROFILE_OVERLAY_HMAC_SECRET", "unit-secret")
+    engine = MagicMock()
+    begin_conn = MagicMock()
+    read_conn = MagicMock()
+    engine.begin.return_value.__enter__.return_value = begin_conn
+    engine.connect.return_value.__enter__.return_value = read_conn
+    begin_conn.execute.return_value.rowcount = 1
+    body = {"lint": {"severity": "warning"}}
+    row = {
+        "id": PACK_ID,
+        "user_id": USER_ID,
+        "slug": "ov1",
+        "base_profile_id": "ICAO_2025",
+        "body": body,
+        "signature": sign_overlay(user_id=USER_ID, base_profile_id="ICAO_2025", body=body),
+        "shared": False,
+        "created_at": NOW,
+        "updated_at": NOW,
+    }
+    read_conn.execute.return_value = _Result(row=row, rows=[row])
+    ins = MagicMock()
+    ins.values.return_value = "insert-stmt"
+    upd = MagicMock()
+    upd.where.return_value = upd
+    upd.values.return_value = "u"
+    dele = MagicMock()
+    dele.where.return_value = "d"
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "insert", return_value=ins),
+        patch.object(svc, "update", return_value=upd),
+        patch.object(svc, "delete", return_value=dele),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        patch.object(svc, "or_", return_value="owner-or-shared"),
+    ):
+        created = service.create_overlay(OverlayCreate(slug="ov1", base_profile_id="ICAO_2025", body=body))
+        assert created.slug == "ov1"
+        assert service.list_overlays()[0].slug == "ov1"
+        assert service.get_overlay(PACK_ID).base_profile_id == "ICAO_2025"
+        service.update_overlay(PACK_ID, OverlayUpdate(shared=True))
+        service.delete_overlay(PACK_ID)
+
+
+def test_overlay_foreign_owner_forbidden(
+    service: svc.ConversionProfilesService, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("PROFILE_OVERLAY_HMAC_SECRET", "unit-secret")
+    other = uuid4()
+    body = {"x": 1}
+    row = {
+        "id": PACK_ID,
+        "user_id": other,
+        "slug": "foreign",
+        "base_profile_id": "ICAO_2025",
+        "body": body,
+        "signature": sign_overlay(user_id=other, base_profile_id="ICAO_2025", body=body),
+        "shared": False,
+        "created_at": NOW,
+        "updated_at": NOW,
+    }
+    engine = MagicMock()
+    conn = MagicMock()
+    engine.connect.return_value.__enter__.return_value = conn
+    conn.execute.return_value = _Result(row=row)
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        pytest.raises(HTTPException) as exc,
+    ):
+        service.get_overlay(PACK_ID)
+    assert exc.value.status_code == 403
+
+
+def test_overlay_get_db_error(service: svc.ConversionProfilesService, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("PROFILE_OVERLAY_HMAC_SECRET", "unit-secret")
+    engine = MagicMock()
+    engine.connect.return_value.__enter__.side_effect = SQLAlchemyError("get boom")
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        patch.object(svc, "_handle_db_error", side_effect=HTTPException(status_code=503, detail="db")),
+        pytest.raises(HTTPException),
+    ):
+        service.get_overlay(PACK_ID)
+
+    monkeypatch.setenv("PROFILE_OVERLAY_HMAC_SECRET", "unit-secret")
+    sig = sign_overlay(user_id=USER_ID, base_profile_id="ICAO_2025", body={})
+    row = {
+        "id": PACK_ID,
+        "user_id": USER_ID,
+        "slug": "ov",
+        "base_profile_id": "ICAO_2025",
+        "body": "not-a-dict",
+        "signature": sig,
+        "shared": False,
+        "created_at": NOW,
+        "updated_at": NOW,
+    }
+    out = service._overlay_to_out(row)
+    assert out.body == {}
+
+
+def test_overlay_get_not_found_and_require_owner(
+    service: svc.ConversionProfilesService, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("PROFILE_OVERLAY_HMAC_SECRET", "unit-secret")
+    engine = MagicMock()
+    conn = MagicMock()
+    engine.connect.return_value.__enter__.return_value = conn
+    conn.execute.return_value = _Result(row=None)
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        pytest.raises(HTTPException) as missing,
+    ):
+        service.get_overlay(PACK_ID)
+    assert missing.value.status_code == 404
+
+    other = uuid4()
+    body = {"ok": True}
+    shared_row = {
+        "id": PACK_ID,
+        "user_id": other,
+        "slug": "shared",
+        "base_profile_id": "ICAO_2025",
+        "body": body,
+        "signature": sign_overlay(user_id=other, base_profile_id="ICAO_2025", body=body),
+        "shared": True,
+        "created_at": NOW,
+        "updated_at": NOW,
+    }
+    conn.execute.return_value = _Result(row=shared_row)
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+    ):
+        got = service.get_overlay(PACK_ID)
+        assert got.shared is True
+        with pytest.raises(HTTPException) as owner_exc:
+            service.get_overlay(PACK_ID, require_owner=True)
+        assert owner_exc.value.status_code == 403
+
+
+def test_overlay_db_errors_and_empty_update(
+    service: svc.ConversionProfilesService, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("PROFILE_OVERLAY_HMAC_SECRET", "unit-secret")
+    body = {"lint": True}
+    row = {
+        "id": PACK_ID,
+        "user_id": USER_ID,
+        "slug": "ov1",
+        "base_profile_id": "ICAO_2025",
+        "body": body,
+        "signature": sign_overlay(user_id=USER_ID, base_profile_id="ICAO_2025", body=body),
+        "shared": False,
+        "created_at": NOW,
+        "updated_at": NOW,
+    }
+    engine = MagicMock()
+    begin_conn = MagicMock()
+    read_conn = MagicMock()
+    engine.begin.return_value.__enter__.return_value = begin_conn
+    engine.connect.return_value.__enter__.return_value = read_conn
+    read_conn.execute.return_value = _Result(row=row, rows=[row])
+    begin_conn.execute.side_effect = SQLAlchemyError("boom")
+
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "insert", return_value=MagicMock(values=MagicMock(return_value="i"))),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        patch.object(svc, "_handle_db_error", side_effect=HTTPException(status_code=503, detail="db")) as handle,
+        pytest.raises(HTTPException),
+    ):
+        service.create_overlay(OverlayCreate(slug="ov1", base_profile_id="ICAO_2025", body=body))
+    handle.assert_called()
+
+    begin_conn.execute.side_effect = None
+    begin_conn.execute.return_value.rowcount = 0
+    upd = MagicMock()
+    upd.where.return_value = upd
+    upd.values.return_value = "u"
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "update", return_value=upd),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        pytest.raises(HTTPException) as upd_exc,
+    ):
+        service.update_overlay(PACK_ID, OverlayUpdate(shared=True))
+    assert upd_exc.value.status_code == 404
+
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+    ):
+        unchanged = service.update_overlay(PACK_ID, OverlayUpdate())
+        assert unchanged.slug == "ov1"
+
+    begin_conn.execute.side_effect = SQLAlchemyError("list boom")
+    engine.connect.return_value.__enter__.side_effect = SQLAlchemyError("list boom")
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        patch.object(svc, "or_", return_value="x"),
+        patch.object(svc, "_handle_db_error", side_effect=HTTPException(status_code=503, detail="db")),
+        pytest.raises(HTTPException),
+    ):
+        service.list_overlays()
+
+    engine.connect.return_value.__enter__.side_effect = None
+    engine.connect.return_value.__enter__.return_value = read_conn
+    begin_conn.execute.side_effect = None
+    begin_conn.execute.return_value.rowcount = 0
+    dele = MagicMock()
+    dele.where.return_value = "d"
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "delete", return_value=dele),
+        pytest.raises(HTTPException) as del_exc,
+    ):
+        service.delete_overlay(PACK_ID)
+    assert del_exc.value.status_code == 404
+
+    begin_conn.execute.side_effect = SQLAlchemyError("del boom")
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "delete", return_value=dele),
+        patch.object(svc, "_handle_db_error", side_effect=HTTPException(status_code=503, detail="db")),
+        pytest.raises(HTTPException),
+    ):
+        service.delete_overlay(PACK_ID)
+
+    begin_conn.execute.side_effect = SQLAlchemyError("upd boom")
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "update", return_value=upd),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        patch.object(svc, "_handle_db_error", side_effect=HTTPException(status_code=503, detail="db")),
+        pytest.raises(HTTPException),
+    ):
+        service.update_overlay(PACK_ID, OverlayUpdate(body={"y": 2}))

@@ -70,6 +70,30 @@ export interface RulePackCreateBody {
   standardReference?: string;
 }
 
+/** Persisted signed overlay. */
+export interface OverlayOut {
+  id: string;
+  user_id: string;
+  slug: string;
+  baseProfileId: string;
+  body: Record<string, unknown>;
+  signature: string;
+  shared: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OverlayListResponse {
+  items: OverlayOut[];
+}
+
+export interface OverlayCreateBody {
+  slug: string;
+  baseProfileId: string;
+  body?: Record<string, unknown>;
+  shared?: boolean;
+}
+
 /**
  * Fetch read-only ConversionProfile catalog.
  *
@@ -109,6 +133,36 @@ export async function createRulePack(
   body: RulePackCreateBody,
 ): Promise<RulePackOut> {
   const response = await fetch(apiUrl('/api/v1/profiles/rule-packs'), {
+    method: 'POST',
+    headers: authHeaders(accessToken),
+    body: JSON.stringify(body),
+  });
+  return parseJson(response);
+}
+
+/**
+ * List signed overlays for the signed-in user.
+ *
+ * @param accessToken - Bearer JWT
+ */
+export async function listOverlays(accessToken: string): Promise<OverlayListResponse> {
+  const response = await fetch(apiUrl('/api/v1/profiles/overlays'), {
+    headers: authHeaders(accessToken),
+  });
+  return parseJson(response);
+}
+
+/**
+ * Create a server-signed overlay.
+ *
+ * @param accessToken - Bearer JWT
+ * @param body - Overlay fields
+ */
+export async function createOverlay(
+  accessToken: string,
+  body: OverlayCreateBody,
+): Promise<OverlayOut> {
+  const response = await fetch(apiUrl('/api/v1/profiles/overlays'), {
     method: 'POST',
     headers: authHeaders(accessToken),
     body: JSON.stringify(body),

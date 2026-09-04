@@ -598,9 +598,9 @@
   rule-pack CRUD (absorbed #915), read-only contract inspector (ADR-038 fields), then
   **signed / operator-scoped overlays** persisted on product Postgres with JWT ownership
   (F30; Auth via Supabase JWT — not PostgREST writes). Phased in-cycle: **M1** rule-pack +
-  inspector; **M2** overlay persist + apply on convert. Does **not** collapse #1024 light
+  inspector; **M2** overlay persist + apply on convert (**landed**). Does **not** collapse #1024 light
   picker; does **not** bake live AFTN/WIS2 routes or credentials into profiles (ADR-021/029).
-  ADR-038 amend for overlay trust. Journey **UJ-072**. Status: **Planned**.
+  ADR-038 amend for overlay trust. Journey **UJ-072**. Status: **In progress** (M3 Playwright pending).
 - **Acceptance (EV-933 / #933 — F7.w)** — **approved** (`D-EV933-01-ac=1`):
   1. M1: rule-pack editor (id, profile, product, stage, severity, when, message,
      standardReference) + share/export; inspector shows ADR-038 staged settings read-only

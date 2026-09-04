@@ -1,14 +1,17 @@
 /**
- * ConversionProfile editor — catalog inspector + rule packs (UJ-072 / F7.w M1).
- * Requires sign-in. Overlays (M2) land in a follow-on milestone.
+ * ConversionProfile editor — catalog inspector, rule packs, signed overlays (UJ-072 / F7.w).
+ * Requires sign-in.
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import {
+  createOverlay,
   createRulePack,
   fetchProfileCatalog,
+  listOverlays,
   listRulePacks,
+  type OverlayOut,
   type ProfileCatalogEntry,
   type RulePackOut,
 } from '@/utils/conversionProfilesApi';
@@ -22,6 +25,14 @@ import {
   PROFILES_INSPECTOR_HEADING,
   PROFILES_INSPECTOR_LOADING,
   PROFILES_INSPECTOR_SELECT,
+  PROFILES_OVERLAY_BASE,
+  PROFILES_OVERLAY_BODY,
+  PROFILES_OVERLAY_HINT,
+  PROFILES_OVERLAY_SAVE,
+  PROFILES_OVERLAY_SLUG,
+  PROFILES_OVERLAYS_EMPTY,
+  PROFILES_OVERLAYS_HEADING,
+  PROFILES_OVERLAYS_LOADING,
   PROFILES_PACK_EXPORT,
   PROFILES_PACK_MESSAGE,
   PROFILES_PACK_PRODUCT,
@@ -57,10 +68,12 @@ interface AuthedProps {
 function ConversionProfileAuthed({ accessToken }: AuthedProps) {
   const [catalog, setCatalog] = useState<ProfileCatalogEntry[] | null>(null);
   const [packs, setPacks] = useState<RulePackOut[] | null>(null);
+  const [overlays, setOverlays] = useState<OverlayOut[] | null>(null);
   const [selectedId, setSelectedId] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [savingOverlay, setSavingOverlay] = useState(false);
 
   const [slug, setSlug] = useState('my-pack');
   const [profile, setProfile] = useState('ICAO_2025');
@@ -71,16 +84,22 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
   const [message, setMessage] = useState('');
   const [standardRef, setStandardRef] = useState('');
 
+  const [overlaySlug, setOverlaySlug] = useState('my-overlay');
+  const [overlayBase, setOverlayBase] = useState('ICAO_2025');
+  const [overlayBodyText, setOverlayBodyText] = useState('{}');
+
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const [cat, packList] = await Promise.all([
+      const [cat, packList, overlayList] = await Promise.all([
         fetchProfileCatalog(accessToken),
         listRulePacks(accessToken),
+        listOverlays(accessToken),
       ]);
       setCatalog(cat.profiles);
       setPacks(packList.items);
+      setOverlays(overlayList.items);
       const first = cat.profiles[0];
       if (!selectedId && first) {
         setSelectedId(first.id);
@@ -122,6 +141,32 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
       setError(errorMessage(err));
     } finally {
       setSaving(false);
+    }
+  };
+
+  const onSaveOverlay = async () => {
+    setSavingOverlay(true);
+    setError(null);
+    try {
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(overlayBodyText.trim() || '{}');
+      } catch {
+        throw new Error('Overlay JSON must be valid');
+      }
+      if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error('Overlay JSON must be an object');
+      }
+      await createOverlay(accessToken, {
+        slug: overlaySlug,
+        baseProfileId: overlayBase,
+        body: parsed as Record<string, unknown>,
+      });
+      await load();
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally {
+      setSavingOverlay(false);
     }
   };
 
@@ -322,6 +367,71 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
             {packs.map((p) => (
               <li key={p.id}>
                 <code>{p.slug}</code> — {p.profile} / {p.product} ({p.severity})
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
+
+      <Card className="space-y-3 p-4" data-testid="conversion-profiles-overlays">
+        <h2 className="text-sm font-medium">{PROFILES_OVERLAYS_HEADING}</h2>
+        <p className="text-xs text-gray-600 dark:text-gray-400">
+          {PROFILES_OVERLAY_HINT}
+        </p>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <label className="text-sm">
+            {PROFILES_OVERLAY_SLUG}
+            <input
+              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-overlay-slug"
+              value={overlaySlug}
+              onChange={(e) => setOverlaySlug(e.target.value)}
+            />
+          </label>
+          <label className="text-sm">
+            {PROFILES_OVERLAY_BASE}
+            <input
+              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-overlay-base"
+              value={overlayBase}
+              onChange={(e) => setOverlayBase(e.target.value)}
+            />
+          </label>
+          <label className="text-sm sm:col-span-2">
+            {PROFILES_OVERLAY_BODY}
+            <textarea
+              className="mt-1 w-full rounded border p-2 font-mono text-xs dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-overlay-body"
+              rows={4}
+              value={overlayBodyText}
+              onChange={(e) => setOverlayBodyText(e.target.value)}
+            />
+          </label>
+        </div>
+        <Button
+          type="button"
+          data-testid="conversion-profiles-overlay-save"
+          onClick={() => void onSaveOverlay()}
+          disabled={savingOverlay}
+        >
+          {savingOverlay ? (
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+          ) : null}
+          {PROFILES_OVERLAY_SAVE}
+        </Button>
+        {loading && overlays === null ? (
+          <p className="text-sm text-gray-500">{PROFILES_OVERLAYS_LOADING}</p>
+        ) : !overlays || overlays.length === 0 ? (
+          <p className="text-sm text-gray-500">{PROFILES_OVERLAYS_EMPTY}</p>
+        ) : (
+          <ul
+            className="space-y-1 text-sm"
+            data-testid="conversion-profiles-overlay-list"
+          >
+            {overlays.map((o) => (
+              <li key={o.id}>
+                <code>{o.slug}</code> — {o.baseProfileId}{' '}
+                <span className="text-gray-500">({o.id})</span>
               </li>
             ))}
           </ul>

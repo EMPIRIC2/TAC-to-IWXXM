@@ -107,12 +107,23 @@ Exchange-only profiles (`GLOBAL_AFS`, …) use `kind: exchange` and omit convers
 - Contract fields not yet machine-validated against runtime — #933 or #925 may add loader
 - `appliesTo.stations` / state filters unimplemented — document as future
 
-### Amend (EV-933 / #933 — Planned)
+### Amend (EV-933 / #933 — Accepted)
 
-Operator-scoped **signed overlays** may be persisted server-side (product Postgres + JWT
-ownership) and applied on convert. First-party catalog entries remain the default trust
-root; unsigned browser-uploaded packs stay **rejected**. Full normative amend lands with
-EV-933 Build (see [Context: conversion-profile-editor-933](../context/conversion-profile-editor-933.md)).
+Operator-scoped **signed overlays** are persisted on product Postgres (`DATABASE_URL`) with
+JWT ownership (`user_id` = Auth `sub`). Trust model:
+
+1. Client submits overlay body JSON over JWT (no client-supplied signature).
+2. Server canonicalizes the body, computes **HMAC-SHA256** with
+   `PROFILE_OVERLAY_HMAC_SECRET` over `user_id:base_profile_id:canonical_json`, and stores
+   the hex digest.
+3. Reads and convert apply **re-verify** the HMAC; missing or mismatched signature → 400.
+4. Convert accepts optional multipart `overlay_id`. When set, Bearer JWT is required and
+   ownership (or `shared=true`) is enforced; guests without `overlay_id` keep public convert.
+5. First-party catalog entries remain the default trust root. Unsigned browser-uploaded
+   schema/rule packs stay **rejected**. Overlay bodies must not carry credentials or
+   destination URIs (ADR-021 / ADR-029).
+
+See [Context: conversion-profile-editor-933](../context/conversion-profile-editor-933.md).
 
 ## References
 

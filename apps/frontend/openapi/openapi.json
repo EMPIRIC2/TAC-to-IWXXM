@@ -433,6 +433,12 @@
             "title": "Manual Text",
             "type": "string"
           },
+          "overlay_id": {
+            "default": "",
+            "description": "Optional signed ConversionProfile overlay id. When set, requires Bearer JWT and ownership (or shared); unknown or unauthorized ids are rejected.",
+            "title": "Overlay Id",
+            "type": "string"
+          },
           "preview": {
             "default": false,
             "description": "Soft-preview: best-effort IWXXM with failure spans on partial convert",
@@ -2945,6 +2951,157 @@
         "title": "Message",
         "type": "object"
       },
+      "OverlayCreate": {
+        "description": "Create body for a signed overlay (server issues the signature).",
+        "properties": {
+          "baseProfileId": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Baseprofileid",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          },
+          "shared": {
+            "default": false,
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "slug": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "baseProfileId"
+        ],
+        "title": "OverlayCreate",
+        "type": "object"
+      },
+      "OverlayListResponse": {
+        "description": "List of overlays for the caller.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OverlayOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "OverlayListResponse",
+        "type": "object"
+      },
+      "OverlayOut": {
+        "description": "Persisted signed overlay (owner-scoped).",
+        "properties": {
+          "baseProfileId": {
+            "title": "Baseprofileid",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "shared": {
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "signature": {
+            "title": "Signature",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "slug",
+          "baseProfileId",
+          "body",
+          "signature",
+          "shared",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "OverlayOut",
+        "type": "object"
+      },
+      "OverlayUpdate": {
+        "description": "Partial update for an overlay (re-signed on write).",
+        "properties": {
+          "baseProfileId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseprofileid"
+          },
+          "body": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body"
+          },
+          "shared": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shared"
+          }
+        },
+        "title": "OverlayUpdate",
+        "type": "object"
+      },
       "PackageIssueModel": {
         "description": "HTTP DTO for an iwxxm-validate package finding (additive on /validate).",
         "properties": {
@@ -5294,6 +5451,11 @@
             "description": "Validation Error"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Convert",
         "tags": [
           "Conversion",
@@ -6532,6 +6694,224 @@
           }
         ],
         "summary": "Get Catalog",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/overlays": {
+      "get": {
+        "description": "List overlays owned by the caller (and shared overlays).",
+        "operationId": "list_overlays_api_v1_profiles_overlays_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverlayListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Overlays",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "post": {
+        "description": "Create a server-signed overlay.",
+        "operationId": "create_overlay_api_v1_profiles_overlays_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OverlayCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverlayOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Overlay",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/overlays/{overlay_id}": {
+      "delete": {
+        "description": "Delete an owned overlay.",
+        "operationId": "delete_overlay_api_v1_profiles_overlays__overlay_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "overlay_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Overlay Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Overlay",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "get": {
+        "description": "Fetch one overlay.",
+        "operationId": "get_overlay_api_v1_profiles_overlays__overlay_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "overlay_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Overlay Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverlayOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Overlay",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "patch": {
+        "description": "Update an owned overlay (re-signed server-side).",
+        "operationId": "patch_overlay_api_v1_profiles_overlays__overlay_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "overlay_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Overlay Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OverlayUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverlayOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Overlay",
         "tags": [
           "Conversion Profiles"
         ]

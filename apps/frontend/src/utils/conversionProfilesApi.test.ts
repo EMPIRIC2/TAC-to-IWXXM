@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  createOverlay,
   createRulePack,
   fetchProfileCatalog,
+  listOverlays,
   listRulePacks,
 } from './conversionProfilesApi';
 
@@ -78,6 +80,48 @@ describe('conversionProfilesApi', () => {
     expect(row.slug).toBe('pack-a');
     expect(fetchMock).toHaveBeenCalledWith(
       'http://api.test/api/v1/profiles/rule-packs',
+      expect.objectContaining({ method: 'POST' }),
+    );
+  });
+
+  it('lists overlays', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ items: [] }),
+    } as Response);
+    const result = await listOverlays('tok');
+    expect(result.items).toEqual([]);
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://api.test/api/v1/profiles/overlays',
+      expect.any(Object),
+    );
+  });
+
+  it('creates an overlay via POST', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 201,
+      json: async () => ({
+        id: 'ov-1',
+        user_id: 'u',
+        slug: 'ov-a',
+        baseProfileId: 'ICAO_2025',
+        body: {},
+        signature: 'sig',
+        shared: false,
+        created_at: '',
+        updated_at: '',
+      }),
+    } as Response);
+    const row = await createOverlay('tok', {
+      slug: 'ov-a',
+      baseProfileId: 'ICAO_2025',
+      body: { x: 1 },
+    });
+    expect(row.slug).toBe('ov-a');
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://api.test/api/v1/profiles/overlays',
       expect.objectContaining({ method: 'POST' }),
     );
   });

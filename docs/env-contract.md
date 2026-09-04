@@ -113,6 +113,7 @@ Do not point `LIVE_*` or `config/prod.json` at onrender.com.
 | CORS | `["http://localhost:18000"]` |
 | `DATABASE_URL` | Local/DO Postgres for session + F8 integration tests |
 | Auth | Optional; use project Auth + publishable key for UJ-046 |
+| `PROFILE_OVERLAY_HMAC_SECRET` | Required to create/verify ConversionProfile overlays (EV-933) |
 
 ### CI (GitHub Actions)
 

@@ -42,6 +42,13 @@ import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { DisseminationDrawer } from './DisseminationDrawer';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
+import { listOverlays, type OverlayOut } from '@/utils/conversionProfilesApi';
+import {
+  CONVERT_OVERLAY_HELP,
+  CONVERT_OVERLAY_LABEL,
+  CONVERT_OVERLAY_NONE,
+} from '@/utils/conversionProfilesCopy';
+import { convertOverlayFields } from '@/utils/convertOverlayFields';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
 import { PrivacySettingsDialog } from './PrivacySettingsDialog';
@@ -236,6 +243,8 @@ interface ConversionParams {
   product: TacProductSelection;
   profile: IwxxmProfile;
   exchangeProfile: ExchangeProfileId;
+  /** Optional signed ConversionProfile overlay UUID (empty = none). */
+  overlayId: string;
   iwxxmVersion: IWXXMVersion;
   strictValidation: boolean;
   includeNilReasons: boolean;
@@ -336,12 +345,14 @@ export function FileConverter({
     product: 'auto',
     profile: DEFAULT_SEMANTIC_PROFILE,
     exchangeProfile: DEFAULT_EXCHANGE_PROFILE,
+    overlayId: '',
     iwxxmVersion: DEFAULT_IWXXM_VERSION,
     strictValidation: true,
     includeNilReasons: true,
     onError: 'warn',
     logLevel: 'INFO',
   });
+  const [signedOverlays, setSignedOverlays] = useState<OverlayOut[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const massFolderInputRef = useRef<HTMLInputElement>(null);
   const massZipInputRef = useRef<HTMLInputElement>(null);
@@ -355,6 +366,34 @@ export function FileConverter({
   useEffect(() => {
     applyWebkitDirectoryAttrs(massFolderInputRef.current);
   }, []);
+
+  /* eslint-disable react-hooks/set-state-in-effect -- load signed overlays when auth token appears/clears */
+  useEffect(() => {
+    const token = accessToken?.trim();
+    if (!token) {
+      setSignedOverlays([]);
+      setConversionParams((prev) =>
+        prev.overlayId ? { ...prev, overlayId: '' } : prev,
+      );
+      return;
+    }
+    let cancelled = false;
+    void listOverlays(token)
+      .then((res) => {
+        if (!cancelled) {
+          setSignedOverlays(res.items);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setSignedOverlays([]);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [accessToken]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const buildSnapshot = (
     overrides?: Partial<ConverterSnapshot>,
@@ -432,6 +471,7 @@ export function FileConverter({
             product: (prefs.product as TacProductSelection) || 'auto',
             profile,
             exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
+            overlayId: '',
             iwxxmVersion,
             strictValidation: prefs.strictValidation ?? true,
             includeNilReasons: prefs.includeNilReasons ?? true,
@@ -555,6 +595,11 @@ export function FileConverter({
         } else if (typeof params.exchangeProfile === 'string') {
           next.exchangeProfile = coerceExchangeProfile(params.exchangeProfile);
         }
+        if (typeof params.overlay_id === 'string') {
+          next.overlayId = params.overlay_id;
+        } else if (typeof params.overlayId === 'string') {
+          next.overlayId = params.overlayId;
+        }
         return next;
       });
     }
@@ -593,6 +638,7 @@ export function FileConverter({
           product: (prefs.product as TacProductSelection) || 'auto',
           profile,
           exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
+          overlayId: '',
           iwxxmVersion,
           strictValidation: prefs.strictValidation ?? true,
           includeNilReasons: prefs.includeNilReasons ?? true,
@@ -975,6 +1021,7 @@ export function FileConverter({
         extensions: nationalExtensionsForProfile(conversionParams.profile),
         exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
         exchangeProfile: conversionParams.exchangeProfile,
+        ...convertOverlayFields(conversionParams.overlayId, accessToken),
       });
 
       console.log('[FileConverter] Conversion response:', response);
@@ -1601,6 +1648,7 @@ export function FileConverter({
           extensions: nationalExtensionsForProfile(conversionParams.profile),
           exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
           exchangeProfile: conversionParams.exchangeProfile,
+          ...convertOverlayFields(conversionParams.overlayId, accessToken),
           signal,
         });
         if (signal.aborted) {
@@ -1646,6 +1694,8 @@ export function FileConverter({
       conversionParams.profile,
       conversionParams.iwxxmVersion,
       conversionParams.exchangeProfile,
+      conversionParams.overlayId,
+      accessToken,
       propagateResiduals,
     ],
   );
@@ -2164,6 +2214,58 @@ export function FileConverter({
                         </option>
                       ))}
                     </select>
+                    {Boolean(accessToken?.trim()) && (
+                      <>
+                        <div className="flex shrink-0 items-center gap-1">
+                          <Label
+                            htmlFor="param-signed-overlay"
+                            className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                          >
+                            {CONVERT_OVERLAY_LABEL}
+                          </Label>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                aria-label={`About ${CONVERT_OVERLAY_LABEL}`}
+                                data-testid="signed-overlay-help-icon"
+                              >
+                                <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="bottom"
+                              className="max-w-xs text-balance"
+                            >
+                              {CONVERT_OVERLAY_HELP}
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <select
+                          id="param-signed-overlay"
+                          aria-label={CONVERT_OVERLAY_LABEL}
+                          data-testid="signed-overlay-select"
+                          value={conversionParams.overlayId}
+                          disabled={isReadOnly}
+                          onChange={(e) => {
+                            const overlayId = e.target.value;
+                            setConversionParams((prev) => ({
+                              ...prev,
+                              overlayId,
+                            }));
+                          }}
+                          className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                        >
+                          <option value="">{CONVERT_OVERLAY_NONE}</option>
+                          {signedOverlays.map((o) => (
+                            <option key={o.id} value={o.id}>
+                              {o.slug} ({o.baseProfileId})
+                            </option>
+                          ))}
+                        </select>
+                      </>
+                    )}
                     <GoldenExamplesSelect
                       disabled={isReadOnly}
                       onSelectExample={handleLoadGoldenExample}

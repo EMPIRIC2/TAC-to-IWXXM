@@ -5,7 +5,20 @@
 
 export const PROFILES_EDITOR_TITLE = 'Conversion profiles';
 export const PROFILES_EDITOR_SUBTITLE =
-  'Inspect catalog profiles and manage lint rule packs for your account.';
+  'Inspect catalog profiles, manage lint rule packs, and save signed overlays for convert.';
+export const PROFILES_OVERLAYS_HEADING = 'Signed overlays';
+export const PROFILES_OVERLAYS_LOADING = 'Loading overlays…';
+export const PROFILES_OVERLAYS_EMPTY = 'No overlays yet.';
+export const PROFILES_OVERLAY_SLUG = 'Overlay id';
+export const PROFILES_OVERLAY_BASE = 'Base profile';
+export const PROFILES_OVERLAY_BODY = 'Overlay JSON';
+export const PROFILES_OVERLAY_SAVE = 'Save overlay';
+export const PROFILES_OVERLAY_HINT =
+  'Overlays are signed on the server. Select an overlay id when converting to apply it.';
+export const CONVERT_OVERLAY_LABEL = 'Signed overlay';
+export const CONVERT_OVERLAY_NONE = 'None';
+export const CONVERT_OVERLAY_HELP =
+  'Optional saved overlay for this convert. Requires sign-in. Does not replace Profile.';
 export const PROFILES_EDITOR_LOGIN_REQUIRED =
   'Sign in to open the conversion profiles editor.';
 export const PROFILES_EDITOR_SIGN_IN = 'Sign in';

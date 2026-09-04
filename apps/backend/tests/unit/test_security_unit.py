@@ -70,6 +70,41 @@ async def test_verify_supabase_token_happy(
     assert claims["sub"] == "u1"
 
 
+async def test_verify_optional_absent() -> None:
+    assert await sec.verify_optional_supabase_token(None) is None
+
+
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_verify_optional_present(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("SUPABASE_URL", "https://example.supabase.co")
+    with patch.object(sec, "verify_access_token", return_value={"sub": "u1"}):
+        claims = await sec.verify_optional_supabase_token(
+            HTTPAuthorizationCredentials(scheme="Bearer", credentials="tok")
+        )
+    assert claims is not None
+    assert claims["sub"] == "u1"
+
+
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_verify_optional_invalid_returns_none(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("SUPABASE_URL", "https://example.supabase.co")
+    with patch.object(
+        sec,
+        "verify_access_token",
+        side_effect=JwtVerificationError("bad"),
+    ):
+        claims = await sec.verify_optional_supabase_token(
+            HTTPAuthorizationCredentials(scheme="Bearer", credentials="tok")
+        )
+    assert claims is None
+
+
 @pytest.mark.unit
 @pytest.mark.asyncio
 async def test_fetch_jwks_removed() -> None:

@@ -485,6 +485,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/profiles/overlays": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Overlays
+         * @description List overlays owned by the caller (and shared overlays).
+         */
+        get: operations["list_overlays_api_v1_profiles_overlays_get"];
+        put?: never;
+        /**
+         * Create Overlay
+         * @description Create a server-signed overlay.
+         */
+        post: operations["create_overlay_api_v1_profiles_overlays_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/overlays/{overlay_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Overlay
+         * @description Fetch one overlay.
+         */
+        get: operations["get_overlay_api_v1_profiles_overlays__overlay_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Overlay
+         * @description Delete an owned overlay.
+         */
+        delete: operations["delete_overlay_api_v1_profiles_overlays__overlay_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Overlay
+         * @description Update an owned overlay (re-signed server-side).
+         */
+        patch: operations["patch_overlay_api_v1_profiles_overlays__overlay_id__patch"];
+        trace?: never;
+    };
     "/api/v1/profiles/rule-packs": {
         parameters: {
             query?: never;
@@ -1549,6 +1601,12 @@ export interface components {
              * @default
              */
             manual_text: string;
+            /**
+             * Overlay Id
+             * @description Optional signed ConversionProfile overlay id. When set, requires Bearer JWT and ownership (or shared); unknown or unauthorized ids are rejected.
+             * @default
+             */
+            overlay_id: string;
             /**
              * Preview
              * @description Soft-preview: best-effort IWXXM with failure spans on partial convert
@@ -2944,6 +3002,85 @@ export interface components {
         Message: {
             /** Message */
             message: string;
+        };
+        /**
+         * OverlayCreate
+         * @description Create body for a signed overlay (server issues the signature).
+         */
+        OverlayCreate: {
+            /** Baseprofileid */
+            baseProfileId: string;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slug */
+            slug: string;
+        };
+        /**
+         * OverlayListResponse
+         * @description List of overlays for the caller.
+         */
+        OverlayListResponse: {
+            /** Items */
+            items: components["schemas"]["OverlayOut"][];
+        };
+        /**
+         * OverlayOut
+         * @description Persisted signed overlay (owner-scoped).
+         */
+        OverlayOut: {
+            /** Baseprofileid */
+            baseProfileId: string;
+            /** Body */
+            body: {
+                [key: string]: unknown;
+            };
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Shared */
+            shared: boolean;
+            /** Signature */
+            signature: string;
+            /** Slug */
+            slug: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
+         * OverlayUpdate
+         * @description Partial update for an overlay (re-signed on write).
+         */
+        OverlayUpdate: {
+            /** Baseprofileid */
+            baseProfileId?: string | null;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            } | null;
+            /** Shared */
+            shared?: boolean | null;
         };
         /**
          * PackageIssueModel
@@ -4915,6 +5052,154 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProfileCatalogResponse"];
+                };
+            };
+        };
+    };
+    list_overlays_api_v1_profiles_overlays_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverlayListResponse"];
+                };
+            };
+        };
+    };
+    create_overlay_api_v1_profiles_overlays_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OverlayCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverlayOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_overlay_api_v1_profiles_overlays__overlay_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                overlay_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverlayOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_overlay_api_v1_profiles_overlays__overlay_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                overlay_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_overlay_api_v1_profiles_overlays__overlay_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                overlay_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OverlayUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverlayOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

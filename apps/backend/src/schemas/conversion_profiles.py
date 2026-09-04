@@ -84,3 +84,46 @@ class RulePackListResponse(BaseModel):
     """List of rule packs for the caller."""
 
     items: list[RulePackOut]
+
+
+class OverlayCreate(BaseModel):
+    """Create body for a signed overlay (server issues the signature)."""
+
+    slug: str = Field(min_length=1, max_length=128)
+    base_profile_id: str = Field(min_length=1, max_length=64, alias="baseProfileId")
+    body: dict[str, Any] = Field(default_factory=dict)
+    shared: bool = False
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class OverlayUpdate(BaseModel):
+    """Partial update for an overlay (re-signed on write)."""
+
+    base_profile_id: str | None = Field(default=None, max_length=64, alias="baseProfileId")
+    body: dict[str, Any] | None = None
+    shared: bool | None = None
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class OverlayOut(BaseModel):
+    """Persisted signed overlay (owner-scoped)."""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    id: UUID
+    user_id: UUID
+    slug: str
+    base_profile_id: str = Field(serialization_alias="baseProfileId")
+    body: dict[str, Any]
+    signature: str
+    shared: bool
+    created_at: datetime
+    updated_at: datetime
+
+
+class OverlayListResponse(BaseModel):
+    """List of overlays for the caller."""
+
+    items: list[OverlayOut]
