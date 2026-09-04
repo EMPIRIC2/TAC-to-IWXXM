@@ -17,6 +17,13 @@ on:
         options:
           - production
         default: production
+      ops:
+        description: 'Optional one-shot ops (does not Deploy)'
+        type: choice
+        options:
+          - none
+          - ev933-staging
+        default: none
 
 env:
   REGISTRY: ghcr.io
@@ -36,6 +43,43 @@ env:
   FRONTEND_VITE_API_BASE_URL: https://api.tac-to-iwxxm.com
 
 jobs:
+  # EV-933 — staging Alembic head + PROFILE_OVERLAY_HMAC_SECRET (workflow_dispatch ops).
+  ops-ev933-staging:
+    name: Ops EV-933 staging (Alembic + HMAC)
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.ops == 'ev933-staging'
+    environment: staging
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - name: Configure kubectl
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        run: |
+          set -euo pipefail
+          if [ -z "${KUBE_CONFIG:-}" ]; then
+            echo "::error::Missing staging secret KUBE_CONFIG"
+            exit 1
+          fi
+          mkdir -p "${HOME}/.kube"
+          if ! printf '%s' "${KUBE_CONFIG}" | base64 --decode > "${HOME}/.kube/config" 2>/dev/null; then
+            echo "::error::KUBE_CONFIG is not valid base64"
+            exit 1
+          fi
+          chmod 600 "${HOME}/.kube/config"
+          if grep -qE 'command:[[:space:]]*doctl' "${HOME}/.kube/config"; then
+            echo "::error::KUBE_CONFIG uses doctl exec auth; use a ServiceAccount token kubeconfig"
+            exit 1
+          fi
+          kubectl version --client
+      - name: Run EV-933 staging ops
+        env:
+          DOKS_NAMESPACE: metar-iwxxm-staging
+        run: bash scripts/deploy/doks_staging_ev933_ops.sh
+
   # EV-043 / TC-F30-012 — PRs to main must promote from stage after Staging smoke.
   staging-gate:
     runs-on: ubuntu-latest
@@ -67,6 +111,7 @@ jobs:
   # stage→main). Format/config remain local pre-commit (EV-036); Compose integration
   # stays local pre-push only. Unit matrix + coverage remain below.
   lint:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Lint
     steps:
@@ -101,6 +146,7 @@ jobs:
         run: make lint
 
   typecheck:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Typecheck
     steps:
@@ -135,6 +181,7 @@ jobs:
         run: make typecheck
 
   test:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Test (${{ matrix.package }})
     strategy:
@@ -336,6 +383,7 @@ jobs:
 
   # EV-080 / #1077 — scripts Python cov + bats-core (D-TP080-2/3).
   scripts-coverage:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Scripts coverage (py + bats)
     steps:
@@ -541,6 +589,7 @@ jobs:
 
   # F30 / EV-031 T2.3 — Postgres service + idempotent alembic upgrade head (TC-EV031-002).
   test-alembic:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Test (alembic / TC-EV031-002)
     services:
@@ -589,6 +638,7 @@ jobs:
   # Matrix legs get GH name suffixes; required check is rust-crates-gate below.
   # ============================================================================
   rust-crates:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Rust crate (${{ matrix.package }})
     strategy:
@@ -640,7 +690,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Rust crates (fmt/clippy/test)
     needs: [rust-crates]
-    if: always()
+    if: >
+      always() &&
+      !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging')
     steps:
       - name: Require rust-crates matrix success
         run: |
@@ -653,6 +705,7 @@ jobs:
   # Job id stays tac2iwxxm-native for EV-036 contract tests; display names are locked.
   # ============================================================================
   tac2iwxxm-native:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: ${{ matrix.check_name }}
     strategy:
@@ -718,6 +771,7 @@ jobs:
   # Locked check name for rulesets: Converter perf (tac2iwxxm)
   # ============================================================================
   converter-perf:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Converter perf (tac2iwxxm)
     steps:
@@ -745,6 +799,7 @@ jobs:
   # disableAuth=true, so no Supabase secrets are required (mock session path).
   # ============================================================================
   e2e-smoke:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: E2E Smoke (Playwright)
     env:
@@ -863,9 +918,11 @@ jobs:
     name: Deploy (${{ github.ref_name }})
     needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native, converter-perf, e2e-smoke]
     if: |
+      (github.event.inputs.ops != 'ev933-staging') && (
       (github.event_name == 'push' && github.ref == 'refs/heads/stage') ||
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(github.ref_name, 'v') && endsWith(github.ref_name, '-deploy')) ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'production')
+      )
     environment: ${{ github.ref == 'refs/heads/stage' && 'staging' || 'production' }}
     permissions:
       contents: read

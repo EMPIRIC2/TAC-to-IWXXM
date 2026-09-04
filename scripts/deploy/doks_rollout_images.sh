@@ -33,7 +33,10 @@ echo "  metar-api      -> ${API_IMG}"
 echo "  metar-frontend -> ${FE_IMG}"
 echo "  metar-worker   -> ${WORKER_IMG}"
 
-kubectl -n "${NS}" set image "deploy/metar-api" "api=${API_IMG}"
+# Keep alembic initContainer on the same backend tag as api (EV-933: otherwise
+# new revisions never apply because init stayed on a stale pin like ev031-doks).
+kubectl -n "${NS}" set image "deploy/metar-api" \
+  "api=${API_IMG}" "alembic-upgrade=${API_IMG}"
 kubectl -n "${NS}" set image "deploy/metar-frontend" "frontend=${FE_IMG}"
 kubectl -n "${NS}" set image "deploy/metar-worker" "worker=${WORKER_IMG}"
 
