@@ -40,6 +40,7 @@
 | `scripts/deploy/doks_host_header_smoke.sh` | `tests/bats/deploy/doks_host_header_smoke.bats` |
 | `scripts/deploy/doks_provisional_live_env.sh` | `tests/bats/deploy/doks_provisional_live_env.bats` |
 | `scripts/deploy/doks_rollout_images.sh` | `tests/bats/deploy/doks_rollout_images.bats` |
+| `scripts/deploy/doks_staging_ev933_ops.sh` | `tests/bats/deploy/doks_staging_ev933_ops.bats` |
 | `scripts/deploy/doks_worker_poller_preflight.sh` | `tests/bats/deploy/doks_worker_poller_preflight.bats` |
 | `scripts/deploy/run_mock_byoc_all_sinks.sh` | `tests/bats/deploy/run_mock_byoc_all_sinks.bats` |
 | `scripts/deploy/run_mock_byoc_compose_smoke.sh` | `tests/bats/deploy/run_mock_byoc_compose_smoke.bats` |
