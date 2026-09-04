@@ -5,6 +5,7 @@ resources:
   - ../../base
   - redirect-apex.yaml
   - ingress-frontend-apex.yaml
+  - role-github-actions-deploy.yaml
 patches:
   - path: patch-ingress-api.yaml
   - path: patch-ingress-frontend.yaml

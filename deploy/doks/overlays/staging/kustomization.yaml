@@ -5,6 +5,7 @@ resources:
   - ../../base
   - redirect-staging-short.yaml
   - ingress-frontend-staging-short.yaml
+  - role-github-actions-deploy.yaml
 patches:
   - target:
       kind: Namespace
