@@ -1840,7 +1840,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 
 - **Level**: Ops / CI
 - **Objective**: Prod Deploy runs only for `vYYYY.MM.DD-deploy` tag pushes (pattern
-  `v*-*-deploy`) or `workflow_dispatch` targeting production — after Deploy `needs`
+  `v*-deploy`) or `workflow_dispatch` targeting production — after Deploy `needs`
   including `e2e-smoke` pass. Solo-dev approval = tag/dispatch (no Environment reviewers).
 - **Pass criteria**: Workflow `on.push.tags` / `workflow_dispatch` documented; Deploy job
   `if` excludes bare `main` push; `needs` includes `e2e-smoke`; ADR-034 + deploy.md match
@@ -1870,8 +1870,9 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### TC-EV051-004: deploy tag triggers prod Deploy
 
 - **Level**: Ops / CI
-- **Objective**: Tag `v*-*-deploy` triggers prod Deploy path
-- **Pass criteria**: `on.push.tags` includes pattern; Deploy resolves `env_role=prod`
+- **Objective**: Tag `v*-deploy` (e.g. `v2026.09.04-deploy`) triggers prod Deploy path
+- **Pass criteria**: `on.push.tags` includes `v*-deploy` (not the two-hyphen `v*-*-deploy`
+  glob, which misses dotted date tags); Deploy resolves `env_role=prod`
 - **Source**: EV-051 AC4; TC-F30-014
 
 ### TC-EV051-005: workflow_dispatch prod escape hatch

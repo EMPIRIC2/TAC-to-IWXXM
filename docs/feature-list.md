@@ -1668,7 +1668,7 @@
      **Staging TAC-to-IWXXM**; prod cluster + PG under **TAC-to-IWXXM**. Amends ADR-034
      (supersedes same-cluster two-namespace staging).
   8. **Tag-driven prod (EV-051 / S060)**: Push to `main` runs full CI **without** prod Deploy.
-     Prod Deploy runs after full CI on `vYYYY.MM.DD-deploy` tag push (pattern `v*-*-deploy`)
+     Prod Deploy runs after full CI on `vYYYY.MM.DD-deploy` tag push (pattern `v*-deploy`)
      or optional `workflow_dispatch`. Deploy `needs` include `e2e-smoke`. Solo-dev “approval”
      = cutting the deploy tag (or dispatch).
 - **Convert APIs**: Remain public (no JWT) for convert/lint/validate/disseminate (`D-S038-F30`).
