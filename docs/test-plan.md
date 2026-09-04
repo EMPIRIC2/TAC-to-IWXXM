@@ -4974,6 +4974,9 @@ No live `codes.wmo.int` HTML in PR CI.
 
 - **Level**: T0 / T2 / T3 (H4–H5 when FE deploy)
 - **Source**: F7.w EV-933; #933; ADR-038 amend; UJ-072
+- **Automation**: `apps/e2e/uj072-conversion-profiles.e2e.spec.ts` (stubbed JWT + APIs).
+  **Live H4–H5** against stage FE: deferred until PR #1138 merges to `stage` and FE
+  deploy includes Conversion profiles nav (T3.2 evidence).
 
 ### F16–F19 verify/deploy gate
 
