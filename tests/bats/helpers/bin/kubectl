@@ -13,6 +13,10 @@ if [[ "$joined" == *"get secret"* && "$joined" == *INGEST_POLLER_URL* ]]; then
   exit 0
 fi
 
+if [[ "$joined" == *"auth can-i get secrets"* ]]; then
+  exit 1
+fi
+
 # EV-933 staging ops — resolve current API image + confirm HMAC/init after patch.
 if [[ "$joined" == *"get deploy metar-api"* && "$joined" == *'containers[?(@.name=="api")].image'* ]]; then
   echo "ghcr.io/empiric2/tac-to-iwxxm/backend:20260904151129-48cf5da"

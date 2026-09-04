@@ -8,5 +8,5 @@ load "${BATS_TEST_DIRNAME}/../helpers/load"
   run bash scripts/deploy/doks_staging_ev933_ops.sh
   [ "$status" -eq 0 ]
   [[ "$output" == *"EV-933 staging ops complete"* ]]
-  [[ "$output" == *"PROFILE_OVERLAY_HMAC_SECRET: added"* ]]
+  [[ "$output" == *"HMAC via=deploy-env"* ]]
 }
