@@ -126,7 +126,7 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
   };
 
   const onExport = () => {
-    if (!packs || packs.length === 0) return;
+    // Invoked only when the export control is enabled (packs loaded and non-empty).
     const blob = new Blob([JSON.stringify(packs, null, 2)], {
       type: 'application/json',
     });

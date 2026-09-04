@@ -18,9 +18,6 @@ async function parseJson<T>(response: Response): Promise<T> {
       typeof error.detail === 'string' ? error.detail : response.statusText;
     throw new Error(detail || `HTTP ${response.status}`);
   }
-  if (response.status === 204) {
-    return undefined as T;
-  }
   return response.json() as Promise<T>;
 }
 
