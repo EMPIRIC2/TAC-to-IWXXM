@@ -1,4 +1,4 @@
-"""BUG-2026-06-25 — work-session soft-delete 502 (RLS 42501).
+"""BUG-2026-06-25 - work-session soft-delete 502 (RLS 42501).
 
 PostgreSQL enforces a SELECT policy's USING expression as an implicit WITH CHECK
 on UPDATE. The original ``metar_work_sessions_select_own`` policy required
@@ -42,7 +42,7 @@ def test_select_policy_does_not_gate_on_deleted_at() -> None:
     body = _select_policy_body(SOFT_DELETE_MIGRATION.read_text(encoding="utf-8"))
     assert body is not None, "SELECT policy not found in soft-delete migration"
     assert "deleted_at" not in body.lower(), (
-        "SELECT policy USING must not reference deleted_at — it is enforced as a "
+        "SELECT policy USING must not reference deleted_at - it is enforced as a "
         "WITH CHECK on UPDATE and blocks soft-delete (BUG-2026-06-25)"
     )
 

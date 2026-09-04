@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:iwxxm-ca="https://dd.meteo.gc.ca/today/aviation/iwxxm/" elementFormDefault="qualified" targetNamespace="https://dd.meteo.gc.ca/today/aviation/iwxxm/">
+  <import namespace="http://icao.int/iwxxm/3.0" schemaLocation="http://schemas.wmo.int/iwxxm/3.0.0/iwxxm.xsd" />
+  <import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd" />
+  <element name="phenomenon" type="iwxxm-ca:wxPhenomenonType" xmlns="http://www.w3.org/2001/XMLSchema">
+    <annotation>
+      <documentation>Warning for Canadian-specific weather phenomena.</documentation>
+    </annotation>
+  </element>
+  <complexType name="wxPhenomenonType" xmlns="http://www.w3.org/2001/XMLSchema">
+    <annotation>
+      <documentation>In Canada, a SIGMET can be issued for thunderstorms with the specific mention of tornado or possible tornado. A SIGMET can also be issued for low level wind shear. See MANAIR Appendix D.5 In Canada, an AIRMET can be issued for a combination of TCU and TS. We can also issue an AIRMET combining SFC VIS and CLD (either BKN or OVC). See MANAIR Appendix E.5 https://publications.gc.ca/site/eng/9.941904/publication.html.</documentation>
+      <appinfo>
+        <vocabulary>https://publications.gc.ca/site/eng/9.941904/publication.html</vocabulary>
+        <extensibility>none</extensibility>
+      </appinfo>
+    </annotation>
+    <complexContent>
+      <extension base="gml:ReferenceType"></extension>
+    </complexContent>
+  </complexType>
+  <complexType name="wxPhenomenonPropertyType" xmlns="http://www.w3.org/2001/XMLSchema">
+    <sequence>
+      <element ref="iwxxm-ca:phenomenon" />
+    </sequence>
+    <attributeGroup ref="gml:OwnershipAttributeGroup" />
+  </complexType>
+  <element name="humanReadableText" type="string" xmlns="http://www.w3.org/2001/XMLSchema">
+    <annotation>
+      <documentation>In TAF, human readable text describes any remarks applicable the aerodrome forecast. MANAIR section 2.6.17 https://publications.gc.ca/site/eng/9.941904/publication.html&lt;/documentation. In SIGMET and AIRMET, human readable text provides the coordinate points describing an area with respect to an aviation reference site (ex: airport). As well, any other information found in the RMK line of the TAC AIRMET and SIGMET is provided as human readable text. See MANAIR sections 5.8.3.4. and 5.8.3.8 for SIGMET annd 6.8.3.4. and 6.8.3.8 for AIRMET. https://publications.gc.ca/site/eng/9.941904/publication.html&lt;/documentation&gt;</documentation>
+    </annotation>
+  </element>
+</schema>

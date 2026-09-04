@@ -1,4 +1,6 @@
-"""Unit tests for iwxxm_validation.py schemas – 0% coverage target."""
+import pytest
+
+"""Unit tests for iwxxm_validation.py schemas - 0% coverage target."""
 
 from src.schemas.iwxxm_validation import (
     SUPPORTED_IWXXM_VERSIONS,
@@ -93,20 +95,12 @@ class TestValidationHelpers:
         assert extract_iwxxm_namespace_version("http://icao.int/iwxxm/2023-1") == "2023-1"
 
     def test_extract_iwxxm_namespace_version_invalid_prefix(self):
-        try:
+        with pytest.raises(ValueError, match="Invalid IWXXM namespace"):
             extract_iwxxm_namespace_version("http://example.org/not-iwxxm/2023-1")
-        except ValueError as exc:
-            assert "Invalid IWXXM namespace" in str(exc)
-        else:
-            raise AssertionError("Expected ValueError")
 
     def test_extract_iwxxm_namespace_version_unsupported(self):
-        try:
+        with pytest.raises(ValueError, match="Unsupported IWXXM version"):
             extract_iwxxm_namespace_version("http://icao.int/iwxxm/2099-1")
-        except ValueError as exc:
-            assert "Unsupported IWXXM version" in str(exc)
-        else:
-            raise AssertionError("Expected ValueError")
 
     def test_get_namespace_version_success(self):
         xml = '<root xmlns:iwxxm="http://icao.int/iwxxm/2025-2" />'
@@ -117,18 +111,10 @@ class TestValidationHelpers:
         assert get_namespace_version(xml) == "3.0"
 
     def test_get_namespace_version_missing_namespace_raises(self):
-        try:
+        with pytest.raises(ValueError, match="namespace not found"):
             get_namespace_version("<root/>")
-        except ValueError as exc:
-            assert "namespace not found" in str(exc)
-        else:
-            raise AssertionError("Expected ValueError")
 
     def test_get_namespace_version_unsupported_raises(self):
         xml = '<root xmlns:iwxxm="http://icao.int/iwxxm/2099-1" />'
-        try:
+        with pytest.raises(ValueError, match="Unsupported IWXXM version"):
             get_namespace_version(xml)
-        except ValueError as exc:
-            assert "Unsupported IWXXM version" in str(exc)
-        else:
-            raise AssertionError("Expected ValueError")

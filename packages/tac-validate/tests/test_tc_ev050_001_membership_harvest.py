@@ -1,4 +1,4 @@
-"""TC-EV050-001 / AC1 — offline harvest → membership sets (S059 / EV-050)."""
+"""TC-EV050-001 / AC1 - offline harvest → membership sets (S059 / EV-050)."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ import urllib.request
 from pathlib import Path
 
 import pytest
-
 from tac_validate import membership
 
 REPO = Path(__file__).resolve().parents[3]
@@ -43,7 +42,7 @@ def test_harvest_is_offline_only(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_committed_artifact_loads_and_matches_harvest() -> None:
     path = membership.membership_artifact_path()
-    assert path.is_file(), "missing wmo_membership.json — run make membership-regen"
+    assert path.is_file(), "missing wmo_membership.json - run make membership-regen"
     membership.load_membership_sets.cache_clear()
     loaded = membership.load_membership_sets()
     harvested = membership.harvest_membership(root=REPO)
@@ -82,7 +81,7 @@ def test_write_membership_artifact_harvests_when_sets_omitted(tmp_path: Path) ->
 
 
 def test_csv_notations_missing_file() -> None:
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError, match=r".*"):
         membership._csv_notations(REPO / "no-such-file.csv")
 
 
@@ -101,7 +100,7 @@ def test_csv_notations_empty(tmp_path: Path) -> None:
 
 
 def test_rdf_notations_missing_file() -> None:
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError, match=r".*"):
         membership._rdf_notations(
             REPO / "missing.rdf",
             register_uri="http://codes.wmo.int/common/nil",
@@ -128,7 +127,7 @@ def test_load_membership_sets_missing_families(tmp_path: Path, monkeypatch: pyte
 def test_load_membership_sets_missing_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(membership, "_ARTIFACT", tmp_path / "absent.json")
     membership.load_membership_sets.cache_clear()
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError, match=r".*"):
         membership.load_membership_sets()
     membership.load_membership_sets.cache_clear()
 

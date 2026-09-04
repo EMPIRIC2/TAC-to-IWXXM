@@ -1,6 +1,6 @@
-"""TC-F6-003 / T5.4: iwxxm_us TAF (+ thin SIGMET/AIRMET) (F6.c–d).
+"""TC-F6-003 / T5.4: iwxxm_us TAF (+ thin SIGMET/AIRMET) (F6.c-d).
 
-Spec: docs/test-plan.md TC-F6-003; docs/feature-list.md F6.c–d / F6.b US pattern;
+Spec: docs/test-plan.md TC-F6-003; docs/feature-list.md F6.c-d / F6.b US pattern;
 ADR-013 extension blocks. SIGMET/AIRMET US surface is intentionally thin (feature-list
 limitations).
 """
@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "iwxxm_us_golden"
@@ -65,5 +66,6 @@ def test_tc_f6_003_non_metar_iwxxm_us_m_golden(case_id: str, golden_manifest: di
         profile=PROFILE,
         iwxxm_version=IWXXM_VERSION,
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert canonicalize_xml(result.xml) == expected

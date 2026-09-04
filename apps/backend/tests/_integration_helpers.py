@@ -11,7 +11,7 @@ Can be used standalone or integrated into test fixtures.
 
 import asyncio
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Optional
 
 from src.clients.aviation_weather_client import AviationWeatherClient
 from src.utilities.conversion import convert_metar_tac
@@ -23,11 +23,11 @@ class IntegrationTestResult:
 
     station_id: str
     status: str  # "PASS", "FAIL", "ERROR"
-    raw_tac: Optional[str] = None
-    converted_iwxxm: Optional[str] = None
-    reference_iwxxm: Optional[str] = None
+    raw_tac: str | None = None
+    converted_iwxxm: str | None = None
+    reference_iwxxm: str | None = None
     errors: list = None
-    conversion_error: Optional[str] = None
+    conversion_error: str | None = None
 
     def __post_init__(self):
         if self.errors is None:
@@ -97,20 +97,19 @@ class IntegrationTestHelper:
                 result.status = "INCOMPLETE" if converted_iwxxm else "ERROR"
 
         except Exception as e:
-            result.errors.append(f"Test error: {str(e)}")
+            result.errors.append(f"Test error: {e!s}")
             result.status = "ERROR"
 
         return result
 
-    async def test_stations_batch(self, station_ids: list, hours: int = 1) -> Dict[str, IntegrationTestResult]:
+    async def test_stations_batch(self, station_ids: list, hours: int = 1) -> dict[str, IntegrationTestResult]:
         """Test METAR conversion for multiple stations.
 
         Args:
-            station_ids: List of ICAO station identifiers
+            station_ids: list of ICAO station identifiers
             hours: Hours back to search for METAR data
 
-        Returns:
-            Dict mapping station_id → IntegrationTestResult
+        Returns: dict mapping station_id → IntegrationTestResult
         """
         results = {}
 

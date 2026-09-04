@@ -10,7 +10,7 @@
 | [ADR-004](ADR-004-manual-gifts-sync.md) | Manual GIFTs upstream merges | Deprecated (ADR-014) |
 | [ADR-005](ADR-005-runtime-toolchain-pins.md) | Runtime and toolchain pins (Python 3.12, Node 22) | Accepted |
 | [ADR-006](ADR-006-render-topology-simplification.md) | Render topology simplification (static frontend, no observability pservs) | Accepted |
-| [ADR-007](ADR-007-universal-coverage-gate.md) | Universal 95% coverage gate | Accepted |
+| [ADR-007](ADR-007-universal-coverage-gate.md) | Universal 100% coverage gate (amended EV-080) | Accepted |
 | [ADR-008](ADR-008-f3-airport-ui-exposure.md) | F3 airport UI exposure | Accepted |
 | [ADR-009](ADR-009-live-test-harness.md) | Live test harness (manual H3–H6, LIVE_* env) | Accepted |
 | [ADR-010](ADR-010-supabase-keys-config-split.md) | Supabase publishable/secret keys and runtime config split | Accepted |
@@ -39,6 +39,13 @@
 | [ADR-033](ADR-033-platform-independence-auth-do-doks.md) | Platform independence — Auth-only Supabase, DO Postgres, DOKS (F30/F31) | **Accepted** (amended by ADR-034) |
 | [ADR-034](ADR-034-doks-staging-promote-from-stage.md) | DOKS staging + promote-from-stage CD; release bump+tag on promote (F30 / #886) | **Accepted** |
 | [ADR-035](ADR-035-quality-metrics-c14n.md) | Quality metrics match/diff uses W3C C14N (not ADR-032 canonicalize) | **Accepted** |
+| [ADR-036](ADR-036-semantic-vs-exchange-profiles.md) | Semantic vs exchange profiles; canonical IDs + alias deprecation (#912) | **Accepted** (EV-063) |
+| [ADR-037](ADR-037-platform-logical-layers.md) | Platform logical layers — keep package layout (epic #922 / spike #923) | **Accepted** (EV-922) |
+| [ADR-038](ADR-038-conversion-profile-contract.md) | ConversionProfile executable contract (spike #924) | **Accepted** (EV-924) |
+| [ADR-039](ADR-039-staged-validation-pipeline.md) | Staged validation pipeline + canonical IR boundary (spike #925) | **Accepted** (EV-925) |
+| [ADR-040](ADR-040-sql-adapters-mapping-config.md) | SQL symmetric adapters + MappingConfig (spike #926) | **Accepted** (EV-926) |
+| [ADR-041](ADR-041-dissemination-gateway.md) | DisseminationGateway + DisseminationPlan (spike #927) | **Accepted** (EV-927) |
+| [ADR-042](ADR-042-workflow-definitions.md) | Workflow definitions — execute(message, workflow) (spike #931) | **Accepted** (EV-931) |
 
 ## Process
 

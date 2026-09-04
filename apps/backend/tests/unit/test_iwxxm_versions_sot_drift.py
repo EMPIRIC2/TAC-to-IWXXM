@@ -23,7 +23,11 @@ _FE_PICKER_FILES = (
     _REPO_ROOT / "apps" / "frontend" / "src" / "app" / "components" / "admin" / "SystemSettingsPanel.tsx",
     _REPO_ROOT / "apps" / "frontend" / "src" / "app" / "components" / "FileConverter.tsx",
 )
-_API_PY = _REPO_ROOT / "apps" / "backend" / "src" / "api.py"
+_API_SOURCES = (
+    _REPO_ROOT / "apps" / "backend" / "src" / "api.py",
+    _REPO_ROOT / "apps" / "backend" / "src" / "routers" / "conversion.py",
+    _REPO_ROOT / "apps" / "backend" / "src" / "routers" / "comprehensive_validation.py",
+)
 _FE_SOT_UTIL = _REPO_ROOT / "apps" / "frontend" / "src" / "utils" / "iwxxmVersions.ts"
 
 
@@ -47,21 +51,30 @@ def test_generated_json_exists_and_matches_python_sot() -> None:
 
 
 def test_fe_pickers_render_options_from_sot_module() -> None:
-    """FE pickers must import SoT helpers and map ``IWXXM_VERSION_OPTIONS`` (not hardcodes)."""
+    """FE pickers must import SoT helpers (not hardcoded version lists)."""
     util = _FE_SOT_UTIL.read_text(encoding="utf-8")
     assert "generated/iwxxm_versions.json" in util
     assert "IWXXM_VERSION_OPTIONS" in util
-    assert "Latest" in util and "Previous" in util
+    assert "iwxxmVersionOptionsForProfile" in util
+    assert "Latest" in util
+    assert "Previous" in util
 
     for path in _FE_PICKER_FILES:
         text = path.read_text(encoding="utf-8")
-        assert "IWXXM_VERSION_OPTIONS" in text, f"{path.name} must use IWXXM_VERSION_OPTIONS"
         assert "iwxxmVersions" in text, f"{path.name} must import iwxxmVersions SoT module"
+        if path.name == "FileConverter.tsx":
+            assert "iwxxmVersionOptionsForProfile" in text, (
+                f"{path.name} must use profile-scoped iwxxmVersionOptionsForProfile"
+            )
+        else:
+            assert "IWXXM_VERSION_OPTIONS" in text, f"{path.name} must use IWXXM_VERSION_OPTIONS"
 
 
 def test_api_form_default_matches_sot_default() -> None:
-    """Multipart ``iwxxm_version`` Form defaults in api.py must match DEFAULT_VERSION."""
-    text = _API_PY.read_text(encoding="utf-8")
-    defaults = set(re.findall(r'iwxxm_version:\s*str\s*=\s*Form\(\s*default="([^"]+)"', text))
-    assert defaults, "No iwxxm_version Form(default=...) found in api.py"
+    """Multipart ``iwxxm_version`` Form defaults in API routes must match DEFAULT_VERSION."""
+    defaults: set[str] = set()
+    for path in _API_SOURCES:
+        text = path.read_text(encoding="utf-8")
+        defaults.update(re.findall(r'iwxxm_version:\s*str\s*=\s*Form\(\s*default="([^"]+)"', text))
+    assert defaults, "No iwxxm_version Form(default=...) found in API route modules"
     assert defaults == {DEFAULT_VERSION}, f"Form defaults {defaults} != DEFAULT_VERSION {DEFAULT_VERSION}"

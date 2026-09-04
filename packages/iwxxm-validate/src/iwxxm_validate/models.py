@@ -36,6 +36,28 @@ class Issue(msgspec.Struct, frozen=True):
     end: int | None = None
 
 
+class StageResult(msgspec.Struct, frozen=True):
+    """
+    Per-stage outcome for layered ``ca_eccc`` validation (EV-068).
+
+    Parameters
+    ----------
+    stage :
+        Stage id aligned with ``catalog.yaml`` ``validation_stages`` (e.g. ``wmo_xsd``).
+    label :
+        Operator-readable stage label (EV-048 - no planning tokens).
+    ok :
+        ``True`` when the stage has no error-severity issues.
+    issues :
+        Findings for this stage only.
+    """
+
+    stage: str
+    label: str
+    ok: bool
+    issues: list[Issue]
+
+
 class ValidationReport(msgspec.Struct, frozen=True):
     """
     Aggregate result of ``validate()``.
@@ -47,15 +69,18 @@ class ValidationReport(msgspec.Struct, frozen=True):
     iwxxm_version :
         Requested IWXXM release line.
     profile :
-        ``annex3`` or ``iwxxm_us``.
+        ``annex3``, ``iwxxm_us``, or ``ca_eccc``.
     issues :
         Ordered list of findings (may include non-blocking warnings).
+    stages :
+        Per-stage breakdown when ``profile=ca_eccc`` layered validation runs.
     """
 
     ok: bool
     iwxxm_version: str
     profile: str
     issues: list[Issue]
+    stages: list[StageResult] = []
 
 
-__all__ = ["Issue", "ValidationReport"]
+__all__ = ["Issue", "StageResult", "ValidationReport"]

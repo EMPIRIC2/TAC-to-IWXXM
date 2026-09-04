@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   QUALITY_METRICS_DIFF_EMPTY_LABEL,
@@ -20,6 +20,11 @@ const apiMocks = vi.hoisted(() => ({
 vi.mock('@/utils/api', () => ({
   fetchQualityMetrics: apiMocks.fetchQualityMetrics,
   fetchQualityMetricsDetail: apiMocks.fetchQualityMetricsDetail,
+  fetchSchemaStatus: vi.fn().mockResolvedValue({
+    profile_pins: {
+      ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
+    },
+  }),
 }));
 
 const MOCK_LIST = {
@@ -397,5 +402,91 @@ describe('QualityMetricsPage detail (TC-EV054-003..004)', () => {
     await waitFor(() => {
       expect(screen.getByText(/No files for this product filter/i)).toBeInTheDocument();
     });
+  });
+
+  it('shouldApplyDetailFetch is false when cancelled', async () => {
+    const { shouldApplyDetailFetch } = await import('./QualityMetricsPage');
+    expect(shouldApplyDetailFetch(false)).toBe(true);
+    expect(shouldApplyDetailFetch(true)).toBe(false);
+  });
+
+  it('ignores late detail results after unmount', async () => {
+    let resolveDetail: ((v: unknown) => void) | undefined;
+    apiMocks.fetchQualityMetricsDetail.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveDetail = resolve;
+        }),
+    );
+    const { unmount } = render(
+      <QualityMetricsPage
+        routeStem="late-stem"
+        onOpenDetailRoute={() => undefined}
+        onBackToList={() => undefined}
+      />,
+    );
+    unmount();
+    await act(async () => {
+      resolveDetail?.(MOCK_DETAIL_EQUAL);
+      await Promise.resolve();
+    });
+    expect(apiMocks.fetchQualityMetricsDetail).toHaveBeenCalled();
+  });
+
+  it('ignores late detail errors after unmount', async () => {
+    let rejectDetail: ((e: unknown) => void) | undefined;
+    apiMocks.fetchQualityMetricsDetail.mockImplementation(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectDetail = reject;
+        }),
+    );
+    const { unmount } = render(
+      <QualityMetricsPage
+        routeStem="late-err"
+        onOpenDetailRoute={() => undefined}
+        onBackToList={() => undefined}
+      />,
+    );
+    unmount();
+    await act(async () => {
+      rejectDetail?.(new Error('late'));
+      await Promise.resolve();
+    });
+    expect(apiMocks.fetchQualityMetricsDetail).toHaveBeenCalled();
+  });
+
+  it('shows detailError on the detail-only route', async () => {
+    apiMocks.fetchQualityMetricsDetail.mockRejectedValueOnce(new Error('detail boom'));
+    render(
+      <QualityMetricsPage
+        routeStem="broken-stem"
+        onOpenDetailRoute={() => undefined}
+        onBackToList={() => undefined}
+      />,
+    );
+    await waitFor(() => {
+      expect(screen.getByRole('alert')).toHaveTextContent(/detail boom|failed/i);
+    });
+  });
+
+  it('returns null active summary for an unknown product filter', async () => {
+    const user = userEvent.setup();
+    apiMocks.fetchQualityMetrics.mockResolvedValue({
+      ...MOCK_LIST,
+      summaries: [{ ...MOCK_LIST.summaries[0]!, product: 'metar' }],
+      files: [
+        { ...MOCK_LIST.files[0]!, product: 'metar' },
+        { ...MOCK_LIST.files[0]!, stem: 'taf-only', product: 'taf' },
+      ],
+    });
+    render(<QualityMetricsPage />);
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-product-filter')).toBeInTheDocument();
+    });
+    await user.selectOptions(
+      screen.getByTestId('quality-metrics-product-filter'),
+      'taf',
+    );
   });
 });

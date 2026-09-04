@@ -1,10 +1,10 @@
-"""TC-F28-002 / TC-F28-003 — SWXA annex3 convert → XSD+SCH + wmoReference peer (F28 theme SX3).
+"""TC-F28-002 / TC-F28-003 - SWXA annex3 convert → XSD+SCH + wmoReference peer (F28 theme SX3).
 
 Asserts WMO ``spacewx-A7-3`` is in the annex3 pack, root
 ``iwxxm:SpaceWeatherAdvisory``, convert → M-xsd/M-sch under default settings.
 Golden equality is not required when ``wmoReference`` is set (S02.L1 / ADR-032).
 
-Always write “F28 theme SX3” (not SPECI S1) — D-S036 / EV-029 M11.
+Always write "F28 theme SX3" (not SPECI S1) - D-S036 / EV-029 M11.
 """
 
 from __future__ import annotations
@@ -127,8 +127,9 @@ def test_tc_f28_003_swxa_wmo_reference_peer(case_id: str) -> None:
 
 
 def test_tc_f28_002_swxa_a7_3_content_signals() -> None:
-    from tac2iwxxm import convert
     from tac2iwxxm.products.swxa import parse_swxa
+
+    from tac2iwxxm import convert
 
     tac = (FIXTURES / "swxa_a7_3.tac").read_text(encoding="utf-8")
     ir = parse_swxa(tac, product="SWXA")

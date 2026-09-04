@@ -3,7 +3,6 @@
 from datetime import UTC, datetime
 
 import pytest
-
 from src.schemas.evaluation import (
     ComparisonDetail,
     ComparisonStatus,

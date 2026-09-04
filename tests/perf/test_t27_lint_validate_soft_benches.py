@@ -1,6 +1,6 @@
 """T2.7: soft-fail sub-second benches for lint + validate alone (ADR-016 Q11=C).
 
-Soft until cutover — failures are reported as warnings / xfail-soft, not hard CI red.
+Soft until cutover - failures are reported as warnings / xfail-soft, not hard CI red.
 """
 
 from __future__ import annotations
@@ -51,6 +51,7 @@ def test_bench_validate_alone_soft() -> None:
     _soft_assert_under_budget(elapsed, "iwxxm_validate.validate")
 
 
-@pytest.mark.parametrize("label,fn", [("lint", "lint"), ("validate", "validate")])
+@pytest.mark.parametrize(("label", "fn"), [("lint", "lint"), ("validate", "validate")])
 def test_bench_entrypoints_callable(label: str, fn: str) -> None:
-    assert label and callable(lint if fn == "lint" else validate)
+    assert label
+    assert callable(lint if fn == "lint" else validate)

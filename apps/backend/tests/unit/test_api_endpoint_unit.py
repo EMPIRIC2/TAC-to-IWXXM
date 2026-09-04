@@ -7,7 +7,6 @@ from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.schemas.validation import AggregatedValidationResult, ValidationLayer, ValidationResult
 from src.utilities.security import verify_supabase_token
@@ -83,6 +82,31 @@ def test_convert_handles_manual_text_with_mocked_converter(client):
     assert payload["successful"] == 1
     assert payload["failed"] == 0
     assert "<iwxxm:METAR" in payload["results"][0]["content"]
+
+
+def test_convert_json_body_propagates_residuals_flag(client, monkeypatch):
+    """TC-EV981 — JSON ConversionRequest wires propagate_residuals_to_remarks."""
+    captured: dict[str, Any] = {}
+
+    def fake_convert(_tac: str, iwxxm_version: str = "2025-2", validate: bool = False, **kwargs: Any):
+        captured.update(kwargs)
+        xml = f'<iwxxm:METAR version="{iwxxm_version}">ok</iwxxm:METAR>'
+        return xml, None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": ["METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013 ZZZZ="],
+            "version": "2025-2",
+            "profile": "iwxxm_us",
+            "propagate_residuals_to_remarks": True,
+        },
+    )
+
+    assert response.status_code == 200, response.text[:500]
+    assert captured.get("propagate_residuals_to_remarks") is True
 
 
 def test_convert_manual_recent_weather_resh_is_normalized_before_validation(client, monkeypatch):

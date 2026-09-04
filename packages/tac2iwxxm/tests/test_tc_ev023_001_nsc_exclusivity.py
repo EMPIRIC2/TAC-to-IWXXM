@@ -1,4 +1,4 @@
-"""TC-EV023-001 — NSC without layered cloud (S030 / EV-023 T1.1).
+"""TC-EV023-001 - NSC without layered cloud (S030 / EV-023 T1.1).
 
 Positive: TAC ``NSC`` → empty/nil ``iwxxm:cloud`` with
 ``nothingOfOperationalSignificance`` and no ``CloudLayer``.
@@ -110,8 +110,9 @@ def test_tc_ev023_001_nsc_convert_no_layered_cloud(tac_path: Path, product: str)
 )
 def test_tc_ev023_001_nsc_cooccurrence_omits_layers(tac: str) -> None:
     """When TAC has both NSC and layered amounts, encode must keep NSC exclusivity."""
-    from tac2iwxxm import convert
     from tac2iwxxm.products.metar_speci import parse_metar_speci
+
+    from tac2iwxxm import convert
 
     product = "METAR" if tac.startswith("METAR") else "SPECI"
     ir = parse_metar_speci(tac, product=product)
@@ -133,7 +134,8 @@ def test_tc_ev023_001_negative_nsc_nil_with_layer_fixture() -> None:
     """Hand-built XML pairing NSC nilReason with CloudLayer fails exclusivity."""
     path = _EV023 / "nsc_nil_with_layer.negative.xml"
     xml = path.read_text(encoding="utf-8")
-    assert _NIL_NSC in xml and "CloudLayer" in xml
+    assert _NIL_NSC in xml
+    assert "CloudLayer" in xml
     with pytest.raises(AssertionError, match="must not contain CloudLayer"):
         assert_nsc_cloud_exclusive(xml)
     # Soft-skip environment: still invoke validate so CI records the path; do not

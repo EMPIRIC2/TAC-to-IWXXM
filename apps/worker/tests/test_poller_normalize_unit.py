@@ -31,7 +31,7 @@ def test_normalize_items_accepts_top_level_list() -> None:
 
 
 def test_normalize_items_rejects_non_list_or_items_dict() -> None:
-    with pytest.raises(ValueError, match="JSON list or \\{items"):
+    with pytest.raises(ValueError, match=r"JSON list or \{items"):
         _normalize_items({"not": "items"}, source_url=FEED_URL)
 
 

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:SPECI xmlns:iwxxm="http://icao.int/iwxxm/3.0"
+    xmlns:iwxxm-ca="https://dd.meteo.gc.ca/today/aviation/iwxxm/"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="speci.ca.auto.cyul"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL"
+    automatedStation="true"
+    translationCentreDesignator="CWAO"
+    translationCentreName="Environment and Climate Change Canada">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>2023-06-23T18:00:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.cyul">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.cyul">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>CYUL</aixm:designator>
+          <aixm:locationIndicatorICAO>CYUL</aixm:locationIndicatorICAO>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+  <iwxxm:observationTime>
+    <gml:TimeInstant gml:id="t.obs">
+      <gml:timePosition>2023-06-23T18:00:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:observationTime>
+  <iwxxm:observation>
+    <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="false">
+      <iwxxm:airTemperature uom="Cel">22.0</iwxxm:airTemperature>
+      <iwxxm:dewpointTemperature uom="Cel">12.0</iwxxm:dewpointTemperature>
+      <iwxxm:qnh uom="hPa">1020</iwxxm:qnh>
+      <iwxxm:surfaceWind>
+        <iwxxm:AerodromeSurfaceWind variableWindDirection="false">
+          <iwxxm:meanWindDirection uom="deg">240</iwxxm:meanWindDirection>
+          <iwxxm:meanWindSpeed uom="[kn_i]">10</iwxxm:meanWindSpeed>
+        </iwxxm:AerodromeSurfaceWind>
+      </iwxxm:surfaceWind>
+      <iwxxm:visibility>
+        <iwxxm:AerodromeHorizontalVisibility>
+          <iwxxm:prevailingVisibility uom="m">9999</iwxxm:prevailingVisibility>
+          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>
+        </iwxxm:AerodromeHorizontalVisibility>
+      </iwxxm:visibility>
+      <iwxxm:cloud>
+        <iwxxm:AerodromeCloud>
+          <iwxxm:layer>
+            <iwxxm:CloudLayer>
+              <iwxxm:amount xlink:href="http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW"/>
+              <iwxxm:base uom="[ft_i]">24000</iwxxm:base>
+            </iwxxm:CloudLayer>
+          </iwxxm:layer>
+        </iwxxm:AerodromeCloud>
+      </iwxxm:cloud>
+      <iwxxm:extension>
+        <iwxxm-ca:Addendum>
+          <iwxxm-ca:observingSystemType xlink:href="https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ObservingSystemType/AWOS"/>
+        </iwxxm-ca:Addendum>
+      </iwxxm:extension>
+    </iwxxm:MeteorologicalAerodromeObservation>
+  </iwxxm:observation>
+</iwxxm:SPECI>

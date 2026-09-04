@@ -211,6 +211,11 @@ function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
   );
 }
 
+/**
+ * Modal dialog for privacy and work-history storage preferences.
+ *
+ * Wraps the settings form in a dismissible dialog shell.
+ */
 export function PrivacySettingsDialog({ isOpen, onClose }: PrivacySettingsDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>

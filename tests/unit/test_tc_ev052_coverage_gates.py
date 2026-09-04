@@ -1,4 +1,4 @@
-"""TC-EV052-002 / T1.3 — every coverage surface enforces ≥95%; soft gates gone.
+"""TC-EV052-002 / T1.3 - every coverage surface enforces ≥95%; soft gates gone.
 
 [Corpus: tests] [Corpus: adr/ADR-007] EV-052 / #950
 """
@@ -43,7 +43,7 @@ def _vitest_thresholds(path: Path) -> dict[str, int]:
 
 @pytest.mark.unit
 class TestTcEv052CoverageGates:
-    """AC2 — soft/deferred gates removed; configs enforce ≥95."""
+    """AC2 - soft/deferred gates removed; configs enforce ≥95."""
 
     def test_inventory_soft_gate_flag_cleared_for_frontend(self) -> None:
         data = yaml.safe_load(INVENTORY.read_text(encoding="utf-8"))
@@ -60,7 +60,7 @@ class TestTcEv052CoverageGates:
             assert _fail_under_from_toml(path) >= 95, surface["id"]
 
     def test_frontend_vitest_all_metrics_at_least_95(self) -> None:
-        """EV-053 / #968 closes D-S061-cov-branches — all four Vitest metrics ≥95."""
+        """EV-053 / #968 closes D-S061-cov-branches - all four Vitest metrics ≥95."""
         thresholds = _vitest_thresholds(FRONTEND_VITEST)
         for metric in ("lines", "statements", "functions", "branches"):
             assert thresholds[metric] >= 95, (
@@ -97,11 +97,11 @@ class TestTcEv052CoverageGates:
         below = [v for v in values if v < 95]
         assert not below, f"ci-cd.yml --cov-fail-under below 95: {below}"
 
-    def test_dissemination_script_enforces_95(self) -> None:
+    def test_dissemination_script_enforces_100(self) -> None:
         script = (ROOT / "scripts/ci/run_dissemination_coverage.sh").read_text(
             encoding="utf-8"
         )
-        assert "--cov-fail-under=95" in script
+        assert "--cov-fail-under=100" in script
 
     def test_no_soften_comments_excusing_sub_95_frontend(self) -> None:
         text = FRONTEND_VITEST.read_text(encoding="utf-8")

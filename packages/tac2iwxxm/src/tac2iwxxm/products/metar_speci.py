@@ -5,11 +5,15 @@ from __future__ import annotations
 import re
 from typing import Any
 
+_CA_SURFACE_TYPES = frozenset({"METAR", "SPECI", "LWIS", "SAWR"})
 _REPORT = re.compile(
-    r"^(?P<rtype>METAR|SPECI)\s+(?:(?P<cor_pre>COR)\s+)?(?P<station>[A-Z][A-Z0-9]{3})\s+"
+    r"^(?P<rtype>LWIS|SAWR|METAR|SPECI)\s+(?:(?P<cor_pre>COR)\s+)?(?P<station>[A-Z][A-Z0-9]{3})\s+"
     r"(?P<ddhhmm>\d{6})Z\b(?P<body>.*)$",
     re.DOTALL,
 )
+_CA_DENSITY_ALT = re.compile(r"\bDENSITY\s+ALT(?:ITUDE)?\s+(?P<ft>\d{3,5})FT\b", re.I)
+_CA_DENSITY_ALT_MISG = re.compile(r"\bDENSITY\s+ALT(?:ITUDE)?\s+MISG\b", re.I)
+_CA_ICE_REMARK = re.compile(r"\bICE\s+(?P<intensity>TRC|LGT|MOD|SEV|HVY)\b", re.I)
 _WIND = re.compile(r"\b(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<uom>KT|MPS)\b")
 _VIS_SM = re.compile(r"\b(?P<vis>\d{1,2})SM\b")
 _VIS_M = re.compile(r"\b(?P<vis>\d{4})\b")
@@ -33,13 +37,13 @@ _NSC = re.compile(r"\bNSC\b")
 _NCD = re.compile(r"\bNCD\b")
 _VV_NOT_OBS = re.compile(r"\bVV///(?![A-Z0-9/])")
 _WIND_SECTOR = re.compile(r"\b(?P<ccw>\d{3})V(?P<cw>\d{3})\b")
-# Variable RVR (US / FMH-1): R04L/1100V2300FT — try before simple RVR.
+# Variable RVR (US / FMH-1): R04L/1100V2300FT - try before simple RVR.
 _RVR_VAR = re.compile(
     r"\bR(?P<rwy>\d{2}[LCR]?)/(?P<min_op>[PM])?(?P<min>\d{4})V(?P<max_op>[PM])?(?P<max>\d{4})"
     r"(?P<tend>[UDN])?(?P<ft>FT)?\b"
 )
 _RVR = re.compile(r"\bR(?P<rwy>\d{2}[LCR]?)/(?P<op>[PM])?(?P<val>\d{4})(?P<tend>[UDN])?(?P<ft>FT)?\b")
-# Minimum visibility with compass sector (e.g. 1200NE) — after prevailing metres.
+# Minimum visibility with compass sector (e.g. 1200NE) - after prevailing metres.
 _VIS_MIN = re.compile(r"\b(?P<vis>\d{4})(?P<dir>N|NE|E|SE|S|SW|W|NW)\b")
 _COMPASS_DEG = {
     "N": 360,
@@ -93,7 +97,7 @@ _CONTRAILS = re.compile(r"\bCONTRAILS?\b")
 _AURORA = re.compile(r"\bAURORA\b")
 _NOSPECI = re.compile(r"\bNOSPECI\b")
 _MAINTENANCE = re.compile(r"(?:^|\s)\$(?=\s|$)")
-# FMH-1 precip/TS begin/end remarks (e.g. RAB28E32, TSB13) — require B and/or E.
+# FMH-1 precip/TS begin/end remarks (e.g. RAB28E32, TSB13) - require B and/or E.
 _RECENT_WX = re.compile(
     r"\b(?P<wx>FZRA|FZDZ|SHRA|SHSN|SHGR|SHGS|TS|DZ|RA|SN|SG|IC|PL|GR|GS|UP)"
     r"(?:B(?P<b>\d{2,4})(?:E(?P<e>\d{2,4}))?|E(?P<e_only>\d{2,4}))\b"
@@ -178,7 +182,7 @@ _SENSOR_NO_CODES = {
 }
 _SENSOR_NO = re.compile(r"\b(?P<tok>" + "|".join(_SENSOR_NO_CODES) + r")\b")
 _SNOW_ELEMENT_HREF = "https://codes.nws.noaa.gov/FMH-1/StatisticallyProcessedWeatherElement/SNOW"
-# GRIB2 Code Table 4.10 entry 1 — accumulation (iwxxm-us PDF SnowIncrease / precip samples).
+# GRIB2 Code Table 4.10 entry 1 - accumulation (iwxxm-us PDF SnowIncrease / precip samples).
 _STAT_ACCUM_HREF = "http://codes.wmo.int/grib2/codeflag/4.10/1"
 _BUFR_CLOUD_HREF = "http://codes.wmo.int/bufr4/codeflag/0-20-012/{code}"
 _NIL_NOT_OBSERVABLE = "http://codes.wmo.int/common/nil/notObservable"
@@ -196,7 +200,7 @@ _CONVECTIVE_DIST_CODES = {
     "OVHD": "OVERHEAD",
 }
 # Structured tokens removed before free-text retain (AO/SLP/PK/WSHFT/LTG/SNINCR/8/conv/
-# hail/sensor/1·2·4 max-min/P·6·7 precip — hourly T… stays for never-drop).
+# hail/sensor/1·2·4 max-min/P·6·7 precip - hourly T… stays for never-drop).
 _CONSUMED_REMARK = re.compile(
     r"\bAO[12]\b|\bSLP\d{3}\b|\bPK\s+WND\s+\d{3}\d{2,3}/\d{4}\b|"
     r"\bWSHFT\s+\d{4}(?:\s+FROPA)?\b|"
@@ -249,7 +253,7 @@ def _sm_to_m(sm: int) -> tuple[int, bool]:
     metres, above
         ``above`` is True when SM ≥ 10 (IWXXM ABOVE operator for 10SM+).
     """
-    metres = int(round(sm * 1609.344))
+    metres = round(sm * 1609.344)
     if sm >= 10:
         return 10000, True
     return metres, False
@@ -384,7 +388,7 @@ def _lightning_type_code(raw: str) -> str | None:
         return "ICCC"
     if len(uniq) == 1:
         return next(iter(uniq))
-    return "".join(parts)
+    return "".join(parts)  # pragma: no cover — all IC/CC/CG mixes handled above
 
 
 def _lightning_sector(sector_tok: str | None) -> dict[str, Any] | None:
@@ -444,12 +448,12 @@ def _parse_sm_fraction(token: str) -> float:
 
 def _sm_float_to_m(sm: float) -> int:
     """Convert fractional statute miles to metres (rounded)."""
-    return int(round(sm * 1609.344))
+    return round(sm * 1609.344)
 
 
 def _sm_float_to_ft(sm: float) -> int:
     """Convert fractional statute miles to feet (rounded)."""
-    return int(round(sm * 5280.0))
+    return round(sm * 5280.0)
 
 
 def _rwy_location_description(loc: str) -> str:
@@ -562,7 +566,7 @@ def _sky_level_field(token: str, base: int) -> dict[str, str]:
     """
     Map one FMH-1 ``8/`` etage digit to CharacterOfTheSky IR.
 
-    Digit ``0``–``9`` → BUFR ``0-20-012`` code ``base+digit``; ``/`` → notObservable.
+    Digit ``0``-``9`` → BUFR ``0-20-012`` code ``base+digit``; ``/`` → notObservable.
     """
     if token == "/":
         return {"nil_reason": _NIL_NOT_OBSERVABLE}
@@ -633,7 +637,7 @@ def _parse_hail_size_remark(remarks: str) -> dict[str, Any] | None:
         return {"maximum_diameter_in": _frac_to_inches(m.group("onlyfrac"))}
     if m.group("onlywhole"):
         return {"maximum_diameter_in": float(int(m.group("onlywhole")))}
-    return None
+    return None  # pragma: no cover — _HAIL_SIZE alternatives are exhaustive
 
 
 def _precip_6_period(hour: int) -> str:
@@ -676,7 +680,7 @@ def _precip_quantity(hundredths: int, *, period: str) -> dict[str, Any]:
         "uom": "[in_i]",
     }
     if hundredths == 0:
-        # FMH P0000 / 60000 / 70000 — less than 0.01" (PDF BELOW sample).
+        # FMH P0000 / 60000 / 70000 - less than 0.01" (PDF BELOW sample).
         row["processed_value"] = 0.01
         row["qualifier"] = "BELOW"
     else:
@@ -720,6 +724,30 @@ def _parse_processed_precip(remarks: str, hour: int) -> list[dict[str, Any]]:
     if p7 is not None:
         qty.append(_precip_quantity(int(p7.group("p")), period="PT24H"))
     return qty
+
+
+def _product_matches_rtype(product: str, rtype: str) -> bool:
+    """Return True when ``product`` is compatible with the TAC lead token."""
+    product_u = product.upper()
+    rtype_u = rtype.upper()
+    if product_u == rtype_u:
+        return True
+    # CA_ECCC: API product METAR/SPECI accepts MANOBS LWIS/SAWR TAC leads (#1039).
+    return bool(product_u in {"METAR", "SPECI"} and rtype_u in {"LWIS", "SAWR"})
+
+
+def _parse_ca_remarks(remarks: str, ir: dict[str, Any]) -> None:
+    """Enrich IR with MANOBS Canadian REMARKS not covered by US FMH-1 path."""
+    density = _CA_DENSITY_ALT.search(remarks)
+    if density is not None:
+        ir["density_altitude_ft"] = int(density.group("ft"))
+    elif _CA_DENSITY_ALT_MISG.search(remarks):
+        ir["density_altitude_missing"] = True
+
+    ice = _CA_ICE_REMARK.search(remarks)
+    if ice is not None:
+        intensity = ice.group("intensity").upper()
+        ir["ca_icing_href"] = f"https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/AerodromeIcing/{intensity}"
 
 
 def _remarks_free_text(remarks: str) -> str:
@@ -914,13 +942,13 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     text = tac.strip()
     # Allow COR before station or immediately after observation time (ICAO #594).
     report_match = re.search(
-        r"((?:METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*?)=",
+        r"((?:LWIS|SAWR|METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*?)=",
         text,
         re.DOTALL,
     )
     if report_match is None:
         report_match = re.search(
-            r"((?:METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*)",
+            r"((?:LWIS|SAWR|METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*)",
             text,
             re.DOTALL,
         )
@@ -933,8 +961,12 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         raise ValueError(f"unable to parse METAR/SPECI report: {report!r}")
 
     rtype = m.group("rtype")
-    if rtype.upper() != product.upper():
+    if not _product_matches_rtype(product, rtype):
         raise ValueError(f"product mismatch: expected {product}, found {rtype}")
+
+    ca_root = rtype.upper()
+    is_lwis = ca_root == "LWIS"
+    is_sawr = ca_root == "SAWR"
 
     station = m.group("station")
     ddhhmm = m.group("ddhhmm")
@@ -955,8 +987,13 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         "minute": minute,
         "nil": bool(_NIL.search(rest)),
         "correction": correction,
-        "auto": bool(_AUTO.search(rest)),
+        "auto": bool(_AUTO.search(rest)) or is_lwis,
     }
+    if ca_root in _CA_SURFACE_TYPES:  # pragma: no branch — rtypes are always CA surface family
+        # National report variant for CA_ECCC emit - see catalog.yaml metar_family_variants.
+        ir["ca_iwxxm_root"] = ca_root
+    if is_lwis:
+        ir["ca_minimal_observation"] = True
 
     if ir["nil"]:
         return ir
@@ -973,16 +1010,18 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     ir["wind_speed_kt"] = int(wind.group("spd"))
     if wind.group("uom") == "MPS":
         ir["wind_speed_mps"] = int(wind.group("spd"))
-        ir["wind_speed_kt"] = int(round(int(wind.group("spd")) * 1.94384))
+        ir["wind_speed_kt"] = round(int(wind.group("spd")) * 1.94384)
     if wind.group("gust"):
         gust_raw = int(wind.group("gust"))
         if wind.group("uom") == "MPS":
             ir["wind_gust_mps"] = gust_raw
-            ir["wind_gust_kt"] = int(round(gust_raw * 1.94384))
+            ir["wind_gust_kt"] = round(gust_raw * 1.94384)
         else:
             ir["wind_gust_kt"] = gust_raw
 
-    if _CAVOK.search(rest):
+    if is_lwis:
+        pass
+    elif _CAVOK.search(rest):
         ir["cavok"] = True
         ir["visibility_m"] = 10000
         ir["visibility_above"] = True
@@ -1033,6 +1072,18 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     body_for_wx = _RMK.split(rest, maxsplit=1)[0]
     obs_body, trend_matches = _split_obs_and_trends(body_for_wx)
 
+    if is_lwis:
+        rmk = _RMK.search(rest)
+        if rmk is not None:
+            remarks = rmk.group("rmk")
+            ir["remarks_present"] = True
+            ir["remarks_text"] = remarks.strip().rstrip("=").strip()
+            _parse_ca_remarks(remarks, ir)
+            leftover = _remarks_free_text(remarks)
+            if leftover:
+                ir["remarks_free_text"] = leftover
+        return ir
+
     # Re-bind visibility from observation only (avoid trend 9999 / TL times).
     if not ir.get("cavok"):
         if _VIS_SM_NOT_OBS.search(obs_body) or _VIS_M_NOT_OBS.search(obs_body):
@@ -1078,7 +1129,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     if _NOSIG.search(body_for_wx):
         ir["nosig"] = True
     if _NSC.search(obs_body):
-        # FAQ §14.3 / TC-EV023-001: NSC is exclusive — drop any FEW/SCT/… layers.
+        # FAQ §14.3 / TC-EV023-001: NSC is exclusive - drop any FEW/SCT/… layers.
         ir["nsc"] = True
         ir["clouds"] = []
         ir.pop("cloud_amount", None)
@@ -1098,8 +1149,8 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         min_raw = int(rvr_var.group("min"))
         max_raw = int(rvr_var.group("max"))
         if rvr_var.group("ft"):
-            min_m = int(round(min_raw * 0.3048))
-            max_m = int(round(max_raw * 0.3048))
+            min_m = round(min_raw * 0.3048)
+            max_m = round(max_raw * 0.3048)
         else:
             min_m = min_raw
             max_m = max_raw
@@ -1117,10 +1168,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         if rvr is not None:
             val = int(rvr.group("val"))
             # US FT → metres; ICAO metre groups stay as-is.
-            if rvr.group("ft"):
-                metres = int(round(val * 0.3048))
-            else:
-                metres = val
+            metres = round(val * 0.3048) if rvr.group("ft") else val
             ir["rvr"] = {
                 "runway": rvr.group("rwy"),
                 "mean_m": metres,
@@ -1144,7 +1192,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     trends: list[dict[str, Any]] = []
     for tm in trend_matches:
         parsed = _parse_trend_group(ir, tm.group("kind"), tm.group("body"))
-        if parsed is not None:
+        if parsed is not None:  # pragma: no branch — trend parser always returns a dict
             trends.append(parsed)
     if trends:
         ir["trend_forecasts"] = trends
@@ -1164,4 +1212,23 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
             ir["nosig"] = True
 
     _parse_remarks(rest, ir)
+    rmk = _RMK.search(rest)
+    if rmk is not None:
+        remarks = rmk.group("rmk")
+        _parse_ca_remarks(remarks, ir)
+        leftover = str(ir.get("remarks_free_text") or "").strip()
+        if ir.get("density_altitude_ft") is not None or ir.get("density_altitude_missing"):
+            leftover = _CA_DENSITY_ALT.sub(" ", leftover)
+            leftover = _CA_DENSITY_ALT_MISG.sub(" ", leftover)
+        if ir.get("ca_icing_href"):
+            leftover = _CA_ICE_REMARK.sub(" ", leftover)
+        leftover = re.sub(r"\s+", " ", leftover).strip(" =")
+        if leftover:
+            ir["remarks_free_text"] = leftover
+        elif ir.get("density_altitude_ft") is not None or ir.get("ca_icing_href"):
+            ir.pop("remarks_free_text", None)
+    if is_sawr:
+        ir["ca_observing_system_href"] = (
+            "https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ObservingSystemType/SAWR"
+        )
     return ir

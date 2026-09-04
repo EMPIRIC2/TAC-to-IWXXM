@@ -3,7 +3,7 @@
 Spec: docs/test-plan.md TC-F6-032; docs/spec.md §packages/iwxxm-validate;
 ADR-015; ADR-016 (msgspec issue models).
 
-Decision D-S008-T21-sch: mirror current F2 — lxml XSD best-effort; Schematron via
+Decision D-S008-T21-sch: mirror current F2 - lxml XSD best-effort; Schematron via
 lxml when queryBinding allows, else SCHEMATRON_SKIPPED (non-blocking) for xslt2;
 optional Docker/Saxon behind env (soft/separate gate, not required for unit suite).
 """
@@ -64,7 +64,7 @@ def test_validate_vendor_metar_returns_structured_report(vendor_metar_xml: str) 
     assert report.profile == "annex3"
     assert isinstance(report.ok, bool)
     assert isinstance(report.issues, list)
-    # Vendor METAR is well-formed — must not fail as XML_SYNTAX_ERROR
+    # Vendor METAR is well-formed - must not fail as XML_SYNTAX_ERROR
     assert not any(issue.code == "XML_SYNTAX_ERROR" for issue in report.issues)
 
 
@@ -104,7 +104,7 @@ def test_validate_malformed_xml_fails_with_issues() -> None:
 def test_validate_schema_invalid_xml_reports_xsd_or_parse_path() -> None:
     """Well-formed but schema-invalid IWXXM yields structured XSD-layer issues when XSD runs.
 
-    If schema compilation is unavailable (catalog gaps), expect SCHEMA_* codes —
+    If schema compilation is unavailable (catalog gaps), expect SCHEMA_* codes -
     never silent success with empty issues.
     """
     from iwxxm_validate import validate
@@ -155,6 +155,31 @@ def test_validate_iwxxm_us_profile_resolves_without_fastapi() -> None:
     assert report.profile == "iwxxm_us"
 
 
+def test_validate_ca_eccc_profile_resolves_without_fastapi() -> None:
+    """TC-EV064-003: profile=ca_eccc accepted when vendor pin present."""
+    from iwxxm_validate import validate
+    from iwxxm_validate.paths import ca_xsd_path
+
+    assert ca_xsd_path() is not None, "iwxxm-ca vendor pin required for TC-EV064-003"
+
+    stub = """<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="http://icao.int/iwxxm/3.0"/>
+"""
+    report = validate(stub, iwxxm_version="3.0.0", profile="ca_eccc")
+    assert hasattr(report, "ok")
+    assert report.profile == "ca_eccc"
+    assert report.issues[0].code != "CA_SCHEMA_NOT_FOUND"
+
+
+def test_validate_ca_eccc_rejects_wrong_iwxxm_version() -> None:
+    """TC-EV064-003: ca_eccc requires IWXXM 3.0.0 operational line."""
+    from iwxxm_validate import validate
+
+    report = validate("<root/>", iwxxm_version="2025-2", profile="ca_eccc")
+    assert report.ok is False
+    assert report.issues[0].code == "INVALID_IWXXM_VERSION"
+
+
 def test_package_has_no_fastapi_or_supabase_imports() -> None:
     """SoC: iwxxm-validate must not import FastAPI or Supabase (spec.md)."""
     forbidden = {"fastapi", "supabase"}
@@ -173,7 +198,6 @@ def test_package_has_no_fastapi_or_supabase_imports() -> None:
 def test_issue_models_are_msgspec_structs() -> None:
     """ADR-016: package issue / report models use msgspec.Struct."""
     import msgspec
-
     from iwxxm_validate import Issue, ValidationReport
 
     assert issubclass(Issue, msgspec.Struct)

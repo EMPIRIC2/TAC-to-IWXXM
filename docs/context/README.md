@@ -8,6 +8,17 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 
 | Slug | Topic | Status | Created | Linked features |
 |------|-------|--------|---------|-----------------|
+| [platform-package-layout-923](platform-package-layout-923.md) | #923/#922 platform package layout gap matrix + Core→Dissemination milestone plan | active | 2026-09-03 | F6, F16–F19, ADR-030, EV-922 |
+| [conversion-profile-editor-933](conversion-profile-editor-933.md) | #933 ConversionProfile editor (rule packs + inspector + signed overlays) | active | 2026-09-03 | F6, F7, F15, ADR-038, EV-933 |
+| [conversion-profile-contract-924](conversion-profile-contract-924.md) | #924 executable ConversionProfile contract + overlay trust boundaries | active | 2026-09-03 | F6, ADR-013, ADR-036, EV-924 |
+| [canonical-met-staged-validation-925](canonical-met-staged-validation-925.md) | #925 canonical IR + staged validation PipelineResult contract | active | 2026-09-03 | F2, F6, F15, ADR-039, EV-925 |
+| [sql-adapters-mapping-926](sql-adapters-mapping-926.md) | #926 SQL symmetric source/sink adapters + MappingConfig | active | 2026-09-03 | F16, ADR-030, ADR-040, EV-926 |
+| [dissemination-gateway-927](dissemination-gateway-927.md) | #927 DisseminationGateway + plan/audit (EDIS/WIS2/AFS) | active | 2026-09-03 | F16–F19, ADR-041, EV-927 |
+| [dissemination-ops-936](dissemination-ops-936.md) | #936 ops UI + Gateway runtime hooks (plan/audit/SQL/health) | active | 2026-09-03 | F16–F19, F7, ADR-041, EV-936 |
+| [workflow-definitions-931](workflow-definitions-931.md) | #931 execute(message, workflow) YAML DSL + packages/workflows | active | 2026-09-03 | F6, F8, ADR-042, EV-931 |
+| [ev-098-ca-eccc-mining](ev-098-ca-eccc-mining.md) | CA_ECCC deep mine #1028–#1031 (datamart, MSC PDFs, MANOBS, MANAIR) via EV-097 handoff | active | 2026-09-02 | F36, EV-098 |
+| [propagate-residuals-to-remarks](propagate-residuals-to-remarks.md) | #981 opt-in fold decode residuals into remarks/HRT + profile default + F7.q hooks (EV-981) | active | 2026-08-31 | F6, F9, F7.q |
+| [ev-080-unit-coverage-100](ev-080-unit-coverage-100.md) | Strict 100% line+branch unit coverage (Py/TS/scripts); ADR-007 uplift (EV-080) | active | 2026-08-27 | ADR-007, F34, M5/CI |
 | [wmo-aviation-registers-889](wmo-aviation-registers-889.md) | #889 codes.wmo.int aviation registers TAC present/cite/cover (S055/EV-046 Lean) | active | 2026-08-08 | F6, F12, F15, F20, F23, F24, F26, F27, F28, F32 |
 | [iwxxm-corpus-residuals-846](iwxxm-corpus-residuals-846.md) | #846 residuals #849–#861 (S046/EV-038) | active | 2026-08-05 | F2, F4, F6, F7, F32 |
 | [iwxxm-corpus-quality-846](iwxxm-corpus-quality-846.md) | #846/#835/#741/#808 official IWXXM corpus + WMO sources | active | 2026-08-04 | F32, F23, F4, F6, F2, S040/EV-032 |

@@ -1,4 +1,4 @@
-"""T1.3 — Workspace/Docker/CI wire for packages/auth + JWKS env (EV-031 / F31)."""
+"""T1.3 - Workspace/Docker/CI wire for packages/auth + JWKS env (EV-031 / F31)."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ class TestT13AuthWorkspaceWire:
         assert "packages/auth/src" in makefile
         assert "basedpyright packages/auth/src" in makefile
         assert "lint-auth" in makefile
-        # EV-047 D-S056-cov95-scope=2 — restore make test-unit-auth (≥95% + per-file).
+        # EV-047 D-S056-cov95-scope=2 - restore make test-unit-auth (≥95% + per-file).
         assert "test-unit-auth:" in makefile
         assert "coverage-auth" not in makefile
 
@@ -32,7 +32,7 @@ class TestT13AuthWorkspaceWire:
         assert "auth," in workflow or "\n            auth," in workflow
         assert "matrix.package == 'auth'" in workflow
         assert "tests/unit/auth" in workflow
-        assert "--cov-fail-under=95" in workflow
+        assert "--cov-fail-under=100" in workflow
         assert "check_per_file_coverage.py" in workflow
         assert "worker," in workflow or "\n            worker," in workflow
 

@@ -1,4 +1,4 @@
-"""EV-013 / UJ-026 — convert API echoes REMARKS_EXCLUDED / retains iwxxm_us free text."""
+"""EV-013 / UJ-026 - convert API echoes REMARKS_EXCLUDED / retains iwxxm_us free text."""
 
 from __future__ import annotations
 
@@ -6,7 +6,6 @@ from enum import Enum
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.conversion import _normalize_issue_severity
 from src.utilities.security import verify_supabase_token

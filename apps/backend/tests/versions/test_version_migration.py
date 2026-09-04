@@ -8,7 +8,6 @@ during conversion between versions (e.g., 2023-1 → 2025-2).
 import xml.etree.ElementTree as ET
 
 import pytest
-
 from src.utilities.version_migration import get_migrator, migrate_xml
 
 
@@ -54,7 +53,7 @@ class TestRunwayStateRemoval:
     </observation>
 </METAR>"""
 
-        xml_out, warnings = migrate_xml(xml_with_runway, "2023-1", "2025-2")
+        xml_out, _warnings = migrate_xml(xml_with_runway, "2023-1", "2025-2")
 
         # Check that runwayState was removed
         root = ET.fromstring(xml_out)
@@ -71,7 +70,7 @@ class TestRunwayStateRemoval:
     </observation>
 </METAR>"""
 
-        xml_out, warnings = migrate_xml(xml_with_runway, "2023-1", "2025-2")
+        _xml_out, warnings = migrate_xml(xml_with_runway, "2023-1", "2025-2")
 
         # Should have warning about runway state
         assert len(warnings) > 0
@@ -84,7 +83,7 @@ class TestRunwayStateRemoval:
     <iwxxm:runwayState><data/></iwxxm:runwayState>
 </root>"""
 
-        xml_out, warnings = migrate_xml(xml_with_runway, "2023-1", "2025-2")
+        _xml_out, warnings = migrate_xml(xml_with_runway, "2023-1", "2025-2")
 
         if warnings:
             warning = warnings[0]
@@ -134,7 +133,7 @@ class TestMigrationNoChanges:
     <element>data</element>
 </METAR>"""
 
-        xml_out, warnings = migrate_xml(xml, "2021-2", "2023-1")
+        _xml_out, warnings = migrate_xml(xml, "2021-2", "2023-1")
 
         assert len(warnings) == 0
 
@@ -175,7 +174,7 @@ class TestMigrationNamespaceHandling:
     <iwxxm:runwayState><data/></iwxxm:runwayState>
 </root>"""
 
-        xml_out, warnings = migrate_xml(xml_with_namespaces, "2023-1", "2025-2")
+        xml_out, _warnings = migrate_xml(xml_with_namespaces, "2023-1", "2025-2")
 
         root = ET.fromstring(xml_out)
         # GML elements should still be there
@@ -220,7 +219,7 @@ class TestEdgeCases:
     </level1>
 </root>"""
 
-        xml_out, warnings = migrate_xml(xml_nested, "2023-1", "2025-2")
+        xml_out, _warnings = migrate_xml(xml_nested, "2023-1", "2025-2")
 
         root = ET.fromstring(xml_out)
         runway_elements = [el for el in root.iter() if "runwayState" in el.tag]

@@ -1,6 +1,6 @@
 """Runtime configuration contract tests (ADR-010 / S003).
 
-Replaces legacy VITE_AUTH_SERVICE_URL checks — config JSON + canonical Supabase
+Replaces legacy VITE_AUTH_SERVICE_URL checks - config JSON + canonical Supabase
 env names are the source of truth for local and deploy wiring.
 """
 
@@ -55,21 +55,21 @@ class TestRuntimeConfigProfiles:
         assert "disableAuth" not in api
 
     def test_prod_cors_includes_doks_fe_placeholder(self) -> None:
-        """T4.5 / D-S038-04-b2 — DOKS FE placeholder allowed before DNS pin (T6.3)."""
+        """T4.5 / D-S038-04-b2 - DOKS FE placeholder allowed before DNS pin (T6.3)."""
         cfg = _load_json(CONFIG_DIR / "prod.json")
         api = cfg["api"]
         assert isinstance(api, dict)
         origins = api.get("corsOrigins")
         assert isinstance(origins, list)
         assert "https://app.doks.placeholder.metar-iwxxm.local" in origins
-        # T6.5 / D-S038-t65-waive — Render suspended; prod primary is provisional DOKS.
+        # T6.5 / D-S038-t65-waive - Render suspended; prod primary is provisional DOKS.
         assert "doks.placeholder" in str(api.get("baseUrl"))
         assert "onrender.com" not in str(api.get("baseUrl"))
         assert "onrender.com" not in str(api.get("frontendUrl"))
 
 
 class TestFrontendEnvExamples:
-    """Minimal frontend secrets — runtime config carries non-secrets."""
+    """Minimal frontend secrets - runtime config carries non-secrets."""
 
     def test_frontend_env_example_is_minimal(self) -> None:
         example = FRONTEND_DIR / ".env.example"

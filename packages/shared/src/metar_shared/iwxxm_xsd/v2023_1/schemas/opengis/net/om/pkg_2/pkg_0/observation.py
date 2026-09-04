@@ -46,7 +46,7 @@ class Result(BaseModel):
     many kinds of observation results. The type of the observation result shall be consistent with the observed
     property, and the scale or scope for the value shall be consistent with the quantity or category type. If the
     observed property (6.2.2.8) is a spatial operation or function, the type of the result may be a coverage, NOTE 2
-    In some contexts, particularly in earth and environmental sciences, the term “observation” is used to refer to
+    In some contexts, particularly in earth and environmental sciences, the term "observation" is used to refer to
     the result itself.
     """
 

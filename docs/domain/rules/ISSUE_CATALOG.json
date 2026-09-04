@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-08-20",
+  "generated": "2026-09-02",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -16,7 +16,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "AT_PRESENT",
@@ -31,7 +31,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "AUTO_PRESENT",
@@ -46,7 +46,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "BECMG_PRESENT",
@@ -61,7 +61,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "CAVOK_PRESENT",
@@ -78,7 +78,199 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
+    },
+    {
+      "code": "CA_AIRMET_GFA",
+      "severity": "info",
+      "message_template": "{product} encodes MANAIR GFA compound phenomenon - ca_eccc profile awareness",
+      "product": null,
+      "tags": [
+        "airmet",
+        "ca_eccc",
+        "manair",
+        "gfa"
+      ],
+      "source_id": "manair-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
+      "source_attribution": "manair-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html - MANAIR AIRMET amends GFA when hazard not already in current GFA (Amendment 15)"
+    },
+    {
+      "code": "CA_ALTIMETER_INHG",
+      "severity": "info",
+      "message_template": "{product} uses inch-of-mercury altimeter (A####) - MANOBS Canadian overlay",
+      "product": null,
+      "tags": [
+        "pressure",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS altimeter A plus four digits (hundredths inHg)"
+    },
+    {
+      "code": "CA_ALTIMETER_NOT_OBS",
+      "severity": "info",
+      "message_template": "{product} altimeter not observable (A////) - MANOBS Canadian overlay",
+      "product": null,
+      "tags": [
+        "pressure",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca - access:gap - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - Reopened: MANOBS specifies A plus four digits and pressure fail-safe; A//// not confirmed as valid"
+    },
+    {
+      "code": "CA_METAR_LWIS",
+      "severity": "info",
+      "message_template": "{product} Limited Weather Information System (LWIS) report - MANOBS CA overlay",
+      "product": null,
+      "tags": [
+        "metar",
+        "ca_eccc",
+        "manobs",
+        "lwis"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS LWIS national report lead; metar-speci-ca LWIS substitution"
+    },
+    {
+      "code": "CA_METAR_SAWR",
+      "severity": "info",
+      "message_template": "{product} Surface Aviation Weather Report (SAWR) - MANOBS CA overlay",
+      "product": null,
+      "tags": [
+        "metar",
+        "ca_eccc",
+        "manobs",
+        "sawr"
+      ],
+      "source_id": "eccc-iwxxm-ca",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/schema/",
+      "source_attribution": "eccc-iwxxm-ca - https://dd.weather.gc.ca/today/aviation/iwxxm/schema/ - Schema-backed SAWR substitution in metar-speci-ca; not a MANOBS code form"
+    },
+    {
+      "code": "CA_REMARK_MANOBS",
+      "severity": "info",
+      "message_template": "{product} Canadian REMARKS present - ca_eccc profile awareness",
+      "product": null,
+      "tags": [
+        "remark",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS Canadian remarks"
+    },
+    {
+      "code": "CA_REMARK_NOSPECI",
+      "severity": "info",
+      "message_template": "{product} MANOBS no-specials remark (NOSPECI) - ca_eccc profile awareness",
+      "product": null,
+      "tags": [
+        "remark",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs",
+        "nospeci"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS NOSPECI remark"
+    },
+    {
+      "code": "CA_REMARK_PRESFR",
+      "severity": "info",
+      "message_template": "{product} MANOBS pressure falling rapidly (PRESFR) - ca_eccc profile awareness",
+      "product": null,
+      "tags": [
+        "remark",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs",
+        "presfr"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS Canadian rapid pressure fall remark PRESFR"
+    },
+    {
+      "code": "CA_REMARK_PRESRR",
+      "severity": "info",
+      "message_template": "{product} MANOBS pressure rising rapidly (PRESRR) - ca_eccc profile awareness",
+      "product": null,
+      "tags": [
+        "remark",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs",
+        "presrr"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS Canadian rapid pressure rise remark PRESRR"
+    },
+    {
+      "code": "CA_REMARK_SECTOR_VIS",
+      "severity": "info",
+      "message_template": "{product} MANOBS sector visibility remark - ca_eccc profile awareness",
+      "product": null,
+      "tags": [
+        "remark",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs",
+        "visibility"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS sector visibility remark; distinct from variable VIS and variable RVR"
+    },
+    {
+      "code": "CA_STATUTE_MILE_VIS",
+      "severity": "info",
+      "message_template": "{product} uses statute-mile visibility - MANOBS Canadian overlay",
+      "product": null,
+      "tags": [
+        "visibility",
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS Canadian land-station visibility uses statute miles with SM"
+    },
+    {
+      "code": "CA_TAF_NCLWS",
+      "severity": "info",
+      "message_template": "{product} includes MANAIR non-convective low-level wind shear (WS group)",
+      "product": null,
+      "tags": [
+        "taf",
+        "ca_eccc",
+        "manair",
+        "nclws"
+      ],
+      "source_id": "manair-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html",
+      "source_attribution": "manair-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html - MANAIR non-convective LLWS group WShhh/dddffKT (Amendment 15)"
     },
     {
       "code": "CLOUD_CB_OR_TCU",
@@ -95,7 +287,7 @@
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 CB/TCU convective type register"
+      "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - CB/TCU convective type register"
     },
     {
       "code": "CNL_REPORT",
@@ -109,7 +301,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "COR_PRESENT",
@@ -127,7 +319,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "EMPTY_TAC",
@@ -140,7 +332,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "FIR_OR_CTA",
@@ -155,7 +347,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "FM_PRESENT",
@@ -170,7 +362,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "INTENSITY_CHANGE",
@@ -186,7 +378,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "INVALID_AHL",
@@ -200,12 +392,12 @@
       ],
       "source_id": "opmet-guidelines-5th",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
-      "source_attribution": "opmet-guidelines-5th \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 WMO AHL TTAAii CCCC YYGGgg communications heading"
+      "source_attribution": "opmet-guidelines-5th - vendor:documentation/webpages/AHL.asciidoc - WMO AHL TTAAii CCCC YYGGgg communications heading"
     },
     {
       "code": "INVALID_CLOUD_TOKEN",
       "severity": "error",
-      "message_template": "{product} invalid cloud/VV token {token!r} \u2014 A3-2 #9",
+      "message_template": "{product} invalid cloud/VV token {token!r} - A3-2 #9",
       "product": null,
       "tags": [
         "cloud",
@@ -215,12 +407,12 @@
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 Cloud amount register landing"
+      "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Cloud amount register landing"
     },
     {
       "code": "INVALID_CNL_SHAPE",
       "severity": "error",
-      "message_template": "TAF CNL must end the message \u2014 A5-1 #6",
+      "message_template": "TAF CNL must end the message - A5-1 #6",
       "product": "taf",
       "tags": [
         "cnl",
@@ -229,7 +421,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "INVALID_NIL",
@@ -247,7 +439,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "INVALID_NO_VA_EXP",
@@ -262,7 +454,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "INVALID_PROB",
@@ -277,7 +469,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "INVALID_REMARK",
@@ -293,12 +485,12 @@
       ],
       "source_id": "fmh-1",
       "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
-      "source_attribution": "fmh-1 \u2014 https://nws.weather.gov/schemas/iwxxm-us/3.0/"
+      "source_attribution": "fmh-1 - https://nws.weather.gov/schemas/iwxxm-us/3.0/"
     },
     {
       "code": "INVALID_RVR",
       "severity": "error",
-      "message_template": "{product} has an invalid RVR token {token!r} that does not match allowed RVR syntax. Error: the TAC does not meet a required format or product rule and should be corrected. Source: No single RVR concept register \u2014 cite 49-2 family + grammar sources.",
+      "message_template": "{product} has an invalid RVR token {token!r} that does not match allowed RVR syntax. Error: the TAC does not meet a required format or product rule and should be corrected. Source: No single RVR concept register - cite 49-2 family + grammar sources.",
       "product": null,
       "tags": [
         "rvr",
@@ -308,7 +500,7 @@
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 No single RVR concept register \u2014 cite 49-2 family + grammar sources"
+      "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - No single RVR concept register \u2014 cite 49-2 family + grammar sources"
     },
     {
       "code": "INVALID_SIGMET_CNL",
@@ -322,7 +514,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "INVALID_SIGMET_COR",
@@ -337,7 +529,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "INVALID_STNR_MOVEMENT",
@@ -354,7 +546,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "INVALID_TX_TN",
@@ -368,7 +560,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "INVALID_VALIDITY_DURATION",
@@ -382,7 +574,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "INVALID_VISIBILITY",
@@ -397,12 +589,12 @@
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations"
+      "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Vis grammar vs WeatherCausingVisibilityReduction for AIRMET obscurations"
     },
     {
       "code": "INVALID_WEATHER",
       "severity": "error",
-      "message_template": "{product} invalid present weather token {token!r} \u2014 A3-2 #8",
+      "message_template": "{product} invalid present weather token {token!r} - A3-2 #8",
       "product": null,
       "tags": [
         "weather",
@@ -412,7 +604,7 @@
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 Prefer register landing + 306/4678 concept pattern over bare root"
+      "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Prefer register landing + 306/4678 concept pattern over bare root"
     },
     {
       "code": "INVALID_WIND",
@@ -427,7 +619,22 @@
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 Wind not in AerodromePresentWeather list"
+      "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Wind not in AerodromePresentWeather list"
+    },
+    {
+      "code": "IN_TAF_TX_TN_OMITTED",
+      "severity": "info",
+      "message_template": "{product} does not include TX/TN temperature forecast groups. Informational: India Meteorological Department TAFs often omit temperature extremes; this does not by itself block conversion.",
+      "product": "TAF",
+      "tags": [
+        "taf",
+        "in_imd",
+        "temperature",
+        "tx_tn"
+      ],
+      "source_id": "imd-mausam",
+      "source_url": "https://mausam.imd.gov.in/",
+      "source_attribution": "imd-mausam - https://mausam.imd.gov.in/ - India IMD TAF often omits TX/TN temperature extremes"
     },
     {
       "code": "MISSING_CCCC",
@@ -442,7 +649,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "MISSING_DTG",
@@ -458,7 +665,7 @@
       ],
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
-      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual; AHL/FM205/XSD cites ok"
+      "source_attribution": "vona-ahl-fm205 - vendor:documentation/webpages/AHL.asciidoc - Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     {
       "code": "MISSING_FIR_OR_CTA",
@@ -475,12 +682,12 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "MISSING_ISSUE_TIME",
       "severity": "error",
-      "message_template": "TAF missing issue time ddhhmmZ \u2014 A5-1 #3",
+      "message_template": "TAF missing issue time ddhhmmZ - A5-1 #3",
       "product": "taf",
       "tags": [
         "time",
@@ -488,12 +695,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "MISSING_MAX_WIND",
       "severity": "error",
-      "message_template": "TCA missing MAX WIND: template field \u2014 A2-2",
+      "message_template": "TCA missing MAX WIND: template field - A2-2",
       "product": "tca",
       "tags": [
         "max_wind",
@@ -501,7 +708,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "MISSING_OBS_OR_FCST",
@@ -518,12 +725,12 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "MISSING_OBS_TIME",
       "severity": "error",
-      "message_template": "{product} missing observation time ddhhmmZ \u2014 A3-2 #3",
+      "message_template": "{product} missing observation time ddhhmmZ - A3-2 #3",
       "product": null,
       "tags": [
         "time",
@@ -532,7 +739,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "MISSING_PRODUCT_KEYWORD",
@@ -545,12 +752,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "MISSING_QNH",
       "severity": "error",
-      "message_template": "{product} missing QNH/altimeter (Qnnnn/Annnn) \u2014 A3-2 #11",
+      "message_template": "{product} missing QNH/altimeter (Qnnnn/Annnn) - A3-2 #11",
       "product": null,
       "tags": [
         "pressure",
@@ -559,7 +766,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "MISSING_SEQUENCE",
@@ -575,12 +782,12 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "MISSING_SVO",
       "severity": "error",
-      "message_template": "VONA missing SVO: template field \u2014 F32 theme V1 / A7-1",
+      "message_template": "VONA missing SVO: template field - F32 theme V1 / A7-1",
       "product": "vona",
       "tags": [
         "svo",
@@ -590,12 +797,12 @@
       ],
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
-      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual; AHL/FM205/XSD cites ok"
+      "source_attribution": "vona-ahl-fm205 - vendor:documentation/webpages/AHL.asciidoc - Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     {
       "code": "MISSING_SWXC",
       "severity": "error",
-      "message_template": "SWXA missing SWXC: template field \u2014 F28 theme SX1 / A2-3",
+      "message_template": "SWXA missing SWXC: template field - F28 theme SX1 / A2-3",
       "product": "swxa",
       "tags": [
         "swxc",
@@ -605,12 +812,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 Table A2-3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 Table A2-3"
     },
     {
       "code": "MISSING_TC",
       "severity": "error",
-      "message_template": "TCA missing TC: template field \u2014 F27 theme T1 / A2-2",
+      "message_template": "TCA missing TC: template field - F27 theme T1 / A2-2",
       "product": "tca",
       "tags": [
         "tropical_cyclone",
@@ -620,7 +827,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "MISSING_TC_IDENTITY",
@@ -635,12 +842,12 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "MISSING_TEMP_DEWPOINT",
       "severity": "error",
-      "message_template": "{product} missing temperature/dewpoint tt/td \u2014 A3-2 #10",
+      "message_template": "{product} missing temperature/dewpoint tt/td - A3-2 #10",
       "product": null,
       "tags": [
         "temperature",
@@ -649,12 +856,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "MISSING_TERMINATOR",
       "severity": "info",
-      "message_template": "Reports in bulletins end with '=' \u2014 add it before publishing",
+      "message_template": "Reports in bulletins end with '=' - add it before publishing",
       "product": null,
       "tags": [
         "terminator",
@@ -664,12 +871,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "MISSING_VAAC",
       "severity": "error",
-      "message_template": "VAA missing VAAC: template field \u2014 A2-1",
+      "message_template": "VAA missing VAAC: template field - A2-1",
       "product": "vaa",
       "tags": [
         "vaac",
@@ -677,12 +884,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "MISSING_VALID",
       "severity": "error",
-      "message_template": "{product} missing VALID ddhhmm/ddhhmm period \u2014 A6 identity",
+      "message_template": "{product} missing VALID ddhhmm/ddhhmm period - A6 identity",
       "product": null,
       "tags": [
         "valid",
@@ -691,12 +898,12 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "MISSING_VALIDITY",
       "severity": "error",
-      "message_template": "TAF missing validity period ddhh/ddhh \u2014 A5-1 #5",
+      "message_template": "TAF missing validity period ddhh/ddhh - A5-1 #5",
       "product": "taf",
       "tags": [
         "validity",
@@ -704,7 +911,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "MISSING_VA_VOLCANO",
@@ -719,12 +926,12 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "MISSING_VISIBILITY",
       "severity": "error",
-      "message_template": "{product} missing visibility or CAVOK \u2014 A3-2 #6",
+      "message_template": "{product} missing visibility or CAVOK - A3-2 #6",
       "product": null,
       "tags": [
         "visibility",
@@ -733,12 +940,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "MISSING_VOLCANO",
       "severity": "error",
-      "message_template": "VAA missing VOLCANO: template field \u2014 F26 theme V1 / A2-1",
+      "message_template": "VAA missing VOLCANO: template field - F26 theme V1 / A2-1",
       "product": "vaa",
       "tags": [
         "volcano",
@@ -748,12 +955,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "MISSING_VONA_VOLCANO",
       "severity": "error",
-      "message_template": "VONA missing VOLCANO: template field \u2014 F32 theme V1 / A7-1",
+      "message_template": "VONA missing VOLCANO: template field - F32 theme V1 / A7-1",
       "product": "vona",
       "tags": [
         "volcano",
@@ -763,12 +970,12 @@
       ],
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
-      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual; AHL/FM205/XSD cites ok"
+      "source_attribution": "vona-ahl-fm205 - vendor:documentation/webpages/AHL.asciidoc - Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     {
       "code": "MISSING_WIND",
       "severity": "error",
-      "message_template": "{product} missing surface wind group \u2014 A3-2 #5",
+      "message_template": "{product} missing surface wind group - A3-2 #5",
       "product": null,
       "tags": [
         "wind",
@@ -777,12 +984,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "MULTIPLE_PHENOMENA",
       "severity": "error",
-      "message_template": "{product} encodes multiple phenomenon families {hit} \u2014 A6 one-phenomenon gate",
+      "message_template": "{product} encodes multiple phenomenon families {hit} - A6 one-phenomenon gate",
       "product": null,
       "tags": [
         "phenomenon",
@@ -791,12 +998,12 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "MULTI_REPORT_BULLETIN",
       "severity": "info",
-      "message_template": "{product} bulletin has multiple TAC reports \u2014 one IWXXM report per TAC (Guidance C1)",
+      "message_template": "{product} bulletin has multiple TAC reports - one IWXXM report per TAC (Guidance C1)",
       "product": null,
       "tags": [
         "bulletin",
@@ -810,7 +1017,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "NCD_PRESENT",
@@ -826,7 +1033,7 @@
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 NCD cloud amount notation family"
+      "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - NCD cloud amount notation family"
     },
     {
       "code": "NIL_REPORT",
@@ -844,7 +1051,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "NOSIG_PRESENT",
@@ -859,7 +1066,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "NO_VA_EXP",
@@ -875,7 +1082,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "NSC_PRESENT",
@@ -893,12 +1100,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "NSC_WITH_CLOUD_LAYERS",
       "severity": "warning",
-      "message_template": "{product} combines NSC (no significant cloud) with FEW/SCT/BKN/OVC cloud layers in the same group \u2014 FAQ \u00a714.3 exclusivity. Warning: conflicting cloud amounts may confuse downstream systems; review before dissemination. Source: ICAO Annex 3 FAQ \u00a714.3. Full normative text may require purchase.",
+      "message_template": "{product} combines NSC (no significant cloud) with FEW/SCT/BKN/OVC cloud layers in the same group - FAQ \u00a714.3 exclusivity. Warning: conflicting cloud amounts may confuse downstream systems; review before dissemination. Source: ICAO Annex 3 FAQ \u00a714.3. Full normative text may require purchase.",
       "product": null,
       "tags": [
         "cloud",
@@ -912,7 +1119,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "NSW_PRESENT",
@@ -929,7 +1136,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "OBS_OR_FCST",
@@ -946,7 +1153,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "ODD_FIELD_ORDER",
@@ -963,7 +1170,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "POINT_LOCATION",
@@ -978,7 +1185,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "POLYGON_LOCATION",
@@ -993,7 +1200,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "PROB_PRESENT",
@@ -1008,12 +1215,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "REMARK_US_EXTENSION",
       "severity": "info",
-      "message_template": "{product} US remarks present \u2014 iwxxm_us profile awareness",
+      "message_template": "{product} US remarks present - iwxxm_us profile awareness",
       "product": null,
       "tags": [
         "remark",
@@ -1024,7 +1231,7 @@
       ],
       "source_id": "fmh-1",
       "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/",
-      "source_attribution": "fmh-1 \u2014 https://nws.weather.gov/schemas/iwxxm-us/3.0/"
+      "source_attribution": "fmh-1 - https://nws.weather.gov/schemas/iwxxm-us/3.0/"
     },
     {
       "code": "RVR_PRESENT",
@@ -1039,7 +1246,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "SIGMET_CNL",
@@ -1054,7 +1261,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "SIGMET_SEQUENCE",
@@ -1068,7 +1275,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "SINGLE_ALTITUDE",
@@ -1082,7 +1289,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "STNR_MOVEMENT",
@@ -1100,12 +1307,12 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "SWXA_FCST_NO_SWX_EXP",
       "severity": "info",
-      "message_template": "SWXA forecast NO SWX EXP \u2014 no space weather expected (F28 theme SX1)",
+      "message_template": "SWXA forecast NO SWX EXP - no space weather expected (F28 theme SX1)",
       "product": "swxa",
       "tags": [
         "forecast",
@@ -1116,12 +1323,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 Table A2-3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 Table A2-3"
     },
     {
       "code": "SWXA_NO_FURTHER_ADVISORIES",
       "severity": "info",
-      "message_template": "SWXA NXT ADVISORY NO FURTHER ADVISORIES \u2014 next time inapplicable (F28 theme SX1)",
+      "message_template": "SWXA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable (F28 theme SX1)",
       "product": "swxa",
       "tags": [
         "next_advisory",
@@ -1131,12 +1338,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 Table A2-3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 Table A2-3"
     },
     {
       "code": "SWXA_RMK_NIL",
       "severity": "info",
-      "message_template": "SWXA RMK NIL \u2014 remarks inapplicable (F28 theme SX1)",
+      "message_template": "SWXA RMK NIL - remarks inapplicable (F28 theme SX1)",
       "product": "swxa",
       "tags": [
         "remarks",
@@ -1147,12 +1354,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 Table A2-3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 Table A2-3"
     },
     {
       "code": "TCA_CB_NIL",
       "severity": "info",
-      "message_template": "TCA CB NIL \u2014 CB missing (F27 theme T1)",
+      "message_template": "TCA CB NIL - CB missing (F27 theme T1)",
       "product": "tca",
       "tags": [
         "cb",
@@ -1163,12 +1370,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "TCA_CYCLONE_UNNAMED",
       "severity": "info",
-      "message_template": "TCA TC UNNAMED \u2014 exceptional name allowed (F27 theme T1)",
+      "message_template": "TCA TC UNNAMED - exceptional name allowed (F27 theme T1)",
       "product": "tca",
       "tags": [
         "tropical_cyclone",
@@ -1179,12 +1386,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "TCA_NO_MSG_EXP",
       "severity": "info",
-      "message_template": "TCA NXT MSG NO MSG EXP \u2014 next time inapplicable (F27 theme T1)",
+      "message_template": "TCA NXT MSG NO MSG EXP - next time inapplicable (F27 theme T1)",
       "product": "tca",
       "tags": [
         "next_advisory",
@@ -1194,12 +1401,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "TCA_RMK_NIL",
       "severity": "info",
-      "message_template": "TCA RMK NIL \u2014 remarks inapplicable (F27 theme T1)",
+      "message_template": "TCA RMK NIL - remarks inapplicable (F27 theme T1)",
       "product": "tca",
       "tags": [
         "remarks",
@@ -1210,7 +1417,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "TC_CB_GEOMETRY",
@@ -1225,7 +1432,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "TC_CYCLONE_IDENTITY",
@@ -1240,7 +1447,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "TEMPO_PRESENT",
@@ -1258,7 +1465,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "TL_PRESENT",
@@ -1273,7 +1480,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "TOP_ABV_OR_BLW",
@@ -1290,7 +1497,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "TX_TN_PRESENT",
@@ -1304,7 +1511,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "UNKNOWN_PRODUCT",
@@ -1316,7 +1523,7 @@
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/",
-      "source_attribution": "codes-wmo-int \u2014 access:N/A \u2014 https://codes.wmo.int/ \u2014 Intentional bare root \u2014 not a registry notation check"
+      "source_attribution": "codes-wmo-int - access:N/A - https://codes.wmo.int/ - Intentional bare root \u2014 not a registry notation check"
     },
     {
       "code": "UNKNOWN_WMO_MEMBERSHIP",
@@ -1333,12 +1540,70 @@
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
-      "source_attribution": "codes-wmo-int \u2014 https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf \u2014 Validated: tac-validate membership gate vs harvested wmo_membership.json"
+      "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Validated: tac-validate membership gate vs harvested wmo_membership.json"
+    },
+    {
+      "code": "US_SWXA_SATCOM_NOT_ISSUED",
+      "severity": "error",
+      "message_template": "{product} SATCOM space weather is not issued under US_FAA_NWS",
+      "product": "SWXA",
+      "tags": [
+        "swxa",
+        "iwxxm_us",
+        "us_faa_nws",
+        "satcom"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": "access:gap - Backfilled from ISSUE_CATALOG membership"
+    },
+    {
+      "code": "US_TAF_BECMG_FORBIDDEN",
+      "severity": "error",
+      "message_template": "{product} BECMG change group is forbidden under US_FAA_NWS",
+      "product": "TAF",
+      "tags": [
+        "taf",
+        "iwxxm_us",
+        "us_faa_nws"
+      ],
+      "source_id": "fmh-1",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html",
+      "source_attribution": "fmh-1 - https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html - US TAF does not use BECMG change groups (FAA GEN 1.7 / national overlay)"
+    },
+    {
+      "code": "US_TAF_TEMPO_MAX_4H",
+      "severity": "error",
+      "message_template": "{product} TEMPO change group exceeds 4-hour US_FAA_NWS maximum",
+      "product": "TAF",
+      "tags": [
+        "taf",
+        "iwxxm_us",
+        "us_faa_nws"
+      ],
+      "source_id": "fmh-1",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html",
+      "source_attribution": "fmh-1 - https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html - US TAF TEMPO groups limited to 4 hours (national overlay)"
+    },
+    {
+      "code": "US_TCA_OBSERVED_CB_NOT_PROVIDED",
+      "severity": "error",
+      "message_template": "{product} observed CB must be NIL under US_FAA_NWS - observed CB not provided",
+      "product": "TCA",
+      "tags": [
+        "tca",
+        "iwxxm_us",
+        "us_faa_nws",
+        "cb"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": "access:gap - Backfilled from ISSUE_CATALOG membership"
     },
     {
       "code": "VAA_FCST_NO_VA_EXP",
       "severity": "info",
-      "message_template": "VAA forecast NO VA EXP \u2014 status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)",
+      "message_template": "VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)",
       "product": "vaa",
       "tags": [
         "forecast",
@@ -1349,12 +1614,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "VAA_NO_FURTHER_ADVISORIES",
       "severity": "info",
-      "message_template": "VAA NXT ADVISORY NO FURTHER ADVISORIES \u2014 next time inapplicable (F26 theme V1)",
+      "message_template": "VAA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable (F26 theme V1)",
       "product": "vaa",
       "tags": [
         "next_advisory",
@@ -1364,12 +1629,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "VAA_RMK_NIL",
       "severity": "info",
-      "message_template": "VAA RMK NIL \u2014 remarks inapplicable (F26 theme V1)",
+      "message_template": "VAA RMK NIL - remarks inapplicable (F26 theme V1)",
       "product": "vaa",
       "tags": [
         "remarks",
@@ -1380,12 +1645,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "VAA_VOLCANO_UNKNOWN",
       "severity": "info",
-      "message_template": "VAA VOLCANO UNKNOWN \u2014 exceptional name allowed (F26 theme V1)",
+      "message_template": "VAA VOLCANO UNKNOWN - exceptional name allowed (F26 theme V1)",
       "product": "vaa",
       "tags": [
         "volcano",
@@ -1396,12 +1661,12 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "VAA_VOLCANO_UNNAMED",
       "severity": "info",
-      "message_template": "VAA VOLCANO UNNAMED \u2014 exceptional name allowed (F26 theme V1)",
+      "message_template": "VAA VOLCANO UNNAMED - exceptional name allowed (F26 theme V1)",
       "product": "vaa",
       "tags": [
         "volcano",
@@ -1412,7 +1677,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 2 A2-1/A2-2"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 2 A2-1/A2-2"
     },
     {
       "code": "VA_ASH_GEOMETRY",
@@ -1427,7 +1692,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "VA_CNL_FIR_MOVED",
@@ -1444,7 +1709,7 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "VA_VOLCANO_IDENTITY",
@@ -1459,12 +1724,12 @@
       ],
       "source_id": "icao-eur-doc-014",
       "source_url": "https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf",
-      "source_attribution": "icao-eur-doc-014 \u2014 https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf \u2014 EUR Doc 014 public; Annex 3 paywall companion"
+      "source_attribution": "icao-eur-doc-014 - https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/014%20-%20EUR%20SIGMET%20and%20AIRMET%20Guide/EUR-Doc-14-EN-5th-Ed-2023-rev-Dec23-clean.pdf - EUR Doc 014 public; Annex 3 paywall companion"
     },
     {
       "code": "VONA_DUR_NIL",
       "severity": "info",
-      "message_template": "VONA DUR NIL \u2014 duration omitted (F32 theme V1)",
+      "message_template": "VONA DUR NIL - duration omitted (F32 theme V1)",
       "product": "vona",
       "tags": [
         "duration",
@@ -1475,12 +1740,12 @@
       ],
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
-      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual; AHL/FM205/XSD cites ok"
+      "source_attribution": "vona-ahl-fm205 - vendor:documentation/webpages/AHL.asciidoc - Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     {
       "code": "VONA_ONSET_NIL",
       "severity": "info",
-      "message_template": "VONA ONSET NIL \u2014 onsetTime omitted (F32 theme V1)",
+      "message_template": "VONA ONSET NIL - onsetTime omitted (F32 theme V1)",
       "product": "vona",
       "tags": [
         "onset",
@@ -1491,7 +1756,7 @@
       ],
       "source_id": "vona-ahl-fm205",
       "source_url": "vendor:documentation/webpages/AHL.asciidoc",
-      "source_attribution": "vona-ahl-fm205 \u2014 vendor:documentation/webpages/AHL.asciidoc \u2014 Guidance silent residual; AHL/FM205/XSD cites ok"
+      "source_attribution": "vona-ahl-fm205 - vendor:documentation/webpages/AHL.asciidoc - Guidance silent residual; AHL/FM205/XSD cites ok"
     },
     {
       "code": "VV_NOT_OBSERVABLE",
@@ -1507,7 +1772,7 @@
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",
-      "source_attribution": "codes-wmo-int \u2014 https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt \u2014 Vertical visibility missingness via nil"
+      "source_attribution": "codes-wmo-int - https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt - Vertical visibility missingness via nil"
     },
     {
       "code": "VV_OMIT",
@@ -1522,7 +1787,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 App 5 / Table A5-1"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
     },
     {
       "code": "WIND_DIR_VARIATION",
@@ -1537,7 +1802,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "WIND_VRB_OR_GUST",
@@ -1552,7 +1817,7 @@
       ],
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
-      "source_attribution": "icao-annex-3 \u2014 access:paywall \u2014 https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 \u2014 Table A3-2 / App 3"
+      "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3"
     },
     {
       "code": "WX_NOT_OBSERVABLE",
@@ -1567,7 +1832,7 @@
       ],
       "source_id": "codes-wmo-int",
       "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",
-      "source_attribution": "codes-wmo-int \u2014 https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt \u2014 nilReason notObservable; prefer iwxxm/nil when pin policy says so"
+      "source_attribution": "codes-wmo-int - https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt - nilReason notObservable; prefer iwxxm/nil when pin policy says so"
     }
   ]
 }

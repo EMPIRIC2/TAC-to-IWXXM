@@ -1,0 +1,680 @@
+# Profile source catalog — machine index (EV-063 / #913)
+# Corpus: domain-profiles · ADR-036 §7
+# Human stubs: semantic/*.md · exchange/*.md
+schema_version: 1
+cycle: EV-094
+updated: "2026-08-31"
+
+priority_legend:
+  P0: "Baseline — implemented or default exchange overlay (F35)"
+  P1: "First national rollout targets (F36 spine: US deepen → CA_ECCC)"
+  P2: "Planned nationals / regional exchange — gaps explicit, not blocking F35"
+
+access_tier:
+  public: "Freely fetchable without license purchase"
+  paywall: "Licensed / store purchase — cite section only in repo"
+  gap: "Authoritative SoT not yet triaged or URL unstable"
+
+profiles:
+  # --- Semantic (TAC → IWXXM) ---
+
+  - id: ICAO_2025
+    kind: semantic
+    priority: P0
+    status: implemented
+    legacy_alias: annex3
+    emit_key: annex3
+    implementation:
+      package: packages/tac2iwxxm
+      registry: profile_registry.py
+      issue: "#914"
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA, VONA]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → iwxxm v2025-2
+    sources:
+      - url: https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1
+        label: ICAO Annex 3 (SARPs)
+        access: paywall
+        proves: TAC templates, issue criteria, dual IWXXM dissemination shall
+      - url: https://schemas.wmo.int/iwxxm/2025-2/
+        label: WMO IWXXM 2025-2 schemas
+        access: public
+        proves: IWXXM encode/validate SoT
+      - url: https://github.com/wmo-im/iwxxm
+        label: wmo-im/iwxxm
+        access: public
+        proves: XSD + Schematron upstream
+      - url: https://community.wmo.int/media/news/services-aviation-newsletter-issue-22025-december-2025
+        label: WMO Aviation Newsletter 2/2025
+        access: public
+        proves: Annex 3 Amd 82 / PANS-MET / IWXXM 2025-2 context
+    mining_notes:
+      - docs/domain/mining/icao-annex-3-mining-notes.md
+      - docs/domain/mining/iwxxm-2025-2-reference-set-mining-notes.md
+      - docs/domain/mining/WMO-306-vI-3-2023-mining-notes.md
+    stub: semantic/ICAO_2025.md
+    gaps: []
+
+  - id: US_FAA_NWS
+    kind: semantic
+    priority: P0
+    status: implemented
+    legacy_alias: iwxxm_us
+    emit_key: iwxxm_us
+    implementation:
+      package: packages/tac2iwxxm
+      module: profiles/iwxxm_us.py
+      deepen_issue: "#919"
+    products: [METAR, SPECI, SIGMET, AIRMET]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → iwxxm v2025-2
+      iwxxm-us: vendor/manifest.json → iwxxm-us 3.0
+    sources:
+      - url: https://www.icams-portal.gov/resources/ofcm/fmh/FMH1/fmh1_2019.pdf
+        label: FMH-1 (2019) — Surface Weather Observations
+        access: public
+        proves: US METAR/SPECI body + RMK grammar
+      - url: https://nws.weather.gov/schemas/iwxxm-us/3.0/
+        label: IWXXM-US 3.0 schemas
+        access: public
+        proves: National IWXXM extensions (RMK, US elements)
+      - url: https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html
+        label: FAA GEN 1.7 differences
+        access: public
+        proves: US differences from ICAO baseline
+    mining_notes:
+      - docs/domain/mining/fmh1-2019-mining-notes.md
+      - docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md
+    stub: semantic/US_FAA_NWS.md
+    gaps:
+      - FMH-1 §12.7.2 additive RMK (T/P/6/7/$, ice accretion, sensor status) — post-#919; no profile-pack fixtures (EV-085 M21 waived)
+      - M14 / #1025 `iwxxm_us` → `US_FAA_NWS` alias cutover — deferred 2026-10-31
+      - codes.nws.noaa.gov/FMH-1 registry probe timed out 2026-07-14
+    acceptance:
+      issue: "#919"
+      status: closed
+      cycle: EV-085
+      waived:
+        - M14 alias cutover (#1025 → 2026-10-31)
+        - FMH-1 §12.7.2 full additive RMK matrix (no mined fixtures)
+
+  - id: CA_ECCC
+    kind: semantic
+    priority: P1
+    status: implemented
+    emit_key: ca_eccc
+    implementation:
+      issue: "#916"
+      package: packages/tac2iwxxm
+      module: profiles/ca_eccc.py
+      validate_profile: ca_eccc
+    products: [METAR, SPECI, TAF, AIRMET, SIGMET, VAA]
+    # MANOBS surface reports: METAR/SPECI are ICAO TAC leads; LWIS/SAWR are Canadian-only
+    # substitution-group roots in metar-speci-ca.xsd (not separate API product enums).
+    metar_family_variants:
+      - tac_lead: METAR
+        api_product: METAR
+        iwxxm_root: "iwxxm:METAR"
+        rule_id_prefix: CA.METAR
+      - tac_lead: SPECI
+        api_product: SPECI
+        iwxxm_root: "iwxxm:SPECI"
+        rule_id_prefix: CA.SPECI
+      - tac_lead: LWIS
+        api_product: METAR
+        iwxxm_root: "iwxxm-ca:LWIS"
+        rule_id: CA.METAR.LWIS
+        manobs: "MANOBS 8 Chap 11.3; TC AIM MET 8.5.2"
+        notes: Limited Weather Information System — minimal obs (wind/temp/dew/altimeter)
+      - tac_lead: SAWR
+        api_product: METAR
+        iwxxm_root: "iwxxm-ca:SAWR"
+        rule_id: CA.METAR.SAWR
+        notes: Surface Aviation Weather Report — full aerodrome obs + CA Addendum
+    metar_speci_ca_addendum:
+      - element: observingSystemType
+        rule_ids: [CA.METAR.AUTO, CA.METAR.LWIS, CA.METAR.SAWR]
+      - element: densityAltitude
+        tac_remark: "DENSITY ALT ####FT"
+      - element: icing
+        tac_remark: "ICE LGT|TRC|MOD|SEV|HVY"
+        rule_id: CA.METAR.RMK.ICING
+      - element: processedQuantity
+        tac_remark: "P/6/7 precip totals (shared IR with iwxxm_us)"
+      - element: seaLevelPressure
+        rule_id: CA.METAR.RMK.SLP_T
+      - element: pressureChangeIndicator
+        rule_ids: [CA.METAR.RMK.PRESFR, CA.METAR.RMK.PRESRR]
+    vendor_pins:
+      iwxxm-ca: vendor/manifest.json → iwxxm-ca 3.0
+      iwxxm-core: vendor/schemas/iwxxm/3.0.0 (MSC operational line)
+    sources:
+      - url: https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html
+        label: MANOBS — Surface Weather Observations
+        access: public
+        proves: Canadian METAR/SPECI observing and coding
+      - url: https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html
+        label: MANAIR 8th Ed. — Aviation Weather Forecasts
+        access: public
+        proves: Canadian TAF/AIRMET standards
+      - url: https://dd.weather.gc.ca/today/aviation/iwxxm/schema/
+        label: MSC IWXXM-CA XSD tree
+        access: public
+        proves: iwxxm-ca.xsd, common-ca.xsd, taf-ca.xsd, airmet-ca.xsd
+      - url: https://eccc-msc.github.io/open-data/msc-data/aviation/iwxxm/readme_aviation-iwxxm-datamart_en/
+        label: MSC aviation IWXXM datamart readme (EN)
+        access: public
+        proves: Operational IWXXM 3.0.0 + CA extensions + products
+      - url: https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/
+        label: MSC IWXXM code-ca vocabularies
+        access: public
+        proves: Canadian AIRMET/TAF/METAR controlled vocabularies
+      - url: https://dd.weather.gc.ca/today/aviation/iwxxm/doc/
+        label: MSC IWXXM implementation documentation
+        access: public
+        proves: Canadian IWXXM implementation detail
+    mining_notes:
+      - docs/domain/mining/manobs-manair-ca-mining-notes.md
+      - docs/domain/mining/eccc-iwxxm-ca-mining-notes.md
+    stub: semantic/CA_ECCC.md
+    gaps:
+      - Extended Canadian-only remark flags (CONTRAILS/AURORA) in structured Addendum
+      - AerodromeVariableRVR / ObservedLightning (P2 / #1039)
+      - Layered ca_eccc validation stack — EV-068 / #1035 (+ #1027 bundle wire) **done**
+      - code-ca vocabulary membership stage — #1033 **done (EV-069)**
+      - SIGMET/VAA TAC convert overlay — out of EV-074; validate-first SIGMET ops in EV-074 / #1043; VAA harvest deferred (D-EV074-vaa-follow, no MSC VAA tree at pin)
+    validation_stages:
+      - id: wellformed
+        label: Well-formed XML
+      - id: wmo_xsd
+        label: WMO IWXXM 3.0.0 schema
+      - id: wmo_schematron
+        label: WMO IWXXM 3.0.0 rules
+      - id: ca_xsd
+        label: Canadian extension schema
+        product_xsd:
+          METAR: metar-speci-ca.xsd
+          SPECI: metar-speci-ca.xsd
+          TAF: taf-ca.xsd
+          AIRMET: airmet-ca.xsd
+          # SIGMET/VAA: no published *-ca XSD — skip ca_xsd as not-applicable (EV-074 / #1043)
+      - id: code_ca
+        label: Canadian code lists
+        issue: "#1033"
+      - id: exchange
+        label: Exchange packaging checks
+        optional: true
+        issue: "#1032"
+    exchange_output:
+      issue: "#1032"
+      status: implemented
+      closeout: "EV-075 verified closed 2026-08-24 — aerodrome products + COLLECT + ops"
+      ev_cycle: EV-071
+      iwxxm_version_pin: "3.0.0"
+      file_naming_pattern: "A_{TTAAiiCCCCYYGGggBBB}_C_{CCC}_{YYYYMMddhhmmss}.xml"
+      distribution_path_template: "https://dd.meteo.gc.ca/today/aviation/iwxxm/{product}/{issuer_code}/{HH}"
+      wmo_header_templates:
+        METAR: "A_LACN"
+        SPECI: "A_LPCN"
+        TAF: "A_LTCN"
+        AIRMET: "A_LWCN"
+        SIGMET: "A_LSCN"  # also A_LYCN (TC), A_LVCN (VA)
+        VAA: "A_LUCN"
+      ev072_slice: [METAR, SPECI, TAF, AIRMET]
+      ev076_slice: [SIGMET]
+      ev074_validate_first: [VAA]
+      ev074_validate_first_note: "VAA validate-first via Montreal VAAC TAC (D-EV074-vaa-waiver-tac); datamart vaa/ absent; exchange emit deferred; SIGMET emit EV-076 / #1061"
+      vaac_tac_harvest_script: scripts/iwxxm/harvest_ca_eccc_vaac_tac.py
+      collect_envelope:
+        issue: "#1032"
+        status: implemented
+        ev_cycle: EV-073
+      ops_corpus:
+        issue: "#1036"
+        status: implemented
+        ev_cycle: EV-072
+        pin_date: "2026-08-24"
+        harvest_script: scripts/iwxxm/harvest_ca_eccc_ops.py
+        manifest: packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json
+      translation_metadata:
+        issue: "#1040"
+        required_when_profile: true
+        config_keys:
+          - translation_centre_id
+          - translation_service_name
+
+  - id: AU_BOM
+    kind: semantic
+    priority: P1
+    status: in_progress
+    emit_key: au_bom
+    implementation:
+      issue: "#917"
+      package: packages/tac2iwxxm
+      cycle: EV-087
+    products: [TAF, METAR, SPECI]
+    # TAF3 is an RMK service marker under product=TAF (D-EV087-taf3) — not a separate API product enum.
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no AU national extension published)
+    sources:
+      - url: https://www.bom.gov.au/aviation/forecasts/international-taf/
+        label: BoM International TAF guidance
+        access: public
+        proves: INTER examples, RMK T/Q context
+      - url: http://www.bom.gov.au/aviation/data/education/taf-metar-speci-reference-card.pdf
+        label: BoM TAF and METAR/SPECI reference card
+        access: public
+        proves: INTER vs TEMPO durations; T/Q RMK; TAF3 marker; AUTO NCD/UP/solidi
+      - url: https://www.bom.gov.au/aviation/taf3/index.shtml
+        label: BoM TAF3 Implementation
+        access: public
+        proves: TAF3 service definition
+      - url: https://www.icao.int/APAC/meetingdocs?fid=38396
+        label: ICAO APAC — Australian TAF extensions WP
+        access: public
+        proves: Regional TAF extension context
+    mining_notes:
+      - docs/domain/mining/au-bom-tac-mining-notes.md
+      - docs/domain/mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md
+    stub: semantic/AU_BOM.md
+    gaps:
+      - No published AU IWXXM extension XSD (core-only emit)
+      - INTER → IWXXM uses TEMPORARY_FLUCTUATIONS + provenance (D-EV087-inter-emit); no native INTER enum
+      - Full BoM category A/B issuance schedule deepen optional
+
+  - id: NZ_CAA_MET
+    kind: semantic
+    priority: P1
+    status: in_progress
+    emit_key: nz_caa_met
+    implementation:
+      issue: "#918"
+      package: packages/tac2iwxxm
+      cycle: EV-087
+    products: [TAF, METAR, SPECI]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no NZ national extension published)
+    sources:
+      - url: https://www.aviation.govt.nz/airspace-and-aerodromes/meteorology/aviation-weather-products/
+        label: NZ CAA aviation weather products
+        access: public
+        proves: Domestic vs international TAF; METAR AUTO policy
+    mining_notes:
+      - docs/domain/mining/nz-caa-met-tac-mining-notes.md
+    stub: semantic/NZ_CAA_MET.md
+    gaps:
+      - No published NZ IWXXM extension XSD (core-only emit)
+      - Domestic 2000FT WIND / QNH MNM/MAX → remarks unless core mapping attested (D-EV087-nz-domestic)
+      - Additional CAA/AIP PDF durable URLs to harden after local PDF harvest
+
+  # --- Thin/compat nationals (#920 / EV-089) — extend ICAO_2025; no national XSD ---
+
+  - id: UK_METOFFICE
+    kind: semantic
+    priority: P2
+    status: implemented
+    emit_key: uk_metoffice
+    locale: [en]
+    issuing_body: UK Met Office / CAA
+    implementation:
+      issue: "#1098"
+      prior_issue: "#920"
+      package: packages/tac2iwxxm
+      cycle: EV-094
+      path: thin
+    products: [METAR, SPECI, TAF]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no UK national extension published)
+    sources:
+      - url: https://www.caa.co.uk/our-work/publications/documents/content/cap746/
+        label: UK CAA CAP 746 — Meteorological observations at aerodromes
+        access: public
+        proves: UK METAR/SPECI/TAF conventions vs Annex 3
+      - url: https://www.metoffice.gov.uk/services/transport/aviation
+        label: Met Office aviation services
+        access: public
+        proves: Operational UK aviation MET context
+      - url: https://aviationweather.gov/api/data/metar?ids=EGLL&format=raw
+        label: AWC METAR API — EGLL attributed fixture (EV-094 M1)
+        access: public
+        proves: Real civil METAR corpus for convert smoke
+      - url: https://aviationweather.gov/api/data/taf?ids=EGLL&format=raw
+        label: AWC TAF API — EGLL attributed fixture (EV-094 M1)
+        access: public
+        proves: Real civil TAF corpus for convert smoke
+    mining_notes:
+      - docs/domain/mining/uk-metoffice-tac-mining-notes.md
+    stub: semantic/UK_METOFFICE.md
+    overrides: []
+    gaps:
+      - No published UK IWXXM extension XSD (core-only emit)
+      - Attributed real SPECI corpus pending (SPECI fixture remains synthetic_ev089)
+      - Local ATIS / special ATS deltas → fixtures only unless override evidence appears
+
+  - id: BR_DECEA
+    kind: semantic
+    priority: P2
+    status: implemented
+    emit_key: br_decea
+    locale: [pt, en]
+    issuing_body: DECEA / ANAC (Brazil)
+    implementation:
+      issue: "#1098"
+      prior_issue: "#920"
+      package: packages/tac2iwxxm
+      cycle: EV-094
+      path: thin
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET]
+    # GAMET: parse-only fixtures only — not in convert product allowlist (D-EV094-gamet)
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no BR national extension published)
+    sources:
+      - url: https://www2.anac.gov.br/
+        label: ANAC (Brazil civil aviation authority)
+        access: public
+        proves: Institutional MET/AIM context
+      - url: https://aisweb.decea.mil.br/
+        label: DECEA AISWEB
+        access: public
+        proves: Brazilian AIP / AIS access for MET product policy
+      - url: https://aviationweather.gov/api/data/metar?ids=SBGR&format=raw
+        label: AWC METAR API — SBGR attributed fixture (EV-094 M2)
+        access: public
+        proves: Real civil METAR corpus for convert smoke
+      - url: https://aviationweather.gov/api/data/taf?ids=SBGR&format=raw
+        label: AWC TAF API — SBGR attributed fixture (EV-094 M2)
+        access: public
+        proves: Real civil TAF corpus for convert smoke
+    mining_notes:
+      - docs/domain/mining/br-decea-tac-mining-notes.md
+    stub: semantic/BR_DECEA.md
+    overrides: []
+    gaps:
+      - No published BR IWXXM extension XSD (core-only emit)
+      - GAMET TAC fixtures parse-only — no IWXXM emit (D-EV094-gamet)
+      - Attributed real SPECI / Brazilian FIR SIGMET / AIRMET corpora pending (synthetic_ev089)
+      - "SAM / CAR_SAM exchange packaging deepen stays on #921 (note only here)"
+  - id: KR_KMA
+    kind: semantic
+    priority: P2
+    status: implemented
+    emit_key: kr_kma
+    locale: [ko, en]
+    issuing_body: Korea Meteorological Administration (KMA)
+    implementation:
+      issue: "#1098"
+      prior_issue: "#920"
+      package: packages/tac2iwxxm
+      cycle: EV-094
+      path: compat
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no KR national extension published)
+    sources:
+      - url: https://www.kma.go.kr/eng/
+        label: KMA (English)
+        access: public
+        proves: National MET authority context
+      - url: https://aviationweather.gov/api/data/metar?ids=RKSI&format=raw
+        label: AWC METAR API (RKSI)
+        access: public
+        proves: Attributed METAR corpus (EV-094 M3)
+      - url: https://aviationweather.gov/api/data/taf?ids=RKSI&format=raw
+        label: AWC TAF API (RKSI)
+        access: public
+        proves: Attributed TAF corpus (EV-094 M3)
+    mining_notes:
+      - docs/domain/mining/kr-kma-tac-mining-notes.md
+    stub: semantic/KR_KMA.md
+    gaps:
+      - No published KR IWXXM extension XSD (core-only emit)
+      - AIP GEN 3.5 durable URL to harden after harvest
+      - Attributed real SPECI / Korean FIR SIGMET / AIRMET corpora pending (synthetic_ev089)
+      - Automated TAC→IWXXM claim (since ~2017) — verify vs fixtures; no override assumed
+
+  - id: JP_JMA
+    kind: semantic
+    priority: P2
+    status: implemented
+    emit_key: jp_jma
+    locale: [ja, en]
+    issuing_body: Japan Meteorological Agency (JMA) / Tokyo VAAC
+    implementation:
+      issue: "#1098"
+      prior_issue: "#920"
+      package: packages/tac2iwxxm
+      cycle: EV-094
+      path: compat
+    products: [METAR, SPECI, TAF, SIGMET, VAA]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no JP national extension published)
+    sources:
+      - url: https://www.jma.go.jp/jma/indexe.html
+        label: JMA (English)
+        access: public
+        proves: METAR/TAF/SIGMET issuance context
+      - url: https://www.data.jma.go.jp/svd/vaac/data/index.html
+        label: Tokyo VAAC
+        access: public
+        proves: Volcanic ash advisory (VAA) corpus
+      - url: https://aviationweather.gov/api/data/metar?ids=RJTT&format=raw
+        label: AWC METAR API (RJTT)
+        access: public
+        proves: Attributed METAR corpus (EV-094 M4)
+      - url: https://aviationweather.gov/api/data/taf?ids=RJTT&format=raw
+        label: AWC TAF API (RJTT)
+        access: public
+        proves: Attributed TAF corpus (EV-094 M4)
+    mining_notes:
+      - docs/domain/mining/jp-jma-tac-mining-notes.md
+    stub: semantic/JP_JMA.md
+    gaps:
+      - No published JP IWXXM extension XSD (core-only emit)
+      - AIRMET not in v1 allowlist (D-EV089-jp-va)
+      - Attributed real SPECI / Japanese FIR SIGMET / Tokyo VAA corpora pending (synthetic_ev089)
+      - VAA validate/convert depth follows existing ICAO_2025 VA paths — no national VA schema fork
+
+  - id: IN_IMD
+    kind: semantic
+    priority: P2
+    status: implemented
+    emit_key: in_imd
+    locale: [en]
+    issuing_body: India Meteorological Department (IMD)
+    implementation:
+      issue: "#1098"
+      prior_issue: "#920"
+      package: packages/tac2iwxxm
+      cycle: EV-094
+      path: compat
+    products: [METAR, SPECI, TAF, SIGMET]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no IN national extension published)
+    sources:
+      - url: https://mausam.imd.gov.in/
+        label: IMD Mausam portal
+        access: public
+        proves: National MET / aviation forecast context
+      - url: https://aviationweather.gov/api/data/metar?ids=VIDP&format=raw
+        label: AWC METAR API (VIDP)
+        access: public
+        proves: Attributed METAR corpus (EV-094 M5)
+      - url: https://aviationweather.gov/api/data/taf?ids=VIDP&format=raw
+        label: AWC TAF API (VIDP)
+        access: public
+        proves: Attributed TAF without TX/TN (EV-094 M5)
+    mining_notes:
+      - docs/domain/mining/in-imd-tac-mining-notes.md
+    stub: semantic/IN_IMD.md
+    gaps:
+      - No published IN IWXXM extension XSD (IMDIMET unpublished — do not invent)
+      - AIP GEN 3.5 durable URL still gap
+      - "No AIRMET/GAMET in v1 (AIP: not issued)"
+      - SPECI / FIR SIGMET attributed corpora still pending (synthetic_ev089)
+    lint_profile:
+      id: in_imd
+      aliases: [IN_IMD]
+      products: [TAF]
+      intent: "Info awareness when TX/TN omitted (national practice); not a hard error waive"
+      registry_code: IN_TAF_TX_TN_OMITTED
+      cycle: EV-094
+      issue: "#1098"
+
+  - id: HK_HKO
+    kind: semantic
+    priority: P2
+    status: implemented
+    emit_key: hk_hko
+    locale: [en, zh]
+    issuing_body: Hong Kong Observatory (HKO)
+    implementation:
+      issue: "#1098"
+      prior_issue: "#920"
+      package: packages/tac2iwxxm
+      cycle: EV-094
+      path: compat
+    products: [METAR, SPECI, TAF, SIGMET, VAA]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → active core pin (no HK national extension published)
+    sources:
+      - url: https://www.hko.gov.hk/en/index.html
+        label: Hong Kong Observatory
+        access: public
+        proves: METAR/TAF/SIGMET/VAA operational context
+      - url: https://aviationweather.gov/api/data/metar?ids=VHHH&format=raw
+        label: AWC METAR API (VHHH)
+        access: public
+        proves: Attributed METAR corpus (EV-094 M6)
+      - url: https://aviationweather.gov/api/data/taf?ids=VHHH&format=raw
+        label: AWC TAF API (VHHH)
+        access: public
+        proves: Attributed TAF with TX/TN (EV-094 M6) — empty overrides
+    mining_notes:
+      - docs/domain/mining/hk-hko-tac-mining-notes.md
+    stub: semantic/HK_HKO.md
+    overrides: []
+    gaps:
+      - No published HK IWXXM extension XSD (core-only emit)
+      - SPECI / Hong Kong FIR SIGMET / VAA attributed corpora still pending (synthetic_ev089)
+      - AIP GEN 3.5 durable URL still gap
+      - Chinese-language bulletin variants not required for v1 fixtures
+
+  # --- Exchange (packaging / routing — not TAC grammar) ---
+
+  - id: GLOBAL_AFS
+    kind: exchange
+    priority: P0
+    status: implemented
+    implementation:
+      issue: "#921"
+      note: EV-065 — registry + COLLECT packaging on convert-bulletin; fixtures under dissemination/tests/fixtures/profiles/GLOBAL_AFS
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA]
+    sources:
+      - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
+        label: OPMET IWXXM Exchange Guidelines (5th Ed.)
+        access: public
+        proves: COLLECT, FTBP filenames, AMHS profile, translation centre rules
+      - url: https://community.wmo.int/site/knowledge-hub/programmes-and-initiatives/wmo-information-system-wis/about-manual-gts/ahls-aviation-data-over-icao-afs
+        label: WMO — AHL / aviation data over ICAO AFS
+        access: public
+        proves: AHL product type designators
+      - url: https://github.com/wmo-im/iwxxm
+        label: wmo-im/iwxxm COLLECT schemas
+        access: public
+        proves: collect.xsd bulletin aggregation
+    mining_notes:
+      - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
+    stub: exchange/GLOBAL_AFS.md
+    gaps:
+      - FTBP filename generation from AHL deepen (beyond bulletinIdentifier placeholder)
+      - Regional overlay deepen beyond COLLECT stubs (ROBEX/RODEX handbook rules — #913)
+
+  - id: APAC_ROBEX
+    kind: exchange
+    priority: P2
+    status: stub
+    implementation:
+      issue: "#921"
+      note: EV-065 P0 — registry + COLLECT baseline; EV-090 mining promote (OPMET Guidelines + APAC FAQs); ROBEX handbook durable file still gap
+    sources:
+      - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
+        label: OPMET IWXXM Exchange Guidelines (5th Ed.)
+        access: public
+        proves: COLLECT / FTBP / AFS exchange baseline shared with GLOBAL_AFS
+      - url: https://www.icao.int/APAC/apac-electronic-documents
+        label: ICAO APAC electronic documents
+        access: public
+        proves: APAC IWXXM OPMET exchange + ROBEX handbook pointer
+      - url: https://www.icao.int/sites/default/files/APAC/Documents/edocs/MET/2025-03_IWXXM-FAQs_3rd-Ed.pdf
+        label: APAC IWXXM FAQs (3rd Ed.)
+        access: public
+        proves: Regional exchange / COLLECT / translation practice
+    mining_notes:
+      - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
+      - docs/domain/mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md
+    stub: exchange/APAC_ROBEX.md
+    gaps:
+      - ROBEX handbook URL not pinned to a durable file row
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
+
+  - id: EUR_RODEX
+    kind: exchange
+    priority: P2
+    status: stub
+    implementation:
+      issue: "#921"
+      note: EV-086 P0 — registry + COLLECT baseline; EV-090 mining promote (OPMET Guidelines + EUR Doc 14 notes); RODEX handbook URL triage remains gap
+    sources:
+      - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
+        label: OPMET IWXXM Exchange Guidelines (5th Ed.)
+        access: public
+        proves: COLLECT / FTBP / AFS exchange baseline shared with GLOBAL_AFS
+      - url: https://www.icao.int/EUR/EUR%20Documents/RODEX%20Handbook.pdf
+        label: EUR RODEX Handbook (candidate)
+        access: gap
+        proves: European regional exchange overlay
+    mining_notes:
+      - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
+      - docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md
+    stub: exchange/EUR_RODEX.md
+    gaps:
+      - RODEX handbook URL needs triage (redirect / edition pin)
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
+
+  - id: AFI
+    kind: exchange
+    priority: P2
+    status: stub
+    implementation:
+      issue: "#921"
+      note: EV-086 P0 — registry + COLLECT baseline; EV-090 promotes shared OPMET Guidelines baseline; AFI-specific handbook still TBD
+    sources:
+      - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
+        label: OPMET IWXXM Exchange Guidelines (5th Ed.)
+        access: public
+        proves: COLLECT / AFS exchange baseline pending regional handbook
+    mining_notes:
+      - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
+    stub: exchange/AFI.md
+    gaps:
+      - Authoritative AFI-specific exchange rule source not listed in #913 initial mine
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
+
+  - id: CAR_SAM
+    kind: exchange
+    priority: P2
+    status: stub
+    implementation:
+      issue: "#921"
+      note: EV-086 P0 — registry + COLLECT baseline; EV-090 promotes shared OPMET Guidelines baseline; CAR/SAM-specific handbook still TBD
+    sources:
+      - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
+        label: OPMET IWXXM Exchange Guidelines (5th Ed.)
+        access: public
+        proves: COLLECT / AFS exchange baseline pending regional handbook
+    mining_notes:
+      - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
+    stub: exchange/CAR_SAM.md
+    gaps:
+      - Authoritative CAR/SAM-specific exchange rule source not listed in #913 initial mine
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped

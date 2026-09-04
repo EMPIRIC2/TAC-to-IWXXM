@@ -1,4 +1,4 @@
-"""TC-F24-002 / TC-F24-003 — AIRMET annex3 golden (S026 / EV-020 T2.1 / F24 theme A3).
+"""TC-F24-002 / TC-F24-003 - AIRMET annex3 golden (S026 / EV-020 T2.1 / F24 theme A3).
 
 Asserts WMO ``airmet-A6-1a-TS`` is in the annex3 pack, root ``iwxxm:AIRMET``,
 geometry is not nil-only, convert → M-xsd/M-sch, and ``canonicalize_xml`` equals
@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
@@ -53,7 +54,7 @@ def test_tc_f24_002_airmet_root_and_geometry(case_id: str) -> None:
     assert result.ok is True, f"M-parse failed for {case_id}: {result.issues!r}"
     assert "iwxxm:AIRMET" in result.xml
     assert "iwxxm:SIGMET" not in result.xml
-    # TC-F24-002: geometry not nil-only — AirspaceVolume / vertical / horizontal.
+    # TC-F24-002: geometry not nil-only - AirspaceVolume / vertical / horizontal.
     assert "<aixm:AirspaceVolume" in result.xml
     assert "gml:posList" in result.xml or "<gml:pos>" in result.xml
     assert (

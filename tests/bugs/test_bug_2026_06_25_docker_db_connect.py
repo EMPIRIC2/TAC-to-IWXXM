@@ -1,9 +1,9 @@
-"""BUG-2026-06-25 — Docker Compose backend cannot create DB tables (#671).
+"""BUG-2026-06-25 - Docker Compose backend cannot create DB tables (#671).
 
 The local-dev Docker Compose stack shipped no database and passed an empty
 ``DATABASE_URL=${DATABASE_URL:-}`` to the backend. An empty string is falsy in
 Python, so ``get_database_url`` fell back to
-``postgresql+asyncpg://postgres:@localhost:5432/postgres`` — but nothing listens
+``postgresql+asyncpg://postgres:@localhost:5432/postgres`` - but nothing listens
 on ``localhost:5432`` inside the backend container, so startup logged::
 
     Failed to create database tables: Multiple exceptions:
@@ -12,7 +12,7 @@ on ``localhost:5432`` inside the backend container, so startup logged::
 Two defects are guarded here:
 
 1. ``get_database_url`` must treat a blank / whitespace-only ``DATABASE_URL``
-   (or ``SUPABASE_DB_URL``) as unset and emit an actionable warning — never
+   (or ``SUPABASE_DB_URL``) as unset and emit an actionable warning - never
    return the blank value as a connection URL.
 2. ``docker-compose.yml`` must bundle a Postgres ``db`` service and default the
    backend ``DATABASE_URL`` to it (non-empty, not ``localhost``), gated on the
@@ -82,12 +82,12 @@ def _db_service(services: dict) -> dict:
 
     The fix for #671 commits to a service literally named ``db`` (referenced by
     the backend's default ``DATABASE_URL`` and ``depends_on``). Asserting the
-    name explicitly — rather than inferring it from a ``"postgres"`` substring —
+    name explicitly - rather than inferring it from a ``"postgres"`` substring -
     makes the contract clear and failures easy to interpret if it is renamed.
     """
     svc = services.get(DB_SERVICE)
     assert svc is not None, (
-        f"docker-compose.yml defines no '{DB_SERVICE}' service — the backend has "
+        f"docker-compose.yml defines no '{DB_SERVICE}' service - the backend has "
         "no database to connect to (root cause of #671)."
     )
     image = str(svc.get("image", ""))
@@ -122,10 +122,11 @@ def test_backend_database_url_defaults_to_bundled_db() -> None:
     assert backend_url is not None, "backend must receive a DATABASE_URL env var"
     # Must not default to an empty string (the #671 footgun) or localhost.
     assert backend_url not in ("${DATABASE_URL:-}", ""), (
-        "backend DATABASE_URL defaults to an empty string — falls back to "
+        "backend DATABASE_URL defaults to an empty string - falls back to "
         "localhost:5432 where no Postgres listens (#671)."
     )
-    assert "localhost" not in backend_url and "127.0.0.1" not in backend_url
+    assert "localhost" not in backend_url
+    assert "127.0.0.1" not in backend_url
     assert DB_SERVICE in backend_url, (
         f"backend DATABASE_URL default must point at the bundled '{DB_SERVICE}' service"
     )

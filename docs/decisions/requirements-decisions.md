@@ -1,6 +1,73 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-08-17 (S070 / EV-060)
+> Stage: 01-requirements | Last updated: 2026-09-03 (EV-933 / #933)
+
+## EV-933 — ConversionProfile editor (#933)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-933 / UI preview | Accepted | Local `:18000` / `:18001` (non-deployed) | confirmed |
+| EV-933 / Fn | **F7.w** deepen | New F7 subfeature; coordinates F6/ADR-038 | confirmed |
+| EV-933 / users | Operator + admin | JWT | confirmed |
+| EV-933 / overlays | Signed + server-persisted | Product Postgres `DATABASE_URL` + JWT ownership (F30); Auth via Supabase JWT — not PostgREST | confirmed |
+| EV-933 / journeys | **UJ-072** | TC-EV933-001..006; #1024 / drawer must-not-break | confirmed |
+| EV-933 / phasing | M1 rule-pack+inspector → M2 overlays | Same evolve | confirmed |
+| EV-933 / ADR | ADR-038 amend (Planned) | Overlay trust | confirmed |
+| EV-933 / connectivity | H4–H5 when FE deploy | After Build gate | planned |
+
+[Corpus: decisions §EV-933] [Corpus: product §F7.w] [Corpus: api] [Corpus: journeys §UJ-072]
+
+
+## EV-936 — Dissemination ops + Gateway hooks (#936)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-936 / UI preview | Declined | Spec from docs/ADR only | confirmed |
+| EV-936 / Fn | Deepen F16–F19 | No new top-level Fn | confirmed |
+| EV-936 / journeys | **UJ-071** (not UJ-054 — taken by Help) | TC-F16-OPS-001..006; drawer UJ-027–030 unchanged | confirmed |
+| EV-936 / API | JWT plan/audit/mapping/health + execute | Public preflight/send unchanged | confirmed |
+| EV-936 / audit DB | Product Postgres `DATABASE_URL` | Amend C2 Supabase→DO Postgres per F30 | confirmed |
+| EV-936 / UI shape | Ops surface + drawer | Complements one-shot send | confirmed |
+| EV-936 / connectivity | H6′ now; H4–H5 on FE deploy | Staging ack optional later | planned |
+
+[Corpus: decisions §EV-936] [Corpus: product] [Corpus: api] [Corpus: journeys]
+
+
+
+## EV-981 — Propagate decode residuals into remarks / HRT (#981)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-981 / UI preview | Declined (A2) | Spec from docs only | confirmed |
+| EV-981 / Fn | Deepen F6 + F9 + F7.q | No new top-level Fn | confirmed |
+| EV-981 / flag | `propagate_residuals_to_remarks` | multipart convert + convert-bulletin | confirmed |
+| EV-981 / default | Off; omitted → profile default | annex3/ICAO_2025 default off | confirmed |
+| EV-981 / profiles | Wire only this cycle | No non-annex3 defaults enabled | confirmed |
+| EV-981 / journeys | UJ-026 fence + UJ-070 | Flag-on path | confirmed |
+| EV-981 / QM | `residuals_propagated_to_remarks` | Precomputed fixture field + UI | confirmed |
+| EV-981 / ADR | Skip unless feasibility requires | decisions log sufficient | confirmed |
+| EV-981 / connectivity | H4–H5 for FE toggle + QM | After Build gate | planned |
+| EV-981 / annex3 emit | Option 1 — no invented free-text; issue documents no XML target | tech-plan | confirmed |
+| EV-981 / dedup | Residuals not already in remarks retain path | tech-plan | confirmed |
+| EV-981 / convert-zip | Inherit Form field | tech-plan | confirmed |
+
+[Corpus: decisions §EV-981] [Corpus: product] [Corpus: api] [Corpus: journeys]
+
+
+
+## EV-095 — Portable EM plugin/MCP paths (#1095)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-095 / refresh | Re-run `install-workspace.sh` | Upstream #106 portable template | confirmed |
+| EV-095 / mcp.json | Keep tracked + `${userHome}` | No gitignore overlay | confirmed |
+| EV-095 / missing | Empty `pluginPaths` + stderr | Fail-open workspaceOpen | confirmed |
+| EV-095 / guard | `scripts/ci/` + validate-fast/CI | Fail on `/Users/` `/home/<user>/` in tracked `.cursor` | confirmed |
+| EV-095 / docs | `ev-095-em-portable-paths.md` + ENGINEERING-MEMORY rewrite | No product CORPUS Fn | confirmed |
+| EV-095 / UI | N/A | DX tooling only | confirmed |
+
+[Corpus: decisions §EV-095]
+
 
 ## EV-060 / S070 — Converter operator bugs + IWXXM pass-through (#1000) (`D-S070-e9`)
 

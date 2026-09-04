@@ -10,36 +10,26 @@ Supports both offline (RDF files) and online (codes.wmo.int) validation.
 
 import logging
 import xml.etree.ElementTree as ET
-from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Dict, List, Set, Tuple
+from typing import cast
 
-import lxml.etree as etree
+from ..config.validation import ValidationSettings, get_validation_settings
+from ..schemas.validation import CodelistValidationResult, ValidationIssue, ValidationLayer, ValidationSeverity
+from ..utilities.xml_types import XmlElement
+from ..utilities.xml_types import lxml_etree as etree
 
 try:
     import requests
-
-    REQUESTS_AVAILABLE = True
 except ImportError:
     requests = None  # type: ignore[assignment,misc]
-    REQUESTS_AVAILABLE = False
-    logger = logging.getLogger(__name__)
-    logger.warning("requests library not available, online validation disabled")
 
-from ..schemas.validation import ValidationIssue, ValidationLayer, ValidationSeverity
+REQUESTS_AVAILABLE = requests is not None
 
 logger = logging.getLogger(__name__)
 
-
-@dataclass
-class CodelistValidationResult:
-    """Result of codelist validation."""
-
-    is_valid: bool
-    issues: List[ValidationIssue]
-    total_references: int = 0
-    invalid_references: int = 0
+if not REQUESTS_AVAILABLE:
+    logger.warning("requests library not available, online validation disabled")
 
 
 class CodeListParser:
@@ -53,7 +43,7 @@ class CodeListParser:
     local RDF files are missing or when enabled via settings.
     """
 
-    def __init__(self, codelists_dir: Path, settings=None):
+    def __init__(self, codelists_dir: Path, settings: ValidationSettings | None = None) -> None:
         """
         Initialize parser for a specific code lists directory.
 
@@ -62,27 +52,28 @@ class CodeListParser:
             settings: Optional ValidationSettings instance
         """
         self.codelists_dir = codelists_dir
-        self._cache: Dict[str, Set[str]] = {}
+        self._cache: dict[str, set[str]] = {}
         self._loaded = False
 
         # Online validation cache: {url: (issue, timestamp)}
-        self._online_cache: Dict[str, Tuple[ValidationIssue, datetime]] = {}
+        self._online_cache: dict[str, tuple[ValidationIssue, datetime]] = {}
 
         # Load settings
         if settings is None:
             try:
-                from ..config.validation import get_validation_settings
-
                 self.settings = get_validation_settings()
             except ImportError:
                 # Fallback if config not available
                 from types import SimpleNamespace
 
-                self.settings = SimpleNamespace(
-                    wmo_online_validation=False,
-                    wmo_validation_timeout=5,
-                    wmo_registry_cache_ttl=3600,
-                    wmo_registry_url="https://codes.wmo.int",
+                self.settings = cast(
+                    ValidationSettings,
+                    SimpleNamespace(
+                        wmo_online_validation=False,
+                        wmo_validation_timeout=5,
+                        wmo_registry_cache_ttl=3600,
+                        wmo_registry_url="https://codes.wmo.int",
+                    ),
                 )
         else:
             self.settings = settings
@@ -138,12 +129,12 @@ class CodeListParser:
             # Extract codelist name from filename (e.g., codes.wmo.int-49-2-Weather.rdf → Weather)
             codelist_name = rdf_file.stem.split("-")[-1] if "-" in rdf_file.stem else rdf_file.stem
 
-            codes: Set[str] = set()
+            codes: set[str] = set()
 
             # Find all Concept elements (SKOS vocabulary)
             for concept in root.findall(".//skos:Concept", namespaces):
                 # Get rdf:about attribute (the URI)
-                about = concept.get("{%s}about" % namespaces["rdf"])
+                about = concept.get("{{{}}}about".format(namespaces["rdf"]))
                 if about:
                     # Extract just the code/value part
                     code = about.split("/")[-1]
@@ -161,7 +152,7 @@ class CodeListParser:
         except Exception as e:
             logger.error(f"Error parsing RDF file {rdf_file}: {e}")
 
-    def get_codes(self, codelist_name: str) -> Set[str]:
+    def get_codes(self, codelist_name: str) -> set[str]:
         """
         Get allowed codes for a specific code list.
 
@@ -190,13 +181,13 @@ class CodeListParser:
         allowed_codes = self.get_codes(codelist_name)
         return code_value in allowed_codes
 
-    def list_codelists(self) -> List[str]:
+    def list_codelists(self) -> list[str]:
         """Get list of available code lists."""
         if not self._loaded:
             self.load_codelists()
         return sorted(self._cache.keys())
 
-    def _extract_codelist_references(self, xml_tree: etree._Element) -> List[Tuple[str, str, str]]:
+    def _extract_codelist_references(self, xml_tree: XmlElement) -> list[tuple[str, str, str]]:
         """
         Extract all xlink:href code list references from XML.
 
@@ -206,7 +197,7 @@ class CodeListParser:
         Returns:
             List of tuples: (href_url, codelist_name, xpath_location)
         """
-        references = []
+        references: list[tuple[str, str, str]] = []
 
         # Namespaces
         namespaces = {
@@ -214,14 +205,16 @@ class CodeListParser:
         }
 
         # Find all xlink:href attributes
-        elements_with_href = xml_tree.xpath("//*[@xlink:href]", namespaces=namespaces)
+        tree = xml_tree
+        elements_with_href = tree.xpath("//*[@xlink:href]", namespaces=namespaces)
 
         for elem in elements_with_href:
-            href = elem.get("{http://www.w3.org/1999/xlink}href")
+            elem_node = elem
+            href = elem_node.get("{http://www.w3.org/1999/xlink}href")
 
             # Only process WMO code list URLs (not internal #id references)
             if href and "codes.wmo.int" in href:
-                xpath = xml_tree.getroottree().getpath(elem)
+                xpath = tree.getroottree().getpath(elem)
 
                 # Extract codelist name from URL
                 # e.g., http://codes.wmo.int/49-2/AerodromeRecentWeather → AerodromeRecentWeather
@@ -246,7 +239,7 @@ class CodeListParser:
         Returns:
             CodelistValidationResult with validation outcomes
         """
-        issues = []
+        issues: list[ValidationIssue] = []
 
         try:
             # Ensure codelists are loaded
@@ -260,7 +253,7 @@ class CodeListParser:
                 issue = ValidationIssue(
                     layer=ValidationLayer.WMO_CODELISTS,
                     level=ValidationSeverity.ERROR,
-                    message=f"XML parsing failed: {str(e)}",
+                    message=f"XML parsing failed: {e!s}",
                     code="XML_SYNTAX_ERROR",
                 )
                 issues.append(issue)
@@ -336,7 +329,7 @@ class CodeListParser:
             issue = ValidationIssue(
                 layer=ValidationLayer.WMO_CODELISTS,
                 level=ValidationSeverity.ERROR,
-                message=f"Validation error: {str(e)}",
+                message=f"Validation error: {e!s}",
                 code=type(e).__name__,
             )
             issues.append(issue)
@@ -454,7 +447,7 @@ class CodeListParser:
             return ValidationIssue(
                 layer=ValidationLayer.WMO_CODELISTS,
                 level=ValidationSeverity.WARNING,
-                message=f"Online validation failed: {str(e)}",
+                message=f"Online validation failed: {e!s}",
                 location=xpath,
                 code="CODELIST_ONLINE_FAILED",
             )
@@ -483,7 +476,7 @@ class CodeListParser:
             }
 
             # Find status element
-            status_elems = root.xpath(".//reg:status/@rdf:resource", namespaces=namespaces)
+            status_elems = cast(list[str], root.xpath(".//reg:status/@rdf:resource", namespaces=namespaces))
             if status_elems:
                 status_url = status_elems[0]
                 # Extract last part: .../reg-status/valid -> "valid"
@@ -510,8 +503,8 @@ class CodeListRegistry:
     Maintains separate CodeListParser instances for each IWXXM version.
     """
 
-    def __init__(self):
-        self._parsers: Dict[str, CodeListParser] = {}
+    def __init__(self) -> None:
+        self._parsers: dict[str, CodeListParser] = {}
 
     def get_parser(self, version: str, codelists_dir: Path) -> CodeListParser:
         """

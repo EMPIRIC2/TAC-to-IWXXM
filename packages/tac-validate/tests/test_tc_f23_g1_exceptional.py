@@ -1,4 +1,4 @@
-"""F23 / G1 — general SIGMET exceptional accept + negatives (TC-F23-004).
+"""F23 / G1 - general SIGMET exceptional accept + negatives (TC-F23-004).
 
 HARD theme G1 from sigmet-research-catalog.md / #733 exceptional-rule table.
 T1.1 fixtures + assertions; T1.2 encodes registry rows + rules.
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

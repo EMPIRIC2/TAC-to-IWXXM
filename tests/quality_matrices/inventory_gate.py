@@ -1,7 +1,7 @@
 """F29 / #831 inventory gate (EV-030 T1.6).
 
 Ensures every in-scope pilot rule has an explicit 20-slot matrix
-(``ready`` / ``needs-fixture`` / ``oos``) — no silent gaps (TC-F29-004).
+(``ready`` / ``needs-fixture`` / ``oos``) - no silent gaps (TC-F29-004).
 """
 
 from __future__ import annotations
@@ -29,6 +29,14 @@ class InventoryRule:
 
 
 @dataclass(frozen=True)
+class InventorySpec:
+    """Inventory rules plus scoped matrix roots (EV-071 / TC-EV071-004)."""
+
+    rules: list[InventoryRule]
+    matrix_roots: list[Path]
+
+
+@dataclass(frozen=True)
 class InventoryGap:
     """A silent or incomplete matrix coverage failure."""
 
@@ -40,8 +48,25 @@ class InventoryGap:
         return f"{self.engine}/{self.rule_id}: {self.detail}"
 
 
-def load_pilot_inventory(path: Path | None = None) -> list[InventoryRule]:
-    """Load the METAR/SPECI pilot inventory (unified index SoT)."""
+def _matrix_roots_from_raw(inv_path: Path, raw: dict[str, object]) -> list[Path]:
+    roots_obj = raw.get("matrix_roots")
+    if isinstance(roots_obj, list):
+        return [
+            DEFAULT_TESTDATA_ROOT / str(item).strip()
+            for item in cast(list[object], roots_obj)
+            if str(item).strip()
+        ]
+    if inv_path.name == "metar_speci_pilot.yml":
+        return [
+            DEFAULT_TESTDATA_ROOT / "lint" / "metar_speci",
+            DEFAULT_TESTDATA_ROOT / "convert" / "metar_speci",
+            DEFAULT_TESTDATA_ROOT / "validate" / "metar_speci",
+        ]
+    raise ValueError(f"{inv_path}: matrix_roots must list scoped testdata subtrees")
+
+
+def load_inventory_spec(path: Path | None = None) -> InventorySpec:
+    """Load inventory rules and scoped matrix roots."""
     inv_path = path or DEFAULT_INVENTORY_PATH
     raw_obj: object = yaml.safe_load(inv_path.read_text(encoding="utf-8"))
     if not isinstance(raw_obj, dict):
@@ -71,18 +96,34 @@ def load_pilot_inventory(path: Path | None = None) -> list[InventoryRule]:
             if not isinstance(rule_id, str) or not rule_id.strip():
                 raise ValueError(f"{inv_path}: engines.{engine_name}[{i}] missing id")
             out.append(InventoryRule(engine=engine, rule_id=rule_id.strip()))
-    return out
+    return InventorySpec(rules=out, matrix_roots=_matrix_roots_from_raw(inv_path, raw))
+
+
+def load_pilot_inventory(path: Path | None = None) -> list[InventoryRule]:
+    """Load the METAR/SPECI pilot inventory (unified index SoT)."""
+    return load_inventory_spec(path).rules
 
 
 def find_inventory_gaps(
     *,
     inventory: list[InventoryRule] | None = None,
-    testdata_root: Path | None = None,
+    matrix_roots: list[Path] | None = None,
+    inventory_path: Path | None = None,
 ) -> list[InventoryGap]:
-    """Return silent/incomplete coverage gaps for the pilot inventory."""
-    rules = inventory if inventory is not None else load_pilot_inventory()
-    root = testdata_root or DEFAULT_TESTDATA_ROOT
-    cases = load_rule_cases_tree(root) if root.is_dir() else []
+    """Return silent/incomplete coverage gaps for an inventory spec."""
+    inv_path = inventory_path or DEFAULT_INVENTORY_PATH
+    if inventory is None or matrix_roots is None:
+        spec = load_inventory_spec(inv_path)
+        rules = inventory if inventory is not None else spec.rules
+        roots = matrix_roots if matrix_roots is not None else spec.matrix_roots
+    else:
+        rules = inventory
+        roots = matrix_roots
+
+    cases: list = []
+    for root in roots:
+        if root.is_dir():
+            cases.extend(load_rule_cases_tree(root))
 
     by_key: dict[tuple[str, str], list] = {}
     for case in cases:
@@ -131,15 +172,15 @@ def find_inventory_gaps(
                         detail=f"{bucket} case_ids {ids} != {expected_ids}",
                     )
                 )
-        for case in rule_cases:
-            if case.status not in _EXPLICIT_STATUSES:
-                gaps.append(
-                    InventoryGap(
-                        engine=rule.engine,
-                        rule_id=rule.rule_id,
-                        detail=f"{case.node_id} has non-explicit status {case.status!r}",
-                    )
-                )
+        gaps.extend(
+            InventoryGap(
+                engine=rule.engine,
+                rule_id=rule.rule_id,
+                detail=f"{case.node_id} has non-explicit status {case.status!r}",
+            )
+            for case in rule_cases
+            if case.status not in _EXPLICIT_STATUSES
+        )
 
     # Extra matrix rules outside inventory are not silent gaps, but report them
     # so CI can decide (pilot gate is inventory-complete, not "no extras").
@@ -158,10 +199,15 @@ def find_inventory_gaps(
 def assert_inventory_complete(
     *,
     inventory: list[InventoryRule] | None = None,
-    testdata_root: Path | None = None,
+    matrix_roots: list[Path] | None = None,
+    inventory_path: Path | None = None,
 ) -> None:
     """Raise ``AssertionError`` if any inventory gaps exist."""
-    gaps = find_inventory_gaps(inventory=inventory, testdata_root=testdata_root)
+    gaps = find_inventory_gaps(
+        inventory=inventory,
+        matrix_roots=matrix_roots,
+        inventory_path=inventory_path,
+    )
     if gaps:
         lines = "\n".join(f"  - {g}" for g in gaps)
         raise AssertionError(f"inventory gate failed ({len(gaps)} gaps):\n{lines}")

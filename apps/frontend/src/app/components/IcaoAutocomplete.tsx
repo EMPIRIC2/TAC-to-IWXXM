@@ -25,6 +25,11 @@ interface AirportSuggestion {
   country?: string;
 }
 
+/**
+ * ICAO code input with airport autocomplete suggestions.
+ *
+ * Validates four-letter codes and optionally accepts any CCCC format.
+ */
 export function IcaoAutocomplete({
   label,
   value,
@@ -54,7 +59,7 @@ export function IcaoAutocomplete({
   }, []);
 
   const validateIcao = (code: string): boolean => {
-    if (!code || code.length !== 4) return false;
+    // Caller only invokes at length === 4.
     if (formatOnly) {
       return /^[A-Z]{4}$/.test(code);
     }

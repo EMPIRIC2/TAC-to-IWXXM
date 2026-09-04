@@ -1,11 +1,10 @@
-"""Unit tests for SchematronValidatorDocker – 0% coverage target."""
+"""Unit tests for SchematronValidatorDocker - 0% coverage target."""
 
 import json
 import subprocess
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from src.utilities.schematron_validator_docker import (
     SchematronValidationResult,
     SchematronValidatorDocker,
@@ -38,7 +37,7 @@ class TestSchematronValidationResult:
 
 class TestSchematronValidatorDockerInit:
     def test_raises_when_schema_missing(self, tmp_path):
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FileNotFoundError, match=r".*"):
             SchematronValidatorDocker(schema_path=str(tmp_path / "missing.sch"))
 
     def test_init_success(self, tmp_path):
@@ -210,3 +209,14 @@ class TestSchematronValidatorDockerHelpers:
         ):
             result = validate_against_schematron("<xml/>", str(schema))
         assert result.valid is True
+
+
+def test_validate_outer_exception_returns_error_result(tmp_path):
+    schema = tmp_path / "test.sch"
+    schema.write_text("<schema/>")
+    validator = SchematronValidatorDocker(schema_path=str(schema))
+    with patch.object(validator, "_run_docker_validation", side_effect=RuntimeError("boom")):
+        result = validator.validate("<xml/>")
+    assert result.valid is False
+    assert result.status == "ERROR"
+    assert "boom" in result.errors[0]

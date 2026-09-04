@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+"""Opt-in Wiki publish of redacted brief + HANDOFF. [Corpus: session-store]"""
+
+from __future__ import annotations
+
+import argparse
+import re
+import sys
+from pathlib import Path
+
+SECRET = re.compile(
+    r"(api[_-]?key|token|secret|password|EV\[1:|[A-Za-z0-9+/]{40,}={0,2})",
+    re.IGNORECASE,
+)
+
+
+def redact(text: str) -> str:
+    lines = []
+    for line in text.splitlines():
+        if SECRET.search(line):
+            lines.append("[redacted]")
+        else:
+            lines.append(line)
+    return "\n".join(lines) + "\n"
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--session", type=Path, required=True)
+    parser.add_argument("--wiki-dir", type=Path, required=True, help="cloned *.wiki.git working tree")
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--yes", action="store_true", help="required to write (opt-in)")
+    args = parser.parse_args()
+    sid = args.session.name
+    brief = redact((args.session / "session-brief.md").read_text(encoding="utf-8"))
+    handoff = redact((args.session / "HANDOFF.md").read_text(encoding="utf-8"))
+    dest_brief = args.wiki_dir / "sessions" / f"{sid}.md"
+    dest_handoff = args.wiki_dir / "sessions" / f"{sid}-handoff.md"
+    if args.dry_run or not args.yes:
+        print(f"would write {dest_brief} and {dest_handoff} (pass --yes to publish)")
+        return 0
+    dest_brief.parent.mkdir(parents=True, exist_ok=True)
+    dest_brief.write_text(brief, encoding="utf-8")
+    dest_handoff.write_text(handoff, encoding="utf-8")
+    print(str(dest_brief))
+    print(str(dest_handoff))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "description": "EV-064 M3/M4/M5 + EV-066 + EV-067 — CA_ECCC MANOBS METAR + MANAIR TAF/AIRMET golden pack",
+  "profile": "CA_ECCC",
+  "cases": [
+    {
+      "id": "metar_basic",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_basic.tac",
+      "golden": "METAR/valid/metar_basic.golden.xml",
+      "rule_id": "CA.METAR.ALT.A",
+      "status": "active"
+    },
+    {
+      "id": "metar_vis_sm",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_vis_sm.tac",
+      "golden": "METAR/valid/metar_vis_sm.golden.xml",
+      "rule_id": "CA.METAR.VIS.SM",
+      "status": "active"
+    },
+    {
+      "id": "metar_auto",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_auto.tac",
+      "golden": "METAR/valid/metar_auto.golden.xml",
+      "rule_id": "CA.METAR.AUTO",
+      "status": "active"
+    },
+    {
+      "id": "metar_rmk_presfr",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_rmk_presfr.tac",
+      "golden": "METAR/valid/metar_rmk_presfr.golden.xml",
+      "rule_id": "CA.METAR.RMK.PRESFR",
+      "status": "active"
+    },
+    {
+      "id": "metar_rmk_presrr",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_rmk_presrr.tac",
+      "golden": "METAR/valid/metar_rmk_presrr.golden.xml",
+      "rule_id": "CA.METAR.RMK.PRESRR",
+      "status": "active"
+    },
+    {
+      "id": "metar_alt_not_obs",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_alt_not_obs.tac",
+      "golden": "METAR/valid/metar_alt_not_obs.golden.xml",
+      "rule_id": "CA.METAR.ALT.NOT_OBS",
+      "status": "active"
+    },
+    {
+      "id": "metar_rmk_slp_t",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_rmk_slp_t.tac",
+      "golden": "METAR/valid/metar_rmk_slp_t.golden.xml",
+      "rule_id": "CA.METAR.RMK.SLP_T",
+      "status": "active"
+    },
+    {
+      "id": "metar_lwis",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_lwis.tac",
+      "golden": "METAR/valid/metar_lwis.golden.xml",
+      "rule_id": "CA.METAR.LWIS",
+      "status": "active"
+    },
+    {
+      "id": "metar_sawr",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_sawr.tac",
+      "golden": "METAR/valid/metar_sawr.golden.xml",
+      "rule_id": "CA.METAR.SAWR",
+      "status": "active"
+    },
+    {
+      "id": "metar_rmk_icing",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_rmk_icing.tac",
+      "golden": "METAR/valid/metar_rmk_icing.golden.xml",
+      "rule_id": "CA.METAR.RMK.ICING",
+      "status": "active"
+    },
+    {
+      "id": "taf_nclws",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_nclws.tac",
+      "golden": "TAF/valid/taf_nclws.golden.xml",
+      "rule_id": "CA.TAF.NCLWS",
+      "status": "active"
+    },
+    {
+      "id": "taf_ic_weather",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_ic_weather.tac",
+      "golden": "TAF/valid/taf_ic_weather.golden.xml",
+      "rule_id": "CA.TAF.WEATHER.IC",
+      "status": "active"
+    },
+    {
+      "id": "taf_amd",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_amd.tac",
+      "golden": "TAF/valid/taf_amd.golden.xml",
+      "rule_id": "CA.TAF.AMD",
+      "status": "active"
+    },
+    {
+      "id": "airmet_gfa",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_gfa.tac",
+      "golden": "AIRMET/valid/airmet_gfa.golden.xml",
+      "rule_id": "CA.AIRMET.GFA",
+      "status": "active"
+    },
+    {
+      "id": "airmet_gfa_sfc_vis",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_gfa_sfc_vis.tac",
+      "golden": "AIRMET/valid/airmet_gfa_sfc_vis.golden.xml",
+      "rule_id": "CA.AIRMET.GFA.SFC_VIS",
+      "status": "active"
+    }
+  ]
+}

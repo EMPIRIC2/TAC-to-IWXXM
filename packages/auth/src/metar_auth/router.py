@@ -1,4 +1,4 @@
-"""FastAPI `/auth/*` routers — Auth-only; no admin (ADR-033 / F31)."""
+"""FastAPI `/auth/*` routers - Auth-only; no admin (ADR-033 / F31)."""
 
 from __future__ import annotations
 

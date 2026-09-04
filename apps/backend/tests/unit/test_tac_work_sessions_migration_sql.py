@@ -1,4 +1,4 @@
-"""T5.1 / T5.2 — Snapshot checks for expand-cutover migration to tac_work_sessions."""
+"""T5.1 / T5.2 - Snapshot checks for expand-cutover migration to tac_work_sessions."""
 
 from pathlib import Path
 
@@ -28,7 +28,7 @@ def test_tac_work_sessions_migration_expand_cutover() -> None:
 
 
 def test_tac_work_sessions_swxa_product_migration() -> None:
-    """F28 / T11.5 — CHECK constraint expanded for product=swxa."""
+    """F28 / T11.5 - CHECK constraint expanded for product=swxa."""
     migration = _REPO_ROOT / "supabase/migrations/20260802000011_tac_work_sessions_swxa.sql"
     assert migration.is_file(), f"missing SWXA product migration at {migration}"
     sql = migration.read_text(encoding="utf-8")
@@ -37,7 +37,7 @@ def test_tac_work_sessions_swxa_product_migration() -> None:
 
 
 def test_tac_work_sessions_vona_product_migration() -> None:
-    """F32 / T2.7 — CHECK constraint expanded for product=vona."""
+    """F32 / T2.7 - CHECK constraint expanded for product=vona."""
     migration = _REPO_ROOT / "supabase/migrations/20260804000012_tac_work_sessions_vona.sql"
     assert migration.is_file(), f"missing VONA product migration at {migration}"
     sql = migration.read_text(encoding="utf-8")

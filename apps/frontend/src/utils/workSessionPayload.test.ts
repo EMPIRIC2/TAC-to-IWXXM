@@ -141,6 +141,19 @@ describe('workSessionPayload', () => {
     ).toEqual({});
   });
 
+  it('returns empty metadata when the download name is not indexed', () => {
+    expect(resolveManualLineMetaFromResult('plain.txt', {}, ['plain.txt'])).toEqual({});
+  });
+
+  it('ignores indexed peers that do not share the same prefix', () => {
+    expect(
+      resolveManualLineMetaFromResult('manual_input_2.txt', {}, [
+        'manual_input_1.txt',
+        'other_prefix_2.txt',
+      ]),
+    ).toEqual({});
+  });
+
   it('falls back to metar when resolved product is outside session products', () => {
     const payload = buildWorkSessionPayload({
       manualInput: 'VONA\nDTG: 20240216/0130Z\nVOLCANO: KARYMSKY\n',

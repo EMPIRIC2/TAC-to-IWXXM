@@ -11,6 +11,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/iwxxm-validate/src packages/iwxxm-validate/tests \
 	packages/tac-validate/src packages/tac-validate/tests \
 	packages/dissemination/src packages/dissemination/tests \
+	packages/workflows/src packages/workflows/tests \
 	tests
 
 .PHONY: install test test-unit vendor-sync export-iwxxm-versions openapi-refresh tip-diff-iwxxm \
@@ -18,7 +19,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-auth test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
-	test-unit-dissemination test-unit-worker test-bugs \
+	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs \
 	test-schemathesis test-mutation test-mutation-poc test-mutation-python test-mutation-js \
 	build-tac2iwxxm-native build-iwxxm-validate-native \
 	test-tac2iwxxm-native test-iwxxm-validate-native rust-check \
@@ -59,14 +60,18 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
 	test-e2e-f16-live-sql \
 	test-live-connectivity test-live-connectivity-doks-provisional test-live-topology-doks-provisional test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live \
-	test-integration coverage coverage-backend coverage-frontend coverage-shared \
+	test-integration test-coverage-scripts test-bats \
+	coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
 	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
 	install-hooks pre-commit-run pre-push-run ci-prepush \
 	catalog-regen catalog-check \
 	membership-regen membership-check \
+	ca-ops-harvest ca-ops-check \
 	generate-quality-metrics \
 	issue-registry-guard \
+	cursor-no-home-paths-guard \
+	pnpm-action-package-manager-guard \
 	supabase-start supabase-stop supabase-reset supabase-status supabase-push supabase-pull \
 
 # --- Monorepo workspace ---
@@ -126,11 +131,29 @@ membership-check: membership-regen
 		|| (echo "wmo_membership.json drift — run make membership-regen and commit"; \
 		git diff --stat -- packages/tac-validate/src/tac_validate/data/wmo_membership.json; exit 1)
 
+# EV-072 M2 / #1036 — offline CA_ECCC MSC datamart ops corpus (pin-date harvest)
+ca-ops-harvest:
+	$(UV) run python scripts/iwxxm/harvest_ca_eccc_ops.py --pin-date 2026-08-24
+	$(UV) run python scripts/iwxxm/harvest_ca_eccc_vaac_tac.py --pin-date 2026-08-24
+
+ca-ops-check: ca-ops-harvest
+	@git diff --quiet -- packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json \
+		|| (echo "ops_manifest.json drift — run make ca-ops-harvest and commit"; \
+		git diff --stat -- packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC/ops_manifest.json; exit 1)
+
 # F15 — hard-fail on severity= literals in rule modules (T2.2a / E11-32)
 issue-registry-guard:
 	ISSUE_REGISTRY_GUARD_STRICT=1 $(UV) run python scripts/ci/check_issue_registry_literals.py \
 		packages/tac-validate/src/tac_validate/rules.py \
 		packages/tac-validate/src/tac_validate/product_rules.py
+
+# EV-095 / #1095: no machine-local /Users/ or /home/<user>/ in tracked .cursor/
+cursor-no-home-paths-guard:
+	$(UV) run python scripts/ci/check_cursor_no_home_paths.py
+
+# EV-096 / #1096: no pnpm/action-setup with.version when packageManager is set
+pnpm-action-package-manager-guard:
+	$(UV) run python scripts/ci/check_pnpm_action_package_manager.py
 
 # --- Formatting ---
 
@@ -214,7 +237,7 @@ test-unit-workspace-py:
 test-unit-shared-py:
 	$(UV) run pytest packages/shared/tests --cov=metar_shared \
 		--cov-config=packages/shared/pyproject.toml --cov-branch \
-		--cov-report=json:packages/shared/coverage.json --cov-fail-under=98 -v
+		--cov-report=json:packages/shared/coverage.json --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/shared/coverage.json
 
 test-unit-shared-js:
@@ -230,7 +253,7 @@ test-unit-backend:
 		--cov=src --cov-config=pyproject.toml --cov-branch \
 		--cov-report=xml:coverage.xml --cov-report=json:coverage.json \
 		--cov-report=term-missing \
-		--cov-fail-under=98 -v)
+		--cov-fail-under=100 -v)
 	$(UV) run python scripts/ci/check_per_file_coverage.py apps/backend/coverage.json
 
 # F34 / EV-059 / #727 — Schemathesis OpenAPI property suite (TC-F34-001..002 / TC-F34-007).
@@ -267,7 +290,7 @@ test-unit-auth:
 	$(UV) run pytest tests/unit/auth --cov=metar_auth \
 		--cov-config=packages/auth/pyproject.toml --cov-branch \
 		--cov-report=json:packages/auth/coverage.json \
-		--cov-report=term-missing --cov-fail-under=95 -v
+		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/auth/coverage.json
 
 # F30 / ADR-033 / TC-EV031-002 — Alembic against DATABASE_URL (idempotent upgrade head).
@@ -302,7 +325,7 @@ test-unit-tac2iwxxm:
 	$(UV) run pytest packages/tac2iwxxm/tests --cov=tac2iwxxm \
 		--cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
 		--cov-report=json:packages/tac2iwxxm/coverage.json \
-		--cov-report=term-missing --cov-fail-under=95 -v
+		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/tac2iwxxm/coverage.json
 
 # Build optional PyO3 extension (requires rustc + maturin). ADR-017 / T4.3.
@@ -388,14 +411,14 @@ test-unit-iwxxm-validate:
 	$(UV) run pytest packages/iwxxm-validate/tests --cov=iwxxm_validate \
 		--cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
 		--cov-report=json:packages/iwxxm-validate/coverage.json \
-		--cov-report=term-missing --cov-fail-under=95 -v
+		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/iwxxm-validate/coverage.json
 
 test-unit-tac-validate:
 	$(UV) run pytest packages/tac-validate/tests --cov=tac_validate \
 		--cov-config=packages/tac-validate/pyproject.toml --cov-branch \
 		--cov-report=json:packages/tac-validate/coverage.json \
-		--cov-report=term-missing --cov-fail-under=95 -v
+		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/tac-validate/coverage.json
 
 # F24/F25 / EV-020 — combined WMO quality pack (E20-F3=3): SIGMET keep-green + AIRMET + METAR/SPECI/TAF
@@ -495,6 +518,16 @@ test-iwxxm-translation-informative:
 test-unit-dissemination:
 	bash scripts/ci/run_dissemination_coverage.sh
 
+# ADR-042 / EV-1132 — packages/workflows coverage 100%.
+test-unit-workflows:
+	$(UV) run pytest packages/workflows/tests -m unit \
+		--cov=workflows --cov-config=packages/workflows/pyproject.toml --cov-branch \
+		--cov-report=term-missing --cov-report=json:packages/workflows/coverage.json \
+		--cov-fail-under=100 -v
+	@if [ -f scripts/ci/check_per_file_coverage.py ]; then \
+		$(UV) run python scripts/ci/check_per_file_coverage.py packages/workflows/coverage.json; \
+	fi
+
 # F16 / T2.5 — TC-F16-003 multi-DB (SQLite always; PG/MySQL via Testcontainers when Docker up).
 test-integration-dissemination:
 	$(UV) run pytest packages/dissemination/tests \
@@ -542,19 +575,57 @@ test-unit-worker:
 	$(UV) run pytest apps/worker/tests -m unit \
 		--cov=metar_worker --cov-config=apps/worker/pyproject.toml --cov-branch \
 		--cov-report=term-missing --cov-report=json:apps/worker/coverage.json \
-		--cov-fail-under=95 -v
+		--cov-fail-under=100 -v
 	@if [ -f scripts/ci/check_per_file_coverage.py ]; then \
 		$(UV) run python scripts/ci/check_per_file_coverage.py apps/worker/coverage.json; \
 	fi
+
+# EV-080 / #1077 — scripts Python coverage (D-TP080-3). fail_under 100 + per-file.
+# Hyphenated dirs (tac-validate, test-data) are not importable subpackages — extra --cov=.
+test-coverage-scripts:
+	@set -e; \
+	if ! find tests/scripts -type f \( -name 'test_*.py' -o -name '*_test.py' \) 2>/dev/null | grep -q .; then \
+		echo "[test-coverage-scripts] error: no tests under tests/scripts/ (EV-080 M4)." >&2; \
+		exit 1; \
+	fi; \
+	$(UV) run pytest tests/scripts \
+		--cov=scripts \
+		--cov=scripts/tac-validate/regen_issue_catalog.py \
+		--cov=scripts/test-data/export_tc_m003_golden.py \
+		--cov-config=tests/scripts/coveragerc \
+		--cov-branch \
+		--cov-report=term-missing \
+		--cov-report=json:scripts/coverage.json \
+		--cov-fail-under=100 -v; \
+	$(UV) run python scripts/ci/check_per_file_coverage.py scripts/coverage.json --min-pct 100
+
+# EV-080 / #1077 — bats-core for every scripts/**/*.sh (D-TP080-2).
+test-bats:
+	@set -e; \
+	if ! find tests/bats -type f -name '*.bats' 2>/dev/null | grep -q .; then \
+		echo "[test-bats] error: no *.bats under tests/bats/ (EV-080 M4)." >&2; \
+		exit 1; \
+	fi; \
+	if ! command -v bats >/dev/null 2>&1; then \
+		echo "[test-bats] error: bats not on PATH — install bats-core (brew/apt) or enable CI install step." >&2; \
+		exit 1; \
+	fi; \
+	bats $$(find tests/bats -type f -name '*.bats' | sort)
 
 test-bugs:
 	$(UV) run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
 test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
-	test-unit-dissemination test-unit-worker test-bugs
+	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs
 
 test: test-unit
+
+# Pack-verify `tests` angle fallback (`pack-run` tries `make test` then `make test-fast`).
+# Stable subset without the FE Vitest coverage job (which times out under agent load).
+# Full `make test` / CI frontend matrix remain the merge gate.
+test-fast: test-unit-workspace test-unit-backend test-unit-auth test-unit-tac2iwxxm \
+	test-unit-iwxxm-validate test-unit-tac-validate test-bugs
 
 tests\:e2e:
 	cd apps/e2e && $(PNPM) exec playwright test
@@ -786,7 +857,7 @@ validate-yaml:
 	$(UV) run pre-commit run actionlint --all-files
 	$(UV) run pre-commit run yamllint --all-files
 
-validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check issue-registry-guard
+validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check issue-registry-guard cursor-no-home-paths-guard pnpm-action-package-manager-guard
 
 config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v
@@ -833,9 +904,18 @@ validate-ci: validate-fast validate-ci-medium
 # Use `make ci` / `make test-integration` when Docker ports 18000/18001 are free.
 ci-prepush: format-check typecheck lint test-unit-workspace test-unit-backend \
 	test-unit-frontend test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
-	test-unit-dissemination test-unit-worker test-bugs badge-audit
+	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs badge-audit
 
 # EV-036 long local gate (husky pre-push): units + Compose integration.
 ci: ci-prepush test-integration
 
 acci: ci test-e2e-playwright-smoke audit-frontend
+
+security-scan-install:
+	bash scripts/security/install-tools.sh
+
+security-scan:
+	bash scripts/security/run-all.sh
+
+check-exact-pins:
+	python3 scripts/ci/check-exact-pins.py

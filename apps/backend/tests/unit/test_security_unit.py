@@ -8,13 +8,12 @@ import pytest
 from fastapi import HTTPException
 from fastapi.security import HTTPAuthorizationCredentials
 from metar_auth.jwks import JwtVerificationError
-
 from src.utilities import security as sec
 
 
 @pytest.mark.unit
 def test_disable_auth_constant_is_false() -> None:
-    """DISABLE_AUTH must stay False — work-sessions always require JWT."""
+    """DISABLE_AUTH must stay False - work-sessions always require JWT."""
     assert sec.DISABLE_AUTH is False
 
 
@@ -37,13 +36,15 @@ async def test_verify_supabase_token_rejects_bad_jwt(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("SUPABASE_URL", "https://example.supabase.co")
-    with patch.object(
-        sec,
-        "verify_access_token",
-        side_effect=JwtVerificationError("bad"),
+    with (
+        patch.object(
+            sec,
+            "verify_access_token",
+            side_effect=JwtVerificationError("bad"),
+        ),
+        pytest.raises(HTTPException) as exc,
     ):
-        with pytest.raises(HTTPException) as exc:
-            await sec.verify_supabase_token(HTTPAuthorizationCredentials(scheme="Bearer", credentials="tok"))
+        await sec.verify_supabase_token(HTTPAuthorizationCredentials(scheme="Bearer", credentials="tok"))
     assert exc.value.status_code == 401
 
 
@@ -53,9 +54,8 @@ async def test_verify_supabase_token_requires_sub(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setenv("SUPABASE_JWKS_URL", "https://example.supabase.co/jwks")
-    with patch.object(sec, "verify_access_token", return_value={"aud": "x"}):
-        with pytest.raises(HTTPException) as exc:
-            await sec.verify_supabase_token(HTTPAuthorizationCredentials(scheme="Bearer", credentials="tok"))
+    with patch.object(sec, "verify_access_token", return_value={"aud": "x"}), pytest.raises(HTTPException) as exc:
+        await sec.verify_supabase_token(HTTPAuthorizationCredentials(scheme="Bearer", credentials="tok"))
     assert exc.value.status_code == 401
 
 
@@ -68,6 +68,41 @@ async def test_verify_supabase_token_happy(
     with patch.object(sec, "verify_access_token", return_value={"sub": "u1"}):
         claims = await sec.verify_supabase_token(HTTPAuthorizationCredentials(scheme="Bearer", credentials="tok"))
     assert claims["sub"] == "u1"
+
+
+async def test_verify_optional_absent() -> None:
+    assert await sec.verify_optional_supabase_token(None) is None
+
+
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_verify_optional_present(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("SUPABASE_URL", "https://example.supabase.co")
+    with patch.object(sec, "verify_access_token", return_value={"sub": "u1"}):
+        claims = await sec.verify_optional_supabase_token(
+            HTTPAuthorizationCredentials(scheme="Bearer", credentials="tok")
+        )
+    assert claims is not None
+    assert claims["sub"] == "u1"
+
+
+@pytest.mark.unit
+@pytest.mark.asyncio
+async def test_verify_optional_invalid_returns_none(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("SUPABASE_URL", "https://example.supabase.co")
+    with patch.object(
+        sec,
+        "verify_access_token",
+        side_effect=JwtVerificationError("bad"),
+    ):
+        claims = await sec.verify_optional_supabase_token(
+            HTTPAuthorizationCredentials(scheme="Bearer", credentials="tok")
+        )
+    assert claims is None
 
 
 @pytest.mark.unit

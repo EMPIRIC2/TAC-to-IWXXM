@@ -45,9 +45,19 @@ def test_advisory_field_empty_value_still_segments() -> None:
 def test_explain_advisory_abbreviation_and_label_tokens() -> None:
     seen: dict[str, int] = {}
     vaa = _explain_advisory("VAA", product="VAA", seen=seen)
-    assert vaa is not None and "volcanic" in vaa.lower()
+    assert vaa is not None
+    assert "volcanic" in vaa.lower()
     tca = _explain_advisory("TCA", product="TCA", seen={})
-    assert tca is not None and "tropical" in tca.lower()
+    assert tca is not None
+    assert "tropical" in tca.lower()
+    swxa = _explain_advisory("SWXA", product="SWXA", seen={})
+    assert swxa is not None
+    assert "space" in swxa.lower()
+    swxa_other = _explain_advisory("DONLON", product="SWXA", seen={})
+    assert swxa_other is not None
+    vona = _explain_advisory("VONA", product="VONA", seen={})
+    assert vona is not None
+    assert "volcano" in vona.lower()
     dtg = _explain_advisory("DTG:", product="VAA", seen={})
     assert dtg is not None
     # Second VA token is not special-cased (seen already); still glossary-backed.
@@ -56,18 +66,26 @@ def test_explain_advisory_abbreviation_and_label_tokens() -> None:
 
 
 def test_classify_unknown_product_returns_none_fn() -> None:
-    fn = _classify("SWXA")
+    fn = _classify("NOT_A_PRODUCT")
     assert fn("ANY", {}) is None
+
+
+def test_advisory_field_finder_unknown_product_empty() -> None:
+    from tac2iwxxm.decode import _advisory_field_finder
+
+    assert _advisory_field_finder("NOT_A_PRODUCT") == []
 
 
 def test_sentence_from_segment_empty_and_station() -> None:
     assert _sentence_from_segment(DecodeSegment(0, 1, "X", "")) is None
     clause = _sentence_from_segment(DecodeSegment(0, 4, "KJFK", "Station location indicator (KJFK)"))
-    assert clause is not None and "KJFK" in clause
+    assert clause is not None
+    assert "KJFK" in clause
     report = _sentence_from_segment(
         DecodeSegment(0, 5, "METAR", "Report type (routine meteorological aerodrome report)")
     )
-    assert report is not None and report.lower().startswith("report type")
+    assert report is not None
+    assert report.lower().startswith("report type")
 
 
 def test_metar_nosig_ao1_rmk_paths() -> None:

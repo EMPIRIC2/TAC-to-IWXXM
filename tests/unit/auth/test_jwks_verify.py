@@ -1,4 +1,4 @@
-"""T1.1 — JWKS-only JWT verify (F31 / ADR-033 / D-S038-04-b1)."""
+"""T1.1 - JWKS-only JWT verify (F31 / ADR-033 / D-S038-04-b1)."""
 
 from __future__ import annotations
 

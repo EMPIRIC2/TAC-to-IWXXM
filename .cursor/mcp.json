@@ -13,5 +13,11 @@
         "Authorization": "Bearer ${RENDER_API_KEY}"
       }
     }
+  },
+  "mcpServers": {
+    "engineering-memory": {
+      "type": "stdio",
+      "command": "${userHome}/Documents/GitHub/spec-dev-knowledge-graph/cursor-plugin/scripts/mcp-server.sh"
+    }
   }
 }

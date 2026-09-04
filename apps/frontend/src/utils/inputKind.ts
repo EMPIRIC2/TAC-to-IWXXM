@@ -28,8 +28,9 @@ export function looksLikeAhlBulletin(text: string): boolean {
   if (!trimmed) {
     return false;
   }
-  const first = trimmed.split(/\r?\n/).find((line) => line.trim()) ?? '';
-  return AHL_LINE.test(first.trim().toUpperCase());
+  const firstLine = trimmed.split(/\r?\n/).find((line) => line.trim());
+  // Non-empty trimmed text always yields a non-blank line from find().
+  return AHL_LINE.test(firstLine!.trim().toUpperCase());
 }
 
 /**
@@ -86,13 +87,8 @@ export function detectInputKind(fileName: string, content?: string): OperatorInp
       return 'ahl_bulletin';
     }
   }
+  // Extension-only guess when content is absent or did not match above.
   if (lower.endsWith('.xml')) {
-    if (content && looksLikeCollectIwxxm(content)) {
-      return 'collect_iwxxm';
-    }
-    if (content && looksLikeIwxxmDocument(content)) {
-      return 'iwxxm_document';
-    }
     return 'unknown';
   }
   return 'tac';

@@ -6,7 +6,6 @@ import inspect
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -100,7 +99,7 @@ def test_validate_accepts_profile_and_calls_iwxxm_validate(client: TestClient, m
     """Thin wrapper must invoke iwxxm_validate.validate (TC-F6-033) and map package fields."""
     calls: list[dict[str, object]] = []
 
-    def fake_validate(xml: str, *, iwxxm_version: str, profile: str = "annex3", levels=None):
+    def fake_validate(xml: str, *, iwxxm_version: str, profile: str = "annex3", levels=None, product=None):
         calls.append(
             {
                 "xml": xml,

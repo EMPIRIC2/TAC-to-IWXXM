@@ -22,11 +22,11 @@ _DEFAULT_PROFILE = "annex3"
 def apply_skip_policy(case: RuleCase) -> None:
     """Skip ``needs-fixture`` / ``oos`` cases with a cite in the skip message.
 
-    Inventory gate (T1.6) still treats these slots as explicit — not silent gaps.
+    Inventory gate (T1.6) still treats these slots as explicit - not silent gaps.
     """
     if case.status == "needs-fixture":
         reason = _meta_str(case.meta, "reason") or "needs-fixture"
-        pytest.skip(f"{case.node_id}: needs-fixture — {reason}")
+        pytest.skip(f"{case.node_id}: needs-fixture - {reason}")
     if case.status == "oos":
         cite = (
             _meta_str(case.meta, "cite")
@@ -34,7 +34,7 @@ def apply_skip_policy(case: RuleCase) -> None:
             or _meta_str(case.meta, "reason")
             or "oos"
         )
-        pytest.skip(f"{case.node_id}: oos — {cite}")
+        pytest.skip(f"{case.node_id}: oos - {cite}")
 
 
 def run_rule_case(case: RuleCase) -> None:
@@ -46,16 +46,17 @@ def run_rule_case(case: RuleCase) -> None:
         run_convert_case(case)
     elif case.engine == "validate":
         run_validate_case(case)
-    else:  # pragma: no cover — loaders already narrow engine
+    else:  # pragma: no cover - loaders already narrow engine
         raise ValueError(f"unknown engine {case.engine!r}")
 
 
 def run_lint_case(case: RuleCase) -> None:
-    """Execute a lint RuleCase (``ready`` only — call after skip policy)."""
+    """Execute a lint RuleCase (``ready`` only - call after skip policy)."""
     apply_skip_policy(case)
     tac = _require_tac(case)
     product = _meta_str(case.meta, "product") or "METAR"
-    report = lint_tac(tac, product=product)
+    profile = _meta_str(case.meta, "profile") or _DEFAULT_PROFILE
+    report = lint_tac(tac, product=product, profile=profile)
     _assert_lint_expect(case, report)
 
 
@@ -167,9 +168,8 @@ def _assert_convert_expect(case: RuleCase, result: Any) -> None:
         wanted = _as_str_list(expect["codes"], case=case, field_name="codes")
         _assert_codes_present(case, _issue_codes(result.issues), wanted)
     if expect.get("require_xml") and result.ok:
-        assert isinstance(result.xml, str) and result.xml.strip(), (
-            f"{case.node_id}: convert expected non-empty xml"
-        )
+        assert isinstance(result.xml, str)
+        assert result.xml.strip(), f"{case.node_id}: convert expected non-empty xml"
 
 
 def _assert_validate_expect(case: RuleCase, report: Any) -> None:

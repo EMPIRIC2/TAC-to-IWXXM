@@ -1,4 +1,4 @@
-"""BUG-2026-06-21 — production logout fails: signOutWithScope omits Bearer token.
+"""BUG-2026-06-21 - production logout fails: signOutWithScope omits Bearer token.
 
 User report: console "Logout failed:" (empty statusText) on every logout click in
 production. POST /auth/logout requires Authorization: Bearer per api-contract.md;
@@ -13,6 +13,6 @@ from __future__ import annotations
 import pytest
 
 pytest.skip(
-    "F21/ADR-031: operator Auth / DISABLE_AUTH dual path removed — bug N/A",
+    "F21/ADR-031: operator Auth / DISABLE_AUTH dual path removed - bug N/A",
     allow_module_level=True,
 )

@@ -8,6 +8,8 @@ import {
   stemFromFirstTac,
   formatArchiveTimestamp,
   ACCUMULATE_RESULT_CAP,
+  appendConvertedWithinCap,
+  nextFirstAccumulatedTac,
 } from './outputFilename';
 
 describe('sanitizeOutputFilename', () => {
@@ -111,6 +113,13 @@ describe('outputArchiveName', () => {
     );
   });
 
+  it('uses the timestamped converted_files fallback when firstTac is empty', () => {
+    const now = new Date(1_700_000_000_000);
+    expect(outputArchiveName('', { firstTac: '', now })).toBe(
+      `converted_files_${now.getTime()}.zip`,
+    );
+  });
+
   it('uses the timestamped converted_files fallback when no custom name and no firstTac', () => {
     const now = new Date(1_700_000_000_000);
     expect(outputArchiveName('', { now })).toBe(`converted_files_${now.getTime()}.zip`);
@@ -123,5 +132,27 @@ describe('outputArchiveName', () => {
 describe('ACCUMULATE_RESULT_CAP', () => {
   it('is 200 per EV-057 / D-S067-903-cap', () => {
     expect(ACCUMULATE_RESULT_CAP).toBe(200);
+  });
+});
+
+describe('appendConvertedWithinCap', () => {
+  it('appends under the cap and rejects over-cap batches', () => {
+    expect(appendConvertedWithinCap([1], [2], 3)).toEqual({
+      files: [1, 2],
+      overCap: false,
+    });
+    expect(appendConvertedWithinCap([1, 2], [3], 2)).toEqual({
+      files: [1, 2],
+      overCap: true,
+    });
+  });
+});
+
+describe('nextFirstAccumulatedTac', () => {
+  it('keeps an existing stem and falls back through original content', () => {
+    expect(nextFirstAccumulatedTac('kept', 'new')).toBe('kept');
+    expect(nextFirstAccumulatedTac(null, 'first')).toBe('first');
+    expect(nextFirstAccumulatedTac(null, null)).toBe(null);
+    expect(nextFirstAccumulatedTac(null, undefined)).toBe(null);
   });
 });

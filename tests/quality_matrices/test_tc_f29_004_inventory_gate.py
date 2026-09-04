@@ -1,4 +1,4 @@
-"""TC-F29-004 / TC-EV030-003 / T1.6 — inventory gate (no silent gaps)."""
+"""TC-F29-004 / TC-EV030-003 / T1.6 - inventory gate (no silent gaps)."""
 
 from __future__ import annotations
 
@@ -36,6 +36,7 @@ def test_inventory_gate_fails_on_silent_gap(tmp_path: Path) -> None:
         yaml.dump(
             {
                 "version": 1,
+                "matrix_roots": ["lint/metar_speci"],
                 "engines": {
                     "lint": [
                         {
@@ -51,11 +52,16 @@ def test_inventory_gate_fails_on_silent_gap(tmp_path: Path) -> None:
     testdata = tmp_path / "testdata"
     testdata.mkdir()
     inventory = load_pilot_inventory(inv)
-    gaps = find_inventory_gaps(inventory=inventory, testdata_root=testdata)
+    gaps = find_inventory_gaps(
+        inventory=inventory, matrix_roots=[testdata / "lint" / "metar_speci"]
+    )
     assert len(gaps) == 1
     assert "silent gap" in gaps[0].detail
     with pytest.raises(AssertionError, match="silent gap"):
-        assert_inventory_complete(inventory=inventory, testdata_root=testdata)
+        assert_inventory_complete(
+            inventory=inventory,
+            matrix_roots=[testdata / "lint" / "metar_speci"],
+        )
 
 
 def test_inventory_gate_fails_on_incomplete_slots(tmp_path: Path) -> None:
@@ -72,7 +78,8 @@ def test_inventory_gate_fails_on_incomplete_slots(tmp_path: Path) -> None:
         "    meta: {reason: 'only one slot'}\n",
         encoding="utf-8",
     )
-    gaps = find_inventory_gaps(inventory=inv, testdata_root=root)
+    lint_root = root / "lint" / "metar_speci"
+    gaps = find_inventory_gaps(inventory=inv, matrix_roots=[lint_root])
     assert any("expected 20 slots" in g.detail for g in gaps)
     with pytest.raises(AssertionError, match="expected 20 slots"):
-        assert_inventory_complete(inventory=inv, testdata_root=root)
+        assert_inventory_complete(inventory=inv, matrix_roots=[lint_root])

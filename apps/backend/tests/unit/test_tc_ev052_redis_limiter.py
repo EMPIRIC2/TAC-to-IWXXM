@@ -1,4 +1,4 @@
-"""TC-EV052-007 / TC-EV052-008 — REDIS_URL slowapi storage + shared counters."""
+"""TC-EV052-007 / TC-EV052-008 - REDIS_URL slowapi storage + shared counters."""
 
 from __future__ import annotations
 
@@ -8,7 +8,6 @@ import fakeredis
 import pytest
 from fastapi import FastAPI, Request
 from fastapi.testclient import TestClient
-
 from utilities import abuse_controls
 from utilities.abuse_controls import create_limiter, install_abuse_controls
 
@@ -42,7 +41,7 @@ def test_create_limiter_uses_redis_url(monkeypatch: pytest.MonkeyPatch) -> None:
 
 @pytest.mark.unit
 def test_fakeredis_shared_counters_across_clients() -> None:
-    """AC8 — two clients on one FakeServer share key state (multi-replica stand-in)."""
+    """AC8 - two clients on one FakeServer share key state (multi-replica stand-in)."""
     server = fakeredis.FakeServer()
     client_a = fakeredis.FakeStrictRedis(server=server)
     client_b = fakeredis.FakeStrictRedis(server=server)

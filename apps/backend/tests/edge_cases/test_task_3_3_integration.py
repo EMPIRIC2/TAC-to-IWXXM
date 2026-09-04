@@ -6,7 +6,6 @@ Tests enhanced visibility-weather validation against real METAR test data.
 import re
 
 import pytest
-
 from src.testing.metar_test_generator import METARTestGenerator
 from src.validation.semantic_rules import (
     IssueSeverity,
@@ -159,7 +158,7 @@ class TestVisibilityWeatherIntegration:
             pct = count / sum(phenomenon_counts.values()) * 100
 
             # Calculate visibility stats for this phenomenon
-            if p in visibility_by_phenomenon and visibility_by_phenomenon[p]:
+            if visibility_by_phenomenon.get(p):
                 vis_list = visibility_by_phenomenon[p]
                 min_vis = min(vis_list)
                 max_vis = max(vis_list)

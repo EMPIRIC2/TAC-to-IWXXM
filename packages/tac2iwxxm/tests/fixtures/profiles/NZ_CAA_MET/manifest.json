@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "description": "EV-087 — NZ_CAA_MET P1 kickoff fixtures",
+  "profile": "NZ_CAA_MET",
+  "cases": [
+    {
+      "id": "taf_domestic",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_domestic.tac",
+      "rule_id": "NZ.TAF.DOMESTIC",
+      "status": "active"
+    },
+    {
+      "id": "taf_international",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_international.tac",
+      "rule_id": "NZ.TAF.INTERNATIONAL",
+      "status": "active"
+    },
+    {
+      "id": "metar_auto_ncd",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_auto_ncd.tac",
+      "rule_id": "NZ.METAR.NCD",
+      "status": "active"
+    }
+  ]
+}

@@ -3,6 +3,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import {
+  coerceIwxxmProfile,
   detectTacProduct,
   isConvertProductSelection,
   resolveConvertProduct,
@@ -87,6 +88,20 @@ describe('isConvertProductSelection', () => {
     expect(isConvertProductSelection('METAR')).toBe(true);
     expect(isConvertProductSelection('IWXXM')).toBe(true);
     expect(isConvertProductSelection('not-a-product')).toBe(false);
+  });
+});
+
+describe('coerceIwxxmProfile', () => {
+  it('accepts supported profiles including CA_ECCC (EV-064 / EV-093)', () => {
+    expect(coerceIwxxmProfile('annex3')).toBe('annex3');
+    expect(coerceIwxxmProfile('iwxxm_us')).toBe('iwxxm_us');
+    expect(coerceIwxxmProfile('ca_eccc')).toBe('CA_ECCC');
+    expect(coerceIwxxmProfile('CA_ECCC')).toBe('CA_ECCC');
+  });
+
+  it('falls back to ICAO_2025 for unknown values', () => {
+    expect(coerceIwxxmProfile('GLOBAL_AFS')).toBe('ICAO_2025');
+    expect(coerceIwxxmProfile(null)).toBe('ICAO_2025');
   });
 });
 

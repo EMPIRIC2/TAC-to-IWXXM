@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "description": "EV-087 — AU_BOM P1 kickoff fixtures",
+  "profile": "AU_BOM",
+  "cases": [
+    {
+      "id": "taf_inter",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_inter.tac",
+      "rule_id": "AU.TAF.INTER",
+      "status": "active"
+    },
+    {
+      "id": "taf_taf3",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_taf3.tac",
+      "rule_id": "AU.TAF.TAF3",
+      "status": "active"
+    },
+    {
+      "id": "metar_auto_ncd",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_auto_ncd.tac",
+      "rule_id": "AU.METAR.NCD",
+      "status": "active"
+    }
+  ]
+}

@@ -73,5 +73,11 @@ jobs:
           python -m pip install --upgrade pip uv
           uv sync
 
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build iwxxm-validate native for CA_ECCC SIGMET/VAA ops (EV-068)
+        run: bash scripts/ci/ensure_iwxxm_validate_native.sh
+
       - name: Run VAA quality pack
         run: make test-vaa-quality

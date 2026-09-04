@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-from typing import Any
+from typing import Any, cast
 
 import httpx
 
@@ -158,7 +158,7 @@ class SupabaseAuthProxy:
         response = self._http().get(url, headers=headers)
         if response.status_code >= 400:
             raise AuthProxyError("user lookup failed", status_code=401)
-        data = response.json()
+        data = cast(dict[str, Any], response.json())
         return {
             "id": data.get("id") or "",
             "email": data.get("email") or "",
@@ -167,7 +167,10 @@ class SupabaseAuthProxy:
 
 
 def _normalize_session_payload(data: dict[str, Any]) -> dict[str, Any]:
-    user_raw = data.get("user") or {}
+    user_obj = data.get("user")
+    user_raw: dict[str, Any] = (
+        cast(dict[str, Any], user_obj) if isinstance(user_obj, dict) else {}
+    )
     return {
         "user": {
             "id": user_raw.get("id") or "",

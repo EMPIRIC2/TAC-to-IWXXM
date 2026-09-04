@@ -6,7 +6,7 @@
       "tag": "v2025-2",
       "commit_sha": "35180cbe3bec0bc536a78714dd78d2e7ba60931f",
       "local_path": "vendor/schemas/iwxxm",
-      "tree_sha256": "660380ff2a3077e46803dabde20c2667e1f900297b13a6f15b283dca561c64cd"
+      "tree_sha256": "81f7e418a5e2b55947510802723e216fd93592cf82b874ac7d50ca5502cb2157"
     },
     "iwxxm-codelists": {
       "upstream_repo": "wmo-im/iwxxm-codelists",
@@ -35,6 +35,18 @@
       "local_path": "vendor/schemas/iwxxm-us",
       "tree_sha256": "05c72268bc8b7a06712b830194c1661390468e8120ec85dbbd6809f681ae93fc",
       "archive_sha256": "2266770b01b8bb1685ad97419a7114439900d00590e876d210660b42c4b78260"
+    },
+    "iwxxm-ca": {
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/schema/",
+      "tag": "3.0",
+      "local_path": "vendor/schemas/iwxxm-ca",
+      "tree_sha256": "23f986f8b8796d515c23fdeb15b5e47d0296cbb6901f3106bca53c949a58a5fc"
+    },
+    "iwxxm-3.0.0": {
+      "parent_bundle": "iwxxm",
+      "version_line": "3.0.0",
+      "local_path": "vendor/schemas/iwxxm/3.0.0",
+      "tree_sha256": "d3da94c85081f90ef120a112b4fac077a66f43d4b663d4464bf65a52a6475175"
     }
   }
 }

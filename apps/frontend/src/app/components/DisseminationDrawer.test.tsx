@@ -1,18 +1,19 @@
 /**
- * Dissemination drawer Vitest — F16 / TC-F16-001/004/005; UJ-027; EV-018.
+ * Dissemination drawer Vitest — F16 / TC-F16-001/004/005; UJ-027; EV-018; EV-091.
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { DisseminationDrawer } from './DisseminationDrawer';
+import { DisseminationDrawer, resolveCandidateIwxxmXml } from './DisseminationDrawer';
 import { DRAWER_SINK_TYPES, isPreflightGreen } from '/utils/dissemination';
 
 const mockRunDisseminationQueue = vi.hoisted(() => vi.fn());
 const actualRunDisseminationQueue = vi.hoisted(() => ({
   fn: null as typeof import('/utils/disseminationQueue').runDisseminationQueue | null,
 }));
+const mockConvertMetarToIwxxm = vi.hoisted(() => vi.fn());
 
 vi.mock('/utils/disseminationQueue', async (importOriginal) => {
   const actual = await importOriginal<typeof import('/utils/disseminationQueue')>();
@@ -21,6 +22,14 @@ vi.mock('/utils/disseminationQueue', async (importOriginal) => {
   return {
     ...actual,
     runDisseminationQueue: (...args: unknown[]) => mockRunDisseminationQueue(...args),
+  };
+});
+
+vi.mock('/utils/api', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('/utils/api')>();
+  return {
+    ...actual,
+    convertMetarToIwxxm: (...args: unknown[]) => mockConvertMetarToIwxxm(...args),
   };
 });
 
@@ -85,16 +94,119 @@ describe('isPreflightGreen', () => {
   });
 });
 
+describe('resolveCandidateIwxxmXml', () => {
+  beforeEach(() => {
+    mockConvertMetarToIwxxm.mockReset();
+  });
+
+  it('returns existing IWXXM without converting', async () => {
+    await expect(
+      resolveCandidateIwxxmXml(
+        { id: 'c1', name: 'a', source: 'session', iwxxmXml: '  <iwxxm/>  ' },
+        'metar',
+        'GLOBAL_AFS',
+      ),
+    ).resolves.toBe('<iwxxm/>');
+    expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
+  });
+
+  it('throws when candidate has neither IWXXM nor TAC', async () => {
+    await expect(
+      resolveCandidateIwxxmXml(
+        { id: 'c1', name: 'empty', source: 'session' },
+        'metar',
+        'GLOBAL_AFS',
+      ),
+    ).rejects.toThrow(/neither IWXXM XML nor TAC/);
+  });
+
+  it('throws when convert returns no IWXXM XML', async () => {
+    mockConvertMetarToIwxxm.mockResolvedValue({ results: [{ name: 'x' }] });
+    await expect(
+      resolveCandidateIwxxmXml(
+        { id: 'c1', name: 'tac', source: 'session', tacText: 'METAR KJFK' },
+        'metar',
+        'GLOBAL_AFS',
+      ),
+    ).rejects.toThrow(/Convert returned no IWXXM XML/);
+  });
+
+  it('accepts xml / content fallbacks when iwxxm_xml is absent', async () => {
+    mockConvertMetarToIwxxm.mockResolvedValueOnce({
+      results: [{ xml: '  <from-xml/>  ' }],
+    });
+    await expect(
+      resolveCandidateIwxxmXml(
+        { id: 'c1', name: 'tac', source: 'session', tacText: 'METAR KJFK' },
+        'metar',
+        'APAC_ROBEX',
+      ),
+    ).resolves.toBe('<from-xml/>');
+
+    mockConvertMetarToIwxxm.mockResolvedValueOnce({
+      results: [{ content: '<from-content/>' }],
+    });
+    await expect(
+      resolveCandidateIwxxmXml(
+        {
+          id: 'c2',
+          name: 'tac',
+          source: 'session',
+          tacText: 'METAR KLAX',
+          product: 'speci',
+        },
+        'metar',
+        'GLOBAL_AFS',
+      ),
+    ).resolves.toBe('<from-content/>');
+  });
+});
+
 describe('DisseminationDrawer', () => {
   beforeEach(() => {
     mockRunDisseminationQueue.mockClear();
     mockRunDisseminationQueue.mockImplementation(actualRunDisseminationQueue.fn!);
+    mockConvertMetarToIwxxm.mockReset();
+    mockConvertMetarToIwxxm.mockResolvedValue({
+      results: [{ iwxxm_xml: '<iwxxm>from-convert</iwxxm>' }],
+    });
     vi.stubGlobal('fetch', vi.fn());
   });
 
   afterEach(() => {
     mockRunDisseminationQueue.mockImplementation(actualRunDisseminationQueue.fn!);
     vi.unstubAllGlobals();
+  });
+
+  it('renders exchange profile select defaulting to GLOBAL_AFS (TC-EV091-002 / #1089)', () => {
+    render(<DisseminationDrawer {...defaultProps} />);
+    const select = screen.getByTestId('dissemination-exchange-profile');
+    expect(select).toHaveValue('GLOBAL_AFS');
+    expect(
+      screen.getByTestId('dissemination-exchange-profile-help'),
+    ).toBeInTheDocument();
+  });
+
+  it('hydrates exchange profile from workbench prop when drawer opens', () => {
+    const { rerender } = render(
+      <DisseminationDrawer
+        key="closed"
+        {...defaultProps}
+        open={false}
+        exchangeProfile="EUR_RODEX"
+      />,
+    );
+    rerender(
+      <DisseminationDrawer
+        key="open-EUR_RODEX"
+        {...defaultProps}
+        open
+        exchangeProfile="EUR_RODEX"
+      />,
+    );
+    expect(screen.getByTestId('dissemination-exchange-profile')).toHaveValue(
+      'EUR_RODEX',
+    );
   });
 
   it('renders nothing when closed', () => {
@@ -251,6 +363,13 @@ describe('DisseminationDrawer', () => {
       expect(screen.getByTestId('dissemination-send-success')).toBeInTheDocument();
     });
 
+    expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        manualText: expect.stringContaining('METAR KJFK'),
+        exchangeProfile: 'GLOBAL_AFS',
+      }),
+    );
+
     const sendBody = JSON.parse(
       (
         global.fetch as unknown as {
@@ -259,7 +378,66 @@ describe('DisseminationDrawer', () => {
       ).mock.calls[1][1].body,
     );
     expect(sendBody.handle).toBe('drop-handle');
+    expect(sendBody.iwxxm_xml).toContain('from-convert');
     expect(sendBody.tac_text).toContain('METAR KJFK');
+  });
+
+  it('TC-EV091-002: selected exchange overlay is sent on convert-before-send (#1089)', async () => {
+    const user = userEvent.setup();
+    vi.mocked(global.fetch)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          ok: true,
+          connectivity_ok: true,
+          diffs: [],
+          handle: 'overlay-handle',
+        }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          ok: true,
+          kv_upload_key: 'kv:overlay:1',
+        }),
+      } as Response);
+
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        iwxxmXml={undefined}
+        tacText="METAR KJFK 010000Z 18004KT="
+      />,
+    );
+
+    await user.selectOptions(
+      screen.getByTestId('dissemination-exchange-profile'),
+      'APAC_ROBEX',
+    );
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'postgresql://u:p@db.example.com/wx',
+    );
+    await user.click(screen.getByTestId('dissemination-send-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-send-success')).toBeInTheDocument();
+    });
+
+    expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+      expect.objectContaining({
+        exchangeProfile: 'APAC_ROBEX',
+        manualText: expect.stringContaining('METAR KJFK'),
+      }),
+    );
+    const sendBody = JSON.parse(
+      (
+        global.fetch as unknown as {
+          mock: { calls: [unknown, [string, { body: string }]] };
+        }
+      ).mock.calls[1][1].body,
+    );
+    expect(sendBody.iwxxm_xml).toContain('from-convert');
   });
 
   it('allows preflight without auth token (F21 public)', async () => {
@@ -285,7 +463,7 @@ describe('DisseminationDrawer', () => {
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalled();
     });
-    const init = vi.mocked(global.fetch).mock.calls[0][1] as RequestInit;
+    const init = vi.mocked(global.fetch).mock.calls[0]![1] as RequestInit;
     expect(
       (init.headers as Record<string, string> | undefined)?.Authorization,
     ).toBeUndefined();
@@ -791,6 +969,25 @@ describe('DisseminationDrawer', () => {
     });
   });
 
+  it('shows Error.message for Error queue failures', async () => {
+    const user = userEvent.setup();
+    mockRunDisseminationQueue.mockImplementation(() => {
+      throw new Error('queue boom');
+    });
+
+    render(<DisseminationDrawer {...defaultProps} />);
+
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/queue-err.db',
+    );
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-error')).toHaveTextContent('queue boom');
+    });
+  });
+
   it('shows pending progress rows when results exist without row state', async () => {
     const user = userEvent.setup();
     mockRunDisseminationQueue.mockImplementation(async function* () {
@@ -833,5 +1030,127 @@ describe('DisseminationDrawer', () => {
       'data-status',
       'pending',
     );
+  });
+
+  it('parses empty BYOC params JSON as an empty object', async () => {
+    const user = userEvent.setup();
+    render(<DisseminationDrawer {...defaultProps} />);
+    await user.selectOptions(screen.getByTestId('dissemination-sink-chooser'), 'wis2');
+    fireEvent.change(screen.getByTestId('dissemination-byoc-params'), {
+      target: { value: '' },
+    });
+    await user.click(screen.getByTestId('dissemination-preflight-button'));
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalled();
+    });
+  });
+
+  it('reports failures without detail using the generic progress copy', async () => {
+    const user = userEvent.setup();
+    mockRunDisseminationQueue.mockImplementation(async function* () {
+      yield {
+        type: 'file_done',
+        result: {
+          candidateId: 'session-primary',
+          status: 'failed',
+          phase: 'send',
+        },
+      };
+    });
+
+    render(<DisseminationDrawer {...defaultProps} />);
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/nodetail.db',
+    );
+    await user.click(screen.getByTestId('dissemination-send-button'));
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-error')).toHaveTextContent(
+        /see progress below/i,
+      );
+    });
+  });
+
+  it('covers drop/progress helper branches', async () => {
+    const { dropReaderText, hasDropFiles, progressRowState } =
+      await import('./DisseminationDrawer');
+    expect(hasDropFiles(null)).toBe(false);
+    expect(hasDropFiles(undefined)).toBe(false);
+    expect(dropReaderText(null)).toBe('');
+    expect(dropReaderText('hi')).toBe('hi');
+    expect(progressRowState({}, 'x')).toEqual({ status: 'pending' });
+    expect(progressRowState({ x: { status: 'send', detail: 'd' } }, 'x')).toEqual({
+      status: 'send',
+      detail: 'd',
+    });
+  });
+
+  it('send path uses drawer product when candidate product is missing', async () => {
+    const { resolveDisseminationProduct } = await import('./DisseminationDrawer');
+    expect(resolveDisseminationProduct(undefined, 'taf')).toBe('taf');
+    expect(resolveDisseminationProduct('metar', 'taf')).toBe('metar');
+
+    const user = userEvent.setup();
+    let sawMissingProduct = false;
+    mockRunDisseminationQueue.mockImplementation(async function* (opts: {
+      send: (c: { product?: string }, h: string) => Promise<unknown>;
+      candidates: Array<{ id: string; product?: string }>;
+    }) {
+      for (const c of opts.candidates) {
+        if (c.product === undefined) {
+          sawMissingProduct = true;
+        }
+        await opts.send(c, 'h-fallback');
+        yield {
+          type: 'result' as const,
+          result: {
+            candidateId: c.id,
+            status: 'success' as const,
+          },
+        };
+      }
+    });
+
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: async () => ({ ok: true }),
+    } as Response);
+
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        product="taf"
+        sessionOutputs={[
+          {
+            id: 'no-product-send',
+            name: 'orphan.xml',
+            source: 'session',
+            iwxxmXml: '<taf/>',
+          },
+        ]}
+      />,
+    );
+
+    await user.click(screen.getByTestId('dissemination-select-all'));
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/send-product.db',
+    );
+    await user.click(screen.getByTestId('dissemination-send-button'));
+    await waitFor(() => {
+      expect(mockRunDisseminationQueue).toHaveBeenCalled();
+    });
+    expect(sawMissingProduct).toBe(true);
+  });
+
+  it('ignores drop FileList with empty first slot', () => {
+    render(<DisseminationDrawer {...defaultProps} />);
+    const dropzone = screen.getByTestId('dissemination-dropzone');
+    fireEvent.drop(dropzone, {
+      dataTransfer: {
+        files: { length: 1, 0: undefined } as unknown as FileList,
+      },
+    });
+    expect(screen.queryByText(/drop\.xml|drop\.tac/i)).not.toBeInTheDocument();
   });
 });

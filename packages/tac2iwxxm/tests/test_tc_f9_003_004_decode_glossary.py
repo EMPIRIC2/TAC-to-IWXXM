@@ -1,4 +1,4 @@
-"""TC-F9-003 / TC-F9-004 — decode glossary registry (S026 / EV-020 T5.1 / F9 deepen).
+"""TC-F9-003 / TC-F9-004 - decode glossary registry (S026 / EV-020 T5.1 / F9 deepen).
 
 Plain-English token meanings from official/near-official tables with YAML
 overrides (ADR-032 / E20-E2). OpenAIP/F3 miss keeps ICAO designator (no fail).
@@ -9,7 +9,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from tac2iwxxm.decode import decode_tac
 
 AIRMET_GOLDEN = "YUDD AIRMET 1 VALID 151520/151800 YUSO- YUDD SHANLON FIR ISOL TS OBS N OF S50 TOP ABV FL100 STNR WKN="
@@ -28,7 +27,7 @@ def _explanation_for(tac: str, product: str, code: str) -> str:
     raise AssertionError(f"no segment for {code!r} in {product} decode of {tac!r}")
 
 
-# --- TC-F9-003 — seven-product glossary meanings ---
+# --- TC-F9-003 - seven-product glossary meanings ---
 
 
 def test_tc_f9_003_sigmet_obsc_ts_meanings() -> None:
@@ -54,10 +53,12 @@ def test_tc_f9_003_airmet_isol_stnr_wkn_meanings() -> None:
 def test_tc_f9_003_metar_speci_taf_remain_value_aware() -> None:
     """METAR/SPECI/TAF keep value-aware quality (regression for F9 deepen)."""
     wind = _explanation_for(METAR_GOLDEN, "METAR", "18004KT")
-    assert "180°" in wind and "4 kt" in wind
+    assert "180°" in wind
+    assert "4 kt" in wind
     speci = "SPECI KJFK 232045Z 24012G22KT 8SM BKN020 12/06 A3001="
     gust = _explanation_for(speci, "SPECI", "24012G22KT")
-    assert "gust" in gust.lower() and "22 kt" in gust
+    assert "gust" in gust.lower()
+    assert "22 kt" in gust
     taf = "TAF KJFK 151800Z 1600/1618 13005KT 9999 TEMPO 1606/1612 4000 -RA="
     tempo = _explanation_for(taf, "TAF", "TEMPO")
     assert "temporary" in tempo.lower() or "fluctuation" in tempo.lower()
@@ -90,7 +91,7 @@ def test_tc_f9_003_openaip_miss_keeps_designator_no_fail() -> None:
         set_location_name_resolver(None)
 
 
-# --- TC-F9-004 — official tables + YAML override merge ---
+# --- TC-F9-004 - official tables + YAML override merge ---
 
 
 def test_tc_f9_004_official_tables_and_packaged_yaml_load() -> None:

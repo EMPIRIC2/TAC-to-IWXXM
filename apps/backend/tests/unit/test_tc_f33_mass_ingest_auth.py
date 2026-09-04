@@ -1,4 +1,4 @@
-"""TC-F33-004 — mass ingest requires JWT (EV-042 / #897).
+"""TC-F33-004 - mass ingest requires JWT (EV-042 / #897).
 
 [Corpus: product §F33] [Corpus: api] [Corpus: tests]
 """
@@ -9,7 +9,6 @@ from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.abuse_controls import get_limiter
 from src.utilities.security import verify_supabase_token
@@ -138,9 +137,8 @@ def test_tc_f33_002_mass_ingest_rejects_total_bytes_cap(
 async def test_tc_f33_002_mass_ingest_rejects_empty_file_list() -> None:
     """Empty upload list → 400 (covers handler guard)."""
     from fastapi import HTTPException
-    from starlette.requests import Request
-
     from src.routers import mass_ingest as mass_router
+    from starlette.requests import Request
 
     scope = {
         "type": "http",

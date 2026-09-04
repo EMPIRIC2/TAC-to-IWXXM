@@ -79,10 +79,12 @@ const SIGMET_SAMPLE: LintIssueCatalogEntry[] = [
 
 describe('lintIssueCatalog tooltip resolver (T5.3)', () => {
   it('indexes entries by code', () => {
+    const firstSample = SAMPLE[0]!;
+    const secondSample = SAMPLE[1]!;
     const byCode = indexCatalogByCode([
       ...SAMPLE,
-      { ...SAMPLE[0], code: '' },
-      { ...SAMPLE[1], code: 'MISSING_TERMINATOR', severity: 'warning' },
+      { ...firstSample, code: '' },
+      { ...secondSample, code: 'MISSING_TERMINATOR', severity: 'warning' },
     ]);
     expect(byCode.size).toBe(2);
     expect(byCode.get('MISSING_TERMINATOR')?.severity).toBe('warning');
@@ -118,13 +120,15 @@ describe('lintIssueCatalog TAF tag helpers (T5.1 / E15-14)', () => {
   });
 
   it('formatCatalogEntryCopy includes severity, tags, and product when set', () => {
-    const withProduct = formatCatalogEntryCopy(TAF_SAMPLE[0]);
+    const tafFirst = TAF_SAMPLE[0]!;
+    const tafSecond = TAF_SAMPLE[1]!;
+    const withProduct = formatCatalogEntryCopy(tafFirst);
     expect(withProduct).toContain('FM_PRESENT');
     expect(withProduct).toContain('info');
     expect(withProduct).toMatch(/tags:\s*change,\s*taf/i);
     expect(withProduct).toMatch(/product:\s*taf/i);
 
-    const shared = formatCatalogEntryCopy(TAF_SAMPLE[1]);
+    const shared = formatCatalogEntryCopy(tafSecond);
     expect(shared).toContain('CAVOK_PRESENT');
     expect(shared).toMatch(/tags:.*taf/i);
     expect(shared).not.toMatch(/product:/i);
@@ -132,7 +136,7 @@ describe('lintIssueCatalog TAF tag helpers (T5.1 / E15-14)', () => {
 
   it('formatCatalogEntryCopy includes source attribution when present (EV-040)', () => {
     const copy = formatCatalogEntryCopy({
-      ...TAF_SAMPLE[0],
+      ...TAF_SAMPLE[0]!,
       source_id: 'icao-annex-3',
       source_url: 'https://store.icao.int/',
       source_attribution: 'icao-annex-3 — access:paywall',
@@ -142,7 +146,7 @@ describe('lintIssueCatalog TAF tag helpers (T5.1 / E15-14)', () => {
 
   it('formats source ID with URL when attribution is unavailable', () => {
     const copy = formatCatalogEntryCopy({
-      ...TAF_SAMPLE[0],
+      ...TAF_SAMPLE[0]!,
       tags: [],
       product: null,
       source_id: 'wmo-guide',
@@ -156,13 +160,13 @@ describe('lintIssueCatalog TAF tag helpers (T5.1 / E15-14)', () => {
   it('handles rows without tags, product, or provenance', () => {
     expect(
       filterCatalogByTag(
-        [{ ...TAF_SAMPLE[0], tags: undefined } as unknown as LintIssueCatalogEntry],
+        [{ ...TAF_SAMPLE[0]!, tags: undefined } as unknown as LintIssueCatalogEntry],
         'taf',
       ),
     ).toEqual([]);
     expect(
       formatCatalogEntryCopy({
-        ...TAF_SAMPLE[0],
+        ...TAF_SAMPLE[0]!,
         tags: undefined,
         product: null,
       } as unknown as LintIssueCatalogEntry),
@@ -185,7 +189,7 @@ describe('lintIssueCatalog SIGMET/VA tag helpers (T5.1 / E19-17)', () => {
   });
 
   it('formatCatalogEntryCopy includes product:sigmet when set', () => {
-    const copy = formatCatalogEntryCopy(SIGMET_SAMPLE[0]);
+    const copy = formatCatalogEntryCopy(SIGMET_SAMPLE[0]!);
     expect(copy).toContain('SIGMET_CNL');
     expect(copy).toMatch(/tags:.*sigmet/i);
     expect(copy).toMatch(/product:\s*sigmet/i);

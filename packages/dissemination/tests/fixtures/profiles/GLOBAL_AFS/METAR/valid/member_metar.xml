@@ -1,0 +1,3 @@
+<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2" gml:id="uuid.member">
+  <iwxxm:observation nilReason="http://codes.wmo.int/common/nil/missing"/>
+</iwxxm:METAR>

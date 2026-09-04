@@ -2,17 +2,18 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-18 (S071 / EV-061 — TC-EV061-* pre-promote UX + AHL + catalog + stage→main gate)
+> **Last updated**: 2026-08-25 (EV-084 — US_FAA_NWS M19 WAUS multi-section AIRMET)
 
 ## Scope
 
-**In scope**: Product features F1–F32 (F1 superseded by F6 engine; F7 Planned — workbench
+**In scope**: Product features F1–**F36** (F1 superseded by F6 engine; F7 Planned — workbench
 smoke under F15/F20/F23–F27; **F7.g** golden examples #780 / UJ-032; **F7.h/i** hybrid sessions;
 F8–F15 as prior cycles; **F16–F19 Done** dissemination epic; **F20** TAF+SPECI quality;
 **F21 Amended** public convert + optional Auth for long-term storage; **F22** privacy preference
 center (deepen F31); **F23** SIGMET family quality bar; **F24** AIRMET; **F25** WMO
 METAR/SPECI/TAF parity; **F26** VAA; **F27** TCA; **F30** platform independence; **F31** hybrid
-sessions; **F32** VONA quality bar); monorepo migration validation M1–M6 (M3 deprecated at F6 cutover; **M4 restore**);
+sessions; **F32** VONA quality bar; **F35** semantic vs exchange profile architecture;
+**F36** national/exchange profile content); monorepo migration validation M1–M6 (M3 deprecated at F6 cutover; **M4 restore**);
 connectivity tiers **H0c–H7** (local + live **DOKS** target; Render until cutover soak);
 tac2iwxxm + `tac-validate` + `iwxxm-validate` metrics (library/CI); backend thin wrappers;
 F7 decode/spans/soft-preview/workbench/unified sessions; admin-route negative tests; **F15**
@@ -99,6 +100,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-042 | F25/F9/F7.g deepen | Official WMO TAC peers decode empty/allowlisted residuals | H4–H5 if FE | TC-EV027-001..005 |
 | UJ-043 | F28 + F6/F12/F2/F13/F15/F20/F23/F24/F26/F27 deepen | Eight-family lint/convert/validate + SWXA bar (#823) | H4–H5 if FE | TC-EV029-001..008; TC-F28-001..006 |
 | UJ-044 | F29 + F23/F12/F2/F13/F9/F26/F27 deepen | Rule matrices (#831) + TC SIGMET deepen (#829) + VAA/TCA decode (#820) | H4–H5 if FE | TC-EV030-001..006; TC-F29-001..007 |
+| UJ-044a | F9/F28/F32 deepen (EV-099) | SWXA/VONA structured decode — no whole-TAC residual on quality peers (#1119) | H4–H5 N/A (API); staging health | TC-EV099-001..004 |
 | UJ-045 | F31+F21 | Guest convert + persistent loss-of-progress notice + local history | **H4–H5 required** | TC-F31-001/002/006 |
 | UJ-046 | F31+F30 | Login → auto-upload drafts → DO Postgres sessions | **H4–H5 required** | TC-F31-003/004/006 |
 | UJ-047 | F22+F31 | Privacy prefs ↔ IndexedDB / Auth cookies | **H4–H5 required** | TC-F31-005; TC-F22-* deepen |
@@ -107,10 +109,10 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-050 | F4+F7 deepen (EV-038) | IWXXM version picker Latest / Previous (#854) | H4–H5 when FE | TC-EV038-007 |
 | UJ-051 | F33 | Secure mass file/folder ingest (auth + caps) | **H4–H5 required** | TC-F33-001..006 |
 | UJ-052 | F7 deepen (EV-042) | Queue + keyboard/batch convert·validate | **H4–H5 required** | TC-EV042-003..004 |
-| UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
+| UJ-053 | F16–F19 deepen (EV-091) | Operator dissemination destinations visible | **H4–H5 required** | TC-EV091-001..002; TC-EV042-002 |
 | UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
 | UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
-| UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056 / EV-058) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988); side-by-side vs inline XML diff (#983) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005; TC-EV058-001..005 |
+| UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056 / EV-058 / **EV-981**) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988); side-by-side vs inline XML diff (#983); residual fold indicator (#981) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005; TC-EV058-001..005; TC-EV981-004 |
 | UJ-057 | F7.r deepen (EV-057) | Accumulate conversions → Download all ZIP (#903) | **H4–H5 required** | TC-EV057-903-001..007 |
 | UJ-058 | F7.s deepen (EV-057) | Validate existing IWXXM paste/upload (#838) | **H4–H5 required** | TC-EV057-838-001..005 |
 | UJ-059 | F7/F6 deepen (EV-060) | AHL bulletin lint/validate without heading flood (#1001) | **H4–H5 required** | TC-EV060-1001-001..003 |
@@ -123,6 +125,10 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-065 | F6/F7 deepen (EV-061) | AHL decode + convert-bulletin (#1012) | **H4–H5 required** | TC-EV061-1012-001..004 |
 | UJ-066 / UJ-067 | F7.u (EV-061) | Product/Profile + param bars aligned (#1013) | **H4–H5 required** | TC-EV061-1013-001..003 |
 | UJ-068 | F7.v/F15 (EV-061; EV-062) | Validation Issues Catalog (#1014; #1017 deepen) | **H4–H5 required** | TC-EV061-1014-001..004; TC-EV062-001..006 |
+| UJ-069 | F35/F36 (EV-063/EV-090/EV-093) | Semantic convert → exchange package (`GLOBAL_AFS`) | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-*; TC-EV093-* |
+| UJ-070 | F6+F9+F7.q (EV-981 / #981) | Opt-in propagate decode residuals into remarks / HRT + QM indicator | **H4–H5 required** | TC-EV981-001..005 |
+| UJ-071 | F16–F19 deepen (EV-936 / #936) | Dissemination ops — plan/audit/SQL mapping/gateway health | H6′; **H4–H5** when FE deploy | TC-F16-OPS-001..006 |
+| UJ-072 | F7.w deepen (EV-933 / #933) | ConversionProfile editor — rule pack / overlay / convert | **H4–H5** when FE deploy | TC-EV933-001..006 |
 | UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
 | LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
@@ -183,9 +189,11 @@ notice + DOKS URLs — `D-S038-tp`). **H7** remains bulletin ingest path (not F8
 | CI | GitHub Actions | validate + test (matrix, incl. `bugs`) + e2e-smoke (Playwright) + deploy; path filters deferred (P2) | `.github/workflows/ci-cd.yml` | root |
 | Pre-commit | pre-commit framework | fast gates (format/lint/typecheck/secrets/yaml) | `.pre-commit-config.yaml` | root |
 
-**Coverage**: 95% on all packages and apps (ADR-007) — pytest for Python, Vitest for frontend.
-Python also enforces **per-file ≥95%** via `scripts/ci/check_per_file_coverage.py` (EV-047 /
-`D-S056-cov95-scope=2`), including auth and worker. **F34** adds Schemathesis (path-filtered
+**Coverage**: **100%** line+branch on all packages and apps (ADR-007 / EV-080 / #1077) —
+pytest for Python, Vitest for frontend/shared. Python also enforces **per-file ≥100%** via
+`scripts/ci/check_per_file_coverage.py --min-pct 100`. Scripts: Python cov ≥100% +
+**bats-core** for every `scripts/**/*.sh` (**TC-EV080-001..010**). Historical EV-052/053
+retained **95%** TCs as prior-bar evidence. **F34** adds Schemathesis (path-filtered
 required, tight budget) and mutation testing (nightly/manual only) — see **TC-F34-001..007** /
 EV-059.
 
@@ -1484,6 +1492,36 @@ New **TC-EV027-001..005** (`E27-TC=1`). Ties **UJ-042**; deepens UJ-039 / UJ-020
 - **Pass criteria**: #820 AC met or child-issued with cite
 - **Source**: #820; F9/F26/F27 deepen
 
+## EV-099 — #1119 SWXA/VONA structured decode
+
+### TC-EV099-001: SWXA/VONA in decode `_SUPPORTED` with LABEL spans (UJ-044a)
+
+- **Level**: T0 / T2
+- **Objective**: `decode_tac` returns field segments for major SWXA/VONA labels (mirror VAA/TCA)
+- **Pass criteria**: Peers `vona_a7_1`, `swxa_a7_3`/`_4`/`_5` have ≥1 segment per known label family; product in `_SUPPORTED`
+- **Source**: #1119; [Corpus: product §F9]
+
+### TC-EV099-002: No whole-TAC residual (UJ-044a)
+
+- **Level**: T0 / T2
+- **Objective**: Residuals must not be a single span covering the entire TAC body
+- **Pass criteria**: No residual with `(start,end)==(0,len(tac))` on those peers; `allow_any` removed for `vona_a7_1` / `swxa_a7_3`
+- **Source**: #1119; D-EV099-residuals
+
+### TC-EV099-003: Explicit meaningful residuals only (UJ-044a)
+
+- **Level**: T0 / T2
+- **Objective**: Leftover tokens (if any) are exact allowlist rows with issue cite — not `allow_any`
+- **Pass criteria**: Residual matrix green; any leftover has `residual_text` + linked issue
+- **Source**: ADR-025 G4; D-EV099-residuals
+
+### TC-EV099-004: Convert peer XML bit-identical (UJ-044a)
+
+- **Level**: T2
+- **Objective**: Annex3 convert equality / F28+F32 quality packs unchanged for peers
+- **Pass criteria**: Golden/soft-compare still pass; no encode churn from decode-only change
+- **Source**: #1119; D-EV099-convert
+
 ### TC-F29-001: Harness recommendation written (UJ-044)
 
 - **Level**: T0
@@ -1998,6 +2036,86 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   branches ≥95; documented in session verify report
 - **Source**: EV-053 AC5 (`D-S062-01-ac` Q3=2)
 
+### EV-080 / #1077 — Universal 100% unit coverage gate
+
+- **Level**: T0 / CI
+- **Objective**: Raise ADR-007 from ≥95% to **100%** line+branch for Python apps/packages,
+  Vitest unit surfaces, and repo scripts (Python cov + bats-core for every `.sh`)
+- **Pass criteria**: AC1–AC6 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-080;
+  **TC-EV080-001..010**
+- **Source**: EV-080; [#1077](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1077);
+  [Corpus: adr/ADR-007]
+
+### TC-EV080-001: Coverage surface inventory @ 100 floor
+
+- **Level**: T0
+- **Objective**: Document every coverage surface with `target_floor: 100` and approved omits only
+- **Pass criteria**: Inventory YAML lists apps/packages/scripts; no unapproved excludes
+- **Source**: EV-080 AC1; REQ-EV080-001
+
+### TC-EV080-002: Python fail_under 100 in configs + CI
+
+- **Level**: T0 / CI
+- **Objective**: Every pyproject + matrix job uses fail_under / `--cov-fail-under` **100**; `branch = true`
+- **Pass criteria**: Config + workflow grep/tests assert 100; `__init__.py` not omitted
+- **Source**: EV-080 AC2; REQ-EV080-002..003
+
+### TC-EV080-003: Python aggregate + per-file 100 green
+
+- **Level**: T0 / CI
+- **Objective**: Unit matrix green at 100%; per-file checker `--min-pct 100`
+- **Pass criteria**: CI package coverage jobs green; checker fails when any file &lt;100
+- **Source**: EV-080 AC2; REQ-EV080-004..005
+
+### TC-EV080-004: Vitest thresholds 100 + executable excludes purged
+
+- **Level**: T0
+- **Objective**: FE + shared Vitest lines/statements/functions/branches = **100**; no executable excludes
+- **Pass criteria**: vitest configs show 100; TacEditor/App/liveAssist/gunzip/etc. not excluded
+- **Source**: EV-080 AC3; REQ-EV080-006..008
+
+### TC-EV080-005: FE + shared coverage suites green
+
+- **Level**: T0 / CI
+- **Objective**: `pnpm … test:coverage` green under 100% thresholds
+- **Pass criteria**: frontend + `@metar/shared` coverage jobs green
+- **Source**: EV-080 AC3; REQ-EV080-009
+
+### TC-EV080-006: Scripts Python coverage 100
+
+- **Level**: T0 / CI
+- **Objective**: Dedicated job/make target covers `scripts/**/*.py` at ≥100% line+branch
+- **Pass criteria**: Job green; fail_under 100
+- **Source**: EV-080 AC4; REQ-EV080-010
+
+### TC-EV080-007: bats-core installed in CI
+
+- **Level**: T0 / CI
+- **Objective**: Workflow installs bats-core and runs bats suite
+- **Pass criteria**: CI step succeeds; bats binary available
+- **Source**: EV-080 AC5; REQ-EV080-011..012; D-EV080-bats
+
+### TC-EV080-008: Every `.sh` has bats coverage
+
+- **Level**: T0 / CI
+- **Objective**: Each `scripts/**/*.sh` mapped to ≥1 bats test
+- **Pass criteria**: Manifest count matches `find scripts -name '*.sh'`; bats job green
+- **Source**: EV-080 AC5; REQ-EV080-011
+
+### TC-EV080-009: Standing docs + ADR-007 at 100%
+
+- **Level**: T0
+- **Objective**: ADR-007, typing-policy, test-plan metrics cite **100%**
+- **Pass criteria**: Docs greppable for 100% gate; CORPUS cites valid
+- **Source**: EV-080 AC6; REQ-EV080-013
+
+### TC-EV080-010: No silent excludes remain
+
+- **Level**: T0
+- **Objective**: Audit inventory vs configs — zero unapproved measurement omits
+- **Pass criteria**: Diff/inventory audit passes in CI or unit guard test
+- **Source**: EV-080 AC6; REQ-EV080-014..015
+
 ### EV-054 / S063 — Quality metrics tab (#836 / F7.q)
 
 - **Level**: T0 / T2 / T3 / H4–H5
@@ -2231,6 +2349,56 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   collapse remain; C14N/`match_status` unchanged. Synced scroll best-effort only.
 - **Pass criteria**: Local Playwright green; H4–H5 after staging deploy (13)
 - **Source**: EV-058 AC5; UJ-056; `D-S068-01-ac=2b`
+
+### EV-981 — Propagate decode residuals into remarks / HRT (#981)
+
+- **Mode**: deepen F6 / F9 / F7.q; **UJ-070** (+ UJ-026 fence)
+- **Pass criteria**: AC in evolve-decisions §EV-981; TC-EV981-001..005
+- **Source**: [#981](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/981);
+  [Context: propagate-residuals-to-remarks](context/propagate-residuals-to-remarks.md);
+  [Corpus: product §F6/F9/F7.q]
+
+### TC-EV981-001: Default off preserves UJ-026 / goldens
+
+- **Level**: T0 / T2
+- **Objective**: Omitted / `false` `propagate_residuals_to_remarks` does not change annex3
+  `REMARKS_EXCLUDED` or existing convert goldens
+- **Pass criteria**: Existing UJ-026 package/API tests + goldens remain green without flag
+- **Source**: EV-981; UJ-026; `D-EV981-default`
+
+### TC-EV981-002: Flag on folds residuals into remarks / HRT
+
+- **Level**: T0 / T2
+- **Objective**: With flag `true` on a remarks/HRT-emitting profile, residual token text
+  appears in profile-aware remarks / `humanReadableText` and info
+  `RESIDUALS_PROPAGATED_TO_REMARKS` is emitted. On annex3, flag-on emits the same issue
+  documenting no XML target without inventing free-text remarks.
+- **Pass criteria**: Package + API unit assert XML/HRT contains residual text + issue code
+- **Source**: EV-981; UJ-070; `D-EV981-flag`
+
+### TC-EV981-003: Workbench toggle + plain-language copy
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Operator can enable/disable fold; copy has no planning ids; effective value
+  reflects override vs profile default
+- **Pass criteria**: Vitest + Playwright; operatorVisibleCopy / OpenAPI guard green
+- **Source**: EV-981; UJ-070; EV-048
+
+### TC-EV981-004: Quality metrics residual fold indicator
+
+- **Level**: T0 / T2 / H4–H5
+- **Objective**: Detail JSON includes `residuals_propagated_to_remarks`; UI residuals panel
+  reflects it; default fixtures `false`
+- **Pass criteria**: API unit + Vitest/Playwright on `/quality/:stem`
+- **Source**: EV-981; UJ-056 deepen; `D-EV981-qm`
+
+### TC-EV981-005: Profile default wire (annex3 off)
+
+- **Level**: T0 / T2
+- **Objective**: Omitted flag resolves via profile default; annex3/ICAO_2025 → off; explicit
+  override wins; no other profile defaults enabled this cycle
+- **Pass criteria**: Unit matrix for omit / true / false × annex3
+- **Source**: EV-981; `D-EV981-annex3` / `D-EV981-profile-wire`
 
 ### EV-059 / S069 — F34 Contract + mutation quality gates (#841 / #727 / #874)
 
@@ -2612,6 +2780,1284 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: Registry/catalog drift green; OpenAPI includes new optional fields
 - **Pass criteria**: TC-F15-001 family + OpenAPI internal-doc-ref guards
 - **Source**: #1017; ADR-028; NFR1–NFR4
+
+### EV-064 / F36 — CA_ECCC profile (#916)
+
+- **Mode**: deepen F36; IWXXM 3.0.0 + `iwxxm-ca` line
+- **Pass criteria**: AC in evolve-decisions §EV-064; TC-EV064-*
+- **Source**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916); ADR-036;
+  [domain/profiles/semantic/CA_ECCC.md](domain/profiles/semantic/CA_ECCC.md)
+
+### TC-EV064-001: Vendor pin iwxxm-ca + IWXXM 3.0.0 core
+
+- **Level**: T0
+- **Objective**: `vendor/manifest.json` includes `iwxxm-ca`; core 3.0.0 refs resolve for CA XSD
+- **Pass criteria**: Manifest checksum gate; sync script copies `iwxxm-ca` tree
+- **Source**: EV-064 M1; R-EV064-01
+
+### TC-EV064-002: Convert METAR CA_ECCC golden
+
+- **Level**: T0 / T2
+- **Objective**: `semantic_profile=CA_ECCC` converts MANOBS fixture to golden IWXXM
+- **Pass criteria**: Profile fixture manifest green; not annex3 delegate for targeted rules
+- **Source**: EV-064 M3; R-EV064-02
+
+### TC-EV064-003: Validate CA extension XSD path
+
+- **Level**: T0
+- **Objective**: `validate_iwxxm(..., profile=ca_eccc)` uses CA catalog roots
+- **Pass criteria**: Valid CA golden passes XSD; missing pin fails closed
+- **Source**: EV-064 M2; R-EV064-05
+
+### TC-EV064-004: API CA_ECCC wire matrix
+
+- **Level**: T2 / T3
+- **Objective**: `semantic_profile=CA_ECCC` on convert/validate; unknown id → 400
+- **Pass criteria**: TC-EV063-003 pattern extended for `ca_eccc`
+- **Source**: R-EV064-06
+
+### TC-EV064-005: FE profile picker CA_ECCC
+
+- **Level**: T2 / H4–H5
+- **Objective**: FileConverter profile dropdown includes Canada (ECCC)
+- **Pass criteria**: Workflow test sends `CA_ECCC` (or canonical wire id) on convert
+- **Source**: #1024 slice; R-EV064-07
+
+### TC-EV064-006: Forecast product E2E (TAF or AIRMET)
+
+- **Level**: T0 / T2
+- **Objective**: At least one MANAIR TAF or GFA AIRMET golden + API convert path
+- **Pass criteria**: #916 acceptance “METAR + one forecast product”
+- **Source**: EV-064 M4/M5; R-EV064-03/04
+
+### EV-066 / #916 — CA_ECCC RMK + altimeter deepen
+
+- **Mode**: deepen F36; IWXXM 3.0.0 + `iwxxm-ca` line
+- **Pass criteria**: AC in evolve-decisions §EV-066; TC-EV066-*
+- **Source**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916); EV-066;
+  [domain/profiles/semantic/CA_ECCC.md](domain/profiles/semantic/CA_ECCC.md)
+
+### TC-EV066-001: PRESRR remark golden
+
+- **Level**: T0 / T2
+- **Objective**: `CA_ECCC` converts METAR with `PRESRR` to golden with RISING pressureChangeIndicator
+- **Pass criteria**: Manifest case `metar_rmk_presrr`; canonicalize diff empty
+- **Source**: EV-066 M1/M2; FR-EV066-01
+
+### TC-EV066-002: Altimeter not observable (`A////`)
+
+- **Level**: T0 / T2
+- **Objective**: Body `A////` → nil-reason QNH; no false altimeter_inhg
+- **Pass criteria**: Golden + convert ok; nilReason notObservable on qnh
+- **Source**: EV-066 M1/M2; FR-EV066-02
+
+### TC-EV066-003: SLP + hourly T remark combo
+
+- **Level**: T0 / T2
+- **Objective**: Addendum encodes SLP; additive T preserved in humanReadableText
+- **Pass criteria**: Golden diff empty; Addendum contains seaLevelPressure
+- **Source**: EV-066 M2; FR-EV066-03
+
+### TC-EV066-004: Canadian RMK lint deepen
+
+- **Level**: T0
+- **Objective**: `lint(..., profile=ca_eccc)` emits extended MANOBS remark codes
+- **Pass criteria**: `CA_REMARK_PRESRR`, `CA_REMARK_NOSPECI`, `CA_REMARK_SECTOR_VIS`, `CA_ALTIMETER_NOT_OBS`
+- **Source**: EV-066 M3; FR-EV066-04
+
+### EV-068 / #1035 + #1027 — CA_ECCC layered validation stack
+
+- **Mode**: deepen F2/F4/F13/F36; IWXXM 3.0.0 profile-pinned bundle + staged `ca_eccc` validate
+- **Pass criteria**: AC in evolve-decisions §EV-068; TC-EV068-*
+- **Source**: [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035), [#1027](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1027); EV-068;
+  [domain/IWXXM_VALIDATION.md](domain/IWXXM_VALIDATION.md) §CA_ECCC validation stages
+
+### TC-EV068-001: Profile-pinned 3.0.0 bundle integrity
+
+- **Level**: T0
+- **Objective**: `vendor/manifest.json` + on-disk trees satisfy CA_ECCC bundle resolution
+- **Pass criteria**: `iwxxm-ca` pin present; `3.0.0/IWXXM/iwxxm.xsd` exists; manifest integrity test green
+- **Source**: EV-068 M1; #1027; R-EV068-001
+
+### TC-EV068-002: Layered validate stages + product XSD selection
+
+- **Level**: T0 / T2
+- **Objective**: `validate(..., profile=ca_eccc)` returns per-stage issues; METAR uses `metar-speci-ca.xsd` at layer 4
+- **Pass criteria**: Missing CA extension element fails at `ca_xsd` layer (not only `wmo_xsd`)
+- **Source**: EV-068 M3/M4; #1035; R-EV068-002..003
+
+### TC-EV068-003: EV-067 golden validate gate
+
+- **Level**: T0 / T2
+- **Objective**: `metar_lwis`, `metar_sawr`, `metar_rmk_icing` goldens pass layers 2–4 under `ca_eccc`
+- **Pass criteria**: Replaces EV-064/067 XSD waive in `test_tc_ev064_002_ca_eccc_goldens.py`
+- **Source**: EV-068 M6; R-EV068-007
+
+### TC-EV068-004: API `extensions=IWXXM_CA` wire
+
+- **Level**: T2 / H4
+- **Objective**: Convert/validate accept `extensions` with `IWXXM_CA`; triggers full CA stack
+- **Pass criteria**: OpenAPI + backend unit tests; backward compat when extensions omitted
+- **Source**: EV-068 M5; #1027; R-EV068-005
+
+### TC-EV068-005: Datamart METAR sample (informative)
+
+- **Level**: T2
+- **Objective**: Operational datamart METAR sample passes full CA stack when fixture available
+- **Pass criteria**: Document pass/fail in test or mining notes — gate per feasibility decision
+- **Source**: #1035 acceptance; R-EV068-NF-003
+
+### EV-069 / #1035 follow-on — CA_ECCC validation deepen
+
+- **Mode**: deepen F2/F13; layers 5–6 + TAF product XSD gate
+- **Pass criteria**: AC in evolve-decisions §EV-069; TC-EV069-*
+- **Source**: [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035), [#1033](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1033), [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032); EV-069
+
+### TC-EV069-001: All CA stages implemented
+
+- **Level**: T0
+- **Objective**: `pending_ca_stages()` empty; registry matches catalog
+- **Pass criteria**: `IMPLEMENTED_CA_STAGES == CA_VALIDATION_STAGES`
+- **Source**: EV-069 M1
+
+### TC-EV069-002: TAF NCLWS full stack
+
+- **Level**: T0 / T2
+- **Objective**: `taf_nclws.golden.xml` passes layers 1–6 under `ca_eccc` + `product=TAF`
+- **Pass criteria**: All stage `ok`; `ca_xsd` validates NCLWS global element against `taf-ca.xsd`
+- **Source**: EV-069 M2; #1035 TAF acceptance
+
+### TC-EV069-003: code-ca membership gate
+
+- **Level**: T0
+- **Objective**: Unknown code-ca href fails at `code_ca` layer only
+- **Pass criteria**: `CODE_CA_UNKNOWN` on bad href; known goldens pass
+- **Source**: EV-069 M3; #1033
+
+### TC-EV069-004: Layer attribution preserved with full stack
+
+- **Level**: T0
+- **Objective**: CA XSD failures still attributed to `ca_xsd`; later stages skipped on error
+- **Pass criteria**: Monkeypatched `ca_xsd` failure; no `code_ca` stage appended
+- **Source**: EV-069 M4
+
+### EV-070 / #1041 — CA_ECCC TAF + AIRMET convert deepen
+
+- **Mode**: deepen F6/F20/F36; `tac2iwxxm` national mappers
+- **Pass criteria**: AC in evolve-decisions §EV-070; TC-EV070-*
+- **Source**: [#1041](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1041); EV-069 follow-on
+
+### TC-EV070-001: TAF present_and_forecast_weather encode
+
+- **Level**: T0 / T2
+- **Objective**: TAF golden with Canadian forecast weather encodes `code-ca/present_and_forecast_weather/` href
+- **Pass criteria**: Convert matches golden; `code_ca` layer passes
+- **Source**: EV-070 M1; #1041 TAF
+
+### TC-EV070-002: TAF MANAIR amendment slice
+
+- **Level**: T2
+- **Objective**: At least one amendment/corrected TAF golden converts and validates
+- **Pass criteria**: Layered `ca_eccc` layers 1–6 pass
+- **Source**: EV-070 M1; #1041 TAF
+
+### TC-EV070-003: AIRMET GFA structured fields
+
+- **Level**: T0 / T2
+- **Objective**: SFC_VIS* phenomenon golden includes `surfaceVisibility` / `cloudBase` / `surfaceWindSpeed` where applicable
+- **Pass criteria**: Golden diff stable; `airmet-ca.xsd` layer passes
+- **Source**: EV-070 M2; #1041 AIRMET
+
+### TC-EV070-004: AIRMET phenomenon vocabulary
+
+- **Level**: T0
+- **Objective**: Root `phenomenon` xlink uses `airmet_weather_phenomena/` code-ca path
+- **Pass criteria**: `code_ca` membership passes; unknown code fails closed
+- **Source**: EV-070 M2
+
+### TC-EV070-005: Convert → validate round-trip
+
+- **Level**: T2
+- **Objective**: All new EV-070 goldens convert then pass full `ca_eccc` stack
+- **Pass criteria**: `report.valid` and per-stage `ok` for layers 1–6
+- **Source**: EV-070 M3; FR6
+
+### TC-EV070-006: Manifest rule_id promotion
+
+- **Level**: T0
+- **Objective**: New cases in `manifest.json` with `status: active` and unique `rule_id`
+- **Pass criteria**: `test_tc_ev064_002` parametrization includes new case ids
+- **Source**: EV-070 M3
+
+### EV-071 / #1038 + #1032 + #1040 — CA_ECCC lint pack + exchange output (METAR)
+
+- **Mode**: deepen F15/F6/F36; national lint pack + operational packaging
+- **Pass criteria**: AC in evolve-decisions §EV-071; TC-EV071-*
+- **Source**: [#1038](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1038),
+  [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032),
+  [#1040](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1040); EV-070 follow-on
+
+### TC-EV071-001: CA lint pack — ≥10 rules with fixtures
+
+- **Level**: T0
+- **Objective**: `profile=ca_eccc` lint returns ≥10 distinct CA rule codes on fixture matrix
+- **Pass criteria**: Each code has accept/negative fixture; registry + catalog in sync
+- **Source**: EV-071 M1; #1038
+
+### TC-EV071-002: Profile isolation CA vs US
+
+- **Level**: T0
+- **Objective**: Same TAC under `ca_eccc` vs `iwxxm_us` emits profile-appropriate codes only
+- **Pass criteria**: No cross-profile CA/US rule bleed
+- **Source**: EV-071 M1; #1038 acceptance
+
+### TC-EV071-003: API pre-convert CA lint wire
+
+- **Level**: T2
+- **Objective**: Convert with `semantic_profile=CA_ECCC` runs CA TAC lint before convert
+- **Pass criteria**: Lint issues include CA codes when applicable TAC supplied
+- **Source**: EV-071 M1; FR-L6
+
+### TC-EV071-004: Quality matrix METAR (CA) rows
+
+- **Level**: T0
+- **Objective**: Quality matrix includes CA lint rows with working catalog links
+- **Pass criteria**: Matrix CI passes; source links resolve
+- **Source**: EV-071 M1; #1038
+
+### TC-EV071-005: MSC METAR filename pattern
+
+- **Level**: T0 / T2
+- **Objective**: Convert/package with `CA_ECCC` emits `A_{TTAAiiCCCCYYGGggBBB}_C_{CCC}_{YYYYMMddhhmmss}.xml`
+- **Pass criteria**: Filename matches mining/datamart pattern for METAR golden
+- **Source**: EV-071 M2; #1032 acceptance
+
+### TC-EV071-006: WMO header METAR (`A_LACN`)
+
+- **Level**: T0
+- **Objective**: CA profile validates METAR WMO header designator
+- **Pass criteria**: Layer-6 exchange check passes; wrong designator fails closed
+- **Source**: EV-071 M2; #1032
+
+### TC-EV071-007: Translation centre metadata golden
+
+- **Level**: T0 / T2
+- **Objective**: CA convert populates translation centre attrs when profile requires
+- **Pass criteria**: Golden XML includes configured translation metadata elements
+- **Source**: EV-071 M2; #1040
+
+### TC-EV071-008: API convert output spec exposure
+
+- **Level**: T2
+- **Objective**: Convert response includes operator-visible profile output spec fields
+- **Pass criteria**: OpenAPI + integration test; no internal doc refs in strings
+- **Source**: EV-071 M2; #1032 FR-E6
+
+### TC-EV071-009: Datamart fixture round-trip
+
+- **Level**: T2
+- **Objective**: Operational datamart sample round-trips naming + header checks
+- **Pass criteria**: Filename, header, and layer-6 validate pass on fixture
+- **Source**: EV-071 M2; #1032 acceptance
+
+### EV-072 / #1032 residual + #1036 — CA_ECCC exchange aerodrome products + ops corpus
+
+- **Mode**: deepen F36/F6; complete exchange output + operational fixtures
+- **Pass criteria**: AC in evolve-decisions §EV-072; TC-EV072-*
+- **Source**: EV-071 deferred; [#1036](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1036)
+
+### TC-EV072-001: SPECI exchange output (`A_LPCN`)
+
+- **Level**: T0 / T2
+- **Objective**: CA_ECCC SPECI convert returns MSC filename + `A_LPCN` WMO header in output_spec
+- **Pass criteria**: Layer-6 validate passes; wrong designator fails closed
+- **Source**: EV-072 M1; #1032 residual
+
+### TC-EV072-002: TAF exchange output (`A_LTCN`)
+
+- **Level**: T0 / T2
+- **Objective**: CA_ECCC TAF convert returns MSC filename + `A_LTCN` WMO header in output_spec
+- **Pass criteria**: Layer-6 validate passes; distribution path segment `taf`
+- **Source**: EV-072 M1; #1032 residual
+
+### TC-EV072-003: AIRMET exchange output (`A_LWCN`)
+
+- **Level**: T0 / T2
+- **Objective**: CA_ECCC AIRMET convert returns MSC filename + `A_LWCN` WMO header in output_spec
+- **Pass criteria**: Layer-6 validate passes; distribution path segment `airmet`
+- **Source**: EV-072 M1; #1032 residual
+
+### TC-EV072-004: Layer-6 goldens per aerodrome product
+
+- **Level**: T0
+- **Objective**: `validate_ca_exchange_packaging` parametrized for METAR/SPECI/TAF/AIRMET goldens
+- **Pass criteria**: Each product has accept/negative packaging fixture
+- **Source**: EV-072 M1
+
+### TC-EV072-005: API output_spec SPECI/TAF/AIRMET
+
+- **Level**: T2
+- **Objective**: `/api/v1/convert` with `semantic_profile=CA_ECCC` returns populated output_spec per product
+- **Pass criteria**: No internal doc refs; product-appropriate designator and filename
+- **Source**: EV-072 M1; FR-X6
+
+### TC-EV072-006: Catalog exchange_output all products
+
+- **Level**: T0
+- **Objective**: `catalog.yaml` CA_ECCC exchange_output documents all four aerodrome products
+- **Pass criteria**: No `ev071_slice`-only marker; docs match `exchange_output.py`
+- **Source**: EV-072 M1; FR-X8
+
+### TC-EV072-007: Ops harvest script pin-date reproducibility
+
+- **Level**: T1
+- **Objective**: Harvest script fetches MSC datamart tree for pin date without live CI dependency
+- **Pass criteria**: Script documents rate limit + pin; manifest checksum stable
+- **Source**: EV-072 M2; #1036
+
+### TC-EV072-008: Ops METAR fixture count
+
+- **Level**: T0
+- **Objective**: ≥5 METAR ops fixtures under `CA_ECCC/METAR/ops/` in manifest
+- **Pass criteria**: Manifest `tier: wmoReference`; CI collects fixtures
+- **Source**: EV-072 M2; #1036 acceptance
+
+### TC-EV072-009: Ops SPECI/TAF/AIRMET fixture counts
+
+- **Level**: T0
+- **Objective**: ≥2 ops fixtures each for SPECI, TAF, AIRMET
+- **Pass criteria**: Manifest entries + layer-6 packaging check or documented waiver
+- **Source**: EV-072 M2; #1036 acceptance
+
+### TC-EV072-010: Ops IWXXM packaging checks
+
+- **Level**: T2
+- **Objective**: Ops IWXXM samples pass layer-6 filename/header checks where attrs present
+- **Pass criteria**: Pass or explicit waiver row in manifest notes
+- **Source**: EV-072 M2; FR-O5
+
+### EV-073 / #1032 COLLECT + #1042 — CA_ECCC envelope + profile wiring
+
+- **Mode**: deepen F36/F6/F7; COLLECT wrap + operator profile/extension wiring
+- **Pass criteria**: AC in evolve-decisions §EV-073; TC-EV073-*
+- **Source**: EV-072 deferred; [#1042](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1042)
+
+### TC-EV073-001: COLLECT wrap idempotency
+
+- **Level**: T0
+- **Objective**: `wrap_ca_eccc_collect` returns input unchanged when already COLLECT
+- **Source**: EV-073 M1
+
+### TC-EV073-002: MSC bulletinIdentifier
+
+- **Level**: T0
+- **Objective**: Wrapped output sets `collect:bulletinIdentifier` to MSC filename from AHL
+- **Source**: EV-073 M1; #1032
+
+### TC-EV073-003: Inner product round-trip
+
+- **Level**: T0
+- **Objective**: `extract_iwxxm_from_collect(wrap(product))` equals inner product XML
+- **Source**: EV-073 M1
+
+### TC-EV073-004: Ops fixture shell parity
+
+- **Level**: T2
+- **Objective**: Single-member ops fixtures match COLLECT shell structure after wrap
+- **Source**: EV-073 M1; FR-O5
+
+### TC-EV073-005: Convert COLLECT output mode
+
+- **Level**: T2
+- **Objective**: CA_ECCC convert with packaging flag returns COLLECT-wrapped XML
+- **Source**: EV-073 M1; FR-X6
+
+### TC-EV073-006: FE IWXXM_CA auto-wire
+
+- **Level**: T2
+- **Objective**: Selecting `ca_eccc` sends `extensions=IWXXM_CA` on convert/validate
+- **Source**: EV-073 M2; #1042
+
+### TC-EV073-007: Profile metadata surfacing
+
+- **Level**: T2
+- **Objective**: UI shows IWXXM 3.0.0 pin + extension label when CA_ECCC selected
+- **Source**: EV-073 M2; #1042
+
+### TC-EV073-008: Fail-closed vendor pin
+
+- **Level**: T2
+- **Objective**: Missing CA vendor bundle blocks convert with operator help
+- **Source**: EV-073 M2; #1042
+
+### TC-EV073-009: E2E CA_ECCC convert + validate
+
+- **Level**: T4 / H6
+- **Objective**: Select CA_ECCC → convert Canadian METAR → validate pass with ca_xsd
+- **Source**: EV-073 M2; #1042 acceptance
+
+### EV-074 / #1043 — CA_ECCC SIGMET + VAA validate-first ops
+
+- **Mode**: deepen F23/F26/F36; datamart ops IWXXM + WMO 3.0.0 validate; no TAC convert
+- **Pass criteria**: AC in evolve-decisions §EV-074; TC-EV074-*
+- **Source**: [#1043](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1043); playbook #1044 type P
+
+### TC-EV074-001: Harvest script SIGMET/VAA pin URLs
+
+- **Level**: T0
+- **Objective**: Harvest plan includes SIGMET and VAA datamart entries; CI uses committed fixtures only
+- **Source**: EV-074 M1; REQ-EV074-M1-001
+
+### TC-EV074-002: Ops SIGMET fixture count
+
+- **Level**: T1
+- **Objective**: Manifest contains ≥2 SIGMET ops IWXXM; kinds recorded
+- **Source**: EV-074 M1; REQ-EV074-M1-002
+
+### TC-EV074-003: Ops VAA fixture count
+
+- **Level**: T1
+- **Objective**: Manifest VAA ≥1 Montreal VAAC TAC ops fixture; `vaa_harvest=vaac_tac_waived` (D-EV074-vaa-waiver-tac). Target ≥2 when VAAC 31-day index publishes more. Do not silent-fill encoder VAA.
+- **Source**: EV-074 M1; EV-077; D-EV074-vaa-waiver-tac
+
+### TC-EV074-004: SIGMET WMO 3.0.0 under CA profile
+
+- **Level**: T1
+- **Objective**: Harvested SIGMET fixtures pass wellformed + WMO 3.0.0 XSD+Schematron with `semantic_profile=CA_ECCC`
+- **Source**: EV-074 M2; REQ-EV074-M2-001
+
+### TC-EV074-005: VAA VAAC TAC validate-first
+
+- **Level**: T1
+- **Objective**: Montreal VAAC TAC ops fixtures pass annex3 VAA lint; IWXXM exchange packaging N/A (no datamart vaa/)
+- **Source**: EV-077; D-EV074-vaa-waiver-tac
+
+### TC-EV074-011: VAA VAAC TAC lint green
+
+- **Level**: T1
+- **Objective**: Each manifest VAA `ops_tac` passes `tac_validate.lint(product=VAA)` with no errors
+- **Source**: EV-077; TC-EV074-005
+
+### TC-EV074-006: ca_xsd skipped not-applicable
+
+- **Level**: T0
+- **Objective**: SIGMET/VAA CA layered validate skips `ca_xsd` as not-applicable (no `CA_PRODUCT_XSD_NOT_FOUND` error); mapped aerodrome products still fail-closed if XSD file missing
+- **Source**: EV-074 M2; REQ-EV074-M2-002
+
+### TC-EV074-007: Catalog lists SIGMET/VAA
+
+- **Level**: T0
+- **Objective**: `catalog.yaml` CA_ECCC products include SIGMET and VAA with validate-first status
+- **Source**: EV-074 M2; REQ-EV074-M2-004
+
+### TC-EV074-008: Coverage matrix CA SIGMET/VAA row
+
+- **Level**: T0
+- **Objective**: Coverage matrix documents validate-first ops slice + #1033 note-only
+- **Source**: EV-074 M2; REQ-EV074-M2-004
+
+### TC-EV074-009: Aerodrome CA regression
+
+- **Level**: T1
+- **Objective**: METAR/SPECI/TAF/AIRMET CA convert, exchange, COLLECT, and layered validate remain green
+- **Source**: EV-074 M2; REQ-EV074-M2-005
+
+### TC-EV074-010: code-ca SIGMET note-only
+
+- **Level**: T0
+- **Objective**: Catalog/coverage notes #1033 investigation without shipping SIGMET `code-ca` rules
+- **Source**: EV-074; D-EV074-1033
+
+### EV-075 / #1032 — CA_ECCC umbrella closeout audit
+
+- **Mode**: doc audit + regression gate; no product code unless drift
+- **Pass criteria**: AC in evolve-decisions §EV-075; TC-EV075-*
+- **Source**: [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032) (verify close); EV-071..074 on `stage`
+
+### TC-EV075-001: #1032 aerodrome exchange output regression
+
+- **Level**: T0
+- **Objective**: TC-EV071-005..009 + TC-EV072-001..006 green on branch
+- **Pass criteria**: All exchange-output tests pass; catalog `ev072_slice` documents four aerodrome products
+- **Source**: EV-075 REQ-EV075-001
+
+### TC-EV075-002: COLLECT + ops corpus regression
+
+- **Level**: T0
+- **Objective**: TC-EV073-001..005 + TC-EV072-007..010 green
+- **Pass criteria**: COLLECT wrap + ops manifest counts unchanged
+- **Source**: EV-075 REQ-EV075-002..003
+
+### TC-EV075-003: SIGMET validate-first + waived residuals documented
+
+- **Level**: T0 / docs
+- **Objective**: TC-EV074-001..010 green; catalog/coverage note SIGMET/VAA exchange emit waived → #1061
+- **Pass criteria**: `ev074_validate_first` documented; VAA harvest waiver cited
+- **Source**: EV-075 REQ-EV075-004..005
+
+### TC-EV075-004: Standing docs parity
+
+- **Level**: Docs
+- **Objective**: `catalog.yaml`, `COVERAGE_MATRIX.md`, `CA_ECCC.md`, `evolve-decisions.md` §EV-075 aligned
+- **Pass criteria**: No stale “#1032 open” rows; acceptance checklist updated
+- **Source**: EV-075 NFR-EV075-001
+
+### EV-076 / #1061 — CA_ECCC SIGMET exchange output emit
+
+- **Mode**: delta deepen F36 exchange output
+- **Pass criteria**: AC in evolve-decisions §EV-076; TC-EV1061-*
+- **Source**: [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061); split from #1032 / EV-075
+
+### TC-EV1061-001: Catalog SIGMET exchange slice
+
+- **Level**: T0 / docs
+- **Objective**: `ev076_slice: [SIGMET]`; VAA remains `ev074_validate_first`
+- **Pass criteria**: catalog row matches implementation
+- **Source**: EV-076 M2
+
+### TC-EV1061-002: SIGMET WMO header designators
+
+- **Level**: T0
+- **Objective**: `A_LSCN` default; VA/TC via `sigmet_kind`
+- **Pass criteria**: unit tests green
+- **Source**: EV-076 M1
+
+### TC-EV1061-003: Ops MSC filename output spec
+
+- **Level**: T0
+- **Objective**: SIGMET ops fixtures expand filename + WMO AHL via `build_ca_eccc_output_spec_from_msc_filename`
+- **Pass criteria**: suggested_filename matches datamart source_filename
+- **Source**: EV-076 M1
+
+### TC-EV1061-004: SIGMET ops layer-6 packaging
+
+- **Level**: T0
+- **Objective**: Ops SIGMET IWXXM passes `validate_ca_exchange_packaging` with MSC context
+- **Pass criteria**: no blocking exchange issues; TC-EV072-010 includes SIGMET
+- **Source**: EV-076 M1
+
+### EV-079 / #919 — US_FAA_NWS SIGMET/AIRMET national layer (M8)
+
+- **Mode**: parser tokens + profile fixture pack + regression gate
+- **Pass criteria**: AC in evolve-decisions §EV-079; TC-EV079-*
+- **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); EV-063 M7 RMK matrix prior
+
+### TC-EV079-001: SIGMET/AIRMET manifest rows
+
+- **Level**: T0
+- **Objective**: `fixtures/profiles/US_FAA_NWS/manifest.json` lists ≥2 SIGMET + ≥3 AIRMET with `US.*` rule ids
+- **Pass criteria**: `test_tc_ev079_us_sigmet_airmet.py::test_tc_ev079_001_*`
+- **Source**: EV-079 REQ-EV079-001
+
+### TC-EV079-002: SIGMET phenomenon tokens
+
+- **Level**: T1
+- **Objective**: OBSC TS + SEV ICE parse to `OBSC_TS` / `SEV_ICE`; FL band geometry on SEV ICE
+- **Pass criteria**: `test_tc_ev079_002_*`
+- **Source**: EV-079 REQ-EV079-002
+
+### TC-EV079-003: AIRMET US phenomenon tokens
+
+- **Level**: T1
+- **Objective**: IFR → `SFC_VIS`; MOD TURB → `MOD_TURB`; ISOL TS unchanged
+- **Pass criteria**: `test_tc_ev079_003_*`
+- **Source**: EV-079 REQ-EV079-003
+
+### TC-EV079-004: SIGMET/AIRMET M-golden convert
+
+- **Level**: T1
+- **Objective**: `US_FAA_NWS` convert matches profile goldens; `iwxxm-us` namespace present
+- **Pass criteria**: `test_tc_ev079_004_*`
+- **Source**: EV-079 REQ-EV079-004
+
+### EV-080 / #919 — US_FAA_NWS SIGMET VOR reference geometry (M9)
+
+- **Mode**: `ReferencePointGeometryParser` + bundled VOR table + fixture pack
+- **Pass criteria**: AC in evolve-decisions §EV-080; TC-EV080-*
+- **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); EV-079 M8 prior
+
+### TC-EV080-001: VOR offset math
+
+- **Level**: T1
+- **Objective**: `offset_nm` moves point north/east as expected
+- **Pass criteria**: `test_tc_ev080_001_*`
+- **Source**: EV-080 REQ-EV080-003
+
+### TC-EV080-002: VOR chain parse
+
+- **Level**: T1
+- **Objective**: `FROM` chain yields closed polygon + `reference_points` audit
+- **Pass criteria**: `test_tc_ev080_002_*`
+- **Source**: EV-080 REQ-EV080-001
+
+### TC-EV080-003: Unknown VOR fails closed
+
+- **Level**: T1
+- **Objective**: `UnknownVOR` raised for absent id
+- **Pass criteria**: `test_tc_ev080_003_*`
+- **Source**: EV-080 REQ-EV080-002
+
+### TC-EV080-004: VOR fixture convert goldens
+
+- **Level**: T1
+- **Objective**: manifest rows convert to profile goldens
+- **Pass criteria**: `test_tc_ev080_004_*`
+- **Source**: EV-080 REQ-EV080-005
+
+### TC-EV080-005: Bundled VOR table
+
+- **Level**: T1
+- **Objective**: EED/BZA/TRM resolve within CONUS bounds
+- **Pass criteria**: `test_tc_ev080_005_*`
+- **Source**: EV-080 REQ-EV080-002
+
+### EV-081 / #919 — US_FAA_NWS M10–M13 (hazards, WST, VIS, TAF lint)
+
+- **Mode**: iwxxm-us hazard emit + convective SIGMET parse/emit + M7 VIS assert + TAF overlay lint
+- **Pass criteria**: AC in evolve-decisions §EV-081; TC-EV081-*
+- **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); EV-080 M9 prior
+
+### TC-EV081-001: AIRMET IFR weather hazards
+
+- **Level**: T1
+- **Objective**: IFR AIRMET emits `AIRMETWeatherHazards` with `causingIFRConditions`
+- **Pass criteria**: `test_tc_ev081_001_*`
+- **Source**: EV-081 REQ-EV081-001
+
+### TC-EV081-002: Convective SIGMET (WST)
+
+- **Level**: T1
+- **Objective**: `CONVECTIVE SIGMET` parses and emits `SIGMETWeatherHazards` `AreaTS`
+- **Pass criteria**: `test_tc_ev081_002_*`
+- **Source**: EV-081 REQ-EV081-002
+
+### TC-EV081-003: US TAF BECMG forbidden
+
+- **Level**: T1
+- **Objective**: `iwxxm_us` lint emits `US_TAF_BECMG_FORBIDDEN` for BECMG groups
+- **Pass criteria**: `test_tc_ev081_003_*`
+- **Source**: EV-081 REQ-EV081-006
+
+### TC-EV081-004: US TAF TEMPO max 4h
+
+- **Level**: T1
+- **Objective**: `iwxxm_us` lint emits `US_TAF_TEMPO_MAX_4H` when TEMPO window > 4h
+- **Pass criteria**: `test_tc_ev081_004_*`
+- **Source**: EV-081 REQ-EV081-007
+
+### TC-EV081-005: Structured visibility fixtures present
+
+- **Level**: T1
+- **Objective**: M7 `rmk_sector_vis` / `rmk_tower_vis` / `rmk_var_vis` remain in US_FAA_NWS manifest
+- **Pass criteria**: `test_tc_ev081_005_*`
+- **Source**: EV-081 REQ-EV081-005
+
+### EV-082 / #919 — US_FAA_NWS M15–M16 (outlook / multi-area AIRMET)
+
+- **Mode**: `OTLK VALID` outlook parse/emit + AND-joined multi-area members
+- **Pass criteria**: AC in evolve-decisions §EV-082; TC-EV082-*
+- **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); NWSI 10-811 §7.3 item 10; EV-081 prior
+
+### TC-EV082-001: AIRMET outlook sub-period
+
+- **Level**: T1
+- **Objective**: Outlook emits forecast analysis + `validTimeSubPeriod` extension
+- **Pass criteria**: `test_tc_ev082_001_*`
+- **Source**: EV-082 REQ-EV082-001..005
+
+### TC-EV082-002: Multi-area AIRMET
+
+- **Level**: T1
+- **Objective**: AND-joined areas emit multiple `AIRMETEvolvingCondition` members
+- **Pass criteria**: `test_tc_ev082_002_*`
+- **Source**: EV-082 REQ-EV082-006..007
+
+### TC-EV082-003: EV-081 regression pack
+
+- **Level**: T1
+- **Objective**: EV-079..081 SIGMET/AIRMET manifest rows remain green
+- **Pass criteria**: `test_tc_ev082_003_*`
+- **Source**: EV-082 REQ-EV082-008
+
+### EV-083 / #919 — US_FAA_NWS M17–M18 (CONUS UPDT + FRZLVL forecast)
+
+- **Mode**: CONUS `UPDT` header parse + standalone `FRZLVL...` subsection emit
+- **Pass criteria**: AC in evolve-decisions §EV-083; TC-EV083-*
+- **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); NWSI 10-811 Appendix A2.1; EV-082 prior
+
+### TC-EV083-001: CONUS UPDT header + inline FRZLVL
+
+- **Level**: T1
+- **Objective**: `AIRMET ZULU UPDT` header populates IR; `BTN FRZLVL` + inline levels emit
+- **Pass criteria**: `test_tc_ev083_001_*`
+- **Source**: EV-083 REQ-EV083-001..004
+
+### TC-EV083-002: FRZLVL-only subsection
+
+- **Level**: T1
+- **Objective**: Standalone `FRZLVL...` emits `FreezingLevelForecast`
+- **Pass criteria**: `test_tc_ev083_002_*`
+- **Source**: EV-083 REQ-EV083-005..007
+
+### TC-EV083-003: EV-082 regression pack
+
+- **Level**: T1
+- **Objective**: EV-079..082 US_FAA_NWS SIGMET/AIRMET manifest rows remain green
+- **Pass criteria**: `test_tc_ev083_003_*`
+- **Source**: EV-083 REQ-EV083-008
+
+### EV-084 / #919 — US_FAA_NWS M19 (WAUS multi-section AIRMET)
+
+- **Mode**: Full bulletin ICE + VOR `FROM` geometry + inline FRZLVL + `OTLK VALID` + FRZLVL subsection
+- **Pass criteria**: AC in evolve-decisions §EV-084; TC-EV084-*
+- **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); NWSI 10-811; EV-083 prior
+
+### TC-EV084-001: WAUS multi-section convert golden
+
+- **Level**: T1
+- **Objective**: One bulletin emits polygon geometry, outlook member, and `FreezingLevelForecast`
+- **Pass criteria**: `test_tc_ev084_001_*`
+- **Source**: EV-084 REQ-EV084-001..004
+
+### TC-EV084-002: VOR TO-chain parser
+
+- **Level**: T1
+- **Objective**: `FROM … TO …` chains and missing WSW cardinal coverage
+- **Pass criteria**: `test_tc_ev084_002_*`
+- **Source**: EV-084 REQ-EV084-005
+
+### TC-EV084-003: EV-083 regression pack
+
+- **Level**: T1
+- **Objective**: EV-079..083 manifest rows remain green (incl. updated `airmet_zulu_updt_ice` geometry)
+- **Pass criteria**: `test_tc_ev084_003_*`
+- **Source**: EV-084 REQ-EV084-006
+
+### EV-078 / #916 — CA_ECCC P1 closeout audit
+
+- **Mode**: doc audit + regression gate; no product code unless drift
+- **Pass criteria**: AC in evolve-decisions §EV-078; TC-EV078-*
+- **Source**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) (verify close); EV-071..077 on `stage`
+
+### TC-EV078-001: SIGMET exchange + catalog slices documented
+
+- **Level**: T0 / docs
+- **Objective**: `ev076_slice: [SIGMET]`; `ev074_validate_first: [VAA]`; VAAC harvest script cited
+- **Pass criteria**: catalog row matches EV-076/077 implementation
+- **Source**: EV-078 REQ-EV078-001
+
+### TC-EV078-002: VAA TAC + AIRMET ops regression
+
+- **Level**: T1
+- **Objective**: ≥1 VAA `ops_tac`; ≥4 AIRMET datamart ops; `vaa_harvest=vaac_tac_waived`
+- **Pass criteria**: manifest fixtures on disk
+- **Source**: EV-078 REQ-EV078-002
+
+### TC-EV078-003: Coverage matrix residuals waived
+
+- **Level**: T0 / docs
+- **Objective**: X6 SIGMET emit met; X7 VAA emit waived; S2 EV-077 cited
+- **Pass criteria**: `COVERAGE_MATRIX.md` acceptance checklist current
+- **Source**: EV-078 REQ-EV078-003
+
+### TC-EV078-004: Standing docs parity post EV-077
+
+- **Level**: Docs
+- **Objective**: `feature-list.md`, `CA_ECCC.md`, `evolve-decisions.md` §EV-078 aligned; no stale bare “VAA harvest deferred”
+- **Pass criteria**: EV-077 / waiver cited; #916 closeout recorded
+- **Source**: EV-078 NFR-EV078-001
+
+### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
+
+- **Mode**: new F35/F36; amends F6 wire
+- **Pass criteria**: AC in evolve-decisions §EV-063; UJ-069; TC-EV063-*
+- **Source**: [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912),
+  [#914](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/914),
+  [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); ADR-036
+
+### TC-EV063-001: Alias annex3 ≡ ICAO_2025 convert parity
+
+- **Level**: T0 / T2 / T3
+- **Objective**: `annex3` alias produces same IWXXM as pre-migration goldens
+- **Pass criteria**: Golden diff empty under defaults; deprecation signal present when implemented
+- **Source**: UJ-069; FR-03; A1
+
+### TC-EV063-002: US_FAA_NWS ≡ iwxxm_us RMK semantics
+
+- **Level**: T0 / T2
+- **Objective**: Canonical `US_FAA_NWS` matches current `iwxxm_us` RMK behavior
+- **Pass criteria**: Existing iwxxm_us METAR RMK fixtures green
+- **Source**: UJ-069; A2; #919
+
+### TC-EV063-003: Unknown semantic or exchange profile → 400
+
+- **Level**: T2 / T3
+- **Objective**: Hard fail on invalid ids
+- **Pass criteria**: `invalid_profile` or successor codes; no 5xx
+- **Source**: UJ-069; FR-06
+
+### TC-EV063-004: Exchange packaging default GLOBAL_AFS
+
+- **Level**: T2
+- **Objective**: Package path without explicit exchange profile uses `GLOBAL_AFS`
+- **Pass criteria**: Deterministic packaging test artifact; no live sink
+- **Source**: UJ-069; A4; #921
+
+### TC-EV063-005: Exchange profile ≠ dissemination credentials
+
+- **Level**: T0 / T2
+- **Objective**: Selecting exchange profile does not persist or require BYOC secrets
+- **Pass criteria**: F16–F19 regression suite green; explicit negative test in Spec/Build
+- **Source**: UJ-069; A5; ADR-021/029
+
+### TC-EV063-006: Profile id metrics + alias counters (Build)
+
+- **Level**: T2 / observability
+- **Objective**: Metrics emitted for semantic/exchange ids and alias use
+- **Pass criteria**: Contract documented; smoke assert in integration test when implemented
+- **Source**: EV-063 observability; NFR observability skill
+
+### EV-065 / #921 — GLOBAL_AFS closure + APAC_ROBEX stub
+
+- **Mode**: delta deepen F36 exchange overlays
+- **Pass criteria**: TC-EV065-001..003; catalog + GLOBAL_AFS.md status updated
+- **Source**: [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921); EV-065
+
+### TC-EV065-001: GLOBAL_AFS fixture COLLECT golden
+
+- **Level**: T0 / T2
+- **Objective**: Profile fixture under `profiles/GLOBAL_AFS/` produces deterministic COLLECT wrap
+- **Pass criteria**: `is_collect_bulletin`; `bulletinIdentifier` present
+- **Source**: EV-065; FR-EV065-01
+
+### TC-EV065-002: APAC_ROBEX registry + packaging stub
+
+- **Level**: T0 / T2
+- **Objective**: `APAC_ROBEX` resolves and COLLECT-wraps member IWXXM
+- **Pass criteria**: Registry includes wire + canonical; packaging test green
+- **Source**: EV-065; FR-EV065-02
+
+### TC-EV065-003: convert-bulletin APAC_ROBEX API wire
+
+- **Level**: T2 / T3
+- **Objective**: `POST /api/v1/convert-bulletin` with `exchange_profile=APAC_ROBEX` returns COLLECT XML
+- **Pass criteria**: HTTP 200; `exchange_profile` echoed; COLLECT root in result
+- **Source**: EV-065; UJ-069
+
+### EV-086 / #921 — EUR_RODEX + AFI + CAR_SAM stubs
+
+- **Mode**: delta deepen F36 exchange overlays
+- **Pass criteria**: TC-EV086-001..004; catalog + exchange stub docs
+- **Source**: [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921); EV-086
+
+### TC-EV086-001: Registry resolves regional stubs
+
+- **Level**: T0 / T2
+- **Objective**: `EUR_RODEX`, `AFI`, `CAR_SAM` resolve (wire + canonical)
+- **Pass criteria**: `known_exchange_profile_ids` contains all three; `resolve_exchange_profile` non-None
+- **Source**: EV-086; UJ-069
+
+### TC-EV086-002: Packaging COLLECT for each stub
+
+- **Level**: T0 / T2
+- **Objective**: Each stub COLLECT-wraps member IWXXM via GLOBAL_AFS baseline
+- **Pass criteria**: `is_collect_bulletin`; `bulletinIdentifier` preserved
+- **Source**: EV-086; FR-EV086-01
+
+### TC-EV086-003: Unknown exchange fail-closed
+
+- **Level**: T0 / T2
+- **Objective**: Garbage exchange id still rejected
+- **Pass criteria**: `ValueError` from packaging / API 400
+- **Source**: EV-086; ADR-036
+
+### TC-EV086-004: EV-065 regression
+
+- **Level**: T0 / T2
+- **Objective**: GLOBAL_AFS + APAC_ROBEX paths unchanged
+- **Pass criteria**: TC-EV065-001..002 green
+- **Source**: EV-086
+
+### EV-090 / #921+#913+#1024 — Exchange mining deepen + light picker
+
+- **Mode**: delta deepen F36 exchange overlays + F7 light UI
+- **Pass criteria**: TC-EV090-001..005; catalog/stub provenance deltas; UJ-069 FE steps
+- **Source**: [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921), [#913](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913), [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024); EV-090; ADR-036
+
+### TC-EV090-001: Catalog provenance for regional exchange stubs
+
+- **Level**: T0
+- **Objective**: Each exchange id (`GLOBAL_AFS`, `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM`) has promoted mining_notes and/or shared OPMET Guidelines source; ROBEX handbook durable file remains an explicit gap if unpinned
+- **Pass criteria**: `catalog.yaml` + stub Owns/Gaps match; PROVENANCE_MAP digs where tickets apply
+- **Source**: EV-090; D-EV090-req 2a; #913
+
+### TC-EV090-002: Workbench Exchange profile control
+
+- **Level**: T0 / T2 (browser unit)
+- **Objective**: Labeled Exchange profile select lists registered ids; default `GLOBAL_AFS`; accessible name distinct from semantic Profile
+- **Pass criteria**: `data-testid` exchange select visible; options include regional stubs; plain-language help without internal doc refs
+- **Source**: EV-090; #1024; UJ-069; D-EV090-ui
+
+### TC-EV090-003: FE sends exchange_profile on package/bulletin path
+
+- **Level**: T0 / T2 (browser unit)
+- **Objective**: Selecting a non-default exchange id sends `exchange_profile` on convert-bulletin / packaging request; convert-only path does not invent credentials
+- **Pass criteria**: Form/JSON field matches API contract; unknown id rejected by API (existing fail-closed)
+- **Source**: EV-090; api-contract; UJ-069
+
+### TC-EV090-004: H4–H5 connectivity for exchange picker
+
+- **Level**: T3 / H4–H5
+- **Objective**: Live or staging workbench can select exchange overlay and complete package path without CORS failure
+- **Pass criteria**: Connectivity gate scripts / Playwright e2e green for UJ-069 FE
+- **Source**: EV-090; connectivity-gates; D-EV090-routing
+
+### TC-EV090-005: EV-086 packaging regression
+
+- **Level**: T0 / T2
+- **Objective**: COLLECT baseline for all regional stubs unchanged
+- **Pass criteria**: TC-EV086-001..004 green
+- **Source**: EV-090
+
+### EV-093 / #1024 — Semantic light picker deepen
+
+- **Mode**: delta deepen F7/F35 FE semantic Profile wire + nationals
+- **Pass criteria**: TC-EV093-001..006; UJ-069 FE semantic steps; preserve TC-EV060/064/090/091
+- **Source**: [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024); EV-093; ADR-036; D-EV093-*
+
+### TC-EV093-001: Profile options = all canonicals + aliases
+
+- **Level**: T0 / T2 (browser unit)
+- **Objective**: `profile-type-select` lists `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`,
+  `NZ_CAA_MET`, thin packs, plus legacy `annex3` / `iwxxm_us`; default `ICAO_2025`
+- **Pass criteria**: Options + default match FR-01/FR-02/FR-04; accessible name distinct from Exchange
+- **Source**: EV-093; D-EV093-g2; UJ-069
+
+### TC-EV093-002: FE sends semantic_profile uppercase
+
+- **Level**: T0 / T2
+- **Objective**: Convert / convert-bulletin FormData appends `semantic_profile` with uppercase
+  OpenAPI ids (e.g. `ICAO_2025`), not only deprecated `profile=`
+- **Pass criteria**: Client unit asserts field + value; API accepts
+- **Source**: EV-093; D-EV093-wire; api-contract
+
+### TC-EV093-003: Legacy aliases still convert
+
+- **Level**: T0 / T2
+- **Objective**: Selecting `annex3` or `iwxxm_us` resolves and converts; coerce helpers map stored prefs
+- **Pass criteria**: Alias options present; convert path green; no unknown-profile 400
+- **Source**: EV-093; #1025 window; FR-02
+
+### TC-EV093-004: CA_ECCC pin / metadata unchanged
+
+- **Level**: T0 / T2
+- **Objective**: Choosing `CA_ECCC` still pins IWXXM 3.0.0, sends `IWXXM_CA` extensions, shows metadata / block notice
+- **Pass criteria**: TC-EV064-005 behavior preserved under new option value
+- **Source**: EV-093; FR-05
+
+### TC-EV093-005: Profile trust copy
+
+- **Level**: T0 / T2
+- **Objective**: Plain-language Profile/Exchange trust model without bloating the control bar: (A) help icons + tooltips on Profile and Exchange labels; (B) one short always-visible summary under the bar; (C) collapsed “What’s this?” details with full copy (not destinations/credentials; not editable overlays)
+- **Pass criteria**: `product-profile-bar` contains controls only (no help paragraphs); summary + details `data-testid`s present; full help visible after expand; no internal doc refs (EV-048)
+- **Source**: EV-093; FR-06; #924; D-EV093-trust-layout
+
+### TC-EV093-006: H4–H5 / e2e UJ-069 semantic + exchange
+
+- **Level**: T3 / H4–H5
+- **Objective**: Playwright (or live connectivity) selects canonical Profile + Exchange and completes convert/package path
+- **Pass criteria**: Extend `tc-ev090-uj069-exchange-picker` or sibling TC-EV093 e2e green
+- **Source**: EV-093; connectivity-gates; UJ-069
+
+### EV-087 / #917+#918 — AU_BOM + NZ_CAA_MET P1 kickoff
+
+- **Mode**: delta deepen F36 semantic nationals
+- **Pass criteria**: TC-EV087-001..006; catalog P1 + stubs + mining notes; D-EV087-* locked
+- **Source**: [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917), [#918](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/918); EV-087; ADR-036
+
+### TC-EV087-001: Registry resolves AU_BOM and NZ_CAA_MET
+
+- **Level**: T0 / T2
+- **Objective**: Canonical wire ids resolve to emit keys `au_bom` / `nz_caa_met`
+- **Pass criteria**: `resolve_semantic_profile` non-None; `known_semantic_profile_ids` contains both
+- **Source**: FR-EV087-01; UJ-069
+
+### TC-EV087-002: AU INTER parsed distinct from TEMPO
+
+- **Level**: T0 / T2
+- **Objective**: Under `AU_BOM`, `INTER` is a distinct IR change-group
+- **Pass criteria**: Fixture with INTER does not collapse to TEMPO-only AST; `rule_id` AU.TAF.INTER
+- **Source**: FR-EV087-02; D-EV087-inter-emit
+
+### TC-EV087-003: AU INTER emit policy (no invented enum)
+
+- **Level**: T0 / T2
+- **Objective**: Converted IWXXM uses `TEMPORARY_FLUCTUATIONS` and preserves INTER provenance
+- **Pass criteria**: No `changeIndicator="INTER"`; remarks/diagnostics/humanReadable retain INTER; XSD-valid under core pin
+- **Source**: FR-EV087-03; D-EV087-inter-emit
+
+### TC-EV087-004: AU TAF3 RMK flag
+
+- **Level**: T0 / T2
+- **Objective**: `TAF3` / `TAF3 VALID TL` detected under `product=TAF`
+- **Pass criteria**: Profile flag / IR field set; API product remains TAF
+- **Source**: FR-EV087-04; D-EV087-taf3
+
+### TC-EV087-005: NZ domestic vs international TAF fixtures
+
+- **Level**: T0 / T2
+- **Objective**: Domestic extras parsed; international path remains Annex 3-shaped
+- **Pass criteria**: ≥1 domestic + ≥1 international fixture; extras in IR and/or remarks
+- **Source**: FR-EV087-06..07; D-EV087-nz-domestic
+
+### TC-EV087-006: Unknown semantic profile fail-closed
+
+- **Level**: T0 / T2
+- **Objective**: Garbage semantic id still rejected after AU/NZ registration
+- **Pass criteria**: API 400 / library reject; ICAO/US/CA paths unchanged
+- **Source**: FR-EV087-01; ADR-036
+
+### EV-088 / #1044 — National profile onboarding playbook
+
+- **Mode**: engineering enablement (docs + scaffold; no #920/#921 feature content)
+- **Pass criteria**: TC-EV088-001..006; playbook + `_template/`; ADR-036/README links
+- **Source**: [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044); EV-088; ADR-036
+
+### TC-EV088-001: Playbook lists issue types A–P
+
+- **Level**: T0 / Docs
+- **Objective**: `NATIONAL_PROFILE_PLAYBOOK.md` documents child types A–P
+- **Pass criteria**: Each `| A |` … `| P |` row present
+- **Source**: #1044 §8
+
+### TC-EV088-002: Template stubs present
+
+- **Level**: T0 / Docs
+- **Objective**: `_template/` holds catalog-row, semantic, mining, manifest stubs
+- **Pass criteria**: Five required template files on disk
+- **Source**: #1044 deliverables
+
+### TC-EV088-003: Catalog YAML parses
+
+- **Level**: T0
+- **Objective**: `catalog.yaml` remains valid machine index
+- **Pass criteria**: YAML loads; `CA_ECCC` and `ICAO_2025` present
+- **Source**: [Corpus: domain-profiles]
+
+### TC-EV088-004: README and ADR-036 link playbook
+
+- **Level**: T0 / Docs
+- **Objective**: Standing docs discoverable from hub + ADR
+- **Pass criteria**: Playbook filename cited in README and ADR-036
+- **Source**: #1044 AC
+
+### TC-EV088-005: Scaffold dry-run
+
+- **Level**: T0
+- **Objective**: `scaffold_national_profile.py --dry-run` prints checklist without writes
+- **Pass criteria**: Exit 0; checklist mentions `profile_registry.py`; no new semantic stub file
+- **Source**: EV-088 Build M2
+
+### TC-EV088-006: Scaffold rejects bad id
+
+- **Level**: T0
+- **Objective**: Malformed `--id` fails closed
+- **Pass criteria**: Exit 2; stderr error
+- **Source**: EV-088 Build M2
+
+### EV-096 / #1096 — Harden Cursor rules/skills from CI footguns
+
+- **Mode**: process/DX delta — encode recurring CI failures into rules/skills (+ cheap guards);
+  not a product Fn fix
+- **Pass criteria**: TC-EV096-001..005; #1096 AC; triage note on issue; PR into `stage`
+- **Source**: [#1096](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1096); EV-096;
+  [Corpus: tests]; [Corpus: decisions]; related [#1095](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1095)
+
+### TC-EV096-001: Triage note (≥5 themes)
+
+- **Level**: T0 / Docs
+- **Objective**: Written triage of ≥5 recent failure/bug themes with concrete run or issue links
+- **Pass criteria**: Issue #1096 comment (or session report mirrored to issue) lists themes + links
+- **Source**: REQ-EV096-01; #1096 AC
+
+### TC-EV096-002: Rule + skill landed
+
+- **Level**: T0 / Docs
+- **Objective**: At least one Cursor rule and one skill/procedure update for these footguns
+- **Pass criteria**: `.cursor/rules/optional/ci-recurring-footguns.mdc` (or equivalent) +
+  `ci-after-push` / related skill note on tip; or explicit waiver with rationale
+- **Source**: REQ-EV096-02; REQ-EV096-03; #1096 AC
+
+### TC-EV096-003: Machine-local path class covered
+
+- **Level**: T0 / CI
+- **Objective**: #1095 portable EM paths remain guarded
+- **Pass criteria**: `make cursor-no-home-paths-guard` / `validate-fast` includes
+  `scripts/ci/check_cursor_no_home_paths.py`; rule cites verify-only path
+- **Source**: REQ-EV096-07; EV-095; #1095
+
+### TC-EV096-004: Stage→main vs evolve CI expectations
+
+- **Level**: T0 / Docs
+- **Objective**: Agents know promote vs evolve-branch CI differences
+- **Pass criteria**: `ci-after-push.mdc` (and/or footguns rule) states: feature/evolve PR →
+  `stage` first; promote `stage`→`main` requires E2E Full (not smoke-only); watch CI after push
+- **Source**: REQ-EV096-03; REQ-EV096-08; [Corpus: deploy] §Promote
+
+### TC-EV096-005: Frontend coverage / Mutation pnpm / Vendor sync documented
+
+- **Level**: T0 / Docs (+ optional CI guard)
+- **Objective**: If-you-see-X-do-Y for FE 100% coverage, Mutation `packageManager` dual-spec,
+  Vendor Schema Sync recurring fails
+- **Pass criteria**: Footguns rule covers all three; Mutation workflow fixed to packageManager-only
+  when dual-spec still present; vendor documented as non-blocking triage (no hand-edit
+  `vendor/schemas`)
+- **Source**: REQ-EV096-04..06; REQ-EV096-09; sample runs #33401453421, #33386557847,
+  #33393624607
+
+### EV-098 / #1028–#1031 — CA_ECCC deep mining
+
+- **Mode**: delta F36 — domain mining + P0 fixtures (no UI / H4–H5 waived)
+- **Pass criteria**: TC-EV098-001..005; REQs R1–R6; promote only after handoff gate C
+- **Source**: [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028)–[#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031); EV-098; [ev-098-ca-eccc-mining.md](decisions/ev-098-ca-eccc-mining.md); ADR-036
+
+### TC-EV098-001: Datamart triage complete (Docs)
+
+- **Level**: T0 / Docs
+- **Objective**: Every directory under MSC IWXXM datamart root classified mined | redirected | dead with promotion backlog rows
+- **Pass criteria**: `eccc-iwxxm-ca-mining-notes.md` section-level findings; backlog has `rule_id` / priority / status
+- **Source**: R1; #1028
+
+### TC-EV098-002: MSC doc PDF catalogue (Docs)
+
+- **Level**: T0 / Docs
+- **Objective**: All MSC `doc/` PDFs (EN primary) triaged into `eccc-iwxxm-doc-pdfs-mining-notes.md`
+- **Pass criteria**: Per-PDF durable citation + section index; no full copyrighted prose committed
+- **Source**: R2 / R5; #1031
+
+### TC-EV098-003: MANOBS P0 fixtures (Build)
+
+- **Level**: T0 / T2
+- **Objective**: P0 rules `CA.METAR.VIS.SM`, `CA.METAR.ALT.A`, `CA.METAR.AUTO` have valid/invalid fixture pairs under `profiles/CA_ECCC/`
+- **Pass criteria**: Catalog entries + fixture tests green after gate-C promote; COVERAGE_MATRIX METAR (CA) updated where promoted
+- **Source**: R3; #1029
+
+### TC-EV098-004: MANAIR TAF national extension (Build)
+
+- **Level**: T0 / T2
+- **Objective**: ≥1 TAF national extension rule promoted with golden IWXXM 3.0.0 + `taf-ca`
+- **Pass criteria**: Fixture under `profiles/CA_ECCC/TAF/`; MANAIR citation in mining notes
+- **Source**: R4; #1030
+
+### TC-EV098-005: AIRMET GFA phenomena ↔ code-ca (Build)
+
+- **Level**: T0 / T2
+- **Objective**: AIRMET GFA phenomena vocabulary membership checks wired to `code-ca`
+- **Pass criteria**: At least one `CA.AIRMET.PHENOMENA.*` stub or fixture; durable URL in PROVENANCE
+- **Source**: R4 / R5; #1030
+
+### EV-094 / #1098 — Thin/compat national deepen
+
+- **Mode**: delta F36 — deepen EV-089 packs (fixtures, sources, SPECI KR/JP, IN lint overlay)
+- **Pass criteria**: TC-EV094-001..006; #1098 AC; #920 stays closed; GAMET parse-only held
+- **Source**: [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); EV-094; ADR-036; [GAMET-spike.md](domain/profiles/GAMET-spike.md)
+
+### TC-EV094-001: Catalog deepen hygiene
+
+- **Level**: T0 / Docs
+- **Objective**: Six thin/compat ids retain EV-089 products (plus SPECI on KR/JP); deepen gaps/sources updated
+- **Pass criteria**: `catalog.yaml` loads; KR/JP `products` include SPECI; `IN_IMD` notes lint overlay intent
+- **Source**: FR-EV094-02; FR-EV094-05; D-EV094-in-taf
+
+### TC-EV094-002: Attributed fixture corpora (Build)
+
+- **Level**: T0 / T2
+- **Objective**: ≥1 attributed real/archive TAC per convert product per shipped pack
+- **Pass criteria**: Manifest or mining cites source URL + UTC; convert smoke green; gaps explicit if missing
+- **Source**: FR-EV094-03
+
+### TC-EV094-003: KR/JP SPECI allowlist (Build)
+
+- **Level**: T0 / T2
+- **Objective**: `KR_KMA` and `JP_JMA` convert SPECI
+- **Pass criteria**: Allowlist + SPECI fixture convert OK; AIRMET still excluded for JP
+- **Source**: D-EV094-speci-expand
+
+### TC-EV094-004: IN_IMD TX/TN lint overlay (Build)
+
+- **Level**: T0 / T2
+- **Objective**: `lint(..., profile=in_imd|IN_IMD)` on TAF without TX/TN emits registered info awareness code; annex3 path unchanged for same TAC
+- **Pass criteria**: Registry row + fixture test; convert still core IWXXM; no national XSD
+- **Source**: D-EV094-in-taf; FR-EV094-04
+
+### TC-EV094-005: GAMET parse-only held
+
+- **Level**: T0 / Docs
+- **Objective**: EV-094 does not add GAMET emit
+- **Pass criteria**: `GAMET-spike.md` still parse-only; BR convert allowlist excludes GAMET
+- **Source**: D-EV094-gamet
+
+### TC-EV094-006: Must-not-break prior nationals
+
+- **Level**: T2
+- **Objective**: ICAO/US/CA/AU/NZ + EV-089 ids still resolve; unknown id rejected
+- **Pass criteria**: Existing TC-EV087/089 smoke still green on tip
+- **Source**: FR-EV094-10
+
+### EV-089 / #920 — Thin/compat national packs
+
+- **Mode**: delta F36 — thin/compat semantic packs via EV-088 playbook thin path
+- **Pass criteria**: TC-EV089-001..007; six catalog rows + stubs; GAMET parse-only spike; UK first Build PR
+- **Source**: [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920); EV-089; ADR-036; [GAMET-spike.md](domain/profiles/GAMET-spike.md)
+
+### TC-EV089-001: Catalog lists six #920 profile ids
+
+- **Level**: T0 / Docs
+- **Objective**: `catalog.yaml` contains UK_METOFFICE, BR_DECEA, KR_KMA, JP_JMA, IN_IMD, HK_HKO
+- **Pass criteria**: YAML loads; each id `kind: semantic` and `issue: "#920"`
+- **Source**: FR-EV089-01
+
+### TC-EV089-002: Semantic stubs present
+
+- **Level**: T0 / Docs
+- **Objective**: `docs/domain/profiles/semantic/<ID>.md` exists for each #920 id
+- **Pass criteria**: Six stub files on disk
+- **Source**: FR-EV089-02
+
+### TC-EV089-003: GAMET spike is parse-only
+
+- **Level**: T0 / Docs
+- **Objective**: Standing GAMET disposition forbids IWXXM emit
+- **Pass criteria**: `GAMET-spike.md` states parse-only; no convert product enum for GAMET
+- **Source**: D-EV089-gamet
+
+### TC-EV089-004: Scaffold dry-run still works after #920 stubs
+
+- **Level**: T0
+- **Objective**: Scaffold checklist for a probe id that is not yet a standing stub
+- **Pass criteria**: `scaffold_national_profile.py --id ZZ_SCAFFOLD_PROBE --dry-run` exit 0; no stub written (TC-EV088-005)
+- **Source**: EV-088 playbook; FR-EV089-04
+
+### TC-EV089-005: UK_METOFFICE registry + fixture smoke (Build)
+
+- **Level**: T0 / T2
+- **Objective**: First shippable thin pack converts METAR/SPECI/TAF under profile id
+- **Pass criteria**: Fixtures under `profiles/UK_METOFFICE/`; convert or fixture-load tests green; ICAO/US/CA/AU/NZ unchanged
+- **Source**: FR-EV089-02; FR-EV089-10
+
+### TC-EV089-006: Remaining #920 packs smoke (Build, per PR)
+
+- **Level**: T0 / T2
+- **Objective**: Each subsequent profile PR adds fixtures + allowlist for its v1 products
+- **Pass criteria**: Parameterized tests per id; BR excludes GAMET from convert allowlist
+- **Source**: FR-EV089-05; FR-EV089-06
+
+### TC-EV089-007: Unknown semantic id still rejected
+
+- **Level**: T0 / T2
+- **Objective**: Garbage semantic id rejected after #920 registration
+- **Pass criteria**: API 400 / library reject; existing profiles unchanged
+- **Source**: FR-EV089-10; ADR-036
 
 ### TC-EV061-1015-001: Promote PR required-check inventory
 
@@ -3209,10 +4655,10 @@ No live `codes.wmo.int` HTML in PR CI.
 
 ## F33 / EV-042 — Mass ingest + destinations hide + churn (S050)
 
-> Operator Dissemination destinations (DB + WIS2/EDIS/AMHS/SWIM/AFS) and Convert&Send are
-> **UI-hidden** this cycle (`OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false`). Backend
-> `/api/v1/dissemination/*` retained for harness. Restore track: [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
-> Ops: [Corpus: ops] `docs/ops/operator-ui-runbook.md` §EV-042 destinations deferred.
+> Historical: Operator Dissemination destinations were **UI-hidden** under EV-042.
+> **EV-091 / #898** restores destinations (`destinationsEnabled=true`) with URI-BYOC and
+> connection-first preflight; #1089 adds drawer exchange overlay. Backend
+> `/api/v1/dissemination/*` unchanged. Ops: [Corpus: ops] `docs/ops/operator-ui-runbook.md` §EV-091.
 
 ### TC-F33-001: Authenticated mass ingest accepts TAC / zip (UJ-051)
 
@@ -3259,20 +4705,20 @@ No live `codes.wmo.int` HTML in PR CI.
   `test_t83_h4_cors_preflight_mass_ingest` / staging smoke; H5 `massIngestUrl` absent
 - **Source**: AC6; connectivity-gates H4–H5
 
-### TC-EV042-001: Operator UI has no dissemination destinations (UJ-053)
+### TC-EV042-001: Operator UI has no dissemination destinations (UJ-053) — **superseded**
 
-- **Level**: T2 / T3
+- **Level**: T2 / T3 (historical EV-042)
 - **Objective**: Convert&Send + Disseminate + **Upload to Database** absent; Convert/Validate remain
-- **Pass criteria**: Vitest + Playwright assert `convert-and-send-button` /
-  `open-dissemination-drawer` / `upload-to-database-button` count 0; convert still succeeds
-- **Source**: AC1; UJ-053; #897; 11-verify-impl amend (hide DatabaseUploadDialog)
+- **Pass criteria**: Vitest residual gate-off case still asserts hide when
+  `destinationsEnabled=false`; production default is **enabled** (EV-091)
+- **Source**: AC1; UJ-053; #897; superseded by **TC-EV091-001**
 
 ### TC-EV042-002: Dissemination API retained for harness (UJ-053)
 
 - **Level**: T0 / T2
 - **Objective**: `/api/v1/dissemination/preflight` + `/send` still mounted for tests/harness
 - **Pass criteria**: Existing dissemination API tests green; operator Playwright UJ-027–030
-  skipped until #898
+  restored under EV-091 / #898
 - **Source**: AC2; UJ-053
 
 ### TC-EV042-003: Work queue keyboard next/prev + Enter convert/validate (UJ-052)
@@ -3291,9 +4737,32 @@ No live `codes.wmo.int` HTML in PR CI.
 
 ### EV-042 verify gate
 
-- [ ] TC-F33-001..006 + TC-EV042-001..004 green (or explicit deferral)
-- [ ] H4–H5 mass route wired (H0i + live smoke + Playwright UJ-051..053)
-- [ ] Operator destinations restore tracked in #898
+- [x] TC-F33-001..006 + TC-EV042-001..004 green (or explicit deferral)
+- [x] H4–H5 mass route wired (H0i + live smoke + Playwright UJ-051..053)
+- [x] Operator destinations restore tracked in #898 → **delivered EV-091**
+
+### TC-EV091-001: Operator dissemination destinations visible (UJ-053 restore / #898)
+
+- **Level**: T2 / T3
+- **Objective**: Convert&Send + Disseminate + Upload to Database visible; Convert remains
+- **Pass criteria**: Vitest + Playwright assert `convert-and-send-button` /
+  `open-dissemination-drawer` / `upload-to-database-button` present; preflight still gates Send
+- **Source**: EV-091; #898; UJ-027–030 / UJ-053
+
+### TC-EV091-002: Drawer exchange overlay on convert-before-send (#1089)
+
+- **Level**: T2 / T3
+- **Objective**: Dissemination drawer Exchange profile select (default `GLOBAL_AFS`); TAC
+  candidates convert with `exchange_profile` before send
+- **Pass criteria**: Vitest selects `APAC_ROBEX` and asserts convert called with that id;
+  Playwright asserts select visible; Convert&Send continues to use workbench picker
+- **Source**: EV-091; #1089; [Corpus: product §F36]
+
+### EV-091 verify gate
+
+- [ ] TC-EV091-001..002 green
+- [ ] UJ-027–030 Playwright unskipped and green (stubbed BYOC)
+- [ ] SSRF / memory-only BYOC invariants unchanged
 
 ### TC-EV031-001: One-time migrate legacy Supabase → DO Postgres
 
@@ -3478,6 +4947,38 @@ No live `codes.wmo.int` HTML in PR CI.
   is Postgres + WIS2 + EDIS only; S-EV014-M2)
 - **Source**: F19; Q20=D; 02-verify-plan Q28=A
 
+### TC-F16-OPS-001..006: Dissemination ops + Gateway hooks (UJ-071 / EV-936)
+
+| ID | Objective | Pass criteria |
+|----|-----------|---------------|
+| TC-F16-OPS-001 | Gateway façade `validate`/`send` maps to existing sink preflight/send | Unit tests; SinkAdapter HTTP v1 unchanged |
+| TC-F16-OPS-002 | `health()` per gateway kind returns operator-safe `GatewayHealth` | No secrets in `detail`; connectivity-only |
+| TC-F16-OPS-003 | Plan execute writes redacted `DeliveryReceipt` audit on `DATABASE_URL` | JWT required; no URI/secret columns |
+| TC-F16-OPS-004 | MappingConfig CRUD (source/sink) via authenticated API | ADR-040 fields; 401 without JWT |
+| TC-F16-OPS-005 | Ops UI: plan editor + audit list/detail + health (no secret render) | Vitest + Playwright H6′ |
+| TC-F16-OPS-006 | Drawer UJ-027–030 regression | Existing mocked H6′ suite stays green |
+
+- **Level**: T0 / T2 / T3 (H6′)
+- **Source**: F16–F19 deepen EV-936; #936; ADR-041; ADR-040; UJ-071
+
+### TC-EV933-001..006: ConversionProfile editor (UJ-072 / EV-933)
+
+| ID | Objective | Pass criteria |
+|----|-----------|---------------|
+| TC-EV933-001 | Rule-pack CRUD fields + export | Vitest; fields match F7.w AC |
+| TC-EV933-002 | Inspector read-only for catalog profiles | No edit of first-party contract fields in M1 |
+| TC-EV933-003 | Overlay persist requires JWT + signature/trust | 401 without JWT; 400 unsigned |
+| TC-EV933-004 | Ownership: user cannot mutate foreign overlay | 403; RLS-equivalent filters on `DATABASE_URL` |
+| TC-EV933-005 | Convert applies selected overlay / pack | Unit + API; fail-closed unknown id |
+| TC-EV933-006 | Playwright UJ-072 + #1024 / drawer regression | H4–H5 / T2; must-not-break picker + drawer |
+
+- **Level**: T0 / T2 / T3 (H4–H5 when FE deploy)
+- **Source**: F7.w EV-933; #933; ADR-038 amend; UJ-072
+- **Automation**: `apps/e2e/uj072-conversion-profiles.e2e.spec.ts` (stubbed JWT + APIs).
+  **Live H4–H5** against stage FE: **PASS** 2026-09-04 — `make` connectivity H4–H5;
+  catalog JWT GET 200; rule-pack + overlay create; convert with `overlay_id` metadata;
+  Conversion profiles nav + guest sign-in prompt on `app.staging.tac-to-iwxxm.com`.
+
 ### F16–F19 verify/deploy gate
 
 - [ ] TC-F16-001..005 green (multi-DB + SSRF + drawer + multi-select)
@@ -3486,7 +4987,8 @@ No live `codes.wmo.int` HTML in PR CI.
 - [ ] TC-F17-001 staging wis2box green; TC-F17-002 live BYOC before cycle close
 - [ ] TC-F18-001 format green; TC-F18-002 live BYOC before cycle close
 - [ ] TC-F19-001..003 staging/test green; live F19 optional (evidence or waive id)
-- [ ] H4–H5 after API/FE dissemination routes ship; H0c on CORS/env changes; H6′ UJ-027–030
+- [x] TC-F16-OPS-001..006 green when EV-936 Build ships (UJ-071 / H6′) — M1–M3 unit/Vitest + M4 Playwright (`uj071-dissemination-ops.e2e.spec.ts` + drawer regression)
+- [ ] H4–H5 after API/FE dissemination routes ship; H0c on CORS/env changes; H6′ UJ-027–030 (+ UJ-071) — live H4–H5 deferred at EV-936 M4 intake (ops already on stage via #1134)
 - [ ] `DISSEMINATION_EGRESS_ALLOWLIST` in config-spec / env-contract / deploy / staging-secrets-matrix
       (S-EV014-L1 **resolved** at 04; matrix row added at 05-verify-tech)
 
@@ -3792,7 +5294,7 @@ comments-only, or `*.test.*` / pytest modules.
 
 | Metric | Threshold | Context |
 |--------|-----------|---------|
-| Backend unit coverage | **95% all packages/apps** + **per-file ≥95%** (Python) | ADR-007 / EV-047 |
+| Unit coverage (Python + TS + scripts) | **100% line+branch** all packages/apps + **per-file ≥100%** (Python); scripts `*.py` cov + bats for every `*.sh` | ADR-007 / EV-080 / #1077 |
 | E2E pass rate | 100% on T2 before merge | Big-bang gate |
 | Live E2E (T3) | Manual signoff before release | `make test-live` — not CI-gated |
 | Vendor sync PR | human review required | No auto-merge to main |

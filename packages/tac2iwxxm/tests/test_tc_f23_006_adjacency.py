@@ -1,4 +1,4 @@
-"""TC-F23-006 / V2 — SIGMET ↔ VA SIGMET ↔ VAA adjacency guards (S025 / EV-019 T3.3).
+"""TC-F23-006 / V2 - SIGMET ↔ VA SIGMET ↔ VAA adjacency guards (S025 / EV-019 T3.3).
 
 Never silent-swap roots or products under shared ``product=sigmet`` wire (E19-13):
 VA TAC → ``iwxxm:VolcanicAshSIGMET``; general non-VA/TC → ``iwxxm:SIGMET``;
@@ -30,7 +30,7 @@ def _read_accept(name: str) -> str:
 
 
 def test_tc_f23_006_keyword_presence_for_auto_detect() -> None:
-    """TAC keywords are the auto-detect signal — SIGMET vs VA ADVISORY must not blur."""
+    """TAC keywords are the auto-detect signal - SIGMET vs VA ADVISORY must not blur."""
     general = _read_accept("sigmet_basic.tac")
     va = _read_accept("sigmet_v1_va_volcano.tac")
     vaa = _read_accept("vaa_basic.tac")
@@ -51,10 +51,10 @@ def _has_root(xml: str, local: str) -> bool:
 
 @pytest.mark.parametrize(
     "fname",
-    (
+    [
         "sigmet_basic.tac",
         "sigmet_a6_1a_ts.tac",
-    ),
+    ],
 )
 def test_tc_f23_006_general_sigmet_keeps_sigmet_root(fname: str) -> None:
     path = TAC_VALIDATE / fname if (TAC_VALIDATE / fname).is_file() else ANNEX3 / fname
@@ -71,10 +71,10 @@ def test_tc_f23_006_general_sigmet_keeps_sigmet_root(fname: str) -> None:
 
 @pytest.mark.parametrize(
     "fname",
-    (
+    [
         "sigmet_v1_va_volcano.tac",
         "sigmet_v1_no_va_exp.tac",
-    ),
+    ],
 )
 def test_tc_f23_006_va_sigmet_selects_volcanic_ash_root(fname: str) -> None:
     """VA phenomenon TAC under product=sigmet must content-select VolcanicAshSIGMET."""
@@ -134,9 +134,14 @@ def test_tc_f23_006_bulletin_neighbors_no_silent_swap() -> None:
     g = convert(general, product="SIGMET", profile=_PROFILE, iwxxm_version=_VERSION)
     v = convert(va, product="SIGMET", profile=_PROFILE, iwxxm_version=_VERSION)
     a = convert(vaa, product="VAA", profile=_PROFILE, iwxxm_version=_VERSION)
-    assert g.ok and _has_root(g.xml, "SIGMET") and not _has_root(g.xml, "VolcanicAshSIGMET")
-    assert v.ok and _has_root(v.xml, "VolcanicAshSIGMET") and not _has_root(v.xml, "SIGMET")
-    assert a.ok and _has_root(a.xml, "VolcanicAshAdvisory")
+    assert g.ok
+    assert _has_root(g.xml, "SIGMET")
+    assert not _has_root(g.xml, "VolcanicAshSIGMET")
+    assert v.ok
+    assert _has_root(v.xml, "VolcanicAshSIGMET")
+    assert not _has_root(v.xml, "SIGMET")
+    assert a.ok
+    assert _has_root(a.xml, "VolcanicAshAdvisory")
 
     assert convert(vaa, product="SIGMET", profile=_PROFILE, iwxxm_version=_VERSION).ok is False
     assert convert(general, product="VAA", profile=_PROFILE, iwxxm_version=_VERSION).ok is False

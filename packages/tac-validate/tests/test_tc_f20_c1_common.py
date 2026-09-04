@@ -1,4 +1,4 @@
-"""F20 / C1 — common rules (reportStatus / nilReasons / one-report) (TC-F20-004).
+"""F20 / C1 - common rules (reportStatus / nilReasons / one-report) (TC-F20-004).
 
 HARD theme C1 from taf-speci-research-catalog.md / #735/#734 common table.
 T4.1 fixtures; T4.2 encodes registry tags + MULTI_REPORT_BULLETIN and asserts.
@@ -12,7 +12,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

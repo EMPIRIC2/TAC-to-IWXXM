@@ -1,4 +1,4 @@
-"""TC-F6-001 / TC-F6-002: annex3 product-matrix fixtures (F6.c–f / T5.1–T5.3).
+"""TC-F6-001 / TC-F6-002: annex3 product-matrix fixtures (F6.c-f / T5.1-T5.3).
 
 Spec: docs/test-plan.md TC-F6-001, TC-F6-002; docs/feature-list.md F6 (7 products);
 docs/user-journeys.md UJ-005 / UJ-006.

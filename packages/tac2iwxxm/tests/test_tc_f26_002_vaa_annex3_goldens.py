@@ -1,10 +1,10 @@
-"""TC-F26-002 / TC-F26-003 — VAA annex3 golden (S027 / EV-021 T2.1 / F26 theme V3).
+"""TC-F26-002 / TC-F26-003 - VAA annex3 golden (S027 / EV-021 T2.1 / F26 theme V3).
 
 Asserts WMO ``va-advisory-A7-2`` is in the annex3 pack, root
 ``iwxxm:VolcanicAshAdvisory``, convert → M-xsd/M-sch, and ``canonicalize_xml``
 equals vendor golden under default convert settings (ADR-032 / E21-2).
 
-Always write “F26 theme V3” (not F23 VA-SIGMET V3) — D-S027-EV021-s02m1-1.
+Always write "F26 theme V3" (not F23 VA-SIGMET V3) - D-S027-EV021-s02m1-1.
 """
 
 from __future__ import annotations
@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
@@ -110,8 +111,9 @@ def test_tc_f26_002_vaa_m_golden(case_id: str) -> None:
 
 def test_tc_f26_002_vaa_a7_2_content_signals() -> None:
     """Karymsky / TOKYO seed: advisory root + volcano identity under product=vaa."""
-    from tac2iwxxm import convert
     from tac2iwxxm.products.vaa_tca import parse_vaa
+
+    from tac2iwxxm import convert
 
     tac = (FIXTURES / "vaa_a7_2.tac").read_text(encoding="utf-8")
     ir = parse_vaa(tac, product="VAA")

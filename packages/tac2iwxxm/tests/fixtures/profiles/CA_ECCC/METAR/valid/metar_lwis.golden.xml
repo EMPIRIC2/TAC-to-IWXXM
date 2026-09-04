@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm-ca:LWIS xmlns:iwxxm="http://icao.int/iwxxm/3.0"
+    xmlns:iwxxm-ca="https://dd.meteo.gc.ca/today/aviation/iwxxm/"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="lwis.ca.cyla"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL"
+    automatedStation="true">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>2023-06-29T20:00:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:aerodrome>
+    <aixm:AirportHeliport gml:id="ad.cyla">
+      <aixm:timeSlice>
+        <aixm:AirportHeliportTimeSlice gml:id="ad.ts.cyla">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:designator>CYLA</aixm:designator>
+          <aixm:locationIndicatorICAO>CYLA</aixm:locationIndicatorICAO>
+        </aixm:AirportHeliportTimeSlice>
+      </aixm:timeSlice>
+    </aixm:AirportHeliport>
+  </iwxxm:aerodrome>
+  <iwxxm:observationTime>
+    <gml:TimeInstant gml:id="t.obs">
+      <gml:timePosition>2023-06-29T20:00:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:observationTime>
+  <iwxxm:observation>
+    <iwxxm:MeteorologicalAerodromeObservation gml:id="obs.1" cloudAndVisibilityOK="false">
+      <iwxxm:airTemperature uom="Cel">0.0</iwxxm:airTemperature>
+      <iwxxm:dewpointTemperature uom="Cel">-2.0</iwxxm:dewpointTemperature>
+      <iwxxm:qnh uom="hPa">990.9</iwxxm:qnh>
+      <iwxxm:surfaceWind>
+        <iwxxm:AerodromeSurfaceWind variableWindDirection="false">
+          <iwxxm:meanWindDirection uom="deg">310</iwxxm:meanWindDirection>
+          <iwxxm:meanWindSpeed uom="[kn_i]">6</iwxxm:meanWindSpeed>
+        </iwxxm:AerodromeSurfaceWind>
+      </iwxxm:surfaceWind>
+      <iwxxm:extension>
+        <iwxxm-ca:Addendum>
+          <iwxxm-ca:observingSystemType xlink:href="https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ObservingSystemType/LWIS"/>
+        </iwxxm-ca:Addendum>
+      </iwxxm:extension>
+    </iwxxm:MeteorologicalAerodromeObservation>
+  </iwxxm:observation>
+</iwxxm-ca:LWIS>

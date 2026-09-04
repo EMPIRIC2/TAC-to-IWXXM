@@ -110,7 +110,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 | `files` | no* | — | TAC files |
 | `manual_text` | no* | — | TAC string |
 | `product` | **yes** | — | `airmet` \| `metar` \| `sigmet` \| `speci` \| `taf` \| `vaa` \| `tca` \| `swxa` \| `vona` \| `iwxxm` (EV-060 / F7.t — pass-through; no TAC convert) |
-| `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
+| `profile` | no | `annex3` | `annex3` \| `iwxxm_us` — **legacy**; see [EV-063 / F35 proposed wire](#ev-063--f35-proposed-semantic--exchange-wire-not-implemented-until-build-gate) |
 | `iwxxm_version` | no | SoT default (`2025-2`) | Enum = Python `SUPPORTED_VERSIONS` via generated JSON (`apps/frontend/src/generated/iwxxm_versions.json`; `make export-iwxxm-versions`; #851 / D-S046-sot) |
 | `lint` | no | `true` | Run `tac-validate` before convert (Q14=C) |
 | `preview` | no | `false` | Soft-preview mode (S011) — see below |
@@ -121,6 +121,7 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 | `issuing_center` | no | `""` | Optional issuing centre ICAO (4-letter) |
 | `include_nil_reasons` | no | `true` | Prefer emitting nilReason attributes (engine may still emit NIL shells) |
 | `log_level` | no | `INFO` | Minimum severity for process issues echoed to clients **and** backend/package logger verbosity (EV-060 / #1004). Must not log JWTs, passwords, or Authorization headers at DEBUG. |
+| `propagate_residuals_to_remarks` | no | *(profile default; annex3/ICAO_2025 → `false`)* | **EV-981 / #981**: when resolved `true` **and** the semantic profile already emits remarks / `humanReadableText` (`iwxxm_us`, `ca_eccc`, …), append decode residual token text (excluding spans already covered by remarks retain) into that emit path and emit info `ConvertIssue` `RESIDUALS_PROPAGATED_TO_REMARKS`. On **annex3**, there is no XML remarks/HRT target — do not invent free-text remarks; when flag is on and residuals exist, still emit info `RESIDUALS_PROPAGATED_TO_REMARKS` whose message documents **no XML target** (quality-metrics `residuals_propagated_to_remarks` remains false). When `false` or resolved off, residuals stay diagnostic-only (UJ-026 unchanged). Omitted → semantic-profile default (wire shipped; only annex3/ICAO_2025 defaults defined this cycle = off). Explicit `true`/`false` overrides profile default. Same field on `/convert-zip`. Operator UI: plain-language toggle (no planning ids). |
 
 \* At least one of `files` or `manual_text` required (unchanged).
 
@@ -177,12 +178,75 @@ Each `ConversionResult` includes optional `tac_input` (original TAC echo) for in
 | code | HTTP | When |
 |------|------|------|
 | `unknown_product` | 400 | Invalid product enum / unsupported |
-| `invalid_profile` | 400 | Profile not in enum |
+| `invalid_profile` | 400 | Profile not in enum (semantic or exchange when applicable) |
+| `invalid_semantic_profile` | 400 | **Proposed (F35)** — unknown `conversion.semanticProfile` |
+| `invalid_exchange_profile` | 400 | **Proposed (F35)** — unknown `exchange.profile` |
+| `deprecated_profile_alias` | — | **Proposed (F35)** — not an error; deprecation signal when alias used |
 | `missing_iwxxm_us` | 400 | `profile=iwxxm_us` but vendor pin/catalog missing |
 | `parse_failed` | 422 | TAC fails product parse |
 | `tac_lint_failed` | 422 | Optional when convert path invokes lint (prefer `/lint-tac`) |
 
 Unexpected converter crashes remain **5xx**.
+
+### EV-063 / F35 — semantic + exchange wire (Build)
+
+**Status**: **Implemented** on convert/validate/convert-bulletin routes (M3 wire + M4 metrics).
+Legacy flat `profile=` remains as deprecated alias. Optional `PROFILE_WIRE_V2` env toggles
+defaults (see env-contract).
+
+**Intent**: Separate **semantic** (TAC→IWXXM) from **exchange** (packaging). Canonical semantic
+ids: `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` (EV-087), thin/compat
+`UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO` (EV-089 / #920; deepen EV-094 / #1098).
+**EV-094:** `KR_KMA` / `JP_JMA` convert allowlists gain **SPECI**; `IN_IMD` gains tac-validate lint
+profile `in_imd` (alias `IN_IMD`) for TAF TX/TN omission **info** awareness — convert stays core IWXXM.
+Legacy aliases during deprecation window (until **2026-10-31**,
+[#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)):
+
+| Alias | Canonical |
+|-------|-----------|
+| `annex3` | `ICAO_2025` |
+| `iwxxm_us` | `US_FAA_NWS` |
+
+**Target request shape** (multipart field names TBD in 04-tech-plan — may be JSON body on
+package-only routes):
+
+| Field | Required | Default | Description |
+|-------|----------|---------|-------------|
+| `semantic_profile` | no | `ICAO_2025` (or alias `annex3` during window) | Semantic profile id. **EV-093 / #1024:** workbench Profile control submits this field with **uppercase** OpenAPI ids for all registered canonicals (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, thin packs); legacy alias option values `annex3` / `iwxxm_us` remain accepted through the #1025 window. Prefer this field over deprecated `profile`. |
+| `iwxxm_version` | no | SoT default | Unchanged — independent of semantic id |
+| `extensions` | no | `[]` | Optional national extension tokens (e.g. `IWXXM_US_3`, `IWXXM_CA`). **EV-068:** when `IWXXM_CA` is present with `semantic_profile=CA_ECCC`, triggers the full Canadian validation stack (layers 1–5 in [IWXXM_VALIDATION.md](domain/IWXXM_VALIDATION.md) §CA_ECCC validation stages). When omitted, `CA_ECCC` alone selects profile-pinned 3.0.0 core XSD+SCH scaffold (backward compatible). **EV-074:** for `product=SIGMET` or `VAA`, Canadian product XSD is not published — layer `ca_xsd` is skipped as not applicable (not an error); WMO 3.0.0 XSD+Schematron still run. |
+| `exchange_profile` | no | `GLOBAL_AFS` | Used when **packaging** / disseminate-prep invoked; ignored on convert-only. Known wire ids: `GLOBAL_AFS`, `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` (EV-065/EV-086 regional stubs share COLLECT baseline). **EV-090 / #1024:** workbench light Exchange control submits this field on package/bulletin paths. |
+| `profile` | no | — | **Deprecated** — maps to `semantic_profile` via alias table |
+
+**Nested logical model** (for library / future JSON routes):
+
+```yaml
+conversion:
+  semanticProfile: US_FAA_NWS
+  iwxxmVersion: "2025-2"
+  extensions: [IWXXM_US_3]
+exchange:
+  profile: GLOBAL_AFS
+```
+
+**Behavior**:
+
+- Unknown semantic or exchange id → **400** (hard).
+- Alias use → same semantics as canonical id + deprecation signal (response header and/or
+  structured field — finalize in Build).
+- Exchange profile selects packaging rules only — **not** F16–F19 sink credentials.
+
+**Observability** (`GET /metrics`, Prometheus — TC-EV063-006):
+
+| Metric | Labels | When incremented |
+|--------|--------|------------------|
+| `tac_semantic_profile_requests_total` | `route`, `semantic_profile` | Each resolved profile wire on convert/validate/convert-bulletin (`semantic_profile` = canonical id, uppercase) |
+| `tac_exchange_profile_requests_total` | `route`, `exchange_profile` | When client supplies explicit `exchange_profile` |
+| `tac_semantic_profile_alias_requests_total` | `route`, `semantic_profile` | When a deprecated alias (`annex3`, `iwxxm_us`) was used |
+
+No PII in profile metric labels. Counters are **not** returned on convert JSON responses.
+
+**Corpus**: [Corpus: product] F35/F36; [Corpus: adr/ADR-036]; [Corpus: domain-profiles]
 
 ### Bulletin conversion (S008 amend)
 
@@ -202,9 +266,10 @@ TAC reports; split; convert each via `tac2iwxxm`. Single-report TAC stays on `/a
 | `files` | no* | — | Bulletin file(s) |
 | `manual_text` | no* | — | Bulletin string |
 | `product` | **yes** | — | Same enum as convert |
-| `profile` | no | `annex3` | `annex3` \| `iwxxm_us` |
+| `profile` | no | `annex3` | `annex3` \| `iwxxm_us` — **legacy**; see [EV-063 / F35 proposed wire](#ev-063--f35-proposed-semantic--exchange-wire-not-implemented-until-build-gate) |
 | `iwxxm_version` | no | SoT default | Same enum as convert (`iwxxm_versions.json` / #851) |
 | `lint` | no | `true` | When true, run `tac-validate` before each report convert |
+| `propagate_residuals_to_remarks` | no | *(profile default; annex3/ICAO_2025 → `false`)* | Same semantics as `/convert` (EV-981 / #981) |
 
 * At least one of `files` or `manual_text` required.
 
@@ -497,10 +562,16 @@ free of internal doc refs (EV-048). Cycle hard requirements: Schematron enabled 
   "converted_xml": "<?xml …",
   "match_status": "equal",
   "residuals": [],
+  "residuals_propagated_to_remarks": false,
   "lint_issues": [],
   "validate_issues": []
 }
 ```
+
+**EV-981 / #981**: `residuals_propagated_to_remarks` is additive (boolean). Existing
+precomputed fixtures default **`false`** until regenerated under an enabled convert flag.
+Operator residuals panel must describe fold status in plain language (no planning ids).
+Does not imply live WMO fetch.
 
 **Errors**: `404` when stem unknown; `503` when precomputed artifact missing at runtime
 (misconfigured deploy) — operator-facing `detail` must stay free of internal doc refs
@@ -652,10 +723,47 @@ Encoding: **msgspec** request Struct validation + response encode; thin pydantic
 aliases only (E14-07=A / ADR-026). CORS: no new origins; reuse existing
 `METAR_CORS_ORIGINS` / `corsOrigins` (H4–H5 / H6′ for UJ-027–030).
 
+### EV-936 / #936 — Dissemination ops + Gateway hooks (JWT)
+
+Public `POST /dissemination/preflight` + `/send` **unchanged** (F21; memory-only BYOC).
+New **authenticated** routes (Bearer JWT — same posture as work-sessions):
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET`/`PUT` | `/api/v1/dissemination/plans/{plan_id}` | DisseminationPlan CRUD (policy, transforms, retry, destination refs — **no secrets**) |
+| `POST` | `/api/v1/dissemination/plans/{plan_id}/execute` | Execute/dry-run → `DeliveryReceipt[]`; writes audit |
+| `GET` | `/api/v1/dissemination/audit` | List/filter (product, station, profile, status); redacted |
+| `GET` | `/api/v1/dissemination/audit/{id}` | Detail; never returns BYOC secrets or connection URIs |
+| `GET`/`PUT` | `/api/v1/dissemination/mappings/{id}` | MappingConfig CRUD (ADR-040) |
+| `GET` | `/api/v1/dissemination/gateways/health` | Per-kind `GatewayHealth` (`ok`, `gateway`, `connectivity_ok`, `detail`) |
+
+**Auth**: JWT required → 401/403 without. **Storage**: audit + saved plans/mappings on product
+Postgres (`DATABASE_URL`) — not Supabase PostgREST. **Egress**: ADR-029 allowlist still applies
+when execute triggers send.
+
+### EV-933 / #933 — ConversionProfile editor + overlays (JWT)
+
+First-party catalog remains fail-closed (ADR-038). New **authenticated** routes for
+operator-scoped overlays and rule packs (Bearer JWT — same posture as work-sessions /
+dissemination ops). **Storage**: product Postgres (`DATABASE_URL`) with ownership filters —
+not Supabase PostgREST product writes (F30). Auth identity from Supabase JWT.
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET` | `/api/v1/profiles/catalog` | Read-only ConversionProfile / catalog projection (ADR-038 fields; no secrets) |
+| `GET`/`POST`/`PUT`/`DELETE` | `/api/v1/profiles/rule-packs/{id}` | Rule-pack CRUD; export-friendly body |
+| `GET`/`POST`/`PATCH`/`DELETE` | `/api/v1/profiles/overlays[/{id}]` | Server-HMAC signed overlays; reject unsigned/tampered |
+| `POST` | `/api/v1/convert` (existing) | Optional multipart `overlay_id` (JWT + ownership when set) |
+
+**Auth**: JWT required for pack/overlay mutate → 401/403. **Trust**: unsigned browser packs
+rejected. **Non-goals**: credentials / destination URIs in profile objects (ADR-021/029).
+
 ### S050 / EV-042 — Operator UI destinations hidden
 
-Operator Dissemination drawer / Convert&Send destination path is **UI-hidden** (UJ-053).
-These `/dissemination/*` routes remain for **harness/tests** until [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898) restores destinations. No API deletion this cycle.
+Operator Dissemination drawer / Convert&Send destination path is **restored** (EV-091 / #898).
+These `/dissemination/*` routes serve operator UI and harness/tests. Drawer convert-before-send
+uses workbench/`exchange_profile` overlay (#1089); send body itself remains IWXXM/TAC payload
+without a separate exchange field.
 
 ## F33 Secure mass ingest (S050 / EV-042 / #897)
 
@@ -743,6 +851,9 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 
 ### Session changelog
 
+- EV-981 (2026-08-31): #981 — additive convert / convert-bulletin
+  `propagate_residuals_to_remarks`; quality-metrics detail
+  `residuals_propagated_to_remarks`; info issue `RESIDUALS_PROPAGATED_TO_REMARKS`.
 - S066 / EV-056 (2026-08-11): F7.q #988 — **no HTTP contract change**. FE shareable route
   `/quality/:stem` + collapsible equal-context hunks consume existing
   `GET /api/v1/quality-metrics` + `/{stem}` (pretty C14N panes from S065).
@@ -770,6 +881,8 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
   **additive** `GET /api/v1/lint-issue-catalog` (E11-31) for FE tooltips/catalog panel
 - S019 / EV-014 (2026-07-21): Planned `POST /api/v1/dissemination/preflight` + `/send`
   (ADR-030); F16–F19 sinks; Batch 1 architecture locked (Q32=A)
+- EV-936 / #936 (2026-09-03): Additive JWT routes for plans/execute/audit/mappings/gateway
+  health; public preflight/send unchanged; audit on `DATABASE_URL`
 - S020 / EV-015 (2026-07-22): F20 TAF+SPECI quality — **full endpoint review**; no new routes;
   wire shapes unchanged. `product` enum already includes `taf` \| `speci` on convert /
   convert-bulletin / lint-tac / decode-tac. Registry codes for TAF (+ SPECI deepen) flow through

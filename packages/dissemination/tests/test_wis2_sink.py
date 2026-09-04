@@ -1,7 +1,7 @@
 """WIS2 sink adapter unit tests with mocked MQTT/HTTP (T3.1 / TC-F17-001 / E14-09).
 
 Exercises preflight + publish orchestration without a live broker or wis2box.
-Real Compose harness coverage lands in T3.3–T3.4.
+Real Compose harness coverage lands in T3.3-T3.4.
 """
 
 from __future__ import annotations
@@ -11,7 +11,6 @@ from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
-
 from dissemination.allowlist import EgressDenied, parse_allowlist
 from dissemination.wis2 import (
     Wis2Params,
@@ -158,6 +157,33 @@ async def test_wis2_publish_redacts_secret_in_transport_errors(mqtt: AsyncMock, 
     assert "secret-token" not in str(excinfo.value)
 
 
+@pytest.mark.asyncio
+async def test_wis2_publish_redacts_without_mqtt_credentials(mqtt: AsyncMock, http: AsyncMock) -> None:
+    """``_redact_exc`` false branches when username/password are unset (EV-080 M2a)."""
+    http.put_dataset = AsyncMock(side_effect=RuntimeError("transport boom"))
+    with pytest.raises(ValueError, match="transport boom"):
+        await wis2_publish(
+            _params(mqtt_username=None, mqtt_password=None),
+            iwxxm_xml=b"<x/>",
+            allowlist=_allowlist("broker.example.test", "data.example.test"),
+            mqtt=mqtt,
+            http=http,
+        )
+
+
+@pytest.mark.asyncio
+async def test_wis2_publish_reraises_egress_denied(mqtt: AsyncMock, http: AsyncMock) -> None:
+    http.put_dataset = AsyncMock(side_effect=EgressDenied("blocked mid-publish"))
+    with pytest.raises(EgressDenied, match="blocked mid-publish"):
+        await wis2_publish(
+            _params(),
+            iwxxm_xml=b"<x/>",
+            allowlist=_allowlist("broker.example.test", "data.example.test"),
+            mqtt=mqtt,
+            http=http,
+        )
+
+
 def test_build_wis2_notification_canonical_link() -> None:
     params = _params()
     note = build_wis2_notification(params, content_type="application/xml")
@@ -196,7 +222,7 @@ async def test_wis2_preflight_dataset_ping_false(mqtt: AsyncMock, http: AsyncMoc
 @pytest.mark.asyncio
 async def test_wis2_preflight_transport_error_redacted(mqtt: AsyncMock, http: AsyncMock) -> None:
     mqtt.connect = AsyncMock(side_effect=RuntimeError("password=secret-token boom"))
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(ValueError, match=r".*") as excinfo:
         await wis2_preflight(
             _params(),
             allowlist=_allowlist("broker.example.test", "data.example.test"),

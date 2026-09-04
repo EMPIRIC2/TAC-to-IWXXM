@@ -27,10 +27,9 @@ def packaged_schemas_root() -> Path | None:
     published wheel. ``MANIFEST.json`` alone does not count as materialised.
     """
     iwxxm = _PACKAGE_SCHEMAS / "iwxxm"
-    if iwxxm.is_dir() and any(iwxxm.iterdir()):
+    if iwxxm.is_dir() and any(iwxxm.iterdir()) and any((iwxxm / child).is_dir() for child in iwxxm.iterdir()):
         # Require at least one version tree (not only empty placeholder).
-        if any((iwxxm / child).is_dir() for child in iwxxm.iterdir()):
-            return _PACKAGE_SCHEMAS
+        return _PACKAGE_SCHEMAS
     return None
 
 
@@ -67,6 +66,34 @@ def vendor_iwxxm_us_root() -> Path:
     if packaged is not None:
         return packaged / "iwxxm-us"
     return repo_root() / "vendor" / "schemas" / "iwxxm-us"
+
+
+def vendor_iwxxm_ca_root() -> Path:
+    """Return ``iwxxm-ca`` schema root (packaged subset or vendor pin)."""
+    packaged = packaged_schemas_root()
+    if packaged is not None:
+        return packaged / "iwxxm-ca"
+    return repo_root() / "vendor" / "schemas" / "iwxxm-ca"
+
+
+def ca_xsd_path(*, tag: str = "3.0") -> Path | None:
+    """
+    Return MSC ``iwxxm-ca.xsd`` aggregate when the vendor pin is present.
+
+    Parameters
+    ----------
+    tag :
+        Pin subdirectory (default ``3.0`` per ``vendor/manifest.json``).
+    """
+    root = vendor_iwxxm_ca_root()
+    candidates = [
+        root / tag / "iwxxm-ca.xsd",
+        root / "iwxxm-ca.xsd",
+    ]
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    return None
 
 
 @lru_cache(maxsize=32)
@@ -132,12 +159,14 @@ def clear_path_caches() -> None:
 
 
 __all__ = [
+    "ca_xsd_path",
     "clear_path_caches",
     "codelists_dir",
     "packaged_schemas_root",
     "repo_root",
     "schematron_path",
     "us_catalog_path",
+    "vendor_iwxxm_ca_root",
     "vendor_iwxxm_root",
     "vendor_iwxxm_us_root",
     "version_dir",

@@ -1,4 +1,4 @@
-"""T2.4 / TC-F31-003 — work-sessions JWT gate + convert stays public."""
+"""T2.4 / TC-F31-003 - work-sessions JWT gate + convert stays public."""
 
 from __future__ import annotations
 

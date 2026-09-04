@@ -1,4 +1,4 @@
-"""TC-EV023-001 / T1.3 — NSC exclusivity lint (NSC_WITH_CLOUD_LAYERS)."""
+"""TC-EV023-001 / T1.3 - NSC exclusivity lint (NSC_WITH_CLOUD_LAYERS)."""
 
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ def test_tc_ev023_001_nsc_with_few_emits_warning() -> None:
 
 
 def test_tc_ev023_001_nsc_base_tempo_few_no_false_positive() -> None:
-    """NSC on base + FEW in TEMPO are different groups — not exclusivity."""
+    """NSC on base + FEW in TEMPO are different groups - not exclusivity."""
     tac = "SPECI KJFK 231751Z 18012KT 9999 NSC 15/07 Q1013 TEMPO FEW015="
     report = lint(tac, product="SPECI")
     assert "NSC_WITH_CLOUD_LAYERS" not in {i.code for i in report.issues}

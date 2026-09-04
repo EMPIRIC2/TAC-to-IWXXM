@@ -54,6 +54,8 @@ __pypackages__/
 .venv/
 venv/
 env/
+!tests/bats/env/
+!tests/bats/env/**
 ENV/
 env.bak/
 venv.bak/
@@ -144,6 +146,9 @@ docs/_build/
 
 # --- Cursor (local indexing prefs only; .cursorignore is tracked) ---
 .cursorindexingignore
+.cursor/pack
+.cursor/bin/__pycache__/
+evidence/
 
 # --- Misc generated ---
 *.log
@@ -196,3 +201,6 @@ packages/shared/src/metar_shared/iwxxm_xsd/**/__pycache__/
 # Local DOKS kube/access secrets (never commit)
 deploy/doks/.env.access
 tmp/
+
+# EV-088 profile scaffold working copies (merge into catalog.yaml by hand)
+docs/domain/profiles/_scaffold_out/

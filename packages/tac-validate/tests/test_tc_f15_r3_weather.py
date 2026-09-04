@@ -1,4 +1,4 @@
-"""Research R3 / TC-F15-003 — present weather phenomena grammar (T3.5/T3.6).
+"""Research R3 / TC-F15-003 - present weather phenomena grammar (T3.5/T3.6).
 
 Accept cases cover intensity, descriptor, precip, and VC* combos. Malformed wx
 groups emit ``INVALID_WEATHER``.
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

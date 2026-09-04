@@ -1,7 +1,7 @@
-"""F28 theme SX1 — SWXA exceptional accept + negatives (TC-F28-001/004 / #740).
+"""F28 theme SX1 - SWXA exceptional accept + negatives (TC-F28-001/004 / #740).
 
 HARD theme for Space Weather Advisory. T11.1 fixtures; T11.2 registry/rules.
-Theme id **SX1** (not SPECI S1) — D-S036-F28-sx1.
+Theme id **SX1** (not SPECI S1) - D-S036-F28-sx1.
 """
 
 from __future__ import annotations
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 
@@ -100,4 +99,6 @@ def test_f28_sx1_invalid_emits_error(case: dict[str, Any]) -> None:
     assert by_code(code).severity == "error"
     if case.get("require_spans"):
         matched = [i for i in report.issues if i.code == code]
-        assert matched and matched[0].start is not None and matched[0].end is not None
+        assert matched
+        assert matched[0].start is not None
+        assert matched[0].end is not None

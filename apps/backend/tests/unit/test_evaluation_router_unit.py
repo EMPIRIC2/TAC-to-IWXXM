@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+from typing import ClassVar
+
 import httpx
 import pytest
 from fastapi import BackgroundTasks, HTTPException
-
 from src.routers import evaluation as eval_router
 from src.schemas.evaluation import ComparisonStatus, EvaluationMode, EvaluationRequest
 
@@ -286,9 +287,9 @@ async def test_run_evaluation_job_completes_and_updates_summary(monkeypatch):
         passed = True
         our_elements = 1
         their_elements = 1
-        missing_elements = []
-        extra_elements = []
-        value_mismatches = []
+        missing_elements: ClassVar[list[object]] = []
+        extra_elements: ClassVar[list[object]] = []
+        value_mismatches: ClassVar[list[object]] = []
         error_message = None
 
     class _EvalService:
@@ -430,9 +431,9 @@ async def test_run_evaluation_job_comparison_fail_branch(monkeypatch):
         passed = False
         our_elements = 1
         their_elements = 2
-        missing_elements = ["x"]
-        extra_elements = []
-        value_mismatches = []
+        missing_elements: ClassVar[list[str]] = ["x"]
+        extra_elements: ClassVar[list[object]] = []
+        value_mismatches: ClassVar[list[object]] = []
         error_message = None
 
     class _EvalService:
@@ -521,9 +522,9 @@ async def test_run_evaluation_job_all_mode_uses_sampler(monkeypatch):
         passed = True
         our_elements = 1
         their_elements = 1
-        missing_elements = []
-        extra_elements = []
-        value_mismatches = []
+        missing_elements: ClassVar[list[object]] = []
+        extra_elements: ClassVar[list[object]] = []
+        value_mismatches: ClassVar[list[object]] = []
         error_message = None
 
     class _EvalService:

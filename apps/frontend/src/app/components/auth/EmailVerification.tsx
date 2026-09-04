@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useState, useEffect } from 'react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -11,6 +12,53 @@ interface EmailVerificationProps {
   onBackToLogin: () => void;
 }
 
+/** Aria-label for the verify CTA (exported for unit coverage). */
+export function verifyButtonAriaLabel(isVerifying: boolean): string {
+  return isVerifying ? 'Checking verification status' : "I've verified my email";
+}
+
+/** Verify button body — extracted so loading UI is unit-testable without async paint races. */
+export function VerifyActionLabel({ isVerifying }: { isVerifying: boolean }) {
+  if (isVerifying) {
+    return (
+      <>
+        <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+        Checking...
+      </>
+    );
+  }
+  return <>I've Verified My Email</>;
+}
+
+/** Resend button body — extracted for the same coverage reason. */
+export function ResendActionLabel({
+  isResending,
+  canResend,
+  countdown,
+}: {
+  isResending: boolean;
+  canResend: boolean;
+  countdown: number;
+}) {
+  if (isResending) {
+    return (
+      <>
+        <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+        Sending...
+      </>
+    );
+  }
+  return (
+    <>
+      <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
+      {canResend ? 'Resend Email' : `Resend in ${countdown}s`}
+    </>
+  );
+}
+
+/**
+ * Post-registration email verification screen with resend and status polling.
+ */
 export function EmailVerification({
   email,
   onVerified,
@@ -71,6 +119,9 @@ export function EmailVerification({
 
   const maskEmail = (email: string) => {
     const [localPart, domain] = email.split('@');
+    if (!localPart || !domain) {
+      return email;
+    }
     if (localPart.length <= 3) {
       return `${localPart[0]}***@${domain}`;
     }
@@ -152,18 +203,9 @@ export function EmailVerification({
               onClick={handleVerify}
               disabled={isVerifying}
               className="w-full h-10 text-xs"
-              aria-label={
-                isVerifying ? 'Checking verification status' : "I've verified my email"
-              }
+              aria-label={verifyButtonAriaLabel(isVerifying)}
             >
-              {isVerifying ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
-                  Checking...
-                </>
-              ) : (
-                "I've Verified My Email"
-              )}
+              <VerifyActionLabel isVerifying={isVerifying} />
             </Button>
 
             <Button
@@ -177,17 +219,11 @@ export function EmailVerification({
                   : `Resend available in ${countdown} seconds`
               }
             >
-              {isResending ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
-                  Sending...
-                </>
-              ) : (
-                <>
-                  <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
-                  {canResend ? 'Resend Email' : `Resend in ${countdown}s`}
-                </>
-              )}
+              <ResendActionLabel
+                isResending={isResending}
+                canResend={canResend}
+                countdown={countdown}
+              />
             </Button>
           </div>
 

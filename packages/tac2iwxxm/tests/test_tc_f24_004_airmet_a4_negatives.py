@@ -1,4 +1,4 @@
-"""TC-F24-004 — AIRMET A4 negatives + translation-failed adjacency (S026 / EV-020 T2.4).
+"""TC-F24-004 - AIRMET A4 negatives + translation-failed adjacency (S026 / EV-020 T2.4).
 
 Rule-violating AIRMET must emit registry diagnostics; ``airmet-translation-failed`` is not a
 happy-path golden and must not silent-swap product/root with SIGMET/VA.
@@ -75,7 +75,9 @@ def test_tc_f24_004_negatives_emit_registry_codes(case: dict[str, Any]) -> None:
     assert expected in codes, f"expected {expected} in {sorted(codes)}"
     if case.get("require_spans"):
         matched = [i for i in report.issues if i.code == expected]
-        assert matched and matched[0].start is not None and matched[0].end is not None
+        assert matched
+        assert matched[0].start is not None
+        assert matched[0].end is not None
 
 
 def test_tc_f24_004_translation_failed_not_in_happy_path_pack() -> None:
@@ -91,7 +93,7 @@ def test_tc_f24_004_translation_failed_keeps_airmet_root() -> None:
     assert "AIRMET" in tac.upper()
     assert "INVALID TS" in tac.upper()
     result = convert(tac, product="AIRMET", profile=_PROFILE, iwxxm_version=_VERSION)
-    # Convert may soft-succeed; adjacency requires AIRMET root — never SIGMET/VA swap.
+    # Convert may soft-succeed; adjacency requires AIRMET root - never SIGMET/VA swap.
     assert result.product == "AIRMET"
     assert result.xml
     assert "<iwxxm:AIRMET " in result.xml

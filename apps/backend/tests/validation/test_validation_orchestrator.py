@@ -3,13 +3,13 @@ Tests for Validation Orchestrator
 """
 
 import pytest
-
-from src.schemas.validation import ValidationLayer
+from src.schemas.validation import ValidationIssue, ValidationLayer, ValidationSeverity
 from src.services.validation_orchestrator import (
     ComprehensiveValidationResult,
     ValidationOrchestrator,
     get_validation_orchestrator,
 )
+from src.utilities.codelist_parser import CodelistValidationResult
 
 # Sample TAC and XML for testing
 SAMPLE_TAC = "METAR KJ FK 112030Z 18012KT 10SM FEW250 15/07 A3005"
@@ -40,14 +40,10 @@ class TestValidationOrchestrator:
         assert orchestrator1 is orchestrator2
 
     def test_orchestrator_initialization(self):
-        """Test orchestrator initializes with all validators."""
+        """Test orchestrator initializes with validation service (IWXXM via adapter)."""
         orchestrator = get_validation_orchestrator()
 
         assert orchestrator.validation_service is not None
-        assert orchestrator.xsd_validator is not None
-        assert orchestrator.schematron_validator is not None
-        assert orchestrator.gml_validator is not None
-        assert orchestrator.schema_registry is not None
 
     def test_validate_complete_with_minimal_layers(self):
         """Test validation with only layers 1-2 (no XML required)."""
@@ -134,7 +130,7 @@ class TestValidationOrchestrator:
         assert isinstance(result.issues_by_layer, dict)
 
         # Each key should be a ValidationLayer enum
-        for layer in result.issues_by_layer.keys():
+        for layer in result.issues_by_layer:
             assert isinstance(layer, ValidationLayer)
 
     def test_parallel_layer_execution(self):
@@ -154,16 +150,19 @@ class TestValidationOrchestrator:
         assert len(result.layers_run) <= 3
 
     def test_missing_codelists_setup_returns_warning_issue(self, monkeypatch):
-        """Missing codelists should not raise and should produce a warning issue."""
+        """Missing codelists directory yields a warning from the package layer."""
         orchestrator = ValidationOrchestrator()
-
-        def _raise_missing_codelists(version):
-            raise FileNotFoundError("missing rule directory")
+        warn = ValidationIssue(
+            layer=ValidationLayer.WMO_CODELISTS,
+            level=ValidationSeverity.WARNING,
+            message="missing codelists",
+            code="CODELIST_DIR_NOT_FOUND",
+        )
 
         monkeypatch.setattr(
-            orchestrator.schema_registry,
-            "get_codelists_dir",
-            _raise_missing_codelists,
+            orchestrator,
+            "_run_codelist_layer",
+            staticmethod(lambda *_a, **_k: CodelistValidationResult(is_valid=True, issues=[warn])),
         )
 
         result = orchestrator.validate_complete(
@@ -177,8 +176,7 @@ class TestValidationOrchestrator:
         assert ValidationLayer.WMO_CODELISTS in result.layers_run
         assert ValidationLayer.WMO_CODELISTS in result.issues_by_layer
         assert any(
-            issue.code == "WMO_CODELISTS_SETUP_WARNING"
-            for issue in result.issues_by_layer[ValidationLayer.WMO_CODELISTS]
+            issue.code == "CODELIST_DIR_NOT_FOUND" for issue in result.issues_by_layer[ValidationLayer.WMO_CODELISTS]
         )
 
     def test_version_parameter_propagation(self):

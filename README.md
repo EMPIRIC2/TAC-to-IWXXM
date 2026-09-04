@@ -2,7 +2,7 @@
 
 [![CI/CD](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/ci-cd.yml)
 [![E2E](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/e2e-tests.yml)
-[![E2E tests](https://img.shields.io/badge/E2E_tests-108-blue)](apps/e2e)
+[![E2E tests](https://img.shields.io/badge/E2E_tests-118-blue)](apps/e2e)
 [![Unit coverage gate](https://img.shields.io/badge/unit_coverage-%E2%89%A595%25-success)](docs/test-plan.md)
 
 Convert aviation TAC (METAR, SPECI, TAF, SIGMET family, and related products) to WMO IWXXM
@@ -13,6 +13,9 @@ all in a single git monorepo (no submodules).
 
 - Public convert workbench (guest mode) with optional Auth for saved history
 - Multi-product TAC → IWXXM via [`tac2iwxxm`](packages/tac2iwxxm/)
+- **Semantic + exchange profiles** — canonical ids (`ICAO_2025`, `US_FAA_NWS`) with legacy
+  aliases (`annex3`, `iwxxm_us`); regional exchange packaging (`GLOBAL_AFS`); see
+  [domain profiles](docs/domain/profiles/README.md) and [ADR-036](docs/adr/ADR-036-semantic-vs-exchange-profiles.md)
 - TAC lint ([`tac-validate`](packages/tac-validate/)) and IWXXM XSD + Schematron
   ([`iwxxm-validate`](packages/iwxxm-validate/))
 - Soft preview / decode summaries and workbench lint UX
@@ -99,6 +102,7 @@ TAC-to-IWXXM/
 │   ├── dissemination/ # destination sinks / SSRF helpers
 │   └── shared/        # Shared types and constants
 ├── vendor/schemas/    # Read-only iwxxm snapshots (make vendor-sync)
+├── docs/domain/profiles/  # Semantic + exchange profile catalog (EV-063)
 ├── deploy/doks/       # Staging + prod overlays
 ├── tests/             # Migration gates, integration, smoke, bug repros
 ├── docs/              # Specs and guides — start at docs/CORPUS.md
@@ -147,10 +151,14 @@ See [docs/deploy.md](docs/deploy.md) §Live test harness.
 
 | Branch | Role | What’s live |
 |--------|------|-------------|
-| `stage` | Staging deploys | Quality metrics (list + detail pages) on staging; promote to production deferred |
-| `main` | Production | Last production promote: 2026-08-10 |
+| `stage` | Staging deploys | Quality metrics; **F35** semantic/exchange profile wire + registry (EV-063 / PR #1026); **F36** US RMK fixtures + CA_ECCC stub |
+| `main` | Production | Last production promote: 2026-08-10 — F35/F36 not yet promoted |
 
 Quality metrics on staging: https://app.staging.tac-to-iwxxm.com/quality
+
+**Profile API (staging):** multipart `semantic_profile` / `exchange_profile` (flat `profile` alias
+during deprecation window until 2026-10-31 — [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)).
+See [api-contract.md](docs/api-contract.md) EV-063 section.
 
 ## Documentation
 
@@ -162,7 +170,8 @@ Quality metrics on staging: https://app.staging.tac-to-iwxxm.com/quality
 | [docs/deploy-state.md](docs/deploy-state.md) | Current staging / prod tips |
 | [docs/api-contract.md](docs/api-contract.md) | HTTP API reference |
 | [docs/spec.md](docs/spec.md) | System specification |
-| [docs/feature-list.md](docs/feature-list.md) | Product features |
+| [docs/feature-list.md](docs/feature-list.md) | Product features (F35 Implemented, F36 in progress) |
+| [docs/domain/profiles/README.md](docs/domain/profiles/README.md) | National semantic + exchange profile catalog |
 | [docs/CHANGELOG.md](docs/CHANGELOG.md) | Release notes |
 
 ## License

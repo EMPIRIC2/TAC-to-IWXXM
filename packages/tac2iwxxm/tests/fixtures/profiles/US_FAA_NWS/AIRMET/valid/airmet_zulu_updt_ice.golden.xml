@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:AIRMET xmlns:iwxxm-us="http://www.weather.gov/iwxxm-us/3.0"
+    xmlns:iwxxm="http://icao.int/iwxxm/2025-2"
+    xmlns:xlink="http://www.w3.org/1999/xlink"
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:aixm="http://www.aixm.aero/schema/5.1.1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    gml:id="airmet.us.chiz"
+    reportStatus="NORMAL"
+    permissibleUsage="OPERATIONAL">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="t.issue">
+      <gml:timePosition>2014-05-09T14:45:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+  <iwxxm:issuingAirTrafficServicesUnit>
+    <aixm:Unit gml:id="unit.atsu.chiz">
+      <aixm:timeSlice>
+        <aixm:UnitTimeSlice gml:id="unit.atsu.ts.chiz">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:name>CHIZ FIC</aixm:name>
+          <aixm:type>FIC</aixm:type>
+          <aixm:designator>CHIZ</aixm:designator>
+        </aixm:UnitTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Unit>
+  </iwxxm:issuingAirTrafficServicesUnit>
+  <iwxxm:originatingMeteorologicalWatchOffice>
+    <aixm:Unit gml:id="unit.mwo.kkci">
+      <aixm:timeSlice>
+        <aixm:UnitTimeSlice gml:id="unit.mwo.ts.kkci">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:name>KKCI MWO</aixm:name>
+          <aixm:type>MWO</aixm:type>
+          <aixm:designator>KKCI</aixm:designator>
+        </aixm:UnitTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Unit>
+  </iwxxm:originatingMeteorologicalWatchOffice>
+  <iwxxm:issuingAirTrafficServicesRegion>
+    <aixm:Airspace gml:id="as.chiz">
+      <aixm:timeSlice>
+        <aixm:AirspaceTimeSlice gml:id="as.ts.chiz">
+          <gml:validTime/>
+          <aixm:interpretation>SNAPSHOT</aixm:interpretation>
+          <aixm:type>FIR</aixm:type>
+          <aixm:designator>CHIZ</aixm:designator>
+          <aixm:name>CHIZ</aixm:name>
+        </aixm:AirspaceTimeSlice>
+      </aixm:timeSlice>
+    </aixm:Airspace>
+  </iwxxm:issuingAirTrafficServicesRegion>
+  <iwxxm:sequenceNumber>4</iwxxm:sequenceNumber>
+  <iwxxm:validPeriod>
+    <gml:TimePeriod gml:id="t.valid">
+      <gml:beginPosition>2014-05-09T14:45:00Z</gml:beginPosition>
+      <gml:endPosition>2014-05-09T21:00:00Z</gml:endPosition>
+    </gml:TimePeriod>
+  </iwxxm:validPeriod>
+  <iwxxm:phenomenon xlink:href="http://codes.wmo.int/49-2/AirWxPhenomena/MOD_ICE"/>
+  <iwxxm:analysis>
+    <iwxxm:AIRMETEvolvingConditionCollection gml:id="evolving.chiz" timeIndicator="OBSERVATION">
+      <iwxxm:phenomenonTime nilReason="http://codes.wmo.int/common/nil/missing"/>
+      <iwxxm:member>
+        <iwxxm:AIRMETEvolvingCondition gml:id="cond.chiz" intensityChange="NO_CHANGE">
+              <iwxxm:geometry>
+                <aixm:AirspaceVolume gml:id="vol.chiz">
+              <aixm:lowerLimit uom="FL">60</aixm:lowerLimit>
+              <aixm:lowerLimitReference>STD</aixm:lowerLimitReference>
+              <aixm:upperLimit uom="FL">200</aixm:upperLimit>
+              <aixm:upperLimitReference>STD</aixm:upperLimitReference>
+                  <aixm:horizontalProjection>
+                    <aixm:Surface gml:id="sfc.chiz" srsDimension="2" axisLabels="Lat Long" srsName="http://www.opengis.net/def/crs/EPSG/0/4326">
+                      <gml:patches>
+                        <gml:PolygonPatch>
+                          <gml:exterior>
+                            <gml:LinearRing>
+                              <gml:posList>34.6121 -114.5507 33.2295 -114.3744 32.7947 -116.1602 34.6121 -114.5507</gml:posList>
+                            </gml:LinearRing>
+                          </gml:exterior>
+                        </gml:PolygonPatch>
+                      </gml:patches>
+                    </aixm:Surface>
+                  </aixm:horizontalProjection>
+                </aixm:AirspaceVolume>
+              </iwxxm:geometry>
+                      <iwxxm:extension>
+                <iwxxm-us:AIRMETEvolvingConditionExtension>
+                  <iwxxm-us:freezingLevel>
+                    <iwxxm-us:flightLevel>
+                    <aixm:AirspaceLayer gml:id="fl.obs.lo">
+                      <aixm:upperLimit uom="FL">60</aixm:upperLimit>
+                      <aixm:upperLimitReference>STD</aixm:upperLimitReference>
+                    </aixm:AirspaceLayer>
+                    </iwxxm-us:flightLevel>
+                    <iwxxm-us:multipleLevels>true</iwxxm-us:multipleLevels>
+                  </iwxxm-us:freezingLevel>
+                  <iwxxm-us:freezingLevel>
+                    <iwxxm-us:flightLevel>
+                    <aixm:AirspaceLayer gml:id="fl.obs.hi">
+                      <aixm:upperLimit uom="FL">100</aixm:upperLimit>
+                      <aixm:upperLimitReference>STD</aixm:upperLimitReference>
+                    </aixm:AirspaceLayer>
+                    </iwxxm-us:flightLevel>
+                    <iwxxm-us:multipleLevels>true</iwxxm-us:multipleLevels>
+                  </iwxxm-us:freezingLevel>
+                </iwxxm-us:AIRMETEvolvingConditionExtension>
+              </iwxxm:extension>
+</iwxxm:AIRMETEvolvingCondition>
+      </iwxxm:member>
+    </iwxxm:AIRMETEvolvingConditionCollection>
+  </iwxxm:analysis>
+</iwxxm:AIRMET>

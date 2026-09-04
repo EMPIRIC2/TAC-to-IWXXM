@@ -1,0 +1,63 @@
+# bats ↔ scripts manifest (EV-080 / TC-EV080-008)
+
+| Script | Bats |
+|--------|------|
+| `scripts/ci/alembic_upgrade.sh` | `tests/bats/ci/alembic_upgrade.bats` |
+| `scripts/ci/ensure_iwxxm_validate_native.sh` | `tests/bats/ci/ensure_iwxxm_validate_native.bats` |
+| `scripts/ci/promote_release_reminder.sh` | `tests/bats/ci/promote_release_reminder.bats` |
+| `scripts/ci/run_ahl_com_quality.sh` | `tests/bats/ci/run_ahl_com_quality.bats` |
+| `scripts/ci/run_airmet_quality.sh` | `tests/bats/ci/run_airmet_quality.bats` |
+| `scripts/ci/run_codelist_uri_drift.sh` | `tests/bats/ci/run_codelist_uri_drift.bats` |
+| `scripts/ci/run_dissemination_coverage.sh` | `tests/bats/ci/run_dissemination_coverage.bats` |
+| `scripts/ci/run_ev032_a6_2_tc_canary.sh` | `tests/bats/ci/run_ev032_a6_2_tc_canary.bats` |
+| `scripts/ci/run_ev032_vona_canary.sh` | `tests/bats/ci/run_ev032_vona_canary.bats` |
+| `scripts/ci/run_iwxxm_us_compat_smoke.sh` | `tests/bats/ci/run_iwxxm_us_compat_smoke.bats` |
+| `scripts/ci/run_metar_quality.sh` | `tests/bats/ci/run_metar_quality.bats` |
+| `scripts/ci/run_mutation_js.sh` | `tests/bats/ci/run_mutation_js.bats` |
+| `scripts/ci/run_mutation_python.sh` | `tests/bats/ci/run_mutation_python.bats` |
+| `scripts/ci/run_product_order_smoke.sh` | `tests/bats/ci/run_product_order_smoke.bats` |
+| `scripts/ci/run_provenance_canary.sh` | `tests/bats/ci/run_provenance_canary.bats` |
+| `scripts/ci/run_provenance_quality.sh` | `tests/bats/ci/run_provenance_quality.bats` |
+| `scripts/ci/run_quality_matrices_full.sh` | `tests/bats/ci/run_quality_matrices_full.bats` |
+| `scripts/ci/run_quality_matrices_smoke.sh` | `tests/bats/ci/run_quality_matrices_smoke.bats` |
+| `scripts/ci/run_report_state_matrix_smoke.sh` | `tests/bats/ci/run_report_state_matrix_smoke.bats` |
+| `scripts/ci/run_sigmet_quality.sh` | `tests/bats/ci/run_sigmet_quality.bats` |
+| `scripts/ci/run_speci_quality.sh` | `tests/bats/ci/run_speci_quality.bats` |
+| `scripts/ci/run_swxa_quality.sh` | `tests/bats/ci/run_swxa_quality.bats` |
+| `scripts/ci/run_taf_quality.sh` | `tests/bats/ci/run_taf_quality.bats` |
+| `scripts/ci/run_tc_sigmet_quality.sh` | `tests/bats/ci/run_tc_sigmet_quality.bats` |
+| `scripts/ci/run_tca_quality.sh` | `tests/bats/ci/run_tca_quality.bats` |
+| `scripts/ci/run_va_sigmet_quality.sh` | `tests/bats/ci/run_va_sigmet_quality.bats` |
+| `scripts/ci/run_vaa_quality.sh` | `tests/bats/ci/run_vaa_quality.bats` |
+| `scripts/ci/run_vona_quality.sh` | `tests/bats/ci/run_vona_quality.bats` |
+| `scripts/ci/run_wis2box_harness.sh` | `tests/bats/ci/run_wis2box_harness.bats` |
+| `scripts/ci/run_wmo_quality.sh` | `tests/bats/ci/run_wmo_quality.bats` |
+| `scripts/ci/staging_gate.sh` | `tests/bats/ci/staging_gate.bats` |
+| `scripts/deploy/apply_gh_branch_rulesets.sh` | `tests/bats/deploy/apply_gh_branch_rulesets.bats` |
+| `scripts/deploy/apply_render_cors_env.sh` | `tests/bats/deploy/apply_render_cors_env.bats` |
+| `scripts/deploy/check_no_bare_curl_imgurl.sh` | `tests/bats/deploy/check_no_bare_curl_imgurl.bats` |
+| `scripts/deploy/check_worker_crashloop.sh` | `tests/bats/deploy/check_worker_crashloop.bats` |
+| `scripts/deploy/doks_host_header_smoke.sh` | `tests/bats/deploy/doks_host_header_smoke.bats` |
+| `scripts/deploy/doks_provisional_live_env.sh` | `tests/bats/deploy/doks_provisional_live_env.bats` |
+| `scripts/deploy/doks_rollout_images.sh` | `tests/bats/deploy/doks_rollout_images.bats` |
+| `scripts/deploy/doks_staging_ev933_ops.sh` | `tests/bats/deploy/doks_staging_ev933_ops.bats` |
+| `scripts/deploy/doks_worker_poller_preflight.sh` | `tests/bats/deploy/doks_worker_poller_preflight.bats` |
+| `scripts/deploy/run_mock_byoc_all_sinks.sh` | `tests/bats/deploy/run_mock_byoc_all_sinks.bats` |
+| `scripts/deploy/run_mock_byoc_compose_smoke.sh` | `tests/bats/deploy/run_mock_byoc_compose_smoke.bats` |
+| `scripts/deploy/run_mock_byoc_smoke.sh` | `tests/bats/deploy/run_mock_byoc_smoke.bats` |
+| `scripts/deploy/staging_smoke.sh` | `tests/bats/deploy/staging_smoke.bats` |
+| `scripts/deploy/verify_connectivity.sh` | `tests/bats/deploy/verify_connectivity.bats` |
+| `scripts/env/verify-sync.sh` | `tests/bats/env/verify-sync.bats` |
+| `scripts/frontend/audit-ci.sh` | `tests/bats/frontend/audit-ci.bats` |
+| `scripts/frontend/prepare-config.sh` | `tests/bats/frontend/prepare-config.bats` |
+| `scripts/launchers/launch_api.sh` | `tests/bats/launchers/launch_api.bats` |
+| `scripts/launchers/launch_gui.sh` | `tests/bats/launchers/launch_gui.bats` |
+| `scripts/openapi/check_openapi_types.sh` | `tests/bats/openapi/check_openapi_types.bats` |
+| `scripts/ops/apply_doks_work_session_ssl_fix.sh` | `tests/bats/ops/apply_doks_work_session_ssl_fix.bats` |
+| `scripts/supabase/apply-advisor-migrations.sh` | `tests/bats/supabase/apply-advisor-migrations.bats` |
+| `scripts/supabase/db-pull.sh` | `tests/bats/supabase/db-pull.bats` |
+| `scripts/supabase/db-push.sh` | `tests/bats/supabase/db-push.bats` |
+| `scripts/supabase/local-dev.sh` | `tests/bats/supabase/local-dev.bats` |
+| `scripts/vendor/sync-iwxxm.sh` | `tests/bats/vendor/sync-iwxxm.bats` |
+
+**Count:** 56 scripts / 56 bats

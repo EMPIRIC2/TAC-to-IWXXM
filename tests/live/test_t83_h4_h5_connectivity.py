@@ -36,7 +36,7 @@ def _urls() -> tuple[str, str]:
 
 
 def test_t83_h4_cors_preflight_convert() -> None:
-    """H4 — OPTIONS preflight for /api/v1/convert from frontend origin."""
+    """H4 - OPTIONS preflight for /api/v1/convert from frontend origin."""
     api, origin = _urls()
     api_headers = live_api_host_headers()
     with httpx.Client(timeout=45.0) as client:
@@ -61,7 +61,7 @@ def test_t83_h4_cors_preflight_convert() -> None:
 
 
 def test_t83_h4_cors_preflight_mass_ingest() -> None:
-    """H4 — OPTIONS preflight for /api/v1/ingest/mass (F33 / UJ-051)."""
+    """H4 - OPTIONS preflight for /api/v1/ingest/mass (F33 / UJ-051)."""
     api, origin = _urls()
     api_headers = live_api_host_headers()
     with httpx.Client(timeout=45.0) as client:
@@ -85,7 +85,7 @@ def test_t83_h4_cors_preflight_mass_ingest() -> None:
 
 
 def test_t83_h5_frontend_config_json_api_base() -> None:
-    """H5 — staging /config.json api.baseUrl matches expected API base.
+    """H5 - staging /config.json api.baseUrl matches expected API base.
 
     F33 mass ingest uses the same ``api.baseUrl`` (no separate mass URL knob).
     """
@@ -110,7 +110,7 @@ def test_t83_h5_frontend_config_json_api_base() -> None:
 
 
 def test_t83_h5_frontend_index_reachable() -> None:
-    """H5 companion — frontend index responds (static site up)."""
+    """H5 companion - frontend index responds (static site up)."""
     _urls()
     fetch_base = live_frontend_fetch_base()
     with httpx.Client(timeout=45.0, follow_redirects=True) as client:

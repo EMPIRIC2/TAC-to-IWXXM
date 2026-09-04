@@ -1,4 +1,4 @@
-"""msgspec request/response models for dissemination preflight/send (F16–F19)."""
+"""msgspec request/response models for dissemination preflight/send (F16-F19)."""
 
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ SinkType = Literal[
     "afs",
 ]
 
-# Drawer chooser order — keep FE enums aligned (T5.2 / E14-05 / E14-10).
+# Drawer chooser order - keep FE enums aligned (T5.2 / E14-05 / E14-10).
 DRAWER_SINK_TYPES: tuple[SinkType, ...] = (
     "postgres",
     "mysql",
@@ -33,6 +33,8 @@ DRAWER_SINK_TYPES: tuple[SinkType, ...] = (
 
 
 class SchemaDiffItem(msgspec.Struct, frozen=True):
+    """One schema difference returned from dissemination preflight."""
+
     kind: str
     table: str
     detail: str
@@ -40,6 +42,8 @@ class SchemaDiffItem(msgspec.Struct, frozen=True):
 
 
 class PreflightRequest(msgspec.Struct, frozen=True):
+    """Preflight a destination sink before operator send."""
+
     sink_type: SinkType
     uri: str | None = None
     ddl: bool = False
@@ -49,6 +53,8 @@ class PreflightRequest(msgspec.Struct, frozen=True):
 
 
 class PreflightResponse(msgspec.Struct, frozen=True):
+    """Preflight outcome with connectivity, schema diffs, and optional handle."""
+
     ok: bool
     connectivity_ok: bool
     diffs: list[SchemaDiffItem]
@@ -57,6 +63,8 @@ class PreflightResponse(msgspec.Struct, frozen=True):
 
 
 class SendRequest(msgspec.Struct, frozen=True):
+    """Send IWXXM (and optional TAC) to a preflighted or one-shot destination."""
+
     handle: str | None = None
     sink_type: SinkType | None = None
     uri: str | None = None
@@ -68,6 +76,8 @@ class SendRequest(msgspec.Struct, frozen=True):
 
 
 class SendResponse(msgspec.Struct, frozen=True):
+    """Send outcome with optional object-store upload key metadata."""
+
     ok: bool
     kv_upload_key: str | None = None
     detail: str | None = None

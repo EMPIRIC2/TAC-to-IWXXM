@@ -151,6 +151,25 @@ describe('Register', () => {
     });
   });
 
+  it('shows generic toast when register rejects with a non-Error value', async () => {
+    const user = userEvent.setup();
+    mockRegisterUser.mockRejectedValueOnce('boom');
+
+    render(<Register {...defaultProps} />);
+
+    await user.type(screen.getByLabelText(/email address/i), 'pilot@example.com');
+    await user.type(screen.getByLabelText(/^password$/i), 'secret123');
+    await user.type(screen.getByLabelText(/confirm password/i), 'secret123');
+    await user.click(screen.getByLabelText(/accept terms and conditions/i));
+    await user.click(screen.getByRole('button', { name: /create account/i }));
+
+    await waitFor(() => {
+      expect(mockToast.error).toHaveBeenCalledWith(
+        'An error occurred during registration. Please try again.',
+      );
+    });
+  });
+
   it('shows short password validation error', async () => {
     const user = userEvent.setup();
     render(<Register {...defaultProps} />);

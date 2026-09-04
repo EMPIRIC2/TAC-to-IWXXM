@@ -30,6 +30,9 @@ export type IwxxmVersionId = (typeof IWXXM_VERSION_IDS)[number];
 /** Default IWXXM line (matches Python ``DEFAULT_VERSION``). */
 export const DEFAULT_IWXXM_VERSION = IWXXM_VERSIONS_SOT.default as IwxxmVersionId;
 
+/** MSC operational IWXXM line for CA_ECCC (EV-064). */
+export const CA_ECCC_IWXXM_VERSION = '3.0.0' as const;
+
 /**
  * Human label for a role — UJ-050 / #854.
  *
@@ -68,4 +71,23 @@ export function coerceIwxxmVersion(value: unknown): IwxxmVersionId {
     return value as IwxxmVersionId;
   }
   return DEFAULT_IWXXM_VERSION;
+}
+
+/**
+ * IWXXM version select options for the active semantic profile.
+ *
+ * @param profile - UI profile emit key
+ * @returns Version options (CA_ECCC pins 3.0.0 only)
+ */
+export function iwxxmVersionOptionsForProfile(profile: string) {
+  if (profile.trim().toLowerCase().replace(/-/g, '_') === 'ca_eccc') {
+    return [
+      {
+        value: CA_ECCC_IWXXM_VERSION,
+        label: '3.0.0 (CA MSC operational)',
+        role: 'latest' as IwxxmVersionRole,
+      },
+    ];
+  }
+  return IWXXM_VERSION_OPTIONS;
 }

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import contextvars
 import json
 import logging
@@ -11,12 +12,16 @@ import re
 import threading
 import time
 from collections import defaultdict
+from collections.abc import Awaitable, Callable
 from datetime import UTC, datetime
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fastapi import FastAPI, Request
 from fastapi.responses import Response
 from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
+
+if TYPE_CHECKING:
+    from .profile_wire import WireProfileSelection
 
 # Module-level registry avoids relying on prometheus_client's private internals
 # while still preventing duplicate-registration errors on module reload.
@@ -71,11 +76,41 @@ METAR_CONVERSION_DURATION_SECONDS = _get_or_create_histogram(
     ["status", "iwxxm_version", "icao_region"],
 )
 
+TAC_SEMANTIC_PROFILE_REQUESTS_TOTAL = _get_or_create_counter(
+    "tac_semantic_profile_requests_total",
+    "Profile wire requests by canonical semantic profile id (F35 / EV-063)",
+    ["route", "semantic_profile"],
+)
+
+TAC_EXCHANGE_PROFILE_REQUESTS_TOTAL = _get_or_create_counter(
+    "tac_exchange_profile_requests_total",
+    "Profile wire requests with an explicit exchange profile id (F35 / EV-063)",
+    ["route", "exchange_profile"],
+)
+
+TAC_SEMANTIC_PROFILE_ALIAS_REQUESTS_TOTAL = _get_or_create_counter(
+    "tac_semantic_profile_alias_requests_total",
+    "Profile wire requests that used a deprecated semantic profile alias (F35 / EV-063)",
+    ["route", "semantic_profile"],
+)
+
 
 class JsonLogFormatter(logging.Formatter):
     """Formats log records as JSON."""
 
     def format(self, record: logging.LogRecord) -> str:
+        """Serialize a log record as a single JSON line for structured logging.
+
+        Parameters
+        ----------
+        record : logging.LogRecord
+            Log record to format.
+
+        Returns
+        -------
+        str
+            JSON-encoded log payload.
+        """
         payload = {
             "timestamp": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
             "level": record.levelname,
@@ -92,7 +127,7 @@ class JsonLogFormatter(logging.Formatter):
 class LokiHandler(logging.Handler):
     """Pushes logs to Loki using HTTP API."""
 
-    def __init__(self, service_name: str):
+    def __init__(self, service_name: str) -> None:
         super().__init__()
         self.service_name = service_name
         self.push_url = os.getenv("LOKI_PUSH_URL", "").strip()
@@ -128,6 +163,13 @@ class LokiHandler(logging.Handler):
         self._worker.start()
 
     def emit(self, record: logging.LogRecord) -> None:
+        """Enqueue a log record for asynchronous push to Loki.
+
+        Parameters
+        ----------
+        record : logging.LogRecord
+            Log record to ship when Loki is configured and level passes the filter.
+        """
         if not self.push_url or self._session is None:
             return
         if self.min_level and record.levelno < self.min_level:
@@ -142,6 +184,7 @@ class LokiHandler(logging.Handler):
             self.handleError(record)
 
     def close(self) -> None:
+        """Stop the background worker and close the HTTP session."""
         try:
             self._stop_event.set()
             if self._worker.is_alive():
@@ -201,10 +244,8 @@ class LokiHandler(logging.Handler):
                     batch.clear()
 
         if batch:
-            try:
+            with contextlib.suppress(Exception):
                 self._send_batch(batch)
-            except Exception:
-                pass
 
     def _build_loki_entry(self, record: logging.LogRecord) -> dict[str, Any]:
         ts_ns = str(int(record.created * 1_000_000_000))
@@ -271,6 +312,44 @@ def setup_logging(service_name: str) -> None:
     ensure_request_log_filters()
 
 
+def _metric_profile_id(profile_id: str) -> str:
+    """Normalize a profile id for Prometheus labels (uppercase, no PII)."""
+    return (profile_id or "unknown").strip().upper().replace("-", "_") or "unknown"
+
+
+def record_profile_wire_metrics(route: str, wire: WireProfileSelection) -> None:
+    """
+    Record semantic/exchange profile id counters for a resolved wire selection.
+
+    Parameters
+    ----------
+    route :
+        FastAPI route path (e.g. ``/api/v1/convert``).
+    wire :
+        ``WireProfileSelection`` from ``profile_wire.resolve_route_profiles``.
+    """
+    safe_route = (route or "unknown").strip() or "unknown"
+    semantic_id = _metric_profile_id(getattr(wire, "semantic_canonical", ""))
+
+    TAC_SEMANTIC_PROFILE_REQUESTS_TOTAL.labels(
+        route=safe_route,
+        semantic_profile=semantic_id,
+    ).inc()
+
+    if getattr(wire, "deprecated_alias_used", False):
+        TAC_SEMANTIC_PROFILE_ALIAS_REQUESTS_TOTAL.labels(
+            route=safe_route,
+            semantic_profile=semantic_id,
+        ).inc()
+
+    exchange = getattr(wire, "exchange_profile", None)
+    if exchange:
+        TAC_EXCHANGE_PROFILE_REQUESTS_TOTAL.labels(
+            route=safe_route,
+            exchange_profile=_metric_profile_id(exchange),
+        ).inc()
+
+
 def record_translation_metric(
     status: str,
     iwxxm_version: str,
@@ -299,7 +378,11 @@ def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
     """Install metrics middleware and /metrics endpoint into FastAPI app."""
 
     @app.middleware("http")
-    async def prometheus_http_metrics(request: Request, call_next):
+    async def prometheus_http_metrics(
+        request: Request,
+        call_next: Callable[[Request], Awaitable[Response]],
+    ) -> Response:
+        """Record Prometheus HTTP request counters and latency histograms."""
         start = time.perf_counter()
         try:
             response = await call_next(request)
@@ -328,6 +411,7 @@ def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
 
     @app.get("/metrics", include_in_schema=False)
     async def metrics_endpoint() -> Response:
+        """Expose Prometheus metrics in text exposition format."""
         data = generate_latest()
         return Response(content=data, media_type=CONTENT_TYPE_LATEST)
 
@@ -339,13 +423,14 @@ _REQUEST_LOG_LEVEL: contextvars.ContextVar[int | None] = contextvars.ContextVar(
 _ALLOWED_LOG_LEVELS = frozenset({"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"})
 _JWT_RE = re.compile(r"eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+")
 _AUTH_RE = re.compile(r"(?i)(authorization\s*[:=]\s*)(\S+)")
-_FILTERS_INSTALLED = False
+_filters_installed = False
 
 
 class RequestLogLevelFilter(logging.Filter):
     """Drop records below the per-request convert ``log_level`` ContextVar."""
 
     def filter(self, record: logging.LogRecord) -> bool:
+        """Allow records at or above the per-request convert log level."""
         minimum = _REQUEST_LOG_LEVEL.get()
         if minimum is None:
             return True
@@ -356,6 +441,7 @@ class SecretRedactFilter(logging.Filter):
     """Strip JWTs and Authorization header values from log records."""
 
     def filter(self, record: logging.LogRecord) -> bool:
+        """Redact JWTs and Authorization header values from log message text."""
         try:
             message = record.getMessage()
         except Exception:
@@ -370,8 +456,8 @@ class SecretRedactFilter(logging.Filter):
 
 def ensure_request_log_filters() -> None:
     """Attach request-level and secret filters once (safe for tests)."""
-    global _FILTERS_INSTALLED
-    if _FILTERS_INSTALLED:
+    global _filters_installed
+    if _filters_installed:
         return
     level_filter = RequestLogLevelFilter()
     redact_filter = SecretRedactFilter()
@@ -380,7 +466,7 @@ def ensure_request_log_filters() -> None:
         target = logging.getLogger(name)
         target.addFilter(level_filter)
         target.addFilter(redact_filter)
-    _FILTERS_INSTALLED = True
+    _filters_installed = True
 
 
 _REQUEST_LOGGERS = ("src", "src.api", "tac2iwxxm", "tac_validate", "iwxxm_validate")
@@ -414,12 +500,10 @@ def set_request_log_level(request: Request, level_name: str | None) -> str:
 def _reset_request_log_level(request: Request) -> None:
     token = getattr(request.state, "convert_log_level_token", None)
     if token is not None:
-        try:
+        with contextlib.suppress(ValueError):
             _REQUEST_LOG_LEVEL.reset(token)
-        except ValueError:
             # Starlette BaseHTTPMiddleware runs the route in a different Context
             # than dispatch(); Token.reset is invalid across contexts.
-            pass
         request.state.convert_log_level_token = None
     previous = getattr(request.state, "convert_log_level_prev", None)
     if previous:

@@ -1,4 +1,4 @@
-"""TC-F20-003 — SPECI iwxxm_us golden expansion (S020 / EV-015 T3.5–T3.6 / S3).
+"""TC-F20-003 - SPECI iwxxm_us golden expansion (S020 / EV-015 T3.5-T3.6 / S3).
 
 Asserts iwxxm_us SPECI S3 themes and convert → XSD+Schematron + M-golden.
 """
@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "iwxxm_us_golden"

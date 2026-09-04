@@ -17,7 +17,7 @@
     ],
     "preToolUse": [
       {
-        "command": "python3 .cursor/hooks/scope_check.py",
+        "command": "python3 .cursor/hooks/pack/scope_check.py",
         "matcher": "Write",
         "timeout": 10
       },
@@ -39,7 +39,7 @@
     ],
     "afterFileEdit": [
       {
-        "command": "python3 .cursor/hooks/feature_drift.py",
+        "command": "python3 .cursor/hooks/pack/feature_drift.py",
         "matcher": "Write|TabWrite",
         "timeout": 10
       },
@@ -50,6 +50,11 @@
       },
       {
         "command": "python3 .cursor/hooks/pypi_release_guard.py",
+        "matcher": "Write|TabWrite",
+        "timeout": 10
+      },
+      {
+        "command": "bash .cursor/hooks/coverage-advisory.sh",
         "matcher": "Write|TabWrite",
         "timeout": 10
       },
@@ -68,6 +73,24 @@
       {
         "command": "bash .cursor/hooks/post-test-sync.sh",
         "timeout": 10
+      }
+    ],
+    "workspaceOpen": [
+      {
+        "command": ".cursor/hooks/register-workspace-plugins.sh"
+      },
+      {
+        "command": ".cursor/hooks/pack/bootstrap-engineering-memory.sh"
+      }
+    ],
+    "sessionStart": [
+      {
+        "command": ".cursor/hooks/pack/cursor-session-start.sh"
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": ".cursor/hooks/pack/cursor-session-end.sh"
       }
     ]
   }

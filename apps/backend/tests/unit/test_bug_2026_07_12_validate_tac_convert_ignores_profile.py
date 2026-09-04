@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -37,7 +36,7 @@ def test_validate_tac_auto_convert_forwards_profile(client: TestClient, monkeypa
             None,
         )
 
-    def fake_iwxxm_validate(xml: str, *, iwxxm_version: str, profile: str = "annex3", levels=None):
+    def fake_iwxxm_validate(xml: str, *, iwxxm_version: str, profile: str = "annex3", levels=None, product=None):
         from iwxxm_validate import ValidationReport
 
         return ValidationReport(

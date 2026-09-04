@@ -1,4 +1,4 @@
-"""TC-EV050-007 / AC7 — dual-profile annex3 vs iwxxm_us lint harness (S059)."""
+"""TC-EV050-007 / AC7 - dual-profile annex3 vs iwxxm_us lint harness (S059)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.dual_profile import compare_lint_profiles
 from tac_validate.profiles import (
@@ -61,7 +60,7 @@ def test_dual_applicable_no_unclassified_divergence(product: str) -> None:
     assert mem_a == mem_u
 
 
-@pytest.mark.parametrize("product", ["VAA", "TCA", "SWXA", "VONA"])
+@pytest.mark.parametrize("product", ["VAA", "VONA"])
 def test_na_products_iwxxm_us_not_fail(product: str) -> None:
     tac = _read(_REPRESENTATIVE[product])
     result = compare_lint_profiles(tac, product=product)
@@ -70,6 +69,18 @@ def test_na_products_iwxxm_us_not_fail(product: str) -> None:
     assert result.iwxxm_us_codes is None
     with pytest.raises(ValueError, match="not applicable"):
         lint(tac, product=product, profile=PROFILE_IWXXM_US)
+
+
+@pytest.mark.parametrize("product", ["TCA", "SWXA"])
+def test_thin_lint_products_dual_na_but_iwxxm_us_lint_allowed(product: str) -> None:
+    """#919 M22 - SWXA/TCA accept iwxxm_us for thin US lint; dual compare stays N/A."""
+    tac = _read(_REPRESENTATIVE[product])
+    result = compare_lint_profiles(tac, product=product)
+    assert result.disposition == "na"
+    assert result.ok is True
+    assert result.iwxxm_us_codes is None
+    report = lint(tac, product=product, profile=PROFILE_IWXXM_US)
+    assert report.product == product
 
 
 def test_membership_sad_matches_across_dual_profiles() -> None:

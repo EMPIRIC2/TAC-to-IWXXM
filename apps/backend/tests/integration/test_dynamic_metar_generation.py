@@ -6,10 +6,8 @@ and tests conversion to both IWXXM 2023-1 and 2025-2.
 
 import json
 from pathlib import Path
-from typing import List
 
 import pytest
-
 from src.schemas.validation import ValidationResult
 from src.testing.metar_test_generator import METARTestCase, METARTestGenerator
 from src.utilities.conversion import convert_metar_tac_with_metadata
@@ -27,7 +25,7 @@ def get_generator() -> METARTestGenerator:
     return _generator
 
 
-def get_test_cases(count: int = 200, use_cache: bool = True) -> List[METARTestCase]:
+def get_test_cases(count: int = 200, use_cache: bool = True) -> list[METARTestCase]:
     """Get or generate test cases singleton."""
     global _test_cases
     if _test_cases is None:
@@ -56,7 +54,7 @@ def get_test_cases(count: int = 200, use_cache: bool = True) -> List[METARTestCa
 
 # Generate test cases once per session
 @pytest.fixture(scope="session")
-def test_cases() -> List[METARTestCase]:
+def test_cases() -> list[METARTestCase]:
     """Fixture providing generated test cases."""
     return get_test_cases()
 
@@ -112,12 +110,11 @@ class TestDynamicMETARConversion:
             assert test_case.station_id in iwxxm_xml, f"Station ID {test_case.station_id} not found in output"
 
             # If we have validation result, check it
-            if validation_result:
+            if validation_result and not validation_result.is_valid:
                 # Log any errors for investigation
-                if not validation_result.is_valid:
-                    print(f"\n⚠️  Validation issues for {test_case.station_id}:")
-                    for issue in validation_result.errors[:5]:  # Show first 5 errors
-                        print(f"   - {issue.message}")
+                print(f"\n⚠️  Validation issues for {test_case.station_id}:")
+                for issue in validation_result.errors[:5]:  # Show first 5 errors
+                    print(f"   - {issue.message}")
 
             # Save failed cases for analysis
             if not iwxxm_xml or (validation_result and not validation_result.is_valid):
@@ -150,12 +147,11 @@ class TestDynamicMETARConversion:
             assert "2025-2" in iwxxm_xml, "Version 2025-2 not found in output"
 
             # If we have validation result, check it
-            if validation_result:
+            if validation_result and not validation_result.is_valid:
                 # Log any errors for investigation
-                if not validation_result.is_valid:
-                    print(f"\n⚠️  Validation issues for {test_case.station_id}:")
-                    for issue in validation_result.errors[:5]:  # Show first 5 errors
-                        print(f"   - {issue.message}")
+                print(f"\n⚠️  Validation issues for {test_case.station_id}:")
+                for issue in validation_result.errors[:5]:  # Show first 5 errors
+                    print(f"   - {issue.message}")
 
             # Save failed cases for analysis
             if not iwxxm_xml or (validation_result and not validation_result.is_valid):
@@ -237,7 +233,7 @@ class TestRegionalCoverage:
                 if iwxxm_xml and len(iwxxm_xml) > 0:
                     success_count += 1
             except Exception as e:
-                print(f"  Warning: Failed to convert {test_case.station_id}: {str(e)}")
+                print(f"  Warning: Failed to convert {test_case.station_id}: {e!s}")
 
         # Only assert if we have cases
         if len(regional_cases) > 0:
@@ -269,7 +265,7 @@ class TestRegionalCoverage:
                 if iwxxm_xml and len(iwxxm_xml) > 0:
                     success_count += 1
             except Exception as e:
-                print(f"  Warning: Failed to convert {test_case.station_id}: {str(e)}")
+                print(f"  Warning: Failed to convert {test_case.station_id}: {e!s}")
 
         # Only assert if we have cases
         if len(regional_cases) > 0:
@@ -317,7 +313,7 @@ class TestPhenomenonCoverage:
                     if iwxxm_xml and len(iwxxm_xml) > 0:
                         success_count += 1
                 except Exception as e:
-                    print(f"  Warning: Failed to convert {test_case.station_id}: {str(e)}")
+                    print(f"  Warning: Failed to convert {test_case.station_id}: {e!s}")
 
             success_rate = success_count / len(phenomenon_cases) if phenomenon_cases else 0
             print(f"\n  {version}: {success_count}/{len(phenomenon_cases)} successful ({success_rate:.1%})")

@@ -4,17 +4,12 @@
  * Spec: docs/test-plan.md TC-F16..F19 + H6′; docs/user-journeys.md UJ-027–030.
  * Live BYOC (TC-F17-002 / TC-F18-002) remains cycle-close only — stubbed here.
  *
- * EV-042 / #897: operator Disseminate UI hidden — file skipped until #898.
+ * EV-091 / #898: operator Disseminate destinations restored (+ #1089 exchange overlay).
  */
 import { expect, test, type Page, type Request } from '@playwright/test';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { fillManualTac, openConverterForE2e } from './playwright-e2e-helpers';
-
-test.skip(
-  true,
-  'EV-042: OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false; restore operator UJ-027–030 in #898',
-);
 
 const METAR_TAC = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11 A2990=';
 const IWXXM_XML =
@@ -227,13 +222,13 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
 
     expect(captured.preflight.length).toBe(2);
     expect(captured.send.length).toBe(1);
-    const firstBody = captured.preflight[0].postDataJSON() as {
+    const firstBody = captured.preflight[0]!.postDataJSON() as {
       sink_type: string;
       uri: string;
     };
     expect(firstBody.sink_type).toBe('postgres');
     expect(firstBody.uri).toContain('postgresql://');
-    const sendBody = captured.send[0].postDataJSON() as {
+    const sendBody = captured.send[0]!.postDataJSON() as {
       handle: string;
       iwxxm_xml?: string;
       tac_text?: string;
@@ -246,6 +241,7 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     page,
   }) => {
     await stubWorkbenchNoise(page);
+    await stubConvert(page);
     await openConverterForE2e(page);
     const captured = await stubDisseminationApis(page, {
       preflightBody: {
@@ -275,14 +271,31 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     await page.getByTestId('dissemination-send-button').click();
     await expect(page.getByTestId('dissemination-send-success')).toBeVisible();
 
-    const sendBody = captured.send[0].postDataJSON() as { tac_text?: string };
+    const sendBody = captured.send[0]!.postDataJSON() as {
+      tac_text?: string;
+      iwxxm_xml?: string;
+    };
     expect(sendBody.tac_text).toContain('METAR');
+    expect(sendBody.iwxxm_xml).toBeTruthy();
+  });
+
+  test('UJ-027 / TC-EV091-002: drawer exchange overlay select is visible (#1089)', async ({
+    page,
+  }) => {
+    await prepareWorkbench(page);
+    await openDisseminationDrawer(page);
+    const select = page.getByTestId('dissemination-exchange-profile');
+    await expect(select).toBeVisible();
+    await expect(select).toHaveValue('GLOBAL_AFS');
+    await select.selectOption('APAC_ROBEX');
+    await expect(select).toHaveValue('APAC_ROBEX');
   });
 
   test('UJ-027: multi-select drop + forced fail continues; progress screenshot (TC-F16-005)', async ({
     page,
   }) => {
     await stubWorkbenchNoise(page);
+    await stubConvert(page);
     await openConverterForE2e(page);
 
     let preflightCalls = 0;
@@ -385,7 +398,7 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     await page.getByTestId('dissemination-send-button').click();
     await expect(page.getByTestId('dissemination-send-success')).toBeVisible();
 
-    const body = captured.preflight[0].postDataJSON() as {
+    const body = captured.preflight[0]!.postDataJSON() as {
       sink_type: string;
       params: Record<string, string>;
     };
@@ -424,9 +437,9 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
     await page.getByTestId('dissemination-send-button').click();
     await expect(page.getByTestId('dissemination-send-success')).toBeVisible();
 
-    const body = captured.preflight[0].postDataJSON() as { sink_type: string };
+    const body = captured.preflight[0]!.postDataJSON() as { sink_type: string };
     expect(body.sink_type).toBe('edis');
-    expect(captured.send[0].postDataJSON()).toMatchObject({
+    expect(captured.send[0]!.postDataJSON()).toMatchObject({
       handle: 'e2e-edis-handle',
     });
   });
@@ -462,7 +475,7 @@ test.describe('T6.3 / UJ-027–030: dissemination drawer H6′ smokes', () => {
       await page.getByTestId('dissemination-send-button').click();
       await expect(page.getByTestId('dissemination-send-success')).toBeVisible();
 
-      const body = captured.preflight[0].postDataJSON() as { sink_type: string };
+      const body = captured.preflight[0]!.postDataJSON() as { sink_type: string };
       expect(body.sink_type).toBe(sink);
 
       await page.getByTestId('dissemination-drawer-close').click();

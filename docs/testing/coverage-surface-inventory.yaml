@@ -1,0 +1,196 @@
+# EV-080 / #1077 — coverage surface inventory (ADR-007 @ 100%)
+# Corpus: [Corpus: adr/ADR-007] [Corpus: tests] [Corpus: tech-spec]
+#
+# target_floor: universal minimum after EV-080. measured_* updated M3 (2026-08-28).
+
+target_floor: 100
+generated: "2026-08-28"
+issue: 1077
+cycle: EV-080
+branch: evolve/EV-080-unit-coverage-100
+prior_inventory: docs/sessions/S061-ci-polish-quality-pr-stats/reports/coverage-surface-inventory.yaml
+measurement_note: >
+  Python totals from package coverage.json (branch=true). Frontend from
+  apps/frontend/coverage/coverage-final.json after M3 exclude purge + fills.
+  FE + shared-js Vitest thresholds enforced at 100.
+
+surfaces:
+  - id: root-pyproject
+    config_path: pyproject.toml
+    kind: pytest_fail_under
+    target_min: 100
+    enforced: 100
+    ci_job_or_make: "make test-unit / root pytest cov config"
+    notes: "T2.4 flipped; **/__init__.py omit removed"
+
+  - id: backend
+    config_path: apps/backend/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 100
+    enforced: 100
+    ci_job_or_make: "ci-cd.yml matrix package=backend + per-file check"
+    measured_percent_covered: 98.03
+    measured_missing_lines: 84
+    measured_files_below_100: 35
+    measured_artifact: apps/backend/coverage.json
+
+  - id: worker
+    config_path: apps/worker/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 100
+    enforced: 100
+    ci_job_or_make: "make test-unit-worker / ci-cd.yml matrix package=worker"
+    measured_percent_covered: 99.38
+    measured_missing_lines: 1
+    measured_files_below_100: 1
+    measured_artifact: apps/worker/coverage.json
+
+  - id: auth
+    config_path: packages/auth/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 100
+    enforced: 100
+    ci_job_or_make: "ci-cd.yml matrix package=auth + per-file check"
+    measured_percent_covered: 100.0
+    measured_missing_lines: 0
+    measured_files_below_100: 0
+    measured_artifact: packages/auth/coverage.json
+
+  - id: shared-py
+    config_path: packages/shared/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 100
+    enforced: 100
+    ci_job_or_make: "ci-cd.yml matrix package=shared + per-file check"
+    measured_percent_covered: 99.8
+    measured_missing_lines: 0
+    measured_files_below_100: 1
+    measured_artifact: packages/shared/coverage.json
+    notes: "Gap is partial branch in vendor_manifest.py"
+
+  - id: shared-js
+    config_path: packages/shared/vitest.config.ts
+    kind: vitest_thresholds
+    target_min: 100
+    enforced: 100
+    ci_job_or_make: "pnpm --filter @metar/shared run test:coverage"
+    current_thresholds:
+      lines: 100
+      statements: 100
+      functions: 100
+      branches: 100
+    measured_statements_pct: 100.0
+    measured_branches_pct: 100.0
+    measured_files_below_100: 0
+    measured_artifact: packages/shared/coverage/coverage-final.json
+
+  - id: tac2iwxxm
+    config_path: packages/tac2iwxxm/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 100
+    enforced: 100
+    ci_job_or_make: "ci-cd.yml matrix package=tac2iwxxm + per-file check"
+    measured_percent_covered: 97.3
+    measured_missing_lines: 79
+    measured_files_below_100: 22
+    measured_artifact: packages/tac2iwxxm/coverage.json
+
+  - id: tac-validate
+    config_path: packages/tac-validate/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 100
+    enforced: 100
+    ci_job_or_make: "ci-cd.yml matrix package=tac-validate + per-file check"
+    measured_percent_covered: 98.31
+    measured_missing_lines: 11
+    measured_files_below_100: 9
+    measured_artifact: packages/tac-validate/coverage.json
+
+  - id: iwxxm-validate
+    config_path: packages/iwxxm-validate/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 100
+    enforced: 100
+    ci_job_or_make: "ci-cd.yml matrix package=iwxxm-validate + per-file check"
+    measured_percent_covered: 97.81
+    measured_missing_lines: 11
+    measured_files_below_100: 9
+    measured_artifact: packages/iwxxm-validate/coverage.json
+
+  - id: dissemination
+    config_path: packages/dissemination/pyproject.toml
+    kind: pytest_fail_under
+    target_min: 100
+    enforced: 100
+    ci_job_or_make: "scripts/ci/run_dissemination_coverage.sh + per-file check"
+    measured_percent_covered: 99.13
+    measured_missing_lines: 4
+    measured_files_below_100: 3
+    measured_artifact: packages/dissemination/coverage.json
+
+  - id: frontend
+    config_path: apps/frontend/vitest.config.ts
+    kind: vitest_thresholds
+    target_min: 100
+    enforced: 100
+    ci_job_or_make: "pnpm --filter @metar/frontend run test:coverage"
+    current_thresholds:
+      lines: 100
+      statements: 100
+      functions: 100
+      branches: 100
+    measured_statements_pct: 100.0
+    measured_branches_pct: 100.0
+    measured_files_below_100: 0
+    measured_artifact: apps/frontend/coverage/coverage-final.json
+    # Historical M3 purge list (TC-EV080-001); no longer present in vitest exclude.
+    executable_excludes_to_remove:
+      - src/utils/tacEditorSpans.ts
+      - src/app/components/TacEditor.tsx
+      - src/utils/liveAssist.ts
+      - src/hooks/useLiveWorkbenchAssist.ts
+      - src/utils/gunzip.ts
+      - src/app/App.tsx
+    approved_excludes:
+      - src/fixtures/**
+      - src/generated/**
+      - "**/*.d.ts"
+      - src/test/
+      - node_modules/
+      - dist/
+      - tests/
+      - "**/*.spec.ts"
+
+  - id: per-file-checker
+    config_path: scripts/ci/check_per_file_coverage.py
+    kind: per_file_script
+    target_min: 100
+    enforced: 100
+    ci_job_or_make: "invoked after Python package coverage JSON in ci-cd.yml / Makefile"
+    notes: "Default --min-pct 100 (T2.4 flipped)"
+
+  - id: scripts-python
+    config_path: tests/scripts/README.md
+    kind: scripts_pytest_cov
+    target_min: 100
+    enforced: true
+    script_py_file_count: 48
+    ci_job_or_make: "make test-coverage-scripts + CI job scripts-coverage"
+
+  - id: scripts-shell-bats
+    config_path: tests/bats/README.md
+    kind: bats_core
+    target_min: 100_of_files
+    enforced: true
+    shell_file_count_at_inventory: 59
+    ci_job_or_make: "make test-bats + CI job scripts-coverage"
+
+intentional_non_surfaces:
+  - id: vendor
+    reason: "Read-only third-party schemas (ADR-007 approved omit)"
+  - id: iwxxm_xsd_generated
+    reason: "ADR-027 generated trees (ADR-007 approved omit)"
+  - id: bugs
+    reason: "tests/bugs runs with --no-cov"
+  - id: e2e-playwright
+    reason: "Out of scope for unit coverage gate"

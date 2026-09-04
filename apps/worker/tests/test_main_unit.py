@@ -173,3 +173,14 @@ def test_main_loop_breaks_sleep_on_shutdown(
 
     worker_main.main()
     worker_main.time.sleep.assert_not_called()
+
+
+def test_module_main_guard_invokes_main(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Cover ``if __name__ == "__main__"`` via run_module (EV-080 M2a)."""
+    import runpy
+
+    monkeypatch.setenv("INGEST_POLLER_URL", "REPLACE_ME_INGEST_POLLER_URL")
+    monkeypatch.setenv("DATABASE_URL", "postgresql://u:p@localhost/db")
+    with pytest.raises(SystemExit) as exc:
+        runpy.run_module("metar_worker.__main__", run_name="__main__")
+    assert exc.value.code == 2

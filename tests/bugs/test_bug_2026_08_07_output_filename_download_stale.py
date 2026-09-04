@@ -1,4 +1,4 @@
-"""BUG-2026-08-07 / #904 — Download must use current Output filename after convert.
+"""BUG-2026-08-07 / #904 - Download must use current Output filename after convert.
 
 Behavioral UI repro lives in:
 ``apps/frontend/src/test/bug-2026-08-07-output-filename-download-stale.test.tsx``

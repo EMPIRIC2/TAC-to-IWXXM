@@ -17,7 +17,8 @@ OUT_ROOT = REPO_ROOT / "packages" / "shared" / "src" / "metar_shared" / "iwxxm_x
 
 def _load_script():
     spec = importlib.util.spec_from_file_location("iwxxm_xsd_codegen", SCRIPT)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod

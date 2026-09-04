@@ -3,7 +3,6 @@
 from pathlib import Path
 
 import pytest
-
 from src.config import iwxxm_versions as versions
 
 
@@ -164,7 +163,7 @@ class TestGetVersionConfig:
             versions.get_version_config("2021-2")
 
     def test_unsupported_version_raises(self):
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r".*"):
             versions.get_version_config("2099-9")
 
     def test_valid_version_returns_config(self):
@@ -247,7 +246,7 @@ class TestSchemaResolution:
         monkeypatch.setattr(versions, "PROJECT_ROOT", tmp_path)
         monkeypatch.setattr(versions, "get_version_config", lambda _version: fake_config)
 
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FileNotFoundError, match=r".*"):
             versions.resolve_schema_file("2025-2", "xsd")
 
 

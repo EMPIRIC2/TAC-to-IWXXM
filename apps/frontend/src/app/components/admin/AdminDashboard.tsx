@@ -18,6 +18,9 @@ interface AdminDashboardProps {
 
 type AdminPanel = 'approval' | 'settings' | 'monitoring' | 'work-sessions';
 
+/**
+ * Admin shell with panel navigation for approvals, settings, monitoring, and sessions.
+ */
 export function AdminDashboard({
   onLogout,
   userEmail,

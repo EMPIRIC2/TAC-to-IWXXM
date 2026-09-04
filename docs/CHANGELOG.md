@@ -2,6 +2,29 @@
 
 All notable user-facing and deployable changes for TAC to IWXXM.
 
+## 2026-09-04 — Production release (pending promote)
+
+### Added
+- **Conversion profiles** — Operator editor for rule packs and signed overlays (HMAC), catalog
+  inspector, and convert with selected overlay (`overlay_id`). Journey UJ-072 / F7.w.
+- **Dissemination ops** — Shell UI and JWT API for plans, audit, SQL mapping, and gateway health
+  (EV-936 / UJ-071).
+
+### Changed
+- API Docker image bundles `docs/domain/profiles` so the ConversionProfile catalog serves in DOKS.
+- DOKS Deploy rollout pins the `alembic-upgrade` initContainer to the same backend tag as `api`.
+- Staging/prod `github-actions-deploy` Role can patch Secrets and create Jobs (ops).
+
+### Packages
+- No publishable package semver bumps this promote (`tac2iwxxm` / `tac-validate` /
+  `iwxxm-validate` remain **0.3.0** / **0.2.0** / **0.2.0** — coverage/tooling-only diffs).
+
+### Deploy
+- Promote PR: (open `stage` → `main`).
+- After merge + tip CI green: tag `v2026.09.04-deploy` to roll production.
+- Prod prerequisites: Alembic `20260903_0003` (+ earlier profile rule-pack revision if missing);
+  set `PROFILE_OVERLAY_HMAC_SECRET` on prod `metar-api-secrets`.
+
 ## 2026-08-21 — Production release
 
 Operator-facing improvements validated on staging, now promoting to production.

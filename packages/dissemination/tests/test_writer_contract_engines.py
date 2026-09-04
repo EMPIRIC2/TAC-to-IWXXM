@@ -13,10 +13,9 @@ from collections.abc import AsyncIterator, Iterator
 from contextlib import contextmanager
 
 import pytest
+from dissemination.writer_contract import DiffKind, apply_writer_contract, diff_writer_contract
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
-
-from dissemination.writer_contract import DiffKind, apply_writer_contract, diff_writer_contract
 
 pytestmark = pytest.mark.integration
 

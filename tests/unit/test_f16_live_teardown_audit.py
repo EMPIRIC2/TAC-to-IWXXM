@@ -1,4 +1,4 @@
-"""EV-039 / T2.4 — teardown audit for Testcontainers fixtures + SQLite temps (AC5/AC6).
+"""EV-039 / T2.4 - teardown audit for Testcontainers fixtures + SQLite temps (AC5/AC6).
 
 Static contracts: dissemination engine fixtures use context-manager containers and
 ``engine.dispose()`` in ``finally``. Runtime: disposable SQLite files are removed

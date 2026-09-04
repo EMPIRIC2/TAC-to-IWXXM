@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import argparse
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 from iwxxm_validate.codec import json_encoder
 from iwxxm_validate.validate_iwxxm import validate_iwxxm
@@ -30,8 +30,19 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--profile",
         default="annex3",
-        choices=("annex3", "iwxxm_us"),
+        choices=("annex3", "iwxxm_us", "ca_eccc"),
         help="Schema profile (default: annex3)",
+    )
+    parser.add_argument(
+        "--product",
+        default=None,
+        help="API product for Canadian extension XSD when --extensions includes IWXXM_CA",
+    )
+    parser.add_argument(
+        "--extensions",
+        nargs="*",
+        default=[],
+        help="National extension tokens (e.g. IWXXM_CA enables full ca_eccc stack)",
     )
     parser.add_argument(
         "--json",
@@ -39,6 +50,15 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Emit ValidationReport as JSON on stdout",
     )
     return parser
+
+
+def _cli_validate_product(profile: str, extensions: Sequence[str], product: str | None) -> str | None:
+    if profile != "ca_eccc":
+        return None
+    normalized = {token.strip().upper().replace("-", "_") for token in extensions if token.strip()}
+    if "IWXXM_CA" in normalized:
+        return (product or "METAR").upper()
+    return None
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -68,6 +88,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         text,
         iwxxm_version=args.iwxxm_version,
         profile=args.profile,
+        product=_cli_validate_product(args.profile, args.extensions, args.product),
     )
     if args.json:
         sys.stdout.write(json_encoder.encode(report).decode("utf-8"))

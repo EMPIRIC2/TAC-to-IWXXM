@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import re
 import time
-from typing import Optional
+from typing import Any
 
 from ..schemas.airport import get_airport_validator
 from ..schemas.validation import (
@@ -28,7 +28,7 @@ class ValidationError(Exception):
 class ValidationService:
     """Service for layered validation of METAR/TAC and IWXXM XML."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize validation service."""
         self.airport_validator = get_airport_validator()
         logger.info(f"ValidationService initialized with {self.airport_validator.count()} airports")
@@ -110,10 +110,10 @@ class ValidationService:
             logger.error(f"Error validating ICAO: {e}", exc_info=True)
             result.add_issue(
                 level=ValidationLevel.ERROR,
-                message=f"Validation error: {str(e)}",
+                message=f"Validation error: {e!s}",
                 code="VALIDATION_ERROR",
             )
-            raise ValidationError(f"ICAO validation error: {e}")
+            raise ValidationError(f"ICAO validation error: {e}") from e
         finally:
             result.execution_time_ms = (time.time() - start_time) * 1000
 
@@ -177,7 +177,7 @@ class ValidationService:
             logger.error(f"Error validating TAC syntax: {e}", exc_info=True)
             result.add_issue(
                 level=ValidationLevel.ERROR,
-                message=f"Syntax validation error: {str(e)}",
+                message=f"Syntax validation error: {e!s}",
                 code="VALIDATION_ERROR",
             )
         finally:
@@ -189,8 +189,8 @@ class ValidationService:
         self,
         content: str,
         content_type: str = "tac",
-        layers: Optional[list[ValidationLayer]] = None,
-        iwxxm_version: Optional[str] = None,
+        layers: list[ValidationLayer] | None = None,
+        iwxxm_version: str | None = None,
     ) -> AggregatedValidationResult:
         """Validate content for the requested layers (dependency/router entry point)."""
         del layers, iwxxm_version
@@ -211,7 +211,7 @@ class ValidationService:
         Returns:
             AggregatedValidationResult with all layer results
         """
-        results = []
+        results: list[Any] = []
 
         # Layer 1: ICAO validation (may raise)
         try:
@@ -242,7 +242,7 @@ class ValidationService:
         return AggregatedValidationResult.from_results(results)
 
     @staticmethod
-    def _extract_icao_from_tac(tac_text: str) -> Optional[str]:
+    def _extract_icao_from_tac(tac_text: str) -> str | None:
         """Extract ICAO code from METAR/SPECI TAC text."""
         icao = extract_airport_code(tac_text)
         if icao:
@@ -257,7 +257,7 @@ class ValidationService:
 
 
 # Global validation service instance
-_validation_service: Optional[ValidationService] = None
+_validation_service: ValidationService | None = None
 
 
 def get_validation_service() -> ValidationService:

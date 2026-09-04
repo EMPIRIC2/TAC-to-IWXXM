@@ -7,7 +7,7 @@ Run against deployed Render stack when URLs are configured:
 Requires: LIVE_API_URL, LIVE_FRONTEND_URL (STAGING_* fallbacks supported).
 
 Provisional DOKS (D-S038-t63-waive): set PLAYWRIGHT_DOKS_PROVISIONAL=1 (or
-DOKS_PROVISIONAL=1) plus DOKS_* hosts — requests hit the LB IP with Ingress Host
+DOKS_PROVISIONAL=1) plus DOKS_* hosts - requests hit the LB IP with Ingress Host
 headers (see scripts/deploy/doks_provisional_live_env.sh).
 """
 
@@ -26,13 +26,13 @@ pytestmark = pytest.mark.live
 
 @pytest.mark.asyncio
 async def test_staging_cors_preflight_allows_frontend_origin() -> None:
-    """H4 — OPTIONS preflight from browser origin succeeds."""
+    """H4 - OPTIONS preflight from browser origin succeeds."""
     warn_deprecated_env()
     api_url = live_api_url()
     origin = live_frontend_url()
     if not api_url or not origin:
         pytest.skip(
-            "LIVE_API_URL and LIVE_FRONTEND_URL not set — skip live H4 connectivity"
+            "LIVE_API_URL and LIVE_FRONTEND_URL not set - skip live H4 connectivity"
         )
 
     import httpx
@@ -59,13 +59,13 @@ async def test_staging_cors_preflight_allows_frontend_origin() -> None:
 
 @pytest.mark.asyncio
 async def test_staging_cors_preflight_work_sessions_patch() -> None:
-    """H4 — work-sessions PATCH preflight for F5 auto-save."""
+    """H4 - work-sessions PATCH preflight for F5 auto-save."""
     warn_deprecated_env()
     api_url = live_api_url()
     origin = live_frontend_url()
     if not api_url or not origin:
         pytest.skip(
-            "LIVE_API_URL and LIVE_FRONTEND_URL not set — skip live H4 connectivity"
+            "LIVE_API_URL and LIVE_FRONTEND_URL not set - skip live H4 connectivity"
         )
 
     import httpx
@@ -90,13 +90,13 @@ async def test_staging_cors_preflight_work_sessions_patch() -> None:
 
 @pytest.mark.asyncio
 async def test_staging_cors_preflight_mass_ingest_post() -> None:
-    """H4 — F33 mass ingest POST preflight from frontend origin (UJ-051 / EV-042)."""
+    """H4 - F33 mass ingest POST preflight from frontend origin (UJ-051 / EV-042)."""
     warn_deprecated_env()
     api_url = live_api_url()
     origin = live_frontend_url()
     if not api_url or not origin:
         pytest.skip(
-            "LIVE_API_URL and LIVE_FRONTEND_URL not set — skip live H4 connectivity"
+            "LIVE_API_URL and LIVE_FRONTEND_URL not set - skip live H4 connectivity"
         )
 
     import httpx

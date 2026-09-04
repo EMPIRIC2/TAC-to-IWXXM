@@ -18,6 +18,7 @@ read the rows below that apply — do not invent alternate doc sets.
 | **tests** | Test matrix & gates | [test-plan.md](test-plan.md) | Parity checks, smoke TC-IDs, CI expectations |
 | **adr** | Architecture decisions | [adr/](adr/) ([index](adr/README.md)) | Non-obvious tech choices; cite ADR-NNN |
 | **decisions** | Interview / evolve decision logs | [decisions/](decisions/) | Trace *why* a standing doc says X |
+| **domain-profiles** | Semantic + exchange profile source catalog | [domain/profiles/](domain/profiles/) | National/exchange profile evidence (#912/#913); cite for F35/F36 scope |
 
 ### Tech-spec satellites (via [tech-spec.md](tech-spec.md))
 
@@ -40,7 +41,7 @@ These are useful but **not** required for every design/parity pass:
 | [ops/](ops/), [guides/](guides/), [domain/](domain/) | Runbooks, narrative guides, domain deep-dives |
 | [reports/](reports/), [sessions/](sessions/), [bug-reports/](bug-reports/), [context/](context/), [ARCHIVE/](ARCHIVE/) | Ephemeral / historical |
 
-Session artifacts stay under `docs/sessions/{id}/` — see [sessions-reference](../.cursor/skills/sessions-reference.md).
+**Session store (pack orchestrators):** live state at `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/{id}/` (`state.yaml`, `HANDOFF.md`). Legacy `docs/sessions/` and `workflow-state.yaml` are brownfield-only — do not open new pack cycles there. See [.cursor/MIGRATED-TO-PLUGIN.md](../.cursor/MIGRATED-TO-PLUGIN.md).
 
 ## Parity check protocol
 
@@ -59,14 +60,16 @@ Cite as: `[Corpus: <id>]` or `[Corpus: <path> §section]`.
 | Skill / rule | Must read at least |
 |--------------|-------------------|
 | All stages (first hop) | This file’s band for the stage + [protocol-card](../.cursor/skills/protocol-card.md) |
-| 01–03 (product) | product, journeys, decisions |
-| 04–06 (tech) | system-spec, tech-spec, adr, dependency-inventory |
-| 07–11 (build/verify) | product, system-spec, api, tests, journeys |
-| 12–13 (deploy) | tech-spec, deploy, env-contract |
-| 14-hotfix | product + system-spec; then tech-spec / api / tests as symptom requires |
-| 15-service-health | tech-spec, deploy, env-contract |
-| 16-evolve | CORPUS rows for **touched features only**; every change/reference cites `[Corpus: …]`; missing coverage → AskQuestion doc-add |
+| Spec band (`spec-requirements`, `spec-draft-docs`, …) | product, journeys, decisions |
+| Tech band (`spec-tech-plan`, `spec-tech-tooling`, …) | system-spec, tech-spec, adr, dependency-inventory |
+| Build band (`build-build`, `build-verify-*`, …) | product, system-spec, api, tests, journeys |
+| Deploy (`build-verify-deploy`, `build-deploy-smoke`) | tech-spec, deploy, env-contract |
+| `hotfix` orchestrator | product + system-spec; then tech-spec / api / tests as symptom requires |
+| `build-health` | tech-spec, deploy, env-contract |
+| `evolve` / `brownfield` / `greenfield` | CORPUS rows for **touched features only**; every change cites `[Corpus: …]`; missing coverage → AskQuestion doc-add |
 | plan-adherence / spec-adherence / docs-corpus rules | this file + rows above; mandatory citations; interview if docs missing |
+
+Pack skills load from **engineering-memory** plugin (`spec-*`, `build-*`, orchestrators). Project-only: `mine-domain-sources`, `monorepo-migration-checklist`.
 
 Do **not** preload `docs/domain/**` or guides unless the session scope is domain mining.
 

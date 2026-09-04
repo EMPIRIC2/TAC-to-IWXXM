@@ -1,4 +1,4 @@
-"""Annex-3 profile XML writer for METAR/SPECI (F6.a / F20 S3 / F25 W1–W2)."""
+"""Annex-3 profile XML writer for METAR/SPECI (F6.a / F20 S3 / F25 W1-W2)."""
 
 from __future__ import annotations
 
@@ -8,6 +8,7 @@ from xml.sax.saxutils import escape
 NS = {
     "2025-2": "http://icao.int/iwxxm/2025-2",
     "2023-1": "http://icao.int/iwxxm/2023-1",
+    "3.0.0": "http://icao.int/iwxxm/3.0",
 }
 
 CLOUD_HREF = "http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/{amt}"
@@ -37,29 +38,29 @@ def obs_timestamp(ir: dict[str, Any]) -> str:
     return f"2023-06-{day:02d}T{hour:02d}:{minute:02d}:00Z"
 
 
-def _fmt_cel(value: Any) -> str:
+def _fmt_cel(value: object) -> str:
     """Format Celsius for IWXXM (WMO examples use one decimal place)."""
-    return f"{float(value):.1f}"
+    return f"{float(str(value)):.1f}"
 
 
-def _fmt_hpa(value: Any) -> str:
+def _fmt_hpa(value: object) -> str:
     """Format QNH: whole hPa without trailing .0; tenths otherwise."""
-    fval = float(value)
+    fval = float(str(value))
     if fval == int(fval):
         return str(int(fval))
     return str(fval)
 
 
-def _fmt_speed(value: Any, *, force_one_decimal: bool = False) -> str:
+def _fmt_speed(value: object, *, force_one_decimal: bool = False) -> str:
     """Format wind speed; WMO mean speeds often use one decimal."""
-    fval = float(value)
+    fval = float(str(value))
     if force_one_decimal or fval != int(fval):
         return f"{fval:.1f}"
     return str(int(fval))
 
 
 def _annex3_gml_id(ir: dict[str, Any], product: str) -> str:
-    """Stable gml:id for annex3 METAR/SPECI goldens (theme-aware for S3 / W1–W2)."""
+    """Stable gml:id for annex3 METAR/SPECI goldens (theme-aware for S3 / W1-W2)."""
     root = product.lower()
     station = str(ir["station"]).lower()
     if ir.get("nil"):
@@ -102,10 +103,12 @@ def _visibility_block(ir: dict[str, Any], *, visibility_extension: str = "") -> 
                 f'\n          <iwxxm:minimumVisibilityDirection uom="deg">'
                 f"{ir['min_visibility_dir_deg']}</iwxxm:minimumVisibilityDirection>"
             )
+    vis_uom = str(ir.get("visibility_display_uom") or "m")
+    vis_val = ir.get("visibility_display_value", ir["visibility_m"])
     ext = f"\n{visibility_extension}" if visibility_extension else ""
     return f"""      <iwxxm:visibility>
         <iwxxm:AerodromeHorizontalVisibility>
-          <iwxxm:prevailingVisibility uom="m">{ir["visibility_m"]}</iwxxm:prevailingVisibility>{vis_op}{min_vis}{ext}
+          <iwxxm:prevailingVisibility uom="{vis_uom}">{vis_val}</iwxxm:prevailingVisibility>{vis_op}{min_vis}{ext}
         </iwxxm:AerodromeHorizontalVisibility>
       </iwxxm:visibility>
 """
@@ -129,8 +132,8 @@ def _rvr_block(ir: dict[str, Any], *, rvr_extension: str = "") -> str:
             mean_xml = f'          <iwxxm:meanRVR uom="m" xsi:nil="true" nilReason="{NIL_WITHHELD}"/>'
             ext = f"\n{rvr_extension}"
         else:
-            # annex3 path: no US extension — emit midpoint mean for XSD shape.
-            mid = int(round((int(rvr["min_m"]) + int(rvr["max_m"])) / 2))
+            # annex3 path: no US extension - emit midpoint mean for XSD shape.
+            mid = round((int(rvr["min_m"]) + int(rvr["max_m"])) / 2)
             mean_xml = f'          <iwxxm:meanRVR uom="m">{mid}</iwxxm:meanRVR>'
             ext = ""
     else:
@@ -187,9 +190,7 @@ def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
     layers: list[dict[str, Any]] = []
     if isinstance(clouds_raw, list) and clouds_raw:
         cloud_items = cast(list[Any], clouds_raw)
-        for item in cloud_items:
-            if isinstance(item, dict):
-                layers.append(cast(dict[str, Any], item))
+        layers.extend(cast(dict[str, Any], item) for item in cloud_items if isinstance(item, dict))
     elif ir.get("cloud_amount") and ir.get("cloud_base_ft") is not None:
         layers = [{"amount": ir["cloud_amount"], "base_ft": ir["cloud_base_ft"]}]
     if not layers:
@@ -302,9 +303,9 @@ def _trend_forecasts(ir: dict[str, Any]) -> str:
     forecasts_raw = ir.get("trend_forecasts")
     forecasts: list[dict[str, Any]] = []
     if isinstance(forecasts_raw, list) and forecasts_raw:
-        for item in cast(list[Any], forecasts_raw):
-            if isinstance(item, dict):
-                forecasts.append(cast(dict[str, Any], item))
+        forecasts.extend(
+            cast(dict[str, Any], item) for item in cast(list[Any], forecasts_raw) if isinstance(item, dict)
+        )
     else:
         # Legacy F20 path: nosig + single tempo_trend.
         if ir.get("nosig") and not forecasts:
@@ -320,7 +321,7 @@ def _trend_forecasts(ir: dict[str, Any]) -> str:
         indicator = str(trend.get("change_indicator") or "TEMPORARY_FLUCTUATIONS")
         cavok = bool(trend.get("cavok"))
         cavok_attr = ' cloudAndVisibilityOK="true"' if cavok else ' cloudAndVisibilityOK="false"'
-        # Second METAR BECMG AT1800 omits cloudAndVisibilityOK in vendor — keep false when weather/vis present.
+        # Second METAR BECMG AT1800 omits cloudAndVisibilityOK in vendor - keep false when weather/vis present.
         if indicator == "BECOMING" and trend.get("weather_nsw") and not trend.get("cloud_nsc"):
             # Vendor metar-A3-1 second trend has no cloudAndVisibilityOK attribute.
             cavok_attr = ""
@@ -393,7 +394,9 @@ def build_observation_and_trends(
     rvr_block = ""
     wx_block = ""
     cloud = ""
-    if not cavok:
+    if ir.get("ca_minimal_observation"):
+        cavok_attr = "false"
+    elif not cavok:
         vis_block = _visibility_block(ir, visibility_extension=visibility_extension)
         rvr_block = _rvr_block(ir, rvr_extension=rvr_extension)
         wx_block = _present_weather_block(ir)
@@ -458,6 +461,9 @@ def _aerodrome_block(station: str) -> str:
     </aixm:AirportHeliport>
   </iwxxm:aerodrome>
 """
+
+
+aerodrome_block = _aerodrome_block
 
 
 def emit_metar_speci_annex3(

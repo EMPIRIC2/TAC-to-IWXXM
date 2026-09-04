@@ -19,7 +19,6 @@ import pytest
 from fastapi.routing import APIRoute
 from fastapi.testclient import TestClient
 from pydantic import BaseModel
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -106,9 +105,8 @@ def test_msgspec_http_helper_reuses_encoder() -> None:
 def test_msgspec_json_response_returns_fastapi_response() -> None:
     """Helper returns starlette/fastapi Response with application/json body."""
     import msgspec
-    from starlette.responses import Response
-
     from src.msgspec_http import msgspec_json_response
+    from starlette.responses import Response
 
     class _Sample(msgspec.Struct):
         ok: bool
@@ -220,7 +218,7 @@ def test_high_churn_json_routes_call_msgspec_helper(
 
 
 def test_high_churn_openapi_keeps_pydantic_response_aliases() -> None:
-    """ADR-026: OpenAPI still publishes pydantic aliases — no dual runtime validation."""
+    """ADR-026: OpenAPI still publishes pydantic aliases - no dual runtime validation."""
     schema = api_module.app.openapi()
     components = schema.get("components", {}).get("schemas", {})
     for name in (
@@ -241,7 +239,7 @@ def test_high_churn_openapi_keeps_pydantic_response_aliases() -> None:
 
 
 def test_multipart_intake_unchanged_rejects_json_on_lint(client: TestClient) -> None:
-    """E10-28: multipart Form intake unchanged — JSON body is not accepted."""
+    """E10-28: multipart Form intake unchanged - JSON body is not accepted."""
     response = client.post(
         "/api/v1/lint-tac",
         json={"manual_text": METAR_TAC, "product": "METAR"},
@@ -277,7 +275,7 @@ def test_convert_zip_returns_application_zip(client: TestClient, monkeypatch: py
         assert zf.namelist(), "ZIP must contain at least one member"
 
 
-# --- Auth routes restored (F31) — pydantic, not msgspec -----------------------------
+# --- Auth routes restored (F31) - pydantic, not msgspec -----------------------------
 
 
 def test_auth_login_route_present() -> None:
@@ -334,7 +332,7 @@ def test_decode_tac_contract_shape(client: TestClient) -> None:
 def test_validate_contract_shape(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     from iwxxm_validate import ValidationReport
 
-    def fake_sdk(xml: str, *, iwxxm_version: str, profile: str = "annex3", levels=None):
+    def fake_sdk(xml: str, *, iwxxm_version: str, profile: str = "annex3", levels=None, product=None):
         return ValidationReport(ok=True, iwxxm_version=iwxxm_version, profile=profile, issues=[])
 
     monkeypatch.setattr(api_module, "iwxxm_validate_fn", fake_sdk)

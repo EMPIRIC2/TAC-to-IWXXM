@@ -101,7 +101,7 @@ describe('UserApprovalPanel', () => {
 
     await screen.findByText('user1');
     const approveButtons = screen.getAllByRole('button', { name: /approve/i });
-    await user.click(approveButtons[0]);
+    await user.click(approveButtons[0]!);
 
     await waitFor(() => {
       expect(fetchMock).toHaveBeenCalledWith(
@@ -129,7 +129,7 @@ describe('UserApprovalPanel', () => {
 
     await screen.findByText('user1');
     const rejectButtons = screen.getAllByRole('button', { name: /reject/i });
-    await user.click(rejectButtons[0]);
+    await user.click(rejectButtons[0]!);
 
     await waitFor(() => {
       expect(fetchMock).toHaveBeenCalledWith(
@@ -166,7 +166,7 @@ describe('UserApprovalPanel', () => {
 
     await screen.findByText('user1');
     const approveButtons = screen.getAllByRole('button', { name: /approve/i });
-    await user.click(approveButtons[0]);
+    await user.click(approveButtons[0]!);
 
     await waitFor(() => {
       expect(mockToast.error).toHaveBeenCalledWith('Failed to approve user');
@@ -184,7 +184,7 @@ describe('UserApprovalPanel', () => {
 
     await screen.findByText('user1');
     const rejectButtons = screen.getAllByRole('button', { name: /reject/i });
-    await user.click(rejectButtons[0]);
+    await user.click(rejectButtons[0]!);
 
     await waitFor(() => {
       expect(mockToast.error).toHaveBeenCalledWith('Failed to reject user');
@@ -193,6 +193,16 @@ describe('UserApprovalPanel', () => {
 
   it('shows empty pending users message when list is empty', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(jsonResponse({ users: [] }));
+
+    render(<UserApprovalPanel accessToken={accessToken} />);
+
+    await waitFor(() => {
+      expect(screen.getByText(/no pending approvals/i)).toBeInTheDocument();
+    });
+  });
+
+  it('treats a missing users field as an empty pending list', async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse({}));
 
     render(<UserApprovalPanel accessToken={accessToken} />);
 
@@ -217,7 +227,7 @@ describe('UserApprovalPanel', () => {
 
     await screen.findByText('user1');
     const approveButtons = screen.getAllByRole('button', { name: /approve/i });
-    user.click(approveButtons[0]);
+    user.click(approveButtons[0]!);
 
     await waitFor(() => {
       const buttons = screen.getAllByRole('button', { name: /approve/i });

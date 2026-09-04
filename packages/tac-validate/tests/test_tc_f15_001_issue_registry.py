@@ -1,4 +1,4 @@
-"""TC-F15-001 — issue registry API (S015 / EV-011, F15 / ADR-028).
+"""TC-F15-001 - issue registry API (S015 / EV-011, F15 / ADR-028).
 
 Contract for ``tac_validate.issue_registry``:
 
@@ -19,7 +19,7 @@ import pytest
 _SCREAMING_SNAKE = re.compile(r"^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$")
 _SEVERITIES = frozenset({"error", "warning", "info"})
 
-# Codes already emitted by rules.py / product_rules.py — must be registered in T1.2.
+# Codes already emitted by rules.py / product_rules.py - must be registered in T1.2.
 _EXISTING_EMITTED_CODES = frozenset(
     {
         "UNKNOWN_PRODUCT",
@@ -85,7 +85,7 @@ def test_by_code_returns_registered_spec() -> None:
 def test_by_code_rejects_unknown_code() -> None:
     from tac_validate.issue_registry import by_code
 
-    with pytest.raises(KeyError):
+    with pytest.raises(KeyError, match=r".*"):
         by_code("NOT_A_REAL_ISSUE_CODE_XYZ")
 
 
@@ -129,7 +129,7 @@ def test_issue_from_message_override() -> None:
 def test_issue_from_rejects_unknown_code() -> None:
     from tac_validate.issue_registry import issue_from
 
-    with pytest.raises(KeyError):
+    with pytest.raises(KeyError, match=r".*"):
         issue_from("NOT_A_REAL_ISSUE_CODE_XYZ")
 
 
@@ -146,14 +146,15 @@ def test_registry_rows_use_screaming_snake_and_valid_severity() -> None:
     for spec in ISSUES:
         assert _SCREAMING_SNAKE.fullmatch(spec.code), spec.code
         assert spec.severity in _SEVERITIES, (spec.code, spec.severity)
-        assert isinstance(spec.message_template, str) and spec.message_template
+        assert isinstance(spec.message_template, str)
+        assert spec.message_template
         if spec.product is not None:
             assert isinstance(spec.product, str)
         assert all(isinstance(t, str) for t in spec.tags)
 
 
 def test_missing_terminator_default_severity_is_info() -> None:
-    """ADR-025 / ADR-028 — MISSING_TERMINATOR remains info."""
+    """ADR-025 / ADR-028 - MISSING_TERMINATOR remains info."""
     from tac_validate.issue_registry import by_code
 
     assert by_code("MISSING_TERMINATOR").severity == "info"

@@ -9,16 +9,14 @@ Run with: pytest tests/test_aviationweather_live_api.py -m live_api
 
 import asyncio
 from io import StringIO
-from typing import Optional, Tuple
+from typing import Optional
 
 import httpx
 import pytest
 from lxml import etree
-
 from src.schemas.validation import ValidationLevel
+from src.services.iwxxm_validation_adapter import validate_schematron, validate_xml_schema
 from src.utilities.conversion import convert_metar_tac_with_metadata
-from src.utilities.schematron_validator import validate_schematron
-from src.utilities.xsd_validator import validate_xml_schema
 
 # Major airports with known good coverage
 TEST_AIRPORTS = [
@@ -31,7 +29,7 @@ TEST_AIRPORTS = [
 ]
 
 
-async def fetch_latest_metar(icao_code: str, timeout: int = 10) -> Optional[str]:
+async def fetch_latest_metar(icao_code: str, http_timeout: int = 10) -> str | None:
     """
     Fetch the latest METAR for an airport from AviationWeather.gov API.
 
@@ -51,7 +49,7 @@ async def fetch_latest_metar(icao_code: str, timeout: int = 10) -> Optional[str]
     }
 
     try:
-        async with httpx.AsyncClient(timeout=timeout) as client:
+        async with httpx.AsyncClient(timeout=http_timeout) as client:
             response = await client.get(base_url, params=params)
             response.raise_for_status()
 
@@ -83,7 +81,7 @@ def mock_metar_responses():
     }
 
 
-def validate_iwxxm_xsd(xml_string: str, iwxxm_version: str = "2025-2") -> Tuple[bool, Optional[str]]:
+def validate_iwxxm_xsd(xml_string: str, iwxxm_version: str = "2025-2") -> tuple[bool, str | None]:
     """
     Validate IWXXM XML against XSD schema.
 
@@ -91,8 +89,7 @@ def validate_iwxxm_xsd(xml_string: str, iwxxm_version: str = "2025-2") -> Tuple[
         xml_string: IWXXM XML document
         iwxxm_version: IWXXM version (e.g., "2025-2")
 
-    Returns:
-        Tuple of (is_valid, error_message)
+    Returns: tuple of (is_valid, error_message)
     """
     try:
         result = validate_xml_schema(xml_string, iwxxm_version)
@@ -135,7 +132,7 @@ async def test_live_metar_conversion_2025_2(icao_code: str, mock_metar_responses
 
     # Convert to IWXXM 2025-2 with PRODUCTION datums (no test overrides)
     try:
-        iwxxm_xml, validation_result = convert_metar_tac_with_metadata(
+        iwxxm_xml, _validation_result = convert_metar_tac_with_metadata(
             tac_text=metar_tac,
             iwxxm_version="2025-2",
             use_test_overrides=False,  # Use production-accurate vertical datums
@@ -199,7 +196,7 @@ async def test_live_metar_metadata_enrichment():
     if not metar_tac:
         pytest.skip(f"No METAR data available for {icao_code}")
 
-    iwxxm_xml, validation_result = convert_metar_tac_with_metadata(
+    iwxxm_xml, _validation_result = convert_metar_tac_with_metadata(
         tac_text=metar_tac,
         iwxxm_version="2025-2",
         use_test_overrides=False,

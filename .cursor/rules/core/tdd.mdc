@@ -36,3 +36,10 @@ When implementing any feature or component:
 7. **Spec alignment**: Test assertions should match the metrics and thresholds in
    `docs/test-plan.md` and `docs/acceptance-criteria.md`. If a test needs a threshold not
    in the specs, raise it as `[Ambiguity]` before choosing a value.
+
+8. **Coverage fill-before-flip (ADR-007 / EV-080)**: When raising `fail_under`, Vitest
+   thresholds, `--cov-fail-under`, or `check_per_file_coverage.py --min-pct`, the tip must
+   already be green at the new floor. Sequence: coverage red on tip → add tests → green →
+   flip gate (final commit of the milestone PR). Do not flip on a red tip. Scripts:
+   `make test-coverage-scripts` / `make test-bats`. Advisory hook:
+   `.cursor/hooks/coverage-advisory.sh`.

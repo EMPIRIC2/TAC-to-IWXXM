@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "description": "EV-072 M2 \u2014 CA_ECCC MSC datamart ops conformance corpus",
+  "profile": "CA_ECCC",
+  "pin_date": "2026-08-24",
+  "datamart_base": "https://dd.weather.gc.ca",
+  "rate_limit_seconds": 1.0,
+  "cases": [
+    {
+      "id": "taf_cwao_12_001",
+      "product": "TAF",
+      "tier": "wmoReference",
+      "ops_xml": "TAF/ops/taf_cwao_12_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/taf/cwao/12/A_LTCN22CWAO241200_C_CWAO_20260824120000.xml",
+      "source_filename": "A_LTCN22CWAO241200_C_CWAO_20260824120000.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "taf_cwao_12_002",
+      "product": "TAF",
+      "tier": "wmoReference",
+      "ops_xml": "TAF/ops/taf_cwao_12_002.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/taf/cwao/12/A_LTCN31CWAO241200_C_CWAO_20260824120000.xml",
+      "source_filename": "A_LTCN31CWAO241200_C_CWAO_20260824120000.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "airmet_czul_05_001",
+      "product": "AIRMET",
+      "tier": "wmoReference",
+      "ops_xml": "AIRMET/ops/airmet_czul_05_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/airmet/czul/05/A_LWCN25CWAO240529_C_CWAO_20260824052916.xml",
+      "source_filename": "A_LWCN25CWAO240529_C_CWAO_20260824052916.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "airmet_czvr_13_001",
+      "product": "AIRMET",
+      "tier": "wmoReference",
+      "ops_xml": "AIRMET/ops/airmet_czvr_13_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/airmet/czvr/13/A_LWCN21CWAO241302_C_CWAO_20260824130238.xml",
+      "source_filename": "A_LWCN21CWAO241302_C_CWAO_20260824130238.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "airmet_czwg_12_001",
+      "product": "AIRMET",
+      "tier": "wmoReference",
+      "ops_xml": "AIRMET/ops/airmet_czwg_12_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/airmet/czwg/12/A_LWCN23CWAO241204_C_CWAO_20260824120414.xml",
+      "source_filename": "A_LWCN23CWAO241204_C_CWAO_20260824120414.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "airmet_czeg_gfa_sfc_vis_001",
+      "product": "AIRMET",
+      "tier": "wmoReference",
+      "ops_xml": "AIRMET/ops/airmet_czeg_gfa_sfc_vis_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/airmet/czeg/13/A_LWCN22CWAO241355_C_CWAO_20260824135540.xml",
+      "source_filename": "A_LWCN22CWAO241355_C_CWAO_20260824135540.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only"
+    },
+    {
+      "id": "sigmet_czeg_15_001",
+      "product": "SIGMET",
+      "tier": "wmoReference",
+      "ops_xml": "SIGMET/ops/sigmet_czeg_15_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/sigmet/czeg/15/A_LSCN22CWAO241540_C_CWAO_20260824154038.xml",
+      "source_filename": "A_LSCN22CWAO241540_C_CWAO_20260824154038.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only",
+      "sigmet_kind": "weather"
+    },
+    {
+      "id": "sigmet_czqm_08_001",
+      "product": "SIGMET",
+      "tier": "wmoReference",
+      "ops_xml": "SIGMET/ops/sigmet_czqm_08_001.xml",
+      "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/sigmet/czqm/08/A_LSCN26CWAO240835_C_CWAO_20260824083546.xml",
+      "source_filename": "A_LSCN26CWAO240835_C_CWAO_20260824083546.xml",
+      "packaging_waiver": "MSC operational COLLECT members omit translationCentre* attrs; filename + reportStatus checks only",
+      "sigmet_kind": "weather"
+    },
+    {
+      "id": "metar_basic_ops",
+      "product": "METAR",
+      "tier": "wmoReference",
+      "ops_xml": "METAR/ops/metar_basic_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "metar_auto_ops",
+      "product": "METAR",
+      "tier": "wmoReference",
+      "ops_xml": "METAR/ops/metar_auto_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "metar_lwis_ops",
+      "product": "METAR",
+      "tier": "wmoReference",
+      "ops_xml": "METAR/ops/metar_lwis_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "metar_sawr_ops",
+      "product": "METAR",
+      "tier": "wmoReference",
+      "ops_xml": "METAR/ops/metar_sawr_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "metar_vis_sm_ops",
+      "product": "METAR",
+      "tier": "wmoReference",
+      "ops_xml": "METAR/ops/metar_vis_sm_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "speci_basic_ops",
+      "product": "SPECI",
+      "tier": "wmoReference",
+      "ops_xml": "SPECI/ops/speci_basic_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "speci_auto_ops",
+      "product": "SPECI",
+      "tier": "wmoReference",
+      "ops_xml": "SPECI/ops/speci_auto_ops.xml",
+      "source": "encoder_reference",
+      "packaging_waiver": "METAR/SPECI IWXXM not published on MSC datamart at pin_date; encoder reference for layer-6 packaging checks only"
+    },
+    {
+      "id": "vaa_edziza_20260818_001",
+      "product": "VAA",
+      "tier": "vaacTac",
+      "ops_tac": "VAA/ops/vaa_edziza_20260818_001.tac",
+      "source": "vaac_tac",
+      "source_url": "https://weather.gc.ca/eer/vaac/viewData_e.html?product=FVCN&data=20260818-1859Z_FVCN01-0001_EDZIZA-320060.msg.sent.txt",
+      "vaac_header": "FVCN01-0001",
+      "volcano": "EDZIZA-320060",
+      "packaging_waiver": "VAA validate-first TAC from Montreal VAAC; no MSC datamart IWXXM (D-EV074-vaa-waiver-tac); exchange emit still deferred"
+    }
+  ],
+  "vaa_harvest": "vaac_tac_waived",
+  "vaa_harvest_note": "Datamart vaa/ tree absent; Montreal VAAC TAC via D-EV074-vaa-waiver-tac. 1 bulletin(s) at pin 2026-08-24 (31-day index); \u22652 when published.",
+  "manifest_sha256": "dfface322d29c3afd0fe5b6bcb52167b858073a4bf0c4865c064ceeaedab427c"
+}

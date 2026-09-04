@@ -12,7 +12,7 @@ from typing import Any, cast
 MANIFEST_SCHEMA_VERSION = 1
 MANIFEST_RELATIVE_PATH = Path("vendor/manifest.json")
 
-# GitHub (wmo-im) snapshots — require upstream_repo + commit_sha.
+# GitHub (wmo-im) snapshots - require upstream_repo + commit_sha.
 GITHUB_BUNDLE_NAMES: tuple[str, ...] = (
     "iwxxm",
     "iwxxm-codelists",
@@ -20,10 +20,15 @@ GITHUB_BUNDLE_NAMES: tuple[str, ...] = (
     "iwxxm-translation",
 )
 
-# HTTP archive snapshots — require source_url (+ optional archive_sha256).
-HTTP_BUNDLE_NAMES: tuple[str, ...] = ("iwxxm-us",)
+# HTTP archive snapshots - require source_url (+ optional archive_sha256).
+HTTP_BUNDLE_NAMES: tuple[str, ...] = ("iwxxm-us", "iwxxm-ca")
 
-VENDOR_BUNDLE_NAMES: tuple[str, ...] = GITHUB_BUNDLE_NAMES + HTTP_BUNDLE_NAMES
+# Profile-scoped IWXXM release lines vendored as subtrees (EV-068 / #1027).
+PROFILE_LINE_BUNDLE_NAMES: tuple[str, ...] = ("iwxxm-3.0.0",)
+
+VENDOR_BUNDLE_NAMES: tuple[str, ...] = (
+    GITHUB_BUNDLE_NAMES + HTTP_BUNDLE_NAMES + PROFILE_LINE_BUNDLE_NAMES
+)
 
 GITHUB_BUNDLE_REQUIRED_FIELDS: tuple[str, ...] = (
     "upstream_repo",
@@ -36,6 +41,13 @@ GITHUB_BUNDLE_REQUIRED_FIELDS: tuple[str, ...] = (
 HTTP_BUNDLE_REQUIRED_FIELDS: tuple[str, ...] = (
     "source_url",
     "tag",
+    "local_path",
+    "tree_sha256",
+)
+
+PROFILE_LINE_BUNDLE_REQUIRED_FIELDS: tuple[str, ...] = (
+    "parent_bundle",
+    "version_line",
     "local_path",
     "tree_sha256",
 )
@@ -111,6 +123,26 @@ def _validate_github_bundle_entry(name: str, entry_dict: dict[str, Any]) -> list
     return errors
 
 
+def _validate_profile_line_bundle_entry(
+    name: str, entry_dict: dict[str, Any]
+) -> list[str]:
+    errors = _check_required_fields(
+        name, entry_dict, PROFILE_LINE_BUNDLE_REQUIRED_FIELDS
+    )
+
+    parent = entry_dict.get("parent_bundle")
+    if isinstance(parent, str) and parent not in GITHUB_BUNDLE_NAMES:
+        errors.append(
+            f"bundle {name!r} parent_bundle must be a GitHub bundle name, got {parent!r}"
+        )
+
+    version_line = entry_dict.get("version_line")
+    if isinstance(version_line, str) and not version_line.strip():
+        errors.append(f"bundle {name!r} version_line must be non-empty")
+
+    return errors
+
+
 def _validate_http_bundle_entry(name: str, entry_dict: dict[str, Any]) -> list[str]:
     errors = _check_required_fields(name, entry_dict, HTTP_BUNDLE_REQUIRED_FIELDS)
 
@@ -135,7 +167,7 @@ def _validate_http_bundle_entry(name: str, entry_dict: dict[str, Any]) -> list[s
     return errors
 
 
-def _validate_bundle_entry(name: str, entry: Any) -> list[str]:
+def _validate_bundle_entry(name: str, entry: object) -> list[str]:
     errors: list[str] = []
     if not isinstance(entry, dict):
         errors.append(f"bundle {name!r} must be an object")
@@ -144,7 +176,9 @@ def _validate_bundle_entry(name: str, entry: Any) -> list[str]:
     entry_dict = cast(dict[str, Any], entry)
 
     # Dispatch by bundle name (not source_url presence) so GitHub pins may carry URLs.
-    if name in HTTP_BUNDLE_NAMES:
+    if name in PROFILE_LINE_BUNDLE_NAMES:
+        errors.extend(_validate_profile_line_bundle_entry(name, entry_dict))
+    elif name in HTTP_BUNDLE_NAMES:
         errors.extend(_validate_http_bundle_entry(name, entry_dict))
     else:
         errors.extend(_validate_github_bundle_entry(name, entry_dict))
@@ -181,10 +215,11 @@ def validate_manifest_schema(manifest: dict[str, Any]) -> list[str]:
 
     bundle_map = cast(dict[str, Any], bundles)
 
-    for name in VENDOR_BUNDLE_NAMES:
-        if name not in bundle_map:
-            errors.append(f"missing required bundle {name!r}")
-
+    errors.extend(
+        f"missing required bundle {name!r}"
+        for name in VENDOR_BUNDLE_NAMES
+        if name not in bundle_map
+    )
     for name, entry in bundle_map.items():
         errors.extend(_validate_bundle_entry(name, entry))
 

@@ -1,4 +1,4 @@
-"""TC-EV023-006 — translationCentre* gate (S030 / EV-023 T4.3).
+"""TC-EV023-006 - translationCentre* gate (S030 / EV-023 T4.3).
 
 Default in-State convert omits ``translationCentreDesignator`` /
 ``translationCentreName``. Emit only when ``emit_translation_centre`` is set

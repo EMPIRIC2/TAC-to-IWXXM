@@ -11,7 +11,6 @@ from typing import Any, get_args
 from unittest.mock import patch
 
 import pytest
-
 from dissemination.allowlist import EgressDenied, parse_allowlist
 from dissemination.f19_stubs import (
     F19_SINK_TYPES,
@@ -152,7 +151,7 @@ async def test_staging_send_requires_payload(sink_type: str) -> None:
 async def test_staging_errors_redact_password(sink_type: str) -> None:
     adapter = get_staging_sink(sink_type)
     params = _params(sink_type, host="")
-    with pytest.raises(ValueError) as exc_info:
+    with pytest.raises(ValueError, match=r".*") as exc_info:
         await adapter.preflight(
             params=params,
             allowlist=_allowlist("gateway.example.test"),

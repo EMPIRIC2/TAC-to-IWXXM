@@ -1,4 +1,4 @@
-"""TC-EV030-006 / T3.1+T3.2 — VAA/TCA decode residual pin (#820).
+"""TC-EV030-006 / T3.1+T3.2 - VAA/TCA decode residual pin (#820).
 
 T3.1 snapped pre-deepen counts (VAA=13, TCA=14). T3.2 structured field decode
 shrunk official peers to the counts below; keep this pin current.
@@ -9,12 +9,11 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from tac2iwxxm.decode import decode_tac
 
 ANNEX3 = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
 
-# Post–T3.3 counts — structured fields + VAA AHL; both official peers empty.
+# Post-T3.3 counts - structured fields + VAA AHL; both official peers empty.
 _BASELINE: tuple[tuple[str, str, int], ...] = (
     ("vaa_a7_2", "VAA", 0),
     ("tca_a2_2", "TCA", 0),

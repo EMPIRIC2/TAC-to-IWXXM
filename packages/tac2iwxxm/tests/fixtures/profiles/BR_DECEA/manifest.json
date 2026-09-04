@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "description": "EV-094 M2 — BR_DECEA deepen; GAMET ops fixtures remain parse-only",
+  "profile": "BR_DECEA",
+  "cycle": "EV-094",
+  "issue": "#1098",
+  "cases": [
+    {
+      "id": "metar_sbgr",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_sbgr.tac",
+      "rule_id": "BR.BASE.ICAO",
+      "status": "active",
+      "source_kind": "official",
+      "source_url": "https://aviationweather.gov/api/data/metar?ids=SBGR&format=raw",
+      "source_label": "Aviation Weather Center METAR API (SBGR)",
+      "observed_at_utc": "2026-08-31T15:00:00Z"
+    },
+    {
+      "id": "speci_sbgr",
+      "product": "SPECI",
+      "tac": "SPECI/valid/speci_sbgr.tac",
+      "rule_id": "BR.BASE.ICAO",
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed real SPECI corpus pending — catalog gap EV-094"
+    },
+    {
+      "id": "taf_sbgr",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_sbgr.tac",
+      "rule_id": "BR.BASE.ICAO",
+      "status": "active",
+      "source_kind": "official",
+      "source_url": "https://aviationweather.gov/api/data/taf?ids=SBGR&format=raw",
+      "source_label": "Aviation Weather Center TAF API (SBGR)",
+      "observed_at_utc": "2026-08-31T09:00:00Z"
+    },
+    {
+      "id": "sigmet_basic",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_basic.tac",
+      "rule_id": "BR.BASE.ICAO",
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed Brazilian FIR SIGMET corpus pending"
+    },
+    {
+      "id": "airmet_basic",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_basic.tac",
+      "rule_id": "BR.BASE.ICAO",
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed Brazilian FIR AIRMET corpus pending"
+    },
+    {
+      "id": "gamet_sample",
+      "product": "GAMET",
+      "tac": "GAMET/ops/gamet_sample.tac",
+      "rule_id": "BR.GAMET.PARSE",
+      "status": "parse_only",
+      "source_kind": "synthetic_ev089",
+      "note": "GAMET parse-only — no IWXXM emit (D-EV094-gamet)"
+    }
+  ]
+}

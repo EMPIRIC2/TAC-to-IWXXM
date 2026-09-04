@@ -25,6 +25,13 @@ Never open feature→`main`. Path: feature → PR → `stage` → Staging smoke 
 HTTPS probes use staging cluster IP (`STAGING_LB_IP`, default `143.244.202.13`), not
 prod `168.144.12.70`. See `docs/deploy.md` §Promote and `doks-promote-from-stage.mdc`.
 
+**Evolve / feature branches:** open PRs into **`stage`**, not `main`. Watch `ci-cd.yml` on
+the evolve branch until green before treating the PR as ready.
+
+**Promote CI:** `stage`→`main` requires **E2E Full (Playwright)** (and Lint / Typecheck /
+full Test matrix) — not smoke-only. If E2E Full fails: `gh run view <id> --log-failed`,
+download Playwright artifacts from the run, triage (see `ci-recurring-footguns.mdc`).
+
 Workflows live at **monorepo root** (`../` from this backend package when checked out alone).
 
 ## After every push (required)
@@ -38,7 +45,7 @@ gh run watch <run-id>
 | Outcome | Action |
 |---------|--------|
 | **success** | Record run URL; proceed |
-| **failure** | `gh run view <run-id> --log-failed` → fix → push → re-watch |
+| **failure** | `gh run view <run-id> --log-failed` (+ download job artifacts for E2E) → fix → push → re-watch |
 | **User waives** | AskQuestion only; note waiver in PR/summary |
 
 ## Before the first push (local parity — monorepo root)
@@ -57,6 +64,8 @@ matrix entry of the `ci-cd.yml` `test` job and via `make test-bugs` (included in
 
 ## Related
 
+- `ci-recurring-footguns.mdc` — project-specific if-you-see-X-do-Y (coverage, E2E Full, pnpm/Mutation, vendor sync)
 - `atomic-commits.mdc` — local checks before commit
 - `14-hotfix` / `09-qa` skills — full parity lists
 - `docs/deploy.md` §Runbook
+- Project skill: `.cursor/skills/ci-after-push/SKILL.md`

@@ -1,4 +1,4 @@
-"""TC-EV025-004 / M4.5 — MaxMinTemperatures + ProcessedProperty + ObservingSystem.
+"""TC-EV025-004 / M4.5 - MaxMinTemperatures + ProcessedProperty + ObservingSystem.
 
 Asserts FMH-1 additive ``1``/``2``/``4`` max-min, precip ``P``/``6``/``7`` as
 ``processedQuantity``, and ``AO1``/``AO2`` ObservingSystemType hrefs under
@@ -10,8 +10,9 @@ XML pins follow iwxxm-us 3.0 PDF sample shapes
 
 from __future__ import annotations
 
-from tac2iwxxm import convert
 from tac2iwxxm.products.metar_speci import parse_metar_speci
+
+from tac2iwxxm import convert
 
 IWXXM_VERSION = "2025-2"
 PROFILE = "iwxxm_us"
@@ -19,7 +20,7 @@ PROFILE = "iwxxm_us"
 # 6-h max 15.6 °C / min 7.0 °C (1/2 snTTT).
 _TAC_MAXMIN_6H = "METAR KJFK 231751Z 18008KT 10SM CLR 15/07 A3005 RMK AO2 10156 20070="
 
-# 24-h max 21.1 °C / min −2.2 °C (4snTTTsnTTT).
+# 24-h max 21.1 °C / min -2.2 °C (4snTTTsnTTT).
 _TAC_MAXMIN_24H = "METAR KJFK 231251Z 18008KT 10SM CLR 15/07 A3005 RMK AO2 402111022="
 
 # Hourly precip 0.15 in (Prrrr).
@@ -28,7 +29,7 @@ _TAC_PRECIP_P = "METAR KJFK 231751Z 18008KT 10SM CLR 15/07 A3005 RMK AO2 P0015="
 # Trace precip P0000 → BELOW 0.01 in (PDF ProcessedProperty sample).
 _TAC_PRECIP_TRACE = "METAR KJFK 231751Z 18008KT 10SM CLR 15/07 A3005 RMK AO2 P0000="
 
-# 3-/6-h precip group 6RRRR (0.35 in) — period from observation hour.
+# 3-/6-h precip group 6RRRR (0.35 in) - period from observation hour.
 _TAC_PRECIP_6 = "METAR KJFK 231851Z 18008KT 10SM CLR 15/07 A3005 RMK AO2 60035="
 
 # 24-h precip 7R24R24R24 (1.23 in).

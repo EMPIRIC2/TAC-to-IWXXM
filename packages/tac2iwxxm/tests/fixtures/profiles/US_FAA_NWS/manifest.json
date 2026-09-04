@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "description": "EV-063 M7 + EV-079 M8 + EV-080 M9 + EV-081 M10–M13 + EV-082 M15–M16 + EV-083 M17–M18 + EV-084 M19 + EV-085 M20–M22 — US_FAA_NWS (#919)",
+  "profile": "US_FAA_NWS",
+  "cases": [
+    {
+      "id": "rmk_ao2_slp",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_ao2_slp.tac",
+      "golden": "METAR/valid/rmk_ao2_slp.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_AO2_SLP"
+    },
+    {
+      "id": "rmk_pk_wnd",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_pk_wnd.tac",
+      "golden": "METAR/valid/rmk_pk_wnd.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_PK_WND"
+    },
+    {
+      "id": "rmk_wshft_fropa",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_wshft_fropa.tac",
+      "golden": "METAR/valid/rmk_wshft_fropa.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_WSHFT_FROPA"
+    },
+    {
+      "id": "rmk_ltg_dsnt",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_ltg_dsnt.tac",
+      "golden": "METAR/valid/rmk_ltg_dsnt.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_LTG_DSNT"
+    },
+    {
+      "id": "rmk_var_vis",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_var_vis.tac",
+      "golden": "METAR/valid/rmk_var_vis.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_VAR_VIS"
+    },
+    {
+      "id": "rmk_sector_vis",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_sector_vis.tac",
+      "golden": "METAR/valid/rmk_sector_vis.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_SECTOR_VIS"
+    },
+    {
+      "id": "rmk_tower_vis",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_tower_vis.tac",
+      "golden": "METAR/valid/rmk_tower_vis.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_TOWER_VIS"
+    },
+    {
+      "id": "rmk_sky_8",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_sky_8.tac",
+      "golden": "METAR/valid/rmk_sky_8.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_SKY_8"
+    },
+    {
+      "id": "rmk_convective_cb",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_convective_cb.tac",
+      "golden": "METAR/valid/rmk_convective_cb.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_CONVECTIVE_CB"
+    },
+    {
+      "id": "rmk_hail_gr",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_hail_gr.tac",
+      "golden": "METAR/valid/rmk_hail_gr.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_HAIL_GR"
+    },
+    {
+      "id": "rmk_presfr",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_presfr.tac",
+      "golden": "METAR/valid/rmk_presfr.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_PRESFR"
+    },
+    {
+      "id": "rmk_recent_wx",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_recent_wx.tac",
+      "golden": "METAR/valid/rmk_recent_wx.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_RECENT_WX"
+    },
+    {
+      "id": "rmk_chino",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_chino.tac",
+      "golden": "METAR/valid/rmk_chino.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_CHINO"
+    },
+    {
+      "id": "rmk_snincr",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_snincr.tac",
+      "golden": "METAR/valid/rmk_snincr.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_SNINCR"
+    },
+    {
+      "id": "rmk_combined",
+      "product": "METAR",
+      "tac": "METAR/valid/rmk_combined.tac",
+      "golden": "METAR/valid/rmk_combined.golden.xml",
+      "rule_id": "US.METAR.RMK.RMK_COMBINED"
+    },
+    {
+      "id": "sigmet_obsc_ts",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_obsc_ts.tac",
+      "golden": "SIGMET/valid/sigmet_obsc_ts.golden.xml",
+      "rule_id": "US.SIGMET.PHEN.OBSC_TS"
+    },
+    {
+      "id": "sigmet_sev_ice",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_sev_ice.tac",
+      "golden": "SIGMET/valid/sigmet_sev_ice.golden.xml",
+      "rule_id": "US.SIGMET.PHEN.SEV_ICE"
+    },
+    {
+      "id": "sigmet_vor_chain",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_vor_chain.tac",
+      "golden": "SIGMET/valid/sigmet_vor_chain.golden.xml",
+      "rule_id": "US.SIGMET.GEOM.VOR"
+    },
+    {
+      "id": "sigmet_vor_single",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_vor_single.tac",
+      "golden": "SIGMET/valid/sigmet_vor_single.golden.xml",
+      "rule_id": "US.SIGMET.GEOM.VOR"
+    },
+    {
+      "id": "sigmet_conv_wst",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_conv_wst.tac",
+      "golden": "SIGMET/valid/sigmet_conv_wst.golden.xml",
+      "rule_id": "US.SIGMET.CONV.WST"
+    },
+    {
+      "id": "airmet_isol_ts",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_isol_ts.tac",
+      "golden": "AIRMET/valid/airmet_isol_ts.golden.xml",
+      "rule_id": "US.AIRMET.PHEN.ISOL_TS"
+    },
+    {
+      "id": "airmet_ifr",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_ifr.tac",
+      "golden": "AIRMET/valid/airmet_ifr.golden.xml",
+      "rule_id": "US.AIRMET.PHEN.SFC_VIS"
+    },
+    {
+      "id": "airmet_mod_turb",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_mod_turb.tac",
+      "golden": "AIRMET/valid/airmet_mod_turb.golden.xml",
+      "rule_id": "US.AIRMET.PHEN.MOD_TURB"
+    },
+    {
+      "id": "airmet_ice_outlook",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_ice_outlook.tac",
+      "golden": "AIRMET/valid/airmet_ice_outlook.golden.xml",
+      "rule_id": "US.AIRMET.OUTLOOK.ICE"
+    },
+    {
+      "id": "airmet_mod_turb_multi",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_mod_turb_multi.tac",
+      "golden": "AIRMET/valid/airmet_mod_turb_multi.golden.xml",
+      "rule_id": "US.AIRMET.AREA.MULTI"
+    },
+    {
+      "id": "airmet_zulu_updt_ice",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_zulu_updt_ice.tac",
+      "golden": "AIRMET/valid/airmet_zulu_updt_ice.golden.xml",
+      "rule_id": "US.AIRMET.HEADER.CONUS_UPDT"
+    },
+    {
+      "id": "airmet_frzlvl_section",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_frzlvl_section.tac",
+      "golden": "AIRMET/valid/airmet_frzlvl_section.golden.xml",
+      "rule_id": "US.AIRMET.FRZLVL.SECTION"
+    },
+    {
+      "id": "airmet_waus_multisection",
+      "product": "AIRMET",
+      "tac": "AIRMET/valid/airmet_waus_multisection.tac",
+      "golden": "AIRMET/valid/airmet_waus_multisection.golden.xml",
+      "rule_id": "US.AIRMET.BULLETIN.MULTISECTION"
+    }
+  ],
+  "negative_cases": [
+    {
+      "id": "sigmet_vor_unknown",
+      "product": "SIGMET",
+      "tac": "SIGMET/invalid/sigmet_vor_unknown.tac",
+      "rule_id": "US.SIGMET.GEOM.VOR",
+      "expect": "parse_error"
+    },
+    {
+      "id": "taf_becmg",
+      "product": "TAF",
+      "tac": "TAF/invalid/taf_becmg.tac",
+      "rule_id": "US.TAF.BECMG_FORBIDDEN",
+      "lint_codes": ["US_TAF_BECMG_FORBIDDEN"]
+    },
+    {
+      "id": "taf_tempo_over_4h",
+      "product": "TAF",
+      "tac": "TAF/invalid/taf_tempo_over_4h.tac",
+      "rule_id": "US.TAF.TEMPO_MAX_4H",
+      "lint_codes": ["US_TAF_TEMPO_MAX_4H"]
+    },
+    {
+      "id": "swxa_satcom",
+      "product": "SWXA",
+      "tac": "SWXA/invalid/swxa_satcom.tac",
+      "rule_id": "US.SWXA.SATCOM_NOT_ISSUED",
+      "lint_codes": ["US_SWXA_SATCOM_NOT_ISSUED"]
+    },
+    {
+      "id": "tca_observed_cb",
+      "product": "TCA",
+      "tac": "TCA/invalid/tca_observed_cb.tac",
+      "rule_id": "US.TCA.OBSERVED_CB_NOT_PROVIDED",
+      "lint_codes": ["US_TCA_OBSERVED_CB_NOT_PROVIDED"]
+    }
+  ]
+}

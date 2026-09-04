@@ -1,4 +1,4 @@
-"""TC-EV035-001 — dig inventory completeness."""
+"""TC-EV035-001 - dig inventory completeness."""
 
 from __future__ import annotations
 

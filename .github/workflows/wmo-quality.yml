@@ -40,6 +40,9 @@ jobs:
         with:
           submodules: false
 
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:

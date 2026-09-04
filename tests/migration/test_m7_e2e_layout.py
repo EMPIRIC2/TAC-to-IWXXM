@@ -1,4 +1,4 @@
-"""M7 E2E workspace layout — migration-plan.md Step 3, test-plan.md §E2E."""
+"""M7 E2E workspace layout - migration-plan.md Step 3, test-plan.md §E2E."""
 
 from __future__ import annotations
 

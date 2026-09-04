@@ -23,7 +23,7 @@ def test_list_drivers_import_error(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delitem(sys.modules, "pyodbc", raising=False)
     real_import = __import__
 
-    def _no_pyodbc(name: str, globals=None, locals=None, fromlist=(), level=0):  # noqa: A002
+    def _no_pyodbc(name: str, globals=None, locals=None, fromlist=(), level=0):
         if name == "pyodbc" or name.startswith("pyodbc."):
             raise ImportError("no pyodbc")
         return real_import(name, globals, locals, fromlist, level)

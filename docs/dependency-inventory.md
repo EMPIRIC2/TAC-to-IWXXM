@@ -29,7 +29,17 @@
 | iwxxm-validate | XSD + Schematron (F2) | MIT | workspace path |
 | gifts | ~~Conversion~~ | — | **Removed at F6 cutover** (ADR-014) |
 | dissemination | F16–F19 sinks | MIT | workspace path (ADR-030) |
+| workflows | Workflow YAML executor `execute(message, workflow)` (ADR-042 / #1132) | MIT | workspace path (EV-1132 Implemented) |
 | auth | Supabase Auth JWT verify + `/auth/*` (F31 restore) | MIT | workspace `packages/auth` (ADR-033) |
+
+### packages/workflows (EV-1132 / #1132 — Implemented)
+
+| Package | Purpose | License | Source |
+|---------|---------|---------|--------|
+| tac2iwxxm | convert-iwxxm stage | MIT | workspace path |
+| tac-validate | validate-tac stage | MIT | workspace path |
+| iwxxm-validate | validate-xsd / validate-schematron | MIT | workspace path |
+| pyyaml | WorkflowDefinition YAML load | MIT | PyPI (`>=6.0`; already used by tac2iwxxm) |
 
 ### packages/dissemination (S019 / EV-014 — M1)
 
@@ -142,7 +152,8 @@ via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SEC
 | yamllint | pre-commit hook | `.github/` YAML lint (EV-002) |
 | supabase/setup-cli | GitHub Action | Supabase CLI in `supabase-sync.yml` — **pin `2.111.0`** (not `latest`; CLI 2.112.0 breaks `link` on api-keys `inserted_at`, supabase/cli#6115 / BUG-2026-08-07) |
 | docker / compose | system | Local multi-service |
-| Coverage | 95% all members | pytest + Vitest gates (ADR-007); includes tac2iwxxm, tac-validate, iwxxm-validate |
+| Coverage | **100%** line+branch all members | pytest + Vitest gates (ADR-007 / EV-080 / #1077); includes tac2iwxxm, tac-validate, iwxxm-validate; per-file `--min-pct 100` |
+| bats-core | **CI** (EV-080 / #1077) | Shell script unit tests for every `scripts/**/*.sh` — **MIT**; install in CI (apt/brew/action); not a Python package |
 | schemathesis | **dev** (F34 / EV-059 / #727) | OpenAPI property-based suite vs `apps/backend` ASGI — **MIT**; pinned `==4.24.3` (workspace `dev`) |
 | pytest-gremlins | **dev** (F34 / EV-059 / #874) | Python mutation testing (pytest plugin) — **MIT**; pinned `==1.9.0` (workspace `dev`); nightly/manual |
 | @stryker-mutator/core (+ vitest-runner / typescript-checker) | **dev** (F34 / EV-059 / #874) | TypeScript mutation testing — **Apache-2.0**; pinned `10.0.0` in `apps/frontend` + `packages/shared`; nightly/manual |
@@ -191,6 +202,8 @@ New dependencies require `[Decision]` + back-add to this file per plan-adherence
 
 ### Session changelog
 
+- EV-080 / #1077 (2026-08-27): Coverage floor **100%** line+branch (ADR-007 amend); **bats-core**
+  for every `scripts/**/*.sh`; scripts Python coverage harness (`D-EV080-bats`)
 - S069 / EV-059 (2026-08-17): **schemathesis==4.24.3** (MIT) pinned in workspace `dev`;
   **pytest-gremlins==1.9.0** (MIT) + **@stryker-mutator/{core,vitest-runner,typescript-checker}@10.0.0**
   (Apache-2.0) pinned for #874 — F34 quality gates (`D-S069-tool`); mutation not a every-PR

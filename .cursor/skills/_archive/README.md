@@ -1,16 +1,16 @@
-# Archived legacy skills (RET-001 / S017)
+# Archived skills — plugin migration (2026-08-24)
 
-Full historical `SKILL.md` copies. Live paths under `.cursor/skills/{name}/` are **redirect
-stubs** pointing at numbered pipeline skills.
+Legacy numbered pipeline, redirect stubs, and pack duplicates archived here when TAC migrated to the **engineering-memory** plugin.
 
-| Archive | Use instead |
-|---------|-------------|
-| `gather-context` | [00-context](../00-context/SKILL.md) |
-| `doc-planner` | [01-requirements](../01-requirements/SKILL.md) |
-| `audit-docs` | [02-verify-plan](../02-verify-plan/SKILL.md) / [05-verify-tech](../05-verify-tech/SKILL.md) |
-| `build-planner` | [04-tech-plan](../04-tech-plan/SKILL.md) |
-| `build-executor` | [07-build](../07-build/SKILL.md) |
-| `verify-build` | [08-verify-build](../08-verify-build/SKILL.md) |
-| `deploy-verify` | [13-deploy-smoke](../13-deploy-smoke/SKILL.md) |
+**Live skills:** plugin Customize (`evolve`, `spec-context`, `build-build`, `support-*`, …) + project-only dirs at `skills/` root (`mine-domain-sources`, `monorepo-migration-checklist`).
 
-Do not add new work to these archives.
+| Subdir | Contents |
+|--------|----------|
+| `numbered/` | `00-context` … `19-address-pr-review` |
+| `legacy-orchestrators/` | `pipeline` |
+| `redirect-stubs/` | gather-context, doc-planner, … (where not already in `_archive/`) |
+| `pack-duplicates/` | support skills duplicated by plugin |
+| `legacy-refs/` | sessions-reference, workflow-state refs, pipeline-preamble |
+| `legacy-pt002/` | PT-002 `implementing/build` stub |
+
+Do not invoke archived skills for new work.

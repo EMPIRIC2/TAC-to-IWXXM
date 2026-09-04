@@ -1,4 +1,4 @@
-"""Unit tests for VersionDetector – 0% coverage target."""
+"""Unit tests for VersionDetector - 0% coverage target."""
 
 import subprocess
 from unittest.mock import MagicMock, patch
@@ -234,3 +234,39 @@ class TestVersionDetectorConvenienceFunctions:
             assert check_for_updates() is True
         with patch.object(VersionDetector, "get_unconfigured_versions", return_value=[]):
             assert check_for_updates() is False
+
+
+class TestVersionDetectorCoverageGaps:
+    def test_unexpected_exception_falls_back_to_dirs(self, tmp_path):
+        iwxxm_path = tmp_path / "iwxxm"
+        iwxxm_path.mkdir()
+        (iwxxm_path / "2025-2").mkdir()
+        with patch(
+            "src.utilities.version_detector.subprocess.run",
+            side_effect=RuntimeError("unexpected"),
+        ):
+            vd = VersionDetector(schemas_root=tmp_path)
+            tags = vd.get_available_tags()
+        assert "v2025-2" in tags
+
+    def test_dir_fallback_iterdir_exception(self, tmp_path):
+        with patch(
+            "src.utilities.version_detector.subprocess.run",
+            side_effect=RuntimeError("unexpected"),
+        ):
+            vd = VersionDetector(schemas_root=tmp_path)
+            vd.iwxxm_path = MagicMock()
+            vd.iwxxm_path.exists.return_value = True
+            vd.iwxxm_path.iterdir.side_effect = OSError("cannot list")
+            assert vd.get_available_tags() == []
+
+    def test_report_skips_unconfigured_section_when_empty(self, tmp_path):
+        vd = VersionDetector(schemas_root=tmp_path)
+        with (
+            patch.object(vd, "detect_versions", return_value=[VersionInfo("2025-2", "v2025-2", True, True)]),
+            patch.object(vd, "get_latest_version", return_value="2025-2"),
+            patch.object(vd, "get_unconfigured_versions", return_value=[]),
+        ):
+            report = vd.generate_version_report()
+        assert "All Available Versions" in report
+        assert "Unconfigured Versions Available" not in report

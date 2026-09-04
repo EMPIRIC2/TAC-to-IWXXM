@@ -6,17 +6,19 @@ Provides async session management for statistics and other database operations.
 
 import logging
 import os
+from collections.abc import AsyncGenerator, AsyncIterator
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, Optional
+from typing import Any
 
+from fastapi import FastAPI
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession, async_sessionmaker, create_async_engine
 
 logger = logging.getLogger(__name__)
 
 # Database engine and session maker (singletons)
-_engine: Optional[AsyncEngine] = None
-_async_session_maker: Optional[async_sessionmaker] = None
+_engine: AsyncEngine | None = None
+_async_session_maker: async_sessionmaker[AsyncSession] | None = None
 
 
 def _clean_env(name: str) -> str:
@@ -68,7 +70,7 @@ def get_database_url() -> str:
     """
     # Try direct DATABASE_URL first. Treat a blank / whitespace-only value as
     # unset: docker-compose passes ``DATABASE_URL=${DATABASE_URL:-}`` (an empty
-    # string), and an empty string is falsy while a whitespace string is truthy —
+    # string), and an empty string is falsy while a whitespace string is truthy -
     # either would otherwise silently fall back to localhost or be returned as a
     # broken URL (see BUG-2026-06-25 / GitHub #671).
     if database_url := _clean_env("DATABASE_URL"):
@@ -164,7 +166,7 @@ async def init_db_engine(
         raise
 
 
-async def close_db_engine():
+async def close_db_engine() -> None:
     """Close database engine and dispose of connections."""
     global _engine, _async_session_maker
 
@@ -180,7 +182,7 @@ async def close_db_engine():
         logger.info("Database engine closed")
 
 
-def get_db_engine() -> Optional[AsyncEngine]:
+def get_db_engine() -> AsyncEngine | None:
     """
     Get existing database engine.
 
@@ -235,7 +237,7 @@ async def test_db_connection() -> bool:
         return False
 
 
-async def get_db_stats() -> dict:
+async def get_db_stats() -> dict[str, Any]:
     """
     Get database engine statistics.
 
@@ -257,8 +259,8 @@ async def get_db_stats() -> dict:
 
 
 # Lifespan context manager for FastAPI
-@asynccontextmanager
-async def database_lifespan(app):
+@asynccontextmanager  # pyright: ignore[reportDeprecated]
+async def database_lifespan(app: FastAPI) -> AsyncIterator[None]:
     """
     FastAPI lifespan context manager for database engine.
 
@@ -278,7 +280,7 @@ async def database_lifespan(app):
         await close_db_engine()
 
 
-async def create_tables():
+async def create_tables() -> None:
     """
     Create all database tables defined in ORM models.
 

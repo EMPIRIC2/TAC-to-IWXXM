@@ -1,4 +1,4 @@
-"""TC-F15-001 / E11-22 — ISSUE_CATALOG drift vs ``issue_registry.ISSUES``.
+"""TC-F15-001 / E11-22 - ISSUE_CATALOG drift vs ``issue_registry.ISSUES``.
 
 Committed ``docs/domain/rules/ISSUE_CATALOG.{md,json}`` must match a fresh
 export from the registry (``make catalog-regen``).
@@ -41,7 +41,7 @@ def _registry_rows() -> list[dict[str, object]]:
 
 def test_issue_catalog_json_matches_registry() -> None:
     catalog_attribution._load.cache_clear()
-    assert CATALOG_JSON.is_file(), "missing ISSUE_CATALOG.json — run make catalog-regen"
+    assert CATALOG_JSON.is_file(), "missing ISSUE_CATALOG.json - run make catalog-regen"
     payload = json.loads(CATALOG_JSON.read_text(encoding="utf-8"))
     assert payload["schema_version"] == 1
     assert "generated from tac_validate.issue_registry" in payload["source"]
@@ -50,7 +50,7 @@ def test_issue_catalog_json_matches_registry() -> None:
 
 
 def test_issue_catalog_md_lists_every_code() -> None:
-    assert CATALOG_MD.is_file(), "missing ISSUE_CATALOG.md — run make catalog-regen"
+    assert CATALOG_MD.is_file(), "missing ISSUE_CATALOG.md - run make catalog-regen"
     text = CATALOG_MD.read_text(encoding="utf-8")
     assert "generated from tac_validate.issue_registry" in text
     assert "Source attribution" in text

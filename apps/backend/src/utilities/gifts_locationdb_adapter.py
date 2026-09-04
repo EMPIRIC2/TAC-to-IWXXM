@@ -6,7 +6,7 @@ GIFTs encoder expects a dictionary-like object with:
 """
 
 import logging
-from typing import Optional
+from typing import Any
 
 try:
     from ..services.openaip_service import OpenAIPService
@@ -31,7 +31,7 @@ class GiftsLocationDBAdapter:
     in the format required by GIFTs encoder.
     """
 
-    def __init__(self, openaip_service: Optional[OpenAIPService] = None):
+    def __init__(self, openaip_service: OpenAIPService | None = None) -> None:
         """
         Initialize the adapter.
 
@@ -49,7 +49,7 @@ class GiftsLocationDBAdapter:
         except Exception as e:
             logger.debug(f"AirportValidator not available: {e}")
 
-    def get(self, icao_code: str) -> Optional[str]:
+    def get(self, icao_code: str) -> str | None:
         """
         Get airport data in GIFTs format.
 
@@ -93,6 +93,6 @@ class GiftsLocationDBAdapter:
         """
         return self.get(icao_code) is not None
 
-    def get_cached_airports(self) -> dict:
+    def get_cached_airports(self) -> dict[str, Any]:
         """Get all cached airports from OpenAIP."""
         return self.openaip_service.get_all_airports()

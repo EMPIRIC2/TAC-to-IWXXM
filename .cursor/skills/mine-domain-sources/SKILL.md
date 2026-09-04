@@ -18,6 +18,10 @@ Complements [extract-pdf-to-repo](../extract-pdf-to-repo/SKILL.md) (PDF binary �
 `mining/` notes). Use **this** skill for web/GitHub/registry/vendor mining and for
 **promoting** durable findings into the standing canonicals.
 
+When evolve needs a **deep-research agent handoff** first (scope → findings → promote
+gates), start with [deep-research-domain-handoff](../deep-research-domain-handoff/SKILL.md)
+(EV-097); return here for **gate C** promote / conflict resolution.
+
 Hub: [`docs/domain/README.md`](../../../docs/domain/README.md). Domain is **not** minimal
 corpus ([`docs/CORPUS.md`](../../../docs/CORPUS.md)).
 

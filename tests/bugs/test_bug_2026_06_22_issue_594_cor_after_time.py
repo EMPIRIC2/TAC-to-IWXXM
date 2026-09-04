@@ -1,4 +1,4 @@
-"""BUG-2026-06-22 — GitHub #594: ICAO COR-after-time METAR conversion.
+"""BUG-2026-06-22 - GitHub #594: ICAO COR-after-time METAR conversion.
 
 Post cutover: exercised via ``convert_metar_tac_with_metadata`` (tac2iwxxm).
 COR before station and COR after time both emit ``reportStatus="CORRECTION"``.

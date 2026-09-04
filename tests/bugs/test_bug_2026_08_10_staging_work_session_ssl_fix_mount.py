@@ -1,4 +1,4 @@
-"""BUG-2026-08-10 — do not ConfigMap-mount over work_session_service.py.
+"""BUG-2026-08-10 - do not ConfigMap-mount over work_session_service.py.
 
 Staging returned ``NameError: UUID`` because a stale ``work-session-ssl-fix``
 ConfigMap overrode the in-image module (which already includes ``_sync_database_url``

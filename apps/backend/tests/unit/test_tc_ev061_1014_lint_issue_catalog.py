@@ -1,4 +1,4 @@
-"""T5.1 / TC-EV061-1014 — lint + IWXXM catalog additive fields (#1014).
+"""T5.1 / TC-EV061-1014 - lint + IWXXM catalog additive fields (#1014).
 
 Spec: docs/test-plan.md TC-EV061-1014-002..004; docs/api-contract.md §lint-issue-catalog;
 UJ-068; [Corpus: api] [Corpus: tests] [Corpus: product §F15]
@@ -10,11 +10,10 @@ import re
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
-# Operator-visible planning vocabulary (EV-048) — must not appear in attribution.
+# Operator-visible planning vocabulary (EV-048) - must not appear in attribution.
 _INTERNAL_DOC_REF = re.compile(
     r"(?:\[Corpus:|\bADR-\d+\b|\bEV-\d+\b|\bS0\d+\b|\bTC-[A-Z0-9-]+\b|"
     r"\bE\d{2}-\d+\b|(?<!\w)#\d{3,}\b|\bF\d+\b|docs/sessions/|docs/feature-list)"

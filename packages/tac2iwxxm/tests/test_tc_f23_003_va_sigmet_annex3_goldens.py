@@ -1,4 +1,4 @@
-"""TC-F23-003 — VA SIGMET annex3 golden expansion (S025 / EV-019 T4.1 / F23 theme V3).
+"""TC-F23-003 - VA SIGMET annex3 golden expansion (S025 / EV-019 T4.1 / F23 theme V3).
 
 Asserts annex3 golden pack covers WMO ``sigmet-VA-EGGX`` seed (+ NO VA EXP),
 root ``iwxxm:VolcanicAshSIGMET`` under HTTP ``product=sigmet`` (E19-13), and
@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
@@ -95,8 +96,9 @@ def test_tc_f23_003_va_sigmet_m_golden(case_id: str) -> None:
 
 def test_tc_f23_003_va_eggx_content_signals() -> None:
     """sigmet-VA-EGGX seed: VA phenomenon + product=sigmet wire → VolcanicAshSIGMET."""
-    from tac2iwxxm import convert
     from tac2iwxxm.products.sigmet_airmet import parse_sigmet
+
+    from tac2iwxxm import convert
 
     tac = (FIXTURES / "sigmet_va_eggx.tac").read_text(encoding="utf-8")
     ir = parse_sigmet(tac, product="SIGMET")
@@ -110,8 +112,9 @@ def test_tc_f23_003_va_eggx_content_signals() -> None:
 
 def test_tc_f23_003_va_eggx_ash_cloud_polygon_and_sfc_fl() -> None:
     """#739: prefer VA CLD WI polygon over volcano PSN; encode SFC/FL550."""
-    from tac2iwxxm import convert
     from tac2iwxxm.products.sigmet_airmet import parse_sigmet
+
+    from tac2iwxxm import convert
 
     tac = (FIXTURES / "sigmet_va_eggx.tac").read_text(encoding="utf-8")
     ir = parse_sigmet(tac, product="SIGMET")
@@ -129,8 +132,9 @@ def test_tc_f23_003_va_eggx_ash_cloud_polygon_and_sfc_fl() -> None:
 
 def test_tc_f23_003_no_va_exp_nil_geometry() -> None:
     """#739 NO VA EXP → geometry nilReason nothingOfOperationalSignificance."""
-    from tac2iwxxm import convert
     from tac2iwxxm.products.sigmet_airmet import parse_sigmet
+
+    from tac2iwxxm import convert
 
     tac = (FIXTURES / "sigmet_va_no_va_exp.tac").read_text(encoding="utf-8")
     ir = parse_sigmet(tac, product="SIGMET")

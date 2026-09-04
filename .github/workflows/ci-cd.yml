@@ -17,6 +17,13 @@ on:
         options:
           - production
         default: production
+      ops:
+        description: 'Optional one-shot ops (does not Deploy)'
+        type: choice
+        options:
+          - none
+          - ev933-staging
+        default: none
 
 env:
   REGISTRY: ghcr.io
@@ -36,6 +43,43 @@ env:
   FRONTEND_VITE_API_BASE_URL: https://api.tac-to-iwxxm.com
 
 jobs:
+  # EV-933 — staging Alembic head + PROFILE_OVERLAY_HMAC_SECRET (workflow_dispatch ops).
+  ops-ev933-staging:
+    name: Ops EV-933 staging (Alembic + HMAC)
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'workflow_dispatch' &&
+      github.event.inputs.ops == 'ev933-staging'
+    environment: staging
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - name: Configure kubectl
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        run: |
+          set -euo pipefail
+          if [ -z "${KUBE_CONFIG:-}" ]; then
+            echo "::error::Missing staging secret KUBE_CONFIG"
+            exit 1
+          fi
+          mkdir -p "${HOME}/.kube"
+          if ! printf '%s' "${KUBE_CONFIG}" | base64 --decode > "${HOME}/.kube/config" 2>/dev/null; then
+            echo "::error::KUBE_CONFIG is not valid base64"
+            exit 1
+          fi
+          chmod 600 "${HOME}/.kube/config"
+          if grep -qE 'command:[[:space:]]*doctl' "${HOME}/.kube/config"; then
+            echo "::error::KUBE_CONFIG uses doctl exec auth; use a ServiceAccount token kubeconfig"
+            exit 1
+          fi
+          kubectl version --client
+      - name: Run EV-933 staging ops
+        env:
+          DOKS_NAMESPACE: metar-iwxxm-staging
+        run: bash scripts/deploy/doks_staging_ev933_ops.sh
+
   # EV-043 / TC-F30-012 — PRs to main must promote from stage after Staging smoke.
   staging-gate:
     runs-on: ubuntu-latest
@@ -67,6 +111,7 @@ jobs:
   # stage→main). Format/config remain local pre-commit (EV-036); Compose integration
   # stays local pre-push only. Unit matrix + coverage remain below.
   lint:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Lint
     steps:
@@ -101,6 +146,7 @@ jobs:
         run: make lint
 
   typecheck:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Typecheck
     steps:
@@ -135,6 +181,7 @@ jobs:
         run: make typecheck
 
   test:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Test (${{ matrix.package }})
     strategy:
@@ -150,6 +197,7 @@ jobs:
             iwxxm-validate,
             tac-validate,
             dissemination,
+            workflows,
             worker,
             bugs,
           ]
@@ -198,7 +246,7 @@ jobs:
             --cov-config=packages/shared/pyproject.toml --cov-branch \
             --cov-report=xml:packages/shared/coverage.xml \
             --cov-report=json:packages/shared/coverage.json \
-            --cov-report=term-missing --cov-fail-under=98 -v
+            --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/shared/coverage.json
           pnpm --filter @metar/shared run test:coverage
 
@@ -210,7 +258,7 @@ jobs:
             --cov-report=xml:coverage.xml \
             --cov-report=json:coverage.json \
             --cov-report=term-missing \
-            --cov-fail-under=98 -v)
+            --cov-fail-under=100 -v)
           uv run python scripts/ci/check_per_file_coverage.py apps/backend/coverage.json
 
       # F31 / EV-047 — JWKS Auth units; package + per-file ≥95% (D-S056-cov95-scope=2).
@@ -221,11 +269,19 @@ jobs:
             --cov-config=packages/auth/pyproject.toml --cov-branch \
             --cov-report=xml:packages/auth/coverage.xml \
             --cov-report=json:packages/auth/coverage.json \
-            --cov-report=term-missing --cov-fail-under=95 -v
+            --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/auth/coverage.json
 
       # EV-023 / E23-T4=2: TC-EV023-005 Amd79 informative cases use xfail(strict=False);
       # xfail_strict=false in packages/tac2iwxxm/pyproject.toml — soft failures must not hard-fail.
+      - name: Install Rust toolchain (tac2iwxxm CA_ECCC validate)
+        if: matrix.package == 'tac2iwxxm'
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build iwxxm-validate native for tac2iwxxm CA_ECCC tests
+        if: matrix.package == 'tac2iwxxm'
+        run: bash scripts/ci/ensure_iwxxm_validate_native.sh
+
       - name: Run tac2iwxxm unit tests with coverage
         if: matrix.package == 'tac2iwxxm'
         run: |
@@ -233,7 +289,7 @@ jobs:
             --cov-config=packages/tac2iwxxm/pyproject.toml --cov-branch \
             --cov-report=xml:packages/tac2iwxxm/coverage.xml \
             --cov-report=json:packages/tac2iwxxm/coverage.json \
-            --cov-report=term-missing --cov-fail-under=95 -v
+            --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/tac2iwxxm/coverage.json
 
       - name: Install Rust toolchain (iwxxm-validate native)
@@ -257,7 +313,7 @@ jobs:
             --cov-config=packages/iwxxm-validate/pyproject.toml --cov-branch \
             --cov-report=xml:packages/iwxxm-validate/coverage.xml \
             --cov-report=json:packages/iwxxm-validate/coverage.json \
-            --cov-report=term-missing --cov-fail-under=95 -v
+            --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/iwxxm-validate/coverage.json
 
       - name: Run tac-validate unit tests with coverage
@@ -267,7 +323,7 @@ jobs:
             --cov-config=packages/tac-validate/pyproject.toml --cov-branch \
             --cov-report=xml:packages/tac-validate/coverage.xml \
             --cov-report=json:packages/tac-validate/coverage.json \
-            --cov-report=term-missing --cov-fail-under=95 -v
+            --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/tac-validate/coverage.json
 
       # F16–F19 / T0.1 — skips until packages/dissemination is scaffolded (T1.1/T1.2).
@@ -280,7 +336,12 @@ jobs:
         if: matrix.package == 'dissemination'
         run: make test-integration-dissemination
 
-      # F8 / EV-047 — worker unit + package/per-file ≥95%.
+      # ADR-042 / EV-1132 — workflows executor unit + 100% coverage.
+      - name: Run workflows unit tests with coverage
+        if: matrix.package == 'workflows'
+        run: make test-unit-workflows
+
+      # F8 / EV-047 — worker unit + package/per-file ≥100%.
       - name: Run worker unit tests with coverage
         if: matrix.package == 'worker'
         run: make test-unit-worker
@@ -319,6 +380,37 @@ jobs:
           name: frontend-coverage-report
           path: apps/frontend/coverage/
           if-no-files-found: ignore
+
+  # EV-080 / #1077 — scripts Python cov + bats-core (D-TP080-2/3).
+  scripts-coverage:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
+    runs-on: ubuntu-latest
+    name: Scripts coverage (py + bats)
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+          uv sync
+
+      - name: Install bats-core
+        run: sudo apt-get update && sudo apt-get install -y bats
+
+      - name: Scripts Python coverage (fail_under 100)
+        run: make test-coverage-scripts
+
+      - name: bats for scripts/**/*.sh
+        run: make test-bats
 
   # EV-036 — sticky PR comment with coverage summary (no Codecov; local artifacts only).
   coverage-pr-comment:
@@ -497,6 +589,7 @@ jobs:
 
   # F30 / EV-031 T2.3 — Postgres service + idempotent alembic upgrade head (TC-EV031-002).
   test-alembic:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Test (alembic / TC-EV031-002)
     services:
@@ -545,6 +638,7 @@ jobs:
   # Matrix legs get GH name suffixes; required check is rust-crates-gate below.
   # ============================================================================
   rust-crates:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Rust crate (${{ matrix.package }})
     strategy:
@@ -596,7 +690,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Rust crates (fmt/clippy/test)
     needs: [rust-crates]
-    if: always()
+    if: >
+      always() &&
+      !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging')
     steps:
       - name: Require rust-crates matrix success
         run: |
@@ -609,6 +705,7 @@ jobs:
   # Job id stays tac2iwxxm-native for EV-036 contract tests; display names are locked.
   # ============================================================================
   tac2iwxxm-native:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: ${{ matrix.check_name }}
     strategy:
@@ -674,6 +771,7 @@ jobs:
   # Locked check name for rulesets: Converter perf (tac2iwxxm)
   # ============================================================================
   converter-perf:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Converter perf (tac2iwxxm)
     steps:
@@ -701,6 +799,7 @@ jobs:
   # disableAuth=true, so no Supabase secrets are required (mock session path).
   # ============================================================================
   e2e-smoke:
+    if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: E2E Smoke (Playwright)
     env:
@@ -819,9 +918,11 @@ jobs:
     name: Deploy (${{ github.ref_name }})
     needs: [test, test-alembic, rust-crates-gate, tac2iwxxm-native, converter-perf, e2e-smoke]
     if: |
+      (github.event.inputs.ops != 'ev933-staging') && (
       (github.event_name == 'push' && github.ref == 'refs/heads/stage') ||
       (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/') && startsWith(github.ref_name, 'v') && endsWith(github.ref_name, '-deploy')) ||
       (github.event_name == 'workflow_dispatch' && github.event.inputs.target == 'production')
+      )
     environment: ${{ github.ref == 'refs/heads/stage' && 'staging' || 'production' }}
     permissions:
       contents: read

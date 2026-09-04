@@ -6,7 +6,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { FailedTacCue } from './FailedTacCue';
+import { FailedTacCue, type FailedTacCueProps } from './FailedTacCue';
 import { TacEditor } from './TacEditor';
 
 describe('FailedTacCue', () => {
@@ -46,6 +46,33 @@ describe('FailedTacCue', () => {
       />,
     );
     expect(screen.getByTestId('failed-tac-cue')).toHaveTextContent(/2/);
+  });
+
+  it('omits optional code and message lines when absent', () => {
+    render(<FailedTacCue failedSpans={[{ start: 0, end: 5 }]} />);
+    const cue = screen.getByTestId('failed-tac-cue');
+    expect(cue).toHaveTextContent(/Failed-TAC/i);
+    expect(cue.querySelector('.font-mono')).toBeNull();
+  });
+
+  it('renders message-only spans without a code line', () => {
+    render(
+      <FailedTacCue failedSpans={[{ start: 0, end: 5, message: 'partial preview' }]} />,
+    );
+    expect(screen.getByText('partial preview')).toBeInTheDocument();
+    expect(screen.queryByText(/PARSE_ERROR/i)).toBeNull();
+  });
+
+  it('renders code-only spans without a message line', () => {
+    render(<FailedTacCue failedSpans={[{ start: 0, end: 5, code: 'WARN_ONLY' }]} />);
+    expect(screen.getByText('WARN_ONLY')).toBeInTheDocument();
+  });
+
+  it('returns null when the first span slot is missing', () => {
+    const sparseSpans = [] as FailedTacCueProps['failedSpans'];
+    sparseSpans[1] = { start: 0, end: 5, message: 'later span only' };
+    const { container } = render(<FailedTacCue failedSpans={sparseSpans} />);
+    expect(container.querySelector('[data-testid="failed-tac-cue"]')).toBeNull();
   });
 });
 

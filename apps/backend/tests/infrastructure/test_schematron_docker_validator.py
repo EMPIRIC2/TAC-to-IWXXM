@@ -155,7 +155,7 @@ class TestSchematronValidatorDocker:
             pytest.skip("Test XML file not found")
 
         # Read actual XML
-        with open(xml_path, "r") as f:
+        with open(xml_path) as f:
             xml_content = f.read()
 
         # Run validation (this calls actual Docker)
@@ -189,7 +189,7 @@ class TestSchematronIntegration:
         if not xml_path.exists():
             pytest.skip(f"Test file not found: {xml_path}")
 
-        with open(xml_path, "r") as f:
+        with open(xml_path) as f:
             xml_content = f.read()
 
         # Run validation - may result in ERROR due to Schematron compilation not fully set up
@@ -221,7 +221,7 @@ class TestSchematronIntegration:
         results_summary = []
 
         for xml_file in xml_files:
-            with open(xml_file, "r") as f:
+            with open(xml_file) as f:
                 xml_content = f.read()
 
             result = validator.validate(xml_content)

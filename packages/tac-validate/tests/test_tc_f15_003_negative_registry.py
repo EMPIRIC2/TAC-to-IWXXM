@@ -1,4 +1,4 @@
-"""TC-F15-003 / T2.3 — negative fixture ``expected_codes`` ⊆ registry."""
+"""TC-F15-003 / T2.3 - negative fixture ``expected_codes`` ⊆ registry."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate.issue_registry import by_code
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"

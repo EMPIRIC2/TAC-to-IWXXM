@@ -1,4 +1,4 @@
-"""Unit tests for WMOExamplesLoader – 0% coverage target."""
+"""Unit tests for WMOExamplesLoader - 0% coverage target."""
 
 from src.utilities.wmo_examples_loader import WMOExample, WMOExamplesLoader, load_wmo_examples
 

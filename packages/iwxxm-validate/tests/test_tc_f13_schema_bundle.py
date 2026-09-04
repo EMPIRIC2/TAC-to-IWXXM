@@ -11,7 +11,6 @@ import zipfile
 from pathlib import Path
 
 import pytest
-
 from iwxxm_validate.paths import (
     clear_path_caches,
     packaged_schemas_root,
@@ -30,7 +29,8 @@ SCHEMAS_ROOT = PACKAGE_ROOT / "src" / "iwxxm_validate" / "schemas"
 
 def _load_sync():
     spec = importlib.util.spec_from_file_location("sync_runtime_schemas", SYNC_SCRIPT)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -127,6 +127,13 @@ def test_validate_iwxxm_guard_paths(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(vi, "us_catalog_path", lambda: None)
     missing_us = validate_iwxxm("<r/>", iwxxm_version="2023-1", profile="iwxxm_us")
     assert missing_us.issues[0].code == "US_CATALOG_NOT_FOUND"
+
+    wrong_ver = validate_iwxxm("<r/>", iwxxm_version="2025-2", profile="ca_eccc")
+    assert wrong_ver.issues[0].code == "INVALID_IWXXM_VERSION"
+
+    monkeypatch.setattr(vi, "ca_xsd_path", lambda **_: None)
+    missing_ca = validate_iwxxm("<r/>", iwxxm_version="3.0.0", profile="ca_eccc")
+    assert missing_ca.issues[0].code == "CA_SCHEMA_NOT_FOUND"
 
     monkeypatch.setattr(vi, "rust_available", lambda: False)
     monkeypatch.setattr(

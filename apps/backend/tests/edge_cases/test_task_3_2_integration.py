@@ -6,7 +6,6 @@ Tests enhanced cloud layer validation against real METAR test data.
 import re
 
 import pytest
-
 from src.testing.metar_test_generator import METARTestGenerator
 from src.validation.semantic_rules import (
     CloudLayerValidationRule,
@@ -70,7 +69,7 @@ class TestCloudLayerValidationWithRealData:
         invalid_count = 0
         no_clouds_count = 0
 
-        for i, case in enumerate(test_cases):
+        for _i, case in enumerate(test_cases):
             metar_text = case.raw_metar
 
             # Extract cloud layers from raw METAR

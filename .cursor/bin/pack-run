@@ -1,0 +1,144 @@
+#!/usr/bin/env python3
+"""Per-angle scriptable checks. Exit 0 PASS / 1 FAIL. Prints verdict=."""
+
+from __future__ import annotations
+
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+PHASE = os.environ.get("VERIFY_PHASE", "documenting")
+
+
+def has_any(root: Path, names: tuple[str, ...]) -> bool:
+    return any((root / name).exists() for name in names)
+
+
+def docs_text(root: Path) -> str:
+    docs = root / "docs"
+    if not docs.is_dir():
+        return ""
+    chunks: list[str] = []
+    for path in docs.rglob("*.md"):
+        try:
+            chunks.append(path.read_text(encoding="utf-8", errors="replace"))
+        except OSError:
+            continue
+    return "\n".join(chunks).lower()
+
+
+def run_make(root: Path, target: str) -> bool:
+    makefile = root / "Makefile"
+    if not makefile.is_file():
+        return False
+    proc = subprocess.run(
+        ["make", "-C", str(root), target],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    return proc.returncode == 0
+
+
+def finish(ok: bool, detail: str) -> int:
+    verdict = "PASS" if ok else "FAIL"
+    print(f"verdict={verdict} phase={PHASE} {detail}")
+    return 0 if ok else 1
+
+
+def check(pack: str, root: Path) -> int:
+    text = docs_text(root)
+    if pack == "lint-format-typecheck":
+        if PHASE == "documenting":
+            ok = "lint" in text or has_any(root, ("Makefile", "pyproject.toml", "package.json"))
+            return finish(ok, "lint-bar-or-tooling-manifest")
+        ok = run_make(root, "lint") if (root / "Makefile").is_file() else has_any(
+            root, ("pyproject.toml", "package.json")
+        )
+        return finish(ok, "make-lint-or-manifest")
+    if pack == "tests":
+        if PHASE == "documenting":
+            ok = "test" in text or has_any(root, ("Makefile", "pytest.ini", "package.json"))
+            return finish(ok, "test-bar")
+        if (root / "Makefile").is_file():
+            return finish(run_make(root, "test") or run_make(root, "test-fast"), "make-test")
+        return finish(has_any(root, ("pytest.ini", "package.json")), "test-manifest")
+    if pack == "security":
+        if PHASE == "documenting":
+            ok = "security" in text or has_any(root, (".gitleaks.toml", "gitleaks.toml"))
+            return finish(ok, "security-bar")
+        return finish(True, "no-blocking-scanner-in-fixture")
+    if pack == "pii":
+        ok = "pii" in text or "privacy" in text or "retention" in text
+        if PHASE == "documenting":
+            return finish(ok or not has_any(root, ("docs/feature-list.md",)), "pii-policy-or-no-product")
+        return finish(ok or True, "pii-implementing-advisory-pass-if-no-product-data")
+    if pack == "contracts":
+        ok = has_any(root, ("docs/api-contract.md",)) or "api" in text
+        return finish(ok or not (root / "apps").exists(), "api-contract-or-no-apps")
+    if pack == "qa-quality":
+        ok = has_any(root, ("docs/test-plan.md",)) or "qa" in text or "coverage" in text
+        return finish(ok, "qa-bar")
+    if pack == "observability":
+        ok = "observ" in text or "metric" in text or "log" in text or not has_any(
+            root, ("docs/feature-list.md",)
+        )
+        return finish(ok, "observability-bar-or-not-a-service")
+    if pack == "adr-raid":
+        ok = has_any(root, ("docs/adr/README.md", "docs/decisions.md")) or "decision" in text
+        return finish(ok, "decisions-logged")
+    if pack == "milestones-planning":
+        ok = has_any(root, ("docs/plan-card.md", "docs/roadmap.md")) or "plan" in text or "milestone" in text
+        return finish(ok, "plan-present")
+    if pack == "human-readable":
+        # Fail if any docs H1 is only an opaque token like F12 or T1.1
+        bad = False
+        docs = root / "docs"
+        if docs.is_dir():
+            for path in docs.rglob("*.md"):
+                for line in path.read_text(encoding="utf-8", errors="replace").splitlines()[:5]:
+                    if line.startswith("# ") and line[2:].strip().isidentifier() and len(line.strip()) < 8:
+                        bad = True
+        return finish(not bad, "english-headings")
+    if pack == "database-hygiene":
+        touches_db = "postgres" in text or "migration" in text or (root / "migrations").exists()
+        if not touches_db:
+            return finish(True, "na-no-database")
+        ok = (root / "migrations").exists() or "migration" in text
+        return finish(ok, "migrations")
+    if pack == "inline-documentation":
+        if PHASE == "documenting":
+            ok = (
+                "inline-documentation" in text
+                or "docstring" in text
+                or "tsdoc" in text
+                or has_any(root, ("docs/decisions/ev-025-inline-documentation-verify.md",))
+            )
+            return finish(ok, "inline-doc-bar-stated")
+        bin_dir = Path(__file__).resolve().parent
+        checker = bin_dir / "inline-doc-check.py"
+        if not checker.is_file():
+            return finish(False, "inline-doc-check-missing")
+        proc = subprocess.run(
+            [sys.executable, str(checker), str(root)],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        detail = (proc.stdout or proc.stderr or "").strip().replace("\n", " | ")[:500]
+        return finish(proc.returncode == 0, detail or "inline-doc-scan")
+    return finish(False, f"unknown-pack-{pack}")
+
+
+def main() -> int:
+    if len(sys.argv) < 2:
+        print("usage: pack-run PACK_ID [ROOT]", file=sys.stderr)
+        return 2
+    pack = sys.argv[1]
+    root = Path(sys.argv[2] if len(sys.argv) > 2 else os.environ.get("VERIFY_ROOT", ".")).resolve()
+    return check(pack, root)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

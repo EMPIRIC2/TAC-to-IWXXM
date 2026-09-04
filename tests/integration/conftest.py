@@ -22,7 +22,7 @@ def _require_live_integration_opt_in() -> None:
 
 @pytest.fixture(scope="session")
 def live_api_token() -> str:
-    """Bearer token from POST /auth/login (runtime — do not persist)."""
+    """Bearer token from POST /auth/login (runtime - do not persist)."""
     return obtain_live_api_token()
 
 

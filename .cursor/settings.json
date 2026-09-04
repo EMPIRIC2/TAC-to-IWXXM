@@ -2,6 +2,9 @@
   "plugins": {
     "render": {
       "enabled": true
+    },
+    "engineering-memory": {
+      "enabled": true
     }
   }
 }

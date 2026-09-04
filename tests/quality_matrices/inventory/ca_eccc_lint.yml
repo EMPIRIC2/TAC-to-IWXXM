@@ -1,0 +1,54 @@
+version: 1
+cite: EV-071 M1 / TC-EV071-004
+matrix_roots:
+- lint/ca_eccc
+engines:
+  lint:
+  - id: CA_STATUTE_MILE_VIS
+    native:
+      kind: registry_code
+      code: CA_STATUTE_MILE_VIS
+  - id: CA_ALTIMETER_INHG
+    native:
+      kind: registry_code
+      code: CA_ALTIMETER_INHG
+  - id: CA_ALTIMETER_NOT_OBS
+    native:
+      kind: registry_code
+      code: CA_ALTIMETER_NOT_OBS
+  - id: CA_REMARK_MANOBS
+    native:
+      kind: registry_code
+      code: CA_REMARK_MANOBS
+  - id: CA_REMARK_PRESFR
+    native:
+      kind: registry_code
+      code: CA_REMARK_PRESFR
+  - id: CA_REMARK_PRESRR
+    native:
+      kind: registry_code
+      code: CA_REMARK_PRESRR
+  - id: CA_REMARK_NOSPECI
+    native:
+      kind: registry_code
+      code: CA_REMARK_NOSPECI
+  - id: CA_REMARK_SECTOR_VIS
+    native:
+      kind: registry_code
+      code: CA_REMARK_SECTOR_VIS
+  - id: CA_METAR_LWIS
+    native:
+      kind: registry_code
+      code: CA_METAR_LWIS
+  - id: CA_METAR_SAWR
+    native:
+      kind: registry_code
+      code: CA_METAR_SAWR
+  - id: CA_TAF_NCLWS
+    native:
+      kind: registry_code
+      code: CA_TAF_NCLWS
+  - id: CA_AIRMET_GFA
+    native:
+      kind: registry_code
+      code: CA_AIRMET_GFA

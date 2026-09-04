@@ -95,6 +95,36 @@ metar-to-IWXXM/
 | Vendor schemas | Authoritative IWXXM SoT | `vendor/schemas/*` | wmo-im + iwxxm-us snapshots |
 | Work history (F5/F31) | Guest IndexedDB + logged-in DO Postgres sessions | FE IndexedDB + `tac_work_sessions` on DO | F7.i / F31; Auth JWT |
 | Worker (F8) | Near-RT ingest poller → store/quarantine | `apps/worker/` | `DATABASE_URL` → DO Postgres (F30) |
+| Workflows | YAML executor `execute(message, workflow)` (ADR-042) | `packages/workflows/` | tac2iwxxm, tac-validate, iwxxm-validate, pyyaml (EV-1132) |
+| Coverage gate harness (EV-080) | Unit coverage enforcement: pytest-cov + Vitest + per-file checker + scripts Python cov + bats-core | `scripts/ci/`, `tests/bats/` (planned), CI matrix | ADR-007 / #1077 |
+
+### Platform logical layers (#922 / #923)
+
+Epic [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922) describes a **logical** layering model
+(**Core → Profiles → Validation → Adapters → Dissemination**). Spike [#923](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/923)
+and [ADR-037](adr/ADR-037-platform-logical-layers.md) **keep current package names** (Option C) and map
+epic layers onto the monorepo below. Physical renames/splits (Option B) require a later evolve cycle
+after contract spikes #924–#927 close — **those spikes are now closed (ADR-038–042, EV-922 synthesis 2026-09-03).**
+
+| Logical layer | Purpose | Current home(s) | Contract (ADR) | Runtime gap |
+|---------------|---------|-----------------|----------------|-------------|
+| **Core** | Shared IR types, constants, vendor helpers | `packages/shared`; IR inside `packages/tac2iwxxm` | ADR-037 Option C | Document boundaries only |
+| **Profiles** | Semantic + exchange profile contracts + content | Code: `tac2iwxxm/profiles/*`, `tac_validate/profiles.py`, `dissemination/exchange_registry.py`; content: `docs/domain/profiles/` (ADR-036) | ADR-038 | Loader/resolver; #933 UI |
+| **Conversion** | TAC→IWXXM encode/decode | `packages/tac2iwxxm` | ADR-038 | Exchange packaging vs dissemination |
+| **Validation** | Staged TAC then IWXXM | `packages/tac-validate` + `packages/iwxxm-validate` | ADR-039 PipelineResult | Unified runtime; `ca_eccc` reference |
+| **Adapters** | SQL/DB symmetric source/sink mapping | `packages/dissemination` (`db_preflight`, `writer_contract`, `sink`) | ADR-040 MappingConfig | Source poll; sink mapping runtime (#896) |
+| **Gateways / AFS** | AFTN/AMHS/EDIS/WIS2box + plan/audit | `packages/dissemination` (`edis`, `wis2`, `transports`, `packaging`) | ADR-041 DisseminationGateway | **EV-936 Planned:** façade + `health()` + plan runtime (#936) |
+| **Dissemination** | Policy, plan, retry, delivery audit | Same + FE drawer + **ops surface** (`apps/frontend`) | ADR-041 DisseminationPlan | **EV-936 Planned:** audit on `DATABASE_URL` + ops UI (#936) |
+| **Workflows** | `execute(message, workflow)` | `packages/workflows` + `workflows/*.yaml`; F8 via `execute` | ADR-042 | EV-1132 Implemented |
+| **Auth** | JWT middleware | `packages/auth` | — | Out of MET platform layers |
+| **Apps** | HTTP / UI / worker / e2e | `apps/backend`, `frontend`, `worker`, `e2e` | — | Thin callers — no package move |
+
+**Approved milestone sequence** (epic #922 synthesis): Core → Profiles (#912/#924) → Validation (#925) →
+Adapters (#926) → Dissemination (#927) → Workflows (#931) → Platform UIs (#933–#938).
+
+**References:** [Context: platform-package-layout-923](context/platform-package-layout-923.md);
+[Context: epic-922-synthesis](context/epic-922-synthesis.md);
+EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `reports/922-epic-synthesis.md`.
 
 ## Component Details
 
@@ -114,9 +144,14 @@ metar-to-IWXXM/
 
 ### packages/tac2iwxxm
 
+- **EV-063 / F35 delta (#912)**: Profile plugins evolve from flat `annex3` / `iwxxm_us` to
+  **semantic** ids (`ICAO_2025`, `US_FAA_NWS`, …) with legacy aliases until #1025 cutover.
+  **Exchange** profiles (`GLOBAL_AFS`, `APAC_ROBEX`, …) apply on packaging paths in
+  `packages/dissemination` — not in the TAC lexer. See [ADR-036](adr/ADR-036-semantic-vs-exchange-profiles.md)
+  and [domain/profiles/](domain/profiles/).
 - **Purpose**: General TAC→IWXXM library (F6). Python public API → **bulletin split** (WMO AHL)
-  → versioned IR → product plugins → profile plugins (`annex3` / `iwxxm_us`) → XML writer;
-  library/CI metrics via companion validate packages.
+  → versioned IR → product plugins → profile plugins (`annex3` / `iwxxm_us` → **F35** semantic ids)
+  → XML writer; library/CI metrics via companion validate packages.
 - **Products (v1)**: AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA.
 - **Inputs**: TAC string/files **or bulletins**; `product`; `profile`; `iwxxm_version`; schema paths under vendor.
 - **Outputs**: IWXXM XML bytes/strings (per report); metrics reports in tests/CI only (not convert API fields).
@@ -235,8 +270,8 @@ metar-to-IWXXM/
 - **Purpose**: Public converter UI (product/profile/version), CodeMirror 6 workbench, decode
   panel, Failed-TAC / soft-preview UX, **IndexedDB** F5 My METARs + F7 multi-product sessions
   (F7.h), and F22 privacy notice/settings. **Done (F16–F19)**: Dissemination drawer + APIs
-  remain for harness. **S050 / EV-042 (#897)**: Operator Dissemination sink chooser /
-  Convert&Send **destination path UI-hidden** (UJ-053); restore on [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
+  remain for harness. **EV-091 / #898**: Operator Dissemination sink chooser /
+  Convert&Send / Upload to Database **restored** (UJ-053); drawer exchange overlay #1089.
   **F33**: Auth-gated mass file/folder ingest (caps 200 / 5 MiB / 50 MiB; sniff/zip-bomb).
   **F7 deepen EV-042**: Queue + keyboard + batch convert/validate (UJ-052). **No**
   AdminDashboard, `/admin/*` (F21 public convert; Auth optional for F31/F33 mass).
@@ -314,8 +349,13 @@ metar-to-IWXXM/
 
 - **Purpose**: Operator UI for seven F6 products + hybrid sessions (**F7.i** / F31).
 - **Slices**: F7.a–F7.h as before; **F7.i** restores JWT session APIs to DO Postgres for logged-in users.
-- **API**: Public convert companions unchanged; session CRUD requires Auth JWT.
-- **Source**: S011; S023 F7.h; **S038 / EV-031 F7.i**.
+- **F7.w (EV-933 / #933)**: ConversionProfile editor — rule-pack CRUD, ADR-038 inspector,
+  signed operator overlays on product Postgres (`DATABASE_URL`) with JWT ownership; UJ-072.
+  Complements light picker (#1024); does not merge destinations/credentials into profiles.
+- **API**: Public convert companions unchanged; session CRUD requires Auth JWT; F7.w pack/overlay
+  mutate routes require JWT (see [api-contract.md](api-contract.md) §EV-933).
+- **Source**: S011; S023 F7.h; **S038 / EV-031 F7.i**; **EV-933 F7.w**;
+  [Context: conversion-profile-editor-933](context/conversion-profile-editor-933.md).
 
 ### F21 — Public convert + optional Auth (Amended S038 / EV-031)
 
@@ -337,6 +377,18 @@ metar-to-IWXXM/
 - **Non-goals (F8 worker path)**: public machine-ingest auth UX; **automatic** push of ingest
   results (operator dissemination sinks are **F16–F19**, not F8 auto-push).
 - **Source**: ADR-018; **F30**; [feature-list.md](feature-list.md) F8.
+- **EV-1132 / #1132**: Cut over to `packages/workflows.execute` + `workflows/f8-metar-ingest-default.yaml`
+  (ADR-042). See [Context: workflows-runtime-1132](context/workflows-runtime-1132.md).
+
+### packages/workflows (ADR-042 / EV-1132)
+
+- **Purpose**: Thin MET-lib workflow executor — load git `workflows/*.yaml`, run fixed stage
+  registry (`validate-tac` → `convert-iwxxm` → `validate-xsd` / `validate-schematron` for MVP),
+  return `WorkflowResult`. Apps remain thin callers.
+- **SoC**: **No** FastAPI, Supabase, or SQLAlchemy; store/quarantine via injected ports.
+- **Status**: **Implemented** (EV-1132 / #1132) — contract Accepted in ADR-042.
+- **Source**: [ADR-042](adr/ADR-042-workflow-definitions.md);
+  [Context: workflows-runtime-1132](context/workflows-runtime-1132.md).
 
 ### F30 — Platform independence (S038 / EV-031)
 
@@ -347,6 +399,17 @@ metar-to-IWXXM/
 
 - **Purpose**: Guest local + notice; logged-in DO sessions; auto-upload; F22 interplay.
 - **Source**: [feature-list.md](feature-list.md) F31.
+
+### F16–F19 deepen — Gateway hooks + ops UI (EV-936 / #936) — Planned
+
+- **Purpose**: Runtime **DisseminationGateway** façade (`validate` / `send` / `health`) over
+  existing sinks; **DisseminationPlan** execute + delivery audit on product Postgres; operator
+  **Dissemination ops** surface (plan/audit/SQL mapping/gateway health) alongside the destinations
+  drawer. JWT for ops/plan/audit/mapping/health; public preflight/send unchanged (F21).
+- **Non-goals**: #933/#934/#938; live AFTN/failover features; secrets in audit UI; new packages.
+- **Source**: [feature-list.md](feature-list.md) §F16–F19 deepen (EV-936);
+  [Context: dissemination-ops-936](context/dissemination-ops-936.md); ADR-041 / ADR-040;
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-936; UJ-071.
 
 ### F16–F19 — Dissemination epic (S019 / EV-014) — Done
 
@@ -370,13 +433,14 @@ metar-to-IWXXM/
 - **Auth / F5**: Public dissemination (F21 — no operator JWT). Local session may record
   `kv_upload_key` on Finished in IndexedDB only; never store destination secrets.
 - **Status**: **Done** (EV-014 closed 2026-07-21; PR #771/#772). Multi-select deepen EV-018;
-  live local SQL e2e deepen S047 / EV-039. **S050 / EV-042**: Operator **UI destinations
-  temporarily hidden** (all sinks); APIs + `packages/dissemination` retained for harness;
-  restore tracked on [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
+  live local SQL e2e deepen S047 / EV-039. **EV-091 / #898**: Operator UI destinations
+  **restored** (URI-BYOC + F17–F19 sinks); #1089 drawer exchange overlay; APIs +
+  `packages/dissemination` unchanged; connection-first preflight retained.
 - **ADRs**: ADR-021 amend (destination paste); ADR-029 (SSRF / allowlist); ADR-030
   (`packages/dissemination` + sink/API/wis2box/EDIS).
 - **Source**: [feature-list.md](feature-list.md) F16–F19; #729 / #2 / #6; evolve-decisions EV-014;
-  **#785; evolve-decisions EV-018**; **S047 / evolve-decisions EV-039**; **S050 / EV-042 / #897**.
+  **#785; evolve-decisions EV-018**; **S047 / evolve-decisions EV-039**; **S050 / EV-042 / #897**;
+  **EV-091 / #898 / #1089**.
 
 ### F33 — Secure mass file/folder ingest (S050 / EV-042) — Planned
 

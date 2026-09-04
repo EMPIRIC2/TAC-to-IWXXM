@@ -1,4 +1,4 @@
-"""TC-EV047-005..008 — converter PR hard gate vs committed baselines."""
+"""TC-EV047-005..008 - converter PR hard gate vs committed baselines."""
 
 from __future__ import annotations
 
@@ -20,7 +20,7 @@ REPO = Path(__file__).resolve().parents[2]
 
 
 def test_tc_ev047_baseline_file_schema() -> None:
-    """TC-EV047-006/008 — committed baseline YAML schema + ceilings."""
+    """TC-EV047-006/008 - committed baseline YAML schema + ceilings."""
     assert DEFAULT_BASELINES.is_file()
     data = yaml.safe_load(DEFAULT_BASELINES.read_text(encoding="utf-8"))
     assert data["version"] == 1
@@ -39,9 +39,9 @@ def test_tc_ev047_baseline_file_schema() -> None:
 
 
 def test_tc_ev047_convert_under_ceiling() -> None:
-    """TC-EV047-006 — current convert stays under committed ceilings (green path).
+    """TC-EV047-006 - current convert stays under committed ceilings (green path).
 
-    Skipped while ``status: laptop_seed`` (D-S056-04-plan=2) — re-enable after T1.3
+    Skipped while ``status: laptop_seed`` (D-S056-04-plan=2) - re-enable after T1.3
     CI re-record sets ``status: ci_recorded``.
     """
     baselines = load_converter_pr_baselines()
@@ -65,7 +65,7 @@ def test_tc_ev047_convert_under_ceiling() -> None:
 
 
 def test_tc_ev047_artificial_slowdown_exceeds_ceiling() -> None:
-    """TC-EV047-005 — deliberate slowdown turns the gate red."""
+    """TC-EV047-005 - deliberate slowdown turns the gate red."""
     baselines = load_converter_pr_baselines()
     pb = baselines.products["metar"]
     delay = max(pb.ceiling_p95_s * 2, 0.002)
@@ -87,13 +87,13 @@ def test_tc_ev047_artificial_slowdown_exceeds_ceiling() -> None:
 
 
 def test_tc_ev047_makefile_has_baseline_refresh_target() -> None:
-    """TC-EV047-006 — explicit refresh target (no silent auto-raise)."""
+    """TC-EV047-006 - explicit refresh target (no silent auto-raise)."""
     makefile = (REPO / "Makefile").read_text(encoding="utf-8")
     assert "perf-converter-baseline" in makefile
 
 
 def test_tc_ev047_ci_job_locked_name() -> None:
-    """TC-EV047-007 — CI job display name matches ruleset context."""
+    """TC-EV047-007 - CI job display name matches ruleset context."""
     workflow = (REPO / ".github" / "workflows" / "ci-cd.yml").read_text(
         encoding="utf-8"
     )

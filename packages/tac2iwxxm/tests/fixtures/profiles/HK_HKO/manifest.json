@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "description": "EV-094 M6 — HK_HKO deepen; AWC-attributed VHHH METAR/TAF (TX/TN present); SPECI/SIGMET/VAA synthetic gaps; SIGMET+VAA remain on allowlist",
+  "profile": "HK_HKO",
+  "cycle": "EV-094",
+  "issue": "#1098",
+  "cases": [
+    {
+      "id": "metar_vhhh",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_vhhh.tac",
+      "rule_id": "HK.BASE.ICAO",
+      "status": "active",
+      "source_kind": "official",
+      "source_url": "https://aviationweather.gov/api/data/metar?ids=VHHH&format=raw",
+      "source_label": "Aviation Weather Center METAR API (VHHH)",
+      "observed_at_utc": "2026-08-31T15:00:00Z"
+    },
+    {
+      "id": "speci_vhhh",
+      "product": "SPECI",
+      "tac": "SPECI/valid/speci_vhhh.tac",
+      "rule_id": "HK.BASE.ICAO",
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed real SPECI corpus pending — catalog gap EV-094"
+    },
+    {
+      "id": "taf_vhhh",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_vhhh.tac",
+      "rule_id": "HK.BASE.ICAO",
+      "status": "active",
+      "source_kind": "official",
+      "source_url": "https://aviationweather.gov/api/data/taf?ids=VHHH&format=raw",
+      "source_label": "Aviation Weather Center TAF API (VHHH)",
+      "observed_at_utc": "2026-08-31T14:00:00Z",
+      "note": "TX/TN present — HKO Annex-conformant; empty overrides"
+    },
+    {
+      "id": "sigmet_basic",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_basic.tac",
+      "rule_id": "HK.BASE.ICAO",
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed Hong Kong FIR SIGMET corpus pending (allowlist retained D-EV094-products)"
+    },
+    {
+      "id": "vaa_sample",
+      "product": "VAA",
+      "tac": "VAA/valid/vaa_sample.tac",
+      "rule_id": "HK.BASE.ICAO",
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed HKO/VAAC VAA corpus pending (allowlist retained D-EV094-products)"
+    }
+  ]
+}

@@ -91,10 +91,7 @@ export function useLiveWorkbenchAssist({
   const clearConsole = useCallback(() => setConsoleLines([]), []);
 
   useEffect(() => {
-    const scheduler = schedulerRef.current;
-    if (!scheduler) {
-      return;
-    }
+    const scheduler = schedulerRef.current!;
 
     if (!enabled || !text.trim()) {
       scheduler.cancel();

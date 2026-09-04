@@ -1,11 +1,10 @@
-"""TC-EV052-006 — optional Sentry init (no-op without DSN)."""
+"""TC-EV052-006 - optional Sentry init (no-op without DSN)."""
 
 from __future__ import annotations
 
 from typing import Any
 
 import pytest
-
 from utilities import sentry_init
 
 

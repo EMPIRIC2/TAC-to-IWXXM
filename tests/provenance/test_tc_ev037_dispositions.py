@@ -1,4 +1,4 @@
-"""TC-EV037 — matrix dispositions #869 / #870 / #872."""
+"""TC-EV037 - matrix dispositions #869 / #870 / #872."""
 
 from __future__ import annotations
 
@@ -29,7 +29,8 @@ def test_tc_ev037_001_vona_sot_guidance_nonblocking() -> None:
     data = load_map()
     text = COVERAGE.read_text(encoding="utf-8")
     assert "non-blocking" in text.lower() or "SoT" in text
-    assert "cookbook" in text.lower() and "derived" in text.lower()
+    assert "cookbook" in text.lower()
+    assert "derived" in text.lower()
     assert "#869" in text
 
     silent = next(
@@ -97,7 +98,9 @@ def test_tc_ev037_004_disposals_recorded() -> None:
     data = load_map()
     assert data.get("cycle") == "EV-037"
     disposals = data.get("ev037_dispositions") or {}
-    assert "869" in disposals and "870" in disposals and "872" in disposals
+    assert "869" in disposals
+    assert "870" in disposals
+    assert "872" in disposals
     # Disposed gaps removed from gaps[]
     gap_ids = {g.get("id") for g in data.get("gaps") or []}
     assert "US_SCH_ABSENT" not in gap_ids
@@ -110,7 +113,7 @@ def test_tc_ev037_004_disposals_recorded() -> None:
 
 
 @pytest.mark.parametrize(
-    "rule_id,status",
+    ("rule_id", "status"),
     [
         ("VONA_GUIDANCE_SILENT", "N/A"),
         ("US_SCH_ABSENT", "N/A"),

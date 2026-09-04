@@ -10,11 +10,10 @@ Reference: WMO IWXXM code tables
 - http://codes.wmo.int/iwxxm/nil
 """
 
-from enum import Enum
-from typing import Set
+from enum import StrEnum
 
 
-class MeteorologicalFeature(str, Enum):
+class MeteorologicalFeature(StrEnum):
     """Valid IWXXM meteorological features."""
 
     AIRFRAME_ICING = "AIRFRAME_ICING"
@@ -39,7 +38,7 @@ class MeteorologicalFeature(str, Enum):
     STORM = "STORM"
 
 
-class VolcanicAviationColourCode(str, Enum):
+class VolcanicAviationColourCode(StrEnum):
     """Valid IWXXM volcanic aviation colour codes."""
 
     GREEN = "GREEN"
@@ -49,7 +48,7 @@ class VolcanicAviationColourCode(str, Enum):
     UNASSIGNED = "UNASSIGNED"
 
 
-class NilReason(str, Enum):
+class NilReason(StrEnum):
     """Valid IWXXM nil reasons for missing data."""
 
     ABOVE_DETECTION_RANGE = "AboveDetectionRange"
@@ -65,7 +64,7 @@ class NilReason(str, Enum):
     WITHHELD = "withheld"
 
 
-class IWXXMVersion(str, Enum):
+class IWXXMVersion(StrEnum):
     """Supported IWXXM versions."""
 
     VERSION_2016 = "2016-1"
@@ -77,13 +76,13 @@ class IWXXMVersion(str, Enum):
 
 
 # Set for quick lookups
-VALID_METEOROLOGICAL_FEATURES: Set[str] = {f.value for f in MeteorologicalFeature}
+VALID_METEOROLOGICAL_FEATURES: set[str] = {f.value for f in MeteorologicalFeature}
 
-VALID_VOLCANIC_CODES: Set[str] = {c.value for c in VolcanicAviationColourCode}
+VALID_VOLCANIC_CODES: set[str] = {c.value for c in VolcanicAviationColourCode}
 
-VALID_NIL_REASONS: Set[str] = {r.value for r in NilReason}
+VALID_NIL_REASONS: set[str] = {r.value for r in NilReason}
 
-SUPPORTED_IWXXM_VERSIONS: Set[str] = {v.value for v in IWXXMVersion}
+SUPPORTED_IWXXM_VERSIONS: set[str] = {v.value for v in IWXXMVersion}
 
 
 def is_valid_meteorological_feature(feature: str) -> bool:

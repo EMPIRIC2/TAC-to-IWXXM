@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-08-20 (EV-062 Validation Issues Catalog / #1017 deepen UJ-068)
+> **Last updated**: 2026-09-03 (EV-933 #933 ConversionProfile editor — UJ-072)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -42,10 +42,10 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-025 | Manual TAC Input modes (TAC / AHL / COLLECT) | apps/frontend | F7 (ADR-024) | T2 / **T3** / H6′ |
 | UJ-026 | METAR REMARKS retain / exclusion (#667) | UI / API / package | F6 | T0 / T2 |
-| UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) + multi-select | apps/frontend | F16 | T2 / **T3** / H6′ (+ **live local** Compose); **operator UI deferred EV-042** — harness only until #898 |
-| UJ-028 | Dissemination drawer — WIS2 publish | apps/frontend | F17 | T2 / **T3** / H6′; **operator UI deferred EV-042** until #898 |
-| UJ-029 | Dissemination drawer — EDIS → RTH Washington | apps/frontend | F18 | T2 / **T3**; **operator UI deferred EV-042** until #898 |
-| UJ-030 | Dissemination drawer — AMHS / SWIM / AFS | apps/frontend | F19 | T2 / **T3**; **operator UI deferred EV-042** until #898 |
+| UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) + multi-select | apps/frontend | F16 | T2 / **T3** / H6′ (+ **live local** Compose); **restored EV-091 / #898** (+ #1089 exchange overlay) |
+| UJ-028 | Dissemination drawer — WIS2 publish | apps/frontend | F17 | T2 / **T3** / H6′; **restored EV-091 / #898** |
+| UJ-029 | Dissemination drawer — EDIS → RTH Washington | apps/frontend | F18 | T2 / **T3**; **restored EV-091 / #898** |
+| UJ-030 | Dissemination drawer — AMHS / SWIM / AFS | apps/frontend | F19 | T2 / **T3**; **restored EV-091 / #898** |
 | UJ-031 | TAF + SPECI lint / convert→validate golden | UI / API / CI | F20 (+F6/F12) | T0 / T2 / **T3** |
 | UJ-032 | Load golden example → convert / validate | apps/frontend | F7 (#780) | T0 / T2 / H4–H5 |
 | UJ-033 | Privacy notice + settings + GPC | apps/frontend | F22 | T0 / T2 / H4–H5 |
@@ -69,7 +69,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-050 | IWXXM version picker Latest / Previous labels | apps/frontend | F4+F7 deepen (EV-038 / #854) | T2 / **T3** / H4–H5 |
 | UJ-051 | Secure mass file/folder ingest (auth + caps) | apps/frontend | F33 | T2 / **T3** / H4–H5 |
 | UJ-052 | Operator queue + keyboard/batch convert·validate churn | apps/frontend | F7 deepen (EV-042) | T2 / **T3** / H4–H5 |
-| UJ-053 | Operator UI has no dissemination destinations | apps/frontend | F16–F19 deepen (EV-042) | T2 / **T3** / H4–H5 |
+| UJ-053 | Operator dissemination destinations visible (EV-091 restore; was hide under EV-042) | apps/frontend | F16–F19 deepen | T2 / **T3** / H4–H5 |
 | UJ-054 | Operator Help → one-pager / handbook | apps/frontend | F7 deepen (EV-047 / #956/#957) | T0 / T2 / **T3** |
 | UJ-055 | Operator UI + API docs free of internal planning vocabulary | apps/frontend / OpenAPI | F7+F21 deepen (EV-048 / #951) | T0 / T2 / **T3** |
 | UJ-056 | Browse official corpus Quality metrics tab | apps/frontend | F7.q deepen (EV-054 / #836; EV-055 / #982+#980+#979; EV-056 / #988; EV-058 / #983) | T0 / T2 / **T3** / H4–H5 |
@@ -85,6 +85,10 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-066 | Product Type + Profile bars no-wrap / aligned | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
 | UJ-067 | Conversion parameter bar aligned with mode selects | apps/frontend | F7.u (EV-061 / #1013) | T0 / T2 / **T3** / H4–H5 |
 | UJ-068 | Lint & validation catalog top-level tab/page | apps/frontend | F7.v/F15 (EV-061 / #1014; **EV-062 / #1017** deepen) | T0 / T2 / **T3** / H4–H5 |
+| UJ-069 | Convert with semantic profile → package with exchange profile | API / library / workbench (#1024) | F35+F36 (EV-063/EV-090/EV-093 / #912) | T2 / **T3**; **H4–H5** (FE) |
+| UJ-070 | Opt-in propagate decode residuals into remarks / HRT | UI / API / package / Quality metrics (#981) | F6+F9+F7.q (EV-981) | T0 / T2 / **T3** / H4–H5 |
+| UJ-071 | Dissemination ops — plan/audit/SQL mapping/gateway health | apps/frontend / API | F16–F19 deepen (EV-936 / #936) | T2 / **T3** / H6′ (+ H4–H5 when FE deploy) |
+| UJ-072 | ConversionProfile editor — rule pack → overlay → convert | apps/frontend / API | F7.w (EV-933 / #933) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
@@ -345,6 +349,10 @@ partial success may encode recognized elements and retain remainder (UJ-026).
 **Deepen (S032 / EV-025)**: As dig ❌ types gain structured codecs (UJ-040), acceptance (2)
 expands to those types; any still-unparsed tokens remain in `humanReadableText` (never drop).
 
+**Fence (EV-981 / #981)**: With `propagate_residuals_to_remarks` **off** (default / annex3
+profile default), decode residuals must **not** appear in remarks / HRT solely because they
+were undecoded — UJ-026 and goldens stay unchanged. Flag-on behavior is **UJ-070**.
+
 **Automated tests**:
 - Package: `packages/tac2iwxxm/tests/test_issue_667_metar_remarks.py`
 - API unit: `apps/backend/tests/unit/test_uj026_remarks_convert_issues.py`
@@ -352,6 +360,125 @@ expands to those types; any still-unparsed tokens remain in `humanReadableText` 
 - Playwright: `apps/e2e/uj026-metar-remarks.e2e.spec.ts`
 
 **Source**: S018 / EV-013
+
+---
+
+### UJ-070: Opt-in propagate decode residuals into remarks / HRT (#981)
+
+**Actor**: Meteorological operator / API client
+
+**Goal**: Optionally fold undecoded TAC residual spans into the remarks /
+`humanReadableText` retention path so leftover text is preserved in IWXXM when the operator
+opts in.
+
+**Feature**: F6 + F9 + F7.q (EV-981)
+
+**Steps**:
+
+1. Convert METAR/SPECI (or other product with residuals) with
+   `propagate_residuals_to_remarks=false` or omitted on annex3 → residuals only in decode /
+   quality-metrics diagnostics; annex3 `RMK` still yields `REMARKS_EXCLUDED` (UJ-026).
+2. Convert the same TAC with `propagate_residuals_to_remarks=true` on a profile that
+   emits remarks / `humanReadableText` (`iwxxm_us`, `ca_eccc`, …) → residual token text
+   appears in that emit path; response includes info `ConvertIssue`
+   `RESIDUALS_PROPAGATED_TO_REMARKS`. On **annex3**, flag-on does **not** invent free-text
+   remarks XML; the same issue code documents **no XML target** and QM fold stays false.
+3. Workbench: toggle labeled in plain language; reflects effective value (explicit override
+   vs profile default).
+4. Quality metrics detail for a stem shows `residuals_propagated_to_remarks` and the
+   residuals panel indicates fold status (fixtures precomputed; default corpus `false`).
+
+**Acceptance**:
+1. Default off preserves UJ-026 + existing goldens.
+2. Enabled path retains residual text in emitted remarks / HRT when the profile has that
+   emit path; annex3 documents no XML target without inventing remarks.
+3. Flag documented in API + UI without internal planning vocabulary.
+4. QM detail field + indicator present; no live WMO fetch.
+5. Profile-default hook present; annex3/ICAO_2025 default remains off; no other profile
+   defaults enabled this cycle.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EV981-001..005 (see test-plan)
+
+**Source**: EV-981 / #981; [Context: propagate-residuals-to-remarks](context/propagate-residuals-to-remarks.md)
+
+---
+
+### UJ-071: Dissemination ops — plan / audit / SQL mapping / gateway health (EV-936 / #936)
+
+**Actor**: Authenticated meteorological operator (JWT)
+
+**Goal**: Configure DisseminationPlan + SQL MappingConfig, inspect redacted delivery audit,
+and check gateway health — without replacing one-shot destinations drawer send (UJ-027–030).
+
+**Feature**: F16–F19 deepen (EV-936)
+
+**Steps**:
+
+1. Sign in (F31). Open **Dissemination ops** (distinct from destinations drawer).
+2. **SQL mapping**: create/edit MappingConfig (message / station / timestamp / externalId);
+   source vs sink mode; no national MET schema prescribed.
+3. **Plan editor**: set validity policy + destination multi-select (no live credential paste in plan).
+4. **Execute plan** (or dry-run) for a sample message → audit row with `DeliveryReceipt` fields;
+   UI never shows BYOC secrets or connection URIs.
+5. **Audit list/detail**: filter by product/station/profile/status; open detail.
+6. **Gateway health**: view per-kind `GatewayHealth` (ok / connectivity_ok / operator-safe detail).
+7. Optionally complete one-shot Disseminate in the destinations drawer (UJ-027) — unchanged.
+
+**Acceptance**:
+1. Ops surface complements drawer; UJ-027–030 remain green.
+2. Audit on product Postgres (`DATABASE_URL`); JWT required for ops/plan/audit/mapping/health.
+3. Public `POST /dissemination/preflight` + `/send` unchanged (F21).
+4. No secrets/URIs in audit API or UI; no internal planning vocabulary on operator copy.
+5. H6′ smoke for UJ-071; H4–H5 when FE ops routes deploy.
+
+**Errors**: 401/403 without JWT; allowlist/connectivity failures as operator-safe messages.
+
+**Tier**: T2 / T3 / H6′ (+ H4–H5 when FE deploy)
+
+**Automated tests**: TC-F16-OPS-001..006 (see test-plan)
+
+**Source**: EV-936 / #936; ADR-041; ADR-040; [Context: dissemination-ops-936](context/dissemination-ops-936.md)
+
+---
+
+### UJ-072: ConversionProfile editor — inspect, rule-pack, overlay, convert (EV-933 / #933)
+
+**Actor**: Authenticated meteorological operator or admin (JWT)
+
+**Goal**: Open the ConversionProfile editor, inspect a catalog profile, edit a rule-pack,
+save a signed operator-scoped overlay (M2), and apply it on convert — without collapsing
+the light picker (#1024) or putting credentials in the profile.
+
+**Feature**: F7.w (EV-933)
+
+**Steps**:
+
+1. Sign in (F31). Open **Profiles / ConversionProfile** editor (operator + admin).
+2. **Inspect**: select a first-party catalog id (e.g. `ICAO_2025`, `US_FAA_NWS`); view
+   ADR-038 staged settings read-only (grammar, validation refs, exchange default — no secrets).
+3. **Rule-pack (M1)**: create/edit pack fields (id, profile, product, stage, severity, when,
+   message, standardReference); export/share as downloadable YAML/JSON.
+4. **Overlay (M2)**: save signed operator-scoped overlay to product Postgres (JWT ownership;
+   admin may manage shared packs per ownership rules). Reject unsigned / unknown trust.
+5. Return to workbench convert; select overlay (or pack) and convert a sample TAC.
+6. Confirm light semantic/exchange picker (#1024) and dissemination drawer still work.
+
+**Acceptance**:
+1. M1 ships rule-pack + inspector before M2 overlay persist (same evolve).
+2. No credentials / destination URIs in profile or overlay payloads (ADR-021/029).
+3. Fail-closed on unsigned overlays and unknown profile ids.
+4. UJ-069 / #1024 and UJ-027–030 / UJ-071 remain green.
+5. H4–H5 when FE editor routes deploy; operator copy free of internal planning ids (EV-048).
+
+**Errors**: 401/403 without JWT; 400 unsigned/invalid overlay; ownership 403 on foreign packs.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EV933-001..006 (see test-plan)
+
+**Source**: EV-933 / #933; ADR-038 (amend overlays); [Context: conversion-profile-editor-933](context/conversion-profile-editor-933.md)
 
 ---
 
@@ -868,12 +995,16 @@ residuals, lint, validate, with a unified XML diff vs our conversion.
    reflect enabled / fixed 2025-2 disposition without internal planning ids.
 7. Confirm a deferred / gap stem is labeled (not silently missing).
 8. Optional later: deep-link the same stem into the convert workbench.
+9. **EV-981**: in residuals panel, see whether leftover TAC was folded into remarks /
+   human-readable text for that fixture (`residuals_propagated_to_remarks`; default corpus
+   `false`).
 
 **Acceptance**: AC1–AC7 in evolve-decisions §EV-054 (tab shell) **and** AC1–AC7 in
 evolve-decisions §EV-055 (normalize + validate disposition) **and** AC1–AC5 in
 evolve-decisions §EV-056 (detail route + collapsible diffs) **and** AC1–AC5 in
-evolve-decisions §EV-058 (side-by-side vs inline); TC-EV054-001..008 +
-TC-EV055-001..007 + TC-EV056-001..005 + TC-EV058-001..005. Default view needs no
+evolve-decisions §EV-058 (side-by-side vs inline) **and** EV-981 QM hook (`D-EV981-qm`);
+TC-EV054-001..008 + TC-EV055-001..007 + TC-EV056-001..005 + TC-EV058-001..005 +
+TC-EV981-004. Default view needs no
 Supabase and no live upstream WMO fetch — metrics come from public
 `GET /api/v1/quality-metrics*` backed by precomputed fixtures (`D-S063-gateA=2`;
 regen under `D-S064-regen=1`).
@@ -1123,6 +1254,38 @@ appear as semantic/legacy aliases without being the href. Paywall access is labe
 
 **Acceptance**: feature-list F7.v / F15 / #1014 + #1017; TC-EV061-1014-* + TC-EV062-*. Distinct from #996.
 **Tier: T0 / T2 / T3 / H4–H5**. [Corpus: product §F7] [Corpus: product §F15] [Corpus: api]
+
+---
+
+### UJ-069: Semantic Convert → Exchange Package (EV-063 / #912 / EV-093)
+
+**Actor**: Library integrator or operator (API + workbench light picker via #1024 / EV-090 / EV-093)
+
+**Goal**: Convert TAC with a **semantic** profile (canonical uppercase ids such as `ICAO_2025`,
+`US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, thin packs, or legacy alias `annex3` /
+`iwxxm_us` during deprecation window), then prepare output for dissemination using an
+**exchange** profile (default `GLOBAL_AFS`) without conflating profile choice with sink
+credentials or editable overlays.
+
+**Steps**:
+
+1. On the workbench, open **Profile** and choose a canonical id (default `ICAO_2025`) or a
+   legacy alias option; confirm help text that Profile is not destinations/credentials and does
+   not edit overlays. API clients may POST `semantic_profile=ICAO_2025` (or alias `annex3`) with
+   a supported product.
+2. Receive IWXXM matching pre-migration annex3 goldens for ICAO path; CA_ECCC keeps 3.0.0 pin /
+   extension behavior; observe deprecation signal if alias used.
+3. Invoke packaging/disseminate-prep with `exchange_profile=GLOBAL_AFS` (or rely on default), or
+   select a regional stub (`APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM`). On the workbench, choose
+   **Exchange profile** (default `GLOBAL_AFS`); convert-only actions do not invent credentials.
+4. Confirm packaging hooks run deterministically in CI (no live sink push). Exchange help states
+   choice is not a destination or credential.
+5. Confirm F16–F19 BYOC credentials are not stored or implied by semantic or exchange profile
+   selection (drawer overlay EV-091 unchanged).
+
+**Acceptance**: feature-list F35/F36; ADR-036; api-contract; TC-EV063-*; TC-EV065-*; TC-EV086-*;
+TC-EV090-*; **TC-EV093-***.
+**Tier: T2 / T3**; **H4–H5** (FE). [Corpus: product §F35] [Corpus: product §F36] [Corpus: product §F7] [Corpus: api] [Corpus: adr/ADR-036]
 
 ---
 
@@ -1910,29 +2073,30 @@ per-file errors, under auth + size/count caps + sniff/zip-bomb guards.
 1. After convert or mass ingest, see a sticky result/queue list.
 2. Use next/prev keyboard shortcuts; Enter triggers convert or validate for the focused item.
 3. Multi-select items → batch convert and/or batch validate; progress visible.
-4. Confirm Convert&Send / Disseminate destination UI is absent (UJ-053).
+4. Confirm Convert&Send / Disseminate / Upload to Database destinations are available (UJ-053 restore / EV-091).
 
-**Acceptance**: TC-EV042-003..004.
+**Acceptance**: TC-EV042-003..004; TC-EV091-001.
 
 ---
 
-### UJ-053: No Operator Dissemination Destinations (S050 / EV-042)
+### UJ-053: Operator Dissemination Destinations Restored (EV-091 / #898)
 
 **Actor**: Operator
 
 **Goal**: Dissemination drawer sink chooser, Convert&Send destination path, and
-**Upload to Database** / `DatabaseUploadDialog` are not available (DB + WIS2/EDIS/AMHS/SWIM/AFS).
-Backend APIs remain for harness until #898.
+**Upload to Database** / `DatabaseUploadDialog` are available (DB URI-BYOC + WIS2/EDIS/AMHS/SWIM/AFS).
+Drawer includes **Exchange profile** overlay (#1089). Connection-first preflight remains required.
+Backend APIs continue for harness.
 
-**Feature**: **F16–F19** deepen — EV-042 / #897; restore [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898)
+**Feature**: **F16–F19** deepen — EV-091 / #898 / #1089 (supersedes EV-042 hide)
 
 **Steps**:
 
-1. Open workbench; confirm no sink chooser / Convert&Send / Upload to Database.
-2. Convert and validate still work (UJ-001/002/052).
-3. Harness/tests may still call `/api/v1/dissemination/*` outside the operator UI.
+1. Open workbench; confirm Convert&Send, Disseminate, and Upload to Database are visible.
+2. Open Dissemination drawer; select sink + optional Exchange profile; Preflight before Send.
+3. Convert and validate still work (UJ-001/002/052).
 
-**Acceptance**: TC-EV042-001..002.
+**Acceptance**: TC-EV091-001..002; TC-EV042-002 (API retained).
 
 ---
 

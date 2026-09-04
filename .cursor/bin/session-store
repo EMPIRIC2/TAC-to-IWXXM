@@ -1,0 +1,281 @@
+#!/usr/bin/env python3
+"""Local session store CLI. [Corpus: session-store] [Corpus: handoff]"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+from datetime import UTC, datetime
+from pathlib import Path
+
+DEFAULT_ROOT = Path.home() / ".cursor" / "workflow"
+
+STATE_KEYS = (
+    "id",
+    "orchestrator",
+    "status",
+    "phase",
+    "documenting_to_implementing_gate",
+    "scale",
+    "selected_angles",
+    "slice",
+    "slice_mode",
+    "current_step",
+    "wiki_publish",
+    "started",
+    "closed",
+)
+
+HANDOFF = """# HANDOFF — {sid}
+
+## Resume
+- Orchestrator: {orch}
+- Command: resume this session (do not start a new intake)
+- Local path: {path}
+- Wiki (if published): not published
+
+## Goal
+(fill)
+
+## Phase and gate
+- Phase: documenting
+- Gate: closed
+- Scale: (fill)
+- Selected angles: (fill)
+
+## Done
+(none yet)
+
+## Evidence
+None yet
+
+## Next skill
+spec-development/context
+
+## Do not
+- Re-run completed intake unless deltas
+- Open Implementing while gate closed
+- Delete old 00–19 (until a later cycle)
+- Write live session state into the project git tree
+
+## Open questions
+(none)
+"""
+
+BRIEF = """---
+session_id: {sid}
+orchestrator: {orch}
+status: in_progress
+---
+
+# Session {sid}
+
+## Intent
+(fill)
+
+## Scope
+In / out of scope (fill)
+"""
+
+ROUTING = """# Routing plan — {sid}
+
+**orchestrator:** {orch}
+**scale:** (set at intake)
+**slice:** —
+**documenting_to_implementing_gate:** closed
+
+## Spec-development band
+
+| Step | Skill | Required | Status |
+|------|-------|----------|--------|
+| 1 | spec-development/context | yes | pending |
+| 2 | spec-development/requirements | yes | pending |
+| 3 | spec-development/draft-docs | yes | pending |
+| 4 | spec-development/feasibility | yes | pending |
+| 5 | bin/verify --phase documenting | yes | pending |
+
+## Build band
+
+**Status:** blocked_until_gate
+
+| Step | Skill | Required | Status |
+|------|-------|----------|--------|
+| 1 | build/build | yes | blocked |
+| 2 | bin/verify --phase implementing | yes | blocked |
+"""
+
+STATE = """id: {sid}
+orchestrator: {orch}
+status: in_progress
+phase: documenting
+documenting_to_implementing_gate: closed
+scale: null
+selected_angles: []
+slice: null
+slice_mode: null
+current_step: spec-development/context
+wiki_publish: false
+started: "{started}"
+"""
+
+
+def _format_value(key: str, value: object) -> str:
+    if value is None:
+        return "null"
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    if key == "selected_angles" and isinstance(value, list):
+        return ",".join(str(v) for v in value) if value else "[]"
+    if key == "selected_angles" and isinstance(value, str):
+        return value if value else "[]"
+    return str(value)
+
+
+def write_state(path: Path, data: dict[str, object]) -> None:
+    lines: list[str] = []
+    for key in STATE_KEYS:
+        if key not in data:
+            continue
+        lines.append(f"{key}: {_format_value(key, data[key])}")
+    (path / "state.yaml").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def create(root: Path, owner: str, repo: str, sid: str, orch: str) -> Path:
+    session = root / owner / repo / "sessions" / sid
+    session.mkdir(parents=True, exist_ok=True)
+    (session / "reports").mkdir(exist_ok=True)
+    (session / "evidence").mkdir(exist_ok=True)
+    started = datetime.now(UTC).strftime("%Y-%m-%d")
+    path = session
+    (session / "HANDOFF.md").write_text(
+        HANDOFF.format(sid=sid, orch=orch, path=path), encoding="utf-8"
+    )
+    (session / "session-brief.md").write_text(BRIEF.format(sid=sid, orch=orch), encoding="utf-8")
+    (session / "routing-plan.md").write_text(
+        ROUTING.format(sid=sid, orch=orch), encoding="utf-8"
+    )
+    write_state(
+        session,
+        {
+            "id": sid,
+            "orchestrator": orch,
+            "status": "in_progress",
+            "phase": "documenting",
+            "documenting_to_implementing_gate": "closed",
+            "scale": None,
+            "selected_angles": [],
+            "slice": None,
+            "slice_mode": None,
+            "current_step": "spec-development/context",
+            "wiki_publish": False,
+            "started": started,
+        },
+    )
+    print(str(session))
+    return session
+
+
+def read_state(path: Path) -> dict[str, object]:
+    text = (path / "state.yaml").read_text(encoding="utf-8")
+    data: dict[str, object] = {}
+    for line in text.splitlines():
+        if not line.strip() or line.strip().startswith("#") or ":" not in line:
+            continue
+        key, _, raw = line.partition(":")
+        key = key.strip()
+        val = raw.strip().strip('"')
+        if val in ("true", "false"):
+            data[key] = val == "true"
+        elif val == "null":
+            data[key] = None
+        elif val == "[]":
+            data[key] = []
+        elif key == "selected_angles" and val:
+            data[key] = [part.strip() for part in val.split(",") if part.strip()]
+        elif key == "slice" and val.isdigit():
+            data[key] = int(val)
+        else:
+            data[key] = val
+    return data
+
+
+def update_state(path: Path, updates: dict[str, object]) -> dict[str, object]:
+    data = read_state(path)
+    data.update(updates)
+    write_state(path, data)
+    return data
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Session store")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+
+    c = sub.add_parser("create")
+    c.add_argument("--root", type=Path, default=DEFAULT_ROOT)
+    c.add_argument("--owner", required=True)
+    c.add_argument("--repo", required=True)
+    c.add_argument("--id", required=True)
+    c.add_argument("--orchestrator", required=True)
+
+    r = sub.add_parser("read")
+    r.add_argument("--path", type=Path, required=True)
+
+    u = sub.add_parser("update")
+    u.add_argument("--path", type=Path, required=True)
+    u.add_argument("--phase")
+    u.add_argument("--gate", dest="documenting_to_implementing_gate")
+    u.add_argument("--status")
+    u.add_argument("--scale")
+    u.add_argument("--angles", dest="selected_angles")
+    u.add_argument("--step", dest="current_step")
+    u.add_argument("--slice", type=int)
+    u.add_argument("--slice-mode", dest="slice_mode")
+    u.add_argument("--wiki-publish", choices=("true", "false"))
+
+    args = parser.parse_args()
+
+    if args.cmd == "create":
+        create(args.root, args.owner, args.repo, args.id, args.orchestrator)
+        return 0
+
+    if args.cmd == "read":
+        payload = read_state(args.path)
+        print(json.dumps(payload, indent=2))
+        return 0
+
+    updates: dict[str, object] = {}
+    for field in (
+        "phase",
+        "documenting_to_implementing_gate",
+        "status",
+        "scale",
+        "current_step",
+        "slice_mode",
+    ):
+        val = getattr(args, field, None)
+        if val is not None:
+            updates[field] = val
+    if args.selected_angles is not None:
+        updates["selected_angles"] = [
+            part.strip() for part in args.selected_angles.split(",") if part.strip()
+        ]
+    if args.slice is not None:
+        updates["slice"] = args.slice
+    if args.wiki_publish is not None:
+        updates["wiki_publish"] = args.wiki_publish == "true"
+    if args.status == "completed" and "phase" not in updates:
+        updates["phase"] = "closed"
+        updates["closed"] = datetime.now(UTC).strftime("%Y-%m-%d")
+
+    if not updates:
+        print("update: no fields to change", file=sys.stderr)
+        return 1
+
+    payload = update_state(args.path, updates)
+    print(json.dumps(payload, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

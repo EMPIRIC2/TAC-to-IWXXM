@@ -94,7 +94,8 @@ const tacSpansDecorations = StateField.define<DecorationSet>({
 
 // StateField update always rebuilds from tacSpansField (doc/effects land there first).
 
-function spanTooltip(view: EditorView, pos: number): Tooltip | null {
+/** Exported for unit coverage of hover tooltip DOM (EV-080). */
+export function spanTooltip(view: EditorView, pos: number): Tooltip | null {
   const spans = view.state.field(tacSpansField);
   const hit = spans.find((s) => pos >= s.start && pos < s.end);
   if (!hit) {

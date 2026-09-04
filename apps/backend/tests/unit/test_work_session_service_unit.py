@@ -8,7 +8,6 @@ from uuid import uuid4
 
 import pytest
 from fastapi import HTTPException
-
 from src.schemas.work_session import (
     WorkSessionCreate,
     WorkSessionProduct,
@@ -540,7 +539,6 @@ def test_soft_delete_db_error(monkeypatch: pytest.MonkeyPatch) -> None:
     assert exc.value.status_code == 502
 
     from fastapi.security import HTTPAuthorizationCredentials
-
     from src.utilities import security as sec
 
     monkeypatch.delenv("SUPABASE_URL", raising=False)
@@ -559,7 +557,6 @@ def test_soft_delete_db_error(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_verify_supabase_token_jwks_ok(monkeypatch: pytest.MonkeyPatch) -> None:
     from fastapi.security import HTTPAuthorizationCredentials
-
     from src.utilities import security as sec
 
     monkeypatch.setenv("SUPABASE_URL", "https://example.supabase.co")

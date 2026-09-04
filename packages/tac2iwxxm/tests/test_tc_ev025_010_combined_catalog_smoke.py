@@ -1,4 +1,4 @@
-"""TC-EV025-010 — Combined WMO + iwxxm-us catalog validate smoke (S032 M6 / F2/F13).
+"""TC-EV025-010 - Combined WMO + iwxxm-us catalog validate smoke (S032 M6 / F2/F13).
 
 Lane A structured REMARKS XML must validate under ``profile=iwxxm_us`` (combined
 catalogs). Schematron soft skips are allowed (S02.L1); blocking XSD errors are not.

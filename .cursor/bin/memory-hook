@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Engineering memory hook — always uses engineering-memory venv Python.
+# [Corpus: skill-integration] [Corpus: hook-contract]
+set -euo pipefail
+
+BIN="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ -n "${EM_ENGINEERING_MEMORY_ROOT:-}" ]]; then
+  ROOT="$EM_ENGINEERING_MEMORY_ROOT"
+elif [[ -f "$BIN/../../../packages/engineering-memory/pyproject.toml" ]]; then
+  ROOT="$(cd "$BIN/../../.." && pwd)"
+else
+  ROOT="${HOME}/Documents/GitHub/spec-dev-knowledge-graph"
+fi
+
+PY="$ROOT/packages/engineering-memory/.venv/bin/python"
+CLI="$BIN/memory_hook_cli.py"
+
+if [[ ! -x "$PY" ]]; then
+  echo "memory-hook: venv not found at $PY — see docs/deploy.md §Install" >&2
+  exit 1
+fi
+
+if [[ -f "$ROOT/.env" ]]; then
+  set -a
+  # shellcheck disable=SC1090
+  source "$ROOT/.env"
+  set +a
+fi
+
+export EM_ENGINEERING_MEMORY_ROOT="$ROOT"
+exec "$PY" "$CLI" "$@"
