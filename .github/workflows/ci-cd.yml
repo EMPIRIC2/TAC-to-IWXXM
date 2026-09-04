@@ -4,9 +4,11 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [main, stage]
-    # EV-051 — prod Deploy gate (solo): tag on main tip, not bare main push
+    # EV-051 — prod Deploy gate (solo): tag on main tip, not bare main push.
+    # Use `v*-deploy` (not `v*-*-deploy`): dotted tags like `v2026.09.04-deploy`
+    # have a single hyphen before `deploy` and do not match two-segment globs.
     tags:
-      - 'v*-*-deploy'
+      - 'v*-deploy'
   pull_request:
     branches: [main, stage]
   workflow_dispatch:
