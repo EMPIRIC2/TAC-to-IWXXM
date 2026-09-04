@@ -279,6 +279,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         comprehensive_validation=fake_comprehensive_validation_router,
         conversion=fake_conversion_router,
         conversion_meta=fake_conversion_meta_router,
+        conversion_profiles=fake_router_module,
         dissemination=fake_router_module,
         dissemination_ops=fake_router_module,
         evaluation=fake_router_module,

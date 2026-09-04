@@ -433,6 +433,12 @@
             "title": "Manual Text",
             "type": "string"
           },
+          "overlay_id": {
+            "default": "",
+            "description": "Optional signed ConversionProfile overlay id. When set, requires Bearer JWT and ownership (or shared); unknown or unauthorized ids are rejected.",
+            "title": "Overlay Id",
+            "type": "string"
+          },
           "preview": {
             "default": false,
             "description": "Soft-preview: best-effort IWXXM with failure spans on partial convert",
@@ -2945,6 +2951,157 @@
         "title": "Message",
         "type": "object"
       },
+      "OverlayCreate": {
+        "description": "Create body for a signed overlay (server issues the signature).",
+        "properties": {
+          "baseProfileId": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Baseprofileid",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          },
+          "shared": {
+            "default": false,
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "slug": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "baseProfileId"
+        ],
+        "title": "OverlayCreate",
+        "type": "object"
+      },
+      "OverlayListResponse": {
+        "description": "List of overlays for the caller.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/OverlayOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "OverlayListResponse",
+        "type": "object"
+      },
+      "OverlayOut": {
+        "description": "Persisted signed overlay (owner-scoped).",
+        "properties": {
+          "baseProfileId": {
+            "title": "Baseprofileid",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "shared": {
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "signature": {
+            "title": "Signature",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "slug",
+          "baseProfileId",
+          "body",
+          "signature",
+          "shared",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "OverlayOut",
+        "type": "object"
+      },
+      "OverlayUpdate": {
+        "description": "Partial update for an overlay (re-signed on write).",
+        "properties": {
+          "baseProfileId": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseprofileid"
+          },
+          "body": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body"
+          },
+          "shared": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shared"
+          }
+        },
+        "title": "OverlayUpdate",
+        "type": "object"
+      },
       "PackageIssueModel": {
         "description": "HTTP DTO for an iwxxm-validate package finding (additive on /validate).",
         "properties": {
@@ -3178,6 +3335,117 @@
         "title": "PlanExecuteResponse",
         "type": "object"
       },
+      "ProfileCatalogEntry": {
+        "description": "Read-only ConversionProfile catalog entry for the inspector.",
+        "properties": {
+          "emit_key": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Emit Key"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "implementation": {
+            "additionalProperties": true,
+            "title": "Implementation",
+            "type": "object"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "legacy_alias": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Legacy Alias"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          },
+          "products": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Products",
+            "type": "array"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "vendor_pins": {
+            "additionalProperties": true,
+            "title": "Vendor Pins",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "kind"
+        ],
+        "title": "ProfileCatalogEntry",
+        "type": "object"
+      },
+      "ProfileCatalogResponse": {
+        "description": "Catalog list response.",
+        "properties": {
+          "profiles": {
+            "items": {
+              "$ref": "#/components/schemas/ProfileCatalogEntry"
+            },
+            "title": "Profiles",
+            "type": "array"
+          },
+          "schema_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schema Version"
+          }
+        },
+        "required": [
+          "profiles"
+        ],
+        "title": "ProfileCatalogResponse",
+        "type": "object"
+      },
       "QualityMetricsDetailResponse": {
         "description": "Response for GET /api/v1/quality-metrics/{stem}.",
         "properties": {
@@ -3391,6 +3659,249 @@
           "product"
         ],
         "title": "QualityMetricsSummaryModel",
+        "type": "object"
+      },
+      "RulePackCreate": {
+        "description": "Create body for a rule pack.",
+        "properties": {
+          "message": {
+            "default": "",
+            "maxLength": 2048,
+            "title": "Message",
+            "type": "string"
+          },
+          "product": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Product",
+            "type": "string"
+          },
+          "profile": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Profile",
+            "type": "string"
+          },
+          "severity": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Severity",
+            "type": "string"
+          },
+          "slug": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          },
+          "stage": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Stage",
+            "type": "string"
+          },
+          "standardReference": {
+            "default": "",
+            "maxLength": 512,
+            "title": "Standardreference",
+            "type": "string"
+          },
+          "when": {
+            "default": "",
+            "maxLength": 2048,
+            "title": "When",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "profile",
+          "product",
+          "stage",
+          "severity"
+        ],
+        "title": "RulePackCreate",
+        "type": "object"
+      },
+      "RulePackListResponse": {
+        "description": "List of rule packs for the caller.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RulePackOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "RulePackListResponse",
+        "type": "object"
+      },
+      "RulePackOut": {
+        "description": "Persisted rule pack (owner-scoped).",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "product": {
+            "title": "Product",
+            "type": "string"
+          },
+          "profile": {
+            "title": "Profile",
+            "type": "string"
+          },
+          "severity": {
+            "title": "Severity",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "stage": {
+            "title": "Stage",
+            "type": "string"
+          },
+          "standardReference": {
+            "title": "Standardreference",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          },
+          "when": {
+            "title": "When",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "slug",
+          "profile",
+          "product",
+          "stage",
+          "severity",
+          "when",
+          "message",
+          "standardReference",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "RulePackOut",
+        "type": "object"
+      },
+      "RulePackUpdate": {
+        "description": "Partial update for a rule pack.",
+        "properties": {
+          "message": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product"
+          },
+          "profile": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Profile"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Severity"
+          },
+          "stage": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Stage"
+          },
+          "standardReference": {
+            "anyOf": [
+              {
+                "maxLength": 512,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Standardreference"
+          },
+          "when": {
+            "anyOf": [
+              {
+                "maxLength": 2048,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "When"
+          }
+        },
+        "title": "RulePackUpdate",
         "type": "object"
       },
       "SessionResponse": {
@@ -4940,6 +5451,11 @@
             "description": "Validation Error"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Convert",
         "tags": [
           "Conversion",
@@ -6153,6 +6669,469 @@
         "summary": "Lint Tac",
         "tags": [
           "Validation"
+        ]
+      }
+    },
+    "/api/v1/profiles/catalog": {
+      "get": {
+        "description": "Read-only ConversionProfile catalog for the authenticated Profiles inspector.\n\nRequires JWT so the inspector stays on the authenticated Profiles surface.",
+        "operationId": "get_catalog_api_v1_profiles_catalog_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileCatalogResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Catalog",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/overlays": {
+      "get": {
+        "description": "List overlays owned by the caller (and shared overlays).",
+        "operationId": "list_overlays_api_v1_profiles_overlays_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverlayListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Overlays",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "post": {
+        "description": "Create a server-signed overlay.",
+        "operationId": "create_overlay_api_v1_profiles_overlays_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OverlayCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverlayOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Overlay",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/overlays/{overlay_id}": {
+      "delete": {
+        "description": "Delete an owned overlay.",
+        "operationId": "delete_overlay_api_v1_profiles_overlays__overlay_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "overlay_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Overlay Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Overlay",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "get": {
+        "description": "Fetch one overlay.",
+        "operationId": "get_overlay_api_v1_profiles_overlays__overlay_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "overlay_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Overlay Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverlayOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Overlay",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "patch": {
+        "description": "Update an owned overlay (re-signed server-side).",
+        "operationId": "patch_overlay_api_v1_profiles_overlays__overlay_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "overlay_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Overlay Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OverlayUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverlayOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Overlay",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/rule-packs": {
+      "get": {
+        "description": "List rule packs owned by the caller.",
+        "operationId": "list_rule_packs_api_v1_profiles_rule_packs_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RulePackListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Rule Packs",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "post": {
+        "description": "Create a rule pack.",
+        "operationId": "create_rule_pack_api_v1_profiles_rule_packs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RulePackCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RulePackOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Rule Pack",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/rule-packs/{pack_id}": {
+      "delete": {
+        "description": "Delete a rule pack.",
+        "operationId": "delete_rule_pack_api_v1_profiles_rule_packs__pack_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pack_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Pack Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Rule Pack",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "get": {
+        "description": "Fetch one rule pack.",
+        "operationId": "get_rule_pack_api_v1_profiles_rule_packs__pack_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pack_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Pack Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RulePackOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Rule Pack",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "patch": {
+        "description": "Update a rule pack.",
+        "operationId": "patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "pack_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Pack Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RulePackUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RulePackOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Rule Pack",
+        "tags": [
+          "Conversion Profiles"
         ]
       }
     },

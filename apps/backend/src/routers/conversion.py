@@ -9,6 +9,7 @@ import pathlib
 import time
 import zipfile
 from typing import Any, cast
+from uuid import UUID
 
 from dissemination.packaging import apply_exchange_packaging
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
@@ -34,6 +35,7 @@ from src.schemas.validation import (
     LintIssueModel,
     ValidationLayer,
 )
+from src.services.conversion_profiles_service import ConversionProfilesService
 from src.services.validation import ValidationError as ValidationServiceError
 from src.utilities.ca_exchange_wire import apply_ca_eccc_collect_output, ca_eccc_output_spec_for_request
 from src.utilities.conversion import ConversionError
@@ -41,6 +43,7 @@ from src.utilities.extension_wire import IWXXM_CA_TOKEN
 from src.utilities.iwxxm_pass_through import NOT_XML_CODE, lint_iwxxm_pass_through
 from src.utilities.metar_normalizer import normalize_recent_weather_tokens
 from src.utilities.observability import set_request_log_level
+from src.utilities.security import verify_optional_supabase_token
 from src.utilities.tac_parser import extract_airport_code
 from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 
@@ -390,6 +393,14 @@ async def convert(
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
         ),
     ),
+    overlay_id: str = Form(
+        default="",
+        description=(
+            "Optional signed ConversionProfile overlay id. When set, requires Bearer JWT "
+            "and ownership (or shared); unknown or unauthorized ids are rejected."
+        ),
+    ),
+    auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> Response:
     """Convert METAR/SPECI TAC text to IWXXM XML."""
     logger.info(
@@ -400,6 +411,28 @@ async def convert(
         request.headers.get("content-type", "none"),
         bool(request.headers.get("authorization")),
     )
+
+    applied_overlay_id: str | None = None
+    overlay_base_profile: str | None = None
+    overlay_token = (overlay_id or "").strip()
+    if overlay_token:
+        if auth_user is None:
+            raise HTTPException(
+                status_code=401,
+                detail="Sign in required to apply a ConversionProfile overlay",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        try:
+            overlay_uuid = UUID(overlay_token)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown overlay id") from exc
+        overlay = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id"))).get_overlay(
+            overlay_uuid
+        )
+        applied_overlay_id = str(overlay.id)
+        overlay_base_profile = overlay.base_profile_id
+        if not (semantic_profile or "").strip() and not (profile or "").strip():
+            semantic_profile = overlay_base_profile
 
     # Try to parse JSON body if Content-Type is application/json
     request_body = None
@@ -874,6 +907,10 @@ async def convert(
         "stop_on_error": bool(stop_on_error),
         "semantic_profile": wire.semantic_canonical,
     }
+    if applied_overlay_id:
+        request_metadata["overlay_id"] = applied_overlay_id
+        if overlay_base_profile:
+            request_metadata["overlay_base_profile"] = overlay_base_profile
     if exchange_output:
         request_metadata["exchange_output"] = True
     sample_for_output_spec = manual_text.strip() if manual_text else ""

@@ -368,6 +368,28 @@ vi.mock('./components/DisseminationOpsPage', () => ({
   ),
 }));
 
+vi.mock('./components/ConversionProfilePage', () => ({
+  ConversionProfilePage: ({
+    accessToken,
+    onRequestLogin,
+  }: {
+    accessToken?: string;
+    onRequestLogin?: () => void;
+  }) => (
+    <div data-testid="conversion-profiles-page" data-authed={accessToken ? '1' : '0'}>
+      {onRequestLogin ? (
+        <button
+          type="button"
+          data-testid="profiles-request-login"
+          onClick={onRequestLogin}
+        >
+          Sign in
+        </button>
+      ) : null}
+    </div>
+  ),
+}));
+
 vi.mock('./components/ThemeProvider', () => ({
   ThemeProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
@@ -521,6 +543,28 @@ describe('App Component (F31 optional Auth)', () => {
 
     await user.click(screen.getByTestId('shell-nav-dissemination-ops'));
     expect(screen.getByTestId('dissemination-ops-page')).toHaveAttribute(
+      'data-authed',
+      '1',
+    );
+  });
+
+  it('opens Conversion profiles via shell nav with and without JWT', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByTestId('shell-nav-profiles'));
+    expect(screen.getByTestId('conversion-profiles-page')).toHaveAttribute(
+      'data-authed',
+      '0',
+    );
+  });
+
+  it('opens Conversion profiles as authenticated with JWT', async () => {
+    const user = userEvent.setup();
+    authMocks.isLoggedIn.mockReturnValue(true);
+    authMocks.getAccessToken.mockReturnValue('jwt-profiles');
+    render(<App />);
+    await user.click(screen.getByTestId('shell-nav-profiles'));
+    expect(screen.getByTestId('conversion-profiles-page')).toHaveAttribute(
       'data-authed',
       '1',
     );

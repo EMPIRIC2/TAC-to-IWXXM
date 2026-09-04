@@ -90,6 +90,9 @@ const mockValidateIwxxm = vi.hoisted(() =>
 const mockUploadConvertedFiles = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ message: 'Files uploaded successfully' }),
 );
+const mockListOverlays = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({ items: [] as Array<Record<string, unknown>> }),
+);
 
 const mockToast = vi.hoisted(() => ({
   success: vi.fn(),
@@ -140,6 +143,10 @@ vi.mock('/utils/api', () => ({
   fetchAirportRegion: vi
     .fn()
     .mockResolvedValue({ airport_code: 'KJFK', icao_region: 'NAM' }),
+}));
+
+vi.mock('@/utils/conversionProfilesApi', () => ({
+  listOverlays: (...args: unknown[]) => mockListOverlays(...args),
 }));
 
 vi.mock('./TacEditor', () => ({
@@ -289,6 +296,8 @@ describe('FileConverter Component', () => {
     mockMassIngestFiles.mockReset();
     mockInflateGzipToText.mockReset();
     mockValidateIwxxm.mockReset();
+    mockListOverlays.mockReset();
+    mockListOverlays.mockResolvedValue({ items: [] });
     localStorage.clear();
     mockSignOutWithScope.mockResolvedValue(true);
     mockPersistSession.mockResolvedValue(null);
@@ -5586,6 +5595,204 @@ describe('FileConverter Component', () => {
       expect(mockToast.success).not.toHaveBeenCalledWith(
         expect.stringMatching(/Batch converted/i),
       );
+    });
+  });
+
+  describe('EV-933 signed overlay select', () => {
+    it('loads overlays when signed in and passes overlayId on convert', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockListOverlays.mockResolvedValue({
+        items: [
+          {
+            id: 'ov-uuid-1',
+            user_id: 'u',
+            slug: 'soft-lint',
+            baseProfileId: 'ICAO_2025',
+            body: {},
+            signature: 'sig',
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      mockConvertMetarToIwxxm.mockResolvedValue({
+        results: [
+          {
+            name: 'manual',
+            content: '<iwxxm/>',
+            source: 'KJFK',
+            size_bytes: 8,
+          },
+        ],
+        errors: [],
+        total_processed: 1,
+        successful: 1,
+        failed: 0,
+      });
+      render(<FileConverter {...defaultProps} accessToken="jwt-ov" />);
+      const select = await screen.findByTestId('signed-overlay-select');
+      await user.selectOptions(select, 'ov-uuid-1');
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalled();
+      });
+      expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          overlayId: 'ov-uuid-1',
+          accessToken: 'jwt-ov',
+        }),
+      );
+    });
+
+    it('hides signed overlay select for guests', () => {
+      render(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
+    });
+
+    it('clears overlays when listOverlays fails', async () => {
+      mockListOverlays.mockRejectedValueOnce(new Error('no overlays'));
+      render(<FileConverter {...defaultProps} accessToken="jwt-ov" />);
+      const select = await screen.findByTestId('signed-overlay-select');
+      expect(select.querySelectorAll('option')).toHaveLength(1);
+    });
+
+    it('clears selected overlayId when auth token is removed', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockListOverlays.mockResolvedValue({
+        items: [
+          {
+            id: 'ov-logout',
+            user_id: 'u',
+            slug: 'bye',
+            baseProfileId: 'ICAO_2025',
+            body: {},
+            signature: 'sig',
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      const { rerender } = render(
+        <FileConverter {...defaultProps} accessToken="jwt-ov" />,
+      );
+      const select = await screen.findByTestId('signed-overlay-select');
+      await user.selectOptions(select, 'ov-logout');
+      expect(select).toHaveValue('ov-logout');
+      rerender(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
+    });
+
+    it('ignores overlay list resolution after unmount', async () => {
+      let resolveList!: (value: { items: [] }) => void;
+      mockListOverlays.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveList = resolve;
+          }),
+      );
+      const { unmount } = render(
+        <FileConverter {...defaultProps} accessToken="jwt-ov" />,
+      );
+      unmount();
+      resolveList({ items: [] });
+    });
+
+    it('hydrates overlay_id and overlayId from conversion_params', async () => {
+      mockListOverlays.mockResolvedValue({
+        items: [
+          {
+            id: 'ov-from-session',
+            user_id: 'u',
+            slug: 'saved',
+            baseProfileId: 'ICAO_2025',
+            body: {},
+            signature: 'sig',
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      const { rerender } = render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={
+            {
+              id: 'sess-ov-1',
+              status: 'draft',
+              manual_tac: '',
+              conversion_params: { overlay_id: 'ov-from-session' },
+            } as never
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('signed-overlay-select')).toHaveValue(
+          'ov-from-session',
+        );
+      });
+      rerender(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={
+            {
+              id: 'sess-ov-2',
+              status: 'draft',
+              manual_tac: '',
+              conversion_params: { overlayId: 'ov-from-session' },
+            } as never
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('signed-overlay-select')).toHaveValue(
+          'ov-from-session',
+        );
+      });
+    });
+
+    it('live IWXXM includes overlayId when hydrated', async () => {
+      mockConvertMetarToIwxxm.mockResolvedValue({
+        results: [{ iwxxm_xml: '<live-ov/>' }],
+        errors: [],
+        total_processed: 1,
+        successful: 1,
+        failed: 0,
+      });
+      render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={
+            {
+              id: 'sess-ov-live',
+              status: 'draft',
+              manual_tac: 'METAR KJFK 121851Z=',
+              conversion_params: { overlay_id: 'ov-live' },
+            } as never
+          }
+        />,
+      );
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012' },
+      });
+      fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({
+            overlayId: 'ov-live',
+            accessToken: 'jwt-ov',
+            preview: true,
+          }),
+        );
+      });
     });
   });
 });

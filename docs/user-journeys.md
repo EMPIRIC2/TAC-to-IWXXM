@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-03 (EV-936 #936 dissemination ops + Gateway hooks — UJ-071)
+> **Last updated**: 2026-09-03 (EV-933 #933 ConversionProfile editor — UJ-072)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -88,6 +88,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-069 | Convert with semantic profile → package with exchange profile | API / library / workbench (#1024) | F35+F36 (EV-063/EV-090/EV-093 / #912) | T2 / **T3**; **H4–H5** (FE) |
 | UJ-070 | Opt-in propagate decode residuals into remarks / HRT | UI / API / package / Quality metrics (#981) | F6+F9+F7.q (EV-981) | T0 / T2 / **T3** / H4–H5 |
 | UJ-071 | Dissemination ops — plan/audit/SQL mapping/gateway health | apps/frontend / API | F16–F19 deepen (EV-936 / #936) | T2 / **T3** / H6′ (+ H4–H5 when FE deploy) |
+| UJ-072 | ConversionProfile editor — rule pack → overlay → convert | apps/frontend / API | F7.w (EV-933 / #933) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
@@ -439,6 +440,45 @@ and check gateway health — without replacing one-shot destinations drawer send
 **Automated tests**: TC-F16-OPS-001..006 (see test-plan)
 
 **Source**: EV-936 / #936; ADR-041; ADR-040; [Context: dissemination-ops-936](context/dissemination-ops-936.md)
+
+---
+
+### UJ-072: ConversionProfile editor — inspect, rule-pack, overlay, convert (EV-933 / #933)
+
+**Actor**: Authenticated meteorological operator or admin (JWT)
+
+**Goal**: Open the ConversionProfile editor, inspect a catalog profile, edit a rule-pack,
+save a signed operator-scoped overlay (M2), and apply it on convert — without collapsing
+the light picker (#1024) or putting credentials in the profile.
+
+**Feature**: F7.w (EV-933)
+
+**Steps**:
+
+1. Sign in (F31). Open **Profiles / ConversionProfile** editor (operator + admin).
+2. **Inspect**: select a first-party catalog id (e.g. `ICAO_2025`, `US_FAA_NWS`); view
+   ADR-038 staged settings read-only (grammar, validation refs, exchange default — no secrets).
+3. **Rule-pack (M1)**: create/edit pack fields (id, profile, product, stage, severity, when,
+   message, standardReference); export/share as downloadable YAML/JSON.
+4. **Overlay (M2)**: save signed operator-scoped overlay to product Postgres (JWT ownership;
+   admin may manage shared packs per ownership rules). Reject unsigned / unknown trust.
+5. Return to workbench convert; select overlay (or pack) and convert a sample TAC.
+6. Confirm light semantic/exchange picker (#1024) and dissemination drawer still work.
+
+**Acceptance**:
+1. M1 ships rule-pack + inspector before M2 overlay persist (same evolve).
+2. No credentials / destination URIs in profile or overlay payloads (ADR-021/029).
+3. Fail-closed on unsigned overlays and unknown profile ids.
+4. UJ-069 / #1024 and UJ-027–030 / UJ-071 remain green.
+5. H4–H5 when FE editor routes deploy; operator copy free of internal planning ids (EV-048).
+
+**Errors**: 401/403 without JWT; 400 unsigned/invalid overlay; ownership 403 on foreign packs.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EV933-001..006 (see test-plan)
+
+**Source**: EV-933 / #933; ADR-038 (amend overlays); [Context: conversion-profile-editor-933](context/conversion-profile-editor-933.md)
 
 ---
 

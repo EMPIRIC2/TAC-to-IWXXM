@@ -9,6 +9,7 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 | Slug | Topic | Status | Created | Linked features |
 |------|-------|--------|---------|-----------------|
 | [platform-package-layout-923](platform-package-layout-923.md) | #923/#922 platform package layout gap matrix + Core→Dissemination milestone plan | active | 2026-09-03 | F6, F16–F19, ADR-030, EV-922 |
+| [conversion-profile-editor-933](conversion-profile-editor-933.md) | #933 ConversionProfile editor (rule packs + inspector + signed overlays) | active | 2026-09-03 | F6, F7, F15, ADR-038, EV-933 |
 | [conversion-profile-contract-924](conversion-profile-contract-924.md) | #924 executable ConversionProfile contract + overlay trust boundaries | active | 2026-09-03 | F6, ADR-013, ADR-036, EV-924 |
 | [canonical-met-staged-validation-925](canonical-met-staged-validation-925.md) | #925 canonical IR + staged validation PipelineResult contract | active | 2026-09-03 | F2, F6, F15, ADR-039, EV-925 |
 | [sql-adapters-mapping-926](sql-adapters-mapping-926.md) | #926 SQL symmetric source/sink adapters + MappingConfig | active | 2026-09-03 | F16, ADR-030, ADR-040, EV-926 |

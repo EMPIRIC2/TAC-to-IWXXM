@@ -164,6 +164,8 @@ export async function convertMetarToIwxxm(params: {
   exchangeOutput?: boolean;
   /** Exchange packaging profile (ignored on convert-only; used when packaging). */
   exchangeProfile?: string;
+  /** Optional signed ConversionProfile overlay id (requires accessToken). */
+  overlayId?: string;
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<ConversionResponse> {
@@ -229,13 +231,23 @@ export async function convertMetarToIwxxm(params: {
     formData.append('exchange_output', 'true');
   }
 
+  if (params.overlayId?.trim()) {
+    formData.append('overlay_id', params.overlayId.trim());
+  }
+
   try {
     console.log('[API] Request to:', apiUrl('/convert'));
+
+    const overlayToken = params.overlayId?.trim();
+    const bearer = params.accessToken?.trim();
+    const headers: HeadersInit | undefined =
+      overlayToken && bearer ? { Authorization: `Bearer ${bearer}` } : undefined;
 
     const response = await withTimeout(
       fetch(apiUrl('/convert'), {
         method: 'POST',
         body: formData,
+        headers,
         signal: params.signal,
       }),
       30000,

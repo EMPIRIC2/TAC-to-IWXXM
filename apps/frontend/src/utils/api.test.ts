@@ -1398,6 +1398,28 @@ describe('API Utils', () => {
         accessToken: 'tok',
       });
       expect(global.fetch).toHaveBeenCalled();
+      const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      // accessToken alone does not authorize convert (public); Authorization only with overlay_id
+      expect(options.headers?.Authorization).toBeUndefined();
+    });
+
+    it('sends overlay_id with bearer when set', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK',
+        overlayId: '  ov-123  ',
+        accessToken: ' jwt ',
+      });
+      const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      const body = options.body as FormData;
+      expect(body.get('overlay_id')).toBe('ov-123');
+      expect(options.headers?.Authorization).toBe('Bearer jwt');
     });
 
     it('uses default conversion fields when optional values are omitted', async () => {

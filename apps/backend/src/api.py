@@ -125,6 +125,7 @@ try:
         comprehensive_validation,
         conversion,
         conversion_meta,
+        conversion_profiles,
         dissemination,
         dissemination_ops,
         evaluation,
@@ -141,6 +142,7 @@ except ImportError:
         comprehensive_validation,
         conversion,
         conversion_meta,
+        conversion_profiles,
         dissemination,
         dissemination_ops,
         evaluation,
@@ -358,6 +360,12 @@ try:
     logger.info("DEBUG: included dissemination_ops router successfully")
 except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include dissemination_ops router: {e}", exc_info=True)
+
+try:
+    app.include_router(conversion_profiles.router)
+    logger.info("DEBUG: included conversion_profiles router successfully")
+except Exception as e:  # pragma: no cover - defensive
+    logger.error(f"DEBUG: Failed to include conversion_profiles router: {e}", exc_info=True)
 
 try:
     app.include_router(mass_ingest.router)

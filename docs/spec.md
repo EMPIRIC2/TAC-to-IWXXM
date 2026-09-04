@@ -349,8 +349,13 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 
 - **Purpose**: Operator UI for seven F6 products + hybrid sessions (**F7.i** / F31).
 - **Slices**: F7.a–F7.h as before; **F7.i** restores JWT session APIs to DO Postgres for logged-in users.
-- **API**: Public convert companions unchanged; session CRUD requires Auth JWT.
-- **Source**: S011; S023 F7.h; **S038 / EV-031 F7.i**.
+- **F7.w (EV-933 / #933)**: ConversionProfile editor — rule-pack CRUD, ADR-038 inspector,
+  signed operator overlays on product Postgres (`DATABASE_URL`) with JWT ownership; UJ-072.
+  Complements light picker (#1024); does not merge destinations/credentials into profiles.
+- **API**: Public convert companions unchanged; session CRUD requires Auth JWT; F7.w pack/overlay
+  mutate routes require JWT (see [api-contract.md](api-contract.md) §EV-933).
+- **Source**: S011; S023 F7.h; **S038 / EV-031 F7.i**; **EV-933 F7.w**;
+  [Context: conversion-profile-editor-933](context/conversion-profile-editor-933.md).
 
 ### F21 — Public convert + optional Auth (Amended S038 / EV-031)
 

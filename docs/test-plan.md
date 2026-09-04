@@ -128,6 +128,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-069 | F35/F36 (EV-063/EV-090/EV-093) | Semantic convert → exchange package (`GLOBAL_AFS`) | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-*; TC-EV093-* |
 | UJ-070 | F6+F9+F7.q (EV-981 / #981) | Opt-in propagate decode residuals into remarks / HRT + QM indicator | **H4–H5 required** | TC-EV981-001..005 |
 | UJ-071 | F16–F19 deepen (EV-936 / #936) | Dissemination ops — plan/audit/SQL mapping/gateway health | H6′; **H4–H5** when FE deploy | TC-F16-OPS-001..006 |
+| UJ-072 | F7.w deepen (EV-933 / #933) | ConversionProfile editor — rule pack / overlay / convert | **H4–H5** when FE deploy | TC-EV933-001..006 |
 | UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
 | LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
 | UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
@@ -4959,6 +4960,23 @@ No live `codes.wmo.int` HTML in PR CI.
 
 - **Level**: T0 / T2 / T3 (H6′)
 - **Source**: F16–F19 deepen EV-936; #936; ADR-041; ADR-040; UJ-071
+
+### TC-EV933-001..006: ConversionProfile editor (UJ-072 / EV-933)
+
+| ID | Objective | Pass criteria |
+|----|-----------|---------------|
+| TC-EV933-001 | Rule-pack CRUD fields + export | Vitest; fields match F7.w AC |
+| TC-EV933-002 | Inspector read-only for catalog profiles | No edit of first-party contract fields in M1 |
+| TC-EV933-003 | Overlay persist requires JWT + signature/trust | 401 without JWT; 400 unsigned |
+| TC-EV933-004 | Ownership: user cannot mutate foreign overlay | 403; RLS-equivalent filters on `DATABASE_URL` |
+| TC-EV933-005 | Convert applies selected overlay / pack | Unit + API; fail-closed unknown id |
+| TC-EV933-006 | Playwright UJ-072 + #1024 / drawer regression | H4–H5 / T2; must-not-break picker + drawer |
+
+- **Level**: T0 / T2 / T3 (H4–H5 when FE deploy)
+- **Source**: F7.w EV-933; #933; ADR-038 amend; UJ-072
+- **Automation**: `apps/e2e/uj072-conversion-profiles.e2e.spec.ts` (stubbed JWT + APIs).
+  **Live H4–H5** against stage FE: deferred until PR #1138 merges to `stage` and FE
+  deploy includes Conversion profiles nav (T3.2 evidence).
 
 ### F16–F19 verify/deploy gate
 
