@@ -601,7 +601,7 @@
   inspector; **M2** overlay persist + apply on convert (**landed**). Does **not** collapse #1024 light
   picker; does **not** bake live AFTN/WIS2 routes or credentials into profiles (ADR-021/029).
   ADR-038 amend for overlay trust. Journey **UJ-072**. Status: **Implemented** (M1–M3;
-  live H4–H5 deferred until FE on stage — see test-plan TC-EV933-006).
+  live H4–H5 PASS 2026-09-04 — see test-plan TC-EV933-006).
 - **Acceptance (EV-933 / #933 — F7.w)** — **approved** (`D-EV933-01-ac=1`):
   1. M1: rule-pack editor (id, profile, product, stage, severity, when, message,
      standardReference) + share/export; inspector shows ADR-038 staged settings read-only
