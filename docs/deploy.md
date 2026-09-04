@@ -120,7 +120,7 @@ services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the 
 |---------|----------------|---------|-----------|------------|-------------|
 | Push `stage` | `staging` | `metar-iwxxm-staging` | `metar-iwxxm-staging` | `stage-latest` | **Staging smoke** job |
 | Push `main` | — | — | — | — | **CI only** (no Deploy) |
-| Tag `vYYYY.MM.DD-deploy` (`v*-*-deploy`) or `workflow_dispatch` → production | `production` | `metar-iwxxm` | `metar-iwxxm` | `main-latest` | prod smoke via 13 / Makefile |
+| Tag `vYYYY.MM.DD-deploy` (`v*-deploy`) or `workflow_dispatch` → production | `production` | `metar-iwxxm` | `metar-iwxxm` | `main-latest` | prod smoke via 13 / Makefile |
 
 **Deploy** in `.github/workflows/ci-cd.yml` waits on full CI including **`e2e-smoke`**, then:
 
