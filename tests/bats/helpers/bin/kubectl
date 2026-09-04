@@ -16,6 +16,9 @@ fi
 if [[ "$joined" == *"auth can-i get secrets"* ]]; then
   exit 1
 fi
+if [[ "$joined" == *"auth can-i create jobs"* ]]; then
+  exit 1
+fi
 
 # EV-933 staging ops — resolve current API image + confirm HMAC/init after patch.
 if [[ "$joined" == *"get deploy metar-api"* && "$joined" == *'containers[?(@.name=="api")].image'* ]]; then
@@ -26,8 +29,11 @@ if [[ "$joined" == *"get deploy metar-api"* && "$joined" == *'initContainers[?(@
   echo "ghcr.io/empiric2/tac-to-iwxxm/backend:20260904151129-48cf5da"
   exit 0
 fi
+if [[ "$joined" == *"get pods"* ]]; then
+  echo "metar-api-stub"
+  exit 0
+fi
 if [[ "$joined" == *"get secret"* && "$joined" == *PROFILE_OVERLAY_HMAC_SECRET* ]]; then
-  # First probe (missing) vs post-patch confirm: empty then non-empty via call count file.
   state="${BATS_TMPDIR:-/tmp}/kubectl-ev933-hmac-state"
   if [[ ! -f "${state}" ]]; then
     : >"${state}"

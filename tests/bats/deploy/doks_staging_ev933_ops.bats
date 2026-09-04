@@ -9,4 +9,5 @@ load "${BATS_TEST_DIRNAME}/../helpers/load"
   [ "$status" -eq 0 ]
   [[ "$output" == *"EV-933 staging ops complete"* ]]
   [[ "$output" == *"HMAC via=deploy-env"* ]]
+  [[ "$output" == *"migrate via=initContainer"* ]]
 }

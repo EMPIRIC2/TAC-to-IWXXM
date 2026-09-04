@@ -2,8 +2,8 @@
 # EV-933 staging ops: Alembic head + PROFILE_OVERLAY_HMAC_SECRET on staging API.
 #
 # Requires kubectl context for metar-iwxxm-staging (CI: staging env KUBE_CONFIG).
-# Prefer Secret patch; if RBAC denies secrets, fall back to Deployment literal env
-# (staging unblock — move into metar-api-secrets when SA can patch secrets).
+# Prefer Secret patch; if RBAC denies secrets, fall back to Deployment literal env.
+# Prefer batch Job for alembic; if RBAC denies jobs, pin initContainer + rollout restart.
 #
 # Usage: bash scripts/deploy/doks_staging_ev933_ops.sh
 set -euo pipefail
@@ -48,7 +48,6 @@ if kubectl -n "${NS}" auth can-i get secrets >/dev/null 2>&1; then
   fi
 else
   echo "warn: SA cannot get secrets — setting PROFILE_OVERLAY_HMAC_SECRET on Deployment env"
-  # Clear any prior literal then set (idempotent for re-runs).
   kubectl -n "${NS}" set env "deploy/metar-api" "PROFILE_OVERLAY_HMAC_SECRET-" >/dev/null 2>&1 || true
   kubectl -n "${NS}" set env "deploy/metar-api" "PROFILE_OVERLAY_HMAC_SECRET=${HMAC}"
   echo "PROFILE_OVERLAY_HMAC_SECRET: set on deploy/metar-api (literal env fallback)"
@@ -56,9 +55,10 @@ else
 fi
 unset HMAC
 
-# One-shot alembic Job on the current API image (init may still have been stale).
-kubectl -n "${NS}" delete job "${JOB_NAME}" --ignore-not-found=true
-cat <<EOF | kubectl -n "${NS}" apply -f -
+MIGRATE_VIA=""
+if kubectl -n "${NS}" auth can-i create jobs.batch >/dev/null 2>&1; then
+  kubectl -n "${NS}" delete job "${JOB_NAME}" --ignore-not-found=true
+  cat <<EOF | kubectl -n "${NS}" apply -f -
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -91,20 +91,38 @@ spec:
             - secretRef:
                 name: ${SECRET_NAME}
 EOF
-
-echo "Waiting for Job ${JOB_NAME}…"
-kubectl -n "${NS}" wait --for=condition=complete "job/${JOB_NAME}" --timeout=180s
-echo "--- alembic job logs ---"
-kubectl -n "${NS}" logs "job/${JOB_NAME}"
-echo "--- end logs ---"
+  echo "Waiting for Job ${JOB_NAME}…"
+  kubectl -n "${NS}" wait --for=condition=complete "job/${JOB_NAME}" --timeout=180s
+  echo "--- alembic job logs ---"
+  kubectl -n "${NS}" logs "job/${JOB_NAME}"
+  echo "--- end logs ---"
+  MIGRATE_VIA="job"
+else
+  echo "warn: SA cannot create jobs — relying on alembic-upgrade initContainer + restart"
+  MIGRATE_VIA="initContainer"
+fi
 
 kubectl -n "${NS}" rollout restart "deploy/metar-api"
 kubectl -n "${NS}" rollout status "deploy/metar-api" --timeout=180s
+
+# Best-effort initContainer log (may be gone after success).
+POD="$(
+  kubectl -n "${NS}" get pods -l app.kubernetes.io/name=metar-api \
+    --field-selector=status.phase=Running \
+    -o jsonpath='{.items[0].metadata.name}' 2>/dev/null || true
+)"
+if [[ -n "${POD}" ]]; then
+  echo "--- initContainer alembic-upgrade logs (${POD}) ---"
+  kubectl -n "${NS}" logs "${POD}" -c alembic-upgrade 2>/dev/null || \
+    echo "(init logs unavailable — container already completed)"
+  echo "--- end init logs ---"
+fi
 
 INIT_IMG="$(
   kubectl -n "${NS}" get deploy metar-api \
     -o jsonpath='{.spec.template.spec.initContainers[?(@.name=="alembic-upgrade")].image}'
 )"
 echo "confirm: HMAC via=${HMAC_SET_VIA}"
+echo "confirm: migrate via=${MIGRATE_VIA}"
 echo "confirm: initContainer image=${INIT_IMG}"
 echo "EV-933 staging ops complete"
