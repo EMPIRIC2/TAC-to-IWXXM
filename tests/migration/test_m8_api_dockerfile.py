@@ -34,10 +34,17 @@ class TestM8ApiDockerfileMonorepoContext:
             "packages/shared",
             "config",
             "vendor/schemas",
+            "docs/domain/profiles",
         ):
             assert fragment in dockerfile_text, f"Missing COPY path: {fragment}"
         assert "packages/gifts" not in dockerfile_text
         assert "COPY auth/" not in dockerfile_text
+
+    def test_dockerfile_copies_profile_catalog_for_ev933(
+        self, dockerfile_text: str
+    ) -> None:
+        """API image must bake docs/domain/profiles for GET /profiles/catalog."""
+        assert "COPY docs/domain/profiles" in dockerfile_text
 
     def test_dockerfile_copies_config_tree(self, dockerfile_text: str) -> None:
         """S003 - API image must bake config/prod.json for METAR_CONFIG_ENV=prod."""
