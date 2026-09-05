@@ -148,8 +148,8 @@ def load_profile_catalog(
                 implementation=_as_str_dict(row.get("implementation")),
                 deltas_vs_icao=_deltas_vs_icao(entry_id),
                 iwxxm_line=_iwxxm_line(entry_id, vendor_pins),
-                rule_pack_count=(rule_pack_counts or {}).get(entry_id),
-                overlay_count=(overlay_counts or {}).get(entry_id),
+                rule_pack_count=None if rule_pack_counts is None else rule_pack_counts.get(entry_id, 0),
+                overlay_count=None if overlay_counts is None else overlay_counts.get(entry_id, 0),
             )
         )
     return ProfileCatalogResponse(
