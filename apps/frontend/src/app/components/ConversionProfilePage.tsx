@@ -837,9 +837,14 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
           {PROFILES_PACK_SAVE}
         </Button>
 
+        {loadErrors.packs && packs !== null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {PROFILES_PACKS_UNAVAILABLE} {loadErrors.packs}
+          </p>
+        ) : null}
         {loading && packs === null ? (
           <p className="text-sm text-gray-500">{PROFILES_PACKS_LOADING}</p>
-        ) : loadErrors.packs ? (
+        ) : loadErrors.packs && packs === null ? (
           <p className="text-sm text-amber-700 dark:text-amber-300">
             {PROFILES_PACKS_UNAVAILABLE} {loadErrors.packs}
           </p>
@@ -921,9 +926,14 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
           ) : null}
           {PROFILES_OVERLAY_SAVE}
         </Button>
+        {loadErrors.overlays && overlays !== null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {PROFILES_OVERLAYS_UNAVAILABLE} {loadErrors.overlays}
+          </p>
+        ) : null}
         {loading && overlays === null ? (
           <p className="text-sm text-gray-500">{PROFILES_OVERLAYS_LOADING}</p>
-        ) : loadErrors.overlays ? (
+        ) : loadErrors.overlays && overlays === null ? (
           <p className="text-sm text-amber-700 dark:text-amber-300">
             {PROFILES_OVERLAYS_UNAVAILABLE} {loadErrors.overlays}
           </p>

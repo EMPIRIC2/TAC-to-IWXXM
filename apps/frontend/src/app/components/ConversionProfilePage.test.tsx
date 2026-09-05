@@ -714,4 +714,54 @@ describe('ConversionProfilePage', () => {
       screen.getByTestId('conversion-profiles-inspector-detail'),
     ).toBeInTheDocument();
   });
+
+  it('preserves the last successful pack and overlay lists when a later reload degrades', async () => {
+    listRulePacks
+      .mockResolvedValueOnce({ items: [samplePack] })
+      .mockResolvedValueOnce({ items: [samplePack] })
+      .mockRejectedValueOnce(new Error('pack fetch failed after save'));
+    listOverlays
+      .mockResolvedValueOnce({ items: [sampleOverlay] })
+      .mockResolvedValueOnce({ items: [sampleOverlay] })
+      .mockRejectedValueOnce(new Error('overlay fetch failed after save'));
+
+    const user = userEvent.setup();
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-profiles-pack-list')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('conversion-profiles-pack-list')).toHaveTextContent(
+      'my-pack',
+    );
+    expect(screen.getByTestId('conversion-profiles-overlay-list')).toHaveTextContent(
+      'my-overlay',
+    );
+
+    await user.click(screen.getByTestId('conversion-profiles-pack-save'));
+
+    await waitFor(() => {
+      expect(createRulePack).toHaveBeenCalled();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-profiles-error')).toHaveTextContent(
+        /pack fetch failed after save/i,
+      );
+    });
+
+    expect(screen.getByTestId('conversion-profiles-pack-list')).toHaveTextContent(
+      'my-pack',
+    );
+    expect(screen.getByTestId('conversion-profiles-overlay-list')).toHaveTextContent(
+      'my-overlay',
+    );
+    expect(screen.getByTestId('conversion-profiles-packs')).toHaveTextContent(
+      /Rule packs unavailable/i,
+    );
+    expect(screen.getByTestId('conversion-profiles-overlays')).toHaveTextContent(
+      /Overlays unavailable/i,
+    );
+  });
 });
