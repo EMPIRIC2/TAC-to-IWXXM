@@ -21,7 +21,19 @@ describe('conversionProfilesApi', () => {
       ok: true,
       status: 200,
       json: async () => ({
-        profiles: [{ id: 'ICAO_2025', kind: 'semantic', products: [] }],
+        profiles: [
+          {
+            id: 'ICAO_2025',
+            kind: 'semantic',
+            products: [],
+            deltas_vs_icao: [
+              'Baseline ICAO/WMO line used for cross-profile comparison.',
+            ],
+            iwxxm_line: 'vendor/manifest.json → iwxxm v2025-2',
+            rule_pack_count: 1,
+            overlay_count: 2,
+          },
+        ],
       }),
     } as Response);
 
@@ -33,6 +45,9 @@ describe('conversionProfilesApi', () => {
       }),
     );
     expect(result.profiles[0]?.id).toBe('ICAO_2025');
+    expect(result.profiles[0]?.rule_pack_count).toBe(1);
+    expect(result.profiles[0]?.overlay_count).toBe(2);
+    expect(result.profiles[0]?.deltas_vs_icao).toHaveLength(1);
   });
 
   it('lists rule packs', async () => {

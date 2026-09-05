@@ -546,6 +546,8 @@ export async function fetchLintIssueCatalog(params?: {
   family?: string;
   issue_type?: string;
   source_access?: string;
+  semantic_profile?: string;
+  exchange_profile?: string;
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<LintIssueCatalogResponse> {
@@ -561,6 +563,12 @@ export async function fetchLintIssueCatalog(params?: {
   }
   if (params?.source_access && params.source_access.trim()) {
     query.set('source_access', params.source_access.trim().toLowerCase());
+  }
+  if (params?.semantic_profile && params.semantic_profile.trim()) {
+    query.set('semantic_profile', params.semantic_profile.trim());
+  }
+  if (params?.exchange_profile && params.exchange_profile.trim()) {
+    query.set('exchange_profile', params.exchange_profile.trim());
   }
   const qs = query.toString() ? `?${query.toString()}` : '';
   const response = await withTimeout(

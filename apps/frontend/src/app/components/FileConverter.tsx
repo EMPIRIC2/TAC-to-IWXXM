@@ -1,4 +1,11 @@
-import { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -42,7 +49,12 @@ import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { DisseminationDrawer } from './DisseminationDrawer';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
-import { listOverlays, type OverlayOut } from '@/utils/conversionProfilesApi';
+import {
+  fetchProfileCatalog,
+  listOverlays,
+  type OverlayOut,
+  type ProfileCatalogEntry,
+} from '@/utils/conversionProfilesApi';
 import {
   CONVERT_OVERLAY_HELP,
   CONVERT_OVERLAY_LABEL,
@@ -102,6 +114,8 @@ import {
   splitManualEntries,
   DEFAULT_SEMANTIC_PROFILE,
   SEMANTIC_PROFILE_OPTIONS,
+  TAC_PRODUCTS,
+  type TacProduct,
   type IwxxmProfile,
   type TacProductSelection,
 } from '@/utils/tacProduct';
@@ -237,6 +251,72 @@ type IWXXMVersion = IwxxmVersionId;
 type OnErrorBehavior = 'skip' | 'fail' | 'warn';
 type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 
+const PROFILE_LABELS = new Map<string, string>(
+  SEMANTIC_PROFILE_OPTIONS.map((option) => [option.value, option.label]),
+);
+
+const FALLBACK_PROFILE_SUMMARIES: Partial<Record<IwxxmProfile, ProfileCatalogEntry>> = {
+  ICAO_2025: {
+    id: 'ICAO_2025',
+    kind: 'semantic',
+    products: [
+      'METAR',
+      'SPECI',
+      'TAF',
+      'SIGMET',
+      'AIRMET',
+      'VAA',
+      'TCA',
+      'SWXA',
+      'VONA',
+    ],
+    deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+  },
+  US_FAA_NWS: {
+    id: 'US_FAA_NWS',
+    kind: 'semantic',
+    products: ['METAR', 'SPECI', 'SIGMET', 'AIRMET'],
+    deltas_vs_icao: [
+      'Adds FAA/NWS national differences on top of the ICAO baseline.',
+      'Uses the iwxxm-us schema catalog for United States IWXXM extensions.',
+    ],
+  },
+  CA_ECCC: {
+    id: 'CA_ECCC',
+    kind: 'semantic',
+    products: [...CA_ECCC_SUPPORTED_PRODUCTS],
+    deltas_vs_icao: [CA_ECCC_EXTENSION_LABEL],
+  },
+};
+
+function profileDisplayName(profileId: string): string {
+  return PROFILE_LABELS.get(profileId) ?? profileId;
+}
+
+function fallbackProfileSummary(
+  profile: IwxxmProfile,
+  iwxxmVersion: IWXXMVersion,
+): ProfileCatalogEntry {
+  const canonicalId = hydrateSemanticProfile(profile);
+  const fallback = FALLBACK_PROFILE_SUMMARIES[canonicalId];
+  if (fallback) {
+    return {
+      ...fallback,
+      iwxxm_line:
+        canonicalId === 'CA_ECCC'
+          ? `IWXXM ${CA_ECCC_IWXXM_VERSION} (MSC operational)`
+          : `IWXXM ${iwxxmVersion}`,
+    };
+  }
+  return {
+    id: canonicalId,
+    kind: 'semantic',
+    products: [],
+    deltas_vs_icao: [],
+    iwxxm_line: `IWXXM ${iwxxmVersion}`,
+  };
+}
+
 interface ConversionParams {
   bulletinId: string;
   issuingCenter: string;
@@ -353,6 +433,9 @@ export function FileConverter({
     logLevel: 'INFO',
   });
   const [signedOverlays, setSignedOverlays] = useState<OverlayOut[]>([]);
+  const [profileCatalogEntries, setProfileCatalogEntries] = useState<
+    ProfileCatalogEntry[]
+  >([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const massFolderInputRef = useRef<HTMLInputElement>(null);
   const massZipInputRef = useRef<HTMLInputElement>(null);
@@ -366,6 +449,31 @@ export function FileConverter({
   useEffect(() => {
     applyWebkitDirectoryAttrs(massFolderInputRef.current);
   }, []);
+
+  /* eslint-disable react-hooks/set-state-in-effect -- load profile summary catalog when auth token appears/clears */
+  useEffect(() => {
+    const token = accessToken?.trim();
+    if (!token) {
+      setProfileCatalogEntries([]);
+      return;
+    }
+    let cancelled = false;
+    void fetchProfileCatalog(token)
+      .then((res) => {
+        if (!cancelled) {
+          setProfileCatalogEntries(res.profiles);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setProfileCatalogEntries([]);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [accessToken]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   /* eslint-disable react-hooks/set-state-in-effect -- load signed overlays when auth token appears/clears */
   useEffect(() => {
@@ -394,6 +502,23 @@ export function FileConverter({
     };
   }, [accessToken]);
   /* eslint-enable react-hooks/set-state-in-effect */
+
+  const activeProfileSummary = useMemo(() => {
+    const canonicalId = hydrateSemanticProfile(conversionParams.profile);
+    const catalogMatch = profileCatalogEntries.find(
+      (entry) => entry.id === canonicalId,
+    );
+    return (
+      catalogMatch ?? fallbackProfileSummary(canonicalId, conversionParams.iwxxmVersion)
+    );
+  }, [conversionParams.iwxxmVersion, conversionParams.profile, profileCatalogEntries]);
+  const activeProfileExampleProducts = useMemo(
+    () =>
+      activeProfileSummary.products.filter((product): product is TacProduct =>
+        (TAC_PRODUCTS as readonly string[]).includes(product),
+      ),
+    [activeProfileSummary.products],
+  );
 
   const buildSnapshot = (
     overrides?: Partial<ConverterSnapshot>,
@@ -1722,6 +1847,8 @@ export function FileConverter({
   const { entries: lintCatalogEntries, byCode: lintCatalogByCode } =
     useLintIssueCatalog({
       product: liveAssistProduct,
+      semanticProfile: conversionParams.profile,
+      exchangeProfile: conversionParams.exchangeProfile,
       enabled: !isReadOnly,
     });
 
@@ -2267,7 +2394,9 @@ export function FileConverter({
                       </>
                     )}
                     <GoldenExamplesSelect
+                      applicableProducts={activeProfileExampleProducts}
                       disabled={isReadOnly}
+                      semanticProfile={conversionParams.profile}
                       onSelectExample={handleLoadGoldenExample}
                     />
                   </div>
@@ -2279,6 +2408,51 @@ export function FileConverter({
                     Encoding and packaging rules only — not destinations, credentials,
                     or editable overlays.
                   </p>
+                  <div
+                    className="rounded-md border border-gray-200 bg-white p-3 text-sm dark:border-gray-700 dark:bg-gray-800"
+                    data-testid="workbench-profile-summary"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <div>
+                        <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                          Profile at a glance
+                        </p>
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                          {profileDisplayName(activeProfileSummary.id)}
+                        </h3>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                          {activeProfileSummary.id}
+                        </p>
+                      </div>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        {activeProfileSummary.iwxxm_line ?? 'IWXXM line unavailable'}
+                      </p>
+                    </div>
+                    {activeProfileSummary.deltas_vs_icao &&
+                    activeProfileSummary.deltas_vs_icao.length > 0 ? (
+                      <ul className="mt-2 space-y-1 text-xs text-gray-700 dark:text-gray-300">
+                        {activeProfileSummary.deltas_vs_icao
+                          .slice(0, 3)
+                          .map((delta) => (
+                            <li key={delta}>{delta}</li>
+                          ))}
+                      </ul>
+                    ) : null}
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600 dark:text-gray-400">
+                      <span>
+                        Products:{' '}
+                        {activeProfileSummary.products.length > 0
+                          ? activeProfileSummary.products.join(', ')
+                          : 'Sign in to load profile coverage'}
+                      </span>
+                      {activeProfileSummary.rule_pack_count != null ? (
+                        <span>Rule packs: {activeProfileSummary.rule_pack_count}</span>
+                      ) : null}
+                      {activeProfileSummary.overlay_count != null ? (
+                        <span>Overlays: {activeProfileSummary.overlay_count}</span>
+                      ) : null}
+                    </div>
+                  </div>
                   <details
                     className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
                     data-testid="product-profile-trust-details"

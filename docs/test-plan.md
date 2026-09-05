@@ -125,6 +125,8 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-065 | F6/F7 deepen (EV-061) | AHL decode + convert-bulletin (#1012) | **H4–H5 required** | TC-EV061-1012-001..004 |
 | UJ-066 / UJ-067 | F7.u (EV-061) | Product/Profile + param bars aligned (#1013) | **H4–H5 required** | TC-EV061-1013-001..003 |
 | UJ-068 | F7.v/F15 (EV-061; EV-062) | Validation Issues Catalog (#1014; #1017 deepen) | **H4–H5 required** | TC-EV061-1014-001..004; TC-EV062-001..006 |
+| UJ-073 | F7.v/F15 (EV-1120) | Profile-scoped Validation Issues Catalog (#1121–#1123) | **H4–H5 when FE ships** | TC-EV1120-001..009 |
+| UJ-072d | F7.w (EV-1120) | Glanceable Profile summary + blocks + examples (#1145) | **H4–H5 when FE ships** | TC-EV1120-010..016 |
 | UJ-069 | F35/F36 (EV-063/EV-090/EV-093) | Semantic convert → exchange package (`GLOBAL_AFS`) | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-*; TC-EV093-* |
 | UJ-070 | F6+F9+F7.q (EV-981 / #981) | Opt-in propagate decode residuals into remarks / HRT + QM indicator | **H4–H5 required** | TC-EV981-001..005 |
 | UJ-071 | F16–F19 deepen (EV-936 / #936) | Dissemination ops — plan/audit/SQL mapping/gateway health | H6′; **H4–H5** when FE deploy | TC-F16-OPS-001..006 |
@@ -2781,6 +2783,132 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: Registry/catalog drift green; OpenAPI includes new optional fields
 - **Pass criteria**: TC-F15-001 family + OpenAPI internal-doc-ref guards
 - **Source**: #1017; ADR-028; NFR1–NFR4
+
+### EV-1120 / F7.v+F7.w+F15+F35 — Profile-scoped catalog + Profile UX Phase A (#1120)
+
+- **Mode**: deepen F7.v / F7.w / F15 / F35; Phase A only (#1146/#1147 deferred)
+- **Pass criteria**: requirements-report AC-API/CNT/UI/UX; EV-048 clean
+- **Source**: [#1120](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1120);
+  [context/profile-scoped-catalog-1120.md](context/profile-scoped-catalog-1120.md)
+
+### TC-EV1120-001: Catalog omit-params preserves prior behavior
+
+- **Level**: T0 / T2
+- **Objective**: `GET /lint-issue-catalog` without semantic/exchange params matches pre-EV-1120 set
+- **Pass criteria**: Fixture parity smoke green
+- **Source**: #1121; AC-API-1
+
+### TC-EV1120-002: semantic_profile filter shared ∪ matching
+
+- **Level**: T0 / T2
+- **Objective**: Filter returns shared + profile-applicable rows only
+- **Pass criteria**: National-only fixture omitted under ICAO_2025; present under owning profile
+- **Source**: #1121; AC-API-2
+
+### TC-EV1120-003: Unknown semantic_profile → 400
+
+- **Level**: T0 / T2
+- **Objective**: Fail-closed unknown profile ids
+- **Pass criteria**: 400 + `invalid_semantic_profile` (or documented sibling code)
+- **Source**: #1121; AC-API-3
+
+### TC-EV1120-004: exchange_profile packaging filter
+
+- **Level**: T0 / T2
+- **Objective**: Exchange filter applies to packaging-tagged rows only
+- **Pass criteria**: Unit/integration smoke; unknown → 400
+- **Source**: #1121
+
+### TC-EV1120-005: OpenAPI + api-contract additive
+
+- **Level**: T0
+- **Objective**: Query params documented; EV-048 OpenAPI guard green
+- **Pass criteria**: Contract tests + internal-doc-ref guards
+- **Source**: #1121; AC-API-4
+
+### TC-EV1120-006: US_FAA_NWS national-only catalog row
+
+- **Level**: T0 / T2
+- **Objective**: ≥1 TAC lint national-only code mined + tagged
+- **Pass criteria**: Visible under US filter; hidden under ICAO_2025
+- **Source**: #1122; AC-CNT-1
+
+### TC-EV1120-007: CA_ECCC national-only catalog row
+
+- **Level**: T0 / T2
+- **Objective**: ≥1 TAC lint national-only code mined + tagged
+- **Pass criteria**: Visible under CA filter; hidden under ICAO_2025
+- **Source**: #1122; AC-CNT-1
+
+### TC-EV1120-008: US + CA IWXXM validation national rows
+
+- **Level**: T0 / T2
+- **Objective**: ≥1 IWXXM-family national-only row each for US and CA
+- **Pass criteria**: Filter semantics + provenance URLs present
+- **Source**: #1122; AC-CNT-2
+
+### TC-EV1120-009: Workbench catalog follows Profile
+
+- **Level**: T0 / T2 / H4–H5
+- **Objective**: Changing Profile refetches/filters catalog panel
+- **Pass criteria**: UJ-073; national demo visible only under owning profile
+- **Source**: #1123; AC-UI-1
+
+### TC-EV1120-010: Profiles page glanceable summary composition
+
+- **Level**: T0 / T2
+- **Objective**: First viewport is one summary composition
+- **Pass criteria**: Shows name/id, ≤3 deltas, products, IWXXM line, counts
+- **Source**: #1145; AC-UX-1
+
+### TC-EV1120-011: Workbench Profile twin
+
+- **Level**: T0 / T2
+- **Objective**: Compact twin beside Profile control; JWT counts gated
+- **Pass criteria**: Public twin without pack counts; authed shows counts
+- **Source**: #1145; AC-UX-2
+
+### TC-EV1120-012: ADR-038 blocks inspect/jump
+
+- **Level**: T0 / T2
+- **Objective**: Block click opens detail and jumps to existing forms
+- **Pass criteria**: No new runtime loader; EV-048 clean
+- **Source**: #1145; AC-UX-3
+
+### TC-EV1120-013: Profile-aware examples all semantic profiles
+
+- **Level**: T0 / T2
+- **Objective**: Example load for every registered semantic profile
+- **Pass criteria**: Thin packs may reuse ICAO + note
+- **Source**: #1145; AC-UX-4
+
+### TC-EV1120-014: Starter seed sync non-destructive
+
+- **Level**: T0 / T2
+- **Objective**: Seed sync skips customized packs/overlays
+- **Pass criteria**: Custom slug preserved after catalog deepen
+- **Source**: #1145; AC-UX-5
+
+### TC-EV1120-015: Live refresh summary + catalog
+
+- **Level**: T0 / T2
+- **Objective**: Profile change updates twin + catalog without full reload
+- **Pass criteria**: Component/e2e assertion
+- **Source**: #1145; AC-UX-6
+
+### TC-EV1120-016: Workflow links read-only (Phase A)
+
+- **Level**: T0 / T2
+- **Objective**: Workflow affordances are status/links only
+- **Pass criteria**: No authoring UI in Phase A (#1147 deferred)
+- **Source**: #1145; D-R19/22
+
+### TC-EV1120-017: Side-by-side profile compare highlights deltas
+
+- **Level**: T0 / T2
+- **Objective**: Comparing two semantic profiles shows shared labels with differing cells emphasized
+- **Pass criteria**: US_FAA_NWS vs ICAO_2025 (or fixture pair) shows ≥1 highlighted difference (products and/or vs-ICAO deltas and/or IWXXM line)
+- **Source**: #1145; D-R27=3
 
 ### EV-064 / F36 — CA_ECCC profile (#916)
 

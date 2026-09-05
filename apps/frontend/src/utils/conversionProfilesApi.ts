@@ -32,6 +32,10 @@ export interface ProfileCatalogEntry {
   emit_key?: string | null;
   vendor_pins?: Record<string, unknown>;
   implementation?: Record<string, unknown>;
+  deltas_vs_icao?: string[];
+  iwxxm_line?: string | null;
+  rule_pack_count?: number | null;
+  overlay_count?: number | null;
 }
 
 export interface ProfileCatalogResponse {

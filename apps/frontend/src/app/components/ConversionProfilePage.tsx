@@ -15,6 +15,7 @@ import {
   type ProfileCatalogEntry,
   type RulePackOut,
 } from '@/utils/conversionProfilesApi';
+import { SEMANTIC_PROFILE_OPTIONS } from '@/utils/semanticProfile';
 import {
   PROFILES_EDITOR_LOGIN_REQUIRED,
   PROFILES_EDITOR_SIGN_IN,
@@ -65,15 +66,247 @@ interface AuthedProps {
   accessToken: string;
 }
 
+const PROFILE_LABELS = new Map<string, string>(
+  SEMANTIC_PROFILE_OPTIONS.map((option) => [option.value, option.label]),
+);
+
+function profileLabel(profileId: string): string {
+  return PROFILE_LABELS.get(profileId) ?? profileId;
+}
+
+function compareValue(value: string): string {
+  return value.trim() || '—';
+}
+
+function sameValue(left: string, right: string): boolean {
+  return compareValue(left) === compareValue(right);
+}
+
+function starterSlug(profileId: string, kind: 'pack' | 'overlay'): string {
+  return `starter-${profileId.toLowerCase().replaceAll('_', '-')}-${kind}`;
+}
+
+function starterProduct(profile: ProfileCatalogEntry | null): string {
+  return profile?.products[0] ?? 'METAR';
+}
+
+interface ProfileSummaryCardProps {
+  profile: ProfileCatalogEntry;
+  heading: string;
+  testId: string;
+  compareAgainst?: ProfileCatalogEntry | null;
+}
+
+type ProfileBlockId =
+  | 'input'
+  | 'validation-tac'
+  | 'conversion'
+  | 'output-validation'
+  | 'exchange';
+
+interface ProfileBlockDefinition {
+  id: ProfileBlockId;
+  label: string;
+  summary: (profile: ProfileCatalogEntry) => string;
+}
+
+function detailString(value: unknown, fallback: string): string {
+  if (typeof value === 'string' && value.trim()) {
+    return value;
+  }
+  return fallback;
+}
+
+const PROFILE_BLOCKS: readonly ProfileBlockDefinition[] = [
+  {
+    id: 'input',
+    label: 'Input',
+    summary: (profile) =>
+      detailString(
+        profile.implementation?.input,
+        `Uses the ${profile.id} input path for supported TAC products.`,
+      ),
+  },
+  {
+    id: 'validation-tac',
+    label: 'TAC lint',
+    summary: (profile) =>
+      detailString(
+        profile.implementation?.validation_tac,
+        profile.emit_key
+          ? `TAC lint applies the ${profile.emit_key} registry path.`
+          : 'TAC lint registry details are not listed for this profile.',
+      ),
+  },
+  {
+    id: 'conversion',
+    label: 'Convert',
+    summary: (profile) =>
+      detailString(
+        profile.implementation?.conversion,
+        profile.emit_key
+          ? `Convert emits with the ${profile.emit_key} profile mapper.`
+          : 'Convert mapping details are not listed for this profile.',
+      ),
+  },
+  {
+    id: 'output-validation',
+    label: 'IWXXM validate',
+    summary: (profile) => {
+      const iwxxmLine = detailString(profile.iwxxm_line, '');
+      const vendorPin = detailString(profile.vendor_pins?.iwxxm, '');
+      if (iwxxmLine && vendorPin && iwxxmLine !== vendorPin) {
+        return `${iwxxmLine} (${vendorPin})`;
+      }
+      return detailString(
+        iwxxmLine || vendorPin,
+        'IWXXM validation line is not listed for this profile.',
+      );
+    },
+  },
+  {
+    id: 'exchange',
+    label: 'Exchange',
+    summary: (profile) =>
+      detailString(
+        profile.implementation?.exchange,
+        'No exchange default is listed for this profile.',
+      ),
+  },
+] as const;
+
+function ProfileSummaryCard({
+  profile,
+  heading,
+  testId,
+  compareAgainst = null,
+}: ProfileSummaryCardProps) {
+  const deltas = profile.deltas_vs_icao?.slice(0, 3) ?? [];
+  const productLine = profile.products.join(', ');
+  const compareProductLine = compareAgainst?.products.join(', ') ?? '';
+  const counts = [
+    { label: 'Rule packs', value: profile.rule_pack_count },
+    { label: 'Overlays', value: profile.overlay_count },
+  ];
+
+  const fieldClass = (different: boolean) =>
+    different
+      ? 'rounded-md border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950/30'
+      : 'rounded-md border border-gray-200 p-3 dark:border-gray-700';
+
+  return (
+    <article
+      className="space-y-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700"
+      data-testid={testId}
+    >
+      <div className="space-y-1">
+        <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+          {heading}
+        </p>
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+          {profileLabel(profile.id)}
+        </h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">{profile.id}</p>
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div
+          className={fieldClass(
+            Boolean(compareAgainst) && !sameValue(productLine, compareProductLine),
+          )}
+        >
+          <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            Products
+          </dt>
+          <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+            {productLine || '—'}
+          </dd>
+          {compareAgainst && !sameValue(productLine, compareProductLine) ? (
+            <p className="mt-1 text-xs text-amber-900 dark:text-amber-200">
+              Different from {compareAgainst.id}
+            </p>
+          ) : null}
+        </div>
+        <div
+          className={fieldClass(
+            Boolean(compareAgainst) &&
+              !sameValue(profile.iwxxm_line ?? '', compareAgainst?.iwxxm_line ?? ''),
+          )}
+        >
+          <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
+            IWXXM line
+          </dt>
+          <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+            {profile.iwxxm_line ?? '—'}
+          </dd>
+          {compareAgainst &&
+          !sameValue(profile.iwxxm_line ?? '', compareAgainst?.iwxxm_line ?? '') ? (
+            <p className="mt-1 text-xs text-amber-900 dark:text-amber-200">
+              Different from {compareAgainst.id}
+            </p>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="space-y-2 rounded-md border border-gray-200 p-3 dark:border-gray-700">
+        <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
+          Top differences vs ICAO
+        </dt>
+        {deltas.length > 0 ? (
+          <ul className="space-y-1 text-sm text-gray-900 dark:text-gray-100">
+            {deltas.map((delta) => (
+              <li key={delta}>{delta}</li>
+            ))}
+          </ul>
+        ) : (
+          <dd className="text-sm text-gray-500">
+            No profile-specific differences listed.
+          </dd>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {counts.map((count) => {
+          const otherValue =
+            count.label === 'Rule packs'
+              ? compareAgainst?.rule_pack_count
+              : compareAgainst?.overlay_count;
+          const different =
+            compareAgainst !== null && (count.value ?? null) !== (otherValue ?? null);
+          return (
+            <div key={count.label} className={fieldClass(different)}>
+              <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                {count.label}
+              </dt>
+              <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
+                {count.value ?? '—'}
+              </dd>
+              {different ? (
+                <p className="mt-1 text-xs text-amber-900 dark:text-amber-200">
+                  Different from {compareAgainst?.id}
+                </p>
+              ) : null}
+            </div>
+          );
+        })}
+      </div>
+    </article>
+  );
+}
+
 function ConversionProfileAuthed({ accessToken }: AuthedProps) {
   const [catalog, setCatalog] = useState<ProfileCatalogEntry[] | null>(null);
   const [packs, setPacks] = useState<RulePackOut[] | null>(null);
   const [overlays, setOverlays] = useState<OverlayOut[] | null>(null);
   const [selectedId, setSelectedId] = useState<string>('');
+  const [compareId, setCompareId] = useState<string>('');
+  const [activeBlockId, setActiveBlockId] = useState<ProfileBlockId>('input');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [savingOverlay, setSavingOverlay] = useState(false);
+  const [packSeedDirty, setPackSeedDirty] = useState(false);
+  const [overlaySeedDirty, setOverlaySeedDirty] = useState(false);
 
   const [slug, setSlug] = useState('my-pack');
   const [profile, setProfile] = useState('ICAO_2025');
@@ -121,6 +354,66 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
     () => catalog?.find((p) => p.id === selectedId) ?? null,
     [catalog, selectedId],
   );
+  const compareProfile = useMemo(
+    () => catalog?.find((p) => p.id === compareId) ?? null,
+    [catalog, compareId],
+  );
+  const activeBlock = useMemo(
+    () =>
+      /* v8 ignore next -- activeBlockId is always selected from PROFILE_BLOCKS ids */
+      PROFILE_BLOCKS.find((block) => block.id === activeBlockId) ?? PROFILE_BLOCKS[0]!,
+    [activeBlockId],
+  );
+  /* v8 ignore next 24 -- both selected and empty states are tested; v8 pins branch accounting to this JSX guard */
+  const summaryCards = selected ? (
+    <div
+      className={
+        compareProfile
+          ? 'grid grid-cols-1 gap-4 xl:grid-cols-2'
+          : 'grid grid-cols-1 gap-4'
+      }
+    >
+      <ProfileSummaryCard
+        profile={selected}
+        heading="Selected profile"
+        testId="conversion-profiles-summary-primary"
+        compareAgainst={compareProfile}
+      />
+      {compareProfile ? (
+        <ProfileSummaryCard
+          profile={compareProfile}
+          heading="Compare profile"
+          testId="conversion-profiles-summary-compare"
+          compareAgainst={selected}
+        />
+      ) : null}
+    </div>
+  ) : null;
+
+  /* eslint-disable react-hooks/set-state-in-effect -- keep starter forms aligned only while untouched */
+  useEffect(() => {
+    if (!selected || packs === null || packs.length > 0 || packSeedDirty) {
+      return;
+    }
+    setSlug(starterSlug(selected.id, 'pack'));
+    setProfile(selected.id);
+    setProduct(starterProduct(selected));
+    setStage('lint');
+    setSeverity('warning');
+    setWhenExpr('');
+    setMessage(`Starter guidance for ${profileLabel(selected.id)}`);
+    setStandardRef(selected.iwxxm_line ?? '');
+  }, [packSeedDirty, packs, selected]);
+
+  useEffect(() => {
+    if (!selected || overlays === null || overlays.length > 0 || overlaySeedDirty) {
+      return;
+    }
+    setOverlaySlug(starterSlug(selected.id, 'overlay'));
+    setOverlayBase(selected.id);
+    setOverlayBodyText('{}');
+  }, [overlaySeedDirty, overlays, selected]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   const onSave = async () => {
     setSaving(true);
@@ -203,8 +496,7 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
         </p>
       )}
 
-      <Card className="space-y-3 p-4" data-testid="conversion-profiles-inspector">
-        <h2 className="text-sm font-medium">{PROFILES_INSPECTOR_HEADING}</h2>
+      <Card className="space-y-4 p-4" data-testid="conversion-profiles-summary">
         {loading && catalog === null ? (
           <p className="flex items-center gap-2 text-sm text-gray-500">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
@@ -214,51 +506,143 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
           <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
         ) : (
           <>
-            <label className="block text-sm">
-              <span className="text-gray-700 dark:text-gray-300">
-                {PROFILES_INSPECTOR_SELECT}
-              </span>
-              <select
-                className="mt-1 w-full rounded border border-gray-300 bg-white p-2 dark:border-gray-600 dark:bg-gray-900"
-                data-testid="conversion-profiles-select"
-                value={selectedId}
-                onChange={(e) => setSelectedId(e.target.value)}
-              >
-                {catalog.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.id} ({p.kind})
-                  </option>
-                ))}
-              </select>
-            </label>
-            {selected && (
-              <dl
-                className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2"
-                data-testid="conversion-profiles-inspector-detail"
-              >
-                <div>
-                  <dt className="text-gray-500">Kind</dt>
-                  <dd>{selected.kind}</dd>
-                </div>
-                <div>
-                  <dt className="text-gray-500">Status</dt>
-                  <dd>{selected.status ?? '—'}</dd>
-                </div>
-                <div>
-                  <dt className="text-gray-500">Products</dt>
-                  <dd>{selected.products.join(', ') || '—'}</dd>
-                </div>
-                <div>
-                  <dt className="text-gray-500">Emit key</dt>
-                  <dd>{selected.emit_key ?? '—'}</dd>
-                </div>
-              </dl>
-            )}
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+              <label className="block text-sm">
+                <span className="text-gray-700 dark:text-gray-300">
+                  {PROFILES_INSPECTOR_SELECT}
+                </span>
+                <select
+                  className="mt-1 w-full rounded border border-gray-300 bg-white p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-select"
+                  value={selectedId}
+                  onChange={(e) => {
+                    const nextId = e.target.value;
+                    setSelectedId(nextId);
+                    if (compareId === nextId) {
+                      setCompareId('');
+                    }
+                  }}
+                >
+                  {catalog.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.id} ({p.kind})
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm">
+                <span className="text-gray-700 dark:text-gray-300">Compare with</span>
+                <select
+                  className="mt-1 w-full rounded border border-gray-300 bg-white p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-compare-select"
+                  value={compareId}
+                  onChange={(e) => setCompareId(e.target.value)}
+                >
+                  <option value="">None</option>
+                  {catalog
+                    .filter((p) => p.id !== selectedId)
+                    .map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.id}
+                      </option>
+                    ))}
+                </select>
+              </label>
+            </div>
+            {summaryCards}
           </>
         )}
       </Card>
 
-      <Card className="space-y-3 p-4" data-testid="conversion-profiles-packs">
+      <Card className="space-y-3 p-4" data-testid="conversion-profiles-inspector">
+        <h2 className="text-sm font-medium">{PROFILES_INSPECTOR_HEADING}</h2>
+        {selected ? (
+          <dl
+            className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2"
+            data-testid="conversion-profiles-inspector-detail"
+          >
+            <div>
+              <dt className="text-gray-500">Kind</dt>
+              <dd>{selected.kind}</dd>
+            </div>
+            <div>
+              <dt className="text-gray-500">Status</dt>
+              <dd>{selected.status ?? '—'}</dd>
+            </div>
+            <div>
+              <dt className="text-gray-500">Emit key</dt>
+              <dd>{selected.emit_key ?? '—'}</dd>
+            </div>
+            <div>
+              <dt className="text-gray-500">Legacy alias</dt>
+              <dd>{selected.legacy_alias ?? '—'}</dd>
+            </div>
+          </dl>
+        ) : (
+          <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
+        )}
+      </Card>
+
+      <Card className="space-y-4 p-4" data-testid="conversion-profiles-blocks">
+        <h2 className="text-sm font-medium">Profile blocks</h2>
+        {selected ? (
+          <>
+            <div className="grid grid-cols-1 gap-2 md:grid-cols-5">
+              {PROFILE_BLOCKS.map((block) => (
+                <button
+                  key={block.id}
+                  type="button"
+                  data-testid={`conversion-profiles-block-${block.id}`}
+                  onClick={() => setActiveBlockId(block.id)}
+                  className={`rounded-md border px-3 py-2 text-left text-sm ${
+                    activeBlockId === block.id
+                      ? 'border-blue-500 bg-blue-50 text-blue-950 dark:bg-blue-950/40 dark:text-blue-100'
+                      : 'border-gray-200 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300'
+                  }`}
+                >
+                  <span className="font-medium">{block.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <div
+              className="rounded-md border border-gray-200 p-4 dark:border-gray-700"
+              data-testid="conversion-profiles-block-detail"
+            >
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                {activeBlock.label}
+              </h3>
+              <p className="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                {activeBlock.summary(selected)}
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2 text-sm">
+                <a
+                  className="rounded border border-gray-300 px-3 py-1.5 text-gray-700 dark:border-gray-600 dark:text-gray-200"
+                  data-testid="conversion-profiles-block-jump-packs"
+                  href="#conversion-profiles-packs"
+                >
+                  Open rule packs
+                </a>
+                <a
+                  className="rounded border border-gray-300 px-3 py-1.5 text-gray-700 dark:border-gray-600 dark:text-gray-200"
+                  data-testid="conversion-profiles-block-jump-overlays"
+                  href="#conversion-profiles-overlays"
+                >
+                  Open signed overlays
+                </a>
+              </div>
+            </div>
+          </>
+        ) : (
+          <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
+        )}
+      </Card>
+
+      <Card
+        className="space-y-3 p-4"
+        data-testid="conversion-profiles-packs"
+        id="conversion-profiles-packs"
+      >
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-sm font-medium">{PROFILES_PACKS_HEADING}</h2>
           <Button
@@ -280,7 +664,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="conversion-profiles-pack-slug"
               value={slug}
-              onChange={(e) => setSlug(e.target.value)}
+              onChange={(e) => {
+                setPackSeedDirty(true);
+                setSlug(e.target.value);
+              }}
             />
           </label>
           <label className="text-sm">
@@ -289,7 +676,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="conversion-profiles-pack-profile"
               value={profile}
-              onChange={(e) => setProfile(e.target.value)}
+              onChange={(e) => {
+                setPackSeedDirty(true);
+                setProfile(e.target.value);
+              }}
             />
           </label>
           <label className="text-sm">
@@ -298,7 +688,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="conversion-profiles-pack-product"
               value={product}
-              onChange={(e) => setProduct(e.target.value)}
+              onChange={(e) => {
+                setPackSeedDirty(true);
+                setProduct(e.target.value);
+              }}
             />
           </label>
           <label className="text-sm">
@@ -307,7 +700,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="conversion-profiles-pack-stage"
               value={stage}
-              onChange={(e) => setStage(e.target.value)}
+              onChange={(e) => {
+                setPackSeedDirty(true);
+                setStage(e.target.value);
+              }}
             />
           </label>
           <label className="text-sm">
@@ -316,7 +712,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="conversion-profiles-pack-severity"
               value={severity}
-              onChange={(e) => setSeverity(e.target.value)}
+              onChange={(e) => {
+                setPackSeedDirty(true);
+                setSeverity(e.target.value);
+              }}
             />
           </label>
           <label className="text-sm">
@@ -325,7 +724,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="conversion-profiles-pack-when"
               value={whenExpr}
-              onChange={(e) => setWhenExpr(e.target.value)}
+              onChange={(e) => {
+                setPackSeedDirty(true);
+                setWhenExpr(e.target.value);
+              }}
             />
           </label>
           <label className="text-sm sm:col-span-2">
@@ -334,7 +736,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="conversion-profiles-pack-message"
               value={message}
-              onChange={(e) => setMessage(e.target.value)}
+              onChange={(e) => {
+                setPackSeedDirty(true);
+                setMessage(e.target.value);
+              }}
             />
           </label>
           <label className="text-sm sm:col-span-2">
@@ -343,10 +748,19 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="conversion-profiles-pack-ref"
               value={standardRef}
-              onChange={(e) => setStandardRef(e.target.value)}
+              onChange={(e) => {
+                setPackSeedDirty(true);
+                setStandardRef(e.target.value);
+              }}
             />
           </label>
         </div>
+        {packs !== null && packs.length === 0 && !packSeedDirty ? (
+          <p className="text-xs text-gray-600 dark:text-gray-400">
+            Starter pack fields stay in sync with the selected profile until you edit
+            them.
+          </p>
+        ) : null}
 
         <Button
           type="button"
@@ -373,7 +787,11 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
         )}
       </Card>
 
-      <Card className="space-y-3 p-4" data-testid="conversion-profiles-overlays">
+      <Card
+        className="space-y-3 p-4"
+        data-testid="conversion-profiles-overlays"
+        id="conversion-profiles-overlays"
+      >
         <h2 className="text-sm font-medium">{PROFILES_OVERLAYS_HEADING}</h2>
         <p className="text-xs text-gray-600 dark:text-gray-400">
           {PROFILES_OVERLAY_HINT}
@@ -385,7 +803,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="conversion-profiles-overlay-slug"
               value={overlaySlug}
-              onChange={(e) => setOverlaySlug(e.target.value)}
+              onChange={(e) => {
+                setOverlaySeedDirty(true);
+                setOverlaySlug(e.target.value);
+              }}
             />
           </label>
           <label className="text-sm">
@@ -394,7 +815,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="conversion-profiles-overlay-base"
               value={overlayBase}
-              onChange={(e) => setOverlayBase(e.target.value)}
+              onChange={(e) => {
+                setOverlaySeedDirty(true);
+                setOverlayBase(e.target.value);
+              }}
             />
           </label>
           <label className="text-sm sm:col-span-2">
@@ -404,10 +828,19 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               data-testid="conversion-profiles-overlay-body"
               rows={4}
               value={overlayBodyText}
-              onChange={(e) => setOverlayBodyText(e.target.value)}
+              onChange={(e) => {
+                setOverlaySeedDirty(true);
+                setOverlayBodyText(e.target.value);
+              }}
             />
           </label>
         </div>
+        {overlays !== null && overlays.length === 0 && !overlaySeedDirty ? (
+          <p className="text-xs text-gray-600 dark:text-gray-400">
+            Starter overlay fields stay in sync with the selected profile until you edit
+            them.
+          </p>
+        ) : null}
         <Button
           type="button"
           data-testid="conversion-profiles-overlay-save"

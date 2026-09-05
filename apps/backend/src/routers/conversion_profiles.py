@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBearer
 
 from ..schemas.conversion_profiles import (
@@ -37,13 +37,34 @@ def profiles_service(
 @router.get("/catalog", response_model=ProfileCatalogResponse)
 def get_catalog(
     _user: dict[str, Any] = Depends(verify_supabase_token),
+    service: ConversionProfilesService = Depends(profiles_service),
 ) -> ProfileCatalogResponse:
     """
     Read-only ConversionProfile catalog for the authenticated Profiles inspector.
 
     Requires JWT so the inspector stays on the authenticated Profiles surface.
     """
-    return load_profile_catalog()
+    rule_pack_counts: dict[str, int] = {}
+    try:
+        for pack in service.list_rule_packs():
+            rule_pack_counts[pack.profile] = rule_pack_counts.get(pack.profile, 0) + 1
+    except HTTPException as exc:
+        if exc.status_code != 503:
+            raise
+
+    overlay_counts: dict[str, int] = {}
+    try:
+        for overlay in service.list_overlays():
+            key = overlay.base_profile_id
+            overlay_counts[key] = overlay_counts.get(key, 0) + 1
+    except HTTPException as exc:
+        if exc.status_code != 503:
+            raise
+
+    return load_profile_catalog(
+        rule_pack_counts=rule_pack_counts,
+        overlay_counts=overlay_counts,
+    )
 
 
 @router.get("/rule-packs", response_model=RulePackListResponse)

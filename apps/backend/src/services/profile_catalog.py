@@ -66,7 +66,52 @@ def _as_str_dict(value: object) -> dict[str, Any]:
     return {str(k): v for k, v in cast(dict[object, object], value).items()}
 
 
-def load_profile_catalog() -> ProfileCatalogResponse:
+_DELTA_MAP: dict[str, list[str]] = {
+    "ICAO_2025": [
+        "Baseline ICAO/WMO line used for cross-profile comparison.",
+    ],
+    "US_FAA_NWS": [
+        "Adds FAA/NWS national differences on top of the ICAO baseline.",
+        "Uses the iwxxm-us schema catalog for United States IWXXM extensions.",
+        "Current product slice is METAR, SPECI, SIGMET, and AIRMET.",
+    ],
+    "CA_ECCC": [
+        "Adds Canadian MANOBS and MANAIR rules on top of the ICAO baseline.",
+        "Pins the Canadian operational IWXXM 3.0.0 line with iwxxm-ca product schemas.",
+        "Covers METAR, SPECI, TAF, AIRMET, SIGMET, and VAA in the current slice.",
+    ],
+    "AU_BOM": [
+        "Thin pack in progress: compare from the ICAO baseline first.",
+    ],
+    "NZ_CAA_MET": [
+        "Thin pack in progress: compare from the ICAO baseline first.",
+    ],
+}
+
+
+def _deltas_vs_icao(profile_id: str) -> list[str]:
+    return list(
+        _DELTA_MAP.get(profile_id, ["Thin pack: reuses the ICAO baseline until a profile-specific extension lands."])
+    )[:3]
+
+
+def _iwxxm_line(profile_id: str, vendor_pins: dict[str, Any]) -> str | None:
+    if profile_id == "ICAO_2025":
+        return str(vendor_pins.get("iwxxm") or "WMO IWXXM 2025-2")
+    if profile_id == "US_FAA_NWS":
+        return "WMO IWXXM 2025-2 core + iwxxm-us 3.0"
+    if profile_id == "CA_ECCC":
+        return "WMO IWXXM 3.0.0 core + iwxxm-ca 3.0"
+    if vendor_pins:
+        return "; ".join(str(value) for value in vendor_pins.values())
+    return None
+
+
+def load_profile_catalog(
+    *,
+    rule_pack_counts: dict[str, int] | None = None,
+    overlay_counts: dict[str, int] | None = None,
+) -> ProfileCatalogResponse:
     """
     Project catalog.yaml into the ConversionProfile inspector response shape.
 
@@ -89,6 +134,7 @@ def load_profile_catalog() -> ProfileCatalogResponse:
             continue
         row = cast(dict[str, Any], item)
         entry_id = _as_str(row.get("id")) or ""
+        vendor_pins = _as_str_dict(row.get("vendor_pins"))
         entries.append(
             ProfileCatalogEntry(
                 id=entry_id,
@@ -98,8 +144,12 @@ def load_profile_catalog() -> ProfileCatalogResponse:
                 products=_as_str_list(row.get("products")),
                 legacy_alias=_as_str(row.get("legacy_alias")),
                 emit_key=_as_str(row.get("emit_key")),
-                vendor_pins=_as_str_dict(row.get("vendor_pins")),
+                vendor_pins=vendor_pins,
                 implementation=_as_str_dict(row.get("implementation")),
+                deltas_vs_icao=_deltas_vs_icao(entry_id),
+                iwxxm_line=_iwxxm_line(entry_id, vendor_pins),
+                rule_pack_count=(rule_pack_counts or {}).get(entry_id),
+                overlay_count=(overlay_counts or {}).get(entry_id),
             )
         )
     return ProfileCatalogResponse(

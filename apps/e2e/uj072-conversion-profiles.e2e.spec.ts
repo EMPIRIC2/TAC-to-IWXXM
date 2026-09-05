@@ -26,6 +26,11 @@ type ProfilesCapture = {
   convert: Request[];
 };
 
+type StubProfilesOptions = {
+  rulePacks?: ReadonlyArray<Record<string, unknown>>;
+  overlays?: ReadonlyArray<Record<string, unknown>>;
+};
+
 async function seedMockAuth(page: Page): Promise<void> {
   await page.addInitScript((token) => {
     const expiresAt = String(Math.floor(Date.now() / 1000) + 3600);
@@ -67,9 +72,19 @@ async function stubWorkbenchNoise(page: Page): Promise<void> {
       }),
     });
   });
+  await page.route('**/api/v1/lint-issue-catalog**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ issues: [] }),
+    });
+  });
 }
 
-async function stubProfilesApis(page: Page): Promise<ProfilesCapture> {
+async function stubProfilesApis(
+  page: Page,
+  options: StubProfilesOptions = {},
+): Promise<ProfilesCapture> {
   const captured: ProfilesCapture = {
     catalog: [],
     rulePacksGet: [],
@@ -78,6 +93,20 @@ async function stubProfilesApis(page: Page): Promise<ProfilesCapture> {
     overlaysPost: [],
     convert: [],
   };
+  const rulePacks = options.rulePacks ?? [];
+  const overlays = options.overlays ?? [
+    {
+      id: OVERLAY_ID,
+      user_id: '33333333-3333-4333-8333-333333333333',
+      slug: 'e2e-overlay',
+      baseProfileId: 'ICAO_2025',
+      body: {},
+      signature: 'a'.repeat(64),
+      shared: false,
+      created_at: '2026-09-04T00:00:00Z',
+      updated_at: '2026-09-04T00:00:00Z',
+    },
+  ];
 
   await page.route('**/api/v1/profiles/catalog**', async (route) => {
     captured.catalog.push(route.request());
@@ -93,6 +122,18 @@ async function stubProfilesApis(page: Page): Promise<ProfilesCapture> {
             status: 'implemented',
             products: ['METAR', 'SPECI', 'TAF'],
             emit_key: 'annex3',
+            deltas_vs_icao: [
+              'Baseline ICAO/WMO line used for cross-profile comparison.',
+            ],
+            iwxxm_line: 'IWXXM 2025-2 core',
+            rule_pack_count: rulePacks.length,
+            overlay_count: overlays.length,
+            vendor_pins: { iwxxm: 'WMO IWXXM 2025-2' },
+            implementation: {
+              input: 'tac2iwxxm/profiles/annex3',
+              conversion: 'annex3 emit plugin',
+              exchange: 'GLOBAL_AFS default',
+            },
           },
           {
             id: 'US_FAA_NWS',
@@ -100,6 +141,39 @@ async function stubProfilesApis(page: Page): Promise<ProfilesCapture> {
             status: 'implemented',
             products: ['METAR'],
             emit_key: 'iwxxm_us',
+            deltas_vs_icao: [
+              'Retains selected RMK content in output.',
+              'Adds FAA/NWS national extension coverage.',
+            ],
+            iwxxm_line: 'IWXXM-US 3.0.0',
+            rule_pack_count: rulePacks.filter((item) => item.profile === 'US_FAA_NWS')
+              .length,
+            overlay_count: overlays.filter(
+              (item) => item.baseProfileId === 'US_FAA_NWS',
+            ).length,
+            vendor_pins: { iwxxm: 'iwxxm-us 3.0.0' },
+            implementation: {
+              input: 'tac2iwxxm/profiles/iwxxm_us',
+              conversion: 'iwxxm_us emit plugin',
+            },
+          },
+          {
+            id: 'CA_ECCC',
+            kind: 'semantic',
+            status: 'pilot',
+            products: ['METAR', 'SPECI', 'TAF', 'AIRMET'],
+            emit_key: 'ca_eccc',
+            deltas_vs_icao: ['Pins the MSC operational IWXXM line.'],
+            iwxxm_line: 'IWXXM 3.0.0 (MSC operational)',
+            rule_pack_count: rulePacks.filter((item) => item.profile === 'CA_ECCC')
+              .length,
+            overlay_count: overlays.filter((item) => item.baseProfileId === 'CA_ECCC')
+              .length,
+            vendor_pins: { iwxxm: 'MSC 3.0.0' },
+            implementation: {
+              input: 'tac2iwxxm/profiles/ca_eccc',
+              conversion: 'ca_eccc emit plugin',
+            },
           },
         ],
       }),
@@ -113,7 +187,7 @@ async function stubProfilesApis(page: Page): Promise<ProfilesCapture> {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ items: [] }),
+        body: JSON.stringify({ items: rulePacks }),
       });
       return;
     }
@@ -150,21 +224,7 @@ async function stubProfilesApis(page: Page): Promise<ProfilesCapture> {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({
-          items: [
-            {
-              id: OVERLAY_ID,
-              user_id: '33333333-3333-4333-8333-333333333333',
-              slug: 'e2e-overlay',
-              baseProfileId: 'ICAO_2025',
-              body: {},
-              signature: 'a'.repeat(64),
-              shared: false,
-              created_at: '2026-09-04T00:00:00Z',
-              updated_at: '2026-09-04T00:00:00Z',
-            },
-          ],
-        }),
+        body: JSON.stringify({ items: overlays }),
       });
       return;
     }
@@ -336,5 +396,81 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await openBtn.click();
     await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
     await expect(page.getByTestId('dissemination-exchange-profile')).toBeVisible();
+  });
+
+  test('TC-EV1120-010/012/014/017: summary, compare, blocks, and starter sync', async ({
+    page,
+  }) => {
+    await seedMockAuth(page);
+    await stubWorkbenchNoise(page);
+    await stubProfilesApis(page, { rulePacks: [], overlays: [] });
+
+    await openProfiles(page);
+
+    await expect(page.getByTestId('conversion-profiles-summary')).toBeVisible();
+    await expect(page.getByTestId('conversion-profiles-summary-primary')).toContainText(
+      /ICAO_2025/i,
+    );
+    await page
+      .getByTestId('conversion-profiles-compare-select')
+      .selectOption('US_FAA_NWS');
+    await expect(page.getByTestId('conversion-profiles-summary-compare')).toContainText(
+      /US_FAA_NWS/i,
+    );
+    await expect(page.getByText(/Different from US_FAA_NWS/i).first()).toBeVisible();
+
+    await page.getByTestId('conversion-profiles-block-output-validation').click();
+    await expect(page.getByTestId('conversion-profiles-block-detail')).toContainText(
+      /WMO IWXXM 2025-2/i,
+    );
+    await expect(
+      page.getByTestId('conversion-profiles-block-jump-packs'),
+    ).toHaveAttribute('href', '#conversion-profiles-packs');
+
+    await page.getByTestId('conversion-profiles-select').selectOption('US_FAA_NWS');
+    await expect(page.getByTestId('conversion-profiles-pack-profile')).toHaveValue(
+      'US_FAA_NWS',
+    );
+    await expect(page.getByTestId('conversion-profiles-overlay-base')).toHaveValue(
+      'US_FAA_NWS',
+    );
+    await page.getByTestId('conversion-profiles-pack-slug').fill('custom-pack');
+    await page.getByTestId('conversion-profiles-select').selectOption('CA_ECCC');
+    await expect(page.getByTestId('conversion-profiles-pack-slug')).toHaveValue(
+      'custom-pack',
+    );
+    await expect(page.getByTestId('conversion-profiles-pack-profile')).toHaveValue(
+      'US_FAA_NWS',
+    );
+  });
+
+  test('TC-EV1120-011/013/015: workbench twin and profile-aware example refresh', async ({
+    page,
+  }) => {
+    await seedMockAuth(page);
+    await stubWorkbenchNoise(page);
+    await stubProfilesApis(page);
+
+    await openPublicConverter(page);
+    await dismissPrivacyNoticeIfPresent(page);
+
+    await expect(page.getByTestId('workbench-profile-summary')).toBeVisible();
+    await expect(page.getByTestId('workbench-profile-summary')).toContainText(
+      /ICAO_2025/i,
+    );
+
+    await page.getByTestId('profile-type-select').selectOption('US_FAA_NWS');
+    await expect(page.getByTestId('workbench-profile-summary')).toContainText(
+      /US_FAA_NWS/i,
+    );
+    await page.getByTestId('examples-select').click();
+    await expect(
+      page.getByRole('option', {
+        name: /METAR WMO A3-1 \(annex3\).*Reused for United States \(FAA\/NWS\)/i,
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('option', { name: /TC SIGMET WMO A6-2-TC/i }),
+    ).toHaveCount(0);
   });
 });

@@ -2498,6 +2498,14 @@
             "title": "Code",
             "type": "string"
           },
+          "exchange_profiles": {
+            "description": "Canonical exchange profile ids for packaging-tagged rows; empty = shared",
+            "items": {
+              "type": "string"
+            },
+            "title": "Exchange Profiles",
+            "type": "array"
+          },
           "family": {
             "anyOf": [
               {
@@ -2572,6 +2580,14 @@
             ],
             "description": "Vocabulary concept path when href is a verified landing",
             "title": "Semantic Identifier"
+          },
+          "semantic_profiles": {
+            "description": "Canonical semantic profile ids this row applies to; empty = shared/global",
+            "items": {
+              "type": "string"
+            },
+            "title": "Semantic Profiles",
+            "type": "array"
           },
           "severity": {
             "title": "Severity",
@@ -3338,6 +3354,13 @@
       "ProfileCatalogEntry": {
         "description": "Read-only ConversionProfile catalog entry for the inspector.",
         "properties": {
+          "deltas_vs_icao": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Deltas Vs Icao",
+            "type": "array"
+          },
           "emit_key": {
             "anyOf": [
               {
@@ -3358,6 +3381,17 @@
             "title": "Implementation",
             "type": "object"
           },
+          "iwxxm_line": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iwxxm Line"
+          },
           "kind": {
             "title": "Kind",
             "type": "string"
@@ -3372,6 +3406,18 @@
               }
             ],
             "title": "Legacy Alias"
+          },
+          "overlay_count": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overlay Count"
           },
           "priority": {
             "anyOf": [
@@ -3390,6 +3436,18 @@
             },
             "title": "Products",
             "type": "array"
+          },
+          "rule_pack_count": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Pack Count"
           },
           "status": {
             "anyOf": [
@@ -6597,6 +6655,38 @@
                 }
               ],
               "title": "Source Access"
+            }
+          },
+          {
+            "in": "query",
+            "name": "semantic_profile",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semantic Profile"
+            }
+          },
+          {
+            "in": "query",
+            "name": "exchange_profile",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Exchange Profile"
             }
           }
         ],

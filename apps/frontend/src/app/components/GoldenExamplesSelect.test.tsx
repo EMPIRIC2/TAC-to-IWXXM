@@ -68,4 +68,41 @@ describe('GoldenExamplesSelect', () => {
       options.every((option) => (option.textContent ?? '').trim().length > 0),
     ).toBe(true);
   });
+
+  it('filters to applicable products and labels reused seeds for non-ICAO profiles', async () => {
+    const user = userEvent.setup();
+    render(
+      <GoldenExamplesSelect
+        onSelectExample={vi.fn()}
+        semanticProfile="US_FAA_NWS"
+        applicableProducts={['METAR']}
+      />,
+    );
+
+    await user.click(screen.getByTestId('examples-select'));
+    expect(
+      await screen.findByRole('option', {
+        name: /METAR WMO A3-1 \(annex3\).*Reused for United States \(FAA\/NWS\)/i,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: /SIGMET/i })).not.toBeInTheDocument();
+  });
+
+  it('labels reused WMO reference examples for non-ICAO profiles', async () => {
+    const user = userEvent.setup();
+    render(
+      <GoldenExamplesSelect
+        onSelectExample={vi.fn()}
+        semanticProfile="US_FAA_NWS"
+        applicableProducts={['SWXA']}
+      />,
+    );
+
+    await user.click(screen.getByTestId('examples-select'));
+    expect(
+      await screen.findByRole('option', {
+        name: /SWXA WMO A7-3.*WMO reference.*Reused for United States \(FAA\/NWS\)/i,
+      }),
+    ).toBeInTheDocument();
+  });
 });
