@@ -255,6 +255,40 @@ const PROFILE_LABELS = new Map<string, string>(
   SEMANTIC_PROFILE_OPTIONS.map((option) => [option.value, option.label]),
 );
 
+const FALLBACK_PROFILE_SUMMARIES: Partial<Record<IwxxmProfile, ProfileCatalogEntry>> = {
+  ICAO_2025: {
+    id: 'ICAO_2025',
+    kind: 'semantic',
+    products: [
+      'METAR',
+      'SPECI',
+      'TAF',
+      'SIGMET',
+      'AIRMET',
+      'VAA',
+      'TCA',
+      'SWXA',
+      'VONA',
+    ],
+    deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+  },
+  US_FAA_NWS: {
+    id: 'US_FAA_NWS',
+    kind: 'semantic',
+    products: ['METAR', 'SPECI', 'SIGMET', 'AIRMET'],
+    deltas_vs_icao: [
+      'Adds FAA/NWS national differences on top of the ICAO baseline.',
+      'Uses the iwxxm-us schema catalog for United States IWXXM extensions.',
+    ],
+  },
+  CA_ECCC: {
+    id: 'CA_ECCC',
+    kind: 'semantic',
+    products: [...CA_ECCC_SUPPORTED_PRODUCTS],
+    deltas_vs_icao: [CA_ECCC_EXTENSION_LABEL],
+  },
+};
+
 function profileDisplayName(profileId: string): string {
   return PROFILE_LABELS.get(profileId) ?? profileId;
 }
@@ -263,17 +297,19 @@ function fallbackProfileSummary(
   profile: IwxxmProfile,
   iwxxmVersion: IWXXMVersion,
 ): ProfileCatalogEntry {
-  if (isCaEcccProfile(profile)) {
+  const canonicalId = hydrateSemanticProfile(profile);
+  const fallback = FALLBACK_PROFILE_SUMMARIES[canonicalId];
+  if (fallback) {
     return {
-      id: 'CA_ECCC',
-      kind: 'semantic',
-      products: [...CA_ECCC_SUPPORTED_PRODUCTS],
-      deltas_vs_icao: [CA_ECCC_EXTENSION_LABEL],
-      iwxxm_line: `IWXXM ${CA_ECCC_IWXXM_VERSION} (MSC operational)`,
+      ...fallback,
+      iwxxm_line:
+        canonicalId === 'CA_ECCC'
+          ? `IWXXM ${CA_ECCC_IWXXM_VERSION} (MSC operational)`
+          : `IWXXM ${iwxxmVersion}`,
     };
   }
   return {
-    id: hydrateSemanticProfile(profile),
+    id: canonicalId,
     kind: 'semantic',
     products: [],
     deltas_vs_icao: [],

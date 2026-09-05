@@ -2804,6 +2804,24 @@ describe('FileConverter Component', () => {
         screen.queryByRole('option', { name: /TC SIGMET WMO A6-2-TC/i }),
       ).not.toBeInTheDocument();
     });
+
+    it('scopes examples for guest users without profile catalog auth', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter />);
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+      await user.click(screen.getByTestId('examples-select'));
+
+      expect(
+        await screen.findByRole('option', {
+          name: /METAR WMO A3-1 \(annex3\).*Reused for Canada \(ECCC\)/i,
+        }),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole('option', { name: /TCA WMO A2-2 \(annex3\)/i }),
+      ).not.toBeInTheDocument();
+      expect(mockFetchProfileCatalog).not.toHaveBeenCalled();
+    });
   });
 
   describe('EV-053 FileConverter branch fill (#968)', () => {
@@ -5924,6 +5942,25 @@ describe('FileConverter Component', () => {
       );
       expect(screen.getByText(/IWXXM line unavailable/)).toBeInTheDocument();
       mapGetSpy.mockRestore();
+    });
+
+    it('falls back for guest profiles without a built-in summary map entry', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
+      });
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'AU_BOM');
+
+      await waitFor(() => {
+        expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
+          'AU_BOM',
+        );
+      });
+      expect(screen.getByText(/IWXXM 2025-2/)).toBeInTheDocument();
+      expect(screen.getByText(/Sign in to load profile coverage/)).toBeInTheDocument();
     });
   });
 });
