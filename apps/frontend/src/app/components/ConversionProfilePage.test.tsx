@@ -647,4 +647,71 @@ describe('ConversionProfilePage', () => {
       screen.queryByText(/No catalog profiles available\./i),
     ).not.toBeInTheDocument();
   });
+
+  it('preserves the last successful catalog view when a save-triggered reload degrades', async () => {
+    fetchProfileCatalog
+      .mockResolvedValueOnce({
+        profiles: [
+          {
+            id: 'ICAO_2025',
+            kind: 'semantic',
+            status: 'implemented',
+            products: ['METAR'],
+            emit_key: 'annex3',
+            iwxxm_line: 'IWXXM 2025-2 core',
+            rule_pack_count: 1,
+            overlay_count: 1,
+          },
+        ],
+      })
+      .mockResolvedValueOnce({
+        profiles: [
+          {
+            id: 'ICAO_2025',
+            kind: 'semantic',
+            status: 'implemented',
+            products: ['METAR'],
+            emit_key: 'annex3',
+            iwxxm_line: 'IWXXM 2025-2 core',
+            rule_pack_count: 1,
+            overlay_count: 1,
+          },
+        ],
+      })
+      .mockRejectedValueOnce(new Error('catalog fetch failed after save'));
+    listRulePacks.mockResolvedValue({ items: [] });
+    listOverlays.mockResolvedValue({ items: [] });
+
+    const user = userEvent.setup();
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-summary-primary'),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
+      'ICAO_2025',
+    );
+
+    await user.click(screen.getByTestId('conversion-profiles-pack-save'));
+
+    await waitFor(() => {
+      expect(createRulePack).toHaveBeenCalled();
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-profiles-error')).toHaveTextContent(
+        /catalog fetch failed after save/i,
+      );
+    });
+
+    expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
+      'ICAO_2025',
+    );
+    expect(
+      screen.getByTestId('conversion-profiles-inspector-detail'),
+    ).toBeInTheDocument();
+  });
 });

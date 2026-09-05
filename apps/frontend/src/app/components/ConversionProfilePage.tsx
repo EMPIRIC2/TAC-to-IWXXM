@@ -96,6 +96,10 @@ function countDisplay(value: number | null | undefined): string {
   return typeof value === 'number' ? String(value) : PROFILES_COUNT_UNAVAILABLE;
 }
 
+function unavailableMessage(detail: string | null): string {
+  return [PROFILES_INSPECTOR_UNAVAILABLE, detail].filter(Boolean).join(' ');
+}
+
 function starterSlug(profileId: string, kind: 'pack' | 'overlay'): string {
   return `starter-${profileId.toLowerCase().replaceAll('_', '-')}-${kind}`;
 }
@@ -362,9 +366,9 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
     const nextPacks = packResult.status === 'fulfilled' ? packResult.value.items : null;
     const nextOverlays =
       overlayResult.status === 'fulfilled' ? overlayResult.value.items : null;
-    setCatalog(nextCatalog);
-    setPacks(nextPacks);
-    setOverlays(nextOverlays);
+    setCatalog((current) => nextCatalog ?? current);
+    setPacks((current) => nextPacks ?? current);
+    setOverlays((current) => nextOverlays ?? current);
 
     const first = nextCatalog?.[0];
     if (!selectedId && first) {
@@ -531,14 +535,19 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
       )}
 
       <Card className="space-y-4 p-4" data-testid="conversion-profiles-summary">
+        {loadErrors.catalog && catalog !== null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {unavailableMessage(loadErrors.catalog)}
+          </p>
+        ) : null}
         {loading && catalog === null ? (
           <p className="flex items-center gap-2 text-sm text-gray-500">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
             {PROFILES_INSPECTOR_LOADING}
           </p>
-        ) : loadErrors.catalog ? (
+        ) : loadErrors.catalog && catalog === null ? (
           <p className="text-sm text-amber-700 dark:text-amber-300">
-            {PROFILES_INSPECTOR_UNAVAILABLE} {loadErrors.catalog}
+            {unavailableMessage(loadErrors.catalog)}
           </p>
         ) : !catalog || catalog.length === 0 ? (
           <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
@@ -594,11 +603,12 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
 
       <Card className="space-y-3 p-4" data-testid="conversion-profiles-inspector">
         <h2 className="text-sm font-medium">{PROFILES_INSPECTOR_HEADING}</h2>
-        {loadErrors.catalog ? (
+        {loadErrors.catalog && catalog !== null ? (
           <p className="text-sm text-amber-700 dark:text-amber-300">
-            {PROFILES_INSPECTOR_UNAVAILABLE} {loadErrors.catalog}
+            {unavailableMessage(loadErrors.catalog)}
           </p>
-        ) : selected ? (
+        ) : null}
+        {selected ? (
           <dl
             className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2"
             data-testid="conversion-profiles-inspector-detail"
@@ -620,6 +630,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               <dd>{selected.legacy_alias ?? '—'}</dd>
             </div>
           </dl>
+        ) : loadErrors.catalog ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {unavailableMessage(loadErrors.catalog)}
+          </p>
         ) : (
           <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
         )}
@@ -627,11 +641,12 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
 
       <Card className="space-y-4 p-4" data-testid="conversion-profiles-blocks">
         <h2 className="text-sm font-medium">Profile blocks</h2>
-        {loadErrors.catalog ? (
+        {loadErrors.catalog && catalog !== null ? (
           <p className="text-sm text-amber-700 dark:text-amber-300">
-            {PROFILES_INSPECTOR_UNAVAILABLE} {loadErrors.catalog}
+            {unavailableMessage(loadErrors.catalog)}
           </p>
-        ) : selected ? (
+        ) : null}
+        {selected ? (
           <>
             <div className="grid grid-cols-1 gap-2 md:grid-cols-5">
               {PROFILE_BLOCKS.map((block) => (
@@ -679,6 +694,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               </div>
             </div>
           </>
+        ) : loadErrors.catalog ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {unavailableMessage(loadErrors.catalog)}
+          </p>
         ) : (
           <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
         )}
