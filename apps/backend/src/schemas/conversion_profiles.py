@@ -23,6 +23,10 @@ class ProfileCatalogEntry(BaseModel):
     emit_key: str | None = None
     vendor_pins: dict[str, Any] = Field(default_factory=dict)
     implementation: dict[str, Any] = Field(default_factory=dict)
+    deltas_vs_icao: list[str] = Field(default_factory=list)
+    iwxxm_line: str | None = None
+    rule_pack_count: int | None = Field(default=None, ge=0)
+    overlay_count: int | None = Field(default=None, ge=0)
 
 
 class ProfileCatalogResponse(BaseModel):

@@ -1020,6 +1020,21 @@ describe('API Utils', () => {
       );
     });
 
+    it('GETs lint-issue-catalog with semantic and exchange profile filters', async () => {
+      mockFetchResponse({ issues: [] });
+      await fetchLintIssueCatalog({
+        product: 'TAF',
+        semantic_profile: 'US_FAA_NWS',
+        exchange_profile: 'GLOBAL_AFS',
+      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /\/lint-issue-catalog\?product=taf&semantic_profile=US_FAA_NWS&exchange_profile=GLOBAL_AFS$/,
+        ),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
     it('GETs lint-issue-catalog with issue_type and source_access filters', async () => {
       mockFetchResponse({ issues: [] });
       await fetchLintIssueCatalog({

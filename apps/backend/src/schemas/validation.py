@@ -385,6 +385,15 @@ class LintIssueCatalogEntryModel(BaseModel):
         default=None,
         description="Operator access tier: public, paywall, login, semantic_only",
     )
+    # Additive EV-1120 / #1121 (optional; older clients ignore).
+    semantic_profiles: list[str] = Field(
+        default_factory=list,
+        description=("Canonical semantic profile ids this row applies to; empty = shared/global"),
+    )
+    exchange_profiles: list[str] = Field(
+        default_factory=list,
+        description=("Canonical exchange profile ids for packaging-tagged rows; empty = shared"),
+    )
 
 
 class LintIssueCatalogResponse(BaseModel):

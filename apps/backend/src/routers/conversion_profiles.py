@@ -37,13 +37,26 @@ def profiles_service(
 @router.get("/catalog", response_model=ProfileCatalogResponse)
 def get_catalog(
     _user: dict[str, Any] = Depends(verify_supabase_token),
+    service: ConversionProfilesService = Depends(profiles_service),
 ) -> ProfileCatalogResponse:
     """
     Read-only ConversionProfile catalog for the authenticated Profiles inspector.
 
     Requires JWT so the inspector stays on the authenticated Profiles surface.
     """
-    return load_profile_catalog()
+    rule_pack_counts: dict[str, int] = {}
+    for pack in service.list_rule_packs():
+        rule_pack_counts[pack.profile] = rule_pack_counts.get(pack.profile, 0) + 1
+
+    overlay_counts: dict[str, int] = {}
+    for overlay in service.list_overlays():
+        key = overlay.base_profile_id
+        overlay_counts[key] = overlay_counts.get(key, 0) + 1
+
+    return load_profile_catalog(
+        rule_pack_counts=rule_pack_counts,
+        overlay_counts=overlay_counts,
+    )
 
 
 @router.get("/rule-packs", response_model=RulePackListResponse)

@@ -5676,3 +5676,35 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 | R2 | Decision | Full UX bundle: header snippet + derived label + prominent Source TAC + multi-line mapping |
 | R3 | Decision | Frontend redeploy required |
 | R4 | Scope | Lean routing — skip 02/03/05/06 |
+
+## Cycle EV-1120 — Profile-scoped catalog + Profile workbench Phase A (#1120)
+
+**Session**: `EV-1120-epic-profile-scoped-lint-validation-issues-catal`  
+**Features**: deepen **F7.v** / **F7.w** / **F15** / **F35** (no new Fn)  
+**Issues**: [#1120](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1120) · [#1121](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1121) · [#1122](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122) · [#1123](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1123) · [#1145](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1145)  
+**Follow-ons**: [#1146](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1146) Phase B composable convert · [#1147](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1147) Phase C workflow authoring  
+**Started**: 2026-09-05  
+**Status**: **in_progress** — requirements locked; documenting band
+
+### Scope lock
+
+| ID | Decision |
+|----|----------|
+| D-R12 | Local UI preview yes (`:18000` / `:18001`) |
+| D-R13 | vs-ICAO deltas catalog-driven |
+| D-R14 | Workbench twin always; JWT counts gated |
+| D-R15 | #1122: ≥1 TAC lint + ≥1 IWXXM row each US + CA |
+| D-R16 | Docs: product · api · journeys · tests · domain-profiles · decisions |
+| D-R17/18 | Examples + seeds for all semantic profiles |
+| D-R19/23 | Phase A blocks = ADR-038 inspect/jump only |
+| D-R20 | Live refresh + seed sync (no soft-preview) |
+| D-R21/22 | Phase A this evolve; B=#1146 C=#1147 |
+
+### Phase A summary
+
+Additive catalog filters; national catalog mining; glanceable Profile summary + examples/seeds;
+blocks as presentation of existing contract sections. True composable convert and workflow
+authoring deferred.
+
+**Context**: [profile-scoped-catalog-1120](../context/profile-scoped-catalog-1120.md)
+

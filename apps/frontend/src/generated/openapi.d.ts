@@ -2806,6 +2806,11 @@ export interface components {
             /** Code */
             code: string;
             /**
+             * Exchange Profiles
+             * @description Canonical exchange profile ids for packaging-tagged rows; empty = shared
+             */
+            exchange_profiles?: string[];
+            /**
              * Family
              * @description lint (TAC registry) or iwxxm (validation checks)
              */
@@ -2834,6 +2839,11 @@ export interface components {
              * @description Vocabulary concept path when href is a verified landing
              */
             semantic_identifier?: string | null;
+            /**
+             * Semantic Profiles
+             * @description Canonical semantic profile ids this row applies to; empty = shared/global
+             */
+            semantic_profiles?: string[];
             /** Severity */
             severity: string;
             /**
@@ -3178,6 +3188,8 @@ export interface components {
          * @description Read-only ConversionProfile catalog entry for the inspector.
          */
         ProfileCatalogEntry: {
+            /** Deltas Vs Icao */
+            deltas_vs_icao?: string[];
             /** Emit Key */
             emit_key?: string | null;
             /** Id */
@@ -3186,14 +3198,20 @@ export interface components {
             implementation?: {
                 [key: string]: unknown;
             };
+            /** Iwxxm Line */
+            iwxxm_line?: string | null;
             /** Kind */
             kind: string;
             /** Legacy Alias */
             legacy_alias?: string | null;
+            /** Overlay Count */
+            overlay_count?: number | null;
             /** Priority */
             priority?: string | null;
             /** Products */
             products?: string[];
+            /** Rule Pack Count */
+            rule_pack_count?: number | null;
             /** Status */
             status?: string | null;
             /** Vendor Pins */
@@ -4969,6 +4987,8 @@ export interface operations {
                 family?: string | null;
                 issue_type?: string | null;
                 source_access?: string | null;
+                semantic_profile?: string | null;
+                exchange_profile?: string | null;
             };
             header?: never;
             path?: never;

@@ -177,6 +177,19 @@ def test_catalog_returns_profiles(profiles_client: Any) -> None:
     assert "ICAO_2025" in ids
     assert "US_FAA_NWS" in ids
 
+    by_id = {profile["id"]: profile for profile in body["profiles"]}
+    icao = by_id["ICAO_2025"]
+    assert icao["rule_pack_count"] == 1
+    assert icao["overlay_count"] == 1
+    assert icao["deltas_vs_icao"]
+    assert isinstance(icao["iwxxm_line"], str)
+
+    us = by_id["US_FAA_NWS"]
+    assert us["rule_pack_count"] is None
+    assert us["overlay_count"] is None
+    assert len(us["deltas_vs_icao"]) <= 3
+    assert "iwxxm-us" in (us["iwxxm_line"] or "")
+
 
 def test_rule_packs_crud(profiles_client: Any) -> None:
     client, fake = profiles_client

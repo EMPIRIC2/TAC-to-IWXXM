@@ -93,6 +93,31 @@ const mockUploadConvertedFiles = vi.hoisted(() =>
 const mockListOverlays = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ items: [] as Array<Record<string, unknown>> }),
 );
+const mockFetchProfileCatalog = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    profiles: [
+      {
+        id: 'ICAO_2025',
+        kind: 'semantic',
+        products: ['METAR', 'TAF'],
+        deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+        iwxxm_line: 'IWXXM 2025-2 core',
+      },
+      {
+        id: 'US_FAA_NWS',
+        kind: 'semantic',
+        products: ['METAR'],
+        deltas_vs_icao: [
+          'Retains selected RMK content in output.',
+          'Adds FAA/NWS national extension coverage.',
+        ],
+        iwxxm_line: 'IWXXM-US 3.0.0',
+        rule_pack_count: 2,
+        overlay_count: 1,
+      },
+    ],
+  }),
+);
 
 const mockToast = vi.hoisted(() => ({
   success: vi.fn(),
@@ -146,6 +171,7 @@ vi.mock('/utils/api', () => ({
 }));
 
 vi.mock('@/utils/conversionProfilesApi', () => ({
+  fetchProfileCatalog: (...args: unknown[]) => mockFetchProfileCatalog(...args),
   listOverlays: (...args: unknown[]) => mockListOverlays(...args),
 }));
 
@@ -297,7 +323,31 @@ describe('FileConverter Component', () => {
     mockInflateGzipToText.mockReset();
     mockValidateIwxxm.mockReset();
     mockListOverlays.mockReset();
+    mockFetchProfileCatalog.mockReset();
     mockListOverlays.mockResolvedValue({ items: [] });
+    mockFetchProfileCatalog.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ICAO_2025',
+          kind: 'semantic',
+          products: ['METAR', 'TAF'],
+          deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+          iwxxm_line: 'IWXXM 2025-2 core',
+        },
+        {
+          id: 'US_FAA_NWS',
+          kind: 'semantic',
+          products: ['METAR'],
+          deltas_vs_icao: [
+            'Retains selected RMK content in output.',
+            'Adds FAA/NWS national extension coverage.',
+          ],
+          iwxxm_line: 'IWXXM-US 3.0.0',
+          rule_pack_count: 2,
+          overlay_count: 1,
+        },
+      ],
+    });
     localStorage.clear();
     mockSignOutWithScope.mockResolvedValue(true);
     mockPersistSession.mockResolvedValue(null);
@@ -2736,6 +2786,23 @@ describe('FileConverter Component', () => {
 
       expect(screen.queryByTestId('demo-example-banner')).not.toBeInTheDocument();
       expect((screen.getByTestId('tac-editor') as HTMLTextAreaElement).value).toBe('');
+    });
+
+    it('scopes examples to the selected semantic profile', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'US_FAA_NWS');
+      await user.click(screen.getByTestId('examples-select'));
+
+      expect(
+        await screen.findByRole('option', {
+          name: /METAR WMO A3-1 \(annex3\).*Reused for United States \(FAA\/NWS\)/i,
+        }),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole('option', { name: /TC SIGMET WMO A6-2-TC/i }),
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -5793,6 +5860,70 @@ describe('FileConverter Component', () => {
           }),
         );
       });
+    });
+  });
+
+  describe('EV-1120 compact profile twin', () => {
+    it('shows compact profile summary for authenticated workbench users', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
+      });
+      expect(mockFetchProfileCatalog).toHaveBeenCalledWith('tok');
+      expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
+        'ICAO_2025',
+      );
+      expect(screen.getByText(/IWXXM 2025-2 core/)).toBeInTheDocument();
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'US_FAA_NWS');
+
+      await waitFor(() => {
+        expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
+          'US_FAA_NWS',
+        );
+      });
+      expect(
+        screen.getByText(/Retains selected RMK content in output\./),
+      ).toBeInTheDocument();
+      expect(screen.getByText(/Rule packs: 2/)).toBeInTheDocument();
+      expect(screen.getByText(/Overlays: 1/)).toBeInTheDocument();
+    });
+
+    it('falls back when catalog metadata is sparse', async () => {
+      const originalMapGet = Map.prototype.get;
+      const mapGetSpy = vi.spyOn(Map.prototype, 'get').mockImplementation(function (
+        this: Map<unknown, unknown>,
+        key: unknown,
+      ) {
+        if (key === 'ICAO_2025') {
+          return undefined;
+        }
+        return originalMapGet.call(this, key);
+      });
+      mockFetchProfileCatalog.mockResolvedValueOnce({
+        profiles: [
+          {
+            id: 'ICAO_2025',
+            kind: 'semantic',
+            products: ['METAR'],
+            deltas_vs_icao: [],
+          },
+        ],
+      });
+
+      render(<FileConverter accessToken="tok" />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
+      });
+
+      expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
+        'ICAO_2025',
+      );
+      expect(screen.getByText(/IWXXM line unavailable/)).toBeInTheDocument();
+      mapGetSpy.mockRestore();
     });
   });
 });

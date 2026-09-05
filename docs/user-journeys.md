@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-03 (EV-933 #933 ConversionProfile editor — UJ-072)
+> **Last updated**: 2026-09-05 (EV-1120 #1120 Phase A — UJ-072 deepen + UJ-073)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -89,6 +89,8 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-070 | Opt-in propagate decode residuals into remarks / HRT | UI / API / package / Quality metrics (#981) | F6+F9+F7.q (EV-981) | T0 / T2 / **T3** / H4–H5 |
 | UJ-071 | Dissemination ops — plan/audit/SQL mapping/gateway health | apps/frontend / API | F16–F19 deepen (EV-936 / #936) | T2 / **T3** / H6′ (+ H4–H5 when FE deploy) |
 | UJ-072 | ConversionProfile editor — rule pack → overlay → convert | apps/frontend / API | F7.w (EV-933 / #933) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072d | Glanceable Profile summary + blocks + examples | apps/frontend | F7.w (EV-1120 / #1145) | T0 / T2 / **T3** / H4–H5 |
+| UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
@@ -479,6 +481,68 @@ the light picker (#1024) or putting credentials in the profile.
 **Automated tests**: TC-EV933-001..006 (see test-plan)
 
 **Source**: EV-933 / #933; ADR-038 (amend overlays); [Context: conversion-profile-editor-933](context/conversion-profile-editor-933.md)
+
+---
+
+### UJ-072 deepen: Glanceable Profile summary + blocks + examples (EV-1120 / #1145)
+
+**Actor**: Operator (guest on workbench twin; authenticated on Profiles editor)
+
+**Goal**: See at a glance what the selected semantic profile means; inspect ADR-038 blocks;
+load a profile-appropriate example; open starter packs without losing custom edits.
+
+**Feature**: F7.w (EV-1120 Phase A)
+
+**Steps**:
+
+1. Open convert workbench — Profile control shows **compact twin** (name, ≤3 vs-ICAO deltas,
+   products, IWXXM line; pack/overlay counts show "—" until signed in).
+2. Change Profile — twin + Validation Issues Catalog (#1123) refresh without full reload.
+3. Sign in; open **Conversion profiles** — first viewport is one **summary composition**
+   (not three equal form cards) showing profile-specific settings (products, IWXXM line,
+   ≤3 vs-ICAO deltas, pack/overlay counts).
+4. **Compare**: select a second profile; side-by-side settings highlight differences
+   (e.g. US_FAA_NWS vs ICAO_2025).
+5. Click an ADR-038 **block** (input / TAC lint / convert / IWXXM validate / exchange) →
+   inspect detail and jump to existing rule-pack or overlay forms (no new runtime).
+6. Use **Examples** to load a sample for the selected profile (all registered semantic
+   profiles; thin packs may reuse ICAO sample with a note).
+7. First visit may seed starter packs/overlays from examples; re-open after customize does
+   **not** overwrite custom packs. Read-only workflow links may appear; no workflow authoring.
+
+**Acceptance**: AC-UX-1..6 from EV-1120 requirements + side-by-side compare; EV-048 clean; UJ-072 base + #1024 remain green.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EV1120-010..017
+
+**Source**: EV-1120 / #1145; [Context: profile-scoped-catalog-1120](context/profile-scoped-catalog-1120.md)
+
+---
+
+### UJ-073: Profile-scoped Validation Issues Catalog (EV-1120 / #1123)
+
+**Actor**: Operator (F21 public catalog OK)
+
+**Goal**: Browse lint/IWXXM validation issues filtered to the workbench Profile so national-only
+codes appear only under the matching semantic profile.
+
+**Feature**: F7.v / F15 (EV-1120)
+
+**Steps**:
+
+1. Open Validation Issues Catalog with Profile = `ICAO_2025` — shared/ICAO rows; no US/CA-only demo codes.
+2. Switch Profile to `US_FAA_NWS` (or `CA_ECCC`) — shared ∪ that profile’s national-only rows appear.
+3. When packaging UI exposes Exchange, catalog also respects `exchange_profile` filter.
+4. Confirm omit-param API clients unchanged; unknown profile query → 400.
+
+**Acceptance**: AC-API-1..4, AC-UI-1; TC-EV1120-001..009; no EV-048 regressions.
+
+**Tier**: T0 / T2 / H4–H5 when live
+
+**Automated tests**: TC-EV1120-001..009
+
+**Source**: EV-1120 / #1121–#1123
 
 ---
 

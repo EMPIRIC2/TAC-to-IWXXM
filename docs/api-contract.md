@@ -412,6 +412,10 @@ lightweight catalog panel (F15). Does **not** change `POST /lint-tac` response s
 | Param | Required | Description |
 |-------|----------|-------------|
 | `product` | no | If set, filter rows tagged for that product (e.g. `metar`, `speci`); omit = all |
+| `family` | no | `lint` \| `iwxxm` (EV-061+) |
+| `issue_type` / `source_access` | no | EV-062 filters (additive) |
+| `semantic_profile` | no | **EV-1120 / #1121** — canonical semantic profile id (uppercase OpenAPI ids; legacy aliases accepted if already on convert wire). Omit = all rows (current behavior). When set: return **shared/global ∪ rows applicable to that profile**; national-only codes for other profiles omitted. Unknown id → **400** (`invalid_semantic_profile` style). |
+| `exchange_profile` | no | **EV-1120 / #1121** — packaging-context filter only (not F16–F19 egress). Omit = ignore exchange tagging. When set: include shared ∪ rows tagged for that exchange profile. Unknown id → **400**. |
 
 **Response** (msgspec encode; pydantic OpenAPI alias):
 
@@ -750,7 +754,7 @@ not Supabase PostgREST product writes (F30). Auth identity from Supabase JWT.
 
 | Method | Path | Notes |
 |--------|------|-------|
-| `GET` | `/api/v1/profiles/catalog` | Read-only ConversionProfile / catalog projection (ADR-038 fields; no secrets) |
+| `GET` | `/api/v1/profiles/catalog` | Read-only ConversionProfile / catalog projection (ADR-038 fields; no secrets). **EV-1120 / #1145 additive:** optional `deltas_vs_icao` (≤3 plain-language bullets vs ICAO baseline), `iwxxm_line` / vendor-pin summary for glanceable summary + side-by-side compare; when JWT present, optional `rule_pack_count` / `overlay_count` for the caller. |
 | `GET`/`POST`/`PUT`/`DELETE` | `/api/v1/profiles/rule-packs/{id}` | Rule-pack CRUD; export-friendly body |
 | `GET`/`POST`/`PATCH`/`DELETE` | `/api/v1/profiles/overlays[/{id}]` | Server-HMAC signed overlays; reject unsigned/tampered |
 | `POST` | `/api/v1/convert` (existing) | Optional multipart `overlay_id` (JWT + ownership when set) |

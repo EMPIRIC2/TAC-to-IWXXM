@@ -52,7 +52,7 @@ loadPlaywrightEnv();
 
 const DEFAULT_FRONTEND_URL = 'http://localhost:18000';
 const DEFAULT_API_BASE_URL = 'http://localhost:18001';
-const configuredBaseUrl = process.env.PLAYWRIGHT_BASE_URL || DEFAULT_FRONTEND_URL;
+const requestedBaseUrl = process.env.PLAYWRIGHT_BASE_URL || DEFAULT_FRONTEND_URL;
 
 function isRemoteBaseUrl(url: string): boolean {
   try {
@@ -66,12 +66,21 @@ function isRemoteBaseUrl(url: string): boolean {
   }
 }
 
-const remotePlaywright = isRemoteBaseUrl(configuredBaseUrl);
+function isLegacyLocalViteUrl(url: string): boolean {
+  return /^(http:\/\/)(localhost|127\.0\.0\.1):5173\/?$/i.test(url);
+}
+
+const requestedRemotePlaywright = isRemoteBaseUrl(requestedBaseUrl);
 /** Skip webServer when API/FE already run in Docker (EV-039 F16 LIVE). */
 const skipWebServer =
-  remotePlaywright ||
+  requestedRemotePlaywright ||
   process.env.PLAYWRIGHT_SKIP_WEBSERVER === '1' ||
   process.env.PLAYWRIGHT_SKIP_WEBSERVER === 'true';
+const configuredBaseUrl =
+  !skipWebServer && isLegacyLocalViteUrl(requestedBaseUrl)
+    ? DEFAULT_FRONTEND_URL
+    : requestedBaseUrl;
+const remotePlaywright = isRemoteBaseUrl(configuredBaseUrl);
 const localConfigEnv = process.env.METAR_CONFIG_ENV || 'local';
 
 /** Provisional DOKS (D-S038-t63-waive): map placeholder Hosts → LB IP in Chromium. */
@@ -90,6 +99,8 @@ const doksResolverRules = `MAP ${doksFeHost} ${doksLbIp}, MAP ${doksApiHost} ${d
  * Local: starts monorepo dev stack via webServer (config/local.json by default).
  * Auth UI specs: set METAR_CONFIG_ENV=e2e (see make test-e2e-t2-product).
  * Live: set PLAYWRIGHT_BASE_URL to frontend URL — webServer is skipped.
+ * Local stale `.env` guard: when Playwright manages the webServer, ignore legacy
+ * `http://localhost:5173` and target the monorepo stack on `http://localhost:18000`.
  * Provisional DOKS: PLAYWRIGHT_DOKS_PROVISIONAL=1 + placeholder FE host.
  */
 export default defineConfig({

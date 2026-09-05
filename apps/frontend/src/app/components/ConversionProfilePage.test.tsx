@@ -61,13 +61,53 @@ describe('ConversionProfilePage', () => {
           id: 'ICAO_2025',
           kind: 'semantic',
           status: 'implemented',
-          products: ['METAR'],
+          products: ['METAR', 'TAF'],
           emit_key: 'annex3',
+          deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+          iwxxm_line: 'IWXXM 2025-2 core',
+          rule_pack_count: 1,
+          overlay_count: 1,
+          vendor_pins: { iwxxm: 'WMO IWXXM 2025-2' },
+          implementation: {
+            input: 'tac2iwxxm/profiles/annex3',
+            conversion: 'annex3 emit plugin',
+            exchange: 'GLOBAL_AFS default',
+          },
         },
         {
           id: 'US_FAA_NWS',
           kind: 'semantic',
-          products: [],
+          status: 'implemented',
+          products: ['METAR'],
+          emit_key: 'iwxxm_us',
+          deltas_vs_icao: [
+            'Retains selected RMK content in output.',
+            'Adds FAA/NWS national extension coverage.',
+          ],
+          iwxxm_line: 'IWXXM-US 3.0.0',
+          rule_pack_count: 2,
+          overlay_count: 0,
+          vendor_pins: { iwxxm: 'iwxxm-us 3.0.0' },
+          implementation: {
+            input: 'tac2iwxxm/profiles/iwxxm_us',
+            conversion: 'iwxxm_us emit plugin',
+          },
+        },
+        {
+          id: 'CA_ECCC',
+          kind: 'semantic',
+          status: 'pilot',
+          products: ['METAR', 'SPECI', 'TAF', 'AIRMET'],
+          emit_key: 'ca_eccc',
+          deltas_vs_icao: ['Pins the MSC operational IWXXM line.'],
+          iwxxm_line: 'IWXXM 3.0.0 (MSC operational)',
+          rule_pack_count: 0,
+          overlay_count: 0,
+          vendor_pins: { iwxxm: 'MSC 3.0.0' },
+          implementation: {
+            input: 'tac2iwxxm/profiles/ca_eccc',
+            conversion: 'ca_eccc emit plugin',
+          },
         },
       ],
     });
@@ -140,6 +180,23 @@ describe('ConversionProfilePage', () => {
     expect(screen.getByText(/boom/)).toBeInTheDocument();
   });
 
+  it('shows the empty inspector state when catalog loads without profiles', async () => {
+    fetchProfileCatalog.mockResolvedValue({ profiles: [] });
+    listRulePacks.mockResolvedValue({ items: [] });
+    listOverlays.mockResolvedValue({ items: [] });
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getAllByText(/No catalog profiles available\./).length,
+      ).toBeGreaterThan(0);
+    });
+
+    expect(
+      screen.queryByTestId('conversion-profiles-summary-primary'),
+    ).not.toBeInTheDocument();
+  });
+
   it('shows Unknown error for non-Error load rejection', async () => {
     fetchProfileCatalog.mockRejectedValue('weird');
     render(<ConversionProfilePage accessToken="tok" />);
@@ -197,6 +254,198 @@ describe('ConversionProfilePage', () => {
     expect(createObjectURL).toHaveBeenCalled();
     expect(click).toHaveBeenCalled();
     expect(revokeObjectURL).toHaveBeenCalled();
+  });
+
+  it('renders a summary-first compare view', async () => {
+    const user = userEvent.setup();
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-profiles-summary')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
+      'ICAO_2025',
+    );
+    expect(screen.getByText(/IWXXM 2025-2 core/)).toBeInTheDocument();
+    expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
+      'Rule packs',
+    );
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-compare-select'),
+      'US_FAA_NWS',
+    );
+
+    expect(screen.getByTestId('conversion-profiles-summary-compare')).toHaveTextContent(
+      'US_FAA_NWS',
+    );
+    expect(screen.getAllByText(/Different from/).length).toBeGreaterThan(0);
+    expect(
+      screen.getByText(/Retains selected RMK content in output\./),
+    ).toBeInTheDocument();
+  });
+
+  it('opens ADR-038 block detail and jump links', async () => {
+    const user = userEvent.setup();
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-profiles-block-input')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('conversion-profiles-block-output-validation'));
+
+    expect(screen.getByTestId('conversion-profiles-block-detail')).toHaveTextContent(
+      'IWXXM validate',
+    );
+    expect(screen.getByTestId('conversion-profiles-block-detail')).toHaveTextContent(
+      'WMO IWXXM 2025-2',
+    );
+    expect(screen.getByTestId('conversion-profiles-block-jump-packs')).toHaveAttribute(
+      'href',
+      '#conversion-profiles-packs',
+    );
+    expect(
+      screen.getByTestId('conversion-profiles-block-jump-overlays'),
+    ).toHaveAttribute('href', '#conversion-profiles-overlays');
+  });
+
+  it('seeds starter pack and overlay forms only while untouched', async () => {
+    const user = userEvent.setup();
+    listRulePacks.mockResolvedValue({ items: [] });
+    listOverlays.mockResolvedValue({ items: [] });
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-pack-profile'),
+      ).toBeInTheDocument();
+    });
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-select'),
+      'US_FAA_NWS',
+    );
+    expect(screen.getByTestId('conversion-profiles-pack-profile')).toHaveValue(
+      'US_FAA_NWS',
+    );
+    expect(screen.getByTestId('conversion-profiles-overlay-base')).toHaveValue(
+      'US_FAA_NWS',
+    );
+
+    await user.clear(screen.getByTestId('conversion-profiles-pack-slug'));
+    await user.type(screen.getByTestId('conversion-profiles-pack-slug'), 'custom-pack');
+    await user.clear(screen.getByTestId('conversion-profiles-overlay-slug'));
+    await user.type(
+      screen.getByTestId('conversion-profiles-overlay-slug'),
+      'custom-overlay',
+    );
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-select'),
+      'CA_ECCC',
+    );
+    expect(screen.getByTestId('conversion-profiles-pack-slug')).toHaveValue(
+      'custom-pack',
+    );
+    expect(screen.getByTestId('conversion-profiles-pack-profile')).toHaveValue(
+      'US_FAA_NWS',
+    );
+    expect(screen.getByTestId('conversion-profiles-overlay-slug')).toHaveValue(
+      'custom-overlay',
+    );
+    expect(screen.getByTestId('conversion-profiles-overlay-base')).toHaveValue(
+      'US_FAA_NWS',
+    );
+  });
+
+  it('clears compare when selecting the same profile and shows fallback detail copy', async () => {
+    const user = userEvent.setup();
+    fetchProfileCatalog.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ZZ_TEST_PROFILE',
+          kind: 'semantic',
+          products: [],
+        },
+        {
+          id: 'ICAO_2025',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR', 'TAF'],
+          emit_key: 'annex3',
+          rule_pack_count: 1,
+          overlay_count: 1,
+          vendor_pins: { iwxxm: 'WMO IWXXM 2025-2' },
+          implementation: {
+            input: 'tac2iwxxm/profiles/annex3',
+            exchange: 'GLOBAL_AFS default',
+          },
+        },
+      ],
+    });
+    listRulePacks.mockResolvedValue({ items: [] });
+    listOverlays.mockResolvedValue({ items: [] });
+
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-profiles-summary')).toBeInTheDocument();
+    });
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-compare-select'),
+      'ICAO_2025',
+    );
+    expect(
+      screen.getByTestId('conversion-profiles-summary-compare'),
+    ).toBeInTheDocument();
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-select'),
+      'ICAO_2025',
+    );
+    expect(
+      screen.queryByTestId('conversion-profiles-summary-compare'),
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByTestId('conversion-profiles-block-validation-tac'));
+    expect(screen.getByTestId('conversion-profiles-block-detail')).toHaveTextContent(
+      'TAC lint applies the annex3 registry path.',
+    );
+    await user.click(screen.getByTestId('conversion-profiles-block-conversion'));
+    expect(screen.getByTestId('conversion-profiles-block-detail')).toHaveTextContent(
+      'Convert emits with the annex3 profile mapper.',
+    );
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-select'),
+      'ZZ_TEST_PROFILE',
+    );
+    expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
+      'Products',
+    );
+    expect(screen.getAllByText('—').length).toBeGreaterThan(0);
+    await user.click(screen.getByTestId('conversion-profiles-block-validation-tac'));
+    expect(screen.getByTestId('conversion-profiles-block-detail')).toHaveTextContent(
+      'TAC lint registry details are not listed for this profile.',
+    );
+    await user.click(screen.getByTestId('conversion-profiles-block-conversion'));
+    expect(screen.getByTestId('conversion-profiles-block-detail')).toHaveTextContent(
+      'Convert mapping details are not listed for this profile.',
+    );
+
+    await user.click(screen.getByTestId('conversion-profiles-block-output-validation'));
+    expect(screen.getByTestId('conversion-profiles-block-detail')).toHaveTextContent(
+      'IWXXM validation line is not listed for this profile.',
+    );
+
+    await user.click(screen.getByTestId('conversion-profiles-block-exchange'));
+    expect(screen.getByTestId('conversion-profiles-block-detail')).toHaveTextContent(
+      'No exchange default is listed for this profile.',
+    );
+    expect(screen.getByText('Status')).toBeInTheDocument();
   });
 
   it('export is disabled when packs empty', async () => {

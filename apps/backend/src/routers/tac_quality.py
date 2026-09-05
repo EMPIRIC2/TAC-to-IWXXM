@@ -34,12 +34,21 @@ async def lint_issue_catalog(
     family: str | None = None,
     issue_type: str | None = None,
     source_access: str | None = None,
+    semantic_profile: str | None = None,
+    exchange_profile: str | None = None,
 ) -> Response:
     """Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page."""
+    from dissemination.exchange_registry import resolve_exchange_profile
     from tac_validate.catalog_attribution import attribution_for
     from tac_validate.issue_catalog_meta import classify_issue_type
 
     from src.services.iwxxm_validation_catalog import iwxxm_validation_catalog_rows
+    from src.services.lint_catalog_profile_filter import (
+        exchange_profiles_from_tags,
+        row_matches_profile,
+        semantic_profiles_from_tags,
+    )
+    from src.utilities.profile_wire import resolve_route_profiles
 
     family_key = (family or "").strip().lower() or None
     if family_key is not None and family_key not in {"lint", "iwxxm"}:
@@ -47,19 +56,41 @@ async def lint_issue_catalog(
     issue_type_key = (issue_type or "").strip().lower() or None
     source_access_key = (source_access or "").strip().lower() or None
 
+    semantic_raw = (semantic_profile or "").strip()
+    exchange_raw = (exchange_profile or "").strip()
+    semantic_canonical: str | None = None
+    exchange_canonical: str | None = None
+    if semantic_raw:
+        semantic_canonical = resolve_route_profiles(
+            semantic_profile=semantic_raw,
+            for_packaging=False,
+        ).semantic_canonical
+    if exchange_raw:
+        resolved_ex = resolve_exchange_profile(exchange_raw)
+        if resolved_ex is None:
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "code": "invalid_exchange_profile",
+                    "message": f"Unknown exchange profile {exchange_raw!r}",
+                },
+            )
+        exchange_canonical = resolved_ex.wire_id
+
     issues: list[LintIssueCatalogEntryModel] = []
 
     if family_key in (None, "lint"):
         entries = tac_catalog_entries(product=product)
         for spec in entries:
             attr = attribution_for(spec.code)
+            tags = list(spec.tags)
             issues.append(
                 LintIssueCatalogEntryModel(
                     code=spec.code,
                     severity=spec.severity,
                     message_template=spec.message_template,
                     product=spec.product,
-                    tags=list(spec.tags),
+                    tags=tags,
                     source_id=attr.get("source_id"),
                     source_url=attr.get("source_url"),
                     source_attribution=attr.get("source_attribution"),
@@ -76,11 +107,37 @@ async def lint_issue_catalog(
                     ),
                     source_locator=attr.get("source_locator"),
                     source_access=attr.get("source_access"),
+                    semantic_profiles=semantic_profiles_from_tags(tags),
+                    exchange_profiles=exchange_profiles_from_tags(tags),
                 )
             )
 
     if family_key in (None, "iwxxm"):
-        issues.extend(LintIssueCatalogEntryModel(**row) for row in iwxxm_validation_catalog_rows())
+        for row in iwxxm_validation_catalog_rows():
+            tags = list(row.get("tags") or [])
+            issues.append(
+                LintIssueCatalogEntryModel(
+                    code=str(row["code"]),
+                    severity=str(row["severity"]),
+                    message_template=str(row["message_template"]),
+                    product=row.get("product"),
+                    tags=tags,
+                    source_id=row.get("source_id"),
+                    source_url=row.get("source_url"),
+                    source_attribution=row.get("source_attribution"),
+                    family=row.get("family"),
+                    source_type=row.get("source_type"),
+                    status=row.get("status"),
+                    semantic_identifier=row.get("semantic_identifier"),
+                    last_verified=row.get("last_verified"),
+                    replacement_url=row.get("replacement_url"),
+                    issue_type=row.get("issue_type"),
+                    source_locator=row.get("source_locator"),
+                    source_access=row.get("source_access"),
+                    semantic_profiles=semantic_profiles_from_tags(tags),
+                    exchange_profiles=exchange_profiles_from_tags(tags),
+                )
+            )
     if issue_type_key or source_access_key:
         filtered: list[LintIssueCatalogEntryModel] = []
         for row in issues:
@@ -90,6 +147,11 @@ async def lint_issue_catalog(
                 continue
             filtered.append(row)
         issues = filtered
+
+    if semantic_canonical is not None:
+        issues = [row for row in issues if row_matches_profile(row.semantic_profiles, selected=semantic_canonical)]
+    if exchange_canonical is not None:
+        issues = [row for row in issues if row_matches_profile(row.exchange_profiles, selected=exchange_canonical)]
 
     return api_surface.msgspec_json_response(LintIssueCatalogResponse(issues=issues))
 
