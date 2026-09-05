@@ -121,6 +121,24 @@ class DisseminationOpsService:
             ) from exc
 
     def create_plan(self, payload: DisseminationPlanCreate) -> DisseminationPlanOut:
+        """
+        Persist an owner-scoped dissemination plan.
+
+        Parameters
+        ----------
+        payload : DisseminationPlanCreate
+            Validated plan fields to store for the authenticated owner.
+
+        Returns
+        -------
+        DisseminationPlanOut
+            Newly created dissemination plan record.
+
+        Raises
+        ------
+        HTTPException
+            If the payload contains disallowed secret-like fields or the database write fails.
+        """
         _reject_secrets(payload.model_dump())
         row: dict[str, Any] = {
             "id": uuid4(),
@@ -141,6 +159,24 @@ class DisseminationOpsService:
         return DisseminationPlanOut.model_validate(row)
 
     def get_plan(self, plan_id: UUID) -> DisseminationPlanOut:
+        """
+        Return one owner-scoped dissemination plan by id.
+
+        Parameters
+        ----------
+        plan_id : UUID
+            Plan identifier belonging to the authenticated owner.
+
+        Returns
+        -------
+        DisseminationPlanOut
+            Stored dissemination plan for ``plan_id``.
+
+        Raises
+        ------
+        HTTPException
+            If the plan does not exist for the owner or the database lookup fails.
+        """
         t = _table(PLANS_TABLE)
         result: Any | None
         try:
@@ -155,6 +191,27 @@ class DisseminationOpsService:
         return DisseminationPlanOut.model_validate(dict(result))
 
     def update_plan(self, plan_id: UUID, payload: DisseminationPlanUpdate) -> DisseminationPlanOut:
+        """
+        Update mutable fields on an owner-scoped dissemination plan.
+
+        Parameters
+        ----------
+        plan_id : UUID
+            Plan identifier belonging to the authenticated owner.
+        payload : DisseminationPlanUpdate
+            Partial plan fields to merge into the stored row.
+
+        Returns
+        -------
+        DisseminationPlanOut
+            Updated dissemination plan after persistence.
+
+        Raises
+        ------
+        HTTPException
+            If the plan is missing, the update payload contains secret-like fields,
+            or the database write fails.
+        """
         data = payload.model_dump(exclude_unset=True)
         _reject_secrets(data)
         existing = self.get_plan(plan_id)
@@ -186,6 +243,41 @@ class DisseminationOpsService:
         product: str | None = None,
         destinations: dict[str, Any] | None = None,
     ) -> AuditRecordOut:
+        """
+        Persist one owner-scoped dissemination audit record.
+
+        Parameters
+        ----------
+        status_value : str
+            Delivery status stored for the audit row.
+        gateway : str
+            Gateway or transport label associated with the attempt.
+        detail : str | None, optional
+            Optional human-readable detail about the attempt result.
+        message_id : str | None, optional
+            Optional upstream message identifier.
+        station : str | None, optional
+            Optional station code associated with the attempt.
+        profile : str | None, optional
+            Optional semantic profile label associated with the attempt.
+        iwxxm_version : str | None, optional
+            Optional IWXXM release line recorded for the attempt.
+        product : str | None, optional
+            Optional meteorological product family.
+        destinations : dict[str, Any] | None, optional
+            Destination metadata scrubbed for secret-like fields before persistence.
+
+        Returns
+        -------
+        AuditRecordOut
+            Newly created audit record.
+
+        Raises
+        ------
+        HTTPException
+            If destination metadata contains disallowed secret-like fields or the
+            database write fails.
+        """
         dest = destinations or {}
         _reject_secrets(dest)
         row: dict[str, Any] = {
@@ -219,6 +311,34 @@ class DisseminationOpsService:
         page: int = 1,
         limit: int = 20,
     ) -> tuple[list[AuditRecordOut], int]:
+        """
+        List owner-scoped dissemination audit rows with optional filters.
+
+        Parameters
+        ----------
+        product : str | None, optional
+            Optional product filter.
+        station : str | None, optional
+            Optional station filter.
+        profile : str | None, optional
+            Optional semantic profile filter.
+        status_filter : str | None, optional
+            Optional dissemination status filter.
+        page : int, optional
+            One-based result page.
+        limit : int, optional
+            Maximum records to return for the page.
+
+        Returns
+        -------
+        tuple[list[AuditRecordOut], int]
+            Page of audit rows plus the computed running total for the current query.
+
+        Raises
+        ------
+        HTTPException
+            If the database query fails.
+        """
         t = _table(AUDIT_TABLE)
         stmt = select(t).where(t.c.user_id == self.user_id)
         if product:
@@ -245,6 +365,24 @@ class DisseminationOpsService:
         return [AuditRecordOut.model_validate(dict(r)) for r in rows], total
 
     def get_audit(self, audit_id: UUID) -> AuditRecordOut:
+        """
+        Return one owner-scoped audit record by id.
+
+        Parameters
+        ----------
+        audit_id : UUID
+            Audit record identifier belonging to the authenticated owner.
+
+        Returns
+        -------
+        AuditRecordOut
+            Stored audit record for ``audit_id``.
+
+        Raises
+        ------
+        HTTPException
+            If the record does not exist for the owner or the database lookup fails.
+        """
         t = _table(AUDIT_TABLE)
         result: Any | None
         try:
@@ -259,6 +397,24 @@ class DisseminationOpsService:
         return AuditRecordOut.model_validate(dict(result))
 
     def create_mapping(self, payload: MappingConfigCreate) -> MappingConfigOut:
+        """
+        Persist an owner-scoped mapping configuration.
+
+        Parameters
+        ----------
+        payload : MappingConfigCreate
+            Validated mapping configuration to store.
+
+        Returns
+        -------
+        MappingConfigOut
+            Newly created mapping configuration record.
+
+        Raises
+        ------
+        HTTPException
+            If the payload contains disallowed secret-like fields or the database write fails.
+        """
         _reject_secrets(payload.model_dump())
         row: dict[str, Any] = {
             "id": uuid4(),
@@ -277,6 +433,24 @@ class DisseminationOpsService:
         return MappingConfigOut.model_validate(row)
 
     def get_mapping(self, mapping_id: UUID) -> MappingConfigOut:
+        """
+        Return one owner-scoped mapping configuration by id.
+
+        Parameters
+        ----------
+        mapping_id : UUID
+            Mapping identifier belonging to the authenticated owner.
+
+        Returns
+        -------
+        MappingConfigOut
+            Stored mapping configuration for ``mapping_id``.
+
+        Raises
+        ------
+        HTTPException
+            If the mapping does not exist for the owner or the database lookup fails.
+        """
         t = _table(MAPPINGS_TABLE)
         result: Any | None
         try:
@@ -291,6 +465,27 @@ class DisseminationOpsService:
         return MappingConfigOut.model_validate(dict(result))
 
     def update_mapping(self, mapping_id: UUID, payload: MappingConfigUpdate) -> MappingConfigOut:
+        """
+        Update mutable fields on an owner-scoped mapping configuration.
+
+        Parameters
+        ----------
+        mapping_id : UUID
+            Mapping identifier belonging to the authenticated owner.
+        payload : MappingConfigUpdate
+            Partial mapping fields to merge into the stored row.
+
+        Returns
+        -------
+        MappingConfigOut
+            Updated mapping configuration after persistence.
+
+        Raises
+        ------
+        HTTPException
+            If the mapping is missing, the update payload contains secret-like fields,
+            or the database write fails.
+        """
         data = payload.model_dump(exclude_unset=True)
         _reject_secrets(data)
         existing = self.get_mapping(mapping_id)
