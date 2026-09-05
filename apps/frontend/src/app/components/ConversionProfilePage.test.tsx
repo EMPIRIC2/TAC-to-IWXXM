@@ -177,7 +177,10 @@ describe('ConversionProfilePage', () => {
     await waitFor(() => {
       expect(screen.getByTestId('conversion-profiles-error')).toBeInTheDocument();
     });
-    expect(screen.getByText(/boom/)).toBeInTheDocument();
+    expect(screen.getByTestId('conversion-profiles-error')).toHaveTextContent('boom');
+    expect(screen.getByTestId('conversion-profiles-packs')).toHaveTextContent(
+      /Rule packs unavailable/i,
+    );
   });
 
   it('shows the empty inspector state when catalog loads without profiles', async () => {
@@ -201,7 +204,9 @@ describe('ConversionProfilePage', () => {
     fetchProfileCatalog.mockRejectedValue('weird');
     render(<ConversionProfilePage accessToken="tok" />);
     await waitFor(() => {
-      expect(screen.getByText(/Unknown error/)).toBeInTheDocument();
+      expect(screen.getByTestId('conversion-profiles-error')).toHaveTextContent(
+        /Unknown error/,
+      );
     });
   });
 
@@ -553,5 +558,93 @@ describe('ConversionProfilePage', () => {
     await waitFor(() => {
       expect(screen.getByText(/No overlays yet/)).toBeInTheDocument();
     });
+  });
+
+  it('distinguishes loaded zero counts from unavailable counts', async () => {
+    fetchProfileCatalog.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ICAO_2025',
+          kind: 'semantic',
+          products: ['METAR'],
+          rule_pack_count: 0,
+          overlay_count: 0,
+        },
+        {
+          id: 'ZZ_UNAVAILABLE',
+          kind: 'semantic',
+          products: ['TAF'],
+          rule_pack_count: undefined,
+          overlay_count: null,
+        },
+      ],
+    });
+
+    const user = userEvent.setup();
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-summary-primary'),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
+      'Rule packs',
+    );
+    expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
+      '0',
+    );
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-select'),
+      'ZZ_UNAVAILABLE',
+    );
+
+    expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
+      'Unavailable',
+    );
+  });
+
+  it('keeps catalog summary visible and marks overlays degraded when overlay fetch fails', async () => {
+    listOverlays.mockRejectedValue(new Error('overlay fetch failed'));
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-summary-primary'),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
+      'ICAO_2025',
+    );
+    expect(screen.getByTestId('conversion-profiles-overlays')).toHaveTextContent(
+      /Overlays unavailable/i,
+    );
+    expect(screen.getByTestId('conversion-profiles-error')).toHaveTextContent(
+      /overlay fetch failed/i,
+    );
+    expect(screen.queryByText(/No overlays yet\./i)).not.toBeInTheDocument();
+  });
+
+  it('shows a catalog degraded hint without collapsing the rest of the page', async () => {
+    fetchProfileCatalog.mockRejectedValue(new Error('catalog fetch failed'));
+    listRulePacks.mockResolvedValue({ items: [samplePack] });
+    listOverlays.mockResolvedValue({ items: [sampleOverlay] });
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-profiles-summary')).toBeInTheDocument();
+    });
+
+    expect(screen.getByTestId('conversion-profiles-summary')).toHaveTextContent(
+      /Catalog unavailable/i,
+    );
+    expect(screen.getByTestId('conversion-profiles-pack-list')).toBeInTheDocument();
+    expect(screen.getByTestId('conversion-profiles-overlay-list')).toBeInTheDocument();
+    expect(
+      screen.queryByText(/No catalog profiles available\./i),
+    ).not.toBeInTheDocument();
   });
 });
