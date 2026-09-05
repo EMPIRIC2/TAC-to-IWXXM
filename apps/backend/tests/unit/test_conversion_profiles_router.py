@@ -191,6 +191,102 @@ def test_catalog_returns_profiles(profiles_client: Any) -> None:
     assert "iwxxm-us" in (us["iwxxm_line"] or "")
 
 
+def test_catalog_stays_available_when_profile_storage_is_unavailable() -> None:
+    class _FailingProfilesService:
+        def list_rule_packs(self) -> list[RulePackOut]:
+            raise HTTPException(status_code=503, detail="Profile storage unavailable")
+
+        def list_overlays(self) -> list[OverlayOut]:
+            raise HTTPException(status_code=503, detail="Profile storage unavailable")
+
+    async def override_verify_token() -> dict[str, str]:
+        return {"sub": str(USER_ID), "aud": "test-project", "role": "user"}
+
+    def override_service() -> _FailingProfilesService:
+        return _FailingProfilesService()
+
+    app.dependency_overrides[verify_supabase_token] = override_verify_token
+    app.dependency_overrides[profiles_router.profiles_service] = override_service
+    client = TestClient(app)
+    catalog_mod.clear_catalog_cache()
+
+    res = client.get(
+        "/api/v1/profiles/catalog",
+        headers={"Authorization": "Bearer test-token"},
+    )
+
+    app.dependency_overrides.clear()
+    catalog_mod.clear_catalog_cache()
+
+    assert res.status_code == 200
+    body = res.json()
+    by_id = {profile["id"]: profile for profile in body["profiles"]}
+    assert by_id["ICAO_2025"]["rule_pack_count"] is None
+    assert by_id["ICAO_2025"]["overlay_count"] is None
+
+
+def test_catalog_propagates_non_503_rule_pack_errors() -> None:
+    class _FailingProfilesService:
+        def list_rule_packs(self) -> list[RulePackOut]:
+            raise HTTPException(status_code=403, detail="Forbidden")
+
+        def list_overlays(self) -> list[OverlayOut]:
+            return []
+
+    async def override_verify_token() -> dict[str, str]:
+        return {"sub": str(USER_ID), "aud": "test-project", "role": "user"}
+
+    def override_service() -> _FailingProfilesService:
+        return _FailingProfilesService()
+
+    app.dependency_overrides[verify_supabase_token] = override_verify_token
+    app.dependency_overrides[profiles_router.profiles_service] = override_service
+    client = TestClient(app)
+    catalog_mod.clear_catalog_cache()
+
+    res = client.get(
+        "/api/v1/profiles/catalog",
+        headers={"Authorization": "Bearer test-token"},
+    )
+
+    app.dependency_overrides.clear()
+    catalog_mod.clear_catalog_cache()
+
+    assert res.status_code == 403
+    assert res.json()["detail"] == "Forbidden"
+
+
+def test_catalog_propagates_non_503_overlay_errors() -> None:
+    class _FailingProfilesService:
+        def list_rule_packs(self) -> list[RulePackOut]:
+            return []
+
+        def list_overlays(self) -> list[OverlayOut]:
+            raise HTTPException(status_code=403, detail="Forbidden")
+
+    async def override_verify_token() -> dict[str, str]:
+        return {"sub": str(USER_ID), "aud": "test-project", "role": "user"}
+
+    def override_service() -> _FailingProfilesService:
+        return _FailingProfilesService()
+
+    app.dependency_overrides[verify_supabase_token] = override_verify_token
+    app.dependency_overrides[profiles_router.profiles_service] = override_service
+    client = TestClient(app)
+    catalog_mod.clear_catalog_cache()
+
+    res = client.get(
+        "/api/v1/profiles/catalog",
+        headers={"Authorization": "Bearer test-token"},
+    )
+
+    app.dependency_overrides.clear()
+    catalog_mod.clear_catalog_cache()
+
+    assert res.status_code == 403
+    assert res.json()["detail"] == "Forbidden"
+
+
 def test_rule_packs_crud(profiles_client: Any) -> None:
     client, fake = profiles_client
     headers = {"Authorization": "Bearer test-token"}

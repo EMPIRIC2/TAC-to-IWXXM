@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBearer
 
 from ..schemas.conversion_profiles import (
@@ -45,13 +45,21 @@ def get_catalog(
     Requires JWT so the inspector stays on the authenticated Profiles surface.
     """
     rule_pack_counts: dict[str, int] = {}
-    for pack in service.list_rule_packs():
-        rule_pack_counts[pack.profile] = rule_pack_counts.get(pack.profile, 0) + 1
+    try:
+        for pack in service.list_rule_packs():
+            rule_pack_counts[pack.profile] = rule_pack_counts.get(pack.profile, 0) + 1
+    except HTTPException as exc:
+        if exc.status_code != 503:
+            raise
 
     overlay_counts: dict[str, int] = {}
-    for overlay in service.list_overlays():
-        key = overlay.base_profile_id
-        overlay_counts[key] = overlay_counts.get(key, 0) + 1
+    try:
+        for overlay in service.list_overlays():
+            key = overlay.base_profile_id
+            overlay_counts[key] = overlay_counts.get(key, 0) + 1
+    except HTTPException as exc:
+        if exc.status_code != 503:
+            raise
 
     return load_profile_catalog(
         rule_pack_counts=rule_pack_counts,
