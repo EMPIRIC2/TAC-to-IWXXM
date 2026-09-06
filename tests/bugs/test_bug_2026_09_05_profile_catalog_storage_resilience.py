@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import sys
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 from uuid import uuid4
 
@@ -38,6 +39,14 @@ class _FailingProfilesService:
         )
 
 
+class _SparseProfilesService:
+    def list_rule_packs(self) -> list[Any]:
+        return [SimpleNamespace(profile="ICAO_2025")]
+
+    def list_overlays(self) -> list[Any]:
+        return [SimpleNamespace(base_profile_id="ICAO_2025")]
+
+
 @pytest.fixture
 def client_with_failing_profile_storage() -> TestClient:
     async def override_verify_token() -> dict[str, str]:
@@ -45,6 +54,22 @@ def client_with_failing_profile_storage() -> TestClient:
 
     def override_service() -> _FailingProfilesService:
         return _FailingProfilesService()
+
+    app.dependency_overrides[verify_supabase_token] = override_verify_token
+    app.dependency_overrides[profiles_router.profiles_service] = override_service
+    client = TestClient(app)
+    yield client
+    app.dependency_overrides.clear()
+    catalog_mod.clear_catalog_cache()
+
+
+@pytest.fixture
+def client_with_sparse_profile_counts() -> TestClient:
+    async def override_verify_token() -> dict[str, str]:
+        return {"sub": str(USER_ID), "aud": "test-project", "role": "user"}
+
+    def override_service() -> _SparseProfilesService:
+        return _SparseProfilesService()
 
     app.dependency_overrides[verify_supabase_token] = override_verify_token
     app.dependency_overrides[profiles_router.profiles_service] = override_service
@@ -71,3 +96,20 @@ def test_bug_2026_09_05_profile_catalog_stays_available_without_storage(
     by_id = {profile["id"]: profile for profile in body["profiles"]}
     assert by_id["ICAO_2025"]["rule_pack_count"] is None
     assert by_id["ICAO_2025"]["overlay_count"] is None
+
+
+def test_bug_2026_09_05_profile_catalog_uses_zero_for_missing_profile_counts(
+    client_with_sparse_profile_counts: TestClient,
+) -> None:
+    response = client_with_sparse_profile_counts.get(
+        "/api/v1/profiles/catalog",
+        headers={"Authorization": "Bearer test-token"},
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    by_id = {profile["id"]: profile for profile in body["profiles"]}
+    assert by_id["ICAO_2025"]["rule_pack_count"] == 1
+    assert by_id["ICAO_2025"]["overlay_count"] == 1
+    assert by_id["US_FAA_NWS"]["rule_pack_count"] == 0
+    assert by_id["US_FAA_NWS"]["overlay_count"] == 0

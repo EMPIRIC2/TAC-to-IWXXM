@@ -185,8 +185,8 @@ def test_catalog_returns_profiles(profiles_client: Any) -> None:
     assert isinstance(icao["iwxxm_line"], str)
 
     us = by_id["US_FAA_NWS"]
-    assert us["rule_pack_count"] is None
-    assert us["overlay_count"] is None
+    assert us["rule_pack_count"] == 0
+    assert us["overlay_count"] == 0
     assert len(us["deltas_vs_icao"]) <= 3
     assert "iwxxm-us" in (us["iwxxm_line"] or "")
 

@@ -21,11 +21,13 @@ import {
   PROFILES_EDITOR_SIGN_IN,
   PROFILES_EDITOR_SUBTITLE,
   PROFILES_EDITOR_TITLE,
+  PROFILES_COUNT_UNAVAILABLE,
   PROFILES_ERROR_PREFIX,
   PROFILES_INSPECTOR_EMPTY,
   PROFILES_INSPECTOR_HEADING,
   PROFILES_INSPECTOR_LOADING,
   PROFILES_INSPECTOR_SELECT,
+  PROFILES_INSPECTOR_UNAVAILABLE,
   PROFILES_OVERLAY_BASE,
   PROFILES_OVERLAY_BODY,
   PROFILES_OVERLAY_HINT,
@@ -34,6 +36,7 @@ import {
   PROFILES_OVERLAYS_EMPTY,
   PROFILES_OVERLAYS_HEADING,
   PROFILES_OVERLAYS_LOADING,
+  PROFILES_OVERLAYS_UNAVAILABLE,
   PROFILES_PACK_EXPORT,
   PROFILES_PACK_MESSAGE,
   PROFILES_PACK_PRODUCT,
@@ -47,6 +50,7 @@ import {
   PROFILES_PACKS_EMPTY,
   PROFILES_PACKS_HEADING,
   PROFILES_PACKS_LOADING,
+  PROFILES_PACKS_UNAVAILABLE,
 } from '@/utils/conversionProfilesCopy';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
@@ -66,6 +70,12 @@ interface AuthedProps {
   accessToken: string;
 }
 
+interface LoadErrorState {
+  catalog: string | null;
+  packs: string | null;
+  overlays: string | null;
+}
+
 const PROFILE_LABELS = new Map<string, string>(
   SEMANTIC_PROFILE_OPTIONS.map((option) => [option.value, option.label]),
 );
@@ -80,6 +90,14 @@ function compareValue(value: string): string {
 
 function sameValue(left: string, right: string): boolean {
   return compareValue(left) === compareValue(right);
+}
+
+function countDisplay(value: number | null | undefined): string {
+  return typeof value === 'number' ? String(value) : PROFILES_COUNT_UNAVAILABLE;
+}
+
+function unavailableMessage(detail: string | null): string {
+  return [PROFILES_INSPECTOR_UNAVAILABLE, detail].filter(Boolean).join(' ');
 }
 
 function starterSlug(profileId: string, kind: 'pack' | 'overlay'): string {
@@ -279,7 +297,7 @@ function ProfileSummaryCard({
                 {count.label}
               </dt>
               <dd className="mt-1 text-sm text-gray-900 dark:text-gray-100">
-                {count.value ?? '—'}
+                {countDisplay(count.value)}
               </dd>
               {different ? (
                 <p className="mt-1 text-xs text-amber-900 dark:text-amber-200">
@@ -298,6 +316,11 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
   const [catalog, setCatalog] = useState<ProfileCatalogEntry[] | null>(null);
   const [packs, setPacks] = useState<RulePackOut[] | null>(null);
   const [overlays, setOverlays] = useState<OverlayOut[] | null>(null);
+  const [loadErrors, setLoadErrors] = useState<LoadErrorState>({
+    catalog: null,
+    packs: null,
+    overlays: null,
+  });
   const [selectedId, setSelectedId] = useState<string>('');
   const [compareId, setCompareId] = useState<string>('');
   const [activeBlockId, setActiveBlockId] = useState<ProfileBlockId>('input');
@@ -324,24 +347,39 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
-    try {
-      const [cat, packList, overlayList] = await Promise.all([
-        fetchProfileCatalog(accessToken),
-        listRulePacks(accessToken),
-        listOverlays(accessToken),
-      ]);
-      setCatalog(cat.profiles);
-      setPacks(packList.items);
-      setOverlays(overlayList.items);
-      const first = cat.profiles[0];
-      if (!selectedId && first) {
-        setSelectedId(first.id);
-      }
-    } catch (err) {
-      setError(errorMessage(err));
-    } finally {
-      setLoading(false);
+    const [catResult, packResult, overlayResult] = await Promise.allSettled([
+      fetchProfileCatalog(accessToken),
+      listRulePacks(accessToken),
+      listOverlays(accessToken),
+    ]);
+
+    const nextLoadErrors: LoadErrorState = {
+      catalog: catResult.status === 'rejected' ? errorMessage(catResult.reason) : null,
+      packs: packResult.status === 'rejected' ? errorMessage(packResult.reason) : null,
+      overlays:
+        overlayResult.status === 'rejected' ? errorMessage(overlayResult.reason) : null,
+    };
+    setLoadErrors(nextLoadErrors);
+
+    const nextCatalog =
+      catResult.status === 'fulfilled' ? catResult.value.profiles : null;
+    const nextPacks = packResult.status === 'fulfilled' ? packResult.value.items : null;
+    const nextOverlays =
+      overlayResult.status === 'fulfilled' ? overlayResult.value.items : null;
+    setCatalog((current) => nextCatalog ?? current);
+    setPacks((current) => nextPacks ?? current);
+    setOverlays((current) => nextOverlays ?? current);
+
+    const first = nextCatalog?.[0];
+    if (!selectedId && first) {
+      setSelectedId(first.id);
     }
+
+    const failureMessages = Object.values(nextLoadErrors).filter(
+      (value): value is string => value !== null,
+    );
+    setError(failureMessages.length > 0 ? failureMessages.join(' | ') : null);
+    setLoading(false);
   }, [accessToken, selectedId]);
 
   /* eslint-disable react-hooks/set-state-in-effect -- refetch when token changes */
@@ -497,10 +535,19 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
       )}
 
       <Card className="space-y-4 p-4" data-testid="conversion-profiles-summary">
+        {loadErrors.catalog && catalog !== null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {unavailableMessage(loadErrors.catalog)}
+          </p>
+        ) : null}
         {loading && catalog === null ? (
           <p className="flex items-center gap-2 text-sm text-gray-500">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
             {PROFILES_INSPECTOR_LOADING}
+          </p>
+        ) : loadErrors.catalog && catalog === null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {unavailableMessage(loadErrors.catalog)}
           </p>
         ) : !catalog || catalog.length === 0 ? (
           <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
@@ -556,6 +603,11 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
 
       <Card className="space-y-3 p-4" data-testid="conversion-profiles-inspector">
         <h2 className="text-sm font-medium">{PROFILES_INSPECTOR_HEADING}</h2>
+        {loadErrors.catalog && catalog !== null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {unavailableMessage(loadErrors.catalog)}
+          </p>
+        ) : null}
         {selected ? (
           <dl
             className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2"
@@ -578,6 +630,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               <dd>{selected.legacy_alias ?? '—'}</dd>
             </div>
           </dl>
+        ) : loadErrors.catalog ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {unavailableMessage(loadErrors.catalog)}
+          </p>
         ) : (
           <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
         )}
@@ -585,6 +641,11 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
 
       <Card className="space-y-4 p-4" data-testid="conversion-profiles-blocks">
         <h2 className="text-sm font-medium">Profile blocks</h2>
+        {loadErrors.catalog && catalog !== null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {unavailableMessage(loadErrors.catalog)}
+          </p>
+        ) : null}
         {selected ? (
           <>
             <div className="grid grid-cols-1 gap-2 md:grid-cols-5">
@@ -633,6 +694,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               </div>
             </div>
           </>
+        ) : loadErrors.catalog ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {unavailableMessage(loadErrors.catalog)}
+          </p>
         ) : (
           <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
         )}
@@ -772,8 +837,17 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
           {PROFILES_PACK_SAVE}
         </Button>
 
+        {loadErrors.packs && packs !== null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {PROFILES_PACKS_UNAVAILABLE} {loadErrors.packs}
+          </p>
+        ) : null}
         {loading && packs === null ? (
           <p className="text-sm text-gray-500">{PROFILES_PACKS_LOADING}</p>
+        ) : loadErrors.packs && packs === null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {PROFILES_PACKS_UNAVAILABLE} {loadErrors.packs}
+          </p>
         ) : !packs || packs.length === 0 ? (
           <p className="text-sm text-gray-500">{PROFILES_PACKS_EMPTY}</p>
         ) : (
@@ -852,8 +926,17 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
           ) : null}
           {PROFILES_OVERLAY_SAVE}
         </Button>
+        {loadErrors.overlays && overlays !== null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {PROFILES_OVERLAYS_UNAVAILABLE} {loadErrors.overlays}
+          </p>
+        ) : null}
         {loading && overlays === null ? (
           <p className="text-sm text-gray-500">{PROFILES_OVERLAYS_LOADING}</p>
+        ) : loadErrors.overlays && overlays === null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {PROFILES_OVERLAYS_UNAVAILABLE} {loadErrors.overlays}
+          </p>
         ) : !overlays || overlays.length === 0 ? (
           <p className="text-sm text-gray-500">{PROFILES_OVERLAYS_EMPTY}</p>
         ) : (

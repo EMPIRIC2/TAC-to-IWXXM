@@ -105,4 +105,23 @@ describe('GoldenExamplesSelect', () => {
       }),
     ).toBeInTheDocument();
   });
+
+  it('hides TAC product groups when an empty applicable-products list is provided', async () => {
+    const user = userEvent.setup();
+    render(
+      <GoldenExamplesSelect
+        onSelectExample={vi.fn()}
+        semanticProfile="AU_BOM"
+        applicableProducts={[]}
+      />,
+    );
+
+    await user.click(screen.getByTestId('examples-select'));
+    expect(screen.queryByText('METAR')).not.toBeInTheDocument();
+    expect(screen.queryByText('SIGMET')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('option', { name: /METAR WMO A3-1/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: /TAF/i })).not.toBeInTheDocument();
+  });
 });

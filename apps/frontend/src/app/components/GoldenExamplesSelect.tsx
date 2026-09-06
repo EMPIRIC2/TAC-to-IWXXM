@@ -95,10 +95,7 @@ export function GoldenExamplesSelect({
   const byProduct = groupTacByProduct();
   const ahlExamples = EXAMPLES.filter((ex) => ex.inputMode === 'ahl_bulletin');
   const iwxxmExamples = EXAMPLES.filter((ex) => ex.inputMode === 'collect_iwxxm');
-  const allowedProducts =
-    applicableProducts && applicableProducts.length > 0
-      ? new Set(applicableProducts)
-      : null;
+  const allowedProducts = applicableProducts ? new Set(applicableProducts) : null;
 
   return (
     <div className="flex flex-wrap items-center gap-2">
