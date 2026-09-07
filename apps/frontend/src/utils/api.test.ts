@@ -254,8 +254,63 @@ describe('API Utils', () => {
       const [, options] = (global.fetch as any).mock.calls[0];
       const body = options.body as FormData;
       expect(body.get('product')).toBe('TAF');
-      expect(body.get('profile')).toBe('iwxxm_us');
+      expect(body.get('semantic_profile')).toBe('iwxxm_us');
+      expect(body.get('profile')).toBeNull();
       expect(body.get('iwxxm_version')).toBe('2025-2');
+    });
+
+    it('appends propagate_residuals_to_remarks when explicitly set (TC-EV981)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        propagateResidualsToRemarks: true,
+      });
+      let body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('propagate_residuals_to_remarks')).toBe('true');
+
+      (global.fetch as any).mockClear();
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        propagateResidualsToRemarks: false,
+      });
+      body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('propagate_residuals_to_remarks')).toBe('false');
+    });
+
+    it('appends semantic_profile uppercase for canonical ids (TC-EV093-002)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        product: 'METAR',
+        profile: 'ICAO_2025',
+        iwxxmVersion: '2025-2',
+      });
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('semantic_profile')).toBe('ICAO_2025');
+      expect(body.get('profile')).toBeNull();
     });
 
     it('appends validation, stop_on_error, bulletin, and issuing centre (ADR-023)', async () => {
@@ -306,6 +361,47 @@ describe('API Utils', () => {
       const body = options.body as FormData;
       expect(body.getAll('extensions')).toEqual(['IWXXM_CA']);
       expect(body.get('exchange_output')).toBe('true');
+    });
+
+    it('appends exchange_profile on convert when provided (EV-090)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        profile: 'annex3',
+        exchangeProfile: 'CAR_SAM',
+      });
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('exchange_profile')).toBe('CAR_SAM');
+    });
+
+    it('appends report_variant on convert when provided (EV-1050)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR CYUL 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        product: 'METAR',
+        profile: 'CA_ECCC',
+        reportVariant: 'LWIS',
+      } as any);
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('report_variant')).toBe('LWIS');
     });
 
     it('should throw error on conversion failure', async () => {
@@ -916,7 +1012,7 @@ describe('API Utils', () => {
         accessToken: 'tok',
       });
       expect(result.issues).toHaveLength(1);
-      expect(result.issues[0].code).toBe('MISSING_TERMINATOR');
+      expect(result.issues[0]!.code).toBe('MISSING_TERMINATOR');
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringMatching(/\/lint-issue-catalog\?product=metar$/),
         expect.objectContaining({
@@ -941,6 +1037,21 @@ describe('API Utils', () => {
       expect(result.issues).toHaveLength(1);
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringMatching(/\/lint-issue-catalog\?family=iwxxm$/),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('GETs lint-issue-catalog with semantic and exchange profile filters', async () => {
+      mockFetchResponse({ issues: [] });
+      await fetchLintIssueCatalog({
+        product: 'TAF',
+        semantic_profile: 'US_FAA_NWS',
+        exchange_profile: 'GLOBAL_AFS',
+      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /\/lint-issue-catalog\?product=taf&semantic_profile=US_FAA_NWS&exchange_profile=GLOBAL_AFS$/,
+        ),
         expect.objectContaining({ method: 'GET' }),
       );
     });
@@ -1111,14 +1222,59 @@ describe('API Utils', () => {
         files: [file],
         product: 'metar',
         profile: 'annex3',
+        exchangeProfile: 'EUR_RODEX',
+        iwxxmVersion: '2023-1',
         lint: false,
         accessToken: 'tok',
       });
       expect(result.bulletin_meta.cccc).toBe('KZNY');
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/convert-bulletin'),
-        expect.objectContaining({ method: 'POST' }),
-      );
+      const [, init] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0] as [
+        string,
+        { body: FormData },
+      ];
+      expect(init.body.get('exchange_profile')).toBe('EUR_RODEX');
+      expect(init.body.get('iwxxm_version')).toBe('2023-1');
+    });
+
+    it('appends propagate_residuals_to_remarks on convert-bulletin (TC-EV981)', async () => {
+      mockFetchResponse({
+        bulletin_meta: {
+          ahl: 'SAUS31 KZNY 121200',
+          report_count: 0,
+          tt: 'SA',
+          aa: 'US',
+          cccc: 'KZNY',
+          yygggg: '121200',
+        },
+        results: [],
+      });
+      await convertBulletin({
+        product: 'METAR',
+        manualText: 'SAUS31',
+        propagateResidualsToRemarks: true,
+      });
+      let body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('propagate_residuals_to_remarks')).toBe('true');
+
+      (global.fetch as any).mockClear();
+      mockFetchResponse({
+        bulletin_meta: {
+          ahl: 'SAUS31 KZNY 121200',
+          report_count: 0,
+          tt: 'SA',
+          aa: 'US',
+          cccc: 'KZNY',
+          yygggg: '121200',
+        },
+        results: [],
+      });
+      await convertBulletin({
+        product: 'METAR',
+        manualText: 'SAUS31',
+        propagateResidualsToRemarks: false,
+      });
+      body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('propagate_residuals_to_remarks')).toBe('false');
     });
 
     it('throws on convert-bulletin HTTP error with detail.message', async () => {
@@ -1166,7 +1322,7 @@ describe('API Utils', () => {
       const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
       const body = options.body as FormData;
       expect(body.get('manual_text')).toBeNull();
-      expect(body.get('profile')).toBe('annex3');
+      expect(body.get('semantic_profile')).toBe('ICAO_2025');
       expect(body.get('lint')).toBe('true');
     });
 
@@ -1188,6 +1344,14 @@ describe('API Utils', () => {
           accessToken: 'tok',
         }),
       ).rejects.toBeInstanceOf(EndpointNotImplementedError);
+    });
+
+    it('constructs EndpointNotImplementedError with default status/code', () => {
+      const err = new EndpointNotImplementedError('placeholder');
+      expect(err).toBeInstanceOf(EndpointNotImplementedError);
+      expect(err.status).toBe(501);
+      expect(err.code).toBe('not_implemented');
+      expect(err.name).toBe('EndpointNotImplementedError');
     });
 
     it('uses COLLECT placeholder defaults when the 501 body has no details', async () => {
@@ -1272,6 +1436,28 @@ describe('API Utils', () => {
         accessToken: 'tok',
       });
       expect(global.fetch).toHaveBeenCalled();
+      const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      // accessToken alone does not authorize convert (public); Authorization only with overlay_id
+      expect(options.headers?.Authorization).toBeUndefined();
+    });
+
+    it('sends overlay_id with bearer when set', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK',
+        overlayId: '  ov-123  ',
+        accessToken: ' jwt ',
+      });
+      const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
+      const body = options.body as FormData;
+      expect(body.get('overlay_id')).toBe('ov-123');
+      expect(options.headers?.Authorization).toBe('Bearer jwt');
     });
 
     it('uses default conversion fields when optional values are omitted', async () => {
@@ -1287,7 +1473,7 @@ describe('API Utils', () => {
       const body = options.body as FormData;
       expect(body.get('manual_text')).toBeNull();
       expect(body.get('product')).toBe('METAR');
-      expect(body.get('profile')).toBe('annex3');
+      expect(body.get('semantic_profile')).toBe('ICAO_2025');
       expect(body.get('validate_output')).toBe('false');
       expect(body.get('include_nil_reasons')).toBe('true');
       expect(body.get('preview')).toBeNull();

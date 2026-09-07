@@ -7,8 +7,17 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { GoldenExamplesSelect } from './GoldenExamplesSelect';
+import {
+  CANONICAL_SEMANTIC_PROFILES,
+  DEFAULT_SEMANTIC_PROFILE,
+  SEMANTIC_PROFILE_OPTIONS,
+} from '@/utils/semanticProfile';
 
 describe('GoldenExamplesSelect', () => {
+  const profileLabels = new Map(
+    SEMANTIC_PROFILE_OPTIONS.map((option) => [option.value, option.label]),
+  );
+
   it('does not offer soft-fail or file-queue examples (C5)', async () => {
     const user = userEvent.setup();
     const onSelectExample = vi.fn();
@@ -67,5 +76,90 @@ describe('GoldenExamplesSelect', () => {
     expect(
       options.every((option) => (option.textContent ?? '').trim().length > 0),
     ).toBe(true);
+  });
+
+  it('filters to applicable products and labels reused seeds for non-ICAO profiles', async () => {
+    const user = userEvent.setup();
+    render(
+      <GoldenExamplesSelect
+        onSelectExample={vi.fn()}
+        semanticProfile="US_FAA_NWS"
+        applicableProducts={['METAR']}
+      />,
+    );
+
+    await user.click(screen.getByTestId('examples-select'));
+    expect(
+      await screen.findByRole('option', {
+        name: /METAR WMO A3-1 \(annex3\).*Reused for United States \(FAA\/NWS\)/i,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: /SIGMET/i })).not.toBeInTheDocument();
+  });
+
+  it('labels reused WMO reference examples for non-ICAO profiles', async () => {
+    const user = userEvent.setup();
+    render(
+      <GoldenExamplesSelect
+        onSelectExample={vi.fn()}
+        semanticProfile="US_FAA_NWS"
+        applicableProducts={['SWXA']}
+      />,
+    );
+
+    await user.click(screen.getByTestId('examples-select'));
+    expect(
+      await screen.findByRole('option', {
+        name: /SWXA WMO A7-3.*WMO reference.*Reused for United States \(FAA\/NWS\)/i,
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it('exposes a METAR example path for every registered semantic profile', async () => {
+    for (const profile of CANONICAL_SEMANTIC_PROFILES) {
+      const user = userEvent.setup();
+      const { unmount } = render(
+        <GoldenExamplesSelect
+          onSelectExample={vi.fn()}
+          semanticProfile={profile}
+          applicableProducts={['METAR']}
+        />,
+      );
+
+      await user.click(screen.getByTestId('examples-select'));
+      const option = await screen.findByRole('option', {
+        name: /METAR WMO A3-1 \(annex3\)/i,
+      });
+      expect(option).toBeInTheDocument();
+
+      if (profile === DEFAULT_SEMANTIC_PROFILE) {
+        expect(option).not.toHaveTextContent(/Reused for/i);
+      } else {
+        expect(option).toHaveTextContent(
+          `Reused for ${profileLabels.get(profile) ?? profile}`,
+        );
+      }
+
+      unmount();
+    }
+  });
+
+  it('hides TAC product groups when an empty applicable-products list is provided', async () => {
+    const user = userEvent.setup();
+    render(
+      <GoldenExamplesSelect
+        onSelectExample={vi.fn()}
+        semanticProfile="AU_BOM"
+        applicableProducts={[]}
+      />,
+    );
+
+    await user.click(screen.getByTestId('examples-select'));
+    expect(screen.queryByText('METAR')).not.toBeInTheDocument();
+    expect(screen.queryByText('SIGMET')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('option', { name: /METAR WMO A3-1/i }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: /TAF/i })).not.toBeInTheDocument();
   });
 });

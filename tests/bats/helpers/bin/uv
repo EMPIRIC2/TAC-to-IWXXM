@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# stub
+if [[ "${1:-}" == "run" ]]; then shift; fi
+exit 0

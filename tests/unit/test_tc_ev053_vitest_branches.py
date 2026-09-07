@@ -1,4 +1,4 @@
-"""TC-EV053-001 / T1.3 — Vitest branches ≥95; FileConverter in coverage set.
+"""TC-EV053-001 / T1.3 - Vitest branches ≥95; FileConverter in coverage set.
 
 [Corpus: tests] [Corpus: adr/ADR-007] EV-053 / #968
 """
@@ -26,7 +26,7 @@ def _vitest_thresholds(path: Path) -> dict[str, int]:
 
 @pytest.mark.unit
 class TestTcEv053VitestBranches:
-    """AC1 — config enforces branches ≥95 with FileConverter included."""
+    """AC1 - config enforces branches ≥95 with FileConverter included."""
 
     def test_all_thresholds_at_least_95(self) -> None:
         thresholds = _vitest_thresholds(FRONTEND_VITEST)

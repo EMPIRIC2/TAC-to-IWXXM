@@ -7,6 +7,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   QUALITY_METRICS_DIFF_EMPTY_LABEL,
+  QUALITY_METRICS_RESIDUALS_FOLDED,
+  QUALITY_METRICS_RESIDUALS_NOT_FOLDED,
   QUALITY_METRICS_XML_VIEW_NORMALIZED,
   QUALITY_METRICS_XML_VIEW_RAW,
   QualityMetricsDetail,
@@ -36,6 +38,7 @@ const FORMATTING_ONLY: QualityMetricsDetailResponse = {
   converted_xml: '<?xml version="1.0"?><root xmlns="urn:x"><v>1</v></root>',
   match_status: 'equal',
   residuals: [],
+  residuals_propagated_to_remarks: false,
   lint_issues: [],
   validate_issues: [],
 };
@@ -107,6 +110,20 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
     expect(
       screen.getByTestId('quality-metrics-validate-chip-schema-import'),
     ).toHaveTextContent(QUALITY_METRICS_SCHEMA_IMPORT_RESOLVED);
+    expect(
+      screen.getByTestId('quality-metrics-pane-residuals-fold-status'),
+    ).toHaveTextContent(QUALITY_METRICS_RESIDUALS_NOT_FOLDED);
+  });
+
+  it('shows folded residual status when residuals_propagated_to_remarks is true', () => {
+    render(
+      <QualityMetricsDetail
+        detail={{ ...FORMATTING_ONLY, residuals_propagated_to_remarks: true }}
+      />,
+    );
+    expect(
+      screen.getByTestId('quality-metrics-pane-residuals-fold-status'),
+    ).toHaveTextContent(QUALITY_METRICS_RESIDUALS_FOLDED);
   });
 
   it('toggle shows raw XML while unified diff stays on normalized peers', async () => {
@@ -202,8 +219,7 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
     expect(screen.getByTestId('quality-metrics-diff-expand-all')).toBeInTheDocument();
 
     // Toggle the same hunk off (covers expandedCollapseKeys delete branch).
-    const hunksAfterExpand = screen.getAllByTestId('quality-metrics-diff-expand-hunk');
-    await user.click(hunksAfterExpand[0]!);
+    await user.click(expandHunks[0]!);
 
     await user.click(screen.getByTestId('quality-metrics-diff-expand-all'));
     expect(screen.getByTestId('quality-metrics-diff-expand-all')).toHaveTextContent(
@@ -390,5 +406,55 @@ describe('QualityMetricsDetail diff layout (TC-EV058)', () => {
     expect(
       screen.queryByTestId('quality-metrics-diff-side-by-side'),
     ).not.toBeInTheDocument();
+  });
+
+  it('shows deferral reason and failing validate chips', () => {
+    render(
+      <QualityMetricsDetail
+        detail={{
+          ...SEMANTIC_DIFF,
+          deferred: true,
+          match_status: 'unequal',
+          deferral_reason: 'Waiting on official pin',
+          validate_issues: [
+            { code: 'SCHEMATRON_SKIPPED', message: 'skipped' },
+            { code: 'SCHEMA_IMPORT_WARNING', message: 'unresolved' },
+          ],
+        }}
+      />,
+    );
+    expect(screen.getByText(/Waiting on official pin/i)).toBeInTheDocument();
+    const chips = screen.getByTestId('quality-metrics-validate-chips');
+    expect(chips.querySelectorAll('[data-ok="false"]').length).toBeGreaterThan(0);
+  });
+
+  it('uses singular unchanged-line copy for a one-line collapsed hunk', async () => {
+    const { unchangedLinesExpandLabel } = await import('./QualityMetricsDetail');
+    expect(unchangedLinesExpandLabel(1)).toBe('Expand 1 unchanged line');
+    expect(unchangedLinesExpandLabel(2)).toBe('Expand 2 unchanged lines');
+  });
+
+  it('treats missing validate_issues and null TAC as empty panes', () => {
+    render(
+      <QualityMetricsDetail
+        detail={{
+          ...FORMATTING_ONLY,
+          tac: undefined as unknown as string,
+          residuals: undefined as unknown as [],
+          lint_issues: undefined as unknown as [],
+          validate_issues: undefined as unknown as [],
+        }}
+      />,
+    );
+    expect(screen.getByTestId('quality-metrics-pane-tac')).toHaveTextContent(
+      /No TAC available/i,
+    );
+    expect(
+      screen.getByTestId('quality-metrics-pane-residuals-empty'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('quality-metrics-pane-lint-empty')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('quality-metrics-pane-validate-empty'),
+    ).toBeInTheDocument();
   });
 });

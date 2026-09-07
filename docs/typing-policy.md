@@ -1,8 +1,8 @@
 # Typing Policy
 
 > **Project**: METAR to IWXXM Converter  
-> **Last updated**: 2026-06-14  
-> **Source**: execution plan §Tech Stack, ADR-005, ADR-007
+> **Last updated**: 2026-08-27 (EV-strict-lint-typecheck)  
+> **Source**: execution plan §Tech Stack, ADR-005, ADR-007 (amended EV-080 / #1077 — 100%)
 
 ## Python
 
@@ -11,6 +11,31 @@
 | Runtime | Python **3.12** (pinned) |
 | Typechecker | **basedpyright** (`strict` on `apps/backend`, `packages/*`) |
 | Linter / formatter | **Ruff** (all Python packages including `packages/gifts`) |
+
+### Ruff rule sets (monorepo root `ruff.toml`)
+
+| Code | Purpose |
+|------|---------|
+| E, F, I | pycodestyle errors, pyflakes, isort |
+| UP, B, SIM, RUF | pyupgrade, bugbear, simplify, ruff-specific |
+| PERF, ASYNC | perflint, async blocking-I/O guard |
+| PT | pytest-style (raises match, assert layout) |
+| ANN | annotations on `apps/` + `packages/` **src** (`**/tests/**` ignores ANN) |
+
+Per-package `pyproject.toml` files **extend** root `ruff.toml` (line-length 120 where noted) — do not reintroduce thin `E,W,F,I`-only overrides.
+
+**ANN401 waivers:** lxml / PyO3 boundary modules in `packages/iwxxm-validate` (`c14n`, `native`, `schematron`, `xsd`) — third-party handles without complete stubs.
+
+### basedpyright
+
+| Setting | Value |
+|---------|-------|
+| `typeCheckingMode` | `strict` (root + `apps/backend`) |
+| `reportUnknownMemberType` | **error** |
+| `reportUnknownVariableType` | **error** |
+| `reportMissingTypeStubs` | `false` |
+
+Use typed JSON/XML boundaries (`cast`, `TypedDict`, `XmlElement` protocol in `apps/backend/src/utilities/xml_types.py`) instead of broad `# pyright: ignore`.
 
 ### Conventions
 
@@ -23,9 +48,9 @@
 
 ```bash
 # From repo root (after uv sync)
-uv run basedpyright
-uv run ruff check .
-uv run ruff format --check .
+make typecheck-py   # basedpyright per package + backend
+make lint-py        # ruff check (PY_LINT scope)
+uv run ruff format --check apps packages tests
 ```
 
 Strict enforcement applies to new code under `apps/` and `packages/`. Legacy paths (`backend/`, `GIFTs/`, `auth/`) are included during migration and tightened as packages move (Phase 1–3).
@@ -43,6 +68,24 @@ upstream typing remediation is merged.
 | Linter | ESLint 9 + typescript-eslint (frontend, e2e, shared) |
 | Formatter | Prettier 3 (all TypeScript workspaces) |
 
+### Compiler strictness
+
+All TS workspaces enable:
+
+- `"strict": true`
+- `"noUncheckedIndexedAccess": true` — array/tuple/index reads may be `undefined`; guard before use
+
+### ESLint
+
+Key rules at **error** (root `eslint.config.js` + `apps/frontend/eslint.config.js`):
+
+- `@typescript-eslint/no-explicit-any`
+- `@typescript-eslint/no-unused-vars`
+- `@typescript-eslint/no-empty-object-type`
+- `@typescript-eslint/no-require-imports`
+
+`pnpm run lint:js` uses `--max-warnings 0`.
+
 ### Commands
 
 ```bash
@@ -53,13 +96,16 @@ cd apps/frontend && pnpm exec eslint src
 cd apps/frontend && pnpm exec tsc --noEmit
 ```
 
-## Coverage gate (ADR-007 / EV-047)
+## Coverage gate (ADR-007 / EV-080 / #1077)
 
-**95%** line/branch coverage on all workspace members — pytest for Python, Vitest for frontend.
-Configured in root `pyproject.toml` `[tool.coverage.report]` and per-package overrides
-(Phase 1 T1.9). **EV-047 / D-S056-cov95-scope=2:** every measured Python source file must
-also be ≥95% (`scripts/ci/check_per_file_coverage.py` after package unit jobs); auth and
-worker use hard `fail_under = 95` (no longer soft-report-only).
+**100%** line and branch coverage on all workspace members — pytest for Python, Vitest for
+frontend/shared. Configured in root `pyproject.toml` `[tool.coverage.report]` and
+per-package overrides (`fail_under = 100`, `branch = true`). **Per-file ≥100%** via
+`scripts/ci/check_per_file_coverage.py --min-pct 100` after package unit jobs.
+
+**Scripts (EV-080):** all `scripts/**/*.py` under a dedicated coverage job (≥100%); every
+`scripts/**/*.sh` exercised by ≥1 **bats-core** test in CI. Approved omits only:
+`vendor/**`, generated XSD/codegen, non-executable fixtures — see ADR-007.
 
 ## References
 

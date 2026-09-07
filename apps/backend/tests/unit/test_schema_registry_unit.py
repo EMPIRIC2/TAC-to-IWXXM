@@ -168,11 +168,10 @@ def test_clear_registry_cache_resets_method_caches(monkeypatch, tmp_path) -> Non
     monkeypatch.setattr(registry_module, "resolve_schema_file", lambda _v, _t: path)
 
     _ = registry.get_xsd_path("2025-2")
-    assert registry.get_xsd_path.cache_info().currsize > 0
+    assert registry._file_cache
 
     registry_module.clear_registry_cache()
 
-    assert registry.get_xsd_path.cache_info().currsize == 0
     assert registry._file_cache == {}
 
 

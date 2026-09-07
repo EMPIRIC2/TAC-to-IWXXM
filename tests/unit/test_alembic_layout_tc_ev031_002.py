@@ -1,4 +1,4 @@
-"""T2.1 / TC-EV031-002 — Alembic layout under apps/backend (F30 / ADR-033).
+"""T2.1 / TC-EV031-002 - Alembic layout under apps/backend (F30 / ADR-033).
 
 Structural checks always run. Live empty→head + second upgrade idempotency lives in
 ``tests/integration/test_alembic_upgrade_idempotent.py``.
@@ -70,7 +70,7 @@ def test_initial_revision_defines_tac_work_sessions_and_f8_tables() -> None:
         assert col in bodies, f"revision body missing column token {col!r}"
     for product in REQUIRED_PRODUCTS:
         assert product in bodies, f"revision body missing product {product!r}"
-    # DO Postgres: no Supabase Auth user FK (Auth-only Supabase — ADR-033).
+    # DO Postgres: no Supabase Auth user FK (Auth-only Supabase - ADR-033).
     assert "REFERENCES auth.users" not in bodies
     assert 'ForeignKey("auth.users' not in bodies
     assert "ForeignKey('auth.users" not in bodies

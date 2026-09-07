@@ -1,4 +1,4 @@
-"""T2.5.2 — per-file ≥95% coverage gate (EV-047 / D-S056-cov95)."""
+"""T2.5.2 - per-file ≥95% coverage gate (EV-047 / D-S056-cov95)."""
 
 from __future__ import annotations
 
@@ -16,7 +16,8 @@ SCRIPT = ROOT / "scripts" / "ci" / "check_per_file_coverage.py"
 
 def _load_mod() -> ModuleType:
     spec = importlib.util.spec_from_file_location("check_per_file_coverage", SCRIPT)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     mod = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = mod
     spec.loader.exec_module(mod)

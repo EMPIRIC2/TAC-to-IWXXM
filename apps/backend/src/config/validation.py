@@ -4,8 +4,6 @@ This module provides centralized configuration for all validation layers
 including XSD, Schematron, and WMO Code List validation.
 """
 
-from typing import Optional
-
 from pydantic_settings import BaseSettings
 
 
@@ -41,7 +39,7 @@ class ValidationSettings(BaseSettings):
 
 
 # Global singleton instance
-_settings_instance: Optional[ValidationSettings] = None
+_settings_instance: ValidationSettings | None = None
 
 
 def get_validation_settings() -> ValidationSettings:
@@ -56,7 +54,7 @@ def get_validation_settings() -> ValidationSettings:
     return _settings_instance
 
 
-def reset_validation_settings():
+def reset_validation_settings() -> None:
     """Reset settings instance (useful for testing)."""
     global _settings_instance
     _settings_instance = None

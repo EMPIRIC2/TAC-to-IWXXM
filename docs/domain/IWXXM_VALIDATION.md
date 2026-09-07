@@ -99,6 +99,9 @@ delivered layers **1–4**; EV-069 completes **5–6** (code-ca + exchange).
 | `TAF` | `taf-ca.xsd` |
 | `AIRMET` | `airmet-ca.xsd` |
 | `SIGMET`, `VAA` | **none published** — skip `ca_xsd` as not-applicable (EV-074 / #1043); still run wellformed + WMO 3.0.0 XSD+SCH |
+| `QVACI` / QVA | **blocked** under strict `CA_ECCC` = IWXXM **3.0.0** — ECCC lists `qvaci` (header TBD) but WMO QVA first appears in **2025-2** / package 1.0.0 ([RULE_SOURCE_URLS](rules/RULE_SOURCE_URLS.md) `CA-ECCC-QVACI-VERSION-GAP`; EV-098 / #1028). Do not invent schema URIs or promote 3.0 fixtures. |
+
+**Exchange filename (CA):** MSC grammar uses a repeated issuer token written `{CCC}` in prose but exemplified as WMO **CCCC** (e.g. `_C_CWAO_`). Implement as repeat-`CCCC`, not width-3 (`CA-ECCC-FILENAME`).
 
 **Operator-visible stage labels** must be plain language (EV-048) — no corpus ids or planning
 tokens in API/CLI issue text.

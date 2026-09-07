@@ -1,4 +1,4 @@
-"""TC-F21 amended by F31 — Auth restored; convert stays public; sessions JWT-gated."""
+"""TC-F21 amended by F31 - Auth restored; convert stays public; sessions JWT-gated."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ def test_auth_routes_present_without_admin() -> None:
 
 @pytest.mark.unit
 def test_work_sessions_routes_present() -> None:
-    """F31 / M2 — work-sessions mounted under /api/v1 (JWT-gated)."""
+    """F31 / M2 - work-sessions mounted under /api/v1 (JWT-gated)."""
     from src.api import app
 
     paths = set(_iter_route_paths(app.routes))
@@ -55,7 +55,7 @@ def test_auth_login_not_route_missing() -> None:
 
 @pytest.mark.unit
 def test_work_sessions_list_requires_jwt() -> None:
-    """TC-F31-003 — session list is 401/403 without Bearer (not a silent public 200)."""
+    """TC-F31-003 - session list is 401/403 without Bearer (not a silent public 200)."""
     from src.api import app
 
     client = TestClient(app)
@@ -88,7 +88,7 @@ def test_convert_succeeds_without_authorization() -> None:
 
 @pytest.mark.unit
 def test_lint_and_validate_succeed_without_authorization() -> None:
-    """TC-EV031-003 deepen — lint-tac / validate stay JWT-free (F21 Amended)."""
+    """TC-EV031-003 deepen - lint-tac / validate stay JWT-free (F21 Amended)."""
     from src import api as api_module
 
     api_module.app.dependency_overrides.clear()

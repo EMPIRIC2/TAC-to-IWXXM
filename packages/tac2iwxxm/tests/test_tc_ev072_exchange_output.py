@@ -1,4 +1,4 @@
-"""TC-EV072-001..006 — CA_ECCC exchange output aerodrome products (EV-072 M1).
+"""TC-EV072-001..006 - CA_ECCC exchange output aerodrome products (EV-072 M1).
 
 [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: tests §TC-EV072]
 """
@@ -9,8 +9,6 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
-
-from tac2iwxxm import convert, parse_ahl
 from tac2iwxxm.exchange_output import (
     build_ca_eccc_output_spec,
     ca_distribution_path,
@@ -19,6 +17,8 @@ from tac2iwxxm.exchange_output import (
     format_ca_wmo_ahl,
     msc_filename_matches_pattern,
 )
+
+from tac2iwxxm import convert, parse_ahl
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "CA_ECCC"
 PROFILE = "ca_eccc"
@@ -116,7 +116,8 @@ def test_tc_ev072_004_layer6_packaging_goldens(
 
     wrong = "A_LACN31 CYUL 231800" if product != "METAR" else "A_LTCN31 CYUL 231800"
     bad = validate_ca_exchange_packaging(golden, product=product, ahl_header=wrong)
-    assert bad and bad[0].code == "CA_EXCHANGE_AHL_PRODUCT"
+    assert bad
+    assert bad[0].code == "CA_EXCHANGE_AHL_PRODUCT"
 
     if tac_inline is not None:
         tac = tac_inline

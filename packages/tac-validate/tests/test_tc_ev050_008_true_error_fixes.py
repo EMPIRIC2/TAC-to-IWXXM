@@ -1,4 +1,4 @@
-"""TC-EV050-008 / AC8 — true-error profile fixes + regressions (S059)."""
+"""TC-EV050-008 / AC8 - true-error profile fixes + regressions (S059)."""
 
 from __future__ import annotations
 

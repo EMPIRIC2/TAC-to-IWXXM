@@ -29,7 +29,7 @@ def test_strip_dynamic_attrs_removes_ids_and_schema_location():
 
     assert "id" not in elem.attrib
     assert "{http://www.w3.org/2001/XMLSchema-instance}schemaLocation" not in elem.attrib
-    child = list(elem)[0]
+    child = next(iter(elem))
     assert "uuid" not in child.attrib
     assert child.attrib["keep"] == "yes"
 

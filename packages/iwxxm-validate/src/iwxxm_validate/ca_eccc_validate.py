@@ -1,4 +1,4 @@
-"""Layered ``ca_eccc`` validation pipeline with per-stage reporting (EV-068 M3–M4)."""
+"""Layered ``ca_eccc`` validation pipeline with per-stage reporting (EV-068 M3-M4)."""
 
 from __future__ import annotations
 
@@ -337,6 +337,7 @@ def validate_ca_eccc_layered(
     all_issues: list[Issue] = []
 
     def append_stage(stage_id: str, issues: list[Issue]) -> None:
+        """Record one validation stage and merge its issues into the report."""
         stages.append(_stage_result(stage_id, issues))
         all_issues.extend(issues)
 

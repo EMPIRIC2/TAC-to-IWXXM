@@ -8,6 +8,7 @@ dependencies = [
     "tac2iwxxm",
     "tac-validate",
     "iwxxm-validate",
+    "workflows",
     "httpx>=0.28.1",
     "pydantic>=2.0.0",
     "pydantic-settings>=2.14.2",
@@ -47,5 +48,5 @@ branch = true
 source = ["src/metar_worker"]
 
 [tool.coverage.report]
-fail_under = 95
+fail_under = 100
 show_missing = true

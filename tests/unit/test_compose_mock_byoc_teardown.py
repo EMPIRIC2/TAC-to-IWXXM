@@ -1,4 +1,4 @@
-"""EV-039 / AC4 — compose-mock-byoc teardown must remove containers and volumes.
+"""EV-039 / AC4 - compose-mock-byoc teardown must remove containers and volumes.
 
 T1.1 (S047): contract that ``compose-mock-byoc-down`` uses ``down -v --remove-orphans``
 on an isolated compose project so orphans cannot linger and backend/frontend stay up.

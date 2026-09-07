@@ -1,11 +1,11 @@
-"""AFS COLLECT + multi-version IWXXM namespace hooks (F16–F19 / EV-023 T6.3).
+"""AFS COLLECT + multi-version IWXXM namespace hooks (F16-F19 / EV-023 T6.3).
 
 APAC FAQ §3.4 / §14.7: all AFS IWXXM must use COLLECT before send; when a
 bulletin mixes IWXXM package lines, each member group must declare
 ``http://icao.int/iwxxm/{version}``.
 
-These helpers are **dissemination / bulletin** path hooks — not single-report
-``tac2iwxxm.convert`` SoT (S02.M2). Full COLLECT packaging remains ops/F16–F19.
+These helpers are **dissemination / bulletin** path hooks - not single-report
+``tac2iwxxm.convert`` SoT (S02.M2). Full COLLECT packaging remains ops/F16-F19.
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ from typing import Final
 
 COLLECT_NS: Final[str] = "http://def.wmo.int/collect/2014"
 IWXXM_NS_PREFIX: Final[str] = "http://icao.int/iwxxm/"
-# FAQ §3.4 — AFS exchange mandates COLLECT wrap (informative ops mandate).
+# FAQ §3.4 - AFS exchange mandates COLLECT wrap (informative ops mandate).
 AFS_REQUIRES_COLLECT: Final[bool] = True
 
 _IWXXM_NS_DECL = re.compile(

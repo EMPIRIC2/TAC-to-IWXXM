@@ -1,4 +1,4 @@
-"""TC-EV060-1006 / D-S070-logout=1a — restore POST /auth/logout.
+"""TC-EV060-1006 / D-S070-logout=1a - restore POST /auth/logout.
 
 Spec: [Corpus: api] POST /auth/logout; [Corpus: product §F31]; #1006.
 """

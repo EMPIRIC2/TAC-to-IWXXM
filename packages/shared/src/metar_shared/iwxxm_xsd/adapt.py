@@ -1,7 +1,7 @@
 """Follow-on adapters from xsdata pydantic models (ADR-027 / T3.7).
 
 Validate hot path stays Rust (`iwxxm-validate`). These helpers expose version
-discovery and a stable seam for later msgspec/Rust adapt tasks — they do not
+discovery and a stable seam for later msgspec/Rust adapt tasks - they do not
 rewrite generated ``v*`` trees.
 """
 
@@ -34,9 +34,11 @@ def available_versions() -> list[str]:
     if not isinstance(versions_field, list):
         return []
     versions: list[str] = []
-    for item in cast(list[object], versions_field):
-        if isinstance(item, (str, int, float)):
-            versions.append(str(item))
+    versions.extend(
+        str(item)
+        for item in cast(list[object], versions_field)
+        if isinstance(item, (str, int, float))
+    )
     return versions
 
 
@@ -77,28 +79,28 @@ def import_version_leaf(version: str, leaf: str = "xlink") -> ModuleType:
     return import_module(f"{pkg}.{leaf}")
 
 
-def pydantic_to_msgspec(_model: Any) -> Any:
+def pydantic_to_msgspec(_model: object) -> object:
     """
     Placeholder for msgspec Struct adaptation (ADR-027 follow-on).
 
     Raises
     ------
     NotImplementedError
-        Always — convert builders wire this in a later task.
+        Always - convert builders wire this in a later task.
     """
     raise NotImplementedError(
         "msgspec adaptation of xsdata pydantic models is a follow-on (ADR-027)"
     )
 
 
-def pydantic_to_rust_hint(_model: Any) -> str:
+def pydantic_to_rust_hint(_model: object) -> str:
     """
     Placeholder for Rust type-hint export (ADR-027 follow-on).
 
     Raises
     ------
     NotImplementedError
-        Always — native convert builders wire this in a later task.
+        Always - native convert builders wire this in a later task.
     """
     raise NotImplementedError(
         "Rust adapt hints from xsdata pydantic models are a follow-on (ADR-027)"

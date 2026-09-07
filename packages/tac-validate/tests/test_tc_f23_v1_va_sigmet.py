@@ -1,4 +1,4 @@
-"""F23 / V1 — VA SIGMET accept + negatives (TC-F23-004 / #739).
+"""F23 / V1 - VA SIGMET accept + negatives (TC-F23-004 / #739).
 
 HARD theme V1 from sigmet-research-catalog.md. T3.1 fixtures + T3.2 registry/rules.
 """
@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

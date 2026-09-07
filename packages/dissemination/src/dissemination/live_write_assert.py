@@ -1,7 +1,7 @@
 """Assert writer-contract rows after live F16 dissemination send (EV-039 / AC2).
 
 Playwright invokes this module via ``python -m dissemination.live_write_assert``
-after UI success (S05.M3 — async drivers in-package; no FastAPI imports).
+after UI success (S05.M3 - async drivers in-package; no FastAPI imports).
 
 [Corpus: product §F16] [Corpus: tests] TC-F16-LIVE [Corpus: adr/ADR-030]
 """
@@ -115,7 +115,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
-    """CLI entry — exit 0 on success, 1 on assertion failure, 2 on usage/error."""
+    """CLI entry - exit 0 on success, 1 on assertion failure, 2 on usage/error."""
     args = _build_parser().parse_args(argv)
     try:
         count = asyncio.run(
@@ -129,7 +129,7 @@ def main(argv: list[str] | None = None) -> int:
     except AssertionError as exc:
         print(json.dumps({"ok": False, "error": str(exc)}), file=sys.stderr)
         return 1
-    except Exception as exc:  # noqa: BLE001 — CLI boundary
+    except Exception as exc:
         print(json.dumps({"ok": False, "error": str(exc)}), file=sys.stderr)
         return 2
     print(json.dumps({"ok": True, "count": count}))

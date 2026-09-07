@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import PRODUCTS, lint
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
@@ -67,11 +66,11 @@ def test_negative_depth_split_matches_e10_21() -> None:
     for case in data["negative"]:
         product = case["product"]
         depth = case["depth"]
-        if product in {"METAR", "SPECI", "TAF"}:
-            assert depth == "full_checklist"
-        elif product == "SIGMET" and case.get("theme") in {"G1", "G2", "V1", "V2", "C1"}:
-            assert depth == "full_checklist"
-        elif product == "AIRMET" and case.get("theme") in {"A1", "A2", "EV050"}:
+        if (
+            product in {"METAR", "SPECI", "TAF"}
+            or (product == "SIGMET" and case.get("theme") in {"G1", "G2", "V1", "V2", "C1"})
+            or (product == "AIRMET" and case.get("theme") in {"A1", "A2", "EV050"})
+        ):
             assert depth == "full_checklist"
         else:
             assert depth == "template_gate"

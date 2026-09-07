@@ -148,16 +148,15 @@ def validate_ca_exchange_packaging(
                 )
             )
 
-    if expected_filename is not None:
-        if not _MSC_FILENAME_RE.match(expected_filename.strip()):
-            issues.append(
-                Issue(
-                    severity="error",
-                    code="CA_EXCHANGE_FILENAME",
-                    message=f"Filename {expected_filename!r} does not match MSC exchange pattern",
-                    layer=STAGE_EXCHANGE,
-                )
+    if expected_filename is not None and not _MSC_FILENAME_RE.match(expected_filename.strip()):
+        issues.append(
+            Issue(
+                severity="error",
+                code="CA_EXCHANGE_FILENAME",
+                message=f"Filename {expected_filename!r} does not match MSC exchange pattern",
+                layer=STAGE_EXCHANGE,
             )
+        )
 
     if require_translation_centre:
         designator = root.get("translationCentreDesignator")

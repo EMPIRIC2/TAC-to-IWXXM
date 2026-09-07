@@ -1,4 +1,4 @@
-"""M6 docker-compose topology — deploy.md §Local, test-plan.md TC-M005 compose gate."""
+"""M6 docker-compose topology - deploy.md §Local, test-plan.md TC-M005 compose gate."""
 
 from __future__ import annotations
 

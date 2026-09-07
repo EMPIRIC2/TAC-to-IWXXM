@@ -72,6 +72,12 @@ def run_once(settings: WorkerSettings, store: StoreClient | None = None) -> int:
 
 
 def main() -> None:
+    """
+    Start the F8 ingest worker poll loop or run a single poll when ``--once`` is set.
+
+    Validates ``INGEST_POLLER_URL``, initializes observability hooks, and exits on
+    SIGTERM/SIGINT after the current poll completes.
+    """
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s %(levelname)s %(name)s %(message)s",

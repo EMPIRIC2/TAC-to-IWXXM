@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "description": "EV-094 M5 — IN_IMD deepen; AWC-attributed VIDP METAR/TAF; SPECI/SIGMET synthetic gaps; in_imd lint overlay for TAF TX/TN",
+  "profile": "IN_IMD",
+  "cycle": "EV-094",
+  "issue": "#1098",
+  "cases": [
+    {
+      "id": "metar_vidp",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_vidp.tac",
+      "rule_id": "IN.BASE.ICAO",
+      "status": "active",
+      "source_kind": "official",
+      "source_url": "https://aviationweather.gov/api/data/metar?ids=VIDP&format=raw",
+      "source_label": "Aviation Weather Center METAR API (VIDP)",
+      "observed_at_utc": "2026-08-31T15:00:00Z"
+    },
+    {
+      "id": "speci_vidp",
+      "product": "SPECI",
+      "tac": "SPECI/valid/speci_vidp.tac",
+      "rule_id": "IN.BASE.ICAO",
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed real SPECI corpus pending — catalog gap EV-094"
+    },
+    {
+      "id": "taf_vidp",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_vidp.tac",
+      "rule_id": "IN.TAF.OMIT_TX_TN",
+      "status": "active",
+      "source_kind": "official",
+      "source_url": "https://aviationweather.gov/api/data/taf?ids=VIDP&format=raw",
+      "source_label": "Aviation Weather Center TAF API (VIDP)",
+      "observed_at_utc": "2026-08-31T14:00:00Z",
+      "note": "No TX/TN — national omission practice (in_imd lint awareness)"
+    },
+    {
+      "id": "sigmet_basic",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_basic.tac",
+      "rule_id": "IN.BASE.ICAO",
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed Indian FIR SIGMET corpus pending"
+    }
+  ]
+}

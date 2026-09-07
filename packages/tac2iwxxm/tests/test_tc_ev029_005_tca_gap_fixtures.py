@@ -25,7 +25,7 @@ ACCEPT_TCA = Path(__file__).resolve().parents[2] / "tac-validate" / "tests" / "f
 IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
 
-# Body has no COR/AMD keyword — status must come from AHL BBB (T10.2).
+# Body has no COR/AMD keyword - status must come from AHL BBB (T10.2).
 _BBB_CASES = (
     ("tca_ahl_normal.txt", None, "NORMAL"),
     ("tca_ahl_rra.txt", "RRA", "NORMAL"),

@@ -1,4 +1,4 @@
-"""TC-EV066-004 — CA_ECCC MANOBS RMK lint deepen (EV-066 / #916).
+"""TC-EV066-004 - CA_ECCC MANOBS RMK lint deepen (EV-066 / #916).
 
 [Corpus: product §F36] [Corpus: tests §TC-EV066]
 """

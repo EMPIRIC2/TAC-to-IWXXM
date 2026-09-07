@@ -1,4 +1,4 @@
-"""TC-F15-003 / Research R1 — station, observation time, and field-order fixtures (T3.1/T3.2).
+"""TC-F15-003 / Research R1 - station, observation time, and field-order fixtures (T3.1/T3.2).
 
 Accept + missing CCCC/ddhhmmZ assert error codes. Odd-order cases expect
 ``ODD_FIELD_ORDER`` (warning) without failing ``report.ok``.
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 
@@ -80,7 +79,7 @@ def test_r1_missing_cccc_or_obs_time_errors(case: dict[str, Any]) -> None:
 
 @pytest.mark.parametrize("case", _ORDER_WARNINGS, ids=_case_ids(_ORDER_WARNINGS))
 def test_r1_odd_field_order_emits_warning(case: dict[str, Any]) -> None:
-    """Warning-only odd order — report.ok stays True (errors absent)."""
+    """Warning-only odd order - report.ok stays True (errors absent)."""
     report = lint(_read_tac(case["tac"]), product=case["product"])
     assert report.ok is True
     matched = [i for i in report.issues if i.code == "ODD_FIELD_ORDER"]

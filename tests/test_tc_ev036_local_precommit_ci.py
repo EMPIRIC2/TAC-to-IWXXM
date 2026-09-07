@@ -1,4 +1,4 @@
-"""TC-EV036 — local-first CI / husky / slim remote workflow contracts (S044 / EV-036).
+"""TC-EV036 - local-first CI / husky / slim remote workflow contracts (S044 / EV-036).
 
 Dense asserts for M5 deepen: commit medium validate, push Compose via ``make ci``,
 remote drops validate + Compose, keeps unit matrix + coverage PR comment.
@@ -43,7 +43,7 @@ def workflow_doc(workflow_text: str) -> dict:
 
 @pytest.mark.unit
 class TestTcEv036001PreCommitMediumValidate:
-    """TC-EV036-001 — husky pre-commit runs fast + medium validate."""
+    """TC-EV036-001 - husky pre-commit runs fast + medium validate."""
 
     def test_husky_pre_commit_exists_and_executable_bit_path(self) -> None:
         assert HUSKY_PRE_COMMIT.is_file()
@@ -63,7 +63,8 @@ class TestTcEv036001PreCommitMediumValidate:
 
     def test_husky_pre_commit_does_not_run_full_ci_or_integration(self) -> None:
         text = HUSKY_PRE_COMMIT.read_text(encoding="utf-8")
-        assert "make ci\n" not in text and not re.search(r"\bmake ci\b", text)
+        assert "make ci\n" not in text
+        assert not re.search(r"\bmake ci\b", text)
         assert "test-integration" not in text
         assert "ci-prepush" not in text
 
@@ -98,7 +99,7 @@ class TestTcEv036001PreCommitMediumValidate:
 
 @pytest.mark.unit
 class TestTcEv036002PrePushMakeCi:
-    """TC-EV036-002 — husky pre-push runs make ci; no validate-ci; no remote Compose."""
+    """TC-EV036-002 - husky pre-push runs make ci; no validate-ci; no remote Compose."""
 
     def test_husky_pre_push_runs_make_ci(self) -> None:
         text = HUSKY_PRE_PUSH.read_text(encoding="utf-8")
@@ -157,7 +158,7 @@ class TestTcEv036002PrePushMakeCi:
 
 @pytest.mark.unit
 class TestTcEv036003RemoteUnitsCoverageNoValidate:
-    """TC-EV036-003 — no validate job; units+coverage+PR comment; deploy needs test."""
+    """TC-EV036-003 - no validate job; units+coverage+PR comment; deploy needs test."""
 
     def test_no_validate_job(self, workflow_doc: dict) -> None:
         jobs = workflow_doc["jobs"]

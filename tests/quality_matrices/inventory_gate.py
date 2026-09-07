@@ -1,7 +1,7 @@
 """F29 / #831 inventory gate (EV-030 T1.6).
 
 Ensures every in-scope pilot rule has an explicit 20-slot matrix
-(``ready`` / ``needs-fixture`` / ``oos``) — no silent gaps (TC-F29-004).
+(``ready`` / ``needs-fixture`` / ``oos``) - no silent gaps (TC-F29-004).
 """
 
 from __future__ import annotations
@@ -172,15 +172,15 @@ def find_inventory_gaps(
                         detail=f"{bucket} case_ids {ids} != {expected_ids}",
                     )
                 )
-        for case in rule_cases:
-            if case.status not in _EXPLICIT_STATUSES:
-                gaps.append(
-                    InventoryGap(
-                        engine=rule.engine,
-                        rule_id=rule.rule_id,
-                        detail=f"{case.node_id} has non-explicit status {case.status!r}",
-                    )
-                )
+        gaps.extend(
+            InventoryGap(
+                engine=rule.engine,
+                rule_id=rule.rule_id,
+                detail=f"{case.node_id} has non-explicit status {case.status!r}",
+            )
+            for case in rule_cases
+            if case.status not in _EXPLICIT_STATUSES
+        )
 
     # Extra matrix rules outside inventory are not silent gaps, but report them
     # so CI can decide (pilot gate is inventory-complete, not "no extras").

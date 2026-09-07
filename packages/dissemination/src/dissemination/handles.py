@@ -11,6 +11,8 @@ from typing import Any
 
 @dataclass
 class HandleRecord:
+    """In-memory preflight handle payload bound to one user and sink."""
+
     user_id: str
     sink_type: str
     uri: str | None
@@ -19,7 +21,7 @@ class HandleRecord:
 
 
 class HandleStore:
-    """Process-local handle map — never persisted."""
+    """Process-local handle map - never persisted."""
 
     def __init__(self, *, ttl_seconds: float = 300.0) -> None:
         self.ttl_seconds = ttl_seconds
@@ -35,6 +37,27 @@ class HandleStore:
         params: dict[str, Any] | None = None,
         now: float | None = None,
     ) -> str:
+        """
+        Issue an opaque handle for a green preflight result.
+
+        Parameters
+        ----------
+        user_id :
+            Authenticated caller id; handles are scoped per user.
+        sink_type :
+            Drawer / API sink discriminator.
+        uri :
+            Destination URI captured at preflight time, if any.
+        params :
+            Non-secret sink parameters to replay on send.
+        now :
+            Optional epoch seconds for tests; defaults to ``time.time()``.
+
+        Returns
+        -------
+        str
+            URL-safe handle token valid for ``ttl_seconds``.
+        """
         token = secrets.token_urlsafe(24)
         ts = time.time() if now is None else now
         rec = HandleRecord(
@@ -56,6 +79,23 @@ class HandleStore:
         user_id: str,
         now: float | None = None,
     ) -> HandleRecord | None:
+        """
+        Return a handle record without consuming it.
+
+        Parameters
+        ----------
+        handle :
+            Opaque token from ``create``.
+        user_id :
+            Caller id; must match the record owner.
+        now :
+            Optional epoch seconds for expiry checks.
+
+        Returns
+        -------
+        HandleRecord or None
+            The record when valid; ``None`` when missing, expired, or user mismatch.
+        """
         ts = time.time() if now is None else now
         with self._lock:
             self._purge(ts)
@@ -70,6 +110,21 @@ class HandleStore:
             return rec
 
     def pop(self, handle: str, *, user_id: str) -> HandleRecord | None:
+        """
+        Remove and return a handle record after a successful send.
+
+        Parameters
+        ----------
+        handle :
+            Opaque token from ``create``.
+        user_id :
+            Caller id; must match the record owner.
+
+        Returns
+        -------
+        HandleRecord or None
+            The removed record, or ``None`` when missing or user mismatch.
+        """
         with self._lock:
             rec = self._items.get(handle)
             if rec is None or rec.user_id != user_id:
@@ -77,6 +132,7 @@ class HandleStore:
             return self._items.pop(handle)
 
     def clear(self) -> None:
+        """Drop all in-memory handles (tests and process reset)."""
         with self._lock:
             self._items.clear()
 

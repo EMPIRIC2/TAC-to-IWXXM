@@ -5,7 +5,6 @@ from __future__ import annotations
 import os
 
 import pytest
-
 from iwxxm_validate import rust_available, rust_module
 
 

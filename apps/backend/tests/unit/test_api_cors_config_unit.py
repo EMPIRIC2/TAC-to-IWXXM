@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import metar_shared.config_loader as config_loader
 import pytest
-
 from src import api as api_module
+
+import metar_shared.config_loader as config_loader
 
 
 @pytest.mark.parametrize("value", ["true", "1", "yes", "on", "TRUE", "Yes"])

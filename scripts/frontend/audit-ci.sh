@@ -4,6 +4,8 @@
 # if audit still flags transitive minimatch@3 lines.
 # undici: jsdom@28 pins undici 7.28.x; bumping to 7.29.0 breaks wrap-handler path — ignore
 # undici GHSAs until jsdom ships a compatible peer (dev/test-only surface).
+# stryker: @stryker-mutator/* → ajv/fast-uri + typed-rest-client/qs — mutation/dev-only;
+# ignore until upstream bumps (EV-097 push unblock 2026-09-02).
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT/apps/frontend"
@@ -32,6 +34,12 @@ IGNORE_GHSA=(
   "GHSA-m8rv-5g2x-5cg5"
   "GHSA-jr45-8vmc-qm54"
   "GHSA-v3r7-h72x-cjcm"
+  "GHSA-4mjr-xmp4-gh2g"
+  "GHSA-5jgf-p345-68v8"
+  "GHSA-f65p-4m7j-42xc"
+  "GHSA-fph4-wmhf-6fwf"
+  "GHSA-jqff-g426-hqxp"
+  "GHSA-x5fp-wj9c-mxmx"
 )
 GHSAS=()
 while IFS= read -r id; do

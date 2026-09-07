@@ -36,9 +36,12 @@ def test_fixtures_cover_single_bulletin_golden() -> None:
 def test_load_fixtures_non_empty() -> None:
     loaded = harness.load_fixtures()
     assert set(loaded) == set(harness.FIXTURES)
-    assert loaded["single_metar"].tac and "METAR" in loaded["single_metar"].tac
-    assert loaded["bulletin"].tac and loaded["bulletin"].tac.count("METAR") >= 2
-    assert loaded["golden_iwxxm"].xml and "iwxxm:METAR" in loaded["golden_iwxxm"].xml
+    assert loaded["single_metar"].tac
+    assert "METAR" in loaded["single_metar"].tac
+    assert loaded["bulletin"].tac
+    assert loaded["bulletin"].tac.count("METAR") >= 2
+    assert loaded["golden_iwxxm"].xml
+    assert "iwxxm:METAR" in loaded["golden_iwxxm"].xml
     for fid in harness.FIXTURES:
         assert loaded[fid].path.is_file()
         assert loaded[fid].path.is_relative_to(REPO)
@@ -58,7 +61,8 @@ def test_run_matrix_timings_shape() -> None:
     for layer in ("lint", "convert_ir", "xsd", "schematron"):
         cell = by_key[(layer, "single_metar")]
         assert cell.status == "ok"
-        assert cell.p50_s is not None and cell.p95_s is not None
+        assert cell.p50_s is not None
+        assert cell.p95_s is not None
         assert cell.p95_s >= cell.p50_s >= 0.0
 
     # HTTP encode paths always have XML (fixture or convert).
@@ -66,7 +70,8 @@ def test_run_matrix_timings_shape() -> None:
         for fid in harness.FIXTURES:
             cell = by_key[(layer, fid)]
             assert cell.status == "ok"
-            assert cell.p50_s is not None and cell.p95_s is not None
+            assert cell.p50_s is not None
+            assert cell.p95_s is not None
 
 
 def test_matrix_as_dict_keys() -> None:
@@ -102,4 +107,5 @@ def test_measure_layer_on_single_metar(layer: harness.LayerId) -> None:
     timing = harness.measure_layer(layer, fixture, iterations=3)
     assert timing.layer == layer
     assert timing.status == "ok"
-    assert timing.p50_s is not None and timing.p95_s is not None
+    assert timing.p50_s is not None
+    assert timing.p95_s is not None

@@ -7,7 +7,6 @@ from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 
 import pytest
-
 from src.schemas.icao_opmet import TranslationStatus
 from src.services import statistics as stats
 
@@ -146,7 +145,8 @@ async def test_log_translation_successful_insert_and_metric(monkeypatch):
 
     assert translation_id is not None
     assert len(fake_session.added) == 1
-    assert metric_calls and metric_calls[0]["status"] == "success"
+    assert metric_calls
+    assert metric_calls[0]["status"] == "success"
 
 
 @pytest.mark.asyncio

@@ -1,4 +1,4 @@
-"""TC-F23-002 — General SIGMET annex3 golden expansion (S025 / EV-019 T2.1 / F23 theme G3).
+"""TC-F23-002 - General SIGMET annex3 golden expansion (S025 / EV-019 T2.1 / F23 theme G3).
 
 Asserts annex3 golden pack covers WMO ``sigmet-A6-1a-TS`` / CNL seeds (+ STNR expand),
 root ``iwxxm:SIGMET``, and convert → XSD+Schematron + M-golden for those cases.
@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
@@ -121,7 +122,8 @@ def test_tc_f23_002_a6_1a_motion_intensity_encode() -> None:
     assert result.ok is True
     xml = result.xml
     assert 'intensityChange="WEAKEN"' in xml
-    assert "<iwxxm:directionOfMotion" in xml and ">90</iwxxm:directionOfMotion>" in xml
+    assert "<iwxxm:directionOfMotion" in xml
+    assert ">90</iwxxm:directionOfMotion>" in xml
     assert ">20</iwxxm:speedOfMotion>" in xml
     assert 'upperLimit uom="FL">390</aixm:upperLimit>' in xml
 

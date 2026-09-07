@@ -1,4 +1,4 @@
-"""Unit coverage for pipeline failure / soft-pass branches (EV-047 T2.5.4)."""
+"""Unit coverage for pipeline failure / soft-pass branches (EV-047 T2.5.4 / EV-1132)."""
 
 from __future__ import annotations
 
@@ -8,6 +8,8 @@ from typing import Any
 import pytest
 from metar_worker.pipeline import process_job
 from metar_worker.poller import IngestJob
+
+from workflows import stages as stages_mod
 
 pytestmark = pytest.mark.unit
 
@@ -30,9 +32,10 @@ def test_process_job_skip_lint_bypasses_tac_lint(
         calls.append("lint")
         raise AssertionError("lint should be skipped")
 
-    monkeypatch.setattr("metar_worker.pipeline.tac_lint", boom_lint)
+    monkeypatch.setattr(stages_mod, "tac_lint_fn", boom_lint)
     monkeypatch.setattr(
-        "metar_worker.pipeline.tac2iwxxm_convert",
+        stages_mod,
+        "tac2iwxxm_convert_fn",
         lambda *_a, **_k: SimpleNamespace(
             ok=True,
             xml="<iwxxm:METAR/>",
@@ -40,7 +43,8 @@ def test_process_job_skip_lint_bypasses_tac_lint(
         ),
     )
     monkeypatch.setattr(
-        "metar_worker.pipeline.iwxxm_validate",
+        stages_mod,
+        "iwxxm_validate_fn",
         lambda *_a, **_k: SimpleNamespace(ok=True, issues=[]),
     )
     result = process_job(_job(), skip_lint=True)
@@ -51,11 +55,13 @@ def test_process_job_skip_lint_bypasses_tac_lint(
 
 def test_process_job_convert_fail(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
-        "metar_worker.pipeline.tac_lint",
+        stages_mod,
+        "tac_lint_fn",
         lambda *_a, **_k: SimpleNamespace(ok=True, issues=[]),
     )
     monkeypatch.setattr(
-        "metar_worker.pipeline.tac2iwxxm_convert",
+        stages_mod,
+        "tac2iwxxm_convert_fn",
         lambda *_a, **_k: SimpleNamespace(
             ok=False,
             xml=None,
@@ -76,11 +82,13 @@ def test_process_job_convert_fail(monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_process_job_convert_ok_but_empty_xml(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
-        "metar_worker.pipeline.tac_lint",
+        stages_mod,
+        "tac_lint_fn",
         lambda *_a, **_k: SimpleNamespace(ok=True, issues=[]),
     )
     monkeypatch.setattr(
-        "metar_worker.pipeline.tac2iwxxm_convert",
+        stages_mod,
+        "tac2iwxxm_convert_fn",
         lambda *_a, **_k: SimpleNamespace(ok=True, xml="", issues=[]),
     )
     result = process_job(_job())
@@ -92,11 +100,13 @@ def test_process_job_iwxxm_validate_blocking_error(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(
-        "metar_worker.pipeline.tac_lint",
+        stages_mod,
+        "tac_lint_fn",
         lambda *_a, **_k: SimpleNamespace(ok=True, issues=[]),
     )
     monkeypatch.setattr(
-        "metar_worker.pipeline.tac2iwxxm_convert",
+        stages_mod,
+        "tac2iwxxm_convert_fn",
         lambda *_a, **_k: SimpleNamespace(
             ok=True,
             xml="<iwxxm:METAR/>",
@@ -104,7 +114,8 @@ def test_process_job_iwxxm_validate_blocking_error(
         ),
     )
     monkeypatch.setattr(
-        "metar_worker.pipeline.iwxxm_validate",
+        stages_mod,
+        "iwxxm_validate_fn",
         lambda *_a, **_k: SimpleNamespace(
             ok=False,
             issues=[
@@ -127,35 +138,41 @@ def test_process_job_schematron_skipped_soft_pass(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     monkeypatch.setattr(
-        "metar_worker.pipeline.tac_lint",
+        stages_mod,
+        "tac_lint_fn",
         lambda *_a, **_k: SimpleNamespace(ok=True, issues=[]),
     )
     monkeypatch.setattr(
-        "metar_worker.pipeline.tac2iwxxm_convert",
+        stages_mod,
+        "tac2iwxxm_convert_fn",
         lambda *_a, **_k: SimpleNamespace(
             ok=True,
             xml="<iwxxm:METAR/>",
             issues=[],
         ),
     )
-    monkeypatch.setattr(
-        "metar_worker.pipeline.iwxxm_validate",
-        lambda *_a, **_k: SimpleNamespace(
-            ok=False,
-            issues=[
-                SimpleNamespace(
-                    severity="error",
-                    code="SCHEMATRON_SKIPPED",
-                    message="sch skipped",
-                ),
-                SimpleNamespace(
-                    severity="warning",
-                    code="NOTE",
-                    message="info",
-                ),
-            ],
-        ),
-    )
+
+    def _validate(*_a: Any, **kwargs: Any) -> Any:
+        levels = kwargs.get("levels") or ()
+        if "schematron" in levels:
+            return SimpleNamespace(
+                ok=False,
+                issues=[
+                    SimpleNamespace(
+                        severity="error",
+                        code="SCHEMATRON_SKIPPED",
+                        message="sch skipped",
+                    ),
+                    SimpleNamespace(
+                        severity="warning",
+                        code="NOTE",
+                        message="info",
+                    ),
+                ],
+            )
+        return SimpleNamespace(ok=True, issues=[])
+
+    monkeypatch.setattr(stages_mod, "iwxxm_validate_fn", _validate)
     result = process_job(_job())
     assert result.ok is True
     assert result.stage_failed is None

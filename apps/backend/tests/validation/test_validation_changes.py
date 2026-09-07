@@ -16,7 +16,7 @@ def test_airport_name_capitalization():
     print("\n=== Test 1: Airport Name Capitalization ===")
     test_metar = "METAR VTUO 290000Z 22003KT 190V360 2000 BR FEW035 25/25 Q1011 BECMG FM0100 3000 BR="
 
-    xml, validation_result = convert_metar_tac_with_metadata(test_metar)
+    xml, _validation_result = convert_metar_tac_with_metadata(test_metar)
 
     # Check if airport name is uppercase
     if "BURI RAM AIRPORT" in xml:
@@ -24,11 +24,11 @@ def test_airport_name_capitalization():
         assert True
     elif "Buri Ram Airport" in xml:
         print("✗ FAIL: Airport name is still title case (Buri Ram Airport)")
-        assert False, "Airport name is still title case (Buri Ram Airport)"
+        raise AssertionError("Airport name is still title case (Buri Ram Airport)")
     else:
         print("⚠ WARNING: Airport name not found in XML")
         print(f"XML excerpt: {xml[:500]}")
-        assert False, "Airport name not found in XML"
+        raise AssertionError("Airport name not found in XML")
 
 
 def test_input_validation():
@@ -46,10 +46,10 @@ def test_input_validation():
         else:
             print("✗ FAIL: Valid METAR failed validation")
             print(f"  Issues: {result.summary}")
-            assert False, f"Valid METAR failed validation: {result.summary}"
+            raise AssertionError(f"Valid METAR failed validation: {result.summary}")
     except Exception as e:
         print(f"✗ FAIL: Validation raised exception: {e}")
-        assert False, f"Validation raised exception: {e}"
+        raise AssertionError(f"Validation raised exception: {e}") from e
 
     # Test invalid METAR (no ICAO)
     invalid_metar = "231751Z 18012KT 10SM FEW040 15/07 A3005"
@@ -76,7 +76,7 @@ def test_conversion_with_validation():
     all_passed = True
     for metar, icao, expected_name in test_cases:
         try:
-            xml, validation_result = convert_metar_tac_with_metadata(metar)
+            xml, _validation_result = convert_metar_tac_with_metadata(metar)
 
             # Check for ICAO location indicator code (primary validation)
             if f"<aixm:locationIndicatorICAO>{icao}</aixm:locationIndicatorICAO>" in xml:

@@ -1,4 +1,4 @@
-"""M4 layout checks — packages/auth restored (F31 / ADR-033 / EV-031)."""
+"""M4 layout checks - packages/auth restored (F31 / ADR-033 / EV-031)."""
 
 from __future__ import annotations
 

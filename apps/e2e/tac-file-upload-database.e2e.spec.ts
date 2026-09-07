@@ -3,7 +3,11 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { loginAndOpenConverter } from './playwright-e2e-helpers';
 
-const DEFAULT_TAC_RELATIVE_PATH = 'data/iwxxm-translation/Amd79-80-2023/metar';
+/** Legacy layout (pre-monorepo) plus vendor pin path after M2. */
+const DEFAULT_TAC_RELATIVE_CANDIDATES = [
+  'vendor/schemas/iwxxm-translation/Amd79-80-2023/metar',
+  'data/iwxxm-translation/Amd79-80-2023/metar',
+] as const;
 const REQUIRE_TAC_FIXTURES =
   process.env.PLAYWRIGHT_REQUIRE_TAC_FIXTURES === '1' || process.env.CI === 'true';
 
@@ -18,26 +22,28 @@ function resolveTacFilesDir(): string | null {
     return configured;
   }
 
-  const candidateFromRepoRoot = path.resolve(process.cwd(), DEFAULT_TAC_RELATIVE_PATH);
-  if (fs.existsSync(candidateFromRepoRoot)) {
-    return candidateFromRepoRoot;
-  }
-
-  const candidateFromFrontendCwd = path.resolve(
+  // playwright.config / make test-e2e-* run with cwd = apps/e2e
+  const searchRoots = [
     process.cwd(),
-    '..',
-    DEFAULT_TAC_RELATIVE_PATH,
-  );
-  if (fs.existsSync(candidateFromFrontendCwd)) {
-    return candidateFromFrontendCwd;
+    path.resolve(process.cwd(), '..'),
+    path.resolve(process.cwd(), '../..'),
+  ];
+  const checked: string[] = [];
+  for (const root of searchRoots) {
+    for (const relative of DEFAULT_TAC_RELATIVE_CANDIDATES) {
+      const candidate = path.resolve(root, relative);
+      checked.push(candidate);
+      if (fs.existsSync(candidate)) {
+        return candidate;
+      }
+    }
   }
 
   if (REQUIRE_TAC_FIXTURES) {
     throw new Error(
       [
         'No TAC fixtures directory found for Playwright upload tests.',
-        `Checked: ${candidateFromRepoRoot}`,
-        `Checked: ${candidateFromFrontendCwd}`,
+        ...checked.map((p) => `Checked: ${p}`),
         'Set PLAYWRIGHT_TAC_FIXTURES_DIR or disable strict fixture requirement with PLAYWRIGHT_REQUIRE_TAC_FIXTURES=0 for local runs.',
       ].join(' '),
     );
@@ -58,24 +64,23 @@ function getTacFiles(): TacFixture[] {
     return [];
   }
 
-  return fs
-    .readdirSync(tacFilesDir)
-    .filter((fileName) => fileName.endsWith('.tac'))
-    .slice(0, 3)
-    .map((fileName) => ({
-      content: fs.readFileSync(`${tacFilesDir}/${fileName}`, 'utf-8').trim(),
-      name: fileName,
-      path: `${tacFilesDir}/${fileName}`,
-    }));
+  return (
+    fs
+      .readdirSync(tacFilesDir)
+      .filter((fileName) => fileName.endsWith('.tac'))
+      .map((fileName) => ({
+        content: fs.readFileSync(`${tacFilesDir}/${fileName}`, 'utf-8').trim(),
+        name: fileName,
+        path: `${tacFilesDir}/${fileName}`,
+      }))
+      // Prefer METAR — SPECI fixtures in this tree often encode as Failed-TAC.
+      .filter((file) => /^METAR\b/i.test(file.content))
+      .slice(0, 3)
+  );
 }
 
 test.describe('TAC File Upload to Database', () => {
   test('upload button stays disabled before conversion', async ({ page }) => {
-    // EV-042 / UJ-053: Upload to Database hidden until #898 restore.
-    test.skip(
-      true,
-      'EV-042: Upload to Database hidden (destinationsEnabled=false); restore #898',
-    );
     await loginAndOpenConverter(page);
 
     await expect(
@@ -84,19 +89,34 @@ test.describe('TAC File Upload to Database', () => {
   });
 
   test('single TAC file can be converted and sent with one click', async ({ page }) => {
-    // EV-042 / UJ-053: Convert&Send destination path hidden until #898 restore.
-    test.skip(
-      true,
-      'EV-042: Convert&Send hidden (OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false); restore #898',
-    );
-    const tacFiles = getTacFiles();
-    test.skip(
-      tacFiles.length === 0,
-      'No TAC fixture files available for upload E2E coverage.',
-    );
-
-    const testFile = tacFiles[0];
+    // Convert&Send skips upload when conversion returns issues/errors. Mock a clean
+    // convert so this exercises the upload chain (real convert often returns lint issues).
+    const cleanMetar = 'METAR KJFK 121251Z 24008KT 10SM FEW250 18/M03 A3016';
     await loginAndOpenConverter(page);
+
+    await page.route('**/api/v1/convert', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          results: [
+            {
+              name: 'kjfk-clean.tac',
+              content:
+                '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2">ok</iwxxm:METAR>',
+              tac_input: cleanMetar,
+              source: 'file',
+              size_bytes: 64,
+            },
+          ],
+          errors: [],
+          issues: [],
+          total_processed: 1,
+          successful: 1,
+          failed: 0,
+        }),
+      });
+    });
 
     await page.route('**/functions/v1/**/database/upload', async (route) => {
       await route.fulfill({
@@ -109,30 +129,35 @@ test.describe('TAC File Upload to Database', () => {
       });
     });
 
-    await page.locator('input[type="file"]').setInputFiles(testFile.path);
+    // Prefer aria-label — mass-ingest folder/zip inputs also match input[type=file].
+    await page.getByLabel('Select TAC files to upload').setInputFiles({
+      name: 'kjfk-clean.tac',
+      mimeType: 'text/plain',
+      buffer: Buffer.from(`${cleanMetar}\n`, 'utf-8'),
+    });
     await page.getByTestId('convert-and-send-button').click();
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      { timeout: 10000 },
-    );
-    await expect(page.locator('pre').first()).toContainText(/iwxxm|metar:/i);
+    const resultsRegion = page.getByRole('region', { name: /conversion results/i });
+    await expect(resultsRegion).toBeVisible({ timeout: 10000 });
+    // Source TAC is the first <pre>; IWXXM XML is a later block in the same result.
+    await expect(
+      resultsRegion.locator('pre').filter({ hasText: /iwxxm/i }).first(),
+    ).toBeVisible({
+      timeout: 10000,
+    });
     await expect(page.getByText(/Files converted and sent successfully/i)).toBeVisible({
       timeout: 10000,
     });
   });
 
   test('single TAC file can be converted and uploaded', async ({ page }) => {
-    test.skip(
-      true,
-      'EV-042: Upload to Database dialog hidden (destinationsEnabled=false); restore #898',
-    );
     const tacFiles = getTacFiles();
     test.skip(
       tacFiles.length === 0,
       'No TAC fixture files available for upload E2E coverage.',
     );
 
-    const testFile = tacFiles[0];
+    const testFile = tacFiles[0]!;
     await loginAndOpenConverter(page);
 
     await page.route('**/functions/v1/**/database/upload', async (route) => {
@@ -150,13 +175,16 @@ test.describe('TAC File Upload to Database', () => {
       });
     });
 
-    await page.locator('input[type="file"]').setInputFiles(testFile.path);
+    await page.getByLabel('Select TAC files to upload').setInputFiles(testFile.path);
     await page.getByTestId('convert-button').click();
 
-    await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
-      { timeout: 10000 },
-    );
-    await expect(page.locator('pre').first()).toContainText(/iwxxm|metar:/i);
+    const resultsRegion = page.getByRole('region', { name: /conversion results/i });
+    await expect(resultsRegion).toBeVisible({ timeout: 10000 });
+    await expect(
+      resultsRegion.locator('pre').filter({ hasText: /iwxxm/i }).first(),
+    ).toBeVisible({
+      timeout: 10000,
+    });
 
     await page
       .getByRole('button', { name: /Upload 1 converted files to database/i })
@@ -170,10 +198,6 @@ test.describe('TAC File Upload to Database', () => {
   });
 
   test('multiple TAC files can be queued and converted', async ({ page }) => {
-    test.skip(
-      true,
-      'EV-042: Upload to Database button hidden (destinationsEnabled=false); restore #898',
-    );
     const tacFiles = getTacFiles();
     test.skip(
       tacFiles.length < 2,
@@ -183,7 +207,7 @@ test.describe('TAC File Upload to Database', () => {
     await loginAndOpenConverter(page);
 
     await page
-      .locator('input[type="file"]')
+      .getByLabel('Select TAC files to upload')
       .setInputFiles(tacFiles.slice(0, 2).map((file) => file.path));
     await page.getByTestId('convert-button').click();
 

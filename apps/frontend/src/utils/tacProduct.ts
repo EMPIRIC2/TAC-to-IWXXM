@@ -36,25 +36,17 @@ export function isConvertProductSelection(value: string): value is TacProductSel
   return value === 'auto' || (CONVERT_PRODUCTS as readonly string[]).includes(value);
 }
 
-export type IwxxmProfile = 'annex3' | 'iwxxm_us' | 'ca_eccc';
+/** @deprecated Prefer importing from `@/utils/semanticProfile` (EV-093). */
+export type { IwxxmProfile } from '@/utils/semanticProfile';
 
-const IWXXM_PROFILES: readonly IwxxmProfile[] = ['annex3', 'iwxxm_us', 'ca_eccc'];
-
-/**
- * Narrow stored/UI profile strings to a supported IWXXM emit profile.
- *
- * @param value - Candidate profile string
- * @returns Supported profile id
- */
-export function coerceIwxxmProfile(value: unknown): IwxxmProfile {
-  if (
-    typeof value === 'string' &&
-    (IWXXM_PROFILES as readonly string[]).includes(value)
-  ) {
-    return value as IwxxmProfile;
-  }
-  return 'annex3';
-}
+export {
+  coerceIwxxmProfile,
+  DEFAULT_SEMANTIC_PROFILE,
+  hydrateSemanticProfile,
+  isCaEcccProfile,
+  SEMANTIC_PROFILE_OPTIONS,
+  wireSemanticProfile,
+} from '@/utils/semanticProfile';
 
 const PRODUCT_RE =
   /\b(AIRMET|SIGMET|SPECI|METAR|TAF|VAA|TCA|SWXA|VONA|SWX\s+ADVISORY|VOLCANIC\s+ASH|TROPICAL\s+CYCLONE)\b/i;
@@ -74,7 +66,7 @@ export function detectTacProduct(
   if (!match) {
     return defaultProduct;
   }
-  const token = match[1].toUpperCase().replace(/\s+/g, ' ');
+  const token = match[1]!.toUpperCase().replace(/\s+/g, ' ');
   if (token.startsWith('VOLCANIC')) {
     return 'VAA';
   }

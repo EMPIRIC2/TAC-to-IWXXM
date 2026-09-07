@@ -5,7 +5,6 @@ Tests schema file path resolution and version-specific schema access.
 """
 
 import pytest
-
 from src.utilities.schema_registry import clear_registry_cache, get_schema_registry
 
 
@@ -147,7 +146,7 @@ class TestRegistryErrorHandling:
         """Test error on invalid version."""
         registry = get_schema_registry()
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r".*"):
             registry.get_version_info("9999-9")
 
     def test_missing_submodule_error(self):
@@ -156,7 +155,5 @@ class TestRegistryErrorHandling:
 
         # If submodules are properly initialized, this should work
         # If not, should raise FileNotFoundError
-        try:
+        with pytest.raises(FileNotFoundError, match=r"(?i)(submodule|not found)"):
             registry.get_xsd_path("2025-2")
-        except FileNotFoundError as e:
-            assert "submodule" in str(e).lower() or "not found" in str(e).lower()

@@ -6,7 +6,6 @@ from contextlib import asynccontextmanager
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
-
 from src.schemas.evaluation import ComparisonDetail, ComparisonStatus, EvaluationResultDetail, JobSummaryStats
 from src.services import evaluation_store
 

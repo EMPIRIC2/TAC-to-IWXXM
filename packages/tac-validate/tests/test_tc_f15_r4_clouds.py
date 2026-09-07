@@ -1,4 +1,4 @@
-"""Research R4 / TC-F15-003 — clouds / CAVOK / VV / CB/TCU (T3.7/T3.8).
+"""Research R4 / TC-F15-003 - clouds / CAVOK / VV / CB/TCU (T3.7/T3.8).
 
 Accept cases cover CAVOK, FEW/height, VV, NSC. Malformed cloud groups emit
 ``INVALID_CLOUD_TOKEN``. CB/TCU suffixes emit ``CLOUD_CB_OR_TCU`` (info).
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

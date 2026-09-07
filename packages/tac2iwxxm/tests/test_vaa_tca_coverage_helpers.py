@@ -1,7 +1,7 @@
 """Coverage helpers for ``vaa_tca`` parse branches (T6.2 / cov-fail-under=95).
 
 Hits S/W points, empty polygons, NO VA EXP, FL/SFC bands, TCA MOV uom
-variants, and STNR — paths not exercised by the WMO A7-2 / A2-2 goldens alone.
+variants, and STNR - paths not exercised by the WMO A7-2 / A2-2 goldens alone.
 """
 
 from __future__ import annotations
@@ -144,4 +144,6 @@ def test_convert_content_bounds_and_remark_span_miss() -> None:
     assert _remark_span("METAR KJFK NOSIG", "malformed AO token") == (None, None)
     # Needle + match → span
     start, end = _remark_span("METAR KJFK RMK AO9", "malformed AO token")
-    assert start is not None and end is not None and end > start
+    assert start is not None
+    assert end is not None
+    assert end > start

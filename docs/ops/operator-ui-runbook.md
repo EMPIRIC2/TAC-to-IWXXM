@@ -23,19 +23,22 @@ standards, schemas, and packages** underwrite that behavior.
 **Journeys:** UJ-001/005 (convert), UJ-013/015–018 (workbench), UJ-020/021 (decode/preview),
 UJ-027–030 (dissemination when used) — [Corpus: journeys].
 
-## EV-042 — Operator destinations deferred (#897 / #898)
+## EV-091 — Operator destinations restored (#898 / #1089)
 
-**Status (S050 / EV-042):** Operator Dissemination drawer sinks, Convert&Send, and
-**Upload to Database** are **hidden** (`destinationsEnabled=false` in
-`operatorDisseminationUi.ts`). Operators use Convert, Validate, mass Folder/Zip ingest
-(F33, auth required), and the work queue (UJ-052).
+**Status (EV-091):** Operator Dissemination drawer sinks, Convert&Send, and
+**Upload to Database** are **visible** (`destinationsEnabled=true` in
+`operatorDisseminationUi.ts`). DB path uses **URI-BYOC** (do not wait on #896). Drawer
+includes **Exchange profile** overlay (#1089; default Global AFS). Preflight must succeed
+before Send. Memory-only BYOC + SSRF allowlist unchanged (ADR-021/029/030).
 
-- Backend `/api/v1/dissemination/*` remains for harness / CI.
-- Restore all destinations (DB + WIS2/EDIS/AMHS/SWIM/AFS), including Upload to Database /
-  Convert&Send, via [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
-- Live UJ-027–030 Playwright stays skipped until restore; UJ-051..053 cover the interim UI.
+- Backend `/api/v1/dissemination/*` serves operator UI and harness / CI.
+- Live UJ-027–030 Playwright smokes are active (stubbed BYOC); UJ-051..053 cover mass + restore.
 
-[Corpus: product §F16–F19/F33] [Corpus: journeys §UJ-051..053]
+[Corpus: product §F16–F19/F33] [Corpus: journeys §UJ-027–030, UJ-051..053]
+
+### Historical — EV-042 destinations deferred (#897)
+
+S050 temporarily hid destinations; restored by EV-091 above.
 
 ---
 

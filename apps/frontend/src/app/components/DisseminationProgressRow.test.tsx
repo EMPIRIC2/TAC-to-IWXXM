@@ -95,4 +95,16 @@ describe('DisseminationProgressRow', () => {
       'Failed — timeout',
     );
   });
+
+  it('falls back to motion enabled when force and system preference are unset', () => {
+    mockUseReducedMotion.mockReturnValueOnce(null as unknown as boolean);
+
+    render(
+      <DisseminationProgressRow candidateId="fallback" name="f.xml" status="pending" />,
+    );
+
+    expect(
+      screen.getByTestId('dissemination-progress-graphic-fallback'),
+    ).toBeInTheDocument();
+  });
 });

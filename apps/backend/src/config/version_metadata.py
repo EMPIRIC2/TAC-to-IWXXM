@@ -6,7 +6,6 @@ translation metadata requirements, and formatting rules for IWXXM versions 2016-
 """
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
 
 
 @dataclass
@@ -20,15 +19,15 @@ class VersionMetadata:
     has_measures: bool  # Special measures schema
     translation_metadata_optional: bool  # Can be omitted
     coordinate_precision_decimals: int  # Format precision for gml:pos
-    elevation_rounding: Optional[int]  # None = no rounding, 0/1 = round to that precision
-    element_order_priority: List[str] = field(default_factory=list)  # Element ordering for aerodrome
+    elevation_rounding: int | None  # None = no rounding, 0/1 = round to that precision
+    element_order_priority: list[str] = field(default_factory=list)  # Element ordering for aerodrome
 
     def __repr__(self) -> str:
         return f"VersionMetadata(version={self.version}, ns={self.namespace.split('/')[-1]})"
 
 
 # Version metadata registry - single source of truth for all versions
-VERSION_METADATA: Dict[str, VersionMetadata] = {
+VERSION_METADATA: dict[str, VersionMetadata] = {
     "2016": VersionMetadata(
         version="2016",
         namespace="http://icao.int/iwxxm/2.1",
@@ -87,7 +86,7 @@ VERSION_METADATA: Dict[str, VersionMetadata] = {
 }
 
 
-def get_version_metadata(version: str) -> Optional[VersionMetadata]:
+def get_version_metadata(version: str) -> VersionMetadata | None:
     """Get metadata for a specific IWXXM version.
 
     Args:
@@ -134,6 +133,6 @@ def normalize_version(version_str: str) -> str:
     return normalized
 
 
-def get_supported_versions() -> List[str]:
+def get_supported_versions() -> list[str]:
     """Get list of supported IWXXM versions."""
     return list(VERSION_METADATA.keys())

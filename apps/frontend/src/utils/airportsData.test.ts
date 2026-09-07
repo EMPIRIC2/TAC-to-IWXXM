@@ -429,7 +429,7 @@ describe('Airport Data & Utilities', () => {
       const results = airports.toJSON();
       expect(Array.isArray(results)).toBe(true);
       if (results.length > 0) {
-        const airport: Airport = results[0];
+        const airport: Airport = results[0]!;
         expect(airport.icao).toBeDefined();
       }
     });
@@ -438,7 +438,7 @@ describe('Airport Data & Utilities', () => {
       const results = airports.searchByIcao('K');
       expect(Array.isArray(results)).toBe(true);
       if (results.length > 0) {
-        const airport: Airport = results[0];
+        const airport: Airport = results[0]!;
         expect(airport.icao).toBeDefined();
       }
     });

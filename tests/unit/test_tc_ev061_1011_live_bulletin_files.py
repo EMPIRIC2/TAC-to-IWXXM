@@ -1,4 +1,4 @@
-"""TC-EV061-1011 / TC-LIVE-F6-030 — live bulletin harness posts multipart ``files``.
+"""TC-EV061-1011 / TC-LIVE-F6-030 - live bulletin harness posts multipart ``files``.
 
 [Corpus: api] [Corpus: tests §TC-LIVE-F6-030] #1011
 """
@@ -41,9 +41,11 @@ def _convert_bulletin_multipart_field_names(source: str) -> list[str]:
         for kw in node.keywords:
             if kw.arg != "files" or not isinstance(kw.value, ast.Dict):
                 continue
-            for key in kw.value.keys:
-                if isinstance(key, ast.Constant) and isinstance(key.value, str):
-                    names.append(key.value)
+            names.extend(
+                key.value
+                for key in kw.value.keys
+                if isinstance(key, ast.Constant) and isinstance(key.value, str)
+            )
     return names
 
 

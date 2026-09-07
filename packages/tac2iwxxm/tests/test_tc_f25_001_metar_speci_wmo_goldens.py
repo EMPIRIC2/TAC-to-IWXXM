@@ -1,4 +1,4 @@
-"""TC-F25-001 — WMO METAR/SPECI annex3 goldens (S026 / EV-020 T3.1 / F25 themes W1–W2).
+"""TC-F25-001 - WMO METAR/SPECI annex3 goldens (S026 / EV-020 T3.1 / F25 themes W1-W2).
 
 Asserts vendor ``metar-A3-1`` / ``speci-A3-2`` are in the annex3 pack and
 ``canonicalize_xml(convert(...))`` equals vendor golden under default convert
@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
@@ -110,7 +111,7 @@ def test_tc_f25_002_wmo_m_xsd_sch(
     _seed: str,
     _root: str,
 ) -> None:
-    """TC-F25-002 — XSD+Schematron on F25 METAR/SPECI WMO goldens (T3.3)."""
+    """TC-F25-002 - XSD+Schematron on F25 METAR/SPECI WMO goldens (T3.3)."""
     from iwxxm_validate import validate
 
     from tac2iwxxm import convert

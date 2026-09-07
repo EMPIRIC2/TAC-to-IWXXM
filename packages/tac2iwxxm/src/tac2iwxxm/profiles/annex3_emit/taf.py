@@ -1,4 +1,4 @@
-"""Annex-3 profile XML writers — taf."""
+"""Annex-3 profile XML writers - taf."""
 
 # pyright: reportWildcardImportFromLibrary=false
 
@@ -60,8 +60,8 @@ def _taf_aerodrome_block(station: str, *, include_arp: bool) -> str:
 """
 
 
-def _fmt_taf_speed(value: Any) -> str:
-    fval = float(value)
+def _fmt_taf_speed(value: object) -> str:
+    fval = float(str(value))
     if fval == int(fval):
         # Vendor A5-1: base uses 5.0; TEMPO/FM use bare integers for whole m/s.
         return str(int(fval))
@@ -81,10 +81,7 @@ def _taf_wind_block(fcst: dict[str, Any]) -> str:
     if fcst.get("wind_speed_mps") is not None:
         # WMO A5-1 baseForecast uses one decimal on 5.0; change groups use bare ints.
         spd_raw = float(fcst["wind_speed_mps"])
-        if fcst.get("_base_wind_decimal"):
-            spd = f"{spd_raw:.1f}"
-        else:
-            spd = _fmt_taf_speed(spd_raw)
+        spd = f"{spd_raw:.1f}" if fcst.get("_base_wind_decimal") else _fmt_taf_speed(spd_raw)
         uom = "m/s"
         gust = fcst.get("wind_gust_mps")
     else:
@@ -107,9 +104,7 @@ def _taf_cloud_block(fcst: dict[str, Any], *, gml_id: str) -> str:
     clouds_raw = fcst.get("clouds")
     layers: list[dict[str, Any]] = []
     if isinstance(clouds_raw, list) and clouds_raw:
-        for item in cast(list[Any], clouds_raw):
-            if isinstance(item, dict):
-                layers.append(cast(dict[str, Any], item))
+        layers.extend(cast(dict[str, Any], item) for item in cast(list[Any], clouds_raw) if isinstance(item, dict))
     elif fcst.get("cloud_amount") and fcst.get("cloud_base_ft") is not None:
         layers = [{"amount": fcst["cloud_amount"], "base_ft": fcst["cloud_base_ft"]}]
     if not layers:
@@ -155,9 +150,7 @@ def _taf_change_forecasts(ir: dict[str, Any], station: str) -> str:
         return ""
     parts: list[str] = []
     typed_changes: list[dict[str, Any]] = []
-    for raw in cast(list[Any], changes_raw):
-        if isinstance(raw, dict):
-            typed_changes.append(cast(dict[str, Any], raw))
+    typed_changes.extend(cast(dict[str, Any], raw) for raw in cast(list[Any], changes_raw) if isinstance(raw, dict))
     for idx, change in enumerate(typed_changes, start=1):
         indicator = str(change.get("change_indicator") or "BECOMING")
         cavok = "true" if change.get("cavok") else "false"
@@ -227,7 +220,7 @@ def emit_taf_annex3(
     else:
         status = "NORMAL"
 
-    # CNL — Guidance: isCancelReport + cancelledReportValidPeriod; omit valid/base/change.
+    # CNL - Guidance: isCancelReport + cancelledReportValidPeriod; omit valid/base/change.
     if ir.get("cancel"):
         begin, end = _taf_period(ir)
         aerodrome = _taf_aerodrome_block(station, include_arp=False)
@@ -257,7 +250,7 @@ def emit_taf_annex3(
 
     aerodrome = _taf_aerodrome_block(station, include_arp=station == "YUDO")
 
-    # NIL without validity — empty baseForecast; omit validPeriod when unknown.
+    # NIL without validity - empty baseForecast; omit validPeriod when unknown.
     if ir.get("nil") and "valid_from_day" not in ir:
         return f"""<?xml version="1.0" encoding="UTF-8"?>
 <iwxxm:TAF xmlns:iwxxm="{ns}"

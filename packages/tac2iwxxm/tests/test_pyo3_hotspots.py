@@ -9,9 +9,9 @@ from __future__ import annotations
 import os
 
 import pytest
+from tac2iwxxm.native import scan_metar_tokens
 
 from tac2iwxxm import rust_module
-from tac2iwxxm.native import scan_metar_tokens
 
 METAR = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
 

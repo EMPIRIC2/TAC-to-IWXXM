@@ -3,7 +3,6 @@ Helper utility for extracting ICAO airport codes from TAC messages.
 """
 
 import re
-from typing import Optional
 
 ICAO_PATTERN = re.compile(
     r"(?:METAR|SPECI)(?:\s+COR)?\s+([A-Z0-9]{4})(?=\s|$)",
@@ -11,7 +10,7 @@ ICAO_PATTERN = re.compile(
 )
 
 
-def extract_airport_code(tac_message: str) -> Optional[str]:
+def extract_airport_code(tac_message: str) -> str | None:
     """
     Extract ICAO airport code from TAC METAR/SPECI message.
 

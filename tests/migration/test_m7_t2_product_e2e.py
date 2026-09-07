@@ -1,4 +1,4 @@
-"""M7 T2 product E2E gate — test-plan.md TC-001, TC-003."""
+"""M7 T2 product E2E gate - test-plan.md TC-001, TC-003."""
 
 from __future__ import annotations
 

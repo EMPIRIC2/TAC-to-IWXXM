@@ -6,7 +6,7 @@ without changing encode/validate engines. [Corpus: product §F15] [Corpus: api]
 
 from __future__ import annotations
 
-from typing import Iterable
+from collections.abc import Iterable
 
 ISSUE_TYPES = frozenset({"presence", "structure", "content", "consistency", "iwxxm_schema", "other"})
 SOURCE_ACCESS = frozenset({"public", "paywall", "login", "semantic_only"})
@@ -120,7 +120,7 @@ def source_locator_for(note: str | None) -> str | None:
     # Companion blurbs without a locus still count as unavailable for section cite.
     lower = text.lower()
     if lower.startswith("eur doc") and "annex 3 paywall companion" in lower:
-        # Still a document cite — keep as locator text.
+        # Still a document cite - keep as locator text.
         return text
     return text
 

@@ -74,17 +74,14 @@ async function queueTwoTacFiles(page: Page): Promise<void> {
   });
 }
 
-test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + no destinations', () => {
-  test('UJ-053 / TC-EV042-001: Convert&Send, Disseminate, Upload to Database absent; convert remains', async ({
+test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + restored destinations', () => {
+  test('UJ-053 / TC-EV091-001: Convert&Send, Disseminate, Upload to Database visible; convert remains', async ({
     page,
   }) => {
     await openPublicConverter(page);
-    await expect(page.getByTestId('convert-and-send-button')).toHaveCount(0);
-    await expect(page.getByTestId('open-dissemination-drawer')).toHaveCount(0);
-    await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
-    await expect(
-      page.getByRole('button', { name: /Upload .* converted files to database/i }),
-    ).toHaveCount(0);
+    await expect(page.getByTestId('convert-and-send-button')).toBeVisible();
+    await expect(page.getByTestId('open-dissemination-drawer')).toBeVisible();
+    await expect(page.getByTestId('upload-to-database-button')).toBeVisible();
     await expect(page.getByTestId('convert-button')).toBeVisible();
     await expect(page.getByTestId('mass-ingest-folder-button')).toBeVisible();
     await expect(page.getByTestId('mass-ingest-zip-button')).toBeVisible();
@@ -95,7 +92,7 @@ test.describe('T4.1 — UJ-051..053 EV-042 mass ingest + queue + no destinations
         timeout: 45_000,
       },
     );
-    await expect(page.getByTestId('upload-to-database-button')).toHaveCount(0);
+    await expect(page.getByTestId('upload-to-database-button')).toBeEnabled();
   });
 
   test('UJ-051 / TC-F33-004: guest Folder mass ingest prompts sign-in', async ({

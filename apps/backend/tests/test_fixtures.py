@@ -14,13 +14,11 @@ Fixtures:
 """
 
 import os
-from typing import Dict, List
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api import app
 from src.utilities.security import verify_supabase_token
 
@@ -232,7 +230,7 @@ async def test_database_engine():
 
 
 @pytest.fixture
-def sample_metars() -> Dict[str, str]:
+def sample_metars() -> dict[str, str]:
     """Sample METAR messages for testing.
 
     Returns a dictionary mapping ICAO airport codes to METAR strings.
@@ -278,7 +276,7 @@ def sample_iwxxm() -> str:
 
 
 @pytest.fixture
-def sample_station_ids() -> List[str]:
+def sample_station_ids() -> list[str]:
     """Sample ICAO station IDs for testing.
 
     Returns list of major international airports across all ICAO regions.

@@ -1,4 +1,4 @@
-"""TC-EV030-006 / T3.2 — structured VAA/TCA field + forecast-hour decode (#820).
+"""TC-EV030-006 / T3.2 - structured VAA/TCA field + forecast-hour decode (#820).
 
 Major labeled fields and ``+N HR`` forecasts become segments; residual count
 must drop below the T3.1 baseline.
@@ -12,7 +12,7 @@ from tac2iwxxm.decode import decode_tac
 
 ANNEX3 = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
 
-# T3.1 baseline residual counts — T3.2 must shrink strictly below these.
+# T3.1 baseline residual counts - T3.2 must shrink strictly below these.
 _BASELINE_VAA = 13
 _BASELINE_TCA = 14
 

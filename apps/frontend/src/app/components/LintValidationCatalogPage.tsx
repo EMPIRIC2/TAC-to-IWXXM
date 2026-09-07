@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * Top-level Validation Issues Catalog page — code, type, level, description, source links.
  *
@@ -28,7 +29,7 @@ import {
 } from '@/utils/lintValidationCatalogCopy';
 
 type FamilyFilter = 'all' | 'lint' | 'iwxxm';
-type SortKey = 'code' | 'level' | 'family' | 'issue_type' | 'source_access';
+export type SortKey = 'code' | 'level' | 'family' | 'issue_type' | 'source_access';
 
 const LEVEL_OPTIONS = ['all', 'critical', 'error', 'warning', 'info'] as const;
 const TYPE_OPTIONS = [
@@ -76,7 +77,7 @@ function isClickableSource(entry: LintIssueCatalogEntry): boolean {
 /**
  * Read a sortable string field from a catalog row (non-level sorts).
  */
-function sortFieldValue(entry: LintIssueCatalogEntry, sortBy: SortKey): string {
+export function sortFieldValue(entry: LintIssueCatalogEntry, sortBy: SortKey): string {
   switch (sortBy) {
     case 'family':
       return entry.family || '';
@@ -94,7 +95,7 @@ function sortFieldValue(entry: LintIssueCatalogEntry, sortBy: SortKey): string {
 /**
  * Compare catalog rows for client-side sort.
  */
-function compareEntries(
+export function compareEntries(
   a: LintIssueCatalogEntry,
   b: LintIssueCatalogEntry,
   sortBy: SortKey,
@@ -120,6 +121,17 @@ function compareEntries(
     return cmp;
   }
   return (a.code || '').localeCompare(b.code || '', undefined, { sensitivity: 'base' });
+}
+
+/** Whether a catalog row matches the selected level filter. */
+export function entryMatchesLevelFilter(
+  entry: LintIssueCatalogEntry,
+  levelKey: string | null,
+): boolean {
+  if (levelKey && (entry.severity || '').toLowerCase() !== levelKey) {
+    return false;
+  }
+  return true;
 }
 
 /**
@@ -163,12 +175,9 @@ export function LintValidationCatalogPage() {
 
   const sorted = useMemo(() => {
     const levelKey = levelFilter === 'all' ? null : levelFilter;
-    const filtered = entries.filter((entry) => {
-      if (levelKey && (entry.severity || '').toLowerCase() !== levelKey) {
-        return false;
-      }
-      return true;
-    });
+    const filtered = entries.filter((entry) =>
+      entryMatchesLevelFilter(entry, levelKey),
+    );
     return [...filtered].sort((a, b) => compareEntries(a, b, sortBy));
   }, [entries, levelFilter, sortBy]);
 

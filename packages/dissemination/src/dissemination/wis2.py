@@ -1,7 +1,7 @@
-"""WIS2 sink adapter — MQTT notification + HTTP dataset (F17 / E14-09).
+"""WIS2 sink adapter - MQTT notification + HTTP dataset (F17 / E14-09).
 
 Transports are injected (Protocols) so unit tests mock MQTT/HTTP without a live
-broker. Compose wis2box wiring lands in T3.3–T3.4; live BYOC remains cycle-close.
+broker. Compose wis2box wiring lands in T3.3-T3.4; live BYOC remains cycle-close.
 """
 
 from __future__ import annotations
@@ -88,7 +88,7 @@ def build_wis2_notification(
     content_type: str = "application/xml",
 ) -> dict[str, object]:
     """
-    Build a minimal WIS Notification Message–shaped JSON dict.
+    Build a minimal WIS Notification Message-shaped JSON dict.
 
     Parameters
     ----------

@@ -1,11 +1,11 @@
-"""TC-F27-006 / F27 theme T2 — TCA ↔ TC SIGMET adjacency (S027 / EV-021 T3.3).
+"""TC-F27-006 / F27 theme T2 - TCA ↔ TC SIGMET adjacency (S027 / EV-021 T3.3).
 
 HARD guards from vaa-tca-theme-fixture-map.md:
 - ``product=tca`` never emits ``iwxxm:TropicalCycloneSIGMET`` (advisory root only)
-- TC SIGMET quality (#738) is OOS this cycle — use general SIGMET keepers for
+- TC SIGMET quality (#738) is OOS this cycle - use general SIGMET keepers for
   cross-product rejection (never silent-swap TCA ↔ SIGMET)
 
-Always write “F27 theme T2” (not F20 TAF T2) — D-S027-EV021-s02m1-1.
+Always write "F27 theme T2" (not F20 TAF T2) - D-S027-EV021-s02m1-1.
 T3.4 hardens emit/product guards if any assertion fails.
 """
 
@@ -24,7 +24,7 @@ TAC_VALIDATE = Path(__file__).resolve().parents[2] / "tac-validate" / "tests" / 
 _PROFILE = "annex3"
 _VERSION = "2025-2"
 
-# F27 theme T1 accept pack + baseline — each must keep TropicalCycloneAdvisory under product=tca.
+# F27 theme T1 accept pack + baseline - each must keep TropicalCycloneAdvisory under product=tca.
 _TCA_ACCEPT = (
     "tca_basic.tac",
     "tca_t1_unnamed.tac",
@@ -32,7 +32,7 @@ _TCA_ACCEPT = (
     "tca_t1_cb_nil.tac",
 )
 
-# General SIGMET accept — must never silent-swap to TCA advisory root (#738 OOS for TC SIGMET).
+# General SIGMET accept - must never silent-swap to TCA advisory root (#738 OOS for TC SIGMET).
 _SIGMET_ACCEPT = ("sigmet_basic.tac",)
 
 
@@ -118,9 +118,11 @@ def test_tc_f27_006_bulletin_neighbors_no_silent_swap() -> None:
 
     a = convert(tca, product="TCA", profile=_PROFILE, iwxxm_version=_VERSION)
     s = convert(sig, product="SIGMET", profile=_PROFILE, iwxxm_version=_VERSION)
-    assert a.ok and _has_root(a.xml, "TropicalCycloneAdvisory")
+    assert a.ok
+    assert _has_root(a.xml, "TropicalCycloneAdvisory")
     assert not _has_root(a.xml, "TropicalCycloneSIGMET")
-    assert s.ok and not _has_root(s.xml, "TropicalCycloneAdvisory")
+    assert s.ok
+    assert not _has_root(s.xml, "TropicalCycloneAdvisory")
 
     assert convert(tca, product="SIGMET", profile=_PROFILE, iwxxm_version=_VERSION).ok is False
     assert convert(sig, product="TCA", profile=_PROFILE, iwxxm_version=_VERSION).ok is False

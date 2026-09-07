@@ -54,7 +54,8 @@ def test_load_sch_and_csv_common_nil_match(tmp_path: Path) -> None:
     vend = load_csv_member_uris(csv)
     assert sch == vend
     only_l, only_r = diff_uri_sets(sch, vend)
-    assert only_l == [] and only_r == []
+    assert only_l == []
+    assert only_r == []
 
 
 def test_summarize_real_aviation_registers_offline() -> None:

@@ -1,7 +1,7 @@
-"""F27 theme T1 — TCA exceptional accept + negatives (TC-F27-001/004 / #737).
+"""F27 theme T1 - TCA exceptional accept + negatives (TC-F27-001/004 / #737).
 
 HARD theme from vaa-tca-theme-fixture-map.md. T3.1 fixtures; T3.2 registry/rules.
-Always write “F27 theme T1” (not F20 TAF T1) — D-S027-EV021-s02m1-1.
+Always write "F27 theme T1" (not F20 TAF T1) - D-S027-EV021-s02m1-1.
 """
 
 from __future__ import annotations
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 
@@ -99,4 +98,6 @@ def test_f27_t1_invalid_emits_error(case: dict[str, Any]) -> None:
     assert by_code(code).severity == "error"
     if case.get("require_spans"):
         matched = [i for i in report.issues if i.code == code]
-        assert matched and matched[0].start is not None and matched[0].end is not None
+        assert matched
+        assert matched[0].start is not None
+        assert matched[0].end is not None

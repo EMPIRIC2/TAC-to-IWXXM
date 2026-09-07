@@ -16,9 +16,11 @@ def _us_gml_id(ir: dict[str, Any], product: str) -> str:
     """Stable gml:id for US golden fixtures (theme-aware for F20 S3)."""
     root = product.lower()
     station = str(ir["station"]).lower()
-    rvr = ir.get("rvr")
-    if isinstance(rvr, dict) and rvr.get("variable"):
-        return f"{root}.us.var.rvr.{station}"
+    rvr_raw = ir.get("rvr")
+    if isinstance(rvr_raw, dict):
+        rvr = cast(dict[str, Any], rvr_raw)
+        if rvr.get("variable"):
+            return f"{root}.us.var.rvr.{station}"
     if ir.get("observed_lightning"):
         return f"{root}.us.ltg.{station}"
     if ir.get("snow_increase"):
@@ -79,7 +81,7 @@ def _observed_lightning_xml(lightning: dict[str, Any]) -> str:
         parts.append(f'                <iwxxm-us:type xlink:href="{escape(str(typ))}"/>')
     sector_raw = lightning.get("sector")
     if isinstance(sector_raw, dict):
-        sector: dict[str, Any] = sector_raw
+        sector = cast(dict[str, Any], sector_raw)
         if sector.get("in_all_quadrants"):
             parts.append("                <iwxxm-us:sector>")
             parts.append('                  <iwxxm-us:Sector inAllQuadrants="true"/>')
@@ -145,7 +147,7 @@ def _convective_cloud_xml(conv: dict[str, Any]) -> str:
         parts.append(f'                <iwxxm-us:qualitativeDistance xlink:href="{escape(str(dist))}"/>')
     sector_raw = conv.get("sector")
     if isinstance(sector_raw, dict):
-        sector: dict[str, Any] = sector_raw
+        sector = cast(dict[str, Any], sector_raw)
         if sector.get("in_all_quadrants"):
             parts.append("                <iwxxm-us:sector>")
             parts.append('                  <iwxxm-us:Sector inAllQuadrants="true"/>')
@@ -189,25 +191,25 @@ def _vop_addendum_inner(ir: dict[str, Any]) -> str:
         "            <iwxxm-us:VisuallyObservablePhenomena>",
     ]
     if has_lightning:
-        lightning: dict[str, Any] = lightning_raw  # type: ignore[assignment]
+        lightning = cast(dict[str, Any], lightning_raw)
         ol = _observed_lightning_xml(lightning)
         inner_parts.append("              <iwxxm-us:lightning>")
         inner_parts.append(ol)
         inner_parts.append("              </iwxxm-us:lightning>")
     if has_convective:
-        convective: dict[str, Any] = convective_raw  # type: ignore[assignment]
+        convective = cast(dict[str, Any], convective_raw)
         conv_xml = _convective_cloud_xml(convective)
         inner_parts.append("              <iwxxm-us:convection>")
         inner_parts.append(conv_xml)
         inner_parts.append("              </iwxxm-us:convection>")
     if has_sky:
-        sky: dict[str, Any] = sky_raw  # type: ignore[assignment]
+        sky = cast(dict[str, Any], sky_raw)
         sky_xml = _character_of_the_sky_xml(sky)
         inner_parts.append("              <iwxxm-us:characterOfTheSky>")
         inner_parts.append(sky_xml)
         inner_parts.append("              </iwxxm-us:characterOfTheSky>")
     if has_obscuration:
-        obsc: dict[str, Any] = obscuration_raw  # type: ignore[assignment]
+        obsc = cast(dict[str, Any], obscuration_raw)
         height = int(str(obsc["height_ft"]))
         amt = escape(str(obsc["amount_href"]))
         wx = escape(str(obsc["weather_href"]))
@@ -234,7 +236,7 @@ def _hailstone_size_addendum_inner(ir: dict[str, Any]) -> str:
     hail_raw = ir.get("hailstone_size")
     if not isinstance(hail_raw, dict):
         return ""
-    hail: dict[str, Any] = hail_raw
+    hail = cast(dict[str, Any], hail_raw)
     diam = hail.get("maximum_diameter_in")
     if diam is None:
         return ""
@@ -254,7 +256,7 @@ def _snow_increase_addendum_inner(ir: dict[str, Any]) -> str:
     snow_raw = ir.get("snow_increase")
     if not isinstance(snow_raw, dict):
         return ""
-    snow: dict[str, Any] = snow_raw
+    snow = cast(dict[str, Any], snow_raw)
     incr = int(str(snow["increase_in"]))
     depth = int(str(snow["depth_in"]))
     elem = escape(str(snow["processed_weather_element_href"]))
@@ -286,8 +288,7 @@ def _inoperative_sensors_extension(ir: dict[str, Any]) -> str:
         "          <iwxxm-us:failedSensors>",
         "            <iwxxm-us:FailedSensors>",
     ]
-    for href in hrefs:
-        failed_parts.append(f'              <iwxxm-us:parameter xlink:href="{escape(href)}"/>')
+    failed_parts.extend(f'              <iwxxm-us:parameter xlink:href="{escape(href)}"/>' for href in hrefs)
     failed_parts.extend(
         [
             "            </iwxxm-us:FailedSensors>",
@@ -308,7 +309,7 @@ def _second_location_addendum_inner(ir: dict[str, Any]) -> str:
     second_raw = ir.get("observed_at_second_location")
     if not isinstance(second_raw, dict):
         return ""
-    second: dict[str, Any] = second_raw
+    second = cast(dict[str, Any], second_raw)
     attrs = ""
     if second.get("visibility_below_sensor_minimum"):
         attrs = ' visibilityBelowSensorMinimum="true"'
@@ -345,7 +346,7 @@ def _visibility_us_extension(ir: dict[str, Any]) -> str:
     chunks: list[str] = []
     sector_raw = ir.get("sector_visibility")
     if isinstance(sector_raw, dict):
-        sector: dict[str, Any] = sector_raw
+        sector = cast(dict[str, Any], sector_raw)
         below = ""
         if sector.get("below_sensor_minimum"):
             below = "\n              <iwxxm-us:belowSensorMinimum>true</iwxxm-us:belowSensorMinimum>"
@@ -359,7 +360,7 @@ def _visibility_us_extension(ir: dict[str, Any]) -> str:
         )
     tower_raw = ir.get("tower_visibility")
     if isinstance(tower_raw, dict):
-        tower: dict[str, Any] = tower_raw
+        tower = cast(dict[str, Any], tower_raw)
         less = ""
         if tower.get("less_than"):
             less = "\n              <iwxxm-us:lessThan>true</iwxxm-us:lessThan>"
@@ -372,7 +373,7 @@ def _visibility_us_extension(ir: dict[str, Any]) -> str:
         )
     var_vis_raw = ir.get("variable_visibility")
     if isinstance(var_vis_raw, dict):
-        var_vis: dict[str, Any] = var_vis_raw
+        var_vis = cast(dict[str, Any], var_vis_raw)
         attrs = ' belowMinimum="true"' if var_vis.get("below_minimum") else ""
         chunks.append(
             f"""          <iwxxm:extension>
@@ -392,7 +393,7 @@ def _cloud_layer_us_extension(ir: dict[str, Any]) -> str:
     chunks: list[str] = []
     cig_raw = ir.get("variable_ceiling")
     if isinstance(cig_raw, dict):
-        cig: dict[str, Any] = cig_raw
+        cig = cast(dict[str, Any], cig_raw)
         chunks.append(
             f"""              <iwxxm:extension>
                 <iwxxm-us:VariableCeilingHeight>
@@ -403,7 +404,7 @@ def _cloud_layer_us_extension(ir: dict[str, Any]) -> str:
         )
     sky_raw = ir.get("variable_sky")
     if isinstance(sky_raw, dict):
-        sky: dict[str, Any] = sky_raw
+        sky = cast(dict[str, Any], sky_raw)
         first = escape(str(sky["first_amount_href"]))
         second = escape(str(sky["second_amount_href"]))
         chunks.append(
@@ -428,7 +429,7 @@ def _max_min_temperatures_addendum_inner(ir: dict[str, Any]) -> str:
     for row_obj in cast(list[object], rows_raw):
         if not isinstance(row_obj, dict):
             continue
-        row: dict[str, Any] = row_obj
+        row = cast(dict[str, Any], row_obj)
         period = escape(str(row.get("preceding_period") or "PT6H"))
         max_xml = _measure_or_nil("maxTemperature", row.get("max_c"), uom="Cel")
         min_xml = _measure_or_nil("minTemperature", row.get("min_c"), uom="Cel")
@@ -449,10 +450,7 @@ def _measure_or_nil(tag: str, value: object, *, uom: str) -> str:
     """Emit a MeasureWithNilReason element (value or missing nil)."""
     if value is None:
         return f'<iwxxm-us:{tag} uom="N/A" nilReason="missing" xsi:nil="true"/>'
-    if isinstance(value, float):
-        txt = f"{value:.1f}"
-    else:
-        txt = _fmt_deg(float(str(value)))
+    txt = f"{value:.1f}" if isinstance(value, float) else _fmt_deg(float(str(value)))
     return f'<iwxxm-us:{tag} uom="{uom}">{txt}</iwxxm-us:{tag}>'
 
 
@@ -465,7 +463,7 @@ def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
     for row_obj in cast(list[object], qty_raw):
         if not isinstance(row_obj, dict):
             continue
-        row: dict[str, Any] = row_obj
+        row = cast(dict[str, Any], row_obj)
         elem = escape(str(row["processed_weather_element_href"]))
         vtype = escape(str(row["value_type_href"]))
         period = escape(str(row.get("value_period") or "PT1H"))
@@ -503,7 +501,7 @@ def _recent_weather_addendum_inner(ir: dict[str, Any]) -> str:
     for idx, row_obj in enumerate(cast(list[object], rows_raw)):
         if not isinstance(row_obj, dict):
             continue
-        row: dict[str, Any] = row_obj
+        row = cast(dict[str, Any], row_obj)
         href = escape(str(row["phenomenon_href"]))
         b_hour = int(row["begin_hour"]) if row.get("begin_hour") is not None else obs_hour
         e_hour = int(row["end_hour"]) if row.get("end_hour") is not None else obs_hour
@@ -657,8 +655,11 @@ def _wind_shift_extension(ir: dict[str, Any]) -> str:
 
 def _variable_rvr_extension(ir: dict[str, Any]) -> str:
     """Serialize RVR ``iwxxm-us:AerodromeVariableRVR`` when variable min/max present."""
-    rvr = ir.get("rvr")
-    if not isinstance(rvr, dict) or not rvr.get("variable"):
+    rvr_raw = ir.get("rvr")
+    if not isinstance(rvr_raw, dict):
+        return ""
+    rvr = cast(dict[str, Any], rvr_raw)
+    if not rvr.get("variable"):
         return ""
     attrs: list[str] = []
     if rvr.get("below_sensor_minimum"):
@@ -873,7 +874,8 @@ def _airmet_freezing_level_forecast_extension(ir: dict[str, Any]) -> str:
         f"{int(ir['valid_to_hour']):02d}:{int(ir['valid_to_minute']):02d}:00Z"
     )
     multiple = bool(section.get("multiple_levels"))
-    typed_isopleths: list[dict[str, Any]] = [cast(dict[str, Any], item) for item in isopleths if isinstance(item, dict)]
+    typed_isopleths: list[dict[str, Any]] = []
+    typed_isopleths.extend(cast(dict[str, Any], obj) for obj in cast(list[object], isopleths) if isinstance(obj, dict))
     members = "\n".join(
         _freezing_level_isopleth_xml(item, idx, multiple=multiple) for idx, item in enumerate(typed_isopleths, start=1)
     )
@@ -909,9 +911,10 @@ def _inject_first_evolving_extension(xml: str, inner: str) -> str:
 
 def _airmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
     """Serialize ``iwxxm-us:AIRMETWeatherHazards`` when IR carries US hazard metadata."""
-    hazard = ir.get("us_airmet_hazard")
-    if not isinstance(hazard, dict):
+    hazard_raw = ir.get("us_airmet_hazard")
+    if not isinstance(hazard_raw, dict):
         return ""
+    hazard = cast(dict[str, Any], hazard_raw)
     href = hazard.get("href")
     if not isinstance(href, str) or not href.strip():
         return ""
@@ -931,9 +934,10 @@ def _airmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
 
 def _sigmet_weather_hazards_extension(ir: dict[str, Any]) -> str:
     """Serialize ``iwxxm-us:SIGMETWeatherHazards`` when IR carries US hazard metadata."""
-    hazard = ir.get("us_sigmet_hazard")
-    if not isinstance(hazard, dict):
+    hazard_raw = ir.get("us_sigmet_hazard")
+    if not isinstance(hazard_raw, dict):
         return ""
+    hazard = cast(dict[str, Any], hazard_raw)
     href = hazard.get("href")
     if not isinstance(href, str) or not href.strip():
         return ""

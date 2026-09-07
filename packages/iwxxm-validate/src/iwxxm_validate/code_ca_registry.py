@@ -1,7 +1,7 @@
 """Curated MSC code-ca vocabulary membership registry (EV-069 / #1033).
 
 Offline membership checks for ``xlink:href`` values under the MSC code-ca base URL.
-Codes are sourced from CA_ECCC goldens, ``tac2iwxxm`` emit paths, and mining notes —
+Codes are sourced from CA_ECCC goldens, ``tac2iwxxm`` emit paths, and mining notes -
 not fetched from the network at validate time.
 
 [Corpus: product §F2] [Corpus: product §F13] [Corpus: domain-profiles §CA_ECCC]

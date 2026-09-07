@@ -7,15 +7,19 @@ alwaysApply: false
 # Dissemination coverage + Compose harness (S019 / EV-014)
 
 Traces to ADR-007, ADR-030, E14-04, E14-09, execution-plan T0.1 / T3.3.
+Amended by EV-080 / #1077 (universal **100%** floor).
 
 ## Coverage (`packages/dissemination`)
 
-- Enforce **≥95%** branch coverage via `packages/dissemination/pyproject.toml`
-  `[tool.coverage.report] fail_under = 95` (sibling bar: tac2iwxxm / tac-validate).
+- Enforce **100%** line+branch coverage via `packages/dissemination/pyproject.toml`
+  `[tool.coverage.report] fail_under = 100` (sibling bar: all packages under ADR-007).
 - Local / CI entrypoint: `make test-unit-dissemination` →
   `scripts/ci/run_dissemination_coverage.sh`.
-- Script **skips (exit 0)** until T1.1/T1.2 create `packages/dissemination/pyproject.toml`.
-- Do **not** lower the global ADR-007 95% floor.
+- **EV-080 sequencing:** if the script/pyproject still say `95`, flip to `100` only in
+  Build T2.4 after fills (fill-before-flip) — never lower the floor.
+- Script **skips (exit 0)** until T1.1/T1.2 create `packages/dissemination/pyproject.toml`
+  (historical note; package now exists).
+- Do **not** lower the global ADR-007 **100%** floor.
 
 ## wis2box Compose harness (F17)
 

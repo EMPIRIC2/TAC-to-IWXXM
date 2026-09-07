@@ -7,6 +7,7 @@
 
 import { apiUrl, getApiBaseUrl } from './apiBase';
 import { DEFAULT_IWXXM_VERSION } from './iwxxmVersions';
+import { wireSemanticProfile } from './semanticProfile';
 import type {
   BulletinMeta,
   BulletinReportResult,
@@ -157,8 +158,16 @@ export async function convertMetarToIwxxm(params: {
   /** Filters conversion/validation/lint issue verbosity (sent when API accepts it). */
   logLevel?: string;
   preview?: boolean;
+  /** When true, fold decode residuals into remarks/HRT (omit for profile default). */
+  propagateResidualsToRemarks?: boolean;
   extensions?: string[];
   exchangeOutput?: boolean;
+  /** Exchange packaging profile (ignored on convert-only; used when packaging). */
+  exchangeProfile?: string;
+  /** Optional profile-scoped report variant within the selected product family. */
+  reportVariant?: string;
+  /** Optional signed ConversionProfile overlay id (requires accessToken). */
+  overlayId?: string;
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<ConversionResponse> {
@@ -176,10 +185,18 @@ export async function convertMetarToIwxxm(params: {
 
   // F6.e — product required by API; default METAR when caller omits (legacy callers)
   formData.append('product', (params.product || 'METAR').toUpperCase());
-  formData.append('profile', params.profile || 'annex3');
+  // EV-093 / #1024 — prefer semantic_profile (uppercase OpenAPI ids); drop deprecated profile=
+  formData.append('semantic_profile', wireSemanticProfile(params.profile));
+  if (params.exchangeProfile?.trim()) {
+    formData.append('exchange_profile', params.exchangeProfile.trim());
+  }
+  if (params.reportVariant?.trim()) {
+    formData.append('report_variant', params.reportVariant.trim().toUpperCase());
+  }
 
-  // Add IWXXM version (default to 2025-2)
-  formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
+  if (params.iwxxmVersion?.trim()) {
+    formData.append('iwxxm_version', params.iwxxmVersion.trim());
+  }
 
   // Add validation flag (default to false)
   formData.append('validate_output', params.validateOutput ? 'true' : 'false');
@@ -204,6 +221,12 @@ export async function convertMetarToIwxxm(params: {
     formData.append('preview', 'true');
   }
 
+  if (params.propagateResidualsToRemarks === true) {
+    formData.append('propagate_residuals_to_remarks', 'true');
+  } else if (params.propagateResidualsToRemarks === false) {
+    formData.append('propagate_residuals_to_remarks', 'false');
+  }
+
   if (params.extensions?.length) {
     for (const token of params.extensions) {
       formData.append('extensions', token);
@@ -214,13 +237,23 @@ export async function convertMetarToIwxxm(params: {
     formData.append('exchange_output', 'true');
   }
 
+  if (params.overlayId?.trim()) {
+    formData.append('overlay_id', params.overlayId.trim());
+  }
+
   try {
     console.log('[API] Request to:', apiUrl('/convert'));
+
+    const overlayToken = params.overlayId?.trim();
+    const bearer = params.accessToken?.trim();
+    const headers: HeadersInit | undefined =
+      overlayToken && bearer ? { Authorization: `Bearer ${bearer}` } : undefined;
 
     const response = await withTimeout(
       fetch(apiUrl('/convert'), {
         method: 'POST',
         body: formData,
+        headers,
         signal: params.signal,
       }),
       30000,
@@ -257,8 +290,12 @@ export async function convertBulletin(params: {
   files?: File[];
   product: string;
   profile?: string;
+  /** Exchange packaging overlay (default GLOBAL_AFS on API when omitted). */
+  exchangeProfile?: string;
   iwxxmVersion?: string;
   lint?: boolean;
+  /** When true, fold decode residuals into remarks/HRT (omit for profile default). */
+  propagateResidualsToRemarks?: boolean;
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<ConvertBulletinResponse> {
@@ -270,10 +307,19 @@ export async function convertBulletin(params: {
     params.files.forEach((file) => formData.append('files', file));
   }
   formData.append('product', params.product.toUpperCase());
-  formData.append('profile', params.profile || 'annex3');
-  formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
+  formData.append('semantic_profile', wireSemanticProfile(params.profile));
+  if (params.exchangeProfile?.trim()) {
+    formData.append('exchange_profile', params.exchangeProfile.trim());
+  }
+  if (params.iwxxmVersion?.trim()) {
+    formData.append('iwxxm_version', params.iwxxmVersion.trim());
+  }
   formData.append('lint', params.lint === false ? 'false' : 'true');
-
+  if (params.propagateResidualsToRemarks === true) {
+    formData.append('propagate_residuals_to_remarks', 'true');
+  } else if (params.propagateResidualsToRemarks === false) {
+    formData.append('propagate_residuals_to_remarks', 'false');
+  }
   const response = await withTimeout(
     fetch(apiUrl('/convert-bulletin'), {
       method: 'POST',
@@ -299,6 +345,9 @@ export async function convertBulletin(params: {
   return (await response.json()) as ConvertBulletinResponse;
 }
 
+/**
+ * Thrown when the backend returns HTTP 501 for a not-yet-implemented route.
+ */
 export class EndpointNotImplementedError extends Error {
   status: number;
   code: string;
@@ -331,7 +380,7 @@ export async function ingestCollect(params: {
   if (params.files?.length) {
     params.files.forEach((file) => formData.append('files', file));
   }
-  formData.append('profile', params.profile || 'annex3');
+  formData.append('semantic_profile', wireSemanticProfile(params.profile));
   formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
 
   const response = await withTimeout(
@@ -435,7 +484,7 @@ export async function validateIwxxm(params: {
   if (params.xmlContent?.trim()) {
     formData.append('xml_content', params.xmlContent.trim());
   }
-  formData.append('profile', params.profile || 'annex3');
+  formData.append('semantic_profile', wireSemanticProfile(params.profile));
   formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
   formData.append('stop_on_error', params.stopOnError === false ? 'false' : 'true');
   const layers = params.layers?.length ? params.layers : ['ALL'];
@@ -505,6 +554,8 @@ export async function fetchLintIssueCatalog(params?: {
   family?: string;
   issue_type?: string;
   source_access?: string;
+  semantic_profile?: string;
+  exchange_profile?: string;
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<LintIssueCatalogResponse> {
@@ -520,6 +571,12 @@ export async function fetchLintIssueCatalog(params?: {
   }
   if (params?.source_access && params.source_access.trim()) {
     query.set('source_access', params.source_access.trim().toLowerCase());
+  }
+  if (params?.semantic_profile && params.semantic_profile.trim()) {
+    query.set('semantic_profile', params.semantic_profile.trim());
+  }
+  if (params?.exchange_profile && params.exchange_profile.trim()) {
+    query.set('exchange_profile', params.exchange_profile.trim());
   }
   const qs = query.toString() ? `?${query.toString()}` : '';
   const response = await withTimeout(

@@ -8,7 +8,6 @@ from typing import Any
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.schemas.validation import AggregatedValidationResult, ValidationLayer, ValidationResult
 from src.utilities.conversion import ConversionError

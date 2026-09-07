@@ -1,0 +1,33 @@
+# Catalog row template — copy into docs/domain/profiles/catalog.yaml
+#
+# Replace PLACEHOLDER_* values. Keep kind: semantic for national TAC→IWXXM overlays.
+# See NATIONAL_PROFILE_PLAYBOOK.md §1.
+
+- id: PLACEHOLDER_ID                 # e.g. UK_METOFFICE
+  kind: semantic
+  priority: P2                       # P0|P1|P2|P3
+  status: planned                    # planned|in_progress|implemented
+  locale: [en]
+  issuing_body: PLACEHOLDER_ORG
+  products: [METAR, SPECI, TAF]
+  # iwxxm_version_pin: "2025-2"      # optional; independent of app default
+  # extension_token: PLACEHOLDER_EXT # only if national XSD published
+  # vendor_pins:
+  #   iwxxm: vendor/manifest.json → iwxxm v2025-2
+  sources:
+    - url: https://example.invalid/replace-me
+      label: PLACEHOLDER primary source
+      access: public                 # public|paywall|gap
+      proves: grammar | extension XSD | exchange | validate-only
+  mining_notes:
+    - docs/domain/mining/PLACEHOLDER_SLUG-tac-mining-notes.md
+  stub: semantic/PLACEHOLDER_ID.md
+  gaps:
+    - "Fill after first mining pass"
+  # Optional §7 exchange-output fields (catalog / ConversionProfile):
+  # exchange_output:
+  #   wmo_header_template: {}
+  #   file_naming_pattern: ""
+  #   distribution_url_pattern: ""
+  #   station_reporting_rules: ""
+  #   translation_centre_metadata_policy: ""

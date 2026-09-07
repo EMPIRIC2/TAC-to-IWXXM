@@ -2,14 +2,14 @@
 IWXXM Validation Orchestrator
 
 Coordinates validation layers with proper sequencing, parallelization,
-and error handling. IWXXM layers (3–7) delegate to ``iwxxm_validation_adapter``
-(``packages/iwxxm-validate``); TAC layers (1–2) remain in ``ValidationService``.
+and error handling. IWXXM layers (3-7) delegate to ``iwxxm_validation_adapter``
+(``packages/iwxxm-validate``); TAC layers (1-2) remain in ``ValidationService``.
 """
 
 import logging
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Any
 
 from ..schemas.validation import (
     CodelistValidationResult,
@@ -26,19 +26,23 @@ from . import iwxxm_validation_adapter as iwxxm_adapter
 
 logger = logging.getLogger(__name__)
 
+ValidationOutcome = (
+    ValidationResult | XSDValidationResult | SchematronValidationResult | GMLValidationResult | CodelistValidationResult
+)
+
 
 @dataclass
 class ComprehensiveValidationResult:
     """Result of comprehensive multi-layer validation."""
 
     is_valid: bool
-    layers_run: List[ValidationLayer]
-    layers_passed: List[ValidationLayer]
-    layers_failed: List[ValidationLayer]
-    all_issues: List[ValidationIssue]
-    issues_by_layer: Dict[ValidationLayer, List[ValidationIssue]] = field(default_factory=dict)
+    layers_run: list[ValidationLayer]
+    layers_passed: list[ValidationLayer]
+    layers_failed: list[ValidationLayer]
+    all_issues: list[ValidationIssue]
+    issues_by_layer: dict[ValidationLayer, list[ValidationIssue]] = field(default_factory=dict)
     version: str = ""
-    stopped_at_layer: Optional[ValidationLayer] = None
+    stopped_at_layer: ValidationLayer | None = None
 
     @property
     def passed(self) -> bool:
@@ -53,24 +57,25 @@ class ValidationOrchestrator:
     Validation Sequence:
     1. Layer 1 (AIRPORT_ICAO) - Blocking
     2. Layer 2 (TAC_SYNTAX) - Blocking
-    3. Layer 3 (XML_WELLFORMED) - Blocking — package
-    4. Layer 4 (XML_SCHEMA) - Blocking — package
-    5-7. Layers 5-7 (SCHEMATRON, GML_REFERENCES, WMO_CODELISTS) - Parallel, non-blocking — package
+    3. Layer 3 (XML_WELLFORMED) - Blocking - package
+    4. Layer 4 (XML_SCHEMA) - Blocking - package
+    5-7. Layers 5-7 (SCHEMATRON, GML_REFERENCES, WMO_CODELISTS) - Parallel, non-blocking - package
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize validation orchestrator."""
         self.validation_service = ValidationService()
 
-    def _is_validation_passed(self, result) -> bool:
+    def _is_validation_passed(self, result: ValidationOutcome) -> bool:
         """Check if validation passed, handling both ValidationResult and specialized types."""
-        if hasattr(result, "passed"):
-            return result.passed
-        elif hasattr(result, "is_valid"):
-            return result.is_valid
-        else:
-            logger.warning(f"Unknown result type {type(result)}: cannot determine pass/fail")
-            return False
+        passed = getattr(result, "passed", None)
+        if isinstance(passed, bool):
+            return passed
+        is_valid = getattr(result, "is_valid", None)
+        if isinstance(is_valid, bool):
+            return is_valid
+        logger.warning(f"Unknown result type {type(result)}: cannot determine pass/fail")
+        return False
 
     def validate_wellformed(self, xml_content: str) -> ValidationResult:
         """Public XML well-formedness validation helper."""
@@ -89,7 +94,7 @@ class ValidationOrchestrator:
         xml_content: str,
         *,
         iwxxm_version: str,
-        layers: Optional[List[ValidationLayer]] = None,
+        layers: list[ValidationLayer] | None = None,
     ) -> ComprehensiveValidationResult:
         """Validate IWXXM XML for selected layers (typically 3-7)."""
         return self.validate_complete(
@@ -105,7 +110,7 @@ class ValidationOrchestrator:
         tac_text: str,
         xml_content: str,
         version: str,
-        layers: Optional[List[ValidationLayer]] = None,
+        layers: list[ValidationLayer] | None = None,
         stop_on_error: bool = True,
     ) -> ComprehensiveValidationResult:
         """
@@ -124,11 +129,11 @@ class ValidationOrchestrator:
         if layers is None:
             layers = list(ValidationLayer)
 
-        layers_run = []
-        layers_passed = []
-        layers_failed = []
-        all_issues = []
-        issues_by_layer = {}
+        layers_run: list[ValidationLayer] = []
+        layers_passed: list[ValidationLayer] = []
+        layers_failed: list[ValidationLayer] = []
+        all_issues: list[ValidationIssue] = []
+        issues_by_layer: dict[ValidationLayer, list[ValidationIssue]] = {}
         stopped_at_layer = None
 
         if ValidationLayer.AIRPORT_ICAO in layers:
@@ -273,7 +278,7 @@ class ValidationOrchestrator:
             logger.info(f"Running layers {parallel_layers} in parallel")
 
             with ThreadPoolExecutor(max_workers=3) as executor:
-                futures = {}
+                futures: dict[ValidationLayer, Future[Any]] = {}
 
                 if ValidationLayer.SCHEMATRON in parallel_layers:
                     futures[ValidationLayer.SCHEMATRON] = executor.submit(
@@ -310,7 +315,7 @@ class ValidationOrchestrator:
                         issue = ValidationIssue(
                             layer=layer,
                             level=ValidationSeverity.ERROR,
-                            message=f"Validation error: {str(e)}",
+                            message=f"Validation error: {e!s}",
                             code="VALIDATION_ERROR",
                         )
                         all_issues.append(issue)
@@ -345,7 +350,7 @@ class ValidationOrchestrator:
         return CodelistValidationResult(is_valid=is_valid, issues=issues)
 
 
-_orchestrator_instance: Optional[ValidationOrchestrator] = None
+_orchestrator_instance: ValidationOrchestrator | None = None
 
 
 def get_validation_orchestrator() -> ValidationOrchestrator:

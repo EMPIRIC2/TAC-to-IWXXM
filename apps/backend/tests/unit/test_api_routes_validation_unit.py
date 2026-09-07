@@ -11,12 +11,11 @@ from typing import Any
 import pytest
 from fastapi import UploadFile
 from fastapi.testclient import TestClient
-from starlette.responses import Response
-
 from src import api as api_module
 from src.schemas.validation import ValidationLayer, ValidationLevel
 from src.utilities.conversion import ConversionError
 from src.utilities.security import verify_supabase_token
+from starlette.responses import Response
 
 
 def _json_payload(response: Any) -> dict[str, Any]:
@@ -194,7 +193,7 @@ async def test_validate_comprehensive_json_body_maps_level_to_layers(monkeypatch
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "level,expected",
+    ("level", "expected"),
     [
         # schema: package owns XSD; orchestrator keeps well-formed only (F11.4)
         ("schema", [ValidationLayer.XML_WELLFORMED]),

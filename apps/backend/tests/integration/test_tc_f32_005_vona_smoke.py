@@ -1,4 +1,4 @@
-"""T2.7 / TC-F32-005 — VONA lint/convert + catalog GET smoke (UJ-045)."""
+"""T2.7 / TC-F32-005 - VONA lint/convert + catalog GET smoke (UJ-045)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,6 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 

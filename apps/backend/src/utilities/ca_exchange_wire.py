@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from tac2iwxxm import BulletinSplitError, parse_ahl, split_bulletin
 from tac2iwxxm.ca_collect_packaging import wrap_ca_eccc_collect
 from tac2iwxxm.exchange_output import (
     build_ca_eccc_output_spec,
@@ -10,6 +9,8 @@ from tac2iwxxm.exchange_output import (
     issued_at_from_yygggg,
     profile_output_spec_to_dict,
 )
+
+from tac2iwxxm import BulletinSplitError, parse_ahl, split_bulletin
 
 
 def ca_eccc_output_spec_for_request(

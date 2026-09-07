@@ -26,7 +26,7 @@ uv run pytest packages/dissemination/tests \
   --cov-branch \
   --cov-report=term-missing \
   --cov-report=json:packages/dissemination/coverage.json \
-  --cov-fail-under=95 \
+  --cov-fail-under=100 \
   -v
 exec uv run python scripts/ci/check_per_file_coverage.py \
   packages/dissemination/coverage.json

@@ -92,15 +92,16 @@ describe('isConvertProductSelection', () => {
 });
 
 describe('coerceIwxxmProfile', () => {
-  it('accepts supported profiles including ca_eccc (EV-064)', () => {
+  it('accepts supported profiles including CA_ECCC (EV-064 / EV-093)', () => {
     expect(coerceIwxxmProfile('annex3')).toBe('annex3');
     expect(coerceIwxxmProfile('iwxxm_us')).toBe('iwxxm_us');
-    expect(coerceIwxxmProfile('ca_eccc')).toBe('ca_eccc');
+    expect(coerceIwxxmProfile('ca_eccc')).toBe('CA_ECCC');
+    expect(coerceIwxxmProfile('CA_ECCC')).toBe('CA_ECCC');
   });
 
-  it('falls back to annex3 for unknown values', () => {
-    expect(coerceIwxxmProfile('GLOBAL_AFS')).toBe('annex3');
-    expect(coerceIwxxmProfile(null)).toBe('annex3');
+  it('falls back to ICAO_2025 for unknown values', () => {
+    expect(coerceIwxxmProfile('GLOBAL_AFS')).toBe('ICAO_2025');
+    expect(coerceIwxxmProfile(null)).toBe('ICAO_2025');
   });
 });
 

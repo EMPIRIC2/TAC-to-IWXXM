@@ -1,7 +1,7 @@
-"""F26 theme V1 — VAA exceptional accept + negatives (TC-F26-001/004 / #736).
+"""F26 theme V1 - VAA exceptional accept + negatives (TC-F26-001/004 / #736).
 
 HARD theme from vaa-tca-theme-fixture-map.md. T1.1 fixtures; T1.2 registry/rules.
-Always write “F26 theme V1” (not F23 VA-SIGMET V1) — D-S027-EV021-s02m1-1.
+Always write "F26 theme V1" (not F23 VA-SIGMET V1) - D-S027-EV021-s02m1-1.
 """
 
 from __future__ import annotations
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 
@@ -101,4 +100,6 @@ def test_f26_v1_invalid_emits_error(case: dict[str, Any]) -> None:
     assert by_code(code).severity == "error"
     if case.get("require_spans"):
         matched = [i for i in report.issues if i.code == code]
-        assert matched and matched[0].start is not None and matched[0].end is not None
+        assert matched
+        assert matched[0].start is not None
+        assert matched[0].end is not None

@@ -32,7 +32,7 @@ def _builder_stage_body(text: str) -> str:
             start = index
             break
     assert start is not None, (
-        "apps/frontend/Dockerfile has no `AS builder` stage — expected a "
+        "apps/frontend/Dockerfile has no `AS builder` stage - expected a "
         "multi-stage build that compiles the frontend bundle."
     )
     end = len(lines)

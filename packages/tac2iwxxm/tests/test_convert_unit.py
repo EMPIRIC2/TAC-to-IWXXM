@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import pytest
-
-from tac2iwxxm import ConvertError, convert
 from tac2iwxxm.products.metar_speci import parse_metar_speci
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
+
+from tac2iwxxm import ConvertError, convert
 
 
 def test_convert_error_is_value_error() -> None:
@@ -44,6 +44,67 @@ def test_convert_iwxxm_us_profile_ok() -> None:
     assert result.ir is not None
     assert result.ir["observing_system_type"] == "AO2"
     assert result.ir["sea_level_pressure_hpa"] == 1014.9
+
+
+@pytest.mark.parametrize(
+    ("profile", "product", "tac"),
+    [
+        ("annex3", "METAR", "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="),
+        ("iwxxm_us", "METAR", "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2="),
+        ("AU_BOM", "METAR", "METAR YSSY 231730Z AUTO 18012KT 9999 FEW030 18/10 Q1017="),
+        ("NZ_CAA_MET", "METAR", "METAR NZAA 231700Z AUTO VRB03KT 9999 FEW020 14/09 Q1015="),
+    ],
+)
+def test_convert_rejects_profile_scoped_3_0_0_for_non_ca_profiles(
+    profile: str,
+    product: str,
+    tac: str,
+) -> None:
+    result = convert(
+        tac,
+        product=product,
+        profile=profile,
+        iwxxm_version="3.0.0",
+    )
+    assert result.ok is False
+    assert result.issues[0].code == "INVALID_IWXXM_VERSION"
+    assert "3.0.0" in result.issues[0].message
+
+
+def test_convert_rejects_report_variant_for_profile_without_catalog() -> None:
+    result = convert(
+        "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",
+        product="METAR",
+        profile="annex3",
+        report_variant="LWIS",
+    )
+    assert result.ok is False
+    assert result.issues[0].code == "INVALID_REPORT_VARIANT"
+
+
+def test_convert_rejects_report_variant_product_mismatch() -> None:
+    result = convert(
+        "SPECI CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=",
+        product="SPECI",
+        profile="CA_ECCC",
+        iwxxm_version="3.0.0",
+        report_variant="LWIS",
+    )
+    assert result.ok is False
+    assert result.issues[0].code == "INVALID_REPORT_VARIANT"
+
+
+def test_convert_ca_eccc_report_variant_overrides_root() -> None:
+    result = convert(
+        "METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=",
+        product="METAR",
+        profile="CA_ECCC",
+        iwxxm_version="3.0.0",
+        report_variant="LWIS",
+    )
+    assert result.ok is True
+    assert result.ir is not None
+    assert result.ir["ca_iwxxm_root"] == "LWIS"
 
 
 def test_convert_parse_error_returns_ok_false() -> None:
@@ -149,8 +210,9 @@ def test_scan_metar_tokens_raises_without_extension(monkeypatch: pytest.MonkeyPa
 
 
 def test_scan_metar_tokens_when_rust_available() -> None:
-    from tac2iwxxm import rust_available
     from tac2iwxxm.native import scan_metar_tokens
+
+    from tac2iwxxm import rust_available
 
     if not rust_available():
         pytest.skip("PyO3 extension not built in this environment")
@@ -165,7 +227,8 @@ def test_convert_vrb_omits_mean_wind_direction() -> None:
         "METAR KJFK 231751Z VRB03KT 5SM FEW010 15/07 A2992=",
         product="METAR",
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert 'variableWindDirection="true"' in result.xml
     assert "meanWindDirection" not in result.xml
     assert ">None<" not in result.xml
@@ -177,10 +240,11 @@ def test_convert_mps_gust_emitted_in_metres_per_second() -> None:
         "METAR KJFK 231751Z 24004G12MPS 5SM FEW010 15/07 A2992=",
         product="METAR",
     )
-    assert result.ok and result.ir is not None
+    assert result.ok
+    assert result.ir is not None
     assert result.ir["wind_speed_mps"] == 4
     assert result.ir["wind_gust_mps"] == 12
     # Knots still recorded on IR for decode / US consumers.
-    assert result.ir["wind_gust_kt"] == int(round(12 * 1.94384))
+    assert result.ir["wind_gust_kt"] == round(12 * 1.94384)
     assert 'meanWindSpeed uom="m/s">4.0</iwxxm:meanWindSpeed>' in (result.xml or "")
     assert 'windGustSpeed uom="m/s">12</iwxxm:windGustSpeed>' in (result.xml or "")

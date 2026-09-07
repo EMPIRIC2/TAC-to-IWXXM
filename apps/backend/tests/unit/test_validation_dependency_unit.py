@@ -2,7 +2,6 @@
 
 import pytest
 from fastapi import HTTPException
-
 from src.utilities import validation_dependency as vd
 
 

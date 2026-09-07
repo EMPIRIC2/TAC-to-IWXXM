@@ -11,10 +11,26 @@ from dataclasses import dataclass
 CANONICAL_ICAO_2025 = "icao_2025"
 CANONICAL_US_FAA_NWS = "us_faa_nws"
 CANONICAL_CA_ECCC = "ca_eccc"
+CANONICAL_AU_BOM = "au_bom"
+CANONICAL_NZ_CAA_MET = "nz_caa_met"
+CANONICAL_UK_METOFFICE = "uk_metoffice"
+CANONICAL_BR_DECEA = "br_decea"
+CANONICAL_KR_KMA = "kr_kma"
+CANONICAL_JP_JMA = "jp_jma"
+CANONICAL_IN_IMD = "in_imd"
+CANONICAL_HK_HKO = "hk_hko"
 
 EMIT_ANNEX3 = "annex3"
 EMIT_IWXXM_US = "iwxxm_us"
 EMIT_CA_ECCC = "ca_eccc"
+EMIT_AU_BOM = "au_bom"
+EMIT_NZ_CAA_MET = "nz_caa_met"
+EMIT_UK_METOFFICE = "uk_metoffice"
+EMIT_BR_DECEA = "br_decea"
+EMIT_KR_KMA = "kr_kma"
+EMIT_JP_JMA = "jp_jma"
+EMIT_IN_IMD = "in_imd"
+EMIT_HK_HKO = "hk_hko"
 
 _ALIAS_TO_CANONICAL: dict[str, str] = {
     EMIT_ANNEX3: CANONICAL_ICAO_2025,
@@ -25,9 +41,27 @@ _CANONICAL_TO_EMIT: dict[str, str] = {
     CANONICAL_ICAO_2025: EMIT_ANNEX3,
     CANONICAL_US_FAA_NWS: EMIT_IWXXM_US,
     CANONICAL_CA_ECCC: EMIT_CA_ECCC,
+    CANONICAL_AU_BOM: EMIT_AU_BOM,
+    CANONICAL_NZ_CAA_MET: EMIT_NZ_CAA_MET,
+    CANONICAL_UK_METOFFICE: EMIT_UK_METOFFICE,
+    CANONICAL_BR_DECEA: EMIT_BR_DECEA,
+    CANONICAL_KR_KMA: EMIT_KR_KMA,
+    CANONICAL_JP_JMA: EMIT_JP_JMA,
+    CANONICAL_IN_IMD: EMIT_IN_IMD,
+    CANONICAL_HK_HKO: EMIT_HK_HKO,
 }
 
 _KNOWN_WIRE_IDS: frozenset[str] = frozenset(_ALIAS_TO_CANONICAL) | frozenset(_CANONICAL_TO_EMIT)
+_GENERAL_IWXXM_VERSIONS = frozenset({"2025-2", "2023-1"})
+_PROFILE_SCOPED_IWXXM_VERSIONS: dict[str, frozenset[str]] = {
+    EMIT_CA_ECCC: frozenset({"3.0.0"}),
+}
+_PROFILE_REPORT_VARIANTS: dict[str, dict[str, frozenset[str]]] = {
+    EMIT_CA_ECCC: {
+        "METAR": frozenset({"METAR", "LWIS", "SAWR"}),
+        "SPECI": frozenset({"SPECI"}),
+    }
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -92,15 +126,49 @@ def known_semantic_profile_ids() -> frozenset[str]:
     return _KNOWN_WIRE_IDS
 
 
+def supported_iwxxm_versions_for_profile(profile: str) -> frozenset[str]:
+    """Return the supported IWXXM lines for a semantic profile id or emit key."""
+    resolved = resolve_semantic_profile(profile)
+    emit_key = resolved.emit_key if resolved is not None else normalize_profile_id(profile)
+    return _PROFILE_SCOPED_IWXXM_VERSIONS.get(emit_key, _GENERAL_IWXXM_VERSIONS)
+
+
+def supported_report_variants_for_profile(profile: str, product: str) -> frozenset[str]:
+    """Return allowed report-variant ids for a semantic profile + API product."""
+    resolved = resolve_semantic_profile(profile)
+    emit_key = resolved.emit_key if resolved is not None else normalize_profile_id(profile)
+    product_u = product.strip().upper()
+    by_product = _PROFILE_REPORT_VARIANTS.get(emit_key, {})
+    return by_product.get(product_u, frozenset())
+
+
 __all__ = [
-    "CANONICAL_ICAO_2025",
-    "CANONICAL_US_FAA_NWS",
+    "CANONICAL_AU_BOM",
+    "CANONICAL_BR_DECEA",
     "CANONICAL_CA_ECCC",
+    "CANONICAL_HK_HKO",
+    "CANONICAL_ICAO_2025",
+    "CANONICAL_IN_IMD",
+    "CANONICAL_JP_JMA",
+    "CANONICAL_KR_KMA",
+    "CANONICAL_NZ_CAA_MET",
+    "CANONICAL_UK_METOFFICE",
+    "CANONICAL_US_FAA_NWS",
     "EMIT_ANNEX3",
-    "EMIT_IWXXM_US",
+    "EMIT_AU_BOM",
+    "EMIT_BR_DECEA",
     "EMIT_CA_ECCC",
+    "EMIT_HK_HKO",
+    "EMIT_IN_IMD",
+    "EMIT_IWXXM_US",
+    "EMIT_JP_JMA",
+    "EMIT_KR_KMA",
+    "EMIT_NZ_CAA_MET",
+    "EMIT_UK_METOFFICE",
     "ResolvedSemanticProfile",
     "known_semantic_profile_ids",
     "normalize_profile_id",
     "resolve_semantic_profile",
+    "supported_iwxxm_versions_for_profile",
+    "supported_report_variants_for_profile",
 ]

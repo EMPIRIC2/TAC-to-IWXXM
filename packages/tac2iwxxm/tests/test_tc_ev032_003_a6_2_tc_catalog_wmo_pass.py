@@ -1,4 +1,4 @@
-"""TC-EV032-003 — #835 catalog promote A6-2-TC → wmoPass (S040 / EV-032 T1.4).
+"""TC-EV032-003 - #835 catalog promote A6-2-TC → wmoPass (S040 / EV-032 T1.4).
 
 Marked ``ev032_smoke`` for path-filtered pre-commit canary (E32-T7 / T1.5).
 """

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from src.utilities.metar_normalizer import normalize_recent_weather_tokens
 
 # ---------------------------------------------------------------------------

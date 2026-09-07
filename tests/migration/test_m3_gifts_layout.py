@@ -1,4 +1,4 @@
-"""M3 / cutover — packages/gifts removed (ADR-014 / T4.7)."""
+"""M3 / cutover - packages/gifts removed (ADR-014 / T4.7)."""
 
 from __future__ import annotations
 

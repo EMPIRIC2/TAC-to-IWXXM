@@ -1,4 +1,4 @@
-"""TC-EV084 — US_FAA_NWS M19 (#919 WAUS multi-section AIRMET bulletin).
+"""TC-EV084 - US_FAA_NWS M19 (#919 WAUS multi-section AIRMET bulletin).
 
 [Corpus: product §F36] [Corpus: tests] [Corpus: domain-profiles §US_FAA_NWS]
 """
@@ -9,11 +9,11 @@ import json
 from pathlib import Path
 
 import pytest
-from metar_shared.xml_canonical import canonicalize_xml
-
-from tac2iwxxm import convert
 from tac2iwxxm.geometry.reference_point import UnknownVOR, parse_vor_reference_geometry
 from tac2iwxxm.products.sigmet_airmet import parse_airmet
+
+from metar_shared.xml_canonical import canonicalize_xml
+from tac2iwxxm import convert
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "US_FAA_NWS"
 MANIFEST_PATH = FIXTURES / "manifest.json"
@@ -31,7 +31,7 @@ def us_manifest() -> dict:
 
 
 def test_tc_ev084_001_airmet_waus_multisection(us_manifest: dict) -> None:
-    """M19 — ICE + FROM geometry + inline FRZLVL + OTLK + FRZLVL subsection in one bulletin."""
+    """M19 - ICE + FROM geometry + inline FRZLVL + OTLK + FRZLVL subsection in one bulletin."""
     case = next(c for c in us_manifest["cases"] if c["id"] == "airmet_waus_multisection")
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
     ir = parse_airmet(tac)
@@ -41,7 +41,8 @@ def test_tc_ev084_001_airmet_waus_multisection(us_manifest: dict) -> None:
     assert isinstance(ir.get("frzlvl_section"), dict)
     assert ir.get("inline_frzlvl_lo") == 60
     result = convert(tac, product="AIRMET", profile=PROFILE, iwxxm_version=IWXXM_VERSION)
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
     assert "gml:posList" in result.xml
     assert "FreezingLevelForecast" in result.xml
     assert "cond.chiz.outlook.1" in result.xml

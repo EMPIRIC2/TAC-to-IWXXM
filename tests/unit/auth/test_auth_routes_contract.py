@@ -1,4 +1,4 @@
-"""T1.1 — `/auth/login` + `/auth/me` contract; no admin (F31 / ADR-033)."""
+"""T1.1 - `/auth/login` + `/auth/me` contract; no admin (F31 / ADR-033)."""
 
 from __future__ import annotations
 

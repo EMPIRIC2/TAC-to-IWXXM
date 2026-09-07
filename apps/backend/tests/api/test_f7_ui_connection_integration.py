@@ -6,7 +6,7 @@ backend. Complements ``test_frontend_contract_integration.py`` (legacy convert)
 and H0i CORS tests.
 
 Spec: docs/api-contract.md (lint-tac, decode-tac, soft-preview, work-sessions);
-docs/test-plan.md TC-F7-002–005; connectivity-gates H0i.
+docs/test-plan.md TC-F7-002-005; connectivity-gates H0i.
 """
 
 from __future__ import annotations
@@ -17,7 +17,6 @@ from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api import app
 from src.utilities.security import verify_supabase_token
 

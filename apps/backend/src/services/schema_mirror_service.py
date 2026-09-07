@@ -5,12 +5,13 @@ Downloads and stores IWXXM schema releases (XSD, Schematron, codelists) locally
 with integrity verification via SHA256 checksums and lockfile management.
 """
 
+import asyncio
 import hashlib
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, Optional, Set
+from typing import Any, cast
 from urllib.parse import urljoin, urlparse
 
 import httpx
@@ -26,7 +27,7 @@ class SchemaMirrorService:
     manifest and lockfile for reproducible validation.
     """
 
-    def __init__(self, base_path: Path, timeout_seconds: int = 60):
+    def __init__(self, base_path: Path, timeout_seconds: int = 60) -> None:
         """
         Initialize the mirror service.
 
@@ -36,8 +37,8 @@ class SchemaMirrorService:
         """
         self.base_path = Path(base_path)
         self.timeout_seconds = timeout_seconds
-        self.downloaded_files: Set[str] = set()
-        self.current_version_dir: Optional[Path] = None  # Track current version being mirrored
+        self.downloaded_files: set[str] = set()
+        self.current_version_dir: Path | None = None  # Track current version being mirrored
 
     async def mirror_version(
         self,
@@ -46,7 +47,7 @@ class SchemaMirrorService:
         include_examples: bool = True,
         include_html: bool = True,
         include_xmi: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Mirror a complete schema version tree.
 
@@ -75,7 +76,7 @@ class SchemaMirrorService:
         self.downloaded_files.clear()
 
         # Download root XSD and recursively follow imports
-        manifest = {}
+        manifest: dict[str, Any] = {}
         await self._download_xsd_tree(root_xsd_url, version_dir, manifest)
 
         # Download additional resources
@@ -94,7 +95,7 @@ class SchemaMirrorService:
         # Write manifest with checksums
         manifest_data = {
             "version": version,
-            "mirrored_at": datetime.now(timezone.utc).isoformat(),
+            "mirrored_at": datetime.now(UTC).isoformat(),
             "root_url": root_xsd_url,
             "base_url": base_url,
             "resources": {"schemas": True, "examples": include_examples, "html": include_html, "xmi": include_xmi},
@@ -117,7 +118,7 @@ class SchemaMirrorService:
             "version_dir": str(version_dir),
         }
 
-    async def _download_xsd_tree(self, xsd_url: str, target_dir: Path, manifest: Dict[str, Dict]):
+    async def _download_xsd_tree(self, xsd_url: str, target_dir: Path, manifest: dict[str, dict[str, Any]]) -> None:
         """
         Recursively download XSD and all imports/includes.
 
@@ -176,7 +177,9 @@ class SchemaMirrorService:
                 logger.error(f"Error downloading {xsd_url}: {e}")
                 raise
 
-    async def _process_xsd_imports(self, xsd_content: str, base_url: str, target_dir: Path, manifest: Dict):
+    async def _process_xsd_imports(
+        self, xsd_content: str, base_url: str, target_dir: Path, manifest: dict[str, Any]
+    ) -> None:
         """
         Extract and download XSD imports/includes.
 
@@ -211,8 +214,8 @@ class SchemaMirrorService:
             await self._download_xsd_tree(schema_url, target_dir, manifest)
 
     async def _download_directory(
-        self, directory_url: str, target_dir: Path, manifest: Dict, skip_on_404: bool = False
-    ):
+        self, directory_url: str, target_dir: Path, manifest: dict[str, Any], skip_on_404: bool = False
+    ) -> None:
         """
         Download all files from a directory listing (Apache-style index).
 
@@ -271,7 +274,7 @@ class SchemaMirrorService:
                 if not skip_on_404:
                     raise
 
-    async def _download_file(self, file_url: str, target_dir: Path, manifest: Dict):
+    async def _download_file(self, file_url: str, target_dir: Path, manifest: dict[str, Any]) -> None:
         """
         Download a single file and add to manifest.
 
@@ -295,12 +298,10 @@ class SchemaMirrorService:
                 parsed = urlparse(file_url)
                 filename = Path(parsed.path).name
 
-                target_dir.mkdir(parents=True, exist_ok=True)
+                await asyncio.to_thread(target_dir.mkdir, parents=True, exist_ok=True)
                 local_file = target_dir / filename
 
-                # Write file
-                with local_file.open("wb") as f:
-                    f.write(content)
+                await asyncio.to_thread(local_file.write_bytes, content)
 
                 # Compute SHA256
                 sha256 = hashlib.sha256(content).hexdigest()
@@ -323,7 +324,7 @@ class SchemaMirrorService:
                 logger.error(f"Error downloading file {file_url}: {e}")
                 raise
 
-    async def _update_lockfile(self, version: str, manifest_data: Dict):
+    async def _update_lockfile(self, version: str, manifest_data: dict[str, Any]) -> None:
         """
         Update global schemas.lock.json with new version.
 
@@ -334,21 +335,23 @@ class SchemaMirrorService:
         lockfile_path = self.base_path / "schemas.lock.json"
 
         # Load existing lockfile
+        lockfile: dict[str, Any]
         if lockfile_path.exists():
             with lockfile_path.open("r") as f:
-                lockfile = json.load(f)
+                lockfile = cast(dict[str, Any], json.load(f))
         else:
-            lockfile = {"format_version": "1.0", "updated_at": datetime.now(timezone.utc).isoformat(), "versions": {}}
+            lockfile = {"format_version": "1.0", "updated_at": datetime.now(UTC).isoformat(), "versions": {}}
 
+        versions_map = cast(dict[str, Any], lockfile.setdefault("versions", {}))
         # Add/update version entry
-        lockfile["versions"][version] = {
+        versions_map[version] = {
             "mirrored_at": manifest_data["mirrored_at"],
             "root_url": manifest_data["root_url"],
             "base_url": manifest_data.get("base_url"),
             "file_count": len(manifest_data["files"]),
             "resources": manifest_data.get("resources", {}),
         }
-        lockfile["updated_at"] = datetime.now(timezone.utc).isoformat()
+        lockfile["updated_at"] = datetime.now(UTC).isoformat()
 
         # Write lockfile
         with lockfile_path.open("w") as f:
@@ -405,7 +408,7 @@ async def mirror_schema_version(
     include_examples: bool = True,
     include_html: bool = True,
     include_xmi: bool = True,
-) -> Dict:
+) -> dict[str, Any]:
     """
     Convenience function to mirror a single schema version.
 

@@ -93,27 +93,30 @@ def check_parse_gate(
         )
 
     # Common repairable: missing report terminator '=' on METAR/SPECI/TAF
-    if product in {"METAR", "SPECI", "TAF"} and not stripped.rstrip().endswith("="):
-        if not any(i.code == "MISSING_PRODUCT_KEYWORD" for i in issues):
-            core = stripped.rstrip()
-            # Highlight the final character of the report (terminator should follow).
-            term_end = start + len(core)
-            term_start = term_end - 1 if core else start
-            issues.append(
-                issue_from(
-                    "MISSING_TERMINATOR",
-                    location="terminator",
-                    start=term_start,
-                    end=term_end,
-                )
+    if (
+        product in {"METAR", "SPECI", "TAF"}
+        and not stripped.rstrip().endswith("=")
+        and not any(i.code == "MISSING_PRODUCT_KEYWORD" for i in issues)
+    ):
+        core = stripped.rstrip()
+        # Highlight the final character of the report (terminator should follow).
+        term_end = start + len(core)
+        term_start = term_end - 1 if core else start
+        issues.append(
+            issue_from(
+                "MISSING_TERMINATOR",
+                location="terminator",
+                start=term_start,
+                end=term_end,
             )
-            fixes.append(
-                Fix(
-                    code="add_terminator",
-                    message="Add '='",
-                    replacement=stripped.rstrip() + "=",
-                )
+        )
+        fixes.append(
+            Fix(
+                code="add_terminator",
+                message="Add '='",
+                replacement=stripped.rstrip() + "=",
             )
+        )
 
     return issues, fixes
 

@@ -111,6 +111,8 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
     expect(bar).toContainElement(product);
     expect(bar).toContainElement(profile);
     expect(bar).not.toContainElement(screen.getByTestId('input-mode-group'));
+    expect(bar).not.toContainElement(screen.getByTestId('product-profile-bar-summary'));
+    expect(bar).not.toContainElement(screen.getByTestId('semantic-profile-help'));
     desktopNowrapContract(bar);
 
     expect(product).toHaveAccessibleName(/^product$/i);

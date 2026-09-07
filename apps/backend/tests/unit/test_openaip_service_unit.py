@@ -1,11 +1,10 @@
-"""Unit tests for OpenAIPService – 0% coverage target."""
+"""Unit tests for OpenAIPService - 0% coverage target."""
 
 import builtins
 import json
 from datetime import UTC, datetime, timedelta
 
 import pytest
-
 from src.services.openaip_service import OpenAIPService
 
 
@@ -259,3 +258,10 @@ class TestOpenAIPServiceHelpers:
         result = svc.get_airport("EGLL")
 
         assert result == {"name": "new"}
+
+
+def test_load_cache_rejects_non_dict(tmp_path):
+    cache_file = tmp_path / "cache.json"
+    cache_file.write_text("[1,2,3]", encoding="utf-8")
+    svc = OpenAIPService(cache_file=cache_file)
+    assert svc._cache == {} or svc._load_cache() is False

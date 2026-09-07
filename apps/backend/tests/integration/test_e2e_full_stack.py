@@ -28,7 +28,7 @@ import subprocess
 import time
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 from unittest.mock import patch
 
 import httpx
@@ -40,7 +40,7 @@ import requests
 pytestmark = pytest.mark.e2e
 
 
-def load_env_file(env_path: Path) -> Dict[str, str]:
+def load_env_file(env_path: Path) -> dict[str, str]:
     """
     Load environment variables from .env file.
 
@@ -53,7 +53,7 @@ def load_env_file(env_path: Path) -> Dict[str, str]:
         return env_vars
 
     try:
-        with open(env_path, "r") as f:
+        with open(env_path) as f:
             for line in f:
                 line = line.strip()
 
@@ -70,9 +70,7 @@ def load_env_file(env_path: Path) -> Dict[str, str]:
                 value = value.strip()
 
                 # Remove quotes if present
-                if value.startswith('"') and value.endswith('"'):
-                    value = value[1:-1]
-                elif value.startswith("'") and value.endswith("'"):
+                if (value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'")):
                     value = value[1:-1]
 
                 env_vars[key] = value
@@ -108,7 +106,7 @@ def e2e_environment_check():
     # Provide defaults for missing values
     if not database_url:
         database_url = "sqlite:///:memory:"  # In-memory SQLite for testing
-        print("\n  ℹ️  Using mock DATABASE_URL (sqlite:///:memory:)")
+        print("\n  i️  Using mock DATABASE_URL (sqlite:///:memory:)")
     elif "test" not in database_url.lower():
         # Real database provided but doesn't contain "test" - use mock instead for safety
         database_url = "sqlite:///:memory:"
@@ -118,13 +116,13 @@ def e2e_environment_check():
 
     if not supabase_url:
         supabase_url = "https://mock-project.supabase.co"
-        print("  ℹ️  Using mock SUPABASE_URL")
+        print("  i️  Using mock SUPABASE_URL")
     else:
         print("  ✅ Using real SUPABASE_URL from environment")
 
     if not supabase_key:
         supabase_key = f"mock-key-{uuid.uuid4().hex[:20]}"
-        print("  ℹ️  Using mock SUPABASE_ANON_KEY")
+        print("  i️  Using mock SUPABASE_ANON_KEY")
     else:
         print("  ✅ Using real SUPABASE_ANON_KEY from environment")
 
@@ -192,8 +190,8 @@ def e2e_server(e2e_server_port):
     server_env["PYTHONPATH"] = backend_dir if not existing_pythonpath else f"{backend_dir}:{existing_pythonpath}"
 
     # Start uvicorn server in subprocess
-    server_stdout = open("/tmp/e2e_server_stdout.log", "w")
-    server_stderr = open("/tmp/e2e_server_stderr.log", "w")
+    server_stdout = open("/tmp/e2e_server_stdout.log", "w")  # noqa: SIM115
+    server_stderr = open("/tmp/e2e_server_stderr.log", "w")  # noqa: SIM115
     server_process = subprocess.Popen(
         [
             sys.executable,
@@ -233,15 +231,15 @@ def e2e_server(e2e_server_port):
                 server_stdout.close()
                 # Read the log files
                 try:
-                    with open("/tmp/e2e_server_stdout.log", "r") as f:
+                    with open("/tmp/e2e_server_stdout.log") as f:
                         stdout_str = f.read()[-2000:]  # Last 2000 chars
-                    with open("/tmp/e2e_server_stderr.log", "r") as f:
+                    with open("/tmp/e2e_server_stderr.log") as f:
                         stderr_str = f.read()[-1000:]  # Last 1000 chars
                     print(f"\n❌ Server stdout:\n{stdout_str}")
                     print(f"\n❌ Server stderr:\n{stderr_str}")
-                except Exception as e:
-                    print(f"\n❌ Could not read server logs: {e}")
-                raise RuntimeError(f"Server failed to start on {base_url}")
+                except Exception as log_err:
+                    print(f"\n❌ Could not read server logs: {log_err}")
+                raise RuntimeError(f"Server failed to start on {base_url}") from None
             time.sleep(0.2)
 
     yield base_url
@@ -264,7 +262,7 @@ def e2e_server(e2e_server_port):
     os.environ.pop("E2E_TEST_MODE", None)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def e2e_client(e2e_server, request):
     """
     HTTP client fixture for E2E testing with real network I/O.
@@ -292,8 +290,8 @@ def e2e_client(e2e_server, request):
         except Exception:
             pass  # Best effort cleanup
 
-    request.addfinalizer(cleanup)
-    return client
+    yield client
+    cleanup()
 
 
 @pytest.fixture
@@ -342,7 +340,7 @@ def e2e_auth_token(e2e_environment_check):
     # Real code would verify this signature, but we mock that dependency
     mock_token = "mock." + uuid.uuid4().hex[:40] + ".token"
 
-    print(f"\n  ℹ️  Using mock authentication token (user: {mock_user_id})")
+    print(f"\n  i️  Using mock authentication token (user: {mock_user_id})")
     return mock_token
 
 
@@ -363,15 +361,15 @@ def webhook_receiver():
             """Clear received webhooks."""
             self.webhooks.clear()
 
-        def get_latest(self) -> Dict[str, Any]:
+        def get_latest(self) -> dict[str, Any]:
             """Get the most recent webhook."""
             return self.webhooks[-1] if self.webhooks else None
 
-        def get_all(self) -> List[Dict[str, Any]]:
+        def get_all(self) -> list[dict[str, Any]]:
             """Get all received webhooks."""
             return self.webhooks.copy()
 
-        async def receive(self, webhook_data: Dict[str, Any]):
+        async def receive(self, webhook_data: dict[str, Any]):
             """Simulate receiving a webhook."""
             self.webhooks.append(
                 {
@@ -424,23 +422,18 @@ class TestE2EAuthenticationFlow:
     async def test_unauthenticated_access_denied(self, e2e_client):
         """Test that protected endpoints reject unauthenticated requests."""
         # Try to create an evaluation job without authentication header
-        try:
-            response = await e2e_client.post(
-                "/api/v1/eval/jobs",
-                json={
-                    "mode": "single",
-                    "station_ids": ["KJFK"],
-                    "hours": 1,
-                },
-                # No Authorization header
-            )
+        response = await e2e_client.post(
+            "/api/v1/eval/jobs",
+            json={
+                "mode": "single",
+                "station_ids": ["KJFK"],
+                "hours": 1,
+            },
+            # No Authorization header
+        )
 
-            # Should be denied (401 or 403) or get a Supabase error
-            assert response.status_code in [401, 403, 404]
-        except Exception as e:
-            # If Supabase call fails (404 table not found, etc), that's acceptable
-            # This tests that the endpoint exists and attempts auth
-            assert "404" in str(e) or "401" in str(e) or "403" in str(e)
+        # Should be denied (401 or 403) or get a Supabase error
+        assert response.status_code in [401, 403, 404]
 
     @pytest.mark.asyncio
     async def test_authenticated_conversion(self, e2e_client, e2e_auth_token):
@@ -559,10 +552,8 @@ class TestE2EConversionPipeline:
         assert response.headers["content-type"] == "application/zip"
         assert "content-disposition" in response.headers
         # Accept both new and old filename formats
-        assert (
-            "iwxxm" in response.headers["content-disposition"].lower()
-            and ".zip" in response.headers["content-disposition"]
-        )
+        assert "iwxxm" in response.headers["content-disposition"].lower()
+        assert ".zip" in response.headers["content-disposition"]
 
         # Verify ZIP content is non-empty
         content = response.content
@@ -621,7 +612,7 @@ class TestE2EEvaluationJobWorkflow:
                 if status in ["completed", "failed"]:
                     break
 
-                time.sleep(0.5)
+                await asyncio.sleep(0.5)
 
             # Job should have reached a terminal state or still be pending/running
             assert status in ["pending", "running", "completed", "failed"]
@@ -792,17 +783,12 @@ class TestE2EErrorHandlingAndRecovery:
     async def test_database_error_recovery(self, e2e_client):
         """Test graceful handling of database errors."""
         # Try to get a non-existent evaluation job with auth header
-        try:
-            response = await e2e_client.get(
-                "/api/v1/eval/jobs/non-existent-job-id-12345", headers={"Authorization": "Bearer test-token-12345"}
-            )
+        response = await e2e_client.get(
+            "/api/v1/eval/jobs/non-existent-job-id-12345", headers={"Authorization": "Bearer test-token-12345"}
+        )
 
-            # Should return error, not 500
-            assert response.status_code in [400, 401, 403, 404]
-        except Exception as e:
-            # If Supabase returns 404 (table not found) or auth error, that's acceptable
-            # This tests that the endpoint exists and attempts to query
-            assert "404" in str(e) or "401" in str(e) or "403" in str(e)
+        # Should return error, not 500
+        assert response.status_code in [400, 401, 403, 404]
 
     @pytest.mark.asyncio
     @pytest.mark.skip(reason="Evaluation job endpoints suspended")
@@ -1015,7 +1001,7 @@ class TestE2EFullEndpointCoverage:
         )
         assert response.status_code == 200
         data = response.json()
-        assert "results" in data or "conversions" in data.keys()
+        assert "results" in data or "conversions" in data
 
     @pytest.mark.asyncio
     async def test_validation_endpoint_tac(self, e2e_client):
@@ -1235,7 +1221,7 @@ class TestE2EValidationEndpoints:
         data = response.json()
 
         # Should have timing information
-        assert "execution_time_ms" in data or any("time" in k.lower() for k in data.keys())
+        assert "execution_time_ms" in data or any("time" in k.lower() for k in data)
 
     @pytest.mark.asyncio
     async def test_validate_error_handling(self, e2e_client):
@@ -1350,7 +1336,7 @@ class TestE2EICAOOPMETEndpoints:
             "RJTT": "APAC",  # Asia-Pacific
         }
 
-        for airport_code, expected_region in airports.items():
+        for airport_code in airports:
             response = await e2e_client.get(f"/api/v1/translation/airport-region/{airport_code}")
 
             # Endpoint may not exist, but test structure if it does
@@ -1461,10 +1447,7 @@ class TestE2EEnhancedEvaluationJobWorkflow:
         data = response.json()
 
         # Should return list or object with jobs
-        if isinstance(data, list):
-            jobs = data
-        else:
-            jobs = data.get("jobs") or []
+        jobs = data if isinstance(data, list) else data.get("jobs") or []
 
         assert isinstance(jobs, list)
 

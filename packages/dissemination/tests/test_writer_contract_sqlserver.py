@@ -1,7 +1,7 @@
 """SQL Server writer-contract via aioodbc (T2.6 / TC-F16-003 / E14-06).
 
 Live engine tests require Docker (Testcontainers) **and** a system ODBC SQL Server
-driver (e.g. Microsoft ODBC Driver 18). Without ODBC, cases skip — CI may omit ODBC.
+driver (e.g. Microsoft ODBC Driver 18). Without ODBC, cases skip - CI may omit ODBC.
 Driver install notes: ``docs/deploy.md`` §SQL Server ODBC and this package README.
 """
 
@@ -14,15 +14,14 @@ from contextlib import contextmanager
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 import pytest
-from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
-
 from dissemination.db_preflight import dialect_for_sink, normalize_sqlalchemy_uri
 from dissemination.odbc import (
     odbc_sqlserver_available,
     preferred_sqlserver_odbc_driver,
 )
 from dissemination.writer_contract import DiffKind, apply_writer_contract, diff_writer_contract
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
 pytestmark = pytest.mark.integration
 

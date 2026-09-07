@@ -9,7 +9,8 @@ from __future__ import annotations
 import logging
 import os
 import re
-from typing import Any, Dict, List, Optional, Tuple, TypeGuard
+from collections.abc import Callable
+from typing import Any, TypeGuard, cast
 
 from fastapi import HTTPException, Request, UploadFile
 
@@ -33,19 +34,25 @@ except ImportError:  # pragma: no cover - Docker/local import path mirror
     from utilities.profile_wire import WireProfileSelection, resolve_route_profiles
 
 from iwxxm_validate.models import ValidationReport
+
 from tac2iwxxm import BulletinSplitError
+
+try:
+    from .services.validation_orchestrator import ValidationOrchestrator
+except ImportError:  # pragma: no cover - Docker/local import path mirror
+    from services.validation_orchestrator import ValidationOrchestrator
 
 logger = logging.getLogger(__name__)
 
 
-def _iwxxm_validate_fn():
+def _iwxxm_validate_fn() -> Callable[..., ValidationReport]:
     """Resolve the patchable SDK alias from ``api`` (TC-F6-033 / F11)."""
     try:
         from . import api as api_mod
     except ImportError:  # pragma: no cover - Docker/local import path mirror
         import api as api_mod
 
-    return api_mod.iwxxm_validate_fn
+    return cast(Callable[..., ValidationReport], api_mod.iwxxm_validate_fn)
 
 
 def is_dev_cors_relaxation_enabled() -> bool:
@@ -58,14 +65,14 @@ def is_dev_cors_relaxation_enabled() -> bool:
     )
 
 
-def add_origin_if_missing(origins: list, origin: str) -> list:
+def add_origin_if_missing(origins: list[str], origin: str) -> list[str]:
     """Append origin if not present."""
     if origin and origin not in origins:
         origins.append(origin)
     return origins
 
 
-def add_loopback_origin_variants(origins: list) -> list:
+def add_loopback_origin_variants(origins: list[Any]) -> list[Any]:
     """Ensure localhost and 127.0.0.1 variants are both allowed for local dev."""
     expanded_origins = list(origins)
     for origin in origins:
@@ -78,7 +85,7 @@ def add_loopback_origin_variants(origins: list) -> list:
     return expanded_origins
 
 
-def get_cors_origins() -> list:
+def get_cors_origins() -> list[Any]:
     """Get allowed CORS origins from config with deprecated env fallbacks."""
     import warnings
 
@@ -119,7 +126,7 @@ def get_cors_origins() -> list:
     return add_loopback_origin_variants(origins)
 
 
-def get_cors_allowed_headers() -> list:
+def get_cors_allowed_headers() -> list[Any]:
     """Get allowed CORS request headers."""
     if is_dev_cors_relaxation_enabled():
         return ["*"]
@@ -133,7 +140,7 @@ def _is_named_upload(value: object) -> TypeGuard[UploadFile]:
     return bool(getattr(value, "filename", None))
 
 
-async def parse_files(request: Request) -> List[UploadFile]:
+async def parse_files(request: Request) -> list[UploadFile]:
     """
     Parse files parameter from request, handling edge cases:
     - Swagger UI 'Send empty value' sends empty string which FastAPI can't parse
@@ -141,7 +148,7 @@ async def parse_files(request: Request) -> List[UploadFile]:
     """
     try:
         form = await request.form()
-        files = []
+        files: list[UploadFile] = []
         for key, value in form.multi_items():
             if key == "files" and _is_named_upload(value):
                 files.append(value)
@@ -164,13 +171,13 @@ async def parse_files(request: Request) -> List[UploadFile]:
                 ],
                 total_errors=1,
             ).model_dump(),
-        )
+        ) from e
 
 
-# Multi-line TAC products — keep the whole buffer as one entry (do not line-split).
+# Multi-line TAC products - keep the whole buffer as one entry (do not line-split).
 # SIGMET/AIRMET: WMO examples are header- + body= across lines (BUG-2026-07-30 / F23 UI).
 # VAA/TCA/SWXA/VONA: advisory / notice templates with labeled fields (F26/F27/F28/F32).
-# IWXXM: pass-through XML document (F7.t / EV-060 / #1003) — never line-split.
+# IWXXM: pass-through XML document (F7.t / EV-060 / #1003) - never line-split.
 _MULTILINE_TEMPLATE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA", "IWXXM"})
 
 # Wire product enum (api-contract EV-029 / F28 / EV-032 F32 / EV-060 F7.t).
@@ -179,9 +186,9 @@ _API_PRODUCTS = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "
 
 
 def normalize_api_product(
-    product: Optional[str],
+    product: str | None,
     *,
-    default: Optional[str] = "METAR",
+    default: str | None = "METAR",
 ) -> str:
     """Normalize multipart/JSON ``product`` to uppercase enum or raise ``unknown_product`` 400."""
     raw = (product or "").strip()
@@ -212,7 +219,9 @@ def normalize_api_product(
 
 def _coerce_form_list(value: object) -> list[str]:
     """Return list form field values; direct endpoint calls leave ``Form()`` defaults."""
-    return value if isinstance(value, list) else []
+    if isinstance(value, list):
+        return [item for item in cast(list[object], value) if isinstance(item, str)]
+    return []
 
 
 def _coerce_form_str(value: object, default: str = "") -> str:
@@ -221,7 +230,7 @@ def _coerce_form_str(value: object, default: str = "") -> str:
 
 
 def _resolve_request_extensions(
-    form_extensions: List[str],
+    form_extensions: list[str],
     json_extensions: list[str] | None,
 ) -> list[str]:
     """Merge multipart and JSON extension tokens; reject unknown ids."""
@@ -246,12 +255,16 @@ def _package_issue_payload(issue: object) -> dict[str, Any]:
 
 
 def _package_stages_payload(report: object) -> list[dict[str, Any]] | None:
-    stages = getattr(report, "stages", None) or []
+    stages_obj = getattr(report, "stages", None)
+    if not isinstance(stages_obj, list):
+        return None
+    stages: list[object] = cast(list[object], stages_obj)
     if not stages:
         return None
     out: list[dict[str, Any]] = []
     for stage in stages:
-        stage_issues = getattr(stage, "issues", None) or []
+        issues_obj = getattr(stage, "issues", None)
+        stage_issues: list[object] = cast(list[object], issues_obj) if isinstance(issues_obj, list) else []
         out.append(
             {
                 "stage": str(getattr(stage, "stage", "")),
@@ -306,16 +319,16 @@ def _resolve_request_profiles(
     return wire
 
 
-def _is_multiline_template_product(product: Optional[str]) -> bool:
+def _is_multiline_template_product(product: str | None) -> bool:
     """Return True for products whose TAC must not be split one-entry-per-line."""
     return (product or "").strip().upper() in _MULTILINE_TEMPLATE_PRODUCTS
 
 
-def split_manual_entries(manual_text: str, product: Optional[str] = None) -> List[str]:
+def split_manual_entries(manual_text: str, product: str | None = None) -> list[str]:
     """Split manual text into TAC entries.
 
     Default (METAR/SPECI/TAF): one entry per non-empty line.
-    SIGMET/AIRMET/VAA/TCA/SWXA/VONA: entire buffer is one multi-line document —
+    SIGMET/AIRMET/VAA/TCA/SWXA/VONA: entire buffer is one multi-line document -
     line-splitting would shred the header/body (SIGMET/AIRMET) or template
     fields (``VA ADVISORY`` / ``SWX ADVISORY`` / ``VONA`` / ``DTG:`` / …).
     """
@@ -327,7 +340,7 @@ def split_manual_entries(manual_text: str, product: Optional[str] = None) -> Lis
     return [line.strip() for line in manual_text.splitlines() if line.strip()]
 
 
-def manual_entries_with_offsets(manual_text: str, product: Optional[str] = None) -> List[Tuple[str, int]]:
+def manual_entries_with_offsets(manual_text: str, product: str | None = None) -> list[tuple[str, int]]:
     """Split like ``split_manual_entries`` with start offsets into the original buffer.
 
     Offsets point at the first non-whitespace character of each kept entry so
@@ -344,7 +357,7 @@ def manual_entries_with_offsets(manual_text: str, product: Optional[str] = None)
         lead = len(manual_text) - len(manual_text.lstrip())
         # Preserve internal newlines; only trim outer whitespace for the entry text.
         return [(stripped, lead)]
-    out: List[Tuple[str, int]] = []
+    out: list[tuple[str, int]] = []
     offset = 0
     for line in manual_text.splitlines(keepends=True):
         raw = line[:-1] if line.endswith("\n") else line
@@ -358,7 +371,7 @@ def manual_entries_with_offsets(manual_text: str, product: Optional[str] = None)
     return out
 
 
-async def read_uploaded_text(upload_file: UploadFile) -> Tuple[Optional[str], Optional[str]]:
+async def read_uploaded_text(upload_file: UploadFile) -> tuple[str | None, str | None]:
     """Read uploaded text file using strict UTF-8 decoding with a size limit.
 
     Gzip payloads (``.gz`` / magic ``1f 8b``) are inflated before decode.
@@ -408,7 +421,7 @@ async def read_uploaded_text(upload_file: UploadFile) -> Tuple[Optional[str], Op
 MAX_BULLETIN_REPORTS = 100
 
 
-async def read_upload_files_text(files: Optional[List[UploadFile]]) -> Tuple[str, Optional[str]]:
+async def read_upload_files_text(files: list[UploadFile] | None) -> tuple[str, str | None]:
     """Join multipart uploads via ``read_uploaded_text`` (10 MiB each).
 
     Returns
@@ -430,7 +443,7 @@ async def read_upload_files_text(files: Optional[List[UploadFile]]) -> Tuple[str
     return "\n".join(chunks), None
 
 
-def is_xml_input(filename: Optional[str], content: str) -> bool:
+def is_xml_input(filename: str | None, content: str) -> bool:
     """Determine if uploaded content looks like XML input."""
     lowered_name = (filename or "").lower()
     if lowered_name.endswith(".xml"):
@@ -440,12 +453,12 @@ def is_xml_input(filename: Optional[str], content: str) -> bool:
 
 def classify_and_validate_upload_content(
     *,
-    filename: Optional[str],
+    filename: str | None,
     content: str | None,
     iwxxm_version: str,
     endpoint_path: str,
-    validation_orchestrator: Optional[Any],
-) -> Optional[Dict[str, str]]:
+    validation_orchestrator: ValidationOrchestrator | None,
+) -> dict[str, str] | None:
     """Return a standardized XML rejection payload for TAC-only conversion endpoints."""
     if not content or not is_xml_input(filename, content):
         return None
@@ -493,7 +506,7 @@ def classify_and_validate_upload_content(
     }
 
 
-def normalize_code(value: Optional[str], max_length: int) -> Optional[str]:
+def normalize_code(value: str | None, max_length: int) -> str | None:
     """Normalize optional alphanumeric code-like fields."""
     if not value:
         return None
@@ -507,7 +520,7 @@ _BULLETIN_ID_RE = re.compile(r"^[A-Z]{4}[0-9]{2}$")
 _CCCC_RE = re.compile(r"^[A-Z]{4}$")
 
 
-def parse_optional_bulletin_id(value: Optional[str]) -> str:
+def parse_optional_bulletin_id(value: str | None) -> str:
     """Return uppercase bulletin id, or empty when omitted.
 
     Raises
@@ -539,7 +552,7 @@ def parse_optional_bulletin_id(value: Optional[str]) -> str:
     return raw
 
 
-def parse_optional_issuing_center(value: Optional[str]) -> str:
+def parse_optional_issuing_center(value: str | None) -> str:
     """Return uppercase ICAO CCCC, or empty when omitted.
 
     Raises
@@ -571,14 +584,14 @@ def parse_optional_issuing_center(value: Optional[str]) -> str:
     return raw
 
 
-def normalize_validation_level(value: Optional[str]) -> str:
+def normalize_validation_level(value: str | None) -> str:
     """Normalize validation level to one of the supported API values."""
     allowed_levels = {"basic", "schema", "schematron", "icao_opmet", "comprehensive"}
     level = (value or "basic").strip().lower().replace("-", "_")
     return level if level in allowed_levels else "basic"
 
 
-def _product_uses_metar_tac_layers(product: Optional[str]) -> bool:
+def _product_uses_metar_tac_layers(product: str | None) -> bool:
     """Return True when legacy METAR/SPECI TAC keyword layers apply.
 
     F6.e non-METAR products (TAF, SIGMET, ...) must not be rejected by
@@ -588,7 +601,7 @@ def _product_uses_metar_tac_layers(product: Optional[str]) -> bool:
     return product_u in {"METAR", "SPECI"}
 
 
-async def parse_optional_files(request: Request) -> List[UploadFile]:
+async def parse_optional_files(request: Request) -> list[UploadFile]:
     """Parse optional file uploads, filtering out empty strings from form data."""
     form = await request.form()
     files_data = form.getlist("files")

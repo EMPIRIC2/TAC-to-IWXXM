@@ -1,10 +1,9 @@
-"""Thin FastAPI routers for dissemination preflight/send (F16–F19 / ADR-030)."""
+"""Thin FastAPI routers for dissemination preflight/send (F16-F19 / ADR-030)."""
 
 from __future__ import annotations
 
 import logging
 import uuid
-from typing import Any
 
 import msgspec
 from dissemination.db_preflight import (
@@ -46,10 +45,21 @@ def _client_id(request: Request) -> str:
     return "anonymous"
 
 
-async def _read_struct(request: Request, decoder: msgspec.json.Decoder) -> Any:
+async def _read_preflight(request: Request) -> PreflightRequest:
     raw = await request.body()
     try:
-        return decoder.decode(raw)
+        return _decoder_preflight.decode(raw)
+    except msgspec.DecodeError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=redact_secrets(f"invalid request body: {exc}"),
+        ) from exc
+
+
+async def _read_send(request: Request) -> SendRequest:
+    raw = await request.body()
+    try:
+        return _decoder_send.decode(raw)
     except msgspec.DecodeError as exc:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
@@ -61,7 +71,7 @@ async def _read_struct(request: Request, decoder: msgspec.json.Decoder) -> Any:
 @dissemination_limit(_limiter)
 async def dissemination_preflight(
     request: Request,
-):
+) -> object:
     """Run sink preflight; return schema diffs and optional memory-only handle."""
     uid = _client_id(request)
     try:
@@ -72,7 +82,7 @@ async def dissemination_preflight(
             detail=str(exc),
         ) from exc
 
-    req: PreflightRequest = await _read_struct(request, _decoder_preflight)
+    req = await _read_preflight(request)
 
     if req.sink_type not in _DB_SINKS:
         raise HTTPException(
@@ -121,7 +131,7 @@ async def dissemination_preflight(
 @dissemination_limit(_limiter)
 async def dissemination_send(
     request: Request,
-):
+) -> object:
     """Send IWXXM via a green preflight handle or inline sink params."""
     uid = _client_id(request)
     try:
@@ -132,7 +142,7 @@ async def dissemination_send(
             detail=str(exc),
         ) from exc
 
-    req: SendRequest = await _read_struct(request, _decoder_send)
+    req = await _read_send(request)
 
     sink_type = req.sink_type
     uri = req.uri

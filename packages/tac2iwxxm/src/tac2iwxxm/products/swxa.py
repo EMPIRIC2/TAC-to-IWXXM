@@ -49,7 +49,7 @@ def _fields(text: str) -> dict[str, str]:
             continue
         if current_key is not None:
             cont = line.strip()
-            if cont:
+            if cont:  # pragma: no branch — blank lines already skipped above
                 prev = out.get(current_key, "")
                 out[current_key] = f"{prev} {cont}".strip() if prev else cont
     return out

@@ -23,7 +23,7 @@ ANNEX3 = FIXTURES / "annex3_golden"
 IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
 
-# Body has no COR/AMD keyword — status must come from AHL BBB (T2.2).
+# Body has no COR/AMD keyword - status must come from AHL BBB (T2.2).
 _BBB_CASES = (
     ("metar_ahl_normal.txt", None, "NORMAL"),
     ("metar_ahl_rra.txt", "RRA", "NORMAL"),

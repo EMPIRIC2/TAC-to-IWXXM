@@ -4,11 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 from types import SimpleNamespace
+from typing import ClassVar
 
 import msgspec
 import pytest
-from lxml import etree
-
 from iwxxm_validate import validate
 from iwxxm_validate.codec import json_decoder, json_encoder
 from iwxxm_validate.models import Issue, ValidationReport
@@ -25,6 +24,7 @@ from iwxxm_validate.paths import (
 )
 from iwxxm_validate.schematron import clear_schematron_cache, validate_schematron
 from iwxxm_validate.xsd import clear_xsd_cache, validate_xsd
+from lxml import etree
 
 
 def test_codec_roundtrip_validation_report() -> None:
@@ -54,7 +54,7 @@ def test_repo_root_from_schemas_root(monkeypatch: pytest.MonkeyPatch, tmp_path: 
 
 
 def test_version_dir_missing_raises() -> None:
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError, match=r".*"):
         version_dir("9999-9")
 
 
@@ -185,7 +185,7 @@ def test_validate_xsd_success_with_fake_schema(monkeypatch: pytest.MonkeyPatch) 
     clear_xsd_cache()
 
     class _Ok:
-        error_log: list[object] = []
+        error_log: ClassVar[list[object]] = []
 
         def validate(self, _doc: object) -> bool:
             return True
@@ -199,7 +199,7 @@ def test_validate_xsd_failure_with_error_log(monkeypatch: pytest.MonkeyPatch) ->
     err = SimpleNamespace(message="bad element", line=1, column=2)
 
     class _Bad:
-        error_log = [err]
+        error_log: ClassVar[list[object]] = [err]
 
         def validate(self, _doc: object) -> bool:
             return False
@@ -214,7 +214,7 @@ def test_validate_xsd_failure_empty_error_log(monkeypatch: pytest.MonkeyPatch) -
     clear_xsd_cache()
 
     class _Bad:
-        error_log: list[object] = []
+        error_log: ClassVar[list[object]] = []
 
         def validate(self, _doc: object) -> bool:
             return False
@@ -228,7 +228,7 @@ def test_validate_xsd_validate_raises(monkeypatch: pytest.MonkeyPatch) -> None:
     clear_xsd_cache()
 
     class _Boom:
-        error_log: list[object] = []
+        error_log: ClassVar[list[object]] = []
 
         def validate(self, _doc: object) -> bool:
             raise RuntimeError("boom")
@@ -412,7 +412,7 @@ def test_xsd_path_missing_file(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) 
 
     paths_mod.version_dir.cache_clear()
     monkeypatch.setattr(paths_mod, "version_dir", lambda _v: tmp_path)
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError, match=r".*"):
         xsd_path("2023-1")
 
 
@@ -420,7 +420,7 @@ def test_schematron_path_missing_file(monkeypatch: pytest.MonkeyPatch, tmp_path:
     from iwxxm_validate import paths as paths_mod
 
     monkeypatch.setattr(paths_mod, "version_dir", lambda _v: tmp_path)
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError, match=r".*"):
         schematron_path("2023-1")
 
 
@@ -428,7 +428,7 @@ def test_codelists_dir_missing(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) 
     from iwxxm_validate import paths as paths_mod
 
     monkeypatch.setattr(paths_mod, "version_dir", lambda _v: tmp_path)
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError, match=r".*"):
         codelists_dir("2023-1")
 
 
@@ -474,6 +474,24 @@ def test_api_skips_schematron_after_xml_syntax() -> None:
     assert report.ok is False
     assert any(i.code == "XML_SYNTAX_ERROR" for i in report.issues)
     assert not any(i.layer == "schematron" and i.code != "XML_SYNTAX_ERROR" for i in report.issues)
+
+
+def test_api_returns_immediately_for_mocked_xsd_syntax_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    syntax_issue = Issue(
+        severity="error",
+        code="XML_SYNTAX_ERROR",
+        message="bad XML",
+        layer="xsd",
+    )
+    monkeypatch.setattr("iwxxm_validate.api.validate_xsd", lambda _xml, _version: [syntax_issue])
+
+    report = validate(
+        "<root/>",
+        iwxxm_version="2023-1",
+        levels=("xsd",),
+    )
+
+    assert report.issues == [syntax_issue]
 
 
 def test_resolve_ca_eccc_bundle_rejects_non_pinned_version() -> None:
@@ -530,6 +548,22 @@ def test_validate_xsd_at_path_parse_error(tmp_path: Path, monkeypatch: pytest.Mo
     assert issues[0].code == "SCHEMA_PARSE_ERROR"
 
 
+def test_validate_xsd_at_path_generic_compile_error(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from iwxxm_validate.xsd import clear_xsd_cache, validate_xsd_at_path
+
+    clear_xsd_cache()
+    xsd_file = tmp_path / "unavailable.xsd"
+    xsd_file.write_text("<?xml version='1.0'?><xs:schema/>", encoding="utf-8")
+    monkeypatch.setattr(
+        "iwxxm_validate.xsd._compile_schema_file",
+        lambda _path: (_ for _ in ()).throw(RuntimeError("dependency missing")),
+    )
+
+    issues = validate_xsd_at_path("<root/>", xsd_file, layer="ca_xsd")
+
+    assert issues[0].code == "SCHEMA_NOT_AVAILABLE"
+
+
 def test_validate_xsd_at_path_success(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     from iwxxm_validate.xsd import clear_xsd_cache, validate_xsd_at_path
 
@@ -541,7 +575,7 @@ def test_validate_xsd_at_path_success(monkeypatch: pytest.MonkeyPatch, tmp_path:
     )
 
     class _Ok:
-        error_log: list[object] = []
+        error_log: ClassVar[list[object]] = []
 
         def validate(self, _doc: object) -> bool:
             return True
@@ -588,7 +622,8 @@ def test_validate_ca_eccc_layered_bundle_missing(monkeypatch: pytest.MonkeyPatch
     report = validate_ca_eccc_layered("<root/>", iwxxm_version="3.0.0")
     assert report.ok is False
     assert report.issues[0].code == "CA_SCHEMA_NOT_FOUND"
-    assert report.stages and report.stages[0].stage == "wmo_xsd"
+    assert report.stages
+    assert report.stages[0].stage == "wmo_xsd"
 
 
 def test_validate_ca_eccc_layered_lxml_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -675,7 +710,7 @@ def test_validate_ca_xsd_document_lxml_fallback(monkeypatch: pytest.MonkeyPatch,
     )
 
     class _Ok:
-        error_log: list[object] = []
+        error_log: ClassVar[list[object]] = []
 
         def validate(self, _doc: object) -> bool:
             return True
@@ -707,7 +742,7 @@ def test_validate_xsd_at_path_xml_syntax(monkeypatch: pytest.MonkeyPatch, tmp_pa
     )
 
     class _Ok:
-        error_log: list[object] = []
+        error_log: ClassVar[list[object]] = []
 
         def validate(self, _doc: object) -> bool:
             return True
@@ -773,3 +808,44 @@ def test_validate_ca_eccc_layered_missing_product_xsd(monkeypatch: pytest.Monkey
     ca_stage = next((s for s in report.stages if s.stage == "ca_xsd"), None)
     assert ca_stage is not None
     assert any(i.code == "CA_PRODUCT_XSD_NOT_FOUND" for i in ca_stage.issues)
+
+
+def test_ca_xsd_path_checks_fallback_candidate(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    from iwxxm_validate import paths as paths_mod
+
+    fallback = tmp_path / "iwxxm-ca.xsd"
+    fallback.write_text("<schema/>", encoding="utf-8")
+    monkeypatch.setattr(paths_mod, "vendor_iwxxm_ca_root", lambda: tmp_path)
+
+    assert paths_mod.ca_xsd_path() == fallback
+
+    fallback.unlink()
+    assert paths_mod.ca_xsd_path() is None
+
+
+def test_lxml_core_levels_stop_after_wellformed_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    import importlib
+
+    vi = importlib.import_module("iwxxm_validate.validate_iwxxm")
+    syntax_issue = Issue(
+        severity="error",
+        code="XML_SYNTAX_ERROR",
+        message="bad XML",
+        layer="wellformed",
+    )
+    monkeypatch.setattr(vi, "rust_available", lambda: False)
+    monkeypatch.setattr(vi, "run_wellformed_lxml", lambda _xml: [syntax_issue])
+    monkeypatch.setattr(
+        vi,
+        "validate",
+        lambda *_args, **_kwargs: pytest.fail("XSD fallback must be skipped after syntax failure"),
+    )
+
+    report = vi._validate_core_levels(
+        "<bad>",
+        iwxxm_version="2023-1",
+        profile="annex3",
+        selected=("wellformed", "xsd"),
+    )
+
+    assert report.issues == [syntax_issue]

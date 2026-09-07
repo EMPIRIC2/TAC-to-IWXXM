@@ -1,4 +1,4 @@
-"""EV-022 / F9 deepen — WMO SIGMET A6-1a-TS decode should not leave header/body residuals.
+"""EV-022 / F9 deepen - WMO SIGMET A6-1a-TS decode should not leave header/body residuals.
 
 Previously convert succeeded while Decode listed residuals for sequence, VALID, MWO,
 FIR name, SE-box geometry, FL, and MOV direction/speed.

@@ -5,7 +5,7 @@ This module defines the database models for translation statistics and related d
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 from uuid import UUID
 
 from sqlalchemy import (
@@ -52,24 +52,24 @@ class TranslationStatisticsModel(Base):
     # Input/Output
     tac_message: Mapped[str] = mapped_column(Text, nullable=False)
     iwxxm_version: Mapped[str] = mapped_column(String(10), nullable=False)
-    iwxxm_output: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    iwxxm_output: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # Translation result
     translation_status: Mapped[str] = mapped_column(String(20), nullable=False)
-    validation_layers_passed: Mapped[Optional[List[str]]] = mapped_column(ARRAY(String), nullable=True)
-    validation_errors: Mapped[Optional[Dict[str, Any]]] = mapped_column(JSONB, nullable=True)
+    validation_layers_passed: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
+    validation_errors: Mapped[dict[str, Any] | None] = mapped_column(JSONB, nullable=True)
 
     # Performance metrics
     translation_duration_ms: Mapped[int] = mapped_column(Integer, nullable=False)
 
     # User context
-    user_id: Mapped[Optional[UUID]] = mapped_column(PGUUID(as_uuid=True), nullable=True)
-    session_id: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    user_id: Mapped[UUID | None] = mapped_column(PGUUID(as_uuid=True), nullable=True)
+    session_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     # Translation Centre metadata
     translation_centre_designator: Mapped[str] = mapped_column(String(50), nullable=False, server_default="NOAA-MDL")
-    bulletin_reception_time: Mapped[Optional[datetime]] = mapped_column(SA_DateTime(timezone=True), nullable=True)
-    bulletin_id: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    bulletin_reception_time: Mapped[datetime | None] = mapped_column(SA_DateTime(timezone=True), nullable=True)
+    bulletin_id: Mapped[str | None] = mapped_column(String(100), nullable=True)
 
     # Constraints
     __table_args__ = (
@@ -115,8 +115,8 @@ class TranslationStatisticsSummaryModel(Base):
     interval_type: Mapped[str] = mapped_column(String(10), nullable=False)
 
     # Filters (NULL means "all")
-    icao_region: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
-    iwxxm_version: Mapped[Optional[str]] = mapped_column(String(10), nullable=True)
+    icao_region: Mapped[str | None] = mapped_column(String(10), nullable=True)
+    iwxxm_version: Mapped[str | None] = mapped_column(String(10), nullable=True)
 
     # Aggregated metrics
     total_translations: Mapped[int] = mapped_column(Integer, nullable=False)

@@ -8,7 +8,6 @@ Tests enhanced visibility-weather validation with:
 """
 
 import pytest
-
 from src.validation.semantic_rules import (
     IssueSeverity,
     VisibilityWeatherValidationRule,

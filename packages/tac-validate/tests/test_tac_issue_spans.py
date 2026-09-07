@@ -1,9 +1,8 @@
-"""T2.1 — Issue models accept optional character spans (S011 / EV-008)."""
+"""T2.1 - Issue models accept optional character spans (S011 / EV-008)."""
 
 from __future__ import annotations
 
 import msgspec
-
 from tac_validate.models import Issue
 
 

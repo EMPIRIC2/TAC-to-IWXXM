@@ -9,7 +9,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from iwxxm_validate import rust_available, validate_iwxxm
 from iwxxm_validate.ca_eccc_bundle import CA_ECCC_IWXXM_VERSION
 
@@ -22,7 +21,7 @@ EV067_CASES = (
     "metar_rmk_icing",
 )
 
-# Substitution-group roots skip WMO XSD/SCH; standard METAR root runs layers 2–4.
+# Substitution-group roots skip WMO XSD/SCH; standard METAR root runs layers 2-4.
 _EXPECTED_STAGES = {
     "metar_lwis": ("wellformed", "ca_xsd", "code_ca", "exchange"),
     "metar_sawr": ("wellformed", "ca_xsd", "code_ca", "exchange"),
@@ -32,7 +31,7 @@ _EXPECTED_STAGES = {
 
 @pytest.mark.parametrize("case_id", EV067_CASES)
 def test_tc_ev068_003_ev067_golden_passes_ca_layers(case_id: str) -> None:
-    """EV-067 goldens pass layered ca_eccc validation (layers 2–4 as applicable)."""
+    """EV-067 goldens pass layered ca_eccc validation (layers 2-4 as applicable)."""
     if not rust_available():
         pytest.skip("iwxxm_validate._rust not built (make build-iwxxm-validate-native)")
 

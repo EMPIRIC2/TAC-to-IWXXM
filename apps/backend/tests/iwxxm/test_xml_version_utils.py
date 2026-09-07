@@ -8,7 +8,7 @@ Handles namespace differences and version-specific validation.
 import pathlib
 import re
 import sys
-from typing import Optional, Tuple
+from typing import Optional
 from xml.etree import ElementTree as ET
 
 # Add src to path for imports
@@ -55,7 +55,7 @@ def normalize_namespace_for_comparison(xml_string: str, target_version: str) -> 
 
 def compare_xml_ignoring_namespace_version(
     xml1: str, xml2: str, strip_dynamic_attrs: bool = True
-) -> Tuple[bool, Optional[str]]:
+) -> tuple[bool, str | None]:
     """
     Compare two IWXXM XML documents, ignoring namespace version differences.
 
@@ -67,8 +67,7 @@ def compare_xml_ignoring_namespace_version(
         xml2: Second XML document
         strip_dynamic_attrs: Whether to remove dynamic attributes (UUIDs, timestamps)
 
-    Returns:
-        Tuple of (is_equal, error_message)
+    Returns: tuple of (is_equal, error_message)
         - is_equal: True if documents are structurally equivalent
         - error_message: Description of first difference found, or None if equal
     """
@@ -94,7 +93,7 @@ def compare_xml_ignoring_namespace_version(
         return True, None
 
     except Exception as e:
-        return False, f"Comparison error: {str(e)}"
+        return False, f"Comparison error: {e!s}"
 
 
 def get_version_compatibility(version1: str, version2: str) -> str:
@@ -129,13 +128,11 @@ def _compare_elements(elem1: ET.Element, elem2: ET.Element) -> bool:
     if tag1 != tag2:
         return False
 
-    if elem1.text and elem2.text:
-        if elem1.text.strip() != elem2.text.strip():
-            return False
+    if elem1.text and elem2.text and elem1.text.strip() != elem2.text.strip():
+        return False
 
-    if elem1.tail and elem2.tail:
-        if elem1.tail.strip() != elem2.tail.strip():
-            return False
+    if elem1.tail and elem2.tail and elem1.tail.strip() != elem2.tail.strip():
+        return False
 
     # Compare non-dynamic attributes
     attrs1 = {k: v for k, v in elem1.attrib.items() if not _is_dynamic_attr(k, v)}
@@ -151,7 +148,7 @@ def _compare_elements(elem1: ET.Element, elem2: ET.Element) -> bool:
     if len(elem1) != len(elem2):
         return False
 
-    return all(_compare_elements(c1, c2) for c1, c2 in zip(elem1, elem2))
+    return all(_compare_elements(c1, c2) for c1, c2 in zip(elem1, elem2, strict=False))
 
 
 def _extract_tag_name(tag: str) -> str:
@@ -203,6 +200,4 @@ def _is_dynamic_attr(name: str, value: str) -> bool:
         return True
     if "uuid" in value.lower():
         return True
-    if re.match(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}", value):
-        return True
-    return False
+    return bool(re.match(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}", value))

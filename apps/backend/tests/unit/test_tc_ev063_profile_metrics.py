@@ -1,4 +1,4 @@
-"""TC-EV063-006 — profile id metrics + alias counters (EV-063 / F35).
+"""TC-EV063-006 - profile id metrics + alias counters (EV-063 / F35).
 
 Spec: docs/test-plan.md §TC-EV063-006; ADR-036 §6.
 """
@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities import observability as observability_module
 from src.utilities.profile_wire import WireProfileSelection

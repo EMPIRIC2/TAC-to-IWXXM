@@ -1,4 +1,4 @@
-"""EV-040 — document and fix RVR tendency + AHL YYGGgg false positives."""
+"""EV-040 - document and fix RVR tendency + AHL YYGGgg false positives."""
 
 from __future__ import annotations
 

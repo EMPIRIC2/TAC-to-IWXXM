@@ -67,18 +67,19 @@ def test_lint_optional_fixes_on_repairable_input() -> None:
     """When a rule can suggest a repair, fixes[] is populated (Q9=C)."""
     from tac_validate import lint
 
-    # Missing trailing '=' — skeleton may offer normalize_terminator fix
+    # Missing trailing '=' - skeleton may offer normalize_terminator fix
     report = lint(
         "METAR KJFK 101851Z 24008KT 10SM FEW250 15/07 A3034",
         product="METAR",
     )
     assert isinstance(report.fixes, list)
     if report.ok is False:
-        # Either issues without fixes, or issues with optional fixes — never silent success
+        # Either issues without fixes, or issues with optional fixes - never silent success
         assert len(report.issues) >= 1
     # If the skeleton offers a terminator fix, shape must match API contract
     for fix in report.fixes:
-        assert hasattr(fix, "code") and hasattr(fix, "message")
+        assert hasattr(fix, "code")
+        assert hasattr(fix, "message")
         assert hasattr(fix, "replacement")
 
 
@@ -95,7 +96,7 @@ def test_lint_accepts_all_seven_products(product: str) -> None:
     """Rule-pack skeleton must accept each product id (F6 + F28 SWXA)."""
     from tac_validate import lint
 
-    # Empty input fails parse gate for every product — proves product dispatch exists
+    # Empty input fails parse gate for every product - proves product dispatch exists
     report = lint("", product=product)
     assert report.product == product
     assert report.ok is False

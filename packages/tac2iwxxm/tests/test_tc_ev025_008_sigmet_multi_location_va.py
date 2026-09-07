@@ -1,4 +1,4 @@
-"""TC-EV025-008 — #809 sigmet-multi-location-VA ADR-032 equality (S033 / EV-026 T1.1).
+"""TC-EV025-008 - #809 sigmet-multi-location-VA ADR-032 equality (S033 / EV-026 T1.1).
 
 Strict gate (E26-TC=1): convert annex3 → ``canonicalize_xml`` equals vendor XML under
 default pin. Soft-compare / inequality assert removed. Catalog promote remains TC-EV025-009.
@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 from lxml import etree
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
@@ -53,8 +54,9 @@ def test_tc_ev025_008_package_and_vendor_fixtures_present() -> None:
 
 def test_tc_ev025_008_canonicalize_equals_vendor() -> None:
     """ADR-032 strict equality vs vendor (EV-026)."""
-    from tac2iwxxm import convert
     from tac2iwxxm.products.sigmet_airmet import parse_sigmet
+
+    from tac2iwxxm import convert
 
     case = next(c for c in _load_manifest()["cases"] if c["id"] == CASE_ID)
     tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
@@ -95,8 +97,10 @@ def test_tc_ev025_008_canonicalize_equals_vendor() -> None:
     assert len(actual_pos) == len(vendor_pos)
 
     actual_text = result.xml
-    assert ">250<" in actual_text and ">370<" in actual_text
-    assert ">150<" in actual_text and ">300<" in actual_text
+    assert ">250<" in actual_text
+    assert ">370<" in actual_text
+    assert ">150<" in actual_text
+    assert ">300<" in actual_text
 
     volcano = actual.find(f"{IW}eruptingVolcano/{METCE}Volcano")
     assert volcano is not None

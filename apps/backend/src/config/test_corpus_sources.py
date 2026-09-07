@@ -6,14 +6,14 @@ translation pairs, NWS examples, and operational API snapshots.
 """
 
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any
 
 # apps/backend/src/config → repo root (prefer vendor pin over legacy apps/schemas)
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
 _REPO_ROOT = Path(__file__).resolve().parents[4]
 
 # External test corpus sources
-TEST_CORPUS_SOURCES: Dict[str, Dict[str, Any]] = {
+TEST_CORPUS_SOURCES: dict[str, dict[str, Any]] = {
     "wmo_canonical_examples": {
         "type": "mirrored",
         "path": _REPO_ROOT / "vendor" / "schemas" / "iwxxm" / "{version}" / "IWXXM" / "examples",
@@ -102,7 +102,7 @@ TEST_CORPUS_SOURCES: Dict[str, Dict[str, Any]] = {
 }
 
 
-def get_corpus_source(name: str) -> Dict[str, Any]:
+def get_corpus_source(name: str) -> dict[str, Any]:
     """
     Get configuration for a specific test corpus source.
 
@@ -120,7 +120,7 @@ def get_corpus_source(name: str) -> Dict[str, Any]:
     return TEST_CORPUS_SOURCES[name]
 
 
-def get_enabled_corpus_sources() -> Dict[str, Dict[str, Any]]:
+def get_enabled_corpus_sources() -> dict[str, dict[str, Any]]:
     """
     Get all enabled test corpus sources.
 
@@ -130,7 +130,7 @@ def get_enabled_corpus_sources() -> Dict[str, Dict[str, Any]]:
     return {name: config for name, config in TEST_CORPUS_SOURCES.items() if config.get("enabled", False)}
 
 
-def get_corpus_sources_by_type(source_type: str) -> Dict[str, Dict[str, Any]]:
+def get_corpus_sources_by_type(source_type: str) -> dict[str, dict[str, Any]]:
     """
     Get corpus sources filtered by type.
 
@@ -143,7 +143,7 @@ def get_corpus_sources_by_type(source_type: str) -> Dict[str, Dict[str, Any]]:
     return {name: config for name, config in TEST_CORPUS_SOURCES.items() if config.get("type") == source_type}
 
 
-def get_corpus_sources_by_priority(priority: str) -> Dict[str, Dict[str, Any]]:
+def get_corpus_sources_by_priority(priority: str) -> dict[str, dict[str, Any]]:
     """
     Get corpus sources filtered by priority.
 
@@ -188,6 +188,6 @@ def get_corpus_path(name: str, version: str | None = None) -> Path:
         raise ValueError(f"Unknown corpus type: {config['type']}")
 
 
-def get_all_corpus_sources() -> List[str]:
+def get_all_corpus_sources() -> list[str]:
     """Get list of all corpus source names."""
     return list(TEST_CORPUS_SOURCES.keys())

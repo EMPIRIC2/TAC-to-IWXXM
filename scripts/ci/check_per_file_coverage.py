@@ -3,12 +3,12 @@
 
 Reads ``coverage.json`` produced by ``coverage json`` (or pytest-cov's
 ``--cov-report=json``). For each file with ``num_statements > 0``, requires
-``percent_covered >= min_pct`` (default 95.0).
+``percent_covered >= min_pct`` (default 100.0).
 
 Usage::
 
     python scripts/ci/check_per_file_coverage.py coverage.json
-    python scripts/ci/check_per_file_coverage.py coverage.json --min-pct 95
+    python scripts/ci/check_per_file_coverage.py coverage.json --min-pct 100
 """
 
 from __future__ import annotations
@@ -56,7 +56,7 @@ def files_below_floor(
     report :
         Parsed ``coverage.json`` document.
     min_pct :
-        Inclusive floor (e.g. ``95.0``).
+        Inclusive floor (e.g. ``100.0``).
 
     Returns
     -------
@@ -83,7 +83,7 @@ def files_below_floor(
 def check_report(
     report: dict[str, Any],
     *,
-    min_pct: float = 95.0,
+    min_pct: float = 100.0,
 ) -> int:
     """
     Print a report and return process exit code (0=ok, 1=below floor).
@@ -124,8 +124,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--min-pct",
         type=float,
-        default=95.0,
-        help="Per-file percent_covered floor (default: 95)",
+        default=100.0,
+        help="Per-file percent_covered floor (default: 100)",
     )
     args = parser.parse_args(argv)
     path: Path = args.coverage_json

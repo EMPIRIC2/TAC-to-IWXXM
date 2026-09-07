@@ -1,4 +1,4 @@
-"""TC-EV071-003 — API pre-convert CA lint wire (EV-071 M1 / FR-L6).
+"""TC-EV071-003 - API pre-convert CA lint wire (EV-071 M1 / FR-L6).
 
 [Corpus: api] [Corpus: tests §TC-EV071]
 """
@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -54,7 +53,8 @@ def test_tc_ev071_003_convert_echoes_ca_lint_codes(
         files=_convert_files(semantic_profile=(None, "CA_ECCC")),
     )
     assert response.status_code == 200, response.text[:500]
-    assert seen and seen[0].get("profile") == "ca_eccc"
+    assert seen
+    assert seen[0].get("profile") == "ca_eccc"
 
     issue_codes = {row.get("code") for row in response.json().get("issues", [])}
     assert "CA_STATUTE_MILE_VIS" in issue_codes

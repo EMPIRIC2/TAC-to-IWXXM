@@ -1,4 +1,4 @@
-"""Extensible decode glossary — official tables + YAML overrides (F9 / ADR-032).
+"""Extensible decode glossary - official tables + YAML overrides (F9 / ADR-032).
 
 Merge order: official/near-official meanings first, then YAML overlay
 (``decode_glossary.yaml`` / ``TAC2IWXXM_DECODE_GLOSSARY_PATH`` wins on conflict).
@@ -32,7 +32,7 @@ def _tokens_from_mapping(raw: object) -> dict[str, str]:
     return out
 
 
-# Official / near-official abbreviations (WMO codes / Annex 3 / EUR App A cites —
+# Official / near-official abbreviations (WMO codes / Annex 3 / EUR App A cites -
 # short meanings only; no copyrighted prose). Keys are uppercase TAC tokens.
 _OFFICIAL_TOKENS: dict[str, str] = {
     # Spatial / intensity (SIGMET / AIRMET)
@@ -224,9 +224,9 @@ def explain_glossary_token(token: str, *, fallback: str | None = None) -> str | 
 
 
 __all__ = [
+    "explain_glossary_token",
     "load_glossary",
     "meaning_for",
-    "explain_glossary_token",
     "reload_glossary",
     "resolve_location_name",
     "set_location_name_resolver",

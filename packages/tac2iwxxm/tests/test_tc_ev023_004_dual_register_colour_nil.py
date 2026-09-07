@@ -1,4 +1,4 @@
-"""TC-EV023-004 — Dual-register colour + nil encode policy (S030 / EV-023 T4.1).
+"""TC-EV023-004 - Dual-register colour + nil encode policy (S030 / EV-023 T4.1).
 
 Locks offline vendor RDF/CSV as CI SoT for:
 - ``49-2/AviationColourCode`` vs ``iwxxm/AviationColourCode`` member divergence
@@ -133,7 +133,7 @@ def test_tc_ev023_004_offline_colour_and_nil_rdf_present() -> None:
         assert path.is_file(), f"missing offline SoT: {path}"
         resolved = str(path.resolve())
         assert "/vendor/schemas/" in resolved.replace("\\", "/")
-        # SoT is local vendor bytes — not fetched at test time.
+        # SoT is local vendor bytes - not fetched at test time.
         assert path.stat().st_size > 0
 
 
@@ -190,7 +190,7 @@ def test_tc_ev023_004_vona_official_uses_iwxxm_colour_register() -> None:
 
 
 def test_tc_ev023_004_amd79_vaa_suite_may_lag_on_49_2_colour() -> None:
-    """Amd79 VAA ``FVAU03ADRM-0424`` may use legacy 49-2 RED — suite lag, not 2025-2 target."""
+    """Amd79 VAA ``FVAU03ADRM-0424`` may use legacy 49-2 RED - suite lag, not 2025-2 target."""
     path = _AMD79_VAA / "FVAU03ADRM-0424.xml"
     assert path.is_file(), path
     xml = path.read_text(encoding="utf-8")
@@ -256,7 +256,7 @@ def test_tc_ev023_004_codelist_edge_errors_and_legacy_default(monkeypatch: pytes
     monkeypatch.setenv("TAC2IWXXM_REPO_ROOT", str(_REPO))
     assert cl.repo_root() == _REPO.resolve()
 
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError, match=r".*"):
         cl.load_aviation_colour_members("iwxxm", iwxxm_version="no-such-pin")
 
     with pytest.raises(ValueError, match="unknown colour register"):

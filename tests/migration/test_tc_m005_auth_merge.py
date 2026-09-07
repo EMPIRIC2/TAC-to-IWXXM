@@ -1,4 +1,4 @@
-"""TC-M005 amended by F31 — Auth restored on backend host (ADR-033); convert stays public.
+"""TC-M005 amended by F31 - Auth restored on backend host (ADR-033); convert stays public.
 
 Historical F21 asserted Auth gone. EV-031 restores JWKS `/auth/*` without `/admin`.
 """

@@ -1,4 +1,4 @@
-"""TC-EV035-006 — gap raise gate (no silent invent)."""
+"""TC-EV035-006 - gap raise gate (no silent invent)."""
 
 from __future__ import annotations
 
@@ -14,13 +14,16 @@ def test_tc_ev035_006_gap_report_when_gaps() -> None:
         ("catalog_codes", "code", "status"),
         ("full_stack_rules", "rule_id", "status"),
     ):
-        for row in data.get(section) or []:
-            if row.get(status_key) == "gap":
-                gap_statuses.append(f"{section}:{row[key]}")
-    for cell in data.get("matrix_cells") or []:
-        if cell.get("disposition") == "warn" and cell.get("ticket"):
-            gap_statuses.append(f"matrix:{cell['product']}/{cell['role']}")
-
+        gap_statuses.extend(
+            f"{section}:{row[key]}"
+            for row in data.get(section) or []
+            if row.get(status_key) == "gap"
+        )
+    gap_statuses.extend(
+        f"matrix:{cell['product']}/{cell['role']}"
+        for cell in data.get("matrix_cells") or []
+        if cell.get("disposition") == "warn" and cell.get("ticket")
+    )
     if not gaps and not gap_statuses:
         return
 

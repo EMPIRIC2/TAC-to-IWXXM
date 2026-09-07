@@ -9,7 +9,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from iwxxm_validate.ca_eccc_bundle import (
     CA_ECCC_IWXXM_VERSION,
     ca_eccc_bundle_available,
@@ -71,10 +70,10 @@ class TestTcEv068002CaBundleResolution:
         assert report.ok is True
 
     def test_native_ca_golden_convert_passes_wmo_layers(self) -> None:
-        """CA convert output validates on native path (layers 2–3) without catalog gaps."""
-        from tac2iwxxm import convert
-
+        """CA convert output validates on native path (layers 2-3) without catalog gaps."""
         from iwxxm_validate import rust_available, validate_iwxxm
+
+        from tac2iwxxm import convert
 
         if not rust_available():
             pytest.skip("iwxxm_validate._rust not built (make build-iwxxm-validate-native)")
@@ -86,7 +85,8 @@ class TestTcEv068002CaBundleResolution:
             profile="ca_eccc",
             iwxxm_version=CA_ECCC_IWXXM_VERSION,
         )
-        assert converted.ok and converted.xml
+        assert converted.ok
+        assert converted.xml
 
         report = validate_iwxxm(
             converted.xml,

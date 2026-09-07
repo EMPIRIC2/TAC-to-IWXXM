@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from tac2iwxxm.profiles.annex3_emit._common import _fmt_coord, _ns
 
 

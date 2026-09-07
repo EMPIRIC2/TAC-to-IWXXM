@@ -150,7 +150,7 @@ describe('TC-EV061-1012 FileConverter AHL parity', () => {
     expect(mockConvertBulletin).toHaveBeenCalledWith(
       expect.objectContaining({
         product: 'METAR',
-        profile: 'annex3',
+        profile: 'ICAO_2025',
         manualText: expect.stringContaining('SAUS31 KZNY 121200'),
       }),
     );

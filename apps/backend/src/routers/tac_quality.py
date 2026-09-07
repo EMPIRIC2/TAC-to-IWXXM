@@ -2,11 +2,8 @@
 
 from __future__ import annotations
 
-from typing import List, Optional
-
 from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response
-from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 from tac_validate import lint as tac_lint_fn
 from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
 
@@ -22,6 +19,7 @@ from src.schemas.validation import (
     LintTacResponse,
 )
 from src.utilities.iwxxm_pass_through import lint_iwxxm_pass_through
+from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 
 router = APIRouter(prefix="/api/v1", tags=["Validation"])
 
@@ -32,16 +30,25 @@ router = APIRouter(prefix="/api/v1", tags=["Validation"])
     responses={},
 )
 async def lint_issue_catalog(
-    product: Optional[str] = None,
-    family: Optional[str] = None,
-    issue_type: Optional[str] = None,
-    source_access: Optional[str] = None,
+    product: str | None = None,
+    family: str | None = None,
+    issue_type: str | None = None,
+    source_access: str | None = None,
+    semantic_profile: str | None = None,
+    exchange_profile: str | None = None,
 ) -> Response:
     """Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page."""
+    from dissemination.exchange_registry import resolve_exchange_profile
     from tac_validate.catalog_attribution import attribution_for
     from tac_validate.issue_catalog_meta import classify_issue_type
 
     from src.services.iwxxm_validation_catalog import iwxxm_validation_catalog_rows
+    from src.services.lint_catalog_profile_filter import (
+        exchange_profiles_from_tags,
+        row_matches_profile,
+        semantic_profiles_from_tags,
+    )
+    from src.utilities.profile_wire import resolve_route_profiles
 
     family_key = (family or "").strip().lower() or None
     if family_key is not None and family_key not in {"lint", "iwxxm"}:
@@ -49,19 +56,41 @@ async def lint_issue_catalog(
     issue_type_key = (issue_type or "").strip().lower() or None
     source_access_key = (source_access or "").strip().lower() or None
 
+    semantic_raw = (semantic_profile or "").strip()
+    exchange_raw = (exchange_profile or "").strip()
+    semantic_canonical: str | None = None
+    exchange_canonical: str | None = None
+    if semantic_raw:
+        semantic_canonical = resolve_route_profiles(
+            semantic_profile=semantic_raw,
+            for_packaging=False,
+        ).semantic_canonical
+    if exchange_raw:
+        resolved_ex = resolve_exchange_profile(exchange_raw)
+        if resolved_ex is None:
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "code": "invalid_exchange_profile",
+                    "message": f"Unknown exchange profile {exchange_raw!r}",
+                },
+            )
+        exchange_canonical = resolved_ex.wire_id
+
     issues: list[LintIssueCatalogEntryModel] = []
 
     if family_key in (None, "lint"):
         entries = tac_catalog_entries(product=product)
         for spec in entries:
             attr = attribution_for(spec.code)
+            tags = list(spec.tags)
             issues.append(
                 LintIssueCatalogEntryModel(
                     code=spec.code,
                     severity=spec.severity,
                     message_template=spec.message_template,
                     product=spec.product,
-                    tags=list(spec.tags),
+                    tags=tags,
                     source_id=attr.get("source_id"),
                     source_url=attr.get("source_url"),
                     source_attribution=attr.get("source_attribution"),
@@ -78,13 +107,37 @@ async def lint_issue_catalog(
                     ),
                     source_locator=attr.get("source_locator"),
                     source_access=attr.get("source_access"),
+                    semantic_profiles=semantic_profiles_from_tags(tags),
+                    exchange_profiles=exchange_profiles_from_tags(tags),
                 )
             )
 
     if family_key in (None, "iwxxm"):
         for row in iwxxm_validation_catalog_rows():
-            issues.append(LintIssueCatalogEntryModel(**row))
-
+            tags = list(row.get("tags") or [])
+            issues.append(
+                LintIssueCatalogEntryModel(
+                    code=str(row["code"]),
+                    severity=str(row["severity"]),
+                    message_template=str(row["message_template"]),
+                    product=row.get("product"),
+                    tags=tags,
+                    source_id=row.get("source_id"),
+                    source_url=row.get("source_url"),
+                    source_attribution=row.get("source_attribution"),
+                    family=row.get("family"),
+                    source_type=row.get("source_type"),
+                    status=row.get("status"),
+                    semantic_identifier=row.get("semantic_identifier"),
+                    last_verified=row.get("last_verified"),
+                    replacement_url=row.get("replacement_url"),
+                    issue_type=row.get("issue_type"),
+                    source_locator=row.get("source_locator"),
+                    source_access=row.get("source_access"),
+                    semantic_profiles=semantic_profiles_from_tags(tags),
+                    exchange_profiles=exchange_profiles_from_tags(tags),
+                )
+            )
     if issue_type_key or source_access_key:
         filtered: list[LintIssueCatalogEntryModel] = []
         for row in issues:
@@ -95,6 +148,11 @@ async def lint_issue_catalog(
             filtered.append(row)
         issues = filtered
 
+    if semantic_canonical is not None:
+        issues = [row for row in issues if row_matches_profile(row.semantic_profiles, selected=semantic_canonical)]
+    if exchange_canonical is not None:
+        issues = [row for row in issues if row_matches_profile(row.exchange_profiles, selected=exchange_canonical)]
+
     return api_surface.msgspec_json_response(LintIssueCatalogResponse(issues=issues))
 
 
@@ -102,7 +160,7 @@ async def lint_issue_catalog(
     "/lint-tac",
     response_model=LintTacResponse,
     responses={
-        415: {"description": "Unsupported Media Type — multipart/form-data required"},
+        415: {"description": "Unsupported Media Type - multipart/form-data required"},
     },
 )
 async def lint_tac(
@@ -112,9 +170,9 @@ async def lint_tac(
         default="METAR",
         description="Product type, or iwxxm for XML lint (default METAR)",
     ),
-    files: Optional[List[UploadFile]] = File(None),
+    files: list[UploadFile] | None = File(None),
 ) -> Response:
-    """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only — Q8=A)."""
+    """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A)."""
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -177,7 +235,7 @@ async def lint_tac(
     tags=["Conversion"],
     response_model=DecodeTacResponse,
     responses={
-        415: {"description": "Unsupported Media Type — multipart/form-data required"},
+        415: {"description": "Unsupported Media Type - multipart/form-data required"},
         422: {"description": "Missing required product field"},
     },
 )
@@ -185,7 +243,7 @@ async def decode_tac_endpoint(
     request: Request,
     product: str = Form(..., description="TAC product (required)"),
     manual_text: str = Form(default="", description="TAC text to decode"),
-    files: Optional[List[UploadFile]] = File(None),
+    files: list[UploadFile] | None = File(None),
 ) -> Response:
     """Decode TAC into annotated segments and a plain-language summary."""
     content_type = (request.headers.get("content-type") or "").lower()

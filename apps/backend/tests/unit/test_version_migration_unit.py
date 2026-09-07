@@ -1,10 +1,9 @@
-"""Unit tests for VersionMigrator – 0% coverage target."""
+"""Unit tests for VersionMigrator - 0% coverage target."""
 
 import xml.etree.ElementTree as ET
 from unittest.mock import patch
 
 import pytest
-
 from src.utilities.version_migration import VersionMigrationWarning, VersionMigrator
 
 SIMPLE_XML = '<?xml version="1.0"?><root xmlns:iwxxm="http://icao.int/iwxxm"><child name="test"/></root>'
@@ -53,12 +52,14 @@ class TestVersionMigratorMigrate:
 
     def test_invalid_xml_raises(self):
         m = VersionMigrator()
-        with patch(
-            "src.utilities.version_migration.get_breaking_changes",
-            return_value=[{"action": "remove", "element": "foo", "xpath": "//foo", "reason": "gone"}],
+        with (
+            patch(
+                "src.utilities.version_migration.get_breaking_changes",
+                return_value=[{"action": "remove", "element": "foo", "xpath": "//foo", "reason": "gone"}],
+            ),
+            pytest.raises(ET.ParseError),
         ):
-            with pytest.raises(ET.ParseError):
-                m.migrate(INVALID_XML, "2023-1", "2025-2")
+            m.migrate(INVALID_XML, "2023-1", "2025-2")
 
     def test_remove_action_removes_element(self):
         xml = """<?xml version="1.0"?>
@@ -76,7 +77,7 @@ class TestVersionMigratorMigrate:
         ]
         m = VersionMigrator()
         with patch("src.utilities.version_migration.get_breaking_changes", return_value=breaking):
-            result_xml, warnings = m.migrate(xml, "2023-1", "2025-2")
+            result_xml, _warnings = m.migrate(xml, "2023-1", "2025-2")
         # OldElement should be removed
         assert "OldElement" not in result_xml
 
@@ -123,7 +124,7 @@ class TestVersionMigratorMigrate:
         ]
         m = VersionMigrator()
         with patch("src.utilities.version_migration.get_breaking_changes", return_value=breaking):
-            result_xml, warnings = m.migrate(SIMPLE_XML, "2023-1", "2025-2")
+            result_xml, _warnings = m.migrate(SIMPLE_XML, "2023-1", "2025-2")
         # Should not raise; unsupported action is skipped
         assert isinstance(result_xml, str)
 

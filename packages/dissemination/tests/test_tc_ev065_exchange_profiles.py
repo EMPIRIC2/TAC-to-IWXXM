@@ -1,4 +1,4 @@
-"""TC-EV065 — GLOBAL_AFS + APAC_ROBEX exchange profile closure (#921 / EV-065)."""
+"""TC-EV065 - GLOBAL_AFS + APAC_ROBEX exchange profile closure (#921 / EV-065)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from dissemination.collect_namespaces import is_collect_bulletin
 from dissemination.packaging import apply_exchange_packaging
 
@@ -23,7 +22,7 @@ def _load_manifest() -> dict:
     ids=[row["id"] for row in _load_manifest()["fixtures"]],
 )
 def test_tc_ev065_001_global_afs_fixture_collect_wrap(fixture_row: dict) -> None:
-    """TC-EV065-001 — GLOBAL_AFS COLLECT golden from profile fixture."""
+    """TC-EV065-001 - GLOBAL_AFS COLLECT golden from profile fixture."""
     member_path = _FIXTURES / fixture_row["path"]
     member_xml = member_path.read_text(encoding="utf-8")
     packaged = apply_exchange_packaging(
@@ -37,7 +36,7 @@ def test_tc_ev065_001_global_afs_fixture_collect_wrap(fixture_row: dict) -> None
 
 
 def test_tc_ev065_002_apac_robex_resolves_and_wraps() -> None:
-    """TC-EV065-002 — APAC_ROBEX P0 stub produces COLLECT bulletin."""
+    """TC-EV065-002 - APAC_ROBEX P0 stub produces COLLECT bulletin."""
     member_xml = (_FIXTURES / "METAR" / "valid" / "member_metar.xml").read_text(encoding="utf-8")
     packaged = apply_exchange_packaging(
         member_xml,

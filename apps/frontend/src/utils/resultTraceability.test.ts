@@ -83,4 +83,22 @@ describe('resultTraceability', () => {
     expect(resolveOriginalTac('  ', undefined, undefined)).toBe('');
     expect(resolveOriginalTac('', undefined, ' METAR FILE ')).toBe('METAR FILE');
   });
+
+  it('deriveTacDisplayTitle uses long download name when TAC is too long', () => {
+    const longTac = 'X'.repeat(60);
+    expect(deriveTacDisplayTitle(longTac, 'uploaded.metar')).toBe('uploaded.metar');
+  });
+
+  it('parseTacHeadline ignores leading blank lines', () => {
+    expect(parseTacHeadline('\n\nMETAR KJFK 121251Z 18012KT')).toEqual({
+      product: 'METAR',
+      station: 'KJFK',
+      time: '121251Z',
+    });
+  });
+
+  it('truncateTacSnippet keeps text that exactly matches the max length', () => {
+    const exact = 'M'.repeat(72);
+    expect(truncateTacSnippet(exact, 72)).toBe(exact);
+  });
 });

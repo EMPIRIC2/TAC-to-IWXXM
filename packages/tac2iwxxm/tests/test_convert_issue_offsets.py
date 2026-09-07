@@ -1,9 +1,10 @@
-"""T2.2 — ConvertIssue optional start/end when locatable (S011 / EV-008)."""
+"""T2.2 - ConvertIssue optional start/end when locatable (S011 / EV-008)."""
 
 from __future__ import annotations
 
-from tac2iwxxm import ConvertIssue, convert
 from tac2iwxxm.codec import json_encoder
+
+from tac2iwxxm import ConvertIssue, convert
 
 
 def test_convert_issue_accepts_optional_start_end() -> None:
@@ -29,7 +30,8 @@ def test_parse_error_spans_tac_content() -> None:
     assert result.ok is False
     issue = result.issues[0]
     assert issue.code == "PARSE_ERROR"
-    assert issue.start is not None and issue.end is not None
+    assert issue.start is not None
+    assert issue.end is not None
     leading = len(tac) - len(tac.lstrip())
     stripped = tac.strip()
     assert issue.start == leading

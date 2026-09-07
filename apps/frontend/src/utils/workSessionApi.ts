@@ -42,6 +42,12 @@ export interface ListWorkSessionsParams {
   limit?: number;
 }
 
+/**
+ * List authenticated user's work sessions from the API.
+ *
+ * @param accessToken - Bearer JWT for the current user.
+ * @param params - Optional filters and pagination.
+ */
 export async function listWorkSessions(
   accessToken: string,
   params: ListWorkSessionsParams = {},
@@ -64,6 +70,12 @@ export async function listWorkSessions(
   return parseJson<WorkSessionListResponse>(response);
 }
 
+/**
+ * Create a remote work session for the authenticated user.
+ *
+ * @param accessToken - Bearer JWT for the current user.
+ * @param payload - Session fields to persist server-side.
+ */
 export async function createWorkSession(
   accessToken: string,
   payload: WorkSessionUpsertPayload,
@@ -76,6 +88,12 @@ export async function createWorkSession(
   return parseJson<WorkSession>(response);
 }
 
+/**
+ * Fetch one remote work session by id.
+ *
+ * @param accessToken - Bearer JWT for the current user.
+ * @param sessionId - Session primary key.
+ */
 export async function getWorkSession(
   accessToken: string,
   sessionId: string,
@@ -86,6 +104,13 @@ export async function getWorkSession(
   return parseJson<WorkSession>(response);
 }
 
+/**
+ * Patch an existing remote work session.
+ *
+ * @param accessToken - Bearer JWT for the current user.
+ * @param sessionId - Session to update.
+ * @param payload - Fields to merge into the session.
+ */
 export async function updateWorkSession(
   accessToken: string,
   sessionId: string,
@@ -99,6 +124,12 @@ export async function updateWorkSession(
   return parseJson<WorkSession>(response);
 }
 
+/**
+ * Soft-delete a remote work session.
+ *
+ * @param accessToken - Bearer JWT for the current user.
+ * @param sessionId - Session to mark deleted.
+ */
 export async function deleteWorkSession(
   accessToken: string,
   sessionId: string,
@@ -110,6 +141,12 @@ export async function deleteWorkSession(
   return parseJson<WorkSession>(response);
 }
 
+/**
+ * Restore a soft-deleted remote work session.
+ *
+ * @param accessToken - Bearer JWT for the current user.
+ * @param sessionId - Session to undelete.
+ */
 export async function restoreWorkSession(
   accessToken: string,
   sessionId: string,
@@ -121,6 +158,12 @@ export async function restoreWorkSession(
   return parseJson<WorkSession>(response);
 }
 
+/**
+ * List all users' work sessions (admin-only).
+ *
+ * @param accessToken - Admin Bearer JWT.
+ * @param params - Optional status and pagination filters.
+ */
 export async function listAdminWorkSessions(
   accessToken: string,
   params: ListWorkSessionsParams = {},

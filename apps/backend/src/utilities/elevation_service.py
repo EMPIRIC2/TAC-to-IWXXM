@@ -8,7 +8,7 @@ and vertical datum from authoritative sources.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -16,9 +16,9 @@ logger = logging.getLogger(__name__)
 class ElevationService:
     """Service for managing airport elevation and vertical datum data."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the elevation service with vertical datum mappings."""
-        self.datum_map: Dict[str, Any] = {}
+        self.datum_map: dict[str, Any] = {}
         self._load_datum_mapping()
 
     def _load_datum_mapping(self) -> None:
@@ -26,7 +26,7 @@ class ElevationService:
         datum_file = Path(__file__).parent.parent / "data" / "vertical_datum_map.json"
 
         try:
-            with open(datum_file, "r", encoding="utf-8") as f:
+            with open(datum_file, encoding="utf-8") as f:
                 self.datum_map = json.load(f)
             logger.info(
                 f"Loaded vertical datum mappings for {len(self.datum_map.get('country_defaults', {}))} countries"
@@ -38,7 +38,7 @@ class ElevationService:
             logger.error(f"Error parsing vertical datum mapping: {e}")
             self.datum_map = {"country_defaults": {}, "airport_overrides": {}, "datum_info": {}}
 
-    def get_vertical_datum(self, icao: str, country_code: Optional[str] = None) -> str:
+    def get_vertical_datum(self, icao: str, country_code: str | None = None) -> str:
         """
         Get the appropriate vertical datum for an airport.
 
@@ -100,11 +100,11 @@ class ElevationService:
     def get_elevation_data(
         self,
         icao: str,
-        default_elevation_ft: Optional[int] = None,
-        country_code: Optional[str] = None,
+        default_elevation_ft: int | None = None,
+        country_code: str | None = None,
         version: str = "2025-2",  # Add version parameter with default
         use_test_overrides: bool = False,  # Add test override flag
-    ) -> Tuple[int | float | None, str]:
+    ) -> tuple[int | float | None, str]:
         """
         Get elevation and vertical datum for an airport with version-aware formatting.
 
@@ -137,10 +137,10 @@ class ElevationService:
     def _get_raw_elevation_data(
         self,
         icao: str,
-        default_elevation_ft: Optional[int] = None,
-        country_code: Optional[str] = None,
+        default_elevation_ft: int | None = None,
+        country_code: str | None = None,
         use_test_overrides: bool = False,
-    ) -> Tuple[Optional[int], str]:
+    ) -> tuple[int | None, str]:
         """Get raw elevation data without version-specific formatting.
 
         Args:
@@ -163,7 +163,7 @@ class ElevationService:
                     elevation_m = overrides[icao].get("elevation_m")
 
                 if elevation_m is None and default_elevation_ft is not None:
-                    elevation_m = int(round(default_elevation_ft * 0.3048))
+                    elevation_m = round(default_elevation_ft * 0.3048)
 
                 logger.debug(
                     f"Using test override for {icao}: datum={vertical_datum} "
@@ -190,7 +190,7 @@ class ElevationService:
 
         if default_elevation_ft is not None:
             # Convert feet to meters
-            elevation_m = int(round(default_elevation_ft * 0.3048))
+            elevation_m = round(default_elevation_ft * 0.3048)
             logger.debug(
                 f"Using database elevation for {icao}: {default_elevation_ft}ft = {elevation_m}m "
                 f"(datum: {vertical_datum})"
@@ -200,7 +200,7 @@ class ElevationService:
         logger.debug(f"No elevation data available for {icao}")
         return None, vertical_datum
 
-    def get_coordinates_override(self, icao: str) -> Optional[Tuple[float, float]]:
+    def get_coordinates_override(self, icao: str) -> tuple[float, float] | None:
         """
         Get high-precision coordinate overrides for an airport if available.
 
@@ -224,7 +224,7 @@ class ElevationService:
 
         return None
 
-    def get_test_datum_override(self, icao: str) -> Optional[Dict[str, str]]:
+    def get_test_datum_override(self, icao: str) -> dict[str, str] | None:
         """
         Get test-specific vertical datum override for WMO reference compliance.
 
@@ -237,7 +237,7 @@ class ElevationService:
         test_overrides = self.datum_map.get("test_overrides", {})
         return test_overrides.get(icao)
 
-    def get_datum_info(self, datum: str) -> Optional[Dict[str, str]]:
+    def get_datum_info(self, datum: str) -> dict[str, str] | None:
         """
         Get information about a vertical datum.
 

@@ -1,4 +1,4 @@
-"""TC-EV025-004 / M4.6 — Addendum residuals + RecentWeather.
+"""TC-EV025-004 / M4.6 - Addendum residuals + RecentWeather.
 
 Asserts PRESFR/PRESRR, maintenance ``$``, CONTRAILS/AURORA/NOSPECI flags,
 and FMH-1 precip begin/end → ``RecentWeather`` under ``iwxxm_us``.
@@ -6,8 +6,9 @@ and FMH-1 precip begin/end → ``RecentWeather`` under ``iwxxm_us``.
 
 from __future__ import annotations
 
-from tac2iwxxm import convert
 from tac2iwxxm.products.metar_speci import parse_metar_speci
+
+from tac2iwxxm import convert
 
 IWXXM_VERSION = "2025-2"
 PROFILE = "iwxxm_us"
@@ -77,7 +78,8 @@ def test_tc_ev025_004_recent_weather_emits() -> None:
     """RAB28E32 → RecentWeather RA with begin/end on observation hour."""
     ir = parse_metar_speci(_TAC_RECENT, product="METAR")
     recent = ir.get("recent_weather_us")
-    assert isinstance(recent, list) and len(recent) == 1
+    assert isinstance(recent, list)
+    assert len(recent) == 1
     assert recent[0].get("phenomenon_href") == _WX_RA
     assert recent[0].get("begin_minute") == 28
     assert recent[0].get("end_minute") == 32

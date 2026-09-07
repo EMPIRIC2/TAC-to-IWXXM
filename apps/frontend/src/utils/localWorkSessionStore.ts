@@ -180,6 +180,12 @@ export async function clearLocalWorkSessions(): Promise<void> {
   await db.clear(STORE);
 }
 
+/**
+ * Create a new work session in local IndexedDB storage.
+ *
+ * @param payload - Session fields to persist.
+ * @returns The stored session row with generated id and timestamps.
+ */
 export async function createLocalWorkSession(
   payload: WorkSessionUpsertPayload,
 ): Promise<WorkSession> {
@@ -191,6 +197,13 @@ export async function createLocalWorkSession(
   return row;
 }
 
+/**
+ * Fetch one local work session by id.
+ *
+ * @param sessionId - Session primary key.
+ * @returns The stored session row.
+ * @throws When the session does not exist locally.
+ */
 export async function getLocalWorkSession(sessionId: string): Promise<WorkSession> {
   const db = await getDb();
   const row = await db.get(STORE, sessionId);
@@ -200,6 +213,13 @@ export async function getLocalWorkSession(sessionId: string): Promise<WorkSessio
   return row;
 }
 
+/**
+ * Update an existing local work session.
+ *
+ * @param sessionId - Session to update.
+ * @param payload - Partial or full session fields to merge.
+ * @returns The updated session row.
+ */
 export async function updateLocalWorkSession(
   sessionId: string,
   payload: WorkSessionUpsertPayload,
@@ -213,6 +233,12 @@ export async function updateLocalWorkSession(
   return row;
 }
 
+/**
+ * Soft-delete a local work session by setting `deleted_at`.
+ *
+ * @param sessionId - Session to mark deleted.
+ * @returns The updated session row.
+ */
 export async function deleteLocalWorkSession(sessionId: string): Promise<WorkSession> {
   const existing = await getLocalWorkSession(sessionId);
   const row: WorkSession = {
@@ -225,6 +251,12 @@ export async function deleteLocalWorkSession(sessionId: string): Promise<WorkSes
   return row;
 }
 
+/**
+ * Restore a soft-deleted local work session.
+ *
+ * @param sessionId - Session to undelete.
+ * @returns The updated session row with `deleted_at` cleared.
+ */
 export async function restoreLocalWorkSession(sessionId: string): Promise<WorkSession> {
   assertWorkHistoryPersistAllowed();
   const existing = await getLocalWorkSession(sessionId);
@@ -238,6 +270,12 @@ export async function restoreLocalWorkSession(sessionId: string): Promise<WorkSe
   return row;
 }
 
+/**
+ * List local work sessions with optional filters and pagination.
+ *
+ * @param params - Status, product, deletion, and paging filters.
+ * @returns Paginated session list sorted by most recently updated.
+ */
 export async function listLocalWorkSessions(
   params: ListLocalWorkSessionsParams = {},
 ): Promise<WorkSessionListResponse> {
@@ -275,6 +313,11 @@ export async function listMyMetars(
   });
 }
 
+/**
+ * Export all local work sessions as a versioned JSON document.
+ *
+ * @returns Export envelope suitable for backup or migration.
+ */
 export async function exportLocalWorkSessions(): Promise<LocalWorkSessionExportV1> {
   const db = await getDb();
   const sessions = await db.getAll(STORE);
@@ -286,6 +329,12 @@ export async function exportLocalWorkSessions(): Promise<LocalWorkSessionExportV
   };
 }
 
+/**
+ * Import sessions from a local export document into IndexedDB.
+ *
+ * @param doc - Versioned export payload from {@link exportLocalWorkSessions}.
+ * @returns Count of sessions written.
+ */
 export async function importLocalWorkSessions(
   doc: LocalWorkSessionExportV1,
 ): Promise<{ imported: number }> {

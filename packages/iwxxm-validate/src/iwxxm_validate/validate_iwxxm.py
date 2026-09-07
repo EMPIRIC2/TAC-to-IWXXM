@@ -1,4 +1,4 @@
-"""F13 SDK entrypoint ``validate_iwxxm`` — Rust hot path with lxml fallback (E10-22 / E10-36)."""
+"""F13 SDK entrypoint ``validate_iwxxm`` - Rust hot path with lxml fallback (E10-22 / E10-36)."""
 
 from __future__ import annotations
 
@@ -34,7 +34,7 @@ _LXML_LEVELS = frozenset({"xsd", "schematron"})
 def _catalog_roots(iwxxm_version: str, *, profile: str = "annex3") -> list[str]:
     """Return directory roots for xmloxide ``SchemaResolver`` (packaged / vendor).
 
-    Runtime subset (E10-34) ships ``iwxxm/externalSchema`` only — no translation
+    Runtime subset (E10-34) ships ``iwxxm/externalSchema`` only - no translation
     modelling bulk. Monorepo may still resolve translation as a last resort.
     """
     vdir = version_dir(iwxxm_version)
@@ -56,18 +56,16 @@ def _catalog_roots(iwxxm_version: str, *, profile: str = "annex3") -> list[str]:
 
 def _issues_from_rust(raw: Sequence[dict[str, Any]]) -> list[Issue]:
     """Map Rust issue dicts to msgspec ``Issue`` structs."""
-    out: list[Issue] = []
-    for item in raw:
-        out.append(
-            Issue(
-                severity=str(item.get("severity", "error")),
-                code=str(item.get("code", "NATIVE_ISSUE")),
-                message=str(item.get("message", "")),
-                layer=str(item.get("layer", "xsd")),
-                location=item.get("location"),
-            )
+    return [
+        Issue(
+            severity=str(item.get("severity", "error")),
+            code=str(item.get("code", "NATIVE_ISSUE")),
+            message=str(item.get("message", "")),
+            layer=str(item.get("layer", "xsd")),
+            location=item.get("location"),
         )
-    return out
+        for item in raw
+    ]
 
 
 def _append_extended_levels(

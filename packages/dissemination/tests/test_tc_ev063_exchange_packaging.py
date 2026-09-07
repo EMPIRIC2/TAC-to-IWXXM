@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from dissemination.collect_namespaces import is_collect_bulletin
 from dissemination.exchange_registry import (
     DEFAULT_EXCHANGE_PROFILE_ID,
@@ -60,6 +59,9 @@ def test_known_exchange_profile_ids_includes_wire_and_canonical() -> None:
     assert "global_afs" in ids
     assert "APAC_ROBEX" in ids
     assert "apac_robex" in ids
+    assert "EUR_RODEX" in ids
+    assert "AFI" in ids
+    assert "CAR_SAM" in ids
 
 
 def test_wrap_global_afs_collect_preserves_member() -> None:
@@ -81,7 +83,7 @@ def test_apply_exchange_packaging_global_afs() -> None:
 
 
 def test_apply_exchange_packaging_apac_robex_collect_wrap() -> None:
-    """TC-EV065-002 — APAC_ROBEX P0 stub uses GLOBAL_AFS COLLECT baseline."""
+    """TC-EV065-002 - APAC_ROBEX P0 stub uses GLOBAL_AFS COLLECT baseline."""
     packaged = apply_exchange_packaging(
         _MEMBER_XML,
         exchange_profile="APAC_ROBEX",
@@ -93,20 +95,20 @@ def test_apply_exchange_packaging_apac_robex_collect_wrap() -> None:
 
 def test_apply_exchange_packaging_rejects_unknown_profile() -> None:
     with pytest.raises(ValueError, match="unknown exchange profile"):
-        apply_exchange_packaging(_MEMBER_XML, exchange_profile="EUR_RODEX")
+        apply_exchange_packaging(_MEMBER_XML, exchange_profile="NOT_AN_EXCHANGE")
 
 
 def test_apply_exchange_packaging_rejects_unimplemented_canonical(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Future regional overlays return a clear not-implemented error."""
+    """Resolved but unregistered packaging path returns a clear not-implemented error."""
 
     def fake_resolve(_profile: str):
         from dissemination.exchange_registry import ResolvedExchangeProfile
 
-        return ResolvedExchangeProfile(canonical="eur_rodex", wire_id="EUR_RODEX")
+        return ResolvedExchangeProfile(canonical="future_overlay", wire_id="FUTURE_OVERLAY")
 
     monkeypatch.setattr("dissemination.packaging.resolve_exchange_profile", fake_resolve)
     with pytest.raises(ValueError, match="not implemented"):
-        apply_exchange_packaging(_MEMBER_XML, exchange_profile="EUR_RODEX")
+        apply_exchange_packaging(_MEMBER_XML, exchange_profile="FUTURE_OVERLAY")
 
 
 def test_wrap_global_afs_collect_strips_xml_declaration() -> None:

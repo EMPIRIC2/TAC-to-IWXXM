@@ -1,4 +1,4 @@
-"""TC-EV050-004 / AC4 — aggressive RE* / AIRMET_ / SpaceWx / TCU fixtures (S059)."""
+"""TC-EV050-004 / AC4 - aggressive RE* / AIRMET_ / SpaceWx / TCU fixtures (S059)."""
 
 from __future__ import annotations
 

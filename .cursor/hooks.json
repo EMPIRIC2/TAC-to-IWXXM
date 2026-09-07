@@ -54,6 +54,11 @@
         "timeout": 10
       },
       {
+        "command": "bash .cursor/hooks/coverage-advisory.sh",
+        "matcher": "Write|TabWrite",
+        "timeout": 10
+      },
+      {
         "command": "bash .cursor/hooks/fast-ci-check.sh",
         "matcher": "Write|TabWrite",
         "timeout": 60
@@ -73,6 +78,19 @@
     "workspaceOpen": [
       {
         "command": ".cursor/hooks/register-workspace-plugins.sh"
+      },
+      {
+        "command": ".cursor/hooks/pack/bootstrap-engineering-memory.sh"
+      }
+    ],
+    "sessionStart": [
+      {
+        "command": ".cursor/hooks/pack/cursor-session-start.sh"
+      }
+    ],
+    "sessionEnd": [
+      {
+        "command": ".cursor/hooks/pack/cursor-session-end.sh"
       }
     ]
   }

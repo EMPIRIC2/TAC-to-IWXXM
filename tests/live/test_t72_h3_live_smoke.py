@@ -1,4 +1,4 @@
-"""H3 live smoke — convert / lint-tac / convert-bulletin (T7.2).
+"""H3 live smoke - convert / lint-tac / convert-bulletin (T7.2).
 
 Uses LIVE_API_URL (default staging API). Skips when URL unset or auth fails.
 """

@@ -105,6 +105,15 @@ describe('PrivacySettingsDialog', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it('saves with work history enabled without clearing local sessions', async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    savePrivacyPreferences({ workHistoryLocal: true });
+    render(<PrivacySettingsDialog isOpen onClose={onClose} />);
+    await user.click(screen.getByRole('button', { name: /save preferences/i }));
+    expect(onClose).toHaveBeenCalled();
+  });
+
   it('closes when the dialog requests open=false', async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();

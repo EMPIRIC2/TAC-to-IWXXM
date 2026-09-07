@@ -1,4 +1,4 @@
-"""Annex-3 profile XML writers — vona."""
+"""Annex-3 profile XML writers - vona."""
 
 # pyright: reportWildcardImportFromLibrary=false
 
@@ -56,7 +56,7 @@ def _vona_a7_1_peer(ir: dict[str, Any]) -> bool:
     )
 
 
-# XSD ``VolcanicAshCloudMovementType`` (vona.xsd) — do not invent tokens.
+# XSD ``VolcanicAshCloudMovementType`` (vona.xsd) - do not invent tokens.
 _VONA_ASH_MOVEMENT = frozenset(
     {
         "UNKNOWN",
@@ -97,7 +97,7 @@ def _vona_ash_phenomenon_property(
 
     A7-1 peer keeps ``iwxxm/nil/inapplicable`` (official golden). Non-peer TAC that
     supplies ``HGT SOURCE`` and/or ``MOV`` encodes ``VolcanicAshCloudVerticalExtent``
-    per XSD (G-VONA-1 / #849) — no packing rules beyond free-text heightSource + enum MOV.
+    per XSD (G-VONA-1 / #849) - no packing rules beyond free-text heightSource + enum MOV.
     """
     height_source = ir.get("height_source")
     movement = _vona_ash_movement_token(cast(str | None, ir.get("movement")))
@@ -163,10 +163,7 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ash_id = _VONA_A7_1_ASH_ID if peer else f"{vol_slug}.ash"
 
     override = ir.get("report_status")
-    if override in {"NORMAL", "AMENDMENT", "CORRECTION"}:
-        report_status = str(override)
-    else:
-        report_status = "NORMAL"
+    report_status = str(override) if override in {"NORMAL", "AMENDMENT", "CORRECTION"} else "NORMAL"
 
     current_href = aviation_colour_href(str(ir["current_colour"]), iwxxm_version=iwxxm_version)
     previous_xml = ""

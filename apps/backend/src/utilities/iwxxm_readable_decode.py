@@ -157,6 +157,7 @@ def readable_decode_from_iwxxm(xml: str) -> ReadableDecode:
     root_kind = _local_name(root.tag)
 
     def add(code: str, explanation: str) -> None:
+        """Append a readable decode segment when ``code`` is new and non-XML."""
         token = code.strip()
         if not token or token in seen_codes:
             return
@@ -174,6 +175,7 @@ def readable_decode_from_iwxxm(xml: str) -> ReadableDecode:
         )
 
     def walk(elem: ET.Element, parents: tuple[ET.Element, ...] = ()) -> None:
+        """Recursively extract human-readable tokens from IWXXM XML elements."""
         local = _local_name(elem.tag)
         href = _attr(elem, "href")
         uom = _attr(elem, "uom")
@@ -218,7 +220,7 @@ def readable_decode_from_iwxxm(xml: str) -> ReadableDecode:
             add("CAVOK", "Cloud and visibility OK")
 
         for child in list(elem):
-            walk(child, parents + (elem,))
+            walk(child, (*parents, elem))
 
     walk(root)
 

@@ -6,13 +6,13 @@ ICAO Doc 10003 - Manual on the Digital Exchange of Aeronautical Meteorological I
 """
 
 from datetime import datetime
-from enum import Enum
-from typing import Any, Dict, List, Optional
+from enum import StrEnum
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class ICAORegion(str, Enum):
+class ICAORegion(StrEnum):
     """ICAO Regional Offices as per user decision 3."""
 
     AFI = "AFI"  # Africa-Indian Ocean
@@ -26,7 +26,7 @@ class ICAORegion(str, Enum):
     WAFR = "WAFR"  # West African
 
 
-class TranslationStatus(str, Enum):
+class TranslationStatus(StrEnum):
     """Status of TAC to IWXXM translation."""
 
     SUCCESS = "success"
@@ -35,7 +35,7 @@ class TranslationStatus(str, Enum):
     VALIDATION_ERROR = "validation_error"
 
 
-class ValidationLayer(str, Enum):
+class ValidationLayer(StrEnum):
     """7-layer IWXXM validation stages."""
 
     AIRPORT_ICAO = "AIRPORT_ICAO"
@@ -83,30 +83,30 @@ class TranslationRecord(BaseModel):
     # Input/Output
     tac_message: str = Field(..., description="Original TAC METAR message")
     iwxxm_version: str = Field(..., description="Target IWXXM version (2025-2 or 2023-1)")
-    iwxxm_output: Optional[str] = Field(default=None, description="Generated IWXXM XML (null if translation failed)")
+    iwxxm_output: str | None = Field(default=None, description="Generated IWXXM XML (null if translation failed)")
 
     # Translation result
     translation_status: TranslationStatus = Field(..., description="Overall translation outcome")
-    validation_layers_passed: List[ValidationLayer] = Field(
+    validation_layers_passed: list[ValidationLayer] = Field(
         default_factory=list, description="Validation layers successfully passed"
     )
-    validation_errors: Optional[Dict[str, Any]] = Field(default=None, description="Validation errors by layer (if any)")
+    validation_errors: dict[str, Any] | None = Field(default=None, description="Validation errors by layer (if any)")
 
     # Performance metrics
     translation_duration_ms: int = Field(..., description="Translation processing time in milliseconds", ge=0)
 
     # User context
-    user_id: Optional[str] = Field(default=None, description="Authenticated user ID (Supabase UUID)")
-    session_id: Optional[str] = Field(default=None, description="User session identifier")
+    user_id: str | None = Field(default=None, description="Authenticated user ID (Supabase UUID)")
+    session_id: str | None = Field(default=None, description="User session identifier")
 
     # Translation Centre metadata
     translation_centre_designator: str = Field(
         default="NOAA-MDL", description="Translation centre designator (ICAO location indicator)"
     )
-    bulletin_reception_time: Optional[datetime] = Field(
+    bulletin_reception_time: datetime | None = Field(
         default=None, description="Original bulletin reception time (if applicable)"
     )
-    bulletin_id: Optional[str] = Field(default=None, description="WMO bulletin identifier (if applicable)")
+    bulletin_id: str | None = Field(default=None, description="WMO bulletin identifier (if applicable)")
 
 
 class TranslationStatistics(BaseModel):
@@ -145,26 +145,26 @@ class TranslationStatistics(BaseModel):
     # Success metrics
     success_rate: float = Field(..., description="Translation success rate (percentage)", ge=0, le=100)
     average_duration_ms: float = Field(..., description="Average translation duration (milliseconds)", ge=0)
-    median_duration_ms: Optional[float] = Field(
+    median_duration_ms: float | None = Field(
         default=None, description="Median translation duration (milliseconds)", ge=0
     )
 
     # Distribution breakdowns
-    translations_by_region: Dict[ICAORegion, int] = Field(
+    translations_by_region: dict[ICAORegion, int] = Field(
         default_factory=dict, description="Translation count by ICAO region"
     )
-    translations_by_version: Dict[str, int] = Field(
+    translations_by_version: dict[str, int] = Field(
         default_factory=dict, description="Translation count by IWXXM version"
     )
-    translations_by_airport: Optional[Dict[str, int]] = Field(
+    translations_by_airport: dict[str, int] | None = Field(
         default=None, description="Top airports by translation volume (optional)"
     )
 
     # Validation metrics
-    validation_layer_success_rates: Dict[ValidationLayer, float] = Field(
+    validation_layer_success_rates: dict[ValidationLayer, float] = Field(
         default_factory=dict, description="Success rate per validation layer (percentage)"
     )
-    common_validation_errors: Optional[List[Dict[str, Any]]] = Field(
+    common_validation_errors: list[dict[str, Any]] | None = Field(
         default=None, description="Most frequent validation errors (optional)"
     )
 
@@ -186,9 +186,9 @@ class TranslationStatisticsRequest(BaseModel):
 
     start_date: datetime = Field(..., description="Statistics period start (ISO 8601)")
     end_date: datetime = Field(..., description="Statistics period end (ISO 8601)")
-    icao_region: Optional[ICAORegion] = Field(default=None, description="Filter by ICAO region (optional)")
-    iwxxm_version: Optional[str] = Field(default=None, description="Filter by IWXXM version (optional)")
-    airport_code: Optional[str] = Field(
+    icao_region: ICAORegion | None = Field(default=None, description="Filter by ICAO region (optional)")
+    iwxxm_version: str | None = Field(default=None, description="Filter by IWXXM version (optional)")
+    airport_code: str | None = Field(
         default=None, description="Filter by specific airport (optional)", min_length=4, max_length=4
     )
     include_airport_breakdown: bool = Field(default=False, description="Include per-airport statistics")
@@ -211,12 +211,12 @@ class TranslationCentreInfo(BaseModel):
         }
     )
 
-    centre_name: Optional[str] = Field(default=None, description="Full name of translation centre")
-    centre_designator: Optional[str] = Field(default=None, description="Short designator for translation centre")
-    icao_location_indicator: Optional[str] = Field(
+    centre_name: str | None = Field(default=None, description="Full name of translation centre")
+    centre_designator: str | None = Field(default=None, description="Short designator for translation centre")
+    icao_location_indicator: str | None = Field(
         default=None, description="ICAO location indicator (CCCC)", min_length=4, max_length=4
     )
-    supported_iwxxm_versions: List[str] = Field(..., description="Supported IWXXM versions")
-    supported_products: List[str] = Field(default=["METAR", "SPECI"], description="Supported aviation product types")
-    online_since: Optional[datetime] = Field(default=None, description="Service start date (ISO 8601)")
-    contact_email: Optional[str] = Field(default=None, description="Technical contact email")
+    supported_iwxxm_versions: list[str] = Field(..., description="Supported IWXXM versions")
+    supported_products: list[str] = Field(default=["METAR", "SPECI"], description="Supported aviation product types")
+    online_since: datetime | None = Field(default=None, description="Service start date (ISO 8601)")
+    contact_email: str | None = Field(default=None, description="Technical contact email")

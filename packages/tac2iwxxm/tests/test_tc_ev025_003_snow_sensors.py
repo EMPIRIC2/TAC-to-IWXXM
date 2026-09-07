@@ -1,4 +1,4 @@
-"""TC-EV025-003 / #812 — SnowIncrease + sensor outage (UJ-040).
+"""TC-EV025-003 / #812 - SnowIncrease + sensor outage (UJ-040).
 
 Asserts ``iwxxm-us:SnowIncrease`` (SNINCR) and ``InoperativeSensors`` /
 ``FailedSensors`` / ``MeteorologicalSensors`` under ``profile=iwxxm_us``.

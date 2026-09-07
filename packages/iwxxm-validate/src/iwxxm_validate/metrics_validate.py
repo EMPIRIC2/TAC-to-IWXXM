@@ -1,4 +1,4 @@
-"""Quality-metrics validate entrypoint — native-first (EV-055 / #980 / #979).
+"""Quality-metrics validate entrypoint - native-first (EV-055 / #980 / #979).
 
 Prefer ``validate_iwxxm`` so IWXXM 2025-2 Schematron (xslt2) and XSD are evaluated
 when the Rust extension is built. Soft ``SCHEMATRON_SKIPPED`` /

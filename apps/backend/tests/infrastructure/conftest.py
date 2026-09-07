@@ -13,7 +13,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[4]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from tests.live_fixtures import (  # noqa: E402
+from tests.live_fixtures import (
     live_api_base,
     obtain_live_api_token,
     wake_live_api,
@@ -24,7 +24,7 @@ LIVE_API_TIMEOUT = 30.0
 
 @pytest.fixture(scope="session")
 def live_api_token() -> str:
-    """Obtain bearer token via POST /auth/login (runtime — do not persist)."""
+    """Obtain bearer token via POST /auth/login (runtime - do not persist)."""
     return obtain_live_api_token()
 
 

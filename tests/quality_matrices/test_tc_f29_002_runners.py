@@ -1,4 +1,4 @@
-"""TC-F29-002 / T1.2 — three-engine runners + needs-fixture skip policy."""
+"""TC-F29-002 / T1.2 - three-engine runners + needs-fixture skip policy."""
 
 from __future__ import annotations
 
@@ -46,7 +46,7 @@ def test_skip_policy_oos(tmp_path: Path) -> None:
         encoding="utf-8",
     )
     case = load_rule_cases(path)[0]
-    with pytest.raises(pytest.skip.Exception, match=r"oos — S02\.M2"):
+    with pytest.raises(pytest.skip.Exception, match=r"oos - S02\.M2"):
         apply_skip_policy(case)
 
 
@@ -69,7 +69,7 @@ def test_run_validate_happy() -> None:
 
 
 @pytest.mark.parametrize(
-    "path,bucket",
+    ("path", "bucket"),
     [
         (_LINT_VIS, "happy"),
         (_CONVERT_NIL, "happy"),

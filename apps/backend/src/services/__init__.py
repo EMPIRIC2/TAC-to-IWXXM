@@ -5,7 +5,7 @@ from .evaluation_service import EvaluationService
 from .validation import ValidationService
 
 __all__ = [
+    "EvaluationService",
     "ValidationService",
     "check_and_regenerate_airports",
-    "EvaluationService",
 ]

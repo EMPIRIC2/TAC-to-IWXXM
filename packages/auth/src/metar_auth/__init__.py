@@ -1,4 +1,4 @@
-"""Supabase Auth-only library — JWKS JWT verify + `/auth/*` routers (ADR-033)."""
+"""Supabase Auth-only library - JWKS JWT verify + `/auth/*` routers (ADR-033)."""
 
 from __future__ import annotations
 

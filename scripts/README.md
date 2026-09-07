@@ -2,6 +2,19 @@
 
 This directory contains organized utility scripts, database setup scripts, and launch scripts for the METAR to IWXXM Converter project.
 
+## Coverage gate (EV-080 / #1077)
+
+Per [ADR-007](../docs/adr/ADR-007-universal-coverage-gate.md): every `scripts/**/*.py` is
+measured under a dedicated **100%** line+branch coverage job; every `scripts/**/*.sh` has
+≥1 **bats-core** test in CI (`tests/bats/`). Local entrypoints (EV-080 tech-tooling):
+
+```bash
+make test-coverage-scripts   # pytest tests/scripts --cov=scripts (scaffold until M4)
+make test-bats               # bats tests/bats (scaffold until M4)
+```
+
+Approved omits do not apply to these scripts themselves.
+
 ## Directory Structure
 
 ### 📁 [launchers/](launchers/)

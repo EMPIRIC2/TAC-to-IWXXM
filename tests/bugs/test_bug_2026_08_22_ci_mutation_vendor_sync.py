@@ -1,4 +1,4 @@
-"""BUG-2026-08-22 — Mutation pnpm conflict + Vendor Sync same-tag commit drift.
+"""BUG-2026-08-22 - Mutation pnpm conflict + Vendor Sync same-tag commit drift.
 
 Mutation workflow: ``pnpm/action-setup`` with ``version: 9`` conflicts with
 ``packageManager: pnpm@9.15.4`` in package.json.
@@ -22,7 +22,8 @@ CHECK_UPSTREAM = ROOT / "scripts" / "vendor" / "check_upstream.py"
 
 def _load_module(path: Path, name: str):
     spec = importlib.util.spec_from_file_location(name, path)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod

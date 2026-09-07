@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useEffect, useState } from 'react';
 import type { WorkSession } from '@metar/shared';
 import { Loader2, History } from 'lucide-react';
@@ -21,6 +22,11 @@ const STATUS_LABEL: Record<string, string> = {
   failed: 'Failed',
 };
 
+/** Whether an in-flight history fetch should still write React state. */
+export function shouldApplyHistoryResult(cancelled: boolean): boolean {
+  return !cancelled;
+}
+
 /**
  * Recent work list — IndexedDB for guests; `/work-sessions` when authenticated.
  */
@@ -43,13 +49,15 @@ export function WorkHistorySidebar({
         const response = accessToken
           ? await listWorkSessions(accessToken, { limit: 5 })
           : await listLocalWorkSessions({ limit: 5 });
-        if (!cancelled) {
-          setSessions(response.items);
+        if (cancelled) {
+          return;
         }
+        setSessions(response.items);
       } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load history');
+        if (cancelled) {
+          return;
         }
+        setError(err instanceof Error ? err.message : 'Failed to load history');
       } finally {
         if (!cancelled) {
           setLoading(false);

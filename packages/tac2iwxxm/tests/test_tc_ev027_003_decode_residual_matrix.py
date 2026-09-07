@@ -1,4 +1,4 @@
-"""TC-EV027-003 — decode residual matrix for official WMO TAC peers (#815)."""
+"""TC-EV027-003 - decode residual matrix for official WMO TAC peers (#815)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,6 @@ import sys
 from pathlib import Path
 
 import pytest
-
 from tac2iwxxm.decode import decode_tac
 
 _FIXTURES = Path(__file__).resolve().parent / "fixtures"
@@ -34,11 +33,12 @@ def test_tc_ev027_003_allowlist_entries_have_doc_intent_and_issue() -> None:
     ids=[p.catalog_id or p.stem for p in registered_peers()],
 )
 def test_tc_ev027_003_decode_residuals_empty_or_allowlisted(peer) -> None:
-    assert peer.product and peer.catalog_id
+    assert peer.product
+    assert peer.catalog_id
     tac = annex3_path(peer).read_text(encoding="utf-8")
     result = decode_tac(tac, product=peer.product)
     if allows_any_residual(peer.catalog_id):
-        # F9 G4 / ADR-025 — residuals permitted when allowlist entry cites intent + issue.
+        # F9 G4 / ADR-025 - residuals permitted when allowlist entry cites intent + issue.
         return
     got = {r.text for r in result.residuals}
     allowed = allowlisted_texts(peer.catalog_id)

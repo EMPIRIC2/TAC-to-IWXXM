@@ -1,4 +1,4 @@
-"""TC-F32-004 — VONA convert → XSD+SCH + ADR-032 golden (S040 / EV-032 T2.6).
+"""TC-F32-004 - VONA convert → XSD+SCH + ADR-032 golden (S040 / EV-032 T2.6).
 
 Accept path: annex3 convert of ``vona-A7-1`` is M-xsd/M-sch clean and
 ``canonicalize_xml`` equals the official peer / package golden (soft→strict).
@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"

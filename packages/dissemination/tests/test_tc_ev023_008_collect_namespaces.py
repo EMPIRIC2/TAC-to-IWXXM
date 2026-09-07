@@ -1,6 +1,6 @@
-"""TC-EV023-008 — COLLECT / multi-version namespaces (S030 / EV-023 T6.3).
+"""TC-EV023-008 - COLLECT / multi-version namespaces (S030 / EV-023 T6.3).
 
-Hooks on the F16–F19 / bulletin path (S02.M2). Single-report convert SoT
+Hooks on the F16-F19 / bulletin path (S02.M2). Single-report convert SoT
 must remain unchanged (no COLLECT root from ``tac2iwxxm.convert``).
 """
 
@@ -45,9 +45,9 @@ def test_tc_ev023_008_iwxxm_namespace_uri() -> None:
 
     assert iwxxm_namespace_uri("2025-2") == "http://icao.int/iwxxm/2025-2"
     assert iwxxm_namespace_uri("2023-1") == "http://icao.int/iwxxm/2023-1"
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         iwxxm_namespace_uri("")
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         iwxxm_namespace_uri("2025/2")
 
 
@@ -66,7 +66,7 @@ def test_tc_ev023_008_vendor_failed_collect_member_ns() -> None:
 
 
 def test_tc_ev023_008_multi_version_member_groups() -> None:
-    """FAQ §14.7 — each group may declare its own http://icao.int/iwxxm/{version}."""
+    """FAQ §14.7 - each group may declare its own http://icao.int/iwxxm/{version}."""
     from dissemination.collect_namespaces import (
         collect_namespace_issues,
         member_iwxxm_namespace_uris,
@@ -81,10 +81,10 @@ def test_tc_ev023_008_multi_version_member_groups() -> None:
 
 
 def test_tc_ev023_008_single_report_convert_is_not_collect() -> None:
-    """Convert SoT stays single-report — no MeteorologicalBulletin root."""
-    from tac2iwxxm import convert
-
+    """Convert SoT stays single-report - no MeteorologicalBulletin root."""
     from dissemination.collect_namespaces import is_collect_bulletin
+
+    from tac2iwxxm import convert
 
     result = convert(
         "METAR KJFK 231751Z 18012KT 9999 FEW020 15/07 Q1013=",

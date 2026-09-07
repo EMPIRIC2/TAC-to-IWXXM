@@ -1,4 +1,4 @@
-"""TC-EV047-001..004 — slim husky shape A (lint commit + fast-unit push)."""
+"""TC-EV047-001..004 - slim husky shape A (lint commit + fast-unit push)."""
 
 from __future__ import annotations
 
@@ -8,7 +8,7 @@ REPO = Path(__file__).resolve().parents[2]
 
 
 def test_tc_ev047_001_pre_commit_lint_only() -> None:
-    """Husky pre-commit runs lint/format only — not full pre-commit / medium validate."""
+    """Husky pre-commit runs lint/format only - not full pre-commit / medium validate."""
     text = (REPO / ".husky" / "pre-commit").read_text(encoding="utf-8")
     assert "validate-ci-medium" not in text
     assert "uv run pre-commit run\n" not in text
@@ -18,7 +18,7 @@ def test_tc_ev047_001_pre_commit_lint_only() -> None:
 
 
 def test_tc_ev047_002_pre_push_fast_units_only() -> None:
-    """Husky pre-push runs fast unit subset — not make ci / Compose integration."""
+    """Husky pre-push runs fast unit subset - not make ci / Compose integration."""
     text = (REPO / ".husky" / "pre-push").read_text(encoding="utf-8")
     commands = [
         ln.strip() for ln in text.splitlines() if ln.strip().startswith("make ")

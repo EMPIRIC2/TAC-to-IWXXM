@@ -74,7 +74,7 @@ def compare_lint_profiles(tac_text: str, *, product: str) -> ProfileLintCompare:
             divergent_codes=frozenset(),
             unclassified_divergent=frozenset(),
             ok=True,
-            note="iwxxm_us unsupported for product — N/A (not fail)",
+            note="iwxxm_us unsupported for product - N/A (not fail)",
         )
 
     iwxxm_us_codes = _issue_codes(tac_text, product=product_u, profile=PROFILE_IWXXM_US)

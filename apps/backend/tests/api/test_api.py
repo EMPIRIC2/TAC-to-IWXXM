@@ -3,7 +3,6 @@ import zipfile
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api import app
 from src.utilities.security import verify_supabase_token
 

@@ -1,11 +1,11 @@
-"""TC-F27-004 — F27 theme C1 + translation-failed adjacency (S027 / EV-021 T4.4).
+"""TC-F27-004 - F27 theme C1 + translation-failed adjacency (S027 / EV-021 T4.4).
 
 Common-rule coverage for TCA: ``reportStatus`` / ``permissibleUsage`` on the WMO golden,
 T1 negatives still emit registry diagnostics, and ``tc-advisory-translation-failed`` is not a
 happy-path golden and must not silent-swap product/root with SIGMET/TC SIGMET.
 
-Convert-only (no TAC lint surface) — CRS attrs, ``translationFailedTAC`` emission, COLLECT
-packing — documented for matrix note (F26 C1 / F23 C1 pattern).
+Convert-only (no TAC lint surface) - CRS attrs, ``translationFailedTAC`` emission, COLLECT
+packing - documented for matrix note (F26 C1 / F23 C1 pattern).
 """
 
 from __future__ import annotations
@@ -73,11 +73,13 @@ def test_tc_f27_004_negatives_emit_registry_codes(case: dict[str, Any]) -> None:
     assert expected in codes, f"expected {expected} in {sorted(codes)}"
     if case.get("require_spans"):
         matched = [i for i in report.issues if i.code == expected]
-        assert matched and matched[0].start is not None and matched[0].end is not None
+        assert matched
+        assert matched[0].start is not None
+        assert matched[0].end is not None
 
 
 def test_tc_f27_004_golden_has_report_status_and_usage() -> None:
-    """C1 — reportStatus / permissibleUsage present on default convert of A2-2."""
+    """C1 - reportStatus / permissibleUsage present on default convert of A2-2."""
     tac = (ANNEX3 / "tca_a2_2.tac").read_text(encoding="utf-8")
     result = convert(tac, product="TCA", profile=_PROFILE, iwxxm_version=_VERSION)
     assert result.ok is True
@@ -100,7 +102,7 @@ def test_tc_f27_004_translation_failed_keeps_tca_root() -> None:
     tac = (VENDOR / "tc-advisory-translation-failed.tac").read_text(encoding="utf-8")
     assert "TC ADVISORY" in tac.upper()
     result = convert(tac, product="TCA", profile=_PROFILE, iwxxm_version=_VERSION)
-    # Convert may soft-succeed; adjacency requires TCA root — never SIGMET/TC SIGMET swap.
+    # Convert may soft-succeed; adjacency requires TCA root - never SIGMET/TC SIGMET swap.
     assert result.product == "TCA"
     assert result.xml
     assert "<iwxxm:TropicalCycloneAdvisory" in result.xml

@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 import random
-from typing import Dict
 
 from locust import HttpUser, between, task
-
 from tests.load.auth import AuthProvider, build_auth_provider
 from tests.load.config import LoadProfile, load_profile
 
@@ -32,7 +30,7 @@ class BaseMetarUser(HttpUser):
         self.profile = load_profile()
         self.auth_provider = build_auth_provider(self.profile)
 
-    def request_context(self, scenario: str, endpoint: str) -> Dict[str, str]:
+    def request_context(self, scenario: str, endpoint: str) -> dict[str, str]:
         """Context labels consumed by metrics hooks."""
         return {
             "profile": self.profile.name,
@@ -41,7 +39,7 @@ class BaseMetarUser(HttpUser):
             "endpoint": endpoint,
         }
 
-    def protected_headers(self) -> Dict[str, str]:
+    def protected_headers(self) -> dict[str, str]:
         """Return headers for protected endpoints."""
         return self.auth_provider.headers()
 

@@ -27,6 +27,9 @@ interface UserApprovalPanelProps {
   accessToken: string;
 }
 
+/**
+ * Admin panel for reviewing and approving pending user registrations.
+ */
 export function UserApprovalPanel({ accessToken }: UserApprovalPanelProps) {
   const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
   const [isLoading, setIsLoading] = useState(false);

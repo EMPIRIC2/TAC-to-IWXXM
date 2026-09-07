@@ -13,7 +13,7 @@ profiles. This directory is the standing SoT for profile *evidence*; implementat
 
 | Kind | Examples | Owns |
 |------|----------|------|
-| **Semantic** | `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` | TAC parse rules, RMK policy, national IWXXM extensions |
+| **Semantic** | `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, thin/compat (#920) | TAC parse rules, RMK policy, national IWXXM extensions |
 | **Exchange** | `GLOBAL_AFS`, `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` | Bulletin/filename/routing packaging — **not** TAC grammar |
 
 **Not here:** F16–F19 dissemination **destination** credentials (memory-only BYOC).
@@ -22,18 +22,25 @@ profiles. This directory is the standing SoT for profile *evidence*; implementat
 
 ```
 profiles/
-  README.md                 # this file
-  catalog.yaml              # machine index (URLs, gaps, priority) — P0/P1 rows
+  README.md                      # this file
+  NATIONAL_PROFILE_PLAYBOOK.md   # onboarding playbook (#1044 / EV-088)
+  _template/                     # copy stubs for new nationals
+  catalog.yaml                   # machine index (URLs, gaps, priority)
   semantic/
-    ICAO_2025.md            # P0 implemented
-    US_FAA_NWS.md           # P0 implemented (#919 deepen)
-    CA_ECCC.md              # P1 planned (#916)
+    ICAO_2025.md                 # P0 implemented
+    US_FAA_NWS.md                # P0 implemented (#919 deepen)
+    CA_ECCC.md                   # P1 implemented (#916) — reference impl
+    AU_BOM.md / NZ_CAA_MET.md    # P1 thin kickoff (EV-087)
+    UK_METOFFICE.md … HK_HKO.md  # P2 thin/compat (#920 / EV-089)
     ...
   exchange/
-    GLOBAL_AFS.md           # P0 implemented (EV-065 / #921)
-    APAC_ROBEX.md           # P2 stub (EV-065 P0)
+    GLOBAL_AFS.md                # P0 implemented (EV-065 / #921)
+    APAC_ROBEX.md … CAR_SAM.md   # P2 stubs (EV-065/086)
     ...
 ```
+
+**New national?** Start with [NATIONAL_PROFILE_PLAYBOOK.md](NATIONAL_PROFILE_PLAYBOOK.md)
+and [`_template/`](_template/).
 
 Fixture goldens (implementation): `profiles/<id>/<product>/{valid,invalid,expected-*}` under
 package test trees — land with first heavy national profile (F36).
@@ -58,23 +65,51 @@ Exchange default: `GLOBAL_AFS` — see [`exchange/GLOBAL_AFS.md`](exchange/GLOBA
 Machine-readable index: [`catalog.yaml`](catalog.yaml) — P0/P1 profile rows with source URLs,
 access tier, vendor pins, gaps, and mining-note cross-refs.
 
+### `metar_family_variants` contract
+
+For semantic profiles whose METAR/SPECI family includes national IWXXM roots beyond the global
+API `product` enum, `catalog.yaml` may define `metar_family_variants` rows. Each row is
+normative and describes one TAC lead / emit pairing within the selected semantic profile:
+
+| Field | Required | Meaning |
+|-------|----------|---------|
+| `tac_lead` | yes | TAC report lead token as observed on the wire (`METAR`, `SPECI`, `LWIS`, `SAWR`) |
+| `api_product` | yes | Global API dispatch family used by convert/validate (`METAR`, `SPECI`, `TAF`, ...) |
+| `iwxxm_root` | yes | Resolved IWXXM root element emitted for that row |
+| `rule_id` or `rule_id_prefix` | yes | Lint/fixture rule linkage for the variant or family |
+| `minimal_observation` | no | Marks sparse/minimal-observation reports whose omission set is profile-defined |
+| `manobs` / `notes` | no | Human citation / implementation note; informative, not runtime dispatch keys |
+
+Runtime contract:
+
+- Clients continue to send the global `product` family plus `semantic_profile`.
+- Profiles may additionally accept optional `report_variant` where this table exists.
+- When `report_variant` is omitted, convert may resolve it from the TAC lead and echo the
+  resolved value in response metadata.
+- Profiles without `metar_family_variants` keep `report_variant` absent / not applicable.
+
 | Priority | Semantic | Exchange |
 |----------|----------|----------|
 | **P0** | `ICAO_2025`, `US_FAA_NWS` | `GLOBAL_AFS` (default) |
-| **P1** | `CA_ECCC` | — |
-| **P2** | `AU_BOM`, `NZ_CAA_MET` | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
+| **P1** | `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET` | — |
+| **P2** | `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO` (#920 kickoff; **#1098** / EV-094 deepen → `implemented`) | `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` |
 
 ## Open gaps (#913 deepen)
 
 - [x] `catalog.yaml` with URL + access tier + gap status per profile id  
 - [x] Semantic stubs for `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`  
 - [ ] CA MANOBS/MANAIR section-level rule stubs for `CA_ECCC` (#916 / EV-064 in progress)  
-- [ ] AU TAF INTER/TAF3/RMK T/Q refs for `AU_BOM`  
-- [ ] NZ domestic vs international TAF refs for `NZ_CAA_MET`  
-- [ ] Regional exchange rule sources for ROBEX/RODEX variants (P2)  
+- [x] AU TAF INTER/TAF3/RMK T/Q refs for `AU_BOM` (EV-087 mining kickoff)  
+- [x] NZ domestic vs international TAF refs for `NZ_CAA_MET` (EV-087 mining kickoff)  
+- [x] Thin/compat catalog + stubs for #920 ids (EV-089 Spec; Build fixtures/registry pending)  
+- [x] Thin/compat **deepen** corpora + KR/JP SPECI + `in_imd` lint overlay ([#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098) / EV-094)  
+- [ ] Regional exchange rule sources for ROBEX/RODEX variants (P2)
 
 ## References
 
+- [NATIONAL_PROFILE_PLAYBOOK.md](NATIONAL_PROFILE_PLAYBOOK.md) — [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044)
+- [GAMET-spike.md](GAMET-spike.md) — EV-089 parse-only; EV-094 reaffirm
 - [ADR-036](../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 - [#913 Mine ticket](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913)
+- [#1098 Thin/compat deepen](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)
 - [#1025 Alias cutover](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025)

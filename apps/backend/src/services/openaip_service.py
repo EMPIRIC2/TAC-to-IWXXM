@@ -9,7 +9,7 @@ import json
 import logging
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from typing import Dict, Optional
+from typing import Any, cast
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class OpenAIPService:
     """Service for accessing OpenAIP airport data with intelligent caching."""
 
-    def __init__(self, cache_file: Optional[Path] = None, api_key: Optional[str] = None):
+    def __init__(self, cache_file: Path | None = None, api_key: str | None = None) -> None:
         """
         Initialize OpenAIP service.
 
@@ -30,9 +30,9 @@ class OpenAIPService:
 
         self.cache_file = cache_file
         self.api_key = api_key
-        self._cache: Optional[Dict[str, dict]] = None
-        self._cache_timestamp: Optional[datetime] = None
-        self._live_cache: Dict[str, dict] = {}  # In-memory cache for live API calls
+        self._cache: dict[str, dict[str, Any]] | None = None
+        self._cache_timestamp: datetime | None = None
+        self._live_cache: dict[str, dict[str, Any]] = {}  # In-memory cache for live API calls
         self._load_cache()
 
     def _load_cache(self) -> bool:
@@ -43,11 +43,15 @@ class OpenAIPService:
 
         try:
             with open(self.cache_file) as f:
-                data = json.load(f)
+                raw = json.load(f)
+            if not isinstance(raw, dict):
+                return False
+            data = cast(dict[str, Any], raw)
 
             # Extract metadata and airports
-            metadata = data.get("_metadata", {})
-            self._cache = data.get("airports", data)  # Handle both formats
+            metadata = cast(dict[str, Any], data.get("_metadata", {}))
+            airports_raw = data.get("airports", data)
+            self._cache = cast(dict[str, dict[str, Any]], airports_raw if isinstance(airports_raw, dict) else {})
             self._cache_timestamp = datetime.fromisoformat(
                 metadata.get("fetched_at", datetime.now(UTC).replace(tzinfo=None).isoformat())
             )
@@ -61,7 +65,7 @@ class OpenAIPService:
             self._cache = {}
             return False
 
-    def get_airport(self, icao: str) -> Optional[Dict]:
+    def get_airport(self, icao: str) -> dict[str, Any] | None:
         """
         Get airport data by ICAO code.
 
@@ -91,17 +95,16 @@ class OpenAIPService:
                     return cached_entry.get("data")
 
         # Try live API if available
-        if self.api_key:
-            if airport := self._fetch_from_api(icao):
-                self._live_cache[icao] = {
-                    "data": airport,
-                    "_cached_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
-                }
-                return airport
+        if self.api_key and (airport := self._fetch_from_api(icao)):
+            self._live_cache[icao] = {
+                "data": airport,
+                "_cached_at": datetime.now(UTC).replace(tzinfo=None).isoformat(),
+            }
+            return airport
 
         return None
 
-    def _fetch_from_api(self, icao: str) -> Optional[Dict]:
+    def _fetch_from_api(self, icao: str) -> dict[str, Any] | None:
         """
         Fetch a single airport from OpenAIP API (fallback).
 
@@ -124,7 +127,7 @@ class OpenAIPService:
 
             response = requests.get(url, headers=headers, params=params, timeout=5)
             if response.status_code == 200:
-                data = response.json()
+                data = cast(dict[str, Any], response.json())
                 if items := data.get("items"):
                     return items[0]
         except Exception as e:
@@ -144,7 +147,7 @@ class OpenAIPService:
         """
         return self.get_airport(icao) is not None
 
-    def get_all_airports(self) -> Dict[str, dict]:
+    def get_all_airports(self) -> dict[str, dict[str, Any]]:
         """
         Get all cached airports (for bulk operations).
 
@@ -153,7 +156,7 @@ class OpenAIPService:
         """
         return self._cache or {}
 
-    def cache_freshness(self) -> Optional[timedelta]:
+    def cache_freshness(self) -> timedelta | None:
         """
         Get how old the cache is.
 

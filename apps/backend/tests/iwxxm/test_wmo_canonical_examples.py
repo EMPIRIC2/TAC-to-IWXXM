@@ -8,10 +8,8 @@ These are the gold standard reference examples - 100% should validate successful
 """
 
 from pathlib import Path
-from typing import List
 
 import pytest
-
 from src.config.iwxxm_versions import get_versions_by_channel
 from src.config.test_corpus_sources import get_corpus_path
 from src.utilities.wmo_examples_loader import WMOExample, WMOExamplesLoader
@@ -37,12 +35,11 @@ def test_versions():
     return versions
 
 
-def collect_wmo_examples(versions: List[str]) -> List[tuple]:
+def collect_wmo_examples(versions: list[str]) -> list[tuple]:
     """
     Collect all WMO canonical examples for parametrization.
 
-    Returns:
-        List of (version, example) tuples for pytest.parametrize
+    Returns: list of (version, example) tuples for pytest.parametrize
     """
     loader = WMOExamplesLoader(SCHEMAS_BASE)
     test_cases = []
@@ -54,9 +51,7 @@ def collect_wmo_examples(versions: List[str]) -> List[tuple]:
             print(f"Note: Examples not available for {version}. Check vendor/schemas/iwxxm pin.")
             continue
 
-        for example in examples:
-            test_cases.append((version, example))
-
+        test_cases.extend((version, example) for example in examples)
     return test_cases
 
 
@@ -73,7 +68,7 @@ class TestWMOCanonicalExamplesValidation:
     gold standard reference implementations.
     """
 
-    @pytest.mark.parametrize("version,example", WMO_EXAMPLES)
+    @pytest.mark.parametrize(("version", "example"), WMO_EXAMPLES)
     def test_example_xml_well_formed(self, version: str, example: WMOExample):
         """Verify example XML is well-formed."""
         import xml.etree.ElementTree as ET
@@ -83,7 +78,7 @@ class TestWMOCanonicalExamplesValidation:
         except ET.ParseError as e:
             pytest.fail(f"XML parse error in {example.example_id}: {e}")
 
-    @pytest.mark.parametrize("version,example", WMO_EXAMPLES)
+    @pytest.mark.parametrize(("version", "example"), WMO_EXAMPLES)
     def test_example_xsd_validation(self, version: str, example: WMOExample):
         """Verify example passes XSD schema validation."""
         from src.services.iwxxm_validation_adapter import validate_xml_schema
@@ -93,7 +88,7 @@ class TestWMOCanonicalExamplesValidation:
 
         assert result.is_valid, f"XSD validation failed for {example.example_id}:\n{[i.message for i in result.issues]}"
 
-    @pytest.mark.parametrize("version,example", WMO_EXAMPLES)
+    @pytest.mark.parametrize(("version", "example"), WMO_EXAMPLES)
     @pytest.mark.skip(reason="Schematron validator enhancement pending")
     def test_example_schematron_validation(self, version: str, example: WMOExample):
         """Verify example passes Schematron validation with local RDF codelists."""
@@ -111,7 +106,7 @@ class TestWMOCanonicalExamplesValidation:
             f"Failed rules: {[r.rule_id for r in result.failed_rules]}"
         )
 
-    @pytest.mark.parametrize("version,example", WMO_EXAMPLES)
+    @pytest.mark.parametrize(("version", "example"), WMO_EXAMPLES)
     def test_example_gml_validation(self, version: str, example: WMOExample):
         """Verify example passes GML validation (internal + external references)."""
         from src.schemas.validation import GMLValidationResult
@@ -168,10 +163,7 @@ class TestWMOExamplesManifest:
         """Verify examples directory exists for all supported versions."""
         missing_versions = []
 
-        for version in test_versions:
-            if not examples_loader.load_examples(version):
-                missing_versions.append(version)
-
+        missing_versions.extend(version for version in test_versions if not examples_loader.load_examples(version))
         if missing_versions:
             pytest.skip(
                 f"Examples not available for: {', '.join(missing_versions)}. "

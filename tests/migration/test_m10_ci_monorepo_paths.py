@@ -1,4 +1,4 @@
-"""M10 CI monorepo paths — T10.1, migration-plan.md Step 7."""
+"""M10 CI monorepo paths - T10.1, migration-plan.md Step 7."""
 
 from __future__ import annotations
 
@@ -72,7 +72,7 @@ class TestM10CiMonorepoPaths:
 
 @pytest.mark.migration
 class TestM10CiInRepoFrontendBuild:
-    """T10.2 — frontend Docker build must use in-repo apps/frontend."""
+    """T10.2 - frontend Docker build must use in-repo apps/frontend."""
 
     @pytest.fixture
     def workflow_text(self) -> str:

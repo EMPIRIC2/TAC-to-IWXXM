@@ -1,4 +1,4 @@
-"""TC-EV055-004: Schematron enabled for IWXXM 2025-2 (hard — native path).
+"""TC-EV055-004: Schematron enabled for IWXXM 2025-2 (hard - native path).
 
 Spec: docs/test-plan.md TC-EV055-004; AC4; #980; D-S064-sch-hard=1.
 Corpus: [Corpus: product §F13] [Corpus: tests]

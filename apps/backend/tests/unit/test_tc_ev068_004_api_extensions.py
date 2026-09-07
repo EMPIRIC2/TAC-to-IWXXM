@@ -1,4 +1,4 @@
-"""TC-EV068-004 — API extensions=IWXXM_CA wire (EV-068 M5).
+"""TC-EV068-004 - API extensions=IWXXM_CA wire (EV-068 M5).
 
 Spec: docs/test-plan.md §TC-EV068-004; docs/api-contract.md §EV-063 extensions.
 """
@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -73,7 +72,8 @@ def test_tc_ev068_004_iwxxm_ca_forwards_product_and_stages(
     )
     assert response.status_code == 200, response.text[:500]
     body = response.json()
-    assert seen and seen[0].get("product") == "METAR"
+    assert seen
+    assert seen[0].get("product") == "METAR"
     assert body.get("extensions") == ["IWXXM_CA"]
     stages = body.get("package_stages") or []
     assert any(stage.get("stage") == "ca_xsd" for stage in stages)
@@ -103,7 +103,8 @@ def test_tc_ev068_004_without_iwxxm_ca_skips_product(
         },
     )
     assert response.status_code == 200, response.text[:500]
-    assert seen and seen[0].get("product") is None
+    assert seen
+    assert seen[0].get("product") is None
     assert "package_stages" not in response.json()
 
 
@@ -146,7 +147,8 @@ def test_tc_ev068_004_convert_tac_forwards_extensions_on_validate_output(
         },
     )
     assert response.status_code == 200, response.text[:500]
-    assert seen and seen[0].get("product") == "METAR"
+    assert seen
+    assert seen[0].get("product") == "METAR"
 
 
 def test_tc_ev068_004_convert_iwxxm_pass_through_forwards_extensions(
@@ -175,4 +177,5 @@ def test_tc_ev068_004_convert_iwxxm_pass_through_forwards_extensions(
         },
     )
     assert response.status_code == 200, response.text[:500]
-    assert seen and seen[0].get("product") == "IWXXM"
+    assert seen
+    assert seen[0].get("product") == "IWXXM"

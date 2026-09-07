@@ -1,4 +1,4 @@
-"""BUG-2026-06-25 — Supabase Sync CI: server edge function missing admin.tsx.
+"""BUG-2026-06-25 - Supabase Sync CI: server edge function missing admin.tsx.
 
 CI ``supabase functions deploy`` failed bundling ``server`` because
 ``index.ts`` imports ``./admin.tsx`` which was absent (present only under
@@ -32,7 +32,7 @@ def _relative_import_targets(
 
 
 def test_server_admin_module_exists() -> None:
-    """server/index.ts imports ./admin.tsx — file must exist for CI bundle."""
+    """server/index.ts imports ./admin.tsx - file must exist for CI bundle."""
     assert SERVER_ADMIN.is_file(), f"Missing edge function module: {SERVER_ADMIN}"
 
 

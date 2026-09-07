@@ -1,4 +1,4 @@
-"""TC-EV071-004 — CA_ECCC lint quality matrix inventory gate."""
+"""TC-EV071-004 - CA_ECCC lint quality matrix inventory gate."""
 
 from __future__ import annotations
 

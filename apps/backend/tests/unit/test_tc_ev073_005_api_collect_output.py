@@ -1,14 +1,14 @@
-"""TC-EV073-005 — API convert COLLECT output mode (EV-073 M1 / #1032)."""
+"""TC-EV073-005 - API convert COLLECT output mode (EV-073 M1 / #1032)."""
 
 from __future__ import annotations
 
 import pytest
 from dissemination.collect_namespaces import is_collect_bulletin
 from fastapi.testclient import TestClient
-from tac2iwxxm import parse_ahl
+from src import api as api_module
 from tac2iwxxm.exchange_output import ca_msc_filename, issued_at_from_yygggg
 
-from src import api as api_module
+from tac2iwxxm import parse_ahl
 
 _BULLETIN = """\
 SAUL31 CYUL 231800

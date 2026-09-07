@@ -218,7 +218,7 @@ class TestIntegrationDataQuality:
     def test_integration_test_stations_defined(self):
         """Verify integration test stations are properly configured."""
         assert len(INTEGRATION_TEST_STATIONS) > 0
-        assert all(len(station_id) == 4 for station_id in INTEGRATION_TEST_STATIONS.keys())
+        assert all(len(station_id) == 4 for station_id in INTEGRATION_TEST_STATIONS)
 
     def test_smoke_test_subset_exists(self):
         """Verify smoke test subset is a proper subset of full stations."""

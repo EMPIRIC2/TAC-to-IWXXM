@@ -1,4 +1,4 @@
-"""TC-EV023-002 — Missing WX / Guidance nils (S030 / EV-023 T2.1).
+"""TC-EV023-002 - Missing WX / Guidance nils (S030 / EV-023 T2.1).
 
 Locks ``common/nil`` vs ``iwxxm/nil`` URI families per product vocabulary:
 aerodrome METAR/SPECI Guidance nils use ``codes.wmo.int/common/nil/...``;

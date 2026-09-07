@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import os
 import time
-from typing import Any
+from typing import Any, cast
 
 import httpx
 import jwt
@@ -87,10 +87,10 @@ def _fetch_jwks_document(jwks_url: str) -> dict[str, Any]:
     try:
         response = httpx.get(jwks_url, timeout=10.0)
         response.raise_for_status()
-        document = response.json()
+        document = cast(dict[str, Any], response.json())
     except Exception as exc:
         raise JwtVerificationError(f"JWKS fetch failed: {exc}") from exc
-    if not isinstance(document, dict) or "keys" not in document:
+    if "keys" not in document:
         raise JwtVerificationError("JWKS document missing keys")
     _JWKS_CACHE[jwks_url] = (now, document)
     return document

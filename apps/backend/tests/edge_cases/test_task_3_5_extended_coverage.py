@@ -6,10 +6,9 @@ Comprehensive integration testing of semantic validation rules against
 
 import re
 from dataclasses import dataclass, field
-from typing import Any, Dict
+from typing import Any
 
 import pytest
-
 from src.testing.metar_test_generator import METARTestGenerator
 from src.validation.semantic_rules import (
     CloudLayerValidationRule,
@@ -38,7 +37,7 @@ class ValidationStatistics:
     visibility_failed: int = 0
 
     # Failure distribution
-    failures_by_category: Dict[str, int] = field(
+    failures_by_category: dict[str, int] = field(
         default_factory=lambda: {
             "data_quality": 0,
             "physical_impossibility": 0,
@@ -48,15 +47,15 @@ class ValidationStatistics:
     )
 
     # Phenomenon distribution
-    phenomena_encountered: Dict[str, int] = field(default_factory=dict)
+    phenomena_encountered: dict[str, int] = field(default_factory=dict)
 
     # Coverage code distribution
-    coverage_codes: Dict[str, int] = field(default_factory=dict)
+    coverage_codes: dict[str, int] = field(default_factory=dict)
 
     # Real data insights
-    temperature_stats: Dict[str, float] = field(default_factory=dict)
-    visibility_stats: Dict[str, float] = field(default_factory=dict)
-    altitude_stats: Dict[str, float] = field(default_factory=dict)
+    temperature_stats: dict[str, float] = field(default_factory=dict)
+    visibility_stats: dict[str, float] = field(default_factory=dict)
+    altitude_stats: dict[str, float] = field(default_factory=dict)
 
     def pass_rate(self) -> float:
         """Calculate overall pass rate."""
@@ -118,7 +117,7 @@ class TestExtendedValidationCoverage:
         """Provide statistics collection."""
         return ValidationStatistics()
 
-    def parse_metar_data(self, raw_metar: str) -> Dict[str, Any]:
+    def parse_metar_data(self, raw_metar: str) -> dict[str, Any]:
         """Extract temperature, clouds, visibility, and phenomena from METAR."""
         data = {
             "temperature": None,

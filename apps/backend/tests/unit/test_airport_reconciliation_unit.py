@@ -1,11 +1,10 @@
-"""Unit tests for AirportReconciliationService – 0% coverage target."""
+"""Unit tests for AirportReconciliationService - 0% coverage target."""
 
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import pytest
-
 from src.services.airport_reconciliation import (
     AirportReconciliationService,
     ConflictLog,
@@ -148,7 +147,7 @@ class TestLoadGiftsData:
 
 
 class TestSafeFloat:
-    @pytest.mark.parametrize("value,expected", [(None, None), ("", None), ("12.5", 12.5), (12, 12.0)])
+    @pytest.mark.parametrize(("value", "expected"), [(None, None), ("", None), ("12.5", 12.5), (12, 12.0)])
     def test_safe_float_expected_values(self, value, expected):
         svc = _make_service()
         assert svc._safe_float(value) == expected

@@ -22,6 +22,12 @@ vi.mock('./MonitoringPanel', () => ({
   MonitoringPanel: () => <div data-testid="monitoring-panel">Monitoring Panel</div>,
 }));
 
+vi.mock('./AdminWorkSessionsPanel', () => ({
+  AdminWorkSessionsPanel: () => (
+    <div data-testid="work-sessions-panel">Work Sessions Panel</div>
+  ),
+}));
+
 vi.mock('../ThemeToggle', () => ({
   ThemeToggle: () => <div data-testid="theme-toggle">Theme Toggle</div>,
 }));
@@ -57,6 +63,9 @@ describe('AdminDashboard', () => {
 
     await user.click(screen.getByText('System Monitoring'));
     expect(screen.getByTestId('monitoring-panel')).toBeInTheDocument();
+
+    await user.click(screen.getByText('Work Sessions'));
+    expect(screen.getByTestId('work-sessions-panel')).toBeInTheDocument();
 
     await user.click(screen.getByText('User Approvals'));
     expect(screen.getByTestId('approval-panel')).toBeInTheDocument();

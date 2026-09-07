@@ -5,11 +5,11 @@ independent of XML schema validation. Focuses on scientific accuracy.
 """
 
 from dataclasses import dataclass
-from enum import Enum
-from typing import List, Optional
+from enum import StrEnum
+from typing import Any, ClassVar
 
 
-class IssueSeverity(str, Enum):
+class IssueSeverity(StrEnum):
     """Severity levels for validation issues."""
 
     ERROR = "error"  # Data physically impossible
@@ -27,7 +27,7 @@ class ValidationIssue:
     expected: str
     actual: str
     affected_field: str
-    suggested_fix: Optional[str] = None
+    suggested_fix: str | None = None
 
     def __str__(self) -> str:
         return f"[{self.severity.upper()}] {self.rule_name}: {self.message}"
@@ -47,13 +47,13 @@ class TemperatureValidationRule:
     Spacing Check: Typically T - Td between 0°C and ~30°C
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize temperature validation rule."""
         self.rule_name = "temperature_dewpoint_relationship"
         self.min_dew_spread = 0.0  # °C, minimum T - Td
         self.max_dew_spread = 50.0  # °C, maximum realistic T - Td
 
-    def validate(self, temperature: Optional[float], dewpoint: Optional[float]) -> List[ValidationIssue]:
+    def validate(self, temperature: float | None, dewpoint: float | None) -> list[ValidationIssue]:
         """Validate temperature and dewpoint relationship.
 
         Args:
@@ -63,7 +63,7 @@ class TemperatureValidationRule:
         Returns:
             List of validation issues (empty if valid)
         """
-        issues = []
+        issues: list[ValidationIssue] = []
 
         # Skip validation if either value missing
         if temperature is None or dewpoint is None:
@@ -153,7 +153,7 @@ class CloudLayerValidationRule:
     """
 
     # Coverage hierarchy (lower = more sky visible)
-    COVERAGE_RANK = {
+    COVERAGE_RANK: ClassVar[dict[str, int]] = {
         "CLR": 0,  # Clear (SKC code equivalent)
         "SKC": 0,  # Sky Clear
         "FEW": 1,  # 1-2 oktas (12.5-25%)
@@ -172,16 +172,16 @@ class CloudLayerValidationRule:
     LARGE_GAP_M = 3000  # Large gap (> 3km)
     EXTREME_GAP_M = 8000  # Extreme gap (> 8km)
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize cloud layer validation rule."""
         self.rule_name = "cloud_layer_consistency"
 
-    def _check_altitude_validity(self, layers: List[dict]) -> List[ValidationIssue]:
+    def _check_altitude_validity(self, layers: list[dict[str, Any]]) -> list[ValidationIssue]:
         """Check each layer's altitude is within valid range.
 
         Returns issues for out-of-range altitudes.
         """
-        issues = []
+        issues: list[ValidationIssue] = []
 
         for i, layer in enumerate(layers):
             alt = layer.get("altitude_m")
@@ -234,12 +234,12 @@ class CloudLayerValidationRule:
 
         return issues
 
-    def _check_altitude_gaps(self, layers: List[dict]) -> List[ValidationIssue]:
+    def _check_altitude_gaps(self, layers: list[dict[str, Any]]) -> list[ValidationIssue]:
         """Analyze gaps between cloud layers for anomalies.
 
         Returns issues for unusual gap patterns.
         """
-        issues = []
+        issues: list[ValidationIssue] = []
 
         layers_by_alt = sorted(layers, key=lambda x: x.get("altitude_m", 0))
 
@@ -287,12 +287,12 @@ class CloudLayerValidationRule:
 
         return issues
 
-    def _check_coverage_consistency(self, layers: List[dict]) -> List[ValidationIssue]:
+    def _check_coverage_consistency(self, layers: list[dict[str, Any]]) -> list[ValidationIssue]:
         """Validate coverage patterns are physically consistent.
 
         Returns issues for illogical coverage sequences.
         """
-        issues = []
+        issues: list[ValidationIssue] = []
 
         layers_by_alt = sorted(layers, key=lambda x: x.get("altitude_m", 0))
 
@@ -325,7 +325,7 @@ class CloudLayerValidationRule:
 
         return issues
 
-    def validate(self, cloud_layers: List[dict]) -> List[ValidationIssue]:
+    def validate(self, cloud_layers: list[dict[str, Any]]) -> list[ValidationIssue]:
         """Validate cloud layer sequence (Task 3.2 enhanced).
 
         Performs comprehensive checks:
@@ -345,13 +345,13 @@ class CloudLayerValidationRule:
         Returns:
             List of validation issues (empty if valid)
         """
-        issues = []
+        issues: list[ValidationIssue] = []
 
         if not cloud_layers:
             return issues
 
         # Check 1: Clear sky exclusivity (highest priority)
-        clear_layers = [l for l in cloud_layers if l.get("coverage") in ["CLR", "SKC"]]
+        clear_layers = [layer for layer in cloud_layers if layer.get("coverage") in ["CLR", "SKC"]]
         if clear_layers and len(cloud_layers) > 1:
             issues.append(
                 ValidationIssue(
@@ -373,7 +373,10 @@ class CloudLayerValidationRule:
         issues.extend(self._check_altitude_gaps(cloud_layers))
 
         # Sort by altitude for remaining checks
-        layers_by_alt = sorted(cloud_layers, key=lambda x: x.get("altitude_m", 0))
+        layers_by_alt = sorted(
+            cloud_layers,
+            key=lambda layer: int(layer.get("altitude_m") or 0),
+        )
 
         # Check 4: Altitude strict ordering (no duplicates, increasing with height)
         for i in range(len(layers_by_alt) - 1):
@@ -415,7 +418,7 @@ class VisibilityWeatherValidationRule:
     """
 
     # Expected visibility ranges for weather phenomena
-    PHENOMENA_VISIBILITY = {
+    PHENOMENA_VISIBILITY: ClassVar[dict[str, dict[str, int | str]]] = {
         "FG": {
             "min_m": 0,
             "max_m": 1000,
@@ -475,32 +478,32 @@ class VisibilityWeatherValidationRule:
     }
 
     # Phenomenon combinations that compound visibility effects
-    COMPOUNDS = {
+    COMPOUNDS: ClassVar[dict[tuple[str, str], str]] = {
         ("FG", "BR"): "Fog + Mist: expect very low visibility",
         ("SN", "BR"): "Snow + Mist: expect low visibility",
         ("RA", "BR"): "Rain + Mist: expect reduced visibility",
         ("TS", "RA"): "Thunderstorm + Rain: expect very variable visibility",
     }
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize visibility-weather validation rule."""
         self.rule_name = "visibility_weather_consistency"
 
-    def _check_single_phenomenon(self, phenomenon: str, visibility: int) -> List[ValidationIssue]:
+    def _check_single_phenomenon(self, phenomenon: str, visibility: int) -> list[ValidationIssue]:
         """Check visibility for a single weather phenomenon.
 
         Returns list of issues.
         """
-        issues = []
+        issues: list[ValidationIssue] = []
 
         if phenomenon not in self.PHENOMENA_VISIBILITY:
             return issues
 
         expected = self.PHENOMENA_VISIBILITY[phenomenon]
-        min_vis = expected["min_m"]
-        max_vis = expected["max_m"]
-        error_min = expected.get("severity_error_min", min_vis)
-        error_max = expected.get("severity_error_max", max_vis)
+        min_vis = int(expected["min_m"])
+        max_vis = int(expected["max_m"])
+        error_min = int(expected.get("severity_error_min", min_vis))
+        error_max = int(expected.get("severity_error_max", max_vis))
 
         # Check if visibility is out of critical range (ERROR)
         if visibility < error_min or visibility > error_max:
@@ -531,12 +534,12 @@ class VisibilityWeatherValidationRule:
 
         return issues
 
-    def _check_phenomenon_combinations(self, phenomena: List[str], visibility: int) -> List[ValidationIssue]:
+    def _check_phenomenon_combinations(self, phenomena: list[str], visibility: int) -> list[ValidationIssue]:
         """Check visibility against combinations of phenomena.
 
         Multiple phenomena compound effects on visibility.
         """
-        issues = []
+        issues: list[ValidationIssue] = []
 
         if len(phenomena) < 2:
             return issues
@@ -551,7 +554,7 @@ class VisibilityWeatherValidationRule:
                 vis2 = self.PHENOMENA_VISIBILITY[p2]
 
                 # More restrictive = lower max and lower typical
-                restrictive_max = min(vis1["max_m"], vis2["max_m"])
+                restrictive_max = min(int(vis1["max_m"]), int(vis2["max_m"]))
 
                 if visibility > restrictive_max:
                     issues.append(
@@ -570,8 +573,8 @@ class VisibilityWeatherValidationRule:
         return issues
 
     def validate(
-        self, visibility_meters: Optional[int], weather_phenomena: Optional[List[str]] = None
-    ) -> List[ValidationIssue]:
+        self, visibility_meters: int | None, weather_phenomena: list[str] | None = None
+    ) -> list[ValidationIssue]:
         """Validate visibility aligns with weather phenomena (Task 3.3 enhanced).
 
         Performs checks for:
@@ -586,7 +589,7 @@ class VisibilityWeatherValidationRule:
         Returns:
             List of validation issues (empty if valid)
         """
-        issues = []
+        issues: list[ValidationIssue] = []
 
         if not visibility_meters:
             return issues
@@ -617,7 +620,7 @@ class SemanticValidationEngine:
     comprehensive error reporting.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize validation engine with all rules."""
         self.temperature_rule = TemperatureValidationRule()
         self.cloud_rule = CloudLayerValidationRule()
@@ -625,12 +628,12 @@ class SemanticValidationEngine:
 
     def validate_metar_data(
         self,
-        temperature: Optional[float] = None,
-        dewpoint: Optional[float] = None,
-        cloud_layers: Optional[List[dict]] = None,
-        visibility_meters: Optional[int] = None,
-        weather_phenomena: Optional[List[str]] = None,
-    ) -> List[ValidationIssue]:
+        temperature: float | None = None,
+        dewpoint: float | None = None,
+        cloud_layers: list[dict[str, Any]] | None = None,
+        visibility_meters: int | None = None,
+        weather_phenomena: list[str] | None = None,
+    ) -> list[ValidationIssue]:
         """Run comprehensive semantic validation on METAR data.
 
         Args:
@@ -643,7 +646,7 @@ class SemanticValidationEngine:
         Returns:
             List of all validation issues found
         """
-        all_issues = []
+        all_issues: list[ValidationIssue] = []
 
         # Run temperature validation
         all_issues.extend(self.temperature_rule.validate(temperature, dewpoint))
@@ -658,7 +661,9 @@ class SemanticValidationEngine:
 
         return all_issues
 
-    def generate_report(self, issues: List[ValidationIssue], station_id: str = "UNKNOWN", raw_metar: str = "") -> dict:
+    def generate_report(
+        self, issues: list[ValidationIssue], station_id: str = "UNKNOWN", raw_metar: str = ""
+    ) -> dict[str, Any]:
         """Generate structured validation report.
 
         Args:

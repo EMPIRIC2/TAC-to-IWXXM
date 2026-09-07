@@ -1,4 +1,4 @@
-"""TC-EV025-004 / M4.3 — Sector / Obscurations / SecondLocation / Tower (UJ-040).
+"""TC-EV025-004 / M4.3 - Sector / Obscurations / SecondLocation / Tower (UJ-040).
 
 Asserts ``SectorVisibility``, ``Obscurations`` (VOP), ``ObservedAtSecondLocation``
 (+ ``SensorLocation``), and ``TowerVisibility`` under ``iwxxm_us``.
@@ -9,8 +9,9 @@ XML pins follow iwxxm-us 3.0 PDF sample shapes
 
 from __future__ import annotations
 
-from tac2iwxxm import convert
 from tac2iwxxm.products.metar_speci import parse_metar_speci
+
+from tac2iwxxm import convert
 
 IWXXM_VERSION = "2025-2"
 PROFILE = "iwxxm_us"

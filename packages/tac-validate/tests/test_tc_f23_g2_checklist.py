@@ -1,4 +1,4 @@
-"""F23 / G2 — general SIGMET sequence/validity/FIR/OBS/intensity (TC-F23-004).
+"""F23 / G2 - general SIGMET sequence/validity/FIR/OBS/intensity (TC-F23-004).
 
 HARD theme G2 from sigmet-research-catalog.md / #733 checklist.
 T1.3 fixtures + assertions; T1.4 encodes registry rows + rules.
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

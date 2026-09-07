@@ -29,7 +29,7 @@ describe('BUG-2026-07-15 superseded by F21 (no Bearer)', () => {
     localStorage.setItem('access_token', 'stale-jwt');
     await lintTac({ manualText: 'fjgfjf', product: 'METAR' });
     const init = (global.fetch as ReturnType<typeof vi.fn>).mock
-      .calls[0][1] as RequestInit;
+      .calls[0]![1] as RequestInit;
     expect(
       (init.headers as Record<string, string> | undefined)?.Authorization,
     ).toBeUndefined();
@@ -39,7 +39,7 @@ describe('BUG-2026-07-15 superseded by F21 (no Bearer)', () => {
     localStorage.setItem('access_token', 'stale-jwt');
     await decodeTac({ manualText: 'fjgfjf', product: 'METAR' });
     const init = (global.fetch as ReturnType<typeof vi.fn>).mock
-      .calls[0][1] as RequestInit;
+      .calls[0]![1] as RequestInit;
     expect(
       (init.headers as Record<string, string> | undefined)?.Authorization,
     ).toBeUndefined();

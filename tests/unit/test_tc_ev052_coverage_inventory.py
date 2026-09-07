@@ -1,4 +1,4 @@
-"""TC-EV052-001 / T1.1 — coverage surface inventory exists and is complete.
+"""TC-EV052-001 / T1.1 - coverage surface inventory exists and is complete.
 
 [Corpus: tests] [Corpus: adr/ADR-007] [Corpus: product] EV-052 / #950
 """
@@ -42,7 +42,7 @@ REQUIRED_SURFACE_IDS = frozenset(
 
 @pytest.mark.unit
 class TestTcEv052CoverageInventory:
-    """AC1 / TC-EV052-001 — inventory every coverage surface vs ≥95% target."""
+    """AC1 / TC-EV052-001 - inventory every coverage surface vs ≥95% target."""
 
     def test_inventory_file_exists(self) -> None:
         assert INVENTORY.is_file(), f"missing inventory: {INVENTORY}"
@@ -52,7 +52,8 @@ class TestTcEv052CoverageInventory:
         assert isinstance(data, dict)
         assert int(data.get("target_floor", 0)) >= 95
         surfaces = data.get("surfaces")
-        assert isinstance(surfaces, list) and surfaces
+        assert isinstance(surfaces, list)
+        assert surfaces
         ids = {s["id"] for s in surfaces if isinstance(s, dict) and "id" in s}
         missing = REQUIRED_SURFACE_IDS - ids
         assert not missing, f"inventory missing surfaces: {sorted(missing)}"

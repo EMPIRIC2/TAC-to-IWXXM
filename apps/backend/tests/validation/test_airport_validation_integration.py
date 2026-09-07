@@ -37,9 +37,7 @@ class TestAirportValidatorIntegration:
         validator = get_airport_validator()
 
         # Try a common airport
-        if validator.validate_icao("KJFK"):
-            assert True
-        elif validator.validate_icao("EGLL"):
+        if validator.validate_icao("KJFK") or validator.validate_icao("EGLL"):
             assert True
         elif validator.count() > 0:
             # If we have any airports, test with first one

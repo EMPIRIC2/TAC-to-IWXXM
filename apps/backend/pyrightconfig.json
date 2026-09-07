@@ -2,12 +2,11 @@
   "include": ["src"],
   "exclude": ["**/__pycache__"],
   "pythonVersion": "3.12",
-  "typeCheckingMode": "standard",
+  "typeCheckingMode": "strict",
   "reportMissingTypeStubs": false,
-  "reportUnknownMemberType": "none",
-  "reportUnknownVariableType": "none",
-  "reportUnknownArgumentType": "none",
-  "reportUnknownParameterType": "none",
-  "reportMissingTypeArgument": "none",
+  "reportUnknownMemberType": "error",
+  "reportUnknownVariableType": "error",
+  "reportPrivateUsage": "none",
+  "reportUnusedFunction": "none",
   "extraPaths": ["../../packages/tac2iwxxm/src", "src"]
 }

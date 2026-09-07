@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from tac2iwxxm.convert import convert
 from tac2iwxxm.native import rust_available, rust_module, scan_metar_tokens
 from tac2iwxxm.products.sigmet_airmet import parse_airmet, parse_sigmet
@@ -209,7 +208,7 @@ def test_more_coverage_edges() -> None:
 
     orig = ap.emit_taf_annex3
 
-    def _fake_emit(ir, *, iwxxm_version):  # noqa: ANN001, ANN202
+    def _fake_emit(ir, *, iwxxm_version):
         return (
             '<?xml version="1.0"?>\n'
             f'<iwxxm:TAF xmlns:iwxxm="http://icao.int/iwxxm/{iwxxm_version}" '
@@ -310,7 +309,8 @@ def test_more_coverage_edges() -> None:
 
     # VAA latlon / DTG edge helpers via public parsers with sparse fields.
     sparse = parse_vaa("VA ADVISORY\nDTG: 20040925/1900Z\nVAAC: TOKYO\nVOLCANO: X\nPSN: S1234 W01234\n")
-    assert sparse["lat"] is not None and sparse["lat"] < 0
+    assert sparse["lat"] is not None
+    assert sparse["lat"] < 0
     assert sparse["source_elevation_m"] is None
 
     from tac2iwxxm.products.vaa_tca import _latlon, _parse_dtg

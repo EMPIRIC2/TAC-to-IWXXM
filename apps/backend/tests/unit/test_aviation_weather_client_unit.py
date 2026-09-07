@@ -10,7 +10,6 @@ from unittest.mock import AsyncMock
 
 import httpx
 import pytest
-
 from src.clients.aviation_weather_client import (
     AviationWeatherAPIError,
     AviationWeatherClient,

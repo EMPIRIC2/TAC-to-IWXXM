@@ -46,9 +46,11 @@ def _imports_gifts(path: Path) -> list[str]:
     hits: list[str] = []
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
-            for alias in node.names:
-                if alias.name == "gifts" or alias.name.startswith("gifts."):
-                    hits.append(alias.name)
+            hits.extend(
+                alias.name
+                for alias in node.names
+                if alias.name == "gifts" or alias.name.startswith("gifts.")
+            )
         elif isinstance(node, ast.ImportFrom):
             mod = node.module or ""
             if mod == "gifts" or mod.startswith("gifts."):
@@ -94,7 +96,8 @@ def test_t46_local_tc001_convert_via_tac2iwxxm() -> None:
     tac = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
     result = convert(tac, product="METAR", profile="annex3", iwxxm_version="2025-2")
     assert result.ok is True
-    assert result.xml and "<iwxxm:METAR" in result.xml
+    assert result.xml
+    assert "<iwxxm:METAR" in result.xml
     # Must not require gifts at runtime for this path
     with pytest.raises(ImportError):
         __import__("gifts")

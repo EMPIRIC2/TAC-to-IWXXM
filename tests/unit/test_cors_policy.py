@@ -1,4 +1,4 @@
-"""Connectivity gate H0c — CORS policy unit tests.
+"""Connectivity gate H0c - CORS policy unit tests.
 
 Validates ``METAR_CORS_ORIGINS`` parsing contract via ``metar_shared``.
 In-process CORSMiddleware tests against ``apps/backend`` follow in T5.4.
@@ -17,7 +17,7 @@ from metar_shared import METAR_CORS_ORIGINS_ENV, parse_comma_separated_origins
 
 @pytest.mark.unit
 class TestMetarCorsOriginsPolicy:
-    """H0c — METAR_CORS_ORIGINS env contract."""
+    """H0c - METAR_CORS_ORIGINS env contract."""
 
     def test_env_constant_matches_deploy_spec(self) -> None:
         assert METAR_CORS_ORIGINS_ENV == "METAR_CORS_ORIGINS"

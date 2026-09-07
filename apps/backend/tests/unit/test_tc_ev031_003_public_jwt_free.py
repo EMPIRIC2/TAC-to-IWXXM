@@ -1,4 +1,4 @@
-"""TC-EV031-003 — public convert/lint/validate/decode stay JWT-free after Auth restore.
+"""TC-EV031-003 - public convert/lint/validate/decode stay JWT-free after Auth restore.
 
 Spec: docs/test-plan.md TC-EV031-003; F21 Amended; F31 / ADR-033.
 """
@@ -9,7 +9,6 @@ from collections.abc import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api import app
 
 SAMPLE_METAR = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
@@ -27,7 +26,7 @@ def _multipart(client: TestClient, path: str, fields: dict[str, str]):
 
 @pytest.fixture
 def public_client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
-    """Unauthenticated client — no Authorization header injected."""
+    """Unauthenticated client - no Authorization header injected."""
     monkeypatch.setenv("METAR_CONFIG_ENV", "local")
     monkeypatch.delenv("METAR_CORS_ORIGINS", raising=False)
     monkeypatch.setenv("ENABLE_DEV_CORS_RELAXATION", "true")

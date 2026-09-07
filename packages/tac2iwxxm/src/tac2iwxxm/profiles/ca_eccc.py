@@ -1,4 +1,4 @@
-"""CA_ECCC profile XML writer — Canadian METAR/SPECI/TAF (IWXXM 3.0.0 + iwxxm-ca).
+"""CA_ECCC profile XML writer - Canadian METAR/SPECI/TAF (IWXXM 3.0.0 + iwxxm-ca).
 
 Encodes MANOBS surface observations and MANAIR TAF extensions on the MSC operational
 line: statute-mile visibility, inch-of-mercury altimeter (via QNH), AUTO observing
@@ -29,7 +29,7 @@ CA_AIRMET_PHENOM_BASE = f"{_CODE_CA_BASE}/airmet_weather_phenomena"
 CA_ICING_BASE = f"{_CODE_CA_BASE}/AerodromeIcing"
 CA_PRESENT_FORECAST_WEATHER_BASE = f"{_CODE_CA_BASE}/present_and_forecast_weather"
 
-# MANOBS METAR-family TAC leads — catalogued in docs/domain/profiles/catalog.yaml
+# MANOBS METAR-family TAC leads - catalogued in docs/domain/profiles/catalog.yaml
 # (CA_ECCC.metar_family_variants). API product stays METAR/SPECI; IR ca_iwxxm_root
 # selects IWXXM root (core iwxxm:METAR/SPECI vs national iwxxm-ca:LWIS/SAWR).
 CA_METAR_FAMILY_TAC_LEADS = frozenset({"METAR", "SPECI", "LWIS", "SAWR"})
@@ -130,7 +130,7 @@ def _processed_quantity_addendum_inner(ir: dict[str, Any]) -> str:
     for row_obj in cast(list[object], qty_raw):
         if not isinstance(row_obj, dict):
             continue
-        row: dict[str, Any] = row_obj
+        row = cast(dict[str, Any], row_obj)
         elem = escape(str(row["processed_weather_element_href"]))
         vtype = escape(str(row["value_type_href"]))
         period = escape(str(row.get("value_period") or "PT1H"))
@@ -277,7 +277,7 @@ def _taf_forecast_extension(ir: dict[str, Any]) -> str:
 
 
 def _nclws_extension(ir: dict[str, Any]) -> str:
-    """Backward-compatible wrapper — prefer ``_taf_forecast_extension``."""
+    """Backward-compatible wrapper - prefer ``_taf_forecast_extension``."""
     return _taf_forecast_extension(ir)
 
 
@@ -535,8 +535,8 @@ def emit_metar_speci_ca_eccc(
 
 
 __all__ = [
-    "CA_IWXXM_VERSION",
     "CA_IWXXM_CA_SUBSTITUTION_ROOTS",
+    "CA_IWXXM_VERSION",
     "CA_METAR_FAMILY_TAC_LEADS",
     "CA_NS",
     "CA_OBS_AWOS",

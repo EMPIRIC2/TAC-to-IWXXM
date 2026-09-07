@@ -1,4 +1,4 @@
-"""BUG-2026-06-21 — admin panels called wrong API host (historical).
+"""BUG-2026-06-21 - admin panels called wrong API host (historical).
 
 S011 / ADR-021 (#697): product ``/admin/*`` surface is removed. Regression now
 asserts routes are absent (404), not auth-gated on a mounted admin router.
@@ -45,7 +45,7 @@ def test_admin_routes_registered_on_merged_api() -> None:
 
 
 def test_admin_settings_requires_authorization() -> None:
-    """GET /admin/settings is gone — 404, not an auth challenge."""
+    """GET /admin/settings is gone - 404, not an auth challenge."""
     client = TestClient(app)
     response = client.get("/admin/settings")
     assert response.status_code == 404

@@ -1,4 +1,4 @@
-"""T11.5 / TC-F28-006 — runtime ``product=swxa`` enum (S036 / EV-029 / S02.M1).
+"""T11.5 / TC-F28-006 - runtime ``product=swxa`` enum (S036 / EV-029 / S02.M1).
 
 Accepts ``swxa`` (case-insensitive) on lint/decode/convert; rejects ``swx`` with
 ``unknown_product`` 400 per api-contract.
@@ -10,7 +10,6 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -106,7 +105,7 @@ def test_convert_bulletin_rejects_swx(client: TestClient) -> None:
     assert "unknown_product" in response.text
 
 
-@pytest.mark.parametrize("bad", ("swx", "SWX", "notaproduct"))
+@pytest.mark.parametrize("bad", ["swx", "SWX", "notaproduct"])
 def test_convert_rejects_unknown_product_alias(client: TestClient, bad: str) -> None:
     response = _multipart(
         client,

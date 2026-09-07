@@ -7,7 +7,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx
 import pytest
-
 from dissemination.transports import AiomqttClient, HttpxDatasetClient
 
 
@@ -74,6 +73,30 @@ async def test_aiomqtt_subscribe_and_recv_require_connect() -> None:
         await mqtt.subscribe("t")
     with pytest.raises(RuntimeError, match="not connected"):
         await mqtt.recv(timeout_s=0.1)
+    with pytest.raises(RuntimeError, match="not connected"):
+        await mqtt.publish("t", b"x")
+
+
+@pytest.mark.asyncio
+async def test_aiomqtt_recv_empty_messages_completes_async_for() -> None:
+    """Empty message stream exits the async-for without returning bytes (EV-080 M2a)."""
+    inner = AsyncMock()
+
+    async def _messages() -> Any:
+        if False:  # pragma: no cover - makes this an async generator
+            yield None
+        return
+
+    inner.messages = _messages()
+    cm = MagicMock()
+    cm.__aenter__ = AsyncMock(return_value=inner)
+    cm.__aexit__ = AsyncMock(return_value=None)
+    with patch("dissemination.transports.aiomqtt.Client", return_value=cm):
+        mqtt = AiomqttClient(host="127.0.0.1")
+        await mqtt.connect()
+        # ``_next`` returns None when the async-for completes with no messages.
+        assert await mqtt.recv(timeout_s=1.0) is None
+        await mqtt.disconnect()
 
 
 @pytest.mark.asyncio

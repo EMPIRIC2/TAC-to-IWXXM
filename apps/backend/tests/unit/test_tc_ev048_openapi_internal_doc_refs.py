@@ -1,4 +1,4 @@
-"""TC-EV048-002/005 — OpenAPI free of internal planning vocabulary (EV-048 / #951).
+"""TC-EV048-002/005 - OpenAPI free of internal planning vocabulary (EV-048 / #951).
 
 T1.1: red clean-scan until M2 strip; synthetic inject always green.
 [Corpus: tests] [Corpus: api] [Corpus: product §F21]
@@ -12,7 +12,6 @@ from collections.abc import Iterable, Iterator
 from typing import Any
 
 import pytest
-
 from src import api as api_module
 
 # Locked patterns (D-S057-guard-s0=1, D-S057-04-guard-ext=1).

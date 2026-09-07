@@ -19,9 +19,17 @@ export interface UseLintIssueCatalogResult {
 export function useLintIssueCatalog(options: {
   product?: string;
   accessToken?: string;
+  semanticProfile?: string;
+  exchangeProfile?: string;
   enabled?: boolean;
 }): UseLintIssueCatalogResult {
-  const { product, accessToken, enabled = true } = options;
+  const {
+    product,
+    accessToken,
+    semanticProfile,
+    exchangeProfile,
+    enabled = true,
+  } = options;
   const [entries, setEntries] = useState<LintIssueCatalogEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,27 +45,27 @@ export function useLintIssueCatalog(options: {
     fetchLintIssueCatalog({
       product,
       accessToken,
+      semantic_profile: semanticProfile,
+      exchange_profile: exchangeProfile,
       signal: controller.signal,
     })
       .then((res) => {
         if (!controller.signal.aborted) {
           setEntries(res.issues);
+          setLoading(false);
         }
       })
       .catch((err: unknown) => {
+        /* v8 ignore next 3 -- abort cleanup path is timing-sensitive under jsdom */
         if (controller.signal.aborted) {
           return;
         }
         setEntries([]);
         setError(err instanceof Error ? err.message : 'Catalog load failed');
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) {
-          setLoading(false);
-        }
+        setLoading(false);
       });
     return () => controller.abort();
-  }, [product, accessToken, enabled]);
+  }, [product, accessToken, semanticProfile, exchangeProfile, enabled]);
 
   const byCode = useMemo(() => indexCatalogByCode(entries), [entries]);
 

@@ -13,7 +13,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Convert */
+        /**
+         * Convert
+         * @description Convert METAR/SPECI TAC text to IWXXM XML.
+         */
         post: operations["convert_api_v1_convert_post"];
         delete?: never;
         options?: never;
@@ -53,7 +56,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Convert Zip */
+        /**
+         * Convert Zip
+         * @description Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.
+         */
         post: operations["convert_zip_api_v1_convert_zip_post"];
         delete?: never;
         options?: never;
@@ -75,6 +81,181 @@ export interface paths {
          * @description Decode TAC into annotated segments and a plain-language summary.
          */
         post: operations["decode_tac_endpoint_api_v1_decode_tac_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dissemination/audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Audit
+         * @description List redacted delivery audit rows for the caller.
+         */
+        get: operations["list_audit_api_v1_dissemination_audit_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dissemination/audit/{audit_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Audit
+         * @description Fetch one audit row (owner-scoped).
+         */
+        get: operations["get_audit_api_v1_dissemination_audit__audit_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dissemination/gateways/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Gateways Health
+         * @description Connectivity-only health for known drawer gateway kinds.
+         *
+         *     AMHS, SWIM, and AFS kinds are staging-honest; others report no live probe
+         *     until registered.
+         */
+        get: operations["gateways_health_api_v1_dissemination_gateways_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dissemination/mappings/{mapping_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Mapping
+         * @description Fetch MappingConfig by id.
+         */
+        get: operations["get_mapping_api_v1_dissemination_mappings__mapping_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch Mapping
+         * @description Update MappingConfig fields.
+         */
+        patch: operations["patch_mapping_api_v1_dissemination_mappings__mapping_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/dissemination/mappings/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Upsert Mapping
+         * @description Create MappingConfig by name (unique per user).
+         */
+        put: operations["upsert_mapping_api_v1_dissemination_mappings__name__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dissemination/plans/{plan_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Plan
+         * @description Fetch one plan by id (owner-scoped).
+         */
+        get: operations["get_plan_api_v1_dissemination_plans__plan_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch Plan
+         * @description Update plan fields (no secrets).
+         */
+        patch: operations["patch_plan_api_v1_dissemination_plans__plan_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/dissemination/plans/{plan_id}/execute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Execute Plan Route
+         * @description Execute or dry-run a plan; persist redacted audit rows per receipt.
+         *
+         *     Default ``dry_run=true`` so operators can exercise audit without egress.
+         */
+        post: operations["execute_plan_route_api_v1_dissemination_plans__plan_id__execute_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/dissemination/plans/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Upsert Plan By Slug
+         * @description Create a plan under ``slug`` (unique per user).
+         *
+         *     Path slug wins over body.slug when they differ.
+         */
+        put: operations["upsert_plan_by_slug_api_v1_dissemination_plans__slug__put"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -273,13 +454,139 @@ export interface paths {
         put?: never;
         /**
          * Lint Tac
-         * @description Thin wrapper over ``packages/tac-validate`` (multipart/form-data only — Q8=A).
+         * @description Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A).
          */
         post: operations["lint_tac_api_v1_lint_tac_post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Catalog
+         * @description Read-only ConversionProfile catalog for the authenticated Profiles inspector.
+         *
+         *     Requires JWT so the inspector stays on the authenticated Profiles surface.
+         */
+        get: operations["get_catalog_api_v1_profiles_catalog_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/overlays": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Overlays
+         * @description List overlays owned by the caller (and shared overlays).
+         */
+        get: operations["list_overlays_api_v1_profiles_overlays_get"];
+        put?: never;
+        /**
+         * Create Overlay
+         * @description Create a server-signed overlay.
+         */
+        post: operations["create_overlay_api_v1_profiles_overlays_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/overlays/{overlay_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Overlay
+         * @description Fetch one overlay.
+         */
+        get: operations["get_overlay_api_v1_profiles_overlays__overlay_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Overlay
+         * @description Delete an owned overlay.
+         */
+        delete: operations["delete_overlay_api_v1_profiles_overlays__overlay_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Overlay
+         * @description Update an owned overlay (re-signed server-side).
+         */
+        patch: operations["patch_overlay_api_v1_profiles_overlays__overlay_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/profiles/rule-packs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Rule Packs
+         * @description List rule packs owned by the caller.
+         */
+        get: operations["list_rule_packs_api_v1_profiles_rule_packs_get"];
+        put?: never;
+        /**
+         * Create Rule Pack
+         * @description Create a rule pack.
+         */
+        post: operations["create_rule_pack_api_v1_profiles_rule_packs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/rule-packs/{pack_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Rule Pack
+         * @description Fetch one rule pack.
+         */
+        get: operations["get_rule_pack_api_v1_profiles_rule_packs__pack_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Rule Pack
+         * @description Delete a rule pack.
+         */
+        delete: operations["delete_rule_pack_api_v1_profiles_rule_packs__pack_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Rule Pack
+         * @description Update a rule pack.
+         */
+        patch: operations["patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch"];
         trace?: never;
     };
     "/api/v1/quality-metrics": {
@@ -865,10 +1172,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List Work Sessions */
+        /**
+         * List Work Sessions
+         * @description List work sessions for the authenticated user with optional filters.
+         */
         get: operations["list_work_sessions_api_v1_work_sessions_get"];
         put?: never;
-        /** Create Work Session */
+        /**
+         * Create Work Session
+         * @description Create a new work session owned by the authenticated user.
+         */
         post: operations["create_work_session_api_v1_work_sessions_post"];
         delete?: never;
         options?: never;
@@ -883,15 +1196,24 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get Work Session */
+        /**
+         * Get Work Session
+         * @description Return a single work session by id.
+         */
         get: operations["get_work_session_api_v1_work_sessions__session_id__get"];
         put?: never;
         post?: never;
-        /** Delete Work Session */
+        /**
+         * Delete Work Session
+         * @description Soft-delete a work session (sets ``deleted_at``).
+         */
         delete: operations["delete_work_session_api_v1_work_sessions__session_id__delete"];
         options?: never;
         head?: never;
-        /** Update Work Session */
+        /**
+         * Update Work Session
+         * @description Update mutable fields on an existing work session.
+         */
         patch: operations["update_work_session_api_v1_work_sessions__session_id__patch"];
         trace?: never;
     };
@@ -904,7 +1226,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Restore Work Session */
+        /**
+         * Restore Work Session
+         * @description Restore a previously soft-deleted work session.
+         */
         post: operations["restore_work_session_api_v1_work_sessions__session_id__restore_post"];
         delete?: never;
         options?: never;
@@ -1065,6 +1390,61 @@ export interface components {
             validated_at?: string;
         };
         /**
+         * AuditListResponse
+         * @description Paginated audit list.
+         */
+        AuditListResponse: {
+            /** Items */
+            items: components["schemas"]["AuditRecordOut"][];
+            /** Limit */
+            limit: number;
+            /** Page */
+            page: number;
+            /** Total */
+            total: number;
+        };
+        /**
+         * AuditRecordOut
+         * @description Persisted audit row — never includes BYOC secrets or URIs.
+         */
+        AuditRecordOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Destinations */
+            destinations?: {
+                [key: string]: unknown;
+            };
+            /** Detail */
+            detail?: string | null;
+            /** Gateway */
+            gateway: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Iwxxm Version */
+            iwxxm_version?: string | null;
+            /** Message Id */
+            message_id?: string | null;
+            /** Product */
+            product?: string | null;
+            /** Profile */
+            profile?: string | null;
+            /** Station */
+            station?: string | null;
+            /** Status */
+            status: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
          * AuthResponse
          * @description Login response.
          */
@@ -1200,7 +1580,7 @@ export interface components {
             /**
              * Iwxxm Version
              * @description Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)
-             * @default 2025-2
+             * @default
              */
             iwxxm_version: string;
             /**
@@ -1222,6 +1602,12 @@ export interface components {
              */
             manual_text: string;
             /**
+             * Overlay Id
+             * @description Optional signed ConversionProfile overlay id. When set, requires Bearer JWT and ownership (or shared); unknown or unauthorized ids are rejected.
+             * @default
+             */
+            overlay_id: string;
+            /**
              * Preview
              * @description Soft-preview: best-effort IWXXM with failure spans on partial convert
              * @default false
@@ -1235,13 +1621,24 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
              * @default
              */
             profile: string;
             /**
+             * Propagate Residuals To Remarks
+             * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
+             */
+            propagate_residuals_to_remarks?: boolean | null;
+            /**
+             * Report Variant
+             * @description Optional profile-scoped report variant within the selected product family (for example LWIS under CA_ECCC + METAR)
+             * @default
+             */
+            report_variant: string;
+            /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)
+             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
              * @default
              */
             semantic_profile: string;
@@ -1295,7 +1692,7 @@ export interface components {
             /**
              * Iwxxm Version
              * @description Target IWXXM version
-             * @default 2025-2
+             * @default
              */
             iwxxm_version: string;
             /**
@@ -1317,13 +1714,18 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
              * @default
              */
             profile: string;
             /**
+             * Propagate Residuals To Remarks
+             * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
+             */
+            propagate_residuals_to_remarks?: boolean | null;
+            /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)
+             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
              * @default
              */
             semantic_profile: string;
@@ -1342,6 +1744,11 @@ export interface components {
              * @default
              */
             manual_text: string;
+            /**
+             * Propagate Residuals To Remarks
+             * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
+             */
+            propagate_residuals_to_remarks?: boolean | null;
         };
         /** Body_decode_tac_endpoint_api_v1_decode_tac_post */
         Body_decode_tac_endpoint_api_v1_decode_tac_post: {
@@ -1444,14 +1851,14 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
              * @default
              */
             profile: string;
             request_body?: components["schemas"]["ValidateRequest"] | null;
             /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC; aliases annex3 / iwxxm_us accepted)
+             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
              * @default
              */
             semantic_profile: string;
@@ -1770,7 +2177,7 @@ export interface components {
         };
         /**
          * DecodeResidualModel
-         * @description HTTP DTO for an undecoded TAC span (explicit residuals — G4).
+         * @description HTTP DTO for an undecoded TAC span (explicit residuals - G4).
          */
         DecodeResidualModel: {
             /** End */
@@ -1811,6 +2218,104 @@ export interface components {
              * @default
              */
             summary: string;
+        };
+        /**
+         * DeliveryReceiptOut
+         * @description Redacted delivery receipt (API).
+         */
+        DeliveryReceiptOut: {
+            /**
+             * Attempt
+             * @default 1
+             */
+            attempt: number;
+            /** Completed At */
+            completed_at?: string | null;
+            /** Detail */
+            detail?: string | null;
+            /** Gateway */
+            gateway: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "DELIVERED" | "FAILED" | "SKIPPED";
+        };
+        /**
+         * DisseminationPlanCreate
+         * @description Body to create a DisseminationPlan (no secrets).
+         */
+        DisseminationPlanCreate: {
+            /** Destination Refs */
+            destination_refs?: string[];
+            /** Retry */
+            retry?: {
+                [key: string]: unknown;
+            } | null;
+            /** Slug */
+            slug: string;
+            /** Transforms */
+            transforms?: string[];
+            /**
+             * Validity Policy
+             * @default valid-only
+             * @enum {string}
+             */
+            validity_policy: "valid-only" | "warn-ok";
+        };
+        /**
+         * DisseminationPlanOut
+         * @description Persisted plan row.
+         */
+        DisseminationPlanOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Destination Refs */
+            destination_refs: string[];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Retry */
+            retry?: {
+                [key: string]: unknown;
+            } | null;
+            /** Slug */
+            slug: string;
+            /** Transforms */
+            transforms: string[];
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Validity Policy */
+            validity_policy: string;
+        };
+        /**
+         * DisseminationPlanUpdate
+         * @description Partial update for a DisseminationPlan.
+         */
+        DisseminationPlanUpdate: {
+            /** Destination Refs */
+            destination_refs?: string[] | null;
+            /** Retry */
+            retry?: {
+                [key: string]: unknown;
+            } | null;
+            /** Transforms */
+            transforms?: string[] | null;
+            /** Validity Policy */
+            validity_policy?: ("valid-only" | "warn-ok") | null;
         };
         /**
          * EvaluationJobResponse
@@ -2085,6 +2590,28 @@ export interface components {
              */
             start: number;
         };
+        /**
+         * GatewayHealthListResponse
+         * @description Health for registered gateway kinds.
+         */
+        GatewayHealthListResponse: {
+            /** Items */
+            items: components["schemas"]["GatewayHealthOut"][];
+        };
+        /**
+         * GatewayHealthOut
+         * @description Operator-safe gateway health row.
+         */
+        GatewayHealthOut: {
+            /** Connectivity Ok */
+            connectivity_ok: boolean;
+            /** Detail */
+            detail?: string | null;
+            /** Gateway */
+            gateway: string;
+            /** Ok */
+            ok: boolean;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -2285,6 +2812,11 @@ export interface components {
             /** Code */
             code: string;
             /**
+             * Exchange Profiles
+             * @description Canonical exchange profile ids for packaging-tagged rows; empty = shared
+             */
+            exchange_profiles?: string[];
+            /**
              * Family
              * @description lint (TAC registry) or iwxxm (validation checks)
              */
@@ -2313,6 +2845,11 @@ export interface components {
              * @description Vocabulary concept path when href is a verified landing
              */
             semantic_identifier?: string | null;
+            /**
+             * Semantic Profiles
+             * @description Canonical semantic profile ids this row applies to; empty = shared/global
+             */
+            semantic_profiles?: string[];
             /** Severity */
             severity: string;
             /**
@@ -2412,12 +2949,176 @@ export interface components {
             scope?: string | null;
         };
         /**
+         * MappingConfigCreate
+         * @description Create a field mapping — no connection secrets.
+         */
+        MappingConfigCreate: {
+            /** Config */
+            config?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "source" | "sink";
+            /** Name */
+            name: string;
+        };
+        /**
+         * MappingConfigOut
+         * @description Persisted MappingConfig row.
+         */
+        MappingConfigOut: {
+            /** Config */
+            config: {
+                [key: string]: unknown;
+            };
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Mode */
+            mode: string;
+            /** Name */
+            name: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
+         * MappingConfigUpdate
+         * @description Partial MappingConfig update.
+         */
+        MappingConfigUpdate: {
+            /** Config */
+            config?: {
+                [key: string]: unknown;
+            } | null;
+            /** Mode */
+            mode?: ("source" | "sink") | null;
+        };
+        /**
          * Message
          * @description Simple success message.
          */
         Message: {
             /** Message */
             message: string;
+        };
+        /**
+         * MetarFamilyVariant
+         * @description Read-only METAR-family variant row projected from the profile catalog.
+         */
+        MetarFamilyVariant: {
+            /** Api Product */
+            api_product: string;
+            /** Iwxxm Root */
+            iwxxm_root: string;
+            /** Manobs */
+            manobs?: string | null;
+            /** Minimal Observation */
+            minimal_observation?: boolean | null;
+            /** Notes */
+            notes?: string | null;
+            /** Rule Id */
+            rule_id?: string | null;
+            /** Rule Id Prefix */
+            rule_id_prefix?: string | null;
+            /** Tac Lead */
+            tac_lead: string;
+        };
+        /**
+         * OverlayCreate
+         * @description Create body for a signed overlay (server issues the signature).
+         */
+        OverlayCreate: {
+            /** Baseprofileid */
+            baseProfileId: string;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slug */
+            slug: string;
+        };
+        /**
+         * OverlayListResponse
+         * @description List of overlays for the caller.
+         */
+        OverlayListResponse: {
+            /** Items */
+            items: components["schemas"]["OverlayOut"][];
+        };
+        /**
+         * OverlayOut
+         * @description Persisted signed overlay (owner-scoped).
+         */
+        OverlayOut: {
+            /** Baseprofileid */
+            baseProfileId: string;
+            /** Body */
+            body: {
+                [key: string]: unknown;
+            };
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Shared */
+            shared: boolean;
+            /** Signature */
+            signature: string;
+            /** Slug */
+            slug: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
+         * OverlayUpdate
+         * @description Partial update for an overlay (re-signed on write).
+         */
+        OverlayUpdate: {
+            /** Baseprofileid */
+            baseProfileId?: string | null;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            } | null;
+            /** Shared */
+            shared?: boolean | null;
         };
         /**
          * PackageIssueModel
@@ -2473,6 +3174,92 @@ export interface components {
             name: string;
         };
         /**
+         * PlanExecuteRequest
+         * @description Execute or dry-run a plan for a sample message.
+         */
+        PlanExecuteRequest: {
+            /**
+             * Dry Run
+             * @default true
+             */
+            dry_run: boolean;
+            /** Iwxxm Version */
+            iwxxm_version?: string | null;
+            /** Iwxxm Xml */
+            iwxxm_xml?: string | null;
+            /** Message Id */
+            message_id?: string | null;
+            /** Product */
+            product?: string | null;
+            /** Profile */
+            profile?: string | null;
+            /** Station */
+            station?: string | null;
+            /** Tac Text */
+            tac_text?: string | null;
+        };
+        /**
+         * PlanExecuteResponse
+         * @description Execute outcome with receipts.
+         */
+        PlanExecuteResponse: {
+            /**
+             * Plan Id
+             * Format: uuid
+             */
+            plan_id: string;
+            /** Receipts */
+            receipts: components["schemas"]["DeliveryReceiptOut"][];
+        };
+        /**
+         * ProfileCatalogEntry
+         * @description Read-only ConversionProfile catalog entry for the inspector.
+         */
+        ProfileCatalogEntry: {
+            /** Deltas Vs Icao */
+            deltas_vs_icao?: string[];
+            /** Emit Key */
+            emit_key?: string | null;
+            /** Id */
+            id: string;
+            /** Implementation */
+            implementation?: {
+                [key: string]: unknown;
+            };
+            /** Iwxxm Line */
+            iwxxm_line?: string | null;
+            /** Kind */
+            kind: string;
+            /** Legacy Alias */
+            legacy_alias?: string | null;
+            /** Metar Family Variants */
+            metar_family_variants?: components["schemas"]["MetarFamilyVariant"][];
+            /** Overlay Count */
+            overlay_count?: number | null;
+            /** Priority */
+            priority?: string | null;
+            /** Products */
+            products?: string[];
+            /** Rule Pack Count */
+            rule_pack_count?: number | null;
+            /** Status */
+            status?: string | null;
+            /** Vendor Pins */
+            vendor_pins?: {
+                [key: string]: unknown;
+            };
+        };
+        /**
+         * ProfileCatalogResponse
+         * @description Catalog list response.
+         */
+        ProfileCatalogResponse: {
+            /** Profiles */
+            profiles: components["schemas"]["ProfileCatalogEntry"][];
+            /** Schema Version */
+            schema_version?: number | string | null;
+        };
+        /**
          * QualityMetricsDetailResponse
          * @description Response for GET /api/v1/quality-metrics/{stem}.
          */
@@ -2506,6 +3293,11 @@ export interface components {
             residuals?: {
                 [key: string]: unknown;
             }[];
+            /**
+             * Residuals Propagated To Remarks
+             * @default false
+             */
+            residuals_propagated_to_remarks: boolean;
             /** Stem */
             stem: string;
             /**
@@ -2605,6 +3397,107 @@ export interface components {
              * @default 0
              */
             validate_fail: number;
+        };
+        /**
+         * RulePackCreate
+         * @description Create body for a rule pack.
+         */
+        RulePackCreate: {
+            /**
+             * Message
+             * @default
+             */
+            message: string;
+            /** Product */
+            product: string;
+            /** Profile */
+            profile: string;
+            /** Severity */
+            severity: string;
+            /** Slug */
+            slug: string;
+            /** Stage */
+            stage: string;
+            /**
+             * Standardreference
+             * @default
+             */
+            standardReference: string;
+            /**
+             * When
+             * @default
+             */
+            when: string;
+        };
+        /**
+         * RulePackListResponse
+         * @description List of rule packs for the caller.
+         */
+        RulePackListResponse: {
+            /** Items */
+            items: components["schemas"]["RulePackOut"][];
+        };
+        /**
+         * RulePackOut
+         * @description Persisted rule pack (owner-scoped).
+         */
+        RulePackOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Message */
+            message: string;
+            /** Product */
+            product: string;
+            /** Profile */
+            profile: string;
+            /** Severity */
+            severity: string;
+            /** Slug */
+            slug: string;
+            /** Stage */
+            stage: string;
+            /** Standardreference */
+            standardReference: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** When */
+            when: string;
+        };
+        /**
+         * RulePackUpdate
+         * @description Partial update for a rule pack.
+         */
+        RulePackUpdate: {
+            /** Message */
+            message?: string | null;
+            /** Product */
+            product?: string | null;
+            /** Profile */
+            profile?: string | null;
+            /** Severity */
+            severity?: string | null;
+            /** Stage */
+            stage?: string | null;
+            /** Standardreference */
+            standardReference?: string | null;
+            /** When */
+            when?: string | null;
         };
         /**
          * SessionResponse
@@ -2929,7 +3822,7 @@ export interface components {
             product?: string | null;
             /**
              * Profile
-             * @description Deprecated — use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
              * @default
              * @example annex3
              * @example iwxxm_us
@@ -2937,7 +3830,7 @@ export interface components {
             profile: string;
             /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, or CA_ECCC)
+             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE)
              * @example ICAO_2025
              * @example US_FAA_NWS
              * @example CA_ECCC
@@ -3455,14 +4348,14 @@ export interface operations {
                     "application/json": components["schemas"]["ConvertBulletinResponse"];
                 };
             };
-            /** @description Empty bulletin — no TAC reports after the abbreviated heading */
+            /** @description Empty bulletin - no TAC reports after the abbreviated heading */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
             };
-            /** @description Unsupported Media Type — multipart/form-data required */
+            /** @description Unsupported Media Type - multipart/form-data required */
             415: {
                 headers: {
                     [name: string]: unknown;
@@ -3531,7 +4424,7 @@ export interface operations {
                     "application/json": components["schemas"]["DecodeTacResponse"];
                 };
             };
-            /** @description Unsupported Media Type — multipart/form-data required */
+            /** @description Unsupported Media Type - multipart/form-data required */
             415: {
                 headers: {
                     [name: string]: unknown;
@@ -3544,6 +4437,330 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    list_audit_api_v1_dissemination_audit_get: {
+        parameters: {
+            query?: {
+                product?: string | null;
+                station?: string | null;
+                profile?: string | null;
+                status?: string | null;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_audit_api_v1_dissemination_audit__audit_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                audit_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditRecordOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    gateways_health_api_v1_dissemination_gateways_health_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GatewayHealthListResponse"];
+                };
+            };
+        };
+    };
+    get_mapping_api_v1_dissemination_mappings__mapping_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                mapping_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MappingConfigOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_mapping_api_v1_dissemination_mappings__mapping_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                mapping_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MappingConfigUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MappingConfigOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upsert_mapping_api_v1_dissemination_mappings__name__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MappingConfigCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MappingConfigOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_plan_api_v1_dissemination_plans__plan_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationPlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_plan_api_v1_dissemination_plans__plan_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisseminationPlanUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationPlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    execute_plan_route_api_v1_dissemination_plans__plan_id__execute_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanExecuteRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanExecuteResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upsert_plan_by_slug_api_v1_dissemination_plans__slug__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisseminationPlanCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationPlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
             };
         };
     };
@@ -3800,6 +5017,8 @@ export interface operations {
                 family?: string | null;
                 issue_type?: string | null;
                 source_access?: string | null;
+                semantic_profile?: string | null;
+                exchange_profile?: string | null;
             };
             header?: never;
             path?: never;
@@ -3849,12 +5068,328 @@ export interface operations {
                     "application/json": components["schemas"]["LintTacResponse"];
                 };
             };
-            /** @description Unsupported Media Type — multipart/form-data required */
+            /** @description Unsupported Media Type - multipart/form-data required */
             415: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_catalog_api_v1_profiles_catalog_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileCatalogResponse"];
+                };
+            };
+        };
+    };
+    list_overlays_api_v1_profiles_overlays_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverlayListResponse"];
+                };
+            };
+        };
+    };
+    create_overlay_api_v1_profiles_overlays_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OverlayCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverlayOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_overlay_api_v1_profiles_overlays__overlay_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                overlay_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverlayOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_overlay_api_v1_profiles_overlays__overlay_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                overlay_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_overlay_api_v1_profiles_overlays__overlay_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                overlay_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OverlayUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverlayOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_rule_packs_api_v1_profiles_rule_packs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulePackListResponse"];
+                };
+            };
+        };
+    };
+    create_rule_pack_api_v1_profiles_rule_packs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RulePackCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulePackOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_rule_pack_api_v1_profiles_rule_packs__pack_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulePackOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_rule_pack_api_v1_profiles_rule_packs__pack_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RulePackUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulePackOut"];
+                };
             };
             /** @description Validation Error */
             422: {
@@ -3967,7 +5502,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             /** @description Validation Error */

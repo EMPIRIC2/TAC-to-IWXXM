@@ -2,6 +2,31 @@
 
 All notable user-facing and deployable changes for TAC to IWXXM.
 
+## 2026-09-04 — Production release
+
+### Added
+- **Conversion profiles** — Operator editor for rule packs and signed overlays (HMAC), catalog
+  inspector, and convert with selected overlay (`overlay_id`). Journey UJ-072 / F7.w.
+- **Dissemination ops** — Shell UI and JWT API for plans, audit, SQL mapping, and gateway health
+  (EV-936 / UJ-071).
+
+### Changed
+- API Docker image bundles `docs/domain/profiles` so the ConversionProfile catalog serves in DOKS.
+- DOKS Deploy rollout pins the `alembic-upgrade` initContainer to the same backend tag as `api`.
+- Staging/prod `github-actions-deploy` Role can patch Secrets and create Jobs (ops).
+- CI `on.push.tags` glob is `v*-deploy` so dotted tags like `v2026.09.04-deploy` start prod
+  Deploy (the prior `v*-*-deploy` pattern did not match).
+
+### Packages
+- No publishable package semver bumps this promote (`tac2iwxxm` / `tac-validate` /
+  `iwxxm-validate` remain **0.3.0** / **0.2.0** / **0.2.0** — coverage/tooling-only diffs).
+
+### Deploy
+- Promote PR: [#1142](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1142) (merged).
+- Tag `v2026.09.04-deploy` was cut; prod Deploy for that cutover used `workflow_dispatch`
+  because the old tag glob missed dotted dates (fixed above for the next cutover).
+- Prod: Alembic `20260903_0003`; `PROFILE_OVERLAY_HMAC_SECRET` on prod `metar-api-secrets`.
+
 ## 2026-08-21 — Production release
 
 Operator-facing improvements validated on staging, now promoting to production.

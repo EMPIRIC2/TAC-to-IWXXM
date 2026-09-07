@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import Optional
+from typing import ClassVar
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -13,7 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 class AirportCoordinates(BaseModel):
     """Geographic coordinates for an airport."""
 
-    model_config = ConfigDict(
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         json_schema_extra={
             "example": {
                 "latitude": -26.140081,
@@ -26,16 +26,14 @@ class AirportCoordinates(BaseModel):
 
     latitude: float = Field(..., description="Latitude in decimal degrees", ge=-90, le=90)
     longitude: float = Field(..., description="Longitude in decimal degrees", ge=-180, le=180)
-    elevation_ft: Optional[int] = Field(None, description="Elevation in feet", ge=-1500)
-    vertical_datum: Optional[str] = Field(
-        "EGM_96", description="Vertical datum for elevation (EGM_96, NAVD88, AHD, etc.)"
-    )
+    elevation_ft: int | None = Field(None, description="Elevation in feet", ge=-1500)
+    vertical_datum: str | None = Field("EGM_96", description="Vertical datum for elevation (EGM_96, NAVD88, AHD, etc.)")
 
 
 class Airport(BaseModel):
     """Airport data model with ICAO and metadata."""
 
-    model_config = ConfigDict(
+    model_config: ClassVar[ConfigDict] = ConfigDict(
         json_schema_extra={
             "example": {
                 "icao": "KJFK",
@@ -60,7 +58,7 @@ class Airport(BaseModel):
         max_length=4,
         examples=["KJFK", "EGLL", "FAOR"],
     )
-    iata: Optional[str] = Field(
+    iata: str | None = Field(
         None,
         description="IATA airport code (3 characters)",
         min_length=3,
@@ -68,14 +66,14 @@ class Airport(BaseModel):
         examples=["JFK", "LHR", "JNB"],
     )
     name: str = Field(..., description="Full airport name", min_length=1)
-    city: Optional[str] = Field(None, description="City or municipality")
-    country: Optional[str] = Field(None, description="Country name")
+    city: str | None = Field(None, description="City or municipality")
+    country: str | None = Field(None, description="Country name")
     type: str = Field(
         ...,
         description="Airport type",
         examples=["large_airport", "medium_airport", "small_airport", "heliport"],
     )
-    coordinates: Optional[AirportCoordinates] = Field(None, description="Geographic coordinates")
+    coordinates: AirportCoordinates | None = Field(None, description="Geographic coordinates")
 
     @field_validator("icao")
     @classmethod
@@ -87,7 +85,7 @@ class Airport(BaseModel):
 
     @field_validator("iata")
     @classmethod
-    def validate_iata_format(cls, v: Optional[str]) -> Optional[str]:
+    def validate_iata_format(cls, v: str | None) -> str | None:
         """Validate IATA code format: 3 uppercase alphanumeric characters."""
         if v is None:
             return None
@@ -103,8 +101,8 @@ class AirportValidator:
     Loads airport data from airports.json and provides validation methods.
     """
 
-    _instance: Optional[AirportValidator] = None
-    _airports: dict[str, Airport] = {}
+    _instance: AirportValidator | None = None
+    _airports: ClassVar[dict[str, Airport]] = {}
     _loaded: bool = False
 
     def __new__(cls) -> AirportValidator:
@@ -129,7 +127,7 @@ class AirportValidator:
                 f"Airport data not found at {data_path}. Please run: python scripts/parse_airports_csv.py"
             )
 
-        with open(data_path, "r", encoding="utf-8") as f:
+        with open(data_path, encoding="utf-8") as f:
             airports_data = json.load(f)
 
         # Build lookup map (case-insensitive)
@@ -163,7 +161,7 @@ class AirportValidator:
             return False
         return icao_code.upper() in self._airports
 
-    def get_airport(self, icao_code: str) -> Optional[Airport]:
+    def get_airport(self, icao_code: str) -> Airport | None:
         """
         Get airport data for an ICAO code.
 
@@ -227,7 +225,7 @@ class AirportValidator:
 
 
 # Global validator instance
-_validator_instance: Optional[AirportValidator] = None
+_validator_instance: AirportValidator | None = None
 
 
 def get_airport_validator() -> AirportValidator:

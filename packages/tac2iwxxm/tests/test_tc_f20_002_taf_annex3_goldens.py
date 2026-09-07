@@ -1,4 +1,4 @@
-"""TC-F20-002 — TAF annex3 golden expansion (S020 / EV-015 T2.1 / T4).
+"""TC-F20-002 - TAF annex3 golden expansion (S020 / EV-015 T2.1 / T4).
 
 Asserts annex3 golden pack covers TAF exceptional themes (NIL/CNL/AMD/COR/CAVOK)
 and convert → XSD+Schematron + M-golden for those cases.
@@ -10,6 +10,7 @@ import json
 from pathlib import Path
 
 import pytest
+
 from metar_shared.xml_canonical import canonicalize_xml
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"

@@ -1,6 +1,6 @@
 """Product-specific TAC checklist and template-gate rules (F12 / E10-21).
 
-Cite paraphrase tables in ``docs/domain/TAC_VALIDATION.md`` only — no Annex prose.
+Cite paraphrase tables in ``docs/domain/TAC_VALIDATION.md`` only - no Annex prose.
 """
 
 # pyright: reportUnusedImport=false, reportPrivateUsage=false

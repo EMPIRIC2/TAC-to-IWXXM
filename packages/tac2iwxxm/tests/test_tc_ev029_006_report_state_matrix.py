@@ -1,10 +1,10 @@
-"""TC-EV029-006 — Report-state matrix smoke (T12.2 / M12).
+"""TC-EV029-006 - Report-state matrix smoke (T12.2 / M12).
 
-Consolidates family × report-state cells for CI:
+Consolidates family x report-state cells for CI:
 
 * Normal / AMD / COR via AHL BBB → ``@reportStatus``
-* CNL via product cancel path (``isCancelReport``) — **not** reportStatus
-* NIL via ``nilReason`` / product NIL — **not** reportStatus
+* CNL via product cancel path (``isCancelReport``) - **not** reportStatus
+* NIL via ``nilReason`` / product NIL - **not** reportStatus
 
 Per-family pack seeds remain in ``test_tc_ev029_007_*`` / ``test_tc_ev029_005_*`` /
 TC-F28; this module locks the matrix for TC-EV029-006.
@@ -51,7 +51,7 @@ _BBB_CASES: tuple[tuple[str, str, str, str, str | None, str, str], ...] = (
     ("TCA", "TCA", "tca", "tca_ahl_normal.txt", None, "NORMAL", "TropicalCycloneAdvisory"),
     ("TCA", "TCA", "tca", "tca_ahl_cca.txt", "CCA", "CORRECTION", "TropicalCycloneAdvisory"),
     ("TCA", "TCA", "tca", "tca_ahl_aaa.txt", "AAA", "AMENDMENT", "TropicalCycloneAdvisory"),
-    # SWXA: Normal only in-tree (AMD/COR AHL fixtures absent — document gap, not silent blank).
+    # SWXA: Normal only in-tree (AMD/COR AHL fixtures absent - document gap, not silent blank).
     ("SWXA", "SWXA", "swxa", "swxa_ahl_normal.txt", None, "NORMAL", "SpaceWeatherAdvisory"),
 )
 
@@ -72,22 +72,22 @@ _NIL_CASES: tuple[tuple[str, str, str, str], ...] = (
     ("TAF", "TAF", "taf_nil.tac", "TAF"),
 )
 
-# Explicit gap / N/A cells — must stay listed so the matrix has no silent blanks (TC-EV029-001/006).
+# Explicit gap / N/A cells - must stay listed so the matrix has no silent blanks (TC-EV029-001/006).
 _GAP_OR_NA_CELLS: tuple[tuple[str, str, str], ...] = (
     ("SWXA", "AMD", "no AHL AAA fixture in-tree (FIXTURE_GAPS / M11 Normal-only)"),
     ("SWXA", "COR", "no AHL CCA fixture in-tree (FIXTURE_GAPS / M11 Normal-only)"),
-    ("SWXA", "CNL", "N/A — SWXA has no product CNL form"),
-    ("SWXA", "NIL", "N/A — SWXA uses advisory RMK / NXT paths, not aerodrome NIL"),
-    ("METAR", "CNL", "N/A — METAR uses COR/AMD keywords + NIL, not CNL cancel"),
-    ("SPECI", "CNL", "N/A — SPECI uses COR + NIL, not CNL cancel"),
-    ("VAA", "CNL", "N/A — VAA cancel not AHL reportStatus; RMK NIL = remarks nilReason"),
-    ("TCA", "CNL", "N/A — TCA cancel not AHL reportStatus; RMK NIL / NO MSG EXP = nilReason"),
-    ("VAA", "NIL", "defer — RMK NIL remarks path covered in TC-EV029-005 (not report NIL)"),
-    ("TCA", "NIL", "defer — RMK NIL / NO MSG EXP covered in TC-EV029-005 (not report NIL)"),
-    ("VA_SIGMET", "NIL", "N/A — VA SIGMET uses CNL cancel / NO VA EXP, not aerodrome NIL"),
-    ("TC_SIGMET", "NIL", "N/A — TC SIGMET uses CNL cancel, not aerodrome NIL"),
-    ("AIRMET", "NIL", "N/A — AIRMET uses CNL cancel, not aerodrome NIL"),
-    ("SIGMET", "NIL", "N/A — general SIGMET uses CNL cancel, not aerodrome NIL"),
+    ("SWXA", "CNL", "N/A - SWXA has no product CNL form"),
+    ("SWXA", "NIL", "N/A - SWXA uses advisory RMK / NXT paths, not aerodrome NIL"),
+    ("METAR", "CNL", "N/A - METAR uses COR/AMD keywords + NIL, not CNL cancel"),
+    ("SPECI", "CNL", "N/A - SPECI uses COR + NIL, not CNL cancel"),
+    ("VAA", "CNL", "N/A - VAA cancel not AHL reportStatus; RMK NIL = remarks nilReason"),
+    ("TCA", "CNL", "N/A - TCA cancel not AHL reportStatus; RMK NIL / NO MSG EXP = nilReason"),
+    ("VAA", "NIL", "defer - RMK NIL remarks path covered in TC-EV029-005 (not report NIL)"),
+    ("TCA", "NIL", "defer - RMK NIL / NO MSG EXP covered in TC-EV029-005 (not report NIL)"),
+    ("VA_SIGMET", "NIL", "N/A - VA SIGMET uses CNL cancel / NO VA EXP, not aerodrome NIL"),
+    ("TC_SIGMET", "NIL", "N/A - TC SIGMET uses CNL cancel, not aerodrome NIL"),
+    ("AIRMET", "NIL", "N/A - AIRMET uses CNL cancel, not aerodrome NIL"),
+    ("SIGMET", "NIL", "N/A - general SIGMET uses CNL cancel, not aerodrome NIL"),
 )
 
 
@@ -103,10 +103,7 @@ def _has_root(xml: str, local: str) -> bool:
 
 
 def _read_case(source: str, name: str) -> str:
-    if source == "annex3":
-        path = ANNEX3 / name
-    else:
-        path = FIXTURES / source / name
+    path = ANNEX3 / name if source == "annex3" else FIXTURES / source / name
     assert path.is_file(), f"missing fixture: {path}"
     return path.read_text(encoding="utf-8")
 
@@ -133,10 +130,12 @@ def test_report_state_matrix_bbb_cells_locked() -> None:
 
 
 def test_report_state_gap_cells_documented() -> None:
-    """No silent blanks — gap/N/A cells are explicit (COVERAGE_MATRIX / #823 B3)."""
+    """No silent blanks - gap/N/A cells are explicit (COVERAGE_MATRIX / #823 B3)."""
     assert len(_GAP_OR_NA_CELLS) >= 10
     for family, state, note in _GAP_OR_NA_CELLS:
-        assert family and state and note
+        assert family
+        assert state
+        assert note
 
 
 @pytest.mark.parametrize(

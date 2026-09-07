@@ -4,7 +4,11 @@
 Emits ``quality-summary.json`` files under ``--out`` for:
 
 * annex3 + iwxxm_us golden manifests (live convert + canonicalize compare)
-* quality-matrix RuleCase inventory (ready / needs-fixture / oos)
+* quality-matrix RuleCase inventory (ready / soft / fail only —
+
+  ``needs-fixture`` / ``oos`` inventory gaps are **not** counted as Skip;
+
+  Skip is reserved for golden-pack cases missing tac/golden)
 
 Outcome buckets: match | soft_diff | fail | skip (by product x profile).
 """
@@ -156,8 +160,17 @@ def collect_quality_matrix_inventory(qm_root: Path) -> dict[tuple[str, str], lis
     """
     Inventory quality-matrix RuleCase YAML statuses (no engine execution).
 
-    ready → match (pack slot ready), needs-fixture/oos → skip,
-    other/unknown → soft_diff (explicit non-ready disposition).
+    Only **executable / disposition** slots appear in the sticky PR comment:
+
+    * ``ready`` / ``ok`` / ``pass`` → match
+    * ``soft`` / ``soft_diff`` / … → soft_diff
+    * ``fail`` / ``failed`` / ``error`` → fail
+    * unknown → soft_diff
+
+    ``needs-fixture`` / ``oos`` / ``skip`` are **omitted** (not counted as Skip).
+    Those inventory gaps remain enforced by the matrix inventory gate; the PR
+    comment Skip column is reserved for golden-pack examples that lack tac/golden
+    (delete-or-run policy).
 
     Parameters
     ----------
@@ -215,7 +228,8 @@ def collect_quality_matrix_inventory(qm_root: Path) -> dict[tuple[str, str], lis
                 # Inventory: ready slot (not a live engine outcome).
                 _bump(agg, product, profile, "match")
             elif status in {"needs-fixture", "oos", "skip", "skipped"}:
-                _bump(agg, product, profile, "skip")
+                # Explicit inventory gap — not a skipped golden example.
+                continue
             elif status in {"soft", "soft_diff", "soft-diff", "soft_compare"}:
                 _bump(agg, product, profile, "soft_diff")
             elif status in {"fail", "failed", "error"}:

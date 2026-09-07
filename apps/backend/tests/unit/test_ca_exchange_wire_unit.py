@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from dissemination.collect_namespaces import is_collect_bulletin
-
 from src.utilities.ca_exchange_wire import (
     apply_ca_eccc_collect_output,
     ca_collect_bulletin_identifier,

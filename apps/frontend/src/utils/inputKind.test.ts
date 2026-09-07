@@ -53,6 +53,14 @@ describe('inputKind', () => {
     expect(detectInputKind('report.xml')).toBe('unknown');
   });
 
+  it('detects collect wrappers from a bare <collect tag', () => {
+    expect(looksLikeCollectIwxxm('<collect xmlns="urn:example"/>')).toBe(true);
+  });
+
+  it('returns false for non-XML text in looksLikeIwxxmDocument', () => {
+    expect(looksLikeIwxxmDocument('METAR KJFK')).toBe(false);
+  });
+
   it('handles alternative headers, compressed extensions, and IWXXM XML without COLLECT', () => {
     expect(
       looksLikeAhlBulletin('\n  \nSAUS31 KZNY 121200 COR\nMETAR KJFK 121251Z='),

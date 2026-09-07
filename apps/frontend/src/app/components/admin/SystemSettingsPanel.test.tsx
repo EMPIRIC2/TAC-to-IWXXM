@@ -244,7 +244,7 @@ describe('SystemSettingsPanel', () => {
       'Invalid ICAO code (must be 4 letters)',
     );
 
-    await user.click(screen.getAllByRole('button', { name: '×' })[0]);
+    await user.click(screen.getAllByRole('button', { name: '×' })[0]!);
     expect(mockToast.info).toHaveBeenCalledWith('ICAO code KJFK removed');
   });
 

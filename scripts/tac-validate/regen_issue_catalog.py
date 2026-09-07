@@ -87,7 +87,7 @@ def _attribution_fields(prov: dict[str, object] | None) -> dict[str, str | None]
     return {
         "source_id": str(source_id) if source_id else None,
         "source_url": str(source_url) if source_url else None,
-        "source_attribution": " — ".join(parts) if parts else None,
+        "source_attribution": " - ".join(parts) if parts else None,
     }
 
 

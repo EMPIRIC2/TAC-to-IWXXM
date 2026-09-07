@@ -1,4 +1,4 @@
-"""M7 TC-002 validation gate — test-plan.md UJ-002, F2."""
+"""M7 TC-002 validation gate - test-plan.md UJ-002, F2."""
 
 from __future__ import annotations
 

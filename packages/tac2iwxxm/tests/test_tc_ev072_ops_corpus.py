@@ -1,4 +1,4 @@
-"""TC-EV072-007..010 — CA_ECCC MSC datamart ops corpus (EV-072 M2 / #1036).
+"""TC-EV072-007..010 - CA_ECCC MSC datamart ops corpus (EV-072 M2 / #1036).
 
 [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: tests §TC-EV072]
 """
@@ -10,7 +10,6 @@ import re
 from pathlib import Path
 
 import pytest
-
 from tac2iwxxm.ca_ops_corpus import (
     extract_iwxxm_from_collect,
     load_ops_manifest,
@@ -34,7 +33,7 @@ def _expected_wmo_ahl(source_filename: str, product: str) -> str | None:
     match = _AHL_FROM_FILENAME.match(source_filename)
     if not match:
         return None
-    tt, aa, ii, cccc, yygggg = match.groups()
+    _tt, _aa, ii, cccc, yygggg = match.groups()
     designator = ca_wmo_header_designator(product)
     return f"{designator}{ii} {cccc} {yygggg}"
 
@@ -183,8 +182,9 @@ def test_tc_ev072_010_ops_iwxxm_packaging_checks(case: dict) -> None:
     )
     waiver = case.get("packaging_waiver")
     if waiver:
-        assert isinstance(waiver, str) and waiver
-        # Encoder reference fixtures may lack translation centre — packaging attrs only.
+        assert isinstance(waiver, str)
+        assert waiver
+        # Encoder reference fixtures may lack translation centre - packaging attrs only.
         blocking = [issue for issue in issues if issue.code != "CA_EXCHANGE_TRANSLATION_CENTRE"]
         assert blocking == [], [(issue.code, issue.message) for issue in blocking]
     else:

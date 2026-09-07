@@ -16,7 +16,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api import app
 from src.utilities.security import verify_supabase_token
 
@@ -64,7 +63,7 @@ class TestSmokeAuthentication:
         assert response.status_code == 200
 
     def test_unauthenticated_convert_is_public(self, unauthenticated_client):
-        """F21: convert is public — missing Authorization must not yield 401."""
+        """F21: convert is public - missing Authorization must not yield 401."""
         response = unauthenticated_client.post("/api/v1/convert", json={"metars": ["METAR TEST"]})
 
         assert response.status_code != 401

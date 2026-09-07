@@ -1,4 +1,4 @@
-"""TC-F15-001 — CI gate: every emitted Issue.code must be registered (E11-27).
+"""TC-F15-001 - CI gate: every emitted Issue.code must be registered (E11-27).
 
 Fails CI when rules emit an unknown code (ADR-028 / F15). Complements the registry
 API tests in ``test_tc_f15_001_issue_registry.py``.
@@ -11,7 +11,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from tac_validate import PRODUCTS, lint
 from tac_validate.issue_registry import by_code
 from tac_validate.models import Issue
@@ -29,7 +28,7 @@ def _assert_registered(code: str) -> None:
 def test_unknown_code_gate_rejects_unregistered_issue() -> None:
     """Explicit gate: constructing a finding with a bogus code must fail lookup."""
     bogus = Issue(severity="error", code="NOT_REGISTERED_XYZ", message="x")
-    with pytest.raises(KeyError):
+    with pytest.raises(KeyError, match=r".*"):
         _assert_registered(bogus.code)
 
 
@@ -53,10 +52,11 @@ def test_lint_fixture_emissions_are_registered() -> None:
         ("not-a-product", "NOPE"),
     ):
         product_arg = product if product in PRODUCTS or product == "NOPE" else "METAR"
-        if product == "NOPE":
-            report = lint(tac, product="NOPE")  # type: ignore[arg-type]
-        else:
-            report = lint(tac, product=product_arg)
+        report = (
+            lint(tac, product="NOPE")  # type: ignore[arg-type]
+            if product == "NOPE"
+            else lint(tac, product=product_arg)
+        )
         for issue in report.issues:
             seen.add(issue.code)
             _assert_registered(issue.code)
@@ -79,7 +79,7 @@ def _codes_from_call(node: ast.Call) -> list[str]:
             value = _string_const(kw.value)
             if value is not None:
                 codes.append(value)
-    # _issue("CODE", ...) / issue_from("CODE", ...) — first positional is the code.
+    # _issue("CODE", ...) / issue_from("CODE", ...) - first positional is the code.
     if func_name in {"_issue", "issue_from"} and node.args:
         value = _string_const(node.args[0])
         if value is not None:

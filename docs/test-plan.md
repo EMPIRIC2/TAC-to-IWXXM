@@ -34,13 +34,13 @@ DOKS soak; Supabase hosted Postgres / PostgREST as product data plane.
 Unified manual live test harness against **DOKS** production endpoints after F30 cutover
 (Render URLs remain valid only until soak + decommission — TC-F30-005):
 
-| Tier | Scope | Makefile target |
-|------|-------|-----------------|
-| H3 | Live API pytest (health, convert, validate; convert **no JWT**) | `make test-live-api` |
-| H4–H5 | CORS preflight + frontend bundle URLs — **required this cycle** (FE Auth + notice + DOKS) | `make test-live-connectivity` |
-| H6 | Playwright UJ-001–007 (+ UJ-008) + F7 smokes + **UJ-045–047** + dissemination H6′ | `make test-live-e2e` |
-| **H7** | Live bulletin gate: multi-report AHL → split → convert → Schematron | `make test-live-bulletin` (planned) |
-| All | Sequential H4–H5 → H3 → H6 → H7 | `make test-live` (extend when H7 lands) |
+| Tier   | Scope                                                                                     | Makefile target                         |
+| ------ | ----------------------------------------------------------------------------------------- | --------------------------------------- |
+| H3     | Live API pytest (health, convert, validate; convert **no JWT**)                           | `make test-live-api`                    |
+| H4–H5  | CORS preflight + frontend bundle URLs — **required this cycle** (FE Auth + notice + DOKS) | `make test-live-connectivity`           |
+| H6     | Playwright UJ-001–007 (+ UJ-008) + F7 smokes + **UJ-045–047** + dissemination H6′         | `make test-live-e2e`                    |
+| **H7** | Live bulletin gate: multi-report AHL → split → convert → Schematron                       | `make test-live-bulletin` (planned)     |
+| All    | Sequential H4–H5 → H3 → H6 → H7                                                           | `make test-live` (extend when H7 lands) |
 
 **Prerequisite**: E2E-001 schema path regression must be resolved before H3 validate and full H6 UJ-002 pass (see [e2e-report.md](reports/e2e-report.md)).
 
@@ -54,82 +54,88 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 
 ## User Journeys (E2E)
 
-| Journey | Feature | Local E2E module | Live E2E | Test plan TC |
-|---------|---------|------------------|----------|--------------|
-| UJ-001 | F6 | `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/e2e/tac-file-upload-database.e2e.spec.ts` | `make test-live-e2e` (H6) | TC-001, TC-LIVE-001 |
-| UJ-002 | F2+F6 | backend validation tests + UI Strict Validation → `validate_output` (ADR-023) | H3 validate + H6 where exposed | TC-002, TC-LIVE-002 |
-| UJ-003 | Auth / F31 | **Restored** — see UJ-046; convert still public | H6 login path | TC-F31-003/004; TC-F21-auth-gone amended |
-| UJ-004 | F5+F7+F31 | Hybrid history (guest IDB + logged-in server) | H6 UJ-004/045/046 | TC-004 + TC-F31-001..004 |
-| UJ-005 | F6 | F6 product-matrix Playwright (planned) | H6 | TC-F6-001, TC-LIVE-F6-001 |
-| UJ-006 | F6 | API product-matrix pytest | H3 live | TC-F6-002, TC-LIVE-F6-002 |
-| UJ-007 | F2+F6 | US-profile validate | H3 / H6 | TC-F6-003, TC-LIVE-F6-003 |
-| UJ-008–010 | F6 | error/edge specs | T2 (+ T3 smoke UJ-008) | TC-F6-010–012 |
-| UJ-011 | F6 | bulletin split API (T2) | **H7** live | TC-F6-030, TC-LIVE-F6-030 |
-| UJ-012 | F6 | tac-validate fail API (T2) | H3 optional smoke | TC-F6-031 |
-| UJ-013 | F7 | workbench shell Playwright | H6′ | TC-F7-001 |
-| UJ-014 | F8 | worker unit + T7.4 staging | staging | (F8 plan / ADR-018) |
-| UJ-015 | F7 | decode-tac API + decode panel | H6′ | TC-F7-002 |
-| UJ-016 | F7 | Failed-TAC + soft-preview | H6′ | TC-F7-003 |
-| UJ-017 | F7 | live workbench debounce/spans | H6′ | TC-F7-004 |
-| UJ-018 | F7 | unified sessions + migrate smoke | H6′ | TC-F7-005 |
-| UJ-019 | F7 | `/admin` negative | H6′ | TC-F7-006 |
-| UJ-020 | F9 | decode values + summary (unit/API/Vitest/Playwright) | H6′ | TC-F9-001, TC-F9-002 |
-| UJ-021 | F10 | preview pane + terminator quick fix | H6′ | TC-F10-001, TC-F10-002 |
-| UJ-022 | F11 | operator convert/validate after msgspec | H6′ | TC-F11-001 |
-| UJ-023 | F12–F14 | PyPI tag → install smoke | CI | TC-F14-001 |
-| UJ-DEV-005 | F12–F14 | pip install packages | CI | TC-F12-001, TC-F13-001, TC-F14-002 |
-| UJ-DEV-004 | F2/F6/M5 | `tac-validate` + `iwxxm-validate` package CI | — | TC-F6-032 |
-| UJ-DEV-006 | F13–F14 | Rust fmt/clippy/`cargo test` + maturin both crates | CI | TC-EV045-001..007 |
-| UJ-024 | F15 | METAR/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F15-001..005 |
-| UJ-025 | F7 | Manual TAC Input modes (ADR-024 / #730) | H6′ | TC-F7-007 |
-| UJ-027 | F16 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (+ live local suite EV-039) | H6′ / live local | TC-F16-001..005; TC-F16-LIVE-001..004 |
-| UJ-028 | F17 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F17-001..002 |
-| UJ-029 | F18 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (UI smoke; live BYOC cycle-close) | live BYOC | TC-F18-001..002 |
-| UJ-030 | F19 | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` | H6′ | TC-F19-001..003 |
-| UJ-031 | F20 | TAF/SPECI registry + convert→validate golden | H4–H5 if FE | TC-F20-001..006 |
-| UJ-032 | F7 | Golden examples load (convert + validate) | H4–H5 if FE | TC-F7-008 |
-| UJ-033 | F22 | Privacy notice + settings + GPC | H4–H5 if FE | TC-F22-001..003 |
-| UJ-034 | F23 | SIGMET/VA SIGMET registry + convert→validate golden | H4–H5 if FE | TC-F23-001..006 |
-| UJ-035 | F24 | AIRMET registry + WMO golden (defaults) | H4–H5 if FE | TC-F24-001..005 |
-| UJ-036 | F25 | WMO-passing Examples + METAR/SPECI/TAF goldens | H4–H5 if FE | TC-F25-001..004 |
-| UJ-037 | F26 | VAA registry + WMO golden (defaults) | H4–H5 if FE | TC-F26-001..006 |
-| UJ-038 | F27 | TCA registry + WMO golden (defaults) | H4–H5 if FE | TC-F27-001..006 |
-| UJ-039 | F25/F7.g deepen | Load official WMO examples from sample menu | H4–H5 if FE | TC-EV024-004..006 |
-| UJ-040 | F6.b deepen | Structured iwxxm-us REMARKS encode pack | — (API T3 optional) | TC-EV025-001..007 |
-| UJ-041 | F23 deepen | sigmet-multi-location-VA ADR-032 equality / wmoPass (EV-026) | — | TC-EV025-008..009 |
-| UJ-042 | F25/F9/F7.g deepen | Official WMO TAC peers decode empty/allowlisted residuals | H4–H5 if FE | TC-EV027-001..005 |
-| UJ-043 | F28 + F6/F12/F2/F13/F15/F20/F23/F24/F26/F27 deepen | Eight-family lint/convert/validate + SWXA bar (#823) | H4–H5 if FE | TC-EV029-001..008; TC-F28-001..006 |
-| UJ-044 | F29 + F23/F12/F2/F13/F9/F26/F27 deepen | Rule matrices (#831) + TC SIGMET deepen (#829) + VAA/TCA decode (#820) | H4–H5 if FE | TC-EV030-001..006; TC-F29-001..007 |
-| UJ-045 | F31+F21 | Guest convert + persistent loss-of-progress notice + local history | **H4–H5 required** | TC-F31-001/002/006 |
-| UJ-046 | F31+F30 | Login → auto-upload drafts → DO Postgres sessions | **H4–H5 required** | TC-F31-003/004/006 |
-| UJ-047 | F22+F31 | Privacy prefs ↔ IndexedDB / Auth cookies | **H4–H5 required** | TC-F31-005; TC-F22-* deepen |
-| UJ-048 | F30 | DOKS cutover smoke (API + FE + worker) | **H0–H5 required** | TC-F30-004/005; TC-EV031-* |
-| UJ-049 | F32 + F6/F7/F12/F2/F13 deepen | VONA quality bar + full F7 surface (#741); cycle also #835/#808/corpus | H4–H5 when FE | TC-EV032-001..008; TC-F32-001..006 |
-| UJ-050 | F4+F7 deepen (EV-038) | IWXXM version picker Latest / Previous (#854) | H4–H5 when FE | TC-EV038-007 |
-| UJ-051 | F33 | Secure mass file/folder ingest (auth + caps) | **H4–H5 required** | TC-F33-001..006 |
-| UJ-052 | F7 deepen (EV-042) | Queue + keyboard/batch convert·validate | **H4–H5 required** | TC-EV042-003..004 |
-| UJ-053 | F16–F19 deepen (EV-042) | Operator UI has no dissemination destinations | **H4–H5 required** | TC-EV042-001..002 |
-| UJ-054 | F7 deepen (EV-047) | Operator Help → one-pager / handbook (#956/#957) | T0/T2; H4–H5 when FE deploy | TC-EV047-009..011 |
-| UJ-055 | F7+F21 deepen (EV-048) | Operator UI + OpenAPI free of internal planning vocabulary (#951) | T0/T2; T3 if UI hits | TC-EV048-001..005 |
-| UJ-056 | F7.q deepen (EV-054 / EV-055 / EV-056 / EV-058) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988); side-by-side vs inline XML diff (#983) | **H4–H5 required** | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005; TC-EV058-001..005 |
-| UJ-057 | F7.r deepen (EV-057) | Accumulate conversions → Download all ZIP (#903) | **H4–H5 required** | TC-EV057-903-001..007 |
-| UJ-058 | F7.s deepen (EV-057) | Validate existing IWXXM paste/upload (#838) | **H4–H5 required** | TC-EV057-838-001..005 |
-| UJ-059 | F7/F6 deepen (EV-060) | AHL bulletin lint/validate without heading flood (#1001) | **H4–H5 required** | TC-EV060-1001-001..003 |
-| UJ-060 | F7.t (EV-060) | IWXXM product pass-through lint+F2 (#1003) | **H4–H5 required** | TC-EV060-1003-001..004 |
-| UJ-061 | F7/F6 deepen (EV-060) | Profile labeled at converter top (#1002) | **H4–H5 required** | TC-EV060-1002-001..003 |
-| UJ-062 | F7/F6 deepen (EV-060) | Bulletin ID + Issuing Center applied (#1005) | **H4–H5 required** | TC-EV060-1005-001..003 |
-| UJ-063 | F29 deepen (EV-060) | Conversion log_level sets logger verbosity (#1004) | T0/T2 | TC-EV060-1004-001..002 |
-| UJ-003 / UJ-046 | F31 deepen (EV-060) | Auth register/login/logout/persist UAT (#1006) | **H4–H5 required** | TC-EV060-1006-001..004 |
-| UJ-064 | F2/F9/F10 deepen (EV-061) | Validate IWXXM item-by-item readable decode (#1010) | **H4–H5 required** | TC-EV061-1010-001..003 |
-| UJ-065 | F6/F7 deepen (EV-061) | AHL decode + convert-bulletin (#1012) | **H4–H5 required** | TC-EV061-1012-001..004 |
-| UJ-066 / UJ-067 | F7.u (EV-061) | Product/Profile + param bars aligned (#1013) | **H4–H5 required** | TC-EV061-1013-001..003 |
-| UJ-068 | F7.v/F15 (EV-061; EV-062) | Validation Issues Catalog (#1014; #1017 deepen) | **H4–H5 required** | TC-EV061-1014-001..004; TC-EV062-001..006 |
-| UJ-069 | F35/F36 (EV-063) | Semantic convert → exchange package (`GLOBAL_AFS`) | T2 / **T3** (API); H4–H5 if #1024 FE | TC-EV063-001..006 |
-| UJ-DEV-009 | F34 deepen (EV-061) | stage→main full CI+E2E+lint+typecheck (#1015) | CI | TC-EV061-1015-001..002 |
-| LIVE-F6-030 | F6 chore (EV-061) | Live bulletin multipart field `files` (#1011) | Live H7 | TC-LIVE-F6-030 (fix harness) |
-| UJ-OPS-002 | F30 deepen (EV-057) | Prod apex → app redirect (#948) | ops / T3 | TC-EV057-948-001..003 |
-| UJ-DEV-007 | M5 deepen (EV-047) | Slim husky lint commit + fast-unit push (#833) | — | TC-EV047-001..004 |
-| UJ-DEV-008 | F6 deepen (EV-047) | Converter perf regression blocks PR (#834) | CI | TC-EV047-005..008 |
+| Journey         | Feature                                                      | Local E2E module                                                                                                                                                                                                                                           | Live E2E                          | Test plan TC                                                                             |
+| --------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- | ---------------------------------------------------------------------------------------- |
+| UJ-001          | F6                                                           | `apps/e2e/tac-file-conversion.e2e.spec.ts`, `apps/e2e/tac-file-upload-database.e2e.spec.ts`                                                                                                                                                                | `make test-live-e2e` (H6)         | TC-001, TC-LIVE-001                                                                      |
+| UJ-002          | F2+F6                                                        | backend validation tests + UI Strict Validation → `validate_output` (ADR-023)                                                                                                                                                                              | H3 validate + H6 where exposed    | TC-002, TC-LIVE-002                                                                      |
+| UJ-003          | Auth / F31                                                   | **Restored** — see UJ-046; convert still public                                                                                                                                                                                                            | H6 login path                     | TC-F31-003/004; TC-F21-auth-gone amended                                                 |
+| UJ-004          | F5+F7+F31                                                    | Hybrid history (guest IDB + logged-in server)                                                                                                                                                                                                              | H6 UJ-004/045/046                 | TC-004 + TC-F31-001..004                                                                 |
+| UJ-005          | F6                                                           | F6 product-matrix Playwright (planned)                                                                                                                                                                                                                     | H6                                | TC-F6-001, TC-LIVE-F6-001                                                                |
+| UJ-006          | F6                                                           | API product-matrix pytest                                                                                                                                                                                                                                  | H3 live                           | TC-F6-002, TC-LIVE-F6-002                                                                |
+| UJ-007          | F2+F6                                                        | US-profile validate                                                                                                                                                                                                                                        | H3 / H6                           | TC-F6-003, TC-LIVE-F6-003                                                                |
+| UJ-008–010      | F6                                                           | error/edge specs                                                                                                                                                                                                                                           | T2 (+ T3 smoke UJ-008)            | TC-F6-010–012                                                                            |
+| UJ-011          | F6                                                           | bulletin split API (T2)                                                                                                                                                                                                                                    | **H7** live                       | TC-F6-030, TC-LIVE-F6-030                                                                |
+| UJ-012          | F6                                                           | tac-validate fail API (T2)                                                                                                                                                                                                                                 | H3 optional smoke                 | TC-F6-031                                                                                |
+| UJ-013          | F7                                                           | workbench shell Playwright                                                                                                                                                                                                                                 | H6′                               | TC-F7-001                                                                                |
+| UJ-014          | F8                                                           | worker unit + T7.4 staging                                                                                                                                                                                                                                 | staging                           | (F8 plan / ADR-018)                                                                      |
+| UJ-015          | F7                                                           | decode-tac API + decode panel                                                                                                                                                                                                                              | H6′                               | TC-F7-002                                                                                |
+| UJ-016          | F7                                                           | Failed-TAC + soft-preview                                                                                                                                                                                                                                  | H6′                               | TC-F7-003                                                                                |
+| UJ-017          | F7                                                           | live workbench debounce/spans                                                                                                                                                                                                                              | H6′                               | TC-F7-004                                                                                |
+| UJ-018          | F7                                                           | unified sessions + migrate smoke                                                                                                                                                                                                                           | H6′                               | TC-F7-005                                                                                |
+| UJ-019          | F7                                                           | `/admin` negative                                                                                                                                                                                                                                          | H6′                               | TC-F7-006                                                                                |
+| UJ-020          | F9                                                           | decode values + summary (unit/API/Vitest/Playwright)                                                                                                                                                                                                       | H6′                               | TC-F9-001, TC-F9-002                                                                     |
+| UJ-021          | F10                                                          | preview pane + terminator quick fix                                                                                                                                                                                                                        | H6′                               | TC-F10-001, TC-F10-002                                                                   |
+| UJ-022          | F11                                                          | operator convert/validate after msgspec                                                                                                                                                                                                                    | H6′                               | TC-F11-001                                                                               |
+| UJ-023          | F12–F14                                                      | PyPI tag → install smoke                                                                                                                                                                                                                                   | CI                                | TC-F14-001                                                                               |
+| UJ-DEV-005      | F12–F14                                                      | pip install packages                                                                                                                                                                                                                                       | CI                                | TC-F12-001, TC-F13-001, TC-F14-002                                                       |
+| UJ-DEV-004      | F2/F6/M5                                                     | `tac-validate` + `iwxxm-validate` package CI                                                                                                                                                                                                               | —                                 | TC-F6-032                                                                                |
+| UJ-DEV-006      | F13–F14                                                      | Rust fmt/clippy/`cargo test` + maturin both crates                                                                                                                                                                                                         | CI                                | TC-EV045-001..007                                                                        |
+| UJ-024          | F15                                                          | METAR/SPECI registry + convert→validate golden                                                                                                                                                                                                             | H4–H5 if FE                       | TC-F15-001..005                                                                          |
+| UJ-025          | F7                                                           | Manual TAC Input modes (ADR-024 / #730)                                                                                                                                                                                                                    | H6′                               | TC-F7-007                                                                                |
+| UJ-027          | F16                                                          | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (+ live local suite EV-039)                                                                                                                                                                          | H6′ / live local                  | TC-F16-001..005; TC-F16-LIVE-001..004                                                    |
+| UJ-028          | F17                                                          | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts`                                                                                                                                                                                                      | H6′                               | TC-F17-001..002                                                                          |
+| UJ-029          | F18                                                          | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (UI smoke; live BYOC cycle-close)                                                                                                                                                                    | live BYOC                         | TC-F18-001..002                                                                          |
+| UJ-030          | F19                                                          | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts`                                                                                                                                                                                                      | H6′                               | TC-F19-001..003                                                                          |
+| UJ-031          | F20                                                          | TAF/SPECI registry + convert→validate golden                                                                                                                                                                                                               | H4–H5 if FE                       | TC-F20-001..006                                                                          |
+| UJ-032          | F7                                                           | Golden examples load (convert + validate)                                                                                                                                                                                                                  | H4–H5 if FE                       | TC-F7-008                                                                                |
+| UJ-033          | F22                                                          | Privacy notice + settings + GPC                                                                                                                                                                                                                            | H4–H5 if FE                       | TC-F22-001..003                                                                          |
+| UJ-034          | F23                                                          | SIGMET/VA SIGMET registry + convert→validate golden                                                                                                                                                                                                        | H4–H5 if FE                       | TC-F23-001..006                                                                          |
+| UJ-035          | F24                                                          | AIRMET registry + WMO golden (defaults)                                                                                                                                                                                                                    | H4–H5 if FE                       | TC-F24-001..005                                                                          |
+| UJ-036          | F25                                                          | WMO-passing Examples + METAR/SPECI/TAF goldens                                                                                                                                                                                                             | H4–H5 if FE                       | TC-F25-001..004                                                                          |
+| UJ-037          | F26                                                          | VAA registry + WMO golden (defaults)                                                                                                                                                                                                                       | H4–H5 if FE                       | TC-F26-001..006                                                                          |
+| UJ-038          | F27                                                          | TCA registry + WMO golden (defaults)                                                                                                                                                                                                                       | H4–H5 if FE                       | TC-F27-001..006                                                                          |
+| UJ-039          | F25/F7.g deepen                                              | Load official WMO examples from sample menu                                                                                                                                                                                                                | H4–H5 if FE                       | TC-EV024-004..006                                                                        |
+| UJ-040          | F6.b deepen                                                  | Structured iwxxm-us REMARKS encode pack                                                                                                                                                                                                                    | — (API T3 optional)               | TC-EV025-001..007                                                                        |
+| UJ-041          | F23 deepen                                                   | sigmet-multi-location-VA ADR-032 equality / wmoPass (EV-026)                                                                                                                                                                                               | —                                 | TC-EV025-008..009                                                                        |
+| UJ-042          | F25/F9/F7.g deepen                                           | Official WMO TAC peers decode empty/allowlisted residuals                                                                                                                                                                                                  | H4–H5 if FE                       | TC-EV027-001..005                                                                        |
+| UJ-043          | F28 + F6/F12/F2/F13/F15/F20/F23/F24/F26/F27 deepen           | Eight-family lint/convert/validate + SWXA bar (#823)                                                                                                                                                                                                       | H4–H5 if FE                       | TC-EV029-001..008; TC-F28-001..006                                                       |
+| UJ-044          | F29 + F23/F12/F2/F13/F9/F26/F27 deepen                       | Rule matrices (#831) + TC SIGMET deepen (#829) + VAA/TCA decode (#820)                                                                                                                                                                                     | H4–H5 if FE                       | TC-EV030-001..006; TC-F29-001..007                                                       |
+| UJ-044a         | F9/F28/F32 deepen (EV-099)                                   | SWXA/VONA structured decode — no whole-TAC residual on quality peers (#1119)                                                                                                                                                                               | H4–H5 N/A (API); staging health   | TC-EV099-001..004                                                                        |
+| UJ-045          | F31+F21                                                      | Guest convert + persistent loss-of-progress notice + local history                                                                                                                                                                                         | **H4–H5 required**                | TC-F31-001/002/006                                                                       |
+| UJ-046          | F31+F30                                                      | Login → auto-upload drafts → DO Postgres sessions                                                                                                                                                                                                          | **H4–H5 required**                | TC-F31-003/004/006                                                                       |
+| UJ-047          | F22+F31                                                      | Privacy prefs ↔ IndexedDB / Auth cookies                                                                                                                                                                                                                   | **H4–H5 required**                | TC-F31-005; TC-F22-\* deepen                                                             |
+| UJ-048          | F30                                                          | DOKS cutover smoke (API + FE + worker)                                                                                                                                                                                                                     | **H0–H5 required**                | TC-F30-004/005; TC-EV031-\*                                                              |
+| UJ-049          | F32 + F6/F7/F12/F2/F13 deepen                                | VONA quality bar + full F7 surface (#741); cycle also #835/#808/corpus                                                                                                                                                                                     | H4–H5 when FE                     | TC-EV032-001..008; TC-F32-001..006                                                       |
+| UJ-050          | F4+F7 deepen (EV-038)                                        | IWXXM version picker Latest / Previous (#854)                                                                                                                                                                                                              | H4–H5 when FE                     | TC-EV038-007                                                                             |
+| UJ-051          | F33                                                          | Secure mass file/folder ingest (auth + caps)                                                                                                                                                                                                               | **H4–H5 required**                | TC-F33-001..006                                                                          |
+| UJ-052          | F7 deepen (EV-042)                                           | Queue + keyboard/batch convert·validate                                                                                                                                                                                                                    | **H4–H5 required**                | TC-EV042-003..004                                                                        |
+| UJ-053          | F16–F19 deepen (EV-091)                                      | Operator dissemination destinations visible                                                                                                                                                                                                                | **H4–H5 required**                | TC-EV091-001..002; TC-EV042-002                                                          |
+| UJ-054          | F7 deepen (EV-047)                                           | Operator Help → one-pager / handbook (#956/#957)                                                                                                                                                                                                           | T0/T2; H4–H5 when FE deploy       | TC-EV047-009..011                                                                        |
+| UJ-055          | F7+F21 deepen (EV-048)                                       | Operator UI + OpenAPI free of internal planning vocabulary (#951)                                                                                                                                                                                          | T0/T2; T3 if UI hits              | TC-EV048-001..005                                                                        |
+| UJ-056          | F7.q deepen (EV-054 / EV-055 / EV-056 / EV-058 / **EV-981**) | Quality metrics primary tab — match/residuals/lint/validate; W3C C14N diffs (#982); 2025-2 validate disposition (#980/#979); dedicated `/quality/:stem` + collapsible hunks (#988); side-by-side vs inline XML diff (#983); residual fold indicator (#981) | **H4–H5 required**                | TC-EV054-001..008; TC-EV055-001..007; TC-EV056-001..005; TC-EV058-001..005; TC-EV981-004 |
+| UJ-057          | F7.r deepen (EV-057)                                         | Accumulate conversions → Download all ZIP (#903)                                                                                                                                                                                                           | **H4–H5 required**                | TC-EV057-903-001..007                                                                    |
+| UJ-058          | F7.s deepen (EV-057)                                         | Validate existing IWXXM paste/upload (#838)                                                                                                                                                                                                                | **H4–H5 required**                | TC-EV057-838-001..005                                                                    |
+| UJ-059          | F7/F6 deepen (EV-060)                                        | AHL bulletin lint/validate without heading flood (#1001)                                                                                                                                                                                                   | **H4–H5 required**                | TC-EV060-1001-001..003                                                                   |
+| UJ-060          | F7.t (EV-060)                                                | IWXXM product pass-through lint+F2 (#1003)                                                                                                                                                                                                                 | **H4–H5 required**                | TC-EV060-1003-001..004                                                                   |
+| UJ-061          | F7/F6 deepen (EV-060)                                        | Profile labeled at converter top (#1002)                                                                                                                                                                                                                   | **H4–H5 required**                | TC-EV060-1002-001..003                                                                   |
+| UJ-062          | F7/F6 deepen (EV-060)                                        | Bulletin ID + Issuing Center applied (#1005)                                                                                                                                                                                                               | **H4–H5 required**                | TC-EV060-1005-001..003                                                                   |
+| UJ-063          | F29 deepen (EV-060)                                          | Conversion log_level sets logger verbosity (#1004)                                                                                                                                                                                                         | T0/T2                             | TC-EV060-1004-001..002                                                                   |
+| UJ-003 / UJ-046 | F31 deepen (EV-060)                                          | Auth register/login/logout/persist UAT (#1006)                                                                                                                                                                                                             | **H4–H5 required**                | TC-EV060-1006-001..004                                                                   |
+| UJ-064          | F2/F9/F10 deepen (EV-061)                                    | Validate IWXXM item-by-item readable decode (#1010)                                                                                                                                                                                                        | **H4–H5 required**                | TC-EV061-1010-001..003                                                                   |
+| UJ-065          | F6/F7 deepen (EV-061)                                        | AHL decode + convert-bulletin (#1012)                                                                                                                                                                                                                      | **H4–H5 required**                | TC-EV061-1012-001..004                                                                   |
+| UJ-066 / UJ-067 | F7.u (EV-061)                                                | Product/Profile + param bars aligned (#1013)                                                                                                                                                                                                               | **H4–H5 required**                | TC-EV061-1013-001..003                                                                   |
+| UJ-068          | F7.v/F15 (EV-061; EV-062)                                    | Validation Issues Catalog (#1014; #1017 deepen)                                                                                                                                                                                                            | **H4–H5 required**                | TC-EV061-1014-001..004; TC-EV062-001..006                                                |
+| UJ-073          | F7.v/F15 (EV-1120)                                           | Profile-scoped Validation Issues Catalog (#1121–#1123)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-001..009                                                                       |
+| UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
+| UJ-069          | F35/F36 (EV-063/EV-090/EV-093; M4 deepen)                    | Semantic convert → exchange package (`GLOBAL_AFS`) with explicit profile/IWXXM-line compatibility                                                                                                                                                          | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-_; TC-EV093-_; milestone 4 cross-version follow-ons          |
+| UJ-070          | F6+F9+F7.q (EV-981 / #981)                                   | Opt-in propagate decode residuals into remarks / HRT + QM indicator                                                                                                                                                                                        | **H4–H5 required**                | TC-EV981-001..005                                                                        |
+| UJ-071          | F16–F19 deepen (EV-936 / #936)                               | Dissemination ops — plan/audit/SQL mapping/gateway health                                                                                                                                                                                                  | H6′; **H4–H5** when FE deploy     | TC-F16-OPS-001..006                                                                      |
+| UJ-072          | F7.w deepen (EV-933 / #933; M4 sharing)                      | ConversionProfile editor — rule pack / overlay / share non-secret assets / convert-package                                                                                                                                                                 | **H4–H5** when FE deploy          | TC-EV933-001..006 + milestone 4 sharing regressions                                      |
+| UJ-DEV-009      | F34 deepen (EV-061)                                          | stage→main full CI+E2E+lint+typecheck (#1015)                                                                                                                                                                                                              | CI                                | TC-EV061-1015-001..002                                                                   |
+| LIVE-F6-030     | F6 chore (EV-061)                                            | Live bulletin multipart field `files` (#1011)                                                                                                                                                                                                              | Live H7                           | TC-LIVE-F6-030 (fix harness)                                                             |
+| UJ-OPS-002      | F30 deepen (EV-057)                                          | Prod apex → app redirect (#948)                                                                                                                                                                                                                            | ops / T3                          | TC-EV057-948-001..003                                                                    |
+| UJ-DEV-007      | M5 deepen (EV-047)                                           | Slim husky lint commit + fast-unit push (#833)                                                                                                                                                                                                             | —                                 | TC-EV047-001..004                                                                        |
+| UJ-DEV-008      | F6 deepen (EV-047)                                           | Converter perf regression blocks PR (#834)                                                                                                                                                                                                                 | CI                                | TC-EV047-005..008                                                                        |
 
 **Admin dashboard E2E**: **Retired** (S011 / #697). Replace prior admin panel locator guidance with
 **TC-F7-006** — assert `/admin` and legacy admin deep links return not-found; delete/skip old
@@ -143,15 +149,15 @@ admin suite modules.
 
 ## Connectivity & Wiring
 
-| Tier | Scope | Command |
-|------|-------|---------|
-| H0e | Env contract sync (`.env` + config JSON) | `make env-check` |
-| H0c | CORS policy (in-process) | `pytest apps/backend/tests/unit/test_cors_policy.py` |
-| H0i | Cross-service integration | `pytest apps/backend/tests/integration` |
-| H3 | Live API smoke (pytest) | `make test-live-api` |
-| H4 | Live CORS preflight | `make test-live-connectivity` |
-| H5 | Frontend bundle URLs | `make test-live-connectivity` |
-| H6 | Live Playwright UJ-001–007 (+ UJ-008) + F7 UJ-013/015–019 + **UJ-025** + **UJ-027–030** (H6′ when F16–F19 ships; **operator UI deferred #898 / EV-042**) + **UJ-051..053** (EV-042) | `make test-live-e2e` |
+| Tier | Scope                                                                                                                                                                               | Command                                              |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| H0e  | Env contract sync (`.env` + config JSON)                                                                                                                                            | `make env-check`                                     |
+| H0c  | CORS policy (in-process)                                                                                                                                                            | `pytest apps/backend/tests/unit/test_cors_policy.py` |
+| H0i  | Cross-service integration                                                                                                                                                           | `pytest apps/backend/tests/integration`              |
+| H3   | Live API smoke (pytest)                                                                                                                                                             | `make test-live-api`                                 |
+| H4   | Live CORS preflight                                                                                                                                                                 | `make test-live-connectivity`                        |
+| H5   | Frontend bundle URLs                                                                                                                                                                | `make test-live-connectivity`                        |
+| H6   | Live Playwright UJ-001–007 (+ UJ-008) + F7 UJ-013/015–019 + **UJ-025** + **UJ-027–030** (H6′ when F16–F19 ships; **operator UI deferred #898 / EV-042**) + **UJ-051..053** (EV-042) | `make test-live-e2e`                                 |
 
 | **H7** | Live bulletin → split → convert → Schematron (UJ-011) | `make test-live-bulletin` (planned) |
 
@@ -174,20 +180,22 @@ notice + DOKS URLs — `D-S038-tp`). **H7** remains bulletin ingest path (not F8
 
 ## Test Strategy
 
-| Level | Framework | Scope | Run Command | Location |
-|-------|-----------|-------|-------------|----------|
-| Unit | pytest / Vitest | packages/*, apps/backend, apps/frontend components | `make test-unit` | per workspace |
-| Integration | pytest | API + auth + conversion | `make test-integration` | apps/backend/tests |
-| E2E smoke (CI) | Playwright | Auth bootstrap + TAC conversion (mock session, no secrets) | `make test-e2e-playwright-smoke` | apps/e2e/ |
-| E2E (T2) | Playwright | UJ-001–007 local stack | `make test-e2e-playwright` | apps/e2e/ |
-| Live E2E (T3) | Playwright + pytest | UJ-001–007 on Render | `make test-live` | apps/e2e/ + live pytest |
-| Vendor | pytest | manifest + schema presence | `pytest tests/vendor` | tests/vendor |
-| CI | GitHub Actions | validate + test (matrix, incl. `bugs`) + e2e-smoke (Playwright) + deploy; path filters deferred (P2) | `.github/workflows/ci-cd.yml` | root |
-| Pre-commit | pre-commit framework | fast gates (format/lint/typecheck/secrets/yaml) | `.pre-commit-config.yaml` | root |
+| Level          | Framework            | Scope                                                                                                | Run Command                      | Location                |
+| -------------- | -------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------- | ----------------------- |
+| Unit           | pytest / Vitest      | packages/\*, apps/backend, apps/frontend components                                                  | `make test-unit`                 | per workspace           |
+| Integration    | pytest               | API + auth + conversion                                                                              | `make test-integration`          | apps/backend/tests      |
+| E2E smoke (CI) | Playwright           | Auth bootstrap + TAC conversion (mock session, no secrets)                                           | `make test-e2e-playwright-smoke` | apps/e2e/               |
+| E2E (T2)       | Playwright           | UJ-001–007 local stack                                                                               | `make test-e2e-playwright`       | apps/e2e/               |
+| Live E2E (T3)  | Playwright + pytest  | UJ-001–007 on Render                                                                                 | `make test-live`                 | apps/e2e/ + live pytest |
+| Vendor         | pytest               | manifest + schema presence                                                                           | `pytest tests/vendor`            | tests/vendor            |
+| CI             | GitHub Actions       | validate + test (matrix, incl. `bugs`) + e2e-smoke (Playwright) + deploy; path filters deferred (P2) | `.github/workflows/ci-cd.yml`    | root                    |
+| Pre-commit     | pre-commit framework | fast gates (format/lint/typecheck/secrets/yaml)                                                      | `.pre-commit-config.yaml`        | root                    |
 
-**Coverage**: 95% on all packages and apps (ADR-007) — pytest for Python, Vitest for frontend.
-Python also enforces **per-file ≥95%** via `scripts/ci/check_per_file_coverage.py` (EV-047 /
-`D-S056-cov95-scope=2`), including auth and worker. **F34** adds Schemathesis (path-filtered
+**Coverage**: **100%** line+branch on all packages and apps (ADR-007 / EV-080 / #1077) —
+pytest for Python, Vitest for frontend/shared. Python also enforces **per-file ≥100%** via
+`scripts/ci/check_per_file_coverage.py --min-pct 100`. Scripts: Python cov ≥100% +
+**bats-core** for every `scripts/**/*.sh` (**TC-EV080-001..010**). Historical EV-052/053
+retained **95%** TCs as prior-bar evidence. **F34** adds Schemathesis (path-filtered
 required, tight budget) and mutation testing (nightly/manual only) — see **TC-F34-001..007** /
 EV-059.
 
@@ -373,14 +381,14 @@ EV-059.
 - **Objective**: Validate FileConverter Manual TAC Input modes per ADR-024 matrix
 - **Matrix**:
 
-  | Case | Input | Mode | Expect |
-  | ---- | ----- | ---- | ------ |
-  | T1 | Single METAR TAC | TAC report | Convert OK; Product Auto-detect |
-  | T2 | Multi-report WMO AHL | AHL bulletin | `/convert-bulletin` + summary/results |
-  | T3 | AHL or COLLECT pasted in TAC mode | (auto-switch) | Switches mode + toast (**required**) |
-  | T4 | COLLECT XML (fixture) | IWXXM COLLECT | `/ingest-collect` → **501** placeholder UX |
-  | T5 | `.gz` COLLECT/bulletin if accepted | matching | Inflate + same as T2/T4 |
-  | T6 | Read-only finished session | any | Mode buttons disabled |
+  | Case | Input                              | Mode          | Expect                                     |
+  | ---- | ---------------------------------- | ------------- | ------------------------------------------ |
+  | T1   | Single METAR TAC                   | TAC report    | Convert OK; Product Auto-detect            |
+  | T2   | Multi-report WMO AHL               | AHL bulletin  | `/convert-bulletin` + summary/results      |
+  | T3   | AHL or COLLECT pasted in TAC mode  | (auto-switch) | Switches mode + toast (**required**)       |
+  | T4   | COLLECT XML (fixture)              | IWXXM COLLECT | `/ingest-collect` → **501** placeholder UX |
+  | T5   | `.gz` COLLECT/bulletin if accepted | matching      | Inflate + same as T2/T4                    |
+  | T6   | Read-only finished session         | any           | Mode buttons disabled                      |
 
 - **Pass criteria**:
   1. Vitest: `inputKind`, `api` (convert-bulletin + ingest-collect 501), `FileConverter` mode group
@@ -407,13 +415,13 @@ EV-059.
 - **Objective**: Frontend static example catalog loads into FileConverter correctly
 - **Matrix**:
 
-  | Case | Action | Expect |
-  | ---- | ------ | ------ |
-  | C1 | Catalog completeness | ≥2 TAC/product **or** documented 1-fixture gap; ≥1 AHL; ≥1 happy-path IWXXM |
-  | C2 | Load TAC example | Editor body set; `product` set; toast; demo labeling |
-  | C3 | Load AHL example | `inputMode` = `ahl_bulletin`; multi-report body |
-  | C4 | Load IWXXM example | `inputMode` = `collect_iwxxm` (or validate path); happy-path XML |
-  | C5 | Soft-fail / file-queue | **Out of v1** — not tested |
+  | Case | Action                 | Expect                                                                      |
+  | ---- | ---------------------- | --------------------------------------------------------------------------- |
+  | C1   | Catalog completeness   | ≥2 TAC/product **or** documented 1-fixture gap; ≥1 AHL; ≥1 happy-path IWXXM |
+  | C2   | Load TAC example       | Editor body set; `product` set; toast; demo labeling                        |
+  | C3   | Load AHL example       | `inputMode` = `ahl_bulletin`; multi-report body                             |
+  | C4   | Load IWXXM example     | `inputMode` = `collect_iwxxm` (or validate path); happy-path XML            |
+  | C5   | Soft-fail / file-queue | **Out of v1** — not tested                                                  |
 
 - **Pass criteria**:
   1. Vitest: catalog unit + FileConverter click-to-load green
@@ -426,15 +434,15 @@ EV-059.
 
 Cross-layer coverage for workbench connection points (not only isolated unit/TC modules):
 
-| Connection | API path | Backend integration | Playwright |
-|------------|----------|---------------------|------------|
-| Live lint + spans | `POST /api/v1/lint-tac` | `apps/backend/tests/api/test_f7_ui_connection_integration.py` | `apps/e2e/f7-ui-api-connections.e2e.spec.ts` |
-| Decode panel | `POST /api/v1/decode-tac` | same | same |
-| Soft-preview / Failed-TAC | `POST /api/v1/convert` (`preview=true`) | same + `test_frontend_contract_integration.py` | same |
-| My METARs / sessions | `/api/v1/work-sessions*` + `product` | same | same |
-| Manual TAC Input modes | `/convert`, `/convert-bulletin`, `/ingest-collect` | existing convert/bulletin tests + 501 | TC-F7-007 e2e (S016) |
-| Golden examples (static FE) | (none — client fixtures) | — | TC-F7-008 Vitest (S021) |
-| Browser CORS (H0i) | OPTIONS on lint/decode/convert | same + `test_h0i_connectivity.py` | — |
+| Connection                  | API path                                           | Backend integration                                           | Playwright                                   |
+| --------------------------- | -------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------- |
+| Live lint + spans           | `POST /api/v1/lint-tac`                            | `apps/backend/tests/api/test_f7_ui_connection_integration.py` | `apps/e2e/f7-ui-api-connections.e2e.spec.ts` |
+| Decode panel                | `POST /api/v1/decode-tac`                          | same                                                          | same                                         |
+| Soft-preview / Failed-TAC   | `POST /api/v1/convert` (`preview=true`)            | same + `test_frontend_contract_integration.py`                | same                                         |
+| My METARs / sessions        | `/api/v1/work-sessions*` + `product`               | same                                                          | same                                         |
+| Manual TAC Input modes      | `/convert`, `/convert-bulletin`, `/ingest-collect` | existing convert/bulletin tests + 501                         | TC-F7-007 e2e (S016)                         |
+| Golden examples (static FE) | (none — client fixtures)                           | —                                                             | TC-F7-008 Vitest (S021)                      |
+| Browser CORS (H0i)          | OPTIONS on lint/decode/convert                     | same + `test_h0i_connectivity.py`                             | —                                            |
 
 ### F7 verify/deploy gate
 
@@ -593,25 +601,25 @@ split. Tooling: `dtolnay/rust-toolchain@stable` + components `rustfmt,clippy`;
 Cargo cache (`Swatinem/rust-cache` or equivalent). Local: `make rust-check`.
 [Corpus: product §F13] [Corpus: product §F14] [Corpus: tests] [Corpus: adr/ADR-017]
 
-| ID | Level | Assert |
-|----|-------|--------|
-| TC-EV045-001 | CI | `cargo fmt --check` fails on unformatted Rust in both crate trees |
-| TC-EV045-002 | CI | `cargo clippy -- -D warnings` fails on warnings (documented allowlist only if needed) |
-| TC-EV045-003 | CI | `cargo test` green for `tac2iwxxm` and `iwxxm-validate` Rust crates |
-| TC-EV045-004 | CI | Maturin/PyO3 smoke for **both** packages (`TAC2IWXXM_REQUIRE_RUST` /
-  `IWXXM_VALIDATE_REQUIRE_RUST` or equivalent) |
-| TC-EV045-005 | T0 | `make rust-check` mirrors CI: fmt + clippy + `cargo test` **both** crates **and** both `test-*-native` maturin smokes (D-S054-04-local=2) |
-| TC-EV045-006 | Ops | Required check name(s) **documented**; PRs cannot merge with red Rust CI **once rulesets applied** |
-| TC-EV045-007 | CI | Jobs run on default `ci-cd.yml` PR/push (same as today’s native job; **not** path-filter-only — D-S054-04-trigger=1) |
+| ID                                           | Level | Assert                                                                                                                                    |
+| -------------------------------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| TC-EV045-001                                 | CI    | `cargo fmt --check` fails on unformatted Rust in both crate trees                                                                         |
+| TC-EV045-002                                 | CI    | `cargo clippy -- -D warnings` fails on warnings (documented allowlist only if needed)                                                     |
+| TC-EV045-003                                 | CI    | `cargo test` green for `tac2iwxxm` and `iwxxm-validate` Rust crates                                                                       |
+| TC-EV045-004                                 | CI    | Maturin/PyO3 smoke for **both** packages (`TAC2IWXXM_REQUIRE_RUST` /                                                                      |
+| `IWXXM_VALIDATE_REQUIRE_RUST` or equivalent) |
+| TC-EV045-005                                 | T0    | `make rust-check` mirrors CI: fmt + clippy + `cargo test` **both** crates **and** both `test-*-native` maturin smokes (D-S054-04-local=2) |
+| TC-EV045-006                                 | Ops   | Required check name(s) **documented**; PRs cannot merge with red Rust CI **once rulesets applied**                                        |
+| TC-EV045-007                                 | CI    | Jobs run on default `ci-cd.yml` PR/push (same as today’s native job; **not** path-filter-only — D-S054-04-trigger=1)                      |
 
 **Required status check contexts** (must match `ci-cd.yml` job `name:` exactly; applied via
 `scripts/deploy/apply_gh_branch_rulesets.sh` when repo admin is available):
 
-| Context | Role |
-|---------|------|
+| Context                         | Role                                             |
+| ------------------------------- | ------------------------------------------------ |
 | `Rust crates (fmt/clippy/test)` | fmt + clippy + `cargo test` both crates (EV-045) |
-| `tac2iwxxm PyO3 (maturin)` | existing maturin smoke |
-| `iwxxm-validate PyO3 (maturin)` | EV-045 maturin smoke (new) |
+| `tac2iwxxm PyO3 (maturin)`      | existing maturin smoke                           |
+| `iwxxm-validate PyO3 (maturin)` | EV-045 maturin smoke (new)                       |
 
 Also retained from F30 script: `Test (backend)`, `Test (frontend)`, `Alembic migrations`;
 `main` adds `Staging gate`.
@@ -1047,11 +1055,11 @@ treat TC-EV045-006 as **docs/script met; ops deferred**. [Corpus: tests] [Corpus
 
 - **Level**: T0 / CI or nightly
 - **Objective**: Amd79-80-2023 METAR/TAF/VAA/TCA **TAC** → our 2025-2 → XSD+SCH; mark
-  **informative**; do not fail on 2023-1 XML byte diffs (`gml:id`, translation* attrs, clocks)
+  **informative**; do not fail on 2023-1 XML byte diffs (`gml:id`, translation\* attrs, clocks)
 - **Pass criteria**: suite wired; SIGMET/AIRMET remain on official schemas.wmo.int examples
 - **Source**: F6/F2; #800 P1
 
-### TC-EV023-006: translationCentre* gate (P1)
+### TC-EV023-006: translationCentre\* gate (P1)
 
 - **Level**: T0 / T2
 - **Objective**: Default in-State convert omits `translationCentre*`; emit only when
@@ -1486,6 +1494,36 @@ New **TC-EV027-001..005** (`E27-TC=1`). Ties **UJ-042**; deepens UJ-039 / UJ-020
 - **Pass criteria**: #820 AC met or child-issued with cite
 - **Source**: #820; F9/F26/F27 deepen
 
+## EV-099 — #1119 SWXA/VONA structured decode
+
+### TC-EV099-001: SWXA/VONA in decode `_SUPPORTED` with LABEL spans (UJ-044a)
+
+- **Level**: T0 / T2
+- **Objective**: `decode_tac` returns field segments for major SWXA/VONA labels (mirror VAA/TCA)
+- **Pass criteria**: Peers `vona_a7_1`, `swxa_a7_3`/`_4`/`_5` have ≥1 segment per known label family; product in `_SUPPORTED`
+- **Source**: #1119; [Corpus: product §F9]
+
+### TC-EV099-002: No whole-TAC residual (UJ-044a)
+
+- **Level**: T0 / T2
+- **Objective**: Residuals must not be a single span covering the entire TAC body
+- **Pass criteria**: No residual with `(start,end)==(0,len(tac))` on those peers; `allow_any` removed for `vona_a7_1` / `swxa_a7_3`
+- **Source**: #1119; D-EV099-residuals
+
+### TC-EV099-003: Explicit meaningful residuals only (UJ-044a)
+
+- **Level**: T0 / T2
+- **Objective**: Leftover tokens (if any) are exact allowlist rows with issue cite — not `allow_any`
+- **Pass criteria**: Residual matrix green; any leftover has `residual_text` + linked issue
+- **Source**: ADR-025 G4; D-EV099-residuals
+
+### TC-EV099-004: Convert peer XML bit-identical (UJ-044a)
+
+- **Level**: T2
+- **Objective**: Annex3 convert equality / F28+F32 quality packs unchanged for peers
+- **Pass criteria**: Golden/soft-compare still pass; no encode churn from decode-only change
+- **Source**: #1119; D-EV099-convert
+
 ### TC-F29-001: Harness recommendation written (UJ-044)
 
 - **Level**: T0
@@ -1552,7 +1590,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Level**: T0 (docs)
 - **Objective**: Epic lists #835/#741/#808 + corpus track; evolve-decisions EV-032 scope matches
 - **Pass criteria**: #846 body + `evolve-decisions.md` §EV-032 + session-brief agree
-- **Source**: #846; E32-*
+- **Source**: #846; E32-\*
 
 ### TC-EV032-002: #835 A6-2-TC canonicalize_xml equality (UJ-034/039 deepen)
 
@@ -1804,7 +1842,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 
 - **Level**: Ops / CI
 - **Objective**: Prod Deploy runs only for `vYYYY.MM.DD-deploy` tag pushes (pattern
-  `v*-*-deploy`) or `workflow_dispatch` targeting production — after Deploy `needs`
+  `v*-deploy`) or `workflow_dispatch` targeting production — after Deploy `needs`
   including `e2e-smoke` pass. Solo-dev approval = tag/dispatch (no Environment reviewers).
 - **Pass criteria**: Workflow `on.push.tags` / `workflow_dispatch` documented; Deploy job
   `if` excludes bare `main` push; `needs` includes `e2e-smoke`; ADR-034 + deploy.md match
@@ -1834,8 +1872,9 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### TC-EV051-004: deploy tag triggers prod Deploy
 
 - **Level**: Ops / CI
-- **Objective**: Tag `v*-*-deploy` triggers prod Deploy path
-- **Pass criteria**: `on.push.tags` includes pattern; Deploy resolves `env_role=prod`
+- **Objective**: Tag `v*-deploy` (e.g. `v2026.09.04-deploy`) triggers prod Deploy path
+- **Pass criteria**: `on.push.tags` includes `v*-deploy` (not the two-hyphen `v*-*-deploy`
+  glob, which misses dotted date tags); Deploy resolves `env_role=prod`
 - **Source**: EV-051 AC4; TC-F30-014
 
 ### TC-EV051-005: workflow_dispatch prod escape hatch
@@ -1999,6 +2038,86 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Coverage report (json/html or per-file summary) shows FileConverter
   branches ≥95; documented in session verify report
 - **Source**: EV-053 AC5 (`D-S062-01-ac` Q3=2)
+
+### EV-080 / #1077 — Universal 100% unit coverage gate
+
+- **Level**: T0 / CI
+- **Objective**: Raise ADR-007 from ≥95% to **100%** line+branch for Python apps/packages,
+  Vitest unit surfaces, and repo scripts (Python cov + bats-core for every `.sh`)
+- **Pass criteria**: AC1–AC6 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-080;
+  **TC-EV080-001..010**
+- **Source**: EV-080; [#1077](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1077);
+  [Corpus: adr/ADR-007]
+
+### TC-EV080-001: Coverage surface inventory @ 100 floor
+
+- **Level**: T0
+- **Objective**: Document every coverage surface with `target_floor: 100` and approved omits only
+- **Pass criteria**: Inventory YAML lists apps/packages/scripts; no unapproved excludes
+- **Source**: EV-080 AC1; REQ-EV080-001
+
+### TC-EV080-002: Python fail_under 100 in configs + CI
+
+- **Level**: T0 / CI
+- **Objective**: Every pyproject + matrix job uses fail_under / `--cov-fail-under` **100**; `branch = true`
+- **Pass criteria**: Config + workflow grep/tests assert 100; `__init__.py` not omitted
+- **Source**: EV-080 AC2; REQ-EV080-002..003
+
+### TC-EV080-003: Python aggregate + per-file 100 green
+
+- **Level**: T0 / CI
+- **Objective**: Unit matrix green at 100%; per-file checker `--min-pct 100`
+- **Pass criteria**: CI package coverage jobs green; checker fails when any file &lt;100
+- **Source**: EV-080 AC2; REQ-EV080-004..005
+
+### TC-EV080-004: Vitest thresholds 100 + executable excludes purged
+
+- **Level**: T0
+- **Objective**: FE + shared Vitest lines/statements/functions/branches = **100**; no executable excludes
+- **Pass criteria**: vitest configs show 100; TacEditor/App/liveAssist/gunzip/etc. not excluded
+- **Source**: EV-080 AC3; REQ-EV080-006..008
+
+### TC-EV080-005: FE + shared coverage suites green
+
+- **Level**: T0 / CI
+- **Objective**: `pnpm … test:coverage` green under 100% thresholds
+- **Pass criteria**: frontend + `@metar/shared` coverage jobs green
+- **Source**: EV-080 AC3; REQ-EV080-009
+
+### TC-EV080-006: Scripts Python coverage 100
+
+- **Level**: T0 / CI
+- **Objective**: Dedicated job/make target covers `scripts/**/*.py` at ≥100% line+branch
+- **Pass criteria**: Job green; fail_under 100
+- **Source**: EV-080 AC4; REQ-EV080-010
+
+### TC-EV080-007: bats-core installed in CI
+
+- **Level**: T0 / CI
+- **Objective**: Workflow installs bats-core and runs bats suite
+- **Pass criteria**: CI step succeeds; bats binary available
+- **Source**: EV-080 AC5; REQ-EV080-011..012; D-EV080-bats
+
+### TC-EV080-008: Every `.sh` has bats coverage
+
+- **Level**: T0 / CI
+- **Objective**: Each `scripts/**/*.sh` mapped to ≥1 bats test
+- **Pass criteria**: Manifest count matches `find scripts -name '*.sh'`; bats job green
+- **Source**: EV-080 AC5; REQ-EV080-011
+
+### TC-EV080-009: Standing docs + ADR-007 at 100%
+
+- **Level**: T0
+- **Objective**: ADR-007, typing-policy, test-plan metrics cite **100%**
+- **Pass criteria**: Docs greppable for 100% gate; CORPUS cites valid
+- **Source**: EV-080 AC6; REQ-EV080-013
+
+### TC-EV080-010: No silent excludes remain
+
+- **Level**: T0
+- **Objective**: Audit inventory vs configs — zero unapproved measurement omits
+- **Pass criteria**: Diff/inventory audit passes in CI or unit guard test
+- **Source**: EV-080 AC6; REQ-EV080-014..015
 
 ### EV-054 / S063 — Quality metrics tab (#836 / F7.q)
 
@@ -2233,6 +2352,56 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   collapse remain; C14N/`match_status` unchanged. Synced scroll best-effort only.
 - **Pass criteria**: Local Playwright green; H4–H5 after staging deploy (13)
 - **Source**: EV-058 AC5; UJ-056; `D-S068-01-ac=2b`
+
+### EV-981 — Propagate decode residuals into remarks / HRT (#981)
+
+- **Mode**: deepen F6 / F9 / F7.q; **UJ-070** (+ UJ-026 fence)
+- **Pass criteria**: AC in evolve-decisions §EV-981; TC-EV981-001..005
+- **Source**: [#981](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/981);
+  [Context: propagate-residuals-to-remarks](context/propagate-residuals-to-remarks.md);
+  [Corpus: product §F6/F9/F7.q]
+
+### TC-EV981-001: Default off preserves UJ-026 / goldens
+
+- **Level**: T0 / T2
+- **Objective**: Omitted / `false` `propagate_residuals_to_remarks` does not change annex3
+  `REMARKS_EXCLUDED` or existing convert goldens
+- **Pass criteria**: Existing UJ-026 package/API tests + goldens remain green without flag
+- **Source**: EV-981; UJ-026; `D-EV981-default`
+
+### TC-EV981-002: Flag on folds residuals into remarks / HRT
+
+- **Level**: T0 / T2
+- **Objective**: With flag `true` on a remarks/HRT-emitting profile, residual token text
+  appears in profile-aware remarks / `humanReadableText` and info
+  `RESIDUALS_PROPAGATED_TO_REMARKS` is emitted. On annex3, flag-on emits the same issue
+  documenting no XML target without inventing free-text remarks.
+- **Pass criteria**: Package + API unit assert XML/HRT contains residual text + issue code
+- **Source**: EV-981; UJ-070; `D-EV981-flag`
+
+### TC-EV981-003: Workbench toggle + plain-language copy
+
+- **Level**: T0 / T2 / T3 / H4–H5
+- **Objective**: Operator can enable/disable fold; copy has no planning ids; effective value
+  reflects override vs profile default
+- **Pass criteria**: Vitest + Playwright; operatorVisibleCopy / OpenAPI guard green
+- **Source**: EV-981; UJ-070; EV-048
+
+### TC-EV981-004: Quality metrics residual fold indicator
+
+- **Level**: T0 / T2 / H4–H5
+- **Objective**: Detail JSON includes `residuals_propagated_to_remarks`; UI residuals panel
+  reflects it; default fixtures `false`
+- **Pass criteria**: API unit + Vitest/Playwright on `/quality/:stem`
+- **Source**: EV-981; UJ-056 deepen; `D-EV981-qm`
+
+### TC-EV981-005: Profile default wire (annex3 off)
+
+- **Level**: T0 / T2
+- **Objective**: Omitted flag resolves via profile default; annex3/ICAO_2025 → off; explicit
+  override wins; no other profile defaults enabled this cycle
+- **Pass criteria**: Unit matrix for omit / true / false × annex3
+- **Source**: EV-981; `D-EV981-annex3` / `D-EV981-profile-wire`
 
 ### EV-059 / S069 — F34 Contract + mutation quality gates (#841 / #727 / #874)
 
@@ -2615,10 +2784,144 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: TC-F15-001 family + OpenAPI internal-doc-ref guards
 - **Source**: #1017; ADR-028; NFR1–NFR4
 
+### EV-1120 / F7.v+F7.w+F15+F35 — Profile-scoped catalog + Profile UX Phase A (#1120)
+
+- **Mode**: deepen F7.v / F7.w / F15 / F35; Phase A only (#1146/#1147 deferred)
+- **Pass criteria**: requirements-report AC-API/CNT/UI/UX; EV-048 clean
+- **Source**: [#1120](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1120);
+  [context/profile-scoped-catalog-1120.md](context/profile-scoped-catalog-1120.md)
+
+### TC-EV1120-001: Catalog omit-params preserves prior behavior
+
+- **Level**: T0 / T2
+- **Objective**: `GET /lint-issue-catalog` without semantic/exchange params matches pre-EV-1120 set
+- **Pass criteria**: Fixture parity smoke green
+- **Source**: #1121; AC-API-1
+
+### TC-EV1120-002: semantic_profile filter shared ∪ matching
+
+- **Level**: T0 / T2
+- **Objective**: Filter returns shared + profile-applicable rows only
+- **Pass criteria**: National-only fixture omitted under ICAO_2025; present under owning profile
+- **Source**: #1121; AC-API-2
+
+### TC-EV1120-003: Unknown semantic_profile → 400
+
+- **Level**: T0 / T2
+- **Objective**: Fail-closed unknown profile ids
+- **Pass criteria**: 400 + `invalid_semantic_profile` (or documented sibling code)
+- **Source**: #1121; AC-API-3
+
+### TC-EV1120-004: exchange_profile packaging filter
+
+- **Level**: T0 / T2
+- **Objective**: Exchange filter applies to packaging-tagged rows only
+- **Pass criteria**: Unit/integration smoke; unknown → 400
+- **Source**: #1121
+
+### TC-EV1120-005: OpenAPI + api-contract additive
+
+- **Level**: T0
+- **Objective**: Query params documented; EV-048 OpenAPI guard green
+- **Pass criteria**: Contract tests + internal-doc-ref guards
+- **Source**: #1121; AC-API-4
+
+### TC-EV1120-006: US_FAA_NWS national-only catalog row
+
+- **Level**: T0 / T2
+- **Objective**: ≥1 TAC lint national-only code mined + tagged
+- **Pass criteria**: Visible under US filter; hidden under ICAO_2025
+- **Source**: #1122; AC-CNT-1
+
+### TC-EV1120-007: CA_ECCC national-only catalog row
+
+- **Level**: T0 / T2
+- **Objective**: ≥1 TAC lint national-only code mined + tagged
+- **Pass criteria**: Visible under CA filter; hidden under ICAO_2025
+- **Source**: #1122; AC-CNT-1
+
+### TC-EV1120-008: US + CA IWXXM validation national rows
+
+- **Level**: T0 / T2
+- **Objective**: ≥1 IWXXM-family national-only row each for US and CA
+- **Pass criteria**: Filter semantics + provenance URLs present
+- **Source**: #1122; AC-CNT-2
+
+### TC-EV1120-009: Workbench catalog follows Profile
+
+- **Level**: T0 / T2 / H4–H5
+- **Objective**: Changing Profile refetches/filters catalog panel
+- **Pass criteria**: UJ-073; national demo visible only under owning profile
+- **Source**: #1123; AC-UI-1
+
+### TC-EV1120-010: Profiles page glanceable summary composition
+
+- **Level**: T0 / T2
+- **Objective**: First viewport is one summary composition
+- **Pass criteria**: Shows name/id, ≤3 deltas, products, IWXXM line, counts
+- **Source**: #1145; AC-UX-1
+
+### TC-EV1120-011: Workbench Profile twin
+
+- **Level**: T0 / T2
+- **Objective**: Compact twin beside Profile control; JWT counts gated
+- **Pass criteria**: Public twin stays compact and shows pack/overlay count placeholders;
+  authenticated view reveals counts without changing the compact layout
+- **Source**: #1145; AC-UX-2
+
+### TC-EV1120-012: ADR-038 blocks inspect/jump
+
+- **Level**: T0 / T2
+- **Objective**: Block click opens detail and jumps to existing forms
+- **Pass criteria**: No new runtime loader; EV-048 clean
+- **Source**: #1145; AC-UX-3
+
+### TC-EV1120-013: Profile-aware examples all semantic profiles
+
+- **Level**: T0 / T2
+- **Objective**: Example load for every registered semantic profile
+- **Pass criteria**: Thin packs may reuse ICAO + note; Conversion Profiles may show
+  read-only example coverage guidance plus a jump back to Convert without adding a second
+  editable picker on that page
+- **Source**: #1145; AC-UX-4
+
+### TC-EV1120-014: Starter seed sync non-destructive
+
+- **Level**: T0 / T2
+- **Objective**: Seed sync skips customized packs/overlays
+- **Pass criteria**: Custom slug preserved after catalog deepen
+- **Source**: #1145; AC-UX-5
+
+### TC-EV1120-015: Live refresh summary + catalog
+
+- **Level**: T0 / T2
+- **Objective**: Profile change updates twin + catalog without full reload
+- **Pass criteria**: Component/e2e assertion proves summary/twin + catalog refresh while
+  unrelated in-progress editing state is preserved unless a profile-dependent control becomes
+  invalid
+- **Source**: #1145; AC-UX-6
+
+### TC-EV1120-016: Workflow links read-only (Phase A)
+
+- **Level**: T0 / T2
+- **Objective**: Workflow affordances are status/links only
+- **Pass criteria**: No authoring UI in Phase A (#1147 deferred); links may coexist with
+  read-only example guidance and a Convert jump action
+- **Source**: #1145; D-R19/22
+
+### TC-EV1120-017: Side-by-side profile compare highlights deltas
+
+- **Level**: T0 / T2
+- **Objective**: Comparing two semantic profiles shows shared labels with differing cells emphasized
+- **Pass criteria**: Conversion Profiles summary compare for US_FAA_NWS vs ICAO_2025 (or fixture
+  pair) shows ≥1 highlighted difference (products and/or vs-ICAO deltas and/or IWXXM line)
+  while the workbench twin remains compact
+- **Source**: #1145; D-R27=3
+
 ### EV-064 / F36 — CA_ECCC profile (#916)
 
 - **Mode**: deepen F36; IWXXM 3.0.0 + `iwxxm-ca` line
-- **Pass criteria**: AC in evolve-decisions §EV-064; TC-EV064-*
+- **Pass criteria**: AC in evolve-decisions §EV-064; TC-EV064-\*
 - **Source**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916); ADR-036;
   [domain/profiles/semantic/CA_ECCC.md](domain/profiles/semantic/CA_ECCC.md)
 
@@ -2667,7 +2970,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-066 / #916 — CA_ECCC RMK + altimeter deepen
 
 - **Mode**: deepen F36; IWXXM 3.0.0 + `iwxxm-ca` line
-- **Pass criteria**: AC in evolve-decisions §EV-066; TC-EV066-*
+- **Pass criteria**: AC in evolve-decisions §EV-066; TC-EV066-\*
 - **Source**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916); EV-066;
   [domain/profiles/semantic/CA_ECCC.md](domain/profiles/semantic/CA_ECCC.md)
 
@@ -2702,7 +3005,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-068 / #1035 + #1027 — CA_ECCC layered validation stack
 
 - **Mode**: deepen F2/F4/F13/F36; IWXXM 3.0.0 profile-pinned bundle + staged `ca_eccc` validate
-- **Pass criteria**: AC in evolve-decisions §EV-068; TC-EV068-*
+- **Pass criteria**: AC in evolve-decisions §EV-068; TC-EV068-\*
 - **Source**: [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035), [#1027](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1027); EV-068;
   [domain/IWXXM_VALIDATION.md](domain/IWXXM_VALIDATION.md) §CA_ECCC validation stages
 
@@ -2744,7 +3047,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-069 / #1035 follow-on — CA_ECCC validation deepen
 
 - **Mode**: deepen F2/F13; layers 5–6 + TAF product XSD gate
-- **Pass criteria**: AC in evolve-decisions §EV-069; TC-EV069-*
+- **Pass criteria**: AC in evolve-decisions §EV-069; TC-EV069-\*
 - **Source**: [#1035](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1035), [#1033](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1033), [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032); EV-069
 
 ### TC-EV069-001: All CA stages implemented
@@ -2778,7 +3081,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-070 / #1041 — CA_ECCC TAF + AIRMET convert deepen
 
 - **Mode**: deepen F6/F20/F36; `tac2iwxxm` national mappers
-- **Pass criteria**: AC in evolve-decisions §EV-070; TC-EV070-*
+- **Pass criteria**: AC in evolve-decisions §EV-070; TC-EV070-\*
 - **Source**: [#1041](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1041); EV-069 follow-on
 
 ### TC-EV070-001: TAF present_and_forecast_weather encode
@@ -2798,7 +3101,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### TC-EV070-003: AIRMET GFA structured fields
 
 - **Level**: T0 / T2
-- **Objective**: SFC_VIS* phenomenon golden includes `surfaceVisibility` / `cloudBase` / `surfaceWindSpeed` where applicable
+- **Objective**: SFC_VIS\* phenomenon golden includes `surfaceVisibility` / `cloudBase` / `surfaceWindSpeed` where applicable
 - **Pass criteria**: Golden diff stable; `airmet-ca.xsd` layer passes
 - **Source**: EV-070 M2; #1041 AIRMET
 
@@ -2826,7 +3129,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-071 / #1038 + #1032 + #1040 — CA_ECCC lint pack + exchange output (METAR)
 
 - **Mode**: deepen F15/F6/F36; national lint pack + operational packaging
-- **Pass criteria**: AC in evolve-decisions §EV-071; TC-EV071-*
+- **Pass criteria**: AC in evolve-decisions §EV-071; TC-EV071-\*
 - **Source**: [#1038](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1038),
   [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032),
   [#1040](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1040); EV-070 follow-on
@@ -2897,7 +3200,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-072 / #1032 residual + #1036 — CA_ECCC exchange aerodrome products + ops corpus
 
 - **Mode**: deepen F36/F6; complete exchange output + operational fixtures
-- **Pass criteria**: AC in evolve-decisions §EV-072; TC-EV072-*
+- **Pass criteria**: AC in evolve-decisions §EV-072; TC-EV072-\*
 - **Source**: EV-071 deferred; [#1036](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1036)
 
 ### TC-EV072-001: SPECI exchange output (`A_LPCN`)
@@ -2973,7 +3276,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-073 / #1032 COLLECT + #1042 — CA_ECCC envelope + profile wiring
 
 - **Mode**: deepen F36/F6/F7; COLLECT wrap + operator profile/extension wiring
-- **Pass criteria**: AC in evolve-decisions §EV-073; TC-EV073-*
+- **Pass criteria**: AC in evolve-decisions §EV-073; TC-EV073-\*
 - **Source**: EV-072 deferred; [#1042](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1042)
 
 ### TC-EV073-001: COLLECT wrap idempotency
@@ -3033,7 +3336,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-074 / #1043 — CA_ECCC SIGMET + VAA validate-first ops
 
 - **Mode**: deepen F23/F26/F36; datamart ops IWXXM + WMO 3.0.0 validate; no TAC convert
-- **Pass criteria**: AC in evolve-decisions §EV-074; TC-EV074-*
+- **Pass criteria**: AC in evolve-decisions §EV-074; TC-EV074-\*
 - **Source**: [#1043](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1043); playbook #1044 type P
 
 ### TC-EV074-001: Harvest script SIGMET/VAA pin URLs
@@ -3105,7 +3408,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-075 / #1032 — CA_ECCC umbrella closeout audit
 
 - **Mode**: doc audit + regression gate; no product code unless drift
-- **Pass criteria**: AC in evolve-decisions §EV-075; TC-EV075-*
+- **Pass criteria**: AC in evolve-decisions §EV-075; TC-EV075-\*
 - **Source**: [#1032](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1032) (verify close); EV-071..074 on `stage`
 
 ### TC-EV075-001: #1032 aerodrome exchange output regression
@@ -3139,7 +3442,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-076 / #1061 — CA_ECCC SIGMET exchange output emit
 
 - **Mode**: delta deepen F36 exchange output
-- **Pass criteria**: AC in evolve-decisions §EV-076; TC-EV1061-*
+- **Pass criteria**: AC in evolve-decisions §EV-076; TC-EV1061-\*
 - **Source**: [#1061](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1061); split from #1032 / EV-075
 
 ### TC-EV1061-001: Catalog SIGMET exchange slice
@@ -3173,7 +3476,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-079 / #919 — US_FAA_NWS SIGMET/AIRMET national layer (M8)
 
 - **Mode**: parser tokens + profile fixture pack + regression gate
-- **Pass criteria**: AC in evolve-decisions §EV-079; TC-EV079-*
+- **Pass criteria**: AC in evolve-decisions §EV-079; TC-EV079-\*
 - **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); EV-063 M7 RMK matrix prior
 
 ### TC-EV079-001: SIGMET/AIRMET manifest rows
@@ -3207,7 +3510,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-080 / #919 — US_FAA_NWS SIGMET VOR reference geometry (M9)
 
 - **Mode**: `ReferencePointGeometryParser` + bundled VOR table + fixture pack
-- **Pass criteria**: AC in evolve-decisions §EV-080; TC-EV080-*
+- **Pass criteria**: AC in evolve-decisions §EV-080; TC-EV080-\*
 - **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); EV-079 M8 prior
 
 ### TC-EV080-001: VOR offset math
@@ -3248,7 +3551,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-081 / #919 — US_FAA_NWS M10–M13 (hazards, WST, VIS, TAF lint)
 
 - **Mode**: iwxxm-us hazard emit + convective SIGMET parse/emit + M7 VIS assert + TAF overlay lint
-- **Pass criteria**: AC in evolve-decisions §EV-081; TC-EV081-*
+- **Pass criteria**: AC in evolve-decisions §EV-081; TC-EV081-\*
 - **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); EV-080 M9 prior
 
 ### TC-EV081-001: AIRMET IFR weather hazards
@@ -3289,7 +3592,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-082 / #919 — US_FAA_NWS M15–M16 (outlook / multi-area AIRMET)
 
 - **Mode**: `OTLK VALID` outlook parse/emit + AND-joined multi-area members
-- **Pass criteria**: AC in evolve-decisions §EV-082; TC-EV082-*
+- **Pass criteria**: AC in evolve-decisions §EV-082; TC-EV082-\*
 - **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); NWSI 10-811 §7.3 item 10; EV-081 prior
 
 ### TC-EV082-001: AIRMET outlook sub-period
@@ -3316,7 +3619,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-083 / #919 — US_FAA_NWS M17–M18 (CONUS UPDT + FRZLVL forecast)
 
 - **Mode**: CONUS `UPDT` header parse + standalone `FRZLVL...` subsection emit
-- **Pass criteria**: AC in evolve-decisions §EV-083; TC-EV083-*
+- **Pass criteria**: AC in evolve-decisions §EV-083; TC-EV083-\*
 - **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); NWSI 10-811 Appendix A2.1; EV-082 prior
 
 ### TC-EV083-001: CONUS UPDT header + inline FRZLVL
@@ -3343,7 +3646,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-084 / #919 — US_FAA_NWS M19 (WAUS multi-section AIRMET)
 
 - **Mode**: Full bulletin ICE + VOR `FROM` geometry + inline FRZLVL + `OTLK VALID` + FRZLVL subsection
-- **Pass criteria**: AC in evolve-decisions §EV-084; TC-EV084-*
+- **Pass criteria**: AC in evolve-decisions §EV-084; TC-EV084-\*
 - **Source**: [#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919); NWSI 10-811; EV-083 prior
 
 ### TC-EV084-001: WAUS multi-section convert golden
@@ -3370,7 +3673,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-078 / #916 — CA_ECCC P1 closeout audit
 
 - **Mode**: doc audit + regression gate; no product code unless drift
-- **Pass criteria**: AC in evolve-decisions §EV-078; TC-EV078-*
+- **Pass criteria**: AC in evolve-decisions §EV-078; TC-EV078-\*
 - **Source**: [#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) (verify close); EV-071..077 on `stage`
 
 ### TC-EV078-001: SIGMET exchange + catalog slices documented
@@ -3404,7 +3707,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-063 / F35–F36 — Semantic vs exchange profiles (#912)
 
 - **Mode**: new F35/F36; amends F6 wire
-- **Pass criteria**: AC in evolve-decisions §EV-063; UJ-069; TC-EV063-*
+- **Pass criteria**: AC in evolve-decisions §EV-063; UJ-069; TC-EV063-\*
 - **Source**: [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912),
   [#914](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/914),
   [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); ADR-036
@@ -3478,6 +3781,438 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: HTTP 200; `exchange_profile` echoed; COLLECT root in result
 - **Source**: EV-065; UJ-069
 
+### EV-086 / #921 — EUR_RODEX + AFI + CAR_SAM stubs
+
+- **Mode**: delta deepen F36 exchange overlays
+- **Pass criteria**: TC-EV086-001..004; catalog + exchange stub docs
+- **Source**: [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921); EV-086
+
+### TC-EV086-001: Registry resolves regional stubs
+
+- **Level**: T0 / T2
+- **Objective**: `EUR_RODEX`, `AFI`, `CAR_SAM` resolve (wire + canonical)
+- **Pass criteria**: `known_exchange_profile_ids` contains all three; `resolve_exchange_profile` non-None
+- **Source**: EV-086; UJ-069
+
+### TC-EV086-002: Packaging COLLECT for each stub
+
+- **Level**: T0 / T2
+- **Objective**: Each stub COLLECT-wraps member IWXXM via GLOBAL_AFS baseline
+- **Pass criteria**: `is_collect_bulletin`; `bulletinIdentifier` preserved
+- **Source**: EV-086; FR-EV086-01
+
+### TC-EV086-003: Unknown exchange fail-closed
+
+- **Level**: T0 / T2
+- **Objective**: Garbage exchange id still rejected
+- **Pass criteria**: `ValueError` from packaging / API 400
+- **Source**: EV-086; ADR-036
+
+### TC-EV086-004: EV-065 regression
+
+- **Level**: T0 / T2
+- **Objective**: GLOBAL_AFS + APAC_ROBEX paths unchanged
+- **Pass criteria**: TC-EV065-001..002 green
+- **Source**: EV-086
+
+### EV-090 / #921+#913+#1024 — Exchange mining deepen + light picker
+
+- **Mode**: delta deepen F36 exchange overlays + F7 light UI
+- **Pass criteria**: TC-EV090-001..005; catalog/stub provenance deltas; UJ-069 FE steps
+- **Source**: [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921), [#913](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913), [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024); EV-090; ADR-036
+
+### TC-EV090-001: Catalog provenance for regional exchange stubs
+
+- **Level**: T0
+- **Objective**: Each exchange id (`GLOBAL_AFS`, `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM`) has promoted mining_notes and/or shared OPMET Guidelines source; ROBEX handbook durable file remains an explicit gap if unpinned
+- **Pass criteria**: `catalog.yaml` + stub Owns/Gaps match; PROVENANCE_MAP digs where tickets apply
+- **Source**: EV-090; D-EV090-req 2a; #913
+
+### TC-EV090-002: Workbench Exchange profile control
+
+- **Level**: T0 / T2 (browser unit)
+- **Objective**: Labeled Exchange profile select lists registered ids; default `GLOBAL_AFS`; accessible name distinct from semantic Profile
+- **Pass criteria**: `data-testid` exchange select visible; options include regional stubs; plain-language help without internal doc refs
+- **Source**: EV-090; #1024; UJ-069; D-EV090-ui
+
+### TC-EV090-003: FE sends exchange_profile on package/bulletin path
+
+- **Level**: T0 / T2 (browser unit)
+- **Objective**: Selecting a non-default exchange id sends `exchange_profile` on convert-bulletin / packaging request; convert-only path does not invent credentials
+- **Pass criteria**: Form/JSON field matches API contract; unknown id rejected by API (existing fail-closed)
+- **Source**: EV-090; api-contract; UJ-069
+
+### TC-EV090-004: H4–H5 connectivity for exchange picker
+
+- **Level**: T3 / H4–H5
+- **Objective**: Live or staging workbench can select exchange overlay and complete package path without CORS failure
+- **Pass criteria**: Connectivity gate scripts / Playwright e2e green for UJ-069 FE
+- **Source**: EV-090; connectivity-gates; D-EV090-routing
+
+### TC-EV090-005: EV-086 packaging regression
+
+- **Level**: T0 / T2
+- **Objective**: COLLECT baseline for all regional stubs unchanged
+- **Pass criteria**: TC-EV086-001..004 green
+- **Source**: EV-090
+
+### EV-093 / #1024 — Semantic light picker deepen
+
+- **Mode**: delta deepen F7/F35 FE semantic Profile wire + nationals
+- **Pass criteria**: TC-EV093-001..006; UJ-069 FE semantic steps; preserve TC-EV060/064/090/091
+- **Source**: [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024); EV-093; ADR-036; D-EV093-\*
+
+### TC-EV093-001: Profile options = all canonicals + aliases
+
+- **Level**: T0 / T2 (browser unit)
+- **Objective**: `profile-type-select` lists `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`,
+  `NZ_CAA_MET`, thin packs, plus legacy `annex3` / `iwxxm_us`; default `ICAO_2025`
+- **Pass criteria**: Options + default match FR-01/FR-02/FR-04; accessible name distinct from Exchange
+- **Source**: EV-093; D-EV093-g2; UJ-069
+
+### TC-EV093-002: FE sends semantic_profile uppercase
+
+- **Level**: T0 / T2
+- **Objective**: Convert / convert-bulletin FormData appends `semantic_profile` with uppercase
+  OpenAPI ids (e.g. `ICAO_2025`), not only deprecated `profile=`
+- **Pass criteria**: Client unit asserts field + value; API accepts
+- **Source**: EV-093; D-EV093-wire; api-contract
+
+### TC-EV093-003: Legacy aliases still convert
+
+- **Level**: T0 / T2
+- **Objective**: Selecting `annex3` or `iwxxm_us` resolves and converts; coerce helpers map stored prefs
+- **Pass criteria**: Alias options present; convert path green; no unknown-profile 400
+- **Source**: EV-093; #1025 window; FR-02
+
+### TC-EV093-004: CA_ECCC pin / metadata unchanged
+
+- **Level**: T0 / T2
+- **Objective**: Choosing `CA_ECCC` still pins IWXXM 3.0.0, sends `IWXXM_CA` extensions, shows metadata / block notice
+- **Pass criteria**: TC-EV064-005 behavior preserved under new option value
+- **Source**: EV-093; FR-05
+
+### TC-EV093-005: Profile trust copy
+
+- **Level**: T0 / T2
+- **Objective**: Plain-language Profile/Exchange trust model without bloating the control bar: (A) help icons + tooltips on Profile and Exchange labels; (B) one short always-visible summary under the bar; (C) collapsed “What’s this?” details with full copy (not destinations/credentials; not editable overlays)
+- **Pass criteria**: `product-profile-bar` contains controls only (no help paragraphs); summary + details `data-testid`s present; full help visible after expand; no internal doc refs (EV-048)
+- **Source**: EV-093; FR-06; #924; D-EV093-trust-layout
+
+### TC-EV093-006: H4–H5 / e2e UJ-069 semantic + exchange
+
+- **Level**: T3 / H4–H5
+- **Objective**: Playwright (or live connectivity) selects canonical Profile + Exchange and completes convert/package path
+- **Pass criteria**: Extend `tc-ev090-uj069-exchange-picker` or sibling TC-EV093 e2e green
+- **Source**: EV-093; connectivity-gates; UJ-069
+
+### EV-087 / #917+#918 — AU_BOM + NZ_CAA_MET P1 kickoff
+
+- **Mode**: delta deepen F36 semantic nationals
+- **Pass criteria**: TC-EV087-001..006; catalog P1 + stubs + mining notes; D-EV087-\* locked
+- **Source**: [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917), [#918](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/918); EV-087; ADR-036
+
+### TC-EV087-001: Registry resolves AU_BOM and NZ_CAA_MET
+
+- **Level**: T0 / T2
+- **Objective**: Canonical wire ids resolve to emit keys `au_bom` / `nz_caa_met`
+- **Pass criteria**: `resolve_semantic_profile` non-None; `known_semantic_profile_ids` contains both
+- **Source**: FR-EV087-01; UJ-069
+
+### TC-EV087-002: AU INTER parsed distinct from TEMPO
+
+- **Level**: T0 / T2
+- **Objective**: Under `AU_BOM`, `INTER` is a distinct IR change-group
+- **Pass criteria**: Fixture with INTER does not collapse to TEMPO-only AST; `rule_id` AU.TAF.INTER
+- **Source**: FR-EV087-02; D-EV087-inter-emit
+
+### TC-EV087-003: AU INTER emit policy (no invented enum)
+
+- **Level**: T0 / T2
+- **Objective**: Converted IWXXM uses `TEMPORARY_FLUCTUATIONS` and preserves INTER provenance
+- **Pass criteria**: No `changeIndicator="INTER"`; remarks/diagnostics/humanReadable retain INTER; XSD-valid under core pin
+- **Source**: FR-EV087-03; D-EV087-inter-emit
+
+### TC-EV087-004: AU TAF3 RMK flag
+
+- **Level**: T0 / T2
+- **Objective**: `TAF3` / `TAF3 VALID TL` detected under `product=TAF`
+- **Pass criteria**: Profile flag / IR field set; API product remains TAF
+- **Source**: FR-EV087-04; D-EV087-taf3
+
+### TC-EV087-005: NZ domestic vs international TAF fixtures
+
+- **Level**: T0 / T2
+- **Objective**: Domestic extras parsed; international path remains Annex 3-shaped
+- **Pass criteria**: ≥1 domestic + ≥1 international fixture; extras in IR and/or remarks
+- **Source**: FR-EV087-06..07; D-EV087-nz-domestic
+
+### TC-EV087-006: Unknown semantic profile fail-closed
+
+- **Level**: T0 / T2
+- **Objective**: Garbage semantic id still rejected after AU/NZ registration
+- **Pass criteria**: API 400 / library reject; ICAO/US/CA paths unchanged
+- **Source**: FR-EV087-01; ADR-036
+
+### EV-088 / #1044 — National profile onboarding playbook
+
+- **Mode**: engineering enablement (docs + scaffold; no #920/#921 feature content)
+- **Pass criteria**: TC-EV088-001..006; playbook + `_template/`; ADR-036/README links
+- **Source**: [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044); EV-088; ADR-036
+
+### TC-EV088-001: Playbook lists issue types A–P
+
+- **Level**: T0 / Docs
+- **Objective**: `NATIONAL_PROFILE_PLAYBOOK.md` documents child types A–P
+- **Pass criteria**: Each `| A |` … `| P |` row present
+- **Source**: #1044 §8
+
+### TC-EV088-002: Template stubs present
+
+- **Level**: T0 / Docs
+- **Objective**: `_template/` holds catalog-row, semantic, mining, manifest stubs
+- **Pass criteria**: Five required template files on disk
+- **Source**: #1044 deliverables
+
+### TC-EV088-003: Catalog YAML parses
+
+- **Level**: T0
+- **Objective**: `catalog.yaml` remains valid machine index
+- **Pass criteria**: YAML loads; `CA_ECCC` and `ICAO_2025` present
+- **Source**: [Corpus: domain-profiles]
+
+### TC-EV088-004: README and ADR-036 link playbook
+
+- **Level**: T0 / Docs
+- **Objective**: Standing docs discoverable from hub + ADR
+- **Pass criteria**: Playbook filename cited in README and ADR-036
+- **Source**: #1044 AC
+
+### TC-EV088-005: Scaffold dry-run
+
+- **Level**: T0
+- **Objective**: `scaffold_national_profile.py --dry-run` prints checklist without writes
+- **Pass criteria**: Exit 0; checklist mentions `profile_registry.py`; no new semantic stub file
+- **Source**: EV-088 Build M2
+
+### TC-EV088-006: Scaffold rejects bad id
+
+- **Level**: T0
+- **Objective**: Malformed `--id` fails closed
+- **Pass criteria**: Exit 2; stderr error
+- **Source**: EV-088 Build M2
+
+### EV-096 / #1096 — Harden Cursor rules/skills from CI footguns
+
+- **Mode**: process/DX delta — encode recurring CI failures into rules/skills (+ cheap guards);
+  not a product Fn fix
+- **Pass criteria**: TC-EV096-001..005; #1096 AC; triage note on issue; PR into `stage`
+- **Source**: [#1096](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1096); EV-096;
+  [Corpus: tests]; [Corpus: decisions]; related [#1095](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1095)
+
+### TC-EV096-001: Triage note (≥5 themes)
+
+- **Level**: T0 / Docs
+- **Objective**: Written triage of ≥5 recent failure/bug themes with concrete run or issue links
+- **Pass criteria**: Issue #1096 comment (or session report mirrored to issue) lists themes + links
+- **Source**: REQ-EV096-01; #1096 AC
+
+### TC-EV096-002: Rule + skill landed
+
+- **Level**: T0 / Docs
+- **Objective**: At least one Cursor rule and one skill/procedure update for these footguns
+- **Pass criteria**: `.cursor/rules/optional/ci-recurring-footguns.mdc` (or equivalent) +
+  `ci-after-push` / related skill note on tip; or explicit waiver with rationale
+- **Source**: REQ-EV096-02; REQ-EV096-03; #1096 AC
+
+### TC-EV096-003: Machine-local path class covered
+
+- **Level**: T0 / CI
+- **Objective**: #1095 portable EM paths remain guarded
+- **Pass criteria**: `make cursor-no-home-paths-guard` / `validate-fast` includes
+  `scripts/ci/check_cursor_no_home_paths.py`; rule cites verify-only path
+- **Source**: REQ-EV096-07; EV-095; #1095
+
+### TC-EV096-004: Stage→main vs evolve CI expectations
+
+- **Level**: T0 / Docs
+- **Objective**: Agents know promote vs evolve-branch CI differences
+- **Pass criteria**: `ci-after-push.mdc` (and/or footguns rule) states: feature/evolve PR →
+  `stage` first; promote `stage`→`main` requires E2E Full (not smoke-only); watch CI after push
+- **Source**: REQ-EV096-03; REQ-EV096-08; [Corpus: deploy] §Promote
+
+### TC-EV096-005: Frontend coverage / Mutation pnpm / Vendor sync documented
+
+- **Level**: T0 / Docs (+ optional CI guard)
+- **Objective**: If-you-see-X-do-Y for FE 100% coverage, Mutation `packageManager` dual-spec,
+  Vendor Schema Sync recurring fails
+- **Pass criteria**: Footguns rule covers all three; Mutation workflow fixed to packageManager-only
+  when dual-spec still present; vendor documented as non-blocking triage (no hand-edit
+  `vendor/schemas`)
+- **Source**: REQ-EV096-04..06; REQ-EV096-09; sample runs #33401453421, #33386557847,
+  #33393624607
+
+### EV-098 / #1028–#1031 — CA_ECCC deep mining
+
+- **Mode**: delta F36 — domain mining + P0 fixtures (no UI / H4–H5 waived)
+- **Pass criteria**: TC-EV098-001..005; REQs R1–R6; promote only after handoff gate C
+- **Source**: [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028)–[#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031); EV-098; [ev-098-ca-eccc-mining.md](decisions/ev-098-ca-eccc-mining.md); ADR-036
+
+### TC-EV098-001: Datamart triage complete (Docs)
+
+- **Level**: T0 / Docs
+- **Objective**: Every directory under MSC IWXXM datamart root classified mined | redirected | dead with promotion backlog rows
+- **Pass criteria**: `eccc-iwxxm-ca-mining-notes.md` section-level findings; backlog has `rule_id` / priority / status
+- **Source**: R1; #1028
+
+### TC-EV098-002: MSC doc PDF catalogue (Docs)
+
+- **Level**: T0 / Docs
+- **Objective**: All MSC `doc/` PDFs (EN primary) triaged into `eccc-iwxxm-doc-pdfs-mining-notes.md`
+- **Pass criteria**: Per-PDF durable citation + section index; no full copyrighted prose committed
+- **Source**: R2 / R5; #1031
+
+### TC-EV098-003: MANOBS P0 fixtures (Build)
+
+- **Level**: T0 / T2
+- **Objective**: P0 rules `CA.METAR.VIS.SM`, `CA.METAR.ALT.A`, `CA.METAR.AUTO` have valid/invalid fixture pairs under `profiles/CA_ECCC/`
+- **Pass criteria**: Catalog entries + fixture tests green after gate-C promote; COVERAGE_MATRIX METAR (CA) updated where promoted
+- **Source**: R3; #1029
+
+### TC-EV098-004: MANAIR TAF national extension (Build)
+
+- **Level**: T0 / T2
+- **Objective**: ≥1 TAF national extension rule promoted with golden IWXXM 3.0.0 + `taf-ca`
+- **Pass criteria**: Fixture under `profiles/CA_ECCC/TAF/`; MANAIR citation in mining notes
+- **Source**: R4; #1030
+
+### TC-EV098-005: AIRMET GFA phenomena ↔ code-ca (Build)
+
+- **Level**: T0 / T2
+- **Objective**: AIRMET GFA phenomena vocabulary membership checks wired to `code-ca`
+- **Pass criteria**: At least one `CA.AIRMET.PHENOMENA.*` stub or fixture; durable URL in PROVENANCE
+- **Source**: R4 / R5; #1030
+
+### EV-094 / #1098 — Thin/compat national deepen
+
+- **Mode**: delta F36 — deepen EV-089 packs (fixtures, sources, SPECI KR/JP, IN lint overlay)
+- **Pass criteria**: TC-EV094-001..006; #1098 AC; #920 stays closed; GAMET parse-only held
+- **Source**: [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); EV-094; ADR-036; [GAMET-spike.md](domain/profiles/GAMET-spike.md)
+
+### TC-EV094-001: Catalog deepen hygiene
+
+- **Level**: T0 / Docs
+- **Objective**: Six thin/compat ids retain EV-089 products (plus SPECI on KR/JP); deepen gaps/sources updated
+- **Pass criteria**: `catalog.yaml` loads; KR/JP `products` include SPECI; `IN_IMD` notes lint overlay intent
+- **Source**: FR-EV094-02; FR-EV094-05; D-EV094-in-taf
+
+### TC-EV094-002: Attributed fixture corpora (Build)
+
+- **Level**: T0 / T2
+- **Objective**: ≥1 attributed real/archive TAC per convert product per shipped pack
+- **Pass criteria**: Manifest or mining cites source URL + UTC; convert smoke green; gaps explicit if missing
+- **Source**: FR-EV094-03
+
+### TC-EV094-003: KR/JP SPECI allowlist (Build)
+
+- **Level**: T0 / T2
+- **Objective**: `KR_KMA` and `JP_JMA` convert SPECI
+- **Pass criteria**: Allowlist + SPECI fixture convert OK; AIRMET still excluded for JP
+- **Source**: D-EV094-speci-expand
+
+### TC-EV094-004: IN_IMD TX/TN lint overlay (Build)
+
+- **Level**: T0 / T2
+- **Objective**: `lint(..., profile=in_imd|IN_IMD)` on TAF without TX/TN emits registered info awareness code; annex3 path unchanged for same TAC
+- **Pass criteria**: Registry row + fixture test; convert still core IWXXM; no national XSD
+- **Source**: D-EV094-in-taf; FR-EV094-04
+
+### TC-EV094-005: GAMET parse-only held
+
+- **Level**: T0 / Docs
+- **Objective**: EV-094 does not add GAMET emit
+- **Pass criteria**: `GAMET-spike.md` still parse-only; BR convert allowlist excludes GAMET
+- **Source**: D-EV094-gamet
+
+### TC-EV094-006: Must-not-break prior nationals
+
+- **Level**: T2
+- **Objective**: ICAO/US/CA/AU/NZ + EV-089 ids still resolve; unknown id rejected
+- **Pass criteria**: Existing TC-EV087/089 smoke still green on tip
+- **Source**: FR-EV094-10
+
+### TC-EV094-007: Thin/compat manifest accounting by profile
+
+- **Level**: T0 / T2
+- **Objective**: EV-094 thin/compat manifests expose explicit per-profile counts for active,
+  attributed, synthetic-gap, and parse-only cases
+- **Pass criteria**: `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, and `HK_HKO`
+  manifests match the locked quality-accounting matrix on tip
+- **Source**: [#970](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/970); [Corpus: product §F36]
+
+### TC-EV094-008: Thin/compat manifest accounting totals
+
+- **Level**: T0 / T2
+- **Objective**: Aggregate EV-094 thin/compat counts stay stable across the shipped deepen set
+- **Pass criteria**: Combined active, attributed, synthetic-gap, and parse-only totals match the
+  explicit matrix and catch untracked manifest drift
+- **Source**: [#970](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/970); [Corpus: product §F36]
+
+### EV-089 / #920 — Thin/compat national packs
+
+- **Mode**: delta F36 — thin/compat semantic packs via EV-088 playbook thin path
+- **Pass criteria**: TC-EV089-001..007; six catalog rows + stubs; GAMET parse-only spike; UK first Build PR
+- **Source**: [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920); EV-089; ADR-036; [GAMET-spike.md](domain/profiles/GAMET-spike.md)
+
+### TC-EV089-001: Catalog lists six #920 profile ids
+
+- **Level**: T0 / Docs
+- **Objective**: `catalog.yaml` contains UK_METOFFICE, BR_DECEA, KR_KMA, JP_JMA, IN_IMD, HK_HKO
+- **Pass criteria**: YAML loads; each id `kind: semantic` and `issue: "#920"`
+- **Source**: FR-EV089-01
+
+### TC-EV089-002: Semantic stubs present
+
+- **Level**: T0 / Docs
+- **Objective**: `docs/domain/profiles/semantic/<ID>.md` exists for each #920 id
+- **Pass criteria**: Six stub files on disk
+- **Source**: FR-EV089-02
+
+### TC-EV089-003: GAMET spike is parse-only
+
+- **Level**: T0 / Docs
+- **Objective**: Standing GAMET disposition forbids IWXXM emit
+- **Pass criteria**: `GAMET-spike.md` states parse-only; no convert product enum for GAMET
+- **Source**: D-EV089-gamet
+
+### TC-EV089-004: Scaffold dry-run still works after #920 stubs
+
+- **Level**: T0
+- **Objective**: Scaffold checklist for a probe id that is not yet a standing stub
+- **Pass criteria**: `scaffold_national_profile.py --id ZZ_SCAFFOLD_PROBE --dry-run` exit 0; no stub written (TC-EV088-005)
+- **Source**: EV-088 playbook; FR-EV089-04
+
+### TC-EV089-005: UK_METOFFICE registry + fixture smoke (Build)
+
+- **Level**: T0 / T2
+- **Objective**: First shippable thin pack converts METAR/SPECI/TAF under profile id
+- **Pass criteria**: Fixtures under `profiles/UK_METOFFICE/`; convert or fixture-load tests green; ICAO/US/CA/AU/NZ unchanged
+- **Source**: FR-EV089-02; FR-EV089-10
+
+### TC-EV089-006: Remaining #920 packs smoke (Build, per PR)
+
+- **Level**: T0 / T2
+- **Objective**: Each subsequent profile PR adds fixtures + allowlist for its v1 products
+- **Pass criteria**: Parameterized tests per id; BR excludes GAMET from convert allowlist
+- **Source**: FR-EV089-05; FR-EV089-06
+
+### TC-EV089-007: Unknown semantic id still rejected
+
+- **Level**: T0 / T2
+- **Objective**: Garbage semantic id rejected after #920 registration
+- **Pass criteria**: API 400 / library reject; existing profiles unchanged
+- **Source**: FR-EV089-10; ADR-036
+
 ### TC-EV061-1015-001: Promote PR required-check inventory
 
 - **Level**: Docs / CI
@@ -3495,7 +4230,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-057 / S067 — M0 Ready: apex redirect + accumulate ZIP + validate-only (#948 / #903 / #838)
 
 - **Mode**: delta deepen F7.r / F7.s + F30; F1/F6/F2/F4 notes as applicable
-- **Pass criteria**: AC in evolve-decisions §EV-057; TC-EV057-*; **UJ-057** / **UJ-058** /
+- **Pass criteria**: AC in evolve-decisions §EV-057; TC-EV057-\*; **UJ-057** / **UJ-058** /
   **UJ-OPS-002**
 - **Source**: [#948](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/948),
   [#903](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/903),
@@ -3613,10 +4348,10 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 
 ### Live harness — staging (EV-043 / EV-044)
 
-| Env | API | Frontend |
-|-----|-----|----------|
+| Env     | API                                    | Frontend                               |
+| ------- | -------------------------------------- | -------------------------------------- |
 | staging | `https://api.staging.tac-to-iwxxm.com` | `https://app.staging.tac-to-iwxxm.com` |
-| prod | `https://api.tac-to-iwxxm.com` | `https://app.tac-to-iwxxm.com` |
+| prod    | `https://api.tac-to-iwxxm.com`         | `https://app.tac-to-iwxxm.com`         |
 
 CI **Staging smoke** sets `LIVE_API_URL` / `LIVE_FRONTEND_URL` to staging hosts after Deploy
 staging. Prod smokes remain Makefile / 13-deploy-smoke against prod hosts.
@@ -3633,7 +4368,7 @@ cited or revisited. Raise unfindable sources — do not invent.
 - **Objective**: Every `docs/domain/mining/*-mining-notes.md` is indexed and linked from the
   provenance map (or explicitly retired with rationale)
 - **Pass criteria**: Parametric assert — one case per dig file; map lists dig path + date mined
-  + products/roles touched; orphan digs fail CI
+  - products/roles touched; orphan digs fail CI
 - **Many asserts**: file exists · indexed · non-empty source URL or paywall landing · products
   non-empty · role label valid
 - **Source**: S043; [docs/domain/mining/README.md](domain/mining/README.md)
@@ -4074,10 +4809,10 @@ No live `codes.wmo.int` HTML in PR CI.
 
 ## F33 / EV-042 — Mass ingest + destinations hide + churn (S050)
 
-> Operator Dissemination destinations (DB + WIS2/EDIS/AMHS/SWIM/AFS) and Convert&Send are
-> **UI-hidden** this cycle (`OPERATOR_DISSEMINATION_DESTINATIONS_ENABLED=false`). Backend
-> `/api/v1/dissemination/*` retained for harness. Restore track: [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898).
-> Ops: [Corpus: ops] `docs/ops/operator-ui-runbook.md` §EV-042 destinations deferred.
+> Historical: Operator Dissemination destinations were **UI-hidden** under EV-042.
+> **EV-091 / #898** restores destinations (`destinationsEnabled=true`) with URI-BYOC and
+> connection-first preflight; #1089 adds drawer exchange overlay. Backend
+> `/api/v1/dissemination/*` unchanged. Ops: [Corpus: ops] `docs/ops/operator-ui-runbook.md` §EV-091.
 
 ### TC-F33-001: Authenticated mass ingest accepts TAC / zip (UJ-051)
 
@@ -4124,20 +4859,20 @@ No live `codes.wmo.int` HTML in PR CI.
   `test_t83_h4_cors_preflight_mass_ingest` / staging smoke; H5 `massIngestUrl` absent
 - **Source**: AC6; connectivity-gates H4–H5
 
-### TC-EV042-001: Operator UI has no dissemination destinations (UJ-053)
+### TC-EV042-001: Operator UI has no dissemination destinations (UJ-053) — **superseded**
 
-- **Level**: T2 / T3
+- **Level**: T2 / T3 (historical EV-042)
 - **Objective**: Convert&Send + Disseminate + **Upload to Database** absent; Convert/Validate remain
-- **Pass criteria**: Vitest + Playwright assert `convert-and-send-button` /
-  `open-dissemination-drawer` / `upload-to-database-button` count 0; convert still succeeds
-- **Source**: AC1; UJ-053; #897; 11-verify-impl amend (hide DatabaseUploadDialog)
+- **Pass criteria**: Vitest residual gate-off case still asserts hide when
+  `destinationsEnabled=false`; production default is **enabled** (EV-091)
+- **Source**: AC1; UJ-053; #897; superseded by **TC-EV091-001**
 
 ### TC-EV042-002: Dissemination API retained for harness (UJ-053)
 
 - **Level**: T0 / T2
 - **Objective**: `/api/v1/dissemination/preflight` + `/send` still mounted for tests/harness
 - **Pass criteria**: Existing dissemination API tests green; operator Playwright UJ-027–030
-  skipped until #898
+  restored under EV-091 / #898
 - **Source**: AC2; UJ-053
 
 ### TC-EV042-003: Work queue keyboard next/prev + Enter convert/validate (UJ-052)
@@ -4156,9 +4891,32 @@ No live `codes.wmo.int` HTML in PR CI.
 
 ### EV-042 verify gate
 
-- [ ] TC-F33-001..006 + TC-EV042-001..004 green (or explicit deferral)
-- [ ] H4–H5 mass route wired (H0i + live smoke + Playwright UJ-051..053)
-- [ ] Operator destinations restore tracked in #898
+- [x] TC-F33-001..006 + TC-EV042-001..004 green (or explicit deferral)
+- [x] H4–H5 mass route wired (H0i + live smoke + Playwright UJ-051..053)
+- [x] Operator destinations restore tracked in #898 → **delivered EV-091**
+
+### TC-EV091-001: Operator dissemination destinations visible (UJ-053 restore / #898)
+
+- **Level**: T2 / T3
+- **Objective**: Convert&Send + Disseminate + Upload to Database visible; Convert remains
+- **Pass criteria**: Vitest + Playwright assert `convert-and-send-button` /
+  `open-dissemination-drawer` / `upload-to-database-button` present; preflight still gates Send
+- **Source**: EV-091; #898; UJ-027–030 / UJ-053
+
+### TC-EV091-002: Drawer exchange overlay on convert-before-send (#1089)
+
+- **Level**: T2 / T3
+- **Objective**: Dissemination drawer Exchange profile select (default `GLOBAL_AFS`); TAC
+  candidates convert with `exchange_profile` before send
+- **Pass criteria**: Vitest selects `APAC_ROBEX` and asserts convert called with that id;
+  Playwright asserts select visible; Convert&Send continues to use workbench picker
+- **Source**: EV-091; #1089; [Corpus: product §F36]
+
+### EV-091 verify gate
+
+- [ ] TC-EV091-001..002 green
+- [ ] UJ-027–030 Playwright unskipped and green (stubbed BYOC)
+- [ ] SSRF / memory-only BYOC invariants unchanged
 
 ### TC-EV031-001: One-time migrate legacy Supabase → DO Postgres
 
@@ -4343,6 +5101,38 @@ No live `codes.wmo.int` HTML in PR CI.
   is Postgres + WIS2 + EDIS only; S-EV014-M2)
 - **Source**: F19; Q20=D; 02-verify-plan Q28=A
 
+### TC-F16-OPS-001..006: Dissemination ops + Gateway hooks (UJ-071 / EV-936)
+
+| ID             | Objective                                                              | Pass criteria                             |
+| -------------- | ---------------------------------------------------------------------- | ----------------------------------------- |
+| TC-F16-OPS-001 | Gateway façade `validate`/`send` maps to existing sink preflight/send  | Unit tests; SinkAdapter HTTP v1 unchanged |
+| TC-F16-OPS-002 | `health()` per gateway kind returns operator-safe `GatewayHealth`      | No secrets in `detail`; connectivity-only |
+| TC-F16-OPS-003 | Plan execute writes redacted `DeliveryReceipt` audit on `DATABASE_URL` | JWT required; no URI/secret columns       |
+| TC-F16-OPS-004 | MappingConfig CRUD (source/sink) via authenticated API                 | ADR-040 fields; 401 without JWT           |
+| TC-F16-OPS-005 | Ops UI: plan editor + audit list/detail + health (no secret render)    | Vitest + Playwright H6′                   |
+| TC-F16-OPS-006 | Drawer UJ-027–030 regression                                           | Existing mocked H6′ suite stays green     |
+
+- **Level**: T0 / T2 / T3 (H6′)
+- **Source**: F16–F19 deepen EV-936; #936; ADR-041; ADR-040; UJ-071
+
+### TC-EV933-001..006: ConversionProfile editor (UJ-072 / EV-933)
+
+| ID           | Objective                                      | Pass criteria                                 |
+| ------------ | ---------------------------------------------- | --------------------------------------------- |
+| TC-EV933-001 | Rule-pack CRUD fields + export                 | Vitest; fields match F7.w AC                  |
+| TC-EV933-002 | Inspector read-only for catalog profiles       | No edit of first-party contract fields in M1  |
+| TC-EV933-003 | Overlay persist requires JWT + signature/trust | 401 without JWT; 400 unsigned                 |
+| TC-EV933-004 | Ownership: user cannot mutate foreign overlay  | 403; RLS-equivalent filters on `DATABASE_URL` |
+| TC-EV933-005 | Convert applies selected overlay / pack        | Unit + API; fail-closed unknown id            |
+| TC-EV933-006 | Playwright UJ-072 + #1024 / drawer regression  | H4–H5 / T2; must-not-break picker + drawer    |
+
+- **Level**: T0 / T2 / T3 (H4–H5 when FE deploy)
+- **Source**: F7.w EV-933; #933; ADR-038 amend; UJ-072
+- **Automation**: `apps/e2e/uj072-conversion-profiles.e2e.spec.ts` (stubbed JWT + APIs).
+  **Live H4–H5** against stage FE: **PASS** 2026-09-04 — `make` connectivity H4–H5;
+  catalog JWT GET 200; rule-pack + overlay create; convert with `overlay_id` metadata;
+  Conversion profiles nav + guest sign-in prompt on `app.staging.tac-to-iwxxm.com`.
+
 ### F16–F19 verify/deploy gate
 
 - [ ] TC-F16-001..005 green (multi-DB + SSRF + drawer + multi-select)
@@ -4351,7 +5141,8 @@ No live `codes.wmo.int` HTML in PR CI.
 - [ ] TC-F17-001 staging wis2box green; TC-F17-002 live BYOC before cycle close
 - [ ] TC-F18-001 format green; TC-F18-002 live BYOC before cycle close
 - [ ] TC-F19-001..003 staging/test green; live F19 optional (evidence or waive id)
-- [ ] H4–H5 after API/FE dissemination routes ship; H0c on CORS/env changes; H6′ UJ-027–030
+- [x] TC-F16-OPS-001..006 green when EV-936 Build ships (UJ-071 / H6′) — M1–M3 unit/Vitest + M4 Playwright (`uj071-dissemination-ops.e2e.spec.ts` + drawer regression)
+- [ ] H4–H5 after API/FE dissemination routes ship; H0c on CORS/env changes; H6′ UJ-027–030 (+ UJ-071) — live H4–H5 deferred at EV-936 M4 intake (ops already on stage via #1134)
 - [ ] `DISSEMINATION_EGRESS_ALLOWLIST` in config-spec / env-contract / deploy / staging-secrets-matrix
       (S-EV014-L1 **resolved** at 04; matrix row added at 05-verify-tech)
 
@@ -4575,51 +5366,51 @@ actionlint/yamllint, medium validate, full coverage matrix, Compose integration)
 merge strength (unit matrix + coverage + PR coverage comment + native/Rust/e2e/alembic as
 wired). Scheduled workflows (`vendor-sync`, load/e2e) unchanged.
 
-| Trigger | Workflow | Jobs | Checks |
-|---------|----------|------|--------|
-| Local commit | husky → pre-commit | lint | ruff / prettier / eslint (lint/format only; shape A) |
-| Local push | husky pre-push | fast units | agreed fast unit subset only (not `validate-ci` / not Compose) |
-| PR / push `main`, `stage`, `dev` | `ci-cd.yml` | **remote** | typecheck + catalog/registry + secrets/yaml as configured; unit matrix + coverage + PR coverage comment; `tac2iwxxm-native`; **Rust crate checks** (EV-045); **converter perf hard gate** (EV-047 / #834); `e2e-smoke`; `test-alembic` |
-| push `main` / `stage` | `ci-cd.yml` | **deploy** | needs remaining remote jobs; GHCR + **DOKS**; Render optional |
-| Schedule | `vendor-sync.yml` | vendor-sync | wmo-im schema sync PR (M6) |
-| Manual / schedule | `load-tests.yml`, `e2e-tests.yml` | — | out of EV-002 / EV-036 / EV-047 day-to-day husky scope |
+| Trigger                          | Workflow                          | Jobs        | Checks                                                                                                                                                                                                                                 |
+| -------------------------------- | --------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Local commit                     | husky → pre-commit                | lint        | ruff / prettier / eslint (lint/format only; shape A)                                                                                                                                                                                   |
+| Local push                       | husky pre-push                    | fast units  | agreed fast unit subset only (not `validate-ci` / not Compose)                                                                                                                                                                         |
+| PR / push `main`, `stage`, `dev` | `ci-cd.yml`                       | **remote**  | typecheck + catalog/registry + secrets/yaml as configured; unit matrix + coverage + PR coverage comment; `tac2iwxxm-native`; **Rust crate checks** (EV-045); **converter perf hard gate** (EV-047 / #834); `e2e-smoke`; `test-alembic` |
+| push `main` / `stage`            | `ci-cd.yml`                       | **deploy**  | needs remaining remote jobs; GHCR + **DOKS**; Render optional                                                                                                                                                                          |
+| Schedule                         | `vendor-sync.yml`                 | vendor-sync | wmo-im schema sync PR (M6)                                                                                                                                                                                                             |
+| Manual / schedule                | `load-tests.yml`, `e2e-tests.yml` | —           | out of EV-002 / EV-036 / EV-047 day-to-day husky scope                                                                                                                                                                                 |
 
 ### Pre-commit / husky (local gates) — EV-047 (#833; supersedes EV-036 day-to-day)
 
-| Hook | Tool | Role |
-|------|------|------|
-| husky pre-commit | lint/format only | ruff / prettier / eslint — **no** tsc/basedpyright/catalog/registry/actionlint/yamllint/medium validate on default path |
-| husky pre-push | fast unit subset | explicit Makefile/pytest target — **not** full `ci-prepush` / Compose |
-| Opt-in local | `make validate-*` / `ci-prepush` | full parity when contributor chooses |
-| Remote PR coverage | `coverage-pr-comment` | sticky PR comment from unit coverage artifacts |
-| Remote converter perf | hard gate job | EV-047 / #834 — fail on convert p95 regression |
+| Hook                  | Tool                             | Role                                                                                                                    |
+| --------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| husky pre-commit      | lint/format only                 | ruff / prettier / eslint — **no** tsc/basedpyright/catalog/registry/actionlint/yamllint/medium validate on default path |
+| husky pre-push        | fast unit subset                 | explicit Makefile/pytest target — **not** full `ci-prepush` / Compose                                                   |
+| Opt-in local          | `make validate-*` / `ci-prepush` | full parity when contributor chooses                                                                                    |
+| Remote PR coverage    | `coverage-pr-comment`            | sticky PR comment from unit coverage artifacts                                                                          |
+| Remote converter perf | hard gate job                    | EV-047 / #834 — fail on convert p95 regression                                                                          |
 
 Family `test-*-quality` packs stay path-filtered / opt-in — **not** on every commit/push.
 Remote Playwright **e2e-smoke** stays on Actions (browser install cost; not every local push).
 
-### TC-EV036 (M5 / S044) — local-first CI *(superseded for husky day-to-day by EV-047)*
+### TC-EV036 (M5 / S044) — local-first CI _(superseded for husky day-to-day by EV-047)_
 
-| ID | Level | Assert |
-|----|-------|--------|
-| TC-EV036-001 | T0 | *(historical)* husky pre-commit ran fast + medium validate |
-| TC-EV036-002 | T0 | *(historical)* `.husky/pre-push` ran `make ci` |
-| TC-EV036-003 | T0 | `ci-cd.yml` — no `validate:` job; unit matrix + coverage + PR comment; no Compose integration; deploy `needs` includes `test` — **still relevant for remote graph** |
+| ID           | Level | Assert                                                                                                                                                              |
+| ------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| TC-EV036-001 | T0    | _(historical)_ husky pre-commit ran fast + medium validate                                                                                                          |
+| TC-EV036-002 | T0    | _(historical)_ `.husky/pre-push` ran `make ci`                                                                                                                      |
+| TC-EV036-003 | T0    | `ci-cd.yml` — no `validate:` job; unit matrix + coverage + PR comment; no Compose integration; deploy `needs` includes `test` — **still relevant for remote graph** |
 
 ### TC-EV047 (M5 / F6 / F7 / S056) — slim husky + converter perf + operator docs
 
-| ID | Level | Assert |
-|----|-------|--------|
-| TC-EV047-001 | T0 | `.husky/pre-commit` (via `make install-hooks`) runs lint/format only — does **not** invoke tsc, basedpyright, catalog-check, issue-registry-guard, actionlint, yamllint, or medium validate |
-| TC-EV047-002 | T0 | `.husky/pre-push` runs agreed **fast unit** subset only — does **not** run `validate-ci` or Compose integration |
-| TC-EV047-003 | T0 | `docs/ops/DEVELOPMENT.md` hook table matches shape A; opt-in `make` targets documented |
-| TC-EV047-004 | T0/CI | Offloaded gates still present in CI (typecheck and/or catalog/registry/secrets/yaml/unit coverage as configured) — contract test or workflow assert |
-| TC-EV047-005 | T0/CI | Artificial slowdown in `tac2iwxxm.convert` fails converter perf hard gate |
-| TC-EV047-006 | T0/CI | Revert slowdown → gate green; baselines committed YAML with documented refresh (no silent auto-raise) |
-| TC-EV047-007 | CI | Perf gate is required check (or merge-blocking job) on PR path to protected branches — job `name:` **`Converter perf (tac2iwxxm)`** must match `scripts/deploy/apply_gh_branch_rulesets.sh` (D-S056-gateA=2) |
-| TC-EV047-008 | T0 | Flake policy documented (median-of-N / retry / tolerance); convert-only p95; METAR/SPECI/TAF + thin SIGMET-family; pure-Python first |
-| TC-EV047-009 | T0 | `docs/guides/operator-one-pager.md` exists; one-page content checklist (convert→validate→download; version; soft preview); no internal citations |
-| TC-EV047-010 | T0 | `docs/guides/operator-handbook.md` has required sections + ingest pointer; no internal citations; one-pager links here |
-| TC-EV047-011 | T0/T2 | README Quick start links both docs; in-app Help entry reaches one-pager (UJ-054) |
+| ID           | Level | Assert                                                                                                                                                                                                       |
+| ------------ | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| TC-EV047-001 | T0    | `.husky/pre-commit` (via `make install-hooks`) runs lint/format only — does **not** invoke tsc, basedpyright, catalog-check, issue-registry-guard, actionlint, yamllint, or medium validate                  |
+| TC-EV047-002 | T0    | `.husky/pre-push` runs agreed **fast unit** subset only — does **not** run `validate-ci` or Compose integration                                                                                              |
+| TC-EV047-003 | T0    | `docs/ops/DEVELOPMENT.md` hook table matches shape A; opt-in `make` targets documented                                                                                                                       |
+| TC-EV047-004 | T0/CI | Offloaded gates still present in CI (typecheck and/or catalog/registry/secrets/yaml/unit coverage as configured) — contract test or workflow assert                                                          |
+| TC-EV047-005 | T0/CI | Artificial slowdown in `tac2iwxxm.convert` fails converter perf hard gate                                                                                                                                    |
+| TC-EV047-006 | T0/CI | Revert slowdown → gate green; baselines committed YAML with documented refresh (no silent auto-raise)                                                                                                        |
+| TC-EV047-007 | CI    | Perf gate is required check (or merge-blocking job) on PR path to protected branches — job `name:` **`Converter perf (tac2iwxxm)`** must match `scripts/deploy/apply_gh_branch_rulesets.sh` (D-S056-gateA=2) |
+| TC-EV047-008 | T0    | Flake policy documented (median-of-N / retry / tolerance); convert-only p95; METAR/SPECI/TAF + thin SIGMET-family; pure-Python first                                                                         |
+| TC-EV047-009 | T0    | `docs/guides/operator-one-pager.md` exists; one-page content checklist (convert→validate→download; version; soft preview); no internal citations                                                             |
+| TC-EV047-010 | T0    | `docs/guides/operator-handbook.md` has required sections + ingest pointer; no internal citations; one-pager links here                                                                                       |
+| TC-EV047-011 | T0/T2 | README Quick start links both docs; in-app Help entry reaches one-pager (UJ-054)                                                                                                                             |
 
 ### TC-EV048 (F7 / F21 / S057) — strip internal doc refs from UI + public API (#951)
 
@@ -4631,12 +5422,12 @@ lookbehind because `\b#` misses `#702` after spaces/slashes). Allowlist only for
 true domain false positives. Do **not** scan `docs/` standing text, source
 comments-only, or `*.test.*` / pytest modules.
 
-| ID | Tier | Criterion |
-|----|------|-----------|
-| TC-EV048-001 | T0 | PR (or session report) lists audit findings for UI strings + OpenAPI descriptions + client-facing errors |
-| TC-EV048-002 | T0 | OpenAPI export / schema `description` + operation summaries pass guard (no internal-doc patterns) |
+| ID           | Tier  | Criterion                                                                                                                                |
+| ------------ | ----- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| TC-EV048-001 | T0    | PR (or session report) lists audit findings for UI strings + OpenAPI descriptions + client-facing errors                                 |
+| TC-EV048-002 | T0    | OpenAPI export / schema `description` + operation summaries pass guard (no internal-doc patterns)                                        |
 | TC-EV048-003 | T0/T2 | Operator-visible FE string catalogs (labels/helpers/tooltips/banners/empty states/console/catalog/example tiers/privacy-auth) pass guard |
-| TC-EV048-004 | T0 | Client-facing API `detail` / error messages pass guard |
+| TC-EV048-004 | T0    | Client-facing API `detail` / error messages pass guard                                                                                   |
 | TC-EV048-005 | T0/CI | Automated unit/CI test fails if a synthetic internal cite is injected into scanned OpenAPI or FE catalogs; comments/tests remain allowed |
 
 ### Removed workflows (EV-002)
@@ -4647,20 +5438,20 @@ comments-only, or `*.test.*` / pytest modules.
 
 ## Test Data
 
-| Dataset | Source | Location |
-|---------|--------|----------|
-| Sample METAR / multi-product TAC | repo fixtures | `test-data/` + `packages/tac2iwxxm/tests/` |
-| IWXXM schemas | wmo-im + iwxxm-us vendored | `vendor/schemas/` |
-| Golden XML | baseline + archive gifts goldens | `test-data/golden/` / package golden/ |
+| Dataset                          | Source                           | Location                                   |
+| -------------------------------- | -------------------------------- | ------------------------------------------ |
+| Sample METAR / multi-product TAC | repo fixtures                    | `test-data/` + `packages/tac2iwxxm/tests/` |
+| IWXXM schemas                    | wmo-im + iwxxm-us vendored       | `vendor/schemas/`                          |
+| Golden XML                       | baseline + archive gifts goldens | `test-data/golden/` / package golden/      |
 
 ## Metrics & Thresholds
 
-| Metric | Threshold | Context |
-|--------|-----------|---------|
-| Backend unit coverage | **95% all packages/apps** + **per-file ≥95%** (Python) | ADR-007 / EV-047 |
-| E2E pass rate | 100% on T2 before merge | Big-bang gate |
-| Live E2E (T3) | Manual signoff before release | `make test-live` — not CI-gated |
-| Vendor sync PR | human review required | No auto-merge to main |
+| Metric                                | Threshold                                                                                                        | Context                         |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| Unit coverage (Python + TS + scripts) | **100% line+branch** all packages/apps + **per-file ≥100%** (Python); scripts `*.py` cov + bats for every `*.sh` | ADR-007 / EV-080 / #1077        |
+| E2E pass rate                         | 100% on T2 before merge                                                                                          | Big-bang gate                   |
+| Live E2E (T3)                         | Manual signoff before release                                                                                    | `make test-live` — not CI-gated |
+| Vendor sync PR                        | human review required                                                                                            | No auto-merge to main           |
 
 ## Big-Bang Merge Gate
 

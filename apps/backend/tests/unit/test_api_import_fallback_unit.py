@@ -73,6 +73,7 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         Form=lambda default=None, **_kwargs: default,
         HTTPException=_FakeHTTPException,
         Request=object,
+        Response=object,
         UploadFile=object,
     )
     fake_fastapi_middleware = _stub_module("fastapi.middleware")
@@ -278,7 +279,9 @@ def test_api_module_top_level_fallback_imports(monkeypatch):
         comprehensive_validation=fake_comprehensive_validation_router,
         conversion=fake_conversion_router,
         conversion_meta=fake_conversion_meta_router,
+        conversion_profiles=fake_router_module,
         dissemination=fake_router_module,
+        dissemination_ops=fake_router_module,
         evaluation=fake_router_module,
         health=fake_health_router,
         icao_opmet=fake_router_module,

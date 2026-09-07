@@ -54,6 +54,12 @@ export function resolveSessionProduct(snapshot: ConverterSnapshot): WorkSessionP
   return SESSION_PRODUCTS.has(lower) ? lower : 'metar';
 }
 
+/**
+ * Derive a human-readable session title from TAC manual input.
+ *
+ * @param manualInput - Raw TAC text; ICAO is extracted when present.
+ * @returns Title such as `KJFK · 2026-08-31 12:34`.
+ */
 export function extractSessionTitle(manualInput: string): string {
   const match = manualInput.match(ICAO_RE);
   const icao = match?.[1] ?? 'TAC';
@@ -61,6 +67,11 @@ export function extractSessionTitle(manualInput: string): string {
   return `${icao} · ${stamp}`;
 }
 
+/**
+ * Whether the converter snapshot contains any user-entered or converted content.
+ *
+ * @param snapshot - Current converter UI state.
+ */
 export function hasConverterContent(snapshot: ConverterSnapshot): boolean {
   return (
     !!snapshot.manualInput.trim() ||
@@ -69,6 +80,13 @@ export function hasConverterContent(snapshot: ConverterSnapshot): boolean {
   );
 }
 
+/**
+ * Build a work-session upsert payload from converter UI state.
+ *
+ * @param snapshot - Current converter fields and conversion results.
+ * @param options - Optional status override and KV upload key.
+ * @returns Payload ready for local or remote session APIs.
+ */
 export function buildWorkSessionPayload(
   snapshot: ConverterSnapshot,
   options?: { status?: WorkSessionStatus; kvUploadKey?: string },
@@ -133,13 +151,13 @@ export function resolveManualLineMetaFromResult(
       (peerMatch): peerMatch is RegExpMatchArray =>
         !!peerMatch && peerMatch[1] === prefix,
     )
-    .map((peerMatch) => Number.parseInt(peerMatch[2], 10))
+    .map((peerMatch) => Number.parseInt(peerMatch[2]!, 10))
     .sort((a, b) => a - b);
   if (indexedPeers.length <= 1) {
     return {};
   }
   return {
-    manualLineIndex: Number.parseInt(match[2], 10),
+    manualLineIndex: Number.parseInt(match[2]!, 10),
     manualLineTotal: indexedPeers.length,
   };
 }

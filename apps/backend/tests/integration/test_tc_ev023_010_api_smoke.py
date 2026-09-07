@@ -1,7 +1,7 @@
 """T7.1 / TC-EV023 API convert+validate smoke (S030 / EV-023).
 
 In-process FastAPI client (CI). Covers translationCentre Form gate + NSC omit
-layers + validate path on convert output. Live H4–H5 deferred to T7.4 / 13.
+layers + validate path on convert output. Live H4-H5 deferred to T7.4 / 13.
 """
 
 from __future__ import annotations
@@ -11,14 +11,13 @@ from collections.abc import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api import app
 from src.utilities.security import verify_supabase_token
 
 pytestmark = [pytest.mark.integration, pytest.mark.smoke]
 
 _METAR_OK = "METAR KJFK 231751Z 18012KT 9999 FEW020 15/07 Q1013="
-# NSC exclusivity — must not emit layered cloud children (TC-EV023-001).
+# NSC exclusivity - must not emit layered cloud children (TC-EV023-001).
 _METAR_NSC = "METAR KJFK 231751Z 18012KT 9999 NSC 15/07 Q1013="
 
 

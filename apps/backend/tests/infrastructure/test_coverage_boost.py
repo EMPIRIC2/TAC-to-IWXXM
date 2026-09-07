@@ -5,7 +5,6 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api import app
 from src.utilities.conversion import ConversionError
 from src.utilities.security import verify_supabase_token
@@ -117,17 +116,15 @@ class TestIWXXMValidationFunctions:
         """Test namespace validation with invalid namespace."""
         from schemas.iwxxm_validation import extract_iwxxm_namespace_version
 
-        with pytest.raises(ValueError) as exc_info:
+        with pytest.raises(ValueError, match="Invalid IWXXM namespace"):
             extract_iwxxm_namespace_version("http://invalid.com/namespace")
-        assert "Invalid IWXXM namespace" in str(exc_info.value)
 
     def test_extract_iwxxm_namespace_unsupported_version(self):
         """Test namespace validation with unsupported version."""
         from schemas.iwxxm_validation import extract_iwxxm_namespace_version
 
-        with pytest.raises(ValueError) as exc_info:
+        with pytest.raises(ValueError, match="Unsupported IWXXM version"):
             extract_iwxxm_namespace_version("http://icao.int/iwxxm/9999.9")
-        assert "Unsupported IWXXM version" in str(exc_info.value)
 
     def test_extract_iwxxm_namespace_valid(self):
         """Test namespace validation with valid namespace."""

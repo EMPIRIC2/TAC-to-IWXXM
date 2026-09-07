@@ -1,4 +1,4 @@
-"""Unit tests for WMOCodelistCache – 0% coverage target."""
+"""Unit tests for WMOCodelistCache - 0% coverage target."""
 
 import builtins
 import importlib

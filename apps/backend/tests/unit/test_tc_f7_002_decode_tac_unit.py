@@ -10,7 +10,6 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -83,7 +82,7 @@ def test_decode_tac_product_required(client: TestClient) -> None:
     assert response.status_code in {400, 422}
 
 
-@pytest.mark.parametrize("product,filename", list(GOLDEN_PRODUCT_FILES.items()))
+@pytest.mark.parametrize(("product", "filename"), list(GOLDEN_PRODUCT_FILES.items()))
 def test_decode_tac_golden_segments_non_empty(
     client: TestClient,
     product: str,

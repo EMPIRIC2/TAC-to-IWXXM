@@ -1,4 +1,4 @@
-"""TC-F30-007 — CD wires DOKS rollout; Render hooks must not hard-fail Deploy."""
+"""TC-F30-007 - CD wires DOKS rollout; Render hooks must not hard-fail Deploy."""
 
 from __future__ import annotations
 

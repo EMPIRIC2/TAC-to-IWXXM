@@ -1,4 +1,4 @@
-"""F24 / A1 — AIRMET header / sequence / FIR (TC-F24-001/004).
+"""F24 / A1 - AIRMET header / sequence / FIR (TC-F24-001/004).
 
 HARD theme A1 from wmo-quality-research-catalog.md / #731.
 T1.1 fixtures + assertions; T1.2 encodes rules (reuse MISSING_SEQUENCE / MISSING_FIR_OR_CTA).
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
@@ -67,4 +66,6 @@ def test_a1_error_codes(case: dict[str, Any]) -> None:
     assert expected in codes, f"expected {expected} in {sorted(codes)}"
     if case.get("require_spans"):
         matched = [i for i in report.issues if i.code == expected]
-        assert matched and matched[0].start is not None and matched[0].end is not None
+        assert matched
+        assert matched[0].start is not None
+        assert matched[0].end is not None

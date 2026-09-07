@@ -1,4 +1,4 @@
-"""Research R2 / TC-F15-003 — visibility SM / meters / fractions / 9999 (T3.3/T3.4).
+"""Research R2 / TC-F15-003 - visibility SM / meters / fractions / 9999 (T3.3/T3.4).
 
 Baseline + fraction SM accepts; malformed vis emits ``INVALID_VISIBILITY``.
 """
@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

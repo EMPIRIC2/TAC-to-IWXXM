@@ -1,4 +1,4 @@
-"""T2.1 / TC-EV031-002 — empty DB → head; second ``upgrade head`` is a no-op.
+"""T2.1 / TC-EV031-002 - empty DB → head; second ``upgrade head`` is a no-op.
 
 Requires Docker (testcontainers) or ``DATABASE_URL`` pointing at an empty disposable
 Postgres. Skips when neither is available (local without Docker).

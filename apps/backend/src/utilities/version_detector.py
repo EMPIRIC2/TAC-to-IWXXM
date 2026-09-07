@@ -9,7 +9,7 @@ import logging
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any
 
 from ..config.iwxxm_versions import SUPPORTED_VERSIONS, normalize_version
 
@@ -24,15 +24,15 @@ class VersionInfo:
     tag: str
     is_configured: bool
     is_latest: bool
-    schemas_path: Optional[Path] = None
-    schematron_path: Optional[Path] = None
+    schemas_path: Path | None = None
+    schematron_path: Path | None = None
     has_codelists: bool = False
 
 
 class VersionDetector:
     """Detects available IWXXM versions from git submodule."""
 
-    def __init__(self, schemas_root: Optional[Path] = None):
+    def __init__(self, schemas_root: Path | None = None) -> None:
         """
         Initialize version detector.
 
@@ -50,7 +50,7 @@ class VersionDetector:
         self.codelists_path = schemas_root / "iwxxm-codelists"
         self.modelling_path = schemas_root / "iwxxm-modelling"
 
-    def get_available_tags(self) -> List[str]:
+    def get_available_tags(self) -> list[str]:
         """
         Get all available version tags from iwxxm git submodule.
 
@@ -80,7 +80,7 @@ class VersionDetector:
 
         # Fallback: Check for versioned directories (used with git archive)
         try:
-            available_dirs = []
+            available_dirs: list[Any] = []
             if self.iwxxm_path.exists():
                 for item in self.iwxxm_path.iterdir():
                     if item.is_dir() and item.name.startswith(("v", "20")):
@@ -97,7 +97,7 @@ class VersionDetector:
 
         return []
 
-    def get_latest_version(self) -> Optional[str]:
+    def get_latest_version(self) -> str | None:
         """
         Read LATEST_VERSION file to get current official WMO version.
 
@@ -146,7 +146,7 @@ class VersionDetector:
             return f"v{version}"
         return version
 
-    def check_version_files(self, version: str) -> Dict[str, bool]:
+    def check_version_files(self, version: str) -> dict[str, bool]:
         """
         Check if required files exist for a version.
 
@@ -165,7 +165,7 @@ class VersionDetector:
             "codelists": (iwxxm_dir / "rule").exists() and any((iwxxm_dir / "rule").glob("*.rdf")),
         }
 
-    def detect_versions(self) -> List[VersionInfo]:
+    def detect_versions(self) -> list[VersionInfo]:
         """
         Detect all available IWXXM versions and their configuration status.
 
@@ -176,7 +176,7 @@ class VersionDetector:
         latest_version = self.get_latest_version()
         configured_versions = set(SUPPORTED_VERSIONS.keys())
 
-        version_infos = []
+        version_infos: list[Any] = []
 
         for tag in available_tags:
             version = self.tag_to_version(tag)
@@ -201,7 +201,7 @@ class VersionDetector:
 
         return version_infos
 
-    def get_unconfigured_versions(self) -> List[VersionInfo]:
+    def get_unconfigured_versions(self) -> list[VersionInfo]:
         """
         Get versions that are available but not yet configured.
 
@@ -211,7 +211,7 @@ class VersionDetector:
         all_versions = self.detect_versions()
         return [v for v in all_versions if not v.is_configured]
 
-    def get_new_versions_since(self, current_version: str) -> List[VersionInfo]:
+    def get_new_versions_since(self, current_version: str) -> list[VersionInfo]:
         """
         Get versions newer than the specified version.
 
@@ -269,7 +269,7 @@ class VersionDetector:
         return "\n".join(report)
 
 
-def detect_available_versions() -> List[VersionInfo]:
+def detect_available_versions() -> list[VersionInfo]:
     """
     Convenience function to detect available IWXXM versions.
 

@@ -11,7 +11,6 @@ import zipfile
 from pathlib import Path
 
 import pytest
-
 from iwxxm_validate.paths import (
     clear_path_caches,
     packaged_schemas_root,
@@ -30,7 +29,8 @@ SCHEMAS_ROOT = PACKAGE_ROOT / "src" / "iwxxm_validate" / "schemas"
 
 def _load_sync():
     spec = importlib.util.spec_from_file_location("sync_runtime_schemas", SYNC_SCRIPT)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None
+    assert spec.loader is not None
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module

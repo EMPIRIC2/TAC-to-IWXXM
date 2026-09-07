@@ -1,4 +1,4 @@
-"""TC-EV050-002 / AC2 — membership wired into lint (stable issue codes).
+"""TC-EV050-002 / AC2 - membership wired into lint (stable issue codes).
 
 S059 / EV-050 T2.2: recent weather, AIRMET underscore↔space normalize, cloud type,
 and unknown/sad tokens emit ``UNKNOWN_WMO_MEMBERSHIP``.

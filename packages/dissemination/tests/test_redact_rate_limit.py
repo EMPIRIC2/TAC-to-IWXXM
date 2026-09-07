@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from dissemination.rate_limit import DisseminationRateLimiter, RateLimitExceeded
 from dissemination.redact import redact_secrets, redact_uri
 
@@ -47,7 +46,7 @@ def test_rate_limiter_env_and_reset(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_rate_limiter_evicts_stale_hits() -> None:
     lim = DisseminationRateLimiter(max_per_minute=1)
     lim.check("u", now=1000.0)
-    # Outside the 60s window — prior hit must be dropped (line 50).
+    # Outside the 60s window - prior hit must be dropped (line 50).
     lim.check("u", now=1061.0)
 
 
@@ -65,7 +64,7 @@ def test_redact_uri_password_without_username() -> None:
 
 
 def test_redact_uri_swallows_urlparse_errors(monkeypatch: pytest.MonkeyPatch) -> None:
-    def _boom(_uri: str):  # noqa: ANN202
+    def _boom(_uri: str):
         raise ValueError("parse failed")
 
     monkeypatch.setattr("dissemination.redact.urlparse", _boom)

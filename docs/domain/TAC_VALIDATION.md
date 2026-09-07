@@ -16,6 +16,7 @@ Hub: [README.md](README.md) · URL catalog: [rules/RULE_SOURCE_URLS.md](rules/RU
 | **Alphanumeric code forms / groups** | WMO-No. **306 Vol I.1** | `tac-validate` |
 | **Coded tokens** (weather, phenomena, nils) | **codes.wmo.int** (+ offline RDF) | `tac-validate` vocab gates |
 | **US REMARKS / national differences** | **FMH-1** + NWS instructions + **iwxxm-us** docs | `tac-validate` profile `iwxxm_us` |
+| **Canada (`CA_ECCC`) TAC overlay** | **MANOBS** (METAR/SPECI) + **MANAIR** (TAF/AIRMET) | `tac-validate` profile `ca_eccc` |
 | **XML well-formed / XSD / Schematron** | schemas.wmo.int | `iwxxm-validate` (post-convert) |
 
 Historical **GIFTs** METAR grammar is a **gap baseline**, not ongoing SoT (ADR-014).
@@ -37,6 +38,7 @@ substitute.
 | **L3 — Token membership** | Weather, cloud, phenomena spellings | **codes.wmo.int** + vendor RDF snapshots | Colour *meanings* (Doc 9766); national REMARKS |
 | **L4 — Business thresholds** | SPECI shall vs Rec; TAF FM/BECMG/TEMPO/PROB; SIGMET one-phenomenon | Cite Annex 3 sections only (no full text in git) | Numeric engines need licensed PDF |
 | **L5 — Profile overlay** | US REMARKS / national differences | FMH-1 + `codes.nws.noaa.gov` + iwxxm-us | — |
+| **L5b — CA overlay** | MANOBS/MANAIR national TAC | [MANOBS/MANAIR dig](mining/manobs-manair-ca-mining-notes.md) · [RULE_SOURCE_URLS](rules/RULE_SOURCE_URLS.md) | — |
 
 **CI / no-license fallback:** gate on **L1 + L3 + official `.tac` accept shapes**; label
 L2/L4 engines that need Annex 3 prose as “requires licensed Annex 3 reference” in design
@@ -398,6 +400,34 @@ Use for profile **`iwxxm_us` only**. Applicable only when the station can evalua
 | 10–12 | Volcano / mishap / misc | First noted eruption; mishap unless intervening obs; agency/observer-critical |
 
 Local PDF + Ch.12 carve: `.local/reference/fmh1-2019/` (gitignored).
+
+---
+
+## Canada profile (`CA_ECCC`) — MANOBS / MANAIR
+
+National TAC overlay for Environment and Climate Change Canada. Semantic profile
+`CA_ECCC` ([profiles/semantic/CA_ECCC.md](profiles/semantic/CA_ECCC.md)). Dig:
+[mining/manobs-manair-ca-mining-notes.md](mining/manobs-manair-ca-mining-notes.md).
+Catalog: [RULE_SOURCE_URLS](rules/RULE_SOURCE_URLS.md) MANOBS + MANAIR rows.
+
+| Resource | Pin | Use |
+|----------|-----|-----|
+| MANOBS 8th Ed. Amd 2 | Feb 2023 | METAR/SPECI TAC grammar + IWXXM dual dissemination |
+| MANAIR 8th Ed. **Amd 15** | Jul 2026 (defer-to-latest) | TAF/AIRMET/GFA national forecast practice |
+| Local `iwxxm-ca` + `iwxxm-3.0.0` | `vendor/manifest.json` | Machine schema after TAC lint |
+
+**EV-098 / #1029–#1030 Gate C (selective):**
+
+| Claim | Stance |
+|-------|--------|
+| `SM` visibility, `A`+4 digits, `AUTO`, LWIS, PRESRR/PRESFR/SLP | Reaffirm / deepen provenance |
+| `A////` (`CA_ALTIMETER_NOT_OBS`) | **Reopened** — contradicted by mined MANOBS; quarantine positive fixture |
+| SAWR | Keep behavior; cite **`metar-speci-ca.xsd`**, not MANOBS |
+| Sector VIS / variable VIS / variable RVR | Three distinct stubs (`VIS.SECTOR`, `VIS.VAR`, `RVR.VAR`) |
+| TAF NCLWS `WShhh/dddffKT` | Reaffirm; no gust in WS group; ≥100 kt → 3 digits |
+| TAF WX | Bare `SA` invalid; `SHPL` obsolete under current MANAIR |
+| AIRMET ↔ GFA; SFC wind/VIS/cloud; six code-ca members | Provenance promote; positive-list membership only |
+| Lightning TAC ↔ `ObservedLightning`; Addendum monolith | **Held** |
 
 ---
 

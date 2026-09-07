@@ -1,4 +1,4 @@
-"""TC-EV074 — CA_ECCC SIGMET/VAA validate-first ops (#1043).
+"""TC-EV074 - CA_ECCC SIGMET/VAA validate-first ops (#1043).
 
 [Corpus: product §F23] [Corpus: product §F26] [Corpus: product §F36]
 [Corpus: tests §TC-EV074]
@@ -15,7 +15,6 @@ from iwxxm_validate.ca_eccc_layers import (
     ca_product_has_national_xsd,
 )
 from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
-
 from tac2iwxxm.ca_ops_corpus import (
     extract_iwxxm_from_collect,
     load_ops_manifest,
@@ -70,7 +69,8 @@ def test_tc_ev074_006b_mapped_product_missing_xsd_still_errors(monkeypatch) -> N
 
 def test_tc_ev074_007_catalog_lists_sigmet_vaa() -> None:
     block = _ca_eccc_catalog_text()
-    assert "SIGMET" in block and "VAA" in block
+    assert "SIGMET" in block
+    assert "VAA" in block
     assert "ev074_validate_first: [VAA]" in block
     assert "ev076_slice: [SIGMET]" in block
 
@@ -159,7 +159,8 @@ def test_tc_ev074_collect_unwraps_sigmet() -> None:
 
 def test_tc_ev074_008_coverage_matrix_documents_slice() -> None:
     text = _COVERAGE.read_text(encoding="utf-8")
-    assert "SIGMET" in text and "VAA" in text
+    assert "SIGMET" in text
+    assert "VAA" in text
     assert "ca_xsd" in text or "ca_xsd" in text
     assert "1033" in text
     assert "deferred" in text.lower() or "D-EV074-vaa-follow" in text

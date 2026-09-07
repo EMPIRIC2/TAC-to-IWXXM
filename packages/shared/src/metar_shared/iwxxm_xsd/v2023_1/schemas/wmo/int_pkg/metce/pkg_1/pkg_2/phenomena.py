@@ -89,7 +89,7 @@ class TropicalCyclone(TropicalCycloneType):
     Cyclone of tropical origin of small diameter (some hundreds of kilometres) with minimum surface pressure in some
     cases less than 900 hPa, very violent winds and torrential rain; sometimes accompanied by thunderstorms.
 
-    It usually contains a central region, known as the “eye” of the storm, with a diameter of the order of some tens
+    It usually contains a central region, known as the "eye" of the storm, with a diameter of the order of some tens
     of kilometres, and with light winds and more or less lightly clouded sky. WMO No. 306 Vol I.1 code-table 3704
     "Shape and definition of the eye of the tropical cyclone" and WMO No. 306 Vol I.1 code-table 3790 "Intensity of
     the tropical cyclone" provide additional candidate attributes that may be incorporated within this «FeatureType»

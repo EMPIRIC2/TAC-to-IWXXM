@@ -5,7 +5,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from tac2iwxxm.decode import DecodeResult, decode_tac
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "product_matrix"
@@ -21,7 +20,7 @@ PRODUCT_FILES = {
 }
 
 
-@pytest.mark.parametrize("product,filename", list(PRODUCT_FILES.items()))
+@pytest.mark.parametrize(("product", "filename"), list(PRODUCT_FILES.items()))
 def test_decode_tac_product_matrix_well_formed(product: str, filename: str) -> None:
     tac = (FIXTURES / filename).read_text(encoding="utf-8").strip()
     result = decode_tac(tac, product=product)

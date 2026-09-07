@@ -22,6 +22,24 @@ def uri_hostname(uri: str) -> str | None:
 
 
 def dialect_for_sink(sink_type: str) -> str:
+    """
+    Map a dissemination DB sink name to a SQLAlchemy dialect label.
+
+    Parameters
+    ----------
+    sink_type :
+        One of ``postgres``, ``mysql``, ``sqlserver``, or ``sqlite``.
+
+    Returns
+    -------
+    str
+        Dialect string used by writer-contract DDL helpers.
+
+    Raises
+    ------
+    ValueError
+        When ``sink_type`` is not a supported DB sink.
+    """
     mapping = {
         "postgres": "postgresql",
         "mysql": "mysql",

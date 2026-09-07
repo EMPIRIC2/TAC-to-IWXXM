@@ -1,4 +1,4 @@
-"""Product rules — sigmet_airmet."""
+"""Product rules - sigmet_airmet."""
 
 # pyright: reportWildcardImportFromLibrary=false, reportUnusedFunction=false
 
@@ -19,7 +19,7 @@ def _count_families(text: str, families: tuple[tuple[str, re.Pattern[str]], ...]
 
 
 def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
-    """F23 theme G1 — CNL / COR / STNR / geometry / single-alt / TOP ABV|BLW."""
+    """F23 theme G1 - CNL / COR / STNR / geometry / single-alt / TOP ABV|BLW."""
     # ruff: noqa: F403, F405
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
@@ -28,7 +28,7 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="INVALID_SIGMET_COR",
-            message="SIGMET must not use COR (cancel + re-issue) — research G1",
+            message="SIGMET must not use COR (cancel + re-issue) - research G1",
             core=core,
             body_start=start,
             body_end=end,
@@ -42,7 +42,7 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="INVALID_SIGMET_CNL",
-                message="SIGMET CNL must omit phenomenon/analysis body — research G1",
+                message="SIGMET CNL must omit phenomenon/analysis body - research G1",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -52,7 +52,7 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="SIGMET_CNL",
-                message="SIGMET CNL cancel report — research G1",
+                message="SIGMET CNL cancel report - research G1",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -62,7 +62,7 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
                 _emit_token_info(
                     issues,
                     code="VA_CNL_FIR_MOVED",
-                    message="VA SIGMET CNL identifies FIR to which ash has moved — research V1",
+                    message="VA SIGMET CNL identifies FIR to which ash has moved - research V1",
                     core=core,
                     body_start=start,
                     body_end=end,
@@ -75,7 +75,7 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="INVALID_STNR_MOVEMENT",
-                message="SIGMET STNR conflicts with MOV — research G1",
+                message="SIGMET STNR conflicts with MOV - research G1",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -85,7 +85,7 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="STNR_MOVEMENT",
-                message="SIGMET STNR stationary movement — research G1",
+                message="SIGMET STNR stationary movement - research G1",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -96,7 +96,7 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="POLYGON_LOCATION",
-            message="SIGMET polygon/line WI geometry — research G1",
+            message="SIGMET polygon/line WI geometry - research G1",
             core=core,
             body_start=start,
             body_end=end,
@@ -108,7 +108,7 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="POINT_LOCATION",
-            message=("SIGMET single-point location (encode CircleByCenterPoint r=0) — research G1"),
+            message=("SIGMET single-point location (encode CircleByCenterPoint r=0) - research G1"),
             core=core,
             body_start=start,
             body_end=end,
@@ -119,7 +119,7 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="TOP_ABV_OR_BLW",
-            message="SIGMET TOP ABV/BLW level grammar — research G1",
+            message="SIGMET TOP ABV/BLW level grammar - research G1",
             core=core,
             body_start=start,
             body_end=end,
@@ -131,7 +131,7 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="SINGLE_ALTITUDE",
-            message="SIGMET single altitude (same lower/upper) — research G1",
+            message="SIGMET single altitude (same lower/upper) - research G1",
             core=core,
             body_start=start,
             body_end=end,
@@ -152,7 +152,7 @@ def _sigmet_validity_hours(start: str, end: str) -> float | None:
     start_m = sd * 24 * 60 + sh * 60 + sm
     end_m = ed * 24 * 60 + eh * 60 + em
     if end_m < start_m:
-        # Day/month wrap (e.g. 312200/010200) — add one 31-day month bucket.
+        # Day/month wrap (e.g. 312200/010200) - add one 31-day month bucket.
         end_m += 31 * 24 * 60
     return (end_m - start_m) / 60.0
 
@@ -165,7 +165,7 @@ def _check_sigmet_g2(
     is_va: bool = False,
     is_tc: bool = False,
 ) -> list[Issue]:
-    """F23 theme G2 — sequence / validity duration / FIR / OBS·FCST / intensity."""
+    """F23 theme G2 - sequence / validity duration / FIR / OBS·FCST / intensity."""
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -174,7 +174,7 @@ def _check_sigmet_g2(
         _emit_token_info(
             issues,
             code="SIGMET_SEQUENCE",
-            message="SIGMET sequence number present — research G2",
+            message="SIGMET sequence number present - research G2",
             core=core,
             body_start=start,
             body_end=end,
@@ -184,7 +184,7 @@ def _check_sigmet_g2(
         _emit_token_info(
             issues,
             code="MISSING_SEQUENCE",
-            message="SIGMET missing sequence number after SIGMET — research G2",
+            message="SIGMET missing sequence number after SIGMET - research G2",
             core=core,
             body_start=start,
             body_end=end,
@@ -207,7 +207,7 @@ def _check_sigmet_g2(
             _emit_token_info(
                 issues,
                 code="INVALID_VALIDITY_DURATION",
-                message=f"SIGMET VALID period exceeds {label} — research G2",
+                message=f"SIGMET VALID period exceeds {label} - research G2",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -219,7 +219,7 @@ def _check_sigmet_g2(
         _emit_token_info(
             issues,
             code="FIR_OR_CTA",
-            message="SIGMET FIR/CTA/UIR airspace identity — research G2",
+            message="SIGMET FIR/CTA/UIR airspace identity - research G2",
             core=core,
             body_start=start,
             body_end=end,
@@ -229,7 +229,7 @@ def _check_sigmet_g2(
         _emit_token_info(
             issues,
             code="MISSING_FIR_OR_CTA",
-            message="SIGMET missing FIR/CTA/UIR airspace identity — research G2",
+            message="SIGMET missing FIR/CTA/UIR airspace identity - research G2",
             core=core,
             body_start=start,
             body_end=end,
@@ -241,7 +241,7 @@ def _check_sigmet_g2(
         _emit_token_info(
             issues,
             code="OBS_OR_FCST",
-            message="SIGMET OBS or FCST analysis — research G2",
+            message="SIGMET OBS or FCST analysis - research G2",
             core=core,
             body_start=start,
             body_end=end,
@@ -251,7 +251,7 @@ def _check_sigmet_g2(
         _emit_token_info(
             issues,
             code="MISSING_OBS_OR_FCST",
-            message="SIGMET missing OBS or FCST — research G2",
+            message="SIGMET missing OBS or FCST - research G2",
             core=core,
             body_start=start,
             body_end=end,
@@ -263,7 +263,7 @@ def _check_sigmet_g2(
         _emit_token_info(
             issues,
             code="INTENSITY_CHANGE",
-            message="SIGMET intensity change INTSF/WKN/NC — research G2",
+            message="SIGMET intensity change INTSF/WKN/NC - research G2",
             core=core,
             body_start=start,
             body_end=end,
@@ -274,7 +274,7 @@ def _check_sigmet_g2(
 
 
 def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
-    """F24 theme A1 — AIRMET sequence number + FIR/CTA identity."""
+    """F24 theme A1 - AIRMET sequence number + FIR/CTA identity."""
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -283,7 +283,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="SIGMET_SEQUENCE",
-            message="AIRMET sequence number present — F24 theme A1",
+            message="AIRMET sequence number present - F24 theme A1",
             core=core,
             body_start=start,
             body_end=end,
@@ -293,7 +293,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_SEQUENCE",
-            message="AIRMET missing sequence number after AIRMET — F24 theme A1",
+            message="AIRMET missing sequence number after AIRMET - F24 theme A1",
             core=core,
             body_start=start,
             body_end=end,
@@ -305,7 +305,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="FIR_OR_CTA",
-            message="AIRMET FIR/CTA/UIR airspace identity — F24 theme A1",
+            message="AIRMET FIR/CTA/UIR airspace identity - F24 theme A1",
             core=core,
             body_start=start,
             body_end=end,
@@ -315,7 +315,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_FIR_OR_CTA",
-            message="AIRMET missing FIR/CTA/UIR airspace identity — F24 theme A1",
+            message="AIRMET missing FIR/CTA/UIR airspace identity - F24 theme A1",
             core=core,
             body_start=start,
             body_end=end,
@@ -326,7 +326,7 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
-    """F24 theme A2 — AIRMET phenomenon modifiers (OBS/STNR/WKN/TOP ABV)."""
+    """F24 theme A2 - AIRMET phenomenon modifiers (OBS/STNR/WKN/TOP ABV)."""
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -335,7 +335,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="INVALID_STNR_MOVEMENT",
-                message="AIRMET STNR conflicts with MOV — F24 theme A2",
+                message="AIRMET STNR conflicts with MOV - F24 theme A2",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -345,7 +345,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="STNR_MOVEMENT",
-                message="AIRMET STNR stationary movement — F24 theme A2",
+                message="AIRMET STNR stationary movement - F24 theme A2",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -356,7 +356,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="TOP_ABV_OR_BLW",
-            message="AIRMET TOP ABV/BLW level grammar — F24 theme A2",
+            message="AIRMET TOP ABV/BLW level grammar - F24 theme A2",
             core=core,
             body_start=start,
             body_end=end,
@@ -368,7 +368,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="OBS_OR_FCST",
-            message="AIRMET OBS or FCST analysis — F24 theme A2",
+            message="AIRMET OBS or FCST analysis - F24 theme A2",
             core=core,
             body_start=start,
             body_end=end,
@@ -378,7 +378,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_OBS_OR_FCST",
-            message="AIRMET missing OBS or FCST — F24 theme A2",
+            message="AIRMET missing OBS or FCST - F24 theme A2",
             core=core,
             body_start=start,
             body_end=end,
@@ -390,7 +390,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="INTENSITY_CHANGE",
-            message="AIRMET intensity change INTSF/WKN/NC — F24 theme A2",
+            message="AIRMET intensity change INTSF/WKN/NC - F24 theme A2",
             core=core,
             body_start=start,
             body_end=end,
@@ -401,7 +401,7 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
-    """F23 theme V1 — VA volcano identity / ash geometry / NO VA EXP / CNL FIR-moved."""
+    """F23 theme V1 - VA volcano identity / ash geometry / NO VA EXP / CNL FIR-moved."""
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -410,7 +410,7 @@ def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="INVALID_NO_VA_EXP",
-                message="VA SIGMET NO VA EXP must not include VA CLD body — research V1",
+                message="VA SIGMET NO VA EXP must not include VA CLD body - research V1",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -420,7 +420,7 @@ def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
             _emit_token_info(
                 issues,
                 code="NO_VA_EXP",
-                message="VA SIGMET NO VA EXP absence token — research V1",
+                message="VA SIGMET NO VA EXP absence token - research V1",
                 core=core,
                 body_start=start,
                 body_end=end,
@@ -435,7 +435,7 @@ def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="VA_VOLCANO_IDENTITY",
-            message="VA SIGMET erupting volcano identity (MT/PSN) — research V1",
+            message="VA SIGMET erupting volcano identity (MT/PSN) - research V1",
             core=core,
             body_start=start,
             body_end=end,
@@ -445,7 +445,7 @@ def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_VA_VOLCANO",
-            message="VA SIGMET missing volcano identity (MT … PSN) — research V1",
+            message="VA SIGMET missing volcano identity (MT … PSN) - research V1",
             core=core,
             body_start=start,
             body_end=end,
@@ -456,7 +456,7 @@ def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="VA_ASH_GEOMETRY",
-            message="VA SIGMET ash cloud geometry / forecast position — research V1",
+            message="VA SIGMET ash cloud geometry / forecast position - research V1",
             core=core,
             body_start=start,
             body_end=end,
@@ -467,7 +467,7 @@ def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
-    """EV-030 theme TC — cyclone identity / OF TC CENTRE geometry (#829)."""
+    """EV-030 theme TC - cyclone identity / OF TC CENTRE geometry (#829)."""
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -482,7 +482,7 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="TC_CYCLONE_IDENTITY",
-            message="TC SIGMET tropical cyclone identity (TC … PSN) — #829 / TC-EV030-004",
+            message="TC SIGMET tropical cyclone identity (TC … PSN) - #829 / TC-EV030-004",
             core=core,
             body_start=start,
             body_end=end,
@@ -492,7 +492,7 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="MISSING_TC_IDENTITY",
-            message="TC SIGMET missing cyclone identity (TC … PSN) — #829 / TC-EV030-004",
+            message="TC SIGMET missing cyclone identity (TC … PSN) - #829 / TC-EV030-004",
             core=core,
             body_start=start,
             body_end=end,
@@ -503,7 +503,7 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
         _emit_token_info(
             issues,
             code="TC_CB_GEOMETRY",
-            message="TC SIGMET CB geometry WI … OF TC CENTRE — #829 / TC-EV030-004",
+            message="TC SIGMET CB geometry WI … OF TC CENTRE - #829 / TC-EV030-004",
             core=core,
             body_start=start,
             body_end=end,
@@ -518,14 +518,14 @@ def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> 
     upper = body.upper()
     core = upper[:-1] if upper.endswith("=") else upper
     issues: list[Issue] = []
-    # F23 theme C1 — one IWXXM report per TAC report (shared with METAR/SPECI/TAF).
+    # F23 theme C1 - one IWXXM report per TAC report (shared with METAR/SPECI/TAF).
     issues.extend(_check_c1_multi_report(tac, product))
 
     if not _VALID_PERIOD.search(upper):
         issues.append(
             _issue(
                 "MISSING_VALID",
-                f"{product} missing VALID ddhhmm/ddhhmm period — A6 identity",
+                f"{product} missing VALID ddhhmm/ddhhmm period - A6 identity",
                 start=start,
                 end=end,
                 location="valid",
@@ -534,7 +534,7 @@ def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> 
 
     if product == "SIGMET":
         issues.extend(_check_sigmet_g1(start=start, end=end, upper=upper))
-        # CNL reports intentionally omit phenomenon — skip multi-family + G2 body gates.
+        # CNL reports intentionally omit phenomenon - skip multi-family + G2 body gates.
         if _SIGMET_CNL.search(upper[:-1] if upper.endswith("=") else upper):
             return issues
         is_va = bool(_SIGMET_VA_TOKEN.search(upper))
@@ -545,11 +545,11 @@ def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> 
         if is_tc and not is_va:
             issues.extend(_check_sigmet_tc(start=start, end=end, upper=upper))
     elif product == "AIRMET":
-        # F24 theme A1 — sequence + FIR (CNL still needs identity; skip multi-family below).
+        # F24 theme A1 - sequence + FIR (CNL still needs identity; skip multi-family below).
         issues.extend(_check_airmet_a1(start=start, end=end, upper=upper))
         if _SIGMET_CNL.search(upper[:-1] if upper.endswith("=") else upper):
             return issues
-        # F24 theme A2 — OBS/STNR/intensity/TOP ABV (phenomenon families below).
+        # F24 theme A2 - OBS/STNR/intensity/TOP ABV (phenomenon families below).
         issues.extend(_check_airmet_a2(start=start, end=end, upper=upper))
         issues.extend(
             _check_ca_gfa_airmet(
@@ -567,14 +567,14 @@ def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> 
         issues.append(
             _issue(
                 "MULTIPLE_PHENOMENA",
-                f"{product} encodes multiple phenomenon families {hit} — A6 one-phenomenon gate",
+                f"{product} encodes multiple phenomenon families {hit} - A6 one-phenomenon gate",
                 start=start,
                 end=end,
                 location="phenomenon",
             )
         )
 
-    # EV-050 — AirWx/SigWx register membership (underscore↔space normalize).
+    # EV-050 - AirWx/SigWx register membership (underscore↔space normalize).
     issues.extend(_check_phenomenon_membership(upper, product=product, start=start, end=end))
 
     return issues

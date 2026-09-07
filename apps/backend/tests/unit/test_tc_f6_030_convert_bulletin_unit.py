@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -124,6 +123,22 @@ def test_convert_bulletin_requires_product(client: TestClient) -> None:
         files={"manual_text": (None, FIXTURE_TEXT)},
     )
     assert response.status_code == 422
+
+
+def test_convert_bulletin_rejects_profile_scoped_3_0_0_for_non_ca_profile(client: TestClient) -> None:
+    response = client.post(
+        "/api/v1/convert-bulletin",
+        files={
+            "manual_text": (None, FIXTURE_TEXT),
+            "product": (None, "METAR"),
+            "semantic_profile": (None, "ICAO_2025"),
+            "iwxxm_version": (None, "3.0.0"),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"]
+    assert detail["issues"][0]["code"] == "INVALID_IWXXM_VERSION"
 
 
 SPECI_CCA_TEXT = """\

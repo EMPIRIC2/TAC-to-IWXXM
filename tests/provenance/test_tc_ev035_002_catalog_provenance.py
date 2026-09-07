@@ -1,4 +1,4 @@
-"""TC-EV035-002 — ISSUE_CATALOG code ↔ provenance."""
+"""TC-EV035-002 - ISSUE_CATALOG code ↔ provenance."""
 
 from __future__ import annotations
 

@@ -12,7 +12,7 @@ from collections.abc import Callable
 from tac_validate.issue_registry import issue_from
 from tac_validate.models import Fix, Issue, LintReport
 
-# TTAAii CCCC YYGGgg [BBB] — same shape as operator input-kind detect.
+# TTAAii CCCC YYGGgg [BBB] - same shape as operator input-kind detect.
 _LOOKS_LIKE_AHL = re.compile(
     r"^[A-Z]{4}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{1,3})?\s*$",
 )
@@ -57,7 +57,7 @@ def _contained_reports(remainder: str) -> list[tuple[int, str]]:
 
     Prefer ``=``-terminated slices (METAR/SPECI/TAF/SIGMET/AIRMET). When none
     are present, keep the stripped remainder as one report so advisories that
-    omit ``=`` (VAA/TCA/SWXA/VONA) still lint — same keep-whole rule as
+    omit ``=`` (VAA/TCA/SWXA/VONA) still lint - same keep-whole rule as
     ``tac2iwxxm.bulletin`` body regexes.
     """
     found: list[tuple[int, str]] = []
@@ -89,9 +89,7 @@ def _ahl_heading_ok(heading: str) -> bool:
     if match.group("tt") not in _KNOWN_TT:
         return False
     bbb = match.group("bbb")
-    if bbb and not _BBB_VALID.fullmatch(bbb.upper()):
-        return False
-    return True
+    return not (bbb and not _BBB_VALID.fullmatch(bbb.upper()))
 
 
 def _shift_issue(issue: Issue, delta: int) -> Issue:

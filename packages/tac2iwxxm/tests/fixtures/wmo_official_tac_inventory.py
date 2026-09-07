@@ -13,7 +13,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[4]
 _PIN_EXAMPLES = _REPO_ROOT / "vendor" / "schemas" / "iwxxm" / "2025-2" / "IWXXM" / "examples"
 _ANNEX3 = Path(__file__).resolve().parent / "annex3_golden"
 
-# F6 + F28 + F32 — product prefixes / stems that belong on the WMO happy-path inventory.
+# F6 + F28 + F32 - product prefixes / stems that belong on the WMO happy-path inventory.
 _IN_SCOPE_PREFIXES = (
     "metar-",
     "speci-",
@@ -145,25 +145,25 @@ OFFICIAL_TAC_PEERS: tuple[OfficialTacPeer, ...] = (
     OfficialTacPeer(
         "spacewx-A7-4",
         "deferred",
-        deferral_reason="Second/third WMO SWXA — single-seed catalog (F28 / TC-F28-005)",
+        deferral_reason="Second/third WMO SWXA - single-seed catalog (F28 / TC-F28-005)",
         issue="#740",
     ),
     OfficialTacPeer(
         "spacewx-A7-5",
         "deferred",
-        deferral_reason="Second/third WMO SWXA — single-seed catalog (F28 / TC-F28-005)",
+        deferral_reason="Second/third WMO SWXA - single-seed catalog (F28 / TC-F28-005)",
         issue="#740",
     ),
     OfficialTacPeer(
         "metar-NIL-collect",
         "deferred",
-        deferral_reason="COLLECT / validate shape — not sample-menu happy-path (EV-024)",
+        deferral_reason="COLLECT / validate shape - not sample-menu happy-path (EV-024)",
         issue="EV-024",
     ),
     OfficialTacPeer(
         "taf-NIL-collect",
         "deferred",
-        deferral_reason="COLLECT / validate shape — not sample-menu happy-path (EV-024)",
+        deferral_reason="COLLECT / validate shape - not sample-menu happy-path (EV-024)",
         issue="EV-024",
     ),
 )

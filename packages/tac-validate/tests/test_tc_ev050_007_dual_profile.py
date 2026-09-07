@@ -1,4 +1,4 @@
-"""TC-EV050-007 / AC7 — dual-profile annex3 vs iwxxm_us lint harness (S059)."""
+"""TC-EV050-007 / AC7 - dual-profile annex3 vs iwxxm_us lint harness (S059)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.dual_profile import compare_lint_profiles
 from tac_validate.profiles import (
@@ -74,7 +73,7 @@ def test_na_products_iwxxm_us_not_fail(product: str) -> None:
 
 @pytest.mark.parametrize("product", ["TCA", "SWXA"])
 def test_thin_lint_products_dual_na_but_iwxxm_us_lint_allowed(product: str) -> None:
-    """#919 M22 — SWXA/TCA accept iwxxm_us for thin US lint; dual compare stays N/A."""
+    """#919 M22 - SWXA/TCA accept iwxxm_us for thin US lint; dual compare stays N/A."""
     tac = _read(_REPRESENTATIVE[product])
     result = compare_lint_profiles(tac, product=product)
     assert result.disposition == "na"

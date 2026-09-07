@@ -1,13 +1,14 @@
 """TAC decode/annotate segments for the operator decode panel (F7 / #702).
 
 Produces ordered ``code`` | explanation segments with character offsets, plus
-explicit residuals for undecoded spans (VAA/TCA may be residual-heavy — G4).
+explicit residuals for undecoded spans. VAA/TCA/SWXA/VONA use structured
+``LABEL:`` fields (EV-030 / EV-099); leftover tokens stay explicit (G4).
 """
 
 from __future__ import annotations
 
 import re
-from typing import Callable
+from collections.abc import Callable
 
 import msgspec
 
@@ -17,12 +18,13 @@ from tac2iwxxm.glossary import (
     resolve_location_name,
 )
 
-_SUPPORTED = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA"})
+_SUPPORTED = frozenset({"AIRMET", "METAR", "SIGMET", "SPECI", "TAF", "VAA", "TCA", "SWXA", "VONA"})
+_ADVISORY_STRUCTURED = frozenset({"VAA", "TCA", "SWXA", "VONA"})
 
 _WIND = re.compile(r"^(?P<dir>\d{3}|VRB)(?P<spd>\d{2,3})(?:G(?P<gust>\d{2,3}))?(?P<unit>KT|MPS)$")
 _VIS_SM = re.compile(r"^(?P<mod>[PM])?(?P<val>\d{1,2})SM$")
 _VIS_M = re.compile(r"^\d{4}$")
-# Minimum visibility with compass sector (e.g. 1200NE) — after prevailing metres.
+# Minimum visibility with compass sector (e.g. 1200NE) - after prevailing metres.
 _VIS_MIN = re.compile(r"^(?P<vis>\d{4})(?P<dir>N|NE|E|SE|S|SW|W|NW)$")
 _CLOUD = re.compile(r"^(?P<amt>FEW|SCT|BKN|OVC|SKC|CLR|NSC|NCD)(?P<hgt>\d{3})?(?P<ctype>CB|TCU)?$")
 _TEMP = re.compile(r"^(?P<t>M?\d{2})/(?P<td>M?\d{2})$")
@@ -33,16 +35,16 @@ _STATION = re.compile(r"^[A-Z][A-Z0-9]{3}$")
 _TAF_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})$")
 _TAF_FM = re.compile(r"^FM(?P<dd>\d{2})(?P<hh>\d{2})(?P<mm>\d{2})$")
 _TAF_PROB = re.compile(r"^PROB(?P<pct>\d{2})$")
-# METAR/SPECI trend time indicators (TL/AT/FM + HHMM) — distinct from TAF FMDDHHMM.
+# METAR/SPECI trend time indicators (TL/AT/FM + HHMM) - distinct from TAF FMDDHHMM.
 _TREND_TIME = re.compile(r"^(?P<kind>TL|AT|FM)(?P<hh>\d{2})(?P<mm>\d{2})$")
 _SIG_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})(?P<m1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})(?P<m2>\d{2})$")
 _SIG_FL = re.compile(r"^FL(?P<fl>\d{2,3})$")
-# Vertical layer — ``SFC/FL550`` or ``FL250/370``.
+# Vertical layer - ``SFC/FL550`` or ``FL250/370``.
 _SIG_FL_LAYER = re.compile(r"^(?:SFC/FL(?P<sfc>\d{2,3})|FL(?P<a>\d{2,3})/(?:FL)?(?P<b>\d{2,3}))$")
 _SIG_SPEED_KT = re.compile(r"^(?P<spd>\d{1,3})KT$")
 _SIG_LAT = re.compile(r"^(?P<hemi>[NS])(?P<deg>\d{1,2})(?P<min>\d{2})?$")
 _SIG_LON = re.compile(r"^(?P<hemi>[EW])(?P<deg>\d{1,3})(?P<min>\d{2})?$")
-# Observation/forecast clock ``1600Z`` (hhmmZ) — distinct from METAR ``ddhhmmZ``.
+# Observation/forecast clock ``1600Z`` (hhmmZ) - distinct from METAR ``ddhhmmZ``.
 _SIG_HHMMZ = re.compile(r"^(?P<hh>\d{2})(?P<mm>\d{2})Z$")
 _SIG_DIR = frozenset({"N", "NE", "E", "SE", "S", "SW", "W", "NW"})
 _SIG_DIR_NAME = {
@@ -66,7 +68,7 @@ _WX = re.compile(
     r"(?P<desc>MI|PR|BC|DR|BL|SH|TS|FZ)?"
     r"(?P<phen>(?:DZ|RA|SN|SG|IC|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+)$"
 )
-# Runway visual range — R{rw}/{vis}{U|D|N}? (e.g. R12/1000U).
+# Runway visual range - R{rw}/{vis}{U|D|N}? (e.g. R12/1000U).
 _RVR = re.compile(r"^R(?P<rw>\d{2}[LCR]?)/(?P<vis>[MP]?\d{4})(?P<trend>[UDN])?$")
 
 _WX_INTENSITY = {"+": "heavy", "-": "light", "VC": "in the vicinity"}
@@ -126,7 +128,7 @@ def _fmt_wind(m: re.Match[str], *, label: str) -> str:
     speed = int(m.group("spd"))
     unit = "kt" if m.group("unit") == "KT" else "m/s"
     origin = "variable in direction" if direction == "VRB" else f"from {int(direction)}°"
-    text = f"{label} — {origin} at {speed} {unit}"
+    text = f"{label} - {origin} at {speed} {unit}"
     gust = m.group("gust")
     if gust:
         text += f", gusting {int(gust)} {unit}"
@@ -134,7 +136,7 @@ def _fmt_wind(m: re.Match[str], *, label: str) -> str:
 
 
 def _fmt_time(m: re.Match[str], *, label: str) -> str:
-    return f"{label} — day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
+    return f"{label} - day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
 
 
 def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
@@ -168,7 +170,7 @@ def _fmt_wx(m: re.Match[str], *, forecast: bool) -> str:
     parts.extend(_WX_PHENOMENON[phen[i : i + 2]] for i in range(0, len(phen), 2))
     phrase = " ".join(parts)
     label = "Forecast weather" if forecast else "Weather"
-    return f"{label} — {phrase[0].upper()}{phrase[1:]}" if phrase else f"{label} group"
+    return f"{label} - {phrase[0].upper()}{phrase[1:]}" if phrase else f"{label} group"
 
 
 class DecodeSegment(msgspec.Struct, frozen=True):
@@ -181,7 +183,7 @@ class DecodeSegment(msgspec.Struct, frozen=True):
 
 
 class DecodeResidual(msgspec.Struct, frozen=True):
-    """Undecoded character span (explicit residuals — G4)."""
+    """Undecoded character span (explicit residuals - G4)."""
 
     start: int
     end: int
@@ -226,7 +228,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return "Temporary fluctuations expected during the following period"
     if upper == "BECMG":
         seen["in_trend"] = 1
-        return "Becoming — gradual change during the following period"
+        return "Becoming - gradual change during the following period"
     if upper == "NSW":
         return "No significant weather"
     if upper == "RMK":
@@ -260,7 +262,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return f"{label} {int(upper)} m"
     if m := _TREND_TIME.match(upper):
         kind = m.group("kind")
-        return f"Trend time — {_TREND_TIME_LABEL[kind]} {m.group('hh')}:{m.group('mm')} UTC"
+        return f"Trend time - {_TREND_TIME_LABEL[kind]} {m.group('hh')}:{m.group('mm')} UTC"
     if m := _CLOUD.match(upper):
         return _fmt_cloud(m, forecast=bool(seen.get("in_trend")))
     if m := _TEMP.match(upper):
@@ -308,7 +310,7 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         return _fmt_time(m, label="Issue time")
     if m := _TAF_VALID.match(upper):
         return (
-            f"Validity — day {int(m.group('d1'))} {m.group('h1')}:00 UTC"
+            f"Validity - day {int(m.group('d1'))} {m.group('h1')}:00 UTC"
             f" to day {int(m.group('d2'))} {m.group('h2')}:00 UTC"
         )
     if m := _WIND.match(upper):
@@ -326,12 +328,12 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
     if m := _TAF_FM.match(upper):
         return (
             f"From day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
-            " — rapid change to new prevailing conditions"
+            " - rapid change to new prevailing conditions"
         )
     if upper == "TEMPO":
         return "Temporary fluctuations expected during the following period"
     if upper == "BECMG":
-        return "Becoming — gradual change during the following period"
+        return "Becoming - gradual change during the following period"
     if m := _TAF_PROB.match(upper):
         return f"{int(m.group('pct'))}% probability of the following conditions"
     if upper.startswith(("FM", "TEMPO", "BECMG", "PROB")):
@@ -455,7 +457,7 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
 
 
 def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str | None:
-    """Best-effort VAA/TCA keyword spans; labeled fields use ``_iter_advisory_fields``."""
+    """Best-effort advisory keyword spans; labeled fields use ``_iter_advisory_fields``."""
     upper = token.upper().rstrip(":")
     if product == "VAA":
         if upper == "VA" and seen.get("va", 0) == 0:
@@ -475,10 +477,21 @@ def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str 
             return explain_glossary_token(upper, fallback="Advisory product header")
         if upper == "TCA":
             return explain_glossary_token(upper, fallback="Tropical cyclone advisory abbreviation")
+    if product == "SWXA":
+        if upper == "SWX" and seen.get("swx", 0) == 0:
+            seen["swx"] = 1
+            return explain_glossary_token(upper, fallback="Space weather advisory marker")
+        if upper == "ADVISORY" and seen.get("adv", 0) == 0:
+            seen["adv"] = 1
+            return explain_glossary_token(upper, fallback="Advisory product header")
+        if upper == "SWXA":
+            return explain_glossary_token(upper, fallback="Space weather advisory abbreviation")
+    if product == "VONA" and upper == "VONA":
+        return explain_glossary_token(upper, fallback="Volcano Observatory Notice for Aviation")
     return explain_glossary_token(upper, fallback=f"{product} token")
 
 
-# Longest-first advisory field labels (WMO VAA/TCA TAC layout). Title templates use
+# Longest-first advisory field labels (WMO VAA/TCA/SWXA/VONA TAC layout). Title templates use
 # ``{hours}`` when the label includes ``+N HR``.
 _VAA_FIELD_SPECS: tuple[tuple[str, str], ...] = (
     (r"FCST\s+VA\s+CLD\s+\+(?P<hours>\d+)\s+HR", "Forecast volcanic ash cloud at +{hours} hours"),
@@ -514,10 +527,52 @@ _TCA_FIELD_SPECS: tuple[tuple[str, str], ...] = (
     (r"C", "Central pressure"),
 )
 
+_SWXA_FIELD_SPECS: tuple[tuple[str, str], ...] = (
+    (r"FCST\s+SWX\s+\+(?P<hours>\d+)\s+HR", "Forecast space weather at +{hours} hours"),
+    (r"NXT\s+ADVISORY", "Next advisory time"),
+    (r"ADVISORY\s+NR", "Advisory number"),
+    (r"SWX\s+EFFECT", "Space weather effect"),
+    (r"OBS\s+SWX", "Observed space weather"),
+    (r"NR\s+RPLC", "Replaced advisory number(s)"),
+    (r"SWXC", "Space weather centre"),
+    (r"DTG", "Date-time group"),
+    (r"RMK", "Remarks"),
+)
+
+_VONA_FIELD_SPECS: tuple[tuple[str, str], ...] = (
+    (r"CURRENT\s+COLOUR\s+CODE", "Current aviation colour code"),
+    (r"PREVIOUS\s+COLOUR\s+CODE", "Previous aviation colour code"),
+    (r"SOURCE\s+ELEV", "Source elevation"),
+    (r"VA\s+CLD\s+HGT", "Volcanic ash cloud height"),
+    (r"HGT\s+SOURCE", "Height information source"),
+    (r"NOTICE\s+NR", "Notice number"),
+    (r"NXT\s+NOTICE", "Next notice"),
+    (r"ACT\s+STS", "Activity status"),
+    (r"VOLCANO", "Volcano"),
+    (r"AREA", "Area / state or region"),
+    (r"ONSET", "Onset time"),
+    (r"DUR", "Duration"),
+    (r"MOV", "Ash cloud movement"),
+    (r"CTC", "Contacts"),
+    (r"SVO", "State volcano observatory"),
+    (r"PSN", "Position"),
+    (r"DTG", "Date-time group"),
+    (r"RMK", "Remarks"),
+)
+
+_FIELD_SPECS_BY_PRODUCT: dict[str, tuple[tuple[str, str], ...]] = {
+    "VAA": _VAA_FIELD_SPECS,
+    "TCA": _TCA_FIELD_SPECS,
+    "SWXA": _SWXA_FIELD_SPECS,
+    "VONA": _VONA_FIELD_SPECS,
+}
+
 
 def _advisory_field_finder(product: str) -> list[tuple[re.Pattern[str], str]]:
     """Return ``(compiled_label_pattern, title_template)`` pairs longest-first."""
-    specs = _VAA_FIELD_SPECS if product == "VAA" else _TCA_FIELD_SPECS
+    specs = _FIELD_SPECS_BY_PRODUCT.get(product)
+    if not specs:
+        return []
     return [(re.compile(rf"(?P<label>{pat})\s*:", re.IGNORECASE), title) for pat, title in specs]
 
 
@@ -549,13 +604,13 @@ def _iter_ahl_heading(tac: str) -> list[tuple[int, int, str, str]]:
     else:
         start, end = m.start(), m.end()
     code = tac[start:end]
-    explanation = f"WMO abbreviated heading — {m.group('ahl')} from {m.group('cccc')} at day-time {m.group('yygggg')}"
+    explanation = f"WMO abbreviated heading - {m.group('ahl')} from {m.group('cccc')} at day-time {m.group('yygggg')}"
     return [(start, end, code, explanation)]
 
 
 def _iter_advisory_ahl(tac: str, *, product: str) -> list[tuple[int, int, str, str]]:
-    """Decode leading WMO AHL (``T1T2A1A2ii CCCC YYGGgg``) on VAA/TCA peers."""
-    if product not in {"VAA", "TCA"}:
+    """Decode leading WMO AHL (``T1T2A1A2ii CCCC YYGGgg``) on structured advisory peers."""
+    if product not in _ADVISORY_STRUCTURED:
         return []
     return _iter_ahl_heading(tac)
 
@@ -566,13 +621,13 @@ def _iter_advisory_fields(
     product: str,
 ) -> list[tuple[int, int, str, str]]:
     """
-    Yield structured ``(start, end, code, explanation)`` for VAA/TCA labeled fields.
+    Yield structured ``(start, end, code, explanation)`` for advisory labeled fields.
 
     Each field spans from its ``LABEL:`` through the value text until the next
     labeled field (or end of bulletin). Continuations on following indented lines
-    are included in the same span (WMO A7-2 / A2-2 layout).
+    are included in the same span (WMO A7 / A2 / SWXA / VONA layout).
     """
-    if product not in {"VAA", "TCA"}:
+    if product not in _ADVISORY_STRUCTURED:
         return []
     # Collect all label hits; when spans overlap prefer the longer (earlier-spec) label.
     hits: list[tuple[int, int, str, str, re.Match[str]]] = []
@@ -602,7 +657,7 @@ def _iter_advisory_fields(
         end = value_start + trim
         value_text = " ".join(tac[value_start:end].split())
         title = _advisory_field_title(code, title_template, match)
-        explanation = f"{title} — {value_text}" if value_text else title
+        explanation = f"{title} - {value_text}" if value_text else title
         out.append((start, end, code, explanation))
     return out
 
@@ -642,7 +697,7 @@ def _classify(
             return _explain_sigmet_airmet(tok, product=product, seen=seen)
 
         return _haz
-    if product in {"VAA", "TCA"}:
+    if product in _ADVISORY_STRUCTURED:
 
         def _adv(tok: str, seen: dict[str, int]) -> str | None:
             return _explain_advisory(tok, product=product, seen=seen)
@@ -693,8 +748,8 @@ def _sentence_from_segment(seg: DecodeSegment) -> str | None:
     if "station location" in lower or "location indicator" in lower:
         return f"station {seg.code.upper()}"
     # Prefer the value-bearing half after an em dash when present.
-    if " — " in text:
-        left, right = text.split(" — ", 1)
+    if " - " in text:
+        left, right = text.split(" - ", 1)
         if left.lower().startswith("report type"):
             return text.rstrip(".")
         return right.rstrip(".")
@@ -835,8 +890,8 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
     segments: list[DecodeSegment] = []
     explained: set[int] = set()
 
-    # VAA/TCA: structured LABEL: value fields first (EV-030 / #820 / TC-EV030-006).
-    if product in {"VAA", "TCA"}:
+    # Advisory products: structured LABEL: value fields first (EV-030 / EV-099).
+    if product in _ADVISORY_STRUCTURED:
         field_spans: list[tuple[int, int]] = []
         advisory_parts = _iter_advisory_ahl(tac, product=product) + _iter_advisory_fields(tac, product=product)
         for start, end, code, explanation in advisory_parts:
@@ -882,13 +937,14 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
     DecodeResult
         ``segments`` for recognized groups; ``residuals`` for undecoded spans;
         ``summary`` plain-language paragraph (F9 / ADR-025).
-        METAR/SPECI/TAF aim for rich segments; VAA/TCA/SWXA are best-effort (G4).
+        METAR/SPECI/TAF aim for rich segments; VAA/TCA/SWXA/VONA use structured
+        LABEL fields (EV-030 / EV-099) with explicit residuals for leftovers (G4).
         Multi-report AHL bulletins are split so each report is decoded independently
         (heading is a bulletin-framing segment, not a product residual).
     """
     product_u = product.upper()
     if product_u not in _SUPPORTED:
-        # Entire body residual — unknown product still returns a well-formed shape.
+        # Entire body residual - unknown product still returns a well-formed shape.
         text = tac
         residuals = [DecodeResidual(start=0, end=len(text), text=text)] if text else []
         summary = _build_summary(product_u, [], residuals)

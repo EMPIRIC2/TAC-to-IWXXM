@@ -1,4 +1,4 @@
-"""EV-039 — TC-F16-LIVE Playwright suite markers (contract).
+"""EV-039 - TC-F16-LIVE Playwright suite markers (contract).
 
 Asserts the live suite file declares LIVE-001..004, is gated by F16_LIVE_SQL,
 and does not mock dissemination routes (AC3).
@@ -41,7 +41,7 @@ def test_live_sql_playwright_gated_by_f16_live_sql_flag() -> None:
 
 
 def test_live_sql_playwright_does_not_mock_dissemination_routes() -> None:
-    """AC3 — live path must not page.route preflight/send (mocked H6' stays separate)."""
+    """AC3 - live path must not page.route preflight/send (mocked H6' stays separate)."""
     text = LIVE_SPEC.read_text(encoding="utf-8")
     code_only = "\n".join(
         line
@@ -58,7 +58,7 @@ def test_live_sql_playwright_does_not_mock_dissemination_routes() -> None:
 
 
 def test_live_sql_playwright_invokes_write_assert_helper() -> None:
-    """T2.2/T2.3 — suite must call the Python live_write_assert helper."""
+    """T2.2/T2.3 - suite must call the Python live_write_assert helper."""
     text = LIVE_SPEC.read_text(encoding="utf-8")
     assert "dissemination.live_write_assert" in text
     assert "assertLiveDbWrite" in text or "live_write_assert" in text

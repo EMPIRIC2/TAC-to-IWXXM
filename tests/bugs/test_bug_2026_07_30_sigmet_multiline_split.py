@@ -1,8 +1,8 @@
-"""BUG-2026-07-30 — SIGMET/AIRMET multi-line manual TAC must not be line-split.
+"""BUG-2026-07-30 - SIGMET/AIRMET multi-line manual TAC must not be line-split.
 
 WMO ``sigmet-A6-1a-TS`` is two lines (header ``…YUSO-`` + body ``…=``). Line-splitting
 yields ``manual_input_2`` → ``PARSE_ERROR: unable to parse SIGMET header`` and a
-soft-preview with nil geometry — matching production UI Failed-TAC on the catalog demo.
+soft-preview with nil geometry - matching production UI Failed-TAC on the catalog demo.
 """
 
 from __future__ import annotations

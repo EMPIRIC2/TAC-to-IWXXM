@@ -7,7 +7,7 @@ as per ICAO Doc 10003 Section 7 requirements.
 
 import logging
 from datetime import UTC, datetime, timedelta
-from typing import Optional
+from typing import Any
 
 from fastapi import APIRouter, HTTPException, Query
 
@@ -29,7 +29,7 @@ router = APIRouter(prefix="/api/v1/translation", tags=["ICAO OPMET Statistics"])
 
 
 @router.get("/centre-info", response_model=TranslationCentreInfo)
-async def get_centre_info():
+async def get_centre_info() -> TranslationCentreInfo:
     """
     Get Translation Centre identification and capabilities.
 
@@ -64,7 +64,7 @@ async def get_centre_info():
 @router.post("/statistics", response_model=TranslationStatistics)
 async def get_translation_statistics(
     request: TranslationStatisticsRequest,
-):
+) -> object:
     """
     Query aggregated translation statistics.
 
@@ -138,9 +138,9 @@ async def get_translation_statistics(
 @router.get("/statistics/recent", response_model=TranslationStatistics)
 async def get_recent_statistics(
     hours: int = Query(24, ge=1, le=168, description="Number of hours to query (1-168)"),
-    icao_region: Optional[ICAORegion] = Query(None, description="Filter by ICAO region"),
-    iwxxm_version: Optional[str] = Query(None, description="Filter by IWXXM version"),
-):
+    icao_region: ICAORegion | None = Query(None, description="Filter by ICAO region"),
+    iwxxm_version: str | None = Query(None, description="Filter by IWXXM version"),
+) -> object:
     """
     Get recent translation statistics (last N hours).
 
@@ -188,7 +188,7 @@ async def get_recent_statistics(
 async def get_statistics_by_region(
     start_date: datetime = Query(..., description="Statistics period start (ISO 8601)"),
     end_date: datetime = Query(..., description="Statistics period end (ISO 8601)"),
-):
+) -> object:
     """
     Get translation statistics grouped by ICAO region.
 
@@ -222,7 +222,7 @@ async def get_statistics_by_region(
 
 
 @router.get("/airport-region/{airport_code}")
-async def get_airport_region(airport_code: str):
+async def get_airport_region(airport_code: str) -> dict[str, Any]:
     """
     Determine ICAO region for a given airport code.
 
@@ -266,7 +266,7 @@ async def get_airport_region(airport_code: str):
             "region_name": region_names.get(region, "Unknown"),
         }
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
 
 
 # =============================================================================
@@ -275,7 +275,7 @@ async def get_airport_region(airport_code: str):
 
 
 @router.get("/health")
-async def statistics_health():
+async def statistics_health() -> object:
     """
     Translation statistics service health check.
 

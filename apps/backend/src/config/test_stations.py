@@ -5,10 +5,10 @@ Curated list of ICAO stations for comprehensive IWXXM testing, selected to
 maximize edge case coverage and geographic diversity.
 """
 
-from typing import Dict, List
+from typing import Any
 
 # Curated test stations organized by category
-TEST_STATIONS: Dict[str, List[str]] = {
+TEST_STATIONS: dict[str, list[str]] = {
     "us_metar_edge_cases": [
         "KJFK",  # New York JFK - High-traffic, complex remarks (AO2, SLP, T-groups)
         "KORD",  # Chicago O'Hare - Midwest, wind shear, RVR, thunderstorms
@@ -65,7 +65,7 @@ TEST_STATIONS: Dict[str, List[str]] = {
 }
 
 # Station metadata for context (optional use)
-STATION_METADATA: Dict[str, Dict[str, str]] = {
+STATION_METADATA: dict[str, dict[str, str]] = {
     "KJFK": {
         "name": "New York John F. Kennedy International",
         "country": "US",
@@ -99,7 +99,7 @@ STATION_METADATA: Dict[str, Dict[str, str]] = {
 }
 
 
-def get_test_stations(category: str = "all") -> List[str]:
+def get_test_stations(category: str = "all") -> list[str]:
     """
     Get list of test stations by category.
 
@@ -113,7 +113,7 @@ def get_test_stations(category: str = "all") -> List[str]:
     """
     if category == "all":
         # Return all unique stations (flatten and deduplicate)
-        all_stations = []
+        all_stations: list[Any] = []
         for stations in TEST_STATIONS.values():
             all_stations.extend(stations)
         return list(set(all_stations))
@@ -121,12 +121,12 @@ def get_test_stations(category: str = "all") -> List[str]:
     return TEST_STATIONS.get(category, [])
 
 
-def get_station_categories() -> List[str]:
+def get_station_categories() -> list[str]:
     """Get list of available station categories."""
     return list(TEST_STATIONS.keys())
 
 
-def get_station_metadata(icao: str) -> Dict[str, str]:
+def get_station_metadata(icao: str) -> dict[str, str]:
     """
     Get metadata for a specific station.
 
@@ -139,7 +139,7 @@ def get_station_metadata(icao: str) -> Dict[str, str]:
     return STATION_METADATA.get(icao, {})
 
 
-def get_all_test_stations_with_metadata() -> Dict[str, Dict[str, str]]:
+def get_all_test_stations_with_metadata() -> dict[str, dict[str, str]]:
     """
     Get all test stations with their metadata.
 
@@ -150,7 +150,7 @@ def get_all_test_stations_with_metadata() -> Dict[str, Dict[str, str]]:
     return {icao: get_station_metadata(icao) for icao in all_icao}
 
 
-def count_stations_by_category() -> Dict[str, int]:
+def count_stations_by_category() -> dict[str, int]:
     """
     Count stations in each category.
 

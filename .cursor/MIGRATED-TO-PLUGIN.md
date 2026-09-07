@@ -14,10 +14,10 @@
 ## Re-install
 
 ```bash
-EM_ROOT="$HOME/Documents/GitHub/spec-dev-knowledge-graph"
-"$EM_ROOT/cursor-plugin/scripts/install-workspace.sh" "$PWD"
+EM_ENGINEERING_MEMORY_ROOT="${EM_ENGINEERING_MEMORY_ROOT:-$HOME/Documents/GitHub/spec-dev-knowledge-graph}"
+"$EM_ENGINEERING_MEMORY_ROOT/cursor-plugin/scripts/install-workspace.sh" "$PWD"
 ```
 
-Reload Cursor after updates.
+Reload Cursor after updates. Do not commit machine-local `/Users/…` or `/home/<user>/…` under `.cursor/` (EV-095 / #1095).
 
-[docs/decisions/ev-023-plugin-migration.md](docs/decisions/ev-023-plugin-migration.md)
+[docs/decisions/ev-023-plugin-migration.md](docs/decisions/ev-023-plugin-migration.md) · [docs/decisions/ev-095-em-portable-paths.md](docs/decisions/ev-095-em-portable-paths.md)

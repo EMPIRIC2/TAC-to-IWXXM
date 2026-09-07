@@ -3,18 +3,18 @@
 import csv
 import pathlib
 import random
-from typing import List, Optional
+from typing import Any
 
 
 class StationSampler:
     """Sample airport stations from the af-airports.csv database."""
 
-    def __init__(self, csv_path: Optional[pathlib.Path] = None):
+    def __init__(self, csv_path: pathlib.Path | None = None) -> None:
         if csv_path is None:
             # Auto-detect CSV path
             csv_path = self._find_airports_csv()
         self.csv_path = csv_path
-        self._airports_cache: Optional[List[dict]] = None
+        self._airports_cache: list[dict[str, Any]] | None = None
 
     @staticmethod
     def _find_airports_csv() -> pathlib.Path:
@@ -23,22 +23,20 @@ class StationSampler:
             pathlib.Path("/app/data/af-airports.csv"),
             pathlib.Path("./data/af-airports.csv"),
         ]
-        for parent in pathlib.Path(__file__).resolve().parents:
-            candidates.append(parent / "data" / "af-airports.csv")
-
+        candidates.extend(parent / "data" / "af-airports.csv" for parent in pathlib.Path(__file__).resolve().parents)
         for candidate in candidates:
             if candidate.exists():
                 return candidate
 
         raise FileNotFoundError("Could not find af-airports.csv")
 
-    def _load_airports(self) -> List[dict]:
+    def _load_airports(self) -> list[dict[str, Any]]:
         """Load and cache airport data."""
         if self._airports_cache is not None:
             return self._airports_cache
 
-        airports = []
-        with open(self.csv_path, "r", encoding="utf-8") as f:
+        airports: list[Any] = []
+        with open(self.csv_path, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             for row in reader:
                 # Only include airports with valid ICAO codes
@@ -62,8 +60,8 @@ class StationSampler:
         count: int,
         large_airports_only: bool = False,
         scheduled_service_only: bool = True,
-        seed: Optional[int] = None,
-    ) -> List[str]:
+        seed: int | None = None,
+    ) -> list[str]:
         """Sample random airport stations.
 
         Args:
@@ -93,7 +91,7 @@ class StationSampler:
 
         return [a["icao"] for a in sampled]
 
-    def get_all_major_airports(self, large_only: bool = True, scheduled_service_only: bool = True) -> List[str]:
+    def get_all_major_airports(self, large_only: bool = True, scheduled_service_only: bool = True) -> list[str]:
         """Get all major airport ICAO codes.
 
         Args:
@@ -113,7 +111,7 @@ class StationSampler:
 
         return [a["icao"] for a in filtered]
 
-    def get_station_info(self, icao: str) -> Optional[dict]:
+    def get_station_info(self, icao: str) -> dict[str, Any] | None:
         """Get information about a specific station.
 
         Args:

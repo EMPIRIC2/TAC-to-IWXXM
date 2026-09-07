@@ -2,20 +2,19 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from types import SimpleNamespace
 
 import pytest
 from fastapi import HTTPException
-
 from src.routers import icao_opmet as router_module
 from src.schemas.icao_opmet import ICAORegion, TranslationStatisticsRequest
 
 
 @pytest.fixture
 def valid_stats_payload() -> dict:
-    start = datetime(2026, 2, 1, tzinfo=timezone.utc)
-    end = datetime(2026, 2, 2, tzinfo=timezone.utc)
+    start = datetime(2026, 2, 1, tzinfo=UTC)
+    end = datetime(2026, 2, 2, tzinfo=UTC)
     return {
         "period_start": start,
         "period_end": end,
@@ -60,8 +59,8 @@ async def test_get_centre_info_parses_online_since(monkeypatch: pytest.MonkeyPat
 @pytest.mark.asyncio
 async def test_get_translation_statistics_validates_date_order() -> None:
     req = TranslationStatisticsRequest(
-        start_date=datetime(2026, 2, 2, tzinfo=timezone.utc),
-        end_date=datetime(2026, 2, 1, tzinfo=timezone.utc),
+        start_date=datetime(2026, 2, 2, tzinfo=UTC),
+        end_date=datetime(2026, 2, 1, tzinfo=UTC),
     )
 
     with pytest.raises(HTTPException, match="end_date must be after start_date"):
@@ -71,8 +70,8 @@ async def test_get_translation_statistics_validates_date_order() -> None:
 @pytest.mark.asyncio
 async def test_get_translation_statistics_validates_max_range() -> None:
     req = TranslationStatisticsRequest(
-        start_date=datetime(2026, 1, 1, tzinfo=timezone.utc),
-        end_date=datetime(2026, 6, 1, tzinfo=timezone.utc),
+        start_date=datetime(2026, 1, 1, tzinfo=UTC),
+        end_date=datetime(2026, 6, 1, tzinfo=UTC),
     )
 
     with pytest.raises(HTTPException, match="Date range cannot exceed"):
@@ -85,8 +84,8 @@ async def test_get_translation_statistics_success(
     valid_stats_payload: dict,
 ) -> None:
     req = TranslationStatisticsRequest(
-        start_date=datetime(2026, 2, 1, tzinfo=timezone.utc),
-        end_date=datetime(2026, 2, 2, tzinfo=timezone.utc),
+        start_date=datetime(2026, 2, 1, tzinfo=UTC),
+        end_date=datetime(2026, 2, 2, tzinfo=UTC),
         icao_region=ICAORegion.NAM,
         iwxxm_version="2025-2",
         airport_code="KJFK",
@@ -135,8 +134,8 @@ async def test_get_recent_statistics_success(
 
 @pytest.mark.asyncio
 async def test_get_statistics_by_region_success(monkeypatch: pytest.MonkeyPatch) -> None:
-    start = datetime(2026, 2, 1, tzinfo=timezone.utc)
-    end = datetime(2026, 2, 2, tzinfo=timezone.utc)
+    start = datetime(2026, 2, 1, tzinfo=UTC)
+    end = datetime(2026, 2, 2, tzinfo=UTC)
 
     async def fake_by_region(**kwargs):
         assert kwargs["start_date"] == start

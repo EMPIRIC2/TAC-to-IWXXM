@@ -26,6 +26,9 @@ interface LoginProps {
   onContinueAsGuest?: () => void;
 }
 
+/**
+ * Sign-in form with optional guest continuation.
+ */
 export function Login({
   onLogin,
   onSwitchToRegister,

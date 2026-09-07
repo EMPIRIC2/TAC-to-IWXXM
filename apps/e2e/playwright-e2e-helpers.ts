@@ -83,7 +83,14 @@ export async function dismissPrivacyNoticeIfPresent(page: Page): Promise<void> {
   if ((await notice.count()) === 0) {
     return;
   }
-  await page.getByRole('button', { name: /dismiss privacy notice/i }).click();
+  try {
+    await page.getByRole('button', { name: /dismiss privacy notice/i }).click();
+  } catch (error) {
+    if ((await notice.count()) === 0) {
+      return;
+    }
+    throw error;
+  }
   await expect(notice).toHaveCount(0);
 }
 
@@ -159,6 +166,12 @@ export async function openConverterForE2e(page: Page): Promise<void> {
   await openPublicConverter(page);
 }
 
+/**
+ * Replace the manual TAC editor contents with the given METAR/SPECI text.
+ *
+ * @param page - Playwright page hosting the converter.
+ * @param metar - TAC string to insert.
+ */
 export async function fillManualTac(page: Page, metar: string): Promise<void> {
   const editor = page.getByLabel(/Enter METAR data manually/i);
   await editor.click();
@@ -166,6 +179,12 @@ export async function fillManualTac(page: Page, metar: string): Promise<void> {
   await page.keyboard.insertText(metar);
 }
 
+/**
+ * Fill the manual TAC editor and click the convert button.
+ *
+ * @param page - Playwright page hosting the converter.
+ * @param metar - TAC string to convert.
+ */
 export async function convertManualMetar(page: Page, metar: string): Promise<void> {
   await fillManualTac(page, metar);
   await page.getByTestId('convert-button').click();

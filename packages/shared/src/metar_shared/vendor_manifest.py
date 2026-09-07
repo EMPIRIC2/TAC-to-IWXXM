@@ -12,7 +12,7 @@ from typing import Any, cast
 MANIFEST_SCHEMA_VERSION = 1
 MANIFEST_RELATIVE_PATH = Path("vendor/manifest.json")
 
-# GitHub (wmo-im) snapshots — require upstream_repo + commit_sha.
+# GitHub (wmo-im) snapshots - require upstream_repo + commit_sha.
 GITHUB_BUNDLE_NAMES: tuple[str, ...] = (
     "iwxxm",
     "iwxxm-codelists",
@@ -20,7 +20,7 @@ GITHUB_BUNDLE_NAMES: tuple[str, ...] = (
     "iwxxm-translation",
 )
 
-# HTTP archive snapshots — require source_url (+ optional archive_sha256).
+# HTTP archive snapshots - require source_url (+ optional archive_sha256).
 HTTP_BUNDLE_NAMES: tuple[str, ...] = ("iwxxm-us", "iwxxm-ca")
 
 # Profile-scoped IWXXM release lines vendored as subtrees (EV-068 / #1027).
@@ -167,7 +167,7 @@ def _validate_http_bundle_entry(name: str, entry_dict: dict[str, Any]) -> list[s
     return errors
 
 
-def _validate_bundle_entry(name: str, entry: Any) -> list[str]:
+def _validate_bundle_entry(name: str, entry: object) -> list[str]:
     errors: list[str] = []
     if not isinstance(entry, dict):
         errors.append(f"bundle {name!r} must be an object")
@@ -215,10 +215,11 @@ def validate_manifest_schema(manifest: dict[str, Any]) -> list[str]:
 
     bundle_map = cast(dict[str, Any], bundles)
 
-    for name in VENDOR_BUNDLE_NAMES:
-        if name not in bundle_map:
-            errors.append(f"missing required bundle {name!r}")
-
+    errors.extend(
+        f"missing required bundle {name!r}"
+        for name in VENDOR_BUNDLE_NAMES
+        if name not in bundle_map
+    )
     for name, entry in bundle_map.items():
         errors.extend(_validate_bundle_entry(name, entry))
 

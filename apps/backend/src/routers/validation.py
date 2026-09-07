@@ -1,7 +1,5 @@
 """Validation endpoints for METAR and IWXXM content."""
 
-from typing import List, Optional
-
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -32,7 +30,7 @@ class ValidationLayerInfo(BaseModel):
     layer: ValidationLayer = Field(..., description="Layer identifier")
     description: str = Field(..., description="Human-readable description")
     blocking: bool = Field(..., description="Whether this layer blocks further validation if it fails")
-    supported_content_types: List[str] = Field(
+    supported_content_types: list[str] = Field(
         default_factory=list, description="Content types this layer supports (tac/xml)"
     )
 
@@ -61,7 +59,7 @@ class ValidationLayersResponse(BaseModel):
         }
     )
 
-    layers: List[ValidationLayerInfo] = Field(..., description="Available validation layers")
+    layers: list[ValidationLayerInfo] = Field(..., description="Available validation layers")
 
 
 class BatchValidationRequest(BaseModel):
@@ -85,15 +83,13 @@ class BatchValidationRequest(BaseModel):
         }
     )
 
-    items: List[ValidationRequest] = Field(
+    items: list[ValidationRequest] = Field(
         ...,
         description="Items to validate",
         min_length=1,
         max_length=100,
     )
-    layers: Optional[List[ValidationLayer]] = Field(
-        None, description="Layers to apply to all items (None = all layers)"
-    )
+    layers: list[ValidationLayer] | None = Field(None, description="Layers to apply to all items (None = all layers)")
 
 
 class BatchValidationResponse(BaseModel):
@@ -119,7 +115,7 @@ class BatchValidationResponse(BaseModel):
         }
     )
 
-    results: List[AggregatedValidationResult] = Field(..., description="Validation results for each item")
+    results: list[AggregatedValidationResult] = Field(..., description="Validation results for each item")
     total_items: int = Field(..., description="Total items requested", ge=0)
     passed_items: int = Field(..., description="Number of items that passed", ge=0)
     failed_items: int = Field(..., description="Number of items that failed", ge=0)
@@ -127,7 +123,7 @@ class BatchValidationResponse(BaseModel):
 
 
 # Initialize validation service (will be instantiated on first use)
-_validation_service: Optional[ValidationService] = None
+_validation_service: ValidationService | None = None
 
 
 def get_validation_service() -> ValidationService:
@@ -146,7 +142,7 @@ def get_validation_service() -> ValidationService:
 )
 async def validate_content(
     request: ValidationRequest,
-):
+) -> object:
     """Validate METAR TAC or IWXXM XML content through multiple validation layers.
 
     ## Request Body
@@ -219,9 +215,9 @@ async def validate_content(
         result = service.validate_all_layers(tac_text=request.content)
         return result
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Validation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Validation error: {e!s}") from e
 
 
 @router.post(
@@ -232,7 +228,7 @@ async def validate_content(
 )
 async def validate_multiple(
     request: BatchValidationRequest,
-):
+) -> object:
     """Validate multiple METAR TAC or IWXXM XML inputs in a single request.
 
     Useful for batch validation of multiple entries. Each item is validated
@@ -297,7 +293,7 @@ async def validate_multiple(
     service = get_validation_service()
 
     try:
-        results: List[AggregatedValidationResult] = []
+        results: list[AggregatedValidationResult] = []
         total_time = 0.0
 
         for item in request.items:
@@ -316,9 +312,9 @@ async def validate_multiple(
             total_execution_time_ms=total_time,
         )
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e)) from e
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Batch validation error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Batch validation error: {e!s}") from e
 
 
 @router.get(
@@ -327,7 +323,7 @@ async def validate_multiple(
     tags=["Validation"],
     summary="Get available validation layers",
 )
-async def get_validation_layers():
+async def get_validation_layers() -> object:
     """Get information about available validation layers.
 
     Each layer validates specific aspects of METAR TAC or IWXXM XML content.

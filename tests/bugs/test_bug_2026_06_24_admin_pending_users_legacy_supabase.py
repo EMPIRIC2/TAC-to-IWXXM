@@ -1,4 +1,4 @@
-"""BUG-2026-06-24 — UserApprovalPanel hits Supabase directly with legacy browser key.
+"""BUG-2026-06-24 - UserApprovalPanel hits Supabase directly with legacy browser key.
 
 After login succeeds via merged API, admin User Approvals panel still queried
 ``user_profiles`` through the browser Supabase client (legacy anon JWT in

@@ -176,7 +176,7 @@ class TestNamespaceVersionExtraction:
         xml = """<?xml version="1.0"?>
 <iwxxm:SPECI>
 </iwxxm:SPECI>"""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r".*"):
             get_namespace_version(xml)
 
     def test_invalid_namespace_raises_error(self) -> None:
@@ -184,7 +184,7 @@ class TestNamespaceVersionExtraction:
         xml = """<?xml version="1.0"?>
 <iwxxm:SPECI xmlns:iwxxm="http://example.com/invalid">
 </iwxxm:SPECI>"""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r".*"):
             get_namespace_version(xml)
 
     def test_unsupported_version_raises_error(self) -> None:
@@ -192,7 +192,7 @@ class TestNamespaceVersionExtraction:
         xml = """<?xml version="1.0"?>
 <iwxxm:SPECI xmlns:iwxxm="http://icao.int/iwxxm/9999-9">
 </iwxxm:SPECI>"""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r".*"):
             get_namespace_version(xml)
 
 

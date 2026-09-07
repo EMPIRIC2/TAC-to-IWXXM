@@ -12,7 +12,6 @@ from typing import Any
 
 import httpx
 import pytest
-
 from src import api as api_module
 from src.schemas.validation import (
     AggregatedValidationResult,
@@ -77,7 +76,7 @@ async def _override_verify_token() -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Async fixture – shared client
+# Async fixture - shared client
 # ---------------------------------------------------------------------------
 
 
@@ -116,7 +115,7 @@ async def async_client_fail_validation(monkeypatch):
 
 
 # ---------------------------------------------------------------------------
-# /api/v1/convert  –  JSON body path (covers lines ~977-994 + 1131-1339)
+# /api/v1/convert  -  JSON body path (covers lines ~977-994 + 1131-1339)
 # ---------------------------------------------------------------------------
 
 
@@ -140,7 +139,7 @@ async def test_convert_json_body_multiple_metars(async_client):
             "metars": [
                 "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013",
                 "METAR KLAX 010000Z 00000KT CAVOK 15/10 Q1013",
-                "",  # blank entry – exercises the 'continue' branch
+                "",  # blank entry - exercises the 'continue' branch
             ]
         },
         headers={"authorization": "Bearer test"},
@@ -205,7 +204,7 @@ async def test_convert_json_body_stop_on_error(async_client_fail_validation):
 
 
 # ---------------------------------------------------------------------------
-# /api/v1/convert/zip  –  JSON body path (covers lines ~2068-2207)
+# /api/v1/convert/zip  -  JSON body path (covers lines ~2068-2207)
 # ---------------------------------------------------------------------------
 
 
@@ -227,7 +226,7 @@ async def test_convert_zip_json_body_multiple_metars(async_client):
             "metars": [
                 "METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013",
                 "METAR KLAX 010000Z 00000KT CAVOK 15/10 Q1013",
-                "",  # blank – exercises continue branch
+                "",  # blank - exercises continue branch
             ]
         },
         headers={"authorization": "Bearer test"},

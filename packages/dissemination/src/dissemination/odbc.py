@@ -24,7 +24,7 @@ def list_sqlserver_odbc_drivers() -> list[str]:
     Returns
     -------
     list[str]
-        Empty when ``pyodbc`` is missing or no SQL Server–capable driver is
+        Empty when ``pyodbc`` is missing or no SQL Server-capable driver is
         registered with the system ODBC manager.
     """
     try:

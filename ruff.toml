@@ -14,17 +14,26 @@ src = [
 
 [lint]
 select = [
-  "E",   # pycodestyle errors
-  "F",   # pyflakes
-  "I",   # isort
-  "UP",  # pyupgrade
-  "B",   # flake8-bugbear
-  "SIM", # flake8-simplify
-  "RUF", # ruff-specific
+  "E",     # pycodestyle errors
+  "F",     # pyflakes
+  "I",     # isort
+  "UP",    # pyupgrade
+  "B",     # flake8-bugbear
+  "SIM",   # flake8-simplify
+  "RUF",   # ruff-specific
+  "PERF",  # perflint
+  "ASYNC", # flake8-async
+  "PT",    # flake8-pytest-style
+  "ANN",   # flake8-annotations (src only; tests ignored below)
 ]
 ignore = [
   "E501", # line length handled by formatter
 ]
+
+[lint.per-file-ignores]
+"**/tests/**" = ["ANN"]
+# lxml / PyO3 boundaries — third-party handles without complete stubs (typing-policy)
+"packages/iwxxm-validate/src/iwxxm_validate/{c14n,native,schematron,xsd}.py" = ["ANN401"]
 
 [lint.isort]
 known-first-party = ["gifts", "auth", "shared", "metar_shared"]

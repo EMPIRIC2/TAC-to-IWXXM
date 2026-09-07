@@ -1,6 +1,6 @@
 """Offline WMO codes encode href policy (F6 / EV-023 TC-EV023-004).
 
-Reads pin ``vendor/schemas/iwxxm/{version}/IWXXM/rule/*.rdf`` only — never
+Reads pin ``vendor/schemas/iwxxm/{version}/IWXXM/rule/*.rdf`` only - never
 live codes.wmo.int HTML. Dual registers:
 
 * ``iwxxm/AviationColourCode`` (2025-2 VONA / preferred colour set + UNASSIGNED)
@@ -163,7 +163,7 @@ def aviation_colour_href(
     Map a TAC / registry colour token to a codes.wmo.int ``xlink:href``.
 
     For pin ``2025-2`` (default), prefer ``iwxxm/AviationColourCode``. Tokens
-    ``UNKNOWN`` / ``NOT GIVEN`` / ``NIL`` map to ``UNASSIGNED`` — never to a
+    ``UNKNOWN`` / ``NOT GIVEN`` / ``NIL`` map to ``UNASSIGNED`` - never to a
     invented ``49-2`` NIL colour href when targeting the iwxxm register.
 
     Parameters
@@ -186,16 +186,10 @@ def aviation_colour_href(
         When the resolved notation is not in the offline register.
     """
     reg: ColourRegister
-    if register is not None:
-        reg = register
-    else:
-        reg = "iwxxm" if iwxxm_version == "2025-2" else "49-2"
+    reg = register if register is not None else "iwxxm" if iwxxm_version == "2025-2" else "49-2"
 
     normalized = _normalize_colour_token(token)
-    if reg == "iwxxm" and normalized in _UNASSIGNED_TOKENS:
-        notation = "UNASSIGNED"
-    else:
-        notation = normalized
+    notation = "UNASSIGNED" if reg == "iwxxm" and normalized in _UNASSIGNED_TOKENS else normalized
 
     members = load_aviation_colour_members(reg, iwxxm_version=iwxxm_version)
     if notation not in members:

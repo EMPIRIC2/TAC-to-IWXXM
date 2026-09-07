@@ -6,10 +6,10 @@ as per user decisions for the METAR to IWXXM Translation Centre.
 """
 
 import os
-from typing import Any, Dict, Optional
+from typing import Any
 
 
-def _clean_env(name: str) -> Optional[str]:
+def _clean_env(name: str) -> str | None:
     """Read an env var, trimming surrounding whitespace (incl. stray CR from CRLF .env files).
 
     Returns ``None`` when the variable is unset or blank, so a malformed value such as
@@ -49,7 +49,7 @@ TECHNICAL_CONTACT_EMAIL = _clean_env("TECHNICAL_CONTACT_EMAIL")
 
 # Maps airport ICAO prefixes to ICAO regional offices
 # Based on ICAO Doc 7910 - Location Indicators
-ICAO_REGION_MAP: Dict[str, str] = {
+ICAO_REGION_MAP: dict[str, str] = {
     # Africa-Indian Ocean (AFI)
     "FB": "AFI",
     "FC": "AFI",
@@ -387,7 +387,7 @@ DEFAULT_IWXXM_VERSION = "2025-2"
 # =============================================================================
 
 
-def get_translation_centre_info() -> Dict[str, Any]:
+def get_translation_centre_info() -> dict[str, Any]:
     """
     Get Translation Centre metadata for IWXXM documents.
 

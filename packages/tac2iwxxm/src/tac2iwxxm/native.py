@@ -1,4 +1,4 @@
-"""Optional PyO3 extension loader (ADR-017 / T4.3–T4.5).
+"""Optional PyO3 extension loader (ADR-017 / T4.3-T4.5).
 
 The ``tac2iwxxm._rust`` module is built by maturin. Pure-Python paths keep working when
 the extension is absent (local without rustc); CI rust job requires it.
@@ -6,7 +6,7 @@ the extension is absent (local without rustc); CI rust job requires it.
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, cast
 
 
 def rust_available() -> bool:
@@ -18,7 +18,7 @@ def rust_available() -> bool:
     return _rust is not None  # pragma: no cover
 
 
-def rust_module() -> Any | None:
+def rust_module() -> object | None:
     """
     Return the loaded ``_rust`` module, or ``None`` if unavailable.
 
@@ -58,5 +58,5 @@ def scan_metar_tokens(tac: str) -> list[str]:
         raise NotImplementedError(
             "PyO3 scan_metar_tokens hotspot not available (build with maturin; implement in T4.5)"
         )
-    result = mod.scan_metar_tokens(tac)
+    result = cast(list[str], cast(Any, mod).scan_metar_tokens(tac))
     return list(result)

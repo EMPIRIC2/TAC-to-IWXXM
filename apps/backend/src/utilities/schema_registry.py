@@ -6,9 +6,8 @@ including XSD, Schematron, and codelist file locations across versions.
 """
 
 import logging
-from functools import lru_cache
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Any
 
 from ..config.iwxxm_versions import (
     SUPPORTED_VERSIONS,
@@ -34,11 +33,10 @@ class SchemaRegistry:
     Handles file resolution, caching, and validation.
     """
 
-    def __init__(self):
-        self._version_cache: Dict[str, Dict] = {}
-        self._file_cache: Dict[str, Path] = {}
+    def __init__(self) -> None:
+        self._version_cache: dict[str, dict[str, Any]] = {}
+        self._file_cache: dict[str, Path] = {}
 
-    @lru_cache(maxsize=32)
     def get_xsd_path(self, version: str) -> Path:
         """
         Get path to XSD schema file for a version.
@@ -63,7 +61,6 @@ class SchemaRegistry:
         logger.debug(f"Resolved XSD for {version}: {path}")
         return path
 
-    @lru_cache(maxsize=32)
     def get_schematron_path(self, version: str) -> Path:
         """
         Get path to Schematron (.sch) file for a version.
@@ -88,7 +85,6 @@ class SchemaRegistry:
         logger.debug(f"Resolved Schematron for {version}: {path}")
         return path
 
-    @lru_cache(maxsize=32)
     def get_codelists_dir(self, version: str) -> Path:
         """
         Get path to codelists directory for a version.
@@ -123,16 +119,16 @@ class SchemaRegistry:
         normalized = normalize_version(version)
         return get_schema_url(normalized)
 
-    def get_version_info(self, version: str) -> Dict:
+    def get_version_info(self, version: str) -> dict[str, Any]:
         """Get complete version configuration."""
         normalized = normalize_version(version)
         return get_version_config(normalized)
 
-    def get_supported_versions(self) -> List[str]:
+    def get_supported_versions(self) -> list[str]:
         """Get list of supported IWXXM versions."""
         return list(SUPPORTED_VERSIONS.keys())
 
-    def list_codelists(self, version: str) -> List[str]:
+    def list_codelists(self, version: str) -> list[str]:
         """
         List all codelist files for a version.
 
@@ -146,7 +142,7 @@ class SchemaRegistry:
         rdf_files = list(codelists_dir.glob("*.rdf"))
         return sorted([f.name for f in rdf_files])
 
-    def get_breaking_changes(self, from_version: str, to_version: str) -> List[Dict]:
+    def get_breaking_changes(self, from_version: str, to_version: str) -> list[dict[str, Any]]:
         """
         Get breaking changes for migration between versions.
 
@@ -159,7 +155,7 @@ class SchemaRegistry:
         """
         return get_breaking_changes(from_version, to_version)
 
-    def get_all_versions(self, channel: str = "all") -> List[str]:
+    def get_all_versions(self, channel: str = "all") -> list[str]:
         """
         Get list of versions filtered by channel.
 
@@ -258,7 +254,7 @@ class SchemaRegistry:
             logger.error(f"Integrity check failed for {version}: {e}")
             return False
 
-    def get_all_versions_with_metadata(self) -> Dict:
+    def get_all_versions_with_metadata(self) -> dict[str, Any]:
         """
         Get all versions with full configuration and discovery metadata.
 
@@ -269,7 +265,7 @@ class SchemaRegistry:
 
 
 # Global registry instance
-_registry_instance: Optional[SchemaRegistry] = None
+_registry_instance: SchemaRegistry | None = None
 
 
 def get_schema_registry() -> SchemaRegistry:
@@ -285,11 +281,9 @@ def get_schema_registry() -> SchemaRegistry:
     return _registry_instance
 
 
-def clear_registry_cache():
+def clear_registry_cache() -> None:
     """Clear all cached schema paths (useful for testing)."""
     global _registry_instance
     if _registry_instance:
         _registry_instance._file_cache.clear()
-        _registry_instance.get_xsd_path.cache_clear()
-        _registry_instance.get_schematron_path.cache_clear()
-        _registry_instance.get_codelists_dir.cache_clear()
+        _registry_instance._version_cache.clear()

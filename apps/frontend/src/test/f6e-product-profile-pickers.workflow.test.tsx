@@ -112,7 +112,7 @@ const PRODUCTS = [
   'VONA',
 ] as const;
 
-const PROFILES = ['annex3', 'iwxxm_us', 'ca_eccc'] as const;
+const PROFILES = ['ICAO_2025', 'US_FAA_NWS', 'CA_ECCC', 'annex3', 'iwxxm_us'] as const;
 
 describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
   const defaultProps = {
@@ -155,7 +155,7 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
     }
 
     expect(product.value).toBe('auto');
-    expect(profile.value).toBe('annex3');
+    expect(profile.value).toBe('ICAO_2025');
     expect(version.value).toBe('2025-2');
 
     // UJ-050 / TC-EV038-007 — Latest / Previous labels from SoT JSON roles (#854)
@@ -264,7 +264,7 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
         product: 'SPECI',
-        profile: 'annex3',
+        profile: 'ICAO_2025',
       }),
     );
   });

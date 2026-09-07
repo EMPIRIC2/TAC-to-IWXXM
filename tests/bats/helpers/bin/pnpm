@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# Stub pnpm — audit skip + openapi-typescript copy.
+set -euo pipefail
+if [[ "${1:-}" == "audit" ]]; then
+  echo "ERR_PNPM_AUDIT_BAD_RESPONSE endpoint retired 410"
+  exit 1
+fi
+
+if [[ "${1:-}" == "exec" ]]; then
+  shift
+  cmd="${1:-}"
+  if [[ "$cmd" == "openapi-typescript" ]]; then
+    out=""
+    while [[ $# -gt 0 ]]; do
+      if [[ "$1" == "-o" ]]; then
+        out="$2"
+        shift 2
+        continue
+      fi
+      shift
+    done
+    candidates=(
+      "src/generated/openapi.d.ts"
+      "apps/frontend/src/generated/openapi.d.ts"
+      "${REPO_ROOT:-}/apps/frontend/src/generated/openapi.d.ts"
+    )
+    for src in "${candidates[@]}"; do
+      if [[ -f "$src" && -n "$out" ]]; then
+        cp "$src" "$out"
+        exit 0
+      fi
+    done
+    exit 0
+  fi
+  if [[ "$cmd" == *stryker* ]]; then
+    exit 0
+  fi
+  exit 0
+fi
+
+exit 0

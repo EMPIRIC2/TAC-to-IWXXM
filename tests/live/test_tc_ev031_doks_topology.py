@@ -1,4 +1,4 @@
-"""T7.3 — TC-EV031-* live probes on provisional DOKS topology.
+"""T7.3 - TC-EV031-* live probes on provisional DOKS topology.
 
 Spec: docs/test-plan.md TC-EV031-003/004; TC-F30-004 deepen; D-S038-t63-waive.
 Requires: source scripts/deploy/doks_provisional_live_env.sh (or make target).
@@ -48,7 +48,7 @@ def _e2e_credentials() -> tuple[str, str]:
 
 
 def test_tc_ev031_003_public_convert_without_jwt_on_doks() -> None:
-    """TC-EV031-003 — convert stays JWT-free on provisional DOKS."""
+    """TC-EV031-003 - convert stays JWT-free on provisional DOKS."""
     api = _require_provisional_api()
     headers = {
         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ def test_tc_ev031_003_public_convert_without_jwt_on_doks() -> None:
 
 
 def test_tc_ev031_003_work_sessions_require_jwt_on_doks() -> None:
-    """TC-EV031-003 companion — work-sessions stay JWT-gated on DOKS."""
+    """TC-EV031-003 companion - work-sessions stay JWT-gated on DOKS."""
     api = _require_provisional_api()
     with httpx.Client(timeout=45.0) as client:
         response = client.get(
@@ -77,7 +77,7 @@ def test_tc_ev031_003_work_sessions_require_jwt_on_doks() -> None:
 
 
 def test_tc_ev031_004_login_session_list_on_doks() -> None:
-    """TC-EV031-004 — login + list work-sessions against DO Postgres on DOKS."""
+    """TC-EV031-004 - login + list work-sessions against DO Postgres on DOKS."""
     api = _require_provisional_api()
     email, password = _e2e_credentials()
     host_headers = live_api_host_headers()

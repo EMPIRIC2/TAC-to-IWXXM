@@ -1,0 +1,91 @@
+---
+description: Recurring TAC-to-IWXXM CI/DX footguns — if you see X, do Y (EV-096 / #1096)
+globs:
+  - .github/workflows/**
+  - apps/frontend/**
+  - .cursor/**
+  - package.json
+  - pnpm-lock.yaml
+alwaysApply: false
+---
+
+# CI recurring footguns (project-specific)
+
+Encode observed breakage so agents do not reinvent triage. Cite [Corpus: tests]
+TC-EV096-* and [Corpus: decisions] `ev-096-ci-rules-skills-harden.md`. Do **not** put
+these ids in operator UI / OpenAPI copy.
+
+## If you see X → do Y
+
+### 1. Frontend coverage / `Test (frontend)` red
+
+**See:** Vitest `ERROR: Coverage for lines|statements|branches … does not meet global
+threshold (100%)`; table row under 100% (e.g. `semanticProfile.ts` uncovered lines).
+
+**Do:**
+1. Run `pnpm --filter @metar/frontend run test:coverage` locally.
+2. Extend or add `*.test.ts(x)` for the uncovered util/helper lines **before** push.
+3. Do not lower global 100% thresholds to “fix” CI (ADR-007 / EV-080 fill-before-flip).
+
+### 2. E2E Full (Playwright) fail on promote / `stage`→`main`
+
+**See:** Job `E2E Full (Playwright)` red on promote PR or `stage` tip (smoke may still be green).
+
+**Do:**
+1. `gh run view <id> --log-failed` and download Playwright artifacts from the run.
+2. Treat promote as requiring **E2E Full**, not smoke-only ([Corpus: deploy] §Promote;
+   `doks-promote-from-stage.mdc`).
+3. Known flaky/surface area includes dissemination drawer UJ-027 multi-select paths —
+   file/fix under a product ticket; this rule is triage only.
+4. Watch CI after push per `ci-after-push.mdc`.
+
+### 3. Mutation / Stryker `ERR_PNPM_BAD_PM_VERSION` or “Multiple versions of pnpm”
+
+**See:** `pnpm/action-setup` fails citing root `packageManager` (e.g. `pnpm@9.15.4`).
+
+**Do:**
+1. Prefer **one** pin: root `package.json` `"packageManager"`.
+2. Do **not** also pass `with.version` to `pnpm/action-setup` in the same workflow.
+3. Guard: `make pnpm-action-package-manager-guard` /
+   `scripts/ci/check_pnpm_action_package_manager.py`.
+4. Do not “fix” by ignoring Mutation noise without documenting status.
+
+### 4. Vendor Schema Sync recurring red
+
+**See:** Scheduled `vendor-sync.yml` / “Vendor Schema Sync” failures on `main`.
+
+**Do:**
+1. Treat as **non-blocking for feature PRs** unless you own M6 vendor sync.
+2. Never hand-edit `vendor/schemas/*` — sync PRs + manifest pins only.
+3. Do not expand a feature/evolve PR to “make weekly vendor sync green.”
+
+### 5. Evolve-branch CI red (lint / typecheck / coverage)
+
+**See:** `evolve/*` PR CI fail on Quality Gates, Test (*), format, mypy, coverage.
+
+**Do:**
+1. Local before first push: `make format-check lint typecheck test-unit` (or `make ci`).
+2. Prefer **fix-before-PR**; open PR only when tip is green locally for touched scopes.
+3. PR base is **`stage`**, never `main` while `origin/stage` exists (`pr-into-stage-first`).
+
+### 6. Machine-local `/Users/` or `/home/<user>/` under tracked `.cursor/`
+
+**See:** Absolute developer home paths in `.cursor/` (EM plugin / MCP).
+
+**Do:**
+1. Run `make cursor-no-home-paths-guard` (also in `validate-fast`).
+2. Use portable env / `${userHome}` / `EM_ENGINEERING_MEMORY_ROOT` — see EV-095 / #1095.
+3. Do not reintroduce home absolute paths in tracked `.cursor/**`.
+
+## Stage → main vs evolve
+
+| Path | Expectation |
+|------|-------------|
+| Feature / evolve PR | Into **`stage`**; watch `ci-cd.yml` on the branch |
+| Promote | **`stage`→`main` only**; Staging gate + **E2E Full** (not smoke-only) |
+| Prod ship | After merge to `main` + tip CI: deploy tag `vYYYY.MM.DD-deploy` (EV-051) |
+
+## Related
+
+- `ci-after-push.mdc`, `ci-quality-gates.mdc`, `doks-promote-from-stage.mdc`
+- `scripts/ci/check_cursor_no_home_paths.py`, `scripts/ci/check_pnpm_action_package_manager.py`

@@ -1,4 +1,4 @@
-"""BUG-2026-08-04 — FE must prefer /config.json API host; Docker must inject publishable key.
+"""BUG-2026-08-04 - FE must prefer /config.json API host; Docker must inject publishable key.
 
 Production ``app.tac-to-iwxxm.com`` called suspended ``metar-to-iwxxm-api.onrender.com``
 because ``apiBase.ts`` ignored runtime config, and the frontend Dockerfile never wrote

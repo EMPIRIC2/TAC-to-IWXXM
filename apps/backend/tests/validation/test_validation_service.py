@@ -1,7 +1,6 @@
 """Tests for validation service."""
 
 import pytest
-
 from src.schemas.validation import ValidationLayer, ValidationLevel
 from src.services.validation import ValidationError, ValidationService, get_validation_service
 
@@ -48,7 +47,7 @@ class TestAirportValidation:
         """Test that missing ICAO code raises ValidationError."""
         validator = get_validation_service()
 
-        # No 4-letter alphabetic token — avoids false-positive ICAO extraction.
+        # No 4-letter alphabetic token - avoids false-positive ICAO extraction.
         tac = "??"
 
         with pytest.raises(ValidationError) as exc_info:

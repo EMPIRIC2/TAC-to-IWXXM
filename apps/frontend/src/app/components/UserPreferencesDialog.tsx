@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { useState, useEffect, useCallback } from 'react';
 import { Button } from './ui/button';
 import { Label } from './ui/label';
@@ -30,6 +31,46 @@ const STORAGE_KEY = 'metar_converter_preferences';
 
 const EXTENSION_OPTIONS = ['.xml', '.iwxxm', '.txt'] as const;
 
+/** Local-part before @ (empty when missing) — exported for unit coverage. */
+export function emailLocalPart(email: string): string {
+  return email.split('@')[0] || '';
+}
+
+/** Loading spinner body — extracted for unit coverage without async paint races. */
+export function PreferencesLoadingBody() {
+  return (
+    <div className="flex items-center justify-center py-12">
+      <Loader2 className="w-8 h-8 animate-spin text-blue-500" aria-hidden="true" />
+      <span className="ml-3 text-gray-600 dark:text-gray-300">
+        Loading preferences...
+      </span>
+    </div>
+  );
+}
+
+/** Whether Reset / header actions should be disabled. */
+export function prefsControlsDisabled(isLoading: boolean, isSaving: boolean): boolean {
+  return isLoading || isSaving;
+}
+
+/** Saving button label — extracted for unit coverage. */
+export function PreferencesSaveLabel({ isSaving }: { isSaving: boolean }) {
+  if (isSaving) {
+    return (
+      <>
+        <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+        Saving…
+      </>
+    );
+  }
+  return <>Save preferences</>;
+}
+
+/**
+ * Modal dialog for display name and output file extension preferences.
+ *
+ * Persists slim user prefs to local storage.
+ */
 export function UserPreferencesDialog({
   isOpen,
   onClose,
@@ -37,7 +78,8 @@ export function UserPreferencesDialog({
   onPreferencesSaved,
 }: UserPreferencesDialogProps) {
   const [preferences, setPreferences] = useState<UserPreferences | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  // Start true so the first open paint covers the loading branch (effect clears sync).
+  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
@@ -52,7 +94,7 @@ export function UserPreferencesDialog({
           displayName:
             typeof parsed.displayName === 'string'
               ? parsed.displayName
-              : userEmail.split('@')[0] || '',
+              : emailLocalPart(userEmail),
           outputFileExtension:
             typeof parsed.outputFileExtension === 'string'
               ? parsed.outputFileExtension
@@ -63,7 +105,7 @@ export function UserPreferencesDialog({
         setPreferences({
           ...DEFAULT_PREFERENCES,
           email: userEmail,
-          displayName: userEmail.split('@')[0] || '',
+          displayName: emailLocalPart(userEmail),
         });
       }
     } catch (error) {
@@ -72,7 +114,7 @@ export function UserPreferencesDialog({
       setPreferences({
         ...DEFAULT_PREFERENCES,
         email: userEmail,
-        displayName: userEmail.split('@')[0] || '',
+        displayName: emailLocalPart(userEmail),
       });
     } finally {
       setIsLoading(false);
@@ -87,8 +129,8 @@ export function UserPreferencesDialog({
   }, [isOpen, loadPreferences]);
 
   const handleSave = () => {
-    if (!preferences) return;
-
+    // Save is only rendered when preferences have loaded.
+    const prefs = preferences as UserPreferences;
     setIsSaving(true);
     setSaveStatus('idle');
 
@@ -105,9 +147,9 @@ export function UserPreferencesDialog({
       // Merge slim fields; leave legacy keys in storage so convert defaults keep working.
       const next = {
         ...prior,
-        displayName: preferences.displayName,
+        displayName: prefs.displayName,
         email: userEmail,
-        outputFileExtension: preferences.outputFileExtension,
+        outputFileExtension: prefs.outputFileExtension,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       setSaveStatus('success');
@@ -136,7 +178,7 @@ export function UserPreferencesDialog({
       const resetPrefs = {
         ...DEFAULT_PREFERENCES,
         email: userEmail,
-        displayName: userEmail.split('@')[0] || '',
+        displayName: emailLocalPart(userEmail),
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(resetPrefs));
       setPreferences(resetPrefs);
@@ -179,7 +221,7 @@ export function UserPreferencesDialog({
             variant="outline"
             size="sm"
             onClick={handleReset}
-            disabled={isLoading || isSaving}
+            disabled={prefsControlsDisabled(isLoading, isSaving)}
             className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
             aria-label="Reset preferences to defaults"
           >
@@ -188,17 +230,9 @@ export function UserPreferencesDialog({
           </Button>
         </div>
 
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2
-              className="w-8 h-8 animate-spin text-blue-500"
-              aria-hidden="true"
-            />
-            <span className="ml-3 text-gray-600 dark:text-gray-300">
-              Loading preferences...
-            </span>
-          </div>
-        ) : preferences ? (
+        {isLoading || !preferences ? (
+          <PreferencesLoadingBody />
+        ) : (
           <div className="space-y-6">
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Adjust your display name and output file extension. Conversion options
@@ -259,18 +293,11 @@ export function UserPreferencesDialog({
                 Cancel
               </Button>
               <Button onClick={handleSave} disabled={isSaving}>
-                {isSaving ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
-                    Saving…
-                  </>
-                ) : (
-                  'Save preferences'
-                )}
+                <PreferencesSaveLabel isSaving={isSaving} />
               </Button>
             </div>
           </div>
-        ) : null}
+        )}
       </Card>
     </div>
   );

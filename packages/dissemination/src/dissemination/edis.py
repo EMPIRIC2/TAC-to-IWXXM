@@ -1,4 +1,4 @@
-"""EDIS → RTH Washington sink — WMO AHL formatting + SMTP submit (F18 / E14-05).
+"""EDIS → RTH Washington sink - WMO AHL formatting + SMTP submit (F18 / E14-05).
 
 Messages are ASCII-only with a WMO abbreviated heading (``T1T2A1A2ii CCCC YYGGgg [BBB]``).
 ``edis_preflight`` is connect/login only (no ``send_message``). Inject

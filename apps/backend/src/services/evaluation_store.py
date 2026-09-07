@@ -65,7 +65,7 @@ async def update_job_status(
 
 async def save_result_to_db(job_id: str, result: EvaluationResultDetail) -> None:
     """Persist one evaluation result row."""
-    comparison_detail = result.comparison.dict() if result.comparison else None
+    comparison_detail = result.comparison.model_dump() if result.comparison else None
     async with get_db_session() as session:
         await session.execute(
             text(

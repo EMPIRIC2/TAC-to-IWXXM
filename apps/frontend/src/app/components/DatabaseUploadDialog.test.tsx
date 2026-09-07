@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
@@ -87,7 +87,7 @@ describe('DatabaseUploadDialog', () => {
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalled();
     });
-    const init = vi.mocked(global.fetch).mock.calls[0][1] as RequestInit;
+    const init = vi.mocked(global.fetch).mock.calls[0]![1] as RequestInit;
     expect(
       (init.headers as Record<string, string> | undefined)?.Authorization,
     ).toBeUndefined();
@@ -221,17 +221,31 @@ describe('DatabaseUploadDialog', () => {
   });
 
   it('fires format and destination onChange handlers for default selections', async () => {
+    const user = userEvent.setup();
     render(<DatabaseUploadDialog {...defaultProps} />);
 
-    fireEvent.change(screen.getByLabelText(/store as iwxxm xml only/i), {
-      target: { value: 'iwxxm' },
-    });
-    fireEvent.change(screen.getByLabelText(/upload to primary database/i), {
-      target: { value: 'primary' },
-    });
+    await user.click(screen.getByLabelText(/store as parsed json only/i));
+    await user.click(screen.getByLabelText(/store as iwxxm xml only/i));
+    await user.click(screen.getByLabelText(/upload to archive database/i));
+    await user.click(screen.getByLabelText(/upload to primary database/i));
 
     expect(screen.getByLabelText(/store as iwxxm xml only/i)).toBeChecked();
     expect(screen.getByLabelText(/upload to primary database/i)).toBeChecked();
+  });
+
+  it('toasts default success message when API omits message', async () => {
+    const user = userEvent.setup();
+    (global.fetch as any).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({}),
+      text: async () => '{}',
+    } as Response);
+
+    render(<DatabaseUploadDialog {...defaultProps} />);
+    await user.click(screen.getByRole('button', { name: /upload files to database/i }));
+    await waitFor(() => {
+      expect(mockToast.success).toHaveBeenCalledWith('Files uploaded successfully');
+    });
   });
 
   it('does not close when clicks stay inside the dialog card', async () => {

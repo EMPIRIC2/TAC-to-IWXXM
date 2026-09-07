@@ -5,7 +5,6 @@ from __future__ import annotations
 from types import SimpleNamespace
 
 import pytest
-
 from src.schemas.validation import ValidationLayer
 from src.services import validation as val
 

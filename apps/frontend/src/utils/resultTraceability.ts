@@ -19,15 +19,15 @@ export function parseTacHeadline(tac: string): {
   station: string | null;
   time: string | null;
 } {
-  const line = tac.trim().split(/\r?\n/)[0]?.trim() ?? '';
+  const line = (tac.trim().split(/\r?\n/)[0] || '').trim();
   const match = line.match(TAC_HEADLINE_RE);
   if (!match) {
     return { product: null, station: null, time: null };
   }
   return {
-    product: (match[1] ?? 'METAR').toUpperCase(),
-    station: match[2].toUpperCase(),
-    time: match[3].toUpperCase(),
+    product: (match[1] || 'METAR').toUpperCase(),
+    station: match[2]!.toUpperCase(),
+    time: match[3]!.toUpperCase(),
   };
 }
 
@@ -42,7 +42,7 @@ export function parseTacHeadline(tac: string): {
 export function deriveTacDisplayTitle(tac: string, downloadName: string): string {
   const { product, station, time } = parseTacHeadline(tac);
   if (station && time) {
-    return `${product ?? 'METAR'} ${station} ${time}`;
+    return `${product} ${station} ${time}`;
   }
   const compact = tac.trim().replace(/\s+/g, ' ');
   if (compact.length > 0 && compact.length <= 48) {

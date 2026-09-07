@@ -9,10 +9,9 @@ Comprehensive analysis of validation failures and categorization into:
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
-
 from src.validation.semantic_rules import (
     CloudLayerValidationRule,
     IssueSeverity,
@@ -36,7 +35,7 @@ class FailureAnalysis:
 
     rule_name: str
     failure_category: FailureCategory
-    input_data: Dict[str, Any]
+    input_data: dict[str, Any]
     error_message: str
     severity: IssueSeverity
     suggested_fix: str
@@ -110,7 +109,7 @@ class FailureCategorizer:
         )
 
     @staticmethod
-    def categorize_cloud_failure(cloud_layers: List[Dict], issue_message: str) -> FailureAnalysis:
+    def categorize_cloud_failure(cloud_layers: list[dict], issue_message: str) -> FailureAnalysis:
         """Categorize cloud layer validation failures."""
 
         # Data quality: missing altitude
@@ -208,7 +207,7 @@ class FailureCategorizer:
 
     @staticmethod
     def categorize_visibility_failure(
-        visibility_meters: float, phenomena: List[str], issue_message: str
+        visibility_meters: float, phenomena: list[str], issue_message: str
     ) -> FailureAnalysis:
         """Categorize visibility-weather validation failures."""
 

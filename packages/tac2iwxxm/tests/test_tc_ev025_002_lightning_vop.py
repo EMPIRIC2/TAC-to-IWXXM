@@ -1,4 +1,4 @@
-"""TC-EV025-002 / #811 — Lightning / VisuallyObservablePhenomena (UJ-040).
+"""TC-EV025-002 / #811 - Lightning / VisuallyObservablePhenomena (UJ-040).
 
 Asserts ``iwxxm-us:VisuallyObservablePhenomena`` wrapping ``ObservedLightning``
 (frequency / type / qualitativeDistance) under ``profile=iwxxm_us``.
@@ -14,10 +14,10 @@ from tac2iwxxm import convert
 IWXXM_VERSION = "2025-2"
 PROFILE = "iwxxm_us"
 
-# PDF sample 1 analogue: distant lightning N–NE of the aerodrome.
+# PDF sample 1 analogue: distant lightning N-NE of the aerodrome.
 _TAC_LTG_DSNT = "METAR KJFK 231751Z 18008KT 10SM SCT040 25/18 A2992 RMK AO2 LTG DSNT N-NE="
 
-# PDF sample 3 analogue: continuous IC/CC/CG lightning NE–E–SE (CCCGIC type).
+# PDF sample 3 analogue: continuous IC/CC/CG lightning NE-E-SE (CCCGIC type).
 _TAC_LTG_CONS = "METAR KJFK 231751Z 18008KT 10SM SCT040 25/18 A2992 RMK AO2 CONS LTGICCCCG NE-E-SE="
 
 _DISTANT_HREF = "https://codes.nws.noaa.gov/FMH-1/QualitativeDistance/DISTANT"

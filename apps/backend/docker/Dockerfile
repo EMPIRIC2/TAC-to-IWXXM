@@ -38,6 +38,8 @@ COPY packages/dissemination packages/dissemination
 COPY apps/backend apps/backend
 COPY config config
 COPY vendor/schemas vendor/schemas
+# EV-933 — ConversionProfile inspector reads docs/domain/profiles/catalog.yaml
+COPY docs/domain/profiles docs/domain/profiles
 
 # Backend still resolves schemas/iwxxm; vendor tree is authoritative (ADR-001).
 RUN ln -s /app/vendor/schemas /app/schemas

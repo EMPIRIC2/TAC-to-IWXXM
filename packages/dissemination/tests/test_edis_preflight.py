@@ -1,6 +1,6 @@
 """EDIS SMTP preflight connectivity tests (T4.3 / TC-F18 / E14-09).
 
-Proves connect/login (or connect-only) without ``send_message`` — no live SMTP
+Proves connect/login (or connect-only) without ``send_message`` - no live SMTP
 in CI. Live RTH BYOC remains TC-F18-002.
 """
 
@@ -10,7 +10,6 @@ from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 from dissemination.allowlist import EgressDenied, parse_allowlist
 from dissemination.edis import EdisParams, edis_preflight
 from dissemination.transports import AiosmtpClient
@@ -107,7 +106,7 @@ async def test_preflight_denies_host_not_allowlisted() -> None:
 async def test_preflight_connect_failure_redacts_password() -> None:
     smtp = _smtp_mock()
     smtp.connect = AsyncMock(side_effect=RuntimeError("connect failed secret-edis-token"))
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(ValueError, match=r".*") as excinfo:
         await edis_preflight(
             _params(),
             allowlist=_allowlist("smtp.gateway.example.test"),
@@ -121,7 +120,7 @@ async def test_preflight_connect_failure_redacts_password() -> None:
 @pytest.mark.asyncio
 async def test_preflight_login_failure_redacts_and_quits() -> None:
     smtp = _smtp_mock(login_side_effect=RuntimeError("auth failed secret-edis-token"))
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(ValueError, match=r".*") as excinfo:
         await edis_preflight(
             _params(),
             allowlist=_allowlist("smtp.gateway.example.test"),

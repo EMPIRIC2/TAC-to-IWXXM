@@ -1,4 +1,4 @@
-"""T5.1 / T5.2 — Snapshot checks for expand-cutover migration to tac_work_sessions."""
+"""T5.1 / T5.2 - Snapshot checks for expand-cutover migration to tac_work_sessions."""
 
 from pathlib import Path
 

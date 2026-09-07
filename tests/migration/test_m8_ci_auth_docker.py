@@ -1,4 +1,4 @@
-"""M8 CI auth Docker removal — ADR-002, T8.2."""
+"""M8 CI auth Docker removal - ADR-002, T8.2."""
 
 from __future__ import annotations
 

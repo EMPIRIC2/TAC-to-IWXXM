@@ -25,6 +25,7 @@ packages/tac2iwxxm/      # General TAC → IWXXM (F6); MIT; PyO3 at cutover
 packages/tac-validate/   # TAC lint / business rules
 packages/iwxxm-validate/ # XSD + Schematron (F2 engine)
 packages/dissemination/  # F16–F19 sinks / writer-contract / SSRF helpers (ADR-030)
+packages/workflows/      # Workflow YAML executor (ADR-042 / #1132)
 packages/shared/         # API types, env helpers, constants
 packages/gifts/          # Transitional until F6 cutover PR deletes it
 vendor/schemas/*         # Read-only wmo-im + iwxxm-us snapshots
@@ -49,6 +50,7 @@ Do **not** create:
 - **packages/tac2iwxxm**: IWXXM serialization only — no FastAPI/Supabase imports
 - **packages/tac-validate** / **iwxxm-validate**: lint/validate engines — no FastAPI/Supabase
 - **packages/dissemination**: sink adapters + writer-contract + SSRF helpers — no FastAPI/Supabase
+- **packages/workflows**: MET stage orchestration + YAML load — no FastAPI/Supabase; store via injected ports
 - **packages/auth**: JWT middleware and auth routes — no conversion logic
 - **apps/backend**: HTTP routers wiring tac2iwxxm + validate + auth (+ thin dissemination)
 - **apps/worker**: ingest orchestration only — calls packages; writes via service-role JWT

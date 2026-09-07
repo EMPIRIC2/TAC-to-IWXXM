@@ -3,7 +3,6 @@
 from dataclasses import dataclass
 
 import pytest
-
 from src.schemas.validation import (
     CodelistValidationResult,
     GMLValidationResult,
@@ -905,7 +904,6 @@ def test_validate_wellformed_malformed_xml():
 def test_adapter_gml_and_codelist_layers(monkeypatch):
     """Adapter GML and codelist helpers delegate to validate_iwxxm."""
     from iwxxm_validate.models import Issue, ValidationReport
-
     from src.services.iwxxm_validation_adapter import validate_gml_references, validate_wmo_codelists
 
     levels_seen: list[tuple[str, ...]] = []

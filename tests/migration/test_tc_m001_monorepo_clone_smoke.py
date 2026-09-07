@@ -1,4 +1,4 @@
-"""TC-M001: Monorepo Clone Smoke — test-plan.md §TC-M001, UJ-DEV-001.
+"""TC-M001: Monorepo Clone Smoke - test-plan.md §TC-M001, UJ-DEV-001.
 
 Verifies a clean clone builds and runs unit tests without git submodules.
 Steps (test-plan):

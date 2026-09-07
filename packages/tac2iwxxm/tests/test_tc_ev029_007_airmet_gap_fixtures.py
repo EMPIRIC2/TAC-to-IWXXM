@@ -2,7 +2,7 @@
 
 M0 inventory: AIRMET standalone is covered (F24 / A6-1a-TS); remaining deepen is
 WA AHL body/BBB matrix and multi-report (example-inventory §A AIRMET row; remine
-§B.7; WA→LW + BBB→reportStatus). AIRMET CNL peer absent from pin — synthetic CNL
+§B.7; WA→LW + BBB→reportStatus). AIRMET CNL peer absent from pin - synthetic CNL
 AHL fixture (FIXTURE_GAPS).
 
 Product-order smoke uses annex3 ``airmet_a6_1a_ts``. BBB→``reportStatus`` and
@@ -23,7 +23,7 @@ ANNEX3 = FIXTURES / "annex3_golden"
 IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
 
-# Body has no COR/AMD keyword — status must come from AHL BBB (T8.2).
+# Body has no COR/AMD keyword - status must come from AHL BBB (T8.2).
 _BBB_CASES = (
     ("airmet_ahl_normal.txt", None, "NORMAL"),
     ("airmet_ahl_rra.txt", "RRA", "NORMAL"),

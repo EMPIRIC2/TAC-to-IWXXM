@@ -492,7 +492,7 @@ class TestValidationLayerCombinations:
                 assert len(results) <= len(metars)
 
     @pytest.mark.parametrize(
-        "validation_level,stop_on_error",
+        ("validation_level", "stop_on_error"),
         [
             ("none", True),
             ("none", False),

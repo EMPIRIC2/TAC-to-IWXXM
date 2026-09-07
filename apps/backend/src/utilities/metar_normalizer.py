@@ -21,9 +21,9 @@ that the rest of the conversion pipeline continues unchanged.
 from __future__ import annotations
 
 import re
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
-# Matches exactly RE + descriptor (SH or FZ) with nothing after — these are
+# Matches exactly RE + descriptor (SH or FZ) with nothing after - these are
 # the only descriptor-only tokens that are both (a) observed in the wild and
 # (b) fixable via a standards-conformant UP suffix.
 _TRUNCATED_REWX_RE = re.compile(r"^RE(SH|FZ)$", re.IGNORECASE)
@@ -31,7 +31,7 @@ _TRUNCATED_REWX_RE = re.compile(r"^RE(SH|FZ)$", re.IGNORECASE)
 
 def normalize_recent_weather_tokens(
     tac_text: str,
-) -> Tuple[str, List[Dict[str, Any]]]:
+) -> tuple[str, list[dict[str, Any]]]:
     """Rewrite truncated recent-weather tokens to WMO D-6 compliant forms.
 
     Operates at the token (whitespace-delimited word) level so that valid
@@ -49,7 +49,7 @@ def normalize_recent_weather_tokens(
         list of dicts with keys ``index``, ``original``, ``replacement``, and
         ``rule``.  The list is empty when no rewrites were made.
     """
-    warnings: List[Dict[str, Any]] = []
+    warnings: list[dict[str, Any]] = []
 
     # Preserve leading/trailing whitespace on the outer string but work on
     # individual tokens so we don't alter separators inside the message.
@@ -104,6 +104,6 @@ def normalize_recent_weather_tokens(
 
 def normalize_recent_weather_for_tac(
     tac_text: str,
-) -> Tuple[str, List[Dict[str, Any]]]:
+) -> tuple[str, list[dict[str, Any]]]:
     """Centralized wrapper for TAC recent-weather normalization."""
     return normalize_recent_weather_tokens(tac_text)

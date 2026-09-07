@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+# Stub kubectl — cluster-free smoke paths.
+set -euo pipefail
+joined="$*"
+
+if [[ "$joined" == *"get deploy metar-worker"* && "$joined" == *replicas* ]]; then
+  echo "0"
+  exit 0
+fi
+
+if [[ "$joined" == *"get secret"* && "$joined" == *INGEST_POLLER_URL* ]]; then
+  printf '%s' 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0VNUElSSUMyL1RBQy10by1JV1hYTS9tYWluL2FwcHMvd29ya2VyL3Rlc3RzL2ZpeHR1cmVzL2luZ2VzdF9mZWVkLmpzb24='
+  exit 0
+fi
+
+if [[ "$joined" == *"auth can-i get secrets"* ]]; then
+  exit 1
+fi
+if [[ "$joined" == *"auth can-i create jobs"* ]]; then
+  exit 1
+fi
+
+# EV-933 staging ops — resolve current API image + confirm HMAC/init after patch.
+if [[ "$joined" == *"get deploy metar-api"* && "$joined" == *'containers[?(@.name=="api")].image'* ]]; then
+  echo "ghcr.io/empiric2/tac-to-iwxxm/backend:20260904151129-48cf5da"
+  exit 0
+fi
+if [[ "$joined" == *"get deploy metar-api"* && "$joined" == *'initContainers[?(@.name=="alembic-upgrade")].image'* ]]; then
+  echo "ghcr.io/empiric2/tac-to-iwxxm/backend:20260904151129-48cf5da"
+  exit 0
+fi
+if [[ "$joined" == *"get pods"* ]]; then
+  echo "metar-api-stub"
+  exit 0
+fi
+if [[ "$joined" == *"get secret"* && "$joined" == *PROFILE_OVERLAY_HMAC_SECRET* ]]; then
+  state="${BATS_TMPDIR:-/tmp}/kubectl-ev933-hmac-state"
+  if [[ ! -f "${state}" ]]; then
+    : >"${state}"
+    exit 0
+  fi
+  printf '%s' 'c3RhZ2luZy1vdmVybGF5LWhtYWMtc3R1Yg=='
+  exit 0
+fi
+
+if [[ "$joined" == *"rollout status"* ]]; then
+  echo 'deployment "metar-worker" successfully rolled out'
+  exit 0
+fi
+
+if [[ "$joined" == *"logs"* ]]; then
+  echo "INFO  [alembic.runtime.migration] Running upgrade -> 20260903_0003"
+  exit 0
+fi
+
+exit 0

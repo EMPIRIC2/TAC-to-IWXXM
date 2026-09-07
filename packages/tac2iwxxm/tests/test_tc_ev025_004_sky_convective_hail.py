@@ -1,4 +1,4 @@
-"""TC-EV025-004 / M4.2 — Sky / convective / hail (UJ-040).
+"""TC-EV025-004 / M4.2 - Sky / convective / hail (UJ-040).
 
 Asserts ``CharacterOfTheSky`` (FMH-1 ``8/CLCMCH``), ``ConvectiveCloudLocation``
 (CB/TS/TCU remarks), and ``HailstoneSize`` (``GR`` size) under ``iwxxm_us``.
@@ -9,8 +9,9 @@ XML pins follow iwxxm-us 3.0 PDF sample instances
 
 from __future__ import annotations
 
-from tac2iwxxm import convert
 from tac2iwxxm.products.metar_speci import parse_metar_speci
+
+from tac2iwxxm import convert
 
 IWXXM_VERSION = "2025-2"
 PROFILE = "iwxxm_us"
@@ -24,7 +25,7 @@ _TAC_SKY_NIL = "METAR KJFK 231751Z 18008KT 10SM OVC008 25/18 A2992 RMK AO2 8/7//
 # PDF ConvectiveCloudLocation: distant CB west moving NE.
 _TAC_CB = "METAR KJFK 231751Z 18008KT 10SM SCT040 25/18 A2992 RMK AO2 CB DSNT W MOV NE="
 
-# PDF: thunderstorm vicinity S–SW moving SE.
+# PDF: thunderstorm vicinity S-SW moving SE.
 _TAC_TS = "METAR KJFK 231751Z 18008KT 10SM SCT040 25/18 A2992 RMK AO2 TS VC S-SW MOV SE="
 
 # PDF HailstoneSize: 1 3/4 inch.

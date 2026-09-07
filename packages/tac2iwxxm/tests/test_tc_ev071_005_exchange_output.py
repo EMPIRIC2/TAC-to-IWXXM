@@ -1,4 +1,4 @@
-"""TC-EV071-005..009 — CA_ECCC exchange output METAR slice (EV-071 M2 / #1032 / #1040).
+"""TC-EV071-005..009 - CA_ECCC exchange output METAR slice (EV-071 M2 / #1032 / #1040).
 
 [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: tests §TC-EV071]
 """
@@ -10,8 +10,6 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
-
-from tac2iwxxm import convert, parse_ahl, split_bulletin
 from tac2iwxxm.exchange_output import (
     build_ca_eccc_output_spec,
     ca_distribution_path,
@@ -23,6 +21,8 @@ from tac2iwxxm.exchange_output import (
     msc_filename_matches_pattern,
     profile_output_spec_to_dict,
 )
+
+from tac2iwxxm import convert, parse_ahl, split_bulletin
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles" / "CA_ECCC"
 PROFILE = "ca_eccc"
@@ -56,7 +56,8 @@ def test_tc_ev071_006_wmo_header_metar_designator() -> None:
     golden = (FIXTURES / "METAR" / "valid" / "metar_basic.golden.xml").read_text(encoding="utf-8")
     assert validate_ca_exchange_packaging(golden, product="METAR", ahl_header=wmo_ahl) == []
     bad = validate_ca_exchange_packaging(golden, product="METAR", ahl_header="A_LTCN31 CYUL 231800")
-    assert bad and bad[0].code == "CA_EXCHANGE_AHL_PRODUCT"
+    assert bad
+    assert bad[0].code == "CA_EXCHANGE_AHL_PRODUCT"
 
 
 def test_tc_ev071_007_translation_centre_metadata_golden() -> None:

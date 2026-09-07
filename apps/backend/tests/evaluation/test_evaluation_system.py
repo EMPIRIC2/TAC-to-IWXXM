@@ -196,7 +196,6 @@ class TestAviationWeatherClient:
     async def test_fetch_metar_batch_handles_404(self):
         """Test handling of 404 responses."""
         import httpx
-
         from src.clients.aviation_weather_client import AviationWeatherClient
 
         with patch("httpx.AsyncClient") as mock_client_class:

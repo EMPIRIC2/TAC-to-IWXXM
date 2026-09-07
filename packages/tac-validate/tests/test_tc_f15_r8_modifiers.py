@@ -1,4 +1,4 @@
-"""Research R8 / E11-28 — AUTO/COR/NIL/NOSIG/TEMPO/RVR/VRB·gust (T3.11/T3.12).
+"""Research R8 / E11-28 - AUTO/COR/NIL/NOSIG/TEMPO/RVR/VRB·gust (T3.11/T3.12).
 
 HARD pack: each theme has accept coverage; modifiers emit info codes; malformed
 NIL/RVR/wind emit errors.
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

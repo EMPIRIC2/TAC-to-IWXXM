@@ -114,4 +114,30 @@ describe('AdminWorkSessionsPanel', () => {
       expect(screen.getByText('archived')).toBeInTheDocument();
     });
   });
+
+  it('ignores late admin list success and errors after unmount', async () => {
+    let resolveList: ((v: unknown) => void) | undefined;
+    let rejectList: ((e: unknown) => void) | undefined;
+    mockListAdmin.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveList = resolve;
+        }),
+    );
+    const first = render(<AdminWorkSessionsPanel accessToken="admin-token" />);
+    first.unmount();
+    resolveList?.({ items: [], total: 0, page: 1, limit: 50 });
+
+    mockListAdmin.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectList = reject;
+        }),
+    );
+    const second = render(<AdminWorkSessionsPanel accessToken="admin-token" />);
+    second.unmount();
+    rejectList?.(new Error('late'));
+    await Promise.resolve();
+    expect(mockListAdmin).toHaveBeenCalled();
+  });
 });

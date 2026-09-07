@@ -93,18 +93,17 @@ concurrency = ["thread", "greenlet"]
 omit = [
     "src/**/__main__.py",
     "src/__main__.py",
-    "src/**/__init__.py",
-    "src/__init__.py",
-    "*/__init__.py",
     "*/test_*.py",
     "tests/*",
     "*/tests/*",
     # Transitional gifts bridge retained for tests; not on F6 convert path (ADR-014 cutover).
     "src/utilities/gifts_locationdb_adapter.py",
+    # Protocol-only lxml typing boundary; runtime uses cast(lxml_etree).
+    "src/utilities/xml_types.py",
 ]
 
 [tool.coverage.report]
-fail_under = 98
+fail_under = 100
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
@@ -116,14 +115,16 @@ exclude_lines = [
 precision = 2
 
 [tool.ruff]
+extend = "../../ruff.toml"
 line-length = 120
 
 [tool.ruff.lint]
-select = ["E", "W", "F", "I"]
-ignore = ["E501", "E741"]
+ignore = ["E741"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["E402", "W293", "F841", "E722", "F811", "F401", "E712"]
+"tests/**" = ["E402", "W293", "F841", "E722", "F811", "F401", "E712", "ANN"]
+"src/routers/**" = ["B008"]
+"src/utilities/security.py" = ["B008"]
 "src/config/icao_opmet.py" = ["F601"]
 
 [tool.uv.sources]

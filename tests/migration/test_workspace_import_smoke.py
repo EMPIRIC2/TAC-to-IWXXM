@@ -1,4 +1,4 @@
-"""TC-M001 workspace import smoke — post gifts cutover + Auth restore (F31)."""
+"""TC-M001 workspace import smoke - post gifts cutover + Auth restore (F31)."""
 
 from __future__ import annotations
 

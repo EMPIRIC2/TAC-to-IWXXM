@@ -1,4 +1,4 @@
-"""TC-F28-006 — SWXA adjacency + AHL FN→LN (S036 / EV-029 T11.4 / F28).
+"""TC-F28-006 - SWXA adjacency + AHL FN→LN (S036 / EV-029 T11.4 / F28).
 
 SWXA never mis-roots as SIGMET/VAA/TCA; AHL ``FN`` maps to IWXXM ``LN``;
 ``split_bulletin(product=SWXA)`` accepts FN + SWX ADVISORY bodies.
@@ -70,11 +70,11 @@ def test_tc_f28_006_swxa_keeps_space_weather_root() -> None:
 
 @pytest.mark.parametrize(
     ("wrong_product", "fixture"),
-    (
+    [
         ("SIGMET", "swxa_a7_3.tac"),
         ("VAA", "swxa_a7_3.tac"),
         ("TCA", "swxa_a7_3.tac"),
-    ),
+    ],
 )
 def test_tc_f28_006_swxa_rejected_as_neighbor(wrong_product: str, fixture: str) -> None:
     tac = (ANNEX3 / fixture).read_text(encoding="utf-8")
@@ -84,7 +84,7 @@ def test_tc_f28_006_swxa_rejected_as_neighbor(wrong_product: str, fixture: str) 
 
 
 def test_tc_f28_006_neighbors_rejected_as_swxa() -> None:
-    for fname, product in (
+    for fname, _product in (
         ("sigmet_basic.tac", "SIGMET"),
         ("vaa_basic.tac", "VAA"),
         ("tca_basic.tac", "TCA"),

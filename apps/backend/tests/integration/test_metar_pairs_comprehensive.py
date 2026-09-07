@@ -17,10 +17,8 @@ Failures generate detailed JSON diff reports for root cause analysis.
 
 import re
 from pathlib import Path
-from typing import List, Tuple
 
 import pytest
-
 from src.utilities.conversion import convert_metar_tac_with_metadata
 
 
@@ -47,11 +45,10 @@ def extract_iwxxm_version(xml_content: str) -> str:
     return "2025-2"
 
 
-def _collect_metar_pairs(data_dir: Path) -> List[Tuple[Path, Path, str]]:
+def _collect_metar_pairs(data_dir: Path) -> list[tuple[Path, Path, str]]:
     """Collect all (tac_file, xml_file, version_name) tuples from test data directories.
 
-    Returns:
-        List of (tac_path, xml_path, amendment_version) tuples
+    Returns: list of (tac_path, xml_path, amendment_version) tuples
     """
     pairs = []
     base = Path(data_dir)
@@ -87,7 +84,7 @@ class TestMetarConversionComprehensive:
     """Parametrized tests for METAR→IWXXM conversion across all amendment versions."""
 
     @pytest.mark.parametrize(
-        "tac_file,xml_file,amendment_version",
+        ("tac_file", "xml_file", "amendment_version"),
         METAR_PAIRS,
     )
     def test_metar_converts_to_matching_iwxxm(self, tac_file: Path, xml_file: Path, amendment_version: str):
@@ -146,7 +143,7 @@ class TestMetarConversionComprehensive:
 
         # Convert METAR TAC to IWXXM XML with enriched aerodrome metadata
         # Use detected version for compatibility + test mode for WMO reference compliance
-        converted_xml, validation_result = convert_metar_tac_with_metadata(
+        converted_xml, _validation_result = convert_metar_tac_with_metadata(
             tac_text,
             iwxxm_version=iwxxm_version,  # Auto-detected from reference XML
             reference_time=reference_time,
@@ -186,22 +183,19 @@ class TestMetarConversionComprehensive:
 
             if report.field_diffs:
                 msg_parts.append(f"\n{len(report.field_diffs)} Field Differences:")
-                for diff in report.field_diffs[:5]:  # Show first 5
-                    msg_parts.append(f"  - {diff}")
+                msg_parts.extend(f"  - {diff}" for diff in report.field_diffs[:5])  # Show first 5
                 if len(report.field_diffs) > 5:
                     msg_parts.append(f"  ... and {len(report.field_diffs) - 5} more")
 
             if report.lat_lon_diffs:
                 msg_parts.append(f"\n{len(report.lat_lon_diffs)} Lat/Lon Differences:")
-                for diff in report.lat_lon_diffs[:3]:
-                    msg_parts.append(f"  - {diff}")
-
+                msg_parts.extend(f"  - {diff}" for diff in report.lat_lon_diffs[:3])
             msg_parts.append(f"\nFull diff report: {REPORT_DIR}/{tac_file.stem}_{amendment_version}.json")
 
             pytest.fail("\n".join(msg_parts))
 
     @pytest.mark.parametrize(
-        "tac_file,xml_file,amendment_version",
+        ("tac_file", "xml_file", "amendment_version"),
         METAR_PAIRS,
     )
     def test_metar_converts_to_iwxxm_2025_2(self, tac_file: Path, xml_file: Path, amendment_version: str):
@@ -230,7 +224,7 @@ class TestMetarConversionComprehensive:
             tac_text += "="
 
         # Convert to IWXXM 2025-2 (latest version)
-        converted_xml, validation_result = convert_metar_tac_with_metadata(
+        converted_xml, _validation_result = convert_metar_tac_with_metadata(
             tac_text,
             iwxxm_version="2025-2",  # Force 2025-2 for live comparison
             use_test_overrides=True,

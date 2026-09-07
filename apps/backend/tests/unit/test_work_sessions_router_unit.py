@@ -1,8 +1,8 @@
-"""Unit tests for F5 work session router — CRUD, WIP conflict, soft-delete, restore."""
+"""Unit tests for F5 work session router - CRUD, WIP conflict, soft-delete, restore."""
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from typing import Any
 from unittest.mock import patch
 from uuid import UUID, uuid4
@@ -10,7 +10,6 @@ from uuid import UUID, uuid4
 import pytest
 from fastapi import HTTPException
 from fastapi.testclient import TestClient
-
 from src.api import app
 from src.routers import work_sessions as ws_router
 from src.schemas.work_session import (
@@ -25,7 +24,7 @@ from src.utilities.security import verify_supabase_token
 
 SESSION_ID = uuid4()
 USER_ID = uuid4()
-NOW = datetime(2026, 6, 23, 12, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 6, 23, 12, 0, tzinfo=UTC)
 
 
 def _sample_session(*, status: WorkSessionStatus = WorkSessionStatus.DRAFT) -> WorkSession:

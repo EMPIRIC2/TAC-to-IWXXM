@@ -2,11 +2,10 @@
 Tests for the statistics logging service.
 """
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-
 from src.schemas.icao_opmet import TranslationStatus
 from src.services.statistics import StatisticsService
 
@@ -158,8 +157,8 @@ class TestGetStatistics:
 
         with patch.object(statistics_service, "get_statistics", new_callable=AsyncMock, return_value=expected_stats):
             # Method requires start_date and end_date
-            start = datetime(2025, 2, 1, tzinfo=timezone.utc)
-            end = datetime(2025, 2, 10, tzinfo=timezone.utc)
+            start = datetime(2025, 2, 1, tzinfo=UTC)
+            end = datetime(2025, 2, 10, tzinfo=UTC)
             stats = await statistics_service.get_statistics(start, end)
 
             assert stats is not None
@@ -183,8 +182,8 @@ class TestGetStatistics:
         }
 
         with patch.object(statistics_service, "get_statistics", new_callable=AsyncMock, return_value=expected_stats):
-            start_date = datetime.now(timezone.utc) - timedelta(days=7)
-            end_date = datetime.now(timezone.utc)
+            start_date = datetime.now(UTC) - timedelta(days=7)
+            end_date = datetime.now(UTC)
 
             stats = await statistics_service.get_statistics(start_date, end_date)
 
@@ -208,8 +207,8 @@ class TestGetStatisticsByRegion:
             statistics_service, "get_statistics_by_region", new_callable=AsyncMock, return_value=expected_stats
         ):
             # Method requires start_date and end_date
-            start = datetime(2025, 2, 1, tzinfo=timezone.utc)
-            end = datetime(2025, 2, 10, tzinfo=timezone.utc)
+            start = datetime(2025, 2, 1, tzinfo=UTC)
+            end = datetime(2025, 2, 10, tzinfo=UTC)
             stats = await statistics_service.get_statistics_by_region(start, end)
 
             assert len(stats) == 2

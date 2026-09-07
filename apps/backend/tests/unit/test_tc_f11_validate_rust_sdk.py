@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar
 from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
 from iwxxm_validate import Issue, ValidationReport, validate_iwxxm
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -69,11 +68,11 @@ def test_validate_calls_sdk_once_without_orchestrator_xsd_schematron(
     class _FakeResult:
         is_valid = True
         version = "2023-1"
-        layers_run: list[Any] = []
-        layers_passed: list[Any] = []
-        layers_failed: list[Any] = []
-        all_issues: list[Any] = []
-        issues_by_layer: dict[Any, list[Any]] = {}
+        layers_run: ClassVar[list[Any]] = []
+        layers_passed: ClassVar[list[Any]] = []
+        layers_failed: ClassVar[list[Any]] = []
+        all_issues: ClassVar[list[Any]] = []
+        issues_by_layer: ClassVar[dict[Any, list[Any]]] = {}
         stopped_at_layer = None
 
     def fake_complete(*, tac_text, xml_content, version, layers, stop_on_error=False):

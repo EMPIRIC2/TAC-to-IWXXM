@@ -1,4 +1,4 @@
-"""TC-EV023-005 — Amd79 TAC → 2025-2 → XSD+SCH informative suite (S030 / EV-023 T5.1).
+"""TC-EV023-005 - Amd79 TAC → 2025-2 → XSD+SCH informative suite (S030 / EV-023 T5.1).
 
 Does **not** byte-match suite 2023-1 XML. Soft failures use
 ``@pytest.mark.xfail(strict=False)`` so main CI does not hard-fail (E23-T4=2).

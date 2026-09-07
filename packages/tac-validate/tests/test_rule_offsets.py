@@ -1,4 +1,4 @@
-"""T2.2 — Parse-gate rules emit character offsets when locatable (S011 / EV-008)."""
+"""T2.2 - Parse-gate rules emit character offsets when locatable (S011 / EV-008)."""
 
 from __future__ import annotations
 
@@ -28,7 +28,8 @@ def test_missing_terminator_highlights_report_end() -> None:
     tac = "METAR KJFK 101851Z 24008KT 10SM FEW250 15/07 A3034"
     report = lint(tac, product="METAR")
     term = next(i for i in report.issues if i.code == "MISSING_TERMINATOR")
-    assert term.start is not None and term.end is not None
+    assert term.start is not None
+    assert term.end is not None
     assert 0 <= term.start < term.end <= len(tac)
     leading = len(tac) - len(tac.lstrip())
     core = tac.strip().rstrip()

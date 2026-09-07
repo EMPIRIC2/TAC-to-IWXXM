@@ -1,4 +1,4 @@
-"""TC-EV023-003 — translationFailedTAC quarantine (S030 / EV-023 T3.1).
+"""TC-EV023-003 - translationFailedTAC quarantine (S030 / EV-023 T3.1).
 
 Locks the official 2025-2 ``*-translation-failed.xml`` attribute matrix and
 requires convert of unreliable TAC to emit a quarantine shell with original TAC
@@ -59,7 +59,8 @@ def assert_quarantine_attr_matrix(xml: str) -> None:
     assert _attr(xml, "reportStatus") == "NORMAL"
     assert _attr(xml, "permissibleUsage") == "OPERATIONAL"
     tac = _attr(xml, "translationFailedTAC")
-    assert tac is not None and tac.strip(), "translationFailedTAC must carry original TAC"
+    assert tac is not None
+    assert tac.strip(), "translationFailedTAC must carry original TAC"
 
 
 def assert_quarantine_shell_no_partial_observation(xml: str) -> None:
@@ -73,9 +74,9 @@ def assert_no_tac_in_xml_comments(xml: str) -> None:
     """Operational TAC must not be smuggled via XML comments."""
     for m in re.finditer(r"<!--(.*?)-->", xml, re.DOTALL):
         body = m.group(1).upper()
-        assert "METAR " not in body and "TAF " not in body and "SPECI " not in body, (
-            "TAC must not appear in XML comments; use translationFailedTAC"
-        )
+        assert "METAR " not in body
+        assert "TAF " not in body
+        assert "SPECI " not in body, "TAC must not appear in XML comments; use translationFailedTAC"
 
 
 @pytest.mark.parametrize(
@@ -92,7 +93,7 @@ def test_tc_ev023_003_official_attr_matrix(xml_name: str, root: str, tac_substr:
     assert_no_tac_in_xml_comments(xml)
     if tac_substr is not None:
         assert tac_substr in (_attr(xml, "translationFailedTAC") or "")
-    # Official failed examples are shells — no observation / baseForecast body.
+    # Official failed examples are shells - no observation / baseForecast body.
     assert_quarantine_shell_no_partial_observation(xml)
 
 

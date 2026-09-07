@@ -45,7 +45,7 @@ class StageResult(msgspec.Struct, frozen=True):
     stage :
         Stage id aligned with ``catalog.yaml`` ``validation_stages`` (e.g. ``wmo_xsd``).
     label :
-        Operator-readable stage label (EV-048 — no planning tokens).
+        Operator-readable stage label (EV-048 - no planning tokens).
     ok :
         ``True`` when the stage has no error-severity issues.
     issues :

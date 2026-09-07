@@ -1,4 +1,11 @@
-import { useState, useRef, useEffect, useLayoutEffect, useCallback } from 'react';
+import {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+  useMemo,
+} from 'react';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -12,6 +19,7 @@ import {
   type IwxxmPreviewStatus,
 } from './IwxxmPreviewPane';
 import { SoftPreviewControl } from './SoftPreviewControl';
+import { PropagateResidualsControl } from './PropagateResidualsControl';
 import { LiveIwxxmToggle } from './LiveIwxxmToggle';
 import { WorkbenchConsole } from './WorkbenchConsole';
 import { useLintIssueCatalog } from '@/hooks/useLintIssueCatalog';
@@ -39,7 +47,21 @@ import { ThemeToggle } from './ThemeToggle';
 import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { DisseminationDrawer } from './DisseminationDrawer';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
+import {
+  fetchProfileCatalog,
+  listOverlays,
+  type MetarFamilyVariant,
+  type OverlayOut,
+  type ProfileCatalogEntry,
+} from '@/utils/conversionProfilesApi';
+import {
+  CONVERT_OVERLAY_HELP,
+  CONVERT_OVERLAY_LABEL,
+  CONVERT_OVERLAY_NONE,
+} from '@/utils/conversionProfilesCopy';
+import { convertOverlayFields } from '@/utils/convertOverlayFields';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
 import { PrivacySettingsDialog } from './PrivacySettingsDialog';
@@ -56,6 +78,7 @@ import {
   CA_ECCC_IWXXM_VERSION,
   type IwxxmVersionId,
   coerceIwxxmVersion,
+  coerceIwxxmVersionForProfile,
   iwxxmVersionOptionsForProfile,
 } from '@/utils/iwxxmVersions';
 import { signOutWithScope } from '/utils/supabase/logout';
@@ -86,12 +109,24 @@ import { isAbortError } from '/utils/liveAssist';
 import {
   detectTacProduct,
   coerceIwxxmProfile,
+  hydrateSemanticProfile,
+  isCaEcccProfile,
   isConvertProductSelection,
   resolveConvertProduct,
   splitManualEntries,
+  DEFAULT_SEMANTIC_PROFILE,
+  SEMANTIC_PROFILE_OPTIONS,
+  TAC_PRODUCTS,
+  type TacProduct,
   type IwxxmProfile,
   type TacProductSelection,
-} from '/utils/tacProduct';
+} from '@/utils/tacProduct';
+import {
+  coerceExchangeProfile,
+  DEFAULT_EXCHANGE_PROFILE,
+  EXCHANGE_PROFILE_OPTIONS,
+  type ExchangeProfileId,
+} from '@/utils/exchangeProfile';
 import {
   CA_ECCC_EXTENSION_LABEL,
   CA_ECCC_SUPPORTED_PRODUCTS,
@@ -120,8 +155,10 @@ import { readGuestConverterState } from '/utils/guestConverterState';
 import { OPERATOR_ONE_PAGER_URL } from '/utils/operatorHelp';
 import {
   ACCUMULATE_RESULT_CAP,
+  appendConvertedWithinCap,
   manualDownloadXmlName,
   manualOutputName,
+  nextFirstAccumulatedTac,
   outputArchiveName,
   sanitizeOutputFilename,
 } from '/utils/outputFilename';
@@ -150,6 +187,22 @@ import {
   type OperatorInputMode,
 } from '/utils/inputKind';
 import { inflateGzipToText, isGzipFileName } from '/utils/gunzip';
+import {
+  applyWebkitDirectoryAttrs,
+  applyFocusedQueueContent,
+  ariaInvalidFromError,
+  caExtensionBundleAvailableFromStatus,
+  clearFileInputValue,
+  coalescePreviewXml,
+  firstTacForArchive,
+  focusedValidateErrorMessage,
+  forEachFileInList,
+  hydratedResultName,
+  isDropZoneActivateKey,
+  iwxxmValidationErrorMessage,
+  lintIssueCount,
+  queueResultOriginalName,
+} from '/utils/fileInputHelpers';
 
 interface ConvertedFile {
   id: string;
@@ -200,11 +253,110 @@ type IWXXMVersion = IwxxmVersionId;
 type OnErrorBehavior = 'skip' | 'fail' | 'warn';
 type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 
+const PROFILE_LABELS = new Map<string, string>(
+  SEMANTIC_PROFILE_OPTIONS.map((option) => [option.value, option.label]),
+);
+
+const FALLBACK_PROFILE_SUMMARIES: Partial<Record<IwxxmProfile, ProfileCatalogEntry>> = {
+  ICAO_2025: {
+    id: 'ICAO_2025',
+    kind: 'semantic',
+    products: [
+      'METAR',
+      'SPECI',
+      'TAF',
+      'SIGMET',
+      'AIRMET',
+      'VAA',
+      'TCA',
+      'SWXA',
+      'VONA',
+    ],
+    deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+  },
+  US_FAA_NWS: {
+    id: 'US_FAA_NWS',
+    kind: 'semantic',
+    products: ['METAR', 'SPECI', 'SIGMET', 'AIRMET'],
+    deltas_vs_icao: [
+      'Adds FAA/NWS national differences on top of the ICAO baseline.',
+      'Uses the iwxxm-us schema catalog for United States IWXXM extensions.',
+    ],
+  },
+  CA_ECCC: {
+    id: 'CA_ECCC',
+    kind: 'semantic',
+    products: [...CA_ECCC_SUPPORTED_PRODUCTS],
+    deltas_vs_icao: [CA_ECCC_EXTENSION_LABEL],
+    metar_family_variants: [
+      {
+        tac_lead: 'METAR',
+        api_product: 'METAR',
+        iwxxm_root: 'iwxxm:METAR',
+        rule_id_prefix: 'CA.METAR',
+      },
+      {
+        tac_lead: 'SPECI',
+        api_product: 'SPECI',
+        iwxxm_root: 'iwxxm:SPECI',
+        rule_id_prefix: 'CA.SPECI',
+      },
+      {
+        tac_lead: 'LWIS',
+        api_product: 'METAR',
+        iwxxm_root: 'iwxxm-ca:LWIS',
+        rule_id: 'CA.METAR.LWIS',
+        minimal_observation: true,
+        notes: 'Limited Weather Information System',
+      },
+      {
+        tac_lead: 'SAWR',
+        api_product: 'METAR',
+        iwxxm_root: 'iwxxm-ca:SAWR',
+        rule_id: 'CA.METAR.SAWR',
+        notes: 'Surface Aviation Weather Report',
+      },
+    ],
+  },
+};
+
+function profileDisplayName(profileId: string): string {
+  return PROFILE_LABELS.get(profileId) ?? profileId;
+}
+
+function fallbackProfileSummary(
+  profile: IwxxmProfile,
+  iwxxmVersion: IWXXMVersion,
+): ProfileCatalogEntry {
+  const canonicalId = hydrateSemanticProfile(profile);
+  const fallback = FALLBACK_PROFILE_SUMMARIES[canonicalId];
+  if (fallback) {
+    return {
+      ...fallback,
+      iwxxm_line:
+        canonicalId === 'CA_ECCC'
+          ? `IWXXM ${CA_ECCC_IWXXM_VERSION} (MSC operational)`
+          : `IWXXM ${iwxxmVersion}`,
+    };
+  }
+  return {
+    id: canonicalId,
+    kind: 'semantic',
+    products: [],
+    deltas_vs_icao: [],
+    iwxxm_line: `IWXXM ${iwxxmVersion}`,
+  };
+}
+
 interface ConversionParams {
   bulletinId: string;
   issuingCenter: string;
   product: TacProductSelection;
   profile: IwxxmProfile;
+  reportVariant: string;
+  exchangeProfile: ExchangeProfileId;
+  /** Optional signed ConversionProfile overlay UUID (empty = none). */
+  overlayId: string;
   iwxxmVersion: IWXXMVersion;
   strictValidation: boolean;
   includeNilReasons: boolean;
@@ -212,6 +364,32 @@ interface ConversionParams {
   logLevel: LogLevel;
 }
 
+function activeMetarFamilyVariants(
+  entry: ProfileCatalogEntry,
+  product: string,
+): MetarFamilyVariant[] {
+  const productU = product.trim().toUpperCase();
+  return (entry.metar_family_variants ?? []).filter(
+    (variant) => variant.api_product.trim().toUpperCase() === productU,
+  );
+}
+
+/**
+ * Operator workbench: TAC queue, convert, validate, and dissemination entry points.
+ *
+ * @param props.accessToken - Bearer token for authenticated API calls (empty for guest)
+ * @param props.userEmail - Display email in the header
+ * @param props.isGuest - When true, guest-mode limits apply
+ * @param props.onLogout - Sign-out handler
+ * @param props.onRequestLogin - Opens sign-in when a gated action needs auth
+ * @param props.onOpenHistory - Opens F5 work-session history
+ * @param props.onLoadWorkSession - Loads a saved work session into the workbench
+ * @param props.onNewMetar - Clears toward a new METAR/SPECI draft
+ * @param props.onSessionUpdated - Notifies parent after autosave / session mutate
+ * @param props.onActiveSessionIdChange - Reports the active F5 session id
+ * @param props.activeWorkSessionId - Current F5 session id when known
+ * @param props.loadedWorkSession - Hydration payload for the active session
+ */
 export function FileConverter({
   accessToken,
   userEmail = 'Guest',
@@ -240,6 +418,7 @@ export function FileConverter({
   const [manualInput, setManualInput] = useState('');
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [softPreview, setSoftPreview] = useState(false);
+  const [propagateResiduals, setPropagateResiduals] = useState(false);
   const [liveIwxxm, setLiveIwxxm] = useState(false);
   const [failedSpans, setFailedSpans] = useState<FailedSpan[]>([]);
   const [previewXml, setPreviewXml] = useState('');
@@ -286,24 +465,125 @@ export function FileConverter({
     bulletinId: '',
     issuingCenter: '',
     product: 'auto',
-    profile: 'annex3',
+    profile: DEFAULT_SEMANTIC_PROFILE,
+    reportVariant: '',
+    exchangeProfile: DEFAULT_EXCHANGE_PROFILE,
+    overlayId: '',
     iwxxmVersion: DEFAULT_IWXXM_VERSION,
     strictValidation: true,
     includeNilReasons: true,
     onError: 'warn',
     logLevel: 'INFO',
   });
+  const [signedOverlays, setSignedOverlays] = useState<OverlayOut[]>([]);
+  const [profileCatalogEntries, setProfileCatalogEntries] = useState<
+    ProfileCatalogEntry[]
+  >([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const massFolderInputRef = useRef<HTMLInputElement>(null);
   const massZipInputRef = useRef<HTMLInputElement>(null);
   const hydratedWorkSessionIdRef = useRef<string | null>(null);
+  const convertedFilesRef = useRef<ConvertedFile[]>([]);
 
   useEffect(() => {
-    const el = massFolderInputRef.current;
-    if (!el) return;
-    el.setAttribute('webkitdirectory', '');
-    el.setAttribute('directory', '');
+    convertedFilesRef.current = convertedFiles;
+  }, [convertedFiles]);
+
+  useEffect(() => {
+    applyWebkitDirectoryAttrs(massFolderInputRef.current);
   }, []);
+
+  /* eslint-disable react-hooks/set-state-in-effect -- load profile summary catalog when auth token appears/clears */
+  useEffect(() => {
+    const token = accessToken?.trim();
+    if (!token) {
+      setProfileCatalogEntries([]);
+      return;
+    }
+    let cancelled = false;
+    void fetchProfileCatalog(token)
+      .then((res) => {
+        if (!cancelled) {
+          setProfileCatalogEntries(res.profiles);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setProfileCatalogEntries([]);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [accessToken]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  /* eslint-disable react-hooks/set-state-in-effect -- load signed overlays when auth token appears/clears */
+  useEffect(() => {
+    const token = accessToken?.trim();
+    if (!token) {
+      setSignedOverlays([]);
+      setConversionParams((prev) =>
+        prev.overlayId ? { ...prev, overlayId: '' } : prev,
+      );
+      return;
+    }
+    let cancelled = false;
+    void listOverlays(token)
+      .then((res) => {
+        if (!cancelled) {
+          setSignedOverlays(res.items);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setSignedOverlays([]);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [accessToken]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  const activeProfileSummary = useMemo(() => {
+    const canonicalId = hydrateSemanticProfile(conversionParams.profile);
+    const catalogMatch = profileCatalogEntries.find(
+      (entry) => entry.id === canonicalId,
+    );
+    return (
+      catalogMatch ?? fallbackProfileSummary(canonicalId, conversionParams.iwxxmVersion)
+    );
+  }, [conversionParams.iwxxmVersion, conversionParams.profile, profileCatalogEntries]);
+  const activeProfileExampleProducts = useMemo(
+    () =>
+      activeProfileSummary.products.filter((product): product is TacProduct =>
+        (TAC_PRODUCTS as readonly string[]).includes(product),
+      ),
+    [activeProfileSummary.products],
+  );
+  const resolvedVariantProduct = useMemo(() => {
+    if (conversionParams.product === 'IWXXM') {
+      return null;
+    }
+    return resolveConvertProduct(conversionParams.product, manualInput);
+  }, [conversionParams.product, manualInput]);
+  const reportVariantOptions = useMemo(() => {
+    if (!resolvedVariantProduct) {
+      return [];
+    }
+    const variants = activeMetarFamilyVariants(
+      activeProfileSummary,
+      resolvedVariantProduct,
+    );
+    return variants.length > 1 ? variants : [];
+  }, [activeProfileSummary, resolvedVariantProduct]);
+  const activeReportVariant = useMemo(() => {
+    const allowed = new Set(reportVariantOptions.map((variant) => variant.tac_lead));
+    return allowed.has(conversionParams.reportVariant)
+      ? conversionParams.reportVariant
+      : '';
+  }, [conversionParams.reportVariant, reportVariantOptions]);
 
   const buildSnapshot = (
     overrides?: Partial<ConverterSnapshot>,
@@ -370,17 +650,20 @@ export function FileConverter({
         const stored = localStorage.getItem('metar_converter_preferences');
         if (stored) {
           const prefs = JSON.parse(stored);
-          const profile = coerceIwxxmProfile(prefs.profile);
-          const iwxxmVersion =
-            profile === 'ca_eccc'
-              ? CA_ECCC_IWXXM_VERSION
-              : coerceIwxxmVersion(prefs.iwxxmVersion);
+          const profile = hydrateSemanticProfile(prefs.profile);
+          const iwxxmVersion = coerceIwxxmVersionForProfile(
+            profile,
+            prefs.iwxxmVersion,
+          );
 
           setConversionParams({
             bulletinId: prefs.bulletinIdExample || 'SAAA00',
             issuingCenter: prefs.issuingCenter || 'KWBC',
             product: (prefs.product as TacProductSelection) || 'auto',
             profile,
+            reportVariant: '',
+            exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
+            overlayId: '',
             iwxxmVersion,
             strictValidation: prefs.strictValidation ?? true,
             includeNilReasons: prefs.includeNilReasons ?? true,
@@ -403,14 +686,13 @@ export function FileConverter({
         if (cancelled) {
           return;
         }
-        setCaExtensionBundleAvailable(
-          status.profile_pins?.ca_eccc?.extension_bundle_available ?? null,
-        );
+        setCaExtensionBundleAvailable(caExtensionBundleAvailableFromStatus(status));
       })
       .catch(() => {
-        if (!cancelled) {
-          setCaExtensionBundleAvailable(null);
+        if (cancelled) {
+          return;
         }
+        setCaExtensionBundleAvailable(null);
       });
     return () => {
       cancelled = true;
@@ -439,11 +721,11 @@ export function FileConverter({
     );
     if (loadedWorkSession.converted_results?.length) {
       const resultNames = loadedWorkSession.converted_results.map((result, index) =>
-        String(result.name ?? `result-${index + 1}`),
+        hydratedResultName(result.name as string | undefined, index),
       );
       setConvertedFiles(
         loadedWorkSession.converted_results.map((result, index) => {
-          const originalName = resultNames[index];
+          const originalName = resultNames[index] as string;
           const originalContent = String(result.tac_input ?? '');
           const lineMeta = resolveManualLineMetaFromResult(
             originalName,
@@ -494,15 +776,30 @@ export function FileConverter({
         if (typeof rawProduct === 'string' && isConvertProductSelection(rawProduct)) {
           next.product = rawProduct;
         }
-        if (
-          params.profile === 'iwxxm_us' ||
-          params.profile === 'annex3' ||
-          params.profile === 'ca_eccc'
-        ) {
-          next.profile = coerceIwxxmProfile(params.profile);
-          if (next.profile === 'ca_eccc') {
-            next.iwxxmVersion = CA_ECCC_IWXXM_VERSION;
-          }
+        if (typeof params.profile === 'string') {
+          next.profile = hydrateSemanticProfile(params.profile);
+        }
+        if (typeof params.report_variant === 'string') {
+          next.reportVariant = params.report_variant;
+        } else if (typeof params.reportVariant === 'string') {
+          next.reportVariant = params.reportVariant;
+        }
+        const rawIwxxmVersion =
+          typeof params.iwxxm_version === 'string'
+            ? params.iwxxm_version
+            : typeof params.iwxxmVersion === 'string'
+              ? params.iwxxmVersion
+              : next.iwxxmVersion;
+        next.iwxxmVersion = coerceIwxxmVersionForProfile(next.profile, rawIwxxmVersion);
+        if (typeof params.exchange_profile === 'string') {
+          next.exchangeProfile = coerceExchangeProfile(params.exchange_profile);
+        } else if (typeof params.exchangeProfile === 'string') {
+          next.exchangeProfile = coerceExchangeProfile(params.exchangeProfile);
+        }
+        if (typeof params.overlay_id === 'string') {
+          next.overlayId = params.overlay_id;
+        } else if (typeof params.overlayId === 'string') {
+          next.overlayId = params.overlayId;
         }
         return next;
       });
@@ -531,17 +828,17 @@ export function FileConverter({
       const stored = localStorage.getItem('metar_converter_preferences');
       if (stored) {
         const prefs = JSON.parse(stored);
-        const profile = coerceIwxxmProfile(prefs.profile);
-        const iwxxmVersion =
-          profile === 'ca_eccc'
-            ? CA_ECCC_IWXXM_VERSION
-            : coerceIwxxmVersion(prefs.iwxxmVersion);
+        const profile = hydrateSemanticProfile(prefs.profile);
+        const iwxxmVersion = coerceIwxxmVersionForProfile(profile, prefs.iwxxmVersion);
 
         setConversionParams({
           bulletinId: prefs.bulletinIdExample || 'SAAA00',
           issuingCenter: prefs.issuingCenter || 'KWBC',
           product: (prefs.product as TacProductSelection) || 'auto',
           profile,
+          reportVariant: '',
+          exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
+          overlayId: '',
           iwxxmVersion,
           strictValidation: prefs.strictValidation ?? true,
           includeNilReasons: prefs.includeNilReasons ?? true,
@@ -561,33 +858,34 @@ export function FileConverter({
     const newPendingFiles: PendingFile[] = [];
     let detectedMode: OperatorInputMode | null = null;
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      try {
-        let content: string;
-        let displayName = file.name;
-        if (isGzipFileName(file.name)) {
-          content = await inflateGzipToText(file);
-          displayName = file.name.replace(/\.gz$/i, '').replace(/\.gzip$/i, '');
-          toast.info(`Decompressed ${file.name}`);
-        } else {
-          content = await file.text();
+    await Promise.all(
+      forEachFileInList(files, async (file, i) => {
+        try {
+          let content: string;
+          let displayName = file.name;
+          if (isGzipFileName(file.name)) {
+            content = await inflateGzipToText(file);
+            displayName = file.name.replace(/\.gz$/i, '').replace(/\.gzip$/i, '');
+            toast.info(`Decompressed ${file.name}`);
+          } else {
+            content = await file.text();
+          }
+          // Classify by decompressed display name + content (not raw .gz → kind "gzip")
+          const kind = detectInputKind(displayName, content);
+          detectedMode = kindToMode(kind);
+          newPendingFiles.push({
+            id: `${displayName}-${Date.now()}-${i}`,
+            name: displayName,
+            content,
+          });
+        } catch (error) {
+          console.error(`Error reading file ${file.name}:`, error);
+          toast.error(
+            error instanceof Error ? error.message : `Failed to read ${file.name}`,
+          );
         }
-        // Classify by decompressed display name + content (not raw .gz → kind "gzip")
-        const kind = detectInputKind(displayName, content);
-        detectedMode = kindToMode(kind);
-        newPendingFiles.push({
-          id: `${displayName}-${Date.now()}-${i}`,
-          name: displayName,
-          content,
-        });
-      } catch (error) {
-        console.error(`Error reading file ${file.name}:`, error);
-        toast.error(
-          error instanceof Error ? error.message : `Failed to read ${file.name}`,
-        );
-      }
-    }
+      }),
+    );
 
     if (detectedMode && detectedMode !== inputMode) {
       setInputMode(detectedMode);
@@ -680,8 +978,8 @@ export function FileConverter({
       });
     } finally {
       setIsMassIngesting(false);
-      if (massFolderInputRef.current) massFolderInputRef.current.value = '';
-      if (massZipInputRef.current) massZipInputRef.current.value = '';
+      clearFileInputValue(massFolderInputRef.current);
+      clearFileInputValue(massZipInputRef.current);
     }
   };
 
@@ -819,6 +1117,7 @@ export function FileConverter({
           files: filesToConvert.length > 0 ? filesToConvert : undefined,
           product: resolvedProduct,
           profile: conversionParams.profile,
+          exchangeProfile: conversionParams.exchangeProfile,
           iwxxmVersion: conversionParams.iwxxmVersion,
           lint: true,
         });
@@ -857,20 +1156,19 @@ export function FileConverter({
         });
         const failed = bulletinResponse.results.filter((r) => !r.ok).length;
         if (newConvertedFiles.length > 0) {
-          let appended = false;
-          setConvertedFiles((prev) => {
-            if (prev.length + newConvertedFiles.length > ACCUMULATE_RESULT_CAP) {
-              toast.error(
-                `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
-              );
-              return prev;
-            }
-            appended = true;
-            return [...prev, ...newConvertedFiles];
-          });
-          if (appended) {
-            setFirstAccumulatedTac(
-              (stem) => stem ?? newConvertedFiles[0]?.originalContent ?? null,
+          const { files, overCap } = appendConvertedWithinCap(
+            convertedFilesRef.current,
+            newConvertedFiles,
+          );
+          if (overCap) {
+            toast.error(
+              `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
+            );
+          } else {
+            setConvertedFiles(files);
+            convertedFilesRef.current = files;
+            setFirstAccumulatedTac((stem) =>
+              nextFirstAccumulatedTac(stem, newConvertedFiles[0]?.originalContent),
             );
           }
         }
@@ -908,6 +1206,7 @@ export function FileConverter({
         files: filesToConvert.length > 0 ? filesToConvert : undefined,
         product: resolvedProduct,
         profile: conversionParams.profile,
+        reportVariant: activeReportVariant || undefined,
         iwxxmVersion: conversionParams.iwxxmVersion,
         validateOutput,
         validationLevel,
@@ -919,8 +1218,11 @@ export function FileConverter({
         includeNilReasons: conversionParams.includeNilReasons,
         logLevel: conversionParams.logLevel,
         preview: softPreview,
+        propagateResidualsToRemarks: propagateResiduals,
         extensions: nationalExtensionsForProfile(conversionParams.profile),
         exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
+        exchangeProfile: conversionParams.exchangeProfile,
+        ...convertOverlayFields(conversionParams.overlayId, accessToken),
       });
 
       console.log('[FileConverter] Conversion response:', response);
@@ -936,7 +1238,7 @@ export function FileConverter({
           const pendingFile = queueFiles[fileIndex];
           const originalName = isManualResult
             ? manualOutputName(outputFilename, index, manualResultCount)
-            : (pendingFile?.name ?? result.name ?? 'unknown');
+            : queueResultOriginalName(pendingFile?.name, result.name);
           const originalContent = resolveOriginalTac(
             result.tac_input ?? undefined,
             manualLines[index],
@@ -986,8 +1288,9 @@ export function FileConverter({
         return null;
       }
 
-      const latestPreviewXml =
-        newConvertedFiles[newConvertedFiles.length - 1]?.convertedContent ?? '';
+      const latestPreviewXml = coalescePreviewXml(
+        newConvertedFiles[newConvertedFiles.length - 1]?.convertedContent,
+      );
       if (latestPreviewXml && (softPreview || softFail)) {
         setPreviewXml(latestPreviewXml);
         setPreviewMode('soft-preview');
@@ -1002,21 +1305,20 @@ export function FileConverter({
         }
       }
 
-      if (newConvertedFiles.length > 0) {
-        let appended = false;
-        setConvertedFiles((prev) => {
-          if (prev.length + newConvertedFiles.length > ACCUMULATE_RESULT_CAP) {
-            toast.error(
-              `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
-            );
-            return prev;
-          }
-          appended = true;
-          return [...prev, ...newConvertedFiles];
-        });
-        if (appended) {
-          setFirstAccumulatedTac(
-            (stem) => stem ?? newConvertedFiles[0]?.originalContent ?? null,
+      {
+        const { files, overCap } = appendConvertedWithinCap(
+          convertedFilesRef.current,
+          newConvertedFiles,
+        );
+        if (overCap) {
+          toast.error(
+            `Cannot keep more than ${ACCUMULATE_RESULT_CAP} conversions. Clear the batch, then convert again.`,
+          );
+        } else {
+          setConvertedFiles(files);
+          convertedFilesRef.current = files;
+          setFirstAccumulatedTac((stem) =>
+            nextFirstAccumulatedTac(stem, newConvertedFiles[0]?.originalContent),
           );
         }
       }
@@ -1062,9 +1364,7 @@ export function FileConverter({
   };
 
   const handleValidateOnly = async () => {
-    if (isReadOnly) {
-      return;
-    }
+    // Read-only sessions cannot enter validate mode (mode buttons disabled).
     const xmlFromPaste = manualInput.trim();
     const xmlFiles = pendingFiles.filter((f) => f.name.toLowerCase().endsWith('.xml'));
     if (xmlFiles.length > 1) {
@@ -1095,8 +1395,7 @@ export function FileConverter({
         toast.warning('IWXXM validation reported failures');
       }
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : 'IWXXM validation failed';
+      const message = iwxxmValidationErrorMessage(error);
       setConversionStatus({ type: 'error', message });
       toast.error(message);
     } finally {
@@ -1260,6 +1559,7 @@ export function FileConverter({
     setConversionParams((prev) => ({
       ...prev,
       product: example.product ?? 'auto',
+      reportVariant: '',
     }));
     setDemoExampleLabel(example.label);
     toast.info(`Loaded ${example.label} example`);
@@ -1304,7 +1604,10 @@ export function FileConverter({
     const a = document.createElement('a');
     a.href = url;
     a.download = outputArchiveName(outputFilename, {
-      firstTac: firstAccumulatedTac ?? convertedFiles[0]?.originalContent,
+      firstTac: firstTacForArchive(
+        firstAccumulatedTac,
+        convertedFiles[0]?.originalContent,
+      ),
     });
     document.body.appendChild(a);
     a.click();
@@ -1368,10 +1671,7 @@ export function FileConverter({
   const focusQueueItem = (index: number) => {
     const clamped = clampQueueIndex(index, pendingFiles.length);
     setQueueFocusIndex(clamped);
-    const item = pendingFiles[clamped];
-    if (item) {
-      setManualInput(item.content);
-    }
+    applyFocusedQueueContent(pendingFiles[clamped], setManualInput);
   };
 
   const handleQueueConvertFocused = async () => {
@@ -1405,16 +1705,15 @@ export function FileConverter({
       if (report.ok) {
         toast.success(`${focused.name}: lint OK`, { id: progressId });
       } else {
-        const issueCount = report.issues?.length ?? 0;
+        const issueCount = lintIssueCount(report.issues);
         toast.error(`${focused.name}: ${issueCount} lint issue(s)`, {
           id: progressId,
         });
       }
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : `Validate failed for ${focused.name}`,
-        { id: progressId },
-      );
+      toast.error(focusedValidateErrorMessage(error, focused.name), {
+        id: progressId,
+      });
     } finally {
       setIsBatchValidating(false);
     }
@@ -1475,7 +1774,7 @@ export function FileConverter({
   };
 
   const handleWorkQueueKeyDown = (e: React.KeyboardEvent) => {
-    if (pendingFiles.length === 0) return;
+    // Queue only mounts when pendingFiles.length > 0 (see JSX below).
     const focus = clampQueueIndex(queueFocusIndex, pendingFiles.length);
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -1524,7 +1823,7 @@ export function FileConverter({
   const hasInput = pendingFiles.length > 0 || !!manualInput.trim();
   const hasConverted = convertedFiles.length > 0;
   const caProfileBlocked =
-    conversionParams.profile === 'ca_eccc' && caExtensionBundleAvailable === false;
+    isCaEcccProfile(conversionParams.profile) && caExtensionBundleAvailable === false;
   const convertDisabled = isBusy || !hasInput || isReadOnly || caProfileBlocked;
   const safeQueueFocusIndex = clampQueueIndex(queueFocusIndex, pendingFiles.length);
   const activeSelectedCount = pendingFiles.filter((f) =>
@@ -1538,21 +1837,21 @@ export function FileConverter({
 
   const liveIwxxmRunner = useCallback(
     async (signal: AbortSignal) => {
-      const text = manualInput.trim();
-      if (!text) {
-        return;
-      }
       setDecodeError(null);
       try {
         const response = await callBackendConversion({
-          manualText: text,
+          manualText: manualInput.trim(),
           product: liveAssistProduct,
           profile: conversionParams.profile,
+          reportVariant: activeReportVariant || undefined,
           iwxxmVersion: conversionParams.iwxxmVersion,
           validateOutput: false,
           preview: true,
+          propagateResidualsToRemarks: propagateResiduals,
           extensions: nationalExtensionsForProfile(conversionParams.profile),
           exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
+          exchangeProfile: conversionParams.exchangeProfile,
+          ...convertOverlayFields(conversionParams.overlayId, accessToken),
           signal,
         });
         if (signal.aborted) {
@@ -1597,6 +1896,11 @@ export function FileConverter({
       liveAssistProduct,
       conversionParams.profile,
       conversionParams.iwxxmVersion,
+      activeReportVariant,
+      conversionParams.exchangeProfile,
+      conversionParams.overlayId,
+      accessToken,
+      propagateResiduals,
     ],
   );
 
@@ -1622,6 +1926,8 @@ export function FileConverter({
   const { entries: lintCatalogEntries, byCode: lintCatalogByCode } =
     useLintIssueCatalog({
       product: liveAssistProduct,
+      semanticProfile: conversionParams.profile,
+      exchangeProfile: conversionParams.exchangeProfile,
       enabled: !isReadOnly,
     });
 
@@ -1980,76 +2286,336 @@ export function FileConverter({
                     </div>
                   </div>
                 </div>
-                <div
-                  className="flex flex-col gap-2 overflow-x-auto rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-nowrap lg:items-center"
-                  data-testid="product-profile-bar"
-                >
-                  <Label
-                    htmlFor="param-product"
-                    className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                <div className="flex flex-col gap-1.5">
+                  <div
+                    className="flex flex-col gap-2 overflow-x-auto rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-nowrap lg:items-center"
+                    data-testid="product-profile-bar"
                   >
-                    Product type
-                  </Label>
-                  <select
-                    id="param-product"
-                    aria-label="Product"
-                    data-testid="product-type-select"
-                    value={conversionParams.product}
-                    disabled={isReadOnly}
-                    onChange={(e) =>
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        product: e.target.value as TacProductSelection,
-                      }))
-                    }
-                    className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    <Label
+                      htmlFor="param-product"
+                      className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                    >
+                      Product type
+                    </Label>
+                    <select
+                      id="param-product"
+                      aria-label="Product"
+                      data-testid="product-type-select"
+                      value={conversionParams.product}
+                      disabled={isReadOnly}
+                      onChange={(e) =>
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          product: e.target.value as TacProductSelection,
+                          reportVariant: '',
+                        }))
+                      }
+                      className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    >
+                      <option value="auto">Auto-detect</option>
+                      <option value="AIRMET">AIRMET</option>
+                      <option value="METAR">METAR</option>
+                      <option value="SIGMET">SIGMET</option>
+                      <option value="SPECI">SPECI</option>
+                      <option value="TAF">TAF</option>
+                      <option value="VAA">VAA</option>
+                      <option value="TCA">TCA</option>
+                      <option value="SWXA">SWXA</option>
+                      <option value="VONA">VONA</option>
+                      <option value="IWXXM">IWXXM</option>
+                    </select>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <Label
+                        htmlFor="param-profile"
+                        className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                      >
+                        Profile
+                      </Label>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                            aria-label="About Profile"
+                            data-testid="semantic-profile-help-icon"
+                          >
+                            <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-xs text-balance">
+                          Encoding rules for conversion — not destinations, credentials,
+                          or editable overlays.
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <select
+                      id="param-profile"
+                      aria-label="Profile"
+                      aria-describedby="product-profile-bar-summary"
+                      data-testid="profile-type-select"
+                      value={conversionParams.profile}
+                      disabled={isReadOnly}
+                      onChange={(e) => {
+                        const profile = coerceIwxxmProfile(e.target.value);
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          profile,
+                          reportVariant: '',
+                          iwxxmVersion: coerceIwxxmVersionForProfile(
+                            profile,
+                            prev.iwxxmVersion,
+                          ),
+                        }));
+                      }}
+                      className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    >
+                      {SEMANTIC_PROFILE_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                    {reportVariantOptions.length > 0 &&
+                      inputMode !== 'ahl_bulletin' && (
+                        <>
+                          <div className="flex shrink-0 items-center gap-1">
+                            <Label
+                              htmlFor="param-report-variant"
+                              className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                            >
+                              Report variant
+                            </Label>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button
+                                  type="button"
+                                  className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                  aria-label="About Report variant"
+                                  data-testid="report-variant-help-icon"
+                                >
+                                  <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent
+                                side="bottom"
+                                className="max-w-xs text-balance"
+                              >
+                                Optional profile-scoped IWXXM root inside the selected
+                                product family. Leave on Auto-detect to infer from the
+                                TAC lead.
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+                          <select
+                            id="param-report-variant"
+                            aria-label="Report variant"
+                            data-testid="report-variant-select"
+                            value={activeReportVariant}
+                            disabled={isReadOnly}
+                            onChange={(e) => {
+                              setConversionParams((prev) => ({
+                                ...prev,
+                                reportVariant: e.target.value,
+                              }));
+                            }}
+                            className="min-w-[10rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                          >
+                            <option value="">Auto-detect from TAC</option>
+                            {reportVariantOptions.map((variant) => (
+                              <option key={variant.tac_lead} value={variant.tac_lead}>
+                                {variant.tac_lead}
+                                {variant.minimal_observation ? ' (minimal)' : ''}
+                              </option>
+                            ))}
+                          </select>
+                        </>
+                      )}
+                    <div className="flex shrink-0 items-center gap-1">
+                      <Label
+                        htmlFor="param-exchange-profile"
+                        className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                      >
+                        Exchange profile
+                      </Label>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                            aria-label="About Exchange profile"
+                            data-testid="exchange-profile-help-icon"
+                          >
+                            <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-xs text-balance">
+                          Used when packaging bulletins — does not choose destinations
+                          or credentials.
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                    <select
+                      id="param-exchange-profile"
+                      aria-label="Exchange profile"
+                      aria-describedby="product-profile-bar-summary"
+                      data-testid="exchange-profile-select"
+                      value={conversionParams.exchangeProfile}
+                      disabled={isReadOnly}
+                      onChange={(e) => {
+                        const exchangeProfile = coerceExchangeProfile(e.target.value);
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          exchangeProfile,
+                        }));
+                      }}
+                      className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    >
+                      {EXCHANGE_PROFILE_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
+                    {Boolean(accessToken?.trim()) && (
+                      <>
+                        <div className="flex shrink-0 items-center gap-1">
+                          <Label
+                            htmlFor="param-signed-overlay"
+                            className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                          >
+                            {CONVERT_OVERLAY_LABEL}
+                          </Label>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                aria-label={`About ${CONVERT_OVERLAY_LABEL}`}
+                                data-testid="signed-overlay-help-icon"
+                              >
+                                <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="bottom"
+                              className="max-w-xs text-balance"
+                            >
+                              {CONVERT_OVERLAY_HELP}
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <select
+                          id="param-signed-overlay"
+                          aria-label={CONVERT_OVERLAY_LABEL}
+                          data-testid="signed-overlay-select"
+                          value={conversionParams.overlayId}
+                          disabled={isReadOnly}
+                          onChange={(e) => {
+                            const overlayId = e.target.value;
+                            setConversionParams((prev) => ({
+                              ...prev,
+                              overlayId,
+                            }));
+                          }}
+                          className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                        >
+                          <option value="">{CONVERT_OVERLAY_NONE}</option>
+                          {signedOverlays.map((o) => (
+                            <option key={o.id} value={o.id}>
+                              {o.slug} ({o.baseProfileId})
+                            </option>
+                          ))}
+                        </select>
+                      </>
+                    )}
+                    <GoldenExamplesSelect
+                      applicableProducts={activeProfileExampleProducts}
+                      disabled={isReadOnly}
+                      semanticProfile={conversionParams.profile}
+                      onSelectExample={handleLoadGoldenExample}
+                    />
+                  </div>
+                  <p
+                    id="product-profile-bar-summary"
+                    className="text-xs text-gray-600 dark:text-gray-400"
+                    data-testid="product-profile-bar-summary"
                   >
-                    <option value="auto">Auto-detect</option>
-                    <option value="AIRMET">AIRMET</option>
-                    <option value="METAR">METAR</option>
-                    <option value="SIGMET">SIGMET</option>
-                    <option value="SPECI">SPECI</option>
-                    <option value="TAF">TAF</option>
-                    <option value="VAA">VAA</option>
-                    <option value="TCA">TCA</option>
-                    <option value="SWXA">SWXA</option>
-                    <option value="VONA">VONA</option>
-                    <option value="IWXXM">IWXXM</option>
-                  </select>
-                  <Label
-                    htmlFor="param-profile"
-                    className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                    Encoding and packaging rules only — not destinations, credentials,
+                    or editable overlays.
+                  </p>
+                  <div
+                    className="rounded-md border border-gray-200 bg-white p-3 text-sm dark:border-gray-700 dark:bg-gray-800"
+                    data-testid="workbench-profile-summary"
                   >
-                    Profile
-                  </Label>
-                  <select
-                    id="param-profile"
-                    aria-label="Profile"
-                    data-testid="profile-type-select"
-                    value={conversionParams.profile}
-                    disabled={isReadOnly}
-                    onChange={(e) => {
-                      const profile = coerceIwxxmProfile(e.target.value);
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        profile,
-                        iwxxmVersion:
-                          profile === 'ca_eccc'
-                            ? CA_ECCC_IWXXM_VERSION
-                            : prev.iwxxmVersion === CA_ECCC_IWXXM_VERSION
-                              ? DEFAULT_IWXXM_VERSION
-                              : prev.iwxxmVersion,
-                      }));
-                    }}
-                    className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <div>
+                        <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                          Profile at a glance
+                        </p>
+                        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                          {profileDisplayName(activeProfileSummary.id)}
+                        </h3>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">
+                          {activeProfileSummary.id}
+                        </p>
+                      </div>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        {activeProfileSummary.iwxxm_line ?? 'IWXXM line unavailable'}
+                      </p>
+                    </div>
+                    {activeProfileSummary.deltas_vs_icao &&
+                    activeProfileSummary.deltas_vs_icao.length > 0 ? (
+                      <ul className="mt-2 space-y-1 text-xs text-gray-700 dark:text-gray-300">
+                        {activeProfileSummary.deltas_vs_icao
+                          .slice(0, 3)
+                          .map((delta) => (
+                            <li key={delta}>{delta}</li>
+                          ))}
+                      </ul>
+                    ) : null}
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600 dark:text-gray-400">
+                      <span>
+                        Products:{' '}
+                        {activeProfileSummary.products.length > 0
+                          ? activeProfileSummary.products.join(', ')
+                          : 'Sign in to load profile coverage'}
+                      </span>
+                      <span>
+                        Rule packs:{' '}
+                        {activeProfileSummary.rule_pack_count != null
+                          ? activeProfileSummary.rule_pack_count
+                          : '—'}
+                      </span>
+                      <span>
+                        Overlays:{' '}
+                        {activeProfileSummary.overlay_count != null
+                          ? activeProfileSummary.overlay_count
+                          : '—'}
+                      </span>
+                    </div>
+                  </div>
+                  <details
+                    className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                    data-testid="product-profile-trust-details"
                   >
-                    <option value="annex3">Annex 3</option>
-                    <option value="iwxxm_us">IWXXM-US</option>
-                    <option value="ca_eccc">Canada (ECCC)</option>
-                  </select>
-                  {conversionParams.profile === 'ca_eccc' && (
+                    <summary className="cursor-pointer select-none font-medium text-gray-700 dark:text-gray-300">
+                      What&apos;s this?
+                    </summary>
+                    <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 dark:border-gray-700">
+                      <p data-testid="semantic-profile-help">
+                        Profile selects encoding rules for conversion. Does not set
+                        destinations or credentials, and does not make national overlays
+                        editable.
+                      </p>
+                      <p data-testid="exchange-profile-help">
+                        Exchange profile is used when packaging bulletins. Does not
+                        choose destinations or credentials.
+                      </p>
+                    </div>
+                  </details>
+                  {isCaEcccProfile(conversionParams.profile) && (
                     <div
-                      className="mt-2 rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
+                      className="rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
                       data-testid="ca-eccc-profile-metadata"
                       role="status"
                     >
@@ -2065,10 +2631,6 @@ export function FileConverter({
                       )}
                     </div>
                   )}
-                  <GoldenExamplesSelect
-                    disabled={isReadOnly}
-                    onSelectExample={handleLoadGoldenExample}
-                  />
                 </div>
               </div>
               {demoExampleLabel && (
@@ -2177,6 +2739,11 @@ export function FileConverter({
                   onChange={setSoftPreview}
                   disabled={isReadOnly || isBusy}
                 />
+                <PropagateResidualsControl
+                  checked={propagateResiduals}
+                  onChange={setPropagateResiduals}
+                  disabled={isReadOnly || isBusy}
+                />
                 <LiveIwxxmToggle
                   checked={liveIwxxm}
                   onChange={setLiveIwxxm}
@@ -2214,7 +2781,7 @@ export function FileConverter({
                 tabIndex={0}
                 data-testid="compact-file-drop-zone"
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (isDropZoneActivateKey(e.key)) {
                     e.preventDefault();
                     fileInputRef.current?.click();
                   }
@@ -2396,7 +2963,7 @@ export function FileConverter({
                     }}
                     placeholder="SAAA00"
                     maxLength={6}
-                    aria-invalid={bulletinFieldError ? true : undefined}
+                    aria-invalid={ariaInvalidFromError(bulletinFieldError)}
                     className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
                   />
                   {bulletinFieldError ? (
@@ -2923,7 +3490,7 @@ export function FileConverter({
         </div>
       </div>
 
-      {/* Database Upload Dialog — gated with destinations UI (EV-042 / #897; restore #898) */}
+      {/* Database Upload Dialog — restored with destinations UI (EV-091 / #898) */}
       {isOperatorDisseminationDestinationsEnabled() ? (
         <DatabaseUploadDialog
           convertedFiles={convertedFiles}
@@ -2934,11 +3501,15 @@ export function FileConverter({
 
       {isOperatorDisseminationDestinationsEnabled() ? (
         <DisseminationDrawer
+          key={
+            isDisseminationOpen ? `open-${conversionParams.exchangeProfile}` : 'closed'
+          }
           open={isDisseminationOpen}
           onOpenChange={setIsDisseminationOpen}
           iwxxmXml={convertedFiles[0]?.convertedContent}
           tacText={manualInput || undefined}
           product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
+          exchangeProfile={conversionParams.exchangeProfile}
         />
       ) : null}
 

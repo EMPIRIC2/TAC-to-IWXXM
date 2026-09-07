@@ -1,4 +1,4 @@
-"""Unit tests for airport_data service (airport_data.py) – 0% coverage target."""
+"""Unit tests for airport_data service (airport_data.py) - 0% coverage target."""
 
 import os
 import subprocess

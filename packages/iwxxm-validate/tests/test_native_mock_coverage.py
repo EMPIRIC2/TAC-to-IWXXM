@@ -1,4 +1,4 @@
-"""Native loader coverage — success (real/fake) + ImportError branches (EV-047)."""
+"""Native loader coverage - success (real/fake) + ImportError branches (EV-047)."""
 
 from __future__ import annotations
 
@@ -6,9 +6,8 @@ import builtins
 import types
 from typing import Any
 
-import pytest
-
 import iwxxm_validate
+import pytest
 from iwxxm_validate import native
 
 

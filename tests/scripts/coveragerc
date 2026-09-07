@@ -1,0 +1,17 @@
+# EV-080 M4 — coverage config for make test-coverage-scripts
+[run]
+branch = true
+source = scripts
+omit =
+
+[report]
+fail_under = 100
+show_missing = true
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+    raise SystemExit\(main
+    raise SystemExit\(main\(
+    sys\.exit\(main\(
+    asyncio\.run\(main\(
+    ^\s*main\(\)\s*$

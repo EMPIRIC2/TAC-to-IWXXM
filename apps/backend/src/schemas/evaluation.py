@@ -1,13 +1,12 @@
 """Schemas for evaluation endpoints."""
 
 from datetime import datetime
-from enum import Enum
-from typing import Dict, List, Optional
+from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class EvaluationMode(str, Enum):
+class EvaluationMode(StrEnum):
     """Evaluation mode."""
 
     SINGLE = "single"
@@ -15,7 +14,7 @@ class EvaluationMode(str, Enum):
     ALL = "all"
 
 
-class JobStatus(str, Enum):
+class JobStatus(StrEnum):
     """Job execution status."""
 
     PENDING = "pending"
@@ -24,7 +23,7 @@ class JobStatus(str, Enum):
     FAILED = "failed"
 
 
-class ComparisonStatus(str, Enum):
+class ComparisonStatus(StrEnum):
     """Comparison result status."""
 
     PASS = "pass"
@@ -51,12 +50,12 @@ class EvaluationRequest(BaseModel):
         ...,
         description="Evaluation mode: 'single' (specific stations), 'random' (random sample), or 'all' (all airports)",
     )
-    station_ids: Optional[List[str]] = Field(
+    station_ids: list[str] | None = Field(
         default=None,
         description="Specific ICAO codes (required for 'single' mode)",
         examples=[["KJFK", "EGLL", "RJTT"]],
     )
-    sample_size: Optional[int] = Field(
+    sample_size: int | None = Field(
         default=100,
         description="Number of stations to sample (for 'random' mode)",
         ge=1,
@@ -112,16 +111,16 @@ class ComparisonDetail(BaseModel):
     passed: bool = Field(..., description="Whether comparison passed")
     our_elements: int = Field(..., description="Number of elements in our converted IWXXM", ge=0)
     their_elements: int = Field(..., description="Number of elements in reference IWXXM", ge=0)
-    missing_elements: List[str] = Field(
+    missing_elements: list[str] = Field(
         default_factory=list, description="Elements present in reference but missing from our output"
     )
-    extra_elements: List[str] = Field(
+    extra_elements: list[str] = Field(
         default_factory=list, description="Elements present in our output but not in reference"
     )
-    value_mismatches: List[Dict[str, str]] = Field(
+    value_mismatches: list[dict[str, str]] = Field(
         default_factory=list, description="Element values that differ between our and reference outputs"
     )
-    error_message: Optional[str] = Field(default=None, description="Error message if comparison failed")
+    error_message: str | None = Field(default=None, description="Error message if comparison failed")
 
 
 class EvaluationResultDetail(BaseModel):
@@ -148,12 +147,12 @@ class EvaluationResultDetail(BaseModel):
 
     station_id: str = Field(..., description="ICAO airport code", examples=["KJFK", "EGLL"])
     timestamp: datetime = Field(..., description="Evaluation timestamp")
-    tac_input: Optional[str] = Field(default=None, description="Original METAR TAC input")
-    our_iwxxm: Optional[str] = Field(default=None, description="Our converted IWXXM XML output")
-    their_iwxxm: Optional[str] = Field(default=None, description="Reference IWXXM XML for comparison")
+    tac_input: str | None = Field(default=None, description="Original METAR TAC input")
+    our_iwxxm: str | None = Field(default=None, description="Our converted IWXXM XML output")
+    their_iwxxm: str | None = Field(default=None, description="Reference IWXXM XML for comparison")
     comparison_status: ComparisonStatus = Field(..., description="Comparison result: pass, fail, or error")
-    comparison: Optional[ComparisonDetail] = Field(default=None, description="Detailed comparison information")
-    errors: List[str] = Field(default_factory=list, description="Any errors during evaluation")
+    comparison: ComparisonDetail | None = Field(default=None, description="Detailed comparison information")
+    errors: list[str] = Field(default_factory=list, description="Any errors during evaluation")
 
 
 class JobSummaryStats(BaseModel):
@@ -178,12 +177,10 @@ class JobSummaryStats(BaseModel):
     failed: int = Field(..., description="Number of stations with failing comparison", ge=0)
     errors: int = Field(..., description="Number of stations with evaluation errors", ge=0)
     pass_rate: float = Field(..., description="Pass rate as decimal (0.0-1.0)", ge=0.0, le=1.0)
-    avg_elements_our: Optional[float] = Field(
+    avg_elements_our: float | None = Field(
         default=None, description="Average number of elements in our converted IWXXM"
     )
-    avg_elements_their: Optional[float] = Field(
-        default=None, description="Average number of elements in reference IWXXM"
-    )
+    avg_elements_their: float | None = Field(default=None, description="Average number of elements in reference IWXXM")
 
 
 class EvaluationJobStatus(BaseModel):
@@ -208,12 +205,12 @@ class EvaluationJobStatus(BaseModel):
     status: JobStatus = Field(..., description="Current status: pending, running, completed, failed")
     progress: int = Field(..., description="Number of stations processed", ge=0)
     total: int = Field(..., description="Total stations to process", ge=0)
-    summary: Optional[JobSummaryStats] = Field(
+    summary: JobSummaryStats | None = Field(
         default=None, description="Summary statistics (populated when job completes)"
     )
     created_at: datetime = Field(..., description="Job creation timestamp")
-    completed_at: Optional[datetime] = Field(default=None, description="Job completion timestamp (if completed)")
-    error_message: Optional[str] = Field(default=None, description="Error message if job failed")
+    completed_at: datetime | None = Field(default=None, description="Job completion timestamp (if completed)")
+    error_message: str | None = Field(default=None, description="Error message if job failed")
 
 
 class EvaluationResultsResponse(BaseModel):
@@ -239,7 +236,7 @@ class EvaluationResultsResponse(BaseModel):
     )
 
     job_id: str = Field(..., description="Job identifier")
-    results: List[EvaluationResultDetail] = Field(..., description="Results for this page")
+    results: list[EvaluationResultDetail] = Field(..., description="Results for this page")
     page: int = Field(..., description="Current page number (1-indexed)", ge=1)
     per_page: int = Field(..., description="Results per page", ge=1)
     total_results: int = Field(..., description="Total number of results", ge=0)
@@ -273,9 +270,9 @@ class JobListItem(BaseModel):
     status: JobStatus = Field(..., description="Job status")
     station_count: int = Field(..., description="Total stations in job", ge=0)
     progress: int = Field(..., description="Stations processed so far", ge=0)
-    summary: Optional[JobSummaryStats] = Field(default=None, description="Summary statistics (if completed)")
+    summary: JobSummaryStats | None = Field(default=None, description="Summary statistics (if completed)")
     created_at: datetime = Field(..., description="Creation timestamp")
-    completed_at: Optional[datetime] = Field(default=None, description="Completion timestamp (if completed)")
+    completed_at: datetime | None = Field(default=None, description="Completion timestamp (if completed)")
 
 
 class JobListResponse(BaseModel):
@@ -300,7 +297,7 @@ class JobListResponse(BaseModel):
         }
     )
 
-    jobs: List[JobListItem] = Field(..., description="Jobs on this page")
+    jobs: list[JobListItem] = Field(..., description="Jobs on this page")
     total: int = Field(..., description="Total number of jobs", ge=0)
     page: int = Field(..., description="Current page number (1-indexed)", ge=1)
     per_page: int = Field(..., description="Jobs per page", ge=1)

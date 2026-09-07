@@ -37,7 +37,8 @@ def test_format_coverage_pr_comment_parses_xml_and_vitest(tmp_path: Path) -> Non
     )
     out = proc.stdout
     assert "<!-- EV-036-coverage-comment -->" in out
-    assert "## Coverage summary (EV-036)" in out
+    assert "## Coverage summary (EV-036 / EV-080)" in out
+    assert "100%" in out
     assert "`backend`" in out
     assert "98.20%" in out
     assert "91.00%" in out

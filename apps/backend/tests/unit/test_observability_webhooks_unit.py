@@ -10,7 +10,6 @@ import httpx
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-
 from src.services import webhooks as webhooks_module
 from src.services.webhooks import WebhookService
 from src.utilities import observability as observability_module

@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 
 import pytest
-
 from src.schemas import airport as airport_schema
 
 
@@ -22,15 +21,15 @@ def test_airport_model_normalizes_icao_and_iata():
 
 
 def test_airport_model_rejects_invalid_icao_and_iata():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         airport_schema.Airport(icao="bad", iata="JFK", name="X", type="large_airport")
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         airport_schema.Airport(icao="KJFK", iata="TOOLONG", name="X", type="large_airport")
 
 
 def test_airport_model_rejects_invalid_icao_pattern_with_length_four():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         airport_schema.Airport(icao="KJ$%", iata="JFK", name="X", type="large_airport")
 
 
@@ -46,7 +45,7 @@ def test_airport_model_accepts_explicit_none_iata():
 
 
 def test_airport_model_rejects_invalid_iata_pattern_with_length_three():
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         airport_schema.Airport(icao="KJFK", iata="J$K", name="X", type="large_airport")
 
 
@@ -170,10 +169,10 @@ def test_airport_coordinates_defaults_and_bounds():
     )
     assert coords_negative.elevation_ft == -1500
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         airport_schema.AirportCoordinates(latitude=91.0, longitude=0.0)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         airport_schema.AirportCoordinates(latitude=0.0, longitude=181.0)
 
 
@@ -225,7 +224,7 @@ def test_airport_validator_load_raises_when_airports_file_missing(tmp_path, monk
     validator = airport_schema.AirportValidator()
     validator._loaded = True
 
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(FileNotFoundError, match=r".*"):
         validator.load_airports()
 
 

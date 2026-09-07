@@ -1,4 +1,4 @@
-"""TC-EV047-009 / TC-EV047-010 — operator one-pager + handbook content gates."""
+"""TC-EV047-009 / TC-EV047-010 - operator one-pager + handbook content gates."""
 
 from __future__ import annotations
 
@@ -31,7 +31,8 @@ def test_operator_handbook_required_sections() -> None:
     text = HANDBOOK.read_text(encoding="utf-8")
     lower = text.lower()
     assert "login" in lower
-    assert "convert" in lower and "validate" in lower
+    assert "convert" in lower
+    assert "validate" in lower
     assert "work history" in lower or "history" in lower
     assert "dissemination" in lower
     assert "troubleshooting" in lower

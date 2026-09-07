@@ -84,7 +84,7 @@ def test_rust_parity_matches_lxml_issue_codes(case: _ParityCase) -> None:
     """Native path agrees with lxml on well-formed goldens; XSD may improve on lxml gaps.
 
     When lxml fails only with ``SCHEMA_PARSE_ERROR`` (GML/ISO import gaps), xmloxide may
-    still validate — that is an intentional F13 improvement, not a parity regression.
+    still validate - that is an intentional F13 improvement, not a parity regression.
     Otherwise error codes must match.
     """
     from iwxxm_validate import rust_available, validate, validate_iwxxm

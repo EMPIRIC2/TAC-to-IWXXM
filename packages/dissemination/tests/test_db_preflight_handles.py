@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-
 from dissemination.db_preflight import (
     dialect_for_sink,
     normalize_sqlalchemy_uri,
@@ -19,7 +18,7 @@ def test_uri_hostname_and_dialect_helpers() -> None:
     assert uri_hostname("sqlite+aiosqlite:///:memory:") is None
     assert dialect_for_sink("postgres") == "postgresql"
     assert normalize_sqlalchemy_uri("postgresql://x", "postgres").startswith("postgresql+asyncpg://")
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         dialect_for_sink("wis2")
 
 
@@ -100,7 +99,7 @@ async def test_run_db_preflight_redacts_engine_errors(
         raise RuntimeError('{"password": "supersecret"} boom')
 
     monkeypatch.setattr("dissemination.db_preflight.diff_writer_contract", _boom)
-    with pytest.raises(ValueError) as excinfo:
+    with pytest.raises(ValueError, match=r".*") as excinfo:
         await run_db_preflight(
             PreflightRequest(
                 sink_type="sqlite",

@@ -3,7 +3,6 @@
 import csv
 
 import pytest
-
 from src.utilities.station_sampler import StationSampler
 
 

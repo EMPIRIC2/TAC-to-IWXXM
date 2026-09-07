@@ -49,7 +49,7 @@ def test_conversion_result_minimal():
 
 def test_conversion_result_validation():
     """Test ConversionResult validation."""
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         ConversionResult(
             name="test.xml",
             content="",  # Empty content should fail min_length=1
@@ -89,7 +89,7 @@ def test_conversion_response_defaults():
 
 def test_conversion_response_validation():
     """Test ConversionResponse field validation."""
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r".*"):
         ConversionResponse(
             total_processed=-1,  # Should be >= 0
             successful=0,

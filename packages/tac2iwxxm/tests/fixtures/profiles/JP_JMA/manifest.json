@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "description": "EV-094 M4 — JP_JMA deepen; SPECI on convert allowlist; METAR/TAF AWC-attributed; no AIRMET",
+  "profile": "JP_JMA",
+  "cycle": "EV-094",
+  "issue": "#1098",
+  "cases": [
+    {
+      "id": "metar_rjtt",
+      "product": "METAR",
+      "tac": "METAR/valid/metar_rjtt.tac",
+      "rule_id": "JP.BASE.ICAO",
+      "status": "active",
+      "source_kind": "official",
+      "source_url": "https://aviationweather.gov/api/data/metar?ids=RJTT&format=raw",
+      "source_label": "Aviation Weather Center METAR API (RJTT)",
+      "observed_at_utc": "2026-08-31T15:00:00Z"
+    },
+    {
+      "id": "speci_rjtt",
+      "product": "SPECI",
+      "tac": "SPECI/valid/speci_rjtt.tac",
+      "rule_id": "JP.BASE.ICAO",
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed real SPECI corpus pending — catalog gap EV-094"
+    },
+    {
+      "id": "taf_rjtt",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_rjtt.tac",
+      "rule_id": "JP.BASE.ICAO",
+      "status": "active",
+      "source_kind": "official",
+      "source_url": "https://aviationweather.gov/api/data/taf?ids=RJTT&format=raw",
+      "source_label": "Aviation Weather Center TAF API (RJTT)",
+      "observed_at_utc": "2026-08-31T11:05:00Z"
+    },
+    {
+      "id": "sigmet_basic",
+      "product": "SIGMET",
+      "tac": "SIGMET/valid/sigmet_basic.tac",
+      "rule_id": "JP.BASE.ICAO",
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed Japanese FIR SIGMET corpus pending"
+    },
+    {
+      "id": "vaa_tokyo",
+      "product": "VAA",
+      "tac": "VAA/valid/vaa_tokyo.tac",
+      "rule_id": "JP.VAA.TOKYO",
+      "status": "active",
+      "source_kind": "synthetic_ev089",
+      "note": "Attributed Tokyo VAAC VAA corpus pending"
+    }
+  ]
+}

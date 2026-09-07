@@ -1,0 +1,41 @@
+---
+description: >
+  When evolve (or an operator) needs TAC/IWXXM domain evidence beyond current
+  docs/domain canonicals, invoke deep-research-domain-handoff — emit a deep-research
+  handoff prompt and AskQuestion gates; never silently promote to SoT (EV-097).
+alwaysApply: false
+---
+
+# Deep-research domain handoff (project-specific)
+
+Use with evolve cycles and domain-mining work. Cite
+[Corpus: decisions] `docs/decisions/ev-097-deep-research-domain-handoff.md`.
+Do **not** put EV-/Corpus ids in operator UI or OpenAPI copy.
+
+## When this applies
+
+- Evolve needs evidence not already in lean `docs/domain/` canonicals / `rules/`
+- Operator asks for deep research / domain mining handoff
+- National/exchange profile or quality-bar work depends on external sources
+
+## Do
+
+1. AskQuestion whether to invoke skill `deep-research-domain-handoff`
+2. Run **gate A** (scope) before emitting the filled `handoff-prompt-template.md`
+3. After research returns: **gate B** (findings review)
+4. Before editing canonicals / `rules/`: **gate C** (promote) then
+   `mine-domain-sources` for publish + defer-to-latest
+5. Without gate C: only session notes and/or `docs/domain/mining/<slug>-mining-notes.md`
+
+## Do not
+
+- Silently edit `TAC_VALIDATION.md`, `IWXXM_CONVERSION.md`, `IWXXM_VALIDATION.md`, or SoT `rules/` rows
+- Dump copyrighted full-text into git
+- Invent a second domain tree outside the lean hub layout
+- Rewrite pack `orchestrators/evolve` for this — project skill + this rule are enough
+
+## Related
+
+- Skill: `.cursor/skills/deep-research-domain-handoff/`
+- Promote owner: `.cursor/skills/mine-domain-sources/`
+- Citation: `docs/domain/rules/ACCESS_AND_CITATION.md`

@@ -5,7 +5,6 @@ This validates that semantic validation works correctly with production data.
 """
 
 import pytest
-
 from src.testing.metar_test_generator import METARTestGenerator
 from src.validation.semantic_rules import (
     IssueSeverity,
@@ -146,7 +145,7 @@ class TestTemperatureValidationWithRealData:
         processed = 0
         errors = []
 
-        for i, case in enumerate(test_cases):
+        for _i, case in enumerate(test_cases):
             try:
                 # Import re for parsing
                 import re
@@ -222,7 +221,7 @@ class TestTemperatureValidationWithRealData:
                 T = -int(temp_str[1:]) if temp_str.startswith("M") else int(temp_str)
                 Td = -int(dewpoint_str[1:]) if dewpoint_str.startswith("M") else int(dewpoint_str)
 
-                if T >= Td:
+                if Td <= T:
                     rh = rule.calculate_relative_humidity(T, Td)
                     rh_values.append(rh)
                     spreads.append(T - Td)

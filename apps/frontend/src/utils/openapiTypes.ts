@@ -120,6 +120,8 @@ export type QualityMetricsDetailResponse = Schemas['QualityMetricsDetailResponse
   tier: string;
   match_status: string;
   residuals: Record<string, unknown>[];
+  /** Whether leftover TAC was folded into remarks / human-readable text for this fixture. */
+  residuals_propagated_to_remarks?: boolean;
   lint_issues: Record<string, unknown>[];
   validate_issues: Record<string, unknown>[];
 };

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * CodeMirror 6 TAC editor shell for the F7 operator workbench (S011 / #702/#694).
  */
@@ -32,6 +33,94 @@ export interface TacEditorProps {
   issueSpans?: TacSpanMark[];
   /** Quick-fix from span tooltip (F10 — e.g. add_terminator). */
   onSpanFix?: (fixCode: string) => void;
+}
+
+/** Sync controlled value into an existing CodeMirror view (no-op when unmounted). */
+export function syncTacEditorValue(view: EditorView | null, value: string): void {
+  if (!view) {
+    return;
+  }
+  const current = view.state.doc.toString();
+  if (current !== value) {
+    view.dispatch({
+      changes: { from: 0, to: current.length, insert: value },
+    });
+  }
+}
+
+/** Toggle contentEditable for read-only mode (no-op when unmounted). */
+export function syncTacEditorReadOnly(
+  view: EditorView | null,
+  readOnly: boolean,
+): void {
+  if (!view) {
+    return;
+  }
+  view.contentDOM.contentEditable = readOnly ? 'false' : 'true';
+}
+
+/** Keep a11y id/label in sync when props change (no-op when unmounted). */
+export function syncTacEditorA11y(
+  view: EditorView | null,
+  ariaLabel: string,
+  id: string,
+): void {
+  if (!view) {
+    return;
+  }
+  view.contentDOM.setAttribute('aria-label', ariaLabel);
+  view.contentDOM.id = id;
+}
+
+/** Push issue span decorations (no-op when unmounted). */
+export function syncTacEditorIssueSpans(
+  view: EditorView | null,
+  issueSpans: TacSpanMark[],
+): void {
+  if (!view) {
+    return;
+  }
+  view.dispatch({ effects: setTacSpansEffect.of(issueSpans) });
+}
+
+/** Handle bubbled ``tac-span-fix`` events from span tooltips. */
+export function handleTacSpanFixEvent(
+  event: Event,
+  onSpanFix: ((fixCode: string) => void) | undefined,
+): void {
+  const detail = (event as CustomEvent<{ fixCode?: string }>).detail;
+  if (detail?.fixCode) {
+    onSpanFix?.(detail.fixCode);
+  }
+}
+
+/** Mount CodeMirror when a host element exists; no-op when missing. */
+export function mountTacEditorView(
+  parent: HTMLElement | null,
+  factory: (parent: HTMLElement) => { destroy: () => void },
+): (() => void) | undefined {
+  if (!parent) {
+    return undefined;
+  }
+  const view = factory(parent);
+  return () => {
+    view.destroy();
+  };
+}
+
+/** Attach ``tac-span-fix`` listener on the editor chrome root. */
+export function attachTacSpanFixListener(
+  inner: HTMLElement | null,
+  handler: (event: Event) => void,
+): (() => void) | undefined {
+  const root = inner?.parentElement ?? null;
+  if (!root) {
+    return undefined;
+  }
+  root.addEventListener('tac-span-fix', handler);
+  return () => {
+    root.removeEventListener('tac-span-fix', handler);
+  };
 }
 
 /**
@@ -70,106 +159,75 @@ export function TacEditor({
   }, [onSpanFix]);
 
   useEffect(() => {
-    if (!parentRef.current) {
-      return;
-    }
+    return mountTacEditorView(parentRef.current, (parent) => {
+      const extensions = [
+        basicSetup,
+        EditorView.lineWrapping,
+        EditorView.updateListener.of((update) => {
+          if (update.docChanged) {
+            onChangeRef.current(update.state.doc.toString());
+          }
+        }),
+        EditorState.readOnly.of(readOnly),
+        EditorView.editable.of(!readOnly),
+        EditorView.contentAttributes.of({
+          'aria-label': ariaLabel,
+          id,
+        }),
+        EditorView.theme({
+          '&': { minHeight: '120px', fontSize: '0.875rem' },
+          '.cm-scroller': { overflow: 'auto' },
+          '.cm-content': {
+            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+          },
+        }),
+        ...tacSpanExtensions(),
+      ];
 
-    const extensions = [
-      basicSetup,
-      EditorView.lineWrapping,
-      EditorView.updateListener.of((update) => {
-        if (update.docChanged) {
-          onChangeRef.current(update.state.doc.toString());
-        }
-      }),
-      EditorState.readOnly.of(readOnly),
-      EditorView.editable.of(!readOnly),
-      EditorView.contentAttributes.of({
-        'aria-label': ariaLabel,
-        id,
-      }),
-      EditorView.theme({
-        '&': { minHeight: '120px', fontSize: '0.875rem' },
-        '.cm-scroller': { overflow: 'auto' },
-        '.cm-content': {
-          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+      const state = EditorState.create({
+        doc: value,
+        extensions,
+      });
+      const view = new EditorView({ state, parent });
+      viewRef.current = view;
+
+      if (issueSpans.length > 0) {
+        view.dispatch({ effects: setTacSpansEffect.of(issueSpans) });
+      }
+
+      return {
+        destroy: () => {
+          view.destroy();
+          viewRef.current = null;
         },
-      }),
-      ...tacSpanExtensions(),
-    ];
-
-    const state = EditorState.create({
-      doc: value,
-      extensions,
+      };
     });
-    const view = new EditorView({ state, parent: parentRef.current });
-    viewRef.current = view;
-
-    if (issueSpans.length > 0) {
-      view.dispatch({ effects: setTacSpansEffect.of(issueSpans) });
-    }
-
-    return () => {
-      view.destroy();
-      viewRef.current = null;
-    };
     // Mount once; value/readOnly/spans synced below.
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional mount-only
   }, []);
 
   useEffect(() => {
-    const view = viewRef.current;
-    if (!view) {
-      return;
-    }
-    const current = view.state.doc.toString();
-    if (current !== value) {
-      view.dispatch({
-        changes: { from: 0, to: current.length, insert: value },
-      });
-    }
+    syncTacEditorValue(viewRef.current, value);
   }, [value]);
 
   useEffect(() => {
-    const view = viewRef.current;
-    if (!view) {
-      return;
-    }
-    view.contentDOM.contentEditable = readOnly ? 'false' : 'true';
+    syncTacEditorReadOnly(viewRef.current, readOnly);
   }, [readOnly]);
 
   // Mount-once CodeMirror keeps initial contentAttributes; sync a11y label when
   // FileConverter switches modes (e.g. TAC → Validate IWXXM / UJ-058 live).
   useEffect(() => {
-    const view = viewRef.current;
-    if (!view) {
-      return;
-    }
-    view.contentDOM.setAttribute('aria-label', ariaLabel);
-    view.contentDOM.id = id;
+    syncTacEditorA11y(viewRef.current, ariaLabel, id);
   }, [ariaLabel, id]);
 
   useEffect(() => {
-    const view = viewRef.current;
-    if (!view) {
-      return;
-    }
-    view.dispatch({ effects: setTacSpansEffect.of(issueSpans) });
+    syncTacEditorIssueSpans(viewRef.current, issueSpans);
   }, [issueSpans]);
 
   useEffect(() => {
-    const root = parentRef.current?.parentElement;
-    if (!root) {
-      return;
-    }
-    const handler = (event: Event) => {
-      const detail = (event as CustomEvent<{ fixCode?: string }>).detail;
-      if (detail?.fixCode) {
-        onSpanFixRef.current?.(detail.fixCode);
-      }
-    };
-    root.addEventListener('tac-span-fix', handler);
-    return () => root.removeEventListener('tac-span-fix', handler);
+    return attachTacSpanFixListener(parentRef.current, (event) => {
+      handleTacSpanFixEvent(event, onSpanFixRef.current);
+    });
   }, []);
 
   return (

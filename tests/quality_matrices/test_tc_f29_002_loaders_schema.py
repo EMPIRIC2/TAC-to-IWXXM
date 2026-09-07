@@ -1,4 +1,4 @@
-"""TC-F29-002 (loader foundation) / T1.1 — shared YAML/JSON loader + RuleCase schema (S037 / EV-030)."""
+"""TC-F29-002 (loader foundation) / T1.1 - shared YAML/JSON loader + RuleCase schema (S037 / EV-030)."""
 
 from __future__ import annotations
 
@@ -87,7 +87,7 @@ def test_load_rule_cases_flat_list_shape(tmp_path: Path) -> None:
 
 
 @pytest.mark.parametrize(
-    "engine,expect",
+    ("engine", "expect"),
     [
         ("lint", {"codes": ["INVALID_VISIBILITY"]}),
         ("convert", {"encode_ok": False}),

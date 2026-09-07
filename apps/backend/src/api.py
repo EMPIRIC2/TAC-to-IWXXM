@@ -6,15 +6,20 @@ import logging
 import os
 import pathlib
 import sys
+from collections.abc import Awaitable, Callable
+from typing import Any
+
+from starlette.types import Message, Receive, Scope, Send
 
 # Add src directory to path for imports (for local uvicorn execution)
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 
 from dissemination.packaging import apply_exchange_packaging
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 from tac_validate import lint as tac_lint_fn
+
+from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 
 try:
     from .schemas.conversion import (
@@ -71,16 +76,16 @@ add_origin_if_missing = api_wire.add_origin_if_missing
 add_loopback_origin_variants = api_wire.add_loopback_origin_variants
 get_cors_origins = api_wire.get_cors_origins
 get_cors_allowed_headers = api_wire.get_cors_allowed_headers
-_is_named_upload = api_wire._is_named_upload
+_is_named_upload = api_wire._is_named_upload  # pyright: ignore[reportPrivateUsage]
 parse_files = api_wire.parse_files
 normalize_api_product = api_wire.normalize_api_product
-_coerce_form_list = api_wire._coerce_form_list
-_coerce_form_str = api_wire._coerce_form_str
-_resolve_request_extensions = api_wire._resolve_request_extensions
-_package_issue_payload = api_wire._package_issue_payload
-_package_stages_payload = api_wire._package_stages_payload
-_resolve_request_profiles = api_wire._resolve_request_profiles
-_is_multiline_template_product = api_wire._is_multiline_template_product
+_coerce_form_list = api_wire._coerce_form_list  # pyright: ignore[reportPrivateUsage]
+_coerce_form_str = api_wire._coerce_form_str  # pyright: ignore[reportPrivateUsage]
+_resolve_request_extensions = api_wire._resolve_request_extensions  # pyright: ignore[reportPrivateUsage]
+_package_issue_payload = api_wire._package_issue_payload  # pyright: ignore[reportPrivateUsage]
+_package_stages_payload = api_wire._package_stages_payload  # pyright: ignore[reportPrivateUsage]
+_resolve_request_profiles = api_wire._resolve_request_profiles  # pyright: ignore[reportPrivateUsage]
+_is_multiline_template_product = api_wire._is_multiline_template_product  # pyright: ignore[reportPrivateUsage]
 split_manual_entries = api_wire.split_manual_entries
 manual_entries_with_offsets = api_wire.manual_entries_with_offsets
 is_xml_input = api_wire.is_xml_input
@@ -88,7 +93,7 @@ normalize_code = api_wire.normalize_code
 parse_optional_bulletin_id = api_wire.parse_optional_bulletin_id
 parse_optional_issuing_center = api_wire.parse_optional_issuing_center
 normalize_validation_level = api_wire.normalize_validation_level
-_product_uses_metar_tac_layers = api_wire._product_uses_metar_tac_layers
+_product_uses_metar_tac_layers = api_wire._product_uses_metar_tac_layers  # pyright: ignore[reportPrivateUsage]
 parse_optional_files = api_wire.parse_optional_files
 bulletin_split_http_error = api_wire.bulletin_split_http_error
 MAX_BULLETIN_REPORTS = api_wire.MAX_BULLETIN_REPORTS
@@ -106,7 +111,7 @@ convert_metar_tac_with_metadata = api_deps.convert_metar_tac_with_metadata
 get_icao_region = api_deps.get_icao_region
 get_translation_centre_info = api_deps.get_translation_centre_info
 get_validation_orchestrator = api_deps.get_validation_orchestrator
-iwxxm_validate_fn = api_deps.iwxxm_validate_fn  # noqa: F401 — patch surface (TC-F6-033)
+iwxxm_validate_fn = api_deps.iwxxm_validate_fn
 msgspec_json_response = api_deps.msgspec_json_response
 read_upload_files_text = api_deps.read_upload_files_text
 read_uploaded_text = api_deps.read_uploaded_text
@@ -120,7 +125,9 @@ try:
         comprehensive_validation,
         conversion,
         conversion_meta,
+        conversion_profiles,
         dissemination,
+        dissemination_ops,
         evaluation,
         health,
         icao_opmet,
@@ -135,7 +142,9 @@ except ImportError:
         comprehensive_validation,
         conversion,
         conversion_meta,
+        conversion_profiles,
         dissemination,
+        dissemination_ops,
         evaluation,
         health,
         icao_opmet,
@@ -182,10 +191,10 @@ install_abuse_controls(app)
 class ConvertRequestLoggingMiddleware:
     """Log request/response details for convert flow, including OPTIONS preflight."""
 
-    def __init__(self, app) -> None:
+    def __init__(self, app: Callable[[Scope, Receive, Send], Awaitable[None]]) -> None:
         self.app = app
 
-    async def __call__(self, scope, receive, send) -> None:
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope.get("type") != "http":
             await self.app(scope, receive, send)
             return
@@ -209,7 +218,8 @@ class ConvertRequestLoggingMiddleware:
             headers.get("content-type", "none"),
         )
 
-        async def send_wrapper(message):
+        async def send_wrapper(message: Message) -> None:
+            """Log preflight response status before forwarding ASGI messages."""
             if message.get("type") == "http.response.start":
                 status_code = message.get("status")
                 logger.info(
@@ -248,12 +258,23 @@ logger.info(
     True,
 )
 
-if dev_cors_relaxed:
-    logger.warning("[CORS] ENABLE_DEV_CORS_RELAXATION is active: localhost:5173 added and preflight headers set to '*'")
+
+def _warn_if_dev_cors_relaxed(enabled: bool) -> None:
+    """Emit operator-facing warning when local CORS relaxation is active."""
+    if enabled:
+        logger.warning(
+            "[CORS] ENABLE_DEV_CORS_RELAXATION is active: localhost:5173 added and preflight headers set to '*'"
+        )
+
+
+_warn_if_dev_cors_relaxed(dev_cors_relaxed)
 
 
 @app.middleware("http")
-async def add_translation_centre_headers(request: Request, call_next):
+async def add_translation_centre_headers(
+    request: Request,
+    call_next: Callable[[Request], Awaitable[Response]],
+) -> Response:
     """Add ICAO Translation Centre identification headers to all responses."""
     response = await call_next(request)
 
@@ -271,7 +292,14 @@ async def add_translation_centre_headers(request: Request, call_next):
     return response
 
 
-def custom_openapi():
+def custom_openapi() -> dict[str, Any]:
+    """Build OpenAPI schema without security schemes for public API docs.
+
+    Returns
+    -------
+    dict
+        Cached OpenAPI document for the FastAPI application.
+    """
     if app.openapi_schema:
         return app.openapi_schema
 
@@ -328,6 +356,18 @@ except Exception as e:  # pragma: no cover - defensive
     logger.error(f"DEBUG: Failed to include dissemination router: {e}", exc_info=True)
 
 try:
+    app.include_router(dissemination_ops.router)
+    logger.info("DEBUG: included dissemination_ops router successfully")
+except Exception as e:  # pragma: no cover - defensive
+    logger.error(f"DEBUG: Failed to include dissemination_ops router: {e}", exc_info=True)
+
+try:
+    app.include_router(conversion_profiles.router)
+    logger.info("DEBUG: included conversion_profiles router successfully")
+except Exception as e:  # pragma: no cover - defensive
+    logger.error(f"DEBUG: Failed to include conversion_profiles router: {e}", exc_info=True)
+
+try:
     app.include_router(mass_ingest.router)
     logger.info("DEBUG: included mass_ingest router successfully")
 except Exception as e:  # pragma: no cover - defensive
@@ -357,6 +397,7 @@ except Exception as e:  # pragma: no cover - defensive
 
 try:
     from metar_auth import create_auth_router
+
     from metar_shared.supabase_env import get_supabase_url
 
     _supabase_url = get_supabase_url()
@@ -394,9 +435,9 @@ __all__ = [
     "ErrorDetail",
     "FailedSpan",
     "HTTPException",
-    "ValidationServiceError",
     "ValidateRequest",
     "ValidateResponse",
+    "ValidationServiceError",
     "app",
     "apply_exchange_packaging",
     "convert",

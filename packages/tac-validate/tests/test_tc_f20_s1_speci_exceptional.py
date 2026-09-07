@@ -1,4 +1,4 @@
-"""F20 / S1 — SPECI exceptional-rule deepen (TC-F20-004 / #734).
+"""F20 / S1 - SPECI exceptional-rule deepen (TC-F20-004 / #734).
 
 HARD theme S1 from taf-speci-research-catalog.md.
 T3.1 fixtures; T3.2 encodes registry + METAR/SPECI S1 diagnostics.
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

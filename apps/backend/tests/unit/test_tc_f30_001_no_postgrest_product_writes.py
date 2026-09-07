@@ -1,4 +1,4 @@
-"""T2.6 / TC-F30-001 — API product path must not write via Supabase PostgREST."""
+"""T2.6 / TC-F30-001 - API product path must not write via Supabase PostgREST."""
 
 from __future__ import annotations
 
@@ -17,7 +17,7 @@ _PRODUCT_MODULES = (
 
 @pytest.mark.unit
 def test_work_session_stack_has_no_supabase_postgrest_client() -> None:
-    """Logged-in sessions use DATABASE_URL / SQLAlchemy — not supabase-py PostgREST."""
+    """Logged-in sessions use DATABASE_URL / SQLAlchemy - not supabase-py PostgREST."""
     for path in _PRODUCT_MODULES:
         assert path.is_file(), f"missing {path}"
         text = path.read_text(encoding="utf-8")

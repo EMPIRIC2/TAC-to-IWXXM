@@ -1,4 +1,4 @@
-"""BUG-2026-07-15 — multi-line soft-preview failed_spans vs editor buffer.
+"""BUG-2026-07-15 - multi-line soft-preview failed_spans vs editor buffer.
 
 When ``preview=true`` converts a multi-line ``manual_text``, each line is
 converted separately. ``failed_spans`` must use offsets relative to the full

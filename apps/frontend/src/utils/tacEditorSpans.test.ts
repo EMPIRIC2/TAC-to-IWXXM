@@ -2,13 +2,14 @@
  * T4.2 — Span normalize / decoration helpers for live workbench (UJ-017).
  */
 
-import { afterEach, describe, expect, it } from 'vitest';
-import { EditorState } from '@codemirror/state';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { EditorState, StateEffect } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import {
   buildSpanDecorations,
   normalizeTacSpans,
   setTacSpansEffect,
+  spanTooltip,
   tacSpanExtensions,
 } from './tacEditorSpans';
 
@@ -80,5 +81,94 @@ describe('tacSpanExtensions', () => {
       changes: { from: 10, to: 10, insert: ' X' },
     });
     expect(view.state.doc.toString()).toContain('X');
+    // No-op selection update hits tacSpansField update return-value path
+    view.dispatch({
+      selection: { anchor: 0, head: 0 },
+    });
+    // Non-matching effect hits the effect.is(...) false branch
+    const other = StateEffect.define<number>();
+    view.dispatch({ effects: other.of(1) });
+  });
+
+  it('buildSpanDecorations uses info mark for info severity', () => {
+    const set = buildSpanDecorations([
+      { start: 0, end: 2, severity: 'info' },
+      { start: 3, end: 5, severity: 'error' },
+    ]);
+    expect(set.size).toBe(2);
+  });
+
+  it('spanTooltip returns null when pos misses all spans', () => {
+    const parent = document.createElement('div');
+    document.body.appendChild(parent);
+    view = new EditorView({
+      state: EditorState.create({
+        doc: 'METAR KJFK',
+        extensions: tacSpanExtensions(),
+      }),
+      parent,
+    });
+    view.dispatch({
+      effects: setTacSpansEffect.of([{ start: 0, end: 5, message: 'type' }]),
+    });
+    expect(spanTooltip(view, 9)).toBeNull();
+  });
+
+  it('spanTooltip builds DOM with fix button and dispatches tac-span-fix', () => {
+    const parent = document.createElement('div');
+    document.body.appendChild(parent);
+    view = new EditorView({
+      state: EditorState.create({
+        doc: 'METAR KJFK',
+        extensions: tacSpanExtensions(),
+      }),
+      parent,
+    });
+    view.dispatch({
+      effects: setTacSpansEffect.of([
+        {
+          start: 0,
+          end: 5,
+          code: 'MISSING_TERMINATOR',
+          message: 'add equals',
+          fixCode: 'add_terminator',
+          fixLabel: 'Add `=`',
+        },
+      ]),
+    });
+
+    const tip = spanTooltip(view, 2);
+    expect(tip).not.toBeNull();
+    const created = tip!.create(view);
+    expect(created.dom.getAttribute('data-testid')).toBe('tac-span-tooltip');
+    const btn = created.dom.querySelector(
+      '[data-testid="tac-span-fix-add_terminator"]',
+    ) as HTMLButtonElement;
+    expect(btn).toBeTruthy();
+
+    const heard = vi.fn();
+    view.dom.addEventListener('tac-span-fix', heard);
+    btn.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+    expect(heard).toHaveBeenCalled();
+    const detail = (heard.mock.calls[0]?.[0] as CustomEvent).detail;
+    expect(detail).toEqual({ fixCode: 'add_terminator' });
+  });
+
+  it('spanTooltip falls back to Issue label when code and message are empty', () => {
+    const parent = document.createElement('div');
+    document.body.appendChild(parent);
+    view = new EditorView({
+      state: EditorState.create({
+        doc: 'METAR',
+        extensions: tacSpanExtensions(),
+      }),
+      parent,
+    });
+    view.dispatch({
+      effects: setTacSpansEffect.of([{ start: 0, end: 5 }]),
+    });
+    const tip = spanTooltip(view, 1);
+    const created = tip!.create(view);
+    expect(created.dom.textContent).toBe('Issue');
   });
 });

@@ -1,4 +1,4 @@
-"""F24 / A2 — AIRMET phenomenon + intensity / STNR / WKN (TC-F24-001/004).
+"""F24 / A2 - AIRMET phenomenon + intensity / STNR / WKN (TC-F24-001/004).
 
 HARD theme A2 from wmo-quality-research-catalog.md / #731.
 T1.3 fixtures + assertions; T1.4 encodes A2 checklist rules (reuse OBS/STNR/WKN/TOP codes).
@@ -11,7 +11,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 from tac_validate import lint
 from tac_validate.issue_registry import by_code
 

@@ -1,4 +1,4 @@
-"""BUG-2026-08-11 — Quality metrics display XML must pretty-print after C14N.
+"""BUG-2026-08-11 - Quality metrics display XML must pretty-print after C14N.
 
 Staging showed unified diffs as one ~3k-character C14N line. The FE helper
 ``qualityMetricsDisplayXml`` must pipe C14N through ``prettyPrintXml`` so

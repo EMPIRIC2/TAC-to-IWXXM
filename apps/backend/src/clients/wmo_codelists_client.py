@@ -8,17 +8,16 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, cast
+
+from ..utilities.codelist_parser import CodeListParser
 
 try:
     import requests
-
-    REQUESTS_AVAILABLE = True
 except ImportError:
     requests = None  # type: ignore[assignment,misc]
-    REQUESTS_AVAILABLE = False
 
-from ..utilities.codelist_parser import CodeListParser
+REQUESTS_AVAILABLE = requests is not None
 
 logger = logging.getLogger(__name__)
 
@@ -29,12 +28,12 @@ class WMOCodelistInfo:
 
     name: str
     url: str
-    version: Optional[str] = None
-    values: Optional[Set[str]] = None
-    last_updated: Optional[datetime] = None
+    version: str | None = None
+    values: set[str] | None = None
+    last_updated: datetime | None = None
     source: str = "local"  # "local" or "online"
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.values is None:
             self.values = set()
 
@@ -46,7 +45,7 @@ class WMOCodelistCache:
         self,
         cache_dir: Path,
         ttl_seconds: int = 604800,  # 1 week default
-    ):
+    ) -> None:
         """Initialize cache.
 
         Args:
@@ -58,16 +57,17 @@ class WMOCodelistCache:
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
         self._metadata_file = cache_dir / "cache_metadata.json"
-        self._metadata: Dict[str, dict] = {}
+        self._metadata: dict[str, dict[str, Any]] = {}
         self._load_metadata()
 
     def _load_metadata(self) -> None:
         """Load cache metadata from file."""
         if self._metadata_file.exists():
             try:
-                with open(self._metadata_file, "r") as f:
-                    data = json.load(f)
-                    self._metadata = data
+                with open(self._metadata_file) as f:
+                    raw = json.load(f)
+                if isinstance(raw, dict):
+                    self._metadata = cast(dict[str, dict[str, Any]], raw)
             except Exception as e:
                 logger.warning(f"Failed to load cache metadata: {e}")
                 self._metadata = {}
@@ -80,7 +80,7 @@ class WMOCodelistCache:
         except Exception as e:
             logger.warning(f"Failed to save cache metadata: {e}")
 
-    def get(self, codelist_name: str) -> Optional[Set[str]]:
+    def get(self, codelist_name: str) -> set[str] | None:
         """Get codelist values from cache if not expired.
 
         Args:
@@ -103,14 +103,17 @@ class WMOCodelistCache:
             return None
 
         try:
-            with open(cache_file, "r") as f:
-                data = json.load(f)
-                return set(data.get("values", []))
+            with open(cache_file) as f:
+                raw = json.load(f)
+            if not isinstance(raw, dict):
+                return None
+            data = cast(dict[str, Any], raw)
+            return set(cast(list[str], data.get("values", [])))
         except Exception as e:
             logger.warning(f"Failed to load cached codelist {codelist_name}: {e}")
             return None
 
-    def set(self, codelist_name: str, values: Set[str]) -> None:
+    def set(self, codelist_name: str, values: set[str]) -> None:
         """Store codelist values in cache.
 
         Args:
@@ -141,7 +144,7 @@ class WMOCodelistCache:
             Number of entries removed
         """
         removed = 0
-        expired_keys = []
+        expired_keys: list[Any] = []
 
         for codelist_name, metadata in self._metadata.items():
             cached_at = datetime.fromisoformat(metadata.get("cached_at", ""))
@@ -174,10 +177,10 @@ class WMOCodelistsClient:
     def __init__(
         self,
         codelists_dir: Path,
-        cache_dir: Optional[Path] = None,
+        cache_dir: Path | None = None,
         enable_online: bool = True,
         registry_url: str = "https://codes.wmo.int",
-    ):
+    ) -> None:
         """Initialize WMO codelists client.
 
         Args:
@@ -276,7 +279,7 @@ class WMOCodelistsClient:
         )
         return False
 
-    def _fetch_codelist_online(self, codelist_name: str) -> Optional[Set[str]]:
+    def _fetch_codelist_online(self, codelist_name: str) -> set[str] | None:
         """Fetch codelist from online WMO registry.
 
         Args:
@@ -307,9 +310,9 @@ class WMOCodelistsClient:
                     "skos": "http://www.w3.org/2004/02/skos/core#",
                 }
 
-                codes = set()
+                codes: set[str] = set()
                 for concept in root.findall(".//skos:Concept", namespaces):
-                    about = concept.get("{%s}about" % namespaces["rdf"])
+                    about = concept.get("{{{}}}about".format(namespaces["rdf"]))
                     if about:
                         code = about.split("/")[-1]
                         codes.add(code)
@@ -365,7 +368,7 @@ class WMOCodelistsClient:
         # Not found
         return WMOCodelistInfo(name=codelist_name, url=f"{self.registry_url}/49-2/{codelist_name}", source="unknown")
 
-    def list_available_codelists(self) -> List[str]:
+    def list_available_codelists(self) -> list[str]:
         """List all available codelists (local and cached).
 
         Returns:
@@ -379,7 +382,7 @@ class WMOCodelistsClient:
 
         return sorted(local_lists)
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get statistics about available codelists.
 
         Returns:

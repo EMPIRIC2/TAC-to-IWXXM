@@ -1,7 +1,7 @@
-"""T6.1 / TC-F26-005 + TC-F27-005 — VAA + TCA lint/convert + catalog GET smoke.
+"""T6.1 / TC-F26-005 + TC-F27-005 - VAA + TCA lint/convert + catalog GET smoke.
 
 Spec: docs/test-plan.md TC-F26-005 / TC-F27-005; UJ-037 / UJ-038;
-execution-plan T6.1 (S027 / EV-021). In-process client (CI); live H3/H4–H5 at 13.
+execution-plan T6.1 (S027 / EV-021). In-process client (CI); live H3/H4-H5 at 13.
 """
 
 from __future__ import annotations
@@ -11,10 +11,9 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-from tac_validate.issue_registry import ISSUES
-
 from src.api import app
 from src.utilities.security import verify_supabase_token
+from tac_validate.issue_registry import ISSUES
 
 pytestmark = [pytest.mark.integration, pytest.mark.smoke]
 

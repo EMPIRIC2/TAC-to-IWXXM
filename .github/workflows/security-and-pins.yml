@@ -1,0 +1,25 @@
+name: security-and-pins
+on:
+  pull_request:
+  push:
+    branches: [main, stage]
+jobs:
+  exact-pins:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: python3 scripts/ci/check-exact-pins.py
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install security tools
+        run: bash scripts/security/install-tools.sh
+      - name: Hard-fail security suite
+        env:
+          SEC_SKIP_SUPABASE_ADVISORS: "1"
+          SEC_INSTALL: "0"
+        run: bash scripts/security/run-all.sh

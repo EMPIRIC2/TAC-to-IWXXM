@@ -1,4 +1,4 @@
-"""TC-EV025-006 / TC-EV025-007 — US REMARKS diagnostics + humanReadableText (S032 M6).
+"""TC-EV025-006 / TC-EV025-007 - US REMARKS diagnostics + humanReadableText (S032 M6).
 
 Deepens UJ-010 / UJ-026 for Lane A structured remarks mixed with garbage / free text.
 """

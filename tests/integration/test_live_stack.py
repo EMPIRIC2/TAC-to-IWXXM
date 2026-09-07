@@ -1,4 +1,4 @@
-"""Live stack integration tests — cross-service H3 + H4 (DOKS primary after T6.5).
+"""Live stack integration tests - cross-service H3 + H4 (DOKS primary after T6.5).
 
 Targets (defaults / prod.json liveE2e):
   API:      http://api.doks.placeholder.metar-iwxxm.local
@@ -29,7 +29,7 @@ def _frontend_url() -> str:
 
 @pytest.mark.asyncio
 async def test_live_frontend_serves_app_shell() -> None:
-    """H6 prerequisite — static frontend is reachable and serves the converter shell."""
+    """H6 prerequisite - static frontend is reachable and serves the converter shell."""
     warn_deprecated_env()
     origin = _frontend_url()
     async with httpx.AsyncClient(timeout=30.0, follow_redirects=True) as client:
@@ -41,7 +41,7 @@ async def test_live_frontend_serves_app_shell() -> None:
 
 @pytest.mark.asyncio
 async def test_live_cors_preflight_from_frontend_origin() -> None:
-    """H4 — browser origin allowed on API preflight."""
+    """H4 - browser origin allowed on API preflight."""
     warn_deprecated_env()
     api_url = live_api_base()
     origin = _frontend_url()
@@ -63,7 +63,7 @@ async def test_live_cors_preflight_from_frontend_origin() -> None:
 
 @pytest.mark.asyncio
 async def test_live_api_public_health_path(live_client_public) -> None:
-    """H3 — public health + versions respond on deployed API."""
+    """H3 - public health + versions respond on deployed API."""
     health = await live_client_public.get("/health")
     assert health.status_code == 200
     data = health.json()
@@ -77,7 +77,7 @@ async def test_live_api_public_health_path(live_client_public) -> None:
 
 @pytest.mark.asyncio
 async def test_live_convert_then_validate_round_trip(live_client) -> None:
-    """TC-LIVE-002 — convert TAC then validate IWXXM on live API."""
+    """TC-LIVE-002 - convert TAC then validate IWXXM on live API."""
     convert = await live_client.post(
         "/api/v1/convert",
         json={"metars": [SAMPLE_METAR], "version": "2025-2"},

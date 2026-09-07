@@ -5,7 +5,7 @@ Defines how coordinates, elevations, and other data should be formatted
 when generating IWXXM XML for different versions.
 """
 
-from typing import Dict, TypedDict
+from typing import TypedDict
 
 
 class CoordinatePrecisionRule(TypedDict):
@@ -25,7 +25,7 @@ class ElevationFormatRule(TypedDict):
 
 # Coordinate precision rules by version
 # Precision determines gml:pos format: e.g., 2 decimals = "61.17 -45.42"
-COORDINATE_PRECISION: Dict[str, CoordinatePrecisionRule] = {
+COORDINATE_PRECISION: dict[str, CoordinatePrecisionRule] = {
     "2016": {"decimals": 2, "rationale": "Legacy precision from original implementations"},
     "2018": {"decimals": 2, "rationale": "ICAO Annex 3 legacy standard (~1.1 km per degree)"},
     "2021-2": {"decimals": 6, "rationale": "Increased precision ~0.111 meters per degree"},
@@ -35,7 +35,7 @@ COORDINATE_PRECISION: Dict[str, CoordinatePrecisionRule] = {
 
 
 # Elevation formatting rules by version
-ELEVATION_FORMAT: Dict[str, ElevationFormatRule] = {
+ELEVATION_FORMAT: dict[str, ElevationFormatRule] = {
     "2016": {"unit": "M", "round_to": 1, "rationale": "Round to nearest meter for legacy systems"},
     "2018": {"unit": "M", "round_to": 1, "rationale": "Round to nearest meter"},
     "2021-2": {"unit": "M", "round_to": 0, "rationale": "No rounding - maintain source precision"},
@@ -83,7 +83,10 @@ def get_coordinate_decimals(version: str) -> int:
     Returns:
         Number of decimal places (2-8)
     """
-    return COORDINATE_PRECISION.get(version, {}).get("decimals", 2)
+    rule = COORDINATE_PRECISION.get(version)
+    if rule is None:
+        return 2
+    return rule["decimals"]
 
 
 def get_elevation_rounding(version: str) -> int:
@@ -95,7 +98,10 @@ def get_elevation_rounding(version: str) -> int:
     Returns:
         Number of decimal places to round to (0 = round to integer)
     """
-    return ELEVATION_FORMAT.get(version, {}).get("round_to", 0)
+    rule = ELEVATION_FORMAT.get(version)
+    if rule is None:
+        return 0
+    return rule["round_to"]
 
 
 def format_coordinates(lat: float, lon: float, version: str) -> str:

@@ -36,6 +36,11 @@ const STATUS_OPTIONS: Array<WorkSessionStatus | 'all'> = [
   'failed',
 ];
 
+/**
+ * Work-history page listing saved METAR/SPECI sessions.
+ *
+ * Uses local IndexedDB by default; syncs with the server when authenticated.
+ */
 export function MyMetarsPage({
   accessToken,
   userEmail = 'Local history',

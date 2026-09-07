@@ -1,4 +1,4 @@
-"""M10 vendor sync workflow — T10.3, M6, ADR-001."""
+"""M10 vendor sync workflow - T10.3, M6, ADR-001."""
 
 from __future__ import annotations
 

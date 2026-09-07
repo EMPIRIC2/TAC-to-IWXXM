@@ -1,5 +1,5 @@
 import xml.etree.ElementTree as ET
-from typing import Optional, Set
+from typing import Optional
 
 
 def _local(tag: str) -> str:
@@ -12,7 +12,7 @@ def parse_xml(xml_text: str) -> ET.Element:
     return ET.fromstring(xml_text)
 
 
-def strip_dynamic_attrs(elem: ET.Element, attrs_to_strip: Optional[Set[str]] = None) -> None:
+def strip_dynamic_attrs(elem: ET.Element, attrs_to_strip: set[str] | None = None) -> None:
     if attrs_to_strip is None:
         # Rely on local-name matching rather than fully qualified URIs
         attrs_to_strip = set()
@@ -26,14 +26,14 @@ def strip_dynamic_attrs(elem: ET.Element, attrs_to_strip: Optional[Set[str]] = N
         strip_dynamic_attrs(child, attrs_to_strip)
 
 
-def _norm_text(t: Optional[str]) -> str:
+def _norm_text(t: str | None) -> str:
     if t is None:
         return ""
     # Collapse whitespace runs and strip
     return " ".join(t.split())
 
 
-def elements_equal(a: ET.Element, b: ET.Element, ignore_attrs: Optional[Set[str]] = None) -> bool:
+def elements_equal(a: ET.Element, b: ET.Element, ignore_attrs: set[str] | None = None) -> bool:
     """Structural XML equality ignoring attribute order and namespaces.
 
     - Compares tag local names (ignores namespace URIs)
@@ -73,13 +73,10 @@ def elements_equal(a: ET.Element, b: ET.Element, ignore_attrs: Optional[Set[str]
     bch = list(b)
     if len(ach) != len(bch):
         return False
-    for i in range(len(ach)):
-        if not elements_equal(ach[i], bch[i], ignore_attrs=ignore_attrs):
-            return False
-    return True
+    return all(elements_equal(ach[i], bch[i], ignore_attrs=ignore_attrs) for i in range(len(ach)))
 
 
-def find_metar(root: ET.Element) -> Optional[ET.Element]:
+def find_metar(root: ET.Element) -> ET.Element | None:
     if _local(root.tag) == "METAR":
         return root
     for child in root.iter():

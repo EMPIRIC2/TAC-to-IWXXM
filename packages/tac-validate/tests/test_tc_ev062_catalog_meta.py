@@ -1,4 +1,4 @@
-"""TC-EV062 — issue_catalog_meta + attribution source_locator/source_access."""
+"""TC-EV062 - issue_catalog_meta + attribution source_locator/source_access."""
 
 from __future__ import annotations
 
@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Any
 
 import pytest
-
 import tac_validate.catalog_attribution as ca
 from tac_validate.issue_catalog_meta import (
     classify_issue_type,
@@ -180,8 +179,10 @@ def test_attribution_semantic_vendor_and_codes_registry(monkeypatch: pytest.Monk
 
     swapped = ca.attribution_for("STORE_WITH_EUR_NOTE")
     assert swapped["source_access"] == "public"
-    assert swapped["replacement_url"] and "store.icao.int" in swapped["replacement_url"]
-    assert swapped["source_url"] and "icao.int/sites" in swapped["source_url"]
+    assert swapped["replacement_url"]
+    assert "store.icao.int" in swapped["replacement_url"]
+    assert swapped["source_url"]
+    assert "icao.int/sites" in swapped["source_url"]
 
     gap = ca.attribution_for("GAP_ROW")
     assert gap["source_access"] == "semantic_only"

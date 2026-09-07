@@ -129,7 +129,7 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'ca_eccc');
+    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: { value: CA_TAC },
     });
@@ -140,7 +140,7 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
     });
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
-        profile: 'ca_eccc',
+        profile: 'CA_ECCC',
         extensions: [CA_ECCC_NATIONAL_EXTENSION],
         exchangeOutput: true,
       }),
@@ -151,7 +151,7 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'ca_eccc');
+    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
     await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
     fireEvent.change(screen.getByTestId('tac-editor'), {
       target: { value: '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/3.0"/>' },
@@ -163,7 +163,7 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
     });
     expect(mockValidateIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
-        profile: 'ca_eccc',
+        profile: 'CA_ECCC',
         extensions: [CA_ECCC_NATIONAL_EXTENSION],
       }),
     );
@@ -173,7 +173,7 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'ca_eccc');
+    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
 
     const panel = screen.getByTestId('ca-eccc-profile-metadata');
     expect(panel).toHaveTextContent('3.0.0');
@@ -200,7 +200,7 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
       expect(mockFetchSchemaStatus).toHaveBeenCalled();
     });
 
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'ca_eccc');
+    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: { value: CA_TAC },
     });
@@ -222,7 +222,7 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
       expect(mockFetchSchemaStatus).toHaveBeenCalled();
     });
 
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'ca_eccc');
+    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: { value: CA_TAC },
     });

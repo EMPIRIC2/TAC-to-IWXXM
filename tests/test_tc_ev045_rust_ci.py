@@ -1,4 +1,4 @@
-"""TC-EV045 — Rust crate CI contracts (S054 / EV-045 / #725).
+"""TC-EV045 - Rust crate CI contracts (S054 / EV-045 / #725).
 
 Asserts Makefile ``rust-check`` parity and ``ci-cd.yml`` locked job names /
 deploy.needs for F13/F14 deepen (D-S054-04).
@@ -81,7 +81,7 @@ def _job_by_name(jobs: dict[str, Any], name: str) -> tuple[str, dict[str, Any]]:
 
 @pytest.mark.unit
 class TestTcEv045005MakefileRustCheck:
-    """TC-EV045-005 — make rust-check mirrors CI (cargo both + both maturin)."""
+    """TC-EV045-005 - make rust-check mirrors CI (cargo both + both maturin)."""
 
     def test_rust_check_target_exists(self, makefile_text: str) -> None:
         assert re.search(r"^rust-check:", makefile_text, re.M)
@@ -100,7 +100,7 @@ class TestTcEv045005MakefileRustCheck:
 
 @pytest.mark.unit
 class TestTcEv045CiJobNames:
-    """TC-EV045-001..004 / AC6 — locked check contexts in ci-cd.yml."""
+    """TC-EV045-001..004 / AC6 - locked check contexts in ci-cd.yml."""
 
     def test_rust_gate_job_exact_name(self, workflow_doc: dict[str, Any]) -> None:
         jobs = workflow_doc["jobs"]
@@ -139,12 +139,12 @@ class TestTcEv045CiJobNames:
     def test_no_path_filter_only_on_workflow(
         self, workflow_doc: dict[str, Any]
     ) -> None:
-        """D-S054-04-trigger=1 — default PR/push, not path-filter-only rust jobs."""
+        """D-S054-04-trigger=1 - default PR/push, not path-filter-only rust jobs."""
         on = workflow_doc.get("on") or workflow_doc.get(True)
         assert isinstance(on, dict)
         assert "pull_request" in on
         assert "push" in on
-        # Top-level path filters would skip most PRs — forbid for this workflow.
+        # Top-level path filters would skip most PRs - forbid for this workflow.
         for key in ("push", "pull_request"):
             node = on[key]
             if isinstance(node, dict):
@@ -173,7 +173,7 @@ class TestTcEv045DeployNeeds:
 
 @pytest.mark.unit
 class TestTcEv045006RulesetScript:
-    """TC-EV045-006 docs half — apply script lists locked contexts."""
+    """TC-EV045-006 docs half - apply script lists locked contexts."""
 
     def test_apply_script_lists_locked_contexts(self) -> None:
         text = RULESETS.read_text(encoding="utf-8")

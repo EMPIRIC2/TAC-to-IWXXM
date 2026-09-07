@@ -1,9 +1,8 @@
-"""T2.1 — iwxxm-validate Issue optional start/end (S011 / EV-008)."""
+"""T2.1 - iwxxm-validate Issue optional start/end (S011 / EV-008)."""
 
 from __future__ import annotations
 
 import msgspec
-
 from iwxxm_validate.models import Issue
 
 

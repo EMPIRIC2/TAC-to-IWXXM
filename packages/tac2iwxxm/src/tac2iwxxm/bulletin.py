@@ -40,49 +40,49 @@ _AHL_LINE = re.compile(
 # AHL page v1.0.1 prefix families: RRx / AAx / CCx with x ∈ A…X (not Y/Z).
 _BBB_VALID = re.compile(r"^(?:AA|CC|RR)[A-X]$")
 
-# gifts METAR.re_TAC — report starts at METAR|SPECI and ends at '='
+# gifts METAR.re_TAC - report starts at METAR|SPECI and ends at '='
 _TAC_METAR_SPECI = re.compile(
     r"^(?:METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s.+?=",
     re.MULTILINE | re.DOTALL,
 )
 
-# TAF body — optional AMD/COR after TAF; ends at '=' (design-note §3.2)
+# TAF body - optional AMD/COR after TAF; ends at '=' (design-note §3.2)
 _TAC_TAF = re.compile(
     r"^TAF\s+(?:(?:AMD|COR)\s+)?[A-Z][A-Z0-9]{3}\s.+?=",
     re.MULTILINE | re.DOTALL,
 )
 
-# SIGMET body — FIR SIGMET seq VALID … MWO- … = (design-note §3.2; WS gen / WV VA)
+# SIGMET body - FIR SIGMET seq VALID … MWO- … = (design-note §3.2; WS gen / WV VA)
 _TAC_SIGMET = re.compile(
     r"^[A-Z]{4}\s+SIGMET\s+\d+\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?=",
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
-# AIRMET body — FIR AIRMET seq VALID … MWO- … = (design-note §3.2; WA → LW / EV-029 M8)
+# AIRMET body - FIR AIRMET seq VALID … MWO- … = (design-note §3.2; WA → LW / EV-029 M8)
 _TAC_AIRMET = re.compile(
     r"^[A-Z]{4}\s+AIRMET\s+\d+\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?=",
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
-# VAA body — VA ADVISORY … = (``=`` preferred for multi; single block may omit — §3.2 / M9)
+# VAA body - VA ADVISORY … = (``=`` preferred for multi; single block may omit - §3.2 / M9)
 _TAC_VAA = re.compile(
     r"^VA\s+ADVISORY\b.+?(?:=\s*$|\Z)",
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
-# TCA body — TC ADVISORY … = (``=`` preferred for multi; single block may omit — §3.2 / M10)
+# TCA body - TC ADVISORY … = (``=`` preferred for multi; single block may omit - §3.2 / M10)
 _TAC_TCA = re.compile(
     r"^TC\s+ADVISORY\b.+?(?:=\s*$|\Z)",
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
-# SWXA body — SWX ADVISORY … = (``=`` preferred for multi; single block may omit — §3.2 / M11)
+# SWXA body - SWX ADVISORY … = (``=`` preferred for multi; single block may omit - §3.2 / M11)
 _TAC_SWXA = re.compile(
     r"^SWX\s+ADVISORY\b.+?(?:=\s*$|\Z)",
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
-# VONA body — VONA … labeled report (keep-whole; optional ``=`` — F32 / G-VONA-4)
+# VONA body - VONA … labeled report (keep-whole; optional ``=`` - F32 / G-VONA-4)
 _TAC_VONA = re.compile(
     r"^VONA\b.+?(?:=\s*$|\Z)",
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
@@ -93,7 +93,7 @@ _PRODUCT_TT: dict[str, frozenset[str]] = {
     "SPECI": frozenset({"SP"}),
     "TAF": frozenset({"FC", "FT"}),
     # WS general + WV volcanic ash + WC tropical cyclone (content-selected root;
-    # E19-13 / EV-029 M5–M7).
+    # E19-13 / EV-029 M5-M7).
     "SIGMET": frozenset({"WS", "WV", "WC"}),
     "AIRMET": frozenset({"WA"}),
     "VAA": frozenset({"FV"}),

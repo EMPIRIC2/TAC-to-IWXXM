@@ -1,6 +1,5 @@
 import pathlib
 import sys
-from typing import List, Tuple
 
 import pytest
 
@@ -20,7 +19,6 @@ import sys
 from pathlib import Path
 
 from _xml_utils import find_metar, parse_xml
-
 from src.schemas.iwxxm_validation import IWXXMVersion, get_namespace_version  # type: ignore
 from src.utilities.conversion import convert_metar_tac, convert_metar_tac_with_metadata  # type: ignore
 
@@ -30,10 +28,10 @@ sys.path.insert(0, str(Path(__file__).parent))
 DATA_ROOT = ROOT / "data" / "iwxxm-translation"
 
 
-def _pairs_in(dir_path: pathlib.Path) -> List[Tuple[pathlib.Path, pathlib.Path]]:
+def _pairs_in(dir_path: pathlib.Path) -> list[tuple[pathlib.Path, pathlib.Path]]:
     """Return list of (tac_path, xml_path) pairs for metar directory."""
     metar_dir = dir_path / "metar"
-    pairs: List[Tuple[pathlib.Path, pathlib.Path]] = []
+    pairs: list[tuple[pathlib.Path, pathlib.Path]] = []
     for tac in sorted(metar_dir.glob("*.tac")):
         xml = tac.with_suffix(".xml")
         if xml.exists():
@@ -51,7 +49,7 @@ def _read_tac(path: pathlib.Path) -> str:
 
 
 @pytest.mark.parametrize(
-    "tac_path, xml_path",
+    ("tac_path", "xml_path"),
     _pairs_in(DATA_ROOT / "Amd79-80-2023"),
 )
 def test_metar_examples_2023_1_produces_valid_xml(tac_path: pathlib.Path, xml_path: pathlib.Path) -> None:
@@ -71,7 +69,7 @@ def test_metar_examples_2023_1_produces_valid_xml(tac_path: pathlib.Path, xml_pa
 
     # Prefer conversion enriched with aerodrome metadata where available
     try:
-        produced_xml, validation_result = convert_metar_tac_with_metadata(
+        produced_xml, _validation_result = convert_metar_tac_with_metadata(
             tac,
             validate=False,  # Disable validation for test performance
         )
@@ -113,7 +111,7 @@ def test_metar_examples_2023_1_produces_valid_xml(tac_path: pathlib.Path, xml_pa
 
 
 @pytest.mark.parametrize(
-    "tac_path, xml_path",
+    ("tac_path", "xml_path"),
     _pairs_in(DATA_ROOT / "Amd79-80-2021") + _pairs_in(DATA_ROOT / "Amd78-2018") + _pairs_in(DATA_ROOT / "Amd77-2016"),
 )
 def test_metar_examples_older_2023_1_produces_valid_subtree(tac_path: pathlib.Path, xml_path: pathlib.Path) -> None:

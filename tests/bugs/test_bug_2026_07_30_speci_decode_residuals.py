@@ -1,4 +1,4 @@
-"""BUG-2026-07-30 — SPECI A3-2 F9 decode must not residual min-vis/cloud/trends/NSW.
+"""BUG-2026-07-30 - SPECI A3-2 F9 decode must not residual min-vis/cloud/trends/NSW.
 
 Annex 3 SPECI A3-2 converts cleanly to IWXXM, but ``decode_tac`` left
 ``1200NE``, ``BKN005CB``, ``TEMPO``/``TL1200``, ``BECMG``/``AT1200``, and ``NSW``

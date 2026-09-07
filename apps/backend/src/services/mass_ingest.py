@@ -1,4 +1,4 @@
-"""F33 mass ingest helpers — caps, sniff, zip-bomb guards (EV-042 / #897).
+"""F33 mass ingest helpers - caps, sniff, zip-bomb guards (EV-042 / #897).
 
 [Corpus: product §F33] [Corpus: api] [Corpus: tech-spec]
 """
@@ -57,9 +57,7 @@ def _looks_binary(sample: bytes) -> bool:
     for magic in _BINARY_MAGIC:
         if sample.startswith(magic):
             return True
-    if b"\x00" in sample[:512]:
-        return True
-    return False
+    return b"\x00" in sample[:512]
 
 
 def _allowed_name(name: str) -> bool:
@@ -223,11 +221,11 @@ def expand_zip_bytes(
 
 
 __all__ = [
+    "DEFAULT_MAX_FILES",
+    "DEFAULT_MAX_FILE_BYTES",
+    "DEFAULT_MAX_TOTAL_BYTES",
     "MassIngestCaps",
     "MassIngestFileResult",
-    "DEFAULT_MAX_FILE_BYTES",
-    "DEFAULT_MAX_FILES",
-    "DEFAULT_MAX_TOTAL_BYTES",
     "evaluate_text_bytes",
     "expand_zip_bytes",
 ]

@@ -10,7 +10,8 @@ import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from re import Pattern
+from typing import Any, ClassVar
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +24,12 @@ class WMOExample:
     version: str  # IWXXM version (e.g., "2025-2")
     message_type: str  # METAR, TAF, SIGMET, etc.
     xml_path: Path  # Path to XML file
-    tac_path: Optional[Path] = None  # Path to TAC file (if exists)
-    test_scenario: Optional[str] = None  # Description from filename
+    tac_path: Path | None = None  # Path to TAC file (if exists)
+    test_scenario: str | None = None  # Description from filename
     is_nil_report: bool = False
     is_collect: bool = False  # COLLECT bulletin format
     is_translation_failed: bool = False  # Edge case examples
-    metadata: Dict = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class WMOExamplesLoader:
@@ -36,7 +37,7 @@ class WMOExamplesLoader:
     Loads WMO canonical examples from mirrored schema directories.
     """
 
-    MESSAGE_TYPE_PATTERNS = {
+    MESSAGE_TYPE_PATTERNS: ClassVar[dict[str, Pattern[str]]] = {
         "METAR": re.compile(r"^metar-", re.IGNORECASE),
         "SPECI": re.compile(r"^speci-", re.IGNORECASE),
         "TAF": re.compile(r"^taf-", re.IGNORECASE),
@@ -50,7 +51,7 @@ class WMOExamplesLoader:
         "QVACI": re.compile(r"^qvaci-", re.IGNORECASE),
     }
 
-    def __init__(self, schemas_base_path: Path):
+    def __init__(self, schemas_base_path: Path) -> None:
         """
         Initialize the examples loader.
 
@@ -75,7 +76,7 @@ class WMOExamplesLoader:
                 return candidate
         return candidates[1]
 
-    def load_examples(self, version: str, message_types: Optional[List[str]] = None) -> List[WMOExample]:
+    def load_examples(self, version: str, message_types: list[str] | None = None) -> list[WMOExample]:
         """
         Load all examples for a specific IWXXM version.
 
@@ -92,7 +93,7 @@ class WMOExamplesLoader:
             logger.warning(f"Examples directory not found: {examples_dir}")
             return []
 
-        examples = []
+        examples: list[WMOExample] = []
         xml_files = sorted(examples_dir.glob("*.xml"))
 
         for xml_file in xml_files:
@@ -129,7 +130,7 @@ class WMOExamplesLoader:
         logger.info(f"Loaded {len(examples)} examples for IWXXM {version}")
         return examples
 
-    def load_all_versions(self, versions: Optional[List[str]] = None) -> Dict[str, List[WMOExample]]:
+    def load_all_versions(self, versions: list[str] | None = None) -> dict[str, list[WMOExample]]:
         """
         Load examples for multiple versions.
 
@@ -142,7 +143,7 @@ class WMOExamplesLoader:
         if versions is None:
             versions = self._detect_available_versions()
 
-        all_examples = {}
+        all_examples: dict[str, list[WMOExample]] = {}
         for version in versions:
             examples = self.load_examples(version)
             if examples:
@@ -150,7 +151,7 @@ class WMOExamplesLoader:
 
         return all_examples
 
-    def get_tac_xml_pairs(self, version: str, message_type: Optional[str] = None) -> List[Tuple[Path, Path, str]]:
+    def get_tac_xml_pairs(self, version: str, message_type: str | None = None) -> list[tuple[Path, Path, str]]:
         """
         Get TAC↔XML pairs for testing roundtrip conversions.
 
@@ -162,16 +163,19 @@ class WMOExamplesLoader:
             List of (tac_path, xml_path, example_id) tuples
         """
         examples = self.load_examples(version)
-        pairs = []
+        pairs: list[tuple[Path, Path, str]] = []
 
-        for example in examples:
-            if example.tac_path and example.tac_path.exists():
-                if message_type is None or example.message_type == message_type:
-                    pairs.append((example.tac_path, example.xml_path, example.example_id))
+        pairs.extend(
+            (example.tac_path, example.xml_path, example.example_id)
+            for example in examples
+            if example.tac_path
+            and example.tac_path.exists()
+            and (message_type is None or example.message_type == message_type)
+        )
 
         return pairs
 
-    def load_guidance_document(self, version: str) -> Optional[str]:
+    def load_guidance_document(self, version: str) -> str | None:
         """
         Load TAC-to-XML-Guidance.txt if available.
 
@@ -188,7 +192,7 @@ class WMOExamplesLoader:
 
         return None
 
-    def get_example_manifest(self, version: str) -> Dict:
+    def get_example_manifest(self, version: str) -> dict[str, Any]:
         """
         Generate manifest of all examples for a version.
 
@@ -200,10 +204,11 @@ class WMOExamplesLoader:
         """
         examples = self.load_examples(version)
 
-        manifest = {
+        by_message_type: dict[str, int] = {}
+        manifest: dict[str, Any] = {
             "version": version,
             "total_examples": len(examples),
-            "by_message_type": {},
+            "by_message_type": by_message_type,
             "with_tac_pairs": 0,
             "nil_reports": 0,
             "collect_bulletins": 0,
@@ -213,7 +218,7 @@ class WMOExamplesLoader:
         for example in examples:
             # Count by message type
             msg_type = example.message_type
-            manifest["by_message_type"][msg_type] = manifest["by_message_type"].get(msg_type, 0) + 1
+            by_message_type[msg_type] = by_message_type.get(msg_type, 0) + 1
 
             # Count special cases
             if example.tac_path:
@@ -243,7 +248,7 @@ class WMOExamplesLoader:
 
         return "UNKNOWN"
 
-    def _extract_scenario(self, example_id: str) -> Optional[str]:
+    def _extract_scenario(self, example_id: str) -> str | None:
         """
         Extract test scenario description from example ID.
 
@@ -259,14 +264,14 @@ class WMOExamplesLoader:
             return parts[1]
         return None
 
-    def _detect_available_versions(self) -> List[str]:
+    def _detect_available_versions(self) -> list[str]:
         """
         Auto-detect available versions from schemas directory.
 
         Returns:
             List of version strings that have examples directories
         """
-        versions = []
+        versions: list[str] = []
 
         if not self.schemas_base_path.exists():
             return versions
@@ -281,8 +286,8 @@ class WMOExamplesLoader:
 
 
 def load_wmo_examples(
-    version: str, schemas_base_path: Path, message_types: Optional[List[str]] = None
-) -> List[WMOExample]:
+    version: str, schemas_base_path: Path, message_types: list[str] | None = None
+) -> list[WMOExample]:
     """
     Convenience function to load WMO examples.
 

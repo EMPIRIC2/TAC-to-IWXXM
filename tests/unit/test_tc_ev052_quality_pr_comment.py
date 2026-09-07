@@ -1,4 +1,4 @@
-"""TC-EV052-004 / TC-EV052-005 — quality sticky PR comment (EV-052 / S061).
+"""TC-EV052-004 / TC-EV052-005 - quality sticky PR comment (EV-052 / S061).
 
 Contract asserts for ``quality-pr-comment`` job + sticky marker parity with
 EV-036 ``coverage-pr-comment`` (update-in-place; distinct marker).
@@ -29,7 +29,7 @@ def workflow_doc() -> dict:
 
 @pytest.mark.unit
 class TestTcEv052004QualityStickyJob:
-    """TC-EV052-004 — second sticky comment job wired in ci-cd.yml."""
+    """TC-EV052-004 - second sticky comment job wired in ci-cd.yml."""
 
     def test_quality_pr_comment_job_present(self, workflow_doc: dict) -> None:
         jobs = workflow_doc["jobs"]
@@ -53,7 +53,7 @@ class TestTcEv052004QualityStickyJob:
 
 @pytest.mark.unit
 class TestTcEv052005StickyIdempotenceParity:
-    """TC-EV052-005 — distinct marker + update-in-place github-script pattern."""
+    """TC-EV052-005 - distinct marker + update-in-place github-script pattern."""
 
     def test_markers_distinct(self) -> None:
         fmt = FORMAT_SCRIPT.read_text(encoding="utf-8")
@@ -85,5 +85,5 @@ class TestTcEv052005StickyIdempotenceParity:
         ops = ROOT / "docs" / "ops" / "DEVELOPMENT.md"
         text = ops.read_text(encoding="utf-8")
         assert "coverage-pr-comment" in text
-        # T2.4 docs parity — mention quality sticky job alongside coverage.
+        # T2.4 docs parity - mention quality sticky job alongside coverage.
         assert "quality-pr-comment" in text

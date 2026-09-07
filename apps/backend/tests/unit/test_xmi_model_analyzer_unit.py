@@ -1,8 +1,7 @@
-"""Unit tests for XMIModelAnalyzer – 0% coverage target."""
+"""Unit tests for XMIModelAnalyzer - 0% coverage target."""
 
 import pytest
 from lxml import etree
-
 from src.utilities.xmi_model_analyzer import (
     BreakingChange,
     UMLElement,
@@ -85,7 +84,7 @@ class TestXMIModelAnalyzerLoadXmi:
 
     def test_load_missing_file_raises(self, tmp_path):
         analyzer = XMIModelAnalyzer()
-        with pytest.raises(FileNotFoundError):
+        with pytest.raises(FileNotFoundError, match=r".*"):
             analyzer.load_xmi_model(tmp_path / "nonexistent.xmi")
 
     def test_load_invalid_xml_raises(self, tmp_path):
@@ -204,3 +203,32 @@ class TestAnalyzeXmiVersionsConvenience:
         assert report["total_changes"] == 0
         assert "error" in report
         assert report["details"] == []
+
+
+def test_string_similarity_empty_and_report_grouping():
+    from src.utilities.xmi_model_analyzer import BreakingChange, XMIModelAnalyzer
+
+    analyzer = XMIModelAnalyzer()
+    assert analyzer._string_similarity("", "abc") == 0.0
+    assert analyzer._string_similarity("abc", "") == 0.0
+
+    changes = [
+        BreakingChange(
+            change_type="removed",
+            element="E1",
+            element_type="class",
+            old_version="2023-1",
+            new_version="2025-2",
+            reason="gone",
+        ),
+        BreakingChange(
+            change_type="removed",
+            element="E2",
+            element_type="class",
+            old_version="2023-1",
+            new_version="2025-2",
+            reason="gone2",
+        ),
+    ]
+    report = analyzer.generate_breaking_change_report(changes)
+    assert len(report["by_type"]["removed"]) == 2

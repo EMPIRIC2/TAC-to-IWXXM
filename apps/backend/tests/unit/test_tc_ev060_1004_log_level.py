@@ -10,7 +10,6 @@ import logging
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.observability import (
     _REQUEST_LOG_LEVEL,

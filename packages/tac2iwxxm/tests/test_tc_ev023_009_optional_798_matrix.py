@@ -1,4 +1,4 @@
-"""TC-EV023-009 — Optional #798 QA deferral + matrix confirm (S030 / EV-023 T6.4).
+"""TC-EV023-009 - Optional #798 QA deferral + matrix confirm (S030 / EV-023 T6.4).
 
 Asserts coverage-matrix / theme-map citations stay wired and that defer-to-latest
 METCE surfaces already shipped under S027 remain present on annex3 goldens.
@@ -43,7 +43,7 @@ def test_tc_ev023_009_no_local_binaries_tracked() -> None:
 
 
 def test_tc_ev023_009_metce_surfaces_survive_defer_to_latest() -> None:
-    """S027 goldens already encode METCE cyclone / erupting volcano — not a new #798 gap."""
+    """S027 goldens already encode METCE cyclone / erupting volcano - not a new #798 gap."""
     tca = (_GOLDEN / "tca_a2_2.golden.xml").read_text(encoding="utf-8")
     vaa = (_GOLDEN / "vaa_a7_2.golden.xml").read_text(encoding="utf-8")
     assert "metce:TropicalCyclone" in tca

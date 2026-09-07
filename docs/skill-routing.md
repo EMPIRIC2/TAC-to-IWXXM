@@ -87,6 +87,7 @@ Does the repo already have docs/feature-list.md + deployable code?
 | "Retrospective" | process | [17-retrospective](../.cursor/skills/17-retrospective/SKILL.md) |
 | "Review this PR" | process | [18-pr-review](../.cursor/skills/18-pr-review/SKILL.md) |
 | "Address review comments" | process | [19-address-pr-review](../.cursor/skills/19-address-pr-review/SKILL.md) |
+| "Deep research" / "mine domain sources" / domain evidence gap on evolve | feature / process | [deep-research-domain-handoff](../.cursor/skills/deep-research-domain-handoff/SKILL.md) → handoff prompt + user gates; promote via [mine-domain-sources](../.cursor/skills/mine-domain-sources/SKILL.md) (EV-097) |
 
 ## Change magnitude (existing app)
 

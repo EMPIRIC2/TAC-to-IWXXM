@@ -63,7 +63,8 @@ def test_pypi_publish_workflow_oidc_and_matrix() -> None:
     )
     assert "PyO3/maturin-action@" in str(native["steps"])
     # Native packages (no pure-only tac-validate in select native_matrix).
-    assert "tac2iwxxm" in select_run and "iwxxm-validate" in select_run
+    assert "tac2iwxxm" in select_run
+    assert "iwxxm-validate" in select_run
     assert "native='[]'" in select_run or 'native="[]"' in select_run
 
     publish = jobs["publish"]

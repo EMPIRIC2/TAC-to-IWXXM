@@ -1,6 +1,6 @@
 """TC-EV029-007 / F23 deepen T5.1: general SIGMET gap fixtures (lint + convert + validate).
 
-M0 inventory: SIGMET standalone is covered (G1–G3 / A6-1a/1b); remaining deepen is
+M0 inventory: SIGMET standalone is covered (G1-G3 / A6-1a/1b); remaining deepen is
 WS AHL body/BBB matrix and multi-report (example-inventory §A SIGMET gen row; remine
 §B.4; WS→LS + BBB→reportStatus). CNL covered via A6-1b seed + AHL CNL fixture.
 
@@ -24,7 +24,7 @@ ANNEX3 = FIXTURES / "annex3_golden"
 IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
 
-# Body has no COR/AMD keyword — status must come from AHL BBB (T5.2).
+# Body has no COR/AMD keyword - status must come from AHL BBB (T5.2).
 _BBB_CASES = (
     ("sigmet_ahl_normal.txt", None, "NORMAL"),
     ("sigmet_ahl_rra.txt", "RRA", "NORMAL"),

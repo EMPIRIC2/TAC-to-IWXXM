@@ -1,6 +1,6 @@
 """TC-EV070-005: CA_ECCC TAF + AIRMET convert → validate round-trip (#1041).
 
-Spec: docs/test-plan.md TC-EV070-005; full ca_eccc stack layers 1–6.
+Spec: docs/test-plan.md TC-EV070-005; full ca_eccc stack layers 1-6.
 Corpus: [Corpus: product §F2] [Corpus: product §F6] [Corpus: tests]
 """
 
@@ -10,7 +10,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from iwxxm_validate import rust_available, validate_iwxxm
 from iwxxm_validate.ca_eccc_bundle import CA_ECCC_IWXXM_VERSION
 
@@ -48,7 +47,8 @@ def test_tc_ev070_005_convert_validate_full_ca_stack(case_id: str, golden_manife
         profile=PROFILE,
         iwxxm_version=CA_ECCC_IWXXM_VERSION,
     )
-    assert result.ok and result.xml
+    assert result.ok
+    assert result.xml
 
     report = validate_iwxxm(
         result.xml,

@@ -139,8 +139,18 @@ describe('T3.1 / TC-EV060-1002: Profile at converter top', () => {
     expect(screen.getByLabelText(/^profile$/i)).toBe(profile);
 
     const values = Array.from(profile.options).map((o) => o.value);
-    expect(values).toEqual(expect.arrayContaining(['annex3', 'iwxxm_us', 'ca_eccc']));
-    expect(profile.value).toBe('annex3');
+    expect(values).toEqual(
+      expect.arrayContaining([
+        'ICAO_2025',
+        'US_FAA_NWS',
+        'CA_ECCC',
+        'AU_BOM',
+        'NZ_CAA_MET',
+        'annex3',
+        'iwxxm_us',
+      ]),
+    );
+    expect(profile.value).toBe('ICAO_2025');
   });
 
   it('exposes a keyboard-accessible Profile name, not icon-only (TC-EV060-1002-002)', () => {
@@ -211,7 +221,7 @@ describe('T3.1 / TC-EV060-1002: Profile at converter top', () => {
       />,
     );
 
-    expect(screen.getByTestId('profile-type-select')).toHaveValue('iwxxm_us');
+    expect(screen.getByTestId('profile-type-select')).toHaveValue('US_FAA_NWS');
     expect(screen.getByTestId('product-type-select')).toHaveValue('TAF');
   });
 });

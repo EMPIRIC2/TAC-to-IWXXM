@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any, cast
 
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import Response
@@ -40,7 +40,7 @@ def _load_doc() -> dict[str, Any]:
     summary="List corpus quality metrics",
 )
 async def list_quality_metrics(
-    product: Optional[str] = Query(
+    product: str | None = Query(
         default=None,
         description="Optional product filter (e.g. metar, taf, sigmet)",
     ),
@@ -48,7 +48,7 @@ async def list_quality_metrics(
     """Serve product summaries and file inventory from the precomputed artifact."""
     doc = _load_doc()
     files = list_file_rows(doc, product=product)
-    summaries_raw = doc.get("summaries") or []
+    summaries_raw = cast(list[dict[str, Any]], doc.get("summaries") or [])
     if product:
         key = product.strip().lower()
         summaries_raw = [s for s in summaries_raw if str(s.get("product", "")).lower() == key]
@@ -83,6 +83,7 @@ async def get_quality_metrics_detail(stem: str) -> Response:
         converted_xml=str(detail.get("converted_xml", "")),
         match_status=str(detail.get("match_status", "")),
         residuals=list(detail.get("residuals") or []),
+        residuals_propagated_to_remarks=bool(detail.get("residuals_propagated_to_remarks", False)),
         lint_issues=list(detail.get("lint_issues") or []),
         validate_issues=list(detail.get("validate_issues") or []),
     )

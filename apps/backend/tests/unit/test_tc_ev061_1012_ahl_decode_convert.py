@@ -1,4 +1,4 @@
-"""TC-EV061-1012 — AHL decode + convert-bulletin (#1012).
+"""TC-EV061-1012 - AHL decode + convert-bulletin (#1012).
 
 [Corpus: product §F6] [Corpus: api] [Corpus: tests §TC-EV061-1012] UJ-065
 """
@@ -9,7 +9,6 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -100,8 +99,10 @@ def test_tc_ev061_1012_002_convert_bulletin_golden(client: TestClient) -> None:
     assert results[1]["ok"] is True
     assert results[0]["tac_input"].startswith("METAR KJFK")
     assert results[1]["tac_input"].startswith("METAR KLGA")
-    assert results[0]["xml"] and "iwxxm" in results[0]["xml"].lower()
-    assert results[1]["xml"] and "iwxxm" in results[1]["xml"].lower()
+    assert results[0]["xml"]
+    assert "iwxxm" in results[0]["xml"].lower()
+    assert results[1]["xml"]
+    assert "iwxxm" in results[1]["xml"].lower()
 
 
 def test_tc_ev061_1012_004_malformed_ahl_invalid_ahl(client: TestClient) -> None:

@@ -1,5 +1,583 @@
 # Evolve Decisions
 
+## Cycle EV-933 — ConversionProfile editor (#933)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-933-ui-conversionprofile-editor-rule-packs-executabl`  
+**Issues:** [#933](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/933) · contract [#924](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/924) / ADR-038 · absorbed #915  
+**Documenting→Implementing gate:** **closed**
+
+| ID | Outcome |
+|----|---------|
+| D-EV933-scope | Rule-pack + inspector + signed overlays (intake 3) |
+| D-EV933-scale | **full** |
+| D-EV933-users | Operator + admin |
+| D-EV933-store | JWT + product Postgres ownership (F30); Supabase Auth identity only |
+| D-EV933-fn | **F7.w** |
+| D-EV933-uj | **UJ-072** + TC-EV933-001..006 |
+| D-EV933-phase | M1 rule-pack/inspector → M2 overlays (same evolve) |
+| D-EV933-adr | ADR-038 amend Planned |
+| D-EV933-01-ac | Acceptance locked (feature-list F7.w) |
+| D-EV933-context | [Context: conversion-profile-editor-933](../context/conversion-profile-editor-933.md) |
+| D-EV933-must-not | #1024 picker; dissemination drawer; no credentials in profiles |
+| D-EV933-TP1..TP9 | **Confirmed** 2026-09-03 — S5–S8 + TP1..TP9 (HMAC; M1→M3; Alembic M1) |
+
+[Corpus: product §F7.w] [Corpus: api] [Corpus: journeys §UJ-072] [Corpus: adr] ADR-038 [Corpus: decisions §EV-933]
+
+---
+
+## Cycle EV-936 — Dissemination ops + Gateway hooks (#936)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-936-dissemination-ops-gateway-hooks`  
+**Issues:** [#936](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/936) · absorbed #935/#937 · contract [#927](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/927) / ADR-041  
+**Documenting→Implementing gate:** **open** (2026-09-03)
+
+| ID | Outcome |
+|----|---------|
+| D-EV936-scope | Gateway runtime hooks + #936 ops UI MVP; defer #933/#934/#938 |
+| D-EV936-ui | Destinations drawer kept; new **Dissemination ops** surface |
+| D-EV936-audit | Persist delivery audit on **product Postgres** (`DATABASE_URL`) + JWT — amend interview “Supabase” shorthand to match F30 (no PostgREST product writes) |
+| D-EV936-api | JWT routes: plans, execute, audit, mappings, gateways/health; public preflight/send unchanged |
+| D-EV936-fn | Deepen F16–F19 only — **no new Fn** |
+| D-EV936-uj | **UJ-071** + TC-F16-OPS-001..006 (UJ-054 already Help handbook) |
+| D-EV936-connectivity | Local FE+API + H6′; H4–H5 when FE ops deploy |
+| D-EV936-context | [Context: dissemination-ops-936](../context/dissemination-ops-936.md) |
+| D-EV936-feasibility | **GO** — risks accepted for tech-plan mitigation |
+| D-EV936-TP1 | M1 façade/health → M2 API/DB → M3 FE ops → M4 H6′ |
+| D-EV936-TP2 | No new dependencies |
+| D-EV936-TP3 | No new ADR |
+| D-EV936-TP4 | No staging for Spec exit; H4–H5 when FE ops on stage |
+| D-EV936-gate | **Open Build** — M1 Gateway façade |
+
+[Corpus: product §F16–F19] [Corpus: api] [Corpus: journeys §UJ-071] [Corpus: adr] ADR-041, ADR-040 [Corpus: decisions §EV-936]
+
+---
+
+
+## Cycle EV-1132 — Workflows runtime + F8 cutover (#1132)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1132-workflows-runtime`  
+**Issues:** [#1132](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1132) · contract [#931](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/931) / ADR-042  
+**Documenting→Implementing gate:** **open** (2026-09-03) · **Build:** Implemented
+
+| ID | Outcome |
+|----|---------|
+| D-EV1132-scope | MVP executor + F8 cutover; no UI/gateway/async/`/convert` replace |
+| D-EV1132-pkg | New `packages/workflows` (MIT); deps tac2iwxxm, tac-validate, iwxxm-validate, pyyaml |
+| D-EV1132-ports | Store/quarantine via injected StorePort — no SQL in package |
+| D-EV1132-parity | Preserve SCHEMATRON_SKIPPED soft-pass + process_job signature |
+| D-EV1132-e2e | Skip e2e (no UI) |
+| D-EV1132-skip-plan | Skip verify-plan/plan-tooling — ADR-042 is SoT |
+| D-EV1132-context | [Context: workflows-runtime-1132](../context/workflows-runtime-1132.md) |
+| D-EV1132-ship | `packages/workflows` + F8 `process_job` → `execute("f8-metar-ingest-default")` |
+
+[Corpus: product §F6] [Corpus: product §F8] [Corpus: adr] ADR-042 [Corpus: decisions §EV-1132]
+
+---
+
+
+## Cycle EV-922-synthesis — Epic #922 close-out
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-922-epic-synthesis`  
+**Issues:** [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV922SYN-accept | **Epic investigation band complete** — all six spikes have Accepted ADRs |
+| D-EV922SYN-matrix | Consolidated gap matrix: contract (ADR) vs runtime gap |
+| D-EV922SYN-sequence | **Final** milestone sequence approved (Core → … → UIs) |
+| D-EV922SYN-merge | PR stack #1125→#1130 merge order documented |
+| D-EV922SYN-close | Close #923–#931 + epic #922 when PRs land on `stage` |
+| D-EV922SYN-ui | Platform UIs #933–#938 unblocked after ADR merge (runtime deps noted) |
+| D-EV922SYN-next | Priority runtime: `packages/workflows` (ADR-042) |
+| D-EV922SYN-writeup | Session `reports/922-epic-synthesis.md` + [Context: epic-922-synthesis](../context/epic-922-synthesis.md) |
+
+[Corpus: system-spec] §Platform logical layers [Corpus: product §F6] [Corpus: adr] ADR-037–042 [Corpus: decisions §EV-922-synthesis]
+
+---
+
+
+## Cycle EV-931 — Workflow definitions (#931)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-931-spike-workflow-definitions-execute-message-workf`  
+**Issues:** [#931](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/931), [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV931-dsl | **Accept** declarative YAML WorkflowDefinition — reject BPMN/Temporal/Celery |
+| D-EV931-execute | **Accept** `execute(message, workflow) -> WorkflowResult` contract (ADR-042) |
+| D-EV931-package | **New** `packages/workflows` executor — apps remain thin callers |
+| D-EV931-files | v1 workflows in git `workflows/*.yaml`; DB-managed deferred (#934) |
+| D-EV931-secrets | No credentials in YAML — `${ENV:…}` / `secretRef:` only (ADR-021) |
+| D-EV931-convert | HTTP `/convert` stays library primitive — not replaced by execute |
+| D-EV931-mvp | Runtime MVP: tac→convert→xsd/sch → quarantine/archive only; gateways deferred |
+| D-EV931-plan | DisseminationPlan runtime remains #936 — workflow documents hooks only |
+| D-EV931-e2e | Skip e2e (no UI) |
+| D-EV931-writeup | Session `reports/931-workflow-definitions.md` |
+
+[Corpus: product §F6] [Corpus: product §F8] [Corpus: adr] ADR-037–042 [Corpus: decisions §EV-931]
+
+---
+
+
+## Cycle EV-927 — DisseminationGateway (#927)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-927-dissemination-gateway`  
+**Issues:** [#927](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/927), [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV927-package | **Extend dissemination** — no packages/afs or gateways |
+| D-EV927-gateway | **Accept** DisseminationGateway contract (ADR-041) over SinkAdapter |
+| D-EV927-plan | DisseminationPlan + DeliveryReceipt documented; runtime deferred |
+| D-EV927-edis | IWXXM not AFTN-safe raw; EDIS = AHL + ASCII TAC (#928) |
+| D-EV927-wis2 | BYOC + DMZ via backend egress (#929) |
+| D-EV927-writeup | Session `reports/927-dissemination-gateway.md` |
+
+[Corpus: product §F16–F19] [Corpus: adr] ADR-030, ADR-041 [Corpus: decisions §EV-927]
+
+---
+
+
+## Cycle EV-926 — SQL adapters + mapping (#926)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-926-sql-adapters-mapping`  
+**Issues:** [#926](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/926), [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV926-package | **Extend dissemination** — no new adapters package |
+| D-EV926-mapping | **Accept** MappingConfig contract (ADR-040) |
+| D-EV926-source | SourceAdapter protocol documented; runtime deferred |
+| D-EV926-oracle | **Defer** Oracle v1 |
+| D-EV926-896 | Hybrid URI connector + mapping (#896) |
+| D-EV926-writeup | Session `reports/926-sql-adapters-mapping.md` |
+
+[Corpus: product §F16] [Corpus: adr] ADR-030, ADR-040 [Corpus: decisions §EV-926]
+
+---
+
+
+## Cycle EV-925 — Canonical MET + staged validation (#925)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-925-canonical-met-staged-validation`  
+**Issues:** [#925](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/925), [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV925-ir | **Keep-in-place** — `ConvertResult.ir` dict in tac2iwxxm; no core package extract |
+| D-EV925-pipeline | **Accept** ADR-039 PipelineResult contract |
+| D-EV925-stages | Map ADR-036 stages; `ca_eccc` StageResult = reference |
+| D-EV925-canonical | Confirm one ICAO path + national overlays |
+| D-EV925-writeup | Session `reports/925-canonical-met-staged-validation.md` |
+
+[Corpus: product §F6] [Corpus: adr] ADR-036, ADR-039 [Corpus: decisions §EV-925]
+
+---
+
+
+## Cycle EV-924 — ConversionProfile contract (#924)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-924-conversion-profile-contract`  
+**Preset:** Standard · **Documenting→Implementing gate:** **closed** · **Issues:** [#924](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/924), [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922)
+
+| ID | Outcome |
+|----|---------|
+| D-EV924-fn | No new Fn — contract spike under F6 |
+| D-EV924-contract | **Accept** normative ConversionProfile contract (ADR-038) |
+| D-EV924-loader | Defer runtime loader — code plugins + registries remain SoT |
+| D-EV924-overlays | Defer custom/operator packs to #933; v1 first-party catalog only |
+| D-EV924-e2e | Skip e2e |
+| D-EV924-writeup | Session `reports/924-conversion-profile-contract.md` |
+
+### Corpus
+
+[Corpus: product §F6] [Corpus: adr] ADR-013, ADR-036, ADR-038 [Corpus: api] [Corpus: decisions §EV-924]
+
+---
+
+
+## Cycle EV-922 — Platform package layout (#922 / #923)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-922-epic-modular-conversion-validation-integration-d`  
+**Preset:** Standard · **Documenting→Implementing gate:** **closed** · **Issues:** [#922](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/922), [#923](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/923)
+
+| ID | Outcome |
+|----|---------|
+| D-EV922-fn | No new Fn — under F6 + F16–F19 architecture |
+| D-EV922-slice | Slice A = #923 only (layout + gap matrix + milestone) |
+| D-EV922-option | **Option C accepted** — logical layers only; defer Option B until #924–#927 (ADR-037) |
+| D-EV922-milestone | Draft Core→Profiles→Validation→Adapters→Dissemination; revise after #924–#927 |
+| D-EV922-issues | No migrate-now children until Option B/A approved |
+| D-EV922-e2e | Skip e2e |
+| D-EV922-writeup | Session `reports/923-platform-package-layout.md` |
+
+### Corpus
+
+[Corpus: product §F6] [Corpus: product §F16] [Corpus: system-spec] [Corpus: adr] ADR-013, ADR-030, ADR-036, ADR-037 [Corpus: decisions §EV-922]
+
+---
+
+
+## Cycle EV-099 — F9 SWXA/VONA structured decode (#1119)
+
+**Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-099-f9-swxa-vona-structured-decode`  
+**Preset:** Standard · **Documenting→Implementing gate:** **open** · **Issue:** [#1119](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1119)
+
+| ID | Outcome |
+|----|---------|
+| D-EV099-fn | Deepen **F9** (+ F28/F32 quality surfaces) — no new top-level Fn |
+| D-EV099-peers | Unlock peers: `vona_a7_1`, `swxa_a7_3`, `swxa_a7_4`, `swxa_a7_5` |
+| D-EV099-residuals | Meaningful explicit residuals OK; **no** whole-TAC / `allow_any` body dump |
+| D-EV099-convert | Convert annex3 peer XML must remain **bit-identical** |
+| D-EV099-pattern | Mirror VAA/TCA structured `LABEL:` decode (EV-030 / #820) |
+| D-EV099-e2e | Skip Playwright e2e this cycle — unit/integration + staging health |
+| D-EV099-pr | PR into `stage` |
+
+### Corpus
+
+[Corpus: product §F9] [Corpus: product §F28] [Corpus: product §F32] [Corpus: decisions §EV-099] [Corpus: adr] ADR-025
+
+---
+
+## Cycle EV-097 — Deep-research domain handoff (skill + rule)
+
+**Opened:** 2026-09-02 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-097-deep-research-domain-handoff`  
+**Preset:** Standard · **Documenting→Implementing gate:** **open** · **Issue:** — (process/meta)
+
+| ID | Outcome |
+|----|---------|
+| D-EV097-skill | Project skill `deep-research-domain-handoff` — evolve-invokable handoff prompts |
+| D-EV097-rule | Optional `deep-research-domain-handoff.mdc` — AskQuestion gates; no silent promote |
+| D-EV097-promote | Promote/conflict via existing `mine-domain-sources` |
+| D-EV097-corpus | No new minimal CORPUS member; decisions + domain hub |
+| D-EV097-wire | protocol-card + skill-routing only (no pack evolve rewrite) |
+| D-EV097-pr | PR into `stage` |
+| D-EV097-scope | No mining pass / no product code this cycle |
+
+### Corpus
+
+[Corpus: decisions §EV-097] [Corpus: product] (process — no Fn)
+
+Detail: [ev-097-deep-research-domain-handoff.md](ev-097-deep-research-domain-handoff.md)
+
+---
+
+## Cycle EV-981 — Optional propagate decode residuals into remarks / HRT (#981)
+
+**Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-981-feature-optional-propagate-decode-residuals-into`  
+**Preset:** Standard · **Documenting→Implementing gate:** **closed** · **Issue:** [#981](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/981)  
+**Context:** [propagate-residuals-to-remarks](../context/propagate-residuals-to-remarks.md)
+
+| ID | Outcome |
+|----|---------|
+| D-EV981-fn | Deepen **F6** / **F9** / **F7.q** — no new top-level Fn |
+| D-EV981-flag | `propagate_residuals_to_remarks` on convert (+ convert-bulletin) |
+| D-EV981-default | Default off; omitted → profile default |
+| D-EV981-annex3 | annex3 / ICAO_2025 default **off** (must not silently retain residuals) |
+| D-EV981-profile-wire | Profile-default hook shipped; **no** other profile defaults enabled this cycle |
+| D-EV981-issue | When folded: info ConvertIssue e.g. `RESIDUALS_PROPAGATED_TO_REMARKS` + provenance |
+| D-EV981-uj | UJ-026 unchanged when off; **UJ-070** when on |
+| D-EV981-qm | Detail `residuals_propagated_to_remarks` + residuals-panel indicator (fixtures stay precomputed) |
+| D-EV981-adr | No ADR unless tech-plan forces standing policy |
+| D-EV981-pr | PR into `stage` |
+| D-EV981-ux | Plain-language operator copy; no internal doc refs |
+| D-EV981-feasible | Feasibility **FEASIBLE**; proceed tech-plan (2026-08-31) |
+| D-EV981-emit-target | Fold into XML only where profile already emits remarks/HRT; **annex3:** no invented free-text; flag-on + residuals → info `RESIDUALS_PROPAGATED_TO_REMARKS` message documents **no XML target**; QM fold bool stays false |
+| D-EV981-dedup | Append only residuals not already covered by remarks-retain / RMK→HRT |
+| D-EV981-zip | `/convert-zip` inherits same Form field + resolve semantics |
+| D-EV981-resolve | Omitted → profile default (annex3/`ICAO_2025` off); explicit override wins; no other profile defaults this cycle |
+
+### Corpus
+
+[Corpus: product §F6/F9/F7.q] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: decisions §EV-981]
+
+---
+
+
+## Cycle EV-096 — Harden Cursor rules/skills from CI footguns (#1096)
+
+**Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-096-ci-rules-skills-harden`  
+**Preset:** Standard · **Documenting→Implementing gate:** **open** · **Issue:** [#1096](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1096)
+
+| ID | Outcome |
+|----|---------|
+| D-EV096-scope | Process/DX only — no product Fn |
+| D-EV096-docs | test-plan delta + `ev-096-ci-rules-skills-harden.md`; skip Feature/Spec/Journeys/ADR |
+| D-EV096-top3 | FE 100% coverage · E2E Full on promote · Mutation pnpm pin |
+| D-EV096-mutation | Document + fix packageManager dual-spec this cycle |
+| D-EV096-vendor | Document only; no hand-edit `vendor/schemas` |
+| D-EV096-1095 | Verify-only existing home-path CI guard |
+| D-EV096-pr | PR into `stage` |
+| D-EV096-ux | No user-facing internal doc refs |
+
+### Corpus
+
+[Corpus: tests] [Corpus: decisions] [Corpus: deploy]
+
+---
+
+## Cycle EV-094 — Thin/compat national deepen (#1098)
+
+**Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-094-thin-compat-national-deepen`  
+**Preset:** Standard · **Documenting→Implementing gate:** **open** · **Issue:** [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)  
+**Prior:** #920 closed (EV-089 / PR #1087) — do not reopen  
+**Build:** M1–M7 complete on stacked PRs (#1099–#1106 tip); catalog six packs `implemented`
+
+| ID | Outcome |
+|----|---------|
+| D-EV094-products | Keep EV-089 allowlists (do not drop IN SIGMET or HK SIGMET/VAA) |
+| D-EV094-speci-expand | Add SPECI to `KR_KMA` and `JP_JMA` convert allowlists + fixtures |
+| D-EV094-in-taf | `IN_IMD` / `in_imd` **lint profile overlay**: TAF omit TX/TN → registered info awareness code; convert stays core IWXXM |
+| D-EV094-jp-airmet | Keep AIRMET out of JP allowlist |
+| D-EV094-uk-mil | Civil-only; military colour OOS |
+| D-EV094-fixtures | Official preferred; aggregator TAC OK with URL + UTC attribution |
+| D-EV094-order | UK → BR → KR → JP → IN → HK; one PR per pack; Spec all six then Build continuum |
+| D-EV094-gamet | Reaffirm parse-only |
+| D-EV094-china | Omit |
+| D-EV094-xsd | No national XSD invent |
+| D-EV094-exchange | #921 OOS |
+| D-EV094-issue | Tracking [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098) |
+| D-EV094-ui | N/A |
+| D-EV094-req | R0:2 · R1:1 · R2 overlay · R3:1 locked 2026-08-31 |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles] [Corpus: adr/ADR-036] [Corpus: tests] [Corpus: decisions]
+
+---
+
+## Cycle EV-093 — Light semantic + exchange profile picker deepen (#1024)
+
+**Opened:** 2026-08-31 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-093-light-profile-picker-deepen`  
+**Preset:** Standard · **Documenting→Implementing gate:** **open** · **Issue:** [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024)  
+**Prior:** EV-090 exchange picker · EV-091 drawer overlay
+
+| ID | Outcome |
+|----|---------|
+| D-EV093-intake | Option 2 deepen — G1–G5 after EV-090/091 partial ship |
+| D-EV093-g2 | **A1** — all registered canonicals in Profile select + legacy `annex3` / `iwxxm_us` |
+| D-EV093-wire | **B1** — Form `semantic_profile` + uppercase OpenAPI ids (`ICAO_2025`, …) |
+| D-EV093-req | R1 recommended — FR-01..08; AC 1–6; TC-EV093-001..006 |
+| D-EV093-ui-preview | **Yes** — local non-deployed preview before merge (not H4–H5 proof) |
+| D-EV093-trust | Profile help: not destinations/credentials; not editable overlays (#924 / #933) |
+| D-EV093-trust-layout | **A+B+C** — help icons/tooltips + one-line summary under bar + collapsed “What’s this?” details; controls-only `product-profile-bar` (no inline wrap) |
+| D-EV093-hygiene | After Build: close #1024; update #912 checklist |
+| D-EV093-scale | standard |
+| D-EV093-kg | Fail-open — peer retrieve skip; keep-local EV-090/091; adopt alias-window + verify gates |
+| D-EV093-gate | **Open Build** — implement M1–M5 on `evolve/EV-093-light-profile-picker-deepen` → PR `stage` |
+
+### Corpus
+
+[Corpus: product §F7] [Corpus: product §F35] [Corpus: product §F36] [Corpus: adr/ADR-036] [Corpus: api] [Corpus: journeys] [Corpus: tests] [Corpus: domain-profiles]
+
+---
+
+## Cycle EV-091 — Dissemination drawer restore (#898 / #1089)
+
+**Opened:** 2026-08-30 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-091-dissemination-drawer-restore`  
+**Preset:** Standard · **Documenting→Implementing gate:** open · **Issues:** [#898](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/898), [#1089](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1089)
+
+| ID | Outcome |
+|----|---------|
+| D-EV091-intake | Full #898 restore (Convert&Send + Disseminate + Upload to Database) + #1089 drawer exchange overlay |
+| D-EV091-db | URI-BYOC for F16 DBs; do **not** wait on #896 connector spike |
+| D-EV091-qol | Connection-first / per-sink schema checks retained (former #795) |
+| D-EV091-overlay | Drawer Exchange profile select; default `GLOBAL_AFS`; convert-before-send wires `exchange_profile` |
+| D-EV091-security | ADR-021/029/030 unchanged |
+| D-EV091-uj053 | Invert UJ-053 / TC-EV042-001 to destinations **visible** (TC-EV091-001); restore UJ-027–030 operator UI |
+| D-EV091-scale | standard |
+| D-EV091-gate | **open** (Build 2026-08-30) — implement T1–T7 |
+| D-EV091-build | Commits `c1f5321f` / `cefc123d` / `e4eb50a6` on `evolve/EV-091-dissemination-drawer-restore` |
+| D-EV091-inline-doc | Full-tree **WAIVE** — delta `VERIFY_DOC_PATHS` PASS (DisseminationDrawer / FileConverter / operatorDisseminationUi); remaining ~107 → [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090). Bar: `docs/decisions/inline-documentation-verify.md` |
+| D-EV091-tech-debt | [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090) — pack checker harden + remaining inline-doc fill; does not block #898/#1089 PR |
+
+### Corpus
+
+[Corpus: product §F16–F19] [Corpus: product §F36] [Corpus: adr/ADR-021] [Corpus: adr/ADR-029] [Corpus: adr/ADR-030] [Corpus: adr/ADR-036] [Corpus: journeys] [Corpus: tests] [Corpus: api] [Corpus: verifier]
+
+---
+
+## Cycle EV-090 — Exchange overlay deepen + light picker (#921 / #913 / #1024)
+
+**Opened:** 2026-08-30 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-090-exchange-overlay-deepen`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Issues:** [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921), [#913](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913), [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024)
+
+| ID | Outcome |
+|----|---------|
+| D-EV090-intake | Option 3 — mining deepen + light picker; drawer #898 out |
+| D-EV090-routing | Standard band + e2e for picker; gate closed until documenting verify |
+| D-EV090-req | R1 recommended: 1a no local UI preview; 2a promote existing mining notes; 3a workbench Exchange select (default `GLOBAL_AFS`, all registered ids, ignored on convert-only); 4b close #921 when mining+picker land and spawn child for drawer |
+| D-EV090-packaging | No new packaging rules this cycle — COLLECT baseline retained; gaps documented only |
+| D-EV090-ui | Light Exchange control beside semantic Profile (`profile-type-select` pattern); plain-language copy; no destinations/credentials |
+| D-EV090-tests | TC-EV090-* (catalog/provenance + FE unit + H4–H5 e2e); preserve TC-EV063/065/086 |
+| D-EV090-adr | ADR-036 cite-only (no amend unless Build finds boundary gap) |
+| D-EV090-kg | Cross-project Neo4j checkpoint (F107): session-open retrieve sparse — **adopt** verification-gate discipline; **keep-local** prior #921 / EV-065 / EV-086 product history; no Pattern to waive |
+| D-EV090-gate | **open** (Build 2026-08-30) |
+| D-EV090-build | Commit `38161462` on `evolve/EV-090-exchange-overlay-deepen` |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: product §F7] [Corpus: domain-profiles] [Corpus: domain] [Corpus: adr/ADR-036] [Corpus: tests] [Corpus: api] [Corpus: journeys]
+
+---
+
+## Cycle EV-089 — Thin/compat national packs (#920)
+
+**Opened:** 2026-08-29 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-089-thin-compat-national-packs`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Issue:** [#920](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/920)
+
+| ID | Outcome |
+|----|---------|
+| D-EV089-order | UK → BR → KR → JP → IN → HK; one profile per PR |
+| D-EV089-china | Omit China |
+| D-EV089-gamet | Parse-only; BR fixtures only; no IWXXM emit; no convert enum |
+| D-EV089-jp-va | JP VAA yes; AIRMET no |
+| D-EV089-hk | HK SIGMET + VAA fixtures |
+| D-EV089-xsd | No invented national XSD |
+| D-EV089-path | Thin path C/N ±D (EV-088 playbook) |
+| D-EV089-exchange | SAM note on BR only; #921 packaging OOS |
+| D-EV089-ui | N/A — no FE picker |
+| D-EV089-child-issues | Spec does not open GH children |
+| D-EV089-req | R0–R4 recommended approved 2026-08-29 |
+| D-EV089-gate | **open** (Build 2026-08-29) |
+| D-EV089-build | Registry + fixtures + TC-EV089 on `evolve/EV-089-thin-compat-national-packs` @ `519d319e` |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles] [Corpus: adr/ADR-036] [Corpus: tests] [Corpus: api]
+
+---
+
+## Cycle EV-088 — Profile engineering enablement (#1044)
+
+**Opened:** 2026-08-29 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-088-profile-eng-enablement`  
+**Preset:** Standard · **Documenting→Implementing gate:** open · **Issue:** [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044)
+
+| ID | Outcome |
+|----|---------|
+| D-EV088-req | Recommended AC — playbook, templates, scaffold, TC-EV088; waive full CA issue-body rewrite |
+| D-EV088-gate | **open** (Build 2026-08-29) |
+| D-EV088-ui | N/A — no FE |
+| D-EV088-pr | [PR #1086](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1086) → `stage`; CI green |
+| D-EV088-inline-doc | Full-tree WAIVE (brownfield); scaffold script documented; bar in `inline-documentation-verify.md` |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles] [Corpus: adr/ADR-036] [Corpus: tests]
+
+---
+
+## Cycle EV-087 — AU_BOM + NZ_CAA_MET semantic P1 kickoff
+
+**Opened:** 2026-08-28 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-087-au-nz-semantic-profiles`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Issues:** [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917), [#918](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/918), [#913](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/913), [#1044](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1044)
+
+### Locked requirements
+
+| ID | Outcome |
+|----|---------|
+| D-EV087-inter-emit | Parse INTER distinctly; emit `TEMPORARY_FLUCTUATIONS` + preserve INTER in remarks/diagnostics; never invent IWXXM enum |
+| D-EV087-taf3 | `product=TAF`; RMK `TAF3` / `TAF3 VALID TL` → flag `AU.TAF.TAF3` |
+| D-EV087-nz-domestic | Parse domestic extras to IR; core IWXXM only if attested; else remarks + diagnostics |
+| D-EV087-catalog | `AU_BOM` + `NZ_CAA_MET` → P1 / in_progress |
+| D-EV087-depth | Registry + stubs + mining + goldens + parse/lint; convert where clear; SIGMET ICAO base |
+| D-EV087-ui | N/A — no FE picker |
+| D-EV087-xsd | No AU/NZ national extension pin (none published) |
+| D-EV087-arch | ADR-036 overlay model confirmed |
+| D-EV087-feasibility | **FEASIBLE** — library-first kickoff; INTER emit policy locked |
+| D-EV087-tech-plan | M1–M5 registry→AU parse→INTER emit→NZ→docs promote |
+| D-EV087-draft-docs | catalog P1, stubs, mining, F36, test-plan TC-EV087, api-contract ids |
+| D-EV087-gate | **open** (`open_build` 2026-08-28) |
+| D-EV087-build | M1–M5 implemented on `evolve/EV-087-au-nz-semantic-profiles`; TC-EV087-001..006 green |
+| D-EV087-pr | [PR #1085](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1085) → `stage`; tip `aa1f3e90`; CI green |
+| D-EV087-verify-build | 08 PASS — `reports/verification-report.md` |
+| D-EV087-qa | 09 PASS — `reports/qa-report.md` (no UI; H4–H5 N/A) |
+| D-EV087-verify-tests | Pack `tests` FAIL from FE Vitest load timeouts — harden FileConverter + add `make test-fast` for pack-run fallback |
+| D-EV087-inline-doc | Full-tree inline-doc WAIVE (brownfield); delta VERIFY_DOC_PATHS PASS; bar in `docs/decisions/inline-documentation-verify.md` |
+| D-EV087-adv-swxa | Quality sticky SWXA Fail:1 pre-existing annex3 residual — not EV-087; pack job PASS |
+| D-EV087-adv-h4h5 | H4–H5 N/A waived (D-EV087-ui); staging smoke after merge if needed |
+| D-EV087-adv-e2e | E2E Full skipped on PR→stage; E2E Smoke PASS |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles] [Corpus: adr/ADR-036] [Corpus: tests] [Corpus: api]
+
+---
+
+## Cycle EV-080 — Universal 100% unit coverage (EV-080-unit-coverage-100)
+
+**Opened:** 2026-08-27 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-080-unit-coverage-100`  
+**Preset:** Full · **Documenting→Implementing gate:** closed · **Issue:** [#1077](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1077)
+
+### Locked intake / requirements
+
+| ID | Outcome |
+|----|---------|
+| D-EV080-goal | 100% line+branch unit coverage; CI fail under 100 |
+| D-EV080-out | vendor; generated xsd/codegen; Playwright as unit surface |
+| D-EV080-scripts-py | All `scripts/**/*.py` cov ≥100% |
+| D-EV080-scripts-sh | bats-core test for **every** `scripts/**/*.sh` |
+| D-EV080-bats | **bats-core** in CI (not shunit2) |
+| D-EV080-fe-excludes | Remove executable FE Vitest coverage excludes |
+| D-EV080-init-omit | Remove `**/__init__.py` coverage omit |
+| D-EV080-manifest | Delta docs approved; skip config/api/deploy |
+| D-EV080-issue | #1077 |
+| D-EV080-gate | **open** (2026-08-27 Spec→Build) |
+| D-EV080-docs | draft-docs applied: ADR-007, typing-policy, test-plan TC-EV080-*, feature-list, dependency-inventory, spec component row, inventory YAML seed |
+| D-EV080-feasibility | **FEASIBLE** multi-PR; fill-before-flip; see session reports/feasibility.md |
+| D-TP080-1..7 | **approved** inventory path, bats tree, scripts cov make target, fill-before-flip, new TC-EV080 guards, sticky 100, base stage |
+| D-TP080-m2-split | **yes** M2a packages / M2b tac2iwxxm+backend+flip |
+| D-TP080-approved | tech-plan approved 2026-08-27 |
+| D-VT080-pass | verify-tech **PASS**; product↔tech PASS; connectivity N/A |
+| D-VT080-med-low | **Approve all** V-M1..V-M5, V-L1..V-L2 |
+| D-TT080-delta | tech-tooling: make targets + bats/scripts READMEs + rule floors + CI stub `if: false` |
+| D-TT080-hook | **coverage-advisory.sh** afterFileEdit |
+| D-EV080-doc-verify | documenting `bin/verify` **12/12 PASS** |
+| D-EV080-build-open | Gate open; branch `evolve/EV-080-unit-coverage-100`; M1 started |
+| D-EV080-m1 | **completed** inventory SoT + TC-EV080-001 (10 pass) + m1-gap-ranked |
+| D-EV080-m1-pr | [#1078](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1078) `[M1] EV-080 coverage inventory @ 100 floor` → stage @ `ba41b804` |
+| D-EV080-m2a | **completed** packages→100%: worker/shared/dissemination/iwxxm-validate/tac-validate/auth — [#1079](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1079) merged @ `cba32156` |
+| D-EV080-m2b | **completed** tac2iwxxm + backend fills + Python fail_under/CI flipped to 100 |
+| D-EV080-m2b-t22 | **completed** tac2iwxxm 100% line+branch (`test_coverage_gaps_ev080.py` + small testability/pragmas) |
+| D-EV080-m2b-t23 | **completed** backend 100% line+branch (`test_ev080_m2b_coverage_gaps.py` + unit extensions) |
+| D-EV080-m2b-t24 | **completed** fail_under / CI `--cov-fail-under` / per-file default → 100; `__init__.py` omit removed |
+| D-EV080-m2b-t25 | **completed** TC-EV080-002/003 + legacy gate asserts updated to 100 |
+| D-EV080-m2b-pr | [#1080](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1080) `[M2b] EV-080 tac2iwxxm+backend → 100% + flip gates` → stage @ `693d7739` **merged** |
+| D-EV080-m3 | **completed** Vitest FE + shared → 100% (exclude purge + fills + thresholds) |
+| D-EV080-m3-t31 | **completed** executable FE coverage.exclude purged (fixtures/generated kept) |
+| D-EV080-m3-fills | **completed** FE unit fills to 100% stmts/branches/funcs/lines (3817/3817, 2837/2837) |
+| D-EV080-m3-flip | **completed** Vitest thresholds FE+shared → 100; TC-EV080-004/005 |
+| D-EV080-m3-pr | [#1081](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1081) `[M3] EV-080 Vitest 100% + exclude purge` → stage **merged** |
+| D-EV080-m4 | **completed** scripts Python cov 100% + bats for all 56 `.sh` + CI `scripts-coverage` enabled |
+| D-EV080-m4-t41 | **completed** `tests/scripts/` harness + `make test-coverage-scripts` fail_under 100 |
+| D-EV080-m4-t43 | **completed** `tests/bats/` mirrors `scripts/**/*.sh` + helpers stubs (NFR-006) |
+| D-EV080-m4-guards | **completed** TC-EV080-006..008 |
+| D-EV080-m4-pr | [#1082](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1082) `[M4] EV-080 scripts py cov 100% + bats-core` → stage |
+| D-EV080-m5 | **completed** TC-EV080-009 docs guard; sticky coverage comment cites 100% gate; TC-EV080-010 via inventory |
+
+### Delivered
+
+| Milestone | Scope | PR |
+|-----------|--------|-----|
+| M1 | Inventory @ floor 100 + TC-EV080-001 | [#1078](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1078) |
+| M2a | Packages → 100% | [#1079](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1079) |
+| M2b | tac2iwxxm + backend + flip gates | [#1080](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1080) |
+| M3 | Vitest FE + shared → 100% | [#1081](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1081) |
+| M4 | Scripts py cov + bats-core | [#1082](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1082) |
+| M5 | Docs/ADR audit + sticky 100 + closeout | (same #1082) |
+
+**Issue:** [#1077](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1077) — close after #1082 merges to `stage`.
+
+### Milestones (planned)
+
+M1 inventory → M2 Python 100% → M3 TS 100% → M4 scripts (py+bats) → M5 ADR/docs/CI closeout
+
+**Tests:** TC-EV080-001..010 · **Requirements:** session `requirements.md`
+
+[Corpus: adr/ADR-007] [Corpus: tests] [Corpus: tech-spec]
+
+---
+
 ## Cycle EV-085 — US_FAA_NWS #919 closeout (EV-085-us-919-closeout)
 
 **Opened:** 2026-08-26 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-085-us-919-closeout`  
@@ -630,6 +1208,33 @@
 
 [Corpus: product §F36] [Corpus: domain-profiles §CA_ECCC] [Corpus: adr/ADR-036]
 [Corpus: api] [Corpus: system-spec] [Corpus: tests]
+
+---
+
+## Cycle EV-086 — EUR_RODEX + AFI + CAR_SAM stubs (#921) (EV-086-regional-exchange-overlays)
+
+**Opened:** 2026-08-28 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-086-regional-exchange-overlays`  
+**Preset:** Standard · **Documenting→Implementing gate:** closed · **Issue:** [#921](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/921)  
+**Parent:** EV-065 / F36 / [#912](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/912)
+
+### Locked intake
+
+| ID | Outcome |
+|----|---------|
+| D-EV086-goal | Land `EUR_RODEX` + `AFI` + `CAR_SAM` exchange stubs (registry + COLLECT packaging + tests + catalog docs) |
+| D-EV086-in | `packages/dissemination` registry/packaging; standing docs; TC-EV086; API known-ids note |
+| D-EV086-out | Drawer UI (#898); ROBEX/RODEX handbook mining deepen (#913); semantic TAC decode; sink protocols |
+| D-EV086-overlay | All three P0 stubs = GLOBAL_AFS COLLECT baseline (same as APAC_ROBEX EV-065) |
+| D-EV086-scale | Standard; evolve default verifying angles; e2e skipped (no UI) |
+| D-EV086-fn | Deepen **F36** only |
+| D-EV086-sources | EUR handbook URL remains access:gap; AFI/CAR_SAM sources TBD via #913 — stubs still ship |
+| D-EV086-feasibility | **FEASIBLE** — EV-065 stub pattern; additive registry + COLLECT |
+| D-EV086-gate | **open** (`open_build` 2026-08-28) |
+
+### Corpus
+
+[Corpus: product §F36] [Corpus: domain-profiles] [Corpus: adr/ADR-036]
+[Corpus: api] [Corpus: tests] [Corpus: journeys §UJ-069]
 
 ---
 
@@ -5071,3 +5676,35 @@ removal. Out: teaching CMS, paste-keys UI, AMHS/SWIM, quiet F5 parallel store.
 | R2 | Decision | Full UX bundle: header snippet + derived label + prominent Source TAC + multi-line mapping |
 | R3 | Decision | Frontend redeploy required |
 | R4 | Scope | Lean routing — skip 02/03/05/06 |
+
+## Cycle EV-1120 — Profile-scoped catalog + Profile workbench Phase A (#1120)
+
+**Session**: `EV-1120-epic-profile-scoped-lint-validation-issues-catal`  
+**Features**: deepen **F7.v** / **F7.w** / **F15** / **F35** (no new Fn)  
+**Issues**: [#1120](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1120) · [#1121](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1121) · [#1122](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122) · [#1123](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1123) · [#1145](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1145)  
+**Follow-ons**: [#1146](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1146) Phase B composable convert · [#1147](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1147) Phase C workflow authoring  
+**Started**: 2026-09-05  
+**Status**: **in_progress** — requirements locked; documenting band
+
+### Scope lock
+
+| ID | Decision |
+|----|----------|
+| D-R12 | Local UI preview yes (`:18000` / `:18001`) |
+| D-R13 | vs-ICAO deltas catalog-driven |
+| D-R14 | Workbench twin always; JWT counts gated |
+| D-R15 | #1122: ≥1 TAC lint + ≥1 IWXXM row each US + CA |
+| D-R16 | Docs: product · api · journeys · tests · domain-profiles · decisions |
+| D-R17/18 | Examples + seeds for all semantic profiles |
+| D-R19/23 | Phase A blocks = ADR-038 inspect/jump only |
+| D-R20 | Live refresh + seed sync (no soft-preview) |
+| D-R21/22 | Phase A this evolve; B=#1146 C=#1147 |
+
+### Phase A summary
+
+Additive catalog filters; national catalog mining; glanceable Profile summary + examples/seeds;
+blocks as presentation of existing contract sections. True composable convert and workflow
+authoring deferred.
+
+**Context**: [profile-scoped-catalog-1120](../context/profile-scoped-catalog-1120.md)
+

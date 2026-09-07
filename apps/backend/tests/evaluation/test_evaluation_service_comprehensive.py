@@ -3,7 +3,6 @@
 import xml.etree.ElementTree as ET
 
 import pytest
-
 from src.services.evaluation_service import ComparisonResult, EvaluationService
 
 

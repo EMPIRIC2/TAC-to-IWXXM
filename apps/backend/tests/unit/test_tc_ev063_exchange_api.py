@@ -1,4 +1,4 @@
-"""TC-EV063-004 / TC-EV063-005 — exchange packaging (EV-063 / #921)."""
+"""TC-EV063-004 / TC-EV063-005 - exchange packaging (EV-063 / #921)."""
 
 from __future__ import annotations
 
@@ -12,7 +12,6 @@ from dissemination.handles import default_handle_store
 from dissemination.packaging import apply_exchange_packaging, wrap_global_afs_collect
 from dissemination.rate_limit import DisseminationRateLimiter
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.routers import dissemination as diss_router
 from src.utilities.abuse_controls import get_limiter
@@ -122,7 +121,8 @@ def test_tc_ev063_004_explicit_global_afs_matches_default(
             "lint": (None, "false"),
         },
     )
-    assert implicit.status_code == 200 and explicit.status_code == 200
+    assert implicit.status_code == 200
+    assert explicit.status_code == 200
     assert implicit.json()["exchange_profile"] == explicit.json()["exchange_profile"] == "GLOBAL_AFS"
     assert is_collect_bulletin(implicit.json()["results"][0]["xml"])
     assert is_collect_bulletin(explicit.json()["results"][0]["xml"])
@@ -132,7 +132,7 @@ def test_tc_ev065_003_convert_bulletin_apac_robex(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    """TC-EV065-003 — convert-bulletin accepts APAC_ROBEX and COLLECT-wraps output."""
+    """TC-EV065-003 - convert-bulletin accepts APAC_ROBEX and COLLECT-wraps output."""
 
     def fake_convert(tac: str, **kwargs):
         return _SAMPLE_METAR_XML, None

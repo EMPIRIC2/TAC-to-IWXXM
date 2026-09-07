@@ -1,4 +1,4 @@
-"""T5.4 / TC-EV031-004 + TC-F30-002 — post-migrate session CRUD; Auth-only Supabase.
+"""T5.4 / TC-EV031-004 + TC-F30-002 - post-migrate session CRUD; Auth-only Supabase.
 
 After Supabase → DO product migrate (T5.3), logged-in work-session CRUD must use
 ``DATABASE_URL`` / SQLAlchemy and must not touch Supabase PostgREST. JWT verify
@@ -7,14 +7,13 @@ remains Supabase Auth JWKS-only.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime, timezone
 from pathlib import Path
 from typing import Any
 from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api import app
 from src.routers import work_sessions as ws_router
 from src.schemas.work_session import (
@@ -37,7 +36,7 @@ _PRODUCT_PATHS = (
 
 USER_ID = uuid4()
 SESSION_ID = uuid4()
-NOW = datetime(2026, 8, 3, 12, 0, tzinfo=timezone.utc)
+NOW = datetime(2026, 8, 3, 12, 0, tzinfo=UTC)
 
 
 def _sample_session(*, status: WorkSessionStatus = WorkSessionStatus.DRAFT) -> WorkSession:
@@ -134,7 +133,7 @@ def post_migrate_client() -> TestClient:
 
 @pytest.mark.unit
 def test_tc_f30_002_product_modules_have_zero_postgrest_imports() -> None:
-    """TC-F30-002 — Auth-only Supabase; no PostgREST product clients on default path."""
+    """TC-F30-002 - Auth-only Supabase; no PostgREST product clients on default path."""
     for path in _PRODUCT_PATHS:
         assert path.is_file(), f"missing {path}"
         text = path.read_text(encoding="utf-8")
@@ -154,7 +153,7 @@ def test_tc_f30_002_jwt_verify_is_jwks_only() -> None:
 
 @pytest.mark.unit
 def test_tc_ev031_004_session_crud_happy_path(post_migrate_client: TestClient) -> None:
-    """TC-EV031-004 — create / list / get / patch / soft-delete / restore via JWT gate."""
+    """TC-EV031-004 - create / list / get / patch / soft-delete / restore via JWT gate."""
     headers = {"Authorization": "Bearer test-token"}
     create = post_migrate_client.post(
         "/api/v1/work-sessions",

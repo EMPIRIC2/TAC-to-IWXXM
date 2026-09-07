@@ -1,11 +1,10 @@
-"""TC-EV054-005 — product summary counts match precomputed quality-metrics artifact."""
+"""TC-EV054-005 - product summary counts match precomputed quality-metrics artifact."""
 
 from __future__ import annotations
 
 from collections import defaultdict
 
 import pytest
-
 from quality_metrics_store import (
     QualityMetricsArtifactMissing,
     clear_corpus_metrics_cache,
@@ -14,7 +13,7 @@ from quality_metrics_store import (
     load_corpus_metrics,
 )
 
-# Golden stem set — stable registered passers expected in inventory.
+# Golden stem set - stable registered passers expected in inventory.
 _GOLDEN_STEMS = (
     "metar-A3-1",
     "speci-A3-2",
@@ -37,7 +36,7 @@ def test_tc_ev054_005_artifact_loads_and_summaries_match_files() -> None:
     assert len(doc["files"]) == 18
     assert len(doc["details"]) == 18
 
-    # Recompute summaries from file rows — must match committed summaries.
+    # Recompute summaries from file rows - must match committed summaries.
     buckets: dict[str, dict[str, int]] = defaultdict(
         lambda: {
             "match_pass": 0,

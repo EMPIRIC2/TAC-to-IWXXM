@@ -1,7 +1,5 @@
 """Validation dependencies for FastAPI request preprocessing."""
 
-from typing import List, Optional
-
 from fastapi import HTTPException
 
 try:
@@ -14,7 +12,7 @@ except ImportError:  # pragma: no cover - flat layout fallback
 
 
 # Singleton validation service for reuse
-_validation_service: Optional[ValidationService] = None
+_validation_service: ValidationService | None = None
 
 
 def get_validation_service() -> ValidationService:
@@ -27,8 +25,8 @@ def get_validation_service() -> ValidationService:
 
 async def validate_metar_input(
     content: str,
-    layers: Optional[List[ValidationLayer]] = None,
-    iwxxm_version: Optional[str] = None,
+    layers: list[ValidationLayer] | None = None,
+    iwxxm_version: str | None = None,
 ) -> AggregatedValidationResult:
     """Validate METAR TAC input with validation layers.
 
@@ -59,15 +57,15 @@ async def validate_metar_input(
         )
         return result
     except ValueError as e:  # pragma: no cover - exercised via API routes
-        raise HTTPException(status_code=400, detail=f"Validation error: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Validation error: {e!s}") from e
     except Exception as e:  # pragma: no cover
-        raise HTTPException(status_code=500, detail=f"Validation service error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Validation service error: {e!s}") from e
 
 
 async def validate_iwxxm_input(
     content: str,
-    layers: Optional[List[ValidationLayer]] = None,
-    iwxxm_version: Optional[str] = None,
+    layers: list[ValidationLayer] | None = None,
+    iwxxm_version: str | None = None,
 ) -> AggregatedValidationResult:
     """Validate IWXXM XML input with validation layers.
 
@@ -98,13 +96,13 @@ async def validate_iwxxm_input(
         )
         return result
     except ValueError as e:  # pragma: no cover - exercised via API routes
-        raise HTTPException(status_code=400, detail=f"Validation error: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Validation error: {e!s}") from e
     except Exception as e:  # pragma: no cover
-        raise HTTPException(status_code=500, detail=f"Validation service error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Validation service error: {e!s}") from e
 
 
 __all__ = [
     "get_validation_service",
-    "validate_metar_input",
     "validate_iwxxm_input",
+    "validate_metar_input",
 ]

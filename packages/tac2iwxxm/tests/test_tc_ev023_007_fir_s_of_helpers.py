@@ -1,4 +1,4 @@
-"""TC-EV023-007 — SIGMET FIR / "S OF" polygon helpers (S030 / EV-023 T6.1).
+"""TC-EV023-007 - SIGMET FIR / "S OF" polygon helpers (S030 / EV-023 T6.1).
 
 Unit tests for pure FIR-boundary intersection helpers (APAC FAQ §3.3).
 Prefer explicit WI polygon TAC over FIR-boundary-only when both appear.
@@ -11,8 +11,8 @@ import re
 
 import pytest
 
-# Synthetic rectangular FIR (closed ring) used as injected boundary — not a live FIR DB.
-# Rough SHANLON-style box: lat 50–58 N, lon 16–8 W.
+# Synthetic rectangular FIR (closed ring) used as injected boundary - not a live FIR DB.
+# Rough SHANLON-style box: lat 50-58 N, lon 16-8 W.
 _FIR_RING: list[tuple[float, float]] = [
     (50.0, -16.0),
     (50.0, -8.0),
@@ -34,12 +34,13 @@ _ENTIRE_BODY = "YUDD SHANLON FIR/UIR OBSC TS FCST ENTIRE FIR TOP FL390 STNR WKN"
 
 def _parse_pos_list(pos_list: str) -> list[tuple[float, float]]:
     nums = [float(x) for x in pos_list.split()]
-    assert len(nums) % 2 == 0 and len(nums) >= 6
+    assert len(nums) % 2 == 0
+    assert len(nums) >= 6
     return list(zip(nums[0::2], nums[1::2], strict=True))
 
 
 def test_tc_ev023_007_select_prefers_wi_polygon_over_relative() -> None:
-    """FAQ §3.3 — prefer polygon TAC when WI and relative phrases both appear."""
+    """FAQ §3.3 - prefer polygon TAC when WI and relative phrases both appear."""
     from tac2iwxxm.products.fir_geometry import select_horizontal_geometry_kind
 
     assert select_horizontal_geometry_kind(_BOTH_BODY) == "wi_polygon"
@@ -128,7 +129,7 @@ def test_tc_ev023_007_resolve_prefers_wi_even_with_fir_boundary() -> None:
     assert geom is not None
     assert geom["kind"] == "polygon"
     ring = _parse_pos_list(geom["pos_list"])
-    # WI vertices (degrees) — not the full FIR NW corner.
+    # WI vertices (degrees) - not the full FIR NW corner.
     assert any(abs(lat - 54.0) < 0.02 and abs(lon - (-12.0)) < 0.02 for lat, lon in ring)
     assert not any(abs(lat - 58.0) < 1e-6 and abs(lon - (-16.0)) < 1e-6 for lat, lon in ring)
 

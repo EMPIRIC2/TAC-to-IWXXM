@@ -5,9 +5,8 @@ from __future__ import annotations
 from types import SimpleNamespace
 
 import pytest
-from starlette.responses import Response
-
 from src import api as api_module
+from starlette.responses import Response
 
 
 @pytest.mark.parametrize("value", ["true", "1", "yes", "on", "TRUE"])

@@ -1,4 +1,4 @@
-"""T3.7 — committed xsdata models + adapt helpers (ADR-027)."""
+"""T3.7 - committed xsdata models + adapt helpers (ADR-027)."""
 
 from __future__ import annotations
 

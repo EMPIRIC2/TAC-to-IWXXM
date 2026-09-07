@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { UserPreferencesDialog } from './UserPreferencesDialog';
@@ -22,6 +22,7 @@ const defaultProps = {
 
 describe('UserPreferencesDialog (EV-040 slim)', () => {
   beforeEach(() => {
+    vi.restoreAllMocks();
     vi.clearAllMocks();
     localStorage.clear();
     vi.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -256,5 +257,39 @@ describe('UserPreferencesDialog (EV-040 slim)', () => {
 
     expect(await screen.findByDisplayValue('newuser')).toBeInTheDocument();
     expect(screen.getByLabelText(/output file extension/i)).toHaveValue('.xml');
+  });
+
+  it('shows loading spinner before preferences resolve', async () => {
+    const { PreferencesLoadingBody } = await import('./UserPreferencesDialog');
+    render(<PreferencesLoadingBody />);
+    expect(screen.getByText(/loading preferences/i)).toBeInTheDocument();
+  });
+
+  it('renders saving label when isSaving', async () => {
+    const { PreferencesSaveLabel, prefsControlsDisabled } =
+      await import('./UserPreferencesDialog');
+    const { rerender } = render(<PreferencesSaveLabel isSaving />);
+    expect(screen.getByText(/saving/i)).toBeInTheDocument();
+    rerender(<PreferencesSaveLabel isSaving={false} />);
+    expect(screen.getByText(/save preferences/i)).toBeInTheDocument();
+    expect(prefsControlsDisabled(true, false)).toBe(true);
+    expect(prefsControlsDisabled(false, true)).toBe(true);
+    expect(prefsControlsDisabled(false, false)).toBe(false);
+  });
+
+  it('clears success status after save timeout', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
+    render(<UserPreferencesDialog {...defaultProps} />);
+    await screen.findByLabelText(/display \/ output name/i);
+    await user.click(screen.getByRole('button', { name: /save preferences/i }));
+    expect(screen.getByText(/preferences saved successfully/i)).toBeInTheDocument();
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(2000);
+    });
+    expect(
+      screen.queryByText(/preferences saved successfully/i),
+    ).not.toBeInTheDocument();
+    vi.useRealTimers();
   });
 });

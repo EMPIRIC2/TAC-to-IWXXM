@@ -1,6 +1,6 @@
 """TC-EV029-007 / F23 deepen T6.1: VA SIGMET gap fixtures (lint + convert + validate).
 
-M0 inventory: VA standalone is covered (V1–V3 / ``sigmet-VA-EGGX`` / multi-loc);
+M0 inventory: VA standalone is covered (V1-V3 / ``sigmet-VA-EGGX`` / multi-loc);
 remaining deepen is WV AHL body/BBB matrix and multi-report (example-inventory §A VA
 SIGMET row; remine §B.5; WV→LV + BBB→reportStatus). CNL covered via FIR-moved seed +
 AHL CNL fixture.
@@ -8,7 +8,7 @@ AHL CNL fixture.
 Product-order smoke (TC-EV029-007 pack seed for VA SIGMET) uses annex3
 ``sigmet_va_eggx``. BBB→``reportStatus`` reuses ``convert(report_status=)`` with
 VA emitter honor (T6.2); ``split_bulletin(product=\"SIGMET\")`` must accept WV AHL
-bodies (T6.2 — currently WS-only).
+bodies (T6.2 - currently WS-only).
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ ANNEX3 = FIXTURES / "annex3_golden"
 IWXXM_VERSION = "2025-2"
 PROFILE = "annex3"
 
-# Body has no COR/AMD keyword — status must come from AHL BBB (T6.2).
+# Body has no COR/AMD keyword - status must come from AHL BBB (T6.2).
 _BBB_CASES = (
     ("va_sigmet_ahl_normal.txt", None, "NORMAL"),
     ("va_sigmet_ahl_rra.txt", "RRA", "NORMAL"),
@@ -185,7 +185,7 @@ def test_va_sigmet_ahl_cnl_split_and_convert() -> None:
     assert result.ok is True, result.issues
     assert result.xml is not None
     assert 'isCancelReport="true"' in result.xml
-    # WV AHL + FIR-moved CNL is VA family — root must not collapse to general SIGMET.
+    # WV AHL + FIR-moved CNL is VA family - root must not collapse to general SIGMET.
     assert "iwxxm:VolcanicAshSIGMET" in result.xml
     assert re.search(r"<iwxxm:SIGMET[\s>]", result.xml) is None
 

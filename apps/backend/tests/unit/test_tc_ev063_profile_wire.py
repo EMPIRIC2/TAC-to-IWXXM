@@ -1,4 +1,4 @@
-"""TC-EV063-003 — API profile wire validation (EV-063 / F35).
+"""TC-EV063-003 - API profile wire validation (EV-063 / F35).
 
 Spec: docs/test-plan.md §TC-EV063-003; docs/api-contract.md §EV-063.
 """
@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 from src.utilities.security import verify_supabase_token
 
@@ -93,7 +92,8 @@ def test_semantic_profile_canonical_forwards_to_convert(
         files=_convert_files(semantic_profile=(None, "ICAO_2025")),
     )
     assert response.status_code == 200, response.text[:400]
-    assert seen and seen[0].get("profile") == "annex3"
+    assert seen
+    assert seen[0].get("profile") == "annex3"
 
 
 def test_legacy_profile_annex3_still_accepted(
@@ -113,7 +113,8 @@ def test_legacy_profile_annex3_still_accepted(
         files=_convert_files(profile=(None, "annex3")),
     )
     assert response.status_code == 200, response.text[:400]
-    assert seen and seen[0].get("profile") == "annex3"
+    assert seen
+    assert seen[0].get("profile") == "annex3"
 
 
 def test_semantic_profile_preferred_over_legacy_profile(
@@ -136,4 +137,5 @@ def test_semantic_profile_preferred_over_legacy_profile(
         ),
     )
     assert response.status_code == 200, response.text[:400]
-    assert seen and seen[0].get("profile") == "iwxxm_us"
+    assert seen
+    assert seen[0].get("profile") == "iwxxm_us"

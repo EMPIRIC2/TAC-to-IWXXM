@@ -3,7 +3,7 @@
 Spec: docs/test-plan.md TC-F6-032; docs/spec.md §packages/iwxxm-validate;
 ADR-015; ADR-016 (msgspec issue models).
 
-Decision D-S008-T21-sch: mirror current F2 — lxml XSD best-effort; Schematron via
+Decision D-S008-T21-sch: mirror current F2 - lxml XSD best-effort; Schematron via
 lxml when queryBinding allows, else SCHEMATRON_SKIPPED (non-blocking) for xslt2;
 optional Docker/Saxon behind env (soft/separate gate, not required for unit suite).
 """
@@ -64,7 +64,7 @@ def test_validate_vendor_metar_returns_structured_report(vendor_metar_xml: str) 
     assert report.profile == "annex3"
     assert isinstance(report.ok, bool)
     assert isinstance(report.issues, list)
-    # Vendor METAR is well-formed — must not fail as XML_SYNTAX_ERROR
+    # Vendor METAR is well-formed - must not fail as XML_SYNTAX_ERROR
     assert not any(issue.code == "XML_SYNTAX_ERROR" for issue in report.issues)
 
 
@@ -104,7 +104,7 @@ def test_validate_malformed_xml_fails_with_issues() -> None:
 def test_validate_schema_invalid_xml_reports_xsd_or_parse_path() -> None:
     """Well-formed but schema-invalid IWXXM yields structured XSD-layer issues when XSD runs.
 
-    If schema compilation is unavailable (catalog gaps), expect SCHEMA_* codes —
+    If schema compilation is unavailable (catalog gaps), expect SCHEMA_* codes -
     never silent success with empty issues.
     """
     from iwxxm_validate import validate
@@ -198,7 +198,6 @@ def test_package_has_no_fastapi_or_supabase_imports() -> None:
 def test_issue_models_are_msgspec_structs() -> None:
     """ADR-016: package issue / report models use msgspec.Struct."""
     import msgspec
-
     from iwxxm_validate import Issue, ValidationReport
 
     assert issubclass(Issue, msgspec.Struct)

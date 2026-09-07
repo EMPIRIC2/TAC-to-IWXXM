@@ -6,7 +6,6 @@ and produces output with correct namespaces and schema references.
 """
 
 import pytest
-
 from src.config.iwxxm_versions import (
     get_namespace_uri,
     get_schema_url,
@@ -58,7 +57,7 @@ class TestVersionConfiguration:
 
     def test_get_version_config_invalid(self):
         """Test error on invalid version."""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=r".*"):
             get_version_config("9999-9")
 
     def test_namespace_uri_per_version(self):

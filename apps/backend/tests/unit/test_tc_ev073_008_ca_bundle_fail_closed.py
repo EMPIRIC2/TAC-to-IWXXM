@@ -1,10 +1,9 @@
-"""TC-EV073-008 — Fail-closed when CA extension vendor pin missing (EV-073 M2)."""
+"""TC-EV073-008 - Fail-closed when CA extension vendor pin missing (EV-073 M2)."""
 
 from __future__ import annotations
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src import api as api_module
 
 _CA_METAR = "METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012="

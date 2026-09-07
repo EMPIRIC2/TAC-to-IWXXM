@@ -129,7 +129,7 @@ function serializeElement(el: Element): string {
     attrs.push({ name: attr.name, value: attr.value });
   }
   // C14N: lexicographic attribute order (xmlns* sorted with other attrs by name)
-  attrs.sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+  attrs.sort((a, b) => (a.name < b.name ? -1 : 1));
 
   let out = `<${tag}`;
   for (const attr of attrs) {
@@ -141,7 +141,8 @@ function serializeElement(el: Element): string {
     if (child.nodeType === Node.ELEMENT_NODE) {
       out += serializeElement(child as Element);
     } else if (child.nodeType === Node.TEXT_NODE) {
-      out += escapeText(child.textContent ?? '');
+      // Whitespace-only / null text nodes are removed before serialize.
+      out += escapeText(child.textContent as string);
     }
   }
   out += `</${tag}>`;
