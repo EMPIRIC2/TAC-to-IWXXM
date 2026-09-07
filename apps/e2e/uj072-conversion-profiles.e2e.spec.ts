@@ -470,6 +470,33 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
       /US_FAA_NWS/i,
     );
     await expect(page.getByText(/Different from US_FAA_NWS/i).first()).toBeVisible();
+    await expect(page.getByTestId('conversion-profiles-summary')).toContainText(
+      /Difference notes compared with ICAO_2025/i,
+    );
+    await expect(page.getByTestId('conversion-profiles-workflows')).toContainText(
+      /Workflow references/i,
+    );
+    await expect(page.getByTestId('conversion-profiles-workflows')).toContainText(
+      /read-only in this screen/i,
+    );
+    await expect(page.getByTestId('conversion-profiles-examples')).toContainText(
+      /Examples available on Convert:\s*METAR, SPECI, TAF/i,
+    );
+    await expect(
+      page.getByTestId('conversion-profiles-workflow-definitions'),
+    ).toHaveAttribute('href', /\/workflows$/);
+    await expect(
+      page.getByTestId('conversion-profiles-workflow-runtime'),
+    ).toHaveAttribute('href', /\/packages\/workflows$/);
+    await page.getByTestId('conversion-profiles-open-examples').click();
+    await expect(page.getByTestId('examples-select')).toBeVisible();
+    await page.getByTestId('shell-nav-profiles').click();
+    await expect(page.getByTestId('conversion-profiles-summary')).toBeVisible();
+    await page.getByTestId('conversion-profiles-select').selectOption('US_FAA_NWS');
+    await expect(page.getByTestId('conversion-profiles-examples')).toContainText(
+      /reused from the ICAO \/ WMO demo set/i,
+    );
+    await page.getByTestId('conversion-profiles-select').selectOption('ICAO_2025');
 
     await page.getByTestId('conversion-profiles-block-output-validation').click();
     await expect(page.getByTestId('conversion-profiles-block-detail')).toContainText(
@@ -509,6 +536,12 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(page.getByTestId('workbench-profile-summary')).toBeVisible();
     await expect(page.getByTestId('workbench-profile-summary')).toContainText(
       /ICAO_2025/i,
+    );
+    await expect(page.getByTestId('workbench-profile-summary')).toContainText(
+      /Rule packs:\s*0/i,
+    );
+    await expect(page.getByTestId('workbench-profile-summary')).toContainText(
+      /Overlays:\s*1/i,
     );
 
     await page.getByTestId('profile-type-select').selectOption('US_FAA_NWS');

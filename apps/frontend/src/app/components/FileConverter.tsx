@@ -2580,12 +2580,18 @@ export function FileConverter({
                           ? activeProfileSummary.products.join(', ')
                           : 'Sign in to load profile coverage'}
                       </span>
-                      {activeProfileSummary.rule_pack_count != null ? (
-                        <span>Rule packs: {activeProfileSummary.rule_pack_count}</span>
-                      ) : null}
-                      {activeProfileSummary.overlay_count != null ? (
-                        <span>Overlays: {activeProfileSummary.overlay_count}</span>
-                      ) : null}
+                      <span>
+                        Rule packs:{' '}
+                        {activeProfileSummary.rule_pack_count != null
+                          ? activeProfileSummary.rule_pack_count
+                          : '—'}
+                      </span>
+                      <span>
+                        Overlays:{' '}
+                        {activeProfileSummary.overlay_count != null
+                          ? activeProfileSummary.overlay_count
+                          : '—'}
+                      </span>
                     </div>
                   </div>
                   <details

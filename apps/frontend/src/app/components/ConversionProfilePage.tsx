@@ -22,8 +22,16 @@ import {
   type ProfileCatalogEntry,
   type RulePackOut,
 } from '@/utils/conversionProfilesApi';
-import { SEMANTIC_PROFILE_OPTIONS } from '@/utils/semanticProfile';
 import {
+  DEFAULT_SEMANTIC_PROFILE,
+  SEMANTIC_PROFILE_OPTIONS,
+  hydrateSemanticProfile,
+} from '@/utils/semanticProfile';
+import {
+  PROFILES_EXAMPLES_EMPTY,
+  PROFILES_EXAMPLES_HEADING,
+  PROFILES_EXAMPLES_PREFIX,
+  PROFILES_EXAMPLES_REUSE_NOTE,
   PROFILES_EDITOR_LOGIN_REQUIRED,
   PROFILES_EDITOR_SIGN_IN,
   PROFILES_EDITOR_SUBTITLE,
@@ -59,6 +67,13 @@ import {
   PROFILES_PACKS_HEADING,
   PROFILES_PACKS_LOADING,
   PROFILES_PACKS_UNAVAILABLE,
+  PROFILES_WORKFLOWS_BODY,
+  PROFILES_WORKFLOWS_DEFINITIONS_LINK,
+  PROFILES_WORKFLOWS_DEFINITIONS_URL,
+  PROFILES_WORKFLOWS_EXAMPLES_LINK,
+  PROFILES_WORKFLOWS_HEADING,
+  PROFILES_WORKFLOWS_RUNTIME_LINK,
+  PROFILES_WORKFLOWS_RUNTIME_URL,
 } from '@/utils/conversionProfilesCopy';
 import {
   createConversionProfileShareBundle,
@@ -72,6 +87,8 @@ export interface ConversionProfilePageProps {
   accessToken?: string;
   /** Navigate to login. */
   onRequestLogin?: () => void;
+  /** Return to the convert workbench to open profile-aware examples. */
+  onOpenConverterExamples?: () => void;
 }
 
 function errorMessage(err: unknown): string {
@@ -80,6 +97,7 @@ function errorMessage(err: unknown): string {
 
 interface AuthedProps {
   accessToken: string;
+  onOpenConverterExamples?: () => void;
 }
 
 interface LoadErrorState {
@@ -96,12 +114,31 @@ function profileLabel(profileId: string): string {
   return PROFILE_LABELS.get(profileId) ?? profileId;
 }
 
+function usesReusedExamples(profileId: string): boolean {
+  return hydrateSemanticProfile(profileId) !== DEFAULT_SEMANTIC_PROFILE;
+}
+
 function compareValue(value: string): string {
   return value.trim() || '—';
 }
 
 function sameValue(left: string, right: string): boolean {
   return compareValue(left) === compareValue(right);
+}
+
+function matchingDeltaLines(
+  deltas: readonly string[],
+  compareDeltas: readonly string[],
+): boolean {
+  if (deltas.length !== compareDeltas.length) {
+    return false;
+  }
+  for (let index = 0; index < deltas.length; index += 1) {
+    if (!sameValue(deltas[index]!, compareDeltas[index]!)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function countDisplay(value: number | null | undefined): string {
@@ -212,8 +249,10 @@ function ProfileSummaryCard({
   compareAgainst = null,
 }: ProfileSummaryCardProps) {
   const deltas = profile.deltas_vs_icao?.slice(0, 3) ?? [];
+  const compareDeltas = compareAgainst?.deltas_vs_icao?.slice(0, 3) ?? [];
   const productLine = profile.products.join(', ');
   const compareProductLine = compareAgainst?.products.join(', ') ?? '';
+  const deltaLinesMatch = matchingDeltaLines(deltas, compareDeltas);
   const counts = [
     { label: 'Rule packs', value: profile.rule_pack_count },
     { label: 'Overlays', value: profile.overlay_count },
@@ -278,7 +317,7 @@ function ProfileSummaryCard({
         </div>
       </div>
 
-      <div className="space-y-2 rounded-md border border-gray-200 p-3 dark:border-gray-700">
+      <div className={fieldClass(Boolean(compareAgainst) && !deltaLinesMatch)}>
         <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
           Top differences vs ICAO
         </dt>
@@ -293,6 +332,11 @@ function ProfileSummaryCard({
             No profile-specific differences listed.
           </dd>
         )}
+        {compareAgainst && !deltaLinesMatch ? (
+          <p className="mt-1 text-xs text-amber-900 dark:text-amber-200">
+            Difference notes compared with {compareAgainst.id}
+          </p>
+        ) : null}
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -324,7 +368,10 @@ function ProfileSummaryCard({
   );
 }
 
-function ConversionProfileAuthed({ accessToken }: AuthedProps) {
+function ConversionProfileAuthed({
+  accessToken,
+  onOpenConverterExamples,
+}: AuthedProps) {
   const [catalog, setCatalog] = useState<ProfileCatalogEntry[] | null>(null);
   const [packs, setPacks] = useState<RulePackOut[] | null>(null);
   const [overlays, setOverlays] = useState<OverlayOut[] | null>(null);
@@ -750,6 +797,62 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
         )}
       </Card>
 
+      <Card className="space-y-3 p-4" data-testid="conversion-profiles-workflows">
+        <h2 className="text-sm font-medium">{PROFILES_WORKFLOWS_HEADING}</h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {PROFILES_WORKFLOWS_BODY}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          <a
+            className="rounded border border-gray-300 px-3 py-1.5 text-sm text-gray-700 dark:border-gray-600 dark:text-gray-200"
+            data-testid="conversion-profiles-workflow-definitions"
+            href={PROFILES_WORKFLOWS_DEFINITIONS_URL}
+            rel="noreferrer"
+            target="_blank"
+          >
+            {PROFILES_WORKFLOWS_DEFINITIONS_LINK}
+          </a>
+          <a
+            className="rounded border border-gray-300 px-3 py-1.5 text-sm text-gray-700 dark:border-gray-600 dark:text-gray-200"
+            data-testid="conversion-profiles-workflow-runtime"
+            href={PROFILES_WORKFLOWS_RUNTIME_URL}
+            rel="noreferrer"
+            target="_blank"
+          >
+            {PROFILES_WORKFLOWS_RUNTIME_LINK}
+          </a>
+          {onOpenConverterExamples ? (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              data-testid="conversion-profiles-open-examples"
+              onClick={onOpenConverterExamples}
+            >
+              {PROFILES_WORKFLOWS_EXAMPLES_LINK}
+            </Button>
+          ) : null}
+        </div>
+      </Card>
+
+      <Card className="space-y-3 p-4" data-testid="conversion-profiles-examples">
+        <h2 className="text-sm font-medium">{PROFILES_EXAMPLES_HEADING}</h2>
+        {selected && selected.products.length > 0 ? (
+          <>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              {PROFILES_EXAMPLES_PREFIX} {selected.products.join(', ')}
+            </p>
+            {usesReusedExamples(selected.id) ? (
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {PROFILES_EXAMPLES_REUSE_NOTE}
+              </p>
+            ) : null}
+          </>
+        ) : (
+          <p className="text-sm text-gray-500">{PROFILES_EXAMPLES_EMPTY}</p>
+        )}
+      </Card>
+
       <Card
         className="space-y-3 p-4"
         data-testid="conversion-profiles-packs"
@@ -1035,6 +1138,7 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
 export function ConversionProfilePage({
   accessToken,
   onRequestLogin,
+  onOpenConverterExamples,
 }: ConversionProfilePageProps) {
   if (!accessToken) {
     return (
@@ -1054,5 +1158,10 @@ export function ConversionProfilePage({
       </div>
     );
   }
-  return <ConversionProfileAuthed accessToken={accessToken} />;
+  return (
+    <ConversionProfileAuthed
+      accessToken={accessToken}
+      onOpenConverterExamples={onOpenConverterExamples}
+    />
+  );
 }

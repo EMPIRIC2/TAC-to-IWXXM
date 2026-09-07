@@ -618,12 +618,14 @@
      catalog follows Profile (+ Exchange when packaging); mined national-only rows for
      US_FAA_NWS + CA_ECCC (#1122) with provenance URLs only.
   2. **Glanceable Profile UX (#1145):** one-composition summary on Conversion Profiles +
-     compact workbench twin (name/id, ≤3 vs-ICAO deltas, products, IWXXM line, pack/overlay
-     counts); **side-by-side compare of two semantic profiles** (differing settings highlighted);
-     ADR-038 sections as **inspect/jump blocks** (not a new runtime loader);
-     profile-aware example load for all semantic profiles + starter seed packs/overlays
-     (sync only if untouched); live refresh of summary + catalog; workflow = read-only
-     links only.
+     compact workbench twin (name/id, ≤3 vs-ICAO deltas, products, IWXXM line; guests see
+     pack/overlay count placeholders until signed in); **side-by-side compare of two semantic
+     profiles** on the Conversion Profiles summary surface (differing settings highlighted; the
+     workbench twin stays compact); ADR-038 sections as **inspect/jump blocks** (not a new
+     runtime loader); profile-aware example load for all registered semantic profiles + starter
+     seed packs/overlays (sync only if untouched); live refresh of summary + catalog without
+     resetting unrelated in-progress edits unless a profile-dependent control becomes invalid;
+     workflow = read-only links only.
   3. **Out of Phase A:** composable convert assembly → [#1146](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1146);
      full workflow authoring → [#1147](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1147);
      marketplace; Learn/XP; soft-preview; #996 click-detail.

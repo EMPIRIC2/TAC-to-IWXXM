@@ -48,3 +48,19 @@ export const PROFILES_PACK_EXPORT = 'Export share bundle';
 export const PROFILES_PACK_IMPORT = 'Import share bundle';
 export const PROFILES_ERROR_PREFIX = 'Profiles error:';
 export const PROFILES_COUNT_UNAVAILABLE = 'Unavailable';
+export const PROFILES_WORKFLOWS_HEADING = 'Workflow references';
+export const PROFILES_WORKFLOWS_BODY =
+  'Workflow definitions are read-only in this screen. Open the current definitions or runtime details in a separate tab.';
+export const PROFILES_WORKFLOWS_DEFINITIONS_LINK = 'Open workflow definitions';
+export const PROFILES_WORKFLOWS_RUNTIME_LINK = 'Open workflow runtime';
+export const PROFILES_WORKFLOWS_EXAMPLES_LINK = 'Open examples on Convert';
+export const PROFILES_WORKFLOWS_DEFINITIONS_URL =
+  'https://github.com/EMPIRIC2/TAC-to-IWXXM/tree/main/workflows';
+export const PROFILES_WORKFLOWS_RUNTIME_URL =
+  'https://github.com/EMPIRIC2/TAC-to-IWXXM/tree/main/packages/workflows';
+export const PROFILES_EXAMPLES_HEADING = 'Examples';
+export const PROFILES_EXAMPLES_PREFIX = 'Examples available on Convert:';
+export const PROFILES_EXAMPLES_EMPTY =
+  'No example products are listed for this profile yet.';
+export const PROFILES_EXAMPLES_REUSE_NOTE =
+  'Current examples are reused from the ICAO / WMO demo set and keep profile-specific notes in the picker.';

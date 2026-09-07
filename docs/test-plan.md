@@ -2865,7 +2865,8 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 
 - **Level**: T0 / T2
 - **Objective**: Compact twin beside Profile control; JWT counts gated
-- **Pass criteria**: Public twin without pack counts; authed shows counts
+- **Pass criteria**: Public twin stays compact and shows pack/overlay count placeholders;
+  authenticated view reveals counts without changing the compact layout
 - **Source**: #1145; AC-UX-2
 
 ### TC-EV1120-012: ADR-038 blocks inspect/jump
@@ -2879,7 +2880,9 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 
 - **Level**: T0 / T2
 - **Objective**: Example load for every registered semantic profile
-- **Pass criteria**: Thin packs may reuse ICAO + note
+- **Pass criteria**: Thin packs may reuse ICAO + note; Conversion Profiles may show
+  read-only example coverage guidance plus a jump back to Convert without adding a second
+  editable picker on that page
 - **Source**: #1145; AC-UX-4
 
 ### TC-EV1120-014: Starter seed sync non-destructive
@@ -2893,21 +2896,26 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 
 - **Level**: T0 / T2
 - **Objective**: Profile change updates twin + catalog without full reload
-- **Pass criteria**: Component/e2e assertion
+- **Pass criteria**: Component/e2e assertion proves summary/twin + catalog refresh while
+  unrelated in-progress editing state is preserved unless a profile-dependent control becomes
+  invalid
 - **Source**: #1145; AC-UX-6
 
 ### TC-EV1120-016: Workflow links read-only (Phase A)
 
 - **Level**: T0 / T2
 - **Objective**: Workflow affordances are status/links only
-- **Pass criteria**: No authoring UI in Phase A (#1147 deferred)
+- **Pass criteria**: No authoring UI in Phase A (#1147 deferred); links may coexist with
+  read-only example guidance and a Convert jump action
 - **Source**: #1145; D-R19/22
 
 ### TC-EV1120-017: Side-by-side profile compare highlights deltas
 
 - **Level**: T0 / T2
 - **Objective**: Comparing two semantic profiles shows shared labels with differing cells emphasized
-- **Pass criteria**: US_FAA_NWS vs ICAO_2025 (or fixture pair) shows ≥1 highlighted difference (products and/or vs-ICAO deltas and/or IWXXM line)
+- **Pass criteria**: Conversion Profiles summary compare for US_FAA_NWS vs ICAO_2025 (or fixture
+  pair) shows ≥1 highlighted difference (products and/or vs-ICAO deltas and/or IWXXM line)
+  while the workbench twin remains compact
 - **Source**: #1145; D-R27=3
 
 ### EV-064 / F36 — CA_ECCC profile (#916)

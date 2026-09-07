@@ -5990,6 +5990,17 @@ describe('FileConverter Component', () => {
       expect(screen.getByText(/Overlays: 1/)).toBeInTheDocument();
     });
 
+    it('shows guest placeholders for rule pack and overlay counts', async () => {
+      render(<FileConverter />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
+      });
+
+      expect(screen.getByText(/Rule packs: —/)).toBeInTheDocument();
+      expect(screen.getByText(/Overlays: —/)).toBeInTheDocument();
+    });
+
     it('falls back when catalog metadata is sparse', async () => {
       const originalMapGet = Map.prototype.get;
       const mapGetSpy = vi.spyOn(Map.prototype, 'get').mockImplementation(function (

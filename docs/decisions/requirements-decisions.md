@@ -2,6 +2,25 @@
 
 > Stage: 01-requirements | Last updated: 2026-09-06 (EV-m4-profiles-annex3-us-custom)
 
+## EV-1120-phase-a-profile-ux — Glanceable Profile UX follow-on
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-1120 / manifest | `feature-list`, `spec`, `user-journeys`, `test-plan` | No extra standing docs in this narrowed pass | confirmed |
+| EV-1120 / scope shape | Narrow `#1145` slice | Treat `#1121`-`#1123` as standing context/contracts, not reopened implementation scope | confirmed |
+| EV-1120 / UI preview | Declined | Requirements from docs/repo only | confirmed |
+| EV-1120 / success focus | Safe executable slice | Prioritize summary composition, compact twin, compare, and safe refresh behavior | confirmed |
+| EV-1120 / profile coverage | All registered semantic profiles | Thin profiles may reuse ICAO examples with a note | confirmed |
+| EV-1120 / guest counts | Placeholder until auth | Keep the compact twin fields visible for guests | confirmed |
+| EV-1120 / refresh safety | Preserve unrelated in-progress state | Reset only when a profile-dependent control becomes invalid | confirmed |
+| EV-1120 / compare surface | Conversion Profiles summary only | Workbench twin stays compact in this slice | confirmed |
+| EV-1120 / ADR-038 blocks | Inspect/jump only | No new runtime/editor surface | confirmed |
+| EV-1120 / starter content | Seed only when untouched | Never overwrite customized packs/overlays | confirmed |
+| EV-1120 / follow-ons | `#1146` and `#1147` remain out | Composable convert and workflow authoring deferred | confirmed |
+
+[Corpus: decisions] [Corpus: product §F7.w] [Corpus: product §F35] [Corpus: api]
+[Corpus: journeys §UJ-072d] [Corpus: tests]
+
 ## EV-m4-profiles-annex3-us-custom — Milestone 4 profiles
 
 | Topic | Decision | Notes | Status |

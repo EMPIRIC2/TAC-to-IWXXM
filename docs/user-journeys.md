@@ -505,18 +505,24 @@ load a profile-appropriate example; open starter packs without losing custom edi
 
 1. Open convert workbench — Profile control shows **compact twin** (name, ≤3 vs-ICAO deltas,
    products, IWXXM line; pack/overlay counts show "—" until signed in).
-2. Change Profile — twin + Validation Issues Catalog (#1123) refresh without full reload.
+2. Change Profile — twin + Validation Issues Catalog (#1123) refresh without full reload, and
+   unrelated in-progress editing state stays intact unless a profile-dependent control becomes
+   invalid.
 3. Sign in; open **Conversion profiles** — first viewport is one **summary composition**
    (not three equal form cards) showing profile-specific settings (products, IWXXM line,
    ≤3 vs-ICAO deltas, pack/overlay counts).
-4. **Compare**: select a second profile; side-by-side settings highlight differences
-   (e.g. US_FAA_NWS vs ICAO_2025).
+4. **Compare**: on the Conversion Profiles summary surface, select a second profile;
+   side-by-side settings highlight differences (e.g. US_FAA_NWS vs ICAO_2025). The workbench
+   twin stays compact and does not grow full compare UI in this slice.
 5. Click an ADR-038 **block** (input / TAC lint / convert / IWXXM validate / exchange) →
    inspect detail and jump to existing rule-pack or overlay forms (no new runtime).
 6. Use **Examples** to load a sample for the selected profile (all registered semantic
-   profiles; thin packs may reuse ICAO sample with a note).
+   profiles; thin packs may reuse ICAO sample with a note). The Conversion Profiles surface
+   also shows the current example coverage and can jump back to **Convert** to open the picker.
 7. First visit may seed starter packs/overlays from examples; re-open after customize does
-   **not** overwrite custom packs. Read-only workflow links may appear; no workflow authoring.
+   **not** overwrite custom packs. All registered semantic profiles have an example path; thin
+   profiles may reuse the ICAO example with a note. Read-only workflow references may appear;
+   no workflow authoring.
 
 **Acceptance**: AC-UX-1..6 from EV-1120 requirements + side-by-side compare; EV-048 clean; UJ-072 base + #1024 remain green.
 

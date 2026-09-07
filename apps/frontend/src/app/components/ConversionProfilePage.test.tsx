@@ -486,7 +486,13 @@ describe('ConversionProfilePage', () => {
 
   it('renders a summary-first compare view', async () => {
     const user = userEvent.setup();
-    render(<ConversionProfilePage accessToken="tok" />);
+    const onOpenConverterExamples = vi.fn();
+    render(
+      <ConversionProfilePage
+        accessToken="tok"
+        onOpenConverterExamples={onOpenConverterExamples}
+      />,
+    );
 
     await waitFor(() => {
       expect(screen.getByTestId('conversion-profiles-summary')).toBeInTheDocument();
@@ -512,6 +518,37 @@ describe('ConversionProfilePage', () => {
     expect(
       screen.getByText(/Retains selected RMK content in output\./),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Difference notes compared with ICAO_2025/),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('conversion-profiles-workflows')).toHaveTextContent(
+      /Workflow references/i,
+    );
+    expect(screen.getByTestId('conversion-profiles-workflows')).toHaveTextContent(
+      /read-only in this screen/i,
+    );
+    expect(screen.getByTestId('conversion-profiles-examples')).toHaveTextContent(
+      /Examples available on Convert/i,
+    );
+    expect(screen.getByTestId('conversion-profiles-examples')).toHaveTextContent(
+      /METAR, TAF/i,
+    );
+    expect(
+      screen.getByTestId('conversion-profiles-workflow-definitions'),
+    ).toHaveAttribute('href', expect.stringContaining('/workflows'));
+    expect(screen.getByTestId('conversion-profiles-workflow-runtime')).toHaveAttribute(
+      'href',
+      expect.stringContaining('/packages/workflows'),
+    );
+    await user.click(screen.getByTestId('conversion-profiles-open-examples'));
+    expect(onOpenConverterExamples).toHaveBeenCalledTimes(1);
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-select'),
+      'US_FAA_NWS',
+    );
+    expect(screen.getByTestId('conversion-profiles-examples')).toHaveTextContent(
+      /reused from the ICAO \/ WMO demo set/i,
+    );
   });
 
   it('opens ADR-038 block detail and jump links', async () => {
@@ -537,6 +574,144 @@ describe('ConversionProfilePage', () => {
     expect(
       screen.getByTestId('conversion-profiles-block-jump-overlays'),
     ).toHaveAttribute('href', '#conversion-profiles-overlays');
+  });
+
+  it('does not flag delta notes when compared profiles share the same note list', async () => {
+    const user = userEvent.setup();
+    fetchProfileCatalog.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ICAO_2025',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR', 'TAF'],
+          deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+          iwxxm_line: 'IWXXM 2025-2 core',
+          rule_pack_count: 1,
+          overlay_count: 1,
+        },
+        {
+          id: 'MATCHED_PROFILE',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR'],
+          deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+          iwxxm_line: 'IWXXM-US 3.0.0',
+          rule_pack_count: 2,
+          overlay_count: 0,
+        },
+      ],
+    });
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-summary-primary'),
+      ).toBeInTheDocument();
+    });
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-compare-select'),
+      'MATCHED_PROFILE',
+    );
+
+    expect(
+      screen.queryByText(/Difference notes compared with MATCHED_PROFILE/),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Difference notes compared with ICAO_2025/),
+    ).not.toBeInTheDocument();
+  });
+
+  it('flags delta notes when the compared profile has no note list', async () => {
+    const user = userEvent.setup();
+    fetchProfileCatalog.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ICAO_2025',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR', 'TAF'],
+          deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+          iwxxm_line: 'IWXXM 2025-2 core',
+          rule_pack_count: 1,
+          overlay_count: 1,
+        },
+        {
+          id: 'NO_DELTAS',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR'],
+          deltas_vs_icao: [],
+          iwxxm_line: 'IWXXM-US 3.0.0',
+          rule_pack_count: 2,
+          overlay_count: 0,
+        },
+      ],
+    });
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-summary-primary'),
+      ).toBeInTheDocument();
+    });
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-compare-select'),
+      'NO_DELTAS',
+    );
+
+    expect(
+      screen.getByText(/Difference notes compared with NO_DELTAS/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/No profile-specific differences listed\./),
+    ).toBeInTheDocument();
+  });
+
+  it('flags delta notes when compared profiles have different note text with equal lengths', async () => {
+    const user = userEvent.setup();
+    fetchProfileCatalog.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ICAO_2025',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR', 'TAF'],
+          deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+          iwxxm_line: 'IWXXM 2025-2 core',
+          rule_pack_count: 1,
+          overlay_count: 1,
+        },
+        {
+          id: 'DIFFERENT_NOTE',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR'],
+          deltas_vs_icao: ['Uses a different national note for compare coverage.'],
+          iwxxm_line: 'IWXXM-US 3.0.0',
+          rule_pack_count: 2,
+          overlay_count: 0,
+        },
+      ],
+    });
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-summary-primary'),
+      ).toBeInTheDocument();
+    });
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-compare-select'),
+      'DIFFERENT_NOTE',
+    );
+
+    expect(
+      screen.getByText(/Difference notes compared with DIFFERENT_NOTE/),
+    ).toBeInTheDocument();
   });
 
   it('seeds starter pack and overlay forms only while untouched', async () => {
