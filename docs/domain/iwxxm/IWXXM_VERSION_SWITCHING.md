@@ -242,12 +242,11 @@ project_root/
 
 ## Setup and Installation
 
-### 1. Initialize Git Submodules
+### 1. Ensure Vendored Schemas Are Present
 
 ```bash
-git submodule update --init --recursive schemas/iwxxm
-git submodule update --init --recursive schemas/iwxxm-codelists
-git submodule update --init --recursive schemas/iwxxm-modelling
+make install
+# Verify the canonical vendored schema tree exists under vendor/schemas/
 ```
 
 ### 2. Install Dependencies
@@ -334,7 +333,8 @@ xml_2023_1 = convert_metar_tac(metar_text, iwxxm_version="2023-1")
 **Solution**:
 ```bash
 cd /root/metar-to-IWXXM
-git submodule update --init --recursive
+make install
+test -d vendor/schemas/iwxxm
 ```
 
 ### Version Not Supported

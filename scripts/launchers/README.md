@@ -17,7 +17,7 @@ chmod +x launch_gui.sh
 
 **Features:**
 - Checks for Node.js and npm installation
-- Verifies frontend submodule exists
+- Verifies the monorepo frontend workspace exists at `apps/frontend`
 - Auto-installs dependencies if needed
 - Starts Vite dev server on http://localhost:5173
 
@@ -102,7 +102,7 @@ chmod +x launch_*.sh
 
 For production, use Docker Compose instead:
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 This provides optimized builds with nginx and proper service orchestration.

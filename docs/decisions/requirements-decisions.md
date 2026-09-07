@@ -297,11 +297,11 @@
 |----|-------|----------|--------|
 | REQ-001 | Monorepo direction | Single git; reduce submodule complexity; preserve upstream pull for iwxxm | confirmed |
 | REQ-002 | iwxxm-* upstream | Vendored snapshots from wmo-im; no git submodules for schemas | confirmed |
-| REQ-003 | GIFTs placement | `packages/gifts` — full source; manual merge from mgoberfield when chosen | confirmed |
+| REQ-003 | GIFTs placement | **Superseded (ADR-014 / F6 cutover)** — `packages/gifts` was the transitional in-repo placement; current monorepo state removes it in favor of `packages/tac2iwxxm` | amended |
 | REQ-004 | Auth shape | `packages/auth` library merged into backend; single deployable API | confirmed |
 | REQ-005 | Workspace tooling | Makefile + uv workspace + pnpm workspaces | confirmed |
 | REQ-006 | Migration approach | Big-bang — one PR removes all submodules | confirmed |
-| REQ-007 | Target layout | `apps/{backend,frontend,e2e}` + `packages/{auth,gifts,shared}` + `vendor/schemas/*` | confirmed |
+| REQ-007 | Target layout | **Amended post-cutover** — `apps/{backend,frontend,worker,e2e}` + `packages/{auth,shared,tac2iwxxm,tac-validate,iwxxm-validate,dissemination,workflows}` + `vendor/schemas/*`; `packages/gifts` removed at F6 cutover | amended |
 | REQ-008 | Legacy repos | Archive after stable deploy; monorepo sole active dev target | confirmed |
 | REQ-009 | Vendor sync trigger | Scheduled GitHub Action opens PR on wmo-im new tags | confirmed |
 | REQ-010 | Deploy topology | Two Render services — API (backend+auth) + static frontend | confirmed |

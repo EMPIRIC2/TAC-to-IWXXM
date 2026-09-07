@@ -93,19 +93,19 @@ These are intentionally skipped placeholder tests for documenting known conversi
 
 ### 6. **Schema/Data Availability** (Variable)
 **Files:** Multiple files including:
-- `tests/test_schema_registry.py` - Schema submodules not initialized (git submodules)
+- `tests/test_schema_registry.py` - IWXXM schema snapshot not available locally
 - `tests/test_xsd_validator.py` - IWXXM schemas not available
 - `tests/test_docker_schematron_container.py` - Schema or test XML files not found
 - `tests/test_metar_pairs_comprehensive.py` - No METAR pairs available
 
-**Reason:** Missing git submodules or test data files
+**Reason:** Missing vendored schema snapshots or test data files
 
-**Context:** These tests skip gracefully when required resources (IWXXM schema git submodules, test data files) are not available in the environment.
+**Context:** These tests skip gracefully when required resources (IWXXM vendored schema snapshots, test data files) are not available in the environment.
 
 Example:
 ```python
-pytest.skip("IWXXM schemas not available (git submodule not initialized)")
-pytest.skip("Schema submodules not initialized")
+pytest.skip("IWXXM schemas not available in vendor snapshot")
+pytest.skip("IWXXM schema snapshot not available")
 ```
 
 ---
@@ -158,7 +158,7 @@ pytest.skip("Schema submodules not initialized")
 
 ### High Priority - Consider Enabling
 1. **Live API Tests** - Consider enabling in staging environments with proper API mocking
-2. **Schema Availability Tests** - Ensure git submodules are initialized: `git submodule update --init --recursive`
+2. **Schema Availability Tests** - Ensure the vendored schema snapshots are present under `vendor/schemas/`
 3. **Edge Case Tests** - These are valuable for tracking known issues. Consider maintaining them with clear issue references
 
 ### Medium Priority - Near-term Improvements
@@ -214,7 +214,7 @@ pytest tests/test_conversion_validation_edge_cases.py -v --tb=short
 
 ## Next Steps
 
-1. **Initialize Schema Submodules** - Run `git submodule update --init --recursive` to enable schema validation tests
+1. **Verify Vendored Schemas** - Confirm the checked-in schema bundles exist under `vendor/schemas/` before running schema validation tests
 2. **Document Issue References** - Add GitHub issue numbers to placeholder edge case tests
 3. **Implement Graceful Degradation Tests** - Update error-handling tests to match new pipeline semantics
 4. **Set Up API Mocking** - Create fixtures for live API tests using recorded responses
