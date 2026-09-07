@@ -80,6 +80,13 @@ function toOverlayCreateBody(value: unknown): OverlayCreateBody {
   };
 }
 
+/**
+ * Build a shareable bundle from persisted ConversionProfile assets.
+ *
+ * @param input.rulePacks - Saved rule packs to export in import-ready form.
+ * @param input.overlays - Saved overlays to export in import-ready form.
+ * @returns A non-secret bundle payload suitable for download or copy/share flows.
+ */
 export function createConversionProfileShareBundle(input: {
   rulePacks: readonly RulePackOut[];
   overlays: readonly OverlayOut[];
@@ -105,6 +112,13 @@ export function createConversionProfileShareBundle(input: {
   };
 }
 
+/**
+ * Parse a downloaded or pasted ConversionProfile share bundle.
+ *
+ * @param rawText - Raw JSON bundle text provided by the operator.
+ * @returns A validated bundle payload ready for import flows.
+ * @throws Error If the payload is not valid JSON or does not match the supported bundle schema.
+ */
 export function parseConversionProfileShareBundle(
   rawText: string,
 ): ConversionProfileShareBundle {
