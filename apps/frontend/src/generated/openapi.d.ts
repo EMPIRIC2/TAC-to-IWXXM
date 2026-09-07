@@ -1631,6 +1631,12 @@ export interface components {
              */
             propagate_residuals_to_remarks?: boolean | null;
             /**
+             * Report Variant
+             * @description Optional profile-scoped report variant within the selected product family (for example LWIS under CA_ECCC + METAR)
+             * @default
+             */
+            report_variant: string;
+            /**
              * Semantic Profile
              * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
              * @default

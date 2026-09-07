@@ -271,6 +271,10 @@ class ConversionRequest(BaseModel):
         default=None,
         description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only",
     )
+    report_variant: str | None = Field(
+        default=None,
+        description="Optional profile-scoped report variant within the selected product family (e.g. LWIS under CA_ECCC + METAR)",
+    )
     extensions: list[str] | None = Field(
         default=None,
         description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",

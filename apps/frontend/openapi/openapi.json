@@ -469,6 +469,12 @@
             "description": "When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).",
             "title": "Propagate Residuals To Remarks"
           },
+          "report_variant": {
+            "default": "",
+            "description": "Optional profile-scoped report variant within the selected product family (for example LWIS under CA_ECCC + METAR)",
+            "title": "Report Variant",
+            "type": "string"
+          },
           "semantic_profile": {
             "default": "",
             "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",

@@ -56,6 +56,12 @@ _GENERAL_IWXXM_VERSIONS = frozenset({"2025-2", "2023-1"})
 _PROFILE_SCOPED_IWXXM_VERSIONS: dict[str, frozenset[str]] = {
     EMIT_CA_ECCC: frozenset({"3.0.0"}),
 }
+_PROFILE_REPORT_VARIANTS: dict[str, dict[str, frozenset[str]]] = {
+    EMIT_CA_ECCC: {
+        "METAR": frozenset({"METAR", "LWIS", "SAWR"}),
+        "SPECI": frozenset({"SPECI"}),
+    }
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -127,6 +133,15 @@ def supported_iwxxm_versions_for_profile(profile: str) -> frozenset[str]:
     return _PROFILE_SCOPED_IWXXM_VERSIONS.get(emit_key, _GENERAL_IWXXM_VERSIONS)
 
 
+def supported_report_variants_for_profile(profile: str, product: str) -> frozenset[str]:
+    """Return allowed report-variant ids for a semantic profile + API product."""
+    resolved = resolve_semantic_profile(profile)
+    emit_key = resolved.emit_key if resolved is not None else normalize_profile_id(profile)
+    product_u = product.strip().upper()
+    by_product = _PROFILE_REPORT_VARIANTS.get(emit_key, {})
+    return by_product.get(product_u, frozenset())
+
+
 __all__ = [
     "CANONICAL_AU_BOM",
     "CANONICAL_BR_DECEA",
@@ -155,4 +170,5 @@ __all__ = [
     "normalize_profile_id",
     "resolve_semantic_profile",
     "supported_iwxxm_versions_for_profile",
+    "supported_report_variants_for_profile",
 ]

@@ -164,6 +164,8 @@ export async function convertMetarToIwxxm(params: {
   exchangeOutput?: boolean;
   /** Exchange packaging profile (ignored on convert-only; used when packaging). */
   exchangeProfile?: string;
+  /** Optional profile-scoped report variant within the selected product family. */
+  reportVariant?: string;
   /** Optional signed ConversionProfile overlay id (requires accessToken). */
   overlayId?: string;
   accessToken?: string;
@@ -187,6 +189,9 @@ export async function convertMetarToIwxxm(params: {
   formData.append('semantic_profile', wireSemanticProfile(params.profile));
   if (params.exchangeProfile?.trim()) {
     formData.append('exchange_profile', params.exchangeProfile.trim());
+  }
+  if (params.reportVariant?.trim()) {
+    formData.append('report_variant', params.reportVariant.trim().toUpperCase());
   }
 
   if (params.iwxxmVersion?.trim()) {

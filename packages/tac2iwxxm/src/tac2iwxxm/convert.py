@@ -31,6 +31,7 @@ from tac2iwxxm.profile_registry import (
     EMIT_UK_METOFFICE,
     resolve_semantic_profile,
     supported_iwxxm_versions_for_profile,
+    supported_report_variants_for_profile,
 )
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
 from tac2iwxxm.profiles.annex3_products import (
@@ -488,6 +489,7 @@ def convert(
     translation_centre_designator: str = "",
     translation_centre_name: str = "",
     report_status: str | None = None,
+    report_variant: str | None = None,
     propagate_residuals_to_remarks: bool | None = None,
 ) -> ConvertResult:
     """
@@ -635,6 +637,23 @@ def convert(
             "INVALID_IWXXM_VERSION",
             message,
         )
+    resolved_report_variant: str | None = None
+    if report_variant is not None and report_variant.strip():
+        resolved_report_variant = report_variant.strip().upper()
+        supported_variants = supported_report_variants_for_profile(profile_l, product_u)
+        if not supported_variants:
+            return _fail(
+                "INVALID_REPORT_VARIANT",
+                f"profile {profile_l} does not define report variants for product {product_u!r}",
+            )
+        if resolved_report_variant not in supported_variants:
+            return _fail(
+                "INVALID_REPORT_VARIANT",
+                (
+                    f"profile {profile_l} supports report_variant(s) {sorted(supported_variants)!r} "
+                    f"for product {product_u!r}, got {resolved_report_variant!r}"
+                ),
+            )
 
     status_override: str | None = None
     if report_status is not None:
@@ -650,6 +669,8 @@ def convert(
         if _UNRELIABLE_TAC.search(tac):
             raise ValueError("unreliable TAC marked INVALID - quarantine")
         ir = _parse(product_u, tac)
+        if resolved_report_variant is not None and profile_l == EMIT_CA_ECCC and product_u == "METAR":
+            ir = {**ir, "ca_iwxxm_root": resolved_report_variant}
         if status_override is not None:
             ir = {**ir, "report_status": status_override}
         if do_propagate:

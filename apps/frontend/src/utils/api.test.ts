@@ -383,6 +383,27 @@ describe('API Utils', () => {
       expect(body.get('exchange_profile')).toBe('CAR_SAM');
     });
 
+    it('appends report_variant on convert when provided (EV-1050)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR CYUL 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        product: 'METAR',
+        profile: 'CA_ECCC',
+        reportVariant: 'LWIS',
+      } as any);
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('report_variant')).toBe('LWIS');
+    });
+
     it('should throw error on conversion failure', async () => {
       mockFetchResponse({ detail: { message: 'Conversion failed' } }, false, 400);
 

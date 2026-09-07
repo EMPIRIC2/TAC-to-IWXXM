@@ -14,6 +14,7 @@ from uuid import UUID
 from dissemination.packaging import apply_exchange_packaging
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response, StreamingResponse
+from tac2iwxxm.profile_registry import supported_report_variants_for_profile
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
 from tac_validate import lint as tac_lint_fn
 
@@ -102,6 +103,41 @@ def _wire_payload_dict(raw_obj: object) -> dict[str, Any]:
     if isinstance(raw_obj, dict):
         return cast(dict[str, Any], raw_obj)
     return {}
+
+
+def _resolve_report_variant(emit_profile: str, product: str, requested_variant: str | None) -> str | None:
+    """Validate and normalize optional report-variant request input."""
+    raw = (requested_variant or "").strip()
+    if not raw:
+        return None
+    variant = raw.upper()
+    supported_variants = supported_report_variants_for_profile(emit_profile, product)
+    detail = ErrorDetail(
+        message="Invalid report_variant",
+        errors=[f"Unsupported report_variant {variant!r} for profile {emit_profile!r} and product {product!r}"],
+        issues=[
+            ConversionIssue(
+                source="request",
+                message=(
+                    f"profile {emit_profile} supports report_variant(s) {sorted(supported_variants)!r} "
+                    f"for product {product!r}, got {variant!r}"
+                )
+                if supported_variants
+                else f"profile {emit_profile} does not define report variants for product {product!r}",
+                severity=ConversionIssueSeverity.ERROR,
+                hint=(
+                    "Choose a report_variant from the allowed profile/product set."
+                    if supported_variants
+                    else "Omit report_variant for profiles without variant catalogs."
+                ),
+                code="INVALID_REPORT_VARIANT",
+            )
+        ],
+        total_errors=1,
+    )
+    if variant not in supported_variants:
+        raise HTTPException(status_code=400, detail=detail.model_dump())
+    return variant
 
 
 @router.post(
@@ -394,6 +430,10 @@ async def convert(
         default="",
         description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
     ),
+    report_variant: str = Form(
+        default="",
+        description="Optional profile-scoped report variant within the selected product family (for example LWIS under CA_ECCC + METAR)",
+    ),
     exchange_output: bool = Form(
         default=False,
         description=(
@@ -547,6 +587,9 @@ async def convert(
         body_product = getattr(request_body, "product", None)
         if body_product is not None:
             product = body_product
+        body_report_variant = getattr(request_body, "report_variant", None)
+        if body_report_variant is not None:
+            report_variant = body_report_variant
         manual_text = ""  # Override form input
         files = None  # Override file input
 
@@ -584,6 +627,7 @@ async def convert(
         semantic_canonical=wire.semantic_canonical,
         emit_profile=emit_profile,
     )
+    resolved_report_variant = _resolve_report_variant(emit_profile, product, report_variant)
 
     json_extensions = getattr(request_body, "extensions", None) if request_body is not None else None
     resolved_extensions = api_surface._resolve_request_extensions(extensions, json_extensions)
@@ -930,6 +974,8 @@ async def convert(
         "stop_on_error": bool(stop_on_error),
         "semantic_profile": wire.semantic_canonical,
     }
+    if resolved_report_variant:
+        request_metadata["report_variant"] = resolved_report_variant
     if applied_overlay_id:
         request_metadata["overlay_id"] = applied_overlay_id
         if overlay_base_profile:
@@ -1107,6 +1153,7 @@ async def convert(
                     lenient=False,
                     product=product,
                     profile=emit_profile,
+                    report_variant=resolved_report_variant,
                     preview=preview,
                     soft_preview_out=soft_preview_buf,
                     emit_translation_centre=emit_translation_centre,
@@ -1372,6 +1419,7 @@ async def convert(
                 lenient=False,  # normalization already applied above
                 product=product,
                 profile=emit_profile,
+                report_variant=resolved_report_variant,
                 preview=preview,
                 soft_preview_out=soft_preview_buf,
                 emit_translation_centre=emit_translation_centre,
@@ -1643,6 +1691,7 @@ async def convert(
                     validate=False,
                     product=product,
                     profile=emit_profile,
+                    report_variant=resolved_report_variant,
                     preview=preview,
                     soft_preview_out=soft_preview_buf,
                     emit_translation_centre=emit_translation_centre,

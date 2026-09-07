@@ -71,6 +71,42 @@ def test_convert_rejects_profile_scoped_3_0_0_for_non_ca_profiles(
     assert "3.0.0" in result.issues[0].message
 
 
+def test_convert_rejects_report_variant_for_profile_without_catalog() -> None:
+    result = convert(
+        "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=",
+        product="METAR",
+        profile="annex3",
+        report_variant="LWIS",
+    )
+    assert result.ok is False
+    assert result.issues[0].code == "INVALID_REPORT_VARIANT"
+
+
+def test_convert_rejects_report_variant_product_mismatch() -> None:
+    result = convert(
+        "SPECI CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=",
+        product="SPECI",
+        profile="CA_ECCC",
+        iwxxm_version="3.0.0",
+        report_variant="LWIS",
+    )
+    assert result.ok is False
+    assert result.issues[0].code == "INVALID_REPORT_VARIANT"
+
+
+def test_convert_ca_eccc_report_variant_overrides_root() -> None:
+    result = convert(
+        "METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=",
+        product="METAR",
+        profile="CA_ECCC",
+        iwxxm_version="3.0.0",
+        report_variant="LWIS",
+    )
+    assert result.ok is True
+    assert result.ir is not None
+    assert result.ir["ca_iwxxm_root"] == "LWIS"
+
+
 def test_convert_parse_error_returns_ok_false() -> None:
     result = convert("NOT A REPORT", product="METAR")
     assert result.ok is False

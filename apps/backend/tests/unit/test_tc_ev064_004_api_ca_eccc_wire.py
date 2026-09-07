@@ -136,6 +136,116 @@ def test_tc_ev064_004_ca_eccc_defaults_profile_pinned_version_when_omitted(
     assert seen[0].get("iwxxm_version") == _CA_IWXXM_VERSION
 
 
+def test_tc_ev1050_ca_eccc_forwards_report_variant(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    seen: list[dict] = []
+
+    def fake_convert(tac: str, **kwargs):
+        seen.append(kwargs)
+        return "<iwxxm-ca:LWIS xmlns:iwxxm-ca='https://example.test/iwxxm-ca'/>", None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = client.post(
+        "/api/v1/convert",
+        files=_convert_files(
+            semantic_profile=(None, "CA_ECCC"),
+            report_variant=(None, "LWIS"),
+        ),
+    )
+    assert response.status_code == 200, response.text[:500]
+    assert seen
+    assert seen[0].get("report_variant") == "LWIS"
+
+
+def test_tc_ev1050_ca_eccc_rejects_report_variant_product_mismatch(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    called = False
+
+    def fake_convert(tac: str, **kwargs):
+        nonlocal called
+        called = True
+        return "<iwxxm:SPECI xmlns:iwxxm='http://icao.int/iwxxm/3.0'/>", None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (None, "SPECI CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012="),
+            "product": (None, "SPECI"),
+            "semantic_profile": (None, "CA_ECCC"),
+            "report_variant": (None, "LWIS"),
+            "iwxxm_version": (None, _CA_IWXXM_VERSION),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code == 400, response.text[:500]
+    assert called is False
+    detail = response.json()["detail"]
+    assert detail["issues"][0]["code"] == "INVALID_REPORT_VARIANT"
+
+
+def test_tc_ev1050_non_ca_profile_rejects_report_variant(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    called = False
+
+    def fake_convert(tac: str, **kwargs):
+        nonlocal called
+        called = True
+        return "<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/2025-2'/>", None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (None, "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="),
+            "product": (None, "METAR"),
+            "semantic_profile": (None, "ICAO_2025"),
+            "report_variant": (None, "LWIS"),
+            "iwxxm_version": (None, "2025-2"),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code == 400, response.text[:500]
+    assert called is False
+    detail = response.json()["detail"]
+    assert detail["issues"][0]["code"] == "INVALID_REPORT_VARIANT"
+
+
+def test_tc_ev1050_json_body_forwards_report_variant(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    seen: list[dict] = []
+
+    def fake_convert(tac: str, **kwargs):
+        seen.append(kwargs)
+        return "<iwxxm-ca:LWIS xmlns:iwxxm-ca='https://example.test/iwxxm-ca'/>", None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": [_CA_METAR],
+            "product": "METAR",
+            "semantic_profile": "CA_ECCC",
+            "report_variant": "LWIS",
+        },
+    )
+    assert response.status_code == 200, response.text[:500]
+    assert seen
+    assert seen[0].get("report_variant") == "LWIS"
+
+
 def test_tc_ev064_004_validate_accepts_ca_eccc_profile(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,
