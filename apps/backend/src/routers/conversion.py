@@ -6,6 +6,7 @@ import datetime
 import io
 import logging
 import pathlib
+import re
 import time
 import zipfile
 from typing import Any, cast
@@ -138,6 +139,23 @@ def _resolve_report_variant(emit_profile: str, product: str, requested_variant: 
     if variant not in supported_variants:
         raise HTTPException(status_code=400, detail=detail.model_dump())
     return variant
+
+
+def _infer_report_variant_from_sample(emit_profile: str, product: str, sample_text: str | None) -> str | None:
+    """Infer the resolved report variant from TAC lead when the request omits it."""
+    supported_variants = supported_report_variants_for_profile(emit_profile, product)
+    if not supported_variants:
+        return None
+    sample = (sample_text or "").strip().upper()
+    match = re.match(r"^([A-Z]+)\b", sample)
+    if match:
+        lead = match.group(1)
+        if lead in supported_variants:
+            return lead
+    product_u = product.strip().upper()
+    if product_u in supported_variants:
+        return product_u
+    return None
 
 
 @router.post(
@@ -967,6 +985,14 @@ async def convert(
     manual_with_offsets = api_surface.manual_entries_with_offsets(manual_text or "", product=product)
     manual_entries = [entry for entry, _ in manual_with_offsets]
 
+    sample_for_output_spec = manual_text.strip() if manual_text else ""
+    if not sample_for_output_spec and metars_list:
+        sample_for_output_spec = (metars_list[0] or "").strip()
+    response_report_variant = resolved_report_variant or _infer_report_variant_from_sample(
+        emit_profile,
+        product,
+        sample_for_output_spec or None,
+    )
     request_metadata: dict[str, Any] = {
         "bulletin_id": bulletin_id,
         "issuing_center": issuing_center,
@@ -974,17 +1000,14 @@ async def convert(
         "stop_on_error": bool(stop_on_error),
         "semantic_profile": wire.semantic_canonical,
     }
-    if resolved_report_variant:
-        request_metadata["report_variant"] = resolved_report_variant
+    if response_report_variant:
+        request_metadata["report_variant"] = response_report_variant
     if applied_overlay_id:
         request_metadata["overlay_id"] = applied_overlay_id
         if overlay_base_profile:
             request_metadata["overlay_base_profile"] = overlay_base_profile
     if exchange_output:
         request_metadata["exchange_output"] = True
-    sample_for_output_spec = manual_text.strip() if manual_text else ""
-    if not sample_for_output_spec and metars_list:
-        sample_for_output_spec = (metars_list[0] or "").strip()
     output_spec = ca_eccc_output_spec_for_request(
         semantic_canonical=wire.semantic_canonical,
         product=product,
