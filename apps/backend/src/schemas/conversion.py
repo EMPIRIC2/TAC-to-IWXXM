@@ -233,7 +233,10 @@ class ConversionRequest(BaseModel):
         examples=[["KJFK 121853Z 24008KT 10SM FEW250 M04/M17 A3034"]],
     )
     version: str = Field(
-        default="2025-2", description="Target IWXXM version", pattern=r"^\d{4}-\d+$", examples=["2025-2", "2023-1"]
+        default="",
+        description="Target IWXXM version; omit to use the profile-aware default",
+        pattern=r"^\d{4}-\d+$",
+        examples=["2025-2", "2023-1"],
     )
     validation_level: str | None = Field(
         default="basic",

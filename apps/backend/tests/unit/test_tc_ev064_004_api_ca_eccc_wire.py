@@ -248,6 +248,32 @@ def test_tc_ev1050_json_body_forwards_report_variant(
     assert seen[0].get("report_variant") == "LWIS"
 
 
+def test_tc_ev064_004_json_body_defaults_profile_pinned_version_when_omitted(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    seen: list[dict] = []
+
+    def fake_convert(tac: str, **kwargs):
+        seen.append(kwargs)
+        return "<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/3.0'/>", None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": [_CA_METAR],
+            "product": "METAR",
+            "semantic_profile": "CA_ECCC",
+        },
+    )
+    assert response.status_code == 200, response.text[:500]
+    assert seen
+    assert seen[0].get("profile") == "ca_eccc"
+    assert seen[0].get("iwxxm_version") == _CA_IWXXM_VERSION
+
+
 def test_tc_ev1050_metadata_echoes_explicit_report_variant(
     client: TestClient,
     monkeypatch: pytest.MonkeyPatch,
