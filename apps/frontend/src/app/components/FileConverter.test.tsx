@@ -7,6 +7,7 @@ import {
   fireEvent,
   waitFor,
   cleanup,
+  within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from './FileConverter';
@@ -114,6 +115,40 @@ const mockFetchProfileCatalog = vi.hoisted(() =>
         iwxxm_line: 'IWXXM-US 3.0.0',
         rule_pack_count: 2,
         overlay_count: 1,
+      },
+      {
+        id: 'CA_ECCC',
+        kind: 'semantic',
+        products: ['METAR', 'SPECI', 'TAF', 'AIRMET'],
+        deltas_vs_icao: ['Canadian national IWXXM extensions'],
+        iwxxm_line: 'WMO IWXXM 3.0.0 core + iwxxm-ca 3.0',
+        metar_family_variants: [
+          {
+            tac_lead: 'METAR',
+            api_product: 'METAR',
+            iwxxm_root: 'iwxxm:METAR',
+            rule_id_prefix: 'CA.METAR',
+          },
+          {
+            tac_lead: 'SPECI',
+            api_product: 'SPECI',
+            iwxxm_root: 'iwxxm:SPECI',
+            rule_id_prefix: 'CA.SPECI',
+          },
+          {
+            tac_lead: 'LWIS',
+            api_product: 'METAR',
+            iwxxm_root: 'iwxxm-ca:LWIS',
+            rule_id: 'CA.METAR.LWIS',
+            minimal_observation: true,
+          },
+          {
+            tac_lead: 'SAWR',
+            api_product: 'METAR',
+            iwxxm_root: 'iwxxm-ca:SAWR',
+            rule_id: 'CA.METAR.SAWR',
+          },
+        ],
       },
     ],
   }),
@@ -5843,6 +5878,52 @@ describe('FileConverter Component', () => {
       });
     });
 
+    it('hydrates report_variant and reportVariant from conversion_params', async () => {
+      const { rerender } = render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={
+            {
+              id: 'sess-rv-1',
+              status: 'draft',
+              manual_tac: '',
+              conversion_params: {
+                profile: 'ca_eccc',
+                product: 'METAR',
+                report_variant: 'LWIS',
+              },
+            } as never
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('report-variant-select')).toHaveValue('LWIS');
+      });
+
+      rerender(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={
+            {
+              id: 'sess-rv-2',
+              status: 'draft',
+              manual_tac: '',
+              conversion_params: {
+                profile: 'ca_eccc',
+                product: 'METAR',
+                reportVariant: 'SAWR',
+              },
+            } as never
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('report-variant-select')).toHaveValue('SAWR');
+      });
+    });
+
     it('live IWXXM includes overlayId when hydrated', async () => {
       mockConvertMetarToIwxxm.mockResolvedValue({
         results: [{ iwxxm_xml: '<live-ov/>' }],
@@ -5961,6 +6042,68 @@ describe('FileConverter Component', () => {
       });
       expect(screen.getByText(/IWXXM 2025-2/)).toBeInTheDocument();
       expect(screen.getByText(/Sign in to load profile coverage/)).toBeInTheDocument();
+    });
+  });
+
+  describe('EV-1050 report variant selector', () => {
+    it('shows CA_ECCC METAR-family report variants for authenticated users', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+      await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
+
+      const select = await screen.findByTestId('report-variant-select');
+      expect(select).toBeInTheDocument();
+      const options = within(select);
+      expect(
+        options.getByRole('option', { name: /Auto-detect from TAC/i }),
+      ).toBeInTheDocument();
+      expect(options.getByRole('option', { name: 'METAR' })).toBeInTheDocument();
+      expect(
+        options.getByRole('option', { name: 'LWIS (minimal)' }),
+      ).toBeInTheDocument();
+      expect(options.getByRole('option', { name: 'SAWR' })).toBeInTheDocument();
+    });
+
+    it('forwards the selected report variant on convert', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+      await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
+      await user.selectOptions(screen.getByTestId('report-variant-select'), 'LWIS');
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR CYUL 121151Z 18008KT 10SM FEW250 22/14 A3012=' },
+      });
+
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({
+            reportVariant: 'LWIS',
+            profile: 'CA_ECCC',
+            product: 'METAR',
+          }),
+        );
+      });
+    });
+
+    it('clears the report variant when switching to a profile without variants', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+      await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
+      await user.selectOptions(screen.getByTestId('report-variant-select'), 'LWIS');
+      expect(screen.getByTestId('report-variant-select')).toHaveValue('LWIS');
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'ICAO_2025');
+
+      await waitFor(() => {
+        expect(screen.queryByTestId('report-variant-select')).not.toBeInTheDocument();
+      });
     });
   });
 });

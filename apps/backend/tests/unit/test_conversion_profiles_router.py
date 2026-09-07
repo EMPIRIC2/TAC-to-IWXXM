@@ -190,6 +190,18 @@ def test_catalog_returns_profiles(profiles_client: Any) -> None:
     assert len(us["deltas_vs_icao"]) <= 3
     assert "iwxxm-us" in (us["iwxxm_line"] or "")
 
+    ca = by_id["CA_ECCC"]
+    assert [variant["tac_lead"] for variant in ca["metar_family_variants"]] == [
+        "METAR",
+        "SPECI",
+        "LWIS",
+        "SAWR",
+    ]
+    lwis = next(variant for variant in ca["metar_family_variants"] if variant["tac_lead"] == "LWIS")
+    assert lwis["api_product"] == "METAR"
+    assert lwis["iwxxm_root"] == "iwxxm-ca:LWIS"
+    assert lwis["minimal_observation"] is True
+
 
 def test_catalog_stays_available_when_profile_storage_is_unavailable() -> None:
     class _FailingProfilesService:

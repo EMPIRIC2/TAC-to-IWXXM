@@ -3020,6 +3020,28 @@ export interface components {
             message: string;
         };
         /**
+         * MetarFamilyVariant
+         * @description Read-only METAR-family variant row projected from the profile catalog.
+         */
+        MetarFamilyVariant: {
+            /** Api Product */
+            api_product: string;
+            /** Iwxxm Root */
+            iwxxm_root: string;
+            /** Manobs */
+            manobs?: string | null;
+            /** Minimal Observation */
+            minimal_observation?: boolean | null;
+            /** Notes */
+            notes?: string | null;
+            /** Rule Id */
+            rule_id?: string | null;
+            /** Rule Id Prefix */
+            rule_id_prefix?: string | null;
+            /** Tac Lead */
+            tac_lead: string;
+        };
+        /**
          * OverlayCreate
          * @description Create body for a signed overlay (server issues the signature).
          */
@@ -3210,6 +3232,8 @@ export interface components {
             kind: string;
             /** Legacy Alias */
             legacy_alias?: string | null;
+            /** Metar Family Variants */
+            metar_family_variants?: components["schemas"]["MetarFamilyVariant"][];
             /** Overlay Count */
             overlay_count?: number | null;
             /** Priority */

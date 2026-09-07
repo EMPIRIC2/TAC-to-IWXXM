@@ -2973,6 +2973,85 @@
         "title": "Message",
         "type": "object"
       },
+      "MetarFamilyVariant": {
+        "description": "Read-only METAR-family variant row projected from the profile catalog.",
+        "properties": {
+          "api_product": {
+            "title": "Api Product",
+            "type": "string"
+          },
+          "iwxxm_root": {
+            "title": "Iwxxm Root",
+            "type": "string"
+          },
+          "manobs": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manobs"
+          },
+          "minimal_observation": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minimal Observation"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "rule_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Id"
+          },
+          "rule_id_prefix": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Id Prefix"
+          },
+          "tac_lead": {
+            "title": "Tac Lead",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tac_lead",
+          "api_product",
+          "iwxxm_root"
+        ],
+        "title": "MetarFamilyVariant",
+        "type": "object"
+      },
       "OverlayCreate": {
         "description": "Create body for a signed overlay (server issues the signature).",
         "properties": {
@@ -3412,6 +3491,13 @@
               }
             ],
             "title": "Legacy Alias"
+          },
+          "metar_family_variants": {
+            "items": {
+              "$ref": "#/components/schemas/MetarFamilyVariant"
+            },
+            "title": "Metar Family Variants",
+            "type": "array"
           },
           "overlay_count": {
             "anyOf": [
