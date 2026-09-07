@@ -213,6 +213,7 @@ package-only routes):
 | Field | Required | Default | Description |
 |-------|----------|---------|-------------|
 | `semantic_profile` | no | `ICAO_2025` (or alias `annex3` during window) | Semantic profile id. **EV-093 / #1024:** workbench Profile control submits this field with **uppercase** OpenAPI ids for all registered canonicals (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, thin packs); legacy alias option values `annex3` / `iwxxm_us` remain accepted through the #1025 window. Prefer this field over deprecated `profile`. |
+| `report_variant` | no | omitted / auto-detect when profile defines variants | Optional profile-scoped report variant within the selected `product` family. **EV-1050:** for profiles such as `CA_ECCC`, this refines the IWXXM root / TAC lead without promoting national variants into the global `product` enum. Valid values come from the semantic profile catalog (`metar_family_variants`); mismatches fail closed (for example `product=SPECI` with `report_variant=LWIS`). When omitted and the profile supports variants, convert may resolve the variant from TAC lead and echo the resolved value in response metadata. |
 | `iwxxm_version` | no | SoT default | Unchanged — independent of semantic id |
 | `extensions` | no | `[]` | Optional national extension tokens (e.g. `IWXXM_US_3`, `IWXXM_CA`). **EV-068:** when `IWXXM_CA` is present with `semantic_profile=CA_ECCC`, triggers the full Canadian validation stack (layers 1–5 in [IWXXM_VALIDATION.md](domain/IWXXM_VALIDATION.md) §CA_ECCC validation stages). When omitted, `CA_ECCC` alone selects profile-pinned 3.0.0 core XSD+SCH scaffold (backward compatible). **EV-074:** for `product=SIGMET` or `VAA`, Canadian product XSD is not published — layer `ca_xsd` is skipped as not applicable (not an error); WMO 3.0.0 XSD+Schematron still run. |
 | `exchange_profile` | no | `GLOBAL_AFS` | Used when **packaging** / disseminate-prep invoked; ignored on convert-only. Known wire ids: `GLOBAL_AFS`, `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` (EV-065/EV-086 regional stubs share COLLECT baseline). **EV-090 / #1024:** workbench light Exchange control submits this field on package/bulletin paths. |
@@ -223,6 +224,8 @@ package-only routes):
 ```yaml
 conversion:
   semanticProfile: US_FAA_NWS
+  product: METAR
+  reportVariant: LWIS
   iwxxmVersion: "2025-2"
   extensions: [IWXXM_US_3]
 exchange:
@@ -234,6 +237,10 @@ exchange:
 - Unknown semantic or exchange id → **400** (hard).
 - Alias use → same semantics as canonical id + deprecation signal (response header and/or
   structured field — finalize in Build).
+- `report_variant` is only applicable where the selected semantic profile defines variant rows;
+  otherwise omit it and expect no resolved-variant metadata.
+- Convert response metadata may include resolved `report_variant` when the profile defines
+  variants, even if the client omitted the request field and runtime inferred it from TAC lead.
 - Exchange profile selects packaging rules only — **not** F16–F19 sink credentials.
 - Milestone 4 follow-on scope includes supported IWXXM-line conversion framing
   ([#908](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/908)) and operator-sharing surfaces

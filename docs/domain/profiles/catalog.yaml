@@ -1,9 +1,9 @@
 # Profile source catalog — machine index (EV-063 / #913)
 # Corpus: domain-profiles · ADR-036 §7
 # Human stubs: semantic/*.md · exchange/*.md
-schema_version: 1
+schema_version: 2
 cycle: EV-094
-updated: "2026-08-31"
+updated: "2026-09-06"
 
 priority_legend:
   P0: "Baseline — implemented or default exchange overlay (F35)"
@@ -109,8 +109,9 @@ profiles:
       module: profiles/ca_eccc.py
       validate_profile: ca_eccc
     products: [METAR, SPECI, TAF, AIRMET, SIGMET, VAA]
-    # MANOBS surface reports: METAR/SPECI are ICAO TAC leads; LWIS/SAWR are Canadian-only
-    # substitution-group roots in metar-speci-ca.xsd (not separate API product enums).
+    # Normative METAR-family variant mapping: API product dispatch remains global, while
+    # report_variant / TAC lead selects the national IWXXM root within the semantic profile.
+    # LWIS/SAWR remain profile-scoped variants, not separate top-level API product enums.
     metar_family_variants:
       - tac_lead: METAR
         api_product: METAR
@@ -124,6 +125,7 @@ profiles:
         api_product: METAR
         iwxxm_root: "iwxxm-ca:LWIS"
         rule_id: CA.METAR.LWIS
+        minimal_observation: true
         manobs: "MANOBS 8 Chap 11.3; TC AIM MET 8.5.2"
         notes: Limited Weather Information System — minimal obs (wind/temp/dew/altimeter)
       - tac_lead: SAWR
