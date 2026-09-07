@@ -63,7 +63,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-integration test-coverage-scripts test-bats \
 	coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
-	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
+	validate-fast validate-yaml secrets-check security-scan config-guard validate-ci env-check \
 	install-hooks pre-commit-run pre-push-run ci-prepush \
 	catalog-regen catalog-check \
 	membership-regen membership-check \
@@ -915,7 +915,13 @@ security-scan-install:
 	bash scripts/security/install-tools.sh
 
 security-scan:
-	bash scripts/security/run-all.sh
+	@tmp_req="$$(mktemp -t metar-iwxxm-pip-audit.XXXXXX.txt)"; \
+	trap 'rm -f "$$tmp_req"' EXIT; \
+	$(UV) export --format requirements-txt --frozen --no-emit-workspace --all-groups > "$$tmp_req"; \
+	uvx pip-audit -r "$$tmp_req" --disable-pip \
+		$$(grep -v '^[[:space:]]*#' audit/pip-audit-ignore.txt | grep -v '^[[:space:]]*$$' | sed 's/^/--ignore-vuln /'); \
+	$(MAKE) secrets-check; \
+	$(MAKE) audit-frontend
 
 check-exact-pins:
 	python3 scripts/ci/check-exact-pins.py
