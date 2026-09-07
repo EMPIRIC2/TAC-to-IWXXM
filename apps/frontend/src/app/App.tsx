@@ -387,6 +387,7 @@ function App() {
         <ConversionProfilePage
           accessToken={isAuthenticated ? accessToken : undefined}
           onRequestLogin={handleRequestLogin}
+          onOpenConverterExamples={() => setCurrentView('converter')}
         />
       )}
 

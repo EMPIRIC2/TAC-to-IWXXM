@@ -74,3 +74,38 @@ def test_catalog_skips_non_dict_entries(tmp_path: Path, monkeypatch: pytest.Monk
     catalog_mod.clear_catalog_cache()
     resp = catalog_mod.load_profile_catalog()
     assert [p.id for p in resp.profiles] == ["OK"]
+
+
+def test_catalog_skips_invalid_metar_family_variant_rows(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    catalog = tmp_path / "variants.yaml"
+    catalog.write_text(
+        "\n".join(
+            [
+                "schema_version: 2",
+                "profiles:",
+                "  - id: CA_ECCC",
+                "    kind: semantic",
+                "    products: [METAR]",
+                "    metar_family_variants:",
+                "      - not-a-map",
+                "      - tac_lead: LWIS",
+                "      - tac_lead: LWIS",
+                "        api_product: METAR",
+                "        iwxxm_root: iwxxm-ca:LWIS",
+                "        minimal_observation: true",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("PROFILE_CATALOG_PATH", str(catalog))
+    catalog_mod.clear_catalog_cache()
+
+    resp = catalog_mod.load_profile_catalog()
+
+    assert len(resp.profiles) == 1
+    assert [variant.tac_lead for variant in resp.profiles[0].metar_family_variants] == ["LWIS"]
+    assert resp.profiles[0].metar_family_variants[0].minimal_observation is True

@@ -10,7 +10,11 @@ from typing import Any, cast
 import yaml
 from fastapi import HTTPException, status
 
-from ..schemas.conversion_profiles import ProfileCatalogEntry, ProfileCatalogResponse
+from ..schemas.conversion_profiles import (
+    MetarFamilyVariant,
+    ProfileCatalogEntry,
+    ProfileCatalogResponse,
+)
 
 _REPO_ROOT = Path(__file__).resolve().parents[4]
 _DEFAULT_CATALOG = _REPO_ROOT / "docs" / "domain" / "profiles" / "catalog.yaml"
@@ -64,6 +68,35 @@ def _as_str_dict(value: object) -> dict[str, Any]:
     if not isinstance(value, dict):
         return {}
     return {str(k): v for k, v in cast(dict[object, object], value).items()}
+
+
+def _as_metar_family_variants(value: object) -> list[MetarFamilyVariant]:
+    if not isinstance(value, list):
+        return []
+    variants: list[MetarFamilyVariant] = []
+    for item in cast(list[object], value):
+        if not isinstance(item, dict):
+            continue
+        row = cast(dict[str, object], item)
+        minimal_observation = row.get("minimal_observation")
+        tac_lead = _as_str(row.get("tac_lead"))
+        api_product = _as_str(row.get("api_product"))
+        iwxxm_root = _as_str(row.get("iwxxm_root"))
+        if not tac_lead or not api_product or not iwxxm_root:
+            continue
+        variants.append(
+            MetarFamilyVariant(
+                tac_lead=tac_lead,
+                api_product=api_product,
+                iwxxm_root=iwxxm_root,
+                rule_id=_as_str(row.get("rule_id")),
+                rule_id_prefix=_as_str(row.get("rule_id_prefix")),
+                minimal_observation=(minimal_observation if isinstance(minimal_observation, bool) else None),
+                manobs=_as_str(row.get("manobs")),
+                notes=_as_str(row.get("notes")),
+            )
+        )
+    return variants
 
 
 _DELTA_MAP: dict[str, list[str]] = {
@@ -148,6 +181,7 @@ def load_profile_catalog(
                 implementation=_as_str_dict(row.get("implementation")),
                 deltas_vs_icao=_deltas_vs_icao(entry_id),
                 iwxxm_line=_iwxxm_line(entry_id, vendor_pins),
+                metar_family_variants=_as_metar_family_variants(row.get("metar_family_variants")),
                 rule_pack_count=None if rule_pack_counts is None else rule_pack_counts.get(entry_id, 0),
                 overlay_count=None if overlay_counts is None else overlay_counts.get(entry_id, 0),
             )

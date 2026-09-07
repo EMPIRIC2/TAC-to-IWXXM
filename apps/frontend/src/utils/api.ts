@@ -164,6 +164,8 @@ export async function convertMetarToIwxxm(params: {
   exchangeOutput?: boolean;
   /** Exchange packaging profile (ignored on convert-only; used when packaging). */
   exchangeProfile?: string;
+  /** Optional profile-scoped report variant within the selected product family. */
+  reportVariant?: string;
   /** Optional signed ConversionProfile overlay id (requires accessToken). */
   overlayId?: string;
   accessToken?: string;
@@ -188,9 +190,13 @@ export async function convertMetarToIwxxm(params: {
   if (params.exchangeProfile?.trim()) {
     formData.append('exchange_profile', params.exchangeProfile.trim());
   }
+  if (params.reportVariant?.trim()) {
+    formData.append('report_variant', params.reportVariant.trim().toUpperCase());
+  }
 
-  // Add IWXXM version (default to 2025-2)
-  formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
+  if (params.iwxxmVersion?.trim()) {
+    formData.append('iwxxm_version', params.iwxxmVersion.trim());
+  }
 
   // Add validation flag (default to false)
   formData.append('validate_output', params.validateOutput ? 'true' : 'false');
@@ -305,7 +311,9 @@ export async function convertBulletin(params: {
   if (params.exchangeProfile?.trim()) {
     formData.append('exchange_profile', params.exchangeProfile.trim());
   }
-  formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
+  if (params.iwxxmVersion?.trim()) {
+    formData.append('iwxxm_version', params.iwxxmVersion.trim());
+  }
   formData.append('lint', params.lint === false ? 'false' : 'true');
   if (params.propagateResidualsToRemarks === true) {
     formData.append('propagate_residuals_to_remarks', 'true');

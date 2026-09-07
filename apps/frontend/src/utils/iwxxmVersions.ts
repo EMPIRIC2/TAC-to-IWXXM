@@ -73,6 +73,10 @@ export function coerceIwxxmVersion(value: unknown): IwxxmVersionId {
   return DEFAULT_IWXXM_VERSION;
 }
 
+function normalizeProfileId(profile: string): string {
+  return profile.trim().toLowerCase().replace(/-/g, '_');
+}
+
 /**
  * IWXXM version select options for the active semantic profile.
  *
@@ -80,7 +84,7 @@ export function coerceIwxxmVersion(value: unknown): IwxxmVersionId {
  * @returns Version options (CA_ECCC pins 3.0.0 only)
  */
 export function iwxxmVersionOptionsForProfile(profile: string) {
-  if (profile.trim().toLowerCase().replace(/-/g, '_') === 'ca_eccc') {
+  if (normalizeProfileId(profile) === 'ca_eccc') {
     return [
       {
         value: CA_ECCC_IWXXM_VERSION,
@@ -90,4 +94,21 @@ export function iwxxmVersionOptionsForProfile(profile: string) {
     ];
   }
   return IWXXM_VERSION_OPTIONS;
+}
+
+/**
+ * Narrow a candidate version to one supported by the active profile.
+ *
+ * @param profile - Semantic profile id or alias
+ * @param value - Candidate version string
+ * @returns Scoped version for pinned profiles, otherwise a supported SoT version
+ */
+export function coerceIwxxmVersionForProfile(
+  profile: string,
+  value: unknown,
+): IwxxmVersionId | typeof CA_ECCC_IWXXM_VERSION {
+  if (normalizeProfileId(profile) === 'ca_eccc') {
+    return CA_ECCC_IWXXM_VERSION;
+  }
+  return coerceIwxxmVersion(value);
 }

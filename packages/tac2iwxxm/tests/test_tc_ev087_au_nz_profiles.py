@@ -22,9 +22,24 @@ from tac2iwxxm import convert
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "profiles"
 AU = FIXTURES / "AU_BOM"
 NZ = FIXTURES / "NZ_CAA_MET"
+EXPECTED_ACTIVE_CASES = {
+    "AU_BOM": 4,
+    "NZ_CAA_MET": 6,
+}
 METAR_BASIC = (Path(__file__).resolve().parent / "fixtures" / "annex3_golden" / "metar_basic.tac").read_text(
     encoding="utf-8"
 )
+
+
+def _load_manifest(root: Path) -> dict[str, object]:
+    return json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+
+
+def _active_cases(root: Path) -> list[dict[str, str]]:
+    data = _load_manifest(root)
+    cases = data.get("cases")
+    assert isinstance(cases, list)
+    return [case for case in cases if isinstance(case, dict) and str(case.get("status", "active")) == "active"]
 
 
 def test_tc_ev087_001_registry_resolves_au_and_nz() -> None:
@@ -131,18 +146,41 @@ def test_tc_ev087_007_unsupported_product_for_au_nz() -> None:
 
 def test_tc_ev087_008_nz_2000ft_wind_vrb_and_gust() -> None:
     """Domestic 2000FT WIND covers VRB and gust branches."""
-    vrb = parse_taf("TAF NZAA 192313Z 2000/2012 01015KT 30KM NSW SCT020\n2000FT WIND VRB15KT\nQNH MNM 1010 MAX 1020=")
+    vrb = parse_taf((NZ / "TAF" / "valid" / "taf_domestic_vrb.tac").read_text(encoding="utf-8"))
     assert vrb.get("nz_2000ft_wind", {}).get("wind_variable") is True
     assert vrb["nz_2000ft_wind"]["wind_speed_kt"] == 15
     assert "wind_dir_deg" not in vrb["nz_2000ft_wind"]
 
-    gust = parse_taf(
-        "TAF NZAA 192313Z 2000/2012 01015KT 30KM NSW SCT020\n2000FT WIND 27025G35KT\nQNH MNM 1010 MAX 1020="
-    )
+    gust = parse_taf((NZ / "TAF" / "valid" / "taf_domestic_gust.tac").read_text(encoding="utf-8"))
     wind = gust.get("nz_2000ft_wind") or {}
     assert wind.get("wind_dir_deg") == 270
     assert wind.get("wind_speed_kt") == 25
     assert wind.get("wind_gust_kt") == 35
+
+
+def test_tc_ev087_009_manifest_active_case_counts_cover_t1_5_band() -> None:
+    """AU/NZ packs expose explicit active-case counts for the M4 continuity band."""
+    counts = {
+        "AU_BOM": len(_active_cases(AU)),
+        "NZ_CAA_MET": len(_active_cases(NZ)),
+    }
+    assert counts == EXPECTED_ACTIVE_CASES
+    assert sum(counts.values()) == 10
+
+
+@pytest.mark.parametrize(
+    ("root", "profile"),
+    [
+        (AU, "AU_BOM"),
+        (NZ, "NZ_CAA_MET"),
+    ],
+)
+def test_tc_ev087_010_convert_all_active_manifest_cases(root: Path, profile: str) -> None:
+    """All active AU/NZ manifest cases convert under their semantic profile ids."""
+    for case in _active_cases(root):
+        tac = (root / case["tac"]).read_text(encoding="utf-8")
+        result = convert(tac, product=case["product"], profile=profile)
+        assert result.ok, (profile, case["id"], result.issues)
 
 
 @pytest.mark.parametrize(
@@ -156,7 +194,7 @@ def test_tc_ev087_manifest_layout(root: Path, profile: str) -> None:
     """Fixture manifests exist with expected profile id."""
     manifest_path = root / "manifest.json"
     assert manifest_path.is_file()
-    data = json.loads(manifest_path.read_text(encoding="utf-8"))
+    data = _load_manifest(root)
     assert data.get("profile") == profile
     assert data.get("cases")
     for case in data["cases"]:

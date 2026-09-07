@@ -618,12 +618,14 @@
      catalog follows Profile (+ Exchange when packaging); mined national-only rows for
      US_FAA_NWS + CA_ECCC (#1122) with provenance URLs only.
   2. **Glanceable Profile UX (#1145):** one-composition summary on Conversion Profiles +
-     compact workbench twin (name/id, ≤3 vs-ICAO deltas, products, IWXXM line, pack/overlay
-     counts); **side-by-side compare of two semantic profiles** (differing settings highlighted);
-     ADR-038 sections as **inspect/jump blocks** (not a new runtime loader);
-     profile-aware example load for all semantic profiles + starter seed packs/overlays
-     (sync only if untouched); live refresh of summary + catalog; workflow = read-only
-     links only.
+     compact workbench twin (name/id, ≤3 vs-ICAO deltas, products, IWXXM line; guests see
+     pack/overlay count placeholders until signed in); **side-by-side compare of two semantic
+     profiles** on the Conversion Profiles summary surface (differing settings highlighted; the
+     workbench twin stays compact); ADR-038 sections as **inspect/jump blocks** (not a new
+     runtime loader); profile-aware example load for all registered semantic profiles + starter
+     seed packs/overlays (sync only if untouched); live refresh of summary + catalog without
+     resetting unrelated in-progress edits unless a profile-dependent control becomes invalid;
+     workflow = read-only links only.
   3. **Out of Phase A:** composable convert assembly → [#1146](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1146);
      full workflow authoring → [#1147](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1147);
      marketplace; Learn/XP; soft-preview; #996 click-detail.
@@ -1953,7 +1955,11 @@
   1. Runtime accepts canonical + alias ids; metrics for profile id + alias counters
   2. E2E convert → package with `exchange.profile=GLOBAL_AFS` (no live sinks in CI)
   3. Config flag `PROFILE_WIRE_V2` gates nested wire default
-- **Out of scope**: Full #933 editor; #908 cross-version; baking destinations into profiles
+  4. Milestone 4 keeps [#908](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/908) in core
+     acceptance framing so profile selection and supported IWXXM release-line transforms are
+     specified together, even when implementation slices land separately.
+- **Out of scope**: Full #933 editor under F35 itself; baking dissemination credentials into
+  profiles
 - **Source**: EV-063 intake; [ADR-036](adr/ADR-036-semantic-vs-exchange-profiles.md);
   [domain/profiles/README.md](domain/profiles/README.md)
 
@@ -2019,7 +2025,18 @@
      (#1031); MANOBS P0 TAC rules + fixtures (#1029); MANAIR TAF/AIRMET/GFA (#1030). Research via
      deep-research-domain-handoff (EV-097); promote via mine-domain-sources after gate C.
      No UI; no SIGMET national / VAA convert this cycle. **TC-EV098-***.
-- **Out of scope**: Full ROBEX/RODEX packaging rule matrices beyond documented gaps; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); inventing national IWXXM enums/XSDs; China unless public sources appear; GAMET→IWXXM conversion; #933 ConversionProfile editor
+- **Milestone 4 core acceptance framing**: treat [#970](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/970)
+  RuleCases / fixture coverage as a first-class F36 quality requirement rather than a
+  secondary backlog item, and coordinate with operator sharing
+  [#1051](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1051) and cross-version conversion
+  [#908](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/908) as part of the unified profile
+  platform milestone. Sharing must remain free of stored dissemination credentials. [Corpus:
+  tests] [Corpus: product §F7.w] [Corpus: api]
+- **Out of scope**: Full ROBEX/RODEX packaging rule matrices beyond documented gaps; national
+  VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national
+  VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025);
+  inventing national IWXXM enums/XSDs; China unless public sources appear; GAMET→IWXXM
+  conversion; #933 ConversionProfile editor as a separate feature lane from F36 content
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   semantic (**EV-093** canonical + nationals) + **exchange** control (EV-090 / drawer EV-091)
 - **Enablement**: [NATIONAL_PROFILE_PLAYBOOK.md](domain/profiles/NATIONAL_PROFILE_PLAYBOOK.md)

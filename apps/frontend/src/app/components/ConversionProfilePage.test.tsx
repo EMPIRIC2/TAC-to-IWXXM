@@ -2,10 +2,11 @@
  * Vitest for ConversionProfile editor page (TC-EV933-001/002 FE).
  */
 
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ConversionProfilePage } from './ConversionProfilePage';
+import { CONVERSION_PROFILE_SHARE_BUNDLE_VERSION } from '@/utils/conversionProfileShare';
 
 const fetchProfileCatalog = vi.fn();
 const listRulePacks = vi.fn();
@@ -51,6 +52,7 @@ const sampleOverlay = {
 describe('ConversionProfilePage', () => {
   afterEach(() => {
     cleanup();
+    vi.restoreAllMocks();
   });
 
   beforeEach(() => {
@@ -225,7 +227,7 @@ describe('ConversionProfilePage', () => {
 
   it('changes selected profile and exports packs', async () => {
     const user = userEvent.setup();
-    const createObjectURL = vi.fn(() => 'blob:pack');
+    const createObjectURL = vi.fn((_blob: Blob) => 'blob:pack');
     const revokeObjectURL = vi.fn();
     vi.stubGlobal('URL', {
       ...URL,
@@ -257,13 +259,240 @@ describe('ConversionProfilePage', () => {
 
     await user.click(screen.getByTestId('conversion-profiles-export'));
     expect(createObjectURL).toHaveBeenCalled();
+    expect(createObjectURL.mock.calls[0]?.[0]).toBeInstanceOf(Blob);
+    const blob = createObjectURL.mock.calls[0]![0] as unknown as Blob;
+    const exported = JSON.parse(await blob.text()) as {
+      schemaVersion: number;
+      rulePacks: Array<Record<string, unknown>>;
+      overlays: Array<Record<string, unknown>>;
+    };
+    expect(exported.schemaVersion).toBe(CONVERSION_PROFILE_SHARE_BUNDLE_VERSION);
+    expect(exported.rulePacks[0]).toMatchObject({
+      slug: 'my-pack',
+      profile: 'ICAO_2025',
+      product: 'METAR',
+    });
+    expect(exported.rulePacks[0]).not.toHaveProperty('user_id');
+    expect(exported.overlays[0]).toMatchObject({
+      slug: 'my-overlay',
+      baseProfileId: 'ICAO_2025',
+      body: {},
+      shared: false,
+    });
+    expect(exported.overlays[0]).not.toHaveProperty('signature');
+    expect(click).toHaveBeenCalled();
+    expect(revokeObjectURL).toHaveBeenCalled();
+  });
+
+  it('imports a share bundle through the create APIs', async () => {
+    const user = userEvent.setup();
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-profiles-import')).toBeInTheDocument();
+    });
+
+    const file = new File(
+      [
+        JSON.stringify({
+          schemaVersion: CONVERSION_PROFILE_SHARE_BUNDLE_VERSION,
+          rulePacks: [
+            {
+              slug: 'shared-pack',
+              profile: 'US_FAA_NWS',
+              product: 'METAR',
+              stage: 'lint',
+              severity: 'warning',
+              when: 'RMK',
+              message: 'Preserve RMK',
+              standardReference: 'FMH-1',
+            },
+          ],
+          overlays: [
+            {
+              slug: 'shared-overlay',
+              baseProfileId: 'US_FAA_NWS',
+              body: { note: 'shared' },
+              shared: true,
+            },
+          ],
+        }),
+      ],
+      'profiles-share.json',
+      { type: 'application/json' },
+    );
+
+    await user.upload(screen.getByTestId('conversion-profiles-import-input'), file);
+
+    await waitFor(() => {
+      expect(createRulePack).toHaveBeenCalledWith('tok', {
+        slug: 'shared-pack',
+        profile: 'US_FAA_NWS',
+        product: 'METAR',
+        stage: 'lint',
+        severity: 'warning',
+        when: 'RMK',
+        message: 'Preserve RMK',
+        standardReference: 'FMH-1',
+      });
+    });
+    expect(createOverlay).toHaveBeenCalledWith('tok', {
+      slug: 'shared-overlay',
+      baseProfileId: 'US_FAA_NWS',
+      body: { note: 'shared' },
+      shared: true,
+    });
+  });
+
+  it('shows an import error for an invalid share bundle', async () => {
+    const user = userEvent.setup();
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-import-input'),
+      ).toBeInTheDocument();
+    });
+
+    const file = new File(['{not json'], 'broken-share.json', {
+      type: 'application/json',
+    });
+    await user.upload(screen.getByTestId('conversion-profiles-import-input'), file);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-profiles-error')).toHaveTextContent(
+        'Share bundle must be valid JSON',
+      );
+    });
+    expect(createRulePack).not.toHaveBeenCalled();
+    expect(createOverlay).not.toHaveBeenCalled();
+  });
+
+  it('ignores import changes with no selected file', async () => {
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-import-input'),
+      ).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('conversion-profiles-import-input'), {
+      target: { files: [] },
+    });
+
+    await waitFor(() => {
+      expect(createRulePack).not.toHaveBeenCalled();
+      expect(createOverlay).not.toHaveBeenCalled();
+    });
+  });
+
+  it('clicks the hidden import input from the import button', async () => {
+    const user = userEvent.setup();
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-profiles-import')).toBeInTheDocument();
+    });
+
+    const input = screen.getByTestId(
+      'conversion-profiles-import-input',
+    ) as HTMLInputElement;
+    const clickSpy = vi.spyOn(input, 'click').mockImplementation(() => {});
+
+    await user.click(screen.getByTestId('conversion-profiles-import'));
+    expect(clickSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('exports overlays even when rule packs are unavailable', async () => {
+    const user = userEvent.setup();
+    const createObjectURL = vi.fn((_blob: Blob) => 'blob:overlay');
+    const revokeObjectURL = vi.fn();
+    vi.stubGlobal('URL', {
+      ...URL,
+      createObjectURL,
+      revokeObjectURL,
+    });
+    const click = vi.fn();
+    const origCreate = document.createElement.bind(document);
+    vi.spyOn(document, 'createElement').mockImplementation((tag: string) => {
+      const el = origCreate(tag);
+      if (tag === 'a') {
+        Object.defineProperty(el, 'click', { value: click });
+      }
+      return el;
+    });
+    listRulePacks.mockRejectedValue(new Error('packs offline'));
+
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-profiles-export')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('conversion-profiles-export'));
+
+    expect(createObjectURL).toHaveBeenCalled();
+    const blob = createObjectURL.mock.calls[0]![0] as unknown as Blob;
+    const exported = JSON.parse(await blob.text()) as {
+      rulePacks: Array<Record<string, unknown>>;
+      overlays: Array<Record<string, unknown>>;
+    };
+    expect(exported.rulePacks).toEqual([]);
+    expect(exported.overlays).toHaveLength(1);
+    expect(click).toHaveBeenCalled();
+    expect(revokeObjectURL).toHaveBeenCalled();
+  });
+
+  it('exports rule packs even when overlays are unavailable', async () => {
+    const user = userEvent.setup();
+    const createObjectURL = vi.fn((_blob: Blob) => 'blob:pack-only');
+    const revokeObjectURL = vi.fn();
+    vi.stubGlobal('URL', {
+      ...URL,
+      createObjectURL,
+      revokeObjectURL,
+    });
+    const click = vi.fn();
+    const origCreate = document.createElement.bind(document);
+    vi.spyOn(document, 'createElement').mockImplementation((tag: string) => {
+      const el = origCreate(tag);
+      if (tag === 'a') {
+        Object.defineProperty(el, 'click', { value: click });
+      }
+      return el;
+    });
+    listOverlays.mockRejectedValue(new Error('overlays offline'));
+
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-profiles-export')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('conversion-profiles-export'));
+
+    expect(createObjectURL).toHaveBeenCalled();
+    const blob = createObjectURL.mock.calls[0]![0] as unknown as Blob;
+    const exported = JSON.parse(await blob.text()) as {
+      rulePacks: Array<Record<string, unknown>>;
+      overlays: Array<Record<string, unknown>>;
+    };
+    expect(exported.rulePacks).toHaveLength(1);
+    expect(exported.overlays).toEqual([]);
     expect(click).toHaveBeenCalled();
     expect(revokeObjectURL).toHaveBeenCalled();
   });
 
   it('renders a summary-first compare view', async () => {
     const user = userEvent.setup();
-    render(<ConversionProfilePage accessToken="tok" />);
+    const onOpenConverterExamples = vi.fn();
+    render(
+      <ConversionProfilePage
+        accessToken="tok"
+        onOpenConverterExamples={onOpenConverterExamples}
+      />,
+    );
 
     await waitFor(() => {
       expect(screen.getByTestId('conversion-profiles-summary')).toBeInTheDocument();
@@ -289,6 +518,37 @@ describe('ConversionProfilePage', () => {
     expect(
       screen.getByText(/Retains selected RMK content in output\./),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Difference notes compared with ICAO_2025/),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('conversion-profiles-workflows')).toHaveTextContent(
+      /Workflow references/i,
+    );
+    expect(screen.getByTestId('conversion-profiles-workflows')).toHaveTextContent(
+      /read-only in this screen/i,
+    );
+    expect(screen.getByTestId('conversion-profiles-examples')).toHaveTextContent(
+      /Examples available on Convert/i,
+    );
+    expect(screen.getByTestId('conversion-profiles-examples')).toHaveTextContent(
+      /METAR, TAF/i,
+    );
+    expect(
+      screen.getByTestId('conversion-profiles-workflow-definitions'),
+    ).toHaveAttribute('href', expect.stringContaining('/workflows'));
+    expect(screen.getByTestId('conversion-profiles-workflow-runtime')).toHaveAttribute(
+      'href',
+      expect.stringContaining('/packages/workflows'),
+    );
+    await user.click(screen.getByTestId('conversion-profiles-open-examples'));
+    expect(onOpenConverterExamples).toHaveBeenCalledTimes(1);
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-select'),
+      'US_FAA_NWS',
+    );
+    expect(screen.getByTestId('conversion-profiles-examples')).toHaveTextContent(
+      /reused from the ICAO \/ WMO demo set/i,
+    );
   });
 
   it('opens ADR-038 block detail and jump links', async () => {
@@ -314,6 +574,144 @@ describe('ConversionProfilePage', () => {
     expect(
       screen.getByTestId('conversion-profiles-block-jump-overlays'),
     ).toHaveAttribute('href', '#conversion-profiles-overlays');
+  });
+
+  it('does not flag delta notes when compared profiles share the same note list', async () => {
+    const user = userEvent.setup();
+    fetchProfileCatalog.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ICAO_2025',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR', 'TAF'],
+          deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+          iwxxm_line: 'IWXXM 2025-2 core',
+          rule_pack_count: 1,
+          overlay_count: 1,
+        },
+        {
+          id: 'MATCHED_PROFILE',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR'],
+          deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+          iwxxm_line: 'IWXXM-US 3.0.0',
+          rule_pack_count: 2,
+          overlay_count: 0,
+        },
+      ],
+    });
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-summary-primary'),
+      ).toBeInTheDocument();
+    });
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-compare-select'),
+      'MATCHED_PROFILE',
+    );
+
+    expect(
+      screen.queryByText(/Difference notes compared with MATCHED_PROFILE/),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Difference notes compared with ICAO_2025/),
+    ).not.toBeInTheDocument();
+  });
+
+  it('flags delta notes when the compared profile has no note list', async () => {
+    const user = userEvent.setup();
+    fetchProfileCatalog.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ICAO_2025',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR', 'TAF'],
+          deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+          iwxxm_line: 'IWXXM 2025-2 core',
+          rule_pack_count: 1,
+          overlay_count: 1,
+        },
+        {
+          id: 'NO_DELTAS',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR'],
+          deltas_vs_icao: [],
+          iwxxm_line: 'IWXXM-US 3.0.0',
+          rule_pack_count: 2,
+          overlay_count: 0,
+        },
+      ],
+    });
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-summary-primary'),
+      ).toBeInTheDocument();
+    });
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-compare-select'),
+      'NO_DELTAS',
+    );
+
+    expect(
+      screen.getByText(/Difference notes compared with NO_DELTAS/),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/No profile-specific differences listed\./),
+    ).toBeInTheDocument();
+  });
+
+  it('flags delta notes when compared profiles have different note text with equal lengths', async () => {
+    const user = userEvent.setup();
+    fetchProfileCatalog.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ICAO_2025',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR', 'TAF'],
+          deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+          iwxxm_line: 'IWXXM 2025-2 core',
+          rule_pack_count: 1,
+          overlay_count: 1,
+        },
+        {
+          id: 'DIFFERENT_NOTE',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR'],
+          deltas_vs_icao: ['Uses a different national note for compare coverage.'],
+          iwxxm_line: 'IWXXM-US 3.0.0',
+          rule_pack_count: 2,
+          overlay_count: 0,
+        },
+      ],
+    });
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-summary-primary'),
+      ).toBeInTheDocument();
+    });
+
+    await user.selectOptions(
+      screen.getByTestId('conversion-profiles-compare-select'),
+      'DIFFERENT_NOTE',
+    );
+
+    expect(
+      screen.getByText(/Difference notes compared with DIFFERENT_NOTE/),
+    ).toBeInTheDocument();
   });
 
   it('seeds starter pack and overlay forms only while untouched', async () => {

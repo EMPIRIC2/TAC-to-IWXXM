@@ -65,6 +65,29 @@ Exchange default: `GLOBAL_AFS` — see [`exchange/GLOBAL_AFS.md`](exchange/GLOBA
 Machine-readable index: [`catalog.yaml`](catalog.yaml) — P0/P1 profile rows with source URLs,
 access tier, vendor pins, gaps, and mining-note cross-refs.
 
+### `metar_family_variants` contract
+
+For semantic profiles whose METAR/SPECI family includes national IWXXM roots beyond the global
+API `product` enum, `catalog.yaml` may define `metar_family_variants` rows. Each row is
+normative and describes one TAC lead / emit pairing within the selected semantic profile:
+
+| Field | Required | Meaning |
+|-------|----------|---------|
+| `tac_lead` | yes | TAC report lead token as observed on the wire (`METAR`, `SPECI`, `LWIS`, `SAWR`) |
+| `api_product` | yes | Global API dispatch family used by convert/validate (`METAR`, `SPECI`, `TAF`, ...) |
+| `iwxxm_root` | yes | Resolved IWXXM root element emitted for that row |
+| `rule_id` or `rule_id_prefix` | yes | Lint/fixture rule linkage for the variant or family |
+| `minimal_observation` | no | Marks sparse/minimal-observation reports whose omission set is profile-defined |
+| `manobs` / `notes` | no | Human citation / implementation note; informative, not runtime dispatch keys |
+
+Runtime contract:
+
+- Clients continue to send the global `product` family plus `semantic_profile`.
+- Profiles may additionally accept optional `report_variant` where this table exists.
+- When `report_variant` is omitted, convert may resolve it from the TAC lead and echo the
+  resolved value in response metadata.
+- Profiles without `metar_family_variants` keep `report_variant` absent / not applicable.
+
 | Priority | Semantic | Exchange |
 |----------|----------|----------|
 | **P0** | `ICAO_2025`, `US_FAA_NWS` | `GLOBAL_AFS` (default) |

@@ -52,6 +52,7 @@ import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisse
 import {
   fetchProfileCatalog,
   listOverlays,
+  type MetarFamilyVariant,
   type OverlayOut,
   type ProfileCatalogEntry,
 } from '@/utils/conversionProfilesApi';
@@ -77,6 +78,7 @@ import {
   CA_ECCC_IWXXM_VERSION,
   type IwxxmVersionId,
   coerceIwxxmVersion,
+  coerceIwxxmVersionForProfile,
   iwxxmVersionOptionsForProfile,
 } from '@/utils/iwxxmVersions';
 import { signOutWithScope } from '/utils/supabase/logout';
@@ -286,6 +288,35 @@ const FALLBACK_PROFILE_SUMMARIES: Partial<Record<IwxxmProfile, ProfileCatalogEnt
     kind: 'semantic',
     products: [...CA_ECCC_SUPPORTED_PRODUCTS],
     deltas_vs_icao: [CA_ECCC_EXTENSION_LABEL],
+    metar_family_variants: [
+      {
+        tac_lead: 'METAR',
+        api_product: 'METAR',
+        iwxxm_root: 'iwxxm:METAR',
+        rule_id_prefix: 'CA.METAR',
+      },
+      {
+        tac_lead: 'SPECI',
+        api_product: 'SPECI',
+        iwxxm_root: 'iwxxm:SPECI',
+        rule_id_prefix: 'CA.SPECI',
+      },
+      {
+        tac_lead: 'LWIS',
+        api_product: 'METAR',
+        iwxxm_root: 'iwxxm-ca:LWIS',
+        rule_id: 'CA.METAR.LWIS',
+        minimal_observation: true,
+        notes: 'Limited Weather Information System',
+      },
+      {
+        tac_lead: 'SAWR',
+        api_product: 'METAR',
+        iwxxm_root: 'iwxxm-ca:SAWR',
+        rule_id: 'CA.METAR.SAWR',
+        notes: 'Surface Aviation Weather Report',
+      },
+    ],
   },
 };
 
@@ -322,6 +353,7 @@ interface ConversionParams {
   issuingCenter: string;
   product: TacProductSelection;
   profile: IwxxmProfile;
+  reportVariant: string;
   exchangeProfile: ExchangeProfileId;
   /** Optional signed ConversionProfile overlay UUID (empty = none). */
   overlayId: string;
@@ -330,6 +362,16 @@ interface ConversionParams {
   includeNilReasons: boolean;
   onError: OnErrorBehavior;
   logLevel: LogLevel;
+}
+
+function activeMetarFamilyVariants(
+  entry: ProfileCatalogEntry,
+  product: string,
+): MetarFamilyVariant[] {
+  const productU = product.trim().toUpperCase();
+  return (entry.metar_family_variants ?? []).filter(
+    (variant) => variant.api_product.trim().toUpperCase() === productU,
+  );
 }
 
 /**
@@ -424,6 +466,7 @@ export function FileConverter({
     issuingCenter: '',
     product: 'auto',
     profile: DEFAULT_SEMANTIC_PROFILE,
+    reportVariant: '',
     exchangeProfile: DEFAULT_EXCHANGE_PROFILE,
     overlayId: '',
     iwxxmVersion: DEFAULT_IWXXM_VERSION,
@@ -519,6 +562,28 @@ export function FileConverter({
       ),
     [activeProfileSummary.products],
   );
+  const resolvedVariantProduct = useMemo(() => {
+    if (conversionParams.product === 'IWXXM') {
+      return null;
+    }
+    return resolveConvertProduct(conversionParams.product, manualInput);
+  }, [conversionParams.product, manualInput]);
+  const reportVariantOptions = useMemo(() => {
+    if (!resolvedVariantProduct) {
+      return [];
+    }
+    const variants = activeMetarFamilyVariants(
+      activeProfileSummary,
+      resolvedVariantProduct,
+    );
+    return variants.length > 1 ? variants : [];
+  }, [activeProfileSummary, resolvedVariantProduct]);
+  const activeReportVariant = useMemo(() => {
+    const allowed = new Set(reportVariantOptions.map((variant) => variant.tac_lead));
+    return allowed.has(conversionParams.reportVariant)
+      ? conversionParams.reportVariant
+      : '';
+  }, [conversionParams.reportVariant, reportVariantOptions]);
 
   const buildSnapshot = (
     overrides?: Partial<ConverterSnapshot>,
@@ -586,15 +651,17 @@ export function FileConverter({
         if (stored) {
           const prefs = JSON.parse(stored);
           const profile = hydrateSemanticProfile(prefs.profile);
-          const iwxxmVersion = isCaEcccProfile(profile)
-            ? CA_ECCC_IWXXM_VERSION
-            : coerceIwxxmVersion(prefs.iwxxmVersion);
+          const iwxxmVersion = coerceIwxxmVersionForProfile(
+            profile,
+            prefs.iwxxmVersion,
+          );
 
           setConversionParams({
             bulletinId: prefs.bulletinIdExample || 'SAAA00',
             issuingCenter: prefs.issuingCenter || 'KWBC',
             product: (prefs.product as TacProductSelection) || 'auto',
             profile,
+            reportVariant: '',
             exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
             overlayId: '',
             iwxxmVersion,
@@ -711,10 +778,19 @@ export function FileConverter({
         }
         if (typeof params.profile === 'string') {
           next.profile = hydrateSemanticProfile(params.profile);
-          if (isCaEcccProfile(next.profile)) {
-            next.iwxxmVersion = CA_ECCC_IWXXM_VERSION;
-          }
         }
+        if (typeof params.report_variant === 'string') {
+          next.reportVariant = params.report_variant;
+        } else if (typeof params.reportVariant === 'string') {
+          next.reportVariant = params.reportVariant;
+        }
+        const rawIwxxmVersion =
+          typeof params.iwxxm_version === 'string'
+            ? params.iwxxm_version
+            : typeof params.iwxxmVersion === 'string'
+              ? params.iwxxmVersion
+              : next.iwxxmVersion;
+        next.iwxxmVersion = coerceIwxxmVersionForProfile(next.profile, rawIwxxmVersion);
         if (typeof params.exchange_profile === 'string') {
           next.exchangeProfile = coerceExchangeProfile(params.exchange_profile);
         } else if (typeof params.exchangeProfile === 'string') {
@@ -753,15 +829,14 @@ export function FileConverter({
       if (stored) {
         const prefs = JSON.parse(stored);
         const profile = hydrateSemanticProfile(prefs.profile);
-        const iwxxmVersion = isCaEcccProfile(profile)
-          ? CA_ECCC_IWXXM_VERSION
-          : coerceIwxxmVersion(prefs.iwxxmVersion);
+        const iwxxmVersion = coerceIwxxmVersionForProfile(profile, prefs.iwxxmVersion);
 
         setConversionParams({
           bulletinId: prefs.bulletinIdExample || 'SAAA00',
           issuingCenter: prefs.issuingCenter || 'KWBC',
           product: (prefs.product as TacProductSelection) || 'auto',
           profile,
+          reportVariant: '',
           exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
           overlayId: '',
           iwxxmVersion,
@@ -1131,6 +1206,7 @@ export function FileConverter({
         files: filesToConvert.length > 0 ? filesToConvert : undefined,
         product: resolvedProduct,
         profile: conversionParams.profile,
+        reportVariant: activeReportVariant || undefined,
         iwxxmVersion: conversionParams.iwxxmVersion,
         validateOutput,
         validationLevel,
@@ -1483,6 +1559,7 @@ export function FileConverter({
     setConversionParams((prev) => ({
       ...prev,
       product: example.product ?? 'auto',
+      reportVariant: '',
     }));
     setDemoExampleLabel(example.label);
     toast.info(`Loaded ${example.label} example`);
@@ -1766,6 +1843,7 @@ export function FileConverter({
           manualText: manualInput.trim(),
           product: liveAssistProduct,
           profile: conversionParams.profile,
+          reportVariant: activeReportVariant || undefined,
           iwxxmVersion: conversionParams.iwxxmVersion,
           validateOutput: false,
           preview: true,
@@ -1818,6 +1896,7 @@ export function FileConverter({
       liveAssistProduct,
       conversionParams.profile,
       conversionParams.iwxxmVersion,
+      activeReportVariant,
       conversionParams.exchangeProfile,
       conversionParams.overlayId,
       accessToken,
@@ -2228,6 +2307,7 @@ export function FileConverter({
                         setConversionParams((prev) => ({
                           ...prev,
                           product: e.target.value as TacProductSelection,
+                          reportVariant: '',
                         }))
                       }
                       className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
@@ -2280,11 +2360,11 @@ export function FileConverter({
                         setConversionParams((prev) => ({
                           ...prev,
                           profile,
-                          iwxxmVersion: isCaEcccProfile(profile)
-                            ? CA_ECCC_IWXXM_VERSION
-                            : prev.iwxxmVersion === CA_ECCC_IWXXM_VERSION
-                              ? DEFAULT_IWXXM_VERSION
-                              : prev.iwxxmVersion,
+                          reportVariant: '',
+                          iwxxmVersion: coerceIwxxmVersionForProfile(
+                            profile,
+                            prev.iwxxmVersion,
+                          ),
                         }));
                       }}
                       className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
@@ -2295,6 +2375,61 @@ export function FileConverter({
                         </option>
                       ))}
                     </select>
+                    {reportVariantOptions.length > 0 &&
+                      inputMode !== 'ahl_bulletin' && (
+                        <>
+                          <div className="flex shrink-0 items-center gap-1">
+                            <Label
+                              htmlFor="param-report-variant"
+                              className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                            >
+                              Report variant
+                            </Label>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button
+                                  type="button"
+                                  className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                  aria-label="About Report variant"
+                                  data-testid="report-variant-help-icon"
+                                >
+                                  <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent
+                                side="bottom"
+                                className="max-w-xs text-balance"
+                              >
+                                Optional profile-scoped IWXXM root inside the selected
+                                product family. Leave on Auto-detect to infer from the
+                                TAC lead.
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+                          <select
+                            id="param-report-variant"
+                            aria-label="Report variant"
+                            data-testid="report-variant-select"
+                            value={activeReportVariant}
+                            disabled={isReadOnly}
+                            onChange={(e) => {
+                              setConversionParams((prev) => ({
+                                ...prev,
+                                reportVariant: e.target.value,
+                              }));
+                            }}
+                            className="min-w-[10rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                          >
+                            <option value="">Auto-detect from TAC</option>
+                            {reportVariantOptions.map((variant) => (
+                              <option key={variant.tac_lead} value={variant.tac_lead}>
+                                {variant.tac_lead}
+                                {variant.minimal_observation ? ' (minimal)' : ''}
+                              </option>
+                            ))}
+                          </select>
+                        </>
+                      )}
                     <div className="flex shrink-0 items-center gap-1">
                       <Label
                         htmlFor="param-exchange-profile"
@@ -2445,12 +2580,18 @@ export function FileConverter({
                           ? activeProfileSummary.products.join(', ')
                           : 'Sign in to load profile coverage'}
                       </span>
-                      {activeProfileSummary.rule_pack_count != null ? (
-                        <span>Rule packs: {activeProfileSummary.rule_pack_count}</span>
-                      ) : null}
-                      {activeProfileSummary.overlay_count != null ? (
-                        <span>Overlays: {activeProfileSummary.overlay_count}</span>
-                      ) : null}
+                      <span>
+                        Rule packs:{' '}
+                        {activeProfileSummary.rule_pack_count != null
+                          ? activeProfileSummary.rule_pack_count
+                          : '—'}
+                      </span>
+                      <span>
+                        Overlays:{' '}
+                        {activeProfileSummary.overlay_count != null
+                          ? activeProfileSummary.overlay_count
+                          : '—'}
+                      </span>
                     </div>
                   </div>
                   <details

@@ -23,6 +23,27 @@
       "tac": "METAR/valid/metar_auto_ncd.tac",
       "rule_id": "NZ.METAR.NCD",
       "status": "active"
+    },
+    {
+      "id": "speci_auto_ncd",
+      "product": "SPECI",
+      "tac": "SPECI/valid/speci_auto_ncd.tac",
+      "rule_id": "NZ.SPECI.NCD",
+      "status": "active"
+    },
+    {
+      "id": "taf_domestic_vrb",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_domestic_vrb.tac",
+      "rule_id": "NZ.TAF.RMK_2000FT_WIND",
+      "status": "active"
+    },
+    {
+      "id": "taf_domestic_gust",
+      "product": "TAF",
+      "tac": "TAF/valid/taf_domestic_gust.tac",
+      "rule_id": "NZ.TAF.RMK_2000FT_WIND",
+      "status": "active"
     }
   ]
 }

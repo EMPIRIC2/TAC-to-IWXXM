@@ -125,6 +125,22 @@ def test_convert_bulletin_requires_product(client: TestClient) -> None:
     assert response.status_code == 422
 
 
+def test_convert_bulletin_rejects_profile_scoped_3_0_0_for_non_ca_profile(client: TestClient) -> None:
+    response = client.post(
+        "/api/v1/convert-bulletin",
+        files={
+            "manual_text": (None, FIXTURE_TEXT),
+            "product": (None, "METAR"),
+            "semantic_profile": (None, "ICAO_2025"),
+            "iwxxm_version": (None, "3.0.0"),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code == 400
+    detail = response.json()["detail"]
+    assert detail["issues"][0]["code"] == "INVALID_IWXXM_VERSION"
+
+
 SPECI_CCA_TEXT = """\
 SPUS31 KZNY 121230 CCA
 SPECI KJFK 121225Z 18008KT 10SM FEW250 22/14 A3012=

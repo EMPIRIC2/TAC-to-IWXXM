@@ -1,7 +1,19 @@
 # Technical Decision Log
 
 > Extends [product-decisions.md](product-decisions.md) with 05-verify-tech audit verdicts.
-> Last updated: 2026-08-10 (S063 / EV-054)
+> Last updated: 2026-09-06 (EV-m4-profiles-annex3-us-custom)
+
+## EV-m4-profiles-annex3-us-custom 05-verify-tech (2026-09-06)
+
+| ID | Date | Topic | Decision | Status |
+|----|------|-------|----------|--------|
+| VT1 | 2026-09-06 | Connectivity tasking | Make M1 connectivity verification explicit while reusing the current frontend/API topology and H4-H5 expectations | confirmed |
+| VT2 | 2026-09-06 | Quality scope | Name M1 quality work as the **Core profile continuity matrix band** with explicit entry/exit counts | confirmed |
+| VT3 | 2026-09-06 | Follow-on order | Keep M2 `#908` before M3 `#1051` | confirmed |
+| VT4 | 2026-09-06 | Tech scope | Reuse the current dependency and deployment model for M1 unless later evidence forces change | confirmed |
+| D-EVM4-05 | 2026-09-06 | Gate B | PASS for documenting band; build gate remains closed pending final documenting verify + user decision | confirmed |
+
+Session report: `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-m4-profiles-annex3-us-custom/reports/05-verify-tech.md`.
 
 ## S063 / EV-054 05-verify-tech (2026-08-10)
 

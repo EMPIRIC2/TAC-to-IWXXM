@@ -83,7 +83,14 @@ export async function dismissPrivacyNoticeIfPresent(page: Page): Promise<void> {
   if ((await notice.count()) === 0) {
     return;
   }
-  await page.getByRole('button', { name: /dismiss privacy notice/i }).click();
+  try {
+    await page.getByRole('button', { name: /dismiss privacy notice/i }).click();
+  } catch (error) {
+    if ((await notice.count()) === 0) {
+      return;
+    }
+    throw error;
+  }
   await expect(notice).toHaveCount(0);
 }
 

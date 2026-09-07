@@ -6,6 +6,7 @@ import datetime
 import io
 import logging
 import pathlib
+import re
 import time
 import zipfile
 from typing import Any, cast
@@ -14,6 +15,8 @@ from uuid import UUID
 from dissemination.packaging import apply_exchange_packaging
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response, StreamingResponse
+from tac2iwxxm.profile_registry import supported_report_variants_for_profile
+from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
 from tac_validate import lint as tac_lint_fn
 
 from src import api as api_surface
@@ -52,6 +55,47 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["Conversion"])
 
 
+def _resolve_effective_iwxxm_version(
+    requested_version: str,
+    *,
+    semantic_canonical: str | None,
+    emit_profile: str,
+) -> str:
+    """Resolve and validate request IWXXM version for a semantic profile."""
+    requested = requested_version.strip()
+    if not requested:
+        requested = CA_IWXXM_VERSION if semantic_canonical == "ca_eccc" else "2025-2"
+
+    try:
+        from src.config.iwxxm_versions import get_version_config_for_emit_profile, normalize_version
+    except ImportError:
+        from config.iwxxm_versions import get_version_config_for_emit_profile, normalize_version
+
+    try:
+        normalized = normalize_version(requested)
+        get_version_config_for_emit_profile(normalized, emit_profile)
+    except ValueError as e:
+        logger.warning("[CONVERT] Invalid IWXXM version requested: %s", requested)
+        raise HTTPException(
+            status_code=400,
+            detail=ErrorDetail(
+                message=f"Invalid IWXXM version: {e}",
+                errors=[str(e)],
+                issues=[
+                    ConversionIssue(
+                        source="request",
+                        message=str(e),
+                        severity=ConversionIssueSeverity.ERROR,
+                        hint="Use a supported IWXXM version such as 2025-2 or 2023-1.",
+                        code="INVALID_IWXXM_VERSION",
+                    )
+                ],
+                total_errors=1,
+            ).model_dump(),
+        ) from e
+    return normalized
+
+
 def _wire_payload_dict(raw_obj: object) -> dict[str, Any]:
     """Normalize tac2iwxxm issue/span payloads to plain dicts."""
     model_dump = getattr(raw_obj, "model_dump", None)
@@ -60,6 +104,58 @@ def _wire_payload_dict(raw_obj: object) -> dict[str, Any]:
     if isinstance(raw_obj, dict):
         return cast(dict[str, Any], raw_obj)
     return {}
+
+
+def _resolve_report_variant(emit_profile: str, product: str, requested_variant: str | None) -> str | None:
+    """Validate and normalize optional report-variant request input."""
+    raw = (requested_variant or "").strip()
+    if not raw:
+        return None
+    variant = raw.upper()
+    supported_variants = supported_report_variants_for_profile(emit_profile, product)
+    detail = ErrorDetail(
+        message="Invalid report_variant",
+        errors=[f"Unsupported report_variant {variant!r} for profile {emit_profile!r} and product {product!r}"],
+        issues=[
+            ConversionIssue(
+                source="request",
+                message=(
+                    f"profile {emit_profile} supports report_variant(s) {sorted(supported_variants)!r} "
+                    f"for product {product!r}, got {variant!r}"
+                )
+                if supported_variants
+                else f"profile {emit_profile} does not define report variants for product {product!r}",
+                severity=ConversionIssueSeverity.ERROR,
+                hint=(
+                    "Choose a report_variant from the allowed profile/product set."
+                    if supported_variants
+                    else "Omit report_variant for profiles without variant catalogs."
+                ),
+                code="INVALID_REPORT_VARIANT",
+            )
+        ],
+        total_errors=1,
+    )
+    if variant not in supported_variants:
+        raise HTTPException(status_code=400, detail=detail.model_dump())
+    return variant
+
+
+def _infer_report_variant_from_sample(emit_profile: str, product: str, sample_text: str | None) -> str | None:
+    """Infer the resolved report variant from TAC lead when the request omits it."""
+    supported_variants = supported_report_variants_for_profile(emit_profile, product)
+    if not supported_variants:
+        return None
+    sample = (sample_text or "").strip().upper()
+    match = re.match(r"^([A-Z]+)\b", sample)
+    if match:
+        lead = match.group(1)
+        if lead in supported_variants:
+            return lead
+    product_u = product.strip().upper()
+    if product_u in supported_variants:
+        return product_u
+    return None
 
 
 @router.post(
@@ -98,7 +194,7 @@ async def convert_bulletin(
         default="",
         description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
     ),
-    iwxxm_version: str = Form(default="2025-2", description="Target IWXXM version"),
+    iwxxm_version: str = Form(default="", description="Target IWXXM version"),
     lint: bool = Form(default=True, description="Run tac-validate before each report convert"),
     extensions: list[str] = Form(
         default=[],
@@ -127,6 +223,11 @@ async def convert_bulletin(
     )
     emit_profile: str = str(wire.emit_key)
     profile = emit_profile
+    iwxxm_version = _resolve_effective_iwxxm_version(
+        iwxxm_version,
+        semantic_canonical=wire.semantic_canonical,
+        emit_profile=emit_profile,
+    )
     api_surface._resolve_request_extensions(extensions, None)
 
     content_type = (request.headers.get("content-type") or "").lower()
@@ -323,7 +424,7 @@ async def convert(
     files: list[UploadFile] | None = Depends(api_surface.parse_files),
     manual_text: str = Form(default="", description="Optional manual text input (METAR TAC format)"),
     iwxxm_version: str = Form(
-        default="2025-2",
+        default="",
         description="Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)",
     ),
     validate_output: bool = Form(default=False, description="Enable full 7-layer IWXXM validation after conversion"),
@@ -346,6 +447,10 @@ async def convert(
     exchange_profile: str = Form(
         default="",
         description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
+    ),
+    report_variant: str = Form(
+        default="",
+        description="Optional profile-scoped report variant within the selected product family (for example LWIS under CA_ECCC + METAR)",
     ),
     exchange_output: bool = Form(
         default=False,
@@ -500,6 +605,9 @@ async def convert(
         body_product = getattr(request_body, "product", None)
         if body_product is not None:
             product = body_product
+        body_report_variant = getattr(request_body, "report_variant", None)
+        if body_report_variant is not None:
+            report_variant = body_report_variant
         manual_text = ""  # Override form input
         files = None  # Override file input
 
@@ -532,6 +640,12 @@ async def convert(
     )
     emit_profile: str = str(wire.emit_key)
     profile = emit_profile
+    iwxxm_version = _resolve_effective_iwxxm_version(
+        iwxxm_version,
+        semantic_canonical=wire.semantic_canonical,
+        emit_profile=emit_profile,
+    )
+    resolved_report_variant = _resolve_report_variant(emit_profile, product, report_variant)
 
     json_extensions = getattr(request_body, "extensions", None) if request_body is not None else None
     resolved_extensions = api_surface._resolve_request_extensions(extensions, json_extensions)
@@ -705,35 +819,6 @@ async def convert(
             "nilReason on NIL reports until engine honors the flag (ADR-024 placeholder)",
         )
 
-    # Validate and normalize IWXXM version
-    try:
-        from src.config.iwxxm_versions import get_version_config_for_emit_profile, normalize_version
-    except ImportError:
-        from config.iwxxm_versions import get_version_config_for_emit_profile, normalize_version
-
-    try:
-        iwxxm_version = normalize_version(iwxxm_version)
-        get_version_config_for_emit_profile(iwxxm_version, profile)
-    except ValueError as e:
-        logger.warning("[CONVERT] Invalid IWXXM version requested: %s", iwxxm_version)
-        raise HTTPException(
-            status_code=400,
-            detail=ErrorDetail(
-                message=f"Invalid IWXXM version: {e}",
-                errors=[str(e)],
-                issues=[
-                    ConversionIssue(
-                        source="request",
-                        message=str(e),
-                        severity=ConversionIssueSeverity.ERROR,
-                        hint="Use a supported IWXXM version such as 2025-2 or 2023-1.",
-                        code="INVALID_IWXXM_VERSION",
-                    )
-                ],
-                total_errors=1,
-            ).model_dump(),
-        ) from e
-
     results: list[ConversionResult] = []
     errors: list[str] = []
     issues: list[ConversionIssue] = []
@@ -900,6 +985,14 @@ async def convert(
     manual_with_offsets = api_surface.manual_entries_with_offsets(manual_text or "", product=product)
     manual_entries = [entry for entry, _ in manual_with_offsets]
 
+    sample_for_output_spec = manual_text.strip() if manual_text else ""
+    if not sample_for_output_spec and metars_list:
+        sample_for_output_spec = (metars_list[0] or "").strip()
+    response_report_variant = resolved_report_variant or _infer_report_variant_from_sample(
+        emit_profile,
+        product,
+        sample_for_output_spec or None,
+    )
     request_metadata: dict[str, Any] = {
         "bulletin_id": bulletin_id,
         "issuing_center": issuing_center,
@@ -907,15 +1000,14 @@ async def convert(
         "stop_on_error": bool(stop_on_error),
         "semantic_profile": wire.semantic_canonical,
     }
+    if response_report_variant:
+        request_metadata["report_variant"] = response_report_variant
     if applied_overlay_id:
         request_metadata["overlay_id"] = applied_overlay_id
         if overlay_base_profile:
             request_metadata["overlay_base_profile"] = overlay_base_profile
     if exchange_output:
         request_metadata["exchange_output"] = True
-    sample_for_output_spec = manual_text.strip() if manual_text else ""
-    if not sample_for_output_spec and metars_list:
-        sample_for_output_spec = (metars_list[0] or "").strip()
     output_spec = ca_eccc_output_spec_for_request(
         semantic_canonical=wire.semantic_canonical,
         product=product,
@@ -1084,6 +1176,7 @@ async def convert(
                     lenient=False,
                     product=product,
                     profile=emit_profile,
+                    report_variant=resolved_report_variant,
                     preview=preview,
                     soft_preview_out=soft_preview_buf,
                     emit_translation_centre=emit_translation_centre,
@@ -1349,6 +1442,7 @@ async def convert(
                 lenient=False,  # normalization already applied above
                 product=product,
                 profile=emit_profile,
+                report_variant=resolved_report_variant,
                 preview=preview,
                 soft_preview_out=soft_preview_buf,
                 emit_translation_centre=emit_translation_centre,
@@ -1620,6 +1714,7 @@ async def convert(
                     validate=False,
                     product=product,
                     profile=emit_profile,
+                    report_variant=resolved_report_variant,
                     preview=preview,
                     soft_preview_out=soft_preview_buf,
                     emit_translation_centre=emit_translation_centre,

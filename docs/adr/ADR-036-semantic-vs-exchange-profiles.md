@@ -51,6 +51,8 @@ Constraints from EV-063 intake:
    ```yaml
    conversion:
      semanticProfile: US_FAA_NWS
+     product: METAR             # dispatch family
+     reportVariant: LWIS        # optional profile-scoped IWXXM root / TAC lead
      iwxxmVersion: "2025-2"      # independent of semantic id
      extensions: [IWXXM_US_3]    # optional national extension tokens
    exchange:
@@ -60,6 +62,12 @@ Constraints from EV-063 intake:
    During transition, flat multipart `profile=` remains accepted and maps to
    `conversion.semanticProfile` via aliases. Config default may stay on legacy names until cutover
    (`PROFILE_WIRE_V2` feature flag — see env-contract).
+
+   `reportVariant` is optional and only applies where the selected semantic profile defines a
+   profile-scoped variant catalog (for example `CA_ECCC.metar_family_variants`). It does **not**
+   create new top-level API `product` enums; instead it refines the IWXXM root / TAC lead within
+   the selected dispatch family. When omitted, runtime may resolve it from TAC lead and echo the
+   resolved value in structured response metadata.
 
 4. **Validation contract** (align #925 later; minimum for F35)
 
@@ -103,6 +111,8 @@ Constraints from EV-063 intake:
 - Clear separation for API, UI (#1024 light picker vs #933 editor), and library consumers.
 - National profiles become data-driven overlays on one pipeline.
 - Exchange packaging can evolve with #921 without re-parsing TAC.
+- Profile-scoped national report roots can surface on the wire without inflating the global
+  `product` enum.
 
 ### Negative / risks
 
@@ -115,6 +125,8 @@ Constraints from EV-063 intake:
 - **F35** (EV-063): ADR acceptance, api-contract delta, compat layer, metrics, #1025 schedule.
 - **F36**: #919 US deepen, #916 CA_ECCC first P1, #921 exchange overlays, fixture layout
   `profiles/<id>/<product>/{valid,invalid,expected-*}`.
+- **#1050**: profile-scoped `reportVariant` contract for national IWXXM roots inside a dispatch
+  family (`semanticProfile` → `product` → `reportVariant`).
 - **#1024**: Light operator picker (deferred unless Spec→Build pulls FE).
 - Amend ADR-013 cross-reference when F35 Build completes (profile plugin path naming).
 - **National onboarding (EV-088 / #1044):** Repeatable semantic-profile playbook and copy

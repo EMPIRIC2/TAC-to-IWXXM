@@ -9,6 +9,21 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 
 
+class MetarFamilyVariant(BaseModel):
+    """Read-only METAR-family variant row projected from the profile catalog."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    tac_lead: str
+    api_product: str
+    iwxxm_root: str
+    rule_id: str | None = None
+    rule_id_prefix: str | None = None
+    minimal_observation: bool | None = None
+    manobs: str | None = None
+    notes: str | None = None
+
+
 class ProfileCatalogEntry(BaseModel):
     """Read-only ConversionProfile catalog entry for the inspector."""
 
@@ -25,6 +40,7 @@ class ProfileCatalogEntry(BaseModel):
     implementation: dict[str, Any] = Field(default_factory=dict)
     deltas_vs_icao: list[str] = Field(default_factory=list)
     iwxxm_line: str | None = None
+    metar_family_variants: list[MetarFamilyVariant] = Field(default_factory=list)
     rule_pack_count: int | None = Field(default=None, ge=0)
     overlay_count: int | None = Field(default=None, ge=0)
 

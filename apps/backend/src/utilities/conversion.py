@@ -168,6 +168,7 @@ def convert_metar_tac_with_metadata(
     translation_centre_designator: str = "",
     translation_centre_name: str = "",
     report_status: str | None = None,
+    report_variant: str | None = None,
     propagate_residuals_to_remarks: bool | None = None,
 ) -> tuple[str, ComprehensiveValidationResult | None]:
     """
@@ -248,6 +249,7 @@ def convert_metar_tac_with_metadata(
         translation_centre_designator=translation_centre_designator,
         translation_centre_name=translation_centre_name,
         report_status=report_status,
+        report_variant=report_variant,
         propagate_residuals_to_remarks=propagate_residuals_to_remarks,
     )
     if not result.ok or not result.xml:

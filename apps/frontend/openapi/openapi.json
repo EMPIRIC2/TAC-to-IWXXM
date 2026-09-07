@@ -410,7 +410,7 @@
             "type": "string"
           },
           "iwxxm_version": {
-            "default": "2025-2",
+            "default": "",
             "description": "Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)",
             "title": "Iwxxm Version",
             "type": "string"
@@ -468,6 +468,12 @@
             ],
             "description": "When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).",
             "title": "Propagate Residuals To Remarks"
+          },
+          "report_variant": {
+            "default": "",
+            "description": "Optional profile-scoped report variant within the selected product family (for example LWIS under CA_ECCC + METAR)",
+            "title": "Report Variant",
+            "type": "string"
           },
           "semantic_profile": {
             "default": "",
@@ -542,7 +548,7 @@
             "title": "Files"
           },
           "iwxxm_version": {
-            "default": "2025-2",
+            "default": "",
             "description": "Target IWXXM version",
             "title": "Iwxxm Version",
             "type": "string"
@@ -2967,6 +2973,85 @@
         "title": "Message",
         "type": "object"
       },
+      "MetarFamilyVariant": {
+        "description": "Read-only METAR-family variant row projected from the profile catalog.",
+        "properties": {
+          "api_product": {
+            "title": "Api Product",
+            "type": "string"
+          },
+          "iwxxm_root": {
+            "title": "Iwxxm Root",
+            "type": "string"
+          },
+          "manobs": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manobs"
+          },
+          "minimal_observation": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minimal Observation"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "rule_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Id"
+          },
+          "rule_id_prefix": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Id Prefix"
+          },
+          "tac_lead": {
+            "title": "Tac Lead",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tac_lead",
+          "api_product",
+          "iwxxm_root"
+        ],
+        "title": "MetarFamilyVariant",
+        "type": "object"
+      },
       "OverlayCreate": {
         "description": "Create body for a signed overlay (server issues the signature).",
         "properties": {
@@ -3406,6 +3491,13 @@
               }
             ],
             "title": "Legacy Alias"
+          },
+          "metar_family_variants": {
+            "items": {
+              "$ref": "#/components/schemas/MetarFamilyVariant"
+            },
+            "title": "Metar Family Variants",
+            "type": "array"
           },
           "overlay_count": {
             "anyOf": [

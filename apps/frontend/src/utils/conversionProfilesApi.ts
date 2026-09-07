@@ -21,6 +21,18 @@ async function parseJson<T>(response: Response): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+/** Catalog variant row for profile-scoped METAR-family roots. */
+export interface MetarFamilyVariant {
+  tac_lead: string;
+  api_product: string;
+  iwxxm_root: string;
+  rule_id?: string | null;
+  rule_id_prefix?: string | null;
+  minimal_observation?: boolean | null;
+  manobs?: string | null;
+  notes?: string | null;
+}
+
 /** Catalog profile entry (inspector). */
 export interface ProfileCatalogEntry {
   id: string;
@@ -34,6 +46,7 @@ export interface ProfileCatalogEntry {
   implementation?: Record<string, unknown>;
   deltas_vs_icao?: string[];
   iwxxm_line?: string | null;
+  metar_family_variants?: MetarFamilyVariant[];
   rule_pack_count?: number | null;
   overlay_count?: number | null;
 }
