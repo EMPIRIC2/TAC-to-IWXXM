@@ -9,10 +9,18 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBearer
 
 from ..schemas.conversion_profiles import (
+    DisseminationTemplateCreate,
+    DisseminationTemplateListResponse,
+    DisseminationTemplateOut,
+    DisseminationTemplateUpdate,
     OverlayCreate,
     OverlayListResponse,
     OverlayOut,
     OverlayUpdate,
+    PresetCreate,
+    PresetListResponse,
+    PresetOut,
+    PresetUpdate,
     ProfileCatalogResponse,
     RulePackCreate,
     RulePackListResponse,
@@ -114,6 +122,96 @@ def delete_rule_pack(
 ) -> None:
     """Delete a rule pack."""
     service.delete_rule_pack(pack_id)
+
+
+@router.get("/presets", response_model=PresetListResponse)
+def list_presets(
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> PresetListResponse:
+    """List semantic presets owned by the caller (and shared presets)."""
+    return PresetListResponse(items=service.list_presets())
+
+
+@router.post("/presets", response_model=PresetOut, status_code=201)
+def create_preset(
+    payload: PresetCreate,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> PresetOut:
+    """Create a semantic preset."""
+    return service.create_preset(payload)
+
+
+@router.get("/presets/{preset_id}", response_model=PresetOut)
+def get_preset(
+    preset_id: UUID,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> PresetOut:
+    """Fetch one semantic preset."""
+    return service.get_preset(preset_id)
+
+
+@router.patch("/presets/{preset_id}", response_model=PresetOut)
+def patch_preset(
+    preset_id: UUID,
+    payload: PresetUpdate,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> PresetOut:
+    """Update a semantic preset."""
+    return service.update_preset(preset_id, payload)
+
+
+@router.delete("/presets/{preset_id}", status_code=204)
+def delete_preset(
+    preset_id: UUID,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> None:
+    """Delete a semantic preset."""
+    service.delete_preset(preset_id)
+
+
+@router.get("/templates", response_model=DisseminationTemplateListResponse)
+def list_templates(
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> DisseminationTemplateListResponse:
+    """List dissemination templates owned by the caller (and shared templates)."""
+    return DisseminationTemplateListResponse(items=service.list_templates())
+
+
+@router.post("/templates", response_model=DisseminationTemplateOut, status_code=201)
+def create_template(
+    payload: DisseminationTemplateCreate,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> DisseminationTemplateOut:
+    """Create a dissemination template."""
+    return service.create_template(payload)
+
+
+@router.get("/templates/{template_id}", response_model=DisseminationTemplateOut)
+def get_template(
+    template_id: UUID,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> DisseminationTemplateOut:
+    """Fetch one dissemination template."""
+    return service.get_template(template_id)
+
+
+@router.patch("/templates/{template_id}", response_model=DisseminationTemplateOut)
+def patch_template(
+    template_id: UUID,
+    payload: DisseminationTemplateUpdate,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> DisseminationTemplateOut:
+    """Update a dissemination template."""
+    return service.update_template(template_id, payload)
+
+
+@router.delete("/templates/{template_id}", status_code=204)
+def delete_template(
+    template_id: UUID,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> None:
+    """Delete an owned dissemination template."""
+    service.delete_template(template_id)
 
 
 @router.get("/overlays", response_model=OverlayListResponse)

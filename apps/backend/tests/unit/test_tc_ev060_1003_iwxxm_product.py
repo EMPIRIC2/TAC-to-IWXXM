@@ -7,6 +7,7 @@ Spec: docs/test-plan.md TC-EV060-1003-001..002; [Corpus: api] [Corpus: tests]
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from fastapi.testclient import TestClient
@@ -29,6 +30,11 @@ GOLDEN_XML = (
 )
 
 TAC_SAMPLE = "METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012="
+IWXXM_2023_1_SAMPLE = """<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/2023-1'>
+  <iwxxm:runwayState>REMOVE_ME</iwxxm:runwayState>
+</iwxxm:METAR>
+"""
 
 
 @pytest.fixture
@@ -181,3 +187,72 @@ def test_tc_ev060_1003_openapi_product_describes_iwxxm() -> None:
     assert "iwxxm" in lint_body["properties"]["product"]["description"].lower()
     bulletin_body = components["Body_convert_bulletin_api_v1_convert_bulletin_post"]
     assert "iwxxm" in bulletin_body["properties"]["product"]["description"].lower()
+
+
+def test_tc_ev060_1003_rejects_unknown_source_namespace(client: TestClient) -> None:
+    response = _multipart(
+        client,
+        "/api/v1/convert",
+        {
+            "manual_text": "<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/2026-9'/>",
+            "product": "iwxxm",
+            "validate_output": "true",
+        },
+    )
+
+    assert response.status_code == 400, response.text[:500]
+    detail = response.json()["detail"]
+    assert detail["message"] == "Unsupported IWXXM source version"
+
+
+def test_tc_ev060_1003_migrated_iwxxm_validation_failure_fails_closed(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        api_module,
+        "_call_iwxxm_validate",
+        lambda *_a, **_k: SimpleNamespace(
+            ok=False,
+            issues=[SimpleNamespace(message="schema fail", code="IWXXM_SCHEMA", layer="xsd", location="/")],
+        ),
+    )
+
+    response = _multipart(
+        client,
+        "/api/v1/convert",
+        {
+            "manual_text": IWXXM_2023_1_SAMPLE,
+            "product": "iwxxm",
+            "iwxxm_version": "2025-2",
+            "validate_output": "true",
+        },
+    )
+
+    assert response.status_code == 400, response.text[:500]
+    detail = response.json()["detail"]
+    assert detail["message"] == "Migrated IWXXM did not validate for the requested target version"
+    assert detail["issues"][0]["code"] == "IWXXM_SCHEMA"
+
+
+def test_tc_ev060_1003_migrated_iwxxm_validation_exception_fails_closed(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def boom(*_a, **_k):
+        raise RuntimeError("validator unavailable")
+
+    monkeypatch.setattr(api_module, "_call_iwxxm_validate", boom)
+
+    response = _multipart(
+        client,
+        "/api/v1/convert",
+        {
+            "manual_text": IWXXM_2023_1_SAMPLE,
+            "product": "iwxxm",
+            "iwxxm_version": "2025-2",
+            "validation_level": "schematron",
+        },
+    )
+
+    assert response.status_code == 400, response.text[:500]
+    detail = response.json()["detail"]
+    assert detail["message"] == "Migrated IWXXM validation could not complete"

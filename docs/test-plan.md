@@ -131,6 +131,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-070          | F6+F9+F7.q (EV-981 / #981)                                   | Opt-in propagate decode residuals into remarks / HRT + QM indicator                                                                                                                                                                                        | **H4–H5 required**                | TC-EV981-001..005                                                                        |
 | UJ-071          | F16–F19 deepen (EV-936 / #936)                               | Dissemination ops — plan/audit/SQL mapping/gateway health                                                                                                                                                                                                  | H6′; **H4–H5** when FE deploy     | TC-F16-OPS-001..006                                                                      |
 | UJ-072          | F7.w deepen (EV-933 / #933; M4 sharing)                      | ConversionProfile editor — rule pack / overlay / share non-secret assets / convert-package                                                                                                                                                                 | **H4–H5** when FE deploy          | TC-EV933-001..006 + milestone 4 sharing regressions                                      |
+| UJ-074          | F7.w + F16–F19 deepen (EV-1051 / #1051)                      | Save and reuse shared semantic presets + destination templates without stored secrets                                                                                                                                                                       | **H4–H5** when FE deploy          | TC-EV1051-001..006                                                                       |
 | UJ-DEV-009      | F34 deepen (EV-061)                                          | stage→main full CI+E2E+lint+typecheck (#1015)                                                                                                                                                                                                              | CI                                | TC-EV061-1015-001..002                                                                   |
 | LIVE-F6-030     | F6 chore (EV-061)                                            | Live bulletin multipart field `files` (#1011)                                                                                                                                                                                                              | Live H7                           | TC-LIVE-F6-030 (fix harness)                                                             |
 | UJ-OPS-002      | F30 deepen (EV-057)                                          | Prod apex → app redirect (#948)                                                                                                                                                                                                                            | ops / T3                          | TC-EV057-948-001..003                                                                    |
@@ -5132,6 +5133,24 @@ No live `codes.wmo.int` HTML in PR CI.
   **Live H4–H5** against stage FE: **PASS** 2026-09-04 — `make` connectivity H4–H5;
   catalog JWT GET 200; rule-pack + overlay create; convert with `overlay_id` metadata;
   Conversion profiles nav + guest sign-in prompt on `app.staging.tac-to-iwxxm.com`.
+
+### TC-EV1051-001..006: Shared semantic presets + destination templates (UJ-074 / EV-1051)
+
+| ID | Objective | Pass criteria |
+|----|-----------|---------------|
+| TC-EV1051-001 | Semantic preset CRUD stores only approved conversion defaults | JWT-gated create/update/list/delete; preset references a valid semantic profile id |
+| TC-EV1051-002 | Semantic preset share rules allow shared read but preserve ownership boundaries | Second user can read/apply shared preset; foreign private preset stays 403 |
+| TC-EV1051-003 | Convert applies `preset_id` without hiding explicit operator choices | Resolved preset defaults appear on convert/package; explicit request fields still win |
+| TC-EV1051-004 | Dissemination template CRUD rejects secret-bearing fields | URI/DSN/password/token/api-key persistence fails closed; non-secret metadata saves |
+| TC-EV1051-005 | Shared template loads into drawer but runtime credentials remain one-shot | Second user can load shared template, add runtime credentials, and preflight/send |
+| TC-EV1051-006 | Regression path keeps `#1024` picker, UJ-072 editor, drawer, and work-session hydration green | Vitest/Playwright cover apply surfaces, saved-id round-trip, and secret non-persistence without collapsing controls |
+
+- **Level**: T0 / T2 / T3 (H4–H5 when FE deploy)
+- **Source**: F7.w / F16–F19 deepen; #1051; UJ-074; ADR-021 / ADR-029 / ADR-036
+- **Automation**: backend unit/API + frontend Vitest for preset/template CRUD and secret
+  rejection; frontend session hydration checks for `preset_id` /
+  `dissemination_template_id`; Playwright path for create -> share -> apply preset and load
+  -> preflight/send template with one-shot credentials.
 
 ### F16–F19 verify/deploy gate
 

@@ -10,7 +10,7 @@ import {
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { FileConverter } from './FileConverter';
+import { FileConverter, clearOverlayOnAuthLoss } from './FileConverter';
 import { operatorDisseminationUiConfig } from '/utils/operatorDisseminationUi';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
@@ -92,6 +92,12 @@ const mockUploadConvertedFiles = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ message: 'Files uploaded successfully' }),
 );
 const mockListOverlays = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({ items: [] as Array<Record<string, unknown>> }),
+);
+const mockListPresets = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({ items: [] as Array<Record<string, unknown>> }),
+);
+const mockListTemplates = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ items: [] as Array<Record<string, unknown>> }),
 );
 const mockFetchProfileCatalog = vi.hoisted(() =>
@@ -207,6 +213,8 @@ vi.mock('/utils/api', () => ({
 
 vi.mock('@/utils/conversionProfilesApi', () => ({
   fetchProfileCatalog: (...args: unknown[]) => mockFetchProfileCatalog(...args),
+  listPresets: (...args: unknown[]) => mockListPresets(...args),
+  listTemplates: (...args: unknown[]) => mockListTemplates(...args),
   listOverlays: (...args: unknown[]) => mockListOverlays(...args),
 }));
 
@@ -341,6 +349,29 @@ vi.mock('./ui/sonner', () => ({
 describe('FileConverter Component', () => {
   const defaultProps = {};
 
+  it('clears overlays on auth loss only when one is selected', () => {
+    const withOverlay = {
+      bulletinId: '',
+      issuingCenter: '',
+      product: 'METAR' as const,
+      profile: 'ICAO_2025' as const,
+      reportVariant: '',
+      exchangeProfile: 'GLOBAL_AFS' as const,
+      presetId: '',
+      disseminationTemplateId: '',
+      overlayId: 'ov-1',
+      iwxxmVersion: '2025-2' as const,
+      strictValidation: false,
+      includeNilReasons: false,
+      onError: 'skip' as const,
+      logLevel: 'INFO' as const,
+    };
+    const withoutOverlay = { ...withOverlay, overlayId: '' };
+
+    expect(clearOverlayOnAuthLoss(withOverlay).overlayId).toBe('');
+    expect(clearOverlayOnAuthLoss(withoutOverlay)).toBe(withoutOverlay);
+  });
+
   // Coverage + full-suite load routinely exceeds Vitest's default 5s on Branch Path cases.
   vi.setConfig({ testTimeout: 20_000 });
 
@@ -357,8 +388,12 @@ describe('FileConverter Component', () => {
     mockMassIngestFiles.mockReset();
     mockInflateGzipToText.mockReset();
     mockValidateIwxxm.mockReset();
+    mockListPresets.mockReset();
+    mockListTemplates.mockReset();
     mockListOverlays.mockReset();
     mockFetchProfileCatalog.mockReset();
+    mockListPresets.mockResolvedValue({ items: [] });
+    mockListTemplates.mockResolvedValue({ items: [] });
     mockListOverlays.mockResolvedValue({ items: [] });
     mockFetchProfileCatalog.mockResolvedValue({
       profiles: [
@@ -2569,7 +2604,9 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       fireEvent.change(textarea, { target: { value: 'METAR KJFK CUSTOM NAME' } });
-      await user.type(screen.getByTestId('output-filename-input'), 'report');
+      fireEvent.change(screen.getByTestId('output-filename-input'), {
+        target: { value: 'report' },
+      });
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
@@ -2665,7 +2702,9 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       fireEvent.change(textarea, { target: { value: 'METAR ZIP CUSTOM' } });
-      await user.type(screen.getByTestId('output-filename-input'), 'weather');
+      fireEvent.change(screen.getByTestId('output-filename-input'), {
+        target: { value: 'weather' },
+      });
       await user.click(screen.getByTestId('convert-button'));
 
       const downloadZipBtn = await screen.findByLabelText(
@@ -5718,7 +5757,80 @@ describe('FileConverter Component', () => {
     });
   });
 
-  describe('EV-933 signed overlay select', () => {
+  describe('EV-1051 semantic preset and EV-933 overlay selects', () => {
+    it('loads presets when signed in, applies preset defaults, and passes presetId on convert', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockListPresets.mockResolvedValue({
+        items: [
+          {
+            id: 'pr-uuid-1',
+            user_id: 'u',
+            slug: 'us-default',
+            name: 'US Default',
+            semanticProfile: 'US_FAA_NWS',
+            iwxxmVersion: '2025-2',
+            extensions: ['IWXXM_US_3'],
+            reportVariant: null,
+            overlayId: 'ov-uuid-1',
+            shared: true,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      mockListOverlays.mockResolvedValue({
+        items: [
+          {
+            id: 'ov-uuid-1',
+            user_id: 'u',
+            slug: 'soft-lint',
+            baseProfileId: 'US_FAA_NWS',
+            body: {},
+            signature: 'sig',
+            shared: true,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      mockConvertMetarToIwxxm.mockResolvedValue({
+        results: [
+          {
+            name: 'manual',
+            content: '<iwxxm/>',
+            source: 'KJFK',
+            size_bytes: 8,
+          },
+        ],
+        errors: [],
+        total_processed: 1,
+        successful: 1,
+        failed: 0,
+      });
+      render(<FileConverter {...defaultProps} accessToken="jwt-pr" />);
+      const presetSelect = await screen.findByTestId('semantic-preset-select');
+      await user.selectOptions(presetSelect, 'pr-uuid-1');
+      expect(screen.getByTestId('profile-type-select')).toHaveValue('US_FAA_NWS');
+      expect(screen.getByTestId('signed-overlay-select')).toHaveValue('ov-uuid-1');
+
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalled();
+      });
+      expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          presetId: 'pr-uuid-1',
+          profile: 'US_FAA_NWS',
+          overlayId: 'ov-uuid-1',
+          accessToken: 'jwt-pr',
+        }),
+      );
+    });
+
     it('loads overlays when signed in and passes overlayId on convert', async () => {
       const user = userEvent.setup({ delay: null });
       mockListOverlays.mockResolvedValue({
@@ -5807,6 +5919,218 @@ describe('FileConverter Component', () => {
       expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
     });
 
+    it('clears a previously selected overlay across auth removal and restoration', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockListOverlays.mockResolvedValue({
+        items: [
+          {
+            id: 'ov-restore',
+            user_id: 'u',
+            slug: 'restore',
+            baseProfileId: 'ICAO_2025',
+            body: {},
+            signature: 'sig',
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      const { rerender } = render(
+        <FileConverter {...defaultProps} accessToken="jwt-ov" />,
+      );
+      const select = await screen.findByTestId('signed-overlay-select');
+      await user.selectOptions(select, 'ov-restore');
+      expect(select).toHaveValue('ov-restore');
+
+      rerender(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
+
+      rerender(<FileConverter {...defaultProps} accessToken="jwt-ov" />);
+      await waitFor(() => {
+        expect(screen.getByTestId('signed-overlay-select')).toHaveValue('');
+      });
+    });
+
+    it('clears a hydrated overlay across auth removal and restoration', async () => {
+      mockListOverlays.mockResolvedValue({
+        items: [
+          {
+            id: 'ov-hydrated',
+            user_id: 'u',
+            slug: 'hydrated',
+            baseProfileId: 'ICAO_2025',
+            body: {},
+            signature: 'sig',
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      const hydratedSession = {
+        id: 'sess-overlay-hydrated',
+        status: 'draft',
+        manual_tac: '',
+        conversion_params: { overlay_id: 'ov-hydrated' },
+      } as never;
+
+      const { rerender } = render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={hydratedSession}
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('signed-overlay-select')).toHaveValue('ov-hydrated');
+      });
+
+      rerender(<FileConverter {...defaultProps} loadedWorkSession={hydratedSession} />);
+      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
+
+      rerender(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={hydratedSession}
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('signed-overlay-select')).toHaveValue('');
+      });
+    });
+
+    it('handles auth token removal when no overlay is selected', async () => {
+      const { rerender } = render(
+        <FileConverter {...defaultProps} accessToken="jwt-ov" />,
+      );
+      await screen.findByTestId('signed-overlay-select');
+
+      rerender(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
+    });
+
+    it('clears selected presetId when auth token is removed', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockListPresets.mockResolvedValue({
+        items: [
+          {
+            id: 'pr-logout',
+            user_id: 'u',
+            slug: 'bye',
+            name: 'Bye',
+            semanticProfile: 'ICAO_2025',
+            iwxxmVersion: '2025-2',
+            extensions: [],
+            reportVariant: null,
+            overlayId: null,
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      const { rerender } = render(
+        <FileConverter {...defaultProps} accessToken="jwt-pr" />,
+      );
+      const select = await screen.findByTestId('semantic-preset-select');
+      await user.selectOptions(select, 'pr-logout');
+      expect(select).toHaveValue('pr-logout');
+      rerender(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('semantic-preset-select')).not.toBeInTheDocument();
+    });
+
+    it('hydrates dissemination template ids from conversion_params into the drawer', async () => {
+      const user = userEvent.setup({ delay: null });
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      mockListTemplates.mockResolvedValue({
+        items: [
+          {
+            id: 'tpl-from-session',
+            user_id: 'u',
+            slug: 'saved-db',
+            name: 'Saved DB',
+            sinkType: 'sqlite',
+            product: 'metar',
+            ddl: true,
+            params: {},
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-tpl"
+          loadedWorkSession={
+            {
+              id: 'sess-tpl-1',
+              status: 'draft',
+              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
+              conversion_params: { dissemination_template_id: 'tpl-from-session' },
+            } as never
+          }
+        />,
+      );
+
+      await user.click(screen.getByTestId('open-dissemination-drawer'));
+      await waitFor(() => {
+        expect(screen.getByTestId('dissemination-template-select')).toHaveValue(
+          'tpl-from-session',
+        );
+      });
+    });
+
+    it('clears selected disseminationTemplateId when auth token is removed', async () => {
+      const user = userEvent.setup({ delay: null });
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      mockListTemplates.mockResolvedValue({
+        items: [
+          {
+            id: 'tpl-logout',
+            user_id: 'u',
+            slug: 'bye',
+            name: 'Bye',
+            sinkType: 'sqlite',
+            product: 'metar',
+            ddl: false,
+            params: {},
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      const { rerender } = render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-tpl"
+          loadedWorkSession={
+            {
+              id: 'sess-tpl-logout',
+              status: 'draft',
+              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
+              conversion_params: { disseminationTemplateId: 'tpl-logout' },
+            } as never
+          }
+        />,
+      );
+      await user.click(screen.getByTestId('open-dissemination-drawer'));
+      await waitFor(() => {
+        expect(screen.getByTestId('dissemination-template-select')).toHaveValue(
+          'tpl-logout',
+        );
+      });
+
+      rerender(<FileConverter {...defaultProps} />);
+      expect(
+        screen.queryByTestId('dissemination-template-select'),
+      ).not.toBeInTheDocument();
+    });
+
     it('ignores overlay list resolution after unmount', async () => {
       let resolveList!: (value: { items: [] }) => void;
       mockListOverlays.mockImplementation(
@@ -5876,6 +6200,234 @@ describe('FileConverter Component', () => {
           'ov-from-session',
         );
       });
+    });
+
+    it('hydrates preset_id and presetId from conversion_params', async () => {
+      mockListPresets.mockResolvedValue({
+        items: [
+          {
+            id: 'pr-from-session',
+            user_id: 'u',
+            slug: 'saved',
+            name: 'Saved preset',
+            semanticProfile: 'US_FAA_NWS',
+            iwxxmVersion: '2025-2',
+            extensions: [],
+            reportVariant: null,
+            overlayId: null,
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      const { rerender } = render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={
+            {
+              id: 'sess-pr-1',
+              status: 'draft',
+              manual_tac: '',
+              conversion_params: { preset_id: 'pr-from-session' },
+            } as never
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('semantic-preset-select')).toHaveValue(
+          'pr-from-session',
+        );
+      });
+      rerender(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={
+            {
+              id: 'sess-pr-2',
+              status: 'draft',
+              manual_tac: '',
+              conversion_params: { presetId: 'pr-from-session' },
+            } as never
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('semantic-preset-select')).toHaveValue(
+          'pr-from-session',
+        );
+      });
+    });
+
+    it('clears preset selection when the user switches back to None', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockListPresets.mockResolvedValue({
+        items: [
+          {
+            id: 'pr-uuid-1',
+            user_id: 'u',
+            slug: 'us-default',
+            name: 'US Default',
+            semanticProfile: 'US_FAA_NWS',
+            iwxxmVersion: '2025-2',
+            extensions: [],
+            reportVariant: null,
+            overlayId: null,
+            shared: true,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+
+      render(<FileConverter {...defaultProps} accessToken="jwt-pr" />);
+      const presetSelect = await screen.findByTestId('semantic-preset-select');
+      await user.selectOptions(presetSelect, 'pr-uuid-1');
+      expect(presetSelect).toHaveValue('pr-uuid-1');
+
+      await user.selectOptions(presetSelect, '');
+      expect(presetSelect).toHaveValue('');
+    });
+
+    it('keeps dissemination template state stable when the same id is reselected', async () => {
+      const user = userEvent.setup({ delay: null });
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      mockListTemplates.mockResolvedValue({
+        items: [
+          {
+            id: 'tpl-stable',
+            user_id: 'u',
+            slug: 'saved-db',
+            name: 'Saved DB',
+            sinkType: 'sqlite',
+            product: 'metar',
+            ddl: true,
+            params: {},
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+
+      render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-tpl"
+          loadedWorkSession={
+            {
+              id: 'sess-tpl-stable',
+              status: 'draft',
+              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
+              conversion_params: { dissemination_template_id: 'tpl-stable' },
+            } as never
+          }
+        />,
+      );
+
+      await user.click(screen.getByTestId('open-dissemination-drawer'));
+      const templateSelect = await screen.findByTestId('dissemination-template-select');
+      expect(templateSelect).toHaveValue('tpl-stable');
+
+      fireEvent.change(templateSelect, { target: { value: 'tpl-stable' } });
+      expect(screen.getByTestId('dissemination-template-select')).toHaveValue(
+        'tpl-stable',
+      );
+    });
+
+    it('keeps dissemination template params stable when the drawer reports the same id', async () => {
+      vi.resetModules();
+      vi.doMock('./DisseminationDrawer', () => ({
+        DisseminationDrawer: ({
+          open,
+          disseminationTemplateId,
+          onDisseminationTemplateChange,
+        }: {
+          open: boolean;
+          disseminationTemplateId?: string;
+          onDisseminationTemplateChange?: (templateId: string) => void;
+        }) =>
+          open ? (
+            <button
+              type="button"
+              data-testid="mock-dissemination-drawer-trigger"
+              onClick={() =>
+                onDisseminationTemplateChange?.(disseminationTemplateId ?? '')
+              }
+            >
+              {disseminationTemplateId ?? ''}
+            </button>
+          ) : null,
+      }));
+
+      const { FileConverter: MockedFileConverter } = await import('./FileConverter');
+      render(
+        <MockedFileConverter
+          {...defaultProps}
+          accessToken="jwt-tpl"
+          loadedWorkSession={
+            {
+              id: 'sess-tpl-same-id',
+              status: 'draft',
+              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
+              conversion_params: { dissemination_template_id: 'tpl-stable' },
+            } as never
+          }
+        />,
+      );
+
+      fireEvent.click(screen.getByTestId('open-dissemination-drawer'));
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('mock-dissemination-drawer-trigger'),
+        ).toHaveTextContent('tpl-stable');
+      });
+      fireEvent.click(screen.getByTestId('mock-dissemination-drawer-trigger'));
+      vi.doUnmock('./DisseminationDrawer');
+    });
+
+    it('updates dissemination template params when the drawer reports a new id', async () => {
+      vi.resetModules();
+      vi.doMock('./DisseminationDrawer', () => ({
+        DisseminationDrawer: ({
+          open,
+          disseminationTemplateId,
+          onDisseminationTemplateChange,
+        }: {
+          open: boolean;
+          disseminationTemplateId?: string;
+          onDisseminationTemplateChange?: (templateId: string) => void;
+        }) =>
+          open ? (
+            <button
+              type="button"
+              data-testid="mock-dissemination-drawer-update"
+              onClick={() => onDisseminationTemplateChange?.('tpl-updated')}
+            >
+              {disseminationTemplateId ?? ''}
+            </button>
+          ) : null,
+      }));
+
+      const { FileConverter: MockedFileConverter } = await import('./FileConverter');
+      render(<MockedFileConverter {...defaultProps} accessToken="jwt-tpl" />);
+
+      fireEvent.click(screen.getByTestId('open-dissemination-drawer'));
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('mock-dissemination-drawer-update'),
+        ).toHaveTextContent('');
+      });
+
+      fireEvent.click(screen.getByTestId('mock-dissemination-drawer-update'));
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('mock-dissemination-drawer-update'),
+        ).toHaveTextContent('tpl-updated');
+      });
+      vi.doUnmock('./DisseminationDrawer');
     });
 
     it('hydrates report_variant and reportVariant from conversion_params', async () => {

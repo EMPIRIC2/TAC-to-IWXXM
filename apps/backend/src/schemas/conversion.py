@@ -278,6 +278,10 @@ class ConversionRequest(BaseModel):
         default=None,
         description="Optional profile-scoped report variant within the selected product family (e.g. LWIS under CA_ECCC + METAR)",
     )
+    preset_id: str | None = Field(
+        default=None,
+        description="Optional saved semantic preset id; explicit request fields still win when both are supplied",
+    )
     extensions: list[str] | None = Field(
         default=None,
         description="Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)",

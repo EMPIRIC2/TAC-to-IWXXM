@@ -51,15 +51,20 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
 import {
   fetchProfileCatalog,
+  listPresets,
   listOverlays,
   type MetarFamilyVariant,
   type OverlayOut,
+  type PresetOut,
   type ProfileCatalogEntry,
 } from '@/utils/conversionProfilesApi';
 import {
   CONVERT_OVERLAY_HELP,
   CONVERT_OVERLAY_LABEL,
   CONVERT_OVERLAY_NONE,
+  CONVERT_PRESET_HELP,
+  CONVERT_PRESET_LABEL,
+  CONVERT_PRESET_NONE,
 } from '@/utils/conversionProfilesCopy';
 import { convertOverlayFields } from '@/utils/convertOverlayFields';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
@@ -355,6 +360,10 @@ interface ConversionParams {
   profile: IwxxmProfile;
   reportVariant: string;
   exchangeProfile: ExchangeProfileId;
+  /** Optional saved semantic preset UUID (empty = none). */
+  presetId: string;
+  /** Optional saved dissemination template UUID (empty = none). */
+  disseminationTemplateId: string;
   /** Optional signed ConversionProfile overlay UUID (empty = none). */
   overlayId: string;
   iwxxmVersion: IWXXMVersion;
@@ -362,6 +371,11 @@ interface ConversionParams {
   includeNilReasons: boolean;
   onError: OnErrorBehavior;
   logLevel: LogLevel;
+}
+
+// eslint-disable-next-line react-refresh/only-export-components -- test helper exported alongside component
+export function clearOverlayOnAuthLoss(prev: ConversionParams): ConversionParams {
+  return prev.overlayId ? { ...prev, overlayId: '' } : prev;
 }
 
 function activeMetarFamilyVariants(
@@ -468,6 +482,8 @@ export function FileConverter({
     profile: DEFAULT_SEMANTIC_PROFILE,
     reportVariant: '',
     exchangeProfile: DEFAULT_EXCHANGE_PROFILE,
+    presetId: '',
+    disseminationTemplateId: '',
     overlayId: '',
     iwxxmVersion: DEFAULT_IWXXM_VERSION,
     strictValidation: true,
@@ -475,6 +491,7 @@ export function FileConverter({
     onError: 'warn',
     logLevel: 'INFO',
   });
+  const [savedPresets, setSavedPresets] = useState<PresetOut[]>([]);
   const [signedOverlays, setSignedOverlays] = useState<OverlayOut[]>([]);
   const [profileCatalogEntries, setProfileCatalogEntries] = useState<
     ProfileCatalogEntry[]
@@ -518,14 +535,42 @@ export function FileConverter({
   }, [accessToken]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
+  /* eslint-disable react-hooks/set-state-in-effect -- load semantic presets when auth token appears/clears */
+  useEffect(() => {
+    const token = accessToken?.trim();
+    if (!token) {
+      setSavedPresets([]);
+      setConversionParams((prev) =>
+        prev.presetId || prev.disseminationTemplateId || prev.overlayId
+          ? { ...prev, presetId: '', disseminationTemplateId: '', overlayId: '' }
+          : prev,
+      );
+      return;
+    }
+    let cancelled = false;
+    void listPresets(token)
+      .then((res) => {
+        if (!cancelled) {
+          setSavedPresets(res.items);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setSavedPresets([]);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [accessToken]);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
   /* eslint-disable react-hooks/set-state-in-effect -- load signed overlays when auth token appears/clears */
   useEffect(() => {
     const token = accessToken?.trim();
     if (!token) {
       setSignedOverlays([]);
-      setConversionParams((prev) =>
-        prev.overlayId ? { ...prev, overlayId: '' } : prev,
-      );
+      setConversionParams((prev) => clearOverlayOnAuthLoss(prev));
       return;
     }
     let cancelled = false;
@@ -663,6 +708,8 @@ export function FileConverter({
             profile,
             reportVariant: '',
             exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
+            presetId: '',
+            disseminationTemplateId: '',
             overlayId: '',
             iwxxmVersion,
             strictValidation: prefs.strictValidation ?? true,
@@ -784,6 +831,16 @@ export function FileConverter({
         } else if (typeof params.reportVariant === 'string') {
           next.reportVariant = params.reportVariant;
         }
+        if (typeof params.preset_id === 'string') {
+          next.presetId = params.preset_id;
+        } else if (typeof params.presetId === 'string') {
+          next.presetId = params.presetId;
+        }
+        if (typeof params.dissemination_template_id === 'string') {
+          next.disseminationTemplateId = params.dissemination_template_id;
+        } else if (typeof params.disseminationTemplateId === 'string') {
+          next.disseminationTemplateId = params.disseminationTemplateId;
+        }
         const rawIwxxmVersion =
           typeof params.iwxxm_version === 'string'
             ? params.iwxxm_version
@@ -838,6 +895,8 @@ export function FileConverter({
           profile,
           reportVariant: '',
           exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
+          presetId: '',
+          disseminationTemplateId: '',
           overlayId: '',
           iwxxmVersion,
           strictValidation: prefs.strictValidation ?? true,
@@ -1206,6 +1265,7 @@ export function FileConverter({
         files: filesToConvert.length > 0 ? filesToConvert : undefined,
         product: resolvedProduct,
         profile: conversionParams.profile,
+        presetId: conversionParams.presetId || undefined,
         reportVariant: activeReportVariant || undefined,
         iwxxmVersion: conversionParams.iwxxmVersion,
         validateOutput,
@@ -1843,6 +1903,7 @@ export function FileConverter({
           manualText: manualInput.trim(),
           product: liveAssistProduct,
           profile: conversionParams.profile,
+          presetId: conversionParams.presetId || undefined,
           reportVariant: activeReportVariant || undefined,
           iwxxmVersion: conversionParams.iwxxmVersion,
           validateOutput: false,
@@ -1896,6 +1957,7 @@ export function FileConverter({
       liveAssistProduct,
       conversionParams.profile,
       conversionParams.iwxxmVersion,
+      conversionParams.presetId,
       activeReportVariant,
       conversionParams.exchangeProfile,
       conversionParams.overlayId,
@@ -2288,7 +2350,7 @@ export function FileConverter({
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <div
-                    className="flex flex-col gap-2 overflow-x-auto rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-nowrap lg:items-center"
+                    className="flex flex-col gap-2 rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-nowrap lg:items-center"
                     data-testid="product-profile-bar"
                   >
                     <Label
@@ -2343,8 +2405,9 @@ export function FileConverter({
                           </button>
                         </TooltipTrigger>
                         <TooltipContent side="bottom" className="max-w-xs text-balance">
-                          Encoding rules for conversion — not destinations, credentials,
-                          or editable overlays.
+                          Choose the operational rule set used for TAC lint, conversion,
+                          and IWXXM validation. Profiles can reflect ICAO/WMO defaults
+                          or national extension behavior.
                         </TooltipContent>
                       </Tooltip>
                     </div>
@@ -2375,6 +2438,76 @@ export function FileConverter({
                         </option>
                       ))}
                     </select>
+                    {Boolean(accessToken?.trim()) && (
+                      <>
+                        <div className="flex shrink-0 items-center gap-1">
+                          <Label
+                            htmlFor="param-semantic-preset"
+                            className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                          >
+                            {CONVERT_PRESET_LABEL}
+                          </Label>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                aria-label={`About ${CONVERT_PRESET_LABEL}`}
+                                data-testid="semantic-preset-help-icon"
+                              >
+                                <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="bottom"
+                              className="max-w-xs text-balance"
+                            >
+                              {CONVERT_PRESET_HELP}
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        <select
+                          id="param-semantic-preset"
+                          aria-label={CONVERT_PRESET_LABEL}
+                          data-testid="semantic-preset-select"
+                          value={conversionParams.presetId}
+                          disabled={isReadOnly}
+                          onChange={(e) => {
+                            const nextPresetId = e.target.value;
+                            const preset = savedPresets.find(
+                              (item) => item.id === nextPresetId,
+                            );
+                            if (!preset) {
+                              setConversionParams((prev) => ({
+                                ...prev,
+                                presetId: '',
+                              }));
+                              return;
+                            }
+                            const profile = coerceIwxxmProfile(preset.semanticProfile);
+                            setConversionParams((prev) => ({
+                              ...prev,
+                              presetId: preset.id,
+                              profile,
+                              reportVariant: preset.reportVariant ?? '',
+                              overlayId: preset.overlayId ?? '',
+                              iwxxmVersion: coerceIwxxmVersionForProfile(
+                                profile,
+                                preset.iwxxmVersion,
+                              ),
+                            }));
+                          }}
+                          className="min-w-[11rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                        >
+                          <option value="">{CONVERT_PRESET_NONE}</option>
+                          {savedPresets.map((preset) => (
+                            <option key={preset.id} value={preset.id}>
+                              {preset.name} ({preset.semanticProfile})
+                            </option>
+                          ))}
+                        </select>
+                      </>
+                    )}
                     {reportVariantOptions.length > 0 &&
                       inputMode !== 'ahl_bulletin' && (
                         <>
@@ -3509,6 +3642,15 @@ export function FileConverter({
           iwxxmXml={convertedFiles[0]?.convertedContent}
           tacText={manualInput || undefined}
           product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
+          accessToken={accessToken}
+          disseminationTemplateId={conversionParams.disseminationTemplateId}
+          onDisseminationTemplateChange={(templateId) =>
+            setConversionParams((prev) =>
+              prev.disseminationTemplateId === templateId
+                ? prev
+                : { ...prev, disseminationTemplateId: templateId },
+            )
+          }
           exchangeProfile={conversionParams.exchangeProfile}
         />
       ) : null}

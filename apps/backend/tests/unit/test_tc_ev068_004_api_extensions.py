@@ -156,7 +156,7 @@ def test_tc_ev068_004_convert_iwxxm_pass_through_forwards_extensions(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     seen: list[dict] = []
-    xml_payload = "<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/3.0'/>"
+    xml_payload = "<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/2023-1'/>"
 
     def fake_validate_iwxxm(xml: str, **kwargs):
         seen.append(kwargs)

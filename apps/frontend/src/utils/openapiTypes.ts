@@ -98,14 +98,21 @@ export type LintIssueCatalogEntry = Schemas['LintIssueCatalogEntryModel'] & {
   issue_type?: string | null;
   source_locator?: string | null;
   source_access?: string | null;
+  semantic_profiles?: string[];
+  exchange_profiles?: string[];
 };
 
 export type LintIssueCatalogResponse = {
   issues: LintIssueCatalogEntry[];
 };
 
-export type QualityMetricsSummary = Schemas['QualityMetricsSummaryModel'];
-export type QualityMetricsFileRow = Schemas['QualityMetricsFileRowModel'];
+export type QualityMetricsSummary = Schemas['QualityMetricsSummaryModel'] & {
+  pair_examples?: number;
+  unpaired_examples?: number;
+};
+export type QualityMetricsFileRow = Schemas['QualityMetricsFileRowModel'] & {
+  has_tac_pair?: boolean;
+};
 
 export type QualityMetricsListResponse = {
   generated_at: string;

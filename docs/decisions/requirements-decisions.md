@@ -55,6 +55,20 @@
 
 [Corpus: decisions §EV-933] [Corpus: product §F7.w] [Corpus: api] [Corpus: journeys §UJ-072]
 
+## EV-1051 — Operator sharing of semantic presets + dissemination templates (#1051)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-1051 / scope | Implement **Part A + Part B** in one cycle | Docs/ADR first; smallest viable build slices after scope lock | confirmed |
+| EV-1051 / semantic presets | Saved + shared | Reference existing semantic profile ids plus non-secret conversion defaults only | confirmed |
+| EV-1051 / dissemination templates | Saved + shared | Non-secret destination metadata/reference only; no credential persistence | confirmed |
+| EV-1051 / runtime credentials | Memory-only | Operator re-enters live credential or URI material at use time | confirmed |
+| EV-1051 / guest path | No saved sharing | Guest remains IndexedDB-only (F31) | confirmed |
+| EV-1051 / apply surfaces | Keep distinct | `#1024` light picker + drawer remain apply surfaces; full editor remains separate | confirmed |
+
+[Corpus: decisions §EV-1051] [Corpus: product §F7.w] [Corpus: product §F16] [Corpus: api]
+[Corpus: journeys §UJ-074] [Corpus: adr/ADR-021] [Corpus: adr/ADR-029] [Corpus: adr/ADR-036]
+
 
 ## EV-936 — Dissemination ops + Gateway hooks (#936)
 

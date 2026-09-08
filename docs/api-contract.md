@@ -142,7 +142,10 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
   do **not** run TAC→IWXXM; they lint XML (well-formed / COLLECT vs report) and may run F2
   validate. TAC text → structured not-XML error (not METAR lint). `/lint-tac` with
   `product=iwxxm` uses XML lint rules, not TAC product syntax. `/validate` unchanged engine
-  (F2); product field documents the pass-through path.
+  (F2); product field documents the pass-through path. **EV-908:** on `POST /api/v1/convert`,
+  when the uploaded IWXXM line differs from the requested `iwxxm_version`, the backend migrates
+  the XML to the target supported line, rewrites namespace/schema references, and validates the
+  migrated output before returning success.
 - **`product=vona`**: Volcano Observatory Notice for Aviation →
   `iwxxm:VolcanoObservatoryNoticeForAviation` (F32 / #741). Canonical wire value is **`vona`**.
   Unknown aliases → `unknown_product` **400**.
@@ -247,6 +250,8 @@ exchange:
   ([#1051](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1051)), but sharing must stay limited
   to non-secret profile assets or destination references; convert/lint/validate remain public,
   while mutate/share/manage profile assets remain JWT-gated.
+- For `product=iwxxm`, convert response metadata may include `source_iwxxm_version`,
+  `target_iwxxm_version`, and `migrated_iwxxm` to describe the pass-through or migration path.
 
 **Observability** (`GET /metrics`, Prometheus — TC-EV063-006):
 
@@ -773,6 +778,38 @@ not Supabase PostgREST product writes (F30). Auth identity from Supabase JWT.
 
 **Auth**: JWT required for pack/overlay mutate → 401/403. **Trust**: unsigned browser packs
 rejected. **Non-goals**: credentials / destination URIs in profile objects (ADR-021/029).
+
+### EV-1051 / #1051 — Operator sharing of semantic presets + dissemination templates (JWT)
+
+`#1051` deepens the existing authenticated profile and dissemination surfaces rather than
+creating a public marketplace or a new secret store. Two saved asset classes are allowed:
+
+1. **Semantic preset**: named operator/org-shareable preset that references an existing
+   semantic profile id and supported conversion defaults (`iwxxmVersion`, `extensions[]`,
+   optional `reportVariant`, optional overlay/rule-pack references).
+2. **Dissemination template**: named operator/org-shareable destination reference that stores
+   only non-secret sink metadata and any required runtime-field hints.
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET`/`POST` | `/api/v1/profiles/presets` | List/create semantic presets owned by the caller plus rows visible via share rules |
+| `GET`/`PATCH`/`DELETE` | `/api/v1/profiles/presets/{preset_id}` | Read/update/delete one semantic preset; unknown or unauthorized ids fail closed |
+| `GET`/`POST` | `/api/v1/profiles/templates` | List/create saved dissemination templates (non-secret only) |
+| `GET`/`PATCH`/`DELETE` | `/api/v1/profiles/templates/{template_id}` | Read/update/delete one saved template |
+| `POST` | `/api/v1/convert` (existing) | Optional saved `preset_id` may resolve conversion defaults before request execution; explicit request fields still win when both are supplied |
+| `POST` | `/api/v1/dissemination/preflight` (existing) | Optional `dissemination_template_id` may resolve non-secret sink metadata, but caller still supplies one-shot live credentials/URI material when required |
+| `POST` | `/api/v1/dissemination/send` (existing) | Same template resolution rule as preflight; runtime credentials remain memory-only |
+
+**Auth**: mutate/share/manage preset/template rows requires JWT. Convert/lint/validate stay
+public when no saved asset id is supplied. **Visibility**: finalized in Build, but must support
+owner-scoped and shared reads without exposing PII in metrics labels. **Secret rules**:
+saved dissemination templates must reject URIs, DSNs, passwords, API keys, tokens, and
+connection strings; semantic presets may store only non-secret conversion defaults and saved
+asset references. Work-session hydration may persist `preset_id` and
+`dissemination_template_id` as saved-asset references only; it must not persist live
+destination credentials or URIs. **Non-goals**: guest sharing, arbitrary uploaded executable
+profiles, saved dissemination credentials, or conflating exchange profile ids with destination
+state.
 
 ### S050 / EV-042 — Operator UI destinations hidden
 

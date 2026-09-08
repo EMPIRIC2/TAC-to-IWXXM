@@ -26,6 +26,10 @@ leakage risk if the API opens arbitrary sockets.
 6. **Required** deploy env `DISSEMINATION_EGRESS_ALLOWLIST` (host/CIDR list). **Empty allowlist
    ⇒ no user-URI / user-host egress** in that environment (fail closed). Staging may set an
    explicit list including the project wis2box harness.
+7. **Amendment (EV-1051)**: If a saved dissemination template / destination reference is
+   introduced, it may store only non-secret sink metadata. Allowlist, SSRF, and redaction
+   checks still run against the final runtime target after the operator supplies any one-shot
+   credential or URI material; a saved template never bypasses those gates.
 
 ## Alternatives Considered
 
@@ -42,3 +46,5 @@ leakage risk if the API opens arbitrary sockets.
   `docs/deploy.md`). Staging secrets matrix also lists the Render API row (05-verify-tech).
 - Preflight/send APIs return structured errors when allowlist/SSRF checks fail.
 - Live BYOC demos require operator to populate allowlist for their destination hosts.
+- Saved dissemination templates do not imply a destination is reachable or allowed in the
+  current environment; runtime allowlist and SSRF checks remain fail-closed.
