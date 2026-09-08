@@ -25,6 +25,7 @@ and packaging hook. ROBEX-specific filename or routing rules deepen on backlog.
 | Source | Access | Proves |
 |--------|--------|--------|
 | [OPMET IWXXM Exchange Guidelines (5th Ed.)](https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf) | public | Shared COLLECT / FTBP / AFS baseline |
+| [APAC ROBEX Handbook (19th Ed., Feb 2026)](https://www.icao.int/sites/default/files/APAC/Documents/edocs/MET/2026-02-APAC-ROBEX-HB-19TH-ED.pdf) | public | APAC ROBEX bulletin exchange scheme and IWXXM/AMHS transition posture |
 | [APAC IWXXM FAQs (3rd Ed.)](https://www.icao.int/sites/default/files/APAC/Documents/edocs/MET/2025-03_IWXXM-FAQs_3rd-Ed.pdf) | public | COLLECT mandate; translation centre policy |
 | [ICAO APAC electronic documents](https://www.icao.int/APAC/apac-electronic-documents) | public | ROBEX handbook pointer (durable file not yet pinned) |
 
@@ -43,5 +44,4 @@ and packaging hook. ROBEX-specific filename or routing rules deepen on backlog.
 
 ## Gaps
 
-- ROBEX handbook durable URL pin
 - Regional rules beyond GLOBAL_AFS COLLECT baseline

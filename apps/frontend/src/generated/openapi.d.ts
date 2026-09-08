@@ -3632,6 +3632,11 @@ export interface components {
              */
             deferred: boolean;
             /**
+             * Has Tac Pair
+             * @default false
+             */
+            has_tac_pair: boolean;
+            /**
              * Lint Error Count
              * @default 0
              */
@@ -3694,6 +3699,11 @@ export interface components {
              * @default 0
              */
             match_pass: number;
+            /**
+             * Pair Examples
+             * @default 0
+             */
+            pair_examples: number;
             /** Product */
             product: string;
             /**
@@ -3701,6 +3711,11 @@ export interface components {
              * @default 0
              */
             residual_nonempty: number;
+            /**
+             * Unpaired Examples
+             * @default 0
+             */
+            unpaired_examples: number;
             /**
              * Validate Fail
              * @default 0

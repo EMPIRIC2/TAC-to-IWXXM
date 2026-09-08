@@ -28,6 +28,7 @@ class TestVersionMigrator:
 
         assert xml_out  # Should return XML
         assert len(warnings) == 0  # No breaking changes
+        assert xml_out == sample_xml
 
     def test_malformed_xml_error(self):
         """Test error handling for malformed XML."""

@@ -111,11 +111,17 @@ def _build_summaries(files: list[dict[str, Any]]) -> list[dict[str, Any]]:
             "lint_fail": 0,
             "validate_fail": 0,
             "deferred_gaps": 0,
+            "pair_examples": 0,
+            "unpaired_examples": 0,
         }
     )
     for row in files:
         product = row["product"]
         b = buckets[product]
+        if row.get("has_tac_pair"):
+            b["pair_examples"] += 1
+        else:
+            b["unpaired_examples"] += 1
         if row["deferred"]:
             b["deferred_gaps"] += 1
             continue
@@ -189,6 +195,7 @@ def generate_corpus_metrics() -> dict[str, Any]:
                     "lint_error_count": 0,
                     "validate_error_count": 0,
                     "deferred": True,
+                    "has_tac_pair": False,
                 }
             )
             details[peer.stem] = detail
@@ -263,6 +270,7 @@ def generate_corpus_metrics() -> dict[str, Any]:
                 "lint_error_count": _error_count(lint_issues),
                 "validate_error_count": _error_count(validate_issues),
                 "deferred": False,
+                "has_tac_pair": True,
             }
         )
         details[peer.stem] = detail

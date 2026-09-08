@@ -45,10 +45,16 @@ def test_tc_ev054_005_artifact_loads_and_summaries_match_files() -> None:
             "lint_fail": 0,
             "validate_fail": 0,
             "deferred_gaps": 0,
+            "pair_examples": 0,
+            "unpaired_examples": 0,
         }
     )
     for row in doc["files"]:
         b = buckets[row["product"]]
+        if row.get("has_tac_pair"):
+            b["pair_examples"] += 1
+        else:
+            b["unpaired_examples"] += 1
         if row["deferred"]:
             b["deferred_gaps"] += 1
             continue
@@ -90,6 +96,7 @@ def test_tc_ev054_005_golden_stems_have_detail_and_metar_equal() -> None:
     metar_rows = list_file_rows(doc, product="metar")
     assert any(r["stem"] == "metar-A3-1" for r in metar_rows)
     assert any(r["deferred"] for r in metar_rows)  # metar-NIL-collect
+    assert any(r["has_tac_pair"] for r in metar_rows)
 
 
 def test_tc_ev054_005_missing_artifact_raises(tmp_path) -> None:

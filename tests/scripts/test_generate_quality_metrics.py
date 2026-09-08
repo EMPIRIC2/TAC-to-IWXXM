@@ -49,6 +49,7 @@ def test_build_summaries_all_branches() -> None:
             "residual_count": 0,
             "lint_error_count": 0,
             "validate_error_count": 0,
+            "has_tac_pair": False,
         },
         {
             "product": "metar",
@@ -57,6 +58,7 @@ def test_build_summaries_all_branches() -> None:
             "residual_count": 1,
             "lint_error_count": 1,
             "validate_error_count": 1,
+            "has_tac_pair": True,
         },
         {
             "product": "metar",
@@ -65,6 +67,7 @@ def test_build_summaries_all_branches() -> None:
             "residual_count": 0,
             "lint_error_count": 0,
             "validate_error_count": 0,
+            "has_tac_pair": False,
         },
     ]
     summaries = mod._build_summaries(files)
@@ -75,6 +78,8 @@ def test_build_summaries_all_branches() -> None:
     assert by["metar"]["residual_nonempty"] == 1
     assert by["metar"]["lint_fail"] == 1
     assert by["metar"]["validate_fail"] == 1
+    assert by["metar"]["pair_examples"] == 1
+    assert by["metar"]["unpaired_examples"] == 2
 
 
 def test_generate_corpus_metrics_branches(
@@ -146,6 +151,8 @@ def test_generate_corpus_metrics_branches(
     assert len(doc["files"]) == 2
     assert doc["details"]["deferred-stem"]["deferred"] is True
     assert doc["details"]["metar-A3-1"]["match_status"] == "equal"
+    assert doc["files"][0]["has_tac_pair"] is False
+    assert doc["files"][1]["has_tac_pair"] is True
 
 
 def test_generate_corpus_metrics_vendor_and_failures(
@@ -324,6 +331,8 @@ def test_main_writes_output(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> 
                     "match_pass": 1,
                     "match_fail": 0,
                     "deferred_gaps": 0,
+                    "pair_examples": 1,
+                    "unpaired_examples": 0,
                 }
             ],
             "files": [{"deferred": False}, {"deferred": True}],
