@@ -28,14 +28,30 @@ import {
   QUALITY_METRICS_PAGE_TITLE,
 } from '@/utils/qualityMetricsCopy';
 
-type QualityMetricsSummaryWithPairCounts = QualityMetricsSummary & {
-  pair_examples?: number;
-  unpaired_examples?: number;
+type QualityMetricsSummaryWithPairCounts = Omit<
+  QualityMetricsSummary,
+  'pair_examples' | 'unpaired_examples'
+> & {
+  pair_examples: number;
+  unpaired_examples: number;
 };
 
 type QualityMetricsFileRowWithPairState = QualityMetricsFileRow & {
   has_tac_pair?: boolean;
 };
+
+function normalizeSummary(
+  summary: QualityMetricsSummary & {
+    pair_examples?: number;
+    unpaired_examples?: number;
+  },
+): QualityMetricsSummaryWithPairCounts {
+  return {
+    ...summary,
+    pair_examples: summary.pair_examples ?? 0,
+    unpaired_examples: summary.unpaired_examples ?? 0,
+  };
+}
 
 interface QualityMetricsPageProps {
   /** Optional stem select hook (in addition to route navigation). */
@@ -89,7 +105,7 @@ export function QualityMetricsPage({
       const response = await fetchQualityMetrics({
         product: productFilter === 'all' ? undefined : productFilter,
       });
-      setSummaries(response.summaries);
+      setSummaries(response.summaries.map(normalizeSummary));
       setFiles(response.files);
       setGeneratedAt(response.generated_at);
       setIwxxmPin(response.iwxxm_pin);
@@ -158,8 +174,8 @@ export function QualityMetricsPage({
           lint_fail: acc.lint_fail + row.lint_fail,
           validate_fail: acc.validate_fail + row.validate_fail,
           deferred_gaps: acc.deferred_gaps + row.deferred_gaps,
-          pair_examples: acc.pair_examples + (row.pair_examples ?? 0),
-          unpaired_examples: acc.unpaired_examples + (row.unpaired_examples ?? 0),
+          pair_examples: acc.pair_examples + row.pair_examples,
+          unpaired_examples: acc.unpaired_examples + row.unpaired_examples,
         }),
         {
           product: 'all',
@@ -178,8 +194,8 @@ export function QualityMetricsPage({
     return selected
       ? {
           ...selected,
-          pair_examples: selected.pair_examples ?? 0,
-          unpaired_examples: selected.unpaired_examples ?? 0,
+          pair_examples: selected.pair_examples,
+          unpaired_examples: selected.unpaired_examples,
         }
       : null;
   }, [productFilter, summaries]);

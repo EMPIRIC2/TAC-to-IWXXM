@@ -243,6 +243,47 @@ describe('QualityMetricsPage (TC-EV054-002)', () => {
     expect(summary).toHaveTextContent('0');
   });
 
+  it('sums mixed defined and missing pair coverage counts for all products', async () => {
+    apiMocks.fetchQualityMetrics.mockResolvedValueOnce({
+      ...MOCK_LIST,
+      summaries: [
+        {
+          product: 'metar',
+          match_pass: 1,
+          match_fail: 0,
+          residual_nonempty: 0,
+          lint_fail: 0,
+          validate_fail: 0,
+          deferred_gaps: 0,
+        },
+        {
+          product: 'taf',
+          match_pass: 1,
+          match_fail: 0,
+          residual_nonempty: 0,
+          lint_fail: 0,
+          validate_fail: 0,
+          deferred_gaps: 0,
+          pair_examples: 2,
+          unpaired_examples: 3,
+        },
+      ],
+      files: MOCK_LIST.files,
+    });
+
+    render(<QualityMetricsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-summary')).toBeInTheDocument();
+    });
+
+    const summary = screen.getByTestId('quality-metrics-summary');
+    expect(summary).toHaveTextContent('TAC/XML pairs');
+    expect(summary).toHaveTextContent('Unpaired examples');
+    expect(summary).toHaveTextContent('2');
+    expect(summary).toHaveTextContent('3');
+  });
+
   it('defaults missing selected-product pair coverage counts to zero', async () => {
     const user = userEvent.setup();
     apiMocks.fetchQualityMetrics
@@ -284,6 +325,52 @@ describe('QualityMetricsPage (TC-EV054-002)', () => {
     expect(summary).toHaveTextContent('TAC/XML pairs');
     expect(summary).toHaveTextContent('Unpaired examples');
     expect(summary).toHaveTextContent('0');
+  });
+
+  it('preserves selected-product pair coverage counts when present', async () => {
+    const user = userEvent.setup();
+    apiMocks.fetchQualityMetrics
+      .mockResolvedValueOnce(MOCK_LIST)
+      .mockResolvedValueOnce({
+        ...MOCK_LIST,
+        summaries: [
+          {
+            product: 'metar',
+            match_pass: 1,
+            match_fail: 0,
+            residual_nonempty: 0,
+            lint_fail: 0,
+            validate_fail: 0,
+            deferred_gaps: 0,
+            pair_examples: 4,
+            unpaired_examples: 1,
+          },
+        ],
+        files: [MOCK_LIST.files[0]],
+      });
+
+    render(<QualityMetricsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-product-filter')).toBeInTheDocument();
+    });
+
+    await user.selectOptions(
+      screen.getByTestId('quality-metrics-product-filter'),
+      'metar',
+    );
+
+    await waitFor(() => {
+      expect(apiMocks.fetchQualityMetrics).toHaveBeenLastCalledWith({
+        product: 'metar',
+      });
+    });
+
+    const summary = screen.getByTestId('quality-metrics-summary');
+    expect(summary).toHaveTextContent('TAC/XML pairs');
+    expect(summary).toHaveTextContent('Unpaired examples');
+    expect(summary).toHaveTextContent('4');
+    expect(summary).toHaveTextContent('1');
   });
 });
 
