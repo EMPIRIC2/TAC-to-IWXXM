@@ -9,6 +9,7 @@ import {
   createLocalWorkSession,
   updateLocalWorkSession,
 } from '/utils/localWorkSessionStore';
+import { createWorkSession, updateWorkSession } from '/utils/workSessionApi';
 import {
   buildWorkSessionPayload,
   type ConverterSnapshot,
@@ -20,7 +21,7 @@ export const AUTOSAVE_DEBOUNCE_MS = 3000;
 export type AutoSaveIndicator = 'idle' | 'pending' | 'saving' | 'saved' | 'error';
 
 export interface UseWorkSessionSyncOptions {
-  /** @deprecated F21 — ignored; local IndexedDB needs no JWT */
+  /** When present, persist work sessions through the authenticated F31 API. */
   accessToken?: string;
   sessionId: string | null;
   sessionStatus?: WorkSessionStatus | null;
@@ -37,6 +38,7 @@ export interface UseWorkSessionSyncOptions {
  * @returns Save indicator state and persist/schedule helpers.
  */
 export function useWorkSessionSync({
+  accessToken,
   sessionId,
   sessionStatus,
   onSessionSaved,
@@ -68,7 +70,8 @@ export function useWorkSessionSync({
       if (isReadOnly) {
         return null;
       }
-      if (!canPersistWorkHistoryLocal()) {
+      const token = accessToken?.trim();
+      if (!token && !canPersistWorkHistoryLocal()) {
         setSaveIndicator('idle');
         return null;
       }
@@ -82,7 +85,14 @@ export function useWorkSessionSync({
       try {
         let saved: WorkSession;
         const activeId = sessionIdRef.current;
-        if (activeId) {
+        if (token) {
+          if (activeId) {
+            saved = await updateWorkSession(token, activeId, payload);
+          } else {
+            saved = await createWorkSession(token, payload);
+            onSessionIdAssigned(saved.id);
+          }
+        } else if (activeId) {
           saved = await updateLocalWorkSession(activeId, payload);
         } else {
           saved = await createLocalWorkSession(payload);
@@ -97,7 +107,7 @@ export function useWorkSessionSync({
         return null;
       }
     },
-    [isReadOnly, onSessionIdAssigned, onSessionSaved],
+    [accessToken, isReadOnly, onSessionIdAssigned, onSessionSaved],
   );
 
   const scheduleAutoSave = useCallback(
