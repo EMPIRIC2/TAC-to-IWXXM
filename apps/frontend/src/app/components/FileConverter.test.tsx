@@ -2063,6 +2063,47 @@ describe('FileConverter Component', () => {
       });
     });
 
+    it('persists structured failure logs in the failed session snapshot', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockRejectedValueOnce(
+        new MockConvertApiError('All conversions failed', {
+          status: 400,
+          errors: ['manual_input: Validation failed - 1 validation issue(s) found'],
+          issues: [
+            {
+              source: 'manual_input',
+              message: 'No ICAO code found in TAC text',
+              severity: 'error',
+              code: 'ICAO_VALIDATION_FAILED',
+            },
+          ],
+        }),
+      );
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, { target: { value: 'METAR NOT A VALID' } });
+
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockPersistSession).toHaveBeenCalledWith(
+          expect.objectContaining({
+            conversionLog: {
+              errors: ['manual_input: Validation failed - 1 validation issue(s) found'],
+              issues: [
+                expect.objectContaining({
+                  message: 'No ICAO code found in TAC text',
+                  code: 'ICAO_VALIDATION_FAILED',
+                }),
+              ],
+            },
+          }),
+          { status: 'failed' },
+        );
+      });
+    });
+
     it('uses fallback copy path when clipboard API is unavailable', async () => {
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockReset().mockResolvedValueOnce({

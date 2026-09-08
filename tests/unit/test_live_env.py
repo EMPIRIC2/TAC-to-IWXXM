@@ -53,6 +53,12 @@ def test_live_frontend_url_falls_back_to_e2e(monkeypatch: pytest.MonkeyPatch) ->
     assert live_frontend_url() == "https://frontend.example.com"
 
 
+def test_live_urls_default_to_placeholder_hosts_when_unset() -> None:
+    assert live_api_url() == ""
+    assert live_frontend_url() == ""
+    assert expected_api_base_url() == ""
+
+
 def test_doks_provisional_host_headers(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("PLAYWRIGHT_DOKS_PROVISIONAL", "1")
     monkeypatch.setenv("DOKS_LB_IP", "10.0.0.9")

@@ -514,10 +514,20 @@ export function FileConverter({
   const massZipInputRef = useRef<HTMLInputElement>(null);
   const hydratedWorkSessionIdRef = useRef<string | null>(null);
   const convertedFilesRef = useRef<ConvertedFile[]>([]);
+  const conversionLogRef = useRef<ConversionLog | null>(null);
+
+  const updateConversionLog = useCallback((next: ConversionLog | null) => {
+    conversionLogRef.current = next;
+    setConversionLog(next);
+  }, []);
 
   useEffect(() => {
     convertedFilesRef.current = convertedFiles;
   }, [convertedFiles]);
+
+  useEffect(() => {
+    conversionLogRef.current = conversionLog;
+  }, [conversionLog]);
 
   useEffect(() => {
     applyWebkitDirectoryAttrs(massFolderInputRef.current);
@@ -658,10 +668,13 @@ export function FileConverter({
       manualLineIndex: file.manualLineIndex,
       manualLineTotal: file.manualLineTotal,
     })),
-    conversionLog: conversionLog
+    conversionLog: conversionLogRef.current
       ? {
-          errors: conversionLog.errors,
-          issues: conversionLog.issues as unknown as Record<string, unknown>[],
+          errors: conversionLogRef.current.errors,
+          issues: conversionLogRef.current.issues as unknown as Record<
+            string,
+            unknown
+          >[],
         }
       : null,
     conversionParams: {
@@ -815,7 +828,7 @@ export function FileConverter({
     const hasLog =
       (loadedWorkSession.errors?.length ?? 0) > 0 ||
       (loadedWorkSession.issues?.length ?? 0) > 0;
-    setConversionLog(
+    updateConversionLog(
       hasLog
         ? {
             errors: loadedWorkSession.errors ?? [],
@@ -874,7 +887,7 @@ export function FileConverter({
         return next;
       });
     }
-  }, [loadedWorkSession]);
+  }, [loadedWorkSession, updateConversionLog]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
@@ -1106,7 +1119,7 @@ export function FileConverter({
     };
 
     setConversionStatus({ type: 'loading', message: 'Converting...' });
-    setConversionLog(null);
+    updateConversionLog(null);
     setFailedSpans([]);
     setBulletinSummary(null);
     setPlaceholderNotice(null);
@@ -1163,7 +1176,7 @@ export function FileConverter({
         } catch (err) {
           if (err instanceof EndpointNotImplementedError) {
             setPlaceholderNotice(err.message);
-            setConversionLog({
+            updateConversionLog({
               errors: [],
               issues: [
                 {
@@ -1246,7 +1259,9 @@ export function FileConverter({
         }
         clearConvertedFromQueue();
         // EV-040: keep manual TAC input after convert (do not clear).
-        setConversionLog(issueBag.length > 0 ? { errors: [], issues: issueBag } : null);
+        updateConversionLog(
+          issueBag.length > 0 ? { errors: [], issues: issueBag } : null,
+        );
         setConversionStatus({ type: 'idle' });
         if (failed > 0) {
           toast.warning(`Bulletin: ${newConvertedFiles.length} ok, ${failed} failed`);
@@ -1353,7 +1368,7 @@ export function FileConverter({
 
       if (newConvertedFiles.length === 0) {
         if (hasLog) {
-          setConversionLog({ errors: responseErrors, issues: responseIssues });
+          updateConversionLog({ errors: responseErrors, issues: responseIssues });
         }
         const failureMessage = responseErrors[0] ?? 'No files were converted';
         toast.error(failureMessage);
@@ -1400,7 +1415,7 @@ export function FileConverter({
       if (!softFail) {
         setFailedSpans([]);
       }
-      setConversionLog(
+      updateConversionLog(
         hasLog ? { errors: responseErrors, issues: responseIssues } : null,
       );
       setConversionStatus({ type: 'idle' });
@@ -1412,7 +1427,7 @@ export function FileConverter({
         isStructuredConvertError(error) &&
         (error.errors.length > 0 || error.issues.length > 0)
       ) {
-        setConversionLog({
+        updateConversionLog({
           errors: error.errors,
           issues: error.issues,
         });
@@ -1608,45 +1623,48 @@ export function FileConverter({
     setConvertedFiles([]);
     setFirstAccumulatedTac(null);
     setValidateReport(null);
-    setConversionLog(null);
+    updateConversionLog(null);
     setConversionStatus({ type: 'idle' });
     onActiveSessionIdChange?.(null);
     onNewMetar?.();
     toast.info(isReadOnly ? 'Starting a new TAC session' : 'Starting a new TAC draft');
   };
 
-  const handleLoadGoldenExample = useCallback((exampleId: string) => {
-    const example = getExampleById(exampleId);
-    if (!example) {
-      return;
-    }
-    // Drop prior conversion/preview state so demo TAC is never paired with stale XML.
-    setPendingFiles([]);
-    setConvertedFiles([]);
-    setFirstAccumulatedTac(null);
-    setValidateReport(null);
-    setConversionLog(null);
-    setConversionStatus({ type: 'idle' });
-    setFailedSpans([]);
-    setPreviewXml('');
-    setPreviewStatus('empty');
-    setPreviewMode('idle');
-    setPreviewSoftFailDetail(undefined);
-    setBulletinSummary(null);
-    setPlaceholderNotice(null);
-    setDecodeError(null);
+  const handleLoadGoldenExample = useCallback(
+    (exampleId: string) => {
+      const example = getExampleById(exampleId);
+      if (!example) {
+        return;
+      }
+      // Drop prior conversion/preview state so demo TAC is never paired with stale XML.
+      setPendingFiles([]);
+      setConvertedFiles([]);
+      setFirstAccumulatedTac(null);
+      setValidateReport(null);
+      updateConversionLog(null);
+      setConversionStatus({ type: 'idle' });
+      setFailedSpans([]);
+      setPreviewXml('');
+      setPreviewStatus('empty');
+      setPreviewMode('idle');
+      setPreviewSoftFailDetail(undefined);
+      setBulletinSummary(null);
+      setPlaceholderNotice(null);
+      setDecodeError(null);
 
-    setManualInput(example.body.replace(/\s+$/, ''));
-    setInputMode(example.inputMode);
-    // Always set product — omit → auto — so a prior TAF pick cannot stick on AHL/TAC demos.
-    setConversionParams((prev) => ({
-      ...prev,
-      product: example.product ?? 'auto',
-      reportVariant: '',
-    }));
-    setDemoExampleLabel(example.label);
-    toast.info(`Loaded ${example.label} example`);
-  }, []);
+      setManualInput(example.body.replace(/\s+$/, ''));
+      setInputMode(example.inputMode);
+      // Always set product — omit → auto — so a prior TAF pick cannot stick on AHL/TAC demos.
+      setConversionParams((prev) => ({
+        ...prev,
+        product: example.product ?? 'auto',
+        reportVariant: '',
+      }));
+      setDemoExampleLabel(example.label);
+      toast.info(`Loaded ${example.label} example`);
+    },
+    [updateConversionLog],
+  );
 
   const resolveDownloadXmlName = (file: ConvertedFile): string => {
     if (file.liveOutputSlot) {
@@ -1888,7 +1906,7 @@ export function FileConverter({
     setConvertedFiles([]);
     setFirstAccumulatedTac(null);
     setValidateReport(null);
-    setConversionLog(null);
+    updateConversionLog(null);
     setConversionStatus({ type: 'idle' });
     setFailedSpans([]);
     setPreviewXml('');
