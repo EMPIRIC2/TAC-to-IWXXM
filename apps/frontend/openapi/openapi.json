@@ -6900,6 +6900,11 @@
             "description": "Successful Response"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Dissemination Preflight",
         "tags": [
           "Dissemination"
@@ -6922,6 +6927,11 @@
             "description": "Successful Response"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Dissemination Send",
         "tags": [
           "Dissemination"

@@ -44,9 +44,10 @@ class SchemaDiffItem(msgspec.Struct, frozen=True):
 class PreflightRequest(msgspec.Struct, frozen=True):
     """Preflight a destination sink before operator send."""
 
-    sink_type: SinkType
+    dissemination_template_id: str | None = None
+    sink_type: SinkType | None = None
     uri: str | None = None
-    ddl: bool = False
+    ddl: bool | None = None
     product: str | None = None
     iwxxm_version: str | None = None
     params: dict[str, Any] = msgspec.field(default_factory=dict)
@@ -65,6 +66,7 @@ class PreflightResponse(msgspec.Struct, frozen=True):
 class SendRequest(msgspec.Struct, frozen=True):
     """Send IWXXM (and optional TAC) to a preflighted or one-shot destination."""
 
+    dissemination_template_id: str | None = None
     handle: str | None = None
     sink_type: SinkType | None = None
     uri: str | None = None

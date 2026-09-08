@@ -11,7 +11,9 @@ from dissemination.rate_limit import DisseminationRateLimiter
 from fastapi.testclient import TestClient
 from src import api as api_module
 from src.routers import dissemination as diss_router
+from src.schemas.conversion_profiles import DisseminationTemplateOut
 from src.utilities.abuse_controls import get_limiter
+from src.utilities.security import verify_optional_supabase_token
 
 
 @pytest.fixture
@@ -31,6 +33,26 @@ def client(monkeypatch: pytest.MonkeyPatch):
 def _sqlite_uri(tmp_path: Path) -> str:
     db = tmp_path / "dissem.db"
     return f"sqlite+aiosqlite:///{db}"
+
+
+def _template() -> DisseminationTemplateOut:
+    from datetime import UTC, datetime
+    from uuid import uuid4
+
+    now = datetime(2026, 9, 7, tzinfo=UTC)
+    return DisseminationTemplateOut(
+        id=uuid4(),
+        user_id=uuid4(),
+        slug="saved-sqlite",
+        name="Saved SQLite",
+        sink_type="sqlite",
+        product="metar",
+        ddl=True,
+        params={"schema": "public"},
+        shared=True,
+        created_at=now,
+        updated_at=now,
+    )
 
 
 def test_preflight_msgspec_shape_and_handle_memory_only(client: TestClient, tmp_path: Path) -> None:
@@ -315,3 +337,174 @@ def test_send_apply_failure_becomes_500(client: TestClient, monkeypatch: pytest.
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
     assert resp.status_code == 500
+
+
+def test_preflight_template_requires_auth(client: TestClient) -> None:
+    template = _template()
+    resp = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps({"dissemination_template_id": str(template.id)}),
+        headers={"Content-Type": "application/json"},
+    )
+    assert resp.status_code == 401
+    assert "sign in" in resp.text.lower()
+
+
+def test_preflight_unknown_template_id_returns_400(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    template = _template()
+
+    async def _auth() -> dict[str, str]:
+        return {"sub": str(template.user_id)}
+
+    class _Svc:
+        def __init__(self, _user_id: str) -> None:
+            pass
+
+        def get_template(self, _template_id):
+            raise ValueError("bad template")
+
+    api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
+    monkeypatch.setattr(diss_router, "ConversionProfilesService", _Svc)
+
+    resp = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps({"dissemination_template_id": str(template.id)}),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 400
+
+
+def test_preflight_template_applies_defaults_and_explicit_fields_win(
+    client: TestClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    template = _template()
+    seen = {}
+
+    async def _auth() -> dict[str, str]:
+        return {"sub": str(template.user_id)}
+
+    async def _ok(req):
+        seen["req"] = req
+        from dissemination.models import PreflightResponse
+
+        return PreflightResponse(ok=True, connectivity_ok=True, diffs=[], detail=None)
+
+    class _Svc:
+        def __init__(self, _user_id: str) -> None:
+            pass
+
+        def get_template(self, _template_id):
+            return template
+
+    api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
+    monkeypatch.setattr(diss_router, "ConversionProfilesService", _Svc)
+    monkeypatch.setattr(diss_router, "run_db_preflight", _ok)
+    uri = _sqlite_uri(tmp_path)
+    resp = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps(
+            {
+                "dissemination_template_id": str(template.id),
+                "uri": uri,
+                "product": "taf",
+                "params": {"table": "ops_reports"},
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 200, resp.text
+    req = seen["req"]
+    assert req.sink_type == "sqlite"
+    assert req.uri == uri
+    assert req.ddl is True
+    assert req.product == "taf"
+    assert req.params == {"schema": "public", "table": "ops_reports"}
+
+
+def test_send_template_requires_auth(client: TestClient) -> None:
+    template = _template()
+    resp = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "dissemination_template_id": str(template.id),
+                "iwxxm_xml": "<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/2025-2'/>",
+                "product": "metar",
+            }
+        ),
+        headers={"Content-Type": "application/json"},
+    )
+    assert resp.status_code == 401
+    assert "sign in" in resp.text.lower()
+
+
+def test_send_unknown_template_id_returns_400(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
+    template = _template()
+
+    async def _auth() -> dict[str, str]:
+        return {"sub": str(template.user_id)}
+
+    class _Svc:
+        def __init__(self, _user_id: str) -> None:
+            pass
+
+        def get_template(self, _template_id):
+            raise ValueError("bad template")
+
+    api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
+    monkeypatch.setattr(diss_router, "ConversionProfilesService", _Svc)
+
+    resp = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "dissemination_template_id": str(template.id),
+                "iwxxm_xml": "<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/2025-2'/>",
+                "product": "metar",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 400
+
+
+def test_send_template_applies_defaults(client: TestClient, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    template = _template()
+    seen = []
+
+    async def _auth() -> dict[str, str]:
+        return {"sub": str(template.user_id)}
+
+    async def _ok(req):
+        seen.append(req)
+        from dissemination.models import PreflightResponse
+
+        return PreflightResponse(ok=True, connectivity_ok=True, diffs=[], detail=None)
+
+    class _Svc:
+        def __init__(self, _user_id: str) -> None:
+            pass
+
+        def get_template(self, _template_id):
+            return template
+
+    api_module.app.dependency_overrides[verify_optional_supabase_token] = _auth
+    monkeypatch.setattr(diss_router, "ConversionProfilesService", _Svc)
+    monkeypatch.setattr(diss_router, "run_db_preflight", _ok)
+    uri = _sqlite_uri(tmp_path)
+    resp = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "dissemination_template_id": str(template.id),
+                "uri": uri,
+                "iwxxm_xml": "<x/>",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 200, resp.text
+    assert seen
+    assert seen[0].sink_type == "sqlite"
+    assert seen[0].uri == uri
+    assert seen[0].ddl is True

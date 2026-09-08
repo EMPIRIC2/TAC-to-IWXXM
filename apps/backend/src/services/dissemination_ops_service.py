@@ -76,7 +76,7 @@ def _reject_secrets(payload: dict[str, Any], *, path: str = "") -> None:
         full = f"{path}.{key}" if path else key
         if _SECRET_KEY.search(key):
             raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
                 detail=f"Field not allowed in dissemination ops persistence: {full}",
             )
         if isinstance(value, dict):
