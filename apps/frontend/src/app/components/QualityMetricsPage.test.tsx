@@ -39,6 +39,8 @@ const MOCK_LIST = {
       lint_fail: 0,
       validate_fail: 0,
       deferred_gaps: 1,
+      pair_examples: 1,
+      unpaired_examples: 1,
     },
     {
       product: 'taf',
@@ -48,6 +50,8 @@ const MOCK_LIST = {
       lint_fail: 0,
       validate_fail: 0,
       deferred_gaps: 0,
+      pair_examples: 1,
+      unpaired_examples: 0,
     },
   ],
   files: [
@@ -60,6 +64,7 @@ const MOCK_LIST = {
       lint_error_count: 0,
       validate_error_count: 0,
       deferred: false,
+      has_tac_pair: true,
     },
     {
       stem: 'metar-NIL-collect',
@@ -70,6 +75,7 @@ const MOCK_LIST = {
       lint_error_count: 0,
       validate_error_count: 0,
       deferred: true,
+      has_tac_pair: false,
     },
     {
       stem: 'taf-A5-1',
@@ -80,6 +86,7 @@ const MOCK_LIST = {
       lint_error_count: 0,
       validate_error_count: 0,
       deferred: false,
+      has_tac_pair: true,
     },
   ],
 };
@@ -132,8 +139,11 @@ describe('QualityMetricsPage (TC-EV054-002)', () => {
     expect(screen.getByTestId('quality-metrics-row-taf-A5-1')).toBeInTheDocument();
 
     const summary = screen.getByTestId('quality-metrics-summary');
+    expect(within(summary).getByText('TAC/XML pairs')).toBeInTheDocument();
+    expect(within(summary).getByText('Unpaired examples')).toBeInTheDocument();
     expect(within(summary).getByText('Matches')).toBeInTheDocument();
-    expect(within(summary).getByText('2')).toBeInTheDocument();
+    expect(summary).toHaveTextContent('TAC/XML pairs');
+    expect(summary).toHaveTextContent('2');
   });
 
   it('labels deferred gap stems (AC5)', async () => {
@@ -148,6 +158,9 @@ describe('QualityMetricsPage (TC-EV054-002)', () => {
     expect(
       screen.getByTestId('quality-metrics-deferred-metar-NIL-collect'),
     ).toHaveTextContent(QUALITY_METRICS_DEFERRED_LABEL);
+    expect(
+      screen.getByTestId('quality-metrics-row-metar-NIL-collect'),
+    ).toHaveTextContent(/no TAC\/XML pair/i);
   });
 
   it('filters list by product', async () => {
@@ -199,6 +212,78 @@ describe('QualityMetricsPage (TC-EV054-002)', () => {
     await waitFor(() => {
       expect(screen.getByText('Failed to load quality metrics')).toBeInTheDocument();
     });
+  });
+
+  it('defaults missing pair coverage counts to zero', async () => {
+    apiMocks.fetchQualityMetrics.mockResolvedValueOnce({
+      ...MOCK_LIST,
+      summaries: [
+        {
+          product: 'metar',
+          match_pass: 1,
+          match_fail: 0,
+          residual_nonempty: 0,
+          lint_fail: 0,
+          validate_fail: 0,
+          deferred_gaps: 0,
+        },
+      ],
+      files: [MOCK_LIST.files[0]],
+    });
+
+    render(<QualityMetricsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-summary')).toBeInTheDocument();
+    });
+
+    const summary = screen.getByTestId('quality-metrics-summary');
+    expect(summary).toHaveTextContent('TAC/XML pairs');
+    expect(summary).toHaveTextContent('Unpaired examples');
+    expect(summary).toHaveTextContent('0');
+  });
+
+  it('defaults missing selected-product pair coverage counts to zero', async () => {
+    const user = userEvent.setup();
+    apiMocks.fetchQualityMetrics
+      .mockResolvedValueOnce(MOCK_LIST)
+      .mockResolvedValueOnce({
+        ...MOCK_LIST,
+        summaries: [
+          {
+            product: 'metar',
+            match_pass: 1,
+            match_fail: 0,
+            residual_nonempty: 0,
+            lint_fail: 0,
+            validate_fail: 0,
+            deferred_gaps: 0,
+          },
+        ],
+        files: [MOCK_LIST.files[0]],
+      });
+
+    render(<QualityMetricsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-product-filter')).toBeInTheDocument();
+    });
+
+    await user.selectOptions(
+      screen.getByTestId('quality-metrics-product-filter'),
+      'metar',
+    );
+
+    await waitFor(() => {
+      expect(apiMocks.fetchQualityMetrics).toHaveBeenLastCalledWith({
+        product: 'metar',
+      });
+    });
+
+    const summary = screen.getByTestId('quality-metrics-summary');
+    expect(summary).toHaveTextContent('TAC/XML pairs');
+    expect(summary).toHaveTextContent('Unpaired examples');
+    expect(summary).toHaveTextContent('0');
   });
 });
 
