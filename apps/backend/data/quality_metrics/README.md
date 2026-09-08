@@ -19,7 +19,7 @@ make generate-quality-metrics
 
 Re-run when the official TAC inventory, annex3 goldens, vendor IWXXM pin, or
 encode/lint/validate engines change in a way that affects corpus diagnostics.
-CI does not auto-regenerate on every PR — commit an updated `corpus_metrics.json`
-when inventory/engine deltas change diagnostics (same pattern as catalog-regen).
+CI verifies that the committed metrics content still matches a fresh local
+regeneration, while ignoring the timestamp-only `generated_at` field.
 
 Do **not** hand-edit match/residual/lint/validate fields — regenerate instead.

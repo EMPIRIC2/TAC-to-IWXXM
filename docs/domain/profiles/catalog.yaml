@@ -597,12 +597,16 @@ profiles:
     status: stub
     implementation:
       issue: "#921"
-      note: EV-065 P0 — registry + COLLECT baseline; EV-090 mining promote (OPMET Guidelines + APAC FAQs); ROBEX handbook durable file still gap
+      note: EV-065 P0 — registry + COLLECT baseline; EV-090 mining promote (OPMET Guidelines + APAC FAQs); ROBEX handbook durable file pinned from ICAO APAC edocs
     sources:
       - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
         label: OPMET IWXXM Exchange Guidelines (5th Ed.)
         access: public
         proves: COLLECT / FTBP / AFS exchange baseline shared with GLOBAL_AFS
+      - url: https://www.icao.int/sites/default/files/APAC/Documents/edocs/MET/2026-02-APAC-ROBEX-HB-19TH-ED.pdf
+        label: APAC ROBEX Handbook (19th Ed., Feb 2026)
+        access: public
+        proves: APAC regional OPMET bulletin exchange scheme and IWXXM/AMHS transition posture
       - url: https://www.icao.int/APAC/apac-electronic-documents
         label: ICAO APAC electronic documents
         access: public
@@ -616,7 +620,6 @@ profiles:
       - docs/domain/mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md
     stub: exchange/APAC_ROBEX.md
     gaps:
-      - ROBEX handbook URL not pinned to a durable file row
       - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
 
   - id: EUR_RODEX
@@ -625,22 +628,21 @@ profiles:
     status: stub
     implementation:
       issue: "#921"
-      note: EV-086 P0 — registry + COLLECT baseline; EV-090 mining promote (OPMET Guidelines + EUR Doc 14 notes); RODEX handbook URL triage remains gap
+      note: EV-086 P0 — registry + COLLECT baseline; EV-090 mining promote (OPMET Guidelines + EUR notes); EUR Doc 018 durable edition pin added
     sources:
       - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
         label: OPMET IWXXM Exchange Guidelines (5th Ed.)
         access: public
         proves: COLLECT / FTBP / AFS exchange baseline shared with GLOBAL_AFS
-      - url: https://www.icao.int/EUR/EUR%20Documents/RODEX%20Handbook.pdf
-        label: EUR RODEX Handbook (candidate)
-        access: gap
-        proves: European regional exchange overlay
+      - url: https://www.icao.int/sites/default/files/EURNAT/Documents/EUR%20and%20Nat%20Docs/EUR%20Documents/EUR%20Documents/018%20-%20OPMET%20Handbook/EUR-Doc-18-EN-Edition-15-Amd-0.pdf
+        label: EUR OPMET Data Management Handbook (EUR Doc 018, Ed. 15)
+        access: public
+        proves: Main guidance material for EUR RODEX schema, including IWXXM exchange and RODB procedures
     mining_notes:
       - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
       - docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md
     stub: exchange/EUR_RODEX.md
     gaps:
-      - RODEX handbook URL needs triage (redirect / edition pin)
       - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
 
   - id: AFI
@@ -649,17 +651,20 @@ profiles:
     status: stub
     implementation:
       issue: "#921"
-      note: EV-086 P0 — registry + COLLECT baseline; EV-090 promotes shared OPMET Guidelines baseline; AFI-specific handbook still TBD
+      note: EV-086 P0 — registry + COLLECT baseline; EV-090 shared baseline plus AFI IWXXM regional guideline pin
     sources:
       - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
         label: OPMET IWXXM Exchange Guidelines (5th Ed.)
         access: public
         proves: COLLECT / AFS exchange baseline pending regional handbook
+      - url: https://www.icao.int/sites/default/files/sp-files/ESAF/Documents/AFI%20IWXXM%20Guideline%20Documents/AFI%20IWXXM%20Implementation%20Guideline%20Doc%20Ed.1_2020.pdf
+        label: AFI IWXXM Implementation Guideline (Ed. 1, Dec 2020)
+        access: public
+        proves: AFI regional IWXXM exchange transition guidance, including AMHS/FTBP posture
     mining_notes:
       - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
     stub: exchange/AFI.md
     gaps:
-      - Authoritative AFI-specific exchange rule source not listed in #913 initial mine
       - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
 
   - id: CAR_SAM

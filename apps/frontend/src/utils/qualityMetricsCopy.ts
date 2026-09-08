@@ -12,7 +12,7 @@ export const QUALITY_METRICS_PAGE_TITLE = 'Quality metrics';
 
 /** Page subtitle — plain-language purpose. */
 export const QUALITY_METRICS_PAGE_SUBTITLE =
-  'Compare our converted IWXXM to official WMO examples. See match status, leftover TAC (residuals), lint findings, and validation results.';
+  'Compare our converted IWXXM to official WMO examples. See match status, TAC/XML pair coverage, leftover TAC (residuals), lint findings, and validation results.';
 
 /** Empty list when the product filter has no rows. */
 export const QUALITY_METRICS_EMPTY_LIST = 'No files for this product filter.';

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import pytest
@@ -108,6 +109,149 @@ async def test_tac_quality_decode_tac_endpoint(monkeypatch: pytest.MonkeyPatch) 
         files=None,
     )
     assert isinstance(response, Response)
+
+
+def test_tac_quality_advisory_explanation_variants() -> None:
+    assert tac_quality._advisory_explanation("VONA", "DTG") == "Issue time"
+    assert tac_quality._advisory_explanation("VONA", "VOLCANO") == "Volcano"
+    assert tac_quality._advisory_explanation("VONA", "UNKNOWN_LABEL") == "Unknown Label"
+    assert tac_quality._advisory_explanation("SWXA", "SWXC") == "Center"
+    assert tac_quality._advisory_explanation("SWXA", "FCST SWX +6 HR") == "Forecast +6 hours"
+    assert tac_quality._advisory_explanation("SWXA", "ODD_LABEL") == "Odd Label"
+
+
+def test_tac_quality_enrich_advisory_decode_passthrough_and_empty_cases() -> None:
+    segments, residuals, summary = tac_quality._enrich_advisory_decode(
+        "METAR KJFK 101851Z 24008KT 10SM FEW250 15/07 A3034=",
+        product="METAR",
+        segments=[SimpleNamespace(start=0, end=5, code="METAR", explanation="Type")],
+        residuals=[SimpleNamespace(start=6, end=10, text="rest")],
+        summary="existing summary",
+    )
+    assert summary == "existing summary"
+    assert [(s.start, s.end, s.code, s.explanation) for s in segments] == [(0, 5, "METAR", "Type")]
+    assert [(r.start, r.end, r.text) for r in residuals] == [(6, 10, "rest")]
+
+    empty_segments, empty_residuals, empty_summary = tac_quality._enrich_advisory_decode(
+        "",
+        product="VONA",
+        segments=[],
+        residuals=[],
+        summary=None,
+    )
+    assert empty_segments == []
+    assert empty_residuals == []
+    assert empty_summary == ""
+
+
+def test_tac_quality_enrich_advisory_decode_vona_builds_segments_and_summary() -> None:
+    tac = """VONA
+DTG: 20240216/0130Z
+VOLCANO: KARYMSKY 300130
+CURRENT COLOUR CODE: YELLOW
+RMK: Line one
+ continuation text
+"""
+    segments, residuals, summary = tac_quality._enrich_advisory_decode(
+        tac,
+        product="VONA",
+        segments=[],
+        residuals=[SimpleNamespace(start=0, end=len(tac), text=tac)],
+        summary=None,
+    )
+    assert residuals == []
+    assert any(s.explanation == "Notice type" and s.code == "VONA" for s in segments)
+    assert any(s.explanation == "Issue time" and s.code == "20240216/0130Z" for s in segments)
+    assert any(s.explanation == "Volcano" and s.code == "KARYMSKY 300130" for s in segments)
+    assert any(s.explanation == "Current colour code" and s.code == "YELLOW" for s in segments)
+    assert any(s.explanation == "Remarks" and s.code == "Line one continuation text" for s in segments)
+    assert summary == "VONA for KARYMSKY 300130. Current colour code YELLOW."
+
+
+def test_tac_quality_enrich_advisory_decode_swxa_builds_segments_and_summary() -> None:
+    tac = """SWX ADVISORY
+SWXC: DONLON
+SWX EFFECT: HF COM
+NXT ADVISORY: WILL BE ISSUED BY 20201108/0700Z
+"""
+    segments, residuals, summary = tac_quality._enrich_advisory_decode(
+        tac,
+        product="SWXA",
+        segments=[],
+        residuals=[SimpleNamespace(start=0, end=len(tac), text=tac)],
+        summary="fallback",
+    )
+    assert residuals == []
+    assert any(s.explanation == "Advisory header" and s.code == "SWX ADVISORY" for s in segments)
+    assert any(s.explanation == "Center" and s.code == "DONLON" for s in segments)
+    assert any(s.explanation == "Effect" and s.code == "HF COM" for s in segments)
+    assert any(s.explanation == "Next advisory" and s.code == "WILL BE ISSUED BY 20201108/0700Z" for s in segments)
+    assert summary == "SWX advisory from DONLON. Effect: HF COM."
+
+
+def test_tac_quality_enrich_advisory_decode_returns_original_residuals_when_unparsed() -> None:
+    residual = SimpleNamespace(start=2, end=7, text="leftover")
+    segments, residuals, summary = tac_quality._enrich_advisory_decode(
+        "plain text without advisory labels",
+        product="SWXA",
+        segments=[],
+        residuals=[residual],
+        summary="fallback summary",
+    )
+    assert segments == []
+    assert [(r.start, r.end, r.text) for r in residuals] == [(2, 7, "leftover")]
+    assert summary == "fallback summary"
+
+
+def test_tac_quality_enrich_advisory_decode_branch_gaps_without_optional_fields() -> None:
+    vona_tac = """VONA
+
+DTG: 20240216/0130Z
+"""
+    vona_segments, vona_residuals, vona_summary = tac_quality._enrich_advisory_decode(
+        vona_tac,
+        product="VONA",
+        segments=[],
+        residuals=[SimpleNamespace(start=0, end=len(vona_tac), text=vona_tac)],
+        summary="fallback summary",
+    )
+    assert vona_residuals == []
+    assert any(s.explanation == "Notice type" for s in vona_segments)
+    assert any(s.explanation == "Issue time" for s in vona_segments)
+    assert vona_summary == "fallback summary"
+
+    swxa_tac = """SWX ADVISORY
+
+SWXC: DONLON
+"""
+    swxa_segments, swxa_residuals, swxa_summary = tac_quality._enrich_advisory_decode(
+        swxa_tac,
+        product="SWXA",
+        segments=[],
+        residuals=[SimpleNamespace(start=0, end=len(swxa_tac), text=swxa_tac)],
+        summary="fallback summary",
+    )
+    assert swxa_residuals == []
+    assert any(s.explanation == "Advisory header" for s in swxa_segments)
+    assert any(s.explanation == "Center" for s in swxa_segments)
+    assert swxa_summary == "SWX advisory from DONLON."
+
+
+def test_tac_quality_enrich_advisory_decode_swxa_without_center_keeps_effect_summary() -> None:
+    swxa_tac = """SWX ADVISORY
+SWX EFFECT: HF COM
+"""
+    segments, residuals, summary = tac_quality._enrich_advisory_decode(
+        swxa_tac,
+        product="SWXA",
+        segments=[],
+        residuals=[SimpleNamespace(start=0, end=len(swxa_tac), text=swxa_tac)],
+        summary="fallback summary",
+    )
+    assert residuals == []
+    assert any(s.explanation == "Advisory header" for s in segments)
+    assert any(s.explanation == "Effect" and s.code == "HF COM" for s in segments)
+    assert summary == "Effect: HF COM."
 
 
 @pytest.mark.asyncio

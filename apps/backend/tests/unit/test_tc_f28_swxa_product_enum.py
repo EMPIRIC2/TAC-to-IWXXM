@@ -69,6 +69,9 @@ def test_decode_tac_accepts_product_swxa(client: TestClient) -> None:
     body = response.json()
     assert body["product"] == "SWXA"
     assert "summary" in body
+    assert body["segments"]
+    assert any("Space weather centre" in segment["explanation"] for segment in body["segments"])
+    assert not (len(body["residuals"]) == 1 and body["residuals"][0]["text"].strip() == tac.strip())
 
 
 def test_convert_accepts_product_swxa(client: TestClient) -> None:

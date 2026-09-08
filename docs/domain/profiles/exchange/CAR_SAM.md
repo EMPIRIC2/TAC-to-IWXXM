@@ -5,7 +5,7 @@
 
 Regional **exchange** overlay for ICAO CAR/SAM. P0 stub delegates to the
 `GLOBAL_AFS` COLLECT baseline. Shared AFS exchange baseline is the OPMET Guidelines;
-CAR/SAM-specific handbook sources remain TBD (#913).
+CAR/SAM-specific handbook sources remain unresolved after the current #913 source pass.
 
 ## Owns (target)
 
@@ -25,7 +25,7 @@ CAR/SAM-specific handbook sources remain TBD (#913).
 | Source | Access | Proves |
 |--------|--------|--------|
 | [OPMET IWXXM Exchange Guidelines (5th Ed.)](https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf) | public | Shared COLLECT / AFS baseline |
-| CAR/SAM-specific exchange handbook | gap | Regional overlay rules |
+| CAR/SAM-specific exchange handbook | gap | No durable public regional handbook URL pinned yet; keep overlay on global baseline until a regional source is confirmed |
 
 ## Mining notes
 
@@ -41,5 +41,5 @@ CAR/SAM-specific handbook sources remain TBD (#913).
 
 ## Gaps
 
-- Authoritative CAR/SAM-specific exchange source row in catalog
+- Durable CAR/SAM regional exchange handbook / guidance URL
 - Regional rules beyond GLOBAL_AFS COLLECT baseline

@@ -4232,6 +4232,11 @@
             "title": "Deferred",
             "type": "boolean"
           },
+          "has_tac_pair": {
+            "default": false,
+            "title": "Has Tac Pair",
+            "type": "boolean"
+          },
           "lint_error_count": {
             "default": 0,
             "title": "Lint Error Count",
@@ -4329,6 +4334,11 @@
             "title": "Match Pass",
             "type": "integer"
           },
+          "pair_examples": {
+            "default": 0,
+            "title": "Pair Examples",
+            "type": "integer"
+          },
           "product": {
             "title": "Product",
             "type": "string"
@@ -4336,6 +4346,11 @@
           "residual_nonempty": {
             "default": 0,
             "title": "Residual Nonempty",
+            "type": "integer"
+          },
+          "unpaired_examples": {
+            "default": 0,
+            "title": "Unpaired Examples",
             "type": "integer"
           },
           "validate_fail": {
