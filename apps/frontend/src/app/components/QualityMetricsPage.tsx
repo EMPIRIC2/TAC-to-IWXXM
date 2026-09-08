@@ -149,6 +149,8 @@ export function QualityMetricsPage({
           lint_fail: acc.lint_fail + row.lint_fail,
           validate_fail: acc.validate_fail + row.validate_fail,
           deferred_gaps: acc.deferred_gaps + row.deferred_gaps,
+          pair_examples: acc.pair_examples + (row.pair_examples ?? 0),
+          unpaired_examples: acc.unpaired_examples + (row.unpaired_examples ?? 0),
         }),
         {
           product: 'all',
@@ -158,10 +160,19 @@ export function QualityMetricsPage({
           lint_fail: 0,
           validate_fail: 0,
           deferred_gaps: 0,
+          pair_examples: 0,
+          unpaired_examples: 0,
         } satisfies QualityMetricsSummary,
       );
     }
-    return summaries.find((s) => s.product === productFilter) ?? null;
+    const selected = summaries.find((s) => s.product === productFilter);
+    return selected
+      ? {
+          ...selected,
+          pair_examples: selected.pair_examples ?? 0,
+          unpaired_examples: selected.unpaired_examples ?? 0,
+        }
+      : null;
   }, [productFilter, summaries]);
 
   const handleSelectStem = (stem: string) => {
@@ -248,10 +259,18 @@ export function QualityMetricsPage({
 
               {!loading && !error && activeSummary && (
                 <div
-                  className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6"
+                  className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-8"
                   data-testid="quality-metrics-summary"
                   aria-label="Quality metrics summary"
                 >
+                  <SummaryStat
+                    label="TAC/XML pairs"
+                    value={activeSummary.pair_examples}
+                  />
+                  <SummaryStat
+                    label="Unpaired examples"
+                    value={activeSummary.unpaired_examples}
+                  />
                   <SummaryStat label="Matches" value={activeSummary.match_pass} />
                   <SummaryStat label="Mismatches" value={activeSummary.match_fail} />
                   <SummaryStat
@@ -292,6 +311,9 @@ export function QualityMetricsPage({
                             <div className="text-xs text-gray-500 dark:text-gray-400">
                               {row.product.toUpperCase()} · {row.tier} ·{' '}
                               {formatMatchStatusLabel(row.match_status)}
+                              {row.has_tac_pair === false
+                                ? ' · no TAC/XML pair'
+                                : ' · TAC/XML pair'}
                             </div>
                           </div>
                           <div className="flex flex-wrap items-center gap-2 text-xs">
