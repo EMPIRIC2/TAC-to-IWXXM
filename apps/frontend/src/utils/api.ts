@@ -87,6 +87,38 @@ export interface ApiError {
   total_errors?: number;
 }
 
+/**
+ * Structured hard-convert failure surfaced by the backend.
+ *
+ * Preserves ``detail.errors`` / ``detail.issues`` from non-2xx convert responses so
+ * the workbench can render the same operator-facing log panel it uses for 200 responses
+ * with partial or failed conversion details.
+ */
+export class ConvertApiError extends Error {
+  status: number;
+  errors: string[];
+  issues: ConversionIssue[];
+
+  constructor(
+    message: string,
+    {
+      status,
+      errors = [],
+      issues = [],
+    }: {
+      status: number;
+      errors?: string[];
+      issues?: ConversionIssue[];
+    },
+  ) {
+    super(message);
+    this.name = 'ConvertApiError';
+    this.status = status;
+    this.errors = errors;
+    this.issues = issues;
+  }
+}
+
 /** Prefer FastAPI string ``detail``, then nested message, then ``message``. */
 function apiErrorMessage(
   error: { detail?: unknown; message?: unknown },
@@ -272,9 +304,27 @@ export async function convertMetarToIwxxm(params: {
         message: `Conversion failed: ${response.statusText}`,
         errors: [],
       }));
-      throw new Error(
-        error.detail?.message || error.message || `HTTP ${response.status}`,
-      );
+      const detail =
+        error.detail && typeof error.detail === 'object'
+          ? (error.detail as Record<string, unknown>)
+          : null;
+      const errors = Array.isArray(detail?.errors)
+        ? detail.errors.filter((item): item is string => typeof item === 'string')
+        : Array.isArray(error.errors)
+          ? error.errors.filter(
+              (item: unknown): item is string => typeof item === 'string',
+            )
+          : [];
+      const issues = Array.isArray(detail?.issues)
+        ? (detail.issues as ConversionIssue[])
+        : Array.isArray(error.issues)
+          ? (error.issues as ConversionIssue[])
+          : [];
+      throw new ConvertApiError(apiErrorMessage(error, `HTTP ${response.status}`), {
+        status: response.status,
+        errors,
+        issues,
+      });
     }
 
     return await response.json();

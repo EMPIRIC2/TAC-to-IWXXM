@@ -31,26 +31,15 @@ test.describe('UJ-001 delta — accumulate results + error log', () => {
     );
   });
 
-  test('failed convert shows error log panel', async ({ page }) => {
-    await page.route('**/api/v1/convert', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          results: [],
-          errors: ['Invalid METAR syntax'],
-          issues: [],
-        }),
-      });
-    });
-
+  test('invalid convert shows error log panel', async ({ page }) => {
     await openConverterForE2e(page);
-    await convertManualMetar(page, 'NOT A VALID METAR');
+    await convertManualMetar(page, 'METAR NOT A VALID');
 
     const errorLog = page.getByLabel(/conversion error log/i);
     await expect(errorLog).toBeVisible({
       timeout: 10000,
     });
-    await expect(errorLog.getByText(/Invalid METAR syntax/i)).toBeVisible();
+    await expect(errorLog.getByText(/All conversions failed/i)).toBeVisible();
+    await expect(errorLog.getByText(/No ICAO code found in TAC text/i)).toBeVisible();
   });
 });

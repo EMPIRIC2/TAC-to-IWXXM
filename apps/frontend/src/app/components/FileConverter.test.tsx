@@ -42,6 +42,32 @@ const MockEndpointNotImplementedError = vi.hoisted(() => {
     }
   };
 });
+const MockConvertApiError = vi.hoisted(() => {
+  return class ConvertApiError extends Error {
+    status: number;
+    errors: string[];
+    issues: Array<Record<string, unknown>>;
+
+    constructor(
+      message: string,
+      {
+        status,
+        errors = [],
+        issues = [],
+      }: {
+        status: number;
+        errors?: string[];
+        issues?: Array<Record<string, unknown>>;
+      },
+    ) {
+      super(message);
+      this.name = 'ConvertApiError';
+      this.status = status;
+      this.errors = errors;
+      this.issues = issues;
+    }
+  };
+});
 const mockIngestCollect = vi.hoisted(() =>
   vi.fn().mockImplementation(() => {
     throw new MockEndpointNotImplementedError(
@@ -171,6 +197,7 @@ const mockToast = vi.hoisted(() => ({
 }));
 const mockPersistSession = vi.hoisted(() => vi.fn().mockResolvedValue(null));
 const mockScheduleAutoSave = vi.hoisted(() => vi.fn());
+const mockUseWorkSessionSync = vi.hoisted(() => vi.fn());
 const mockInflateGzipToText = vi.hoisted(() => vi.fn());
 const mockReadGuestConverterState = vi.hoisted(() => vi.fn(() => null));
 const mockIsReadOnly = vi.hoisted(() => ({ value: false }));
@@ -191,6 +218,7 @@ vi.mock('/utils/supabase/logout', () => ({
 vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: mockConvertMetarToIwxxm,
   convertBulletin: mockConvertBulletin,
+  ConvertApiError: MockConvertApiError,
   ingestCollect: mockIngestCollect,
   massIngestFiles: mockMassIngestFiles,
   EndpointNotImplementedError: MockEndpointNotImplementedError,
@@ -268,13 +296,7 @@ vi.mock('sonner', () => ({
 
 vi.mock('@/hooks/useWorkSessionSync', () => ({
   AUTOSAVE_DEBOUNCE_MS: 3000,
-  useWorkSessionSync: () => ({
-    isReadOnly: mockIsReadOnly.value,
-    saveIndicator: mockSaveIndicator.value,
-    scheduleAutoSave: mockScheduleAutoSave,
-    persistSession: mockPersistSession,
-    flushAutoSave: vi.fn().mockResolvedValue(null),
-  }),
+  useWorkSessionSync: (...args: unknown[]) => mockUseWorkSessionSync(...args),
 }));
 
 vi.mock('/utils/guestConverterState', () => ({
@@ -476,6 +498,14 @@ describe('FileConverter Component', () => {
     mockReadGuestConverterState.mockReturnValue(null);
     mockIsReadOnly.value = false;
     mockSaveIndicator.value = 'idle';
+    mockUseWorkSessionSync.mockReset();
+    mockUseWorkSessionSync.mockImplementation(() => ({
+      isReadOnly: mockIsReadOnly.value,
+      saveIndicator: mockSaveIndicator.value,
+      scheduleAutoSave: mockScheduleAutoSave,
+      persistSession: mockPersistSession,
+      flushAutoSave: vi.fn().mockResolvedValue(null),
+    }));
   });
 
   afterEach(() => {
@@ -1972,6 +2002,67 @@ describe('FileConverter Component', () => {
       expect(screen.getByText('Conversion Error')).toBeInTheDocument();
     });
 
+    it('forwards hook session callbacks to parent handlers', () => {
+      const onSessionUpdated = vi.fn();
+      const onActiveSessionIdChange = vi.fn();
+      mockUseWorkSessionSync.mockImplementationOnce((options) => {
+        const typed = options as {
+          onSessionSaved: (session: { id: string }) => void;
+          onSessionIdAssigned: (id: string) => void;
+        };
+        typed.onSessionSaved({ id: 'sess-123' });
+        typed.onSessionIdAssigned('sess-123');
+        return {
+          isReadOnly: false,
+          saveIndicator: 'idle',
+          scheduleAutoSave: mockScheduleAutoSave,
+          persistSession: mockPersistSession,
+          flushAutoSave: vi.fn().mockResolvedValue(null),
+        };
+      });
+
+      render(
+        <FileConverter
+          {...defaultProps}
+          onSessionUpdated={onSessionUpdated}
+          onActiveSessionIdChange={onActiveSessionIdChange}
+        />,
+      );
+
+      expect(onSessionUpdated).toHaveBeenCalledWith({ id: 'sess-123' });
+      expect(onActiveSessionIdChange).toHaveBeenCalledWith('sess-123');
+    });
+
+    it('renders error log panel from structured hard-convert API failures', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockRejectedValueOnce(
+        new MockConvertApiError('All conversions failed', {
+          status: 400,
+          errors: ['manual_input: Validation failed - 1 validation issue(s) found'],
+          issues: [
+            {
+              source: 'manual_input',
+              message: 'No ICAO code found in TAC text',
+              severity: 'error',
+              code: 'ICAO_VALIDATION_FAILED',
+            },
+          ],
+        }),
+      );
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, { target: { value: 'METAR NOT A VALID' } });
+
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByLabelText(/conversion error log/i)).toBeInTheDocument();
+        expect(screen.getByText(/All conversions failed/i)).toBeInTheDocument();
+        expect(screen.getByText(/No ICAO code found in TAC text/i)).toBeInTheDocument();
+      });
+    });
+
     it('uses fallback copy path when clipboard API is unavailable', async () => {
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockReset().mockResolvedValueOnce({
@@ -2099,6 +2190,29 @@ describe('FileConverter Component', () => {
         expect(screen.getByText('validation parsing failed')).toBeInTheDocument();
       });
       expect(mockToast.error).toHaveBeenCalledWith('validation parsing failed');
+    });
+
+    it('skips conversion log hydration for structured convert errors without details', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockReset().mockRejectedValueOnce(
+        new MockConvertApiError('HTTP 400', {
+          status: 400,
+          errors: [],
+          issues: [],
+        }),
+      );
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, { target: { value: 'METAR EMPTY STRUCTURED ERROR' } });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText('Conversion Error')).toBeInTheDocument();
+        expect(screen.getByText('HTTP 400')).toBeInTheDocument();
+      });
+      expect(screen.queryByLabelText(/conversion error log/i)).not.toBeInTheDocument();
+      expect(mockToast.error).toHaveBeenCalledWith('HTTP 400');
     });
 
     it('handles result with xml fallback field when iwxxm_xml is missing', async () => {
