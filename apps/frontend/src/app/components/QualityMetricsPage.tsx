@@ -28,6 +28,31 @@ import {
   QUALITY_METRICS_PAGE_TITLE,
 } from '@/utils/qualityMetricsCopy';
 
+type QualityMetricsSummaryWithPairCounts = Omit<
+  QualityMetricsSummary,
+  'pair_examples' | 'unpaired_examples'
+> & {
+  pair_examples: number;
+  unpaired_examples: number;
+};
+
+type QualityMetricsFileRowWithPairState = QualityMetricsFileRow & {
+  has_tac_pair?: boolean;
+};
+
+function normalizeSummary(
+  summary: QualityMetricsSummary & {
+    pair_examples?: number;
+    unpaired_examples?: number;
+  },
+): QualityMetricsSummaryWithPairCounts {
+  return {
+    ...summary,
+    pair_examples: summary.pair_examples ?? 0,
+    unpaired_examples: summary.unpaired_examples ?? 0,
+  };
+}
+
 interface QualityMetricsPageProps {
   /** Optional stem select hook (in addition to route navigation). */
   onSelectStem?: (stem: string) => void;
@@ -59,8 +84,8 @@ export function QualityMetricsPage({
   onBackToList,
 }: QualityMetricsPageProps) {
   const [productFilter, setProductFilter] = useState<string>('all');
-  const [summaries, setSummaries] = useState<QualityMetricsSummary[]>([]);
-  const [files, setFiles] = useState<QualityMetricsFileRow[]>([]);
+  const [summaries, setSummaries] = useState<QualityMetricsSummaryWithPairCounts[]>([]);
+  const [files, setFiles] = useState<QualityMetricsFileRowWithPairState[]>([]);
   const [generatedAt, setGeneratedAt] = useState<string>('');
   const [iwxxmPin, setIwxxmPin] = useState<string>('');
   const [loading, setLoading] = useState(true);
@@ -80,7 +105,7 @@ export function QualityMetricsPage({
       const response = await fetchQualityMetrics({
         product: productFilter === 'all' ? undefined : productFilter,
       });
-      setSummaries(response.summaries);
+      setSummaries(response.summaries.map(normalizeSummary));
       setFiles(response.files);
       setGeneratedAt(response.generated_at);
       setIwxxmPin(response.iwxxm_pin);
@@ -149,6 +174,8 @@ export function QualityMetricsPage({
           lint_fail: acc.lint_fail + row.lint_fail,
           validate_fail: acc.validate_fail + row.validate_fail,
           deferred_gaps: acc.deferred_gaps + row.deferred_gaps,
+          pair_examples: acc.pair_examples + row.pair_examples,
+          unpaired_examples: acc.unpaired_examples + row.unpaired_examples,
         }),
         {
           product: 'all',
@@ -158,10 +185,19 @@ export function QualityMetricsPage({
           lint_fail: 0,
           validate_fail: 0,
           deferred_gaps: 0,
-        } satisfies QualityMetricsSummary,
+          pair_examples: 0,
+          unpaired_examples: 0,
+        } satisfies QualityMetricsSummaryWithPairCounts,
       );
     }
-    return summaries.find((s) => s.product === productFilter) ?? null;
+    const selected = summaries.find((s) => s.product === productFilter);
+    return selected
+      ? {
+          ...selected,
+          pair_examples: selected.pair_examples,
+          unpaired_examples: selected.unpaired_examples,
+        }
+      : null;
   }, [productFilter, summaries]);
 
   const handleSelectStem = (stem: string) => {
@@ -248,10 +284,18 @@ export function QualityMetricsPage({
 
               {!loading && !error && activeSummary && (
                 <div
-                  className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6"
+                  className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-8"
                   data-testid="quality-metrics-summary"
                   aria-label="Quality metrics summary"
                 >
+                  <SummaryStat
+                    label="TAC/XML pairs"
+                    value={activeSummary.pair_examples}
+                  />
+                  <SummaryStat
+                    label="Unpaired examples"
+                    value={activeSummary.unpaired_examples}
+                  />
                   <SummaryStat label="Matches" value={activeSummary.match_pass} />
                   <SummaryStat label="Mismatches" value={activeSummary.match_fail} />
                   <SummaryStat
@@ -292,6 +336,9 @@ export function QualityMetricsPage({
                             <div className="text-xs text-gray-500 dark:text-gray-400">
                               {row.product.toUpperCase()} · {row.tier} ·{' '}
                               {formatMatchStatusLabel(row.match_status)}
+                              {row.has_tac_pair === false
+                                ? ' · no TAC/XML pair'
+                                : ' · TAC/XML pair'}
                             </div>
                           </div>
                           <div className="flex flex-wrap items-center gap-2 text-xs">
