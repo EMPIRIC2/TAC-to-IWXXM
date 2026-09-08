@@ -22,14 +22,13 @@ $ErrorActionPreference = "Stop"
 
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Split-Path -Parent $ScriptDir
-$FrontendDir = Join-Path $RepoRoot "frontend"
+$FrontendDir = Join-Path $RepoRoot "apps/frontend"
 
 # Check if frontend directory exists
 if (-not (Test-Path $FrontendDir)) {
     Write-Host "❌ Frontend directory not found at $FrontendDir" -ForegroundColor Red
     Write-Host ""
-    Write-Host "Please ensure the frontend submodule is initialized:" -ForegroundColor Yellow
-    Write-Host "  git submodule update --init --recursive"
+    Write-Host "Run 'make install' from the repo root to set up the monorepo workspace." -ForegroundColor Yellow
     exit 1
 }
 

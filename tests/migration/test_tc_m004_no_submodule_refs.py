@@ -16,7 +16,7 @@ STANDING_DOC_PATHS = (
     ROOT / "README.md",
     ROOT / "docs" / "spec.md",
     ROOT / "docs" / "deploy.md",
-    ROOT / "docs" / "DEVELOPMENT.md",
+    ROOT / "docs" / "ops" / "DEVELOPMENT.md",
 )
 
 SUBMODULE_COMMAND_PATTERN = re.compile(r"git\s+submodule", re.IGNORECASE)

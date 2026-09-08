@@ -44,7 +44,7 @@
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire |
 | F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived |
-| M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
+| M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
 | M4 | Auth library in backend API | Implemented | Platform | S038 / EV-031 — Supabase Auth-only restore; was Deprecated operator #783 |
@@ -1791,7 +1791,7 @@
 
 ### F32: VONA Quality Bar — S040 / EV-032
 
-- **Status**: **Done** (M2 closed 2026-08-04; [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) closed).
+- **Status**: **Done** (EV-032 milestone 2 closed 2026-08-04; [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) closed).
 - **What it does**: Raises **VONA** (Volcano Observatory Notice for Aviation) TAC lint,
   convert, and IWXXM-validate quality to the F15–F28 product bar. Root
   `iwxxm:VolcanoObservatoryNoticeForAviation`. **WMO `TAC-to-XML-Guidance.txt` has no VONA
@@ -2056,7 +2056,7 @@
 
 ### F23 deepen (S040 / EV-032 — #835 A6-2-TC → wmoPass)
 
-- **Status**: **Done** (M1 closed 2026-08-04; F23 remains **Done** for gen/VA/TC quality path)
+- **Status**: **Done** (EV-032 milestone 1 closed 2026-08-04; F23 remains **Done** for gen/VA/TC quality path)
 - **Issues**: [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) closed; parent [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
 - **What it does**: Closed ADR-032 `canonicalize_xml` equality vs vendor `sigmet-A6-2-TC.xml`
   under default pin; promoted catalog `sigmet_a6_2_tc` → **`wmoPass`**; FIXTURE_GAPS /
@@ -2068,7 +2068,7 @@
 
 ### F4 / F6 / F2 / F13 deepen (S040 / EV-032 — #808 release-line adoptability)
 
-- **Status**: **Done** (M3 closed 2026-08-04; [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) closed).
+- **Status**: **Done** (EV-032 milestone 3 closed 2026-08-04; [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) closed).
 - **Issues**: [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) closed; companion [#847](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/847) closed; parent [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846).
   Automation/UX children: #851–#855.
 - **What it does**: Written maintainability assessment + adopt/deprecate checklists aligned with
@@ -2250,6 +2250,7 @@
 
 ### M1: Monorepo Layout
 
+- **Status**: **Implemented** — the repository uses the monorepo target tree today (`apps/`, `packages/`, `vendor/`), `.gitmodules` is absent, and migration acceptance lives in `TC-M001` / `TC-M004`.
 - **What it does**: Replaces six git submodules with a single-repo tree: `apps/`, `packages/`, `vendor/`.
 - **F6 delta**: Approved tree gains `packages/tac2iwxxm`; loses `packages/gifts` at F6 cutover.
 - **S008 package amend**: Also gains `packages/tac-validate` and `packages/iwxxm-validate`.

@@ -299,7 +299,7 @@ curl -X POST http://localhost:8001/convert-zip \
 - Resolves XSD, Schematron, codelist paths
 - LRU caching for performance
 - Singleton pattern for shared state
-- Uses git submodules: schemas/iwxxm/, schemas/iwxxm-codelists/, schemas/iwxxm-modelling/
+- Uses vendored schema snapshots under `vendor/schemas/` (legacy `schemas/` compatibility paths may exist in some dev/runtime setups)
 
 **3. GIFTs Adapter** (`src/utilities/gifts_adapter.py`)
 
@@ -319,7 +319,7 @@ curl -X POST http://localhost:8001/convert-zip \
 
 - Parses RDF/XML code list files
 - Per-version code validation
-- Uses WMO RDF codelists from git submodule
+- Uses WMO RDF codelists from the vendored schema snapshot
 
 ### Integration Points
 

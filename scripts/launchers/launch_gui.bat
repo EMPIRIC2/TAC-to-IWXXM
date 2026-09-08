@@ -7,13 +7,12 @@ setlocal enabledelayedexpansion
 REM Get script directory and repository root
 set "SCRIPT_DIR=%~dp0"
 set "REPO_ROOT=%SCRIPT_DIR%.."
-set "FRONTEND_DIR=%REPO_ROOT%\frontend"
+set "FRONTEND_DIR=%REPO_ROOT%\apps\frontend"
 
 REM Check if frontend directory exists
 if not exist "%FRONTEND_DIR%" (
     echo [ERROR] Frontend directory not found at: %FRONTEND_DIR%
-    echo [INFO] Please ensure the frontend submodule is initialized:
-    echo [INFO]   git submodule update --init --recursive
+    echo [INFO] Run "make install" from the repo root to set up the monorepo workspace.
     exit /b 1
 )
 if "%1"=="--help" goto :show_help
