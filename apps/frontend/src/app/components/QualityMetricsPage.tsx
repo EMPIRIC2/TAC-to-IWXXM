@@ -28,6 +28,15 @@ import {
   QUALITY_METRICS_PAGE_TITLE,
 } from '@/utils/qualityMetricsCopy';
 
+type QualityMetricsSummaryWithPairCounts = QualityMetricsSummary & {
+  pair_examples?: number;
+  unpaired_examples?: number;
+};
+
+type QualityMetricsFileRowWithPairState = QualityMetricsFileRow & {
+  has_tac_pair?: boolean;
+};
+
 interface QualityMetricsPageProps {
   /** Optional stem select hook (in addition to route navigation). */
   onSelectStem?: (stem: string) => void;
@@ -59,8 +68,8 @@ export function QualityMetricsPage({
   onBackToList,
 }: QualityMetricsPageProps) {
   const [productFilter, setProductFilter] = useState<string>('all');
-  const [summaries, setSummaries] = useState<QualityMetricsSummary[]>([]);
-  const [files, setFiles] = useState<QualityMetricsFileRow[]>([]);
+  const [summaries, setSummaries] = useState<QualityMetricsSummaryWithPairCounts[]>([]);
+  const [files, setFiles] = useState<QualityMetricsFileRowWithPairState[]>([]);
   const [generatedAt, setGeneratedAt] = useState<string>('');
   const [iwxxmPin, setIwxxmPin] = useState<string>('');
   const [loading, setLoading] = useState(true);
@@ -162,7 +171,7 @@ export function QualityMetricsPage({
           deferred_gaps: 0,
           pair_examples: 0,
           unpaired_examples: 0,
-        } satisfies QualityMetricsSummary,
+        } satisfies QualityMetricsSummaryWithPairCounts,
       );
     }
     const selected = summaries.find((s) => s.product === productFilter);
