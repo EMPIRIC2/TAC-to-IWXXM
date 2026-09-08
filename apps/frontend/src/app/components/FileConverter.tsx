@@ -254,6 +254,19 @@ interface FileConverterProps {
   loadedWorkSession?: WorkSession | null;
 }
 
+function isStructuredConvertError(
+  error: unknown,
+): error is Error & { errors: string[]; issues: ConversionLog['issues'] } {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+  const candidate = error as Partial<{
+    errors: unknown;
+    issues: unknown;
+  }>;
+  return Array.isArray(candidate.errors) && Array.isArray(candidate.issues);
+}
+
 type IWXXMVersion = IwxxmVersionId;
 type OnErrorBehavior = 'skip' | 'fail' | 'warn';
 type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
@@ -1394,6 +1407,16 @@ export function FileConverter({
       return { files: newConvertedFiles, hasErrors: hasLog || softFail, softFail };
     } catch (error) {
       console.error('[FileConverter] Conversion error:', error);
+
+      if (
+        isStructuredConvertError(error) &&
+        (error.errors.length > 0 || error.issues.length > 0)
+      ) {
+        setConversionLog({
+          errors: error.errors,
+          issues: error.issues,
+        });
+      }
 
       const errorMessage =
         error instanceof Error

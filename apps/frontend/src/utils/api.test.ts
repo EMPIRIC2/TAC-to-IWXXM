@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import {
   checkHealth,
   convertBulletin,
+  ConvertApiError,
   convertMetarToIwxxm,
   convertMetarToIwxxmZip,
   decodeTac,
@@ -428,7 +429,72 @@ describe('API Utils', () => {
     it('should throw error on conversion failure', async () => {
       mockFetchResponse({ detail: { message: 'Conversion failed' } }, false, 400);
 
-      await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toThrow();
+      await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toThrow(
+        ConvertApiError,
+      );
+    });
+
+    it('preserves structured errors and issues on hard convert failure', async () => {
+      mockFetchResponse(
+        {
+          detail: {
+            message: 'All conversions failed',
+            errors: ['manual_input: Validation failed - 1 validation issue(s) found'],
+            issues: [
+              {
+                source: 'manual_input',
+                message: 'No ICAO code found in TAC text',
+                severity: 'error',
+                code: 'ICAO_VALIDATION_FAILED',
+              },
+            ],
+          },
+        },
+        false,
+        400,
+      );
+
+      await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toMatchObject({
+        name: 'ConvertApiError',
+        message: 'All conversions failed',
+        status: 400,
+        errors: ['manual_input: Validation failed - 1 validation issue(s) found'],
+        issues: [
+          expect.objectContaining({
+            code: 'ICAO_VALIDATION_FAILED',
+          }),
+        ],
+      });
+    });
+
+    it('falls back to top-level convert errors and issues when detail is absent', async () => {
+      mockFetchResponse(
+        {
+          message: 'Validation rejected',
+          errors: ['manual_input: Validation failed'],
+          issues: [
+            {
+              source: 'manual_input',
+              message: 'Top-level issue',
+              severity: 'error',
+            },
+          ],
+        },
+        false,
+        422,
+      );
+
+      await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toMatchObject({
+        name: 'ConvertApiError',
+        message: 'Validation rejected',
+        status: 422,
+        errors: ['manual_input: Validation failed'],
+        issues: [
+          expect.objectContaining({
+            message: 'Top-level issue',
+          }),
+        ],
+      });
     });
 
     it('falls back to top-level message when convert error detail is absent', async () => {
