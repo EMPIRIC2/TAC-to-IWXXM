@@ -14,6 +14,7 @@ const actualRunDisseminationQueue = vi.hoisted(() => ({
   fn: null as typeof import('/utils/disseminationQueue').runDisseminationQueue | null,
 }));
 const mockConvertMetarToIwxxm = vi.hoisted(() => vi.fn());
+const mockListTemplates = vi.hoisted(() => vi.fn());
 
 vi.mock('/utils/disseminationQueue', async (importOriginal) => {
   const actual = await importOriginal<typeof import('/utils/disseminationQueue')>();
@@ -37,6 +38,10 @@ vi.mock('/utils/apiBase', () => ({
   apiUrl: (path: string) =>
     `http://api.test/api/v1${path.startsWith('/') ? path : `/${path}`}`,
   getApiBaseUrl: () => 'http://api.test',
+}));
+
+vi.mock('/utils/conversionProfilesApi', () => ({
+  listTemplates: (...args: unknown[]) => mockListTemplates(...args),
 }));
 
 const defaultProps = {
@@ -167,6 +172,8 @@ describe('DisseminationDrawer', () => {
     mockRunDisseminationQueue.mockClear();
     mockRunDisseminationQueue.mockImplementation(actualRunDisseminationQueue.fn!);
     mockConvertMetarToIwxxm.mockReset();
+    mockListTemplates.mockReset();
+    mockListTemplates.mockResolvedValue({ items: [] });
     mockConvertMetarToIwxxm.mockResolvedValue({
       results: [{ iwxxm_xml: '<iwxxm>from-convert</iwxxm>' }],
     });
@@ -467,6 +474,68 @@ describe('DisseminationDrawer', () => {
     expect(
       (init.headers as Record<string, string> | undefined)?.Authorization,
     ).toBeUndefined();
+  });
+
+  it('loads saved templates for signed-in users and sends template id with bearer', async () => {
+    const user = userEvent.setup();
+    mockListTemplates.mockResolvedValue({
+      items: [
+        {
+          id: 'tpl-1',
+          slug: 'saved-db',
+          name: 'Saved DB',
+          sinkType: 'sqlite',
+          product: 'metar',
+          ddl: true,
+          params: { schema: 'public' },
+          shared: true,
+          user_id: 'u',
+          created_at: '',
+          updated_at: '',
+        },
+      ],
+    });
+    vi.mocked(global.fetch)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          ok: true,
+          connectivity_ok: true,
+          diffs: [],
+          handle: 'saved-handle',
+        }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({ ok: true, kv_upload_key: 'kv:saved:1' }),
+      } as Response);
+
+    render(<DisseminationDrawer {...defaultProps} accessToken="jwt" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-template-select')).toBeInTheDocument();
+    });
+    await user.selectOptions(
+      screen.getByTestId('dissemination-template-select'),
+      'tpl-1',
+    );
+    expect(screen.getByTestId('dissemination-sink-chooser')).toHaveValue('sqlite');
+    expect(screen.getByTestId('dissemination-ddl-toggle')).toBeChecked();
+
+    await user.type(
+      screen.getByTestId('dissemination-uri-input'),
+      'sqlite:////tmp/saved.db',
+    );
+    await user.click(screen.getByTestId('dissemination-send-button'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-send-success')).toBeInTheDocument();
+    });
+    const preflightInit = vi.mocked(global.fetch).mock.calls[0]?.[1] as RequestInit;
+    expect(preflightInit.headers).toMatchObject({
+      Authorization: 'Bearer jwt',
+    });
+    expect(String(preflightInit.body)).toContain('"dissemination_template_id":"tpl-1"');
   });
 
   it('rejects invalid BYOC JSON before calling preflight', async () => {
@@ -782,6 +851,173 @@ describe('DisseminationDrawer', () => {
 
     await user.click(screen.getByTestId('dissemination-drawer-backdrop'));
     expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it('shows a fallback template load error for non-Error rejections', async () => {
+    mockListTemplates.mockRejectedValueOnce('boom');
+    render(<DisseminationDrawer {...defaultProps} accessToken="jwt" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-template-error')).toHaveTextContent(
+        'Unable to load templates',
+      );
+    });
+  });
+
+  it('shows the error message from template load failures', async () => {
+    mockListTemplates.mockRejectedValueOnce(new Error('template load failed'));
+    render(<DisseminationDrawer {...defaultProps} accessToken="jwt" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-template-error')).toHaveTextContent(
+        'template load failed',
+      );
+    });
+  });
+
+  it('ignores template list resolution after unmount', async () => {
+    let resolveList!: (value: { items: Array<Record<string, unknown>> }) => void;
+    mockListTemplates.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveList = resolve;
+        }),
+    );
+
+    const { unmount } = render(
+      <DisseminationDrawer {...defaultProps} accessToken="jwt" />,
+    );
+    unmount();
+    resolveList({ items: [] });
+  });
+
+  it('ignores template list rejection after unmount', async () => {
+    let rejectList!: (reason?: unknown) => void;
+    mockListTemplates.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectList = reject;
+        }),
+    );
+
+    const { unmount } = render(
+      <DisseminationDrawer {...defaultProps} accessToken="jwt" />,
+    );
+    unmount();
+    rejectList(new Error('late template failure'));
+  });
+
+  it('supports controlled dissemination template changes and resets on close', async () => {
+    const user = userEvent.setup();
+    const onDisseminationTemplateChange = vi.fn();
+    const onOpenChange = vi.fn();
+    mockListTemplates.mockResolvedValueOnce({
+      items: [
+        {
+          id: 'tpl-1',
+          user_id: 'u',
+          slug: 'saved',
+          name: 'Saved',
+          sinkType: 'sqlite',
+          product: 'metar',
+          ddl: true,
+          params: { schema: 'public' },
+          shared: false,
+          created_at: '',
+          updated_at: '',
+        },
+      ],
+    });
+
+    render(
+      <DisseminationDrawer
+        {...defaultProps}
+        accessToken="jwt"
+        disseminationTemplateId=""
+        onDisseminationTemplateChange={onDisseminationTemplateChange}
+        onOpenChange={onOpenChange}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-template-select')).toHaveValue('');
+    });
+
+    fireEvent.change(screen.getByTestId('dissemination-template-select'), {
+      target: { value: 'tpl-1' },
+    });
+    expect(onDisseminationTemplateChange).toHaveBeenCalledWith('tpl-1');
+    expect(screen.getByTestId('dissemination-sink-chooser')).toHaveValue('sqlite');
+
+    await user.click(screen.getByTestId('dissemination-drawer-backdrop'));
+    expect(onDisseminationTemplateChange).toHaveBeenCalledWith('');
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
+  it('ignores unknown template ids after they are selected', async () => {
+    mockListTemplates.mockResolvedValueOnce({
+      items: [
+        {
+          id: 'tpl-1',
+          user_id: 'u',
+          slug: 'saved',
+          name: 'Saved',
+          sinkType: 'wis2',
+          product: 'metar',
+          ddl: true,
+          params: { schema: 'public' },
+          shared: false,
+          created_at: '',
+          updated_at: '',
+        },
+      ],
+    });
+
+    render(<DisseminationDrawer {...defaultProps} accessToken="jwt" />);
+
+    const sinkSelect = await screen.findByTestId('dissemination-sink-chooser');
+    fireEvent.change(screen.getByTestId('dissemination-template-select'), {
+      target: { value: 'tpl-1' },
+    });
+    expect(sinkSelect).toHaveValue('wis2');
+    expect(screen.getByTestId('dissemination-byoc-params')).toHaveValue(
+      JSON.stringify({ schema: 'public' }, null, 2),
+    );
+
+    fireEvent.change(screen.getByTestId('dissemination-template-select'), {
+      target: { value: '' },
+    });
+    expect(sinkSelect).toHaveValue('wis2');
+    expect(screen.getByTestId('dissemination-byoc-params')).toHaveValue(
+      JSON.stringify({ schema: 'public' }, null, 2),
+    );
+  });
+
+  it('falls back to an empty params object when a template omits params', async () => {
+    mockListTemplates.mockResolvedValueOnce({
+      items: [
+        {
+          id: 'tpl-null-params',
+          user_id: 'u',
+          slug: 'saved',
+          name: 'Saved',
+          sinkType: 'wis2',
+          product: 'metar',
+          ddl: false,
+          params: null,
+          shared: false,
+          created_at: '',
+          updated_at: '',
+        },
+      ],
+    });
+
+    render(<DisseminationDrawer {...defaultProps} accessToken="jwt" />);
+    fireEvent.change(await screen.findByTestId('dissemination-template-select'), {
+      target: { value: 'tpl-null-params' },
+    });
+
+    expect(screen.getByTestId('dissemination-byoc-params')).toHaveValue('{}');
   });
 
   it('shows selection cap error when select-all exceeds 20 files (TC-F16-005)', async () => {

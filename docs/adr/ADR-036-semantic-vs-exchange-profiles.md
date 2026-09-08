@@ -125,6 +125,10 @@ Constraints from EV-063 intake:
 - **F35** (EV-063): ADR acceptance, api-contract delta, compat layer, metrics, #1025 schedule.
 - **F36**: #919 US deepen, #916 CA_ECCC first P1, #921 exchange overlays, fixture layout
   `profiles/<id>/<product>/{valid,invalid,expected-*}`.
+- **#1051**: saved semantic presets may reference semantic profile ids plus approved
+  conversion defaults, and saved dissemination templates may reference non-secret destination
+  metadata only. Neither replaces first-party catalog profiles or turns exchange profiles into
+  destination credentials.
 - **#1050**: profile-scoped `reportVariant` contract for national IWXXM roots inside a dispatch
   family (`semanticProfile` → `product` → `reportVariant`).
 - **#1024**: Light operator picker (deferred unless Spec→Build pulls FE).

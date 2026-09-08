@@ -29,6 +29,11 @@ require **operator-owned** (BYO) credentials and removal of that admin product s
    (DB URI / WIS2 / EDIS SMTP / AMHS params) is **allowed** for F16–F19. Credentials are
    backend memory-only, never saved as profiles, never stored on work sessions. Governed by
    ADR-029 (SSRF + required allowlist). This does **not** reintroduce paste of Supabase auth keys.
+7. **Amendment (EV-1051)**: Authenticated users may save and share **non-secret dissemination
+   templates / destination references** and **semantic presets**, but any live destination
+   credential material remains one-shot and memory-only on preflight/send. Saved rows must
+   reject URIs, DSNs, passwords, private keys, access tokens, and connection strings; any
+   required runtime credential is re-entered by the operator at use time.
 
 ## Alternatives Considered
 
@@ -45,3 +50,5 @@ require **operator-owned** (BYO) credentials and removal of that admin product s
 - Docs and `.env.example` must rename harness credentials; 04/07 update scripts and Playwright.
 - `create_admin_user.py` (if kept) must not imply dashboard admin UX.
 - Dissemination drawer + ADR-029 env (`DISSEMINATION_EGRESS_ALLOWLIST`) required for F16–F19.
+- Saved dissemination templates, if present, are references to non-secret metadata only and
+  must not become a back door for durable BYOC secret storage.

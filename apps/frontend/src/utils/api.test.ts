@@ -404,6 +404,27 @@ describe('API Utils', () => {
       expect(body.get('report_variant')).toBe('LWIS');
     });
 
+    it('appends preset_id and bearer on convert when provided (EV-1051)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        presetId: '  pr-123  ',
+        accessToken: ' jwt ',
+      });
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('preset_id')).toBe('pr-123');
+      expect(options.headers?.Authorization).toBe('Bearer jwt');
+    });
+
     it('should throw error on conversion failure', async () => {
       mockFetchResponse({ detail: { message: 'Conversion failed' } }, false, 400);
 

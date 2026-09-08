@@ -148,6 +148,8 @@ export async function convertMetarToIwxxm(params: {
   files?: File[];
   product?: string;
   profile?: string;
+  /** Optional saved semantic preset id (requires accessToken). */
+  presetId?: string;
   iwxxmVersion?: string;
   validateOutput?: boolean;
   validationLevel?: string;
@@ -192,6 +194,9 @@ export async function convertMetarToIwxxm(params: {
   }
   if (params.reportVariant?.trim()) {
     formData.append('report_variant', params.reportVariant.trim().toUpperCase());
+  }
+  if (params.presetId?.trim()) {
+    formData.append('preset_id', params.presetId.trim());
   }
 
   if (params.iwxxmVersion?.trim()) {
@@ -245,9 +250,12 @@ export async function convertMetarToIwxxm(params: {
     console.log('[API] Request to:', apiUrl('/convert'));
 
     const overlayToken = params.overlayId?.trim();
+    const presetToken = params.presetId?.trim();
     const bearer = params.accessToken?.trim();
     const headers: HeadersInit | undefined =
-      overlayToken && bearer ? { Authorization: `Bearer ${bearer}` } : undefined;
+      (overlayToken || presetToken) && bearer
+        ? { Authorization: `Bearer ${bearer}` }
+        : undefined;
 
     const response = await withTimeout(
       fetch(apiUrl('/convert'), {

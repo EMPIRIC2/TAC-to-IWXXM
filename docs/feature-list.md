@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933); **deepen** EV-1120 Phase A profile-scoped catalog + glanceable Profile UX (#1120/#1145; B/C → #1146/#1147) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933); **deepen** EV-1051 shared semantic presets + team-safe sharing of non-secret profile assets/destination references (#1051); **deepen** EV-1120 Phase A profile-scoped catalog + glanceable Profile UX (#1120/#1145; B/C → #1146/#1147) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
@@ -611,6 +611,30 @@
   3. UJ-072 + TC-EV933-001..006; H4–H5 when FE routes deploy; no secrets in profile objects.
   4. #1024 picker and dissemination drawer remain green; no internal planning vocabulary
      on operator copy (EV-048).
+- **EV-1051 deepen (F7.w / F16–F19 / #1051)**: authenticated operators can save and share
+  **named semantic presets** that reference first-party semantic profile ids plus approved
+  conversion defaults (`iwxxmVersion`, `extensions[]`, optional `reportVariant`, optional
+  selected overlay/rule-pack linkage) and **saved dissemination templates** that contain
+  only non-secret destination metadata. Semantic presets do **not** replace catalog profiles
+  or invent arbitrary executable browser-uploaded profiles; dissemination templates do
+  **not** persist secrets, destination URIs, DSNs, API keys, SMTP passwords, or one-shot
+  credentials. Convert/package flows may apply a saved preset by id; dissemination
+  preflight/send may apply a saved template reference only when the operator still provides
+  any required runtime credentials. [Corpus: adr/ADR-036] [Corpus: adr/ADR-038]
+- **Acceptance (EV-1051 / #1051)**:
+  1. Saved semantic presets are JWT-gated, owner-scoped, and shareable only through
+     approved visibility rules; guest flow remains IndexedDB-only (F31).
+  2. Presets point to existing semantic profile ids and supported IWXXM-line choices; they
+     may carry only non-secret conversion defaults and references to already-approved
+     profile assets.
+  3. Saved dissemination templates store sink type plus non-secret metadata or destination
+     references only; runtime credentials remain memory-only under ADR-021/029.
+  4. `#1024` light picker and the restored dissemination drawer remain the apply surfaces;
+     the full editor remains distinct from the quick workbench controls.
+  5. Work-session hydration may round-trip saved preset/template ids only; it must not
+     restore one-shot destination credentials or URIs into the workbench.
+  5. UJ-072 / UJ-074 and `TC-EV933-*` / `TC-EV1051-*` cover save, share, apply, ownership,
+     and no-secret persistence paths.
 - **EV-1120 deepen (F7.v / F7.w / F15 / F35 — Phase A / #1120)** — **requirements locked**
   (`D-EV1120-phaseA=1`):
   1. **Catalog filters (#1121–#1123):** additive `semantic_profile` + `exchange_profile` on
@@ -970,6 +994,10 @@
   SQLite** (Q23=A–D; no other named vendor).
 - **Auth vs destination**: Destination secrets are **not** Supabase and are never stored
   (IndexedDB may hold `kv_upload_key` / metadata only after F21).
+- **EV-1051 / #1051 deepen**: authenticated users may additionally save **non-secret
+  dissemination templates / destination references** for reuse and sharing, but the live
+  destination URI/DSN/credential material remains one-shot and memory-only on each
+  preflight/send request.
 - **Security (Q11=A+B)**: Backend-only egress; deny private/metadata ranges; DNS rebinding guard;
   TLS preferred; timeouts/size limits; secret redaction; rate limits; **required**
   `DISSEMINATION_EGRESS_ALLOWLIST` (empty ⇒ no user-URI egress).

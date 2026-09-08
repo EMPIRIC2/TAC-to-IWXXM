@@ -91,6 +91,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-072 | ConversionProfile editor — rule pack → overlay → convert | apps/frontend / API | F7.w (EV-933 / #933) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072d | Glanceable Profile summary + blocks + examples | apps/frontend | F7.w (EV-1120 / #1145) | T0 / T2 / **T3** / H4–H5 |
 | UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
+| UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
@@ -489,6 +490,61 @@ the light picker (#1024) or putting credentials in the profile.
 **Automated tests**: TC-EV933-001..006 (see test-plan)
 
 **Source**: EV-933 / #933; ADR-038 (amend overlays); [Context: conversion-profile-editor-933](context/conversion-profile-editor-933.md)
+
+---
+
+### UJ-074: Save and reuse shared semantic presets + destination templates (EV-1051 / #1051)
+
+**Actor**: Authenticated meteorological operator or admin (JWT)
+
+**Goal**: Save a reusable **semantic preset** for convert/package defaults, share it through
+approved visibility rules, save a **non-secret dissemination template** for the drawer, and
+reuse both without storing live destination credentials or collapsing the light picker into
+the full editor.
+
+**Feature**: F7.w + F16–F19 deepen (EV-1051)
+
+**Steps**:
+
+1. Sign in and open the Conversion profiles editor.
+2. Create or edit a **semantic preset** that references an existing first-party semantic
+   profile id and supported defaults (`iwxxmVersion`, optional `extensions[]`,
+   optional `reportVariant`, optional overlay/rule-pack linkage).
+3. Mark the preset for the approved share scope and confirm another authenticated operator
+   can list and apply it without gaining write access unless explicitly allowed.
+4. Return to the workbench; apply the preset and verify explicit form choices still remain
+   visible and editable.
+5. Open the dissemination drawer and save a **destination template** containing only
+   non-secret sink metadata or a destination reference; do **not** store a live URI, DSN,
+   password, token, or connection string.
+6. Reopen the drawer as another authenticated operator, load the shared template, provide
+   any required one-shot runtime credentials, and run preflight/send.
+7. Save or reload the work session and confirm the selected preset/template ids hydrate back
+   into the workbench and drawer without restoring any runtime credential material.
+8. Confirm guest flows, the light picker, and the restored drawer still work without the
+   new saved assets.
+
+**Acceptance**:
+
+1. Semantic presets point only to existing semantic profile ids and supported conversion
+   defaults; they do not create arbitrary executable browser-managed profiles.
+2. Sharing remains JWT-gated and owner-scoped with approved shared-read behavior; guest flow
+   remains IndexedDB-only.
+3. Saved dissemination templates contain only non-secret metadata or references; live
+   destination credentials remain memory-only on preflight/send.
+4. Work-session hydration may round-trip saved preset/template ids, but not live destination
+   credentials or URIs.
+5. Convert/package and dissemination apply surfaces stay distinct from the full editor.
+6. UJ-072 / UJ-069 / UJ-027–030 remain green when preset/template support lands.
+
+**Errors**: 401/403 without JWT; 403 on foreign private preset/template; 400/422 when a saved
+template attempts to persist secret-bearing fields.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EV1051-001..006 (see test-plan)
+
+**Source**: EV-1051 / #1051; ADR-021 amend; ADR-029 amend; ADR-036
 
 ---
 

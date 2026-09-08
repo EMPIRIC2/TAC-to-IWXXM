@@ -91,6 +91,15 @@ def test_get_version_config_for_emit_profile_scoped_and_reraise() -> None:
         versions.get_version_config_for_emit_profile("9999-9", "annex3")
 
 
+def test_version_migration_same_version_returns_input() -> None:
+    from src.utilities.version_migration import migrate_xml
+
+    xml = '<?xml version="1.0"?><root><element>data</element></root>'
+    xml_out, warnings = migrate_xml(xml, "2025-2", "2025-2")
+    assert xml_out == xml
+    assert warnings == []
+
+
 def test_resolve_schema_file_existing_and_codelists_fallback(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     # Unknown file_type raises; valid types resolve against real config when present.
     with pytest.raises(ValueError, match="Unknown file type"):
@@ -1048,6 +1057,7 @@ def test_wmo_codelist_non_dict_and_requests_none(tmp_path: Path, monkeypatch: py
 
     monkeypatch.setattr(wmo_mod, "REQUESTS_AVAILABLE", True)
     monkeypatch.setattr(wmo_mod, "requests", None)
+    monkeypatch.setattr(wmo_mod, "CodeListParser", lambda *_a, **_k: object())
     client = WMOCodelistsClient(codelists_dir=tmp_path, cache_dir=tmp_path)
     assert client._fetch_codelist_online("Weather") is None
 
@@ -1482,7 +1492,15 @@ def test_convert_json_exchange_output_and_iwxxm_paths(
 def test_convert_ca_eccc_import_fallback_and_validate_paths(
     convert_client: TestClient, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    xml = '<?xml version="1.0"?><iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/3.0.0"/>'
+    xml = (
+        Path(__file__).resolve().parents[4]
+        / "packages"
+        / "tac2iwxxm"
+        / "tests"
+        / "fixtures"
+        / "annex3_golden"
+        / "metar_basic.golden.xml"
+    ).read_text(encoding="utf-8")
     real_import = builtins.__import__
 
     def fake_import(name: str, globals=None, locals=None, fromlist=(), level: int = 0):
@@ -1515,12 +1533,16 @@ def test_convert_ca_eccc_import_fallback_and_validate_paths(
     )
     assert resp.status_code in {200, 400, 422, 500}
 
+    # Limit the forced import failure to the CA bundle path above so the pass-through
+    # assertions below exercise validation behavior, not a lingering import shim.
+    monkeypatch.setattr(builtins, "__import__", real_import)
+
     # IWXXM pass-through validate failure + exception
     bad_report = SimpleNamespace(
         ok=False,
         issues=[SimpleNamespace(message="xsd fail", code="XSD", location="/")],
     )
-    monkeypatch.setattr(api_module, "_call_iwxxm_validate", lambda *_a, **_k: bad_report)
+    monkeypatch.setattr(conversion_router.api_surface, "_call_iwxxm_validate", lambda *_a, **_k: bad_report)
     resp2 = convert_client.post(
         "/api/v1/convert",
         files={
@@ -1534,7 +1556,7 @@ def test_convert_ca_eccc_import_fallback_and_validate_paths(
     def boom(*_a: Any, **_k: Any) -> None:
         raise RuntimeError("validate down")
 
-    monkeypatch.setattr(api_module, "_call_iwxxm_validate", boom)
+    monkeypatch.setattr(conversion_router.api_surface, "_call_iwxxm_validate", boom)
     resp3 = convert_client.post(
         "/api/v1/convert",
         files={
@@ -1660,3 +1682,29 @@ def test_convert_files_preview_layer12(convert_client: TestClient, monkeypatch: 
         },
     )
     assert resp.status_code in {200, 400, 422}
+
+
+def test_convert_accumulator_absorb_soft_preview_without_source_keeps_issues_empty() -> None:
+    acc = conversion_router._ConvertAccumulator()
+
+    acc.absorb_soft_preview(
+        {
+            "ok": True,
+            "convert_issues": [{"code": "IGNORED", "message": "convert issue without source should not be copied"}],
+            "failed_spans": [],
+        },
+        preview=False,
+        source=None,
+    )
+
+    assert acc.issues == []
+    assert acc.preview_failed_spans == []
+    assert acc.preview_saw_soft_fail is False
+
+
+def test_convert_accumulator_add_aggregated_validation_issues_ignores_falsy_payload() -> None:
+    acc = conversion_router._ConvertAccumulator()
+
+    acc.add_aggregated_validation_issues("validate", None)
+
+    assert acc.issues == []

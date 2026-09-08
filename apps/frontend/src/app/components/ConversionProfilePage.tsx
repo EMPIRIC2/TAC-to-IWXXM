@@ -14,13 +14,27 @@ import {
 import { Loader2 } from 'lucide-react';
 import {
   createOverlay,
+  createPreset,
   createRulePack,
+  createTemplate,
+  deleteOverlay,
+  deletePreset,
+  deleteRulePack,
+  deleteTemplate,
   fetchProfileCatalog,
+  listPresets,
+  listTemplates,
   listOverlays,
   listRulePacks,
+  type DisseminationTemplateOut,
   type OverlayOut,
+  type PresetOut,
   type ProfileCatalogEntry,
   type RulePackOut,
+  updateTemplate,
+  updateOverlay,
+  updatePreset,
+  updateRulePack,
 } from '@/utils/conversionProfilesApi';
 import {
   DEFAULT_SEMANTIC_PROFILE,
@@ -36,6 +50,10 @@ import {
   PROFILES_EDITOR_SIGN_IN,
   PROFILES_EDITOR_SUBTITLE,
   PROFILES_EDITOR_TITLE,
+  PROFILES_GLOSSARY_EXCHANGE,
+  PROFILES_GLOSSARY_HEADING,
+  PROFILES_GLOSSARY_OVERLAY,
+  PROFILES_GLOSSARY_PROFILE,
   PROFILES_COUNT_UNAVAILABLE,
   PROFILES_ERROR_PREFIX,
   PROFILES_INSPECTOR_EMPTY,
@@ -45,16 +63,39 @@ import {
   PROFILES_INSPECTOR_UNAVAILABLE,
   PROFILES_OVERLAY_BASE,
   PROFILES_OVERLAY_BODY,
+  PROFILES_OVERLAY_DELETE,
   PROFILES_OVERLAY_HINT,
+  PROFILES_OVERLAY_NEW,
   PROFILES_OVERLAY_SAVE,
   PROFILES_OVERLAY_SLUG,
+  PROFILES_OVERLAY_UPDATE,
   PROFILES_OVERLAYS_EMPTY,
   PROFILES_OVERLAYS_HEADING,
   PROFILES_OVERLAYS_LOADING,
   PROFILES_OVERLAYS_UNAVAILABLE,
+  PROFILES_PRESET_DELETE,
+  PROFILES_PRESET_IWXXM_VERSION,
+  PROFILES_PRESET_NAME,
+  PROFILES_PRESET_NEW,
+  PROFILES_PRESET_OVERLAY,
+  PROFILES_PRESET_PROFILE,
+  PROFILES_PRESET_REPORT_VARIANT,
+  PROFILES_PRESET_SAVE,
+  PROFILES_PRESET_SHARED,
+  PROFILES_PRESET_SLUG,
+  PROFILES_PRESET_UPDATE,
+  PROFILES_PRESETS_EMPTY,
+  PROFILES_PRESETS_HEADING,
+  PROFILES_PRESETS_LOADING,
+  PROFILES_PRESETS_UNAVAILABLE,
+  PROFILES_PROFILE_AUTHORITY,
+  PROFILES_PROFILE_COVERAGE,
+  PROFILES_PROFILE_FAMILY,
   PROFILES_PACK_EXPORT,
   PROFILES_PACK_IMPORT,
+  PROFILES_PACK_DELETE,
   PROFILES_PACK_MESSAGE,
+  PROFILES_PACK_NEW,
   PROFILES_PACK_PRODUCT,
   PROFILES_PACK_PROFILE,
   PROFILES_PACK_REF,
@@ -62,11 +103,28 @@ import {
   PROFILES_PACK_SEVERITY,
   PROFILES_PACK_SLUG,
   PROFILES_PACK_STAGE,
+  PROFILES_PACK_UPDATE,
   PROFILES_PACK_WHEN,
   PROFILES_PACKS_EMPTY,
   PROFILES_PACKS_HEADING,
   PROFILES_PACKS_LOADING,
   PROFILES_PACKS_UNAVAILABLE,
+  PROFILES_TEMPLATE_DDL,
+  PROFILES_TEMPLATE_DELETE,
+  PROFILES_TEMPLATE_HINT,
+  PROFILES_TEMPLATE_NAME,
+  PROFILES_TEMPLATE_NEW,
+  PROFILES_TEMPLATE_PARAMS,
+  PROFILES_TEMPLATE_PRODUCT,
+  PROFILES_TEMPLATE_SAVE,
+  PROFILES_TEMPLATE_SHARED,
+  PROFILES_TEMPLATE_SINK,
+  PROFILES_TEMPLATE_SLUG,
+  PROFILES_TEMPLATE_UPDATE,
+  PROFILES_TEMPLATES_EMPTY,
+  PROFILES_TEMPLATES_HEADING,
+  PROFILES_TEMPLATES_LOADING,
+  PROFILES_TEMPLATES_UNAVAILABLE,
   PROFILES_WORKFLOWS_BODY,
   PROFILES_WORKFLOWS_DEFINITIONS_LINK,
   PROFILES_WORKFLOWS_DEFINITIONS_URL,
@@ -102,8 +160,10 @@ interface AuthedProps {
 
 interface LoadErrorState {
   catalog: string | null;
+  presets: string | null;
   packs: string | null;
   overlays: string | null;
+  templates: string | null;
 }
 
 const PROFILE_LABELS = new Map<string, string>(
@@ -112,6 +172,33 @@ const PROFILE_LABELS = new Map<string, string>(
 
 function profileLabel(profileId: string): string {
   return PROFILE_LABELS.get(profileId) ?? profileId;
+}
+
+function profileFamily(profileId: string): string {
+  if (profileId.startsWith('ICAO_')) {
+    return 'ICAO / WMO baseline';
+  }
+  return 'National or regional extension';
+}
+
+function profileAuthority(profileId: string): string {
+  if (profileId.startsWith('ICAO_')) {
+    return 'ICAO / WMO';
+  }
+  const [country, ...rest] = profileId.split('_');
+  const suffix = rest.join(' ');
+  return suffix ? `${country} - ${suffix}` : profileId;
+}
+
+function profileCoverage(profile: ProfileCatalogEntry): string {
+  const kinds: string[] = [];
+  if (profile.products.length > 0) {
+    kinds.push(profile.products.join(', '));
+  }
+  if (profile.iwxxm_line) {
+    kinds.push(profile.iwxxm_line);
+  }
+  return kinds.join(' | ') || 'Coverage details unavailable';
 }
 
 function usesReusedExamples(profileId: string): boolean {
@@ -149,12 +236,20 @@ function unavailableMessage(detail: string | null): string {
   return [PROFILES_INSPECTOR_UNAVAILABLE, detail].filter(Boolean).join(' ');
 }
 
-function starterSlug(profileId: string, kind: 'pack' | 'overlay'): string {
+function starterSlug(
+  profileId: string,
+  kind: 'pack' | 'overlay' | 'preset' | 'template',
+): string {
   return `starter-${profileId.toLowerCase().replaceAll('_', '-')}-${kind}`;
 }
 
 function starterProduct(profile: ProfileCatalogEntry | null): string {
   return profile?.products[0] ?? 'METAR';
+}
+
+function starterPresetIwxxmVersion(profile: ProfileCatalogEntry | null): string {
+  const match = profile?.iwxxm_line?.match(/\b(?:\d{4}-\d|\d+\.\d+\.\d+)\b/);
+  return match?.[0] ?? '2025-2';
 }
 
 interface ProfileSummaryCardProps {
@@ -373,24 +468,43 @@ function ConversionProfileAuthed({
   onOpenConverterExamples,
 }: AuthedProps) {
   const [catalog, setCatalog] = useState<ProfileCatalogEntry[] | null>(null);
+  const [presets, setPresets] = useState<PresetOut[] | null>(null);
   const [packs, setPacks] = useState<RulePackOut[] | null>(null);
   const [overlays, setOverlays] = useState<OverlayOut[] | null>(null);
+  const [templates, setTemplates] = useState<DisseminationTemplateOut[] | null>(null);
   const [loadErrors, setLoadErrors] = useState<LoadErrorState>({
     catalog: null,
+    presets: null,
     packs: null,
     overlays: null,
+    templates: null,
   });
   const [selectedId, setSelectedId] = useState<string>('');
   const [compareId, setCompareId] = useState<string>('');
   const [activeBlockId, setActiveBlockId] = useState<ProfileBlockId>('input');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [savingPreset, setSavingPreset] = useState(false);
   const [saving, setSaving] = useState(false);
   const [savingOverlay, setSavingOverlay] = useState(false);
+  const [savingTemplate, setSavingTemplate] = useState(false);
+  const [presetSeedDirty, setPresetSeedDirty] = useState(false);
   const [packSeedDirty, setPackSeedDirty] = useState(false);
   const [overlaySeedDirty, setOverlaySeedDirty] = useState(false);
+  const [templateSeedDirty, setTemplateSeedDirty] = useState(false);
+  const [editingPresetId, setEditingPresetId] = useState<string | null>(null);
+  const [editingPackId, setEditingPackId] = useState<string | null>(null);
+  const [editingOverlayId, setEditingOverlayId] = useState<string | null>(null);
+  const [editingTemplateId, setEditingTemplateId] = useState<string | null>(null);
   const importInputRef = useRef<HTMLInputElement | null>(null);
 
+  const [presetSlug, setPresetSlug] = useState('my-preset');
+  const [presetName, setPresetName] = useState('My preset');
+  const [presetProfile, setPresetProfile] = useState('ICAO_2025');
+  const [presetIwxxmVersion, setPresetIwxxmVersion] = useState('2025-2');
+  const [presetReportVariant, setPresetReportVariant] = useState('');
+  const [presetOverlayId, setPresetOverlayId] = useState('');
+  const [presetShared, setPresetShared] = useState(false);
   const [slug, setSlug] = useState('my-pack');
   const [profile, setProfile] = useState('ICAO_2025');
   const [product, setProduct] = useState('METAR');
@@ -403,32 +517,108 @@ function ConversionProfileAuthed({
   const [overlaySlug, setOverlaySlug] = useState('my-overlay');
   const [overlayBase, setOverlayBase] = useState('ICAO_2025');
   const [overlayBodyText, setOverlayBodyText] = useState('{}');
+  const [templateSlug, setTemplateSlug] = useState('my-template');
+  const [templateName, setTemplateName] = useState('My template');
+  const [templateSinkType, setTemplateSinkType] = useState('postgres');
+  const [templateProduct, setTemplateProduct] = useState('metar');
+  const [templateDdl, setTemplateDdl] = useState(false);
+  const [templateShared, setTemplateShared] = useState(false);
+  const [templateParamsText, setTemplateParamsText] = useState('{}');
+
+  const resetPresetForm = useCallback((nextSelected: ProfileCatalogEntry | null) => {
+    setEditingPresetId(null);
+    setPresetSeedDirty(false);
+    const nextProfile = nextSelected?.id ?? 'ICAO_2025';
+    setPresetSlug(nextSelected ? starterSlug(nextSelected.id, 'preset') : 'my-preset');
+    setPresetName(nextSelected ? `${profileLabel(nextProfile)} preset` : 'My preset');
+    setPresetProfile(nextProfile);
+    setPresetIwxxmVersion(starterPresetIwxxmVersion(nextSelected));
+    setPresetReportVariant('');
+    setPresetOverlayId('');
+    setPresetShared(false);
+  }, []);
+
+  const resetPackForm = useCallback((nextSelected: ProfileCatalogEntry | null) => {
+    setEditingPackId(null);
+    setPackSeedDirty(false);
+    setSlug(nextSelected ? starterSlug(nextSelected.id, 'pack') : 'my-pack');
+    setProfile(nextSelected?.id ?? 'ICAO_2025');
+    setProduct(nextSelected ? starterProduct(nextSelected) : 'METAR');
+    setStage('lint');
+    setSeverity('warning');
+    setWhenExpr('');
+    setMessage(
+      nextSelected ? `Starter guidance for ${profileLabel(nextSelected.id)}` : '',
+    );
+    setStandardRef(nextSelected?.iwxxm_line ?? '');
+  }, []);
+
+  const resetOverlayForm = useCallback((nextSelected: ProfileCatalogEntry | null) => {
+    setEditingOverlayId(null);
+    setOverlaySeedDirty(false);
+    setOverlaySlug(
+      nextSelected ? starterSlug(nextSelected.id, 'overlay') : 'my-overlay',
+    );
+    setOverlayBase(nextSelected?.id ?? 'ICAO_2025');
+    setOverlayBodyText('{}');
+  }, []);
+
+  const resetTemplateForm = useCallback((nextSelected: ProfileCatalogEntry | null) => {
+    setEditingTemplateId(null);
+    setTemplateSeedDirty(false);
+    setTemplateSlug(
+      nextSelected ? starterSlug(nextSelected.id, 'template') : 'my-template',
+    );
+    setTemplateName(
+      nextSelected ? `${profileLabel(nextSelected.id)} destination` : 'My template',
+    );
+    setTemplateSinkType('postgres');
+    setTemplateProduct(starterProduct(nextSelected).toLowerCase());
+    setTemplateDdl(false);
+    setTemplateShared(false);
+    setTemplateParamsText('{}');
+  }, []);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
-    const [catResult, packResult, overlayResult] = await Promise.allSettled([
-      fetchProfileCatalog(accessToken),
-      listRulePacks(accessToken),
-      listOverlays(accessToken),
-    ]);
+    const [catResult, presetResult, packResult, overlayResult, templateResult] =
+      await Promise.allSettled([
+        fetchProfileCatalog(accessToken),
+        listPresets(accessToken),
+        listRulePacks(accessToken),
+        listOverlays(accessToken),
+        listTemplates(accessToken),
+      ]);
 
     const nextLoadErrors: LoadErrorState = {
       catalog: catResult.status === 'rejected' ? errorMessage(catResult.reason) : null,
+      presets:
+        presetResult.status === 'rejected' ? errorMessage(presetResult.reason) : null,
       packs: packResult.status === 'rejected' ? errorMessage(packResult.reason) : null,
       overlays:
         overlayResult.status === 'rejected' ? errorMessage(overlayResult.reason) : null,
+      templates:
+        templateResult.status === 'rejected'
+          ? errorMessage(templateResult.reason)
+          : null,
     };
     setLoadErrors(nextLoadErrors);
 
     const nextCatalog =
       catResult.status === 'fulfilled' ? catResult.value.profiles : null;
+    const nextPresets =
+      presetResult.status === 'fulfilled' ? presetResult.value.items : null;
     const nextPacks = packResult.status === 'fulfilled' ? packResult.value.items : null;
     const nextOverlays =
       overlayResult.status === 'fulfilled' ? overlayResult.value.items : null;
+    const nextTemplates =
+      templateResult.status === 'fulfilled' ? templateResult.value.items : null;
     setCatalog((current) => nextCatalog ?? current);
+    setPresets((current) => nextPresets ?? current);
     setPacks((current) => nextPacks ?? current);
     setOverlays((current) => nextOverlays ?? current);
+    setTemplates((current) => nextTemplates ?? current);
 
     const first = nextCatalog?.[0];
     if (!selectedId && first) {
@@ -490,6 +680,19 @@ function ConversionProfileAuthed({
 
   /* eslint-disable react-hooks/set-state-in-effect -- keep starter forms aligned only while untouched */
   useEffect(() => {
+    if (!selected || presets === null || presets.length > 0 || presetSeedDirty) {
+      return;
+    }
+    setPresetSlug(starterSlug(selected.id, 'preset'));
+    setPresetName(`${profileLabel(selected.id)} preset`);
+    setPresetProfile(selected.id);
+    setPresetIwxxmVersion(starterPresetIwxxmVersion(selected));
+    setPresetReportVariant('');
+    setPresetOverlayId('');
+    setPresetShared(false);
+  }, [presetSeedDirty, presets, selected]);
+
+  useEffect(() => {
     if (!selected || packs === null || packs.length > 0 || packSeedDirty) {
       return;
     }
@@ -511,13 +714,54 @@ function ConversionProfileAuthed({
     setOverlayBase(selected.id);
     setOverlayBodyText('{}');
   }, [overlaySeedDirty, overlays, selected]);
+
+  useEffect(() => {
+    if (!selected || templates === null || templates.length > 0 || templateSeedDirty) {
+      return;
+    }
+    setTemplateSlug(starterSlug(selected.id, 'template'));
+    setTemplateName(`${profileLabel(selected.id)} destination`);
+    setTemplateProduct(starterProduct(selected).toLowerCase());
+    setTemplateSinkType('postgres');
+    setTemplateDdl(false);
+    setTemplateShared(false);
+    setTemplateParamsText('{}');
+  }, [selected, templateSeedDirty, templates]);
   /* eslint-enable react-hooks/set-state-in-effect */
+
+  const onSavePreset = async () => {
+    setSavingPreset(true);
+    setError(null);
+    try {
+      const payload = {
+        slug: presetSlug,
+        name: presetName,
+        semanticProfile: presetProfile,
+        iwxxmVersion: presetIwxxmVersion,
+        extensions: [],
+        reportVariant: presetReportVariant || null,
+        overlayId: presetOverlayId || null,
+        shared: presetShared,
+      };
+      if (editingPresetId) {
+        await updatePreset(accessToken, editingPresetId, payload);
+      } else {
+        await createPreset(accessToken, payload);
+      }
+      await load();
+      resetPresetForm(selected);
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally {
+      setSavingPreset(false);
+    }
+  };
 
   const onSave = async () => {
     setSaving(true);
     setError(null);
     try {
-      await createRulePack(accessToken, {
+      const payload = {
         slug,
         profile,
         product,
@@ -526,8 +770,14 @@ function ConversionProfileAuthed({
         when: whenExpr,
         message,
         standardReference: standardRef,
-      });
+      };
+      if (editingPackId) {
+        await updateRulePack(accessToken, editingPackId, payload);
+      } else {
+        await createRulePack(accessToken, payload);
+      }
       await load();
+      resetPackForm(selected);
     } catch (err) {
       setError(errorMessage(err));
     } finally {
@@ -548,16 +798,159 @@ function ConversionProfileAuthed({
       if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
         throw new Error('Overlay JSON must be an object');
       }
-      await createOverlay(accessToken, {
+      const payload = {
         slug: overlaySlug,
         baseProfileId: overlayBase,
         body: parsed as Record<string, unknown>,
-      });
+      };
+      if (editingOverlayId) {
+        await updateOverlay(accessToken, editingOverlayId, payload);
+      } else {
+        await createOverlay(accessToken, payload);
+      }
       await load();
+      resetOverlayForm(selected);
     } catch (err) {
       setError(errorMessage(err));
     } finally {
       setSavingOverlay(false);
+    }
+  };
+
+  const onSaveTemplate = async () => {
+    setSavingTemplate(true);
+    setError(null);
+    try {
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(templateParamsText.trim() || '{}');
+      } catch {
+        throw new Error('Template JSON must be valid');
+      }
+      if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        throw new Error('Template JSON must be an object');
+      }
+      const payload = {
+        slug: templateSlug,
+        name: templateName,
+        sinkType: templateSinkType,
+        product: templateProduct || null,
+        ddl: templateDdl,
+        params: parsed as Record<string, unknown>,
+        shared: templateShared,
+      };
+      if (editingTemplateId) {
+        await updateTemplate(accessToken, editingTemplateId, payload);
+      } else {
+        await createTemplate(accessToken, payload);
+      }
+      await load();
+      resetTemplateForm(selected);
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally {
+      setSavingTemplate(false);
+    }
+  };
+
+  const onEditPack = (pack: RulePackOut) => {
+    setEditingPackId(pack.id);
+    setPackSeedDirty(true);
+    setSlug(pack.slug);
+    setProfile(pack.profile);
+    setProduct(pack.product);
+    setStage(pack.stage);
+    setSeverity(pack.severity);
+    setWhenExpr(pack.when);
+    setMessage(pack.message);
+    setStandardRef(pack.standardReference);
+  };
+
+  const onDeletePack = async (packId: string) => {
+    setSaving(true);
+    setError(null);
+    try {
+      await deleteRulePack(accessToken, packId);
+      await load();
+      resetPackForm(selected);
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const onEditPreset = (preset: PresetOut) => {
+    setEditingPresetId(preset.id);
+    setPresetSeedDirty(true);
+    setPresetSlug(preset.slug);
+    setPresetName(preset.name);
+    setPresetProfile(preset.semanticProfile);
+    setPresetIwxxmVersion(preset.iwxxmVersion);
+    setPresetReportVariant(preset.reportVariant ?? '');
+    setPresetOverlayId(preset.overlayId ?? '');
+    setPresetShared(preset.shared);
+  };
+
+  const onDeletePreset = async (presetId: string) => {
+    setSavingPreset(true);
+    setError(null);
+    try {
+      await deletePreset(accessToken, presetId);
+      await load();
+      resetPresetForm(selected);
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally {
+      setSavingPreset(false);
+    }
+  };
+
+  const onEditOverlay = (overlay: OverlayOut) => {
+    setEditingOverlayId(overlay.id);
+    setOverlaySeedDirty(true);
+    setOverlaySlug(overlay.slug);
+    setOverlayBase(overlay.baseProfileId);
+    setOverlayBodyText(JSON.stringify(overlay.body, null, 2));
+  };
+
+  const onDeleteOverlay = async (overlayId: string) => {
+    setSavingOverlay(true);
+    setError(null);
+    try {
+      await deleteOverlay(accessToken, overlayId);
+      await load();
+      resetOverlayForm(selected);
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally {
+      setSavingOverlay(false);
+    }
+  };
+
+  const onEditTemplate = (template: DisseminationTemplateOut) => {
+    setEditingTemplateId(template.id);
+    setTemplateSeedDirty(true);
+    setTemplateSlug(template.slug);
+    setTemplateName(template.name);
+    setTemplateSinkType(template.sinkType);
+    setTemplateProduct(template.product ?? '');
+    setTemplateDdl(template.ddl);
+    setTemplateShared(template.shared);
+    setTemplateParamsText(JSON.stringify(template.params, null, 2));
+  };
+
+  const onDeleteTemplate = async (templateId: string) => {
+    setSavingTemplate(true);
+    setError(null);
+    try {
+      await deleteTemplate(accessToken, templateId);
+      await load();
+      resetTemplateForm(selected);
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally {
+      setSavingTemplate(false);
     }
   };
 
@@ -723,6 +1116,18 @@ function ConversionProfileAuthed({
               <dt className="text-gray-500">Legacy alias</dt>
               <dd>{selected.legacy_alias ?? '—'}</dd>
             </div>
+            <div>
+              <dt className="text-gray-500">{PROFILES_PROFILE_FAMILY}</dt>
+              <dd>{profileFamily(selected.id)}</dd>
+            </div>
+            <div>
+              <dt className="text-gray-500">{PROFILES_PROFILE_AUTHORITY}</dt>
+              <dd>{profileAuthority(selected.id)}</dd>
+            </div>
+            <div className="sm:col-span-2">
+              <dt className="text-gray-500">{PROFILES_PROFILE_COVERAGE}</dt>
+              <dd>{profileCoverage(selected)}</dd>
+            </div>
           </dl>
         ) : loadErrors.catalog ? (
           <p className="text-sm text-amber-700 dark:text-amber-300">
@@ -731,6 +1136,36 @@ function ConversionProfileAuthed({
         ) : (
           <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
         )}
+      </Card>
+
+      <Card className="space-y-3 p-4" data-testid="conversion-profiles-glossary">
+        <h2 className="text-sm font-medium">{PROFILES_GLOSSARY_HEADING}</h2>
+        <dl className="grid grid-cols-1 gap-3 text-sm md:grid-cols-3">
+          <div className="rounded-md border border-gray-200 p-3 dark:border-gray-700">
+            <dt className="font-medium text-gray-900 dark:text-gray-100">
+              Semantic profile
+            </dt>
+            <dd className="mt-1 text-gray-700 dark:text-gray-300">
+              {PROFILES_GLOSSARY_PROFILE}
+            </dd>
+          </div>
+          <div className="rounded-md border border-gray-200 p-3 dark:border-gray-700">
+            <dt className="font-medium text-gray-900 dark:text-gray-100">
+              Exchange profile
+            </dt>
+            <dd className="mt-1 text-gray-700 dark:text-gray-300">
+              {PROFILES_GLOSSARY_EXCHANGE}
+            </dd>
+          </div>
+          <div className="rounded-md border border-gray-200 p-3 dark:border-gray-700">
+            <dt className="font-medium text-gray-900 dark:text-gray-100">
+              Signed overlay
+            </dt>
+            <dd className="mt-1 text-gray-700 dark:text-gray-300">
+              {PROFILES_GLOSSARY_OVERLAY}
+            </dd>
+          </div>
+        </dl>
       </Card>
 
       <Card className="space-y-4 p-4" data-testid="conversion-profiles-blocks">
@@ -850,6 +1285,168 @@ function ConversionProfileAuthed({
           </>
         ) : (
           <p className="text-sm text-gray-500">{PROFILES_EXAMPLES_EMPTY}</p>
+        )}
+      </Card>
+
+      <Card className="space-y-3 p-4" data-testid="conversion-profiles-presets">
+        <h2 className="text-sm font-medium">{PROFILES_PRESETS_HEADING}</h2>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <label className="text-sm">
+            {PROFILES_PRESET_SLUG}
+            <input
+              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-preset-slug"
+              value={presetSlug}
+              onChange={(e) => {
+                setPresetSeedDirty(true);
+                setPresetSlug(e.target.value);
+              }}
+            />
+          </label>
+          <label className="text-sm">
+            {PROFILES_PRESET_NAME}
+            <input
+              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-preset-name"
+              value={presetName}
+              onChange={(e) => {
+                setPresetSeedDirty(true);
+                setPresetName(e.target.value);
+              }}
+            />
+          </label>
+          <label className="text-sm">
+            {PROFILES_PRESET_PROFILE}
+            <input
+              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-preset-profile"
+              value={presetProfile}
+              onChange={(e) => {
+                setPresetSeedDirty(true);
+                setPresetProfile(e.target.value);
+              }}
+            />
+          </label>
+          <label className="text-sm">
+            {PROFILES_PRESET_IWXXM_VERSION}
+            <input
+              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-preset-iwxxm-version"
+              value={presetIwxxmVersion}
+              onChange={(e) => {
+                setPresetSeedDirty(true);
+                setPresetIwxxmVersion(e.target.value);
+              }}
+            />
+          </label>
+          <label className="text-sm">
+            {PROFILES_PRESET_REPORT_VARIANT}
+            <input
+              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-preset-report-variant"
+              value={presetReportVariant}
+              onChange={(e) => {
+                setPresetSeedDirty(true);
+                setPresetReportVariant(e.target.value);
+              }}
+            />
+          </label>
+          <label className="text-sm">
+            {PROFILES_PRESET_OVERLAY}
+            <input
+              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-preset-overlay-id"
+              value={presetOverlayId}
+              onChange={(e) => {
+                setPresetSeedDirty(true);
+                setPresetOverlayId(e.target.value);
+              }}
+            />
+          </label>
+          <label className="flex items-center gap-2 text-sm sm:col-span-2">
+            <input
+              data-testid="conversion-profiles-preset-shared"
+              type="checkbox"
+              checked={presetShared}
+              onChange={(e) => {
+                setPresetSeedDirty(true);
+                setPresetShared(e.target.checked);
+              }}
+            />
+            <span>{PROFILES_PRESET_SHARED}</span>
+          </label>
+        </div>
+        {presets !== null && presets.length === 0 && !presetSeedDirty ? (
+          <p className="text-xs text-gray-600 dark:text-gray-400">
+            Starter preset fields stay in sync with the selected profile until you edit
+            them.
+          </p>
+        ) : null}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            data-testid="conversion-profiles-preset-save"
+            onClick={() => void onSavePreset()}
+            disabled={savingPreset}
+          >
+            {savingPreset ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            ) : null}
+            {editingPresetId ? PROFILES_PRESET_UPDATE : PROFILES_PRESET_SAVE}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            data-testid="conversion-profiles-preset-reset"
+            onClick={() => resetPresetForm(selected)}
+            disabled={savingPreset}
+          >
+            {PROFILES_PRESET_NEW}
+          </Button>
+          {editingPresetId ? (
+            <Button
+              type="button"
+              variant="destructive"
+              data-testid="conversion-profiles-preset-delete"
+              onClick={() => void onDeletePreset(editingPresetId)}
+              disabled={savingPreset}
+            >
+              {PROFILES_PRESET_DELETE}
+            </Button>
+          ) : null}
+        </div>
+        {loadErrors.presets && presets !== null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {PROFILES_PRESETS_UNAVAILABLE} {loadErrors.presets}
+          </p>
+        ) : null}
+        {loading && presets === null ? (
+          <p className="text-sm text-gray-500">{PROFILES_PRESETS_LOADING}</p>
+        ) : loadErrors.presets && presets === null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {PROFILES_PRESETS_UNAVAILABLE} {loadErrors.presets}
+          </p>
+        ) : !presets || presets.length === 0 ? (
+          <p className="text-sm text-gray-500">{PROFILES_PRESETS_EMPTY}</p>
+        ) : (
+          <ul
+            className="space-y-1 text-sm"
+            data-testid="conversion-profiles-preset-list"
+          >
+            {presets.map((preset) => (
+              <li key={preset.id} className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  className="rounded border border-gray-300 px-2 py-1 text-left text-xs dark:border-gray-600"
+                  data-testid={`conversion-profiles-preset-edit-${preset.id}`}
+                  onClick={() => onEditPreset(preset)}
+                >
+                  Edit
+                </button>
+                <code>{preset.slug}</code> - {preset.name} ({preset.semanticProfile})
+              </li>
+            ))}
+          </ul>
         )}
       </Card>
 
@@ -999,15 +1596,37 @@ function ConversionProfileAuthed({
           </p>
         ) : null}
 
-        <Button
-          type="button"
-          data-testid="conversion-profiles-pack-save"
-          onClick={() => void onSave()}
-          disabled={saving}
-        >
-          {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : null}
-          {PROFILES_PACK_SAVE}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            data-testid="conversion-profiles-pack-save"
+            onClick={() => void onSave()}
+            disabled={saving}
+          >
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : null}
+            {editingPackId ? PROFILES_PACK_UPDATE : PROFILES_PACK_SAVE}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            data-testid="conversion-profiles-pack-reset"
+            onClick={() => resetPackForm(selected)}
+            disabled={saving}
+          >
+            {PROFILES_PACK_NEW}
+          </Button>
+          {editingPackId ? (
+            <Button
+              type="button"
+              variant="destructive"
+              data-testid="conversion-profiles-pack-delete"
+              onClick={() => void onDeletePack(editingPackId)}
+              disabled={saving}
+            >
+              {PROFILES_PACK_DELETE}
+            </Button>
+          ) : null}
+        </div>
 
         {loadErrors.packs && packs !== null ? (
           <p className="text-sm text-amber-700 dark:text-amber-300">
@@ -1025,8 +1644,182 @@ function ConversionProfileAuthed({
         ) : (
           <ul className="space-y-1 text-sm" data-testid="conversion-profiles-pack-list">
             {packs.map((p) => (
-              <li key={p.id}>
+              <li key={p.id} className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  className="rounded border border-gray-300 px-2 py-1 text-left text-xs dark:border-gray-600"
+                  data-testid={`conversion-profiles-pack-edit-${p.id}`}
+                  onClick={() => onEditPack(p)}
+                >
+                  Edit
+                </button>
                 <code>{p.slug}</code> — {p.profile} / {p.product} ({p.severity})
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
+
+      <Card className="space-y-3 p-4" data-testid="conversion-profiles-templates">
+        <h2 className="text-sm font-medium">{PROFILES_TEMPLATES_HEADING}</h2>
+        <p className="text-xs text-gray-600 dark:text-gray-400">
+          {PROFILES_TEMPLATE_HINT}
+        </p>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <label className="text-sm">
+            {PROFILES_TEMPLATE_SLUG}
+            <input
+              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-template-slug"
+              value={templateSlug}
+              onChange={(e) => {
+                setTemplateSeedDirty(true);
+                setTemplateSlug(e.target.value);
+              }}
+            />
+          </label>
+          <label className="text-sm">
+            {PROFILES_TEMPLATE_NAME}
+            <input
+              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-template-name"
+              value={templateName}
+              onChange={(e) => {
+                setTemplateSeedDirty(true);
+                setTemplateName(e.target.value);
+              }}
+            />
+          </label>
+          <label className="text-sm">
+            {PROFILES_TEMPLATE_SINK}
+            <input
+              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-template-sink"
+              value={templateSinkType}
+              onChange={(e) => {
+                setTemplateSeedDirty(true);
+                setTemplateSinkType(e.target.value);
+              }}
+            />
+          </label>
+          <label className="text-sm">
+            {PROFILES_TEMPLATE_PRODUCT}
+            <input
+              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-template-product"
+              value={templateProduct}
+              onChange={(e) => {
+                setTemplateSeedDirty(true);
+                setTemplateProduct(e.target.value);
+              }}
+            />
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              data-testid="conversion-profiles-template-ddl"
+              type="checkbox"
+              checked={templateDdl}
+              onChange={(e) => {
+                setTemplateSeedDirty(true);
+                setTemplateDdl(e.target.checked);
+              }}
+            />
+            <span>{PROFILES_TEMPLATE_DDL}</span>
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              data-testid="conversion-profiles-template-shared"
+              type="checkbox"
+              checked={templateShared}
+              onChange={(e) => {
+                setTemplateSeedDirty(true);
+                setTemplateShared(e.target.checked);
+              }}
+            />
+            <span>{PROFILES_TEMPLATE_SHARED}</span>
+          </label>
+          <label className="text-sm sm:col-span-2">
+            {PROFILES_TEMPLATE_PARAMS}
+            <textarea
+              className="mt-1 w-full rounded border p-2 font-mono text-xs dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-profiles-template-params"
+              rows={4}
+              value={templateParamsText}
+              onChange={(e) => {
+                setTemplateSeedDirty(true);
+                setTemplateParamsText(e.target.value);
+              }}
+            />
+          </label>
+        </div>
+        {templates !== null && templates.length === 0 && !templateSeedDirty ? (
+          <p className="text-xs text-gray-600 dark:text-gray-400">
+            Starter template fields stay in sync with the selected profile until you
+            edit them.
+          </p>
+        ) : null}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            data-testid="conversion-profiles-template-save"
+            onClick={() => void onSaveTemplate()}
+            disabled={savingTemplate}
+          >
+            {savingTemplate ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            ) : null}
+            {editingTemplateId ? PROFILES_TEMPLATE_UPDATE : PROFILES_TEMPLATE_SAVE}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            data-testid="conversion-profiles-template-reset"
+            onClick={() => resetTemplateForm(selected)}
+            disabled={savingTemplate}
+          >
+            {PROFILES_TEMPLATE_NEW}
+          </Button>
+          {editingTemplateId ? (
+            <Button
+              type="button"
+              variant="destructive"
+              data-testid="conversion-profiles-template-delete"
+              onClick={() => void onDeleteTemplate(editingTemplateId)}
+              disabled={savingTemplate}
+            >
+              {PROFILES_TEMPLATE_DELETE}
+            </Button>
+          ) : null}
+        </div>
+        {loadErrors.templates && templates !== null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {PROFILES_TEMPLATES_UNAVAILABLE} {loadErrors.templates}
+          </p>
+        ) : null}
+        {loading && templates === null ? (
+          <p className="text-sm text-gray-500">{PROFILES_TEMPLATES_LOADING}</p>
+        ) : loadErrors.templates && templates === null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {PROFILES_TEMPLATES_UNAVAILABLE} {loadErrors.templates}
+          </p>
+        ) : !templates || templates.length === 0 ? (
+          <p className="text-sm text-gray-500">{PROFILES_TEMPLATES_EMPTY}</p>
+        ) : (
+          <ul
+            className="space-y-1 text-sm"
+            data-testid="conversion-profiles-template-list"
+          >
+            {templates.map((template) => (
+              <li key={template.id} className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  className="rounded border border-gray-300 px-2 py-1 text-left text-xs dark:border-gray-600"
+                  data-testid={`conversion-profiles-template-edit-${template.id}`}
+                  onClick={() => onEditTemplate(template)}
+                >
+                  Edit
+                </button>
+                <code>{template.slug}</code> - {template.name} ({template.sinkType})
               </li>
             ))}
           </ul>
@@ -1087,17 +1880,39 @@ function ConversionProfileAuthed({
             them.
           </p>
         ) : null}
-        <Button
-          type="button"
-          data-testid="conversion-profiles-overlay-save"
-          onClick={() => void onSaveOverlay()}
-          disabled={savingOverlay}
-        >
-          {savingOverlay ? (
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            data-testid="conversion-profiles-overlay-save"
+            onClick={() => void onSaveOverlay()}
+            disabled={savingOverlay}
+          >
+            {savingOverlay ? (
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            ) : null}
+            {editingOverlayId ? PROFILES_OVERLAY_UPDATE : PROFILES_OVERLAY_SAVE}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            data-testid="conversion-profiles-overlay-reset"
+            onClick={() => resetOverlayForm(selected)}
+            disabled={savingOverlay}
+          >
+            {PROFILES_OVERLAY_NEW}
+          </Button>
+          {editingOverlayId ? (
+            <Button
+              type="button"
+              variant="destructive"
+              data-testid="conversion-profiles-overlay-delete"
+              onClick={() => void onDeleteOverlay(editingOverlayId)}
+              disabled={savingOverlay}
+            >
+              {PROFILES_OVERLAY_DELETE}
+            </Button>
           ) : null}
-          {PROFILES_OVERLAY_SAVE}
-        </Button>
+        </div>
         {loadErrors.overlays && overlays !== null ? (
           <p className="text-sm text-amber-700 dark:text-amber-300">
             {PROFILES_OVERLAYS_UNAVAILABLE} {loadErrors.overlays}
@@ -1117,7 +1932,15 @@ function ConversionProfileAuthed({
             data-testid="conversion-profiles-overlay-list"
           >
             {overlays.map((o) => (
-              <li key={o.id}>
+              <li key={o.id} className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  className="rounded border border-gray-300 px-2 py-1 text-left text-xs dark:border-gray-600"
+                  data-testid={`conversion-profiles-overlay-edit-${o.id}`}
+                  onClick={() => onEditOverlay(o)}
+                >
+                  Edit
+                </button>
                 <code>{o.slug}</code> — {o.baseProfileId}{' '}
                 <span className="text-gray-500">({o.id})</span>
               </li>
