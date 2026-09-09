@@ -725,3 +725,37 @@ Full ranking: [mining/wmo-im-org-mining-notes.md](../mining/wmo-im-org-mining-no
 | [#699](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/699) | IWXXM validation package — schema release pointers |
 | [#693](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/693) | Converter — conversion citations |
 | [#702](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/702) / [#714](https://github.com/joseph-c-mcguire/metar-to-IWXXM/issues/714) | Decode / F7 UX provenance |
+
+
+---
+
+## EV-M1-five-remaining / #913 promote (2026-09-09)
+
+Additional durable / candidate pins from mine-ticket closeout triage
+([`docs/domain/profiles/mining/EV-M1-913-source-triage.md`](../profiles/mining/EV-M1-913-source-triage.md)).
+
+### NWS forecast product samples (`US_FAA_NWS`)
+
+- **URL:** https://forecast.weather.gov/product.php?format=CI&glossary=0&issuedby=E&product=SIG&site=ABR&version=2
+- **Access:** public
+- **Applies to:** products: SIGMET · profiles: US_FAA_NWS · role: example / fixture seed
+- **Caveats:** Live product form — version query params rotate; cite as example SoT only
+
+- **URL:** https://forecast.weather.gov/product.php?format=TXT&issuedby=WSH&product=PNS&site=DLH&version=26
+- **Access:** public
+- **Applies to:** products: ops guidance · profiles: US_FAA_NWS · role: context
+- **Caveats:** PNS text product; identifier transition notes
+
+### KMA IWXXM intro (`KR_KMA`)
+
+- **URL:** https://amo.kma.go.kr/eng/iwxxm/iwxxm-intro.do
+- **Access:** public
+- **Applies to:** products: METAR, SPECI, TAF, SIGMET, AIRMET · profiles: KR_KMA · role: national program context
+- **Caveats:** Program intro page — not an XSD pin
+
+### India eAIP GEN 3.5 archive (`IN_IMD`) — deferred durable pin
+
+- **URL:** https://aim-india.aai.aero/eAIP_Archive/19-03-2026/eAIP/IN-GEN%203.5-en-GB.html
+- **Access:** gap (date-stamped archive)
+- **Applies to:** products: METAR, SPECI, TAF, SIGMET · profiles: IN_IMD · role: cite-only until durable pin
+- **Caveats:** Archive path embeds effective date — treat as unstable; do not use as sole SoT

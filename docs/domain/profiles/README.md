@@ -96,14 +96,18 @@ Runtime contract:
 
 ## Open gaps (#913 deepen)
 
+Closeout triage: [`mining/EV-M1-913-source-triage.md`](mining/EV-M1-913-source-triage.md)
+(EV-M1-five-remaining / 2026-09-09).
+
 - [x] `catalog.yaml` with URL + access tier + gap status per profile id  
 - [x] Semantic stubs for `ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`  
-- [ ] CA MANOBS/MANAIR section-level rule stubs for `CA_ECCC` (#916 / EV-064 in progress)  
 - [x] AU TAF INTER/TAF3/RMK T/Q refs for `AU_BOM` (EV-087 mining kickoff)  
 - [x] NZ domestic vs international TAF refs for `NZ_CAA_MET` (EV-087 mining kickoff)  
-- [x] Thin/compat catalog + stubs for #920 ids (EV-089 Spec; Build fixtures/registry pending)  
-- [x] Thin/compat **deepen** corpora + KR/JP SPECI + `in_imd` lint overlay ([#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098) / EV-094)  
-- [ ] Regional exchange rule sources for ROBEX/RODEX variants (P2)
+- [x] Thin/compat catalog + stubs for #920 ids (EV-089; deepen [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098) / EV-094)  
+- [x] Thin/compat **deepen** corpora + KR/JP SPECI + `in_imd` lint overlay (#1098 / EV-094)  
+- [x] Regional exchange **source pins** for ROBEX / RODEX / AFI (EV-090); `CAR_SAM` handbook **deferred gap**  
+- [ ] CA MANOBS/MANAIR **section-level** rule stubs — **re-homed** to [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028) / [#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031) (not `#913` close blocker)  
+- [ ] ROBEX/RODEX **full handbook rule matrices** — exchange deepen residual (URLs mined; matrices outside `#913` AC)
 
 ## References
 
