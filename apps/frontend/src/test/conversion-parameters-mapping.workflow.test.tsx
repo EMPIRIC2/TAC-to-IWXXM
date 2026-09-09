@@ -137,10 +137,9 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
         validateOutput: true,
         validationLevel: 'comprehensive',
         stopOnError: false,
+        // EV-1051: signed-in convert always forwards Bearer (preset_id auth).
+        accessToken: 'mapping-token',
       }),
-    );
-    expect(mockConvertMetarToIwxxm.mock.calls[0]?.[0]).not.toHaveProperty(
-      'accessToken',
     );
   });
 

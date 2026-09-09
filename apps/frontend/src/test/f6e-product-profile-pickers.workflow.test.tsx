@@ -198,10 +198,9 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
         product: 'METAR',
         profile: 'annex3',
         iwxxmVersion: '2023-1',
+        // EV-1051: signed-in convert always forwards Bearer (preset_id auth).
+        accessToken: 'f6e-token',
       }),
-    );
-    expect(mockConvertMetarToIwxxm.mock.calls[0]?.[0]).not.toHaveProperty(
-      'accessToken',
     );
   });
 
