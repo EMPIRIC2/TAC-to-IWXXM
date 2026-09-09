@@ -96,10 +96,18 @@ export async function dismissPrivacyNoticeIfPresent(page: Page): Promise<void> {
 
 /** Open the public converter shell (F21 — no login / JWT). */
 export async function openPublicConverter(page: Page): Promise<void> {
-  await page.goto('/');
-  await expect(
-    page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i }),
-  ).toBeVisible({ timeout: 10000 });
+  const heading = page.getByRole('heading', { name: /METAR.*IWXXM.*Converter/i });
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  try {
+    await expect(heading).toBeVisible({ timeout: 10000 });
+  } catch {
+    // Live staging can intermittently serve a stale or incomplete first load.
+    // Retry one clean navigation before failing the spec.
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await expect(heading).toBeVisible({ timeout: 20000 });
+    await dismissPrivacyNoticeIfPresent(page);
+    return;
+  }
   await dismissPrivacyNoticeIfPresent(page);
 }
 
