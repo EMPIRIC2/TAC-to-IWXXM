@@ -168,6 +168,28 @@ def test_preflight_unimplemented_sink(client: TestClient) -> None:
     assert resp.status_code == 501
 
 
+def test_preflight_missing_sink_type_is_422(client: TestClient) -> None:
+    """F-ADV-01: omit sink_type (no template) → 422, not 501."""
+    resp = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps({"uri": "http://127.0.0.1:5432/postgres"}),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 422, resp.text
+    assert "sink_type" in str(resp.json().get("detail", "")).lower()
+
+
+def test_send_missing_sink_type_is_422(client: TestClient) -> None:
+    """F-ADV-01: send without sink_type/handle → 422."""
+    resp = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps({"iwxxm_xml": "<x/>"}),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert resp.status_code == 422, resp.text
+    assert "sink_type" in str(resp.json().get("detail", "")).lower()
+
+
 def test_send_requires_iwxxm_xml(client: TestClient, tmp_path: Path) -> None:
     uri = _sqlite_uri(tmp_path)
     pre = client.post(
