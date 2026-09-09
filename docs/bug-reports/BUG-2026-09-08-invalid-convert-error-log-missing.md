@@ -60,22 +60,27 @@ shared Playwright helper.
 - Path: `apps/frontend/src/utils/api.test.ts`
 - Path: `apps/frontend/src/app/components/FileConverter.test.tsx`
 - Path: `apps/e2e/issue-555-ux-delta.e2e.spec.ts`
-- Status: unit/component green locally; live staging re-verify pending after coverage fix
+- Status: unit/component green locally; live staging re-verify green on
+  `ea8ef014` (invalid convert + previously flaky shell-load specs)
 
 ## Fix
 
 1. Preserve structured `errors` / `issues` in `ConvertApiError`.
 2. Merge `error.message` into the visible conversion log for hard-convert failures.
 3. Retry one public-converter navigation in Playwright before failing heading waits.
+4. Cover blank-message merge branches so frontend coverage stays at the 100% branch gate.
 
 ## Interview record
 
 - Build gate: Open Build and proceed with fixes now.
 - First bug: Missing visible conversion error log on invalid convert.
-- Remediation path: Fix locally first, then verify with targeted and live tests.
+- Remediation path: Fix locally, redeploy to stage, and re-run live tests.
 - Severity: High.
 - Repro confirmation: confirmed from targeted staging Playwright repro.
-- Root cause confirmation: approved before patching.
+- Root cause confirmation: approved dual fix (error-log message merge + page-open retry).
+- Flake scope: address flakes in the same pass if actionable.
+- Live verification: issue-555 + four flake specs passed against staging after
+  `ea8ef014` deploy.
 
 ## Prevention & countermeasures
 
