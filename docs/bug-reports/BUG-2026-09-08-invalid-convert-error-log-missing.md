@@ -81,6 +81,10 @@ shared Playwright helper.
 - Flake scope: address flakes in the same pass if actionable.
 - Live verification: issue-555 + four flake specs passed against staging after
   `ea8ef014` deploy.
+- Closeout (2026-09-09): full live suite against staging green —
+  `make test-live-e2e` (114 passed), connectivity, API (20 passed / 1 skipped),
+  integration (5), bulletin (1); docs-tip stage CI `34340311512` green;
+  hotfix-log row 16 recorded. Promote to `main` deferred.
 
 ## Prevention & countermeasures
 
