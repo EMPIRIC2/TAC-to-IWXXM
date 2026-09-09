@@ -686,6 +686,9 @@ POST   /api/v1/work-sessions/{id}/restore
 **Auth**: Bearer JWT (Supabase Auth). Owner isolation by Auth `user_id`. Exact list/query/body
 shapes finalize in 04 (historical ADR-020 shapes are the starting point).
 
+**Title**: Plain-text only. Create/update strips HTML markup from `title` on write (defense in
+depth; UI still renders titles as text nodes). Operators should not rely on stored HTML.
+
 **Admin work-sessions list**: Remains removed (`GET /admin/work-sessions`).
 
 **Guest users**: Convert/validate/lint/decode/preview/dissemination without login; history local
@@ -719,7 +722,7 @@ allowlist. Abuse controls apply (rate limits / body size).
 |-------|-------|
 | Request | JSON: `sink_type` (`postgres` \| `mysql` \| `sqlserver` \| `sqlite` \| `wis2` \| `edis` \| `amhs` \| `swim` \| `afs`) + sink-specific connection params (DB URI or WIS2/EDIS/AMHS fields) + optional `payload` metadata (product, schema version) + `ddl` flag for create-if-missing + **single** IWXXM/TAC body (or in-session/drop reference) |
 | Success | Structured preflight result: connectivity OK, schema/writer-contract diff (empty when green), optional short-lived opaque `handle` |
-| Failure | 400/422 structured errors (allowlist/SSRF, auth to dest, schema mismatch, missing columns); secrets redacted |
+| Failure | **422** when `sink_type` is omitted/`null` (client error); **501** when `sink_type` is a known drawer value not yet implemented for this route (e.g. `wis2`); 400/403 structured errors (allowlist/SSRF, auth to dest, schema mismatch, missing columns); secrets redacted |
 
 ### `POST /api/v1/dissemination/send`
 
@@ -727,7 +730,7 @@ allowlist. Abuse controls apply (rate limits / body size).
 |-------|-------|
 | Request | JSON: either `handle` from green preflight **or** full sink params again + **single** IWXXM/TAC body (or reference to in-session convert result / drag-drop content) |
 | Success | Sink ack + optional `kv_upload_key` metadata for local Finished (no dest secrets stored) |
-| Failure | Same structured/redacted errors as preflight; block if preflight would not be green |
+| Failure | Same structured/redacted errors as preflight (**422** missing/`null` `sink_type` when no valid handle supplies it; **501** unimplemented sink); block if preflight would not be green |
 
 ### Multi-file selection (EV-018 / #785) — client contract
 

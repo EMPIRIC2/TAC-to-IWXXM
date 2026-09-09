@@ -1,11 +1,17 @@
 """Pydantic schemas for F5/F7 unified TAC work session API (ADR-020)."""
 
+from __future__ import annotations
+
+import re
 from datetime import datetime
 from enum import StrEnum
+from html import unescape
 from typing import Any
 from uuid import UUID
 
 from pydantic import BaseModel, Field, field_validator
+
+_HTML_TAG_RE = re.compile(r"<[^>]*>")
 
 
 class WorkSessionStatus(StrEnum):
@@ -43,6 +49,28 @@ def _normalize_product_value(value: object) -> object:
     return value
 
 
+def sanitize_work_session_title(value: object) -> object:
+    """
+    Strip HTML markup from a work-session title (defense in depth).
+
+    Parameters
+    ----------
+    value :
+        Raw title from create/update, or ``None`` when omitted.
+
+    Returns
+    -------
+    object
+        Plain-text title with tags removed and whitespace normalized, ``None``
+        when the input was ``None``, or the original value when not a string.
+    """
+    if value is None or not isinstance(value, str):
+        return value
+    plain = unescape(_HTML_TAG_RE.sub("", value))
+    plain = plain.replace("<", "").replace(">", "")
+    return " ".join(plain.split())
+
+
 class WorkSessionPayload(BaseModel):
     """Shared optional fields for create/update payloads (product declared on subclasses)."""
 
@@ -55,6 +83,11 @@ class WorkSessionPayload(BaseModel):
     conversion_params: dict[str, Any] = Field(default_factory=dict)
     status: WorkSessionStatus | None = None
     kv_upload_key: str | None = None
+
+    @field_validator("title", mode="before")
+    @classmethod
+    def _sanitize_title(cls, value: object) -> object:
+        return sanitize_work_session_title(value)
 
 
 class WorkSessionCreate(WorkSessionPayload):
@@ -102,6 +135,12 @@ class WorkSession(BaseModel):
     @classmethod
     def _normalize_product(cls, value: object) -> object:
         return _normalize_product_value(value)
+
+    @field_validator("title", mode="before")
+    @classmethod
+    def _sanitize_title(cls, value: object) -> object:
+        cleaned = sanitize_work_session_title(value)
+        return "" if cleaned is None else cleaned
 
 
 class WorkSessionListResponse(BaseModel):

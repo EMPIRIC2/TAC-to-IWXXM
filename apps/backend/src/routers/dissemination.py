@@ -86,6 +86,39 @@ async def _read_send(request: Request) -> SendRequest:
         ) from exc
 
 
+def _require_db_sink(sink_type: str | None) -> str:
+    """
+    Map missing vs unimplemented sink types to the correct client status.
+
+    Parameters
+    ----------
+    sink_type :
+        Requested sink, or ``None`` when omitted (and not supplied by template/handle).
+
+    Returns
+    -------
+    str
+        A sink type in ``_DB_SINKS``.
+
+    Raises
+    ------
+    HTTPException
+        **422** when ``sink_type`` is missing/`None`; **501** when the value is a
+        known drawer sink not implemented on this DB route.
+    """
+    if sink_type is None:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="sink_type is required",
+        )
+    if sink_type not in _DB_SINKS:
+        raise HTTPException(
+            status_code=status.HTTP_501_NOT_IMPLEMENTED,
+            detail=f"sink_type {sink_type!r} not implemented in this milestone",
+        )
+    return sink_type
+
+
 @router.post("/preflight")
 @dissemination_limit(_limiter)
 async def dissemination_preflight(
@@ -126,11 +159,7 @@ async def dissemination_preflight(
             params=_merge_template_params(template.params, dict(req.params)),
         )
 
-    if req.sink_type not in _DB_SINKS:
-        raise HTTPException(
-            status_code=status.HTTP_501_NOT_IMPLEMENTED,
-            detail=f"sink_type {req.sink_type!r} not implemented in this milestone",
-        )
+    sink_type = _require_db_sink(req.sink_type)
 
     try:
         result = await run_db_preflight(req)
@@ -155,7 +184,7 @@ async def dissemination_preflight(
     if result.ok:
         handle = default_handle_store.create(
             user_id=uid,
-            sink_type=req.sink_type,
+            sink_type=sink_type,
             uri=req.uri,
             params=dict(req.params),
         )
@@ -223,11 +252,7 @@ async def dissemination_send(
         sink_type = rec.sink_type  # type: ignore[assignment]
         uri = rec.uri
 
-    if sink_type not in _DB_SINKS:
-        raise HTTPException(
-            status_code=status.HTTP_501_NOT_IMPLEMENTED,
-            detail=f"sink_type {sink_type!r} not implemented in this milestone",
-        )
+    sink_type = _require_db_sink(sink_type)
     if not uri:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
