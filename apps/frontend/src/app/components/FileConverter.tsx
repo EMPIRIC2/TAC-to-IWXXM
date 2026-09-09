@@ -2311,7 +2311,7 @@ export function FileConverter({
             conversionParams.product !== 'IWXXM' ? (
               <Button
                 data-testid="convert-and-send-button"
-                variant="secondary"
+                variant="outline"
                 onClick={handleConvertAndSend}
                 disabled={convertDisabled}
                 className="min-w-[9.5rem] text-base disabled:opacity-50 disabled:cursor-not-allowed"
@@ -2384,7 +2384,7 @@ export function FileConverter({
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
-          <div>
+          <div className="min-w-0" data-testid="workbench-main-column">
             {/* Manual Input — primary workbench */}
             <div className="mb-6">
               {isReadOnly && (
@@ -2441,7 +2441,7 @@ export function FileConverter({
                 </div>
                 <div className="flex flex-col gap-1.5">
                   <div
-                    className="flex flex-col gap-2 rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-nowrap lg:items-center"
+                    className="flex min-w-0 flex-col gap-2 rounded-md border border-gray-300 bg-white px-2 py-2 dark:border-gray-600 dark:bg-gray-800 lg:flex-row lg:flex-wrap lg:items-center"
                     data-testid="product-profile-bar"
                   >
                     <Label
@@ -3715,7 +3715,10 @@ export function FileConverter({
             </div>
           </div>
           {onLoadWorkSession && (
-            <aside className="relative z-0 lg:sticky lg:top-8 lg:mt-8 lg:self-start">
+            <aside
+              className="relative z-0 w-full min-w-0 lg:sticky lg:top-8 lg:mt-8 lg:w-[280px] lg:max-w-[280px] lg:shrink-0 lg:self-start"
+              data-testid="recent-work-aside"
+            >
               <WorkHistorySidebar
                 accessToken={accessToken}
                 activeSessionId={activeWorkSessionId}

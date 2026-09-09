@@ -2694,12 +2694,13 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: UJ-058 / UJ-060 still pass
 - **Source**: #1010; F7.s / F7.t
 
-### TC-EV061-1013-001: Product Type + Profile no-wrap ≥1024px
+### TC-EV061-1013-001: Product Type + Profile row ≥1024px (wrap-capable)
 
 - **Level**: T0 / T2 / T3 / H4–H5
-- **Objective**: Top Product Type + Profile stay on one bar without wrap at ≥1024px
-- **Pass criteria**: No wrap; keyboard labels preserved
-- **Source**: #1013; UJ-066
+- **Objective**: Top Product Type + Profile share one bar at ≥1024px; bar may wrap so
+  Exchange profile is not painted under Recent work (TC-UX-RW-001)
+- **Pass criteria**: `lg:flex-row` + `lg:flex-wrap`; keyboard labels preserved
+- **Source**: #1013; UJ-066; TC-UX-RW-001 deepen
 
 ### TC-EV061-1013-002: Mode selects one aligned row
 
@@ -4918,6 +4919,24 @@ No live `codes.wmo.int` HTML in PR CI.
 - [ ] TC-EV091-001..002 green
 - [ ] UJ-027–030 Playwright unskipped and green (stubbed BYOC)
 - [ ] SSRF / memory-only BYOC invariants unchanged
+
+### TC-UX-R04-001: Convert&Send outline hierarchy (UJ-001 deepen)
+
+- **Level**: T0 / T2
+- **Objective**: With destinations UI on, Convert is the only filled primary; Convert&Send is
+  outline (or non-filled mute); Upload / Disseminate / Zip stay outline
+- **Pass criteria**: Vitest asserts `convert-and-send-button` uses outline (or computed
+  non-filled style vs Convert filled); optional staging screenshot / computed-style check
+- **Source**: F21 deepen; UJ-001; post-CD UX-R04 soft-fail after #1163
+
+### TC-UX-RW-001: Recent work does not obscure profile bar (UJ-001 deepen)
+
+- **Level**: T0 / T2 / T3 (optional viewport)
+- **Objective**: At desktop widths, expanded Recent work must not make Product / Profile /
+  Exchange profile controls unusable (no overflow paint-over)
+- **Pass criteria**: Vitest layout/collapse regression; optional Playwright ~1280 assert
+  controls remain hittable / not covered; 375 `overflowX === 0` unchanged
+- **Source**: F5 deepen; UJ-001; operator staging screenshot 2026-09-09
 
 ### TC-EV031-001: One-time migrate legacy Supabase → DO Postgres
 

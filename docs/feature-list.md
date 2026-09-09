@@ -133,6 +133,10 @@
 - **What it did (EV-017)**: IndexedDB-only public path; server `tac_work_sessions` retired from public product.
 - **Historical (pre-EV-017)**: Per-user Supabase Postgres via JWT + `tac_work_sessions`.
 - **UI**: Guest path keeps recent-history / My METARs locally; logged-in path shows server sessions; persistent notice when guest that progress may be lost without login (F31).
+- **Workbench dock (deepen)**: Recent work / My METARs must not obscure Product type /
+  Profile / Exchange profile controls or the primary TAC/IWXXM panes at desktop widths
+  (reserve column space, contain overflow, and/or collapse). Expand/collapse remains
+  available; narrow viewports may default collapsed.
 - **Legacy Supabase rows**: No product reads from Supabase DB; archive/export/delete policy under F30/#830.
 - **Source**: #555 / S004; F7; #783; **S038 / EV-031 / F31**; [Context: platform-independence-842](context/platform-independence-842.md)
 
@@ -1202,6 +1206,10 @@
   4. Abuse-control + dissemination SSRF/allowlist unchanged in spirit
   5. Env/docs: Supabase **Auth** credentials for login path; product **DB** = DO `DATABASE_URL`
   6. E2E: public convert UJs plus login / guest-notice / privacy UJs (F31)
+  7. **Workbench action hierarchy (deepen)**: When destinations UI is on, **Convert** is the
+     only filled primary CTA; **Convert&Send** uses outline (or clearly muted non-fill) so it
+     does not compete as a second solid CTA. Upload / Disseminate / Download stay outline;
+     Clear stays ghost.
 - **Out of scope**: Forced login for convert; CMP; selling personal data
 - **S057 / EV-048 deepen (#951 — public OpenAPI / client error copy)**: Public OpenAPI
   path/operation summaries, parameter/schema `description` fields, runtime `/docs` / Redoc
