@@ -9,24 +9,44 @@ cases:
     accept: true
 - bucket: happy
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=
+  expect:
+    accept: true
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/happy
 - bucket: happy
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: METAR KSEA 231800Z 27008KT 10SM SCT025 14/06 A3004=
+  expect:
+    accept: true
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/happy
 - bucket: happy
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231852Z 18010KT 10SM FEW040 15/07 A3005=
+  expect:
+    accept: true
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/happy
 - bucket: happy
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=
+  expect:
+    accept: true
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: SPECI
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/happy
 - bucket: sad
   case_id: '01'
   status: ready
@@ -39,71 +59,161 @@ cases:
     cite: tac-validate R2 invalid_vis_km
 - bucket: sad
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 121251Z 18008KT 10KM FEW250 22/12 A3012=
+  expect:
+    accept: false
+    codes:
+    - INVALID_VISIBILITY
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/sad
 - bucket: sad
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: METAR KSEA 231800Z 27008KT 5KM SCT025 14/06 A3004=
+  expect:
+    accept: false
+    codes:
+    - INVALID_VISIBILITY
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/sad
 - bucket: sad
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 231751Z 18012KT 2KM FEW040 15/07 A3005=
+  expect:
+    accept: false
+    codes:
+    - INVALID_VISIBILITY
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: SPECI
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/sad
 - bucket: sad
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231852Z VRB03KT 15KM FEW040 15/07 A3005=
+  expect:
+    accept: false
+    codes:
+    - INVALID_VISIBILITY
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/sad
 - bucket: edge_pass
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=
+  expect:
+    accept: true
   meta:
-    reason: "pilot spike \u2014 fill in M1"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/edge_pass
 - bucket: edge_pass
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR KSEA 231800Z 27008KT 10SM SCT025 14/06 A3004=
+  expect:
+    accept: true
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/edge_pass
 - bucket: edge_pass
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: '  METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=  '
+  expect:
+    accept: true
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/edge_pass
 - bucket: edge_pass
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005
+  expect:
+    accept: true
+    codes:
+    - MISSING_TERMINATOR
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/edge_pass
 - bucket: edge_pass
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=
+  expect:
+    accept: true
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: SPECI
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/edge_pass
 - bucket: edge_fail
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT 10KM FEW250 22/12 A3012=
+  expect:
+    accept: false
+    codes:
+    - INVALID_VISIBILITY
   meta:
-    reason: "pilot spike \u2014 fill in M1"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/edge_fail
 - bucket: edge_fail
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: GARBAGE
+  expect:
+    accept: false
+    codes:
+    - MISSING_PRODUCT_KEYWORD
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/edge_fail
 - bucket: edge_fail
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 10SM FEW040 15/07 A3005=
+  expect:
+    accept: false
+    codes:
+    - MISSING_WIND
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/edge_fail
 - bucket: edge_fail
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: .
+  expect:
+    accept: false
+    codes:
+    - MISSING_PRODUCT_KEYWORD
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/edge_fail
 - bucket: edge_fail
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT FEW040 15/07 A3005=
+  expect:
+    accept: false
+    codes:
+    - MISSING_VISIBILITY
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 INVALID_VISIBILITY/edge_fail

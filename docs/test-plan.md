@@ -4147,8 +4147,10 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### EV-970 / #970 — Quality-matrix needs-fixture fill (METAR/SPECI)
 
 - **Mode**: delta F29 inventory — fill or intentional `oos` (not indefinite scaffolds)
-- **S1**: `convert/metar_speci` only; lint/validate deferred
-- **Pass criteria**: TC-EV970-001..002; convert ready smoke; inventory gate unchanged
+- **S1**: `convert/metar_speci` cleared (273 ready / 47 oos)
+- **S2**: `lint/metar_speci` cleared (720 ready); empty-TAC loader allowance for `EMPTY_TAC`
+- **S3**: `validate/metar_speci` deferred
+- **Pass criteria**: TC-EV970-001..003; ready smokes; inventory gate unchanged
 - **Source**: [#970](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/970); [Corpus: product §F29]; [Corpus: tests]
 
 ### TC-EV970-001: Convert needs-fixture cleared
@@ -4158,7 +4160,14 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: All slots `ready` or `oos` with cite; material ready count (≥200)
 - **Source**: FR-EV970-02 / FR-EV970-03; `test_tc_ev970_001_convert_nf_cleared.py`
 
-### TC-EV970-002: Convert ready cases execute
+### TC-EV970-002: Lint needs-fixture cleared
+
+- **Level**: T0 / T1
+- **Objective**: No `needs-fixture` remains under `tests/quality_matrices/testdata/lint/metar_speci/`
+- **Pass criteria**: Material ready fill (≥700); `test_pilot_lint_ready_smoke` green
+- **Source**: `test_tc_ev970_002_lint_nf_cleared.py`
+
+### TC-EV970-003: Convert ready cases execute
 
 - **Level**: T1
 - **Objective**: Every convert `ready` RuleCase passes `run_rule_case`
