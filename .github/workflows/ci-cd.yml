@@ -406,7 +406,13 @@ jobs:
           uv sync
 
       - name: Install bats-core
-        run: sudo apt-get update && sudo apt-get install -y bats
+        # Drop Google Chrome apt lists when present — GH runners sometimes ship a
+        # chrome-stable source that 409/hash-mismatches and fails any apt-get update.
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/google-chrome*.list \
+            /etc/apt/sources.list.d/google*.list || true
+          sudo apt-get update
+          sudo apt-get install -y bats
 
       - name: Scripts Python coverage (fail_under 100)
         run: make test-coverage-scripts
@@ -836,7 +842,12 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browser (chromium)
-        run: pnpm --filter @metar/e2e exec playwright install --with-deps chromium
+        # See scripts-coverage bats step — strip broken google-chrome apt sources
+        # before Playwright's --with-deps apt-get update.
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/google-chrome*.list \
+            /etc/apt/sources.list.d/google*.list || true
+          pnpm --filter @metar/e2e exec playwright install --with-deps chromium
 
       - name: Run Playwright smoke specs
         run: make test-e2e-playwright-smoke
@@ -893,7 +904,10 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browser (chromium)
-        run: pnpm --filter @metar/e2e exec playwright install --with-deps chromium
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/google-chrome*.list \
+            /etc/apt/sources.list.d/google*.list || true
+          pnpm --filter @metar/e2e exec playwright install --with-deps chromium
 
       - name: Run Playwright full suite
         run: make test-e2e-playwright
