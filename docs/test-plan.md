@@ -5156,21 +5156,23 @@ No live `codes.wmo.int` HTML in PR CI.
 
 ### TC-EV1051-001..006: Shared semantic presets + destination templates (UJ-074 / EV-1051)
 
-| ID | Objective | Pass criteria |
-|----|-----------|---------------|
-| TC-EV1051-001 | Semantic preset CRUD stores only approved conversion defaults | JWT-gated create/update/list/delete; preset references a valid semantic profile id |
-| TC-EV1051-002 | Semantic preset share rules allow shared read but preserve ownership boundaries | Second user can read/apply shared preset; foreign private preset stays 403 |
-| TC-EV1051-003 | Convert applies `preset_id` without hiding explicit operator choices | Resolved preset defaults appear on convert/package; explicit request fields still win |
-| TC-EV1051-004 | Dissemination template CRUD rejects secret-bearing fields | URI/DSN/password/token/api-key persistence fails closed; non-secret metadata saves |
-| TC-EV1051-005 | Shared template loads into drawer but runtime credentials remain one-shot | Second user can load shared template, add runtime credentials, and preflight/send |
-| TC-EV1051-006 | Regression path keeps `#1024` picker, UJ-072 editor, drawer, and work-session hydration green | Vitest/Playwright cover apply surfaces, saved-id round-trip, and secret non-persistence without collapsing controls |
+| ID | Objective | Pass criteria | Evidence |
+|----|-----------|---------------|----------|
+| TC-EV1051-001 | Semantic preset CRUD stores only approved conversion defaults | JWT-gated create/update/list/delete; preset references a valid semantic profile id | `test_conversion_profiles_service.py` preset CRUD; `test_conversion_profiles_router.py` presets routes; convert apply `test_tc_ev1051_001_convert_preset.py` |
+| TC-EV1051-002 | Semantic preset share rules allow shared read but preserve ownership boundaries | Second user can read/apply shared preset; foreign private preset stays 403 | `test_tc_ev1051_002_006_closeout.py` (shared get + private 403); service `get_preset` ownership |
+| TC-EV1051-003 | Convert applies `preset_id` without hiding explicit operator choices | Resolved preset defaults appear on convert/package; explicit request fields still win | `test_tc_ev1051_001_convert_preset.py` (`test_convert_preset_keeps_explicit_request_fields`) |
+| TC-EV1051-004 | Dissemination template CRUD rejects secret-bearing fields | URI/DSN/password/token/api-key persistence fails closed; non-secret metadata saves | `test_tc_ev1051_002_006_closeout.py`; `test_template_rejects_secret_values_and_handles_errors` |
+| TC-EV1051-005 | Shared template loads into drawer but runtime credentials remain one-shot | Second user can load shared template, add runtime credentials, and preflight/send | `test_dissemination_api.py` template preflight/send + auth; `apps/e2e/uj074-profile-presets.e2e.spec.ts` |
+| TC-EV1051-006 | Regression path keeps `#1024` picker, UJ-072 editor, drawer, and work-session hydration green | Vitest/Playwright cover apply surfaces, saved-id round-trip, and secret non-persistence without collapsing controls | FE Vitest ConversionProfilePage / DisseminationDrawer / FileConverter; `uj072` + `uj074` Playwright |
 
 - **Level**: T0 / T2 / T3 (H4–H5 when FE deploy)
 - **Source**: F7.w / F16–F19 deepen; #1051; UJ-074; ADR-021 / ADR-029 / ADR-036
 - **Automation**: backend unit/API + frontend Vitest for preset/template CRUD and secret
   rejection; frontend session hydration checks for `preset_id` /
-  `dissemination_template_id`; Playwright path for create -> share -> apply preset and load
-  -> preflight/send template with one-shot credentials.
+  `dissemination_template_id`; Playwright
+  `apps/e2e/uj074-profile-presets.e2e.spec.ts` (stubbed JWT + APIs) for create → share →
+  apply preset and template → preflight with one-shot URI. **Live H4–H5** against stage FE
+  deferred until this closeout lands on stage (same pattern as UJ-072).
 
 ### F16–F19 verify/deploy gate
 
