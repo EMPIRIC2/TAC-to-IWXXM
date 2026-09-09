@@ -2694,12 +2694,13 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: UJ-058 / UJ-060 still pass
 - **Source**: #1010; F7.s / F7.t
 
-### TC-EV061-1013-001: Product Type + Profile no-wrap ≥1024px
+### TC-EV061-1013-001: Product Type + Profile row ≥1024px (wrap-capable)
 
 - **Level**: T0 / T2 / T3 / H4–H5
-- **Objective**: Top Product Type + Profile stay on one bar without wrap at ≥1024px
-- **Pass criteria**: No wrap; keyboard labels preserved
-- **Source**: #1013; UJ-066
+- **Objective**: Top Product Type + Profile share one bar at ≥1024px; bar may wrap so
+  Exchange profile is not painted under Recent work (TC-UX-RW-001)
+- **Pass criteria**: `lg:flex-row` + `lg:flex-wrap`; keyboard labels preserved
+- **Source**: #1013; UJ-066; TC-UX-RW-001 deepen
 
 ### TC-EV061-1013-002: Mode selects one aligned row
 
