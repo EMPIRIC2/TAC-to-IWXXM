@@ -71,8 +71,11 @@ describe('TC-F31-002 guest loss-of-progress notice', () => {
     ).toBe(false);
   });
 
-  it('exposes persistent banner copy', () => {
+  it('exposes persistent banner copy without trailing log-in phrase', () => {
     expect(GUEST_LOSS_OF_PROGRESS_MESSAGE.toLowerCase()).toMatch(/lost|sign/);
+    expect(GUEST_LOSS_OF_PROGRESS_MESSAGE.toLowerCase()).not.toMatch(
+      /until you log in/,
+    );
   });
 });
 

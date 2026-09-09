@@ -80,6 +80,10 @@ import {
   shouldShowGuestLossOfProgressNotice,
 } from '@/utils/guestLossNotice';
 import {
+  preferCollapsedWorkbenchChrome,
+  subscribeNarrowWorkbenchChrome,
+} from '@/utils/workbenchChrome';
+import {
   DEFAULT_IWXXM_VERSION,
   CA_ECCC_IWXXM_VERSION,
   type IwxxmVersionId,
@@ -403,6 +407,12 @@ interface ConversionParams {
   logLevel: LogLevel;
 }
 
+/**
+ * Clear a signed overlay selection when the operator loses auth (guest / logout).
+ *
+ * @param prev - Current conversion params
+ * @returns Params with ``overlayId`` cleared when it was set
+ */
 // eslint-disable-next-line react-refresh/only-export-components -- test helper exported alongside component
 export function clearOverlayOnAuthLoss(prev: ConversionParams): ConversionParams {
   return prev.overlayId ? { ...prev, overlayId: '' } : prev;
@@ -476,7 +486,11 @@ export function FileConverter({
   const [bulletinSummary, setBulletinSummary] = useState<string | null>(null);
   const [placeholderNotice, setPlaceholderNotice] = useState<string | null>(null);
   /** UX-07: collapse Recent work while editing / opening Examples. */
-  const [recentWorkCollapsed, setRecentWorkCollapsed] = useState(false);
+  const [recentWorkCollapsed, setRecentWorkCollapsed] = useState(
+    preferCollapsedWorkbenchChrome,
+  );
+  /** UX-08: remount Profile glance closed when entering narrow (epoch bump). */
+  const [profileGlanceEpoch, setProfileGlanceEpoch] = useState(0);
   // Restore the guest's custom output filename from the session snapshot (R5).
   const [outputFilename, setOutputFilename] = useState(() => {
     const saved = readGuestConverterState()?.conversionParams?.output_filename;
@@ -550,6 +564,13 @@ export function FileConverter({
 
   useEffect(() => {
     applyWebkitDirectoryAttrs(massFolderInputRef.current);
+  }, []);
+
+  useEffect(() => {
+    return subscribeNarrowWorkbenchChrome(() => {
+      setRecentWorkCollapsed(true);
+      setProfileGlanceEpoch((epoch) => epoch + 1);
+    });
   }, []);
 
   /* eslint-disable react-hooks/set-state-in-effect -- load profile summary catalog when auth token appears/clears */
@@ -2078,13 +2099,16 @@ export function FileConverter({
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
+        {/* Header — stack/wrap on narrow viewports (staging UX: no horizontal overflow). */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-semibold text-gray-900 dark:text-white">
+          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white sm:text-3xl">
               METAR → IWXXM Converter
             </h1>
-            <div className="flex items-center gap-3">
+            <div
+              className="flex flex-wrap items-center gap-2 sm:gap-3"
+              data-testid="workbench-header-actions"
+            >
               <Button
                 asChild
                 variant="outline"
@@ -2098,8 +2122,8 @@ export function FileConverter({
                   aria-label="Open operator help one-pager"
                   data-testid="operator-help-link"
                 >
-                  <CircleHelp className="w-4 h-4 mr-2" aria-hidden="true" />
-                  Help
+                  <CircleHelp className="mr-0 h-4 w-4 sm:mr-2" aria-hidden="true" />
+                  <span className="hidden sm:inline">Help</span>
                 </a>
               </Button>
               <Button
@@ -2109,11 +2133,13 @@ export function FileConverter({
                 className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-500"
                 aria-label="Open user preferences"
               >
-                <Settings className="w-4 h-4 mr-2" aria-hidden="true" />
-                Preferences
+                <Settings className="mr-0 h-4 w-4 sm:mr-2" aria-hidden="true" />
+                <span className="hidden sm:inline">Preferences</span>
               </Button>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-gray-600 dark:text-gray-400">Theme</span>
+                <span className="hidden text-sm text-gray-600 dark:text-gray-400 sm:inline">
+                  Theme
+                </span>
                 <ThemeToggle />
               </div>
               <div className="relative">
@@ -2748,6 +2774,7 @@ export function FileConverter({
                     or editable overlays.
                   </p>
                   <details
+                    key={profileGlanceEpoch}
                     className="rounded-md border border-gray-200 bg-white text-sm dark:border-gray-700 dark:bg-gray-800"
                     data-testid="workbench-profile-summary"
                   >
@@ -2881,12 +2908,13 @@ export function FileConverter({
                   </p>
                 )}
               {bulletinSummary && (
-                <p
-                  className="mb-2 rounded border border-blue-200 bg-blue-50 px-2 py-1 text-xs text-blue-900 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-100"
+                <StatusBanner
+                  tone="info"
+                  className="mb-2 text-xs"
                   data-testid="bulletin-summary"
                 >
                   {bulletinSummary}
-                </p>
+                </StatusBanner>
               )}
               {placeholderNotice && (
                 <StatusBanner

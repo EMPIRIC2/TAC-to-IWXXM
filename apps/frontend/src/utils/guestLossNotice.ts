@@ -36,6 +36,9 @@ export function shouldShowGuestLossOfProgressNotice(
 
 /**
  * Human-readable copy for the persistent guest banner (UJ-045).
+ *
+ * Do not end with “log in” / “sign in” — StatusBanner already exposes a Sign in
+ * action; combined text must not read as “Sign in log in” (viewport UX probe).
  */
 export const GUEST_LOSS_OF_PROGRESS_MESSAGE =
-  'Progress may be lost without signing in. Local drafts stay on this device only until you log in.';
+  'Progress may be lost without signing in. Local drafts stay on this device only.';

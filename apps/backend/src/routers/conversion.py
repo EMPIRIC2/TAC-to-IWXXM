@@ -182,6 +182,25 @@ class _ConvertAccumulator:
         layer: str | None = None,
         location: str | None = None,
     ) -> None:
+        """Append a conversion/validation issue to this accumulator.
+
+        Parameters
+        ----------
+        source :
+            Input name or logical source label.
+        message :
+            Operator-facing issue text.
+        severity :
+            Issue severity (default ERROR).
+        hint :
+            Optional remediation hint.
+        code :
+            Optional stable issue code.
+        layer :
+            Optional validation layer id.
+        location :
+            Optional location pointer within the input.
+        """
         self.issues.append(
             ConversionIssue(
                 source=source,

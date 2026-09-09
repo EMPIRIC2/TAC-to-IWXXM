@@ -34,6 +34,7 @@ export function SoftPreviewControl({
         className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-600 focus:ring-rose-500 disabled:cursor-not-allowed"
         checked={checked}
         disabled={disabled}
+        readOnly={false}
         onChange={(e) => onChange(e.target.checked)}
       />
       <span className="min-w-0">
