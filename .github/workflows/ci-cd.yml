@@ -406,12 +406,13 @@ jobs:
           uv sync
 
       - name: Install bats-core
-        # Drop Google Chrome apt lists when present — GH runners sometimes ship a
-        # chrome-stable source that 409/hash-mismatches and fails any apt-get update.
+        # GH ubuntu images may ship a google-chrome apt source that currently
+        # hash-mismatches; ignore sources.list.d and use Ubuntu mirrors only.
         run: |
-          sudo rm -f /etc/apt/sources.list.d/google-chrome*.list \
-            /etc/apt/sources.list.d/google*.list || true
-          sudo apt-get update
+          sudo apt-get update \
+            -o Dir::Etc::sourcelist="sources.list" \
+            -o Dir::Etc::sourceparts="-" \
+            -o APT::Get::List-Cleanup="0"
           sudo apt-get install -y bats
 
       - name: Scripts Python coverage (fail_under 100)
@@ -842,12 +843,10 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browser (chromium)
-        # See scripts-coverage bats step — strip broken google-chrome apt sources
-        # before Playwright's --with-deps apt-get update.
-        run: |
-          sudo rm -f /etc/apt/sources.list.d/google-chrome*.list \
-            /etc/apt/sources.list.d/google*.list || true
-          pnpm --filter @metar/e2e exec playwright install --with-deps chromium
+        # Avoid `install --with-deps` apt refresh against a broken google-chrome
+        # mirror on GH runners; Playwright's bundled Chromium is enough on
+        # ubuntu-latest for smoke/full suites.
+        run: pnpm --filter @metar/e2e exec playwright install chromium
 
       - name: Run Playwright smoke specs
         run: make test-e2e-playwright-smoke
@@ -904,10 +903,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browser (chromium)
-        run: |
-          sudo rm -f /etc/apt/sources.list.d/google-chrome*.list \
-            /etc/apt/sources.list.d/google*.list || true
-          pnpm --filter @metar/e2e exec playwright install --with-deps chromium
+        run: pnpm --filter @metar/e2e exec playwright install chromium
 
       - name: Run Playwright full suite
         run: make test-e2e-playwright
