@@ -4,7 +4,42 @@
 
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { preferCollapsedWorkbenchChrome, WORKBENCH_NARROW_MQ } from './workbenchChrome';
+import {
+  preferCollapsedWorkbenchChrome,
+  subscribeNarrowWorkbenchChrome,
+  WORKBENCH_NARROW_MQ,
+} from './workbenchChrome';
+
+function stubMatchMedia(initialMatches: boolean) {
+  let matches = initialMatches;
+  const listeners = new Set<() => void>();
+  const matchMedia = vi.fn((query: string) => ({
+    get matches() {
+      return matches;
+    },
+    media: query,
+    addEventListener: (_event: string, fn: () => void) => {
+      listeners.add(fn);
+    },
+    removeEventListener: (_event: string, fn: () => void) => {
+      listeners.delete(fn);
+    },
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+    onchange: null,
+  }));
+  vi.stubGlobal('window', { matchMedia });
+  return {
+    matchMedia,
+    setMatches: (next: boolean) => {
+      matches = next;
+    },
+    fireChange: () => {
+      listeners.forEach((fn) => fn());
+    },
+  };
+}
 
 describe('preferCollapsedWorkbenchChrome', () => {
   afterEach(() => {
@@ -17,14 +52,44 @@ describe('preferCollapsedWorkbenchChrome', () => {
   });
 
   it('follows the narrow media query', () => {
-    const matchMedia = vi.fn((query: string) => ({
-      matches: query === WORKBENCH_NARROW_MQ,
-      media: query,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-    }));
-    vi.stubGlobal('window', { matchMedia });
+    const { matchMedia } = stubMatchMedia(true);
     expect(preferCollapsedWorkbenchChrome()).toBe(true);
     expect(matchMedia).toHaveBeenCalledWith(WORKBENCH_NARROW_MQ);
+  });
+});
+
+describe('subscribeNarrowWorkbenchChrome', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('returns a no-op unsubscribe when matchMedia is missing', () => {
+    vi.stubGlobal('window', {});
+    const unsub = subscribeNarrowWorkbenchChrome(() => undefined);
+    expect(() => unsub()).not.toThrow();
+  });
+
+  it('invokes onEnterNarrow only when crossing wide → narrow', () => {
+    const { setMatches, fireChange } = stubMatchMedia(false);
+    const onEnterNarrow = vi.fn();
+    const unsub = subscribeNarrowWorkbenchChrome(onEnterNarrow);
+
+    fireChange();
+    expect(onEnterNarrow).not.toHaveBeenCalled();
+
+    setMatches(true);
+    fireChange();
+    expect(onEnterNarrow).toHaveBeenCalledTimes(1);
+
+    fireChange();
+    expect(onEnterNarrow).toHaveBeenCalledTimes(1);
+
+    setMatches(false);
+    fireChange();
+    setMatches(true);
+    fireChange();
+    expect(onEnterNarrow).toHaveBeenCalledTimes(2);
+
+    unsub();
   });
 });

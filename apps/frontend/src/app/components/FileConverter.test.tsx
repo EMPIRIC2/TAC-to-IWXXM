@@ -306,7 +306,9 @@ vi.mock('/utils/guestConverterState', () => ({
 }));
 
 vi.mock('./WorkHistorySidebar', () => ({
-  WorkHistorySidebar: () => null,
+  WorkHistorySidebar: ({ collapsed }: { collapsed?: boolean }) => (
+    <div data-testid="recent-work-collapsed" data-collapsed={collapsed ? '1' : '0'} />
+  ),
 }));
 
 vi.mock('jszip', () => ({
@@ -559,6 +561,68 @@ describe('FileConverter Component', () => {
           .querySelector('button') as HTMLButtonElement,
       );
       expect(onRequestLogin).toHaveBeenCalled();
+    });
+
+    it('opens Profile glance via summary toggle', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter {...defaultProps} />);
+      const details = screen.getByTestId(
+        'workbench-profile-summary',
+      ) as HTMLDetailsElement;
+      expect(details.open).toBe(false);
+      await user.click(details.querySelector('summary') as HTMLElement);
+      expect(details.open).toBe(true);
+    });
+
+    it('collapses Recent work when viewport enters narrow via subscribed MQ', async () => {
+      const user = userEvent.setup({ delay: null });
+      let matches = false;
+      const listeners = new Set<() => void>();
+      vi.spyOn(window, 'matchMedia').mockImplementation(
+        (query: string) =>
+          ({
+            get matches() {
+              return matches;
+            },
+            media: query,
+            addEventListener: (_event: string, fn: () => void) => {
+              listeners.add(fn);
+            },
+            removeEventListener: (_event: string, fn: () => void) => {
+              listeners.delete(fn);
+            },
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+            onchange: null,
+          }) as unknown as MediaQueryList,
+      );
+
+      render(<FileConverter {...defaultProps} onLoadWorkSession={vi.fn()} />);
+      expect(screen.getByTestId('recent-work-collapsed')).toHaveAttribute(
+        'data-collapsed',
+        '0',
+      );
+
+      const details = screen.getByTestId(
+        'workbench-profile-summary',
+      ) as HTMLDetailsElement;
+      await user.click(details.querySelector('summary') as HTMLElement);
+      expect(details.open).toBe(true);
+
+      matches = true;
+      act(() => {
+        listeners.forEach((fn) => fn());
+      });
+      await waitFor(() => {
+        expect(screen.getByTestId('recent-work-collapsed')).toHaveAttribute(
+          'data-collapsed',
+          '1',
+        );
+        expect(
+          (screen.getByTestId('workbench-profile-summary') as HTMLDetailsElement).open,
+        ).toBe(false);
+      });
     });
 
     it('shows first-visit privacy notice and opens settings from footer', async () => {

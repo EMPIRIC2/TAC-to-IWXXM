@@ -79,7 +79,10 @@ import {
   GUEST_LOSS_OF_PROGRESS_MESSAGE,
   shouldShowGuestLossOfProgressNotice,
 } from '@/utils/guestLossNotice';
-import { preferCollapsedWorkbenchChrome } from '@/utils/workbenchChrome';
+import {
+  preferCollapsedWorkbenchChrome,
+  subscribeNarrowWorkbenchChrome,
+} from '@/utils/workbenchChrome';
 import {
   DEFAULT_IWXXM_VERSION,
   CA_ECCC_IWXXM_VERSION,
@@ -486,8 +489,8 @@ export function FileConverter({
   const [recentWorkCollapsed, setRecentWorkCollapsed] = useState(
     preferCollapsedWorkbenchChrome,
   );
-  /** UX-08: Profile at a glance stays closed unless the operator opens it. */
-  const [profileGlanceOpen, setProfileGlanceOpen] = useState(false);
+  /** UX-08: remount Profile glance closed when entering narrow (epoch bump). */
+  const [profileGlanceEpoch, setProfileGlanceEpoch] = useState(0);
   // Restore the guest's custom output filename from the session snapshot (R5).
   const [outputFilename, setOutputFilename] = useState(() => {
     const saved = readGuestConverterState()?.conversionParams?.output_filename;
@@ -564,23 +567,10 @@ export function FileConverter({
   }, []);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-      return;
-    }
-    const mq = window.matchMedia('(max-width: 767px)');
-    // Initial collapse comes from useState(preferCollapsedWorkbenchChrome).
-    // Only re-collapse when *entering* narrow from wide — do not fight a manual expand.
-    let wasNarrow = mq.matches;
-    const onChange = () => {
-      const nowNarrow = mq.matches;
-      if (nowNarrow && !wasNarrow) {
-        setRecentWorkCollapsed(true);
-        setProfileGlanceOpen(false);
-      }
-      wasNarrow = nowNarrow;
-    };
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
+    return subscribeNarrowWorkbenchChrome(() => {
+      setRecentWorkCollapsed(true);
+      setProfileGlanceEpoch((epoch) => epoch + 1);
+    });
   }, []);
 
   /* eslint-disable react-hooks/set-state-in-effect -- load profile summary catalog when auth token appears/clears */
@@ -2784,14 +2774,9 @@ export function FileConverter({
                     or editable overlays.
                   </p>
                   <details
+                    key={profileGlanceEpoch}
                     className="rounded-md border border-gray-200 bg-white text-sm dark:border-gray-700 dark:bg-gray-800"
                     data-testid="workbench-profile-summary"
-                    open={profileGlanceOpen}
-                    onToggle={(event) => {
-                      setProfileGlanceOpen(
-                        (event.currentTarget as HTMLDetailsElement).open,
-                      );
-                    }}
                   >
                     <summary className="cursor-pointer select-none px-3 py-2">
                       <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
