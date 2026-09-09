@@ -27,7 +27,7 @@ export function PropagateResidualsControl({
   disabled = false,
 }: PropagateResidualsControlProps) {
   return (
-    <label className="mb-4 flex cursor-pointer items-start gap-2 text-sm text-gray-800 dark:text-gray-200">
+    <label className="mb-0 flex cursor-pointer items-start gap-2 text-sm text-gray-800 dark:text-gray-200">
       <input
         type="checkbox"
         data-testid="propagate-residuals-toggle"

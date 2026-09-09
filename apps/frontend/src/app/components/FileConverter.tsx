@@ -21,6 +21,7 @@ import {
 import { SoftPreviewControl } from './SoftPreviewControl';
 import { PropagateResidualsControl } from './PropagateResidualsControl';
 import { LiveIwxxmToggle } from './LiveIwxxmToggle';
+import { StatusBanner } from './StatusBanner';
 import { WorkbenchConsole } from './WorkbenchConsole';
 import { useLintIssueCatalog } from '@/hooks/useLintIssueCatalog';
 import {
@@ -2114,8 +2115,12 @@ export function FileConverter({
               </div>
               <div className="relative">
                 <Button
-                  variant="outline"
-                  className="bg-red-500 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 border-0"
+                  variant={isGuest ? 'default' : 'outline'}
+                  className={
+                    isGuest
+                      ? undefined
+                      : 'border-gray-300 text-gray-800 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700'
+                  }
                   aria-label={isGuest ? 'Sign in to save work' : 'Logout options'}
                   data-testid={isGuest ? 'sign-in-button' : 'logout-button'}
                   onClick={() => {
@@ -2184,20 +2189,22 @@ export function FileConverter({
             preferred.
           </p>
           {showGuestLossNotice && (
-            <p
-              className="mt-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-950 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100"
-              role="status"
+            <StatusBanner
+              tone="warning"
+              className="mt-3"
               data-testid="guest-loss-notice"
+              action={
+                <button
+                  type="button"
+                  className="underline underline-offset-2 font-medium"
+                  onClick={() => onRequestLogin?.()}
+                >
+                  Sign in
+                </button>
+              }
             >
-              {GUEST_LOSS_OF_PROGRESS_MESSAGE}{' '}
-              <button
-                type="button"
-                className="underline underline-offset-2 font-medium"
-                onClick={() => onRequestLogin?.()}
-              >
-                Sign in
-              </button>
-            </p>
+              {GUEST_LOSS_OF_PROGRESS_MESSAGE}
+            </StatusBanner>
           )}
           <PrivacyNotice
             open={showPrivacyNotice}
@@ -2228,7 +2235,7 @@ export function FileConverter({
               <span className="sr-only">Autosave idle</span>
             )}
           </div>
-          <div className="flex min-h-10 flex-wrap items-center gap-3">
+          <div className="flex min-h-10 flex-wrap items-center gap-2 sm:gap-3">
             <Button
               type="button"
               variant="outline"
@@ -2242,9 +2249,10 @@ export function FileConverter({
             </Button>
             <Button
               data-testid="convert-button"
+              variant="default"
               onClick={handleConvert}
               disabled={convertDisabled}
-              className="min-w-[7.5rem] bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="min-w-[7.5rem] text-base disabled:opacity-50 disabled:cursor-not-allowed"
               aria-busy={isConverting}
               aria-label={
                 isConverting
@@ -2274,9 +2282,10 @@ export function FileConverter({
             conversionParams.product !== 'IWXXM' ? (
               <Button
                 data-testid="convert-and-send-button"
+                variant="secondary"
                 onClick={handleConvertAndSend}
                 disabled={convertDisabled}
-                className="min-w-[9.5rem] bg-indigo-500 hover:bg-indigo-600 dark:bg-indigo-600 dark:hover:bg-indigo-700 text-white text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                className="min-w-[9.5rem] text-base disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-busy={isConvertAndSending}
                 aria-label={
                   isConvertAndSending
@@ -2297,7 +2306,7 @@ export function FileConverter({
                 onClick={() => setIsUploadDialogOpen(true)}
                 disabled={isBusy || !hasConverted || isReadOnly}
                 variant="outline"
-                className="min-w-[13.5rem] bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                className="min-w-[13.5rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label={`Upload ${convertedFiles.length} converted files to database`}
               >
                 <Database className="w-4 h-4" aria-hidden="true" />
@@ -2314,7 +2323,7 @@ export function FileConverter({
                 onClick={() => setIsDisseminationOpen(true)}
                 disabled={isBusy || isReadOnly}
                 variant="outline"
-                className="min-w-[10rem] bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+                className="min-w-[10rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label="Open dissemination drawer for BYOC upload or publish"
               >
                 Disseminate
@@ -2325,7 +2334,7 @@ export function FileConverter({
               onClick={handleDownloadAll}
               disabled={isBusy || !hasConverted}
               variant="outline"
-              className="min-w-[10rem] bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base disabled:opacity-50 disabled:cursor-not-allowed focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              className="min-w-[10rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
               aria-label={`Download all ${convertedFiles.length} converted files as ZIP`}
             >
               Download ZIP
@@ -2336,8 +2345,8 @@ export function FileConverter({
             <Button
               data-testid="clear-queue-button"
               onClick={handleClear}
-              variant="outline"
-              className="min-w-[5.5rem] bg-gray-600 text-white hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600 text-base focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+              variant="ghost"
+              className="min-w-[5.5rem] text-base text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
               aria-label="Clear all pending files and manual input"
             >
               Clear
@@ -2350,13 +2359,10 @@ export function FileConverter({
             {/* Manual Input — primary workbench */}
             <div className="mb-6">
               {isReadOnly && (
-                <p
-                  className="mb-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100"
-                  role="status"
-                >
+                <StatusBanner tone="caution" className="mb-2">
                   This session is finished and read-only. Use <strong>New TAC</strong>{' '}
                   to start fresh.
-                </p>
+                </StatusBanner>
               )}
               <div className="mb-2 flex flex-col gap-2">
                 <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
@@ -2823,13 +2829,13 @@ export function FileConverter({
                 </div>
               </div>
               {demoExampleLabel && (
-                <p
-                  className="mb-2 rounded border border-amber-200 bg-amber-50 px-2 py-1 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100"
+                <StatusBanner
+                  tone="info"
+                  className="mb-2 text-xs"
                   data-testid="demo-example-banner"
-                  role="status"
                 >
                   Demo / non-operational example: {demoExampleLabel}
-                </p>
+                </StatusBanner>
               )}
               {inputMode === 'ahl_bulletin' && (
                 <p className="mb-2 text-xs text-gray-600 dark:text-gray-400">
@@ -2872,13 +2878,13 @@ export function FileConverter({
                 </p>
               )}
               {placeholderNotice && (
-                <p
-                  className="mb-2 rounded border border-amber-300 bg-amber-50 px-2 py-1 text-xs text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100"
+                <StatusBanner
+                  tone="caution"
+                  className="mb-2 text-xs"
                   data-testid="placeholder-notice"
-                  role="status"
                 >
                   {placeholderNotice}
-                </p>
+                </StatusBanner>
               )}
               <FailedTacCue failedSpans={failedSpans} />
               <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:items-stretch">
@@ -2922,7 +2928,7 @@ export function FileConverter({
                   }}
                 />
               </div>
-              <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+              <div className="mt-3 flex flex-col gap-3 rounded-md border border-gray-200 bg-gray-50/60 p-3 dark:border-gray-700 dark:bg-gray-900/30 sm:flex-row sm:items-start sm:gap-6">
                 <SoftPreviewControl
                   checked={softPreview}
                   onChange={setSoftPreview}
