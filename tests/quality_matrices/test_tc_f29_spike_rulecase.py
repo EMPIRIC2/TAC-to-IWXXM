@@ -23,9 +23,10 @@ def test_tc_f29_spike_load_yaml_rule_cases() -> None:
     assert {c.bucket for c in cases} == set(BUCKETS)
     assert all(c.rule_id == "INVALID_VISIBILITY" for c in cases)
     assert all(c.engine == "lint" for c in cases)
+    # EV-970 S2: lint pilot slots filled — all ready.
     ready = [c for c in cases if c.status == "ready"]
-    assert len(ready) == 2
-    assert {c.bucket for c in ready} == {"happy", "sad"}
+    assert len(ready) == 20
+    assert {c.bucket for c in ready} == set(BUCKETS)
 
 
 @pytest.mark.parametrize(
@@ -44,11 +45,11 @@ def test_tc_f29_spike_node_id_shape(
     assert cases[(bucket, case_id)].node_id == expected_node
 
 
-def test_tc_f29_spike_needs_fixture_status() -> None:
+def test_tc_f29_spike_ready_cases_have_tac() -> None:
+    """After EV-970 S2 fill, INVALID_VISIBILITY slots are ready with TAC bodies."""
     cases = load_rule_cases(_SPIKE)
-    pending = [c for c in cases if c.status == "needs-fixture"]
-    assert len(pending) == 18
-    assert all(c.tac is None for c in pending)
+    assert all(c.status == "ready" for c in cases)
+    assert all(isinstance(c.tac, str) and c.tac.strip() for c in cases)
 
 
 def test_tc_f29_spike_rejects_bad_case_id(tmp_path: Path) -> None:

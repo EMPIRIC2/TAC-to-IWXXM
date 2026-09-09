@@ -3,101 +3,203 @@ engine: lint
 cases:
 - bucket: happy
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=
+  expect: &id001
+    accept: true
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/happy
 - bucket: happy
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR KSEA 231800Z 27008KT 10SM SCT025 14/06 A3004=
+  expect: &id002
+    accept: true
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/happy
 - bucket: happy
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231852Z 18010KT 10SM FEW040 15/07 A3005=
+  expect: &id003
+    accept: true
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/happy
 - bucket: happy
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=
+  expect: &id004
+    accept: true
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: SPECI
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/happy
 - bucket: happy
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT CAVOK 15/07 Q1013=
+  expect: &id005
+    accept: true
+    codes:
+    - CAVOK_PRESENT
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/happy
 - bucket: sad
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=
+  expect: &id006
+    accept: false
+    codes:
+    - UNKNOWN_PRODUCT
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: NOT_A_PRODUCT
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/sad
 - bucket: sad
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR KSEA 231800Z 27008KT 10SM SCT025 14/06 A3004=
+  expect: &id007
+    accept: false
+    codes:
+    - UNKNOWN_PRODUCT
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: BOGUS
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/sad
 - bucket: sad
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=
+  expect: &id008
+    accept: false
+    codes:
+    - UNKNOWN_PRODUCT
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: XYZ
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/sad
 - bucket: sad
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231852Z 18010KT 10SM FEW040 15/07 A3005=
+  expect: &id009
+    accept: false
+    codes:
+    - UNKNOWN_PRODUCT
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: UNKNOWN
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/sad
 - bucket: sad
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: .
+  expect: &id010
+    accept: false
+    codes:
+    - UNKNOWN_PRODUCT
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: ???
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/sad
 - bucket: edge_pass
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=
+  expect: *id001
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/edge_pass
 - bucket: edge_pass
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR KSEA 231800Z 27008KT 10SM SCT025 14/06 A3004=
+  expect: *id002
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/edge_pass
 - bucket: edge_pass
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231852Z 18010KT 10SM FEW040 15/07 A3005=
+  expect: *id003
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/edge_pass
 - bucket: edge_pass
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=
+  expect: *id004
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: SPECI
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/edge_pass
 - bucket: edge_pass
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT CAVOK 15/07 Q1013=
+  expect: *id005
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: METAR
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/edge_pass
 - bucket: edge_fail
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=
+  expect: *id006
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: NOT_A_PRODUCT
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/edge_fail
 - bucket: edge_fail
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR KSEA 231800Z 27008KT 10SM SCT025 14/06 A3004=
+  expect: *id007
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: BOGUS
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/edge_fail
 - bucket: edge_fail
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=
+  expect: *id008
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: XYZ
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/edge_fail
 - bucket: edge_fail
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231852Z 18010KT 10SM FEW040 15/07 A3005=
+  expect: *id009
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: UNKNOWN
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/edge_fail
 - bucket: edge_fail
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: .
+  expect: *id010
   meta:
-    reason: "T1.3 pilot scaffold \u2014 fill when fixture ready"
+    product: ???
+    profile: annex3
+    cite: EV-970-S2 UNKNOWN_PRODUCT/edge_fail

@@ -141,7 +141,13 @@ def load_rule_cases(path: Path) -> list[RuleCase]:
         )
         meta = _as_str_any_dict(item.get("meta") or {}, path=path, field_name="meta")
 
-        if status == "ready" and not (isinstance(tac, str) and tac.strip()):
+        expect_codes = expect.get("codes")
+        allow_empty_tac = isinstance(expect_codes, list) and "EMPTY_TAC" in expect_codes
+        if (
+            status == "ready"
+            and not allow_empty_tac
+            and not (isinstance(tac, str) and tac.strip())
+        ):
             raise ValueError(f"{path}: cases[{i}] status ready requires non-empty tac")
         if status == "oos" and not _meta_has_cite(meta):
             raise ValueError(f"{path}: cases[{i}] status oos requires meta cite/reason")
