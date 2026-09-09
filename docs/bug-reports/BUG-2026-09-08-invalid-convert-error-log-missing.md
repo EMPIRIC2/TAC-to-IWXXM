@@ -40,24 +40,33 @@ Result: red on staging; `getByLabel(/conversion error log/i)` not found.
 1. Staging `config.json` points at `https://api.staging.tac-to-iwxxm.com`.
 2. Direct API probe shows hard-convert invalid TAC returns HTTP 400 with structured
    `detail.errors` and `detail.issues`.
-3. `apps/frontend/src/utils/api.ts` currently throws `new Error(message)` for non-2xx convert
-   responses and discards `detail.errors` / `detail.issues`.
-4. `apps/frontend/src/app/components/FileConverter.tsx` catch block only reads
-   `error.message`, so it can show the generic banner/toast but cannot render `ErrorLogPanel`.
+3. First pass: `apps/frontend/src/utils/api.ts` now preserves structured convert failures via
+   `ConvertApiError`, and `FileConverter` populates `conversionLog` from that error.
+4. Live Playwright still failed after that deploy because the panel asserted
+   `All conversions failed`, while the catch path only stored `error.errors` and omitted the
+   top-level `error.message`.
+5. Follow-up: merge the primary convert message into the visible error log, keep blank
+   messages out of the panel, and harden `openPublicConverter()` with one navigation retry
+   for intermittent staging shell-load flakes.
+6. Stage CI then blocked deploy on frontend branch coverage 99.94% until the blank-message
+   merge branches were covered.
 
-**Root cause:** structured convert failure payloads are dropped at the frontend API boundary
-for hard-convert HTTP errors.
+**Root cause:** hard-convert catch path omitted the top-level convert failure message from
+the visible error-log panel; live flakes separately hit a brittle first-load wait in the
+shared Playwright helper.
 
 ## Repro test
 
 - Path: `apps/frontend/src/utils/api.test.ts`
 - Path: `apps/frontend/src/app/components/FileConverter.test.tsx`
-- Status: red before fix; green after fix
+- Path: `apps/e2e/issue-555-ux-delta.e2e.spec.ts`
+- Status: unit/component green locally; live staging re-verify pending after coverage fix
 
 ## Fix
 
-Preserve structured `errors` / `issues` in a frontend convert-specific error type, then let
-`FileConverter` populate `conversionLog` from that error in the hard-convert catch path.
+1. Preserve structured `errors` / `issues` in `ConvertApiError`.
+2. Merge `error.message` into the visible conversion log for hard-convert failures.
+3. Retry one public-converter navigation in Playwright before failing heading waits.
 
 ## Interview record
 
