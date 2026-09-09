@@ -26,4 +26,12 @@ describe('SoftPreviewControl', () => {
     render(<SoftPreviewControl checked={true} onChange={() => {}} />);
     expect(screen.getByTestId('soft-preview-toggle')).toBeChecked();
   });
+
+  it('when busy uses disabled, not readOnly', () => {
+    render(<SoftPreviewControl checked={false} onChange={() => {}} disabled />);
+    const toggle = screen.getByTestId('soft-preview-toggle') as HTMLInputElement;
+    expect(toggle).toBeDisabled();
+    expect(toggle.readOnly).toBe(false);
+    expect(toggle).not.toHaveAttribute('readonly');
+  });
 });

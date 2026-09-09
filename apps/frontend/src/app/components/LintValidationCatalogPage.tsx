@@ -84,6 +84,12 @@ function profileList(value: string[] | null | undefined): string[] {
   );
 }
 
+/**
+ * Human-readable semantic/exchange profile lists for a catalog entry.
+ *
+ * @param entry - Lint issue catalog row
+ * @returns Display strings (comma-joined or “All … profiles”)
+ */
 export function formatApplicableProfiles(entry: LintIssueCatalogEntry): {
   semantic: string;
   exchange: string;

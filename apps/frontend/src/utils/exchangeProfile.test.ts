@@ -31,5 +31,7 @@ describe('exchangeProfileLabel', () => {
 
   it('returns the raw id when unrecognized', () => {
     expect(exchangeProfileLabel('UNKNOWN_X')).toBe('UNKNOWN_X');
+    // Native select title uses this string for truncated options (UX-09).
+    expect(exchangeProfileLabel('APAC_ROBEX').length).toBeGreaterThan(0);
   });
 });

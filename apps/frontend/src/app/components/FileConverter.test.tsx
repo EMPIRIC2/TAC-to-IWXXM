@@ -545,6 +545,10 @@ describe('FileConverter Component', () => {
         target: { value: 'METAR KJFK' },
       });
       expect(screen.getByTestId('guest-loss-notice')).toBeInTheDocument();
+      expect(screen.getByTestId('guest-loss-notice').textContent || '').not.toMatch(
+        /until you log in/i,
+      );
+      expect(screen.getByTestId('workbench-header-actions')).toBeInTheDocument();
 
       await user.click(screen.getByTestId('sign-in-button'));
       expect(onRequestLogin).toHaveBeenCalled();
