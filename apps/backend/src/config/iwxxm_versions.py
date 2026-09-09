@@ -163,6 +163,14 @@ PROFILE_SCOPED_VERSIONS: dict[str, dict[str, Any]] = {
     },
 }
 
+# Explicit IWXXM→IWXXM migrate allowlist (EV-908 / #908).
+# Same-version is a no-op outside this set; reverse / undefined pairs fail closed.
+SUPPORTED_MIGRATE_PAIRS: frozenset[tuple[str, str]] = frozenset(
+    {
+        ("2023-1", "2025-2"),
+    }
+)
+
 # Version remapping (for non-existent or deprecated versions)
 VERSION_REMAPPING = {
     "2025-1": "2025-2",  # 2025-1 doesn't exist; remap to 2025-2
@@ -422,6 +430,13 @@ def get_breaking_changes(from_version: str, to_version: str) -> list[dict[str, A
     changes = to_config.get("breaking_changes_from_prior", {})
 
     return changes.get(from_version, [])
+
+
+def is_migration_supported(from_version: str, to_version: str) -> bool:
+    """Return True when IWXXM→IWXXM migration for this pair is allowlisted (EV-908)."""
+    if from_version == to_version:
+        return True
+    return (from_version, to_version) in SUPPORTED_MIGRATE_PAIRS
 
 
 def get_namespace_uri(version: str) -> str:

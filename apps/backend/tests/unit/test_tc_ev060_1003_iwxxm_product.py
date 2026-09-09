@@ -47,6 +47,21 @@ IWXXM_2023_1_SAMPLE = """<?xml version="1.0" encoding="UTF-8"?>
 </iwxxm:METAR>
 """
 
+IWXXM_2025_2_SAMPLE = """<?xml version="1.0" encoding="UTF-8"?>
+<iwxxm:METAR
+    xmlns:iwxxm='http://icao.int/iwxxm/2025-2'
+    xmlns:gml="http://www.opengis.net/gml/3.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://icao.int/iwxxm/2025-2 https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd"
+    gml:id="metar-1">
+  <iwxxm:issueTime>
+    <gml:TimeInstant gml:id="ti-1">
+      <gml:timePosition>2026-09-07T18:00:00Z</gml:timePosition>
+    </gml:TimeInstant>
+  </iwxxm:issueTime>
+</iwxxm:METAR>
+"""
+
 
 @pytest.fixture
 def client() -> TestClient:
@@ -303,6 +318,27 @@ def test_tc_ev908_iwxxm_product_rejects_unknown_source_namespace(client: TestCli
     assert response.status_code == 400, response.text[:500]
     detail = response.json()["detail"]
     assert detail["message"] == "Unsupported IWXXM source version"
+
+
+def test_tc_ev908_003_reverse_migration_fails_closed(client: TestClient) -> None:
+    """TC-EV908-003: 2025-2 → 2023-1 is unsupported (no silent NS rewrite)."""
+    response = _multipart(
+        client,
+        "/api/v1/convert",
+        {
+            "manual_text": IWXXM_2025_2_SAMPLE,
+            "product": "iwxxm",
+            "iwxxm_version": "2023-1",
+            "validate_output": "false",
+        },
+    )
+
+    assert response.status_code == 400, response.text[:500]
+    detail = response.json()["detail"]
+    assert detail["message"] == "Unsupported IWXXM version migration"
+    assert detail["issues"][0]["code"] == "UNSUPPORTED_IWXXM_MIGRATION"
+    assert "2025-2" in detail["issues"][0]["message"]
+    assert "2023-1" in detail["issues"][0]["message"]
 
 
 def test_tc_ev908_iwxxm_product_migration_validate_exception_fails_closed(

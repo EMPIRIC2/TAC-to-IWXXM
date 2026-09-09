@@ -42,14 +42,23 @@ class TestVersionMigratorInit:
 
 
 class TestVersionMigratorMigrate:
-    def test_no_breaking_changes_returns_original(self):
-        """When no breaking changes, original XML returned unchanged."""
+    def test_no_breaking_changes_still_rewrites_supported_pair(self):
+        """Allowlisted pairs still rewrite NS/schema even with empty breaking list."""
+        xml = """<?xml version="1.0"?>
+<root xmlns="http://icao.int/iwxxm/2023-1">
+  <child>data</child>
+</root>"""
         m = VersionMigrator()
         with patch("src.utilities.version_migration.get_breaking_changes", return_value=[]):
-            result_xml, warnings = m.migrate(SIMPLE_XML, "2023-1", "2025-2")
+            result_xml, warnings = m.migrate(xml, "2023-1", "2025-2")
         assert warnings == []
-        # Content should be preserved
-        assert "child" in result_xml or "root" in result_xml
+        assert "http://icao.int/iwxxm/2025-2" in result_xml
+        assert "child" in result_xml
+
+    def test_unsupported_pair_raises(self):
+        m = VersionMigrator()
+        with pytest.raises(ValueError, match="Unsupported IWXXM migration from 2025-2 to 2023-1"):
+            m.migrate(SIMPLE_XML, "2025-2", "2023-1")
 
     def test_invalid_xml_raises(self):
         m = VersionMigrator()

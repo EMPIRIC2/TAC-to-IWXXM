@@ -1854,12 +1854,30 @@ async def convert(
         migrated_payload = xml_payload
         migration_warnings: list[dict[str, Any]] = []
         if migrated_iwxxm:
-            migrated_payload, migration_warnings = migrate_xml(
-                xml_payload,
-                from_version=source_iwxxm_version,
-                to_version=iwxxm_version,
-                emit_profile=emit_profile,
-            )
+            try:
+                migrated_payload, migration_warnings = migrate_xml(
+                    xml_payload,
+                    from_version=source_iwxxm_version,
+                    to_version=iwxxm_version,
+                    emit_profile=emit_profile,
+                )
+            except ValueError as exc:
+                raise HTTPException(
+                    status_code=400,
+                    detail=ErrorDetail(
+                        message="Unsupported IWXXM version migration",
+                        errors=[str(exc)],
+                        issues=[
+                            ConversionIssue(
+                                source="manual",
+                                message=str(exc),
+                                severity=ConversionIssueSeverity.ERROR,
+                                code="UNSUPPORTED_IWXXM_MIGRATION",
+                            )
+                        ],
+                        total_errors=1,
+                    ).model_dump(),
+                ) from exc
             pass_issues.extend(
                 ConversionIssue(
                     source="manual",
