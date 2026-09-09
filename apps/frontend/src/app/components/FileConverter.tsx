@@ -568,16 +568,19 @@ export function FileConverter({
       return;
     }
     const mq = window.matchMedia('(max-width: 767px)');
-    const applyNarrowDefaults = () => {
-      if (!mq.matches) {
-        return;
+    // Initial collapse comes from useState(preferCollapsedWorkbenchChrome).
+    // Only re-collapse when *entering* narrow from wide — do not fight a manual expand.
+    let wasNarrow = mq.matches;
+    const onChange = () => {
+      const nowNarrow = mq.matches;
+      if (nowNarrow && !wasNarrow) {
+        setRecentWorkCollapsed(true);
+        setProfileGlanceOpen(false);
       }
-      setRecentWorkCollapsed(true);
-      setProfileGlanceOpen(false);
+      wasNarrow = nowNarrow;
     };
-    applyNarrowDefaults();
-    mq.addEventListener('change', applyNarrowDefaults);
-    return () => mq.removeEventListener('change', applyNarrowDefaults);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
   }, []);
 
   /* eslint-disable react-hooks/set-state-in-effect -- load profile summary catalog when auth token appears/clears */
