@@ -2,8 +2,8 @@
 # Corpus: domain-profiles · ADR-036 §7
 # Human stubs: semantic/*.md · exchange/*.md
 schema_version: 2
-cycle: EV-094
-updated: "2026-09-06"
+cycle: EV-M1-five-remaining
+updated: "2026-09-09"
 
 priority_legend:
   P0: "Baseline — implemented or default exchange overlay (F35)"
@@ -82,9 +82,18 @@ profiles:
         label: FAA GEN 1.7 differences
         access: public
         proves: US differences from ICAO baseline
+      - url: https://forecast.weather.gov/product.php?format=CI&glossary=0&issuedby=E&product=SIG&site=ABR&version=2
+        label: NWS convective SIGMET sample form
+        access: public
+        proves: Example convective SIGMET product form (fixture seed)
+      - url: https://forecast.weather.gov/product.php?format=TXT&issuedby=WSH&product=PNS&site=DLH&version=26
+        label: NWS PNS — VOR→airport ID transition notes
+        access: public
+        proves: US identifier transition guidance (ops context)
     mining_notes:
       - docs/domain/mining/fmh1-2019-mining-notes.md
       - docs/domain/mining/iwxxm-us-metar-speci-pdf-mining-notes.md
+      - docs/domain/profiles/mining/EV-M1-913-source-triage.md
     stub: semantic/US_FAA_NWS.md
     gaps:
       - FMH-1 §12.7.2 additive RMK (T/P/6/7/$, ice accretion, sensor status) — post-#919; no profile-pack fixtures (EV-085 M21 waived)
@@ -425,8 +434,13 @@ profiles:
         label: AWC TAF API (RKSI)
         access: public
         proves: Attributed TAF corpus (EV-094 M3)
+      - url: https://amo.kma.go.kr/eng/iwxxm/iwxxm-intro.do
+        label: KMA AMO IWXXM program intro
+        access: public
+        proves: National IWXXM program context (#913 triage)
     mining_notes:
       - docs/domain/mining/kr-kma-tac-mining-notes.md
+      - docs/domain/profiles/mining/EV-M1-913-source-triage.md
     stub: semantic/KR_KMA.md
     gaps:
       - No published KR IWXXM extension XSD (core-only emit)
@@ -505,12 +519,17 @@ profiles:
         label: AWC TAF API (VIDP)
         access: public
         proves: Attributed TAF without TX/TN (EV-094 M5)
+      - url: https://aim-india.aai.aero/eAIP_Archive/19-03-2026/eAIP/IN-GEN%203.5-en-GB.html
+        label: India eAIP GEN 3.5 archive snapshot (2026-03-19)
+        access: gap
+        proves: Candidate GEN 3.5 cite — date-stamped archive (unstable; harden durable pin)
     mining_notes:
       - docs/domain/mining/in-imd-tac-mining-notes.md
+      - docs/domain/profiles/mining/EV-M1-913-source-triage.md
     stub: semantic/IN_IMD.md
     gaps:
       - No published IN IWXXM extension XSD (IMDIMET unpublished — do not invent)
-      - AIP GEN 3.5 durable URL still gap
+      - AIP GEN 3.5 durable URL still gap (archive snapshot cited; not durable)
       - "No AIRMET/GAMET in v1 (AIP: not issued)"
       - SPECI / FIR SIGMET attributed corpora still pending (synthetic_ev089)
     lint_profile:
