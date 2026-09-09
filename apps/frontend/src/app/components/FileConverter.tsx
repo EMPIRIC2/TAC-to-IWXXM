@@ -267,6 +267,21 @@ function isStructuredConvertError(
   return Array.isArray(candidate.errors) && Array.isArray(candidate.issues);
 }
 
+function mergeVisibleConvertErrors(primaryMessage: string, errors: string[]): string[] {
+  const merged = new Set<string>();
+  const normalizedPrimary = primaryMessage.trim();
+  if (normalizedPrimary) {
+    merged.add(normalizedPrimary);
+  }
+  for (const error of errors) {
+    const normalized = error.trim();
+    if (normalized) {
+      merged.add(normalized);
+    }
+  }
+  return Array.from(merged);
+}
+
 type IWXXMVersion = IwxxmVersionId;
 type OnErrorBehavior = 'skip' | 'fail' | 'warn';
 type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
@@ -1428,7 +1443,7 @@ export function FileConverter({
         (error.errors.length > 0 || error.issues.length > 0)
       ) {
         updateConversionLog({
-          errors: error.errors,
+          errors: mergeVisibleConvertErrors(error.message, error.errors),
           issues: error.issues,
         });
       }

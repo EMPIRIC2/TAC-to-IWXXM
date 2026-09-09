@@ -2057,9 +2057,14 @@ describe('FileConverter Component', () => {
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
-        expect(screen.getByLabelText(/conversion error log/i)).toBeInTheDocument();
-        expect(screen.getByText(/All conversions failed/i)).toBeInTheDocument();
-        expect(screen.getByText(/No ICAO code found in TAC text/i)).toBeInTheDocument();
+        const errorLog = screen.getByLabelText(/conversion error log/i);
+        expect(errorLog).toBeInTheDocument();
+        expect(
+          within(errorLog).getByText(/All conversions failed/i),
+        ).toBeInTheDocument();
+        expect(
+          within(errorLog).getByText(/No ICAO code found in TAC text/i),
+        ).toBeInTheDocument();
       });
     });
 
@@ -2090,7 +2095,10 @@ describe('FileConverter Component', () => {
         expect(mockPersistSession).toHaveBeenCalledWith(
           expect.objectContaining({
             conversionLog: {
-              errors: ['manual_input: Validation failed - 1 validation issue(s) found'],
+              errors: [
+                'All conversions failed',
+                'manual_input: Validation failed - 1 validation issue(s) found',
+              ],
               issues: [
                 expect.objectContaining({
                   message: 'No ICAO code found in TAC text',
