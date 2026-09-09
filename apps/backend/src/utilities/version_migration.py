@@ -14,6 +14,7 @@ from src.config.iwxxm_versions import (
     get_breaking_changes,
     get_version_config,
     get_version_config_for_emit_profile,
+    is_migration_supported,
 )
 
 logger = logging.getLogger(__name__)
@@ -96,11 +97,11 @@ class VersionMigrator:
             logger.debug(f"No migration needed from {from_version} to {to_version}")
             return xml_content, []
 
+        if not is_migration_supported(from_version, to_version):
+            raise ValueError(f"Unsupported IWXXM migration from {from_version} to {to_version}")
+
         if emit_profile is None:
             changes = get_breaking_changes(from_version, to_version)
-            if not changes:
-                logger.debug(f"No breaking changes from {from_version} to {to_version}")
-                return xml_content, []
             to_config = get_version_config(to_version)
         else:
             to_config = get_version_config_for_emit_profile(to_version, emit_profile)

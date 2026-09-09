@@ -117,11 +117,11 @@
 
 ### F4: IWXXM Version Handling
 
-- **What it does**: Supports multiple IWXXM release lines (e.g. 2023-1, 2025-2) with version-aware formatting.
-- **Inputs**: Target version parameter, TAC product input.
-- **Outputs**: Version-appropriate IWXXM XML.
-- **Limitations**: Only versions present in `vendor/schemas/` snapshots (WMO + iwxxm-us when pinned).
-- **Source**: docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md
+- **What it does**: Supports multiple IWXXM release lines (e.g. 2023-1, 2025-2) with version-aware formatting; **deepen EV-908 / #908** migrates already-produced IWXXM XML between supported pairs (`product=iwxxm` on convert).
+- **Inputs**: Target version parameter, TAC product input **or** IWXXM XML pass-through.
+- **Outputs**: Version-appropriate IWXXM XML (encode or migrate).
+- **Limitations**: Only versions present in `vendor/schemas/` snapshots (WMO + iwxxm-us when pinned). Cross-version pair matrix: [CROSS_VERSION_CONVERSION.md](domain/iwxxm/CROSS_VERSION_CONVERSION.md) — reverse **2025-2 → 2023-1** fail-closed until specified.
+- **Source**: docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md · VERSION_SUPPORT_POLICY.md · CROSS_VERSION_CONVERSION.md · #908
 
 ### F5: User METAR Work History
 

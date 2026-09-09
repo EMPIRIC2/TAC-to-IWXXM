@@ -127,16 +127,28 @@ class TestMigrationNoChanges:
         assert xml_out  # Should return XML
         assert len(warnings) == 0
 
-    def test_2021_2_to_2023_1_no_changes(self):
-        """Test upgrade from 2021-2 to 2023-1 (no breaking changes)."""
+    def test_2021_2_to_2023_1_unsupported(self):
+        """Deprecated→supported pairs are not allowlisted (EV-908 fail-closed)."""
         xml = """<?xml version="1.0"?>
 <METAR xmlns:iwxxm="http://icao.int/iwxxm/2021-2">
     <element>data</element>
 </METAR>"""
 
-        _xml_out, warnings = migrate_xml(xml, "2021-2", "2023-1")
+        with pytest.raises(ValueError, match="Unsupported IWXXM migration"):
+            migrate_xml(xml, "2021-2", "2023-1")
 
-        assert len(warnings) == 0
+
+class TestUnsupportedMigrationPairs:
+    """TC-EV908-003: reverse / undefined pairs fail closed."""
+
+    def test_2025_2_to_2023_1_raises(self):
+        xml = """<?xml version="1.0"?>
+<METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2">
+    <element>data</element>
+</METAR>"""
+
+        with pytest.raises(ValueError, match="Unsupported IWXXM migration from 2025-2 to 2023-1"):
+            migrate_xml(xml, "2025-2", "2023-1")
 
 
 class TestMigrationMultipleElements:
