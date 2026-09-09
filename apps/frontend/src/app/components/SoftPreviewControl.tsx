@@ -7,7 +7,7 @@ export const SOFT_PREVIEW_LABEL = 'Soft-preview';
 
 /** Operator-visible help under the soft-preview toggle (scanned by TC-EV048-003). */
 export const SOFT_PREVIEW_HELP =
-  'Return best-effort IWXXM and failed spans when TAC is partial (not for publish).';
+  'Best-effort IWXXM when TAC is partial — not for publish.';
 
 export interface SoftPreviewControlProps {
   checked: boolean;
@@ -27,18 +27,21 @@ export function SoftPreviewControl({
   disabled = false,
 }: SoftPreviewControlProps) {
   return (
-    <label className="mb-4 flex cursor-pointer items-start gap-2 text-sm text-gray-800 dark:text-gray-200">
+    <label className="mb-0 flex cursor-pointer items-start gap-2 text-sm text-gray-800 dark:text-gray-200">
       <input
         type="checkbox"
         data-testid="soft-preview-toggle"
-        className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+        className="mt-0.5 h-4 w-4 rounded border-gray-300 text-rose-600 focus:ring-rose-500 disabled:cursor-not-allowed"
         checked={checked}
         disabled={disabled}
         onChange={(e) => onChange(e.target.checked)}
       />
-      <span>
+      <span className="min-w-0">
         <span className="font-medium">{SOFT_PREVIEW_LABEL}</span>
-        <span className="block text-xs text-gray-500 dark:text-gray-400">
+        <span
+          className="mt-0.5 block text-xs leading-snug text-gray-500 dark:text-gray-400"
+          title={SOFT_PREVIEW_HELP}
+        >
           {SOFT_PREVIEW_HELP}
         </span>
       </span>
