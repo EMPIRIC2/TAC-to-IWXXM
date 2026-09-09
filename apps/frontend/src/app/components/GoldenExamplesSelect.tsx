@@ -34,6 +34,8 @@ export interface GoldenExamplesSelectProps {
   applicableProducts?: readonly TacProduct[];
   /** Called with the catalog id when an example is chosen */
   onSelectExample: (exampleId: string) => void;
+  /** Fired when the Examples menu opens or closes (UX-07 collapse Recent work). */
+  onOpenChange?: (open: boolean) => void;
 }
 
 const PROFILE_LABELS = new Map<string, string>(
@@ -91,6 +93,7 @@ export function GoldenExamplesSelect({
   semanticProfile = DEFAULT_SEMANTIC_PROFILE,
   applicableProducts,
   onSelectExample,
+  onOpenChange,
 }: GoldenExamplesSelectProps) {
   const byProduct = groupTacByProduct();
   const ahlExamples = EXAMPLES.filter((ex) => ex.inputMode === 'ahl_bulletin');
@@ -107,6 +110,7 @@ export function GoldenExamplesSelect({
       </Label>
       <Select
         disabled={disabled}
+        onOpenChange={onOpenChange}
         onValueChange={(value) => {
           onSelectExample(value);
         }}

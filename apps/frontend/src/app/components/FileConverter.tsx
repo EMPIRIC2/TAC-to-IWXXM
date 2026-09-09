@@ -474,6 +474,8 @@ export function FileConverter({
   const [demoExampleLabel, setDemoExampleLabel] = useState<string | null>(null);
   const [bulletinSummary, setBulletinSummary] = useState<string | null>(null);
   const [placeholderNotice, setPlaceholderNotice] = useState<string | null>(null);
+  /** UX-07: collapse Recent work while editing / opening Examples. */
+  const [recentWorkCollapsed, setRecentWorkCollapsed] = useState(false);
   // Restore the guest's custom output filename from the session snapshot (R5).
   const [outputFilename, setOutputFilename] = useState(() => {
     const saved = readGuestConverterState()?.conversionParams?.output_filename;
@@ -2654,6 +2656,11 @@ export function FileConverter({
                       aria-label="Exchange profile"
                       aria-describedby="product-profile-bar-summary"
                       data-testid="exchange-profile-select"
+                      title={
+                        EXCHANGE_PROFILE_OPTIONS.find(
+                          (opt) => opt.value === conversionParams.exchangeProfile,
+                        )?.label ?? conversionParams.exchangeProfile
+                      }
                       value={conversionParams.exchangeProfile}
                       disabled={isReadOnly}
                       onChange={(e) => {
@@ -2663,7 +2670,7 @@ export function FileConverter({
                           exchangeProfile,
                         }));
                       }}
-                      className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                      className="min-w-[12.5rem] max-w-full shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 sm:min-w-[14rem] dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     >
                       {EXCHANGE_PROFILE_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>
@@ -2728,6 +2735,11 @@ export function FileConverter({
                       disabled={isReadOnly}
                       semanticProfile={conversionParams.profile}
                       onSelectExample={handleLoadGoldenExample}
+                      onOpenChange={(open) => {
+                        if (open) {
+                          setRecentWorkCollapsed(true);
+                        }
+                      }}
                     />
                   </div>
                   <p
@@ -2738,57 +2750,59 @@ export function FileConverter({
                     Encoding and packaging rules only — not destinations, credentials,
                     or editable overlays.
                   </p>
-                  <div
-                    className="rounded-md border border-gray-200 bg-white p-3 text-sm dark:border-gray-700 dark:bg-gray-800"
+                  <details
+                    className="rounded-md border border-gray-200 bg-white text-sm dark:border-gray-700 dark:bg-gray-800"
                     data-testid="workbench-profile-summary"
                   >
-                    <div className="flex flex-wrap items-start justify-between gap-2">
-                      <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                          Profile at a glance
-                        </p>
-                        <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    <summary className="cursor-pointer select-none px-3 py-2">
+                      <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        Profile at a glance
+                      </span>
+                      <span className="mt-0.5 flex flex-wrap items-baseline justify-between gap-2">
+                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
                           {profileDisplayName(activeProfileSummary.id)}
-                        </h3>
-                        <p className="text-xs text-gray-600 dark:text-gray-400">
-                          {activeProfileSummary.id}
-                        </p>
-                      </div>
+                        </span>
+                        <span className="text-xs text-gray-600 dark:text-gray-400">
+                          {activeProfileSummary.iwxxm_line ?? 'IWXXM line unavailable'}
+                        </span>
+                      </span>
+                    </summary>
+                    <div className="space-y-2 border-t border-gray-100 px-3 py-2 dark:border-gray-700">
                       <p className="text-xs text-gray-600 dark:text-gray-400">
-                        {activeProfileSummary.iwxxm_line ?? 'IWXXM line unavailable'}
+                        {activeProfileSummary.id}
                       </p>
+                      {activeProfileSummary.deltas_vs_icao &&
+                      activeProfileSummary.deltas_vs_icao.length > 0 ? (
+                        <ul className="space-y-1 text-xs text-gray-700 dark:text-gray-300">
+                          {activeProfileSummary.deltas_vs_icao
+                            .slice(0, 3)
+                            .map((delta) => (
+                              <li key={delta}>{delta}</li>
+                            ))}
+                        </ul>
+                      ) : null}
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600 dark:text-gray-400">
+                        <span>
+                          Products:{' '}
+                          {activeProfileSummary.products.length > 0
+                            ? activeProfileSummary.products.join(', ')
+                            : 'Sign in to load profile coverage'}
+                        </span>
+                        <span>
+                          Rule packs:{' '}
+                          {activeProfileSummary.rule_pack_count != null
+                            ? activeProfileSummary.rule_pack_count
+                            : '—'}
+                        </span>
+                        <span>
+                          Overlays:{' '}
+                          {activeProfileSummary.overlay_count != null
+                            ? activeProfileSummary.overlay_count
+                            : '—'}
+                        </span>
+                      </div>
                     </div>
-                    {activeProfileSummary.deltas_vs_icao &&
-                    activeProfileSummary.deltas_vs_icao.length > 0 ? (
-                      <ul className="mt-2 space-y-1 text-xs text-gray-700 dark:text-gray-300">
-                        {activeProfileSummary.deltas_vs_icao
-                          .slice(0, 3)
-                          .map((delta) => (
-                            <li key={delta}>{delta}</li>
-                          ))}
-                      </ul>
-                    ) : null}
-                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600 dark:text-gray-400">
-                      <span>
-                        Products:{' '}
-                        {activeProfileSummary.products.length > 0
-                          ? activeProfileSummary.products.join(', ')
-                          : 'Sign in to load profile coverage'}
-                      </span>
-                      <span>
-                        Rule packs:{' '}
-                        {activeProfileSummary.rule_pack_count != null
-                          ? activeProfileSummary.rule_pack_count
-                          : '—'}
-                      </span>
-                      <span>
-                        Overlays:{' '}
-                        {activeProfileSummary.overlay_count != null
-                          ? activeProfileSummary.overlay_count
-                          : '—'}
-                      </span>
-                    </div>
-                  </div>
+                  </details>
                   <details
                     className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
                     data-testid="product-profile-trust-details"
@@ -2888,7 +2902,10 @@ export function FileConverter({
               )}
               <FailedTacCue failedSpans={failedSpans} />
               <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:items-stretch">
-                <div className="min-w-0">
+                <div
+                  className="min-w-0"
+                  onFocusCapture={() => setRecentWorkCollapsed(true)}
+                >
                   <TacEditor
                     id="manual-input"
                     value={manualInput}
@@ -3673,12 +3690,14 @@ export function FileConverter({
             </div>
           </div>
           {onLoadWorkSession && (
-            <aside className="lg:sticky lg:top-8 lg:mt-8 lg:self-start">
+            <aside className="relative z-0 lg:sticky lg:top-8 lg:mt-8 lg:self-start">
               <WorkHistorySidebar
                 accessToken={accessToken}
                 activeSessionId={activeWorkSessionId}
                 onSelectSession={onLoadWorkSession}
                 onOpenHistory={onOpenHistory}
+                collapsed={recentWorkCollapsed}
+                onCollapsedChange={setRecentWorkCollapsed}
               />
             </aside>
           )}

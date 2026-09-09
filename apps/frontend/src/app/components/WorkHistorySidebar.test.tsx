@@ -223,4 +223,44 @@ describe('WorkHistorySidebar', () => {
     expect(shouldApplyHistoryResult(false)).toBe(true);
     expect(shouldApplyHistoryResult(true)).toBe(false);
   });
+
+  it('renders compact expand control when collapsed (UX-07)', async () => {
+    const onCollapsedChange = vi.fn();
+    const user = userEvent.setup();
+    render(
+      <WorkHistorySidebar
+        collapsed
+        onCollapsedChange={onCollapsedChange}
+        onSelectSession={onSelectSession}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('recent-work-expand')).toBeInTheDocument();
+    });
+    expect(screen.queryByTestId('recent-work-panel')).not.toBeInTheDocument();
+    expect(screen.getByTestId('recent-work-expand')).toHaveTextContent(
+      /Recent work \(1\)/,
+    );
+
+    await user.click(screen.getByTestId('recent-work-expand'));
+    expect(onCollapsedChange).toHaveBeenCalledWith(false);
+  });
+
+  it('exposes collapse control when expanded and onCollapsedChange is set', async () => {
+    const onCollapsedChange = vi.fn();
+    const user = userEvent.setup();
+    render(
+      <WorkHistorySidebar
+        onCollapsedChange={onCollapsedChange}
+        onSelectSession={onSelectSession}
+      />,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('recent-work-panel')).toBeInTheDocument();
+    });
+    await user.click(screen.getByTestId('recent-work-collapse'));
+    expect(onCollapsedChange).toHaveBeenCalledWith(true);
+  });
 });
