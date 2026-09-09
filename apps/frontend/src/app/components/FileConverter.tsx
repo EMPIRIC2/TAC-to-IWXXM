@@ -1350,7 +1350,7 @@ export function FileConverter({
         extensions: nationalExtensionsForProfile(conversionParams.profile),
         exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
         exchangeProfile: conversionParams.exchangeProfile,
-        accessToken: accessToken?.trim() || undefined,
+        ...(accessToken?.trim() ? { accessToken: accessToken.trim() } : {}),
         ...convertOverlayFields(conversionParams.overlayId, accessToken),
       });
 
@@ -1994,7 +1994,7 @@ export function FileConverter({
           extensions: nationalExtensionsForProfile(conversionParams.profile),
           exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
           exchangeProfile: conversionParams.exchangeProfile,
-          accessToken: accessToken?.trim() || undefined,
+          ...(accessToken?.trim() ? { accessToken: accessToken.trim() } : {}),
           ...convertOverlayFields(conversionParams.overlayId, accessToken),
           signal,
         });
