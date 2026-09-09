@@ -41,3 +41,18 @@ export function coerceExchangeProfile(value: unknown): ExchangeProfileId {
   }
   return DEFAULT_EXCHANGE_PROFILE;
 }
+
+/**
+ * Operator-visible label for an exchange profile wire id (select ``title``).
+ *
+ * @param id - Wire id (may be unknown in defensive UI paths)
+ * @returns Catalog label, or the raw id when unrecognized
+ */
+export function exchangeProfileLabel(id: string): string {
+  for (const opt of EXCHANGE_PROFILE_OPTIONS) {
+    if (opt.value === id) {
+      return opt.label;
+    }
+  }
+  return id;
+}

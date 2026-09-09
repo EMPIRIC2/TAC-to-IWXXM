@@ -131,6 +131,7 @@ import {
   coerceExchangeProfile,
   DEFAULT_EXCHANGE_PROFILE,
   EXCHANGE_PROFILE_OPTIONS,
+  exchangeProfileLabel,
   type ExchangeProfileId,
 } from '@/utils/exchangeProfile';
 import {
@@ -2656,11 +2657,7 @@ export function FileConverter({
                       aria-label="Exchange profile"
                       aria-describedby="product-profile-bar-summary"
                       data-testid="exchange-profile-select"
-                      title={
-                        EXCHANGE_PROFILE_OPTIONS.find(
-                          (opt) => opt.value === conversionParams.exchangeProfile,
-                        )?.label ?? conversionParams.exchangeProfile
-                      }
+                      title={exchangeProfileLabel(conversionParams.exchangeProfile)}
                       value={conversionParams.exchangeProfile}
                       disabled={isReadOnly}
                       onChange={(e) => {
