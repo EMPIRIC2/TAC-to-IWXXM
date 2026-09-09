@@ -4919,6 +4919,24 @@ No live `codes.wmo.int` HTML in PR CI.
 - [ ] UJ-027–030 Playwright unskipped and green (stubbed BYOC)
 - [ ] SSRF / memory-only BYOC invariants unchanged
 
+### TC-UX-R04-001: Convert&Send outline hierarchy (UJ-001 deepen)
+
+- **Level**: T0 / T2
+- **Objective**: With destinations UI on, Convert is the only filled primary; Convert&Send is
+  outline (or non-filled mute); Upload / Disseminate / Zip stay outline
+- **Pass criteria**: Vitest asserts `convert-and-send-button` uses outline (or computed
+  non-filled style vs Convert filled); optional staging screenshot / computed-style check
+- **Source**: F21 deepen; UJ-001; post-CD UX-R04 soft-fail after #1163
+
+### TC-UX-RW-001: Recent work does not obscure profile bar (UJ-001 deepen)
+
+- **Level**: T0 / T2 / T3 (optional viewport)
+- **Objective**: At desktop widths, expanded Recent work must not make Product / Profile /
+  Exchange profile controls unusable (no overflow paint-over)
+- **Pass criteria**: Vitest layout/collapse regression; optional Playwright ~1280 assert
+  controls remain hittable / not covered; 375 `overflowX === 0` unchanged
+- **Source**: F5 deepen; UJ-001; operator staging screenshot 2026-09-09
+
 ### TC-EV031-001: One-time migrate legacy Supabase → DO Postgres
 
 - **Level**: T0 / T2 (ops script + integration)

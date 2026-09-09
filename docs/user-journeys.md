@@ -148,16 +148,20 @@ must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US 
 2. Drag-drop `.tac` file or paste manual text (METAR/SPECI).
 3. Optionally leave product on **auto** / METAR and profile **annex3** (defaults).
 4. **#664 (EV-005)**: Optionally type an **Output filename** for manually entered TAC.
-5. Choose **Convert**, **Convert&Send**, or **Upload to Database**.
-6. View output; each result card shows **TAC-derived title**, optional **Line N of M** for
+5. Choose **Convert**, **Convert&Send**, or **Upload to Database**. Visually, **Convert** is
+   the sole filled primary; **Convert&Send** is outline/muted when destinations are shown.
+6. Confirm **Recent work** (when expanded) does not cover Product / Profile / Exchange profile
+   controls. Collapse or scroll as needed; expand control remains available.
+7. View output; each result card shows **TAC-derived title**, optional **Line N of M** for
    multi-line manual input, prominent **Source TAC** panel, and download filename when it
    differs (#655 / EV-007). #555 replace-on-success and error log panel behavior unchanged.
-7. On convert failure after F6 cutover: structured error only — **no gifts rollback**.
-8. If guest: work may auto-save to IndexedDB (UJ-004/045) with loss-of-progress notice.
+8. On convert failure after F6 cutover: structured error only — **no gifts rollback**.
+9. If guest: work may auto-save to IndexedDB (UJ-004/045) with loss-of-progress notice.
    If logged in: may sync to DO Postgres sessions (UJ-046).
 
 **Acceptance**: METAR converts without error via tac2iwxxm; **no JWT required for convert**;
-schema/Schematron pass for selected version; UX behaviors from #555/#664 preserved.
+schema/Schematron pass for selected version; UX behaviors from #555/#664 preserved;
+Convert sole filled primary; Recent work does not obscure profile controls.
 
 **Automated tests**: `apps/e2e/tac-file-conversion.e2e.spec.ts` (T2); `make test-live-e2e` (T3)
 

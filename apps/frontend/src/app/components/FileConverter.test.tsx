@@ -1580,6 +1580,31 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('convert-button')).toBeInTheDocument();
     });
 
+    it('uses outline Convert&Send so Convert is the sole filled primary (TC-UX-R04-001)', () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      render(<FileConverter {...defaultProps} />);
+      const convert = screen.getByTestId('convert-button');
+      const convertAndSend = screen.getByTestId('convert-and-send-button');
+      const upload = screen.getByTestId('upload-to-database-button');
+      const disseminate = screen.getByTestId('open-dissemination-drawer');
+      expect(convert).toHaveClass('bg-primary');
+      expect(convertAndSend).toHaveClass('bg-background');
+      expect(convertAndSend).not.toHaveClass('bg-secondary');
+      expect(upload).toHaveClass('bg-background');
+      expect(disseminate).toHaveClass('bg-background');
+    });
+
+    it('contains product-profile bar in main column beside Recent work (TC-UX-RW-001)', () => {
+      render(<FileConverter {...defaultProps} onLoadWorkSession={vi.fn()} />);
+      const main = screen.getByTestId('workbench-main-column');
+      const bar = screen.getByTestId('product-profile-bar');
+      expect(main).toHaveClass('min-w-0');
+      expect(bar).toHaveClass('lg:flex-wrap');
+      expect(bar.className).not.toMatch(/\blg:flex-nowrap\b/);
+      expect(screen.getByTestId('recent-work-collapsed')).toBeInTheDocument();
+      expect(screen.getByTestId('exchange-profile-select')).toBeInTheDocument();
+    });
+
     it('hides Convert&Send, Disseminate, and Upload to Database while destinations UI is off (TC-EV042-001 gate residual)', () => {
       operatorDisseminationUiConfig.destinationsEnabled = false;
       render(<FileConverter {...defaultProps} />);
