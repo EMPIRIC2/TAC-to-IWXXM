@@ -30,7 +30,7 @@ Operator-facing and package improvements validated on staging since the 2026-09-
 - Nightly TestPyPI workflow + `make pypi-calver-bump` (ops: Trusted Publishers / `testpypi` env)
 
 ### Deploy
-- Promote PR: _(link when opened)_ (`stage` → `main`).
+- Promote PR: [#1172](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1172) (`stage` → `main`).
 - Staging tip before promote: `ba4525f9` (Staging smoke green).
 - After merge + tip CI green: tag `v2026.09.10-deploy` to roll production.
 - Prod Alembic: apply through `20260907_0004` (profile presets + dissemination templates).
