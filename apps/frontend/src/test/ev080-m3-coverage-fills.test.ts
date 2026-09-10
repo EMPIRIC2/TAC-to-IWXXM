@@ -166,6 +166,63 @@ describe('EV-080 api.json catch fallbacks and quality metrics defaults', () => {
     expect(body.summaries).toEqual([]);
     expect(body.files).toEqual([]);
   });
+
+  it('convertMetarToIwxxm omits iwxxm_version when caller does not specify one', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      json: vi.fn().mockResolvedValue({
+        results: [],
+        errors: [],
+        issues: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await convertMetarToIwxxm({
+      manualText: 'METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=',
+      profile: 'CA_ECCC',
+    });
+
+    const request = fetchMock.mock.calls[0]?.[1] as { body?: FormData } | undefined;
+    expect(request?.body).toBeInstanceOf(FormData);
+    expect((request?.body as FormData).has('iwxxm_version')).toBe(false);
+    expect((request?.body as FormData).get('semantic_profile')).toBe('CA_ECCC');
+  });
+
+  it('convertBulletin omits iwxxm_version when caller does not specify one', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      statusText: 'OK',
+      json: vi.fn().mockResolvedValue({
+        bulletin_meta: {
+          ahl: 'SAUS31 CYUL 231800',
+          report_count: 1,
+          cccc: 'CYUL',
+          yygggg: '231800',
+        },
+        results: [],
+      }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    await convertBulletin({
+      manualText:
+        'SAUS31 CYUL 231800\nMETAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=',
+      product: 'METAR',
+      profile: 'CA_ECCC',
+    });
+
+    const request = fetchMock.mock.calls[0]?.[1] as { body?: FormData } | undefined;
+    expect(request?.body).toBeInstanceOf(FormData);
+    expect((request?.body as FormData).has('iwxxm_version')).toBe(false);
+    expect((request?.body as FormData).get('semantic_profile')).toBe('CA_ECCC');
+  });
 });
 
 describe('EV-080 convertBulletin detail message branches', () => {

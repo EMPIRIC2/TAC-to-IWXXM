@@ -9,10 +9,17 @@ import {
 
 const mockCreate = vi.fn();
 const mockUpdate = vi.fn();
+const mockCreateRemote = vi.fn();
+const mockUpdateRemote = vi.fn();
 
 vi.mock('/utils/localWorkSessionStore', () => ({
   createLocalWorkSession: (...args: unknown[]) => mockCreate(...args),
   updateLocalWorkSession: (...args: unknown[]) => mockUpdate(...args),
+}));
+
+vi.mock('/utils/workSessionApi', () => ({
+  createWorkSession: (...args: unknown[]) => mockCreateRemote(...args),
+  updateWorkSession: (...args: unknown[]) => mockUpdateRemote(...args),
 }));
 
 const snapshot: ConverterSnapshot = {
@@ -29,6 +36,8 @@ describe('useWorkSessionSync', () => {
     vi.useFakeTimers();
     mockCreate.mockReset();
     mockUpdate.mockReset();
+    mockCreateRemote.mockReset();
+    mockUpdateRemote.mockReset();
     mockCreate.mockResolvedValue({
       id: 'new-session',
       status: 'draft',
@@ -60,6 +69,40 @@ describe('useWorkSessionSync', () => {
       kv_upload_key: null,
       deleted_at: null,
       user_id: 'local',
+      created_at: '2026-06-24T00:00:00Z',
+      updated_at: '2026-06-24T00:00:01Z',
+    });
+    mockCreateRemote.mockResolvedValue({
+      id: 'remote-session',
+      status: 'draft',
+      product: 'metar',
+      title: 'KJFK',
+      manual_tac: snapshot.manualInput,
+      pending_files: [],
+      converted_results: [],
+      errors: [],
+      issues: [],
+      conversion_params: {},
+      kv_upload_key: null,
+      deleted_at: null,
+      user_id: 'remote-user',
+      created_at: '2026-06-24T00:00:00Z',
+      updated_at: '2026-06-24T00:00:00Z',
+    });
+    mockUpdateRemote.mockResolvedValue({
+      id: 'remote-existing-session',
+      status: 'draft',
+      product: 'metar',
+      title: 'KJFK',
+      manual_tac: snapshot.manualInput,
+      pending_files: [],
+      converted_results: [],
+      errors: [],
+      issues: [],
+      conversion_params: {},
+      kv_upload_key: null,
+      deleted_at: null,
+      user_id: 'remote-user',
       created_at: '2026-06-24T00:00:00Z',
       updated_at: '2026-06-24T00:00:01Z',
     });
@@ -118,6 +161,62 @@ describe('useWorkSessionSync', () => {
 
     expect(mockUpdate).toHaveBeenCalledWith('existing-session', expect.any(Object));
     expect(mockCreate).not.toHaveBeenCalled();
+  });
+
+  it('creates remote authenticated session when accessToken is present', async () => {
+    const onSessionSaved = vi.fn();
+    const onSessionIdAssigned = vi.fn();
+
+    const { result } = renderHook(() =>
+      useWorkSessionSync({
+        accessToken: 'jwt-token',
+        sessionId: null,
+        sessionStatus: null,
+        onSessionSaved,
+        onSessionIdAssigned,
+      }),
+    );
+
+    await act(async () => {
+      await result.current.persistSession(snapshot);
+    });
+
+    expect(mockCreateRemote).toHaveBeenCalledWith('jwt-token', expect.any(Object));
+    expect(mockCreate).not.toHaveBeenCalled();
+    expect(onSessionIdAssigned).toHaveBeenCalledWith('remote-session');
+    expect(onSessionSaved).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'remote-session' }),
+    );
+    expect(result.current.saveIndicator).toBe('saved');
+  });
+
+  it('updates remote authenticated session when accessToken and sessionId are present', async () => {
+    const onSessionSaved = vi.fn();
+
+    const { result } = renderHook(() =>
+      useWorkSessionSync({
+        accessToken: 'jwt-token',
+        sessionId: 'remote-existing-session',
+        sessionStatus: 'draft',
+        onSessionSaved,
+        onSessionIdAssigned: vi.fn(),
+      }),
+    );
+
+    await act(async () => {
+      await result.current.persistSession(snapshot);
+    });
+
+    expect(mockUpdateRemote).toHaveBeenCalledWith(
+      'jwt-token',
+      'remote-existing-session',
+      expect.any(Object),
+    );
+    expect(mockUpdate).not.toHaveBeenCalled();
+    expect(onSessionSaved).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'remote-existing-session' }),
+    );
+    expect(result.current.saveIndicator).toBe('saved');
   });
 
   it('skips persist when session is finished (read-only)', async () => {

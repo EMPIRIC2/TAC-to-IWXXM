@@ -92,10 +92,10 @@ Layer result dataclasses (`XSDValidationResult`, `SchematronValidationResult`,
 
 ### 1. Version Detection (`version_detector.py`)
 
-Detects available IWXXM versions from git submodule tags and identifies upgrade opportunities.
+Detects available IWXXM versions from vendored schema snapshots and identifies upgrade opportunities.
 
 **Key Features**:
-- Scans `schemas/iwxxm/` git tags for available versions
+- Scans the local IWXXM schema tree and, when available, repository tags for known versions
 - Reads `LATEST_VERSION` file for current WMO release
 - Compares against configured versions in `iwxxm_versions.py`
 - Generates upgrade reports
@@ -384,16 +384,16 @@ Schematron RDF `document()` resolution is handled inside **`packages/iwxxm-valid
 lxml = ">=4.9.0"  # XML parsing, XSD validation, Schematron
 ```
 
-### Required Git Submodules
+### Required Vendored Schema Bundles
 
 ```bash
-# Initialize submodules
-git submodule update --init --recursive
+# Install workspace dependencies and verify vendored schemas are present
+make install
 
-# Submodules:
-# - schemas/iwxxm/ (WMO IWXXM schemas)
-# - schemas/iwxxm-codelists/ (WMO RDF code lists) 
-# - schemas/iwxxm-modelling/ (UML/EA generators only — runtime SCH is vendor/schemas/iwxxm/.../iwxxm.sch)
+# Bundles:
+# - vendor/schemas/iwxxm/ (WMO IWXXM schemas)
+# - vendor/schemas/iwxxm-codelists/ (WMO RDF code lists)
+# - vendor/schemas/iwxxm-modelling/ (UML/EA generators only — runtime SCH is vendor/schemas/iwxxm/.../iwxxm.sch)
 ```
 
 ---
@@ -402,10 +402,9 @@ git submodule update --init --recursive
 
 ### Issue: XSD validation fails with "Schema not found"
 
-**Solution**: Ensure git submodule is initialized:
+**Solution**: Ensure the vendored schema snapshot is present:
 ```bash
-cd schemas/iwxxm
-git submodule update --init
+cd vendor/schemas/iwxxm
 ls IWXXM/iwxxm.xsd  # Should exist
 ```
 

@@ -2,7 +2,7 @@
 
 [![CI/CD](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/ci-cd.yml)
 [![E2E](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/e2e-tests.yml/badge.svg)](https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/workflows/e2e-tests.yml)
-[![E2E tests](https://img.shields.io/badge/E2E_tests-118-blue)](apps/e2e)
+[![E2E tests](https://img.shields.io/badge/E2E_tests-123-blue)](apps/e2e)
 [![Unit coverage gate](https://img.shields.io/badge/unit_coverage-%E2%89%A595%25-success)](docs/test-plan.md)
 
 Convert aviation TAC (METAR, SPECI, TAF, SIGMET family, and related products) to WMO IWXXM
@@ -22,7 +22,9 @@ all in a single git monorepo (no submodules).
 - **Quality metrics** tab — compare converted IWXXM to the official WMO example corpus
   (`/quality`, shareable `/quality/:stem`)
 - Near-real-time ingest worker
-- Dissemination sink APIs retained (operator UI destinations currently hidden — restore tracked separately)
+- **Dissemination / Send (beta)** — operator destinations restored; label as beta in the UI.
+  Feedback welcome via
+  [GitHub Issues (`beta-feedback`)](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/new?labels=beta-feedback)
 
 ## Architecture
 

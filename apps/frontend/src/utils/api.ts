@@ -87,6 +87,38 @@ export interface ApiError {
   total_errors?: number;
 }
 
+/**
+ * Structured hard-convert failure surfaced by the backend.
+ *
+ * Preserves ``detail.errors`` / ``detail.issues`` from non-2xx convert responses so
+ * the workbench can render the same operator-facing log panel it uses for 200 responses
+ * with partial or failed conversion details.
+ */
+export class ConvertApiError extends Error {
+  status: number;
+  errors: string[];
+  issues: ConversionIssue[];
+
+  constructor(
+    message: string,
+    {
+      status,
+      errors = [],
+      issues = [],
+    }: {
+      status: number;
+      errors?: string[];
+      issues?: ConversionIssue[];
+    },
+  ) {
+    super(message);
+    this.name = 'ConvertApiError';
+    this.status = status;
+    this.errors = errors;
+    this.issues = issues;
+  }
+}
+
 /** Prefer FastAPI string ``detail``, then nested message, then ``message``. */
 function apiErrorMessage(
   error: { detail?: unknown; message?: unknown },
@@ -148,6 +180,8 @@ export async function convertMetarToIwxxm(params: {
   files?: File[];
   product?: string;
   profile?: string;
+  /** Optional saved semantic preset id (requires accessToken). */
+  presetId?: string;
   iwxxmVersion?: string;
   validateOutput?: boolean;
   validationLevel?: string;
@@ -164,6 +198,8 @@ export async function convertMetarToIwxxm(params: {
   exchangeOutput?: boolean;
   /** Exchange packaging profile (ignored on convert-only; used when packaging). */
   exchangeProfile?: string;
+  /** Optional profile-scoped report variant within the selected product family. */
+  reportVariant?: string;
   /** Optional signed ConversionProfile overlay id (requires accessToken). */
   overlayId?: string;
   accessToken?: string;
@@ -188,9 +224,16 @@ export async function convertMetarToIwxxm(params: {
   if (params.exchangeProfile?.trim()) {
     formData.append('exchange_profile', params.exchangeProfile.trim());
   }
+  if (params.reportVariant?.trim()) {
+    formData.append('report_variant', params.reportVariant.trim().toUpperCase());
+  }
+  if (params.presetId?.trim()) {
+    formData.append('preset_id', params.presetId.trim());
+  }
 
-  // Add IWXXM version (default to 2025-2)
-  formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
+  if (params.iwxxmVersion?.trim()) {
+    formData.append('iwxxm_version', params.iwxxmVersion.trim());
+  }
 
   // Add validation flag (default to false)
   formData.append('validate_output', params.validateOutput ? 'true' : 'false');
@@ -239,9 +282,12 @@ export async function convertMetarToIwxxm(params: {
     console.log('[API] Request to:', apiUrl('/convert'));
 
     const overlayToken = params.overlayId?.trim();
+    const presetToken = params.presetId?.trim();
     const bearer = params.accessToken?.trim();
     const headers: HeadersInit | undefined =
-      overlayToken && bearer ? { Authorization: `Bearer ${bearer}` } : undefined;
+      (overlayToken || presetToken) && bearer
+        ? { Authorization: `Bearer ${bearer}` }
+        : undefined;
 
     const response = await withTimeout(
       fetch(apiUrl('/convert'), {
@@ -258,9 +304,27 @@ export async function convertMetarToIwxxm(params: {
         message: `Conversion failed: ${response.statusText}`,
         errors: [],
       }));
-      throw new Error(
-        error.detail?.message || error.message || `HTTP ${response.status}`,
-      );
+      const detail =
+        error.detail && typeof error.detail === 'object'
+          ? (error.detail as Record<string, unknown>)
+          : null;
+      const errors = Array.isArray(detail?.errors)
+        ? detail.errors.filter((item): item is string => typeof item === 'string')
+        : Array.isArray(error.errors)
+          ? error.errors.filter(
+              (item: unknown): item is string => typeof item === 'string',
+            )
+          : [];
+      const issues = Array.isArray(detail?.issues)
+        ? (detail.issues as ConversionIssue[])
+        : Array.isArray(error.issues)
+          ? (error.issues as ConversionIssue[])
+          : [];
+      throw new ConvertApiError(apiErrorMessage(error, `HTTP ${response.status}`), {
+        status: response.status,
+        errors,
+        issues,
+      });
     }
 
     return await response.json();
@@ -305,7 +369,9 @@ export async function convertBulletin(params: {
   if (params.exchangeProfile?.trim()) {
     formData.append('exchange_profile', params.exchangeProfile.trim());
   }
-  formData.append('iwxxm_version', params.iwxxmVersion || DEFAULT_IWXXM_VERSION);
+  if (params.iwxxmVersion?.trim()) {
+    formData.append('iwxxm_version', params.iwxxmVersion.trim());
+  }
   formData.append('lint', params.lint === false ? 'false' : 'true');
   if (params.propagateResidualsToRemarks === true) {
     formData.append('propagate_residuals_to_remarks', 'true');
@@ -546,6 +612,8 @@ export async function fetchLintIssueCatalog(params?: {
   family?: string;
   issue_type?: string;
   source_access?: string;
+  semantic_profile?: string;
+  exchange_profile?: string;
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<LintIssueCatalogResponse> {
@@ -561,6 +629,12 @@ export async function fetchLintIssueCatalog(params?: {
   }
   if (params?.source_access && params.source_access.trim()) {
     query.set('source_access', params.source_access.trim().toLowerCase());
+  }
+  if (params?.semantic_profile && params.semantic_profile.trim()) {
+    query.set('semantic_profile', params.semantic_profile.trim());
+  }
+  if (params?.exchange_profile && params.exchange_profile.trim()) {
+    query.set('exchange_profile', params.exchange_profile.trim());
   }
   const qs = query.toString() ? `?${query.toString()}` : '';
   const response = await withTimeout(

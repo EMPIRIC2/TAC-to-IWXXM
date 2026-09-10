@@ -537,6 +537,58 @@ export interface paths {
         patch: operations["patch_overlay_api_v1_profiles_overlays__overlay_id__patch"];
         trace?: never;
     };
+    "/api/v1/profiles/presets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Presets
+         * @description List semantic presets owned by the caller (and shared presets).
+         */
+        get: operations["list_presets_api_v1_profiles_presets_get"];
+        put?: never;
+        /**
+         * Create Preset
+         * @description Create a semantic preset.
+         */
+        post: operations["create_preset_api_v1_profiles_presets_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/presets/{preset_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Preset
+         * @description Fetch one semantic preset.
+         */
+        get: operations["get_preset_api_v1_profiles_presets__preset_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Preset
+         * @description Delete a semantic preset.
+         */
+        delete: operations["delete_preset_api_v1_profiles_presets__preset_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Preset
+         * @description Update a semantic preset.
+         */
+        patch: operations["patch_preset_api_v1_profiles_presets__preset_id__patch"];
+        trace?: never;
+    };
     "/api/v1/profiles/rule-packs": {
         parameters: {
             query?: never;
@@ -587,6 +639,58 @@ export interface paths {
          * @description Update a rule pack.
          */
         patch: operations["patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/profiles/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Templates
+         * @description List dissemination templates owned by the caller (and shared templates).
+         */
+        get: operations["list_templates_api_v1_profiles_templates_get"];
+        put?: never;
+        /**
+         * Create Template
+         * @description Create a dissemination template.
+         */
+        post: operations["create_template_api_v1_profiles_templates_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/templates/{template_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Template
+         * @description Fetch one dissemination template.
+         */
+        get: operations["get_template_api_v1_profiles_templates__template_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Template
+         * @description Delete an owned dissemination template.
+         */
+        delete: operations["delete_template_api_v1_profiles_templates__template_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Template
+         * @description Update a dissemination template.
+         */
+        patch: operations["patch_template_api_v1_profiles_templates__template_id__patch"];
         trace?: never;
     };
     "/api/v1/quality-metrics": {
@@ -1580,7 +1684,7 @@ export interface components {
             /**
              * Iwxxm Version
              * @description Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)
-             * @default 2025-2
+             * @default
              */
             iwxxm_version: string;
             /**
@@ -1608,6 +1712,12 @@ export interface components {
              */
             overlay_id: string;
             /**
+             * Preset Id
+             * @description Optional saved semantic preset id. When set, requires Bearer JWT. Explicit request fields still win when both are supplied.
+             * @default
+             */
+            preset_id: string;
+            /**
              * Preview
              * @description Soft-preview: best-effort IWXXM with failure spans on partial convert
              * @default false
@@ -1630,6 +1740,12 @@ export interface components {
              * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
              */
             propagate_residuals_to_remarks?: boolean | null;
+            /**
+             * Report Variant
+             * @description Optional profile-scoped report variant within the selected product family (for example LWIS under CA_ECCC + METAR)
+             * @default
+             */
+            report_variant: string;
             /**
              * Semantic Profile
              * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
@@ -1686,7 +1802,7 @@ export interface components {
             /**
              * Iwxxm Version
              * @description Target IWXXM version
-             * @default 2025-2
+             * @default
              */
             iwxxm_version: string;
             /**
@@ -2312,6 +2428,106 @@ export interface components {
             validity_policy?: ("valid-only" | "warn-ok") | null;
         };
         /**
+         * DisseminationTemplateCreate
+         * @description Create body for a saved dissemination template.
+         */
+        DisseminationTemplateCreate: {
+            /**
+             * Ddl
+             * @default false
+             */
+            ddl: boolean;
+            /** Name */
+            name: string;
+            /** Params */
+            params?: {
+                [key: string]: unknown;
+            };
+            /** Product */
+            product?: string | null;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Sinktype */
+            sinkType: string;
+            /** Slug */
+            slug: string;
+        };
+        /**
+         * DisseminationTemplateListResponse
+         * @description List of saved dissemination templates for the caller.
+         */
+        DisseminationTemplateListResponse: {
+            /** Items */
+            items: components["schemas"]["DisseminationTemplateOut"][];
+        };
+        /**
+         * DisseminationTemplateOut
+         * @description Persisted saved dissemination template.
+         */
+        DisseminationTemplateOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Ddl */
+            ddl: boolean;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Params */
+            params?: {
+                [key: string]: unknown;
+            };
+            /** Product */
+            product?: string | null;
+            /** Shared */
+            shared: boolean;
+            /** Sinktype */
+            sinkType: string;
+            /** Slug */
+            slug: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
+         * DisseminationTemplateUpdate
+         * @description Partial update for a saved dissemination template.
+         */
+        DisseminationTemplateUpdate: {
+            /** Ddl */
+            ddl?: boolean | null;
+            /** Name */
+            name?: string | null;
+            /** Params */
+            params?: {
+                [key: string]: unknown;
+            } | null;
+            /** Product */
+            product?: string | null;
+            /** Shared */
+            shared?: boolean | null;
+            /** Sinktype */
+            sinkType?: string | null;
+            /** Slug */
+            slug?: string | null;
+        };
+        /**
          * EvaluationJobResponse
          * @description Response when creating an evaluation job.
          * @example {
@@ -2806,6 +3022,11 @@ export interface components {
             /** Code */
             code: string;
             /**
+             * Exchange Profiles
+             * @description Canonical exchange profile ids for packaging-tagged rows; empty = shared
+             */
+            exchange_profiles?: string[];
+            /**
              * Family
              * @description lint (TAC registry) or iwxxm (validation checks)
              */
@@ -2834,6 +3055,11 @@ export interface components {
              * @description Vocabulary concept path when href is a verified landing
              */
             semantic_identifier?: string | null;
+            /**
+             * Semantic Profiles
+             * @description Canonical semantic profile ids this row applies to; empty = shared/global
+             */
+            semantic_profiles?: string[];
             /** Severity */
             severity: string;
             /**
@@ -3004,6 +3230,28 @@ export interface components {
             message: string;
         };
         /**
+         * MetarFamilyVariant
+         * @description Read-only METAR-family variant row projected from the profile catalog.
+         */
+        MetarFamilyVariant: {
+            /** Api Product */
+            api_product: string;
+            /** Iwxxm Root */
+            iwxxm_root: string;
+            /** Manobs */
+            manobs?: string | null;
+            /** Minimal Observation */
+            minimal_observation?: boolean | null;
+            /** Notes */
+            notes?: string | null;
+            /** Rule Id */
+            rule_id?: string | null;
+            /** Rule Id Prefix */
+            rule_id_prefix?: string | null;
+            /** Tac Lead */
+            tac_lead: string;
+        };
+        /**
          * OverlayCreate
          * @description Create body for a signed overlay (server issues the signature).
          */
@@ -3081,6 +3329,8 @@ export interface components {
             } | null;
             /** Shared */
             shared?: boolean | null;
+            /** Slug */
+            slug?: string | null;
         };
         /**
          * PackageIssueModel
@@ -3174,10 +3424,109 @@ export interface components {
             receipts: components["schemas"]["DeliveryReceiptOut"][];
         };
         /**
+         * PresetCreate
+         * @description Create body for a saved semantic preset.
+         */
+        PresetCreate: {
+            /** Extensions */
+            extensions?: string[];
+            /** Iwxxmversion */
+            iwxxmVersion: string;
+            /** Name */
+            name: string;
+            /** Overlayid */
+            overlayId?: string | null;
+            /** Reportvariant */
+            reportVariant?: string | null;
+            /** Semanticprofile */
+            semanticProfile: string;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slug */
+            slug: string;
+        };
+        /**
+         * PresetListResponse
+         * @description List of semantic presets for the caller.
+         */
+        PresetListResponse: {
+            /** Items */
+            items: components["schemas"]["PresetOut"][];
+        };
+        /**
+         * PresetOut
+         * @description Persisted saved semantic preset.
+         */
+        PresetOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Extensions */
+            extensions?: string[];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Iwxxmversion */
+            iwxxmVersion: string;
+            /** Name */
+            name: string;
+            /** Overlayid */
+            overlayId?: string | null;
+            /** Reportvariant */
+            reportVariant?: string | null;
+            /** Semanticprofile */
+            semanticProfile: string;
+            /** Shared */
+            shared: boolean;
+            /** Slug */
+            slug: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
+         * PresetUpdate
+         * @description Partial update for a saved semantic preset.
+         */
+        PresetUpdate: {
+            /** Extensions */
+            extensions?: string[] | null;
+            /** Iwxxmversion */
+            iwxxmVersion?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Overlayid */
+            overlayId?: string | null;
+            /** Reportvariant */
+            reportVariant?: string | null;
+            /** Semanticprofile */
+            semanticProfile?: string | null;
+            /** Shared */
+            shared?: boolean | null;
+            /** Slug */
+            slug?: string | null;
+        };
+        /**
          * ProfileCatalogEntry
          * @description Read-only ConversionProfile catalog entry for the inspector.
          */
         ProfileCatalogEntry: {
+            /** Deltas Vs Icao */
+            deltas_vs_icao?: string[];
             /** Emit Key */
             emit_key?: string | null;
             /** Id */
@@ -3186,14 +3535,22 @@ export interface components {
             implementation?: {
                 [key: string]: unknown;
             };
+            /** Iwxxm Line */
+            iwxxm_line?: string | null;
             /** Kind */
             kind: string;
             /** Legacy Alias */
             legacy_alias?: string | null;
+            /** Metar Family Variants */
+            metar_family_variants?: components["schemas"]["MetarFamilyVariant"][];
+            /** Overlay Count */
+            overlay_count?: number | null;
             /** Priority */
             priority?: string | null;
             /** Products */
             products?: string[];
+            /** Rule Pack Count */
+            rule_pack_count?: number | null;
             /** Status */
             status?: string | null;
             /** Vendor Pins */
@@ -3275,6 +3632,11 @@ export interface components {
              */
             deferred: boolean;
             /**
+             * Has Tac Pair
+             * @default false
+             */
+            has_tac_pair: boolean;
+            /**
              * Lint Error Count
              * @default 0
              */
@@ -3337,6 +3699,11 @@ export interface components {
              * @default 0
              */
             match_pass: number;
+            /**
+             * Pair Examples
+             * @default 0
+             */
+            pair_examples: number;
             /** Product */
             product: string;
             /**
@@ -3344,6 +3711,11 @@ export interface components {
              * @default 0
              */
             residual_nonempty: number;
+            /**
+             * Unpaired Examples
+             * @default 0
+             */
+            unpaired_examples: number;
             /**
              * Validate Fail
              * @default 0
@@ -3444,6 +3816,8 @@ export interface components {
             profile?: string | null;
             /** Severity */
             severity?: string | null;
+            /** Slug */
+            slug?: string | null;
             /** Stage */
             stage?: string | null;
             /** Standardreference */
@@ -4969,6 +5343,8 @@ export interface operations {
                 family?: string | null;
                 issue_type?: string | null;
                 source_access?: string | null;
+                semantic_profile?: string | null;
+                exchange_profile?: string | null;
             };
             header?: never;
             path?: never;
@@ -5204,6 +5580,154 @@ export interface operations {
             };
         };
     };
+    list_presets_api_v1_profiles_presets_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresetListResponse"];
+                };
+            };
+        };
+    };
+    create_preset_api_v1_profiles_presets_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresetCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_preset_api_v1_profiles_presets__preset_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_preset_api_v1_profiles_presets__preset_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_preset_api_v1_profiles_presets__preset_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresetUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_rule_packs_api_v1_profiles_rule_packs_get: {
         parameters: {
             query?: never;
@@ -5339,6 +5863,154 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RulePackOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_templates_api_v1_profiles_templates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationTemplateListResponse"];
+                };
+            };
+        };
+    };
+    create_template_api_v1_profiles_templates_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisseminationTemplateCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_template_api_v1_profiles_templates__template_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_template_api_v1_profiles_templates__template_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_template_api_v1_profiles_templates__template_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisseminationTemplateUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationTemplateOut"];
                 };
             };
             /** @description Validation Error */

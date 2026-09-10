@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-03 (EV-933 #933 ConversionProfile editor — UJ-072)
+> **Last updated**: 2026-09-05 (EV-1120 #1120 Phase A — UJ-072 deepen + UJ-073)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -89,6 +89,9 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-070 | Opt-in propagate decode residuals into remarks / HRT | UI / API / package / Quality metrics (#981) | F6+F9+F7.q (EV-981) | T0 / T2 / **T3** / H4–H5 |
 | UJ-071 | Dissemination ops — plan/audit/SQL mapping/gateway health | apps/frontend / API | F16–F19 deepen (EV-936 / #936) | T2 / **T3** / H6′ (+ H4–H5 when FE deploy) |
 | UJ-072 | ConversionProfile editor — rule pack → overlay → convert | apps/frontend / API | F7.w (EV-933 / #933) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072d | Glanceable Profile summary + blocks + examples | apps/frontend | F7.w (EV-1120 / #1145) | T0 / T2 / **T3** / H4–H5 |
+| UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
+| UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
@@ -145,16 +148,20 @@ must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US 
 2. Drag-drop `.tac` file or paste manual text (METAR/SPECI).
 3. Optionally leave product on **auto** / METAR and profile **annex3** (defaults).
 4. **#664 (EV-005)**: Optionally type an **Output filename** for manually entered TAC.
-5. Choose **Convert**, **Convert&Send**, or **Upload to Database**.
-6. View output; each result card shows **TAC-derived title**, optional **Line N of M** for
+5. Choose **Convert**, **Convert&Send**, or **Upload to Database**. Visually, **Convert** is
+   the sole filled primary; **Convert&Send** is outline/muted when destinations are shown.
+6. Confirm **Recent work** (when expanded) does not cover Product / Profile / Exchange profile
+   controls. Collapse or scroll as needed; expand control remains available.
+7. View output; each result card shows **TAC-derived title**, optional **Line N of M** for
    multi-line manual input, prominent **Source TAC** panel, and download filename when it
    differs (#655 / EV-007). #555 replace-on-success and error log panel behavior unchanged.
-7. On convert failure after F6 cutover: structured error only — **no gifts rollback**.
-8. If guest: work may auto-save to IndexedDB (UJ-004/045) with loss-of-progress notice.
+8. On convert failure after F6 cutover: structured error only — **no gifts rollback**.
+9. If guest: work may auto-save to IndexedDB (UJ-004/045) with loss-of-progress notice.
    If logged in: may sync to DO Postgres sessions (UJ-046).
 
 **Acceptance**: METAR converts without error via tac2iwxxm; **no JWT required for convert**;
-schema/Schematron pass for selected version; UX behaviors from #555/#664 preserved.
+schema/Schematron pass for selected version; UX behaviors from #555/#664 preserved;
+Convert sole filled primary; Recent work does not obscure profile controls.
 
 **Automated tests**: `apps/e2e/tac-file-conversion.e2e.spec.ts` (T2); `make test-live-e2e` (T3)
 
@@ -448,7 +455,8 @@ and check gateway health — without replacing one-shot destinations drawer send
 **Actor**: Authenticated meteorological operator or admin (JWT)
 
 **Goal**: Open the ConversionProfile editor, inspect a catalog profile, edit a rule-pack,
-save a signed operator-scoped overlay (M2), and apply it on convert — without collapsing
+save a signed operator-scoped overlay (M2), share approved non-secret profile assets or
+destination references, and apply the result on convert/package flows without collapsing
 the light picker (#1024) or putting credentials in the profile.
 
 **Feature**: F7.w (EV-933)
@@ -462,15 +470,22 @@ the light picker (#1024) or putting credentials in the profile.
    message, standardReference); export/share as downloadable YAML/JSON.
 4. **Overlay (M2)**: save signed operator-scoped overlay to product Postgres (JWT ownership;
    admin may manage shared packs per ownership rules). Reject unsigned / unknown trust.
-5. Return to workbench convert; select overlay (or pack) and convert a sample TAC.
-6. Confirm light semantic/exchange picker (#1024) and dissemination drawer still work.
+5. Share the rule-pack or approved destination metadata/reference without exposing stored
+   credentials or destination secrets.
+6. Return to workbench convert/package; select overlay (or pack), choose a supported profile /
+   IWXXM line combination, and run a sample flow.
+7. Confirm light semantic/exchange picker (#1024) and dissemination drawer still work.
 
 **Acceptance**:
 1. M1 ships rule-pack + inspector before M2 overlay persist (same evolve).
 2. No credentials / destination URIs in profile or overlay payloads (ADR-021/029).
 3. Fail-closed on unsigned overlays and unknown profile ids.
-4. UJ-069 / #1024 and UJ-027–030 / UJ-071 remain green.
-5. H4–H5 when FE editor routes deploy; operator copy free of internal planning ids (EV-048).
+4. Share flows may expose only approved non-secret profile assets or destination references;
+   destination credentials remain memory-only.
+5. Supported profile and IWXXM line choices remain explicit in the operator flow, including
+   cross-version conversion requirements tracked under milestone 4.
+6. UJ-069 / #1024 and UJ-027–030 / UJ-071 remain green.
+7. H4–H5 when FE editor routes deploy; operator copy free of internal planning ids (EV-048).
 
 **Errors**: 401/403 without JWT; 400 unsigned/invalid overlay; ownership 403 on foreign packs.
 
@@ -479,6 +494,129 @@ the light picker (#1024) or putting credentials in the profile.
 **Automated tests**: TC-EV933-001..006 (see test-plan)
 
 **Source**: EV-933 / #933; ADR-038 (amend overlays); [Context: conversion-profile-editor-933](context/conversion-profile-editor-933.md)
+
+---
+
+### UJ-074: Save and reuse shared semantic presets + destination templates (EV-1051 / #1051)
+
+**Actor**: Authenticated meteorological operator or admin (JWT)
+
+**Goal**: Save a reusable **semantic preset** for convert/package defaults, share it through
+approved visibility rules, save a **non-secret dissemination template** for the drawer, and
+reuse both without storing live destination credentials or collapsing the light picker into
+the full editor.
+
+**Feature**: F7.w + F16–F19 deepen (EV-1051)
+
+**Steps**:
+
+1. Sign in and open the Conversion profiles editor.
+2. Create or edit a **semantic preset** that references an existing first-party semantic
+   profile id and supported defaults (`iwxxmVersion`, optional `extensions[]`,
+   optional `reportVariant`, optional overlay/rule-pack linkage).
+3. Mark the preset for the approved share scope and confirm another authenticated operator
+   can list and apply it without gaining write access unless explicitly allowed.
+4. Return to the workbench; apply the preset and verify explicit form choices still remain
+   visible and editable.
+5. Open the dissemination drawer and save a **destination template** containing only
+   non-secret sink metadata or a destination reference; do **not** store a live URI, DSN,
+   password, token, or connection string.
+6. Reopen the drawer as another authenticated operator, load the shared template, provide
+   any required one-shot runtime credentials, and run preflight/send.
+7. Save or reload the work session and confirm the selected preset/template ids hydrate back
+   into the workbench and drawer without restoring any runtime credential material.
+8. Confirm guest flows, the light picker, and the restored drawer still work without the
+   new saved assets.
+
+**Acceptance**:
+
+1. Semantic presets point only to existing semantic profile ids and supported conversion
+   defaults; they do not create arbitrary executable browser-managed profiles.
+2. Sharing remains JWT-gated and owner-scoped with approved shared-read behavior; guest flow
+   remains IndexedDB-only.
+3. Saved dissemination templates contain only non-secret metadata or references; live
+   destination credentials remain memory-only on preflight/send.
+4. Work-session hydration may round-trip saved preset/template ids, but not live destination
+   credentials or URIs.
+5. Convert/package and dissemination apply surfaces stay distinct from the full editor.
+6. UJ-072 / UJ-069 / UJ-027–030 remain green when preset/template support lands.
+
+**Errors**: 401/403 without JWT; 403 on foreign private preset/template; 400/422 when a saved
+template attempts to persist secret-bearing fields.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EV1051-001..006 (see test-plan)
+
+**Source**: EV-1051 / #1051; ADR-021 amend; ADR-029 amend; ADR-036
+
+---
+
+### UJ-072 deepen: Glanceable Profile summary + blocks + examples (EV-1120 / #1145)
+
+**Actor**: Operator (guest on workbench twin; authenticated on Profiles editor)
+
+**Goal**: See at a glance what the selected semantic profile means; inspect ADR-038 blocks;
+load a profile-appropriate example; open starter packs without losing custom edits.
+
+**Feature**: F7.w (EV-1120 Phase A)
+
+**Steps**:
+
+1. Open convert workbench — Profile control shows **compact twin** (name, ≤3 vs-ICAO deltas,
+   products, IWXXM line; pack/overlay counts show "—" until signed in).
+2. Change Profile — twin + Validation Issues Catalog (#1123) refresh without full reload, and
+   unrelated in-progress editing state stays intact unless a profile-dependent control becomes
+   invalid.
+3. Sign in; open **Conversion profiles** — first viewport is one **summary composition**
+   (not three equal form cards) showing profile-specific settings (products, IWXXM line,
+   ≤3 vs-ICAO deltas, pack/overlay counts).
+4. **Compare**: on the Conversion Profiles summary surface, select a second profile;
+   side-by-side settings highlight differences (e.g. US_FAA_NWS vs ICAO_2025). The workbench
+   twin stays compact and does not grow full compare UI in this slice.
+5. Click an ADR-038 **block** (input / TAC lint / convert / IWXXM validate / exchange) →
+   inspect detail and jump to existing rule-pack or overlay forms (no new runtime).
+6. Use **Examples** to load a sample for the selected profile (all registered semantic
+   profiles; thin packs may reuse ICAO sample with a note). The Conversion Profiles surface
+   also shows the current example coverage and can jump back to **Convert** to open the picker.
+7. First visit may seed starter packs/overlays from examples; re-open after customize does
+   **not** overwrite custom packs. All registered semantic profiles have an example path; thin
+   profiles may reuse the ICAO example with a note. Read-only workflow references may appear;
+   no workflow authoring.
+
+**Acceptance**: AC-UX-1..6 from EV-1120 requirements + side-by-side compare; EV-048 clean; UJ-072 base + #1024 remain green.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EV1120-010..017
+
+**Source**: EV-1120 / #1145; [Context: profile-scoped-catalog-1120](context/profile-scoped-catalog-1120.md)
+
+---
+
+### UJ-073: Profile-scoped Validation Issues Catalog (EV-1120 / #1123)
+
+**Actor**: Operator (F21 public catalog OK)
+
+**Goal**: Browse lint/IWXXM validation issues filtered to the workbench Profile so national-only
+codes appear only under the matching semantic profile.
+
+**Feature**: F7.v / F15 (EV-1120)
+
+**Steps**:
+
+1. Open Validation Issues Catalog with Profile = `ICAO_2025` — shared/ICAO rows; no US/CA-only demo codes.
+2. Switch Profile to `US_FAA_NWS` (or `CA_ECCC`) — shared ∪ that profile’s national-only rows appear.
+3. When packaging UI exposes Exchange, catalog also respects `exchange_profile` filter.
+4. Confirm omit-param API clients unchanged; unknown profile query → 400.
+
+**Acceptance**: AC-API-1..4, AC-UI-1; TC-EV1120-001..009; no EV-048 regressions.
+
+**Tier**: T0 / T2 / H4–H5 when live
+
+**Automated tests**: TC-EV1120-001..009
+
+**Source**: EV-1120 / #1121–#1123
 
 ---
 

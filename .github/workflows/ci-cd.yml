@@ -406,7 +406,14 @@ jobs:
           uv sync
 
       - name: Install bats-core
-        run: sudo apt-get update && sudo apt-get install -y bats
+        # GH ubuntu images may ship a google-chrome apt source that currently
+        # hash-mismatches; ignore sources.list.d and use Ubuntu mirrors only.
+        run: |
+          sudo apt-get update \
+            -o Dir::Etc::sourcelist="sources.list" \
+            -o Dir::Etc::sourceparts="-" \
+            -o APT::Get::List-Cleanup="0"
+          sudo apt-get install -y bats
 
       - name: Scripts Python coverage (fail_under 100)
         run: make test-coverage-scripts
@@ -836,7 +843,10 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browser (chromium)
-        run: pnpm --filter @metar/e2e exec playwright install --with-deps chromium
+        # Avoid `install --with-deps` apt refresh against a broken google-chrome
+        # mirror on GH runners; Playwright's bundled Chromium is enough on
+        # ubuntu-latest for smoke/full suites.
+        run: pnpm --filter @metar/e2e exec playwright install chromium
 
       - name: Run Playwright smoke specs
         run: make test-e2e-playwright-smoke
@@ -893,7 +903,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Install Playwright browser (chromium)
-        run: pnpm --filter @metar/e2e exec playwright install --with-deps chromium
+        run: pnpm --filter @metar/e2e exec playwright install chromium
 
       - name: Run Playwright full suite
         run: make test-e2e-playwright

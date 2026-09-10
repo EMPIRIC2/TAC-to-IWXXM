@@ -12,9 +12,15 @@ from fastapi.testclient import TestClient
 from src.api import app
 from src.routers import conversion_profiles as profiles_router
 from src.schemas.conversion_profiles import (
+    DisseminationTemplateCreate,
+    DisseminationTemplateOut,
+    DisseminationTemplateUpdate,
     OverlayCreate,
     OverlayOut,
     OverlayUpdate,
+    PresetCreate,
+    PresetOut,
+    PresetUpdate,
     RulePackCreate,
     RulePackOut,
     RulePackUpdate,
@@ -25,6 +31,8 @@ from src.utilities.security import verify_supabase_token
 USER_ID = uuid4()
 PACK_ID = uuid4()
 OVERLAY_ID = uuid4()
+PRESET_ID = uuid4()
+TEMPLATE_ID = uuid4()
 NOW = datetime(2026, 9, 3, 12, 0, tzinfo=UTC)
 
 
@@ -59,10 +67,45 @@ def _sample_overlay() -> OverlayOut:
     )
 
 
+def _sample_preset() -> PresetOut:
+    return PresetOut(
+        id=PRESET_ID,
+        user_id=USER_ID,
+        slug="icao-2025-default",
+        name="ICAO 2025 default",
+        semantic_profile="ICAO_2025",
+        iwxxm_version="2025-2",
+        extensions=[],
+        report_variant=None,
+        overlay_id=None,
+        shared=False,
+        created_at=NOW,
+        updated_at=NOW,
+    )
+
+
+def _sample_template() -> DisseminationTemplateOut:
+    return DisseminationTemplateOut(
+        id=TEMPLATE_ID,
+        user_id=USER_ID,
+        slug="ops-postgres",
+        name="Ops Postgres",
+        sink_type="postgres",
+        product="metar",
+        ddl=False,
+        params={"schema": "public"},
+        shared=True,
+        created_at=NOW,
+        updated_at=NOW,
+    )
+
+
 class _FakeProfilesService:
     def __init__(self) -> None:
         self.pack = _sample_pack()
         self.overlay = _sample_overlay()
+        self.preset = _sample_preset()
+        self.template = _sample_template()
 
     def list_rule_packs(self) -> list[RulePackOut]:
         return [self.pack]
@@ -98,8 +141,75 @@ class _FakeProfilesService:
         if pack_id != self.pack.id:
             raise HTTPException(status_code=404, detail="Rule pack not found")
 
+    def list_presets(self) -> list[PresetOut]:
+        return [self.preset]
+
+    def get_preset(self, preset_id: UUID, *, require_owner: bool = False) -> PresetOut:
+        if preset_id != self.preset.id:
+            raise HTTPException(status_code=404, detail="Preset not found")
+        return self.preset
+
+    def create_preset(self, payload: PresetCreate) -> PresetOut:
+        self.preset = self.preset.model_copy(
+            update={
+                "slug": payload.slug,
+                "name": payload.name,
+                "semantic_profile": payload.semantic_profile,
+                "iwxxm_version": payload.iwxxm_version,
+                "extensions": payload.extensions,
+                "report_variant": payload.report_variant,
+                "overlay_id": payload.overlay_id,
+                "shared": payload.shared,
+            }
+        )
+        return self.preset
+
+    def update_preset(self, preset_id: UUID, payload: PresetUpdate) -> PresetOut:
+        if preset_id != self.preset.id:
+            raise HTTPException(status_code=404, detail="Preset not found")
+        data = payload.model_dump(exclude_unset=True, by_alias=False)
+        self.preset = self.preset.model_copy(update=data)
+        return self.preset
+
+    def delete_preset(self, preset_id: UUID) -> None:
+        if preset_id != self.preset.id:
+            raise HTTPException(status_code=404, detail="Preset not found")
+
     def list_overlays(self) -> list[OverlayOut]:
         return [self.overlay]
+
+    def list_templates(self) -> list[DisseminationTemplateOut]:
+        return [self.template]
+
+    def get_template(self, template_id: UUID, *, require_owner: bool = False) -> DisseminationTemplateOut:
+        if template_id != self.template.id:
+            raise HTTPException(status_code=404, detail="Dissemination template not found")
+        return self.template
+
+    def create_template(self, payload: DisseminationTemplateCreate) -> DisseminationTemplateOut:
+        self.template = self.template.model_copy(
+            update={
+                "slug": payload.slug,
+                "name": payload.name,
+                "sink_type": payload.sink_type,
+                "product": payload.product,
+                "ddl": payload.ddl,
+                "params": payload.params,
+                "shared": payload.shared,
+            }
+        )
+        return self.template
+
+    def update_template(self, template_id: UUID, payload: DisseminationTemplateUpdate) -> DisseminationTemplateOut:
+        if template_id != self.template.id:
+            raise HTTPException(status_code=404, detail="Dissemination template not found")
+        data = payload.model_dump(exclude_unset=True, by_alias=False)
+        self.template = self.template.model_copy(update=data)
+        return self.template
+
+    def delete_template(self, template_id: UUID) -> None:
+        if template_id != self.template.id:
+            raise HTTPException(status_code=404, detail="Dissemination template not found")
 
     def get_overlay(self, overlay_id: UUID, *, require_owner: bool = False) -> OverlayOut:
         if overlay_id != self.overlay.id:
@@ -122,6 +232,8 @@ class _FakeProfilesService:
         if overlay_id != self.overlay.id:
             raise HTTPException(status_code=404, detail="Overlay not found")
         data = payload.model_dump(exclude_unset=True, by_alias=False)
+        if "slug" in data and data["slug"] is not None:
+            self.overlay = self.overlay.model_copy(update={"slug": data["slug"]})
         if "base_profile_id" in data and data["base_profile_id"] is not None:
             self.overlay = self.overlay.model_copy(update={"base_profile_id": data["base_profile_id"]})
         if "body" in data and data["body"] is not None:
@@ -177,6 +289,127 @@ def test_catalog_returns_profiles(profiles_client: Any) -> None:
     assert "ICAO_2025" in ids
     assert "US_FAA_NWS" in ids
 
+    by_id = {profile["id"]: profile for profile in body["profiles"]}
+    icao = by_id["ICAO_2025"]
+    assert icao["rule_pack_count"] == 1
+    assert icao["overlay_count"] == 1
+    assert icao["deltas_vs_icao"]
+    assert isinstance(icao["iwxxm_line"], str)
+
+    us = by_id["US_FAA_NWS"]
+    assert us["rule_pack_count"] == 0
+    assert us["overlay_count"] == 0
+    assert len(us["deltas_vs_icao"]) <= 3
+    assert "iwxxm-us" in (us["iwxxm_line"] or "")
+
+    ca = by_id["CA_ECCC"]
+    assert [variant["tac_lead"] for variant in ca["metar_family_variants"]] == [
+        "METAR",
+        "SPECI",
+        "LWIS",
+        "SAWR",
+    ]
+    lwis = next(variant for variant in ca["metar_family_variants"] if variant["tac_lead"] == "LWIS")
+    assert lwis["api_product"] == "METAR"
+    assert lwis["iwxxm_root"] == "iwxxm-ca:LWIS"
+    assert lwis["minimal_observation"] is True
+
+
+def test_catalog_stays_available_when_profile_storage_is_unavailable() -> None:
+    class _FailingProfilesService:
+        def list_rule_packs(self) -> list[RulePackOut]:
+            raise HTTPException(status_code=503, detail="Profile storage unavailable")
+
+        def list_overlays(self) -> list[OverlayOut]:
+            raise HTTPException(status_code=503, detail="Profile storage unavailable")
+
+    async def override_verify_token() -> dict[str, str]:
+        return {"sub": str(USER_ID), "aud": "test-project", "role": "user"}
+
+    def override_service() -> _FailingProfilesService:
+        return _FailingProfilesService()
+
+    app.dependency_overrides[verify_supabase_token] = override_verify_token
+    app.dependency_overrides[profiles_router.profiles_service] = override_service
+    client = TestClient(app)
+    catalog_mod.clear_catalog_cache()
+
+    res = client.get(
+        "/api/v1/profiles/catalog",
+        headers={"Authorization": "Bearer test-token"},
+    )
+
+    app.dependency_overrides.clear()
+    catalog_mod.clear_catalog_cache()
+
+    assert res.status_code == 200
+    body = res.json()
+    by_id = {profile["id"]: profile for profile in body["profiles"]}
+    assert by_id["ICAO_2025"]["rule_pack_count"] is None
+    assert by_id["ICAO_2025"]["overlay_count"] is None
+
+
+def test_catalog_propagates_non_503_rule_pack_errors() -> None:
+    class _FailingProfilesService:
+        def list_rule_packs(self) -> list[RulePackOut]:
+            raise HTTPException(status_code=403, detail="Forbidden")
+
+        def list_overlays(self) -> list[OverlayOut]:
+            return []
+
+    async def override_verify_token() -> dict[str, str]:
+        return {"sub": str(USER_ID), "aud": "test-project", "role": "user"}
+
+    def override_service() -> _FailingProfilesService:
+        return _FailingProfilesService()
+
+    app.dependency_overrides[verify_supabase_token] = override_verify_token
+    app.dependency_overrides[profiles_router.profiles_service] = override_service
+    client = TestClient(app)
+    catalog_mod.clear_catalog_cache()
+
+    res = client.get(
+        "/api/v1/profiles/catalog",
+        headers={"Authorization": "Bearer test-token"},
+    )
+
+    app.dependency_overrides.clear()
+    catalog_mod.clear_catalog_cache()
+
+    assert res.status_code == 403
+    assert res.json()["detail"] == "Forbidden"
+
+
+def test_catalog_propagates_non_503_overlay_errors() -> None:
+    class _FailingProfilesService:
+        def list_rule_packs(self) -> list[RulePackOut]:
+            return []
+
+        def list_overlays(self) -> list[OverlayOut]:
+            raise HTTPException(status_code=403, detail="Forbidden")
+
+    async def override_verify_token() -> dict[str, str]:
+        return {"sub": str(USER_ID), "aud": "test-project", "role": "user"}
+
+    def override_service() -> _FailingProfilesService:
+        return _FailingProfilesService()
+
+    app.dependency_overrides[verify_supabase_token] = override_verify_token
+    app.dependency_overrides[profiles_router.profiles_service] = override_service
+    client = TestClient(app)
+    catalog_mod.clear_catalog_cache()
+
+    res = client.get(
+        "/api/v1/profiles/catalog",
+        headers={"Authorization": "Bearer test-token"},
+    )
+
+    app.dependency_overrides.clear()
+    catalog_mod.clear_catalog_cache()
+
+    assert res.status_code == 403
+    assert res.json()["detail"] == "Forbidden"
+
 
 def test_rule_packs_crud(profiles_client: Any) -> None:
     client, fake = profiles_client
@@ -211,10 +444,12 @@ def test_rule_packs_crud(profiles_client: Any) -> None:
     patched = client.patch(
         f"/api/v1/profiles/rule-packs/{PACK_ID}",
         headers=headers,
-        json={"severity": "error"},
+        json={"slug": "metar-hard", "severity": "error"},
     )
     assert patched.status_code == 200
+    assert patched.json()["slug"] == "metar-hard"
     assert patched.json()["severity"] == "error"
+    assert fake.pack.slug == "metar-hard"
     assert fake.pack.severity == "error"
 
     deleted = client.delete(f"/api/v1/profiles/rule-packs/{PACK_ID}", headers=headers)
@@ -224,6 +459,53 @@ def test_rule_packs_crud(profiles_client: Any) -> None:
 def test_rule_packs_require_auth() -> None:
     client = TestClient(app)
     assert client.get("/api/v1/profiles/rule-packs").status_code in {401, 403}
+
+
+def test_presets_crud(profiles_client: Any) -> None:
+    client, fake = profiles_client
+    headers = {"Authorization": "Bearer test-token"}
+
+    listed = client.get("/api/v1/profiles/presets", headers=headers)
+    assert listed.status_code == 200
+    assert listed.json()["items"][0]["semanticProfile"] == "ICAO_2025"
+
+    created = client.post(
+        "/api/v1/profiles/presets",
+        headers=headers,
+        json={
+            "slug": "us-default",
+            "name": "US Default",
+            "semanticProfile": "US_FAA_NWS",
+            "iwxxmVersion": "2025-2",
+            "extensions": ["IWXXM_US_3"],
+            "reportVariant": None,
+            "overlayId": None,
+            "shared": True,
+        },
+    )
+    assert created.status_code == 201
+    assert created.json()["name"] == "US Default"
+    assert created.json()["shared"] is True
+
+    got = client.get(f"/api/v1/profiles/presets/{PRESET_ID}", headers=headers)
+    assert got.status_code == 200
+
+    patched = client.patch(
+        f"/api/v1/profiles/presets/{PRESET_ID}",
+        headers=headers,
+        json={"name": "US Default 2"},
+    )
+    assert patched.status_code == 200
+    assert patched.json()["name"] == "US Default 2"
+    assert fake.preset.name == "US Default 2"
+
+    deleted = client.delete(f"/api/v1/profiles/presets/{PRESET_ID}", headers=headers)
+    assert deleted.status_code == 204
+
+
+def test_presets_require_auth() -> None:
+    client = TestClient(app)
+    assert client.get("/api/v1/profiles/presets").status_code in {401, 403}
 
 
 def test_overlays_crud(profiles_client: Any) -> None:
@@ -254,10 +536,12 @@ def test_overlays_crud(profiles_client: Any) -> None:
     patched = client.patch(
         f"/api/v1/profiles/overlays/{OVERLAY_ID}",
         headers=headers,
-        json={"shared": True},
+        json={"slug": "icao-hard", "shared": True},
     )
     assert patched.status_code == 200
+    assert patched.json()["slug"] == "icao-hard"
     assert patched.json()["shared"] is True
+    assert fake.overlay.slug == "icao-hard"
     assert fake.overlay.shared is True
 
     deleted = client.delete(f"/api/v1/profiles/overlays/{OVERLAY_ID}", headers=headers)
@@ -267,3 +551,51 @@ def test_overlays_crud(profiles_client: Any) -> None:
 def test_overlays_require_auth() -> None:
     client = TestClient(app)
     assert client.get("/api/v1/profiles/overlays").status_code in {401, 403}
+
+
+def test_templates_crud(profiles_client: Any) -> None:
+    client, fake = profiles_client
+    headers = {"Authorization": "Bearer test-token"}
+
+    listed = client.get("/api/v1/profiles/templates", headers=headers)
+    assert listed.status_code == 200
+    assert listed.json()["items"][0]["sinkType"] == "postgres"
+
+    created = client.post(
+        "/api/v1/profiles/templates",
+        headers=headers,
+        json={
+            "slug": "shared-wis2",
+            "name": "Shared WIS2",
+            "sinkType": "wis2",
+            "product": "metar",
+            "ddl": False,
+            "params": {"topic": "origin/a/wis2"},
+            "shared": True,
+        },
+    )
+    assert created.status_code == 201
+    assert created.json()["name"] == "Shared WIS2"
+    assert created.json()["shared"] is True
+
+    got = client.get(f"/api/v1/profiles/templates/{TEMPLATE_ID}", headers=headers)
+    assert got.status_code == 200
+
+    patched = client.patch(
+        f"/api/v1/profiles/templates/{TEMPLATE_ID}",
+        headers=headers,
+        json={"name": "Shared WIS2 2", "ddl": True},
+    )
+    assert patched.status_code == 200
+    assert patched.json()["name"] == "Shared WIS2 2"
+    assert patched.json()["ddl"] is True
+    assert fake.template.name == "Shared WIS2 2"
+    assert fake.template.ddl is True
+
+    deleted = client.delete(f"/api/v1/profiles/templates/{TEMPLATE_ID}", headers=headers)
+    assert deleted.status_code == 204
+
+
+def test_templates_require_auth() -> None:
+    client = TestClient(app)
+    assert client.get("/api/v1/profiles/templates").status_code in {401, 403}

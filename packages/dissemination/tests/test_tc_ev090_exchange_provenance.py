@@ -61,9 +61,8 @@ def test_tc_ev090_001_catalog_provenance_for_exchange_stubs(profile_id: str) -> 
 
     if profile_id == "APAC_ROBEX":
         assert "icao-apac-iwxxm-faqs" in provenance_blob or "APAC" in provenance_blob
-        gaps = row.get("gaps") or []
-        assert any("ROBEX handbook" in str(g) for g in gaps), (
-            "APAC_ROBEX must keep ROBEX handbook durable-URL gap explicit until pinned"
+        assert "APAC ROBEX Handbook" in provenance_blob or "APAC-ROBEX-HB" in provenance_blob, (
+            "APAC_ROBEX must keep a pinned ROBEX handbook source in the catalog/stub provenance"
         )
     else:
         assert (

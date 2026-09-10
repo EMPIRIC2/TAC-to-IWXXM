@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import {
   checkHealth,
   convertBulletin,
+  ConvertApiError,
   convertMetarToIwxxm,
   convertMetarToIwxxmZip,
   decodeTac,
@@ -383,10 +384,117 @@ describe('API Utils', () => {
       expect(body.get('exchange_profile')).toBe('CAR_SAM');
     });
 
+    it('appends report_variant on convert when provided (EV-1050)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR CYUL 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        product: 'METAR',
+        profile: 'CA_ECCC',
+        reportVariant: 'LWIS',
+      } as any);
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('report_variant')).toBe('LWIS');
+    });
+
+    it('appends preset_id and bearer on convert when provided (EV-1051)', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        presetId: '  pr-123  ',
+        accessToken: ' jwt ',
+      });
+
+      const [, options] = (global.fetch as any).mock.calls[0];
+      const body = options.body as FormData;
+      expect(body.get('preset_id')).toBe('pr-123');
+      expect(options.headers?.Authorization).toBe('Bearer jwt');
+    });
+
     it('should throw error on conversion failure', async () => {
       mockFetchResponse({ detail: { message: 'Conversion failed' } }, false, 400);
 
-      await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toThrow();
+      await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toThrow(
+        ConvertApiError,
+      );
+    });
+
+    it('preserves structured errors and issues on hard convert failure', async () => {
+      mockFetchResponse(
+        {
+          detail: {
+            message: 'All conversions failed',
+            errors: ['manual_input: Validation failed - 1 validation issue(s) found'],
+            issues: [
+              {
+                source: 'manual_input',
+                message: 'No ICAO code found in TAC text',
+                severity: 'error',
+                code: 'ICAO_VALIDATION_FAILED',
+              },
+            ],
+          },
+        },
+        false,
+        400,
+      );
+
+      await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toMatchObject({
+        name: 'ConvertApiError',
+        message: 'All conversions failed',
+        status: 400,
+        errors: ['manual_input: Validation failed - 1 validation issue(s) found'],
+        issues: [
+          expect.objectContaining({
+            code: 'ICAO_VALIDATION_FAILED',
+          }),
+        ],
+      });
+    });
+
+    it('falls back to top-level convert errors and issues when detail is absent', async () => {
+      mockFetchResponse(
+        {
+          message: 'Validation rejected',
+          errors: ['manual_input: Validation failed'],
+          issues: [
+            {
+              source: 'manual_input',
+              message: 'Top-level issue',
+              severity: 'error',
+            },
+          ],
+        },
+        false,
+        422,
+      );
+
+      await expect(convertMetarToIwxxm({ manualText: 'TEST' })).rejects.toMatchObject({
+        name: 'ConvertApiError',
+        message: 'Validation rejected',
+        status: 422,
+        errors: ['manual_input: Validation failed'],
+        issues: [
+          expect.objectContaining({
+            message: 'Top-level issue',
+          }),
+        ],
+      });
     });
 
     it('falls back to top-level message when convert error detail is absent', async () => {
@@ -1020,6 +1128,21 @@ describe('API Utils', () => {
       );
     });
 
+    it('GETs lint-issue-catalog with semantic and exchange profile filters', async () => {
+      mockFetchResponse({ issues: [] });
+      await fetchLintIssueCatalog({
+        product: 'TAF',
+        semantic_profile: 'US_FAA_NWS',
+        exchange_profile: 'GLOBAL_AFS',
+      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(
+          /\/lint-issue-catalog\?product=taf&semantic_profile=US_FAA_NWS&exchange_profile=GLOBAL_AFS$/,
+        ),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
     it('GETs lint-issue-catalog with issue_type and source_access filters', async () => {
       mockFetchResponse({ issues: [] });
       await fetchLintIssueCatalog({
@@ -1187,6 +1310,7 @@ describe('API Utils', () => {
         product: 'metar',
         profile: 'annex3',
         exchangeProfile: 'EUR_RODEX',
+        iwxxmVersion: '2023-1',
         lint: false,
         accessToken: 'tok',
       });
@@ -1196,6 +1320,7 @@ describe('API Utils', () => {
         { body: FormData },
       ];
       expect(init.body.get('exchange_profile')).toBe('EUR_RODEX');
+      expect(init.body.get('iwxxm_version')).toBe('2023-1');
     });
 
     it('appends propagate_residuals_to_remarks on convert-bulletin (TC-EV981)', async () => {

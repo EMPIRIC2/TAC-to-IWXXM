@@ -156,6 +156,13 @@ class TestVersionHelpers:
         assert versions.is_version_supported("definitely-not-supported") is False
         assert isinstance(versions.get_breaking_changes("2023-1", "2025-2"), list)
 
+    def test_is_migration_supported_allowlist(self):
+        """EV-908: same-version and allowlisted forward; reverse fail-closed."""
+        assert versions.is_migration_supported("2025-2", "2025-2") is True
+        assert versions.is_migration_supported("2023-1", "2025-2") is True
+        assert versions.is_migration_supported("2025-2", "2023-1") is False
+        assert ("2023-1", "2025-2") in versions.SUPPORTED_MIGRATE_PAIRS
+
 
 class TestGetVersionConfig:
     def test_deprecated_version_raises(self):

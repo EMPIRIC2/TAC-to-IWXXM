@@ -109,6 +109,10 @@ Future (2027+): When next version releases:
 - Re-process historical archives if needed
 - One-time conversion to 2025-2 format
 
+**Option 4: In-app IWXXM↔IWXXM migrate (#908)**
+- Upload existing IWXXM (`product=iwxxm` on `POST /api/v1/convert`) and set `iwxxm_version` to the target line
+- Pair support is defined in [CROSS_VERSION_CONVERSION.md](CROSS_VERSION_CONVERSION.md) — not every direction is supported (fail closed)
+
 ### Breaking Changes to Review
 
 If migrating from 2021-2 → 2023-1:

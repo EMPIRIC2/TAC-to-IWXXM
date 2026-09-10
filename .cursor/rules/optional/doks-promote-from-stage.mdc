@@ -27,7 +27,8 @@ DOKS clusters** (not only namespaces). Use env-scoped kubeconfigs.
    `e2e-smoke`) + **Staging smoke** (HTTPS or Host-header via staging LB
    `143.244.202.13` / `STAGING_LB_IP`).
 3. **Release prep on `stage` (recommended before every promote):** bump publishable
-   package semver when those packages changed, cut `docs/CHANGELOG.md`, commit on
+   package **CalVer** (`YYYY.MM.DD` / `.N` per ADR-043) when those packages changed, cut
+   `docs/CHANGELOG.md`, commit on
    `stage` — see §Release on promote and [Corpus: deploy] §Promote.
 4. Promote: PR **`stage` → `main` only**. CI **Staging gate** (`staging-gate`) must pass
    (head=`stage` + tip Staging smoke green). No feature→`main`. **EV-061 / #1015:** also
@@ -50,7 +51,7 @@ deploy). Recommendation (soft — Staging gate does not fail on missing bumps):
 
 | Step | When | Action |
 |------|------|--------|
-| Semver | On `stage`, before opening/updating the promote PR | For each changed publishable package (`tac2iwxxm`, `tac-validate`, `iwxxm-validate`): decide none/patch/minor/major; sync `pyproject.toml` + `__version__` + Cargo/locks when present |
+| CalVer | On `stage`, before opening/updating the promote PR | For each changed publishable package (`tac2iwxxm`, `tac-validate`, `iwxxm-validate`): set `YYYY.MM.DD` (or `.N` same-day); sync `pyproject.toml` + `__version__` + Cargo/locks when present ([Corpus: adr/ADR-043]) |
 | CHANGELOG | Same commit(s) on `stage` | Move Unreleased bullets into a dated section; note promote PR |
 | Deploy tag | After merge to `main` + tip CI green | `git tag vYYYY.MM.DD-deploy`; `git push origin <tag>` — **this** rolls prod (EV-051) |
 | PyPI tags | After merge when publishing | Per-package tags only (`tac2iwxxm-v*`, …); run **pypi-release-checklist** first |

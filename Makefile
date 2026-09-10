@@ -15,6 +15,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	tests
 
 .PHONY: install test test-unit vendor-sync export-iwxxm-versions openapi-refresh tip-diff-iwxxm \
+	pypi-calver-bump \
 	iwxxm-us-compat-smoke codelist-uri-drift \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-auth test-unit-frontend \
@@ -63,7 +64,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-integration test-coverage-scripts test-bats \
 	coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
-	validate-fast validate-yaml secrets-check config-guard validate-ci env-check \
+	validate-fast validate-yaml secrets-check security-scan config-guard validate-ci env-check \
 	install-hooks pre-commit-run pre-push-run ci-prepush \
 	catalog-regen catalog-check \
 	membership-regen membership-check \
@@ -394,6 +395,12 @@ export-iwxxm-versions:
 openapi-refresh:
 	$(UV) run python scripts/openapi/export_openapi.py
 	$(PNPM) --filter @metar/frontend run openapi:generate
+
+# EV-1150 / ADR-043 — bump F12–F14 packages to CalVer (YYYY.MM.DD[.N][.devN])
+# Usage: make pypi-calver-bump ARGS='--all'
+#        make pypi-calver-bump ARGS='--package tac-validate --dev 1'
+pypi-calver-bump:
+	$(UV) run python scripts/pypi/bump_calver.py $(ARGS)
 
 # S046 / EV-038 / #852 — XSD/SCH/example stem deltas between vendor pins
 tip-diff-iwxxm:
@@ -915,7 +922,13 @@ security-scan-install:
 	bash scripts/security/install-tools.sh
 
 security-scan:
-	bash scripts/security/run-all.sh
+	@tmp_req="$$(mktemp -t metar-iwxxm-pip-audit.XXXXXX.txt)"; \
+	trap 'rm -f "$$tmp_req"' EXIT; \
+	$(UV) export --format requirements-txt --frozen --no-emit-workspace --all-groups > "$$tmp_req"; \
+	uvx pip-audit -r "$$tmp_req" --disable-pip \
+		$$(grep -v '^[[:space:]]*#' audit/pip-audit-ignore.txt | grep -v '^[[:space:]]*$$' | sed 's/^/--ignore-vuln /'); \
+	$(MAKE) secrets-check; \
+	$(MAKE) audit-frontend
 
 check-exact-pins:
 	python3 scripts/ci/check-exact-pins.py

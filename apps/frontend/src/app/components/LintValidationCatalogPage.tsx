@@ -16,6 +16,7 @@ import {
   LINT_VALIDATION_CATALOG_COL_CODE,
   LINT_VALIDATION_CATALOG_COL_DESCRIPTION,
   LINT_VALIDATION_CATALOG_COL_LEVEL,
+  LINT_VALIDATION_CATALOG_COL_PROFILES,
   LINT_VALIDATION_CATALOG_COL_SOURCE,
   LINT_VALIDATION_CATALOG_COL_TYPE,
   LINT_VALIDATION_CATALOG_EMPTY,
@@ -72,6 +73,33 @@ function isClickableSource(entry: LintIssueCatalogEntry): boolean {
     return false;
   }
   return url.startsWith('http://') || url.startsWith('https://');
+}
+
+function profileList(value: string[] | null | undefined): string[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+  return value.filter(
+    (item): item is string => typeof item === 'string' && item.trim().length > 0,
+  );
+}
+
+/**
+ * Human-readable semantic/exchange profile lists for a catalog entry.
+ *
+ * @param entry - Lint issue catalog row
+ * @returns Display strings (comma-joined or “All … profiles”)
+ */
+export function formatApplicableProfiles(entry: LintIssueCatalogEntry): {
+  semantic: string;
+  exchange: string;
+} {
+  const semantic = profileList(entry.semantic_profiles);
+  const exchange = profileList(entry.exchange_profiles);
+  return {
+    semantic: semantic.length > 0 ? semantic.join(', ') : 'All semantic profiles',
+    exchange: exchange.length > 0 ? exchange.join(', ') : 'All exchange profiles',
+  };
 }
 
 /**
@@ -322,6 +350,9 @@ export function LintValidationCatalogPage() {
                         {LINT_VALIDATION_CATALOG_COL_LEVEL}
                       </th>
                       <th className="px-2 py-2 font-medium">
+                        {LINT_VALIDATION_CATALOG_COL_PROFILES}
+                      </th>
+                      <th className="px-2 py-2 font-medium">
                         {LINT_VALIDATION_CATALOG_COL_DESCRIPTION}
                       </th>
                       <th className="px-2 py-2 font-medium">
@@ -330,56 +361,71 @@ export function LintValidationCatalogPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
-                    {sorted.map((entry) => (
-                      <tr
-                        key={`${entry.family ?? 'lint'}-${entry.code}`}
-                        data-testid={`lint-validation-catalog-entry-${entry.code}`}
-                        className="align-top"
-                      >
-                        <td className="px-2 py-2 font-mono text-xs text-gray-900 dark:text-gray-100">
-                          {entry.code}
-                        </td>
-                        <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
-                          {entry.issue_type ?? '—'}
-                        </td>
-                        <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
-                          {entry.severity}
-                        </td>
-                        <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
-                          {entry.message_template}
-                        </td>
-                        <td className="px-2 py-2">
-                          <div className="space-y-1">
-                            {entry.source_locator ? (
-                              <p className="text-xs text-gray-600 dark:text-gray-400">
-                                {entry.source_locator}
+                    {sorted.map((entry) => {
+                      const profiles = formatApplicableProfiles(entry);
+                      return (
+                        <tr
+                          key={`${entry.family ?? 'lint'}-${entry.code}`}
+                          data-testid={`lint-validation-catalog-entry-${entry.code}`}
+                          className="align-top"
+                        >
+                          <td className="px-2 py-2 font-mono text-xs text-gray-900 dark:text-gray-100">
+                            {entry.code}
+                          </td>
+                          <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
+                            {entry.issue_type ?? '—'}
+                          </td>
+                          <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
+                            {entry.severity}
+                          </td>
+                          <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300">
+                            <div className="space-y-1">
+                              <p>
+                                <span className="font-medium">Semantic:</span>{' '}
+                                {profiles.semantic}
                               </p>
-                            ) : null}
-                            {entry.source_access ? (
-                              <p className="text-xs text-gray-500 dark:text-gray-500">
-                                Access: {entry.source_access.replace('_', ' ')}
+                              <p>
+                                <span className="font-medium">Exchange:</span>{' '}
+                                {profiles.exchange}
                               </p>
-                            ) : null}
-                            {isClickableSource(entry) ? (
-                              <a
-                                href={entry.source_url!}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="break-all text-blue-700 underline hover:text-blue-900 dark:text-blue-400"
-                              >
-                                {entry.source_url}
-                              </a>
-                            ) : entry.source_url ? (
-                              <span className="break-all text-gray-500 dark:text-gray-400">
-                                {entry.source_url}
-                              </span>
-                            ) : (
-                              <span className="text-gray-400">—</span>
-                            )}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                            </div>
+                          </td>
+                          <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
+                            {entry.message_template}
+                          </td>
+                          <td className="px-2 py-2">
+                            <div className="space-y-1">
+                              {entry.source_locator ? (
+                                <p className="text-xs text-gray-600 dark:text-gray-400">
+                                  {entry.source_locator}
+                                </p>
+                              ) : null}
+                              {entry.source_access ? (
+                                <p className="text-xs text-gray-500 dark:text-gray-500">
+                                  Access: {entry.source_access.replace('_', ' ')}
+                                </p>
+                              ) : null}
+                              {isClickableSource(entry) ? (
+                                <a
+                                  href={entry.source_url!}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="break-all text-blue-700 underline hover:text-blue-900 dark:text-blue-400"
+                                >
+                                  {entry.source_url}
+                                </a>
+                              ) : entry.source_url ? (
+                                <span className="break-all text-gray-500 dark:text-gray-400">
+                                  {entry.source_url}
+                                </span>
+                              ) : (
+                                <span className="text-gray-400">—</span>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               )}

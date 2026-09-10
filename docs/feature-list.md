@@ -14,19 +14,19 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933); **deepen** EV-1051 shared semantic presets + team-safe sharing of non-secret profile assets/destination references (#1051); **deepen** EV-1120 Phase A profile-scoped catalog + glanceable Profile UX (#1120/#1145; B/C → #1146/#1147) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
-| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated |
-| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980 |
-| F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725) |
+| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
+| F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
+| F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725); **deepen** EV-1150 CalVer + promote tags + nightly TestPyPI (ADR-043) |
 | F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators |
-| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 UI-hide (API retained); **restore** EV-091 / #898 + #1089 exchange overlay |
-| F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; S050 / EV-042 hide; **restore** EV-091 / #898 |
-| F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; S050 / EV-042 hide; **restore** EV-091 / #898 |
-| F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; S050 / EV-042 hide; **restore** EV-091 / #898 |
+| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 UI-hide (API retained); **restore** EV-091 / #898 + #1089 exchange overlay; **deepen** EV-1150 operator **beta** badge + Issues feedback (ADR-043) |
+| F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
+| F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
+| F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
 | F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 |
 | F21 | Public convert + optional Auth for long-term storage | Amended | Product | S023 #783; **S038 / EV-031 / F31** amend; **deepen** S057 / EV-048 #951 OpenAPI/error copy hygiene |
 | F22 | Privacy preference center (Solution A + GPC) | Implemented | Product | S023 / EV-017; #783; **deepen** F31 storage gates |
@@ -44,7 +44,7 @@
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire |
 | F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived |
-| M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Planned | Platform | REQ-002–006 |
+| M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
 | M4 | Auth library in backend API | Implemented | Platform | S038 / EV-031 — Supabase Auth-only restore; was Deprecated operator #783 |
@@ -117,11 +117,11 @@
 
 ### F4: IWXXM Version Handling
 
-- **What it does**: Supports multiple IWXXM release lines (e.g. 2023-1, 2025-2) with version-aware formatting.
-- **Inputs**: Target version parameter, TAC product input.
-- **Outputs**: Version-appropriate IWXXM XML.
-- **Limitations**: Only versions present in `vendor/schemas/` snapshots (WMO + iwxxm-us when pinned).
-- **Source**: docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md
+- **What it does**: Supports multiple IWXXM release lines (e.g. 2023-1, 2025-2) with version-aware formatting; **deepen EV-908 / #908** migrates already-produced IWXXM XML between supported pairs (`product=iwxxm` on convert).
+- **Inputs**: Target version parameter, TAC product input **or** IWXXM XML pass-through.
+- **Outputs**: Version-appropriate IWXXM XML (encode or migrate).
+- **Limitations**: Only versions present in `vendor/schemas/` snapshots (WMO + iwxxm-us when pinned). Cross-version pair matrix: [CROSS_VERSION_CONVERSION.md](domain/iwxxm/CROSS_VERSION_CONVERSION.md) — reverse **2025-2 → 2023-1** fail-closed until specified.
+- **Source**: docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md · VERSION_SUPPORT_POLICY.md · CROSS_VERSION_CONVERSION.md · #908
 
 ### F5: User METAR Work History
 
@@ -133,6 +133,10 @@
 - **What it did (EV-017)**: IndexedDB-only public path; server `tac_work_sessions` retired from public product.
 - **Historical (pre-EV-017)**: Per-user Supabase Postgres via JWT + `tac_work_sessions`.
 - **UI**: Guest path keeps recent-history / My METARs locally; logged-in path shows server sessions; persistent notice when guest that progress may be lost without login (F31).
+- **Workbench dock (deepen)**: Recent work / My METARs must not obscure Product type /
+  Profile / Exchange profile controls or the primary TAC/IWXXM panes at desktop widths
+  (reserve column space, contain overflow, and/or collapse). Expand/collapse remains
+  available; narrow viewports may default collapsed.
 - **Legacy Supabase rows**: No product reads from Supabase DB; archive/export/delete policy under F30/#830.
 - **Source**: #555 / S004; F7; #783; **S038 / EV-031 / F31**; [Context: platform-independence-842](context/platform-independence-842.md)
 
@@ -362,7 +366,7 @@
   | F7.t | #1003 | IWXXM as **product** pass-through (lint + F2 validate; no TAC convert) (S070 / EV-060); siblings #1001 AHL noise, #1002 profile picker, #1004 log_level, #1005 bulletin fields, #1006 Auth UAT |
   | F7.u | #1013 | Product/Profile bars no-wrap (S071 / EV-061) |
   | F7.v | #1014 / #1017 | Validation Issues Catalog tab (S071 / EV-061; EV-062) |
-  | F7.w | #933 | ConversionProfile editor — rule packs + inspector + signed overlays (EV-933); UJ-072 |
+  | F7.w | #933 | ConversionProfile editor — rule packs + inspector + signed overlays (EV-933); UJ-072; **deepen** EV-1120 / #1145 glanceable summary + ADR-038 inspect/jump blocks + profile examples/seeds (Phase A); composable convert → #1146; workflow authoring → #1147 |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
@@ -611,6 +615,50 @@
   3. UJ-072 + TC-EV933-001..006; H4–H5 when FE routes deploy; no secrets in profile objects.
   4. #1024 picker and dissemination drawer remain green; no internal planning vocabulary
      on operator copy (EV-048).
+- **EV-1051 deepen (F7.w / F16–F19 / #1051)**: authenticated operators can save and share
+  **named semantic presets** that reference first-party semantic profile ids plus approved
+  conversion defaults (`iwxxmVersion`, `extensions[]`, optional `reportVariant`, optional
+  selected overlay/rule-pack linkage) and **saved dissemination templates** that contain
+  only non-secret destination metadata. Semantic presets do **not** replace catalog profiles
+  or invent arbitrary executable browser-uploaded profiles; dissemination templates do
+  **not** persist secrets, destination URIs, DSNs, API keys, SMTP passwords, or one-shot
+  credentials. Convert/package flows may apply a saved preset by id; dissemination
+  preflight/send may apply a saved template reference only when the operator still provides
+  any required runtime credentials. [Corpus: adr/ADR-036] [Corpus: adr/ADR-038]
+- **Acceptance (EV-1051 / #1051)**:
+  1. Saved semantic presets are JWT-gated, owner-scoped, and shareable only through
+     approved visibility rules; guest flow remains IndexedDB-only (F31).
+  2. Presets point to existing semantic profile ids and supported IWXXM-line choices; they
+     may carry only non-secret conversion defaults and references to already-approved
+     profile assets.
+  3. Saved dissemination templates store sink type plus non-secret metadata or destination
+     references only; runtime credentials remain memory-only under ADR-021/029.
+  4. `#1024` light picker and the restored dissemination drawer remain the apply surfaces;
+     the full editor remains distinct from the quick workbench controls.
+  5. Work-session hydration may round-trip saved preset/template ids only; it must not
+     restore one-shot destination credentials or URIs into the workbench.
+  5. UJ-072 / UJ-074 and `TC-EV933-*` / `TC-EV1051-*` cover save, share, apply, ownership,
+     and no-secret persistence paths.
+- **EV-1120 deepen (F7.v / F7.w / F15 / F35 — Phase A / #1120)** — **requirements locked**
+  (`D-EV1120-phaseA=1`):
+  1. **Catalog filters (#1121–#1123):** additive `semantic_profile` + `exchange_profile` on
+     `GET /api/v1/lint-issue-catalog`; omit = current behavior; unknown → 400; workbench
+     catalog follows Profile (+ Exchange when packaging); mined national-only rows for
+     US_FAA_NWS + CA_ECCC (#1122) with provenance URLs only.
+  2. **Glanceable Profile UX (#1145):** one-composition summary on Conversion Profiles +
+     compact workbench twin (name/id, ≤3 vs-ICAO deltas, products, IWXXM line; guests see
+     pack/overlay count placeholders until signed in); **side-by-side compare of two semantic
+     profiles** on the Conversion Profiles summary surface (differing settings highlighted; the
+     workbench twin stays compact); ADR-038 sections as **inspect/jump blocks** (not a new
+     runtime loader); profile-aware example load for all registered semantic profiles + starter
+     seed packs/overlays (sync only if untouched); live refresh of summary + catalog without
+     resetting unrelated in-progress edits unless a profile-dependent control becomes invalid;
+     workflow = read-only links only.
+  3. **Out of Phase A:** composable convert assembly → [#1146](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1146);
+     full workflow authoring → [#1147](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1147);
+     marketplace; Learn/XP; soft-preview; #996 click-detail.
+  4. Journeys UJ-072 deepen + UJ-073; TC-EV1120-*; H4–H5 when FE ships; EV-048 clean.
+  **Context**: [profile-scoped-catalog-1120](context/profile-scoped-catalog-1120.md).
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -950,6 +998,10 @@
   SQLite** (Q23=A–D; no other named vendor).
 - **Auth vs destination**: Destination secrets are **not** Supabase and are never stored
   (IndexedDB may hold `kv_upload_key` / metadata only after F21).
+- **EV-1051 / #1051 deepen**: authenticated users may additionally save **non-secret
+  dissemination templates / destination references** for reuse and sharing, but the live
+  destination URI/DSN/credential material remains one-shot and memory-only on each
+  preflight/send request.
 - **Security (Q11=A+B)**: Backend-only egress; deny private/metadata ranges; DNS rebinding guard;
   TLS preferred; timeouts/size limits; secret redaction; rate limits; **required**
   `DISSEMINATION_EGRESS_ALLOWLIST` (empty ⇒ no user-URI egress).
@@ -1154,6 +1206,10 @@
   4. Abuse-control + dissemination SSRF/allowlist unchanged in spirit
   5. Env/docs: Supabase **Auth** credentials for login path; product **DB** = DO `DATABASE_URL`
   6. E2E: public convert UJs plus login / guest-notice / privacy UJs (F31)
+  7. **Workbench action hierarchy (deepen)**: When destinations UI is on, **Convert** is the
+     only filled primary CTA; **Convert&Send** uses outline (or clearly muted non-fill) so it
+     does not compete as a second solid CTA. Upload / Disseminate / Download stay outline;
+     Clear stays ghost.
 - **Out of scope**: Forced login for convert; CMP; selling personal data
 - **S057 / EV-048 deepen (#951 — public OpenAPI / client error copy)**: Public OpenAPI
   path/operation summaries, parameter/schema `description` fields, runtime `/docs` / Redoc
@@ -1771,7 +1827,7 @@
 
 ### F32: VONA Quality Bar — S040 / EV-032
 
-- **Status**: **Done** (M2 closed 2026-08-04; [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) closed).
+- **Status**: **Done** (EV-032 milestone 2 closed 2026-08-04; [#741](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/741) closed).
 - **What it does**: Raises **VONA** (Volcano Observatory Notice for Aviation) TAC lint,
   convert, and IWXXM-validate quality to the F15–F28 product bar. Root
   `iwxxm:VolcanoObservatoryNoticeForAviation`. **WMO `TAC-to-XML-Guidance.txt` has no VONA
@@ -1935,7 +1991,11 @@
   1. Runtime accepts canonical + alias ids; metrics for profile id + alias counters
   2. E2E convert → package with `exchange.profile=GLOBAL_AFS` (no live sinks in CI)
   3. Config flag `PROFILE_WIRE_V2` gates nested wire default
-- **Out of scope**: Full #933 editor; #908 cross-version; baking destinations into profiles
+  4. Milestone 4 keeps [#908](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/908) in core
+     acceptance framing so profile selection and supported IWXXM release-line transforms are
+     specified together, even when implementation slices land separately.
+- **Out of scope**: Full #933 editor under F35 itself; baking dissemination credentials into
+  profiles
 - **Source**: EV-063 intake; [ADR-036](adr/ADR-036-semantic-vs-exchange-profiles.md);
   [domain/profiles/README.md](domain/profiles/README.md)
 
@@ -2001,7 +2061,18 @@
      (#1031); MANOBS P0 TAC rules + fixtures (#1029); MANAIR TAF/AIRMET/GFA (#1030). Research via
      deep-research-domain-handoff (EV-097); promote via mine-domain-sources after gate C.
      No UI; no SIGMET national / VAA convert this cycle. **TC-EV098-***.
-- **Out of scope**: Full ROBEX/RODEX packaging rule matrices beyond documented gaps; national VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025); inventing national IWXXM enums/XSDs; China unless public sources appear; GAMET→IWXXM conversion; #933 ConversionProfile editor
+- **Milestone 4 core acceptance framing**: treat [#970](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/970)
+  RuleCases / fixture coverage as a first-class F36 quality requirement rather than a
+  secondary backlog item, and coordinate with operator sharing
+  [#1051](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1051) and cross-version conversion
+  [#908](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/908) as part of the unified profile
+  platform milestone. Sharing must remain free of stored dissemination credentials. [Corpus:
+  tests] [Corpus: product §F7.w] [Corpus: api]
+- **Out of scope**: Full ROBEX/RODEX packaging rule matrices beyond documented gaps; national
+  VAA/VONA **convert** forks (EV-074 is **validate-first** CA SIGMET/VAA ops, not a national
+  VAA schema fork); **M14** alias cutover [#1025](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1025);
+  inventing national IWXXM enums/XSDs; China unless public sources appear; GAMET→IWXXM
+  conversion; #933 ConversionProfile editor as a separate feature lane from F36 content
 - **Related UI**: Light picker [#1024](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1024) —
   semantic (**EV-093** canonical + nationals) + **exchange** control (EV-090 / drawer EV-091)
 - **Enablement**: [NATIONAL_PROFILE_PLAYBOOK.md](domain/profiles/NATIONAL_PROFILE_PLAYBOOK.md)
@@ -2021,7 +2092,7 @@
 
 ### F23 deepen (S040 / EV-032 — #835 A6-2-TC → wmoPass)
 
-- **Status**: **Done** (M1 closed 2026-08-04; F23 remains **Done** for gen/VA/TC quality path)
+- **Status**: **Done** (EV-032 milestone 1 closed 2026-08-04; F23 remains **Done** for gen/VA/TC quality path)
 - **Issues**: [#835](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/835) closed; parent [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846)
 - **What it does**: Closed ADR-032 `canonicalize_xml` equality vs vendor `sigmet-A6-2-TC.xml`
   under default pin; promoted catalog `sigmet_a6_2_tc` → **`wmoPass`**; FIXTURE_GAPS /
@@ -2033,7 +2104,7 @@
 
 ### F4 / F6 / F2 / F13 deepen (S040 / EV-032 — #808 release-line adoptability)
 
-- **Status**: **Done** (M3 closed 2026-08-04; [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) closed).
+- **Status**: **Done** (EV-032 milestone 3 closed 2026-08-04; [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) closed).
 - **Issues**: [#808](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/808) closed; companion [#847](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/847) closed; parent [#846](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/846).
   Automation/UX children: #851–#855.
 - **What it does**: Written maintainability assessment + adopt/deprecate checklists aligned with
@@ -2215,6 +2286,7 @@
 
 ### M1: Monorepo Layout
 
+- **Status**: **Implemented** — the repository uses the monorepo target tree today (`apps/`, `packages/`, `vendor/`), `.gitmodules` is absent, and migration acceptance lives in `TC-M001` / `TC-M004`.
 - **What it does**: Replaces six git submodules with a single-repo tree: `apps/`, `packages/`, `vendor/`.
 - **F6 delta**: Approved tree gains `packages/tac2iwxxm`; loses `packages/gifts` at F6 cutover.
 - **S008 package amend**: Also gains `packages/tac-validate` and `packages/iwxxm-validate`.

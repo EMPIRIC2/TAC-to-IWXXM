@@ -1,6 +1,4 @@
-"""
-Tests for IWXXM Version Detector
-"""
+"""Tests for IWXXM version detection against vendored schemas."""
 
 from pathlib import Path
 
@@ -47,11 +45,11 @@ class TestVersionDetector:
 
     @pytest.mark.integration
     def test_get_available_tags(self):
-        """Test getting git tags from submodule."""
+        """Test getting version tags from the schema tree."""
         detector = VersionDetector()
         tags = detector.get_available_tags()
 
-        # Should return list (may be empty if submodule not initialized)
+        # Should return list (may be empty when git metadata is unavailable)
         assert isinstance(tags, list)
 
         if tags:
@@ -120,16 +118,15 @@ class TestVersionDetector:
 
 @pytest.mark.integration
 class TestVersionDetectorIntegration:
-    """Integration tests requiring git submodule."""
+    """Integration tests requiring vendored IWXXM schemas."""
 
     def test_check_version_files_for_known_version(self):
         """Test checking file existence for known version."""
-        schemas_path = Path(__file__).parent.parent.parent / "schemas" / "iwxxm"
+        detector = VersionDetector()
+        schemas_path = detector.iwxxm_path
 
         if not schemas_path.exists():
-            pytest.skip("IWXXM schemas not available (git submodule not initialized)")
-
-        detector = VersionDetector()
+            pytest.skip("IWXXM schemas not available in vendor snapshot")
 
         # Check for version 2025-2 (should exist in IWXXM/)
         file_checks = detector.check_version_files("2025-2")
@@ -141,13 +138,12 @@ class TestVersionDetectorIntegration:
         assert "codelists" in file_checks
 
     def test_detect_actual_wmo_versions(self):
-        """Test detecting real WMO IWXXM versions from submodule."""
-        schemas_path = Path(__file__).parent.parent.parent / "schemas" / "iwxxm"
+        """Test detecting real WMO IWXXM versions from vendored schemas."""
+        detector = VersionDetector()
+        schemas_path = detector.iwxxm_path
 
         if not schemas_path.exists():
             pytest.skip("IWXXM schemas not available")
-
-        detector = VersionDetector()
         versions = detector.detect_versions()
 
         # Should detect at least 2025-2, 2023-1, 2021-2
@@ -159,13 +155,12 @@ class TestVersionDetectorIntegration:
             assert latest in version_strings or latest is None
 
     def test_version_report_with_real_data(self):
-        """Test version report generation with real submodule data."""
-        schemas_path = Path(__file__).parent.parent.parent / "schemas" / "iwxxm"
+        """Test version report generation with real vendored schema data."""
+        detector = VersionDetector()
+        schemas_path = detector.iwxxm_path
 
         if not schemas_path.exists():
             pytest.skip("IWXXM schemas not available")
-
-        detector = VersionDetector()
         report = detector.generate_version_report()
 
         # Report should contain version information

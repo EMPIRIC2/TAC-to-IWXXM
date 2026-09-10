@@ -25,7 +25,7 @@ AFI-specific handbook sources remain TBD (#913).
 | Source | Access | Proves |
 |--------|--------|--------|
 | [OPMET IWXXM Exchange Guidelines (5th Ed.)](https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf) | public | Shared COLLECT / AFS baseline |
-| AFI-specific exchange handbook | gap | Regional overlay rules |
+| [AFI IWXXM Implementation Guideline (Ed. 1, Dec 2020)](https://www.icao.int/sites/default/files/sp-files/ESAF/Documents/AFI%20IWXXM%20Guideline%20Documents/AFI%20IWXXM%20Implementation%20Guideline%20Doc%20Ed.1_2020.pdf) | public | AFI regional IWXXM exchange transition guidance, including AMHS/FTBP posture |
 
 ## Mining notes
 
@@ -41,5 +41,4 @@ AFI-specific handbook sources remain TBD (#913).
 
 ## Gaps
 
-- Authoritative AFI-specific exchange source row in catalog
 - Regional rules beyond GLOBAL_AFS COLLECT baseline

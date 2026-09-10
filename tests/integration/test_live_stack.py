@@ -1,8 +1,8 @@
 """Live stack integration tests - cross-service H3 + H4 (DOKS primary after T6.5).
 
-Targets (defaults / prod.json liveE2e):
-  API:      http://api.doks.placeholder.metar-iwxxm.local
-  Frontend: http://app.doks.placeholder.metar-iwxxm.local
+Targets:
+  API:      LIVE_API_URL
+  Frontend: LIVE_FRONTEND_URL
 
 Run:
   make test-live-integration
@@ -13,8 +13,8 @@ from __future__ import annotations
 
 import httpx
 import pytest
-from tests.live_env import live_api_url, live_frontend_url, warn_deprecated_env
-from tests.live_fixtures import DEFAULT_LIVE_API, live_api_base, wake_live_api
+from tests.live_env import live_frontend_url, warn_deprecated_env
+from tests.live_fixtures import live_api_base, wake_live_api
 
 DEFAULT_LIVE_FRONTEND = "http://app.doks.placeholder.metar-iwxxm.local"
 
@@ -108,19 +108,3 @@ async def test_live_auth_login_rejects_bad_credentials() -> None:
             json={"email": "not-a-real-user@example.com", "password": "wrong-password"},
         )
     assert response.status_code in (401, 403, 422)
-
-
-def test_live_env_defaults_match_render_stack(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Documented Render URLs are used when LIVE_* vars are unset."""
-    for key in (
-        "LIVE_API_URL",
-        "LIVE_FRONTEND_URL",
-        "STAGING_API_URL",
-        "STAGING_FRONTEND_ORIGIN",
-        "E2E_API_URL",
-        "E2E_FRONTEND_URL",
-    ):
-        monkeypatch.delenv(key, raising=False)
-    assert live_api_url() == ""
-    assert live_api_base() == DEFAULT_LIVE_API
-    assert _frontend_url() == DEFAULT_LIVE_FRONTEND

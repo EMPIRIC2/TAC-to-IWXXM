@@ -25,6 +25,9 @@ def test_tc_ev054_008_list_and_filter(client: TestClient) -> None:
     assert body["iwxxm_pin"] == "2025-2"
     assert len(body["files"]) == 18
     assert body["summaries"]
+    assert "pair_examples" in body["summaries"][0]
+    assert "unpaired_examples" in body["summaries"][0]
+    assert "has_tac_pair" in body["files"][0]
 
     metar = client.get("/api/v1/quality-metrics", params={"product": "metar"})
     assert metar.status_code == 200

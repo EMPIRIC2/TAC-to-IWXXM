@@ -173,4 +173,23 @@ describe('TC-EV064-005: CA_ECCC profile picker', () => {
       (container.querySelector('#param-iwxxm-version') as HTMLSelectElement).value,
     ).toBe('3.0.0');
   });
+
+  it('keeps 3.0.0 scoped to CA_ECCC and leaves standard lines on other profiles', async () => {
+    const user = userEvent.setup();
+    const { container } = render(<FileConverter {...defaultProps} />);
+    await user.click(screen.getByLabelText(/expand parameters/i));
+
+    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
+    const version = container.querySelector(
+      '#param-iwxxm-version',
+    ) as HTMLSelectElement;
+
+    await user.selectOptions(profile, 'CA_ECCC');
+    expect(Array.from(version.options).map((o) => o.value)).toEqual(['3.0.0']);
+
+    await user.selectOptions(profile, 'US_FAA_NWS');
+    const standardOptions = Array.from(version.options).map((o) => o.value);
+    expect(standardOptions).toEqual(expect.arrayContaining(['2025-2', '2023-1']));
+    expect(standardOptions).not.toContain('3.0.0');
+  });
 });

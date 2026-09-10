@@ -5,6 +5,8 @@
  * Peer tabs for F7 / F7.q / F7.v / UJ-071; not a FileConverter panel.
  */
 
+import { BetaBadge } from './BetaBadge';
+
 export type ShellPrimaryView =
   | 'converter'
   | 'history'
@@ -63,12 +65,15 @@ export function AppShellNav({ activeView, onNavigate }: AppShellNavProps) {
               data-testid={`shell-nav-${view}`}
               className={
                 selected
-                  ? 'rounded-md bg-gray-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-gray-100 dark:text-gray-900'
-                  : 'rounded-md px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800'
+                  ? 'inline-flex items-center gap-1.5 rounded-md bg-gray-900 px-3 py-1.5 text-sm font-medium text-white dark:bg-gray-100 dark:text-gray-900'
+                  : 'inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800'
               }
               onClick={() => onNavigate(view)}
             >
               {SHELL_NAV_LABELS[view]}
+              {view === 'dissemination-ops' ? (
+                <BetaBadge className="inline-flex" />
+              ) : null}
             </button>
           );
         })}

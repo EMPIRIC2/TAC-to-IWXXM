@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 from unittest.mock import patch
 
 import pytest
+import src.utilities.version_migration as vm
 from src.utilities.version_migration import VersionMigrationWarning, VersionMigrator
 
 SIMPLE_XML = '<?xml version="1.0"?><root xmlns:iwxxm="http://icao.int/iwxxm"><child name="test"/></root>'
@@ -41,14 +42,23 @@ class TestVersionMigratorInit:
 
 
 class TestVersionMigratorMigrate:
-    def test_no_breaking_changes_returns_original(self):
-        """When no breaking changes, original XML returned unchanged."""
+    def test_no_breaking_changes_still_rewrites_supported_pair(self):
+        """Allowlisted pairs still rewrite NS/schema even with empty breaking list."""
+        xml = """<?xml version="1.0"?>
+<root xmlns="http://icao.int/iwxxm/2023-1">
+  <child>data</child>
+</root>"""
         m = VersionMigrator()
         with patch("src.utilities.version_migration.get_breaking_changes", return_value=[]):
-            result_xml, warnings = m.migrate(SIMPLE_XML, "2023-1", "2025-2")
+            result_xml, warnings = m.migrate(xml, "2023-1", "2025-2")
         assert warnings == []
-        # Content should be preserved
-        assert "child" in result_xml or "root" in result_xml
+        assert "http://icao.int/iwxxm/2025-2" in result_xml
+        assert "child" in result_xml
+
+    def test_unsupported_pair_raises(self):
+        m = VersionMigrator()
+        with pytest.raises(ValueError, match="Unsupported IWXXM migration from 2025-2 to 2023-1"):
+            m.migrate(SIMPLE_XML, "2025-2", "2023-1")
 
     def test_invalid_xml_raises(self):
         m = VersionMigrator()
@@ -200,3 +210,37 @@ class TestVersionMigrationHelpers:
         migrate_mock.assert_called_once_with(SIMPLE_XML, "2023-1", "2025-2")
         assert result_xml == "<xml/>"
         assert warnings == [{"element": "x"}]
+
+    def test_source_version_config_allows_deprecated_source(self):
+        config = vm._source_version_config("3.0.0")
+        assert config["namespace_uri"] == "http://icao.int/iwxxm/3.0"
+        assert config["schema_url"].endswith("/3.0.0/iwxxm.xsd")
+
+    def test_rewrite_version_references_repairs_schema_location_without_old_schema_url(self):
+        root = ET.fromstring(
+            """
+<iwxxm:METAR
+    xmlns:iwxxm="http://icao.int/iwxxm/2023-1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://icao.int/iwxxm/2023-1">
+  <iwxxm:child />
+</iwxxm:METAR>
+""".strip()
+        )
+        migrator = VersionMigrator()
+
+        migrator._rewrite_version_references(
+            root,
+            from_config={
+                "namespace_uri": "http://icao.int/iwxxm/2023-1",
+                "schema_url": "https://schemas.wmo.int/iwxxm/2023-1/iwxxm.xsd",
+            },
+            to_config={
+                "namespace_uri": "http://icao.int/iwxxm/2025-2",
+                "schema_url": "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd",
+            },
+        )
+
+        schema_location = root.attrib["{http://www.w3.org/2001/XMLSchema-instance}schemaLocation"]
+        assert "http://icao.int/iwxxm/2025-2" in schema_location
+        assert "https://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd" in schema_location

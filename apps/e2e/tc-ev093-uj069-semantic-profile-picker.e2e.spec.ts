@@ -71,4 +71,83 @@ test.describe('EV-093 — UJ-069 semantic + exchange profile pickers', () => {
     expect(postedSemantic).toBe('AU_BOM');
     expect(postedExchange).toBe('APAC_ROBEX');
   });
+
+  test('EV-1050: CA_ECCC report variant selection is sent on convert', async ({
+    page,
+  }) => {
+    let postedSemantic: string | null = null;
+    let postedVariant: string | null = null;
+    await page.route('**/api/v1/profiles/catalog', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          schema_version: 2,
+          profiles: [
+            {
+              id: 'CA_ECCC',
+              kind: 'semantic',
+              products: ['METAR', 'SPECI', 'TAF', 'AIRMET'],
+              deltas_vs_icao: ['Canadian national IWXXM extensions'],
+              iwxxm_line: 'WMO IWXXM 3.0.0 core + iwxxm-ca 3.0',
+              metar_family_variants: [
+                { tac_lead: 'METAR', api_product: 'METAR', iwxxm_root: 'iwxxm:METAR' },
+                { tac_lead: 'LWIS', api_product: 'METAR', iwxxm_root: 'iwxxm-ca:LWIS' },
+                { tac_lead: 'SAWR', api_product: 'METAR', iwxxm_root: 'iwxxm-ca:SAWR' },
+              ],
+            },
+          ],
+        }),
+      });
+    });
+    await page.route('**/api/v1/convert', async (route) => {
+      const body = route.request().postDataBuffer();
+      if (body) {
+        const text = body.toString('utf8');
+        postedSemantic =
+          /name="semantic_profile"\r?\n\r?\n([^\r\n]+)/.exec(text)?.[1] ?? null;
+        postedVariant =
+          /name="report_variant"\r?\n\r?\n([^\r\n]+)/.exec(text)?.[1] ?? null;
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          results: [
+            {
+              ok: true,
+              iwxxm_xml:
+                '<iwxxm-ca:LWIS xmlns:iwxxm-ca="https://example.test/iwxxm-ca"/>',
+              tac_input: 'METAR CYUL 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+            },
+          ],
+          errors: [],
+          issues: [],
+          total_processed: 1,
+          successful: 1,
+          failed: 0,
+          metadata: { report_variant: 'LWIS' },
+        }),
+      });
+    });
+
+    await openPublicConverter(page);
+    await page.getByTestId('profile-type-select').selectOption('CA_ECCC');
+    await page.getByTestId('product-type-select').selectOption('METAR');
+    await expect(page.getByTestId('report-variant-select')).toBeVisible();
+    await page.getByTestId('report-variant-select').selectOption('LWIS');
+    const editor = page.getByTestId('tac-editor');
+    await editor.click();
+    await page.keyboard.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+    await page.keyboard.insertText(
+      'METAR CYUL 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+    );
+    await page.getByTestId('convert-button').click();
+
+    await expect(page.getByText(/successfully converted 1 file/i)).toBeVisible({
+      timeout: 60_000,
+    });
+    expect(postedSemantic).toBe('CA_ECCC');
+    expect(postedVariant).toBe('LWIS');
+  });
 });

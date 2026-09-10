@@ -372,9 +372,11 @@ vi.mock('./components/ConversionProfilePage', () => ({
   ConversionProfilePage: ({
     accessToken,
     onRequestLogin,
+    onOpenConverterExamples,
   }: {
     accessToken?: string;
     onRequestLogin?: () => void;
+    onOpenConverterExamples?: () => void;
   }) => (
     <div data-testid="conversion-profiles-page" data-authed={accessToken ? '1' : '0'}>
       {onRequestLogin ? (
@@ -384,6 +386,15 @@ vi.mock('./components/ConversionProfilePage', () => ({
           onClick={onRequestLogin}
         >
           Sign in
+        </button>
+      ) : null}
+      {onOpenConverterExamples ? (
+        <button
+          type="button"
+          data-testid="profiles-open-examples"
+          onClick={onOpenConverterExamples}
+        >
+          Open examples
         </button>
       ) : null}
     </div>
@@ -568,6 +579,16 @@ describe('App Component (F31 optional Auth)', () => {
       'data-authed',
       '1',
     );
+  });
+
+  it('returns from Conversion profiles to Convert for examples', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.click(screen.getByTestId('shell-nav-profiles'));
+    await user.click(screen.getByTestId('profiles-open-examples'));
+
+    expect(screen.getByTestId('file-converter')).toBeInTheDocument();
   });
 
   it('boots on quality detail path from location', () => {

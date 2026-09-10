@@ -32,9 +32,20 @@ def _case(path: Path, bucket: str, case_id: str = "01") -> RuleCase:
     raise AssertionError(f"missing {path.name}/{bucket}/{case_id}")
 
 
-def test_skip_policy_needs_fixture() -> None:
+def _needs_fixture_case(tmp_path: Path) -> RuleCase:
+    path = tmp_path / "needs.yml"
+    path.write_text(
+        "rule_id: X\nengine: lint\ncases:\n"
+        "  - bucket: edge_pass\n    case_id: '01'\n    status: needs-fixture\n"
+        "    meta: {reason: 'synthetic skip fixture'}\n",
+        encoding="utf-8",
+    )
+    return load_rule_cases(path)[0]
+
+
+def test_skip_policy_needs_fixture(tmp_path: Path) -> None:
     with pytest.raises(pytest.skip.Exception, match="needs-fixture"):
-        apply_skip_policy(_case(_LINT_VIS, "edge_pass"))
+        apply_skip_policy(_needs_fixture_case(tmp_path))
 
 
 def test_skip_policy_oos(tmp_path: Path) -> None:
@@ -55,9 +66,9 @@ def test_run_lint_happy_and_sad() -> None:
     run_lint_case(_case(_LINT_VIS, "sad"))
 
 
-def test_run_lint_skips_needs_fixture() -> None:
+def test_run_lint_skips_needs_fixture(tmp_path: Path) -> None:
     with pytest.raises(pytest.skip.Exception, match="needs-fixture"):
-        run_rule_case(_case(_LINT_VIS, "edge_fail"))
+        run_rule_case(_needs_fixture_case(tmp_path))
 
 
 def test_run_convert_happy() -> None:

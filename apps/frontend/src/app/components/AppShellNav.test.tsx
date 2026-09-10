@@ -12,6 +12,11 @@ describe('AppShellNav', () => {
     expect(screen.getByTestId('shell-nav-dissemination-ops')).toHaveTextContent(
       SHELL_NAV_LABELS['dissemination-ops'],
     );
+    expect(
+      screen
+        .getByTestId('shell-nav-dissemination-ops')
+        .querySelector('[data-testid="beta-badge"]'),
+    ).toHaveTextContent('Beta');
     expect(screen.getByTestId('shell-nav-profiles')).toHaveTextContent(
       SHELL_NAV_LABELS.profiles,
     );

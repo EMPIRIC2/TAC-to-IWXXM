@@ -2,6 +2,41 @@
 
 All notable user-facing and deployable changes for TAC to IWXXM.
 
+## 2026-09-10 — Production release
+
+Operator-facing and package improvements validated on staging since the 2026-09-04 cut.
+
+### Added
+- **Conversion profile presets** — Save and reuse semantic profile + IWXXM version presets
+  (Alembic `20260907_0004`); share-bundle and glanceable profile catalog UX.
+- **Profile-aware convert** — Report-variant selection, AU/NZ profile fixtures, and hardened
+  profile catalog / quality metrics surfaces.
+- **Workbench chrome** — Recent work, profile glance, exchange profile, StatusBanner tones,
+  Convert&Send outline, and mobile/guest adversarial UX polish on staging.
+- **Beta Dissemination / Send** — Operator dissemination surfaces marked beta with GitHub
+  Issues feedback path (ADR-043).
+
+### Changed
+- Fail-closed unsupported IWXXM migrate pairs.
+- Hard-convert error surfacing, public app load retry, and conversion error-log persistence.
+- Dissemination template request reuse; missing `sink_type` returns 422; session titles sanitized.
+- Backend modularity (router/package splits) and security-scan CI gates from the tech-debt pass.
+- Frontend coverage gate restored; METAR/SPECI quality fixture gaps cleared (EV-970).
+
+### Packages
+- `tac2iwxxm` **0.3.0 → 2026.9.10** (CalVer; profile convert / registry + fixtures)
+- `tac-validate` **0.2.0 → 2026.9.10** (CalVer bump; ADR-043)
+- `iwxxm-validate` **0.2.0 → 2026.9.10** (CalVer bump; ADR-043)
+- Nightly TestPyPI workflow + `make pypi-calver-bump` (ops: Trusted Publishers / `testpypi` env)
+
+### Deploy
+- Promote PR: _(link when opened)_ (`stage` → `main`).
+- Staging tip before promote: `ba4525f9` (Staging smoke green).
+- After merge + tip CI green: tag `v2026.09.10-deploy` to roll production.
+- Prod Alembic: apply through `20260907_0004` (profile presets + dissemination templates).
+- Optional PyPI tags after checklist: `tac2iwxxm-v2026.9.10`, `tac-validate-v2026.9.10`,
+  `iwxxm-validate-v2026.9.10`.
+
 ## 2026-09-04 — Production release
 
 ### Added

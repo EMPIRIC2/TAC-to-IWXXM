@@ -111,9 +111,17 @@ def _meta_str(meta: dict[str, Any], key: str) -> str | None:
 
 
 def _require_tac(case: RuleCase) -> str:
-    if not isinstance(case.tac, str) or not case.tac.strip():
-        raise AssertionError(f"{case.node_id}: ready case missing tac")
-    return case.tac
+    if isinstance(case.tac, str) and case.tac.strip():
+        return case.tac
+    expect_codes = case.expect.get("codes")
+    if (
+        isinstance(expect_codes, list)
+        and "EMPTY_TAC" in expect_codes
+        and isinstance(case.tac, str)
+    ):
+        # EV-970: EMPTY_TAC fixtures may be "" / whitespace-only.
+        return case.tac
+    raise AssertionError(f"{case.node_id}: ready case missing tac")
 
 
 def _xml_payload(case: RuleCase) -> str | None:

@@ -137,10 +137,9 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
         validateOutput: true,
         validationLevel: 'comprehensive',
         stopOnError: false,
+        // EV-1051: signed-in convert always forwards Bearer (preset_id auth).
+        accessToken: 'mapping-token',
       }),
-    );
-    expect(mockConvertMetarToIwxxm.mock.calls[0]?.[0]).not.toHaveProperty(
-      'accessToken',
     );
   });
 
@@ -260,5 +259,83 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
         iwxxmVersion: '2025-2',
       }),
     );
+  });
+
+  it('hydrates stored session IWXXM line for non-CA profiles', async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <FileConverter
+        {...defaultProps}
+        loadedWorkSession={
+          {
+            id: 'sess-2023',
+            status: 'wip',
+            conversion_params: {
+              product: 'METAR',
+              profile: 'ICAO_2025',
+              iwxxm_version: '2023-1',
+            },
+          } as any
+        }
+      />,
+    );
+
+    await user.click(screen.getByLabelText(/expand parameters/i));
+    const iwxxmVersion = container.querySelector(
+      '#param-iwxxm-version',
+    ) as HTMLSelectElement;
+    expect(iwxxmVersion.value).toBe('2023-1');
+  });
+
+  it('normalizes stored session IWXXM line to the profile matrix', async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <FileConverter
+        {...defaultProps}
+        loadedWorkSession={
+          {
+            id: 'sess-ca',
+            status: 'wip',
+            conversion_params: {
+              product: 'METAR',
+              profile: 'CA_ECCC',
+              iwxxm_version: '2025-2',
+            },
+          } as any
+        }
+      />,
+    );
+
+    await user.click(screen.getByLabelText(/expand parameters/i));
+    const iwxxmVersion = container.querySelector(
+      '#param-iwxxm-version',
+    ) as HTMLSelectElement;
+    expect(iwxxmVersion.value).toBe('3.0.0');
+  });
+
+  it('hydrates camelCase stored session IWXXM line for non-CA profiles', async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <FileConverter
+        {...defaultProps}
+        loadedWorkSession={
+          {
+            id: 'sess-camel',
+            status: 'wip',
+            conversion_params: {
+              product: 'METAR',
+              profile: 'ICAO_2025',
+              iwxxmVersion: '2023-1',
+            },
+          } as any
+        }
+      />,
+    );
+
+    await user.click(screen.getByLabelText(/expand parameters/i));
+    const iwxxmVersion = container.querySelector(
+      '#param-iwxxm-version',
+    ) as HTMLSelectElement;
+    expect(iwxxmVersion.value).toBe('2023-1');
   });
 });

@@ -27,6 +27,8 @@ const BASE_ISSUES = [
     source_url:
       'https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1',
     status: 'verified',
+    semantic_profiles: [],
+    exchange_profiles: ['GLOBAL_AFS'],
   },
   {
     code: 'XML_SCHEMA',
@@ -40,6 +42,8 @@ const BASE_ISSUES = [
     source_locator: 'Pinned XSD schema bundle',
     source_url: 'https://github.com/wmo-im/iwxxm',
     status: 'verified',
+    semantic_profiles: ['ICAO_2025', 'CA_ECCC'],
+    exchange_profiles: [],
   },
   {
     code: 'AMD_PRESENT',
@@ -54,6 +58,8 @@ const BASE_ISSUES = [
     source_url:
       'https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1',
     status: 'verified',
+    semantic_profiles: ['ICAO_2025'],
+    exchange_profiles: [],
   },
   {
     code: 'VENDOR_ONLY',
@@ -66,6 +72,8 @@ const BASE_ISSUES = [
     source_access: 'semantic_only',
     source_url: 'vendor:documentation/webpages/AHL.asciidoc',
     status: 'semantic_only',
+    semantic_profiles: [],
+    exchange_profiles: [],
   },
 ];
 
@@ -169,6 +177,21 @@ describe('LintValidationCatalogPage', () => {
     const row = await screen.findByTestId('lint-validation-catalog-entry-XML_SCHEMA');
     expect(row).toHaveTextContent('Pinned XSD schema bundle');
     expect(row).toHaveTextContent(/Access: public/i);
+  });
+
+  it('shows applicable semantic and exchange profiles in the catalog', async () => {
+    render(<LintValidationCatalogPage />);
+    const xmlSchema = await screen.findByTestId(
+      'lint-validation-catalog-entry-XML_SCHEMA',
+    );
+    expect(xmlSchema).toHaveTextContent('Semantic: ICAO_2025, CA_ECCC');
+    expect(xmlSchema).toHaveTextContent('Exchange: All exchange profiles');
+
+    const terminator = screen.getByTestId(
+      'lint-validation-catalog-entry-MISSING_TERMINATOR',
+    );
+    expect(terminator).toHaveTextContent('Semantic: All semantic profiles');
+    expect(terminator).toHaveTextContent('Exchange: GLOBAL_AFS');
   });
 
   it('filters by level client-side (TC-EV062-004)', async () => {

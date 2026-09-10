@@ -15,96 +15,232 @@ cases:
     cite: annex3_golden/speci_basic.tac
 - bucket: happy
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KSEA 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=
+  expect:
+    encode_ok: true
+    require_xml: true
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 variant of speci_basic
 - bucket: happy
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 231800Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=
+  expect:
+    encode_ok: true
+    require_xml: true
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 variant of speci_basic
 - bucket: happy
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 232045Z 27015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=
+  expect:
+    encode_ok: true
+    require_xml: true
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 variant of speci_basic
 - bucket: happy
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN012 OVC040 12/06 A3001=
+  expect:
+    encode_ok: true
+    require_xml: true
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 variant of speci_basic
 - bucket: sad
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: GARBAGE
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 garbage tokens
 - bucket: sad
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: .
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 dot-only TAC
 - bucket: sad
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: TAF KJFK 231730Z 2318/2424 18010KT P6SM FEW040=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 TAF body
 - bucket: sad
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 METAR keyword under product=SPECI
 - bucket: sad
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: NOTAM KJFK CLOSED=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 non-METAR/SPECI product token
 - bucket: edge_pass
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001
+  expect:
+    encode_ok: true
+    require_xml: true
   meta:
-    reason: T1.4
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 missing terminator =
 - bucket: edge_pass
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: '  SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=  '
+  expect:
+    encode_ok: true
+    require_xml: true
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 leading/trailing whitespace
 - bucket: edge_pass
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001 RMK AO2=
+  expect:
+    encode_ok: true
+    require_xml: true
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 RMK AO2
 - bucket: edge_pass
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001  =
+  expect:
+    encode_ok: true
+    require_xml: true
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 space before terminator
 - bucket: edge_pass
   case_id: '05'
-  status: needs-fixture
+  status: oos
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#970 EV-970-S1 convert residual'
+    reason: insufficient edge_pass corpus
 - bucket: edge_fail
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
   meta:
-    reason: T1.4
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 cross-product keyword
 - bucket: edge_fail
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 keyword only
 - bucket: edge_fail
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: ????
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 symbols
 - bucket: edge_fail
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK=
+  expect:
+    encode_ok: false
+    codes:
+    - PARSE_ERROR
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S1 truncated after station
 - bucket: edge_fail
   case_id: '05'
-  status: needs-fixture
+  status: oos
   meta:
-    reason: T1.4 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#970 EV-970-S1 convert residual'
+    reason: edge_fail suite exhausted

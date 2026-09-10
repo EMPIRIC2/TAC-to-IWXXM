@@ -410,7 +410,7 @@
             "type": "string"
           },
           "iwxxm_version": {
-            "default": "2025-2",
+            "default": "",
             "description": "Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)",
             "title": "Iwxxm Version",
             "type": "string"
@@ -437,6 +437,12 @@
             "default": "",
             "description": "Optional signed ConversionProfile overlay id. When set, requires Bearer JWT and ownership (or shared); unknown or unauthorized ids are rejected.",
             "title": "Overlay Id",
+            "type": "string"
+          },
+          "preset_id": {
+            "default": "",
+            "description": "Optional saved semantic preset id. When set, requires Bearer JWT. Explicit request fields still win when both are supplied.",
+            "title": "Preset Id",
             "type": "string"
           },
           "preview": {
@@ -468,6 +474,12 @@
             ],
             "description": "When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).",
             "title": "Propagate Residuals To Remarks"
+          },
+          "report_variant": {
+            "default": "",
+            "description": "Optional profile-scoped report variant within the selected product family (for example LWIS under CA_ECCC + METAR)",
+            "title": "Report Variant",
+            "type": "string"
           },
           "semantic_profile": {
             "default": "",
@@ -542,7 +554,7 @@
             "title": "Files"
           },
           "iwxxm_version": {
-            "default": "2025-2",
+            "default": "",
             "description": "Target IWXXM version",
             "title": "Iwxxm Version",
             "type": "string"
@@ -1692,6 +1704,243 @@
         "title": "DisseminationPlanUpdate",
         "type": "object"
       },
+      "DisseminationTemplateCreate": {
+        "description": "Create body for a saved dissemination template.",
+        "properties": {
+          "ddl": {
+            "default": false,
+            "title": "Ddl",
+            "type": "boolean"
+          },
+          "name": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "params": {
+            "additionalProperties": true,
+            "title": "Params",
+            "type": "object"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product"
+          },
+          "shared": {
+            "default": false,
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "sinkType": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Sinktype",
+            "type": "string"
+          },
+          "slug": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "sinkType"
+        ],
+        "title": "DisseminationTemplateCreate",
+        "type": "object"
+      },
+      "DisseminationTemplateListResponse": {
+        "description": "List of saved dissemination templates for the caller.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DisseminationTemplateOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "DisseminationTemplateListResponse",
+        "type": "object"
+      },
+      "DisseminationTemplateOut": {
+        "description": "Persisted saved dissemination template.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "ddl": {
+            "title": "Ddl",
+            "type": "boolean"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "params": {
+            "additionalProperties": true,
+            "title": "Params",
+            "type": "object"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product"
+          },
+          "shared": {
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "sinkType": {
+            "title": "Sinktype",
+            "type": "string"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "slug",
+          "name",
+          "sinkType",
+          "ddl",
+          "shared",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "DisseminationTemplateOut",
+        "type": "object"
+      },
+      "DisseminationTemplateUpdate": {
+        "description": "Partial update for a saved dissemination template.",
+        "properties": {
+          "ddl": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ddl"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "params": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Params"
+          },
+          "product": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product"
+          },
+          "shared": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shared"
+          },
+          "sinkType": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sinktype"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          }
+        },
+        "title": "DisseminationTemplateUpdate",
+        "type": "object"
+      },
       "EvaluationJobResponse": {
         "description": "Response when creating an evaluation job.",
         "example": {
@@ -2498,6 +2747,14 @@
             "title": "Code",
             "type": "string"
           },
+          "exchange_profiles": {
+            "description": "Canonical exchange profile ids for packaging-tagged rows; empty = shared",
+            "items": {
+              "type": "string"
+            },
+            "title": "Exchange Profiles",
+            "type": "array"
+          },
           "family": {
             "anyOf": [
               {
@@ -2572,6 +2829,14 @@
             ],
             "description": "Vocabulary concept path when href is a verified landing",
             "title": "Semantic Identifier"
+          },
+          "semantic_profiles": {
+            "description": "Canonical semantic profile ids this row applies to; empty = shared/global",
+            "items": {
+              "type": "string"
+            },
+            "title": "Semantic Profiles",
+            "type": "array"
           },
           "severity": {
             "title": "Severity",
@@ -2951,6 +3216,85 @@
         "title": "Message",
         "type": "object"
       },
+      "MetarFamilyVariant": {
+        "description": "Read-only METAR-family variant row projected from the profile catalog.",
+        "properties": {
+          "api_product": {
+            "title": "Api Product",
+            "type": "string"
+          },
+          "iwxxm_root": {
+            "title": "Iwxxm Root",
+            "type": "string"
+          },
+          "manobs": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Manobs"
+          },
+          "minimal_observation": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Minimal Observation"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "rule_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Id"
+          },
+          "rule_id_prefix": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Id Prefix"
+          },
+          "tac_lead": {
+            "title": "Tac Lead",
+            "type": "string"
+          }
+        },
+        "required": [
+          "tac_lead",
+          "api_product",
+          "iwxxm_root"
+        ],
+        "title": "MetarFamilyVariant",
+        "type": "object"
+      },
       "OverlayCreate": {
         "description": "Create body for a signed overlay (server issues the signature).",
         "properties": {
@@ -3097,6 +3441,18 @@
               }
             ],
             "title": "Shared"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
           }
         },
         "title": "OverlayUpdate",
@@ -3335,9 +3691,300 @@
         "title": "PlanExecuteResponse",
         "type": "object"
       },
+      "PresetCreate": {
+        "description": "Create body for a saved semantic preset.",
+        "properties": {
+          "extensions": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 16,
+            "title": "Extensions",
+            "type": "array"
+          },
+          "iwxxmVersion": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Iwxxmversion",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "overlayId": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overlayid"
+          },
+          "reportVariant": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reportvariant"
+          },
+          "semanticProfile": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Semanticprofile",
+            "type": "string"
+          },
+          "shared": {
+            "default": false,
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "slug": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "semanticProfile",
+          "iwxxmVersion"
+        ],
+        "title": "PresetCreate",
+        "type": "object"
+      },
+      "PresetListResponse": {
+        "description": "List of semantic presets for the caller.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PresetOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "PresetListResponse",
+        "type": "object"
+      },
+      "PresetOut": {
+        "description": "Persisted saved semantic preset.",
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "extensions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Extensions",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "iwxxmVersion": {
+            "title": "Iwxxmversion",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "overlayId": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overlayid"
+          },
+          "reportVariant": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reportvariant"
+          },
+          "semanticProfile": {
+            "title": "Semanticprofile",
+            "type": "string"
+          },
+          "shared": {
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "user_id",
+          "slug",
+          "name",
+          "semanticProfile",
+          "iwxxmVersion",
+          "shared",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "PresetOut",
+        "type": "object"
+      },
+      "PresetUpdate": {
+        "description": "Partial update for a saved semantic preset.",
+        "properties": {
+          "extensions": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 16,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Extensions"
+          },
+          "iwxxmVersion": {
+            "anyOf": [
+              {
+                "maxLength": 32,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iwxxmversion"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "overlayId": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overlayid"
+          },
+          "reportVariant": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reportvariant"
+          },
+          "semanticProfile": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Semanticprofile"
+          },
+          "shared": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shared"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          }
+        },
+        "title": "PresetUpdate",
+        "type": "object"
+      },
       "ProfileCatalogEntry": {
         "description": "Read-only ConversionProfile catalog entry for the inspector.",
         "properties": {
+          "deltas_vs_icao": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Deltas Vs Icao",
+            "type": "array"
+          },
           "emit_key": {
             "anyOf": [
               {
@@ -3358,6 +4005,17 @@
             "title": "Implementation",
             "type": "object"
           },
+          "iwxxm_line": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iwxxm Line"
+          },
           "kind": {
             "title": "Kind",
             "type": "string"
@@ -3372,6 +4030,25 @@
               }
             ],
             "title": "Legacy Alias"
+          },
+          "metar_family_variants": {
+            "items": {
+              "$ref": "#/components/schemas/MetarFamilyVariant"
+            },
+            "title": "Metar Family Variants",
+            "type": "array"
+          },
+          "overlay_count": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overlay Count"
           },
           "priority": {
             "anyOf": [
@@ -3390,6 +4067,18 @@
             },
             "title": "Products",
             "type": "array"
+          },
+          "rule_pack_count": {
+            "anyOf": [
+              {
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rule Pack Count"
           },
           "status": {
             "anyOf": [
@@ -3543,6 +4232,11 @@
             "title": "Deferred",
             "type": "boolean"
           },
+          "has_tac_pair": {
+            "default": false,
+            "title": "Has Tac Pair",
+            "type": "boolean"
+          },
           "lint_error_count": {
             "default": 0,
             "title": "Lint Error Count",
@@ -3640,6 +4334,11 @@
             "title": "Match Pass",
             "type": "integer"
           },
+          "pair_examples": {
+            "default": 0,
+            "title": "Pair Examples",
+            "type": "integer"
+          },
           "product": {
             "title": "Product",
             "type": "string"
@@ -3647,6 +4346,11 @@
           "residual_nonempty": {
             "default": 0,
             "title": "Residual Nonempty",
+            "type": "integer"
+          },
+          "unpaired_examples": {
+            "default": 0,
+            "title": "Unpaired Examples",
             "type": "integer"
           },
           "validate_fail": {
@@ -3863,6 +4567,18 @@
               }
             ],
             "title": "Severity"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
           },
           "stage": {
             "anyOf": [
@@ -6184,6 +6900,11 @@
             "description": "Successful Response"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Dissemination Preflight",
         "tags": [
           "Dissemination"
@@ -6206,6 +6927,11 @@
             "description": "Successful Response"
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Dissemination Send",
         "tags": [
           "Dissemination"
@@ -6598,6 +7324,38 @@
               ],
               "title": "Source Access"
             }
+          },
+          {
+            "in": "query",
+            "name": "semantic_profile",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Semantic Profile"
+            }
+          },
+          {
+            "in": "query",
+            "name": "exchange_profile",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Exchange Profile"
+            }
           }
         ],
         "responses": {
@@ -6917,6 +7675,224 @@
         ]
       }
     },
+    "/api/v1/profiles/presets": {
+      "get": {
+        "description": "List semantic presets owned by the caller (and shared presets).",
+        "operationId": "list_presets_api_v1_profiles_presets_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PresetListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Presets",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "post": {
+        "description": "Create a semantic preset.",
+        "operationId": "create_preset_api_v1_profiles_presets_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PresetCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PresetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Preset",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/presets/{preset_id}": {
+      "delete": {
+        "description": "Delete a semantic preset.",
+        "operationId": "delete_preset_api_v1_profiles_presets__preset_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "preset_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Preset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Preset",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "get": {
+        "description": "Fetch one semantic preset.",
+        "operationId": "get_preset_api_v1_profiles_presets__preset_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "preset_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Preset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PresetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Preset",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "patch": {
+        "description": "Update a semantic preset.",
+        "operationId": "patch_preset_api_v1_profiles_presets__preset_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "preset_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Preset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PresetUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PresetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Preset",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
     "/api/v1/profiles/rule-packs": {
       "get": {
         "description": "List rule packs owned by the caller.",
@@ -7130,6 +8106,224 @@
           }
         ],
         "summary": "Patch Rule Pack",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/templates": {
+      "get": {
+        "description": "List dissemination templates owned by the caller (and shared templates).",
+        "operationId": "list_templates_api_v1_profiles_templates_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisseminationTemplateListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Templates",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "post": {
+        "description": "Create a dissemination template.",
+        "operationId": "create_template_api_v1_profiles_templates_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisseminationTemplateCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisseminationTemplateOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/templates/{template_id}": {
+      "delete": {
+        "description": "Delete an owned dissemination template.",
+        "operationId": "delete_template_api_v1_profiles_templates__template_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Template Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "get": {
+        "description": "Fetch one dissemination template.",
+        "operationId": "get_template_api_v1_profiles_templates__template_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Template Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisseminationTemplateOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "patch": {
+        "description": "Update a dissemination template.",
+        "operationId": "patch_template_api_v1_profiles_templates__template_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Template Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisseminationTemplateUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisseminationTemplateOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Template",
         "tags": [
           "Conversion Profiles"
         ]

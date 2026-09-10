@@ -47,7 +47,7 @@ def test_tc_ev088_003_catalog_yaml_parses() -> None:
     """Machine catalog remains parseable YAML with profiles list."""
     data = yaml.safe_load(_CATALOG.read_text(encoding="utf-8"))
     assert isinstance(data, dict)
-    assert data.get("schema_version") == 1
+    assert data.get("schema_version") == 2
     profiles = data.get("profiles")
     assert isinstance(profiles, list)
     assert len(profiles) >= 1

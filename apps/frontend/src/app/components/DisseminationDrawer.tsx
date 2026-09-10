@@ -7,9 +7,10 @@
  * ``exchange_profile`` before send (parity with workbench light picker).
  */
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from './ui/button';
 import { Label } from './ui/label';
+import { BetaBadge } from './BetaBadge';
 import {
   DisseminationProgressRow,
   type ProgressRowStatus,
@@ -39,6 +40,15 @@ import {
 import { firstDropFile, resolveDisseminationProduct } from '@/utils/fileInputHelpers';
 import { convertMetarToIwxxm } from '/utils/api';
 import {
+  listTemplates,
+  type DisseminationTemplateOut,
+} from '/utils/conversionProfilesApi';
+import {
+  DISSEMINATION_TEMPLATE_HELP,
+  DISSEMINATION_TEMPLATE_LABEL,
+  DISSEMINATION_TEMPLATE_NONE,
+} from '/utils/conversionProfilesCopy';
+import {
   coerceExchangeProfile,
   DEFAULT_EXCHANGE_PROFILE,
   EXCHANGE_PROFILE_OPTIONS,
@@ -57,6 +67,9 @@ export interface DisseminationDrawerProps {
   product?: string;
   /** Extra current-session outputs (beyond primary convert props). */
   sessionOutputs?: ExportCandidateInput[];
+  accessToken?: string;
+  disseminationTemplateId?: string;
+  onDisseminationTemplateChange?: (templateId: string) => void;
   /**
    * Initial exchange overlay (workbench light picker). Drawer keeps local state
    * after open so operators can override without mutating convert params.
@@ -141,6 +154,9 @@ export function DisseminationDrawer({
   tacText: propTac,
   product = 'metar',
   sessionOutputs = [],
+  accessToken,
+  disseminationTemplateId = '',
+  onDisseminationTemplateChange,
   exchangeProfile: exchangeProfileProp,
 }: DisseminationDrawerProps) {
   const [sinkType, setSinkType] = useState<SinkType>('postgres');
@@ -157,6 +173,13 @@ export function DisseminationDrawer({
   const [error, setError] = useState<string | null>(null);
   const [rowState, setRowState] = useState<Record<string, RowUiState>>({});
   const [lastResults, setLastResults] = useState<DisseminationFileResult[]>([]);
+  const [templates, setTemplates] = useState<DisseminationTemplateOut[]>([]);
+  const [templateLoadError, setTemplateLoadError] = useState<string | null>(null);
+  const [localSelectedTemplateId, setLocalSelectedTemplateId] = useState('');
+  const templatesEnabled = Boolean(accessToken?.trim());
+  const selectedTemplateId = onDisseminationTemplateChange
+    ? disseminationTemplateId
+    : localSelectedTemplateId;
   const [exchangeProfile, setExchangeProfile] = useState<ExchangeProfileId>(() =>
     coerceExchangeProfile(exchangeProfileProp ?? DEFAULT_EXCHANGE_PROFILE),
   );
@@ -226,6 +249,50 @@ export function DisseminationDrawer({
     }
   }, [byocParamsJson, needsUri]);
 
+  useEffect(() => {
+    if (!open || !templatesEnabled) {
+      return;
+    }
+    const token = accessToken!.trim();
+    let cancelled = false;
+    void listTemplates(token)
+      .then((response) => {
+        if (cancelled) return;
+        setTemplates(response.items);
+        setTemplateLoadError(null);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        setTemplates([]);
+        setTemplateLoadError(
+          err instanceof Error ? err.message : 'Unable to load templates',
+        );
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [accessToken, open, templatesEnabled]);
+
+  const applyTemplate = useCallback(
+    (templateId: string) => {
+      if (onDisseminationTemplateChange) {
+        onDisseminationTemplateChange(templateId);
+      } else {
+        setLocalSelectedTemplateId(templateId);
+      }
+      const template = templates.find((item) => item.id === templateId);
+      if (!template) {
+        return;
+      }
+      setSinkType(template.sinkType as SinkType);
+      setDdl(template.ddl);
+      setByocParamsJson(JSON.stringify(template.params ?? {}, null, 2));
+      setLastResults([]);
+      setRowState({});
+    },
+    [onDisseminationTemplateChange, templates],
+  );
+
   const runQueue = useCallback(
     async (mode: 'disseminate' | 'preflight_only') => {
       // Selection emptiness is enforced via canAct / disabled buttons.
@@ -254,25 +321,33 @@ export function DisseminationDrawer({
             params,
           },
           preflight: async (candidate, sink) =>
-            disseminationPreflight({
-              sink_type: sink.sinkType,
-              uri: sink.uri,
-              ddl: sink.ddl,
-              product: sink.product,
-              params: sink.params,
-            }),
+            disseminationPreflight(
+              {
+                dissemination_template_id: selectedTemplateId || undefined,
+                sink_type: sink.sinkType,
+                uri: sink.uri,
+                ddl: sink.ddl,
+                product: sink.product,
+                params: sink.params,
+              },
+              accessToken,
+            ),
           send: async (candidate, handle) => {
             const iwxxmXml = await resolveCandidateIwxxmXml(
               candidate,
               product,
               exchangeProfile,
             );
-            return disseminationSend({
-              handle,
-              iwxxm_xml: iwxxmXml,
-              tac_text: candidate.tacText?.trim() || undefined,
-              product: resolveDisseminationProduct(candidate.product, product),
-            });
+            return disseminationSend(
+              {
+                dissemination_template_id: selectedTemplateId || undefined,
+                handle,
+                iwxxm_xml: iwxxmXml,
+                tac_text: candidate.tacText?.trim() || undefined,
+                product: resolveDisseminationProduct(candidate.product, product),
+              },
+              accessToken,
+            );
           },
         })) {
           if (event.type === 'progress') {
@@ -308,12 +383,14 @@ export function DisseminationDrawer({
       }
     },
     [
+      accessToken,
       ddl,
       exchangeProfile,
       needsUri,
       parseByocParams,
       product,
       selectedCandidates,
+      selectedTemplateId,
       sinkType,
       uri,
     ],
@@ -361,8 +438,15 @@ export function DisseminationDrawer({
     setRowState({});
     setLastResults([]);
     setError(null);
+    setTemplates([]);
+    setTemplateLoadError(null);
+    if (onDisseminationTemplateChange) {
+      onDisseminationTemplateChange('');
+    } else {
+      setLocalSelectedTemplateId('');
+    }
     onOpenChange(false);
-  }, [onOpenChange]);
+  }, [onDisseminationTemplateChange, onOpenChange]);
 
   if (!open) return null;
 
@@ -386,12 +470,17 @@ export function DisseminationDrawer({
         onClick={(e) => e.stopPropagation()}
       >
         <header className="flex items-start justify-between gap-2">
-          <h2
-            id="dissemination-drawer-title"
-            className="text-lg font-semibold text-gray-900 dark:text-white"
-          >
-            Dissemination
-          </h2>
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2
+                id="dissemination-drawer-title"
+                className="text-lg font-semibold text-gray-900 dark:text-white"
+              >
+                Dissemination
+              </h2>
+              <BetaBadge showHelp />
+            </div>
+          </div>
           <Button
             type="button"
             variant="ghost"
@@ -404,6 +493,41 @@ export function DisseminationDrawer({
         </header>
 
         <div className="space-y-2">
+          {templatesEnabled && templates.length > 0 ? (
+            <>
+              <Label htmlFor="dissemination-template-select">
+                {DISSEMINATION_TEMPLATE_LABEL}
+              </Label>
+              <select
+                id="dissemination-template-select"
+                data-testid="dissemination-template-select"
+                className="w-full rounded border border-gray-300 bg-white px-2 py-2 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+                value={selectedTemplateId}
+                onChange={(e) => applyTemplate(e.target.value)}
+              >
+                <option value="">{DISSEMINATION_TEMPLATE_NONE}</option>
+                {templates.map((template) => (
+                  <option key={template.id} value={template.id}>
+                    {template.name} ({template.sinkType})
+                  </option>
+                ))}
+              </select>
+              <p
+                className="text-xs text-gray-500 dark:text-gray-400"
+                data-testid="dissemination-template-help"
+              >
+                {DISSEMINATION_TEMPLATE_HELP}
+              </p>
+            </>
+          ) : null}
+          {templatesEnabled && templateLoadError ? (
+            <p
+              className="text-xs text-amber-700 dark:text-amber-400"
+              data-testid="dissemination-template-error"
+            >
+              {templateLoadError}
+            </p>
+          ) : null}
           <Label htmlFor="dissemination-sink-type">Destination sink</Label>
           <select
             id="dissemination-sink-type"

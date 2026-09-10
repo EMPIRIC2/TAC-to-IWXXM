@@ -5,6 +5,8 @@ Spec: docs/test-plan.md §TC-EV068-004; docs/api-contract.md §EV-063 extensions
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 from fastapi.testclient import TestClient
 from src import api as api_module
@@ -12,6 +14,15 @@ from src.utilities.security import verify_supabase_token
 
 _CA_METAR = "METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012="
 _CA_IWXXM_VERSION = "3.0.0"
+_GOLDEN_XML = (
+    Path(__file__).resolve().parents[4]
+    / "packages"
+    / "tac2iwxxm"
+    / "tests"
+    / "fixtures"
+    / "annex3_golden"
+    / "metar_basic.golden.xml"
+)
 
 
 @pytest.fixture
@@ -90,7 +101,7 @@ def test_tc_ev068_004_without_iwxxm_ca_skips_product(
         seen.append(kwargs)
         return _FakeReport(product=kwargs.get("product"), stages=[])
 
-    monkeypatch.setattr(api_module, "iwxxm_validate_fn", fake_validate_iwxxm)
+    monkeypatch.setattr(api_module, "_call_iwxxm_validate", fake_validate_iwxxm)
 
     response = client.post(
         "/api/v1/validate",
@@ -104,7 +115,7 @@ def test_tc_ev068_004_without_iwxxm_ca_skips_product(
     )
     assert response.status_code == 200, response.text[:500]
     assert seen
-    assert seen[0].get("product") is None
+    assert seen[0].get("product") == "METAR"
     assert "package_stages" not in response.json()
 
 
@@ -156,7 +167,7 @@ def test_tc_ev068_004_convert_iwxxm_pass_through_forwards_extensions(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     seen: list[dict] = []
-    xml_payload = "<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/3.0'/>"
+    xml_payload = "<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/2023-1'/>"
 
     def fake_validate_iwxxm(xml: str, **kwargs):
         seen.append(kwargs)
@@ -169,8 +180,8 @@ def test_tc_ev068_004_convert_iwxxm_pass_through_forwards_extensions(
         files={
             "manual_text": (None, xml_payload),
             "product": (None, "iwxxm"),
-            "semantic_profile": (None, "CA_ECCC"),
-            "iwxxm_version": (None, _CA_IWXXM_VERSION),
+            "semantic_profile": (None, "ICAO_2025"),
+            "iwxxm_version": (None, "2025-2"),
             "validate_output": (None, "true"),
             "extensions": (None, "IWXXM_CA"),
             "lint": (None, "false"),
@@ -178,4 +189,4 @@ def test_tc_ev068_004_convert_iwxxm_pass_through_forwards_extensions(
     )
     assert response.status_code == 200, response.text[:500]
     assert seen
-    assert seen[0].get("product") == "IWXXM"
+    assert seen[0].get("product") is None

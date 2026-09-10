@@ -30,6 +30,8 @@ from tac2iwxxm.profile_registry import (
     EMIT_NZ_CAA_MET,
     EMIT_UK_METOFFICE,
     resolve_semantic_profile,
+    supported_iwxxm_versions_for_profile,
+    supported_report_variants_for_profile,
 )
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
 from tac2iwxxm.profiles.annex3_products import (
@@ -481,12 +483,13 @@ def convert(
     *,
     product: str,
     profile: str = "annex3",
-    iwxxm_version: str = "2025-2",
+    iwxxm_version: str | None = None,
     preview: bool = False,
     emit_translation_centre: bool = False,
     translation_centre_designator: str = "",
     translation_centre_name: str = "",
     report_status: str | None = None,
+    report_variant: str | None = None,
     propagate_residuals_to_remarks: bool | None = None,
 ) -> ConvertResult:
     """
@@ -530,6 +533,7 @@ def convert(
         Structured result with XML, IR, and issues.
     """
     product_u = product.upper()
+    requested_iwxxm_version = iwxxm_version or "2025-2"
     resolved = resolve_semantic_profile(profile)
     if resolved is None:
         profile_l = profile.lower()
@@ -538,12 +542,20 @@ def convert(
             code="UNSUPPORTED_PROFILE",
             message=f"profile {profile_l!r} not supported yet",
         )
-        xml = _preview_stub_xml(product_u, iwxxm_version, f"UNSUPPORTED_PROFILE: {issue.message}") if preview else None
+        xml = (
+            _preview_stub_xml(
+                product_u,
+                requested_iwxxm_version,
+                f"UNSUPPORTED_PROFILE: {issue.message}",
+            )
+            if preview
+            else None
+        )
         return ConvertResult(
             ok=False,
             product=product_u,
             profile=profile_l,
-            iwxxm_version=iwxxm_version,
+            iwxxm_version=requested_iwxxm_version,
             xml=xml,
             issues=[issue],
         )
@@ -552,6 +564,9 @@ def convert(
     semantic_profile = resolved.canonical
     deprecated_alias_used = resolved.alias_used
     do_propagate = resolve_propagate_residuals_to_remarks(profile_l, propagate_residuals_to_remarks)
+    effective_iwxxm_version = (
+        CA_IWXXM_VERSION if profile_l == EMIT_CA_ECCC and iwxxm_version is None else requested_iwxxm_version
+    )
 
     def _fail(
         code: str,
@@ -569,12 +584,12 @@ def convert(
             start=span_start,
             end=span_end,
         )
-        xml = _preview_stub_xml(product_u, iwxxm_version, f"{code}: {message}") if preview else None
+        xml = _preview_stub_xml(product_u, effective_iwxxm_version, f"{code}: {message}") if preview else None
         return ConvertResult(
             ok=False,
             product=product_u,
             profile=profile_l,
-            iwxxm_version=iwxxm_version,
+            iwxxm_version=effective_iwxxm_version,
             semantic_profile=semantic_profile,
             deprecated_alias_used=deprecated_alias_used,
             xml=xml,
@@ -609,11 +624,36 @@ def convert(
             "UNSUPPORTED_PROFILE",
             f"profile {profile_l} not supported yet for product {product_u!r}",
         )
-    if profile_l == EMIT_CA_ECCC and iwxxm_version != CA_IWXXM_VERSION:
+    supported_versions = supported_iwxxm_versions_for_profile(profile_l)
+    if effective_iwxxm_version not in supported_versions:
+        if profile_l == EMIT_CA_ECCC:
+            message = f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {effective_iwxxm_version!r}"
+        else:
+            message = (
+                f"profile {profile_l} supports iwxxm_version(s) {sorted(supported_versions)!r}, "
+                f"got {effective_iwxxm_version!r}"
+            )
         return _fail(
             "INVALID_IWXXM_VERSION",
-            f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}",
+            message,
         )
+    resolved_report_variant: str | None = None
+    if report_variant is not None and report_variant.strip():
+        resolved_report_variant = report_variant.strip().upper()
+        supported_variants = supported_report_variants_for_profile(profile_l, product_u)
+        if not supported_variants:
+            return _fail(
+                "INVALID_REPORT_VARIANT",
+                f"profile {profile_l} does not define report variants for product {product_u!r}",
+            )
+        if resolved_report_variant not in supported_variants:
+            return _fail(
+                "INVALID_REPORT_VARIANT",
+                (
+                    f"profile {profile_l} supports report_variant(s) {sorted(supported_variants)!r} "
+                    f"for product {product_u!r}, got {resolved_report_variant!r}"
+                ),
+            )
 
     status_override: str | None = None
     if report_status is not None:
@@ -629,6 +669,8 @@ def convert(
         if _UNRELIABLE_TAC.search(tac):
             raise ValueError("unreliable TAC marked INVALID - quarantine")
         ir = _parse(product_u, tac)
+        if resolved_report_variant is not None and profile_l == EMIT_CA_ECCC and product_u == "METAR":
+            ir = {**ir, "ca_iwxxm_root": resolved_report_variant}
         if status_override is not None:
             ir = {**ir, "report_status": status_override}
         if do_propagate:
@@ -638,7 +680,7 @@ def convert(
                 profile_l=profile_l,
                 ir=ir,
             )
-        xml = _emit(product_u, profile_l, ir, iwxxm_version)
+        xml = _emit(product_u, profile_l, ir, effective_iwxxm_version)
     except ValueError as exc:
         message = str(exc)
         if preview:
@@ -649,10 +691,10 @@ def convert(
                 ok=True,
                 product=product_u,
                 profile=profile_l,
-                iwxxm_version=iwxxm_version,
+                iwxxm_version=effective_iwxxm_version,
                 semantic_profile=semantic_profile,
                 deprecated_alias_used=deprecated_alias_used,
-                xml=_quarantine_xml(product_u, tac.strip(), iwxxm_version),
+                xml=_quarantine_xml(product_u, tac.strip(), effective_iwxxm_version),
                 issues=[
                     ConvertIssue(
                         severity="warning",
@@ -739,7 +781,7 @@ def convert(
         ok=True,
         product=product_u,
         profile=profile_l,
-        iwxxm_version=iwxxm_version,
+        iwxxm_version=effective_iwxxm_version,
         semantic_profile=semantic_profile,
         deprecated_alias_used=deprecated_alias_used,
         xml=xml,

@@ -35,12 +35,25 @@ Per [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md), three laye
 1. **`semanticProfile`** (`CA_ECCC`) — national parse/emit overlay (MANOBS + `*-ca.xsd`).
 2. **`product`** — converter dispatch family (`METAR` \| `SPECI` \| `TAF` \| …). LWIS/SAWR are
    not global product enums; they share the METAR-family parser and fixture tree.
-3. **`ca_iwxxm_root`** (IR) — TAC lead preserved from bulletin; selects IWXXM root element and
-   observing-system vocabulary at emit time.
+3. **`reportVariant` / `report_variant`** (wire, optional) — profile-scoped report variant inside
+   the chosen dispatch family. For CA surface reports this may be `LWIS` or `SAWR` while
+   `product=METAR` stays unchanged.
+4. **`ca_iwxxm_root`** (IR) — resolved TAC lead / variant preserved into IR; selects IWXXM root
+   element and observing-system vocabulary at emit time.
 
 So LWIS/SAWR are **not** “METAR with a different label” — they are distinct MANOBS report types
 and distinct `metar-speci-ca.xsd` roots. The API routes them through `product=METAR` because
 they are aerodrome **surface observation** reports, not because they encode as `iwxxm:METAR`.
+
+### Convert wire behavior
+
+- Request: `semantic_profile=CA_ECCC` + `product=METAR` may optionally include
+  `report_variant=LWIS|SAWR|METAR`.
+- Validation: mismatches fail closed, for example `product=SPECI` with `report_variant=LWIS`.
+- Fallback: when omitted, convert resolves the variant from the TAC lead (`LWIS`, `SAWR`,
+  `METAR`, `SPECI`) and preserves that resolved value in metadata / IR.
+- Response metadata: convert echoes resolved `report_variant` when the selected semantic profile
+  defines `metar_family_variants`; profiles without a variant table omit it.
 
 **LWIS vs SAWR vs METAR (behavioural):**
 

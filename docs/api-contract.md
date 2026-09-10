@@ -142,7 +142,13 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
   do **not** run TAC→IWXXM; they lint XML (well-formed / COLLECT vs report) and may run F2
   validate. TAC text → structured not-XML error (not METAR lint). `/lint-tac` with
   `product=iwxxm` uses XML lint rules, not TAC product syntax. `/validate` unchanged engine
-  (F2); product field documents the pass-through path.
+  (F2); product field documents the pass-through path. **EV-908 / #908:** on `POST /api/v1/convert`,
+  when the uploaded IWXXM line differs from the requested `iwxxm_version`, the backend migrates
+  only **supported** pairs per
+  [CROSS_VERSION_CONVERSION.md](domain/iwxxm/CROSS_VERSION_CONVERSION.md) (currently
+  **2023-1 → 2025-2** lossy), rewrites namespace/schema references, and validates the
+  migrated output before returning success. Unsupported pairs (e.g. **2025-2 → 2023-1**)
+  fail closed with HTTP **400** and issue code `UNSUPPORTED_IWXXM_MIGRATION`.
 - **`product=vona`**: Volcano Observatory Notice for Aviation →
   `iwxxm:VolcanoObservatoryNoticeForAviation` (F32 / #741). Canonical wire value is **`vona`**.
   Unknown aliases → `unknown_product` **400**.
@@ -213,6 +219,7 @@ package-only routes):
 | Field | Required | Default | Description |
 |-------|----------|---------|-------------|
 | `semantic_profile` | no | `ICAO_2025` (or alias `annex3` during window) | Semantic profile id. **EV-093 / #1024:** workbench Profile control submits this field with **uppercase** OpenAPI ids for all registered canonicals (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, thin packs); legacy alias option values `annex3` / `iwxxm_us` remain accepted through the #1025 window. Prefer this field over deprecated `profile`. |
+| `report_variant` | no | omitted / auto-detect when profile defines variants | Optional profile-scoped report variant within the selected `product` family. **EV-1050:** for profiles such as `CA_ECCC`, this refines the IWXXM root / TAC lead without promoting national variants into the global `product` enum. Valid values come from the semantic profile catalog (`metar_family_variants`); mismatches fail closed (for example `product=SPECI` with `report_variant=LWIS`). When omitted and the profile supports variants, convert may resolve the variant from TAC lead and echo the resolved value in response metadata. |
 | `iwxxm_version` | no | SoT default | Unchanged — independent of semantic id |
 | `extensions` | no | `[]` | Optional national extension tokens (e.g. `IWXXM_US_3`, `IWXXM_CA`). **EV-068:** when `IWXXM_CA` is present with `semantic_profile=CA_ECCC`, triggers the full Canadian validation stack (layers 1–5 in [IWXXM_VALIDATION.md](domain/IWXXM_VALIDATION.md) §CA_ECCC validation stages). When omitted, `CA_ECCC` alone selects profile-pinned 3.0.0 core XSD+SCH scaffold (backward compatible). **EV-074:** for `product=SIGMET` or `VAA`, Canadian product XSD is not published — layer `ca_xsd` is skipped as not applicable (not an error); WMO 3.0.0 XSD+Schematron still run. |
 | `exchange_profile` | no | `GLOBAL_AFS` | Used when **packaging** / disseminate-prep invoked; ignored on convert-only. Known wire ids: `GLOBAL_AFS`, `APAC_ROBEX`, `EUR_RODEX`, `AFI`, `CAR_SAM` (EV-065/EV-086 regional stubs share COLLECT baseline). **EV-090 / #1024:** workbench light Exchange control submits this field on package/bulletin paths. |
@@ -223,6 +230,8 @@ package-only routes):
 ```yaml
 conversion:
   semanticProfile: US_FAA_NWS
+  product: METAR
+  reportVariant: LWIS
   iwxxmVersion: "2025-2"
   extensions: [IWXXM_US_3]
 exchange:
@@ -234,7 +243,18 @@ exchange:
 - Unknown semantic or exchange id → **400** (hard).
 - Alias use → same semantics as canonical id + deprecation signal (response header and/or
   structured field — finalize in Build).
+- `report_variant` is only applicable where the selected semantic profile defines variant rows;
+  otherwise omit it and expect no resolved-variant metadata.
+- Convert response metadata may include resolved `report_variant` when the profile defines
+  variants, even if the client omitted the request field and runtime inferred it from TAC lead.
 - Exchange profile selects packaging rules only — **not** F16–F19 sink credentials.
+- Milestone 4 follow-on scope includes supported IWXXM-line conversion framing
+  ([#908](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/908)) and operator-sharing surfaces
+  ([#1051](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1051)), but sharing must stay limited
+  to non-secret profile assets or destination references; convert/lint/validate remain public,
+  while mutate/share/manage profile assets remain JWT-gated.
+- For `product=iwxxm`, convert response metadata may include `source_iwxxm_version`,
+  `target_iwxxm_version`, and `migrated_iwxxm` to describe the pass-through or migration path.
 
 **Observability** (`GET /metrics`, Prometheus — TC-EV063-006):
 
@@ -412,6 +432,10 @@ lightweight catalog panel (F15). Does **not** change `POST /lint-tac` response s
 | Param | Required | Description |
 |-------|----------|-------------|
 | `product` | no | If set, filter rows tagged for that product (e.g. `metar`, `speci`); omit = all |
+| `family` | no | `lint` \| `iwxxm` (EV-061+) |
+| `issue_type` / `source_access` | no | EV-062 filters (additive) |
+| `semantic_profile` | no | **EV-1120 / #1121** — canonical semantic profile id (uppercase OpenAPI ids; legacy aliases accepted if already on convert wire). Omit = all rows (current behavior). When set: return **shared/global ∪ rows applicable to that profile**; national-only codes for other profiles omitted. Unknown id → **400** (`invalid_semantic_profile` style). |
+| `exchange_profile` | no | **EV-1120 / #1121** — packaging-context filter only (not F16–F19 egress). Omit = ignore exchange tagging. When set: include shared ∪ rows tagged for that exchange profile. Unknown id → **400**. |
 
 **Response** (msgspec encode; pydantic OpenAPI alias):
 
@@ -665,6 +689,9 @@ POST   /api/v1/work-sessions/{id}/restore
 **Auth**: Bearer JWT (Supabase Auth). Owner isolation by Auth `user_id`. Exact list/query/body
 shapes finalize in 04 (historical ADR-020 shapes are the starting point).
 
+**Title**: Plain-text only. Create/update strips HTML markup from `title` on write (defense in
+depth; UI still renders titles as text nodes). Operators should not rely on stored HTML.
+
 **Admin work-sessions list**: Remains removed (`GET /admin/work-sessions`).
 
 **Guest users**: Convert/validate/lint/decode/preview/dissemination without login; history local
@@ -698,7 +725,7 @@ allowlist. Abuse controls apply (rate limits / body size).
 |-------|-------|
 | Request | JSON: `sink_type` (`postgres` \| `mysql` \| `sqlserver` \| `sqlite` \| `wis2` \| `edis` \| `amhs` \| `swim` \| `afs`) + sink-specific connection params (DB URI or WIS2/EDIS/AMHS fields) + optional `payload` metadata (product, schema version) + `ddl` flag for create-if-missing + **single** IWXXM/TAC body (or in-session/drop reference) |
 | Success | Structured preflight result: connectivity OK, schema/writer-contract diff (empty when green), optional short-lived opaque `handle` |
-| Failure | 400/422 structured errors (allowlist/SSRF, auth to dest, schema mismatch, missing columns); secrets redacted |
+| Failure | **422** when `sink_type` is omitted/`null` (client error); **501** when `sink_type` is a known drawer value not yet implemented for this route (e.g. `wis2`); 400/403 structured errors (allowlist/SSRF, auth to dest, schema mismatch, missing columns); secrets redacted |
 
 ### `POST /api/v1/dissemination/send`
 
@@ -706,7 +733,7 @@ allowlist. Abuse controls apply (rate limits / body size).
 |-------|-------|
 | Request | JSON: either `handle` from green preflight **or** full sink params again + **single** IWXXM/TAC body (or reference to in-session convert result / drag-drop content) |
 | Success | Sink ack + optional `kv_upload_key` metadata for local Finished (no dest secrets stored) |
-| Failure | Same structured/redacted errors as preflight; block if preflight would not be green |
+| Failure | Same structured/redacted errors as preflight (**422** missing/`null` `sink_type` when no valid handle supplies it; **501** unimplemented sink); block if preflight would not be green |
 
 ### Multi-file selection (EV-018 / #785) — client contract
 
@@ -750,13 +777,45 @@ not Supabase PostgREST product writes (F30). Auth identity from Supabase JWT.
 
 | Method | Path | Notes |
 |--------|------|-------|
-| `GET` | `/api/v1/profiles/catalog` | Read-only ConversionProfile / catalog projection (ADR-038 fields; no secrets) |
+| `GET` | `/api/v1/profiles/catalog` | Read-only ConversionProfile / catalog projection (ADR-038 fields; no secrets). **EV-1120 / #1145 additive:** optional `deltas_vs_icao` (≤3 plain-language bullets vs ICAO baseline), `iwxxm_line` / vendor-pin summary for glanceable summary + side-by-side compare; when JWT present, optional `rule_pack_count` / `overlay_count` for the caller. |
 | `GET`/`POST`/`PUT`/`DELETE` | `/api/v1/profiles/rule-packs/{id}` | Rule-pack CRUD; export-friendly body |
 | `GET`/`POST`/`PATCH`/`DELETE` | `/api/v1/profiles/overlays[/{id}]` | Server-HMAC signed overlays; reject unsigned/tampered |
 | `POST` | `/api/v1/convert` (existing) | Optional multipart `overlay_id` (JWT + ownership when set) |
 
 **Auth**: JWT required for pack/overlay mutate → 401/403. **Trust**: unsigned browser packs
 rejected. **Non-goals**: credentials / destination URIs in profile objects (ADR-021/029).
+
+### EV-1051 / #1051 — Operator sharing of semantic presets + dissemination templates (JWT)
+
+`#1051` deepens the existing authenticated profile and dissemination surfaces rather than
+creating a public marketplace or a new secret store. Two saved asset classes are allowed:
+
+1. **Semantic preset**: named operator/org-shareable preset that references an existing
+   semantic profile id and supported conversion defaults (`iwxxmVersion`, `extensions[]`,
+   optional `reportVariant`, optional overlay/rule-pack references).
+2. **Dissemination template**: named operator/org-shareable destination reference that stores
+   only non-secret sink metadata and any required runtime-field hints.
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET`/`POST` | `/api/v1/profiles/presets` | List/create semantic presets owned by the caller plus rows visible via share rules |
+| `GET`/`PATCH`/`DELETE` | `/api/v1/profiles/presets/{preset_id}` | Read/update/delete one semantic preset; unknown or unauthorized ids fail closed |
+| `GET`/`POST` | `/api/v1/profiles/templates` | List/create saved dissemination templates (non-secret only) |
+| `GET`/`PATCH`/`DELETE` | `/api/v1/profiles/templates/{template_id}` | Read/update/delete one saved template |
+| `POST` | `/api/v1/convert` (existing) | Optional saved `preset_id` may resolve conversion defaults before request execution; explicit request fields still win when both are supplied |
+| `POST` | `/api/v1/dissemination/preflight` (existing) | Optional `dissemination_template_id` may resolve non-secret sink metadata, but caller still supplies one-shot live credentials/URI material when required |
+| `POST` | `/api/v1/dissemination/send` (existing) | Same template resolution rule as preflight; runtime credentials remain memory-only |
+
+**Auth**: mutate/share/manage preset/template rows requires JWT. Convert/lint/validate stay
+public when no saved asset id is supplied. **Visibility**: finalized in Build, but must support
+owner-scoped and shared reads without exposing PII in metrics labels. **Secret rules**:
+saved dissemination templates must reject URIs, DSNs, passwords, API keys, tokens, and
+connection strings; semantic presets may store only non-secret conversion defaults and saved
+asset references. Work-session hydration may persist `preset_id` and
+`dissemination_template_id` as saved-asset references only; it must not persist live
+destination credentials or URIs. **Non-goals**: guest sharing, arbitrary uploaded executable
+profiles, saved dissemination credentials, or conflating exchange profile ids with destination
+state.
 
 ### S050 / EV-042 — Operator UI destinations hidden
 

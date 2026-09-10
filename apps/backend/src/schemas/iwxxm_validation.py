@@ -147,8 +147,8 @@ def get_namespace_version(xml_string: str) -> str:
     """
     import re
 
-    # Extract namespace from first few lines - supports both YYYY-X and X.X formats
-    match = re.search(r'xmlns:iwxxm="http://icao\.int/iwxxm/([0-9]+(?:\.[0-9]|-[0-9])?)"', xml_string[:500])
+    # Accept either valid XML quote style for the IWXXM namespace declaration.
+    match = re.search(r"""xmlns:iwxxm=['"]http://icao\.int/iwxxm/([0-9]+(?:\.[0-9]|-[0-9])?)['"]""", xml_string[:500])
     if not match:
         raise ValueError("IWXXM namespace not found in XML")
 

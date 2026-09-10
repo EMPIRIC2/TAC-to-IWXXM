@@ -52,6 +52,16 @@ _CANONICAL_TO_EMIT: dict[str, str] = {
 }
 
 _KNOWN_WIRE_IDS: frozenset[str] = frozenset(_ALIAS_TO_CANONICAL) | frozenset(_CANONICAL_TO_EMIT)
+_GENERAL_IWXXM_VERSIONS = frozenset({"2025-2", "2023-1"})
+_PROFILE_SCOPED_IWXXM_VERSIONS: dict[str, frozenset[str]] = {
+    EMIT_CA_ECCC: frozenset({"3.0.0"}),
+}
+_PROFILE_REPORT_VARIANTS: dict[str, dict[str, frozenset[str]]] = {
+    EMIT_CA_ECCC: {
+        "METAR": frozenset({"METAR", "LWIS", "SAWR"}),
+        "SPECI": frozenset({"SPECI"}),
+    }
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -116,6 +126,22 @@ def known_semantic_profile_ids() -> frozenset[str]:
     return _KNOWN_WIRE_IDS
 
 
+def supported_iwxxm_versions_for_profile(profile: str) -> frozenset[str]:
+    """Return the supported IWXXM lines for a semantic profile id or emit key."""
+    resolved = resolve_semantic_profile(profile)
+    emit_key = resolved.emit_key if resolved is not None else normalize_profile_id(profile)
+    return _PROFILE_SCOPED_IWXXM_VERSIONS.get(emit_key, _GENERAL_IWXXM_VERSIONS)
+
+
+def supported_report_variants_for_profile(profile: str, product: str) -> frozenset[str]:
+    """Return allowed report-variant ids for a semantic profile + API product."""
+    resolved = resolve_semantic_profile(profile)
+    emit_key = resolved.emit_key if resolved is not None else normalize_profile_id(profile)
+    product_u = product.strip().upper()
+    by_product = _PROFILE_REPORT_VARIANTS.get(emit_key, {})
+    return by_product.get(product_u, frozenset())
+
+
 __all__ = [
     "CANONICAL_AU_BOM",
     "CANONICAL_BR_DECEA",
@@ -143,4 +169,6 @@ __all__ = [
     "known_semantic_profile_ids",
     "normalize_profile_id",
     "resolve_semantic_profile",
+    "supported_iwxxm_versions_for_profile",
+    "supported_report_variants_for_profile",
 ]

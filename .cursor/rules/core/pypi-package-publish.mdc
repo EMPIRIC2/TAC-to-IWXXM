@@ -22,21 +22,23 @@ Traces to `[Corpus: product]` F12–F14, `[Corpus: system-spec]` package compone
 - Workflows need `id-token: write` and a PyPI Trusted Publisher linked to the workflow +
   **per-package** tag filter.
 
-## Version tags (F14)
+## Version tags (F14 / ADR-043)
 
 | Package | PyPI name | Tag pattern |
 |---------|-----------|-------------|
-| `packages/tac-validate` | `tac-validate` | `tac-validate-v*` (e.g. `tac-validate-v0.1.0`) |
+| `packages/tac-validate` | `tac-validate` | `tac-validate-v*` (e.g. `tac-validate-v2026.09.10`) |
 | `packages/iwxxm-validate` | `iwxxm-validate` | `iwxxm-validate-v*` |
 | `packages/tac2iwxxm` | `tac2iwxxm` | `tac2iwxxm-v*` |
 
-- Do not publish from arbitrary branch pushes — **tag-driven** only.
-- First public release this cycle: `0.1.0` for all three.
+- **CalVer** `YYYY.MM.DD` (same-day `YYYY.MM.DD.N`); nightlies `YYYY.MM.DD.devN` → TestPyPI
+  only via `pypi-nightly.yml`.
+- Do not publish prod wheels from arbitrary branch pushes — **tag-driven** only
+  (`pypi-publish.yml`).
 - Extra `tac2iwxxm[validate]` must depend on both validators (F14).
-- **Promote timing (recommended):** bump package versions on `stage` before the
+- **Promote timing (recommended):** bump CalVer on `stage` before the
   `stage`→`main` PR; push package tags from the merged `main` tip when publishing.
-  Deploy cutovers also use `vYYYY.MM.DD-deploy`. See [Corpus: deploy] §Promote and
-  `doks-promote-from-stage.mdc` §Release on promote.
+  Deploy cutovers also use `vYYYY.MM.DD-deploy`. See [Corpus: deploy] §Promote,
+  `doks-promote-from-stage.mdc` §Release on promote, and [Corpus: adr/ADR-043].
 
 ## Package boundaries
 

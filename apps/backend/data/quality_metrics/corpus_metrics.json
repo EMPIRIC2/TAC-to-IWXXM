@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-11T16:48:50Z",
+  "generated_at": "2026-09-08T00:19:33Z",
   "iwxxm_pin": "2025-2",
   "summaries": [
     {
@@ -9,7 +9,9 @@
       "residual_nonempty": 0,
       "lint_fail": 0,
       "validate_fail": 0,
-      "deferred_gaps": 0
+      "deferred_gaps": 0,
+      "pair_examples": 1,
+      "unpaired_examples": 0
     },
     {
       "product": "metar",
@@ -18,7 +20,9 @@
       "residual_nonempty": 0,
       "lint_fail": 0,
       "validate_fail": 0,
-      "deferred_gaps": 1
+      "deferred_gaps": 1,
+      "pair_examples": 1,
+      "unpaired_examples": 1
     },
     {
       "product": "sigmet",
@@ -27,7 +31,9 @@
       "residual_nonempty": 1,
       "lint_fail": 0,
       "validate_fail": 0,
-      "deferred_gaps": 0
+      "deferred_gaps": 0,
+      "pair_examples": 5,
+      "unpaired_examples": 0
     },
     {
       "product": "speci",
@@ -36,16 +42,20 @@
       "residual_nonempty": 0,
       "lint_fail": 0,
       "validate_fail": 0,
-      "deferred_gaps": 0
+      "deferred_gaps": 0,
+      "pair_examples": 1,
+      "unpaired_examples": 0
     },
     {
       "product": "swxa",
       "match_pass": 1,
       "match_fail": 0,
-      "residual_nonempty": 1,
+      "residual_nonempty": 0,
       "lint_fail": 0,
       "validate_fail": 0,
-      "deferred_gaps": 2
+      "deferred_gaps": 2,
+      "pair_examples": 1,
+      "unpaired_examples": 2
     },
     {
       "product": "taf",
@@ -54,7 +64,9 @@
       "residual_nonempty": 0,
       "lint_fail": 0,
       "validate_fail": 0,
-      "deferred_gaps": 1
+      "deferred_gaps": 1,
+      "pair_examples": 2,
+      "unpaired_examples": 1
     },
     {
       "product": "tca",
@@ -63,7 +75,9 @@
       "residual_nonempty": 0,
       "lint_fail": 0,
       "validate_fail": 0,
-      "deferred_gaps": 0
+      "deferred_gaps": 0,
+      "pair_examples": 1,
+      "unpaired_examples": 0
     },
     {
       "product": "vaa",
@@ -72,16 +86,20 @@
       "residual_nonempty": 0,
       "lint_fail": 0,
       "validate_fail": 0,
-      "deferred_gaps": 0
+      "deferred_gaps": 0,
+      "pair_examples": 1,
+      "unpaired_examples": 0
     },
     {
       "product": "vona",
       "match_pass": 0,
       "match_fail": 1,
-      "residual_nonempty": 1,
+      "residual_nonempty": 0,
       "lint_fail": 0,
       "validate_fail": 0,
-      "deferred_gaps": 0
+      "deferred_gaps": 0,
+      "pair_examples": 1,
+      "unpaired_examples": 0
     }
   ],
   "files": [
@@ -93,7 +111,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "speci-A3-2",
@@ -103,7 +122,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "taf-A5-1",
@@ -113,7 +133,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "taf-A5-2",
@@ -123,7 +144,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "sigmet-A6-1a-TS",
@@ -133,7 +155,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "sigmet-A6-1b-CNL",
@@ -143,7 +166,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "sigmet-VA-EGGX",
@@ -153,7 +177,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "sigmet-multi-location-VA",
@@ -163,7 +188,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "sigmet-A6-2-TC",
@@ -173,7 +199,8 @@
       "residual_count": 4,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "airmet-A6-1a-TS",
@@ -183,7 +210,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "va-advisory-A7-2",
@@ -193,7 +221,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "tc-advisory-A2-2",
@@ -203,27 +232,30 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "spacewx-A7-3",
       "product": "swxa",
       "tier": "wmoReference",
       "match_status": "equal",
-      "residual_count": 1,
+      "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "vona-A7-1",
       "product": "vona",
       "tier": "wmoPass",
       "match_status": "unequal",
-      "residual_count": 1,
+      "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": false
+      "deferred": false,
+      "has_tac_pair": true
     },
     {
       "stem": "spacewx-A7-4",
@@ -233,7 +265,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": true
+      "deferred": true,
+      "has_tac_pair": false
     },
     {
       "stem": "spacewx-A7-5",
@@ -243,7 +276,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": true
+      "deferred": true,
+      "has_tac_pair": false
     },
     {
       "stem": "metar-NIL-collect",
@@ -253,7 +287,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": true
+      "deferred": true,
+      "has_tac_pair": false
     },
     {
       "stem": "taf-NIL-collect",
@@ -263,7 +298,8 @@
       "residual_count": 0,
       "lint_error_count": 0,
       "validate_error_count": 0,
-      "deferred": true
+      "deferred": true,
+      "has_tac_pair": false
     }
   ],
   "details": {
@@ -281,7 +317,7 @@
         {
           "severity": "info",
           "code": "RVR_PRESENT",
-          "message": "METAR RVR group 'R12/1000U' present — research R8",
+          "message": "METAR RVR group 'R12/1000U' present - research R8",
           "location": "modifier",
           "start": 33,
           "end": 42
@@ -289,7 +325,7 @@
         {
           "severity": "info",
           "code": "NSW_PRESENT",
-          "message": "METAR NSW present — research T3 / S1",
+          "message": "METAR NSW present - research T3 / S1",
           "location": "modifier",
           "start": 114,
           "end": 117
@@ -311,7 +347,7 @@
         {
           "severity": "info",
           "code": "CLOUD_CB_OR_TCU",
-          "message": "SPECI cloud group 'BKN005CB' includes convective type — research R4",
+          "message": "SPECI cloud group 'BKN005CB' includes convective type - research R4",
           "location": "cloud",
           "start": 48,
           "end": 56
@@ -319,7 +355,7 @@
         {
           "severity": "info",
           "code": "TEMPO_PRESENT",
-          "message": "SPECI TEMPO trend present — research R8",
+          "message": "SPECI TEMPO trend present - research R8",
           "location": "modifier",
           "start": 69,
           "end": 74
@@ -327,7 +363,7 @@
         {
           "severity": "info",
           "code": "WIND_VRB_OR_GUST",
-          "message": "SPECI wind '05025G37KT' uses VRB and/or gust — research R8",
+          "message": "SPECI wind '05025G37KT' uses VRB and/or gust - research R8",
           "location": "modifier",
           "start": 19,
           "end": 29
@@ -335,7 +371,7 @@
         {
           "severity": "info",
           "code": "NSC_PRESENT",
-          "message": "SPECI NSC present — research T3 / S1",
+          "message": "SPECI NSC present - research T3 / S1",
           "location": "modifier",
           "start": 109,
           "end": 112
@@ -343,7 +379,7 @@
         {
           "severity": "info",
           "code": "NSW_PRESENT",
-          "message": "SPECI NSW present — research T3 / S1",
+          "message": "SPECI NSW present - research T3 / S1",
           "location": "modifier",
           "start": 105,
           "end": 108
@@ -365,7 +401,7 @@
         {
           "severity": "info",
           "code": "FM_PRESENT",
-          "message": "TAF FM change group present — research T2",
+          "message": "TAF FM change group present - research T2",
           "location": "modifier",
           "start": 134,
           "end": 142
@@ -373,7 +409,7 @@
         {
           "severity": "info",
           "code": "BECMG_PRESENT",
-          "message": "TAF BECMG change group present — research T2",
+          "message": "TAF BECMG change group present - research T2",
           "location": "modifier",
           "start": 48,
           "end": 53
@@ -381,7 +417,7 @@
         {
           "severity": "info",
           "code": "TEMPO_PRESENT",
-          "message": "TAF TEMPO change group present — research T2",
+          "message": "TAF TEMPO change group present - research T2",
           "location": "modifier",
           "start": 80,
           "end": 85
@@ -403,7 +439,7 @@
         {
           "severity": "info",
           "code": "AMD_PRESENT",
-          "message": "TAF AMD modifier present — research T1",
+          "message": "TAF AMD modifier present - research T1",
           "location": "modifier",
           "start": 4,
           "end": 7
@@ -411,7 +447,7 @@
         {
           "severity": "info",
           "code": "CNL_REPORT",
-          "message": "TAF CNL cancel report — research T1",
+          "message": "TAF CNL cancel report - research T1",
           "location": "modifier",
           "start": 31,
           "end": 34
@@ -433,7 +469,7 @@
         {
           "severity": "info",
           "code": "SINGLE_ALTITUDE",
-          "message": "SIGMET single altitude (same lower/upper) — research G1",
+          "message": "SIGMET single altitude (same lower/upper) - research G1",
           "location": "modifier",
           "start": 101,
           "end": 106
@@ -441,7 +477,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "SIGMET sequence number present — research G2",
+          "message": "SIGMET sequence number present - research G2",
           "location": "modifier",
           "start": 12,
           "end": 13
@@ -449,7 +485,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "SIGMET FIR/CTA/UIR airspace identity — research G2",
+          "message": "SIGMET FIR/CTA/UIR airspace identity - research G2",
           "location": "modifier",
           "start": 53,
           "end": 56
@@ -457,7 +493,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "SIGMET OBS or FCST analysis — research G2",
+          "message": "SIGMET OBS or FCST analysis - research G2",
           "location": "modifier",
           "start": 69,
           "end": 73
@@ -465,7 +501,7 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "SIGMET intensity change INTSF/WKN/NC — research G2",
+          "message": "SIGMET intensity change INTSF/WKN/NC - research G2",
           "location": "modifier",
           "start": 118,
           "end": 121
@@ -487,7 +523,7 @@
         {
           "severity": "info",
           "code": "SIGMET_CNL",
-          "message": "SIGMET CNL cancel report — research G1",
+          "message": "SIGMET CNL cancel report - research G1",
           "location": "modifier",
           "start": 61,
           "end": 64
@@ -509,7 +545,7 @@
         {
           "severity": "info",
           "code": "POLYGON_LOCATION",
-          "message": "SIGMET polygon/line WI geometry — research G1",
+          "message": "SIGMET polygon/line WI geometry - research G1",
           "location": "modifier",
           "start": 128,
           "end": 130
@@ -517,7 +553,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "SIGMET sequence number present — research G2",
+          "message": "SIGMET sequence number present - research G2",
           "location": "modifier",
           "start": 12,
           "end": 13
@@ -525,7 +561,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "SIGMET FIR/CTA/UIR airspace identity — research G2",
+          "message": "SIGMET FIR/CTA/UIR airspace identity - research G2",
           "location": "modifier",
           "start": 64,
           "end": 67
@@ -533,7 +569,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "SIGMET OBS or FCST analysis — research G2",
+          "message": "SIGMET OBS or FCST analysis - research G2",
           "location": "modifier",
           "start": 114,
           "end": 117
@@ -541,7 +577,7 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "SIGMET intensity change INTSF/WKN/NC — research G2",
+          "message": "SIGMET intensity change INTSF/WKN/NC - research G2",
           "location": "modifier",
           "start": 199,
           "end": 201
@@ -549,7 +585,7 @@
         {
           "severity": "info",
           "code": "VA_VOLCANO_IDENTITY",
-          "message": "VA SIGMET erupting volcano identity (MT/PSN) — research V1",
+          "message": "VA SIGMET erupting volcano identity (MT/PSN) - research V1",
           "location": "modifier",
           "start": 80,
           "end": 82
@@ -557,7 +593,7 @@
         {
           "severity": "info",
           "code": "VA_ASH_GEOMETRY",
-          "message": "VA SIGMET ash cloud geometry / forecast position — research V1",
+          "message": "VA SIGMET ash cloud geometry / forecast position - research V1",
           "location": "modifier",
           "start": 68,
           "end": 70
@@ -579,7 +615,7 @@
         {
           "severity": "info",
           "code": "POLYGON_LOCATION",
-          "message": "SIGMET polygon/line WI geometry — research G1",
+          "message": "SIGMET polygon/line WI geometry - research G1",
           "location": "modifier",
           "start": 135,
           "end": 137
@@ -587,7 +623,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "SIGMET sequence number present — research G2",
+          "message": "SIGMET sequence number present - research G2",
           "location": "modifier",
           "start": 18,
           "end": 19
@@ -595,7 +631,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "SIGMET FIR/CTA/UIR airspace identity — research G2",
+          "message": "SIGMET FIR/CTA/UIR airspace identity - research G2",
           "location": "modifier",
           "start": 65,
           "end": 68
@@ -603,7 +639,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "SIGMET OBS or FCST analysis — research G2",
+          "message": "SIGMET OBS or FCST analysis - research G2",
           "location": "modifier",
           "start": 121,
           "end": 124
@@ -611,7 +647,7 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "SIGMET intensity change INTSF/WKN/NC — research G2",
+          "message": "SIGMET intensity change INTSF/WKN/NC - research G2",
           "location": "modifier",
           "start": 236,
           "end": 238
@@ -619,7 +655,7 @@
         {
           "severity": "info",
           "code": "VA_VOLCANO_IDENTITY",
-          "message": "VA SIGMET erupting volcano identity (MT/PSN) — research V1",
+          "message": "VA SIGMET erupting volcano identity (MT/PSN) - research V1",
           "location": "modifier",
           "start": 81,
           "end": 83
@@ -627,7 +663,7 @@
         {
           "severity": "info",
           "code": "VA_ASH_GEOMETRY",
-          "message": "VA SIGMET ash cloud geometry / forecast position — research V1",
+          "message": "VA SIGMET ash cloud geometry / forecast position - research V1",
           "location": "modifier",
           "start": 69,
           "end": 71
@@ -670,7 +706,7 @@
         {
           "severity": "info",
           "code": "POLYGON_LOCATION",
-          "message": "SIGMET polygon/line WI geometry — research G1",
+          "message": "SIGMET polygon/line WI geometry - research G1",
           "location": "modifier",
           "start": 100,
           "end": 102
@@ -678,7 +714,7 @@
         {
           "severity": "info",
           "code": "SINGLE_ALTITUDE",
-          "message": "SIGMET single altitude (same lower/upper) — research G1",
+          "message": "SIGMET single altitude (same lower/upper) - research G1",
           "location": "modifier",
           "start": 126,
           "end": 131
@@ -686,7 +722,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "SIGMET sequence number present — research G2",
+          "message": "SIGMET sequence number present - research G2",
           "location": "modifier",
           "start": 12,
           "end": 13
@@ -694,7 +730,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "SIGMET FIR/CTA/UIR airspace identity — research G2",
+          "message": "SIGMET FIR/CTA/UIR airspace identity - research G2",
           "location": "modifier",
           "start": 53,
           "end": 56
@@ -702,7 +738,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "SIGMET OBS or FCST analysis — research G2",
+          "message": "SIGMET OBS or FCST analysis - research G2",
           "location": "modifier",
           "start": 87,
           "end": 90
@@ -710,7 +746,7 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "SIGMET intensity change INTSF/WKN/NC — research G2",
+          "message": "SIGMET intensity change INTSF/WKN/NC - research G2",
           "location": "modifier",
           "start": 132,
           "end": 134
@@ -718,7 +754,7 @@
         {
           "severity": "info",
           "code": "TC_CYCLONE_IDENTITY",
-          "message": "TC SIGMET tropical cyclone identity (TC … PSN) — #829 / TC-EV030-004",
+          "message": "TC SIGMET tropical cyclone identity (TC … PSN) - #829 / TC-EV030-004",
           "location": "modifier",
           "start": 57,
           "end": 59
@@ -726,7 +762,7 @@
         {
           "severity": "info",
           "code": "TC_CB_GEOMETRY",
-          "message": "TC SIGMET CB geometry WI … OF TC CENTRE — #829 / TC-EV030-004",
+          "message": "TC SIGMET CB geometry WI … OF TC CENTRE - #829 / TC-EV030-004",
           "location": "modifier",
           "start": 57,
           "end": 59
@@ -748,7 +784,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "AIRMET sequence number present — F24 theme A1",
+          "message": "AIRMET sequence number present - F24 theme A1",
           "location": "modifier",
           "start": 16,
           "end": 17
@@ -756,7 +792,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "AIRMET FIR/CTA/UIR airspace identity — F24 theme A1",
+          "message": "AIRMET FIR/CTA/UIR airspace identity - F24 theme A1",
           "location": "modifier",
           "start": 62,
           "end": 65
@@ -764,7 +800,7 @@
         {
           "severity": "info",
           "code": "STNR_MOVEMENT",
-          "message": "AIRMET STNR stationary movement — F24 theme A2",
+          "message": "AIRMET STNR stationary movement - F24 theme A2",
           "location": "modifier",
           "start": 106,
           "end": 110
@@ -772,7 +808,7 @@
         {
           "severity": "info",
           "code": "TOP_ABV_OR_BLW",
-          "message": "AIRMET TOP ABV/BLW level grammar — F24 theme A2",
+          "message": "AIRMET TOP ABV/BLW level grammar - F24 theme A2",
           "location": "modifier",
           "start": 92,
           "end": 95
@@ -780,7 +816,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "AIRMET OBS or FCST analysis — F24 theme A2",
+          "message": "AIRMET OBS or FCST analysis - F24 theme A2",
           "location": "modifier",
           "start": 79,
           "end": 82
@@ -788,7 +824,7 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "AIRMET intensity change INTSF/WKN/NC — F24 theme A2",
+          "message": "AIRMET intensity change INTSF/WKN/NC - F24 theme A2",
           "location": "modifier",
           "start": 111,
           "end": 114
@@ -810,7 +846,7 @@
         {
           "severity": "info",
           "code": "VAA_FCST_NO_VA_EXP",
-          "message": "VAA forecast NO VA EXP — status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)",
+          "message": "VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)",
           "location": "forecast",
           "start": 1090,
           "end": 1099
@@ -832,7 +868,7 @@
         {
           "severity": "info",
           "code": "TCA_RMK_NIL",
-          "message": "TCA RMK NIL — remarks inapplicable (F27 theme T1)",
+          "message": "TCA RMK NIL - remarks inapplicable (F27 theme T1)",
           "location": "remarks",
           "start": 774,
           "end": 777
@@ -849,18 +885,12 @@
       "official_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:SpaceWeatherAdvisory \n    xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\" \n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\" \n    xmlns:xlink=\"http://www.w3.org/1999/xlink\" \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n    xsi:schemaLocation=\"http://icao.int/iwxxm/2025-2 http://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd\"\n    gml:id=\"uuid.dea6234c-f57f-4ccf-be7a-bb00a0265af2\" \n    reportStatus=\"NORMAL\" \n    permissibleUsage=\"OPERATIONAL\">\n    \n    <iwxxm:issueTime>\n        <gml:TimeInstant gml:id=\"uuid.161d2ad1-e945-4213-84a7-8f9c2c57540f\">\n            <gml:timePosition>2020-11-08T01:00:00Z</gml:timePosition>\n        </gml:TimeInstant>\n    </iwxxm:issueTime>\n    \n    <iwxxm:issuingSpaceWeatherCentre>\n        <aixm:Unit gml:id=\"uuid.c6a51258-7c8c-4ef9-beda-fbe7e3601f30\">\n            <aixm:timeSlice>\n                <aixm:UnitTimeSlice gml:id=\"uuid.64f29fac-154b-4484-a49d-7c8816e4840c\">\n                    <gml:validTime/>\n                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n                    <aixm:name>DONLON</aixm:name>\n                    <aixm:type>OTHER:SWXC</aixm:type>\n                </aixm:UnitTimeSlice>\n            </aixm:timeSlice>\n        </aixm:Unit>\n    </iwxxm:issuingSpaceWeatherCentre>\n    \n    <iwxxm:advisoryNumber>2020/1</iwxxm:advisoryNumber>\n  \n    <iwxxm:effect>HF_COM</iwxxm:effect>\n    \n    <iwxxm:analysis>\n        <iwxxm:SpaceWeatherAnalysis gml:id=\"uuid.e10181fb-ff0a-40cf-865c-bb209fc49b90\" timeIndicator=\"OBSERVATION\">\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"uuid.c0710916-7571-400d-91cc-9c55aea01e94\">\n                    <gml:timePosition>2020-11-08T01:00:00Z</gml:timePosition>\n                </gml:TimeInstant>\n\t    </iwxxm:phenomenonTime>\n            <iwxxm:intensityAndRegion>\n                <iwxxm:SpaceWeatherIntensityAndRegion gml:id=\"uuid.34415dca-6fab-45e4-8225-c45960b1e9d2\">\n                    <iwxxm:intensity>SEV</iwxxm:intensity>\n                    <iwxxm:region>\n                        <iwxxm:SpaceWeatherRegion gml:id=\"uuid.0dc02601-d889-4b94-9619-0bddf4f47182\">\n                            <iwxxm:location>\n                                <aixm:AirspaceVolume gml:id=\"uuid.7138f8d1-9854-46cb-a1b1-9d96c5cee46f\">\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"uuid.3b00652b-4bed-4655-959c-1c9efd431cac\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:LinearRing>\n                                                            <gml:posList>\n                                                                30 180\n                                                                60 180\n                                                                60 -180\n                                                                30 -180\n                                                                30 180\n                                                            </gml:posList>\n                                                        </gml:LinearRing>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:location>\n                            <iwxxm:locationIndicator xlink:href=\"http://codes.wmo.int/49-2/SpaceWxLocation/MNH\"/>\n                        </iwxxm:SpaceWeatherRegion>\n                    </iwxxm:region>\n                    <iwxxm:region>\n                        <iwxxm:SpaceWeatherRegion gml:id=\"uuid.03f257e6-63ea-4604-a896-0545c63be45b\">\n                            <iwxxm:location>\n                                <aixm:AirspaceVolume gml:id=\"uuid.uuid.7138f8d1-9854-46cb-a1b1-9d96c5cee46f\">\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"uuid.4947b933-5b70-442f-b8e5-bc6237aa8526\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:LinearRing>\n                                                            <gml:posList>\n                                                                00 180\n                                                                30 180\n                                                                30 -180\n                                                                00 -180\n                                                                00 180\n                                                            </gml:posList>\n                                                        </gml:LinearRing>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:location>\n                            <iwxxm:locationIndicator xlink:href=\"http://codes.wmo.int/49-2/SpaceWxLocation/EQN\"/>\n                        </iwxxm:SpaceWeatherRegion>\n                    </iwxxm:region>\n                    <iwxxm:region>\n                        <iwxxm:SpaceWeatherRegion gml:id=\"uuid.bf8c0ce9-0e3c-4926-9ada-404c7a377844\">\n                            <iwxxm:location>\n                                <aixm:AirspaceVolume gml:id=\"uuid.35176a41-3b85-4035-8eec-1fdfbed1a73b\">\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"uuid.0e5ad8d3-400b-4460-b8ef-833eb456d35e\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:LinearRing>\n                                                            <gml:posList>\n                                                                -30 180\n                                                                00 180\n                                                                00 -180\n                                                                -30 -180\n                                                                -30 180\n                                                            </gml:posList>\n                                                        </gml:LinearRing>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:location>\n                            <iwxxm:locationIndicator xlink:href=\"http://codes.wmo.int/49-2/SpaceWxLocation/EQS\"/>\n                        </iwxxm:SpaceWeatherRegion>\n                    </iwxxm:region>\n                    <iwxxm:region>\n                        <iwxxm:SpaceWeatherRegion gml:id=\"uuid.0cfde53e-07ae-41dd-ac1a-9f0a53789d0a\">\n                            <iwxxm:location>\n                                <aixm:AirspaceVolume gml:id=\"uuid.c7ccb885-a5f9-444c-9a90-bf6d24cc97e2\">\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"uuid.e60a4857-0205-43ff-970f-2b1e01a67102\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:LinearRing>\n                                                            <gml:posList>\n                                                                -60 180\n                                                                -30 180\n                                                                -30 -180\n                                                                -60 -180\n                                                                -60 180\n                                                            </gml:posList>\n                                                        </gml:LinearRing>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:location>\n                            <iwxxm:locationIndicator xlink:href=\"http://codes.wmo.int/49-2/SpaceWxLocation/MSH\"/>\n                        </iwxxm:SpaceWeatherRegion>\n                    </iwxxm:region>\n                    <iwxxm:region>\n                        <iwxxm:SpaceWeatherRegion gml:id=\"uuid.0a7f155f-e952-4747-a318-877b46187186\">\n                            <iwxxm:location>\n                                <aixm:AirspaceVolume gml:id=\"uuid.5dd7358d-f580-45e5-8c7b-2aaa8ebf0574\">\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"uuid.7eb777d7-e6b0-42a5-b10d-27210a9e414e\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:Ring>\n                                                            <gml:curveMember>\n                                                                <gml:Curve gml:id=\"uuid.bcf98ca2-0fb0-44b9-880d-7f45a284d1b3\">\n                                                                    <gml:segments>\n                                                                        <gml:CircleByCenterPoint numArc=\"1\">\n                                                                            <gml:pos>-16.71 70.94</gml:pos>\n                                                                            <gml:radius uom=\"km\">10100</gml:radius>\n                                                                        </gml:CircleByCenterPoint>\n                                                                    </gml:segments>\n                                                                </gml:Curve>\n                                                            </gml:curveMember>\n                                                        </gml:Ring>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:location>\n                            <iwxxm:locationIndicator xlink:href=\"http://codes.wmo.int/49-2/SpaceWxLocation/DAYSIDE\"/>\n                        </iwxxm:SpaceWeatherRegion>\n                    </iwxxm:region>\n                </iwxxm:SpaceWeatherIntensityAndRegion>\n            </iwxxm:intensityAndRegion>\n            <iwxxm:intensityAndRegion>\n                <iwxxm:SpaceWeatherIntensityAndRegion gml:id=\"uuid.c1bfa3fa-9728-4d82-b629-059d6d340267\">\n                    <iwxxm:intensity>MOD</iwxxm:intensity>\n                    <iwxxm:region>\n                        <iwxxm:SpaceWeatherRegion gml:id=\"uuid.8d3833f3-a5d5-40e4-9eb8-d05b3348c083\">\n                            <iwxxm:location>\n                                <aixm:AirspaceVolume gml:id=\"uuid.46f7b571-fb59-491a-8bcd-0c85bdb01b8b\">\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"uuid.91e21dd1-c61e-418a-b05b-5ba741608e31\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:Ring>\n                                                            <gml:curveMember>\n                                                                <gml:Curve gml:id=\"uuid.751125de-d41a-41f5-a458-5092a6fe0200\">\n                                                                    <gml:segments>\n                                                                        <gml:CircleByCenterPoint numArc=\"1\">\n                                                                            <gml:pos>9999 9999</gml:pos>\n                                                                            <gml:radius uom=\"km\">10100</gml:radius>\n                                                                        </gml:CircleByCenterPoint>\n                                                                    </gml:segments>\n                                                                </gml:Curve>\n                                                            </gml:curveMember>\n                                                        </gml:Ring>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:location>\n                            <iwxxm:locationIndicator xlink:href=\"http://codes.wmo.int/49-2/SpaceWxLocation/NIGHTSIDE\"/>\n                        </iwxxm:SpaceWeatherRegion>\n                    </iwxxm:region>\n                </iwxxm:SpaceWeatherIntensityAndRegion>\n            </iwxxm:intensityAndRegion>\n        </iwxxm:SpaceWeatherAnalysis>\n    </iwxxm:analysis>\n    \n    <iwxxm:analysis>\n        <iwxxm:SpaceWeatherAnalysis gml:id=\"uuid.96cfc825-3f5d-40f0-b9bd-46d790ee9f50\" timeIndicator=\"FORECAST\">\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"uuid.bcfff471-386e-45ab-888d-9099bf6e2e29\">\n                    <gml:timePosition>2020-11-08T07:00:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:intensityAndRegion nilReason=\"http://codes.wmo.int/common/nil/nothingOfOperationalSignificance\"/>\n        </iwxxm:SpaceWeatherAnalysis>\n    </iwxxm:analysis>\n    \n    <iwxxm:analysis>\n        <iwxxm:SpaceWeatherAnalysis gml:id=\"uuid.8fc8a55b-e730-4d84-bb44-6e7b7dc3dd32\" timeIndicator=\"FORECAST\">\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"uuid.6797ba22-7b7b-4f40-9f2d-f58265a0ddf0\">\n                    <gml:timePosition>2020-11-08T13:00:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:intensityAndRegion nilReason=\"http://codes.wmo.int/common/nil/nothingOfOperationalSignificance\"/>\n        </iwxxm:SpaceWeatherAnalysis>\n    </iwxxm:analysis>\n    \n    <iwxxm:analysis>\n        <iwxxm:SpaceWeatherAnalysis gml:id=\"uuid.6a1f263b-5aeb-4002-af1b-9c3ef2812f8d\"  timeIndicator=\"FORECAST\">\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"uuid.447d235b-ac6f-4a0b-b658-76c9e782d76c\">\n                    <gml:timePosition>2020-11-08T19:00:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:intensityAndRegion nilReason=\"http://codes.wmo.int/common/nil/nothingOfOperationalSignificance\"/>\n        </iwxxm:SpaceWeatherAnalysis>\n    </iwxxm:analysis>\n    \n    <iwxxm:analysis>\n        <iwxxm:SpaceWeatherAnalysis gml:id=\"uuid.ba259410-18a3-4074-92e5-1fd09dccedd4\" timeIndicator=\"FORECAST\">\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"uuid.1b741865-7044-4d45-a841-792a704b610c\">\n                    <gml:timePosition>2020-11-09T01:00:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:intensityAndRegion nilReason=\"http://codes.wmo.int/common/nil/nothingOfOperationalSignificance\"/>\n        </iwxxm:SpaceWeatherAnalysis>\n    </iwxxm:analysis>\n    \n    <iwxxm:remarks>SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE WWW.SPACEWEATHERPROVIDER.WEB</iwxxm:remarks>\n    \n    <iwxxm:nextAdvisoryTime>\n        <gml:TimeInstant gml:id=\"uuid.ff02e4b5-e54c-4ec3-b34c-842229274727\">\n            <gml:timePosition>2020-11-08T07:00:00Z</gml:timePosition>\n        </gml:TimeInstant>\n    </iwxxm:nextAdvisoryTime>\n    \n</iwxxm:SpaceWeatherAdvisory>\n",
       "converted_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:SpaceWeatherAdvisory xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"swxa.donlon\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n    <iwxxm:issueTime>\n        <gml:TimeInstant gml:id=\"swxa.t.issue.donlon\">\n            <gml:timePosition>2020-11-08T01:00:00Z</gml:timePosition>\n        </gml:TimeInstant>\n    </iwxxm:issueTime>\n    <iwxxm:issuingSpaceWeatherCentre>\n        <aixm:Unit gml:id=\"unit.swxc.donlon\">\n            <aixm:timeSlice>\n                <aixm:UnitTimeSlice gml:id=\"unit.swxc.ts.donlon\">\n                    <gml:validTime/>\n                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n                    <aixm:name>DONLON</aixm:name>\n                    <aixm:type>OTHER:SWXC</aixm:type>\n                </aixm:UnitTimeSlice>\n            </aixm:timeSlice>\n        </aixm:Unit>\n    </iwxxm:issuingSpaceWeatherCentre>\n    <iwxxm:advisoryNumber>2020/1</iwxxm:advisoryNumber>\n    <iwxxm:effect>HF_COM</iwxxm:effect>\n    <iwxxm:analysis>\n        <iwxxm:SpaceWeatherAnalysis gml:id=\"swxa.an.donlon.0\" timeIndicator=\"OBSERVATION\">\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"swxa.an.donlon.0.t\">\n                    <gml:timePosition>2020-11-08T01:00:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:intensityAndRegion>\n                <iwxxm:SpaceWeatherIntensityAndRegion gml:id=\"swxa.an.donlon.0.iar.0\">\n                    <iwxxm:intensity>SEV</iwxxm:intensity>\n                    <iwxxm:region>\n                        <iwxxm:SpaceWeatherRegion gml:id=\"swxa.reg.donlon.0\">\n                            <iwxxm:location>\n                                <aixm:AirspaceVolume gml:id=\"swxa.reg.donlon.0.vol\">\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"swxa.reg.donlon.0.sfc\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:LinearRing>\n                                                            <gml:posList>\n                                                                30 180\n                                                                60 180\n                                                                60 -180\n                                                                30 -180\n                                                                30 180\n                                                            </gml:posList>\n                                                        </gml:LinearRing>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:location>\n                            <iwxxm:locationIndicator xlink:href=\"http://codes.wmo.int/49-2/SpaceWxLocation/MNH\"/>\n                        </iwxxm:SpaceWeatherRegion>\n                    </iwxxm:region>\n                    <iwxxm:region>\n                        <iwxxm:SpaceWeatherRegion gml:id=\"swxa.reg.donlon.1\">\n                            <iwxxm:location>\n                                <aixm:AirspaceVolume gml:id=\"swxa.reg.donlon.1.vol\">\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"swxa.reg.donlon.1.sfc\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:LinearRing>\n                                                            <gml:posList>\n                                                                00 180\n                                                                30 180\n                                                                30 -180\n                                                                00 -180\n                                                                00 180\n                                                            </gml:posList>\n                                                        </gml:LinearRing>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:location>\n                            <iwxxm:locationIndicator xlink:href=\"http://codes.wmo.int/49-2/SpaceWxLocation/EQN\"/>\n                        </iwxxm:SpaceWeatherRegion>\n                    </iwxxm:region>\n                    <iwxxm:region>\n                        <iwxxm:SpaceWeatherRegion gml:id=\"swxa.reg.donlon.2\">\n                            <iwxxm:location>\n                                <aixm:AirspaceVolume gml:id=\"swxa.reg.donlon.2.vol\">\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"swxa.reg.donlon.2.sfc\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:LinearRing>\n                                                            <gml:posList>\n                                                                -30 180\n                                                                00 180\n                                                                00 -180\n                                                                -30 -180\n                                                                -30 180\n                                                            </gml:posList>\n                                                        </gml:LinearRing>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:location>\n                            <iwxxm:locationIndicator xlink:href=\"http://codes.wmo.int/49-2/SpaceWxLocation/EQS\"/>\n                        </iwxxm:SpaceWeatherRegion>\n                    </iwxxm:region>\n                    <iwxxm:region>\n                        <iwxxm:SpaceWeatherRegion gml:id=\"swxa.reg.donlon.3\">\n                            <iwxxm:location>\n                                <aixm:AirspaceVolume gml:id=\"swxa.reg.donlon.3.vol\">\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"swxa.reg.donlon.3.sfc\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:LinearRing>\n                                                            <gml:posList>\n                                                                -60 180\n                                                                -30 180\n                                                                -30 -180\n                                                                -60 -180\n                                                                -60 180\n                                                            </gml:posList>\n                                                        </gml:LinearRing>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:location>\n                            <iwxxm:locationIndicator xlink:href=\"http://codes.wmo.int/49-2/SpaceWxLocation/MSH\"/>\n                        </iwxxm:SpaceWeatherRegion>\n                    </iwxxm:region>\n                    <iwxxm:region>\n                        <iwxxm:SpaceWeatherRegion gml:id=\"swxa.reg.donlon.4\">\n                            <iwxxm:location>\n                                <aixm:AirspaceVolume gml:id=\"swxa.reg.donlon.4.vol\">\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"swxa.reg.donlon.4.sfc\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:Ring>\n                                                            <gml:curveMember>\n                                                                <gml:Curve gml:id=\"swxa.reg.donlon.4.curve\">\n                                                                    <gml:segments>\n                                                                        <gml:CircleByCenterPoint numArc=\"1\">\n                                                                            <gml:pos>-16.71 70.94</gml:pos>\n                                                                            <gml:radius uom=\"km\">10100</gml:radius>\n                                                                        </gml:CircleByCenterPoint>\n                                                                    </gml:segments>\n                                                                </gml:Curve>\n                                                            </gml:curveMember>\n                                                        </gml:Ring>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:location>\n                            <iwxxm:locationIndicator xlink:href=\"http://codes.wmo.int/49-2/SpaceWxLocation/DAYLIGHT_SIDE\"/>\n                        </iwxxm:SpaceWeatherRegion>\n                    </iwxxm:region>\n                </iwxxm:SpaceWeatherIntensityAndRegion>\n            </iwxxm:intensityAndRegion>\n            <iwxxm:intensityAndRegion>\n                <iwxxm:SpaceWeatherIntensityAndRegion gml:id=\"swxa.an.donlon.0.iar.1\">\n                    <iwxxm:intensity>MOD</iwxxm:intensity>\n                    <iwxxm:region>\n                        <iwxxm:SpaceWeatherRegion gml:id=\"swxa.reg.donlon.5\">\n                            <iwxxm:location>\n                                <aixm:AirspaceVolume gml:id=\"swxa.reg.donlon.5.vol\">\n                                    <aixm:horizontalProjection>\n                                        <aixm:Surface gml:id=\"swxa.reg.donlon.5.sfc\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                                            <gml:patches>\n                                                <gml:PolygonPatch>\n                                                    <gml:exterior>\n                                                        <gml:Ring>\n                                                            <gml:curveMember>\n                                                                <gml:Curve gml:id=\"swxa.reg.donlon.5.curve\">\n                                                                    <gml:segments>\n                                                                        <gml:CircleByCenterPoint numArc=\"1\">\n                                                                            <gml:pos>9999 9999</gml:pos>\n                                                                            <gml:radius uom=\"km\">10100</gml:radius>\n                                                                        </gml:CircleByCenterPoint>\n                                                                    </gml:segments>\n                                                                </gml:Curve>\n                                                            </gml:curveMember>\n                                                        </gml:Ring>\n                                                    </gml:exterior>\n                                                </gml:PolygonPatch>\n                                            </gml:patches>\n                                        </aixm:Surface>\n                                    </aixm:horizontalProjection>\n                                </aixm:AirspaceVolume>\n                            </iwxxm:location>\n                            <iwxxm:locationIndicator xlink:href=\"http://codes.wmo.int/49-2/SpaceWxLocation/NIGHTSIDE\"/>\n                        </iwxxm:SpaceWeatherRegion>\n                    </iwxxm:region>\n                </iwxxm:SpaceWeatherIntensityAndRegion>\n            </iwxxm:intensityAndRegion>\n        </iwxxm:SpaceWeatherAnalysis>\n    </iwxxm:analysis>\n    <iwxxm:analysis>\n        <iwxxm:SpaceWeatherAnalysis gml:id=\"swxa.an.donlon.1\" timeIndicator=\"FORECAST\">\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"swxa.an.donlon.1.t\">\n                    <gml:timePosition>2020-11-08T07:00:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:intensityAndRegion nilReason=\"http://codes.wmo.int/common/nil/nothingOfOperationalSignificance\"/>\n        </iwxxm:SpaceWeatherAnalysis>\n    </iwxxm:analysis>\n    <iwxxm:analysis>\n        <iwxxm:SpaceWeatherAnalysis gml:id=\"swxa.an.donlon.2\" timeIndicator=\"FORECAST\">\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"swxa.an.donlon.2.t\">\n                    <gml:timePosition>2020-11-08T13:00:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:intensityAndRegion nilReason=\"http://codes.wmo.int/common/nil/nothingOfOperationalSignificance\"/>\n        </iwxxm:SpaceWeatherAnalysis>\n    </iwxxm:analysis>\n    <iwxxm:analysis>\n        <iwxxm:SpaceWeatherAnalysis gml:id=\"swxa.an.donlon.3\" timeIndicator=\"FORECAST\">\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"swxa.an.donlon.3.t\">\n                    <gml:timePosition>2020-11-08T19:00:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:intensityAndRegion nilReason=\"http://codes.wmo.int/common/nil/nothingOfOperationalSignificance\"/>\n        </iwxxm:SpaceWeatherAnalysis>\n    </iwxxm:analysis>\n    <iwxxm:analysis>\n        <iwxxm:SpaceWeatherAnalysis gml:id=\"swxa.an.donlon.4\" timeIndicator=\"FORECAST\">\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"swxa.an.donlon.4.t\">\n                    <gml:timePosition>2020-11-09T01:00:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:intensityAndRegion nilReason=\"http://codes.wmo.int/common/nil/nothingOfOperationalSignificance\"/>\n        </iwxxm:SpaceWeatherAnalysis>\n    </iwxxm:analysis>\n    <iwxxm:remarks>SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE WWW.SPACEWEATHERPROVIDER.WEB</iwxxm:remarks>\n    <iwxxm:nextAdvisoryTime>\n        <gml:TimeInstant gml:id=\"swxa.t.next.donlon\">\n            <gml:timePosition>2020-11-08T07:00:00Z</gml:timePosition>\n        </gml:TimeInstant>\n    </iwxxm:nextAdvisoryTime>\n</iwxxm:SpaceWeatherAdvisory>\n",
       "match_status": "equal",
-      "residuals": [
-        {
-          "start": 0,
-          "end": 532,
-          "text": "SWX ADVISORY\nDTG:                20201108/0100Z \nSWXC:               DONLON\nSWX EFFECT:         HF COM\nADVISORY NR:        2020/1\nOBS SWX:            08/0100Z SEV MNH EQN EQS MSH DAYSIDE MOD NIGHTSIDE\nFCST SWX +6 HR:     08/0700Z NO SWX EXP\nFCST SWX +12 HR:    08/1300Z NO SWX EXP\nFCST SWX +18 HR:    08/1900Z NO SWX EXP\nFCST SWX +24 HR:    09/0100Z NO SWX EXP\nRMK:                SWX EVENT IMPACTING LOWER HF COM FREQ BAND. SEE\n                    WWW.SPACEWEATHERPROVIDER.WEB \nNXT ADVISORY:       WILL BE ISSUED BY 20201108/0700Z\n"
-        }
-      ],
+      "residuals": [],
       "lint_issues": [
         {
           "severity": "info",
           "code": "SWXA_FCST_NO_SWX_EXP",
-          "message": "SWXA forecast NO SWX EXP — no space weather expected (F28 theme SX1)",
+          "message": "SWXA forecast NO SWX EXP - no space weather expected (F28 theme SX1)",
           "location": "forecast",
           "start": 230,
           "end": 240
@@ -877,18 +907,12 @@
       "official_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:VolcanoObservatoryNoticeForAviation \n    xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    xsi:schemaLocation=\"http://www.aixm.aero/schema/5.1.1 http://www.aixm.aero/schema/5.1.1/AIXM_Features.xsd\n    http://icao.int/iwxxm/2025-2 http://schemas.wmo.int/iwxxm/2025-2/iwxxm.xsd\"\n    gml:id=\"uuid.bf9c0a92-c909-4efc-8558-472d8aad209f\" reportStatus=\"NORMAL\" permissibleUsage=\"OPERATIONAL\">\n\n    <!-- Unique identifier of the collective -->\n    <gml:identifier codeSpace=\"http://vona/centre/kvert\">a9d53294-7fcf-4a73-9dd2-63df64041800</gml:identifier>\n    \n    <!-- A temporal bounding box containing the phenomenonTime of all objects -->\n    <iwxxm:boundingPeriod>\n        <gml:TimePeriod gml:id=\"uuid.c4e5e9cd-4fd5-4846-a8c3-f21d90857235\">\n            <gml:beginPosition>2024-02-16T01:30:00Z</gml:beginPosition>\n            <gml:endPosition>2024-02-16T01:30:00Z</gml:endPosition>\n        </gml:TimePeriod>\n    </iwxxm:boundingPeriod>\n    \n    <!-- A spatial bounding box containing the phenomenonGeometry of all objects -->\n    <iwxxm:boundingVolume>\n        <iwxxm:ElevatedEnvelope>\n            <gml:lowerCorner srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">54.03 159.27</gml:lowerCorner>\n            <gml:upperCorner srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">54.03 159.27</gml:upperCorner>\n            <iwxxm:upperElevation uom=\"M\">15000</iwxxm:upperElevation>\n            <iwxxm:upperVerticalReference>MSL</iwxxm:upperVerticalReference>\n            <iwxxm:lowerElevation uom=\"M\">1536</iwxxm:lowerElevation>\n            <iwxxm:lowerVerticalReference>MSL</iwxxm:lowerVerticalReference>\n        </iwxxm:ElevatedEnvelope>\n    </iwxxm:boundingVolume>\n    \n    <!-- A list of all phenomena of all objects -->\n    <iwxxm:phenomenaList xlink:href=\"http://codes.wmo.int/iwxxm/MeteorologicalFeature/VOLCANO\"/>\n    <iwxxm:phenomenaList xlink:href=\"http://codes.wmo.int/iwxxm/MeteorologicalFeature/VOLCANIC_ASH\"/>\n    \n    <!-- Issue time of the collective -->\n    <iwxxm:issueTime>\n        <gml:TimeInstant gml:id=\"uuid.ebd7395f-e9fd-4a8f-965f-3573476484e7\">\n            <gml:timePosition>2024-02-16T01:30:00Z</gml:timePosition>\n        </gml:TimeInstant>\n    </iwxxm:issueTime>\n\n    <!-- Originating centre of the collective -->\n    <iwxxm:originatingCentre>\n         <aixm:Unit gml:id=\"uuid.8e4920c1-7342-4870-98d0-61c154e97d2d\">\n            <aixm:timeSlice>\n                <aixm:UnitTimeSlice gml:id=\"uuid.4445dee4-f57f-44fb-bb6e-f35f1a0ef577\">\n                    <gml:validTime/>\n                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n                    <aixm:name>KVERT</aixm:name>\n\t\t    <aixm:type>OTHER:SVO</aixm:type>\n\t\t    <aixm:compliantICAO>YES</aixm:compliantICAO>\n                    <aixm:designator>UHPP</aixm:designator>\n                </aixm:UnitTimeSlice>\n            </aixm:timeSlice>\n        </aixm:Unit>\n    </iwxxm:originatingCentre>\n   \n    <!-- Category of objects, in this case volcanicObservations -->\n    <iwxxm:phenomenonCategory>volcanicObservations</iwxxm:phenomenonCategory>\n    \n    <!-- phenomenonTime is the time when the collective is valid -->\n    <iwxxm:phenomenonTime>\n        <gml:TimeInstant gml:id=\"uuid.b2e71246-b5bc-47b8-a553-9425f508e802\">\n            <gml:timePosition>2024-02-16T01:30:00Z</gml:timePosition>\n        </gml:TimeInstant>\n    </iwxxm:phenomenonTime>\n    \n    <!-- A Volcano Object -->\n    <iwxxm:feature>\n        <iwxxm:MeteorologicalFeature gml:id=\"uuid.a2885938-cbd0-4953-bd07-c813ce918b1d\">\n            <gml:identifier codeSpace=\"http://vona/volcano\">88fb9884-e14e-4c2b-848f-88a34f3d8d07</gml:identifier>\n            <iwxxm:phenomenonCategory>volcanicObservations</iwxxm:phenomenonCategory>\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"uuid.39d9d7ac-35ee-48e7-9aff-4ca1bef73508\">\n                    <gml:timePosition>2024-02-16T01:30:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/iwxxm/MeteorologicalFeature/VOLCANO\"/>\n            <iwxxm:phenomenonGeometry>\n                <gml:Point gml:id=\"uuid.fd4d007a-0444-476c-820e-c3af3e67b917\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/ers/EPSG/0/4326\">\n                    <gml:pos>54.03 159.27</gml:pos>\n                </gml:Point>\n            </iwxxm:phenomenonGeometry>\n            <iwxxm:phenomenonProperty>\n                <iwxxm:Volcano gml:id=\"uuid.b536caa9-3180-4c0a-9809-88bd7dd66d5d\">\n                    <iwxxm:name>KARYMSKY</iwxxm:name>\n                    <iwxxm:IAVCEINumber>300130</iwxxm:IAVCEINumber>\n                    <iwxxm:sourceElevation>\n                        <iwxxm:ElevatedLevel gml:id=\"uuid.72b3c565-47ad-42c3-8235-4f94be7bff0d\" srsDimension=\"2\" srsName=\"http://www.opengis.net/def/ers/EPSG/0/4326\">\n                            <iwxxm:elevation uom=\"M\">1536</iwxxm:elevation>\n                            <iwxxm:verticalReference>MSL</iwxxm:verticalReference>\n                        </iwxxm:ElevatedLevel>\n                    </iwxxm:sourceElevation>\n                    <iwxxm:activityStatus>DECREASED_ACTIVITY</iwxxm:activityStatus>\n                </iwxxm:Volcano>\n            </iwxxm:phenomenonProperty>\n        </iwxxm:MeteorologicalFeature>\n    </iwxxm:feature>\n        \n    <!-- A Volcanic Ash Cloud Object -->\n    <iwxxm:feature>\n        <iwxxm:MeteorologicalFeature gml:id=\"uuid.14210650-668b-48f7-9d8d-f17eede0f253\">\n            <gml:identifier codeSpace=\"http://vona/volcanic_ash_cloud\">b99ba0e8-ddd0-4985-b0f8-914ad90d390b</gml:identifier>\n            <iwxxm:phenomenonCategory>volcanicObservations</iwxxm:phenomenonCategory>\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"uuid.ecad909a-95a1-4e24-a137-ba1c883d97a1\">\n                    <gml:timePosition>2024-02-16T01:30:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/iwxxm/MeteorologicalFeature/VOLCANIC_ASH\"/>\n            <iwxxm:phenomenonGeometry>\n                <iwxxm:ElevatedLevel gml:id=\"uuid.f17a94a3-2412-44a0-8cd5-12873e4400c7\" srsDimension=\"2\" srsName=\"http://www.opengis.net/def/ers/EPSG/0/4326\">\n                    <iwxxm:elevation uom=\"M\">15000</iwxxm:elevation>\n                    <iwxxm:verticalReference>MSL</iwxxm:verticalReference>\n                </iwxxm:ElevatedLevel>\n            </iwxxm:phenomenonGeometry>\n            <iwxxm:phenomenonProperty nilReason=\"http://codes.wmo.int/iwxxm/nil/inapplicable\"></iwxxm:phenomenonProperty>\n        </iwxxm:MeteorologicalFeature>\n    </iwxxm:feature>\n    \n    <!-- Rest of the elements in VONA collective -->\n    <iwxxm:stateOrRegion>RUSSIA</iwxxm:stateOrRegion>\n    <iwxxm:noticeNumber>2021/4</iwxxm:noticeNumber>\n    <iwxxm:currentColourCode xlink:href=\"http://codes.wmo.int/iwxxm/AviationColourCode/YELLOW\"/>\n    <iwxxm:previousColourCode xlink:href=\"http://codes.wmo.int/iwxxm/AviationColourCode/ORANGE\"/>\n    <iwxxm:contacts>DUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM, WWW.VOLCANO.COM</iwxxm:contacts>\n    <iwxxm:remarks>SATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE ACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY PRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.</iwxxm:remarks>\n    <iwxxm:nextNotice>WILL BE ISSUED BY 20240223/0130Z</iwxxm:nextNotice>\n\n</iwxxm:VolcanoObservatoryNoticeForAviation>\n",
       "converted_xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:VolcanoObservatoryNoticeForAviation xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"vona.kvert\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n    <gml:identifier codeSpace=\"http://vona/centre/kvert\">a9d53294-7fcf-4a73-9dd2-63df64041800</gml:identifier>\n    <iwxxm:boundingPeriod>\n        <gml:TimePeriod gml:id=\"vona.t.bound.kvert\">\n            <gml:beginPosition>2024-02-16T01:30:00Z</gml:beginPosition>\n            <gml:endPosition>2024-02-16T01:30:00Z</gml:endPosition>\n        </gml:TimePeriod>\n    </iwxxm:boundingPeriod>\n    <iwxxm:boundingVolume>\n        <iwxxm:ElevatedEnvelope>\n            <gml:lowerCorner srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">54.03 159.27</gml:lowerCorner>\n            <gml:upperCorner srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">54.03 159.27</gml:upperCorner>\n            <iwxxm:upperElevation uom=\"M\">15000</iwxxm:upperElevation>\n            <iwxxm:upperVerticalReference>MSL</iwxxm:upperVerticalReference>\n            <iwxxm:lowerElevation uom=\"M\">1536</iwxxm:lowerElevation>\n            <iwxxm:lowerVerticalReference>MSL</iwxxm:lowerVerticalReference>\n        </iwxxm:ElevatedEnvelope>\n    </iwxxm:boundingVolume>\n    <iwxxm:phenomenaList xlink:href=\"http://codes.wmo.int/iwxxm/MeteorologicalFeature/VOLCANO\"/>\n    <iwxxm:phenomenaList xlink:href=\"http://codes.wmo.int/iwxxm/MeteorologicalFeature/VOLCANIC_ASH\"/>\n    <iwxxm:issueTime>\n        <gml:TimeInstant gml:id=\"vona.t.issue.kvert\">\n            <gml:timePosition>2024-02-16T01:30:00Z</gml:timePosition>\n        </gml:TimeInstant>\n    </iwxxm:issueTime>\n    <iwxxm:originatingCentre>\n         <aixm:Unit gml:id=\"unit.svo.kvert\">\n            <aixm:timeSlice>\n                <aixm:UnitTimeSlice gml:id=\"unit.svo.ts.kvert\">\n                    <gml:validTime/>\n                    <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n                    <aixm:name>KVERT</aixm:name>\n                    <aixm:type>OTHER:SVO</aixm:type>\n                    <aixm:compliantICAO>YES</aixm:compliantICAO>\n                    <aixm:designator>UHPP</aixm:designator>\n                </aixm:UnitTimeSlice>\n            </aixm:timeSlice>\n        </aixm:Unit>\n    </iwxxm:originatingCentre>\n    <iwxxm:phenomenonCategory>volcanicObservations</iwxxm:phenomenonCategory>\n    <iwxxm:phenomenonTime>\n        <gml:TimeInstant gml:id=\"vona.t.phen.kvert\">\n            <gml:timePosition>2024-02-16T01:30:00Z</gml:timePosition>\n        </gml:TimeInstant>\n    </iwxxm:phenomenonTime>\n    <iwxxm:feature>\n        <iwxxm:MeteorologicalFeature gml:id=\"vona.feat.volcano.karymsky\">\n            <gml:identifier codeSpace=\"http://vona/volcano\">88fb9884-e14e-4c2b-848f-88a34f3d8d07</gml:identifier>\n            <iwxxm:phenomenonCategory>volcanicObservations</iwxxm:phenomenonCategory>\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"vona.t.volcano.karymsky\">\n                    <gml:timePosition>2024-02-16T01:30:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/iwxxm/MeteorologicalFeature/VOLCANO\"/>\n            <iwxxm:phenomenonGeometry>\n                <gml:Point gml:id=\"vona.pt.karymsky\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/ers/EPSG/0/4326\">\n                    <gml:pos>54.03 159.27</gml:pos>\n                </gml:Point>\n            </iwxxm:phenomenonGeometry>\n            <iwxxm:phenomenonProperty>\n                <iwxxm:Volcano gml:id=\"vona.volcano.karymsky\">\n                    <iwxxm:name>KARYMSKY</iwxxm:name>\n                    <iwxxm:IAVCEINumber>300130</iwxxm:IAVCEINumber>\n                    <iwxxm:sourceElevation>\n                        <iwxxm:ElevatedLevel gml:id=\"vona.elev.src.karymsky\" srsDimension=\"2\" srsName=\"http://www.opengis.net/def/ers/EPSG/0/4326\">\n                            <iwxxm:elevation uom=\"M\">1536</iwxxm:elevation>\n                            <iwxxm:verticalReference>MSL</iwxxm:verticalReference>\n                        </iwxxm:ElevatedLevel>\n                    </iwxxm:sourceElevation>\n                    <iwxxm:activityStatus>DECREASED_ACTIVITY</iwxxm:activityStatus>\n                </iwxxm:Volcano>\n            </iwxxm:phenomenonProperty>\n        </iwxxm:MeteorologicalFeature>\n    </iwxxm:feature>\n    <iwxxm:feature>\n        <iwxxm:MeteorologicalFeature gml:id=\"vona.feat.ash.karymsky\">\n            <gml:identifier codeSpace=\"http://vona/volcanic_ash_cloud\">b99ba0e8-ddd0-4985-b0f8-914ad90d390b</gml:identifier>\n            <iwxxm:phenomenonCategory>volcanicObservations</iwxxm:phenomenonCategory>\n            <iwxxm:phenomenonTime>\n                <gml:TimeInstant gml:id=\"vona.t.ash.karymsky\">\n                    <gml:timePosition>2024-02-16T01:30:00Z</gml:timePosition>\n                </gml:TimeInstant>\n            </iwxxm:phenomenonTime>\n            <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/iwxxm/MeteorologicalFeature/VOLCANIC_ASH\"/>\n            <iwxxm:phenomenonGeometry>\n                <iwxxm:ElevatedLevel gml:id=\"vona.elev.ash.karymsky\" srsDimension=\"2\" srsName=\"http://www.opengis.net/def/ers/EPSG/0/4326\">\n                    <iwxxm:elevation uom=\"M\">15000</iwxxm:elevation>\n                    <iwxxm:verticalReference>MSL</iwxxm:verticalReference>\n                </iwxxm:ElevatedLevel>\n            </iwxxm:phenomenonGeometry>\n            <iwxxm:phenomenonProperty nilReason=\"http://codes.wmo.int/iwxxm/nil/inapplicable\"></iwxxm:phenomenonProperty>\n        </iwxxm:MeteorologicalFeature>\n    </iwxxm:feature>\n    <iwxxm:stateOrRegion>RUSSIA</iwxxm:stateOrRegion>\n    <iwxxm:noticeNumber>2021/4</iwxxm:noticeNumber>\n    <iwxxm:currentColourCode xlink:href=\"http://codes.wmo.int/iwxxm/AviationColourCode/YELLOW\"/>\n    <iwxxm:previousColourCode xlink:href=\"http://codes.wmo.int/iwxxm/AviationColourCode/ORANGE\"/>\n    <iwxxm:contacts>DUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM, WWW.VOLCANO.COM</iwxxm:contacts>\n    <iwxxm:remarks>SATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE ACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY PRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.</iwxxm:remarks>\n    <iwxxm:nextNotice>WILL BE ISSUED BY 20240223/0130Z</iwxxm:nextNotice>\n</iwxxm:VolcanoObservatoryNoticeForAviation>\n",
       "match_status": "unequal",
-      "residuals": [
-        {
-          "start": 0,
-          "end": 705,
-          "text": "VONA\nDTG:\t\t\t20240216/0130Z\nVOLCANO:\t\tKARYMSKY 300130\nPSN:\t\t\tN5403 E15927\nAREA:\t\t\tRUSSIA\nSOURCE ELEV:\t\t1536M AMSL\nNOTICE NR:\t\t2021/4\nCURRENT COLOUR CODE:\tYELLOW\nPREVIOUS COLOUR CODE:\tORANGE\nSVO:\t\t\tKVERT\nACT STS:\t\tDECREASED ACT\nONSET:\t\t\tNIL\nDUR:\t\t\tNIL\nVA CLD HGT:\t\t15KM AMSL\nHGT SOURCE:\t\tGRD OBSERVER\nMOV:\t\t\tSW\nCTC:\t\t\tDUTY VOLCANOLOGIEST, TEL +123-456-789 EMAIL, DUTY.VOLCANOLOGIEST[AT]VOLCANO.COM,\n\t\t\tWWW.VOLCANO.COM\nRMK:\t\t\tSATELLITE, SEISMIC AND INFRASOUND DATA SHOW NO EVIDENCE OF FURTHER ERUPTIVE\n\t\t\tACT. FUTURE EXPLOSIONS AT KARYMSKY ARE LIKELY. THEY OCCUR WO WRNG AND TYPICALLY\n\t\t\tPRODUCE SMALL VA CLD THAT DISSIPATE QUICKLY; HOWEVER, LARGER ASH ARE POSS.\nNXT NOTICE:\t\tWILL BE ISSUED BY 20240223/0130Z"
-        }
-      ],
+      "residuals": [],
       "lint_issues": [
         {
           "severity": "info",
           "code": "VONA_ONSET_NIL",
-          "message": "VONA ONSET NIL — onsetTime omitted (F32 theme V1)",
+          "message": "VONA ONSET NIL - onsetTime omitted (F32 theme V1)",
           "location": "onset",
           "start": 235,
           "end": 238
@@ -896,7 +920,7 @@
         {
           "severity": "info",
           "code": "VONA_DUR_NIL",
-          "message": "VONA DUR NIL — duration omitted (F32 theme V1)",
+          "message": "VONA DUR NIL - duration omitted (F32 theme V1)",
           "location": "duration",
           "start": 246,
           "end": 249
@@ -909,7 +933,7 @@
       "product": "swxa",
       "tier": "deferred",
       "deferred": true,
-      "deferral_reason": "Second/third WMO SWXA — single-seed catalog (F28 / TC-F28-005)",
+      "deferral_reason": "Second/third WMO SWXA - single-seed catalog (F28 / TC-F28-005)",
       "tac": "",
       "official_xml": "",
       "converted_xml": "",
@@ -923,7 +947,7 @@
       "product": "swxa",
       "tier": "deferred",
       "deferred": true,
-      "deferral_reason": "Second/third WMO SWXA — single-seed catalog (F28 / TC-F28-005)",
+      "deferral_reason": "Second/third WMO SWXA - single-seed catalog (F28 / TC-F28-005)",
       "tac": "",
       "official_xml": "",
       "converted_xml": "",
@@ -937,7 +961,7 @@
       "product": "metar",
       "tier": "deferred",
       "deferred": true,
-      "deferral_reason": "COLLECT / validate shape — not sample-menu happy-path (EV-024)",
+      "deferral_reason": "COLLECT / validate shape - not sample-menu happy-path (EV-024)",
       "tac": "",
       "official_xml": "",
       "converted_xml": "",
@@ -951,7 +975,7 @@
       "product": "taf",
       "tier": "deferred",
       "deferred": true,
-      "deferral_reason": "COLLECT / validate shape — not sample-menu happy-path (EV-024)",
+      "deferral_reason": "COLLECT / validate shape - not sample-menu happy-path (EV-024)",
       "tac": "",
       "official_xml": "",
       "converted_xml": "",

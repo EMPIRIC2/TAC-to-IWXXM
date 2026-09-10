@@ -33,6 +33,7 @@
 | `scripts/ci/run_wis2box_harness.sh` | `tests/bats/ci/run_wis2box_harness.bats` |
 | `scripts/ci/run_wmo_quality.sh` | `tests/bats/ci/run_wmo_quality.bats` |
 | `scripts/ci/staging_gate.sh` | `tests/bats/ci/staging_gate.bats` |
+| `scripts/ci/watch_github_ci.sh` | `tests/bats/ci/watch_github_ci.bats` |
 | `scripts/deploy/apply_gh_branch_rulesets.sh` | `tests/bats/deploy/apply_gh_branch_rulesets.bats` |
 | `scripts/deploy/apply_render_cors_env.sh` | `tests/bats/deploy/apply_render_cors_env.bats` |
 | `scripts/deploy/check_no_bare_curl_imgurl.sh` | `tests/bats/deploy/check_no_bare_curl_imgurl.bats` |
@@ -60,4 +61,4 @@
 | `scripts/supabase/local-dev.sh` | `tests/bats/supabase/local-dev.bats` |
 | `scripts/vendor/sync-iwxxm.sh` | `tests/bats/vendor/sync-iwxxm.bats` |
 
-**Count:** 56 scripts / 56 bats
+**Count:** 57 scripts / 57 bats

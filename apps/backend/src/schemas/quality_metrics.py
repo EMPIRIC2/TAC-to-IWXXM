@@ -17,6 +17,8 @@ class QualityMetricsSummaryModel(BaseModel):
     lint_fail: int = 0
     validate_fail: int = 0
     deferred_gaps: int = 0
+    pair_examples: int = 0
+    unpaired_examples: int = 0
 
 
 class QualityMetricsFileRowModel(BaseModel):
@@ -30,6 +32,7 @@ class QualityMetricsFileRowModel(BaseModel):
     lint_error_count: int = 0
     validate_error_count: int = 0
     deferred: bool = False
+    has_tac_pair: bool = False
 
 
 class QualityMetricsListResponse(BaseModel):

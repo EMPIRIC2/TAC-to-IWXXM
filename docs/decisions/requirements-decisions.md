@@ -1,6 +1,44 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-09-03 (EV-933 / #933)
+> Stage: 01-requirements | Last updated: 2026-09-06 (EV-m4-profiles-annex3-us-custom)
+
+## EV-1120-phase-a-profile-ux — Glanceable Profile UX follow-on
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-1120 / manifest | `feature-list`, `spec`, `user-journeys`, `test-plan` | No extra standing docs in this narrowed pass | confirmed |
+| EV-1120 / scope shape | Narrow `#1145` slice | Treat `#1121`-`#1123` as standing context/contracts, not reopened implementation scope | confirmed |
+| EV-1120 / UI preview | Declined | Requirements from docs/repo only | confirmed |
+| EV-1120 / success focus | Safe executable slice | Prioritize summary composition, compact twin, compare, and safe refresh behavior | confirmed |
+| EV-1120 / profile coverage | All registered semantic profiles | Thin profiles may reuse ICAO examples with a note | confirmed |
+| EV-1120 / guest counts | Placeholder until auth | Keep the compact twin fields visible for guests | confirmed |
+| EV-1120 / refresh safety | Preserve unrelated in-progress state | Reset only when a profile-dependent control becomes invalid | confirmed |
+| EV-1120 / compare surface | Conversion Profiles summary only | Workbench twin stays compact in this slice | confirmed |
+| EV-1120 / ADR-038 blocks | Inspect/jump only | No new runtime/editor surface | confirmed |
+| EV-1120 / starter content | Seed only when untouched | Never overwrite customized packs/overlays | confirmed |
+| EV-1120 / follow-ons | `#1146` and `#1147` remain out | Composable convert and workflow authoring deferred | confirmed |
+
+[Corpus: decisions] [Corpus: product §F7.w] [Corpus: product §F35] [Corpus: api]
+[Corpus: journeys §UJ-072d] [Corpus: tests]
+
+## EV-m4-profiles-annex3-us-custom — Milestone 4 profiles
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-M4 / manifest | `feature-list`, `spec`, `user-journeys`, `test-plan`, `api-contract` | Skip config/deploy unless a concrete gap appears | confirmed |
+| EV-M4 / milestone shape | Unified profile platform | Semantic + exchange profile content + operator management/sharing + quality coverage | confirmed |
+| EV-M4 / #908 | Core acceptance | Cross-version conversion is in-scope milestone acceptance, not background only | confirmed |
+| EV-M4 / #1051 | Core acceptance with security boundary | Sharing is in scope, but only for non-secret profile assets or destination references | confirmed |
+| EV-M4 / #970 | Core acceptance | RuleCases / fixture backlog is first-class milestone quality scope | confirmed |
+| EV-M4 / journey | Combined `UJ-069` + `UJ-072` anchor | Choose profile → inspect/edit/share → convert/package → preserve picker/drawer | confirmed |
+| EV-M4 / compatibility | Strict | Preserve existing profile picker, dissemination drawer, and public convert/lint/validate posture | confirmed |
+| EV-M4 / auth | JWT for mutate/share/manage | Public convert/lint/validate remains public | confirmed |
+| EV-M4 / UI preview | Declined | Requirements from docs/repo only | confirmed |
+| EV-M4 / contradiction | No stored/shared dissemination credentials | Reject sharing secrets in profile or destination objects | confirmed |
+| EV-M4 / feasibility | Broad docs framing + narrowed build gate | Keep milestone 4 umbrella language, but plan only an executable subset for any later build gate | confirmed |
+
+[Corpus: decisions] [Corpus: product §F35] [Corpus: product §F36] [Corpus: product §F7.w]
+[Corpus: api] [Corpus: journeys §UJ-069] [Corpus: journeys §UJ-072] [Corpus: tests]
 
 ## EV-933 — ConversionProfile editor (#933)
 
@@ -16,6 +54,20 @@
 | EV-933 / connectivity | H4–H5 when FE deploy | After Build gate | planned |
 
 [Corpus: decisions §EV-933] [Corpus: product §F7.w] [Corpus: api] [Corpus: journeys §UJ-072]
+
+## EV-1051 — Operator sharing of semantic presets + dissemination templates (#1051)
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EV-1051 / scope | Implement **Part A + Part B** in one cycle | Docs/ADR first; smallest viable build slices after scope lock | confirmed |
+| EV-1051 / semantic presets | Saved + shared | Reference existing semantic profile ids plus non-secret conversion defaults only | confirmed |
+| EV-1051 / dissemination templates | Saved + shared | Non-secret destination metadata/reference only; no credential persistence | confirmed |
+| EV-1051 / runtime credentials | Memory-only | Operator re-enters live credential or URI material at use time | confirmed |
+| EV-1051 / guest path | No saved sharing | Guest remains IndexedDB-only (F31) | confirmed |
+| EV-1051 / apply surfaces | Keep distinct | `#1024` light picker + drawer remain apply surfaces; full editor remains separate | confirmed |
+
+[Corpus: decisions §EV-1051] [Corpus: product §F7.w] [Corpus: product §F16] [Corpus: api]
+[Corpus: journeys §UJ-074] [Corpus: adr/ADR-021] [Corpus: adr/ADR-029] [Corpus: adr/ADR-036]
 
 
 ## EV-936 — Dissemination ops + Gateway hooks (#936)
@@ -259,11 +311,11 @@
 |----|-------|----------|--------|
 | REQ-001 | Monorepo direction | Single git; reduce submodule complexity; preserve upstream pull for iwxxm | confirmed |
 | REQ-002 | iwxxm-* upstream | Vendored snapshots from wmo-im; no git submodules for schemas | confirmed |
-| REQ-003 | GIFTs placement | `packages/gifts` — full source; manual merge from mgoberfield when chosen | confirmed |
+| REQ-003 | GIFTs placement | **Superseded (ADR-014 / F6 cutover)** — `packages/gifts` was the transitional in-repo placement; current monorepo state removes it in favor of `packages/tac2iwxxm` | amended |
 | REQ-004 | Auth shape | `packages/auth` library merged into backend; single deployable API | confirmed |
 | REQ-005 | Workspace tooling | Makefile + uv workspace + pnpm workspaces | confirmed |
 | REQ-006 | Migration approach | Big-bang — one PR removes all submodules | confirmed |
-| REQ-007 | Target layout | `apps/{backend,frontend,e2e}` + `packages/{auth,gifts,shared}` + `vendor/schemas/*` | confirmed |
+| REQ-007 | Target layout | **Amended post-cutover** — `apps/{backend,frontend,worker,e2e}` + `packages/{auth,shared,tac2iwxxm,tac-validate,iwxxm-validate,dissemination,workflows}` + `vendor/schemas/*`; `packages/gifts` removed at F6 cutover | amended |
 | REQ-008 | Legacy repos | Archive after stable deploy; monorepo sole active dev target | confirmed |
 | REQ-009 | Vendor sync trigger | Scheduled GitHub Action opens PR on wmo-im new tags | confirmed |
 | REQ-010 | Deploy topology | Two Render services — API (backend+auth) + static frontend | confirmed |

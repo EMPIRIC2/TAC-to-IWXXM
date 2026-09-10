@@ -13,10 +13,12 @@ See docs/deploy.md §Promote / §Release checklist. ADR-034.
 
 - [ ] Reviewed publishable package diffs since last `v*-deploy` tag
       (`tac2iwxxm` / `tac-validate` / `iwxxm-validate`)
-- [ ] Semver bumps committed on `stage` (or explicit **none** for docs/infra-only)
+- [ ] CalVer bumps committed on `stage` (or explicit **none** for docs/infra-only)
+      — `YYYY.MM.DD` / `YYYY.MM.DD.N` (ADR-043)
 - [ ] `docs/CHANGELOG.md` cut with dated section
 - [ ] After merge: tag `vYYYY.MM.DD-deploy` on `main` tip and push
 - [ ] If publishing: per-package PyPI tags after pypi-release-checklist
+      (e.g. `tac-validate-v2026.09.10`)
 
 ## Summary
 

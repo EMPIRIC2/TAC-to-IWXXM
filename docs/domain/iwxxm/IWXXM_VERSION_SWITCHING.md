@@ -134,6 +134,10 @@ Updated conversion functions to accept version parameter:
   - Options: "2025-2" (latest), "2023-1" (previous), "2025-1" (remaps to 2025-2)
   - Deprecated versions (2021-2, 2018, 2016, 3.x) will return HTTP 400 error
   - Validated automatically
+- For `product=IWXXM`, the route treats `manual_text` / upload content as existing IWXXM XML.
+  If the source namespace line differs from the requested `iwxxm_version`, the backend migrates
+  the document to the target supported line, rewrites namespace and schema references, and
+  validates the migrated output before returning success.
 
 **Example Request**:
 ```bash
@@ -199,8 +203,11 @@ Source IWXXM XML (e.g., 2023-1)
     ↓
 Migrate (version_migration.py)
     ├─ Parse XML
+    ├─ Detect source namespace version
     ├─ Detect breaking changes
     ├─ Remove/transform elements
+    ├─ Rewrite namespace + schemaLocation to target line
+    ├─ Validate migrated output (XSD + Schematron)
     ├─ Log warnings
     ↓
 Target IWXXM XML (e.g., 2025-2)
@@ -242,12 +249,11 @@ project_root/
 
 ## Setup and Installation
 
-### 1. Initialize Git Submodules
+### 1. Ensure Vendored Schemas Are Present
 
 ```bash
-git submodule update --init --recursive schemas/iwxxm
-git submodule update --init --recursive schemas/iwxxm-codelists
-git submodule update --init --recursive schemas/iwxxm-modelling
+make install
+# Verify the canonical vendored schema tree exists under vendor/schemas/
 ```
 
 ### 2. Install Dependencies
@@ -334,7 +340,8 @@ xml_2023_1 = convert_metar_tac(metar_text, iwxxm_version="2023-1")
 **Solution**:
 ```bash
 cd /root/metar-to-IWXXM
-git submodule update --init --recursive
+make install
+test -d vendor/schemas/iwxxm
 ```
 
 ### Version Not Supported

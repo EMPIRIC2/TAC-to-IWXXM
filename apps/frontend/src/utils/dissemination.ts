@@ -38,7 +38,8 @@ export interface SchemaDiffItem {
 }
 
 export interface PreflightRequest {
-  sink_type: SinkType;
+  dissemination_template_id?: string | null;
+  sink_type?: SinkType | null;
   uri?: string | null;
   ddl?: boolean;
   product?: string | null;
@@ -55,6 +56,7 @@ export interface PreflightResponse {
 }
 
 export interface SendRequest {
+  dissemination_template_id?: string | null;
   handle?: string | null;
   sink_type?: SinkType | null;
   uri?: string | null;
@@ -111,10 +113,13 @@ export function isPreflightGreen(
  */
 export async function disseminationPreflight(
   body: PreflightRequest,
+  accessToken?: string,
 ): Promise<PreflightResponse> {
   const response = await fetch(apiUrl('/dissemination/preflight'), {
     method: 'POST',
-    headers: JSON_HEADERS,
+    headers: accessToken?.trim()
+      ? { ...JSON_HEADERS, Authorization: `Bearer ${accessToken.trim()}` }
+      : JSON_HEADERS,
     body: JSON.stringify(body),
   });
   return parseJson<PreflightResponse>(response);
@@ -125,10 +130,15 @@ export async function disseminationPreflight(
  *
  * @param body - Handle from green preflight and/or payload
  */
-export async function disseminationSend(body: SendRequest): Promise<SendResponse> {
+export async function disseminationSend(
+  body: SendRequest,
+  accessToken?: string,
+): Promise<SendResponse> {
   const response = await fetch(apiUrl('/dissemination/send'), {
     method: 'POST',
-    headers: JSON_HEADERS,
+    headers: accessToken?.trim()
+      ? { ...JSON_HEADERS, Authorization: `Bearer ${accessToken.trim()}` }
+      : JSON_HEADERS,
     body: JSON.stringify(body),
   });
   return parseJson<SendResponse>(response);

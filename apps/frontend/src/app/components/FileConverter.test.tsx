@@ -7,9 +7,10 @@ import {
   fireEvent,
   waitFor,
   cleanup,
+  within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { FileConverter } from './FileConverter';
+import { FileConverter, clearOverlayOnAuthLoss } from './FileConverter';
 import { operatorDisseminationUiConfig } from '/utils/operatorDisseminationUi';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
@@ -38,6 +39,32 @@ const MockEndpointNotImplementedError = vi.hoisted(() => {
       this.name = 'EndpointNotImplementedError';
       this.status = status;
       this.code = code;
+    }
+  };
+});
+const MockConvertApiError = vi.hoisted(() => {
+  return class ConvertApiError extends Error {
+    status: number;
+    errors: string[];
+    issues: Array<Record<string, unknown>>;
+
+    constructor(
+      message: string,
+      {
+        status,
+        errors = [],
+        issues = [],
+      }: {
+        status: number;
+        errors?: string[];
+        issues?: Array<Record<string, unknown>>;
+      },
+    ) {
+      super(message);
+      this.name = 'ConvertApiError';
+      this.status = status;
+      this.errors = errors;
+      this.issues = issues;
     }
   };
 });
@@ -93,6 +120,71 @@ const mockUploadConvertedFiles = vi.hoisted(() =>
 const mockListOverlays = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ items: [] as Array<Record<string, unknown>> }),
 );
+const mockListPresets = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({ items: [] as Array<Record<string, unknown>> }),
+);
+const mockListTemplates = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({ items: [] as Array<Record<string, unknown>> }),
+);
+const mockFetchProfileCatalog = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    profiles: [
+      {
+        id: 'ICAO_2025',
+        kind: 'semantic',
+        products: ['METAR', 'TAF'],
+        deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+        iwxxm_line: 'IWXXM 2025-2 core',
+      },
+      {
+        id: 'US_FAA_NWS',
+        kind: 'semantic',
+        products: ['METAR'],
+        deltas_vs_icao: [
+          'Retains selected RMK content in output.',
+          'Adds FAA/NWS national extension coverage.',
+        ],
+        iwxxm_line: 'IWXXM-US 3.0.0',
+        rule_pack_count: 2,
+        overlay_count: 1,
+      },
+      {
+        id: 'CA_ECCC',
+        kind: 'semantic',
+        products: ['METAR', 'SPECI', 'TAF', 'AIRMET'],
+        deltas_vs_icao: ['Canadian national IWXXM extensions'],
+        iwxxm_line: 'WMO IWXXM 3.0.0 core + iwxxm-ca 3.0',
+        metar_family_variants: [
+          {
+            tac_lead: 'METAR',
+            api_product: 'METAR',
+            iwxxm_root: 'iwxxm:METAR',
+            rule_id_prefix: 'CA.METAR',
+          },
+          {
+            tac_lead: 'SPECI',
+            api_product: 'SPECI',
+            iwxxm_root: 'iwxxm:SPECI',
+            rule_id_prefix: 'CA.SPECI',
+          },
+          {
+            tac_lead: 'LWIS',
+            api_product: 'METAR',
+            iwxxm_root: 'iwxxm-ca:LWIS',
+            rule_id: 'CA.METAR.LWIS',
+            minimal_observation: true,
+          },
+          {
+            tac_lead: 'SAWR',
+            api_product: 'METAR',
+            iwxxm_root: 'iwxxm-ca:SAWR',
+            rule_id: 'CA.METAR.SAWR',
+          },
+        ],
+      },
+    ],
+  }),
+);
 
 const mockToast = vi.hoisted(() => ({
   success: vi.fn(),
@@ -105,6 +197,7 @@ const mockToast = vi.hoisted(() => ({
 }));
 const mockPersistSession = vi.hoisted(() => vi.fn().mockResolvedValue(null));
 const mockScheduleAutoSave = vi.hoisted(() => vi.fn());
+const mockUseWorkSessionSync = vi.hoisted(() => vi.fn());
 const mockInflateGzipToText = vi.hoisted(() => vi.fn());
 const mockReadGuestConverterState = vi.hoisted(() => vi.fn(() => null));
 const mockIsReadOnly = vi.hoisted(() => ({ value: false }));
@@ -125,6 +218,7 @@ vi.mock('/utils/supabase/logout', () => ({
 vi.mock('/utils/api', () => ({
   convertMetarToIwxxm: mockConvertMetarToIwxxm,
   convertBulletin: mockConvertBulletin,
+  ConvertApiError: MockConvertApiError,
   ingestCollect: mockIngestCollect,
   massIngestFiles: mockMassIngestFiles,
   EndpointNotImplementedError: MockEndpointNotImplementedError,
@@ -146,6 +240,9 @@ vi.mock('/utils/api', () => ({
 }));
 
 vi.mock('@/utils/conversionProfilesApi', () => ({
+  fetchProfileCatalog: (...args: unknown[]) => mockFetchProfileCatalog(...args),
+  listPresets: (...args: unknown[]) => mockListPresets(...args),
+  listTemplates: (...args: unknown[]) => mockListTemplates(...args),
   listOverlays: (...args: unknown[]) => mockListOverlays(...args),
 }));
 
@@ -199,13 +296,7 @@ vi.mock('sonner', () => ({
 
 vi.mock('@/hooks/useWorkSessionSync', () => ({
   AUTOSAVE_DEBOUNCE_MS: 3000,
-  useWorkSessionSync: () => ({
-    isReadOnly: mockIsReadOnly.value,
-    saveIndicator: mockSaveIndicator.value,
-    scheduleAutoSave: mockScheduleAutoSave,
-    persistSession: mockPersistSession,
-    flushAutoSave: vi.fn().mockResolvedValue(null),
-  }),
+  useWorkSessionSync: (...args: unknown[]) => mockUseWorkSessionSync(...args),
 }));
 
 vi.mock('/utils/guestConverterState', () => ({
@@ -215,7 +306,9 @@ vi.mock('/utils/guestConverterState', () => ({
 }));
 
 vi.mock('./WorkHistorySidebar', () => ({
-  WorkHistorySidebar: () => null,
+  WorkHistorySidebar: ({ collapsed }: { collapsed?: boolean }) => (
+    <div data-testid="recent-work-collapsed" data-collapsed={collapsed ? '1' : '0'} />
+  ),
 }));
 
 vi.mock('jszip', () => ({
@@ -280,6 +373,29 @@ vi.mock('./ui/sonner', () => ({
 describe('FileConverter Component', () => {
   const defaultProps = {};
 
+  it('clears overlays on auth loss only when one is selected', () => {
+    const withOverlay = {
+      bulletinId: '',
+      issuingCenter: '',
+      product: 'METAR' as const,
+      profile: 'ICAO_2025' as const,
+      reportVariant: '',
+      exchangeProfile: 'GLOBAL_AFS' as const,
+      presetId: '',
+      disseminationTemplateId: '',
+      overlayId: 'ov-1',
+      iwxxmVersion: '2025-2' as const,
+      strictValidation: false,
+      includeNilReasons: false,
+      onError: 'skip' as const,
+      logLevel: 'INFO' as const,
+    };
+    const withoutOverlay = { ...withOverlay, overlayId: '' };
+
+    expect(clearOverlayOnAuthLoss(withOverlay).overlayId).toBe('');
+    expect(clearOverlayOnAuthLoss(withoutOverlay)).toBe(withoutOverlay);
+  });
+
   // Coverage + full-suite load routinely exceeds Vitest's default 5s on Branch Path cases.
   vi.setConfig({ testTimeout: 20_000 });
 
@@ -296,8 +412,36 @@ describe('FileConverter Component', () => {
     mockMassIngestFiles.mockReset();
     mockInflateGzipToText.mockReset();
     mockValidateIwxxm.mockReset();
+    mockListPresets.mockReset();
+    mockListTemplates.mockReset();
     mockListOverlays.mockReset();
+    mockFetchProfileCatalog.mockReset();
+    mockListPresets.mockResolvedValue({ items: [] });
+    mockListTemplates.mockResolvedValue({ items: [] });
     mockListOverlays.mockResolvedValue({ items: [] });
+    mockFetchProfileCatalog.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ICAO_2025',
+          kind: 'semantic',
+          products: ['METAR', 'TAF'],
+          deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
+          iwxxm_line: 'IWXXM 2025-2 core',
+        },
+        {
+          id: 'US_FAA_NWS',
+          kind: 'semantic',
+          products: ['METAR'],
+          deltas_vs_icao: [
+            'Retains selected RMK content in output.',
+            'Adds FAA/NWS national extension coverage.',
+          ],
+          iwxxm_line: 'IWXXM-US 3.0.0',
+          rule_pack_count: 2,
+          overlay_count: 1,
+        },
+      ],
+    });
     localStorage.clear();
     mockSignOutWithScope.mockResolvedValue(true);
     mockPersistSession.mockResolvedValue(null);
@@ -356,6 +500,14 @@ describe('FileConverter Component', () => {
     mockReadGuestConverterState.mockReturnValue(null);
     mockIsReadOnly.value = false;
     mockSaveIndicator.value = 'idle';
+    mockUseWorkSessionSync.mockReset();
+    mockUseWorkSessionSync.mockImplementation(() => ({
+      isReadOnly: mockIsReadOnly.value,
+      saveIndicator: mockSaveIndicator.value,
+      scheduleAutoSave: mockScheduleAutoSave,
+      persistSession: mockPersistSession,
+      flushAutoSave: vi.fn().mockResolvedValue(null),
+    }));
   });
 
   afterEach(() => {
@@ -395,6 +547,10 @@ describe('FileConverter Component', () => {
         target: { value: 'METAR KJFK' },
       });
       expect(screen.getByTestId('guest-loss-notice')).toBeInTheDocument();
+      expect(screen.getByTestId('guest-loss-notice').textContent || '').not.toMatch(
+        /until you log in/i,
+      );
+      expect(screen.getByTestId('workbench-header-actions')).toBeInTheDocument();
 
       await user.click(screen.getByTestId('sign-in-button'));
       expect(onRequestLogin).toHaveBeenCalled();
@@ -405,6 +561,68 @@ describe('FileConverter Component', () => {
           .querySelector('button') as HTMLButtonElement,
       );
       expect(onRequestLogin).toHaveBeenCalled();
+    });
+
+    it('opens Profile glance via summary toggle', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter {...defaultProps} />);
+      const details = screen.getByTestId(
+        'workbench-profile-summary',
+      ) as HTMLDetailsElement;
+      expect(details.open).toBe(false);
+      await user.click(details.querySelector('summary') as HTMLElement);
+      expect(details.open).toBe(true);
+    });
+
+    it('collapses Recent work when viewport enters narrow via subscribed MQ', async () => {
+      const user = userEvent.setup({ delay: null });
+      let matches = false;
+      const listeners = new Set<() => void>();
+      vi.spyOn(window, 'matchMedia').mockImplementation(
+        (query: string) =>
+          ({
+            get matches() {
+              return matches;
+            },
+            media: query,
+            addEventListener: (_event: string, fn: () => void) => {
+              listeners.add(fn);
+            },
+            removeEventListener: (_event: string, fn: () => void) => {
+              listeners.delete(fn);
+            },
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+            onchange: null,
+          }) as unknown as MediaQueryList,
+      );
+
+      render(<FileConverter {...defaultProps} onLoadWorkSession={vi.fn()} />);
+      expect(screen.getByTestId('recent-work-collapsed')).toHaveAttribute(
+        'data-collapsed',
+        '0',
+      );
+
+      const details = screen.getByTestId(
+        'workbench-profile-summary',
+      ) as HTMLDetailsElement;
+      await user.click(details.querySelector('summary') as HTMLElement);
+      expect(details.open).toBe(true);
+
+      matches = true;
+      act(() => {
+        listeners.forEach((fn) => fn());
+      });
+      await waitFor(() => {
+        expect(screen.getByTestId('recent-work-collapsed')).toHaveAttribute(
+          'data-collapsed',
+          '1',
+        );
+        expect(
+          (screen.getByTestId('workbench-profile-summary') as HTMLDetailsElement).open,
+        ).toBe(false);
+      });
     });
 
     it('shows first-visit privacy notice and opens settings from footer', async () => {
@@ -1362,6 +1580,31 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('convert-button')).toBeInTheDocument();
     });
 
+    it('uses outline Convert&Send so Convert is the sole filled primary (TC-UX-R04-001)', () => {
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      render(<FileConverter {...defaultProps} />);
+      const convert = screen.getByTestId('convert-button');
+      const convertAndSend = screen.getByTestId('convert-and-send-button');
+      const upload = screen.getByTestId('upload-to-database-button');
+      const disseminate = screen.getByTestId('open-dissemination-drawer');
+      expect(convert).toHaveClass('bg-primary');
+      expect(convertAndSend).toHaveClass('bg-background');
+      expect(convertAndSend).not.toHaveClass('bg-secondary');
+      expect(upload).toHaveClass('bg-background');
+      expect(disseminate).toHaveClass('bg-background');
+    });
+
+    it('contains product-profile bar in main column beside Recent work (TC-UX-RW-001)', () => {
+      render(<FileConverter {...defaultProps} onLoadWorkSession={vi.fn()} />);
+      const main = screen.getByTestId('workbench-main-column');
+      const bar = screen.getByTestId('product-profile-bar');
+      expect(main).toHaveClass('min-w-0');
+      expect(bar).toHaveClass('lg:flex-wrap');
+      expect(bar.className).not.toMatch(/\blg:flex-nowrap\b/);
+      expect(screen.getByTestId('recent-work-collapsed')).toBeInTheDocument();
+      expect(screen.getByTestId('exchange-profile-select')).toBeInTheDocument();
+    });
+
     it('hides Convert&Send, Disseminate, and Upload to Database while destinations UI is off (TC-EV042-001 gate residual)', () => {
       operatorDisseminationUiConfig.destinationsEnabled = false;
       render(<FileConverter {...defaultProps} />);
@@ -1852,6 +2095,165 @@ describe('FileConverter Component', () => {
       expect(screen.getByText('Conversion Error')).toBeInTheDocument();
     });
 
+    it('forwards hook session callbacks to parent handlers', () => {
+      const onSessionUpdated = vi.fn();
+      const onActiveSessionIdChange = vi.fn();
+      mockUseWorkSessionSync.mockImplementationOnce((options) => {
+        const typed = options as {
+          onSessionSaved: (session: { id: string }) => void;
+          onSessionIdAssigned: (id: string) => void;
+        };
+        typed.onSessionSaved({ id: 'sess-123' });
+        typed.onSessionIdAssigned('sess-123');
+        return {
+          isReadOnly: false,
+          saveIndicator: 'idle',
+          scheduleAutoSave: mockScheduleAutoSave,
+          persistSession: mockPersistSession,
+          flushAutoSave: vi.fn().mockResolvedValue(null),
+        };
+      });
+
+      render(
+        <FileConverter
+          {...defaultProps}
+          onSessionUpdated={onSessionUpdated}
+          onActiveSessionIdChange={onActiveSessionIdChange}
+        />,
+      );
+
+      expect(onSessionUpdated).toHaveBeenCalledWith({ id: 'sess-123' });
+      expect(onActiveSessionIdChange).toHaveBeenCalledWith('sess-123');
+    });
+
+    it('renders error log panel from structured hard-convert API failures', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockRejectedValueOnce(
+        new MockConvertApiError('All conversions failed', {
+          status: 400,
+          errors: ['manual_input: Validation failed - 1 validation issue(s) found'],
+          issues: [
+            {
+              source: 'manual_input',
+              message: 'No ICAO code found in TAC text',
+              severity: 'error',
+              code: 'ICAO_VALIDATION_FAILED',
+            },
+          ],
+        }),
+      );
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, { target: { value: 'METAR NOT A VALID' } });
+
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        const errorLog = screen.getByLabelText(/conversion error log/i);
+        expect(errorLog).toBeInTheDocument();
+        expect(
+          within(errorLog).getByText(/All conversions failed/i),
+        ).toBeInTheDocument();
+        expect(
+          within(errorLog).getByText(/No ICAO code found in TAC text/i),
+        ).toBeInTheDocument();
+      });
+    });
+
+    it('persists structured failure logs in the failed session snapshot', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockRejectedValueOnce(
+        new MockConvertApiError('All conversions failed', {
+          status: 400,
+          errors: ['manual_input: Validation failed - 1 validation issue(s) found'],
+          issues: [
+            {
+              source: 'manual_input',
+              message: 'No ICAO code found in TAC text',
+              severity: 'error',
+              code: 'ICAO_VALIDATION_FAILED',
+            },
+          ],
+        }),
+      );
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, { target: { value: 'METAR NOT A VALID' } });
+
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockPersistSession).toHaveBeenCalledWith(
+          expect.objectContaining({
+            conversionLog: {
+              errors: [
+                'All conversions failed',
+                'manual_input: Validation failed - 1 validation issue(s) found',
+              ],
+              issues: [
+                expect.objectContaining({
+                  message: 'No ICAO code found in TAC text',
+                  code: 'ICAO_VALIDATION_FAILED',
+                }),
+              ],
+            },
+          }),
+          { status: 'failed' },
+        );
+      });
+    });
+
+    it('skips blank hard-convert messages when building the visible error log', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockRejectedValueOnce(
+        new MockConvertApiError('   ', {
+          status: 400,
+          errors: ['', '  ', 'manual_input: Validation failed'],
+          issues: [
+            {
+              source: 'manual_input',
+              message: 'No ICAO code found in TAC text',
+              severity: 'error',
+              code: 'ICAO_VALIDATION_FAILED',
+            },
+          ],
+        }),
+      );
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, { target: { value: 'METAR NOT A VALID' } });
+
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockPersistSession).toHaveBeenCalledWith(
+          expect.objectContaining({
+            conversionLog: {
+              errors: ['manual_input: Validation failed'],
+              issues: [
+                expect.objectContaining({
+                  message: 'No ICAO code found in TAC text',
+                  code: 'ICAO_VALIDATION_FAILED',
+                }),
+              ],
+            },
+          }),
+          { status: 'failed' },
+        );
+      });
+
+      const errorLog = screen.getByLabelText(/conversion error log/i);
+      expect(
+        within(errorLog).getByText('manual_input: Validation failed'),
+      ).toBeInTheDocument();
+      expect(
+        within(errorLog).getByText(/No ICAO code found in TAC text/i),
+      ).toBeInTheDocument();
+    });
+
     it('uses fallback copy path when clipboard API is unavailable', async () => {
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockReset().mockResolvedValueOnce({
@@ -1979,6 +2381,29 @@ describe('FileConverter Component', () => {
         expect(screen.getByText('validation parsing failed')).toBeInTheDocument();
       });
       expect(mockToast.error).toHaveBeenCalledWith('validation parsing failed');
+    });
+
+    it('skips conversion log hydration for structured convert errors without details', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockReset().mockRejectedValueOnce(
+        new MockConvertApiError('HTTP 400', {
+          status: 400,
+          errors: [],
+          issues: [],
+        }),
+      );
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, { target: { value: 'METAR EMPTY STRUCTURED ERROR' } });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText('Conversion Error')).toBeInTheDocument();
+        expect(screen.getByText('HTTP 400')).toBeInTheDocument();
+      });
+      expect(screen.queryByLabelText(/conversion error log/i)).not.toBeInTheDocument();
+      expect(mockToast.error).toHaveBeenCalledWith('HTTP 400');
     });
 
     it('handles result with xml fallback field when iwxxm_xml is missing', async () => {
@@ -2484,7 +2909,9 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       fireEvent.change(textarea, { target: { value: 'METAR KJFK CUSTOM NAME' } });
-      await user.type(screen.getByTestId('output-filename-input'), 'report');
+      fireEvent.change(screen.getByTestId('output-filename-input'), {
+        target: { value: 'report' },
+      });
       await user.click(screen.getByTestId('convert-button'));
 
       await waitFor(() => {
@@ -2580,7 +3007,9 @@ describe('FileConverter Component', () => {
       const { container } = render(<FileConverter {...defaultProps} />);
       const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
       fireEvent.change(textarea, { target: { value: 'METAR ZIP CUSTOM' } });
-      await user.type(screen.getByTestId('output-filename-input'), 'weather');
+      fireEvent.change(screen.getByTestId('output-filename-input'), {
+        target: { value: 'weather' },
+      });
       await user.click(screen.getByTestId('convert-button'));
 
       const downloadZipBtn = await screen.findByLabelText(
@@ -2736,6 +3165,41 @@ describe('FileConverter Component', () => {
 
       expect(screen.queryByTestId('demo-example-banner')).not.toBeInTheDocument();
       expect((screen.getByTestId('tac-editor') as HTMLTextAreaElement).value).toBe('');
+    });
+
+    it('scopes examples to the selected semantic profile', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'US_FAA_NWS');
+      await user.click(screen.getByTestId('examples-select'));
+
+      expect(
+        await screen.findByRole('option', {
+          name: /METAR WMO A3-1 \(annex3\).*Reused for United States \(FAA\/NWS\)/i,
+        }),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole('option', { name: /TC SIGMET WMO A6-2-TC/i }),
+      ).not.toBeInTheDocument();
+    });
+
+    it('scopes examples for guest users without profile catalog auth', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter />);
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+      await user.click(screen.getByTestId('examples-select'));
+
+      expect(
+        await screen.findByRole('option', {
+          name: /METAR WMO A3-1 \(annex3\).*Reused for Canada \(ECCC\)/i,
+        }),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole('option', { name: /TCA WMO A2-2 \(annex3\)/i }),
+      ).not.toBeInTheDocument();
+      expect(mockFetchProfileCatalog).not.toHaveBeenCalled();
     });
   });
 
@@ -5598,7 +6062,80 @@ describe('FileConverter Component', () => {
     });
   });
 
-  describe('EV-933 signed overlay select', () => {
+  describe('EV-1051 semantic preset and EV-933 overlay selects', () => {
+    it('loads presets when signed in, applies preset defaults, and passes presetId on convert', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockListPresets.mockResolvedValue({
+        items: [
+          {
+            id: 'pr-uuid-1',
+            user_id: 'u',
+            slug: 'us-default',
+            name: 'US Default',
+            semanticProfile: 'US_FAA_NWS',
+            iwxxmVersion: '2025-2',
+            extensions: ['IWXXM_US_3'],
+            reportVariant: null,
+            overlayId: 'ov-uuid-1',
+            shared: true,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      mockListOverlays.mockResolvedValue({
+        items: [
+          {
+            id: 'ov-uuid-1',
+            user_id: 'u',
+            slug: 'soft-lint',
+            baseProfileId: 'US_FAA_NWS',
+            body: {},
+            signature: 'sig',
+            shared: true,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      mockConvertMetarToIwxxm.mockResolvedValue({
+        results: [
+          {
+            name: 'manual',
+            content: '<iwxxm/>',
+            source: 'KJFK',
+            size_bytes: 8,
+          },
+        ],
+        errors: [],
+        total_processed: 1,
+        successful: 1,
+        failed: 0,
+      });
+      render(<FileConverter {...defaultProps} accessToken="jwt-pr" />);
+      const presetSelect = await screen.findByTestId('semantic-preset-select');
+      await user.selectOptions(presetSelect, 'pr-uuid-1');
+      expect(screen.getByTestId('profile-type-select')).toHaveValue('US_FAA_NWS');
+      expect(screen.getByTestId('signed-overlay-select')).toHaveValue('ov-uuid-1');
+
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalled();
+      });
+      expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          presetId: 'pr-uuid-1',
+          profile: 'US_FAA_NWS',
+          overlayId: 'ov-uuid-1',
+          accessToken: 'jwt-pr',
+        }),
+      );
+    });
+
     it('loads overlays when signed in and passes overlayId on convert', async () => {
       const user = userEvent.setup({ delay: null });
       mockListOverlays.mockResolvedValue({
@@ -5687,6 +6224,218 @@ describe('FileConverter Component', () => {
       expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
     });
 
+    it('clears a previously selected overlay across auth removal and restoration', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockListOverlays.mockResolvedValue({
+        items: [
+          {
+            id: 'ov-restore',
+            user_id: 'u',
+            slug: 'restore',
+            baseProfileId: 'ICAO_2025',
+            body: {},
+            signature: 'sig',
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      const { rerender } = render(
+        <FileConverter {...defaultProps} accessToken="jwt-ov" />,
+      );
+      const select = await screen.findByTestId('signed-overlay-select');
+      await user.selectOptions(select, 'ov-restore');
+      expect(select).toHaveValue('ov-restore');
+
+      rerender(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
+
+      rerender(<FileConverter {...defaultProps} accessToken="jwt-ov" />);
+      await waitFor(() => {
+        expect(screen.getByTestId('signed-overlay-select')).toHaveValue('');
+      });
+    });
+
+    it('clears a hydrated overlay across auth removal and restoration', async () => {
+      mockListOverlays.mockResolvedValue({
+        items: [
+          {
+            id: 'ov-hydrated',
+            user_id: 'u',
+            slug: 'hydrated',
+            baseProfileId: 'ICAO_2025',
+            body: {},
+            signature: 'sig',
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      const hydratedSession = {
+        id: 'sess-overlay-hydrated',
+        status: 'draft',
+        manual_tac: '',
+        conversion_params: { overlay_id: 'ov-hydrated' },
+      } as never;
+
+      const { rerender } = render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={hydratedSession}
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('signed-overlay-select')).toHaveValue('ov-hydrated');
+      });
+
+      rerender(<FileConverter {...defaultProps} loadedWorkSession={hydratedSession} />);
+      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
+
+      rerender(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={hydratedSession}
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('signed-overlay-select')).toHaveValue('');
+      });
+    });
+
+    it('handles auth token removal when no overlay is selected', async () => {
+      const { rerender } = render(
+        <FileConverter {...defaultProps} accessToken="jwt-ov" />,
+      );
+      await screen.findByTestId('signed-overlay-select');
+
+      rerender(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
+    });
+
+    it('clears selected presetId when auth token is removed', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockListPresets.mockResolvedValue({
+        items: [
+          {
+            id: 'pr-logout',
+            user_id: 'u',
+            slug: 'bye',
+            name: 'Bye',
+            semanticProfile: 'ICAO_2025',
+            iwxxmVersion: '2025-2',
+            extensions: [],
+            reportVariant: null,
+            overlayId: null,
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      const { rerender } = render(
+        <FileConverter {...defaultProps} accessToken="jwt-pr" />,
+      );
+      const select = await screen.findByTestId('semantic-preset-select');
+      await user.selectOptions(select, 'pr-logout');
+      expect(select).toHaveValue('pr-logout');
+      rerender(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('semantic-preset-select')).not.toBeInTheDocument();
+    });
+
+    it('hydrates dissemination template ids from conversion_params into the drawer', async () => {
+      const user = userEvent.setup({ delay: null });
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      mockListTemplates.mockResolvedValue({
+        items: [
+          {
+            id: 'tpl-from-session',
+            user_id: 'u',
+            slug: 'saved-db',
+            name: 'Saved DB',
+            sinkType: 'sqlite',
+            product: 'metar',
+            ddl: true,
+            params: {},
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-tpl"
+          loadedWorkSession={
+            {
+              id: 'sess-tpl-1',
+              status: 'draft',
+              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
+              conversion_params: { dissemination_template_id: 'tpl-from-session' },
+            } as never
+          }
+        />,
+      );
+
+      await user.click(screen.getByTestId('open-dissemination-drawer'));
+      await waitFor(() => {
+        expect(screen.getByTestId('dissemination-template-select')).toHaveValue(
+          'tpl-from-session',
+        );
+      });
+    });
+
+    it('clears selected disseminationTemplateId when auth token is removed', async () => {
+      const user = userEvent.setup({ delay: null });
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      mockListTemplates.mockResolvedValue({
+        items: [
+          {
+            id: 'tpl-logout',
+            user_id: 'u',
+            slug: 'bye',
+            name: 'Bye',
+            sinkType: 'sqlite',
+            product: 'metar',
+            ddl: false,
+            params: {},
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      const { rerender } = render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-tpl"
+          loadedWorkSession={
+            {
+              id: 'sess-tpl-logout',
+              status: 'draft',
+              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
+              conversion_params: { disseminationTemplateId: 'tpl-logout' },
+            } as never
+          }
+        />,
+      );
+      await user.click(screen.getByTestId('open-dissemination-drawer'));
+      await waitFor(() => {
+        expect(screen.getByTestId('dissemination-template-select')).toHaveValue(
+          'tpl-logout',
+        );
+      });
+
+      rerender(<FileConverter {...defaultProps} />);
+      expect(
+        screen.queryByTestId('dissemination-template-select'),
+      ).not.toBeInTheDocument();
+    });
+
     it('ignores overlay list resolution after unmount', async () => {
       let resolveList!: (value: { items: [] }) => void;
       mockListOverlays.mockImplementation(
@@ -5758,6 +6507,280 @@ describe('FileConverter Component', () => {
       });
     });
 
+    it('hydrates preset_id and presetId from conversion_params', async () => {
+      mockListPresets.mockResolvedValue({
+        items: [
+          {
+            id: 'pr-from-session',
+            user_id: 'u',
+            slug: 'saved',
+            name: 'Saved preset',
+            semanticProfile: 'US_FAA_NWS',
+            iwxxmVersion: '2025-2',
+            extensions: [],
+            reportVariant: null,
+            overlayId: null,
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+      const { rerender } = render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={
+            {
+              id: 'sess-pr-1',
+              status: 'draft',
+              manual_tac: '',
+              conversion_params: { preset_id: 'pr-from-session' },
+            } as never
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('semantic-preset-select')).toHaveValue(
+          'pr-from-session',
+        );
+      });
+      rerender(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={
+            {
+              id: 'sess-pr-2',
+              status: 'draft',
+              manual_tac: '',
+              conversion_params: { presetId: 'pr-from-session' },
+            } as never
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('semantic-preset-select')).toHaveValue(
+          'pr-from-session',
+        );
+      });
+    });
+
+    it('clears preset selection when the user switches back to None', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockListPresets.mockResolvedValue({
+        items: [
+          {
+            id: 'pr-uuid-1',
+            user_id: 'u',
+            slug: 'us-default',
+            name: 'US Default',
+            semanticProfile: 'US_FAA_NWS',
+            iwxxmVersion: '2025-2',
+            extensions: [],
+            reportVariant: null,
+            overlayId: null,
+            shared: true,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+
+      render(<FileConverter {...defaultProps} accessToken="jwt-pr" />);
+      const presetSelect = await screen.findByTestId('semantic-preset-select');
+      await user.selectOptions(presetSelect, 'pr-uuid-1');
+      expect(presetSelect).toHaveValue('pr-uuid-1');
+
+      await user.selectOptions(presetSelect, '');
+      expect(presetSelect).toHaveValue('');
+    });
+
+    it('keeps dissemination template state stable when the same id is reselected', async () => {
+      const user = userEvent.setup({ delay: null });
+      operatorDisseminationUiConfig.destinationsEnabled = true;
+      mockListTemplates.mockResolvedValue({
+        items: [
+          {
+            id: 'tpl-stable',
+            user_id: 'u',
+            slug: 'saved-db',
+            name: 'Saved DB',
+            sinkType: 'sqlite',
+            product: 'metar',
+            ddl: true,
+            params: {},
+            shared: false,
+            created_at: '',
+            updated_at: '',
+          },
+        ],
+      });
+
+      render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-tpl"
+          loadedWorkSession={
+            {
+              id: 'sess-tpl-stable',
+              status: 'draft',
+              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
+              conversion_params: { dissemination_template_id: 'tpl-stable' },
+            } as never
+          }
+        />,
+      );
+
+      await user.click(screen.getByTestId('open-dissemination-drawer'));
+      const templateSelect = await screen.findByTestId('dissemination-template-select');
+      expect(templateSelect).toHaveValue('tpl-stable');
+
+      fireEvent.change(templateSelect, { target: { value: 'tpl-stable' } });
+      expect(screen.getByTestId('dissemination-template-select')).toHaveValue(
+        'tpl-stable',
+      );
+    });
+
+    it('keeps dissemination template params stable when the drawer reports the same id', async () => {
+      vi.resetModules();
+      vi.doMock('./DisseminationDrawer', () => ({
+        DisseminationDrawer: ({
+          open,
+          disseminationTemplateId,
+          onDisseminationTemplateChange,
+        }: {
+          open: boolean;
+          disseminationTemplateId?: string;
+          onDisseminationTemplateChange?: (templateId: string) => void;
+        }) =>
+          open ? (
+            <button
+              type="button"
+              data-testid="mock-dissemination-drawer-trigger"
+              onClick={() =>
+                onDisseminationTemplateChange?.(disseminationTemplateId ?? '')
+              }
+            >
+              {disseminationTemplateId ?? ''}
+            </button>
+          ) : null,
+      }));
+
+      const { FileConverter: MockedFileConverter } = await import('./FileConverter');
+      render(
+        <MockedFileConverter
+          {...defaultProps}
+          accessToken="jwt-tpl"
+          loadedWorkSession={
+            {
+              id: 'sess-tpl-same-id',
+              status: 'draft',
+              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
+              conversion_params: { dissemination_template_id: 'tpl-stable' },
+            } as never
+          }
+        />,
+      );
+
+      fireEvent.click(screen.getByTestId('open-dissemination-drawer'));
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('mock-dissemination-drawer-trigger'),
+        ).toHaveTextContent('tpl-stable');
+      });
+      fireEvent.click(screen.getByTestId('mock-dissemination-drawer-trigger'));
+      vi.doUnmock('./DisseminationDrawer');
+    });
+
+    it('updates dissemination template params when the drawer reports a new id', async () => {
+      vi.resetModules();
+      vi.doMock('./DisseminationDrawer', () => ({
+        DisseminationDrawer: ({
+          open,
+          disseminationTemplateId,
+          onDisseminationTemplateChange,
+        }: {
+          open: boolean;
+          disseminationTemplateId?: string;
+          onDisseminationTemplateChange?: (templateId: string) => void;
+        }) =>
+          open ? (
+            <button
+              type="button"
+              data-testid="mock-dissemination-drawer-update"
+              onClick={() => onDisseminationTemplateChange?.('tpl-updated')}
+            >
+              {disseminationTemplateId ?? ''}
+            </button>
+          ) : null,
+      }));
+
+      const { FileConverter: MockedFileConverter } = await import('./FileConverter');
+      render(<MockedFileConverter {...defaultProps} accessToken="jwt-tpl" />);
+
+      fireEvent.click(screen.getByTestId('open-dissemination-drawer'));
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('mock-dissemination-drawer-update'),
+        ).toHaveTextContent('');
+      });
+
+      fireEvent.click(screen.getByTestId('mock-dissemination-drawer-update'));
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('mock-dissemination-drawer-update'),
+        ).toHaveTextContent('tpl-updated');
+      });
+      vi.doUnmock('./DisseminationDrawer');
+    });
+
+    it('hydrates report_variant and reportVariant from conversion_params', async () => {
+      const { rerender } = render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={
+            {
+              id: 'sess-rv-1',
+              status: 'draft',
+              manual_tac: '',
+              conversion_params: {
+                profile: 'ca_eccc',
+                product: 'METAR',
+                report_variant: 'LWIS',
+              },
+            } as never
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('report-variant-select')).toHaveValue('LWIS');
+      });
+
+      rerender(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-ov"
+          loadedWorkSession={
+            {
+              id: 'sess-rv-2',
+              status: 'draft',
+              manual_tac: '',
+              conversion_params: {
+                profile: 'ca_eccc',
+                product: 'METAR',
+                reportVariant: 'SAWR',
+              },
+            } as never
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('report-variant-select')).toHaveValue('SAWR');
+      });
+    });
+
     it('live IWXXM includes overlayId when hydrated', async () => {
       mockConvertMetarToIwxxm.mockResolvedValue({
         results: [{ iwxxm_xml: '<live-ov/>' }],
@@ -5792,6 +6815,162 @@ describe('FileConverter Component', () => {
             preview: true,
           }),
         );
+      });
+    });
+  });
+
+  describe('EV-1120 compact profile twin', () => {
+    it('shows compact profile summary for authenticated workbench users', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
+      });
+      expect(mockFetchProfileCatalog).toHaveBeenCalledWith('tok');
+      expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
+        'ICAO_2025',
+      );
+      expect(screen.getByText(/IWXXM 2025-2 core/)).toBeInTheDocument();
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'US_FAA_NWS');
+
+      await waitFor(() => {
+        expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
+          'US_FAA_NWS',
+        );
+      });
+      expect(
+        screen.getByText(/Retains selected RMK content in output\./),
+      ).toBeInTheDocument();
+      expect(screen.getByText(/Rule packs: 2/)).toBeInTheDocument();
+      expect(screen.getByText(/Overlays: 1/)).toBeInTheDocument();
+    });
+
+    it('shows guest placeholders for rule pack and overlay counts', async () => {
+      render(<FileConverter />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
+      });
+
+      expect(screen.getByText(/Rule packs: —/)).toBeInTheDocument();
+      expect(screen.getByText(/Overlays: —/)).toBeInTheDocument();
+    });
+
+    it('falls back when catalog metadata is sparse', async () => {
+      const originalMapGet = Map.prototype.get;
+      const mapGetSpy = vi.spyOn(Map.prototype, 'get').mockImplementation(function (
+        this: Map<unknown, unknown>,
+        key: unknown,
+      ) {
+        if (key === 'ICAO_2025') {
+          return undefined;
+        }
+        return originalMapGet.call(this, key);
+      });
+      mockFetchProfileCatalog.mockResolvedValueOnce({
+        profiles: [
+          {
+            id: 'ICAO_2025',
+            kind: 'semantic',
+            products: ['METAR'],
+            deltas_vs_icao: [],
+          },
+        ],
+      });
+
+      render(<FileConverter accessToken="tok" />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
+      });
+
+      expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
+        'ICAO_2025',
+      );
+      expect(screen.getByText(/IWXXM line unavailable/)).toBeInTheDocument();
+      mapGetSpy.mockRestore();
+    });
+
+    it('falls back for guest profiles without a built-in summary map entry', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter />);
+
+      await waitFor(() => {
+        expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
+      });
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'AU_BOM');
+
+      await waitFor(() => {
+        expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
+          'AU_BOM',
+        );
+      });
+      expect(screen.getByText(/IWXXM 2025-2/)).toBeInTheDocument();
+      expect(screen.getByText(/Sign in to load profile coverage/)).toBeInTheDocument();
+    });
+  });
+
+  describe('EV-1050 report variant selector', () => {
+    it('shows CA_ECCC METAR-family report variants for authenticated users', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+      await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
+
+      const select = await screen.findByTestId('report-variant-select');
+      expect(select).toBeInTheDocument();
+      const options = within(select);
+      expect(
+        options.getByRole('option', { name: /Auto-detect from TAC/i }),
+      ).toBeInTheDocument();
+      expect(options.getByRole('option', { name: 'METAR' })).toBeInTheDocument();
+      expect(
+        options.getByRole('option', { name: 'LWIS (minimal)' }),
+      ).toBeInTheDocument();
+      expect(options.getByRole('option', { name: 'SAWR' })).toBeInTheDocument();
+    });
+
+    it('forwards the selected report variant on convert', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+      await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
+      await user.selectOptions(screen.getByTestId('report-variant-select'), 'LWIS');
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR CYUL 121151Z 18008KT 10SM FEW250 22/14 A3012=' },
+      });
+
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({
+            reportVariant: 'LWIS',
+            profile: 'CA_ECCC',
+            product: 'METAR',
+          }),
+        );
+      });
+    });
+
+    it('clears the report variant when switching to a profile without variants', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+      await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
+      await user.selectOptions(screen.getByTestId('report-variant-select'), 'LWIS');
+      expect(screen.getByTestId('report-variant-select')).toHaveValue('LWIS');
+
+      await user.selectOptions(screen.getByTestId('profile-type-select'), 'ICAO_2025');
+
+      await waitFor(() => {
+        expect(screen.queryByTestId('report-variant-select')).not.toBeInTheDocument();
       });
     });
   });

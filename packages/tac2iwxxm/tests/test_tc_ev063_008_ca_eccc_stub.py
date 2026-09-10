@@ -53,3 +53,20 @@ def test_tc_ev063_008_ca_eccc_taf_requires_iwxxm_3_0_0() -> None:
 
     ok = convert(tac, product="TAF", profile=PROFILE, iwxxm_version=CA_IWXXM_VERSION)
     assert ok.ok, f"expected TAF convert: {ok.issues!r}"
+
+
+def test_tc_ev063_008_ca_eccc_defaults_to_profile_pinned_iwxxm_version() -> None:
+    """CA_ECCC uses its profile-pinned 3.0.0 line when caller omits iwxxm_version."""
+    data = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+    case = data["cases"][0]
+    tac = (FIXTURES / case["tac"]).read_text(encoding="utf-8")
+
+    result = convert(
+        tac,
+        product=case["product"],
+        profile=PROFILE,
+    )
+
+    assert result.ok, result.issues
+    assert result.iwxxm_version == CA_IWXXM_VERSION
+    assert result.semantic_profile == "ca_eccc"

@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useEffect, useState } from 'react';
 import type { WorkSession } from '@metar/shared';
-import { Loader2, History } from 'lucide-react';
+import { ChevronDown, ChevronRight, History, Loader2 } from 'lucide-react';
 import { listLocalWorkSessions } from '/utils/localWorkSessionStore';
 import { listWorkSessions } from '/utils/workSessionApi';
 import { Button } from './ui/button';
@@ -13,6 +13,13 @@ interface WorkHistorySidebarProps {
   activeSessionId?: string | null;
   onSelectSession: (session: WorkSession) => void;
   onOpenHistory?: () => void;
+  /**
+   * When true, show a compact expand control only (UX-07 — avoid overlaying the
+   * workbench while editing / opening Examples).
+   */
+  collapsed?: boolean;
+  /** Called when the operator expands or collapses the dock. */
+  onCollapsedChange?: (collapsed: boolean) => void;
 }
 
 const STATUS_LABEL: Record<string, string> = {
@@ -35,6 +42,8 @@ export function WorkHistorySidebar({
   activeSessionId,
   onSelectSession,
   onOpenHistory,
+  collapsed = false,
+  onCollapsedChange,
 }: WorkHistorySidebarProps) {
   const [sessions, setSessions] = useState<WorkSession[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,18 +78,57 @@ export function WorkHistorySidebar({
     };
   }, [accessToken, activeSessionId]);
 
+  if (collapsed) {
+    const countLabel =
+      !loading && !error && sessions.length > 0 ? ` (${sessions.length})` : '';
+    return (
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        className="w-full justify-start gap-2"
+        data-testid="recent-work-expand"
+        aria-expanded={false}
+        aria-label="Expand recent work"
+        onClick={() => onCollapsedChange?.(false)}
+      >
+        <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+        <History className="h-4 w-4 shrink-0" aria-hidden="true" />
+        Recent work{countLabel}
+      </Button>
+    );
+  }
+
   return (
-    <Card className="p-4" aria-label="Recent work sessions">
+    <Card
+      className="p-4"
+      aria-label="Recent work sessions"
+      data-testid="recent-work-panel"
+    >
       <div className="mb-3 flex items-center justify-between gap-2">
         <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-gray-100">
           <History className="h-4 w-4" aria-hidden="true" />
           Recent work
         </h2>
-        {onOpenHistory && (
-          <Button type="button" variant="ghost" size="sm" onClick={onOpenHistory}>
-            My METARs
-          </Button>
-        )}
+        <div className="flex items-center gap-1">
+          {onOpenHistory && (
+            <Button type="button" variant="ghost" size="sm" onClick={onOpenHistory}>
+              My METARs
+            </Button>
+          )}
+          {onCollapsedChange ? (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              data-testid="recent-work-collapse"
+              aria-label="Collapse recent work"
+              onClick={() => onCollapsedChange(true)}
+            >
+              <ChevronDown className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          ) : null}
+        </div>
       </div>
 
       {loading && (

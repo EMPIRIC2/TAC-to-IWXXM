@@ -106,8 +106,9 @@ test.describe('EV-061 T2 — UJ-066 / UJ-067 converter bars', () => {
     await expect(paramsBar).toBeVisible();
     await expect(page.getByTestId('product-type-select')).toBeVisible();
     await expect(page.getByTestId('profile-type-select')).toBeVisible();
-    // Desktop lg:flex-nowrap (≥1024) — TC-EV061-1013 class contract via computed style.
-    await expect(productBar).toHaveCSS('flex-wrap', 'nowrap');
+    // Product bar is wrap-capable at ≥1024 so Exchange profile is not painted under
+    // Recent work (TC-UX-RW-001 / TC-EV061-1013-001). Params bar stays nowrap.
+    await expect(productBar).toHaveCSS('flex-wrap', 'wrap');
     await expect(paramsBar).toHaveCSS('flex-wrap', 'nowrap');
   });
 

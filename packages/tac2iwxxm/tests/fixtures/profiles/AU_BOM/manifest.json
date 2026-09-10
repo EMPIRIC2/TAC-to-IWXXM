@@ -23,6 +23,13 @@
       "tac": "METAR/valid/metar_auto_ncd.tac",
       "rule_id": "AU.METAR.NCD",
       "status": "active"
+    },
+    {
+      "id": "speci_auto_ncd",
+      "product": "SPECI",
+      "tac": "SPECI/valid/speci_auto_ncd.tac",
+      "rule_id": "AU.SPECI.NCD",
+      "status": "active"
     }
   ]
 }

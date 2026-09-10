@@ -169,6 +169,33 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "source_access": "public",
             "source_locator": "NWS iwxxm-us schema catalog",
         },
+        {
+            "code": "IWXXM_CA_EXTENSION",
+            "severity": "error",
+            "message_template": (
+                "Canadian IWXXM profile validation uses the ECCC iwxxm-ca schema "
+                "bundle, including product extensions such as metar-speci-ca.xsd and "
+                "taf-ca.xsd. Error: CA_ECCC documents must validate against those "
+                "Canadian schemas and constraints, not only the baseline IWXXM bundle."
+            ),
+            "product": None,
+            "tags": ["ca_eccc", "iwxxm"],
+            "family": "iwxxm",
+            "source_id": "eccc-iwxxm-ca",
+            "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/schema/",
+            "source_attribution": (
+                "eccc-iwxxm-ca - https://dd.weather.gc.ca/today/aviation/iwxxm/schema/ "
+                "- Canadian iwxxm-ca schema bundle and product XSDs"
+            ),
+            "source_type": "tier2",
+            "status": "verified",
+            "semantic_identifier": None,
+            "last_verified": _LAST_VERIFIED,
+            "replacement_url": None,
+            "issue_type": "iwxxm_schema",
+            "source_access": "public",
+            "source_locator": "ECCC iwxxm-ca schema bundle (iwxxm-ca.xsd, metar-speci-ca.xsd, taf-ca.xsd)",
+        },
     ]
 
 

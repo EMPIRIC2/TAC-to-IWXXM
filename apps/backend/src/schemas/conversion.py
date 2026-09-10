@@ -233,7 +233,10 @@ class ConversionRequest(BaseModel):
         examples=[["KJFK 121853Z 24008KT 10SM FEW250 M04/M17 A3034"]],
     )
     version: str = Field(
-        default="2025-2", description="Target IWXXM version", pattern=r"^\d{4}-\d+$", examples=["2025-2", "2023-1"]
+        default="",
+        description="Target IWXXM version; omit to use the profile-aware default",
+        pattern=r"^\d{4}-\d+$",
+        examples=["2025-2", "2023-1"],
     )
     validation_level: str | None = Field(
         default="basic",
@@ -270,6 +273,14 @@ class ConversionRequest(BaseModel):
     exchange_profile: str | None = Field(
         default=None,
         description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only",
+    )
+    report_variant: str | None = Field(
+        default=None,
+        description="Optional profile-scoped report variant within the selected product family (e.g. LWIS under CA_ECCC + METAR)",
+    )
+    preset_id: str | None = Field(
+        default=None,
+        description="Optional saved semantic preset id; explicit request fields still win when both are supplied",
     )
     extensions: list[str] | None = Field(
         default=None,

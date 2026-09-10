@@ -84,10 +84,10 @@ ENABLE_LIVE_API_TESTS=true
 SCHEMATRON_USE_DOCKER=true
 ```
 
-### 6. ✅ Initialized Git Submodules
-Ran `git submodule update --init --recursive` to download:
-- `schemas/iwxxm/` - IWXXM XML schemas
-- `schemas/iwxxm-modelling/` - IWXXM UML/EA modelling + XSLT generators (informative; not runtime Schematron — see `docs/domain/mining/iwxxm-modelling-v2025-2-mining-notes.md`)
+### 6. ✅ Verified Vendored Schemas
+Verified the checked-in schema bundles under:
+- `vendor/schemas/iwxxm/` - IWXXM XML schemas
+- `vendor/schemas/iwxxm-modelling/` - IWXXM UML/EA modelling + XSLT generators (informative; not runtime Schematron — see `docs/domain/mining/iwxxm-modelling-v2025-2-mining-notes.md`)
 
 This fixed ~16 previously skipped tests that required schema files.
 

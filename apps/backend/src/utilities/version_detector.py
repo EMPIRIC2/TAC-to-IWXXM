@@ -1,19 +1,21 @@
 """
-IWXXM Version Detection Utility
+IWXXM version detection utility.
 
-Detects available IWXXM versions from git submodule tags and compares against
-configured versions to identify upgrade opportunities.
+Detect available IWXXM versions from vendored schema snapshots and, when
+available, local git metadata, then compare them against configured versions.
 """
 
 import logging
+import re
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from ..config.iwxxm_versions import SUPPORTED_VERSIONS, normalize_version
+from ..config.iwxxm_versions import PROJECT_ROOT, SUPPORTED_VERSIONS, normalize_version
 
 logger = logging.getLogger(__name__)
+VERSION_TAG_PATTERN = re.compile(r"^v\d{4}-\d+$")
 
 
 @dataclass
@@ -30,20 +32,23 @@ class VersionInfo:
 
 
 class VersionDetector:
-    """Detects available IWXXM versions from git submodule."""
+    """Detect available IWXXM versions from vendored schema snapshots."""
 
     def __init__(self, schemas_root: Path | None = None) -> None:
         """
         Initialize version detector.
 
         Args:
-            schemas_root: Root directory of schemas (defaults to project schemas/)
+            schemas_root: Root directory of schemas (defaults to
+                ``project_root/vendor/schemas`` and falls back to legacy
+                ``project_root/schemas`` compatibility paths)
         """
         if schemas_root is None:
-            # Default to project root/schemas
-            current_file = Path(__file__)
-            project_root = current_file.parent.parent.parent.parent
-            schemas_root = project_root / "schemas"
+            # Prefer the canonical vendored schema tree, but keep the legacy
+            # compatibility path for older local/dev setups.
+            vendor_schemas = PROJECT_ROOT / "vendor" / "schemas"
+            legacy_schemas = PROJECT_ROOT / "schemas"
+            schemas_root = vendor_schemas if vendor_schemas.exists() else legacy_schemas
 
         self.schemas_root = schemas_root
         self.iwxxm_path = schemas_root / "iwxxm"
@@ -52,21 +57,21 @@ class VersionDetector:
 
     def get_available_tags(self) -> list[str]:
         """
-        Get all available version tags from iwxxm git submodule.
+        Get all available version tags from the IWXXM schema tree.
 
         Returns:
             List of git tags (e.g., ['v2025-2', 'v2023-1', 'v2021-2'])
         """
         try:
-            # Get all tags from the submodule
+            # Read repository tags when the vendored snapshot retains git metadata.
             result = subprocess.run(
                 ["git", "tag", "-l", "v*"], cwd=self.iwxxm_path, capture_output=True, text=True, check=True, timeout=10
             )
 
             tags = [tag.strip() for tag in result.stdout.split("\n") if tag.strip()]
 
-            # Filter to version tags (v20XX-X format)
-            version_tags = [tag for tag in tags if tag.startswith("v") and "-" in tag]
+            # Filter to IWXXM version tags only (v20XX-X format).
+            version_tags = [tag for tag in tags if VERSION_TAG_PATTERN.fullmatch(tag)]
 
             if version_tags:
                 return sorted(version_tags, reverse=True)  # Newest first

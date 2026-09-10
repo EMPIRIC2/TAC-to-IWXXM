@@ -82,8 +82,13 @@ vi.mock('../app/components/IcaoAutocomplete', () => ({
   ),
 }));
 
-function desktopNowrapContract(el: HTMLElement): void {
-  expect(el.className).toMatch(/\blg:flex-nowrap\b/);
+function desktopRowContract(el: HTMLElement, wrap: 'nowrap' | 'wrap'): void {
+  if (wrap === 'nowrap') {
+    expect(el.className).toMatch(/\blg:flex-nowrap\b/);
+  } else {
+    expect(el.className).toMatch(/\blg:flex-wrap\b/);
+    expect(el.className).not.toMatch(/\blg:flex-nowrap\b/);
+  }
   expect(el.className).toMatch(/\bflex-col\b/);
   expect(el.className).toMatch(/\blg:flex-row\b/);
 }
@@ -101,7 +106,7 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
     localStorage.clear();
   });
 
-  it('keeps Product Type + Profile on one no-wrap bar at ≥1024px (TC-EV061-1013-001)', () => {
+  it('keeps Product Type + Profile on one wrap-capable bar at ≥1024px (TC-EV061-1013-001)', () => {
     render(<FileConverter {...defaultProps} />);
 
     const bar = screen.getByTestId('product-profile-bar');
@@ -113,7 +118,8 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
     expect(bar).not.toContainElement(screen.getByTestId('input-mode-group'));
     expect(bar).not.toContainElement(screen.getByTestId('product-profile-bar-summary'));
     expect(bar).not.toContainElement(screen.getByTestId('semantic-profile-help'));
-    desktopNowrapContract(bar);
+    // Wrap so Exchange profile is not painted under Recent work (TC-UX-RW-001).
+    desktopRowContract(bar, 'wrap');
 
     expect(product).toHaveAccessibleName(/^product$/i);
     expect(profile).toHaveAccessibleName(/^profile$/i);
@@ -130,7 +136,7 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
     expect(modeBar).toContainElement(modeGroup);
     expect(modeBar).not.toContainElement(screen.getByTestId('product-type-select'));
     expect(modeBar).not.toContainElement(screen.getByTestId('profile-type-select'));
-    desktopNowrapContract(modeBar);
+    desktopRowContract(modeBar, 'nowrap');
 
     expect(modeGroup).toHaveAccessibleName(/^input mode$/i);
     expect(screen.getByTestId('input-mode-tac')).toBeVisible();
@@ -146,7 +152,7 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
     const paramBar = screen.getByTestId('conversion-params-bar');
     expect(paramBar).toContainElement(screen.getByTestId('bulletin-id-input'));
     expect(paramBar).toContainElement(screen.getByTestId('issuing-center-input'));
-    desktopNowrapContract(paramBar);
+    desktopRowContract(paramBar, 'nowrap');
 
     await user.click(screen.getByLabelText(/expand parameters/i));
     expect(paramBar).toContainElement(
