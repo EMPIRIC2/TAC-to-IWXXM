@@ -15,6 +15,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	tests
 
 .PHONY: install test test-unit vendor-sync export-iwxxm-versions openapi-refresh tip-diff-iwxxm \
+	pypi-calver-bump \
 	iwxxm-us-compat-smoke codelist-uri-drift \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-auth test-unit-frontend \
@@ -394,6 +395,12 @@ export-iwxxm-versions:
 openapi-refresh:
 	$(UV) run python scripts/openapi/export_openapi.py
 	$(PNPM) --filter @metar/frontend run openapi:generate
+
+# EV-1150 / ADR-043 — bump F12–F14 packages to CalVer (YYYY.MM.DD[.N][.devN])
+# Usage: make pypi-calver-bump ARGS='--all'
+#        make pypi-calver-bump ARGS='--package tac-validate --dev 1'
+pypi-calver-bump:
+	$(UV) run python scripts/pypi/bump_calver.py $(ARGS)
 
 # S046 / EV-038 / #852 — XSD/SCH/example stem deltas between vendor pins
 tip-diff-iwxxm:

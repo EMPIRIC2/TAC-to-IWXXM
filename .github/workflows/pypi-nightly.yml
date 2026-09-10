@@ -1,0 +1,98 @@
+# EV-1150 / ADR-043 — nightly TestPyPI builds for F12–F14 (CalVer .devN).
+# Prod PyPI remains tag-driven via pypi-publish.yml.
+#
+# Requires GitHub Environment `testpypi` + Trusted Publisher on each TestPyPI
+# project pointing at this workflow.
+name: PyPI Nightly (TestPyPI)
+
+on:
+  schedule:
+    # 07:00 UTC daily
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish to TestPyPI via OIDC (requires Trusted Publisher)
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pypi-nightly-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  nightly:
+    name: Nightly ${{ matrix.package }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package: tac-validate
+            path: packages/tac-validate
+            native: false
+          - package: iwxxm-validate
+            path: packages/iwxxm-validate
+            native: true
+          - package: tac2iwxxm
+            path: packages/tac2iwxxm
+            native: true
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/${{ matrix.package }}
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          submodules: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+
+      - name: Bump CalVer .devN for this run
+        env:
+          PACKAGE: ${{ matrix.package }}
+          RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          set -euo pipefail
+          python scripts/pypi/bump_calver.py --package "${PACKAGE}" --dev "${RUN_NUMBER}"
+          python -c "import tomllib, pathlib; print(tomllib.loads(pathlib.Path('${{ matrix.path }}/pyproject.toml').read_text())['project']['version'])"
+
+      - name: Build pure wheel (+ sdist when safe)
+        if: matrix.native == false
+        env:
+          PACKAGE: ${{ matrix.package }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          uv build --wheel --package "${PACKAGE}" -o dist
+          uv build --sdist --package "${PACKAGE}" -o dist
+          find dist -maxdepth 1 -type f -printf '%p\n' | sort
+
+      - name: Build native linux wheel (maturin)
+        if: matrix.native == true
+        uses: PyO3/maturin-action@v1
+        with:
+          working-directory: ${{ matrix.path }}
+          command: build
+          args: --release -o ../../dist
+          sccache: "true"
+          manylinux: auto
+
+      - name: Publish to TestPyPI (OIDC)
+        if: >-
+          github.event_name == 'schedule'
+          || (github.event_name == 'workflow_dispatch' && inputs.publish == true)
+        continue-on-error: true
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true

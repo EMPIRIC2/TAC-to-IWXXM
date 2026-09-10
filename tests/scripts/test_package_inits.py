@@ -11,6 +11,7 @@ def test_import_script_package_inits() -> None:
     import scripts.iwxxm
     import scripts.openapi
     import scripts.ops
+    import scripts.pypi
     import scripts.utilities
     import scripts.vendor
 
@@ -19,3 +20,4 @@ def test_import_script_package_inits() -> None:
     assert scripts.__file__
     assert scripts.ci.__file__
     assert scripts.deploy.__file__
+    assert scripts.pypi.__file__

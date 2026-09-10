@@ -46,6 +46,7 @@
 | [ADR-040](ADR-040-sql-adapters-mapping-config.md) | SQL symmetric adapters + MappingConfig (spike #926) | **Accepted** (EV-926) |
 | [ADR-041](ADR-041-dissemination-gateway.md) | DisseminationGateway + DisseminationPlan (spike #927) | **Accepted** (EV-927) |
 | [ADR-042](ADR-042-workflow-definitions.md) | Workflow definitions — execute(message, workflow) (spike #931) | **Accepted** (EV-931) |
+| [ADR-043](ADR-043-beta-features-pypi-calver.md) | Beta feature surfacing + PyPI CalVer / nightly TestPyPI | **Accepted** (EV-1150) |
 
 ## Process
 

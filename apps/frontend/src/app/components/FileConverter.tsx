@@ -48,6 +48,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { DisseminationDrawer } from './DisseminationDrawer';
+import { BetaBadge } from './BetaBadge';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
 import {
@@ -2329,6 +2330,7 @@ export function FileConverter({
                   aria-hidden="true"
                 />
                 Convert&Send
+                <BetaBadge className="ml-1 inline-flex" />
               </Button>
             ) : null}
             {isOperatorDisseminationDestinationsEnabled() ? (
@@ -2358,6 +2360,7 @@ export function FileConverter({
                 aria-label="Open dissemination drawer for BYOC upload or publish"
               >
                 Disseminate
+                <BetaBadge className="ml-1 inline-flex" />
               </Button>
             ) : null}
             <Button
