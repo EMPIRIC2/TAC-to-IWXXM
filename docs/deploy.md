@@ -552,8 +552,9 @@ publishing** on version tags:
 | `packages/iwxxm-validate` | `iwxxm-validate-v*` | `iwxxm-validate` |
 | `packages/tac2iwxxm` | `tac2iwxxm-v*` | `tac2iwxxm` |
 
-**Versioning (ADR-043):** **CalVer** `YYYY.MM.DD` (same-day `YYYY.MM.DD.N`). Example tag:
-`tac-validate-v2026.09.10`. Legacy `0.x` wheels remain on PyPI.
+**Versioning (ADR-043):** **CalVer** date components as PEP 440 integers **without
+leading zeros** (e.g. `2026.9.10`; same-day `2026.9.10.1`). Example tag:
+`tac-validate-v2026.9.10`. Legacy `0.x` wheels remain on PyPI.
 
 **Prod publish:** bump CalVer on `stage` → merge promote → push `{name}-v{version}` from
 `main` tip. Workflow `.github/workflows/pypi-publish.yml` (package matrix) builds

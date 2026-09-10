@@ -5,7 +5,7 @@ Usage
 -----
   python scripts/pypi/bump_calver.py --package tac-validate
   python scripts/pypi/bump_calver.py --all --dev 1
-  python scripts/pypi/bump_calver.py --all --date 2026.09.10 --same-day-n 1
+  python scripts/pypi/bump_calver.py --all --date 2026.9.10 --same-day-n 1
 
 Traces to ADR-043 / EV-1150. Does not publish.
 """
@@ -84,6 +84,7 @@ def calver_string(
     -------
     str
         Version like ``2026.9.10``, ``2026.9.10.1``, or ``2026.9.10.dev7``.
+        Month/day are unpadded — PEP 440 and Cargo forbid leading zeros.
     """
     d = day or date.today()
     base = f"{d.year}.{d.month}.{d.day}"

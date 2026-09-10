@@ -14,7 +14,7 @@ on:
       publish:
         description: Publish to TestPyPI via OIDC (requires Trusted Publisher)
         type: boolean
-        default: true
+        default: false
 
 permissions:
   contents: read
@@ -64,6 +64,13 @@ jobs:
           set -euo pipefail
           python scripts/pypi/bump_calver.py --package "${PACKAGE}" --dev "${RUN_NUMBER}"
           python -c "import tomllib, pathlib; print(tomllib.loads(pathlib.Path('${{ matrix.path }}/pyproject.toml').read_text())['project']['version'])"
+
+      - name: Sync iwxxm-validate schema subset into package tree
+        if: matrix.package == 'iwxxm-validate'
+        env:
+          PYTHONUTF8: "1"
+          PYTHONIOENCODING: utf-8
+        run: uv run python packages/iwxxm-validate/scripts/sync_runtime_schemas.py
 
       - name: Build pure wheel (+ sdist when safe)
         if: matrix.native == false

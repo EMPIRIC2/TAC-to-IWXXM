@@ -220,7 +220,7 @@ OIDC trusted publishing** — no long-lived PyPI API token in repo secrets when 
 | msgspec vs pydantic     | Code + ADR-026                    | Response encode msgspec; multipart Form intake unchanged |
 | OpenAPI aliases         | `apps/backend` schemas            | Thin pydantic mirrors for docs only                      |
 | PyPI trusted publishing | GitHub Environment + PyPI project | OIDC; **one** workflow + package matrix; tags `{pkg}-v*` |
-| PyPI versioning (EV-1150 / ADR-043) | Package metadata + tags | **CalVer** `YYYY.MM.DD` (same-day `YYYY.MM.DD.N`); nightlies `YYYY.MM.DD.devN` → **TestPyPI only** |
+| PyPI versioning (EV-1150 / ADR-043) | Package metadata + tags | **CalVer** date ints without leading zeros (e.g. `2026.9.10`; same-day `.N`); nightlies `.devN` → **TestPyPI only** |
 | PyPI project names      | Package metadata                  | `tac-validate`, `iwxxm-validate`, `tac2iwxxm`            |
 | Schema bundle size      | `iwxxm-validate` wheel build      | From `vendor/schemas/*` pins; not an env var             |
 | Render redeploy         | Existing API/static secrets       | When API contract changes; CORS unchanged                |

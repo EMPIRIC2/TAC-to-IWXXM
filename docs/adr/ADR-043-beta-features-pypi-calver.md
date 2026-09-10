@@ -30,9 +30,11 @@ prod publishes, and nightly builds without polluting prod PyPI.
 
 ### B — PyPI CalVer + nightly + promote
 
-1. **CalVer** for F12–F14 packages: `YYYY.MM.DD` (PEP 440); same-day rebuilds
-   `YYYY.MM.DD.N`; nightlies `YYYY.MM.DD.devN`.
-2. Tag patterns remain `{package}-v{version}` (e.g. `tac-validate-v2026.09.10`).
+1. **CalVer** for F12–F14 packages: `YYYY.M.D` written as PEP 440 / Cargo-legal
+   integers **without leading zeros** (e.g. `2026.9.10`, not `2026.09.10`). Same-day
+   rebuilds `YYYY.M.D.N`; nightlies `YYYY.M.D.devN`. Docs may still say `YYYY.MM.DD`
+   as a date shape; emitted versions drop zero-padding.
+2. Tag patterns remain `{package}-v{version}` (e.g. `tac-validate-v2026.9.10`).
 3. **Prod PyPI** stays tag-driven OIDC via `pypi-publish.yml` — no publish on bare branch push.
 4. On **`stage`→`main` promote**: bump CalVer on `stage` when packages changed; after merge,
    push package tags from `main` tip (amends ADR-034 release language from “semver” to

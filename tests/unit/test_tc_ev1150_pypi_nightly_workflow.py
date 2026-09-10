@@ -37,8 +37,12 @@ def test_pypi_nightly_workflow_schedule_and_testpypi() -> None:
     matrix_pkgs = {row["package"] for row in job["strategy"]["matrix"]["include"]}
     assert matrix_pkgs == EXPECTED_PACKAGES
 
+    dispatch = on["workflow_dispatch"]["inputs"]["publish"]
+    assert dispatch["default"] is False
+
     steps_blob = str(job["steps"])
     assert "bump_calver.py" in steps_blob
+    assert "sync_runtime_schemas.py" in steps_blob
     assert "test.pypi.org" in steps_blob
     assert "continue-on-error" in WORKFLOW.read_text(encoding="utf-8")
     # No long-lived TestPyPI password in the workflow file.

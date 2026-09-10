@@ -2321,8 +2321,8 @@ export function FileConverter({
                 aria-busy={isConvertAndSending}
                 aria-label={
                   isConvertAndSending
-                    ? 'Converting and sending files, please wait'
-                    : 'Convert TAC to IWXXM XML and send to database'
+                    ? 'Converting and sending files, please wait (beta)'
+                    : 'Convert TAC to IWXXM XML and send to database (beta)'
                 }
               >
                 <Loader2
@@ -2357,7 +2357,7 @@ export function FileConverter({
                 disabled={isBusy || isReadOnly}
                 variant="outline"
                 className="min-w-[10rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
-                aria-label="Open dissemination drawer for BYOC upload or publish"
+                aria-label="Open dissemination drawer for BYOC upload or publish (beta)"
               >
                 Disseminate
                 <BetaBadge className="ml-1 inline-flex" />
