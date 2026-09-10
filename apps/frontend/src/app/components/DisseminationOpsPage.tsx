@@ -41,6 +41,7 @@ import {
 } from '@/utils/disseminationOpsCopy';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
+import { BetaBadge } from './BetaBadge';
 
 export interface DisseminationOpsPageProps {
   /** Bearer JWT — when absent, show sign-in prompt. */
@@ -157,9 +158,12 @@ function DisseminationOpsAuthed({ accessToken }: AuthedOpsProps) {
       data-testid="dissemination-ops-page"
     >
       <header>
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-50">
-          {DISSEMINATION_OPS_TITLE}
-        </h1>
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-50">
+            {DISSEMINATION_OPS_TITLE}
+          </h1>
+          <BetaBadge showHelp />
+        </div>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
           {DISSEMINATION_OPS_SUBTITLE}
         </p>
@@ -368,9 +372,12 @@ export function DisseminationOpsPage({
         className="mx-auto max-w-3xl px-4 py-10"
         data-testid="dissemination-ops-page"
       >
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-50">
-          {DISSEMINATION_OPS_TITLE}
-        </h1>
+        <div className="flex flex-wrap items-center gap-2">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-50">
+            {DISSEMINATION_OPS_TITLE}
+          </h1>
+          <BetaBadge showHelp />
+        </div>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
           {DISSEMINATION_OPS_LOGIN_REQUIRED}
         </p>

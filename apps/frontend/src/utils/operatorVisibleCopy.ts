@@ -57,6 +57,11 @@ import {
   QUALITY_METRICS_SCHEMATRON_SKIPPED,
 } from '@/utils/validateDispositionChips';
 import {
+  BETA_BADGE_LABEL,
+  BETA_FEEDBACK_HELP,
+  BETA_FEEDBACK_LINK_LABEL,
+} from '@/utils/betaFeedback';
+import {
   DISSEMINATION_OPS_AUDIT_EMPTY,
   DISSEMINATION_OPS_AUDIT_HEADING,
   DISSEMINATION_OPS_AUDIT_LOADING,
@@ -186,6 +191,9 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'profiles.error-prefix', text: PROFILES_ERROR_PREFIX },
     { id: 'dissemination-ops.title', text: DISSEMINATION_OPS_TITLE },
     { id: 'dissemination-ops.subtitle', text: DISSEMINATION_OPS_SUBTITLE },
+    { id: 'beta.badge', text: BETA_BADGE_LABEL },
+    { id: 'beta.feedback-help', text: BETA_FEEDBACK_HELP },
+    { id: 'beta.feedback-link', text: BETA_FEEDBACK_LINK_LABEL },
     {
       id: 'dissemination-ops.login-required',
       text: DISSEMINATION_OPS_LOGIN_REQUIRED,

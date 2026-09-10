@@ -1,0 +1,36 @@
+---
+description: Recommend beta labeling + GitHub Issues feedback for new product features
+globs:
+  - apps/frontend/**
+  - docs/feature-list.md
+  - .github/ISSUE_TEMPLATE/**
+alwaysApply: false
+---
+
+# Beta feature rollout
+
+Traces to `[Corpus: adr/ADR-043]` and `[Corpus: product]` (operator-facing Fn).
+
+## When adding a new product feature (operator UI or public-facing capability)
+
+1. **Recommend beta** — AskQuestion first option: ship with a visible **Beta** badge/label
+   and plain-language “feedback welcome” copy.
+2. **Point to Issues** — Wire a feedback link to  
+   `https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/new?labels=beta-feedback`  
+   (reuse the shared template/label; do not invent a second URL scheme without ADR).
+3. **Docs** — Note beta + feedback in root `README.md` (and GitHub About when the feature is
+   user-visible from the landing description).
+4. **Waive only via AskQuestion** — If the feature is clearly GA on day one, record the
+   waiver in `docs/decisions/` / session decisions; do not silently skip beta.
+
+## Must not
+
+- Put internal doc refs (`[Corpus:…]`, ADR/EV/TC ids, `docs/sessions/…`) in operator copy
+  (EV-048 / `no-internal-doc-refs-user-facing.mdc`).
+- Treat beta as a substitute for egress/SSRF/BYOC safety on dissemination paths.
+
+## Related
+
+- Issue template: `.github/ISSUE_TEMPLATE/beta_feedback.md`
+- Dissemination beta surfaces: F16–F19 (EV-1150)
+- PyPI publish cadence is separate (`pypi-package-publish.mdc` / ADR-043 §B)

@@ -10,6 +10,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Button } from './ui/button';
 import { Label } from './ui/label';
+import { BetaBadge } from './BetaBadge';
 import {
   DisseminationProgressRow,
   type ProgressRowStatus,
@@ -469,12 +470,17 @@ export function DisseminationDrawer({
         onClick={(e) => e.stopPropagation()}
       >
         <header className="flex items-start justify-between gap-2">
-          <h2
-            id="dissemination-drawer-title"
-            className="text-lg font-semibold text-gray-900 dark:text-white"
-          >
-            Dissemination
-          </h2>
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2
+                id="dissemination-drawer-title"
+                className="text-lg font-semibold text-gray-900 dark:text-white"
+              >
+                Dissemination
+              </h2>
+              <BetaBadge showHelp />
+            </div>
+          </div>
           <Button
             type="button"
             variant="ghost"

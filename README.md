@@ -22,7 +22,9 @@ all in a single git monorepo (no submodules).
 - **Quality metrics** tab — compare converted IWXXM to the official WMO example corpus
   (`/quality`, shareable `/quality/:stem`)
 - Near-real-time ingest worker
-- Dissemination sink APIs retained (operator UI destinations currently hidden — restore tracked separately)
+- **Dissemination / Send (beta)** — operator destinations restored; label as beta in the UI.
+  Feedback welcome via
+  [GitHub Issues (`beta-feedback`)](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/new?labels=beta-feedback)
 
 ## Architecture
 

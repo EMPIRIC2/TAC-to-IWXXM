@@ -48,6 +48,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { DisseminationDrawer } from './DisseminationDrawer';
+import { BetaBadge } from './BetaBadge';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
 import {
@@ -2320,8 +2321,8 @@ export function FileConverter({
                 aria-busy={isConvertAndSending}
                 aria-label={
                   isConvertAndSending
-                    ? 'Converting and sending files, please wait'
-                    : 'Convert TAC to IWXXM XML and send to database'
+                    ? 'Converting and sending files, please wait (beta)'
+                    : 'Convert TAC to IWXXM XML and send to database (beta)'
                 }
               >
                 <Loader2
@@ -2329,6 +2330,7 @@ export function FileConverter({
                   aria-hidden="true"
                 />
                 Convert&Send
+                <BetaBadge className="ml-1 inline-flex" />
               </Button>
             ) : null}
             {isOperatorDisseminationDestinationsEnabled() ? (
@@ -2355,9 +2357,10 @@ export function FileConverter({
                 disabled={isBusy || isReadOnly}
                 variant="outline"
                 className="min-w-[10rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
-                aria-label="Open dissemination drawer for BYOC upload or publish"
+                aria-label="Open dissemination drawer for BYOC upload or publish (beta)"
               >
                 Disseminate
+                <BetaBadge className="ml-1 inline-flex" />
               </Button>
             ) : null}
             <Button

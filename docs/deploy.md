@@ -135,7 +135,8 @@ services without failing (see BUG-2026-08-03). GHCR push continues; DOKS is the 
 2. Merge to `stage` → **Deploy (stage)** to staging cluster + **Staging smoke** green for that SHA
    (HTTPS when Porkbun A records point at staging LB `143.244.202.13`; until then Host-header
    probes via `STAGING_LB_IP` / `DOKS_LB_IP` are valid).
-3. **Release prep on `stage` (recommended):** bump publishable package semver when those
+3. **Release prep on `stage` (recommended):** bump publishable package **CalVer**
+   (`YYYY.MM.DD` / `YYYY.MM.DD.N` per ADR-043) when those
    packages changed since the last release; cut `docs/CHANGELOG.md`; commit on `stage` so the
    promote PR carries the release metadata (see checklist below).
 4. Open PR **`stage` → `main` only** (never feature → `main`). Job **Staging gate**
@@ -540,9 +541,9 @@ make test-live                # H4–H5 → H3 → H6
 
 See [staging-secrets-matrix.md](ops/staging-secrets-matrix.md) for staging values.
 
-## PyPI package publish (S014 / EV-010 / F12–F14; EMPIRIC2 cutover EV-028 / #781)
+## PyPI package publish (S014 / EV-010 / F12–F14; EMPIRIC2 cutover EV-028 / #781; EV-1150 / ADR-043)
 
-Library packages publish **independently** of Render via GitHub Actions **OIDC trusted
+Library packages publish **independently** of app Deploy via GitHub Actions **OIDC trusted
 publishing** on version tags:
 
 | Package | Tag pattern | PyPI name |
@@ -551,32 +552,37 @@ publishing** on version tags:
 | `packages/iwxxm-validate` | `iwxxm-validate-v*` | `iwxxm-validate` |
 | `packages/tac2iwxxm` | `tac2iwxxm-v*` | `tac2iwxxm` |
 
-**First release**: `0.1.0` for each (bootstrap). **Subsequent releases** (e.g. `0.1.1`, EV-028):
-bump `pyproject.toml` version, tag `{name}-v{version}`, workflow publishes via OIDC.
+**Versioning (ADR-043):** **CalVer** date components as PEP 440 integers **without
+leading zeros** (e.g. `2026.9.10`; same-day `2026.9.10.1`). Example tag:
+`tac-validate-v2026.9.10`. Legacy `0.x` wheels remain on PyPI.
 
-**One** GitHub Actions workflow (`.github/workflows/pypi-publish.yml`) with a **package matrix**
-builds sdist+wheel (maturin manylinux/macOS/win for native crates), optional smoke-install,
-then publishes on matching version tags. Prefer no long-lived `PYPI_API_TOKEN` when OIDC is
-available.
+**Prod publish:** bump CalVer on `stage` → merge promote → push `{name}-v{version}` from
+`main` tip. Workflow `.github/workflows/pypi-publish.yml` (package matrix) builds
+sdist+wheel (maturin for native crates), smoke-install, then OIDC publish. Prefer no
+long-lived `PYPI_API_TOKEN` when OIDC is configured.
 
-**Trusted Publisher** (each PyPI project → Publishing settings):
+**Nightly (TestPyPI only):** `.github/workflows/pypi-nightly.yml` (schedule +
+`workflow_dispatch`) publishes `YYYY.MM.DD.devN` to TestPyPI. Never auto-publish nightlies
+to prod PyPI.
+
+**Trusted Publisher** (each PyPI / TestPyPI project → Publishing settings):
 
 | Field | Value |
 |-------|--------|
 | Owner | `EMPIRIC2` |
 | Repository | `TAC-to-IWXXM` |
-| Workflow | `pypi-publish.yml` |
-| Environment | `pypi` |
+| Workflow | `pypi-publish.yml` (prod) / `pypi-nightly.yml` (TestPyPI) |
+| Environment | `pypi` / `testpypi` |
 
 Remove any stale publisher pointing at the pre-transfer GitHub owner/repo. Ensure GitHub
-Environment `pypi` exists on `EMPIRIC2/TAC-to-IWXXM`. Workflow needs `id-token: write`
+Environments exist on `EMPIRIC2/TAC-to-IWXXM`. Workflows need `id-token: write`
 (see config-spec §F11–F14).
 
 **Public landing pages**: Package `README.md` (and `pyproject.toml` `description`) are the
 PyPI long/short description — write for library consumers; do not require internal ADR /
 feature-id / execution-plan identifiers. Monorepo tracing stays in corpus / session docs.
 
-**Render**: PyPI publish does not replace Render smokes. When msgspec **response** shapes
+**Render / DOKS**: PyPI publish does not replace app smokes. When msgspec **response** shapes
 change, redeploy API then frontend and run H4–H5 + UJ-022.
 
 ## References
