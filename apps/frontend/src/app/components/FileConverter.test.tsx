@@ -672,15 +672,16 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('theme-toggle')).toBeInTheDocument();
     });
 
-    it('should display database upload button', async () => {
+    it('does not display Upload to Database button (EV-beta-ux-export-auth)', async () => {
       operatorDisseminationUiConfig.destinationsEnabled = true;
       render(<FileConverter {...defaultProps} />);
-      const dbBtn = await screen.findByText(/upload to database/i, {
-        selector: 'button',
-      });
-      expect(dbBtn).toBeInTheDocument();
-      // Button should be disabled initially (no converted files)
-      expect(dbBtn).toBeDisabled();
+      expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(/upload to database/i, { selector: 'button' }),
+      ).not.toBeInTheDocument();
+      expect(
+        await screen.findByTestId('open-dissemination-drawer'),
+      ).toBeInTheDocument();
     });
 
     it('should display settings button', async () => {
@@ -692,34 +693,20 @@ describe('FileConverter Component', () => {
   });
 
   describe('Dialog Management', () => {
-    it('should open database upload dialog', async () => {
+    it('does not mount database upload dialog (EV-beta-ux-export-auth)', async () => {
       operatorDisseminationUiConfig.destinationsEnabled = true;
       render(<FileConverter {...defaultProps} />);
-
-      // Database upload button is initially disabled (no converted files)
-      const dbBtn = await screen.findByText(/upload to database/i, {
-        selector: 'button',
-      });
-      expect(dbBtn).toBeDisabled();
-
-      // Dialog should remain closed
-      const dialog = screen.getByTestId('database-upload-dialog');
-      expect(dialog.style.display).toBe('none');
+      expect(screen.queryByTestId('database-upload-dialog')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
     });
 
-    it('should close database upload dialog', async () => {
+    it('keeps dissemination drawer available without upload dialog', async () => {
       operatorDisseminationUiConfig.destinationsEnabled = true;
       render(<FileConverter {...defaultProps} />);
-
-      // Database upload button is initially disabled
-      const dbBtn = await screen.findByText(/upload to database/i, {
-        selector: 'button',
-      });
-      expect(dbBtn).toBeDisabled();
-
-      // Dialog should be closed initially
-      const dialog = screen.getByTestId('database-upload-dialog');
-      expect(dialog.style.display).toBe('none');
+      expect(
+        await screen.findByTestId('open-dissemination-drawer'),
+      ).toBeInTheDocument();
+      expect(screen.queryByTestId('close-upload-dialog')).not.toBeInTheDocument();
     });
 
     it('should open preferences dialog', async () => {
@@ -2665,8 +2652,8 @@ describe('FileConverter Component', () => {
       expect(nilCheck.checked).toBe(false);
     });
 
-    // line 829: DatabaseUploadDialog onClose callback sets isUploadDialogOpen to false
-    it('closes database upload dialog when onClose is invoked', async () => {
+    // Upload-to-database dialog removed (EV-beta-ux-export-auth)
+    it('does not expose upload-to-database after convert (EV-beta-ux-export-auth)', async () => {
       operatorDisseminationUiConfig.destinationsEnabled = true;
       const user = userEvent.setup({ delay: null });
       mockConvertMetarToIwxxm.mockResolvedValueOnce({
@@ -2678,22 +2665,16 @@ describe('FileConverter Component', () => {
       fireEvent.change(textarea, { target: { value: 'METAR CLOSE DIALOG TEST' } });
       await user.click(screen.getByTestId('convert-button'));
 
-      const uploadButton = await screen.findByRole('button', {
-        name: /upload 1 converted files to database/i,
-      });
-      await user.click(uploadButton);
-
       await waitFor(() => {
-        expect(screen.getByTestId('database-upload-dialog').style.display).toBe(
-          'block',
-        );
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalled();
       });
-
-      await user.click(screen.getByTestId('close-upload-dialog'));
-
-      await waitFor(() => {
-        expect(screen.getByTestId('database-upload-dialog').style.display).toBe('none');
-      });
+      expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('database-upload-dialog')).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', {
+          name: /upload .* converted files to database/i,
+        }),
+      ).not.toBeInTheDocument();
     });
 
     it('displays Convert&Send button and chains convert with upload (flag-on coverage)', async () => {

@@ -145,19 +145,24 @@ export function manualDownloadXmlName(
  * @returns Same-length list of unique member paths
  */
 export function uniquifyZipMemberNames(names: string[]): string[] {
-  const seen = new Map<string, number>();
+  const used = new Set<string>();
   return names.map((raw) => {
     const name = raw.trim() || 'download.xml';
-    const count = seen.get(name) ?? 0;
-    seen.set(name, count + 1);
-    if (count === 0) {
+    if (!used.has(name)) {
+      used.add(name);
       return name;
     }
     const dot = name.lastIndexOf('.');
-    if (dot <= 0) {
-      return `${name}_${count + 1}`;
+    const stem = dot > 0 ? name.slice(0, dot) : name;
+    const ext = dot > 0 ? name.slice(dot) : '';
+    let n = 2;
+    let candidate = `${stem}_${n}${ext}`;
+    while (used.has(candidate)) {
+      n += 1;
+      candidate = `${stem}_${n}${ext}`;
     }
-    return `${name.slice(0, dot)}_${count + 1}${name.slice(dot)}`;
+    used.add(candidate);
+    return candidate;
   });
 }
 

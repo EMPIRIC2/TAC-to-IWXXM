@@ -174,4 +174,12 @@ describe('uniquifyZipMemberNames (TC-EV-beta-002)', () => {
   it('handles names without an extension', () => {
     expect(uniquifyZipMemberNames(['a', 'a'])).toEqual(['a', 'a_2']);
   });
+
+  it('avoids colliding with an already-present _N suffix', () => {
+    expect(uniquifyZipMemberNames(['foo.xml', 'foo_2.xml', 'foo.xml'])).toEqual([
+      'foo.xml',
+      'foo_2.xml',
+      'foo_3.xml',
+    ]);
+  });
 });

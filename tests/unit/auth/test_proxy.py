@@ -164,6 +164,31 @@ def test_sign_up_success_and_confirm_email_null_session() -> None:
 @pytest.mark.parametrize(
     ("status_code", "expected"),
     [
+        (400, 400),
+        (422, 400),
+        (500, 502),
+        (503, 502),
+    ],
+)
+def test_sign_up_maps_http_errors(status_code: int, expected: int) -> None:
+    client = MagicMock(spec=httpx.Client)
+    client.post.return_value = MagicMock(
+        status_code=status_code,
+        text="signup denied",
+    )
+    proxy = SupabaseAuthProxy(
+        supabase_url="https://proj.supabase.co",
+        publishable_key="pk",
+        client=client,
+    )
+    with pytest.raises(AuthProxyError, match="registration failed") as exc_info:
+        proxy.sign_up("b@example.com", "secret12")
+    assert exc_info.value.status_code == expected
+
+
+@pytest.mark.parametrize(
+    ("status_code", "expected"),
+    [
         (400, 401),
         (401, 401),
         (500, 502),

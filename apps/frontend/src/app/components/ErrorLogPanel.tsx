@@ -30,13 +30,22 @@ const HIDDEN_OPERATOR_ISSUE_CODES = new Set(['DEPRECATED_PROFILE_ALIAS']);
 export function ErrorLogPanel({ log, minLogLevel = 'INFO' }: ErrorLogPanelProps) {
   const [expanded, setExpanded] = useState(true);
   const visibleErrors = log.errors;
+  const suppressedByCode = log.issues.filter((issue) =>
+    HIDDEN_OPERATOR_ISSUE_CODES.has(String(issue.code ?? '')),
+  );
+  const levelHiddenIssues = log.issues.filter(
+    (issue) =>
+      !HIDDEN_OPERATOR_ISSUE_CODES.has(String(issue.code ?? '')) &&
+      !issueLevelPasses(issue.severity, minLogLevel),
+  );
   const filteredIssues = log.issues.filter(
     (issue) =>
       !HIDDEN_OPERATOR_ISSUE_CODES.has(String(issue.code ?? '')) &&
       issueLevelPasses(issue.severity, minLogLevel),
   );
   const totalCount = visibleErrors.length + filteredIssues.length;
-  const hiddenCount = log.errors.length + log.issues.length - totalCount;
+  const levelHiddenCount = levelHiddenIssues.length;
+  const hiddenCount = suppressedByCode.length + levelHiddenCount;
 
   const tone = useMemo(() => {
     if (visibleErrors.length > 0) {
@@ -119,7 +128,7 @@ export function ErrorLogPanel({ log, minLogLevel = 'INFO' }: ErrorLogPanelProps)
         <span className={titleClass}>
           <AlertCircle className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
           Conversion / validation log ({totalCount}
-          {hiddenCount > 0 ? ` · ${hiddenCount} hidden by log level` : ''})
+          {levelHiddenCount > 0 ? ` · ${levelHiddenCount} hidden by log level` : ''})
         </span>
         {expanded ? (
           <ChevronUp className="h-5 w-5" aria-hidden="true" />
