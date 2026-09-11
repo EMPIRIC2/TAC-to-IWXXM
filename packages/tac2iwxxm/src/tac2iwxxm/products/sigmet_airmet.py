@@ -809,10 +809,9 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     if seq_label != str(seq_num):
         ir["sequence_label"] = seq_label
     fir_extra = match.groupdict().get("fir_extra")
-    if fir_extra:
-        extras = [p for p in fir_extra.upper().split() if len(p) == 4]
-        if extras:
-            ir["additional_firs"] = extras
+    extras = [p for p in (fir_extra or "").upper().split() if len(p) == 4]
+    if extras:
+        ir["additional_firs"] = extras
     if ahl_tt is not None:
         ir["ahl_tt"] = ahl_tt
     _enrich_sigmet_body(ir, body)
