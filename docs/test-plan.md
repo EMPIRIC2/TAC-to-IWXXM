@@ -5549,6 +5549,18 @@ Full IWXXM XML for the matrix lives in session evidence (not all committed); one
 | TC-EV-beta-007 | `POST /auth/register` + `/auth/login` succeed (unit + local); staging evidence recorded | T0 / T3 |
 | TC-EV-beta-008 | Profile share export/import round-trip (non-secret) still works | T0 |
 
+### TC-EV-verify — Post-merge verify (#1177–#1179 / EV-verify-1177-1179)
+
+| ID | Assert | Tier | Issue |
+|----|--------|------|-------|
+| TC-EV-verify-001 | Staging `POST /auth/register` creates user or clear email-confirm path; login returns session; FE stores tokens | T3 | #1177 |
+| TC-EV-verify-002 | Staging guest convert still works without login (F21) | T3 | #1177 |
+| TC-EV-verify-003 | Empty zip / zero results guarded; mixed unique+colliding basenames; unicode/long filenames | T0 | #1178 |
+| TC-EV-verify-004 | Profile share export/import rejects secrets; work-history import conflict behavior documented or fixed | T0 | #1178 |
+| TC-EV-verify-005 | Scan of tac-validate operator messages + FE catalogs lacks research tokens `T3`/`S1`/…; library codes remain; no EV-048 planning-vocab regressions | T0 | #1179 |
+
+Evidence root: `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-verify-1177-1179/evidence/`.
+
 ### TC-EV908 — IWXXM cross-version conversion (#908)
 
 Standing matrix: [CROSS_VERSION_CONVERSION.md](domain/iwxxm/CROSS_VERSION_CONVERSION.md).
