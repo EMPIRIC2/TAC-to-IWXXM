@@ -182,4 +182,12 @@ describe('uniquifyZipMemberNames (TC-EV-beta-002)', () => {
       'foo_3.xml',
     ]);
   });
+
+  it('defaults blank names to download.xml and uniquifies them', () => {
+    expect(uniquifyZipMemberNames(['', '  ', 'download.xml'])).toEqual([
+      'download.xml',
+      'download_2.xml',
+      'download_3.xml',
+    ]);
+  });
 });
