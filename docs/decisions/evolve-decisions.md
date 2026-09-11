@@ -1,5 +1,42 @@
 # Evolve Decisions
 
+## Cycle EV-cmo-converter-harden — CMO Week 1 convert soft/hard fails
+
+**Opened:** 2026-09-11 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-cmo-converter-harden`  
+**Parent:** EV-cmo-week1-test-sets · **Documenting→Implementing gate:** **open** (operator proceed)
+
+| ID | Outcome |
+|----|---------|
+| D-CMO-H-fixtures | Do **not** rewrite authoritative CMO TAC under `tests/fixtures/cmo_week1/` |
+| D-CMO-H-bare | Bare ICAO obs accepted when product hint is METAR/SPECI (inject keyword) |
+| D-CMO-H-typos | `NOISG`→NOSIG alias; `EMPO`→TEMPO alias (IR flags) |
+| D-CMO-H-sigmet | Alphanumeric/phonetic sequence + SIGA0 strip + dual FIR header parse |
+| D-CMO-H-f20 | F20 METAR↔SPECI keyword mismatch guards unchanged |
+| D-CMO-H-research | Deeper US oceanic IWXXM fidelity → research handoff (not blocking 579/579) |
+
+[Corpus: product §F6] [Corpus: tests] [Corpus: decisions]
+
+---
+
+## Cycle EV-cmo-week1-test-sets — CMO Week 1 NMHS evaluation corpus
+
+
+**Opened:** 2026-09-11 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-cmo-week1-test-sets`  
+**Documenting→Implementing gate:** **open** (operator: proceed / source authoritative / one go)
+
+| ID | Outcome |
+|----|---------|
+| D-CMO-W1-source | Desktop pack `/Users/bigme/Desktop/TAC-to-IWXXM Testing/` is **authoritative** — do not clean TAC |
+| D-CMO-W1-scope | Stage Week 1 METAR/SPECI/TAF/SIGMET; convert+validate matrix (`annex3` / `2025-2`) |
+| D-CMO-W1-iwxxm | Full generated IWXXM in session `evidence/`; commit TAC + samples + `matrix-summary.json` |
+| D-CMO-W1-siga0 | Two US oceanic `SIGA0*` SIGMETs dispositioned `authoritative_us_oceanic_siga0` (parse gap / F6.d deepen) |
+| D-CMO-W1-fn | Deepens **F6** + **F2** evaluation coverage; no new Fn |
+| D-CMO-W1-tc | TC-EV-CMO-001..005 in [Corpus: tests] |
+
+[Corpus: product §F6] [Corpus: product §F2] [Corpus: tests] [Corpus: decisions]
+
+---
+
 ## Cycle EV-933 — ConversionProfile editor (#933)
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-933-ui-conversionprofile-editor-rule-packs-executabl`  
