@@ -103,6 +103,38 @@ class SupabaseAuthProxy:
         data = response.json()
         return _normalize_session_payload(data)
 
+    def sign_up(self, email: str, password: str) -> dict[str, Any]:
+        """
+        Register via Supabase GoTrue signup.
+
+        Parameters
+        ----------
+        email : str
+            User email.
+        password : str
+            User password.
+
+        Returns
+        -------
+        dict[str, Any]
+            Normalized ``user`` + optional ``session`` (null when email confirm
+            is required).
+        """
+        url = f"{self.supabase_url}/auth/v1/signup"
+        response = self._http().post(
+            url,
+            headers=self._headers(),
+            json={"email": email, "password": password},
+        )
+        if response.status_code >= 400:
+            detail = response.text
+            raise AuthProxyError(
+                f"registration failed: {detail}",
+                status_code=400 if response.status_code < 500 else 502,
+            )
+        data = cast(dict[str, Any], response.json())
+        return _normalize_session_payload(data)
+
     def sign_out(
         self, access_token: str, *, scope: str | None = None
     ) -> dict[str, str]:
@@ -171,15 +203,21 @@ def _normalize_session_payload(data: dict[str, Any]) -> dict[str, Any]:
     user_raw: dict[str, Any] = (
         cast(dict[str, Any], user_obj) if isinstance(user_obj, dict) else {}
     )
+    access_token = str(data.get("access_token") or "")
+    refresh_token = str(data.get("refresh_token") or "")
+    expires_at = int(data.get("expires_at") or 0)
+    session: dict[str, Any] | None = None
+    if access_token:
+        session = {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "expires_at": expires_at,
+        }
     return {
         "user": {
             "id": user_raw.get("id") or "",
             "email": user_raw.get("email") or "",
             "metadata": user_raw.get("user_metadata") or {},
         },
-        "session": {
-            "access_token": data.get("access_token") or "",
-            "refresh_token": data.get("refresh_token") or "",
-            "expires_at": int(data.get("expires_at") or 0),
-        },
+        "session": session,
     }

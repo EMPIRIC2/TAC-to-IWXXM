@@ -71,7 +71,7 @@ export function AppShellNav({ activeView, onNavigate }: AppShellNavProps) {
               onClick={() => onNavigate(view)}
             >
               {SHELL_NAV_LABELS[view]}
-              {view === 'dissemination-ops' ? (
+              {view === 'dissemination-ops' || view === 'profiles' ? (
                 <BetaBadge className="inline-flex" />
               ) : null}
             </button>

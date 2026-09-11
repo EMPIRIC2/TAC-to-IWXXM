@@ -135,6 +135,37 @@ export function manualDownloadXmlName(
   return manualOutputName(base, index, total).replace(/\.(txt|metar)$/i, '.xml');
 }
 
+/**
+ * Make ZIP member names unique when basenames collide (TC-EV-beta-002).
+ *
+ * First occurrence keeps the original name; later ones get `_2`, `_3`, … before
+ * the extension (matching multi-line manual suffix style).
+ *
+ * @param names - Intended member filenames in download order
+ * @returns Same-length list of unique member paths
+ */
+export function uniquifyZipMemberNames(names: string[]): string[] {
+  const used = new Set<string>();
+  return names.map((raw) => {
+    const name = raw.trim() || 'download.xml';
+    if (!used.has(name)) {
+      used.add(name);
+      return name;
+    }
+    const dot = name.lastIndexOf('.');
+    const stem = dot > 0 ? name.slice(0, dot) : name;
+    const ext = dot > 0 ? name.slice(dot) : '';
+    let n = 2;
+    let candidate = `${stem}_${n}${ext}`;
+    while (used.has(candidate)) {
+      n += 1;
+      candidate = `${stem}_${n}${ext}`;
+    }
+    used.add(candidate);
+    return candidate;
+  });
+}
+
 export type OutputArchiveNameOptions = {
   /** TAC text from the first successful conversion in the accumulate batch. */
   firstTac?: string;

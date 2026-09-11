@@ -33,7 +33,6 @@ import {
   FolderOpen,
   Archive,
   Loader2,
-  Database,
   Settings,
   ChevronDown,
   ChevronUp,
@@ -46,9 +45,9 @@ import JSZip from 'jszip';
 import { toast } from 'sonner';
 import { ThemeToggle } from './ThemeToggle';
 import { GoldenExamplesSelect } from './GoldenExamplesSelect';
-import { DatabaseUploadDialog } from './DatabaseUploadDialog';
 import { DisseminationDrawer } from './DisseminationDrawer';
 import { BetaBadge } from './BetaBadge';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
 import {
@@ -173,6 +172,7 @@ import {
   nextFirstAccumulatedTac,
   outputArchiveName,
   sanitizeOutputFilename,
+  uniquifyZipMemberNames,
 } from '/utils/outputFilename';
 import {
   deriveTacDisplayTitle,
@@ -505,7 +505,6 @@ export function FileConverter({
     message?: string;
   }>({ type: 'idle' });
   const [conversionLog, setConversionLog] = useState<ConversionLog | null>(null);
-  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
   const [isDisseminationOpen, setIsDisseminationOpen] = useState(false);
   const [isMassIngesting, setIsMassIngesting] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
@@ -1736,10 +1735,12 @@ export function FileConverter({
     if (convertedFiles.length === 0) return;
 
     const zip = new JSZip();
+    const memberNames = uniquifyZipMemberNames(
+      convertedFiles.map((file) => resolveDownloadXmlName(file)),
+    );
 
-    convertedFiles.forEach((file) => {
-      const filename = resolveDownloadXmlName(file);
-      zip.file(filename, file.convertedContent);
+    convertedFiles.forEach((file, index) => {
+      zip.file(memberNames[index]!, file.convertedContent);
     });
 
     const content = await zip.generateAsync({ type: 'blob' });
@@ -2331,22 +2332,6 @@ export function FileConverter({
                 />
                 Convert&Send
                 <BetaBadge className="ml-1 inline-flex" />
-              </Button>
-            ) : null}
-            {isOperatorDisseminationDestinationsEnabled() ? (
-              <Button
-                data-testid="upload-to-database-button"
-                onClick={() => setIsUploadDialogOpen(true)}
-                disabled={isBusy || !hasConverted || isReadOnly}
-                variant="outline"
-                className="min-w-[13.5rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
-                aria-label={`Upload ${convertedFiles.length} converted files to database`}
-              >
-                <Database className="w-4 h-4" aria-hidden="true" />
-                Upload to Database
-                <span className="inline-block min-w-[1.75rem] tabular-nums">
-                  ({convertedFiles.length})
-                </span>
               </Button>
             ) : null}
             {isOperatorDisseminationDestinationsEnabled() ? (
@@ -3600,36 +3585,42 @@ export function FileConverter({
                 </h2>
                 <div className="space-y-4">
                   {convertedFiles.map((file) => (
-                    <Card
+                    <Collapsible
                       key={file.id}
-                      className="p-4 bg-white dark:bg-gray-800 dark:border-gray-700"
+                      defaultOpen
+                      className="rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800"
+                      data-testid={`result-item-${file.id}`}
                     >
-                      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <p className="text-base font-medium text-gray-900 dark:text-white">
-                              {file.displayTitle}
-                            </p>
-                            {file.manualLineIndex != null &&
-                            file.manualLineTotal != null ? (
-                              <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/40 dark:text-blue-200">
-                                Line {file.manualLineIndex} of {file.manualLineTotal}
-                              </span>
+                      <div className="flex items-center justify-between gap-2 p-4 flex-wrap">
+                        <CollapsibleTrigger asChild>
+                          <button
+                            type="button"
+                            className="min-w-0 flex-1 text-left group"
+                            aria-label={`Toggle details for ${file.displayTitle}`}
+                            data-testid={`result-toggle-${file.id}`}
+                          >
+                            <div className="flex flex-wrap items-center gap-2">
+                              <ChevronDown
+                                className="h-4 w-4 shrink-0 text-gray-500 transition-transform group-data-[state=closed]:-rotate-90"
+                                aria-hidden="true"
+                              />
+                              <p className="text-base font-medium text-gray-900 dark:text-white">
+                                {file.displayTitle}
+                              </p>
+                              {file.manualLineIndex != null &&
+                              file.manualLineTotal != null ? (
+                                <span className="inline-flex items-center rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 dark:bg-blue-900/40 dark:text-blue-200">
+                                  Line {file.manualLineIndex} of {file.manualLineTotal}
+                                </span>
+                              ) : null}
+                            </div>
+                            {file.displayTitle !== file.originalName ? (
+                              <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5 ml-6">
+                                Download: {file.originalName}
+                              </p>
                             ) : null}
-                          </div>
-                          {file.displayTitle !== file.originalName ? (
-                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                              Download: {file.originalName}
-                            </p>
-                          ) : null}
-                          {file.originalContent.length > 60 &&
-                          file.displayTitle !==
-                            file.originalContent.trim().replace(/\s+/g, ' ') ? (
-                            <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 break-all">
-                              {truncateTacSnippet(file.originalContent)}
-                            </p>
-                          ) : null}
-                        </div>
+                          </button>
+                        </CollapsibleTrigger>
                         <div className="flex gap-2">
                           <Button
                             variant="outline"
@@ -3665,34 +3656,43 @@ export function FileConverter({
                           </Button>
                         </div>
                       </div>
-                      <div
-                        className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 rounded text-sm overflow-x-auto mb-3 border border-gray-200 dark:border-gray-700"
-                        role="region"
-                        aria-label={`Original TAC input for ${file.displayTitle}`}
-                      >
-                        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
-                          Source TAC
-                        </p>
-                        {file.originalContent ? (
-                          <pre className="whitespace-pre-wrap break-all font-mono">
-                            {file.originalContent}
-                          </pre>
-                        ) : (
-                          <p className="text-sm italic text-gray-500 dark:text-gray-400">
-                            Original TAC unavailable for this result.
+                      <CollapsibleContent className="px-4 pb-4">
+                        {file.originalContent.length > 60 &&
+                        file.displayTitle !==
+                          file.originalContent.trim().replace(/\s+/g, ' ') ? (
+                          <p className="text-xs font-mono text-gray-600 dark:text-gray-400 mb-3 break-all">
+                            {truncateTacSnippet(file.originalContent)}
                           </p>
-                        )}
-                      </div>
-                      <div
-                        className="bg-gray-900 dark:bg-gray-950 text-green-400 dark:text-green-300 p-4 rounded text-sm overflow-x-auto"
-                        role="region"
-                        aria-label={`Converted XML content for ${file.originalName}`}
-                      >
-                        <pre className="whitespace-pre-wrap break-all font-mono">
-                          {file.convertedContent}
-                        </pre>
-                      </div>
-                    </Card>
+                        ) : null}
+                        <div
+                          className="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 p-4 rounded text-sm overflow-x-auto mb-3 border border-gray-200 dark:border-gray-700"
+                          role="region"
+                          aria-label={`Original TAC input for ${file.displayTitle}`}
+                        >
+                          <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-2">
+                            Source TAC
+                          </p>
+                          {file.originalContent ? (
+                            <pre className="whitespace-pre-wrap break-all font-mono">
+                              {file.originalContent}
+                            </pre>
+                          ) : (
+                            <p className="text-sm italic text-gray-500 dark:text-gray-400">
+                              Original TAC unavailable for this result.
+                            </p>
+                          )}
+                        </div>
+                        <div
+                          className="bg-gray-900 dark:bg-gray-950 text-green-400 dark:text-green-300 p-4 rounded text-sm overflow-x-auto"
+                          role="region"
+                          aria-label={`Converted XML content for ${file.originalName}`}
+                        >
+                          <pre className="whitespace-pre-wrap break-all font-mono">
+                            {file.convertedContent}
+                          </pre>
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
                   ))}
                 </div>
               </div>
@@ -3736,15 +3736,6 @@ export function FileConverter({
           )}
         </div>
       </div>
-
-      {/* Database Upload Dialog — restored with destinations UI (EV-091 / #898) */}
-      {isOperatorDisseminationDestinationsEnabled() ? (
-        <DatabaseUploadDialog
-          convertedFiles={convertedFiles}
-          isOpen={isUploadDialogOpen}
-          onClose={() => setIsUploadDialogOpen(false)}
-        />
-      ) : null}
 
       {isOperatorDisseminationDestinationsEnabled() ? (
         <DisseminationDrawer

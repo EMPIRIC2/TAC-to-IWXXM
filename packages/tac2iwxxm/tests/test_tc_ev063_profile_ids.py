@@ -36,7 +36,8 @@ def test_tc_ev063_001_alias_annex3_deprecation_signal() -> None:
     assert result.ok
     assert result.deprecated_alias_used
     codes = {issue.code for issue in result.issues}
-    assert "DEPRECATED_PROFILE_ALIAS" in codes
+    # Operator-facing deprecation notices suppressed (EV-beta-ux-export-auth).
+    assert "DEPRECATED_PROFILE_ALIAS" not in codes
 
 
 @pytest.mark.parametrize(

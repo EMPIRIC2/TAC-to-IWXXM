@@ -19,14 +19,18 @@ prod publishes, and nightly builds without polluting prod PyPI.
 
 ### A — Beta surfacing + feedback
 
-1. Operator UI marks **Dissemination** and **Send** (including Convert&Send and Dissemination
-   ops) as **beta** with plain-language copy and a link to GitHub Issues:
+1. Operator UI marks **Dissemination** and **Send** (including Convert&Send and
+   Dissemination ops) as **beta** with plain-language copy and a link to GitHub Issues:
    `https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/new?labels=beta-feedback`.
-2. Root README and GitHub repo About mention beta status and the same feedback path.
-3. Issue template `.github/ISSUE_TEMPLATE/beta_feedback.md` + label `beta-feedback`.
-4. Agent process: when adding **new product features**, recommend (AskQuestion first option)
+2. Operator UI marks **Conversion profiles** (shell nav + ConversionProfile editor) as
+   **beta** with the same badge + feedback path (EV-beta-ux-export-auth).
+3. **Upload to Database** toolbar control is **removed** (EV-beta-ux-export-auth) — operators
+   use Disseminate / Convert&Send for outside send; do not reintroduce without beta + AC.
+4. Root README and GitHub repo About mention beta status and the same feedback path.
+5. Issue template `.github/ISSUE_TEMPLATE/beta_feedback.md` + label `beta-feedback`.
+6. Agent process: when adding **new product features**, recommend (AskQuestion first option)
    shipping as beta with Issues feedback wiring — see `.cursor/rules/core/beta-feature-rollout.mdc`.
-5. Operator-visible strings must not embed internal doc refs (EV-048).
+7. Operator-visible strings must not embed internal doc refs (EV-048).
 
 ### B — PyPI CalVer + nightly + promote
 
@@ -61,6 +65,7 @@ prod publishes, and nightly builds without polluting prod PyPI.
 
 ## References
 
-- [Corpus: product] F12–F14, F16–F19  
+- [Corpus: product] F12–F14, F16–F19, F7.w / F35 (conversion profiles beta)  
 - [Corpus: tech-spec] / [Corpus: deploy]  
 - EV-1150 requirements report  
+- EV-beta-ux-export-auth (profiles + remaining send surfaces)  
