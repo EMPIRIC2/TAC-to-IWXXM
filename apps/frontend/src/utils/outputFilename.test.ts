@@ -10,6 +10,7 @@ import {
   ACCUMULATE_RESULT_CAP,
   appendConvertedWithinCap,
   nextFirstAccumulatedTac,
+  uniquifyZipMemberNames,
 } from './outputFilename';
 
 describe('sanitizeOutputFilename', () => {
@@ -154,5 +155,23 @@ describe('nextFirstAccumulatedTac', () => {
     expect(nextFirstAccumulatedTac(null, 'first')).toBe('first');
     expect(nextFirstAccumulatedTac(null, null)).toBe(null);
     expect(nextFirstAccumulatedTac(null, undefined)).toBe(null);
+  });
+});
+
+describe('uniquifyZipMemberNames (TC-EV-beta-002)', () => {
+  it('keeps unique names and suffixes collisions', () => {
+    expect(
+      uniquifyZipMemberNames([
+        'test.xml',
+        'test.xml',
+        'test.xml',
+        'other.xml',
+        'test.xml',
+      ]),
+    ).toEqual(['test.xml', 'test_2.xml', 'test_3.xml', 'other.xml', 'test_4.xml']);
+  });
+
+  it('handles names without an extension', () => {
+    expect(uniquifyZipMemberNames(['a', 'a'])).toEqual(['a', 'a_2']);
   });
 });

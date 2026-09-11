@@ -201,6 +201,21 @@ _METAR_SPECI_SKIP = frozenset({"METAR", "SPECI", "COR", "AUTO", "NIL", "CAVOK", 
 _TAF_SKIP = frozenset({"TAF", "AMD", "COR", "NIL", "CNL", "CAVOK"})
 
 
+_RESEARCH_REF_RE = re.compile(
+    r"(?:\s*[-" + "\u2013\u2014" + r";/]?\s*)?research\s+[A-Za-z]?\d+"
+    r"(?:\s*/\s*(?:[A-Za-z]?\d+|#\d+|iwxxm_us))*",
+    re.IGNORECASE,
+)
+
+
+def _strip_research_refs(message: str) -> str:
+    """Drop research milestone tokens (T3/S1/R8/…) from operator-facing messages."""
+    cleaned = _RESEARCH_REF_RE.sub("", message)
+    cleaned = re.sub(r"\s{2,}", " ", cleaned)
+    cleaned = re.sub(r"\s*[-" + "\u2013\u2014" + r";/]+\s*$", "", cleaned).strip()
+    return cleaned if cleaned else message
+
+
 def _issue(
     code: str,
     message: str,
@@ -212,7 +227,7 @@ def _issue(
     """Build an Issue via the registry (severity from IssueSpec; message preserved)."""
     return issue_from(
         code,
-        message=message,
+        message=_strip_research_refs(message),
         location=location,
         start=start,
         end=end,
@@ -461,7 +476,7 @@ def _check_us_remarks(
             _append_remark_issue(
                 issues,
                 code="INVALID_REMARK",
-                message=f"{product} malformed remark {tok!r} (SLP needs 3 digits) - research R5 / iwxxm_us",
+                message=f"{product} malformed remark {tok!r} (SLP needs 3 digits)",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -477,7 +492,7 @@ def _check_us_remarks(
             _append_remark_issue(
                 issues,
                 code="INVALID_REMARK",
-                message=f"{product} malformed remark {tok!r} (P precip needs 4 digits) - research R5 / iwxxm_us",
+                message=f"{product} malformed remark {tok!r} (P precip needs 4 digits)",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -493,7 +508,7 @@ def _check_us_remarks(
             _append_remark_issue(
                 issues,
                 code="INVALID_REMARK",
-                message=f"{product} malformed remark {tok!r} (T tenths needs 8 digits) - research R5 / iwxxm_us",
+                message=f"{product} malformed remark {tok!r} (T tenths needs 8 digits)",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -512,7 +527,7 @@ def _check_us_remarks(
             _append_remark_issue(
                 issues,
                 code="INVALID_REMARK",
-                message=f"{product} malformed remark PK WND (need dddss/tt) - research R5 / iwxxm_us",
+                message=f"{product} malformed remark PK WND (need dddss/tt)",
                 core=core,
                 body_start=body_start,
                 body_end=body_end,
@@ -526,9 +541,7 @@ def _check_us_remarks(
         _append_remark_issue(
             issues,
             code="REMARK_US_EXTENSION",
-            message=(
-                f"{product} US remarks present (AO1/AO2/SLP/P/T/PK WND) - iwxxm_us profile awareness; research R5"
-            ),
+            message=(f"{product} US remarks present (AO1/AO2/SLP/P/T/PK WND) - iwxxm_us profile awareness"),
             core=core,
             body_start=body_start,
             body_end=body_end,

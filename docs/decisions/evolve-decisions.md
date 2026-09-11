@@ -1,5 +1,28 @@
 # Evolve Decisions
 
+## Cycle EV-beta-ux-export-auth — Beta UX + export/auth harden
+
+**Opened:** 2026-09-11 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-beta-ux-export-auth`  
+**Documenting→Implementing gate:** closed (await Spec band + operator gate)
+
+| ID | Outcome |
+|----|---------|
+| D-EV-beta-01 | UI preview: docs/code only |
+| D-EV-beta-02 | Scale **standard**; implement in-session + GH verify tickets for residual |
+| D-EV-beta-03 | Auth verify **local + staging** |
+| D-EV-beta-04 | Extend ADR-043 beta to conversion profiles; Convert&Send + Disseminate remain beta |
+| D-EV-beta-05 | Suppress operator-visible `DEPRECATED_PROFILE_ALIAS` (and similar) |
+| D-EV-beta-06 | Operator lint copy = tac-validate library codes/messages only — no research T3/S1 |
+| D-EV-beta-07 | Zip download uniquifies colliding basenames; Results items collapsible |
+| D-EV-beta-08 | Info-only Conversion/Validation log → neutral chrome (not amber/red) |
+| D-EV-beta-09 | Restore `POST /auth/register` via GoTrue proxy; login remains |
+| D-EV-beta-10 | **Remove** Upload to Database toolbar button (use Disseminate / Convert&Send) |
+| D-EV-beta-11 | Follow-up verify tickets: #1177 staging auth, #1178 export edges, #1179 lint token scan |
+
+[Corpus: product] [Corpus: journeys] [Corpus: tests] [Corpus: adr/ADR-043] [Corpus: decisions]
+
+---
+
 ## Cycle EV-cmo-converter-harden — CMO Week 1 convert soft/hard fails
 
 **Opened:** 2026-09-11 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-cmo-converter-harden`  

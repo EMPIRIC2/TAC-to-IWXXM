@@ -21,16 +21,16 @@ def _iter_route_paths(routes) -> list[str]:
 
 @pytest.mark.unit
 def test_backend_mounts_auth_login_logout_and_me() -> None:
-    """Operator /auth/login, /auth/logout, /auth/me are mounted; no admin.
+    """Operator /auth/register, /auth/login, /auth/logout, /auth/me are mounted; no admin.
 
-    Spec: [Corpus: api] POST /auth/logout; EV-060 D-S070-logout=1a (#1006).
+    Spec: [Corpus: api] POST /auth/register; EV-beta-ux-export-auth; EV-060 logout.
     """
     from src.api import app
 
     paths = set(_iter_route_paths(app.routes))
 
+    assert "/auth/register" in paths
     assert "/auth/login" in paths
     assert "/auth/logout" in paths
     assert "/auth/me" in paths
-    assert "/auth/register" not in paths
     assert not any("/admin" in p for p in paths)

@@ -141,6 +141,26 @@ def test_sign_in_success_normalizes_payload() -> None:
     }
 
 
+def test_sign_up_success_and_confirm_email_null_session() -> None:
+    client = MagicMock(spec=httpx.Client)
+    client.post.return_value = MagicMock(
+        status_code=200,
+        json=lambda: {
+            "access_token": None,
+            "user": {"id": "u2", "email": "b@example.com", "user_metadata": {}},
+        },
+    )
+    proxy = SupabaseAuthProxy(
+        supabase_url="https://proj.supabase.co",
+        publishable_key="pk",
+        client=client,
+    )
+    out = proxy.sign_up("b@example.com", "secret12")
+    assert out["user"]["id"] == "u2"
+    assert out["session"] is None
+    assert "/auth/v1/signup" in client.post.call_args.args[0]
+
+
 @pytest.mark.parametrize(
     ("status_code", "expected"),
     [
@@ -301,11 +321,7 @@ def test_normalize_session_payload_defaults() -> None:
     out = _normalize_session_payload({})
     assert out == {
         "user": {"id": "", "email": "", "metadata": {}},
-        "session": {
-            "access_token": "",
-            "refresh_token": "",
-            "expires_at": 0,
-        },
+        "session": None,
     }
 
 

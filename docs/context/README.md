@@ -8,6 +8,7 @@ part of an active pipeline session. See [sessions/README.md](../sessions/README.
 
 | Slug | Topic | Status | Created | Linked features |
 |------|-------|--------|---------|-----------------|
+| [beta-ux-export-auth](beta-ux-export-auth.md) | Beta profiles/send + zip uniqueness + auth register (EV-beta-ux-export-auth) | active | 2026-09-11 | F7, F10, F15, F16–F19, F31, F35, ADR-043 |
 | [platform-package-layout-923](platform-package-layout-923.md) | #923/#922 platform package layout gap matrix + Core→Dissemination milestone plan | active | 2026-09-03 | F6, F16–F19, ADR-030, EV-922 |
 | [conversion-profile-editor-933](conversion-profile-editor-933.md) | #933 ConversionProfile editor (rule packs + inspector + signed overlays) | active | 2026-09-03 | F6, F7, F15, ADR-038, EV-933 |
 | [conversion-profile-contract-924](conversion-profile-contract-924.md) | #924 executable ConversionProfile contract + overlay trust boundaries | active | 2026-09-03 | F6, ADR-013, ADR-036, EV-924 |

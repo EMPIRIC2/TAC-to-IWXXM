@@ -148,13 +148,18 @@ must pass annex3 convert via UI (UJ-005 parametrize) and API smoke (UJ-006). US 
 2. Drag-drop `.tac` file or paste manual text (METAR/SPECI).
 3. Optionally leave product on **auto** / METAR and profile **annex3** (defaults).
 4. **#664 (EV-005)**: Optionally type an **Output filename** for manually entered TAC.
-5. Choose **Convert**, **Convert&Send**, or **Upload to Database**. Visually, **Convert** is
-   the sole filled primary; **Convert&Send** is outline/muted when destinations are shown.
+5. Choose **Convert**, **Convert&Send**, or **Disseminate**. Visually, **Convert** is
+   the sole filled primary; **Convert&Send** / Disseminate are outline/muted beta when
+   destinations are shown. **Upload to Database** is removed (EV-beta-ux-export-auth).
 6. Confirm **Recent work** (when expanded) does not cover Product / Profile / Exchange profile
    controls. Collapse or scroll as needed; expand control remains available.
 7. View output; each result card shows **TAC-derived title**, optional **Line N of M** for
    multi-line manual input, prominent **Source TAC** panel, and download filename when it
    differs (#655 / EV-007). #555 replace-on-success and error log panel behavior unchanged.
+   **EV-beta-ux-export-auth**: result cards are **collapsible**; **Download all (zip)** yields
+   distinct member names when basenames would collide (e.g. five `test.xml` → five files);
+   Conversion/Validation log chrome stays neutral when only `info` issues are present;
+   operators never see internal profile-alias deprecation notices.
 8. On convert failure after F6 cutover: structured error only — **no gifts rollback**.
 9. If guest: work may auto-save to IndexedDB (UJ-004/045) with loss-of-progress notice.
    If logged in: may sync to DO Postgres sessions (UJ-046).
@@ -210,6 +215,10 @@ still works without JWT.
 and logged-in session persist**. Guest/public convert (F21 / UJ-001) still works without an
 account. Test accounts only — no production PII in fixtures. [Corpus: product §F31]
 [Corpus: tests]
+
+**EV-beta-ux-export-auth**: Backend must expose `POST /auth/register` (Supabase GoTrue
+sign-up via `packages/auth` proxy) so FE `register()` succeeds. Verify login + register on
+**local** and **staging**. Operator-visible errors stay plain-language (EV-048).
 
 ---
 
@@ -2211,7 +2220,8 @@ per-file errors, under auth + size/count caps + sniff/zip-bomb guards.
 1. After convert or mass ingest, see a sticky result/queue list.
 2. Use next/prev keyboard shortcuts; Enter triggers convert or validate for the focused item.
 3. Multi-select items → batch convert and/or batch validate; progress visible.
-4. Confirm Convert&Send / Disseminate / Upload to Database destinations are available (UJ-053 restore / EV-091).
+4. Confirm Convert&Send / Disseminate destinations are available (UJ-053 restore / EV-091);
+   Upload to Database is removed (EV-beta-ux-export-auth).
 
 **Acceptance**: TC-EV042-003..004; TC-EV091-001.
 
@@ -2221,16 +2231,17 @@ per-file errors, under auth + size/count caps + sniff/zip-bomb guards.
 
 **Actor**: Operator
 
-**Goal**: Dissemination drawer sink chooser, Convert&Send destination path, and
-**Upload to Database** / `DatabaseUploadDialog` are available (DB URI-BYOC + WIS2/EDIS/AMHS/SWIM/AFS).
-Drawer includes **Exchange profile** overlay (#1089). Connection-first preflight remains required.
-Backend APIs continue for harness.
+**Goal**: Dissemination drawer sink chooser and Convert&Send destination path are available
+(DB URI-BYOC + WIS2/EDIS/AMHS/SWIM/AFS). **Upload to Database** toolbar control removed
+(EV-beta-ux-export-auth). Drawer includes **Exchange profile** overlay (#1089).
+Connection-first preflight remains required. Backend APIs continue for harness.
 
 **Feature**: **F16–F19** deepen — EV-091 / #898 / #1089 (supersedes EV-042 hide)
 
 **Steps**:
 
-1. Open workbench; confirm Convert&Send, Disseminate, and Upload to Database are visible.
+1. Open workbench; confirm Convert&Send and Disseminate are visible (beta); Upload to
+   Database is absent.
 2. Open Dissemination drawer; select sink + optional Exchange profile; Preflight before Send.
 3. Convert and validate still work (UJ-001/002/052).
 

@@ -4931,10 +4931,12 @@ No live `codes.wmo.int` HTML in PR CI.
 ### TC-EV091-001: Operator dissemination destinations visible (UJ-053 restore / #898)
 
 - **Level**: T2 / T3
-- **Objective**: Convert&Send + Disseminate + Upload to Database visible; Convert remains
+- **Objective**: Convert&Send + Disseminate visible; Convert remains; **Upload to Database
+  absent** (EV-beta-ux-export-auth)
 - **Pass criteria**: Vitest + Playwright assert `convert-and-send-button` /
-  `open-dissemination-drawer` / `upload-to-database-button` present; preflight still gates Send
-- **Source**: EV-091; #898; UJ-027–030 / UJ-053
+  `open-dissemination-drawer` present and `upload-to-database-button` absent; preflight
+  still gates Send
+- **Source**: EV-091; #898; UJ-027–030 / UJ-053; EV-beta-ux-export-auth
 
 ### TC-EV091-002: Drawer exchange overlay on convert-before-send (#1089)
 
@@ -5533,6 +5535,19 @@ Do **not** rewrite source TAC (typos and oddities are intentional). Runner:
 | TC-EV-CMO-005 | Authoritative oddities preserved (`NOISG`, `VIS16KIM`, `EMPO`, truncated TAF, SPECI-set METAR/bare ICAO) |
 
 Full IWXXM XML for the matrix lives in session evidence (not all committed); one sample per product under `tests/fixtures/cmo_week1/samples/`.
+
+### TC-EV-beta — Beta UX + export/auth (EV-beta-ux-export-auth)
+
+| ID | Assert | Tier |
+|----|--------|------|
+| TC-EV-beta-001 | Dissemination / Convert&Send / Dissemination ops + Conversion profiles nav/page show Beta badge + feedback href; Upload to Database button absent | T0/T2 |
+| TC-EV-beta-002 | Zip download of N results sharing basename yields N distinct members | T0 |
+| TC-EV-beta-003 | Operator-visible lint/validate messages lack research tokens `T3`/`S1`; library codes remain | T0 |
+| TC-EV-beta-004 | ErrorLogPanel / Conversion·Validation chrome is neutral when max severity is `info` | T0 |
+| TC-EV-beta-005 | `DEPRECATED_PROFILE_ALIAS` (and equivalent) not shown in operator log panels | T0 |
+| TC-EV-beta-006 | IWXXM Results items are collapsible | T0/T2 |
+| TC-EV-beta-007 | `POST /auth/register` + `/auth/login` succeed (unit + local); staging evidence recorded | T0 / T3 |
+| TC-EV-beta-008 | Profile share export/import round-trip (non-secret) still works | T0 |
 
 ### TC-EV908 — IWXXM cross-version conversion (#908)
 

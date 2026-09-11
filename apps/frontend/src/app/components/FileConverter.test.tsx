@@ -1560,23 +1560,18 @@ describe('FileConverter Component', () => {
       fireEvent.change(textarea, { target: { value: 'METAR UPLOAD BUTTON' } });
       await user.click(screen.getByTestId('convert-button'));
 
-      const uploadButton = await screen.findByTestId('upload-to-database-button');
-      expect(uploadButton).toBeEnabled();
-
-      await user.click(uploadButton);
-      await waitFor(() => {
-        expect(screen.getByTestId('database-upload-dialog').style.display).toBe(
-          'block',
-        );
-      });
+      expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
+      expect(
+        await screen.findByTestId('open-dissemination-drawer'),
+      ).toBeInTheDocument();
     });
 
-    it('shows Convert&Send, Disseminate, and Upload to Database when destinations UI is on (TC-EV091-001 / #898)', () => {
+    it('shows Convert&Send and Disseminate when destinations UI is on (TC-EV091-001 / #898; Upload to Database removed EV-beta)', () => {
       operatorDisseminationUiConfig.destinationsEnabled = true;
       render(<FileConverter {...defaultProps} />);
       expect(screen.getByTestId('open-dissemination-drawer')).toBeInTheDocument();
       expect(screen.getByTestId('convert-and-send-button')).toBeInTheDocument();
-      expect(screen.getByTestId('upload-to-database-button')).toBeInTheDocument();
+      expect(screen.queryByTestId('upload-to-database-button')).not.toBeInTheDocument();
       expect(screen.getByTestId('convert-button')).toBeInTheDocument();
     });
 
@@ -1585,12 +1580,10 @@ describe('FileConverter Component', () => {
       render(<FileConverter {...defaultProps} />);
       const convert = screen.getByTestId('convert-button');
       const convertAndSend = screen.getByTestId('convert-and-send-button');
-      const upload = screen.getByTestId('upload-to-database-button');
       const disseminate = screen.getByTestId('open-dissemination-drawer');
       expect(convert).toHaveClass('bg-primary');
       expect(convertAndSend).toHaveClass('bg-background');
       expect(convertAndSend).not.toHaveClass('bg-secondary');
-      expect(upload).toHaveClass('bg-background');
       expect(disseminate).toHaveClass('bg-background');
     });
 
@@ -1605,7 +1598,7 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('exchange-profile-select')).toBeInTheDocument();
     });
 
-    it('hides Convert&Send, Disseminate, and Upload to Database while destinations UI is off (TC-EV042-001 gate residual)', () => {
+    it('hides Convert&Send and Disseminate while destinations UI is off (TC-EV042-001 gate residual)', () => {
       operatorDisseminationUiConfig.destinationsEnabled = false;
       render(<FileConverter {...defaultProps} />);
       expect(screen.queryByTestId('open-dissemination-drawer')).not.toBeInTheDocument();

@@ -708,14 +708,8 @@ def convert(
         return _fail("PARSE_ERROR", message, span=True)
 
     issues: list[ConvertIssue] = []
-    if deprecated_alias_used:
-        issues.append(
-            ConvertIssue(
-                severity="info",
-                code="DEPRECATED_PROFILE_ALIAS",
-                message=f"profile alias {profile!r} is deprecated; use canonical id {semantic_profile!r}",
-            )
-        )
+    # Alias resolution remains server-side; do not surface DEPRECATED_PROFILE_ALIAS
+    # to operators (EV-beta-ux-export-auth / D-EV-beta-05).
     if propagate_issue is not None:
         issues.append(propagate_issue)
     # D-EV087-inter-emit / national remark provenance (AU INTER, TAF3, NZ domestic extras).
