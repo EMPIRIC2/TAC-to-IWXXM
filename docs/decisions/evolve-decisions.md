@@ -13,6 +13,8 @@
 | D-EV-v-04 | Out of scope: new sinks, profile feature work beyond share/import edges, promote to main |
 | D-EV-v-05 | UI preview during Spec: docs/code only (no local UI interview preview) |
 | D-EV-v-06 | Acceptance = issue checkboxes + session evidence; close GH issues when green |
+| D-EV-v-07 | Work-history import: same `id` → IndexedDB `put` **last-wins** overwrite (intentional; tested) |
+| D-EV-v-08 | Staging register blocked by Supabase confirmation email SMTP (`Error sending confirmation email`); route live — fix staging Auth email or disable confirm for UAT |
 
 [Corpus: product] [Corpus: tests §TC-EV-verify-*] [Corpus: deploy] [Corpus: decisions]
 

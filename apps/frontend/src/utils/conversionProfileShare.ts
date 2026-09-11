@@ -14,6 +14,24 @@ import type {
 
 export const CONVERSION_PROFILE_SHARE_BUNDLE_VERSION = 1;
 
+/** Keys that must never appear in a shareable overlay body (or nested objects). */
+const FORBIDDEN_SECRET_KEYS = new Set([
+  'password',
+  'passwd',
+  'secret',
+  'api_key',
+  'apikey',
+  'access_token',
+  'refresh_token',
+  'authorization',
+  'bearer',
+  'private_key',
+  'service_role',
+  'supabase_service_role_key',
+  'connection_string',
+  'dsn',
+]);
+
 export interface ConversionProfileShareBundle {
   schemaVersion: number;
   rulePacks: RulePackCreateBody[];
@@ -22,6 +40,31 @@ export interface ConversionProfileShareBundle {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+/**
+ * Reject payloads that embed credential-like keys.
+ *
+ * @param value - Arbitrary JSON fragment
+ * @param path - Dot path for error messages
+ */
+export function assertNoShareSecrets(value: unknown, path = 'root'): void {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => {
+      assertNoShareSecrets(item, `${path}[${index}]`);
+    });
+    return;
+  }
+  if (!isRecord(value)) {
+    return;
+  }
+  for (const [key, child] of Object.entries(value)) {
+    const normalized = key.toLowerCase().replace(/-/g, '_');
+    if (FORBIDDEN_SECRET_KEYS.has(normalized)) {
+      throw new Error(`Share bundle must not include secret field: ${path}.${key}`);
+    }
+    assertNoShareSecrets(child, `${path}.${key}`);
+  }
 }
 
 function asString(value: unknown, field: string): string {
@@ -68,6 +111,9 @@ function toOverlayCreateBody(value: unknown): OverlayCreateBody {
   if (body !== undefined && !isRecord(body)) {
     throw new Error('Share bundle overlay body must be an object');
   }
+  if (body !== undefined) {
+    assertNoShareSecrets(body, 'overlays[].body');
+  }
   const shared = value.shared;
   if (shared !== undefined && typeof shared !== 'boolean') {
     throw new Error('Share bundle overlay shared flag must be boolean when present');
@@ -91,7 +137,7 @@ export function createConversionProfileShareBundle(input: {
   rulePacks: readonly RulePackOut[];
   overlays: readonly OverlayOut[];
 }): ConversionProfileShareBundle {
-  return {
+  const bundle: ConversionProfileShareBundle = {
     schemaVersion: CONVERSION_PROFILE_SHARE_BUNDLE_VERSION,
     rulePacks: input.rulePacks.map((pack) => ({
       slug: pack.slug,
@@ -103,13 +149,17 @@ export function createConversionProfileShareBundle(input: {
       message: pack.message,
       standardReference: pack.standardReference,
     })),
-    overlays: input.overlays.map((overlay) => ({
-      slug: overlay.slug,
-      baseProfileId: overlay.baseProfileId,
-      body: overlay.body,
-      shared: overlay.shared,
-    })),
+    overlays: input.overlays.map((overlay) => {
+      assertNoShareSecrets(overlay.body, 'overlays[].body');
+      return {
+        slug: overlay.slug,
+        baseProfileId: overlay.baseProfileId,
+        body: overlay.body,
+        shared: overlay.shared,
+      };
+    }),
   };
+  return bundle;
 }
 
 /**
