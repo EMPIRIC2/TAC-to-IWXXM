@@ -91,6 +91,28 @@ def test_sigmet_cnl_letter_sequence_label() -> None:
     assert ir.get("cancelled_sequence_label") == "A3"
 
 
+def test_sigmet_cnl_valid_keyword_before_period() -> None:
+    """CMO Week 1 WCCA cancel uses ``CNL SIGMET A3 VALID`` then the period."""
+    tac = (
+        "WCCA31 TTPP 141815\n\n"
+        "TTZP SIGMET A4 VALID 141815/142145 TTPP-\n"
+        "TTZP PIARCO FIR CNL SIGMET A3 VALID\n"
+        "141545/142145 RMK: TC LORENZO MOV TO KZWY FIR="
+    )
+    ir = parse_sigmet(tac, product="SIGMET")
+    assert ir.get("cancel") is True
+    assert ir.get("cancelled_sequence") == 3
+    assert ir.get("cancelled_sequence_label") == "A3"
+    assert ir.get("ahl_tt") == "WC"
+    result = convert(tac, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
+    assert result.ok
+    assert result.xml is not None
+    assert 'isCancelReport="true"' in result.xml
+    assert "cancelledReportSequenceNumber>3<" in result.xml
+    # WC AHL keeps TropicalCycloneSIGMET family root for CNL (EV-029).
+    assert "TropicalCycloneSIGMET" in result.xml
+
+
 def test_parse_sequence_token_rejects_garbage() -> None:
     from tac2iwxxm.products.sigmet_airmet import _parse_sequence_token
 

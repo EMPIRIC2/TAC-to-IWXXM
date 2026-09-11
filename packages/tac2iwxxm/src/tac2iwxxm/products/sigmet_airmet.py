@@ -21,8 +21,9 @@ _AIRMET = re.compile(
 )
 _CNL = re.compile(
     r"\bCNL\s+(?:SIGMET|AIRMET)\s+(?P<cnl_seq>(?:[A-Z]+\s+\d+|[A-Z]?\d+))\s+"
+    r"(?:VALID\s+)?"
     r"(?P<cnl_from>\d{6})/(?P<cnl_to>\d{6})\b",
-    re.IGNORECASE,
+    re.IGNORECASE | re.DOTALL,
 )
 _SIGA0_LINE = re.compile(r"^SIGA0[A-Z0-9]*\s*$", re.IGNORECASE)
 # VA CNL identifies FIR to which ash has moved (F23 V1 / tac-validate VA_CNL_FIR_MOVED).
