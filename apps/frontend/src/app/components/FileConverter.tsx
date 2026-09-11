@@ -1740,10 +1740,7 @@ export function FileConverter({
     );
 
     convertedFiles.forEach((file, index) => {
-      zip.file(
-        memberNames[index] ?? resolveDownloadXmlName(file),
-        file.convertedContent,
-      );
+      zip.file(memberNames[index]!, file.convertedContent);
     });
 
     const content = await zip.generateAsync({ type: 'blob' });
