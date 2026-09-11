@@ -128,6 +128,10 @@ describe('outputArchiveName', () => {
       `converted_files_${now.getTime()}.zip`,
     );
   });
+
+  it('falls back to wall-clock Date when now is omitted', () => {
+    expect(outputArchiveName('')).toMatch(/^converted_files_\d+\.zip$/);
+  });
 });
 
 describe('ACCUMULATE_RESULT_CAP', () => {
