@@ -5514,6 +5514,25 @@ comments-only, or `*.test.*` / pytest modules.
 | Sample METAR / multi-product TAC | repo fixtures                    | `test-data/` + `packages/tac2iwxxm/tests/` |
 | IWXXM schemas                    | wmo-im + iwxxm-us vendored       | `vendor/schemas/`                          |
 | Golden XML                       | baseline + archive gifts goldens | `test-data/golden/` / package golden/      |
+| CMO Week 1 NMHS evaluation TAC   | Desktop pack (authoritative)     | `tests/fixtures/cmo_week1/`                |
+
+### EV-cmo-week1-test-sets — CMO Week 1 evaluation corpus
+
+[Corpus: product §F6] [Corpus: product §F2] [Corpus: decisions]
+
+Authoritative Week 1 METAR/SPECI/TAF/SIGMET TAC from the CMO/Brown NMHS evaluation pack.
+Do **not** rewrite source TAC (typos and oddities are intentional). Runner:
+`uv run python scripts/cmo_week1_matrix.py` (profile `annex3`, IWXXM `2025-2`).
+
+| ID | Assert |
+|----|--------|
+| TC-EV-CMO-001 | Four TAC sources + README staged under `tests/fixtures/cmo_week1/` |
+| TC-EV-CMO-002 | Parser yields 497 METAR + 42 SPECI + 21 TAF + 19 SIGMET (= 579) |
+| TC-EV-CMO-003 | Smoke convert+validate one Caribbean message per product |
+| TC-EV-CMO-004 | `matrix-summary.json` records 579/579 convert+validate ok after converter harden |
+| TC-EV-CMO-005 | Authoritative oddities preserved (`NOISG`, `VIS16KIM`, `EMPO`, truncated TAF, SPECI-set METAR/bare ICAO) |
+
+Full IWXXM XML for the matrix lives in session evidence (not all committed); one sample per product under `tests/fixtures/cmo_week1/samples/`.
 
 ### TC-EV908 — IWXXM cross-version conversion (#908)
 

@@ -32,7 +32,12 @@ _QNH_NOT_OBS = re.compile(r"(?<![A-Z0-9])Q////(?![A-Z0-9/])")
 _CLOUD = re.compile(r"\b(?P<amt>FEW|SCT|BKN|OVC)(?P<base>\d{3})(?P<ctype>CB|TCU)?\b")
 _NIL = re.compile(r"\bNIL\b")
 _AUTO = re.compile(r"\bAUTO\b")
-_NOSIG = re.compile(r"\bNOSIG\b")
+# NOISG is an observed operator typo for NOSIG (CMO Week 1 corpus); accept as alias.
+_NOSIG = re.compile(r"\b(?:NOSIG|NOISG)\b")
+_BARE_OBS = re.compile(
+    r"^((?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*?)(?:=\s*)?$",
+    re.DOTALL | re.IGNORECASE,
+)
 _NSC = re.compile(r"\bNSC\b")
 _NCD = re.compile(r"\bNCD\b")
 _VV_NOT_OBS = re.compile(r"\bVV///(?![A-Z0-9/])")
@@ -940,6 +945,7 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         When the TAC cannot be decoded.
     """
     text = tac.strip()
+    product_u = product.upper()
     # Allow COR before station or immediately after observation time (ICAO #594).
     report_match = re.search(
         r"((?:LWIS|SAWR|METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*?)=",
@@ -952,6 +958,17 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
             text,
             re.DOTALL,
         )
+    # Bare ICAO observation: inject the caller product hint (METAR/SPECI only).
+    # Does not silent-swap when an explicit opposite keyword is present (F20).
+    if report_match is None and product_u in {"METAR", "SPECI"}:
+        bare = _BARE_OBS.match(text.rstrip("=").strip())
+        if bare is not None:
+            text = f"{product_u} {bare.group(1).strip()}"
+            report_match = re.search(
+                r"((?:METAR|SPECI)\s+(?:COR\s+)?[A-Z][A-Z0-9]{3}\s+\d{6}Z(?:\s+COR)?\b.*)",
+                text,
+                re.DOTALL,
+            )
     if report_match is None:
         raise ValueError("no METAR/SPECI report found in TAC")
 
@@ -1126,8 +1143,11 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
         ir["cloud_amount"] = cloud_layers[0]["amount"]
         ir["cloud_base_ft"] = cloud_layers[0]["base_ft"]
 
-    if _NOSIG.search(body_for_wx):
+    nosig_m = _NOSIG.search(body_for_wx)
+    if nosig_m is not None:
         ir["nosig"] = True
+        if nosig_m.group(0).upper() == "NOISG":
+            ir["nosig_typo_alias"] = True
     if _NSC.search(obs_body):
         # FAQ §14.3 / TC-EV023-001: NSC is exclusive - drop any FEW/SCT/… layers.
         ir["nsc"] = True

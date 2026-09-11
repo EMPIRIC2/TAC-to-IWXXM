@@ -1,0 +1,33 @@
+{
+  "profile": "annex3",
+  "iwxxm_version": "2025-2",
+  "total": 579,
+  "convert_ok": 579,
+  "validate_ok": 579,
+  "by_dataset": {
+    "metar": {
+      "pass": 494,
+      "authoritative_token_typo": 3
+    },
+    "speci": {
+      "pass": 40,
+      "authoritative_cross_product": 1,
+      "authoritative_missing_product_keyword": 1
+    },
+    "taf": {
+      "pass": 19,
+      "authoritative_truncated": 1,
+      "authoritative_token_typo": 1
+    },
+    "sigmet": {
+      "pass": 17,
+      "authoritative_us_oceanic_siga0": 2
+    }
+  },
+  "message_counts": {
+    "metar": 497,
+    "speci": 42,
+    "taf": 21,
+    "sigmet": 19
+  }
+}
