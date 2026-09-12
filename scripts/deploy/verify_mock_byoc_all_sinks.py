@@ -29,20 +29,15 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 ROOT = Path(__file__).resolve().parents[2]
 FIXTURES = json.loads(
-    (
-        ROOT
-        / "docs/sessions/S019-dissemination-upload/fixtures/mock-byoc-destinations.json"
-    ).read_text(encoding="utf-8")
+    (ROOT / "tests/fixtures/byoc/mock-byoc-destinations.json").read_text(
+        encoding="utf-8"
+    )
 )
 IWXXM = (
-    ROOT
-    / "docs/sessions/S019-dissemination-upload/fixtures/byoc-test-candidates/sample-metar.iwxxm.xml"
+    ROOT / "tests/fixtures/byoc/byoc-test-candidates/sample-metar.iwxxm.xml"
 ).read_text(encoding="utf-8")
 TAC = (
-    (
-        ROOT
-        / "docs/sessions/S019-dissemination-upload/fixtures/byoc-test-candidates/sample-metar.tac"
-    )
+    (ROOT / "tests/fixtures/byoc/byoc-test-candidates/sample-metar.tac")
     .read_text(encoding="utf-8")
     .strip()
 )

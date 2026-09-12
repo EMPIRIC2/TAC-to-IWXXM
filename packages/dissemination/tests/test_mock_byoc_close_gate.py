@@ -21,14 +21,7 @@ from dissemination.wis2 import Wis2Params, wis2_preflight, wis2_publish
 from dissemination.writer_contract import apply_writer_contract, diff_writer_contract
 from sqlalchemy.ext.asyncio import create_async_engine
 
-_FIXTURES = (
-    Path(__file__).resolve().parents[3]
-    / "docs"
-    / "sessions"
-    / "S019-dissemination-upload"
-    / "fixtures"
-    / "mock-byoc-destinations.json"
-)
+_FIXTURES = Path(__file__).resolve().parents[3] / "tests" / "fixtures" / "byoc" / "mock-byoc-destinations.json"
 
 
 @pytest.fixture(scope="module")

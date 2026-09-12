@@ -12,7 +12,7 @@ import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
-INVENTORY = ROOT / "docs" / "testing" / "coverage-surface-inventory.yaml"
+INVENTORY = ROOT / "docs" / "engineering" / "coverage-surface-inventory.yaml"
 
 REQUIRED_SURFACE_IDS = frozenset(
     {

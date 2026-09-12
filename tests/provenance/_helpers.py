@@ -10,14 +10,7 @@ MAP_JSON = REPO / "docs" / "domain" / "rules" / "PROVENANCE_MAP.json"
 MAP_MD = REPO / "docs" / "domain" / "rules" / "PROVENANCE_MAP.md"
 CATALOG_JSON = REPO / "docs" / "domain" / "rules" / "ISSUE_CATALOG.json"
 MINING_DIR = REPO / "docs" / "domain" / "mining"
-GAP_REPORT = (
-    REPO
-    / "docs"
-    / "sessions"
-    / "S043-rule-source-traceability"
-    / "reports"
-    / "provenance-gaps.md"
-)
+GAP_REPORT = REPO / "docs" / "domain" / "rules" / "provenance-gaps.md"
 
 VALID_STATUSES = frozenset({"ok", "gap", "paywall", "N/A"})
 VALID_ROLES = frozenset(

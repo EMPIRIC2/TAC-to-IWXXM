@@ -5,20 +5,24 @@ read the rows below that apply — do not invent alternate doc sets.
 
 > Skills and rules must cite paths from this file (e.g. `[Corpus: system-spec]`,
 > `[Corpus: adr/ADR-00N]`). Folder layout: [README.md](README.md).
+>
+> **EV-docs-numpy-corpus:** default load is the **engineering spine** only. Domain and
+> historical trees are opt-in or archived. See [decisions/ev-docs-numpy-corpus.md](decisions/ev-docs-numpy-corpus.md).
 
 ## Minimal corpus (design + parity)
 
 | ID | Role | Path | Skills use it to… |
 |----|------|------|-------------------|
-| **product** | Approved features & acceptance | [feature-list.md](feature-list.md) | Scope (F1–F34 / M1–M6); reject out-of-list work |
+| **product** | Approved features & acceptance | [feature-list.md](feature-list.md) | Scope (F*/M*); reject out-of-list work |
+| **now** | Ticket-tuned eng index | [engineering/NOW.md](engineering/NOW.md) | Current open epics / priority work |
+| **docstrings** | In-code documentation bar | [engineering/docstrings.md](engineering/docstrings.md) | NumPy / TSDoc / comment policy |
 | **journeys** | End-user journeys | [user-journeys.md](user-journeys.md) | E2E / verify-impl sign-off (UJ-*) |
 | **system-spec** | Architecture, components, constraints | [spec.md](spec.md) | Design parity vs `apps/` + `packages/` + `vendor/` |
 | **tech-spec** | Runtime / config / deploy / deps hub | [tech-spec.md](tech-spec.md) | Config names, env, deploy topology, dependency pins |
-| **api** | HTTP contract | [api-contract.md](api-contract.md) | Request/response/error shapes |
+| **api** | HTTP contract | [api-contract.md](api-contract.md) (+ OpenAPI as truth) | Request/response/error shapes |
 | **tests** | Test matrix & gates | [test-plan.md](test-plan.md) | Parity checks, smoke TC-IDs, CI expectations |
 | **adr** | Architecture decisions | [adr/](adr/) ([index](adr/README.md)) | Non-obvious tech choices; cite ADR-NNN |
 | **decisions** | Interview / evolve decision logs | [decisions/](decisions/) | Trace *why* a standing doc says X |
-| **domain-profiles** | Semantic + exchange profile source catalog | [domain/profiles/](domain/profiles/) | National/exchange profile evidence (#912/#913); cite for F35/F36 scope |
 
 ### Tech-spec satellites (via [tech-spec.md](tech-spec.md))
 
@@ -29,25 +33,30 @@ read the rows below that apply — do not invent alternate doc sets.
 | [deploy.md](deploy.md) | Deploy targets, integration, runbook |
 | [dependency-inventory.md](dependency-inventory.md) | Allowed dependencies & licenses |
 
-## Not in the minimal corpus
+## Opt-in (load only when the ticket needs it)
 
-These are useful but **not** required for every design/parity pass:
-
-| Path | Role |
+| Path | When |
 |------|------|
-| [skill-routing.md](skill-routing.md) | Which pipeline skill to invoke |
-| [typing-policy.md](typing-policy.md) | Lint/type strictness |
-| [hotfix-log.md](hotfix-log.md) | Hotfix index |
-| [ops/](ops/), [guides/](guides/), [domain/](domain/) | Runbooks, narrative guides, domain deep-dives |
-| [reports/](reports/), [sessions/](sessions/), [bug-reports/](bug-reports/), [context/](context/), [ARCHIVE/](ARCHIVE/) | Ephemeral / historical |
+| [domain/](domain/) (incl. profiles) | Domain mining, national/exchange profiles (e.g. CA_ECCC, F35/F36) |
+| [guides/](guides/), [ops/](ops/) | Operator runbooks / narrative how-tos — **not** design gates; treat GIFTs-era `guides/API.md` + `guides/ARCHITECTURE.md` as obsolete |
+| [bug-reports/](bug-reports/) | Active hotfix investigation |
+| [skill-routing.md](skill-routing.md), [typing-policy.md](typing-policy.md), [hotfix-log.md](hotfix-log.md) | Tooling / process satellites |
 
-**Session store (pack orchestrators):** live state at `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/{id}/` (`state.yaml`, `HANDOFF.md`). Legacy `docs/sessions/` and `workflow-state.yaml` are brownfield-only — do not open new pack cycles there. See [.cursor/MIGRATED-TO-PLUGIN.md](../.cursor/MIGRATED-TO-PLUGIN.md).
+## Not in the corpus (do not use for design gates)
+
+| Path | Status |
+|------|--------|
+| Legacy `docs/sessions/` tree | **Archiving** → orphan `docs-archive` after fixture promote; stub README only on default branch |
+| `docs/ARCHIVE/`, `docs/context/`, `docs/evolve-report-EV-*.md`, `docs/reports/`, `docs/archives/`, `docs/retrospectives/` | **Archiving** with sessions |
+| Full historical `workflow-state.yaml` blob | **Archiving**; root file becomes a stub |
+
+**Session store (pack orchestrators):** live state at `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/{id}/` (`state.yaml`, `HANDOFF.md`). Do **not** open new pack cycles under `docs/sessions/`. See [.cursor/MIGRATED-TO-PLUGIN.md](../.cursor/MIGRATED-TO-PLUGIN.md).
 
 ## Parity check protocol
 
 When a skill says “check corpus parity” or “spec conformance”:
 
-1. **Scope** — Does the change map to **product** (`feature-list.md`)? If no → `[Scope Drift]`.
+1. **Scope** — Does the change map to **product** (`feature-list.md`) and **now** (open tickets)? If no → `[Scope Drift]`.
 2. **Design** — Does behavior match **system-spec** + **api** (+ **adr** if a decision exists)?
 3. **Runtime** — Do names/URLs/env match **tech-spec** (and its satellites)?
 4. **Verification** — Are assertions grounded in **tests** (`test-plan.md`) and **journeys**?
@@ -60,18 +69,17 @@ Cite as: `[Corpus: <id>]` or `[Corpus: <path> §section]`.
 | Skill / rule | Must read at least |
 |--------------|-------------------|
 | All stages (first hop) | This file’s band for the stage + [protocol-card](../.cursor/skills/protocol-card.md) |
-| Spec band (`spec-requirements`, `spec-draft-docs`, …) | product, journeys, decisions |
-| Tech band (`spec-tech-plan`, `spec-tech-tooling`, …) | system-spec, tech-spec, adr, dependency-inventory |
-| Build band (`build-build`, `build-verify-*`, …) | product, system-spec, api, tests, journeys |
-| Deploy (`build-verify-deploy`, `build-deploy-smoke`) | tech-spec, deploy, env-contract |
-| `hotfix` orchestrator | product + system-spec; then tech-spec / api / tests as symptom requires |
-| `build-health` | tech-spec, deploy, env-contract |
+| Spec band | product, now, journeys, decisions |
+| Tech band | system-spec, tech-spec, adr, dependency-inventory |
+| Build band | product, system-spec, api, tests, journeys, docstrings (when touching public APIs) |
+| Deploy | tech-spec, deploy, env-contract |
+| `hotfix` | product + system-spec; then tech-spec / api / tests as symptom requires |
+| Domain mining | **domain** opt-in + product |
 | `evolve` / `brownfield` / `greenfield` | CORPUS rows for **touched features only**; every change cites `[Corpus: …]`; missing coverage → AskQuestion doc-add |
-| plan-adherence / spec-adherence / docs-corpus rules | this file + rows above; mandatory citations; interview if docs missing |
 
-Pack skills load from **engineering-memory** plugin (`spec-*`, `build-*`, orchestrators). Project-only: `mine-domain-sources`, `monorepo-migration-checklist`.
+Pack skills load from **engineering-memory** plugin. Project-only: `mine-domain-sources`, `monorepo-migration-checklist`.
 
-Do **not** preload `docs/domain/**` or guides unless the session scope is domain mining.
+Do **not** preload `docs/domain/**`, guides, or archived session trees unless the session scope requires them.
 
 ## Change control
 

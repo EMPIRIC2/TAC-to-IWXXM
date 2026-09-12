@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-08-18 (S071 / EV-061 — AHL `INVALID_AHL`; validate decode segments; catalog additive fields)
+> **Last updated**: 2026-09-12 (EV-docs-accuracy-audit — OpenAPI parity notes; auth register skew)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
 > F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
 > Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)
@@ -12,7 +12,11 @@
 |-------------|----------|-----|
 | Local dev | `http://localhost:18000` | `http://localhost:18001` |
 | DOKS (prod) | `https://app.tac-to-iwxxm.com` | `https://api.tac-to-iwxxm.com` |
-| Render (transitional) | `https://<frontend-host>.onrender.com` | `https://<api-host>.onrender.com` |
+| DOKS (staging) | `https://app.staging.tac-to-iwxxm.com` | `https://api.staging.tac-to-iwxxm.com` |
+
+**Path inventory truth:** live OpenAPI (`GET {API}/openapi.json`) is authoritative for which
+routes are mounted in that environment. This document captures contracts and quirks; when they
+disagree, prefer OpenAPI + AskQuestion before patching callers.
 
 **EV-031 / F21 Amended**: Frontend uses single API base for `/api/v1/*` **and** `/auth/*`.
 Convert/lint/validate/disseminate remain **public** (no JWT). JWT required only for
@@ -63,15 +67,20 @@ GET /health
 ### Authentication — Restored (S038 / EV-031 / F31; was Removed F21)
 
 ```
-POST /auth/register
+POST /auth/register   # mounted in code + staging; **prod returned 404 as of 2026-09-12** (deploy lag — last prod tag `v2026.09.10-deploy`; register shipped on `main` via #1180/#1183 — roll with next `v*-deploy` tag)
 POST /auth/login
 POST /auth/logout
 GET  /auth/me
-GET  /auth/health
 ```
 
 **Status**: **Restored** for optional long-term storage. Supabase Auth issues JWTs; API verifies
-via `packages/auth`. Convert/lint/validate/disseminate **do not** require JWT.
+via `packages/auth`. Convert/lint/validate/disseminate **do not** require JWT. Use **`GET /health`**
+for liveness (there is no live `/auth/health` route).
+
+**Prod skew (EV-docs-accuracy-audit R1):** Not a code omission — `create_auth_router` always
+registers `POST /auth/register` (unit: `test_auth_router_mount_unit`). Staging OpenAPI lists it
+and returns 422 on empty body; prod OpenAPI omits it and returns **404** until the next tag-driven
+DOKS prod rollout ([Corpus: deploy] §CD).
 
 **F8**: Worker uses machine/`DATABASE_URL` credentials **off** the operator Auth path (ADR-018
 amend / ADR-033).
@@ -669,6 +678,30 @@ POST /api/v1/validate
 shape as `POST /decode-tac` when Validate IWXXM still produces a readable decode. Omitted
 when there is no decode. FE shows item-by-item rows (parity with TAC products), not a raw
 dump. F7.s validate-only and F7.t pass-through stay. Older clients ignore extras.
+
+### Staged validation + schema status (OpenAPI — thin pointer)
+
+Live OpenAPI also mounts (see `{API}/openapi.json` for request/response schemas):
+
+```
+GET  /api/v1/validation/layers
+POST /api/v1/validation/validate
+POST /api/v1/validation/validate-multi
+GET  /api/v1/schema-status
+GET  /api/v1/versions
+```
+
+These complement `POST /api/v1/validate`. Prefer OpenAPI for field-level detail (ADR-039).
+
+### Evaluation jobs (OpenAPI — thin pointer)
+
+```
+GET,POST /api/v1/eval/jobs
+GET      /api/v1/eval/jobs/{job_id}
+GET      /api/v1/eval/jobs/{job_id}/results
+```
+
+Corpus / quality evaluation surfaces — not part of the public convert happy path. Prefer OpenAPI.
 
 ### Work sessions (F5+F7+F31 — **restored HTTP**; hybrid storage — S038 / EV-031)
 

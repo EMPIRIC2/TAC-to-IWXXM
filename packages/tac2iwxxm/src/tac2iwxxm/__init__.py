@@ -1,4 +1,9 @@
-"""General TAC → IWXXM converter (F6)."""
+"""General TAC → IWXXM converter (F6).
+
+Public entrypoints include :func:`tac2iwxxm.convert.convert`, bulletin helpers,
+and decode utilities. Prefer NumPy-style docstrings on public APIs; see
+``docs/engineering/docstrings.md``.
+"""
 
 from __future__ import annotations
 

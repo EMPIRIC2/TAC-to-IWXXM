@@ -55,5 +55,5 @@ left the exact schedule expression open for 04-tech-plan.
 
 ## References
 
-- [metar-work-history.md](../context/metar-work-history.md) — R12, R17
+- metar-work-history.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) — R12, R17
 - [requirements-decisions.md §F5-R8, F5-R11](../decisions/requirements-decisions.md)

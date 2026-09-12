@@ -84,7 +84,7 @@ production or DOKS services:
 | Live suite | `make test-e2e-f16-live-sql` — up → Playwright `uj027-f16-live-sql.e2e.spec.ts` → always down |
 | Flag | `F16_LIVE_SQL` — default **1** locally, **0** when `CI` is set; `test-live-e2e` / local `test-live` invoke LIVE when `1` |
 | Allowlist | `DISSEMINATION_EGRESS_ALLOWLIST` — see [env-contract.md](env-contract.md); local recipe below ([Corpus: adr/ADR-029]) |
-| Fixtures | `docs/sessions/S019-dissemination-upload/fixtures/mock-byoc-destinations.json` |
+| Fixtures | `tests/fixtures/byoc/mock-byoc-destinations.json` |
 | Live Playwright | TC-F16-LIVE-001..004 / UJ-027 live path — [test-plan.md](test-plan.md); separate from mocked H6′ |
 
 ### Local harness recipe (CORS + allowlist — H4–H5 local)

@@ -61,6 +61,6 @@ Constraints:
 
 ## References
 
-- [Context: platform-package-layout-923](../context/platform-package-layout-923.md)
+- Context: platform-package-layout-923 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - EV-922 session report `923-platform-package-layout.md`
 - [Corpus: product] F6, F16–F19

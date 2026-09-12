@@ -3,7 +3,7 @@
 > **Project**: TAC to IWXXM  
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM  
 > **Version**: monorepo + `tac2iwxxm` + operator UI (Quality metrics on stage)  
-> **Last updated**: 2026-08-17 (S070 / EV-060 — F7.t IWXXM product pass-through + converter operator bugs)
+> **Last updated**: 2026-09-12 (EV-docs-accuracy-audit — tree/status/link scrub)
 
 ## Overview
 
@@ -53,26 +53,30 @@ One-time migrate of legacy Supabase `tac_work_sessions` (and related) into DO Po
 ### Repository (target tree)
 
 ```
-metar-to-IWXXM/
+TAC-to-IWXXM/
 ├── apps/
 │   ├── backend/          # FastAPI — conversion, validation, auth routes
 │   ├── frontend/         # React/Vite UI
-│   ├── worker/           # F8 near-RT ingest poller (Render Background Worker)
+│   ├── worker/           # F8 near-RT ingest poller (DOKS Deployment)
 │   └── e2e/              # Playwright + cross-service integration
 ├── packages/
-│   ├── auth/             # Supabase auth library (not a deployable)
+│   ├── auth/             # Supabase Auth JWT library (not a deployable)
 │   ├── tac2iwxxm/        # General TAC→IWXXM (F6); MIT; PyO3 required at cutover
-│   ├── tac-validate/     # TAC lint + business rules (all 7 product TAC forms)
+│   ├── tac-validate/     # TAC lint + business rules
 │   ├── iwxxm-validate/   # XSD + Schematron (F2); vendor consumers
+│   ├── dissemination/    # F16–F19 sinks / writer-contract / SSRF (ADR-030)
+│   ├── workflows/        # YAML execute(message, workflow) (ADR-042)
 │   └── shared/           # API types, env helpers, constants
 ├── vendor/
 │   ├── manifest.json     # Pins upstream repo/tag/SHA or HTTP URL+hash per bundle
 │   └── schemas/
 │       ├── iwxxm/
+│       ├── iwxxm-ca/     # Canada / ECCC national extensions (when pinned)
 │       ├── iwxxm-codelists/
 │       ├── iwxxm-modelling/
 │       ├── iwxxm-translation/
-│       └── iwxxm-us/     # NOAA/MDL national extensions (F6; HTTP 3.0 snapshot)
+│       └── iwxxm-us/     # NOAA/MDL national extensions (F6)
+├── workflows/            # Workflow YAML definitions
 ├── pyproject.toml        # uv workspace root
 ├── pnpm-workspace.yaml
 ├── Makefile
@@ -96,7 +100,7 @@ metar-to-IWXXM/
 | Work history (F5/F31) | Guest IndexedDB + logged-in DO Postgres sessions | FE IndexedDB + `tac_work_sessions` on DO | F7.i / F31; Auth JWT |
 | Worker (F8) | Near-RT ingest poller → store/quarantine | `apps/worker/` | `DATABASE_URL` → DO Postgres (F30) |
 | Workflows | YAML executor `execute(message, workflow)` (ADR-042) | `packages/workflows/` | tac2iwxxm, tac-validate, iwxxm-validate, pyyaml (EV-1132) |
-| Coverage gate harness (EV-080) | Unit coverage enforcement: pytest-cov + Vitest + per-file checker + scripts Python cov + bats-core | `scripts/ci/`, `tests/bats/` (planned), CI matrix | ADR-007 / #1077 |
+| Coverage gate harness (EV-080) | Unit coverage enforcement: pytest-cov + Vitest + per-file checker + scripts Python cov + bats-core | `scripts/ci/`, `tests/bats/`, CI matrix | ADR-007 / #1077 |
 
 ### Platform logical layers (#922 / #923)
 
@@ -122,8 +126,8 @@ after contract spikes #924–#927 close — **those spikes are now closed (ADR-0
 **Approved milestone sequence** (epic #922 synthesis): Core → Profiles (#912/#924) → Validation (#925) →
 Adapters (#926) → Dissemination (#927) → Workflows (#931) → Platform UIs (#933–#938).
 
-**References:** [Context: platform-package-layout-923](context/platform-package-layout-923.md);
-[Context: epic-922-synthesis](context/epic-922-synthesis.md);
+**References:** Context: platform-package-layout-923 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+Context: epic-922-synthesis (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
 EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `reports/922-epic-synthesis.md`.
 
 ## Component Details
@@ -189,10 +193,10 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **License**: MIT.
 - **IR**: **msgspec.Struct** (ADR-016); HTTP high-churn paths also msgspec (ADR-026).
 - **Source**: [feature-list.md](feature-list.md) F6/F14/F20/F23/F26/F27; ADR-013; ADR-014; ADR-026;
-  evolve-decisions EV-023; [context/general-tac-iwxxm-converter.md](context/general-tac-iwxxm-converter.md);
-  [context/package-publish-validation.md](context/package-publish-validation.md);
-  [context/aerodrome-quality.md](context/aerodrome-quality.md);
-  [context/sigmet-quality.md](context/sigmet-quality.md).
+  evolve-decisions EV-023; context/general-tac-iwxxm-converter.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  context/package-publish-validation.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  context/aerodrome-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  context/sigmet-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ### packages/tac-validate
 
@@ -239,8 +243,8 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   colour / dual nil RDF policy tests under offline vendor SoT (v2025-2 pin).
 - **SoC**: **No** FastAPI or Supabase imports; **read-only** consumption of `vendor/schemas/*`
   (and bundled copies in published wheels).
-- **Source**: feature-list F2/F13; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md);
-  [context/package-publish-validation.md](context/package-publish-validation.md);
+- **Source**: feature-list F2/F13; context/realtime-tac-ingest.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  context/package-publish-validation.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   evolve-decisions EV-023.
 
 ### packages/gifts — removed
@@ -322,7 +326,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   badge ("Soft preview — not for publish" plain-language copy vs "Passed") + failed-span
   count linked to editor highlights. Lint console renders `info` severity distinctly with a
   one-click **"Add `=`"** quick fix (also as editor affordance on the hint span). ADR-025.
-- **Source**: F6-R5; feature-list F6/F7/F9/F10/F21/F22; [context/f7-operator-ui.md](context/f7-operator-ui.md).
+- **Source**: F6-R5; feature-list F6/F7/F9/F10/F21/F22; context/f7-operator-ui.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ### Runtime configuration (`config/`)
 
@@ -361,7 +365,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **API**: Public convert companions unchanged; session CRUD requires Auth JWT; F7.w pack/overlay
   mutate routes require JWT (see [api-contract.md](api-contract.md) §EV-933).
 - **Source**: S011; S023 F7.h; **S038 / EV-031 F7.i**; **EV-933 F7.w**;
-  [Context: conversion-profile-editor-933](context/conversion-profile-editor-933.md).
+  Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ### F21 — Public convert + optional Auth (Amended S038 / EV-031)
 
@@ -384,7 +388,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   results (operator dissemination sinks are **F16–F19**, not F8 auto-push).
 - **Source**: ADR-018; **F30**; [feature-list.md](feature-list.md) F8.
 - **EV-1132 / #1132**: Cut over to `packages/workflows.execute` + `workflows/f8-metar-ingest-default.yaml`
-  (ADR-042). See [Context: workflows-runtime-1132](context/workflows-runtime-1132.md).
+  (ADR-042). See Context: workflows-runtime-1132 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ### packages/workflows (ADR-042 / EV-1132)
 
@@ -394,7 +398,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **SoC**: **No** FastAPI, Supabase, or SQLAlchemy; store/quarantine via injected ports.
 - **Status**: **Implemented** (EV-1132 / #1132) — contract Accepted in ADR-042.
 - **Source**: [ADR-042](adr/ADR-042-workflow-definitions.md);
-  [Context: workflows-runtime-1132](context/workflows-runtime-1132.md).
+  Context: workflows-runtime-1132 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ### F30 — Platform independence (S038 / EV-031)
 
@@ -414,7 +418,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   drawer. JWT for ops/plan/audit/mapping/health; public preflight/send unchanged (F21).
 - **Non-goals**: #933/#934/#938; live AFTN/failover features; secrets in audit UI; new packages.
 - **Source**: [feature-list.md](feature-list.md) §F16–F19 deepen (EV-936);
-  [Context: dissemination-ops-936](context/dissemination-ops-936.md); ADR-041 / ADR-040;
+  Context: dissemination-ops-936 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); ADR-041 / ADR-040;
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-936; UJ-071.
 
 ### F16–F19 — Dissemination epic (S019 / EV-014) — Done
@@ -471,7 +475,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Status**: **Done** (S020 / EV-015; #778).
 - **Non-goals**: Sibling product-quality tickets; PyPI bumps; F16–F19 changes; new ADR unless
   registry architecture changes.
-- **Source**: [feature-list.md](feature-list.md) F20; #735/#734; [context/aerodrome-quality.md](context/aerodrome-quality.md);
+- **Source**: [feature-list.md](feature-list.md) F20; #735/#734; context/aerodrome-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   evolve-decisions EV-015; ADR-028.
 
 ### F23 — SIGMET family quality bar (general + VA) (S025 / EV-019) — Done
@@ -494,7 +498,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   new `product` enum (E19-13). FE: **additive catalog filters for SIGMET/VA tags** in scope
   (E19-17=B amends E19-14); new ADR unless registry architecture changes.
 - **Source**: [feature-list.md](feature-list.md) F23; #733/#739;
-  [context/sigmet-quality.md](context/sigmet-quality.md); evolve-decisions EV-019; ADR-028.
+  context/sigmet-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); evolve-decisions EV-019; ADR-028.
 
 ### F24 — AIRMET quality bar (S026 / EV-020) — Done
 
@@ -556,7 +560,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Journeys / tests**: **UJ-043**; TC-F28-001..006; cycle TC-EV029-*.
 - **Non-goals**: VONA #741; SIGWX / QVACI; dissemination sink UI; GIFTs-as-normative.
 - **Source**: feature-list F28; evolve-decisions EV-029;
-  [Context: eight-family-ahl-rules-823](context/eight-family-ahl-rules-823.md).
+  Context: eight-family-ahl-rules-823 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ### S036 / EV-029 — Eight-family AHL / lint / convert / validate (#823)
 
@@ -581,7 +585,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Journeys / tests**: **UJ-044**; TC-F29-001..007; cycle TC-EV030-*.
 - **Non-goals**: 100% Annex-3 coverage in first PR; live network/Supabase coupling.
 - **Source**: feature-list F29; evolve-decisions EV-030;
-  [Context: quality-residuals-831](context/quality-residuals-831.md); #831.
+  Context: quality-residuals-831 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #831.
 
 ### S037 / EV-030 — Quality residuals #831 / #829 / #820
 
@@ -607,7 +611,7 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Journeys / tests**: **UJ-045**; TC-F32-001..006; cycle TC-EV032-*.
 - **Non-goals**: Metrics UI #836; SIGWX / QVACI; vendor hand-edits.
 - **Source**: feature-list F32; evolve-decisions EV-032;
-  [Context: iwxxm-corpus-quality-846](context/iwxxm-corpus-quality-846.md); #741.
+  Context: iwxxm-corpus-quality-846 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate); #741.
 
 ### S040 / EV-032 — Official IWXXM corpus quality / WMO source parity (#846)
 
@@ -831,7 +835,7 @@ Standing doc updates during a session use **delta commits** on the session branc
 
 - S008 (2026-07-12): F6 tac2iwxxm architecture; gifts removal; IWXXM-US; UI product/profile; ADR-014
 - S008 amend (2026-07-12): `tac-validate` + `iwxxm-validate`; unified pipeline; F7/F8 Planned;
-  dashed F8 worker; [context/realtime-tac-ingest.md](context/realtime-tac-ingest.md)
+  dashed F8 worker; context/realtime-tac-ingest.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - S008 05 (2026-07-12): F8 worker in-tree; PyO3 cutover gate; iwxxm-us HTTP 3.0 pin; three Render
   services (D-S008-05-batch1)
 - S011 / EV-008 (2026-07-13): F7 operator UI architecture; BYO + admin removal; decode/spans/

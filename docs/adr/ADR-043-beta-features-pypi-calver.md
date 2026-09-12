@@ -3,7 +3,7 @@
 > **Status**: Accepted (EV-1150)  
 > **Date**: 2026-09-10  
 > **Deciders**: User (evolve intake — proceed with recommendations)  
-> **Related**: F12–F14; F16–F19; [ADR-034](ADR-034-doks-staging-promote-from-stage.md); [docs/deploy.md](../deploy.md); [docs/context/beta-feedback-pypi-calver.md](../context/beta-feedback-pypi-calver.md)  
+> **Related**: F12–F14; F16–F19; [ADR-034](ADR-034-doks-staging-promote-from-stage.md); [docs/deploy.md](../deploy.md); (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)  
 > **Sessions**: EV-1150-beta-feedback-pypi-calver
 
 ## Context
