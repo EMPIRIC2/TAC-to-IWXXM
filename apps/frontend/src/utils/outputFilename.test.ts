@@ -194,4 +194,14 @@ describe('uniquifyZipMemberNames (TC-EV-beta-002)', () => {
       'download_3.xml',
     ]);
   });
+
+  it('handles unicode and long basenames without collision (TC-EV-verify-003)', () => {
+    const long = `${'a'.repeat(180)}.xml`;
+    expect(uniquifyZipMemberNames(['café.xml', 'café.xml', long, long])).toEqual([
+      'café.xml',
+      'café_2.xml',
+      long,
+      long.replace(/\.xml$/, '_2.xml'),
+    ]);
+  });
 });

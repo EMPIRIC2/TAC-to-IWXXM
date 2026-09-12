@@ -198,6 +198,19 @@ describe('localWorkSessionStore (TC-004)', () => {
     expect(restored.items.map((s) => s.title).sort()).toEqual(['A', 'B']);
   });
 
+  it('import overwrites same-id sessions (last-wins; TC-EV-verify-004)', async () => {
+    const created = await createLocalWorkSession(draftPayload({ title: 'original' }));
+    const exported = await exportLocalWorkSessions();
+    const conflictDoc = {
+      ...exported,
+      sessions: [{ ...created, title: 'imported-winner' }],
+    };
+    const result = await importLocalWorkSessions(conflictDoc);
+    expect(result.imported).toBe(1);
+    expect((await getLocalWorkSession(created.id)).title).toBe('imported-winner');
+    expect((await listLocalWorkSessions()).total).toBe(1);
+  });
+
   it('defaults optional collection fields when omitted on create', async () => {
     const created = await createLocalWorkSession({
       title: 'Sparse draft',

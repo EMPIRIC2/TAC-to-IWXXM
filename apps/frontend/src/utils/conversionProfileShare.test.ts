@@ -259,4 +259,57 @@ describe('parseConversionProfileShareBundle', () => {
       ),
     ).toThrow('Share bundle field must be a string when present: rulePacks[].when');
   });
+
+  it('rejects secret-like keys in overlay bodies (TC-EV-verify-004)', () => {
+    expect(() =>
+      parseConversionProfileShareBundle(
+        JSON.stringify({
+          schemaVersion: CONVERSION_PROFILE_SHARE_BUNDLE_VERSION,
+          rulePacks: [],
+          overlays: [
+            {
+              slug: 'bad',
+              baseProfileId: 'ICAO_2025',
+              body: { password: 'x', lint: { severity: 'warning' } },
+            },
+          ],
+        }),
+      ),
+    ).toThrow(/must not include secret field/);
+
+    expect(() =>
+      parseConversionProfileShareBundle(
+        JSON.stringify({
+          schemaVersion: CONVERSION_PROFILE_SHARE_BUNDLE_VERSION,
+          rulePacks: [],
+          overlays: [
+            {
+              slug: 'nested-array',
+              baseProfileId: 'ICAO_2025',
+              body: { sinks: [{ api_key: 'leak' }] },
+            },
+          ],
+        }),
+      ),
+    ).toThrow(/must not include secret field/);
+
+    expect(() =>
+      createConversionProfileShareBundle({
+        rulePacks: [],
+        overlays: [
+          {
+            id: 'o1',
+            user_id: 'u1',
+            slug: 'bad',
+            baseProfileId: 'ICAO_2025',
+            body: { connection_string: 'postgres://x' },
+            signature: 'signed',
+            shared: false,
+            created_at: '2026-09-11T00:00:00Z',
+            updated_at: '2026-09-11T00:00:00Z',
+          },
+        ],
+      }),
+    ).toThrow(/must not include secret field/);
+  });
 });

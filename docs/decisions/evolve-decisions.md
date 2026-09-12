@@ -1,5 +1,25 @@
 # Evolve Decisions
 
+## Cycle EV-verify-1177-1179 — Post-merge verify (#1177–#1179)
+
+**Opened:** 2026-09-11 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-verify-1177-1179`  
+**Parent:** EV-beta-ux-export-auth / #1180 → `stage` · **Documenting→Implementing gate:** closed (await Spec band)
+
+| ID | Outcome |
+|----|---------|
+| D-EV-v-01 | Scope: #1177 + #1178 + #1179 in one **standard** evolve |
+| D-EV-v-02 | Staging auth UAT: agent curl + FE against `app/api.staging.tac-to-iwxxm.com` |
+| D-EV-v-03 | Prefer verify + minimal fixes; hotfix only if staging auth is red after deploy |
+| D-EV-v-04 | Out of scope: new sinks, profile feature work beyond share/import edges, promote to main |
+| D-EV-v-05 | UI preview during Spec: docs/code only (no local UI interview preview) |
+| D-EV-v-06 | Acceptance = issue checkboxes + session evidence; close GH issues when green |
+| D-EV-v-07 | Work-history import: same `id` → IndexedDB `put` **last-wins** overwrite (intentional; tested) |
+| D-EV-v-08 | Staging register blocked by Supabase confirmation email SMTP (`Error sending confirmation email`); route live — fix staging Auth email or disable confirm for UAT |
+
+[Corpus: product] [Corpus: tests §TC-EV-verify-*] [Corpus: deploy] [Corpus: decisions]
+
+---
+
 ## Cycle EV-beta-ux-export-auth — Beta UX + export/auth harden
 
 **Opened:** 2026-09-11 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-beta-ux-export-auth`  
