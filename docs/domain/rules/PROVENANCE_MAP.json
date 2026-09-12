@@ -3,7 +3,7 @@
   "cycle": "EV-037",
   "session": "EV-098-ca-eccc-mining",
   "generated": "2026-09-02",
-  "gap_report": "docs/sessions/S055-wmo-aviation-registers/reports/codes-wmo-int-coverage.md",
+  "gap_report": "docs/domain/registers/codes-wmo-int-coverage.md",
   "digs": [
     {
       "path": "docs/domain/mining/ICAO-Doc-10003-draft-2014-mining-notes.md",
@@ -2449,7 +2449,7 @@
       "engine": "convert",
       "assert_sites": [
         "packages/tac2iwxxm/tests/test_tc_f32_004_vona_validate_golden.py",
-        "docs/sessions/S040-iwxxm-corpus-quality/reports/t2.1-vona-encode-cookbook.md",
+        "docs/domain/vona/t2.1-vona-encode-cookbook.md",
         "docs/domain/mining/vona-encode-remine-ev035-mining-notes.md"
       ]
     },

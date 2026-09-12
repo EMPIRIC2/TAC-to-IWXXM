@@ -12,14 +12,7 @@ import pytest
 import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
-INVENTORY = (
-    ROOT
-    / "docs"
-    / "sessions"
-    / "S061-ci-polish-quality-pr-stats"
-    / "reports"
-    / "coverage-surface-inventory.yaml"
-)
+INVENTORY = ROOT / "docs" / "engineering" / "coverage-surface-inventory-s061.yaml"
 
 # Surfaces that must appear in the inventory (CI matrix + scripted runners).
 REQUIRED_SURFACE_IDS = frozenset(
