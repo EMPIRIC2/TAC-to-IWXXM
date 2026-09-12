@@ -1,16 +1,122 @@
 """Validation endpoints for METAR and IWXXM content."""
 
+from __future__ import annotations
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict, Field
 
 from ..schemas.validation import (
     AggregatedValidationResult,
+    ValidationIssue,
     ValidationLayer,
     ValidationRequest,
+    ValidationResult,
 )
 from ..services.validation import ValidationService
+from ..services.validation_orchestrator import (
+    ComprehensiveValidationResult,
+    get_validation_orchestrator,
+)
 
 router = APIRouter()
+
+_XML_CONTENT_TYPES = frozenset({"xml", "iwxxm"})
+_TAC_LAYERS = frozenset({ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX})
+_XML_LAYERS = frozenset(
+    {
+        ValidationLayer.XML_WELLFORMED,
+        ValidationLayer.XML_SCHEMA,
+        ValidationLayer.SCHEMATRON,
+        ValidationLayer.GML_REFERENCES,
+        ValidationLayer.WMO_CODELISTS,
+    }
+)
+
+
+def _normalize_content_type(raw: str | None) -> str:
+    """Return canonical content type: ``tac`` or ``xml``."""
+    normalized = (raw or "tac").strip().lower()
+    if normalized in _XML_CONTENT_TYPES:
+        return "xml"
+    if normalized == "tac":
+        return "tac"
+    raise ValueError(f"Unsupported content_type '{raw}'; expected 'tac', 'xml', or 'iwxxm'")
+
+
+def _aggregated_from_comprehensive(
+    comprehensive: ComprehensiveValidationResult,
+) -> AggregatedValidationResult:
+    """Map orchestrator output onto the AggregatedValidationResult HTTP shape."""
+    results: list[ValidationResult] = []
+    for layer in comprehensive.layers_run:
+        issues = list(comprehensive.issues_by_layer.get(layer, []))
+        # Ensure issue.layer matches (orchestrator may already set it).
+        normalized_issues: list[ValidationIssue] = []
+        for issue in issues:
+            if issue.layer != layer:
+                normalized_issues.append(
+                    ValidationIssue(
+                        layer=layer,
+                        level=issue.level,
+                        message=issue.message,
+                        location=issue.location,
+                        code=issue.code,
+                        suggestion=issue.suggestion,
+                    )
+                )
+            else:
+                normalized_issues.append(issue)
+        results.append(
+            ValidationResult(
+                passed=layer in comprehensive.layers_passed,
+                layer=layer,
+                issues=normalized_issues,
+            )
+        )
+    return AggregatedValidationResult.from_results(results)
+
+
+def _validate_one(item: ValidationRequest) -> AggregatedValidationResult:
+    """Validate a single item, honoring ``content_type`` and ``layers``."""
+    content_type = _normalize_content_type(item.content_type)
+    layers = item.layers
+    version = item.iwxxm_version or "2025-2"
+
+    if content_type == "xml":
+        selected = list(layers) if layers is not None else list(_XML_LAYERS)
+        tac_requested = [layer for layer in selected if layer in _TAC_LAYERS]
+        if tac_requested:
+            raise ValueError(
+                "TAC layers require content_type 'tac'; "
+                f"got {', '.join(layer.value for layer in tac_requested)} with XML content"
+            )
+        xml_layers = [layer for layer in selected if layer in _XML_LAYERS]
+        if not xml_layers:
+            raise ValueError("No XML validation layers selected")
+        comprehensive = get_validation_orchestrator().validate(
+            item.content,
+            iwxxm_version=version,
+            layers=xml_layers,
+        )
+        return _aggregated_from_comprehensive(comprehensive)
+
+    # TAC path — reject pure XML layer selections without XML content.
+    if layers is not None:
+        xml_only = [layer for layer in layers if layer in _XML_LAYERS]
+        tac_any = [layer for layer in layers if layer in _TAC_LAYERS]
+        if xml_only and not tac_any:
+            raise ValueError(
+                "XML layers require content_type 'xml' or 'iwxxm' "
+                f"(requested: {', '.join(layer.value for layer in xml_only)})"
+            )
+        layers = [layer for layer in layers if layer in _TAC_LAYERS] or None
+
+    return get_validation_service().validate(
+        content=item.content,
+        content_type="tac",
+        layers=layers,
+        iwxxm_version=version,
+    )
 
 
 class ValidationLayerInfo(BaseModel):
@@ -147,16 +253,12 @@ async def validate_content(
 
     ## Request Body
     - **content** (string, required): The METAR TAC or IWXXM XML content to validate
-    - **content_type** (string, default="tac"): Type of content ("tac" or "xml")
-    - **layers** (array, optional): Specific validation layers to run. If None, runs all layers:
-      - `airport_icao`: Validate ICAO airport code
-      - `tac_syntax`: Validate METAR TAC syntax
-      - `xml_wellformed`: Check XML is well-formed
-      - `xml_schema`: Validate against XSD schema
-      - `schematron`: SCHEMATRON rules validation
-      - `gml_references`: GML reference checks
-      - `wmo_codelists`: WMO code list validation
-    - **iwxxm_version** (string, optional): IWXXM version for context (e.g., "3.0.1")
+    - **content_type** (string, default="tac"): ``tac``, ``xml``, or ``iwxxm`` (alias of xml)
+    - **layers** (array, optional): Specific validation layers to run.
+      - TAC (``content_type=tac``): ``airport_icao``, ``tac_syntax`` (default both)
+      - XML (``content_type=xml|iwxxm``): ``xml_wellformed``, ``xml_schema``,
+        ``schematron``, ``gml_references``, ``wmo_codelists`` (default all XML layers)
+    - **iwxxm_version** (string, optional): IWXXM version for XML layers (e.g., "2025-2")
 
     ## Response
     Returns aggregated validation results with:
@@ -209,11 +311,8 @@ async def validate_content(
     }
     ```
     """
-    service = get_validation_service()
-
     try:
-        result = service.validate_all_layers(tac_text=request.content)
-        return result
+        return _validate_one(request)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e)) from e
     except Exception as e:
@@ -237,7 +336,7 @@ async def validate_multiple(
     ## Request Body
     - **items** (array, required): Array of validation requests (1-100 items)
       - Each item has: content, content_type, layers (optional), iwxxm_version (optional)
-    - **layers** (array, optional): Default layers to apply to all items
+    - **layers** (array, optional): Default layers to apply to all items that omit layers
 
     ## Response
     Returns batch validation results with:
@@ -290,14 +389,15 @@ async def validate_multiple(
     }
     ```
     """
-    service = get_validation_service()
-
     try:
         results: list[AggregatedValidationResult] = []
         total_time = 0.0
 
         for item in request.items:
-            result = service.validate_all_layers(tac_text=item.content)
+            effective = item
+            if item.layers is None and request.layers is not None:
+                effective = item.model_copy(update={"layers": request.layers})
+            result = _validate_one(effective)
             results.append(result)
             total_time += result.execution_time_ms
 

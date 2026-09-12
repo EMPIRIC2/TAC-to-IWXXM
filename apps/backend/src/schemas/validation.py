@@ -246,7 +246,9 @@ class ValidationRequest(BaseModel):
         examples=["METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2"],
     )
     content_type: str = Field(
-        "tac", description="Content type: 'tac' (METAR TAC) or 'xml' (IWXXM XML)", examples=["tac", "xml"]
+        "tac",
+        description=("Content type: 'tac' (METAR TAC), 'xml' (IWXXM XML), or 'iwxxm' (alias of xml)"),
+        examples=["tac", "xml", "iwxxm"],
     )
     layers: list[ValidationLayer] | None = Field(None, description="Specific layers to validate (None = all layers)")
     iwxxm_version: str | None = Field(None, description="IWXXM version for validation context", examples=["3.0.1"])

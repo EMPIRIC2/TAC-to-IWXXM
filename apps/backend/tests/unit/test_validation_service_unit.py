@@ -142,7 +142,12 @@ def test_validate_rejects_xml_content_type(monkeypatch):
 
 def test_validate_delegates_to_validate_all_layers(monkeypatch):
     service = _make_service(monkeypatch)
-    monkeypatch.setattr(service, "validate_all_layers", lambda tac: "aggregated")
+
+    def _fake_all(tac, layers=None):
+        assert layers is None
+        return "aggregated"
+
+    monkeypatch.setattr(service, "validate_all_layers", _fake_all)
 
     assert service.validate("METAR KJFK 010000Z", content_type="tac") == "aggregated"
 
