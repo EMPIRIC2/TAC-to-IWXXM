@@ -390,3 +390,23 @@ def test_normalize_session_payload_partial_user() -> None:
     assert out["user"]["id"] == ""
     assert out["session"]["access_token"] == "a"
     assert out["session"]["expires_at"] == 0
+
+
+def test_normalize_session_payload_nested_session_tokens() -> None:
+    """Some GoTrue shapes nest tokens under ``session`` without top-level access_token."""
+    data: dict[str, Any] = {
+        "user": {"id": "u9", "email": "n@x.y", "user_metadata": {"role": "op"}},
+        "session": {
+            "access_token": "nested-at",
+            "refresh_token": "nested-rt",
+            "expires_at": 42,
+        },
+    }
+    out = _normalize_session_payload(data)
+    assert out["user"]["id"] == "u9"
+    assert out["user"]["metadata"]["role"] == "op"
+    assert out["session"] == {
+        "access_token": "nested-at",
+        "refresh_token": "nested-rt",
+        "expires_at": 42,
+    }

@@ -9,7 +9,12 @@ load "${BATS_TEST_DIRNAME}/../helpers/load"
 }
 
 @test "scripts/deploy/doks_worker_poller_preflight.sh: preflight OK with stub kubectl secret" {
-  run bash scripts/deploy/doks_worker_poller_preflight.sh
+  # Prefer bats kubectl stub even if the runner has a real kubectl earlier on PATH.
+  helpers_bin="$(cd "${BATS_TEST_DIRNAME}/../helpers/bin" && pwd)"
+  run env PATH="${helpers_bin}:${PATH}" bash scripts/deploy/doks_worker_poller_preflight.sh
+  if [[ "$status" -ne 0 ]]; then
+    echo "preflight status=${status} output=${output}" >&2
+  fi
   [ "$status" -eq 0 ]
   [[ "$output" == *"Preflight OK"* ]]
 }
