@@ -53,8 +53,9 @@ class TestValidateContent:
         )
 
         class FakeService:
-            def validate_all_layers(self, tac_text):
-                assert tac_text == "METAR TEST"
+            def validate(self, content, content_type="tac", layers=None, iwxxm_version=None):
+                assert content == "METAR TEST"
+                assert content_type == "tac"
                 return expected
 
         monkeypatch.setattr(validation_router, "get_validation_service", lambda: FakeService())
@@ -67,8 +68,8 @@ class TestValidateContent:
     @pytest.mark.asyncio
     async def test_validate_content_maps_value_error_to_400(self, monkeypatch):
         class FakeService:
-            def validate_all_layers(self, tac_text):
-                raise ValueError(f"bad input: {tac_text}")
+            def validate(self, content, content_type="tac", layers=None, iwxxm_version=None):
+                raise ValueError(f"bad input: {content}")
 
         monkeypatch.setattr(validation_router, "get_validation_service", lambda: FakeService())
         request = validation_router.ValidationRequest(content="BAD", content_type="tac")
@@ -82,8 +83,8 @@ class TestValidateContent:
     @pytest.mark.asyncio
     async def test_validate_content_maps_unexpected_error_to_500(self, monkeypatch):
         class FakeService:
-            def validate_all_layers(self, tac_text):
-                raise RuntimeError(f"boom: {tac_text}")
+            def validate(self, content, content_type="tac", layers=None, iwxxm_version=None):
+                raise RuntimeError(f"boom: {content}")
 
         monkeypatch.setattr(validation_router, "get_validation_service", lambda: FakeService())
         request = validation_router.ValidationRequest(content="BAD", content_type="tac")
@@ -93,6 +94,50 @@ class TestValidateContent:
 
         assert exc_info.value.status_code == 500
         assert exc_info.value.detail == "Validation error: boom: BAD"
+
+    @pytest.mark.asyncio
+    async def test_validate_content_xml_uses_orchestrator(self, monkeypatch):
+        from src.services.validation_orchestrator import ComprehensiveValidationResult
+
+        expected_layers = [ValidationLayer.XML_WELLFORMED, ValidationLayer.XML_SCHEMA]
+
+        class FakeOrch:
+            def validate(self, xml_content, *, iwxxm_version, layers=None):
+                assert xml_content.startswith("<?xml")
+                assert iwxxm_version == "2025-2"
+                assert layers == expected_layers
+                return ComprehensiveValidationResult(
+                    is_valid=True,
+                    layers_run=list(expected_layers),
+                    layers_passed=list(expected_layers),
+                    layers_failed=[],
+                    all_issues=[],
+                    issues_by_layer={},
+                    version=iwxxm_version,
+                )
+
+        monkeypatch.setattr(validation_router, "get_validation_orchestrator", lambda: FakeOrch())
+        request = validation_router.ValidationRequest(
+            content="<?xml version='1.0'?><iwxxm:METAR/>",
+            content_type="iwxxm",
+            layers=expected_layers,
+            iwxxm_version="2025-2",
+        )
+        result = await validation_router.validate_content(request)
+        assert result.passed is True
+        assert result.layers_validated == expected_layers
+
+    @pytest.mark.asyncio
+    async def test_validate_content_rejects_xml_layers_on_tac(self):
+        request = validation_router.ValidationRequest(
+            content="METAR KJFK 010000Z 00000KT CAVOK",
+            content_type="tac",
+            layers=[ValidationLayer.XML_SCHEMA],
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await validation_router.validate_content(request)
+        assert exc_info.value.status_code == 400
+        assert "xml" in str(exc_info.value.detail).lower()
 
 
 class TestValidateMultiple:
@@ -104,8 +149,8 @@ class TestValidateMultiple:
         ]
 
         class FakeService:
-            def validate_all_layers(self, tac_text):
-                assert tac_text in {"METAR ONE", "METAR TWO"}
+            def validate(self, content, content_type="tac", layers=None, iwxxm_version=None):
+                assert content in {"METAR ONE", "METAR TWO"}
                 return responses.pop(0)
 
         monkeypatch.setattr(validation_router, "get_validation_service", lambda: FakeService())
@@ -128,8 +173,8 @@ class TestValidateMultiple:
     @pytest.mark.asyncio
     async def test_validate_multiple_maps_value_error_to_400(self, monkeypatch):
         class FakeService:
-            def validate_all_layers(self, tac_text):
-                raise ValueError(f"bad batch item: {tac_text}")
+            def validate(self, content, content_type="tac", layers=None, iwxxm_version=None):
+                raise ValueError(f"bad batch item: {content}")
 
         monkeypatch.setattr(validation_router, "get_validation_service", lambda: FakeService())
         request = validation_router.BatchValidationRequest(
@@ -145,8 +190,8 @@ class TestValidateMultiple:
     @pytest.mark.asyncio
     async def test_validate_multiple_maps_unexpected_error_to_500(self, monkeypatch):
         class FakeService:
-            def validate_all_layers(self, tac_text):
-                raise RuntimeError(f"explode: {tac_text}")
+            def validate(self, content, content_type="tac", layers=None, iwxxm_version=None):
+                raise RuntimeError(f"explode: {content}")
 
         monkeypatch.setattr(validation_router, "get_validation_service", lambda: FakeService())
         request = validation_router.BatchValidationRequest(

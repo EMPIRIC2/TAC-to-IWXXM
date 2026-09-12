@@ -3,8 +3,19 @@
 from __future__ import annotations
 
 from locust import events
+
+# Side-effect imports: register Prometheus hooks and expose HttpUser classes to Locust.
+from tests.load import metrics as _load_metrics
 from tests.load.config import load_profile
-from tests.load.metrics import on_locust_init, on_locust_request
+from tests.load.scenarios import (
+    ConversionApiUser,
+    EvaluationApiUser,
+    PublicApiUser,
+    ValidationApiUser,
+)
+
+# Keep imported symbols referenced so Ruff does not treat them as unused.
+_ = (_load_metrics, ConversionApiUser, EvaluationApiUser, PublicApiUser, ValidationApiUser)
 
 
 @events.test_start.add_listener
