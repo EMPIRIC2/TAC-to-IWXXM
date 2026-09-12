@@ -1,5 +1,8 @@
 # METAR to IWXXM Conversion - Architecture Overview
 
+> **OBSOLETE (EV-docs-accuracy-audit):** Pre-monorepo / GIFTs-era layered diagrams. **Not a
+> CORPUS design gate.** Use [spec.md](../spec.md) + [tech-spec.md](../tech-spec.md) + ADRs.
+
 ## System Design (Sprint 1 + Sprint 2)
 
 ### Layered Architecture

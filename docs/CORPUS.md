@@ -38,7 +38,7 @@ read the rows below that apply — do not invent alternate doc sets.
 | Path | When |
 |------|------|
 | [domain/](domain/) (incl. profiles) | Domain mining, national/exchange profiles (e.g. CA_ECCC, F35/F36) |
-| [guides/](guides/), [ops/](ops/) | Operator runbooks / narrative how-tos |
+| [guides/](guides/), [ops/](ops/) | Operator runbooks / narrative how-tos — **not** design gates; treat GIFTs-era `guides/API.md` + `guides/ARCHITECTURE.md` as obsolete |
 | [bug-reports/](bug-reports/) | Active hotfix investigation |
 | [skill-routing.md](skill-routing.md), [typing-policy.md](typing-policy.md), [hotfix-log.md](hotfix-log.md) | Tooling / process satellites |
 

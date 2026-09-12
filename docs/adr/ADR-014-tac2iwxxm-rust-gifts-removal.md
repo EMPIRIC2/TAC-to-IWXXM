@@ -6,7 +6,7 @@
 > **Stage**: 01-requirements  
 > **Supersedes (partial)**: [ADR-013](ADR-013-tac2iwxxm-package-architecture.md) (Cython path; gifts-as-fallback; FAA-five-only v1)  
 > **Deprecates**: [ADR-004](ADR-004-manual-gifts-sync.md), REQ-014  
-> **Context refs**: [Context: general-tac-iwxxm-converter](../context/general-tac-iwxxm-converter.md), session S008
+> **Context refs**: Context: general-tac-iwxxm-converter (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate), session S008
 
 ## Context
 

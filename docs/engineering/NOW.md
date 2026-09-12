@@ -4,7 +4,7 @@ Ticket-tuned index for agents and humans. Prefer open GitHub issues over histori
 
 **Live agent state:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/{id}/`  
 **Standing corpus:** [CORPUS.md](../CORPUS.md)  
-**Session:** EV-docs-numpy-corpus (docs slim + NumPy)
+**Active sessions:** EV-docs-accuracy-audit (doc accuracy); prior slim PR [#1185](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1185)
 
 ## Open epics / high priority (snapshot 2026-09-12)
 
@@ -20,18 +20,20 @@ Ticket-tuned index for agents and humans. Prefer open GitHub issues over histori
 | [#962](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/962) | Epic — US gov adoption readiness |
 | [#1058](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1058) | Spike — many exchanges / marketplace architecture |
 | [#1097](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1097) | Epic (backlog) — in-app marketplace |
+| [#1159](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1159) | UI — SIGMET examples OUTPUT_VALIDATION_WARNING |
+| [#1149](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1149) | UI — profile counts / catalog error states |
 
-Refresh this table when starting a cycle (`gh issue list`). Do not treat closed tickets or `docs/sessions/` as scope authority.
+Refresh this table when starting a cycle (`gh issue list`). Do not treat closed tickets or archived session trees as scope authority.
 
 ## Engineering spine (always)
 
 | Need | Doc |
 |------|-----|
-| Features / scope | [feature-list.md](../feature-list.md) (being slimmed) |
+| Features / scope | [feature-list.md](../feature-list.md) |
 | Architecture | [spec.md](../spec.md) |
 | Env / deploy / deps | [tech-spec.md](../tech-spec.md) + satellites |
 | HTTP | OpenAPI + [api-contract.md](../api-contract.md) quirks |
-| Gates | [test-plan.md](../test-plan.md) (slim gates) |
+| Gates | [test-plan.md](../test-plan.md) |
 | Docstrings | [docstrings.md](docstrings.md) |
 
 ## Domain (opt-in)

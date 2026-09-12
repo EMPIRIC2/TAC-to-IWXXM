@@ -5,7 +5,7 @@
 > **Deciders**: User (S008 01-requirements AskQuestion Q1–Q54)  
 > **Stage**: 01-requirements  
 > **Related**: [ADR-013](ADR-013-tac2iwxxm-package-architecture.md), [ADR-014](ADR-014-tac2iwxxm-rust-gifts-removal.md), [ADR-009](ADR-009-live-test-harness.md)  
-> **Context refs**: [Context: realtime-tac-ingest](../context/realtime-tac-ingest.md), session S008
+> **Context refs**: Context: realtime-tac-ingest (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate), session S008
 
 ## Context
 
