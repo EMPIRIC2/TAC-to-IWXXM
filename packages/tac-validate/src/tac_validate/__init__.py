@@ -1,4 +1,9 @@
-"""TAC parse gate and business-rule pack (F6 lint)."""
+"""TAC parse gate and business-rule pack (F6 lint).
+
+Call :func:`tac_validate.api.lint` for product-scoped TAC lint reports. Issue
+codes live in the registry (see ``docs/engineering/docstrings.md`` for the
+documentation bar).
+"""
 
 from __future__ import annotations
 
