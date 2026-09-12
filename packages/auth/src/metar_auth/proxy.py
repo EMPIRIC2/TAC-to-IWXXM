@@ -199,13 +199,30 @@ class SupabaseAuthProxy:
 
 
 def _normalize_session_payload(data: dict[str, Any]) -> dict[str, Any]:
+    """Normalize GoTrue token or signup JSON into ``user`` + optional ``session``.
+
+    Password-grant responses nest the user under ``user`` and put tokens at the
+    top level. Email-confirm signup often returns the **user object itself** at
+    the top level (``id`` / ``email`` / ``confirmation_sent_at``) with no
+    ``access_token`` — treat that shape as the user so register does not return
+    an empty ``user`` when ``session`` is null.
+    """
     user_obj = data.get("user")
-    user_raw: dict[str, Any] = (
-        cast(dict[str, Any], user_obj) if isinstance(user_obj, dict) else {}
-    )
+    if isinstance(user_obj, dict):
+        user_raw: dict[str, Any] = cast(dict[str, Any], user_obj)
+    elif data.get("id") or data.get("email"):
+        user_raw = data
+    else:
+        user_raw = {}
     access_token = str(data.get("access_token") or "")
     refresh_token = str(data.get("refresh_token") or "")
     expires_at = int(data.get("expires_at") or 0)
+    nested_obj = data.get("session")
+    if not access_token and isinstance(nested_obj, dict):
+        nested = cast(dict[str, Any], nested_obj)
+        access_token = str(nested.get("access_token") or "")
+        refresh_token = str(nested.get("refresh_token") or refresh_token)
+        expires_at = int(nested.get("expires_at") or expires_at)
     session: dict[str, Any] | None = None
     if access_token:
         session = {
