@@ -12,7 +12,7 @@
 #   DISSEMINATION_EGRESS_ALLOWLIST=wis2box,127.0.0.1,127.0.0.0/8,localhost
 #
 # Paste-ready params:
-#   docs/sessions/S019-dissemination-upload/fixtures/mock-byoc-destinations.json
+#   tests/fixtures/byoc/mock-byoc-destinations.json
 
 services:
   byoc-postgres:

@@ -7,8 +7,8 @@ cd "$ROOT"
 
 export DISSEMINATION_EGRESS_ALLOWLIST="${DISSEMINATION_EGRESS_ALLOWLIST:-wis2box,127.0.0.1,127.0.0.0/8,localhost}"
 
-FIXTURES="$ROOT/docs/sessions/S019-dissemination-upload/fixtures/mock-byoc-destinations.json"
-CANDIDATES="$ROOT/docs/sessions/S019-dissemination-upload/fixtures/byoc-test-candidates"
+FIXTURES="$ROOT/tests/fixtures/byoc/mock-byoc-destinations.json"
+CANDIDATES="$ROOT/tests/fixtures/byoc/byoc-test-candidates"
 
 echo "==> Waiting for mock BYOC ports"
 python3 - <<'PY'
@@ -47,7 +47,7 @@ from dissemination.db_preflight import run_db_preflight
 from dissemination.models import PreflightRequest
 
 fixtures = json.loads(
-    Path("docs/sessions/S019-dissemination-upload/fixtures/mock-byoc-destinations.json").read_text()
+    Path("tests/fixtures/byoc/mock-byoc-destinations.json").read_text()
 )
 
 
