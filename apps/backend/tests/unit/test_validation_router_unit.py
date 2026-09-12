@@ -216,3 +216,81 @@ class TestGetValidationLayers:
         assert response.layers[0].supported_content_types == ["tac"]
         assert response.layers[-1].layer == ValidationLayer.WMO_CODELISTS
         assert response.layers[-1].supported_content_types == ["xml"]
+
+
+class TestValidateHelpersCoverage:
+    def test_normalize_content_type_rejects_unknown(self):
+        with pytest.raises(ValueError, match="Unsupported content_type"):
+            validation_router._normalize_content_type("pdf")
+
+    def test_aggregated_from_comprehensive_rewrites_mismatched_issue_layer(self):
+        from src.schemas.validation import ValidationIssue, ValidationLevel
+        from src.services.validation_orchestrator import ComprehensiveValidationResult
+
+        wrong = ValidationIssue(
+            layer=ValidationLayer.TAC_SYNTAX,
+            level=ValidationLevel.ERROR,
+            message="mismatched",
+            code="X",
+        )
+        comp = ComprehensiveValidationResult(
+            is_valid=False,
+            layers_run=[ValidationLayer.XML_WELLFORMED],
+            layers_passed=[],
+            layers_failed=[ValidationLayer.XML_WELLFORMED],
+            all_issues=[wrong],
+            issues_by_layer={ValidationLayer.XML_WELLFORMED: [wrong]},
+            version="2025-2",
+        )
+        agg = validation_router._aggregated_from_comprehensive(comp)
+        assert agg.results[0].layer == ValidationLayer.XML_WELLFORMED
+        assert agg.results[0].issues[0].layer == ValidationLayer.XML_WELLFORMED
+
+    def test_aggregated_from_comprehensive_keeps_matching_issue_layer(self):
+        from src.schemas.validation import ValidationIssue, ValidationLevel
+        from src.services.validation_orchestrator import ComprehensiveValidationResult
+
+        matching = ValidationIssue(
+            layer=ValidationLayer.XML_WELLFORMED,
+            level=ValidationLevel.WARNING,
+            message="ok layer",
+            code="W",
+        )
+        comp = ComprehensiveValidationResult(
+            is_valid=True,
+            layers_run=[ValidationLayer.XML_WELLFORMED],
+            layers_passed=[ValidationLayer.XML_WELLFORMED],
+            layers_failed=[],
+            all_issues=[matching],
+            issues_by_layer={ValidationLayer.XML_WELLFORMED: [matching]},
+            version="2025-2",
+        )
+        agg = validation_router._aggregated_from_comprehensive(comp)
+        assert agg.results[0].issues[0] is matching
+
+    @pytest.mark.asyncio
+    async def test_validate_content_rejects_tac_layers_on_xml(self):
+        request = validation_router.ValidationRequest(
+            content="<?xml version='1.0'?><root/>",
+            content_type="xml",
+            layers=[ValidationLayer.AIRPORT_ICAO],
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await validation_router.validate_content(request)
+        assert exc_info.value.status_code == 400
+        assert "TAC layers" in str(exc_info.value.detail)
+
+    @pytest.mark.asyncio
+    async def test_validate_content_rejects_empty_xml_layer_selection(self, monkeypatch):
+        # Force empty xml_layers by selecting only non-XML via monkeypatch of filter path:
+        # layers that are neither TAC nor in _XML_LAYERS cannot exist on the enum;
+        # instead call _validate_one with xml and layers=[] after normalize.
+        request = validation_router.ValidationRequest(
+            content="<?xml version='1.0'?><root/>",
+            content_type="xml",
+            layers=[],
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await validation_router.validate_content(request)
+        assert exc_info.value.status_code == 400
+        assert "No XML validation layers" in str(exc_info.value.detail)
