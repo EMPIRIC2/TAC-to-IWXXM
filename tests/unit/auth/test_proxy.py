@@ -161,6 +161,36 @@ def test_sign_up_success_and_confirm_email_null_session() -> None:
     assert "/auth/v1/signup" in client.post.call_args.args[0]
 
 
+def test_sign_up_gotrue_top_level_user_when_confirm_required() -> None:
+    """GoTrue email-confirm signup returns the user at the top level (no nested user)."""
+    client = MagicMock(spec=httpx.Client)
+    client.post.return_value = MagicMock(
+        status_code=200,
+        json=lambda: {
+            "id": "e1041ac2-f3d7-47d7-b9d5-759a7e29c357",
+            "aud": "authenticated",
+            "role": "authenticated",
+            "email": "beta@josephcmcg.com",
+            "confirmation_sent_at": "2026-09-12T00:28:43.772047845Z",
+            "app_metadata": {"provider": "email", "providers": ["email"]},
+            "user_metadata": {
+                "email": "beta@josephcmcg.com",
+                "email_verified": False,
+            },
+        },
+    )
+    proxy = SupabaseAuthProxy(
+        supabase_url="https://proj.supabase.co",
+        publishable_key="pk",
+        client=client,
+    )
+    out = proxy.sign_up("beta@josephcmcg.com", "secret12")
+    assert out["user"]["id"] == "e1041ac2-f3d7-47d7-b9d5-759a7e29c357"
+    assert out["user"]["email"] == "beta@josephcmcg.com"
+    assert out["user"]["metadata"]["email_verified"] is False
+    assert out["session"] is None
+
+
 @pytest.mark.parametrize(
     ("status_code", "expected"),
     [
