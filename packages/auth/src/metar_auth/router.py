@@ -41,6 +41,18 @@ class LoginRequest(BaseModel):
         return validate_email_permissive(value)
 
 
+class RegisterRequest(BaseModel):
+    """Registration credentials (Supabase GoTrue signup)."""
+
+    email: str
+    password: str = Field(min_length=6)
+
+    @field_validator("email")
+    @classmethod
+    def _email(cls, value: str) -> str:
+        return validate_email_permissive(value)
+
+
 class UserResponse(BaseModel):
     """Auth user projection."""
 
@@ -114,7 +126,7 @@ def create_auth_router(
     supabase_url: str | None = None,
 ) -> APIRouter:
     """
-    Build the Auth-only router (login + logout + me). No ``/admin`` routes.
+    Build the Auth-only router (register + login + logout + me). No ``/admin`` routes.
 
     Parameters
     ----------
@@ -135,6 +147,20 @@ def create_auth_router(
 
     def _proxy() -> SupabaseAuthProxy:
         return auth_proxy
+
+    @router.post("/register", response_model=AuthResponse)
+    def register(
+        request: RegisterRequest,
+        client: SupabaseAuthProxy = Depends(_proxy),  # noqa: B008
+    ) -> dict[str, Any]:
+        """Create an account via Supabase Auth signup."""
+        try:
+            return client.sign_up(request.email, request.password)
+        except AuthProxyError as exc:
+            raise HTTPException(
+                status_code=exc.status_code,
+                detail=str(exc),
+            ) from exc
 
     @router.post("/login", response_model=AuthResponse)
     def login(
@@ -196,5 +222,5 @@ def create_auth_router(
         return user
 
     # Keep nested handlers referenced for typecheckers that miss FastAPI decorators.
-    _ = (login, logout, me)
+    _ = (register, login, logout, me)
     return router

@@ -8,19 +8,24 @@ from typing import Any, cast
 from tac2iwxxm.geometry.reference_point import parse_vor_reference_geometry
 
 _SIGMET = re.compile(
-    r"^(?P<fir>[A-Z]{4})\s+SIGMET\s+(?P<seq>\d+)\s+VALID\s+"
+    r"^(?P<fir>[A-Z]{4})(?:\s+(?P<fir_extra>(?:[A-Z]{4}\s+)+))?\s*SIGMET\s+"
+    r"(?P<seq>(?:[A-Z]+\s+\d+|[A-Z]?\d+))\s+VALID\s+"
     r"(?P<from>\d{6})/(?P<to>\d{6})\s+(?P<mwo>[A-Z]{4})\s*-\s*(?P<body>.*)$",
     re.DOTALL | re.IGNORECASE,
 )
 _AIRMET = re.compile(
-    r"^(?P<fir>[A-Z]{4})\s+AIRMET\s+(?P<seq>\d+)\s+VALID\s+"
+    r"^(?P<fir>[A-Z]{4})\s+AIRMET\s+"
+    r"(?P<seq>(?:[A-Z]+\s+\d+|[A-Z]?\d+))\s+VALID\s+"
     r"(?P<from>\d{6})/(?P<to>\d{6})\s+(?P<mwo>[A-Z]{4})\s*-\s*(?P<body>.*)$",
     re.DOTALL | re.IGNORECASE,
 )
 _CNL = re.compile(
-    r"\bCNL\s+(?:SIGMET|AIRMET)\s+(?P<cnl_seq>\d+)\s+(?P<cnl_from>\d{6})/(?P<cnl_to>\d{6})\b",
-    re.IGNORECASE,
+    r"\bCNL\s+(?:SIGMET|AIRMET)\s+(?P<cnl_seq>(?:[A-Z]+\s+\d+|[A-Z]?\d+))\s+"
+    r"(?:VALID\s+)?"
+    r"(?P<cnl_from>\d{6})/(?P<cnl_to>\d{6})\b",
+    re.IGNORECASE | re.DOTALL,
 )
+_SIGA0_LINE = re.compile(r"^SIGA0[A-Z0-9]*\s*$", re.IGNORECASE)
 # VA CNL identifies FIR to which ash has moved (F23 V1 / tac-validate VA_CNL_FIR_MOVED).
 _CNL_FIR_MOVED = re.compile(r"\b(?:AND|MOV)\s+TO\s+FIR\b", re.IGNORECASE)
 # Optional leading WMO AHL (WC/WV/WS) so convert can family-select CNL roots (EV-029 M7).
@@ -315,7 +320,10 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
     cnl = _CNL.search(body)
     if cnl is not None:
         ir["cancel"] = True
-        ir["cancelled_sequence"] = int(cnl.group("cnl_seq"))
+        cnl_seq, cnl_label = _parse_sequence_token(cnl.group("cnl_seq"))
+        ir["cancelled_sequence"] = cnl_seq
+        if cnl_label != str(cnl_seq):
+            ir["cancelled_sequence_label"] = cnl_label
         c_from = _parse_valid(cnl.group("cnl_from"))
         c_to = _parse_valid(cnl.group("cnl_to"))
         ir["cancelled_from_day"] = c_from[0]
@@ -645,6 +653,32 @@ def _apply_airmet_area_to_ir(ir: dict[str, Any], area: dict[str, Any]) -> None:
     ir.update(area)
 
 
+def _parse_sequence_token(raw: str) -> tuple[int, str]:
+    """
+    Normalize SIGMET/AIRMET sequence tokens to (numeric, label).
+
+    Accepts ``12``, ``03``, ``A4``, ``E6``, ``A08``, ``T03``, and phonetic
+    forms such as ``FOXTROT 20`` / ``ALFA 12`` (US oceanic).
+    """
+    token = " ".join(raw.upper().split())
+    phonetic = re.fullmatch(r"([A-Z]+)\s+(\d+)", token)
+    if phonetic is not None:
+        return int(phonetic.group(2)), token
+    lettered = re.fullmatch(r"([A-Z])(\d+)", token)
+    if lettered is not None:
+        return int(lettered.group(2)), token
+    numeric = re.fullmatch(r"(\d+)", token)
+    if numeric is not None:
+        return int(numeric.group(1)), token
+    raise ValueError(f"unable to parse SIGMET/AIRMET sequence: {raw!r}")
+
+
+def _strip_siga0_heading(text: str) -> str:
+    """Drop NWS ``SIGA0*`` abbreviated-heading lines before SIGMET body parse."""
+    lines = [ln for ln in text.splitlines() if not _SIGA0_LINE.match(ln.strip())]
+    return "\n".join(lines)
+
+
 def _parse_convective_sigmet(text: str) -> dict[str, Any] | None:
     """Parse US ``CONVECTIVE SIGMET`` body (WST / #919 M11)."""
     match = _CONVECTIVE_SIGMET.match(text)
@@ -733,6 +767,7 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
         ahl_tt = ahl_match.group("tt").upper()
         body_tac = raw_in[ahl_match.end() :]
 
+    body_tac = _strip_siga0_heading(body_tac)
     text = _normalize(body_tac)
     conv = _parse_convective_sigmet(text)
     if conv is not None:
@@ -746,6 +781,7 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     body = match.group("body")
     from_d, from_h, from_m = _parse_valid(match.group("from"))
     to_d, to_h, to_m = _parse_valid(match.group("to"))
+    seq_num, seq_label = _parse_sequence_token(match.group("seq"))
     upper_body = body.upper()
     if "AMSWELL" in upper_body:
         fir_name = "AMSWELL FIR"
@@ -760,7 +796,7 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
         "product": "SIGMET",
         "fir": match.group("fir").upper(),
         "mwo": match.group("mwo").upper(),
-        "sequence": int(match.group("seq")),
+        "sequence": seq_num,
         "valid_from_day": from_d,
         "valid_from_hour": from_h,
         "valid_from_minute": from_m,
@@ -771,6 +807,12 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
         "fir_name": fir_name,
         "raw": text,
     }
+    if seq_label != str(seq_num):
+        ir["sequence_label"] = seq_label
+    fir_extra = match.groupdict().get("fir_extra")
+    extras = [p for p in (fir_extra or "").upper().split() if len(p) == 4]
+    if extras:
+        ir["additional_firs"] = extras
     if ahl_tt is not None:
         ir["ahl_tt"] = ahl_tt
     _enrich_sigmet_body(ir, body)
@@ -828,12 +870,13 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
         body = match.group("body")
         from_d, from_h, from_m = _parse_valid(match.group("from"))
         to_d, to_h, to_m = _parse_valid(match.group("to"))
+        seq_num, seq_label = _parse_sequence_token(match.group("seq"))
         ir = {
             "ir_version": 1,
             "product": "AIRMET",
             "fir": match.group("fir").upper(),
             "mwo": match.group("mwo").upper(),
-            "sequence": int(match.group("seq")),
+            "sequence": seq_num,
             "valid_from_day": from_d,
             "valid_from_hour": from_h,
             "valid_from_minute": from_m,
@@ -844,6 +887,8 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
             "fir_name": "SHANLON FIR" if "SHANLON" in body.upper() else match.group("fir").upper(),
             "raw": text,
         }
+        if seq_label != str(seq_num):
+            ir["sequence_label"] = seq_label
     main_body, outlook_body = _split_airmet_main_and_outlook(body)
     hazard_body, frzlvl_from_main = _split_frzlvl_section(main_body)
     frzlvl_body = frzlvl_from_main

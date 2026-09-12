@@ -10,6 +10,7 @@ import {
   ACCUMULATE_RESULT_CAP,
   appendConvertedWithinCap,
   nextFirstAccumulatedTac,
+  uniquifyZipMemberNames,
 } from './outputFilename';
 
 describe('sanitizeOutputFilename', () => {
@@ -127,6 +128,10 @@ describe('outputArchiveName', () => {
       `converted_files_${now.getTime()}.zip`,
     );
   });
+
+  it('falls back to wall-clock Date when now is omitted', () => {
+    expect(outputArchiveName('')).toMatch(/^converted_files_\d+\.zip$/);
+  });
 });
 
 describe('ACCUMULATE_RESULT_CAP', () => {
@@ -154,5 +159,49 @@ describe('nextFirstAccumulatedTac', () => {
     expect(nextFirstAccumulatedTac(null, 'first')).toBe('first');
     expect(nextFirstAccumulatedTac(null, null)).toBe(null);
     expect(nextFirstAccumulatedTac(null, undefined)).toBe(null);
+  });
+});
+
+describe('uniquifyZipMemberNames (TC-EV-beta-002)', () => {
+  it('keeps unique names and suffixes collisions', () => {
+    expect(
+      uniquifyZipMemberNames([
+        'test.xml',
+        'test.xml',
+        'test.xml',
+        'other.xml',
+        'test.xml',
+      ]),
+    ).toEqual(['test.xml', 'test_2.xml', 'test_3.xml', 'other.xml', 'test_4.xml']);
+  });
+
+  it('handles names without an extension', () => {
+    expect(uniquifyZipMemberNames(['a', 'a'])).toEqual(['a', 'a_2']);
+  });
+
+  it('avoids colliding with an already-present _N suffix', () => {
+    expect(uniquifyZipMemberNames(['foo.xml', 'foo_2.xml', 'foo.xml'])).toEqual([
+      'foo.xml',
+      'foo_2.xml',
+      'foo_3.xml',
+    ]);
+  });
+
+  it('defaults blank names to download.xml and uniquifies them', () => {
+    expect(uniquifyZipMemberNames(['', '  ', 'download.xml'])).toEqual([
+      'download.xml',
+      'download_2.xml',
+      'download_3.xml',
+    ]);
+  });
+
+  it('handles unicode and long basenames without collision (TC-EV-verify-003)', () => {
+    const long = `${'a'.repeat(180)}.xml`;
+    expect(uniquifyZipMemberNames(['café.xml', 'café.xml', long, long])).toEqual([
+      'café.xml',
+      'café_2.xml',
+      long,
+      long.replace(/\.xml$/, '_2.xml'),
+    ]);
   });
 });

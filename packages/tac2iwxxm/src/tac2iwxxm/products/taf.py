@@ -29,8 +29,9 @@ _BECMG = re.compile(
     r"\bBECMG\s+(?P<from>\d{4})/(?P<to>\d{4})\s+(?P<body>.*)$",
     re.DOTALL,
 )
+# EMPO is an observed typo for TEMPO (CMO Week 1 corpus); accept as alias.
 _TEMPO = re.compile(
-    r"\bTEMPO\s+(?P<from>\d{4})/(?P<to>\d{4})\s+(?P<body>.*)$",
+    r"\b(?:TEMPO|EMPO)\s+(?P<from>\d{4})/(?P<to>\d{4})\s+(?P<body>.*)$",
     re.DOTALL,
 )
 _INTER = re.compile(
@@ -48,7 +49,7 @@ _WX_TOKEN = re.compile(
     r"(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS|IC)+"
     r")(?![A-Z0-9/])"
 )
-_CHANGE_TOKEN = r"(?:BECMG\s+\d{4}/\d{4}|TEMPO\s+\d{4}/\d{4}|INTER\s+\d{4}/\d{4}|FM\d{6})"
+_CHANGE_TOKEN = r"(?:BECMG\s+\d{4}/\d{4}|(?:TEMPO|EMPO)\s+\d{4}/\d{4}|INTER\s+\d{4}/\d{4}|FM\d{6})"
 _CHANGE_GROUP = re.compile(
     rf"\b{_CHANGE_TOKEN}\b.*?(?=\b{_CHANGE_TOKEN}\b|$)",
     re.DOTALL,
@@ -192,11 +193,13 @@ def _parse_change_groups(ir: dict[str, Any], body: str) -> list[dict[str, Any]]:
             continue
         tempo = _TEMPO.match(chunk)
         if tempo is not None:
-            change = {
+            change: dict[str, Any] = {
                 "change_indicator": "TEMPORARY_FLUCTUATIONS",
                 "phenomenon_begin": _taf_day_hour_stamp(ir, tempo.group("from")),
                 "phenomenon_end": _taf_day_hour_stamp(ir, tempo.group("to")),
             }
+            if chunk.upper().startswith("EMPO"):
+                change["tac_change_indicator"] = "EMPO"
             change.update(_parse_forecast_body(tempo.group("body")))
             changes.append(change)
             continue

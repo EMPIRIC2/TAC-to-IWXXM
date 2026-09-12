@@ -1,5 +1,85 @@
 # Evolve Decisions
 
+## Cycle EV-verify-1177-1179 — Post-merge verify (#1177–#1179)
+
+**Opened:** 2026-09-11 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-verify-1177-1179`  
+**Parent:** EV-beta-ux-export-auth / #1180 → `stage` · **Documenting→Implementing gate:** closed (await Spec band)
+
+| ID | Outcome |
+|----|---------|
+| D-EV-v-01 | Scope: #1177 + #1178 + #1179 in one **standard** evolve |
+| D-EV-v-02 | Staging auth UAT: agent curl + FE against `app/api.staging.tac-to-iwxxm.com` |
+| D-EV-v-03 | Prefer verify + minimal fixes; hotfix only if staging auth is red after deploy |
+| D-EV-v-04 | Out of scope: new sinks, profile feature work beyond share/import edges, promote to main |
+| D-EV-v-05 | UI preview during Spec: docs/code only (no local UI interview preview) |
+| D-EV-v-06 | Acceptance = issue checkboxes + session evidence; close GH issues when green |
+| D-EV-v-07 | Work-history import: same `id` → IndexedDB `put` **last-wins** overwrite (intentional; tested) |
+| D-EV-v-08 | Staging register blocked by Supabase confirmation email SMTP (`Error sending confirmation email`); route live — fix staging Auth email or disable confirm for UAT |
+
+[Corpus: product] [Corpus: tests §TC-EV-verify-*] [Corpus: deploy] [Corpus: decisions]
+
+---
+
+## Cycle EV-beta-ux-export-auth — Beta UX + export/auth harden
+
+**Opened:** 2026-09-11 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-beta-ux-export-auth`  
+**Documenting→Implementing gate:** closed (await Spec band + operator gate)
+
+| ID | Outcome |
+|----|---------|
+| D-EV-beta-01 | UI preview: docs/code only |
+| D-EV-beta-02 | Scale **standard**; implement in-session + GH verify tickets for residual |
+| D-EV-beta-03 | Auth verify **local + staging** |
+| D-EV-beta-04 | Extend ADR-043 beta to conversion profiles; Convert&Send + Disseminate remain beta |
+| D-EV-beta-05 | Suppress operator-visible `DEPRECATED_PROFILE_ALIAS` (and similar) |
+| D-EV-beta-06 | Operator lint copy = tac-validate library codes/messages only — no research T3/S1 |
+| D-EV-beta-07 | Zip download uniquifies colliding basenames; Results items collapsible |
+| D-EV-beta-08 | Info-only Conversion/Validation log → neutral chrome (not amber/red) |
+| D-EV-beta-09 | Restore `POST /auth/register` via GoTrue proxy; login remains |
+| D-EV-beta-10 | **Remove** Upload to Database toolbar button (use Disseminate / Convert&Send) |
+| D-EV-beta-11 | Follow-up verify tickets: #1177 staging auth, #1178 export edges, #1179 lint token scan |
+
+[Corpus: product] [Corpus: journeys] [Corpus: tests] [Corpus: adr/ADR-043] [Corpus: decisions]
+
+---
+
+## Cycle EV-cmo-converter-harden — CMO Week 1 convert soft/hard fails
+
+**Opened:** 2026-09-11 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-cmo-converter-harden`  
+**Parent:** EV-cmo-week1-test-sets · **Documenting→Implementing gate:** **open** (operator proceed)
+
+| ID | Outcome |
+|----|---------|
+| D-CMO-H-fixtures | Do **not** rewrite authoritative CMO TAC under `tests/fixtures/cmo_week1/` |
+| D-CMO-H-bare | Bare ICAO obs accepted when product hint is METAR/SPECI (inject keyword) |
+| D-CMO-H-typos | `NOISG`→NOSIG alias; `EMPO`→TEMPO alias (IR flags) |
+| D-CMO-H-sigmet | Alphanumeric/phonetic sequence + SIGA0 strip + dual FIR header parse |
+| D-CMO-H-f20 | F20 METAR↔SPECI keyword mismatch guards unchanged |
+| D-CMO-H-research | Deeper US oceanic IWXXM fidelity → research handoff (not blocking 579/579) |
+
+[Corpus: product §F6] [Corpus: tests] [Corpus: decisions]
+
+---
+
+## Cycle EV-cmo-week1-test-sets — CMO Week 1 NMHS evaluation corpus
+
+
+**Opened:** 2026-09-11 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-cmo-week1-test-sets`  
+**Documenting→Implementing gate:** **open** (operator: proceed / source authoritative / one go)
+
+| ID | Outcome |
+|----|---------|
+| D-CMO-W1-source | Desktop pack `/Users/bigme/Desktop/TAC-to-IWXXM Testing/` is **authoritative** — do not clean TAC |
+| D-CMO-W1-scope | Stage Week 1 METAR/SPECI/TAF/SIGMET; convert+validate matrix (`annex3` / `2025-2`) |
+| D-CMO-W1-iwxxm | Full generated IWXXM in session `evidence/`; commit TAC + samples + `matrix-summary.json` |
+| D-CMO-W1-siga0 | Two US oceanic `SIGA0*` SIGMETs dispositioned `authoritative_us_oceanic_siga0` (parse gap / F6.d deepen) |
+| D-CMO-W1-fn | Deepens **F6** + **F2** evaluation coverage; no new Fn |
+| D-CMO-W1-tc | TC-EV-CMO-001..005 in [Corpus: tests] |
+
+[Corpus: product §F6] [Corpus: product §F2] [Corpus: tests] [Corpus: decisions]
+
+---
+
 ## Cycle EV-933 — ConversionProfile editor (#933)
 
 **Opened:** 2026-09-03 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-933-ui-conversionprofile-editor-rule-packs-executabl`  

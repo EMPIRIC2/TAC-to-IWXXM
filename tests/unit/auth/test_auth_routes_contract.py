@@ -100,6 +100,55 @@ def test_login_returns_user_and_session() -> None:
     proxy.sign_in.assert_called_once_with("a@example.com", "password123")
 
 
+def test_register_returns_user_and_optional_null_session() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    proxy.sign_up.return_value = {
+        "user": {"id": "u2", "email": "b@example.com", "metadata": {}},
+        "session": None,
+    }
+    client = _app_with_auth(
+        proxy=proxy,
+        jwks_url="https://proj.supabase.co/auth/v1/.well-known/jwks.json",
+    )
+    response = client.post(
+        "/auth/register",
+        json={"email": "b@example.com", "password": "password123"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["user"]["id"] == "u2"
+    assert body["session"] is None
+    proxy.sign_up.assert_called_once_with("b@example.com", "password123")
+
+
+def test_register_maps_proxy_failure() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    proxy.sign_up.side_effect = AuthProxyError("registration failed", status_code=400)
+    client = _app_with_auth(
+        proxy=proxy,
+        jwks_url="https://proj.supabase.co/auth/v1/.well-known/jwks.json",
+    )
+    response = client.post(
+        "/auth/register",
+        json={"email": "b@example.com", "password": "password123"},
+    )
+    assert response.status_code == 400
+
+
+def test_register_rejects_invalid_email_body() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    client = _app_with_auth(
+        proxy=proxy,
+        jwks_url="https://proj.supabase.co/auth/v1/.well-known/jwks.json",
+    )
+    response = client.post(
+        "/auth/register",
+        json={"email": "not-an-email", "password": "password123"},
+    )
+    assert response.status_code == 422
+    proxy.sign_up.assert_not_called()
+
+
 def test_login_maps_proxy_failure_to_401() -> None:
     proxy = MagicMock(spec=SupabaseAuthProxy)
     proxy.sign_in.side_effect = AuthProxyError("bad creds", status_code=401)

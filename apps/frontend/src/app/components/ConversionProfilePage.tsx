@@ -139,6 +139,7 @@ import {
 } from '@/utils/conversionProfileShare';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
+import { BetaBadge } from './BetaBadge';
 
 export interface ConversionProfilePageProps {
   /** Bearer JWT — when absent, show sign-in prompt. */
@@ -1007,8 +1008,9 @@ function ConversionProfileAuthed({
       data-testid="conversion-profiles-page"
     >
       <header>
-        <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+        <h1 className="flex flex-wrap items-center gap-2 text-xl font-semibold text-gray-900 dark:text-gray-100">
           {PROFILES_EDITOR_TITLE}
+          <BetaBadge showHelp />
         </h1>
         <p className="text-sm text-gray-600 dark:text-gray-400">
           {PROFILES_EDITOR_SUBTITLE}
@@ -1969,7 +1971,10 @@ export function ConversionProfilePage({
         className="mx-auto max-w-lg space-y-4 p-8 text-center"
         data-testid="conversion-profiles-page"
       >
-        <h1 className="text-xl font-semibold">{PROFILES_EDITOR_TITLE}</h1>
+        <h1 className="flex flex-wrap items-center justify-center gap-2 text-xl font-semibold">
+          {PROFILES_EDITOR_TITLE}
+          <BetaBadge showHelp />
+        </h1>
         <p className="text-sm text-gray-600">{PROFILES_EDITOR_LOGIN_REQUIRED}</p>
         <Button
           type="button"

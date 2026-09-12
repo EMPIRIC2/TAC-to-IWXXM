@@ -52,4 +52,17 @@ describe('TC-EV048 internal doc ref guard (FE)', () => {
     }
     expect(leaks, leaks.join('\n')).toEqual([]);
   });
+
+  it('TC-EV-verify-005: operator catalogs lack research milestone tokens', () => {
+    // Match "research T3", "research S1", bare "research R8" style refs — not ICAO S1 alone.
+    const researchToken =
+      /\bresearch\s+[A-Za-z]?\d+\b|\bresearch\s+[A-Za-z]?\d+\s*\/\s*[A-Za-z]?\d+/i;
+    const leaks: string[] = [];
+    for (const { id, text } of collectOperatorVisibleCopy()) {
+      if (researchToken.test(text)) {
+        leaks.push(`${id}: ${text}`);
+      }
+    }
+    expect(leaks, leaks.join('\n')).toEqual([]);
+  });
 });

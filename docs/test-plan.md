@@ -4931,10 +4931,12 @@ No live `codes.wmo.int` HTML in PR CI.
 ### TC-EV091-001: Operator dissemination destinations visible (UJ-053 restore / #898)
 
 - **Level**: T2 / T3
-- **Objective**: Convert&Send + Disseminate + Upload to Database visible; Convert remains
+- **Objective**: Convert&Send + Disseminate visible; Convert remains; **Upload to Database
+  absent** (EV-beta-ux-export-auth)
 - **Pass criteria**: Vitest + Playwright assert `convert-and-send-button` /
-  `open-dissemination-drawer` / `upload-to-database-button` present; preflight still gates Send
-- **Source**: EV-091; #898; UJ-027–030 / UJ-053
+  `open-dissemination-drawer` present and `upload-to-database-button` absent; preflight
+  still gates Send
+- **Source**: EV-091; #898; UJ-027–030 / UJ-053; EV-beta-ux-export-auth
 
 ### TC-EV091-002: Drawer exchange overlay on convert-before-send (#1089)
 
@@ -5514,6 +5516,50 @@ comments-only, or `*.test.*` / pytest modules.
 | Sample METAR / multi-product TAC | repo fixtures                    | `test-data/` + `packages/tac2iwxxm/tests/` |
 | IWXXM schemas                    | wmo-im + iwxxm-us vendored       | `vendor/schemas/`                          |
 | Golden XML                       | baseline + archive gifts goldens | `test-data/golden/` / package golden/      |
+| CMO Week 1 NMHS evaluation TAC   | Desktop pack (authoritative)     | `tests/fixtures/cmo_week1/`                |
+
+### EV-cmo-week1-test-sets — CMO Week 1 evaluation corpus
+
+[Corpus: product §F6] [Corpus: product §F2] [Corpus: decisions]
+
+Authoritative Week 1 METAR/SPECI/TAF/SIGMET TAC from the CMO/Brown NMHS evaluation pack.
+Do **not** rewrite source TAC (typos and oddities are intentional). Runner:
+`uv run python scripts/cmo_week1_matrix.py` (profile `annex3`, IWXXM `2025-2`).
+
+| ID | Assert |
+|----|--------|
+| TC-EV-CMO-001 | Four TAC sources + README staged under `tests/fixtures/cmo_week1/` |
+| TC-EV-CMO-002 | Parser yields 497 METAR + 42 SPECI + 21 TAF + 19 SIGMET (= 579) |
+| TC-EV-CMO-003 | Smoke convert+validate one Caribbean message per product |
+| TC-EV-CMO-004 | `matrix-summary.json` records 579/579 convert+validate ok after converter harden |
+| TC-EV-CMO-005 | Authoritative oddities preserved (`NOISG`, `VIS16KIM`, `EMPO`, truncated TAF, SPECI-set METAR/bare ICAO) |
+
+Full IWXXM XML for the matrix lives in session evidence (not all committed); one sample per product under `tests/fixtures/cmo_week1/samples/`.
+
+### TC-EV-beta — Beta UX + export/auth (EV-beta-ux-export-auth)
+
+| ID | Assert | Tier |
+|----|--------|------|
+| TC-EV-beta-001 | Dissemination / Convert&Send / Dissemination ops + Conversion profiles nav/page show Beta badge + feedback href; Upload to Database button absent | T0/T2 |
+| TC-EV-beta-002 | Zip download of N results sharing basename yields N distinct members | T0 |
+| TC-EV-beta-003 | Operator-visible lint/validate messages lack research tokens `T3`/`S1`; library codes remain | T0 |
+| TC-EV-beta-004 | ErrorLogPanel / Conversion·Validation chrome is neutral when max severity is `info` | T0 |
+| TC-EV-beta-005 | `DEPRECATED_PROFILE_ALIAS` (and equivalent) not shown in operator log panels | T0 |
+| TC-EV-beta-006 | IWXXM Results items are collapsible | T0/T2 |
+| TC-EV-beta-007 | `POST /auth/register` + `/auth/login` succeed (unit + local); staging evidence recorded | T0 / T3 |
+| TC-EV-beta-008 | Profile share export/import round-trip (non-secret) still works | T0 |
+
+### TC-EV-verify — Post-merge verify (#1177–#1179 / EV-verify-1177-1179)
+
+| ID | Assert | Tier | Issue |
+|----|--------|------|-------|
+| TC-EV-verify-001 | Staging `POST /auth/register` creates user or clear email-confirm path; login returns session; FE stores tokens | T3 | #1177 |
+| TC-EV-verify-002 | Staging guest convert still works without login (F21) | T3 | #1177 |
+| TC-EV-verify-003 | Empty zip / zero results guarded; mixed unique+colliding basenames; unicode/long filenames | T0 | #1178 |
+| TC-EV-verify-004 | Profile share export/import rejects secrets; work-history import conflict behavior documented or fixed | T0 | #1178 |
+| TC-EV-verify-005 | Scan of tac-validate operator messages + FE catalogs lacks research tokens `T3`/`S1`/…; library codes remain; no EV-048 planning-vocab regressions | T0 | #1179 |
+
+Evidence root: `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-verify-1177-1179/evidence/`.
 
 ### TC-EV908 — IWXXM cross-version conversion (#908)
 

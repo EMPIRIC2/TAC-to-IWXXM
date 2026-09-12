@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-24 (EV-079 — US SIGMET/AIRMET national layer M8)
+> **Last updated**: 2026-09-11 (EV-beta-ux-export-auth — beta profiles + export/auth UX)
 
 ## Summary
 
@@ -14,16 +14,16 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
-| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933); **deepen** EV-1051 shared semantic presets + team-safe sharing of non-secret profile assets/destination references (#1051); **deepen** EV-1120 Phase A profile-scoped catalog + glanceable Profile UX (#1120/#1145; B/C → #1146/#1147) |
+| F7 | Multi-product TAC operator UI / sessions | Planned | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933); **deepen** EV-1051 shared semantic presets + team-safe sharing of non-secret profile assets/destination references (#1051); **deepen** EV-1120 Phase A profile-scoped catalog + glanceable Profile UX (#1120/#1145; B/C → #1146/#1147); **deepen** EV-beta-ux-export-auth collapsible Results + zip unique names + info-only log chrome + library-id-only lint copy |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
-| F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert |
+| F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert; **deepen** EV-beta-ux-export-auth info-only Conversion/Validation log chrome (not amber/red) |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725); **deepen** EV-1150 CalVer + promote tags + nightly TestPyPI (ADR-043) |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators |
-| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 UI-hide (API retained); **restore** EV-091 / #898 + #1089 exchange overlay; **deepen** EV-1150 operator **beta** badge + Issues feedback (ADR-043) |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators; **deepen** EV-beta-ux-export-auth operator messages = library codes only (no research T3/S1 tokens) |
+| F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 UI-hide (API retained); **restore** EV-091 / #898 + #1089 exchange overlay; **deepen** EV-1150 operator **beta** badge + Issues feedback (ADR-043); **deepen** EV-beta-ux-export-auth remove Upload to Database button; Disseminate/Convert&Send remain beta |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
 | F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
@@ -38,11 +38,11 @@
 | F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 SpaceWxPhenomena fixtures |
 | F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
 | F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); S053 / EV-044 dual DOKS; **deepen** S060 / EV-051 tag-driven prod Deploy; **deepen** S067 / EV-057 apex → app redirect (#948) |
-| F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22 |
+| F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22; **deepen** EV-beta-ux-export-auth restore working `/auth/register` + login verify (local + staging) |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
-| F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire |
+| F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire; **deepen** EV-beta-ux-export-auth suppress operator-visible `DEPRECATED_PROFILE_ALIAS` notices; Conversion profiles UI marked **beta** (ADR-043) |
 | F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
@@ -63,7 +63,7 @@
 - **UI actions** (still applicable until F6 UI replaces controls):
   - **Convert** — TAC → IWXXM only.
   - **Convert&Send** — TAC → IWXXM then upload to primary database (fixed defaults).
-  - **Upload to Database** — upload previously converted files (dialog).
+  - ~~**Upload to Database**~~ — **removed** (EV-beta-ux-export-auth); use Disseminate.
 - **#555 UX (EV-004)**: On successful convert, replace result cards; collapsible error log from
   API `errors`/`issues`.
 - **Custom output filename (EV-005 / #664)**: Optional manual-input output basename.

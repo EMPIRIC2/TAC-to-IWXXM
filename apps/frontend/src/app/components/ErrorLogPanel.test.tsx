@@ -102,4 +102,45 @@ describe('ErrorLogPanel', () => {
     expect(screen.getByText(/0 · 1 hidden by log level/i)).toBeInTheDocument();
     expect(screen.getByText(/no messages at CRITICAL or above/i)).toBeInTheDocument();
   });
+
+  it('uses neutral chrome for info-only issues (TC-EV-beta-004)', () => {
+    render(
+      <ErrorLogPanel
+        log={{
+          errors: [],
+          issues: [
+            {
+              source: 'manual_input',
+              message: 'Informational note',
+              severity: 'info',
+              code: 'CAVOK_PRESENT',
+            },
+          ],
+        }}
+      />,
+    );
+    expect(screen.getByTestId('conversion-error-log')).toHaveAttribute(
+      'data-tone',
+      'neutral',
+    );
+  });
+
+  it('hides DEPRECATED_PROFILE_ALIAS from operators (TC-EV-beta-005)', () => {
+    const { container } = render(
+      <ErrorLogPanel
+        log={{
+          errors: [],
+          issues: [
+            {
+              source: 'manual_input',
+              message: "profile alias 'annex3' is deprecated",
+              severity: 'info',
+              code: 'DEPRECATED_PROFILE_ALIAS',
+            },
+          ],
+        }}
+      />,
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
 });
