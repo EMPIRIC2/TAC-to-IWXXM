@@ -278,6 +278,22 @@ describe('parseConversionProfileShareBundle', () => {
     ).toThrow(/must not include secret field/);
 
     expect(() =>
+      parseConversionProfileShareBundle(
+        JSON.stringify({
+          schemaVersion: CONVERSION_PROFILE_SHARE_BUNDLE_VERSION,
+          rulePacks: [],
+          overlays: [
+            {
+              slug: 'nested-array',
+              baseProfileId: 'ICAO_2025',
+              body: { sinks: [{ api_key: 'leak' }] },
+            },
+          ],
+        }),
+      ),
+    ).toThrow(/must not include secret field/);
+
+    expect(() =>
       createConversionProfileShareBundle({
         rulePacks: [],
         overlays: [
