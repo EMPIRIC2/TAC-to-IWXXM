@@ -1,0 +1,61 @@
+{
+  "test_case": "URMT-290000Z",
+  "amendment_version": "Amd78-2018",
+  "status": "FAIL",
+  "field_diffs": [
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "CHILD_COUNT_MISMATCH",
+      "expected_count": 6,
+      "actual_count": 3
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice/designator",
+      "type": "TAG_MISMATCH",
+      "expected": "designator",
+      "actual": "locationIndicatorICAO"
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "name",
+      "index": 3
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "locationIndicatorICAO",
+      "index": 4
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "ARP",
+      "index": 5
+    },
+    {
+      "path": "METAR/observationTime",
+      "type": "ATTRIBUTE_MISMATCH",
+      "attribute": "href",
+      "expected": "#uuid.6fb06621-49ca-4d36-978e-229206d943a5",
+      "actual": "#uuid.cdfca013-4b8e-4dd3-b684-ce3e4c5bd64d"
+    },
+    {
+      "path": "METAR/observation/MeteorologicalAerodromeObservation/runwayState/AerodromeRunwayState/runway",
+      "type": "ATTRIBUTE_MISMATCH",
+      "attribute": "href",
+      "expected": "#uuid.721abccf-b887-49ba-8002-27d8692afde3",
+      "actual": "#uuid.da5b0c7a-e021-4efa-af56-8fa03020cb59"
+    }
+  ],
+  "lat_lon_diffs": [
+    {
+      "element_id": "unknown",
+      "status": "MISSING_IN_ACTUAL",
+      "expected_lat": 45.12,
+      "expected_lon": 42.12
+    }
+  ],
+  "metadata_diffs": [],
+  "generated_at": "2026-02-13T01:40:54.366388"
+}

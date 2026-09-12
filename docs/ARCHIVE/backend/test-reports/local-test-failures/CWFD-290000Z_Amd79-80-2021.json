@@ -1,0 +1,60 @@
+{
+  "test_case": "CWFD-290000Z",
+  "amendment_version": "Amd79-80-2021",
+  "status": "FAIL",
+  "field_diffs": [
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "CHILD_COUNT_MISMATCH",
+      "expected_count": 7,
+      "actual_count": 3
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice/designator",
+      "type": "TAG_MISMATCH",
+      "expected": "designator",
+      "actual": "locationIndicatorICAO"
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "name",
+      "index": 3
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "locationIndicatorICAO",
+      "index": 4
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "designatorIATA",
+      "index": 5
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "ARP",
+      "index": 6
+    },
+    {
+      "path": "METAR/observationTime",
+      "type": "ATTRIBUTE_MISMATCH",
+      "attribute": "href",
+      "expected": "#uuid.0e010cfd-d872-4e31-8a1e-bb434a3dc6db",
+      "actual": "#uuid.1e445541-2293-4775-8918-fb98f5942ed4"
+    }
+  ],
+  "lat_lon_diffs": [
+    {
+      "element_id": "unknown",
+      "status": "MISSING_IN_ACTUAL",
+      "expected_lat": 66.6578,
+      "expected_lon": -61.3594
+    }
+  ],
+  "metadata_diffs": [],
+  "generated_at": "2026-02-13T01:40:54.549650"
+}

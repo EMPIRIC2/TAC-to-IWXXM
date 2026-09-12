@@ -1,0 +1,66 @@
+{
+  "test_case": "WSSS-290000Z",
+  "amendment_version": "Amd78-2018",
+  "status": "FAIL",
+  "field_diffs": [
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "CHILD_COUNT_MISMATCH",
+      "expected_count": 6,
+      "actual_count": 3
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice/designator",
+      "type": "TAG_MISMATCH",
+      "expected": "designator",
+      "actual": "locationIndicatorICAO"
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "name",
+      "index": 3
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "locationIndicatorICAO",
+      "index": 4
+    },
+    {
+      "path": "METAR/aerodrome/AirportHeliport/timeSlice/AirportHeliportTimeSlice",
+      "type": "MISSING_CHILD",
+      "child_tag": "ARP",
+      "index": 5
+    },
+    {
+      "path": "METAR/observationTime",
+      "type": "ATTRIBUTE_MISMATCH",
+      "attribute": "href",
+      "expected": "#uuid.a12cfd9c-3165-4cee-b1bd-df3156d3e37a",
+      "actual": "#uuid.cd314efb-e1a4-43ec-9c70-99ea36b2a593"
+    },
+    {
+      "path": "METAR/trendForecast/MeteorologicalAerodromeTrendForecast/phenomenonTime/TimePeriod/beginPosition",
+      "type": "TEXT_MISMATCH",
+      "expected": "2020-05-29T01:30:00Z",
+      "actual": "2026-01-29T01:30:00Z"
+    },
+    {
+      "path": "METAR/trendForecast/MeteorologicalAerodromeTrendForecast/phenomenonTime/TimePeriod/endPosition",
+      "type": "TEXT_MISMATCH",
+      "expected": "2020-05-29T01:30:00Z",
+      "actual": "2026-01-29T01:30:00Z"
+    }
+  ],
+  "lat_lon_diffs": [
+    {
+      "element_id": "unknown",
+      "status": "MISSING_IN_ACTUAL",
+      "expected_lat": 1.37,
+      "expected_lon": 103.97
+    }
+  ],
+  "metadata_diffs": [],
+  "generated_at": "2026-02-13T01:40:54.409724"
+}

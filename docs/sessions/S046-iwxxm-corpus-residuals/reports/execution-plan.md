@@ -1,0 +1,136 @@
+# Execution plan — S046 / EV-038 (#846 residuals #849–#861)
+
+> **Status**: **approved** (`D-S046-04-plan`=1) — Gate B PASS; **08 PASS**; Phase C **`D-S046-phase-c`=1**; T5.2 **09+10 PASS**; T5.3 **APPROVED** (`D-S046-11`=1); Phase D deploy — T5.4 **12-verify-deploy in progress**  
+> **Branch**: `evolve/EV-038-iwxxm-corpus-residuals`  
+> **Evolve cycle**: EV-038  
+> **Features**: deepen **F2 / F4 / F6 / F7 / F32** (no new Fn)  
+> **Spec sources**: feature-list §EV-038; UJ-050; TC-EV038-001..014; AC1–AC14;
+> `D-S046-mplan`; `D-S046-sot`; S02.M1–M5; #846 / #849–#861
+
+## Current State
+
+| Field | Value |
+|-------|-------|
+| **Active phase** | Phase D — deploy (T5.4 12→13) |
+| **Active milestone** | M5 — Verify / deploy closeout |
+| **Active task** | T5.4 — 12 + 13 (**in_progress**) |
+| **Tasks** | 27 / 28 completed (through T5.3); T5.4 in progress |
+| **Last updated** | 2026-08-06 |
+
+## Tech Stack Summary
+
+| Area | Choice | Source |
+|------|--------|--------|
+| Template | `static+api+worker` | template |
+| #851 SoT | Python `iwxxm_versions.py` → **generated committed JSON** → FE + OpenAPI/CI | `D-S046-sot`=1 |
+| #854 labels | Roles `latest` / `previous` from generated JSON (replace hardcoded strings) | UJ-050; AC7 |
+| #852 tip-diff | Script/job vs previous vendor pin; no hand-edit vendor | AC5 |
+| #853 US gate | Checklist + optional CI smoke; lag decision documented | AC6 |
+| Encode M4 | Fixtures + SCH; cite-only deferral OK when no WMO peer | AC11–AC13; S02.M4 |
+| New deps | **None** expected | — |
+| Deploy | Standard 12/13; **waive for docs-only M1** ship if alone; required for M2+ runtime | S02.M5 |
+| Local UI | Non-deployed preview at M2/#854 | `D-S046-mplan` Q2=1 |
+
+### Generated JSON shape (locked)
+
+```json
+{
+  "default": "2025-2",
+  "versions": [
+    {"id": "2025-2", "role": "latest"},
+    {"id": "2023-1", "role": "previous"}
+  ]
+}
+```
+
+**Path locked (T2.1):** `apps/frontend/src/generated/iwxxm_versions.json`  
+Export: `make export-iwxxm-versions` → `scripts/iwxxm/export_iwxxm_versions.py`
+
+## Interview locks
+
+| ID | Decision |
+|----|----------|
+| D-S046-mplan | M1→M2→M3→M4; UI yes@M2 |
+| D-S046-ac | AC1–AC14 approved |
+| D-S046-02-gate-a | PASS after SoT |
+| D-S046-sot | Python → generated JSON → FE + OpenAPI/CI |
+| D-S046-04-plan | **1** — approved as written |
+| D-S046-05-gate-b | **1** — PASS → 07 M1 |
+| D-S046-phase-c | **1** — push + start T5.2 (09+10) |
+| D-S046-ui-preview | **2** — decline non-deployed preview; approve from reports/tests only |
+| D-S046-11 | **1** — Approve all AC1–AC14 + UJ-050; proceed to T5.4 |
+
+## Milestones & Tasks (TDD order)
+
+`evolve_cycle_id: EV-038` · `deepen_feature_ids: [F2, F4, F6, F7, F32]`
+
+**Work order:** M1 docs → M2 release-line → M3 soft → M4 encode → closeout.
+
+### M1 — Docs / process (#858, #861, #855)
+
+| Task | Type | Description | Spec Source | Depends On | Status |
+|------|------|-------------|-------------|------------|--------|
+| T1.1 | Docs | COVERAGE_MATRIX + epic note: WAFS/QVACI/SIGWX XML-only OOS (G5) | AC1; TC-EV038-001; #858 | — | **completed** |
+| T1.2 | Docs | iwxxm-modelling delta-watch checklist step on sync PRs (G8) | AC2; TC-EV038-002; #861 | T1.1 | **completed** |
+| T1.3 | Docs | Deprecation-calendar GitHub issue template + dry-run note | AC3; TC-EV038-003; #855 | T1.2 | **completed** |
+| T1.4 | Docs | Close #858/#861/#855; link #846 | AC14 | T1.3 | **completed** |
+
+### M2 — Release-line automation + UX (#851–#854)
+
+| Task | Type | Description | Spec Source | Depends On | Status |
+|------|------|-------------|-------------|------------|--------|
+| T2.1 | Test | Red: CI/drift test fails when FE/OpenAPI diverge from Python SoT | AC4; TC-EV038-004; `D-S046-sot` | T1.4 | **completed** |
+| T2.2 | Code | Export script: Python → committed JSON (+ roles); wire Makefile/`make` target | AC4; `D-S046-sot` | T2.1 | **completed** |
+| T2.3 | Code | FE import JSON for picker options + Latest/Previous labels; drop hardcodes | AC7; UJ-050; TC-EV038-007; #854 | T2.2 | **completed** |
+| T2.4 | Code | OpenAPI / schema enum docs align with export; CI assert | AC4; TC-EV038-004 | T2.2 | **completed** |
+| T2.5 | Test | Green drift CI + FE Vitest for labels | TC-EV038-004/007 | T2.3, T2.4 | **completed** |
+| T2.6 | Code | Sync-PR tip-diff script (XSD/SCH/example stems); link adopt checklist | AC5; TC-EV038-005; #852 | T2.5 | **completed** |
+| T2.7 | Docs | iwxxm-us compatibility checklist + optional CI smoke; lag decision | AC6; TC-EV038-006; #853 | T2.6 | **completed** |
+| T2.8 | Docs | Close #851–#854; local UI preview note | AC14; UJ-050 | T2.7 | **completed** |
+
+### M3 — Corpus soft / gates (#859, #860, #857)
+
+| Task | Type | Description | Spec Source | Depends On | Status |
+|------|------|-------------|-------------|------------|--------|
+| T3.1 | Docs/Config | codes.wmo.int vs vendor codelist drift check cadence (+ optional CI) | AC8; TC-EV038-008; #859 | T2.8 | **completed** |
+| T3.2 | Docs | Inventory `*-translation-failed*` vs soft path; fixtures or deferral | AC9; TC-EV038-009; #860 | T3.1 | **completed** |
+| T3.3 | Docs | SWXA A7-4/A7-5 disposition; catalog only with vendor peers | AC10; TC-EV038-010; #857 | T3.2 | **completed** |
+| T3.4 | Docs | Close/defer #859/#860/#857 | AC14 | T3.3 | **completed** |
+
+### M4 — Encode deepen (#849, #850, #856)
+
+| Task | Type | Description | Spec Source | Depends On | Status |
+|------|------|-------------|-------------|------------|--------|
+| T4.1 | Test | Red: VONA vertical-extent fixtures (HGT SOURCE / MOV) when TAC supplies | AC11; TC-EV038-011; #849 | T3.4 | **completed** |
+| T4.2 | Code | Encode `VolcanicAshCloudVerticalExtent` path (no invented packing) | AC11; F32 | T4.1 | **completed** |
+| T4.3 | Test | Green SCH + matrix residual row for G-VONA-1 | TC-EV038-011 | T4.2 | **completed** |
+| T4.4 | Test/Docs | RESUSPENDED_VOLCANIC_ASH — fixtures **or** cite-only deferral + matrix | AC12; TC-EV038-012; #850 | T4.3 | **completed** |
+| T4.5 | Test | Red: ADR-032 equality vs `sigmet-VA-EGGX` (or irreducible-diff doc) | AC13; TC-EV038-013; #856 | T4.4 | **completed** |
+| T4.6 | Code | Encode/canonicalize deltas → equality green when feasible | AC13; ADR-032 | T4.5 | **completed** |
+| T4.7 | Code | Catalog promote → `wmoPass` **or** document residual; FIXTURE_GAPS | AC13; TC-EV038-013 | T4.6 | **completed** |
+| T4.8 | Docs | Close/defer #849/#850/#856; COVERAGE_MATRIX | AC14 | T4.7 | **completed** |
+
+### M5 — Verify / deploy closeout
+
+| Task | Type | Description | Spec Source | Depends On | Status |
+|------|------|-------------|-------------|------------|--------|
+| T5.1 | Config | 08-verify-build — lint/typecheck/format/suites | 08 | T4.8 | **completed** |
+| T5.2 | Test | 09-qa + 10-e2e (UJ-050); H4–H5 prep | 09; 10 | T5.1 | **completed** |
+| T5.3 | Docs | 11-verify-impl AC roll-up; epic #846 update | AC14; TC-EV038-014; 11 | T5.2 | **completed** |
+| T5.4 | Deploy | 12 + 13 (or waive if final ship docs-only — unlikely after M2+) | 12; 13; S02.M5 | T5.3 | **in_progress** |
+
+## PR / Git Strategy
+
+| Item | Value |
+|------|-------|
+| Branch | `evolve/EV-038-iwxxm-corpus-residuals` → `main` |
+| Commits | Atomic per task / logical group; `[EV-038]` / `[T*]` prefix |
+| PR title | `[EV-038] Epic #846 corpus residuals #849–#861` |
+| Merge | Explicit user approval |
+
+## Phase Gate Check (B→C)
+
+- [x] Execution plan approved (`D-S046-04-plan`=1)
+- [x] 05-verify-tech PASS (`D-S046-05-gate-b`=1)
+- [x] No new deps without inventory back-add
+- [x] SoT path + OpenAPI drift tasks present (T2.1–T2.5)

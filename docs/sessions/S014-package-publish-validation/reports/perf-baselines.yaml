@@ -1,0 +1,55 @@
+# F11 / E10-35 absolute baselines for hard gates (T1.3).
+# Source: layer-cost-matrix.md mean p95 (2026-07-18).
+# Re-record after F13 Rust Schematron before publish hard-fail.
+
+version: 1
+recorded: "2026-07-18"
+source_report: layer-cost-matrix.md
+iwxxm_version: "2025-2"
+profile: annex3
+iterations: 21
+
+gates:
+  lib_path_ratio: 0.85
+  http_msgspec_ratio: 1.0
+
+baselines_p95_s:
+  lint: 0.0000021
+  convert_ir: 0.0000218
+  xsd: 0.0000364
+  schematron: 0.0000352  # skip-path until Rust Schematron
+  http_pydantic_map: 0.0000062
+  http_msgspec_observed: 0.0000020
+  lib_path_lxml: 0.0000955  # lint+convert+xsd+schematron means
+
+ceilings_p95_s:
+  lib_path_hard: 0.000081175  # 0.85 * lib_path_lxml
+  http_msgspec_hard: 0.0000062  # 1.0 * http_pydantic_map
+
+# T3.5 — soft-bench wiring for native validate_iwxxm (E10-35).
+# Observed ratios are measured in tests/perf/test_t35_*; re-record absolute
+# numbers on publish runners before T6.6 hard-fail.
+native_soft_bench:
+  iwxxm_version: "2023-1"
+  profile: annex3
+  hard_env: IWXXM_VALIDATE_HARD_PERF
+  validate_combined_note: >
+    Soft head-to-head vs same-run lxml validate (xsd+schematron). Native
+    Schematron evaluates real rules; lxml may SCHEMATRON_SKIPPED — ratio soft
+    warnings expected until T6.6 re-baselines against native-capable reference.
+  lib_path_ratio: 0.85
+  publish_hard_task: T6.6
+
+# T5.3 — soft-bench wiring for msgspec HTTP encode (E10-35).
+http_soft_bench:
+  hard_env: IWXXM_VALIDATE_HARD_PERF
+  http_msgspec_ratio: 1.0
+  note: >
+    Soft head-to-head msgspec encode vs same-run pydantic model_dump_json;
+    helper path vs committed http_pydantic_map ceiling. Hard-fail at T6.6.
+  publish_hard_task: T6.6
+
+caveats:
+  - schematron_xslt2_skipped_d_s008_t21_sch
+  - rebaseline_after_f13_rust_schematron
+  - t35_soft_benches_native_vs_lxml
