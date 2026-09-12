@@ -3,7 +3,7 @@
 Asserts coverage-matrix / theme-map citations stay wired and that defer-to-latest
 METCE surfaces already shipped under S027 remain present on annex3 goldens.
 Optional aviation-nil ``missing`` stubs beyond existing convert paths stay deferred
-(see ``docs/sessions/S030-apac-encode-validate/reports/t6.4-optional-798-qa-matrix.md``).
+(see ``docs/domain/apac/t6.4-optional-798-qa-matrix.md``).
 """
 
 from __future__ import annotations
@@ -12,8 +12,8 @@ from pathlib import Path
 
 _REPO = Path(__file__).resolve().parents[3]
 _MATRIX = _REPO / "docs" / "domain" / "rules" / "COVERAGE_MATRIX.md"
-_THEME = _REPO / "docs" / "sessions" / "S030-apac-encode-validate" / "reports" / "apac-encode-theme-fixture-map.md"
-_T64 = _REPO / "docs" / "sessions" / "S030-apac-encode-validate" / "reports" / "t6.4-optional-798-qa-matrix.md"
+_THEME = _REPO / "docs" / "domain" / "apac" / "apac-encode-theme-fixture-map.md"
+_T64 = _REPO / "docs" / "domain" / "apac" / "t6.4-optional-798-qa-matrix.md"
 _GOLDEN = Path(__file__).resolve().parent / "fixtures" / "annex3_golden"
 
 

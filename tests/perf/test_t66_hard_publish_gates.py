@@ -2,7 +2,7 @@
 
 Soft benches (T3.5 / T5.3) force ``hard=False``. This module exercises the publish
 path: HTTP 1.0x must pass; lib 0.85x hard-fails under the env flip (see
-``docs/sessions/S014-package-publish-validation/reports/t66-hard-publish-gates.md``).
+``docs/engineering/perf/t66-hard-publish-gates.md``).
 """
 
 from __future__ import annotations
@@ -225,14 +225,7 @@ def test_t66_lib_hard_gates_under_env_flip() -> None:
 
 
 def test_t66_report_exists() -> None:
-    report = (
-        REPO_ROOT
-        / "docs"
-        / "sessions"
-        / "S014-package-publish-validation"
-        / "reports"
-        / "t66-hard-publish-gates.md"
-    )
+    report = REPO_ROOT / "docs" / "engineering" / "perf" / "t66-hard-publish-gates.md"
     assert report.is_file()
     text = report.read_text(encoding="utf-8")
     assert "0.85" in text
