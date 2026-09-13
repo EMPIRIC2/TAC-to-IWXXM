@@ -281,16 +281,45 @@ class TestValidateHelpersCoverage:
         assert "TAC layers" in str(exc_info.value.detail)
 
     @pytest.mark.asyncio
-    async def test_validate_content_rejects_empty_xml_layer_selection(self, monkeypatch):
-        # Force empty xml_layers by selecting only non-XML via monkeypatch of filter path:
-        # layers that are neither TAC nor in _XML_LAYERS cannot exist on the enum;
-        # instead call _validate_one with xml and layers=[] after normalize.
+    async def test_validate_content_rejects_empty_layers_for_xml_and_tac(self):
+        for content_type, content in (
+            ("xml", "<?xml version='1.0'?><root/>"),
+            ("tac", "METAR KJFK 010000Z 00000KT CAVOK"),
+        ):
+            request = validation_router.ValidationRequest(
+                content=content,
+                content_type=content_type,
+                layers=[],
+            )
+            with pytest.raises(HTTPException) as exc_info:
+                await validation_router.validate_content(request)
+            assert exc_info.value.status_code == 400
+            assert "non-empty" in str(exc_info.value.detail).lower()
+
+    @pytest.mark.asyncio
+    async def test_validate_content_rejects_when_xml_layer_set_empty(self, monkeypatch):
+        """Defensive path: selected layers exist but none map to _XML_LAYERS."""
+        monkeypatch.setattr(validation_router, "_XML_LAYERS", frozenset())
         request = validation_router.ValidationRequest(
             content="<?xml version='1.0'?><root/>",
             content_type="xml",
-            layers=[],
+            layers=[ValidationLayer.XML_WELLFORMED],
         )
         with pytest.raises(HTTPException) as exc_info:
             await validation_router.validate_content(request)
         assert exc_info.value.status_code == 400
         assert "No XML validation layers" in str(exc_info.value.detail)
+
+    @pytest.mark.asyncio
+    async def test_validate_content_rejects_when_tac_layer_set_empty(self, monkeypatch):
+        """Defensive path: requested layers exist but none map to _TAC_LAYERS."""
+        monkeypatch.setattr(validation_router, "_TAC_LAYERS", frozenset())
+        request = validation_router.ValidationRequest(
+            content="METAR KJFK 010000Z 00000KT CAVOK",
+            content_type="tac",
+            layers=[ValidationLayer.AIRPORT_ICAO],
+        )
+        with pytest.raises(HTTPException) as exc_info:
+            await validation_router.validate_content(request)
+        assert exc_info.value.status_code == 400
+        assert "No TAC validation layers" in str(exc_info.value.detail)

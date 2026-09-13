@@ -81,6 +81,9 @@ def _validate_one(item: ValidationRequest) -> AggregatedValidationResult:
     content_type = _normalize_content_type(item.content_type)
     layers = item.layers
     version = item.iwxxm_version or "2025-2"
+    # Empty list is explicit "no layers" — reject for both TAC and XML (consistent 400).
+    if layers is not None and len(layers) == 0:
+        raise ValueError("layers must be omitted (use defaults) or a non-empty list")
 
     if content_type == "xml":
         selected = list(layers) if layers is not None else list(_XML_LAYERS)
@@ -109,7 +112,9 @@ def _validate_one(item: ValidationRequest) -> AggregatedValidationResult:
                 "XML layers require content_type 'xml' or 'iwxxm' "
                 f"(requested: {', '.join(layer.value for layer in xml_only)})"
             )
-        layers = [layer for layer in layers if layer in _TAC_LAYERS] or None
+        layers = [layer for layer in layers if layer in _TAC_LAYERS]
+        if not layers:
+            raise ValueError("No TAC validation layers selected")
 
     return get_validation_service().validate(
         content=item.content,
