@@ -24,8 +24,8 @@ Staging-validated hardening since the 2026-09-10 cut (adv-load find/fix + beta U
 - `iwxxm-validate` **2026.9.10 → 2026.9.13** (CalVer sync)
 
 ### Deploy
-- Promote PR: (link when opened) (`stage` → `main`).
-- Staging tip before promote: `b9272b29` (+ release prep commit); Staging smoke green;
+- Promote PR: [#1188](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1188) (`stage` → `main`).
+- Staging tip before promote: `13682c2d` (release prep on `b9272b29`); Staging smoke green;
   post-fix adversarial plunge AC1–AC13 PASS (0% Locust failures @ 15u/3m).
 - After merge + tip CI green: tag `v2026.09.13-deploy` to roll production.
 - Optional PyPI tags after checklist: `tac2iwxxm-v2026.9.13`, `tac-validate-v2026.9.13`,
