@@ -4,7 +4,8 @@ Ticket-tuned index for agents and humans. Prefer open GitHub issues over histori
 
 **Live agent state:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/{id}/`  
 **Standing corpus:** [CORPUS.md](../CORPUS.md)  
-**Active sessions:** EV-docs-accuracy-audit (doc accuracy); prior slim PR [#1185](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1185)
+**Project board:** [project-board.md](../project-board.md) · [Project #7](https://github.com/orgs/EMPIRIC2/projects/7) (20 h/week · I01=2026-09-15)  
+**Active sessions:** EV-project-board-planning (schedule/board); prior slim PR [#1185](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1185)
 
 ## Open epics / high priority (snapshot 2026-09-12)
 

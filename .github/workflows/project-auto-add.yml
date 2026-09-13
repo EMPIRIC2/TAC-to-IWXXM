@@ -1,0 +1,24 @@
+# Auto-add new/reopened issues to org Project #7 (TAC-to-IWXXM).
+# Requires repo secret PROJECT_TOKEN with scopes: project, read:project (+ repo if private).
+# Preferred complement: Project → Workflows → Auto-add to project (is:issue).
+# [Corpus: project-board]
+
+name: Project auto-add
+
+on:
+  issues:
+    types: [opened, reopened, transferred]
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  add-to-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add issue to EMPIRIC2 Project #7
+        uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: https://github.com/orgs/EMPIRIC2/projects/7
+          github-token: ${{ secrets.PROJECT_TOKEN }}
