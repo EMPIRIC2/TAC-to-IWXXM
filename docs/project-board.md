@@ -60,7 +60,7 @@ Size → hours guide: **XS=2 · S=4 · M=8 · L=16 · XL=32**.
 ## Auto-import new tickets
 
 1. **Preferred:** Project → Workflows → **Auto-add to project** for `EMPIRIC2/TAC-to-IWXXM`, filter `is:issue`, enabled.
-2. **Fallback CI:** `.github/workflows/project-auto-add.yml` uses `actions/add-to-project` on `issues: [opened, reopened, transferred]`. Requires repo secret **`PROJECT_TOKEN`** (classic PAT or fine-grained token with `project` + `read:project` on org, plus `repo` for private).
+2. **Fallback CI:** `.github/workflows/project-auto-add.yml` uses `actions/add-to-project` on `issues: [opened, reopened, transferred]`. Requires repo secret **`PROJECT_TOKEN`**: a **fine-grained PAT** on a dedicated bot account with **Organization → Projects (read & write)** and **Repository → Issues (read-only)** for `EMPIRIC2/TAC-to-IWXXM` only. Do **not** use a classic PAT with blanket `repo` scope.
 
 Sub-issue auto-add may already be enabled; it does **not** replace issue auto-add.
 

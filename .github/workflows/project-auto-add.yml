@@ -1,5 +1,7 @@
 # Auto-add new/reopened issues to org Project #7 (TAC-to-IWXXM).
-# Requires repo secret PROJECT_TOKEN with scopes: project, read:project (+ repo if private).
+# Requires repo secret PROJECT_TOKEN: fine-grained PAT for a dedicated bot user —
+# Organization Projects (read & write) + this repo Issues (read-only). Do not use a
+# classic PAT with blanket `repo` scope.
 # Preferred complement: Project → Workflows → Auto-add to project (is:issue).
 # [Corpus: project-board]
 
