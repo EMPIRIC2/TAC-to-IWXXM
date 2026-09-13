@@ -6,6 +6,7 @@ Usage (from repo root, after GraphQL quota recovers):
 
 [Corpus: project-board]
 """
+
 from __future__ import annotations
 
 import json
@@ -210,10 +211,19 @@ def main() -> int:
             fail += 1
             continue
         ops: list[tuple[str, dict]] = [
-            (fields["Priority"][0], {"singleSelectOptionId": fields["Priority"][1][pri]}),
+            (
+                fields["Priority"][0],
+                {"singleSelectOptionId": fields["Priority"][1][pri]},
+            ),
             (fields["Size"][0], {"singleSelectOptionId": fields["Size"][1][size]}),
-            (fields["Iteration"][0], {"singleSelectOptionId": fields["Iteration"][1][it]}),
-            (fields["Status"][0], {"singleSelectOptionId": fields["Status"][1][status]}),
+            (
+                fields["Iteration"][0],
+                {"singleSelectOptionId": fields["Iteration"][1][it]},
+            ),
+            (
+                fields["Status"][0],
+                {"singleSelectOptionId": fields["Status"][1][status]},
+            ),
         ]
         if hours > 0:
             ops.append((fields["Estimate"][0], {"number": float(hours)}))
@@ -231,7 +241,7 @@ def main() -> int:
                         "value": value,
                     },
                 )
-            except Exception as exc:  # noqa: BLE001 — surface and continue
+            except Exception as exc:
                 errs.append(str(exc)[:120])
             time.sleep(0.25)
         if errs:
@@ -245,5 +255,10 @@ def main() -> int:
     return 0 if fail == 0 else 1
 
 
-if __name__ == "__main__":
+def _entry() -> None:
+    """CLI entry (covered in unit tests without network)."""
     raise SystemExit(main())
+
+
+if __name__ == "__main__":
+    _entry()
