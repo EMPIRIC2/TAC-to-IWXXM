@@ -10,7 +10,8 @@ import {
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { FileConverter, clearOverlayOnAuthLoss } from './FileConverter';
+import { FileConverter } from './FileConverter';
+import { clearOverlayOnAuthLoss } from '@/app/utils/clearOverlayOnAuthLoss';
 import { operatorDisseminationUiConfig } from '/utils/operatorDisseminationUi';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));

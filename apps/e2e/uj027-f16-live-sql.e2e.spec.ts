@@ -39,7 +39,7 @@ const E2E_DIR = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(E2E_DIR, '../..');
 const FIXTURES = path.join(
   REPO_ROOT,
-  'docs/sessions/S019-dissemination-upload/fixtures/mock-byoc-destinations.json',
+  'tests/fixtures/byoc/mock-byoc-destinations.json',
 );
 
 const MINIMAL_IWXXM =

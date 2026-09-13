@@ -1,4 +1,9 @@
-"""IWXXM XSD + Schematron validation engine (F2 package)."""
+"""IWXXM XSD + Schematron validation engine (F2 package).
+
+Call :func:`iwxxm_validate.api.validate` for XSD/Schematron reports against
+pinned vendor schemas. Public APIs use NumPy docstrings
+(``docs/engineering/docstrings.md``).
+"""
 
 from __future__ import annotations
 
@@ -9,7 +14,7 @@ from iwxxm_validate.models import Issue, StageResult, ValidationReport
 from iwxxm_validate.native import clear_schema_caches, rust_available, rust_module
 from iwxxm_validate.validate_iwxxm import validate_iwxxm
 
-__version__ = "2026.9.10"
+__version__ = "2026.9.13"
 
 __all__ = [
     "Issue",

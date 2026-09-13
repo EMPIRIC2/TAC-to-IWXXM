@@ -41,5 +41,5 @@ not by full Python bind-on-validate.
 
 ## References
 
-- E10-23, E10-40; F11; `docs/context/package-publish-validation.md` R3
+- E10-23, E10-40; F11; (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) R3
 - ADR-026 (msgspec HTTP); ADR-016 (package msgspec)

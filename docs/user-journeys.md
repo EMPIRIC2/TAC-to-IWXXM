@@ -417,7 +417,7 @@ opts in.
 
 **Automated tests**: TC-EV981-001..005 (see test-plan)
 
-**Source**: EV-981 / #981; [Context: propagate-residuals-to-remarks](context/propagate-residuals-to-remarks.md)
+**Source**: EV-981 / #981; Context: propagate-residuals-to-remarks (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -455,7 +455,7 @@ and check gateway health — without replacing one-shot destinations drawer send
 
 **Automated tests**: TC-F16-OPS-001..006 (see test-plan)
 
-**Source**: EV-936 / #936; ADR-041; ADR-040; [Context: dissemination-ops-936](context/dissemination-ops-936.md)
+**Source**: EV-936 / #936; ADR-041; ADR-040; Context: dissemination-ops-936 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -502,7 +502,7 @@ the light picker (#1024) or putting credentials in the profile.
 
 **Automated tests**: TC-EV933-001..006 (see test-plan)
 
-**Source**: EV-933 / #933; ADR-038 (amend overlays); [Context: conversion-profile-editor-933](context/conversion-profile-editor-933.md)
+**Source**: EV-933 / #933; ADR-038 (amend overlays); Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -599,7 +599,7 @@ load a profile-appropriate example; open starter packs without losing custom edi
 
 **Automated tests**: TC-EV1120-010..017
 
-**Source**: EV-1120 / #1145; [Context: profile-scoped-catalog-1120](context/profile-scoped-catalog-1120.md)
+**Source**: EV-1120 / #1145; Context: profile-scoped-catalog-1120 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -1870,7 +1870,7 @@ TC-F23-003 adjacency; #809 closable.
 
 **Automated tests**: TC-EV025-008..009 (reused ids — `E26-TC=1`); FIXTURE_GAPS / catalog row.
 
-**Source**: #809 · [Context: va-multi-location-809](context/va-multi-location-809.md) · ADR-032
+**Source**: #809 · Context: va-multi-location-809 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) · ADR-032
 
 ---
 
@@ -1910,7 +1910,7 @@ Unexpected leftovers are defects (fix decode or file a child issue — no silent
 **Browser wiring**: Same public decode-tac + static catalog as UJ-039 / UJ-020 — no new
 origins (H4–H5 when FE ships).
 
-**Source**: #815 · ADR-025 · ADR-032 · [Context: wmo-decode-residual-matrix](context/wmo-decode-residual-matrix.md)
+**Source**: #815 · ADR-025 · ADR-032 · Context: wmo-decode-residual-matrix (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -1952,7 +1952,7 @@ Issues [#823](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/823),
 **Browser wiring**: No new origins. H4–H5 only if FE catalog/Examples change ships.
 
 **Source**: #823 · ADR-014 · ADR-028 · ADR-032 ·
-[Context: eight-family-ahl-rules-823](context/eight-family-ahl-rules-823.md)
+Context: eight-family-ahl-rules-823 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -1990,7 +1990,7 @@ or split with links.
 **Browser wiring**: No new origins. H4–H5 only if FE catalog/Examples change ships.
 
 **Source**: #831 · #829 · #820 · ADR-028 · ADR-032 ·
-[Context: quality-residuals-831](context/quality-residuals-831.md)
+Context: quality-residuals-831 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -2019,7 +2019,7 @@ session writes; TC-F31-001/002.
 
 **Browser wiring**: Same API origin rules as UJ-001; no Auth required.
 
-**Source**: E31-*; [Context: platform-independence-842](context/platform-independence-842.md)
+**Source**: E31-*; Context: platform-independence-842 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -2146,7 +2146,7 @@ with links; H4–H5 when FE picker/Examples ship.
 required when FE ships (`D-S040-E32-M` Q2=3).
 
 **Source**: #741 · #846 · ADR-028 · ADR-032 ·
-[Context: iwxxm-corpus-quality-846](context/iwxxm-corpus-quality-846.md)
+Context: iwxxm-corpus-quality-846 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 
@@ -2179,7 +2179,7 @@ aligned; local non-deployed UI preview at M2 (`D-S046-mplan` Q2=1).
 
 **Source**: #854 · #851 ·
 [RELEASE_LINE_STAFF_GUIDE.md](domain/iwxxm/RELEASE_LINE_STAFF_GUIDE.md) ·
-[Context: iwxxm-corpus-residuals-846](context/iwxxm-corpus-residuals-846.md)
+Context: iwxxm-corpus-residuals-846 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ---
 

@@ -59,5 +59,5 @@ ADR-037 Option C keeps package names — extracting `packages/core/canonical-mod
 
 ## References
 
-- [Context: canonical-met-staged-validation-925](../context/canonical-met-staged-validation-925.md)
+- Context: canonical-met-staged-validation-925 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - EV-925 session report `925-canonical-met-staged-validation.md`

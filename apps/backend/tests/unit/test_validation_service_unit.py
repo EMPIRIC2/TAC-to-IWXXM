@@ -140,9 +140,62 @@ def test_validate_rejects_xml_content_type(monkeypatch):
         service.validate("<xml/>", content_type="xml")
 
 
+def test_validate_rejects_unsupported_content_type(monkeypatch):
+    service = _make_service(monkeypatch)
+    with pytest.raises(ValueError, match="Unsupported content_type"):
+        service.validate("METAR KJFK", content_type="pdf")
+
+
+def test_validate_all_layers_rejects_non_tac_layer_selection(monkeypatch):
+    service = _make_service(monkeypatch)
+    with pytest.raises(ValueError, match="No TAC layers requested"):
+        service.validate_all_layers(
+            "METAR KJFK 010000Z",
+            layers=[ValidationLayer.XML_SCHEMA],
+        )
+
+
+def test_validate_all_layers_syntax_exception_is_swallowed(monkeypatch):
+    service = _make_service(monkeypatch, {"KJFK"})
+    monkeypatch.setattr(service, "_extract_icao_from_tac", lambda _tac: "KJFK")
+    monkeypatch.setattr(
+        service,
+        "validate_tac_syntax",
+        lambda _tac: (_ for _ in ()).throw(RuntimeError("syntax boom")),
+    )
+    aggregated = service.validate_all_layers(
+        "METAR KJFK 010000Z",
+        layers=[ValidationLayer.TAC_SYNTAX],
+    )
+    # Exception is logged; no result appended for the failed syntax call.
+    assert aggregated.results == []
+    assert aggregated.layers_validated == []
+
+
+def test_validate_all_layers_icao_only_skips_syntax(monkeypatch):
+    service = _make_service(monkeypatch, {"KJFK"})
+    monkeypatch.setattr(service, "_extract_icao_from_tac", lambda _tac: "KJFK")
+
+    def _boom(_tac):
+        raise AssertionError("syntax should not run")
+
+    monkeypatch.setattr(service, "validate_tac_syntax", _boom)
+    aggregated = service.validate_all_layers(
+        "METAR KJFK 010000Z",
+        layers=[ValidationLayer.AIRPORT_ICAO],
+    )
+    assert len(aggregated.results) == 1
+    assert aggregated.results[0].layer == ValidationLayer.AIRPORT_ICAO
+
+
 def test_validate_delegates_to_validate_all_layers(monkeypatch):
     service = _make_service(monkeypatch)
-    monkeypatch.setattr(service, "validate_all_layers", lambda tac: "aggregated")
+
+    def _fake_all(tac, layers=None):
+        assert layers is None
+        return "aggregated"
+
+    monkeypatch.setattr(service, "validate_all_layers", _fake_all)
 
     assert service.validate("METAR KJFK 010000Z", content_type="tac") == "aggregated"
 

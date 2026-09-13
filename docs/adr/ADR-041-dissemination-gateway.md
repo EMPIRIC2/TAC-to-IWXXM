@@ -86,5 +86,5 @@ Spike [#927](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/927) asks for a **s
 
 ## References
 
-- [Context: dissemination-gateway-927](../context/dissemination-gateway-927.md)
+- Context: dissemination-gateway-927 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - EV-927 session report `927-dissemination-gateway.md`

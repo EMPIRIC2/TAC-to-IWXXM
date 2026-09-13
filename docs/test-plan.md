@@ -6,7 +6,7 @@
 
 ## Scope
 
-**In scope**: Product features F1–**F36** (F1 superseded by F6 engine; F7 Planned — workbench
+**In scope**: Product features F1–**F36** (F1 superseded by F6 engine; F7 **Implemented** — workbench
 smoke under F15/F20/F23–F27; **F7.g** golden examples #780 / UJ-032; **F7.h/i** hybrid sessions;
 F8–F15 as prior cycles; **F16–F19 Done** dissemination epic; **F20** TAF+SPECI quality;
 **F21 Amended** public convert + optional Auth for long-term storage; **F22** privacy preference
@@ -14,7 +14,7 @@ center (deepen F31); **F23** SIGMET family quality bar; **F24** AIRMET; **F25** 
 METAR/SPECI/TAF parity; **F26** VAA; **F27** TCA; **F30** platform independence; **F31** hybrid
 sessions; **F32** VONA quality bar; **F35** semantic vs exchange profile architecture;
 **F36** national/exchange profile content); monorepo migration validation M1–M6 (M3 deprecated at F6 cutover; **M4 restore**);
-connectivity tiers **H0c–H7** (local + live **DOKS** target; Render until cutover soak);
+connectivity tiers **H0c–H7** (local + live **DOKS**; Render suspended — historical only);
 tac2iwxxm + `tac-validate` + `iwxxm-validate` metrics (library/CI); backend thin wrappers;
 F7 decode/spans/soft-preview/workbench/unified sessions; admin-route negative tests; **F15**
 issue registry + METAR golden/negative packs (UJ-024); **F16–F19** dissemination drawer,
@@ -39,10 +39,10 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | H3     | Live API pytest (health, convert, validate; convert **no JWT**)                           | `make test-live-api`                    |
 | H4–H5  | CORS preflight + frontend bundle URLs — **required this cycle** (FE Auth + notice + DOKS) | `make test-live-connectivity`           |
 | H6     | Playwright UJ-001–007 (+ UJ-008) + F7 smokes + **UJ-045–047** + dissemination H6′         | `make test-live-e2e`                    |
-| **H7** | Live bulletin gate: multi-report AHL → split → convert → Schematron                       | `make test-live-bulletin` (planned)     |
+| **H7** | Live bulletin gate: multi-report AHL → split → convert → Schematron                       | `make test-live-bulletin` (wired into `make test-live`) |
 | All    | Sequential H4–H5 → H3 → H6 → H7                                                           | `make test-live` (extend when H7 lands) |
 
-**Prerequisite**: E2E-001 schema path regression must be resolved before H3 validate and full H6 UJ-002 pass (see [e2e-report.md](reports/e2e-report.md)).
+**Prerequisite**: E2E-001 schema path regression must be resolved before H3 validate and full H6 UJ-002 pass (see e2e-report.md (archived/missing — use live harness notes in this test-plan + deploy.md)).
 
 **CI policy**: Manual/local only — no GitHub Actions live job (cold-start + secrets).
 
@@ -2360,7 +2360,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Mode**: deepen F6 / F9 / F7.q; **UJ-070** (+ UJ-026 fence)
 - **Pass criteria**: AC in evolve-decisions §EV-981; TC-EV981-001..005
 - **Source**: [#981](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/981);
-  [Context: propagate-residuals-to-remarks](context/propagate-residuals-to-remarks.md);
+  Context: propagate-residuals-to-remarks (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [Corpus: product §F6/F9/F7.q]
 
 ### TC-EV981-001: Default off preserves UJ-026 / goldens
@@ -2792,7 +2792,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Mode**: deepen F7.v / F7.w / F15 / F35; Phase A only (#1146/#1147 deferred)
 - **Pass criteria**: requirements-report AC-API/CNT/UI/UX; EV-048 clean
 - **Source**: [#1120](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1120);
-  [context/profile-scoped-catalog-1120.md](context/profile-scoped-catalog-1120.md)
+  context/profile-scoped-catalog-1120.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ### TC-EV1120-001: Catalog omit-params preserves prior behavior
 
@@ -5416,7 +5416,7 @@ Before merging the PR that wires tac2iwxxm and deletes `packages/gifts`:
   1. Update `tests/test_playwright_e2e.py` to target merged API at `LIVE_API_URL`
   2. Deprecate `metar-to-iwxxm-auth-v2.onrender.com` references
 - **Pass criteria**: No tests target suspended auth-v2 service
-- **Source**: [Context: live-e2e-integration](context/live-e2e-integration.md)
+- **Source**: Context: live-e2e-integration (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 
 ### TC-LIVE-006: Live work history UJ-004 (F5)
 

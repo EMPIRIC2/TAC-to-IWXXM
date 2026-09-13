@@ -7,13 +7,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-REPORTS = (
-    Path(__file__).resolve().parents[2]
-    / "docs"
-    / "sessions"
-    / "S014-package-publish-validation"
-    / "reports"
-)
+REPORTS = Path(__file__).resolve().parents[2] / "docs" / "engineering" / "perf"
 BASELINES_YAML = REPORTS / "perf-baselines.yaml"
 BASELINES_MD = REPORTS / "perf-baselines.md"
 MATRIX_MD = REPORTS / "layer-cost-matrix.md"

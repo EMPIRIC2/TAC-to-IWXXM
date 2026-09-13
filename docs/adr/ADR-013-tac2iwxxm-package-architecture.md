@@ -4,7 +4,7 @@
 > **Date**: 2026-07-12  
 > **Deciders**: User (S008 AskQuestion)  
 > **Stage**: 00-context  
-> **Context refs**: [Context: general-tac-iwxxm-converter R1–R5](../context/general-tac-iwxxm-converter.md)  
+> **Context refs**: Context: general-tac-iwxxm-converter R1–R5 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)  
 > **Note**: Package + IWXXM-US pin + IR/plugins still stand. Cython path, gifts-as-fallback, and
 > FAA-five-only v1 are superseded by ADR-014 (Rust/PyO3, gifts removal, +VAA/TCA).
 
@@ -72,7 +72,7 @@ not replace).
 
 ## References
 
-- [Context: general-tac-iwxxm-converter](../context/general-tac-iwxxm-converter.md)
+- Context: general-tac-iwxxm-converter (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - ADR-001 (vendor snapshots), ADR-004 (manual gifts sync)
 - [wmo-im/iwxxm](https://github.com/wmo-im/iwxxm)
 - [MDL Data Modeling / IWXXM-US](https://vlab.noaa.gov/web/mdl/data-modeling)

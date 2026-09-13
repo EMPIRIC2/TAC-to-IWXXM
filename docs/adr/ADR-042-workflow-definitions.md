@@ -169,6 +169,6 @@ onInvalid:
 
 ## References
 
-- [Context: workflow-definitions-931](../context/workflow-definitions-931.md)
+- Context: workflow-definitions-931 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - EV-931 session `reports/931-workflow-definitions.md`
 - F8 reference: `apps/worker/src/metar_worker/pipeline.py`

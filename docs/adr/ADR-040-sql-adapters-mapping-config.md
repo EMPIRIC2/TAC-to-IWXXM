@@ -44,7 +44,7 @@ Gaps:
 
 ## MappingConfig sketch
 
-See [Context: sql-adapters-mapping-926](../context/sql-adapters-mapping-926.md) for full YAML example.
+See Context: sql-adapters-mapping-926 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate) for full YAML example.
 
 Logical fields:
 

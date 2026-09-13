@@ -1101,16 +1101,12 @@ export interface paths {
          *
          *     ## Request Body
          *     - **content** (string, required): The METAR TAC or IWXXM XML content to validate
-         *     - **content_type** (string, default="tac"): Type of content ("tac" or "xml")
-         *     - **layers** (array, optional): Specific validation layers to run. If None, runs all layers:
-         *       - `airport_icao`: Validate ICAO airport code
-         *       - `tac_syntax`: Validate METAR TAC syntax
-         *       - `xml_wellformed`: Check XML is well-formed
-         *       - `xml_schema`: Validate against XSD schema
-         *       - `schematron`: SCHEMATRON rules validation
-         *       - `gml_references`: GML reference checks
-         *       - `wmo_codelists`: WMO code list validation
-         *     - **iwxxm_version** (string, optional): IWXXM version for context (e.g., "3.0.1")
+         *     - **content_type** (string, default="tac"): ``tac``, ``xml``, or ``iwxxm`` (alias of xml)
+         *     - **layers** (array, optional): Specific validation layers to run.
+         *       - TAC (``content_type=tac``): ``airport_icao``, ``tac_syntax`` (default both)
+         *       - XML (``content_type=xml|iwxxm``): ``xml_wellformed``, ``xml_schema``,
+         *         ``schematron``, ``gml_references``, ``wmo_codelists`` (default all XML layers)
+         *     - **iwxxm_version** (string, optional): IWXXM version for XML layers (e.g., "2025-2")
          *
          *     ## Response
          *     Returns aggregated validation results with:
@@ -1189,7 +1185,7 @@ export interface paths {
          *     ## Request Body
          *     - **items** (array, required): Array of validation requests (1-100 items)
          *       - Each item has: content, content_type, layers (optional), iwxxm_version (optional)
-         *     - **layers** (array, optional): Default layers to apply to all items
+         *     - **layers** (array, optional): Default layers to apply to all items that omit layers
          *
          *     ## Response
          *     Returns batch validation results with:
@@ -4422,10 +4418,11 @@ export interface components {
             content: string;
             /**
              * Content Type
-             * @description Content type: 'tac' (METAR TAC) or 'xml' (IWXXM XML)
+             * @description Content type: 'tac' (METAR TAC), 'xml' (IWXXM XML), or 'iwxxm' (alias of xml)
              * @default tac
              * @example tac
              * @example xml
+             * @example iwxxm
              */
             content_type: string;
             /**

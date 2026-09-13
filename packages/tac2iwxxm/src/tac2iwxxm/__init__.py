@@ -1,4 +1,9 @@
-"""General TAC → IWXXM converter (F6)."""
+"""General TAC → IWXXM converter (F6).
+
+Public entrypoints include :func:`tac2iwxxm.convert.convert`, bulletin helpers,
+and decode utilities. Prefer NumPy-style docstrings on public APIs; see
+``docs/engineering/docstrings.md``.
+"""
 
 from __future__ import annotations
 
@@ -22,7 +27,7 @@ from tac2iwxxm.models import (
 )
 from tac2iwxxm.native import rust_available, rust_module, scan_metar_tokens
 
-__version__ = "2026.9.10"
+__version__ = "2026.9.13"
 
 __all__ = [
     "AhlParts",

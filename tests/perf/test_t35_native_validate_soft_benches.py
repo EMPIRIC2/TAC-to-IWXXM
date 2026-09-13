@@ -23,9 +23,7 @@ from scripts.bench.perf_gates import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-REPORTS = (
-    REPO_ROOT / "docs" / "sessions" / "S014-package-publish-validation" / "reports"
-)
+REPORTS = REPO_ROOT / "docs" / "engineering" / "perf"
 GOLDEN_XML = (
     REPO_ROOT
     / "packages"
@@ -93,12 +91,7 @@ def test_hard_gate_path_wired_for_publish() -> None:
     assert hard_perf_enabled() is False
 
     plan = (
-        REPO_ROOT
-        / "docs"
-        / "sessions"
-        / "S014-package-publish-validation"
-        / "reports"
-        / "execution-plan.md"
+        REPO_ROOT / "docs" / "engineering" / "perf" / "execution-plan.md"
     ).read_text(encoding="utf-8")
     assert "T6.6" in plan
     assert "0.85" in plan

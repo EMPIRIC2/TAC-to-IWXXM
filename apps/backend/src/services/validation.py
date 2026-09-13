@@ -192,52 +192,84 @@ class ValidationService:
         layers: list[ValidationLayer] | None = None,
         iwxxm_version: str | None = None,
     ) -> AggregatedValidationResult:
-        """Validate content for the requested layers (dependency/router entry point)."""
-        del layers, iwxxm_version
-        if content_type == "xml":
-            raise ValueError("XML validation requires ValidationOrchestrator")
-        return self.validate_all_layers(content)
+        """Validate TAC content for the requested layers (router entry point).
 
-    def validate_all_layers(self, tac_text: str) -> AggregatedValidationResult:
+        XML / IWXXM content must be routed through ``ValidationOrchestrator``.
         """
-        Validate all applicable layers for TAC text.
+        del iwxxm_version
+        normalized = (content_type or "tac").strip().lower()
+        if normalized in {"xml", "iwxxm"}:
+            raise ValueError("XML validation requires ValidationOrchestrator")
+        if normalized != "tac":
+            raise ValueError(f"Unsupported content_type '{content_type}'; expected 'tac', 'xml', or 'iwxxm'")
+        return self.validate_all_layers(content, layers=layers)
+
+    def validate_all_layers(
+        self,
+        tac_text: str,
+        layers: list[ValidationLayer] | None = None,
+    ) -> AggregatedValidationResult:
+        """
+        Validate TAC-applicable layers for TAC text.
 
         This performs synchronous validation of layers 1-2.
-        For async XML validation (layers 3-6), use validate_xml_async.
+        For XML validation (layers 3-7), use ``ValidationOrchestrator``.
 
-        Args:
-            tac_text: METAR/SPECI TAC format text
+        Parameters
+        ----------
+        tac_text:
+            METAR/SPECI TAC format text.
+        layers:
+            Optional subset of layers. Only ``airport_icao`` and ``tac_syntax``
+            are supported here; other layers are ignored (callers should route
+            XML layers to the orchestrator).
 
-        Returns:
-            AggregatedValidationResult with all layer results
+        Returns
+        -------
+        AggregatedValidationResult
+            Aggregated TAC layer results.
         """
         results: list[Any] = []
+        wanted = (
+            set(layers)
+            if layers is not None
+            else {
+                ValidationLayer.AIRPORT_ICAO,
+                ValidationLayer.TAC_SYNTAX,
+            }
+        )
+        run_icao = ValidationLayer.AIRPORT_ICAO in wanted
+        run_syntax = ValidationLayer.TAC_SYNTAX in wanted
+        if not run_icao and not run_syntax:
+            raise ValueError("No TAC layers requested; use content_type 'xml'/'iwxxm' for XML layers")
 
         # Layer 1: ICAO validation (may raise)
-        try:
-            icao_result = self.validate_airport_icao(tac_text)
-            results.append(icao_result)
-        except ValidationError as e:
-            # Create failed result for aggregation
-            icao_result = ValidationResult(
-                passed=False,
-                layer=ValidationLayer.AIRPORT_ICAO,
-            )
-            icao_result.add_issue(
-                level=ValidationLevel.CRITICAL,
-                message=str(e),
-                code="ICAO_VALIDATION_FAILED",
-            )
-            results.append(icao_result)
-            # Stop here if ICAO validation fails
-            return AggregatedValidationResult.from_results(results)
+        if run_icao:
+            try:
+                icao_result = self.validate_airport_icao(tac_text)
+                results.append(icao_result)
+            except ValidationError as e:
+                # Create failed result for aggregation
+                icao_result = ValidationResult(
+                    passed=False,
+                    layer=ValidationLayer.AIRPORT_ICAO,
+                )
+                icao_result.add_issue(
+                    level=ValidationLevel.CRITICAL,
+                    message=str(e),
+                    code="ICAO_VALIDATION_FAILED",
+                )
+                results.append(icao_result)
+                # Stop here if ICAO validation fails
+                return AggregatedValidationResult.from_results(results)
 
         # Layer 2: TAC syntax validation
-        try:
-            syntax_result = self.validate_tac_syntax(tac_text)
-            results.append(syntax_result)
-        except Exception as e:
-            logger.error(f"TAC syntax validation failed: {e}", exc_info=True)
+        if run_syntax:
+            try:
+                syntax_result = self.validate_tac_syntax(tac_text)
+                results.append(syntax_result)
+            except Exception as e:
+                logger.error(f"TAC syntax validation failed: {e}", exc_info=True)
 
         return AggregatedValidationResult.from_results(results)
 

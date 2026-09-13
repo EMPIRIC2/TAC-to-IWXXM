@@ -1,5 +1,10 @@
 # API Documentation
 
+> **OBSOLETE (EV-docs-accuracy-audit):** Pre-monorepo / GIFTs-era narrative. **Not a CORPUS
+> design gate.** Use [api-contract.md](../api-contract.md) + live OpenAPI
+> (`GET {API}/openapi.json`) and [spec.md](../spec.md). Ports, separate auth service, and
+> `gifts_available` below are historical.
+
 ## Overview
 
 The METAR to IWXXM Converter API provides endpoints for converting METAR/SPECI TAC messages to IWXXM XML format.

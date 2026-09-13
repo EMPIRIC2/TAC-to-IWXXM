@@ -13,9 +13,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_BASELINES = (
     REPO_ROOT
     / "docs"
-    / "sessions"
-    / "S014-package-publish-validation"
-    / "reports"
+    / "engineering"
+    / "perf"
     / "perf-baselines.yaml"
 )
 

@@ -48,6 +48,7 @@ import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DisseminationDrawer } from './DisseminationDrawer';
 import { BetaBadge } from './BetaBadge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import { clearOverlayOnAuthLoss } from '@/app/utils/clearOverlayOnAuthLoss';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
 import {
@@ -406,17 +407,6 @@ interface ConversionParams {
   includeNilReasons: boolean;
   onError: OnErrorBehavior;
   logLevel: LogLevel;
-}
-
-/**
- * Clear a signed overlay selection when the operator loses auth (guest / logout).
- *
- * @param prev - Current conversion params
- * @returns Params with ``overlayId`` cleared when it was set
- */
-// eslint-disable-next-line react-refresh/only-export-components -- test helper exported alongside component
-export function clearOverlayOnAuthLoss(prev: ConversionParams): ConversionParams {
-  return prev.overlayId ? { ...prev, overlayId: '' } : prev;
 }
 
 function activeMetarFamilyVariants(

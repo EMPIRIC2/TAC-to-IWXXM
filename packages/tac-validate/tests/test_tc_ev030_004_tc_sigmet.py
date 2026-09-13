@@ -112,14 +112,7 @@ def test_tc_a6_2_allows_six_hour_validity() -> None:
 
 def test_tc_stnr_in_scope_and_geometry_oos_documented() -> None:
     """T2.3 / S02.M2 - STNR covered on TC bodies; exceptional geometry OOS with cite."""
-    oos_note = (
-        Path(__file__).resolve().parents[3]
-        / "docs"
-        / "sessions"
-        / "S037-quality-residuals-831"
-        / "reports"
-        / "t2.3-tc-geometry-oos.md"
-    )
+    oos_note = Path(__file__).resolve().parents[3] / "docs" / "domain" / "quality" / "t2.3-tc-geometry-oos.md"
     assert oos_note.is_file(), f"missing OOS cite note: {oos_note}"
     text = oos_note.read_text(encoding="utf-8")
     assert "D-S037-T2.3-oos" in text

@@ -27,9 +27,8 @@ _FIXTURES = RepoRoot / "packages" / "tac2iwxxm" / "tests" / "fixtures"
 _REPORT_PATH = (
     RepoRoot
     / "docs"
-    / "sessions"
-    / "S014-package-publish-validation"
-    / "reports"
+    / "engineering"
+    / "perf"
     / "layer-cost-matrix.md"
 )
 

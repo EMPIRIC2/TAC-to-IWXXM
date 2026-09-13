@@ -123,12 +123,12 @@ JWT ownership (`user_id` = Auth `sub`). Trust model:
    schema/rule packs stay **rejected**. Overlay bodies must not carry credentials or
    destination URIs (ADR-021 / ADR-029).
 
-See [Context: conversion-profile-editor-933](../context/conversion-profile-editor-933.md).
+See Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ## References
 
-- [Context: conversion-profile-contract-924](../context/conversion-profile-contract-924.md)
-- [Context: conversion-profile-editor-933](../context/conversion-profile-editor-933.md)
+- Context: conversion-profile-contract-924 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+- Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
 - [ADR-037](ADR-037-platform-logical-layers.md) Profiles layer
 - EV-924 session report `924-conversion-profile-contract.md`
 - EV-933 / #933 F7.w / UJ-072

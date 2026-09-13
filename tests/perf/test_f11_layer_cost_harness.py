@@ -8,14 +8,7 @@ import pytest
 from scripts.bench import validation_stack as harness
 
 REPO = Path(__file__).resolve().parents[2]
-REPORT = (
-    REPO
-    / "docs"
-    / "sessions"
-    / "S014-package-publish-validation"
-    / "reports"
-    / "layer-cost-matrix.md"
-)
+REPORT = REPO / "docs" / "engineering" / "perf" / "layer-cost-matrix.md"
 
 
 def test_layers_cover_f11_matrix_scope() -> None:

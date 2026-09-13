@@ -29,7 +29,7 @@ Product Postgres is **DigitalOcean** (`DATABASE_URL`) — not Supabase hosted DB
 - **Format**: JSON
 - **Location**: `config/prod.json` (committed; non-secrets)
 - **Purpose**: Production URLs, CORS, validation flags, observability, live-test URLs
-- **Selected when**: `METAR_CONFIG_ENV=prod` (default on Render API + static deploy)
+- **Selected when**: `METAR_CONFIG_ENV=prod` (DOKS API + static deploy; Render suspended)
 
 | Field                            | Type         | Required | Description                                              |
 | -------------------------------- | ------------ | -------- | -------------------------------------------------------- |
@@ -78,11 +78,10 @@ Injected at deploy time (`scripts/frontend/prepare-config.sh` — publishable ke
 {
   "environment": "prod",
   "api": {
-    "baseUrl": "https://metar-to-iwxxm-api.onrender.com",
-    "frontendUrl": "https://metar-to-iwxxm-frontend-v4-web.onrender.com",
+    "baseUrl": "https://api.tac-to-iwxxm.com",
+    "frontendUrl": "https://app.tac-to-iwxxm.com",
     "corsOrigins": [
-      "https://metar-to-iwxxm-frontend-v4-web.onrender.com",
-      "https://app.doks.placeholder.metar-iwxxm.local"
+      "https://app.tac-to-iwxxm.com"
     ]
   },
   "supabase": {
@@ -93,10 +92,9 @@ Injected at deploy time (`scripts/frontend/prepare-config.sh` — publishable ke
 ```
 
 **Auth bootstrap (F31):** `supabase.url` + `supabase.publishableKey` drive the optional FE Auth
-client. **`api.baseUrl`** is the single origin for `/api/v1/*` and `/auth/*`. DOKS FE placeholder
-may appear in `corsOrigins` before real DNS. **`D-S038-t63-waive`**: `liveE2e.*` may point at
-provisional DOKS placeholders (LB + `/etc/hosts` / Host-header) while public `api.baseUrl` /
-`frontendUrl` remain Render until real DNS is pinned.
+client. **`api.baseUrl`** is the single origin for `/api/v1/*` and `/auth/*`. Values must match
+committed `config/prod.json` (DOKS). Staging uses `config/staging.json`
+(`api.staging.tac-to-iwxxm.com` / `app.staging.tac-to-iwxxm.com`).
 
 ## Environment Variables (secrets + abuse controls)
 
