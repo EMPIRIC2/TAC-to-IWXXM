@@ -2,6 +2,35 @@
 
 All notable user-facing and deployable changes for TAC to IWXXM.
 
+## 2026-09-13 — Production release
+
+Staging-validated hardening since the 2026-09-10 cut (adv-load find/fix + beta UX verify).
+
+### Fixed
+- **Validation `content_type`** — `xml` / `iwxxm` on `/api/v1/validation/validate` run XML layers
+  (not TAC ICAO/syntax); empty `layers: []` returns 400 for TAC and XML.
+- **Locust entrypoint** — `apps/backend/tests/load/locustfile.py` exports User classes.
+- **Staging resilience** — API replicas **2**, higher memory, ingress proxy timeouts **120s**.
+
+### Changed
+- Auth register payload when email confirmation is required (verify path).
+- Beta profiles / zip uniqueness / UX polish; CMO Week 1 converter harden.
+- Docs accuracy audit + CORPUS slim; research-token scan verify edges.
+- UJ-053 e2e: assert Upload to Database absent.
+
+### Packages
+- `tac2iwxxm` **2026.9.10 → 2026.9.13** (CalVer; converter harden + related tests)
+- `tac-validate` **2026.9.10 → 2026.9.13** (CalVer; research-token / rule edges)
+- `iwxxm-validate` **2026.9.10 → 2026.9.13** (CalVer sync)
+
+### Deploy
+- Promote PR: (link when opened) (`stage` → `main`).
+- Staging tip before promote: `b9272b29` (+ release prep commit); Staging smoke green;
+  post-fix adversarial plunge AC1–AC13 PASS (0% Locust failures @ 15u/3m).
+- After merge + tip CI green: tag `v2026.09.13-deploy` to roll production.
+- Optional PyPI tags after checklist: `tac2iwxxm-v2026.9.13`, `tac-validate-v2026.9.13`,
+  `iwxxm-validate-v2026.9.13`.
+
 ## 2026-09-10 — Production release
 
 Operator-facing and package improvements validated on staging since the 2026-09-04 cut.
