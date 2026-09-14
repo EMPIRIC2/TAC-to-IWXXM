@@ -56,8 +56,7 @@ export function ConversionTemplatesPanel({
 
   const selected = items.find((t) => t.id === selectedId) ?? items[0];
 
-  const applySelection = useCallback((tmpl: ConversionTemplateOut | undefined) => {
-    if (!tmpl) return;
+  const applySelection = useCallback((tmpl: ConversionTemplateOut) => {
     setSelectedId(tmpl.id);
     setSlots(tmpl.slots ?? []);
     setFocusGroup(tmpl.sample || '18012G20KT');
@@ -70,7 +69,8 @@ export function ConversionTemplatesPanel({
     try {
       const res = await listConversionTemplates(accessToken);
       setItems(res.items);
-      applySelection(res.items[0]);
+      const first = res.items[0];
+      if (first) applySelection(first);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load templates');
     } finally {
@@ -96,16 +96,15 @@ export function ConversionTemplatesPanel({
     setDragIndex(null);
   };
 
-  const runPreview = async () => {
-    if (!selected) return;
+  const runPreview = async (tmpl: ConversionTemplateOut) => {
     setBusy(true);
     setError(null);
     try {
       const res = await previewConversionTemplate(accessToken, {
-        templateId: selected.id,
+        templateId: tmpl.id,
         focusGroup,
         slots,
-        iwxxmBlock: selected.iwxxmBlock,
+        iwxxmBlock: tmpl.iwxxmBlock,
       });
       setPreview(res);
     } catch (err) {
@@ -115,23 +114,19 @@ export function ConversionTemplatesPanel({
     }
   };
 
-  const forkSelected = async () => {
-    if (!selected) return;
+  const forkSelected = async (tmpl: ConversionTemplateOut) => {
     setBusy(true);
     setError(null);
     try {
-      const slug = `fork-${selected.slug}-${Date.now().toString(36)}`.slice(0, 120);
+      const slug = `fork-${tmpl.slug}-${Date.now().toString(36)}`.slice(0, 120);
       await createConversionTemplate(accessToken, {
         slug,
-        name: `${selected.name} (custom)`,
-        iwxxmBlock: selected.iwxxmBlock,
+        name: `${tmpl.name} (custom)`,
+        iwxxmBlock: tmpl.iwxxmBlock,
         slots,
         sample: focusGroup,
         comments: comments || undefined,
-        forkOf:
-          selected.access === 'first_party'
-            ? selected.id
-            : selected.forkOf || selected.id,
+        forkOf: tmpl.access === 'first_party' ? tmpl.id : tmpl.forkOf || tmpl.id,
       });
       await load();
     } catch (err) {
@@ -164,7 +159,7 @@ export function ConversionTemplatesPanel({
           <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
           {PROFILES_CONV_TEMPLATES_LOADING}
         </p>
-      ) : items.length === 0 ? (
+      ) : !selected ? (
         <p className="text-sm text-gray-500">{PROFILES_CONV_TEMPLATES_EMPTY}</p>
       ) : (
         <>
@@ -173,10 +168,10 @@ export function ConversionTemplatesPanel({
             <select
               className="mt-1 w-full rounded border border-gray-300 bg-white p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="conversion-templates-select"
-              value={selected?.id ?? ''}
+              value={selected.id}
               onChange={(e) => {
                 const next = items.find((t) => t.id === e.target.value);
-                applySelection(next);
+                if (next) applySelection(next);
               }}
             >
               {items.map((t) => (
@@ -260,7 +255,7 @@ export function ConversionTemplatesPanel({
               className="rounded bg-sky-700 px-3 py-1.5 text-sm text-white disabled:opacity-50"
               data-testid="conversion-templates-preview"
               disabled={busy}
-              onClick={() => void runPreview()}
+              onClick={() => void runPreview(selected)}
             >
               {PROFILES_CONV_TEMPLATES_PREVIEW}
             </button>
@@ -269,7 +264,7 @@ export function ConversionTemplatesPanel({
               className="rounded border px-3 py-1.5 text-sm disabled:opacity-50"
               data-testid="conversion-templates-fork"
               disabled={busy}
-              onClick={() => void forkSelected()}
+              onClick={() => void forkSelected(selected)}
             >
               {PROFILES_CONV_TEMPLATES_FORK}
             </button>

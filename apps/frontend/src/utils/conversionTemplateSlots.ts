@@ -26,10 +26,7 @@ export function reorderConversionTemplateSlots(
     return slots;
   }
   const next = [...slots];
-  const [item] = next.splice(fromIndex, 1);
-  if (!item) {
-    return slots;
-  }
+  const item = next.splice(fromIndex, 1)[0] as ConversionTemplateSlot;
   next.splice(toIndex, 0, item);
   return next;
 }
