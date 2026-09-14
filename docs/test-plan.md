@@ -128,6 +128,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-073          | F7.v/F15 (EV-1120)                                           | Profile-scoped Validation Issues Catalog (#1121–#1123)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-001..009                                                                       |
 | UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
 | UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
+| UJ-072f         | F7.w (EV-conversion-profile-ux-libraries)                    | Profile Builder assembly + conversion token modes (Convert/Decode/Skip)                                                                                                                                                                                  | **H4–H5 when FE ships**           | TC-EVCPU-001..008                                                                        |
 | UJ-069          | F35/F36 (EV-063/EV-090/EV-093; M4 deepen)                    | Semantic convert → exchange package (`GLOBAL_AFS`) with explicit profile/IWXXM-line compatibility                                                                                                                                                          | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-_; TC-EV093-_; milestone 4 cross-version follow-ons          |
 | UJ-075          | F4 deepen (EV-908 / #908)                                    | IWXXM↔IWXXM migrate via `product=iwxxm` — supported/lossy/unsupported matrix                                                                                                                                                                               | T2 (API); H4–H5 N/A MVP           | TC-EV908-001..004                                                                        |
 | UJ-070          | F6+F9+F7.q (EV-981 / #981)                                   | Opt-in propagate decode residuals into remarks / HRT + QM indicator                                                                                                                                                                                        | **H4–H5 required**                | TC-EV981-001..005                                                                        |
@@ -3002,6 +3003,70 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: TC-EV048-style guards green for new strings; Beta + Issues feedback link
   per ADR-043
 - **Source**: EV-080; EV-048; ADR-043
+
+### EV-conversion-profile-ux-libraries / F7.w — Profile Builder platform
+
+- **Mode**: deepen F7.w / F7.v / F9; Phase A = filename + creator simplify + conversion
+  token/skip/preview; Phase B/C Spec-locked for later Build
+- **Pass criteria**: AC in [Corpus: product §F7.w] EVCPU; ADR-038 amend EVCPU; UJ-072f
+- **Source**: session `EV-conversion-profile-ux-libraries`
+
+### TC-EVCPU-001: Output filename adjacent to TAC/IWXXM panes
+
+- **Level**: T0 / T2
+- **Objective**: Manual convert Output filename control sits near TAC / IWXXM boxes
+- **Pass criteria**: Vitest layout/testid asserts; not solely under drop zone
+- **Source**: EVCPU; D-EVCPU-filename-scope; UJ-072f
+
+### TC-EVCPU-002: Operator UI hides machine ids
+
+- **Level**: T0 / T2
+- **Objective**: Profile Builder primary chrome uses human names only
+- **Pass criteria**: No `Preset id` / `Pack id` / raw `ICAO_2025` labels in primary fields;
+  copy-id available in overflow/advanced
+- **Source**: EVCPU; D-EVCPU-hide-ids; EV-048
+
+### TC-EVCPU-003: Conversion token modes Convert | Decode-only | Skip
+
+- **Level**: T0 / T2
+- **Objective**: Token authoring supports three modes with gloss; Skip visible in preview
+- **Pass criteria**: Mode persisted; Skip chip in preview; Decode-only does not emit IWXXM map
+- **Source**: EVCPU; D-EVCPU-token-modes; UJ-072f
+
+### TC-EVCPU-004: First-party + custom visible; FP fork only
+
+- **Level**: T0 / T2
+- **Objective**: Builder lists FP defaults + customs; FP immutable except fork
+- **Pass criteria**: Same trust as EV-080; mutate FP rejected
+- **Source**: EVCPU; D-EVCPU-defaults; ADR-038
+
+### TC-EVCPU-005: Guided assembly shell present (Phase A)
+
+- **Level**: T0 / T2
+- **Objective**: Profile creator is guided assembly (not id-centric stacked forms alone)
+- **Pass criteria**: Assembly steps or equivalent; DnD/↑↓ on ordered token lists
+- **Source**: EVCPU; D-EVCPU-shell
+
+### TC-EVCPU-006: Advanced pattern panel secondary
+
+- **Level**: T0 / T2
+- **Objective**: Slot/recipe path remains default; Advanced regex optional
+- **Pass criteria**: Flags / named groups / test-against-sample behind Advanced
+- **Source**: EVCPU; D-EVCPU-regex-path
+
+### TC-EVCPU-007: EV-048 + Beta on Profile Builder surfaces
+
+- **Level**: T0 / T2
+- **Objective**: No planning ids in operator copy; Beta + Issues feedback
+- **Pass criteria**: Guards green; ADR-043
+- **Source**: EVCPU; EV-048; ADR-043
+
+### TC-EVCPU-008: Must-not-break UJ-072e bridge
+
+- **Level**: T0 / T2
+- **Objective**: Existing conversion templates bridge remains green
+- **Pass criteria**: TC-EV080-001..006 still pass
+- **Source**: EVCPU; inherit EV-080
 
 ### EV-064 / F36 — CA_ECCC profile (#916)
 

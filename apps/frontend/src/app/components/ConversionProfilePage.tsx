@@ -50,6 +50,12 @@ import {
   PROFILES_EDITOR_SIGN_IN,
   PROFILES_EDITOR_SUBTITLE,
   PROFILES_EDITOR_TITLE,
+  PROFILES_ASSEMBLY_HEADING,
+  PROFILES_ASSEMBLY_HELP,
+  PROFILES_ASSEMBLY_STEP_BASE,
+  PROFILES_ASSEMBLY_STEP_CONVERT,
+  PROFILES_ASSEMBLY_STEP_VALIDATE,
+  PROFILES_ASSEMBLY_STEP_DISSEM,
   PROFILES_GLOSSARY_EXCHANGE,
   PROFILES_GLOSSARY_HEADING,
   PROFILES_GLOSSARY_OVERLAY,
@@ -1018,6 +1024,41 @@ function ConversionProfileAuthed({
         </p>
       </header>
 
+      <Card className="space-y-2 p-4" data-testid="profile-builder-assembly">
+        <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          {PROFILES_ASSEMBLY_HEADING}
+        </h2>
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          {PROFILES_ASSEMBLY_HELP}
+        </p>
+        <ol className="flex flex-wrap gap-2 text-xs">
+          <li
+            className="rounded border border-sky-300 bg-sky-50 px-2 py-1 dark:border-sky-700 dark:bg-sky-950"
+            data-testid="profile-builder-step-base"
+          >
+            {PROFILES_ASSEMBLY_STEP_BASE}
+          </li>
+          <li
+            className="rounded border border-sky-300 bg-sky-50 px-2 py-1 dark:border-sky-700 dark:bg-sky-950"
+            data-testid="profile-builder-step-convert"
+          >
+            {PROFILES_ASSEMBLY_STEP_CONVERT}
+          </li>
+          <li
+            className="rounded border border-gray-200 px-2 py-1 text-gray-500 dark:border-gray-700"
+            data-testid="profile-builder-step-validate"
+          >
+            {PROFILES_ASSEMBLY_STEP_VALIDATE}
+          </li>
+          <li
+            className="rounded border border-gray-200 px-2 py-1 text-gray-500 dark:border-gray-700"
+            data-testid="profile-builder-step-dissem"
+          >
+            {PROFILES_ASSEMBLY_STEP_DISSEM}
+          </li>
+        </ol>
+      </Card>
+
       <ConversionTemplatesPanel accessToken={accessToken} />
 
       {error && (
@@ -1064,7 +1105,7 @@ function ConversionProfileAuthed({
                 >
                   {catalog.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.id} ({p.kind})
+                      {profileLabel(p.id)}
                     </option>
                   ))}
                 </select>
@@ -1082,7 +1123,7 @@ function ConversionProfileAuthed({
                     .filter((p) => p.id !== selectedId)
                     .map((p) => (
                       <option key={p.id} value={p.id}>
-                        {p.id}
+                        {profileLabel(p.id)}
                       </option>
                     ))}
                 </select>

@@ -3,32 +3,49 @@
  * Plain language only — no planning vocabulary.
  */
 
-export const PROFILES_EDITOR_TITLE = 'Conversion profiles';
+export const PROFILES_EDITOR_TITLE = 'Profile builder';
 export const PROFILES_EDITOR_SUBTITLE =
-  'Inspect catalog profiles, manage conversion templates and lint rule packs, save semantic presets, and keep reusable dissemination templates.';
-export const PROFILES_CONV_TEMPLATES_HEADING = 'Conversion templates';
+  'Assemble conversion, validation, and dissemination pieces with plain-language names. Drag to reorder. Machine codes stay hidden.';
+export const PROFILES_ASSEMBLY_HEADING = 'Guided assembly';
+export const PROFILES_ASSEMBLY_HELP =
+  'Work top to bottom: choose a base profile, map TAC tokens to IWXXM, then attach validation and dissemination when ready.';
+export const PROFILES_ASSEMBLY_STEP_BASE = '1 · Base profile';
+export const PROFILES_ASSEMBLY_STEP_CONVERT = '2 · Conversion tokens';
+export const PROFILES_ASSEMBLY_STEP_VALIDATE = '3 · Validation (later)';
+export const PROFILES_ASSEMBLY_STEP_DISSEM = '4 · Dissemination (later)';
+export const PROFILES_CONV_TEMPLATES_HEADING = 'Conversion tokens';
 export const PROFILES_CONV_TEMPLATES_HELP =
-  'Parameterizable templates map TAC groups to IWXXM blocks. First-party templates can be viewed or forked; custom templates are yours to edit.';
-export const PROFILES_CONV_TEMPLATES_LOADING = 'Loading conversion templates…';
-export const PROFILES_CONV_TEMPLATES_EMPTY = 'No conversion templates available.';
+  'Map TAC groups to IWXXM blocks with typed slots. Built-in rules can be viewed or forked; your customs are editable.';
+export const PROFILES_CONV_TEMPLATES_LOADING = 'Loading conversion tokens…';
+export const PROFILES_CONV_TEMPLATES_EMPTY = 'No conversion tokens available.';
 export const PROFILES_CONV_TEMPLATES_FORK = 'Fork to custom';
 export const PROFILES_CONV_TEMPLATES_PREVIEW = 'Preview mapping';
 export const PROFILES_CONV_TEMPLATES_MOVE_UP = 'Move slot up';
 export const PROFILES_CONV_TEMPLATES_MOVE_DOWN = 'Move slot down';
 export const PROFILES_CONV_TEMPLATES_FOCUS = 'Focused TAC group';
 export const PROFILES_CONV_TEMPLATES_COMMENTS = 'Comments';
-export const PROFILES_CONV_TEMPLATES_BETA = 'Conversion templates';
+export const PROFILES_CONV_TEMPLATES_BETA = 'Conversion tokens';
+export const PROFILES_CONV_TEMPLATES_MODE = 'Token mode';
+export const PROFILES_CONV_TEMPLATES_MODE_CONVERT = 'Convert';
+export const PROFILES_CONV_TEMPLATES_MODE_DECODE = 'Decode only';
+export const PROFILES_CONV_TEMPLATES_MODE_SKIP = 'Skip';
+export const PROFILES_CONV_TEMPLATES_GLOSS = 'Plain-language gloss';
+export const PROFILES_CONV_TEMPLATES_ADVANCED = 'Advanced pattern options';
+export const PROFILES_CONV_TEMPLATES_ADVANCED_HINT =
+  'Optional compiled pattern for experts. Slot builder remains the default path.';
+export const PROFILES_CONV_TEMPLATES_SKIP_CHIP = 'Skipped';
+export const PROFILES_CONV_TEMPLATES_SELECT = 'Conversion rule';
 export const PROFILES_GLOSSARY_HEADING = 'What these options mean';
 export const PROFILES_GLOSSARY_PROFILE =
-  'Semantic profile chooses the operational rule set and national extensions used for TAC lint, conversion, and IWXXM validation.';
+  'Base profile chooses the operational rule set and national extensions used for TAC lint, conversion, and IWXXM validation.';
 export const PROFILES_GLOSSARY_EXCHANGE =
-  'Exchange profile describes how output is packaged for bulletin exchange. It does not select destinations or credentials.';
+  'Exchange packaging describes how output is bundled for bulletin exchange. It does not select destinations or credentials.';
 export const PROFILES_GLOSSARY_OVERLAY =
-  'Signed overlays are saved, server-signed JSON tweaks layered on top of a base profile. They let signed-in operators reuse approved profile adjustments without editing engine code.';
+  'Signed overlays are saved server tweaks layered on a base profile so operators can reuse approved adjustments without editing engine code.';
 export const PROFILES_OVERLAYS_HEADING = 'Signed overlays';
 export const PROFILES_OVERLAYS_LOADING = 'Loading overlays…';
 export const PROFILES_OVERLAYS_EMPTY = 'No overlays yet.';
-export const PROFILES_OVERLAY_SLUG = 'Overlay id';
+export const PROFILES_OVERLAY_SLUG = 'Overlay short name';
 export const PROFILES_OVERLAY_BASE = 'Base profile';
 export const PROFILES_OVERLAY_BODY = 'Overlay JSON';
 export const PROFILES_OVERLAY_SAVE = 'Save overlay';
@@ -36,7 +53,7 @@ export const PROFILES_OVERLAY_UPDATE = 'Update overlay';
 export const PROFILES_OVERLAY_NEW = 'New overlay';
 export const PROFILES_OVERLAY_DELETE = 'Delete overlay';
 export const PROFILES_OVERLAY_HINT =
-  'Overlays are signed on the server. Select an overlay id when converting to apply it.';
+  'Overlays are signed on the server. Choose an overlay when converting to apply it.';
 export const PROFILES_OVERLAYS_UNAVAILABLE =
   'Overlays unavailable right now. Try again after the profile service recovers.';
 export const CONVERT_OVERLAY_LABEL = 'Signed overlay';
@@ -47,8 +64,7 @@ export const CONVERT_PRESET_LABEL = 'Semantic preset';
 export const CONVERT_PRESET_NONE = 'None';
 export const CONVERT_PRESET_HELP =
   'Optional saved preset for this convert. Applies saved profile defaults, but does not choose destinations or credentials.';
-export const PROFILES_EDITOR_LOGIN_REQUIRED =
-  'Sign in to open the conversion profiles editor.';
+export const PROFILES_EDITOR_LOGIN_REQUIRED = 'Sign in to open the profile builder.';
 export const PROFILES_EDITOR_SIGN_IN = 'Sign in';
 export const PROFILES_INSPECTOR_HEADING = 'Catalog inspector';
 export const PROFILES_INSPECTOR_LOADING = 'Loading catalog…';
@@ -64,7 +80,7 @@ export const PROFILES_PACKS_LOADING = 'Loading rule packs…';
 export const PROFILES_PACKS_EMPTY = 'No rule packs yet.';
 export const PROFILES_PACKS_UNAVAILABLE =
   'Rule packs unavailable right now. Try again after the profile service recovers.';
-export const PROFILES_PACK_SLUG = 'Pack id';
+export const PROFILES_PACK_SLUG = 'Pack short name';
 export const PROFILES_PACK_PROFILE = 'Applies to profile';
 export const PROFILES_PACK_PRODUCT = 'Product';
 export const PROFILES_PACK_STAGE = 'Stage';
@@ -85,12 +101,12 @@ export const PROFILES_PRESETS_LOADING = 'Loading semantic presets…';
 export const PROFILES_PRESETS_EMPTY = 'No semantic presets yet.';
 export const PROFILES_PRESETS_UNAVAILABLE =
   'Semantic presets unavailable right now. Try again after the profile service recovers.';
-export const PROFILES_PRESET_SLUG = 'Preset id';
+export const PROFILES_PRESET_SLUG = 'Preset short name';
 export const PROFILES_PRESET_NAME = 'Preset name';
 export const PROFILES_PRESET_PROFILE = 'Semantic profile';
 export const PROFILES_PRESET_IWXXM_VERSION = 'IWXXM version';
 export const PROFILES_PRESET_REPORT_VARIANT = 'Report variant';
-export const PROFILES_PRESET_OVERLAY = 'Signed overlay id';
+export const PROFILES_PRESET_OVERLAY = 'Signed overlay short name';
 export const PROFILES_PRESET_SHARED = 'Shared with other signed-in operators';
 export const PROFILES_PRESET_SAVE = 'Save preset';
 export const PROFILES_PRESET_UPDATE = 'Update preset';
@@ -101,7 +117,7 @@ export const PROFILES_TEMPLATES_LOADING = 'Loading dissemination templates…';
 export const PROFILES_TEMPLATES_EMPTY = 'No dissemination templates yet.';
 export const PROFILES_TEMPLATES_UNAVAILABLE =
   'Dissemination templates unavailable right now. Try again after the profile service recovers.';
-export const PROFILES_TEMPLATE_SLUG = 'Template id';
+export const PROFILES_TEMPLATE_SLUG = 'Template short name';
 export const PROFILES_TEMPLATE_NAME = 'Template name';
 export const PROFILES_TEMPLATE_SINK = 'Destination sink';
 export const PROFILES_TEMPLATE_PRODUCT = 'Default product';

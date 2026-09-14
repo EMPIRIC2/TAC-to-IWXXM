@@ -329,6 +329,7 @@ def preview_conversion_template(
         captures=result.captures,
         xml_block=result.xml_block,
         compiled_pattern=result.compiled_pattern,
+        skipped=list(result.skipped),
     )
 
 

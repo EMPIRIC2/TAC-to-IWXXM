@@ -225,6 +225,8 @@ describe('ConversionProfilePage', () => {
         screen.getByTestId('conversion-profiles-inspector-detail'),
       ).toBeInTheDocument();
     });
+    expect(screen.getByTestId('profile-builder-assembly')).toBeInTheDocument();
+    expect(screen.getByTestId('profile-builder-step-convert')).toBeInTheDocument();
     expect(fetchProfileCatalog).toHaveBeenCalledWith('tok');
     expect(listRulePacks).toHaveBeenCalledWith('tok');
     expect(listOverlays).toHaveBeenCalledWith('tok');
@@ -1094,7 +1096,7 @@ describe('ConversionProfilePage', () => {
       screen.getByTestId('conversion-profiles-inspector-detail'),
     ).toHaveTextContent('ICAO / WMO');
     expect(screen.getByTestId('conversion-profiles-glossary')).toHaveTextContent(
-      /Signed overlays are saved, server-signed JSON tweaks/i,
+      /Signed overlays are saved server tweaks/i,
     );
     expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
       'Rule packs',

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import pytest
 from tac2iwxxm.conversion_templates import (
+    ConversionTemplate,
+    Slot,
     compile_pattern,
     fork_first_party,
     get_first_party_template,
@@ -49,6 +51,26 @@ def test_preview_bridge_wind_matched() -> None:
     assert any(c["slot"] == "direction" and c["value"] == "180" for c in preview.captures)
     assert "WindObservation" in preview.xml_block
     assert "gustSpeed" in preview.xml_block
+    assert preview.skipped == []
+
+
+def test_slot_mode_skip_surfaces_in_preview_and_compile() -> None:
+    """TC-EVCPU-003: Skip mode appears in preview chips; omitted from compiled pattern."""
+    tmpl = ConversionTemplate(
+        id="custom-skip",
+        name="Skip demo",
+        access="custom",
+        iwxxm_block="iwxxm:WindObservation",
+        slots=(
+            Slot("ddd", "direction", "digits", digits=3, mode="convert"),
+            Slot("noise", "residual", "literal", literal="XX", mode="skip", gloss="etc."),
+        ),
+        sample="18012KT",
+    )
+    pattern = compile_pattern(tmpl.slots)
+    assert "noise" not in pattern
+    preview = preview_bridge(tmpl, focus_group="18012KT")
+    assert any(s["slot"] == "noise" and s["gloss"] == "etc." for s in preview.skipped)
 
 
 def test_preview_bridge_wind_no_gust() -> None:

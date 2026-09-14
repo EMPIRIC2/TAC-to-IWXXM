@@ -21,7 +21,7 @@ export const SHELL_NAV_LABELS = {
   quality: 'Quality metrics',
   catalog: 'Validation Issues Catalog',
   'dissemination-ops': 'Dissemination ops',
-  profiles: 'Conversion profiles',
+  profiles: 'Profile builder',
 } as const;
 
 interface AppShellNavProps {

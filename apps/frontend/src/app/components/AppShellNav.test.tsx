@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { AppShellNav, SHELL_NAV_LABELS } from './AppShellNav';
 
 describe('AppShellNav', () => {
-  it('renders Dissemination ops and Conversion profiles tabs', async () => {
+  it('renders Dissemination ops and Profile builder tabs', async () => {
     const user = userEvent.setup();
     const onNavigate = vi.fn();
     render(<AppShellNav activeView="converter" onNavigate={onNavigate} />);

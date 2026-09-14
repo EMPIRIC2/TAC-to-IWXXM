@@ -161,6 +161,32 @@ browser-uploaded unsigned schema bundles.
 Product / journeys / tests: [Corpus: product §F7.w] EV-080; UJ-072e; TC-EV080-*.
 Session: `EV-080-param-conversion-templates`.
 
+### Amend (EV-conversion-profile-ux-libraries — Accepted)
+
+Extends the Profiles authoring surface beyond EV-080 phase-1 into a **Profile Builder
+platform** while keeping Conversion tokens as the hero path.
+
+1. **Shell:** Guided assembly wizard + Libraries hub (Conversion / TAC validation / IWXXM
+   validation / Dissemination). Operator UI uses human-readable names; machine ids are not
+   shown in primary chrome (copy-id in overflow). DnD for ordered lists.
+2. **Token modes:** Each conversion token supports **Convert | Decode-only | Skip** with
+   optional gloss. Skip must appear in preview (no silent drop). Parametric typed captures
+   remain normative.
+3. **Validation library:** Hybrid authoring (recipes + guided + Advanced regex). Issue /
+   level / message; attached-profile chips.
+4. **Dissemination library:** Ordered post-process transform steps + non-secret sink
+   defaults; ADR-021/029 credentials unchanged. Discoverability may ship in a later phase.
+5. **Selection:** Independent concern pickers and bundle presets spanning Conversion +
+   Validation + Dissemination (optional decode).
+6. **Decoding library:** Separate F9 deepen; catalogued NL definitions; not required for
+   Phase A ship.
+7. **Phase A ship set:** Output filename placement on Convert; Profile creator simplify;
+   conversion token/skip/preview hero. Libraries tabs + full validation/dissem authoring =
+   Phase B/C.
+
+Product / journeys / tests: [Corpus: product §F7.w] EVCPU; UJ-072f; TC-EVCPU-*.
+Session: `EV-conversion-profile-ux-libraries`.
+
 ## References
 
 - Context: conversion-profile-contract-924 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)

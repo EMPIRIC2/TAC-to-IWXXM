@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-05 (EV-1120 #1120 Phase A — UJ-072 deepen + UJ-073)
+> **Last updated**: 2026-09-14 (EV-conversion-profile-ux-libraries — UJ-072f)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -91,6 +91,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-072 | ConversionProfile editor — rule pack → overlay → convert | apps/frontend / API | F7.w (EV-933 / #933) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072d | Glanceable Profile summary + blocks + examples | apps/frontend | F7.w (EV-1120 / #1145) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072e | Author conversion template + TAC→IWXXM bridge | apps/frontend / API | F7.w (EV-080 / #1146) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072f | Profile Builder assembly + conversion token modes | apps/frontend / API | F7.w (EV-conversion-profile-ux-libraries) | T0 / T2 / **T3** / H4–H5 |
 | UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
 | UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
@@ -549,6 +550,49 @@ custom templates.
 
 **Source**: EV-080 / #1146; ADR-038 amend (EV-080); session
 `EV-080-param-conversion-templates` (local session-store; not a CORPUS design gate)
+
+---
+
+### UJ-072f: Profile Builder assembly + conversion token modes (EV-conversion-profile-ux-libraries)
+
+**Actor**: Authenticated meteorological operator (JWT)
+
+**Goal**: Assemble a working profile set via the guided Profile Builder (Conversion /
+Validation / Dissemination independently or via a bundle preset), author or fork conversion
+tokens with Convert | Decode-only | Skip modes, preview TAC→IWXXM mapping, and keep machine
+ids out of operator-facing chrome.
+
+**Feature**: F7.w / F7.v deepen (EV-conversion-profile-ux-libraries)
+
+**Steps**:
+
+1. Sign in. Open Profile Builder / Libraries (**Beta**). Prefer human-readable names; no
+   machine ids in primary chrome.
+2. Choose a base national profile by plain name. Attach Conversion, Validation, and
+   Dissemination components independently **or** apply a bundle preset that fills all three.
+3. Open Conversion library: see first-party defaults + customs; fork or edit tokens. Set mode
+   Convert, Decode-only, or Skip (+ gloss). Reorder via DnD / keyboard.
+4. Enter sample TAC; confirm live preview (matched spans, skip chips, IWXXM block). Use
+   Advanced pattern panel only when needed.
+5. (Phase B+) Author a TAC validation issue via recipe/guided path; attach to profiles.
+6. Save custom assets (owner-scoped). Return to Convert; confirm pickers / preset apply;
+   Output filename sits next to TAC/IWXXM panes (Phase A).
+
+**Acceptance**:
+1. Guided assembly + Libraries hub; hide ids; DnD; scientifically simple language.
+2. Token modes Convert | Decode-only | Skip; parametric captures; preview hero.
+3. Independent pickers + bundle presets (Phase B for full pickers if Phase A is conversion-hero only).
+4. TC-EVCPU-001..008; H4–H5 when FE ships; EV-048 clean; UJ-072e must-not-break.
+5. No destination credentials in stored objects (ADR-021/029).
+
+**Errors**: 401/403 without JWT; fail-closed unknown asset ids; ownership 403 on foreign customs.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EVCPU-001..008 (see test-plan)
+
+**Source**: EV-conversion-profile-ux-libraries; ADR-038 amend (EVCPU); session
+`EV-conversion-profile-ux-libraries` (local session-store; not a CORPUS design gate)
 
 ---
 

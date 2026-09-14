@@ -1,6 +1,28 @@
 # Requirements Decisions Log
 
-> Stage: 01-requirements | Last updated: 2026-09-06 (EV-m4-profiles-annex3-us-custom)
+> Stage: 01-requirements | Last updated: 2026-09-14 (EV-conversion-profile-ux-libraries)
+
+## EV-conversion-profile-ux-libraries — Profile Builder platform
+
+| Topic | Decision | Notes | Status |
+|-------|----------|-------|--------|
+| EVCPU / libraries host | New Libraries nav (4 tabs) | Conversion, TAC val, IWXXM val, Dissemination | confirmed |
+| EVCPU / filename | Manual convert pane only | Adjacent to TAC/IWXXM | confirmed |
+| EVCPU / regex | Advanced secondary | Slot-builder / recipes default | confirmed |
+| EVCPU / decode | F9 deepen stub | No Decode Build Phase A | confirmed |
+| EVCPU / shell | Guided wizard + Libraries hub | Q5=1 | confirmed |
+| EVCPU / hide ids | Never in primary UI | Copy-id overflow | confirmed |
+| EVCPU / val UX | Hybrid D | Recipes + guided + Advanced | confirmed |
+| EVCPU / token modes | Convert \| Decode-only \| Skip | Gloss required | confirmed |
+| EVCPU / dissem | Transform steps + sink defaults | Phase C ship; Spec now | confirmed |
+| EVCPU / select | Independent + presets | Both | confirmed |
+| EVCPU / defaults | FP + custom in builder | FP view/fork | confirmed |
+| EVCPU / Phase A | Filename + creator + token hero | Q12=1 | confirmed |
+| EVCPU / UI preview | Staging capture | Local extra N/A | confirmed |
+| EVCPU / dissem discoverability | Future-evolve notes only | Unless Phase C expands | confirmed |
+
+[Corpus: decisions] [Corpus: product §F7.w] [Corpus: product §F7.v] [Corpus: product §F9]
+[Corpus: journeys §UJ-072f] [Corpus: tests] [Corpus: adr/ADR-038]
 
 ## EV-1120-phase-a-profile-ux — Glanceable Profile UX follow-on
 

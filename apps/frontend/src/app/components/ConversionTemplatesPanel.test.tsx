@@ -135,7 +135,7 @@ describe('ConversionTemplatesPanel', () => {
     listMock.mockResolvedValueOnce({ items: [] });
     const { unmount } = render(<ConversionTemplatesPanel accessToken="tok" />);
     await waitFor(() => {
-      expect(screen.getByText(/No conversion templates/i)).toBeInTheDocument();
+      expect(screen.getByText(/No conversion tokens/i)).toBeInTheDocument();
     });
     unmount();
 
@@ -146,6 +146,84 @@ describe('ConversionTemplatesPanel', () => {
         'boom',
       );
     });
+  });
+
+  it('sets token mode to Skip and shows skip chip without machine ids in select', async () => {
+    render(<ConversionTemplatesPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-templates-select')).toBeInTheDocument();
+    });
+    const select = screen.getByTestId('conversion-templates-select');
+    expect(select).toHaveTextContent(/Wind group/);
+    expect(select).not.toHaveTextContent('CV.WIND');
+    fireEvent.change(screen.getByTestId('conversion-template-slot-mode-ddd'), {
+      target: { value: 'skip' },
+    });
+    fireEvent.change(screen.getByTestId('conversion-template-slot-gloss-ddd'), {
+      target: { value: 'etc.' },
+    });
+    expect(screen.getByTestId('conversion-templates-skip-chips')).toHaveTextContent(
+      'Skipped',
+    );
+    const advanced = screen.getByTestId('conversion-templates-advanced');
+    expect(advanced).toBeInTheDocument();
+    fireEvent(advanced, new Event('toggle', { bubbles: true }));
+  });
+
+  it('shows API skipped chips and compiled pattern after preview', async () => {
+    previewMock.mockResolvedValue({
+      templateId: 'CV.WIND',
+      focusGroup: '18012G20KT',
+      matched: true,
+      captures: [],
+      xmlBlock: '<iwxxm:WindObservation/>',
+      compiledPattern: '{ddd}{ff}',
+      skipped: [
+        { slot: 'noise', label: 'residual', gloss: 'etc.' },
+        { slot: 'only-id', label: '', gloss: '' },
+        { slot: '', label: 'label-only', gloss: '' },
+        { slot: '', label: '', gloss: '' },
+      ],
+    });
+    render(<ConversionTemplatesPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-templates-preview')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('conversion-templates-preview'));
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-templates-skip-chips')).toHaveTextContent(
+        'residual',
+      );
+    });
+    expect(screen.getByTestId('conversion-templates-skip-chips')).toHaveTextContent(
+      'only-id',
+    );
+    expect(
+      screen.getByTestId('conversion-templates-advanced-pattern'),
+    ).toHaveTextContent('{ddd}{ff}');
+  });
+
+  it('falls back when slot mode and gloss are unset', async () => {
+    listMock.mockResolvedValue({
+      items: [
+        {
+          ...windItem,
+          slots: [{ id: 'bare', label: 'bare', type: 'digits', digits: 2 }],
+        },
+      ],
+    });
+    render(<ConversionTemplatesPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-template-slot-mode-bare')).toHaveValue(
+        'convert',
+      );
+    });
+    fireEvent.change(screen.getByTestId('conversion-template-slot-mode-bare'), {
+      target: { value: 'skip' },
+    });
+    expect(screen.getByTestId('conversion-templates-skip-chips')).toHaveTextContent(
+      'bare',
+    );
   });
 
   it('handles preview and fork failures and custom forkOf', async () => {

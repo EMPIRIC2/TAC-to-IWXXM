@@ -2865,6 +2865,7 @@ describe('FileConverter Component', () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
 
+      expect(screen.getByTestId('output-filename-near-convert')).toBeInTheDocument();
       expect(screen.getByTestId('output-filename-preview')).toHaveTextContent(
         'manual_input.xml',
       );

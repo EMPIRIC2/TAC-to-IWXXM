@@ -271,6 +271,8 @@ class ConversionTemplateSlot(BaseModel):
     enum_values: str | None = Field(default=None, max_length=256, alias="enumValues")
     literal: str | None = Field(default=None, max_length=64)
     iwxxm_field: str = Field(default="", max_length=256, alias="iwxxmField")
+    mode: str = Field(default="convert", max_length=32)
+    gloss: str = Field(default="", max_length=512)
 
 
 class ConversionTemplateCreate(BaseModel):
@@ -352,3 +354,4 @@ class ConversionTemplatePreviewResponse(BaseModel):
     captures: list[dict[str, str]] = Field(default_factory=list)
     xml_block: str = Field(default="", serialization_alias="xmlBlock")
     compiled_pattern: str = Field(default="", serialization_alias="compiledPattern")
+    skipped: list[dict[str, str]] = Field(default_factory=list)
