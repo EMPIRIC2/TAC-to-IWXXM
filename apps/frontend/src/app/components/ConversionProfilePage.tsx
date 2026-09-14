@@ -146,7 +146,10 @@ import {
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { BetaBadge } from './BetaBadge';
-import { ConversionTemplatesPanel } from './ConversionTemplatesPanel';
+import { ProfileBuilderLibraries } from './ProfileBuilderLibraries';
+
+/** Legacy presets / packs / dissemination templates / overlays chrome (hard-cut). */
+const SHOW_LEGACY_PROFILE_CHROME = false;
 
 export interface ConversionProfilePageProps {
   /** Bearer JWT — when absent, show sign-in prompt. */
@@ -590,24 +593,29 @@ function ConversionProfileAuthed({
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
+    const settled = SHOW_LEGACY_PROFILE_CHROME
+      ? await Promise.allSettled([
+          fetchProfileCatalog(accessToken),
+          listPresets(accessToken),
+          listRulePacks(accessToken),
+          listOverlays(accessToken),
+          listTemplates(accessToken),
+        ])
+      : await Promise.allSettled([fetchProfileCatalog(accessToken)]);
     const [catResult, presetResult, packResult, overlayResult, templateResult] =
-      await Promise.allSettled([
-        fetchProfileCatalog(accessToken),
-        listPresets(accessToken),
-        listRulePacks(accessToken),
-        listOverlays(accessToken),
-        listTemplates(accessToken),
-      ]);
+      settled;
 
     const nextLoadErrors: LoadErrorState = {
       catalog: catResult.status === 'rejected' ? errorMessage(catResult.reason) : null,
       presets:
-        presetResult.status === 'rejected' ? errorMessage(presetResult.reason) : null,
-      packs: packResult.status === 'rejected' ? errorMessage(packResult.reason) : null,
+        presetResult?.status === 'rejected' ? errorMessage(presetResult.reason) : null,
+      packs: packResult?.status === 'rejected' ? errorMessage(packResult.reason) : null,
       overlays:
-        overlayResult.status === 'rejected' ? errorMessage(overlayResult.reason) : null,
+        overlayResult?.status === 'rejected'
+          ? errorMessage(overlayResult.reason)
+          : null,
       templates:
-        templateResult.status === 'rejected'
+        templateResult?.status === 'rejected'
           ? errorMessage(templateResult.reason)
           : null,
     };
@@ -616,17 +624,20 @@ function ConversionProfileAuthed({
     const nextCatalog =
       catResult.status === 'fulfilled' ? catResult.value.profiles : null;
     const nextPresets =
-      presetResult.status === 'fulfilled' ? presetResult.value.items : null;
-    const nextPacks = packResult.status === 'fulfilled' ? packResult.value.items : null;
+      presetResult?.status === 'fulfilled' ? presetResult.value.items : null;
+    const nextPacks =
+      packResult?.status === 'fulfilled' ? packResult.value.items : null;
     const nextOverlays =
-      overlayResult.status === 'fulfilled' ? overlayResult.value.items : null;
+      overlayResult?.status === 'fulfilled' ? overlayResult.value.items : null;
     const nextTemplates =
-      templateResult.status === 'fulfilled' ? templateResult.value.items : null;
+      templateResult?.status === 'fulfilled' ? templateResult.value.items : null;
     setCatalog((current) => nextCatalog ?? current);
-    setPresets((current) => nextPresets ?? current);
-    setPacks((current) => nextPacks ?? current);
-    setOverlays((current) => nextOverlays ?? current);
-    setTemplates((current) => nextTemplates ?? current);
+    if (SHOW_LEGACY_PROFILE_CHROME) {
+      setPresets((current) => nextPresets ?? current);
+      setPacks((current) => nextPacks ?? current);
+      setOverlays((current) => nextOverlays ?? current);
+      setTemplates((current) => nextTemplates ?? current);
+    }
 
     const first = nextCatalog?.[0];
     if (!selectedId && first) {
@@ -1059,7 +1070,7 @@ function ConversionProfileAuthed({
         </ol>
       </Card>
 
-      <ConversionTemplatesPanel accessToken={accessToken} />
+      <ProfileBuilderLibraries accessToken={accessToken} />
 
       {error && (
         <p className="text-sm text-red-600" data-testid="conversion-profiles-error">
@@ -1254,17 +1265,10 @@ function ConversionProfileAuthed({
               <div className="mt-3 flex flex-wrap gap-2 text-sm">
                 <a
                   className="rounded border border-gray-300 px-3 py-1.5 text-gray-700 dark:border-gray-600 dark:text-gray-200"
-                  data-testid="conversion-profiles-block-jump-packs"
-                  href="#conversion-profiles-packs"
+                  data-testid="conversion-profiles-block-jump-libraries"
+                  href="#profile-builder-libraries"
                 >
-                  Open rule packs
-                </a>
-                <a
-                  className="rounded border border-gray-300 px-3 py-1.5 text-gray-700 dark:border-gray-600 dark:text-gray-200"
-                  data-testid="conversion-profiles-block-jump-overlays"
-                  href="#conversion-profiles-overlays"
-                >
-                  Open signed overlays
+                  Open libraries
                 </a>
               </div>
             </div>
@@ -1334,666 +1338,677 @@ function ConversionProfileAuthed({
         )}
       </Card>
 
-      <Card className="space-y-3 p-4" data-testid="conversion-profiles-presets">
-        <h2 className="text-sm font-medium">{PROFILES_PRESETS_HEADING}</h2>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <label className="text-sm">
-            {PROFILES_PRESET_SLUG}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-preset-slug"
-              value={presetSlug}
-              onChange={(e) => {
-                setPresetSeedDirty(true);
-                setPresetSlug(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_PRESET_NAME}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-preset-name"
-              value={presetName}
-              onChange={(e) => {
-                setPresetSeedDirty(true);
-                setPresetName(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_PRESET_PROFILE}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-preset-profile"
-              value={presetProfile}
-              onChange={(e) => {
-                setPresetSeedDirty(true);
-                setPresetProfile(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_PRESET_IWXXM_VERSION}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-preset-iwxxm-version"
-              value={presetIwxxmVersion}
-              onChange={(e) => {
-                setPresetSeedDirty(true);
-                setPresetIwxxmVersion(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_PRESET_REPORT_VARIANT}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-preset-report-variant"
-              value={presetReportVariant}
-              onChange={(e) => {
-                setPresetSeedDirty(true);
-                setPresetReportVariant(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_PRESET_OVERLAY}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-preset-overlay-id"
-              value={presetOverlayId}
-              onChange={(e) => {
-                setPresetSeedDirty(true);
-                setPresetOverlayId(e.target.value);
-              }}
-            />
-          </label>
-          <label className="flex items-center gap-2 text-sm sm:col-span-2">
-            <input
-              data-testid="conversion-profiles-preset-shared"
-              type="checkbox"
-              checked={presetShared}
-              onChange={(e) => {
-                setPresetSeedDirty(true);
-                setPresetShared(e.target.checked);
-              }}
-            />
-            <span>{PROFILES_PRESET_SHARED}</span>
-          </label>
-        </div>
-        {presets !== null && presets.length === 0 && !presetSeedDirty ? (
-          <p className="text-xs text-gray-600 dark:text-gray-400">
-            Starter preset fields stay in sync with the selected profile until you edit
-            them.
-          </p>
-        ) : null}
-        <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            data-testid="conversion-profiles-preset-save"
-            onClick={() => void onSavePreset()}
-            disabled={savingPreset}
-          >
-            {savingPreset ? (
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+      {SHOW_LEGACY_PROFILE_CHROME ? (
+        <>
+          <Card className="space-y-3 p-4" data-testid="conversion-profiles-presets">
+            <h2 className="text-sm font-medium">{PROFILES_PRESETS_HEADING}</h2>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <label className="text-sm">
+                {PROFILES_PRESET_SLUG}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-preset-slug"
+                  value={presetSlug}
+                  onChange={(e) => {
+                    setPresetSeedDirty(true);
+                    setPresetSlug(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_PRESET_NAME}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-preset-name"
+                  value={presetName}
+                  onChange={(e) => {
+                    setPresetSeedDirty(true);
+                    setPresetName(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_PRESET_PROFILE}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-preset-profile"
+                  value={presetProfile}
+                  onChange={(e) => {
+                    setPresetSeedDirty(true);
+                    setPresetProfile(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_PRESET_IWXXM_VERSION}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-preset-iwxxm-version"
+                  value={presetIwxxmVersion}
+                  onChange={(e) => {
+                    setPresetSeedDirty(true);
+                    setPresetIwxxmVersion(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_PRESET_REPORT_VARIANT}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-preset-report-variant"
+                  value={presetReportVariant}
+                  onChange={(e) => {
+                    setPresetSeedDirty(true);
+                    setPresetReportVariant(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_PRESET_OVERLAY}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-preset-overlay-id"
+                  value={presetOverlayId}
+                  onChange={(e) => {
+                    setPresetSeedDirty(true);
+                    setPresetOverlayId(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="flex items-center gap-2 text-sm sm:col-span-2">
+                <input
+                  data-testid="conversion-profiles-preset-shared"
+                  type="checkbox"
+                  checked={presetShared}
+                  onChange={(e) => {
+                    setPresetSeedDirty(true);
+                    setPresetShared(e.target.checked);
+                  }}
+                />
+                <span>{PROFILES_PRESET_SHARED}</span>
+              </label>
+            </div>
+            {presets !== null && presets.length === 0 && !presetSeedDirty ? (
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                Starter preset fields stay in sync with the selected profile until you
+                edit them.
+              </p>
             ) : null}
-            {editingPresetId ? PROFILES_PRESET_UPDATE : PROFILES_PRESET_SAVE}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            data-testid="conversion-profiles-preset-reset"
-            onClick={() => resetPresetForm(selected)}
-            disabled={savingPreset}
-          >
-            {PROFILES_PRESET_NEW}
-          </Button>
-          {editingPresetId ? (
-            <Button
-              type="button"
-              variant="destructive"
-              data-testid="conversion-profiles-preset-delete"
-              onClick={() => void onDeletePreset(editingPresetId)}
-              disabled={savingPreset}
-            >
-              {PROFILES_PRESET_DELETE}
-            </Button>
-          ) : null}
-        </div>
-        {loadErrors.presets && presets !== null ? (
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {PROFILES_PRESETS_UNAVAILABLE} {loadErrors.presets}
-          </p>
-        ) : null}
-        {loading && presets === null ? (
-          <p className="text-sm text-gray-500">{PROFILES_PRESETS_LOADING}</p>
-        ) : loadErrors.presets && presets === null ? (
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {PROFILES_PRESETS_UNAVAILABLE} {loadErrors.presets}
-          </p>
-        ) : !presets || presets.length === 0 ? (
-          <p className="text-sm text-gray-500">{PROFILES_PRESETS_EMPTY}</p>
-        ) : (
-          <ul
-            className="space-y-1 text-sm"
-            data-testid="conversion-profiles-preset-list"
-          >
-            {presets.map((preset) => (
-              <li key={preset.id} className="flex flex-wrap items-center gap-2">
-                <button
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                data-testid="conversion-profiles-preset-save"
+                onClick={() => void onSavePreset()}
+                disabled={savingPreset}
+              >
+                {savingPreset ? (
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                ) : null}
+                {editingPresetId ? PROFILES_PRESET_UPDATE : PROFILES_PRESET_SAVE}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                data-testid="conversion-profiles-preset-reset"
+                onClick={() => resetPresetForm(selected)}
+                disabled={savingPreset}
+              >
+                {PROFILES_PRESET_NEW}
+              </Button>
+              {editingPresetId ? (
+                <Button
                   type="button"
-                  className="rounded border border-gray-300 px-2 py-1 text-left text-xs dark:border-gray-600"
-                  data-testid={`conversion-profiles-preset-edit-${preset.id}`}
-                  onClick={() => onEditPreset(preset)}
+                  variant="destructive"
+                  data-testid="conversion-profiles-preset-delete"
+                  onClick={() => void onDeletePreset(editingPresetId)}
+                  disabled={savingPreset}
                 >
-                  Edit
-                </button>
-                <code>{preset.slug}</code> - {preset.name} ({preset.semanticProfile})
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
-
-      <Card
-        className="space-y-3 p-4"
-        data-testid="conversion-profiles-packs"
-        id="conversion-profiles-packs"
-      >
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-sm font-medium">{PROFILES_PACKS_HEADING}</h2>
-          <div className="flex flex-wrap gap-2">
-            <input
-              ref={importInputRef}
-              className="hidden"
-              data-testid="conversion-profiles-import-input"
-              type="file"
-              accept="application/json,.json"
-              onChange={(event) => void onImport(event)}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              data-testid="conversion-profiles-import"
-              onClick={onImportClick}
-              disabled={saving || savingOverlay}
-            >
-              {PROFILES_PACK_IMPORT}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              data-testid="conversion-profiles-export"
-              onClick={onExport}
-              disabled={
-                (!packs || packs.length === 0) && (!overlays || overlays.length === 0)
-              }
-            >
-              {PROFILES_PACK_EXPORT}
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <label className="text-sm">
-            {PROFILES_PACK_SLUG}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-pack-slug"
-              value={slug}
-              onChange={(e) => {
-                setPackSeedDirty(true);
-                setSlug(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_PACK_PROFILE}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-pack-profile"
-              value={profile}
-              onChange={(e) => {
-                setPackSeedDirty(true);
-                setProfile(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_PACK_PRODUCT}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-pack-product"
-              value={product}
-              onChange={(e) => {
-                setPackSeedDirty(true);
-                setProduct(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_PACK_STAGE}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-pack-stage"
-              value={stage}
-              onChange={(e) => {
-                setPackSeedDirty(true);
-                setStage(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_PACK_SEVERITY}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-pack-severity"
-              value={severity}
-              onChange={(e) => {
-                setPackSeedDirty(true);
-                setSeverity(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_PACK_WHEN}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-pack-when"
-              value={whenExpr}
-              onChange={(e) => {
-                setPackSeedDirty(true);
-                setWhenExpr(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm sm:col-span-2">
-            {PROFILES_PACK_MESSAGE}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-pack-message"
-              value={message}
-              onChange={(e) => {
-                setPackSeedDirty(true);
-                setMessage(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm sm:col-span-2">
-            {PROFILES_PACK_REF}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-pack-ref"
-              value={standardRef}
-              onChange={(e) => {
-                setPackSeedDirty(true);
-                setStandardRef(e.target.value);
-              }}
-            />
-          </label>
-        </div>
-        {packs !== null && packs.length === 0 && !packSeedDirty ? (
-          <p className="text-xs text-gray-600 dark:text-gray-400">
-            Starter pack fields stay in sync with the selected profile until you edit
-            them.
-          </p>
-        ) : null}
-
-        <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            data-testid="conversion-profiles-pack-save"
-            onClick={() => void onSave()}
-            disabled={saving}
-          >
-            {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : null}
-            {editingPackId ? PROFILES_PACK_UPDATE : PROFILES_PACK_SAVE}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            data-testid="conversion-profiles-pack-reset"
-            onClick={() => resetPackForm(selected)}
-            disabled={saving}
-          >
-            {PROFILES_PACK_NEW}
-          </Button>
-          {editingPackId ? (
-            <Button
-              type="button"
-              variant="destructive"
-              data-testid="conversion-profiles-pack-delete"
-              onClick={() => void onDeletePack(editingPackId)}
-              disabled={saving}
-            >
-              {PROFILES_PACK_DELETE}
-            </Button>
-          ) : null}
-        </div>
-
-        {loadErrors.packs && packs !== null ? (
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {PROFILES_PACKS_UNAVAILABLE} {loadErrors.packs}
-          </p>
-        ) : null}
-        {loading && packs === null ? (
-          <p className="text-sm text-gray-500">{PROFILES_PACKS_LOADING}</p>
-        ) : loadErrors.packs && packs === null ? (
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {PROFILES_PACKS_UNAVAILABLE} {loadErrors.packs}
-          </p>
-        ) : !packs || packs.length === 0 ? (
-          <p className="text-sm text-gray-500">{PROFILES_PACKS_EMPTY}</p>
-        ) : (
-          <ul className="space-y-1 text-sm" data-testid="conversion-profiles-pack-list">
-            {packs.map((p) => (
-              <li key={p.id} className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  className="rounded border border-gray-300 px-2 py-1 text-left text-xs dark:border-gray-600"
-                  data-testid={`conversion-profiles-pack-edit-${p.id}`}
-                  onClick={() => onEditPack(p)}
-                >
-                  Edit
-                </button>
-                <code>{p.slug}</code> — {p.profile} / {p.product} ({p.severity})
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
-
-      <Card className="space-y-3 p-4" data-testid="conversion-profiles-templates">
-        <h2 className="text-sm font-medium">{PROFILES_TEMPLATES_HEADING}</h2>
-        <p className="text-xs text-gray-600 dark:text-gray-400">
-          {PROFILES_TEMPLATE_HINT}
-        </p>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <label className="text-sm">
-            {PROFILES_TEMPLATE_SLUG}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-template-slug"
-              value={templateSlug}
-              onChange={(e) => {
-                setTemplateSeedDirty(true);
-                setTemplateSlug(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_TEMPLATE_NAME}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-template-name"
-              value={templateName}
-              onChange={(e) => {
-                setTemplateSeedDirty(true);
-                setTemplateName(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_TEMPLATE_SINK}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-template-sink"
-              value={templateSinkType}
-              onChange={(e) => {
-                setTemplateSeedDirty(true);
-                setTemplateSinkType(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_TEMPLATE_PRODUCT}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-template-product"
-              value={templateProduct}
-              onChange={(e) => {
-                setTemplateSeedDirty(true);
-                setTemplateProduct(e.target.value);
-              }}
-            />
-          </label>
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              data-testid="conversion-profiles-template-ddl"
-              type="checkbox"
-              checked={templateDdl}
-              onChange={(e) => {
-                setTemplateSeedDirty(true);
-                setTemplateDdl(e.target.checked);
-              }}
-            />
-            <span>{PROFILES_TEMPLATE_DDL}</span>
-          </label>
-          <label className="flex items-center gap-2 text-sm">
-            <input
-              data-testid="conversion-profiles-template-shared"
-              type="checkbox"
-              checked={templateShared}
-              onChange={(e) => {
-                setTemplateSeedDirty(true);
-                setTemplateShared(e.target.checked);
-              }}
-            />
-            <span>{PROFILES_TEMPLATE_SHARED}</span>
-          </label>
-          <label className="text-sm sm:col-span-2">
-            {PROFILES_TEMPLATE_PARAMS}
-            <textarea
-              className="mt-1 w-full rounded border p-2 font-mono text-xs dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-template-params"
-              rows={4}
-              value={templateParamsText}
-              onChange={(e) => {
-                setTemplateSeedDirty(true);
-                setTemplateParamsText(e.target.value);
-              }}
-            />
-          </label>
-        </div>
-        {templates !== null && templates.length === 0 && !templateSeedDirty ? (
-          <p className="text-xs text-gray-600 dark:text-gray-400">
-            Starter template fields stay in sync with the selected profile until you
-            edit them.
-          </p>
-        ) : null}
-        <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            data-testid="conversion-profiles-template-save"
-            onClick={() => void onSaveTemplate()}
-            disabled={savingTemplate}
-          >
-            {savingTemplate ? (
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                  {PROFILES_PRESET_DELETE}
+                </Button>
+              ) : null}
+            </div>
+            {loadErrors.presets && presets !== null ? (
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                {PROFILES_PRESETS_UNAVAILABLE} {loadErrors.presets}
+              </p>
             ) : null}
-            {editingTemplateId ? PROFILES_TEMPLATE_UPDATE : PROFILES_TEMPLATE_SAVE}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            data-testid="conversion-profiles-template-reset"
-            onClick={() => resetTemplateForm(selected)}
-            disabled={savingTemplate}
-          >
-            {PROFILES_TEMPLATE_NEW}
-          </Button>
-          {editingTemplateId ? (
-            <Button
-              type="button"
-              variant="destructive"
-              data-testid="conversion-profiles-template-delete"
-              onClick={() => void onDeleteTemplate(editingTemplateId)}
-              disabled={savingTemplate}
-            >
-              {PROFILES_TEMPLATE_DELETE}
-            </Button>
-          ) : null}
-        </div>
-        {loadErrors.templates && templates !== null ? (
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {PROFILES_TEMPLATES_UNAVAILABLE} {loadErrors.templates}
-          </p>
-        ) : null}
-        {loading && templates === null ? (
-          <p className="text-sm text-gray-500">{PROFILES_TEMPLATES_LOADING}</p>
-        ) : loadErrors.templates && templates === null ? (
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {PROFILES_TEMPLATES_UNAVAILABLE} {loadErrors.templates}
-          </p>
-        ) : !templates || templates.length === 0 ? (
-          <p className="text-sm text-gray-500">{PROFILES_TEMPLATES_EMPTY}</p>
-        ) : (
-          <ul
-            className="space-y-1 text-sm"
-            data-testid="conversion-profiles-template-list"
-          >
-            {templates.map((template) => (
-              <li key={template.id} className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  className="rounded border border-gray-300 px-2 py-1 text-left text-xs dark:border-gray-600"
-                  data-testid={`conversion-profiles-template-edit-${template.id}`}
-                  onClick={() => onEditTemplate(template)}
-                >
-                  Edit
-                </button>
-                <code>{template.slug}</code> - {template.name} ({template.sinkType})
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
+            {loading && presets === null ? (
+              <p className="text-sm text-gray-500">{PROFILES_PRESETS_LOADING}</p>
+            ) : loadErrors.presets && presets === null ? (
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                {PROFILES_PRESETS_UNAVAILABLE} {loadErrors.presets}
+              </p>
+            ) : !presets || presets.length === 0 ? (
+              <p className="text-sm text-gray-500">{PROFILES_PRESETS_EMPTY}</p>
+            ) : (
+              <ul
+                className="space-y-1 text-sm"
+                data-testid="conversion-profiles-preset-list"
+              >
+                {presets.map((preset) => (
+                  <li key={preset.id} className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      className="rounded border border-gray-300 px-2 py-1 text-left text-xs dark:border-gray-600"
+                      data-testid={`conversion-profiles-preset-edit-${preset.id}`}
+                      onClick={() => onEditPreset(preset)}
+                    >
+                      Edit
+                    </button>
+                    <code>{preset.slug}</code> - {preset.name} ({preset.semanticProfile}
+                    )
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
 
-      <Card
-        className="space-y-3 p-4"
-        data-testid="conversion-profiles-overlays"
-        id="conversion-profiles-overlays"
-      >
-        <h2 className="text-sm font-medium">{PROFILES_OVERLAYS_HEADING}</h2>
-        <p className="text-xs text-gray-600 dark:text-gray-400">
-          {PROFILES_OVERLAY_HINT}
-        </p>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          <label className="text-sm">
-            {PROFILES_OVERLAY_SLUG}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-overlay-slug"
-              value={overlaySlug}
-              onChange={(e) => {
-                setOverlaySeedDirty(true);
-                setOverlaySlug(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm">
-            {PROFILES_OVERLAY_BASE}
-            <input
-              className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-overlay-base"
-              value={overlayBase}
-              onChange={(e) => {
-                setOverlaySeedDirty(true);
-                setOverlayBase(e.target.value);
-              }}
-            />
-          </label>
-          <label className="text-sm sm:col-span-2">
-            {PROFILES_OVERLAY_BODY}
-            <textarea
-              className="mt-1 w-full rounded border p-2 font-mono text-xs dark:border-gray-600 dark:bg-gray-900"
-              data-testid="conversion-profiles-overlay-body"
-              rows={4}
-              value={overlayBodyText}
-              onChange={(e) => {
-                setOverlaySeedDirty(true);
-                setOverlayBodyText(e.target.value);
-              }}
-            />
-          </label>
-        </div>
-        {overlays !== null && overlays.length === 0 && !overlaySeedDirty ? (
-          <p className="text-xs text-gray-600 dark:text-gray-400">
-            Starter overlay fields stay in sync with the selected profile until you edit
-            them.
-          </p>
-        ) : null}
-        <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            data-testid="conversion-profiles-overlay-save"
-            onClick={() => void onSaveOverlay()}
-            disabled={savingOverlay}
+          <Card
+            className="space-y-3 p-4"
+            data-testid="conversion-profiles-packs"
+            id="conversion-profiles-packs"
           >
-            {savingOverlay ? (
-              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            ) : null}
-            {editingOverlayId ? PROFILES_OVERLAY_UPDATE : PROFILES_OVERLAY_SAVE}
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            data-testid="conversion-profiles-overlay-reset"
-            onClick={() => resetOverlayForm(selected)}
-            disabled={savingOverlay}
-          >
-            {PROFILES_OVERLAY_NEW}
-          </Button>
-          {editingOverlayId ? (
-            <Button
-              type="button"
-              variant="destructive"
-              data-testid="conversion-profiles-overlay-delete"
-              onClick={() => void onDeleteOverlay(editingOverlayId)}
-              disabled={savingOverlay}
-            >
-              {PROFILES_OVERLAY_DELETE}
-            </Button>
-          ) : null}
-        </div>
-        {loadErrors.overlays && overlays !== null ? (
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {PROFILES_OVERLAYS_UNAVAILABLE} {loadErrors.overlays}
-          </p>
-        ) : null}
-        {loading && overlays === null ? (
-          <p className="text-sm text-gray-500">{PROFILES_OVERLAYS_LOADING}</p>
-        ) : loadErrors.overlays && overlays === null ? (
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {PROFILES_OVERLAYS_UNAVAILABLE} {loadErrors.overlays}
-          </p>
-        ) : !overlays || overlays.length === 0 ? (
-          <p className="text-sm text-gray-500">{PROFILES_OVERLAYS_EMPTY}</p>
-        ) : (
-          <ul
-            className="space-y-1 text-sm"
-            data-testid="conversion-profiles-overlay-list"
-          >
-            {overlays.map((o) => (
-              <li key={o.id} className="flex flex-wrap items-center gap-2">
-                <button
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-sm font-medium">{PROFILES_PACKS_HEADING}</h2>
+              <div className="flex flex-wrap gap-2">
+                <input
+                  ref={importInputRef}
+                  className="hidden"
+                  data-testid="conversion-profiles-import-input"
+                  type="file"
+                  accept="application/json,.json"
+                  onChange={(event) => void onImport(event)}
+                />
+                <Button
                   type="button"
-                  className="rounded border border-gray-300 px-2 py-1 text-left text-xs dark:border-gray-600"
-                  data-testid={`conversion-profiles-overlay-edit-${o.id}`}
-                  onClick={() => onEditOverlay(o)}
+                  variant="outline"
+                  size="sm"
+                  data-testid="conversion-profiles-import"
+                  onClick={onImportClick}
+                  disabled={saving || savingOverlay}
                 >
-                  Edit
-                </button>
-                <code>{o.slug}</code> — {o.baseProfileId}{' '}
-                <span className="text-gray-500">({o.id})</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Card>
+                  {PROFILES_PACK_IMPORT}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  data-testid="conversion-profiles-export"
+                  onClick={onExport}
+                  disabled={
+                    (!packs || packs.length === 0) &&
+                    (!overlays || overlays.length === 0)
+                  }
+                >
+                  {PROFILES_PACK_EXPORT}
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <label className="text-sm">
+                {PROFILES_PACK_SLUG}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-pack-slug"
+                  value={slug}
+                  onChange={(e) => {
+                    setPackSeedDirty(true);
+                    setSlug(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_PACK_PROFILE}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-pack-profile"
+                  value={profile}
+                  onChange={(e) => {
+                    setPackSeedDirty(true);
+                    setProfile(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_PACK_PRODUCT}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-pack-product"
+                  value={product}
+                  onChange={(e) => {
+                    setPackSeedDirty(true);
+                    setProduct(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_PACK_STAGE}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-pack-stage"
+                  value={stage}
+                  onChange={(e) => {
+                    setPackSeedDirty(true);
+                    setStage(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_PACK_SEVERITY}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-pack-severity"
+                  value={severity}
+                  onChange={(e) => {
+                    setPackSeedDirty(true);
+                    setSeverity(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_PACK_WHEN}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-pack-when"
+                  value={whenExpr}
+                  onChange={(e) => {
+                    setPackSeedDirty(true);
+                    setWhenExpr(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm sm:col-span-2">
+                {PROFILES_PACK_MESSAGE}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-pack-message"
+                  value={message}
+                  onChange={(e) => {
+                    setPackSeedDirty(true);
+                    setMessage(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm sm:col-span-2">
+                {PROFILES_PACK_REF}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-pack-ref"
+                  value={standardRef}
+                  onChange={(e) => {
+                    setPackSeedDirty(true);
+                    setStandardRef(e.target.value);
+                  }}
+                />
+              </label>
+            </div>
+            {packs !== null && packs.length === 0 && !packSeedDirty ? (
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                Starter pack fields stay in sync with the selected profile until you
+                edit them.
+              </p>
+            ) : null}
+
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                data-testid="conversion-profiles-pack-save"
+                onClick={() => void onSave()}
+                disabled={saving}
+              >
+                {saving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                ) : null}
+                {editingPackId ? PROFILES_PACK_UPDATE : PROFILES_PACK_SAVE}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                data-testid="conversion-profiles-pack-reset"
+                onClick={() => resetPackForm(selected)}
+                disabled={saving}
+              >
+                {PROFILES_PACK_NEW}
+              </Button>
+              {editingPackId ? (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  data-testid="conversion-profiles-pack-delete"
+                  onClick={() => void onDeletePack(editingPackId)}
+                  disabled={saving}
+                >
+                  {PROFILES_PACK_DELETE}
+                </Button>
+              ) : null}
+            </div>
+
+            {loadErrors.packs && packs !== null ? (
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                {PROFILES_PACKS_UNAVAILABLE} {loadErrors.packs}
+              </p>
+            ) : null}
+            {loading && packs === null ? (
+              <p className="text-sm text-gray-500">{PROFILES_PACKS_LOADING}</p>
+            ) : loadErrors.packs && packs === null ? (
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                {PROFILES_PACKS_UNAVAILABLE} {loadErrors.packs}
+              </p>
+            ) : !packs || packs.length === 0 ? (
+              <p className="text-sm text-gray-500">{PROFILES_PACKS_EMPTY}</p>
+            ) : (
+              <ul
+                className="space-y-1 text-sm"
+                data-testid="conversion-profiles-pack-list"
+              >
+                {packs.map((p) => (
+                  <li key={p.id} className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      className="rounded border border-gray-300 px-2 py-1 text-left text-xs dark:border-gray-600"
+                      data-testid={`conversion-profiles-pack-edit-${p.id}`}
+                      onClick={() => onEditPack(p)}
+                    >
+                      Edit
+                    </button>
+                    <code>{p.slug}</code> — {p.profile} / {p.product} ({p.severity})
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+
+          <Card className="space-y-3 p-4" data-testid="conversion-profiles-templates">
+            <h2 className="text-sm font-medium">{PROFILES_TEMPLATES_HEADING}</h2>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              {PROFILES_TEMPLATE_HINT}
+            </p>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <label className="text-sm">
+                {PROFILES_TEMPLATE_SLUG}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-template-slug"
+                  value={templateSlug}
+                  onChange={(e) => {
+                    setTemplateSeedDirty(true);
+                    setTemplateSlug(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_TEMPLATE_NAME}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-template-name"
+                  value={templateName}
+                  onChange={(e) => {
+                    setTemplateSeedDirty(true);
+                    setTemplateName(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_TEMPLATE_SINK}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-template-sink"
+                  value={templateSinkType}
+                  onChange={(e) => {
+                    setTemplateSeedDirty(true);
+                    setTemplateSinkType(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_TEMPLATE_PRODUCT}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-template-product"
+                  value={templateProduct}
+                  onChange={(e) => {
+                    setTemplateSeedDirty(true);
+                    setTemplateProduct(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  data-testid="conversion-profiles-template-ddl"
+                  type="checkbox"
+                  checked={templateDdl}
+                  onChange={(e) => {
+                    setTemplateSeedDirty(true);
+                    setTemplateDdl(e.target.checked);
+                  }}
+                />
+                <span>{PROFILES_TEMPLATE_DDL}</span>
+              </label>
+              <label className="flex items-center gap-2 text-sm">
+                <input
+                  data-testid="conversion-profiles-template-shared"
+                  type="checkbox"
+                  checked={templateShared}
+                  onChange={(e) => {
+                    setTemplateSeedDirty(true);
+                    setTemplateShared(e.target.checked);
+                  }}
+                />
+                <span>{PROFILES_TEMPLATE_SHARED}</span>
+              </label>
+              <label className="text-sm sm:col-span-2">
+                {PROFILES_TEMPLATE_PARAMS}
+                <textarea
+                  className="mt-1 w-full rounded border p-2 font-mono text-xs dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-template-params"
+                  rows={4}
+                  value={templateParamsText}
+                  onChange={(e) => {
+                    setTemplateSeedDirty(true);
+                    setTemplateParamsText(e.target.value);
+                  }}
+                />
+              </label>
+            </div>
+            {templates !== null && templates.length === 0 && !templateSeedDirty ? (
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                Starter template fields stay in sync with the selected profile until you
+                edit them.
+              </p>
+            ) : null}
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                data-testid="conversion-profiles-template-save"
+                onClick={() => void onSaveTemplate()}
+                disabled={savingTemplate}
+              >
+                {savingTemplate ? (
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                ) : null}
+                {editingTemplateId ? PROFILES_TEMPLATE_UPDATE : PROFILES_TEMPLATE_SAVE}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                data-testid="conversion-profiles-template-reset"
+                onClick={() => resetTemplateForm(selected)}
+                disabled={savingTemplate}
+              >
+                {PROFILES_TEMPLATE_NEW}
+              </Button>
+              {editingTemplateId ? (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  data-testid="conversion-profiles-template-delete"
+                  onClick={() => void onDeleteTemplate(editingTemplateId)}
+                  disabled={savingTemplate}
+                >
+                  {PROFILES_TEMPLATE_DELETE}
+                </Button>
+              ) : null}
+            </div>
+            {loadErrors.templates && templates !== null ? (
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                {PROFILES_TEMPLATES_UNAVAILABLE} {loadErrors.templates}
+              </p>
+            ) : null}
+            {loading && templates === null ? (
+              <p className="text-sm text-gray-500">{PROFILES_TEMPLATES_LOADING}</p>
+            ) : loadErrors.templates && templates === null ? (
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                {PROFILES_TEMPLATES_UNAVAILABLE} {loadErrors.templates}
+              </p>
+            ) : !templates || templates.length === 0 ? (
+              <p className="text-sm text-gray-500">{PROFILES_TEMPLATES_EMPTY}</p>
+            ) : (
+              <ul
+                className="space-y-1 text-sm"
+                data-testid="conversion-profiles-template-list"
+              >
+                {templates.map((template) => (
+                  <li key={template.id} className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      className="rounded border border-gray-300 px-2 py-1 text-left text-xs dark:border-gray-600"
+                      data-testid={`conversion-profiles-template-edit-${template.id}`}
+                      onClick={() => onEditTemplate(template)}
+                    >
+                      Edit
+                    </button>
+                    <code>{template.slug}</code> - {template.name} ({template.sinkType})
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+
+          <Card
+            className="space-y-3 p-4"
+            data-testid="conversion-profiles-overlays"
+            id="conversion-profiles-overlays"
+          >
+            <h2 className="text-sm font-medium">{PROFILES_OVERLAYS_HEADING}</h2>
+            <p className="text-xs text-gray-600 dark:text-gray-400">
+              {PROFILES_OVERLAY_HINT}
+            </p>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <label className="text-sm">
+                {PROFILES_OVERLAY_SLUG}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-overlay-slug"
+                  value={overlaySlug}
+                  onChange={(e) => {
+                    setOverlaySeedDirty(true);
+                    setOverlaySlug(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm">
+                {PROFILES_OVERLAY_BASE}
+                <input
+                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-overlay-base"
+                  value={overlayBase}
+                  onChange={(e) => {
+                    setOverlaySeedDirty(true);
+                    setOverlayBase(e.target.value);
+                  }}
+                />
+              </label>
+              <label className="text-sm sm:col-span-2">
+                {PROFILES_OVERLAY_BODY}
+                <textarea
+                  className="mt-1 w-full rounded border p-2 font-mono text-xs dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-overlay-body"
+                  rows={4}
+                  value={overlayBodyText}
+                  onChange={(e) => {
+                    setOverlaySeedDirty(true);
+                    setOverlayBodyText(e.target.value);
+                  }}
+                />
+              </label>
+            </div>
+            {overlays !== null && overlays.length === 0 && !overlaySeedDirty ? (
+              <p className="text-xs text-gray-600 dark:text-gray-400">
+                Starter overlay fields stay in sync with the selected profile until you
+                edit them.
+              </p>
+            ) : null}
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                data-testid="conversion-profiles-overlay-save"
+                onClick={() => void onSaveOverlay()}
+                disabled={savingOverlay}
+              >
+                {savingOverlay ? (
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                ) : null}
+                {editingOverlayId ? PROFILES_OVERLAY_UPDATE : PROFILES_OVERLAY_SAVE}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                data-testid="conversion-profiles-overlay-reset"
+                onClick={() => resetOverlayForm(selected)}
+                disabled={savingOverlay}
+              >
+                {PROFILES_OVERLAY_NEW}
+              </Button>
+              {editingOverlayId ? (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  data-testid="conversion-profiles-overlay-delete"
+                  onClick={() => void onDeleteOverlay(editingOverlayId)}
+                  disabled={savingOverlay}
+                >
+                  {PROFILES_OVERLAY_DELETE}
+                </Button>
+              ) : null}
+            </div>
+            {loadErrors.overlays && overlays !== null ? (
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                {PROFILES_OVERLAYS_UNAVAILABLE} {loadErrors.overlays}
+              </p>
+            ) : null}
+            {loading && overlays === null ? (
+              <p className="text-sm text-gray-500">{PROFILES_OVERLAYS_LOADING}</p>
+            ) : loadErrors.overlays && overlays === null ? (
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                {PROFILES_OVERLAYS_UNAVAILABLE} {loadErrors.overlays}
+              </p>
+            ) : !overlays || overlays.length === 0 ? (
+              <p className="text-sm text-gray-500">{PROFILES_OVERLAYS_EMPTY}</p>
+            ) : (
+              <ul
+                className="space-y-1 text-sm"
+                data-testid="conversion-profiles-overlay-list"
+              >
+                {overlays.map((o) => (
+                  <li key={o.id} className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      className="rounded border border-gray-300 px-2 py-1 text-left text-xs dark:border-gray-600"
+                      data-testid={`conversion-profiles-overlay-edit-${o.id}`}
+                      onClick={() => onEditOverlay(o)}
+                    >
+                      Edit
+                    </button>
+                    <code>{o.slug}</code> — {o.baseProfileId}{' '}
+                    <span className="text-gray-500">({o.id})</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
+        </>
+      ) : null}
     </div>
   );
 }
