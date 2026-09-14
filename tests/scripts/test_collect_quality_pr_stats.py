@@ -14,6 +14,12 @@ from scripts.ci import collect_quality_pr_stats as mod
 ROOT = Path(__file__).resolve().parents[2]
 
 
+def test_normalize_product_unknown_pack_uppercases() -> None:
+    """EV-970 — junk product with unmapped pack folder uses pack.upper()."""
+    assert mod.normalize_product("XYZ", pack_folder="custom_pack") == "CUSTOM_PACK"
+    assert mod.normalize_product("XYZ", pack_folder="") == "METAR"
+
+
 def test_bump_and_rows_from_agg() -> None:
     agg: dict[tuple[str, str], list[int]] = {}
     mod._bump(agg, "metar", "annex3", "match")
