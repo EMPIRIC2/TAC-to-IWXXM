@@ -269,7 +269,7 @@ def delete_overlay(
 def list_conversion_templates(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> ConversionTemplateListResponse:
-    """List first-party and custom conversion templates (EV-080)."""
+    """List first-party and custom conversion templates."""
     return ConversionTemplateListResponse(items=service.list_conversion_templates())
 
 
@@ -290,7 +290,7 @@ def preview_conversion_template(
     payload: ConversionTemplatePreviewRequest,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> ConversionTemplatePreviewResponse:
-    """TAC → template → IWXXM bridge preview (EV-080)."""
+    """TAC to template to IWXXM bridge preview."""
     from tac2iwxxm.conversion_templates import (
         ConversionTemplate,
         Slot,

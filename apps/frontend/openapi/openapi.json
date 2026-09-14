@@ -370,6 +370,12 @@
             "title": "Bulletin Id",
             "type": "string"
           },
+          "conversion_template_id": {
+            "default": "",
+            "description": "Optional conversion template id (first-party or custom). When set for a custom template, requires Bearer JWT and ownership (or shared); unknown ids are rejected.",
+            "title": "Conversion Template Id",
+            "type": "string"
+          },
           "emit_translation_centre": {
             "default": false,
             "description": "When true, emit translationCentreDesignator/Name on successful convert (cross-State / Translation Centre mode; FAQ \u00a714.5). Default omit for in-State.",
@@ -1347,6 +1353,485 @@
           "size_bytes"
         ],
         "title": "ConversionResult",
+        "type": "object"
+      },
+      "ConversionTemplateCreate": {
+        "description": "Create body for a custom conversion template.",
+        "properties": {
+          "comments": {
+            "anyOf": [
+              {
+                "maxLength": 4096,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comments"
+          },
+          "forkOf": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forkof"
+          },
+          "iwxxmBlock": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Iwxxmblock",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "sample": {
+            "default": "",
+            "maxLength": 512,
+            "title": "Sample",
+            "type": "string"
+          },
+          "shared": {
+            "default": false,
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/ConversionTemplateSlot"
+            },
+            "title": "Slots",
+            "type": "array"
+          },
+          "slug": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "iwxxmBlock"
+        ],
+        "title": "ConversionTemplateCreate",
+        "type": "object"
+      },
+      "ConversionTemplateListResponse": {
+        "description": "First-party + custom conversion templates visible to the caller.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ConversionTemplateOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "ConversionTemplateListResponse",
+        "type": "object"
+      },
+      "ConversionTemplateOut": {
+        "description": "Persisted or first-party conversion template projection.",
+        "properties": {
+          "access": {
+            "title": "Access",
+            "type": "string"
+          },
+          "comments": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comments"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "forkOf": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forkof"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "iwxxmBlock": {
+            "title": "Iwxxmblock",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "profiles": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Profiles",
+            "type": "array"
+          },
+          "sample": {
+            "default": "",
+            "title": "Sample",
+            "type": "string"
+          },
+          "shared": {
+            "default": false,
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/ConversionTemplateSlot"
+            },
+            "title": "Slots",
+            "type": "array"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "access",
+          "iwxxmBlock"
+        ],
+        "title": "ConversionTemplateOut",
+        "type": "object"
+      },
+      "ConversionTemplatePreviewRequest": {
+        "description": "Bridge preview request.",
+        "properties": {
+          "focusGroup": {
+            "default": "",
+            "maxLength": 256,
+            "title": "Focusgroup",
+            "type": "string"
+          },
+          "fullTac": {
+            "anyOf": [
+              {
+                "maxLength": 8192,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fulltac"
+          },
+          "iwxxmBlock": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iwxxmblock"
+          },
+          "slots": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ConversionTemplateSlot"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slots"
+          },
+          "templateId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Templateid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "templateId"
+        ],
+        "title": "ConversionTemplatePreviewRequest",
+        "type": "object"
+      },
+      "ConversionTemplatePreviewResponse": {
+        "description": "Bridge preview response.",
+        "properties": {
+          "captures": {
+            "items": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "title": "Captures",
+            "type": "array"
+          },
+          "compiledPattern": {
+            "default": "",
+            "title": "Compiledpattern",
+            "type": "string"
+          },
+          "focusGroup": {
+            "title": "Focusgroup",
+            "type": "string"
+          },
+          "matched": {
+            "title": "Matched",
+            "type": "boolean"
+          },
+          "templateId": {
+            "title": "Templateid",
+            "type": "string"
+          },
+          "xmlBlock": {
+            "default": "",
+            "title": "Xmlblock",
+            "type": "string"
+          }
+        },
+        "required": [
+          "templateId",
+          "focusGroup",
+          "matched"
+        ],
+        "title": "ConversionTemplatePreviewResponse",
+        "type": "object"
+      },
+      "ConversionTemplateSlot": {
+        "description": "One ordered slot in a parameterizable conversion template.",
+        "properties": {
+          "digits": {
+            "anyOf": [
+              {
+                "maximum": 8.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Digits"
+          },
+          "enumValues": {
+            "anyOf": [
+              {
+                "maxLength": 256,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enumvalues"
+          },
+          "id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "iwxxmField": {
+            "default": "",
+            "maxLength": 256,
+            "title": "Iwxxmfield",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "literal": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Literal"
+          },
+          "optional": {
+            "default": false,
+            "title": "Optional",
+            "type": "boolean"
+          },
+          "type": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "type"
+        ],
+        "title": "ConversionTemplateSlot",
+        "type": "object"
+      },
+      "ConversionTemplateUpdate": {
+        "description": "Partial update for a custom conversion template.",
+        "properties": {
+          "comments": {
+            "anyOf": [
+              {
+                "maxLength": 4096,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comments"
+          },
+          "iwxxmBlock": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iwxxmblock"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "sample": {
+            "anyOf": [
+              {
+                "maxLength": 512,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sample"
+          },
+          "shared": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shared"
+          },
+          "slots": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ConversionTemplateSlot"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slots"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          }
+        },
+        "title": "ConversionTemplateUpdate",
         "type": "object"
       },
       "ConvertBulletinResponse": {
@@ -7473,6 +7958,268 @@
           }
         ],
         "summary": "Get Catalog",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/conversion-templates": {
+      "get": {
+        "description": "List first-party and custom conversion templates.",
+        "operationId": "list_conversion_templates_api_v1_profiles_conversion_templates_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionTemplateListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Conversion Templates",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "post": {
+        "description": "Create a custom conversion template (optionally forked from first-party).",
+        "operationId": "create_conversion_template_api_v1_profiles_conversion_templates_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversionTemplateCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionTemplateOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Conversion Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/conversion-templates/preview": {
+      "post": {
+        "description": "TAC to template to IWXXM bridge preview.",
+        "operationId": "preview_conversion_template_api_v1_profiles_conversion_templates_preview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversionTemplatePreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionTemplatePreviewResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Preview Conversion Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/conversion-templates/{template_id}": {
+      "delete": {
+        "description": "Delete an owned custom conversion template.",
+        "operationId": "delete_conversion_template_api_v1_profiles_conversion_templates__template_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "title": "Template Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Conversion Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "get": {
+        "description": "Fetch one conversion template (first-party id or custom UUID).",
+        "operationId": "get_conversion_template_api_v1_profiles_conversion_templates__template_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "title": "Template Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionTemplateOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Conversion Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "patch": {
+        "description": "Update an owned custom conversion template.",
+        "operationId": "patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "title": "Template Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversionTemplateUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionTemplateOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Conversion Template",
         "tags": [
           "Conversion Profiles"
         ]
