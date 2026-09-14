@@ -77,6 +77,29 @@ threshold (100%)`; table row under 100% (e.g. `semanticProfile.ts` uncovered lin
 2. Use portable env / `${userHome}` / `EM_ENGINEERING_MEMORY_ROOT` — see EV-095 / #1095.
 3. Do not reintroduce home absolute paths in tracked `.cursor/**`.
 
+### 7. Mutation schedule red with “100% zapped” but a unit test FAILED
+
+**See:** `mutation.yml` / `gremlins (*)` red; report shows Zapped 100% and a normal
+pytest failure (e.g. `assert None is not None` on CA ECCC layered test).
+
+**Do:**
+1. Treat as **broken baseline** for that package — fix the unit test/code path first
+   (often a later stage never runs because prior XSD errors short-circuit).
+2. Do not raise mutation timeouts or delete the chunk to “green” the schedule.
+3. Daily matrix may be a **subset/rotate**; full matrix remains weekly/`workflow_dispatch`
+   all ([Corpus: tests] TC-F34-005; [Corpus: decisions] `ev-ci-runtime-failures.md`).
+
+### 8. PyPI Nightly maturin / Cargo `unexpected character '.' after patch`
+
+**See:** `pypi-nightly.yml` fails on native packages with Cargo rejecting
+`version = "….devN"`.
+
+**Do:**
+1. Keep PEP 440 `.devN` in `pyproject.toml` / `__version__` for TestPyPI.
+2. Write Cargo as SemVer pre-release `YYYY.M.D-dev.N` via `bump_calver.py`
+   ([Corpus: adr/ADR-043]).
+3. Do not paste PEP 440 `.devN` into `Cargo.toml`.
+
 ## Stage → main vs evolve
 
 | Path | Expectation |

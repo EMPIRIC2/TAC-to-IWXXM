@@ -2489,10 +2489,14 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### TC-F34-005: Nightly / manual mutation matrix
 
 - **Level**: CI (non-PR-required)
-- **Objective**: Chunked workflow covers full Python + TS matrix without blocking every PR
-- **Pass criteria**: `workflow_dispatch` and/or schedule green or flaky survivors tracked;
-  minutes bounded by per-chunk timeouts
-- **Source**: F34 AC3; `D-S069-e4`
+- **Objective**: Chunked workflow covers full Python + TS matrix without blocking every PR.
+  **EV-ci-runtime-failures:** daily schedule uses a **rotated/subset** matrix for wall-time;
+  **weekly** schedule and/or `workflow_dispatch` with `target=all` still run the **full**
+  Python + TS matrix (`D-S069-e4` coverage preserved).
+- **Pass criteria**: Daily subset completes under per-chunk timeouts; weekly/`all` covers
+  full matrix; baseline unit tests for each chunk green (mutation red for survivors only,
+  not broken unmutated suites); flaky survivors tracked
+- **Source**: F34 AC3; `D-S069-e4`; [Corpus: decisions] `ev-ci-runtime-failures.md`
 
 ### TC-F34-006: Inventory, docs, findings, epic close path
 
