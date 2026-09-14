@@ -507,6 +507,9 @@ export interface ConversionTemplateSlot {
   enumValues?: string | null;
   literal?: string | null;
   iwxxmField?: string;
+  /** convert | decode_only | skip */
+  mode?: string;
+  gloss?: string;
 }
 
 /** Conversion template (first-party or custom). */
@@ -538,6 +541,7 @@ export interface ConversionTemplatePreviewResponse {
   captures: Array<Record<string, string>>;
   xmlBlock: string;
   compiledPattern: string;
+  skipped?: Array<Record<string, string>>;
 }
 
 /**

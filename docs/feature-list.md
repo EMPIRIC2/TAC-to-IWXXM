@@ -367,7 +367,7 @@
   | F7.t | #1003 | IWXXM as **product** pass-through (lint + F2 validate; no TAC convert) (S070 / EV-060); siblings #1001 AHL noise, #1002 profile picker, #1004 log_level, #1005 bulletin fields, #1006 Auth UAT |
   | F7.u | #1013 | Product/Profile bars no-wrap (S071 / EV-061) |
   | F7.v | #1014 / #1017 | Validation Issues Catalog tab (S071 / EV-061; EV-062) |
-  | F7.w | #933 | ConversionProfile editor — rule packs + inspector + signed overlays (EV-933); UJ-072; **deepen** EV-1120 / #1145 glanceable summary + ADR-038 inspect/jump blocks + profile examples/seeds (Phase A); **deepen** EV-080 / #1146 parameterizable conversion templates + TAC→IWXXM bridge (phase-1); workflow authoring → #1147 |
+  | F7.w | #933 | ConversionProfile editor — rule packs + inspector + signed overlays (EV-933); UJ-072; **deepen** EV-1120 / #1145 glanceable summary + ADR-038 inspect/jump blocks + profile examples/seeds (Phase A); **deepen** EV-080 / #1146 parameterizable conversion templates + TAC→IWXXM bridge (phase-1); **deepen** EV-conversion-profile-ux-libraries Profile Builder platform (guided assembly + Libraries + token Convert/Decode/Skip; UJ-072f); workflow authoring → #1147 |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
@@ -682,6 +682,32 @@
      ships; EV-048 clean; **Beta** badge + Issues feedback (ADR-043).
   **Session**: `EV-080-param-conversion-templates` under local session-store (not a CORPUS
   design gate).
+- **EV-conversion-profile-ux-libraries deepen (F7.w / F7.v / F9 — Profile Builder platform)**
+  — **requirements locked** (`D-EVCPU-req=1`, 2026-09-14):
+  1. **Shell:** Guided assembly wizard + **Libraries** hub (tabs: Conversion rules, TAC
+     validation, IWXXM validation, Dissemination). Scientifically simple language; **no
+     operator-visible machine ids** (copy-id in overflow). DnD for ordered lists. All
+     first-party + custom assets in the builder; FP view/fork (EV-080 trust).
+  2. **Conversion tokens (hero):** Match → Represent (IWXXM path/block + cardinality /
+     nilReason / ns / choice / uom / nesting / Schematron hooks in model) → mode
+     **Convert | Decode-only | Skip** (+ gloss). Parametric typed captures. Live preview.
+     Advanced pattern panel secondary.
+  3. **Validation:** Hybrid authoring — recipes + guided tokens + Advanced regex; issue /
+     level / message; TAC + IWXXM library tabs with attached-profile chips.
+  4. **Dissemination:** Ordered IWXXM post-process transform steps (DnD) + non-secret sink
+     defaults; credentials memory-only at send. Discoverability journey = future-evolve notes
+     unless Phase C expands.
+  5. **Selection:** Independent Conversion / Validation / Dissemination pickers **and**
+     bundle presets spanning all three (optional decode).
+  6. **Decoding library:** F9 deepen stub / decision this cycle; catalogued NL definitions;
+     not Phase A ship.
+  7. **Phase A Build:** Output filename near TAC/IWXXM panes; Profile creator simplify;
+     conversion token/skip/preview hero. Phase B = Libraries + validation authoring +
+     pickers/presets. Phase C = dissem transforms + decode library deepen.
+  8. Journeys **UJ-072f**; **TC-EVCPU-001..008**; H4–H5 when FE ships; EV-048 clean; Beta
+     + Issues feedback (ADR-043). ADR-038 amend (EVCPU).
+  **Session**: `EV-conversion-profile-ux-libraries` under local session-store (not a CORPUS
+  design gate). Canvas: `profile-builder-platform.canvas.tsx`.
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -746,6 +772,10 @@
   under F6 — not a change to `/decode-tac` response shape.
 - **Out of scope**: LLM/AI-generated text; changing segment offsets contract; Layer 1–2 or
   Schematron semantics.
+- **EV-conversion-profile-ux-libraries deepen (Decoding library stub):** Catalogued
+  natural-language code definitions (reuse `decode_tac` / F9 explanations) as a first-class
+  **Decoding library** asset, separate from Conversion / Validation / Dissemination.
+  **Decision recorded**; not Phase A Build — Phase C deepen. [Corpus: decisions §EVCPU]
 - **Acceptance (F9 v1 done)**:
   1. METAR/SPECI/TAF golden fixtures produce value-aware explanations for wind, visibility,
      temperature/dewpoint, altimeter/QNH, time, station, clouds, weather groups

@@ -150,6 +150,50 @@ def test_preview_wind_bridge(client: Any) -> None:
     assert "WindObservation" in body["xmlBlock"]
 
 
+def test_preview_inline_slots_honors_skip_mode(client: Any) -> None:
+    """Inline preview must forward mode/gloss so skipped chips are not dropped."""
+    http, _fake = client
+    res = http.post(
+        "/api/v1/profiles/conversion-templates/preview",
+        json={
+            "templateId": "CV.WIND",
+            "focusGroup": "18012G20KT",
+            "iwxxmBlock": "iwxxm:WindObservation",
+            "slots": [
+                {
+                    "id": "ddd",
+                    "label": "direction",
+                    "type": "digits",
+                    "digits": 3,
+                    "mode": "convert",
+                },
+                {
+                    "id": "ff",
+                    "label": "speed",
+                    "type": "digits",
+                    "digits": 2,
+                    "mode": "skip",
+                    "gloss": "omit speed for this trial",
+                },
+                {
+                    "id": "uom",
+                    "label": "unit",
+                    "type": "unit",
+                    "enumValues": "KT|MPS",
+                    "mode": "convert",
+                },
+            ],
+        },
+    )
+    assert res.status_code == 200
+    body = res.json()
+    skipped = body.get("skipped") or []
+    assert any(s.get("slot") == "ff" for s in skipped)
+    assert any("omit speed" in (s.get("gloss") or "") for s in skipped)
+    pattern = body.get("compiledPattern") or ""
+    assert "ff" not in pattern.lower() or "{ff}" not in pattern
+
+
 def test_patch_first_party_forbidden(client: Any) -> None:
     http, _fake = client
     res = http.patch(

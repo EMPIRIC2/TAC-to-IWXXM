@@ -293,8 +293,8 @@ def preview_conversion_template(
     """TAC to template to IWXXM bridge preview."""
     from tac2iwxxm.conversion_templates import (
         ConversionTemplate,
-        Slot,
         preview_bridge,
+        slot_from_dict,
         template_from_dict,
     )
 
@@ -304,19 +304,7 @@ def preview_conversion_template(
             name=payload.template_id,
             access="custom",
             iwxxm_block=payload.iwxxm_block or "(omit)",
-            slots=tuple(
-                Slot(
-                    id=s.id,
-                    label=s.label,
-                    type=s.type,  # type: ignore[arg-type]
-                    optional=s.optional,
-                    digits=s.digits,
-                    enum_values=s.enum_values,
-                    literal=s.literal,
-                    iwxxm_field=s.iwxxm_field,
-                )
-                for s in payload.slots
-            ),
+            slots=tuple(slot_from_dict(s.model_dump(by_alias=False)) for s in payload.slots),
         )
     else:
         stored = service.get_conversion_template(payload.template_id)
@@ -329,6 +317,7 @@ def preview_conversion_template(
         captures=result.captures,
         xml_block=result.xml_block,
         compiled_pattern=result.compiled_pattern,
+        skipped=list(result.skipped),
     )
 
 

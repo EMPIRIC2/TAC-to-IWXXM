@@ -5788,3 +5788,35 @@ authoring deferred.
 
 **Context**: [profile-scoped-catalog-1120](../context/profile-scoped-catalog-1120.md)
 
+## Cycle EV-conversion-profile-ux-libraries — Profile Builder platform
+
+**Opened:** 2026-09-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-conversion-profile-ux-libraries`  
+**Features:** deepen **F7.w** / **F7.v** / **F9** (no new Fn)  
+**Prior:** EV-080 / #1146 / PR #1193 (templates phase-1)  
+**Branch:** `evolve/EV-conversion-profile-ux-libraries`  
+**Status:** Spec band — requirements locked; documenting in progress
+
+### Scope lock
+
+| ID | Decision |
+|----|----------|
+| D-EVCPU-req | Requirements locked (recommended Q1–Q12) |
+| D-EVCPU-shell | Guided assembly + Libraries hub |
+| D-EVCPU-hide-ids | No machine ids in operator primary UI |
+| D-EVCPU-token-modes | Convert \| Decode-only \| Skip (+ gloss) |
+| D-EVCPU-val-ux | Hybrid recipes + guided + Advanced regex |
+| D-EVCPU-dissem-xform | Ordered transforms + sink defaults (Phase C) |
+| D-EVCPU-select | Independent pickers + bundle presets |
+| D-EVCPU-defaults | FP + custom in builder; FP view/fork |
+| D-EVCPU-phase-a | Filename + creator simplify + conversion hero |
+| D-EVCPU-decode | F9 deepen stub / decision; not Phase A ship |
+| D-EVCPU-dissem-notes | Discoverability = future-evolve notes |
+
+### Artifacts
+
+- Canvas: `profile-builder-platform.canvas.tsx`
+- Journeys: UJ-072f · Tests: TC-EVCPU-001..008 · ADR-038 amend EVCPU
+- Staging evidence: session `evidence/screenshots/`
+
+[Corpus: product §F7.w] [Corpus: adr/ADR-038] [Corpus: journeys] [Corpus: tests]
+

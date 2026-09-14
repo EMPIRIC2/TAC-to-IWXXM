@@ -12,6 +12,7 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, Literal, cast
 
 SlotType = Literal["digits", "enum", "literal", "unit", "station", "time"]
+SlotMode = Literal["convert", "decode_only", "skip"]
 
 
 @dataclass(frozen=True)
@@ -26,11 +27,13 @@ class Slot:
     enum_values: str | None = None
     literal: str | None = None
     iwxxm_field: str = ""
+    mode: SlotMode = "convert"
+    gloss: str = ""
 
     def to_dict(self) -> dict[str, Any]:
         """Serialize for JSON persistence / API."""
         data = asdict(self)
-        return {k: v for k, v in data.items() if v is not None}
+        return {k: v for k, v in data.items() if v is not None and v != ""}
 
 
 @dataclass(frozen=True)
@@ -64,6 +67,14 @@ class ConversionTemplate:
 
 def slot_from_dict(raw: dict[str, Any]) -> Slot:
     """Build a :class:`Slot` from a JSON-like mapping."""
+    mode_raw = str(raw.get("mode") or "convert")
+    mode: SlotMode = (
+        "decode_only"
+        if mode_raw in {"decode_only", "decode-only", "decode"}
+        else "skip"
+        if mode_raw == "skip"
+        else "convert"
+    )
     return Slot(
         id=str(raw["id"]),
         label=str(raw.get("label") or raw["id"]),
@@ -73,6 +84,8 @@ def slot_from_dict(raw: dict[str, Any]) -> Slot:
         enum_values=raw.get("enum_values") or raw.get("enumValues"),
         literal=raw.get("literal"),
         iwxxm_field=str(raw.get("iwxxm_field") or raw.get("iwxxmField") or ""),
+        mode=mode,
+        gloss=str(raw.get("gloss") or ""),
     )
 
 
@@ -108,6 +121,8 @@ def compile_pattern(slots: list[Slot] | tuple[Slot, ...]) -> str:
     """Compile slots to a secondary pattern string (not the default authoring UI)."""
     parts: list[str] = []
     for s in slots:
+        if s.mode == "skip":
+            continue
         if s.type == "literal":
             parts.append(s.literal or "")
             continue
@@ -151,6 +166,7 @@ class BridgePreview:
     captures: list[dict[str, str]] = field(default_factory=list)
     xml_block: str = ""
     compiled_pattern: str = ""
+    skipped: list[dict[str, str]] = field(default_factory=list)
 
 
 def preview_bridge(
@@ -163,9 +179,12 @@ def preview_bridge(
 
     Phase-1 ships a full parser for the first-party wind template; other templates
     return structure-only previews with ``matched=False`` when the focus group does
-    not fit the wind shape.
+    not fit the wind shape. Skip-mode slots surface as ``skipped`` chips (never silent).
     """
     pattern = compile_pattern(template.slots)
+    skipped = [
+        {"slot": s.id, "label": s.label, "gloss": s.gloss or s.label} for s in template.slots if s.mode == "skip"
+    ]
     group = (focus_group or "").strip()
     if template.id == "CV.WIND" or template.iwxxm_block == "iwxxm:WindObservation":
         m = _WIND_RE.match(group)
@@ -176,6 +195,7 @@ def preview_bridge(
                 matched=False,
                 compiled_pattern=pattern,
                 xml_block="<!-- select a wind group to preview XML -->",
+                skipped=skipped,
             )
         direction, speed, gust, unit = m.group(1), m.group(2), m.group(3), m.group(4).upper()
         uom = "[m/s]" if unit == "MPS" else "[kn]"
@@ -206,6 +226,7 @@ def preview_bridge(
             captures=captures,
             xml_block="\n".join(lines),
             compiled_pattern=pattern,
+            skipped=skipped,
         )
     return BridgePreview(
         template_id=template.id,
@@ -213,6 +234,7 @@ def preview_bridge(
         matched=False,
         compiled_pattern=pattern,
         xml_block=f"<!-- structure preview for {template.iwxxm_block}; group={group!r} -->",
+        skipped=skipped,
     )
 
 

@@ -2950,6 +2950,34 @@ export function FileConverter({
                   }}
                 />
               </div>
+              {/* Output filename beside TAC / IWXXM panes (EVCPU Phase A) */}
+              <div className="mt-3" data-testid="output-filename-near-convert">
+                <Label
+                  htmlFor="output-filename"
+                  className="mb-1 block text-sm font-medium text-gray-900 dark:text-white"
+                >
+                  Output filename (optional)
+                </Label>
+                <Input
+                  id="output-filename"
+                  data-testid="output-filename-input"
+                  value={outputFilename}
+                  onChange={(e) => setOutputFilename(e.target.value)}
+                  readOnly={isReadOnly}
+                  placeholder="manual_input"
+                  className="text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+                  aria-label="Output filename for manually entered METAR downloads"
+                />
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Applies to manually entered downloads. The <code>.xml</code> extension
+                  is added automatically; leave blank to use <code>manual_input</code>.
+                  Saves as{' '}
+                  <code data-testid="output-filename-preview">
+                    {sanitizeOutputFilename(outputFilename)}.xml
+                  </code>
+                  .
+                </p>
+              </div>
               <div className="mt-3 flex flex-col gap-3 rounded-md border border-gray-200 bg-gray-50/60 p-3 dark:border-gray-700 dark:bg-gray-900/30 sm:flex-row sm:items-start sm:gap-6">
                 <SoftPreviewControl
                   checked={softPreview}
@@ -3100,35 +3128,6 @@ export function FileConverter({
                   />
                 </div>
               </Card>
-            </div>
-
-            {/* Output filename for manual input (#664 / EV-005) */}
-            <div className="mb-6">
-              <Label
-                htmlFor="output-filename"
-                className="block mb-2 text-base font-medium text-gray-900 dark:text-white"
-              >
-                Output filename (optional)
-              </Label>
-              <Input
-                id="output-filename"
-                data-testid="output-filename-input"
-                value={outputFilename}
-                onChange={(e) => setOutputFilename(e.target.value)}
-                readOnly={isReadOnly}
-                placeholder="manual_input"
-                className="text-sm dark:bg-gray-800 dark:text-white dark:border-gray-700 focus:ring-2 focus:ring-blue-500"
-                aria-label="Output filename for manually entered METAR downloads"
-              />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Applies to manually entered METAR downloads only. The <code>.xml</code>{' '}
-                extension is added automatically; leave blank to use{' '}
-                <code>manual_input</code>. Saves as{' '}
-                <code data-testid="output-filename-preview">
-                  {sanitizeOutputFilename(outputFilename)}.xml
-                </code>
-                .
-              </p>
             </div>
 
             {/* Conversion Parameters */}

@@ -1646,6 +1646,16 @@
             "title": "Matched",
             "type": "boolean"
           },
+          "skipped": {
+            "items": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "title": "Skipped",
+            "type": "array"
+          },
           "templateId": {
             "title": "Templateid",
             "type": "string"
@@ -1692,6 +1702,12 @@
             ],
             "title": "Enumvalues"
           },
+          "gloss": {
+            "default": "",
+            "maxLength": 512,
+            "title": "Gloss",
+            "type": "string"
+          },
           "id": {
             "maxLength": 64,
             "minLength": 1,
@@ -1721,6 +1737,12 @@
               }
             ],
             "title": "Literal"
+          },
+          "mode": {
+            "default": "convert",
+            "maxLength": 32,
+            "title": "Mode",
+            "type": "string"
           },
           "optional": {
             "default": false,
