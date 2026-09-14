@@ -38,6 +38,18 @@ Canonical Project Status and planning policy for agents and humans.
 
 Size → hours guide: **XS=2 · S=4 · M=8 · L=16 · XL=32**.
 
+## Iteration windows (from I01)
+
+| Ix | Window (Mon–Sun × 2) |
+|----|----------------------|
+| I01 | 2026-09-15 → 2026-09-28 |
+| I02 | 2026-09-29 → 2026-10-12 |
+| I03 | 2026-10-13 → 2026-10-26 |
+| I04 | 2026-10-27 → 2026-11-09 |
+| I05 | 2026-11-10 → 2026-11-23 |
+
+Further Ix continue every 14 days; epics use `I00-Backlog`.
+
 ## Velocity / WIP
 
 1. **Done rate:** ≈ **1–2** shippable issues/week at 20 h ≡ **2–4** Done / **2-week** iteration (supersedes older ~12 Done/week swarm assumption).
@@ -79,7 +91,7 @@ IWXXM deadlines follow these GitHub milestones (not the EMPIRIC2-planning climat
 **Nov 11 must-ship (solo):** #1159, thin #911+#806, #1028–1031, #1121–1123, #1025, #949, spike #877.  
 **Slip post-gate unless thinned:** #909, #910, #777, #728, #970 remainder, M5 UI.
 
-Live schedule snapshot: session `EV-project-board-planning` → `reports/draft-schedule.md`.
+Live schedule snapshot: session `EV-two-week-iterations` → `reports/draft-schedule.md` (2-week; supersedes `EV-project-board-planning` 1-week draft).
 
 ## Views (recommended)
 

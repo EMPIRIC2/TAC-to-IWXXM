@@ -1,6 +1,6 @@
 # EV-project-board-planning — board velocity & schedule
 
-**Session:** `EV-project-board-planning` (2026-09-13)  
+**Session:** `EV-project-board-planning` (2026-09-13); cadence amended by `EV-two-week-iterations` (2026-09-14) → **D-EV-TWI-01**  
 **Orchestrator:** evolve  
 **Standing doc:** [docs/project-board.md](../project-board.md) · [Corpus: project-board]
 
