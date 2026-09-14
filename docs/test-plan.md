@@ -127,6 +127,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-068          | F7.v/F15 (EV-061; EV-062)                                    | Validation Issues Catalog (#1014; #1017 deepen)                                                                                                                                                                                                            | **H4–H5 required**                | TC-EV061-1014-001..004; TC-EV062-001..006                                                |
 | UJ-073          | F7.v/F15 (EV-1120)                                           | Profile-scoped Validation Issues Catalog (#1121–#1123)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-001..009                                                                       |
 | UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
+| UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
 | UJ-069          | F35/F36 (EV-063/EV-090/EV-093; M4 deepen)                    | Semantic convert → exchange package (`GLOBAL_AFS`) with explicit profile/IWXXM-line compatibility                                                                                                                                                          | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-_; TC-EV093-_; milestone 4 cross-version follow-ons          |
 | UJ-075          | F4 deepen (EV-908 / #908)                                    | IWXXM↔IWXXM migrate via `product=iwxxm` — supported/lossy/unsupported matrix                                                                                                                                                                               | T2 (API); H4–H5 N/A MVP           | TC-EV908-001..004                                                                        |
 | UJ-070          | F6+F9+F7.q (EV-981 / #981)                                   | Opt-in propagate decode residuals into remarks / HRT + QM indicator                                                                                                                                                                                        | **H4–H5 required**                | TC-EV981-001..005                                                                        |
@@ -2945,6 +2946,62 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   pair) shows ≥1 highlighted difference (products and/or vs-ICAO deltas and/or IWXXM line)
   while the workbench twin remains compact
 - **Source**: #1145; D-R27=3
+
+### EV-080 / F7.w — Parameterizable conversion templates + TAC→IWXXM bridge (#1146)
+
+- **Mode**: deepen F7.w; phase-1 templates + bridge only (#1147 / library shells deferred)
+- **Pass criteria**: AC in [Corpus: product §F7.w] EV-080; ADR-038 amend EV-080; UJ-072e
+- **Source**: [#1146](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1146); session
+  `EV-080-param-conversion-templates`
+
+### TC-EV080-001: Custom template CRUD owner-scoped
+
+- **Level**: T0 / T2
+- **Objective**: Authenticated owner can create/read/update/delete custom conversion templates
+- **Pass criteria**: JWT required; foreign owner → 403; body has no destination credentials
+- **Source**: EV-080; UJ-072e; ADR-038 EV-080 amend
+
+### TC-EV080-002: Fail-closed unknown template id on convert
+
+- **Level**: T0 / T2
+- **Objective**: Convert rejects unknown / unauthorized template references
+- **Pass criteria**: 400 (or documented fail-closed status) for unknown id; no silent ignore
+- **Source**: EV-080; D-TRUST-01; ADR-038 fail-closed
+
+### TC-EV080-003: Slot reorder + typed capture pass-through
+
+- **Level**: T0 / T2
+- **Objective**: Slot order is persisted; digit/enum captures pass values through (not
+  one-rule-per-literal)
+- **Pass criteria**: Reorder via API/model (DnD + ↑↓ in UI); sample wind-shaped group maps
+  numeric captures to fields
+- **Source**: EV-080; D-CONV-02 / D-CONV-06
+
+### TC-EV080-004: Bridge preview mapping
+
+- **Level**: T0 / T2
+- **Objective**: Bridge UI / preview API shows TAC span, captures, and IWXXM block for a
+  fixture group
+- **Pass criteria**: Wind (or equivalent) fixture produces non-empty captures + XML block
+  preview; comments field accepted
+- **Source**: EV-080; D-UX-02 / D-UI-02/03; UJ-072e
+
+### TC-EV080-005: First-party view + fork (no mutate builtin)
+
+- **Level**: T0 / T2
+- **Objective**: First-party templates are viewable and forkable; builtin source immutable
+- **Pass criteria**: Fork creates owner-scoped custom copy; PATCH/DELETE on first-party id
+  rejected
+- **Source**: EV-080; D-CONV-05 / D-TRUST-01
+
+### TC-EV080-006: EV-048 / OpenAPI no internal doc refs + Beta surfacing
+
+- **Level**: T0 / T2
+- **Objective**: Operator-visible copy and OpenAPI strings free of planning ids; Beta badge
+  present on new authoring surface
+- **Pass criteria**: TC-EV048-style guards green for new strings; Beta + Issues feedback link
+  per ADR-043
+- **Source**: EV-080; EV-048; ADR-043
 
 ### EV-064 / F36 — CA_ECCC profile (#916)
 

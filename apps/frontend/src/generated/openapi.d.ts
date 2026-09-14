@@ -485,6 +485,78 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/profiles/conversion-templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Conversion Templates
+         * @description List first-party and custom conversion templates.
+         */
+        get: operations["list_conversion_templates_api_v1_profiles_conversion_templates_get"];
+        put?: never;
+        /**
+         * Create Conversion Template
+         * @description Create a custom conversion template (optionally forked from first-party).
+         */
+        post: operations["create_conversion_template_api_v1_profiles_conversion_templates_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/conversion-templates/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preview Conversion Template
+         * @description TAC to template to IWXXM bridge preview.
+         */
+        post: operations["preview_conversion_template_api_v1_profiles_conversion_templates_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/conversion-templates/{template_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Conversion Template
+         * @description Fetch one conversion template (first-party id or custom UUID).
+         */
+        get: operations["get_conversion_template_api_v1_profiles_conversion_templates__template_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Conversion Template
+         * @description Delete an owned custom conversion template.
+         */
+        delete: operations["delete_conversion_template_api_v1_profiles_conversion_templates__template_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Conversion Template
+         * @description Update an owned custom conversion template.
+         */
+        patch: operations["patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch"];
+        trace?: never;
+    };
     "/api/v1/profiles/overlays": {
         parameters: {
             query?: never;
@@ -1662,6 +1734,12 @@ export interface components {
              */
             bulletin_id: string;
             /**
+             * Conversion Template Id
+             * @description Optional conversion template id (first-party or custom). When set for a custom template, requires Bearer JWT and ownership (or shared); unknown ids are rejected.
+             * @default
+             */
+            conversion_template_id: string;
+            /**
              * Emit Translation Centre
              * @description When true, emit translationCentreDesignator/Name on successful convert (cross-State / Translation Centre mode; FAQ §14.5). Default omit for in-State.
              * @default false
@@ -2286,6 +2364,175 @@ export interface components {
              * @example METAR FAOR 101200Z COR 33003KT CAVOK 04/M00 Q1023=
              */
             tac_input?: string | null;
+        };
+        /**
+         * ConversionTemplateCreate
+         * @description Create body for a custom conversion template.
+         */
+        ConversionTemplateCreate: {
+            /** Comments */
+            comments?: string | null;
+            /** Forkof */
+            forkOf?: string | null;
+            /** Iwxxmblock */
+            iwxxmBlock: string;
+            /** Name */
+            name: string;
+            /**
+             * Sample
+             * @default
+             */
+            sample: string;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slots */
+            slots?: components["schemas"]["ConversionTemplateSlot"][];
+            /** Slug */
+            slug: string;
+        };
+        /**
+         * ConversionTemplateListResponse
+         * @description First-party + custom conversion templates visible to the caller.
+         */
+        ConversionTemplateListResponse: {
+            /** Items */
+            items: components["schemas"]["ConversionTemplateOut"][];
+        };
+        /**
+         * ConversionTemplateOut
+         * @description Persisted or first-party conversion template projection.
+         */
+        ConversionTemplateOut: {
+            /** Access */
+            access: string;
+            /** Comments */
+            comments?: string | null;
+            /** Created At */
+            created_at?: string | null;
+            /** Forkof */
+            forkOf?: string | null;
+            /** Id */
+            id: string;
+            /** Iwxxmblock */
+            iwxxmBlock: string;
+            /** Name */
+            name: string;
+            /** Profiles */
+            profiles?: string[];
+            /**
+             * Sample
+             * @default
+             */
+            sample: string;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slots */
+            slots?: components["schemas"]["ConversionTemplateSlot"][];
+            /** Slug */
+            slug: string;
+            /** Updated At */
+            updated_at?: string | null;
+            /** User Id */
+            user_id?: string | null;
+        };
+        /**
+         * ConversionTemplatePreviewRequest
+         * @description Bridge preview request.
+         */
+        ConversionTemplatePreviewRequest: {
+            /**
+             * Focusgroup
+             * @default
+             */
+            focusGroup: string;
+            /** Fulltac */
+            fullTac?: string | null;
+            /** Iwxxmblock */
+            iwxxmBlock?: string | null;
+            /** Slots */
+            slots?: components["schemas"]["ConversionTemplateSlot"][] | null;
+            /** Templateid */
+            templateId: string;
+        };
+        /**
+         * ConversionTemplatePreviewResponse
+         * @description Bridge preview response.
+         */
+        ConversionTemplatePreviewResponse: {
+            /** Captures */
+            captures?: {
+                [key: string]: string;
+            }[];
+            /**
+             * Compiledpattern
+             * @default
+             */
+            compiledPattern: string;
+            /** Focusgroup */
+            focusGroup: string;
+            /** Matched */
+            matched: boolean;
+            /** Templateid */
+            templateId: string;
+            /**
+             * Xmlblock
+             * @default
+             */
+            xmlBlock: string;
+        };
+        /**
+         * ConversionTemplateSlot
+         * @description One ordered slot in a parameterizable conversion template.
+         */
+        ConversionTemplateSlot: {
+            /** Digits */
+            digits?: number | null;
+            /** Enumvalues */
+            enumValues?: string | null;
+            /** Id */
+            id: string;
+            /**
+             * Iwxxmfield
+             * @default
+             */
+            iwxxmField: string;
+            /** Label */
+            label: string;
+            /** Literal */
+            literal?: string | null;
+            /**
+             * Optional
+             * @default false
+             */
+            optional: boolean;
+            /** Type */
+            type: string;
+        };
+        /**
+         * ConversionTemplateUpdate
+         * @description Partial update for a custom conversion template.
+         */
+        ConversionTemplateUpdate: {
+            /** Comments */
+            comments?: string | null;
+            /** Iwxxmblock */
+            iwxxmBlock?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Sample */
+            sample?: string | null;
+            /** Shared */
+            shared?: boolean | null;
+            /** Slots */
+            slots?: components["schemas"]["ConversionTemplateSlot"][] | null;
+            /** Slug */
+            slug?: string | null;
         };
         /**
          * ConvertBulletinResponse
@@ -5455,6 +5702,187 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProfileCatalogResponse"];
+                };
+            };
+        };
+    };
+    list_conversion_templates_api_v1_profiles_conversion_templates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplateListResponse"];
+                };
+            };
+        };
+    };
+    create_conversion_template_api_v1_profiles_conversion_templates_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversionTemplateCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_conversion_template_api_v1_profiles_conversion_templates_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversionTemplatePreviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplatePreviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_conversion_template_api_v1_profiles_conversion_templates__template_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_conversion_template_api_v1_profiles_conversion_templates__template_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversionTemplateUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

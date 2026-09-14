@@ -9,6 +9,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBearer
 
 from ..schemas.conversion_profiles import (
+    ConversionTemplateCreate,
+    ConversionTemplateListResponse,
+    ConversionTemplateOut,
+    ConversionTemplatePreviewRequest,
+    ConversionTemplatePreviewResponse,
+    ConversionTemplateUpdate,
     DisseminationTemplateCreate,
     DisseminationTemplateListResponse,
     DisseminationTemplateOut,
@@ -257,3 +263,98 @@ def delete_overlay(
 ) -> None:
     """Delete an owned overlay."""
     service.delete_overlay(overlay_id)
+
+
+@router.get("/conversion-templates", response_model=ConversionTemplateListResponse)
+def list_conversion_templates(
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> ConversionTemplateListResponse:
+    """List first-party and custom conversion templates."""
+    return ConversionTemplateListResponse(items=service.list_conversion_templates())
+
+
+@router.post("/conversion-templates", response_model=ConversionTemplateOut, status_code=201)
+def create_conversion_template(
+    payload: ConversionTemplateCreate,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> ConversionTemplateOut:
+    """Create a custom conversion template (optionally forked from first-party)."""
+    return service.create_conversion_template(payload)
+
+
+@router.post(
+    "/conversion-templates/preview",
+    response_model=ConversionTemplatePreviewResponse,
+)
+def preview_conversion_template(
+    payload: ConversionTemplatePreviewRequest,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> ConversionTemplatePreviewResponse:
+    """TAC to template to IWXXM bridge preview."""
+    from tac2iwxxm.conversion_templates import (
+        ConversionTemplate,
+        Slot,
+        preview_bridge,
+        template_from_dict,
+    )
+
+    if payload.slots is not None:
+        tmpl = ConversionTemplate(
+            id=payload.template_id,
+            name=payload.template_id,
+            access="custom",
+            iwxxm_block=payload.iwxxm_block or "(omit)",
+            slots=tuple(
+                Slot(
+                    id=s.id,
+                    label=s.label,
+                    type=s.type,  # type: ignore[arg-type]
+                    optional=s.optional,
+                    digits=s.digits,
+                    enum_values=s.enum_values,
+                    literal=s.literal,
+                    iwxxm_field=s.iwxxm_field,
+                )
+                for s in payload.slots
+            ),
+        )
+    else:
+        stored = service.get_conversion_template(payload.template_id)
+        tmpl = template_from_dict(stored.model_dump(by_alias=False))
+    result = preview_bridge(tmpl, focus_group=payload.focus_group)
+    return ConversionTemplatePreviewResponse(
+        template_id=result.template_id,
+        focus_group=result.focus_group,
+        matched=result.matched,
+        captures=result.captures,
+        xml_block=result.xml_block,
+        compiled_pattern=result.compiled_pattern,
+    )
+
+
+@router.get("/conversion-templates/{template_id}", response_model=ConversionTemplateOut)
+def get_conversion_template(
+    template_id: str,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> ConversionTemplateOut:
+    """Fetch one conversion template (first-party id or custom UUID)."""
+    return service.get_conversion_template(template_id)
+
+
+@router.patch("/conversion-templates/{template_id}", response_model=ConversionTemplateOut)
+def patch_conversion_template(
+    template_id: str,
+    payload: ConversionTemplateUpdate,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> ConversionTemplateOut:
+    """Update an owned custom conversion template."""
+    return service.update_conversion_template(template_id, payload)
+
+
+@router.delete("/conversion-templates/{template_id}", status_code=204)
+def delete_conversion_template(
+    template_id: str,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> None:
+    """Delete an owned custom conversion template."""
+    service.delete_conversion_template(template_id)

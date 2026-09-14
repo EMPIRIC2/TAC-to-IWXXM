@@ -15,6 +15,10 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from ..schemas.conversion_profiles import (
+    ConversionTemplateCreate,
+    ConversionTemplateOut,
+    ConversionTemplateSlot,
+    ConversionTemplateUpdate,
     DisseminationTemplateCreate,
     DisseminationTemplateOut,
     DisseminationTemplateUpdate,
@@ -36,6 +40,7 @@ RULE_PACKS_TABLE = "tac_profile_rule_packs"
 OVERLAYS_TABLE = "tac_profile_overlays"
 PRESETS_TABLE = "tac_profile_presets"
 TEMPLATES_TABLE = "tac_dissemination_templates"
+CONVERSION_TEMPLATES_TABLE = "tac_conversion_templates"
 _SECRET_KEY = re.compile(r"(?i)(password|passwd|secret|token|api[_-]?key|uri|connection_string|dsn)")
 _URI_VALUE = re.compile(r"^[a-z][a-z0-9+.-]*://", re.IGNORECASE)
 
@@ -624,6 +629,224 @@ class ConversionProfilesService:
                 result = conn.execute(delete(t).where(t.c.id == overlay_id, t.c.user_id == self.user_id))
                 if result.rowcount == 0:
                     raise HTTPException(status_code=404, detail="Overlay not found")
+        except HTTPException:
+            raise
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+
+    @staticmethod
+    def _first_party_template_out(template_id: str) -> ConversionTemplateOut | None:
+        """Project a code-served first-party conversion template."""
+        try:
+            from tac2iwxxm.conversion_templates import get_first_party_template
+        except ImportError:
+            return None
+        tmpl = get_first_party_template(template_id)
+        if tmpl is None:
+            return None
+        slots = [
+            ConversionTemplateSlot.model_validate(
+                {
+                    "id": s.id,
+                    "label": s.label,
+                    "type": s.type,
+                    "optional": s.optional,
+                    "digits": s.digits,
+                    "enumValues": s.enum_values,
+                    "literal": s.literal,
+                    "iwxxmField": s.iwxxm_field,
+                }
+            )
+            for s in tmpl.slots
+        ]
+        return ConversionTemplateOut(
+            id=tmpl.id,
+            user_id=None,
+            slug=tmpl.id,
+            name=tmpl.name,
+            access="first_party",
+            iwxxm_block=tmpl.iwxxm_block,
+            slots=slots,
+            sample=tmpl.sample,
+            comments=tmpl.comments or None,
+            fork_of=None,
+            shared=True,
+            profiles=list(tmpl.profiles),
+            created_at=None,
+            updated_at=None,
+        )
+
+    def _conversion_template_row_to_out(self, row: dict[str, Any]) -> ConversionTemplateOut:
+        """Map a DB row to ConversionTemplateOut."""
+        raw_slots_any: Any = row.get("slots") or []
+        slot_items: list[Any] = cast(list[Any], raw_slots_any) if isinstance(raw_slots_any, list) else []
+        slots: list[ConversionTemplateSlot] = [
+            ConversionTemplateSlot.model_validate(cast(dict[str, Any], item))
+            for item in slot_items
+            if isinstance(item, dict)
+        ]
+        return ConversionTemplateOut(
+            id=str(row["id"]),
+            user_id=row["user_id"],
+            slug=str(row["slug"]),
+            name=str(row["name"]),
+            access="custom",
+            iwxxm_block=str(row["iwxxm_block"]),
+            slots=slots,
+            sample=str(row.get("sample") or ""),
+            comments=row.get("comments"),
+            fork_of=row.get("fork_of"),
+            shared=bool(row.get("shared")),
+            profiles=[],
+            created_at=row.get("created_at"),
+            updated_at=row.get("updated_at"),
+        )
+
+    def list_conversion_templates(self) -> list[ConversionTemplateOut]:
+        """List first-party builtins plus custom templates visible to the caller."""
+        items: list[ConversionTemplateOut] = []
+        try:
+            from tac2iwxxm.conversion_templates import list_first_party_templates
+        except ImportError:
+            list_first_party_templates = None  # type: ignore[assignment]
+        if list_first_party_templates is not None:
+            for tmpl in list_first_party_templates():
+                out = self._first_party_template_out(tmpl.id)
+                if out is not None:
+                    items.append(out)
+        t = _table(CONVERSION_TEMPLATES_TABLE)
+        try:
+            with _get_engine().connect() as conn:
+                rows = (
+                    conn.execute(
+                        select(t).where(or_(t.c.user_id == self.user_id, t.c.shared.is_(True))).order_by(t.c.slug)
+                    )
+                    .mappings()
+                    .all()
+                )
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        items.extend(self._conversion_template_row_to_out(dict(r)) for r in rows)
+        return items
+
+    def get_conversion_template(self, template_id: str, *, require_owner: bool = False) -> ConversionTemplateOut:
+        """Fetch a first-party or custom conversion template; fail-closed on unknown."""
+        first = self._first_party_template_out(template_id)
+        if first is not None:
+            if require_owner:
+                raise HTTPException(status_code=403, detail="First-party templates are read-only")
+            return first
+        try:
+            template_uuid = UUID(template_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown conversion template id") from exc
+        t = _table(CONVERSION_TEMPLATES_TABLE)
+        try:
+            with _get_engine().connect() as conn:
+                row = conn.execute(select(t).where(t.c.id == template_uuid)).mappings().first()
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        if row is None:
+            raise HTTPException(status_code=404, detail="Conversion template not found")
+        owner = row["user_id"]
+        shared = bool(row.get("shared"))
+        if require_owner and owner != self.user_id:
+            raise HTTPException(status_code=403, detail="Conversion template ownership required")
+        if owner != self.user_id and not shared:
+            raise HTTPException(status_code=403, detail="Conversion template ownership required")
+        return self._conversion_template_row_to_out(dict(row))
+
+    def create_conversion_template(self, payload: ConversionTemplateCreate) -> ConversionTemplateOut:
+        """Insert a custom conversion template (fork or new)."""
+        data = payload.model_dump(by_alias=False)
+        _reject_secrets(data)
+        for slot in payload.slots:
+            _reject_secrets(slot.model_dump(by_alias=False))
+        now = datetime.now(tz=UTC)
+        template_id = uuid4()
+        slots_json = [s.model_dump(by_alias=True) for s in payload.slots]
+        values = {
+            "id": template_id,
+            "user_id": self.user_id,
+            "slug": payload.slug,
+            "name": payload.name,
+            "iwxxm_block": payload.iwxxm_block,
+            "slots": slots_json,
+            "sample": payload.sample,
+            "comments": payload.comments,
+            "fork_of": payload.fork_of,
+            "shared": payload.shared,
+            "created_at": now,
+            "updated_at": now,
+        }
+        t = _table(CONVERSION_TEMPLATES_TABLE)
+        try:
+            with _get_engine().begin() as conn:
+                conn.execute(insert(t).values(**values))
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        return self.get_conversion_template(str(template_id), require_owner=True)
+
+    def update_conversion_template(self, template_id: str, payload: ConversionTemplateUpdate) -> ConversionTemplateOut:
+        """Patch an owned custom conversion template; reject first-party ids."""
+        if self._first_party_template_out(template_id) is not None:
+            raise HTTPException(status_code=403, detail="First-party templates cannot be modified")
+        existing = self.get_conversion_template(template_id, require_owner=True)
+        data = payload.model_dump(exclude_unset=True, by_alias=False)
+        _reject_secrets(data)
+        if "slots" in data and data["slots"] is not None:
+            for slot in cast(list[Any], data["slots"]):
+                if isinstance(slot, dict):
+                    _reject_secrets(cast(dict[str, Any], slot))
+        if not data:
+            return existing
+        try:
+            template_uuid = UUID(template_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown conversion template id") from exc
+        slots_value: Any = [s.model_dump(by_alias=True) for s in existing.slots]
+        if "slots" in data and data["slots"] is not None:
+            slots_value = [
+                s.model_dump(by_alias=True) if hasattr(s, "model_dump") else s for s in cast(list[Any], data["slots"])
+            ]
+        values = {
+            "slug": str(data.get("slug") or existing.slug),
+            "name": str(data.get("name") or existing.name),
+            "iwxxm_block": str(data.get("iwxxm_block") or existing.iwxxm_block),
+            "slots": slots_value,
+            "sample": str(data["sample"]) if "sample" in data else existing.sample,
+            "comments": data.get("comments", existing.comments),
+            "shared": bool(data["shared"]) if "shared" in data else existing.shared,
+            "updated_at": datetime.now(tz=UTC),
+        }
+        t = _table(CONVERSION_TEMPLATES_TABLE)
+        try:
+            with _get_engine().begin() as conn:
+                result = conn.execute(
+                    update(t).where(t.c.id == template_uuid, t.c.user_id == self.user_id).values(**values)
+                )
+                if result.rowcount == 0:
+                    raise HTTPException(status_code=404, detail="Conversion template not found")
+        except HTTPException:
+            raise
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        return self.get_conversion_template(template_id, require_owner=True)
+
+    def delete_conversion_template(self, template_id: str) -> None:
+        """Delete an owned custom conversion template; reject first-party."""
+        if self._first_party_template_out(template_id) is not None:
+            raise HTTPException(status_code=403, detail="First-party templates cannot be deleted")
+        try:
+            template_uuid = UUID(template_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown conversion template id") from exc
+        t = _table(CONVERSION_TEMPLATES_TABLE)
+        try:
+            with _get_engine().begin() as conn:
+                result = conn.execute(delete(t).where(t.c.id == template_uuid, t.c.user_id == self.user_id))
+                if result.rowcount == 0:
+                    raise HTTPException(status_code=404, detail="Conversion template not found")
         except HTTPException:
             raise
         except SQLAlchemyError as exc:

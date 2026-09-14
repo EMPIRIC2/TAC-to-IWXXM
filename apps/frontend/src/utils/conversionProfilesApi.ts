@@ -496,3 +496,114 @@ export async function deleteOverlay(
   });
   await parseJson<unknown>(response);
 }
+
+/** Conversion template slot (parameterizable conversion templates). */
+export interface ConversionTemplateSlot {
+  id: string;
+  label: string;
+  type: string;
+  optional?: boolean;
+  digits?: number | null;
+  enumValues?: string | null;
+  literal?: string | null;
+  iwxxmField?: string;
+}
+
+/** Conversion template (first-party or custom). */
+export interface ConversionTemplateOut {
+  id: string;
+  user_id?: string | null;
+  slug: string;
+  name: string;
+  access: string;
+  iwxxmBlock: string;
+  slots: ConversionTemplateSlot[];
+  sample?: string;
+  comments?: string | null;
+  forkOf?: string | null;
+  shared?: boolean;
+  profiles?: string[];
+  created_at?: string | null;
+  updated_at?: string | null;
+}
+
+export interface ConversionTemplateListResponse {
+  items: ConversionTemplateOut[];
+}
+
+export interface ConversionTemplatePreviewResponse {
+  templateId: string;
+  focusGroup: string;
+  matched: boolean;
+  captures: Array<Record<string, string>>;
+  xmlBlock: string;
+  compiledPattern: string;
+}
+
+/**
+ * List first-party and custom conversion templates.
+ *
+ * @param accessToken - Bearer JWT
+ */
+export async function listConversionTemplates(
+  accessToken: string,
+): Promise<ConversionTemplateListResponse> {
+  const response = await fetch(apiUrl('/api/v1/profiles/conversion-templates'), {
+    headers: authHeaders(accessToken),
+  });
+  return parseJson(response);
+}
+
+/**
+ * Preview TAC group mapping for a conversion template.
+ *
+ * @param accessToken - Bearer JWT
+ * @param body - Preview request
+ */
+export async function previewConversionTemplate(
+  accessToken: string,
+  body: {
+    templateId: string;
+    focusGroup: string;
+    fullTac?: string;
+    slots?: ConversionTemplateSlot[];
+    iwxxmBlock?: string;
+  },
+): Promise<ConversionTemplatePreviewResponse> {
+  const response = await fetch(
+    apiUrl('/api/v1/profiles/conversion-templates/preview'),
+    {
+      method: 'POST',
+      headers: authHeaders(accessToken),
+      body: JSON.stringify(body),
+    },
+  );
+  return parseJson(response);
+}
+
+/**
+ * Create a custom conversion template (often a fork).
+ *
+ * @param accessToken - Bearer JWT
+ * @param body - Create payload
+ */
+export async function createConversionTemplate(
+  accessToken: string,
+  body: {
+    slug: string;
+    name: string;
+    iwxxmBlock: string;
+    slots: ConversionTemplateSlot[];
+    sample?: string;
+    comments?: string;
+    forkOf?: string;
+    shared?: boolean;
+  },
+): Promise<ConversionTemplateOut> {
+  const response = await fetch(apiUrl('/api/v1/profiles/conversion-templates'), {
+    method: 'POST',
+    headers: authHeaders(accessToken),
+    body: JSON.stringify(body),
+  });
+  return parseJson(response);
+}

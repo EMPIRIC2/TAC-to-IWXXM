@@ -362,9 +362,14 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   semantic profiles get profile-aware examples, starter packs/overlays seed only when untouched,
   and profile changes refresh the summary/catalog without resetting unrelated in-progress state
   unless a profile-dependent control becomes invalid. [Corpus: product §F7.w] [Corpus: journeys]
+- **EV-080 / #1146 delta on F7.w**: parameterizable conversion templates as the default
+  Conversion rule object; slot-builder + TAC→IWXXM bridge UI (phase-1); first-party view/fork;
+  custom JWT owner CRUD; fail-closed unknown ids; ADR-038 EV-080 amend. Dissemination rules
+  remain Disseminate / Convert & Send only. [Corpus: product §F7.w] [Corpus: adr/ADR-038]
 - **API**: Public convert companions unchanged; session CRUD requires Auth JWT; F7.w pack/overlay
-  mutate routes require JWT (see [api-contract.md](api-contract.md) §EV-933).
-- **Source**: S011; S023 F7.h; **S038 / EV-031 F7.i**; **EV-933 F7.w**;
+  mutate routes require JWT (see [api-contract.md](api-contract.md) §EV-933); conversion
+  template routes require JWT for custom mutate (see §EV-080).
+- **Source**: S011; S023 F7.h; **S038 / EV-031 F7.i**; **EV-933 F7.w**; **EV-080 / #1146**;
   Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
 ### F21 — Public convert + optional Auth (Amended S038 / EV-031)

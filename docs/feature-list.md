@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
-| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933); **deepen** EV-1051 shared semantic presets + team-safe sharing of non-secret profile assets/destination references (#1051); **deepen** EV-1120 Phase A profile-scoped catalog + glanceable Profile UX (#1120/#1145; B/C → #1146/#1147); **deepen** EV-beta-ux-export-auth collapsible Results + zip unique names + info-only log chrome + library-id-only lint copy |
+| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933); **deepen** EV-1051 shared semantic presets + team-safe sharing of non-secret profile assets/destination references (#1051); **deepen** EV-1120 Phase A profile-scoped catalog + glanceable Profile UX (#1120/#1145; B/C → #1146/#1147); **deepen** EV-080 / #1146 parameterizable conversion templates + TAC→IWXXM bridge; **deepen** EV-beta-ux-export-auth collapsible Results + zip unique names + info-only log chrome + library-id-only lint copy |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert; **deepen** EV-beta-ux-export-auth info-only Conversion/Validation log chrome (not amber/red) |
@@ -367,7 +367,7 @@
   | F7.t | #1003 | IWXXM as **product** pass-through (lint + F2 validate; no TAC convert) (S070 / EV-060); siblings #1001 AHL noise, #1002 profile picker, #1004 log_level, #1005 bulletin fields, #1006 Auth UAT |
   | F7.u | #1013 | Product/Profile bars no-wrap (S071 / EV-061) |
   | F7.v | #1014 / #1017 | Validation Issues Catalog tab (S071 / EV-061; EV-062) |
-  | F7.w | #933 | ConversionProfile editor — rule packs + inspector + signed overlays (EV-933); UJ-072; **deepen** EV-1120 / #1145 glanceable summary + ADR-038 inspect/jump blocks + profile examples/seeds (Phase A); composable convert → #1146; workflow authoring → #1147 |
+  | F7.w | #933 | ConversionProfile editor — rule packs + inspector + signed overlays (EV-933); UJ-072; **deepen** EV-1120 / #1145 glanceable summary + ADR-038 inspect/jump blocks + profile examples/seeds (Phase A); **deepen** EV-080 / #1146 parameterizable conversion templates + TAC→IWXXM bridge (phase-1); workflow authoring → #1147 |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
@@ -663,6 +663,25 @@
      marketplace; Learn/XP; soft-preview; #996 click-detail.
   4. Journeys UJ-072 deepen + UJ-073; TC-EV1120-*; H4–H5 when FE ships; EV-048 clean.
   **Context**: profile-scoped-catalog-1120 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+- **EV-080 deepen (F7.w / #1146) — Parameterizable conversion templates + TAC→IWXXM bridge**
+  — **requirements locked** (`D-EV080-req=1`, 2026-09-14):
+  1. **Default Conversion rule object** is a **parameterizable template** (ordered typed
+     slots → IWXXM block/path). Slot-builder-first authoring; compiled pattern secondary.
+     Typed captures pass numbers/enums through. Model may include ns/nil/cardinality/
+     choice/uom/nesting/Schematron hooks; UI v1 may phase controls.
+  2. **Authoring UX:** same builder for first-party + custom; DnD slot reorder with
+     keyboard/↑↓; comments under TAC; inline conversion preview; clear TAC → template →
+     IWXXM bridge (span highlight, captures, XML block). No raw regex as default path.
+  3. **Trust v1:** JWT owner CRUD for custom templates; first-party **view + fork** only;
+     apply custom on convert when entitled; fail-closed unknown template/profile ids.
+     No destination credentials in stored objects (ADR-021/029).
+  4. **Phase-1 ship:** templates + bridge UI only. Out: TAC validation / dissem / decoding
+     library shells; #1147 workflows; marketplace; org-admin mutate of first-party source;
+     N converters. Dissem rules still apply only on Disseminate / Convert & Send.
+  5. ADR-038 amend (EV-080); journeys **UJ-072e**; **TC-EV080-001..006**; H4–H5 when FE
+     ships; EV-048 clean; **Beta** badge + Issues feedback (ADR-043).
+  **Session**: `EV-080-param-conversion-templates` under local session-store (not a CORPUS
+  design gate).
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|

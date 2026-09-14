@@ -140,6 +140,7 @@ import {
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { BetaBadge } from './BetaBadge';
+import { ConversionTemplatesPanel } from './ConversionTemplatesPanel';
 
 export interface ConversionProfilePageProps {
   /** Bearer JWT — when absent, show sign-in prompt. */
@@ -1016,6 +1017,8 @@ function ConversionProfileAuthed({
           {PROFILES_EDITOR_SUBTITLE}
         </p>
       </header>
+
+      <ConversionTemplatesPanel accessToken={accessToken} />
 
       {error && (
         <p className="text-sm text-red-600" data-testid="conversion-profiles-error">
