@@ -9,8 +9,8 @@ Canonical Project Status and planning policy for agents and humans.
 | Owner | `EMPIRIC2` |
 | Project | **#7** — [TAC-to-IWXXM](https://github.com/orgs/EMPIRIC2/projects/7) |
 | Repo | `EMPIRIC2/TAC-to-IWXXM` |
-| Capacity | **20 h/week** solo · ~**15 shipping h** · **1-week** iterations |
-| I01 start | **2026-09-15** (Mon–Sun) |
+| Capacity | **20 h/week** solo · ~**15 shipping h/week** · **2-week** iterations (~**30 shipping h**/iteration) |
+| I01 start | **2026-09-15** (Mon–Sun × 2; each Ix = 14 days) |
 
 ## Status columns (left → right)
 
@@ -33,14 +33,14 @@ Canonical Project Status and planning policy for agents and humans.
 | Priority | P0–P3 | Board rank (keep issue `priority-*` labels aligned) |
 | Size | XS / S / M / L / XL | Relative effort (XS≈2h … XL≈32h) |
 | Estimate (h) | number | Hours for this issue (or remaining chunk) |
-| Iteration | I00-Backlog, I01… | One-week bucket; epics stay `I00-Backlog` |
+| Iteration | I00-Backlog, I01… | Two-week bucket; epics stay `I00-Backlog` |
 | Due date | date | Prefer milestone due; override for hard gates |
 
 Size → hours guide: **XS=2 · S=4 · M=8 · L=16 · XL=32**.
 
 ## Velocity / WIP
 
-1. **Done rate:** ≈ **1–2** shippable issues/week at 20 h (supersedes older ~12 Done/week swarm assumption).
+1. **Done rate:** ≈ **1–2** shippable issues/week at 20 h ≡ **2–4** Done / **2-week** iteration (supersedes older ~12 Done/week swarm assumption).
 2. **WIP cap:** ≤ **2** issues in `In progress` (prefer **1**).
 3. **Ready queue:** keep **3–5** small shippable issues in `Ready`. Refill from the **active milestone** first.
 4. **Epics:** `epic`-labeled issues stay in `Backlog` / `I00-Backlog` until children are Done.
