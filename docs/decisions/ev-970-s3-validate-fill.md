@@ -107,7 +107,7 @@ ObservationReport-9 (`index-of`).
 | 2026-09-14 | Mirror `xlink:href` → unprefixed `href` before Schematron parse so XPath1 can see codelist URIs |
 | 2026-09-14 | `document()` stand-in: `starts-with(@href,'http://codes.wmo.int/') or boolean(@nilReason)` |
 | 2026-09-14 | Report-9 stand-in: every ARP `gml:pos` must have ancestor with `srsName` + `srsDimension='2'` + `axisLabels` |
-| 2026-09-14 | Batch B2 filled remaining **80** SCH negatives → **0** oos in validate/metar_speci |
+| 2026-09-14 | Aggressive METAR_SPECI XPath1 stand-ins apply **only** for IWXXM **2025-2** Schematron paths so CA_ECCC 3.0.0 national uoms / partial translationCentre* remain soft |
 
 ### Counts after S3c Batch B2
 

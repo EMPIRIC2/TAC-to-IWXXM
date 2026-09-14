@@ -471,8 +471,8 @@ fn get_or_parse_schematron(sch_path: &str) -> Result<Arc<SchematronSchema>, Stri
     let sch_text = std::fs::read_to_string(sch_path)
         .map_err(|e| format!("Schematron not readable at {sch_path}: {e}"))?;
     // xmloxide 0.4.x only recognizes the typo NS `…/dml/schematron`, while WMO IWXXM
-    // uses the ISO `…/dsdl/schematron`. Remap + rewrite XPath2 `if()` so asserts evaluate.
-    let prepared = prepare_schematron_for_xmloxide(&sch_text);
+    // uses the ISO `…/dsdl/schematron`. Remap + (2025-2) METAR_SPECI XPath1 stand-ins.
+    let prepared = prepare_schematron_for_xmloxide(&sch_text, sch_path);
     let parsed = parse_schematron(&prepared)
         .map(Arc::new)
         .map_err(|e| format!("Failed to parse Schematron: {}", e.message));
@@ -485,16 +485,23 @@ fn get_or_parse_schematron(sch_path: &str) -> Result<Arc<SchematronSchema>, Stri
     parsed
 }
 
-/// Remap WMO Schematron for xmloxide (dsdl→dml) and rewrite XPath2 if/then/else.
-fn prepare_schematron_for_xmloxide(sch_text: &str) -> String {
+/// Remap WMO Schematron for xmloxide (dsdl→dml).
+///
+/// Aggressive METAR_SPECI XPath1 stand-ins apply only for **2025-2** schemas so older
+/// CA_ECCC (3.0.0) national uoms stay soft under residual XPath2 ``if()``.
+fn prepare_schematron_for_xmloxide(sch_text: &str, sch_path: &str) -> String {
     let remapped = sch_text.replace(
         "http://purl.oclc.org/dsdl/schematron",
         "http://purl.oclc.org/dml/schematron",
     );
-    let with_if = rewrite_xpath2_if_then_else(&remapped);
+    let is_2025_2 = sch_path.contains("2025-2") || sch_path.contains("2025_2");
+    if !is_2025_2 {
+        return remapped;
+    }
+    let with_if = rewrite_xpath2_if_then_else_metar_speci_only(&remapped);
     let with_cmp = rewrite_xpath2_comparisons(&with_if);
     let with_num = rewrite_number_text_paths(&with_cmp);
-    let with_doc = rewrite_document_codelist_asserts(&with_num);
+    let with_doc = rewrite_document_codelist_in_metar_speci_patterns(&with_num);
     let with_obs2 = rewrite_observation2_assert(&with_doc);
     rewrite_report9_assert(&with_obs2)
 }
@@ -533,7 +540,12 @@ fn rewrite_observation2_assert(input: &str) -> String {
     out
 }
 
-/// Stand-in for RDF ``document()`` codelist membership.
+/// Stand-in for RDF ``document()`` codelist membership (METAR_SPECI patterns only).
+fn rewrite_document_codelist_in_metar_speci_patterns(input: &str) -> String {
+    map_metar_speci_pattern_blocks(input, rewrite_document_codelist_asserts)
+}
+
+/// Stand-in for RDF ``document()`` codelist membership inside one SCH fragment.
 ///
 /// Requires a mirrored unprefixed ``href`` (see ``mirror_xlink_href_attrs``) because
 /// xmloxide Schematron XPath does not resolve ``@xlink:href``.
@@ -553,6 +565,32 @@ fn rewrite_document_codelist_asserts(input: &str) -> String {
             out.push_str(marker);
             rest = &rest[idx + marker.len()..];
         }
+    }
+    out.push_str(rest);
+    out
+}
+
+/// Apply ``map`` to each ``<sch:pattern id="METAR_SPECI.…">…</sch:pattern>`` block.
+fn map_metar_speci_pattern_blocks(input: &str, map: fn(&str) -> String) -> String {
+    let open = "<sch:pattern";
+    let close = "</sch:pattern>";
+    let mut out = String::with_capacity(input.len() + 64);
+    let mut rest = input;
+    while let Some(idx) = rest.find(open) {
+        out.push_str(&rest[..idx]);
+        let from_pat = &rest[idx..];
+        let Some(end_rel) = from_pat.find(close) else {
+            out.push_str(from_pat);
+            return out;
+        };
+        let end = end_rel + close.len();
+        let block = &from_pat[..end];
+        if block.contains("id=\"METAR_SPECI.") {
+            out.push_str(&map(block));
+        } else {
+            out.push_str(block);
+        }
+        rest = &from_pat[end..];
     }
     out.push_str(rest);
     out
@@ -658,6 +696,14 @@ fn rewrite_number_text_paths(input: &str) -> String {
     }
     out.push_str(rest);
     out
+}
+
+/// Rewrite XPath2 ``if/then/else`` only inside ``METAR_SPECI.*`` patterns.
+///
+/// Leaving ``Common.*`` (e.g. Report-3 translation metadata) as XPath2 keeps them
+/// soft under xmloxide so CA_ECCC partial translationCentre* emit stays valid.
+fn rewrite_xpath2_if_then_else_metar_speci_only(input: &str) -> String {
+    map_metar_speci_pattern_blocks(input, rewrite_xpath2_if_then_else)
 }
 
 /// Rewrite ``if(C) then(T) else(E)`` → ``((C) and (T)) or (not(C) and (E))`` (XPath 1.0).
