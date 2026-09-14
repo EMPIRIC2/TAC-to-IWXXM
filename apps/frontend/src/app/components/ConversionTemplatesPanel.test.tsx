@@ -162,7 +162,7 @@ describe('ConversionTemplatesPanel', () => {
     fireEvent.change(screen.getByTestId('conversion-template-slot-gloss-ddd'), {
       target: { value: 'etc.' },
     });
-    expect(screen.getByTestId('conversion-templates-skip-chips')).toHaveTextContent(
+    expect(screen.getByTestId('mapping-bridge-skip-chips')).toHaveTextContent(
       'Skipped',
     );
     const advanced = screen.getByTestId('conversion-templates-advanced');
@@ -191,11 +191,11 @@ describe('ConversionTemplatesPanel', () => {
     });
     fireEvent.click(screen.getByTestId('conversion-templates-preview'));
     await waitFor(() => {
-      expect(screen.getByTestId('conversion-templates-skip-chips')).toHaveTextContent(
+      expect(screen.getByTestId('mapping-bridge-skip-chips')).toHaveTextContent(
         'residual',
       );
     });
-    expect(screen.getByTestId('conversion-templates-skip-chips')).toHaveTextContent(
+    expect(screen.getByTestId('mapping-bridge-skip-chips')).toHaveTextContent(
       'only-id',
     );
     expect(
@@ -221,9 +221,7 @@ describe('ConversionTemplatesPanel', () => {
     fireEvent.change(screen.getByTestId('conversion-template-slot-mode-bare'), {
       target: { value: 'skip' },
     });
-    expect(screen.getByTestId('conversion-templates-skip-chips')).toHaveTextContent(
-      'bare',
-    );
+    expect(screen.getByTestId('mapping-bridge-skip-chips')).toHaveTextContent('bare');
   });
 
   it('handles preview and fork failures and custom forkOf', async () => {
@@ -334,7 +332,7 @@ describe('ConversionTemplatesPanel', () => {
     await waitFor(() => {
       expect(
         screen.getByTestId('conversion-templates-preview-result'),
-      ).toHaveTextContent('Matched: no');
+      ).toHaveTextContent('No matching conversion rule');
     });
   });
 

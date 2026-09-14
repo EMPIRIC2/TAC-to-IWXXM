@@ -8,6 +8,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Card } from './ui/card';
 import { BetaBadge } from './BetaBadge';
+import { MappingBridge } from './MappingBridge';
 import {
   createConversionTemplate,
   listConversionTemplates,
@@ -36,7 +37,6 @@ import {
   PROFILES_CONV_TEMPLATES_MOVE_UP,
   PROFILES_CONV_TEMPLATES_PREVIEW,
   PROFILES_CONV_TEMPLATES_SELECT,
-  PROFILES_CONV_TEMPLATES_SKIP_CHIP,
 } from '../../utils/conversionProfilesCopy';
 
 export type ConversionTemplatesPanelProps = {
@@ -225,78 +225,80 @@ export function ConversionTemplatesPanel({
             </select>
           </label>
 
-          <div className="space-y-2" data-testid="conversion-templates-slots">
-            {slots.map((slot, index) => (
-              <div
-                key={slot.id}
-                draggable
-                onDragStart={() => setDragIndex(index)}
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={() => onDrop(index)}
-                className="space-y-2 rounded border border-gray-200 p-2 dark:border-gray-700"
-                data-testid={`conversion-template-slot-${slot.id}`}
-              >
-                <div className="flex cursor-grab items-center gap-2">
-                  <span className="text-xs text-gray-400" aria-hidden>
-                    ::
-                  </span>
-                  <span className="flex-1 text-sm">
-                    {slot.label} · {slot.type}
-                    {slot.iwxxmField ? ` → ${slot.iwxxmField}` : ''}
-                  </span>
-                </div>
-                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  <label className="block text-xs">
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {PROFILES_CONV_TEMPLATES_MODE}
+          <div className="space-y-2" data-testid="template-block-builder">
+            <div className="space-y-2" data-testid="conversion-templates-slots">
+              {slots.map((slot, index) => (
+                <div
+                  key={slot.id}
+                  draggable
+                  onDragStart={() => setDragIndex(index)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={() => onDrop(index)}
+                  className="space-y-2 rounded border border-gray-200 p-2 dark:border-gray-700"
+                  data-testid={`conversion-template-slot-${slot.id}`}
+                >
+                  <div className="flex cursor-grab items-center gap-2">
+                    <span className="text-xs text-gray-400" aria-hidden>
+                      ::
                     </span>
-                    <select
-                      className="mt-1 w-full rounded border border-gray-300 bg-white p-1.5 dark:border-gray-600 dark:bg-gray-900"
-                      data-testid={`conversion-template-slot-mode-${slot.id}`}
-                      value={slot.mode}
-                      onChange={(e) => updateSlot(slot.id, { mode: e.target.value })}
-                    >
-                      {MODE_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <label className="block text-xs">
-                    <span className="text-gray-600 dark:text-gray-400">
-                      {PROFILES_CONV_TEMPLATES_GLOSS}
+                    <span className="flex-1 text-sm">
+                      {slot.label} · {slot.type}
+                      {slot.iwxxmField ? ` → ${slot.iwxxmField}` : ''}
                     </span>
-                    <input
-                      className="mt-1 w-full rounded border border-gray-300 bg-white p-1.5 dark:border-gray-600 dark:bg-gray-900"
-                      data-testid={`conversion-template-slot-gloss-${slot.id}`}
-                      value={slot.gloss || ''}
-                      onChange={(e) => updateSlot(slot.id, { gloss: e.target.value })}
-                      placeholder="e.g. wind direction degrees"
-                    />
-                  </label>
+                  </div>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <label className="block text-xs">
+                      <span className="text-gray-600 dark:text-gray-400">
+                        {PROFILES_CONV_TEMPLATES_MODE}
+                      </span>
+                      <select
+                        className="mt-1 w-full rounded border border-gray-300 bg-white p-1.5 dark:border-gray-600 dark:bg-gray-900"
+                        data-testid={`conversion-template-slot-mode-${slot.id}`}
+                        value={slot.mode}
+                        onChange={(e) => updateSlot(slot.id, { mode: e.target.value })}
+                      >
+                        {MODE_OPTIONS.map((opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="block text-xs">
+                      <span className="text-gray-600 dark:text-gray-400">
+                        {PROFILES_CONV_TEMPLATES_GLOSS}
+                      </span>
+                      <input
+                        className="mt-1 w-full rounded border border-gray-300 bg-white p-1.5 dark:border-gray-600 dark:bg-gray-900"
+                        data-testid={`conversion-template-slot-gloss-${slot.id}`}
+                        value={slot.gloss || ''}
+                        onChange={(e) => updateSlot(slot.id, { gloss: e.target.value })}
+                        placeholder="e.g. wind direction degrees"
+                      />
+                    </label>
+                  </div>
                 </div>
+              ))}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  className="rounded border px-2 py-1 text-sm"
+                  data-testid="conversion-templates-move-up"
+                  aria-label={PROFILES_CONV_TEMPLATES_MOVE_UP}
+                  onClick={() => moveSelected(-1)}
+                >
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  className="rounded border px-2 py-1 text-sm"
+                  data-testid="conversion-templates-move-down"
+                  aria-label={PROFILES_CONV_TEMPLATES_MOVE_DOWN}
+                  onClick={() => moveSelected(1)}
+                >
+                  ↓
+                </button>
               </div>
-            ))}
-            <div className="flex gap-2">
-              <button
-                type="button"
-                className="rounded border px-2 py-1 text-sm"
-                data-testid="conversion-templates-move-up"
-                aria-label={PROFILES_CONV_TEMPLATES_MOVE_UP}
-                onClick={() => moveSelected(-1)}
-              >
-                ↑
-              </button>
-              <button
-                type="button"
-                className="rounded border px-2 py-1 text-sm"
-                data-testid="conversion-templates-move-down"
-                aria-label={PROFILES_CONV_TEMPLATES_MOVE_DOWN}
-                onClick={() => moveSelected(1)}
-              >
-                ↓
-              </button>
             </div>
           </div>
 
@@ -368,39 +370,17 @@ export function ConversionTemplatesPanel({
           </div>
 
           {preview || localSkipChips.length ? (
-            <div
-              className="space-y-2 rounded bg-gray-50 p-3 text-sm dark:bg-gray-900"
-              data-testid="conversion-templates-preview-result"
-            >
-              {preview ? (
-                <>
-                  <p>Matched: {preview.matched ? 'yes' : 'no'}</p>
-                  <pre className="overflow-auto whitespace-pre-wrap text-xs">
-                    {preview.xmlBlock}
-                  </pre>
-                </>
-              ) : null}
-              {previewSkipped.length > 0 ? (
-                <div
-                  className="flex flex-wrap gap-1"
-                  data-testid="conversion-templates-skip-chips"
-                >
-                  {previewSkipped.map((s) => {
-                    const chipKey = s.slot || s.label || 'skip';
-                    const chipText = s.label || s.slot || chipKey;
-                    const glossSuffix = s.gloss ? ` — ${s.gloss}` : '';
-                    return (
-                      <span
-                        key={chipKey}
-                        className="rounded bg-amber-100 px-2 py-0.5 text-xs text-amber-900 dark:bg-amber-900/40 dark:text-amber-100"
-                      >
-                        {PROFILES_CONV_TEMPLATES_SKIP_CHIP}: {chipText}
-                        {glossSuffix}
-                      </span>
-                    );
-                  })}
-                </div>
-              ) : null}
+            <div data-testid="conversion-templates-preview-result">
+              <MappingBridge
+                tacGroup={focusGroup}
+                templateName={selected.name}
+                matched={preview ? preview.matched : null}
+                iwxxmBlock={preview?.xmlBlock ?? ''}
+                skipChips={previewSkipped.map((s) => ({
+                  label: s.label || s.slot || 'skip',
+                  gloss: s.gloss,
+                }))}
+              />
             </div>
           ) : null}
         </>

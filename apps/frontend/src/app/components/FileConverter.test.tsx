@@ -127,6 +127,19 @@ const mockListPresets = vi.hoisted(() =>
 const mockListTemplates = vi.hoisted(() =>
   vi.fn().mockResolvedValue({ items: [] as Array<Record<string, unknown>> }),
 );
+const mockListConversionTemplates = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({ items: [] as Array<Record<string, unknown>> }),
+);
+const mockPreviewConversionTemplate = vi.hoisted(() =>
+  vi.fn().mockResolvedValue({
+    templateId: '',
+    focusGroup: '',
+    matched: false,
+    captures: [],
+    xmlBlock: '',
+    compiledPattern: '',
+  }),
+);
 const mockFetchProfileCatalog = vi.hoisted(() =>
   vi.fn().mockResolvedValue({
     profiles: [
@@ -245,6 +258,9 @@ vi.mock('@/utils/conversionProfilesApi', () => ({
   listPresets: (...args: unknown[]) => mockListPresets(...args),
   listTemplates: (...args: unknown[]) => mockListTemplates(...args),
   listOverlays: (...args: unknown[]) => mockListOverlays(...args),
+  listConversionTemplates: (...args: unknown[]) => mockListConversionTemplates(...args),
+  previewConversionTemplate: (...args: unknown[]) =>
+    mockPreviewConversionTemplate(...args),
 }));
 
 vi.mock('./TacEditor', () => ({
@@ -416,10 +432,21 @@ describe('FileConverter Component', () => {
     mockListPresets.mockReset();
     mockListTemplates.mockReset();
     mockListOverlays.mockReset();
+    mockListConversionTemplates.mockReset();
+    mockPreviewConversionTemplate.mockReset();
     mockFetchProfileCatalog.mockReset();
     mockListPresets.mockResolvedValue({ items: [] });
     mockListTemplates.mockResolvedValue({ items: [] });
     mockListOverlays.mockResolvedValue({ items: [] });
+    mockListConversionTemplates.mockResolvedValue({ items: [] });
+    mockPreviewConversionTemplate.mockResolvedValue({
+      templateId: '',
+      focusGroup: '',
+      matched: false,
+      captures: [],
+      xmlBlock: '',
+      compiledPattern: '',
+    });
     mockFetchProfileCatalog.mockResolvedValue({
       profiles: [
         {

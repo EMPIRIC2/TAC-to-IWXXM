@@ -50,6 +50,17 @@ export const PROFILES_CONV_TEMPLATES_ADVANCED_HINT =
   'Optional compiled pattern for experts. Slot builder remains the default path.';
 export const PROFILES_CONV_TEMPLATES_SKIP_CHIP = 'Skipped';
 export const PROFILES_CONV_TEMPLATES_SELECT = 'Conversion rule';
+export const MAPPING_BRIDGE_HEADING = 'Mapping bridge';
+export const MAPPING_BRIDGE_HELP =
+  'See how a TAC group matches a conversion rule and the IWXXM block it produces.';
+export const MAPPING_BRIDGE_COL_TAC = 'TAC report';
+export const MAPPING_BRIDGE_COL_TEMPLATE = 'Template match';
+export const MAPPING_BRIDGE_COL_IWXXM = 'IWXXM block';
+export const MAPPING_BRIDGE_MATCHED = 'Matched';
+export const MAPPING_BRIDGE_UNMATCHED = 'No matching conversion rule';
+export const MAPPING_BRIDGE_UNMATCHED_HINT =
+  'Every TAC group that maps to IWXXM needs an associated conversion rule. Unmatched groups fail closed.';
+export const MAPPING_BRIDGE_EMPTY_IWXXM = 'Run preview to see the IWXXM block.';
 export const PROFILES_GLOSSARY_HEADING = 'What these options mean';
 export const PROFILES_GLOSSARY_PROFILE =
   'Base profile chooses the operational rule set and national extensions used for TAC lint, conversion, and IWXXM validation.';
