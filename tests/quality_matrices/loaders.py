@@ -143,12 +143,20 @@ def load_rule_cases(path: Path) -> list[RuleCase]:
 
         expect_codes = expect.get("codes")
         allow_empty_tac = isinstance(expect_codes, list) and "EMPTY_TAC" in expect_codes
+        has_xml_payload = any(
+            isinstance(source.get("xml"), str) and str(source.get("xml")).strip()
+            for source in (meta, expect)
+        )
         if (
             status == "ready"
             and not allow_empty_tac
             and not (isinstance(tac, str) and tac.strip())
+            and not has_xml_payload
         ):
-            raise ValueError(f"{path}: cases[{i}] status ready requires non-empty tac")
+            raise ValueError(
+                f"{path}: cases[{i}] status ready requires non-empty tac "
+                "or meta/expect xml"
+            )
         if status == "oos" and not _meta_has_cite(meta):
             raise ValueError(f"{path}: cases[{i}] status oos requires meta cite/reason")
 

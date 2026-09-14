@@ -441,7 +441,10 @@
   residuals, lint, and validate diagnostics via public **`GET /api/v1/quality-metrics*`**
   (`D-S063-compute=1` + `D-S063-gateA=2`). Per-file detail includes **unified XML diff** of
   official vs our conversion (`D-S063-diff=2`). Does **not** flip F7 → Implemented;
-  complements CI matrices (#815 / #831 / F29) without replacing them.
+  complements CI matrices (#815 / #831 / F29) without replacing them. EV-052 sticky PR
+  quality comments remain a **separate** CI surface (goldens + F29 inventory) — not a
+  substitute for this tab’s `corpus_metrics.json` evaluation
+  ([ev-970-s3-validate-fill.md](decisions/ev-970-s3-validate-fill.md)).
 - **Acceptance (EV-054 / #836 — F7.q)** — **approved** (`D-S063-01-ac=1`; Gate A amend
   `D-S063-gateA=2`):
   1. Quality metrics is a **separate primary tab** (shell navigation); lists official corpus
@@ -1699,6 +1702,15 @@
   cycle **TC-EV030-***
 - **Out of scope**: Claiming 100% Annex-3 coverage in first PR; duplicating entire WMO trees
   ×20; coupling matrix to live network
+- **EV-970 deepen (#970 — METAR/SPECI fixture fill + sticky Product hygiene)**: S1 convert and
+  S2 lint cleared `needs-fixture` for `metar_speci`; **S3** cleared validate/metar_speci
+  (`860` ready / `0` oos / `0` NF — see
+  [ev-970-s3-validate-fill.md](decisions/ev-970-s3-validate-fill.md)). Sticky Product rollup
+  must allowlist canonical products and map junk sad-fixture `meta.product` values to the
+  pack parent (e.g. `metar_speci` → `METAR`) so opaque codes never appear as Product rows.
+  Sticky outcomes are **not** the F7.q Quality metrics dashboard (`corpus_metrics.json`);
+  sticky Match includes ready inventory slots plus golden live compares — document that
+  distinction in the PR comment. [Corpus: decisions §ev-970-s3-validate-fill]
 - **S070 / EV-060 deepen (#1004)**: Conversion parameter `log_level` must set backend/package
   logger verbosity (not only client-echoed process-issue filter). DEBUG must not dump JWTs,
   passwords, or Authorization headers. UJ-063 / TC-EV060-1004-*.
@@ -2234,14 +2246,20 @@
      new DOKS Redis Deployment (`D-S061-redis=1`)
   5. `openapi-typescript` FE types from committed OpenAPI snapshot (`make openapi-refresh`;
      `pnpm openapi:check` drift gate) — locked `D-S061-orval=1` (not full Orval)
+- **EV-970 amend (sticky Product hygiene / dashboard clarity)**: Collect/format must
+  **allowlist** canonical Product keys; junk sad-fixture products roll under pack parent.
+  Sticky must **not** be read as F7.q dashboard scores — footnote inventory vs golden live
+  vs `/quality` corpus metrics. See [ev-970-s3-validate-fill.md](decisions/ev-970-s3-validate-fill.md);
+  **TC-EV970-STICKY-001** (product allowlist) when Build lands.
 - **Acceptance**: AC1–AC12 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-052;
-  **TC-EV052-001..012**
-- **Out of scope**: Paid Sentry/Valkey; in-cluster Redis service; #874/#727/#836; AMS #958;
-  stage→main promote this cycle
+  **TC-EV052-001..012**; sticky Product allowlist per EV-970 S3
+- **Out of scope**: Paid Sentry/Valkey; in-cluster Redis service; #874/#727 (CI polish);
+  unifying sticky onto `corpus_metrics.json` this cycle; AMS #958; stage→main promote this
+  cycle. F7.q dashboard remains the operator corpus evaluation surface (#836 family).
 - **Journeys / UI**: N/A (codegen only; no new operator UJ)
-- **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: tech-spec]` ·
-  `[Corpus: deploy]` · `[Corpus: adr/ADR-007]` · `[Corpus: adr/ADR-006]` ·
-  `[Corpus: adr/ADR-031]` · `[Corpus: decisions]`
+- **Corpus**: `[Corpus: product]` · `[Corpus: product §F7.q]` · `[Corpus: tests]` ·
+  `[Corpus: tech-spec]` · `[Corpus: deploy]` · `[Corpus: adr/ADR-007]` ·
+  `[Corpus: adr/ADR-006]` · `[Corpus: adr/ADR-031]` · `[Corpus: decisions]`
 - **Infra**: `docs/sessions/S061-ci-polish-quality-pr-stats/reports/infra-free-tier.md`
 
 ### F29 / M5 deepen (S062 / EV-053 — Vitest branches ≥95 / #968)

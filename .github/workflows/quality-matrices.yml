@@ -10,6 +10,7 @@ on:
       - "tests/quality_matrices/**"
       - "scripts/ci/run_quality_matrices_smoke.sh"
       - "scripts/ci/run_quality_matrices_full.sh"
+      - "packages/iwxxm-validate/**"
       - ".github/workflows/quality-matrices.yml"
       - "pyproject.toml"
   pull_request:
@@ -17,6 +18,7 @@ on:
       - "tests/quality_matrices/**"
       - "scripts/ci/run_quality_matrices_smoke.sh"
       - "scripts/ci/run_quality_matrices_full.sh"
+      - "packages/iwxxm-validate/**"
       - ".github/workflows/quality-matrices.yml"
       - "pyproject.toml"
   workflow_dispatch:
@@ -50,9 +52,19 @@ jobs:
           python -m pip install --upgrade pip uv
           uv sync
 
+      # EV-970 S3b — Schematron negatives need native xmloxide (not lxml SCHEMATRON_SKIPPED).
+      - name: Build iwxxm-validate native
+        run: |
+          uv pip install maturin
+          make build-iwxxm-validate-native
+
       - name: Run quality matrices smoke
         run: make test-quality-matrices-smoke
+        env:
+          IWXXM_VALIDATE_REQUIRE_RUST: "1"
 
       - name: Run full quality matrices (optional)
         if: github.event_name == 'workflow_dispatch' && inputs.full_matrix == 'true'
         run: make test-quality-matrices-full
+        env:
+          IWXXM_VALIDATE_REQUIRE_RUST: "1"

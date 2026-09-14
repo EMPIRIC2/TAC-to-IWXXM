@@ -3,101 +3,551 @@ engine: validate
 cases:
 - bucket: happy
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 121251Z 18008KT 10SM FEW250 22/12 A3012=
+  expect:
+    accept: true
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S3 validate convert-then-validate smoke
 - bucket: happy
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR KSEA 231800Z 27008KT 10SM SCT025 14/06 A3004=
+  expect:
+    accept: true
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S3 validate convert-then-validate smoke
 - bucket: happy
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: METAR KBOS 151955Z 22012G20KT 5SM -RA BR BKN012 OVC025 18/16 A2988=
+  expect:
+    accept: true
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S3 validate convert-then-validate smoke
 - bucket: happy
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: METAR KDEN 101755Z 36015KT 10SM FEW080 SCT120 05/M08 A3035=
+  expect:
+    accept: true
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S3 validate convert-then-validate smoke
 - bucket: happy
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KJFK 232045Z 20015G25KT 8SM -SN BKN020 OVC040 12/06 A3001=
+  expect:
+    accept: true
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S3 validate convert-then-validate smoke
 - bucket: sad
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - METAR_SPECI.MeteorologicalAerodromeObservation-5
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:METAR xmlns:iwxxm=\"\
+      http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\
+      \n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\
+      \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"\
+      metar.basic.kjfk\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\"\
+      \n    automatedStation=\"false\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant\
+      \ gml:id=\"t.issue\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport\
+      \ gml:id=\"ad.kjfk\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice\
+      \ gml:id=\"ad.ts.kjfk\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n\
+      \          <aixm:designator>KJFK</aixm:designator>\n          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>\n\
+      \        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n\
+      \  </iwxxm:aerodrome>\n  <iwxxm:observationTime>\n    <gml:TimeInstant gml:id=\"\
+      t.obs\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:observationTime>\n  <iwxxm:observation>\n\
+      \    <iwxxm:MeteorologicalAerodromeObservation gml:id=\"obs.1\" cloudAndVisibilityOK=\"\
+      false\">\n      <iwxxm:airTemperature uom=\"Cel\">22.0</iwxxm:airTemperature>\n\
+      \      <iwxxm:dewpointTemperature uom=\"Cel\">12.0</iwxxm:dewpointTemperature>\n\
+      \      <iwxxm:qnh uom=\"Pa\">1020</iwxxm:qnh>\n      <iwxxm:surfaceWind>\n \
+      \       <iwxxm:AerodromeSurfaceWind variableWindDirection=\"false\">\n     \
+      \     <iwxxm:meanWindDirection uom=\"deg\">180</iwxxm:meanWindDirection>\n \
+      \         <iwxxm:meanWindSpeed uom=\"[kn_i]\">8</iwxxm:meanWindSpeed>\n    \
+      \    </iwxxm:AerodromeSurfaceWind>\n      </iwxxm:surfaceWind>\n      <iwxxm:visibility>\n\
+      \        <iwxxm:AerodromeHorizontalVisibility>\n          <iwxxm:prevailingVisibility\
+      \ uom=\"m\">10000</iwxxm:prevailingVisibility>\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n\
+      \        </iwxxm:AerodromeHorizontalVisibility>\n      </iwxxm:visibility>\n\
+      \      <iwxxm:cloud>\n        <iwxxm:AerodromeCloud>\n          <iwxxm:layer>\n\
+      \            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW\"\
+      />\n              <iwxxm:base uom=\"[ft_i]\">25000</iwxxm:base>\n          \
+      \  </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloud>\n\
+      \      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeObservation>\n  </iwxxm:observation>\n\
+      </iwxxm:METAR>\n"
+    cite: EV-970-S3b Schematron negative (native) / qnh_bad_uom
 - bucket: sad
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - METAR_SPECI.MeteorologicalAerodromeObservation-5
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:METAR xmlns:iwxxm=\"\
+      http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\
+      \n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\
+      \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"\
+      metar.basic.kjfk\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\"\
+      \n    automatedStation=\"false\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant\
+      \ gml:id=\"t.issue\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport\
+      \ gml:id=\"ad.kjfk\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice\
+      \ gml:id=\"ad.ts.kjfk\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n\
+      \          <aixm:designator>KJFK</aixm:designator>\n          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>\n\
+      \        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n\
+      \  </iwxxm:aerodrome>\n  <iwxxm:observationTime>\n    <gml:TimeInstant gml:id=\"\
+      t.obs\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:observationTime>\n  <iwxxm:observation>\n\
+      \    <iwxxm:MeteorologicalAerodromeObservation gml:id=\"obs.1\" cloudAndVisibilityOK=\"\
+      false\">\n      <iwxxm:airTemperature uom=\"Cel\">22.0</iwxxm:airTemperature>\n\
+      \      <iwxxm:dewpointTemperature uom=\"Cel\">12.0</iwxxm:dewpointTemperature>\n\
+      \      <iwxxm:qnh uom=\"Pa\">1020</iwxxm:qnh>\n      <iwxxm:surfaceWind>\n \
+      \       <iwxxm:AerodromeSurfaceWind variableWindDirection=\"false\">\n     \
+      \     <iwxxm:meanWindDirection uom=\"deg\">180</iwxxm:meanWindDirection>\n \
+      \         <iwxxm:meanWindSpeed uom=\"[kn_i]\">8</iwxxm:meanWindSpeed>\n    \
+      \    </iwxxm:AerodromeSurfaceWind>\n      </iwxxm:surfaceWind>\n      <iwxxm:visibility>\n\
+      \        <iwxxm:AerodromeHorizontalVisibility>\n          <iwxxm:prevailingVisibility\
+      \ uom=\"m\">10000</iwxxm:prevailingVisibility>\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n\
+      \        </iwxxm:AerodromeHorizontalVisibility>\n      </iwxxm:visibility>\n\
+      \      <iwxxm:cloud>\n        <iwxxm:AerodromeCloud>\n          <iwxxm:layer>\n\
+      \            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW\"\
+      />\n              <iwxxm:base uom=\"[ft_i]\">25000</iwxxm:base>\n          \
+      \  </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloud>\n\
+      \      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeObservation>\n  </iwxxm:observation>\n\
+      </iwxxm:METAR>\n"
+    cite: EV-970-S3b Schematron negative (native) / qnh_bad_uom
 - bucket: sad
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - METAR_SPECI.MeteorologicalAerodromeObservation-5
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:METAR xmlns:iwxxm=\"\
+      http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\
+      \n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\
+      \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"\
+      metar.basic.kjfk\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\"\
+      \n    automatedStation=\"false\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant\
+      \ gml:id=\"t.issue\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport\
+      \ gml:id=\"ad.kjfk\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice\
+      \ gml:id=\"ad.ts.kjfk\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n\
+      \          <aixm:designator>KJFK</aixm:designator>\n          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>\n\
+      \        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n\
+      \  </iwxxm:aerodrome>\n  <iwxxm:observationTime>\n    <gml:TimeInstant gml:id=\"\
+      t.obs\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:observationTime>\n  <iwxxm:observation>\n\
+      \    <iwxxm:MeteorologicalAerodromeObservation gml:id=\"obs.1\" cloudAndVisibilityOK=\"\
+      false\">\n      <iwxxm:airTemperature uom=\"Cel\">22.0</iwxxm:airTemperature>\n\
+      \      <iwxxm:dewpointTemperature uom=\"Cel\">12.0</iwxxm:dewpointTemperature>\n\
+      \      <iwxxm:qnh uom=\"Pa\">1020</iwxxm:qnh>\n      <iwxxm:surfaceWind>\n \
+      \       <iwxxm:AerodromeSurfaceWind variableWindDirection=\"false\">\n     \
+      \     <iwxxm:meanWindDirection uom=\"deg\">180</iwxxm:meanWindDirection>\n \
+      \         <iwxxm:meanWindSpeed uom=\"[kn_i]\">8</iwxxm:meanWindSpeed>\n    \
+      \    </iwxxm:AerodromeSurfaceWind>\n      </iwxxm:surfaceWind>\n      <iwxxm:visibility>\n\
+      \        <iwxxm:AerodromeHorizontalVisibility>\n          <iwxxm:prevailingVisibility\
+      \ uom=\"m\">10000</iwxxm:prevailingVisibility>\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n\
+      \        </iwxxm:AerodromeHorizontalVisibility>\n      </iwxxm:visibility>\n\
+      \      <iwxxm:cloud>\n        <iwxxm:AerodromeCloud>\n          <iwxxm:layer>\n\
+      \            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW\"\
+      />\n              <iwxxm:base uom=\"[ft_i]\">25000</iwxxm:base>\n          \
+      \  </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloud>\n\
+      \      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeObservation>\n  </iwxxm:observation>\n\
+      </iwxxm:METAR>\n"
+    cite: EV-970-S3b Schematron negative (native) / qnh_bad_uom
 - bucket: sad
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - METAR_SPECI.MeteorologicalAerodromeObservation-5
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:METAR xmlns:iwxxm=\"\
+      http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\
+      \n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\
+      \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"\
+      metar.basic.kjfk\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\"\
+      \n    automatedStation=\"false\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant\
+      \ gml:id=\"t.issue\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport\
+      \ gml:id=\"ad.kjfk\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice\
+      \ gml:id=\"ad.ts.kjfk\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n\
+      \          <aixm:designator>KJFK</aixm:designator>\n          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>\n\
+      \        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n\
+      \  </iwxxm:aerodrome>\n  <iwxxm:observationTime>\n    <gml:TimeInstant gml:id=\"\
+      t.obs\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:observationTime>\n  <iwxxm:observation>\n\
+      \    <iwxxm:MeteorologicalAerodromeObservation gml:id=\"obs.1\" cloudAndVisibilityOK=\"\
+      false\">\n      <iwxxm:airTemperature uom=\"Cel\">22.0</iwxxm:airTemperature>\n\
+      \      <iwxxm:dewpointTemperature uom=\"Cel\">12.0</iwxxm:dewpointTemperature>\n\
+      \      <iwxxm:qnh uom=\"Pa\">1020</iwxxm:qnh>\n      <iwxxm:surfaceWind>\n \
+      \       <iwxxm:AerodromeSurfaceWind variableWindDirection=\"false\">\n     \
+      \     <iwxxm:meanWindDirection uom=\"deg\">180</iwxxm:meanWindDirection>\n \
+      \         <iwxxm:meanWindSpeed uom=\"[kn_i]\">8</iwxxm:meanWindSpeed>\n    \
+      \    </iwxxm:AerodromeSurfaceWind>\n      </iwxxm:surfaceWind>\n      <iwxxm:visibility>\n\
+      \        <iwxxm:AerodromeHorizontalVisibility>\n          <iwxxm:prevailingVisibility\
+      \ uom=\"m\">10000</iwxxm:prevailingVisibility>\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n\
+      \        </iwxxm:AerodromeHorizontalVisibility>\n      </iwxxm:visibility>\n\
+      \      <iwxxm:cloud>\n        <iwxxm:AerodromeCloud>\n          <iwxxm:layer>\n\
+      \            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW\"\
+      />\n              <iwxxm:base uom=\"[ft_i]\">25000</iwxxm:base>\n          \
+      \  </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloud>\n\
+      \      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeObservation>\n  </iwxxm:observation>\n\
+      </iwxxm:METAR>\n"
+    cite: EV-970-S3b Schematron negative (native) / qnh_bad_uom
 - bucket: sad
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - METAR_SPECI.MeteorologicalAerodromeObservation-5
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:METAR xmlns:iwxxm=\"\
+      http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\
+      \n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\
+      \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"\
+      metar.basic.kjfk\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\"\
+      \n    automatedStation=\"false\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant\
+      \ gml:id=\"t.issue\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport\
+      \ gml:id=\"ad.kjfk\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice\
+      \ gml:id=\"ad.ts.kjfk\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n\
+      \          <aixm:designator>KJFK</aixm:designator>\n          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>\n\
+      \        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n\
+      \  </iwxxm:aerodrome>\n  <iwxxm:observationTime>\n    <gml:TimeInstant gml:id=\"\
+      t.obs\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:observationTime>\n  <iwxxm:observation>\n\
+      \    <iwxxm:MeteorologicalAerodromeObservation gml:id=\"obs.1\" cloudAndVisibilityOK=\"\
+      false\">\n      <iwxxm:airTemperature uom=\"Cel\">22.0</iwxxm:airTemperature>\n\
+      \      <iwxxm:dewpointTemperature uom=\"Cel\">12.0</iwxxm:dewpointTemperature>\n\
+      \      <iwxxm:qnh uom=\"Pa\">1020</iwxxm:qnh>\n      <iwxxm:surfaceWind>\n \
+      \       <iwxxm:AerodromeSurfaceWind variableWindDirection=\"false\">\n     \
+      \     <iwxxm:meanWindDirection uom=\"deg\">180</iwxxm:meanWindDirection>\n \
+      \         <iwxxm:meanWindSpeed uom=\"[kn_i]\">8</iwxxm:meanWindSpeed>\n    \
+      \    </iwxxm:AerodromeSurfaceWind>\n      </iwxxm:surfaceWind>\n      <iwxxm:visibility>\n\
+      \        <iwxxm:AerodromeHorizontalVisibility>\n          <iwxxm:prevailingVisibility\
+      \ uom=\"m\">10000</iwxxm:prevailingVisibility>\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n\
+      \        </iwxxm:AerodromeHorizontalVisibility>\n      </iwxxm:visibility>\n\
+      \      <iwxxm:cloud>\n        <iwxxm:AerodromeCloud>\n          <iwxxm:layer>\n\
+      \            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW\"\
+      />\n              <iwxxm:base uom=\"[ft_i]\">25000</iwxxm:base>\n          \
+      \  </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloud>\n\
+      \      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeObservation>\n  </iwxxm:observation>\n\
+      </iwxxm:METAR>\n"
+    cite: EV-970-S3b Schematron negative (native) / qnh_bad_uom
 - bucket: edge_pass
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 121251Z 18008KT 10SM FEW250 22/12 A3012
+  expect:
+    accept: true
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S3 validate convert-then-validate smoke
 - bucket: edge_pass
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: METAR  KJFK  121251Z 18008KT 10SM FEW250 22/12 A3012=
+  expect:
+    accept: true
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S3 validate convert-then-validate smoke
 - bucket: edge_pass
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: METAR KJFK 121251Z 18008KT 10SM FEW250 22/12 A3012 RMK AO2=
+  expect:
+    accept: true
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S3 validate convert-then-validate smoke
 - bucket: edge_pass
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: METAR KORD 120650Z 27010KT 10SM CLR M02/M08 A3041=
+  expect:
+    accept: true
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S3 validate convert-then-validate smoke
 - bucket: edge_pass
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: SPECI KSEA 231910Z 25012KT 3SM BR BKN008 11/10 A2995=
+  expect:
+    accept: true
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: SPECI
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: EV-970-S3 validate convert-then-validate smoke
 - bucket: edge_fail
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - METAR_SPECI.MeteorologicalAerodromeObservation-5
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:METAR xmlns:iwxxm=\"\
+      http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\
+      \n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\
+      \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"\
+      metar.basic.kjfk\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\"\
+      \n    automatedStation=\"false\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant\
+      \ gml:id=\"t.issue\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport\
+      \ gml:id=\"ad.kjfk\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice\
+      \ gml:id=\"ad.ts.kjfk\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n\
+      \          <aixm:designator>KJFK</aixm:designator>\n          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>\n\
+      \        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n\
+      \  </iwxxm:aerodrome>\n  <iwxxm:observationTime>\n    <gml:TimeInstant gml:id=\"\
+      t.obs\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:observationTime>\n  <iwxxm:observation>\n\
+      \    <iwxxm:MeteorologicalAerodromeObservation gml:id=\"obs.1\" cloudAndVisibilityOK=\"\
+      false\">\n      <iwxxm:airTemperature uom=\"Cel\">22.0</iwxxm:airTemperature>\n\
+      \      <iwxxm:dewpointTemperature uom=\"Cel\">12.0</iwxxm:dewpointTemperature>\n\
+      \      <iwxxm:qnh uom=\"Pa\">1020</iwxxm:qnh>\n      <iwxxm:surfaceWind>\n \
+      \       <iwxxm:AerodromeSurfaceWind variableWindDirection=\"false\">\n     \
+      \     <iwxxm:meanWindDirection uom=\"deg\">180</iwxxm:meanWindDirection>\n \
+      \         <iwxxm:meanWindSpeed uom=\"[kn_i]\">8</iwxxm:meanWindSpeed>\n    \
+      \    </iwxxm:AerodromeSurfaceWind>\n      </iwxxm:surfaceWind>\n      <iwxxm:visibility>\n\
+      \        <iwxxm:AerodromeHorizontalVisibility>\n          <iwxxm:prevailingVisibility\
+      \ uom=\"m\">10000</iwxxm:prevailingVisibility>\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n\
+      \        </iwxxm:AerodromeHorizontalVisibility>\n      </iwxxm:visibility>\n\
+      \      <iwxxm:cloud>\n        <iwxxm:AerodromeCloud>\n          <iwxxm:layer>\n\
+      \            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW\"\
+      />\n              <iwxxm:base uom=\"[ft_i]\">25000</iwxxm:base>\n          \
+      \  </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloud>\n\
+      \      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeObservation>\n  </iwxxm:observation>\n\
+      </iwxxm:METAR>\n"
+    cite: EV-970-S3b Schematron negative (native) / qnh_bad_uom
 - bucket: edge_fail
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - METAR_SPECI.MeteorologicalAerodromeObservation-5
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:METAR xmlns:iwxxm=\"\
+      http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\
+      \n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\
+      \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"\
+      metar.basic.kjfk\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\"\
+      \n    automatedStation=\"false\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant\
+      \ gml:id=\"t.issue\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport\
+      \ gml:id=\"ad.kjfk\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice\
+      \ gml:id=\"ad.ts.kjfk\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n\
+      \          <aixm:designator>KJFK</aixm:designator>\n          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>\n\
+      \        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n\
+      \  </iwxxm:aerodrome>\n  <iwxxm:observationTime>\n    <gml:TimeInstant gml:id=\"\
+      t.obs\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:observationTime>\n  <iwxxm:observation>\n\
+      \    <iwxxm:MeteorologicalAerodromeObservation gml:id=\"obs.1\" cloudAndVisibilityOK=\"\
+      false\">\n      <iwxxm:airTemperature uom=\"Cel\">22.0</iwxxm:airTemperature>\n\
+      \      <iwxxm:dewpointTemperature uom=\"Cel\">12.0</iwxxm:dewpointTemperature>\n\
+      \      <iwxxm:qnh uom=\"Pa\">1020</iwxxm:qnh>\n      <iwxxm:surfaceWind>\n \
+      \       <iwxxm:AerodromeSurfaceWind variableWindDirection=\"false\">\n     \
+      \     <iwxxm:meanWindDirection uom=\"deg\">180</iwxxm:meanWindDirection>\n \
+      \         <iwxxm:meanWindSpeed uom=\"[kn_i]\">8</iwxxm:meanWindSpeed>\n    \
+      \    </iwxxm:AerodromeSurfaceWind>\n      </iwxxm:surfaceWind>\n      <iwxxm:visibility>\n\
+      \        <iwxxm:AerodromeHorizontalVisibility>\n          <iwxxm:prevailingVisibility\
+      \ uom=\"m\">10000</iwxxm:prevailingVisibility>\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n\
+      \        </iwxxm:AerodromeHorizontalVisibility>\n      </iwxxm:visibility>\n\
+      \      <iwxxm:cloud>\n        <iwxxm:AerodromeCloud>\n          <iwxxm:layer>\n\
+      \            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW\"\
+      />\n              <iwxxm:base uom=\"[ft_i]\">25000</iwxxm:base>\n          \
+      \  </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloud>\n\
+      \      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeObservation>\n  </iwxxm:observation>\n\
+      </iwxxm:METAR>\n"
+    cite: EV-970-S3b Schematron negative (native) / qnh_bad_uom
 - bucket: edge_fail
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - METAR_SPECI.MeteorologicalAerodromeObservation-5
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:METAR xmlns:iwxxm=\"\
+      http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\
+      \n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\
+      \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"\
+      metar.basic.kjfk\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\"\
+      \n    automatedStation=\"false\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant\
+      \ gml:id=\"t.issue\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport\
+      \ gml:id=\"ad.kjfk\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice\
+      \ gml:id=\"ad.ts.kjfk\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n\
+      \          <aixm:designator>KJFK</aixm:designator>\n          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>\n\
+      \        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n\
+      \  </iwxxm:aerodrome>\n  <iwxxm:observationTime>\n    <gml:TimeInstant gml:id=\"\
+      t.obs\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:observationTime>\n  <iwxxm:observation>\n\
+      \    <iwxxm:MeteorologicalAerodromeObservation gml:id=\"obs.1\" cloudAndVisibilityOK=\"\
+      false\">\n      <iwxxm:airTemperature uom=\"Cel\">22.0</iwxxm:airTemperature>\n\
+      \      <iwxxm:dewpointTemperature uom=\"Cel\">12.0</iwxxm:dewpointTemperature>\n\
+      \      <iwxxm:qnh uom=\"Pa\">1020</iwxxm:qnh>\n      <iwxxm:surfaceWind>\n \
+      \       <iwxxm:AerodromeSurfaceWind variableWindDirection=\"false\">\n     \
+      \     <iwxxm:meanWindDirection uom=\"deg\">180</iwxxm:meanWindDirection>\n \
+      \         <iwxxm:meanWindSpeed uom=\"[kn_i]\">8</iwxxm:meanWindSpeed>\n    \
+      \    </iwxxm:AerodromeSurfaceWind>\n      </iwxxm:surfaceWind>\n      <iwxxm:visibility>\n\
+      \        <iwxxm:AerodromeHorizontalVisibility>\n          <iwxxm:prevailingVisibility\
+      \ uom=\"m\">10000</iwxxm:prevailingVisibility>\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n\
+      \        </iwxxm:AerodromeHorizontalVisibility>\n      </iwxxm:visibility>\n\
+      \      <iwxxm:cloud>\n        <iwxxm:AerodromeCloud>\n          <iwxxm:layer>\n\
+      \            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW\"\
+      />\n              <iwxxm:base uom=\"[ft_i]\">25000</iwxxm:base>\n          \
+      \  </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloud>\n\
+      \      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeObservation>\n  </iwxxm:observation>\n\
+      </iwxxm:METAR>\n"
+    cite: EV-970-S3b Schematron negative (native) / qnh_bad_uom
 - bucket: edge_fail
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - METAR_SPECI.MeteorologicalAerodromeObservation-5
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:METAR xmlns:iwxxm=\"\
+      http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\
+      \n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\
+      \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"\
+      metar.basic.kjfk\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\"\
+      \n    automatedStation=\"false\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant\
+      \ gml:id=\"t.issue\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport\
+      \ gml:id=\"ad.kjfk\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice\
+      \ gml:id=\"ad.ts.kjfk\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n\
+      \          <aixm:designator>KJFK</aixm:designator>\n          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>\n\
+      \        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n\
+      \  </iwxxm:aerodrome>\n  <iwxxm:observationTime>\n    <gml:TimeInstant gml:id=\"\
+      t.obs\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:observationTime>\n  <iwxxm:observation>\n\
+      \    <iwxxm:MeteorologicalAerodromeObservation gml:id=\"obs.1\" cloudAndVisibilityOK=\"\
+      false\">\n      <iwxxm:airTemperature uom=\"Cel\">22.0</iwxxm:airTemperature>\n\
+      \      <iwxxm:dewpointTemperature uom=\"Cel\">12.0</iwxxm:dewpointTemperature>\n\
+      \      <iwxxm:qnh uom=\"Pa\">1020</iwxxm:qnh>\n      <iwxxm:surfaceWind>\n \
+      \       <iwxxm:AerodromeSurfaceWind variableWindDirection=\"false\">\n     \
+      \     <iwxxm:meanWindDirection uom=\"deg\">180</iwxxm:meanWindDirection>\n \
+      \         <iwxxm:meanWindSpeed uom=\"[kn_i]\">8</iwxxm:meanWindSpeed>\n    \
+      \    </iwxxm:AerodromeSurfaceWind>\n      </iwxxm:surfaceWind>\n      <iwxxm:visibility>\n\
+      \        <iwxxm:AerodromeHorizontalVisibility>\n          <iwxxm:prevailingVisibility\
+      \ uom=\"m\">10000</iwxxm:prevailingVisibility>\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n\
+      \        </iwxxm:AerodromeHorizontalVisibility>\n      </iwxxm:visibility>\n\
+      \      <iwxxm:cloud>\n        <iwxxm:AerodromeCloud>\n          <iwxxm:layer>\n\
+      \            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW\"\
+      />\n              <iwxxm:base uom=\"[ft_i]\">25000</iwxxm:base>\n          \
+      \  </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloud>\n\
+      \      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeObservation>\n  </iwxxm:observation>\n\
+      </iwxxm:METAR>\n"
+    cite: EV-970-S3b Schematron negative (native) / qnh_bad_uom
 - bucket: edge_fail
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - METAR_SPECI.MeteorologicalAerodromeObservation-5
   meta:
-    reason: T1.5 pilot scaffold — fill when fixture ready
+    product: METAR
+    profile: annex3
+    iwxxm_version: 2025-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:METAR xmlns:iwxxm=\"\
+      http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\
+      \n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\
+      \n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"\
+      metar.basic.kjfk\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\"\
+      \n    automatedStation=\"false\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant\
+      \ gml:id=\"t.issue\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport\
+      \ gml:id=\"ad.kjfk\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice\
+      \ gml:id=\"ad.ts.kjfk\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n\
+      \          <aixm:designator>KJFK</aixm:designator>\n          <aixm:locationIndicatorICAO>KJFK</aixm:locationIndicatorICAO>\n\
+      \        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n\
+      \  </iwxxm:aerodrome>\n  <iwxxm:observationTime>\n    <gml:TimeInstant gml:id=\"\
+      t.obs\">\n      <gml:timePosition>2023-06-12T12:51:00Z</gml:timePosition>\n\
+      \    </gml:TimeInstant>\n  </iwxxm:observationTime>\n  <iwxxm:observation>\n\
+      \    <iwxxm:MeteorologicalAerodromeObservation gml:id=\"obs.1\" cloudAndVisibilityOK=\"\
+      false\">\n      <iwxxm:airTemperature uom=\"Cel\">22.0</iwxxm:airTemperature>\n\
+      \      <iwxxm:dewpointTemperature uom=\"Cel\">12.0</iwxxm:dewpointTemperature>\n\
+      \      <iwxxm:qnh uom=\"Pa\">1020</iwxxm:qnh>\n      <iwxxm:surfaceWind>\n \
+      \       <iwxxm:AerodromeSurfaceWind variableWindDirection=\"false\">\n     \
+      \     <iwxxm:meanWindDirection uom=\"deg\">180</iwxxm:meanWindDirection>\n \
+      \         <iwxxm:meanWindSpeed uom=\"[kn_i]\">8</iwxxm:meanWindSpeed>\n    \
+      \    </iwxxm:AerodromeSurfaceWind>\n      </iwxxm:surfaceWind>\n      <iwxxm:visibility>\n\
+      \        <iwxxm:AerodromeHorizontalVisibility>\n          <iwxxm:prevailingVisibility\
+      \ uom=\"m\">10000</iwxxm:prevailingVisibility>\n          <iwxxm:prevailingVisibilityOperator>ABOVE</iwxxm:prevailingVisibilityOperator>\n\
+      \        </iwxxm:AerodromeHorizontalVisibility>\n      </iwxxm:visibility>\n\
+      \      <iwxxm:cloud>\n        <iwxxm:AerodromeCloud>\n          <iwxxm:layer>\n\
+      \            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/FEW\"\
+      />\n              <iwxxm:base uom=\"[ft_i]\">25000</iwxxm:base>\n          \
+      \  </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloud>\n\
+      \      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeObservation>\n  </iwxxm:observation>\n\
+      </iwxxm:METAR>\n"
+    cite: EV-970-S3b Schematron negative (native) / qnh_bad_uom
