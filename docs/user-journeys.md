@@ -92,6 +92,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-072d | Glanceable Profile summary + blocks + examples | apps/frontend | F7.w (EV-1120 / #1145) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072e | Author conversion template + TAC→IWXXM bridge | apps/frontend / API | F7.w (EV-080 / #1146) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072f | Profile Builder assembly + conversion token modes | apps/frontend / API | F7.w (EV-conversion-profile-ux-libraries) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072g | Five Libraries + Mapping bridge + hard cut semantic profile | apps/frontend / API | F7.w (EV-bridge-ux-canvas-align) | T0 / T2 / **T3** / H4–H5 |
 | UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
 | UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
@@ -593,6 +594,58 @@ ids out of operator-facing chrome.
 
 **Source**: EV-conversion-profile-ux-libraries; ADR-038 amend (EVCPU); session
 `EV-conversion-profile-ux-libraries` (local session-store; not a CORPUS design gate)
+
+---
+
+### UJ-072g: Five Libraries + Mapping bridge + hard cut (EV-bridge-ux-canvas-align)
+
+**Actor**: Authenticated meteorological operator (JWT)
+
+**Goal**: Use Profile builder’s five library sub-tabs (defaults pre-loaded from former
+national semantic profiles), fork-on-edit defaults, select five libraries on Convert with
+Product + IWXXM version only, and see the TAC → template → IWXXM Mapping bridge on Convert
+and Profile — without Semantic profile / Exchange / preset / overlay / Signed overlays /
+Dissemination-template chrome.
+
+**Feature**: F7.w deepen (EV-bridge-ux-canvas-align)
+
+**Steps**:
+
+1. Sign in. Open Profile builder (**Beta**). Confirm five sub-tabs: Conversion, TAC
+   validation, IWXXM validation, Dissemination, Decoding — each pre-loaded with first-party
+   defaults for every former national semantic profile line.
+2. Edit a default Conversion (or other) asset; confirm an **auto-fork** is created for the
+   user; original default unchanged and non-deletable. Delete own fork succeeds; delete
+   default fails closed.
+3. Confirm Signed overlays, Dissemination templates, Semantic presets, and Rule pack primary
+   forms are absent.
+4. On Conversion tab: use Mapping bridge (TAC report → Template match → IWXXM block) and
+   Template block builder (DnD / ↑↓).
+5. Open Convert: Product + IWXXM version + five library pickers only (no Profile / Exchange /
+   Semantic preset / Signed overlay). Convert with selected libraries; unknown ids fail closed.
+6. Dissemination transforms (annotations + ordered steps including bulletin re-wrap) apply
+   only on Disseminate / Convert & Send; credentials memory-only.
+7. Decoding library picker selects seeded F9/`decode_tac` assets (or fork).
+8. Convert a report where every emitted IWXXM block is tied to a Conversion rule; introduce
+   an unmatched group and confirm fail-closed + bridge miss indicator.
+
+**Acceptance**:
+1. AC1–AC11 in session `reports/requirements.md` / [Corpus: product §F7.w] EV-bridge.
+2. Hard cut: convert contract no longer accepts `semantic_profile` after cutover.
+3. TC-EVBRIDGE-001..011; H4–H5 when FE ships; EV-048 clean; UJ-072e/f must-not-break paths
+   that remain valid under the new model.
+4. No destination credentials in stored objects (ADR-021/029).
+5. Every TAC→IWXXM block mapping has an associated Conversion library rule (fail-closed).
+
+**Errors**: 401/403 without JWT; 400 unknown library ids; 403 delete/mutate first-party;
+ownership 403 on foreign customs; fail-closed unmatched TAC→IWXXM without rule.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EVBRIDGE-001..011 (see test-plan)
+
+**Source**: EV-bridge-ux-canvas-align; ADR-038 amend (EV-bridge); session
+`EV-bridge-ux-canvas-align` (local session-store; not a CORPUS design gate)
 
 ---
 

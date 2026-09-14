@@ -367,7 +367,7 @@
   | F7.t | #1003 | IWXXM as **product** pass-through (lint + F2 validate; no TAC convert) (S070 / EV-060); siblings #1001 AHL noise, #1002 profile picker, #1004 log_level, #1005 bulletin fields, #1006 Auth UAT |
   | F7.u | #1013 | Product/Profile bars no-wrap (S071 / EV-061) |
   | F7.v | #1014 / #1017 | Validation Issues Catalog tab (S071 / EV-061; EV-062) |
-  | F7.w | #933 | ConversionProfile editor — rule packs + inspector + signed overlays (EV-933); UJ-072; **deepen** EV-1120 / #1145 glanceable summary + ADR-038 inspect/jump blocks + profile examples/seeds (Phase A); **deepen** EV-080 / #1146 parameterizable conversion templates + TAC→IWXXM bridge (phase-1); **deepen** EV-conversion-profile-ux-libraries Profile Builder platform (guided assembly + Libraries + token Convert/Decode/Skip; UJ-072f); workflow authoring → #1147 |
+  | F7.w | #933 | ConversionProfile editor — rule packs + inspector + signed overlays (EV-933); UJ-072; **deepen** EV-1120 / #1145 glanceable summary + ADR-038 inspect/jump blocks + profile examples/seeds (Phase A); **deepen** EV-080 / #1146 parameterizable conversion templates + TAC→IWXXM bridge (phase-1); **deepen** EV-conversion-profile-ux-libraries Profile Builder platform (guided assembly + Libraries + token Convert/Decode/Skip; UJ-072f); **deepen** EV-bridge-ux-canvas-align five Libraries (Conversion / TAC validation / IWXXM validation / Dissemination / Decoding) + Mapping bridge + hard cut `semantic_profile` (UJ-072g); workflow authoring → #1147 |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
@@ -708,6 +708,30 @@
      + Issues feedback (ADR-043). ADR-038 amend (EVCPU).
   **Session**: `EV-conversion-profile-ux-libraries` under local session-store (not a CORPUS
   design gate). Canvas: `profile-builder-platform.canvas.tsx`.
+- **EV-bridge-ux-canvas-align deepen (F7.w — five Libraries + Mapping bridge + hard cut)**
+  — **requirements locked** (`D-EVBRIDGE-req=1`, 2026-09-14):
+  1. **Five libraries:** Conversion · TAC validation · IWXXM validation · Dissemination ·
+     Decoding. Profile builder = **five sub-tabs** (create/edit). Convert bar = Product +
+     IWXXM version + **five library pickers**.
+  2. **Hard cut:** Every existing national semantic profile is **split** into five
+     first-party defaults pre-loaded in the builders. Convert/API **stop** using
+     `semantic_profile` / Exchange / preset / overlay pickers when libraries ship (no alias
+     release). Exchange packaging lives under Dissemination.
+  3. **Trust:** Edit of a first-party default **auto-forks** to a user-owned custom; defaults
+     are never mutated in place and **cannot be deleted**. User forks deletable by owner.
+     JWT custom CRUD; FP view+fork only (code-enforced).
+  4. **Drop primary UI:** Signed overlays, Dissemination templates, Semantic preset / Rule
+     pack authoring chrome (APIs may be retired in tech-plan).
+  5. **UX:** Mapping bridge on Convert **and** Profile; Conversion tab hosts Template block
+     builder (DnD + ↑↓). Dissemination library: annotations + ordered transforms (envelope,
+     topic/filename, checksum, bulletin re-wrap); apply only on Disseminate / Convert & Send;
+     no stored destination secrets. Decoding seeded from F9/`decode_tac`.
+  6. **Rule association:** Every TAC→IWXXM block mapping requires an associated Conversion
+     library rule/template; unmatched groups fail closed (bridge shows match/miss).
+  7. ADR-038 amend (EV-bridge); journeys **UJ-072g**; **TC-EVBRIDGE-001..011**; H4–H5 when FE
+     ships; EV-048 clean; **Beta** + Issues feedback (ADR-043).
+  **Session**: `EV-bridge-ux-canvas-align` under local session-store (not a CORPUS design
+  gate).
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|

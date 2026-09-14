@@ -187,6 +187,35 @@ platform** while keeping Conversion tokens as the hero path.
 Product / journeys / tests: [Corpus: product §F7.w] EVCPU; UJ-072f; TC-EVCPU-*.
 Session: `EV-conversion-profile-ux-libraries`.
 
+### Amend (EV-bridge-ux-canvas-align — Accepted)
+
+**Five Libraries** replace the monolithic semantic-profile Convert control and the Profile
+builder chrome for Semantic presets / Rule packs / Dissemination templates / Signed overlays.
+
+1. **Libraries:** Conversion · TAC validation · IWXXM validation · Dissemination · Decoding.
+   Profile builder exposes **five sub-tabs**. Convert exposes Product + IWXXM version + five
+   library pickers (no Exchange / preset / overlay / `semantic_profile` controls after cutover).
+2. **Hard cut:** All existing national semantic profiles are split into five first-party
+   default assets each and pre-loaded. Convert multipart **must not** accept `semantic_profile`
+   after cutover (fail closed / remove field per OpenAPI). No one-release alias window.
+3. **Fork-on-edit:** Mutating a first-party default creates an owner-scoped fork; builtins are
+   immutable and non-deletable. User forks are deletable by owner.
+4. **Mapping bridge:** TAC report → Template match → IWXXM block on Convert and Profile;
+   Conversion library hosts the Template block builder (DnD + keyboard/↑↓).
+5. **Dissemination library:** Annotations + ordered post-IWXXM transforms (envelope,
+   topic/filename, checksum, bulletin re-wrap). Apply only on Disseminate / Convert & Send.
+   Destination credentials remain memory-only (ADR-021 / ADR-029 / ADR-030).
+6. **Decoding library:** Seeded from F9 / `decode_tac` catalog; fifth Convert picker.
+7. **Dropped primary UI:** Signed overlays, Dissemination templates, Semantic preset / Rule
+   pack forms. Retire or hide corresponding APIs in the same Build unless tech-plan documents
+   a temporary read-only shim (not for Convert selection).
+8. **Rule association (normative):** Every TAC group that emits an IWXXM block must match an
+   associated Conversion library rule/template. Unmatched groups fail closed (no silent
+   engine-only emit). Bridge UI surfaces the matched rule id/name.
+
+Product / journeys / tests: [Corpus: product §F7.w] EV-bridge; UJ-072g; TC-EVBRIDGE-*.
+Session: `EV-bridge-ux-canvas-align`.
+
 ## References
 
 - Context: conversion-profile-contract-924 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
