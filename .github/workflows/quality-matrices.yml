@@ -55,7 +55,7 @@ jobs:
       # EV-970 S3b — Schematron negatives need native xmloxide (not lxml SCHEMATRON_SKIPPED).
       - name: Build iwxxm-validate native
         run: |
-          uv pip install maturin
+          uv pip install 'maturin==1.14.1'
           make build-iwxxm-validate-native
 
       - name: Run quality matrices smoke

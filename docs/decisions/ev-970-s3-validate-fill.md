@@ -31,7 +31,7 @@
 | needs-fixture | 0 |
 | oos | 430 |
 
-Happy + edge_pass: convert-then-validate smoke (`scripts/ci/fill_ev970_s3_validate_matrix.py`).
+Happy + edge_pass: convert-then-validate smoke (`docs/ARCHIVE/scripts/ev-970/fill_ev970_s3_validate_matrix.py`).
 Sad + edge_fail: initially `oos` until S3b.
 
 ## S3b — SCH negatives in-scope (unblocked)
@@ -51,7 +51,7 @@ Sad + edge_fail: initially `oos` until S3b.
 | needs-fixture | 0 |
 | oos | 320 |
 
-Scripts: `fill_ev970_s3b_sch_negatives.py`. Probe tests: `test_tc_ev970_s3b_schematron_dsdl.py`.
+Scripts: `docs/ARCHIVE/scripts/ev-970/fill_ev970_s3b_sch_negatives.py`. Probe tests: `test_tc_ev970_s3b_schematron_dsdl.py`.
 
 ## S3c — residual oos Batch A (hybrid)
 
@@ -70,7 +70,7 @@ Scripts: `fill_ev970_s3b_sch_negatives.py`. Probe tests: `test_tc_ev970_s3b_sche
 | oos | 160 |
 | SCH negatives (sad/edge_fail ready) | 270 |
 
-Script: `scripts/ci/fill_ev970_s3c_sch_oos.py`.
+Script: `docs/ARCHIVE/scripts/ev-970/fill_ev970_s3c_sch_oos.py`.
 
 ### Batch B residual rules (document / index-of / harder)
 

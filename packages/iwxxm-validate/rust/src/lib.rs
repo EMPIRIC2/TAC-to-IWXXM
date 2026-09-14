@@ -680,7 +680,10 @@ fn rewrite_number_text_paths(input: &str) -> String {
         while start > 0 {
             let c = bytes[start - 1] as char;
             if c.is_ascii_alphanumeric()
-                || matches!(c, ':' | '.' | '/' | '[' | ']' | '@' | '=' | '\'' | '"' | '_' | '-')
+                || matches!(
+                    c,
+                    ':' | '.' | '/' | '[' | ']' | '@' | '=' | '\'' | '"' | '_' | '-'
+                )
             {
                 start -= 1;
             } else {
