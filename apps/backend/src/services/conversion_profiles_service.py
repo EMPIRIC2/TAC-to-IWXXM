@@ -22,6 +22,9 @@ from ..schemas.conversion_profiles import (
     DisseminationTemplateCreate,
     DisseminationTemplateOut,
     DisseminationTemplateUpdate,
+    LibraryAssetCreate,
+    LibraryAssetOut,
+    LibraryAssetUpdate,
     OverlayCreate,
     OverlayOut,
     OverlayUpdate,
@@ -41,6 +44,7 @@ OVERLAYS_TABLE = "tac_profile_overlays"
 PRESETS_TABLE = "tac_profile_presets"
 TEMPLATES_TABLE = "tac_dissemination_templates"
 CONVERSION_TEMPLATES_TABLE = "tac_conversion_templates"
+LIBRARY_ASSETS_TABLE = "tac_library_assets"
 _SECRET_KEY = re.compile(r"(?i)(password|passwd|secret|token|api[_-]?key|uri|connection_string|dsn)")
 _URI_VALUE = re.compile(r"^[a-z][a-z0-9+.-]*://", re.IGNORECASE)
 
@@ -851,3 +855,215 @@ class ConversionProfilesService:
             raise
         except SQLAlchemyError as exc:
             _handle_db_error(exc)
+
+    def _first_party_library_out(self, asset_id: str) -> LibraryAssetOut | None:
+        """Map a first-party LibraryAsset to API out."""
+        try:
+            from tac2iwxxm.library_assets import get_first_party_library_asset
+        except ImportError:
+            return None
+        asset = get_first_party_library_asset(asset_id)
+        if asset is None:
+            return None
+        return LibraryAssetOut(
+            id=asset.id,
+            kind=asset.kind,
+            name=asset.name,
+            access="first_party",
+            engine_profile_id=asset.engine_profile_id,
+            attached_national_line=asset.attached_national_line,
+            body=dict(asset.body),
+            fork_of=asset.fork_of,
+            shared=True,
+        )
+
+    def _library_row_to_out(self, row: dict[str, Any]) -> LibraryAssetOut:
+        """Map a DB library asset row to API out."""
+        body_candidate: Any = row.get("body")
+        body: dict[str, Any] = cast(dict[str, Any], body_candidate) if isinstance(body_candidate, dict) else {}
+        return LibraryAssetOut(
+            id=str(row["id"]),
+            kind=str(row["kind"]),  # type: ignore[arg-type]
+            name=str(row["name"]),
+            access="custom",
+            engine_profile_id=str(row["engine_profile_id"]),
+            attached_national_line=str(row["attached_national_line"]),
+            body=body,
+            fork_of=row.get("fork_of"),
+            user_id=row["user_id"],
+            slug=str(row["slug"]),
+            shared=bool(row.get("shared")),
+            created_at=row.get("created_at"),
+            updated_at=row.get("updated_at"),
+        )
+
+    def list_library_assets(self, *, kind: str | None = None) -> list[LibraryAssetOut]:
+        """List first-party defaults plus custom assets visible to the caller."""
+        items: list[LibraryAssetOut] = []
+        try:
+            from tac2iwxxm.library_assets import list_first_party_library_assets
+        except ImportError:
+            list_first_party_library_assets = None  # type: ignore[assignment]
+        if list_first_party_library_assets is not None:
+            for asset in list_first_party_library_assets():
+                if kind is not None and asset.kind != kind:
+                    continue
+                out = self._first_party_library_out(asset.id)
+                if out is not None:
+                    items.append(out)
+        t = _table(LIBRARY_ASSETS_TABLE)
+        try:
+            with _get_engine().connect() as conn:
+                stmt = select(t).where(or_(t.c.user_id == self.user_id, t.c.shared.is_(True)))
+                if kind is not None:
+                    stmt = stmt.where(t.c.kind == kind)
+                rows = conn.execute(stmt.order_by(t.c.slug)).mappings().all()
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        items.extend(self._library_row_to_out(dict(r)) for r in rows)
+        return items
+
+    def get_library_asset(self, asset_id: str, *, require_owner: bool = False) -> LibraryAssetOut:
+        """Fetch a first-party or custom library asset; fail-closed on unknown."""
+        first = self._first_party_library_out(asset_id)
+        if first is not None:
+            if require_owner:
+                raise HTTPException(status_code=403, detail="First-party library assets are read-only")
+            return first
+        try:
+            asset_uuid = UUID(asset_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown library asset id") from exc
+        t = _table(LIBRARY_ASSETS_TABLE)
+        try:
+            with _get_engine().connect() as conn:
+                row = conn.execute(select(t).where(t.c.id == asset_uuid)).mappings().first()
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        if row is None:
+            raise HTTPException(status_code=404, detail="Library asset not found")
+        owner = row["user_id"]
+        shared = bool(row.get("shared"))
+        if require_owner and owner != self.user_id:
+            raise HTTPException(status_code=403, detail="Library asset ownership required")
+        if owner != self.user_id and not shared:
+            raise HTTPException(status_code=403, detail="Library asset ownership required")
+        return self._library_row_to_out(dict(row))
+
+    def create_library_asset(self, payload: LibraryAssetCreate) -> LibraryAssetOut:
+        """Insert a custom library asset (fork or new)."""
+        data = payload.model_dump(by_alias=False)
+        _reject_secrets(data)
+        _reject_secrets(payload.body)
+        now = datetime.now(tz=UTC)
+        asset_id = uuid4()
+        values = {
+            "id": asset_id,
+            "user_id": self.user_id,
+            "slug": payload.slug,
+            "name": payload.name,
+            "kind": payload.kind,
+            "engine_profile_id": payload.engine_profile_id,
+            "attached_national_line": payload.attached_national_line,
+            "body": payload.body,
+            "fork_of": payload.fork_of,
+            "shared": payload.shared,
+            "created_at": now,
+            "updated_at": now,
+        }
+        t = _table(LIBRARY_ASSETS_TABLE)
+        try:
+            with _get_engine().begin() as conn:
+                conn.execute(insert(t).values(**values))
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        return self.get_library_asset(str(asset_id), require_owner=True)
+
+    def update_library_asset(self, asset_id: str, payload: LibraryAssetUpdate) -> LibraryAssetOut:
+        """Update owned custom asset, or auto-fork first-party on edit (AC3)."""
+        first = self._first_party_library_out(asset_id)
+        if first is not None:
+            body = payload.body if payload.body is not None else dict(first.body)
+            _reject_secrets(body)
+            create = LibraryAssetCreate.model_validate(
+                {
+                    "slug": payload.slug or f"fork-{uuid4().hex[:8]}",
+                    "name": payload.name or f"{first.name} (fork)",
+                    "kind": first.kind,
+                    "engineProfileId": first.engine_profile_id,
+                    "attachedNationalLine": first.attached_national_line,
+                    "body": body,
+                    "forkOf": first.id,
+                    "shared": bool(payload.shared) if payload.shared is not None else False,
+                }
+            )
+            return self.create_library_asset(create)
+        try:
+            asset_uuid = UUID(asset_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown library asset id") from exc
+        data = payload.model_dump(by_alias=False, exclude_unset=True)
+        _reject_secrets(data)
+        if "body" in data and isinstance(data["body"], dict):
+            _reject_secrets(cast(dict[str, Any], data["body"]))
+        values: dict[str, Any] = {"updated_at": datetime.now(tz=UTC)}
+        for key in ("slug", "name", "body", "shared"):
+            if key in data:
+                values[key] = data[key]
+        t = _table(LIBRARY_ASSETS_TABLE)
+        try:
+            with _get_engine().begin() as conn:
+                result = conn.execute(
+                    update(t).where(t.c.id == asset_uuid, t.c.user_id == self.user_id).values(**values)
+                )
+                if result.rowcount == 0:
+                    raise HTTPException(status_code=404, detail="Library asset not found")
+        except HTTPException:
+            raise
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        return self.get_library_asset(asset_id, require_owner=True)
+
+    def delete_library_asset(self, asset_id: str) -> None:
+        """Delete an owned custom library asset; reject first-party (AC4)."""
+        if self._first_party_library_out(asset_id) is not None:
+            raise HTTPException(status_code=403, detail="First-party library defaults cannot be deleted")
+        try:
+            asset_uuid = UUID(asset_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown library asset id") from exc
+        t = _table(LIBRARY_ASSETS_TABLE)
+        try:
+            with _get_engine().begin() as conn:
+                result = conn.execute(delete(t).where(t.c.id == asset_uuid, t.c.user_id == self.user_id))
+                if result.rowcount == 0:
+                    raise HTTPException(status_code=404, detail="Library asset not found")
+        except HTTPException:
+            raise
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+
+    def preview_library_rule(self, library_id: str, focus_group: str) -> tuple[str, str]:
+        """Resolve AC11 rule association; return ``(rule_id, rule_name)``."""
+        asset_out = self.get_library_asset(library_id)
+        if asset_out.kind != "conversion":
+            raise HTTPException(status_code=400, detail="Rule preview requires a conversion library")
+        try:
+            from tac2iwxxm.library_assets import LibraryAsset, require_rule_for_group
+        except ImportError as exc:
+            raise HTTPException(status_code=503, detail="Library assets unavailable") from exc
+        domain = LibraryAsset(
+            id=asset_out.id,
+            kind=asset_out.kind,
+            name=asset_out.name,
+            access=asset_out.access,
+            engine_profile_id=asset_out.engine_profile_id,
+            attached_national_line=asset_out.attached_national_line,
+            body=dict(asset_out.body),
+            fork_of=asset_out.fork_of,
+        )
+        try:
+            rule = require_rule_for_group(domain, focus_group=focus_group)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        return rule.id, rule.name
