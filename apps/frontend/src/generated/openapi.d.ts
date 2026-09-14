@@ -2478,6 +2478,10 @@ export interface components {
             focusGroup: string;
             /** Matched */
             matched: boolean;
+            /** Skipped */
+            skipped?: {
+                [key: string]: string;
+            }[];
             /** Templateid */
             templateId: string;
             /**
@@ -2495,6 +2499,11 @@ export interface components {
             digits?: number | null;
             /** Enumvalues */
             enumValues?: string | null;
+            /**
+             * Gloss
+             * @default
+             */
+            gloss: string;
             /** Id */
             id: string;
             /**
@@ -2506,6 +2515,11 @@ export interface components {
             label: string;
             /** Literal */
             literal?: string | null;
+            /**
+             * Mode
+             * @default convert
+             */
+            mode: string;
             /**
              * Optional
              * @default false
