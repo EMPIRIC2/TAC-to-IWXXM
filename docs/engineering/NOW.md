@@ -5,7 +5,7 @@ Ticket-tuned index for agents and humans. Prefer open GitHub issues over histori
 **Live agent state:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/{id}/`  
 **Standing corpus:** [CORPUS.md](../CORPUS.md)  
 **Project board:** [project-board.md](../project-board.md) · [Project #7](https://github.com/orgs/EMPIRIC2/projects/7) (20 h/week · I01=2026-09-15)  
-**Active sessions:** EV-project-board-planning (schedule/board); prior slim PR [#1185](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1185)
+**Active sessions:** EV-080-param-conversion-templates (#1146 / F7.w templates+bridge); EV-project-board-planning (schedule/board); prior slim PR [#1185](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1185)
 
 ## Open epics / high priority (snapshot 2026-09-12)
 
@@ -16,7 +16,7 @@ Ticket-tuned index for agents and humans. Prefer open GitHub issues over histori
 | [#1029](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1029) | CA_ECCC — mine MANOBS |
 | [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028) | CA_ECCC — mine datamart |
 | [#1120](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1120) | Epic — profile-scoped lint/validation catalog |
-| [#1146](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1146) | Epic — composable conversion blocks |
+| [#1146](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1146) | Epic — composable conversion blocks (**active:** EV-080 phase-1 templates + bridge) |
 | [#1147](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1147) | Epic — workflow blocks in ConversionProfile |
 | [#962](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/962) | Epic — US gov adoption readiness |
 | [#1058](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1058) | Spike — many exchanges / marketplace architecture |

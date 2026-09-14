@@ -125,6 +125,42 @@ JWT ownership (`user_id` = Auth `sub`). Trust model:
 
 See Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
+### Amend (EV-080 / #1146 — Accepted)
+
+**Parameterizable conversion templates** are the **default Conversion rule object** for
+operator-authored TAC→IWXXM mapping (slot-builder-first; compiled pattern secondary).
+This amend authorizes **runtime-applicable** composable template objects on the existing
+IR / plugin pipeline — it does **not** authorize N per-country converter engines or
+browser-uploaded unsigned schema bundles.
+
+1. **Object model:** A template is an ordered list of typed slots (digits, enum, unit,
+   literal, station, time, …) with optional flags, optional literal prefixes, and mapping
+   to an IWXXM block/path (including ns, nil, cardinality, choice, uom, nesting; Schematron
+   hooks may appear in the model even when UI v1 does not expose every control).
+2. **Pass-through:** Typed captures carry numbers/enums through — not one rule per literal
+   value.
+3. **Authoring:** Same builder for first-party built-ins and custom templates. Trust v1:
+   JWT owner CRUD for custom; first-party **view + fork** only (no mutate of builtin
+   source). Apply custom on convert when the caller is entitled; fail-closed unknown
+   template/profile ids.
+4. **UX contract:** No raw regex as the default authoring path; advanced compiled/RE2
+   remains secondary. Operator UI must present a clear TAC → template → IWXXM bridge
+   (highlighted span, captures, resulting XML block), comments under TAC, and inline
+   conversion preview. Slot reorder supports drag-and-drop with keyboard/↑↓ fallback.
+5. **Pipeline:** Templates compose with ADR-036 semantic profiles and existing
+   `tac2iwxxm` emit — overlays on one IR pipeline. Dissemination profile/rules still apply
+   only on Disseminate / Convert & Send (not Convert-only). Destination credentials remain
+   memory-only (ADR-021 / ADR-029 / ADR-030).
+6. **Phase-1 ship set (EV-080):** conversion templates + bridge UI only. Libraries for TAC
+   validation / IWXXM validation / dissemination / decoding, rich match completeness, and
+   triple-preset deepen beyond EV-1051 refs are **out of phase-1** unless a later evolve
+   expands scope.
+7. **Decoding:** Long-term Decoding library stays **separate** and may reuse the F9
+   `decode_tac` catalog; not required to ship in EV-080 phase-1.
+
+Product / journeys / tests: [Corpus: product §F7.w] EV-080; UJ-072e; TC-EV080-*.
+Session: `EV-080-param-conversion-templates`.
+
 ## References
 
 - Context: conversion-profile-contract-924 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)

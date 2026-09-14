@@ -90,6 +90,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-071 | Dissemination ops — plan/audit/SQL mapping/gateway health | apps/frontend / API | F16–F19 deepen (EV-936 / #936) | T2 / **T3** / H6′ (+ H4–H5 when FE deploy) |
 | UJ-072 | ConversionProfile editor — rule pack → overlay → convert | apps/frontend / API | F7.w (EV-933 / #933) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072d | Glanceable Profile summary + blocks + examples | apps/frontend | F7.w (EV-1120 / #1145) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072e | Author conversion template + TAC→IWXXM bridge | apps/frontend / API | F7.w (EV-080 / #1146) | T0 / T2 / **T3** / H4–H5 |
 | UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
 | UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
@@ -503,6 +504,51 @@ the light picker (#1024) or putting credentials in the profile.
 **Automated tests**: TC-EV933-001..006 (see test-plan)
 
 **Source**: EV-933 / #933; ADR-038 (amend overlays); Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+
+---
+
+### UJ-072e: Author conversion template + TAC→IWXXM bridge (EV-080 / #1146)
+
+**Actor**: Authenticated meteorological operator (JWT)
+
+**Goal**: Open the conversion template builder, view or fork a first-party template (or
+create a custom one), map typed slots to IWXXM fields, preview the TAC → template → IWXXM
+bridge, save a custom template, and apply it on convert without mutating first-party source
+or storing dissemination credentials.
+
+**Feature**: F7.w deepen (EV-080 / #1146)
+
+**Steps**:
+
+1. Sign in (F31). Open Conversion templates (Profiles / Conversion deepen surface; **Beta**).
+2. Select a first-party template (e.g. wind group); **view** slots; optionally **fork** to
+   custom (first-party source remains immutable in v1).
+3. Edit slots (type, optional, IWXXM field/block); reorder via drag-and-drop or ↑↓.
+4. Enter or load sample TAC; focus a group; confirm highlighted span, capture table, and
+   IWXXM XML block preview; add comments under TAC as needed.
+5. Save custom template (JWT owner-scoped). Unknown / foreign ids fail closed.
+6. Return to workbench convert; select template; run convert; confirm fail-closed on
+   unknown template id.
+7. Confirm #1024 light picker and Disseminate / Convert & Send still apply dissemination
+   rules only on those actions (not Convert-only).
+
+**Acceptance**:
+1. Parameterizable templates are the default Conversion rule object; slot-builder-first;
+   no raw regex as default authoring path.
+2. Bridge UI and inline preview are present; comments under TAC supported.
+3. Trust v1: custom CRUD for owner; first-party view+fork only; no secrets in templates.
+4. ADR-038 EV-080 amend; TC-EV080-001..006; H4–H5 when FE ships; EV-048 clean operator copy.
+5. UJ-072 / UJ-072d / UJ-069 / UJ-027–030 must-not-break.
+
+**Errors**: 401/403 without JWT; 400 unknown/invalid template; ownership 403 on foreign
+custom templates.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EV080-001..006 (see test-plan)
+
+**Source**: EV-080 / #1146; ADR-038 amend (EV-080); session
+`EV-080-param-conversion-templates` (local session-store; not a CORPUS design gate)
 
 ---
 

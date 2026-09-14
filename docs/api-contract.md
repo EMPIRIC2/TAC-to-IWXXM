@@ -818,6 +818,24 @@ not Supabase PostgREST product writes (F30). Auth identity from Supabase JWT.
 **Auth**: JWT required for pack/overlay mutate → 401/403. **Trust**: unsigned browser packs
 rejected. **Non-goals**: credentials / destination URIs in profile objects (ADR-021/029).
 
+### EV-080 / #1146 — Parameterizable conversion templates (JWT)
+
+Deepens F7.w composable conversion assembly. **Parameterizable templates** are the default
+Conversion rule object (ADR-038 EV-080 amend). Phase-1: template CRUD + bridge preview +
+convert apply. Slot-builder payloads are structured JSON (not raw regex-first).
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET` | `/api/v1/profiles/conversion-templates` | List first-party catalog templates + caller-visible custom templates (JWT enrich for custom) |
+| `GET` | `/api/v1/profiles/conversion-templates/{template_id}` | Read one; unknown → fail-closed |
+| `POST`/`PATCH`/`DELETE` | `/api/v1/profiles/conversion-templates[/{template_id}]` | Custom CRUD (JWT owner); reject mutate of first-party builtin ids; fork via POST with `fork_of` |
+| `POST` | `/api/v1/profiles/conversion-templates/preview` | Bridge preview: TAC (+ optional focus span) + template id → captures + IWXXM block sketch |
+| `POST` | `/api/v1/convert` (existing) | Optional `conversion_template_id` (JWT + ownership when custom); unknown → fail-closed |
+
+**Auth**: JWT required for custom mutate / custom apply. **Trust**: first-party view+fork only
+in v1; no destination credentials in template bodies (ADR-021/029). **Non-goals (phase-1):**
+TAC-validation / dissem / decoding library APIs; workflow authoring (#1147).
+
 ### EV-1051 / #1051 — Operator sharing of semantic presets + dissemination templates (JWT)
 
 `#1051` deepens the existing authenticated profile and dissemination surfaces rather than
