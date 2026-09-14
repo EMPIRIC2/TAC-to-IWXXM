@@ -221,3 +221,71 @@ def test_convert_first_party_no_auth_required_for_resolve() -> None:
         },
     )
     assert res.status_code not in {401, 403}
+
+
+def test_preview_with_inline_slots(client: Any) -> None:
+    http, _fake = client
+    res = http.post(
+        "/api/v1/profiles/conversion-templates/preview",
+        json={
+            "templateId": "inline",
+            "focusGroup": "18012G20KT",
+            "iwxxmBlock": "iwxxm:WindObservation",
+            "slots": [
+                {"id": "ddd", "label": "direction", "type": "digits", "digits": 3},
+                {"id": "ff", "label": "speed", "type": "digits", "digits": 2},
+                {"id": "uom", "label": "unit", "type": "unit", "enumValues": "KT|MPS"},
+            ],
+        },
+    )
+    assert res.status_code == 200
+    assert "compiledPattern" in res.json() or "compiled_pattern" in res.json() or "matched" in res.json()
+
+
+def test_get_and_delete_conversion_template(client: Any) -> None:
+    http, _fake = client
+    get_res = http.get(f"/api/v1/profiles/conversion-templates/{TMPL_ID}")
+    assert get_res.status_code == 200
+    assert get_res.json()["id"] == str(TMPL_ID)
+    del_res = http.delete(f"/api/v1/profiles/conversion-templates/{TMPL_ID}")
+    assert del_res.status_code == 204
+
+
+def test_convert_applies_custom_template_metadata() -> None:
+    async def override_optional() -> dict[str, str]:
+        return {"sub": str(USER_ID)}
+
+    app.dependency_overrides[verify_optional_supabase_token] = override_optional
+    try:
+        with patch("src.routers.conversion.ConversionProfilesService") as svc_cls:
+            svc_cls.return_value.get_conversion_template.return_value = _custom()
+            res = TestClient(app).post(
+                "/api/v1/convert",
+                data={
+                    "manual_text": "METAR KJFK 010000Z 18005KT 10SM SKC 20/10 A2992=",
+                    "product": "METAR",
+                    "conversion_template_id": str(TMPL_ID),
+                },
+                headers={"Authorization": "Bearer t"},
+            )
+            assert res.status_code not in {401, 403, 404}
+            svc_cls.return_value.get_conversion_template.assert_called()
+    finally:
+        app.dependency_overrides.clear()
+
+
+def test_convert_template_import_error_falls_through_to_custom_auth() -> None:
+    """When first-party lookup raises ImportError, treat id as custom (auth required)."""
+    with patch(
+        "tac2iwxxm.conversion_templates.get_first_party_template",
+        side_effect=ImportError("missing"),
+    ):
+        res = TestClient(app).post(
+            "/api/v1/convert",
+            data={
+                "manual_text": "METAR KJFK 010000Z 18005KT 10SM SKC 20/10 A2992=",
+                "product": "METAR",
+                "conversion_template_id": "CV.WIND",
+            },
+        )
+    assert res.status_code in {401, 403}

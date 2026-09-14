@@ -11,6 +11,9 @@ import pytest
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from src.schemas.conversion_profiles import (
+    ConversionTemplateCreate,
+    ConversionTemplateSlot,
+    ConversionTemplateUpdate,
     DisseminationTemplateCreate,
     DisseminationTemplateUpdate,
     OverlayCreate,
@@ -1119,3 +1122,391 @@ def test_overlay_db_errors_and_empty_update(
         pytest.raises(HTTPException),
     ):
         service.update_overlay(PACK_ID, OverlayUpdate(body={"y": 2}))
+
+
+def _conversion_template_row(**overrides: Any) -> dict[str, Any]:
+    base: dict[str, Any] = {
+        "id": PACK_ID,
+        "user_id": USER_ID,
+        "slug": "my-wind",
+        "name": "My wind",
+        "iwxxm_block": "iwxxm:WindObservation",
+        "slots": [
+            {
+                "id": "ddd",
+                "label": "direction",
+                "type": "digits",
+                "digits": 3,
+                "optional": False,
+                "iwxxmField": "direction",
+            },
+            "skip-non-dict",
+        ],
+        "sample": "18012KT",
+        "comments": "note",
+        "fork_of": "CV.WIND",
+        "shared": False,
+        "created_at": NOW,
+        "updated_at": NOW,
+    }
+    base.update(overrides)
+    return base
+
+
+def test_conversion_template_crud_and_first_party(service: svc.ConversionProfilesService) -> None:
+    """Cover conversion template service happy paths (mocked DB)."""
+    engine = MagicMock()
+    begin_conn = MagicMock()
+    read_conn = MagicMock()
+    engine.begin.return_value.__enter__.return_value = begin_conn
+    engine.connect.return_value.__enter__.return_value = read_conn
+    begin_conn.execute.return_value.rowcount = 1
+    custom = _conversion_template_row()
+    updated = {**custom, "name": "My wind 2", "slots": []}
+    # list; create.get; update.get; update.get_after; empty_update.get
+    read_conn.execute.side_effect = [
+        _Result(rows=[custom]),
+        _Result(row=custom),
+        _Result(row=custom),
+        _Result(row=updated),
+        _Result(row=updated),
+    ]
+    ins = MagicMock()
+    ins.values.return_value = "insert-stmt"
+    upd = MagicMock()
+    upd.where.return_value = upd
+    upd.values.return_value = "u"
+    dele = MagicMock()
+    dele.where.return_value = "d"
+    slot = ConversionTemplateSlot(id="ddd", label="direction", type="digits", digits=3)
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "insert", return_value=ins),
+        patch.object(svc, "update", return_value=upd),
+        patch.object(svc, "delete", return_value=dele),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        patch.object(svc, "or_", return_value="owner-or-shared"),
+    ):
+        items = service.list_conversion_templates()
+        assert any(i.id == "CV.WIND" for i in items)
+        assert any(i.slug == "my-wind" for i in items)
+
+        fp = service.get_conversion_template("CV.WIND")
+        assert fp.access == "first_party"
+        with pytest.raises(HTTPException) as own_exc:
+            service.get_conversion_template("CV.WIND", require_owner=True)
+        assert own_exc.value.status_code == 403
+
+        created = service.create_conversion_template(
+            ConversionTemplateCreate(
+                slug="forked-wind",
+                name="Forked",
+                iwxxm_block="iwxxm:WindObservation",
+                slots=[slot],
+                fork_of="CV.WIND",
+            )
+        )
+        assert created.slug == "my-wind"
+
+        patched = service.update_conversion_template(
+            str(PACK_ID),
+            ConversionTemplateUpdate(name="My wind 2", slots=[slot], sample="18012G20KT"),
+        )
+        assert patched.name == "My wind 2"
+
+        empty = service.update_conversion_template(str(PACK_ID), ConversionTemplateUpdate())
+        assert empty.id == str(PACK_ID)
+
+        service.delete_conversion_template(str(PACK_ID))
+
+        with pytest.raises(HTTPException) as mod_exc:
+            service.update_conversion_template("CV.WIND", ConversionTemplateUpdate(name="x"))
+        assert mod_exc.value.status_code == 403
+        with pytest.raises(HTTPException) as del_exc:
+            service.delete_conversion_template("CV.WIND")
+        assert del_exc.value.status_code == 403
+
+
+def test_conversion_template_error_paths(service: svc.ConversionProfilesService) -> None:
+    """Fail-closed paths for conversion templates."""
+    engine = MagicMock()
+    begin_conn = MagicMock()
+    read_conn = MagicMock()
+    engine.begin.return_value.__enter__.return_value = begin_conn
+    engine.connect.return_value.__enter__.return_value = read_conn
+    other = _conversion_template_row(user_id=uuid4(), shared=False)
+    shared = _conversion_template_row(shared=True, user_id=uuid4())
+    owned = _conversion_template_row()
+    read_conn.execute.side_effect = [
+        _Result(row=None),
+        _Result(row=other),
+        _Result(row=other),
+        _Result(row=shared),
+        SQLAlchemyError("list boom"),
+        SQLAlchemyError("get boom"),
+    ]
+    ins = MagicMock()
+    ins.values.return_value = "i"
+    upd = MagicMock()
+    upd.where.return_value = upd
+    upd.values.return_value = "u"
+    dele = MagicMock()
+    dele.where.return_value = "d"
+
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        pytest.raises(HTTPException) as bad_id,
+    ):
+        service.get_conversion_template("not-a-uuid")
+    assert bad_id.value.status_code == 400
+
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        pytest.raises(HTTPException) as missing,
+    ):
+        service.get_conversion_template(str(PACK_ID))
+    assert missing.value.status_code == 404
+
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        pytest.raises(HTTPException) as forbidden,
+    ):
+        service.get_conversion_template(str(PACK_ID))
+    assert forbidden.value.status_code == 403
+
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        pytest.raises(HTTPException) as owner_req,
+    ):
+        service.get_conversion_template(str(PACK_ID), require_owner=True)
+    assert owner_req.value.status_code == 403
+
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+    ):
+        got = service.get_conversion_template(str(PACK_ID))
+        assert got.shared is True
+
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        patch.object(svc, "or_", return_value="x"),
+        patch.object(svc, "_handle_db_error", side_effect=HTTPException(status_code=503, detail="db")),
+        pytest.raises(HTTPException),
+    ):
+        service.list_conversion_templates()
+
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        patch.object(svc, "_handle_db_error", side_effect=HTTPException(status_code=503, detail="db")),
+        pytest.raises(HTTPException),
+    ):
+        service.get_conversion_template(str(PACK_ID))
+
+    with (
+        patch.object(svc.ConversionProfilesService, "_first_party_template_out", return_value=None),
+        pytest.raises(HTTPException) as bad_upd,
+    ):
+        service.update_conversion_template("not-uuid", ConversionTemplateUpdate(name="x"))
+    assert bad_upd.value.status_code == 400
+
+    with (
+        patch.object(svc.ConversionProfilesService, "_first_party_template_out", return_value=None),
+        pytest.raises(HTTPException) as bad_del,
+    ):
+        service.delete_conversion_template("not-uuid")
+    assert bad_del.value.status_code == 400
+
+    begin_conn.execute.side_effect = SQLAlchemyError("create boom")
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "insert", return_value=ins),
+        patch.object(svc, "_handle_db_error", side_effect=HTTPException(status_code=503, detail="db")),
+        pytest.raises(HTTPException),
+    ):
+        service.create_conversion_template(
+            ConversionTemplateCreate(
+                slug="x",
+                name="x",
+                iwxxm_block="iwxxm:WindObservation",
+                slots=[ConversionTemplateSlot(id="a", label="a", type="digits", digits=2)],
+            )
+        )
+
+    begin_conn.execute.side_effect = None
+    begin_conn.execute.return_value = MagicMock(rowcount=0)
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "update", return_value=upd),
+        patch.object(
+            service,
+            "get_conversion_template",
+            return_value=service._conversion_template_row_to_out(owned),
+        ),
+        pytest.raises(HTTPException) as upd_missing,
+    ):
+        service.update_conversion_template(str(PACK_ID), ConversionTemplateUpdate(name="z"))
+    assert upd_missing.value.status_code == 404
+
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "delete", return_value=dele),
+        patch.object(svc.ConversionProfilesService, "_first_party_template_out", return_value=None),
+        pytest.raises(HTTPException) as del_missing,
+    ):
+        service.delete_conversion_template(str(PACK_ID))
+    assert del_missing.value.status_code == 404
+
+    begin_conn.execute.side_effect = SQLAlchemyError("upd boom")
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "update", return_value=upd),
+        patch.object(
+            service,
+            "get_conversion_template",
+            return_value=service._conversion_template_row_to_out(owned),
+        ),
+        patch.object(svc, "_handle_db_error", side_effect=HTTPException(status_code=503, detail="db")),
+        pytest.raises(HTTPException),
+    ):
+        service.update_conversion_template(str(PACK_ID), ConversionTemplateUpdate(name="z"))
+
+    begin_conn.execute.side_effect = SQLAlchemyError("del boom")
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "delete", return_value=dele),
+        patch.object(svc.ConversionProfilesService, "_first_party_template_out", return_value=None),
+        patch.object(svc, "_handle_db_error", side_effect=HTTPException(status_code=503, detail="db")),
+        pytest.raises(HTTPException),
+    ):
+        service.delete_conversion_template(str(PACK_ID))
+
+    owned_out = service._conversion_template_row_to_out(owned)
+    with (
+        patch.object(svc.ConversionProfilesService, "_first_party_template_out", return_value=None),
+        patch.object(service, "get_conversion_template", return_value=owned_out),
+        pytest.raises(HTTPException) as bad_uuid_upd,
+    ):
+        service.update_conversion_template("not-uuid", ConversionTemplateUpdate(name="x"))
+    assert bad_uuid_upd.value.status_code == 400
+
+    begin_conn.execute.side_effect = None
+    begin_conn.execute.return_value = MagicMock(rowcount=1)
+    with (
+        patch.object(svc.ConversionProfilesService, "_first_party_template_out", return_value=None),
+        patch.object(
+            service,
+            "get_conversion_template",
+            side_effect=[owned_out, owned_out],
+        ),
+        patch.object(
+            ConversionTemplateUpdate,
+            "model_dump",
+            return_value={
+                "slots": [
+                    "skip",
+                    {
+                        "id": "a",
+                        "label": "a",
+                        "type": "digits",
+                        "digits": 2,
+                        "optional": False,
+                        "enum_values": None,
+                        "literal": None,
+                        "iwxxm_field": "",
+                    },
+                ]
+            },
+        ),
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "update", return_value=upd),
+    ):
+        service.update_conversion_template(str(PACK_ID), ConversionTemplateUpdate(name="ignored"))
+
+
+def test_list_skips_null_first_party_projection(service: svc.ConversionProfilesService) -> None:
+    """When first-party projection returns None, skip that builtin."""
+    engine = MagicMock()
+    read_conn = MagicMock()
+    engine.connect.return_value.__enter__.return_value = read_conn
+    read_conn.execute.return_value = _Result(rows=[])
+    with (
+        patch.object(svc.ConversionProfilesService, "_first_party_template_out", return_value=None),
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        patch.object(svc, "or_", return_value="x"),
+    ):
+        assert service.list_conversion_templates() == []
+
+
+def test_first_party_template_import_fallback(service: svc.ConversionProfilesService) -> None:
+    """ImportError and unknown-id branches for first-party projection."""
+    import builtins
+
+    real_import = builtins.__import__
+
+    def _fake_import(name: str, *args: Any, **kwargs: Any) -> Any:
+        if name == "tac2iwxxm.conversion_templates" or (name == "tac2iwxxm" and kwargs.get("fromlist")):
+            # only fail the conversion_templates submodule import
+            if name == "tac2iwxxm.conversion_templates" or (
+                isinstance(kwargs.get("fromlist"), (list, tuple)) and "conversion_templates" in kwargs["fromlist"]
+            ):
+                raise ImportError("missing")
+            if name == "tac2iwxxm.conversion_templates":
+                raise ImportError("missing")
+        if name == "tac2iwxxm.conversion_templates":
+            raise ImportError("missing")
+        return real_import(name, *args, **kwargs)
+
+    # Patch get_first_party_template import site by replacing module temporarily
+    with patch.dict("sys.modules"):
+        import sys
+
+        sys.modules.pop("tac2iwxxm.conversion_templates", None)
+
+        class _Boom:
+            def __getattr__(self, _name: str) -> Any:
+                raise ImportError("missing")
+
+        # Force from-import failure via finder
+        with patch("builtins.__import__", side_effect=_fake_import):
+            assert svc.ConversionProfilesService._first_party_template_out("CV.WIND") is None
+
+    assert service._first_party_template_out("CV.NOPE") is None
+    assert service._conversion_template_row_to_out(_conversion_template_row(slots="not-a-list")).slots == []
+
+    engine = MagicMock()
+    read_conn = MagicMock()
+    engine.connect.return_value.__enter__.return_value = read_conn
+    read_conn.execute.return_value = _Result(rows=[])
+
+    with (
+        patch("builtins.__import__", side_effect=_fake_import),
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        patch.object(svc, "or_", return_value="x"),
+    ):
+        listed = service.list_conversion_templates()
+        assert listed == []
