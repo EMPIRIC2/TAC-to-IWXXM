@@ -33,7 +33,7 @@ Canonical Project Status and planning policy for agents and humans.
 | Priority | P0–P3 | Board rank (keep issue `priority-*` labels aligned) |
 | Size | XS / S / M / L / XL | Relative effort (XS≈2h … XL≈32h) |
 | Estimate (h) | number | Hours for this issue (or remaining chunk) |
-| Iteration | I00-Backlog, I01… | Two-week bucket; epics stay `I00-Backlog` |
+| Iteration | I00-Backlog, I01… (single-select) | Two-week bucket; **not** GitHub native Iteration field; epics stay `I00-Backlog` |
 | Due date | date | Prefer milestone due; override for hard gates |
 
 Size → hours guide: **XS=2 · S=4 · M=8 · L=16 · XL=32**.
