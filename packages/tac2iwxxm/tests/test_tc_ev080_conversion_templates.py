@@ -66,3 +66,60 @@ def test_fork_first_party_custom_access() -> None:
     assert forked.name == "My wind"
     with pytest.raises(KeyError):
         fork_first_party("CV.NOPE", new_id="x")
+
+
+def test_template_from_dict_accepts_slot_instances_and_skips_junk() -> None:
+    wind = get_first_party_template("CV.WIND")
+    assert wind is not None
+    again = template_from_dict(
+        {
+            "id": "custom-x",
+            "access": "custom",
+            "iwxxmBlock": "iwxxm:WindObservation",
+            "slots": [wind.slots[0], "skip-me", {"id": "lit", "type": "literal", "literal": "G"}],
+            "forkOf": "CV.WIND",
+            "comments": "note",
+        },
+    )
+    assert again.access == "custom"
+    assert again.fork_of == "CV.WIND"
+    assert again.slots[0].id == wind.slots[0].id
+    assert again.slots[1].type == "literal"
+    assert again.comments == "note"
+
+
+def test_compile_pattern_literal_and_station_types() -> None:
+    from tac2iwxxm.conversion_templates import Slot
+
+    pattern = compile_pattern(
+        (
+            Slot("g", "g", "literal", literal="G"),
+            Slot("icao", "station", "station"),
+            Slot("hhmm", "time", "time", optional=True),
+        ),
+    )
+    assert pattern.startswith("G")
+    assert "{icao:station}" in pattern
+    assert "{hhmm?:time}" in pattern
+
+
+def test_reorder_slots_noop_on_unknown_ids() -> None:
+    wind = get_first_party_template("CV.WIND")
+    assert wind is not None
+    same = reorder_slots(wind.slots, "missing", "ddd")
+    assert same == wind.slots
+    same2 = reorder_slots(wind.slots, "ddd", "ddd")
+    assert same2 == wind.slots
+
+
+def test_preview_bridge_wind_unmatched_and_non_wind() -> None:
+    wind = get_first_party_template("CV.WIND")
+    cloud = get_first_party_template("CV.CLOUD")
+    assert wind is not None
+    assert cloud is not None
+    bad = preview_bridge(wind, focus_group="not-a-wind")
+    assert bad.matched is False
+    assert "select a wind group" in bad.xml_block
+    struct = preview_bridge(cloud, focus_group="FEW050")
+    assert struct.matched is False
+    assert "AerodromeCloudLayer" in struct.xml_block
