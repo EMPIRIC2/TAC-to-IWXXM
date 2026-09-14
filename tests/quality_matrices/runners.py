@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import Any, cast
 
 import pytest
-from iwxxm_validate import validate as validate_iwxxm
+from iwxxm_validate import validate_iwxxm
 from tac_validate import lint as lint_tac
 from tests.quality_matrices.loaders import RuleCase
 
@@ -150,6 +150,44 @@ def _assert_codes_present(case: RuleCase, codes: set[str], expected: list[str]) 
     assert not missing, f"{case.node_id}: missing codes {missing}; got {sorted(codes)}"
 
 
+def _message_mentions_sch_id(msg: str, sid: str) -> bool:
+    """True when a Schematron issue message refers to ``sid``.
+
+    Native asserts often prefix ``{sid}: …``. Codelist ``document()`` stand-ins
+    keep WMO text ``Element in iwxxm:… should be a member of code list``.
+    """
+    if msg.startswith(f"{sid}:") or f"{sid}:" in msg:
+        return True
+    parts = sid.split(".")
+    if len(parts) >= 2 and parts[0] in {"METAR_SPECI", "IWXXM"}:
+        tail = parts[1:]
+        needle = (
+            f"iwxxm:{tail[0]}"
+            if len(tail) == 1
+            else "/".join(f"iwxxm:{p}" for p in tail)
+        )
+        if needle in msg and "should be a member of code list" in msg:
+            return True
+    return False
+
+
+def _assert_sch_ids_present(case: RuleCase, report: Any, expected: list[str]) -> None:
+    """Match Schematron pattern ids in issue.code or message (native path)."""
+    codes = _issue_codes(report.issues)
+    messages = [str(getattr(i, "message", "") or "") for i in report.issues]
+    missing: list[str] = []
+    for sid in expected:
+        if sid in codes:
+            continue
+        if any(_message_mentions_sch_id(msg, sid) for msg in messages):
+            continue
+        missing.append(sid)
+    assert not missing, (
+        f"{case.node_id}: missing sch_ids {missing}; "
+        f"codes={sorted(codes)}; messages={messages[:5]}"
+    )
+
+
 def _assert_lint_expect(case: RuleCase, report: Any) -> None:
     expect = case.expect
     if "accept" in expect:
@@ -185,12 +223,19 @@ def _assert_validate_expect(case: RuleCase, report: Any) -> None:
     codes = _issue_codes(report.issues)
     if "sch_ids" in expect:
         sch_ids = _as_str_list(expect["sch_ids"], case=case, field_name="sch_ids")
-        if "SCHEMATRON_SKIPPED" in codes and not any(sid in codes for sid in sch_ids):
+        if "SCHEMATRON_SKIPPED" in codes and not any(
+            sid in codes
+            or any(
+                _message_mentions_sch_id(str(getattr(i, "message", "") or ""), sid)
+                for i in report.issues
+            )
+            for sid in sch_ids
+        ):
             pytest.skip(
                 f"{case.node_id}: Schematron xslt2 skipped on lxml path "
                 f"(want {sch_ids}); use native iwxxm-validate or fixture XML"
             )
-        _assert_codes_present(case, codes, sch_ids)
+        _assert_sch_ids_present(case, report, sch_ids)
     if "codes" in expect:
         wanted = _as_str_list(expect["codes"], case=case, field_name="codes")
         _assert_codes_present(case, codes, wanted)

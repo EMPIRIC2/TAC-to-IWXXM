@@ -140,3 +140,59 @@ cases:
     assert counts[("METAR", "annex3")][0] == 1  # ready → match (inventory)
     assert counts[("METAR", "annex3")][3] == 0  # needs-fixture omitted (not Skip)
     assert ("SPECI", "iwxxm_us") not in counts  # oos omitted
+
+
+@pytest.mark.unit
+def test_normalize_product_junk_rolls_to_pack_parent() -> None:
+    """TC-EV970-STICKY-001 — opaque sad-fixture products map to pack parent."""
+    mod = _load_module()
+    assert mod.normalize_product("XYZ", pack_folder="metar_speci") == "METAR"
+    assert mod.normalize_product("???", pack_folder="metar_speci") == "METAR"
+    assert mod.normalize_product("BOGUS", pack_folder="metar_speci") == "METAR"
+    assert mod.normalize_product("UNKNOWN", pack_folder="metar_speci") == "METAR"
+    assert mod.normalize_product("NOT_A_PRODUCT", pack_folder="metar_speci") == "METAR"
+    assert mod.normalize_product("METAR_SPECI", pack_folder="metar_speci") == "METAR"
+    assert mod.normalize_product("SPECI", pack_folder="metar_speci") == "SPECI"
+    assert mod.normalize_product("TAF", pack_folder="taf") == "TAF"
+
+
+@pytest.mark.unit
+def test_collect_quality_matrix_inventory_rolls_junk_product(tmp_path: Path) -> None:
+    """TC-EV970-STICKY-001 — UNKNOWN_PRODUCT-style meta.product never becomes a row."""
+    mod = _load_module()
+    qm = tmp_path / "quality_matrices"
+    td = qm / "testdata" / "lint" / "metar_speci"
+    td.mkdir(parents=True)
+    (td / "UNKNOWN_PRODUCT.yml").write_text(
+        """
+rule_id: UNKNOWN_PRODUCT
+engine: lint
+cases:
+- bucket: sad
+  case_id: "01"
+  status: ready
+  tac: "XYZ KJFK 010000Z="
+  meta:
+    product: XYZ
+    profile: annex3
+- bucket: sad
+  case_id: "02"
+  status: ready
+  tac: "??? KJFK 010000Z="
+  meta:
+    product: "???"
+    profile: annex3
+- bucket: happy
+  case_id: "01"
+  status: ready
+  tac: "METAR KJFK 010000Z="
+  meta:
+    product: METAR
+    profile: annex3
+""",
+        encoding="utf-8",
+    )
+    counts = mod.collect_quality_matrix_inventory(qm)
+    assert ("XYZ", "annex3") not in counts
+    assert ("???", "annex3") not in counts
+    assert counts[("METAR", "annex3")][0] == 3

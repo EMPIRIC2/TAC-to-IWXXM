@@ -1941,6 +1941,27 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: pytest for formatter; github-script finds marker and updates
 - **Source**: EV-052 AC5
 
+### TC-EV970-STICKY-001: Sticky Product allowlist (junk meta.product)
+
+- **Level**: T0
+- **Objective**: Opaque sad-fixture Product codes (`XYZ`, `???`, `BOGUS`, `UNKNOWN`,
+  `NOT_A_PRODUCT`, …) do not appear as sticky Product rows; they roll to pack parent
+  (e.g. `metar_speci` → `METAR`). Sticky footnote distinguishes inventory Match from
+  F7.q dashboard `match_pass`.
+- **Pass criteria**: Unit tests on `collect_quality_pr_stats` (and formatter label);
+  local/CI sticky sample has zero junk Product keys; docs cite
+  `docs/decisions/ev-970-s3-validate-fill.md`
+- **Source**: EV-970 S3; #970; [Corpus: product §F29] [Corpus: product §F7.q]
+
+### TC-EV970-VALIDATE-001: Validate metar_speci NF material reduction
+
+- **Level**: T0 / CI (smoke) + nightly full
+- **Objective**: Clear `validate/metar_speci` `needs-fixture` (S3); residual SCH negatives
+  as intentional `oos` with cite
+- **Pass criteria**: `test_tc_ev970_003_validate_nf_cleared.py` green; ready ≥400;
+  NF count 0; ready cases pass validate pilot runners
+- **Source**: EV-970 S3; #970; TC-F29-003/004; `docs/decisions/ev-970-s3-validate-fill.md`
+
 ### TC-EV052-006: Sentry optional init
 
 - **Level**: T0
@@ -4149,7 +4170,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Mode**: delta F29 inventory — fill or intentional `oos` (not indefinite scaffolds)
 - **S1**: `convert/metar_speci` cleared (273 ready / 47 oos)
 - **S2**: `lint/metar_speci` cleared (720 ready); empty-TAC loader allowance for `EMPTY_TAC`
-- **S3**: `validate/metar_speci` deferred
+- **S3**: `validate/metar_speci` cleared (860 ready / 0 oos / 0 NF; SCH negatives via native stand-ins)
 - **Pass criteria**: TC-EV970-001..003; ready smokes; inventory gate unchanged
 - **Source**: [#970](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/970); [Corpus: product §F29]; [Corpus: tests]
 
