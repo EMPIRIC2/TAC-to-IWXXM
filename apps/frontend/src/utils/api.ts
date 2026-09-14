@@ -182,6 +182,11 @@ export async function convertMetarToIwxxm(params: {
   profile?: string;
   /** Optional saved semantic preset id (requires accessToken). */
   presetId?: string;
+  conversionLibraryId?: string;
+  tacValidationLibraryId?: string;
+  iwxxmValidationLibraryId?: string;
+  disseminationLibraryId?: string;
+  decodingLibraryId?: string;
   iwxxmVersion?: string;
   validateOutput?: boolean;
   validationLevel?: string;
@@ -221,6 +226,24 @@ export async function convertMetarToIwxxm(params: {
   formData.append('product', (params.product || 'METAR').toUpperCase());
   // EV-093 / #1024 — prefer semantic_profile (uppercase OpenAPI ids); drop deprecated profile=
   formData.append('semantic_profile', wireSemanticProfile(params.profile));
+  if (params.conversionLibraryId?.trim()) {
+    formData.append('conversion_library_id', params.conversionLibraryId.trim());
+  }
+  if (params.tacValidationLibraryId?.trim()) {
+    formData.append('tac_validation_library_id', params.tacValidationLibraryId.trim());
+  }
+  if (params.iwxxmValidationLibraryId?.trim()) {
+    formData.append(
+      'iwxxm_validation_library_id',
+      params.iwxxmValidationLibraryId.trim(),
+    );
+  }
+  if (params.disseminationLibraryId?.trim()) {
+    formData.append('dissemination_library_id', params.disseminationLibraryId.trim());
+  }
+  if (params.decodingLibraryId?.trim()) {
+    formData.append('decoding_library_id', params.decodingLibraryId.trim());
+  }
   if (params.exchangeProfile?.trim()) {
     formData.append('exchange_profile', params.exchangeProfile.trim());
   }

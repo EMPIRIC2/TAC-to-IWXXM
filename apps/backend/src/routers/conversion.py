@@ -1586,6 +1586,26 @@ async def convert(
             "ids are rejected."
         ),
     ),
+    conversion_library_id: str = Form(
+        default="",
+        description="Conversion library asset id (resolves engine profile).",
+    ),
+    tac_validation_library_id: str = Form(
+        default="",
+        description="TAC validation library asset id.",
+    ),
+    iwxxm_validation_library_id: str = Form(
+        default="",
+        description="IWXXM validation library asset id.",
+    ),
+    dissemination_library_id: str = Form(
+        default="",
+        description="Dissemination library asset id.",
+    ),
+    decoding_library_id: str = Form(
+        default="",
+        description="Decoding library asset id.",
+    ),
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> Response:
     """Convert METAR/SPECI TAC text to IWXXM XML."""
@@ -1691,6 +1711,34 @@ async def convert(
     profiles_service: ConversionProfilesService | None = None
     if auth_user is not None:
         profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
+
+    # Reserved for Convert bar pickers (validation/dissem/decode applied in later milestones).
+    _ = (
+        tac_validation_library_id,
+        iwxxm_validation_library_id,
+        dissemination_library_id,
+        decoding_library_id,
+    )
+    conversion_library_token = (conversion_library_id or "").strip()
+    if conversion_library_token:
+        from tac2iwxxm.library_assets import get_first_party_library_asset
+
+        lib = get_first_party_library_asset(conversion_library_token)
+        if lib is None and profiles_service is not None:
+            try:
+                lib_out = profiles_service.get_library_asset(conversion_library_token)
+                semantic_profile = lib_out.engine_profile_id
+                profile = ""
+            except Exception as exc:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Unknown conversion library id",
+                ) from exc
+        elif lib is not None:
+            semantic_profile = lib.engine_profile_id
+            profile = ""
+        else:
+            raise HTTPException(status_code=400, detail="Unknown conversion library id")
 
     applied_preset_id: str | None = None
     preset_token = (preset_id or "").strip()
