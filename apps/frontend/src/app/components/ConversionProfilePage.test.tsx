@@ -25,6 +25,9 @@ const listOverlays = vi.fn();
 const createOverlay = vi.fn();
 const updateOverlay = vi.fn();
 const deleteOverlay = vi.fn();
+const listConversionTemplates = vi.fn();
+const previewConversionTemplate = vi.fn();
+const createConversionTemplate = vi.fn();
 
 vi.mock('@/utils/conversionProfilesApi', () => ({
   fetchProfileCatalog: (...args: unknown[]) => fetchProfileCatalog(...args),
@@ -44,6 +47,9 @@ vi.mock('@/utils/conversionProfilesApi', () => ({
   createOverlay: (...args: unknown[]) => createOverlay(...args),
   updateOverlay: (...args: unknown[]) => updateOverlay(...args),
   deleteOverlay: (...args: unknown[]) => deleteOverlay(...args),
+  listConversionTemplates: (...args: unknown[]) => listConversionTemplates(...args),
+  previewConversionTemplate: (...args: unknown[]) => previewConversionTemplate(...args),
+  createConversionTemplate: (...args: unknown[]) => createConversionTemplate(...args),
 }));
 
 const samplePack = {
@@ -182,6 +188,23 @@ describe('ConversionProfilePage', () => {
     createOverlay.mockResolvedValue(sampleOverlay);
     updateOverlay.mockResolvedValue(sampleOverlay);
     deleteOverlay.mockResolvedValue(undefined);
+    listConversionTemplates.mockResolvedValue({ items: [] });
+    previewConversionTemplate.mockResolvedValue({
+      templateId: 'CV.WIND',
+      focusGroup: '',
+      matched: false,
+      captures: [],
+      xmlBlock: '',
+      compiledPattern: '',
+    });
+    createConversionTemplate.mockResolvedValue({
+      id: 'ct-1',
+      slug: 'fork',
+      name: 'Fork',
+      access: 'custom',
+      iwxxmBlock: 'iwxxm:WindObservation',
+      slots: [],
+    });
   });
 
   it('prompts sign-in when unauthenticated', async () => {

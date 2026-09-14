@@ -256,3 +256,99 @@ class DisseminationTemplateListResponse(BaseModel):
     """List of saved dissemination templates for the caller."""
 
     items: list[DisseminationTemplateOut]
+
+
+class ConversionTemplateSlot(BaseModel):
+    """One ordered slot in a parameterizable conversion template."""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    id: str = Field(min_length=1, max_length=64)
+    label: str = Field(min_length=1, max_length=128)
+    type: str = Field(min_length=1, max_length=32)
+    optional: bool = False
+    digits: int | None = Field(default=None, ge=1, le=8)
+    enum_values: str | None = Field(default=None, max_length=256, alias="enumValues")
+    literal: str | None = Field(default=None, max_length=64)
+    iwxxm_field: str = Field(default="", max_length=256, alias="iwxxmField")
+
+
+class ConversionTemplateCreate(BaseModel):
+    """Create body for a custom conversion template."""
+
+    slug: str = Field(min_length=1, max_length=128)
+    name: str = Field(min_length=1, max_length=128)
+    iwxxm_block: str = Field(min_length=1, max_length=128, alias="iwxxmBlock")
+    slots: list[ConversionTemplateSlot] = Field(default_factory=list)
+    sample: str = Field(default="", max_length=512)
+    comments: str | None = Field(default=None, max_length=4096)
+    fork_of: str | None = Field(default=None, max_length=128, alias="forkOf")
+    shared: bool = False
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class ConversionTemplateUpdate(BaseModel):
+    """Partial update for a custom conversion template."""
+
+    slug: str | None = Field(default=None, max_length=128)
+    name: str | None = Field(default=None, max_length=128)
+    iwxxm_block: str | None = Field(default=None, max_length=128, alias="iwxxmBlock")
+    slots: list[ConversionTemplateSlot] | None = None
+    sample: str | None = Field(default=None, max_length=512)
+    comments: str | None = Field(default=None, max_length=4096)
+    shared: bool | None = None
+
+    model_config = ConfigDict(populate_by_name=True)
+
+
+class ConversionTemplateOut(BaseModel):
+    """Persisted or first-party conversion template projection."""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    id: str
+    user_id: UUID | None = None
+    slug: str
+    name: str
+    access: str
+    iwxxm_block: str = Field(serialization_alias="iwxxmBlock")
+    slots: list[ConversionTemplateSlot] = Field(default_factory=list)
+    sample: str = ""
+    comments: str | None = None
+    fork_of: str | None = Field(default=None, serialization_alias="forkOf")
+    shared: bool = False
+    profiles: list[str] = Field(default_factory=list)
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+
+
+class ConversionTemplateListResponse(BaseModel):
+    """First-party + custom conversion templates visible to the caller."""
+
+    items: list[ConversionTemplateOut]
+
+
+class ConversionTemplatePreviewRequest(BaseModel):
+    """Bridge preview request."""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    template_id: str = Field(min_length=1, max_length=128, alias="templateId")
+    focus_group: str = Field(default="", max_length=256, alias="focusGroup")
+    full_tac: str | None = Field(default=None, max_length=8192, alias="fullTac")
+    slots: list[ConversionTemplateSlot] | None = None
+    iwxxm_block: str | None = Field(default=None, max_length=128, alias="iwxxmBlock")
+
+
+class ConversionTemplatePreviewResponse(BaseModel):
+    """Bridge preview response."""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    template_id: str = Field(serialization_alias="templateId")
+    focus_group: str = Field(serialization_alias="focusGroup")
+    matched: bool
+    captures: list[dict[str, str]] = Field(default_factory=list)
+    xml_block: str = Field(default="", serialization_alias="xmlBlock")
+    compiled_pattern: str = Field(default="", serialization_alias="compiledPattern")

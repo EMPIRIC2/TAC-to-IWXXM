@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
+  createConversionTemplate,
   createOverlay,
   createPreset,
   createRulePack,
@@ -9,10 +10,12 @@ import {
   deleteRulePack,
   deleteTemplate,
   fetchProfileCatalog,
+  listConversionTemplates,
   listOverlays,
   listPresets,
   listRulePacks,
   listTemplates,
+  previewConversionTemplate,
   updateOverlay,
   updatePreset,
   updateRulePack,
@@ -423,6 +426,66 @@ describe('conversionProfilesApi', () => {
       'http://api.test/api/v1/profiles/overlays/ov-1',
       expect.objectContaining({ method: 'DELETE' }),
     );
+  });
+
+  it('lists conversion templates', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        items: [{ id: 'CV.WIND', name: 'Wind', access: 'first_party' }],
+      }),
+    } as Response);
+    const res = await listConversionTemplates('tok');
+    expect(res.items[0]?.id).toBe('CV.WIND');
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://api.test/api/v1/profiles/conversion-templates',
+      expect.objectContaining({ headers: expect.any(Object) }),
+    );
+  });
+
+  it('previews and creates conversion templates', async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          templateId: 'CV.WIND',
+          focusGroup: '18012KT',
+          matched: true,
+          captures: [],
+          xmlBlock: '<x/>',
+          compiledPattern: '',
+        }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 201,
+        json: async () => ({
+          id: 'ct-1',
+          slug: 'fork',
+          name: 'Fork',
+          access: 'custom',
+          iwxxmBlock: 'iwxxm:WindObservation',
+          slots: [],
+        }),
+      } as Response);
+
+    const preview = await previewConversionTemplate('tok', {
+      templateId: 'CV.WIND',
+      focusGroup: '18012KT',
+    });
+    expect(preview.matched).toBe(true);
+    const created = await createConversionTemplate('tok', {
+      slug: 'fork',
+      name: 'Fork',
+      iwxxmBlock: 'iwxxm:WindObservation',
+      slots: [],
+      forkOf: 'CV.WIND',
+    });
+    expect(created.id).toBe('ct-1');
+    expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
   it('throws string detail on error response', async () => {

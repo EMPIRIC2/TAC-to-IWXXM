@@ -5,7 +5,19 @@
 
 export const PROFILES_EDITOR_TITLE = 'Conversion profiles';
 export const PROFILES_EDITOR_SUBTITLE =
-  'Inspect catalog profiles, manage lint rule packs, save semantic presets, and keep reusable dissemination templates.';
+  'Inspect catalog profiles, manage conversion templates and lint rule packs, save semantic presets, and keep reusable dissemination templates.';
+export const PROFILES_CONV_TEMPLATES_HEADING = 'Conversion templates';
+export const PROFILES_CONV_TEMPLATES_HELP =
+  'Parameterizable templates map TAC groups to IWXXM blocks. First-party templates can be viewed or forked; custom templates are yours to edit.';
+export const PROFILES_CONV_TEMPLATES_LOADING = 'Loading conversion templates…';
+export const PROFILES_CONV_TEMPLATES_EMPTY = 'No conversion templates available.';
+export const PROFILES_CONV_TEMPLATES_FORK = 'Fork to custom';
+export const PROFILES_CONV_TEMPLATES_PREVIEW = 'Preview mapping';
+export const PROFILES_CONV_TEMPLATES_MOVE_UP = 'Move slot up';
+export const PROFILES_CONV_TEMPLATES_MOVE_DOWN = 'Move slot down';
+export const PROFILES_CONV_TEMPLATES_FOCUS = 'Focused TAC group';
+export const PROFILES_CONV_TEMPLATES_COMMENTS = 'Comments';
+export const PROFILES_CONV_TEMPLATES_BETA = 'Conversion templates';
 export const PROFILES_GLOSSARY_HEADING = 'What these options mean';
 export const PROFILES_GLOSSARY_PROFILE =
   'Semantic profile chooses the operational rule set and national extensions used for TAC lint, conversion, and IWXXM validation.';

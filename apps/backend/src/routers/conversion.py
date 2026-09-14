@@ -1578,6 +1578,14 @@ async def convert(
             "Explicit request fields still win when both are supplied."
         ),
     ),
+    conversion_template_id: str = Form(
+        default="",
+        description=(
+            "Optional conversion template id (first-party or custom). When set for a "
+            "custom template, requires Bearer JWT and ownership (or shared); unknown "
+            "ids are rejected."
+        ),
+    ),
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> Response:
     """Convert METAR/SPECI TAC text to IWXXM XML."""
@@ -1730,6 +1738,28 @@ async def convert(
         overlay_base_profile = overlay.base_profile_id
         if not (semantic_profile or "").strip() and not (profile or "").strip():
             semantic_profile = overlay_base_profile
+
+    applied_conversion_template_id: str | None = None
+    conversion_template_token = (conversion_template_id or "").strip()
+    if conversion_template_token:
+        is_first_party = False
+        try:
+            from tac2iwxxm.conversion_templates import get_first_party_template
+
+            is_first_party = get_first_party_template(conversion_template_token) is not None
+        except ImportError:
+            is_first_party = False
+        if is_first_party:
+            applied_conversion_template_id = conversion_template_token
+        else:
+            if profiles_service is None:
+                raise HTTPException(
+                    status_code=401,
+                    detail="Sign in required to apply a custom conversion template",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+            tmpl = profiles_service.get_conversion_template(conversion_template_token)
+            applied_conversion_template_id = str(tmpl.id)
 
     json_profile = getattr(request_body, "profile", None) if request_body is not None else None
     json_semantic = getattr(request_body, "semantic_profile", None) if request_body is not None else None
@@ -2063,6 +2093,8 @@ async def convert(
         request_metadata["overlay_id"] = applied_overlay_id
         if overlay_base_profile:
             request_metadata["overlay_base_profile"] = overlay_base_profile
+    if applied_conversion_template_id:
+        request_metadata["conversion_template_id"] = applied_conversion_template_id
     if exchange_output:
         request_metadata["exchange_output"] = True
     output_spec = ca_eccc_output_spec_for_request(
