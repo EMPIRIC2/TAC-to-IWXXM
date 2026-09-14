@@ -796,8 +796,31 @@ def test_validate_xsd_at_path_schema_none_import_warning(monkeypatch: pytest.Mon
 
 
 def test_validate_ca_eccc_layered_missing_product_xsd(monkeypatch: pytest.MonkeyPatch) -> None:
-    from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
+    """CA_PRODUCT_XSD_NOT_FOUND when national XSD applies but path is missing.
 
+    Prior WMO XSD must not short-circuit the pipeline (EV-ci-runtime-failures /
+    mutation baseline): stub rust stages to empty so CA layer still runs.
+    """
+    from iwxxm_validate.ca_eccc_validate import STAGE_CA_XSD, validate_ca_eccc_layered
+
+    def _empty_rust_stage(
+        _xml: str,
+        *,
+        xsd_path: str,
+        sch_path: str,
+        catalog_roots: list[str],
+        levels: list[str],
+        stage_id: str,
+    ) -> list:
+        del xsd_path, sch_path, catalog_roots, levels, stage_id
+        return []
+
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.rust_available", lambda: True)
+    monkeypatch.setattr("iwxxm_validate.ca_eccc_validate._run_rust_stage", _empty_rust_stage)
+    monkeypatch.setattr(
+        "iwxxm_validate.ca_eccc_validate.ca_product_has_national_xsd",
+        lambda _p: True,
+    )
     monkeypatch.setattr("iwxxm_validate.ca_eccc_validate.ca_product_xsd_path", lambda _p: None)
     report = validate_ca_eccc_layered(
         "<?xml version='1.0'?><iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/3.0'/>",
@@ -805,7 +828,7 @@ def test_validate_ca_eccc_layered_missing_product_xsd(monkeypatch: pytest.Monkey
         product="METAR",
         levels=("xsd",),
     )
-    ca_stage = next((s for s in report.stages if s.stage == "ca_xsd"), None)
+    ca_stage = next((s for s in report.stages if s.stage == STAGE_CA_XSD), None)
     assert ca_stage is not None
     assert any(i.code == "CA_PRODUCT_XSD_NOT_FOUND" for i in ca_stage.issues)
 
