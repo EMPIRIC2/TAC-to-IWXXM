@@ -17,7 +17,10 @@ import {
   type ConversionTemplatePreviewResponse,
   type ConversionTemplateSlot,
 } from '../../utils/conversionProfilesApi';
-import { reorderConversionTemplateSlots } from '../../utils/conversionTemplateSlots';
+import {
+  moveSelectedConversionTemplateSlot,
+  reorderConversionTemplateSlots,
+} from '../../utils/conversionTemplateSlots';
 import {
   PROFILES_CONV_TEMPLATES_ADVANCED,
   PROFILES_CONV_TEMPLATES_ADVANCED_HINT,
@@ -113,14 +116,10 @@ export function ConversionTemplatesPanel({
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const moveSelected = (delta: number) => {
-    if (!slots.length) return;
-    const idx = selectedSlotId ? slots.findIndex((s) => s.id === selectedSlotId) : 0;
-    if (idx < 0) return;
-    const nextIdx = idx + delta;
-    if (nextIdx < 0 || nextIdx >= slots.length) return;
-    const reordered = reorderConversionTemplateSlots(slots, idx, nextIdx);
-    setSlots(reordered);
-    setSelectedSlotId(reordered[nextIdx]?.id ?? selectedSlotId);
+    const moved = moveSelectedConversionTemplateSlot(slots, selectedSlotId, delta);
+    if (!moved) return;
+    setSlots(moved.slots);
+    setSelectedSlotId(moved.selectedSlotId);
   };
 
   const onDrop = (toIndex: number) => {
