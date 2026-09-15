@@ -11,6 +11,7 @@ import {
   deleteTemplate,
   fetchProfileCatalog,
   listConversionTemplates,
+  listLibraryAssets,
   listOverlays,
   listPresets,
   listRulePacks,
@@ -441,6 +442,26 @@ describe('conversionProfilesApi', () => {
     expect(fetchMock).toHaveBeenCalledWith(
       'http://api.test/api/v1/profiles/conversion-templates',
       expect.objectContaining({ headers: expect.any(Object) }),
+    );
+  });
+
+  it('lists library assets with and without kind filter', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ items: [] }),
+    } as Response);
+
+    await listLibraryAssets('tok');
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://api.test/api/v1/profiles/library-assets',
+      expect.any(Object),
+    );
+
+    await listLibraryAssets('tok', 'decoding');
+    expect(fetchMock).toHaveBeenCalledWith(
+      'http://api.test/api/v1/profiles/library-assets?kind=decoding',
+      expect.any(Object),
     );
   });
 

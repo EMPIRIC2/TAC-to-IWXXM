@@ -47,4 +47,10 @@ describe('MappingBridge', () => {
     );
     expect(screen.getByTestId('mapping-bridge-skip-chips')).toHaveTextContent('noise');
   });
+
+  it('renders em dash placeholders when TAC group and template name are empty', () => {
+    render(<MappingBridge tacGroup="" matched={null} iwxxmBlock="" />);
+    expect(screen.getByTestId('mapping-bridge-col-tac')).toHaveTextContent('—');
+    expect(screen.getByTestId('mapping-bridge-col-template')).toHaveTextContent('—');
+  });
 });

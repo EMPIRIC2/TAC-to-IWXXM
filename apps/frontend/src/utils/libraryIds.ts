@@ -18,6 +18,29 @@ export function defaultLibraryId(
   return `LIB.${kind.toUpperCase()}.${nationalLine}`;
 }
 
+/**
+ * Default five library ids for a national line (empty → ICAO_2025).
+ *
+ * @param nationalLine - Engine / national line id
+ */
+export function libraryIdsForNationalLine(nationalLine: string): {
+  conversionLibraryId: string;
+  tacValidationLibraryId: string;
+  iwxxmValidationLibraryId: string;
+  disseminationLibraryId: string;
+  decodingLibraryId: string;
+} {
+  const trimmed = nationalLine.trim();
+  const line = trimmed.length > 0 ? trimmed : 'ICAO_2025';
+  return {
+    conversionLibraryId: defaultLibraryId('conversion', line),
+    tacValidationLibraryId: defaultLibraryId('tac_validation', line),
+    iwxxmValidationLibraryId: defaultLibraryId('iwxxm_validation', line),
+    disseminationLibraryId: defaultLibraryId('dissemination', line),
+    decodingLibraryId: defaultLibraryId('decoding', line),
+  };
+}
+
 const ALIAS_TO_NATIONAL: Record<string, string> = {
   annex3: 'ICAO_2025',
   iwxxm_us: 'US_FAA_NWS',

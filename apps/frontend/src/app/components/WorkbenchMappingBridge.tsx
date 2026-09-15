@@ -31,13 +31,15 @@ function seedFocusFromTac(tacText: string | undefined): string {
   if (!tacText?.trim()) {
     return '18012G20KT';
   }
-  const tokens = tacText.trim().split(/\s+/).filter(Boolean);
+  const tokens = tacText
+    .trim()
+    .split(/\s+/)
+    .map((t) => t.replace(/=+$/, ''))
+    .filter(Boolean);
   // Prefer a wind-like group when present; else last token before '='.
   const wind = tokens.find((t) => /^\d{5}/.test(t) || /KT$|MPS$/.test(t));
   if (wind) return wind;
-  const last = [...tokens]
-    .reverse()
-    .find((t) => t !== '=' && t !== 'METAR' && t !== 'SPECI');
+  const last = [...tokens].reverse().find((t) => t !== 'METAR' && t !== 'SPECI');
   return last || '18012G20KT';
 }
 
@@ -85,7 +87,9 @@ export function WorkbenchMappingBridge({
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const runPreview = async () => {
-    if (!selected) return;
+    if (!selected) {
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
@@ -161,7 +165,7 @@ export function WorkbenchMappingBridge({
             type="button"
             className="rounded bg-sky-700 px-3 py-1.5 text-sm text-white disabled:opacity-50"
             data-testid="workbench-mapping-bridge-preview"
-            disabled={busy || !selected}
+            disabled={busy}
             onClick={() => void runPreview()}
           >
             {busy ? (

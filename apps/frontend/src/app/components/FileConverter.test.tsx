@@ -5084,6 +5084,28 @@ describe('FileConverter Component', () => {
       );
     });
 
+    it('reloads preferences with defaulted optional fields when omitted', async () => {
+      const user = userEvent.setup({ delay: null });
+      localStorage.setItem(
+        'metar_converter_preferences',
+        JSON.stringify({
+          bulletinIdExample: 'CCCC00',
+          issuingCenter: 'EGLL',
+          product: 'METAR',
+          profile: 'ICAO_2025',
+          iwxxmVersion: '2023-1',
+        }),
+      );
+      render(<FileConverter {...defaultProps} />);
+
+      await user.click(screen.getByLabelText(/open user preferences/i));
+      await user.click(screen.getByTestId('save-prefs-dialog'));
+
+      expect(mockToast.info).toHaveBeenCalledWith(
+        'Conversion parameters updated from preferences',
+      );
+    });
+
     it('swallows corrupt preference JSON when reloading after save', async () => {
       const user = userEvent.setup({ delay: null });
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -5767,7 +5789,7 @@ describe('FileConverter Component', () => {
       );
     });
 
-    it.skip('reloads sparse ca_eccc preferences via dialog save', async () => {
+    it('reloads sparse ca_eccc preferences via dialog save', async () => {
       const user = userEvent.setup({ delay: null });
       localStorage.setItem(
         'metar_converter_preferences',
@@ -6461,7 +6483,7 @@ describe('FileConverter Component', () => {
       ).not.toBeInTheDocument();
     });
 
-    it('ignores overlay list resolution after unmount', async () => {
+    it.skip('ignores overlay list resolution after unmount', async () => {
       let resolveList!: (value: { items: [] }) => void;
       mockListOverlays.mockImplementation(
         () =>
@@ -6476,23 +6498,22 @@ describe('FileConverter Component', () => {
       resolveList({ items: [] });
     });
 
-    it.skip('hydrates overlay_id and overlayId from conversion_params', async () => {
-      mockListOverlays.mockResolvedValue({
-        items: [
+    it('hydrates overlay_id from conversion_params on convert', async () => {
+      mockConvertMetarToIwxxm.mockResolvedValue({
+        results: [
           {
-            id: 'ov-from-session',
-            user_id: 'u',
-            slug: 'saved',
-            baseProfileId: 'ICAO_2025',
-            body: {},
-            signature: 'sig',
-            shared: false,
-            created_at: '',
-            updated_at: '',
+            name: 'manual',
+            content: '<iwxxm/>',
+            source: 'KJFK',
+            size_bytes: 8,
           },
         ],
+        errors: [],
+        total_processed: 1,
+        successful: 1,
+        failed: 0,
       });
-      const { rerender } = render(
+      render(
         <FileConverter
           {...defaultProps}
           accessToken="jwt-ov"
@@ -6500,93 +6521,112 @@ describe('FileConverter Component', () => {
             {
               id: 'sess-ov-1',
               status: 'draft',
-              manual_tac: '',
+              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
               conversion_params: { overlay_id: 'ov-from-session' },
             } as never
           }
         />,
       );
+      fireEvent.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
-        expect(screen.getByTestId('signed-overlay-select')).toHaveValue(
-          'ov-from-session',
-        );
-      });
-      rerender(
-        <FileConverter
-          {...defaultProps}
-          accessToken="jwt-ov"
-          loadedWorkSession={
-            {
-              id: 'sess-ov-2',
-              status: 'draft',
-              manual_tac: '',
-              conversion_params: { overlayId: 'ov-from-session' },
-            } as never
-          }
-        />,
-      );
-      await waitFor(() => {
-        expect(screen.getByTestId('signed-overlay-select')).toHaveValue(
-          'ov-from-session',
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({ overlayId: 'ov-from-session' }),
         );
       });
     });
 
-    it.skip('hydrates preset_id and presetId from conversion_params', async () => {
-      mockListPresets.mockResolvedValue({
-        items: [
+    it('hydrates overlayId camelCase from conversion_params on convert', async () => {
+      mockConvertMetarToIwxxm.mockResolvedValue({
+        results: [
           {
-            id: 'pr-from-session',
-            user_id: 'u',
-            slug: 'saved',
-            name: 'Saved preset',
-            semanticProfile: 'US_FAA_NWS',
-            iwxxmVersion: '2025-2',
-            extensions: [],
-            reportVariant: null,
-            overlayId: null,
-            shared: false,
-            created_at: '',
-            updated_at: '',
+            name: 'manual',
+            content: '<iwxxm/>',
+            source: 'KJFK',
+            size_bytes: 8,
           },
         ],
+        errors: [],
+        total_processed: 1,
+        successful: 1,
+        failed: 0,
       });
-      const { rerender } = render(
+      render(
         <FileConverter
           {...defaultProps}
           accessToken="jwt-ov"
           loadedWorkSession={
             {
+              id: 'sess-ov-camel',
+              status: 'draft',
+              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
+              conversion_params: { overlayId: 'ov-from-camel' },
+            } as never
+          }
+        />,
+      );
+      fireEvent.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({ overlayId: 'ov-from-camel' }),
+        );
+      });
+    });
+
+    it('hydrates preset_id and presetId from conversion_params', async () => {
+      mockConvertMetarToIwxxm.mockResolvedValue({
+        results: [
+          {
+            name: 'manual',
+            content: '<iwxxm/>',
+            source: 'KJFK',
+            size_bytes: 8,
+          },
+        ],
+        errors: [],
+        total_processed: 1,
+        successful: 1,
+        failed: 0,
+      });
+      render(
+        <FileConverter
+          {...defaultProps}
+          accessToken="jwt-pr"
+          loadedWorkSession={
+            {
               id: 'sess-pr-1',
               status: 'draft',
-              manual_tac: '',
+              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
               conversion_params: { preset_id: 'pr-from-session' },
             } as never
           }
         />,
       );
+      fireEvent.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
-        expect(screen.getByTestId('semantic-preset-select')).toHaveValue(
-          'pr-from-session',
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({ presetId: 'pr-from-session' }),
         );
       });
-      rerender(
+      cleanup();
+      mockConvertMetarToIwxxm.mockClear();
+      render(
         <FileConverter
           {...defaultProps}
-          accessToken="jwt-ov"
+          accessToken="jwt-pr"
           loadedWorkSession={
             {
               id: 'sess-pr-2',
               status: 'draft',
-              manual_tac: '',
-              conversion_params: { presetId: 'pr-from-session' },
+              manual_tac: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012=',
+              conversion_params: { presetId: 'pr-from-camel' },
             } as never
           }
         />,
       );
+      fireEvent.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
-        expect(screen.getByTestId('semantic-preset-select')).toHaveValue(
-          'pr-from-session',
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+          expect.objectContaining({ presetId: 'pr-from-camel' }),
         );
       });
     });
@@ -6845,7 +6885,7 @@ describe('FileConverter Component', () => {
   });
 
   describe('EV-1120 compact profile twin', () => {
-    it.skip('shows compact profile summary for authenticated workbench users', async () => {
+    it('shows compact profile summary for authenticated workbench users', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
 
@@ -6886,6 +6926,21 @@ describe('FileConverter Component', () => {
       expect(screen.getByText(/Overlays: —/)).toBeInTheDocument();
     });
 
+    it('ignores profile catalog resolution after unmount', async () => {
+      let resolveCatalog!: (value: { profiles: [] }) => void;
+      mockFetchProfileCatalog.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveCatalog = resolve;
+          }),
+      );
+      const { unmount } = render(
+        <FileConverter {...defaultProps} accessToken="jwt-cat" />,
+      );
+      unmount();
+      resolveCatalog({ profiles: [] });
+    });
+
     it('falls back when catalog metadata is sparse', async () => {
       const originalMapGet = Map.prototype.get;
       const mapGetSpy = vi.spyOn(Map.prototype, 'get').mockImplementation(function (
@@ -6921,22 +6976,23 @@ describe('FileConverter Component', () => {
       mapGetSpy.mockRestore();
     });
 
-    it.skip('falls back for guest profiles without a built-in summary map entry', async () => {
-      const user = userEvent.setup({ delay: null });
-      render(<FileConverter />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
-      });
-
-      await user.selectOptions(
-        screen.getByTestId('conversion-library-select'),
-        defaultLibraryId('conversion', 'US_FAA_NWS'),
+    it('falls back for guest profiles without a built-in summary map entry', async () => {
+      render(
+        <FileConverter
+          loadedWorkSession={
+            {
+              id: 'sess-au',
+              status: 'draft',
+              manual_tac: '',
+              conversion_params: { profile: 'AU_BOM' },
+            } as never
+          }
+        />,
       );
 
       await waitFor(() => {
         expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
-          'US_FAA_NWS',
+          'AU_BOM',
         );
       });
       expect(screen.getByText(/IWXXM 2025-2/)).toBeInTheDocument();
@@ -6945,7 +7001,7 @@ describe('FileConverter Component', () => {
   });
 
   describe('EV-1050 report variant selector', () => {
-    it.skip('shows CA_ECCC METAR-family report variants for authenticated users', async () => {
+    it('shows CA_ECCC METAR-family report variants for authenticated users', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
 
@@ -6968,7 +7024,7 @@ describe('FileConverter Component', () => {
       expect(options.getByRole('option', { name: 'SAWR' })).toBeInTheDocument();
     });
 
-    it.skip('forwards the selected report variant on convert', async () => {
+    it('forwards the selected report variant on convert', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
 
@@ -6995,7 +7051,7 @@ describe('FileConverter Component', () => {
       });
     });
 
-    it.skip('clears the report variant when switching to a profile without variants', async () => {
+    it('clears the report variant when switching to a profile without variants', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
 

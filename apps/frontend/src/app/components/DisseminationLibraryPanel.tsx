@@ -89,7 +89,7 @@ export function DisseminationLibraryPanel({
   }, [load]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  const selected = items.find((item) => item.id === selectedId) ?? items[0];
+  const selected = items.find((item) => item.id === selectedId) ?? items[0]!;
   const transforms = useMemo(
     () => transformsFromBody(selected?.body),
     [selected?.body],
@@ -124,7 +124,7 @@ export function DisseminationLibraryPanel({
             <select
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="library-assets-select-dissemination"
-              value={selected?.id ?? ''}
+              value={selected.id}
               onChange={(e) => setSelectedId(e.target.value)}
             >
               {items.map((item) => (
@@ -134,39 +134,37 @@ export function DisseminationLibraryPanel({
               ))}
             </select>
           </label>
-          {selected ? (
-            <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-              <p>
-                National line:{' '}
-                <span className="font-medium">{selected.attachedNationalLine}</span>
-                {' · '}
-                Access:{' '}
-                <span className="font-medium">{accessLabel(selected.access)}</span>
+          <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <p>
+              National line:{' '}
+              <span className="font-medium">{selected.attachedNationalLine}</span>
+              {' · '}
+              Access:{' '}
+              <span className="font-medium">{accessLabel(selected.access)}</span>
+            </p>
+            <h3 className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              {PROFILES_LIBRARY_DISSEM_TRANSFORMS_HEADING}
+            </h3>
+            {transforms.length === 0 ? (
+              <p className="text-sm text-gray-500">
+                {PROFILES_LIBRARY_DISSEM_EMPTY_TRANSFORMS}
               </p>
-              <h3 className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                {PROFILES_LIBRARY_DISSEM_TRANSFORMS_HEADING}
-              </h3>
-              {transforms.length === 0 ? (
-                <p className="text-sm text-gray-500">
-                  {PROFILES_LIBRARY_DISSEM_EMPTY_TRANSFORMS}
-                </p>
-              ) : (
-                <ol
-                  className="list-decimal space-y-1 pl-5"
-                  data-testid="dissemination-transforms-list"
-                >
-                  {transforms.map((step, index) => (
-                    <li key={`${step.id}-${index}`}>
-                      <span className="font-medium">{step.type}</span>
-                      {step.id !== step.type ? (
-                        <span className="text-gray-500"> ({step.id})</span>
-                      ) : null}
-                    </li>
-                  ))}
-                </ol>
-              )}
-            </div>
-          ) : null}
+            ) : (
+              <ol
+                className="list-decimal space-y-1 pl-5"
+                data-testid="dissemination-transforms-list"
+              >
+                {transforms.map((step, index) => (
+                  <li key={`${step.id}-${index}`}>
+                    <span className="font-medium">{step.type}</span>
+                    {step.id !== step.type ? (
+                      <span className="text-gray-500"> ({step.id})</span>
+                    ) : null}
+                  </li>
+                ))}
+              </ol>
+            )}
+          </div>
         </>
       )}
     </Card>

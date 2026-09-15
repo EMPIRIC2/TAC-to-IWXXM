@@ -70,7 +70,7 @@ export function LibraryAssetsListPanel({
   }, [load]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  const selected = items.find((item) => item.id === selectedId) ?? items[0];
+  const selected = items.find((item) => item.id === selectedId) ?? items[0]!;
 
   return (
     <Card className="space-y-3 p-4" data-testid={`library-assets-panel-${kind}`}>
@@ -99,7 +99,7 @@ export function LibraryAssetsListPanel({
             <select
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid={`library-assets-select-${kind}`}
-              value={selected?.id ?? ''}
+              value={selected.id}
               onChange={(e) => setSelectedId(e.target.value)}
             >
               {items.map((item) => (
@@ -109,21 +109,19 @@ export function LibraryAssetsListPanel({
               ))}
             </select>
           </label>
-          {selected ? (
-            <ul
-              className="space-y-1 text-sm text-gray-700 dark:text-gray-300"
-              data-testid={`library-assets-detail-${kind}`}
-            >
-              <li>
-                National line:{' '}
-                <span className="font-medium">{selected.attachedNationalLine}</span>
-              </li>
-              <li>
-                Access:{' '}
-                <span className="font-medium">{accessLabel(selected.access)}</span>
-              </li>
-            </ul>
-          ) : null}
+          <ul
+            className="space-y-1 text-sm text-gray-700 dark:text-gray-300"
+            data-testid={`library-assets-detail-${kind}`}
+          >
+            <li>
+              National line:{' '}
+              <span className="font-medium">{selected.attachedNationalLine}</span>
+            </li>
+            <li>
+              Access:{' '}
+              <span className="font-medium">{accessLabel(selected.access)}</span>
+            </li>
+          </ul>
         </>
       )}
     </Card>

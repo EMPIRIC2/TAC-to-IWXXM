@@ -88,7 +88,7 @@ export function DecodingLibraryPanel({ accessToken }: DecodingLibraryPanelProps)
   }, [load]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
-  const selected = items.find((item) => item.id === selectedId) ?? items[0];
+  const selected = items.find((item) => item.id === selectedId) ?? items[0]!;
   const entries = useMemo(() => entriesFromBody(selected?.body), [selected?.body]);
   const filtered = useMemo(() => {
     const q = filter.trim().toUpperCase();
@@ -131,7 +131,7 @@ export function DecodingLibraryPanel({ accessToken }: DecodingLibraryPanelProps)
             <select
               className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
               data-testid="library-assets-select-decoding"
-              value={selected?.id ?? ''}
+              value={selected.id}
               onChange={(e) => setSelectedId(e.target.value)}
             >
               {items.map((item) => (
@@ -141,51 +141,49 @@ export function DecodingLibraryPanel({ accessToken }: DecodingLibraryPanelProps)
               ))}
             </select>
           </label>
-          {selected ? (
-            <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
-              <p>
-                National line:{' '}
-                <span className="font-medium">{selected.attachedNationalLine}</span>
-                {' · '}
-                Access:{' '}
-                <span className="font-medium">{accessLabel(selected.access)}</span>
-                {' · '}
-                Entries: <span className="font-medium">{entries.length}</span>
-              </p>
-              <label className="block text-sm">
-                <span className="text-gray-700 dark:text-gray-300">
-                  {PROFILES_LIBRARY_DECODE_ENTRIES_HEADING}
-                </span>
-                <input
-                  className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
-                  data-testid="decoding-entries-filter"
-                  placeholder="Filter tokens…"
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                />
-              </label>
-              {filtered.length === 0 ? (
-                <p className="text-sm text-gray-500">{PROFILES_LIBRARY_DECODE_EMPTY}</p>
-              ) : (
-                <ul
-                  className="max-h-64 space-y-1 overflow-y-auto text-sm"
-                  data-testid="decoding-entries-list"
-                >
-                  {filtered.map((row) => (
-                    <li key={row.token}>
-                      <span className="font-medium">{row.token}</span>
-                      {row.explanation ? (
-                        <span className="text-gray-600 dark:text-gray-400">
-                          {' — '}
-                          {row.explanation}
-                        </span>
-                      ) : null}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ) : null}
+          <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+            <p>
+              National line:{' '}
+              <span className="font-medium">{selected.attachedNationalLine}</span>
+              {' · '}
+              Access:{' '}
+              <span className="font-medium">{accessLabel(selected.access)}</span>
+              {' · '}
+              Entries: <span className="font-medium">{entries.length}</span>
+            </p>
+            <label className="block text-sm">
+              <span className="text-gray-700 dark:text-gray-300">
+                {PROFILES_LIBRARY_DECODE_ENTRIES_HEADING}
+              </span>
+              <input
+                className="mt-1 w-full rounded border p-2 dark:border-gray-600 dark:bg-gray-900"
+                data-testid="decoding-entries-filter"
+                placeholder="Filter tokens…"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              />
+            </label>
+            {filtered.length === 0 ? (
+              <p className="text-sm text-gray-500">{PROFILES_LIBRARY_DECODE_EMPTY}</p>
+            ) : (
+              <ul
+                className="max-h-64 space-y-1 overflow-y-auto text-sm"
+                data-testid="decoding-entries-list"
+              >
+                {filtered.map((row) => (
+                  <li key={row.token}>
+                    <span className="font-medium">{row.token}</span>
+                    {row.explanation ? (
+                      <span className="text-gray-600 dark:text-gray-400">
+                        {' — '}
+                        {row.explanation}
+                      </span>
+                    ) : null}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </>
       )}
     </Card>

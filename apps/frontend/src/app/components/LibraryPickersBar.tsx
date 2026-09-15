@@ -157,7 +157,7 @@ export function LibraryPickersBar({
     >
       <BetaBadge className="inline-flex shrink-0" />
       {KIND_META.map((meta) => {
-        const options = byKind.get(meta.kind) ?? [];
+        const options = byKind.get(meta.kind)!;
         const value = values[meta.field] || options[0]?.id || '';
         return (
           <div key={meta.kind} className="flex min-w-0 items-center gap-1">

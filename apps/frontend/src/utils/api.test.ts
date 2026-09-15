@@ -316,6 +316,35 @@ describe('API Utils', () => {
       expect(body.get('profile')).toBeNull();
     });
 
+    it('appends explicit conversion and companion library ids when provided', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        product: 'METAR',
+        conversionLibraryId: 'LIB.CONVERSION.CA_ECCC',
+        tacValidationLibraryId: 'LIB.TAC_VALIDATION.CA_ECCC',
+        iwxxmValidationLibraryId: 'LIB.IWXXM_VALIDATION.US_FAA_NWS',
+        disseminationLibraryId: 'LIB.DISSEMINATION.ICAO_2025',
+        decodingLibraryId: 'LIB.DECODING.ICAO_2025',
+      });
+
+      const body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('conversion_library_id')).toBe('LIB.CONVERSION.CA_ECCC');
+      expect(body.get('tac_validation_library_id')).toBe('LIB.TAC_VALIDATION.CA_ECCC');
+      expect(body.get('iwxxm_validation_library_id')).toBe(
+        'LIB.IWXXM_VALIDATION.US_FAA_NWS',
+      );
+      expect(body.get('dissemination_library_id')).toBe('LIB.DISSEMINATION.ICAO_2025');
+      expect(body.get('decoding_library_id')).toBe('LIB.DECODING.ICAO_2025');
+    });
+
     it('appends validation, stop_on_error, bulletin, and issuing centre (ADR-023)', async () => {
       mockFetchResponse({
         results: [],
