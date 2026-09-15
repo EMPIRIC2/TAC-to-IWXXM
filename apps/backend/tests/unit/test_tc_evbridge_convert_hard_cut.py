@@ -168,6 +168,17 @@ def test_resolve_dissemination_custom_non_list_transforms() -> None:
     assert out == []
 
 
+def test_resolve_dissemination_custom_callback_returns_none() -> None:
+    """Callback present but returning None falls through to unknown-id error."""
+    from metar_iwxxm_api.convert_library_hard_cut import resolve_dissemination_transforms
+
+    with pytest.raises(ValueError, match="Unknown dissemination"):
+        resolve_dissemination_transforms(
+            "custom-absent-body",
+            get_custom_dissemination_body=lambda _aid: None,
+        )
+
+
 def test_resolve_dissemination_first_party_non_list_transforms(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
