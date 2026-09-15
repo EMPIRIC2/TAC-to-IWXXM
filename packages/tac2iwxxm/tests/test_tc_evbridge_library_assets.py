@@ -5,8 +5,10 @@ from __future__ import annotations
 import pytest
 from tac2iwxxm.library_assets import (
     LIBRARY_KINDS,
+    LibraryAsset,
     assert_first_party_immutable,
     canonical_national_line_ids,
+    conversion_rules_for_asset,
     first_party_library_id,
     fork_first_party_library,
     get_first_party_library_asset,
@@ -31,6 +33,10 @@ def test_tc_evbridge_002_national_split_five_defaults() -> None:
             assert found.engine_profile_id == national
             assert found.attached_national_line == national
             assert found.kind == kind
+            as_dict = found.to_dict()
+            assert as_dict["id"] == asset_id
+            assert as_dict["kind"] == kind
+            assert as_dict["fork_of"] is None
 
 
 def test_tc_evbridge_003_fork_on_edit_leaves_builtin() -> None:
@@ -48,6 +54,13 @@ def test_tc_evbridge_003_fork_on_edit_leaves_builtin() -> None:
     assert again.body == base.body
 
 
+def test_tc_evbridge_003b_unknown_asset_and_fork() -> None:
+    """Unknown id returns None; fork raises KeyError."""
+    assert get_first_party_library_asset("LIB.CONVERSION.DOES_NOT_EXIST") is None
+    with pytest.raises(KeyError, match="unknown first-party"):
+        fork_first_party_library("LIB.CONVERSION.DOES_NOT_EXIST", new_id="x")
+
+
 def test_tc_evbridge_004_first_party_non_deletable() -> None:
     """Mutate/delete of first-party fails closed."""
     base = get_first_party_library_asset(first_party_library_id("decoding", "CA_ECCC"))
@@ -55,7 +68,8 @@ def test_tc_evbridge_004_first_party_non_deletable() -> None:
     with pytest.raises(PermissionError):
         assert_first_party_immutable(base, mutating=True)
     assert_first_party_immutable(base, mutating=False)
-    custom = fork_first_party_library(base.id, new_id="custom-dec-1")
+    custom = fork_first_party_library(base.id, new_id="custom-dec-1", name="Custom dec")
+    assert custom.name == "Custom dec"
     assert_first_party_immutable(custom, mutating=True)
 
 
@@ -67,3 +81,28 @@ def test_tc_evbridge_011_require_rule_for_group() -> None:
     assert rule.id == "CV.WIND"
     with pytest.raises(ValueError, match="no conversion rule"):
         require_rule_for_group(asset, focus_group="NOTAGROUPXYZ")
+
+
+def test_tc_evbridge_011b_rules_helpers_and_kind_guard() -> None:
+    """conversion_rules_for_asset + require_rule kind / empty-body guards."""
+    dissem = get_first_party_library_asset(
+        first_party_library_id("dissemination", "ICAO_2025"),
+    )
+    assert dissem is not None
+    assert conversion_rules_for_asset(dissem) == ()
+    with pytest.raises(ValueError, match="conversion library"):
+        require_rule_for_group(dissem, focus_group="18012G20KT")
+
+    empty_rules = LibraryAsset(
+        id="custom-empty",
+        kind="conversion",
+        name="Empty",
+        access="custom",
+        engine_profile_id="ICAO_2025",
+        attached_national_line="ICAO_2025",
+        body={"rules": "not-a-list"},
+    )
+    assert conversion_rules_for_asset(empty_rules) == ()
+    # Empty/non-list body falls back to first-party templates
+    rule = require_rule_for_group(empty_rules, focus_group="18012G20KT")
+    assert rule.id == "CV.WIND"
