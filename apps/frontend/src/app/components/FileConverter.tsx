@@ -1256,6 +1256,8 @@ export function FileConverter({
           manualText: manualText || undefined,
           files: filesToConvert.length > 0 ? filesToConvert : undefined,
           product: resolvedProduct,
+          conversionLibraryId: conversionParams.conversionLibraryId || undefined,
+          disseminationLibraryId: conversionParams.disseminationLibraryId || undefined,
           profile: conversionParams.profile,
           exchangeProfile: conversionParams.exchangeProfile,
           iwxxmVersion: conversionParams.iwxxmVersion,

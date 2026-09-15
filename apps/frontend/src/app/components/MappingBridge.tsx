@@ -14,6 +14,7 @@ import {
   MAPPING_BRIDGE_UNMATCHED_HINT,
   PROFILES_CONV_TEMPLATES_SKIP_CHIP,
 } from '../../utils/conversionProfilesCopy';
+import { BetaBadge } from './BetaBadge';
 
 export type MappingBridgeSkipChip = {
   label: string;
@@ -61,12 +62,13 @@ export function MappingBridge({
       data-testid="mapping-bridge"
       aria-label={MAPPING_BRIDGE_HEADING}
     >
-      <div>
+      <div className="flex flex-wrap items-center gap-2">
         <h3 className="text-sm font-medium">{MAPPING_BRIDGE_HEADING}</h3>
-        <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
-          {MAPPING_BRIDGE_HELP}
-        </p>
+        <BetaBadge className="inline-flex" />
       </div>
+      <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+        {MAPPING_BRIDGE_HELP}
+      </p>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         <div
           className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-900"

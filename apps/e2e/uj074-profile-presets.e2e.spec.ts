@@ -322,11 +322,13 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
     ).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
 
-    await expect(page.getByTestId('semantic-preset-select')).toBeVisible({
+    await expect(page.getByTestId('library-pickers-bar')).toBeVisible({
       timeout: 15_000,
     });
-    await page.getByTestId('semantic-preset-select').selectOption(PRESET_ID);
-    await expect(page.getByTestId('semantic-preset-select')).toHaveValue(PRESET_ID);
+    await expect(page.getByTestId('semantic-preset-select')).toHaveCount(0);
+    await page
+      .getByTestId('conversion-library-select')
+      .selectOption('LIB.CONVERSION.CA_ECCC');
 
     const editor = page.getByTestId('tac-editor');
     await editor.click();
@@ -338,7 +340,10 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
     const convertReq = captured.convert[0]!;
     expectBearer(convertReq);
     const form = convertReq.postDataBuffer()?.toString('utf8') ?? '';
-    expect(form).toMatch(new RegExp(`name="preset_id"\\r?\\n\\r?\\n${PRESET_ID}`));
+    expect(form).toMatch(
+      /name="conversion_library_id"\r?\n\r?\nLIB\.CONVERSION\.CA_ECCC/,
+    );
+    expect(form).not.toMatch(/name="preset_id"/);
     await expect(page.getByText(/Successfully converted 1 file/i)).toBeVisible({
       timeout: 15_000,
     });

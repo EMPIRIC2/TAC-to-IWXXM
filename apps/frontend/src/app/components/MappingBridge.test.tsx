@@ -18,6 +18,9 @@ describe('MappingBridge', () => {
       />,
     );
     expect(screen.getByTestId('mapping-bridge')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('mapping-bridge').querySelector('[data-testid="beta-badge"]'),
+    ).toBeTruthy();
     expect(screen.getByTestId('mapping-bridge-col-tac')).toHaveTextContent('VRB03KT');
     expect(screen.getByTestId('mapping-bridge-col-template')).toHaveTextContent(
       'Wind group',

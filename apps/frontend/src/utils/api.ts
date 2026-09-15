@@ -365,6 +365,10 @@ export async function convertBulletin(params: {
   files?: File[];
   product: string;
   profile?: string;
+  /** Conversion library asset id (preferred over profile after EV-bridge). */
+  conversionLibraryId?: string;
+  /** Dissemination library asset id (transforms on Convert & Send / bulletin). */
+  disseminationLibraryId?: string;
   /** Exchange packaging overlay (default GLOBAL_AFS on API when omitted). */
   exchangeProfile?: string;
   iwxxmVersion?: string;
@@ -382,7 +386,17 @@ export async function convertBulletin(params: {
     params.files.forEach((file) => formData.append('files', file));
   }
   formData.append('product', params.product.toUpperCase());
-  formData.append('semantic_profile', wireSemanticProfile(params.profile));
+  if (params.conversionLibraryId?.trim()) {
+    formData.append('conversion_library_id', params.conversionLibraryId.trim());
+  } else if (params.profile?.trim()) {
+    formData.append(
+      'conversion_library_id',
+      conversionLibraryIdFromProfile(params.profile),
+    );
+  }
+  if (params.disseminationLibraryId?.trim()) {
+    formData.append('dissemination_library_id', params.disseminationLibraryId.trim());
+  }
   if (params.exchangeProfile?.trim()) {
     formData.append('exchange_profile', params.exchangeProfile.trim());
   }

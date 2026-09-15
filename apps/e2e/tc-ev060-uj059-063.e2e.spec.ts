@@ -138,15 +138,18 @@ test.describe('EV-060 T2 — UJ-060 IWXXM product pass-through', () => {
   });
 });
 
-test.describe('EV-060 T2 — UJ-061 profile at converter top', () => {
-  test('UJ-061: labeled Profile at top is sent on convert (TC-EV060-1002)', async ({
+test.describe('EV-060 T2 — UJ-061 Conversion library at converter top', () => {
+  test('UJ-061: Conversion library at top is sent on convert (TC-EV060-1002)', async ({
     page,
   }) => {
     await openPublicConverter(page);
-    const profile = page.getByTestId('profile-type-select');
-    await expect(profile).toBeVisible();
-    await expect(profile).toHaveAccessibleName(/^profile$/i);
-    await profile.selectOption('iwxxm_us');
+    await page
+      .getByLabel(/Expand parameters/i)
+      .click()
+      .catch(() => undefined);
+    const conversionLib = page.getByTestId('conversion-library-select');
+    await expect(conversionLib).toBeVisible();
+    await conversionLib.selectOption('LIB.CONVERSION.US_FAA_NWS');
 
     const convertReq = page.waitForRequest(
       (req) => req.url().includes('/api/v1/convert') && req.method() === 'POST',
@@ -154,7 +157,8 @@ test.describe('EV-060 T2 — UJ-061 profile at converter top', () => {
     );
     await convertManualMetar(page, METAR_TAC);
     const captured = await convertReq;
-    expect(postBody(captured)).toContain('iwxxm_us');
+    expect(postBody(captured)).toContain('LIB.CONVERSION.US_FAA_NWS');
+    expect(postBody(captured)).not.toContain('name="semantic_profile"');
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
       {
         timeout: 60_000,

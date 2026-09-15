@@ -11,6 +11,7 @@ import {
   PROFILES_LIBRARY_TAB_IWXXM_VALIDATION,
   PROFILES_LIBRARY_TAB_TAC_VALIDATION,
 } from '../../utils/conversionProfilesCopy';
+import { BetaBadge } from './BetaBadge';
 import { ConversionTemplatesPanel } from './ConversionTemplatesPanel';
 import { DecodingLibraryPanel } from './DecodingLibraryPanel';
 import { DisseminationLibraryPanel } from './DisseminationLibraryPanel';
@@ -34,13 +35,13 @@ export function ProfileBuilderLibraries({ accessToken }: ProfileBuilderLibraries
       data-testid="profile-builder-libraries"
       id="profile-builder-libraries"
     >
-      {' '}
-      <div>
+      <div className="flex flex-wrap items-center gap-2">
         <h2 className="text-sm font-medium">{PROFILES_LIBRARIES_HEADING}</h2>
-        <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
-          {PROFILES_LIBRARIES_HELP}
-        </p>
+        <BetaBadge showHelp />
       </div>
+      <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+        {PROFILES_LIBRARIES_HELP}
+      </p>
       <Tabs defaultValue="conversion" data-testid="profile-builder-library-tabs">
         <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">
           <TabsTrigger value="conversion" data-testid="profile-library-tab-conversion">

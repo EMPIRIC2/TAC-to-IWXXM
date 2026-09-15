@@ -1312,7 +1312,8 @@ describe('API Utils', () => {
         manualText: 'SAUS31 KZNY 121200\nMETAR KJFK=',
         files: [file],
         product: 'metar',
-        profile: 'annex3',
+        conversionLibraryId: 'LIB.CONVERSION.ICAO_2025',
+        disseminationLibraryId: 'LIB.DISSEMINATION.ICAO_2025',
         exchangeProfile: 'EUR_RODEX',
         iwxxmVersion: '2023-1',
         lint: false,
@@ -1323,6 +1324,11 @@ describe('API Utils', () => {
         string,
         { body: FormData },
       ];
+      expect(init.body.get('conversion_library_id')).toBe('LIB.CONVERSION.ICAO_2025');
+      expect(init.body.get('dissemination_library_id')).toBe(
+        'LIB.DISSEMINATION.ICAO_2025',
+      );
+      expect(init.body.get('semantic_profile')).toBeNull();
       expect(init.body.get('exchange_profile')).toBe('EUR_RODEX');
       expect(init.body.get('iwxxm_version')).toBe('2023-1');
     });
@@ -1409,11 +1415,12 @@ describe('API Utils', () => {
         },
         results: [],
       });
-      await convertBulletin({ product: 'taf' });
+      await convertBulletin({ product: 'taf', profile: 'annex3' });
       const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
       const body = options.body as FormData;
       expect(body.get('manual_text')).toBeNull();
-      expect(body.get('semantic_profile')).toBe('ICAO_2025');
+      expect(body.get('conversion_library_id')).toBe('LIB.CONVERSION.ICAO_2025');
+      expect(body.get('semantic_profile')).toBeNull();
       expect(body.get('lint')).toBe('true');
     });
 

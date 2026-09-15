@@ -26,6 +26,11 @@ describe('LibraryPickersBar', () => {
     await waitFor(() => {
       expect(screen.getByTestId('library-pickers-bar')).toBeInTheDocument();
     });
+    expect(
+      screen
+        .getByTestId('library-pickers-bar')
+        .querySelector('[data-testid="beta-badge"]'),
+    ).toBeTruthy();
     expect(screen.getByTestId('conversion-library-select')).toBeInTheDocument();
     expect(screen.getByTestId('tac-validation-library-select')).toBeInTheDocument();
     expect(screen.getByTestId('iwxxm-validation-library-select')).toBeInTheDocument();

@@ -302,7 +302,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(page.getByTestId('conversion-profiles-inspector')).toHaveCount(0);
   });
 
-  test('TC-EV933-006: inspect catalog, save pack + overlay, convert with overlay_id', async ({
+  test('TC-EV933-006: inspect catalog, save pack + overlay, convert with Conversion library', async ({
     page,
   }) => {
     await seedMockAuth(page);
@@ -407,11 +407,12 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     ).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
 
-    const profile = page.getByTestId('profile-type-select');
-    await expect(profile).toBeVisible();
-    await expect(page.getByTestId('exchange-profile-select')).toBeVisible();
-    await expect(page.getByTestId('signed-overlay-select')).toBeVisible();
-    await page.getByTestId('signed-overlay-select').selectOption(OVERLAY_ID);
+    await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
+    await expect(page.getByTestId('profile-type-select')).toHaveCount(0);
+    await expect(page.getByTestId('signed-overlay-select')).toHaveCount(0);
+    await page
+      .getByTestId('conversion-library-select')
+      .selectOption('LIB.CONVERSION.US_FAA_NWS');
 
     const editor = page.getByTestId('tac-editor');
     await editor.click();
@@ -424,11 +425,13 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     expectBearer(convertReq);
     const form = convertReq.postDataBuffer()?.toString('utf8') ?? '';
     expect(form).toMatch(
-      /name="overlay_id"\r?\n\r?\n11111111-1111-4111-8111-111111111111/,
+      /name="conversion_library_id"\r?\n\r?\nLIB\.CONVERSION\.US_FAA_NWS/,
     );
+    expect(form).not.toMatch(/name="overlay_id"/);
+    expect(form).not.toMatch(/name="semantic_profile"/);
   });
 
-  test('TC-EV933-006 regression: #1024 pickers + dissemination drawer still work', async ({
+  test('TC-EV933-006 regression: library pickers + dissemination drawer still work', async ({
     page,
   }) => {
     await seedMockAuth(page);
@@ -436,18 +439,21 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await stubProfilesApis(page);
 
     await openPublicConverter(page);
-    await expect(page.getByTestId('profile-type-select')).toBeVisible();
-    await expect(page.getByTestId('exchange-profile-select')).toBeVisible();
-    await page.getByTestId('profile-type-select').selectOption('AU_BOM');
-    await page.getByTestId('exchange-profile-select').selectOption('APAC_ROBEX');
-    await expect(page.getByTestId('profile-type-select')).toHaveValue('AU_BOM');
-    await expect(page.getByTestId('exchange-profile-select')).toHaveValue('APAC_ROBEX');
+    await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
+    await page
+      .getByTestId('conversion-library-select')
+      .selectOption('LIB.CONVERSION.US_FAA_NWS');
+    await page
+      .getByTestId('dissemination-library-select')
+      .selectOption('LIB.DISSEMINATION.US_FAA_NWS');
+    await expect(page.getByTestId('conversion-library-select')).toHaveValue(
+      'LIB.CONVERSION.US_FAA_NWS',
+    );
 
     const openBtn = page.getByTestId('open-dissemination-drawer');
     await expect(openBtn).toBeEnabled({ timeout: 15_000 });
     await openBtn.click();
     await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
-    await expect(page.getByTestId('dissemination-exchange-profile')).toBeVisible();
   });
 
   test('TC-EV1120-010/012/014/017: summary, compare, blocks, and starter sync', async ({
@@ -544,7 +550,9 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
       /Overlays:\s*1/i,
     );
 
-    await page.getByTestId('profile-type-select').selectOption('US_FAA_NWS');
+    await page
+      .getByTestId('conversion-library-select')
+      .selectOption('LIB.CONVERSION.US_FAA_NWS');
     await expect(page.getByTestId('workbench-profile-summary')).toContainText(
       /US_FAA_NWS/i,
     );

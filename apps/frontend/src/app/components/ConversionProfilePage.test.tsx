@@ -248,6 +248,11 @@ describe('ConversionProfilePage', () => {
     expect(listTemplates).not.toHaveBeenCalled();
     expect(listPresets).not.toHaveBeenCalled();
     expect(screen.getByTestId('profile-builder-libraries')).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId('profile-builder-libraries')
+        .querySelector('[data-testid="beta-badge"]'),
+    ).toBeTruthy();
     expect(screen.getByTestId('profile-library-tab-conversion')).toBeInTheDocument();
     expect(screen.queryByTestId('conversion-profiles-presets')).not.toBeInTheDocument();
     expect(screen.queryByTestId('conversion-profiles-packs')).not.toBeInTheDocument();

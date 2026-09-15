@@ -17,6 +17,7 @@ import {
   PROFILES_LIBRARY_TAB_IWXXM_VALIDATION,
   PROFILES_LIBRARY_TAB_TAC_VALIDATION,
 } from '../../utils/conversionProfilesCopy';
+import { BetaBadge } from './BetaBadge';
 import { Label } from './ui/label';
 
 const KIND_META: Array<{
@@ -154,6 +155,7 @@ export function LibraryPickersBar({
       className="flex min-w-0 flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center"
       data-testid="library-pickers-bar"
     >
+      <BetaBadge className="inline-flex shrink-0" />
       {KIND_META.map((meta) => {
         const options = byKind.get(meta.kind) ?? [];
         const value = values[meta.field] || options[0]?.id || '';
