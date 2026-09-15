@@ -52,7 +52,7 @@ def test_tc_ev073_005_exchange_output_wraps_collect(
         files={
             "manual_text": (None, _BULLETIN),
             "product": (None, "METAR"),
-            "semantic_profile": (None, "CA_ECCC"),
+            "conversion_library_id": (None, "LIB.CONVERSION.CA_ECCC"),
             "iwxxm_version": (None, _CA_IWXXM_VERSION),
             "exchange_output": (None, "true"),
             "lint": (None, "false"),
@@ -89,7 +89,7 @@ def test_tc_ev073_005_exchange_output_off_returns_inner_product(
         files={
             "manual_text": (None, _BULLETIN),
             "product": (None, "METAR"),
-            "semantic_profile": (None, "CA_ECCC"),
+            "conversion_library_id": (None, "LIB.CONVERSION.CA_ECCC"),
             "iwxxm_version": (None, _CA_IWXXM_VERSION),
             "lint": (None, "false"),
         },

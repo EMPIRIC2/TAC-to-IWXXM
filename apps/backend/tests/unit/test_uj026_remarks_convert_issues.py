@@ -28,12 +28,18 @@ def client():
 
 
 def _convert(client: TestClient, *, tac: str, profile: str) -> dict:
+    lib = {
+        "annex3": "LIB.CONVERSION.ICAO_2025",
+        "iwxxm_us": "LIB.CONVERSION.US_FAA_NWS",
+        "ICAO_2025": "LIB.CONVERSION.ICAO_2025",
+        "US_FAA_NWS": "LIB.CONVERSION.US_FAA_NWS",
+    }.get(profile, f"LIB.CONVERSION.{profile.upper()}")
     response = client.post(
         "/api/v1/convert",
         files={
             "manual_text": (None, tac),
             "product": (None, "METAR"),
-            "profile": (None, profile),
+            "conversion_library_id": (None, lib),
             "iwxxm_version": (None, "2025-2"),
             "lint": (None, "false"),
         },

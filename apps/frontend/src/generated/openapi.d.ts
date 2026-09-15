@@ -557,6 +557,78 @@ export interface paths {
         patch: operations["patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch"];
         trace?: never;
     };
+    "/api/v1/profiles/library-assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Library Assets
+         * @description List first-party and custom five-Libraries assets.
+         */
+        get: operations["list_library_assets_api_v1_profiles_library_assets_get"];
+        put?: never;
+        /**
+         * Create Library Asset
+         * @description Create a custom library asset (optionally forked).
+         */
+        post: operations["create_library_asset_api_v1_profiles_library_assets_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/library-assets/preview-rule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preview Library Rule
+         * @description AC11: associate a TAC group with a conversion library rule.
+         */
+        post: operations["preview_library_rule_api_v1_profiles_library_assets_preview_rule_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/library-assets/{asset_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Library Asset
+         * @description Fetch one library asset (first-party id or custom UUID).
+         */
+        get: operations["get_library_asset_api_v1_profiles_library_assets__asset_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Library Asset
+         * @description Delete an owned custom library asset.
+         */
+        delete: operations["delete_library_asset_api_v1_profiles_library_assets__asset_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Library Asset
+         * @description Update custom asset or auto-fork first-party on edit.
+         */
+        patch: operations["patch_library_asset_api_v1_profiles_library_assets__asset_id__patch"];
+        trace?: never;
+    };
     "/api/v1/profiles/overlays": {
         parameters: {
             query?: never;
@@ -1734,11 +1806,29 @@ export interface components {
              */
             bulletin_id: string;
             /**
+             * Conversion Library Id
+             * @description Conversion library asset id (resolves engine profile).
+             * @default
+             */
+            conversion_library_id: string;
+            /**
              * Conversion Template Id
              * @description Optional conversion template id (first-party or custom). When set for a custom template, requires Bearer JWT and ownership (or shared); unknown ids are rejected.
              * @default
              */
             conversion_template_id: string;
+            /**
+             * Decoding Library Id
+             * @description Decoding library asset id.
+             * @default
+             */
+            decoding_library_id: string;
+            /**
+             * Dissemination Library Id
+             * @description Dissemination library asset id.
+             * @default
+             */
+            dissemination_library_id: string;
             /**
              * Emit Translation Centre
              * @description When true, emit translationCentreDesignator/Name on successful convert (cross-State / Translation Centre mode; FAQ §14.5). Default omit for in-State.
@@ -1775,6 +1865,12 @@ export interface components {
              * @default
              */
             issuing_center: string;
+            /**
+             * Iwxxm Validation Library Id
+             * @description IWXXM validation library asset id.
+             * @default
+             */
+            iwxxm_validation_library_id: string;
             /**
              * Iwxxm Version
              * @description Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)
@@ -1853,6 +1949,12 @@ export interface components {
              */
             stop_on_error: boolean;
             /**
+             * Tac Validation Library Id
+             * @description TAC validation library asset id.
+             * @default
+             */
+            tac_validation_library_id: string;
+            /**
              * Translation Centre Designator
              * @description Optional translationCentreDesignator when emit_translation_centre is true
              * @default
@@ -1879,6 +1981,18 @@ export interface components {
         };
         /** Body_convert_bulletin_api_v1_convert_bulletin_post */
         Body_convert_bulletin_api_v1_convert_bulletin_post: {
+            /**
+             * Conversion Library Id
+             * @description Conversion library asset id (resolves engine profile when set)
+             * @default
+             */
+            conversion_library_id: string;
+            /**
+             * Dissemination Library Id
+             * @description Dissemination library asset id. When set, ordered transforms (envelope / topic / checksum / bulletin re-wrap) apply on this Convert & Send path only.
+             * @default
+             */
+            dissemination_library_id: string;
             /**
              * Exchange Profile
              * @description Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths
@@ -1918,7 +2032,7 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use conversion_library_id (legacy alias: annex3 or iwxxm_us)
              * @default
              */
             profile: string;
@@ -1929,7 +2043,7 @@ export interface components {
             propagate_residuals_to_remarks?: boolean | null;
             /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
+             * @description Deprecated on Convert & Send — prefer conversion_library_id. Still accepted on convert-bulletin until Dissemination library packaging lands.
              * @default
              */
             semantic_profile: string;
@@ -3278,6 +3392,132 @@ export interface components {
              * @description Total stations evaluated
              */
             total: number;
+        };
+        /**
+         * LibraryAssetCreate
+         * @description Create a custom library asset (optionally forked).
+         */
+        LibraryAssetCreate: {
+            /** Attachednationalline */
+            attachedNationalLine: string;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            };
+            /** Engineprofileid */
+            engineProfileId: string;
+            /** Forkof */
+            forkOf?: string | null;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "conversion" | "tac_validation" | "iwxxm_validation" | "dissemination" | "decoding";
+            /** Name */
+            name: string;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slug */
+            slug: string;
+        };
+        /**
+         * LibraryAssetListResponse
+         * @description Library assets visible to the caller.
+         */
+        LibraryAssetListResponse: {
+            /** Items */
+            items: components["schemas"]["LibraryAssetOut"][];
+        };
+        /**
+         * LibraryAssetOut
+         * @description First-party or custom library asset (five Libraries).
+         */
+        LibraryAssetOut: {
+            /**
+             * Access
+             * @enum {string}
+             */
+            access: "first_party" | "custom";
+            /** Attachednationalline */
+            attachedNationalLine: string;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            };
+            /** Created At */
+            created_at?: string | null;
+            /** Engineprofileid */
+            engineProfileId: string;
+            /** Forkof */
+            forkOf?: string | null;
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "conversion" | "tac_validation" | "iwxxm_validation" | "dissemination" | "decoding";
+            /** Name */
+            name: string;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slug */
+            slug?: string | null;
+            /** Updated At */
+            updated_at?: string | null;
+            /** Userid */
+            userId?: string | null;
+        };
+        /**
+         * LibraryAssetUpdate
+         * @description Partial update for a custom library asset (or fork-on-edit first-party).
+         */
+        LibraryAssetUpdate: {
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            } | null;
+            /** Name */
+            name?: string | null;
+            /** Shared */
+            shared?: boolean | null;
+            /** Slug */
+            slug?: string | null;
+        };
+        /**
+         * LibraryRulePreviewRequest
+         * @description AC11 rule association preview for a TAC group.
+         */
+        LibraryRulePreviewRequest: {
+            /** Focusgroup */
+            focusGroup: string;
+            /** Libraryid */
+            libraryId: string;
+        };
+        /**
+         * LibraryRulePreviewResponse
+         * @description Matched conversion rule for a TAC group.
+         */
+        LibraryRulePreviewResponse: {
+            /** Focusgroup */
+            focusGroup: string;
+            /** Libraryid */
+            libraryId: string;
+            /**
+             * Matched
+             * @default true
+             */
+            matched: boolean;
+            /** Ruleid */
+            ruleId: string;
+            /** Rulename */
+            ruleName: string;
         };
         /**
          * LintFixModel
@@ -5888,6 +6128,198 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ConversionTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_library_assets_api_v1_profiles_library_assets_get: {
+        parameters: {
+            query?: {
+                kind?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryAssetListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_library_asset_api_v1_profiles_library_assets_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LibraryAssetCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryAssetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_library_rule_api_v1_profiles_library_assets_preview_rule_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LibraryRulePreviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryRulePreviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_library_asset_api_v1_profiles_library_assets__asset_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryAssetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_library_asset_api_v1_profiles_library_assets__asset_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_library_asset_api_v1_profiles_library_assets__asset_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LibraryAssetUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryAssetOut"];
                 };
             };
             /** @description Validation Error */

@@ -48,7 +48,7 @@ def test_tc_ev023_api_default_convert_omits_translation_centre(smoke_client: Tes
         {
             "manual_text": _METAR_OK,
             "product": "METAR",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "iwxxm_version": "2025-2",
             "lint": "false",
         },
@@ -70,7 +70,7 @@ def test_tc_ev023_api_emit_translation_centre_form(smoke_client: TestClient) -> 
         {
             "manual_text": _METAR_OK,
             "product": "METAR",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "iwxxm_version": "2025-2",
             "lint": "false",
             "emit_translation_centre": "true",
@@ -93,7 +93,7 @@ def test_tc_ev023_api_nsc_convert_and_validate(smoke_client: TestClient) -> None
         {
             "manual_text": _METAR_NSC,
             "product": "METAR",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "iwxxm_version": "2025-2",
             "lint": "false",
         },
@@ -112,7 +112,7 @@ def test_tc_ev023_api_nsc_convert_and_validate(smoke_client: TestClient) -> None
             "iwxxm_version": "2025-2",
             "layers": ["XML_WELLFORMED", "XML_SCHEMA"],
             "stop_on_error": "false",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
         },
     )
     # Accept 200 with structured report; do not hard-fail on SCH platform skips.

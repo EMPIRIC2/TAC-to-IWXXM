@@ -117,7 +117,7 @@ class TestUiSoftPreviewConnection:
             files={
                 "manual_text": (None, BAD_METAR_TAC),
                 "product": (None, "METAR"),
-                "profile": (None, "annex3"),
+                "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
                 "lint": (None, "false"),
                 "preview": (None, "true"),
             },

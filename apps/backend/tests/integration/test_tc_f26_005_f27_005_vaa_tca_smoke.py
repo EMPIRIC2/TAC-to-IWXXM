@@ -76,7 +76,7 @@ def test_tc_f26_005_f27_005_lint_and_convert_smoke(
         {
             "manual_text": tac,
             "product": product,
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "lint": "false",
         },
     )

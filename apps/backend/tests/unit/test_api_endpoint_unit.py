@@ -100,7 +100,7 @@ def test_convert_json_body_propagates_residuals_flag(client, monkeypatch):
         json={
             "metars": ["METAR KJFK 010000Z 00000KT CAVOK 10/08 Q1013 ZZZZ="],
             "version": "2025-2",
-            "profile": "iwxxm_us",
+            "conversion_library_id": "LIB.CONVERSION.US_FAA_NWS",
             "propagate_residuals_to_remarks": True,
         },
     )

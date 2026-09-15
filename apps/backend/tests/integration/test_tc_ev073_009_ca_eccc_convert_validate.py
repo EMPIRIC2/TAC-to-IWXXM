@@ -38,7 +38,7 @@ def test_tc_ev073_009_ca_eccc_convert_validate_with_extensions(client: TestClien
         files={
             "manual_text": (None, bulletin),
             "product": (None, "METAR"),
-            "semantic_profile": (None, "CA_ECCC"),
+            "conversion_library_id": (None, "LIB.CONVERSION.CA_ECCC"),
             "iwxxm_version": (None, CA_ECCC_IWXXM_VERSION),
             "extensions": (None, "IWXXM_CA"),
             "exchange_output": (None, "true"),
@@ -56,7 +56,7 @@ def test_tc_ev073_009_ca_eccc_convert_validate_with_extensions(client: TestClien
         "/api/v1/validate",
         files={
             "xml_content": (None, inner_xml),
-            "semantic_profile": (None, "CA_ECCC"),
+            "conversion_library_id": (None, "LIB.CONVERSION.CA_ECCC"),
             "iwxxm_version": (None, CA_ECCC_IWXXM_VERSION),
             "product": (None, "METAR"),
             "extensions": (None, "IWXXM_CA"),

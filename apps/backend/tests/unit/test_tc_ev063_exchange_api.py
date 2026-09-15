@@ -83,7 +83,7 @@ def test_tc_ev063_004_convert_bulletin_defaults_global_afs(
         files={
             "manual_text": (None, _BULLETIN_TEXT),
             "product": (None, "METAR"),
-            "profile": (None, "annex3"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "lint": (None, "false"),
         },
     )

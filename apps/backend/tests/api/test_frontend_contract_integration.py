@@ -76,7 +76,7 @@ def test_convert_preview_contract_includes_failed_spans_keys(client: TestClient)
         files={
             "manual_text": (None, VALID_METAR),
             "product": (None, "METAR"),
-            "profile": (None, "annex3"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "lint": (None, "false"),
             "preview": (None, "true"),
         },

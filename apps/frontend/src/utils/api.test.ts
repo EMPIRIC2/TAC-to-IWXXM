@@ -255,7 +255,8 @@ describe('API Utils', () => {
       const [, options] = (global.fetch as any).mock.calls[0];
       const body = options.body as FormData;
       expect(body.get('product')).toBe('TAF');
-      expect(body.get('semantic_profile')).toBe('iwxxm_us');
+      expect(body.get('conversion_library_id')).toBe('LIB.CONVERSION.US_FAA_NWS');
+      expect(body.get('semantic_profile')).toBeNull();
       expect(body.get('profile')).toBeNull();
       expect(body.get('iwxxm_version')).toBe('2025-2');
     });
@@ -292,7 +293,7 @@ describe('API Utils', () => {
       expect(body.get('propagate_residuals_to_remarks')).toBe('false');
     });
 
-    it('appends semantic_profile uppercase for canonical ids (TC-EV093-002)', async () => {
+    it('appends conversion_library_id for canonical profile ids (EV-bridge hard cut)', async () => {
       mockFetchResponse({
         results: [],
         errors: [],
@@ -310,7 +311,8 @@ describe('API Utils', () => {
 
       const [, options] = (global.fetch as any).mock.calls[0];
       const body = options.body as FormData;
-      expect(body.get('semantic_profile')).toBe('ICAO_2025');
+      expect(body.get('conversion_library_id')).toBe('LIB.CONVERSION.ICAO_2025');
+      expect(body.get('semantic_profile')).toBeNull();
       expect(body.get('profile')).toBeNull();
     });
 
@@ -364,7 +366,7 @@ describe('API Utils', () => {
       expect(body.get('exchange_output')).toBe('true');
     });
 
-    it('appends exchange_profile on convert when provided (EV-090)', async () => {
+    it('does not send exchange_profile on convert after hard cut (EV-bridge)', async () => {
       mockFetchResponse({
         results: [],
         errors: [],
@@ -381,7 +383,8 @@ describe('API Utils', () => {
 
       const [, options] = (global.fetch as any).mock.calls[0];
       const body = options.body as FormData;
-      expect(body.get('exchange_profile')).toBe('CAR_SAM');
+      expect(body.get('exchange_profile')).toBeNull();
+      expect(body.get('conversion_library_id')).toBe('LIB.CONVERSION.ICAO_2025');
     });
 
     it('appends report_variant on convert when provided (EV-1050)', async () => {
@@ -405,7 +408,7 @@ describe('API Utils', () => {
       expect(body.get('report_variant')).toBe('LWIS');
     });
 
-    it('appends preset_id and bearer on convert when provided (EV-1051)', async () => {
+    it('does not send preset_id on convert after hard cut (EV-bridge)', async () => {
       mockFetchResponse({
         results: [],
         errors: [],
@@ -422,7 +425,8 @@ describe('API Utils', () => {
 
       const [, options] = (global.fetch as any).mock.calls[0];
       const body = options.body as FormData;
-      expect(body.get('preset_id')).toBe('pr-123');
+      expect(body.get('preset_id')).toBeNull();
+      // Bearer may still be sent for authenticated callers; preset is unlinked.
       expect(options.headers?.Authorization).toBe('Bearer jwt');
     });
 
@@ -1524,11 +1528,11 @@ describe('API Utils', () => {
       });
       expect(global.fetch).toHaveBeenCalled();
       const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
-      // accessToken alone does not authorize convert (public); Authorization only with overlay_id
-      expect(options.headers?.Authorization).toBeUndefined();
+      // Bearer is forwarded when accessToken is provided (auth optional on public Convert).
+      expect(options.headers?.Authorization).toBe('Bearer tok');
     });
 
-    it('sends overlay_id with bearer when set', async () => {
+    it('does not send overlay_id on convert after hard cut (EV-bridge)', async () => {
       mockFetchResponse({
         results: [],
         errors: [],
@@ -1543,7 +1547,7 @@ describe('API Utils', () => {
       });
       const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
       const body = options.body as FormData;
-      expect(body.get('overlay_id')).toBe('ov-123');
+      expect(body.get('overlay_id')).toBeNull();
       expect(options.headers?.Authorization).toBe('Bearer jwt');
     });
 
@@ -1560,7 +1564,8 @@ describe('API Utils', () => {
       const body = options.body as FormData;
       expect(body.get('manual_text')).toBeNull();
       expect(body.get('product')).toBe('METAR');
-      expect(body.get('semantic_profile')).toBe('ICAO_2025');
+      expect(body.get('semantic_profile')).toBeNull();
+      expect(body.get('conversion_library_id')).toBeNull();
       expect(body.get('validate_output')).toBe('false');
       expect(body.get('include_nil_reasons')).toBe('true');
       expect(body.get('preview')).toBeNull();

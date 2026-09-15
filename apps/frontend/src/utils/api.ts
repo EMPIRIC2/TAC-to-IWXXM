@@ -8,6 +8,7 @@
 import { apiUrl, getApiBaseUrl } from './apiBase';
 import { DEFAULT_IWXXM_VERSION } from './iwxxmVersions';
 import { wireSemanticProfile } from './semanticProfile';
+import { conversionLibraryIdFromProfile } from './libraryIds';
 import type {
   BulletinMeta,
   BulletinReportResult,
@@ -224,10 +225,16 @@ export async function convertMetarToIwxxm(params: {
 
   // F6.e — product required by API; default METAR when caller omits (legacy callers)
   formData.append('product', (params.product || 'METAR').toUpperCase());
-  // EV-093 / #1024 — prefer semantic_profile (uppercase OpenAPI ids); drop deprecated profile=
-  formData.append('semantic_profile', wireSemanticProfile(params.profile));
+  // EV-bridge hard cut: Conversion library resolves the engine profile server-side.
+  // Do not send semantic_profile / profile / preset / overlay / exchange on Convert.
   if (params.conversionLibraryId?.trim()) {
     formData.append('conversion_library_id', params.conversionLibraryId.trim());
+  } else if (params.profile?.trim()) {
+    // Transitional FE callers that only know a profile wire id.
+    formData.append(
+      'conversion_library_id',
+      conversionLibraryIdFromProfile(params.profile),
+    );
   }
   if (params.tacValidationLibraryId?.trim()) {
     formData.append('tac_validation_library_id', params.tacValidationLibraryId.trim());
@@ -244,14 +251,8 @@ export async function convertMetarToIwxxm(params: {
   if (params.decodingLibraryId?.trim()) {
     formData.append('decoding_library_id', params.decodingLibraryId.trim());
   }
-  if (params.exchangeProfile?.trim()) {
-    formData.append('exchange_profile', params.exchangeProfile.trim());
-  }
   if (params.reportVariant?.trim()) {
     formData.append('report_variant', params.reportVariant.trim().toUpperCase());
-  }
-  if (params.presetId?.trim()) {
-    formData.append('preset_id', params.presetId.trim());
   }
 
   if (params.iwxxmVersion?.trim()) {
@@ -297,20 +298,13 @@ export async function convertMetarToIwxxm(params: {
     formData.append('exchange_output', 'true');
   }
 
-  if (params.overlayId?.trim()) {
-    formData.append('overlay_id', params.overlayId.trim());
-  }
-
   try {
     console.log('[API] Request to:', apiUrl('/convert'));
 
-    const overlayToken = params.overlayId?.trim();
-    const presetToken = params.presetId?.trim();
     const bearer = params.accessToken?.trim();
-    const headers: HeadersInit | undefined =
-      (overlayToken || presetToken) && bearer
-        ? { Authorization: `Bearer ${bearer}` }
-        : undefined;
+    const headers: HeadersInit | undefined = bearer
+      ? { Authorization: `Bearer ${bearer}` }
+      : undefined;
 
     const response = await withTimeout(
       fetch(apiUrl('/convert'), {

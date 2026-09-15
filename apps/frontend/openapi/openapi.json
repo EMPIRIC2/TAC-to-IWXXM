@@ -370,10 +370,28 @@
             "title": "Bulletin Id",
             "type": "string"
           },
+          "conversion_library_id": {
+            "default": "",
+            "description": "Conversion library asset id (resolves engine profile).",
+            "title": "Conversion Library Id",
+            "type": "string"
+          },
           "conversion_template_id": {
             "default": "",
             "description": "Optional conversion template id (first-party or custom). When set for a custom template, requires Bearer JWT and ownership (or shared); unknown ids are rejected.",
             "title": "Conversion Template Id",
+            "type": "string"
+          },
+          "decoding_library_id": {
+            "default": "",
+            "description": "Decoding library asset id.",
+            "title": "Decoding Library Id",
+            "type": "string"
+          },
+          "dissemination_library_id": {
+            "default": "",
+            "description": "Dissemination library asset id.",
+            "title": "Dissemination Library Id",
             "type": "string"
           },
           "emit_translation_centre": {
@@ -413,6 +431,12 @@
             "default": "",
             "description": "Optional issuing centre ICAO code",
             "title": "Issuing Center",
+            "type": "string"
+          },
+          "iwxxm_validation_library_id": {
+            "default": "",
+            "description": "IWXXM validation library asset id.",
+            "title": "Iwxxm Validation Library Id",
             "type": "string"
           },
           "iwxxm_version": {
@@ -499,6 +523,12 @@
             "title": "Stop On Error",
             "type": "boolean"
           },
+          "tac_validation_library_id": {
+            "default": "",
+            "description": "TAC validation library asset id.",
+            "title": "Tac Validation Library Id",
+            "type": "string"
+          },
           "translation_centre_designator": {
             "default": "",
             "description": "Optional translationCentreDesignator when emit_translation_centre is true",
@@ -529,6 +559,18 @@
       },
       "Body_convert_bulletin_api_v1_convert_bulletin_post": {
         "properties": {
+          "conversion_library_id": {
+            "default": "",
+            "description": "Conversion library asset id (resolves engine profile when set)",
+            "title": "Conversion Library Id",
+            "type": "string"
+          },
+          "dissemination_library_id": {
+            "default": "",
+            "description": "Dissemination library asset id. When set, ordered transforms (envelope / topic / checksum / bulletin re-wrap) apply on this Convert & Send path only.",
+            "title": "Dissemination Library Id",
+            "type": "string"
+          },
           "exchange_profile": {
             "default": "",
             "description": "Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
@@ -584,7 +626,7 @@
           },
           "profile": {
             "default": "",
-            "description": "Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)",
+            "description": "Deprecated - use conversion_library_id (legacy alias: annex3 or iwxxm_us)",
             "title": "Profile",
             "type": "string"
           },
@@ -602,7 +644,7 @@
           },
           "semantic_profile": {
             "default": "",
-            "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",
+            "description": "Deprecated on Convert & Send \u2014 prefer conversion_library_id. Still accepted on convert-bulletin until Dissemination library packaging lands.",
             "title": "Semantic Profile",
             "type": "string"
           }
@@ -3221,6 +3263,322 @@
           "pass_rate"
         ],
         "title": "JobSummaryStats",
+        "type": "object"
+      },
+      "LibraryAssetCreate": {
+        "description": "Create a custom library asset (optionally forked).",
+        "properties": {
+          "attachedNationalLine": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Attachednationalline",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          },
+          "engineProfileId": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Engineprofileid",
+            "type": "string"
+          },
+          "forkOf": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forkof"
+          },
+          "kind": {
+            "enum": [
+              "conversion",
+              "tac_validation",
+              "iwxxm_validation",
+              "dissemination",
+              "decoding"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "shared": {
+            "default": false,
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "slug": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "kind",
+          "engineProfileId",
+          "attachedNationalLine"
+        ],
+        "title": "LibraryAssetCreate",
+        "type": "object"
+      },
+      "LibraryAssetListResponse": {
+        "description": "Library assets visible to the caller.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/LibraryAssetOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "LibraryAssetListResponse",
+        "type": "object"
+      },
+      "LibraryAssetOut": {
+        "description": "First-party or custom library asset (five Libraries).",
+        "properties": {
+          "access": {
+            "enum": [
+              "first_party",
+              "custom"
+            ],
+            "title": "Access",
+            "type": "string"
+          },
+          "attachedNationalLine": {
+            "title": "Attachednationalline",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "engineProfileId": {
+            "title": "Engineprofileid",
+            "type": "string"
+          },
+          "forkOf": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forkof"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "conversion",
+              "tac_validation",
+              "iwxxm_validation",
+              "dissemination",
+              "decoding"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "shared": {
+            "default": false,
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "name",
+          "access",
+          "engineProfileId",
+          "attachedNationalLine"
+        ],
+        "title": "LibraryAssetOut",
+        "type": "object"
+      },
+      "LibraryAssetUpdate": {
+        "description": "Partial update for a custom library asset (or fork-on-edit first-party).",
+        "properties": {
+          "body": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 256,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "shared": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shared"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          }
+        },
+        "title": "LibraryAssetUpdate",
+        "type": "object"
+      },
+      "LibraryRulePreviewRequest": {
+        "description": "AC11 rule association preview for a TAC group.",
+        "properties": {
+          "focusGroup": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Focusgroup",
+            "type": "string"
+          },
+          "libraryId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Libraryid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "libraryId",
+          "focusGroup"
+        ],
+        "title": "LibraryRulePreviewRequest",
+        "type": "object"
+      },
+      "LibraryRulePreviewResponse": {
+        "description": "Matched conversion rule for a TAC group.",
+        "properties": {
+          "focusGroup": {
+            "title": "Focusgroup",
+            "type": "string"
+          },
+          "libraryId": {
+            "title": "Libraryid",
+            "type": "string"
+          },
+          "matched": {
+            "default": true,
+            "title": "Matched",
+            "type": "boolean"
+          },
+          "ruleId": {
+            "title": "Ruleid",
+            "type": "string"
+          },
+          "ruleName": {
+            "title": "Rulename",
+            "type": "string"
+          }
+        },
+        "required": [
+          "libraryId",
+          "focusGroup",
+          "ruleId",
+          "ruleName"
+        ],
+        "title": "LibraryRulePreviewResponse",
         "type": "object"
       },
       "LintFixModel": {
@@ -8242,6 +8600,296 @@
           }
         ],
         "summary": "Patch Conversion Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/library-assets": {
+      "get": {
+        "description": "List first-party and custom five-Libraries assets.",
+        "operationId": "list_library_assets_api_v1_profiles_library_assets_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Kind"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryAssetListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Library Assets",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "post": {
+        "description": "Create a custom library asset (optionally forked).",
+        "operationId": "create_library_asset_api_v1_profiles_library_assets_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LibraryAssetCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryAssetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Library Asset",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/library-assets/preview-rule": {
+      "post": {
+        "description": "AC11: associate a TAC group with a conversion library rule.",
+        "operationId": "preview_library_rule_api_v1_profiles_library_assets_preview_rule_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LibraryRulePreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryRulePreviewResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Preview Library Rule",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/library-assets/{asset_id}": {
+      "delete": {
+        "description": "Delete an owned custom library asset.",
+        "operationId": "delete_library_asset_api_v1_profiles_library_assets__asset_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Library Asset",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "get": {
+        "description": "Fetch one library asset (first-party id or custom UUID).",
+        "operationId": "get_library_asset_api_v1_profiles_library_assets__asset_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryAssetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Library Asset",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "patch": {
+        "description": "Update custom asset or auto-fork first-party on edit.",
+        "operationId": "patch_library_asset_api_v1_profiles_library_assets__asset_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LibraryAssetUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryAssetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Library Asset",
         "tags": [
           "Conversion Profiles"
         ]

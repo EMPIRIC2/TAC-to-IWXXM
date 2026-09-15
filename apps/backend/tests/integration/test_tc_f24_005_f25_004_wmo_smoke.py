@@ -82,7 +82,7 @@ def test_tc_f24_005_f25_004_lint_convert_decode_smoke(
         {
             "manual_text": tac,
             "product": product,
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "lint": "false",
         },
     )
