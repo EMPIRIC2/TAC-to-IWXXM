@@ -4,36 +4,18 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { CircleHelp, Loader2 } from 'lucide-react';
 import {
   fetchProfileCatalog,
   type ProfileCatalogEntry,
 } from '@/utils/conversionProfilesApi';
+import { SEMANTIC_PROFILE_OPTIONS } from '@/utils/semanticProfile';
 import {
-  DEFAULT_SEMANTIC_PROFILE,
-  SEMANTIC_PROFILE_OPTIONS,
-  hydrateSemanticProfile,
-} from '@/utils/semanticProfile';
-import {
-  PROFILES_EXAMPLES_EMPTY,
-  PROFILES_EXAMPLES_HEADING,
-  PROFILES_EXAMPLES_PREFIX,
-  PROFILES_EXAMPLES_REUSE_NOTE,
+  PROFILES_COUNT_UNAVAILABLE,
   PROFILES_EDITOR_LOGIN_REQUIRED,
   PROFILES_EDITOR_SIGN_IN,
   PROFILES_EDITOR_SUBTITLE,
   PROFILES_EDITOR_TITLE,
-  PROFILES_ASSEMBLY_HEADING,
-  PROFILES_ASSEMBLY_HELP,
-  PROFILES_ASSEMBLY_STEP_BASE,
-  PROFILES_ASSEMBLY_STEP_CONVERT,
-  PROFILES_ASSEMBLY_STEP_VALIDATE,
-  PROFILES_ASSEMBLY_STEP_DISSEM,
-  PROFILES_GLOSSARY_EXCHANGE,
-  PROFILES_GLOSSARY_HEADING,
-  PROFILES_GLOSSARY_OVERLAY,
-  PROFILES_GLOSSARY_PROFILE,
-  PROFILES_COUNT_UNAVAILABLE,
   PROFILES_ERROR_PREFIX,
   PROFILES_INSPECTOR_EMPTY,
   PROFILES_INSPECTOR_HEADING,
@@ -43,18 +25,15 @@ import {
   PROFILES_PROFILE_AUTHORITY,
   PROFILES_PROFILE_COVERAGE,
   PROFILES_PROFILE_FAMILY,
-  PROFILES_WORKFLOWS_BODY,
-  PROFILES_WORKFLOWS_DEFINITIONS_LINK,
-  PROFILES_WORKFLOWS_DEFINITIONS_URL,
-  PROFILES_WORKFLOWS_EXAMPLES_LINK,
-  PROFILES_WORKFLOWS_HEADING,
-  PROFILES_WORKFLOWS_RUNTIME_LINK,
-  PROFILES_WORKFLOWS_RUNTIME_URL,
+  PROFILES_TOOLTIP_INSPECTOR_COMPARE,
+  PROFILES_TOOLTIP_INSPECTOR_PROFILE,
+  PROFILES_TOOLTIP_PROFILE_BLOCKS,
 } from '@/utils/conversionProfilesCopy';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { BetaBadge } from './BetaBadge';
 import { ProfileBuilderLibraries } from './ProfileBuilderLibraries';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 export interface ConversionProfilePageProps {
   /** Bearer JWT — when absent, show sign-in prompt. */
@@ -71,7 +50,25 @@ function errorMessage(err: unknown): string {
 
 interface AuthedProps {
   accessToken: string;
-  onOpenConverterExamples?: () => void;
+}
+
+function FieldHelpTooltip({ label, tooltip }: { label: string; tooltip: string }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          className="inline-flex h-5 w-5 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+          aria-label={label}
+        >
+          <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" className="max-w-xs text-balance">
+        {tooltip}
+      </TooltipContent>
+    </Tooltip>
+  );
 }
 
 const PROFILE_LABELS = new Map<string, string>(
@@ -107,10 +104,6 @@ function profileCoverage(profile: ProfileCatalogEntry): string {
     kinds.push(profile.iwxxm_line);
   }
   return kinds.join(' | ') || 'Coverage details unavailable';
-}
-
-function usesReusedExamples(profileId: string): boolean {
-  return hydrateSemanticProfile(profileId) !== DEFAULT_SEMANTIC_PROFILE;
 }
 
 function compareValue(value: string): string {
@@ -355,10 +348,7 @@ function ProfileSummaryCard({
   );
 }
 
-function ConversionProfileAuthed({
-  accessToken,
-  onOpenConverterExamples,
-}: AuthedProps) {
+function ConversionProfileAuthed({ accessToken }: AuthedProps) {
   const [catalog, setCatalog] = useState<ProfileCatalogEntry[] | null>(null);
   const [loadErrors, setLoadErrors] = useState<{ catalog: string | null }>({
     catalog: null,
@@ -457,117 +447,9 @@ function ConversionProfileAuthed({
         </p>
       </header>
 
-      <Card className="space-y-2 p-4" data-testid="profile-builder-assembly">
-        <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-          {PROFILES_ASSEMBLY_HEADING}
-        </h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {PROFILES_ASSEMBLY_HELP}
-        </p>
-        <ol className="flex flex-wrap gap-2 text-xs">
-          <li
-            className="rounded border border-sky-300 bg-sky-50 px-2 py-1 dark:border-sky-700 dark:bg-sky-950"
-            data-testid="profile-builder-step-base"
-          >
-            {PROFILES_ASSEMBLY_STEP_BASE}
-          </li>
-          <li
-            className="rounded border border-sky-300 bg-sky-50 px-2 py-1 dark:border-sky-700 dark:bg-sky-950"
-            data-testid="profile-builder-step-convert"
-          >
-            {PROFILES_ASSEMBLY_STEP_CONVERT}
-          </li>
-          <li
-            className="rounded border border-gray-200 px-2 py-1 text-gray-500 dark:border-gray-700"
-            data-testid="profile-builder-step-validate"
-          >
-            {PROFILES_ASSEMBLY_STEP_VALIDATE}
-          </li>
-          <li
-            className="rounded border border-gray-200 px-2 py-1 text-gray-500 dark:border-gray-700"
-            data-testid="profile-builder-step-dissem"
-          >
-            {PROFILES_ASSEMBLY_STEP_DISSEM}
-          </li>
-        </ol>
-      </Card>
-
       <ProfileBuilderLibraries accessToken={accessToken} />
 
-      {error && (
-        <p className="text-sm text-red-600" data-testid="conversion-profiles-error">
-          {PROFILES_ERROR_PREFIX} {error}
-        </p>
-      )}
-
-      <Card className="space-y-4 p-4" data-testid="conversion-profiles-summary">
-        {loadErrors.catalog && catalog !== null ? (
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {unavailableMessage(loadErrors.catalog)}
-          </p>
-        ) : null}
-        {loading && catalog === null ? (
-          <p className="flex items-center gap-2 text-sm text-gray-500">
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-            {PROFILES_INSPECTOR_LOADING}
-          </p>
-        ) : loadErrors.catalog && catalog === null ? (
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {unavailableMessage(loadErrors.catalog)}
-          </p>
-        ) : !catalog || catalog.length === 0 ? (
-          <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
-              <label className="block text-sm">
-                <span className="text-gray-700 dark:text-gray-300">
-                  {PROFILES_INSPECTOR_SELECT}
-                </span>
-                <select
-                  className="mt-1 w-full rounded border border-gray-300 bg-white p-2 dark:border-gray-600 dark:bg-gray-900"
-                  data-testid="conversion-profiles-select"
-                  value={selectedId}
-                  onChange={(e) => {
-                    const nextId = e.target.value;
-                    setSelectedId(nextId);
-                    if (compareId === nextId) {
-                      setCompareId('');
-                    }
-                  }}
-                >
-                  {catalog.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {profileLabel(p.id)}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block text-sm">
-                <span className="text-gray-700 dark:text-gray-300">Compare with</span>
-                <select
-                  className="mt-1 w-full rounded border border-gray-300 bg-white p-2 dark:border-gray-600 dark:bg-gray-900"
-                  data-testid="conversion-profiles-compare-select"
-                  value={compareId}
-                  onChange={(e) => setCompareId(e.target.value)}
-                >
-                  <option value="">None</option>
-                  {catalog
-                    .filter((p) => p.id !== selectedId)
-                    .map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {profileLabel(p.id)}
-                      </option>
-                    ))}
-                </select>
-              </label>
-            </div>
-            {summaryCards}
-          </>
-        )}
-      </Card>
-
-      <Card className="space-y-3 p-4" data-testid="conversion-profiles-inspector">
+      <Card className="space-y-4 p-4" data-testid="conversion-profiles-inspector">
         <h2 className="text-sm font-medium">{PROFILES_INSPECTOR_HEADING}</h2>
         {loadErrors.catalog && catalog !== null ? (
           <p className="text-sm text-amber-700 dark:text-amber-300">
@@ -617,38 +499,97 @@ function ConversionProfileAuthed({
         )}
       </Card>
 
-      <Card className="space-y-3 p-4" data-testid="conversion-profiles-glossary">
-        <h2 className="text-sm font-medium">{PROFILES_GLOSSARY_HEADING}</h2>
-        <dl className="grid grid-cols-1 gap-3 text-sm md:grid-cols-3">
-          <div className="rounded-md border border-gray-200 p-3 dark:border-gray-700">
-            <dt className="font-medium text-gray-900 dark:text-gray-100">
-              Semantic profile
-            </dt>
-            <dd className="mt-1 text-gray-700 dark:text-gray-300">
-              {PROFILES_GLOSSARY_PROFILE}
-            </dd>
-          </div>
-          <div className="rounded-md border border-gray-200 p-3 dark:border-gray-700">
-            <dt className="font-medium text-gray-900 dark:text-gray-100">
-              Exchange profile
-            </dt>
-            <dd className="mt-1 text-gray-700 dark:text-gray-300">
-              {PROFILES_GLOSSARY_EXCHANGE}
-            </dd>
-          </div>
-          <div className="rounded-md border border-gray-200 p-3 dark:border-gray-700">
-            <dt className="font-medium text-gray-900 dark:text-gray-100">
-              Signed overlay
-            </dt>
-            <dd className="mt-1 text-gray-700 dark:text-gray-300">
-              {PROFILES_GLOSSARY_OVERLAY}
-            </dd>
-          </div>
-        </dl>
+      {error && (
+        <p className="text-sm text-red-600" data-testid="conversion-profiles-error">
+          {PROFILES_ERROR_PREFIX} {error}
+        </p>
+      )}
+
+      <Card className="space-y-4 p-4" data-testid="conversion-profiles-summary">
+        {loadErrors.catalog && catalog !== null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {unavailableMessage(loadErrors.catalog)}
+          </p>
+        ) : null}
+        {loading && catalog === null ? (
+          <p className="flex items-center gap-2 text-sm text-gray-500">
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+            {PROFILES_INSPECTOR_LOADING}
+          </p>
+        ) : loadErrors.catalog && catalog === null ? (
+          <p className="text-sm text-amber-700 dark:text-amber-300">
+            {unavailableMessage(loadErrors.catalog)}
+          </p>
+        ) : !catalog || catalog.length === 0 ? (
+          <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+              <label className="block text-sm">
+                <span className="inline-flex items-center gap-1 text-gray-700 dark:text-gray-300">
+                  {PROFILES_INSPECTOR_SELECT}
+                  <FieldHelpTooltip
+                    label={`About ${PROFILES_INSPECTOR_SELECT}`}
+                    tooltip={PROFILES_TOOLTIP_INSPECTOR_PROFILE}
+                  />
+                </span>
+                <select
+                  className="mt-1 w-full rounded border border-gray-300 bg-white p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-select"
+                  value={selectedId}
+                  onChange={(e) => {
+                    const nextId = e.target.value;
+                    setSelectedId(nextId);
+                    if (compareId === nextId) {
+                      setCompareId('');
+                    }
+                  }}
+                >
+                  {catalog.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {profileLabel(p.id)}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm">
+                <span className="inline-flex items-center gap-1 text-gray-700 dark:text-gray-300">
+                  Compare with
+                  <FieldHelpTooltip
+                    label="About compare profile"
+                    tooltip={PROFILES_TOOLTIP_INSPECTOR_COMPARE}
+                  />
+                </span>
+                <select
+                  className="mt-1 w-full rounded border border-gray-300 bg-white p-2 dark:border-gray-600 dark:bg-gray-900"
+                  data-testid="conversion-profiles-compare-select"
+                  value={compareId}
+                  onChange={(e) => setCompareId(e.target.value)}
+                >
+                  <option value="">None</option>
+                  {catalog
+                    .filter((p) => p.id !== selectedId)
+                    .map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {profileLabel(p.id)}
+                      </option>
+                    ))}
+                </select>
+              </label>
+            </div>
+            {summaryCards}
+          </>
+        )}
       </Card>
 
       <Card className="space-y-4 p-4" data-testid="conversion-profiles-blocks">
-        <h2 className="text-sm font-medium">Profile blocks</h2>
+        <div className="flex items-center gap-1">
+          <h2 className="text-sm font-medium">Profile blocks</h2>
+          <FieldHelpTooltip
+            label="About profile blocks"
+            tooltip={PROFILES_TOOLTIP_PROFILE_BLOCKS}
+          />
+        </div>
         {loadErrors.catalog && catalog !== null ? (
           <p className="text-sm text-amber-700 dark:text-amber-300">
             {unavailableMessage(loadErrors.catalog)}
@@ -703,62 +644,6 @@ function ConversionProfileAuthed({
           <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
         )}
       </Card>
-
-      <Card className="space-y-3 p-4" data-testid="conversion-profiles-workflows">
-        <h2 className="text-sm font-medium">{PROFILES_WORKFLOWS_HEADING}</h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          {PROFILES_WORKFLOWS_BODY}
-        </p>
-        <div className="flex flex-wrap gap-2">
-          <a
-            className="rounded border border-gray-300 px-3 py-1.5 text-sm text-gray-700 dark:border-gray-600 dark:text-gray-200"
-            data-testid="conversion-profiles-workflow-definitions"
-            href={PROFILES_WORKFLOWS_DEFINITIONS_URL}
-            rel="noreferrer"
-            target="_blank"
-          >
-            {PROFILES_WORKFLOWS_DEFINITIONS_LINK}
-          </a>
-          <a
-            className="rounded border border-gray-300 px-3 py-1.5 text-sm text-gray-700 dark:border-gray-600 dark:text-gray-200"
-            data-testid="conversion-profiles-workflow-runtime"
-            href={PROFILES_WORKFLOWS_RUNTIME_URL}
-            rel="noreferrer"
-            target="_blank"
-          >
-            {PROFILES_WORKFLOWS_RUNTIME_LINK}
-          </a>
-          {onOpenConverterExamples ? (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              data-testid="conversion-profiles-open-examples"
-              onClick={onOpenConverterExamples}
-            >
-              {PROFILES_WORKFLOWS_EXAMPLES_LINK}
-            </Button>
-          ) : null}
-        </div>
-      </Card>
-
-      <Card className="space-y-3 p-4" data-testid="conversion-profiles-examples">
-        <h2 className="text-sm font-medium">{PROFILES_EXAMPLES_HEADING}</h2>
-        {selected && selected.products.length > 0 ? (
-          <>
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              {PROFILES_EXAMPLES_PREFIX} {selected.products.join(', ')}
-            </p>
-            {usesReusedExamples(selected.id) ? (
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                {PROFILES_EXAMPLES_REUSE_NOTE}
-              </p>
-            ) : null}
-          </>
-        ) : (
-          <p className="text-sm text-gray-500">{PROFILES_EXAMPLES_EMPTY}</p>
-        )}
-      </Card>
     </div>
   );
 }
@@ -795,10 +680,6 @@ export function ConversionProfilePage({
       </div>
     );
   }
-  return (
-    <ConversionProfileAuthed
-      accessToken={accessToken}
-      onOpenConverterExamples={onOpenConverterExamples}
-    />
-  );
+  void onOpenConverterExamples;
+  return <ConversionProfileAuthed accessToken={accessToken} />;
 }

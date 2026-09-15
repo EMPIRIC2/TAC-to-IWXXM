@@ -135,16 +135,25 @@ describe('ConversionProfilePage', () => {
         screen.getByTestId('conversion-profiles-inspector-detail'),
       ).toBeInTheDocument();
     });
-    expect(screen.getByTestId('profile-builder-assembly')).toBeInTheDocument();
-    expect(screen.getByTestId('profile-builder-step-convert')).toBeInTheDocument();
-    expect(fetchProfileCatalog).toHaveBeenCalledWith('tok');
-    expect(screen.getByTestId('profile-builder-libraries')).toBeInTheDocument();
+    expect(screen.queryByTestId('profile-builder-assembly')).not.toBeInTheDocument();
     expect(
-      screen
-        .getByTestId('profile-builder-libraries')
-        .querySelector('[data-testid="beta-badge"]'),
+      screen.queryByTestId('conversion-profiles-glossary'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('conversion-profiles-workflows'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId('conversion-profiles-examples'),
+    ).not.toBeInTheDocument();
+    expect(fetchProfileCatalog).toHaveBeenCalledWith('tok');
+    const libraries = screen.getByTestId('profile-builder-libraries');
+    const inspector = screen.getByTestId('conversion-profiles-inspector');
+    expect(
+      libraries.compareDocumentPosition(inspector) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
+    expect(libraries.querySelector('[data-testid="beta-badge"]')).toBeTruthy();
     expect(screen.getByTestId('profile-library-tab-conversion')).toBeInTheDocument();
+    expect(screen.getByTestId('library-draft-shell-conversion')).toBeInTheDocument();
     expect(screen.queryByTestId('conversion-profiles-presets')).not.toBeInTheDocument();
     expect(screen.queryByTestId('conversion-profiles-packs')).not.toBeInTheDocument();
     expect(
@@ -219,13 +228,7 @@ describe('ConversionProfilePage', () => {
 
   it('renders a summary-first compare view', async () => {
     const user = userEvent.setup();
-    const onOpenConverterExamples = vi.fn();
-    render(
-      <ConversionProfilePage
-        accessToken="tok"
-        onOpenConverterExamples={onOpenConverterExamples}
-      />,
-    );
+    render(<ConversionProfilePage accessToken="tok" />);
 
     await waitFor(() => {
       expect(screen.getByTestId('conversion-profiles-summary')).toBeInTheDocument();
@@ -241,9 +244,6 @@ describe('ConversionProfilePage', () => {
     expect(
       screen.getByTestId('conversion-profiles-inspector-detail'),
     ).toHaveTextContent('ICAO / WMO');
-    expect(screen.getByTestId('conversion-profiles-glossary')).toHaveTextContent(
-      /Libraries hold conversion, validation, dissemination, and decoding assets/i,
-    );
     expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
       'Rule packs',
     );
@@ -263,27 +263,6 @@ describe('ConversionProfilePage', () => {
     expect(
       screen.getByText(/Difference notes compared with ICAO_2025/),
     ).toBeInTheDocument();
-    expect(screen.getByTestId('conversion-profiles-workflows')).toHaveTextContent(
-      /Workflow references/i,
-    );
-    expect(screen.getByTestId('conversion-profiles-workflows')).toHaveTextContent(
-      /read-only in this screen/i,
-    );
-    expect(screen.getByTestId('conversion-profiles-examples')).toHaveTextContent(
-      /Examples available on Convert/i,
-    );
-    expect(screen.getByTestId('conversion-profiles-examples')).toHaveTextContent(
-      /METAR, TAF/i,
-    );
-    expect(
-      screen.getByTestId('conversion-profiles-workflow-definitions'),
-    ).toHaveAttribute('href', expect.stringContaining('/workflows'));
-    expect(screen.getByTestId('conversion-profiles-workflow-runtime')).toHaveAttribute(
-      'href',
-      expect.stringContaining('/packages/workflows'),
-    );
-    await user.click(screen.getByTestId('conversion-profiles-open-examples'));
-    expect(onOpenConverterExamples).toHaveBeenCalledTimes(1);
     await user.selectOptions(
       screen.getByTestId('conversion-profiles-select'),
       'US_FAA_NWS',
@@ -291,9 +270,6 @@ describe('ConversionProfilePage', () => {
     expect(
       screen.getByTestId('conversion-profiles-inspector-detail'),
     ).toHaveTextContent('US - FAA NWS');
-    expect(screen.getByTestId('conversion-profiles-examples')).toHaveTextContent(
-      /reused from the ICAO \/ WMO demo set/i,
-    );
   });
 
   it('falls back to raw authority code when profile id has no suffix', async () => {

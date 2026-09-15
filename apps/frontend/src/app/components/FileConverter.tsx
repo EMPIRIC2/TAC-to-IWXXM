@@ -47,6 +47,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DisseminationDrawer } from './DisseminationDrawer';
 import { BetaBadge } from './BetaBadge';
+import { Checkbox } from './ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
@@ -59,6 +60,27 @@ import { convertOverlayFields } from '@/utils/convertOverlayFields';
 import { WorkbenchMappingBridge } from './WorkbenchMappingBridge';
 import { LibraryPickersBar } from './LibraryPickersBar';
 import { libraryIdsForNationalLine } from '@/utils/libraryIds';
+import {
+  buildConversionExportMetadata,
+  CONVERSION_METADATA_CHECKLIST_CONVERT_CONTEXT,
+  CONVERSION_METADATA_CHECKLIST_HEADING,
+  CONVERSION_METADATA_CHECKLIST_LIBRARIES,
+  CONVERSION_METADATA_CHECKLIST_LINT,
+  CONVERSION_METADATA_CHECKLIST_MAPPING_BRIDGE,
+  CONVERSION_METADATA_CHECKLIST_OPERATOR,
+  CONVERSION_METADATA_CHECKLIST_TAC_FINGERPRINT,
+  CONVERSION_METADATA_CHECKLIST_YAML_HASHES,
+  CONVERSION_METADATA_TOGGLE_LABEL,
+  defaultConversionMetadataChecklist,
+  isConversionMetadataExportEnabled,
+  metaSidecarFileName,
+  readConversionMetadataPrefs,
+  serializeConversionMetadata,
+  writeConversionMetadataPrefs,
+  type ConversionMetadataChecklistKey,
+  type ConversionMetadataPrefs,
+} from '@/utils/conversionExportMetadata';
+import { CONVERT_RESET_WMO_LIBRARY_DEFAULTS } from '@/utils/conversionProfilesCopy';
 import { optionalFormField } from '@/utils/optionalFormField';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
@@ -95,6 +117,7 @@ import {
   lintTac,
   validateIwxxm,
   fetchSchemaStatus,
+  downloadBlob,
   EndpointNotImplementedError,
   type FailedSpan,
 } from '/utils/api';
@@ -529,6 +552,10 @@ export function FileConverter({
   const [profileCatalogEntries, setProfileCatalogEntries] = useState<
     ProfileCatalogEntry[]
   >([]);
+  const [metadataPrefs, setMetadataPrefs] = useState<ConversionMetadataPrefs>(() =>
+    readConversionMetadataPrefs(),
+  );
+  const [isMetadataChecklistOpen, setIsMetadataChecklistOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const massFolderInputRef = useRef<HTMLInputElement>(null);
   const massZipInputRef = useRef<HTMLInputElement>(null);
@@ -1666,17 +1693,75 @@ export function FileConverter({
     return file.originalName.replace(/\.(txt|metar)$/i, '.xml');
   };
 
-  const handleDownloadSingle = (file: ConvertedFile) => {
-    const blob = new Blob([file.convertedContent], { type: 'text/xml' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = resolveDownloadXmlName(file);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast.success('File downloaded');
+  const includeConversionMetadata = isConversionMetadataExportEnabled(metadataPrefs);
+
+  const persistMetadataPrefs = useCallback((next: ConversionMetadataPrefs) => {
+    setMetadataPrefs(next);
+    writeConversionMetadataPrefs(next);
+  }, []);
+
+  const updateMetadataChecklist = useCallback(
+    (key: ConversionMetadataChecklistKey, checked: boolean) => {
+      persistMetadataPrefs({
+        ...metadataPrefs,
+        checklist: {
+          ...metadataPrefs.checklist,
+          [key]: checked,
+        },
+      });
+    },
+    [metadataPrefs, persistMetadataPrefs],
+  );
+
+  const buildFileExportMetadata = useCallback(
+    (file: ConvertedFile) =>
+      buildConversionExportMetadata({
+        tacContent: file.originalContent,
+        convertedAt: file.timestamp,
+        product: conversionParams.product,
+        iwxxmVersion: conversionParams.iwxxmVersion,
+        reportVariant: conversionParams.reportVariant,
+        libraries: {
+          conversionLibraryId: conversionParams.conversionLibraryId,
+          tacValidationLibraryId: conversionParams.tacValidationLibraryId,
+          iwxxmValidationLibraryId: conversionParams.iwxxmValidationLibraryId,
+          disseminationLibraryId: conversionParams.disseminationLibraryId,
+          decodingLibraryId: conversionParams.decodingLibraryId,
+        },
+        checklist: metadataPrefs.checklist,
+        isGuest,
+        userEmail,
+        accessToken,
+        conversionLog,
+      }),
+    [
+      accessToken,
+      conversionLog,
+      conversionParams,
+      isGuest,
+      metadataPrefs.checklist,
+      userEmail,
+    ],
+  );
+
+  const handleDownloadSingle = async (file: ConvertedFile) => {
+    const xmlName = resolveDownloadXmlName(file);
+    if (!includeConversionMetadata) {
+      downloadBlob(new Blob([file.convertedContent], { type: 'text/xml' }), xmlName);
+      toast.success('File downloaded');
+      return;
+    }
+
+    const zip = new JSZip();
+    zip.file(xmlName, file.convertedContent);
+    zip.file(
+      metaSidecarFileName(xmlName),
+      serializeConversionMetadata(buildFileExportMetadata(file)),
+    );
+    const content = await zip.generateAsync({ type: 'blob' });
+    const zipStem = xmlName.replace(/\.xml$/i, '') || 'download';
+    downloadBlob(content, `${zipStem}.zip`);
+    toast.success('File downloaded with metadata');
   };
 
   const handleDownloadAll = async () => {
@@ -1688,24 +1773,31 @@ export function FileConverter({
     );
 
     convertedFiles.forEach((file, index) => {
-      zip.file(memberNames[index]!, file.convertedContent);
+      const xmlName = memberNames[index]!;
+      zip.file(xmlName, file.convertedContent);
+      if (includeConversionMetadata) {
+        zip.file(
+          metaSidecarFileName(xmlName),
+          serializeConversionMetadata(buildFileExportMetadata(file)),
+        );
+      }
     });
 
     const content = await zip.generateAsync({ type: 'blob' });
-    const url = URL.createObjectURL(content);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = outputArchiveName(outputFilename, {
-      firstTac: firstTacForArchive(
-        firstAccumulatedTac,
-        convertedFiles[0]?.originalContent,
-      ),
-    });
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast.success('All files downloaded as ZIP');
+    downloadBlob(
+      content,
+      outputArchiveName(outputFilename, {
+        firstTac: firstTacForArchive(
+          firstAccumulatedTac,
+          convertedFiles[0]?.originalContent,
+        ),
+      }),
+    );
+    toast.success(
+      includeConversionMetadata
+        ? 'All files downloaded as ZIP with metadata'
+        : 'All files downloaded as ZIP',
+    );
   };
 
   const handleCopy = (content: string) => {
@@ -2312,9 +2404,106 @@ export function FileConverter({
                 <BetaBadge className="ml-1 inline-flex" />
               </Button>
             ) : null}
+            <div
+              className="flex min-w-[12rem] flex-col gap-1 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-gray-900/40"
+              data-testid="conversion-metadata-export-panel"
+            >
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="conversion-metadata-toggle"
+                  data-testid="conversion-metadata-toggle"
+                  checked={metadataPrefs.enabled}
+                  disabled={isReadOnly}
+                  onCheckedChange={(checked) => {
+                    persistMetadataPrefs({
+                      ...metadataPrefs,
+                      enabled: checked === true,
+                      checklist:
+                        checked === true && !metadataPrefs.enabled
+                          ? defaultConversionMetadataChecklist()
+                          : metadataPrefs.checklist,
+                    });
+                  }}
+                />
+                <Label
+                  htmlFor="conversion-metadata-toggle"
+                  className="flex cursor-pointer items-center gap-1 text-sm text-gray-800 dark:text-gray-200"
+                >
+                  {CONVERSION_METADATA_TOGGLE_LABEL}
+                  <BetaBadge className="inline-flex" />
+                </Label>
+              </div>
+              {metadataPrefs.enabled ? (
+                <Collapsible
+                  open={isMetadataChecklistOpen}
+                  onOpenChange={setIsMetadataChecklistOpen}
+                >
+                  <CollapsibleTrigger asChild>
+                    <button
+                      type="button"
+                      className="flex items-center gap-1 text-left text-xs font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                      data-testid="conversion-metadata-checklist-trigger"
+                    >
+                      {isMetadataChecklistOpen ? (
+                        <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" />
+                      ) : (
+                        <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
+                      )}
+                      {CONVERSION_METADATA_CHECKLIST_HEADING}
+                    </button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent
+                    className="mt-1 space-y-1.5"
+                    data-testid="conversion-metadata-checklist"
+                  >
+                    {(
+                      [
+                        ['libraries', CONVERSION_METADATA_CHECKLIST_LIBRARIES],
+                        [
+                          'libraryYamlHashes',
+                          CONVERSION_METADATA_CHECKLIST_YAML_HASHES,
+                        ],
+                        [
+                          'convertContext',
+                          CONVERSION_METADATA_CHECKLIST_CONVERT_CONTEXT,
+                        ],
+                        ['operator', CONVERSION_METADATA_CHECKLIST_OPERATOR],
+                        ['lintSummary', CONVERSION_METADATA_CHECKLIST_LINT],
+                        [
+                          'tacFingerprint',
+                          CONVERSION_METADATA_CHECKLIST_TAC_FINGERPRINT,
+                        ],
+                        [
+                          'mappingBridgeSummary',
+                          CONVERSION_METADATA_CHECKLIST_MAPPING_BRIDGE,
+                        ],
+                      ] as const
+                    ).map(([key, label]) => (
+                      <div key={key} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`conversion-metadata-check-${key}`}
+                          checked={metadataPrefs.checklist[key]}
+                          disabled={isReadOnly || (key === 'operator' && isGuest)}
+                          onCheckedChange={(checked) =>
+                            updateMetadataChecklist(key, checked === true)
+                          }
+                        />
+                        <Label
+                          htmlFor={`conversion-metadata-check-${key}`}
+                          className="cursor-pointer text-xs text-gray-700 dark:text-gray-300"
+                        >
+                          {label}
+                          {key === 'operator' && isGuest ? ' (sign in required)' : ''}
+                        </Label>
+                      </div>
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              ) : null}
+            </div>
             <Button
               data-testid="download-zip-button"
-              onClick={handleDownloadAll}
+              onClick={() => void handleDownloadAll()}
               disabled={isBusy || !hasConverted}
               variant="outline"
               className="min-w-[10rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
@@ -2461,6 +2650,29 @@ export function FileConverter({
                         });
                       }}
                     />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      disabled={isReadOnly}
+                      data-testid="reset-wmo-library-defaults"
+                      className="shrink-0 text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                      onClick={() => {
+                        const wmoLibraries = libraryIdsForNationalLine('ICAO_2025');
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          ...wmoLibraries,
+                          profile: DEFAULT_SEMANTIC_PROFILE,
+                          reportVariant: '',
+                          iwxxmVersion: coerceIwxxmVersionForProfile(
+                            DEFAULT_SEMANTIC_PROFILE,
+                            prev.iwxxmVersion,
+                          ),
+                        }));
+                      }}
+                    >
+                      {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
+                    </Button>
 
                     {reportVariantOptions.length > 0 &&
                       inputMode !== 'ahl_bulletin' && (
@@ -3405,9 +3617,13 @@ export function FileConverter({
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleDownloadSingle(file)}
+                            onClick={() => void handleDownloadSingle(file)}
                             className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-sm border-0 focus:ring-2 focus:ring-blue-500"
-                            aria-label={`Download ${file.originalName} as XML`}
+                            aria-label={
+                              includeConversionMetadata
+                                ? `Download ${file.originalName} as ZIP with metadata`
+                                : `Download ${file.originalName} as XML`
+                            }
                           >
                             <Download className="w-4 h-4 mr-1" aria-hidden="true" />
                             Download

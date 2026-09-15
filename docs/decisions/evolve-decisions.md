@@ -16,6 +16,8 @@
 | D-EVPYL-70..73 | Requirements R3 — journey IDs locked; Phase B/C ACs all; **requirements locked** → draft-docs |
 | D-EVPYL-74..78 | Verify-plan recommended: ZIP-of-two; guest metadata sans identity; Draft off Convert until Activate; risks accepted; Spec continue |
 | D-EVPYL-docverify | Documenting verify **13/13 PASS**; Spec→Build gate AskQuestion pending |
+| D-EVPYL-gate | Spec→Build **opened** (operator: proceed recommended); Phase A implemented |
+| D-EVPYL-phase-a | Phase A shipped: prose→tooltips; inspector under Libraries; Draft shell; export ZIP-of-two; WMO reset |
 
 [Corpus: product §F7.w] [Corpus: journeys §UJ-072h-*] [Corpus: api] [Corpus: tests] [Corpus: adr/ADR-038] [Corpus: decisions]
 
