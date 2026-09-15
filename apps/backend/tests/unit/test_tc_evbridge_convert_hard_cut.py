@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from unittest.mock import MagicMock
+
 import pytest
 from metar_iwxxm_api.convert_library_hard_cut import (
     DEFAULT_CONVERSION_LIBRARY_ID,
@@ -145,6 +147,38 @@ def test_resolve_dissemination_first_party_and_custom() -> None:
 
     with pytest.raises(ValueError, match="Dissemination library"):
         resolve_dissemination_transforms("LIB.CONVERSION.ICAO_2025")
+
+
+def test_resolve_dissemination_empty_id_raises() -> None:
+    """Empty dissemination id fails closed."""
+    from metar_iwxxm_api.convert_library_hard_cut import resolve_dissemination_transforms
+
+    with pytest.raises(ValueError, match="required"):
+        resolve_dissemination_transforms("")
+
+
+def test_resolve_dissemination_custom_non_list_transforms() -> None:
+    """Custom body with non-list transforms yields empty list."""
+    from metar_iwxxm_api.convert_library_hard_cut import resolve_dissemination_transforms
+
+    out = resolve_dissemination_transforms(
+        "custom-x",
+        get_custom_dissemination_body=lambda _aid: {"transforms": "nope"},
+    )
+    assert out == []
+
+
+def test_resolve_dissemination_first_party_non_list_transforms(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """First-party asset with non-list transforms yields empty list."""
+    from metar_iwxxm_api import convert_library_hard_cut as cut
+
+    fake = MagicMock()
+    fake.kind = "dissemination"
+    fake.body = {"transforms": "broken"}
+    monkeypatch.setattr(cut, "get_first_party_library_asset", lambda _aid: fake)
+    assert cut.resolve_dissemination_transforms("LIB.DISSEMINATION.ICAO_2025") == []
 
 
 def test_resolve_custom_callback_raises_kind_error() -> None:

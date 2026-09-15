@@ -512,6 +512,19 @@ def test_library_asset_service_error_paths(service: ConversionProfilesService) -
             )
         )
 
+    with pytest.raises(HTTPException) as uri_exc:
+        service.create_library_asset(
+            LibraryAssetCreate(
+                slug="uri-bad",
+                name="uri-bad",
+                kind="dissemination",
+                engineProfileId="ICAO_2025",
+                attachedNationalLine="ICAO",
+                body={"endpoint": "postgresql://user:pass@host/db"},
+            )
+        )
+    assert uri_exc.value.status_code == 422
+
     begin_conn.execute.side_effect = None
     begin_conn.execute.return_value.rowcount = 0
     upd = MagicMock()

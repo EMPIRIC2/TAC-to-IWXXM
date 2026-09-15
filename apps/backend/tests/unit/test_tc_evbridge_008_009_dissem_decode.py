@@ -137,7 +137,7 @@ def test_tc_evbridge_008_convert_bulletin_unknown_dissemination_library(
         },
     )
     assert response.status_code == 400
-    assert "Unknown dissemination library" in response.text
+    assert "Dissemination library" in response.text
 
 
 def test_tc_evbridge_008_convert_bulletin_transform_value_error(
@@ -206,6 +206,7 @@ def test_tc_evbridge_008_convert_custom_library_engine(
 
     custom = MagicMock()
     custom.engine_profile_id = "ICAO_2025"
+    custom.kind = "conversion"
     fake_svc = MagicMock()
     fake_svc.get_library_asset.return_value = custom
     monkeypatch.setattr(
@@ -338,7 +339,7 @@ def test_tc_evbridge_008_send_unknown_dissemination_library(
         headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
     )
     assert send.status_code == 400
-    assert "Unknown dissemination library" in send.text
+    assert "Dissemination library" in send.text
 
 
 def test_tc_evbridge_008_send_transform_value_error(
@@ -387,3 +388,109 @@ def test_tc_evbridge_009_decoding_library_seeded_from_decode_tac() -> None:
     tokens = {row["token"] for row in entries}
     assert "TS" in tokens
     assert all(row.get("source") == "decode_tac" for row in entries)
+
+
+def test_tc_evbridge_008_convert_rejects_wrong_kind_custom(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Custom library with non-conversion kind is rejected."""
+
+    def fake_convert(tac: str, **kwargs):
+        return _XML, None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+    custom = MagicMock()
+    custom.engine_profile_id = "ICAO_2025"
+    custom.kind = "decoding"
+    fake_svc = MagicMock()
+    fake_svc.get_library_asset.return_value = custom
+    monkeypatch.setattr(
+        "src.routers.conversion.ConversionProfilesService",
+        lambda *_a, **_k: fake_svc,
+    )
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (None, _TAC),
+            "product": (None, "METAR"),
+            "conversion_library_id": (None, str(uuid4())),
+            "lint": (None, "false"),
+        },
+        headers={"Authorization": "Bearer test-token"},
+    )
+    assert response.status_code == 400
+    assert "Conversion library" in response.text
+
+
+def test_tc_evbridge_008_convert_bulletin_custom_conversion(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """convert-bulletin resolves custom Conversion libraries when authenticated."""
+
+    def fake_convert(tac: str, **kwargs):
+        return _XML, None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+    custom = MagicMock()
+    custom.engine_profile_id = "ICAO_2025"
+    custom.kind = "conversion"
+    fake_svc = MagicMock()
+    fake_svc.get_library_asset.return_value = custom
+    monkeypatch.setattr(
+        "src.routers.conversion.ConversionProfilesService",
+        lambda *_a, **_k: fake_svc,
+    )
+    bulletin = f"SAUS31 KZNY 121200\n{_TAC}"
+    response = client.post(
+        "/api/v1/convert-bulletin",
+        files={
+            "manual_text": (None, bulletin),
+            "product": (None, "METAR"),
+            "conversion_library_id": (None, str(uuid4())),
+            "lint": (None, "false"),
+        },
+        headers={"Authorization": "Bearer test-token"},
+    )
+    assert response.status_code == 200, response.text[:400]
+    fake_svc.get_library_asset.assert_called()
+
+
+def test_tc_evbridge_008_send_custom_dissemination_library(
+    client: TestClient,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Authenticated send applies custom Dissemination library transforms."""
+    custom = MagicMock()
+    custom.kind = "dissemination"
+    custom.body = {"transforms": [{"type": "checksum", "params": {}}]}
+    fake_svc = MagicMock()
+    fake_svc.get_library_asset.return_value = custom
+    monkeypatch.setattr(
+        "src.routers.dissemination.ConversionProfilesService",
+        lambda *_a, **_k: fake_svc,
+    )
+    uri = _sqlite_uri(tmp_path)
+    pre = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps({"sink_type": "sqlite", "uri": uri, "ddl": True}),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    handle = pre.json()["handle"]
+    send = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "handle": handle,
+                "iwxxm_xml": _XML,
+                "product": "metar",
+                "dissemination_library_id": str(uuid4()),
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert send.status_code == 200, send.text
+    fake_svc.get_library_asset.assert_called()
+    assert send.json()["ok"] is True
