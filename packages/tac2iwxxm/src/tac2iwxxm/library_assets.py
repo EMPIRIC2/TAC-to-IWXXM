@@ -102,13 +102,25 @@ def _seed_body(kind: LibraryKind, national_line: str) -> dict[str, Any]:
             "transforms": [
                 {"id": "envelope", "type": "envelope"},
                 {"id": "topic_filename", "type": "topic_filename"},
-                {"id": "checksum", "type": "checksum"},
                 {"id": "bulletin_rewrap", "type": "bulletin_rewrap"},
+                {"id": "checksum", "type": "checksum"},
             ],
             "national_line": national_line,
         }
+    # Decoding: seed from F9 glossary / decode_tac catalog (AC9).
+    from tac2iwxxm.glossary import load_glossary
+
+    glossary = load_glossary()
+    entries = [
+        {
+            "token": token,
+            "explanation": meaning,
+            "source": "decode_tac",
+        }
+        for token, meaning in sorted(glossary.items())
+    ]
     return {
-        "entries": [],
+        "entries": entries,
         "seed": "decode_tac",
         "national_line": national_line,
     }

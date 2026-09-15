@@ -12,6 +12,8 @@ import {
   PROFILES_LIBRARY_TAB_TAC_VALIDATION,
 } from '../../utils/conversionProfilesCopy';
 import { ConversionTemplatesPanel } from './ConversionTemplatesPanel';
+import { DecodingLibraryPanel } from './DecodingLibraryPanel';
+import { DisseminationLibraryPanel } from './DisseminationLibraryPanel';
 import { LibraryAssetsListPanel } from './LibraryAssetsListPanel';
 import { Card } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
@@ -93,18 +95,10 @@ export function ProfileBuilderLibraries({ accessToken }: ProfileBuilderLibraries
           value="dissemination"
           data-testid="profile-library-panel-dissemination"
         >
-          <LibraryAssetsListPanel
-            accessToken={accessToken}
-            kind="dissemination"
-            heading={PROFILES_LIBRARY_TAB_DISSEMINATION}
-          />
+          <DisseminationLibraryPanel accessToken={accessToken} />
         </TabsContent>
         <TabsContent value="decoding" data-testid="profile-library-panel-decoding">
-          <LibraryAssetsListPanel
-            accessToken={accessToken}
-            kind="decoding"
-            heading={PROFILES_LIBRARY_TAB_DECODING}
-          />
+          <DecodingLibraryPanel accessToken={accessToken} />
         </TabsContent>
       </Tabs>
     </Card>

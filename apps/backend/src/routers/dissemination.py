@@ -264,6 +264,32 @@ async def dissemination_send(
             detail="iwxxm_xml is required",
         )
 
+    iwxxm_xml = req.iwxxm_xml
+    dissem_lib = (req.dissemination_library_id or "").strip()
+    if dissem_lib:
+        from dissemination.transforms import apply_dissemination_transforms
+        from tac2iwxxm.library_assets import get_first_party_library_asset
+
+        first = get_first_party_library_asset(dissem_lib)
+        if first is None or first.kind != "dissemination":
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Unknown dissemination library id: {dissem_lib}",
+            )
+        try:
+            transformed = apply_dissemination_transforms(
+                iwxxm_xml,
+                (first.body or {}).get("transforms", []),
+                bulletin_identifier=str(req.params.get("bulletin_identifier") or "") or None,
+                topic=str(req.params.get("topic") or "") or None,
+            )
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(exc),
+            ) from exc
+        iwxxm_xml = transformed.xml
+
     # Re-check allowlist / contract before write.
     try:
         pre = await run_db_preflight(
@@ -310,7 +336,7 @@ async def dissemination_send(
                     "icao": None,
                     "observation_time": None,
                     "iwxxm_version": req.iwxxm_version or "2025-2",
-                    "iwxxm_xml": req.iwxxm_xml,
+                    "iwxxm_xml": iwxxm_xml,
                     "tac_text": req.tac_text,
                     "upload_key": upload_key,
                 },

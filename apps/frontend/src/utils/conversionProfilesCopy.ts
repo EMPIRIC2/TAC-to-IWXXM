@@ -28,6 +28,15 @@ export const PROFILES_LIBRARY_ACCESS_BUILTIN = 'built-in';
 export const PROFILES_LIBRARY_ACCESS_CUSTOM = 'custom';
 export const PROFILES_LIBRARY_STUB_HELP =
   'Select a built-in asset to review. Editing creates your own fork in a later step.';
+export const PROFILES_LIBRARY_DISSEM_HELP =
+  'Ordered post-IWXXM transforms (envelope, topic/filename, checksum, bulletin re-wrap) apply on Disseminate and Convert & Send only — not Convert-only.';
+export const PROFILES_LIBRARY_DISSEM_TRANSFORMS_HEADING = 'Ordered transforms';
+export const PROFILES_LIBRARY_DISSEM_EMPTY_TRANSFORMS =
+  'No transforms defined for this asset.';
+export const PROFILES_LIBRARY_DECODE_HELP =
+  'Plain-language decode glossary seeded from the TAC decode catalog. Select this library on Convert to drive decode explanations.';
+export const PROFILES_LIBRARY_DECODE_ENTRIES_HEADING = 'Decode entries';
+export const PROFILES_LIBRARY_DECODE_EMPTY = 'No matching decode entries.';
 export const PROFILES_CONV_TEMPLATES_HEADING = 'Conversion tokens';
 export const PROFILES_CONV_TEMPLATES_HELP =
   'Map TAC groups to IWXXM blocks with typed slots. Built-in rules can be viewed or forked; your customs are editable.';

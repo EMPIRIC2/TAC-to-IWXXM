@@ -84,12 +84,26 @@ async def execute_plan(
         One receipt per destination ref.
     """
     receipts: list[DeliveryReceipt] = []
+    iwxxm_xml = message.iwxxm_xml
+    if plan.transforms and iwxxm_xml:
+        from dissemination.transforms import apply_dissemination_transforms
+
+        transformed = apply_dissemination_transforms(
+            iwxxm_xml,
+            plan.transforms,
+            bulletin_identifier=(message.params or {}).get("bulletin_identifier")
+            if isinstance(message.params, dict)
+            else None,
+            topic=(message.params or {}).get("topic") if isinstance(message.params, dict) else None,
+        )
+        iwxxm_xml = transformed.xml
+
     for ref in plan.destination_refs:
         msg = DisseminationMessage(
             gateway_kind=ref,
             params=message.params,
             allowlist=message.allowlist,
-            iwxxm_xml=message.iwxxm_xml,
+            iwxxm_xml=iwxxm_xml,
             tac_text=message.tac_text,
         )
         completed = datetime.now(UTC)
