@@ -1845,9 +1845,6 @@ async def convert(
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     profile = ""
     # Preset / overlay / exchange Form values are hard-cut above.
-    applied_preset_id: str | None = None
-    applied_overlay_id: str | None = None
-    overlay_base_profile: str | None = None
     _ = applied_conversion_library_id
 
     applied_conversion_template_id: str | None = None
@@ -2194,14 +2191,8 @@ async def convert(
         "stop_on_error": bool(stop_on_error),
         "semantic_profile": wire.semantic_canonical,
     }
-    if applied_preset_id:
-        request_metadata["preset_id"] = applied_preset_id
     if response_report_variant:
         request_metadata["report_variant"] = response_report_variant
-    if applied_overlay_id:
-        request_metadata["overlay_id"] = applied_overlay_id
-        if overlay_base_profile:
-            request_metadata["overlay_base_profile"] = overlay_base_profile
     if applied_conversion_template_id:
         request_metadata["conversion_template_id"] = applied_conversion_template_id
     if exchange_output:

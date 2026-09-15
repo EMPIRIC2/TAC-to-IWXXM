@@ -1,5 +1,5 @@
 /**
- * T3.1 / TC-EV060-1002 (browser unit): Profile labeled at converter top (#1002).
+ * T3.1 / TC-EV060-1002 (browser unit): Conversion library labeled at converter top.
  *
  * Spec: docs/test-plan.md TC-EV060-1002-001..003; UJ-061;
  * [Corpus: product §F7] [Corpus: tests].
@@ -9,6 +9,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
+import { defaultLibraryId } from '../utils/libraryIds';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
@@ -114,7 +115,7 @@ const TAC_SAMPLE = 'METAR KJFK 121251Z 24016G28KT 3SM -RA BR BKN020 OVC040 14/11
 const XML_SAMPLE =
   '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><ok/></iwxxm:METAR>';
 
-describe('T3.1 / TC-EV060-1002: Profile at converter top', () => {
+describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
   const defaultProps = {
     onLogout: vi.fn(),
     userEmail: 'profile@example.com',
@@ -127,48 +128,49 @@ describe('T3.1 / TC-EV060-1002: Profile at converter top', () => {
     localStorage.clear();
   });
 
-  it('shows a labeled Profile control at the converter top without expanding parameters (TC-EV060-1002-001)', () => {
+  it('shows Product + Conversion library at the converter top without expanding parameters (TC-EV060-1002-001)', () => {
     render(<FileConverter {...defaultProps} />);
 
     const product = screen.getByTestId('product-type-select');
-    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
+    const conversion = screen.getByTestId(
+      'conversion-library-select',
+    ) as HTMLSelectElement;
 
     expect(product).toBeVisible();
-    expect(profile).toBeVisible();
-    expect(profile).toHaveAccessibleName(/profile/i);
-    expect(screen.getByLabelText(/^profile$/i)).toBe(profile);
+    expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
+    expect(conversion).toBeVisible();
+    expect(conversion).toHaveAccessibleName(/^conversion$/i);
+    expect(screen.getByLabelText(/^conversion$/i)).toBe(conversion);
 
-    const values = Array.from(profile.options).map((o) => o.value);
+    const values = Array.from(conversion.options).map((o) => o.value);
     expect(values).toEqual(
       expect.arrayContaining([
-        'ICAO_2025',
-        'US_FAA_NWS',
-        'CA_ECCC',
-        'AU_BOM',
-        'NZ_CAA_MET',
-        'annex3',
-        'iwxxm_us',
+        defaultLibraryId('conversion', 'ICAO_2025'),
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
+        defaultLibraryId('conversion', 'CA_ECCC'),
       ]),
     );
-    expect(profile.value).toBe('ICAO_2025');
+    expect(values).not.toContain(defaultLibraryId('conversion', 'AU_BOM'));
+    expect(conversion.value).toBe(defaultLibraryId('conversion', 'ICAO_2025'));
+    expect(screen.queryByTestId('profile-type-select')).not.toBeInTheDocument();
   });
 
-  it('exposes a keyboard-accessible Profile name, not icon-only (TC-EV060-1002-002)', () => {
+  it('exposes a keyboard-accessible Conversion name, not icon-only (TC-EV060-1002-002)', () => {
     render(<FileConverter {...defaultProps} />);
 
     const product = screen.getByTestId('product-type-select');
-    const profile = screen.getByTestId('profile-type-select');
-    expect(profile).toHaveAccessibleName(/^profile$/i);
-    expect(profile.tagName).toBe('SELECT');
-    expect(product.parentElement).toContainElement(profile);
+    const conversion = screen.getByTestId('conversion-library-select');
+    expect(conversion).toHaveAccessibleName(/^conversion$/i);
+    expect(conversion.tagName).toBe('SELECT');
+    expect(product.parentElement).toContainElement(conversion);
   });
 
-  it('sends selected profile on convert without opening Conversion Parameters (TC-EV060-1002-001)', async () => {
+  it('sends selected conversionLibraryId on convert without opening Conversion Parameters (TC-EV060-1002-001)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
-    const profile = screen.getByTestId('profile-type-select');
-    await user.selectOptions(profile, 'iwxxm_us');
+    const conversion = screen.getByTestId('conversion-library-select');
+    await user.selectOptions(conversion, defaultLibraryId('conversion', 'US_FAA_NWS'));
 
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: { value: TAC_SAMPLE },
@@ -180,16 +182,19 @@ describe('T3.1 / TC-EV060-1002: Profile at converter top', () => {
     });
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
-        profile: 'iwxxm_us',
+        conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
       }),
     );
   });
 
-  it('sends selected profile on Validate IWXXM without expanding parameters (TC-EV060-1002-001)', async () => {
+  it('sends selected profile on Validate IWXXM after Conversion library change (TC-EV060-1002-001)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'iwxxm_us');
+    await user.selectOptions(
+      screen.getByTestId('conversion-library-select'),
+      defaultLibraryId('conversion', 'US_FAA_NWS'),
+    );
     await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
     fireEvent.change(screen.getByTestId('tac-editor'), {
       target: { value: XML_SAMPLE },
@@ -201,13 +206,13 @@ describe('T3.1 / TC-EV060-1002: Profile at converter top', () => {
     });
     expect(mockValidateIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
-        profile: 'iwxxm_us',
+        profile: 'US_FAA_NWS',
         xmlContent: XML_SAMPLE,
       }),
     );
   });
 
-  it('hydrates FileConverter profile from a stored session (TC-EV060-1002-003)', () => {
+  it('hydrates FileConverter product from a stored session (TC-EV060-1002-003)', () => {
     render(
       <FileConverter
         {...defaultProps}
@@ -221,7 +226,10 @@ describe('T3.1 / TC-EV060-1002: Profile at converter top', () => {
       />,
     );
 
-    expect(screen.getByTestId('profile-type-select')).toHaveValue('US_FAA_NWS');
     expect(screen.getByTestId('product-type-select')).toHaveValue('TAF');
+    expect(screen.getByTestId('conversion-library-select')).toBeVisible();
+    expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
+      'US_FAA_NWS',
+    );
   });
 });

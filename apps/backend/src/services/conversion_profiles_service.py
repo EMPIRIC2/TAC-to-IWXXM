@@ -1004,8 +1004,6 @@ class ConversionProfilesService:
             raise HTTPException(status_code=400, detail="Unknown library asset id") from exc
         data = payload.model_dump(by_alias=False, exclude_unset=True)
         _reject_secrets(data)
-        if "body" in data and isinstance(data["body"], dict):
-            _reject_secrets(cast(dict[str, Any], data["body"]))
         values: dict[str, Any] = {"updated_at": datetime.now(tz=UTC)}
         for key in ("slug", "name", "body", "shared"):
             if key in data:

@@ -1,5 +1,6 @@
 /**
- * TC-EV090-002 / TC-EV090-003 — Exchange profile light picker (#1024 / EV-090).
+ * TC-EV090-002 / TC-EV090-003 — Dissemination library picker on Convert chrome
+ * (EV-bridge hard cut; replaces Exchange profile light picker).
  *
  * Spec: docs/test-plan.md TC-EV090-002..003; UJ-069;
  * [Corpus: product §F7] [Corpus: product §F36] [Corpus: tests].
@@ -9,7 +10,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
-import { EXCHANGE_PROFILE_OPTIONS } from '../utils/exchangeProfile';
+import { defaultLibraryId } from '../utils/libraryIds';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
@@ -110,32 +111,40 @@ vi.mock('sonner', () => ({
   toast: mockToast,
 }));
 
-describe('TC-EV090: Exchange profile light picker', () => {
+const GUEST_DISSEMINATION_IDS = [
+  defaultLibraryId('dissemination', 'ICAO_2025'),
+  defaultLibraryId('dissemination', 'US_FAA_NWS'),
+  defaultLibraryId('dissemination', 'CA_ECCC'),
+] as const;
+
+describe('TC-EV090: Dissemination library picker (Convert chrome)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
   });
 
-  it('TC-EV090-002: lists registered exchange ids with accessible label', () => {
+  it('TC-EV090-002: lists guest Dissemination libraries with accessible label', () => {
     render(
       <FileConverter accessToken="tok" isGuest={false} userEmail="op@example.com" />,
     );
-    const exchange = screen.getByTestId('exchange-profile-select') as HTMLSelectElement;
-    expect(exchange).toBeVisible();
-    expect(exchange).toHaveAccessibleName(/exchange profile/i);
+    expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
+    const dissemination = screen.getByTestId(
+      'dissemination-library-select',
+    ) as HTMLSelectElement;
+    expect(dissemination).toBeVisible();
+    expect(dissemination).toHaveAccessibleName(/dissemination/i);
     expect(screen.getByTestId('product-profile-bar-summary')).toHaveTextContent(
       /not destinations/i,
     );
-    expect(screen.getByTestId('exchange-profile-help')).toHaveTextContent(
-      /does not choose destinations or credentials/i,
-    );
-    const values = Array.from(exchange.options).map((o) => o.value);
-    expect(values).toEqual(EXCHANGE_PROFILE_OPTIONS.map((o) => o.value));
-    expect(exchange.value).toBe('GLOBAL_AFS');
-    expect(screen.getByTestId('profile-type-select')).toBeVisible();
+    const values = Array.from(dissemination.options).map((o) => o.value);
+    expect(values).toEqual(expect.arrayContaining([...GUEST_DISSEMINATION_IDS]));
+    expect(dissemination.value).toBe(defaultLibraryId('dissemination', 'ICAO_2025'));
+    expect(screen.getByTestId('conversion-library-select')).toBeVisible();
+    expect(screen.queryByTestId('exchange-profile-select')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('profile-type-select')).not.toBeInTheDocument();
   });
 
-  it('TC-EV090-003: sends exchange_profile on AHL bulletin convert', async () => {
+  it('TC-EV090-003: sends disseminationLibraryId on AHL bulletin convert', async () => {
     const user = userEvent.setup();
     render(
       <FileConverter accessToken="tok" isGuest={false} userEmail="op@example.com" />,
@@ -143,8 +152,8 @@ describe('TC-EV090: Exchange profile light picker', () => {
 
     await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
     await user.selectOptions(
-      screen.getByTestId('exchange-profile-select'),
-      'APAC_ROBEX',
+      screen.getByTestId('dissemination-library-select'),
+      defaultLibraryId('dissemination', 'US_FAA_NWS'),
     );
     fireEvent.change(screen.getByTestId('tac-editor'), {
       target: {
@@ -159,12 +168,13 @@ describe('TC-EV090: Exchange profile light picker', () => {
     });
     expect(mockConvertBulletin).toHaveBeenCalledWith(
       expect.objectContaining({
-        exchangeProfile: 'APAC_ROBEX',
+        disseminationLibraryId: defaultLibraryId('dissemination', 'US_FAA_NWS'),
+        conversionLibraryId: defaultLibraryId('conversion', 'ICAO_2025'),
       }),
     );
   });
 
-  it('hydrates exchange_profile snake_case from a stored session', () => {
+  it('shows Dissemination library after session hydrate (no exchange chrome)', () => {
     render(
       <FileConverter
         accessToken="tok"
@@ -183,10 +193,11 @@ describe('TC-EV090: Exchange profile light picker', () => {
         }
       />,
     );
-    expect(screen.getByTestId('exchange-profile-select')).toHaveValue('EUR_RODEX');
+    expect(screen.getByTestId('dissemination-library-select')).toBeVisible();
+    expect(screen.queryByTestId('exchange-profile-select')).not.toBeInTheDocument();
   });
 
-  it('hydrates exchangeProfile camelCase from a stored session', () => {
+  it('shows Conversion library after camelCase session hydrate', () => {
     render(
       <FileConverter
         accessToken="tok"
@@ -205,6 +216,7 @@ describe('TC-EV090: Exchange profile light picker', () => {
         }
       />,
     );
-    expect(screen.getByTestId('exchange-profile-select')).toHaveValue('AFI');
+    expect(screen.getByTestId('conversion-library-select')).toBeVisible();
+    expect(screen.queryByTestId('exchange-profile-select')).not.toBeInTheDocument();
   });
 });

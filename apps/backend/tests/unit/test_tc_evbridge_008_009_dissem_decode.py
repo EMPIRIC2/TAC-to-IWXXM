@@ -2,10 +2,19 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+from unittest.mock import MagicMock
+from uuid import uuid4
+
 import pytest
+from dissemination.handles import default_handle_store
+from dissemination.rate_limit import DisseminationRateLimiter
 from fastapi.testclient import TestClient
 from src import api as api_module
-from src.utilities.security import verify_supabase_token
+from src.routers import dissemination as diss_router
+from src.utilities.abuse_controls import get_limiter
+from src.utilities.security import verify_optional_supabase_token, verify_supabase_token
 from tac2iwxxm.library_assets import get_first_party_library_asset
 
 _TAC = "METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012="
@@ -19,12 +28,24 @@ _XML = (
 @pytest.fixture
 def client(monkeypatch: pytest.MonkeyPatch):
     async def override_verify_token():
-        return {"sub": "test-user", "aud": "test-aud"}
+        return {"sub": str(uuid4()), "aud": "test-aud"}
 
     api_module.app.dependency_overrides[verify_supabase_token] = override_verify_token
+    api_module.app.dependency_overrides[verify_optional_supabase_token] = override_verify_token
+    monkeypatch.setenv("DISSEMINATION_EGRESS_ALLOWLIST", "")
+    lim = DisseminationRateLimiter(max_per_minute=1000)
+    monkeypatch.setattr(diss_router, "default_rate_limiter", lim)
+    default_handle_store.clear()
+    get_limiter().reset()
     test_client = TestClient(api_module.app)
     yield test_client
     api_module.app.dependency_overrides.clear()
+    default_handle_store.clear()
+    get_limiter().reset()
+
+
+def _sqlite_uri(tmp_path: Path) -> str:
+    return f"sqlite+aiosqlite:///{tmp_path / 'dissem.db'}"
 
 
 def test_tc_evbridge_008_convert_only_skips_dissemination_transforms(
@@ -77,6 +98,283 @@ def test_tc_evbridge_008_convert_bulletin_applies_dissemination_library(
     assert xml is not None
     assert "MeteorologicalBulletin" in xml
     assert "dissemination-checksum" in xml
+
+
+def test_tc_evbridge_008_convert_bulletin_unknown_conversion_library(
+    client: TestClient,
+) -> None:
+    bulletin = f"SAUS31 KZNY 121200\n{_TAC}"
+    response = client.post(
+        "/api/v1/convert-bulletin",
+        files={
+            "manual_text": (None, bulletin),
+            "product": (None, "METAR"),
+            "conversion_library_id": (None, "LIB.CONVERSION.NOT_REAL"),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code == 400
+    assert "Unknown conversion library" in response.text
+
+
+def test_tc_evbridge_008_convert_bulletin_unknown_dissemination_library(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fake_convert(tac: str, **kwargs):
+        return _XML, None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+    bulletin = f"SAUS31 KZNY 121200\n{_TAC}"
+    response = client.post(
+        "/api/v1/convert-bulletin",
+        files={
+            "manual_text": (None, bulletin),
+            "product": (None, "METAR"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
+            "dissemination_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code == 400
+    assert "Unknown dissemination library" in response.text
+
+
+def test_tc_evbridge_008_convert_bulletin_transform_value_error(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fake_convert(tac: str, **kwargs):
+        return _XML, None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    def boom(*_a, **_k):
+        raise ValueError("bad transform")
+
+    monkeypatch.setattr(
+        "dissemination.transforms.apply_dissemination_transforms",
+        boom,
+    )
+    bulletin = f"SAUS31 KZNY 121200\n{_TAC}"
+    response = client.post(
+        "/api/v1/convert-bulletin",
+        files={
+            "manual_text": (None, bulletin),
+            "product": (None, "METAR"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
+            "dissemination_library_id": (None, "LIB.DISSEMINATION.ICAO_2025"),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code == 400
+    assert "bad transform" in response.text
+
+
+def test_tc_evbridge_008_convert_json_library_ids(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fake_convert(tac: str, **kwargs):
+        return _XML, None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+    response = client.post(
+        "/api/v1/convert",
+        json={
+            "metars": [_TAC],
+            "version": "2025-2",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
+            "tac_validation_library_id": "LIB.TAC_VALIDATION.ICAO_2025",
+            "iwxxm_validation_library_id": "LIB.IWXXM_VALIDATION.ICAO_2025",
+            "dissemination_library_id": "LIB.DISSEMINATION.ICAO_2025",
+            "decoding_library_id": "LIB.DECODING.ICAO_2025",
+            "validation_level": "basic",
+        },
+    )
+    assert response.status_code == 200, response.text[:400]
+
+
+def test_tc_evbridge_008_convert_custom_library_engine(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fake_convert(tac: str, **kwargs):
+        return _XML, None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+
+    custom = MagicMock()
+    custom.engine_profile_id = "ICAO_2025"
+    fake_svc = MagicMock()
+    fake_svc.get_library_asset.return_value = custom
+    monkeypatch.setattr(
+        "src.routers.conversion.ConversionProfilesService",
+        lambda *_a, **_k: fake_svc,
+    )
+
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (None, _TAC),
+            "product": (None, "METAR"),
+            "conversion_library_id": (None, str(uuid4())),
+            "lint": (None, "false"),
+        },
+        headers={"Authorization": "Bearer test-token"},
+    )
+    assert response.status_code == 200, response.text[:400]
+    fake_svc.get_library_asset.assert_called()
+
+
+def test_tc_evbridge_008_convert_custom_library_lookup_exception(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fake_convert(tac: str, **kwargs):
+        return _XML, None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+    fake_svc = MagicMock()
+    fake_svc.get_library_asset.side_effect = RuntimeError("db down")
+    monkeypatch.setattr(
+        "src.routers.conversion.ConversionProfilesService",
+        lambda *_a, **_k: fake_svc,
+    )
+
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (None, _TAC),
+            "product": (None, "METAR"),
+            "conversion_library_id": (None, str(uuid4())),
+            "lint": (None, "false"),
+        },
+        headers={"Authorization": "Bearer test-token"},
+    )
+    assert response.status_code == 400
+    assert "Unknown conversion library" in response.text
+
+
+def test_tc_evbridge_008_convert_unknown_library_without_auth(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Unauthenticated convert: custom engine callback returns None (profiles_service absent)."""
+    api_module.app.dependency_overrides.pop(verify_optional_supabase_token, None)
+
+    async def no_auth():
+        return None
+
+    api_module.app.dependency_overrides[verify_optional_supabase_token] = no_auth
+
+    def fake_convert(tac: str, **kwargs):
+        return _XML, None
+
+    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
+    response = client.post(
+        "/api/v1/convert",
+        files={
+            "manual_text": (None, _TAC),
+            "product": (None, "METAR"),
+            "conversion_library_id": (None, str(uuid4())),
+            "lint": (None, "false"),
+        },
+    )
+    assert response.status_code == 400
+    assert "Unknown conversion library" in response.text
+
+
+def test_tc_evbridge_008_send_applies_dissemination_library(
+    client: TestClient,
+    tmp_path: Path,
+) -> None:
+    uri = _sqlite_uri(tmp_path)
+    pre = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps({"sink_type": "sqlite", "uri": uri, "ddl": True}),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert pre.status_code == 200, pre.text
+    handle = pre.json()["handle"]
+    send = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "handle": handle,
+                "iwxxm_xml": _XML,
+                "product": "metar",
+                "dissemination_library_id": "LIB.DISSEMINATION.ICAO_2025",
+                "params": {"bulletin_identifier": "A_SEND.xml"},
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert send.status_code == 200, send.text
+    assert send.json()["ok"] is True
+
+
+def test_tc_evbridge_008_send_unknown_dissemination_library(
+    client: TestClient,
+    tmp_path: Path,
+) -> None:
+    uri = _sqlite_uri(tmp_path)
+    pre = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps({"sink_type": "sqlite", "uri": uri, "ddl": True}),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    handle = pre.json()["handle"]
+    send = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "handle": handle,
+                "iwxxm_xml": _XML,
+                "product": "metar",
+                "dissemination_library_id": "LIB.CONVERSION.ICAO_2025",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert send.status_code == 400
+    assert "Unknown dissemination library" in send.text
+
+
+def test_tc_evbridge_008_send_transform_value_error(
+    client: TestClient,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    uri = _sqlite_uri(tmp_path)
+    pre = client.post(
+        "/api/v1/dissemination/preflight",
+        content=json.dumps({"sink_type": "sqlite", "uri": uri, "ddl": True}),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    handle = pre.json()["handle"]
+
+    def boom(*_a, **_k):
+        raise ValueError("send transform boom")
+
+    monkeypatch.setattr(
+        "dissemination.transforms.apply_dissemination_transforms",
+        boom,
+    )
+    send = client.post(
+        "/api/v1/dissemination/send",
+        content=json.dumps(
+            {
+                "handle": handle,
+                "iwxxm_xml": _XML,
+                "product": "metar",
+                "dissemination_library_id": "LIB.DISSEMINATION.ICAO_2025",
+            }
+        ),
+        headers={"Content-Type": "application/json", "Authorization": "Bearer t"},
+    )
+    assert send.status_code == 400
+    assert "send transform boom" in send.text
 
 
 def test_tc_evbridge_009_decoding_library_seeded_from_decode_tac() -> None:

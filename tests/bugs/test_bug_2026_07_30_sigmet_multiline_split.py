@@ -74,7 +74,7 @@ def test_sigmet_a6_1a_soft_preview_no_header_parse_error(client: TestClient) -> 
         data={
             "manual_text": SIGMET_A6_1A_TS,
             "product": "SIGMET",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "iwxxm_version": "2025-2",
             "preview": "true",
             "stop_on_error": "false",

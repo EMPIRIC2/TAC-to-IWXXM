@@ -13,6 +13,7 @@ import userEvent from '@testing-library/user-event';
 import { FileConverter } from './FileConverter';
 import { clearOverlayOnAuthLoss } from '@/app/utils/clearOverlayOnAuthLoss';
 import { operatorDisseminationUiConfig } from '/utils/operatorDisseminationUi';
+import { defaultLibraryId } from '@/utils/libraryIds';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
@@ -1616,7 +1617,9 @@ describe('FileConverter Component', () => {
       expect(bar).toHaveClass('lg:flex-wrap');
       expect(bar.className).not.toMatch(/\blg:flex-nowrap\b/);
       expect(screen.getByTestId('recent-work-collapsed')).toBeInTheDocument();
-      expect(screen.getByTestId('exchange-profile-select')).toBeInTheDocument();
+      expect(screen.getByTestId('library-pickers-bar')).toBeInTheDocument();
+      expect(screen.getByTestId('conversion-library-select')).toBeInTheDocument();
+      expect(screen.queryByTestId('exchange-profile-select')).not.toBeInTheDocument();
     });
 
     it('hides Convert&Send and Disseminate while destinations UI is off (TC-EV042-001 gate residual)', () => {
@@ -3180,7 +3183,10 @@ describe('FileConverter Component', () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
 
-      await user.selectOptions(screen.getByTestId('profile-type-select'), 'US_FAA_NWS');
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
+      );
       await user.click(screen.getByTestId('examples-select'));
 
       expect(
@@ -3197,7 +3203,10 @@ describe('FileConverter Component', () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter />);
 
-      await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'CA_ECCC'),
+      );
       await user.click(screen.getByTestId('examples-select'));
 
       expect(
@@ -5753,7 +5762,9 @@ describe('FileConverter Component', () => {
           }
         />,
       );
-      expect(screen.getByTestId('profile-type-select')).toHaveValue('CA_ECCC');
+      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+        defaultLibraryId('conversion', 'CA_ECCC'),
+      );
     });
 
     it.skip('reloads sparse ca_eccc preferences via dialog save', async () => {
@@ -5768,7 +5779,9 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(mockToast.info).toHaveBeenCalled();
       });
-      expect(screen.getByTestId('profile-type-select')).toHaveValue('CA_ECCC');
+      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+        defaultLibraryId('conversion', 'CA_ECCC'),
+      );
     });
   });
 
@@ -6122,10 +6135,15 @@ describe('FileConverter Component', () => {
         failed: 0,
       });
       render(<FileConverter {...defaultProps} accessToken="jwt-pr" />);
-      const presetSelect = await screen.findByTestId('semantic-preset-select');
-      await user.selectOptions(presetSelect, 'pr-uuid-1');
-      expect(screen.getByTestId('profile-type-select')).toHaveValue('US_FAA_NWS');
-      expect(screen.getByTestId('signed-overlay-select')).toHaveValue('ov-uuid-1');
+      // Legacy preset / overlay Convert chrome is hard-cut; assert library pickers instead.
+      expect(await screen.findByTestId('library-pickers-bar')).toBeInTheDocument();
+      expect(screen.getByTestId('conversion-library-select')).toBeInTheDocument();
+      expect(screen.queryByTestId('semantic-preset-select')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('signed-overlay-select')).not.toBeInTheDocument();
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
+      );
 
       fireEvent.change(screen.getByTestId('tac-editor'), {
         target: { value: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012' },
@@ -6137,9 +6155,7 @@ describe('FileConverter Component', () => {
       });
       expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
         expect.objectContaining({
-          presetId: 'pr-uuid-1',
-          profile: 'US_FAA_NWS',
-          overlayId: 'ov-uuid-1',
+          conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
           accessToken: 'jwt-pr',
         }),
       );
@@ -6842,7 +6858,10 @@ describe('FileConverter Component', () => {
       );
       expect(screen.getByText(/IWXXM 2025-2 core/)).toBeInTheDocument();
 
-      await user.selectOptions(screen.getByTestId('profile-type-select'), 'US_FAA_NWS');
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
+      );
 
       await waitFor(() => {
         expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
@@ -6910,11 +6929,14 @@ describe('FileConverter Component', () => {
         expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
       });
 
-      await user.selectOptions(screen.getByTestId('profile-type-select'), 'AU_BOM');
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
+      );
 
       await waitFor(() => {
         expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
-          'AU_BOM',
+          'US_FAA_NWS',
         );
       });
       expect(screen.getByText(/IWXXM 2025-2/)).toBeInTheDocument();
@@ -6927,7 +6949,10 @@ describe('FileConverter Component', () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
 
-      await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'CA_ECCC'),
+      );
       await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
 
       const select = await screen.findByTestId('report-variant-select');
@@ -6947,7 +6972,10 @@ describe('FileConverter Component', () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
 
-      await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'CA_ECCC'),
+      );
       await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
       await user.selectOptions(screen.getByTestId('report-variant-select'), 'LWIS');
       fireEvent.change(screen.getByTestId('tac-editor'), {
@@ -6960,7 +6988,7 @@ describe('FileConverter Component', () => {
         expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
           expect.objectContaining({
             reportVariant: 'LWIS',
-            profile: 'CA_ECCC',
+            conversionLibraryId: defaultLibraryId('conversion', 'CA_ECCC'),
             product: 'METAR',
           }),
         );
@@ -6971,12 +6999,18 @@ describe('FileConverter Component', () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
 
-      await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'CA_ECCC'),
+      );
       await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
       await user.selectOptions(screen.getByTestId('report-variant-select'), 'LWIS');
       expect(screen.getByTestId('report-variant-select')).toHaveValue('LWIS');
 
-      await user.selectOptions(screen.getByTestId('profile-type-select'), 'ICAO_2025');
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'ICAO_2025'),
+      );
 
       await waitFor(() => {
         expect(screen.queryByTestId('report-variant-select')).not.toBeInTheDocument();

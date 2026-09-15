@@ -51,8 +51,74 @@ def test_resolve_unknown_library_raises() -> None:
         resolve_engine_profile_from_conversion_library("LIB.CONVERSION.NOT_REAL")
 
 
+def test_resolve_non_conversion_library_raises() -> None:
+    """Non-conversion first-party ids are rejected."""
+    with pytest.raises(ValueError, match="Conversion library"):
+        resolve_engine_profile_from_conversion_library("LIB.DISSEMINATION.ICAO_2025")
+
+
+def test_resolve_custom_engine_profile_callback() -> None:
+    """Custom lookup resolves engine profile via semantic alias or raw wire id."""
+    lib_id, engine = resolve_engine_profile_from_conversion_library(
+        "custom-asset-1",
+        get_custom_engine_profile_id=lambda _aid: "annex3",
+    )
+    assert lib_id == "custom-asset-1"
+    assert engine == "ICAO_2025"
+
+    lib_id2, engine2 = resolve_engine_profile_from_conversion_library(
+        "custom-asset-2",
+        get_custom_engine_profile_id=lambda _aid: "NOT_A_SEMANTIC",
+    )
+    assert lib_id2 == "custom-asset-2"
+    assert engine2 == "NOT_A_SEMANTIC"
+
+
+def test_resolve_custom_callback_none_still_unknown() -> None:
+    """Callback that returns None / empty still fails closed."""
+    with pytest.raises(ValueError, match="Unknown"):
+        resolve_engine_profile_from_conversion_library(
+            "missing-custom",
+            get_custom_engine_profile_id=lambda _aid: None,
+        )
+
+
 def test_library_id_for_alias_annex3() -> None:
     """annex3 alias maps to ICAO Conversion library."""
     assert library_id_for_semantic_or_alias("annex3") == "LIB.CONVERSION.ICAO_2025"
     assert library_id_for_semantic_or_alias("iwxxm_us") == "LIB.CONVERSION.US_FAA_NWS"
     assert library_id_for_semantic_or_alias("CA_ECCC") == "LIB.CONVERSION.CA_ECCC"
+
+
+def test_library_id_for_empty_lib_prefix_and_unknown() -> None:
+    """Empty / LIB. passthrough / unknown alias → default or raw LIB id."""
+    assert library_id_for_semantic_or_alias("") == DEFAULT_CONVERSION_LIBRARY_ID
+    assert library_id_for_semantic_or_alias("   ") == DEFAULT_CONVERSION_LIBRARY_ID
+    assert library_id_for_semantic_or_alias("LIB.CONVERSION.US_FAA_NWS") == "LIB.CONVERSION.US_FAA_NWS"
+    assert library_id_for_semantic_or_alias("not-a-real-profile") == DEFAULT_CONVERSION_LIBRARY_ID
+    assert library_id_for_semantic_or_alias("") == DEFAULT_CONVERSION_LIBRARY_ID
+    assert library_id_for_semantic_or_alias("LIB.CONVERSION.US_FAA_NWS") == ("LIB.CONVERSION.US_FAA_NWS")
+    assert library_id_for_semantic_or_alias("not-a-real-profile") == DEFAULT_CONVERSION_LIBRARY_ID
+
+
+def test_resolve_rejects_non_conversion_library() -> None:
+    """Dissemination library id is not valid as conversion_library_id."""
+    with pytest.raises(ValueError, match="Conversion library"):
+        resolve_engine_profile_from_conversion_library("LIB.DISSEMINATION.ICAO_2025")
+
+
+def test_resolve_custom_library_via_callback() -> None:
+    """Custom assets resolve through get_custom_engine_profile_id."""
+    lib_id, engine = resolve_engine_profile_from_conversion_library(
+        "custom-conv-xyz",
+        get_custom_engine_profile_id=lambda _aid: "US_FAA_NWS",
+    )
+    assert lib_id == "custom-conv-xyz"
+    assert engine == "US_FAA_NWS"
+
+    lib_id2, engine2 = resolve_engine_profile_from_conversion_library(
+        "custom-alias",
+        get_custom_engine_profile_id=lambda _aid: "annex3",
+    )
+    assert lib_id2 == "custom-alias"
+    assert engine2 == "ICAO_2025"

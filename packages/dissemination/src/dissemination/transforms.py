@@ -133,7 +133,8 @@ def apply_dissemination_transforms(
         elif kind == "checksum":
             current, digest = _apply_checksum_comment(current)
             annotations.append(f"checksum={digest}")
-        elif kind == "bulletin_rewrap":
+        else:
+            # Remaining known type: bulletin_rewrap (guarded by KNOWN_TRANSFORM_TYPES)
             current = _bulletin_rewrap(current, bulletin_identifier=bid)
         applied.append(step.id)
 
