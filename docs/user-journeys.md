@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-14 (EV-conversion-profile-ux-libraries — UJ-072f)
+> **Last updated**: 2026-09-15 (EV-profile-builder-yaml-libraries — UJ-072h-*)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -93,6 +93,13 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-072e | Author conversion template + TAC→IWXXM bridge | apps/frontend / API | F7.w (EV-080 / #1146) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072f | Profile Builder assembly + conversion token modes | apps/frontend / API | F7.w (EV-conversion-profile-ux-libraries) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072g | Five Libraries + Mapping bridge + hard cut semantic profile | apps/frontend / API | F7.w (EV-bridge-ux-canvas-align) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072h-conv | Author Conversion library (YAML/DnD/IWXXM blocks) | apps/frontend / API | F7.w (EV-profile-builder-yaml-libraries / #1196) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072h-tac | Author TAC validation library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072h-iwxxm | Author IWXXM validation library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072h-dissem | Author Dissemination library (no secrets) | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072h-decode | Author Decoding library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072h-cross | YAML lock / Warn-Fail / WMO reset | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072h-export | Convert export conversion metadata sidecar | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
 | UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
 | UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
@@ -646,6 +653,98 @@ ownership 403 on foreign customs; fail-closed unmatched TAC→IWXXM without rule
 
 **Source**: EV-bridge-ux-canvas-align; ADR-038 amend (EV-bridge); session
 `EV-bridge-ux-canvas-align` (local session-store; not a CORPUS design gate)
+
+---
+
+### UJ-072h-conv: Author Conversion library — YAML/DnD/IWXXM blocks (#1196)
+
+**Actor**: Authenticated meteorological operator (JWT)
+
+**Goal**: Create or customize a Conversion library asset using templates, duplicated mined
+IWXXM schema blocks, or imported YAML; arrange rule cards under WMO (and national) blocks;
+preview with the shared sample drawer; Save Draft (Activate in Phase C).
+
+**Feature**: F7.w deepen (EV-profile-builder-yaml-libraries / #1196)
+
+**Steps**:
+1. Sign in → Profile builder (**Beta**). Open Conversion tab. Confirm Catalog inspector under
+   the editor; no Guided assembly / glossary / workflow / examples prose; tooltips on controls.
+2. Create via **New from template**, **Duplicate mined block**, or **Import YAML**.
+3. DnD rule cards within IWXXM schema blocks; optionally fork a national built-in and add a
+   country extension block.
+4. Set Convert / Decode-only / Skip on a card; use sample drawer for convert preview.
+5. Save **Draft**. (Phase C: Activate when zero Fail; select asset on Convert.)
+
+**Acceptance**: Phase A shell + Draft save; Phase C Activate + runtime. TC-EVPYL-CONV-*;
+H4–H5 after stage FE; EV-048 clean.
+
+**Tier**: T0 / T2 / T3 / H4–H5 · **Tests**: TC-EVPYL-CONV-001..005
+
+**Source**: #1196; ADR-038 amend EVPYL; session `EV-profile-builder-yaml-libraries`
+
+---
+
+### UJ-072h-tac: Author TAC validation library (#1196)
+
+**Actor**: Authenticated operator (JWT)  
+**Goal**: Enable/disable mined issues, change severity, add custom regex issues, import YAML,
+see lint hits in the sample drawer; Save Draft.  
+**Steps**: Profile builder → TAC validation → edit/create → sample drawer lint → Save Draft.  
+**Acceptance / tests**: TC-EVPYL-TAC-001..004; H4–H5 after stage FE.  
+**Source**: #1196; ADR-038 EVPYL
+
+---
+
+### UJ-072h-iwxxm: Author IWXXM validation library (#1196)
+
+**Actor**: Authenticated operator (JWT)  
+**Goal**: Toggle mined Schematron asserts, author custom XPath/regex-on-XML, document/fork
+existing built-in validation profiles, validate sample IWXXM in the drawer; Save Draft.  
+**Acceptance / tests**: TC-EVPYL-IWXXM-001..004; H4–H5 after stage FE.  
+**Source**: #1196; ADR-038 EVPYL
+
+---
+
+### UJ-072h-dissem: Author Dissemination library — no secrets (#1196)
+
+**Actor**: Authenticated operator (JWT)  
+**Goal**: DnD ordered transforms (envelope, topic/filename pattern, checksum, bulletin
+re-wrap); pattern-only YAML; filename/topic preview; import YAML; never persist credentials
+or destination URIs; Save Draft.  
+**Acceptance / tests**: TC-EVPYL-DISSEM-001..004; ADR-021/029; H4–H5 after stage FE.  
+**Source**: #1196; ADR-038 EVPYL
+
+---
+
+### UJ-072h-decode: Author Decoding library (#1196)
+
+**Actor**: Authenticated operator (JWT)  
+**Goal**: Add/edit glossary entries (regex → plain-language gloss), product scope, duplicate
+mined entries, sample drawer decode preview; Save Draft.  
+**Acceptance / tests**: TC-EVPYL-DECODE-001..004; H4–H5 after stage FE.  
+**Source**: #1196; ADR-038 EVPYL
+
+---
+
+### UJ-072h-cross: YAML lock, Warn/Fail, WMO reset (#1196)
+
+**Actor**: Authenticated operator (JWT)  
+**Goal**: Break YAML → guided UI locks until fixed; Fail regex → Draft OK, Activate blocked
+(Phase C); Warn → Activate allowed with visible Warn; reset to WMO defaults.  
+**Acceptance / tests**: TC-EVPYL-CROSS-001..004; H4–H5 after stage FE.  
+**Source**: #1196; ADR-038 EVPYL
+
+---
+
+### UJ-072h-export: Convert export conversion metadata sidecar (#1196)
+
+**Actor**: Authenticated or guest Convert user (toggle available on Convert download paths)  
+**Goal**: On Convert download, ZIP, or single-result download, opt in to “Include conversion
+metadata”; receive `file.xml` + `file.meta.json`; full checklist default when on; remember
+last choice; no credentials/destination URIs/auth tokens in sidecar; operator id/email when
+that checklist item is selected and signed in.  
+**Acceptance**: Phase A; TC-EVPYL-EXPORT-001..004; Beta on toggle; H4–H5 after stage FE.  
+**Source**: #1196; ADR-038 EVPYL
 
 ---
 

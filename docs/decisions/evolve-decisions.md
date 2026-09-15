@@ -1,5 +1,26 @@
 # Evolve Decisions
 
+## Cycle EV-profile-builder-yaml-libraries — YAML/DnD Profile Builder + export metadata (#1196)
+
+**Opened:** 2026-09-15 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-profile-builder-yaml-libraries`  
+**Issue:** [#1196](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1196) · **Documenting→Implementing gate:** closed (await Spec band)
+
+| ID | Outcome |
+|----|---------|
+| D-EVPYL-01..24 | Intake R1 — major redesign; custom rules all 5 libs; DnD+templates; live regex; tooltips; inspector under editor; WMO defaults; full mining; Beta; phased A→B→C |
+| D-EVPYL-25..40 | Intake R2 — one YAML/asset; live UI↔YAML; strict schema; IWXXM schema blocks; all create paths; shared sample drawer; Warn/Fail; Draft/Activate; signed-in builder; no workflow links; fork nationals; IWXXM SCH+custom; no dissem secrets; Phase A shell |
+| D-EVPYL-41..47 | Intake R3 — export `*.meta.json` sidecar; Convert download toggle; opt-in+remember; full checklist; Phase A; routing approved |
+| D-EVPYL-48..53 | Context — local UI preview; `.meta.json`; all checklist defaults; operator id/email; #1196; deepen F7.w + ADR-038 + UJ-072h |
+| D-EVPYL-54..60 | Requirements R1 — Phase A ACs; Draft-only A / Activate C; expand journeys; export on ZIP+single; must-not-break; library-assets endpoints; Beta dual |
+| D-EVPYL-61..69 | Requirements R2 — separate UJs per library; full scenario matrix; T3 full + smoke happy-path; H4–H5 |
+| D-EVPYL-70..73 | Requirements R3 — journey IDs locked; Phase B/C ACs all; **requirements locked** → draft-docs |
+| D-EVPYL-74..78 | Verify-plan recommended: ZIP-of-two; guest metadata sans identity; Draft off Convert until Activate; risks accepted; Spec continue |
+| D-EVPYL-docverify | Documenting verify **13/13 PASS**; Spec→Build gate AskQuestion pending |
+
+[Corpus: product §F7.w] [Corpus: journeys §UJ-072h-*] [Corpus: api] [Corpus: tests] [Corpus: adr/ADR-038] [Corpus: decisions]
+
+---
+
 ## Cycle EV-verify-1177-1179 — Post-merge verify (#1177–#1179)
 
 **Opened:** 2026-09-11 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-verify-1177-1179`  
