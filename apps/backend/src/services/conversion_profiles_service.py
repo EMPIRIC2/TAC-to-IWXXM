@@ -955,6 +955,7 @@ class ConversionProfilesService:
         data = payload.model_dump(by_alias=False)
         _reject_secrets(data)
         _reject_secrets(payload.body)
+        _reject_template_values(payload.body, path="body")
         now = datetime.now(tz=UTC)
         asset_id = uuid4()
         values = {
@@ -985,6 +986,7 @@ class ConversionProfilesService:
         if first is not None:
             body = payload.body if payload.body is not None else dict(first.body)
             _reject_secrets(body)
+            _reject_template_values(body, path="body")
             create = LibraryAssetCreate.model_validate(
                 {
                     "slug": payload.slug or f"fork-{uuid4().hex[:8]}",
@@ -1004,6 +1006,8 @@ class ConversionProfilesService:
             raise HTTPException(status_code=400, detail="Unknown library asset id") from exc
         data = payload.model_dump(by_alias=False, exclude_unset=True)
         _reject_secrets(data)
+        if "body" in data and isinstance(data["body"], dict):
+            _reject_template_values(cast(dict[str, Any], data["body"]), path="body")
         values: dict[str, Any] = {"updated_at": datetime.now(tz=UTC)}
         for key in ("slug", "name", "body", "shared"):
             if key in data:

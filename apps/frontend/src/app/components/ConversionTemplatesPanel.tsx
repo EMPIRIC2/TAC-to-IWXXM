@@ -72,6 +72,7 @@ export function ConversionTemplatesPanel({
     null,
   );
   const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
 
@@ -79,13 +80,13 @@ export function ConversionTemplatesPanel({
 
   const applySelection = useCallback((tmpl: ConversionTemplateOut) => {
     setSelectedId(tmpl.id);
-    setSlots(
-      (tmpl.slots ?? []).map((s) => ({
-        ...s,
-        mode: s.mode || 'convert',
-        gloss: s.gloss || '',
-      })),
-    );
+    const nextSlots = (tmpl.slots ?? []).map((s) => ({
+      ...s,
+      mode: s.mode || 'convert',
+      gloss: s.gloss || '',
+    }));
+    setSlots(nextSlots);
+    setSelectedSlotId(nextSlots[0]?.id ?? null);
     setFocusGroup(tmpl.sample || '18012G20KT');
     setPreview(null);
   }, []);
@@ -113,8 +114,13 @@ export function ConversionTemplatesPanel({
 
   const moveSelected = (delta: number) => {
     if (!slots.length) return;
-    const idx = 0;
-    setSlots(reorderConversionTemplateSlots(slots, idx, idx + delta));
+    const idx = selectedSlotId ? slots.findIndex((s) => s.id === selectedSlotId) : 0;
+    if (idx < 0) return;
+    const nextIdx = idx + delta;
+    if (nextIdx < 0 || nextIdx >= slots.length) return;
+    const reordered = reorderConversionTemplateSlots(slots, idx, nextIdx);
+    setSlots(reordered);
+    setSelectedSlotId(reordered[nextIdx]?.id ?? selectedSlotId);
   };
 
   const onDrop = (toIndex: number) => {
@@ -230,12 +236,29 @@ export function ConversionTemplatesPanel({
               {slots.map((slot, index) => (
                 <div
                   key={slot.id}
+                  role="button"
+                  tabIndex={0}
                   draggable
-                  onDragStart={() => setDragIndex(index)}
+                  onClick={() => setSelectedSlotId(slot.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setSelectedSlotId(slot.id);
+                    }
+                  }}
+                  onDragStart={() => {
+                    setDragIndex(index);
+                    setSelectedSlotId(slot.id);
+                  }}
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={() => onDrop(index)}
-                  className="space-y-2 rounded border border-gray-200 p-2 dark:border-gray-700"
+                  className={`space-y-2 rounded border p-2 ${
+                    selectedSlotId === slot.id
+                      ? 'border-blue-500 dark:border-blue-400'
+                      : 'border-gray-200 dark:border-gray-700'
+                  }`}
                   data-testid={`conversion-template-slot-${slot.id}`}
+                  aria-pressed={selectedSlotId === slot.id}
                 >
                   <div className="flex cursor-grab items-center gap-2">
                     <span className="text-xs text-gray-400" aria-hidden>

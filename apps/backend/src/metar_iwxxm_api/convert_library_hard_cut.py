@@ -8,6 +8,7 @@ HTTP surface. Engine profile is resolved only from ``conversion_library_id``.
 from __future__ import annotations
 
 from collections.abc import Callable
+from typing import cast
 
 from tac2iwxxm.library_assets import (
     first_party_library_id,
@@ -106,6 +107,62 @@ def resolve_engine_profile_from_conversion_library(
             return token, wire
 
     msg = f"Unknown conversion library id: {token}"
+    raise ValueError(msg)
+
+
+def resolve_dissemination_transforms(
+    dissemination_library_id: str,
+    *,
+    get_custom_dissemination_body: Callable[[str], dict[str, object] | None] | None = None,
+) -> list[object]:
+    """
+    Load ordered Dissemination transform specs for a library id.
+
+    First-party ``LIB.DISSEMINATION.*`` assets resolve from code. Custom UUIDs
+    require ``get_custom_dissemination_body`` (authenticated service lookup that
+    already enforced ``kind == \"dissemination\"``).
+
+    Parameters
+    ----------
+    dissemination_library_id :
+        Dissemination library asset id.
+    get_custom_dissemination_body :
+        Optional callback returning the asset ``body`` dict, or ``None``.
+
+    Returns
+    -------
+    list[object]
+        Transform entries from ``body.transforms`` (may be empty).
+
+    Raises
+    ------
+    ValueError
+        Unknown id or wrong kind.
+    """
+    token = (dissemination_library_id or "").strip()
+    if not token:
+        msg = "dissemination_library_id is required"
+        raise ValueError(msg)
+
+    first = get_first_party_library_asset(token)
+    if first is not None:
+        if first.kind != "dissemination":
+            msg = "dissemination_library_id must reference a Dissemination library"
+            raise ValueError(msg)
+        raw_transforms = (first.body or {}).get("transforms", [])
+        if not isinstance(raw_transforms, list):
+            return []
+        return cast(list[object], raw_transforms)
+
+    if get_custom_dissemination_body is not None:
+        body = get_custom_dissemination_body(token)
+        if body is not None:
+            raw_transforms = body.get("transforms", [])
+            if not isinstance(raw_transforms, list):
+                return []
+            return cast(list[object], raw_transforms)
+
+    msg = f"Unknown dissemination library id: {token}"
     raise ValueError(msg)
 
 

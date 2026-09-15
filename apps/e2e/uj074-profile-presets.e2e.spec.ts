@@ -154,6 +154,39 @@ async function stubEv1051Apis(page: Page): Promise<Capture> {
     });
   });
 
+  await page.route('**/api/v1/profiles/library-assets**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        items: [
+          {
+            id: 'LIB.CONVERSION.CA_ECCC',
+            slug: 'ca-eccc',
+            name: 'CA ECCC Conversion',
+            kind: 'conversion',
+            engineProfileId: 'CA_ECCC',
+            attachedNationalLine: 'CA_ECCC',
+            body: {},
+            access: 'first_party',
+            shared: true,
+          },
+          {
+            id: 'LIB.CONVERSION.ICAO_2025',
+            slug: 'icao-2025',
+            name: 'ICAO Conversion',
+            kind: 'conversion',
+            engineProfileId: 'ICAO_2025',
+            attachedNationalLine: 'ICAO_2025',
+            body: {},
+            access: 'first_party',
+            shared: true,
+          },
+        ],
+      }),
+    });
+  });
+
   await page.route('**/api/v1/profiles/presets**', async (route) => {
     const req = route.request();
     if (req.method() === 'GET') {
@@ -293,28 +326,10 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
     const captured = await stubEv1051Apis(page);
 
     await openProfiles(page);
-    await expect(page.getByTestId('conversion-profiles-presets')).toBeVisible();
-
-    await page.getByTestId('conversion-profiles-preset-slug').fill('e2e-preset');
-    await page.getByTestId('conversion-profiles-preset-name').fill('E2E Shared Preset');
-    await page.getByTestId('conversion-profiles-preset-profile').fill('CA_ECCC');
-    await page.getByTestId('conversion-profiles-preset-iwxxm-version').fill('3.0.0');
-    await page.getByTestId('conversion-profiles-preset-report-variant').fill('LWIS');
-    const shared = page.getByTestId('conversion-profiles-preset-shared');
-    if (!(await shared.isChecked())) {
-      await shared.check();
-    }
-    await page.getByTestId('conversion-profiles-preset-save').click();
-    await expect.poll(() => captured.presetsPost.length).toBe(1);
-    expectBearer(captured.presetsPost[0]!);
-    const presetBody = captured.presetsPost[0]!.postDataJSON() as {
-      slug?: string;
-      shared?: boolean;
-      semanticProfile?: string;
-    };
-    expect(presetBody.slug).toBe('e2e-preset');
-    expect(presetBody.shared).toBe(true);
-    expect(presetBody.semanticProfile).toBe('CA_ECCC');
+    await expect(page.getByTestId('profile-builder-libraries')).toBeVisible();
+    await expect(page.getByTestId('profile-library-tab-conversion')).toBeVisible();
+    await expect(page.getByTestId('conversion-profiles-presets')).toHaveCount(0);
+    await expect(page.getByTestId('conversion-profiles-preset-slug')).toHaveCount(0);
 
     await page.getByTestId('shell-nav-converter').click();
     await expect(

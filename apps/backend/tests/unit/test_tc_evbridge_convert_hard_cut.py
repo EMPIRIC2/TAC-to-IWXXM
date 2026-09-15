@@ -122,3 +122,39 @@ def test_resolve_custom_library_via_callback() -> None:
     )
     assert lib_id2 == "custom-alias"
     assert engine2 == "ICAO_2025"
+
+
+def test_resolve_dissemination_first_party_and_custom() -> None:
+    """Dissemination transforms load from first-party or custom body callback."""
+    from metar_iwxxm_api.convert_library_hard_cut import resolve_dissemination_transforms
+
+    transforms = resolve_dissemination_transforms("LIB.DISSEMINATION.ICAO_2025")
+    assert isinstance(transforms, list)
+    assert transforms  # seeded transforms present
+
+    custom = resolve_dissemination_transforms(
+        "custom-dissem-1",
+        get_custom_dissemination_body=lambda _aid: {
+            "transforms": [{"type": "checksum", "params": {}}],
+        },
+    )
+    assert custom == [{"type": "checksum", "params": {}}]
+
+    with pytest.raises(ValueError, match="Unknown dissemination"):
+        resolve_dissemination_transforms("custom-missing")
+
+    with pytest.raises(ValueError, match="Dissemination library"):
+        resolve_dissemination_transforms("LIB.CONVERSION.ICAO_2025")
+
+
+def test_resolve_custom_callback_raises_kind_error() -> None:
+    """Callback ValueError for wrong kind propagates."""
+
+    def _bad(_aid: str) -> str | None:
+        raise ValueError("conversion_library_id must reference a Conversion library")
+
+    with pytest.raises(ValueError, match="Conversion library"):
+        resolve_engine_profile_from_conversion_library(
+            "custom-wrong-kind",
+            get_custom_engine_profile_id=_bad,
+        )

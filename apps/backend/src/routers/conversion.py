@@ -1295,6 +1295,7 @@ async def convert_bulletin(
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
         ),
     ),
+    auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> Response:
     """Split a WMO AHL bulletin and convert each TAC report.
 
@@ -1307,9 +1308,28 @@ async def convert_bulletin(
             resolve_engine_profile_from_conversion_library,
         )
 
+        profiles_service: ConversionProfilesService | None = None
+        if auth_user is not None:
+            profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
+
+        def _custom_engine(asset_id: str) -> str | None:
+            if profiles_service is None:
+                return None
+            try:
+                asset = profiles_service.get_library_asset(asset_id)
+            except ValueError:
+                raise
+            except Exception:
+                return None
+            if asset.kind != "conversion":
+                msg = "conversion_library_id must reference a Conversion library"
+                raise ValueError(msg)
+            return asset.engine_profile_id
+
         try:
             _, semantic_profile = resolve_engine_profile_from_conversion_library(
                 lib_raw,
+                get_custom_engine_profile_id=_custom_engine,
             )
         except ValueError as exc:
             raise HTTPException(status_code=400, detail=str(exc)) from exc
@@ -1430,6 +1450,25 @@ async def convert_bulletin(
         bulletin_identifier = None
 
     results: list[BulletinReportResultModel] = []
+    dissem_lib = _form_text(dissemination_library_id).strip()
+    dissem_profiles: ConversionProfilesService | None = None
+    if dissem_lib and auth_user is not None:
+        dissem_profiles = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
+
+    def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
+        if dissem_profiles is None:
+            return None
+        try:
+            asset = dissem_profiles.get_library_asset(asset_id)
+        except ValueError:
+            raise
+        except Exception:
+            return None
+        if asset.kind != "dissemination":
+            msg = "dissemination_library_id must reference a Dissemination library"
+            raise ValueError(msg)
+        return dict(asset.body or {})
+
     for index, tac in enumerate(split.reports):
         issues: list[LintIssueModel] = []
         fixes: list[LintFixModel] = []
@@ -1485,21 +1524,15 @@ async def convert_bulletin(
                 bulletin_identifier=bulletin_identifier,
             )
 
-        dissem_lib = _form_text(dissemination_library_id).strip()
         if ok and xml_out and dissem_lib:
             from dissemination.transforms import apply_dissemination_transforms
-            from tac2iwxxm.library_assets import get_first_party_library_asset
+            from metar_iwxxm_api.convert_library_hard_cut import resolve_dissemination_transforms
 
-            body_transforms: object = []
-            first = get_first_party_library_asset(dissem_lib)
-            if first is not None and first.kind == "dissemination":
-                body_transforms = (first.body or {}).get("transforms", [])
-            else:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Unknown dissemination library id: {dissem_lib}",
-                )
             try:
+                body_transforms = resolve_dissemination_transforms(
+                    dissem_lib,
+                    get_custom_dissemination_body=_custom_dissem_body,
+                )
                 transformed = apply_dissemination_transforms(
                     xml_out,
                     body_transforms,
@@ -1564,14 +1597,20 @@ async def convert(
         default="METAR",
         description=("TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)"),
     ),
-    profile: str = Form(default="", description="Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
+    profile: str = Form(
+        default="",
+        description="Rejected — use conversion_library_id.",
+        include_in_schema=False,
+    ),
     semantic_profile: str = Form(
         default="",
-        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",
+        description="Rejected — use conversion_library_id.",
+        include_in_schema=False,
     ),
     exchange_profile: str = Form(
         default="",
-        description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
+        description="Rejected — use dissemination_library_id for packaging transforms.",
+        include_in_schema=False,
     ),
     report_variant: str = Form(
         default="",
@@ -1625,17 +1664,13 @@ async def convert(
     ),
     overlay_id: str = Form(
         default="",
-        description=(
-            "Optional signed ConversionProfile overlay id. When set, requires Bearer JWT "
-            "and ownership (or shared); unknown or unauthorized ids are rejected."
-        ),
+        description="Rejected — overlays removed from Convert; use conversion_library_id.",
+        include_in_schema=False,
     ),
     preset_id: str = Form(
         default="",
-        description=(
-            "Optional saved semantic preset id. When set, requires Bearer JWT. "
-            "Explicit request fields still win when both are supplied."
-        ),
+        description="Rejected — presets removed from Convert; use conversion_library_id.",
+        include_in_schema=False,
     ),
     conversion_template_id: str = Form(
         default="",
@@ -1832,9 +1867,15 @@ async def convert(
         if profiles_service is None:
             return None
         try:
-            return profiles_service.get_library_asset(asset_id).engine_profile_id
+            asset = profiles_service.get_library_asset(asset_id)
+        except ValueError:
+            raise
         except Exception:
             return None
+        if asset.kind != "conversion":
+            msg = "conversion_library_id must reference a Conversion library"
+            raise ValueError(msg)
+        return asset.engine_profile_id
 
     try:
         applied_conversion_library_id, semantic_profile = resolve_engine_profile_from_conversion_library(

@@ -104,14 +104,22 @@ describe('ConversionTemplatesPanel', () => {
     await waitFor(() => {
       expect(screen.getByTestId('conversion-templates-move-down')).toBeInTheDocument();
     });
-    fireEvent.click(screen.getByTestId('conversion-templates-move-down'));
-    fireEvent.click(screen.getByTestId('conversion-templates-move-up'));
-    const first = screen.getByTestId('conversion-template-slot-ddd');
     const second = screen.getByTestId('conversion-template-slot-ff');
+    // Select second slot, move up → ff becomes first among slot roots
+    fireEvent.click(second);
+    fireEvent.click(screen.getByTestId('conversion-templates-move-up'));
+    const slotsRoot = screen.getByTestId('conversion-templates-slots');
+    const slotRoots = Array.from(slotsRoot.children).filter((el) =>
+      (el as HTMLElement).dataset.testid?.startsWith('conversion-template-slot-'),
+    ) as HTMLElement[];
+    expect(slotRoots[0]?.dataset.testid).toBe('conversion-template-slot-ff');
+    expect(slotRoots[1]?.dataset.testid).toBe('conversion-template-slot-ddd');
+    fireEvent.click(screen.getByTestId('conversion-templates-move-down'));
+    const first = screen.getByTestId('conversion-template-slot-ddd');
     fireEvent.dragStart(first);
     fireEvent.dragOver(second);
     fireEvent.drop(second);
-    expect(first).toBeInTheDocument();
+    expect(screen.getByTestId('conversion-template-slot-ddd')).toBeInTheDocument();
   });
 
   it('updates focus and comments fields', async () => {

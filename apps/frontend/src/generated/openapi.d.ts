@@ -1843,7 +1843,7 @@ export interface components {
             exchange_output: boolean;
             /**
              * Exchange Profile
-             * @description Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths
+             * @description Rejected — use dissemination_library_id for packaging transforms.
              * @default
              */
             exchange_profile: string;
@@ -1897,13 +1897,13 @@ export interface components {
             manual_text: string;
             /**
              * Overlay Id
-             * @description Optional signed ConversionProfile overlay id. When set, requires Bearer JWT and ownership (or shared); unknown or unauthorized ids are rejected.
+             * @description Rejected — overlays removed from Convert; use conversion_library_id.
              * @default
              */
             overlay_id: string;
             /**
              * Preset Id
-             * @description Optional saved semantic preset id. When set, requires Bearer JWT. Explicit request fields still win when both are supplied.
+             * @description Rejected — presets removed from Convert; use conversion_library_id.
              * @default
              */
             preset_id: string;
@@ -1921,7 +1921,7 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Rejected — use conversion_library_id.
              * @default
              */
             profile: string;
@@ -1938,7 +1938,7 @@ export interface components {
             report_variant: string;
             /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
+             * @description Rejected — use conversion_library_id.
              * @default
              */
             semantic_profile: string;

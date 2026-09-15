@@ -408,7 +408,7 @@
           },
           "exchange_profile": {
             "default": "",
-            "description": "Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
+            "description": "Rejected \u2014 use dissemination_library_id for packaging transforms.",
             "title": "Exchange Profile",
             "type": "string"
           },
@@ -465,13 +465,13 @@
           },
           "overlay_id": {
             "default": "",
-            "description": "Optional signed ConversionProfile overlay id. When set, requires Bearer JWT and ownership (or shared); unknown or unauthorized ids are rejected.",
+            "description": "Rejected \u2014 overlays removed from Convert; use conversion_library_id.",
             "title": "Overlay Id",
             "type": "string"
           },
           "preset_id": {
             "default": "",
-            "description": "Optional saved semantic preset id. When set, requires Bearer JWT. Explicit request fields still win when both are supplied.",
+            "description": "Rejected \u2014 presets removed from Convert; use conversion_library_id.",
             "title": "Preset Id",
             "type": "string"
           },
@@ -489,7 +489,7 @@
           },
           "profile": {
             "default": "",
-            "description": "Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)",
+            "description": "Rejected \u2014 use conversion_library_id.",
             "title": "Profile",
             "type": "string"
           },
@@ -513,7 +513,7 @@
           },
           "semantic_profile": {
             "default": "",
-            "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",
+            "description": "Rejected \u2014 use conversion_library_id.",
             "title": "Semantic Profile",
             "type": "string"
           },
@@ -7100,6 +7100,11 @@
             "description": "Malformed abbreviated heading (INVALID_AHL) or missing required fields. Engine split failures may include an alias of bulletin_split_failed."
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Convert Bulletin",
         "tags": [
           "Conversion",

@@ -268,18 +268,34 @@ async def dissemination_send(
     dissem_lib = (req.dissemination_library_id or "").strip()
     if dissem_lib:
         from dissemination.transforms import apply_dissemination_transforms
-        from tac2iwxxm.library_assets import get_first_party_library_asset
+        from metar_iwxxm_api.convert_library_hard_cut import resolve_dissemination_transforms
 
-        first = get_first_party_library_asset(dissem_lib)
-        if first is None or first.kind != "dissemination":
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Unknown dissemination library id: {dissem_lib}",
-            )
+        profiles_service: ConversionProfilesService | None = None
+        if auth_user is not None:
+            profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
+
+        def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
+            if profiles_service is None:
+                return None
+            try:
+                asset = profiles_service.get_library_asset(asset_id)
+            except ValueError:
+                raise
+            except Exception:
+                return None
+            if asset.kind != "dissemination":
+                msg = "dissemination_library_id must reference a Dissemination library"
+                raise ValueError(msg)
+            return dict(asset.body or {})
+
         try:
+            body_transforms = resolve_dissemination_transforms(
+                dissem_lib,
+                get_custom_dissemination_body=_custom_dissem_body,
+            )
             transformed = apply_dissemination_transforms(
                 iwxxm_xml,
-                (first.body or {}).get("transforms", []),
+                body_transforms,
                 bulletin_identifier=str(req.params.get("bulletin_identifier") or "") or None,
                 topic=str(req.params.get("topic") or "") or None,
             )
