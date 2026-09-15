@@ -8,6 +8,7 @@
 import { apiUrl, getApiBaseUrl } from './apiBase';
 import { DEFAULT_IWXXM_VERSION } from './iwxxmVersions';
 import { wireSemanticProfile } from './semanticProfile';
+import { conversionLibraryIdFromProfile } from './libraryIds';
 import type {
   BulletinMeta,
   BulletinReportResult,
@@ -182,6 +183,11 @@ export async function convertMetarToIwxxm(params: {
   profile?: string;
   /** Optional saved semantic preset id (requires accessToken). */
   presetId?: string;
+  conversionLibraryId?: string;
+  tacValidationLibraryId?: string;
+  iwxxmValidationLibraryId?: string;
+  disseminationLibraryId?: string;
+  decodingLibraryId?: string;
   iwxxmVersion?: string;
   validateOutput?: boolean;
   validationLevel?: string;
@@ -219,16 +225,34 @@ export async function convertMetarToIwxxm(params: {
 
   // F6.e — product required by API; default METAR when caller omits (legacy callers)
   formData.append('product', (params.product || 'METAR').toUpperCase());
-  // EV-093 / #1024 — prefer semantic_profile (uppercase OpenAPI ids); drop deprecated profile=
-  formData.append('semantic_profile', wireSemanticProfile(params.profile));
-  if (params.exchangeProfile?.trim()) {
-    formData.append('exchange_profile', params.exchangeProfile.trim());
+  // EV-bridge hard cut: Conversion library resolves the engine profile server-side.
+  // Do not send semantic_profile / profile / preset / overlay / exchange on Convert.
+  if (params.conversionLibraryId?.trim()) {
+    formData.append('conversion_library_id', params.conversionLibraryId.trim());
+  } else if (params.profile?.trim()) {
+    // Transitional FE callers that only know a profile wire id.
+    formData.append(
+      'conversion_library_id',
+      conversionLibraryIdFromProfile(params.profile),
+    );
+  }
+  if (params.tacValidationLibraryId?.trim()) {
+    formData.append('tac_validation_library_id', params.tacValidationLibraryId.trim());
+  }
+  if (params.iwxxmValidationLibraryId?.trim()) {
+    formData.append(
+      'iwxxm_validation_library_id',
+      params.iwxxmValidationLibraryId.trim(),
+    );
+  }
+  if (params.disseminationLibraryId?.trim()) {
+    formData.append('dissemination_library_id', params.disseminationLibraryId.trim());
+  }
+  if (params.decodingLibraryId?.trim()) {
+    formData.append('decoding_library_id', params.decodingLibraryId.trim());
   }
   if (params.reportVariant?.trim()) {
     formData.append('report_variant', params.reportVariant.trim().toUpperCase());
-  }
-  if (params.presetId?.trim()) {
-    formData.append('preset_id', params.presetId.trim());
   }
 
   if (params.iwxxmVersion?.trim()) {
@@ -274,20 +298,13 @@ export async function convertMetarToIwxxm(params: {
     formData.append('exchange_output', 'true');
   }
 
-  if (params.overlayId?.trim()) {
-    formData.append('overlay_id', params.overlayId.trim());
-  }
-
   try {
     console.log('[API] Request to:', apiUrl('/convert'));
 
-    const overlayToken = params.overlayId?.trim();
-    const presetToken = params.presetId?.trim();
     const bearer = params.accessToken?.trim();
-    const headers: HeadersInit | undefined =
-      (overlayToken || presetToken) && bearer
-        ? { Authorization: `Bearer ${bearer}` }
-        : undefined;
+    const headers: HeadersInit | undefined = bearer
+      ? { Authorization: `Bearer ${bearer}` }
+      : undefined;
 
     const response = await withTimeout(
       fetch(apiUrl('/convert'), {
@@ -348,6 +365,10 @@ export async function convertBulletin(params: {
   files?: File[];
   product: string;
   profile?: string;
+  /** Conversion library asset id (preferred over profile after EV-bridge). */
+  conversionLibraryId?: string;
+  /** Dissemination library asset id (transforms on Convert & Send / bulletin). */
+  disseminationLibraryId?: string;
   /** Exchange packaging overlay (default GLOBAL_AFS on API when omitted). */
   exchangeProfile?: string;
   iwxxmVersion?: string;
@@ -365,7 +386,17 @@ export async function convertBulletin(params: {
     params.files.forEach((file) => formData.append('files', file));
   }
   formData.append('product', params.product.toUpperCase());
-  formData.append('semantic_profile', wireSemanticProfile(params.profile));
+  if (params.conversionLibraryId?.trim()) {
+    formData.append('conversion_library_id', params.conversionLibraryId.trim());
+  } else if (params.profile?.trim()) {
+    formData.append(
+      'conversion_library_id',
+      conversionLibraryIdFromProfile(params.profile),
+    );
+  }
+  if (params.disseminationLibraryId?.trim()) {
+    formData.append('dissemination_library_id', params.disseminationLibraryId.trim());
+  }
   if (params.exchangeProfile?.trim()) {
     formData.append('exchange_profile', params.exchangeProfile.trim());
   }

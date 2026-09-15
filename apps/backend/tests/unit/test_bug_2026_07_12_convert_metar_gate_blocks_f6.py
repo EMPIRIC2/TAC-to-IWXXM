@@ -41,7 +41,7 @@ def test_convert_taf_product_not_blocked_by_metar_keyword_gate(
         files={
             "manual_text": (None, TAF_TAC),
             "product": (None, "TAF"),
-            "profile": (None, "annex3"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "lint": (None, "false"),
         },
     )

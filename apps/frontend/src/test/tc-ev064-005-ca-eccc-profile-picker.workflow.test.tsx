@@ -1,5 +1,5 @@
 /**
- * TC-EV064-005 (browser unit): CA_ECCC profile picker sends ca_eccc on convert.
+ * TC-EV064-005 (browser unit): CA_ECCC Conversion library sends on convert.
  *
  * Spec: docs/test-plan.md §TC-EV064-005; #1024 slice.
  */
@@ -8,6 +8,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
+import { defaultLibraryId } from '../utils/libraryIds';
 
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
   vi.fn().mockResolvedValue({
@@ -92,8 +93,11 @@ vi.mock('../app/components/IcaoAutocomplete', () => ({
 }));
 
 const CA_TAC = 'METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=';
+const CA_CONVERSION = defaultLibraryId('conversion', 'CA_ECCC');
+const ICAO_CONVERSION = defaultLibraryId('conversion', 'ICAO_2025');
+const US_CONVERSION = defaultLibraryId('conversion', 'US_FAA_NWS');
 
-describe('TC-EV064-005: CA_ECCC profile picker', () => {
+describe('TC-EV064-005: CA_ECCC Conversion library picker', () => {
   const defaultProps = {
     onLogout: vi.fn(),
     userEmail: 'ca@example.com',
@@ -106,18 +110,23 @@ describe('TC-EV064-005: CA_ECCC profile picker', () => {
     localStorage.clear();
   });
 
-  it('lists Canada (ECCC) in the profile dropdown', () => {
+  it('lists Canada (ECCC) in the Conversion library dropdown', () => {
     render(<FileConverter {...defaultProps} />);
-    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
-    const values = Array.from(profile.options).map((o) => o.value);
-    expect(values).toEqual(expect.arrayContaining(['CA_ECCC']));
+    const conversion = screen.getByTestId(
+      'conversion-library-select',
+    ) as HTMLSelectElement;
+    const values = Array.from(conversion.options).map((o) => o.value);
+    expect(values).toEqual(expect.arrayContaining([CA_CONVERSION]));
   });
 
-  it('sends CA_ECCC profile and 3.0.0 version on convert', async () => {
+  it('sends CA_ECCC conversionLibraryId and 3.0.0 version on convert', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+    await user.selectOptions(
+      screen.getByTestId('conversion-library-select'),
+      CA_CONVERSION,
+    );
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: { value: CA_TAC },
     });
@@ -128,30 +137,32 @@ describe('TC-EV064-005: CA_ECCC profile picker', () => {
     });
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
-        profile: 'CA_ECCC',
+        conversionLibraryId: CA_CONVERSION,
         iwxxmVersion: '3.0.0',
       }),
     );
   });
 
-  it('resets IWXXM version to SoT default when leaving CA_ECCC profile', async () => {
+  it('resets IWXXM version to SoT default when leaving CA_ECCC library', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
     await user.click(screen.getByLabelText(/expand parameters/i));
 
-    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
+    const conversion = screen.getByTestId(
+      'conversion-library-select',
+    ) as HTMLSelectElement;
     const version = container.querySelector(
       '#param-iwxxm-version',
     ) as HTMLSelectElement;
 
-    await user.selectOptions(profile, 'CA_ECCC');
+    await user.selectOptions(conversion, CA_CONVERSION);
     expect(version.value).toBe('3.0.0');
 
-    await user.selectOptions(profile, 'ICAO_2025');
+    await user.selectOptions(conversion, ICAO_CONVERSION);
     expect(version.value).not.toBe('3.0.0');
   });
 
-  it('hydrates CA_ECCC profile with pinned 3.0.0 from saved preferences', async () => {
+  it('hydrates CA_ECCC Conversion library with pinned 3.0.0 from saved preferences', async () => {
     localStorage.setItem(
       'metar_converter_preferences',
       JSON.stringify({
@@ -166,28 +177,30 @@ describe('TC-EV064-005: CA_ECCC profile picker', () => {
     const { container } = render(<FileConverter {...defaultProps} />);
     await user.click(screen.getByLabelText(/expand parameters/i));
 
-    expect((screen.getByTestId('profile-type-select') as HTMLSelectElement).value).toBe(
-      'CA_ECCC',
-    );
+    expect(
+      (screen.getByTestId('conversion-library-select') as HTMLSelectElement).value,
+    ).toBe(CA_CONVERSION);
     expect(
       (container.querySelector('#param-iwxxm-version') as HTMLSelectElement).value,
     ).toBe('3.0.0');
   });
 
-  it('keeps 3.0.0 scoped to CA_ECCC and leaves standard lines on other profiles', async () => {
+  it('keeps 3.0.0 scoped to CA_ECCC and leaves standard lines on other libraries', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
     await user.click(screen.getByLabelText(/expand parameters/i));
 
-    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
+    const conversion = screen.getByTestId(
+      'conversion-library-select',
+    ) as HTMLSelectElement;
     const version = container.querySelector(
       '#param-iwxxm-version',
     ) as HTMLSelectElement;
 
-    await user.selectOptions(profile, 'CA_ECCC');
+    await user.selectOptions(conversion, CA_CONVERSION);
     expect(Array.from(version.options).map((o) => o.value)).toEqual(['3.0.0']);
 
-    await user.selectOptions(profile, 'US_FAA_NWS');
+    await user.selectOptions(conversion, US_CONVERSION);
     const standardOptions = Array.from(version.options).map((o) => o.value);
     expect(standardOptions).toEqual(expect.arrayContaining(['2025-2', '2023-1']));
     expect(standardOptions).not.toContain('3.0.0');

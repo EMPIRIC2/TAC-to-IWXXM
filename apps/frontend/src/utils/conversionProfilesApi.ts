@@ -534,6 +534,52 @@ export interface ConversionTemplateListResponse {
   items: ConversionTemplateOut[];
 }
 
+/** Five Libraries asset kinds (Profile builder + Convert pickers). */
+export type LibraryAssetKind =
+  | 'conversion'
+  | 'tac_validation'
+  | 'iwxxm_validation'
+  | 'dissemination'
+  | 'decoding';
+
+/** First-party or custom library asset. */
+export interface LibraryAssetOut {
+  id: string;
+  kind: LibraryAssetKind;
+  name: string;
+  access: 'first_party' | 'custom' | string;
+  engineProfileId: string;
+  attachedNationalLine: string;
+  body?: Record<string, unknown>;
+  forkOf?: string | null;
+  userId?: string | null;
+  slug?: string | null;
+  shared?: boolean;
+  created_at?: string | null;
+  updated_at?: string | null;
+}
+
+export interface LibraryAssetListResponse {
+  items: LibraryAssetOut[];
+}
+
+/**
+ * List first-party and owner custom library assets.
+ *
+ * @param accessToken - Bearer JWT
+ * @param kind - Optional kind filter
+ */
+export async function listLibraryAssets(
+  accessToken: string,
+  kind?: LibraryAssetKind,
+): Promise<LibraryAssetListResponse> {
+  const query = kind ? `?kind=${encodeURIComponent(kind)}` : '';
+  const response = await fetch(apiUrl(`/api/v1/profiles/library-assets${query}`), {
+    headers: authHeaders(accessToken),
+  });
+  return parseJson(response);
+}
+
 export interface ConversionTemplatePreviewResponse {
   templateId: string;
   focusGroup: string;

@@ -10,9 +10,33 @@ export const PROFILES_ASSEMBLY_HEADING = 'Guided assembly';
 export const PROFILES_ASSEMBLY_HELP =
   'Work top to bottom: choose a base profile, map TAC tokens to IWXXM, then attach validation and dissemination when ready.';
 export const PROFILES_ASSEMBLY_STEP_BASE = '1 · Base profile';
-export const PROFILES_ASSEMBLY_STEP_CONVERT = '2 · Conversion tokens';
-export const PROFILES_ASSEMBLY_STEP_VALIDATE = '3 · Validation (later)';
-export const PROFILES_ASSEMBLY_STEP_DISSEM = '4 · Dissemination (later)';
+export const PROFILES_ASSEMBLY_STEP_CONVERT = '2 · Conversion library';
+export const PROFILES_ASSEMBLY_STEP_VALIDATE = '3 · Validation libraries';
+export const PROFILES_ASSEMBLY_STEP_DISSEM = '4 · Dissemination & decoding';
+export const PROFILES_LIBRARIES_HEADING = 'Libraries';
+export const PROFILES_LIBRARIES_HELP =
+  'Create or fork assets in each library. Built-in defaults stay read-only until you fork.';
+export const PROFILES_LIBRARY_TAB_CONVERSION = 'Conversion';
+export const PROFILES_LIBRARY_TAB_TAC_VALIDATION = 'TAC validation';
+export const PROFILES_LIBRARY_TAB_IWXXM_VALIDATION = 'IWXXM validation';
+export const PROFILES_LIBRARY_TAB_DISSEMINATION = 'Dissemination';
+export const PROFILES_LIBRARY_TAB_DECODING = 'Decoding';
+export const PROFILES_LIBRARY_LIST_LOADING = 'Loading library assets…';
+export const PROFILES_LIBRARY_LIST_EMPTY = 'No assets in this library yet.';
+export const PROFILES_LIBRARY_LIST_ERROR = 'Library assets unavailable.';
+export const PROFILES_LIBRARY_ACCESS_BUILTIN = 'built-in';
+export const PROFILES_LIBRARY_ACCESS_CUSTOM = 'custom';
+export const PROFILES_LIBRARY_STUB_HELP =
+  'Select a built-in asset to review. Editing creates your own fork in a later step.';
+export const PROFILES_LIBRARY_DISSEM_HELP =
+  'Ordered post-IWXXM transforms (envelope, topic/filename, checksum, bulletin re-wrap) apply on Disseminate and Convert & Send only — not Convert-only.';
+export const PROFILES_LIBRARY_DISSEM_TRANSFORMS_HEADING = 'Ordered transforms';
+export const PROFILES_LIBRARY_DISSEM_EMPTY_TRANSFORMS =
+  'No transforms defined for this asset.';
+export const PROFILES_LIBRARY_DECODE_HELP =
+  'Plain-language decode glossary seeded from the TAC decode catalog. Select this library on Convert to drive decode explanations.';
+export const PROFILES_LIBRARY_DECODE_ENTRIES_HEADING = 'Decode entries';
+export const PROFILES_LIBRARY_DECODE_EMPTY = 'No matching decode entries.';
 export const PROFILES_CONV_TEMPLATES_HEADING = 'Conversion tokens';
 export const PROFILES_CONV_TEMPLATES_HELP =
   'Map TAC groups to IWXXM blocks with typed slots. Built-in rules can be viewed or forked; your customs are editable.';
@@ -35,13 +59,24 @@ export const PROFILES_CONV_TEMPLATES_ADVANCED_HINT =
   'Optional compiled pattern for experts. Slot builder remains the default path.';
 export const PROFILES_CONV_TEMPLATES_SKIP_CHIP = 'Skipped';
 export const PROFILES_CONV_TEMPLATES_SELECT = 'Conversion rule';
+export const MAPPING_BRIDGE_HEADING = 'Mapping bridge';
+export const MAPPING_BRIDGE_HELP =
+  'See how a TAC group matches a conversion rule and the IWXXM block it produces.';
+export const MAPPING_BRIDGE_COL_TAC = 'TAC report';
+export const MAPPING_BRIDGE_COL_TEMPLATE = 'Template match';
+export const MAPPING_BRIDGE_COL_IWXXM = 'IWXXM block';
+export const MAPPING_BRIDGE_MATCHED = 'Matched';
+export const MAPPING_BRIDGE_UNMATCHED = 'No matching conversion rule';
+export const MAPPING_BRIDGE_UNMATCHED_HINT =
+  'Every TAC group that maps to IWXXM needs an associated conversion rule. Unmatched groups fail closed.';
+export const MAPPING_BRIDGE_EMPTY_IWXXM = 'Run preview to see the IWXXM block.';
 export const PROFILES_GLOSSARY_HEADING = 'What these options mean';
 export const PROFILES_GLOSSARY_PROFILE =
   'Base profile chooses the operational rule set and national extensions used for TAC lint, conversion, and IWXXM validation.';
 export const PROFILES_GLOSSARY_EXCHANGE =
   'Exchange packaging describes how output is bundled for bulletin exchange. It does not select destinations or credentials.';
 export const PROFILES_GLOSSARY_OVERLAY =
-  'Signed overlays are saved server tweaks layered on a base profile so operators can reuse approved adjustments without editing engine code.';
+  'Libraries hold conversion, validation, dissemination, and decoding assets. Built-in defaults stay read-only until you fork a custom copy.';
 export const PROFILES_OVERLAYS_HEADING = 'Signed overlays';
 export const PROFILES_OVERLAYS_LOADING = 'Loading overlays…';
 export const PROFILES_OVERLAYS_EMPTY = 'No overlays yet.';

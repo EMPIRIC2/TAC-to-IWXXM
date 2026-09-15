@@ -82,7 +82,7 @@ def test_convert_accepts_product_swxa(client: TestClient) -> None:
         {
             "manual_text": tac,
             "product": "swxa",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "lint": "false",
         },
     )
@@ -116,7 +116,7 @@ def test_convert_rejects_unknown_product_alias(client: TestClient, bad: str) -> 
         {
             "manual_text": "SWX ADVISORY\nDTG: 20201108/0100Z\n",
             "product": bad,
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "lint": "false",
         },
     )

@@ -181,10 +181,11 @@ async def test_execute_plan_dry_run_skips_send(gateway: DisseminationGateway, ad
         validity_policy="valid-only",
         destination_refs=["postgres"],
         dry_run=True,
+        transforms=[{"type": "checksum"}],
     )
     msg = DisseminationMessage(
         gateway_kind="postgres",
-        params={},
+        params={"bulletin_identifier": "A_PLAN.xml", "topic": "unused"},
         allowlist=_allowlist("127.0.0.1"),
         iwxxm_xml="<x/>",
     )
@@ -311,6 +312,45 @@ def test_dissemination_plan_defaults() -> None:
     assert plan.transforms == []
     assert plan.retry is None
     assert plan.dry_run is False
+
+
+@pytest.mark.asyncio
+async def test_execute_plan_applies_transforms_when_set(gateway: DisseminationGateway, adapter: _FakeAdapter) -> None:
+    """Plan.transforms run before per-destination send (EV-bridge AC8)."""
+    plan = DisseminationPlan(
+        plan_id="p-xf",
+        validity_policy="warn-ok",
+        destination_refs=["postgres"],
+        transforms=["checksum"],
+        dry_run=False,
+    )
+    msg = DisseminationMessage(
+        gateway_kind="postgres",
+        params={"bulletin_identifier": "A_PLAN.xml", "topic": "ignored-when-bid-set"},
+        allowlist=_allowlist("127.0.0.1"),
+        iwxxm_xml=('<?xml version="1.0" encoding="UTF-8"?>\n<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"/>'),
+    )
+    receipts = await execute_plan(plan, msg, gateway)
+    assert receipts[0].status == "DELIVERED"
+    sent_xml = adapter.send.await_args.kwargs["iwxxm_xml"]
+    assert "dissemination-checksum:" in sent_xml
+
+    # Non-dict params still apply transforms (bulletin id / topic omitted).
+    plan2 = DisseminationPlan(
+        plan_id="p-xf2",
+        validity_policy="warn-ok",
+        destination_refs=["postgres"],
+        transforms=["checksum"],
+    )
+    msg2 = DisseminationMessage(
+        gateway_kind="postgres",
+        params="not-a-dict",
+        allowlist=_allowlist("127.0.0.1"),
+        iwxxm_xml="<iwxxm:METAR/>",
+    )
+    receipts2 = await execute_plan(plan2, msg2, gateway)
+    assert receipts2[0].status == "DELIVERED"
+    assert "dissemination-checksum:" in adapter.send.await_args.kwargs["iwxxm_xml"]
 
 
 @pytest.mark.asyncio

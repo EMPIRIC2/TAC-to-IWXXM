@@ -19,6 +19,12 @@ from ..schemas.conversion_profiles import (
     DisseminationTemplateListResponse,
     DisseminationTemplateOut,
     DisseminationTemplateUpdate,
+    LibraryAssetCreate,
+    LibraryAssetListResponse,
+    LibraryAssetOut,
+    LibraryAssetUpdate,
+    LibraryRulePreviewRequest,
+    LibraryRulePreviewResponse,
     OverlayCreate,
     OverlayListResponse,
     OverlayOut,
@@ -347,3 +353,65 @@ def delete_conversion_template(
 ) -> None:
     """Delete an owned custom conversion template."""
     service.delete_conversion_template(template_id)
+
+
+@router.get("/library-assets", response_model=LibraryAssetListResponse)
+def list_library_assets(
+    kind: str | None = None,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> LibraryAssetListResponse:
+    """List first-party and custom five-Libraries assets."""
+    return LibraryAssetListResponse(items=service.list_library_assets(kind=kind))
+
+
+@router.post("/library-assets", response_model=LibraryAssetOut, status_code=201)
+def create_library_asset(
+    payload: LibraryAssetCreate,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> LibraryAssetOut:
+    """Create a custom library asset (optionally forked)."""
+    return service.create_library_asset(payload)
+
+
+@router.post("/library-assets/preview-rule", response_model=LibraryRulePreviewResponse)
+def preview_library_rule(
+    payload: LibraryRulePreviewRequest,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> LibraryRulePreviewResponse:
+    """AC11: associate a TAC group with a conversion library rule."""
+    rule_id, rule_name = service.preview_library_rule(payload.library_id, payload.focus_group)
+    return LibraryRulePreviewResponse(
+        library_id=payload.library_id,
+        focus_group=payload.focus_group,
+        rule_id=rule_id,
+        rule_name=rule_name,
+        matched=True,
+    )
+
+
+@router.get("/library-assets/{asset_id}", response_model=LibraryAssetOut)
+def get_library_asset(
+    asset_id: str,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> LibraryAssetOut:
+    """Fetch one library asset (first-party id or custom UUID)."""
+    return service.get_library_asset(asset_id)
+
+
+@router.patch("/library-assets/{asset_id}", response_model=LibraryAssetOut)
+def patch_library_asset(
+    asset_id: str,
+    payload: LibraryAssetUpdate,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> LibraryAssetOut:
+    """Update custom asset or auto-fork first-party on edit."""
+    return service.update_library_asset(asset_id, payload)
+
+
+@router.delete("/library-assets/{asset_id}", status_code=204)
+def delete_library_asset(
+    asset_id: str,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> None:
+    """Delete an owned custom library asset."""
+    service.delete_library_asset(asset_id)

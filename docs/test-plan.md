@@ -129,6 +129,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
 | UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
 | UJ-072f         | F7.w (EV-conversion-profile-ux-libraries)                    | Profile Builder assembly + conversion token modes (Convert/Decode/Skip)                                                                                                                                                                                  | **H4–H5 when FE ships**           | TC-EVCPU-001..008                                                                        |
+| UJ-072g         | F7.w (EV-bridge-ux-canvas-align)                             | Five Libraries + Mapping bridge + hard cut semantic profile                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVBRIDGE-001..011                                                                     |
 | UJ-069          | F35/F36 (EV-063/EV-090/EV-093; M4 deepen)                    | Semantic convert → exchange package (`GLOBAL_AFS`) with explicit profile/IWXXM-line compatibility                                                                                                                                                          | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-_; TC-EV093-_; milestone 4 cross-version follow-ons          |
 | UJ-075          | F4 deepen (EV-908 / #908)                                    | IWXXM↔IWXXM migrate via `product=iwxxm` — supported/lossy/unsupported matrix                                                                                                                                                                               | T2 (API); H4–H5 N/A MVP           | TC-EV908-001..004                                                                        |
 | UJ-070          | F6+F9+F7.q (EV-981 / #981)                                   | Opt-in propagate decode residuals into remarks / HRT + QM indicator                                                                                                                                                                                        | **H4–H5 required**                | TC-EV981-001..005                                                                        |
@@ -2947,6 +2948,99 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   pair) shows ≥1 highlighted difference (products and/or vs-ICAO deltas and/or IWXXM line)
   while the workbench twin remains compact
 - **Source**: #1145; D-R27=3
+
+### EV-bridge-ux-canvas-align / F7.w — Five Libraries + Mapping bridge + hard cut
+
+- **Mode**: deepen F7.w; five Libraries + bridge UX; hard cut `semantic_profile`
+- **Pass criteria**: AC1–AC10 in [Corpus: product §F7.w] EV-bridge; ADR-038 amend EV-bridge;
+  UJ-072g
+- **Source**: session `EV-bridge-ux-canvas-align`
+
+### TC-EVBRIDGE-001: Five Profile builder sub-tabs
+
+- **Level**: T0 / T2
+- **Objective**: Profile builder exposes Conversion / TAC validation / IWXXM validation /
+  Dissemination / Decoding sub-tabs with create/edit
+- **Pass criteria**: All five tabs render; defaults listed; EV-048 clean labels
+- **Source**: EV-bridge; AC1; UJ-072g
+
+### TC-EVBRIDGE-002: National profile split into five defaults
+
+- **Level**: T0 / T2
+- **Objective**: Each former national semantic profile has five first-party default assets
+- **Pass criteria**: Fixture set covers ICAO_2025 + ≥1 other national line across five libs
+- **Source**: EV-bridge; AC2; hard cut
+
+### TC-EVBRIDGE-003: Fork-on-edit default
+
+- **Level**: T0 / T2
+- **Objective**: Editing a first-party default creates owner fork; builtin unchanged
+- **Pass criteria**: PATCH-on-default → new custom id; GET default unchanged
+- **Source**: EV-bridge; AC3; D-TRUST-01
+
+### TC-EVBRIDGE-004: Non-deletable defaults; deletable forks
+
+- **Level**: T0 / T2
+- **Objective**: DELETE first-party fails closed; DELETE own fork succeeds
+- **Pass criteria**: 403/400 on default delete; 204/200 on own fork delete
+- **Source**: EV-bridge; AC4
+
+### TC-EVBRIDGE-005: Dropped chrome absent
+
+- **Level**: T0 / T2 / T3
+- **Objective**: Signed overlays, Dissemination templates, Semantic preset / Rule pack
+  primary forms absent from Profile builder
+- **Pass criteria**: No operator-visible headings/controls for those forms
+- **Source**: EV-bridge; AC5
+
+### TC-EVBRIDGE-006: Mapping bridge dual surface
+
+- **Level**: T0 / T2 / T3
+- **Objective**: Convert and Profile show TAC → template → IWXXM bridge; Conversion builder
+  supports DnD + ↑↓
+- **Pass criteria**: Bridge columns present; reorder works; preview non-empty for fixture
+- **Source**: EV-bridge; AC6; D-UX-02 / D-CONV-06
+
+### TC-EVBRIDGE-007: Convert bar five pickers + hard cut
+
+- **Level**: T0 / T2 / T3
+- **Objective**: Convert has Product + IWXXM version + five library pickers; no
+  semantic_profile / Exchange / preset / overlay controls; API rejects semantic_profile
+- **Pass criteria**: UI + OpenAPI match; convert with unknown library id fails closed
+- **Source**: EV-bridge; AC7 / AC10; [Corpus: api]
+
+### TC-EVBRIDGE-008: Dissemination transforms apply only on send paths
+
+- **Level**: T0 / T2
+- **Objective**: Annotations + ordered transforms (incl. bulletin re-wrap) run on
+  Disseminate / Convert & Send only — not Convert-only
+- **Pass criteria**: Convert-only skips transform pipeline; send path applies ordered steps;
+  no stored destination secrets
+- **Source**: EV-bridge; AC8; D-DISS-UX-01; ADR-021/029
+
+### TC-EVBRIDGE-009: Decoding library seed + picker
+
+- **Level**: T0 / T2
+- **Objective**: Decoding library seeded from F9/`decode_tac`; Convert picker selects it
+- **Pass criteria**: Defaults listed; fork/edit under trust; picker present on Convert
+- **Source**: EV-bridge; AC9
+
+### TC-EVBRIDGE-010: Beta + EV-048 + fail-closed
+
+- **Level**: T0 / T2
+- **Objective**: Beta badge + Issues feedback; no internal doc refs in operator copy;
+  unknown ids fail closed
+- **Pass criteria**: ADR-043 beta; EV-048 guards green; unknown library → documented error
+- **Source**: EV-bridge; AC10
+
+### TC-EVBRIDGE-011: TAC group requires associated Conversion rule
+
+- **Level**: T0 / T2
+- **Objective**: Every TAC→IWXXM block mapping has an associated Conversion library
+  rule/template; unmatched groups fail closed
+- **Pass criteria**: Fixture with unmatched group → fail-closed error; bridge preview shows
+  miss; matched group shows rule association
+- **Source**: EV-bridge; AC11; ADR-038 EV-bridge §8
 
 ### EV-080 / F7.w — Parameterizable conversion templates + TAC→IWXXM bridge (#1146)
 

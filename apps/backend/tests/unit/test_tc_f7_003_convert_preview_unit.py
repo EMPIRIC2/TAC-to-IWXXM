@@ -43,7 +43,7 @@ def _multipart_convert(
     files: dict[str, tuple[None, str]] = {
         "manual_text": (None, manual_text),
         "product": (None, product),
-        "profile": (None, "annex3"),
+        "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
         "lint": (None, lint),
     }
     if preview is not None:
@@ -199,7 +199,7 @@ def test_convert_preview_json_body_partial_failure(client: TestClient) -> None:
         json={
             "metars": [BAD_METAR_TAC],
             "product": "METAR",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "preview": True,
             "validation_level": "basic",
         },
@@ -244,7 +244,7 @@ def test_convert_preview_json_validation_service_error(client: TestClient, monke
         json={
             "metars": [BAD_METAR_TAC],
             "product": "METAR",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "preview": True,
             "validation_level": "basic",
         },
@@ -268,7 +268,7 @@ def test_convert_preview_file_validation_service_error(client: TestClient, monke
     files = {
         "files": ("bad.metar", BAD_METAR_TAC.encode("utf-8"), "text/plain"),
         "product": (None, "METAR"),
-        "profile": (None, "annex3"),
+        "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
         "preview": (None, "true"),
         "lint": (None, "false"),
     }
@@ -284,7 +284,7 @@ def test_convert_preview_file_upload_soft_fail(client: TestClient) -> None:
     files = {
         "files": ("bad.metar", BAD_METAR_TAC.encode("utf-8"), "text/plain"),
         "product": (None, "METAR"),
-        "profile": (None, "annex3"),
+        "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
         "preview": (None, "true"),
         "lint": (None, "false"),
     }

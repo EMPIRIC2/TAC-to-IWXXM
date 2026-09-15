@@ -53,7 +53,7 @@ class TestTcEv031003PublicRoutesJwtFree:
             {
                 "manual_text": SAMPLE_METAR,
                 "product": "METAR",
-                "profile": "annex3",
+                "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
                 "iwxxm_version": "2025-2",
                 "validate_output": "false",
             },

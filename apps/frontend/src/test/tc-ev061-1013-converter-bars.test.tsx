@@ -1,5 +1,5 @@
 /**
- * T4.1 / TC-EV061-1013 — Product/Profile + param bars (#1013).
+ * T4.1 / TC-EV061-1013 — Product + Library pickers + param bars (#1013).
  *
  * Spec: docs/test-plan.md TC-EV061-1013-001..003; UJ-066; UJ-067;
  * [Corpus: product §F7] [Corpus: journeys] [Corpus: tests]
@@ -106,25 +106,29 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
     localStorage.clear();
   });
 
-  it('keeps Product Type + Profile on one wrap-capable bar at ≥1024px (TC-EV061-1013-001)', () => {
+  it('keeps Product Type + library pickers on one wrap-capable bar at ≥1024px (TC-EV061-1013-001)', () => {
     render(<FileConverter {...defaultProps} />);
 
     const bar = screen.getByTestId('product-profile-bar');
     const product = screen.getByTestId('product-type-select');
-    const profile = screen.getByTestId('profile-type-select');
+    const conversion = screen.getByTestId('conversion-library-select');
+    const libraries = screen.getByTestId('library-pickers-bar');
 
     expect(bar).toContainElement(product);
-    expect(bar).toContainElement(profile);
+    expect(bar).toContainElement(libraries);
+    expect(bar).toContainElement(conversion);
+    expect(bar).toContainElement(screen.getByTestId('dissemination-library-select'));
     expect(bar).not.toContainElement(screen.getByTestId('input-mode-group'));
     expect(bar).not.toContainElement(screen.getByTestId('product-profile-bar-summary'));
     expect(bar).not.toContainElement(screen.getByTestId('semantic-profile-help'));
-    // Wrap so Exchange profile is not painted under Recent work (TC-UX-RW-001).
+    expect(screen.queryByTestId('profile-type-select')).not.toBeInTheDocument();
+    // Wrap so library pickers are not painted under Recent work (TC-UX-RW-001).
     desktopRowContract(bar, 'wrap');
 
     expect(product).toHaveAccessibleName(/^product$/i);
-    expect(profile).toHaveAccessibleName(/^profile$/i);
+    expect(conversion).toHaveAccessibleName(/^conversion$/i);
     expect(screen.getByLabelText(/^product$/i)).toBe(product);
-    expect(screen.getByLabelText(/^profile$/i)).toBe(profile);
+    expect(screen.getByLabelText(/^conversion$/i)).toBe(conversion);
   });
 
   it('keeps mode selects on one aligned no-wrap row at ≥1024px (TC-EV061-1013-002)', () => {
@@ -135,7 +139,9 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
 
     expect(modeBar).toContainElement(modeGroup);
     expect(modeBar).not.toContainElement(screen.getByTestId('product-type-select'));
-    expect(modeBar).not.toContainElement(screen.getByTestId('profile-type-select'));
+    expect(modeBar).not.toContainElement(
+      screen.getByTestId('conversion-library-select'),
+    );
     desktopRowContract(modeBar, 'nowrap');
 
     expect(modeGroup).toHaveAccessibleName(/^input mode$/i);

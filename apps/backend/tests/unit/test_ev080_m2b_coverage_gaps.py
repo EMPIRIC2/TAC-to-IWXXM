@@ -1525,7 +1525,7 @@ def test_convert_ca_eccc_import_fallback_and_validate_paths(
         "/api/v1/convert",
         files={
             "product": (None, "METAR"),
-            "semantic_profile": (None, "ca_eccc"),
+            "conversion_library_id": (None, "LIB.CONVERSION.CA_ECCC"),
             "extensions": (None, "IWXXM_CA"),
             "iwxxm_version": (None, "3.0.0"),
             "manual_text": (None, "METAR CYUL 121151Z 18008KT 10SM FEW250 22/14 A3012="),

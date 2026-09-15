@@ -45,7 +45,7 @@ def test_tc_ev981_api_omit_default_off_no_propagate_issue(api_client: TestClient
         {
             "manual_text": _TAC,
             "product": "METAR",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "iwxxm_version": "2025-2",
             "lint": "false",
         },
@@ -66,7 +66,7 @@ def test_tc_ev981_api_flag_on_iwxxm_us_folds_residual(api_client: TestClient) ->
         {
             "manual_text": _TAC,
             "product": "METAR",
-            "profile": "iwxxm_us",
+            "conversion_library_id": "LIB.CONVERSION.US_FAA_NWS",
             "iwxxm_version": "2025-2",
             "lint": "false",
             "propagate_residuals_to_remarks": "true",
@@ -89,7 +89,7 @@ def test_tc_ev981_api_annex3_flag_on_documents_no_xml_target(api_client: TestCli
         {
             "manual_text": _TAC,
             "product": "METAR",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "iwxxm_version": "2025-2",
             "lint": "false",
             "propagate_residuals_to_remarks": "true",

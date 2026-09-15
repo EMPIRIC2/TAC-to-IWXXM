@@ -251,6 +251,50 @@ async function stubProfilesApis(
     await route.fallback();
   });
 
+  await page.route('**/api/v1/profiles/library-assets**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        items: [
+          {
+            id: 'LIB.CONVERSION.ICAO_2025',
+            slug: 'icao-2025',
+            name: 'ICAO / WMO Conversion',
+            kind: 'conversion',
+            engineProfileId: 'ICAO_2025',
+            attachedNationalLine: 'ICAO_2025',
+            body: {},
+            access: 'first_party',
+            shared: true,
+          },
+          {
+            id: 'LIB.CONVERSION.US_FAA_NWS',
+            slug: 'us-faa-nws',
+            name: 'US FAA/NWS Conversion',
+            kind: 'conversion',
+            engineProfileId: 'US_FAA_NWS',
+            attachedNationalLine: 'US_FAA_NWS',
+            body: {},
+            access: 'first_party',
+            shared: true,
+          },
+          {
+            id: 'LIB.DISSEMINATION.ICAO_2025',
+            slug: 'dissem-icao',
+            name: 'ICAO Dissemination',
+            kind: 'dissemination',
+            engineProfileId: 'ICAO_2025',
+            attachedNationalLine: 'ICAO_2025',
+            body: { transforms: [] },
+            access: 'first_party',
+            shared: true,
+          },
+        ],
+      }),
+    });
+  });
+
   await page.route('**/api/v1/convert', async (route) => {
     captured.convert.push(route.request());
     await route.fulfill({
@@ -302,7 +346,7 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(page.getByTestId('conversion-profiles-inspector')).toHaveCount(0);
   });
 
-  test('TC-EV933-006: inspect catalog, save pack + overlay, convert with overlay_id', async ({
+  test('TC-EV933-006: inspect catalog, save pack + overlay, convert with Conversion library', async ({
     page,
   }) => {
     await seedMockAuth(page);
@@ -326,80 +370,15 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
       'US_FAA_NWS',
     );
 
-    await page.getByTestId('conversion-profiles-pack-slug').fill('e2e-pack');
-    await page.getByTestId('conversion-profiles-pack-profile').fill('ICAO_2025');
-    await page.getByTestId('conversion-profiles-pack-product').fill('METAR');
-    await page.getByTestId('conversion-profiles-pack-stage').fill('lint');
-    await page.getByTestId('conversion-profiles-pack-severity').fill('warning');
-    await page.getByTestId('conversion-profiles-pack-message').fill('soft lint');
-    await page.getByTestId('conversion-profiles-pack-save').click();
-    await expect.poll(() => captured.rulePacksPost.length).toBe(1);
-    expectBearer(captured.rulePacksPost[0]!);
-    const packBody = captured.rulePacksPost[0]!.postDataJSON() as {
-      slug?: string;
-      profile?: string;
-    };
-    expect(packBody.slug).toBe('e2e-pack');
-    expect(packBody.profile).toBe('ICAO_2025');
-
-    await page.getByTestId('conversion-profiles-overlay-slug').fill('e2e-overlay');
-    await page.getByTestId('conversion-profiles-overlay-base').fill('ICAO_2025');
-    await page.getByTestId('conversion-profiles-overlay-body').fill('{"lint":true}');
-    await page.getByTestId('conversion-profiles-overlay-save').click();
-    await expect.poll(() => captured.overlaysPost.length).toBe(1);
-    expectBearer(captured.overlaysPost[0]!);
-
-    await page.getByTestId('conversion-profiles-import-input').setInputFiles({
-      name: 'conversion-profile-share.json',
-      mimeType: 'application/json',
-      buffer: Buffer.from(
-        JSON.stringify({
-          schemaVersion: 1,
-          rulePacks: [
-            {
-              slug: 'shared-pack',
-              profile: 'US_FAA_NWS',
-              product: 'METAR',
-              stage: 'lint',
-              severity: 'warning',
-              when: 'RMK',
-              message: 'shared import',
-              standardReference: 'FMH-1',
-            },
-          ],
-          overlays: [
-            {
-              slug: 'shared-overlay',
-              baseProfileId: 'US_FAA_NWS',
-              body: { lint: true },
-              shared: true,
-            },
-          ],
-        }),
-      ),
-    });
-    await expect.poll(() => captured.rulePacksPost.length).toBe(2);
-    await expect.poll(() => captured.overlaysPost.length).toBe(2);
-    const importedPackBody = captured.rulePacksPost[1]!.postDataJSON() as {
-      slug?: string;
-      profile?: string;
-      standardReference?: string;
-    };
-    expect(importedPackBody).toMatchObject({
-      slug: 'shared-pack',
-      profile: 'US_FAA_NWS',
-      standardReference: 'FMH-1',
-    });
-    const importedOverlayBody = captured.overlaysPost[1]!.postDataJSON() as {
-      slug?: string;
-      baseProfileId?: string;
-      shared?: boolean;
-    };
-    expect(importedOverlayBody).toMatchObject({
-      slug: 'shared-overlay',
-      baseProfileId: 'US_FAA_NWS',
-      shared: true,
-    });
+    await expect(page.getByTestId('profile-builder-libraries')).toBeVisible();
+    await expect(page.getByTestId('profile-library-tab-conversion')).toBeVisible();
+    await page.getByTestId('profile-library-tab-dissemination').click();
+    await expect(page.getByTestId('profile-library-panel-dissemination')).toBeVisible();
+    await page.getByTestId('profile-library-tab-conversion').click();
+    await expect(page.getByTestId('library-assets-panel-conversion')).toBeVisible();
+    await expect(page.getByTestId('conversion-profiles-presets')).toHaveCount(0);
+    await expect(page.getByTestId('conversion-profiles-pack-slug')).toHaveCount(0);
+    await expect(page.getByTestId('conversion-profiles-overlay-slug')).toHaveCount(0);
 
     await page.getByTestId('shell-nav-converter').click();
     await expect(
@@ -407,11 +386,12 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     ).toBeVisible();
     await dismissPrivacyNoticeIfPresent(page);
 
-    const profile = page.getByTestId('profile-type-select');
-    await expect(profile).toBeVisible();
-    await expect(page.getByTestId('exchange-profile-select')).toBeVisible();
-    await expect(page.getByTestId('signed-overlay-select')).toBeVisible();
-    await page.getByTestId('signed-overlay-select').selectOption(OVERLAY_ID);
+    await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
+    await expect(page.getByTestId('profile-type-select')).toHaveCount(0);
+    await expect(page.getByTestId('signed-overlay-select')).toHaveCount(0);
+    await page
+      .getByTestId('conversion-library-select')
+      .selectOption('LIB.CONVERSION.US_FAA_NWS');
 
     const editor = page.getByTestId('tac-editor');
     await editor.click();
@@ -424,11 +404,13 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     expectBearer(convertReq);
     const form = convertReq.postDataBuffer()?.toString('utf8') ?? '';
     expect(form).toMatch(
-      /name="overlay_id"\r?\n\r?\n11111111-1111-4111-8111-111111111111/,
+      /name="conversion_library_id"\r?\n\r?\nLIB\.CONVERSION\.US_FAA_NWS/,
     );
+    expect(form).not.toMatch(/name="overlay_id"/);
+    expect(form).not.toMatch(/name="semantic_profile"/);
   });
 
-  test('TC-EV933-006 regression: #1024 pickers + dissemination drawer still work', async ({
+  test('TC-EV933-006 regression: library pickers + dissemination drawer still work', async ({
     page,
   }) => {
     await seedMockAuth(page);
@@ -436,18 +418,21 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await stubProfilesApis(page);
 
     await openPublicConverter(page);
-    await expect(page.getByTestId('profile-type-select')).toBeVisible();
-    await expect(page.getByTestId('exchange-profile-select')).toBeVisible();
-    await page.getByTestId('profile-type-select').selectOption('AU_BOM');
-    await page.getByTestId('exchange-profile-select').selectOption('APAC_ROBEX');
-    await expect(page.getByTestId('profile-type-select')).toHaveValue('AU_BOM');
-    await expect(page.getByTestId('exchange-profile-select')).toHaveValue('APAC_ROBEX');
+    await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
+    await page
+      .getByTestId('conversion-library-select')
+      .selectOption('LIB.CONVERSION.US_FAA_NWS');
+    await page
+      .getByTestId('dissemination-library-select')
+      .selectOption('LIB.DISSEMINATION.US_FAA_NWS');
+    await expect(page.getByTestId('conversion-library-select')).toHaveValue(
+      'LIB.CONVERSION.US_FAA_NWS',
+    );
 
     const openBtn = page.getByTestId('open-dissemination-drawer');
     await expect(openBtn).toBeEnabled({ timeout: 15_000 });
     await openBtn.click();
     await expect(page.getByTestId('dissemination-drawer')).toBeVisible();
-    await expect(page.getByTestId('dissemination-exchange-profile')).toBeVisible();
   });
 
   test('TC-EV1120-010/012/014/017: summary, compare, blocks, and starter sync', async ({
@@ -503,24 +488,14 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
       /WMO IWXXM 2025-2/i,
     );
     await expect(
-      page.getByTestId('conversion-profiles-block-jump-packs'),
-    ).toHaveAttribute('href', '#conversion-profiles-packs');
+      page.getByTestId('conversion-profiles-block-jump-libraries'),
+    ).toHaveAttribute('href', '#profile-builder-libraries');
 
     await page.getByTestId('conversion-profiles-select').selectOption('US_FAA_NWS');
-    await expect(page.getByTestId('conversion-profiles-pack-profile')).toHaveValue(
-      'US_FAA_NWS',
-    );
-    await expect(page.getByTestId('conversion-profiles-overlay-base')).toHaveValue(
-      'US_FAA_NWS',
-    );
-    await page.getByTestId('conversion-profiles-pack-slug').fill('custom-pack');
-    await page.getByTestId('conversion-profiles-select').selectOption('CA_ECCC');
-    await expect(page.getByTestId('conversion-profiles-pack-slug')).toHaveValue(
-      'custom-pack',
-    );
-    await expect(page.getByTestId('conversion-profiles-pack-profile')).toHaveValue(
-      'US_FAA_NWS',
-    );
+    await expect(page.getByTestId('profile-builder-libraries')).toBeVisible();
+    await expect(page.getByTestId('library-assets-select-conversion')).toBeVisible();
+    await expect(page.getByTestId('conversion-profiles-pack-slug')).toHaveCount(0);
+    await expect(page.getByTestId('conversion-profiles-overlay-base')).toHaveCount(0);
   });
 
   test('TC-EV1120-011/013/015: workbench twin and profile-aware example refresh', async ({
@@ -544,7 +519,9 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
       /Overlays:\s*1/i,
     );
 
-    await page.getByTestId('profile-type-select').selectOption('US_FAA_NWS');
+    await page
+      .getByTestId('conversion-library-select')
+      .selectOption('LIB.CONVERSION.US_FAA_NWS');
     await expect(page.getByTestId('workbench-profile-summary')).toContainText(
       /US_FAA_NWS/i,
     );

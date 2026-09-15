@@ -59,7 +59,7 @@ def test_tc_f28_005_lint_and_convert_smoke(smoke_client: TestClient) -> None:
         {
             "manual_text": tac,
             "product": "swxa",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "lint": "false",
         },
     )

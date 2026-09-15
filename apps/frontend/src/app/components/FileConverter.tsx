@@ -48,27 +48,18 @@ import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DisseminationDrawer } from './DisseminationDrawer';
 import { BetaBadge } from './BetaBadge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
-import { clearOverlayOnAuthLoss } from '@/app/utils/clearOverlayOnAuthLoss';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
 import {
   fetchProfileCatalog,
-  listPresets,
-  listOverlays,
   type MetarFamilyVariant,
-  type OverlayOut,
-  type PresetOut,
   type ProfileCatalogEntry,
 } from '@/utils/conversionProfilesApi';
-import {
-  CONVERT_OVERLAY_HELP,
-  CONVERT_OVERLAY_LABEL,
-  CONVERT_OVERLAY_NONE,
-  CONVERT_PRESET_HELP,
-  CONVERT_PRESET_LABEL,
-  CONVERT_PRESET_NONE,
-} from '@/utils/conversionProfilesCopy';
 import { convertOverlayFields } from '@/utils/convertOverlayFields';
+import { WorkbenchMappingBridge } from './WorkbenchMappingBridge';
+import { LibraryPickersBar } from './LibraryPickersBar';
+import { libraryIdsForNationalLine } from '@/utils/libraryIds';
+import { optionalFormField } from '@/utils/optionalFormField';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
 import { PrivacySettingsDialog } from './PrivacySettingsDialog';
@@ -135,8 +126,6 @@ import {
 import {
   coerceExchangeProfile,
   DEFAULT_EXCHANGE_PROFILE,
-  EXCHANGE_PROFILE_OPTIONS,
-  exchangeProfileLabel,
   type ExchangeProfileId,
 } from '@/utils/exchangeProfile';
 import {
@@ -402,6 +391,11 @@ interface ConversionParams {
   disseminationTemplateId: string;
   /** Optional signed ConversionProfile overlay UUID (empty = none). */
   overlayId: string;
+  conversionLibraryId: string;
+  tacValidationLibraryId: string;
+  iwxxmValidationLibraryId: string;
+  disseminationLibraryId: string;
+  decodingLibraryId: string;
   iwxxmVersion: IWXXMVersion;
   strictValidation: boolean;
   includeNilReasons: boolean;
@@ -414,7 +408,11 @@ function activeMetarFamilyVariants(
   product: string,
 ): MetarFamilyVariant[] {
   const productU = product.trim().toUpperCase();
-  return (entry.metar_family_variants ?? []).filter(
+  const variants = entry.metar_family_variants;
+  if (!variants || variants.length === 0) {
+    return [];
+  }
+  return variants.filter(
     (variant) => variant.api_product.trim().toUpperCase() === productU,
   );
 }
@@ -521,14 +519,13 @@ export function FileConverter({
     presetId: '',
     disseminationTemplateId: '',
     overlayId: '',
+    ...libraryIdsForNationalLine(DEFAULT_SEMANTIC_PROFILE),
     iwxxmVersion: DEFAULT_IWXXM_VERSION,
     strictValidation: true,
     includeNilReasons: true,
     onError: 'warn',
     logLevel: 'INFO',
   });
-  const [savedPresets, setSavedPresets] = useState<PresetOut[]>([]);
-  const [signedOverlays, setSignedOverlays] = useState<OverlayOut[]>([]);
   const [profileCatalogEntries, setProfileCatalogEntries] = useState<
     ProfileCatalogEntry[]
   >([]);
@@ -580,62 +577,6 @@ export function FileConverter({
       .catch(() => {
         if (!cancelled) {
           setProfileCatalogEntries([]);
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [accessToken]);
-  /* eslint-enable react-hooks/set-state-in-effect */
-
-  /* eslint-disable react-hooks/set-state-in-effect -- load semantic presets when auth token appears/clears */
-  useEffect(() => {
-    const token = accessToken?.trim();
-    if (!token) {
-      setSavedPresets([]);
-      setConversionParams((prev) =>
-        prev.presetId || prev.disseminationTemplateId || prev.overlayId
-          ? { ...prev, presetId: '', disseminationTemplateId: '', overlayId: '' }
-          : prev,
-      );
-      return;
-    }
-    let cancelled = false;
-    void listPresets(token)
-      .then((res) => {
-        if (!cancelled) {
-          setSavedPresets(res.items);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setSavedPresets([]);
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [accessToken]);
-  /* eslint-enable react-hooks/set-state-in-effect */
-
-  /* eslint-disable react-hooks/set-state-in-effect -- load signed overlays when auth token appears/clears */
-  useEffect(() => {
-    const token = accessToken?.trim();
-    if (!token) {
-      setSignedOverlays([]);
-      setConversionParams((prev) => clearOverlayOnAuthLoss(prev));
-      return;
-    }
-    let cancelled = false;
-    void listOverlays(token)
-      .then((res) => {
-        if (!cancelled) {
-          setSignedOverlays(res.items);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setSignedOverlays([]);
         }
       });
     return () => {
@@ -767,9 +708,10 @@ export function FileConverter({
             presetId: '',
             disseminationTemplateId: '',
             overlayId: '',
+            ...libraryIdsForNationalLine(profile),
             iwxxmVersion,
-            strictValidation: prefs.strictValidation ?? true,
-            includeNilReasons: prefs.includeNilReasons ?? true,
+            strictValidation: prefs.strictValidation !== false,
+            includeNilReasons: prefs.includeNilReasons !== false,
             onError: prefs.onError || 'warn',
             logLevel: prefs.logLevel || 'INFO',
           });
@@ -954,9 +896,10 @@ export function FileConverter({
           presetId: '',
           disseminationTemplateId: '',
           overlayId: '',
+          ...libraryIdsForNationalLine(profile),
           iwxxmVersion,
-          strictValidation: prefs.strictValidation ?? true,
-          includeNilReasons: prefs.includeNilReasons ?? true,
+          strictValidation: prefs.strictValidation !== false,
+          includeNilReasons: prefs.includeNilReasons !== false,
           onError: prefs.onError || 'warn',
           logLevel: prefs.logLevel || 'INFO',
         });
@@ -1231,6 +1174,10 @@ export function FileConverter({
           manualText: manualText || undefined,
           files: filesToConvert.length > 0 ? filesToConvert : undefined,
           product: resolvedProduct,
+          conversionLibraryId: optionalFormField(conversionParams.conversionLibraryId),
+          disseminationLibraryId: optionalFormField(
+            conversionParams.disseminationLibraryId,
+          ),
           profile: conversionParams.profile,
           exchangeProfile: conversionParams.exchangeProfile,
           iwxxmVersion: conversionParams.iwxxmVersion,
@@ -1250,8 +1197,8 @@ export function FileConverter({
               code: issue.code,
               severity:
                 (issue.severity as ConversionLog['issues'][0]['severity']) || 'warning',
-              start: issue.start ?? undefined,
-              end: issue.end ?? undefined,
+              start: issue.start,
+              end: issue.end,
             });
           });
           if (result.ok && result.xml) {
@@ -1323,16 +1270,27 @@ export function FileConverter({
         files: filesToConvert.length > 0 ? filesToConvert : undefined,
         product: resolvedProduct,
         profile: conversionParams.profile,
-        presetId: conversionParams.presetId || undefined,
-        reportVariant: activeReportVariant || undefined,
+        presetId: optionalFormField(conversionParams.presetId),
+        conversionLibraryId: optionalFormField(conversionParams.conversionLibraryId),
+        tacValidationLibraryId: optionalFormField(
+          conversionParams.tacValidationLibraryId,
+        ),
+        iwxxmValidationLibraryId: optionalFormField(
+          conversionParams.iwxxmValidationLibraryId,
+        ),
+        disseminationLibraryId: optionalFormField(
+          conversionParams.disseminationLibraryId,
+        ),
+        decodingLibraryId: optionalFormField(conversionParams.decodingLibraryId),
+        reportVariant: optionalFormField(activeReportVariant),
         iwxxmVersion: conversionParams.iwxxmVersion,
         validateOutput,
         validationLevel,
         stopOnError: mapOnErrorToStopOnError(
           conversionParams.onError as ConvertOnError,
         ),
-        bulletinId: conversionParams.bulletinId || undefined,
-        issuingCenter: conversionParams.issuingCenter || undefined,
+        bulletinId: optionalFormField(conversionParams.bulletinId),
+        issuingCenter: optionalFormField(conversionParams.issuingCenter),
         includeNilReasons: conversionParams.includeNilReasons,
         logLevel: conversionParams.logLevel,
         preview: softPreview,
@@ -1977,8 +1935,19 @@ export function FileConverter({
           manualText: manualInput.trim(),
           product: liveAssistProduct,
           profile: conversionParams.profile,
-          presetId: conversionParams.presetId || undefined,
-          reportVariant: activeReportVariant || undefined,
+          presetId: optionalFormField(conversionParams.presetId),
+          conversionLibraryId: optionalFormField(conversionParams.conversionLibraryId),
+          tacValidationLibraryId: optionalFormField(
+            conversionParams.tacValidationLibraryId,
+          ),
+          iwxxmValidationLibraryId: optionalFormField(
+            conversionParams.iwxxmValidationLibraryId,
+          ),
+          disseminationLibraryId: optionalFormField(
+            conversionParams.disseminationLibraryId,
+          ),
+          decodingLibraryId: optionalFormField(conversionParams.decodingLibraryId),
+          reportVariant: optionalFormField(activeReportVariant),
           iwxxmVersion: conversionParams.iwxxmVersion,
           validateOutput: false,
           preview: true,
@@ -2033,6 +2002,11 @@ export function FileConverter({
       conversionParams.profile,
       conversionParams.iwxxmVersion,
       conversionParams.presetId,
+      conversionParams.conversionLibraryId,
+      conversionParams.tacValidationLibraryId,
+      conversionParams.iwxxmValidationLibraryId,
+      conversionParams.disseminationLibraryId,
+      conversionParams.decodingLibraryId,
       activeReportVariant,
       conversionParams.exchangeProfile,
       conversionParams.overlayId,
@@ -2457,128 +2431,37 @@ export function FileConverter({
                       <option value="VONA">VONA</option>
                       <option value="IWXXM">IWXXM</option>
                     </select>
-                    <div className="flex shrink-0 items-center gap-1">
-                      <Label
-                        htmlFor="param-profile"
-                        className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                      >
-                        Profile
-                      </Label>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button
-                            type="button"
-                            className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                            aria-label="About Profile"
-                            data-testid="semantic-profile-help-icon"
-                          >
-                            <CircleHelp className="h-3.5 w-3.5" aria-hidden />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" className="max-w-xs text-balance">
-                          Choose the operational rule set used for TAC lint, conversion,
-                          and IWXXM validation. Profiles can reflect ICAO/WMO defaults
-                          or national extension behavior.
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                    <select
-                      id="param-profile"
-                      aria-label="Profile"
-                      aria-describedby="product-profile-bar-summary"
-                      data-testid="profile-type-select"
-                      value={conversionParams.profile}
+                    <LibraryPickersBar
+                      accessToken={accessToken}
                       disabled={isReadOnly}
-                      onChange={(e) => {
-                        const profile = coerceIwxxmProfile(e.target.value);
-                        setConversionParams((prev) => ({
-                          ...prev,
-                          profile,
-                          reportVariant: '',
-                          iwxxmVersion: coerceIwxxmVersionForProfile(
-                            profile,
-                            prev.iwxxmVersion,
-                          ),
-                        }));
+                      values={{
+                        conversionLibraryId: conversionParams.conversionLibraryId,
+                        tacValidationLibraryId: conversionParams.tacValidationLibraryId,
+                        iwxxmValidationLibraryId:
+                          conversionParams.iwxxmValidationLibraryId,
+                        disseminationLibraryId: conversionParams.disseminationLibraryId,
+                        decodingLibraryId: conversionParams.decodingLibraryId,
                       }}
-                      className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                    >
-                      {SEMANTIC_PROFILE_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                    {Boolean(accessToken?.trim()) && (
-                      <>
-                        <div className="flex shrink-0 items-center gap-1">
-                          <Label
-                            htmlFor="param-semantic-preset"
-                            className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                          >
-                            {CONVERT_PRESET_LABEL}
-                          </Label>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                type="button"
-                                className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                                aria-label={`About ${CONVERT_PRESET_LABEL}`}
-                                data-testid="semantic-preset-help-icon"
-                              >
-                                <CircleHelp className="h-3.5 w-3.5" aria-hidden />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent
-                              side="bottom"
-                              className="max-w-xs text-balance"
-                            >
-                              {CONVERT_PRESET_HELP}
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <select
-                          id="param-semantic-preset"
-                          aria-label={CONVERT_PRESET_LABEL}
-                          data-testid="semantic-preset-select"
-                          value={conversionParams.presetId}
-                          disabled={isReadOnly}
-                          onChange={(e) => {
-                            const nextPresetId = e.target.value;
-                            const preset = savedPresets.find(
-                              (item) => item.id === nextPresetId,
-                            );
-                            if (!preset) {
-                              setConversionParams((prev) => ({
-                                ...prev,
-                                presetId: '',
-                              }));
-                              return;
-                            }
-                            const profile = coerceIwxxmProfile(preset.semanticProfile);
-                            setConversionParams((prev) => ({
-                              ...prev,
-                              presetId: preset.id,
+                      onChange={(next, conversionEngineProfileId) => {
+                        setConversionParams((prev) => {
+                          if (!conversionEngineProfileId) {
+                            return { ...prev, ...next };
+                          }
+                          const profile = coerceIwxxmProfile(conversionEngineProfileId);
+                          return {
+                            ...prev,
+                            ...next,
+                            profile,
+                            reportVariant: '',
+                            iwxxmVersion: coerceIwxxmVersionForProfile(
                               profile,
-                              reportVariant: preset.reportVariant ?? '',
-                              overlayId: preset.overlayId ?? '',
-                              iwxxmVersion: coerceIwxxmVersionForProfile(
-                                profile,
-                                preset.iwxxmVersion,
-                              ),
-                            }));
-                          }}
-                          className="min-w-[11rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                        >
-                          <option value="">{CONVERT_PRESET_NONE}</option>
-                          {savedPresets.map((preset) => (
-                            <option key={preset.id} value={preset.id}>
-                              {preset.name} ({preset.semanticProfile})
-                            </option>
-                          ))}
-                        </select>
-                      </>
-                    )}
+                              prev.iwxxmVersion,
+                            ),
+                          };
+                        });
+                      }}
+                    />
+
                     {reportVariantOptions.length > 0 &&
                       inputMode !== 'ahl_bulletin' && (
                         <>
@@ -2634,105 +2517,7 @@ export function FileConverter({
                           </select>
                         </>
                       )}
-                    <div className="flex shrink-0 items-center gap-1">
-                      <Label
-                        htmlFor="param-exchange-profile"
-                        className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                      >
-                        Exchange profile
-                      </Label>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button
-                            type="button"
-                            className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                            aria-label="About Exchange profile"
-                            data-testid="exchange-profile-help-icon"
-                          >
-                            <CircleHelp className="h-3.5 w-3.5" aria-hidden />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" className="max-w-xs text-balance">
-                          Used when packaging bulletins — does not choose destinations
-                          or credentials.
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                    <select
-                      id="param-exchange-profile"
-                      aria-label="Exchange profile"
-                      aria-describedby="product-profile-bar-summary"
-                      data-testid="exchange-profile-select"
-                      title={exchangeProfileLabel(conversionParams.exchangeProfile)}
-                      value={conversionParams.exchangeProfile}
-                      disabled={isReadOnly}
-                      onChange={(e) => {
-                        const exchangeProfile = coerceExchangeProfile(e.target.value);
-                        setConversionParams((prev) => ({
-                          ...prev,
-                          exchangeProfile,
-                        }));
-                      }}
-                      className="min-w-[12.5rem] max-w-full shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 sm:min-w-[14rem] dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                    >
-                      {EXCHANGE_PROFILE_OPTIONS.map((opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                    {Boolean(accessToken?.trim()) && (
-                      <>
-                        <div className="flex shrink-0 items-center gap-1">
-                          <Label
-                            htmlFor="param-signed-overlay"
-                            className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                          >
-                            {CONVERT_OVERLAY_LABEL}
-                          </Label>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                type="button"
-                                className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                                aria-label={`About ${CONVERT_OVERLAY_LABEL}`}
-                                data-testid="signed-overlay-help-icon"
-                              >
-                                <CircleHelp className="h-3.5 w-3.5" aria-hidden />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent
-                              side="bottom"
-                              className="max-w-xs text-balance"
-                            >
-                              {CONVERT_OVERLAY_HELP}
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        <select
-                          id="param-signed-overlay"
-                          aria-label={CONVERT_OVERLAY_LABEL}
-                          data-testid="signed-overlay-select"
-                          value={conversionParams.overlayId}
-                          disabled={isReadOnly}
-                          onChange={(e) => {
-                            const overlayId = e.target.value;
-                            setConversionParams((prev) => ({
-                              ...prev,
-                              overlayId,
-                            }));
-                          }}
-                          className="min-w-[9.5rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                        >
-                          <option value="">{CONVERT_OVERLAY_NONE}</option>
-                          {signedOverlays.map((o) => (
-                            <option key={o.id} value={o.id}>
-                              {o.slug} ({o.baseProfileId})
-                            </option>
-                          ))}
-                        </select>
-                      </>
-                    )}
+
                     <GoldenExamplesSelect
                       applicableProducts={activeProfileExampleProducts}
                       disabled={isReadOnly}
@@ -2753,6 +2538,12 @@ export function FileConverter({
                     Encoding and packaging rules only — not destinations, credentials,
                     or editable overlays.
                   </p>
+                  {accessToken?.trim() ? (
+                    <WorkbenchMappingBridge
+                      accessToken={accessToken.trim()}
+                      tacText={manualInput}
+                    />
+                  ) : null}
                   <details
                     key={profileGlanceEpoch}
                     className="rounded-md border border-gray-200 bg-white text-sm dark:border-gray-700 dark:bg-gray-800"

@@ -54,7 +54,7 @@ def test_tc_ev064_004_semantic_profile_ca_eccc_forwards_emit_key(
 
     response = client.post(
         "/api/v1/convert",
-        files=_convert_files(semantic_profile=(None, "CA_ECCC")),
+        files=_convert_files(conversion_library_id=(None, "LIB.CONVERSION.CA_ECCC")),
     )
     assert response.status_code == 200, response.text[:500]
     assert seen
@@ -76,7 +76,7 @@ def test_tc_ev064_004_legacy_profile_ca_eccc_alias(
 
     response = client.post(
         "/api/v1/convert",
-        files=_convert_files(profile=(None, "ca_eccc")),
+        files=_convert_files(conversion_library_id=(None, "LIB.CONVERSION.CA_ECCC")),
     )
     assert response.status_code == 200, response.text[:500]
     assert seen
@@ -87,7 +87,7 @@ def test_tc_ev064_004_ca_eccc_rejects_wrong_iwxxm_version(client: TestClient) ->
     response = client.post(
         "/api/v1/convert",
         files=_convert_files(
-            semantic_profile=(None, "CA_ECCC"),
+            conversion_library_id=(None, "LIB.CONVERSION.CA_ECCC"),
             iwxxm_version=(None, "2025-2"),
         ),
     )
@@ -102,7 +102,7 @@ def test_tc_ev064_004_non_ca_profiles_reject_profile_scoped_3_0_0(
     response = client.post(
         "/api/v1/convert",
         files=_convert_files(
-            semantic_profile=(None, semantic_profile),
+            conversion_library_id=(None, f"LIB.CONVERSION.{semantic_profile}"),
             iwxxm_version=(None, _CA_IWXXM_VERSION),
         ),
     )
@@ -128,7 +128,7 @@ def test_tc_ev064_004_ca_eccc_defaults_profile_pinned_version_when_omitted(
         files={
             "manual_text": (None, _CA_METAR),
             "product": (None, "METAR"),
-            "semantic_profile": (None, "CA_ECCC"),
+            "conversion_library_id": (None, "LIB.CONVERSION.CA_ECCC"),
             "lint": (None, "false"),
         },
     )
@@ -153,7 +153,7 @@ def test_tc_ev1050_ca_eccc_forwards_report_variant(
     response = client.post(
         "/api/v1/convert",
         files=_convert_files(
-            semantic_profile=(None, "CA_ECCC"),
+            conversion_library_id=(None, "LIB.CONVERSION.CA_ECCC"),
             report_variant=(None, "LWIS"),
         ),
     )
@@ -180,7 +180,7 @@ def test_tc_ev1050_ca_eccc_rejects_report_variant_product_mismatch(
         files={
             "manual_text": (None, "SPECI CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012="),
             "product": (None, "SPECI"),
-            "semantic_profile": (None, "CA_ECCC"),
+            "conversion_library_id": (None, "LIB.CONVERSION.CA_ECCC"),
             "report_variant": (None, "LWIS"),
             "iwxxm_version": (None, _CA_IWXXM_VERSION),
             "lint": (None, "false"),
@@ -210,7 +210,7 @@ def test_tc_ev1050_non_ca_profile_rejects_report_variant(
         files={
             "manual_text": (None, "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="),
             "product": (None, "METAR"),
-            "semantic_profile": (None, "ICAO_2025"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "report_variant": (None, "LWIS"),
             "iwxxm_version": (None, "2025-2"),
             "lint": (None, "false"),
@@ -239,7 +239,7 @@ def test_tc_ev1050_json_body_forwards_report_variant(
         json={
             "metars": [_CA_METAR],
             "product": "METAR",
-            "semantic_profile": "CA_ECCC",
+            "conversion_library_id": "LIB.CONVERSION.CA_ECCC",
             "report_variant": "LWIS",
         },
     )
@@ -265,7 +265,7 @@ def test_tc_ev064_004_json_body_defaults_profile_pinned_version_when_omitted(
         json={
             "metars": [_CA_METAR],
             "product": "METAR",
-            "semantic_profile": "CA_ECCC",
+            "conversion_library_id": "LIB.CONVERSION.CA_ECCC",
         },
     )
     assert response.status_code == 200, response.text[:500]
@@ -286,7 +286,7 @@ def test_tc_ev1050_metadata_echoes_explicit_report_variant(
     response = client.post(
         "/api/v1/convert",
         files=_convert_files(
-            semantic_profile=(None, "CA_ECCC"),
+            conversion_library_id=(None, "LIB.CONVERSION.CA_ECCC"),
             report_variant=(None, "LWIS"),
         ),
     )
@@ -319,7 +319,7 @@ def test_tc_ev1050_metadata_auto_detects_lwis_when_variant_omitted(
         files={
             "manual_text": (None, "LWIS CYUL 292000Z AUTO 31006KT M00/M02 A2926="),
             "product": (None, "METAR"),
-            "semantic_profile": (None, "CA_ECCC"),
+            "conversion_library_id": (None, "LIB.CONVERSION.CA_ECCC"),
             "lint": (None, "false"),
         },
     )
@@ -342,7 +342,7 @@ def test_tc_ev1050_metadata_omits_report_variant_for_non_ca_profiles(
         files={
             "manual_text": (None, "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="),
             "product": (None, "METAR"),
-            "semantic_profile": (None, "ICAO_2025"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "lint": (None, "false"),
         },
     )

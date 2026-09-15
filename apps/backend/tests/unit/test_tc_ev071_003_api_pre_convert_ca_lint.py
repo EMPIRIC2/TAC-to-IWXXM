@@ -50,7 +50,7 @@ def test_tc_ev071_003_convert_echoes_ca_lint_codes(
 
     response = client.post(
         "/api/v1/convert",
-        files=_convert_files(semantic_profile=(None, "CA_ECCC")),
+        files=_convert_files(conversion_library_id=(None, "LIB.CONVERSION.CA_ECCC")),
     )
     assert response.status_code == 200, response.text[:500]
     assert seen
@@ -74,7 +74,7 @@ def test_tc_ev071_003_annex3_convert_no_ca_codes(
     response = client.post(
         "/api/v1/convert",
         files=_convert_files(
-            semantic_profile=(None, "ICAO_2025"),
+            conversion_library_id=(None, "LIB.CONVERSION.ICAO_2025"),
             iwxxm_version=(None, "2025-2"),
         ),
     )

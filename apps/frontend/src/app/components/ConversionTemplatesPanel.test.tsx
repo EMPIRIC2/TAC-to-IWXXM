@@ -104,14 +104,63 @@ describe('ConversionTemplatesPanel', () => {
     await waitFor(() => {
       expect(screen.getByTestId('conversion-templates-move-down')).toBeInTheDocument();
     });
-    fireEvent.click(screen.getByTestId('conversion-templates-move-down'));
-    fireEvent.click(screen.getByTestId('conversion-templates-move-up'));
-    const first = screen.getByTestId('conversion-template-slot-ddd');
     const second = screen.getByTestId('conversion-template-slot-ff');
+    // Select second slot, move up → ff becomes first among slot roots
+    fireEvent.click(second);
+    fireEvent.click(screen.getByTestId('conversion-templates-move-up'));
+    const slotsRoot = screen.getByTestId('conversion-templates-slots');
+    const slotRoots = Array.from(slotsRoot.children).filter((el) =>
+      (el as HTMLElement).dataset.testid?.startsWith('conversion-template-slot-'),
+    ) as HTMLElement[];
+    expect(slotRoots[0]?.dataset.testid).toBe('conversion-template-slot-ff');
+    expect(slotRoots[1]?.dataset.testid).toBe('conversion-template-slot-ddd');
+    fireEvent.click(screen.getByTestId('conversion-templates-move-down'));
+    const first = screen.getByTestId('conversion-template-slot-ddd');
     fireEvent.dragStart(first);
     fireEvent.dragOver(second);
     fireEvent.drop(second);
-    expect(first).toBeInTheDocument();
+    expect(screen.getByTestId('conversion-template-slot-ddd')).toBeInTheDocument();
+  });
+
+  it('selects a slot with Enter and Space keys', async () => {
+    render(<ConversionTemplatesPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-template-slot-ff')).toBeInTheDocument();
+    });
+    const second = screen.getByTestId('conversion-template-slot-ff');
+    fireEvent.keyDown(second, { key: 'Enter' });
+    expect(second).toHaveAttribute('aria-pressed', 'true');
+    const first = screen.getByTestId('conversion-template-slot-ddd');
+    fireEvent.keyDown(first, { key: ' ' });
+    expect(first).toHaveAttribute('aria-pressed', 'true');
+    expect(second).toHaveAttribute('aria-pressed', 'false');
+    // Non-activation keys are ignored
+    fireEvent.keyDown(second, { key: 'a' });
+    expect(first).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('ignores out-of-range slot moves', async () => {
+    render(<ConversionTemplatesPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-templates-move-up')).toBeInTheDocument();
+    });
+    const first = screen.getByTestId('conversion-template-slot-ddd');
+    fireEvent.click(first);
+    // Already at top — move up is a no-op
+    fireEvent.click(screen.getByTestId('conversion-templates-move-up'));
+    const slotsRoot = screen.getByTestId('conversion-templates-slots');
+    let slotRoots = Array.from(slotsRoot.children).filter((el) =>
+      (el as HTMLElement).dataset.testid?.startsWith('conversion-template-slot-'),
+    ) as HTMLElement[];
+    expect(slotRoots[0]?.dataset.testid).toBe('conversion-template-slot-ddd');
+
+    const last = screen.getByTestId('conversion-template-slot-ff');
+    fireEvent.click(last);
+    fireEvent.click(screen.getByTestId('conversion-templates-move-down'));
+    slotRoots = Array.from(slotsRoot.children).filter((el) =>
+      (el as HTMLElement).dataset.testid?.startsWith('conversion-template-slot-'),
+    ) as HTMLElement[];
+    expect(slotRoots[1]?.dataset.testid).toBe('conversion-template-slot-ff');
   });
 
   it('updates focus and comments fields', async () => {
@@ -162,7 +211,7 @@ describe('ConversionTemplatesPanel', () => {
     fireEvent.change(screen.getByTestId('conversion-template-slot-gloss-ddd'), {
       target: { value: 'etc.' },
     });
-    expect(screen.getByTestId('conversion-templates-skip-chips')).toHaveTextContent(
+    expect(screen.getByTestId('mapping-bridge-skip-chips')).toHaveTextContent(
       'Skipped',
     );
     const advanced = screen.getByTestId('conversion-templates-advanced');
@@ -191,11 +240,11 @@ describe('ConversionTemplatesPanel', () => {
     });
     fireEvent.click(screen.getByTestId('conversion-templates-preview'));
     await waitFor(() => {
-      expect(screen.getByTestId('conversion-templates-skip-chips')).toHaveTextContent(
+      expect(screen.getByTestId('mapping-bridge-skip-chips')).toHaveTextContent(
         'residual',
       );
     });
-    expect(screen.getByTestId('conversion-templates-skip-chips')).toHaveTextContent(
+    expect(screen.getByTestId('mapping-bridge-skip-chips')).toHaveTextContent(
       'only-id',
     );
     expect(
@@ -221,9 +270,7 @@ describe('ConversionTemplatesPanel', () => {
     fireEvent.change(screen.getByTestId('conversion-template-slot-mode-bare'), {
       target: { value: 'skip' },
     });
-    expect(screen.getByTestId('conversion-templates-skip-chips')).toHaveTextContent(
-      'bare',
-    );
+    expect(screen.getByTestId('mapping-bridge-skip-chips')).toHaveTextContent('bare');
   });
 
   it('handles preview and fork failures and custom forkOf', async () => {
@@ -334,7 +381,7 @@ describe('ConversionTemplatesPanel', () => {
     await waitFor(() => {
       expect(
         screen.getByTestId('conversion-templates-preview-result'),
-      ).toHaveTextContent('Matched: no');
+      ).toHaveTextContent('No matching conversion rule');
     });
   });
 

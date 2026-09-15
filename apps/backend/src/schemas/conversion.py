@@ -280,7 +280,31 @@ class ConversionRequest(BaseModel):
     )
     preset_id: str | None = Field(
         default=None,
-        description="Optional saved semantic preset id; explicit request fields still win when both are supplied",
+        description="Deprecated on Convert — rejected after library hard cut; use conversion_library_id",
+    )
+    overlay_id: str | None = Field(
+        default=None,
+        description="Deprecated on Convert — rejected after library hard cut",
+    )
+    conversion_library_id: str | None = Field(
+        default=None,
+        description="Conversion library asset id (resolves engine profile)",
+    )
+    tac_validation_library_id: str | None = Field(
+        default=None,
+        description="TAC validation library asset id",
+    )
+    iwxxm_validation_library_id: str | None = Field(
+        default=None,
+        description="IWXXM validation library asset id",
+    )
+    dissemination_library_id: str | None = Field(
+        default=None,
+        description="Dissemination library asset id",
+    )
+    decoding_library_id: str | None = Field(
+        default=None,
+        description="Decoding library asset id",
     )
     extensions: list[str] | None = Field(
         default=None,

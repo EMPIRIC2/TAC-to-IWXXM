@@ -83,7 +83,7 @@ def test_tc_ev061_1012_002_convert_bulletin_golden(client: TestClient) -> None:
         {
             "manual_text": GOLDEN,
             "product": "METAR",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "lint": "false",
         },
     )

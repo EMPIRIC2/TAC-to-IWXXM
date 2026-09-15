@@ -1,11 +1,8 @@
 /**
- * EV-090 T3 / H4–H5 — UJ-069 exchange profile light picker (#1024).
+ * EV-090 T3 / H4–H5 — UJ-069 Dissemination library on AHL convert (replaces exchange chrome).
  *
- * Spec: docs/test-plan.md TC-EV090-004; docs/user-journeys.md UJ-069.
- * [Corpus: product §F7] [Corpus: product §F36] [Corpus: journeys] [Corpus: tests]
- *
- * Live staging connectivity remains 12/13; this is T2/T3 Playwright against local or
- * routed API (same pattern as EV-061 AHL specs).
+ * Spec: docs/test-plan.md TC-EVBRIDGE-007; docs/user-journeys.md UJ-069 deepen.
+ * [Corpus: product §F7.w] [Corpus: journeys] [Corpus: tests]
  */
 import { expect, test } from '@playwright/test';
 import { openPublicConverter } from './playwright-e2e-helpers';
@@ -14,18 +11,20 @@ const AHL_WELL_FORMED = `SAUS31 KZNY 121200
 METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=
 `;
 
-test.describe('EV-090 — UJ-069 exchange profile picker', () => {
-  test('TC-EV090-004: exchange select visible and used on AHL convert', async ({
+test.describe('EV-090 / EV-bridge — UJ-069 Dissemination library picker', () => {
+  test('TC-EV090-004: Dissemination library id posted on AHL convert', async ({
     page,
   }) => {
+    let postedDissem: string | null = null;
     let postedExchange: string | null = null;
     await page.route('**/api/v1/convert-bulletin', async (route) => {
-      const req = route.request();
-      const body = req.postDataBuffer();
+      const body = route.request().postDataBuffer();
       if (body) {
         const text = body.toString('utf8');
-        const match = /name="exchange_profile"\r?\n\r?\n([^\r\n]+)/.exec(text);
-        postedExchange = match?.[1] ?? null;
+        postedDissem =
+          /name="dissemination_library_id"\r?\n\r?\n([^\r\n]+)/.exec(text)?.[1] ?? null;
+        postedExchange =
+          /name="exchange_profile"\r?\n\r?\n([^\r\n]+)/.exec(text)?.[1] ?? null;
       }
       await route.fulfill({
         status: 200,
@@ -37,7 +36,7 @@ test.describe('EV-090 — UJ-069 exchange profile picker', () => {
             cccc: 'KZNY',
             yygggg: '121200',
           },
-          exchange_profile: postedExchange || 'APAC_ROBEX',
+          exchange_profile: 'GLOBAL_AFS',
           results: [
             {
               report_index: 0,
@@ -53,12 +52,13 @@ test.describe('EV-090 — UJ-069 exchange profile picker', () => {
     });
 
     await openPublicConverter(page);
-    const exchange = page.getByTestId('exchange-profile-select');
-    await expect(exchange).toBeVisible();
-    await expect(page.getByTestId('product-profile-bar-summary')).toBeVisible();
-    await page.getByTestId('product-profile-trust-details').locator('summary').click();
-    await expect(page.getByTestId('exchange-profile-help')).toBeVisible();
-    await exchange.selectOption('APAC_ROBEX');
+    await page.getByLabel(/Expand parameters/i).click();
+    await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
+    await expect(page.getByTestId('exchange-profile-select')).toHaveCount(0);
+    await page
+      .getByTestId('dissemination-library-select')
+      .selectOption('LIB.DISSEMINATION.US_FAA_NWS');
+
     await page.getByTestId('input-mode-ahl_bulletin').click();
     const editor = page.getByTestId('tac-editor');
     await editor.click();
@@ -66,6 +66,7 @@ test.describe('EV-090 — UJ-069 exchange profile picker', () => {
     await page.keyboard.insertText(AHL_WELL_FORMED);
     await page.getByTestId('convert-button').click();
     await expect(page.getByText(/bulletin:/i)).toBeVisible({ timeout: 60_000 });
-    expect(postedExchange).toBe('APAC_ROBEX');
+    expect(postedDissem).toBe('LIB.DISSEMINATION.US_FAA_NWS');
+    expect(postedExchange).toBeNull();
   });
 });
