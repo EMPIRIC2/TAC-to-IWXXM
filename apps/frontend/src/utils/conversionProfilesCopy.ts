@@ -242,11 +242,14 @@ export const PROFILES_WORKBENCH_PREVIEW_ISSUES_PLACEHOLDER =
   'Validation issues will appear here when sample data is available.';
 export const PROFILES_OVERVIEW_HEADING = 'Overview';
 export const PROFILES_OVERVIEW_HELP =
-  'Compare two profiles and set which products, file types, and IWXXM versions this profile enables. Full compare controls arrive in a later release.';
+  'Compare two profiles and set which products, file types, and IWXXM versions the primary profile enables.';
+export const PROFILES_OVERVIEW_COMPARE_HEADING = 'Profile compare';
+export const PROFILES_OVERVIEW_ENABLEMENT_HEADING = 'Product enablement';
+export const PROFILES_OVERVIEW_YAML_HEADING = 'Enablement YAML';
 export const PROFILES_OVERVIEW_COMPARE_STUB =
-  'Profile compare is not wired yet. Select two profiles here in a later release.';
+  'Profile compare is available in the Overview compare panel.';
 export const PROFILES_OVERVIEW_ENABLEMENT_STUB =
-  'Product, file-type, and IWXXM version enablement will be editable here in a later release.';
+  'Product, file-type, and IWXXM version enablement is editable in the Overview enablement panel.';
 export const PROFILES_TOOLTIP_INSPECTOR_PROFILE =
   'Choose a built-in semantic profile to inspect its catalog metadata and block wiring.';
 export const PROFILES_TOOLTIP_INSPECTOR_COMPARE =

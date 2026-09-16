@@ -28,10 +28,6 @@ import {
   PROFILES_LIBRARY_TAB_IWXXM_VALIDATION,
   PROFILES_LIBRARY_TAB_OVERVIEW,
   PROFILES_LIBRARY_TAB_TAC_VALIDATION,
-  PROFILES_OVERVIEW_COMPARE_STUB,
-  PROFILES_OVERVIEW_ENABLEMENT_STUB,
-  PROFILES_OVERVIEW_HEADING,
-  PROFILES_OVERVIEW_HELP,
   PROFILES_PROFILE_AUTHORITY,
   PROFILES_PROFILE_COVERAGE,
   PROFILES_PROFILE_FAMILY,
@@ -52,6 +48,7 @@ import { IwxxmValidationRulesPanel } from './IwxxmValidationRulesPanel';
 import { LibraryAssetsListPanel } from './LibraryAssetsListPanel';
 import { LibraryDraftShell, type LibraryDraftSchemaBlock } from './LibraryDraftShell';
 import { LibraryWorkbenchShell } from './LibraryWorkbenchShell';
+import { ProfileOverviewPanel } from './ProfileOverviewPanel';
 import { TacValidationRulesPanel } from './TacValidationRulesPanel';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
@@ -470,24 +467,10 @@ export function ProfileBuilderLibraries({
           className="data-[state=inactive]:hidden"
           data-testid="profile-library-panel-overview"
         >
-          <div className="space-y-3" data-testid="profile-overview-stub">
-            <h3 className="text-sm font-medium">{PROFILES_OVERVIEW_HEADING}</h3>
-            <p className="text-xs text-gray-600 dark:text-gray-400">
-              {PROFILES_OVERVIEW_HELP}
-            </p>
-            <div
-              className="rounded border border-dashed border-gray-300 p-3 text-sm dark:border-gray-600"
-              data-testid="profile-overview-compare-stub"
-            >
-              {PROFILES_OVERVIEW_COMPARE_STUB}
-            </div>
-            <div
-              className="rounded border border-dashed border-gray-300 p-3 text-sm dark:border-gray-600"
-              data-testid="profile-overview-enablement-stub"
-            >
-              {PROFILES_OVERVIEW_ENABLEMENT_STUB}
-            </div>
-          </div>
+          <ProfileOverviewPanel
+            accessToken={accessToken}
+            preferredProfileId={catalogProfile?.id ?? null}
+          />
         </TabsContent>
       </Tabs>
 
