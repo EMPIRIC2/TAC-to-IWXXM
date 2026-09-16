@@ -2,13 +2,13 @@
  * Profile builder Libraries shell — five sub-tabs (Conversion + four stubs).
  */
 
-import { useCallback, useState } from 'react';
+import { CircleHelp } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import type {
   LibraryAssetKind,
   ProfileCatalogEntry,
 } from '@/utils/conversionProfilesApi';
-import { CircleHelp } from 'lucide-react';
-
+import { listLibraryAssets } from '@/utils/conversionProfilesApi';
 import {
   CONVERT_RESET_WMO_LIBRARY_DEFAULTS,
   CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP,
@@ -43,7 +43,7 @@ import { ConversionTemplatesPanel } from './ConversionTemplatesPanel';
 import { DecodingLibraryPanel } from './DecodingLibraryPanel';
 import { DisseminationLibraryPanel } from './DisseminationLibraryPanel';
 import { LibraryAssetsListPanel } from './LibraryAssetsListPanel';
-import { LibraryDraftShell } from './LibraryDraftShell';
+import { LibraryDraftShell, type LibraryDraftSchemaBlock } from './LibraryDraftShell';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
@@ -131,6 +131,67 @@ export function ProfileBuilderLibraries({
   const [draftSavedByKind, setDraftSavedByKind] = useState<
     Partial<Record<LibraryAssetKind, boolean>>
   >({});
+  const [conversionSchemaBlocks, setConversionSchemaBlocks] = useState<
+    LibraryDraftSchemaBlock[] | undefined
+  >(undefined);
+
+  useEffect(() => {
+    let cancelled = false;
+    const nationalLine = catalogProfile?.id ?? 'ICAO_2025';
+    void listLibraryAssets(accessToken, 'conversion')
+      .then((response) => {
+        if (cancelled) {
+          return;
+        }
+        const asset =
+          response.items.find((item) => item.attachedNationalLine === nationalLine) ??
+          response.items.find((item) => item.id === `LIB.CONVERSION.${nationalLine}`);
+        const raw = asset?.body?.schema_blocks;
+        if (!Array.isArray(raw)) {
+          setConversionSchemaBlocks(undefined);
+          return;
+        }
+        const blocks: LibraryDraftSchemaBlock[] = raw
+          .map((entry) => {
+            if (!entry || typeof entry !== 'object') {
+              return null;
+            }
+            const record = entry as Record<string, unknown>;
+            const id = typeof record.id === 'string' ? record.id : '';
+            const label = typeof record.label === 'string' ? record.label : id;
+            const cardsRaw = Array.isArray(record.cards) ? record.cards : [];
+            const cards = cardsRaw
+              .map((card) => {
+                if (!card || typeof card !== 'object') {
+                  return null;
+                }
+                const cardRec = card as Record<string, unknown>;
+                const cardId = typeof cardRec.id === 'string' ? cardRec.id : '';
+                const cardLabel =
+                  typeof cardRec.label === 'string' ? cardRec.label : cardId;
+                if (!cardId) {
+                  return null;
+                }
+                return { id: cardId, label: cardLabel };
+              })
+              .filter((card): card is { id: string; label: string } => card != null);
+            if (!id) {
+              return null;
+            }
+            return { id, label, cards };
+          })
+          .filter((block): block is LibraryDraftSchemaBlock => block != null);
+        setConversionSchemaBlocks(blocks.length > 0 ? blocks : undefined);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setConversionSchemaBlocks(undefined);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [accessToken, catalogProfile?.id]);
 
   const handleDraftStatusChange = useCallback(
     (kind: LibraryAssetKind, status: 'idle' | 'draft' | 'saved') => {
@@ -271,6 +332,7 @@ export function ProfileBuilderLibraries({
           <ConversionTemplatesPanel accessToken={accessToken} />
           <LibraryDraftShell
             kind="conversion"
+            schemaBlocks={conversionSchemaBlocks}
             onDraftStatusChange={onConversionDraftStatusChange}
           />
         </TabsContent>

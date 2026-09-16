@@ -37,11 +37,19 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 type DraftStatus = 'idle' | 'draft' | 'saved';
 
+export type LibraryDraftSchemaBlock = {
+  id: string;
+  label: string;
+  cards: Array<{ id: string; label: string }>;
+};
+
 export type LibraryDraftShellProps = {
   /** Library kind for template defaults. */
   kind: LibraryAssetKind;
   /** Optional built-in asset name shown when duplicating. */
   sourceAssetName?: string;
+  /** Mined IWXXM schema blocks (Conversion Phase B); falls back to stub. */
+  schemaBlocks?: LibraryDraftSchemaBlock[];
   /** Notifies parent when draft status changes (for catalog inspector). */
   onDraftStatusChange?: (status: DraftStatus) => void;
 };
@@ -156,6 +164,7 @@ function DraftHelpTooltip({ label, tooltip }: { label: string; tooltip: string }
 export function LibraryDraftShell({
   kind,
   sourceAssetName,
+  schemaBlocks,
   onDraftStatusChange,
 }: LibraryDraftShellProps) {
   const [yaml, setYaml] = useState('');
@@ -164,6 +173,23 @@ export function LibraryDraftShell({
   useEffect(() => {
     onDraftStatusChange?.(status);
   }, [onDraftStatusChange, status]);
+
+  const displayBlocks = useMemo(() => {
+    if (schemaBlocks && schemaBlocks.length > 0) {
+      return schemaBlocks.map((block) => ({
+        id: block.id,
+        label: block.label,
+        cards: block.cards.map((card) => card.label),
+        cardIds: block.cards.map((card) => card.id),
+      }));
+    }
+    return BLOCKS.map((block) => ({
+      id: block.id,
+      label: block.label,
+      cards: [...block.cards],
+      cardIds: block.cards.map((card) => card),
+    }));
+  }, [schemaBlocks]);
 
   const statusLabel = useMemo(() => {
     if (status === 'saved') {
@@ -293,7 +319,7 @@ export function LibraryDraftShell({
           </p>
         </div>
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-          {BLOCKS.map((block) => (
+          {displayBlocks.map((block) => (
             <div
               key={block.id}
               className="min-h-32 rounded-lg border border-dashed border-gray-300 bg-gray-50/80 p-3 dark:border-gray-600 dark:bg-gray-900/40"
@@ -303,11 +329,12 @@ export function LibraryDraftShell({
                 {block.label}
               </p>
               <ul className="mt-2 space-y-2">
-                {block.cards.map((card) => (
+                {block.cards.map((card, index) => (
                   <li
-                    key={card}
+                    key={block.cardIds[index] ?? card}
                     className="flex cursor-grab items-center gap-2 rounded border border-gray-200 bg-white px-2 py-1.5 text-xs shadow-sm active:cursor-grabbing dark:border-gray-700 dark:bg-gray-800"
                     data-testid={`library-draft-card-${block.id}-${card.replace(/\s+/g, '-').toLowerCase()}-${kind}`}
+                    title={block.cardIds[index]}
                   >
                     <GripVertical
                       className="h-3.5 w-3.5 shrink-0 text-gray-400"

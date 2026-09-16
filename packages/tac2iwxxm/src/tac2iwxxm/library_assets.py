@@ -87,9 +87,12 @@ def _kind_label(kind: LibraryKind) -> str:
 def _seed_body(kind: LibraryKind, national_line: str) -> dict[str, Any]:
     """Build a minimal first-party body for the kind."""
     if kind == "conversion":
+        from tac2iwxxm.conversion_schema_blocks import schema_blocks_for_national_line
+
         templates = [t.to_dict() for t in list_first_party_templates()]
         return {
             "rules": templates,
+            "schema_blocks": schema_blocks_for_national_line(national_line),
             "note": "TAC groups must match an associated conversion rule (AC11).",
         }
     if kind == "tac_validation":
