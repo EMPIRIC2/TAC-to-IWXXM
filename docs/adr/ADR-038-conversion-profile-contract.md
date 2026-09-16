@@ -255,6 +255,20 @@ export metadata. Does not reopen the EV-bridge hard cut.
 Product / journeys / tests: [Corpus: product §F7.w] EVPYL; UJ-072h-*; TC-EVPYL-*.
 Session: `EV-profile-builder-yaml-libraries`. Issue: #1196.
 
+### Amend — EV-profile-builder-mine-residuals (#1198+#1199)
+
+Phase B residual mining (no Profile Builder UX change):
+
+1. **IWXXM validation catalog:** Miner may include **latest** WMO foundation Schematron
+   (`metce` / `opm` / `saf` / `collect`) in addition to core `iwxxm.sch`, tagging each assert
+   with an `authority` field. Core assert ids remain stable. OpenGIS SCH under
+   `externalSchema` is out of scope until a later cycle.
+2. **Conversion national blocks:** AU/BR/HK/IN/JP/KR/NZ/UK blocks are mined only when
+   corresponding read-only vendor pins exist (M6 sync). Until then, miners may document
+   expected discovery paths and skip missing dirs; do not invent national XSD trees.
+3. **Tests:** TC-EVPYL-MINE-006..008. Session:
+   `EV-profile-builder-mine-residuals`. Issues: #1198, #1199.
+
 ## References
 
 - Context: conversion-profile-contract-924 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)

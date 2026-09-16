@@ -58,7 +58,7 @@ def test_mine_validation_check_missing_and_drift(
 def test_mine_iwxxm_validation_missing_sch(tmp_path: Path) -> None:
     mod = _load_module()
     with pytest.raises(FileNotFoundError, match="missing Schematron"):
-        mod.mine_iwxxm_validation(sch_path=tmp_path / "no.sch")
+        mod.mine_sch_file(tmp_path / "no.sch", authority="wmo-iwxxm")
 
 
 def test_mine_iwxxm_validation_dedupe_and_rule_id(
@@ -82,7 +82,41 @@ def test_mine_iwxxm_validation_dedupe_and_rule_id(
         encoding="utf-8",
     )
     monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
-    catalog = mod.mine_iwxxm_validation(sch_path=sch)
-    ids = [a["id"] for a in catalog["asserts"]]
+    items = mod._dedupe_asserts(
+        mod.mine_sch_file(sch, authority="wmo-iwxxm", namespace_ids=False)
+    )
+    ids = [a["id"] for a in items]
     assert ids.count("RULE.A") == 1
     assert "P1" in ids
+    assert all(a["authority"] == "wmo-iwxxm" for a in items)
+
+
+def test_tc_evpyl_mine_006_foundation_sch_included() -> None:
+    """TC-EVPYL-MINE-006: latest WMO foundation SCH mined with authority tags."""
+    mod = _load_module()
+    catalog = mod.mine_iwxxm_validation()
+    authorities = {a["authority"] for a in catalog["asserts"]}
+    assert "wmo-iwxxm" in authorities
+    assert "wmo-metce" in authorities
+    assert "wmo-opm" in authorities
+    assert "wmo-saf" in authorities
+    assert "wmo-collect" in authorities
+    core = [a for a in catalog["asserts"] if a["authority"] == "wmo-iwxxm"]
+    foundation = [a for a in catalog["asserts"] if a["authority"] != "wmo-iwxxm"]
+    assert len(core) >= 50
+    assert len(foundation) >= 20
+    # Core ids stay un-prefixed; foundation ids are namespaced.
+    assert all(":" not in a["id"] or a["id"].count(":") == 1 for a in foundation)
+    assert all(a["id"].startswith("wmo-") for a in foundation)
+    assert catalog.get("sources")
+    assert len(catalog["sources"]) >= 5
+
+
+def test_tc_evpyl_mine_007_opengis_excluded() -> None:
+    """TC-EVPYL-MINE-007: OpenGIS SCH paths are not mined."""
+    mod = _load_module()
+    paths = [str(p).replace("\\", "/") for p, _ in mod.iwxxm_sch_sources()]
+    assert all("schemas.opengis.net" not in p for p in paths)
+    assert all("/om/" not in p for p in paths)
+    assert all("samplingSpatial" not in p for p in paths)
+    assert all("sweCommon" not in p for p in paths)

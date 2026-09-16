@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Mine TAC + IWXXM validation library catalogs (EVPYL T-B2).
+"""Mine TAC + IWXXM validation library catalogs (EVPYL T-B2 / #1199).
 
 Writes:
   packages/tac2iwxxm/src/tac2iwxxm/data/tac_validation_rules.yaml
   packages/tac2iwxxm/src/tac2iwxxm/data/iwxxm_validation_asserts.yaml
+
+IWXXM asserts include core ``iwxxm.sch`` plus latest WMO foundation Schematron
+(metce / opm / saf / collect). OpenGIS SCH under ``externalSchema`` is excluded.
 
 Usage
 -----
@@ -27,36 +30,47 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 DATA = REPO_ROOT / "packages" / "tac2iwxxm" / "src" / "tac2iwxxm" / "data"
 TAC_OUT = DATA / "tac_validation_rules.yaml"
 IWXXM_OUT = DATA / "iwxxm_validation_asserts.yaml"
-SCH = (
-    REPO_ROOT
-    / "vendor"
-    / "schemas"
-    / "iwxxm"
-    / "2025-2"
-    / "IWXXM"
-    / "rule"
-    / "iwxxm.sch"
-)
+VENDOR_IWXXM = REPO_ROOT / "vendor" / "schemas" / "iwxxm"
+SCH_CORE = VENDOR_IWXXM / "2025-2" / "IWXXM" / "rule" / "iwxxm.sch"
+# Backward-compatible alias used by older tests / callers.
+SCH = SCH_CORE
+WMO_FOUNDATION = VENDOR_IWXXM / "externalSchema" / "schemas.wmo.int"
 SCH_NS = {"sch": "http://purl.oclc.org/dsdl/schematron"}
+
+# Latest pin per family (D-EVPYL-R-06).
+FOUNDATION_PINS: tuple[tuple[str, str, str], ...] = (
+    ("wmo-metce", "metce", "1.2"),
+    ("wmo-opm", "opm", "1.2"),
+    ("wmo-saf", "saf", "1.1"),
+    ("wmo-collect", "collect", "1.2"),
+)
+
+
+def iwxxm_sch_sources() -> list[tuple[Path, str]]:
+    """Return (path, authority) pairs for Schematron files to mine."""
+    sources: list[tuple[Path, str]] = [(SCH_CORE, "wmo-iwxxm")]
+    for authority, family, version in FOUNDATION_PINS:
+        path = WMO_FOUNDATION / family / version / "rule" / f"{family}.sch"
+        sources.append((path, authority))
+    return sources
 
 
 def mine_tac_validation() -> dict[str, Any]:
     """Build TAC validation cards from tac-validate issue registry."""
     from tac_validate.issue_registry import catalog_entries
 
-    rules: list[dict[str, Any]] = []
-    for spec in catalog_entries():
-        rules.append(
-            {
-                "id": f"TAC.{spec.code}",
-                "code": spec.code,
-                "label": spec.code.replace("_", " ").title(),
-                "severity": spec.severity,
-                "message_template": spec.message_template,
-                "product": spec.product,
-                "tags": list(spec.tags),
-            }
-        )
+    rules: list[dict[str, Any]] = [
+        {
+            "id": f"TAC.{spec.code}",
+            "code": spec.code,
+            "label": spec.code.replace("_", " ").title(),
+            "severity": spec.severity,
+            "message_template": spec.message_template,
+            "product": spec.product,
+            "tags": list(spec.tags),
+        }
+        for spec in catalog_entries()
+    ]
     rules.sort(key=lambda r: r["id"])
     return {
         "schema_version": 1,
@@ -65,8 +79,34 @@ def mine_tac_validation() -> dict[str, Any]:
     }
 
 
-def mine_iwxxm_validation(*, sch_path: Path = SCH) -> dict[str, Any]:
-    """Build IWXXM validation cards from pinned Schematron asserts."""
+def mine_sch_file(
+    sch_path: Path,
+    *,
+    authority: str,
+    namespace_ids: bool = False,
+) -> list[dict[str, Any]]:
+    """Parse one Schematron file into assert card dicts.
+
+    Parameters
+    ----------
+    sch_path :
+        Path to a ``.sch`` file.
+    authority :
+        Authority tag stored on each assert (e.g. ``wmo-iwxxm``).
+    namespace_ids :
+        When True, prefix assert ids with ``{authority}:`` to avoid collisions
+        across foundation Schematron files.
+
+    Returns
+    -------
+    list[dict[str, Any]]
+        Assert cards (may include duplicate ids before catalog-level dedupe).
+
+    Raises
+    ------
+    FileNotFoundError
+        If ``sch_path`` is missing.
+    """
     if not sch_path.is_file():
         raise FileNotFoundError(f"missing Schematron: {sch_path}")
     tree = ET.parse(sch_path)
@@ -79,12 +119,13 @@ def mine_iwxxm_validation(*, sch_path: Path = SCH) -> dict[str, Any]:
             for assert_el in rule.findall("sch:assert", SCH_NS):
                 test = assert_el.get("test") or ""
                 text = "".join(assert_el.itertext()).strip()
-                # Prefer leading RULE.ID: prefix when present
                 rule_id = pattern_id
                 if ":" in text:
                     head = text.split(":", 1)[0].strip()
                     if "." in head and " " not in head:
                         rule_id = head
+                if namespace_ids:
+                    rule_id = f"{authority}:{rule_id}"
                 asserts.append(
                     {
                         "id": rule_id,
@@ -93,9 +134,59 @@ def mine_iwxxm_validation(*, sch_path: Path = SCH) -> dict[str, Any]:
                         "context": context,
                         "test": test,
                         "enabled_default": True,
+                        "authority": authority,
                     }
                 )
-    # Dedupe by id keeping first
+    return asserts
+
+
+def mine_iwxxm_validation(*, sch_path: Path | None = None) -> dict[str, Any]:
+    """Build IWXXM validation cards from pinned Schematron asserts.
+
+    When ``sch_path`` is set, mines only that file (authority ``wmo-iwxxm``) for
+    backward-compatible single-file callers. Otherwise mines core ``iwxxm.sch``
+    plus latest WMO foundation Schematron pins.
+    """
+    if sch_path is not None:
+        items = mine_sch_file(sch_path, authority="wmo-iwxxm", namespace_ids=False)
+        rel = (
+            str(sch_path.relative_to(REPO_ROOT))
+            if sch_path.is_relative_to(REPO_ROOT)
+            else str(sch_path)
+        )
+        return {
+            "schema_version": 1,
+            "source": rel,
+            "sources": [{"path": rel, "authority": "wmo-iwxxm"}],
+            "iwxxm_version": "2025-2",
+            "asserts": _dedupe_asserts(items),
+        }
+
+    all_items: list[dict[str, Any]] = []
+    sources_meta: list[dict[str, str]] = []
+    for path, authority in iwxxm_sch_sources():
+        namespace = authority != "wmo-iwxxm"
+        all_items.extend(
+            mine_sch_file(path, authority=authority, namespace_ids=namespace)
+        )
+        sources_meta.append(
+            {
+                "path": str(path.relative_to(REPO_ROOT)),
+                "authority": authority,
+            }
+        )
+    unique = _dedupe_asserts(all_items)
+    return {
+        "schema_version": 1,
+        "source": sources_meta[0]["path"] if sources_meta else "",
+        "sources": sources_meta,
+        "iwxxm_version": "2025-2",
+        "asserts": unique,
+    }
+
+
+def _dedupe_asserts(asserts: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Dedupe by id keeping first; sort by id."""
     seen: set[str] = set()
     unique: list[dict[str, Any]] = []
     for item in asserts:
@@ -104,12 +195,7 @@ def mine_iwxxm_validation(*, sch_path: Path = SCH) -> dict[str, Any]:
         seen.add(item["id"])
         unique.append(item)
     unique.sort(key=lambda a: a["id"])
-    return {
-        "schema_version": 1,
-        "source": str(sch_path.relative_to(REPO_ROOT)),
-        "iwxxm_version": "2025-2",
-        "asserts": unique,
-    }
+    return unique
 
 
 def dump_yaml(data: dict[str, Any]) -> str:

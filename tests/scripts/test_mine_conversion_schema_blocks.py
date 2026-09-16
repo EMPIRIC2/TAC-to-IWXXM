@@ -133,6 +133,30 @@ def test_mine_catalog_missing_wmo_tree(
         mod.mine_catalog()
 
 
+def test_tc_evpyl_mine_008_national_residuals_when_pins_absent() -> None:
+    """TC-EVPYL-MINE-008: AU/BR/… lines listed as awaiting pins; check stays green."""
+    mod = _load_module()
+    missing = mod.awaiting_national_vendor_pins()
+    for line in (
+        "AU_BOM",
+        "BR_DECEA",
+        "HK_HKO",
+        "IN_IMD",
+        "JP_JMA",
+        "KR_KMA",
+        "NZ_CAA_MET",
+        "UK_METOFFICE",
+    ):
+        assert line in missing
+    assert "US_FAA_NWS" not in missing
+    assert "CA_ECCC" not in missing
+    catalog = mod.mine_catalog()
+    residuals = catalog.get("national_residuals", {})
+    awaiting = residuals.get("awaiting_vendor_pins", [])
+    assert "AU_BOM" in awaiting
+    assert mod.main(["--check"]) == 0
+
+
 def test_mine_catalog_skips_empty_national_xsds(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

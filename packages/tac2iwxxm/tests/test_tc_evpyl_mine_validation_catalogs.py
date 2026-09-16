@@ -26,6 +26,10 @@ def test_tc_evpyl_mine_011_iwxxm_asserts_nonempty() -> None:
     assert catalog["iwxxm_version"] == "2025-2"
     assert len(catalog["asserts"]) >= 50
     assert all(a.get("enabled_default") is True for a in catalog["asserts"])
+    authorities = {a.get("authority") for a in catalog["asserts"]}
+    assert "wmo-iwxxm" in authorities
+    assert "wmo-metce" in authorities
+    assert len(catalog.get("sources") or []) >= 5
 
 
 def test_tc_evpyl_mine_012_library_seeds_include_rules() -> None:

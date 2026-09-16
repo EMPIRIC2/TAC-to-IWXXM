@@ -688,3 +688,14 @@ blocks:
   - id: iwxxm-ca:weather
     label: weather
     xsd_name: weather
+national_residuals:
+  awaiting_vendor_pins:
+  - AU_BOM
+  - BR_DECEA
+  - HK_HKO
+  - IN_IMD
+  - JP_JMA
+  - KR_KMA
+  - NZ_CAA_MET
+  - UK_METOFFICE
+  unblock: M6 vendor sync must pin national extension XSD trees
