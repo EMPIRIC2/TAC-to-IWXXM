@@ -27,6 +27,8 @@ packages = ["src/tac2iwxxm"]
 [tool.hatch.build.targets.wheel.force-include]
 "src/tac2iwxxm/data/decode_glossary.yaml" = "tac2iwxxm/data/decode_glossary.yaml"
 "src/tac2iwxxm/data/conversion_schema_blocks.yaml" = "tac2iwxxm/data/conversion_schema_blocks.yaml"
+"src/tac2iwxxm/data/tac_validation_rules.yaml" = "tac2iwxxm/data/tac_validation_rules.yaml"
+"src/tac2iwxxm/data/iwxxm_validation_asserts.yaml" = "tac2iwxxm/data/iwxxm_validation_asserts.yaml"
 
 # Maturin builds the optional PyO3 cdylib (ADR-017 / T4.3). Pure-Python hatch wheel
 # remains the default ``uv sync`` path; CI rust job runs ``maturin develop``.

@@ -96,9 +96,23 @@ def _seed_body(kind: LibraryKind, national_line: str) -> dict[str, Any]:
             "note": "TAC groups must match an associated conversion rule (AC11).",
         }
     if kind == "tac_validation":
-        return {"rules": [], "product_scope": "METAR", "national_line": national_line}
+        from tac2iwxxm.validation_library_catalogs import load_tac_validation_rules
+
+        catalog = load_tac_validation_rules()
+        return {
+            "rules": list(catalog.get("rules") or []),
+            "product_scope": "METAR",
+            "national_line": national_line,
+        }
     if kind == "iwxxm_validation":
-        return {"rules": [], "schematron": True, "national_line": national_line}
+        from tac2iwxxm.validation_library_catalogs import load_iwxxm_validation_asserts
+
+        catalog = load_iwxxm_validation_asserts()
+        return {
+            "rules": list(catalog.get("asserts") or []),
+            "schematron": True,
+            "national_line": national_line,
+        }
     if kind == "dissemination":
         return {
             "annotations": [],
