@@ -8,6 +8,8 @@
 
 ## Bottom line
 
+> **Stage 0 note:** An earlier pass (same day) ran under a degraded web channel and classified all eight as “could not verify.” Stage 1 below supersedes that pass with live fetches.
+
 Live web verification (2026-09-16) confirms:
 
 1. **No full national extension tree** analogous to US `iwxxm-us` / CA `iwxxm-ca` was found for BR/HK/IN/JP/KR/NZ/UK.

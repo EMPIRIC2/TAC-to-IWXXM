@@ -765,7 +765,8 @@
   2. **#1198:** National Conversion schema blocks for AU/BR/HK/IN/JP/KR/NZ/UK — **defer full
      mine** until real vendor pins (M6 sync). Hooks landed; Stage 1 (2026-09-16) found
      **AU-TAF** public TAF-only XSD (partial; license/scope gate) and UK Colour State
-     registry 404 — see `docs/domain/profiles/mining/EV-1198-national-xsd-pinability.md`.
+     registry OK but canonical XSD URL **404** — see
+     `docs/domain/profiles/mining/EV-1198-national-xsd-pinability.md`.
      **No invented national XSD trees**; keep #1198 open / blocked for mining.
   3. **Tests:** TC-EVPYL-MINE-006..008; no UI / H4–H5. ADR-038 amend (residuals). EV-048 N/A
      (tooling + package data only).
