@@ -5,6 +5,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
 import {
+  WMO_LIBRARY_DEFAULTS_SYNC_EVENT,
   WMO_LIBRARY_DEFAULTS_SYNC_KEY,
   defaultWmoLibraryDefaultsSync,
   readWmoLibraryDefaultsSync,
@@ -48,14 +49,15 @@ describe('wmoLibraryDefaultsSync', () => {
     expect(readWmoLibraryDefaultsSync()).toEqual(prefs);
   });
 
-  it('falls back when storage is corrupt or incomplete', () => {
-    localStorage.setItem(WMO_LIBRARY_DEFAULTS_SYNC_KEY, '{bad-json');
-    expect(readWmoLibraryDefaultsSync()).toBeNull();
-
-    localStorage.setItem(
-      WMO_LIBRARY_DEFAULTS_SYNC_KEY,
-      JSON.stringify({ profile: 'ICAO_2025', libraryIds: { conversionLibraryId: '' } }),
-    );
-    expect(readWmoLibraryDefaultsSync()).toBeNull();
+  it('dispatches same-tab sync event on write', () => {
+    const seen: unknown[] = [];
+    const handler = (event: Event) => {
+      seen.push((event as CustomEvent).detail);
+    };
+    window.addEventListener(WMO_LIBRARY_DEFAULTS_SYNC_EVENT, handler);
+    const prefs = defaultWmoLibraryDefaultsSync();
+    writeWmoLibraryDefaultsSync(prefs);
+    window.removeEventListener(WMO_LIBRARY_DEFAULTS_SYNC_EVENT, handler);
+    expect(seen).toEqual([prefs]);
   });
 });

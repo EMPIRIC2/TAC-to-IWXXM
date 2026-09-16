@@ -7,6 +7,9 @@ import { DEFAULT_SEMANTIC_PROFILE } from './semanticProfile';
 
 export const WMO_LIBRARY_DEFAULTS_SYNC_KEY = 'tac_wmo_library_defaults_sync';
 
+/** Same-tab notify (StorageEvent only fires across tabs). */
+export const WMO_LIBRARY_DEFAULTS_SYNC_EVENT = 'tac-wmo-library-defaults-sync';
+
 export interface WmoLibraryDefaultsSync {
   profile: string;
   libraryIds: {
@@ -88,6 +91,11 @@ export function writeWmoLibraryDefaultsSync(prefs: WmoLibraryDefaultsSync): void
     localStorage.setItem(WMO_LIBRARY_DEFAULTS_SYNC_KEY, JSON.stringify(prefs));
   } catch {
     // localStorage may be unavailable in private mode
+  }
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(
+      new CustomEvent(WMO_LIBRARY_DEFAULTS_SYNC_EVENT, { detail: prefs }),
+    );
   }
 }
 

@@ -89,6 +89,7 @@ import {
 import {
   readWmoLibraryDefaultsSync,
   resetWmoLibraryDefaultsSync,
+  WMO_LIBRARY_DEFAULTS_SYNC_EVENT,
   WMO_LIBRARY_DEFAULTS_SYNC_KEY,
   type WmoLibraryDefaultsSync,
 } from '@/utils/wmoLibraryDefaultsSync';
@@ -638,8 +639,23 @@ export function FileConverter({
         applyWmoLibraryDefaultsSync(next);
       }
     };
+    const onSameTab = (event: Event) => {
+      const detail = (event as CustomEvent<WmoLibraryDefaultsSync>).detail;
+      if (detail?.profile && detail.libraryIds) {
+        applyWmoLibraryDefaultsSync(detail);
+        return;
+      }
+      const next = readWmoLibraryDefaultsSync();
+      if (next) {
+        applyWmoLibraryDefaultsSync(next);
+      }
+    };
     window.addEventListener('storage', onStorage);
-    return () => window.removeEventListener('storage', onStorage);
+    window.addEventListener(WMO_LIBRARY_DEFAULTS_SYNC_EVENT, onSameTab);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener(WMO_LIBRARY_DEFAULTS_SYNC_EVENT, onSameTab);
+    };
   }, [applyWmoLibraryDefaultsSync]);
 
   useEffect(() => {
