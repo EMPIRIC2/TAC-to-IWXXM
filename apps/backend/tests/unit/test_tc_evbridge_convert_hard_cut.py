@@ -207,6 +207,18 @@ def test_resolve_custom_callback_raises_kind_error() -> None:
         )
 
 
+def test_assert_library_usable_on_convert_ignores_mock_sentinels() -> None:
+    """MagicMock access/status must not trip draft gating in unit stubs."""
+    from unittest.mock import MagicMock
+
+    assert_library_usable_on_convert(
+        kind="conversion",
+        expected_kind="conversion",
+        access=MagicMock(),  # type: ignore[arg-type]
+        status=MagicMock(),  # type: ignore[arg-type]
+    )
+
+
 def test_assert_library_usable_on_convert_blocks_draft() -> None:
     """TC-EVPYL-ACTIVATE — Convert rejects draft customs."""
     assert_library_usable_on_convert(
