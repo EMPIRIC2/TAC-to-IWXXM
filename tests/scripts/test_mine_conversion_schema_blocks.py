@@ -157,6 +157,40 @@ def test_tc_evpyl_mine_008_national_residuals_when_pins_absent() -> None:
     assert mod.main(["--check"]) == 0
 
 
+def test_mine_catalog_no_residuals_when_all_nationals_present(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """When every expected national vendor dir exists, national_residuals is omitted."""
+    mod = _load_module()
+    vendor = tmp_path / "vendor"
+    wmo = vendor / "iwxxm" / "2025-2" / "IWXXM"
+    wmo.mkdir(parents=True)
+    (wmo / "metar.xsd").write_text(
+        """<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="METAR"/>
+</xs:schema>
+""",
+        encoding="utf-8",
+    )
+    for _line, subdir, version, _auth, _qname in mod.NATIONAL_VENDOR_EXPECTATIONS:
+        nd = vendor / subdir / version
+        nd.mkdir(parents=True)
+        (nd / "empty.xsd").write_text(
+            """<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="SkipProperty"/>
+</xs:schema>
+""",
+            encoding="utf-8",
+        )
+    monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(mod, "VENDOR", vendor)
+    catalog = mod.mine_catalog()
+    assert "national_residuals" not in catalog
+    assert catalog["blocks"][0]["authority"] == "wmo"
+
+
 def test_mine_catalog_skips_empty_national_xsds(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

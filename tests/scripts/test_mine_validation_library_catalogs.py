@@ -91,6 +91,40 @@ def test_mine_iwxxm_validation_dedupe_and_rule_id(
     assert all(a["authority"] == "wmo-iwxxm" for a in items)
 
 
+def test_mine_iwxxm_validation_single_sch_path(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Single-file sch_path path (relative + absolute) for backward-compatible callers."""
+    mod = _load_module()
+    sch = tmp_path / "solo.sch"
+    sch.write_text(
+        """<?xml version="1.0"?>
+<schema xmlns="http://purl.oclc.org/dsdl/schematron">
+  <pattern id="SOLO">
+    <rule context="iwxxm:METAR">
+      <assert test="true()">SOLO.1: one</assert>
+    </rule>
+  </pattern>
+</schema>
+""",
+        encoding="utf-8",
+    )
+    # Absolute path outside REPO_ROOT → source is str(path)
+    outside = mod.mine_iwxxm_validation(sch_path=sch)
+    assert outside["source"] == str(sch)
+    assert outside["asserts"][0]["id"] == "SOLO.1"
+    assert outside["asserts"][0]["authority"] == "wmo-iwxxm"
+
+    # Path under REPO_ROOT → relative source
+    nested = REPO_ROOT / "scripts" / "iwxxm" / "_tmp_solo_test.sch"
+    nested.write_text(sch.read_text(encoding="utf-8"), encoding="utf-8")
+    try:
+        inside = mod.mine_iwxxm_validation(sch_path=nested)
+        assert inside["source"] == "scripts/iwxxm/_tmp_solo_test.sch"
+    finally:
+        nested.unlink(missing_ok=True)
+
+
 def test_tc_evpyl_mine_006_foundation_sch_included() -> None:
     """TC-EVPYL-MINE-006: latest WMO foundation SCH mined with authority tags."""
     mod = _load_module()
