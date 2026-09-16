@@ -20,7 +20,7 @@ export type RegexDiagnostic = {
 };
 
 const NESTED_QUANTIFIER = /[+*][?+]|\{\d+,}\+|\{0,/;
-const PATTERN_LINE = /(?:pattern|regex):\s*["']([^"']+)["']/g;
+const PATTERN_LINE = /(?:pattern|regex):\s*["']([^"']*)["']/g;
 
 /**
  * True when YAML cannot be treated as a library mapping (locks layout + Activate).

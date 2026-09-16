@@ -1,15 +1,30 @@
 /**
- * Vitest for LibraryDraftShell (EVPYL Phase A).
+ * Vitest for LibraryDraftShell (EVPYL Phase A / C).
  */
 
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
 import { LibraryDraftShell } from './LibraryDraftShell';
+
+const createLibraryAsset = vi.fn();
+const updateLibraryAsset = vi.fn();
+
+vi.mock('../../utils/conversionProfilesApi', async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import('../../utils/conversionProfilesApi')>();
+  return {
+    ...actual,
+    createLibraryAsset: (...args: unknown[]) => createLibraryAsset(...args),
+    updateLibraryAsset: (...args: unknown[]) => updateLibraryAsset(...args),
+  };
+});
 
 describe('LibraryDraftShell', () => {
   afterEach(() => {
     cleanup();
+    vi.clearAllMocks();
   });
 
   it('renders draft shell with block skeleton for conversion kind', () => {
@@ -29,6 +44,25 @@ describe('LibraryDraftShell', () => {
     expect(screen.getByTestId('library-draft-status-conversion')).toHaveTextContent(
       /Not saved/i,
     );
+  });
+
+  it('renders mined schema blocks when provided', () => {
+    render(
+      <LibraryDraftShell
+        kind="conversion"
+        schemaBlocks={[
+          {
+            id: 'obs',
+            label: 'Observation block',
+            cards: [{ id: 'wind', label: 'Wind card' }],
+          },
+        ]}
+      />,
+    );
+    expect(
+      screen.getByTestId('library-draft-block-obs-conversion'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Wind card')).toBeInTheDocument();
   });
 
   it('loads template yaml and saves draft locally', async () => {
@@ -85,5 +119,158 @@ rules:
     expect(
       screen.getByTestId('library-draft-yaml-lock-tac_validation'),
     ).toBeInTheDocument();
+  });
+
+  it('updates the sample drawer and uses a fallback name when saving nameless YAML', async () => {
+    const user = userEvent.setup();
+    const onDraftStatusChange = vi.fn();
+    render(
+      <LibraryDraftShell
+        kind="conversion"
+        accessToken="tok"
+        onDraftStatusChange={onDraftStatusChange}
+      />,
+    );
+
+    const sample = screen.getByTestId('library-draft-sample-input-conversion');
+    await user.type(sample, '18004KT');
+    expect(sample).toHaveValue('18004KT');
+
+    const editor = screen.getByTestId('library-draft-yaml-conversion');
+    // Valid enough for draft persist; omit a real name so yamlName falls back.
+    fireEvent.change(editor, {
+      target: { value: 'kind: conversion\nname: -\nrules: []\n' },
+    });
+
+    createLibraryAsset.mockResolvedValueOnce({
+      id: 'asset-1',
+      kind: 'conversion',
+      name: 'New conversion draft',
+      access: 'custom',
+      engineProfileId: 'ICAO_2025',
+      attachedNationalLine: 'ICAO_2025',
+      status: 'draft',
+    });
+
+    await user.click(screen.getByTestId('library-draft-save-conversion'));
+    await waitFor(() => {
+      expect(createLibraryAsset).toHaveBeenCalledWith(
+        'tok',
+        expect.objectContaining({
+          name: '-',
+          kind: 'conversion',
+          status: 'draft',
+        }),
+      );
+    });
+    expect(screen.getByTestId('library-draft-status-conversion')).toHaveTextContent(
+      /Draft saved/i,
+    );
+    expect(onDraftStatusChange).toHaveBeenCalledWith('saved');
+  });
+
+  it('creates then updates a library asset when accessToken is present', async () => {
+    const user = userEvent.setup();
+    createLibraryAsset.mockResolvedValueOnce({
+      id: 'asset-1',
+      kind: 'tac_validation',
+      name: 'New TAC validation draft',
+      access: 'custom',
+      engineProfileId: 'ICAO_2025',
+      attachedNationalLine: 'ICAO_2025',
+      status: 'draft',
+    });
+    updateLibraryAsset.mockResolvedValueOnce({
+      id: 'asset-1',
+      kind: 'tac_validation',
+      name: 'New TAC validation draft',
+      access: 'custom',
+      engineProfileId: 'ICAO_2025',
+      attachedNationalLine: 'ICAO_2025',
+      status: 'activated',
+    });
+
+    render(<LibraryDraftShell kind="tac_validation" accessToken="tok" />);
+    await user.click(screen.getByTestId('library-draft-new-template-tac_validation'));
+    await user.click(screen.getByTestId('library-draft-save-tac_validation'));
+
+    await waitFor(() => {
+      expect(createLibraryAsset).toHaveBeenCalledTimes(1);
+    });
+
+    await user.click(screen.getByTestId('library-draft-activate-tac_validation'));
+    await waitFor(() => {
+      expect(updateLibraryAsset).toHaveBeenCalledWith(
+        'tok',
+        'asset-1',
+        expect.objectContaining({ status: 'activated' }),
+      );
+    });
+    expect(screen.getByTestId('library-draft-status-tac_validation')).toHaveTextContent(
+      /Activated/i,
+    );
+  });
+
+  it('surfaces persist errors from the API', async () => {
+    const user = userEvent.setup();
+    createLibraryAsset.mockRejectedValueOnce(new Error('server down'));
+    render(<LibraryDraftShell kind="decoding" accessToken="tok" />);
+    await user.click(screen.getByTestId('library-draft-new-template-decoding'));
+    await user.click(screen.getByTestId('library-draft-save-decoding'));
+    await waitFor(() => {
+      expect(screen.getByText('server down')).toBeInTheDocument();
+    });
+  });
+
+  it('surfaces a generic persist error for non-Error rejections', async () => {
+    const user = userEvent.setup();
+    createLibraryAsset.mockRejectedValueOnce('nope');
+    render(<LibraryDraftShell kind="dissemination" accessToken="tok" />);
+    await user.click(screen.getByTestId('library-draft-new-template-dissemination'));
+    await user.click(screen.getByTestId('library-draft-save-dissemination'));
+    await waitFor(() => {
+      expect(screen.getByText('Save failed')).toBeInTheDocument();
+    });
+  });
+
+  it('ignores save/activate when yaml is empty or activation is locked', async () => {
+    const user = userEvent.setup();
+    render(<LibraryDraftShell kind="conversion" />);
+
+    fireEvent.click(screen.getByTestId('library-draft-save-conversion'));
+    expect(screen.getByTestId('library-draft-status-conversion')).toHaveTextContent(
+      /Not saved/i,
+    );
+
+    await user.click(screen.getByTestId('library-draft-duplicate-conversion'));
+    const editor = screen.getByTestId('library-draft-yaml-conversion');
+    await user.clear(editor);
+    await user.paste(`kind: tac_validation
+name: Bad
+rules:
+  - pattern: "(unclosed"
+`);
+    expect(
+      screen.getByTestId('library-draft-activate-blocked-conversion'),
+    ).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('library-draft-activate-conversion'));
+    expect(screen.getByTestId('library-draft-status-conversion')).toHaveTextContent(
+      /Draft/i,
+    );
+  });
+
+  it('shows capture names for matching sample diagnostics', async () => {
+    const user = userEvent.setup();
+    render(<LibraryDraftShell kind="tac_validation" />);
+    await user.click(screen.getByTestId('library-draft-new-template-tac_validation'));
+    await user.type(
+      screen.getByTestId('library-draft-sample-input-tac_validation'),
+      '18004KT',
+    );
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('library-draft-diagnostics-tac_validation'),
+      ).toHaveTextContent(/Captures|wind/i);
+    });
   });
 });

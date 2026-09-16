@@ -16,8 +16,11 @@ import {
   sanitizeMetadataForExport,
 } from '@/utils/conversionExportMetadata';
 import {
+  WMO_LIBRARY_DEFAULTS_SYNC_KEY,
   defaultWmoLibraryDefaultsSync,
+  readWmoLibraryDefaultsSync,
   resetWmoLibraryDefaultsSync,
+  writeWmoLibraryDefaultsSync,
 } from '@/utils/wmoLibraryDefaultsSync';
 
 const fetchProfileCatalog = vi.fn();
@@ -25,6 +28,8 @@ const listLibraryAssets = vi.fn();
 const listConversionTemplates = vi.fn();
 const previewConversionTemplate = vi.fn();
 const createConversionTemplate = vi.fn();
+const createLibraryAsset = vi.fn();
+const updateLibraryAsset = vi.fn();
 
 vi.mock('@/utils/conversionProfilesApi', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/utils/conversionProfilesApi')>();
@@ -36,6 +41,8 @@ vi.mock('@/utils/conversionProfilesApi', async (importOriginal) => {
     previewConversionTemplate: (...args: unknown[]) =>
       previewConversionTemplate(...args),
     createConversionTemplate: (...args: unknown[]) => createConversionTemplate(...args),
+    createLibraryAsset: (...args: unknown[]) => createLibraryAsset(...args),
+    updateLibraryAsset: (...args: unknown[]) => updateLibraryAsset(...args),
   };
 });
 
@@ -54,7 +61,6 @@ const catalogProfile = {
 describe('TC-EVPYL Phase A', () => {
   afterEach(() => {
     cleanup();
-    vi.restoreAllMocks();
     localStorage.clear();
   });
 
@@ -79,6 +85,24 @@ describe('TC-EVPYL Phase A', () => {
       slots: [],
     });
     listLibraryAssets.mockResolvedValue({ items: [] });
+    createLibraryAsset.mockResolvedValue({
+      id: 'asset-draft-1',
+      kind: 'decoding',
+      name: 'Draft',
+      access: 'custom',
+      engineProfileId: 'ICAO_2025',
+      attachedNationalLine: 'ICAO_2025',
+      status: 'draft',
+    });
+    updateLibraryAsset.mockResolvedValue({
+      id: 'asset-draft-1',
+      kind: 'decoding',
+      name: 'Draft',
+      access: 'custom',
+      engineProfileId: 'ICAO_2025',
+      attachedNationalLine: 'ICAO_2025',
+      status: 'activated',
+    });
   });
 
   it('TC-EVPYL-001: assembly, glossary, workflows, and examples are absent', async () => {
@@ -184,6 +208,203 @@ describe('TC-EVPYL Phase A', () => {
       expect(
         screen.getByTestId('profile-builder-reset-wmo-defaults-help'),
       ).toBeInTheDocument();
+    });
+  });
+
+  it('resets shared WMO library defaults from Profile builder', async () => {
+    const user = userEvent.setup();
+    writeWmoLibraryDefaultsSync({
+      profile: 'US_FAA_NWS',
+      libraryIds: {
+        conversionLibraryId: 'LIB.CONVERSION.US_FAA_NWS',
+        tacValidationLibraryId: 'LIB.TAC_VALIDATION.US_FAA_NWS',
+        iwxxmValidationLibraryId: 'LIB.IWXXM_VALIDATION.US_FAA_NWS',
+        disseminationLibraryId: 'LIB.DISSEMINATION.US_FAA_NWS',
+        decodingLibraryId: 'LIB.DECODING.US_FAA_NWS',
+      },
+    });
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('profile-builder-reset-wmo-defaults'),
+      ).toBeInTheDocument();
+    });
+    await user.click(screen.getByTestId('profile-builder-reset-wmo-defaults'));
+    expect(readWmoLibraryDefaultsSync()).toEqual(defaultWmoLibraryDefaultsSync());
+    expect(localStorage.getItem(WMO_LIBRARY_DEFAULTS_SYNC_KEY)).toBeTruthy();
+  });
+
+  it('loads conversion schema blocks from library assets into the draft shell', async () => {
+    listLibraryAssets.mockResolvedValue({
+      items: [
+        {
+          id: 'LIB.CONVERSION.ICAO_2025',
+          kind: 'conversion',
+          name: 'ICAO conversion',
+          access: 'first_party',
+          engineProfileId: 'ICAO_2025',
+          attachedNationalLine: 'ICAO_2025',
+          body: {
+            schema_blocks: [
+              null,
+              { label: 'missing-id', cards: [{ id: 'c1', label: 'Card' }] },
+              {
+                id: 'obs',
+                label: 'Observation',
+                cards: [
+                  null,
+                  { label: 'no-id' },
+                  { id: 'wind', label: 'Wind' },
+                  { id: 'vis' },
+                ],
+              },
+              { id: 'empty-cards', label: 'Empty', cards: 'nope' },
+            ],
+          },
+        },
+      ],
+    });
+
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('library-draft-block-obs-conversion'),
+      ).toBeInTheDocument();
+    });
+    expect(screen.getByText('Wind')).toBeInTheDocument();
+    expect(screen.getByText('vis')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('library-draft-block-empty-cards-conversion'),
+    ).toBeInTheDocument();
+  });
+
+  it('clears schema blocks when library asset fetch fails or unmounts early', async () => {
+    let resolveAssets: (value: { items: unknown[] }) => void = () => undefined;
+    let rejectAssets: (reason?: unknown) => void = () => undefined;
+    listLibraryAssets.mockImplementation(
+      () =>
+        new Promise((resolve, reject) => {
+          resolveAssets = resolve;
+          rejectAssets = reject;
+        }),
+    );
+
+    const first = render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(listLibraryAssets).toHaveBeenCalled();
+    });
+    first.unmount();
+    resolveAssets({ items: [] });
+
+    listLibraryAssets.mockImplementation(
+      () =>
+        new Promise((_resolve, reject) => {
+          rejectAssets = reject;
+        }),
+    );
+    const second = render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(listLibraryAssets).toHaveBeenCalled();
+    });
+    second.unmount();
+    rejectAssets(new Error('cancelled-network'));
+
+    listLibraryAssets.mockRejectedValueOnce(new Error('network'));
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('library-draft-shell-conversion')).toBeInTheDocument();
+    });
+    expect(
+      screen.getByTestId('library-draft-block-observation-conversion'),
+    ).toBeInTheDocument();
+  });
+
+  it('resolves schema blocks by library id and shows national inspector fields', async () => {
+    const user = userEvent.setup();
+    const usProfile = {
+      id: 'US_FAA_NWS',
+      kind: 'semantic',
+      status: 'implemented',
+      products: [] as string[],
+      emit_key: 'iwxxm_us',
+      deltas_vs_icao: [],
+      iwxxm_line: '',
+      rule_pack_count: 1,
+      overlay_count: 0,
+    };
+    fetchProfileCatalog.mockResolvedValue({
+      profiles: [
+        catalogProfile,
+        usProfile,
+        {
+          id: 'CUSTOM',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['TAF'],
+          emit_key: null,
+          deltas_vs_icao: [],
+          iwxxm_line: 'IWXXM 2023-1',
+          rule_pack_count: 0,
+          overlay_count: 0,
+        },
+      ],
+    });
+    listLibraryAssets.mockResolvedValue({
+      items: [
+        {
+          id: 'LIB.CONVERSION.US_FAA_NWS',
+          kind: 'conversion',
+          name: 'US conversion',
+          access: 'first_party',
+          engineProfileId: 'US_FAA_NWS',
+          attachedNationalLine: 'OTHER_LINE',
+          body: {
+            schema_blocks: [{ id: 'rmk', label: 'Remarks', cards: [] }],
+          },
+        },
+      ],
+    });
+
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-builder-libraries')).toBeInTheDocument();
+    });
+
+    const profileSelect = screen.getByTestId('conversion-profiles-select');
+    await user.selectOptions(profileSelect, 'US_FAA_NWS');
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('library-draft-block-rmk-conversion'),
+      ).toBeInTheDocument();
+    });
+    expect(
+      screen.getByTestId('conversion-profiles-inspector-detail'),
+    ).toHaveTextContent(/National|US - FAA NWS|Coverage unavailable/i);
+
+    await user.selectOptions(profileSelect, 'CUSTOM');
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-inspector-detail'),
+      ).toHaveTextContent('CUSTOM');
+    });
+  });
+
+  it('marks non-conversion inspector status as Draft after save', async () => {
+    const user = userEvent.setup();
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('library-draft-shell-conversion')).toBeInTheDocument();
+    });
+    await user.click(screen.getByTestId('profile-library-tab-decoding'));
+    await user.click(screen.getByTestId('library-draft-new-template-decoding'));
+    await user.click(screen.getByTestId('library-draft-save-decoding'));
+    await waitFor(() => {
+      expect(createLibraryAsset).toHaveBeenCalled();
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-inspector-detail'),
+      ).toHaveTextContent(/Draft/i);
     });
   });
 

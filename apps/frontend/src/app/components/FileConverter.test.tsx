@@ -14,6 +14,17 @@ import { FileConverter } from './FileConverter';
 import { clearOverlayOnAuthLoss } from '@/app/utils/clearOverlayOnAuthLoss';
 import { operatorDisseminationUiConfig } from '/utils/operatorDisseminationUi';
 import { defaultLibraryId } from '@/utils/libraryIds';
+import {
+  CONVERSION_METADATA_PREFS_KEY,
+  readConversionMetadataPrefs,
+} from '@/utils/conversionExportMetadata';
+import {
+  WMO_LIBRARY_DEFAULTS_SYNC_EVENT,
+  WMO_LIBRARY_DEFAULTS_SYNC_KEY,
+  defaultWmoLibraryDefaultsSync,
+  readWmoLibraryDefaultsSync,
+  writeWmoLibraryDefaultsSync,
+} from '@/utils/wmoLibraryDefaultsSync';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
@@ -7079,6 +7090,191 @@ describe('FileConverter Component', () => {
       await waitFor(() => {
         expect(screen.queryByTestId('report-variant-select')).not.toBeInTheDocument();
       });
+    });
+  });
+
+  describe('EVPYL conversion metadata + WMO library sync', () => {
+    it('toggles metadata export, checklist items, and guest operator hint', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter isGuest />);
+
+      expect(
+        screen.getByTestId('conversion-metadata-export-panel'),
+      ).toBeInTheDocument();
+      await user.click(screen.getByTestId('conversion-metadata-toggle'));
+      expect(readConversionMetadataPrefs().enabled).toBe(true);
+
+      await user.click(screen.getByTestId('conversion-metadata-checklist-trigger'));
+      expect(screen.getByTestId('conversion-metadata-checklist')).toBeInTheDocument();
+      expect(
+        screen.getByLabelText(/Operator identity \(sign in required\)/i),
+      ).toBeDisabled();
+
+      await user.click(screen.getByLabelText(/Library selections/i));
+      expect(readConversionMetadataPrefs().checklist.libraries).toBe(false);
+
+      await user.click(screen.getByTestId('conversion-metadata-toggle'));
+      expect(readConversionMetadataPrefs().enabled).toBe(false);
+      expect(localStorage.getItem(CONVERSION_METADATA_PREFS_KEY)).toBeTruthy();
+    });
+
+    it('resets Convert libraries to WMO defaults', async () => {
+      const user = userEvent.setup({ delay: null });
+      writeWmoLibraryDefaultsSync({
+        profile: 'US_FAA_NWS',
+        libraryIds: {
+          conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
+          tacValidationLibraryId: defaultLibraryId('tac_validation', 'US_FAA_NWS'),
+          iwxxmValidationLibraryId: defaultLibraryId('iwxxm_validation', 'US_FAA_NWS'),
+          disseminationLibraryId: defaultLibraryId('dissemination', 'US_FAA_NWS'),
+          decodingLibraryId: defaultLibraryId('decoding', 'US_FAA_NWS'),
+        },
+      });
+
+      render(<FileConverter />);
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'CA_ECCC'),
+      );
+      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+        defaultLibraryId('conversion', 'CA_ECCC'),
+      );
+
+      await user.click(screen.getByTestId('reset-wmo-library-defaults'));
+      expect(readWmoLibraryDefaultsSync()).toEqual(defaultWmoLibraryDefaultsSync());
+      await waitFor(() => {
+        expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+          defaultLibraryId('conversion', 'ICAO_2025'),
+        );
+      });
+      expect(screen.getByTestId('reset-wmo-library-defaults-help')).toBeInTheDocument();
+    });
+
+    it('applies same-tab and storage WMO sync events', async () => {
+      render(<FileConverter />);
+      const us = {
+        profile: 'US_FAA_NWS',
+        libraryIds: {
+          conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
+          tacValidationLibraryId: defaultLibraryId('tac_validation', 'US_FAA_NWS'),
+          iwxxmValidationLibraryId: defaultLibraryId('iwxxm_validation', 'US_FAA_NWS'),
+          disseminationLibraryId: defaultLibraryId('dissemination', 'US_FAA_NWS'),
+          decodingLibraryId: defaultLibraryId('decoding', 'US_FAA_NWS'),
+        },
+      };
+
+      await act(async () => {
+        window.dispatchEvent(
+          new CustomEvent(WMO_LIBRARY_DEFAULTS_SYNC_EVENT, { detail: us }),
+        );
+      });
+      await waitFor(() => {
+        expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+          defaultLibraryId('conversion', 'US_FAA_NWS'),
+        );
+      });
+
+      writeWmoLibraryDefaultsSync(defaultWmoLibraryDefaultsSync());
+      await act(async () => {
+        window.dispatchEvent(
+          new StorageEvent('storage', {
+            key: WMO_LIBRARY_DEFAULTS_SYNC_KEY,
+            newValue: JSON.stringify(defaultWmoLibraryDefaultsSync()),
+          }),
+        );
+      });
+      await waitFor(() => {
+        expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+          defaultLibraryId('conversion', 'ICAO_2025'),
+        );
+      });
+
+      await act(async () => {
+        window.dispatchEvent(
+          new CustomEvent(WMO_LIBRARY_DEFAULTS_SYNC_EVENT, { detail: null }),
+        );
+      });
+    });
+
+    it('downloads a single result and ZIP with metadata sidecars when enabled', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<iwxxm>meta</iwxxm>', name: 'meta.txt' }],
+      });
+      const createUrlSpy = vi
+        .spyOn(URL, 'createObjectURL')
+        .mockReturnValue('blob:meta');
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, 'click')
+        .mockImplementation(() => undefined);
+
+      const { container } = render(
+        <FileConverter accessToken="tok" userEmail="op@example.com" />,
+      );
+      await user.click(screen.getByTestId('conversion-metadata-toggle'));
+      fireEvent.change(container.querySelector('textarea') as HTMLTextAreaElement, {
+        target: { value: 'METAR KJFK 121251Z 18004KT=' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByText('<iwxxm>meta</iwxxm>')).toBeInTheDocument();
+      });
+
+      const downloadOne = await screen.findByRole('button', {
+        name: /download .+ as zip with metadata/i,
+      });
+      await user.click(downloadOne);
+      expect(mockToast.success).toHaveBeenCalledWith('File downloaded with metadata');
+
+      await user.click(screen.getByTestId('download-zip-button'));
+      expect(mockToast.success).toHaveBeenCalledWith(
+        'All files downloaded as ZIP with metadata',
+      );
+
+      createUrlSpy.mockRestore();
+      clickSpy.mockRestore();
+    });
+
+    it('updates conversion engine profile when Conversion library changes', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+          defaultLibraryId('conversion', 'US_FAA_NWS'),
+        );
+      });
+      await user.selectOptions(
+        screen.getByTestId('tac-validation-library-select'),
+        defaultLibraryId('tac_validation', 'CA_ECCC'),
+      );
+      expect(screen.getByTestId('tac-validation-library-select')).toHaveValue(
+        defaultLibraryId('tac_validation', 'CA_ECCC'),
+      );
+    });
+
+    it('ignores unrelated storage events and opens metadata help without toggling', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter />);
+      await act(async () => {
+        window.dispatchEvent(
+          new StorageEvent('storage', {
+            key: 'other-key',
+            newValue: '1',
+          }),
+        );
+        window.dispatchEvent(
+          new StorageEvent('storage', {
+            key: WMO_LIBRARY_DEFAULTS_SYNC_KEY,
+            newValue: null,
+          }),
+        );
+      });
+      await user.click(screen.getByTestId('conversion-metadata-toggle-help'));
+      expect(readConversionMetadataPrefs().enabled).toBe(false);
     });
   });
 });
