@@ -17,6 +17,9 @@
 | D-EVPYL-R-08 | Additive asserts + `authority` tags; core ids stable |
 | D-EVPYL-R-09 | No invented national XSD trees; vendor read-only |
 | D-EVPYL-R-10 | **Requirements locked** → draft-docs (2026-09-16) |
+| D-EVPYL-R-11 | #1198 research: no pin-ready public national XSDs this pass (degraded web) — stay blocked |
+| D-EVPYL-R-12 | No M6 national pin PR; no invented/stub XSDs |
+| D-EVPYL-R-13 | Next: Stage 1 live web re-verify ± Stage 3 outreach; report in docs/domain/profiles/mining/EV-1198-national-xsd-pinability.md |
 
 [Corpus: product §F7.w] [Corpus: tests] [Corpus: adr/ADR-038] [Corpus: decisions]
 
