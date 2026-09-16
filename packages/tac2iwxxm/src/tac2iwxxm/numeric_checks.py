@@ -88,8 +88,7 @@ def evaluate_numeric_check(check: dict[str, Any], candidate: object) -> bool | N
         allowed = {_as_number(item) for item in values_list}
         return number in allowed
     bound = _as_number(check.get("value"))
-    if bound is None:
-        return None
+    assert bound is not None  # shape validation guarantees a number
     if op == "min":
         return number >= bound
     if op == "max":
