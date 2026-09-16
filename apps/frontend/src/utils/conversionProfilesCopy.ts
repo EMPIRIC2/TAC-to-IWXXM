@@ -301,3 +301,50 @@ export const PROFILES_DRAFT_SAMPLE_HELP =
   'Paste a TAC, IWXXM, filename, or glossary sample for this library. Capture groups update as you type.';
 export const PROFILES_DRAFT_SAMPLE_PLACEHOLDER =
   'Sample text for live match and capture summary';
+
+export const PROFILES_TAC_RULES_HEADING = 'TAC validation rules';
+export const PROFILES_TAC_RULES_HELP =
+  'Search mined lint rules, set issue levels, and add custom regex with optional numeric bounds. Built-in catalogs stay read-only until you fork.';
+export const PROFILES_TAC_RULES_SEARCH = 'Search rules';
+export const PROFILES_TAC_RULES_SEARCH_PLACEHOLDER = 'Filter by id, code, or label…';
+export const PROFILES_TAC_RULES_SELECT = 'Rule catalog';
+export const PROFILES_TAC_RULES_IDENTITY = 'Rule id';
+export const PROFILES_TAC_RULES_LABEL = 'Label';
+export const PROFILES_TAC_RULES_SEVERITY = 'Issue level';
+export const PROFILES_TAC_RULES_PATTERN = 'Regex pattern';
+export const PROFILES_TAC_RULES_SAMPLE = 'Sample match';
+export const PROFILES_TAC_RULES_ENABLED = 'Enabled';
+export const PROFILES_TAC_RULES_CHECK_OP = 'Numeric check';
+export const PROFILES_TAC_RULES_CHECK_VALUE = 'Check value';
+export const PROFILES_TAC_RULES_CHECK_VALUES = 'Allowed values (comma-separated)';
+export const PROFILES_TAC_RULES_CHECK_UNIT = 'Unit label';
+export const PROFILES_TAC_RULES_CHECK_NONE = 'None';
+export const PROFILES_TAC_RULES_ADD = 'Add custom rule';
+export const PROFILES_TAC_RULES_FORK = 'Fork to edit';
+export const PROFILES_TAC_RULES_SAVE = 'Save changes';
+export const PROFILES_TAC_RULES_SAVED = 'Saved.';
+export const PROFILES_TAC_RULES_READONLY =
+  'Built-in TAC validation is read-only. Fork to create an editable copy.';
+export const PROFILES_TAC_RULES_EMPTY = 'No rules match this search.';
+export const PROFILES_TAC_RULES_LOADING = 'Loading TAC validation rules…';
+
+export const PROFILES_IWXXM_RULES_HEADING = 'IWXXM validation asserts';
+export const PROFILES_IWXXM_RULES_HELP =
+  'Enable or disable Schematron asserts and add custom overlay rules. Built-in catalogs stay read-only until you fork.';
+export const PROFILES_IWXXM_RULES_SEARCH = 'Search asserts';
+export const PROFILES_IWXXM_RULES_SEARCH_PLACEHOLDER = 'Filter by id or label…';
+export const PROFILES_IWXXM_RULES_SELECT = 'Assert catalog';
+export const PROFILES_IWXXM_RULES_ENABLED = 'Enabled';
+export const PROFILES_IWXXM_RULES_CONTEXT = 'Context';
+export const PROFILES_IWXXM_RULES_TEST = 'Test';
+export const PROFILES_IWXXM_RULES_ADD = 'Add custom overlay rule';
+export const PROFILES_IWXXM_RULES_PATTERN = 'Regex or path';
+export const PROFILES_IWXXM_RULES_FORK = 'Fork to edit';
+export const PROFILES_IWXXM_RULES_SAVE = 'Save changes';
+export const PROFILES_IWXXM_RULES_SAVED = 'Saved.';
+export const PROFILES_IWXXM_RULES_READONLY =
+  'Built-in IWXXM validation is read-only. Fork to create an editable copy.';
+export const PROFILES_IWXXM_RULES_EMPTY = 'No asserts match this search.';
+export const PROFILES_IWXXM_RULES_LOADING = 'Loading IWXXM validation asserts…';
+export const PROFILES_IWXXM_RULES_CHECK_OP = 'Numeric check';
+export const PROFILES_IWXXM_RULES_CHECK_VALUE = 'Check value';

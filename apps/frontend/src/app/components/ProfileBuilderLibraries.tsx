@@ -48,9 +48,11 @@ import { BetaBadge } from './BetaBadge';
 import { ConversionTemplatesPanel } from './ConversionTemplatesPanel';
 import { DecodingLibraryPanel } from './DecodingLibraryPanel';
 import { DisseminationLibraryPanel } from './DisseminationLibraryPanel';
+import { IwxxmValidationRulesPanel } from './IwxxmValidationRulesPanel';
 import { LibraryAssetsListPanel } from './LibraryAssetsListPanel';
 import { LibraryDraftShell, type LibraryDraftSchemaBlock } from './LibraryDraftShell';
 import { LibraryWorkbenchShell } from './LibraryWorkbenchShell';
+import { TacValidationRulesPanel } from './TacValidationRulesPanel';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
@@ -388,11 +390,14 @@ export function ProfileBuilderLibraries({
               />
             }
             editor={
-              <LibraryDraftShell
-                kind="tac_validation"
-                accessToken={accessToken}
-                onDraftStatusChange={onTacValidationDraftStatusChange}
-              />
+              <>
+                <TacValidationRulesPanel accessToken={accessToken} />
+                <LibraryDraftShell
+                  kind="tac_validation"
+                  accessToken={accessToken}
+                  onDraftStatusChange={onTacValidationDraftStatusChange}
+                />
+              </>
             }
           />
         </TabsContent>
@@ -412,11 +417,14 @@ export function ProfileBuilderLibraries({
               />
             }
             editor={
-              <LibraryDraftShell
-                kind="iwxxm_validation"
-                accessToken={accessToken}
-                onDraftStatusChange={onIwxxmValidationDraftStatusChange}
-              />
+              <>
+                <IwxxmValidationRulesPanel accessToken={accessToken} />
+                <LibraryDraftShell
+                  kind="iwxxm_validation"
+                  accessToken={accessToken}
+                  onDraftStatusChange={onIwxxmValidationDraftStatusChange}
+                />
+              </>
             }
           />
         </TabsContent>
