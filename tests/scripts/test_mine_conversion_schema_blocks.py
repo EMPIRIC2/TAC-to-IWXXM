@@ -133,6 +133,64 @@ def test_mine_catalog_missing_wmo_tree(
         mod.mine_catalog()
 
 
+def test_tc_evpyl_mine_008_national_residuals_when_pins_absent() -> None:
+    """TC-EVPYL-MINE-008: AU/BR/… lines listed as awaiting pins; check stays green."""
+    mod = _load_module()
+    missing = mod.awaiting_national_vendor_pins()
+    for line in (
+        "AU_BOM",
+        "BR_DECEA",
+        "HK_HKO",
+        "IN_IMD",
+        "JP_JMA",
+        "KR_KMA",
+        "NZ_CAA_MET",
+        "UK_METOFFICE",
+    ):
+        assert line in missing
+    assert "US_FAA_NWS" not in missing
+    assert "CA_ECCC" not in missing
+    catalog = mod.mine_catalog()
+    residuals = catalog.get("national_residuals", {})
+    awaiting = residuals.get("awaiting_vendor_pins", [])
+    assert "AU_BOM" in awaiting
+    assert mod.main(["--check"]) == 0
+
+
+def test_mine_catalog_no_residuals_when_all_nationals_present(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """When every expected national vendor dir exists, national_residuals is omitted."""
+    mod = _load_module()
+    vendor = tmp_path / "vendor"
+    wmo = vendor / "iwxxm" / "2025-2" / "IWXXM"
+    wmo.mkdir(parents=True)
+    (wmo / "metar.xsd").write_text(
+        """<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="METAR"/>
+</xs:schema>
+""",
+        encoding="utf-8",
+    )
+    for _line, subdir, version, _auth, _qname in mod.NATIONAL_VENDOR_EXPECTATIONS:
+        nd = vendor / subdir / version
+        nd.mkdir(parents=True)
+        (nd / "empty.xsd").write_text(
+            """<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="SkipProperty"/>
+</xs:schema>
+""",
+            encoding="utf-8",
+        )
+    monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(mod, "VENDOR", vendor)
+    catalog = mod.mine_catalog()
+    assert "national_residuals" not in catalog
+    assert catalog["blocks"][0]["authority"] == "wmo"
+
+
 def test_mine_catalog_skips_empty_national_xsds(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

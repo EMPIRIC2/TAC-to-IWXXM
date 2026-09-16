@@ -3128,6 +3128,39 @@ Warn; WMO reset.
 - **TC-EVPYL-ACTIVATE-001..003**: Activate zero Fail; Convert pickers and Convert HTTP reject
   draft customs until Activated.
 
+### EV-profile-builder-mine-residuals / F7.w — Phase B mining residuals (#1198+#1199)
+
+- **Mode**: deepen F7.w mining only; no UI
+- **Pass criteria**: [Corpus: product §F7.w] EVPYL residuals; TC-EVPYL-MINE-006..008
+- **Source**: [#1198](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1198),
+  [#1199](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1199); session
+  `EV-profile-builder-mine-residuals`
+
+##### TC-EVPYL-MINE-006: Foundation Schematron asserts mined
+
+- **Level**: T0
+- **Objective**: `mine_validation_library_catalogs.py` includes latest WMO foundation SCH
+  (metce/opm/saf/collect) with `authority` tags; core `iwxxm.sch` asserts remain; `--check` OK
+- **Pass criteria**: Catalog assert count ≥ core + foundation; no id collision with core;
+  check mode green after regen
+- **Source**: #1199; D-EVPYL-R-05..08
+
+##### TC-EVPYL-MINE-007: OpenGIS SCH excluded this cycle
+
+- **Level**: T0
+- **Objective**: Miner does not ingest OpenGIS om/sampling/swe SCH under `externalSchema`
+- **Pass criteria**: Unit/script assertion that OpenGIS paths are absent from sources list
+- **Source**: #1199; D-EVPYL-R-05
+
+##### TC-EVPYL-MINE-008: National Conversion mine gated on vendor pins
+
+- **Level**: T0
+- **Objective**: Conversion miner documents/discovers expected national vendor dirs for
+  AU/BR/HK/IN/JP/KR/NZ/UK without inventing XSDs; missing dirs skip with residual note
+- **Pass criteria**: Hook/docs present; `--check` still green when nationals absent; #1198
+  remains open with unblock = vendor pin present
+- **Source**: #1198; D-EVPYL-R-02 / D-EVPYL-R-09
+
 ### EV-080 / F7.w — Parameterizable conversion templates + TAC→IWXXM bridge (#1146)
 
 - **Mode**: deepen F7.w; phase-1 templates + bridge only (#1147 / library shells deferred)

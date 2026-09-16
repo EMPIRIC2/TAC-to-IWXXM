@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
-"""Mine Conversion library IWXXM schema blocks from pinned vendor XSDs (EVPYL T-B1).
+"""Mine Conversion library IWXXM schema blocks from pinned vendor XSDs (EVPYL T-B1 / #1198).
 
-Reads WMO IWXXM (default 2025-2) plus US / CA national extension XSDs and writes
+Reads WMO IWXXM (default 2025-2) plus national extension XSDs when present and writes
 ``packages/tac2iwxxm/src/tac2iwxxm/data/conversion_schema_blocks.yaml``.
+
+National lines with **no** vendored XSD tree (AU/BR/HK/IN/JP/KR/NZ/UK) are listed in
+``NATIONAL_VENDOR_EXPECTATIONS`` and skipped until M6 sync pins them (#1198). Do not
+invent stub XSD trees.
 
 Usage
 -----
@@ -40,6 +44,21 @@ SKIP_WMO_FILES = frozenset(
     {"iwxxm.xsd", "gmliwxxm.xsd", "qvaci.xsd", "iwxxm-collect.xsd"}
 )
 _CAMEL_SPLIT = re.compile(r"(?<=[a-z0-9])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])")
+
+# (national_line, vendor_subdir, version_dir, authority, qname_prefix)
+# US/CA are present today; others await vendor pins (#1198 unblock).
+NATIONAL_VENDOR_EXPECTATIONS: tuple[tuple[str, str, str, str, str], ...] = (
+    ("US_FAA_NWS", "iwxxm-us", "3.0", "us", "iwxxm-us"),
+    ("CA_ECCC", "iwxxm-ca", "3.0", "ca", "iwxxm-ca"),
+    ("AU_BOM", "iwxxm-au", "3.0", "au", "iwxxm-au"),
+    ("BR_DECEA", "iwxxm-br", "3.0", "br", "iwxxm-br"),
+    ("HK_HKO", "iwxxm-hk", "3.0", "hk", "iwxxm-hk"),
+    ("IN_IMD", "iwxxm-in", "3.0", "in", "iwxxm-in"),
+    ("JP_JMA", "iwxxm-jp", "3.0", "jp", "iwxxm-jp"),
+    ("KR_KMA", "iwxxm-kr", "3.0", "kr", "iwxxm-kr"),
+    ("NZ_CAA_MET", "iwxxm-nz", "3.0", "nz", "iwxxm-nz"),
+    ("UK_METOFFICE", "iwxxm-uk", "3.0", "uk", "iwxxm-uk"),
+)
 
 
 def _label_from_name(name: str) -> str:
@@ -113,6 +132,16 @@ def _mine_xsd(
     }
 
 
+def awaiting_national_vendor_pins(*, vendor: Path | None = None) -> list[str]:
+    """Return national_line ids whose expected vendor dirs are not present."""
+    root = vendor if vendor is not None else VENDOR
+    missing: list[str] = []
+    for national_line, subdir, version, _auth, _qname in NATIONAL_VENDOR_EXPECTATIONS:
+        if not (root / subdir / version).is_dir():
+            missing.append(national_line)
+    return missing
+
+
 def mine_catalog(*, iwxxm_version: str = "2025-2") -> dict[str, Any]:
     """Build the full conversion schema-blocks catalog."""
     blocks: list[dict[str, Any]] = []
@@ -132,36 +161,42 @@ def mine_catalog(*, iwxxm_version: str = "2025-2") -> dict[str, Any]:
         if block:
             blocks.append(block)
 
-    us_dir = VENDOR / "iwxxm-us" / "3.0"
-    if us_dir.is_dir():
-        for xsd in sorted(us_dir.glob("*.xsd")):
+    skipped: list[str] = []
+    for (
+        national_line,
+        subdir,
+        version,
+        authority,
+        qname_prefix,
+    ) in NATIONAL_VENDOR_EXPECTATIONS:
+        national_dir = VENDOR / subdir / version
+        if not national_dir.is_dir():
+            skipped.append(national_line)
+            continue
+        for xsd in sorted(national_dir.glob("*.xsd")):
             block = _mine_xsd(
                 xsd,
-                authority="us",
-                qname_prefix="iwxxm-us",
-                national_lines=["US_FAA_NWS"],
+                authority=authority,
+                qname_prefix=qname_prefix,
+                national_lines=[national_line],
             )
             if block:
                 blocks.append(block)
 
-    ca_dir = VENDOR / "iwxxm-ca" / "3.0"
-    if ca_dir.is_dir():
-        for xsd in sorted(ca_dir.glob("*.xsd")):
-            block = _mine_xsd(
-                xsd,
-                authority="ca",
-                qname_prefix="iwxxm-ca",
-                national_lines=["CA_ECCC"],
-            )
-            if block:
-                blocks.append(block)
-
-    return {
+    catalog: dict[str, Any] = {
         "schema_version": 1,
         "source": "vendor/schemas (read-only pins)",
         "iwxxm_version": iwxxm_version,
         "blocks": blocks,
     }
+    if skipped:
+        # Residual metadata for Profile Builder / operators of the mine script.
+        # Does not invent XSD content (#1198).
+        catalog["national_residuals"] = {
+            "awaiting_vendor_pins": skipped,
+            "unblock": "M6 vendor sync must pin national extension XSD trees",
+        }
+    return catalog
 
 
 def dump_catalog(catalog: dict[str, Any]) -> str:

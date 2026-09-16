@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-15 (EV-profile-builder-yaml-libraries / #1196 — F7.w YAML/DnD deepen)
+> **Last updated**: 2026-09-16 (EV-profile-builder-mine-residuals / #1198+#1199 — F7.w Phase B mining residuals)
 
 ## Summary
 
@@ -755,6 +755,21 @@
      export-metadata toggle (ADR-043). ADR-038 amend (EVPYL). EV-048 clean.
   **Session**: `EV-profile-builder-yaml-libraries` under local session-store (not a CORPUS
   design gate). Issue: [#1196](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1196).
+- **EV-profile-builder-mine-residuals deepen (F7.w / #1198+#1199 — Phase B mining residuals)**
+  — **requirements locked** (`D-EVPYL-R-10`, 2026-09-16):
+  1. **#1199:** Extend IWXXM validation library mining beyond core `iwxxm.sch` to **latest**
+     WMO foundation Schematron only (`metce` / `opm` / `saf` / `collect` under
+     `vendor/schemas/iwxxm/externalSchema/schemas.wmo.int/.../rule/*.sch`). Additive asserts
+     with `authority` tags; existing core assert ids remain stable; `--check` drift gate kept.
+     OpenGIS / other `externalSchema` SCH out of scope this cycle.
+  2. **#1198:** National Conversion schema blocks for AU/BR/HK/IN/JP/KR/NZ/UK — **defer full
+     mine** until real vendor pins (M6 sync). This cycle: document unblock criteria + miner
+     discovery hooks only; **no invented national XSD trees**; keep #1198 open after hooks.
+  3. **Tests:** TC-EVPYL-MINE-006..008; no UI / H4–H5. ADR-038 amend (residuals). EV-048 N/A
+     (tooling + package data only).
+  **Session**: `EV-profile-builder-mine-residuals` under local session-store (not a CORPUS
+  design gate). Issues: [#1198](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1198),
+  [#1199](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1199).
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|

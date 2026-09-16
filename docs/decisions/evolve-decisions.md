@@ -1,5 +1,27 @@
 # Evolve Decisions
 
+## Cycle EV-profile-builder-mine-residuals — Phase B mining residuals (#1198+#1199)
+
+**Opened:** 2026-09-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-profile-builder-mine-residuals`  
+**Parent:** EV-profile-builder-yaml-libraries / #1196 · **Documenting→Implementing gate:** closed (await Spec band)
+
+| ID | Outcome |
+|----|---------|
+| D-EVPYL-R-01 | Scope: both #1198 + #1199 in one standard evolve |
+| D-EVPYL-R-02 | #1198: defer full national mine until vendor pins; hooks/docs only |
+| D-EVPYL-R-03 | Scale: standard |
+| D-EVPYL-R-04 | Routing approved as written (2026-09-16) |
+| D-EVPYL-R-05 | #1199: WMO foundation SCH only (metce/opm/saf/collect); OpenGIS out |
+| D-EVPYL-R-06 | Version pin: latest family only (metce 1.2, opm 1.2, saf 1.1, collect 1.2) |
+| D-EVPYL-R-07 | #1198 stays open after hooks + unblock criteria |
+| D-EVPYL-R-08 | Additive asserts + `authority` tags; core ids stable |
+| D-EVPYL-R-09 | No invented national XSD trees; vendor read-only |
+| D-EVPYL-R-10 | **Requirements locked** → draft-docs (2026-09-16) |
+
+[Corpus: product §F7.w] [Corpus: tests] [Corpus: adr/ADR-038] [Corpus: decisions]
+
+---
+
 ## Cycle EV-profile-builder-yaml-libraries — YAML/DnD Profile Builder + export metadata (#1196)
 
 **Opened:** 2026-09-15 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-profile-builder-yaml-libraries`  
