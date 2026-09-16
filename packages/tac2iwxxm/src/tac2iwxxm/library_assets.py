@@ -87,40 +87,47 @@ def _kind_label(kind: LibraryKind) -> str:
 def _seed_body(kind: LibraryKind, national_line: str) -> dict[str, Any]:
     """Build a minimal first-party body for the kind."""
     if kind == "conversion":
+        from tac2iwxxm.conversion_schema_blocks import schema_blocks_for_national_line
+
         templates = [t.to_dict() for t in list_first_party_templates()]
         return {
             "rules": templates,
+            "schema_blocks": schema_blocks_for_national_line(national_line),
             "note": "TAC groups must match an associated conversion rule (AC11).",
         }
     if kind == "tac_validation":
-        return {"rules": [], "product_scope": "METAR", "national_line": national_line}
-    if kind == "iwxxm_validation":
-        return {"rules": [], "schematron": True, "national_line": national_line}
-    if kind == "dissemination":
+        from tac2iwxxm.validation_library_catalogs import load_tac_validation_rules
+
+        catalog = load_tac_validation_rules()
         return {
-            "annotations": [],
-            "transforms": [
-                {"id": "envelope", "type": "envelope"},
-                {"id": "topic_filename", "type": "topic_filename"},
-                {"id": "bulletin_rewrap", "type": "bulletin_rewrap"},
-                {"id": "checksum", "type": "checksum"},
-            ],
+            "rules": list(catalog.get("rules") or []),
+            "product_scope": "METAR",
             "national_line": national_line,
         }
-    # Decoding: seed from F9 glossary / decode_tac catalog (AC9).
-    from tac2iwxxm.glossary import load_glossary
+    if kind == "iwxxm_validation":
+        from tac2iwxxm.validation_library_catalogs import load_iwxxm_validation_asserts
 
-    glossary = load_glossary()
-    entries = [
-        {
-            "token": token,
-            "explanation": meaning,
-            "source": "decode_tac",
+        catalog = load_iwxxm_validation_asserts()
+        return {
+            "rules": list(catalog.get("asserts") or []),
+            "schematron": True,
+            "national_line": national_line,
         }
-        for token, meaning in sorted(glossary.items())
-    ]
+    if kind == "dissemination":
+        from tac2iwxxm.dissemination_decoding_catalogs import load_dissemination_transforms
+
+        catalog = load_dissemination_transforms()
+        return {
+            "annotations": list(catalog.get("annotations") or []),
+            "transforms": list(catalog.get("transforms") or []),
+            "national_line": national_line,
+        }
+    # Decoding: mined glossary projection (F9 decode_tac).
+    from tac2iwxxm.dissemination_decoding_catalogs import load_decoding_library_entries
+
+    catalog = load_decoding_library_entries()
     return {
-        "entries": entries,
+        "entries": list(catalog.get("entries") or []),
         "seed": "decode_tac",
         "national_line": national_line,
     }

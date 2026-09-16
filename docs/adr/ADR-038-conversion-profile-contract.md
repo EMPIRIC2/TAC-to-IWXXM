@@ -216,6 +216,45 @@ builder chrome for Semantic presets / Rule packs / Dissemination templates / Sig
 Product / journeys / tests: [Corpus: product §F7.w] EV-bridge; UJ-072g; TC-EVBRIDGE-*.
 Session: `EV-bridge-ux-canvas-align`.
 
+### Amend (EV-profile-builder-yaml-libraries / #1196 — Accepted)
+
+Extends Five Libraries into a **YAML-backed, DnD Profile Builder** with optional Convert
+export metadata. Does not reopen the EV-bridge hard cut.
+
+1. **Authoring model:** Each custom library asset is a **YAML document** (one YAML per asset)
+   with bidirectional live sync to a guided UI. Invalid YAML locks the guided UI until fixed.
+   Save validates against a strict schema (JSON Schema / msgspec). Built-in assets remain
+   read-only; operators create customs (including fork-from-national).
+2. **UI chrome:** Guided assembly / glossary / workflow / examples prose are **removed**.
+   Hover tooltips cover every Profile Builder control. Catalog inspector sits **directly under**
+   the active library editor and follows the active library tab.
+3. **DnD structure:** Top-level **blocks** correspond to **IWXXM schema blocks** from WMO
+   (and national extension blocks associated with country profiles). **Cards** are individual
+   rules inside a block. Create paths: starter templates, duplicate mined block, import YAML.
+4. **Libraries:** Conversion, TAC validation, IWXXM validation, Dissemination, and Decoding
+   are all fully customizable. IWXXM validation supports mined Schematron assert toggles and
+   custom XPath / regex-on-XML. Dissemination YAML/transforms remain pattern-only — **never**
+   credentials or destination URIs (ADR-021 / ADR-029 / ADR-030).
+5. **Defaults:** ICAO/WMO Annex 3 baseline selections for all five library pickers on Profile
+   Builder and Convert, kept in sync.
+6. **Lifecycle:** Phase A ships Draft-only customs + UX shell + export sidecar. Phase B ships
+   comprehensive mined catalogs. Phase C ships live regex validation (compile + capture
+   summary; Warn vs Fail), Activate (requires zero Fail; Draft may have Fail), and runtime
+   binding of activated customs via existing Convert library-id selection.
+7. **Export metadata (Phase A):** Optional Convert download / ZIP / single-result toggle
+   “Include conversion metadata” writes a sidecar `*.meta.json` (not embedded in IWXXM).
+   Default checklist includes all content groups (library ids; YAML snapshots/hashes;
+   product/IWXXM version/timestamp/operator identity; lint/validation summary; TAC
+   fingerprint; mapping-bridge summary). Opt-in default off; remember last choice per
+   operator. Single-file downloads use a ZIP of two. Guests omit identity fields.
+   Draft customs are not selectable on Convert until Activated (Phase C).
+   Never include credentials, destination URIs, or auth tokens.
+8. **Trust / beta:** Signed-in required for Profile Builder. Beta badge on Profile builder and
+   export-metadata toggle (ADR-043). No planning vocabulary in operator copy (EV-048).
+
+Product / journeys / tests: [Corpus: product §F7.w] EVPYL; UJ-072h-*; TC-EVPYL-*.
+Session: `EV-profile-builder-yaml-libraries`. Issue: #1196.
+
 ## References
 
 - Context: conversion-profile-contract-924 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
