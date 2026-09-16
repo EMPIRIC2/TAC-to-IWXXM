@@ -762,3 +762,34 @@ export async function createConversionTemplate(
   });
   return parseJson(response);
 }
+
+/**
+ * Update an owned custom conversion template (fails closed for first-party ids).
+ *
+ * @param accessToken - Bearer JWT
+ * @param templateId - Custom template id
+ * @param body - Partial update (camelCase aliases)
+ */
+export async function updateConversionTemplate(
+  accessToken: string,
+  templateId: string,
+  body: {
+    slug?: string;
+    name?: string;
+    iwxxmBlock?: string;
+    slots?: ConversionTemplateSlot[];
+    sample?: string;
+    comments?: string | null;
+    shared?: boolean;
+  },
+): Promise<ConversionTemplateOut> {
+  const response = await fetch(
+    apiUrl(`/api/v1/profiles/conversion-templates/${encodeURIComponent(templateId)}`),
+    {
+      method: 'PATCH',
+      headers: authHeaders(accessToken),
+      body: JSON.stringify(body),
+    },
+  );
+  return parseJson(response);
+}

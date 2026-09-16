@@ -60,6 +60,20 @@ export const PROFILES_CONV_TEMPLATES_ADVANCED_HINT =
   'Optional compiled pattern for experts. Slot builder remains the default path.';
 export const PROFILES_CONV_TEMPLATES_SKIP_CHIP = 'Skipped';
 export const PROFILES_CONV_TEMPLATES_SELECT = 'Conversion rule';
+export const PROFILES_CONV_TEMPLATES_SEARCH = 'Search conversion rules';
+export const PROFILES_CONV_TEMPLATES_SEARCH_PLACEHOLDER =
+  'Filter by name, group, or IWXXM block…';
+export const PROFILES_CONV_TEMPLATES_CATALOG_HEADING = 'Rule catalog';
+export const PROFILES_CONV_TEMPLATES_CATALOG_HELP =
+  'Browse mined IWXXM schema groups. Select a rule to open a matching conversion token or focus the editor.';
+export const PROFILES_CONV_TEMPLATES_CATALOG_EMPTY =
+  'No catalog rules match this search.';
+export const PROFILES_CONV_TEMPLATES_CATALOG_LOADING = 'Loading rule catalog…';
+export const PROFILES_CONV_TEMPLATES_SLOT_LABEL = 'Slot name';
+export const PROFILES_CONV_TEMPLATES_SAVE = 'Save changes';
+export const PROFILES_CONV_TEMPLATES_READONLY =
+  'Built-in rules are read-only. Fork to custom to rename slots or edit modes.';
+export const PROFILES_CONV_TEMPLATES_SAVED = 'Saved.';
 export const MAPPING_BRIDGE_HEADING = 'Mapping bridge';
 export const MAPPING_BRIDGE_HELP =
   'See how a TAC group matches a conversion rule and the IWXXM block it produces.';

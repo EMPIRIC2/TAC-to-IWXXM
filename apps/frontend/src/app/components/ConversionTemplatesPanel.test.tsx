@@ -11,17 +11,23 @@ vi.mock('../../utils/conversionProfilesApi', () => ({
   listConversionTemplates: vi.fn(),
   previewConversionTemplate: vi.fn(),
   createConversionTemplate: vi.fn(),
+  updateConversionTemplate: vi.fn(),
+  listLibraryAssets: vi.fn(),
 }));
 
 import {
   createConversionTemplate,
   listConversionTemplates,
+  listLibraryAssets,
   previewConversionTemplate,
+  updateConversionTemplate,
 } from '../../utils/conversionProfilesApi';
 
 const listMock = vi.mocked(listConversionTemplates);
 const previewMock = vi.mocked(previewConversionTemplate);
 const createMock = vi.mocked(createConversionTemplate);
+const updateMock = vi.mocked(updateConversionTemplate);
+const listAssetsMock = vi.mocked(listLibraryAssets);
 
 const windItem = {
   id: 'CV.WIND',
@@ -57,6 +63,174 @@ describe('ConversionTemplatesPanel', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     listMock.mockResolvedValue({ items: [windItem] });
+    listAssetsMock.mockResolvedValue({
+      items: [
+        {
+          id: 'LIB.CONVERSION.ICAO_2025',
+          kind: 'conversion',
+          name: 'ICAO conversion',
+          access: 'first_party',
+          engineProfileId: 'annex3',
+          attachedNationalLine: 'ICAO_2025',
+          body: {
+            schema_blocks: [
+              {
+                id: 'wmo-common',
+                label: 'common',
+                cards: [
+                  { id: 'iwxxm:WindObservation', label: 'Wind Observation' },
+                  { id: 'iwxxm:CloudLayer', label: 'Cloud Layer' },
+                ],
+              },
+              {
+                id: 'wmo-metar',
+                label: 'metar',
+                cards: [
+                  { id: 'iwxxm:MeteorologicalAerodromeObservation', label: 'METAR' },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    });
+  });
+
+  it('shows grouped searchable catalog from mined schema blocks (TC-EVWB-CONV-001)', async () => {
+    render(<ConversionTemplatesPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-catalog-picker')).toBeInTheDocument();
+    });
+    expect(
+      screen.getByTestId('conversion-catalog-group-wmo-common'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('conversion-catalog-card-iwxxm:WindObservation'),
+    ).toBeInTheDocument();
+    fireEvent.change(screen.getByTestId('conversion-catalog-search'), {
+      target: { value: 'cloud' },
+    });
+    expect(
+      screen.getByTestId('conversion-catalog-card-iwxxm:CloudLayer'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('conversion-catalog-card-iwxxm:WindObservation'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('keeps built-in slot labels read-only until fork (TC-EVWB-CONV-002)', async () => {
+    render(<ConversionTemplatesPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-template-slot-label-ddd'),
+      ).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('conversion-templates-readonly')).toBeInTheDocument();
+    expect(screen.getByTestId('conversion-template-slot-label-ddd')).toBeDisabled();
+    expect(screen.queryByTestId('conversion-templates-save')).not.toBeInTheDocument();
+  });
+
+  it('renames preset slots and saves custom templates (TC-EVWB-CONV-003)', async () => {
+    listMock.mockResolvedValue({ items: [customItem, windItem] });
+    updateMock.mockResolvedValue({
+      ...customItem,
+      slots: [{ id: 'ddd', label: 'wind direction', type: 'digits', digits: 3 }],
+    });
+    render(<ConversionTemplatesPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-templates-select')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('conversion-templates-select'), {
+      target: { value: 'custom-1' },
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-template-slot-label-ddd'),
+      ).not.toBeDisabled();
+    });
+    fireEvent.change(screen.getByTestId('conversion-template-slot-label-ddd'), {
+      target: { value: 'wind direction' },
+    });
+    fireEvent.click(screen.getByTestId('conversion-templates-save'));
+    await waitFor(() => {
+      expect(updateMock).toHaveBeenCalledWith(
+        'tok',
+        'custom-1',
+        expect.objectContaining({
+          slots: expect.arrayContaining([
+            expect.objectContaining({ id: 'ddd', label: 'wind direction' }),
+          ]),
+        }),
+      );
+    });
+    expect(screen.getByTestId('conversion-templates-saved')).toBeInTheDocument();
+  });
+
+  it('forks foundation then persists slot renames on custom (TC-EVWB-CONV-005)', async () => {
+    createMock.mockResolvedValue({
+      ...customItem,
+      id: 'forked-1',
+      name: 'Wind group (custom)',
+      slots: [
+        { id: 'ddd', label: 'direction', type: 'digits', digits: 3 },
+        { id: 'ff', label: 'speed', type: 'digits', digits: 2 },
+      ],
+    });
+    listMock.mockResolvedValueOnce({ items: [windItem] }).mockResolvedValue({
+      items: [
+        {
+          ...customItem,
+          id: 'forked-1',
+          name: 'Wind group (custom)',
+          slots: [
+            { id: 'ddd', label: 'direction', type: 'digits', digits: 3 },
+            { id: 'ff', label: 'speed', type: 'digits', digits: 2 },
+          ],
+        },
+        windItem,
+      ],
+    });
+    updateMock.mockResolvedValue({
+      ...customItem,
+      id: 'forked-1',
+      name: 'Wind group (custom)',
+      slots: [
+        { id: 'ddd', label: 'bearing', type: 'digits', digits: 3 },
+        { id: 'ff', label: 'speed', type: 'digits', digits: 2 },
+      ],
+    });
+    render(<ConversionTemplatesPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-templates-fork')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('conversion-templates-fork'));
+    await waitFor(() => {
+      expect(createMock).toHaveBeenCalledWith(
+        'tok',
+        expect.objectContaining({ forkOf: 'CV.WIND' }),
+      );
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-template-slot-label-ddd'),
+      ).not.toBeDisabled();
+    });
+    fireEvent.change(screen.getByTestId('conversion-template-slot-label-ddd'), {
+      target: { value: 'bearing' },
+    });
+    fireEvent.click(screen.getByTestId('conversion-templates-save'));
+    await waitFor(() => {
+      expect(updateMock).toHaveBeenCalledWith(
+        'tok',
+        'forked-1',
+        expect.objectContaining({
+          slots: expect.arrayContaining([
+            expect.objectContaining({ id: 'ddd', label: 'bearing' }),
+          ]),
+        }),
+      );
+    });
+    expect(screen.getByTestId('conversion-templates-saved')).toBeInTheDocument();
   });
 
   it('loads templates and previews mapping', async () => {
@@ -180,13 +354,22 @@ describe('ConversionTemplatesPanel', () => {
   });
 
   it('sets token mode to Skip and shows skip chip without machine ids in select', async () => {
+    listMock.mockResolvedValue({ items: [customItem, windItem] });
     render(<ConversionTemplatesPanel accessToken="tok" />);
     await waitFor(() => {
       expect(screen.getByTestId('conversion-templates-select')).toBeInTheDocument();
     });
+    fireEvent.change(screen.getByTestId('conversion-templates-select'), {
+      target: { value: 'custom-1' },
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-template-slot-mode-ddd'),
+      ).not.toBeDisabled();
+    });
     const select = screen.getByTestId('conversion-templates-select');
-    expect(select).toHaveTextContent(/Wind group/);
-    expect(select).not.toHaveTextContent('CV.WIND');
+    expect(select).toHaveTextContent(/My wind/);
+    expect(select).not.toHaveTextContent('custom-1');
     fireEvent.change(screen.getByTestId('conversion-template-slot-mode-ddd'), {
       target: { value: 'skip' },
     });
@@ -238,7 +421,7 @@ describe('ConversionTemplatesPanel', () => {
     listMock.mockResolvedValue({
       items: [
         {
-          ...windItem,
+          ...customItem,
           slots: [{ id: 'bare', label: 'bare', type: 'digits', digits: 2 }],
         },
       ],

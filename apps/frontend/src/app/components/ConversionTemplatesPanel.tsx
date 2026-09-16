@@ -1,18 +1,23 @@
 /**
  * Conversion templates authoring panel (parameterizable TAC→IWXXM bridge).
- * Phase A: hide machine ids, token modes Convert|Decode-only|Skip, Advanced pattern.
+ * P1: searchable catalog, renamable slots, foundation read-only, custom save.
  */
 
 import { Loader2 } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Card } from './ui/card';
 import { BetaBadge } from './BetaBadge';
 import { MappingBridge } from './MappingBridge';
 import {
+  ConversionCatalogPicker,
+  type ConversionCatalogCard,
+} from './ConversionCatalogPicker';
+import {
   createConversionTemplate,
   listConversionTemplates,
   previewConversionTemplate,
+  updateConversionTemplate,
   type ConversionTemplateOut,
   type ConversionTemplatePreviewResponse,
   type ConversionTemplateSlot,
@@ -33,7 +38,13 @@ import {
   PROFILES_CONV_TEMPLATES_MODE_DECODE,
   PROFILES_CONV_TEMPLATES_MODE_SKIP,
   PROFILES_CONV_TEMPLATES_PREVIEW,
+  PROFILES_CONV_TEMPLATES_READONLY,
+  PROFILES_CONV_TEMPLATES_SAVE,
+  PROFILES_CONV_TEMPLATES_SAVED,
+  PROFILES_CONV_TEMPLATES_SEARCH,
+  PROFILES_CONV_TEMPLATES_SEARCH_PLACEHOLDER,
   PROFILES_CONV_TEMPLATES_SELECT,
+  PROFILES_CONV_TEMPLATES_SLOT_LABEL,
 } from '../../utils/conversionProfilesCopy';
 
 export type ConversionTemplatesPanelProps = {
@@ -71,8 +82,13 @@ export function ConversionTemplatesPanel({
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [templateQuery, setTemplateQuery] = useState('');
+  const [catalogCardId, setCatalogCardId] = useState<string | null>(null);
+  const [saveNote, setSaveNote] = useState<string | null>(null);
 
   const selected = items.find((t) => t.id === selectedId) ?? items[0];
+  const isBuiltin = selected?.access === 'first_party';
+  const editable = Boolean(selected && !isBuiltin);
 
   const applySelection = useCallback((tmpl: ConversionTemplateOut) => {
     setSelectedId(tmpl.id);
@@ -84,7 +100,9 @@ export function ConversionTemplatesPanel({
     setSlots(nextSlots);
     setSelectedSlotId(nextSlots[0]?.id ?? null);
     setFocusGroup(tmpl.sample || '18012G20KT');
+    setComments(tmpl.comments || '');
     setPreview(null);
+    setSaveNote(null);
   }, []);
 
   const load = useCallback(async () => {
@@ -108,8 +126,40 @@ export function ConversionTemplatesPanel({
   }, [load]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
+  const filteredTemplates = useMemo(() => {
+    const q = templateQuery.trim().toLowerCase();
+    const list = !q
+      ? items
+      : items.filter(
+          (t) =>
+            t.name.toLowerCase().includes(q) ||
+            t.iwxxmBlock.toLowerCase().includes(q) ||
+            t.slug.toLowerCase().includes(q) ||
+            t.id.toLowerCase().includes(q),
+        );
+    if (selected && !list.some((t) => t.id === selected.id)) {
+      return [selected, ...list];
+    }
+    return list;
+  }, [items, templateQuery, selected]);
+
+  const groupedTemplates = useMemo(() => {
+    const groups = new Map<string, ConversionTemplateOut[]>();
+    for (const tmpl of filteredTemplates) {
+      const key = tmpl.iwxxmBlock || 'other';
+      const list = groups.get(key) ?? [];
+      list.push(tmpl);
+      groups.set(key, list);
+    }
+    return Array.from(groups.entries()).sort(([a], [b]) => a.localeCompare(b));
+  }, [filteredTemplates]);
+
   const updateSlot = (slotId: string, patch: Partial<ConversionTemplateSlot>) => {
+    if (!editable) {
+      return;
+    }
     setSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, ...patch } : s)));
+    setSaveNote(null);
   };
 
   const runPreview = async (tmpl: ConversionTemplateOut) => {
@@ -135,16 +185,18 @@ export function ConversionTemplatesPanel({
     setError(null);
     try {
       const slug = `fork-${tmpl.slug}-${Date.now().toString(36)}`.slice(0, 120);
-      await createConversionTemplate(accessToken, {
+      const created = await createConversionTemplate(accessToken, {
         slug,
         name: `${tmpl.name} (custom)`,
         iwxxmBlock: tmpl.iwxxmBlock,
         slots,
         sample: focusGroup,
-        comments: comments || undefined,
-        forkOf: tmpl.access === 'first_party' ? tmpl.id : tmpl.forkOf || tmpl.id,
+        comments: comments || tmpl.comments || undefined,
+        forkOf: tmpl.id,
       });
-      await load();
+      const res = await listConversionTemplates(accessToken);
+      setItems(res.items);
+      applySelection(created);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Fork failed');
     } finally {
@@ -152,7 +204,43 @@ export function ConversionTemplatesPanel({
     }
   };
 
-  // mode is normalized in applySelection; treat missing as convert for safety.
+  const saveSelected = async (tmpl: ConversionTemplateOut) => {
+    if (tmpl.access === 'first_party') {
+      setError(PROFILES_CONV_TEMPLATES_READONLY);
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    try {
+      const updated = await updateConversionTemplate(accessToken, tmpl.id, {
+        slots,
+        sample: focusGroup,
+        comments: comments || null,
+        iwxxmBlock: tmpl.iwxxmBlock,
+        name: tmpl.name,
+      });
+      setItems((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+      applySelection(updated);
+      setSaveNote(PROFILES_CONV_TEMPLATES_SAVED);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Save failed');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const onCatalogSelect = (card: ConversionCatalogCard) => {
+    setCatalogCardId(card.id);
+    const match =
+      items.find((t) => t.iwxxmBlock === card.id) ||
+      items.find((t) => t.name.toLowerCase() === card.label.toLowerCase()) ||
+      items.find((t) => t.iwxxmBlock.toLowerCase().includes(card.label.toLowerCase()));
+    if (match) {
+      applySelection(match);
+    }
+    setTemplateQuery(card.label || card.id);
+  };
+
   const localSkipChips = slots.filter((s) => s.mode === 'skip');
   const previewSkipped = preview?.skipped?.length
     ? preview.skipped
@@ -174,9 +262,20 @@ export function ConversionTemplatesPanel({
         {PROFILES_CONV_TEMPLATES_HELP}
       </p>
 
+      <ConversionCatalogPicker
+        accessToken={accessToken}
+        selectedCardId={catalogCardId}
+        onSelectCard={onCatalogSelect}
+      />
+
       {error ? (
         <p className="text-sm text-red-600" data-testid="conversion-templates-error">
           {error}
+        </p>
+      ) : null}
+      {saveNote ? (
+        <p className="text-sm text-green-700" data-testid="conversion-templates-saved">
+          {saveNote}
         </p>
       ) : null}
 
@@ -191,6 +290,20 @@ export function ConversionTemplatesPanel({
         <>
           <label className="block text-sm">
             <span className="text-gray-700 dark:text-gray-300">
+              {PROFILES_CONV_TEMPLATES_SEARCH}
+            </span>
+            <input
+              type="search"
+              className="mt-1 w-full rounded border border-gray-300 bg-white p-2 dark:border-gray-600 dark:bg-gray-900"
+              data-testid="conversion-templates-search"
+              placeholder={PROFILES_CONV_TEMPLATES_SEARCH_PLACEHOLDER}
+              value={templateQuery}
+              onChange={(e) => setTemplateQuery(e.target.value)}
+            />
+          </label>
+
+          <label className="block text-sm">
+            <span className="text-gray-700 dark:text-gray-300">
               {PROFILES_CONV_TEMPLATES_SELECT}
             </span>
             <select
@@ -202,13 +315,26 @@ export function ConversionTemplatesPanel({
                 if (next) applySelection(next);
               }}
             >
-              {items.map((t) => (
-                <option key={t.id} value={t.id}>
-                  {t.name} · {accessLabel(t.access)}
-                </option>
+              {groupedTemplates.map(([group, tmpls]) => (
+                <optgroup key={group} label={group}>
+                  {tmpls.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name} · {accessLabel(t.access)}
+                    </option>
+                  ))}
+                </optgroup>
               ))}
             </select>
           </label>
+
+          {isBuiltin ? (
+            <p
+              className="rounded border border-amber-200 bg-amber-50 p-2 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-100"
+              data-testid="conversion-templates-readonly"
+            >
+              {PROFILES_CONV_TEMPLATES_READONLY}
+            </p>
+          ) : null}
 
           <div className="space-y-2" data-testid="template-block-builder">
             <div className="space-y-2" data-testid="conversion-templates-slots">
@@ -232,13 +358,25 @@ export function ConversionTemplatesPanel({
                   data-testid={`conversion-template-slot-${slot.id}`}
                   aria-pressed={selectedSlotId === slot.id}
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="flex-1 text-sm">
-                      {slot.label} · {slot.type}
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    <span>
+                      {slot.type}
                       {slot.iwxxmField ? ` → ${slot.iwxxmField}` : ''}
                     </span>
                   </div>
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    <label className="block text-xs">
+                      <span className="text-gray-600 dark:text-gray-400">
+                        {PROFILES_CONV_TEMPLATES_SLOT_LABEL}
+                      </span>
+                      <input
+                        className="mt-1 w-full rounded border border-gray-300 bg-white p-1.5 dark:border-gray-600 dark:bg-gray-900"
+                        data-testid={`conversion-template-slot-label-${slot.id}`}
+                        value={slot.label}
+                        disabled={!editable}
+                        onChange={(e) => updateSlot(slot.id, { label: e.target.value })}
+                      />
+                    </label>
                     <label className="block text-xs">
                       <span className="text-gray-600 dark:text-gray-400">
                         {PROFILES_CONV_TEMPLATES_MODE}
@@ -247,6 +385,7 @@ export function ConversionTemplatesPanel({
                         className="mt-1 w-full rounded border border-gray-300 bg-white p-1.5 dark:border-gray-600 dark:bg-gray-900"
                         data-testid={`conversion-template-slot-mode-${slot.id}`}
                         value={slot.mode}
+                        disabled={!editable}
                         onChange={(e) => updateSlot(slot.id, { mode: e.target.value })}
                       >
                         {MODE_OPTIONS.map((opt) => (
@@ -256,7 +395,7 @@ export function ConversionTemplatesPanel({
                         ))}
                       </select>
                     </label>
-                    <label className="block text-xs">
+                    <label className="block text-xs sm:col-span-2">
                       <span className="text-gray-600 dark:text-gray-400">
                         {PROFILES_CONV_TEMPLATES_GLOSS}
                       </span>
@@ -264,6 +403,7 @@ export function ConversionTemplatesPanel({
                         className="mt-1 w-full rounded border border-gray-300 bg-white p-1.5 dark:border-gray-600 dark:bg-gray-900"
                         data-testid={`conversion-template-slot-gloss-${slot.id}`}
                         value={slot.gloss || ''}
+                        disabled={!editable}
                         onChange={(e) => updateSlot(slot.id, { gloss: e.target.value })}
                         placeholder="e.g. wind direction degrees"
                       />
@@ -295,7 +435,11 @@ export function ConversionTemplatesPanel({
               data-testid="conversion-templates-comments"
               rows={2}
               value={comments}
-              onChange={(e) => setComments(e.target.value)}
+              disabled={!editable}
+              onChange={(e) => {
+                setComments(e.target.value);
+                setSaveNote(null);
+              }}
             />
           </label>
 
@@ -339,6 +483,17 @@ export function ConversionTemplatesPanel({
             >
               {PROFILES_CONV_TEMPLATES_FORK}
             </button>
+            {editable ? (
+              <button
+                type="button"
+                className="rounded border border-sky-700 px-3 py-1.5 text-sm text-sky-800 disabled:opacity-50 dark:text-sky-200"
+                data-testid="conversion-templates-save"
+                disabled={busy}
+                onClick={() => void saveSelected(selected)}
+              >
+                {PROFILES_CONV_TEMPLATES_SAVE}
+              </button>
+            ) : null}
           </div>
 
           {preview || localSkipChips.length ? (
