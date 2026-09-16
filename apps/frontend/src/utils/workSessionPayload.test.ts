@@ -164,4 +164,31 @@ describe('workSessionPayload', () => {
     });
     expect(payload.product).toBe('metar');
   });
+
+  it('persists export_context on converted_results for metadata sidecars', () => {
+    const exportContext = {
+      product: 'METAR',
+      iwxxmVersion: '2025-2',
+      conversionLibraryId: 'LIB.CONVERSION.ICAO_2025',
+      tacValidationLibraryId: 'LIB.TAC_VALIDATION.ICAO_2025',
+      iwxxmValidationLibraryId: 'LIB.IWXXM_VALIDATION.ICAO_2025',
+      disseminationLibraryId: 'LIB.DISSEMINATION.ICAO_2025',
+      decodingLibraryId: 'LIB.DECODING.ICAO_2025',
+    };
+    const payload = buildWorkSessionPayload({
+      manualInput: 'METAR KJFK 121251Z ...',
+      pendingFiles: [],
+      convertedFiles: [
+        {
+          originalName: 'out.xml',
+          originalContent: 'METAR KJFK 121251Z ...',
+          convertedContent: '<iwxxm/>',
+          exportContext,
+        },
+      ],
+      conversionLog: null,
+      conversionParams: { product: 'METAR' },
+    });
+    expect(payload.converted_results?.[0]?.export_context).toEqual(exportContext);
+  });
 });

@@ -755,6 +755,7 @@ export function FileConverter({
       convertedContent: file.convertedContent,
       manualLineIndex: file.manualLineIndex,
       manualLineTotal: file.manualLineTotal,
+      ...(file.exportContext ? { exportContext: file.exportContext } : {}),
     })),
     conversionLog: conversionLogRef.current
       ? {
@@ -905,6 +906,13 @@ export function FileConverter({
               result.iwxxm_xml ?? result.xml ?? result.content ?? '',
             ),
             timestamp: Date.now(),
+            ...(result.export_context &&
+            typeof result.export_context === 'object' &&
+            !Array.isArray(result.export_context)
+              ? {
+                  exportContext: result.export_context as ConversionExportContext,
+                }
+              : {}),
           };
         }),
       );
