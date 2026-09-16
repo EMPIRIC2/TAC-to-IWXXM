@@ -114,30 +114,20 @@ def _seed_body(kind: LibraryKind, national_line: str) -> dict[str, Any]:
             "national_line": national_line,
         }
     if kind == "dissemination":
+        from tac2iwxxm.dissemination_decoding_catalogs import load_dissemination_transforms
+
+        catalog = load_dissemination_transforms()
         return {
-            "annotations": [],
-            "transforms": [
-                {"id": "envelope", "type": "envelope"},
-                {"id": "topic_filename", "type": "topic_filename"},
-                {"id": "bulletin_rewrap", "type": "bulletin_rewrap"},
-                {"id": "checksum", "type": "checksum"},
-            ],
+            "annotations": list(catalog.get("annotations") or []),
+            "transforms": list(catalog.get("transforms") or []),
             "national_line": national_line,
         }
-    # Decoding: seed from F9 glossary / decode_tac catalog (AC9).
-    from tac2iwxxm.glossary import load_glossary
+    # Decoding: mined glossary projection (F9 decode_tac).
+    from tac2iwxxm.dissemination_decoding_catalogs import load_decoding_library_entries
 
-    glossary = load_glossary()
-    entries = [
-        {
-            "token": token,
-            "explanation": meaning,
-            "source": "decode_tac",
-        }
-        for token, meaning in sorted(glossary.items())
-    ]
+    catalog = load_decoding_library_entries()
     return {
-        "entries": entries,
+        "entries": list(catalog.get("entries") or []),
         "seed": "decode_tac",
         "national_line": national_line,
     }

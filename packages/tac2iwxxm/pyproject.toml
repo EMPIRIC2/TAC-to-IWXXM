@@ -29,6 +29,8 @@ packages = ["src/tac2iwxxm"]
 "src/tac2iwxxm/data/conversion_schema_blocks.yaml" = "tac2iwxxm/data/conversion_schema_blocks.yaml"
 "src/tac2iwxxm/data/tac_validation_rules.yaml" = "tac2iwxxm/data/tac_validation_rules.yaml"
 "src/tac2iwxxm/data/iwxxm_validation_asserts.yaml" = "tac2iwxxm/data/iwxxm_validation_asserts.yaml"
+"src/tac2iwxxm/data/dissemination_transforms.yaml" = "tac2iwxxm/data/dissemination_transforms.yaml"
+"src/tac2iwxxm/data/decoding_library_entries.yaml" = "tac2iwxxm/data/decoding_library_entries.yaml"
 
 # Maturin builds the optional PyO3 cdylib (ADR-017 / T4.3). Pure-Python hatch wheel
 # remains the default ``uv sync`` path; CI rust job runs ``maturin develop``.
