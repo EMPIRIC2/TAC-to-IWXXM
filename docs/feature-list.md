@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-16 (EV-1198 Stage 1 web re-verify — AU partial candidate; #1198 still blocked)
+> **Last updated**: 2026-09-16 (EV-profile-builder-workbench-edit / #1203 — requirements locked)
 
 ## Summary
 
@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
-| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933); **deepen** EV-1051 shared semantic presets + team-safe sharing of non-secret profile assets/destination references (#1051); **deepen** EV-1120 Phase A profile-scoped catalog + glanceable Profile UX (#1120/#1145; B/C → #1146/#1147); **deepen** EV-080 / #1146 parameterizable conversion templates + TAC→IWXXM bridge; **deepen** EV-beta-ux-export-auth collapsible Results + zip unique names + info-only log chrome + library-id-only lint copy; **deepen** EV-profile-builder-yaml-libraries / #1196 YAML/DnD Profile Builder + export metadata sidecars (UJ-072h-*) |
+| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933); **deepen** EV-1051 shared semantic presets + team-safe sharing of non-secret profile assets/destination references (#1051); **deepen** EV-1120 Phase A profile-scoped catalog + glanceable Profile UX (#1120/#1145; B/C → #1146/#1147); **deepen** EV-080 / #1146 parameterizable conversion templates + TAC→IWXXM bridge; **deepen** EV-beta-ux-export-auth collapsible Results + zip unique names + info-only log chrome + library-id-only lint copy; **deepen** EV-profile-builder-yaml-libraries / #1196 YAML/DnD Profile Builder + export metadata sidecars (UJ-072h-*); **deepen** EV-profile-builder-workbench-edit / #1203 IDE workbench + full five-library editability + Overview (UJ-072i-*; supersedes Conversion DnD) |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert; **deepen** EV-beta-ux-export-auth info-only Conversion/Validation log chrome (not amber/red) |
@@ -773,6 +773,33 @@
   **Session**: `EV-profile-builder-mine-residuals` under local session-store (not a CORPUS
   design gate). Issues: [#1198](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1198),
   [#1199](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1199).
+- **EV-profile-builder-workbench-edit deepen (F7.w / #1203 — IDE workbench + full editability)**
+  — **requirements locked** (`D-EVWB-REQ-08`, 2026-09-16):
+  1. **Workbench IA:** Profiles keeps five library tabs + new **Overview** tab. Each library
+     uses IDE layout: catalog list | item editor | optional per-item IWXXM preview and
+     validation issues/warnings preview (**off by default**). Tooltips on every tab + control.
+  2. **Conversion:** **Remove DnD** (order does not matter). Renamable **preset slots** per TAC
+     group (direction, speed, gust, unit, …). Expanded mined catalog + **grouped searchable**
+     picker. Full create/edit of Conversion blocks/templates (UI + YAML). Foundation/WMO
+     read-only; customs = fork + full edit.
+  3. **TAC validation:** Create/edit regex rules; issue levels; clear rule identity; operator
+     args for numeric/bounds checks (`min` / `max` / `eq` / `in` for int+float; optional unit
+     label).
+  4. **IWXXM validation:** Make **all current** validation editable via intuitive UI
+     (enable/disable Schematron/XSD-oriented asserts + custom overlays + shared numeric ops).
+  5. **Decoding:** Symbol→meaning maps; unit annotations; structured types (e.g. polygon =
+     N values + units); add/update interpretations.
+  6. **Dissemination:** Full create/edit of destination/route profiles + enable/disable
+     existing F16–F19 adapters + YAML; **no new protocols**; never store credentials/URIs
+     (ADR-021/029/030). Drawer redesign out of scope.
+  7. **Overview:** Profile compare (diff libraries/rules) + per-profile product / file-type /
+     IWXXM version enablement.
+  8. **YAML** remains portable SoT with UI round-trip; Activate fail-closed on Fail; Beta on
+     workbench (ADR-043). EV-048 clean. Phases P0→P4 per session routing-plan.
+  9. **Journeys:** UJ-072i-*; **Tests:** TC-EVWB-*; **H4–H5** after stage FE. ADR-038 amend
+     (EVWB). Out: F8 auto-push; new sinks; Convert chrome rewrite; PyPI breaks.
+  **Session**: `EV-profile-builder-workbench-edit` under local session-store (not a CORPUS
+  design gate). Issue: [#1203](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1203).
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|

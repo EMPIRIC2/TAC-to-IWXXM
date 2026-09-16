@@ -1,5 +1,31 @@
 # Evolve Decisions
 
+## Cycle EV-profile-builder-workbench-edit — IDE workbench + full editability (#1203)
+
+**Opened:** 2026-09-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-profile-builder-workbench-edit`  
+**Issue:** [#1203](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1203) · **Documenting→Implementing gate:** closed  
+**Precursor:** #1196 / PR #1197 Phase A on `stage`
+
+| ID | Outcome |
+|----|---------|
+| D-EVWB-01..28 | Intake D1–D28 locked (new evolve; full edit ×5; drop DnD; workbench; Overview; YAML SoT; foundation fork-only; operator-only design decisions) |
+| D-EVWB-R1 | Routing approved; issue #1203 created (proceed recommended) |
+| D-EVWB-CTX | Context completed; scoped brief `docs/context/profile-builder-workbench-edit.md`; F107 waive sparse |
+| D-EVWB-REQ-01 | Deepen F7.w under #1203 (no new Fn) |
+| D-EVWB-REQ-02 | Journeys UJ-072i-* |
+| D-EVWB-REQ-03 | Tests TC-EVWB-* + H4–H5 when FE ships |
+| D-EVWB-REQ-04 | UI preview declined — docs/staging description only |
+| D-EVWB-REQ-05 | ADR-038 amend EVWB |
+| D-EVWB-REQ-06 | Numeric ops first ship: min/max/eq/in int+float + optional unit |
+| D-EVWB-REQ-07 | Dissemination = CRUD routes/profiles + adapter enable + YAML; no drawer redesign; no new protocols |
+| D-EVWB-REQ-08 | **Requirements locked** → draft-docs (2026-09-16) |
+| D-EVWB-doc | Spec band completed: draft-docs → tech-tooling; documenting verify **13/13 PASS** |
+| D-EVWB-gate | Spec→Build **opened** (operator G1:A / proceed recommended); first slice **P0** |
+
+[Corpus: product §F7.w] [Corpus: journeys §UJ-072i-*] [Corpus: api] [Corpus: tests] [Corpus: adr/ADR-038] [Corpus: decisions]
+
+---
+
 ## Cycle EV-profile-builder-mine-residuals — Phase B mining residuals (#1198+#1199)
 
 **Opened:** 2026-09-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-profile-builder-mine-residuals`  

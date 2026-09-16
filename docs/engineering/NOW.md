@@ -5,12 +5,15 @@ Ticket-tuned index for agents and humans. Prefer open GitHub issues over histori
 **Live agent state:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/{id}/`  
 **Standing corpus:** [CORPUS.md](../CORPUS.md)  
 **Project board:** [project-board.md](../project-board.md) · [Project #7](https://github.com/orgs/EMPIRIC2/projects/7) (20 h/week · I01=2026-09-15)  
-**Active sessions:** EV-080-param-conversion-templates (#1146 / F7.w templates+bridge); EV-project-board-planning (schedule/board); prior slim PR [#1185](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1185)
+**Active sessions:** EV-profile-builder-workbench-edit ([#1203](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1203) / F7.w IDE workbench); EV-080-param-conversion-templates (#1146); EV-project-board-planning; prior slim PR [#1185](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1185)
 
-## Open epics / high priority (snapshot 2026-09-12)
+## Open epics / high priority (snapshot 2026-09-16)
 
 | Issue | Theme |
 |-------|--------|
+| [#1203](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1203) | **Active** — Profile Builder IDE workbench + full five-library editability (F7.w) |
+| [#1196](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1196) | YAML/DnD Profile Builder lineage (Phase A on stage via #1197; DnD superseded by #1203) |
+| [#1198](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1198) | National Conversion XSD mining (blocked on vendor pins) |
 | [#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031) | CA_ECCC — mine MSC IWXXM PDFs |
 | [#1030](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1030) | CA_ECCC — mine MANAIR |
 | [#1029](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1029) | CA_ECCC — mine MANOBS |

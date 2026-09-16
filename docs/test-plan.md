@@ -131,6 +131,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-072f         | F7.w (EV-conversion-profile-ux-libraries)                    | Profile Builder assembly + conversion token modes (Convert/Decode/Skip)                                                                                                                                                                                  | **H4–H5 when FE ships**           | TC-EVCPU-001..008                                                                        |
 | UJ-072g         | F7.w (EV-bridge-ux-canvas-align)                             | Five Libraries + Mapping bridge + hard cut semantic profile                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVBRIDGE-001..011                                                                     |
 | UJ-072h-conv … UJ-072h-export | F7.w (EV-profile-builder-yaml-libraries / #1196) | YAML/DnD Profile Builder + Convert metadata sidecar                                                                                                                                                                                                       | **H4–H5 when FE ships**           | TC-EVPYL-*                                                                               |
+| UJ-072i-workbench … UJ-072i-overview | F7.w (EV-profile-builder-workbench-edit / #1203) | IDE workbench + full five-library editability + Overview (no Conversion DnD)                                                                                                                                                                             | **H4–H5 when FE ships**           | TC-EVWB-*                                                                                |
 | UJ-069          | F35/F36 (EV-063/EV-090/EV-093; M4 deepen)                    | Semantic convert → exchange package (`GLOBAL_AFS`) with explicit profile/IWXXM-line compatibility                                                                                                                                                          | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-_; TC-EV093-_; milestone 4 cross-version follow-ons          |
 | UJ-075          | F4 deepen (EV-908 / #908)                                    | IWXXM↔IWXXM migrate via `product=iwxxm` — supported/lossy/unsupported matrix                                                                                                                                                                               | T2 (API); H4–H5 N/A MVP           | TC-EV908-001..004                                                                        |
 | UJ-070          | F6+F9+F7.q (EV-981 / #981)                                   | Opt-in propagate decode residuals into remarks / HRT + QM indicator                                                                                                                                                                                        | **H4–H5 required**                | TC-EV981-001..005                                                                        |
@@ -3160,6 +3161,72 @@ Warn; WMO reset.
 - **Pass criteria**: Hook/docs present; `--check` still green when nationals absent; #1198
   remains open with unblock = vendor pin present
 - **Source**: #1198; D-EVPYL-R-02 / D-EVPYL-R-09
+
+### EV-profile-builder-workbench-edit / F7.w — IDE workbench + full editability (#1203)
+
+- **Mode**: deepen F7.w; no new Fn; ADR-038 amend EVWB; supersedes Conversion DnD from #1196 UX
+- **Pass criteria**: [Corpus: product §F7.w] EVWB ACs; UJ-072i-*; H4–H5 after stage FE
+- **Source**: [#1203](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1203); session
+  `EV-profile-builder-workbench-edit`
+- **E2E**: T3 full matrix; CI smoke = happy path only
+- **Phases**: P0 workbench/DnD-off → P1 Conversion → P2 TAC/IWXXM → P3 Decoding+Dissemination →
+  P4 Overview
+
+#### P0 — Workbench shell
+
+##### TC-EVWB-001: Workbench layout + Overview tab stub
+
+- **Level**: T0 / T2
+- **Objective**: Catalog | editor | preview toggles; Overview tab present; library tabs kept
+- **Pass criteria**: testids/DOM structure; preview toggles default off
+
+##### TC-EVWB-002: Conversion DnD removed
+
+- **Level**: T0 / T2
+- **Objective**: No drag-and-drop reorder UI for Conversion rule blocks/slots
+- **Pass criteria**: DnD handles absent; keyboard reorder not required for correctness
+
+##### TC-EVWB-003: Tooltips on tabs and primary controls
+
+- **Level**: T0 / T2
+- **Objective**: Hover help on every library tab + primary workbench controls; EV-048 clean
+- **Pass criteria**: Tooltip coverage assertions; no Corpus/ADR/EV ids in operator copy
+
+#### P1 — Conversion authoring
+
+##### TC-EVWB-CONV-001..005
+
+Grouped searchable catalog (expanded mined set); renamable preset slots; create block/template;
+fork foundation; YAML↔UI round-trip.
+
+#### P2 — TAC / IWXXM validation
+
+##### TC-EVWB-TAC-001..005
+
+Rule identity; regex create/edit; issue levels; numeric ops `min`/`max`/`eq`/`in` (int+float);
+sample lint.
+
+##### TC-EVWB-IWXXM-001..005
+
+Enable/disable/edit current validation surfaces; custom overlays; shared numeric ops; sample
+validate.
+
+#### P3 — Decoding + Dissemination
+
+##### TC-EVWB-DECODE-001..004
+
+Symbol maps; units; structured types (polygon); sample decode.
+
+##### TC-EVWB-DISSEM-001..004
+
+CRUD destination/route profiles + adapter enable/disable; reject secrets/URIs; no new protocols.
+
+#### P4 — Overview
+
+##### TC-EVWB-OVERVIEW-001..004
+
+Profile compare diffs; per-profile product / file-type / IWXXM version enablement; Activate
+wiring unchanged fail-closed.
 
 ### EV-080 / F7.w — Parameterizable conversion templates + TAC→IWXXM bridge (#1146)
 
