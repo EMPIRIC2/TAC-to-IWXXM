@@ -47,6 +47,7 @@ import { ThemeToggle } from './ThemeToggle';
 import { GoldenExamplesSelect } from './GoldenExamplesSelect';
 import { DisseminationDrawer } from './DisseminationDrawer';
 import { BetaBadge } from './BetaBadge';
+import { Checkbox } from './ui/checkbox';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { isOperatorDisseminationDestinationsEnabled } from '/utils/operatorDisseminationUi';
@@ -59,6 +60,39 @@ import { convertOverlayFields } from '@/utils/convertOverlayFields';
 import { WorkbenchMappingBridge } from './WorkbenchMappingBridge';
 import { LibraryPickersBar } from './LibraryPickersBar';
 import { libraryIdsForNationalLine } from '@/utils/libraryIds';
+import {
+  buildConversionExportMetadata,
+  CONVERSION_METADATA_CHECKLIST_CONVERT_CONTEXT,
+  CONVERSION_METADATA_CHECKLIST_HEADING,
+  CONVERSION_METADATA_CHECKLIST_LIBRARIES,
+  CONVERSION_METADATA_CHECKLIST_LINT,
+  CONVERSION_METADATA_CHECKLIST_MAPPING_BRIDGE,
+  CONVERSION_METADATA_CHECKLIST_OPERATOR,
+  CONVERSION_METADATA_CHECKLIST_TAC_FINGERPRINT,
+  CONVERSION_METADATA_TOGGLE_HELP,
+  CONVERSION_METADATA_CHECKLIST_YAML_HASHES,
+  CONVERSION_METADATA_TOGGLE_LABEL,
+  defaultConversionMetadataChecklist,
+  isConversionMetadataExportEnabled,
+  metaSidecarFileName,
+  readConversionMetadataPrefs,
+  serializeConversionMetadata,
+  writeConversionMetadataPrefs,
+  type ConversionExportContext,
+  type ConversionMetadataChecklistKey,
+  type ConversionMetadataPrefs,
+} from '@/utils/conversionExportMetadata';
+import {
+  CONVERT_RESET_WMO_LIBRARY_DEFAULTS,
+  CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP,
+} from '@/utils/conversionProfilesCopy';
+import {
+  readWmoLibraryDefaultsSync,
+  resetWmoLibraryDefaultsSync,
+  WMO_LIBRARY_DEFAULTS_SYNC_EVENT,
+  WMO_LIBRARY_DEFAULTS_SYNC_KEY,
+  type WmoLibraryDefaultsSync,
+} from '@/utils/wmoLibraryDefaultsSync';
 import { optionalFormField } from '@/utils/optionalFormField';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
@@ -95,6 +129,7 @@ import {
   lintTac,
   validateIwxxm,
   fetchSchemaStatus,
+  downloadBlob,
   EndpointNotImplementedError,
   type FailedSpan,
 } from '/utils/api';
@@ -223,6 +258,8 @@ interface ConvertedFile {
    * `index` is 0-based; `total` is the manual batch size.
    */
   liveOutputSlot?: { index: number; total: number };
+  /** Convert-time snapshot for export metadata sidecars. */
+  exportContext?: ConversionExportContext;
 }
 
 interface PendingFile {
@@ -403,6 +440,92 @@ interface ConversionParams {
   logLevel: LogLevel;
 }
 
+function snapshotExportContext(
+  params: ConversionParams,
+  product: string,
+  reportVariant?: string,
+): ConversionExportContext {
+  const variant = (reportVariant ?? params.reportVariant).trim();
+  return {
+    product,
+    iwxxmVersion: params.iwxxmVersion,
+    ...(variant ? { reportVariant: variant } : {}),
+    conversionLibraryId: params.conversionLibraryId,
+    tacValidationLibraryId: params.tacValidationLibraryId,
+    iwxxmValidationLibraryId: params.iwxxmValidationLibraryId,
+    disseminationLibraryId: params.disseminationLibraryId,
+    decodingLibraryId: params.decodingLibraryId,
+  };
+}
+
+function initialConversionParams(): ConversionParams {
+  const base: ConversionParams = {
+    bulletinId: '',
+    issuingCenter: '',
+    product: 'auto',
+    profile: DEFAULT_SEMANTIC_PROFILE,
+    reportVariant: '',
+    exchangeProfile: DEFAULT_EXCHANGE_PROFILE,
+    presetId: '',
+    disseminationTemplateId: '',
+    overlayId: '',
+    ...libraryIdsForNationalLine(DEFAULT_SEMANTIC_PROFILE),
+    iwxxmVersion: DEFAULT_IWXXM_VERSION,
+    strictValidation: true,
+    includeNilReasons: true,
+    onError: 'warn',
+    logLevel: 'INFO',
+  };
+  const sync = readWmoLibraryDefaultsSync();
+  if (!sync) {
+    return base;
+  }
+  const profile = coerceIwxxmProfile(sync.profile);
+  return {
+    ...base,
+    ...sync.libraryIds,
+    profile,
+    reportVariant: '',
+    iwxxmVersion: coerceIwxxmVersionForProfile(profile, base.iwxxmVersion),
+  };
+}
+
+/**
+ * Apply saved converter preferences, preferring shared WMO library sync when present.
+ */
+function conversionParamsFromStoredPreferences(
+  prefs: Record<string, unknown>,
+): ConversionParams {
+  const sync = readWmoLibraryDefaultsSync();
+  const profile = sync
+    ? coerceIwxxmProfile(sync.profile)
+    : hydrateSemanticProfile(prefs.profile);
+  const iwxxmVersion = coerceIwxxmVersionForProfile(profile, prefs.iwxxmVersion);
+  return {
+    bulletinId:
+      (typeof prefs.bulletinIdExample === 'string' && prefs.bulletinIdExample) ||
+      'SAAA00',
+    issuingCenter:
+      (typeof prefs.issuingCenter === 'string' && prefs.issuingCenter) || 'KWBC',
+    product: ((typeof prefs.product === 'string' && prefs.product) ||
+      'auto') as TacProductSelection,
+    profile,
+    reportVariant: '',
+    exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
+    presetId: '',
+    disseminationTemplateId: '',
+    overlayId: '',
+    ...(sync ? sync.libraryIds : libraryIdsForNationalLine(profile)),
+    iwxxmVersion,
+    strictValidation: prefs.strictValidation !== false,
+    includeNilReasons: prefs.includeNilReasons !== false,
+    onError: ((typeof prefs.onError === 'string' && prefs.onError) ||
+      'warn') as ConversionParams['onError'],
+    logLevel: ((typeof prefs.logLevel === 'string' && prefs.logLevel) ||
+      'INFO') as ConversionParams['logLevel'],
+  };
+}
+
 function activeMetarFamilyVariants(
   entry: ProfileCatalogEntry,
   product: string,
@@ -509,26 +632,16 @@ export function FileConverter({
   const [caExtensionBundleAvailable, setCaExtensionBundleAvailable] = useState<
     boolean | null
   >(null);
-  const [conversionParams, setConversionParams] = useState<ConversionParams>({
-    bulletinId: '',
-    issuingCenter: '',
-    product: 'auto',
-    profile: DEFAULT_SEMANTIC_PROFILE,
-    reportVariant: '',
-    exchangeProfile: DEFAULT_EXCHANGE_PROFILE,
-    presetId: '',
-    disseminationTemplateId: '',
-    overlayId: '',
-    ...libraryIdsForNationalLine(DEFAULT_SEMANTIC_PROFILE),
-    iwxxmVersion: DEFAULT_IWXXM_VERSION,
-    strictValidation: true,
-    includeNilReasons: true,
-    onError: 'warn',
-    logLevel: 'INFO',
-  });
+  const [conversionParams, setConversionParams] = useState<ConversionParams>(
+    initialConversionParams,
+  );
   const [profileCatalogEntries, setProfileCatalogEntries] = useState<
     ProfileCatalogEntry[]
   >([]);
+  const [metadataPrefs, setMetadataPrefs] = useState<ConversionMetadataPrefs>(() =>
+    readConversionMetadataPrefs(),
+  );
+  const [isMetadataChecklistOpen, setIsMetadataChecklistOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const massFolderInputRef = useRef<HTMLInputElement>(null);
   const massZipInputRef = useRef<HTMLInputElement>(null);
@@ -540,6 +653,46 @@ export function FileConverter({
     conversionLogRef.current = next;
     setConversionLog(next);
   }, []);
+
+  const applyWmoLibraryDefaultsSync = useCallback((sync: WmoLibraryDefaultsSync) => {
+    const profile = coerceIwxxmProfile(sync.profile);
+    setConversionParams((prev) => ({
+      ...prev,
+      ...sync.libraryIds,
+      profile,
+      reportVariant: '',
+      iwxxmVersion: coerceIwxxmVersionForProfile(profile, prev.iwxxmVersion),
+    }));
+  }, []);
+
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== WMO_LIBRARY_DEFAULTS_SYNC_KEY || !event.newValue) {
+        return;
+      }
+      const next = readWmoLibraryDefaultsSync();
+      if (next) {
+        applyWmoLibraryDefaultsSync(next);
+      }
+    };
+    const onSameTab = (event: Event) => {
+      const detail = (event as CustomEvent<WmoLibraryDefaultsSync>).detail;
+      if (detail?.profile && detail.libraryIds) {
+        applyWmoLibraryDefaultsSync(detail);
+        return;
+      }
+      const next = readWmoLibraryDefaultsSync();
+      if (next) {
+        applyWmoLibraryDefaultsSync(next);
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    window.addEventListener(WMO_LIBRARY_DEFAULTS_SYNC_EVENT, onSameTab);
+    return () => {
+      window.removeEventListener('storage', onStorage);
+      window.removeEventListener(WMO_LIBRARY_DEFAULTS_SYNC_EVENT, onSameTab);
+    };
+  }, [applyWmoLibraryDefaultsSync]);
 
   useEffect(() => {
     convertedFilesRef.current = convertedFiles;
@@ -638,6 +791,8 @@ export function FileConverter({
       convertedContent: file.convertedContent,
       manualLineIndex: file.manualLineIndex,
       manualLineTotal: file.manualLineTotal,
+      convertedAt: file.timestamp,
+      ...(file.exportContext ? { exportContext: file.exportContext } : {}),
     })),
     conversionLog: conversionLogRef.current
       ? {
@@ -685,36 +840,17 @@ export function FileConverter({
     hasLocalUnsavedWork,
   });
 
-  // Load user preferences on mount from localStorage
+  // Load user preferences on mount from localStorage (WMO sync wins for libraries)
   useEffect(() => {
     const loadPreferences = () => {
       try {
         const stored = localStorage.getItem('metar_converter_preferences');
         if (stored) {
-          const prefs = JSON.parse(stored);
-          const profile = hydrateSemanticProfile(prefs.profile);
-          const iwxxmVersion = coerceIwxxmVersionForProfile(
-            profile,
-            prefs.iwxxmVersion,
+          setConversionParams(
+            conversionParamsFromStoredPreferences(
+              JSON.parse(stored) as Record<string, unknown>,
+            ),
           );
-
-          setConversionParams({
-            bulletinId: prefs.bulletinIdExample || 'SAAA00',
-            issuingCenter: prefs.issuingCenter || 'KWBC',
-            product: (prefs.product as TacProductSelection) || 'auto',
-            profile,
-            reportVariant: '',
-            exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
-            presetId: '',
-            disseminationTemplateId: '',
-            overlayId: '',
-            ...libraryIdsForNationalLine(profile),
-            iwxxmVersion,
-            strictValidation: prefs.strictValidation !== false,
-            includeNilReasons: prefs.includeNilReasons !== false,
-            onError: prefs.onError || 'warn',
-            logLevel: prefs.logLevel || 'INFO',
-          });
         }
       } catch (error) {
         console.error('Error loading preferences:', error);
@@ -787,7 +923,17 @@ export function FileConverter({
             convertedContent: String(
               result.iwxxm_xml ?? result.xml ?? result.content ?? '',
             ),
-            timestamp: Date.now(),
+            timestamp:
+              typeof result.converted_at === 'number'
+                ? result.converted_at
+                : Date.now(),
+            ...(result.export_context &&
+            typeof result.export_context === 'object' &&
+            !Array.isArray(result.export_context)
+              ? {
+                  exportContext: result.export_context as ConversionExportContext,
+                }
+              : {}),
           };
         }),
       );
@@ -882,27 +1028,11 @@ export function FileConverter({
     try {
       const stored = localStorage.getItem('metar_converter_preferences');
       if (stored) {
-        const prefs = JSON.parse(stored);
-        const profile = hydrateSemanticProfile(prefs.profile);
-        const iwxxmVersion = coerceIwxxmVersionForProfile(profile, prefs.iwxxmVersion);
-
-        setConversionParams({
-          bulletinId: prefs.bulletinIdExample || 'SAAA00',
-          issuingCenter: prefs.issuingCenter || 'KWBC',
-          product: (prefs.product as TacProductSelection) || 'auto',
-          profile,
-          reportVariant: '',
-          exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
-          presetId: '',
-          disseminationTemplateId: '',
-          overlayId: '',
-          ...libraryIdsForNationalLine(profile),
-          iwxxmVersion,
-          strictValidation: prefs.strictValidation !== false,
-          includeNilReasons: prefs.includeNilReasons !== false,
-          onError: prefs.onError || 'warn',
-          logLevel: prefs.logLevel || 'INFO',
-        });
+        setConversionParams(
+          conversionParamsFromStoredPreferences(
+            JSON.parse(stored) as Record<string, unknown>,
+          ),
+        );
         toast.info('Conversion parameters updated from preferences');
       }
     } catch (error) {
@@ -1213,6 +1343,7 @@ export function FileConverter({
               ),
               convertedContent: result.xml,
               timestamp: Date.now(),
+              exportContext: snapshotExportContext(conversionParams, resolvedProduct),
             });
           }
         });
@@ -1336,6 +1467,11 @@ export function FileConverter({
               : undefined,
             convertedContent: result.iwxxm_xml || result.xml || result.content || '',
             timestamp: Date.now(),
+            exportContext: snapshotExportContext(
+              conversionParams,
+              resolvedProduct,
+              optionalFormField(activeReportVariant),
+            ),
           });
         });
       }
@@ -1666,17 +1802,86 @@ export function FileConverter({
     return file.originalName.replace(/\.(txt|metar)$/i, '.xml');
   };
 
-  const handleDownloadSingle = (file: ConvertedFile) => {
-    const blob = new Blob([file.convertedContent], { type: 'text/xml' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = resolveDownloadXmlName(file);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast.success('File downloaded');
+  const includeConversionMetadata = isConversionMetadataExportEnabled(metadataPrefs);
+
+  const persistMetadataPrefs = useCallback((next: ConversionMetadataPrefs) => {
+    setMetadataPrefs(next);
+    writeConversionMetadataPrefs(next);
+  }, []);
+
+  const updateMetadataChecklist = useCallback(
+    (key: ConversionMetadataChecklistKey, checked: boolean) => {
+      persistMetadataPrefs({
+        ...metadataPrefs,
+        checklist: {
+          ...metadataPrefs.checklist,
+          [key]: checked,
+        },
+      });
+    },
+    [metadataPrefs, persistMetadataPrefs],
+  );
+
+  const buildFileExportMetadata = useCallback(
+    (file: ConvertedFile) => {
+      const ctx = file.exportContext;
+      return buildConversionExportMetadata({
+        tacContent: file.originalContent,
+        convertedAt: file.timestamp,
+        product: ctx?.product ?? conversionParams.product,
+        iwxxmVersion: ctx?.iwxxmVersion ?? conversionParams.iwxxmVersion,
+        reportVariant: ctx?.reportVariant ?? conversionParams.reportVariant,
+        libraries: ctx
+          ? {
+              conversionLibraryId: ctx.conversionLibraryId,
+              tacValidationLibraryId: ctx.tacValidationLibraryId,
+              iwxxmValidationLibraryId: ctx.iwxxmValidationLibraryId,
+              disseminationLibraryId: ctx.disseminationLibraryId,
+              decodingLibraryId: ctx.decodingLibraryId,
+            }
+          : {
+              conversionLibraryId: conversionParams.conversionLibraryId,
+              tacValidationLibraryId: conversionParams.tacValidationLibraryId,
+              iwxxmValidationLibraryId: conversionParams.iwxxmValidationLibraryId,
+              disseminationLibraryId: conversionParams.disseminationLibraryId,
+              decodingLibraryId: conversionParams.decodingLibraryId,
+            },
+        checklist: metadataPrefs.checklist,
+        isGuest,
+        userEmail,
+        accessToken,
+        conversionLog,
+        lintSessionBatch: conversionLog != null,
+      });
+    },
+    [
+      accessToken,
+      conversionLog,
+      conversionParams,
+      isGuest,
+      metadataPrefs.checklist,
+      userEmail,
+    ],
+  );
+
+  const handleDownloadSingle = async (file: ConvertedFile) => {
+    const xmlName = resolveDownloadXmlName(file);
+    if (!includeConversionMetadata) {
+      downloadBlob(new Blob([file.convertedContent], { type: 'text/xml' }), xmlName);
+      toast.success('File downloaded');
+      return;
+    }
+
+    const zip = new JSZip();
+    zip.file(xmlName, file.convertedContent);
+    zip.file(
+      metaSidecarFileName(xmlName),
+      serializeConversionMetadata(buildFileExportMetadata(file)),
+    );
+    const content = await zip.generateAsync({ type: 'blob' });
+    const zipStem = xmlName.replace(/\.xml$/i, '') || 'download';
+    downloadBlob(content, `${zipStem}.zip`);
+    toast.success('File downloaded with metadata');
   };
 
   const handleDownloadAll = async () => {
@@ -1688,24 +1893,31 @@ export function FileConverter({
     );
 
     convertedFiles.forEach((file, index) => {
-      zip.file(memberNames[index]!, file.convertedContent);
+      const xmlName = memberNames[index]!;
+      zip.file(xmlName, file.convertedContent);
+      if (includeConversionMetadata) {
+        zip.file(
+          metaSidecarFileName(xmlName),
+          serializeConversionMetadata(buildFileExportMetadata(file)),
+        );
+      }
     });
 
     const content = await zip.generateAsync({ type: 'blob' });
-    const url = URL.createObjectURL(content);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = outputArchiveName(outputFilename, {
-      firstTac: firstTacForArchive(
-        firstAccumulatedTac,
-        convertedFiles[0]?.originalContent,
-      ),
-    });
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast.success('All files downloaded as ZIP');
+    downloadBlob(
+      content,
+      outputArchiveName(outputFilename, {
+        firstTac: firstTacForArchive(
+          firstAccumulatedTac,
+          convertedFiles[0]?.originalContent,
+        ),
+      }),
+    );
+    toast.success(
+      includeConversionMetadata
+        ? 'All files downloaded as ZIP with metadata'
+        : 'All files downloaded as ZIP',
+    );
   };
 
   const handleCopy = (content: string) => {
@@ -2312,9 +2524,122 @@ export function FileConverter({
                 <BetaBadge className="ml-1 inline-flex" />
               </Button>
             ) : null}
+            <div
+              className="flex min-w-[12rem] flex-col gap-1 rounded-md border border-gray-200 bg-gray-50 px-3 py-2 dark:border-gray-700 dark:bg-gray-900/40"
+              data-testid="conversion-metadata-export-panel"
+            >
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="conversion-metadata-toggle"
+                  data-testid="conversion-metadata-toggle"
+                  checked={metadataPrefs.enabled}
+                  disabled={isReadOnly}
+                  onCheckedChange={(checked) => {
+                    persistMetadataPrefs({
+                      ...metadataPrefs,
+                      enabled: checked === true,
+                      checklist:
+                        checked === true && !metadataPrefs.enabled
+                          ? defaultConversionMetadataChecklist()
+                          : metadataPrefs.checklist,
+                    });
+                  }}
+                />
+                <Label
+                  htmlFor="conversion-metadata-toggle"
+                  className="flex cursor-pointer items-center gap-1 text-sm text-gray-800 dark:text-gray-200"
+                >
+                  {CONVERSION_METADATA_TOGGLE_LABEL}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        className="inline-flex h-5 w-5 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                        aria-label="About conversion metadata"
+                        data-testid="conversion-metadata-toggle-help"
+                        onClick={(event) => event.preventDefault()}
+                      >
+                        <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-xs text-balance">
+                      {CONVERSION_METADATA_TOGGLE_HELP}
+                    </TooltipContent>
+                  </Tooltip>
+                  <BetaBadge className="inline-flex" />
+                </Label>
+              </div>
+              {metadataPrefs.enabled ? (
+                <Collapsible
+                  open={isMetadataChecklistOpen}
+                  onOpenChange={setIsMetadataChecklistOpen}
+                >
+                  <CollapsibleTrigger asChild>
+                    <button
+                      type="button"
+                      className="flex items-center gap-1 text-left text-xs font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                      data-testid="conversion-metadata-checklist-trigger"
+                    >
+                      {isMetadataChecklistOpen ? (
+                        <ChevronUp className="h-3.5 w-3.5" aria-hidden="true" />
+                      ) : (
+                        <ChevronDown className="h-3.5 w-3.5" aria-hidden="true" />
+                      )}
+                      {CONVERSION_METADATA_CHECKLIST_HEADING}
+                    </button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent
+                    className="mt-1 space-y-1.5"
+                    data-testid="conversion-metadata-checklist"
+                  >
+                    {(
+                      [
+                        ['libraries', CONVERSION_METADATA_CHECKLIST_LIBRARIES],
+                        [
+                          'libraryYamlHashes',
+                          CONVERSION_METADATA_CHECKLIST_YAML_HASHES,
+                        ],
+                        [
+                          'convertContext',
+                          CONVERSION_METADATA_CHECKLIST_CONVERT_CONTEXT,
+                        ],
+                        ['operator', CONVERSION_METADATA_CHECKLIST_OPERATOR],
+                        ['lintSummary', CONVERSION_METADATA_CHECKLIST_LINT],
+                        [
+                          'tacFingerprint',
+                          CONVERSION_METADATA_CHECKLIST_TAC_FINGERPRINT,
+                        ],
+                        [
+                          'mappingBridgeSummary',
+                          CONVERSION_METADATA_CHECKLIST_MAPPING_BRIDGE,
+                        ],
+                      ] as const
+                    ).map(([key, label]) => (
+                      <div key={key} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`conversion-metadata-check-${key}`}
+                          checked={metadataPrefs.checklist[key]}
+                          disabled={isReadOnly || (key === 'operator' && isGuest)}
+                          onCheckedChange={(checked) =>
+                            updateMetadataChecklist(key, checked === true)
+                          }
+                        />
+                        <Label
+                          htmlFor={`conversion-metadata-check-${key}`}
+                          className="cursor-pointer text-xs text-gray-700 dark:text-gray-300"
+                        >
+                          {label}
+                          {key === 'operator' && isGuest ? ' (sign in required)' : ''}
+                        </Label>
+                      </div>
+                    ))}
+                  </CollapsibleContent>
+                </Collapsible>
+              ) : null}
+            </div>
             <Button
               data-testid="download-zip-button"
-              onClick={handleDownloadAll}
+              onClick={() => void handleDownloadAll()}
               disabled={isBusy || !hasConverted}
               variant="outline"
               className="min-w-[10rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
@@ -2461,6 +2786,37 @@ export function FileConverter({
                         });
                       }}
                     />
+                    <div className="flex shrink-0 items-center gap-1">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        disabled={isReadOnly}
+                        data-testid="reset-wmo-library-defaults"
+                        className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                        onClick={() => {
+                          const sync = resetWmoLibraryDefaultsSync();
+                          applyWmoLibraryDefaultsSync(sync);
+                        }}
+                      >
+                        {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
+                      </Button>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                            aria-label="About reset to WMO defaults"
+                            data-testid="reset-wmo-library-defaults-help"
+                          >
+                            <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-xs text-balance">
+                          {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
 
                     {reportVariantOptions.length > 0 &&
                       inputMode !== 'ahl_bulletin' && (
@@ -3405,9 +3761,13 @@ export function FileConverter({
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => handleDownloadSingle(file)}
+                            onClick={() => void handleDownloadSingle(file)}
                             className="bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-sm border-0 focus:ring-2 focus:ring-blue-500"
-                            aria-label={`Download ${file.originalName} as XML`}
+                            aria-label={
+                              includeConversionMetadata
+                                ? `Download ${file.originalName} as ZIP with metadata`
+                                : `Download ${file.originalName} as XML`
+                            }
                           >
                             <Download className="w-4 h-4 mr-1" aria-hidden="true" />
                             Download

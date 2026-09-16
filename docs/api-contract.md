@@ -836,6 +836,24 @@ convert apply. Slot-builder payloads are structured JSON (not raw regex-first).
 in v1; no destination credentials in template bodies (ADR-021/029). **Non-goals (phase-1):**
 TAC-validation / dissem / decoding library APIs; workflow authoring (#1147).
 
+### EV-profile-builder-yaml-libraries / #1196 — Library YAML + export metadata (JWT)
+
+Deepens F7.w Five Libraries with **YAML-backed custom assets** and optional Convert export
+sidecars (ADR-038 amend EVPYL). Extends existing library-assets routes (do not invent a second
+profiles tree).
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET`/`POST`/`PATCH`/`DELETE` | `/api/v1/profiles/library-assets[/{asset_id}]` | Existing library asset CRUD; body includes **YAML document** (strict schema on save). Builtins read-only; customs owner-scoped. Draft vs Activated status (Activate = Phase C). |
+| `POST` | `/api/v1/profiles/library-assets/preview-rule` | Existing/extended: sample TAC/IWXXM + rule → match/captures / lint / validate / decode / dissem preview as kind allows |
+| `POST` | `/api/v1/profiles/library-assets/validate-yaml` | Validate YAML against strict schema + regex compile diagnostics (Warn/Fail) without persist |
+| `POST` | `/api/v1/convert` (existing) | Optional `include_conversion_metadata=true` (multipart). When set, response/download packaging includes sibling `*.meta.json` sidecar (not embedded in IWXXM). Single-file downloads return a **ZIP of two** (`xml` + `meta.json`). Guests may omit operator-identity fields; identity fields require JWT. Checklist fields selectable; default all groups when UI toggle on. Never credentials / destination URIs / auth tokens. |
+
+**Auth**: JWT for Profile Builder mutate (signed-in required). Convert metadata toggle may be
+used by guests for non-identity fields; operator identity fields require sign-in. **Trust**:
+builtins immutable; Dissemination YAML rejects secret/URI fields. **Non-goals**: metadata on
+Disseminate path; workflow definition editing on Profiles page.
+
 ### EV-1051 / #1051 — Operator sharing of semantic presets + dissemination templates (JWT)
 
 `#1051` deepens the existing authenticated profile and dissemination surfaces rather than

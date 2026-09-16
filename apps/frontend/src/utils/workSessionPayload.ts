@@ -7,6 +7,7 @@ import type {
   WorkSessionStatus,
   WorkSessionUpsertPayload,
 } from '@metar/shared';
+import type { ConversionExportContext } from './conversionExportMetadata';
 import { resolveConvertProduct, type TacProductSelection } from './tacProduct';
 
 export interface ConvertedFileSnapshot {
@@ -17,6 +18,10 @@ export interface ConvertedFileSnapshot {
   manualLineIndex?: number;
   /** Total manual lines in the batch. */
   manualLineTotal?: number;
+  /** Epoch ms when conversion produced this result (metadata convertedAt). */
+  convertedAt?: number;
+  /** Convert-time library/product snapshot for metadata sidecars. */
+  exportContext?: ConversionExportContext;
 }
 
 export interface ConverterSnapshot {
@@ -109,6 +114,10 @@ export function buildWorkSessionPayload(
             manual_line_total: file.manualLineTotal,
           }
         : {}),
+      ...(typeof file.convertedAt === 'number'
+        ? { converted_at: file.convertedAt }
+        : {}),
+      ...(file.exportContext ? { export_context: file.exportContext } : {}),
     })),
     errors: snapshot.conversionLog?.errors ?? [],
     issues: snapshot.conversionLog?.issues ?? [],

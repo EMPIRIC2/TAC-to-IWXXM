@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
@@ -125,6 +125,21 @@ class _FakeLibrarySvc:
             raise HTTPException(status_code=400, detail="unmatched")
         return "CV.WIND", "Wind group"
 
+    def validate_library_yaml_document(
+        self,
+        yaml_body: str,
+        *,
+        kind: str,
+        lifecycle: str = "draft",
+    ) -> dict[str, Any]:
+        from tac2iwxxm.library_yaml import LibraryKind, LibraryLifecycle, validate_library_yaml
+
+        return validate_library_yaml(
+            yaml_body,
+            expected_kind=cast(LibraryKind, kind),
+            lifecycle=cast(LibraryLifecycle, lifecycle),
+        ).to_dict()
+
 
 @pytest.fixture
 def client() -> Any:
@@ -240,6 +255,18 @@ def test_router_library_assets_crud_and_preview(client: Any) -> None:
     assert preview.status_code == 200
     assert preview.json()["ruleId"] == "CV.WIND"
     assert preview.json()["matched"] is True
+
+    validated = http.post(
+        "/api/v1/profiles/library-assets/validate-yaml",
+        json={
+            "kind": "tac_validation",
+            "yamlBody": "kind: tac_validation\nname: Wind\nrules:\n  - pattern: '(?P<wind>\\\\d{5})KT'\n",
+            "lifecycle": "draft",
+        },
+    )
+    assert validated.status_code == 200
+    assert validated.json()["valid_yaml"] is True
+    assert validated.json()["can_activate"] is True
 
     deleted = http.delete(f"/api/v1/profiles/library-assets/{ASSET_ID}")
     assert deleted.status_code == 204
@@ -652,4 +679,131 @@ def test_first_party_library_import_fallback(service: ConversionProfilesService)
         pytest.raises(HTTPException) as exc,
     ):
         service.preview_library_rule("LIB.CONVERSION.ICAO_2025", "18012G20KT")
+    assert exc.value.status_code == 503
+
+
+def test_validate_library_yaml_and_activate_gate(service: ConversionProfilesService) -> None:
+    """TC-EVPYL-ACTIVATE — Draft may Fail; Activate requires zero Fail."""
+    ok = service.validate_library_yaml_document(
+        "kind: conversion\nname: Wind\nrules: []\n",
+        kind="conversion",
+    )
+    assert ok["can_activate"] is True
+    extra = service._enforce_yaml_lifecycle(
+        yaml_body="kind: conversion\nname: Wind\nrules: []\n",
+        kind="conversion",
+        lifecycle_status="activated",
+    )
+    assert extra["status"] == "activated"
+    assert extra["name"] == "Wind"
+
+    draft_fail = service._enforce_yaml_lifecycle(
+        yaml_body="kind: tac_validation\nname: Broken\nrules:\n  - pattern: '(unclosed'\n",
+        kind="tac_validation",
+        lifecycle_status="draft",
+    )
+    assert draft_fail["status"] == "draft"
+
+    with pytest.raises(HTTPException) as exc:
+        service._enforce_yaml_lifecycle(
+            yaml_body="kind: tac_validation\nname: Broken\nrules:\n  - pattern: '(unclosed'\n",
+            kind="tac_validation",
+            lifecycle_status="activated",
+        )
+    assert exc.value.status_code == 422
+
+    with pytest.raises(HTTPException) as missing:
+        service._enforce_yaml_lifecycle(yaml_body=None, kind="conversion", lifecycle_status="activated")
+    assert missing.value.status_code == 422
+
+    draft_none = service._enforce_yaml_lifecycle(
+        yaml_body=None,
+        kind="conversion",
+        lifecycle_status="draft",
+    )
+    assert draft_none["status"] == "draft"
+
+    invalid = service._enforce_yaml_lifecycle(
+        yaml_body="kind: conversion\n  bad indent",
+        kind="conversion",
+        lifecycle_status="draft",
+    )
+    assert "body" not in invalid
+
+    with patch.object(
+        ConversionProfilesService,
+        "validate_library_yaml_document",
+        return_value={"valid_yaml": True, "can_activate": True, "data": ["nope"], "name": "  "},
+    ):
+        odd = service._enforce_yaml_lifecycle(
+            yaml_body="kind: conversion\nname: x\n",
+            kind="conversion",
+            lifecycle_status="draft",
+        )
+    assert "body" not in odd
+    assert "name" not in odd
+
+
+def test_update_library_asset_yaml_and_schema_version(service: ConversionProfilesService) -> None:
+    """Persist yaml_body, status, and schema_version on PATCH."""
+    engine = MagicMock()
+    begin_conn = MagicMock()
+    read_conn = MagicMock()
+    engine.begin.return_value.__enter__.return_value = begin_conn
+    engine.connect.return_value.__enter__.return_value = read_conn
+    begin_conn.execute.return_value.rowcount = 1
+    row = _library_row(yaml_body="kind: conversion\nname: x\n", status="draft")
+    activated = {**row, "status": "activated", "schema_version": 2}
+    read_conn.execute.side_effect = [
+        _Result(row=row),
+        _Result(row=activated),
+    ]
+    upd = MagicMock()
+    upd.where.return_value = upd
+    upd.values.return_value = "u"
+    with (
+        patch.object(svc, "_get_engine", return_value=engine),
+        patch.object(svc, "_table", return_value=MagicMock()),
+        patch.object(svc, "select", return_value=_stmt_chain()),
+        patch.object(svc, "update", return_value=upd),
+    ):
+        out = service.update_library_asset(
+            str(ASSET_ID),
+            LibraryAssetUpdate(
+                yamlBody="kind: conversion\nname: Wind\nrules: []\n",
+                status="activated",
+                schemaVersion=2,
+            ),
+        )
+    assert out.status == "activated"
+    assert out.schema_version == 2
+
+
+def test_library_row_maps_yaml_lifecycle_columns() -> None:
+    """Custom rows expose yaml_body / status / schema_version."""
+    service = _svc()
+    out = service._library_row_to_out(
+        _library_row(yaml_body="kind: conversion\nname: x\n", status="activated", schema_version=2)
+    )
+    assert out.status == "activated"
+    assert out.schema_version == 2
+    assert out.yaml_body is not None
+    draft = service._library_row_to_out(_library_row())
+    assert draft.status == "draft"
+    assert draft.schema_version == 1
+
+
+def test_validate_library_yaml_unavailable(service: ConversionProfilesService) -> None:
+    """Fail closed when tac2iwxxm.library_yaml cannot be imported."""
+    real_import = __import__
+
+    def _fake_import(name: str, *args: Any, **kwargs: Any) -> Any:
+        if name == "tac2iwxxm.library_yaml" or (
+            name == "tac2iwxxm" and kwargs.get("fromlist") and "library_yaml" in kwargs["fromlist"]
+        ):
+            raise ImportError("missing")
+        return real_import(name, *args, **kwargs)
+
+    with patch("builtins.__import__", side_effect=_fake_import), pytest.raises(HTTPException) as exc:
+        service.validate_library_yaml_document("kind: conversion\nname: x\n", kind="conversion")
     assert exc.value.status_code == 503

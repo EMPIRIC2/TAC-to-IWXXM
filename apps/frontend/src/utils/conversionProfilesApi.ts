@@ -557,6 +557,9 @@ export interface LibraryAssetOut {
   shared?: boolean;
   created_at?: string | null;
   updated_at?: string | null;
+  yamlBody?: string | null;
+  status?: 'draft' | 'activated' | string | null;
+  schemaVersion?: number | null;
 }
 
 export interface LibraryAssetListResponse {
@@ -577,6 +580,108 @@ export async function listLibraryAssets(
   const response = await fetch(apiUrl(`/api/v1/profiles/library-assets${query}`), {
     headers: authHeaders(accessToken),
   });
+  return parseJson(response);
+}
+
+export interface LibraryYamlValidateResponse {
+  valid_yaml: boolean;
+  yaml_error: string | null;
+  kind: LibraryAssetKind | null;
+  name: string | null;
+  lifecycle: 'draft' | 'activated';
+  fail_count: number;
+  warn_count: number;
+  can_activate: boolean;
+  diagnostics: Array<{
+    path: string;
+    pattern: string;
+    severity: 'ok' | 'warn' | 'fail';
+    message: string;
+    captures: Array<{ index: number; name: string }>;
+    sample_matched: boolean | null;
+  }>;
+}
+
+/**
+ * Validate library YAML + regex without persisting.
+ *
+ * @param accessToken - Bearer JWT
+ * @param body - YAML + expected kind
+ */
+export async function validateLibraryYaml(
+  accessToken: string,
+  body: {
+    yamlBody: string;
+    kind: LibraryAssetKind;
+    lifecycle?: 'draft' | 'activated';
+  },
+): Promise<LibraryYamlValidateResponse> {
+  const response = await fetch(
+    apiUrl('/api/v1/profiles/library-assets/validate-yaml'),
+    {
+      method: 'POST',
+      headers: authHeaders(accessToken),
+      body: JSON.stringify(body),
+    },
+  );
+  return parseJson(response);
+}
+
+/**
+ * Create a custom library asset (draft or activated).
+ *
+ * @param accessToken - Bearer JWT
+ * @param body - Create payload
+ */
+export async function createLibraryAsset(
+  accessToken: string,
+  body: {
+    slug: string;
+    name: string;
+    kind: LibraryAssetKind;
+    engineProfileId: string;
+    attachedNationalLine: string;
+    body?: Record<string, unknown>;
+    forkOf?: string;
+    shared?: boolean;
+    yamlBody?: string;
+    status?: 'draft' | 'activated';
+    schemaVersion?: number;
+  },
+): Promise<LibraryAssetOut> {
+  const response = await fetch(apiUrl('/api/v1/profiles/library-assets'), {
+    method: 'POST',
+    headers: authHeaders(accessToken),
+    body: JSON.stringify(body),
+  });
+  return parseJson(response);
+}
+
+/**
+ * Patch an owned custom library asset.
+ *
+ * @param accessToken - Bearer JWT
+ * @param assetId - Custom asset UUID
+ * @param body - Partial update
+ */
+export async function updateLibraryAsset(
+  accessToken: string,
+  assetId: string,
+  body: {
+    name?: string;
+    yamlBody?: string;
+    status?: 'draft' | 'activated';
+    body?: Record<string, unknown>;
+  },
+): Promise<LibraryAssetOut> {
+  const response = await fetch(
+    apiUrl(`/api/v1/profiles/library-assets/${encodeURIComponent(assetId)}`),
+    {
+      method: 'PATCH',
+      headers: authHeaders(accessToken),
+      body: JSON.stringify(body),
+    },
+  );
   return parseJson(response);
 }
 

@@ -1,0 +1,690 @@
+schema_version: 1
+source: vendor/schemas (read-only pins)
+iwxxm_version: 2025-2
+blocks:
+- id: wmo-wafssigwxfc
+  label: WAFS Sig Wx FC
+  authority: wmo
+  national_lines:
+  - '*'
+  xsd_path: vendor/schemas/iwxxm/2025-2/IWXXM/WAFSSigWxFC.xsd
+  cards:
+  - id: iwxxm:Cloud
+    label: Cloud
+    xsd_name: CloudType
+  - id: iwxxm:CloudDistribution
+    label: Cloud Distribution
+    xsd_name: CloudDistribution
+  - id: iwxxm:DegreeOfIcing
+    label: Degree Of Icing
+    xsd_name: DegreeOfIcing
+  - id: iwxxm:DegreeOfTurbulence
+    label: Degree Of Turbulence
+    xsd_name: DegreeOfTurbulence
+  - id: iwxxm:RadiationIncident
+    label: Radiation Incident
+    xsd_name: RadiationIncident
+  - id: iwxxm:WAFSJetStreamWindSymbol
+    label: WAFS Jet Stream Wind Symbol
+    xsd_name: WAFSJetStreamWindSymbol
+  - id: iwxxm:WAFSSignificantWeatherForecast
+    label: WAFS Significant Weather Forecast
+    xsd_name: WAFSSignificantWeatherForecast
+  - id: iwxxm:WorldAreaForecastCentre
+    label: World Area Forecast Centre
+    xsd_name: WorldAreaForecastCentre
+- id: wmo-airmet
+  label: airmet
+  authority: wmo
+  national_lines:
+  - '*'
+  xsd_path: vendor/schemas/iwxxm/2025-2/IWXXM/airmet.xsd
+  cards:
+  - id: iwxxm:AIRMET
+    label: AIRMET
+    xsd_name: AIRMET
+  - id: iwxxm:AIRMETEvolvingCondition
+    label: AIRMET Evolving Condition
+    xsd_name: AIRMETEvolvingCondition
+  - id: iwxxm:AIRMETEvolvingConditionCollection
+    label: AIRMET Evolving Condition Collection
+    xsd_name: AIRMETEvolvingConditionCollection
+  - id: iwxxm:AeronauticalAreaWeatherPhenomenon
+    label: Aeronautical Area Weather Phenomenon
+    xsd_name: AeronauticalAreaWeatherPhenomenon
+  - id: iwxxm:WeatherCausingVisibilityReduction
+    label: Weather Causing Visibility Reduction
+    xsd_name: WeatherCausingVisibilityReduction
+- id: wmo-common
+  label: common
+  authority: wmo
+  national_lines:
+  - '*'
+  xsd_path: vendor/schemas/iwxxm/2025-2/IWXXM/common.xsd
+  cards:
+  - id: iwxxm:AerodromeCloudForecast
+    label: Aerodrome Cloud Forecast
+    xsd_name: AerodromeCloudForecast
+  - id: iwxxm:AerodromeForecastWeather
+    label: Aerodrome Forecast Weather
+    xsd_name: AerodromeForecastWeather
+  - id: iwxxm:AerodromeSurfaceWindForecast
+    label: Aerodrome Surface Wind Forecast
+    xsd_name: AerodromeSurfaceWindForecast
+  - id: iwxxm:AerodromeSurfaceWindTrendForecast
+    label: Aerodrome Surface Wind Trend Forecast
+    xsd_name: AerodromeSurfaceWindTrendForecast
+  - id: iwxxm:AngleWithNilReason
+    label: Angle With Nil Reason
+    xsd_name: AngleWithNilReason
+  - id: iwxxm:BasicReport
+    label: Basic Report
+    xsd_name: BasicReport
+  - id: iwxxm:CloudAmountReportedAtAerodrome
+    label: Cloud Amount Reported At Aerodrome
+    xsd_name: CloudAmountReportedAtAerodrome
+  - id: iwxxm:CloudLayer
+    label: Cloud Layer
+    xsd_name: CloudLayer
+  - id: iwxxm:DistanceWithNilReason
+    label: Distance With Nil Reason
+    xsd_name: DistanceWithNilReason
+  - id: iwxxm:Extension
+    label: ''
+    xsd_name: ExtensionType
+  - id: iwxxm:LengthWithNilReason
+    label: Length With Nil Reason
+    xsd_name: LengthWithNilReason
+  - id: iwxxm:MeasureWithNilReason
+    label: Measure With Nil Reason
+    xsd_name: MeasureWithNilReason
+  - id: iwxxm:Report
+    label: Report
+    xsd_name: Report
+  - id: iwxxm:SigConvectiveCloud
+    label: Sig Convective Cloud
+    xsd_name: SigConvectiveCloudType
+  - id: iwxxm:StringWithNilReason
+    label: String With Nil Reason
+    xsd_name: StringWithNilReason
+  - id: iwxxm:ValDistanceVertical
+    label: Val Distance Vertical
+    xsd_name: ValDistanceVerticalType
+  - id: iwxxm:VelocityWithNilReason
+    label: Velocity With Nil Reason
+    xsd_name: VelocityWithNilReason
+- id: wmo-metfeature
+  label: met Feature
+  authority: wmo
+  national_lines:
+  - '*'
+  xsd_path: vendor/schemas/iwxxm/2025-2/IWXXM/metFeature.xsd
+  cards:
+  - id: iwxxm:ElevatedCurve
+    label: Elevated Curve
+    xsd_name: ElevatedCurve
+  - id: iwxxm:ElevatedEnvelope
+    label: Elevated Envelope
+    xsd_name: ElevatedEnvelope
+  - id: iwxxm:ElevatedLevel
+    label: Elevated Level
+    xsd_name: ElevatedLevel
+  - id: iwxxm:ElevatedPoint
+    label: Elevated Point
+    xsd_name: ElevatedPoint
+  - id: iwxxm:ElevatedSurface
+    label: Elevated Surface
+    xsd_name: ElevatedSurface
+  - id: iwxxm:ElevatedVolume
+    label: Elevated Volume
+    xsd_name: ElevatedVolume
+  - id: iwxxm:MeteorologicalFeature
+    label: Meteorological Feature
+    xsd_name: MeteorologicalFeature
+  - id: iwxxm:MeteorologicalFeatureCollection
+    label: Meteorological Feature Collection
+    xsd_name: MeteorologicalFeatureCollection
+  - id: iwxxm:MeteorologicalPhenomenon
+    label: Meteorological Phenomenon
+    xsd_name: MeteorologicalPhenomenon
+  - id: iwxxm:TropicalCyclone
+    label: Tropical Cyclone
+    xsd_name: TropicalCyclone
+  - id: iwxxm:Volcano
+    label: Volcano
+    xsd_name: Volcano
+- id: wmo-metarspeci
+  label: metar Speci
+  authority: wmo
+  national_lines:
+  - '*'
+  xsd_path: vendor/schemas/iwxxm/2025-2/IWXXM/metarSpeci.xsd
+  cards:
+  - id: iwxxm:AerodromeCloud
+    label: Aerodrome Cloud
+    xsd_name: AerodromeCloud
+  - id: iwxxm:AerodromeHorizontalVisibility
+    label: Aerodrome Horizontal Visibility
+    xsd_name: AerodromeHorizontalVisibility
+  - id: iwxxm:AerodromePresentWeather
+    label: Aerodrome Present Weather
+    xsd_name: AerodromePresentWeather
+  - id: iwxxm:AerodromeRecentWeather
+    label: Aerodrome Recent Weather
+    xsd_name: AerodromeRecentWeather
+  - id: iwxxm:AerodromeRunwayVisualRange
+    label: Aerodrome Runway Visual Range
+    xsd_name: AerodromeRunwayVisualRange
+  - id: iwxxm:AerodromeSeaCondition
+    label: Aerodrome Sea Condition
+    xsd_name: AerodromeSeaCondition
+  - id: iwxxm:AerodromeSurfaceWind
+    label: Aerodrome Surface Wind
+    xsd_name: AerodromeSurfaceWind
+  - id: iwxxm:AerodromeWindShear
+    label: Aerodrome Wind Shear
+    xsd_name: AerodromeWindShear
+  - id: iwxxm:METAR
+    label: METAR
+    xsd_name: METAR
+  - id: iwxxm:MeteorologicalAerodromeObservation
+    label: Meteorological Aerodrome Observation
+    xsd_name: MeteorologicalAerodromeObservation
+  - id: iwxxm:MeteorologicalAerodromeObservationReport
+    label: Meteorological Aerodrome Observation Report
+    xsd_name: MeteorologicalAerodromeObservationReport
+  - id: iwxxm:MeteorologicalAerodromeTrendForecast
+    label: Meteorological Aerodrome Trend Forecast
+    xsd_name: MeteorologicalAerodromeTrendForecast
+  - id: iwxxm:SPECI
+    label: SPECI
+    xsd_name: SPECI
+  - id: iwxxm:SeaSurfaceState
+    label: Sea Surface State
+    xsd_name: SeaSurfaceState
+- id: wmo-sigmet
+  label: sigmet
+  authority: wmo
+  national_lines:
+  - '*'
+  xsd_path: vendor/schemas/iwxxm/2025-2/IWXXM/sigmet.xsd
+  cards:
+  - id: iwxxm:AeronauticalSignificantWeatherPhenomenon
+    label: Aeronautical Significant Weather Phenomenon
+    xsd_name: AeronauticalSignificantWeatherPhenomenon
+  - id: iwxxm:SIGMET
+    label: SIGMET
+    xsd_name: SIGMET
+  - id: iwxxm:SIGMETEvolvingCondition
+    label: SIGMET Evolving Condition
+    xsd_name: SIGMETEvolvingCondition
+  - id: iwxxm:SIGMETEvolvingConditionCollection
+    label: SIGMET Evolving Condition Collection
+    xsd_name: SIGMETEvolvingConditionCollection
+  - id: iwxxm:SIGMETPosition
+    label: SIGMET Position
+    xsd_name: SIGMETPosition
+  - id: iwxxm:SIGMETPositionCollection
+    label: SIGMET Position Collection
+    xsd_name: SIGMETPositionCollection
+  - id: iwxxm:TropicalCycloneSIGMET
+    label: Tropical Cyclone SIGMET
+    xsd_name: TropicalCycloneSIGMET
+  - id: iwxxm:VolcanicAshSIGMET
+    label: Volcanic Ash SIGMET
+    xsd_name: VolcanicAshSIGMET
+  - id: iwxxm:analysisAndForecastPositionAnalysis
+    label: analysis And Forecast Position Analysis
+    xsd_name: analysisAndForecastPositionAnalysis
+- id: wmo-spacewxadvisory
+  label: space Wx Advisory
+  authority: wmo
+  national_lines:
+  - '*'
+  xsd_path: vendor/schemas/iwxxm/2025-2/IWXXM/spaceWxAdvisory.xsd
+  cards:
+  - id: iwxxm:SpaceWeatherAdvisory
+    label: Space Weather Advisory
+    xsd_name: SpaceWeatherAdvisory
+  - id: iwxxm:SpaceWeatherAnalysis
+    label: Space Weather Analysis
+    xsd_name: SpaceWeatherAnalysis
+  - id: iwxxm:SpaceWeatherIntensityAndRegion
+    label: Space Weather Intensity And Region
+    xsd_name: SpaceWeatherIntensityAndRegion
+  - id: iwxxm:SpaceWeatherLocation
+    label: Space Weather Location
+    xsd_name: SpaceWeatherLocation
+  - id: iwxxm:SpaceWeatherRegion
+    label: Space Weather Region
+    xsd_name: SpaceWeatherRegion
+- id: wmo-taf
+  label: taf
+  authority: wmo
+  national_lines:
+  - '*'
+  xsd_path: vendor/schemas/iwxxm/2025-2/IWXXM/taf.xsd
+  cards:
+  - id: iwxxm:AerodromeAirTemperatureForecast
+    label: Aerodrome Air Temperature Forecast
+    xsd_name: AerodromeAirTemperatureForecast
+  - id: iwxxm:MeteorologicalAerodromeForecast
+    label: Meteorological Aerodrome Forecast
+    xsd_name: MeteorologicalAerodromeForecast
+  - id: iwxxm:TAF
+    label: TAF
+    xsd_name: TAF
+- id: wmo-tropicalcycloneadvisory
+  label: tropical Cyclone Advisory
+  authority: wmo
+  national_lines:
+  - '*'
+  xsd_path: vendor/schemas/iwxxm/2025-2/IWXXM/tropicalCycloneAdvisory.xsd
+  cards:
+  - id: iwxxm:TropicalCycloneAdvisory
+    label: Tropical Cyclone Advisory
+    xsd_name: TropicalCycloneAdvisory
+  - id: iwxxm:TropicalCycloneForecastConditions
+    label: Tropical Cyclone Forecast Conditions
+    xsd_name: TropicalCycloneForecastConditions
+  - id: iwxxm:TropicalCycloneObservedConditions
+    label: Tropical Cyclone Observed Conditions
+    xsd_name: TropicalCycloneObservedConditions
+- id: wmo-volcanicashadvisory
+  label: volcanic Ash Advisory
+  authority: wmo
+  national_lines:
+  - '*'
+  xsd_path: vendor/schemas/iwxxm/2025-2/IWXXM/volcanicAshAdvisory.xsd
+  cards:
+  - id: iwxxm:VolcanicAshAdvisory
+    label: Volcanic Ash Advisory
+    xsd_name: VolcanicAshAdvisory
+  - id: iwxxm:VolcanicAshCloudForecast
+    label: Volcanic Ash Cloud Forecast
+    xsd_name: VolcanicAshCloudForecast
+  - id: iwxxm:VolcanicAshCloudObservedOrEstimated
+    label: Volcanic Ash Cloud Observed Or Estimated
+    xsd_name: VolcanicAshCloudObservedOrEstimated
+  - id: iwxxm:VolcanicAshForecastConditions
+    label: Volcanic Ash Forecast Conditions
+    xsd_name: VolcanicAshForecastConditions
+  - id: iwxxm:VolcanicAshObservedOrEstimatedConditions
+    label: Volcanic Ash Observed Or Estimated Conditions
+    xsd_name: VolcanicAshObservedOrEstimatedConditions
+  - id: iwxxm:WindObservedOrEstimated
+    label: Wind Observed Or Estimated
+    xsd_name: WindObservedOrEstimated
+- id: wmo-vona
+  label: vona
+  authority: wmo
+  national_lines:
+  - '*'
+  xsd_path: vendor/schemas/iwxxm/2025-2/IWXXM/vona.xsd
+  cards:
+  - id: iwxxm:AviationColourCode
+    label: Aviation Colour Code
+    xsd_name: AviationColourCode
+  - id: iwxxm:ResuspendedVolcanicAsh
+    label: Resuspended Volcanic Ash
+    xsd_name: ResuspendedVolcanicAsh
+  - id: iwxxm:VolcanicAshCloudVerticalExtent
+    label: Volcanic Ash Cloud Vertical Extent
+    xsd_name: VolcanicAshCloudVerticalExtent
+  - id: iwxxm:VolcanoObservatoryNoticeForAviation
+    label: Volcano Observatory Notice For Aviation
+    xsd_name: VolcanoObservatoryNoticeForAviation
+- id: us-airmet
+  label: airmet
+  authority: us
+  national_lines:
+  - US_FAA_NWS
+  xsd_path: vendor/schemas/iwxxm-us/3.0/airmet.xsd
+  cards:
+  - id: iwxxm-us:AIRMETEvolvingConditionExtension
+    label: AIRMET Evolving Condition
+    xsd_name: AIRMETEvolvingConditionExtension
+  - id: iwxxm-us:AIRMETWeatherHazards
+    label: AIRMET Weather Hazards
+    xsd_name: AIRMETWeatherHazards
+  - id: iwxxm-us:AIRMETWeatherPhenomena
+    label: AIRMET Weather Phenomena
+    xsd_name: AIRMETWeatherPhenomena
+  - id: iwxxm-us:FlightInformationRegions
+    label: Flight Information Regions
+    xsd_name: FlightInformationRegions
+  - id: iwxxm-us:FreezingLevel
+    label: Freezing Level
+    xsd_name: FreezingLevel
+  - id: iwxxm-us:FreezingLevelForecast
+    label: Freezing Level Forecast
+    xsd_name: FreezingLevelForecast
+- id: us-common
+  label: common
+  authority: us
+  national_lines:
+  - US_FAA_NWS
+  xsd_path: vendor/schemas/iwxxm-us/3.0/common.xsd
+  cards:
+  - id: iwxxm-us:AerodromePresentWeather
+    label: Aerodrome Present Weather
+    xsd_name: AerodromePresentWeather
+  - id: iwxxm-us:CloudAmountReportedAtAerodrome
+    label: Cloud Amount Reported At Aerodrome
+    xsd_name: CloudAmountReportedAtAerodrome
+  - id: iwxxm-us:LayerAboveAerodrome
+    label: Layer Above Aerodrome
+    xsd_name: LayerAboveAerodrome
+  - id: iwxxm-us:LengthWithNilReason
+    label: Length With Nil Reason
+    xsd_name: LengthWithNilReason
+  - id: iwxxm-us:MeasureWithNilReason
+    label: Measure With Nil Reason
+    xsd_name: MeasureWithNilReason
+  - id: iwxxm-us:Remarks
+    label: Remarks
+    xsd_name: Remarks
+  - id: iwxxm-us:USMetadata
+    label: US Metadata
+    xsd_name: USMetadata
+- id: us-metarspeci
+  label: metar Speci
+  authority: us
+  national_lines:
+  - US_FAA_NWS
+  xsd_path: vendor/schemas/iwxxm-us/3.0/metarSpeci.xsd
+  cards:
+  - id: iwxxm-us:Addendum
+    label: Addendum
+    xsd_name: Addendum
+  - id: iwxxm-us:AerodromePeakWind
+    label: Aerodrome Peak Wind
+    xsd_name: AerodromePeakWind
+  - id: iwxxm-us:AerodromeVariableRVR
+    label: Aerodrome Variable RVR
+    xsd_name: AerodromeVariableRVR
+  - id: iwxxm-us:AerodromeWindShift
+    label: Aerodrome Wind Shift
+    xsd_name: AerodromeWindShift
+  - id: iwxxm-us:CharacterOfTheSky
+    label: Character Of The Sky
+    xsd_name: CharacterOfTheSky
+  - id: iwxxm-us:CloudTypes
+    label: Cloud Types
+    xsd_name: CloudTypes
+  - id: iwxxm-us:ConvectiveCloudLocation
+    label: Convective Cloud Location
+    xsd_name: ConvectiveCloudLocation
+  - id: iwxxm-us:ConvectiveCloudTypes
+    label: Convective Cloud Types
+    xsd_name: ConvectiveCloudTypes
+  - id: iwxxm-us:FailedSensors
+    label: Failed Sensors
+    xsd_name: FailedSensors
+  - id: iwxxm-us:HailstoneSize
+    label: Hailstone Size
+    xsd_name: HailstoneSize
+  - id: iwxxm-us:InoperativeSensors
+    label: Inoperative Sensors
+    xsd_name: InoperativeSensors
+  - id: iwxxm-us:Lightning
+    label: Lightning
+    xsd_name: LightningType
+  - id: iwxxm-us:LightningFrequency
+    label: Lightning Frequency
+    xsd_name: LightningFrequency
+  - id: iwxxm-us:MaxMinTemperatures
+    label: Max Min Temperatures
+    xsd_name: MaxMinTemperatures
+  - id: iwxxm-us:MeteorologicalSensors
+    label: Meteorological Sensors
+    xsd_name: MeteorologicalSensors
+  - id: iwxxm-us:Obscurations
+    label: Obscurations
+    xsd_name: Obscurations
+  - id: iwxxm-us:ObservedAtSecondLocation
+    label: Observed At Second Location
+    xsd_name: ObservedAtSecondLocation
+  - id: iwxxm-us:ObservedLightning
+    label: Observed Lightning
+    xsd_name: ObservedLightning
+  - id: iwxxm-us:ObservingSystem
+    label: Observing System
+    xsd_name: ObservingSystemType
+  - id: iwxxm-us:ObservingSystemMetadata
+    label: Observing System Metadata
+    xsd_name: ObservingSystemMetadata
+  - id: iwxxm-us:PressureChangingRapidly
+    label: Pressure Changing Rapidly
+    xsd_name: PressureChangingRapidly
+  - id: iwxxm-us:PressureTendencyCharacteristic
+    label: Pressure Tendency Characteristic
+    xsd_name: PressureTendencyCharacteristic
+  - id: iwxxm-us:QualitativeDistance
+    label: Qualitative Distance
+    xsd_name: QualitativeDistance
+  - id: iwxxm-us:RecentWeather
+    label: Recent Weather
+    xsd_name: RecentWeather
+  - id: iwxxm-us:Sector
+    label: Sector
+    xsd_name: Sector
+  - id: iwxxm-us:SectorVisibility
+    label: Sector Visibility
+    xsd_name: SectorVisibility
+  - id: iwxxm-us:SensorLocation
+    label: Sensor Location
+    xsd_name: SensorLocation
+  - id: iwxxm-us:SnowIncrease
+    label: Snow Increase
+    xsd_name: SnowIncrease
+  - id: iwxxm-us:StatisticalFunction
+    label: Statistical Function
+    xsd_name: StatisticalFunctionType
+  - id: iwxxm-us:StatisticallyProcessedWeatherElements
+    label: Statistically Processed Weather Elements
+    xsd_name: StatisticallyProcessedWeatherElements
+  - id: iwxxm-us:TowerVisibility
+    label: Tower Visibility
+    xsd_name: TowerVisibility
+  - id: iwxxm-us:VariableCeilingHeight
+    label: Variable Ceiling Height
+    xsd_name: VariableCeilingHeight
+  - id: iwxxm-us:VariableSkyCondition
+    label: Variable Sky Condition
+    xsd_name: VariableSkyCondition
+  - id: iwxxm-us:VariableVisibility
+    label: Variable Visibility
+    xsd_name: VariableVisibility
+  - id: iwxxm-us:VisuallyObservablePhenomena
+    label: Visually Observable Phenomena
+    xsd_name: VisuallyObservablePhenomena
+- id: us-sigmet
+  label: sigmet
+  authority: us
+  national_lines:
+  - US_FAA_NWS
+  xsd_path: vendor/schemas/iwxxm-us/3.0/sigmet.xsd
+  cards:
+  - id: iwxxm-us:AffectedStates
+    label: Affected States
+    xsd_name: AffectedStates
+  - id: iwxxm-us:SIGMETWeatherHazards
+    label: SIGMET Weather Hazards
+    xsd_name: SIGMETWeatherHazards
+  - id: iwxxm-us:SIGMETWeatherPhenomena
+    label: SIGMET Weather Phenomena
+    xsd_name: SIGMETWeatherPhenomena
+- id: us-taf
+  label: taf
+  authority: us
+  national_lines:
+  - US_FAA_NWS
+  xsd_path: vendor/schemas/iwxxm-us/3.0/taf.xsd
+  cards:
+  - id: iwxxm-us:AirFrameIcingIntensity
+    label: Air Frame Icing Intensity
+    xsd_name: AirFrameIcingIntensity
+  - id: iwxxm-us:AmendableTAFParameter
+    label: Amendable TAF Parameter
+    xsd_name: AmendableTAFParameter
+  - id: iwxxm-us:IcingAboveAerodrome
+    label: Icing Above Aerodrome
+    xsd_name: IcingAboveAerodrome
+  - id: iwxxm-us:MeteorologicalAerodromeForecastExtension
+    label: Meteorological Aerodrome Forecast
+    xsd_name: MeteorologicalAerodromeForecastExtension
+  - id: iwxxm-us:NonConvectiveLowLevelWindShear
+    label: Non Convective Low Level Wind Shear
+    xsd_name: NonConvectiveLowLevelWindShear
+  - id: iwxxm-us:TAFAmendmentLimitations
+    label: TAF Amendment Limitations
+    xsd_name: TAFAmendmentLimitations
+  - id: iwxxm-us:TurbulenceAboveAerodrome
+    label: Turbulence Above Aerodrome
+    xsd_name: TurbulenceAboveAerodrome
+  - id: iwxxm-us:TurbulenceIntensity
+    label: Turbulence Intensity
+    xsd_name: TurbulenceIntensity
+- id: ca-airmet-ca
+  label: airmet ca
+  authority: ca
+  national_lines:
+  - CA_ECCC
+  xsd_path: vendor/schemas/iwxxm-ca/3.0/airmet-ca.xsd
+  cards:
+  - id: iwxxm-ca:cloudBase
+    label: cloud Base
+    xsd_name: cloudBase
+  - id: iwxxm-ca:cloudBaseReference
+    label: cloud Base Reference
+    xsd_name: cloudBaseReference
+  - id: iwxxm-ca:surfaceVisibility
+    label: surface Visibility
+    xsd_name: surfaceVisibility
+  - id: iwxxm-ca:surfaceVisibilityCause
+    label: surface Visibility Cause
+    xsd_name: surfaceVisibilityCause
+  - id: iwxxm-ca:surfaceWindSpeed
+    label: surface Wind Speed
+    xsd_name: surfaceWindSpeed
+- id: ca-common-ca
+  label: common ca
+  authority: ca
+  national_lines:
+  - CA_ECCC
+  xsd_path: vendor/schemas/iwxxm-ca/3.0/common-ca.xsd
+  cards:
+  - id: iwxxm-ca:humanReadableText
+    label: human Readable Text
+    xsd_name: humanReadableText
+  - id: iwxxm-ca:phenomenon
+    label: phenomenon
+    xsd_name: phenomenon
+  - id: iwxxm-ca:wxPhenomenon
+    label: wx Phenomenon
+    xsd_name: wxPhenomenonType
+- id: ca-metar-speci-ca
+  label: metar speci ca
+  authority: ca
+  national_lines:
+  - CA_ECCC
+  xsd_path: vendor/schemas/iwxxm-ca/3.0/metar-speci-ca.xsd
+  cards:
+  - id: iwxxm-ca:Addendum
+    label: Addendum
+    xsd_name: Addendum
+  - id: iwxxm-ca:AerodromeAverageWind
+    label: Aerodrome Average Wind
+    xsd_name: AerodromeAverageWind
+  - id: iwxxm-ca:AerodromeIcing
+    label: Aerodrome Icing
+    xsd_name: AerodromeIcingType
+  - id: iwxxm-ca:AerodromePrevailingVisibility
+    label: Aerodrome Prevailing Visibility
+    xsd_name: AerodromePrevailingVisibility
+  - id: iwxxm-ca:AerodromeVariableRVR
+    label: Aerodrome Variable RVR
+    xsd_name: AerodromeVariableRVR
+  - id: iwxxm-ca:AerodromeWindShift
+    label: Aerodrome Wind Shift
+    xsd_name: AerodromeWindShift
+  - id: iwxxm-ca:CloudTypes
+    label: Cloud Types
+    xsd_name: CloudTypes
+  - id: iwxxm-ca:ConvectiveCloudTypes
+    label: Convective Cloud Types
+    xsd_name: ConvectiveCloudTypes
+  - id: iwxxm-ca:FailedSensors
+    label: Failed Sensors
+    xsd_name: FailedSensors
+  - id: iwxxm-ca:InoperativeSensors
+    label: Inoperative Sensors
+    xsd_name: InoperativeSensors
+  - id: iwxxm-ca:LWIS
+    label: LWIS
+    xsd_name: LWIS
+  - id: iwxxm-ca:MeteorologicalSensors
+    label: Meteorological Sensors
+    xsd_name: MeteorologicalSensors
+  - id: iwxxm-ca:Obscurations
+    label: Obscurations
+    xsd_name: Obscurations
+  - id: iwxxm-ca:ObservedLightning
+    label: Observed Lightning
+    xsd_name: ObservedLightning
+  - id: iwxxm-ca:ObservingSystem
+    label: Observing System
+    xsd_name: ObservingSystemType
+  - id: iwxxm-ca:PressureChangingRapidly
+    label: Pressure Changing Rapidly
+    xsd_name: PressureChangingRapidly
+  - id: iwxxm-ca:QualitativeDistance
+    label: Qualitative Distance
+    xsd_name: QualitativeDistance
+  - id: iwxxm-ca:SAWR
+    label: SAWR
+    xsd_name: SAWR
+  - id: iwxxm-ca:Sector
+    label: Sector
+    xsd_name: Sector
+  - id: iwxxm-ca:SectorVisibility
+    label: Sector Visibility
+    xsd_name: SectorVisibility
+  - id: iwxxm-ca:StatisticalFunction
+    label: Statistical Function
+    xsd_name: StatisticalFunctionType
+  - id: iwxxm-ca:StatisticallyProcessedWeatherElements
+    label: Statistically Processed Weather Elements
+    xsd_name: StatisticallyProcessedWeatherElements
+  - id: iwxxm-ca:TraceCloud
+    label: Trace Cloud
+    xsd_name: TraceCloudType
+  - id: iwxxm-ca:VariableVisibility
+    label: Variable Visibility
+    xsd_name: VariableVisibility
+  - id: iwxxm-ca:VisuallyObservablePhenomena
+    label: Visually Observable Phenomena
+    xsd_name: VisuallyObservablePhenomena
+  - id: iwxxm-ca:Wind
+    label: Wind
+    xsd_name: WindType
+- id: ca-taf-ca
+  label: taf ca
+  authority: ca
+  national_lines:
+  - CA_ECCC
+  xsd_path: vendor/schemas/iwxxm-ca/3.0/taf-ca.xsd
+  cards:
+  - id: iwxxm-ca:AerodromeForecastWeather
+    label: Aerodrome Forecast Weather
+    xsd_name: AerodromeForecastWeatherType
+  - id: iwxxm-ca:LayerAboveAerodrome
+    label: Layer Above Aerodrome
+    xsd_name: LayerAboveAerodromeType
+  - id: iwxxm-ca:NonConvectiveLowLevelWindShear
+    label: Non Convective Low Level Wind Shear
+    xsd_name: NonConvectiveLowLevelWindShear
+  - id: iwxxm-ca:weather
+    label: weather
+    xsd_name: weather

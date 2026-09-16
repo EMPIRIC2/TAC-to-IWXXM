@@ -98,6 +98,16 @@ describe('LibraryPickersBar', () => {
           access: 'custom',
           engineProfileId: 'US_FAA_NWS',
           attachedNationalLine: 'US_FAA_NWS',
+          status: 'activated',
+        },
+        {
+          id: 'LIB.CONVERSION.DRAFT',
+          kind: 'conversion',
+          name: 'Draft conversion',
+          access: 'custom',
+          engineProfileId: 'US_FAA_NWS',
+          attachedNationalLine: 'US_FAA_NWS',
+          status: 'draft',
         },
       ],
     });
@@ -115,9 +125,11 @@ describe('LibraryPickersBar', () => {
       />,
     );
     await waitFor(() => {
-      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
-        'LIB.CONVERSION.CUSTOM',
-      );
+      expect(
+        Array.from(
+          screen.getByTestId('conversion-library-select').querySelectorAll('option'),
+        ).map((opt) => opt.getAttribute('value')),
+      ).toEqual(['LIB.CONVERSION.CUSTOM']);
     });
     const tacSelect = screen.getByTestId(
       'tac-validation-library-select',

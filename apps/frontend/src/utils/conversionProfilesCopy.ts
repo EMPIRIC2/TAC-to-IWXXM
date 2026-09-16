@@ -99,6 +99,12 @@ export const CONVERT_PRESET_LABEL = 'Semantic preset';
 export const CONVERT_PRESET_NONE = 'None';
 export const CONVERT_PRESET_HELP =
   'Optional saved preset for this convert. Applies saved profile defaults, but does not choose destinations or credentials.';
+export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS = 'Reset to WMO defaults';
+export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP =
+  'Restore the ICAO / WMO baseline profile and matching built-in library selections. Shared with Profile builder when you reset there too.';
+export const PROFILES_INSPECTOR_ACCESS_BUILTIN = 'Built-in (read-only default)';
+export const PROFILES_INSPECTOR_STATUS_READY = 'Ready';
+export const PROFILES_INSPECTOR_STATUS_DRAFT = 'Draft saved locally';
 export const PROFILES_EDITOR_LOGIN_REQUIRED = 'Sign in to open the profile builder.';
 export const PROFILES_EDITOR_SIGN_IN = 'Sign in';
 export const PROFILES_INSPECTOR_HEADING = 'Catalog inspector';
@@ -110,6 +116,10 @@ export const PROFILES_INSPECTOR_SELECT = 'Profile';
 export const PROFILES_PROFILE_FAMILY = 'Profile family';
 export const PROFILES_PROFILE_AUTHORITY = 'Authority';
 export const PROFILES_PROFILE_COVERAGE = 'Coverage';
+export const PROFILES_INSPECTOR_FAMILY_ICAO = 'ICAO / WMO baseline';
+export const PROFILES_INSPECTOR_FAMILY_NATIONAL = 'National or regional extension';
+export const PROFILES_INSPECTOR_AUTHORITY_ICAO = 'ICAO / WMO';
+export const PROFILES_INSPECTOR_COVERAGE_UNAVAILABLE = 'Coverage details unavailable';
 export const PROFILES_PACKS_HEADING = 'Rule packs';
 export const PROFILES_PACKS_LOADING = 'Loading rule packs…';
 export const PROFILES_PACKS_EMPTY = 'No rule packs yet.';
@@ -185,3 +195,72 @@ export const PROFILES_EXAMPLES_EMPTY =
   'No example products are listed for this profile yet.';
 export const PROFILES_EXAMPLES_REUSE_NOTE =
   'Current examples are reused from the ICAO / WMO demo set and keep profile-specific notes in the picker.';
+
+/** Profile builder control tooltips (plain language). */
+export const PROFILES_TOOLTIP_LIBRARIES =
+  'Five libraries hold conversion, validation, dissemination, and decoding assets. Built-in defaults stay read-only until you fork a custom copy.';
+export const PROFILES_TOOLTIP_LIBRARY_TAB_CONVERSION =
+  'Map TAC groups to IWXXM blocks with typed slots and optional decode-only or skip modes.';
+export const PROFILES_TOOLTIP_LIBRARY_TAB_TAC_VALIDATION =
+  'TAC lint rules that run before or alongside conversion for the selected profile line.';
+export const PROFILES_TOOLTIP_LIBRARY_TAB_IWXXM_VALIDATION =
+  'IWXXM schema and Schematron checks applied to converted output.';
+export const PROFILES_TOOLTIP_LIBRARY_TAB_DISSEMINATION =
+  'Ordered post-IWXXM transforms for bulletin exchange on Disseminate and Convert & Send.';
+export const PROFILES_TOOLTIP_LIBRARY_TAB_DECODING =
+  'Plain-language decode glossary entries shown when you enable live decode on Convert.';
+export const PROFILES_TOOLTIP_INSPECTOR_PROFILE =
+  'Choose a built-in semantic profile to inspect its catalog metadata and block wiring.';
+export const PROFILES_TOOLTIP_INSPECTOR_COMPARE =
+  'Optionally compare a second profile side by side to highlight product and IWXXM line differences.';
+export const PROFILES_TOOLTIP_PROFILE_BLOCKS =
+  'Step through how the selected profile wires input, lint, convert, validate, and exchange.';
+
+/** Draft authoring shell copy. */
+export const PROFILES_DRAFT_HEADING = 'Draft authoring';
+export const PROFILES_DRAFT_HELP =
+  'Start from a template, duplicate a built-in asset, or paste YAML. Save as a draft any time. Activate when Fail diagnostics are gone so Convert can use the library.';
+export const PROFILES_DRAFT_NEW_TEMPLATE = 'New from template';
+export const PROFILES_DRAFT_DUPLICATE = 'Duplicate built-in';
+export const PROFILES_DRAFT_IMPORT_LABEL = 'Import YAML';
+export const PROFILES_DRAFT_IMPORT_PLACEHOLDER =
+  'Paste or edit YAML for this library kind. Invalid YAML stays in the editor until you fix it.';
+export const PROFILES_DRAFT_SAVE = 'Save draft';
+export const PROFILES_DRAFT_ACTIVATE = 'Activate';
+export const PROFILES_DRAFT_STATUS_IDLE = 'Not saved';
+export const PROFILES_DRAFT_STATUS_DRAFT = 'Draft';
+export const PROFILES_DRAFT_STATUS_SAVED = 'Draft saved';
+export const PROFILES_DRAFT_STATUS_ACTIVATED = 'Activated';
+export const PROFILES_DRAFT_BLOCKS_HEADING = 'IWXXM blocks';
+export const PROFILES_DRAFT_BLOCKS_HELP =
+  'Drag cards between blocks to arrange how TAC groups map to IWXXM. Full editing arrives in a later release.';
+export const PROFILES_DRAFT_BLOCK_OBSERVATION = 'Observation';
+export const PROFILES_DRAFT_BLOCK_CLOUD = 'Cloud';
+export const PROFILES_DRAFT_BLOCK_RVR = 'Runway visual range';
+export const PROFILES_DRAFT_CARD_WIND = 'Surface wind';
+export const PROFILES_DRAFT_CARD_VISIBILITY = 'Visibility';
+export const PROFILES_DRAFT_CARD_CLOUD_AMOUNT = 'Cloud amount';
+export const PROFILES_DRAFT_CARD_RVR = 'RVR value';
+export const PROFILES_DRAFT_TOOLTIP_NEW =
+  'Load a starter YAML outline for this library kind.';
+export const PROFILES_DRAFT_TOOLTIP_DUPLICATE =
+  'Copy the selected built-in asset into a new draft you can edit.';
+export const PROFILES_DRAFT_TOOLTIP_IMPORT =
+  'Paste YAML from another environment or an exported share bundle.';
+export const PROFILES_DRAFT_TOOLTIP_SAVE =
+  'Save this YAML as a draft. Convert cannot use it until you activate.';
+export const PROFILES_DRAFT_TOOLTIP_ACTIVATE =
+  'Activate when YAML is valid and every regex compiles. Warn is allowed; Fail is not.';
+export const PROFILES_DRAFT_DIAGNOSTICS_HEADING = 'Regex diagnostics';
+export const PROFILES_DRAFT_DIAGNOSTICS_HELP =
+  'Fail means the pattern does not compile or the required sample has no match. Warn means it compiles but may backtrack.';
+export const PROFILES_DRAFT_CAPTURES_HEADING = 'Capture groups';
+export const PROFILES_DRAFT_YAML_LOCK =
+  'Fix YAML before rearranging blocks or activating.';
+export const PROFILES_DRAFT_ACTIVATE_BLOCKED =
+  'Activate requires zero Fail diagnostics. Warn is allowed.';
+export const PROFILES_DRAFT_SAMPLE_HEADING = 'Sample preview';
+export const PROFILES_DRAFT_SAMPLE_HELP =
+  'Paste a TAC, IWXXM, filename, or glossary sample for this library. Capture groups update as you type.';
+export const PROFILES_DRAFT_SAMPLE_PLACEHOLDER =
+  'Sample text for live match and capture summary';

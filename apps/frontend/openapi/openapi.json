@@ -3313,6 +3313,12 @@
             "title": "Name",
             "type": "string"
           },
+          "schemaVersion": {
+            "default": 1,
+            "minimum": 1.0,
+            "title": "Schemaversion",
+            "type": "integer"
+          },
           "shared": {
             "default": false,
             "title": "Shared",
@@ -3323,6 +3329,26 @@
             "minLength": 1,
             "title": "Slug",
             "type": "string"
+          },
+          "status": {
+            "default": "draft",
+            "enum": [
+              "draft",
+              "activated"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "yamlBody": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yamlbody"
           }
         },
         "required": [
@@ -3418,6 +3444,11 @@
             "title": "Name",
             "type": "string"
           },
+          "schemaVersion": {
+            "default": 1,
+            "title": "Schemaversion",
+            "type": "integer"
+          },
           "shared": {
             "default": false,
             "title": "Shared",
@@ -3433,6 +3464,15 @@
               }
             ],
             "title": "Slug"
+          },
+          "status": {
+            "default": "draft",
+            "enum": [
+              "draft",
+              "activated"
+            ],
+            "title": "Status",
+            "type": "string"
           },
           "updated_at": {
             "anyOf": [
@@ -3457,6 +3497,17 @@
               }
             ],
             "title": "Userid"
+          },
+          "yamlBody": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yamlbody"
           }
         },
         "required": [
@@ -3497,6 +3548,18 @@
             ],
             "title": "Name"
           },
+          "schemaVersion": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schemaversion"
+          },
           "shared": {
             "anyOf": [
               {
@@ -3519,6 +3582,32 @@
               }
             ],
             "title": "Slug"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "draft",
+                  "activated"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "yamlBody": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yamlbody"
           }
         },
         "title": "LibraryAssetUpdate",
@@ -3579,6 +3668,128 @@
           "ruleName"
         ],
         "title": "LibraryRulePreviewResponse",
+        "type": "object"
+      },
+      "LibraryYamlValidateRequest": {
+        "description": "Validate library YAML without persisting.",
+        "properties": {
+          "kind": {
+            "enum": [
+              "conversion",
+              "tac_validation",
+              "iwxxm_validation",
+              "dissemination",
+              "decoding"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "lifecycle": {
+            "default": "draft",
+            "enum": [
+              "draft",
+              "activated"
+            ],
+            "title": "Lifecycle",
+            "type": "string"
+          },
+          "yamlBody": {
+            "minLength": 0,
+            "title": "Yamlbody",
+            "type": "string"
+          }
+        },
+        "required": [
+          "yamlBody",
+          "kind"
+        ],
+        "title": "LibraryYamlValidateRequest",
+        "type": "object"
+      },
+      "LibraryYamlValidateResponse": {
+        "description": "Regex + schema diagnostics for a library YAML document.",
+        "properties": {
+          "can_activate": {
+            "default": false,
+            "title": "Can Activate",
+            "type": "boolean"
+          },
+          "diagnostics": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Diagnostics",
+            "type": "array"
+          },
+          "fail_count": {
+            "default": 0,
+            "title": "Fail Count",
+            "type": "integer"
+          },
+          "kind": {
+            "anyOf": [
+              {
+                "enum": [
+                  "conversion",
+                  "tac_validation",
+                  "iwxxm_validation",
+                  "dissemination",
+                  "decoding"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kind"
+          },
+          "lifecycle": {
+            "default": "draft",
+            "enum": [
+              "draft",
+              "activated"
+            ],
+            "title": "Lifecycle",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "valid_yaml": {
+            "title": "Valid Yaml",
+            "type": "boolean"
+          },
+          "warn_count": {
+            "default": 0,
+            "title": "Warn Count",
+            "type": "integer"
+          },
+          "yaml_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yaml Error"
+          }
+        },
+        "required": [
+          "valid_yaml"
+        ],
+        "title": "LibraryYamlValidateResponse",
         "type": "object"
       },
       "LintFixModel": {
@@ -8752,6 +8963,53 @@
           }
         ],
         "summary": "Preview Library Rule",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/library-assets/validate-yaml": {
+      "post": {
+        "description": "Validate library YAML and regex diagnostics without persisting.",
+        "operationId": "validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LibraryYamlValidateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryYamlValidateResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Validate Library Yaml",
         "tags": [
           "Conversion Profiles"
         ]

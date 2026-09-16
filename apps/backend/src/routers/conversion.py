@@ -1321,9 +1321,14 @@ async def convert_bulletin(
                 raise
             except Exception:
                 return None
-            if asset.kind != "conversion":
-                msg = "conversion_library_id must reference a Conversion library"
-                raise ValueError(msg)
+            from metar_iwxxm_api.convert_library_hard_cut import assert_library_usable_on_convert
+
+            assert_library_usable_on_convert(
+                kind=asset.kind,
+                expected_kind="conversion",
+                access=asset.access,
+                status=asset.status,
+            )
             return asset.engine_profile_id
 
         try:
@@ -1464,9 +1469,14 @@ async def convert_bulletin(
             raise
         except Exception:
             return None
-        if asset.kind != "dissemination":
-            msg = "dissemination_library_id must reference a Dissemination library"
-            raise ValueError(msg)
+        from metar_iwxxm_api.convert_library_hard_cut import assert_library_usable_on_convert
+
+        assert_library_usable_on_convert(
+            kind=asset.kind,
+            expected_kind="dissemination",
+            access=asset.access,
+            status=asset.status,
+        )
         return dict(asset.body or {})
 
     for index, tac in enumerate(split.reports):
@@ -1872,9 +1882,14 @@ async def convert(
             raise
         except Exception:
             return None
-        if asset.kind != "conversion":
-            msg = "conversion_library_id must reference a Conversion library"
-            raise ValueError(msg)
+        from metar_iwxxm_api.convert_library_hard_cut import assert_library_usable_on_convert
+
+        assert_library_usable_on_convert(
+            kind=asset.kind,
+            expected_kind="conversion",
+            access=asset.access,
+            status=asset.status,
+        )
         return asset.engine_profile_id
 
     try:

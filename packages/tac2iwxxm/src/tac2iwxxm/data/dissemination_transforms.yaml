@@ -1,0 +1,20 @@
+schema_version: 1
+source: first-party pattern-only transforms (ADR-021/029/030)
+transforms:
+- id: envelope
+  type: envelope
+  label: Message envelope
+  note: Pattern-only wrapper; no destination URIs or credentials.
+- id: topic_filename
+  type: topic_filename
+  label: Topic / filename pattern
+  note: Template for topic or file name tokens only.
+- id: bulletin_rewrap
+  type: bulletin_rewrap
+  label: Bulletin rewrap
+  note: Bulletin header/footer pattern rewrite.
+- id: checksum
+  type: checksum
+  label: Checksum annotation
+  note: Integrity annotation pattern; no secrets.
+annotations: []

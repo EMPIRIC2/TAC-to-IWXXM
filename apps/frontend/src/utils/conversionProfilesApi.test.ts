@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   createConversionTemplate,
+  createLibraryAsset,
   createOverlay,
   createPreset,
   createRulePack,
@@ -17,10 +18,12 @@ import {
   listRulePacks,
   listTemplates,
   previewConversionTemplate,
+  updateLibraryAsset,
   updateOverlay,
   updatePreset,
   updateRulePack,
   updateTemplate,
+  validateLibraryYaml,
 } from './conversionProfilesApi';
 
 vi.mock('./apiBase', () => ({
@@ -463,6 +466,71 @@ describe('conversionProfilesApi', () => {
       'http://api.test/api/v1/profiles/library-assets?kind=decoding',
       expect.any(Object),
     );
+  });
+
+  it('validates, creates, and patches library YAML assets', async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          valid_yaml: true,
+          yaml_error: null,
+          kind: 'conversion',
+          name: 'Wind',
+          lifecycle: 'draft',
+          fail_count: 0,
+          warn_count: 0,
+          can_activate: true,
+          diagnostics: [],
+        }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 201,
+        json: async () => ({
+          id: 'asset-1',
+          kind: 'conversion',
+          name: 'Wind',
+          access: 'custom',
+          engineProfileId: 'ICAO_2025',
+          attachedNationalLine: 'ICAO_2025',
+          status: 'draft',
+        }),
+      } as Response)
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          id: 'asset-1',
+          kind: 'conversion',
+          name: 'Wind',
+          access: 'custom',
+          engineProfileId: 'ICAO_2025',
+          attachedNationalLine: 'ICAO_2025',
+          status: 'activated',
+        }),
+      } as Response);
+
+    const report = await validateLibraryYaml('tok', {
+      yamlBody: 'kind: conversion\nname: Wind\n',
+      kind: 'conversion',
+    });
+    expect(report.can_activate).toBe(true);
+    const created = await createLibraryAsset('tok', {
+      slug: 'wind',
+      name: 'Wind',
+      kind: 'conversion',
+      engineProfileId: 'ICAO_2025',
+      attachedNationalLine: 'ICAO_2025',
+      yamlBody: 'kind: conversion\nname: Wind\n',
+      status: 'draft',
+    });
+    expect(created.id).toBe('asset-1');
+    const updated = await updateLibraryAsset('tok', 'asset-1', { status: 'activated' });
+    expect(updated.status).toBe('activated');
+    expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 
   it('previews and creates conversion templates', async () => {

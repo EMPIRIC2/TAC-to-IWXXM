@@ -130,6 +130,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
 | UJ-072f         | F7.w (EV-conversion-profile-ux-libraries)                    | Profile Builder assembly + conversion token modes (Convert/Decode/Skip)                                                                                                                                                                                  | **H4–H5 when FE ships**           | TC-EVCPU-001..008                                                                        |
 | UJ-072g         | F7.w (EV-bridge-ux-canvas-align)                             | Five Libraries + Mapping bridge + hard cut semantic profile                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVBRIDGE-001..011                                                                     |
+| UJ-072h-conv … UJ-072h-export | F7.w (EV-profile-builder-yaml-libraries / #1196) | YAML/DnD Profile Builder + Convert metadata sidecar                                                                                                                                                                                                       | **H4–H5 when FE ships**           | TC-EVPYL-*                                                                               |
 | UJ-069          | F35/F36 (EV-063/EV-090/EV-093; M4 deepen)                    | Semantic convert → exchange package (`GLOBAL_AFS`) with explicit profile/IWXXM-line compatibility                                                                                                                                                          | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-_; TC-EV093-_; milestone 4 cross-version follow-ons          |
 | UJ-075          | F4 deepen (EV-908 / #908)                                    | IWXXM↔IWXXM migrate via `product=iwxxm` — supported/lossy/unsupported matrix                                                                                                                                                                               | T2 (API); H4–H5 N/A MVP           | TC-EV908-001..004                                                                        |
 | UJ-070          | F6+F9+F7.q (EV-981 / #981)                                   | Opt-in propagate decode residuals into remarks / HRT + QM indicator                                                                                                                                                                                        | **H4–H5 required**                | TC-EV981-001..005                                                                        |
@@ -3041,6 +3042,91 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Fixture with unmatched group → fail-closed error; bridge preview shows
   miss; matched group shows rule association
 - **Source**: EV-bridge; AC11; ADR-038 EV-bridge §8
+
+### EV-profile-builder-yaml-libraries / F7.w — YAML/DnD libraries + export metadata (#1196)
+
+- **Mode**: deepen F7.w; no new Fn; ADR-038 amend EVPYL
+- **Pass criteria**: [Corpus: product §F7.w] EVPYL ACs; UJ-072h-*; H4–H5 after stage FE
+- **Source**: [#1196](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1196); session
+  `EV-profile-builder-yaml-libraries`
+- **E2E**: T3 full matrix; CI smoke = happy path only
+
+#### Phase A
+
+##### TC-EVPYL-001: Prose chrome removed; tooltips present
+
+- **Level**: T0 / T2
+- **Objective**: Guided assembly / glossary / workflow / examples absent; hover help on
+  Profile Builder controls
+- **Pass criteria**: Copy constants/tests assert absence; tooltip coverage for primary
+  controls; EV-048 clean
+
+##### TC-EVPYL-002: Catalog inspector under active library editor
+
+- **Level**: T0 / T2
+- **Objective**: Inspector renders below the active library editor and follows the active tab
+- **Pass criteria**: DOM order / testids; per-tab field set changes with library kind
+
+##### TC-EVPYL-003: WMO defaults synced Builder ↔ Convert
+
+- **Level**: T0 / T2
+- **Objective**: ICAO/WMO Annex 3 defaults selected on all five pickers; Builder and Convert
+  stay in sync
+- **Pass criteria**: Default ids match; reset control restores WMO set
+
+##### TC-EVPYL-004: Draft custom shell for all five libraries
+
+- **Level**: T0 / T2
+- **Objective**: Create Draft customs via template, duplicate mined block, or import YAML for
+  each library kind; Activate not required in Phase A
+- **Pass criteria**: JWT CRUD Draft; builtins read-only; no Activate gate yet
+
+##### TC-EVPYL-005: Export metadata sidecar
+
+- **Level**: T0 / T2 / T3
+- **Objective**: Convert download/ZIP/single-result opt-in writes `*.meta.json` with full
+  checklist default; remembers choice; omits secrets
+- **Pass criteria**: Sidecar present when on; absent when off; no credentials/URIs/tokens;
+  operator identity only when checklist item selected and signed in; Beta on toggle
+
+#### Library journeys (matrix — smoke happy path; full T3)
+
+##### TC-EVPYL-CONV-001..005
+
+Conversion: template, duplicate mined IWXXM block, import YAML, fork national + extension
+block, Skip/Decode-only + sample convert preview.
+
+##### TC-EVPYL-TAC-001..004
+
+TAC validation: enable/severity, custom regex issue, sample lint, import YAML.
+
+##### TC-EVPYL-IWXXM-001..004
+
+IWXXM validation: SCH toggle, custom XPath/regex-on-XML, document/fork built-in, sample
+validate.
+
+##### TC-EVPYL-DISSEM-001..004
+
+Dissemination: DnD transforms, pattern-only (reject secrets), filename/topic preview, import
+YAML.
+
+##### TC-EVPYL-DECODE-001..004
+
+Decoding: glossary regex→gloss, product scope, sample decode, duplicate mined.
+
+##### TC-EVPYL-CROSS-001..004
+
+Invalid YAML locks UI; Fail → Draft OK / Activate blocked (Phase C); Warn → Activate with
+Warn; WMO reset.
+
+#### Phase B / C (summary)
+
+- **TC-EVPYL-MINE-001..005**: mined catalogs present for all five libraries; residual tickets
+  for gaps; SWX/thin when in vendor.
+- **TC-EVPYL-REGEX-001..003**: live compile + capture summary; Warn vs Fail (engine in
+  `tac2iwxxm.library_yaml`; Profile builder shell mirrors compile in the editor).
+- **TC-EVPYL-ACTIVATE-001..003**: Activate zero Fail; Convert pickers and Convert HTTP reject
+  draft customs until Activated.
 
 ### EV-080 / F7.w — Parameterizable conversion templates + TAC→IWXXM bridge (#1146)
 
