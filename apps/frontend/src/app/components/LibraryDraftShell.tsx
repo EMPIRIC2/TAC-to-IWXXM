@@ -262,12 +262,6 @@ export function LibraryDraftShell({
 
   const persist = useCallback(
     async (lifecycle: 'draft' | 'activated') => {
-      if (!yaml.trim()) {
-        return;
-      }
-      if (lifecycle === 'activated' && !canActivate) {
-        return;
-      }
       const token = accessToken?.trim();
       if (!token) {
         setStatus(lifecycle === 'activated' ? 'activated' : 'saved');
@@ -301,7 +295,7 @@ export function LibraryDraftShell({
         setPersistError(error instanceof Error ? error.message : 'Save failed');
       }
     },
-    [accessToken, canActivate, kind, savedId, yaml],
+    [accessToken, kind, savedId, yaml],
   );
 
   const saveDraft = useCallback(() => {
@@ -509,7 +503,7 @@ export function LibraryDraftShell({
               <ul className="mt-2 space-y-2">
                 {block.cards.map((card, index) => (
                   <li
-                    key={block.cardIds[index] ?? card}
+                    key={`${block.id}-${index}`}
                     className={`flex items-center gap-2 rounded border border-gray-200 bg-white px-2 py-1.5 text-xs shadow-sm dark:border-gray-700 dark:bg-gray-800 ${invalidYaml ? 'cursor-not-allowed opacity-60' : 'cursor-grab active:cursor-grabbing'}`}
                     data-testid={`library-draft-card-${block.id}-${card.replace(/\s+/g, '-').toLowerCase()}-${kind}`}
                     title={block.cardIds[index]}

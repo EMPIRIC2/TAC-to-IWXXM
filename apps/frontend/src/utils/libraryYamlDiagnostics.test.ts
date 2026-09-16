@@ -88,6 +88,7 @@ rules:
     expect(diags[0]?.severity).toBe('ok');
     expect(diags.some((d) => d.pattern === '')).toBe(true);
     expect(diagnosticsFromYaml('kind: nope')).toEqual([]);
+    expect(diagnosticsFromYaml('kind: conversion\nname: Wind')).toEqual([]);
   });
 
   it('TC-EVPYL-ACTIVATE Convert selectability', () => {

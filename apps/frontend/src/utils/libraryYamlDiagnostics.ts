@@ -132,7 +132,8 @@ export function diagnosticsFromYaml(
   let match = matcher.exec(raw);
   let index = 0;
   while (match !== null) {
-    const pattern = match[1] ?? '';
+    // Capture group 1 is always present when PATTERN_LINE matches (`+` quantifier).
+    const pattern = match[1] as string;
     found.push(diagnoseJsRegex(pattern, sampleOverride, `rules[${index}].pattern`));
     index += 1;
     match = matcher.exec(raw);

@@ -92,11 +92,9 @@ export function writeWmoLibraryDefaultsSync(prefs: WmoLibraryDefaultsSync): void
   } catch {
     // localStorage may be unavailable in private mode
   }
-  if (typeof window !== 'undefined') {
-    window.dispatchEvent(
-      new CustomEvent(WMO_LIBRARY_DEFAULTS_SYNC_EVENT, { detail: prefs }),
-    );
-  }
+  window.dispatchEvent(
+    new CustomEvent(WMO_LIBRARY_DEFAULTS_SYNC_EVENT, { detail: prefs }),
+  );
 }
 
 /**

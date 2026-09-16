@@ -248,6 +248,7 @@ describe('TC-EVPYL Phase A', () => {
             schema_blocks: [
               null,
               { label: 'missing-id', cards: [{ id: 'c1', label: 'Card' }] },
+              { id: 'label-fallback' },
               {
                 id: 'obs',
                 label: 'Observation',
@@ -271,6 +272,9 @@ describe('TC-EVPYL Phase A', () => {
         screen.getByTestId('library-draft-block-obs-conversion'),
       ).toBeInTheDocument();
     });
+    expect(
+      screen.getByTestId('library-draft-block-label-fallback-conversion'),
+    ).toBeInTheDocument();
     expect(screen.getByText('Wind')).toBeInTheDocument();
     expect(screen.getByText('vis')).toBeInTheDocument();
     expect(
@@ -309,14 +313,39 @@ describe('TC-EVPYL Phase A', () => {
     second.unmount();
     rejectAssets(new Error('cancelled-network'));
 
-    listLibraryAssets.mockRejectedValueOnce(new Error('network'));
+    listLibraryAssets.mockRejectedValue(new Error('network'));
     render(<ConversionProfilePage accessToken="tok" />);
     await waitFor(() => {
       expect(screen.getByTestId('library-draft-shell-conversion')).toBeInTheDocument();
     });
-    expect(
-      screen.getByTestId('library-draft-block-observation-conversion'),
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('library-draft-block-observation-conversion'),
+      ).toBeInTheDocument();
+    });
+
+    listLibraryAssets.mockResolvedValue({
+      items: [
+        {
+          id: 'LIB.CONVERSION.ICAO_2025',
+          kind: 'conversion',
+          name: 'ICAO conversion',
+          access: 'first_party',
+          engineProfileId: 'ICAO_2025',
+          attachedNationalLine: 'ICAO_2025',
+          body: {
+            schema_blocks: [{ label: 'no-id-only', cards: [] }, null],
+          },
+        },
+      ],
+    });
+    cleanup();
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('library-draft-block-observation-conversion'),
+      ).toBeInTheDocument();
+    });
   });
 
   it('resolves schema blocks by library id and shows national inspector fields', async () => {
@@ -405,6 +434,30 @@ describe('TC-EVPYL Phase A', () => {
       expect(
         screen.getByTestId('conversion-profiles-inspector-detail'),
       ).toHaveTextContent(/Draft/i);
+    });
+  });
+
+  it('clears mined schema blocks when every raw entry is invalid', async () => {
+    listLibraryAssets.mockResolvedValue({
+      items: [
+        {
+          id: 'LIB.CONVERSION.ICAO_2025',
+          kind: 'conversion',
+          name: 'ICAO conversion',
+          access: 'first_party',
+          engineProfileId: 'ICAO_2025',
+          attachedNationalLine: 'ICAO_2025',
+          body: {
+            schema_blocks: [null, { label: 'no-id' }, 'skip', { id: 1 }],
+          },
+        },
+      ],
+    });
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('library-draft-block-observation-conversion'),
+      ).toBeInTheDocument();
     });
   });
 

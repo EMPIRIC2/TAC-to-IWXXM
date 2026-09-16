@@ -137,9 +137,9 @@ rules:
     expect(sample).toHaveValue('18004KT');
 
     const editor = screen.getByTestId('library-draft-yaml-conversion');
-    // Valid enough for draft persist; omit a real name so yamlName falls back.
+    // No name line → yamlName falls back to "New conversion draft".
     fireEvent.change(editor, {
-      target: { value: 'kind: conversion\nname: -\nrules: []\n' },
+      target: { value: 'kind: conversion\nrules: []\n' },
     });
 
     createLibraryAsset.mockResolvedValueOnce({
@@ -157,7 +157,7 @@ rules:
       expect(createLibraryAsset).toHaveBeenCalledWith(
         'tok',
         expect.objectContaining({
-          name: '-',
+          name: 'New conversion draft',
           kind: 'conversion',
           status: 'draft',
         }),
@@ -167,6 +167,30 @@ rules:
       /Draft saved/i,
     );
     expect(onDraftStatusChange).toHaveBeenCalledWith('saved');
+  });
+
+  it('strips quotes from the YAML name when persisting', async () => {
+    const user = userEvent.setup();
+    createLibraryAsset.mockResolvedValueOnce({
+      id: 'asset-quoted',
+      kind: 'conversion',
+      name: 'Quoted Wind',
+      access: 'custom',
+      engineProfileId: 'ICAO_2025',
+      attachedNationalLine: 'ICAO_2025',
+      status: 'draft',
+    });
+    render(<LibraryDraftShell kind="conversion" accessToken="tok" />);
+    fireEvent.change(screen.getByTestId('library-draft-yaml-conversion'), {
+      target: { value: 'kind: conversion\nname: "Quoted Wind"\nrules: []\n' },
+    });
+    await user.click(screen.getByTestId('library-draft-save-conversion'));
+    await waitFor(() => {
+      expect(createLibraryAsset).toHaveBeenCalledWith(
+        'tok',
+        expect.objectContaining({ name: 'Quoted Wind' }),
+      );
+    });
   });
 
   it('creates then updates a library asset when accessToken is present', async () => {
@@ -237,10 +261,8 @@ rules:
     const user = userEvent.setup();
     render(<LibraryDraftShell kind="conversion" />);
 
-    fireEvent.click(screen.getByTestId('library-draft-save-conversion'));
-    expect(screen.getByTestId('library-draft-status-conversion')).toHaveTextContent(
-      /Not saved/i,
-    );
+    // Empty editor: Save stays disabled (primary gate).
+    expect(screen.getByTestId('library-draft-save-conversion')).toBeDisabled();
 
     await user.click(screen.getByTestId('library-draft-duplicate-conversion'));
     const editor = screen.getByTestId('library-draft-yaml-conversion');
@@ -253,10 +275,7 @@ rules:
     expect(
       screen.getByTestId('library-draft-activate-blocked-conversion'),
     ).toBeInTheDocument();
-    fireEvent.click(screen.getByTestId('library-draft-activate-conversion'));
-    expect(screen.getByTestId('library-draft-status-conversion')).toHaveTextContent(
-      /Draft/i,
-    );
+    expect(screen.getByTestId('library-draft-activate-conversion')).toBeDisabled();
   });
 
   it('shows capture names for matching sample diagnostics', async () => {

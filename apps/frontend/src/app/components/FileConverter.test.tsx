@@ -1073,6 +1073,39 @@ describe('FileConverter Component', () => {
       // Preferences would be loaded into component state
     });
 
+    it('prefers shared WMO library sync when hydrating stored preferences', async () => {
+      writeWmoLibraryDefaultsSync({
+        profile: 'US_FAA_NWS',
+        libraryIds: {
+          conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
+          tacValidationLibraryId: defaultLibraryId('tac_validation', 'US_FAA_NWS'),
+          iwxxmValidationLibraryId: defaultLibraryId('iwxxm_validation', 'US_FAA_NWS'),
+          disseminationLibraryId: defaultLibraryId('dissemination', 'US_FAA_NWS'),
+          decodingLibraryId: defaultLibraryId('decoding', 'US_FAA_NWS'),
+        },
+      });
+      localStorage.setItem(
+        'metar_converter_preferences',
+        JSON.stringify({
+          bulletinIdExample: 'SAUS00',
+          issuingCenter: 'KDEN',
+          profile: 'ICAO_2025',
+          iwxxmVersion: '2025-2',
+          strictValidation: true,
+          includeNilReasons: true,
+          onError: 'warn',
+          logLevel: 'INFO',
+        }),
+      );
+
+      render(<FileConverter {...defaultProps} />);
+      await waitFor(() => {
+        expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+          defaultLibraryId('conversion', 'US_FAA_NWS'),
+        );
+      });
+    });
+
     it('should handle invalid localStorage data gracefully', () => {
       localStorage.setItem('metar_converter_preferences', 'invalid json');
       const consoleSpy = vi.spyOn(console, 'error');
@@ -7275,6 +7308,225 @@ describe('FileConverter Component', () => {
       });
       await user.click(screen.getByTestId('conversion-metadata-toggle-help'));
       expect(readConversionMetadataPrefs().enabled).toBe(false);
+    });
+
+    it('applies corrupt storage sync as a no-op and same-tab fallback when detail is empty', async () => {
+      localStorage.setItem(WMO_LIBRARY_DEFAULTS_SYNC_KEY, '{bad');
+      render(<FileConverter />);
+      await act(async () => {
+        window.dispatchEvent(
+          new StorageEvent('storage', {
+            key: WMO_LIBRARY_DEFAULTS_SYNC_KEY,
+            newValue: '{bad',
+          }),
+        );
+        window.dispatchEvent(
+          new CustomEvent(WMO_LIBRARY_DEFAULTS_SYNC_EVENT, { detail: {} }),
+        );
+      });
+      expect(screen.getByTestId('conversion-library-select')).toBeInTheDocument();
+    });
+
+    it('downloads metadata using hydrated results without export_context', async () => {
+      const user = userEvent.setup({ delay: null });
+      const createUrlSpy = vi
+        .spyOn(URL, 'createObjectURL')
+        .mockReturnValue('blob:hydrated');
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, 'click')
+        .mockImplementation(() => undefined);
+
+      render(
+        <FileConverter
+          accessToken="tok"
+          userEmail="op@example.com"
+          loadedWorkSession={
+            {
+              id: 'ws-meta-1',
+              title: 'Meta',
+              status: 'draft',
+              manual_tac: '',
+              pending_files: [],
+              converted_results: [
+                {
+                  name: 'hydrated.txt',
+                  tac_input: 'METAR KJFK 121251Z=',
+                  iwxxm_xml: '<iwxxm>hydrated</iwxxm>',
+                },
+                {
+                  name: 'with-ctx.txt',
+                  tac_input: 'METAR KJFK 121251Z=',
+                  iwxxm_xml: '<iwxxm>with-ctx</iwxxm>',
+                  export_context: {
+                    product: 'METAR',
+                    iwxxmVersion: '2025-2',
+                    reportVariant: 'LWIS',
+                    conversionLibraryId: defaultLibraryId('conversion', 'CA_ECCC'),
+                    tacValidationLibraryId: defaultLibraryId(
+                      'tac_validation',
+                      'CA_ECCC',
+                    ),
+                    iwxxmValidationLibraryId: defaultLibraryId(
+                      'iwxxm_validation',
+                      'CA_ECCC',
+                    ),
+                    disseminationLibraryId: defaultLibraryId(
+                      'dissemination',
+                      'CA_ECCC',
+                    ),
+                    decodingLibraryId: defaultLibraryId('decoding', 'CA_ECCC'),
+                  },
+                },
+                {
+                  name: 'bad-ctx.txt',
+                  tac_input: 'METAR KJFK 121251Z=',
+                  iwxxm_xml: '<iwxxm>bad-ctx</iwxxm>',
+                  export_context: ['not-an-object'],
+                },
+              ],
+              conversion_params: {},
+              updated_at: new Date().toISOString(),
+            } as any
+          }
+        />,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText('<iwxxm>hydrated</iwxxm>')).toBeInTheDocument();
+      });
+      await user.click(screen.getByTestId('conversion-metadata-toggle'));
+      const downloadButtons = await screen.findAllByRole('button', {
+        name: /download .+ as zip with metadata/i,
+      });
+      for (const btn of downloadButtons) {
+        await user.click(btn);
+      }
+      expect(mockToast.success).toHaveBeenCalledWith('File downloaded with metadata');
+
+      createUrlSpy.mockRestore();
+      clickSpy.mockRestore();
+    });
+
+    it('includes reportVariant in export context when a METAR-family variant is selected', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<iwxxm>variant</iwxxm>' }],
+      });
+      const createUrlSpy = vi
+        .spyOn(URL, 'createObjectURL')
+        .mockReturnValue('blob:variant');
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, 'click')
+        .mockImplementation(() => undefined);
+
+      render(<FileConverter accessToken="tok" userEmail="op@example.com" />);
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'CA_ECCC'),
+      );
+      await user.selectOptions(screen.getByTestId('product-type-select'), 'METAR');
+      await user.selectOptions(screen.getByTestId('report-variant-select'), 'LWIS');
+      await user.click(screen.getByTestId('conversion-metadata-toggle'));
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR CYUL 121151Z 18008KT 10SM FEW250 22/14 A3012=' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.getByText('<iwxxm>variant</iwxxm>')).toBeInTheDocument();
+      });
+      await user.click(
+        await screen.findByRole('button', {
+          name: /download .+ as zip with metadata/i,
+        }),
+      );
+      expect(mockToast.success).toHaveBeenCalledWith('File downloaded with metadata');
+      createUrlSpy.mockRestore();
+      clickSpy.mockRestore();
+    });
+
+    it('fills missing export_context fields from convert params and zip-stems bare .xml', async () => {
+      const user = userEvent.setup({ delay: null });
+      const createUrlSpy = vi
+        .spyOn(URL, 'createObjectURL')
+        .mockReturnValue('blob:partial-ctx');
+      const clickSpy = vi
+        .spyOn(HTMLAnchorElement.prototype, 'click')
+        .mockImplementation(() => undefined);
+
+      render(
+        <FileConverter
+          accessToken="tok"
+          userEmail="op@example.com"
+          loadedWorkSession={
+            {
+              id: 'ws-partial-ctx',
+              title: 'Partial',
+              status: 'draft',
+              manual_tac: '',
+              pending_files: [],
+              converted_results: [
+                {
+                  name: '.xml',
+                  tac_input: 'METAR KJFK 121251Z=',
+                  iwxxm_xml: '<iwxxm>partial-ctx</iwxxm>',
+                  converted_at: 1_700_000_000_000,
+                  export_context: {
+                    product: 'METAR',
+                    conversionLibraryId: defaultLibraryId('conversion', 'ICAO_2025'),
+                    tacValidationLibraryId: defaultLibraryId(
+                      'tac_validation',
+                      'ICAO_2025',
+                    ),
+                    iwxxmValidationLibraryId: defaultLibraryId(
+                      'iwxxm_validation',
+                      'ICAO_2025',
+                    ),
+                    disseminationLibraryId: defaultLibraryId(
+                      'dissemination',
+                      'ICAO_2025',
+                    ),
+                    decodingLibraryId: defaultLibraryId('decoding', 'ICAO_2025'),
+                  },
+                },
+              ],
+              conversion_params: {},
+              updated_at: new Date().toISOString(),
+            } as any
+          }
+        />,
+      );
+
+      await waitFor(() => {
+        expect(screen.getByText('<iwxxm>partial-ctx</iwxxm>')).toBeInTheDocument();
+      });
+      await user.click(screen.getByTestId('conversion-metadata-toggle'));
+      await user.click(
+        await screen.findByRole('button', {
+          name: /download .+ as zip with metadata/i,
+        }),
+      );
+      expect(mockToast.success).toHaveBeenCalledWith('File downloaded with metadata');
+      createUrlSpy.mockRestore();
+      clickSpy.mockRestore();
+    });
+
+    it('loads converter preferences without shared WMO sync present', async () => {
+      localStorage.removeItem(WMO_LIBRARY_DEFAULTS_SYNC_KEY);
+      localStorage.setItem(
+        'metar_converter_preferences',
+        JSON.stringify({
+          profile: 'US_FAA_NWS',
+          iwxxmVersion: '2023-1',
+          product: 'METAR',
+          exchangeProfile: 'GLOBAL_AFS',
+        }),
+      );
+      render(<FileConverter />);
+      await waitFor(() => {
+        expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+          defaultLibraryId('conversion', 'US_FAA_NWS'),
+        );
+      });
     });
   });
 });
