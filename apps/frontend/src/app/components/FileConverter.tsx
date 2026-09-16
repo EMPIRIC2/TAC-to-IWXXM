@@ -69,6 +69,7 @@ import {
   CONVERSION_METADATA_CHECKLIST_MAPPING_BRIDGE,
   CONVERSION_METADATA_CHECKLIST_OPERATOR,
   CONVERSION_METADATA_CHECKLIST_TAC_FINGERPRINT,
+  CONVERSION_METADATA_TOGGLE_HELP,
   CONVERSION_METADATA_CHECKLIST_YAML_HASHES,
   CONVERSION_METADATA_TOGGLE_LABEL,
   defaultConversionMetadataChecklist,
@@ -77,10 +78,20 @@ import {
   readConversionMetadataPrefs,
   serializeConversionMetadata,
   writeConversionMetadataPrefs,
+  type ConversionExportContext,
   type ConversionMetadataChecklistKey,
   type ConversionMetadataPrefs,
 } from '@/utils/conversionExportMetadata';
-import { CONVERT_RESET_WMO_LIBRARY_DEFAULTS } from '@/utils/conversionProfilesCopy';
+import {
+  CONVERT_RESET_WMO_LIBRARY_DEFAULTS,
+  CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP,
+} from '@/utils/conversionProfilesCopy';
+import {
+  readWmoLibraryDefaultsSync,
+  resetWmoLibraryDefaultsSync,
+  WMO_LIBRARY_DEFAULTS_SYNC_KEY,
+  type WmoLibraryDefaultsSync,
+} from '@/utils/wmoLibraryDefaultsSync';
 import { optionalFormField } from '@/utils/optionalFormField';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
@@ -246,6 +257,8 @@ interface ConvertedFile {
    * `index` is 0-based; `total` is the manual batch size.
    */
   liveOutputSlot?: { index: number; total: number };
+  /** Convert-time snapshot for export metadata sidecars. */
+  exportContext?: ConversionExportContext;
 }
 
 interface PendingFile {
@@ -426,6 +439,56 @@ interface ConversionParams {
   logLevel: LogLevel;
 }
 
+function snapshotExportContext(
+  params: ConversionParams,
+  product: string,
+  reportVariant?: string,
+): ConversionExportContext {
+  const variant = (reportVariant ?? params.reportVariant).trim();
+  return {
+    product,
+    iwxxmVersion: params.iwxxmVersion,
+    ...(variant ? { reportVariant: variant } : {}),
+    conversionLibraryId: params.conversionLibraryId,
+    tacValidationLibraryId: params.tacValidationLibraryId,
+    iwxxmValidationLibraryId: params.iwxxmValidationLibraryId,
+    disseminationLibraryId: params.disseminationLibraryId,
+    decodingLibraryId: params.decodingLibraryId,
+  };
+}
+
+function initialConversionParams(): ConversionParams {
+  const base: ConversionParams = {
+    bulletinId: '',
+    issuingCenter: '',
+    product: 'auto',
+    profile: DEFAULT_SEMANTIC_PROFILE,
+    reportVariant: '',
+    exchangeProfile: DEFAULT_EXCHANGE_PROFILE,
+    presetId: '',
+    disseminationTemplateId: '',
+    overlayId: '',
+    ...libraryIdsForNationalLine(DEFAULT_SEMANTIC_PROFILE),
+    iwxxmVersion: DEFAULT_IWXXM_VERSION,
+    strictValidation: true,
+    includeNilReasons: true,
+    onError: 'warn',
+    logLevel: 'INFO',
+  };
+  const sync = readWmoLibraryDefaultsSync();
+  if (!sync) {
+    return base;
+  }
+  const profile = coerceIwxxmProfile(sync.profile);
+  return {
+    ...base,
+    ...sync.libraryIds,
+    profile,
+    reportVariant: '',
+    iwxxmVersion: coerceIwxxmVersionForProfile(profile, base.iwxxmVersion),
+  };
+}
+
 function activeMetarFamilyVariants(
   entry: ProfileCatalogEntry,
   product: string,
@@ -532,23 +595,9 @@ export function FileConverter({
   const [caExtensionBundleAvailable, setCaExtensionBundleAvailable] = useState<
     boolean | null
   >(null);
-  const [conversionParams, setConversionParams] = useState<ConversionParams>({
-    bulletinId: '',
-    issuingCenter: '',
-    product: 'auto',
-    profile: DEFAULT_SEMANTIC_PROFILE,
-    reportVariant: '',
-    exchangeProfile: DEFAULT_EXCHANGE_PROFILE,
-    presetId: '',
-    disseminationTemplateId: '',
-    overlayId: '',
-    ...libraryIdsForNationalLine(DEFAULT_SEMANTIC_PROFILE),
-    iwxxmVersion: DEFAULT_IWXXM_VERSION,
-    strictValidation: true,
-    includeNilReasons: true,
-    onError: 'warn',
-    logLevel: 'INFO',
-  });
+  const [conversionParams, setConversionParams] = useState<ConversionParams>(
+    initialConversionParams,
+  );
   const [profileCatalogEntries, setProfileCatalogEntries] = useState<
     ProfileCatalogEntry[]
   >([]);
@@ -567,6 +616,31 @@ export function FileConverter({
     conversionLogRef.current = next;
     setConversionLog(next);
   }, []);
+
+  const applyWmoLibraryDefaultsSync = useCallback((sync: WmoLibraryDefaultsSync) => {
+    const profile = coerceIwxxmProfile(sync.profile);
+    setConversionParams((prev) => ({
+      ...prev,
+      ...sync.libraryIds,
+      profile,
+      reportVariant: '',
+      iwxxmVersion: coerceIwxxmVersionForProfile(profile, prev.iwxxmVersion),
+    }));
+  }, []);
+
+  useEffect(() => {
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== WMO_LIBRARY_DEFAULTS_SYNC_KEY || !event.newValue) {
+        return;
+      }
+      const next = readWmoLibraryDefaultsSync();
+      if (next) {
+        applyWmoLibraryDefaultsSync(next);
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, [applyWmoLibraryDefaultsSync]);
 
   useEffect(() => {
     convertedFilesRef.current = convertedFiles;
@@ -1240,6 +1314,7 @@ export function FileConverter({
               ),
               convertedContent: result.xml,
               timestamp: Date.now(),
+              exportContext: snapshotExportContext(conversionParams, resolvedProduct),
             });
           }
         });
@@ -1363,6 +1438,11 @@ export function FileConverter({
               : undefined,
             convertedContent: result.iwxxm_xml || result.xml || result.content || '',
             timestamp: Date.now(),
+            exportContext: snapshotExportContext(
+              conversionParams,
+              resolvedProduct,
+              optionalFormField(activeReportVariant),
+            ),
           });
         });
       }
@@ -1714,26 +1794,37 @@ export function FileConverter({
   );
 
   const buildFileExportMetadata = useCallback(
-    (file: ConvertedFile) =>
-      buildConversionExportMetadata({
+    (file: ConvertedFile) => {
+      const ctx = file.exportContext;
+      return buildConversionExportMetadata({
         tacContent: file.originalContent,
         convertedAt: file.timestamp,
-        product: conversionParams.product,
-        iwxxmVersion: conversionParams.iwxxmVersion,
-        reportVariant: conversionParams.reportVariant,
-        libraries: {
-          conversionLibraryId: conversionParams.conversionLibraryId,
-          tacValidationLibraryId: conversionParams.tacValidationLibraryId,
-          iwxxmValidationLibraryId: conversionParams.iwxxmValidationLibraryId,
-          disseminationLibraryId: conversionParams.disseminationLibraryId,
-          decodingLibraryId: conversionParams.decodingLibraryId,
-        },
+        product: ctx?.product ?? conversionParams.product,
+        iwxxmVersion: ctx?.iwxxmVersion ?? conversionParams.iwxxmVersion,
+        reportVariant: ctx?.reportVariant ?? conversionParams.reportVariant,
+        libraries: ctx
+          ? {
+              conversionLibraryId: ctx.conversionLibraryId,
+              tacValidationLibraryId: ctx.tacValidationLibraryId,
+              iwxxmValidationLibraryId: ctx.iwxxmValidationLibraryId,
+              disseminationLibraryId: ctx.disseminationLibraryId,
+              decodingLibraryId: ctx.decodingLibraryId,
+            }
+          : {
+              conversionLibraryId: conversionParams.conversionLibraryId,
+              tacValidationLibraryId: conversionParams.tacValidationLibraryId,
+              iwxxmValidationLibraryId: conversionParams.iwxxmValidationLibraryId,
+              disseminationLibraryId: conversionParams.disseminationLibraryId,
+              decodingLibraryId: conversionParams.decodingLibraryId,
+            },
         checklist: metadataPrefs.checklist,
         isGuest,
         userEmail,
         accessToken,
         conversionLog,
-      }),
+        lintSessionBatch: conversionLog != null,
+      });
+    },
     [
       accessToken,
       conversionLog,
@@ -2430,6 +2521,22 @@ export function FileConverter({
                   className="flex cursor-pointer items-center gap-1 text-sm text-gray-800 dark:text-gray-200"
                 >
                   {CONVERSION_METADATA_TOGGLE_LABEL}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        className="inline-flex h-5 w-5 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                        aria-label="About conversion metadata"
+                        data-testid="conversion-metadata-toggle-help"
+                        onClick={(event) => event.preventDefault()}
+                      >
+                        <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="max-w-xs text-balance">
+                      {CONVERSION_METADATA_TOGGLE_HELP}
+                    </TooltipContent>
+                  </Tooltip>
                   <BetaBadge className="inline-flex" />
                 </Label>
               </div>
@@ -2650,29 +2757,37 @@ export function FileConverter({
                         });
                       }}
                     />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      disabled={isReadOnly}
-                      data-testid="reset-wmo-library-defaults"
-                      className="shrink-0 text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                      onClick={() => {
-                        const wmoLibraries = libraryIdsForNationalLine('ICAO_2025');
-                        setConversionParams((prev) => ({
-                          ...prev,
-                          ...wmoLibraries,
-                          profile: DEFAULT_SEMANTIC_PROFILE,
-                          reportVariant: '',
-                          iwxxmVersion: coerceIwxxmVersionForProfile(
-                            DEFAULT_SEMANTIC_PROFILE,
-                            prev.iwxxmVersion,
-                          ),
-                        }));
-                      }}
-                    >
-                      {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
-                    </Button>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        disabled={isReadOnly}
+                        data-testid="reset-wmo-library-defaults"
+                        className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                        onClick={() => {
+                          const sync = resetWmoLibraryDefaultsSync();
+                          applyWmoLibraryDefaultsSync(sync);
+                        }}
+                      >
+                        {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
+                      </Button>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                            aria-label="About reset to WMO defaults"
+                            data-testid="reset-wmo-library-defaults-help"
+                          >
+                            <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom" className="max-w-xs text-balance">
+                          {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
 
                     {reportVariantOptions.length > 0 &&
                       inputMode !== 'ahl_bulletin' && (

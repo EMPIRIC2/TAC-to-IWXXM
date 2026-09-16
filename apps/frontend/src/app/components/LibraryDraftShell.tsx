@@ -3,7 +3,7 @@
  */
 
 import { CircleHelp, GripVertical } from 'lucide-react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { LibraryAssetKind } from '../../utils/conversionProfilesApi';
 import {
@@ -35,14 +35,16 @@ import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
+type DraftStatus = 'idle' | 'draft' | 'saved';
+
 export type LibraryDraftShellProps = {
   /** Library kind for template defaults. */
   kind: LibraryAssetKind;
   /** Optional built-in asset name shown when duplicating. */
   sourceAssetName?: string;
+  /** Notifies parent when draft status changes (for catalog inspector). */
+  onDraftStatusChange?: (status: DraftStatus) => void;
 };
-
-type DraftStatus = 'idle' | 'draft' | 'saved';
 
 const TEMPLATE_YAML: Record<LibraryAssetKind, string> = {
   conversion: `# Conversion library draft
@@ -151,9 +153,17 @@ function DraftHelpTooltip({ label, tooltip }: { label: string; tooltip: string }
  * @param props.kind - Active library kind
  * @param props.sourceAssetName - Built-in asset label for duplicate hint
  */
-export function LibraryDraftShell({ kind, sourceAssetName }: LibraryDraftShellProps) {
+export function LibraryDraftShell({
+  kind,
+  sourceAssetName,
+  onDraftStatusChange,
+}: LibraryDraftShellProps) {
   const [yaml, setYaml] = useState('');
   const [status, setStatus] = useState<DraftStatus>('idle');
+
+  useEffect(() => {
+    onDraftStatusChange?.(status);
+  }, [onDraftStatusChange, status]);
 
   const statusLabel = useMemo(() => {
     if (status === 'saved') {

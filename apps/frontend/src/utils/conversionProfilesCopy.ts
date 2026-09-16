@@ -100,6 +100,11 @@ export const CONVERT_PRESET_NONE = 'None';
 export const CONVERT_PRESET_HELP =
   'Optional saved preset for this convert. Applies saved profile defaults, but does not choose destinations or credentials.';
 export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS = 'Reset to WMO defaults';
+export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP =
+  'Restore the ICAO / WMO baseline profile and matching built-in library selections. Shared with Profile builder when you reset there too.';
+export const PROFILES_INSPECTOR_ACCESS_BUILTIN = 'Built-in (read-only default)';
+export const PROFILES_INSPECTOR_STATUS_READY = 'Ready';
+export const PROFILES_INSPECTOR_STATUS_DRAFT = 'Draft saved locally';
 export const PROFILES_EDITOR_LOGIN_REQUIRED = 'Sign in to open the profile builder.';
 export const PROFILES_EDITOR_SIGN_IN = 'Sign in';
 export const PROFILES_INSPECTOR_HEADING = 'Catalog inspector';

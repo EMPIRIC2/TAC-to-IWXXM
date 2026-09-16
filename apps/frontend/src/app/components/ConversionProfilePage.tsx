@@ -18,13 +18,9 @@ import {
   PROFILES_EDITOR_TITLE,
   PROFILES_ERROR_PREFIX,
   PROFILES_INSPECTOR_EMPTY,
-  PROFILES_INSPECTOR_HEADING,
   PROFILES_INSPECTOR_LOADING,
   PROFILES_INSPECTOR_SELECT,
   PROFILES_INSPECTOR_UNAVAILABLE,
-  PROFILES_PROFILE_AUTHORITY,
-  PROFILES_PROFILE_COVERAGE,
-  PROFILES_PROFILE_FAMILY,
   PROFILES_TOOLTIP_INSPECTOR_COMPARE,
   PROFILES_TOOLTIP_INSPECTOR_PROFILE,
   PROFILES_TOOLTIP_PROFILE_BLOCKS,
@@ -77,33 +73,6 @@ const PROFILE_LABELS = new Map<string, string>(
 
 function profileLabel(profileId: string): string {
   return PROFILE_LABELS.get(profileId) ?? profileId;
-}
-
-function profileFamily(profileId: string): string {
-  if (profileId.startsWith('ICAO_')) {
-    return 'ICAO / WMO baseline';
-  }
-  return 'National or regional extension';
-}
-
-function profileAuthority(profileId: string): string {
-  if (profileId.startsWith('ICAO_')) {
-    return 'ICAO / WMO';
-  }
-  const [country, ...rest] = profileId.split('_');
-  const suffix = rest.join(' ');
-  return suffix ? `${country} - ${suffix}` : profileId;
-}
-
-function profileCoverage(profile: ProfileCatalogEntry): string {
-  const kinds: string[] = [];
-  if (profile.products.length > 0) {
-    kinds.push(profile.products.join(', '));
-  }
-  if (profile.iwxxm_line) {
-    kinds.push(profile.iwxxm_line);
-  }
-  return kinds.join(' | ') || 'Coverage details unavailable';
 }
 
 function compareValue(value: string): string {
@@ -447,57 +416,7 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
         </p>
       </header>
 
-      <ProfileBuilderLibraries accessToken={accessToken} />
-
-      <Card className="space-y-4 p-4" data-testid="conversion-profiles-inspector">
-        <h2 className="text-sm font-medium">{PROFILES_INSPECTOR_HEADING}</h2>
-        {loadErrors.catalog && catalog !== null ? (
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {unavailableMessage(loadErrors.catalog)}
-          </p>
-        ) : null}
-        {selected ? (
-          <dl
-            className="grid grid-cols-1 gap-2 text-sm sm:grid-cols-2"
-            data-testid="conversion-profiles-inspector-detail"
-          >
-            <div>
-              <dt className="text-gray-500">Kind</dt>
-              <dd>{selected.kind}</dd>
-            </div>
-            <div>
-              <dt className="text-gray-500">Status</dt>
-              <dd>{selected.status ?? '—'}</dd>
-            </div>
-            <div>
-              <dt className="text-gray-500">Emit key</dt>
-              <dd>{selected.emit_key ?? '—'}</dd>
-            </div>
-            <div>
-              <dt className="text-gray-500">Legacy alias</dt>
-              <dd>{selected.legacy_alias ?? '—'}</dd>
-            </div>
-            <div>
-              <dt className="text-gray-500">{PROFILES_PROFILE_FAMILY}</dt>
-              <dd>{profileFamily(selected.id)}</dd>
-            </div>
-            <div>
-              <dt className="text-gray-500">{PROFILES_PROFILE_AUTHORITY}</dt>
-              <dd>{profileAuthority(selected.id)}</dd>
-            </div>
-            <div className="sm:col-span-2">
-              <dt className="text-gray-500">{PROFILES_PROFILE_COVERAGE}</dt>
-              <dd>{profileCoverage(selected)}</dd>
-            </div>
-          </dl>
-        ) : loadErrors.catalog ? (
-          <p className="text-sm text-amber-700 dark:text-amber-300">
-            {unavailableMessage(loadErrors.catalog)}
-          </p>
-        ) : (
-          <p className="text-sm text-gray-500">{PROFILES_INSPECTOR_EMPTY}</p>
-        )}
-      </Card>
+      <ProfileBuilderLibraries accessToken={accessToken} catalogProfile={selected} />
 
       {error && (
         <p className="text-sm text-red-600" data-testid="conversion-profiles-error">

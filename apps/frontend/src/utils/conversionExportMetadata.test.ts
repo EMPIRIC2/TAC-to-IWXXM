@@ -289,6 +289,18 @@ describe('buildConversionExportMetadata', () => {
     });
   });
 
+  it('notes when lint counts reflect the whole convert batch', () => {
+    const metadata = buildConversionExportMetadata({
+      ...baseInput,
+      conversionLog: { errors: [], issues: [] },
+      lintSessionBatch: true,
+    });
+    expect(metadata.lintSummary).toMatchObject({
+      status: 'available',
+      note: expect.stringContaining('whole convert batch'),
+    });
+  });
+
   it('treats missing lint arrays as empty', () => {
     const metadata = buildConversionExportMetadata({
       ...baseInput,
@@ -328,6 +340,23 @@ describe('sanitizeMetadataForExport', () => {
       nested: {
         note: '[redacted]',
         safe: 'METAR KJFK',
+      },
+    });
+  });
+
+  it('strips camelCase forbidden keys in nested objects', () => {
+    const cleaned = sanitizeMetadataForExport({
+      product: 'METAR',
+      nested: {
+        accessToken: 'x',
+        apiKey: 'y',
+        safe: 'ok',
+      },
+    });
+    expect(cleaned).toEqual({
+      product: 'METAR',
+      nested: {
+        safe: 'ok',
       },
     });
   });

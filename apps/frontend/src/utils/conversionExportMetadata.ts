@@ -19,6 +19,8 @@ export interface ConversionMetadataLintLog {
 export const CONVERSION_METADATA_PREFS_KEY = 'tac_conversion_metadata_prefs';
 
 export const CONVERSION_METADATA_TOGGLE_LABEL = 'Include conversion metadata';
+export const CONVERSION_METADATA_TOGGLE_HELP =
+  'When enabled, XML downloads include a small metadata file with library choices, convert settings, and optional lint counts. Nothing secret is stored.';
 export const CONVERSION_METADATA_CHECKLIST_HEADING = 'Choose what to include';
 export const CONVERSION_METADATA_CHECKLIST_LIBRARIES = 'Library selections';
 export const CONVERSION_METADATA_CHECKLIST_YAML_HASHES =
@@ -34,6 +36,8 @@ export const CONVERSION_METADATA_PLACEHOLDER_YAML =
   'Library YAML hash snapshots will be included in a later release.';
 export const CONVERSION_METADATA_PLACEHOLDER_LINT =
   'Per-result lint and validation summaries will be included in a later release.';
+export const CONVERSION_METADATA_LINT_BATCH_NOTE =
+  'Lint counts reflect the whole convert batch, not this file alone.';
 export const CONVERSION_METADATA_PLACEHOLDER_MAPPING =
   'Mapping bridge match summaries will be included in a later release.';
 
@@ -66,6 +70,13 @@ export interface ConversionMetadataLibraryIds {
   decodingLibraryId: string;
 }
 
+/** Snapshot of convert context captured when a result is created. */
+export type ConversionExportContext = ConversionMetadataLibraryIds & {
+  product: string;
+  iwxxmVersion: string;
+  reportVariant?: string;
+};
+
 export interface BuildConversionMetadataInput {
   tacContent: string;
   convertedAt: number;
@@ -78,10 +89,12 @@ export interface BuildConversionMetadataInput {
   userEmail?: string;
   accessToken?: string;
   conversionLog?: ConversionMetadataLintLog | null;
+  /** When true, lint counts come from the shared session log for all files. */
+  lintSessionBatch?: boolean;
   generatedAt?: Date;
 }
 
-const FORBIDDEN_METADATA_KEYS = new Set([
+const FORBIDDEN_METADATA_KEY_NAMES = [
   'password',
   'token',
   'access_token',
@@ -97,7 +110,11 @@ const FORBIDDEN_METADATA_KEYS = new Set([
   'secret',
   'api_key',
   'apiKey',
-]);
+] as const;
+
+const FORBIDDEN_METADATA_KEYS = new Set(
+  FORBIDDEN_METADATA_KEY_NAMES.map((key) => key.toLowerCase()),
+);
 
 const FORBIDDEN_VALUE_RE =
   /(?:^|\s)(?:Bearer\s+[A-Za-z0-9._~+/=-]+|postgresql:\/\/|mongodb:\/\/|mysql:\/\/|smtp:\/\/|https?:\/\/[^\s]*(?:password|token|secret)=)/i;
@@ -248,6 +265,7 @@ function placeholderBlock(note: string): Record<string, unknown> {
 
 function lintSummaryFromLog(
   log: ConversionMetadataLintLog | null | undefined,
+  sessionBatch = false,
 ): Record<string, unknown> {
   if (!log) {
     return placeholderBlock(CONVERSION_METADATA_PLACEHOLDER_LINT);
@@ -264,6 +282,7 @@ function lintSummaryFromLog(
     warningCount,
     infoCount,
     issueCount: issues.length,
+    ...(sessionBatch ? { note: CONVERSION_METADATA_LINT_BATCH_NOTE } : {}),
   };
 }
 
@@ -315,7 +334,10 @@ export function buildConversionExportMetadata(
   }
 
   if (input.checklist.lintSummary) {
-    metadata.lintSummary = lintSummaryFromLog(input.conversionLog);
+    metadata.lintSummary = lintSummaryFromLog(
+      input.conversionLog,
+      input.lintSessionBatch === true,
+    );
   }
 
   if (input.checklist.tacFingerprint) {

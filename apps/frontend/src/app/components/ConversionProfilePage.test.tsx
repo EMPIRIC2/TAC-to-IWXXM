@@ -126,6 +126,30 @@ describe('ConversionProfilePage', () => {
     expect(onRequestLogin).toHaveBeenCalled();
   });
 
+  it('updates inspector Kind when switching library tabs (TC-EVPYL-002)', async () => {
+    const user = userEvent.setup();
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('conversion-profiles-inspector-detail'),
+      ).toBeInTheDocument();
+    });
+
+    expect(
+      screen.getByTestId('conversion-profiles-inspector-detail'),
+    ).toHaveTextContent('Conversion');
+
+    await user.click(screen.getByTestId('profile-library-tab-tac-validation'));
+    expect(
+      screen.getByTestId('conversion-profiles-inspector-detail'),
+    ).toHaveTextContent('TAC validation');
+    expect(screen.getByTestId('conversion-profiles-inspector')).toHaveAttribute(
+      'data-library-kind',
+      'tac_validation',
+    );
+  });
+
   it('loads inspector and five library tabs when authenticated', async () => {
     const user = userEvent.setup();
     render(<ConversionProfilePage accessToken="tok" />);
@@ -148,8 +172,11 @@ describe('ConversionProfilePage', () => {
     expect(fetchProfileCatalog).toHaveBeenCalledWith('tok');
     const libraries = screen.getByTestId('profile-builder-libraries');
     const inspector = screen.getByTestId('conversion-profiles-inspector');
+    expect(libraries).toContainElement(inspector);
     expect(
-      libraries.compareDocumentPosition(inspector) & Node.DOCUMENT_POSITION_FOLLOWING,
+      libraries
+        .querySelector('[data-testid="profile-builder-library-tabs"]')!
+        .compareDocumentPosition(inspector) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(libraries.querySelector('[data-testid="beta-badge"]')).toBeTruthy();
     expect(screen.getByTestId('profile-library-tab-conversion')).toBeInTheDocument();
@@ -642,9 +669,7 @@ describe('ConversionProfilePage', () => {
     expect(
       screen.getByTestId('conversion-profiles-summary-primary'),
     ).toBeInTheDocument();
-    expect(screen.getByTestId('conversion-profiles-inspector')).toHaveTextContent(
-      /reload failed/i,
-    );
+    expect(screen.getByTestId('conversion-profiles-inspector')).toBeInTheDocument();
     expect(screen.getByTestId('conversion-profiles-blocks')).toHaveTextContent(
       /reload failed/i,
     );
