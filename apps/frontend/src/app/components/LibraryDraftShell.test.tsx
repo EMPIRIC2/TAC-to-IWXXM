@@ -40,7 +40,9 @@ describe('LibraryDraftShell', () => {
       `# TAC validation draft
 kind: tac_validation
 name: New TAC validation draft
-rules: []
+rules:
+  - pattern: "(?P<wind>\\\\d{5})KT"
+    sample: "18004KT"
 `,
     );
     expect(screen.getByTestId('library-draft-status-tac_validation')).toHaveTextContent(
@@ -49,7 +51,15 @@ rules: []
 
     await user.click(screen.getByTestId('library-draft-save-tac_validation'));
     expect(screen.getByTestId('library-draft-status-tac_validation')).toHaveTextContent(
-      /Draft saved locally/i,
+      /Draft saved/i,
+    );
+
+    expect(
+      screen.getByTestId('library-draft-activate-tac_validation'),
+    ).not.toBeDisabled();
+    await user.click(screen.getByTestId('library-draft-activate-tac_validation'));
+    expect(screen.getByTestId('library-draft-status-tac_validation')).toHaveTextContent(
+      /Activated/i,
     );
   });
 
@@ -63,5 +73,17 @@ rules: []
     ) as HTMLTextAreaElement;
     expect(yaml.value).toContain('ICAO decode set');
     expect(yaml.value).toContain('kind: decoding');
+  });
+
+  it('locks activate on invalid YAML and shows diagnostics for fail patterns', async () => {
+    const user = userEvent.setup();
+    render(<LibraryDraftShell kind="tac_validation" />);
+    const editor = screen.getByTestId('library-draft-yaml-tac_validation');
+    await user.clear(editor);
+    await user.paste('name: only');
+    expect(screen.getByTestId('library-draft-activate-tac_validation')).toBeDisabled();
+    expect(
+      screen.getByTestId('library-draft-yaml-lock-tac_validation'),
+    ).toBeInTheDocument();
   });
 });

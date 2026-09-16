@@ -10,6 +10,7 @@ import {
   type LibraryAssetOut,
 } from '../../utils/conversionProfilesApi';
 import { defaultLibraryId } from '../../utils/libraryIds';
+import { isLibrarySelectableOnConvert } from '../../utils/libraryYamlDiagnostics';
 import {
   PROFILES_LIBRARY_TAB_CONVERSION,
   PROFILES_LIBRARY_TAB_DECODING,
@@ -144,7 +145,7 @@ export function LibraryPickersBar({
     for (const meta of KIND_META) {
       map.set(
         meta.kind,
-        assets.filter((a) => a.kind === meta.kind),
+        assets.filter((a) => a.kind === meta.kind && isLibrarySelectableOnConvert(a)),
       );
     }
     return map;

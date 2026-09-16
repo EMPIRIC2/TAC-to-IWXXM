@@ -1321,9 +1321,14 @@ async def convert_bulletin(
                 raise
             except Exception:
                 return None
-            if asset.kind != "conversion":
-                msg = "conversion_library_id must reference a Conversion library"
-                raise ValueError(msg)
+            from metar_iwxxm_api.convert_library_hard_cut import assert_library_usable_on_convert
+
+            assert_library_usable_on_convert(
+                kind=asset.kind,
+                expected_kind="conversion",
+                access=asset.access,
+                status=asset.status,
+            )
             return asset.engine_profile_id
 
         try:
@@ -1458,16 +1463,21 @@ async def convert_bulletin(
     def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
         if dissem_profiles is None:
             return None
-        try:
-            asset = dissem_profiles.get_library_asset(asset_id)
-        except ValueError:
-            raise
-        except Exception:
-            return None
-        if asset.kind != "dissemination":
-            msg = "dissemination_library_id must reference a Dissemination library"
-            raise ValueError(msg)
-        return dict(asset.body or {})
+            try:
+                asset = dissem_profiles.get_library_asset(asset_id)
+            except ValueError:
+                raise
+            except Exception:
+                return None
+            from metar_iwxxm_api.convert_library_hard_cut import assert_library_usable_on_convert
+
+            assert_library_usable_on_convert(
+                kind=asset.kind,
+                expected_kind="dissemination",
+                access=asset.access,
+                status=asset.status,
+            )
+            return dict(asset.body or {})
 
     for index, tac in enumerate(split.reports):
         issues: list[LintIssueModel] = []
@@ -1872,9 +1882,14 @@ async def convert(
             raise
         except Exception:
             return None
-        if asset.kind != "conversion":
-            msg = "conversion_library_id must reference a Conversion library"
-            raise ValueError(msg)
+        from metar_iwxxm_api.convert_library_hard_cut import assert_library_usable_on_convert
+
+        assert_library_usable_on_convert(
+            kind=asset.kind,
+            expected_kind="conversion",
+            access=asset.access,
+            status=asset.status,
+        )
         return asset.engine_profile_id
 
     try:

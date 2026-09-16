@@ -7,6 +7,8 @@ from unittest.mock import MagicMock
 import pytest
 from metar_iwxxm_api.convert_library_hard_cut import (
     DEFAULT_CONVERSION_LIBRARY_ID,
+    DRAFT_LIBRARY_CONVERT_DETAIL,
+    assert_library_usable_on_convert,
     legacy_convert_fields_present,
     legacy_convert_reject_detail,
     library_id_for_semantic_or_alias,
@@ -203,3 +205,48 @@ def test_resolve_custom_callback_raises_kind_error() -> None:
             "custom-wrong-kind",
             get_custom_engine_profile_id=_bad,
         )
+
+
+def test_assert_library_usable_on_convert_blocks_draft() -> None:
+    """TC-EVPYL-ACTIVATE — Convert rejects draft customs."""
+    assert_library_usable_on_convert(
+        kind="conversion",
+        expected_kind="conversion",
+        access="first_party",
+        status=None,
+    )
+    assert_library_usable_on_convert(
+        kind="conversion",
+        expected_kind="conversion",
+        access="custom",
+        status="activated",
+    )
+    with pytest.raises(ValueError, match="draft"):
+        assert_library_usable_on_convert(
+            kind="conversion",
+            expected_kind="conversion",
+            access="custom",
+            status="draft",
+        )
+    with pytest.raises(ValueError, match="Conversion library"):
+        assert_library_usable_on_convert(
+            kind="decoding",
+            expected_kind="conversion",
+            access="custom",
+            status="activated",
+        )
+    with pytest.raises(ValueError, match="Dissemination library"):
+        assert_library_usable_on_convert(
+            kind="conversion",
+            expected_kind="dissemination",
+            access="custom",
+            status="activated",
+        )
+    with pytest.raises(ValueError, match="TAC validation"):
+        assert_library_usable_on_convert(
+            kind="conversion",
+            expected_kind="tac_validation",
+            access="custom",
+            status="activated",
+        )
+    assert DRAFT_LIBRARY_CONVERT_DETAIL

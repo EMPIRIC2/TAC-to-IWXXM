@@ -3123,8 +3123,10 @@ Warn; WMO reset.
 
 - **TC-EVPYL-MINE-001..005**: mined catalogs present for all five libraries; residual tickets
   for gaps; SWX/thin when in vendor.
-- **TC-EVPYL-REGEX-001..003**: live compile + capture summary; Warn vs Fail.
-- **TC-EVPYL-ACTIVATE-001..003**: Activate zero Fail; Convert applies activated customs.
+- **TC-EVPYL-REGEX-001..003**: live compile + capture summary; Warn vs Fail (engine in
+  `tac2iwxxm.library_yaml`; Profile builder shell mirrors compile in the editor).
+- **TC-EVPYL-ACTIVATE-001..003**: Activate zero Fail; Convert pickers and Convert HTTP reject
+  draft customs until Activated.
 
 ### EV-080 / F7.w — Parameterizable conversion templates + TAC→IWXXM bridge (#1146)
 

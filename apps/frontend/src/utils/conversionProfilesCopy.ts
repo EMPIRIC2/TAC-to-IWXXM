@@ -219,16 +219,18 @@ export const PROFILES_TOOLTIP_PROFILE_BLOCKS =
 /** Draft authoring shell copy. */
 export const PROFILES_DRAFT_HEADING = 'Draft authoring';
 export const PROFILES_DRAFT_HELP =
-  'Start from a template, duplicate a built-in asset, or paste YAML. Drafts stay in this builder until you activate them in a later step.';
+  'Start from a template, duplicate a built-in asset, or paste YAML. Save as a draft any time. Activate when Fail diagnostics are gone so Convert can use the library.';
 export const PROFILES_DRAFT_NEW_TEMPLATE = 'New from template';
 export const PROFILES_DRAFT_DUPLICATE = 'Duplicate built-in';
 export const PROFILES_DRAFT_IMPORT_LABEL = 'Import YAML';
 export const PROFILES_DRAFT_IMPORT_PLACEHOLDER =
   'Paste or edit YAML for this library kind. Invalid YAML stays in the editor until you fix it.';
 export const PROFILES_DRAFT_SAVE = 'Save draft';
+export const PROFILES_DRAFT_ACTIVATE = 'Activate';
 export const PROFILES_DRAFT_STATUS_IDLE = 'Not saved';
 export const PROFILES_DRAFT_STATUS_DRAFT = 'Draft';
-export const PROFILES_DRAFT_STATUS_SAVED = 'Draft saved locally';
+export const PROFILES_DRAFT_STATUS_SAVED = 'Draft saved';
+export const PROFILES_DRAFT_STATUS_ACTIVATED = 'Activated';
 export const PROFILES_DRAFT_BLOCKS_HEADING = 'IWXXM blocks';
 export const PROFILES_DRAFT_BLOCKS_HELP =
   'Drag cards between blocks to arrange how TAC groups map to IWXXM. Full editing arrives in a later release.';
@@ -246,4 +248,19 @@ export const PROFILES_DRAFT_TOOLTIP_DUPLICATE =
 export const PROFILES_DRAFT_TOOLTIP_IMPORT =
   'Paste YAML from another environment or an exported share bundle.';
 export const PROFILES_DRAFT_TOOLTIP_SAVE =
-  'Save your draft locally in this session. Activation is available in a later step.';
+  'Save this YAML as a draft. Convert cannot use it until you activate.';
+export const PROFILES_DRAFT_TOOLTIP_ACTIVATE =
+  'Activate when YAML is valid and every regex compiles. Warn is allowed; Fail is not.';
+export const PROFILES_DRAFT_DIAGNOSTICS_HEADING = 'Regex diagnostics';
+export const PROFILES_DRAFT_DIAGNOSTICS_HELP =
+  'Fail means the pattern does not compile or the required sample has no match. Warn means it compiles but may backtrack.';
+export const PROFILES_DRAFT_CAPTURES_HEADING = 'Capture groups';
+export const PROFILES_DRAFT_YAML_LOCK =
+  'Fix YAML before rearranging blocks or activating.';
+export const PROFILES_DRAFT_ACTIVATE_BLOCKED =
+  'Activate requires zero Fail diagnostics. Warn is allowed.';
+export const PROFILES_DRAFT_SAMPLE_HEADING = 'Sample preview';
+export const PROFILES_DRAFT_SAMPLE_HELP =
+  'Paste a TAC, IWXXM, filename, or glossary sample for this library. Capture groups update as you type.';
+export const PROFILES_DRAFT_SAMPLE_PLACEHOLDER =
+  'Sample text for live match and capture summary';

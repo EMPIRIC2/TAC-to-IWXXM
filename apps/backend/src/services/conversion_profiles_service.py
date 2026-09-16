@@ -6,7 +6,7 @@ import logging
 import os
 import re
 from datetime import UTC, datetime
-from typing import Any, NoReturn, cast
+from typing import Any, Literal, NoReturn, cast
 from uuid import UUID, uuid4
 
 from fastapi import HTTPException, status
@@ -875,12 +875,20 @@ class ConversionProfilesService:
             body=dict(asset.body),
             fork_of=asset.fork_of,
             shared=True,
+            status="activated",
+            schema_version=1,
         )
 
     def _library_row_to_out(self, row: dict[str, Any]) -> LibraryAssetOut:
         """Map a DB library asset row to API out."""
         body_candidate: Any = row.get("body")
         body: dict[str, Any] = cast(dict[str, Any], body_candidate) if isinstance(body_candidate, dict) else {}
+        status_raw = str(row.get("status") or "draft")
+        status: Literal["draft", "activated"] = "activated" if status_raw == "activated" else "draft"
+        schema_raw = row.get("schema_version")
+        schema_version = int(schema_raw) if isinstance(schema_raw, int) else 1
+        yaml_raw = row.get("yaml_body")
+        yaml_body = str(yaml_raw) if isinstance(yaml_raw, str) else None
         return LibraryAssetOut(
             id=str(row["id"]),
             kind=str(row["kind"]),  # type: ignore[arg-type]
@@ -895,6 +903,9 @@ class ConversionProfilesService:
             shared=bool(row.get("shared")),
             created_at=row.get("created_at"),
             updated_at=row.get("updated_at"),
+            yaml_body=yaml_body,
+            status=status,
+            schema_version=schema_version,
         )
 
     def list_library_assets(self, *, kind: str | None = None) -> list[LibraryAssetOut]:
@@ -950,6 +961,64 @@ class ConversionProfilesService:
             raise HTTPException(status_code=403, detail="Library asset ownership required")
         return self._library_row_to_out(dict(row))
 
+    def validate_library_yaml_document(
+        self,
+        yaml_body: str,
+        *,
+        kind: str,
+        lifecycle: str = "draft",
+    ) -> dict[str, Any]:
+        """Parse YAML and collect regex diagnostics without persisting."""
+        try:
+            from tac2iwxxm.library_yaml import LibraryKind, LibraryLifecycle, validate_library_yaml
+        except ImportError as exc:
+            raise HTTPException(status_code=503, detail="Library YAML validator unavailable") from exc
+        report = validate_library_yaml(
+            yaml_body,
+            expected_kind=cast(LibraryKind, kind),
+            lifecycle=cast(LibraryLifecycle, lifecycle),
+        )
+        return report.to_dict()
+
+    def _enforce_yaml_lifecycle(
+        self,
+        *,
+        yaml_body: str | None,
+        kind: str,
+        lifecycle_status: str,
+    ) -> dict[str, Any]:
+        """Validate YAML when activating; Draft may include Fail diagnostics."""
+        extra: dict[str, Any] = {}
+        if yaml_body is None:
+            if lifecycle_status == "activated":
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                    detail="Activate requires a YAML document with zero Fail diagnostics",
+                )
+            extra["status"] = lifecycle_status
+            return extra
+        extra["yaml_body"] = yaml_body
+        extra["status"] = lifecycle_status
+        report = self.validate_library_yaml_document(
+            yaml_body,
+            kind=kind,
+            lifecycle=lifecycle_status,
+        )
+        if lifecycle_status == "activated" and not bool(report.get("can_activate")):
+            detail = str(report.get("yaml_error") or "Activate requires zero Fail diagnostics")
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail=detail,
+            )
+        if bool(report.get("valid_yaml")):
+            parsed_body = report.get("data")
+            if isinstance(parsed_body, dict):
+                extra["body"] = parsed_body
+            parsed_name = report.get("name")
+            if isinstance(parsed_name, str) and parsed_name.strip():
+                extra["name"] = parsed_name.strip()
+        return extra
+
     def create_library_asset(self, payload: LibraryAssetCreate) -> LibraryAssetOut:
         """Insert a custom library asset (fork or new)."""
         data = payload.model_dump(by_alias=False)
@@ -958,19 +1027,27 @@ class ConversionProfilesService:
         _reject_template_values(payload.body, path="body")
         now = datetime.now(tz=UTC)
         asset_id = uuid4()
+        yaml_extra = self._enforce_yaml_lifecycle(
+            yaml_body=payload.yaml_body,
+            kind=payload.kind,
+            lifecycle_status=payload.status,
+        )
         values = {
             "id": asset_id,
             "user_id": self.user_id,
             "slug": payload.slug,
-            "name": payload.name,
+            "name": yaml_extra.get("name") or payload.name,
             "kind": payload.kind,
             "engine_profile_id": payload.engine_profile_id,
             "attached_national_line": payload.attached_national_line,
-            "body": payload.body,
+            "body": yaml_extra.get("body") if "body" in yaml_extra else payload.body,
             "fork_of": payload.fork_of,
             "shared": payload.shared,
             "created_at": now,
             "updated_at": now,
+            "yaml_body": yaml_extra.get("yaml_body"),
+            "status": yaml_extra.get("status") or payload.status,
+            "schema_version": payload.schema_version,
         }
         t = _table(LIBRARY_ASSETS_TABLE)
         try:
@@ -997,6 +1074,9 @@ class ConversionProfilesService:
                     "body": body,
                     "forkOf": first.id,
                     "shared": bool(payload.shared) if payload.shared is not None else False,
+                    "yamlBody": payload.yaml_body,
+                    "status": payload.status or "draft",
+                    "schemaVersion": payload.schema_version or 1,
                 }
             )
             return self.create_library_asset(create)
@@ -1012,6 +1092,18 @@ class ConversionProfilesService:
         for key in ("slug", "name", "body", "shared"):
             if key in data:
                 values[key] = data[key]
+        if "yaml_body" in data or "status" in data:
+            existing = self.get_library_asset(asset_id, require_owner=True)
+            yaml_body = data.get("yaml_body", existing.yaml_body)
+            lifecycle_status = data.get("status", existing.status)
+            yaml_extra = self._enforce_yaml_lifecycle(
+                yaml_body=yaml_body if isinstance(yaml_body, str) else None,
+                kind=existing.kind,
+                lifecycle_status=str(lifecycle_status),
+            )
+            values.update(yaml_extra)
+        if "schema_version" in data and data["schema_version"] is not None:
+            values["schema_version"] = data["schema_version"]
         t = _table(LIBRARY_ASSETS_TABLE)
         try:
             with _get_engine().begin() as conn:

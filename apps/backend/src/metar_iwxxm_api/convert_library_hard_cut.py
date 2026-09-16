@@ -181,3 +181,37 @@ def library_id_for_semantic_or_alias(profile_or_alias: str) -> str:
     if resolved is None:
         return DEFAULT_CONVERSION_LIBRARY_ID
     return first_party_library_id("conversion", resolved.canonical.upper())
+
+
+DRAFT_LIBRARY_CONVERT_DETAIL = (
+    "This library is still a draft. Activate it on Profile builder before using it on Convert."
+)
+
+
+def assert_library_usable_on_convert(
+    *,
+    kind: str,
+    expected_kind: str,
+    access: str,
+    status: str | None,
+) -> None:
+    """Reject draft custom libraries on Convert (operator-visible detail)."""
+    if kind != expected_kind:
+        labels = {
+            "conversion": "Conversion",
+            "tac_validation": "TAC validation",
+            "iwxxm_validation": "IWXXM validation",
+            "dissemination": "Dissemination",
+            "decoding": "Decoding",
+        }
+        label = labels.get(expected_kind, expected_kind)
+        if expected_kind == "conversion":
+            msg = "conversion_library_id must reference a Conversion library"
+        elif expected_kind == "dissemination":
+            msg = "dissemination_library_id must reference a Dissemination library"
+        else:
+            msg = f"library id must reference a {label} library"
+        raise ValueError(msg)
+    lifecycle = status or ("activated" if access == "first_party" else "draft")
+    if access == "custom" and lifecycle != "activated":
+        raise ValueError(DRAFT_LIBRARY_CONVERT_DETAIL)

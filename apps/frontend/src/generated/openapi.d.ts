@@ -601,6 +601,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/profiles/library-assets/validate-yaml": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Validate Library Yaml
+         * @description Validate library YAML and regex diagnostics without persisting.
+         */
+        post: operations["validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/profiles/library-assets/{asset_id}": {
         parameters: {
             query?: never;
@@ -3416,12 +3436,25 @@ export interface components {
             /** Name */
             name: string;
             /**
+             * Schemaversion
+             * @default 1
+             */
+            schemaVersion: number;
+            /**
              * Shared
              * @default false
              */
             shared: boolean;
             /** Slug */
             slug: string;
+            /**
+             * Status
+             * @default draft
+             * @enum {string}
+             */
+            status: "draft" | "activated";
+            /** Yamlbody */
+            yamlBody?: string | null;
         };
         /**
          * LibraryAssetListResponse
@@ -3463,16 +3496,29 @@ export interface components {
             /** Name */
             name: string;
             /**
+             * Schemaversion
+             * @default 1
+             */
+            schemaVersion: number;
+            /**
              * Shared
              * @default false
              */
             shared: boolean;
             /** Slug */
             slug?: string | null;
+            /**
+             * Status
+             * @default draft
+             * @enum {string}
+             */
+            status: "draft" | "activated";
             /** Updated At */
             updated_at?: string | null;
             /** Userid */
             userId?: string | null;
+            /** Yamlbody */
+            yamlBody?: string | null;
         };
         /**
          * LibraryAssetUpdate
@@ -3485,10 +3531,16 @@ export interface components {
             } | null;
             /** Name */
             name?: string | null;
+            /** Schemaversion */
+            schemaVersion?: number | null;
             /** Shared */
             shared?: boolean | null;
             /** Slug */
             slug?: string | null;
+            /** Status */
+            status?: ("draft" | "activated") | null;
+            /** Yamlbody */
+            yamlBody?: string | null;
         };
         /**
          * LibraryRulePreviewRequest
@@ -3518,6 +3570,64 @@ export interface components {
             ruleId: string;
             /** Rulename */
             ruleName: string;
+        };
+        /**
+         * LibraryYamlValidateRequest
+         * @description Validate library YAML without persisting.
+         */
+        LibraryYamlValidateRequest: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "conversion" | "tac_validation" | "iwxxm_validation" | "dissemination" | "decoding";
+            /**
+             * Lifecycle
+             * @default draft
+             * @enum {string}
+             */
+            lifecycle: "draft" | "activated";
+            /** Yamlbody */
+            yamlBody: string;
+        };
+        /**
+         * LibraryYamlValidateResponse
+         * @description Regex + schema diagnostics for a library YAML document.
+         */
+        LibraryYamlValidateResponse: {
+            /**
+             * Can Activate
+             * @default false
+             */
+            can_activate: boolean;
+            /** Diagnostics */
+            diagnostics?: {
+                [key: string]: unknown;
+            }[];
+            /**
+             * Fail Count
+             * @default 0
+             */
+            fail_count: number;
+            /** Kind */
+            kind?: ("conversion" | "tac_validation" | "iwxxm_validation" | "dissemination" | "decoding") | null;
+            /**
+             * Lifecycle
+             * @default draft
+             * @enum {string}
+             */
+            lifecycle: "draft" | "activated";
+            /** Name */
+            name?: string | null;
+            /** Valid Yaml */
+            valid_yaml: boolean;
+            /**
+             * Warn Count
+             * @default 0
+             */
+            warn_count: number;
+            /** Yaml Error */
+            yaml_error?: string | null;
         };
         /**
          * LintFixModel
@@ -6225,6 +6335,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["LibraryRulePreviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LibraryYamlValidateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryYamlValidateResponse"];
                 };
             };
             /** @description Validation Error */

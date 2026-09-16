@@ -384,6 +384,9 @@ class LibraryAssetOut(BaseModel):
     shared: bool = False
     created_at: datetime | None = None
     updated_at: datetime | None = None
+    yaml_body: str | None = Field(default=None, serialization_alias="yamlBody")
+    status: Literal["draft", "activated"] = "draft"
+    schema_version: int = Field(default=1, serialization_alias="schemaVersion")
 
 
 class LibraryAssetListResponse(BaseModel):
@@ -405,6 +408,9 @@ class LibraryAssetCreate(BaseModel):
     body: dict[str, Any] = Field(default_factory=dict)
     fork_of: str | None = Field(default=None, alias="forkOf")
     shared: bool = False
+    yaml_body: str | None = Field(default=None, alias="yamlBody")
+    status: Literal["draft", "activated"] = "draft"
+    schema_version: int = Field(default=1, ge=1, alias="schemaVersion")
 
 
 class LibraryAssetUpdate(BaseModel):
@@ -416,6 +422,33 @@ class LibraryAssetUpdate(BaseModel):
     name: str | None = Field(default=None, max_length=256)
     body: dict[str, Any] | None = None
     shared: bool | None = None
+    yaml_body: str | None = Field(default=None, alias="yamlBody")
+    status: Literal["draft", "activated"] | None = None
+    schema_version: int | None = Field(default=None, ge=1, alias="schemaVersion")
+
+
+class LibraryYamlValidateRequest(BaseModel):
+    """Validate library YAML without persisting."""
+
+    model_config = ConfigDict(populate_by_name=True)
+
+    yaml_body: str = Field(min_length=0, alias="yamlBody")
+    kind: LibraryKindLiteral
+    lifecycle: Literal["draft", "activated"] = "draft"
+
+
+class LibraryYamlValidateResponse(BaseModel):
+    """Regex + schema diagnostics for a library YAML document."""
+
+    valid_yaml: bool
+    yaml_error: str | None = None
+    kind: LibraryKindLiteral | None = None
+    name: str | None = None
+    lifecycle: Literal["draft", "activated"] = "draft"
+    fail_count: int = 0
+    warn_count: int = 0
+    can_activate: bool = False
+    diagnostics: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class LibraryRulePreviewRequest(BaseModel):

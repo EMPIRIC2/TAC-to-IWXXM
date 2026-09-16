@@ -194,37 +194,38 @@ export function ProfileBuilderLibraries({
   }, [accessToken, catalogProfile?.id]);
 
   const handleDraftStatusChange = useCallback(
-    (kind: LibraryAssetKind, status: 'idle' | 'draft' | 'saved') => {
+    (kind: LibraryAssetKind, status: 'idle' | 'draft' | 'saved' | 'activated') => {
       setDraftSavedByKind((prev) => ({
         ...prev,
-        [kind]: status === 'saved',
+        [kind]: status === 'saved' || status === 'activated',
       }));
     },
     [],
   );
 
   const onConversionDraftStatusChange = useCallback(
-    (status: 'idle' | 'draft' | 'saved') =>
+    (status: 'idle' | 'draft' | 'saved' | 'activated') =>
       handleDraftStatusChange('conversion', status),
     [handleDraftStatusChange],
   );
   const onTacValidationDraftStatusChange = useCallback(
-    (status: 'idle' | 'draft' | 'saved') =>
+    (status: 'idle' | 'draft' | 'saved' | 'activated') =>
       handleDraftStatusChange('tac_validation', status),
     [handleDraftStatusChange],
   );
   const onIwxxmValidationDraftStatusChange = useCallback(
-    (status: 'idle' | 'draft' | 'saved') =>
+    (status: 'idle' | 'draft' | 'saved' | 'activated') =>
       handleDraftStatusChange('iwxxm_validation', status),
     [handleDraftStatusChange],
   );
   const onDisseminationDraftStatusChange = useCallback(
-    (status: 'idle' | 'draft' | 'saved') =>
+    (status: 'idle' | 'draft' | 'saved' | 'activated') =>
       handleDraftStatusChange('dissemination', status),
     [handleDraftStatusChange],
   );
   const onDecodingDraftStatusChange = useCallback(
-    (status: 'idle' | 'draft' | 'saved') => handleDraftStatusChange('decoding', status),
+    (status: 'idle' | 'draft' | 'saved' | 'activated') =>
+      handleDraftStatusChange('decoding', status),
     [handleDraftStatusChange],
   );
 
@@ -332,6 +333,7 @@ export function ProfileBuilderLibraries({
           <ConversionTemplatesPanel accessToken={accessToken} />
           <LibraryDraftShell
             kind="conversion"
+            accessToken={accessToken}
             schemaBlocks={conversionSchemaBlocks}
             onDraftStatusChange={onConversionDraftStatusChange}
           />
@@ -349,6 +351,7 @@ export function ProfileBuilderLibraries({
           />
           <LibraryDraftShell
             kind="tac_validation"
+            accessToken={accessToken}
             onDraftStatusChange={onTacValidationDraftStatusChange}
           />
         </TabsContent>
@@ -365,6 +368,7 @@ export function ProfileBuilderLibraries({
           />
           <LibraryDraftShell
             kind="iwxxm_validation"
+            accessToken={accessToken}
             onDraftStatusChange={onIwxxmValidationDraftStatusChange}
           />
         </TabsContent>
@@ -377,6 +381,7 @@ export function ProfileBuilderLibraries({
           <DisseminationLibraryPanel accessToken={accessToken} />
           <LibraryDraftShell
             kind="dissemination"
+            accessToken={accessToken}
             onDraftStatusChange={onDisseminationDraftStatusChange}
           />
         </TabsContent>
@@ -389,6 +394,7 @@ export function ProfileBuilderLibraries({
           <DecodingLibraryPanel accessToken={accessToken} />
           <LibraryDraftShell
             kind="decoding"
+            accessToken={accessToken}
             onDraftStatusChange={onDecodingDraftStatusChange}
           />
         </TabsContent>

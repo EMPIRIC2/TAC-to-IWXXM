@@ -25,6 +25,8 @@ from ..schemas.conversion_profiles import (
     LibraryAssetUpdate,
     LibraryRulePreviewRequest,
     LibraryRulePreviewResponse,
+    LibraryYamlValidateRequest,
+    LibraryYamlValidateResponse,
     OverlayCreate,
     OverlayListResponse,
     OverlayOut,
@@ -371,6 +373,20 @@ def create_library_asset(
 ) -> LibraryAssetOut:
     """Create a custom library asset (optionally forked)."""
     return service.create_library_asset(payload)
+
+
+@router.post("/library-assets/validate-yaml", response_model=LibraryYamlValidateResponse)
+def validate_library_yaml(
+    payload: LibraryYamlValidateRequest,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> LibraryYamlValidateResponse:
+    """Validate library YAML and regex diagnostics without persisting."""
+    report = service.validate_library_yaml_document(
+        payload.yaml_body,
+        kind=payload.kind,
+        lifecycle=payload.lifecycle,
+    )
+    return LibraryYamlValidateResponse.model_validate(report)
 
 
 @router.post("/library-assets/preview-rule", response_model=LibraryRulePreviewResponse)
