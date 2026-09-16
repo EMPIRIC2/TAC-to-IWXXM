@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-16 (EV-profile-builder-mine-residuals / #1198+#1199 — F7.w Phase B mining residuals)
+> **Last updated**: 2026-09-16 (EV-1198 Stage 1 web re-verify — AU partial candidate; #1198 still blocked)
 
 ## Summary
 
@@ -763,8 +763,11 @@
      with `authority` tags; existing core assert ids remain stable; `--check` drift gate kept.
      OpenGIS / other `externalSchema` SCH out of scope this cycle.
   2. **#1198:** National Conversion schema blocks for AU/BR/HK/IN/JP/KR/NZ/UK — **defer full
-     mine** until real vendor pins (M6 sync). This cycle: document unblock criteria + miner
-     discovery hooks only; **no invented national XSD trees**; keep #1198 open after hooks.
+     mine** until real vendor pins (M6 sync). Hooks landed; Stage 1 (2026-09-16) found
+     **AU-TAF** public TAF-only XSD (partial; license/scope gate) and UK Colour State
+     registry OK but canonical XSD URL **404** — see
+     `docs/domain/profiles/mining/EV-1198-national-xsd-pinability.md`.
+     **No invented national XSD trees**; keep #1198 open / blocked for mining.
   3. **Tests:** TC-EVPYL-MINE-006..008; no UI / H4–H5. ADR-038 amend (residuals). EV-048 N/A
      (tooling + package data only).
   **Session**: `EV-profile-builder-mine-residuals` under local session-store (not a CORPUS

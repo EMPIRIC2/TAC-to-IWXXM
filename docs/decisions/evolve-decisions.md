@@ -21,6 +21,25 @@
 | D-EVPYL-R-12 | No M6 national pin PR; no invented/stub XSDs |
 | D-EVPYL-R-13 | Next: Stage 1 live web re-verify ± Stage 3 outreach; report in docs/domain/profiles/mining/EV-1198-national-xsd-pinability.md |
 
+---
+
+## Cycle EV-1198-stage1-national-xsd-web-reverify — Stage 1 live pinability (#1198)
+
+**Opened:** 2026-09-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1198-stage1-national-xsd-web-reverify`  
+**Documenting→Implementing gate:** closed (spec-only default; AU Stage 2 needs AskQuestion)  
+**Report:** [docs/domain/profiles/mining/EV-1198-national-xsd-pinability.md](../domain/profiles/mining/EV-1198-national-xsd-pinability.md)
+
+| ID | Outcome |
+|----|---------|
+| D-EV1198-S1-01 | Stage 1 live web re-verify completed (working web channel) |
+| D-EV1198-S1-02 | AU-TAF verified: EUR DMG zip → `iwxxm-au` 1.0 TAF-only XSD (partial candidate) |
+| D-EV1198-S1-03 | UK Colour State registry entry exists; canonical XSD URL HTTP 404 — not pin-ready |
+| D-EV1198-S1-04 | BR/HK/IN/JP/KR/NZ — no public national IWXXM extension XSD found this pass |
+| D-EV1198-S1-05 | #1198 stays blocked for Conversion mining; no M6 vendor-sync PR |
+| D-EV1198-S1-06 | US/CA precedent URLs re-verified HTTP 200 |
+| D-EV1198-S1-07 | Stage 3 outreach deferred (operator cannot contact NMSs this cycle) |
+| D-EV1198-S1-08 | AU Stage 2 M6 only after AskQuestion on license + TAF-only scope + path/version |
+
 [Corpus: product §F7.w] [Corpus: tests] [Corpus: adr/ADR-038] [Corpus: decisions]
 
 ---
