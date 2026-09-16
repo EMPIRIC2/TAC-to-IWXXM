@@ -7,9 +7,16 @@ import type {
   LibraryAssetKind,
   ProfileCatalogEntry,
 } from '@/utils/conversionProfilesApi';
+import { CircleHelp } from 'lucide-react';
+
 import {
   CONVERT_RESET_WMO_LIBRARY_DEFAULTS,
+  CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP,
   PROFILES_INSPECTOR_ACCESS_BUILTIN,
+  PROFILES_INSPECTOR_AUTHORITY_ICAO,
+  PROFILES_INSPECTOR_COVERAGE_UNAVAILABLE,
+  PROFILES_INSPECTOR_FAMILY_ICAO,
+  PROFILES_INSPECTOR_FAMILY_NATIONAL,
   PROFILES_INSPECTOR_HEADING,
   PROFILES_INSPECTOR_STATUS_DRAFT,
   PROFILES_INSPECTOR_STATUS_READY,
@@ -60,14 +67,14 @@ const LIBRARY_TAB_LABELS: Record<LibraryTabValue, string> = {
 
 function profileFamily(profileId: string): string {
   if (profileId.startsWith('ICAO_')) {
-    return 'ICAO / WMO baseline';
+    return PROFILES_INSPECTOR_FAMILY_ICAO;
   }
-  return 'National or regional extension';
+  return PROFILES_INSPECTOR_FAMILY_NATIONAL;
 }
 
 function profileAuthority(profileId: string): string {
   if (profileId.startsWith('ICAO_')) {
-    return 'ICAO / WMO';
+    return PROFILES_INSPECTOR_AUTHORITY_ICAO;
   }
   const [country, ...rest] = profileId.split('_');
   const suffix = rest.join(' ');
@@ -82,7 +89,7 @@ function profileCoverage(profile: ProfileCatalogEntry): string {
   if (profile.iwxxm_line) {
     kinds.push(profile.iwxxm_line);
   }
-  return kinds.join(' | ') || 'Coverage details unavailable';
+  return kinds.join(' | ') || PROFILES_INSPECTOR_COVERAGE_UNAVAILABLE;
 }
 
 function LibraryTab({
@@ -185,18 +192,35 @@ export function ProfileBuilderLibraries({
           </TooltipContent>
         </Tooltip>
         <BetaBadge showHelp />
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          data-testid="profile-builder-reset-wmo-defaults"
-          className="ml-auto text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-          onClick={() => {
-            resetWmoLibraryDefaultsSync();
-          }}
-        >
-          {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
-        </Button>
+        <div className="ml-auto flex shrink-0 items-center gap-1">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            data-testid="profile-builder-reset-wmo-defaults"
+            className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+            onClick={() => {
+              resetWmoLibraryDefaultsSync();
+            }}
+          >
+            {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
+          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                aria-label="About reset to WMO defaults"
+                data-testid="profile-builder-reset-wmo-defaults-help"
+              >
+                <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="max-w-xs text-balance">
+              {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
       <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
         {PROFILES_LIBRARIES_HELP}
@@ -238,7 +262,12 @@ export function ProfileBuilderLibraries({
             tooltip={PROFILES_TOOLTIP_LIBRARY_TAB_DECODING}
           />
         </TabsList>
-        <TabsContent value="conversion" data-testid="profile-library-panel-conversion">
+        <TabsContent
+          value="conversion"
+          forceMount
+          className="data-[state=inactive]:hidden"
+          data-testid="profile-library-panel-conversion"
+        >
           <ConversionTemplatesPanel accessToken={accessToken} />
           <LibraryDraftShell
             kind="conversion"
@@ -247,6 +276,8 @@ export function ProfileBuilderLibraries({
         </TabsContent>
         <TabsContent
           value="tac_validation"
+          forceMount
+          className="data-[state=inactive]:hidden"
           data-testid="profile-library-panel-tac-validation"
         >
           <LibraryAssetsListPanel
@@ -261,6 +292,8 @@ export function ProfileBuilderLibraries({
         </TabsContent>
         <TabsContent
           value="iwxxm_validation"
+          forceMount
+          className="data-[state=inactive]:hidden"
           data-testid="profile-library-panel-iwxxm-validation"
         >
           <LibraryAssetsListPanel
@@ -275,6 +308,8 @@ export function ProfileBuilderLibraries({
         </TabsContent>
         <TabsContent
           value="dissemination"
+          forceMount
+          className="data-[state=inactive]:hidden"
           data-testid="profile-library-panel-dissemination"
         >
           <DisseminationLibraryPanel accessToken={accessToken} />
@@ -283,7 +318,12 @@ export function ProfileBuilderLibraries({
             onDraftStatusChange={onDisseminationDraftStatusChange}
           />
         </TabsContent>
-        <TabsContent value="decoding" data-testid="profile-library-panel-decoding">
+        <TabsContent
+          value="decoding"
+          forceMount
+          className="data-[state=inactive]:hidden"
+          data-testid="profile-library-panel-decoding"
+        >
           <DecodingLibraryPanel accessToken={accessToken} />
           <LibraryDraftShell
             kind="decoding"

@@ -154,6 +154,39 @@ describe('TC-EVPYL Phase A', () => {
     }
   });
 
+  it('keeps draft YAML when switching library tabs after Save draft', async () => {
+    const user = userEvent.setup();
+    render(<ConversionProfilePage accessToken="tok" />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('library-draft-shell-conversion')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('library-draft-new-template-conversion'));
+    const editor = screen.getByTestId(
+      'library-draft-yaml-conversion',
+    ) as HTMLTextAreaElement;
+    expect(editor.value).toContain('kind: conversion');
+    await user.click(screen.getByTestId('library-draft-save-conversion'));
+
+    await user.click(screen.getByTestId('profile-library-tab-decoding'));
+    await user.click(screen.getByTestId('profile-library-tab-conversion'));
+
+    expect(
+      (screen.getByTestId('library-draft-yaml-conversion') as HTMLTextAreaElement)
+        .value,
+    ).toContain('kind: conversion');
+  });
+
+  it('exposes WMO reset help on Profile builder', async () => {
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('profile-builder-reset-wmo-defaults-help'),
+      ).toBeInTheDocument();
+    });
+  });
+
   it('TC-EVPYL-005: export metadata helpers sanitize secrets and omit guest operator', () => {
     expect(metaSidecarFileName('report.xml')).toBe('report.meta.json');
     expect(

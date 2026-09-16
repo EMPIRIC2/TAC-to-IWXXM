@@ -121,6 +121,10 @@ import {
   PROFILES_INSPECTOR_HEADING,
   PROFILES_INSPECTOR_LOADING,
   PROFILES_INSPECTOR_SELECT,
+  PROFILES_INSPECTOR_AUTHORITY_ICAO,
+  PROFILES_INSPECTOR_COVERAGE_UNAVAILABLE,
+  PROFILES_INSPECTOR_FAMILY_ICAO,
+  PROFILES_INSPECTOR_FAMILY_NATIONAL,
   PROFILES_LIBRARIES_HEADING,
   PROFILES_LIBRARIES_HELP,
   PROFILES_LIBRARY_LIST_EMPTY,
@@ -290,6 +294,22 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'profiles.inspector-loading', text: PROFILES_INSPECTOR_LOADING },
     { id: 'profiles.inspector-empty', text: PROFILES_INSPECTOR_EMPTY },
     { id: 'profiles.inspector-select', text: PROFILES_INSPECTOR_SELECT },
+    {
+      id: 'profiles.inspector-family-icao',
+      text: PROFILES_INSPECTOR_FAMILY_ICAO,
+    },
+    {
+      id: 'profiles.inspector-family-national',
+      text: PROFILES_INSPECTOR_FAMILY_NATIONAL,
+    },
+    {
+      id: 'profiles.inspector-authority-icao',
+      text: PROFILES_INSPECTOR_AUTHORITY_ICAO,
+    },
+    {
+      id: 'profiles.inspector-coverage-unavailable',
+      text: PROFILES_INSPECTOR_COVERAGE_UNAVAILABLE,
+    },
     { id: 'profiles.packs-heading', text: PROFILES_PACKS_HEADING },
     { id: 'profiles.packs-loading', text: PROFILES_PACKS_LOADING },
     { id: 'profiles.packs-empty', text: PROFILES_PACKS_EMPTY },

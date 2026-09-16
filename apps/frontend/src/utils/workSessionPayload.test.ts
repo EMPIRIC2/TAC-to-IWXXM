@@ -183,6 +183,7 @@ describe('workSessionPayload', () => {
           originalName: 'out.xml',
           originalContent: 'METAR KJFK 121251Z ...',
           convertedContent: '<iwxxm/>',
+          convertedAt: 1_700_000_000_000,
           exportContext,
         },
       ],
@@ -190,5 +191,6 @@ describe('workSessionPayload', () => {
       conversionParams: { product: 'METAR' },
     });
     expect(payload.converted_results?.[0]?.export_context).toEqual(exportContext);
+    expect(payload.converted_results?.[0]?.converted_at).toBe(1_700_000_000_000);
   });
 });

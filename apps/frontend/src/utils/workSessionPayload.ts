@@ -18,6 +18,8 @@ export interface ConvertedFileSnapshot {
   manualLineIndex?: number;
   /** Total manual lines in the batch. */
   manualLineTotal?: number;
+  /** Epoch ms when conversion produced this result (metadata convertedAt). */
+  convertedAt?: number;
   /** Convert-time library/product snapshot for metadata sidecars. */
   exportContext?: ConversionExportContext;
 }
@@ -111,6 +113,9 @@ export function buildWorkSessionPayload(
             manual_line_index: file.manualLineIndex,
             manual_line_total: file.manualLineTotal,
           }
+        : {}),
+      ...(typeof file.convertedAt === 'number'
+        ? { converted_at: file.convertedAt }
         : {}),
       ...(file.exportContext ? { export_context: file.exportContext } : {}),
     })),

@@ -755,6 +755,7 @@ export function FileConverter({
       convertedContent: file.convertedContent,
       manualLineIndex: file.manualLineIndex,
       manualLineTotal: file.manualLineTotal,
+      convertedAt: file.timestamp,
       ...(file.exportContext ? { exportContext: file.exportContext } : {}),
     })),
     conversionLog: conversionLogRef.current
@@ -803,14 +804,17 @@ export function FileConverter({
     hasLocalUnsavedWork,
   });
 
-  // Load user preferences on mount from localStorage
+  // Load user preferences on mount from localStorage (WMO sync wins for libraries)
   useEffect(() => {
     const loadPreferences = () => {
       try {
         const stored = localStorage.getItem('metar_converter_preferences');
         if (stored) {
           const prefs = JSON.parse(stored);
-          const profile = hydrateSemanticProfile(prefs.profile);
+          const sync = readWmoLibraryDefaultsSync();
+          const profile = sync
+            ? coerceIwxxmProfile(sync.profile)
+            : hydrateSemanticProfile(prefs.profile);
           const iwxxmVersion = coerceIwxxmVersionForProfile(
             profile,
             prefs.iwxxmVersion,
@@ -826,7 +830,7 @@ export function FileConverter({
             presetId: '',
             disseminationTemplateId: '',
             overlayId: '',
-            ...libraryIdsForNationalLine(profile),
+            ...(sync ? sync.libraryIds : libraryIdsForNationalLine(profile)),
             iwxxmVersion,
             strictValidation: prefs.strictValidation !== false,
             includeNilReasons: prefs.includeNilReasons !== false,
@@ -905,7 +909,10 @@ export function FileConverter({
             convertedContent: String(
               result.iwxxm_xml ?? result.xml ?? result.content ?? '',
             ),
-            timestamp: Date.now(),
+            timestamp:
+              typeof result.converted_at === 'number'
+                ? result.converted_at
+                : Date.now(),
             ...(result.export_context &&
             typeof result.export_context === 'object' &&
             !Array.isArray(result.export_context)
