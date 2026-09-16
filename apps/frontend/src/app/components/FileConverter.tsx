@@ -490,6 +490,42 @@ function initialConversionParams(): ConversionParams {
   };
 }
 
+/**
+ * Apply saved converter preferences, preferring shared WMO library sync when present.
+ */
+function conversionParamsFromStoredPreferences(
+  prefs: Record<string, unknown>,
+): ConversionParams {
+  const sync = readWmoLibraryDefaultsSync();
+  const profile = sync
+    ? coerceIwxxmProfile(sync.profile)
+    : hydrateSemanticProfile(prefs.profile);
+  const iwxxmVersion = coerceIwxxmVersionForProfile(profile, prefs.iwxxmVersion);
+  return {
+    bulletinId:
+      (typeof prefs.bulletinIdExample === 'string' && prefs.bulletinIdExample) ||
+      'SAAA00',
+    issuingCenter:
+      (typeof prefs.issuingCenter === 'string' && prefs.issuingCenter) || 'KWBC',
+    product: ((typeof prefs.product === 'string' && prefs.product) ||
+      'auto') as TacProductSelection,
+    profile,
+    reportVariant: '',
+    exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
+    presetId: '',
+    disseminationTemplateId: '',
+    overlayId: '',
+    ...(sync ? sync.libraryIds : libraryIdsForNationalLine(profile)),
+    iwxxmVersion,
+    strictValidation: prefs.strictValidation !== false,
+    includeNilReasons: prefs.includeNilReasons !== false,
+    onError: ((typeof prefs.onError === 'string' && prefs.onError) ||
+      'warn') as ConversionParams['onError'],
+    logLevel: ((typeof prefs.logLevel === 'string' && prefs.logLevel) ||
+      'INFO') as ConversionParams['logLevel'],
+  };
+}
+
 function activeMetarFamilyVariants(
   entry: ProfileCatalogEntry,
   product: string,
@@ -810,33 +846,11 @@ export function FileConverter({
       try {
         const stored = localStorage.getItem('metar_converter_preferences');
         if (stored) {
-          const prefs = JSON.parse(stored);
-          const sync = readWmoLibraryDefaultsSync();
-          const profile = sync
-            ? coerceIwxxmProfile(sync.profile)
-            : hydrateSemanticProfile(prefs.profile);
-          const iwxxmVersion = coerceIwxxmVersionForProfile(
-            profile,
-            prefs.iwxxmVersion,
+          setConversionParams(
+            conversionParamsFromStoredPreferences(
+              JSON.parse(stored) as Record<string, unknown>,
+            ),
           );
-
-          setConversionParams({
-            bulletinId: prefs.bulletinIdExample || 'SAAA00',
-            issuingCenter: prefs.issuingCenter || 'KWBC',
-            product: (prefs.product as TacProductSelection) || 'auto',
-            profile,
-            reportVariant: '',
-            exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
-            presetId: '',
-            disseminationTemplateId: '',
-            overlayId: '',
-            ...(sync ? sync.libraryIds : libraryIdsForNationalLine(profile)),
-            iwxxmVersion,
-            strictValidation: prefs.strictValidation !== false,
-            includeNilReasons: prefs.includeNilReasons !== false,
-            onError: prefs.onError || 'warn',
-            logLevel: prefs.logLevel || 'INFO',
-          });
         }
       } catch (error) {
         console.error('Error loading preferences:', error);
@@ -1014,27 +1028,11 @@ export function FileConverter({
     try {
       const stored = localStorage.getItem('metar_converter_preferences');
       if (stored) {
-        const prefs = JSON.parse(stored);
-        const profile = hydrateSemanticProfile(prefs.profile);
-        const iwxxmVersion = coerceIwxxmVersionForProfile(profile, prefs.iwxxmVersion);
-
-        setConversionParams({
-          bulletinId: prefs.bulletinIdExample || 'SAAA00',
-          issuingCenter: prefs.issuingCenter || 'KWBC',
-          product: (prefs.product as TacProductSelection) || 'auto',
-          profile,
-          reportVariant: '',
-          exchangeProfile: coerceExchangeProfile(prefs.exchangeProfile),
-          presetId: '',
-          disseminationTemplateId: '',
-          overlayId: '',
-          ...libraryIdsForNationalLine(profile),
-          iwxxmVersion,
-          strictValidation: prefs.strictValidation !== false,
-          includeNilReasons: prefs.includeNilReasons !== false,
-          onError: prefs.onError || 'warn',
-          logLevel: prefs.logLevel || 'INFO',
-        });
+        setConversionParams(
+          conversionParamsFromStoredPreferences(
+            JSON.parse(stored) as Record<string, unknown>,
+          ),
+        );
         toast.info('Conversion parameters updated from preferences');
       }
     } catch (error) {

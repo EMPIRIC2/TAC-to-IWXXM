@@ -255,6 +255,14 @@ vi.mock('/utils/api', () => ({
   fetchAirportRegion: vi
     .fn()
     .mockResolvedValue({ airport_code: 'KJFK', icao_region: 'NAM' }),
+  downloadBlob: (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  },
 }));
 
 vi.mock('@/utils/conversionProfilesApi', () => ({
