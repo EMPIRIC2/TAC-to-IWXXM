@@ -135,7 +135,12 @@ import {
   PROFILES_LIBRARY_TAB_DECODING,
   PROFILES_LIBRARY_TAB_DISSEMINATION,
   PROFILES_LIBRARY_TAB_IWXXM_VALIDATION,
+  PROFILES_LIBRARY_TAB_OVERVIEW,
   PROFILES_LIBRARY_TAB_TAC_VALIDATION,
+  PROFILES_OVERVIEW_COMPARE_STUB,
+  PROFILES_OVERVIEW_ENABLEMENT_STUB,
+  PROFILES_OVERVIEW_HEADING,
+  PROFILES_OVERVIEW_HELP,
   MAPPING_BRIDGE_COL_IWXXM,
   MAPPING_BRIDGE_COL_TAC,
   MAPPING_BRIDGE_COL_TEMPLATE,
@@ -213,8 +218,18 @@ import {
   PROFILES_TOOLTIP_LIBRARY_TAB_DECODING,
   PROFILES_TOOLTIP_LIBRARY_TAB_DISSEMINATION,
   PROFILES_TOOLTIP_LIBRARY_TAB_IWXXM_VALIDATION,
+  PROFILES_TOOLTIP_LIBRARY_TAB_OVERVIEW,
   PROFILES_TOOLTIP_LIBRARY_TAB_TAC_VALIDATION,
   PROFILES_TOOLTIP_PROFILE_BLOCKS,
+  PROFILES_TOOLTIP_WORKBENCH,
+  PROFILES_WORKBENCH_CATALOG_LABEL,
+  PROFILES_WORKBENCH_EDITOR_LABEL,
+  PROFILES_WORKBENCH_PREVIEW_IWXXM,
+  PROFILES_WORKBENCH_PREVIEW_IWXXM_HELP,
+  PROFILES_WORKBENCH_PREVIEW_IWXXM_PLACEHOLDER,
+  PROFILES_WORKBENCH_PREVIEW_ISSUES,
+  PROFILES_WORKBENCH_PREVIEW_ISSUES_HELP,
+  PROFILES_WORKBENCH_PREVIEW_ISSUES_PLACEHOLDER,
 } from '@/utils/conversionProfilesCopy';
 
 export type OperatorVisibleCopyEntry = {
@@ -276,6 +291,38 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
       text: PROFILES_LIBRARY_TAB_DISSEMINATION,
     },
     { id: 'profiles.library-tab-decoding', text: PROFILES_LIBRARY_TAB_DECODING },
+    { id: 'profiles.library-tab-overview', text: PROFILES_LIBRARY_TAB_OVERVIEW },
+    { id: 'profiles.overview-heading', text: PROFILES_OVERVIEW_HEADING },
+    { id: 'profiles.overview-help', text: PROFILES_OVERVIEW_HELP },
+    { id: 'profiles.overview-compare-stub', text: PROFILES_OVERVIEW_COMPARE_STUB },
+    {
+      id: 'profiles.overview-enablement-stub',
+      text: PROFILES_OVERVIEW_ENABLEMENT_STUB,
+    },
+    { id: 'profiles.workbench-catalog', text: PROFILES_WORKBENCH_CATALOG_LABEL },
+    { id: 'profiles.workbench-editor', text: PROFILES_WORKBENCH_EDITOR_LABEL },
+    { id: 'profiles.workbench-preview-iwxxm', text: PROFILES_WORKBENCH_PREVIEW_IWXXM },
+    {
+      id: 'profiles.workbench-preview-iwxxm-help',
+      text: PROFILES_WORKBENCH_PREVIEW_IWXXM_HELP,
+    },
+    {
+      id: 'profiles.workbench-preview-iwxxm-placeholder',
+      text: PROFILES_WORKBENCH_PREVIEW_IWXXM_PLACEHOLDER,
+    },
+    {
+      id: 'profiles.workbench-preview-issues',
+      text: PROFILES_WORKBENCH_PREVIEW_ISSUES,
+    },
+    {
+      id: 'profiles.workbench-preview-issues-help',
+      text: PROFILES_WORKBENCH_PREVIEW_ISSUES_HELP,
+    },
+    {
+      id: 'profiles.workbench-preview-issues-placeholder',
+      text: PROFILES_WORKBENCH_PREVIEW_ISSUES_PLACEHOLDER,
+    },
+    { id: 'profiles.tooltip-workbench', text: PROFILES_TOOLTIP_WORKBENCH },
     { id: 'profiles.library-list-loading', text: PROFILES_LIBRARY_LIST_LOADING },
     { id: 'profiles.library-list-empty', text: PROFILES_LIBRARY_LIST_EMPTY },
     { id: 'profiles.library-list-error', text: PROFILES_LIBRARY_LIST_ERROR },
@@ -430,6 +477,10 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     {
       id: 'profiles.tooltip-library-tab-decoding',
       text: PROFILES_TOOLTIP_LIBRARY_TAB_DECODING,
+    },
+    {
+      id: 'profiles.tooltip-library-tab-overview',
+      text: PROFILES_TOOLTIP_LIBRARY_TAB_OVERVIEW,
     },
     {
       id: 'profiles.tooltip-inspector-profile',

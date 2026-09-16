@@ -18,10 +18,6 @@ import {
   type ConversionTemplateSlot,
 } from '../../utils/conversionProfilesApi';
 import {
-  moveSelectedConversionTemplateSlot,
-  reorderConversionTemplateSlots,
-} from '../../utils/conversionTemplateSlots';
-import {
   PROFILES_CONV_TEMPLATES_ADVANCED,
   PROFILES_CONV_TEMPLATES_ADVANCED_HINT,
   PROFILES_CONV_TEMPLATES_COMMENTS,
@@ -36,8 +32,6 @@ import {
   PROFILES_CONV_TEMPLATES_MODE_CONVERT,
   PROFILES_CONV_TEMPLATES_MODE_DECODE,
   PROFILES_CONV_TEMPLATES_MODE_SKIP,
-  PROFILES_CONV_TEMPLATES_MOVE_DOWN,
-  PROFILES_CONV_TEMPLATES_MOVE_UP,
   PROFILES_CONV_TEMPLATES_PREVIEW,
   PROFILES_CONV_TEMPLATES_SELECT,
 } from '../../utils/conversionProfilesCopy';
@@ -74,7 +68,6 @@ export function ConversionTemplatesPanel({
   const [preview, setPreview] = useState<ConversionTemplatePreviewResponse | null>(
     null,
   );
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
@@ -114,19 +107,6 @@ export function ConversionTemplatesPanel({
     void load();
   }, [load]);
   /* eslint-enable react-hooks/set-state-in-effect */
-
-  const moveSelected = (delta: number) => {
-    const moved = moveSelectedConversionTemplateSlot(slots, selectedSlotId, delta);
-    if (!moved) return;
-    setSlots(moved.slots);
-    setSelectedSlotId(moved.selectedSlotId);
-  };
-
-  const onDrop = (toIndex: number) => {
-    if (dragIndex === null) return;
-    setSlots(reorderConversionTemplateSlots(slots, dragIndex, toIndex));
-    setDragIndex(null);
-  };
 
   const updateSlot = (slotId: string, patch: Partial<ConversionTemplateSlot>) => {
     setSlots((prev) => prev.map((s) => (s.id === slotId ? { ...s, ...patch } : s)));
@@ -232,12 +212,11 @@ export function ConversionTemplatesPanel({
 
           <div className="space-y-2" data-testid="template-block-builder">
             <div className="space-y-2" data-testid="conversion-templates-slots">
-              {slots.map((slot, index) => (
+              {slots.map((slot) => (
                 <div
                   key={slot.id}
                   role="button"
                   tabIndex={0}
-                  draggable
                   onClick={() => setSelectedSlotId(slot.id)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -245,12 +224,6 @@ export function ConversionTemplatesPanel({
                       setSelectedSlotId(slot.id);
                     }
                   }}
-                  onDragStart={() => {
-                    setDragIndex(index);
-                    setSelectedSlotId(slot.id);
-                  }}
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={() => onDrop(index)}
                   className={`space-y-2 rounded border p-2 ${
                     selectedSlotId === slot.id
                       ? 'border-blue-500 dark:border-blue-400'
@@ -259,10 +232,7 @@ export function ConversionTemplatesPanel({
                   data-testid={`conversion-template-slot-${slot.id}`}
                   aria-pressed={selectedSlotId === slot.id}
                 >
-                  <div className="flex cursor-grab items-center gap-2">
-                    <span className="text-xs text-gray-400" aria-hidden>
-                      ::
-                    </span>
+                  <div className="flex items-center gap-2">
                     <span className="flex-1 text-sm">
                       {slot.label} · {slot.type}
                       {slot.iwxxmField ? ` → ${slot.iwxxmField}` : ''}
@@ -301,26 +271,6 @@ export function ConversionTemplatesPanel({
                   </div>
                 </div>
               ))}
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  className="rounded border px-2 py-1 text-sm"
-                  data-testid="conversion-templates-move-up"
-                  aria-label={PROFILES_CONV_TEMPLATES_MOVE_UP}
-                  onClick={() => moveSelected(-1)}
-                >
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  className="rounded border px-2 py-1 text-sm"
-                  data-testid="conversion-templates-move-down"
-                  aria-label={PROFILES_CONV_TEMPLATES_MOVE_DOWN}
-                  onClick={() => moveSelected(1)}
-                >
-                  ↓
-                </button>
-              </div>
             </div>
           </div>
 

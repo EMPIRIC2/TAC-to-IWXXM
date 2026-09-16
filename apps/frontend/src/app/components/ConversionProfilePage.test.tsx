@@ -181,6 +181,14 @@ describe('ConversionProfilePage', () => {
     expect(libraries.querySelector('[data-testid="beta-badge"]')).toBeTruthy();
     expect(screen.getByTestId('profile-library-tab-conversion')).toBeInTheDocument();
     expect(screen.getByTestId('library-draft-shell-conversion')).toBeInTheDocument();
+    expect(screen.getByTestId('library-workbench-conversion')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('library-workbench-preview-iwxxm-conversion'),
+    ).not.toBeChecked();
+    expect(
+      screen.getByTestId('library-workbench-preview-issues-conversion'),
+    ).not.toBeChecked();
+    expect(screen.getByTestId('profile-library-tab-overview')).toBeInTheDocument();
     expect(screen.queryByTestId('conversion-profiles-presets')).not.toBeInTheDocument();
     expect(screen.queryByTestId('conversion-profiles-packs')).not.toBeInTheDocument();
     expect(
@@ -212,6 +220,53 @@ describe('ConversionProfilePage', () => {
     await waitFor(() => {
       expect(screen.getByTestId('library-assets-panel-decoding')).toBeInTheDocument();
     });
+  });
+
+  it('opens Overview stub and keeps preview toggles off by default (TC-EVWB-001)', async () => {
+    const user = userEvent.setup();
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-builder-libraries')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('library-workbench-conversion')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('library-workbench-catalog-conversion'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('library-workbench-editor-conversion'),
+    ).toBeInTheDocument();
+    const iwxxmToggle = screen.getByTestId(
+      'library-workbench-preview-iwxxm-conversion',
+    );
+    const issuesToggle = screen.getByTestId(
+      'library-workbench-preview-issues-conversion',
+    );
+    expect(iwxxmToggle).not.toBeChecked();
+    expect(issuesToggle).not.toBeChecked();
+    expect(
+      screen.queryByTestId('library-workbench-preview-iwxxm-panel-conversion'),
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByTestId('profile-library-tab-overview'));
+    expect(screen.getByTestId('profile-overview-stub')).toBeInTheDocument();
+    expect(screen.getByTestId('profile-overview-compare-stub')).toBeInTheDocument();
+    expect(screen.getByTestId('profile-overview-enablement-stub')).toBeInTheDocument();
+  });
+
+  it('exposes tooltips on library tabs including Overview (TC-EVWB-003)', async () => {
+    render(<ConversionProfilePage accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-library-tab-overview')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('profile-library-tab-conversion')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('profile-library-tab-tac-validation'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('profile-library-tab-iwxxm-validation'),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId('profile-library-tab-dissemination')).toBeInTheDocument();
+    expect(screen.getByTestId('profile-library-tab-decoding')).toBeInTheDocument();
   });
 
   it('shows empty catalog and load error', async () => {

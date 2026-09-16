@@ -5,7 +5,7 @@
 
 export const PROFILES_EDITOR_TITLE = 'Profile builder';
 export const PROFILES_EDITOR_SUBTITLE =
-  'Assemble conversion, validation, and dissemination pieces with plain-language names. Drag to reorder. Machine codes stay hidden.';
+  'Assemble conversion, validation, and dissemination pieces with plain-language names. Machine codes stay hidden.';
 export const PROFILES_ASSEMBLY_HEADING = 'Guided assembly';
 export const PROFILES_ASSEMBLY_HELP =
   'Work top to bottom: choose a base profile, map TAC tokens to IWXXM, then attach validation and dissemination when ready.';
@@ -21,6 +21,7 @@ export const PROFILES_LIBRARY_TAB_TAC_VALIDATION = 'TAC validation';
 export const PROFILES_LIBRARY_TAB_IWXXM_VALIDATION = 'IWXXM validation';
 export const PROFILES_LIBRARY_TAB_DISSEMINATION = 'Dissemination';
 export const PROFILES_LIBRARY_TAB_DECODING = 'Decoding';
+export const PROFILES_LIBRARY_TAB_OVERVIEW = 'Overview';
 export const PROFILES_LIBRARY_LIST_LOADING = 'Loading library assets…';
 export const PROFILES_LIBRARY_LIST_EMPTY = 'No assets in this library yet.';
 export const PROFILES_LIBRARY_LIST_ERROR = 'Library assets unavailable.';
@@ -209,6 +210,29 @@ export const PROFILES_TOOLTIP_LIBRARY_TAB_DISSEMINATION =
   'Ordered post-IWXXM transforms for bulletin exchange on Disseminate and Convert & Send.';
 export const PROFILES_TOOLTIP_LIBRARY_TAB_DECODING =
   'Plain-language decode glossary entries shown when you enable live decode on Convert.';
+export const PROFILES_TOOLTIP_LIBRARY_TAB_OVERVIEW =
+  'Compare profiles and choose which products, file types, and IWXXM versions this profile enables.';
+export const PROFILES_TOOLTIP_WORKBENCH =
+  'Catalog lists assets; editor opens one item; optional IWXXM and validation previews stay off until you enable them.';
+export const PROFILES_WORKBENCH_CATALOG_LABEL = 'Catalog';
+export const PROFILES_WORKBENCH_EDITOR_LABEL = 'Editor';
+export const PROFILES_WORKBENCH_PREVIEW_IWXXM = 'IWXXM preview';
+export const PROFILES_WORKBENCH_PREVIEW_IWXXM_HELP =
+  'Show a sample IWXXM fragment for the selected item. Off by default.';
+export const PROFILES_WORKBENCH_PREVIEW_ISSUES = 'Validation issues preview';
+export const PROFILES_WORKBENCH_PREVIEW_ISSUES_HELP =
+  'Show lint or validation warnings and failures for the selected item. Off by default.';
+export const PROFILES_WORKBENCH_PREVIEW_IWXXM_PLACEHOLDER =
+  'IWXXM preview will appear here when sample data is available.';
+export const PROFILES_WORKBENCH_PREVIEW_ISSUES_PLACEHOLDER =
+  'Validation issues will appear here when sample data is available.';
+export const PROFILES_OVERVIEW_HEADING = 'Overview';
+export const PROFILES_OVERVIEW_HELP =
+  'Compare two profiles and set which products, file types, and IWXXM versions this profile enables. Full compare controls arrive in a later release.';
+export const PROFILES_OVERVIEW_COMPARE_STUB =
+  'Profile compare is not wired yet. Select two profiles here in a later release.';
+export const PROFILES_OVERVIEW_ENABLEMENT_STUB =
+  'Product, file-type, and IWXXM version enablement will be editable here in a later release.';
 export const PROFILES_TOOLTIP_INSPECTOR_PROFILE =
   'Choose a built-in semantic profile to inspect its catalog metadata and block wiring.';
 export const PROFILES_TOOLTIP_INSPECTOR_COMPARE =
@@ -233,7 +257,7 @@ export const PROFILES_DRAFT_STATUS_SAVED = 'Draft saved';
 export const PROFILES_DRAFT_STATUS_ACTIVATED = 'Activated';
 export const PROFILES_DRAFT_BLOCKS_HEADING = 'IWXXM blocks';
 export const PROFILES_DRAFT_BLOCKS_HELP =
-  'Drag cards between blocks to arrange how TAC groups map to IWXXM. Full editing arrives in a later release.';
+  'Named slots map TAC groups to IWXXM. Full slot rename and catalog search arrive in a later release.';
 export const PROFILES_DRAFT_BLOCK_OBSERVATION = 'Observation';
 export const PROFILES_DRAFT_BLOCK_CLOUD = 'Cloud';
 export const PROFILES_DRAFT_BLOCK_RVR = 'Runway visual range';
@@ -255,8 +279,7 @@ export const PROFILES_DRAFT_DIAGNOSTICS_HEADING = 'Regex diagnostics';
 export const PROFILES_DRAFT_DIAGNOSTICS_HELP =
   'Fail means the pattern does not compile or the required sample has no match. Warn means it compiles but may backtrack.';
 export const PROFILES_DRAFT_CAPTURES_HEADING = 'Capture groups';
-export const PROFILES_DRAFT_YAML_LOCK =
-  'Fix YAML before rearranging blocks or activating.';
+export const PROFILES_DRAFT_YAML_LOCK = 'Fix YAML before editing blocks or activating.';
 export const PROFILES_DRAFT_ACTIVATE_BLOCKED =
   'Activate requires zero Fail diagnostics. Warn is allowed.';
 export const PROFILES_DRAFT_SAMPLE_HEADING = 'Sample preview';
