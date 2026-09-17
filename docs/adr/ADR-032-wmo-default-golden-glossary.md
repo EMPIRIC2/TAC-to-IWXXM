@@ -63,3 +63,6 @@ diverge structurally. Separately, decode explanations for SIGMET/AIRMET use cate
 - **EV-024**: Sample menu can grow with official WMO reference stems without waiting for
   encode equality; operators must still see which demos are strict passers vs reference.
   `FIXTURE_GAPS.md` / catalog tests track both tiers (**UJ-039** / TC-EV024-*).
+- **ADR-044 amend (2026-09-17)**: Decode glossary + `decode_tac` **home** moves to
+  `packages/tac-decoding` (PyPI). Behavior and override env semantics stay; import path
+  changes after one-release `tac2iwxxm` re-export window.

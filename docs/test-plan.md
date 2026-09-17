@@ -126,6 +126,9 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-066 / UJ-067 | F7.u (EV-061)                                                | Product/Profile + param bars aligned (#1013)                                                                                                                                                                                                               | **H4–H5 required**                | TC-EV061-1013-001..003                                                                   |
 | UJ-068          | F7.v/F15 (EV-061; EV-062)                                    | Validation Issues Catalog (#1014; #1017 deepen)                                                                                                                                                                                                            | **H4–H5 required**                | TC-EV061-1014-001..004; TC-EV062-001..006                                                |
 | UJ-073          | F7.v/F15 (EV-1120)                                           | Profile-scoped Validation Issues Catalog (#1121–#1123)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-001..009                                                                       |
+| UJ-076          | F7.v (ADR-044)                                               | Five package-owned trust catalogs                                                                                                                                                                                                                          | **H4–H5 when FE ships**           | TC-EVRPC-001..005                                                                        |
+| UJ-076a         | F7 / F16–F19 / F9 (ADR-044)                                  | Dropdown selection hard cutover                                                                                                                                                                                                                            | **H4–H5 when FE ships**           | TC-EVRPC-006..008                                                                        |
+| UJ-076b         | F9 (ADR-044)                                                 | tac-decoding parity                                                                                                                                                                                                                                        | **H4–H5 when FE ships**           | TC-EVRPC-009                                                                             |
 | UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
 | UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
 | UJ-072f         | F7.w (EV-conversion-profile-ux-libraries)                    | Profile Builder assembly + conversion token modes (Convert/Decode/Skip)                                                                                                                                                                                  | **H4–H5 when FE ships**           | TC-EVCPU-001..008                                                                        |
@@ -6018,3 +6021,22 @@ All must pass before merging migration PR:
 - [ ] H4 CORS preflight + H5 bundle verification on staging
 - [ ] CI green on PR branch
 - [ ] render.yaml updated for two-service topology
+
+## EV-retire-profile-dissem-ui-catalogs / ADR-044
+
+### TC-EVRPC-001..005: Rule catalogs by family (UJ-076)
+
+- **Objective**: `GET /rule-catalogs?family=` returns non-empty packaged rows for each of
+  `tac`, `iwxxm`, `conversion`, `dissemination`, `decoding`; EV-048 clean strings.
+- **Pass criteria**: UJ-076; unit + integration; H4–H5 when FE ships.
+
+### TC-EVRPC-006..008: Dropdown selection hard cutover (UJ-076a)
+
+- **Objective**: Selection-options API lists deployed ids; Profile Builder / library authoring
+  routes/UI absent; dissem send still works.
+- **Pass criteria**: UJ-076a; must-not-break UJ-027–030.
+
+### TC-EVRPC-009: tac-decoding parity (UJ-076b)
+
+- **Objective**: Decode fixtures pass via `tac_decoding`; optional `tac2iwxxm` re-export.
+- **Pass criteria**: UJ-076b; package unit tests.

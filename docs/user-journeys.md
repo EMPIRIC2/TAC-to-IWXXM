@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-16 (EV-profile-builder-workbench-edit — UJ-072i-*)
+> **Last updated**: 2026-09-17 (EV-retire-profile-dissem-ui-catalogs — UJ-076*; UJ-072f–i Retired)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -91,23 +91,26 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-072 | ConversionProfile editor — rule pack → overlay → convert | apps/frontend / API | F7.w (EV-933 / #933) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072d | Glanceable Profile summary + blocks + examples | apps/frontend | F7.w (EV-1120 / #1145) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072e | Author conversion template + TAC→IWXXM bridge | apps/frontend / API | F7.w (EV-080 / #1146) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072f | Profile Builder assembly + conversion token modes | apps/frontend / API | F7.w (EV-conversion-profile-ux-libraries) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072g | Five Libraries + Mapping bridge + hard cut semantic profile | apps/frontend / API | F7.w (EV-bridge-ux-canvas-align) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072h-conv | Author Conversion library (YAML/DnD/IWXXM blocks) | apps/frontend / API | F7.w (EV-profile-builder-yaml-libraries / #1196) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072h-tac | Author TAC validation library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072h-iwxxm | Author IWXXM validation library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072h-dissem | Author Dissemination library (no secrets) | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072h-decode | Author Decoding library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072h-cross | YAML lock / Warn-Fail / WMO reset | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072h-export | Convert export conversion metadata sidecar | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072i-workbench | IDE workbench shell + drop Conversion DnD | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072i-conv | Author Conversion — slots + searchable catalog | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072i-tac | Author TAC validation — regex/levels/bounds | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072i-iwxxm | Author IWXXM validation — full editable | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072i-decode | Author Decoding — maps/units/structured types | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072i-dissem | Author Dissemination — full edit no secrets | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
-| UJ-072i-overview | Overview compare + product/version enablement | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072f | Profile Builder assembly + conversion token modes | apps/frontend / API | F7.w (EV-conversion-profile-ux-libraries) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072g | Five Libraries + Mapping bridge + hard cut semantic profile | apps/frontend / API | F7.w (EV-bridge-ux-canvas-align) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-conv | Author Conversion library (YAML/DnD/IWXXM blocks) | apps/frontend / API | F7.w (EV-profile-builder-yaml-libraries / #1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-tac | Author TAC validation library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-iwxxm | Author IWXXM validation library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-dissem | Author Dissemination library (no secrets) | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-decode | Author Decoding library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-cross | YAML lock / Warn-Fail / WMO reset | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-export | Convert export conversion metadata sidecar | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-workbench | IDE workbench shell + drop Conversion DnD | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-conv | Author Conversion — slots + searchable catalog | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-tac | Author TAC validation — regex/levels/bounds | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-iwxxm | Author IWXXM validation — full editable | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-decode | Author Decoding — maps/units/structured types | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-dissem | Author Dissemination — full edit no secrets | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-overview | Overview compare + product/version enablement | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
 | UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
+| UJ-076 | Five package-owned trust catalogs (tabbed) | apps/frontend / API | F7.v (ADR-044) | T0 / T2 / **T3** / H4–H5 |
+| UJ-076a | Dropdown profile / dissemination / decode selection | apps/frontend / API | F7.w→dropdowns / F16–F19 / F9 (ADR-044) | T0 / T2 / **T3** / H4–H5 |
+| UJ-076b | Decode via `tac-decoding` parity | apps/frontend / API | F9 (ADR-044) | T0 / T2 / H4–H5 |
 | UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
@@ -2800,3 +2803,39 @@ Apply DO Postgres migrations before worker/API traffic. Signoff includes UJ-001/
 - S071 / EV-061 (2026-08-18): UJ-064 validate readable decode (#1010); UJ-065 AHL decode+convert
   (#1012); UJ-066/067 Product/Profile + param bars (#1013); UJ-068 catalog tab (#1014, links
   resolved / unblocked); UJ-DEV-009 stage→main full gate (#1015)
+
+
+### UJ-076: Five package-owned trust catalogs (ADR-044)
+
+**Goal**: Inspect packaged rules for TAC Validation, IWXXM Validation, Conversion,
+Dissemination, and Decoding in a tabbed catalog shell (trust / transparency).
+
+**Actors**: Public operator (F21).
+
+**Steps**:
+1. Open the catalogs surface (nav tab / renamed Validation Issues Catalog shell).
+2. Switch among five tabs; each lists package-exported rows with plain-language summaries.
+3. Optional filters by product/profile where applicable; no edit/create controls.
+4. Confirm no internal planning vocabulary in copy.
+
+**Pass**: T0/T2/T3 + H4–H5; `GET /api/v1/rule-catalogs?family=…` for each family.
+
+### UJ-076a: Dropdown selection (hard cutover)
+
+**Goal**: Select conversion / validation / dissemination / decoding options via dropdowns
+backed by deployed backend lists only.
+
+**Steps**:
+1. On workbench / dissemination drawer, open each selection dropdown.
+2. Options match `GET /api/v1/selection-options` (or narrowed existing list routes).
+3. Profile Builder / library authoring / Dissemination Bench authoring UI is absent.
+4. Disseminate still runs preflight/send with memory-only credentials.
+
+**Pass**: T0/T2/T3 + H4–H5; must-not-break UJ-027–030 send paths.
+
+### UJ-076b: `tac-decoding` parity
+
+**Goal**: Live decode panel / `POST /decode-tac` behavior unchanged after package extract.
+
+**Pass**: Existing decode fixtures green; import path `tac_decoding` (and one-release
+`tac2iwxxm` re-export).

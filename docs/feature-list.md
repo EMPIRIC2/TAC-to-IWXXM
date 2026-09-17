@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-16 (EV-profile-builder-workbench-edit / #1203 — requirements locked)
+> **Last updated**: 2026-09-17 (EV-retire-profile-dissem-ui-catalogs — requirements locked; ADR-044)
 
 ## Summary
 
@@ -14,9 +14,9 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
-| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933); **deepen** EV-1051 shared semantic presets + team-safe sharing of non-secret profile assets/destination references (#1051); **deepen** EV-1120 Phase A profile-scoped catalog + glanceable Profile UX (#1120/#1145; B/C → #1146/#1147); **deepen** EV-080 / #1146 parameterizable conversion templates + TAC→IWXXM bridge; **deepen** EV-beta-ux-export-auth collapsible Results + zip unique names + info-only log chrome + library-id-only lint copy; **deepen** EV-profile-builder-yaml-libraries / #1196 YAML/DnD Profile Builder + export metadata sidecars (UJ-072h-*); **deepen** EV-profile-builder-workbench-edit / #1203 IDE workbench + full five-library editability + Overview (UJ-072i-*; supersedes Conversion DnD) |
+| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); prior F7.v–F7.w history retained in section body |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
-| F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
+| F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert; **deepen** EV-beta-ux-export-auth info-only Conversion/Validation log chrome (not amber/red) |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
@@ -841,6 +841,29 @@
   (ADR-042). Ingest path does **not** auto-disseminate (F16–F19 remain operator-triggered).
   See Context: workflows-runtime-1132 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
+
+- **EV-retire-profile-dissem-ui-catalogs / ADR-044 deepen (F7.v / F7.w / F9 / F16–F19)**:
+  **Hard cutover** — remove Profile Builder / five-library authoring / Dissemination Bench
+  authoring UI. Selection uses **dropdowns** fed only by **backend-deployed** registries
+  (code + deploy to extend; no browser-only add-ons; no YAML escape hatch).
+  **Five trust catalogs** (tabbed shell, read-only): TAC Validation (`tac-validate`),
+  IWXXM Validation (`iwxxm-validate`), Conversion (`tac2iwxxm`), Dissemination
+  (`dissemination`), Decoding (`tac-decoding`). HTTP: family-aware
+  `GET /api/v1/rule-catalogs?family=…` aggregating package exports; keep
+  `GET /lint-issue-catalog` as compatibility wrapper during transition; separate
+  selection-options for dropdowns. **Delete** operator library-assets YAML CRUD UI/API.
+  Dissemination **send/preflight** retained with simpler pickers (ADR-021/029/030 unchanged).
+  F7.w authoring journeys UJ-072f–UJ-072i → **Retired**; new UJ-076*.
+  F9: move decode/glossary into `packages/tac-decoding`; `tac2iwxxm` re-exports one release.
+  Decisions: [decisions/ev-retire-profile-dissem-ui-catalogs.md](decisions/ev-retire-profile-dissem-ui-catalogs.md).
+- **Acceptance (EV-retire-profile-dissem-ui-catalogs / ADR-044)**:
+  1. Profile Builder + Dissemination Bench authoring UI gone (hard cutover)
+  2. Five catalog tabs inspect package-exported rules (plain-language; EV-048 clean)
+  3. Dropdowns list only deployed backend options for convert/validate/dissem/decode selection
+  4. `tac-decoding` importable on monorepo/PyPI path; `/decode-tac` parity; one-release re-export
+  5. Library authoring CRUD removed from operator surfaces; H4–H5 for new catalog/dropdown calls
+  6. Must-not-break: convert, lint, soft-preview, decode-tac, dissem preflight/send + allowlist
+
 ### F9: Value-Aware Live Decode + Plain-Language Summary
 
 - **Status**: **Done** — shipped S013 / EV-009 (2026-07-17, PR #723).
@@ -864,6 +887,9 @@
   under F6 — not a change to `/decode-tac` response shape.
 - **Out of scope**: LLM/AI-generated text; changing segment offsets contract; Layer 1–2 or
   Schematron semantics.
+- **EV-retire-profile-dissem-ui-catalogs / ADR-044**: Decode engine + glossary + Decoding
+  catalog live in `packages/tac-decoding` (PyPI `tac-decoding`). `tac2iwxxm.decode_tac`
+  re-exports for one release then deprecates (amends ADR-032 home).
 - **EV-conversion-profile-ux-libraries deepen (Decoding library stub):** Catalogued
   natural-language code definitions (reuse `decode_tac` / F9 explanations) as a first-class
   **Decoding library** asset, separate from Conversion / Validation / Dissemination.
