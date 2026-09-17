@@ -133,6 +133,7 @@ try:
         icao_opmet,
         mass_ingest,
         quality_metrics,
+        rule_catalogs,
         tac_quality,
         validation,
         work_sessions,
@@ -150,6 +151,7 @@ except ImportError:
         icao_opmet,
         mass_ingest,
         quality_metrics,
+        rule_catalogs,
         tac_quality,
         validation,
         work_sessions,
@@ -389,6 +391,7 @@ try:
     app.include_router(health.router)
     app.include_router(conversion_meta.router)
     app.include_router(tac_quality.router)
+    app.include_router(rule_catalogs.router)
     app.include_router(conversion.router)
     app.include_router(comprehensive_validation.router)
     logger.info("DEBUG: included TD-3b routers successfully")

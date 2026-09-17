@@ -1,0 +1,82 @@
+"""Rule catalogs + selection-options routes (ADR-044)."""
+
+from __future__ import annotations
+
+from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import Response
+from pydantic import BaseModel, Field
+
+from src.msgspec_http import msgspec_json_response
+from src.services.rule_catalogs import catalog_for_family, known_families, selection_options
+
+router = APIRouter(prefix="/api/v1", tags=["Catalogs"])
+
+
+class RuleCatalogItem(BaseModel):
+    """One package-owned trust-catalog row."""
+
+    id: str
+    title: str
+    summary: str = ""
+    severity: str | None = None
+    tags: list[str] = Field(default_factory=list)
+
+
+class RuleCatalogResponse(BaseModel):
+    """Response for GET /rule-catalogs."""
+
+    family: str
+    items: list[RuleCatalogItem]
+
+
+class SelectionOption(BaseModel):
+    """Dropdown option from a deployed registry."""
+
+    id: str
+    label: str
+
+
+class SelectionOptionsResponse(BaseModel):
+    """Response for GET /selection-options."""
+
+    kind: str
+    options: list[SelectionOption]
+
+
+@router.get("/rule-catalogs", response_model=RuleCatalogResponse)
+async def get_rule_catalogs(
+    family: str = Query(..., description="tac | iwxxm | conversion | dissemination | decoding"),
+    product: str | None = Query(None),
+) -> Response:
+    """Export a package-owned trust catalog by family."""
+    key = family.strip().lower()
+    if key not in known_families():
+        raise HTTPException(
+            status_code=400,
+            detail={"code": "invalid_catalog_family", "message": f"Unknown family {family!r}"},
+        )
+    try:
+        raw = catalog_for_family(key, product=product)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail={"code": "invalid_catalog_family", "message": str(exc)},
+        ) from exc
+    items = [RuleCatalogItem.model_validate(row) for row in raw]
+    return msgspec_json_response(RuleCatalogResponse(family=key, items=items))
+
+
+@router.get("/selection-options", response_model=SelectionOptionsResponse)
+async def get_selection_options(
+    kind: str = Query(..., description="conversion | dissemination | decoding"),
+) -> Response:
+    """List deployed registry ids for workbench / dissemination dropdowns."""
+    try:
+        raw = selection_options(kind)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=400,
+            detail={"code": "invalid_selection_kind", "message": str(exc)},
+        ) from exc
+    options = [SelectionOption.model_validate(row) for row in raw]
+    return msgspec_json_response(SelectionOptionsResponse(kind=kind.strip().lower(), options=options))

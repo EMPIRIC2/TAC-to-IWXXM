@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, NoReturn
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -46,6 +46,19 @@ from ..services.profile_catalog import load_profile_catalog
 from ..utilities.security import verify_supabase_token
 
 router = APIRouter(prefix="/api/v1/profiles", tags=["Conversion Profiles"])
+
+# ADR-044: operator library YAML authoring retired (hard cutover).
+_LIBRARY_AUTHORING_GONE = {
+    "code": "library_authoring_retired",
+    "message": "Library authoring is no longer available. Use deployed package catalogs and selection dropdowns.",
+}
+
+
+def _library_authoring_gone() -> NoReturn:
+    """Raise HTTP 410 for retired library authoring routes."""
+    raise HTTPException(status_code=410, detail=_LIBRARY_AUTHORING_GONE)
+
+
 _bearer = HTTPBearer(auto_error=True)
 
 
@@ -371,8 +384,8 @@ def create_library_asset(
     payload: LibraryAssetCreate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryAssetOut:
-    """Create a custom library asset (optionally forked)."""
-    return service.create_library_asset(payload)
+    """Retired — ADR-044 hard cutover (library authoring removed)."""
+    _library_authoring_gone()
 
 
 @router.post("/library-assets/validate-yaml", response_model=LibraryYamlValidateResponse)
@@ -380,13 +393,8 @@ def validate_library_yaml(
     payload: LibraryYamlValidateRequest,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryYamlValidateResponse:
-    """Validate library YAML and regex diagnostics without persisting."""
-    report = service.validate_library_yaml_document(
-        payload.yaml_body,
-        kind=payload.kind,
-        lifecycle=payload.lifecycle,
-    )
-    return LibraryYamlValidateResponse.model_validate(report)
+    """Retired — ADR-044 hard cutover."""
+    _library_authoring_gone()
 
 
 @router.post("/library-assets/preview-rule", response_model=LibraryRulePreviewResponse)
@@ -394,15 +402,8 @@ def preview_library_rule(
     payload: LibraryRulePreviewRequest,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryRulePreviewResponse:
-    """AC11: associate a TAC group with a conversion library rule."""
-    rule_id, rule_name = service.preview_library_rule(payload.library_id, payload.focus_group)
-    return LibraryRulePreviewResponse(
-        library_id=payload.library_id,
-        focus_group=payload.focus_group,
-        rule_id=rule_id,
-        rule_name=rule_name,
-        matched=True,
-    )
+    """Retired — ADR-044 hard cutover."""
+    _library_authoring_gone()
 
 
 @router.get("/library-assets/{asset_id}", response_model=LibraryAssetOut)
@@ -415,13 +416,13 @@ def get_library_asset(
 
 
 @router.patch("/library-assets/{asset_id}", response_model=LibraryAssetOut)
-def patch_library_asset(
+def update_library_asset(
     asset_id: str,
     payload: LibraryAssetUpdate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryAssetOut:
-    """Update custom asset or auto-fork first-party on edit."""
-    return service.update_library_asset(asset_id, payload)
+    """Retired — ADR-044 hard cutover."""
+    _library_authoring_gone()
 
 
 @router.delete("/library-assets/{asset_id}", status_code=204)
@@ -429,5 +430,5 @@ def delete_library_asset(
     asset_id: str,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> None:
-    """Delete an owned custom library asset."""
-    service.delete_library_asset(asset_id)
+    """Retired — ADR-044 hard cutover."""
+    _library_authoring_gone()
