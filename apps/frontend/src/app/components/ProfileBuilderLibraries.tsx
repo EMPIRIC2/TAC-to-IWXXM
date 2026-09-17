@@ -26,6 +26,7 @@ import {
   PROFILES_LIBRARY_TAB_DECODING,
   PROFILES_LIBRARY_TAB_DISSEMINATION,
   PROFILES_LIBRARY_TAB_IWXXM_VALIDATION,
+  PROFILES_LIBRARY_TAB_OVERVIEW,
   PROFILES_LIBRARY_TAB_TAC_VALIDATION,
   PROFILES_PROFILE_AUTHORITY,
   PROFILES_PROFILE_COVERAGE,
@@ -35,6 +36,7 @@ import {
   PROFILES_TOOLTIP_LIBRARY_TAB_DECODING,
   PROFILES_TOOLTIP_LIBRARY_TAB_DISSEMINATION,
   PROFILES_TOOLTIP_LIBRARY_TAB_IWXXM_VALIDATION,
+  PROFILES_TOOLTIP_LIBRARY_TAB_OVERVIEW,
   PROFILES_TOOLTIP_LIBRARY_TAB_TAC_VALIDATION,
 } from '../../utils/conversionProfilesCopy';
 import { resetWmoLibraryDefaultsSync } from '@/utils/wmoLibraryDefaultsSync';
@@ -42,8 +44,12 @@ import { BetaBadge } from './BetaBadge';
 import { ConversionTemplatesPanel } from './ConversionTemplatesPanel';
 import { DecodingLibraryPanel } from './DecodingLibraryPanel';
 import { DisseminationLibraryPanel } from './DisseminationLibraryPanel';
+import { IwxxmValidationRulesPanel } from './IwxxmValidationRulesPanel';
 import { LibraryAssetsListPanel } from './LibraryAssetsListPanel';
 import { LibraryDraftShell, type LibraryDraftSchemaBlock } from './LibraryDraftShell';
+import { LibraryWorkbenchShell } from './LibraryWorkbenchShell';
+import { ProfileOverviewPanel } from './ProfileOverviewPanel';
+import { TacValidationRulesPanel } from './TacValidationRulesPanel';
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
@@ -55,9 +61,9 @@ export type ProfileBuilderLibrariesProps = {
   catalogProfile?: ProfileCatalogEntry | null;
 };
 
-type LibraryTabValue = LibraryAssetKind;
+type BuilderTabValue = LibraryAssetKind | 'overview';
 
-const LIBRARY_TAB_LABELS: Record<LibraryTabValue, string> = {
+const LIBRARY_TAB_LABELS: Record<LibraryAssetKind, string> = {
   conversion: PROFILES_LIBRARY_TAB_CONVERSION,
   tac_validation: PROFILES_LIBRARY_TAB_TAC_VALIDATION,
   iwxxm_validation: PROFILES_LIBRARY_TAB_IWXXM_VALIDATION,
@@ -127,7 +133,7 @@ export function ProfileBuilderLibraries({
   accessToken,
   catalogProfile = null,
 }: ProfileBuilderLibrariesProps) {
-  const [activeTab, setActiveTab] = useState<LibraryTabValue>('conversion');
+  const [activeTab, setActiveTab] = useState<BuilderTabValue>('conversion');
   const [draftSavedByKind, setDraftSavedByKind] = useState<
     Partial<Record<LibraryAssetKind, boolean>>
   >({});
@@ -230,11 +236,18 @@ export function ProfileBuilderLibraries({
   );
 
   const inspectorStatus =
-    activeTab === 'conversion'
-      ? (catalogProfile?.status ?? 'implemented')
-      : draftSavedByKind[activeTab]
-        ? PROFILES_INSPECTOR_STATUS_DRAFT
-        : PROFILES_INSPECTOR_STATUS_READY;
+    activeTab === 'overview'
+      ? PROFILES_INSPECTOR_STATUS_READY
+      : activeTab === 'conversion'
+        ? (catalogProfile?.status ?? 'implemented')
+        : draftSavedByKind[activeTab]
+          ? PROFILES_INSPECTOR_STATUS_DRAFT
+          : PROFILES_INSPECTOR_STATUS_READY;
+
+  const inspectorKindLabel =
+    activeTab === 'overview'
+      ? PROFILES_LIBRARY_TAB_OVERVIEW
+      : LIBRARY_TAB_LABELS[activeTab];
 
   return (
     <Card
@@ -289,7 +302,7 @@ export function ProfileBuilderLibraries({
       </p>
       <Tabs
         value={activeTab}
-        onValueChange={(value) => setActiveTab(value as LibraryTabValue)}
+        onValueChange={(value) => setActiveTab(value as BuilderTabValue)}
         data-testid="profile-builder-library-tabs"
       >
         <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">
@@ -323,6 +336,12 @@ export function ProfileBuilderLibraries({
             label={PROFILES_LIBRARY_TAB_DECODING}
             tooltip={PROFILES_TOOLTIP_LIBRARY_TAB_DECODING}
           />
+          <LibraryTab
+            value="overview"
+            testId="profile-library-tab-overview"
+            label={PROFILES_LIBRARY_TAB_OVERVIEW}
+            tooltip={PROFILES_TOOLTIP_LIBRARY_TAB_OVERVIEW}
+          />
         </TabsList>
         <TabsContent
           value="conversion"
@@ -330,12 +349,26 @@ export function ProfileBuilderLibraries({
           className="data-[state=inactive]:hidden"
           data-testid="profile-library-panel-conversion"
         >
-          <ConversionTemplatesPanel accessToken={accessToken} />
-          <LibraryDraftShell
+          <LibraryWorkbenchShell
             kind="conversion"
-            accessToken={accessToken}
-            schemaBlocks={conversionSchemaBlocks}
-            onDraftStatusChange={onConversionDraftStatusChange}
+            catalog={
+              <LibraryAssetsListPanel
+                accessToken={accessToken}
+                kind="conversion"
+                heading={PROFILES_LIBRARY_TAB_CONVERSION}
+              />
+            }
+            editor={
+              <>
+                <ConversionTemplatesPanel accessToken={accessToken} />
+                <LibraryDraftShell
+                  kind="conversion"
+                  accessToken={accessToken}
+                  schemaBlocks={conversionSchemaBlocks}
+                  onDraftStatusChange={onConversionDraftStatusChange}
+                />
+              </>
+            }
           />
         </TabsContent>
         <TabsContent
@@ -344,15 +377,25 @@ export function ProfileBuilderLibraries({
           className="data-[state=inactive]:hidden"
           data-testid="profile-library-panel-tac-validation"
         >
-          <LibraryAssetsListPanel
-            accessToken={accessToken}
+          <LibraryWorkbenchShell
             kind="tac_validation"
-            heading={PROFILES_LIBRARY_TAB_TAC_VALIDATION}
-          />
-          <LibraryDraftShell
-            kind="tac_validation"
-            accessToken={accessToken}
-            onDraftStatusChange={onTacValidationDraftStatusChange}
+            catalog={
+              <LibraryAssetsListPanel
+                accessToken={accessToken}
+                kind="tac_validation"
+                heading={PROFILES_LIBRARY_TAB_TAC_VALIDATION}
+              />
+            }
+            editor={
+              <>
+                <TacValidationRulesPanel accessToken={accessToken} />
+                <LibraryDraftShell
+                  kind="tac_validation"
+                  accessToken={accessToken}
+                  onDraftStatusChange={onTacValidationDraftStatusChange}
+                />
+              </>
+            }
           />
         </TabsContent>
         <TabsContent
@@ -361,15 +404,25 @@ export function ProfileBuilderLibraries({
           className="data-[state=inactive]:hidden"
           data-testid="profile-library-panel-iwxxm-validation"
         >
-          <LibraryAssetsListPanel
-            accessToken={accessToken}
+          <LibraryWorkbenchShell
             kind="iwxxm_validation"
-            heading={PROFILES_LIBRARY_TAB_IWXXM_VALIDATION}
-          />
-          <LibraryDraftShell
-            kind="iwxxm_validation"
-            accessToken={accessToken}
-            onDraftStatusChange={onIwxxmValidationDraftStatusChange}
+            catalog={
+              <LibraryAssetsListPanel
+                accessToken={accessToken}
+                kind="iwxxm_validation"
+                heading={PROFILES_LIBRARY_TAB_IWXXM_VALIDATION}
+              />
+            }
+            editor={
+              <>
+                <IwxxmValidationRulesPanel accessToken={accessToken} />
+                <LibraryDraftShell
+                  kind="iwxxm_validation"
+                  accessToken={accessToken}
+                  onDraftStatusChange={onIwxxmValidationDraftStatusChange}
+                />
+              </>
+            }
           />
         </TabsContent>
         <TabsContent
@@ -378,11 +431,16 @@ export function ProfileBuilderLibraries({
           className="data-[state=inactive]:hidden"
           data-testid="profile-library-panel-dissemination"
         >
-          <DisseminationLibraryPanel accessToken={accessToken} />
-          <LibraryDraftShell
+          <LibraryWorkbenchShell
             kind="dissemination"
-            accessToken={accessToken}
-            onDraftStatusChange={onDisseminationDraftStatusChange}
+            catalog={<DisseminationLibraryPanel accessToken={accessToken} />}
+            editor={
+              <LibraryDraftShell
+                kind="dissemination"
+                accessToken={accessToken}
+                onDraftStatusChange={onDisseminationDraftStatusChange}
+              />
+            }
           />
         </TabsContent>
         <TabsContent
@@ -391,11 +449,27 @@ export function ProfileBuilderLibraries({
           className="data-[state=inactive]:hidden"
           data-testid="profile-library-panel-decoding"
         >
-          <DecodingLibraryPanel accessToken={accessToken} />
-          <LibraryDraftShell
+          <LibraryWorkbenchShell
             kind="decoding"
+            catalog={<DecodingLibraryPanel accessToken={accessToken} />}
+            editor={
+              <LibraryDraftShell
+                kind="decoding"
+                accessToken={accessToken}
+                onDraftStatusChange={onDecodingDraftStatusChange}
+              />
+            }
+          />
+        </TabsContent>
+        <TabsContent
+          value="overview"
+          forceMount
+          className="data-[state=inactive]:hidden"
+          data-testid="profile-library-panel-overview"
+        >
+          <ProfileOverviewPanel
             accessToken={accessToken}
-            onDraftStatusChange={onDecodingDraftStatusChange}
+            preferredProfileId={catalogProfile?.id ?? null}
           />
         </TabsContent>
       </Tabs>
@@ -412,7 +486,7 @@ export function ProfileBuilderLibraries({
         >
           <div>
             <dt className="text-gray-500">Kind</dt>
-            <dd>{LIBRARY_TAB_LABELS[activeTab]}</dd>
+            <dd>{inspectorKindLabel}</dd>
           </div>
           <div>
             <dt className="text-gray-500">Status</dt>
@@ -441,7 +515,7 @@ export function ProfileBuilderLibraries({
                 <dd>{profileCoverage(catalogProfile)}</dd>
               </div>
             </>
-          ) : activeTab !== 'conversion' ? (
+          ) : activeTab !== 'conversion' && activeTab !== 'overview' ? (
             <div className="sm:col-span-2">
               <dt className="text-gray-500">Access</dt>
               <dd>{PROFILES_INSPECTOR_ACCESS_BUILTIN}</dd>

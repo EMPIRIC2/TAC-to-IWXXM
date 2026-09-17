@@ -269,6 +269,31 @@ Phase B residual mining (no Profile Builder UX change):
 3. **Tests:** TC-EVPYL-MINE-006..008. Session:
    `EV-profile-builder-mine-residuals`. Issues: #1198, #1199.
 
+### Amend (EV-profile-builder-workbench-edit / #1203 — Accepted)
+
+Supersedes **Conversion DnD** from the #1196 amend for operator UX. YAML SoT, Draft/Activate,
+foundation read-only, Dissemination no-secrets, and Convert metadata sidecar rules remain.
+
+1. **Workbench:** Profiles page keeps five library tabs and adds **Overview**. Each library
+   uses IDE layout (catalog | item editor | optional per-item IWXXM / validation preview
+   toggles, **off by default**). Tooltips on every tab and control.
+2. **Conversion blocks:** Unordered named **slots** (preset names per TAC group; operator-
+   renamable). No drag-and-drop reorder. Grouped searchable mined catalog. Full create/edit of
+   Conversion blocks/templates in UI + YAML.
+3. **Shared constraints:** TAC and IWXXM custom rules may use numeric operators
+   `min` / `max` / `eq` / `in` on int|float with optional unit label, plus regex and issue
+   levels. IWXXM authoring exposes enable/disable/edit of current validation surfaces
+   (Schematron/XSD-oriented + overlays).
+4. **Decoding:** Symbol→meaning maps, units, structured types (e.g. polygon arity + units).
+5. **Dissemination:** Full create/edit of destination/route profiles and adapter enablement
+   within existing F16–F19 protocols only; reject credentials and destination URIs.
+6. **Overview:** Profile-to-profile library/rule compare and per-profile product / file-type /
+   IWXXM version enablement.
+7. **Trust / beta:** Signed-in Profile Builder; Beta on workbench (ADR-043); EV-048 clean.
+
+Product / journeys / tests: [Corpus: product §F7.w] EVWB; UJ-072i-*; TC-EVWB-*.
+Session: `EV-profile-builder-workbench-edit`. Issue: #1203.
+
 ## References
 
 - Context: conversion-profile-contract-924 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)

@@ -7,12 +7,20 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../../utils/conversionProfilesApi', () => ({
   listLibraryAssets: vi.fn(),
+  createLibraryAsset: vi.fn(),
+  updateLibraryAsset: vi.fn(),
 }));
 
-import { listLibraryAssets } from '../../utils/conversionProfilesApi';
+import {
+  createLibraryAsset,
+  listLibraryAssets,
+  updateLibraryAsset,
+} from '../../utils/conversionProfilesApi';
 import { DisseminationLibraryPanel } from './DisseminationLibraryPanel';
 
 const listMock = vi.mocked(listLibraryAssets);
+const createMock = vi.mocked(createLibraryAsset);
+const updateMock = vi.mocked(updateLibraryAsset);
 
 const icaoItem = {
   id: 'LIB.DISSEMINATION.ICAO_2025',
@@ -94,5 +102,93 @@ describe('DisseminationLibraryPanel', () => {
     await waitFor(() => {
       expect(screen.getByText(/Unknown error/)).toBeInTheDocument();
     });
+  });
+
+  it('toggles enable and saves custom transforms (TC-EVWB-DISSEM-001..002)', async () => {
+    const custom = {
+      ...emptyItem,
+      body: {
+        transforms: [
+          {
+            id: 'envelope',
+            type: 'envelope',
+            label: 'Message envelope',
+            enabled: true,
+            note: 'Pattern-only',
+          },
+        ],
+      },
+    };
+    listMock.mockResolvedValue({ items: [custom, icaoItem] });
+    updateMock.mockResolvedValue(custom);
+    render(<DisseminationLibraryPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(
+        screen.getByTestId('library-assets-select-dissemination'),
+      ).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('library-assets-select-dissemination'), {
+      target: { value: custom.id },
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-transform-enabled')).not.toBeDisabled();
+    });
+    fireEvent.click(screen.getByTestId('dissemination-transform-enabled'));
+    fireEvent.click(screen.getByTestId('dissemination-rules-save'));
+    await waitFor(() => {
+      expect(updateMock).toHaveBeenCalledWith(
+        'tok',
+        custom.id,
+        expect.objectContaining({
+          body: expect.objectContaining({
+            transforms: expect.arrayContaining([
+              expect.objectContaining({ id: 'envelope', enabled: false }),
+            ]),
+          }),
+          yamlBody: expect.stringContaining('kind: dissemination'),
+        }),
+      );
+    });
+  });
+
+  it('forks foundation, adds transform, and never exposes secret fields (TC-EVWB-DISSEM-003..004)', async () => {
+    const forked = {
+      ...emptyItem,
+      id: 'forked-dissem',
+      name: 'ICAO dissemination (custom)',
+      body: {
+        transforms: [
+          {
+            id: 'envelope',
+            type: 'envelope',
+            label: 'Message envelope',
+            enabled: true,
+          },
+        ],
+      },
+    };
+    createMock.mockResolvedValue(forked);
+    listMock
+      .mockResolvedValueOnce({ items: [icaoItem] })
+      .mockResolvedValue({ items: [forked, icaoItem] });
+    render(<DisseminationLibraryPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-rules-fork')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('dissemination-rules-readonly')).toBeInTheDocument();
+    expect(screen.queryByLabelText(/password/i)).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/https?:\/\//i)).not.toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('dissemination-rules-fork'));
+    await waitFor(() => {
+      expect(createMock).toHaveBeenCalledWith(
+        'tok',
+        expect.objectContaining({ kind: 'dissemination', forkOf: icaoItem.id }),
+      );
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('dissemination-rules-add')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('dissemination-rules-add'));
+    expect(screen.getByTestId('dissemination-transform-type')).toHaveValue('envelope');
   });
 });

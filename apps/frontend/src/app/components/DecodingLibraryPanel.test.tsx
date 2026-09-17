@@ -7,12 +7,20 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('../../utils/conversionProfilesApi', () => ({
   listLibraryAssets: vi.fn(),
+  createLibraryAsset: vi.fn(),
+  updateLibraryAsset: vi.fn(),
 }));
 
-import { listLibraryAssets } from '../../utils/conversionProfilesApi';
+import {
+  createLibraryAsset,
+  listLibraryAssets,
+  updateLibraryAsset,
+} from '../../utils/conversionProfilesApi';
 import { DecodingLibraryPanel } from './DecodingLibraryPanel';
 
 const listMock = vi.mocked(listLibraryAssets);
+const createMock = vi.mocked(createLibraryAsset);
+const updateMock = vi.mocked(updateLibraryAsset);
 
 const icaoItem = {
   id: 'LIB.DECODING.ICAO_2025',
@@ -99,5 +107,94 @@ describe('DecodingLibraryPanel', () => {
     await waitFor(() => {
       expect(screen.getByText(/Unknown error/)).toBeInTheDocument();
     });
+  });
+
+  it('edits meaning, unit, and structured type on customs (TC-EVWB-DECODE-001..003)', async () => {
+    const custom = {
+      ...usItem,
+      body: {
+        entries: [
+          {
+            token: 'POLY',
+            explanation: 'polygon',
+            unit: 'deg',
+            structured_type: 'polygon',
+          },
+        ],
+      },
+    };
+    listMock.mockResolvedValue({ items: [custom, icaoItem] });
+    updateMock.mockResolvedValue(custom);
+    render(<DecodingLibraryPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('library-assets-select-decoding')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('library-assets-select-decoding'), {
+      target: { value: custom.id },
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('decoding-entry-explanation')).not.toBeDisabled();
+    });
+    fireEvent.change(screen.getByTestId('decoding-entry-explanation'), {
+      target: { value: 'polygon area' },
+    });
+    fireEvent.change(screen.getByTestId('decoding-entry-unit'), {
+      target: { value: 'm' },
+    });
+    fireEvent.change(screen.getByTestId('decoding-entry-structured-type'), {
+      target: { value: 'range' },
+    });
+    fireEvent.click(screen.getByTestId('decoding-rules-save'));
+    await waitFor(() => {
+      expect(updateMock).toHaveBeenCalledWith(
+        'tok',
+        custom.id,
+        expect.objectContaining({
+          body: expect.objectContaining({
+            entries: expect.arrayContaining([
+              expect.objectContaining({
+                token: 'POLY',
+                explanation: 'polygon area',
+                unit: 'm',
+                structured_type: 'range',
+              }),
+            ]),
+          }),
+          yamlBody: expect.stringContaining('kind: decoding'),
+        }),
+      );
+    });
+  });
+
+  it('forks foundation and adds an entry (TC-EVWB-DECODE-004)', async () => {
+    const forked = {
+      ...usItem,
+      id: 'forked-decode',
+      name: 'ICAO decode glossary (custom)',
+      body: { entries: [{ token: 'FEW', explanation: 'few clouds' }] },
+    };
+    createMock.mockResolvedValue(forked);
+    listMock
+      .mockResolvedValueOnce({ items: [icaoItem] })
+      .mockResolvedValue({ items: [forked, icaoItem] });
+    render(<DecodingLibraryPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('decoding-rules-fork')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('decoding-rules-readonly')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('decoding-rules-fork'));
+    await waitFor(() => {
+      expect(createMock).toHaveBeenCalledWith(
+        'tok',
+        expect.objectContaining({ kind: 'decoding', forkOf: icaoItem.id }),
+      );
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('decoding-rules-add')).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId('decoding-rules-add'));
+    expect(screen.getByTestId('decoding-entry-token').getAttribute('value')).toMatch(
+      /^NEW/,
+    );
   });
 });

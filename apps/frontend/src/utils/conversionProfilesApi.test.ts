@@ -18,6 +18,7 @@ import {
   listRulePacks,
   listTemplates,
   previewConversionTemplate,
+  updateConversionTemplate,
   updateLibraryAsset,
   updateOverlay,
   updatePreset,
@@ -575,6 +576,29 @@ describe('conversionProfilesApi', () => {
     });
     expect(created.id).toBe('ct-1');
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('PATCHes custom conversion templates (TC-EVWB-CONV-004)', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        id: 'ct-1',
+        slug: 'fork',
+        name: 'Fork',
+        access: 'custom',
+        iwxxmBlock: 'iwxxm:WindObservation',
+        slots: [{ id: 'ddd', label: 'bearing', type: 'digits' }],
+      }),
+    } as Response);
+
+    const updated = await updateConversionTemplate('tok', 'ct-1', {
+      slots: [{ id: 'ddd', label: 'bearing', type: 'digits' }],
+    });
+    expect(updated.slots[0]?.label).toBe('bearing');
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('/api/v1/profiles/conversion-templates/ct-1'),
+      expect.objectContaining({ method: 'PATCH' }),
+    );
   });
 
   it('throws string detail on error response', async () => {

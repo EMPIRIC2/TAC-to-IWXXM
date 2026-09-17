@@ -366,11 +366,23 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   Conversion rule object; slot-builder + TAC→IWXXM bridge UI (phase-1); first-party view/fork;
   custom JWT owner CRUD; fail-closed unknown ids; ADR-038 EV-080 amend. Dissemination rules
   remain Disseminate / Convert & Send only. [Corpus: product §F7.w] [Corpus: adr/ADR-038]
+- **EV-profile-builder-yaml-libraries / #1196 delta on F7.w**: YAML-backed Five Libraries +
+  Draft/Activate + validate-yaml + optional Convert `*.meta.json` sidecar (ADR-038 EVPYL).
+  Phase A shell on `stage` via PR #1197. [Corpus: product §F7.w] [Corpus: api]
+- **EV-profile-builder-workbench-edit / #1203 delta on F7.w**: IDE workbench (catalog | editor |
+  optional previews); **remove Conversion DnD**; renamable preset slots; full editable TAC/IWXXM
+  validation (regex, levels, shared numeric ops); Decoding maps/units/structured types;
+  Dissemination create/edit without new protocols or secrets; Overview compare + per-profile
+  product/file-type/IWXXM version enablement; YAML SoT retained (ADR-038 EVWB). Journeys
+  UJ-072i-*; tests TC-EVWB-*. [Corpus: product §F7.w] [Corpus: journeys] [Corpus: adr/ADR-038]
 - **API**: Public convert companions unchanged; session CRUD requires Auth JWT; F7.w pack/overlay
   mutate routes require JWT (see [api-contract.md](api-contract.md) §EV-933); conversion
-  template routes require JWT for custom mutate (see §EV-080).
+  template routes require JWT for custom mutate (see §EV-080); library-assets YAML mutate +
+  validate-yaml require JWT (see §#1196 / §#1203).
 - **Source**: S011; S023 F7.h; **S038 / EV-031 F7.i**; **EV-933 F7.w**; **EV-080 / #1146**;
-  Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+  **#1196**; **#1203**;
+  Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  Context: [profile-builder-workbench-edit](context/profile-builder-workbench-edit.md) (scoped; not a CORPUS design gate).
 
 ### F21 — Public convert + optional Auth (Amended S038 / EV-031)
 

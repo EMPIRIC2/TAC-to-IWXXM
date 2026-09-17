@@ -14,6 +14,7 @@ from typing import Any, Literal, cast
 import yaml
 
 from tac2iwxxm.library_assets import LIBRARY_KINDS, LibraryKind
+from tac2iwxxm.numeric_checks import evaluate_numeric_check, validate_numeric_check_shape
 
 LibraryLifecycle = Literal["draft", "activated"]
 RegexSeverity = Literal["ok", "warn", "fail"]
@@ -152,6 +153,81 @@ def _extract_patterns(kind: LibraryKind, data: dict[str, Any]) -> list[tuple[str
             sample_key = "sample" if "sample" in row_map else "token"
             found.append((f"{key}[{index}].pattern", pattern, _as_str(row_map.get(sample_key))))
     return found
+
+
+def _rule_rows_for_checks(kind: LibraryKind, data: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
+    """Return (path_prefix, row) for TAC/IWXXM rules that may carry numeric checks."""
+    found: list[tuple[str, dict[str, Any]]] = []
+    if kind == "tac_validation":
+        rows = _as_list(data.get("rules"))
+        key = "rules"
+    elif kind == "iwxxm_validation":
+        rows = _as_list(data.get("custom_rules"))
+        if not rows:
+            rows = _as_list(data.get("rules"))
+        key = "custom_rules" if data.get("custom_rules") is not None else "rules"
+    else:
+        return found
+    for index, row in enumerate(rows):
+        row_map = _as_mapping(row)
+        if row_map:
+            found.append((f"{key}[{index}]", row_map))
+    return found
+
+
+def _numeric_check_diagnostics(
+    kind: LibraryKind,
+    data: dict[str, Any],
+) -> tuple[RegexDiagnostic, ...]:
+    """Validate numeric check shapes and sample-bound evaluations."""
+    out: list[RegexDiagnostic] = []
+    for path, row in _rule_rows_for_checks(kind, data):
+        if "check" not in row:
+            continue
+        check = row.get("check")
+        shape_error = validate_numeric_check_shape(check)
+        if shape_error is not None:
+            out.append(
+                RegexDiagnostic(
+                    path=f"{path}.check",
+                    pattern="",
+                    severity="fail",
+                    message=shape_error,
+                )
+            )
+            continue
+        if not isinstance(check, dict):
+            continue
+        check_map = cast(dict[str, Any], check)
+        sample = _as_str(row.get("sample"))
+        if sample is None:
+            continue
+        field = _as_str(check_map.get("field"))
+        candidate: object = sample
+        pattern = _as_str(row.get("pattern")) or _as_str(row.get("regex"))
+        if pattern and field:
+            try:
+                compiled = re.compile(pattern)
+            except re.error:
+                continue
+            match = compiled.search(sample)
+            if match is not None:
+                try:
+                    candidate = match.group(field)
+                except IndexError:
+                    candidate = sample
+        result = evaluate_numeric_check(check_map, candidate)
+        if result is False:
+            out.append(
+                RegexDiagnostic(
+                    path=f"{path}.check",
+                    pattern=pattern or "",
+                    severity="fail",
+                    message="Sample value fails numeric check",
+                    sample_matched=False,
+                )
+            )
+    return tuple(out)
 
 
 def diagnose_regex(pattern: str, *, sample: str | None = None, path: str = "pattern") -> RegexDiagnostic:
@@ -325,7 +401,7 @@ def validate_library_yaml(
 
     diagnostics = tuple(
         diagnose_regex(pattern, sample=sample, path=path) for path, pattern, sample in _extract_patterns(kind, data)
-    )
+    ) + _numeric_check_diagnostics(kind, data)
     fail_count = sum(1 for item in diagnostics if item.severity == "fail")
     warn_count = sum(1 for item in diagnostics if item.severity == "warn")
     return LibraryYamlReport(

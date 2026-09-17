@@ -2,7 +2,7 @@
  * Draft authoring shell for Profile builder library kinds (EVPYL Phase C).
  */
 
-import { CircleHelp, GripVertical } from 'lucide-react';
+import { CircleHelp } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import type { LibraryAssetKind } from '../../utils/conversionProfilesApi';
@@ -504,14 +504,10 @@ export function LibraryDraftShell({
                 {block.cards.map((card, index) => (
                   <li
                     key={`${block.id}-${index}`}
-                    className={`flex items-center gap-2 rounded border border-gray-200 bg-white px-2 py-1.5 text-xs shadow-sm dark:border-gray-700 dark:bg-gray-800 ${invalidYaml ? 'cursor-not-allowed opacity-60' : 'cursor-grab active:cursor-grabbing'}`}
+                    className={`rounded border border-gray-200 bg-white px-2 py-1.5 text-xs shadow-sm dark:border-gray-700 dark:bg-gray-800 ${invalidYaml ? 'opacity-60' : ''}`}
                     data-testid={`library-draft-card-${block.id}-${card.replace(/\s+/g, '-').toLowerCase()}-${kind}`}
                     title={block.cardIds[index]}
                   >
-                    <GripVertical
-                      className="h-3.5 w-3.5 shrink-0 text-gray-400"
-                      aria-hidden
-                    />
                     {card}
                   </li>
                 ))}

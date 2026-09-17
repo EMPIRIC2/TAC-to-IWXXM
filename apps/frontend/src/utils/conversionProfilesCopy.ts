@@ -5,7 +5,7 @@
 
 export const PROFILES_EDITOR_TITLE = 'Profile builder';
 export const PROFILES_EDITOR_SUBTITLE =
-  'Assemble conversion, validation, and dissemination pieces with plain-language names. Drag to reorder. Machine codes stay hidden.';
+  'Assemble conversion, validation, and dissemination pieces with plain-language names. Machine codes stay hidden.';
 export const PROFILES_ASSEMBLY_HEADING = 'Guided assembly';
 export const PROFILES_ASSEMBLY_HELP =
   'Work top to bottom: choose a base profile, map TAC tokens to IWXXM, then attach validation and dissemination when ready.';
@@ -21,6 +21,7 @@ export const PROFILES_LIBRARY_TAB_TAC_VALIDATION = 'TAC validation';
 export const PROFILES_LIBRARY_TAB_IWXXM_VALIDATION = 'IWXXM validation';
 export const PROFILES_LIBRARY_TAB_DISSEMINATION = 'Dissemination';
 export const PROFILES_LIBRARY_TAB_DECODING = 'Decoding';
+export const PROFILES_LIBRARY_TAB_OVERVIEW = 'Overview';
 export const PROFILES_LIBRARY_LIST_LOADING = 'Loading library assets…';
 export const PROFILES_LIBRARY_LIST_EMPTY = 'No assets in this library yet.';
 export const PROFILES_LIBRARY_LIST_ERROR = 'Library assets unavailable.';
@@ -59,6 +60,20 @@ export const PROFILES_CONV_TEMPLATES_ADVANCED_HINT =
   'Optional compiled pattern for experts. Slot builder remains the default path.';
 export const PROFILES_CONV_TEMPLATES_SKIP_CHIP = 'Skipped';
 export const PROFILES_CONV_TEMPLATES_SELECT = 'Conversion rule';
+export const PROFILES_CONV_TEMPLATES_SEARCH = 'Search conversion rules';
+export const PROFILES_CONV_TEMPLATES_SEARCH_PLACEHOLDER =
+  'Filter by name, group, or IWXXM block…';
+export const PROFILES_CONV_TEMPLATES_CATALOG_HEADING = 'Rule catalog';
+export const PROFILES_CONV_TEMPLATES_CATALOG_HELP =
+  'Browse mined IWXXM schema groups. Select a rule to open a matching conversion token or focus the editor.';
+export const PROFILES_CONV_TEMPLATES_CATALOG_EMPTY =
+  'No catalog rules match this search.';
+export const PROFILES_CONV_TEMPLATES_CATALOG_LOADING = 'Loading rule catalog…';
+export const PROFILES_CONV_TEMPLATES_SLOT_LABEL = 'Slot name';
+export const PROFILES_CONV_TEMPLATES_SAVE = 'Save changes';
+export const PROFILES_CONV_TEMPLATES_READONLY =
+  'Built-in rules are read-only. Fork to custom to rename slots or edit modes.';
+export const PROFILES_CONV_TEMPLATES_SAVED = 'Saved.';
 export const MAPPING_BRIDGE_HEADING = 'Mapping bridge';
 export const MAPPING_BRIDGE_HELP =
   'See how a TAC group matches a conversion rule and the IWXXM block it produces.';
@@ -209,6 +224,32 @@ export const PROFILES_TOOLTIP_LIBRARY_TAB_DISSEMINATION =
   'Ordered post-IWXXM transforms for bulletin exchange on Disseminate and Convert & Send.';
 export const PROFILES_TOOLTIP_LIBRARY_TAB_DECODING =
   'Plain-language decode glossary entries shown when you enable live decode on Convert.';
+export const PROFILES_TOOLTIP_LIBRARY_TAB_OVERVIEW =
+  'Compare profiles and choose which products, file types, and IWXXM versions this profile enables.';
+export const PROFILES_TOOLTIP_WORKBENCH =
+  'Catalog lists assets; editor opens one item; optional IWXXM and validation previews stay off until you enable them.';
+export const PROFILES_WORKBENCH_CATALOG_LABEL = 'Catalog';
+export const PROFILES_WORKBENCH_EDITOR_LABEL = 'Editor';
+export const PROFILES_WORKBENCH_PREVIEW_IWXXM = 'IWXXM preview';
+export const PROFILES_WORKBENCH_PREVIEW_IWXXM_HELP =
+  'Show a sample IWXXM fragment for the selected item. Off by default.';
+export const PROFILES_WORKBENCH_PREVIEW_ISSUES = 'Validation issues preview';
+export const PROFILES_WORKBENCH_PREVIEW_ISSUES_HELP =
+  'Show lint or validation warnings and failures for the selected item. Off by default.';
+export const PROFILES_WORKBENCH_PREVIEW_IWXXM_PLACEHOLDER =
+  'IWXXM preview will appear here when sample data is available.';
+export const PROFILES_WORKBENCH_PREVIEW_ISSUES_PLACEHOLDER =
+  'Validation issues will appear here when sample data is available.';
+export const PROFILES_OVERVIEW_HEADING = 'Overview';
+export const PROFILES_OVERVIEW_HELP =
+  'Compare two profiles and set which products, file types, and IWXXM versions the primary profile enables.';
+export const PROFILES_OVERVIEW_COMPARE_HEADING = 'Profile compare';
+export const PROFILES_OVERVIEW_ENABLEMENT_HEADING = 'Product enablement';
+export const PROFILES_OVERVIEW_YAML_HEADING = 'Enablement YAML';
+export const PROFILES_OVERVIEW_COMPARE_STUB =
+  'Profile compare is available in the Overview compare panel.';
+export const PROFILES_OVERVIEW_ENABLEMENT_STUB =
+  'Product, file-type, and IWXXM version enablement is editable in the Overview enablement panel.';
 export const PROFILES_TOOLTIP_INSPECTOR_PROFILE =
   'Choose a built-in semantic profile to inspect its catalog metadata and block wiring.';
 export const PROFILES_TOOLTIP_INSPECTOR_COMPARE =
@@ -233,7 +274,7 @@ export const PROFILES_DRAFT_STATUS_SAVED = 'Draft saved';
 export const PROFILES_DRAFT_STATUS_ACTIVATED = 'Activated';
 export const PROFILES_DRAFT_BLOCKS_HEADING = 'IWXXM blocks';
 export const PROFILES_DRAFT_BLOCKS_HELP =
-  'Drag cards between blocks to arrange how TAC groups map to IWXXM. Full editing arrives in a later release.';
+  'Named slots map TAC groups to IWXXM. Full slot rename and catalog search arrive in a later release.';
 export const PROFILES_DRAFT_BLOCK_OBSERVATION = 'Observation';
 export const PROFILES_DRAFT_BLOCK_CLOUD = 'Cloud';
 export const PROFILES_DRAFT_BLOCK_RVR = 'Runway visual range';
@@ -255,8 +296,7 @@ export const PROFILES_DRAFT_DIAGNOSTICS_HEADING = 'Regex diagnostics';
 export const PROFILES_DRAFT_DIAGNOSTICS_HELP =
   'Fail means the pattern does not compile or the required sample has no match. Warn means it compiles but may backtrack.';
 export const PROFILES_DRAFT_CAPTURES_HEADING = 'Capture groups';
-export const PROFILES_DRAFT_YAML_LOCK =
-  'Fix YAML before rearranging blocks or activating.';
+export const PROFILES_DRAFT_YAML_LOCK = 'Fix YAML before editing blocks or activating.';
 export const PROFILES_DRAFT_ACTIVATE_BLOCKED =
   'Activate requires zero Fail diagnostics. Warn is allowed.';
 export const PROFILES_DRAFT_SAMPLE_HEADING = 'Sample preview';
@@ -264,3 +304,50 @@ export const PROFILES_DRAFT_SAMPLE_HELP =
   'Paste a TAC, IWXXM, filename, or glossary sample for this library. Capture groups update as you type.';
 export const PROFILES_DRAFT_SAMPLE_PLACEHOLDER =
   'Sample text for live match and capture summary';
+
+export const PROFILES_TAC_RULES_HEADING = 'TAC validation rules';
+export const PROFILES_TAC_RULES_HELP =
+  'Search mined lint rules, set issue levels, and add custom regex with optional numeric bounds. Built-in catalogs stay read-only until you fork.';
+export const PROFILES_TAC_RULES_SEARCH = 'Search rules';
+export const PROFILES_TAC_RULES_SEARCH_PLACEHOLDER = 'Filter by id, code, or label…';
+export const PROFILES_TAC_RULES_SELECT = 'Rule catalog';
+export const PROFILES_TAC_RULES_IDENTITY = 'Rule id';
+export const PROFILES_TAC_RULES_LABEL = 'Label';
+export const PROFILES_TAC_RULES_SEVERITY = 'Issue level';
+export const PROFILES_TAC_RULES_PATTERN = 'Regex pattern';
+export const PROFILES_TAC_RULES_SAMPLE = 'Sample match';
+export const PROFILES_TAC_RULES_ENABLED = 'Enabled';
+export const PROFILES_TAC_RULES_CHECK_OP = 'Numeric check';
+export const PROFILES_TAC_RULES_CHECK_VALUE = 'Check value';
+export const PROFILES_TAC_RULES_CHECK_VALUES = 'Allowed values (comma-separated)';
+export const PROFILES_TAC_RULES_CHECK_UNIT = 'Unit label';
+export const PROFILES_TAC_RULES_CHECK_NONE = 'None';
+export const PROFILES_TAC_RULES_ADD = 'Add custom rule';
+export const PROFILES_TAC_RULES_FORK = 'Fork to edit';
+export const PROFILES_TAC_RULES_SAVE = 'Save changes';
+export const PROFILES_TAC_RULES_SAVED = 'Saved.';
+export const PROFILES_TAC_RULES_READONLY =
+  'Built-in TAC validation is read-only. Fork to create an editable copy.';
+export const PROFILES_TAC_RULES_EMPTY = 'No rules match this search.';
+export const PROFILES_TAC_RULES_LOADING = 'Loading TAC validation rules…';
+
+export const PROFILES_IWXXM_RULES_HEADING = 'IWXXM validation asserts';
+export const PROFILES_IWXXM_RULES_HELP =
+  'Enable or disable Schematron asserts and add custom overlay rules. Built-in catalogs stay read-only until you fork.';
+export const PROFILES_IWXXM_RULES_SEARCH = 'Search asserts';
+export const PROFILES_IWXXM_RULES_SEARCH_PLACEHOLDER = 'Filter by id or label…';
+export const PROFILES_IWXXM_RULES_SELECT = 'Assert catalog';
+export const PROFILES_IWXXM_RULES_ENABLED = 'Enabled';
+export const PROFILES_IWXXM_RULES_CONTEXT = 'Context';
+export const PROFILES_IWXXM_RULES_TEST = 'Test';
+export const PROFILES_IWXXM_RULES_ADD = 'Add custom overlay rule';
+export const PROFILES_IWXXM_RULES_PATTERN = 'Regex or path';
+export const PROFILES_IWXXM_RULES_FORK = 'Fork to edit';
+export const PROFILES_IWXXM_RULES_SAVE = 'Save changes';
+export const PROFILES_IWXXM_RULES_SAVED = 'Saved.';
+export const PROFILES_IWXXM_RULES_READONLY =
+  'Built-in IWXXM validation is read-only. Fork to create an editable copy.';
+export const PROFILES_IWXXM_RULES_EMPTY = 'No asserts match this search.';
+export const PROFILES_IWXXM_RULES_LOADING = 'Loading IWXXM validation asserts…';
+export const PROFILES_IWXXM_RULES_CHECK_OP = 'Numeric check';
+export const PROFILES_IWXXM_RULES_CHECK_VALUE = 'Check value';

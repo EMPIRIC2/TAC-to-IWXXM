@@ -854,6 +854,24 @@ used by guests for non-identity fields; operator identity fields require sign-in
 builtins immutable; Dissemination YAML rejects secret/URI fields. **Non-goals**: metadata on
 Disseminate path; workflow definition editing on Profiles page.
 
+### EV-profile-builder-workbench-edit / #1203 — Workbench + editable libraries (JWT)
+
+Deepens F7.w beyond #1196: IDE workbench authoring, **no Conversion DnD**, shared numeric
+constraint operators, Overview enablement (ADR-038 amend EVWB). Extends existing
+library-assets / validate-yaml routes (do not invent a second profiles tree).
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET`/`POST`/`PATCH`/`DELETE` | `/api/v1/profiles/library-assets[/{asset_id}]` | YAML body supports renamable Conversion slots (unordered); TAC/IWXXM rule objects with `level`, regex, and numeric ops (`min`/`max`/`eq`/`in`, int|float, optional unit); Decoding maps/units/structured types; Dissemination destination/route profiles without secrets/URIs. |
+| `POST` | `/api/v1/profiles/library-assets/validate-yaml` | Extended diagnostics for numeric ops + structured decode types + Overview product/file-type/version enablement document when present |
+| `POST` | `/api/v1/profiles/library-assets/preview-rule` | Workbench sample preview for lint/validate/decode/convert as kind allows |
+| `GET` | `/api/v1/profiles/library-catalogs/{kind}` (existing or extend) | Grouped searchable Conversion catalog (expanded mined set); other kinds as today |
+| `GET`/`PATCH` | existing conversion profile / library-assets (embed) | **Recommended (tech-plan):** store Overview enablement + compare inputs as YAML fields on the parent profile / a dedicated `overview` library-asset kind — **no new `/overview` route tree** in P0–P4 unless Build discovers a hard constraint. Compare is computed client-side from two loaded assets + optional BE helper later. |
+
+**Auth**: JWT for mutate. **Trust**: foundation/builtins read-only; Dissemination rejects
+secrets/URIs. **Non-goals**: new sink protocols; Convert chrome rewrite; F8 auto-push; PyPI
+breaks.
+
 ### EV-1051 / #1051 — Operator sharing of semantic presets + dissemination templates (JWT)
 
 `#1051` deepens the existing authenticated profile and dissemination surfaces rather than

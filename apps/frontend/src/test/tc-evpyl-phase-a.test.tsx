@@ -275,8 +275,12 @@ describe('TC-EVPYL Phase A', () => {
     expect(
       screen.getByTestId('library-draft-block-label-fallback-conversion'),
     ).toBeInTheDocument();
-    expect(screen.getByText('Wind')).toBeInTheDocument();
-    expect(screen.getByText('vis')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('library-draft-card-obs-wind-conversion'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId('library-draft-card-obs-vis-conversion'),
+    ).toBeInTheDocument();
     expect(
       screen.getByTestId('library-draft-block-empty-cards-conversion'),
     ).toBeInTheDocument();

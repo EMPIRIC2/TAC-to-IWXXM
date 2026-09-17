@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-15 (EV-profile-builder-yaml-libraries — UJ-072h-*)
+> **Last updated**: 2026-09-16 (EV-profile-builder-workbench-edit — UJ-072i-*)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -100,6 +100,13 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-072h-decode | Author Decoding library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072h-cross | YAML lock / Warn-Fail / WMO reset | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072h-export | Convert export conversion metadata sidecar | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072i-workbench | IDE workbench shell + drop Conversion DnD | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072i-conv | Author Conversion — slots + searchable catalog | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072i-tac | Author TAC validation — regex/levels/bounds | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072i-iwxxm | Author IWXXM validation — full editable | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072i-decode | Author Decoding — maps/units/structured types | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072i-dissem | Author Dissemination — full edit no secrets | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072i-overview | Overview compare + product/version enablement | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 |
 | UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
 | UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
@@ -745,6 +752,112 @@ last choice; no credentials/destination URIs/auth tokens in sidecar; operator id
 that checklist item is selected and signed in.  
 **Acceptance**: Phase A; TC-EVPYL-EXPORT-001..004; Beta on toggle; H4–H5 after stage FE.  
 **Source**: #1196; ADR-038 EVPYL
+
+---
+
+### UJ-072i-workbench: IDE workbench shell + drop Conversion DnD (#1203)
+
+**Actor**: Authenticated meteorological operator (JWT)
+
+**Goal**: Open Profile Builder workbench (catalog | editor | optional previews off by default);
+confirm Conversion has **no DnD**; tooltips on tabs/controls; foundation assets read-only.
+
+**Feature**: F7.w deepen (EV-profile-builder-workbench-edit / #1203)
+
+**Steps**:
+1. Sign in → Profile builder (**Beta**). Confirm five library tabs + Overview tab.
+2. Open Conversion: catalog list + item editor; no drag handles / reorder UI.
+3. Toggle IWXXM preview and validation issues preview on an item (default off).
+4. Hover tabs/controls — tooltips present; no planning vocabulary (EV-048).
+
+**Acceptance**: P0; TC-EVWB-001..003; H4–H5 after stage FE.
+
+**Tier**: T0 / T2 / T3 / H4–H5 · **Tests**: TC-EVWB-001..003
+
+**Source**: #1203; ADR-038 amend EVWB; session `EV-profile-builder-workbench-edit`
+
+---
+
+### UJ-072i-conv: Author Conversion — renamable slots + searchable catalog (#1203)
+
+**Actor**: Authenticated operator (JWT)
+
+**Goal**: Fork foundation Conversion asset; pick rules from expanded grouped searchable
+catalog; edit renamable preset slots (direction, speed, gust, unit, …); create new
+blocks/templates; YAML round-trip; Save Draft / Activate per existing lifecycle.
+
+**Feature**: F7.w deepen (#1203)
+
+**Steps**:
+1. Fork WMO/foundation Conversion → custom Draft.
+2. Open grouped searchable Conversion rule picker; add multiple rules.
+3. Rename preset slots for a TAC group; create a new Conversion block/template.
+4. Sync UI ↔ YAML; Save Draft; (later phases) Activate and select on Convert.
+
+**Acceptance**: P1; TC-EVWB-CONV-001..005; H4–H5 after stage FE.
+
+**Source**: #1203; ADR-038 EVWB
+
+---
+
+### UJ-072i-tac: Author TAC validation — regex, levels, bounds (#1203)
+
+**Actor**: Authenticated operator (JWT)
+
+**Goal**: Create/edit TAC lint rules with clear identity, issue levels, regex, and numeric
+operators (`min`/`max`/`eq`/`in` int+float + optional unit); sample lint preview.
+
+**Acceptance / tests**: TC-EVWB-TAC-001..005; H4–H5 after stage FE.  
+**Source**: #1203; ADR-038 EVWB
+
+---
+
+### UJ-072i-iwxxm: Author IWXXM validation — full editable (#1203)
+
+**Actor**: Authenticated operator (JWT)
+
+**Goal**: Enable/disable and edit all current IWXXM validation (Schematron/XSD-oriented +
+custom overlays + shared numeric ops) via workbench; sample validate preview.
+
+**Acceptance / tests**: TC-EVWB-IWXXM-001..005; H4–H5 after stage FE.  
+**Source**: #1203; ADR-038 EVWB
+
+---
+
+### UJ-072i-decode: Author Decoding — maps, units, structured types (#1203)
+
+**Actor**: Authenticated operator (JWT)
+
+**Goal**: Add/update symbol→meaning maps, unit annotations, and structured types (e.g.
+polygon with N values + units); sample decode preview.
+
+**Acceptance / tests**: TC-EVWB-DECODE-001..004; H4–H5 after stage FE.  
+**Source**: #1203; ADR-038 EVWB
+
+---
+
+### UJ-072i-dissem: Author Dissemination — full edit, no secrets (#1203)
+
+**Actor**: Authenticated operator (JWT)
+
+**Goal**: Create/edit dissemination destination/route profiles and enable/disable existing
+F16–F19 adapters via YAML/UI; reject credentials/destination URIs on save; no new protocols;
+Dissemination drawer redesign out of scope.
+
+**Acceptance / tests**: TC-EVWB-DISSEM-001..004; ADR-021/029/030; H4–H5 after stage FE.  
+**Source**: #1203; ADR-038 EVWB
+
+---
+
+### UJ-072i-overview: Overview compare + product enablement (#1203)
+
+**Actor**: Authenticated operator (JWT)
+
+**Goal**: On Overview tab, compare two profiles (library/rule diffs) and set per-profile
+enabled products, file types, and IWXXM versions.
+
+**Acceptance / tests**: TC-EVWB-OVERVIEW-001..004; H4–H5 after stage FE.  
+**Source**: #1203; ADR-038 EVWB
 
 ---
 

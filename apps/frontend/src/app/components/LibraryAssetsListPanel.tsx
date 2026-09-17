@@ -1,5 +1,5 @@
 /**
- * Stub list panel for non-Conversion Libraries (TAC/IWXXM validation, Dissemination, Decoding).
+ * Stub list panel for Profile Builder library catalogs.
  */
 
 import { Loader2 } from 'lucide-react';
@@ -22,7 +22,7 @@ import { Card } from './ui/card';
 
 export type LibraryAssetsListPanelProps = {
   accessToken: string;
-  kind: Exclude<LibraryAssetKind, 'conversion'>;
+  kind: LibraryAssetKind;
   heading: string;
 };
 
@@ -33,7 +33,7 @@ function accessLabel(access: string): string {
 }
 
 /**
- * List library assets for one non-conversion kind.
+ * List library assets for one library kind (catalog column).
  *
  * @param props.accessToken - Bearer JWT
  * @param props.kind - Library kind filter
