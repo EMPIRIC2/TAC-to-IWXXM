@@ -972,8 +972,7 @@ export async function fetchRuleCatalog(params: {
   if (params.product?.trim()) {
     query.set('product', params.product.trim().toLowerCase());
   }
-  const qs = query.toString() ? `?${query.toString()}` : '';
-  const response = await fetch(apiUrl(`/rule-catalogs${qs}`), {
+  const response = await fetch(apiUrl(`/rule-catalogs?${query.toString()}`), {
     method: 'GET',
     signal: params.signal,
   });

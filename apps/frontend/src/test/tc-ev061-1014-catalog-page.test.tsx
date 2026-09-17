@@ -8,9 +8,11 @@ import userEvent from '@testing-library/user-event';
 import { LintValidationCatalogPage } from '../app/components/LintValidationCatalogPage';
 
 const fetchLintIssueCatalog = vi.hoisted(() => vi.fn());
+const fetchRuleCatalog = vi.hoisted(() => vi.fn());
 
 vi.mock('@/utils/api', () => ({
   fetchLintIssueCatalog: (...args: unknown[]) => fetchLintIssueCatalog(...args),
+  fetchRuleCatalog: (...args: unknown[]) => fetchRuleCatalog(...args),
 }));
 
 const BASE_ISSUES = [
@@ -80,7 +82,19 @@ const BASE_ISSUES = [
 describe('LintValidationCatalogPage', () => {
   beforeEach(() => {
     fetchLintIssueCatalog.mockReset();
+    fetchRuleCatalog.mockReset();
     fetchLintIssueCatalog.mockResolvedValue({ issues: BASE_ISSUES });
+    fetchRuleCatalog.mockResolvedValue({
+      family: 'conversion',
+      items: [
+        {
+          id: 'ICAO_2025',
+          title: 'ICAO_2025',
+          summary: 'Semantic conversion profile ICAO_2025',
+          tags: ['conversion'],
+        },
+      ],
+    });
   });
 
   it('renders verified links and plain text for semantic-only sources', async () => {
@@ -123,6 +137,85 @@ describe('LintValidationCatalogPage', () => {
     expect(
       within(list).queryByTestId('lint-validation-catalog-entry-MISSING_TERMINATOR'),
     ).not.toBeInTheDocument();
+  });
+
+  it('loads conversion family via rule-catalogs', async () => {
+    const user = userEvent.setup();
+    render(<LintValidationCatalogPage />);
+    await screen.findByTestId('lint-validation-catalog-list');
+
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-family-filter'),
+      'conversion',
+    );
+
+    expect(fetchRuleCatalog).toHaveBeenLastCalledWith({ family: 'conversion' });
+    const list = await screen.findByTestId('lint-validation-catalog-list');
+    expect(
+      within(list).getByTestId('lint-validation-catalog-entry-ICAO_2025'),
+    ).toBeInTheDocument();
+  });
+
+  it('maps rule-catalog rows with missing severity/summary fallbacks', async () => {
+    const user = userEvent.setup();
+    render(<LintValidationCatalogPage />);
+    await screen.findByTestId('lint-validation-catalog-list');
+
+    fetchRuleCatalog.mockResolvedValueOnce({
+      family: 'conversion',
+      items: [
+        { id: 'BARE', title: 'Bare title', summary: '' },
+        {
+          id: 'TAGGED',
+          title: 'Tagged',
+          summary: 'Has summary',
+          severity: 'warning',
+          tags: ['x'],
+        },
+      ],
+    });
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-family-filter'),
+      'conversion',
+    );
+    expect(
+      await screen.findByTestId('lint-validation-catalog-entry-BARE'),
+    ).toHaveTextContent('Bare title');
+    expect(
+      await screen.findByTestId('lint-validation-catalog-entry-TAGGED'),
+    ).toHaveTextContent('Has summary');
+  });
+
+  it('treats missing rule-catalog items as empty', async () => {
+    const user = userEvent.setup();
+    render(<LintValidationCatalogPage />);
+    await screen.findByTestId('lint-validation-catalog-list');
+
+    fetchRuleCatalog.mockResolvedValueOnce({ family: 'decoding', items: undefined });
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-family-filter'),
+      'decoding',
+    );
+    expect(await screen.findByText(/No catalog entries/i)).toBeInTheDocument();
+  });
+
+  it('loads dissemination family via rule-catalogs', async () => {
+    const user = userEvent.setup();
+    render(<LintValidationCatalogPage />);
+    await screen.findByTestId('lint-validation-catalog-list');
+
+    fetchRuleCatalog.mockResolvedValueOnce({
+      family: 'dissemination',
+      items: [{ id: 'GLOBAL_AFS', title: 'GLOBAL_AFS', summary: 'exchange' }],
+    });
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-family-filter'),
+      'dissemination',
+    );
+    expect(fetchRuleCatalog).toHaveBeenLastCalledWith({ family: 'dissemination' });
+    expect(
+      await screen.findByTestId('lint-validation-catalog-entry-GLOBAL_AFS'),
+    ).toBeInTheDocument();
   });
 
   it('filters by issue type via API (TC-EV062-001)', async () => {
