@@ -1,4 +1,4 @@
-"""Rule catalogs + selection-options routes (ADR-044)."""
+"""Rule catalogs + selection-options routes."""
 
 from __future__ import annotations
 

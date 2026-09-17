@@ -384,7 +384,7 @@ def create_library_asset(
     payload: LibraryAssetCreate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryAssetOut:
-    """Retired — ADR-044 hard cutover (library authoring removed)."""
+    """Retired — library authoring is no longer available."""
     _library_authoring_gone()
 
 
@@ -393,7 +393,7 @@ def validate_library_yaml(
     payload: LibraryYamlValidateRequest,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryYamlValidateResponse:
-    """Retired — ADR-044 hard cutover."""
+    """Retired — library authoring is no longer available."""
     _library_authoring_gone()
 
 
@@ -402,7 +402,7 @@ def preview_library_rule(
     payload: LibraryRulePreviewRequest,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryRulePreviewResponse:
-    """Retired — ADR-044 hard cutover."""
+    """Retired — library authoring is no longer available."""
     _library_authoring_gone()
 
 
@@ -421,7 +421,7 @@ def update_library_asset(
     payload: LibraryAssetUpdate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryAssetOut:
-    """Retired — ADR-044 hard cutover."""
+    """Retired — library authoring is no longer available."""
     _library_authoring_gone()
 
 
@@ -430,5 +430,5 @@ def delete_library_asset(
     asset_id: str,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> None:
-    """Retired — ADR-044 hard cutover."""
+    """Retired — library authoring is no longer available."""
     _library_authoring_gone()
