@@ -12,7 +12,7 @@ PACKAGE_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = PACKAGE_ROOT.parents[1]
 SAMPLE_METAR = PACKAGE_ROOT / "tests" / "fixtures" / "annex3_golden" / "metar_basic.tac"
 
-_PACKAGES = ("tac2iwxxm", "tac-validate", "iwxxm-validate")
+_PACKAGES = ("tac-decoding", "tac2iwxxm", "tac-validate", "iwxxm-validate")
 
 
 def _uv_build(dist: Path, package: str) -> None:
@@ -41,8 +41,9 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
     """
     Convert-only wheel works; ``[validate]`` pulls ``tac-validate`` + ``iwxxm-validate``.
 
-    Builds all three local wheels, installs convert-only into a fresh venv, then
-    reinstalls with the ``[validate]`` extra resolved via ``--find-links``.
+    Builds local wheels (including ``tac-decoding`` required by convert), installs
+    convert-only into a fresh venv via ``--find-links``, then reinstalls with the
+    ``[validate]`` extra resolved via ``--find-links``.
     """
     if not SAMPLE_METAR.is_file():
         pytest.skip("sample METAR fixture missing")
@@ -53,6 +54,7 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
         _uv_build(dist, package)
 
     tac2_wheel = _wheel_for(dist, "tac2iwxxm")
+    _wheel_for(dist, "tac-decoding")
     _wheel_for(dist, "tac-validate")
     _wheel_for(dist, "iwxxm-validate")
 
@@ -67,9 +69,18 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
 
     python = venv_dir / ("Scripts/python.exe" if sys.platform == "win32" else "bin/python")
 
-    # --- Convert-only install ---
+    # --- Convert-only install (tac-decoding via find-links) ---
     install_core = subprocess.run(
-        ["uv", "pip", "install", "--python", str(python), str(tac2_wheel)],
+        [
+            "uv",
+            "pip",
+            "install",
+            "--python",
+            str(python),
+            "--find-links",
+            str(dist),
+            str(tac2_wheel),
+        ],
         check=False,
         capture_output=True,
         text=True,

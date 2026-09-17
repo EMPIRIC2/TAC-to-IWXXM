@@ -29,6 +29,7 @@ Traces to `[Corpus: product]` F12–F14, `[Corpus: system-spec]` package compone
 | `packages/tac-validate` | `tac-validate` | `tac-validate-v*` (e.g. `tac-validate-v2026.09.10`) |
 | `packages/iwxxm-validate` | `iwxxm-validate` | `iwxxm-validate-v*` |
 | `packages/tac2iwxxm` | `tac2iwxxm` | `tac2iwxxm-v*` |
+| `packages/tac-decoding` | `tac-decoding` | `tac-decoding-v*` (ADR-044) |
 
 - **CalVer** `YYYY.MM.DD` (same-day `YYYY.MM.DD.N`); nightlies `YYYY.MM.DD.devN` → TestPyPI
   only via `pypi-nightly.yml`.
@@ -47,6 +48,7 @@ Traces to `[Corpus: product]` F12–F14, `[Corpus: system-spec]` package compone
 | `tac-validate` | TAC product rules, CLI, msgspec issue reports | IWXXM / XSD / Schematron |
 | `iwxxm-validate` | Well-formed + XSD + Schematron; bundled pinned schemas; Python SDK | TAC parsing / TAC product rules |
 | `tac2iwxxm` | Conversion (+ optional PyO3); optional validate extra | FastAPI / Supabase imports |
+| `tac-decoding` | TAC decode / glossary / Decoding catalog (ADR-044) | FastAPI / Supabase / IWXXM encode |
 
 ## Wheel / copyright constraints
 
