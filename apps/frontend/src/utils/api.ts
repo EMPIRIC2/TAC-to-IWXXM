@@ -948,6 +948,73 @@ export async function massIngestFiles(params: {
   return (await response.json()) as MassIngestResponse;
 }
 
+/**
+ * Fetch a package-owned trust catalog by family (ADR-044).
+ *
+ * **Endpoint**: GET /api/v1/rule-catalogs
+ */
+export async function fetchRuleCatalog(params: {
+  family: 'tac' | 'iwxxm' | 'conversion' | 'dissemination' | 'decoding';
+  product?: string;
+  signal?: AbortSignal;
+}): Promise<{
+  family: string;
+  items: Array<{
+    id: string;
+    title: string;
+    summary: string;
+    severity?: string | null;
+    tags?: string[];
+  }>;
+}> {
+  const query = new URLSearchParams();
+  query.set('family', params.family);
+  if (params.product?.trim()) {
+    query.set('product', params.product.trim().toLowerCase());
+  }
+  const qs = query.toString() ? `?${query.toString()}` : '';
+  const response = await fetch(apiUrl(`/rule-catalogs${qs}`), {
+    method: 'GET',
+    signal: params.signal,
+  });
+  if (!response.ok) {
+    throw new Error(`rule-catalogs failed: ${response.status}`);
+  }
+  return response.json() as Promise<{
+    family: string;
+    items: Array<{
+      id: string;
+      title: string;
+      summary: string;
+      severity?: string | null;
+      tags?: string[];
+    }>;
+  }>;
+}
+
+/**
+ * Fetch deployed selection options for dropdowns (ADR-044).
+ *
+ * **Endpoint**: GET /api/v1/selection-options
+ */
+export async function fetchSelectionOptions(params: {
+  kind: 'conversion' | 'dissemination' | 'decoding';
+  signal?: AbortSignal;
+}): Promise<{ kind: string; options: Array<{ id: string; label: string }> }> {
+  const query = new URLSearchParams({ kind: params.kind });
+  const response = await fetch(apiUrl(`/selection-options?${query.toString()}`), {
+    method: 'GET',
+    signal: params.signal,
+  });
+  if (!response.ok) {
+    throw new Error(`selection-options failed: ${response.status}`);
+  }
+  return response.json() as Promise<{
+    kind: string;
+    options: Array<{ id: string; label: string }>;
+  }>;
+}
+
 export default {
   checkHealth,
   convertMetarToIwxxm,
@@ -956,6 +1023,8 @@ export default {
   validateIwxxm,
   decodeTac,
   fetchLintIssueCatalog,
+  fetchRuleCatalog,
+  fetchSelectionOptions,
   fetchQualityMetrics,
   fetchQualityMetricsDetail,
   fetchAirportRegion,

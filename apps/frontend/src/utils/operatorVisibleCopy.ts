@@ -285,10 +285,6 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
       id: 'shell.nav.dissemination-ops',
       text: SHELL_NAV_LABELS['dissemination-ops'],
     },
-    {
-      id: 'shell.nav.profiles',
-      text: SHELL_NAV_LABELS.profiles,
-    },
     { id: 'profiles.title', text: PROFILES_EDITOR_TITLE },
     { id: 'profiles.subtitle', text: PROFILES_EDITOR_SUBTITLE },
     { id: 'profiles.assembly-heading', text: PROFILES_ASSEMBLY_HEADING },

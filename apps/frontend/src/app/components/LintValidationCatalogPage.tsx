@@ -8,7 +8,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { fetchLintIssueCatalog } from '@/utils/api';
+import { fetchLintIssueCatalog, fetchRuleCatalog } from '@/utils/api';
 import type { LintIssueCatalogEntry } from '@/utils/openapiTypes';
 import { Card } from './ui/card';
 import {
@@ -29,7 +29,13 @@ import {
   LINT_VALIDATION_CATALOG_TYPE_LABEL,
 } from '@/utils/lintValidationCatalogCopy';
 
-type FamilyFilter = 'all' | 'lint' | 'iwxxm';
+type FamilyFilter =
+  | 'all'
+  | 'lint'
+  | 'iwxxm'
+  | 'conversion'
+  | 'dissemination'
+  | 'decoding';
 export type SortKey = 'code' | 'level' | 'family' | 'issue_type' | 'source_access';
 
 const LEVEL_OPTIONS = ['all', 'critical', 'error', 'warning', 'info'] as const;
@@ -181,6 +187,34 @@ export function LintValidationCatalogPage() {
     setLoading(true);
     setError(null);
     try {
+      if (
+        familyFilter === 'conversion' ||
+        familyFilter === 'dissemination' ||
+        familyFilter === 'decoding'
+      ) {
+        const response = await fetchRuleCatalog({ family: familyFilter });
+        const mapped: LintIssueCatalogEntry[] = (response.items ?? []).map((item) => ({
+          code: item.id,
+          severity: (item.severity as LintIssueCatalogEntry['severity']) || 'info',
+          message_template: item.summary || item.title,
+          product: null,
+          tags: item.tags ?? [],
+          family: familyFilter,
+          source_id: null,
+          source_url: null,
+          source_attribution: null,
+          source_type: null,
+          status: null,
+          semantic_identifier: null,
+          last_verified: null,
+          replacement_url: null,
+          issue_type: 'other',
+          source_access: 'public',
+          source_locator: null,
+        }));
+        setEntries(mapped);
+        return;
+      }
       const response = await fetchLintIssueCatalog({
         family: familyFilter === 'all' ? undefined : familyFilter,
         issue_type: issueTypeFilter === 'all' ? undefined : issueTypeFilter,
@@ -235,9 +269,12 @@ export function LintValidationCatalogPage() {
                 aria-label="Filter by family"
                 onChange={(e) => setFamilyFilter(e.target.value as FamilyFilter)}
               >
-                <option value="all">All</option>
-                <option value="lint">TAC lint</option>
+                <option value="all">All lint / IWXXM</option>
+                <option value="lint">TAC validation</option>
                 <option value="iwxxm">IWXXM validation</option>
+                <option value="conversion">Conversion</option>
+                <option value="dissemination">Dissemination</option>
+                <option value="decoding">Decoding</option>
               </select>
             </label>
             <label className="text-sm text-gray-700 dark:text-gray-300">

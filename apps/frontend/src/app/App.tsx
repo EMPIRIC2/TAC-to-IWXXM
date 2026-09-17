@@ -4,7 +4,6 @@ import { MyMetarsPage } from './components/MyMetarsPage';
 import { QualityMetricsPage } from './components/QualityMetricsPage';
 import { LintValidationCatalogPage } from './components/LintValidationCatalogPage';
 import { DisseminationOpsPage } from './components/DisseminationOpsPage';
-import { ConversionProfilePage } from './components/ConversionProfilePage';
 import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
@@ -61,8 +60,7 @@ function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
     view === 'history' ||
     view === 'quality' ||
     view === 'catalog' ||
-    view === 'dissemination-ops' ||
-    view === 'profiles'
+    view === 'dissemination-ops'
   );
 }
 
@@ -380,14 +378,6 @@ function App() {
         <DisseminationOpsPage
           accessToken={isAuthenticated ? accessToken : undefined}
           onRequestLogin={handleRequestLogin}
-        />
-      )}
-
-      {currentView === 'profiles' && (
-        <ConversionProfilePage
-          accessToken={isAuthenticated ? accessToken : undefined}
-          onRequestLogin={handleRequestLogin}
-          onOpenConverterExamples={() => setCurrentView('converter')}
         />
       )}
 
