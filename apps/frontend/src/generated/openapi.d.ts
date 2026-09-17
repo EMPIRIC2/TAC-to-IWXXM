@@ -572,7 +572,7 @@ export interface paths {
         put?: never;
         /**
          * Create Library Asset
-         * @description Create a custom library asset (optionally forked).
+         * @description Retired — library authoring is no longer available.
          */
         post: operations["create_library_asset_api_v1_profiles_library_assets_post"];
         delete?: never;
@@ -592,7 +592,7 @@ export interface paths {
         put?: never;
         /**
          * Preview Library Rule
-         * @description AC11: associate a TAC group with a conversion library rule.
+         * @description Retired — library authoring is no longer available.
          */
         post: operations["preview_library_rule_api_v1_profiles_library_assets_preview_rule_post"];
         delete?: never;
@@ -612,7 +612,7 @@ export interface paths {
         put?: never;
         /**
          * Validate Library Yaml
-         * @description Validate library YAML and regex diagnostics without persisting.
+         * @description Retired — library authoring is no longer available.
          */
         post: operations["validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post"];
         delete?: never;
@@ -637,16 +637,16 @@ export interface paths {
         post?: never;
         /**
          * Delete Library Asset
-         * @description Delete an owned custom library asset.
+         * @description Retired — library authoring is no longer available.
          */
         delete: operations["delete_library_asset_api_v1_profiles_library_assets__asset_id__delete"];
         options?: never;
         head?: never;
         /**
-         * Patch Library Asset
-         * @description Update custom asset or auto-fork first-party on edit.
+         * Update Library Asset
+         * @description Retired — library authoring is no longer available.
          */
-        patch: operations["patch_library_asset_api_v1_profiles_library_assets__asset_id__patch"];
+        patch: operations["update_library_asset_api_v1_profiles_library_assets__asset_id__patch"];
         trace?: never;
     };
     "/api/v1/profiles/overlays": {
@@ -897,6 +897,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/rule-catalogs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Rule Catalogs
+         * @description Export a package-owned trust catalog by family.
+         */
+        get: operations["get_rule_catalogs_api_v1_rule_catalogs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/schema-status": {
         parameters: {
             query?: never;
@@ -909,6 +929,26 @@ export interface paths {
          * @description Get comprehensive schema status including RC versions and mirroring info.
          */
         get: operations["get_schema_status_api_v1_schema_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/selection-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Selection Options
+         * @description List deployed registry ids for workbench / dissemination dropdowns.
+         */
+        get: operations["get_selection_options_api_v1_selection_options_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -4360,6 +4400,35 @@ export interface components {
             password: string;
         };
         /**
+         * RuleCatalogItem
+         * @description One package-owned trust-catalog row.
+         */
+        RuleCatalogItem: {
+            /** Id */
+            id: string;
+            /** Severity */
+            severity?: string | null;
+            /**
+             * Summary
+             * @default
+             */
+            summary: string;
+            /** Tags */
+            tags?: string[];
+            /** Title */
+            title: string;
+        };
+        /**
+         * RuleCatalogResponse
+         * @description Response for GET /rule-catalogs.
+         */
+        RuleCatalogResponse: {
+            /** Family */
+            family: string;
+            /** Items */
+            items: components["schemas"]["RuleCatalogItem"][];
+        };
+        /**
          * RulePackCreate
          * @description Create body for a rule pack.
          */
@@ -4461,6 +4530,26 @@ export interface components {
             standardReference?: string | null;
             /** When */
             when?: string | null;
+        };
+        /**
+         * SelectionOption
+         * @description Dropdown option from a deployed registry.
+         */
+        SelectionOption: {
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+        };
+        /**
+         * SelectionOptionsResponse
+         * @description Response for GET /selection-options.
+         */
+        SelectionOptionsResponse: {
+            /** Kind */
+            kind: string;
+            /** Options */
+            options: components["schemas"]["SelectionOption"][];
         };
         /**
          * SessionResponse
@@ -6441,7 +6530,7 @@ export interface operations {
             };
         };
     };
-    patch_library_asset_api_v1_profiles_library_assets__asset_id__patch: {
+    update_library_asset_api_v1_profiles_library_assets__asset_id__patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -7131,6 +7220,39 @@ export interface operations {
             };
         };
     };
+    get_rule_catalogs_api_v1_rule_catalogs_get: {
+        parameters: {
+            query: {
+                /** @description tac | iwxxm | conversion | dissemination | decoding */
+                family: string;
+                product?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleCatalogResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_schema_status_api_v1_schema_status_get: {
         parameters: {
             query?: never;
@@ -7147,6 +7269,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    get_selection_options_api_v1_selection_options_get: {
+        parameters: {
+            query: {
+                /** @description conversion | dissemination | decoding */
+                kind: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SelectionOptionsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

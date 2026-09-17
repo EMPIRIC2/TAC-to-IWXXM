@@ -13,6 +13,7 @@ on:
       - "tac-validate-v*"
       - "iwxxm-validate-v*"
       - "tac2iwxxm-v*"
+      - "tac-decoding-v*"
   workflow_dispatch:
     inputs:
       package:
@@ -22,6 +23,7 @@ on:
           - tac-validate
           - iwxxm-validate
           - tac2iwxxm
+          - tac-decoding
         required: true
       publish:
         description: Publish to PyPI via OIDC (requires Trusted Publisher)
@@ -67,6 +69,9 @@ jobs:
           elif [[ "${REF_NAME}" == tac2iwxxm-v* ]]; then
             package="tac2iwxxm"
             should_publish="true"
+          elif [[ "${REF_NAME}" == tac-decoding-v* ]]; then
+            package="tac-decoding"
+            should_publish="true"
           else
             echo "::error::Unable to resolve package from ${EVENT_NAME} / ${REF_NAME}"
             exit 1
@@ -87,6 +92,11 @@ jobs:
               pure='[{"package":"tac2iwxxm","path":"packages/tac2iwxxm","tag_prefix":"tac2iwxxm-v"}]'
               native='[{"os":"ubuntu-latest","package":"tac2iwxxm","path":"packages/tac2iwxxm","tag_prefix":"tac2iwxxm-v"},{"os":"macos-latest","package":"tac2iwxxm","path":"packages/tac2iwxxm","tag_prefix":"tac2iwxxm-v"},{"os":"windows-latest","package":"tac2iwxxm","path":"packages/tac2iwxxm","tag_prefix":"tac2iwxxm-v"}]'
               has_native='true'
+              ;;
+            tac-decoding)
+              pure='[{"package":"tac-decoding","path":"packages/tac-decoding","tag_prefix":"tac-decoding-v"}]'
+              native='[]'
+              has_native='false'
               ;;
             *)
               echo "::error::Unknown package ${package}"
@@ -282,6 +292,10 @@ jobs:
               ;;
             tac2iwxxm)
               python -c "from tac2iwxxm import convert; r=convert('METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=', product='METAR'); assert r.ok and r.xml; print('tac2iwxxm ok')"
+              ;;
+            tac-decoding)
+              python -c "from tac_decoding import decode_tac; r=decode_tac('METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005=', product='METAR'); assert r.summary; print('tac-decoding ok')"
+              tac-decoding --help >/dev/null
               ;;
           esac
 

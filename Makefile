@@ -8,6 +8,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/auth/src \
 	packages/shared packages/shared/tests \
 	packages/tac2iwxxm/src packages/tac2iwxxm/tests \
+	packages/tac-decoding/src packages/tac-decoding/tests \
 	packages/iwxxm-validate/src packages/iwxxm-validate/tests \
 	packages/tac-validate/src packages/tac-validate/tests \
 	packages/dissemination/src packages/dissemination/tests \
@@ -328,6 +329,27 @@ test-unit-tac2iwxxm:
 		--cov-report=json:packages/tac2iwxxm/coverage.json \
 		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/tac2iwxxm/coverage.json
+
+test-unit-tac-decoding:
+	$(UV) run pytest packages/tac-decoding/tests \
+		packages/tac2iwxxm/tests/test_decode_tac.py \
+		packages/tac2iwxxm/tests/test_decode_summary.py \
+		packages/tac2iwxxm/tests/test_decode_value_aware.py \
+		packages/tac2iwxxm/tests/test_tc_f9_003_004_decode_glossary.py \
+		packages/tac2iwxxm/tests/test_tc_f9_sigmet_a6_decode_residuals.py \
+		packages/tac2iwxxm/tests/test_tc_ev027_003_decode_residual_matrix.py \
+		packages/tac2iwxxm/tests/test_tc_ev030_006_vaa_tca_structured_decode.py \
+		packages/tac2iwxxm/tests/test_tc_ev030_006_advisory_decode_coverage.py \
+		packages/tac2iwxxm/tests/test_tc_ev030_006_vaa_tca_residual_baseline.py \
+		packages/tac2iwxxm/tests/test_tc_ev099_swxa_vona_structured_decode.py \
+		packages/tac2iwxxm/tests/test_tc_ev061_1012_ahl_decode.py \
+		packages/tac2iwxxm/tests/test_coverage_gaps_ev080.py \
+		packages/tac2iwxxm/tests/test_vaa_tca_coverage_helpers.py \
+		--cov=tac_decoding \
+		--cov-config=packages/tac-decoding/pyproject.toml --cov-branch \
+		--cov-report=json:packages/tac-decoding/coverage.json \
+		--cov-report=term-missing --cov-fail-under=100 -v
+	$(UV) run python scripts/ci/check_per_file_coverage.py packages/tac-decoding/coverage.json
 
 # Build optional PyO3 extension (requires rustc + maturin). ADR-017 / T4.3.
 build-tac2iwxxm-native:

@@ -25,6 +25,7 @@
 | sqlalchemy | DO Postgres access for sessions / F8 (shared) | MIT | PyPI (`>=2.0,<3`) |
 | asyncpg / psycopg | Postgres drivers for `DATABASE_URL` | Apache-2.0 / LGPL | PyPI (existing + Alembic) |
 | tac2iwxxm | Conversion (F6) | MIT | workspace path |
+| tac-decoding | TAC decode / glossary / Decoding catalog (F9 / ADR-044) | MIT | workspace path → PyPI `tac-decoding` |
 | tac-validate | TAC lint / rules | MIT | workspace path |
 | iwxxm-validate | XSD + Schematron (F2) | MIT | workspace path |
 | gifts | ~~Conversion~~ | — | **Removed at F6 cutover** (ADR-014) |

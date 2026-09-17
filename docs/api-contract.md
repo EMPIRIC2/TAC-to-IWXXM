@@ -425,6 +425,50 @@ Must support TC-F6-031 and TC-F7-004 span highlight.
 optional `fixes[]`. New/migrated METAR/SPECI lint `code` values come from the
 `tac-validate` issue registry; no new response fields on this route.
 
+
+### Rule catalogs (EV-retire-profile-dissem-ui-catalogs / ADR-044)
+
+```
+GET /api/v1/rule-catalogs
+```
+
+**Purpose**: Family-aware export of package-owned trust catalogs for the five-tab operator
+shell (TAC Validation, IWXXM Validation, Conversion, Dissemination, Decoding). Aggregates
+Python catalog APIs from owning packages. **Read-only**.
+
+**Auth**: **None** (F21 public) — same as `lint-issue-catalog`.
+
+**Query**:
+
+| Param | Required | Description |
+|-------|----------|-------------|
+| `family` | yes | `tac` | `iwxxm` | `conversion` | `dissemination` | `decoding` |
+| Product / profile filters | no | Family-specific additive filters (reuse lint-issue-catalog profile filters for `tac` / `iwxxm` where applicable) |
+
+**Response** (msgspec): `{ "family": "...", "items": [ { "id", "title", "summary", "severity?", "tags?", "source_url?", ... } ] }` — exact fields finalized in tech-plan; operator strings EV-048 clean.
+
+**Compatibility**: `GET /api/v1/lint-issue-catalog` remains during transition as a thin wrapper
+or alias for `family=tac` (+ existing IWXXM merge behavior).
+
+### Selection options (ADR-044)
+
+```
+GET /api/v1/selection-options
+```
+
+**Purpose**: Lightweight lists for workbench / dissemination **dropdowns** (deployed registries
+only). Query `kind` ∈ conversion profiles, exchange/dissemination destinations (non-secret),
+decode glossaries/profiles as applicable. Unknown `kind` → 400.
+
+**Auth**: None (public) unless a kind is explicitly JWT-gated in tech-plan (default: public
+read of non-secret deployed ids).
+
+### Library-assets authoring (ADR-044 — removed)
+
+Operator-facing `GET/POST/PATCH/DELETE /api/v1/profiles/library-assets*` authoring routes and
+YAML validate/preview-for-authoring are **removed** at hard cutover. Runtime uses packaged
+registries only. Historical contract text below is **superseded** for operator surfaces.
+
 ### Lint issue catalog (S015 / EV-011 / E11-31)
 
 ```

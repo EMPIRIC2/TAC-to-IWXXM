@@ -12,16 +12,14 @@ export type ShellPrimaryView =
   | 'history'
   | 'quality'
   | 'catalog'
-  | 'dissemination-ops'
-  | 'profiles';
+  | 'dissemination-ops';
 
 export const SHELL_NAV_LABELS = {
   converter: 'Convert',
   history: 'History',
   quality: 'Quality metrics',
-  catalog: 'Validation Issues Catalog',
+  catalog: 'Rule catalogs',
   'dissemination-ops': 'Dissemination ops',
-  profiles: 'Profile builder',
 } as const;
 
 interface AppShellNavProps {
@@ -37,7 +35,6 @@ const TABS: ShellPrimaryView[] = [
   'quality',
   'catalog',
   'dissemination-ops',
-  'profiles',
 ];
 
 /**
@@ -71,7 +68,7 @@ export function AppShellNav({ activeView, onNavigate }: AppShellNavProps) {
               onClick={() => onNavigate(view)}
             >
               {SHELL_NAV_LABELS[view]}
-              {view === 'dissemination-ops' || view === 'profiles' ? (
+              {view === 'dissemination-ops' ? (
                 <BetaBadge className="inline-flex" />
               ) : null}
             </button>

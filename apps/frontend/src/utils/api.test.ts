@@ -11,6 +11,8 @@ import {
   EndpointNotImplementedError,
   fetchAirportRegion,
   fetchLintIssueCatalog,
+  fetchRuleCatalog,
+  fetchSelectionOptions,
   fetchQualityMetrics,
   fetchQualityMetricsDetail,
   fetchSchemaStatus,
@@ -1290,6 +1292,58 @@ describe('API Utils', () => {
       });
       await expect(fetchLintIssueCatalog({ product: 'taf' })).rejects.toThrow(
         /HTTP 502|Bad Gateway/,
+      );
+    });
+
+    it('GETs rule-catalogs with optional product filter', async () => {
+      mockFetchResponse({
+        family: 'conversion',
+        items: [{ id: 'ICAO_2025', title: 'ICAO_2025', summary: 'profile' }],
+      });
+      const result = await fetchRuleCatalog({
+        family: 'conversion',
+        product: ' METAR ',
+      });
+      expect(result.family).toBe('conversion');
+      expect(result.items).toHaveLength(1);
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/rule-catalogs\?family=conversion&product=metar$/),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('throws when rule-catalogs fails', async () => {
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: vi.fn().mockResolvedValueOnce({}),
+      });
+      await expect(fetchRuleCatalog({ family: 'decoding' })).rejects.toThrow(
+        'rule-catalogs failed: 400',
+      );
+    });
+
+    it('GETs selection-options by kind', async () => {
+      mockFetchResponse({
+        kind: 'dissemination',
+        options: [{ id: 'GLOBAL_AFS', label: 'GLOBAL_AFS' }],
+      });
+      const result = await fetchSelectionOptions({ kind: 'dissemination' });
+      expect(result.options[0]!.id).toBe('GLOBAL_AFS');
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/selection-options\?kind=dissemination$/),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('throws when selection-options fails', async () => {
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 503,
+        json: vi.fn().mockResolvedValueOnce({}),
+      });
+      await expect(fetchSelectionOptions({ kind: 'decoding' })).rejects.toThrow(
+        'selection-options failed: 503',
       );
     });
 

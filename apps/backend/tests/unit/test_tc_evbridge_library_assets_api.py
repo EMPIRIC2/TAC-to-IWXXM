@@ -212,8 +212,8 @@ def test_delete_first_party_library_forbidden() -> None:
 
 
 def test_router_library_assets_crud_and_preview(client: Any) -> None:
-    """HTTP surface for list/create/get/patch/delete/preview-rule."""
-    http, fake = client
+    """HTTP surface: list/get remain; mutate routes return 410 (authoring retired)."""
+    http, _fake = client
     listed = http.get("/api/v1/profiles/library-assets")
     assert listed.status_code == 200
     assert len(listed.json()["items"]) >= 2
@@ -234,8 +234,8 @@ def test_router_library_assets_crud_and_preview(client: Any) -> None:
             "forkOf": "LIB.CONVERSION.ICAO_2025",
         },
     )
-    assert created.status_code == 201
-    assert fake.custom.slug == "forked-conv"
+    assert created.status_code == 410
+    assert created.json()["detail"]["code"] == "library_authoring_retired"
 
     got = http.get(f"/api/v1/profiles/library-assets/{ASSET_ID}")
     assert got.status_code == 200
@@ -245,16 +245,13 @@ def test_router_library_assets_crud_and_preview(client: Any) -> None:
         f"/api/v1/profiles/library-assets/{ASSET_ID}",
         json={"name": "Renamed"},
     )
-    assert patched.status_code == 200
-    assert fake.custom.name == "Renamed"
+    assert patched.status_code == 410
 
     preview = http.post(
         "/api/v1/profiles/library-assets/preview-rule",
         json={"libraryId": "LIB.CONVERSION.ICAO_2025", "focusGroup": "18012G20KT"},
     )
-    assert preview.status_code == 200
-    assert preview.json()["ruleId"] == "CV.WIND"
-    assert preview.json()["matched"] is True
+    assert preview.status_code == 410
 
     validated = http.post(
         "/api/v1/profiles/library-assets/validate-yaml",
@@ -264,15 +261,10 @@ def test_router_library_assets_crud_and_preview(client: Any) -> None:
             "lifecycle": "draft",
         },
     )
-    assert validated.status_code == 200
-    assert validated.json()["valid_yaml"] is True
-    assert validated.json()["can_activate"] is True
+    assert validated.status_code == 410
 
     deleted = http.delete(f"/api/v1/profiles/library-assets/{ASSET_ID}")
-    assert deleted.status_code == 204
-
-    forbidden = http.delete("/api/v1/profiles/library-assets/LIB.DECODING.US_FAA_NWS")
-    assert forbidden.status_code == 403
+    assert deleted.status_code == 410
 
 
 class _Result:

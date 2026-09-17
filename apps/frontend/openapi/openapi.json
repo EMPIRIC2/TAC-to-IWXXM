@@ -5461,6 +5461,70 @@
         "title": "RegisterRequest",
         "type": "object"
       },
+      "RuleCatalogItem": {
+        "description": "One package-owned trust-catalog row.",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Severity"
+          },
+          "summary": {
+            "default": "",
+            "title": "Summary",
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RuleCatalogItem",
+        "type": "object"
+      },
+      "RuleCatalogResponse": {
+        "description": "Response for GET /rule-catalogs.",
+        "properties": {
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RuleCatalogItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "family",
+          "items"
+        ],
+        "title": "RuleCatalogResponse",
+        "type": "object"
+      },
       "RulePackCreate": {
         "description": "Create body for a rule pack.",
         "properties": {
@@ -5714,6 +5778,47 @@
           }
         },
         "title": "RulePackUpdate",
+        "type": "object"
+      },
+      "SelectionOption": {
+        "description": "Dropdown option from a deployed registry.",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ],
+        "title": "SelectionOption",
+        "type": "object"
+      },
+      "SelectionOptionsResponse": {
+        "description": "Response for GET /selection-options.",
+        "properties": {
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/SelectionOption"
+            },
+            "title": "Options",
+            "type": "array"
+          }
+        },
+        "required": [
+          "kind",
+          "options"
+        ],
+        "title": "SelectionOptionsResponse",
         "type": "object"
       },
       "SessionResponse": {
@@ -8876,7 +8981,7 @@
         ]
       },
       "post": {
-        "description": "Create a custom library asset (optionally forked).",
+        "description": "Retired \u2014 library authoring is no longer available.",
         "operationId": "create_library_asset_api_v1_profiles_library_assets_post",
         "requestBody": {
           "content": {
@@ -8923,7 +9028,7 @@
     },
     "/api/v1/profiles/library-assets/preview-rule": {
       "post": {
-        "description": "AC11: associate a TAC group with a conversion library rule.",
+        "description": "Retired \u2014 library authoring is no longer available.",
         "operationId": "preview_library_rule_api_v1_profiles_library_assets_preview_rule_post",
         "requestBody": {
           "content": {
@@ -8970,7 +9075,7 @@
     },
     "/api/v1/profiles/library-assets/validate-yaml": {
       "post": {
-        "description": "Validate library YAML and regex diagnostics without persisting.",
+        "description": "Retired \u2014 library authoring is no longer available.",
         "operationId": "validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post",
         "requestBody": {
           "content": {
@@ -9017,7 +9122,7 @@
     },
     "/api/v1/profiles/library-assets/{asset_id}": {
       "delete": {
-        "description": "Delete an owned custom library asset.",
+        "description": "Retired \u2014 library authoring is no longer available.",
         "operationId": "delete_library_asset_api_v1_profiles_library_assets__asset_id__delete",
         "parameters": [
           {
@@ -9102,8 +9207,8 @@
         ]
       },
       "patch": {
-        "description": "Update custom asset or auto-fork first-party on edit.",
-        "operationId": "patch_library_asset_api_v1_profiles_library_assets__asset_id__patch",
+        "description": "Retired \u2014 library authoring is no longer available.",
+        "operationId": "update_library_asset_api_v1_profiles_library_assets__asset_id__patch",
         "parameters": [
           {
             "in": "path",
@@ -9152,7 +9257,7 @@
             "HTTPBearer": []
           }
         ],
-        "summary": "Patch Library Asset",
+        "summary": "Update Library Asset",
         "tags": [
           "Conversion Profiles"
         ]
@@ -10125,6 +10230,67 @@
         ]
       }
     },
+    "/api/v1/rule-catalogs": {
+      "get": {
+        "description": "Export a package-owned trust catalog by family.",
+        "operationId": "get_rule_catalogs_api_v1_rule_catalogs_get",
+        "parameters": [
+          {
+            "description": "tac | iwxxm | conversion | dissemination | decoding",
+            "in": "query",
+            "name": "family",
+            "required": true,
+            "schema": {
+              "description": "tac | iwxxm | conversion | dissemination | decoding",
+              "title": "Family",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Product"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleCatalogResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Rule Catalogs",
+        "tags": [
+          "Catalogs"
+        ]
+      }
+    },
     "/api/v1/schema-status": {
       "get": {
         "description": "Get comprehensive schema status including RC versions and mirroring info.",
@@ -10144,6 +10310,51 @@
         "summary": "Get Schema Status",
         "tags": [
           "Conversion"
+        ]
+      }
+    },
+    "/api/v1/selection-options": {
+      "get": {
+        "description": "List deployed registry ids for workbench / dissemination dropdowns.",
+        "operationId": "get_selection_options_api_v1_selection_options_get",
+        "parameters": [
+          {
+            "description": "conversion | dissemination | decoding",
+            "in": "query",
+            "name": "kind",
+            "required": true,
+            "schema": {
+              "description": "conversion | dissemination | decoding",
+              "title": "Kind",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelectionOptionsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Selection Options",
+        "tags": [
+          "Catalogs"
         ]
       }
     },

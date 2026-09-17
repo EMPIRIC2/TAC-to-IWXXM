@@ -34,6 +34,9 @@ jobs:
           - package: tac-validate
             path: packages/tac-validate
             native: false
+          - package: tac-decoding
+            path: packages/tac-decoding
+            native: false
           - package: iwxxm-validate
             path: packages/iwxxm-validate
             native: true

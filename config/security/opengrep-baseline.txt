@@ -9,7 +9,7 @@ dockerfile.security.missing-user.missing-user	packages/dissemination/docker/f19-
 generic.secrets.security.detected-generic-api-key.detected-generic-api-key	docs/guides/OPENAIP_INTEGRATION_PLAN.md
 generic.secrets.security.detected-generic-api-key.detected-generic-api-key	docs/integration/OPENAIP.md
 generic.secrets.security.detected-jwt-token.detected-jwt-token	apps/frontend/utils/supabase/info.tsx
-python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac2iwxxm/src/tac2iwxxm/glossary.py
+python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac-decoding/src/tac_decoding/glossary.py
 python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac2iwxxm/src/tac2iwxxm/conversion_schema_blocks.py
 python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac2iwxxm/src/tac2iwxxm/dissemination_decoding_catalogs.py
 python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac2iwxxm/src/tac2iwxxm/validation_library_catalogs.py

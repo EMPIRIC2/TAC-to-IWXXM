@@ -47,6 +47,7 @@
 | [ADR-041](ADR-041-dissemination-gateway.md) | DisseminationGateway + DisseminationPlan (spike #927) | **Accepted** (EV-927) |
 | [ADR-042](ADR-042-workflow-definitions.md) | Workflow definitions — execute(message, workflow) (spike #931) | **Accepted** (EV-931) |
 | [ADR-043](ADR-043-beta-features-pypi-calver.md) | Beta feature surfacing + PyPI CalVer / nightly TestPyPI | **Accepted** (EV-1150) |
+| [ADR-044](ADR-044-package-owned-catalogs-tac-decoding.md) | Package-owned rule catalogs; Profile Builder UI hard cutover; `tac-decoding` PyPI | **Accepted** (EV-retire-profile-dissem-ui-catalogs) |
 
 ## Process
 

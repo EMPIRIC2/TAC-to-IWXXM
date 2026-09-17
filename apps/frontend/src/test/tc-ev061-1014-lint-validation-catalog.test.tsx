@@ -148,7 +148,7 @@ describe('T5.1 / TC-EV061-1014: Validation Issues Catalog', () => {
 
     expect(screen.getByTestId('app-shell-nav')).toBeInTheDocument();
     const catalogTab = screen.getByTestId('shell-nav-catalog');
-    expect(catalogTab).toHaveTextContent(/Validation Issues Catalog/i);
+    expect(catalogTab).toHaveTextContent(/Rule catalogs/i);
 
     await user.click(catalogTab);
     expect(screen.getByTestId('lint-validation-catalog-page')).toBeInTheDocument();
