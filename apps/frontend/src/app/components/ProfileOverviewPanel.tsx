@@ -169,12 +169,14 @@ export function ProfileOverviewPanel({
     }
     const out: string[] = [];
     if (!sameList(left.products, right.products)) {
-      out.push(
-        `Products: ${left.products.join(', ') || '—'} vs ${right.products.join(', ') || '—'}`,
-      );
+      const leftProducts = left.products.length ? left.products.join(', ') : '—';
+      const rightProducts = right.products.length ? right.products.join(', ') : '—';
+      out.push(`Products: ${leftProducts} vs ${rightProducts}`);
     }
     if ((left.iwxxm_line ?? '') !== (right.iwxxm_line ?? '')) {
-      out.push(`IWXXM line: ${left.iwxxm_line ?? '—'} vs ${right.iwxxm_line ?? '—'}`);
+      const leftLine = left.iwxxm_line ? left.iwxxm_line : '—';
+      const rightLine = right.iwxxm_line ? right.iwxxm_line : '—';
+      out.push(`IWXXM line: ${leftLine} vs ${rightLine}`);
     }
     if ((left.rule_pack_count ?? null) !== (right.rule_pack_count ?? null)) {
       out.push(

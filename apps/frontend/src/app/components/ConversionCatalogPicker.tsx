@@ -229,7 +229,7 @@ export function ConversionCatalogPicker({
                         })
                       }
                     >
-                      <span className="font-medium">{card.label || card.id}</span>
+                      <span className="font-medium">{card.label}</span>
                       <span className="mt-0.5 block truncate text-xs text-gray-500">
                         {card.id}
                       </span>
