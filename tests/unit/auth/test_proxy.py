@@ -241,6 +241,45 @@ def test_sign_in_maps_http_errors(status_code: int, expected: int) -> None:
     assert exc_info.value.status_code == expected
 
 
+def test_verify_email_success_posts_token_hash() -> None:
+    client = MagicMock(spec=httpx.Client)
+    client.post.return_value = MagicMock(
+        status_code=200,
+        json=lambda: {
+            "access_token": "at",
+            "refresh_token": "rt",
+            "expires_at": 42,
+            "user": {"id": "u9", "email": "c@example.com", "user_metadata": {}},
+        },
+    )
+    proxy = SupabaseAuthProxy(
+        supabase_url="https://proj.supabase.co",
+        publishable_key="pk",
+        client=client,
+    )
+    out = proxy.verify_email("tokhash", "email")
+    assert out["session"]["access_token"] == "at"
+    assert out["user"]["id"] == "u9"
+    assert "/auth/v1/verify" in client.post.call_args.args[0]
+    assert client.post.call_args.kwargs["json"] == {
+        "token_hash": "tokhash",
+        "type": "email",
+    }
+
+
+def test_verify_email_maps_http_errors() -> None:
+    client = MagicMock(spec=httpx.Client)
+    client.post.return_value = MagicMock(status_code=400, text="bad hash")
+    proxy = SupabaseAuthProxy(
+        supabase_url="https://proj.supabase.co",
+        publishable_key="pk",
+        client=client,
+    )
+    with pytest.raises(AuthProxyError, match="email confirmation failed") as exc_info:
+        proxy.verify_email("bad", "email")
+    assert exc_info.value.status_code == 400
+
+
 def _proxy_with_post(
     status_code: int, text: str = ""
 ) -> tuple[SupabaseAuthProxy, MagicMock]:

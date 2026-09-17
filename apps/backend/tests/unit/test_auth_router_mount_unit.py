@@ -31,6 +31,7 @@ def test_backend_mounts_auth_login_logout_and_me() -> None:
 
     assert "/auth/register" in paths
     assert "/auth/login" in paths
+    assert "/auth/confirm" in paths
     assert "/auth/logout" in paths
     assert "/auth/me" in paths
     assert not any("/admin" in p for p in paths)

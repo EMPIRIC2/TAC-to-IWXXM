@@ -53,6 +53,29 @@ class RegisterRequest(BaseModel):
         return validate_email_permissive(value)
 
 
+class ConfirmRequest(BaseModel):
+    """Email confirmation via GoTrue ``token_hash`` (Auth email link)."""
+
+    token_hash: str = Field(min_length=1)
+    type: str = Field(default="email", min_length=1)
+
+    @field_validator("type")
+    @classmethod
+    def _type(cls, value: str) -> str:
+        allowed = {
+            "email",
+            "signup",
+            "invite",
+            "magiclink",
+            "recovery",
+            "email_change",
+        }
+        normalized = value.strip().lower()
+        if normalized not in allowed:
+            raise ValueError(f"Unsupported confirmation type {value!r}")
+        return normalized
+
+
 class UserResponse(BaseModel):
     """Auth user projection."""
 
@@ -162,6 +185,20 @@ def create_auth_router(
                 detail=str(exc),
             ) from exc
 
+    @router.post("/confirm", response_model=AuthResponse)
+    def confirm(
+        request: ConfirmRequest,
+        client: SupabaseAuthProxy = Depends(_proxy),  # noqa: B008
+    ) -> dict[str, Any]:
+        """Confirm email (or related) via GoTrue token_hash verify."""
+        try:
+            return client.verify_email(request.token_hash, request.type)
+        except AuthProxyError as exc:
+            raise HTTPException(
+                status_code=exc.status_code,
+                detail=str(exc),
+            ) from exc
+
     @router.post("/login", response_model=AuthResponse)
     def login(
         request: LoginRequest,
@@ -222,5 +259,5 @@ def create_auth_router(
         return user
 
     # Keep nested handlers referenced for typecheckers that miss FastAPI decorators.
-    _ = (register, login, logout, me)
+    _ = (register, confirm, login, logout, me)
     return router

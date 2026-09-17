@@ -170,6 +170,37 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
 }
 
 /**
+ * Confirm email (or recovery) using the token_hash from the Auth email link.
+ */
+export async function confirmEmail(data: {
+  token_hash: string;
+  type?: string;
+}): Promise<AuthResponse> {
+  const url = authUrl('/confirm');
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      token_hash: data.token_hash,
+      type: data.type || 'email',
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ detail: 'Unknown error' }));
+    const detail =
+      typeof error.detail === 'string' ? error.detail : 'Email confirmation failed';
+    throw new Error(detail);
+  }
+
+  const result: AuthResponse = await response.json();
+  if (result.session) {
+    storeTokens(result.session);
+  }
+  return result;
+}
+
+/**
  * Login with email and password
  */
 export async function login(data: LoginRequest): Promise<AuthResponse> {
@@ -192,7 +223,8 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
     if (!response.ok) {
       const error = await response.json().catch(() => ({ detail: 'Unknown error' }));
       console.error('[Auth Service] Login error:', error);
-      throw new Error(error.detail || 'Login failed');
+      const detail = typeof error.detail === 'string' ? error.detail : 'Login failed';
+      throw new Error(detail);
     }
 
     const result: AuthResponse = await response.json();

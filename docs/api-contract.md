@@ -69,6 +69,7 @@ GET /health
 ```
 POST /auth/register   # mounted in code + staging; **prod returned 404 as of 2026-09-12** (deploy lag — last prod tag `v2026.09.10-deploy`; register shipped on `main` via #1180/#1183 — roll with next `v*-deploy` tag)
 POST /auth/login
+POST /auth/confirm    # GoTrue token_hash verify (email confirm / recovery); HF-auth-register-login
 POST /auth/logout
 GET  /auth/me
 ```

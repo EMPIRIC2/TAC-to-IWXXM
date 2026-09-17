@@ -98,7 +98,10 @@ function App() {
         setQualityStem(parsed.kind === 'detail' ? parsed.stem : null);
         return;
       }
-      if (window.location.pathname.includes('/auth/callback')) {
+      if (
+        window.location.pathname.includes('/auth/callback') ||
+        window.location.pathname.includes('/auth/confirm')
+      ) {
         setCurrentView('callback');
       }
     };
@@ -151,7 +154,10 @@ function App() {
   /* eslint-enable react-hooks/set-state-in-effect */
 
   useLayoutEffect(() => {
-    if (window.location.pathname.includes('/auth/callback')) {
+    if (
+      window.location.pathname.includes('/auth/callback') ||
+      window.location.pathname.includes('/auth/confirm')
+    ) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentView('callback');
     }
