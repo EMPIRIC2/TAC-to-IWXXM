@@ -280,6 +280,56 @@ def test_verify_email_maps_http_errors() -> None:
     assert exc_info.value.status_code == 400
 
 
+def test_sign_in_maps_email_not_confirmed_json_body() -> None:
+    client = MagicMock(spec=httpx.Client)
+    client.post.return_value = MagicMock(
+        status_code=400,
+        text='{"code":400,"error_code":"email_not_confirmed","msg":"Email not confirmed"}',
+    )
+    proxy = SupabaseAuthProxy(
+        supabase_url="https://proj.supabase.co",
+        publishable_key="pk",
+        client=client,
+    )
+    with pytest.raises(AuthProxyError) as exc_info:
+        proxy.sign_in("op@example.com", "password123")
+    assert exc_info.value.status_code == 401
+    assert "confirm your email" in str(exc_info.value).lower()
+    assert "email_not_confirmed" not in str(exc_info.value)
+
+
+def test_sign_in_maps_email_not_confirmed_plain_text() -> None:
+    client = MagicMock(spec=httpx.Client)
+    client.post.return_value = MagicMock(
+        status_code=400,
+        text="email_not_confirmed",
+    )
+    proxy = SupabaseAuthProxy(
+        supabase_url="https://proj.supabase.co",
+        publishable_key="pk",
+        client=client,
+    )
+    with pytest.raises(AuthProxyError) as exc_info:
+        proxy.sign_in("op@example.com", "password123")
+    assert "confirm your email" in str(exc_info.value).lower()
+
+
+def test_sign_in_json_other_error_code_keeps_login_failed_prefix() -> None:
+    client = MagicMock(spec=httpx.Client)
+    client.post.return_value = MagicMock(
+        status_code=400,
+        text='{"code":400,"error_code":"invalid_credentials","msg":"Invalid"}',
+    )
+    proxy = SupabaseAuthProxy(
+        supabase_url="https://proj.supabase.co",
+        publishable_key="pk",
+        client=client,
+    )
+    with pytest.raises(AuthProxyError, match="login failed") as exc_info:
+        proxy.sign_in("op@example.com", "bad")
+    assert exc_info.value.status_code == 401
+
+
 def _proxy_with_post(
     status_code: int, text: str = ""
 ) -> tuple[SupabaseAuthProxy, MagicMock]:
