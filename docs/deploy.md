@@ -403,9 +403,9 @@ BYOC.
 | Frontend | repo root | `apps/frontend/Dockerfile` |
 | Worker | repo root | `apps/worker/Dockerfile` (T6.2) |
 
-API image must include: apps/backend, packages/tac2iwxxm, packages/tac-validate,
-packages/iwxxm-validate, packages/dissemination, packages/shared, vendor/schemas.
-(**No** `packages/auth` — deleted F21 / EV-017.)
+API image must include: apps/backend, packages/tac2iwxxm, packages/tac-decoding,
+packages/tac-validate, packages/iwxxm-validate, packages/dissemination,
+packages/shared, packages/auth, vendor/schemas.
 
 Worker image must include: apps/worker, same packages as API (no frontend).
 
