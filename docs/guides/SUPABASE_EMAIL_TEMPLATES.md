@@ -53,16 +53,19 @@ This template is used for:
 {{ .ConfirmationURL }}
 ```
 
-**Replace with:**
+**Replace with (recommended — matches FE `/auth/confirm`):**
 ```
-{{ .SiteURL }}?token_hash={{ .TokenHash }}&type=email
+{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email
 ```
+
+The app exchanges `token_hash` via `POST /auth/confirm` (GoTrue verify). Keep
+**Confirm email** required (`mailer_autoconfirm` off) in production.
 
 **Full example:**
 ```
 Follow this link to confirm your sign up:
 
-{{ .SiteURL }}?token_hash={{ .TokenHash }}&type=email
+{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email
 
 (Or click the button below)
 

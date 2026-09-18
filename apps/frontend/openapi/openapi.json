@@ -1087,6 +1087,27 @@
         "title": "ComparisonStatus",
         "type": "string"
       },
+      "ConfirmRequest": {
+        "description": "Email confirmation via GoTrue ``token_hash`` (Auth email link).",
+        "properties": {
+          "token_hash": {
+            "minLength": 1,
+            "title": "Token Hash",
+            "type": "string"
+          },
+          "type": {
+            "default": "email",
+            "minLength": 1,
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token_hash"
+        ],
+        "title": "ConfirmRequest",
+        "type": "object"
+      },
       "ConversionIssue": {
         "description": "Structured issue for a single conversion input item.",
         "properties": {
@@ -11190,6 +11211,48 @@
         "summary": "Restore Work Session",
         "tags": [
           "Work Sessions"
+        ]
+      }
+    },
+    "/auth/confirm": {
+      "post": {
+        "description": "Confirm email (or related) via GoTrue token_hash verify.",
+        "operationId": "confirm_auth_confirm_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Confirm",
+        "tags": [
+          "Auth"
         ]
       }
     },

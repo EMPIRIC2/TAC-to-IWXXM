@@ -8,8 +8,14 @@ const mockToast = vi.hoisted(() => ({
   error: vi.fn(),
 }));
 
+const mockConfirmEmail = vi.hoisted(() => vi.fn());
+
 vi.mock('sonner', () => ({
   toast: mockToast,
+}));
+
+vi.mock('@/utils/authService', () => ({
+  confirmEmail: mockConfirmEmail,
 }));
 
 describe('AuthCallback', () => {
@@ -24,6 +30,8 @@ describe('AuthCallback', () => {
       value: {
         hash: '',
         href: 'http://localhost/',
+        search: '',
+        pathname: '/',
       },
     });
 
@@ -72,6 +80,31 @@ describe('AuthCallback', () => {
       },
       { timeout: 3000 },
     );
+  });
+
+  it('confirms email via token_hash query params', async () => {
+    const onVerified = vi.fn();
+    window.location.search = '?token_hash=hash123&type=email';
+    window.location.pathname = '/auth/confirm';
+    mockConfirmEmail.mockResolvedValue({
+      user: { id: 'u1', email: 'op@example.com', metadata: {} },
+      session: {
+        access_token: 'at',
+        refresh_token: 'rt',
+        expires_at: 99,
+      },
+    });
+
+    render(<AuthCallback onVerified={onVerified} />);
+
+    await waitFor(() => {
+      expect(mockConfirmEmail).toHaveBeenCalledWith({
+        token_hash: 'hash123',
+        type: 'email',
+      });
+      expect(mockToast.success).toHaveBeenCalledWith('Email verified successfully!');
+      expect(onVerified).toHaveBeenCalledTimes(1);
+    });
   });
 
   it('handles signup token with onVerified callback', async () => {
@@ -139,9 +172,7 @@ describe('AuthCallback', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: 'Error' })).toBeInTheDocument();
-      expect(
-        screen.getByText('An error occurred. Please try again.'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('handler failure')).toBeInTheDocument();
       expect(mockToast.error).toHaveBeenCalledWith('Authentication failed');
     });
 
