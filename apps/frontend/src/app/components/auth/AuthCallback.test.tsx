@@ -266,6 +266,23 @@ describe('AuthCallback', () => {
     );
   });
 
+  it('uses default catch message when thrown value has no Error message', async () => {
+    const onVerified = vi.fn(() => {
+      throw new Error('');
+    });
+    window.location.hash = '#access_token=abc123&type=signup';
+
+    render(<AuthCallback onVerified={onVerified} />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Error' })).toBeInTheDocument();
+      expect(
+        screen.getByText('An error occurred. Please try again.'),
+      ).toBeInTheDocument();
+      expect(mockToast.error).toHaveBeenCalledWith('Authentication failed');
+    });
+  });
+
   it('redirects home after catch block timeout using fake timers', async () => {
     vi.useFakeTimers();
     const onVerified = vi.fn(() => {
