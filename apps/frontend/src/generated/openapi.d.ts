@@ -1541,6 +1541,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm
+         * @description Confirm email (or related) via GoTrue token_hash verify.
+         */
+        post: operations["confirm_auth_confirm_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/login": {
         parameters: {
             query?: never;
@@ -2350,6 +2370,19 @@ export interface components {
          * @enum {string}
          */
         ComparisonStatus: "pass" | "fail" | "error";
+        /**
+         * ConfirmRequest
+         * @description Email confirmation via GoTrue ``token_hash`` (Auth email link).
+         */
+        ConfirmRequest: {
+            /** Token Hash */
+            token_hash: string;
+            /**
+             * Type
+             * @default email
+             */
+            type: string;
+        };
         /**
          * ConversionIssue
          * @description Structured issue for a single conversion input item.
@@ -7808,6 +7841,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WorkSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    confirm_auth_confirm_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponse"];
                 };
             };
             /** @description Validation Error */
