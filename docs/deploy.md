@@ -407,7 +407,9 @@ API image must include: apps/backend, packages/tac2iwxxm, packages/tac-decoding,
 packages/tac-validate, packages/iwxxm-validate, packages/dissemination,
 packages/shared, packages/auth, vendor/schemas.
 
-Worker image must include: apps/worker, same packages as API (no frontend).
+Worker image must include: apps/worker, packages/tac2iwxxm, packages/tac-decoding,
+packages/tac-validate, packages/iwxxm-validate, packages/workflows, packages/shared,
+vendor/schemas (no frontend).
 
 Frontend image must include: apps/frontend, packages/shared (pnpm workspace dep `@metar/shared`).
 
