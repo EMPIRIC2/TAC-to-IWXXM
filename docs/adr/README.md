@@ -48,6 +48,7 @@
 | [ADR-042](ADR-042-workflow-definitions.md) | Workflow definitions — execute(message, workflow) (spike #931) | **Accepted** (EV-931) |
 | [ADR-043](ADR-043-beta-features-pypi-calver.md) | Beta feature surfacing + PyPI CalVer / nightly TestPyPI | **Accepted** (EV-1150) |
 | [ADR-044](ADR-044-package-owned-catalogs-tac-decoding.md) | Package-owned rule catalogs; Profile Builder UI hard cutover; `tac-decoding` PyPI | **Accepted** (EV-retire-profile-dissem-ui-catalogs) |
+| [ADR-045](ADR-045-shared-tac-pack-engine.md) | Shared TAC pack engine for decode and convert IR | **Accepted** (EV-configurable-tac-decode-packs) |
 
 ## Process
 

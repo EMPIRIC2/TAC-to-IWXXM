@@ -209,7 +209,15 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Constraints**: No FastAPI/Supabase imports. Catalog rows are read-only trust metadata
   (EV-048: no internal doc refs in operator-facing strings).
 - **Migration**: Logic moves from `tac2iwxxm.decode` / `glossary`; `tac2iwxxm` re-exports for
-  one release then deprecates those entry points.
+  one release then deprecates those entry points. **ADR-045** keeps the shims, the legacy
+  parsers, and the multi-pin compares.
+- **EV-configurable-tac-decode-packs / ADR-045**: The same packs also project convert IR.
+  `tac2iwxxm` depends on `tac-decoding` for that IR. Decode must not import `tac2iwxxm`
+  (bulletin split is an injected port). Layouts are token-stream, label-fields, and
+  COLLECT (contained TAC, or an XML field walk when no TAC is present). No IWXXM encoder
+  in this package. Legacy parsers, validation, and pin compares stay (`2023-1`,
+  `2025-2`, `3.0.0`, and whatever pin a profile already requires). Packs do not
+  choose the pin; the caller passes version and profile.
 
 ### packages/tac-validate
 

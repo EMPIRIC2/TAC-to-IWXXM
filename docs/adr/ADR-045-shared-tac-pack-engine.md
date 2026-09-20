@@ -1,0 +1,40 @@
+# ADR-045: Shared TAC pack engine for decode and convert
+
+**Status:** Accepted (requirements lock — EV-configurable-tac-decode-packs, 2026-09-19)
+**Date:** 2026-09-19
+**Corpus:** [Corpus: product §F6] [Corpus: product §F9] [Corpus: product §F23] [Corpus: product §F28] [Corpus: product §F32] [Corpus: system-spec] [Corpus: api] [Corpus: adr/ADR-032] [Corpus: adr/ADR-044]
+
+## Context
+
+Natural-language decode already lives in `packages/tac-decoding`, but product structure is still hardcoded Python. Convert parses the same TAC again in `packages/tac2iwxxm/products/`. The two paths drift. Whitespace-spanning groups (for example fractional statute miles) become residuals. Label-field products (VAA, TCA, SWXA, VONA) need a different layout from METAR/TAF token streams. SIGMET volcanic-ash and tropical-cyclone forms need their own packs without a new HTTP product enum.
+
+## Decision
+
+1. **One engine, many packs.** `tac-decoding` owns a grammar engine. Product behavior lives in YAML/JSON packs. The engine is not a separate decoder per product.
+2. **Two projections from one match.** Each successful match can emit a natural-language explanation and a convert IR slot. `tac2iwxxm` consumes the IR projection. Decode does not import `tac2iwxxm`.
+3. **Layouts.** `token_stream` for METAR, SPECI, TAF, SIGMET, and AIRMET. `label_fields` for VAA, TCA, SWXA, and VONA. Commas and hyphens are delimiters inside values, not a separate file type. COLLECT is a third path: decode contained TAC when present; otherwise walk XML fields. No IWXXM encoder in `tac-decoding`.
+4. **Products.** Core packs: METAR/SPECI, TAF, ordinary SIGMET, VA SIGMET, TC SIGMET, AIRMET, VAA, TCA, SWXA, VONA. WAFS and QVACI are stub packs (whole-body residual) only.
+5. **Wire.** `product=sigmet` stays the only SIGMET HTTP value. The package still selects the IWXXM root from TAC / abbreviated heading. `POST /api/v1/decode-tac` response fields do not change this cycle.
+6. **Legacy stays.** Pack matches run in shadow beside the existing parsers. Do not delete `products/*.py`, validation, or the version comparisons. Profiles already choose the pin: Annex 3 uses `2023-1` and `2025-2`; `ca_eccc` uses `3.0.0`. A pack does not pick a pin. The caller passes `iwxxm_version` and `profile`; the same TAC explains the same way on every pin. XML emit and golden compares stay on the existing profile path, including every pin that already has the example. `tac2iwxxm.decode` and `glossary` shims stay.
+7. **Goldens.** Use existing `vendor/schemas` examples and in-repo fixtures. Do not fetch or commit new WMO copies.
+8. **Trust.** Pack overlays are file or environment only (no in-app editor, ADR-044). Regex and repeat budgets fail closed. Explanation locale hook is English-only this cycle.
+9. **Non-goals.** Do not emit `tac-validate` issues. Do not mutate TAC. Do not add explanation languages. Do not treat the 2026-09 research note as a path authority (VONA is an IWXXM product in this repo).
+
+## Consequences
+
+- Convert and decode can no longer diverge on a product once that product’s legacy parser is deleted.
+- Bulletin split becomes an injected port so decode does not depend on `tac2iwxxm`.
+- A bad overlay must not silently disable the builtin pack.
+- Vendor XML equality is the delete gate, not a softer semantic compare.
+
+## Tech locks (tech-plan, 2026-09-19)
+
+- **Overlay env.** `TAC_DECODING_PACK_DIR` is a directory of YAML/JSON packs. Unset means built-in packs only. It does not replace `TAC_DECODING_GLOSSARY_PATH`.
+- **Match budget.** 10,000 matcher steps per report. Exceeding the budget fails closed. Pack rule ids are not exported on the Decoding catalog this cycle.
+- **Versions.** Keep every pin a profile already compares (`2023-1`, `2025-2`, `3.0.0`, and any later profile pin). Do not fetch missing older copies. Shadow XML must stay byte-identical on each pin that already has the example. Parsers and validation stay.
+- **Deploy.** No new dependency and no required Render secret. PyYAML is already allowed.
+
+## Amends
+
+- **ADR-032:** glossary remains data, but structure (not only token meanings) is pack data.
+- **ADR-044:** `tac-decoding` remains the decode home; this cycle also makes it the convert IR source in shadow. Shims, legacy parsers, and the multi-pin validation compares stay. A later cycle would have to reopen deletion.
