@@ -51,6 +51,14 @@ def test_overlay_json_replaces_builtin(monkeypatch: pytest.MonkeyPatch, tmp_path
     assert packs["metar"].layout == "stub"
 
 
+def test_missing_builtin_pack_dir_still_loads_shells(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    monkeypatch.delenv("TAC_DECODING_PACK_DIR", raising=False)
+    monkeypatch.setattr("tac_decoding.packs._BUILTIN_PACK_DIR", tmp_path / "absent")
+    packs = {pack.id: pack for pack in load_packs()}
+    assert packs["metar"].layout == "token_stream"
+    assert packs["metar"].rules == ()
+
+
 def test_overlay_rejects_bad_files(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setenv("TAC_DECODING_PACK_DIR", str(tmp_path / "missing"))
     with pytest.raises(PackSchemaError, match="not a folder"):

@@ -22,6 +22,8 @@ packages = ["src/tac_decoding"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "src/tac_decoding/data/decode_glossary.yaml" = "tac_decoding/data/decode_glossary.yaml"
+"src/tac_decoding/data/packs/metar.yaml" = "tac_decoding/data/packs/metar.yaml"
+"src/tac_decoding/data/packs/speci.yaml" = "tac_decoding/data/packs/speci.yaml"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

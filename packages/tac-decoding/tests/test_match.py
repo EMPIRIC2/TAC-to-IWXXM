@@ -99,9 +99,10 @@ def test_stub_and_empty_rules_keep_legacy_path() -> None:
     assert stub.spans == ()
     assert stub.residuals[0].code == "WAFS body"
     assert match_tac("", packs["wafs"]).residuals == ()
-    leftover = match_tac("METAR", packs["metar"])
+    # TAF builtin remains an empty shell this cycle (METAR/SPECI are filled).
+    leftover = match_tac("TAF", packs["taf"])
     assert leftover.spans == ()
-    assert leftover.residuals[0].code == "METAR"
+    assert leftover.residuals[0].code == "TAF"
     label = match_tac("VOLCANO: X\n", packs["vona"])
     assert label.spans == ()
     assert label.residuals[0].code == "VOLCANO: X"

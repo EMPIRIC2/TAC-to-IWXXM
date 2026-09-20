@@ -40,6 +40,7 @@ _BUILTINS: tuple[tuple[str, str], ...] = (
     ("wafs", "stub"),
     ("qvaci", "stub"),
 )
+_BUILTIN_PACK_DIR = Path(__file__).resolve().parent / "data" / "packs"
 
 
 class PackSchemaError(ValueError):
@@ -68,6 +69,9 @@ class Pack:
 def load_packs() -> tuple[Pack, ...]:
     """Return built-in packs, with ``TAC_DECODING_PACK_DIR`` applied on top."""
     merged = {pack_id: Pack(pack_id, layout) for pack_id, layout in _BUILTINS}
+    if _BUILTIN_PACK_DIR.is_dir():
+        for pack in _read_overlay(_BUILTIN_PACK_DIR):
+            merged[pack.id] = pack
     raw = os.environ.get(PACK_DIR_ENV, "").strip()
     if not raw:
         return tuple(merged.values())
