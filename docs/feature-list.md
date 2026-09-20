@@ -212,6 +212,14 @@
   cycle. `/convert-zip` inherits the Form field. Does **not** flip F6 status; does **not**
   implement UJ-040 structured remark codecs. See Context: propagate-residuals-to-remarks (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   UJ-070; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-981.
+- **EV-configurable-tac-decode-packs / ADR-045 (F6 deepen, not a status flip):** Convert IR
+  for each core product comes from the same `tac-decoding` pack match as natural-language
+  decode. Legacy `products/*.py` parsers, validation, and pin compares stay
+  (`2023-1`, `2025-2`, `3.0.0`, and any other pin a profile already uses). Packs
+  do not choose the pin. Ordinary, VA, and TC SIGMET
+  are separate packs; HTTP stays `product=sigmet`. TAC abbreviated-heading bulletins stay
+  in scope. COLLECT: decode contained TAC when present; otherwise walk XML fields. No new
+  wire product values. WAFS / QVACI are stub packs only.
 - **Limitations**: US AIRMET/SIGMET docs thinner than METAR/TAF — may gate fixture depth inside
   F6.d; F5 not extended to other products in v1; exact AHL dialect coverage TBD in fixtures.
   Full FMH-1 remark catalog beyond AO/SLP/PK/T/P free-text is still scoped deepen work.
@@ -854,7 +862,8 @@
   selection-options for dropdowns. **Delete** operator library-assets YAML CRUD UI/API.
   Dissemination **send/preflight** retained with simpler pickers (ADR-021/029/030 unchanged).
   F7.w authoring journeys UJ-072f–UJ-072i → **Retired**; new UJ-076*.
-  F9: move decode/glossary into `packages/tac-decoding`; `tac2iwxxm` re-exports one release.
+  F9: move decode/glossary into `packages/tac-decoding`; `tac2iwxxm` re-exports one release
+  (ADR-045: shims, legacy parsers, and multi-pin compares stay).
   Decisions: [decisions/ev-retire-profile-dissem-ui-catalogs.md](decisions/ev-retire-profile-dissem-ui-catalogs.md).
 - **Acceptance (EV-retire-profile-dissem-ui-catalogs / ADR-044)**:
   1. Profile Builder + Dissemination Bench authoring UI gone (hard cutover)
@@ -889,7 +898,15 @@
   Schematron semantics.
 - **EV-retire-profile-dissem-ui-catalogs / ADR-044**: Decode engine + glossary + Decoding
   catalog live in `packages/tac-decoding` (PyPI `tac-decoding`). `tac2iwxxm.decode_tac`
-  re-exports for one release then deprecates (amends ADR-032 home).
+  re-exports for one release then deprecates (amends ADR-032 home). **ADR-045:** shims,
+  legacy parsers, and multi-pin compares stay.
+- **EV-configurable-tac-decode-packs / ADR-045 (F9 deepen, not a status flip):** Pack YAML/JSON
+  owns token-stream rules (METAR/SPECI/TAF/SIGMET/AIRMET, including whitespace-spanning
+  groups) and label-field rules (VAA/TCA/SWXA/VONA). SWXA and VONA stay core (F28/F32).
+  English explanation templates plus a locale hook. `/decode-tac` response fields do not
+  change. `tac2iwxxm.decode` / `glossary` shims stay. Legacy parsers and the
+  multi-pin validation compares stay. No in-app pack editor. Overlays are file or
+  environment only, with regex/repeat budgets that fail closed.
 - **EV-conversion-profile-ux-libraries deepen (Decoding library stub):** Catalogued
   natural-language code definitions (reuse `decode_tac` / F9 explanations) as a first-class
   **Decoding library** asset, separate from Conversion / Validation / Dissemination.

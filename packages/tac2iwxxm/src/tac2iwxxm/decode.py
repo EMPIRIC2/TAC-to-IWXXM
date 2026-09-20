@@ -13,6 +13,7 @@ from tac_decoding.decode import DecodeResidual as DecodeResidual
 from tac_decoding.decode import DecodeResult as DecodeResult
 from tac_decoding.decode import DecodeSegment as DecodeSegment
 from tac_decoding.decode import decode_tac as decode_tac
+from tac_decoding.decode import set_bulletin_splitter
 
 __all__ = [
     "DecodeResidual",
@@ -20,5 +21,17 @@ __all__ = [
     "DecodeSegment",
     "decode_tac",
 ]
+
+
+def _split_for_decode(tac: str, product: str) -> object:
+    from tac2iwxxm import bulletin as bulletin_mod
+
+    try:
+        return bulletin_mod.split_bulletin(tac, product=product)
+    except bulletin_mod.BulletinSplitError:
+        return None
+
+
+set_bulletin_splitter(_split_for_decode)
 
 sys.modules[__name__] = _impl

@@ -129,6 +129,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-076          | F7.v (ADR-044)                                               | Five package-owned trust catalogs                                                                                                                                                                                                                          | **H4–H5 when FE ships**           | TC-EVRPC-001..005                                                                        |
 | UJ-076a         | F7 / F16–F19 / F9 (ADR-044)                                  | Dropdown selection hard cutover                                                                                                                                                                                                                            | **H4–H5 when FE ships**           | TC-EVRPC-006..008                                                                        |
 | UJ-076b         | F9 (ADR-044)                                                 | tac-decoding parity                                                                                                                                                                                                                                        | **H4–H5 when FE ships**           | TC-EVRPC-009                                                                             |
+| UJ-077          | F6/F9 deepen (EV-configurable-tac-decode-packs / #1210)      | Pack engine shadow; operator decode UI unchanged                                                                                                                                                                                                           | H4–H5 N/A (no wire/UI change)     | TC-EV1210-001..004                                                                       |
 | UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
 | UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
 | UJ-072f         | F7.w (EV-conversion-profile-ux-libraries)                    | Profile Builder assembly + conversion token modes (Convert/Decode/Skip)                                                                                                                                                                                  | **H4–H5 when FE ships**           | TC-EVCPU-001..008                                                                        |
@@ -1533,6 +1534,38 @@ New **TC-EV027-001..005** (`E27-TC=1`). Ties **UJ-042**; deepens UJ-039 / UJ-020
 - **Objective**: Annex3 convert equality / F28+F32 quality packs unchanged for peers
 - **Pass criteria**: Golden/soft-compare still pass; no encode churn from decode-only change
 - **Source**: #1119; D-EV099-convert
+
+## EV-configurable-tac-decode-packs — #1210 shared pack engine
+
+Pins are the vendor TAC peers already used by each product’s convert golden (for example `metar-A3-1`, `taf-A5-2`, `sigmet-A6-1a-TS`, `sigmet-A6-2-TC`, `sigmet-VA-EGGX`, `airmet-A6-1a-TS`, `va-advisory-A7-2`, `tc-advisory-A2-2`, `spacewx-A7-3`, `vona-A7-1` under `vendor/schemas/iwxxm`). Do not add new WMO copies. [Corpus: tests] [Corpus: adr/ADR-045]
+
+### TC-EV1210-001: Shadow before delete (UJ-077)
+
+- **Level**: T0 / T2
+- **Objective**: For a product still on its legacy parser, the pack engine result is compared and the legacy result is what convert emits
+- **Pass criteria**: Shadow mode does not change that product’s vendor XML bytes
+- **Source**: #1210; ADR-045 cutover
+
+### TC-EV1210-002: Shadow XML stays byte-identical on every existing pin (UJ-077)
+
+- **Level**: T2
+- **Objective**: Pack shadow does not change convert XML. Legacy parsers, validation, and pin compares stay, including pins other profiles already require (`2023-1`, `2025-2`, `3.0.0`).
+- **Pass criteria**: Golden file compare is byte-identical, not a semantic diff. Compare every vendor pin that already contains that example name (`2023-1`, `2025-2`, and `3.0.0` where the file exists; VAA, SWXA, and VONA examples are `2025-2` only). Do not fetch missing older copies. Do not delete the legacy parser or the version matrix.
+- **Source**: #1210; operator lock 2026-09-19
+
+### TC-EV1210-003: Decode does not import tac2iwxxm (UJ-077)
+
+- **Level**: T0
+- **Objective**: `packages/tac-decoding` has no import of `tac2iwxxm` (bulletin split is injected)
+- **Pass criteria**: Import scan of `tac_decoding` fails if `tac2iwxxm` is imported
+- **Source**: ADR-045
+
+### TC-EV1210-004: Decode HTTP shape unchanged (UJ-077)
+
+- **Level**: T2
+- **Objective**: `POST /api/v1/decode-tac` response keys stay `product`, `summary`, `segments`, `residuals`
+- **Pass criteria**: No new required fields; existing decode contract tests stay green
+- **Source**: #1210; [Corpus: api]
 
 ### TC-F29-001: Harness recommendation written (UJ-044)
 

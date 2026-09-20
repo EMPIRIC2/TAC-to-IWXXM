@@ -1045,6 +1045,8 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 - EV-981 (2026-08-31): #981 — additive convert / convert-bulletin
   `propagate_residuals_to_remarks`; quality-metrics detail
   `residuals_propagated_to_remarks`; info issue `RESIDUALS_PROPAGATED_TO_REMARKS`.
+- EV-configurable-tac-decode-packs (2026-09-19): #1210 — **no HTTP contract change**
+  on `/decode-tac`, `/convert`, or `/convert-bulletin`. See endpoint review at file end.
 - S066 / EV-056 (2026-08-11): F7.q #988 — **no HTTP contract change**. FE shareable route
   `/quality/:stem` + collapsible equal-context hunks consume existing
   `GET /api/v1/quality-metrics` + `/{stem}` (pretty C14N panes from S065).
@@ -1253,3 +1255,20 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 **Breaking changes**: None. Additive only (`D-EV062-api`).
 
 - EV-062 (2026-08-20): #1017 Validation Issues Catalog deepen.
+
+## EV-configurable-tac-decode-packs — Endpoint review (#1210 / ADR-045)
+
+| Endpoint | Change for #1210? | Notes |
+|----------|-------------------|-------|
+| `POST /api/v1/decode-tac` | **None (wire)** | Same `product`, `summary`, `segments`, `residuals`. Pack engine is internal. No `children` / `role` fields |
+| `POST /api/v1/convert` | **None (wire)** | IR source moves to packs per product; vendor XML bytes stay identical |
+| `POST /api/v1/convert-bulletin` | **None (wire)** | TAC abbreviated-heading split unchanged on the wire. COLLECT handling is package-side |
+| `POST /api/v1/lint-tac` | **None (wire)** | Lint issues stay in `tac-validate` |
+| `POST /api/v1/validate` | **None (wire)** | Unchanged |
+| `product=sigmet` | **None (wire)** | Still one enum. Ordinary / VA / TC SIGMET are packs, not new values |
+| FE workbench | **None** | No UI change. H4–H5 not required for this cycle |
+| Dissemination / auth / sessions | **None** | Unchanged |
+
+**Breaking changes**: None. Library import `tac2iwxxm.decode` stays. Legacy parsers, validation, and the pin compares stay (ADR-045).
+
+- EV-configurable-tac-decode-packs (2026-09-19): #1210 — no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]

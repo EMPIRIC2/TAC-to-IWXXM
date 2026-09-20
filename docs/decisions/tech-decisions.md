@@ -179,3 +179,14 @@ Session report: `docs/sessions/S014-package-publish-validation/reports/05-verify
 
 See session report: `docs/sessions/S008-general-tac-iwxxm-converter/reports/05-verify-tech.md`.
 | TECH-ADR-023 | 2026-07-15 | Convert multipart wiring | UI sends bulletin_id/issuing_center/stop_on_error/validate_*; Log Level is client console filter only | confirmed |
+
+## EV-configurable-tac-decode-packs (2026-09-19)
+
+| ID | Date | Topic | Decision | Status |
+|----|------|-------|----------|--------|
+| TAUDIT-EV1210-01 | 2026-09-19 | Overlay env | `TAC_DECODING_PACK_DIR`; unset = built-ins | auto-approved |
+| TAUDIT-EV1210-02 | 2026-09-19 | Budget | 10,000 steps, fail closed; no catalog export | auto-approved |
+| TAUDIT-EV1210-03 | 2026-09-19 | Pins | Every existing vendor pin for the approved example names | auto-approved |
+| TAUDIT-EV1210-04 | 2026-09-19 | Phases | 3 phases / 16 tasks as drafted | approved |
+| TAUDIT-EV1210-05 | 2026-09-19 | Scaffold | Template scaffold not repeated (brownfield delta) | auto-approved |
+| TAUDIT-EV1210-06 | 2026-09-19 | Connectivity | H4–H5 N/A; no new CORS tasks | auto-approved |

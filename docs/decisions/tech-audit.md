@@ -241,3 +241,27 @@ Full report: [`docs/sessions/S008-general-tac-iwxxm-converter/reports/05-verify-
 | Phase B (S008) | 04+05 done; 06 N/A on routing |
 
 Next for S008 routing: **16-evolve**, then **07-build**.
+
+## EV-configurable-tac-decode-packs (2026-09-19)
+
+Delta audit. Historical sections above are unchanged.
+Session plan: `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-configurable-tac-decode-packs/reports/execution-plan.md`.
+
+| Check | Result |
+|-------|--------|
+| F6/F9 tasks present | Pass |
+| T1.1–T1.5 match the Build Plan Card | Pass |
+| TDD: each code task follows a test task | Pass |
+| `TAC_DECODING_PACK_DIR` in config-spec and T1.1 | Pass |
+| No new dependency (PyYAML already listed) | Pass |
+| H4–H5 N/A matches UJ-077 | Pass |
+| No circular task deps | Pass |
+| Template Phase 1 scaffold | Waived — repo already on `static+api+worker` |
+
+| Metric | Count |
+|--------|-------|
+| Auto-approved | 5 |
+| User-approved | 1 (phase shape) |
+| Denied / skipped | 0 |
+
+Phase B partial: execution plan audited. Next is tech-tooling. Gate stays closed.

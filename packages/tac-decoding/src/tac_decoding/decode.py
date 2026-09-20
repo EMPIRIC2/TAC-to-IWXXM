@@ -8,7 +8,8 @@ explicit residuals for undecoded spans. VAA/TCA/SWXA/VONA use structured
 from __future__ import annotations
 
 import re
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
+from typing import Protocol, cast
 
 import msgspec
 
@@ -840,20 +841,40 @@ def _shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
     )
 
 
+class _BulletinMeta(Protocol):
+    ahl: str
+    report_count: int
+
+
+class _BulletinSplit(Protocol):
+    reports: Sequence[str]
+    meta: _BulletinMeta
+
+
+_bulletin_splitter: Callable[[str, str], object] | None = None
+
+
+def set_bulletin_splitter(splitter: Callable[[str, str], object] | None) -> None:
+    """Inject WMO bulletin splitting. Unset means bulletins are not split."""
+    global _bulletin_splitter
+    _bulletin_splitter = splitter
+
+
 def _decode_bulletin(tac: str, *, product: str) -> DecodeResult | None:
     """Split a WMO AHL bulletin and decode each contained TAC report.
 
-    Returns None when the text is not a splittable bulletin so the caller can
-    fall through to single-report decode.
+    Returns None when the text is not a splittable bulletin, or when no
+    bulletin splitter has been injected, so the caller can fall through to
+    single-report decode. This package does not import the converter.
     """
-    from tac2iwxxm.bulletin import BulletinSplitError, split_bulletin
-
     if not _looks_like_ahl_bulletin(tac):
         return None
-    try:
-        split = split_bulletin(tac, product=product)
-    except BulletinSplitError:
+    if _bulletin_splitter is None:
         return None
+    split_obj = _bulletin_splitter(tac, product)
+    if split_obj is None:
+        return None
+    split = cast(_BulletinSplit, split_obj)
 
     segments: list[DecodeSegment] = []
     for start, end, code, explanation in _iter_ahl_heading(tac):
@@ -921,6 +942,16 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
     return DecodeResult(product=product, segments=segments, residuals=residuals, summary=summary)
 
 
+def decode_single_report(tac: str, *, product: str) -> DecodeResult:
+    """Decode one TAC report without bulletin or COLLECT dispatch."""
+    return _decode_single_report(tac, product=product)
+
+
+def shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
+    """Translate segment offsets into a parent document string."""
+    return _shift_decode(result, offset)
+
+
 def decode_tac(tac: str, *, product: str) -> DecodeResult:
     """
     Decode TAC text into ordered explanation segments and residuals.
@@ -928,7 +959,8 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
     Parameters
     ----------
     tac :
-        Raw TAC report text, or a WMO AHL bulletin containing one or more reports.
+        Raw TAC report text, a WMO AHL bulletin, or COLLECT / IWXXM XML with
+        contained TAC or leaf fields.
     product :
         One of the F6 product ids or ``SWXA`` (case-insensitive).
 
@@ -941,6 +973,8 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
         LABEL fields (EV-030 / EV-099) with explicit residuals for leftovers (G4).
         Multi-report AHL bulletins are split so each report is decoded independently
         (heading is a bulletin-framing segment, not a product residual).
+        COLLECT documents decode contained TAC when present, otherwise walk XML
+        fields (ADR-045).
     """
     product_u = product.upper()
     if product_u not in _SUPPORTED:
@@ -949,6 +983,12 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
         residuals = [DecodeResidual(start=0, end=len(text), text=text)] if text else []
         summary = _build_summary(product_u, [], residuals)
         return DecodeResult(product=product_u, segments=[], residuals=residuals, summary=summary)
+
+    from tac_decoding.collect import try_decode_collect
+
+    collected = try_decode_collect(tac, product=product_u)
+    if collected is not None:
+        return collected
 
     bulletin = _decode_bulletin(tac, product=product_u)
     if bulletin is not None:

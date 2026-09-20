@@ -287,6 +287,8 @@ on DO Postgres while keeping public convert and abuse-control env knobs:
 - S027 / EV-021 (2026-07-29): F26/F27 VAA+TCA WMO goldens — **no new env vars**; see §F26/F27
 - S038 / EV-031 (2026-08-03): F30/F31 — `DATABASE_URL` required; Auth keys restored; DOKS live URLs;
   F8 off Supabase DB (ADR-033)
+- EV-configurable-tac-decode-packs / #1210 (2026-09-19): optional `TAC_DECODING_PACK_DIR`;
+  unset means built-in packs only. Not a required deploy secret (ADR-045).
 
 ## F24 / F25 / F9 deepen — WMO goldens + glossary (S026 / EV-020)
 
@@ -297,7 +299,8 @@ No new Render secrets required for convert goldens (package-side). Decode glossa
 |---------|----------------|-------|
 | WMO golden defaults | Code defaults | `profile=annex3`, pinned default `iwxxm_version` — ADR-032 |
 | Decode glossary | Official/near-official sources + YAML **overrides** | E20-E2; ADR-032 |
-| Glossary override path | Packaged `decode_glossary.yaml` + optional `TAC2IWXXM_DECODE_GLOSSARY_PATH` | Overlay only |
+| Glossary override path | Packaged `decode_glossary.yaml` + optional `TAC_DECODING_GLOSSARY_PATH` (legacy `TAC2IWXXM_DECODE_GLOSSARY_PATH`) | Overlay only |
+| Pack overlay dir | Optional `TAC_DECODING_PACK_DIR` | Directory of YAML/JSON packs. Unset = built-in packs only. Not a Render secret (ADR-045 / #1210) |
 | OpenAIP / F3 names | Existing F3 / OpenAIP config | Enrich decode when available; miss → ICAO only |
 | FE Examples catalog | Static FE fixtures | No env; WMO-passers only |
 
