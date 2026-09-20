@@ -1,8 +1,8 @@
-"""Shadow convert: run a pack match beside the legacy parser.
+"""Shadow convert: run a pack match beside convert.
 
-XML still comes from :func:`tac2iwxxm.convert.convert`. Pack IR is projected
-beside the legacy parser IR. The pack does not choose ``iwxxm_version`` or
-``profile``. [Corpus: adr/ADR-045]
+``xml`` matches :func:`tac2iwxxm.convert.convert` at the resolved IR source.
+``legacy_ir`` always comes from ``ir_source=legacy`` when that path succeeds.
+[Corpus: adr/ADR-045]
 """
 
 from __future__ import annotations
@@ -25,7 +25,7 @@ _SIGMET_PACKS = {
 
 @dataclass(frozen=True, slots=True)
 class ShadowResult:
-    """Legacy convert output plus an optional pack match and pack IR."""
+    """Convert output plus an optional pack match and pack IR."""
 
     ok: bool
     xml: str | None
@@ -45,7 +45,7 @@ def convert_shadow(
     iwxxm_version: str | None = None,
 ) -> ShadowResult:
     """
-    Convert with the legacy parser and, for a shadow product, also match the pack.
+    Convert at the default IR source and, for a shadow product, also match the pack.
 
     Parameters
     ----------
@@ -63,16 +63,25 @@ def convert_shadow(
     Returns
     -------
     ShadowResult
-        ``xml`` and ``legacy_ir`` come from the legacy convert. ``pack_ir`` is the
-        pack projection when that convert succeeded for a shadow product.
+        ``xml`` matches default :func:`convert`. ``legacy_ir`` is from
+        ``ir_source=legacy`` when that convert succeeds.
     """
     result = convert(tac, product=product, profile=profile, iwxxm_version=iwxxm_version)
+    legacy = convert(
+        tac,
+        product=product,
+        profile=profile,
+        iwxxm_version=iwxxm_version,
+        ir_source="legacy",
+    )
     matched: MatchResult | None = None
     pack_id: str | None = None
     pack_ir: dict[str, object] | None = None
     product_u = product.upper()
+    # Prefer legacy IR for SIGMET pack selection; fall back to default IR.
+    select_ir = legacy.ir if legacy.ok else result.ir
     if product_u in _SHADOW_PRODUCTS and result.ok:
-        pack_id = _pack_id(product_u, result.ir)
+        pack_id = _pack_id(product_u, select_ir)
         packs = {item.id: item for item in load_packs()}
         matched = match_tac(
             tac,
@@ -88,7 +97,7 @@ def convert_shadow(
         match=matched,
         pack_id=pack_id,
         pack_ir=pack_ir,
-        legacy_ir=result.ir,
+        legacy_ir=legacy.ir if legacy.ok else None,
     )
 
 
