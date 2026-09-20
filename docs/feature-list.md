@@ -226,6 +226,14 @@
   (`metar-A3-1`, `speci-A3-2`) stay byte-identical on every existing pin, flip METAR/SPECI
   convert **default** to the pack-IR path — still **no** `products/*.py` delete (delete
   gate needs a later evolve). Packages stay separate. [Corpus: adr/ADR-045]
+- **EV-pack-fill-delete-gate / ADR-045 deepen (F6, #1214):** Fill + wire remaining core packs
+  (TAF, ordinary/VA/TC SIGMET, AIRMET, VAA, TCA, SWXA, VONA). Stricter in-bar peers include
+  `sigmet-A6-1b-CNL`, `sigmet-multi-location-VA`, and SWXA `_alternate` XML. Rewrite `pack_ir_map` so pack emit
+  does not import deleted legacy parsers. **Selective delete-gate:** remove shared
+  `products/*.py` only when **every** product in that file is byte-identical on in-bar peers
+  (all-or-nothing); keep failing files (zero deletes OK). METAR/SPECI may delete `metar_speci.py` if goldens
+  still pass after mapper independence. WAFS/QVACI stay stubs. Packages stay separate.
+  [Corpus: adr/ADR-045]
 - **Limitations**: US AIRMET/SIGMET docs thinner than METAR/TAF — may gate fixture depth inside
   F6.d; F5 not extended to other products in v1; exact AHL dialect coverage TBD in fixtures.
   Full FMH-1 remark catalog beyond AO/SLP/PK/T/P free-text is still scoped deepen work.
@@ -916,6 +924,9 @@
 - **EV-pack-ir-convert-wire (F9 deepen):** METAR/SPECI builtin pack rules grow until match
   covers convert-golden vendor peers; decode still emits the same `/decode-tac` fields.
   Convert-slot mapping and XML emit stay in `tac2iwxxm` (span IR only in decode).
+- **EV-pack-fill-delete-gate (F9 deepen, #1214):** Remaining core product packs gain real
+  rules (token-stream + label-fields). Decode wire unchanged. Convert-slot mapping must not
+  depend on deleted `products/*.py` after selective delete-gate.
 - **EV-conversion-profile-ux-libraries deepen (Decoding library stub):** Catalogued
   natural-language code definitions (reuse `decode_tac` / F9 explanations) as a first-class
   **Decoding library** asset, separate from Conversion / Validation / Dissemination.

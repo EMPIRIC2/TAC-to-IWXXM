@@ -16,13 +16,7 @@ from tac2iwxxm.decode import decode_tac
 from tac2iwxxm.exchange_output import default_ca_translation_centre
 from tac2iwxxm.ir_source import IR_SOURCE_ENV, resolve_ir_source
 from tac2iwxxm.models import ConvertIssue, ConvertResult
-from tac2iwxxm.pack_ir_map import PackIrMapError, map_spans_to_convert_ir
-from tac2iwxxm.products.metar_speci import parse_metar_speci
-from tac2iwxxm.products.sigmet_airmet import parse_airmet, parse_sigmet
-from tac2iwxxm.products.swxa import parse_swxa
-from tac2iwxxm.products.taf import parse_taf
-from tac2iwxxm.products.vaa_tca import parse_tca, parse_vaa
-from tac2iwxxm.products.vona import parse_vona
+from tac2iwxxm.pack_ir_map import PackIrMapError, map_spans_to_convert_ir, pack_id_for_product
 from tac2iwxxm.profile_registry import (
     EMIT_ANNEX3,
     EMIT_AU_BOM,
@@ -56,6 +50,12 @@ from tac2iwxxm.profiles.iwxxm_us import (
     emit_sigmet_iwxxm_us,
     emit_taf_iwxxm_us,
 )
+from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
+from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet, parse_sigmet
+from tac2iwxxm.slot_builders.swxa import parse_swxa
+from tac2iwxxm.slot_builders.taf import parse_taf
+from tac2iwxxm.slot_builders.vaa_tca import parse_tca, parse_vaa
+from tac2iwxxm.slot_builders.vona import parse_vona
 
 
 def _ir_source_is_explicit_pack(ir_source: str | None) -> bool:
@@ -433,9 +433,10 @@ def _parse_pack_ir(
 ) -> dict[str, Any]:
     """Match the product pack and map spans into convert IR slots."""
     packs = {item.id: item for item in load_packs()}
-    pack = packs.get(product.lower())
+    pack_id = pack_id_for_product(product, tac)
+    pack = packs.get(pack_id)
     if pack is None:
-        msg = f"no pack for product {product!r}"
+        msg = f"no pack for product {product!r} ({pack_id})"
         raise PackIrMapError(msg)
     matched = match_tac(
         tac,

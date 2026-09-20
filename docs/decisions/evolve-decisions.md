@@ -1,5 +1,29 @@
 # Evolve Decisions
 
+## Cycle EV-pack-fill-delete-gate — core pack fill + selective delete (ADR-045 deepen)
+
+**Opened:** 2026-09-20 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-pack-fill-delete-gate`  
+**Issue:** [#1214](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1214) · **Documenting→Implementing gate:** closed  
+**Branch:** `evolve/EV-pack-fill-delete-gate`  
+**Precursor:** #1212 / PR #1213
+
+| ID | Outcome |
+|----|---------|
+| D-PFDG-01 | Stricter in-bar peers (multi-location VA + SWXA alternates) |
+| D-PFDG-02 | All-or-nothing delete per shared `products/*.py` file |
+| D-PFDG-03 | Rewrite `pack_ir_map` — no import of deleted `products/*.py` |
+| D-PFDG-04 | Token-stream first, then label-field, then delete-gate |
+| D-PFDG-05 | METAR/SPECI delete allowed if goldens pass after mapper independence |
+| D-PFDG-06..10 | Packages separate; no HTTP/UI; stubs WAFS/QVACI; byte-identical bar; full scale |
+| D-PFDG-11 | Zero shared-file deletes OK (keep-on-fail; ship packs) |
+| D-PFDG-12 | SWXA primary + `_alternate` both required for flip/delete |
+| D-PFDG-13 | `sigmet-A6-1b-CNL` in-bar |
+| D-PFDG-REQ | Requirements locked 2026-09-20 → draft-docs |
+
+[Corpus: product §F6] [Corpus: product §F9] [Corpus: adr/ADR-045] [Corpus: tests] [Corpus: decisions]
+
+---
+
 ## Cycle EV-pack-ir-convert-wire — pack fill + convert emit (ADR-045 deepen)
 
 **Opened:** 2026-09-20 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-pack-ir-convert-wire`  

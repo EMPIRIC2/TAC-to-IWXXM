@@ -60,3 +60,6 @@ rules:
   - id: equal
     pattern: ["="]
     explain: "Report terminator"
+  - id: token
+    pattern: [".+"]
+    explain: "Token {0}"

@@ -119,7 +119,7 @@ def test_tc_f32_003_vona_metfeature_and_colour_codes(case_id: str) -> None:
 
 
 def test_tc_f32_002_vona_a7_1_content_signals() -> None:
-    from tac2iwxxm.products.vona import parse_vona
+    from tac2iwxxm.slot_builders.vona import parse_vona
 
     from tac2iwxxm import convert
 

@@ -1,0 +1,64 @@
+# Builtin tca label-fields pack (ADR-045 / EV-pack-fill-delete-gate).
+id: tca
+layout: label_fields
+rules:
+  - id: dtg
+    label: "DTG"
+    explain: "DTG {value}"
+  - id: tcac
+    label: "TCAC"
+    explain: "TCAC {value}"
+  - id: tc
+    label: "TC"
+    explain: "TC {value}"
+  - id: advisory_nr
+    label: "ADVISORY NR"
+    explain: "ADVISORY NR {value}"
+  - id: obs_psn
+    label: "OBS PSN"
+    explain: "OBS PSN {value}"
+  - id: cb
+    label: "CB"
+    explain: "CB {value}"
+  - id: mov
+    label: "MOV"
+    explain: "MOV {value}"
+  - id: intst_change
+    label: "INTST CHANGE"
+    explain: "INTST CHANGE {value}"
+  - id: c
+    label: "C"
+    explain: "C {value}"
+  - id: max_wind
+    label: "MAX WIND"
+    explain: "MAX WIND {value}"
+  - id: fcst_psn_6_hr
+    label: "FCST PSN +6 HR"
+    explain: "FCST PSN +6 HR {value}"
+  - id: fcst_max_wind_6_hr
+    label: "FCST MAX WIND +6 HR"
+    explain: "FCST MAX WIND +6 HR {value}"
+  - id: fcst_psn_12_hr
+    label: "FCST PSN +12 HR"
+    explain: "FCST PSN +12 HR {value}"
+  - id: fcst_max_wind_12_hr
+    label: "FCST MAX WIND +12 HR"
+    explain: "FCST MAX WIND +12 HR {value}"
+  - id: fcst_psn_18_hr
+    label: "FCST PSN +18 HR"
+    explain: "FCST PSN +18 HR {value}"
+  - id: fcst_max_wind_18_hr
+    label: "FCST MAX WIND +18 HR"
+    explain: "FCST MAX WIND +18 HR {value}"
+  - id: fcst_psn_24_hr
+    label: "FCST PSN +24 HR"
+    explain: "FCST PSN +24 HR {value}"
+  - id: fcst_max_wind_24_hr
+    label: "FCST MAX WIND +24 HR"
+    explain: "FCST MAX WIND +24 HR {value}"
+  - id: rmk
+    label: "RMK"
+    explain: "RMK {value}"
+  - id: nxt_msg
+    label: "NXT MSG"
+    explain: "NXT MSG {value}"

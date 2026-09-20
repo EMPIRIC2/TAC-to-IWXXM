@@ -1,0 +1,37 @@
+# Builtin swxa label-fields pack (ADR-045 / EV-pack-fill-delete-gate).
+id: swxa
+layout: label_fields
+rules:
+  - id: dtg
+    label: "DTG"
+    explain: "DTG {value}"
+  - id: swxc
+    label: "SWXC"
+    explain: "SWXC {value}"
+  - id: swx_effect
+    label: "SWX EFFECT"
+    explain: "SWX EFFECT {value}"
+  - id: advisory_nr
+    label: "ADVISORY NR"
+    explain: "ADVISORY NR {value}"
+  - id: obs_swx
+    label: "OBS SWX"
+    explain: "OBS SWX {value}"
+  - id: fcst_swx_6_hr
+    label: "FCST SWX +6 HR"
+    explain: "FCST SWX +6 HR {value}"
+  - id: fcst_swx_12_hr
+    label: "FCST SWX +12 HR"
+    explain: "FCST SWX +12 HR {value}"
+  - id: fcst_swx_18_hr
+    label: "FCST SWX +18 HR"
+    explain: "FCST SWX +18 HR {value}"
+  - id: fcst_swx_24_hr
+    label: "FCST SWX +24 HR"
+    explain: "FCST SWX +24 HR {value}"
+  - id: rmk
+    label: "RMK"
+    explain: "RMK {value}"
+  - id: nxt_advisory
+    label: "NXT ADVISORY"
+    explain: "NXT ADVISORY {value}"

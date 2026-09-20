@@ -127,7 +127,7 @@ def test_tc_f28_003_swxa_wmo_reference_peer(case_id: str) -> None:
 
 
 def test_tc_f28_002_swxa_a7_3_content_signals() -> None:
-    from tac2iwxxm.products.swxa import parse_swxa
+    from tac2iwxxm.slot_builders.swxa import parse_swxa
 
     from tac2iwxxm import convert
 

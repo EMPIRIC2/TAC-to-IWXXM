@@ -30,13 +30,6 @@ from tac2iwxxm.exchange_output import parse_msc_exchange_filename
 from tac2iwxxm.geometry.reference_point import ReferencePointGeometryParser
 from tac2iwxxm.glossary import set_location_name_resolver
 from tac2iwxxm.products import fir_geometry as fg
-from tac2iwxxm.products import metar_speci as ms
-from tac2iwxxm.products import sigmet_airmet as sa
-from tac2iwxxm.products import swxa as swxa_mod
-from tac2iwxxm.products import vaa_tca as vt
-from tac2iwxxm.products import vona as vona_mod
-from tac2iwxxm.products.taf import parse_taf
-from tac2iwxxm.products.vona import parse_vona
 from tac2iwxxm.profile_registry import known_semantic_profile_ids
 from tac2iwxxm.profiles import annex3 as a3
 from tac2iwxxm.profiles import ca_eccc as ca
@@ -46,6 +39,13 @@ from tac2iwxxm.profiles.annex3_emit import swxa as swxa_emit
 from tac2iwxxm.profiles.annex3_emit import taf as taf_emit
 from tac2iwxxm.profiles.annex3_emit import tca as tca_emit
 from tac2iwxxm.profiles.annex3_emit import vaa as vaa_emit
+from tac2iwxxm.slot_builders import metar_speci as ms
+from tac2iwxxm.slot_builders import sigmet_airmet as sa
+from tac2iwxxm.slot_builders import swxa as swxa_mod
+from tac2iwxxm.slot_builders import vaa_tca as vt
+from tac2iwxxm.slot_builders import vona as vona_mod
+from tac2iwxxm.slot_builders.taf import parse_taf
+from tac2iwxxm.slot_builders.vona import parse_vona
 
 # ---------------------------------------------------------------------------
 # Tiny modules / helpers
@@ -769,7 +769,7 @@ def test_ev080_remaining_branch_fill(monkeypatch: pytest.MonkeyPatch) -> None:
     sa._enrich_hazard_body(ir_wi, "WI N5000 E01000 - N5100 E01000 MOD ICE")
     assert sa._parse_frzlvl_section("FRZLVL...RANGING FROM SFC-120 ACRS AREA")["multiple_levels"] is False
 
-    from tac2iwxxm.products.sigmet_airmet import _parse_convective_sigmet
+    from tac2iwxxm.slot_builders.sigmet_airmet import _parse_convective_sigmet
 
     _parse_convective_sigmet(
         "CONVECTIVE SIGMET 12 VALID UNTIL 1655Z KS FROM 10N FSD-20NE FSD AREA TS MOV FROM 24045KT TOPS TO FL450"

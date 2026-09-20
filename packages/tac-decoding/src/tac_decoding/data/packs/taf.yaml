@@ -1,0 +1,22 @@
+# Builtin TAF token-stream pack (ADR-045 / EV-pack-fill-delete-gate).
+id: taf
+layout: token_stream
+rules:
+  - id: report_type
+    pattern: ["TAF"]
+    explain: "Forecast {0}"
+  - id: amd
+    pattern: ["AMD"]
+    explain: "Amendment"
+  - id: cor
+    pattern: ["COR"]
+    explain: "Correction"
+  - id: station
+    pattern: ["[A-Z][A-Z0-9]{3}"]
+    explain: "Station {0}"
+  - id: equal
+    pattern: ["="]
+    explain: "Report terminator"
+  - id: token
+    pattern: [".+"]
+    explain: "Token {0}"

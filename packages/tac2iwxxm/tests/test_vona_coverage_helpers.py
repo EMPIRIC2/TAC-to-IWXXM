@@ -5,8 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-from tac2iwxxm.products.vona import parse_vona
 from tac2iwxxm.profiles.annex3_products import emit_vona_annex3
+from tac2iwxxm.slot_builders.vona import parse_vona
 
 from tac2iwxxm import convert, map_t1t2, parse_ahl, split_bulletin
 

@@ -9,13 +9,13 @@ import json
 from pathlib import Path
 
 import pytest
-from tac2iwxxm.products.taf import parse_taf
 from tac2iwxxm.profile_registry import (
     EMIT_AU_BOM,
     EMIT_NZ_CAA_MET,
     known_semantic_profile_ids,
     resolve_semantic_profile,
 )
+from tac2iwxxm.slot_builders.taf import parse_taf
 
 from tac2iwxxm import convert
 

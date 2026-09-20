@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 import pytest
-from tac2iwxxm.products.sigmet_airmet import parse_airmet, parse_sigmet
+from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet, parse_sigmet
 from tac_validate import lint
 from tac_validate.profiles import PROFILE_ANNEX3, PROFILE_IWXXM_US
 

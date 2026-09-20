@@ -48,3 +48,15 @@ Deepen only. Does not reopen mass deletion of `products/*.py`.
 3. **Default flip (not delete).** When pack-IR emit XML is byte-identical to legacy on that bar, METAR/SPECI convert **default** may switch to the pack-IR path mid-cycle. Legacy parsers remain in tree until a later evolve reopens the delete gate.
 4. **Packages stay separate.** Do not merge `tac-decoding` and `tac2iwxxm`.
 5. **Deploy.** Still no required Render secret. Optional override env (if any) is documented in config-spec and is not required for production.
+
+## Amend — EV-pack-fill-delete-gate (2026-09-20)
+
+Deepen #1214. Reopens **selective** deletion only.
+
+1. **Fill + wire.** Remaining core packs (TAF, ordinary/VA/TC SIGMET, AIRMET, VAA, TCA, SWXA, VONA) gain real rules and pack-IR emit. METAR/SPECI stay.
+2. **Stricter coverage bar.** In-bar peers include primary Annex examples **plus** `sigmet-A6-1b-CNL`, `sigmet-multi-location-VA`, and SWXA `_alternate` XML peers on pins where they exist. Out of bar: NIL-collect / translation-failed families unless later deepen.
+3. **Mapper independence.** `pack_ir_map` (and pack emit) must not import `products/*.py` for any product whose legacy parser is deleted.
+4. **Selective delete-gate.** Vendor XML byte-identical on every existing pin for in-bar peers → may delete that product’s legacy parser. Shared files (`metar_speci.py`, `sigmet_airmet.py`, `vaa_tca.py`) are **all-or-nothing**: delete the file only when every product it owns passes; otherwise keep the file and remove only safe dead paths. **Zero deletes this cycle is acceptable** if siblings fail — still ship pack fill.
+5. **SWXA alternates.** Where a pin has both primary and `_alternate` vendor XML, pack-IR emit must match **both** before flip/delete for SWXA.
+6. **METAR/SPECI.** May delete `metar_speci.py` in this cycle if goldens still pass after mapper independence.
+7. **Packages stay separate.** WAFS/QVACI remain stubs. No HTTP wire change. No required Render secret.

@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-19 (EV-configurable-tac-decode-packs — UJ-077; no operator UI change)
+> **Last updated**: 2026-09-20 (EV-pack-fill-delete-gate — UJ-077 deepen #1214; no operator UI change)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -111,7 +111,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-076 | Five package-owned trust catalogs (tabbed) | apps/frontend / API | F7.v (ADR-044) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076a | Dropdown profile / dissemination / decode selection | apps/frontend / API | F7.w→dropdowns / F16–F19 / F9 (ADR-044) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076b | Decode via `tac-decoding` parity | apps/frontend / API | F9 (ADR-044) | T0 / T2 / H4–H5 |
-| UJ-077 | Pack-engine decode and convert, same operator panel | library / API | F6/F9 (#1210 / ADR-045) | T0 / T2; H4–H5 N/A |
+| UJ-077 | Pack-engine decode and convert, same operator panel | library / API | F6/F9 (#1210 / #1214 / ADR-045) | T0 / T2; H4–H5 N/A |
 | UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
@@ -2857,3 +2857,8 @@ backed by deployed backend lists only.
 **EV-pack-ir-convert-wire deepen (2026-09-20):** Same journey. METAR/SPECI packs gain
 real rules; convert may default to pack-IR emit when vendor XML stays byte-identical.
 Legacy parsers stay until a later delete-gate evolve. Pass also: TC-EV-PACKIR-001..005.
+
+**EV-pack-fill-delete-gate deepen (2026-09-20, #1214):** Same journey for remaining core
+products. Stricter goldens include multi-location VA and SWXA alternates. Selective
+legacy parser delete when byte-identical (all-or-nothing per shared file). Pass also:
+TC-EV-PFDG-001..005.

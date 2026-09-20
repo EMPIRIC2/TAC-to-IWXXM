@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 import pytest
-from tac2iwxxm.products.sigmet_airmet import parse_airmet
+from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet
 
 from metar_shared.xml_canonical import canonicalize_xml
 from tac2iwxxm import convert
@@ -93,7 +93,7 @@ def test_tc_ev083_003_ev082_regression_pack(us_manifest: dict) -> None:
 
 def test_tc_ev083_004_parse_conus_variants() -> None:
     """Exercise CONUS/FRZLVL parser branches for coverage."""
-    from tac2iwxxm.products.sigmet_airmet import _phenomenon_from_conus_for_text, parse_airmet
+    from tac2iwxxm.slot_builders.sigmet_airmet import _phenomenon_from_conus_for_text, parse_airmet
 
     assert _phenomenon_from_conus_for_text("TURB") == "MOD_TURB"
     assert _phenomenon_from_conus_for_text("IFR") == "SFC_VIS"
@@ -131,7 +131,7 @@ def test_tc_ev083_004_parse_conus_variants() -> None:
 
 def test_tc_ev083_005_parse_edge_branches() -> None:
     """Cover remaining CONUS/outlook parser branches."""
-    from tac2iwxxm.products.sigmet_airmet import (
+    from tac2iwxxm.slot_builders.sigmet_airmet import (
         _phenomenon_from_conus_for_text,
         _strip_conus_airmet_lead,
         parse_airmet,

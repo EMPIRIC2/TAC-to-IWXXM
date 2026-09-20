@@ -22,7 +22,7 @@ PROFILE = "annex3"
 
 
 def test_tc_ev038_011_parse_carries_height_source_and_movement() -> None:
-    from tac2iwxxm.products.vona import parse_vona
+    from tac2iwxxm.slot_builders.vona import parse_vona
 
     ir = parse_vona(ACCEPT_TAC.read_text(encoding="utf-8"), product="VONA")
     assert ir["height_source"] == "GRD OBSERVER"

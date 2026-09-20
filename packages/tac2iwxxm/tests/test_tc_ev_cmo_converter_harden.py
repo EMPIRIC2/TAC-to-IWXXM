@@ -6,9 +6,9 @@ Does **not** mutate authoritative CMO TAC fixtures. [Corpus: product §F6]
 from __future__ import annotations
 
 import pytest
-from tac2iwxxm.products.metar_speci import parse_metar_speci
-from tac2iwxxm.products.sigmet_airmet import parse_sigmet
-from tac2iwxxm.products.taf import parse_taf
+from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
+from tac2iwxxm.slot_builders.sigmet_airmet import parse_sigmet
+from tac2iwxxm.slot_builders.taf import parse_taf
 
 from tac2iwxxm import convert
 
@@ -114,14 +114,14 @@ def test_sigmet_cnl_valid_keyword_before_period() -> None:
 
 
 def test_parse_sequence_token_rejects_garbage() -> None:
-    from tac2iwxxm.products.sigmet_airmet import _parse_sequence_token
+    from tac2iwxxm.slot_builders.sigmet_airmet import _parse_sequence_token
 
     with pytest.raises(ValueError, match="unable to parse"):
         _parse_sequence_token("??")
 
 
 def test_airmet_letter_sequence_label() -> None:
-    from tac2iwxxm.products.sigmet_airmet import parse_airmet
+    from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet
 
     tac = (
         "LIMM AIRMET A1 VALID 081200/081600 LIIB- "

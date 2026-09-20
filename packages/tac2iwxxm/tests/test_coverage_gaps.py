@@ -5,14 +5,14 @@ from __future__ import annotations
 import pytest
 from tac2iwxxm.convert import convert
 from tac2iwxxm.native import rust_available, rust_module, scan_metar_tokens
-from tac2iwxxm.products.sigmet_airmet import parse_airmet, parse_sigmet
-from tac2iwxxm.products.taf import parse_taf
-from tac2iwxxm.products.vaa_tca import parse_tca, parse_vaa
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
 from tac2iwxxm.profiles.iwxxm_us import (
     emit_metar_speci_iwxxm_us,
     emit_taf_iwxxm_us,
 )
+from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet, parse_sigmet
+from tac2iwxxm.slot_builders.taf import parse_taf
+from tac2iwxxm.slot_builders.vaa_tca import parse_tca, parse_vaa
 
 
 def test_parse_taf_nil_vrb_mps_and_mismatch() -> None:
@@ -313,7 +313,7 @@ def test_more_coverage_edges() -> None:
     assert sparse["lat"] < 0
     assert sparse["source_elevation_m"] is None
 
-    from tac2iwxxm.products.vaa_tca import _latlon, _parse_dtg
+    from tac2iwxxm.slot_builders.vaa_tca import _latlon, _parse_dtg
 
     assert _parse_dtg("20040925/1900Z") is not None
     assert _parse_dtg("not-a-dtg") is None

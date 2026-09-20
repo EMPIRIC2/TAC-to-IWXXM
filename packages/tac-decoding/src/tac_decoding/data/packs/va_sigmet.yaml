@@ -1,0 +1,10 @@
+# Builtin va_sigmet token-stream pack (ADR-045 / EV-pack-fill-delete-gate).
+id: va_sigmet
+layout: token_stream
+rules:
+  - id: equal
+    pattern: ["="]
+    explain: "Report terminator"
+  - id: token
+    pattern: [".+"]
+    explain: "Token {0}"

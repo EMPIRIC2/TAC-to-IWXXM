@@ -11,8 +11,7 @@ import pytest
 from tac2iwxxm.convert import convert
 from tac2iwxxm.ir_source import resolve_ir_source
 from tac2iwxxm.pack_ir_map import PackIrMapError, map_spans_to_convert_ir
-from tac2iwxxm.products import metar_speci as metar_speci_mod
-from tac2iwxxm.products.metar_speci import parse_metar_speci
+from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
 from tac_decoding.match import MatchContext, MatchResult, MatchSpan, match_tac
 from tac_decoding.packs import load_packs
 
@@ -60,10 +59,10 @@ def test_map_rejects_residuals() -> None:
         map_spans_to_convert_ir(match, tac="METAR YUDO", product="METAR")
 
 
-def test_map_rejects_non_metar_family() -> None:
+def test_map_rejects_unsupported_product() -> None:
     match = MatchResult(spans=(), residuals=(), steps=0, iwxxm_version=None, profile=None)
     with pytest.raises(PackIrMapError, match="not supported"):
-        map_spans_to_convert_ir(match, tac="TAF", product="TAF")
+        map_spans_to_convert_ir(match, tac="WAFS", product="WAFS")
 
 
 def test_map_rejects_empty_body_spans() -> None:
@@ -108,12 +107,13 @@ def test_convert_rejects_bad_ir_source() -> None:
 
 
 def test_explicit_pack_fails_when_incomplete() -> None:
-    tac = "METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012 RMK AO2="
+    # Incomplete body — pack catch-all still matches tokens, but slot builder rejects.
+    tac = "METAR"
     result = convert(
         tac,
         product="METAR",
-        profile="ca_eccc",
-        iwxxm_version="3.0.0",
+        profile="annex3",
+        iwxxm_version="2025-2",
         ir_source="pack",
     )
     # Explicit pack does not fall back — quarantine or parse error.
@@ -174,14 +174,13 @@ def test_default_convert_uses_pack_ir(stem: str, product: str) -> None:
     assert default.ir == legacy.ir
 
 
-def test_legacy_parser_module_still_present() -> None:
+def test_products_metar_speci_module_deleted() -> None:
     path = _PRODUCTS / "metar_speci.py"
-    assert path.is_file()
-    assert callable(metar_speci_mod.parse_metar_speci)
+    assert not path.is_file()
 
 
-def test_taf_still_defaults_to_legacy() -> None:
-    assert resolve_ir_source("TAF") == "legacy"
+def test_taf_defaults_to_pack() -> None:
+    assert resolve_ir_source("TAF") == "pack"
 
 
 def test_sigmet_pack_id_from_legacy_root() -> None:
