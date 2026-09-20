@@ -6,8 +6,8 @@
 version: 1
 status: ci_recorded
 recorded: "2026-09-20"
-recorded_host: darwin-arm64
-source: evolve/EV-pack-ir-convert-wire (pack-IR default + cached load_packs)
+recorded_host: ubuntu-latest-ci-observe
+source: evolve/EV-pack-ir-convert-wire (pack-IR default; CI-observed METAR/SPECI)
 iwxxm_version: "2025-2"
 profile: annex3
 warmup: 5
@@ -21,13 +21,14 @@ products:
   metar:
     product: METAR
     tac: "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
-    baseline_p50_s: 0.000062354
-    baseline_p95_s: 0.000069258
+    # CI ubuntu observed p95 ~0.000332s (2026-09-20); darwin seed was ~70µs.
+    baseline_p50_s: 0.000250000
+    baseline_p95_s: 0.000330000
   speci:
     product: SPECI
     tac: "SPECI KJFK 231812Z 18015G25KT 3SM -RA BKN015 14/12 A2990="
-    baseline_p50_s: 0.000073687
-    baseline_p95_s: 0.000109429
+    baseline_p50_s: 0.000250000
+    baseline_p95_s: 0.000330000
   taf:
     product: TAF
     tac: "TAF KJFK 231720Z 2318/2424 18012KT P6SM FEW040="
