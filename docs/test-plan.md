@@ -129,7 +129,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-076          | F7.v (ADR-044)                                               | Five package-owned trust catalogs                                                                                                                                                                                                                          | **H4–H5 when FE ships**           | TC-EVRPC-001..005                                                                        |
 | UJ-076a         | F7 / F16–F19 / F9 (ADR-044)                                  | Dropdown selection hard cutover                                                                                                                                                                                                                            | **H4–H5 when FE ships**           | TC-EVRPC-006..008                                                                        |
 | UJ-076b         | F9 (ADR-044)                                                 | tac-decoding parity                                                                                                                                                                                                                                        | **H4–H5 when FE ships**           | TC-EVRPC-009                                                                             |
-| UJ-077          | F6/F9 deepen (EV-configurable-tac-decode-packs / #1210)      | Pack engine shadow; operator decode UI unchanged                                                                                                                                                                                                           | H4–H5 N/A (no wire/UI change)     | TC-EV1210-001..004                                                                       |
+| UJ-077          | F6/F9 deepen (#1210 + EV-pack-ir-convert-wire)               | Pack shadow + METAR/SPECI pack-IR emit when goldens match                                                                                                                                                                                                  | H4–H5 N/A (no wire/UI change)     | TC-EV1210-001..004; TC-EV-PACKIR-001..005                                                 |
 | UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
 | UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
 | UJ-072f         | F7.w (EV-conversion-profile-ux-libraries)                    | Profile Builder assembly + conversion token modes (Convert/Decode/Skip)                                                                                                                                                                                  | **H4–H5 when FE ships**           | TC-EVCPU-001..008                                                                        |
@@ -1566,6 +1566,45 @@ Pins are the vendor TAC peers already used by each product’s convert golden (f
 - **Objective**: `POST /api/v1/decode-tac` response keys stay `product`, `summary`, `segments`, `residuals`
 - **Pass criteria**: No new required fields; existing decode contract tests stay green
 - **Source**: #1210; [Corpus: api]
+
+## EV-pack-ir-convert-wire — pack fill + convert emit (ADR-045 deepen)
+
+Coverage bar: vendor `metar-A3-1` and `speci-A3-2` on every pin that already has the example. Out of bar: `metar-NIL-collect`, `metar-translation-failed`. H4–H5 N/A. [Corpus: tests] [Corpus: adr/ADR-045]
+
+### TC-EV-PACKIR-001: METAR/SPECI packs cover golden peers (UJ-077)
+
+- **Level**: T0 / T2
+- **Objective**: Builtin `metar` / `speci` packs match vendor TAC peers with structured spans (not empty-shell residuals-only)
+- **Pass criteria**: Span goldens for `metar-A3-1` and `speci-A3-2`; residual tokens shrink vs empty-pack baseline for groups the pack claims
+- **Source**: EV-pack-ir-convert-wire; D-PACKIR-03/04
+
+### TC-EV-PACKIR-002: Span→slot mapping stays in tac2iwxxm (UJ-077)
+
+- **Level**: T0
+- **Objective**: `tac-decoding` still exports span IR only; slot mapping / emit adapters live under `tac2iwxxm`
+- **Pass criteria**: Import scan + unit tests prove no convert-slot schema required inside `tac-decoding`; mapper tests in `tac2iwxxm`
+- **Source**: D-PACKIR-02
+
+### TC-EV-PACKIR-003: Pack-IR emit XML byte-identical before default flip (UJ-077)
+
+- **Level**: T2
+- **Objective**: Pack-IR emit path for METAR/SPECI matches legacy XML byte-for-byte on every existing pin for the coverage bar
+- **Pass criteria**: Same pin matrix discipline as TC-EV1210-002 for `metar-A3-1` / `speci-A3-2`
+- **Source**: D-PACKIR-05
+
+### TC-EV-PACKIR-004: Default flip without parser delete (UJ-077)
+
+- **Level**: T2
+- **Objective**: After equality passes, METAR/SPECI convert default uses pack-IR path; `products/metar_speci.py` still exists
+- **Pass criteria**: Default convert path asserted pack-backed; file presence / import of legacy module still succeeds; no delete of `products/*.py`
+- **Source**: D-PACKIR-05/06; ADR-045 amend 2026-09-20
+
+### TC-EV-PACKIR-005: Decode still does not import tac2iwxxm (UJ-077)
+
+- **Level**: T0
+- **Objective**: Package boundary unchanged
+- **Pass criteria**: Existing TC-EV1210-003 import scan stays green
+- **Source**: D-PACKIR-01/08
 
 ### TC-F29-001: Harness recommendation written (UJ-044)
 

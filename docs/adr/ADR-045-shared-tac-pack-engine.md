@@ -38,3 +38,13 @@ Natural-language decode already lives in `packages/tac-decoding`, but product st
 
 - **ADR-032:** glossary remains data, but structure (not only token meanings) is pack data.
 - **ADR-044:** `tac-decoding` remains the decode home; this cycle also makes it the convert IR source in shadow. Shims, legacy parsers, and the multi-pin validation compares stay. A later cycle would have to reopen deletion.
+
+## Amend — EV-pack-ir-convert-wire (2026-09-20)
+
+Deepen only. Does not reopen mass deletion of `products/*.py`.
+
+1. **Span IR boundary.** `tac-decoding.project_ir` stays span/residual projection. Mapping spans → legacy convert slots and IWXXM emit live only in `tac2iwxxm`.
+2. **Pack fill.** Builtin METAR/SPECI packs gain real rules. Coverage bar: vendor peers `metar-A3-1` and `speci-A3-2` on every pin that already has the example. Out of bar: `metar-NIL-collect`, `metar-translation-failed`.
+3. **Default flip (not delete).** When pack-IR emit XML is byte-identical to legacy on that bar, METAR/SPECI convert **default** may switch to the pack-IR path mid-cycle. Legacy parsers remain in tree until a later evolve reopens the delete gate.
+4. **Packages stay separate.** Do not merge `tac-decoding` and `tac2iwxxm`.
+5. **Deploy.** Still no required Render secret. Optional override env (if any) is documented in config-spec and is not required for production.

@@ -190,6 +190,10 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   (optional config/request gate for Translation Centre); FIR/“S OF” polygon helpers (#738
   coord); COLLECT/multi-version hooks under F16–F19 (not single-report SoT). Runtime pin
   **v2025-2**.
+- **EV-pack-ir-convert-wire / ADR-045 deepen**: Maps pack span IR → legacy convert slots and
+  can emit IWXXM from that path for METAR/SPECI. Default may flip to pack-IR emit when
+  vendor peers stay byte-identical; `products/metar_speci.py` stays until a later delete-gate
+  evolve. Does not fold `tac-decoding` into this package.
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
@@ -218,6 +222,10 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   in this package. Legacy parsers, validation, and pin compares stay (`2023-1`,
   `2025-2`, `3.0.0`, and whatever pin a profile already requires). Packs do not
   choose the pin; the caller passes version and profile.
+- **EV-pack-ir-convert-wire / ADR-045 deepen**: Builtin METAR/SPECI packs gain real rules.
+  `project_ir` remains span/residual IR only. Slot mapping and IWXXM emit from pack IR
+  live in `tac2iwxxm`. When METAR/SPECI vendor goldens stay byte-identical, convert may
+  default to the pack-IR emit path for those products without deleting legacy parsers.
 
 ### packages/tac-validate
 

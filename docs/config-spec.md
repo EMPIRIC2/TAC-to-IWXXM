@@ -301,6 +301,7 @@ No new Render secrets required for convert goldens (package-side). Decode glossa
 | Decode glossary | Official/near-official sources + YAML **overrides** | E20-E2; ADR-032 |
 | Glossary override path | Packaged `decode_glossary.yaml` + optional `TAC_DECODING_GLOSSARY_PATH` (legacy `TAC2IWXXM_DECODE_GLOSSARY_PATH`) | Overlay only |
 | Pack overlay dir | Optional `TAC_DECODING_PACK_DIR` | Directory of YAML/JSON packs. Unset = built-in packs only. Not a Render secret (ADR-045 / #1210) |
+| Convert IR source | Optional `TAC2IWXXM_CONVERT_IR_SOURCE` | `legacy` / `pack` / `auto` (default). `auto` uses pack IR for METAR/SPECI. Not a Render secret (ADR-045 / #1212) |
 | OpenAIP / F3 names | Existing F3 / OpenAIP config | Enrich decode when available; miss → ICAO only |
 | FE Examples catalog | Static FE fixtures | No env; WMO-passers only |
 

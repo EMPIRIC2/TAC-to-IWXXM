@@ -1,0 +1,59 @@
+# Builtin METAR token-stream pack (ADR-045 / EV-pack-ir-convert-wire).
+# Covers annex3 vendor peer metar-A3-1. [Corpus: adr/ADR-045]
+id: metar
+layout: token_stream
+rules:
+  - id: report_type
+    pattern: ["METAR"]
+    explain: "Routine report {0}"
+  - id: station
+    pattern: ["[A-Z][A-Z0-9]{3}"]
+    explain: "Station {0}"
+  - id: obs_time
+    pattern: ["\\d{6}Z"]
+    explain: "Observation time {0}"
+  - id: wind
+    pattern: ["(?:\\d{3}|VRB)\\d{2,3}(?:G\\d{2,3})?(?:KT|MPS)"]
+    explain: "Wind {0}"
+  - id: rvr
+    pattern: ["R\\d{2}[LCR]?/(?:[PM])?\\d{4}(?:[UDN])?(?:FT)?"]
+    explain: "Runway visual range {0}"
+  - id: weather
+    pattern: ["(?://|(?:\\+|-|VC)?(?:MI|PR|BC|DR|BL|SH|TS|FZ)?(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+)"]
+    explain: "Weather {0}"
+  - id: nsw
+    pattern: ["NSW"]
+    explain: "No significant weather"
+  - id: cloud
+    pattern: ["(?:FEW|SCT|BKN|OVC)\\d{3}(?:CB|TCU)?"]
+    explain: "Cloud {0}"
+  - id: nsc
+    pattern: ["NSC"]
+    explain: "No significant cloud"
+  - id: temp_dew
+    pattern: ["M?\\d{2}/M?\\d{2}"]
+    explain: "Temperature and dewpoint {0}"
+  - id: qnh
+    pattern: ["Q\\d{3,4}"]
+    explain: "QNH {0}"
+  - id: altimeter
+    pattern: ["A\\d{4}"]
+    explain: "Altimeter {0}"
+  - id: trend_kind
+    pattern: ["(?:BECMG|TEMPO|NOSIG)"]
+    explain: "Trend {0}"
+  - id: trend_time
+    pattern: ["(?:TL|AT|FM)\\d{4}"]
+    explain: "Trend time {0}"
+  - id: cavok
+    pattern: ["CAVOK"]
+    explain: "Ceiling and visibility OK"
+  - id: visibility_sm
+    pattern: ["(?:P?\\d+(?:\\s+\\d+/\\d+)?|\\d+/\\d+)SM"]
+    explain: "Visibility {0} statute miles"
+  - id: visibility
+    pattern: ["\\d{4}"]
+    explain: "Visibility {0} metres"
+  - id: equal
+    pattern: ["="]
+    explain: "Report terminator"

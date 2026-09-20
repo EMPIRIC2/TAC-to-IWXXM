@@ -125,6 +125,7 @@ def _read_from_root(root: ET.Element) -> CollectRead:
     saw_failed_attr = False
 
     def walk(el: ET.Element, path: tuple[str, ...], depth: int) -> None:
+        """Walk one COLLECT element, collecting TAC and fields."""
         nonlocal bulletin_identifier, nodes, saw_failed_attr
         if depth > _MAX_DEPTH:
             msg = "COLLECT XML exceeds the maximum nesting depth"

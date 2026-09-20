@@ -1272,3 +1272,16 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 **Breaking changes**: None. Library import `tac2iwxxm.decode` stays. Legacy parsers, validation, and the pin compares stay (ADR-045).
 
 - EV-configurable-tac-decode-packs (2026-09-19): #1210 — no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]
+
+## EV-pack-ir-convert-wire — Endpoint review (ADR-045 deepen)
+
+| Endpoint | Change? | Notes |
+|----------|---------|-------|
+| `POST /api/v1/decode-tac` | **None (wire)** | Same fields. Richer METAR/SPECI pack rules improve spans/summary content only |
+| `POST /api/v1/convert` | **None (wire)** | Library default for METAR/SPECI may switch to pack-IR emit when goldens match; request/response shape unchanged |
+| Other convert/validate/lint | **None** | Unchanged |
+| FE / H4–H5 | **N/A** | No UI or CORS change |
+
+**Breaking changes**: None. `products/metar_speci.py` remains until a later delete-gate evolve.
+
+- EV-pack-ir-convert-wire (2026-09-20): deepen #1210 — no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]

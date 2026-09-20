@@ -11,6 +11,7 @@ import json
 import os
 import re
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import cast
 
@@ -40,6 +41,7 @@ _BUILTINS: tuple[tuple[str, str], ...] = (
     ("wafs", "stub"),
     ("qvaci", "stub"),
 )
+_BUILTIN_PACK_DIR = Path(__file__).resolve().parent / "data" / "packs"
 
 
 class PackSchemaError(ValueError):
@@ -67,11 +69,31 @@ class Pack:
 
 def load_packs() -> tuple[Pack, ...]:
     """Return built-in packs, with ``TAC_DECODING_PACK_DIR`` applied on top."""
+    overlay = os.environ.get(PACK_DIR_ENV, "").strip()
+    if not overlay:
+        return _load_builtins_cached()
+    # Overlay dirs are not cached: tests rewrite the same path between loads.
+    return _merge_packs(overlay)
+
+
+def clear_pack_cache() -> None:
+    """Drop cached built-in packs (tests that patch ``_BUILTIN_PACK_DIR`` must call this)."""
+    _load_builtins_cached.cache_clear()
+
+
+@lru_cache(maxsize=1)
+def _load_builtins_cached() -> tuple[Pack, ...]:
+    return _merge_packs("")
+
+
+def _merge_packs(overlay: str) -> tuple[Pack, ...]:
     merged = {pack_id: Pack(pack_id, layout) for pack_id, layout in _BUILTINS}
-    raw = os.environ.get(PACK_DIR_ENV, "").strip()
-    if not raw:
+    if _BUILTIN_PACK_DIR.is_dir():
+        for pack in _read_overlay(_BUILTIN_PACK_DIR):
+            merged[pack.id] = pack
+    if not overlay:
         return tuple(merged.values())
-    for pack in _read_overlay(Path(raw)):
+    for pack in _read_overlay(Path(overlay)):
         merged[pack.id] = pack
     return tuple(merged.values())
 

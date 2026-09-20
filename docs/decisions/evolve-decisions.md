@@ -1,5 +1,27 @@
 # Evolve Decisions
 
+## Cycle EV-pack-ir-convert-wire — pack fill + convert emit (ADR-045 deepen)
+
+**Opened:** 2026-09-20 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-pack-ir-convert-wire`  
+**Precursor:** #1210 / PR #1211 · **Documenting→Implementing gate:** closed  
+**Branch:** `evolve/EV-pack-ir-convert-wire`
+
+| ID | Outcome |
+|----|---------|
+| D-PACKIR-01 | Packages stay separate |
+| D-PACKIR-02 | Span IR in tac-decoding; spans→slots mapper in tac2iwxxm only |
+| D-PACKIR-03/04 | METAR/SPECI first; coverage `metar-A3-1` + `speci-A3-2` |
+| D-PACKIR-05 | Flip METAR/SPECI convert default when goldens match; no parser delete |
+| D-PACKIR-06 | Delete gate closed this cycle |
+| D-PACKIR-07/08 | No HTTP shape change; decode↛tac2iwxxm |
+| D-PACKIR-09 | Comment #1210 + follow-on issue after requirements draft |
+| D-PACKIR-10 | H4–H5/E2E N/A; scale standard |
+| D-PACKIR-REQ | Requirements locked 2026-09-20 → draft-docs |
+
+[Corpus: product §F6] [Corpus: product §F9] [Corpus: adr/ADR-045] [Corpus: tests] [Corpus: decisions]
+
+---
+
 ## Cycle EV-profile-builder-workbench-edit — IDE workbench + full editability (#1203)
 
 **Opened:** 2026-09-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-profile-builder-workbench-edit`  
