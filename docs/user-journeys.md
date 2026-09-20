@@ -2853,3 +2853,7 @@ backed by deployed backend lists only.
 3. Convert. XML matches the existing vendor golden byte for byte once that product has flipped.
 
 **Pass**: TC-EV1210-001..004. No H4–H5 (no frontend or HTTP shape change).
+
+**EV-pack-ir-convert-wire deepen (2026-09-20):** Same journey. METAR/SPECI packs gain
+real rules; convert may default to pack-IR emit when vendor XML stays byte-identical.
+Legacy parsers stay until a later delete-gate evolve. Pass also: TC-EV-PACKIR-001..005.

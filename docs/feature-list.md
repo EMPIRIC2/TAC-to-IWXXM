@@ -220,6 +220,12 @@
   are separate packs; HTTP stays `product=sigmet`. TAC abbreviated-heading bulletins stay
   in scope. COLLECT: decode contained TAC when present; otherwise walk XML fields. No new
   wire product values. WAFS / QVACI are stub packs only.
+- **EV-pack-ir-convert-wire / ADR-045 deepen (F6, not a status flip):** Fill builtin packs
+  (METAR/SPECI first). Span IR stays in `tac-decoding`; `tac2iwxxm` maps spans→legacy
+  convert slots and may emit IWXXM from that path. When METAR/SPECI vendor golden peers
+  (`metar-A3-1`, `speci-A3-2`) stay byte-identical on every existing pin, flip METAR/SPECI
+  convert **default** to the pack-IR path — still **no** `products/*.py` delete (delete
+  gate needs a later evolve). Packages stay separate. [Corpus: adr/ADR-045]
 - **Limitations**: US AIRMET/SIGMET docs thinner than METAR/TAF — may gate fixture depth inside
   F6.d; F5 not extended to other products in v1; exact AHL dialect coverage TBD in fixtures.
   Full FMH-1 remark catalog beyond AO/SLP/PK/T/P free-text is still scoped deepen work.
@@ -907,6 +913,9 @@
   change. `tac2iwxxm.decode` / `glossary` shims stay. Legacy parsers and the
   multi-pin validation compares stay. No in-app pack editor. Overlays are file or
   environment only, with regex/repeat budgets that fail closed.
+- **EV-pack-ir-convert-wire (F9 deepen):** METAR/SPECI builtin pack rules grow until match
+  covers convert-golden vendor peers; decode still emits the same `/decode-tac` fields.
+  Convert-slot mapping and XML emit stay in `tac2iwxxm` (span IR only in decode).
 - **EV-conversion-profile-ux-libraries deepen (Decoding library stub):** Catalogued
   natural-language code definitions (reuse `decode_tac` / F9 explanations) as a first-class
   **Decoding library** asset, separate from Conversion / Validation / Dissemination.
