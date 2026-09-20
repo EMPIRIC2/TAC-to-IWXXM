@@ -7,6 +7,7 @@ fields are walked. This module never encodes IWXXM.
 
 from __future__ import annotations
 
+import re
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
@@ -31,6 +32,11 @@ _IWXXM_ROOTS = frozenset(
     }
 )
 _SKIP_FIELD = frozenset({"bulletinIdentifier"})
+_FORBIDDEN_DTD = re.compile(r"<!DOCTYPE|<!ENTITY", re.IGNORECASE)
+_MAX_DEPTH = 64
+_MAX_NODES = 10_000
+_MAX_LEAVES = 2_000
+_MAX_TAC_REPORTS = 500
 
 
 class CollectError(ValueError):
@@ -71,20 +77,92 @@ def _looks_like_xml(text: str) -> bool:
     return stripped.startswith("<?xml") or stripped.startswith("<")
 
 
+def _has_forbidden_dtd(text: str) -> bool:
+    """Reject DTD / custom entity declarations (billion-laughs class)."""
+    return _FORBIDDEN_DTD.search(text) is not None
+
+
+def _parse_root(text: str) -> ET.Element:
+    if _has_forbidden_dtd(text):
+        msg = "COLLECT XML must not include a document type or entity declaration"
+        raise CollectError(msg)
+    try:
+        return ET.fromstring(text)
+    except ET.ParseError as exc:
+        msg = "COLLECT input is not well-formed XML"
+        raise CollectError(msg) from exc
+
+
+def _is_collect_shape(root: ET.Element) -> bool:
+    local = _local(root.tag)
+    if local == "MeteorologicalBulletin" or local in _IWXXM_ROOTS:
+        return True
+    for nodes, el in enumerate(root.iter(), start=1):
+        if nodes > _MAX_NODES:
+            return False
+        if any(_attr_local(key) == "translationFailedTAC" for key in el.attrib):
+            return True
+    return False
+
+
 def is_collect_input(text: str) -> bool:
     """Return whether ``text`` should use the COLLECT / IWXXM read path."""
-    if not _looks_like_xml(text):
+    if not _looks_like_xml(text) or _has_forbidden_dtd(text):
         return False
     try:
-        root = ET.fromstring(text)
-    except ET.ParseError:
+        root = _parse_root(text)
+    except CollectError:
         return False
+    return _is_collect_shape(root)
+
+
+def _read_from_root(root: ET.Element) -> CollectRead:
     local = _local(root.tag)
-    if local == "MeteorologicalBulletin":
-        return True
-    if local in _IWXXM_ROOTS:
-        return True
-    return any(_attr_local(key) == "translationFailedTAC" for el in root.iter() for key in el.attrib)
+    tac_reports: list[str] = []
+    fields: list[CollectField] = []
+    bulletin_identifier: str | None = None
+    nodes = 0
+    saw_failed_attr = False
+
+    def walk(el: ET.Element, path: tuple[str, ...], depth: int) -> None:
+        nonlocal bulletin_identifier, nodes, saw_failed_attr
+        if depth > _MAX_DEPTH:
+            msg = "COLLECT XML exceeds the maximum nesting depth"
+            raise CollectError(msg)
+        nodes += 1
+        if nodes > _MAX_NODES:
+            msg = "COLLECT XML exceeds the maximum node count"
+            raise CollectError(msg)
+        name = _local(el.tag)
+        here = (*path, name)
+        for key, value in el.attrib.items():
+            if _attr_local(key) != "translationFailedTAC":
+                continue
+            saw_failed_attr = True
+            if value.strip():
+                if len(tac_reports) >= _MAX_TAC_REPORTS:
+                    msg = "COLLECT XML exceeds the maximum contained TAC count"
+                    raise CollectError(msg)
+                tac_reports.append(value.strip())
+        text = (el.text or "").strip()
+        children = list(el)
+        if name == "bulletinIdentifier" and text:
+            bulletin_identifier = text
+        elif text and not children and name not in _SKIP_FIELD:
+            if len(fields) >= _MAX_LEAVES:
+                msg = "COLLECT XML exceeds the maximum leaf-field count"
+                raise CollectError(msg)
+            fields.append(CollectField(name=name, value=text, path="/".join(here)))
+        for child in children:
+            walk(child, here, depth + 1)
+
+    walk(root, (), 0)
+    if local != "MeteorologicalBulletin" and local not in _IWXXM_ROOTS and not saw_failed_attr:
+        msg = "XML is not a COLLECT bulletin or IWXXM report"
+        raise CollectError(msg)
+    if tac_reports:
+        return CollectRead("tac", bulletin_identifier, tuple(tac_reports), ())
+    return CollectRead("xml_walk", bulletin_identifier, (), tuple(fields))
 
 
 def read_collect(xml: str) -> CollectRead:
@@ -103,45 +181,23 @@ def read_collect(xml: str) -> CollectRead:
         ``mode`` is ``tac`` when at least one contained TAC is present, else
         ``xml_walk``.
     """
-    try:
-        root = ET.fromstring(xml)
-    except ET.ParseError as exc:
-        msg = "COLLECT input is not well-formed XML"
-        raise CollectError(msg) from exc
-
-    local = _local(root.tag)
-    has_failed = any(_attr_local(key) == "translationFailedTAC" for el in root.iter() for key in el.attrib)
-    if local != "MeteorologicalBulletin" and local not in _IWXXM_ROOTS and not has_failed:
-        msg = "XML is not a COLLECT bulletin or IWXXM report"
-        raise CollectError(msg)
-
-    tac_reports: list[str] = []
-    fields: list[CollectField] = []
-    bulletin_identifier: str | None = None
-
-    def walk(el: ET.Element, path: tuple[str, ...]) -> None:
-        nonlocal bulletin_identifier
-        name = _local(el.tag)
-        here = (*path, name)
-        for key, value in el.attrib.items():
-            if _attr_local(key) == "translationFailedTAC" and value.strip():
-                tac_reports.append(value.strip())
-        text = (el.text or "").strip()
-        children = list(el)
-        if name == "bulletinIdentifier" and text:
-            bulletin_identifier = text
-        elif text and not children and name not in _SKIP_FIELD:
-            fields.append(CollectField(name=name, value=text, path="/".join(here)))
-        for child in children:
-            walk(child, here)
-
-    walk(root, ())
-    if tac_reports:
-        return CollectRead("tac", bulletin_identifier, tuple(tac_reports), ())
-    return CollectRead("xml_walk", bulletin_identifier, (), tuple(fields))
+    return _read_from_root(_parse_root(xml))
 
 
-def decode_collect(xml: str, *, product: str) -> DecodeResult:
+def _source_span(xml: str, needle: str, search_from: int) -> tuple[int, int, int]:
+    """Best-effort source offsets. Missed finds stay zero-width (entity-decoded text)."""
+    if not needle:
+        return 0, 0, search_from
+    pos = xml.find(needle, search_from)
+    if pos < 0:
+        pos = xml.find(needle)
+    if pos < 0:
+        return 0, 0, search_from
+    end = pos + len(needle)
+    return pos, end, end
+
+
+def decode_collect(xml: str, *, product: str, read: CollectRead | None = None) -> DecodeResult:
     """
     Decode COLLECT or IWXXM XML into the public decode shape.
 
@@ -156,44 +212,31 @@ def decode_collect(xml: str, *, product: str) -> DecodeResult:
         shift_decode,
     )
 
-    read = read_collect(xml)
+    collected = read if read is not None else read_collect(xml)
     product_u = product.upper()
-    if read.mode == "tac":
+    if collected.mode == "tac":
         segments: list[DecodeSegment] = []
         residuals: list[DecodeResidual] = []
         summaries: list[str] = []
         search_from = 0
-        for report in read.tac_reports:
-            pos = xml.find(report, search_from)
-            if pos < 0:
-                pos = xml.find(report)
-            if pos < 0:
-                pos = 0
+        for report in collected.tac_reports:
+            pos, _end, search_from = _source_span(xml, report, search_from)
             inner = shift_decode(decode_single_report(report, product=product_u), pos)
             segments.extend(inner.segments)
             residuals.extend(inner.residuals)
             if inner.summary:
                 summaries.append(inner.summary.rstrip("."))
-            search_from = pos + len(report)
         segments.sort(key=lambda item: (item.start, item.end))
-        n = len(read.tac_reports)
-        label = read.bulletin_identifier or "document"
+        n = len(collected.tac_reports)
+        label = collected.bulletin_identifier or "document"
         numbered = " ".join(f"{index + 1}) {clause}." for index, clause in enumerate(summaries))
         summary = f"COLLECT {label} ({n} report{'s' if n != 1 else ''} with TAC). {numbered}".strip()
         return DecodeResult(product=product_u, segments=segments, residuals=residuals, summary=summary)
 
     segments_xml: list[DecodeSegment] = []
     search_from = 0
-    for field in read.fields:
-        pos = xml.find(field.value, search_from)
-        if pos < 0:
-            pos = xml.find(field.value)
-        if pos < 0:
-            pos = 0
-            end = 0
-        else:
-            end = pos + len(field.value)
-            search_from = end
+    for field in collected.fields:
+        pos, end, search_from = _source_span(xml, field.value, search_from)
         segments_xml.append(
             DecodeSegment(
                 start=pos,
@@ -204,7 +247,7 @@ def decode_collect(xml: str, *, product: str) -> DecodeResult:
         )
     segments_xml.sort(key=lambda item: (item.start, item.end))
     n = len(segments_xml)
-    label = read.bulletin_identifier or "document"
+    label = collected.bulletin_identifier or "document"
     summary = f"COLLECT {label} ({n} field{'s' if n != 1 else ''})."
     if segments_xml:
         preview = "; ".join(f"{item.code}: {item.explanation.split(': ', 1)[-1]}" for item in segments_xml[:8])
@@ -216,6 +259,12 @@ def decode_collect(xml: str, *, product: str) -> DecodeResult:
 
 def try_decode_collect(xml: str, *, product: str) -> DecodeResult | None:
     """Decode COLLECT/IWXXM XML, or return ``None`` when the text is not that path."""
-    if not is_collect_input(xml):
+    if not _looks_like_xml(xml) or _has_forbidden_dtd(xml):
         return None
-    return decode_collect(xml, product=product)
+    try:
+        root = _parse_root(xml)
+    except CollectError:
+        return None
+    if not _is_collect_shape(root):
+        return None
+    return decode_collect(xml, product=product, read=_read_from_root(root))

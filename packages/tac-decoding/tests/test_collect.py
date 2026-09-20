@@ -288,3 +288,86 @@ def test_failed_tac_on_non_iwxxm_wrapper() -> None:
     read = read_collect(xml)
     assert read.mode == "tac"
     assert read.tac_reports == ("METAR YUDO 221630Z INVALID",)
+
+
+def test_doctype_entity_is_rejected() -> None:
+    from tac_decoding.collect import CollectError, is_collect_input, read_collect, try_decode_collect
+
+    bomb = (
+        '<?xml version="1.0"?>\n'
+        "<!DOCTYPE lolz [\n"
+        '  <!ENTITY lol "lol">\n'
+        '  <!ENTITY lol2 "&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;&lol;">\n'
+        "]>\n"
+        '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2">&lol2;</iwxxm:METAR>\n'
+    )
+    assert is_collect_input(bomb) is False
+    assert try_decode_collect(bomb, product="METAR") is None
+    with pytest.raises(CollectError, match="document type or entity"):
+        read_collect(bomb)
+
+
+def test_leaf_cap_is_enforced(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_decoding import collect as collect_mod
+    from tac_decoding.collect import CollectError, read_collect
+
+    monkeypatch.setattr(collect_mod, "_MAX_LEAVES", 3)
+    leaves = "\n".join(f"  <f{i}>{i}</f{i}>" for i in range(5))
+    xml = f'<?xml version="1.0"?>\n<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2">\n{leaves}\n</iwxxm:METAR>\n'
+    with pytest.raises(CollectError, match="leaf-field"):
+        read_collect(xml)
+
+
+def test_depth_and_node_caps_are_enforced(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_decoding import collect as collect_mod
+    from tac_decoding.collect import CollectError, is_collect_input, read_collect, try_decode_collect
+
+    nested = "<a>" * 5 + "x" + "</a>" * 5
+    xml = f'<?xml version="1.0"?>\n<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2">{nested}</iwxxm:METAR>\n'
+    monkeypatch.setattr(collect_mod, "_MAX_DEPTH", 2)
+    with pytest.raises(CollectError, match="nesting depth"):
+        read_collect(xml)
+
+    monkeypatch.setattr(collect_mod, "_MAX_DEPTH", 64)
+    monkeypatch.setattr(collect_mod, "_MAX_NODES", 2)
+    with pytest.raises(CollectError, match="node count"):
+        read_collect(xml)
+
+    wide = "".join(f"<c{i}/>" for i in range(5))
+    wrapper = f"<wrapper>{wide}</wrapper>"
+    monkeypatch.setattr(collect_mod, "_MAX_NODES", 3)
+    assert is_collect_input(wrapper) is False
+    assert try_decode_collect("<note>hello</note>", product="METAR") is None
+    assert try_decode_collect("<not closed", product="METAR") is None
+
+
+def test_tac_report_cap_is_enforced(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_decoding import collect as collect_mod
+    from tac_decoding.collect import CollectError, read_collect
+
+    monkeypatch.setattr(collect_mod, "_MAX_TAC_REPORTS", 1)
+    xml = (
+        '<?xml version="1.0"?>\n'
+        "<wrapper>"
+        '<a translationFailedTAC="METAR YUDO 221630Z INVALID"/>'
+        '<b translationFailedTAC="METAR YUDO 221631Z INVALID"/>'
+        "</wrapper>\n"
+    )
+    with pytest.raises(CollectError, match="contained TAC"):
+        read_collect(xml)
+
+
+def test_source_span_empty_needle() -> None:
+    from tac_decoding.collect import _source_span
+
+    assert _source_span("<root/>", "", 0) == (0, 0, 0)
+
+
+def test_empty_failed_tac_attr_is_xml_walk() -> None:
+    from tac_decoding.collect import read_collect
+
+    xml = '<wrapper translationFailedTAC="   "><leaf>x</leaf></wrapper>'
+    read = read_collect(xml)
+    assert read.mode == "xml_walk"
+    assert read.tac_reports == ()
+    assert read.fields[0].value == "x"
