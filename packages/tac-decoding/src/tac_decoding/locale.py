@@ -68,18 +68,21 @@ def render_template(
 
 class _SafeFormatter(string.Formatter):
     def get_field(self, field_name: str, args: Sequence[Any], kwargs: Mapping[str, Any]) -> tuple[Any, Any]:
+        """Resolve a placeholder only when its name is on the allowlist."""
         if _FIELD.fullmatch(field_name) is None:
             msg = "Explanation placeholder is not allowed"
             raise LocaleError(msg)
         return super().get_field(field_name, args, kwargs)
 
     def format_field(self, value: object, format_spec: str) -> str:
+        """Format a value; reject non-empty format specs."""
         if format_spec:
             msg = "Explanation format is not allowed"
             raise LocaleError(msg)
         return format(value, "")
 
     def convert_field(self, value: object, conversion: str | None) -> object:
+        """Return a value; reject conversion flags."""
         if conversion:
             msg = "Explanation conversion is not allowed"
             raise LocaleError(msg)
