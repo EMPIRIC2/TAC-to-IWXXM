@@ -45,6 +45,12 @@ rules:
   - id: trend_time
     pattern: ["(?:TL|AT|FM)\\d{4}"]
     explain: "Trend time {0}"
+  - id: cavok
+    pattern: ["CAVOK"]
+    explain: "Ceiling and visibility OK"
+  - id: visibility_sm
+    pattern: ["(?:P?\\d+(?:\\s+\\d+/\\d+)?|\\d+/\\d+)SM"]
+    explain: "Visibility {0} statute miles"
   - id: visibility
     pattern: ["\\d{4}"]
     explain: "Visibility {0} metres"
