@@ -34,10 +34,10 @@ from tac2iwxxm.products.fir_geometry import (
     clip_ring_to_relative,
     resolve_fir_relative_polygon,
 )
-from tac2iwxxm.products.sigmet_airmet import parse_airmet, parse_sigmet
-from tac2iwxxm.products.swxa import parse_swxa
-from tac2iwxxm.products.taf import parse_taf
 from tac2iwxxm.profiles import annex3_products as ap
+from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet, parse_sigmet
+from tac2iwxxm.slot_builders.swxa import parse_swxa
+from tac2iwxxm.slot_builders.taf import parse_taf
 
 import tac2iwxxm
 from tac2iwxxm import native
@@ -243,7 +243,7 @@ def test_taf_kt_gust_wx_and_empty_change_groups() -> None:
 
 
 def test_swxa_parser_edges() -> None:
-    from tac2iwxxm.products.swxa import _day_hhmm_to_iso, _fields, _parse_intensity_regions
+    from tac2iwxxm.slot_builders.swxa import _day_hhmm_to_iso, _fields, _parse_intensity_regions
 
     with pytest.raises(ValueError, match="expected product SWXA"):
         parse_swxa("SWX ADVISORY", product="VAA")

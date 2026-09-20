@@ -1285,3 +1285,16 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 **Breaking changes**: None. `products/metar_speci.py` remains until a later delete-gate evolve.
 
 - EV-pack-ir-convert-wire (2026-09-20): deepen #1210 — no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]
+
+## EV-pack-fill-delete-gate — Endpoint review (#1214 / ADR-045)
+
+| Endpoint | Change? | Notes |
+|----------|---------|-------|
+| `POST /api/v1/decode-tac` | **None (wire)** | Same fields. More products get richer pack-backed spans/summary |
+| `POST /api/v1/convert` | **None (wire)** | Library defaults may expand pack-IR emit per product when goldens match; request/response shape unchanged |
+| Other convert/validate/lint | **None** | Unchanged |
+| FE / H4–H5 | **N/A** | No UI or CORS change |
+
+**Breaking changes**: None on HTTP. Library: selective removal of `products/*.py` when byte-identical (all-or-nothing per shared file); `pack_ir_map` must not import deleted parsers.
+
+- EV-pack-fill-delete-gate (2026-09-20): #1214 — no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]

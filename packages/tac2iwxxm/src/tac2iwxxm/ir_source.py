@@ -11,8 +11,8 @@ from typing import Literal
 IrSource = Literal["legacy", "pack"]
 
 IR_SOURCE_ENV = "TAC2IWXXM_CONVERT_IR_SOURCE"
-# METAR/SPECI default to pack IR after EV-pack-ir-convert-wire flip (D-PACKIR-05).
-_PACK_DEFAULT_PRODUCTS = frozenset({"METAR", "SPECI"})
+# Core products default to pack IR after EV-pack-fill-delete-gate (D-PFDG-05/T5).
+_PACK_DEFAULT_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
 
 
 def resolve_ir_source(

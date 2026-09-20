@@ -130,8 +130,8 @@ def test_tc_f27_006_bulletin_neighbors_no_silent_swap() -> None:
 
 def test_tc_f27_006_emit_rejects_forbidden_sigmet_root() -> None:
     """T3.4 hardening: emit_tca_annex3 refuses IR claiming TropicalCycloneSIGMET."""
-    from tac2iwxxm.products.vaa_tca import parse_tca
     from tac2iwxxm.profiles.annex3_products import emit_tca_annex3
+    from tac2iwxxm.slot_builders.vaa_tca import parse_tca
 
     ir = parse_tca(_read_accept("tca_basic.tac"), product="TCA")
     assert ir.get("iwxxm_root") == "TropicalCycloneAdvisory"

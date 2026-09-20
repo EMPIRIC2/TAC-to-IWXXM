@@ -1606,6 +1606,45 @@ Coverage bar: vendor `metar-A3-1` and `speci-A3-2` on every pin that already has
 - **Pass criteria**: Existing TC-EV1210-003 import scan stays green
 - **Source**: D-PACKIR-01/08
 
+## EV-pack-fill-delete-gate — core pack fill + selective delete (#1214 / ADR-045)
+
+Stricter in-bar peers: primary Annex examples **plus** `sigmet-A6-1b-CNL`, `sigmet-multi-location-VA`, and SWXA `_alternate` XML on pins where present. Out of bar: `*-NIL-collect`, `*-translation-failed*`. H4–H5 N/A. [Corpus: tests] [Corpus: adr/ADR-045]
+
+### TC-EV-PFDG-001: Remaining core packs cover in-bar peers (UJ-077)
+
+- **Level**: T0 / T2
+- **Objective**: Builtin packs for TAF, ordinary/VA/TC SIGMET, AIRMET, VAA, TCA, SWXA, VONA match in-bar vendor TAC with structured spans (not empty-shell residuals-only)
+- **Pass criteria**: Span / match goldens for each in-bar peer on every pin that already has the example
+- **Source**: #1214; D-PFDG-01/04
+
+### TC-EV-PFDG-002: pack_ir_map independence from deleted parsers (UJ-077)
+
+- **Level**: T0
+- **Objective**: After rewrite, pack-IR mapping/emit for deleted products does not import `tac2iwxxm.products.*` parsers
+- **Pass criteria**: Import/graph tests; mapper unit tests build convert IR from spans alone for products whose parsers were removed
+- **Source**: D-PFDG-03
+
+### TC-EV-PFDG-003: Pack-IR emit byte-identical before flip (UJ-077)
+
+- **Level**: T2
+- **Objective**: Pack-IR emit matches legacy XML byte-for-byte on in-bar peers for each product before default flip
+- **Pass criteria**: Same pin matrix discipline as TC-EV1210-002 for each product’s in-bar set (including CNL SIGMET, multi-location VA, and SWXA primary+`_alternate`)
+- **Source**: D-PFDG-01/09
+
+### TC-EV-PFDG-004: Selective delete-gate all-or-nothing (UJ-077)
+
+- **Level**: T2
+- **Objective**: Shared parser files deleted only when every owned product passes; failing products keep their file; METAR/SPECI may lose `metar_speci.py` if still green after mapper independence
+- **Pass criteria**: File presence assertions per module; convert still works for kept legacy products; no dangling imports
+- **Source**: D-PFDG-02/05
+
+### TC-EV-PFDG-005: Decode boundary + HTTP unchanged (UJ-077)
+
+- **Level**: T0 / T2
+- **Objective**: `tac-decoding` still does not import `tac2iwxxm`; `/decode-tac` keys unchanged
+- **Pass criteria**: TC-EV1210-003 and TC-EV1210-004 stay green
+- **Source**: D-PFDG-06/07
+
 ### TC-F29-001: Harness recommendation written (UJ-044)
 
 - **Level**: T0

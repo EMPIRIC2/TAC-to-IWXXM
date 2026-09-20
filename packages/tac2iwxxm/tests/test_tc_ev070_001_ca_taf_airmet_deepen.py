@@ -120,7 +120,7 @@ def test_tc_ev070_004_airmet_gfa_structured_fields() -> None:
 
 
 def test_tc_ev070_006_gfa_structured_metre_visibility() -> None:
-    from tac2iwxxm.products.sigmet_airmet import _parse_ca_gfa_structured
+    from tac2iwxxm.slot_builders.sigmet_airmet import _parse_ca_gfa_structured
 
     body = "SFC VIS AND BKN CLD OBS N OF S50 1500M BKN020 MOV NE 25KT NC"
     structured = _parse_ca_gfa_structured(body, "SFC_VIS_and_BKN_CLD")
@@ -131,6 +131,6 @@ def test_tc_ev070_006_gfa_structured_metre_visibility() -> None:
 
 
 def test_tc_ev070_007_gfa_structured_non_sfc_vis_returns_none() -> None:
-    from tac2iwxxm.products.sigmet_airmet import _parse_ca_gfa_structured
+    from tac2iwxxm.slot_builders.sigmet_airmet import _parse_ca_gfa_structured
 
     assert _parse_ca_gfa_structured("MTN OBSC OBS 3SM", "MTN_OBSC") is None

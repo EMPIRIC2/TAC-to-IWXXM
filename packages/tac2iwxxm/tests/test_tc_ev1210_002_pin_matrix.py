@@ -86,6 +86,7 @@ def test_shadow_xml_byte_identical_on_every_existing_pin(
 
 
 def test_legacy_parsers_remain() -> None:
+    slot = Path(__file__).resolve().parents[1] / "src" / "tac2iwxxm" / "slot_builders"
     for name in (
         "metar_speci.py",
         "taf.py",
@@ -94,7 +95,8 @@ def test_legacy_parsers_remain() -> None:
         "swxa.py",
         "vona.py",
     ):
-        assert (_PRODUCTS / name).is_file(), name
+        assert (slot / name).is_file(), name
+        assert not (_PRODUCTS / name).is_file(), name
 
 
 def test_version_matrix_still_lists_profile_pins() -> None:

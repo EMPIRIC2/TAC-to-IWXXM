@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from tac2iwxxm.products import metar_speci as ms
+from tac2iwxxm.slot_builders import metar_speci as ms
 
 
 def test_lightning_type_and_sector_matrix() -> None:
@@ -65,7 +65,7 @@ def test_convective_partial_and_rvr_metre_ft() -> None:
     assert ms._parse_hail_size_remark("GR") is None
     recent = ms._parse_recent_weather_remarks("RAB1805E1845")
     assert any(r.get("begin_hour") == 18 for r in recent)
-    from tac2iwxxm.products.metar_speci import parse_metar_speci
+    from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
 
     ir_m = parse_metar_speci(
         "METAR KJFK 151800Z 18008KT 3SM R04/M0200V0600N 10/05 A2992",

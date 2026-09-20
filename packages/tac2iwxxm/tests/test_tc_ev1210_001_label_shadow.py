@@ -77,7 +77,8 @@ def test_label_shadow_xml_matches_legacy(
     assert shadow.match is not None
     assert shadow.match.iwxxm_version == iwxxm_version
     assert shadow.match.profile == "annex3"
-    assert shadow.match.spans == ()
+    # Label packs are filled (EV-pack-fill-delete-gate) — spans are expected.
+    assert shadow.match.spans
 
 
 @pytest.mark.parametrize(("case_id", "product", "_stem", "_pins"), _CASES)

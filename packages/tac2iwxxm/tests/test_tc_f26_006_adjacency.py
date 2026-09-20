@@ -137,8 +137,8 @@ def test_tc_f26_006_bulletin_neighbors_no_silent_swap() -> None:
 
 def test_tc_f26_006_emit_rejects_forbidden_sigmet_root() -> None:
     """T1.4 hardening: emit_vaa_annex3 refuses IR claiming VolcanicAshSIGMET."""
-    from tac2iwxxm.products.vaa_tca import parse_vaa
     from tac2iwxxm.profiles.annex3_products import emit_vaa_annex3
+    from tac2iwxxm.slot_builders.vaa_tca import parse_vaa
 
     ir = parse_vaa(_read_accept("vaa_basic.tac"), product="VAA")
     assert ir.get("iwxxm_root") == "VolcanicAshAdvisory"

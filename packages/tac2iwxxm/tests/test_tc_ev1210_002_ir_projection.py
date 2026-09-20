@@ -53,8 +53,10 @@ def test_failed_convert_has_no_pack_ir() -> None:
 
 
 def test_parsers_and_pins_still_present_after_ir_projection() -> None:
-    assert (_PRODUCTS / "metar_speci.py").is_file()
-    assert (_PRODUCTS / "sigmet_airmet.py").is_file()
+    slot = Path(__file__).resolve().parents[1] / "src" / "tac2iwxxm" / "slot_builders"
+    assert (slot / "metar_speci.py").is_file()
+    assert (slot / "sigmet_airmet.py").is_file()
+    assert not (_PRODUCTS / "metar_speci.py").is_file()
     from tac2iwxxm.profile_registry import supported_iwxxm_versions_for_profile
 
     assert "2023-1" in supported_iwxxm_versions_for_profile("annex3")

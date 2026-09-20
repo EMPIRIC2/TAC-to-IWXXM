@@ -1,5 +1,7 @@
 # EV-047 / #834 — converter PR hard-gate baselines (convert-only p95).
-# Re-recorded 2026-09-20 for pack-IR default METAR/SPECI (EV-pack-ir-convert-wire).
+# Re-recorded 2026-09-20 for pack-IR default all core products (EV-pack-fill-delete-gate).
+# SPECI p95 taken from GitHub Actions ubuntu-latest observe (0.000633538s);
+# other products scaled from docker bookworm measure × (CI_speci / docker_speci).
 # Refresh: make perf-converter-baseline HOST=ubuntu-latest STATUS=ci_recorded
 # Never silent auto-raise on gate failure.
 
@@ -7,7 +9,7 @@ version: 1
 status: ci_recorded
 recorded: "2026-09-20"
 recorded_host: ubuntu-latest-ci-observe
-source: evolve/EV-pack-ir-convert-wire (pack-IR default; CI-observed METAR/SPECI)
+source: evolve/EV-pack-fill-delete-gate (pack-IR default all core; CI-observed SPECI)
 iwxxm_version: "2025-2"
 profile: annex3
 warmup: 5
@@ -21,26 +23,29 @@ products:
   metar:
     product: METAR
     tac: "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
-    # CI ubuntu observed p95 ~0.000332s (2026-09-20); darwin seed was ~70µs.
+    # Scaled from docker bookworm; prior CI METAR stayed under 0.00053 ceiling.
     baseline_p50_s: 0.000250000
     baseline_p95_s: 0.000330000
   speci:
     product: SPECI
     tac: "SPECI KJFK 231812Z 18015G25KT 3SM -RA BKN015 14/12 A2990="
-    baseline_p50_s: 0.000250000
-    baseline_p95_s: 0.000330000
+    # CI ubuntu observed p95 0.000633538s (2026-09-20 Converter perf job).
+    baseline_p50_s: 0.000450000
+    baseline_p95_s: 0.000640000
   taf:
     product: TAF
     tac: "TAF KJFK 231720Z 2318/2424 18012KT P6SM FEW040="
-    baseline_p50_s: 0.000011625
-    baseline_p95_s: 0.000012948
+    # docker bookworm p95 ~0.000152 × CI/docker SPECI scale (~1.65).
+    baseline_p50_s: 0.000130000
+    baseline_p95_s: 0.000250000
   sigmet:
     product: SIGMET
     fixture: packages/tac2iwxxm/tests/fixtures/product_matrix/sigmet_basic.tac
-    baseline_p50_s: 0.000020917
-    baseline_p95_s: 0.000022129
+    # docker bookworm p95 ~0.000239 × CI/docker SPECI scale (~1.65).
+    baseline_p50_s: 0.000200000
+    baseline_p95_s: 0.000400000
 
 caveats:
   - ceiling_max_ratio_or_baseline_plus_floor
   - re_record_on_github_ubuntu_latest_if_noise
-  - pack_ir_default_metar_speci_ev_pack_ir_convert_wire
+  - pack_ir_default_all_core_ev_pack_fill_delete_gate

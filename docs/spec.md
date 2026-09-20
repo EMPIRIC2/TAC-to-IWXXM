@@ -194,6 +194,10 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   can emit IWXXM from that path for METAR/SPECI. Default may flip to pack-IR emit when
   vendor peers stay byte-identical; `products/metar_speci.py` stays until a later delete-gate
   evolve. Does not fold `tac-decoding` into this package.
+- **EV-pack-fill-delete-gate / ADR-045 deepen (#1214)**: Extend pack fill + pack-IR emit to
+  all core products. `pack_ir_map` must map spans→slots **without** importing deleted
+  `products/*.py`. Selective delete-gate: all-or-nothing per shared parser file when
+  in-bar peers are byte-identical; keep files that fail. Does not merge packages.
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
@@ -226,6 +230,9 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   `project_ir` remains span/residual IR only. Slot mapping and IWXXM emit from pack IR
   live in `tac2iwxxm`. When METAR/SPECI vendor goldens stay byte-identical, convert may
   default to the pack-IR emit path for those products without deleting legacy parsers.
+- **EV-pack-fill-delete-gate (#1214)**: Builtin packs for remaining core products gain real
+  rules. Span IR only in this package; mapper independence + selective parser delete live
+  in `tac2iwxxm`.
 
 ### packages/tac-validate
 
