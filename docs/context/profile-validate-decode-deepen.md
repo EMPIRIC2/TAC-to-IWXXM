@@ -51,7 +51,7 @@ instead of five-library authoring. Decode still shows bare ICAO codes (#724).
 | Id | Status | Notes |
 |----|--------|-------|
 | ICAO_2025 / US_FAA_NWS / CA_ECCC | implemented | CA deepen mining issues still open |
-| AU_BOM / NZ_CAA_MET | **in_progress** | Registry + convert product allowlist; finish → implemented |
+| AU_BOM / NZ_CAA_MET | **implemented** | Registry + convert product allowlist; METAR/SPECI/TAF goldens (TC-EV087 / TC-EVPVD-002..003) |
 | Thin packs (UK/BR/KR/JP/IN/HK) | implemented | Thin path |
 | GLOBAL_AFS | implemented | |
 | APAC_ROBEX / EUR_RODEX / AFI / CAR_SAM | **stub** | OUT → #1222 |
