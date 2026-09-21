@@ -198,7 +198,7 @@ def test_apply_output_policy_drops_ignored_assert_and_keeps_xsd() -> None:
         from iwxxm_validate import policy as policy_mod
 
         original = policy_mod.load_output_policy_catalog
-        policy_mod.load_output_policy_catalog = lambda: catalog  # type: ignore[method-assign]
+        policy_mod.load_output_policy_catalog = lambda profile=None: catalog  # type: ignore[method-assign]
         try:
             return apply_output_policy_to_report(report, policy_id)
         finally:
@@ -239,7 +239,7 @@ def test_validate_iwxxm_applies_policy(monkeypatch: pytest.MonkeyPatch) -> None:
         select=(),
         ignore=("AIRMET.AIRMET-1",),
     )
-    monkeypatch.setattr(policy_mod, "load_output_policy_catalog", lambda: catalog)
+    monkeypatch.setattr(policy_mod, "load_output_policy_catalog", lambda profile=None: catalog)
 
     def _fake(xml_content: str, **kwargs: object) -> ValidationReport:
         _ = (xml_content, kwargs)
@@ -264,3 +264,67 @@ def _write(tmp_path: Path, name: str, body: str) -> Path:
     path = tmp_path / name
     path.write_text(body, encoding="utf-8")
     return path
+
+
+def test_extension_header_layers_ignore_for_profile(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    overlay = tmp_path / "ov"
+    overlay.mkdir()
+    (overlay / "layer.yaml").write_text(
+        "\n".join(
+            [
+                "schema_version: 1",
+                "id: annex3-extra",
+                "lifecycle: draft",
+                "pin: '2025-2'",
+                "extends: [annex3-iwxxm-output]",
+                "profiles: [annex3]",
+                "select: [AIRMET.AIRMET-1]",
+                "ignore: [AIRMET.AIRMET-2]",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("IWXXM_VALIDATE_POLICY_DIR", str(overlay))
+    bare = load_output_policy_catalog()
+    assert bare["annex3-iwxxm-output"].select == ()
+    scoped = load_output_policy_catalog("annex3")
+    assert scoped["annex3-iwxxm-output"].select == ("AIRMET.AIRMET-1",)
+    assert scoped["annex3-iwxxm-output"].ignore == ("AIRMET.AIRMET-2",)
+    other = load_output_policy_catalog("ca_eccc")
+    assert other["annex3-iwxxm-output"].ignore == ()
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: annex3-iwxxm-output\nlifecycle: draft\npin: '2025-2'\nselect: []\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(PolicyError, match="must extend one builtin"):
+        load_output_policy_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: brand-new\nprofiles: [annex3]\npin: '2025-2'\nselect: []\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(PolicyError, match="profiles require extends"):
+        load_output_policy_catalog()
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: bare\nextends: [annex3-iwxxm-output]\npin: '2025-2'\nselect: []\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(PolicyError, match="needs a profiles list"):
+        load_output_policy_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: orphan\nextends: [missing]\nprofiles: [annex3]\npin: '2025-2'\nselect: []\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(PolicyError, match="unknown builtin"):
+        load_output_policy_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: shifted\npin: '2023-1'\nextends: [annex3-iwxxm-output]\n"
+        "profiles: [annex3]\nselect: []\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(PolicyError, match="pin must match"):
+        load_output_policy_catalog("annex3")

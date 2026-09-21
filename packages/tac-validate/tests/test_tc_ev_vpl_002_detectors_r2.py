@@ -15,8 +15,10 @@ from tac_validate.detectors import (
     load_detector_pack,
     run_detector_pack,
     run_r2_visibility_detectors,
+    run_theme_pack,
 )
 from tac_validate.product_rules_pkg.metar_speci import _check_metar_speci
+from tac_validate.theme_checks import lint_profile
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 _MANIFEST = json.loads((FIXTURES / "manifest.json").read_text(encoding="utf-8"))
@@ -405,3 +407,138 @@ def _min_pack(**kwargs: object) -> str:
         "    pattern: a\n"
         "    on_match:\n      code: INVALID_VISIBILITY\n      message_template: x\n"
     )
+
+
+def test_extension_header_layers_detector_rules(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    overlay = tmp_path / "d"
+    overlay.mkdir()
+    (overlay / "layer.yaml").write_text(
+        "\n".join(
+            [
+                "schema_version: 1",
+                "id: vis-extra",
+                "extends: metar-speci-r2-visibility",
+                "profiles: [annex3]",
+                "stage: token",
+                "products: [METAR, SPECI]",
+                "rules:",
+                "  - id: missing_visibility",
+                "    kind: require_search",
+                "    pattern: NEVER",
+                "    on_fail:",
+                "      code: MISSING_VISIBILITY",
+                "      message_template: '{product} overlay'",
+                "  - id: extra_group",
+                "    kind: require_search",
+                "    pattern: METAR",
+                "    on_fail:",
+                "      code: MISSING_VISIBILITY",
+                "      message_template: '{product} extra'",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("TAC_VALIDATE_DETECTOR_DIR", str(overlay))
+    bare = load_detector_catalog()
+    assert all(rule.id != "extra_group" for rule in bare["metar-speci-r2-visibility"].rules)
+    scoped = load_detector_catalog("annex3")
+    rules = {rule.id: rule for rule in scoped["metar-speci-r2-visibility"].rules}
+    assert rules["missing_visibility"].on_fail is not None
+    assert rules["missing_visibility"].on_fail.message_template == "{product} overlay"
+    assert "extra_group" in rules
+    assert "invalid_visibility" in rules
+    other = load_detector_catalog("iwxxm_us")
+    assert all(rule.id != "extra_group" for rule in other["metar-speci-r2-visibility"].rules)
+    annex3 = lint_profile.set("annex3")
+    try:
+        layered = run_theme_pack("metar-speci-r2-visibility", "METAR X=", "METAR")
+    finally:
+        lint_profile.reset(annex3)
+    assert any(issue.message == "METAR overlay" for issue in layered)
+    other_profile = lint_profile.set("iwxxm_us")
+    try:
+        plain = run_theme_pack("metar-speci-r2-visibility", "METAR X=", "METAR")
+    finally:
+        lint_profile.reset(other_profile)
+    assert all(issue.message != "METAR overlay" for issue in plain)
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: metar-speci-r2-visibility\nstage: token\nproducts: [METAR]\n"
+        "rules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="must extend one builtin"):
+        load_detector_catalog()
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: vis-extra\nextends: missing-pack\nprofiles: [annex3]\nstage: token\n"
+        "products: [METAR]\nrules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="unknown builtin"):
+        load_detector_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: vis-extra\nextends: metar-speci-r2-visibility\nprofiles: [annex3]\n"
+        "stage: cross_field\nproducts: [METAR]\nrules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="stage must match"):
+        load_detector_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: vis-extra\nextends: [metar-speci-r2-visibility]\nstage: token\n"
+        "products: [METAR]\nrules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="needs a profiles list"):
+        load_detector_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: vis-extra\nextends: [a, b]\nprofiles: [annex3]\nstage: token\n"
+        "products: [METAR]\nrules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="must extend one builtin"):
+        load_detector_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: vis-extra\nextends: ''\nprofiles: [annex3]\nstage: token\n"
+        "products: [METAR]\nrules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="must extend one builtin"):
+        load_detector_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: brand\nprofiles: annex3\nstage: token\nproducts: [METAR]\n"
+        "rules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="needs a profiles list"):
+        load_detector_catalog()
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: brand\nprofiles: ['']\nstage: token\nproducts: [METAR]\n"
+        "rules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="needs a profiles list"):
+        load_detector_catalog()
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: brand\nprofiles: [annex3]\nstage: token\nproducts: [METAR]\n"
+        "rules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="profiles require extends"):
+        load_detector_catalog()

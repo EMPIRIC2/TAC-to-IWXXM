@@ -22,7 +22,7 @@ def test_token_span_and_residual(monkeypatch: pytest.MonkeyPatch, tmp_path: Path
         monkeypatch,
         tmp_path,
         """
-id: metar
+id: fixture_metar
 layout: token_stream
 rules:
   - id: skip
@@ -33,7 +33,7 @@ rules:
     explain: "Visibility {0} {1}"
 """,
     )
-    pack = {item.id: item for item in load_packs()}["metar"]
+    pack = {item.id: item for item in load_packs()}["fixture_metar"]
     result = match_tac("1 1/2SM KJFK=", pack, context=MatchContext("2025-2", "annex3"))
     assert result.spans[0].code == "1 1/2SM"
     assert result.spans[0].explanation == "Visibility 1 1/2SM"
@@ -48,7 +48,7 @@ def test_same_explain_on_every_pin(monkeypatch: pytest.MonkeyPatch, tmp_path: Pa
         monkeypatch,
         tmp_path,
         """
-id: metar
+id: fixture_metar
 layout: token_stream
 rules:
   - id: kind
@@ -56,7 +56,7 @@ rules:
     explain: "Routine {0}"
 """,
     )
-    pack = {item.id: item for item in load_packs()}["metar"]
+    pack = {item.id: item for item in load_packs()}["fixture_metar"]
     pins = (
         MatchContext("2023-1", "annex3"),
         MatchContext("2025-2", "annex3"),
@@ -75,7 +75,7 @@ def test_label_longest_match(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) ->
         monkeypatch,
         tmp_path,
         """
-id: vona
+id: fixture_vona
 layout: label_fields
 rules:
   - id: adv
@@ -86,7 +86,7 @@ rules:
     explain: "Next {value}"
 """,
     )
-    pack = {item.id: item for item in load_packs()}["vona"]
+    pack = {item.id: item for item in load_packs()}["fixture_vona"]
     result = match_tac("NXT ADVISORY: 20260101\n\nplain\n", pack)
     assert result.spans[0].explanation == "Next 20260101"
     assert result.spans[0].rule_id == "nxt"
@@ -113,7 +113,7 @@ def test_step_budget_fails_closed(monkeypatch: pytest.MonkeyPatch, tmp_path: Pat
         monkeypatch,
         tmp_path,
         """
-id: metar
+id: fixture_metar
 layout: token_stream
 rules:
   - id: kind
@@ -121,14 +121,14 @@ rules:
     explain: "{0}"
 """,
     )
-    pack = {item.id: item for item in load_packs()}["metar"]
+    pack = {item.id: item for item in load_packs()}["fixture_metar"]
     with pytest.raises(MatchBudgetError, match="0 steps"):
         match_tac("METAR", pack, max_steps=0)
     _overlay(
         monkeypatch,
         tmp_path,
         """
-id: vona
+id: fixture_vona
 layout: label_fields
 rules:
   - id: vol
@@ -136,7 +136,7 @@ rules:
     explain: "Volcano {value}"
 """,
     )
-    label_pack = {item.id: item for item in load_packs()}["vona"]
+    label_pack = {item.id: item for item in load_packs()}["fixture_vona"]
     with pytest.raises(MatchBudgetError, match="0 steps"):
         match_tac("VOLCANO: X", label_pack, max_steps=0)
 
@@ -146,7 +146,7 @@ rules:
     [
         ("id: m\nlayout: token_stream\nrules: nope\n", "list"),
         (
-            "id: wafs\nlayout: stub\nrules:\n  - id: a\n    explain: x\n",
+            "id: wafs-bad\nprofiles: [annex3]\nextends: wafs\nlayout: stub\nrules:\n  - id: a\n    explain: x\n",
             "stub",
         ),
         ("id: m\nlayout: token_stream\nrules:\n  - nope\n", "mapping"),

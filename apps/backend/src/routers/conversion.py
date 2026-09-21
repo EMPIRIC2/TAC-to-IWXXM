@@ -17,6 +17,7 @@ from dissemination.packaging import apply_exchange_packaging
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response, StreamingResponse
 from tac2iwxxm.profile_registry import supported_report_variants_for_profile
+from tac2iwxxm.profile_resolve import resolve_validation_policies
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
 from tac_validate import lint as tac_lint_fn
 from tac_validate.models import LintReport
@@ -55,6 +56,12 @@ from src.utilities.version_migration import migrate_xml
 from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 
 logger = logging.getLogger(__name__)
+
+
+def _convert_output_policy_id(profile: str) -> str:
+    """Same IWXXM output policy id ``POST /api/v1/validate`` resolves for this profile."""
+    return resolve_validation_policies(profile or "annex3").iwxxm_output_policy_id
+
 
 router = APIRouter(prefix="/api/v1", tags=["Conversion"])
 
@@ -500,6 +507,7 @@ async def _process_json_metars(
                         emit_key=runtime.emit_profile or "annex3",
                         extensions=runtime.resolved_extensions,
                         product=runtime.product,
+                        output_policy_id=_convert_output_policy_id(runtime.emit_profile or "annex3"),
                     )
                     validation_result = runtime.validation_orchestrator.validate(
                         iwxxm_content,
@@ -776,6 +784,7 @@ async def _process_manual_entries(
                         emit_key=runtime.emit_profile or "annex3",
                         extensions=runtime.resolved_extensions,
                         product=runtime.product,
+                        output_policy_id=_convert_output_policy_id(runtime.emit_profile or "annex3"),
                     )
                     orch_layers = [
                         layer
@@ -1047,6 +1056,7 @@ async def _process_uploaded_files(
                         emit_key=runtime.emit_profile or "annex3",
                         extensions=runtime.resolved_extensions,
                         product=runtime.product,
+                        output_policy_id=_convert_output_policy_id(runtime.emit_profile or "annex3"),
                     )
                     orch_layers = [
                         layer
@@ -2102,6 +2112,7 @@ async def convert(
                     emit_key=(profile or "annex3"),
                     extensions=resolved_extensions,
                     product=product,
+                    output_policy_id=_convert_output_policy_id(profile or "annex3"),
                 )
                 if not getattr(report, "ok", True):
                     validation_issues = [

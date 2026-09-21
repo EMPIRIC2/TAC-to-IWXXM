@@ -52,6 +52,7 @@ class PolicyDocument:
     extends: tuple[str, ...]
     select: tuple[str, ...]
     ignore: tuple[str, ...]
+    profiles: tuple[str, ...]
     severity: Mapping[str, str]
     preview: tuple[str, ...]
     detectors: tuple[str, ...]
@@ -138,6 +139,7 @@ def _parse_document(data: Mapping[str, Any], *, source_path: str | None) -> Poli
         extends=_as_str_list(data.get("extends")),
         select=_as_str_list(data.get("select")),
         ignore=_as_str_list(data.get("ignore")),
+        profiles=_as_str_list(data.get("profiles")),
         severity=_as_severity_map(data.get("severity")),
         preview=_as_str_list(data.get("preview")),
         detectors=_as_str_list(data.get("detectors")),
@@ -174,11 +176,13 @@ def load_policy(path: Path | str) -> PolicyDocument:
     )
 
 
-def load_policy_catalog() -> dict[str, PolicyDocument]:
+def load_policy_catalog(profile: str | None = None) -> dict[str, PolicyDocument]:
     """
     Load builtin policies plus optional ``TAC_VALIDATE_POLICY_DIR`` overlays.
 
-    Later paths with the same ``id`` replace earlier ones (overlay wins).
+    An overlay with ``extends`` layers onto that builtin for the profile ids in
+    its header. Omitting ``profile`` leaves those layers off. A new policy id
+    with no ``extends`` is added for every profile.
     """
     catalog: dict[str, PolicyDocument] = {}
     policies_root = resources.files("tac_validate").joinpath("data", "policies")
@@ -195,8 +199,61 @@ def load_policy_catalog() -> dict[str, PolicyDocument]:
         if overlay_path.is_dir():
             for path in sorted(overlay_path.glob("*.yaml")) + sorted(overlay_path.glob("*.yml")):
                 doc = load_policy(path)
-                catalog[doc.id] = doc
+                layered = _take_policy_overlay(doc, catalog, profile=profile)
+                if layered is None:
+                    continue
+                catalog[layered.id] = layered
     return catalog
+
+
+def _layer_policy(parent: PolicyDocument, child: PolicyDocument) -> PolicyDocument:
+    """Ignore ids add. A non-empty select replaces. An empty select inherits."""
+    select = child.select if child.select else parent.select
+    ignore = tuple(dict.fromkeys((*parent.ignore, *child.ignore)))
+    severity = dict(parent.severity)
+    severity.update(dict(child.severity))
+    preview = tuple(dict.fromkeys((*parent.preview, *child.preview)))
+    detectors = child.detectors if child.detectors else parent.detectors
+    return PolicyDocument(
+        schema_version=parent.schema_version,
+        id=parent.id,
+        lifecycle=parent.lifecycle,
+        product=child.product if child.product is not None else parent.product,
+        extends=parent.extends,
+        select=select,
+        ignore=ignore,
+        profiles=parent.profiles,
+        severity=severity,
+        preview=preview,
+        detectors=detectors,
+        source_path=parent.source_path,
+    )
+
+
+def _take_policy_overlay(
+    doc: PolicyDocument,
+    catalog: Mapping[str, PolicyDocument],
+    *,
+    profile: str | None,
+) -> PolicyDocument | None:
+    if not doc.extends and doc.id not in catalog:
+        if doc.profiles:
+            msg = f"{doc.id} profiles require extends"
+            raise PolicyError(msg)
+        return doc
+    if len(doc.extends) != 1:
+        msg = f"{doc.id} must extend one builtin"
+        raise PolicyError(msg)
+    if not doc.profiles:
+        msg = f"{doc.id} needs a profiles list"
+        raise PolicyError(msg)
+    parent_id = doc.extends[0]
+    if parent_id not in catalog:
+        msg = f"{doc.id} extends unknown builtin {parent_id}"
+        raise PolicyError(msg)
+    if profile is None or profile not in doc.profiles:
+        return None
+    return _layer_policy(catalog[parent_id], doc)
 
 
 def _default_codes_for_product(product: str | None) -> frozenset[str]:
@@ -335,7 +392,12 @@ def resolve_policy(
     )
 
 
-def apply_policy_to_report(report: LintReport, policy_id: str) -> LintReport:
+def apply_policy_to_report(
+    report: LintReport,
+    policy_id: str,
+    *,
+    profile: str | None = None,
+) -> LintReport:
     """
     Keep issues selected by ``policy_id`` and apply severity overrides.
 
@@ -346,7 +408,7 @@ def apply_policy_to_report(report: LintReport, policy_id: str) -> LintReport:
     policy_id :
         TAC quality policy document id.
     """
-    catalog = load_policy_catalog()
+    catalog = load_policy_catalog(profile)
     doc = catalog.get(policy_id)
     if doc is None:
         msg = f"unknown TAC quality policy {policy_id!r}"

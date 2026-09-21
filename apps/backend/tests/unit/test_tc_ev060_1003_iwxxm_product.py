@@ -226,6 +226,7 @@ def test_tc_ev908_iwxxm_product_migrates_between_supported_lines(
             {
                 "xml": xml_payload,
                 "iwxxm_version": str(kwargs.get("iwxxm_version")),
+                "output_policy_id": str(kwargs.get("output_policy_id")),
             }
         )
         return type("Report", (), {"ok": True, "issues": []})()
@@ -255,6 +256,7 @@ def test_tc_ev908_iwxxm_product_migrates_between_supported_lines(
     assert payload["metadata"]["migrated_iwxxm"] is True
     assert validate_calls
     assert validate_calls[0]["iwxxm_version"] == "2025-2"
+    assert validate_calls[0]["output_policy_id"] == "annex3-iwxxm-output"
     assert "http://icao.int/iwxxm/2025-2" in validate_calls[0]["xml"]
 
 

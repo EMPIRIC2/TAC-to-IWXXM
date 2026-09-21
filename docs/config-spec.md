@@ -292,6 +292,8 @@ on DO Postgres while keeping public convert and abuse-control env knobs:
 - EV-validation-policy-layers / #1216 (2026-09-20): optional `TAC_VALIDATE_POLICY_DIR`,
   `TAC_VALIDATE_DETECTOR_DIR`, `IWXXM_VALIDATE_POLICY_DIR` — file/env overlays only (ADR-046).
   Not required Render secrets.
+- EV-yaml-extension-header (2026-09-21): optional `TAC2IWXXM_PROFILE_DIR` — conversion profile
+  binding overlays. Not a required Render secret (ADR-045 / ADR-046).
 
 ## F24 / F25 / F9 deepen — WMO goldens + glossary (S026 / EV-020)
 
@@ -308,6 +310,7 @@ No new Render secrets required for convert goldens (package-side). Decode glossa
 | TAC detector overlay | Optional `TAC_VALIDATE_DETECTOR_DIR` | Extra detector packs. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
 | TAC detector mode | Optional `TAC_VALIDATE_DETECTOR_MODE` | `detector` (default, R2 flipped) / `legacy` (inline visibility for compares). Not a Render secret (ADR-046 / #1216) |
 | IWXXM output policy overlay | Optional `IWXXM_VALIDATE_POLICY_DIR` | Extra IWXXM output policies. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
+| Conversion profile binding overlay | Optional `TAC2IWXXM_PROFILE_DIR` | YAML that layers TAC and IWXXM policy ids onto one builtin binding for listed conversion profile ids. Unset = builtin bindings. Not a Render secret (ADR-045 / ADR-046) |
 | Convert IR source | Optional `TAC2IWXXM_CONVERT_IR_SOURCE` | `legacy` / `pack` / `auto` (default). `auto` uses pack IR for products whose default has flipped (METAR/SPECI after #1213; additional core products after #1214 when goldens pass). Not a Render secret (ADR-045 / #1212 / #1214) |
 | OpenAIP / F3 names | Existing F3 / OpenAIP config | Enrich decode when available; miss → ICAO only |
 | FE Examples catalog | Static FE fixtures | No env; WMO-passers only |

@@ -1,8 +1,8 @@
 """TAC product packs. Structure lives in data; this module only loads it.
 
 Unset ``TAC_DECODING_PACK_DIR`` uses the built-in packs. A directory overlay
-adds or replaces packs. Unknown fields fail closed so a bad file cannot
-silently drop the built-ins.
+extends a builtin for the profile ids in its header, or adds a new pack id.
+A bad file fails closed and does not drop the built-ins.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ import yaml
 from tac_decoding.locale import LocaleError, render_template
 
 PACK_DIR_ENV = "TAC_DECODING_PACK_DIR"
-_ALLOWED = frozenset({"id", "layout", "rules"})
+_ALLOWED = frozenset({"id", "layout", "rules", "profiles", "extends"})
 _RULE_KEYS = frozenset({"id", "pattern", "explain", "label"})
 _LAYOUTS = frozenset({"token_stream", "label_fields", "stub"})
 _SUFFIXES = frozenset({".yaml", ".yml", ".json"})
@@ -67,13 +67,17 @@ class Pack:
     rules: tuple[Rule, ...] = ()
 
 
-def load_packs() -> tuple[Pack, ...]:
-    """Return built-in packs, with ``TAC_DECODING_PACK_DIR`` applied on top."""
+def load_packs(profile: str | None = None) -> tuple[Pack, ...]:
+    """Return built-in packs, with ``TAC_DECODING_PACK_DIR`` applied for ``profile``.
+
+    An overlay file with ``extends`` applies only when ``profile`` is one of its
+    ``profiles``. Omitting ``profile`` leaves those overlays off the result.
+    """
     overlay = os.environ.get(PACK_DIR_ENV, "").strip()
     if not overlay:
         return _load_builtins_cached()
     # Overlay dirs are not cached: tests rewrite the same path between loads.
-    return _merge_packs(overlay)
+    return _merge_packs(overlay, profile)
 
 
 def clear_pack_cache() -> None:
@@ -86,31 +90,91 @@ def _load_builtins_cached() -> tuple[Pack, ...]:
     return _merge_packs("")
 
 
-def _merge_packs(overlay: str) -> tuple[Pack, ...]:
+def _merge_packs(overlay: str, profile: str | None = None) -> tuple[Pack, ...]:
     merged = {pack_id: Pack(pack_id, layout) for pack_id, layout in _BUILTINS}
     if _BUILTIN_PACK_DIR.is_dir():
         for pack in _read_overlay(_BUILTIN_PACK_DIR):
             merged[pack.id] = pack
     if not overlay:
         return tuple(merged.values())
-    for pack in _read_overlay(Path(overlay)):
-        merged[pack.id] = pack
+    _apply_extension_dir(merged, Path(overlay), profile)
     return tuple(merged.values())
 
 
-def _read_overlay(directory: Path) -> tuple[Pack, ...]:
+def _apply_extension_dir(merged: dict[str, Pack], directory: Path, profile: str | None) -> None:
+    """Layer profile overlays onto ``merged``. A bad file raises before any write."""
     if not directory.is_dir():
         msg = f"Pack directory is not a folder: {directory}"
         raise PackSchemaError(msg)
-    found: list[Pack] = []
+    pending: list[tuple[str, Pack]] = []
+    additions: list[Pack] = []
     for path in sorted(directory.iterdir()):
         if path.suffix.lower() not in _SUFFIXES:
             continue
-        found.append(_read_file(path))
-    return tuple(found)
+        target, pack, is_extension = _read_extension(path, merged)
+        if is_extension:
+            if profile is None or profile not in target:
+                continue
+            pending.append((pack.id, pack))
+        else:
+            additions.append(pack)
+    for pack in additions:
+        merged[pack.id] = pack
+    for builtin_id, pack in pending:
+        base = merged[builtin_id]
+        merged[builtin_id] = Pack(builtin_id, base.layout, _merge_rules(base.rules, pack.rules))
 
 
-def _read_file(path: Path) -> Pack:
+def _read_extension(path: Path, merged: dict[str, Pack]) -> tuple[tuple[str, ...], Pack, bool]:
+    """Return ``(profiles, pack, is_extension)``.
+
+    ``pack.id`` is the builtin id when this file extends one.
+    """
+    mapping = _load_mapping(path)
+    extends = mapping.get("extends")
+    profiles = mapping.get("profiles")
+    pack_id = mapping.get("id")
+    if not isinstance(pack_id, str) or not pack_id.strip():
+        msg = f"{path.name} needs a string id"
+        raise PackSchemaError(msg)
+    clean_id = pack_id.strip()
+    if extends is None and clean_id not in merged:
+        if profiles is not None:
+            msg = f"{path.name} profiles require extends"
+            raise PackSchemaError(msg)
+        return (), _read_file(path), False
+    if not isinstance(extends, str) or not extends.strip():
+        msg = f"{path.name} must extend one builtin"
+        raise PackSchemaError(msg)
+    base_id = extends.strip()
+    if base_id not in merged:
+        msg = f"{path.name} extends unknown builtin {base_id}"
+        raise PackSchemaError(msg)
+    if not isinstance(profiles, list):
+        msg = f"{path.name} needs a profiles list"
+        raise PackSchemaError(msg)
+    profile_ids = cast(list[object], profiles)
+    if not profile_ids or not all(isinstance(item, str) and item for item in profile_ids):
+        msg = f"{path.name} needs a profiles list"
+        raise PackSchemaError(msg)
+    pack = _read_file(path)
+    base = merged[base_id]
+    if pack.layout != base.layout:
+        msg = f"{path.name} layout must match {base_id}"
+        raise PackSchemaError(msg)
+    return tuple(str(item) for item in profile_ids), Pack(base_id, pack.layout, pack.rules), True
+
+
+def _merge_rules(base: tuple[Rule, ...], extra: tuple[Rule, ...]) -> tuple[Rule, ...]:
+    """Same rule id replaces that entry. New ids are appended."""
+    replacement = {rule.id: rule for rule in extra}
+    seen = {rule.id for rule in base}
+    merged = [replacement.get(rule.id, rule) for rule in base]
+    merged.extend(rule for rule in extra if rule.id not in seen)
+    return tuple(merged)
+
+
+def _load_mapping(path: Path) -> dict[str, object]:
     text = path.read_text(encoding="utf-8")
     try:
         if path.suffix.lower() == ".json":
@@ -128,6 +192,20 @@ def _read_file(path: Path) -> Pack:
     if unknown:
         msg = f"{path.name} has unknown field {unknown[0]}"
         raise PackSchemaError(msg)
+    return mapping
+
+
+def _read_overlay(directory: Path) -> tuple[Pack, ...]:
+    found: list[Pack] = []
+    for path in sorted(directory.iterdir()):
+        if path.suffix.lower() not in _SUFFIXES:
+            continue
+        found.append(_read_file(path))
+    return tuple(found)
+
+
+def _read_file(path: Path) -> Pack:
+    mapping = _load_mapping(path)
     pack_id = mapping.get("id")
     layout = mapping.get("layout")
     if not isinstance(pack_id, str) or not pack_id.strip():

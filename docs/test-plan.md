@@ -1691,6 +1691,27 @@ H4â€“H5 N/A (no UI / no new HTTP fields). Shadow bar: issue **code + span**. R1â
 - **Pass criteria**: Resolver unit tests; OpenAPI snapshot unchanged for lint/validate query params
 - **Source**: D-VPL-E1; D-VPL-E6; ADR-038 amend
 
+### TC-EV-YEH-001: Extension header merge (UJ-024)
+
+- **Level**: T0
+- **Objective**: Overlays extend one builtin for listed profile ids without replacing the rest
+- **Pass criteria**: Missing `extends` target fails closed and the builtin stays. The same payload id replaces that entry. A new id is added. Other builtin entries stay. Builtin files may omit `profiles` and `extends`.
+- **Source**: EV-yaml-extension-header; ADR-045 amend
+
+### TC-EV-YEH-002: Schematron pattern id on the issue code (UJ-024)
+
+- **Level**: T0 / T2
+- **Objective**: Named Schematron failures use the pattern id; unnamed failures stay generic
+- **Pass criteria**: When the engine has a pattern id, `Issue.code` is that id. Empty select still returns the row. A non-empty select that omits it, or an ignore that adds it, drops the row. No pattern id keeps `SCHEMATRON_ASSERT` and the row stays. XSD, well-formed, and `SCHEMATRON_SKIPPED` codes stay. OpenAPI has no new field.
+- **Source**: EV-yaml-extension-header; ADR-046 amend
+
+### TC-EV-YEH-003: Convert and validate share the policy id (UJ-024)
+
+- **Level**: T0
+- **Objective**: Convert-time validation passes the same output policy id as `POST /api/v1/validate`
+- **Pass criteria**: For one profile, both calls pass the resolved id. Decode response shape and convert XML goldens stay. `/lint-tac` still omits MatchPort.
+- **Source**: EV-yaml-extension-header; ADR-046 amend
+
 ### TC-EV-VPL-007: Generated catalogs drift gate (UJ-024)
 
 - **Level**: T0

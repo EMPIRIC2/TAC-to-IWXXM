@@ -98,7 +98,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     report = lint(text, product=args.product, profile=lint_profile)
     if policy_id:
         try:
-            report = apply_policy_to_report(report, policy_id)
+            report = apply_policy_to_report(report, policy_id, profile=lint_profile)
         except PolicyError as exc:
             print(f"error: {exc}", file=sys.stderr)
             return 2

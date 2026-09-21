@@ -19,7 +19,7 @@ def _overlay(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, text: str) -> None
 
 
 _METAR = """
-id: metar
+id: fixture_metar
 layout: token_stream
 rules:
   - id: kind
@@ -30,7 +30,7 @@ rules:
 
 def test_english_hook_replaces_one_phrase(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _overlay(monkeypatch, tmp_path, _METAR)
-    pack = {item.id: item for item in load_packs()}["metar"]
+    pack = {item.id: item for item in load_packs()}["fixture_metar"]
     hook = ExplanationHook({"kind": "Report {0}"})
     result = match_tac("METAR", pack, hook=hook)
     assert result.spans[0].explanation == "Report METAR"
@@ -40,7 +40,7 @@ def test_english_hook_replaces_one_phrase(monkeypatch: pytest.MonkeyPatch, tmp_p
 
 def test_other_locale_fails_closed(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     _overlay(monkeypatch, tmp_path, _METAR)
-    pack = {item.id: item for item in load_packs()}["metar"]
+    pack = {item.id: item for item in load_packs()}["fixture_metar"]
     with pytest.raises(LocaleError, match="not available"):
         match_tac("METAR", pack, locale="fr")
     with pytest.raises(LocaleError, match="not available"):
@@ -63,7 +63,7 @@ def test_unsafe_pack_template_fails_at_load(monkeypatch: pytest.MonkeyPatch, tmp
         monkeypatch,
         tmp_path,
         """
-id: metar
+id: fixture_metar
 layout: token_stream
 rules:
   - id: kind
@@ -76,7 +76,7 @@ rules:
     _overlay(
         monkeypatch,
         tmp_path,
-        "id: metar\nlayout: token_stream\nrules:\n  - id: kind\n    pattern: ['"
+        "id: fixture_metar\nlayout: token_stream\nrules:\n  - id: kind\n    pattern: ['"
         + ("A" * 201)
         + "']\n    explain: '{0}'\n",
     )
