@@ -77,7 +77,7 @@ instead of five-library authoring. Decode still shows bare ICAO codes (#724).
 ### #724 decode station names
 
 `tac_decoding.glossary` documents optional OpenAIP/F3-style ICAO→name soft-fail;
-backend airport schemas exist. Issue still OPEN — wire into decode explanations/summary.
+backend wires `AirportValidator` on `/decode-tac` (TC-EVPVD-004..005 / #724).
 
 ### Prior related context
 
