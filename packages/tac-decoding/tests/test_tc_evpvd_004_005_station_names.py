@@ -38,7 +38,17 @@ def test_tc_evpvd_005_station_name_soft_fail_unknown() -> None:
         set_location_name_resolver(None)
 
 
-def test_tc_evpvd_004_speci_also_enriches() -> None:
+def test_tc_evpvd_004_summary_skips_parenthetical_place_after_dash() -> None:
+    """Coverage: named-station sep present but place is parenthetical → code-only."""
+    from tac_decoding.decode import DecodeSegment, _sentence_from_segment
+
+    seg = DecodeSegment(
+        start=0,
+        end=4,
+        code="KJFK",
+        explanation="ICAO station location indicator — (legacy)",
+    )
+    assert _sentence_from_segment(seg) == "station KJFK"
     set_location_name_resolver(lambda icao: "Test Field" if icao == "KJFK" else None)
     try:
         result = decode_tac(
