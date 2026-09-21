@@ -39,6 +39,12 @@ tac-validate --product METAR --json path/to/report.tac
 Exit code `0` when lint is OK; `1` when error-severity issues are present (or the file
 cannot be read).
 
+## Policy overlays
+
+Optional TAC quality policy YAML via `TAC_VALIDATE_POLICY_DIR` (ADR-046). See the
+monorepo [Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md)
+and `examples/overlays/`. Detector packs use `TAC_VALIDATE_DETECTOR_DIR`.
+
 ## Rule coverage
 
 METAR, SPECI, and TAF use a full product checklist. SIGMET, AIRMET, VAA, TCA, and SWXA use

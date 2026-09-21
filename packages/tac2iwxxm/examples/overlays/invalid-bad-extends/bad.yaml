@@ -1,0 +1,3 @@
+id: broken-binding
+extends: not-a-emit-key
+profiles: [annex3]

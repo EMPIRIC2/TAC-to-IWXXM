@@ -312,6 +312,7 @@ No new Render secrets required for convert goldens (package-side). Decode glossa
 | IWXXM output policy overlay | Optional `IWXXM_VALIDATE_POLICY_DIR` | Extra IWXXM output policies. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
 | Conversion profile binding overlay | Optional `TAC2IWXXM_PROFILE_DIR` | YAML that layers TAC and IWXXM policy ids onto one builtin binding for listed conversion profile ids. Unset = builtin bindings. Not a Render secret (ADR-045 / ADR-046) |
 | Convert IR source | Optional `TAC2IWXXM_CONVERT_IR_SOURCE` | `legacy` / `pack` / `auto` (default). `auto` uses pack IR for products whose default has flipped (METAR/SPECI after #1213; additional core products after #1214 when goldens pass). Not a Render secret (ADR-045 / #1212 / #1214) |
+| Overlay cookbook + honesty matrix | [domain/overlays/overlay-cookbook.md](domain/overlays/overlay-cookbook.md), [domain/overlays/product-engine-matrix.md](domain/overlays/product-engine-matrix.md) | EV-yaml-engine-configurability / #1224 — deployer/SDK how-to; not an in-app editor |
 | OpenAIP / F3 names | Existing F3 / OpenAIP config | Enrich decode when available; miss → ICAO only |
 | FE Examples catalog | Static FE fixtures | No env; WMO-passers only |
 

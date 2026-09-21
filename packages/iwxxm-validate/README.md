@@ -41,6 +41,13 @@ iwxxm-validate path/to/report.xml --json
 
 Exit `0` when `report.ok`; `1` on validation or I/O errors.
 
+## Output policy overlays
+
+Optional IWXXM output policy YAML via `IWXXM_VALIDATE_POLICY_DIR` (ADR-046). Vendor
+XSD/Schematron remain the source of truth; policies select/ignore assert ids. See the
+monorepo [Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md)
+and `examples/overlays/`.
+
 ## Optional native extension
 
 Default `pip install` is pure Python. Building the PyO3 extension (requires `rustc` and

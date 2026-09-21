@@ -890,7 +890,11 @@ validate-yaml:
 	$(UV) run pre-commit run actionlint --all-files
 	$(UV) run pre-commit run yamllint --all-files
 
-validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard pnpm-action-package-manager-guard
+# EV-yaml-engine-configurability / #1224 — fail-closed overlay examples (TC-EVYEC-003)
+overlay-preflight:
+	$(UV) run python scripts/overlays/preflight.py --all-examples
+
+validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard pnpm-action-package-manager-guard overlay-preflight
 
 config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v

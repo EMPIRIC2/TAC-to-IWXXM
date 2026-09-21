@@ -2,27 +2,27 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-21 (EV-profile-validate-decode-deepen / #1221 — requirements locked)
+> **Last updated**: 2026-09-21 (EV-yaml-engine-configurability / #1224 — requirements locked)
 
 ## Summary
 
 | # | Feature | Status | Category | Source |
 |---|---------|--------|----------|--------|
 | F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
-| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038; **deepen** S071 / EV-061 readable item-by-item decode on validate (#1010) |
+| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038; **deepen** S071 / EV-061 readable item-by-item decode on validate (#1010); **deepen EV-yaml-engine-configurability / #1224**: overlay honesty matrix + cookbook/preflight (no Schematron-as-YAML) |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011); **deepen EV-yaml-engine-configurability / #1224**: convert column honesty (emit stays Python; pack IR + profile overlays documented) |
 | F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); **deepen EV-profile-validate-decode-deepen / #1221**: finish ADR-044 FE residual + #1120/#1145 catalog UX |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
-| F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner; **deepen EV-profile-validate-decode-deepen / #1221 / #724**: ICAO station → airport name (soft-fail) |
+| F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner; **deepen EV-profile-validate-decode-deepen / #1221 / #724**: ICAO station → airport name (soft-fail); **deepen EV-yaml-engine-configurability / #1224**: pack/glossary overlay cookbook + examples |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert; **deepen** EV-beta-ux-export-auth info-only Conversion/Validation log chrome (not amber/red) |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
-| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
+| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043); **deepen EV-yaml-engine-configurability / #1224**: policy/detector overlay docs + preflight (detector YAML deepen deferred) |
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
 | F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725); **deepen** EV-1150 CalVer + promote tags + nightly TestPyPI (ADR-043) |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators; **deepen** EV-beta-ux-export-auth operator messages = library codes only (no research T3/S1 tokens) |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators; **deepen** EV-beta-ux-export-auth operator messages = library codes only (no research T3/S1 tokens); **deepen EV-yaml-engine-configurability / #1224**: honesty matrix for policy vs detector YAML |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 UI-hide (API retained); **restore** EV-091 / #898 + #1089 exchange overlay; **deepen** EV-1150 operator **beta** badge + Issues feedback (ADR-043); **deepen** EV-beta-ux-export-auth remove Upload to Database button; Disseminate/Convert&Send remain beta |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
@@ -371,6 +371,36 @@
   4. The existing TAC lint list and Validate IWXXM list render those results. MatchPort
      stays off `/lint-tac`. Decode response fields and convert XML goldens stay.
 - **Source**: ADR-045 amend; ADR-046 amend; session EV-yaml-extension-header.
+
+### F2 / F6 / F9 / F12 / F15 deepen (EV-yaml-engine-configurability / #1224)
+
+- **Status note**: No new Fn. Honesty + SDK/deployer usability for YAML/file-env overlays
+  across decode, TAC validate, IWXXM validate, and convert. Does **not** reopen ADR-044
+  authoring UI, accept client policy YAML on HTTP, replace vendor Schematron with hand
+  XPath, or rewrite convert emit as YAML.
+- **Deliverables (Build, after Spec gate)**:
+  1. Product × engine matrix (rows: METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA; cells:
+     full | partial | stub | N/A) for decode pack / TAC policy / TAC detector YAML /
+     IWXXM policy / convert pack-IR / convert emit.
+  2. Shared overlay cookbook + `examples/overlays/` per package (minimal `extends` sample).
+  3. Monorepo overlay preflight script + thin package CLI hooks; fail closed on bad
+     `extends` / unknown ids.
+  4. README / PyPI / `config-spec` updates; glossary SoT = `tac-decoding`.
+- **Acceptance**:
+  1. Matrix published under standing docs (CORPUS-cited); CI or unit lock for matrix file
+     presence + schema (TC-EVYEC-001).
+  2. Each of the four package READMEs links cookbook + shows overlay env vars
+     (TC-EVYEC-002).
+  3. Preflight rejects a broken overlay fixture and accepts a valid one (TC-EVYEC-003).
+  4. OpenAPI / contract tests: no client `*_policy` / pack-YAML body fields
+     (TC-EVYEC-004).
+  5. Docs state glossary SoT + legacy env alias (TC-EVYEC-005).
+- **Out of scope**: METAR/SPECI detector YAML deepen (defer); convert-emit YAML; #1222;
+  Profile Builder; HTTP policy injection.
+- **Connectivity**: H4–H5 **N/A** (no operator UI this cycle).
+- **Source**: #1224; ADR-044/045/046; session `EV-yaml-engine-configurability`;
+  [yaml-engine-configurability.md](context/yaml-engine-configurability.md);
+  [ev-yaml-engine-configurability.md](decisions/ev-yaml-engine-configurability.md).
 
 ### F2 deepen (S045 / EV-037 — IWXXM-US Schematron N/A)
 
