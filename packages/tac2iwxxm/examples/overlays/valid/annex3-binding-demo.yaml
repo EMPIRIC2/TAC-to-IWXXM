@@ -1,0 +1,3 @@
+id: annex3-binding-demo
+extends: annex3
+profiles: [annex3]

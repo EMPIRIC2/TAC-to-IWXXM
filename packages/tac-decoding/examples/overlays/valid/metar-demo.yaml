@@ -1,0 +1,9 @@
+# Minimal pack overlay (ADR-045). Extends builtin metar for annex3.
+id: metar-demo
+extends: metar
+profiles: [annex3]
+layout: token_stream
+rules:
+  - id: demo_token
+    pattern: ["DEMO"]
+    explain: "Demo group {0}"

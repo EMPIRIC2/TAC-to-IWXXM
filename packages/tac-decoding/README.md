@@ -35,7 +35,13 @@ for row in catalog_entries(limit=10):
 ## Glossary overlay
 
 Optional YAML via `TAC_DECODING_GLOSSARY_PATH` (or legacy
-`TAC2IWXXM_DECODE_GLOSSARY_PATH`).
+`TAC2IWXXM_DECODE_GLOSSARY_PATH`). **SoT** for the glossary is this package.
+
+## Pack overlays
+
+Optional directory of pack YAML via `TAC_DECODING_PACK_DIR` (ADR-045). See the
+monorepo [Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md)
+and `examples/overlays/`.
 
 ## Links
 

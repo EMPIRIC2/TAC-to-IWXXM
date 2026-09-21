@@ -40,12 +40,12 @@ Read [product-engine-matrix.md](product-engine-matrix.md) before assuming a prod
 
 ## Examples (Build)
 
-After Build gate: `packages/*/examples/overlays/` plus monorepo preflight:
+Package trees under `packages/*/examples/overlays/` plus monorepo preflight:
 
 ```bash
-# Planned entrypoint (TC-EVYEC-003)
 make overlay-preflight
-# or: bash scripts/overlays/preflight.sh path/to/overlay-dir
+# or: uv run python scripts/overlays/preflight.py --all-examples
+# or: uv run python scripts/overlays/preflight.py --kind tac-policy --dir path/to/overlays
 ```
 
 ## HTTP

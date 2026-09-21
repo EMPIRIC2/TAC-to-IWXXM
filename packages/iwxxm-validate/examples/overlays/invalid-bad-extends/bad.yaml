@@ -1,0 +1,8 @@
+schema_version: 1
+id: orphan-iwxxm
+lifecycle: draft
+pin: "2025-2"
+extends: [missing-iwxxm-policy]
+profiles: [annex3]
+select: []
+ignore: []
