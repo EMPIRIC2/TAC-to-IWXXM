@@ -95,6 +95,32 @@ describe('TacValidationRulesPanel', () => {
     expect(screen.getByTestId('tac-validation-rule-id')).toHaveValue('TAC.VIS');
   });
 
+  it('treats missing or non-array rules body as empty', async () => {
+    listMock.mockResolvedValue({
+      items: [
+        {
+          ...builtinAsset,
+          body: { note: 'no rules key' },
+        },
+      ],
+    });
+    const { unmount } = render(<TacValidationRulesPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('tac-validation-rules-panel')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('tac-validation-rule-select').textContent ?? '').toBe('');
+    unmount();
+
+    listMock.mockResolvedValue({
+      items: [{ ...builtinAsset, body: undefined as never }],
+    });
+    render(<TacValidationRulesPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('tac-validation-rules-panel')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('tac-validation-rule-select').textContent ?? '').toBe('');
+  });
+
   it('keeps built-in rules read-only until fork (TC-EVWB-TAC-002)', async () => {
     render(<TacValidationRulesPanel accessToken="tok" />);
     await waitFor(() => {

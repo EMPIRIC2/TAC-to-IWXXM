@@ -129,6 +129,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-076          | F7.v (ADR-044)                                               | Five package-owned trust catalogs                                                                                                                                                                                                                          | **H4–H5 when FE ships**           | TC-EVRPC-001..005                                                                        |
 | UJ-076a         | F7 / F16–F19 / F9 (ADR-044)                                  | Dropdown selection hard cutover                                                                                                                                                                                                                            | **H4–H5 when FE ships**           | TC-EVRPC-006..008                                                                        |
 | UJ-076b         | F9 (ADR-044)                                                 | tac-decoding parity                                                                                                                                                                                                                                        | **H4–H5 when FE ships**           | TC-EVRPC-009                                                                             |
+| UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-077          | F6/F9 deepen (#1210 + EV-pack-ir-convert-wire)               | Pack shadow + METAR/SPECI pack-IR emit when goldens match                                                                                                                                                                                                  | H4–H5 N/A (no wire/UI change)     | TC-EV1210-001..004; TC-EV-PACKIR-001..005                                                 |
 | UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
 | UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
@@ -6225,3 +6226,47 @@ All must pass before merging migration PR:
 
 - **Objective**: Decode fixtures pass via `tac_decoding`; optional `tac2iwxxm` re-export.
 - **Pass criteria**: UJ-076b; package unit tests.
+
+## EV-profile-validate-decode-deepen / #1221 (UJ-078)
+
+### TC-EVPVD-001: Profile Builder authoring absent
+
+- **Level**: T0 / T2
+- **Objective**: Conversion Profiles page has no Profile Builder / five-library authoring
+- **Pass criteria**: Authoring components unmounted; five trust catalogs + dropdowns remain
+- **Source**: D-EVPVD-06; UJ-076 / UJ-076a; ADR-044
+
+### TC-EVPVD-002: AU_BOM catalog implemented + convert goldens
+
+- **Level**: T0 / T2
+- **Objective**: `AU_BOM` catalog `status: implemented`; METAR/SPECI/TAF convert fixtures green
+- **Pass criteria**: D-EVPVD-02; no national XSD invent
+- **Source**: #1221; F36
+
+### TC-EVPVD-003: NZ_CAA_MET catalog implemented + convert goldens
+
+- **Level**: T0 / T2
+- **Objective**: Same bar as TC-EVPVD-002 for `NZ_CAA_MET`
+- **Pass criteria**: D-EVPVD-02
+- **Source**: #1221; F36
+
+### TC-EVPVD-004: Station name on decode hit
+
+- **Level**: T0 / T2
+- **Objective**: Known ICAO (e.g. KJFK) enriches station explanation + summary with airport name
+- **Pass criteria**: Name present when lookup hits; `/decode-tac` keys unchanged
+- **Source**: #724; D-EVPVD-07; UJ-020 / UJ-078
+
+### TC-EVPVD-005: Station name soft-fail
+
+- **Level**: T0
+- **Objective**: Unknown ICAO soft-fails to designator-only explanation
+- **Pass criteria**: No 5xx; ICAO still shown
+- **Source**: #724; D-EVPVD-07
+
+### TC-EVPVD-006: #1120 residual catalog follow
+
+- **Level**: T0 / T2 / H4–H5 when FE
+- **Objective**: Workbench Issues catalog follows Profile; US/CA national-only seed rows present
+- **Pass criteria**: TC-EV1120-006..009 still green; #1122/#1123 gaps closed or waived in #1221
+- **Source**: #1120; D-EVPVD-05

@@ -703,6 +703,10 @@ string content only. Optional additive fields require a follow-on api-contract a
 if proven necessary. Glossary is package data (YAML/JSON); see config-spec for optional
 override path.
 
+**EV-profile-validate-decode-deepen / #1221 / #724**: Station ICAO explanations and
+`summary` include full aerodrome name when the airport lookup hits; miss soft-fails to
+ICAO-only text. **No new response keys** (TC-EVPVD-004..005).
+
 VAA/TCA may be residual-heavy (G4). Must support TC-F7-002.
 
 ### Validation
@@ -1298,3 +1302,17 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 **Breaking changes**: None on HTTP. Library: selective removal of `products/*.py` when byte-identical (all-or-nothing per shared file); `pack_ir_map` must not import deleted parsers.
 
 - EV-pack-fill-delete-gate (2026-09-20): #1214 — no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]
+
+## EV-profile-validate-decode-deepen — Endpoint review (#1221)
+
+| Endpoint | Change? | Notes |
+|----------|---------|-------|
+| `POST /api/v1/decode-tac` | **None (wire)** | Richer station explanation/`summary` strings when airport lookup hits (#724) |
+| `GET /api/v1/lint-issue-catalog` | **None (already EV-1120)** | Confirm residual #1122 content; filters already documented |
+| `GET /api/v1/rule-catalogs` / selection-options | **None (ADR-044)** | FE cutover consumes existing routes |
+| Convert / validate / lint | **None** | AU/NZ catalog status + fixtures only |
+| FE / H4–H5 | **Required when FE ships** | UJ-078 Profile Builder removal + catalog follow |
+
+**Breaking changes**: None on HTTP. FE removes Profile Builder authoring surfaces (ADR-044).
+
+- EV-profile-validate-decode-deepen (2026-09-21): #1221 — no HTTP shape change. [Corpus: api] [Corpus: adr/ADR-044]

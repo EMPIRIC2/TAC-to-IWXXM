@@ -111,6 +111,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-076 | Five package-owned trust catalogs (tabbed) | apps/frontend / API | F7.v (ADR-044) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076a | Dropdown profile / dissemination / decode selection | apps/frontend / API | F7.w→dropdowns / F16–F19 / F9 (ADR-044) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076b | Decode via `tac-decoding` parity | apps/frontend / API | F9 (ADR-044) | T0 / T2 / H4–H5 |
+| UJ-078 | Profile/validate/decode deepen (ADR-044 residual + AU/NZ + station names) | apps/frontend / API | F7/F9/F36 (#1221) | T0 / T2 / **T3** / H4–H5 |
 | UJ-077 | Pack-engine decode and convert, same operator panel | library / API | F6/F9 (#1210 / #1214 / ADR-045) | T0 / T2; H4–H5 N/A |
 | UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
@@ -1199,15 +1200,18 @@ description of the whole report — updating live while typing.
 3. Each recognized token shows a **value-aware** explanation: `24/18` →
    "Temperature 24 °C, dewpoint 18 °C"; `18004KT` → "Wind from 180° at 4 kt"; `10SM` →
    "Visibility 10 statute miles"; `A3011` → "Altimeter 30.11 inHg".
-4. A **"Plain language"** block at the top of the decode panel shows one flowing paragraph
-   summarizing the report, e.g. "Routine METAR for KJFK observed on day 12 at 12:51 UTC.
-   Wind from 180° at 4 kt. …".
-5. Unrecognized content appends "Not decoded: …" naming the residual spans; sparse products
+4. Station ICAO tokens include the **full aerodrome name** when the airport lookup hits
+   (e.g. KJFK → name); miss soft-fails to the ICAO designator only (#724 / EV-profile-validate-decode-deepen).
+5. A **"Plain language"** block at the top of the decode panel shows one flowing paragraph
+   summarizing the report, e.g. "Routine METAR for KJFK (John F Kennedy International…)
+   observed on day 12 at 12:51 UTC. Wind from 180° at 4 kt. …".
+6. Unrecognized content appends "Not decoded: …" naming the residual spans; sparse products
    (SIGMET/AIRMET/VAA/TCA) show a short best-effort summary with "partial decode" wording.
 
 **Acceptance**: METAR/SPECI/TAF golden fixtures show value-aware explanations for wind,
-visibility, temperature/dewpoint, pressure, time, station, clouds, weather; `summary`
-renders live for all seven products; residuals named when present.
+visibility, temperature/dewpoint, pressure, time, station (with name when known), clouds,
+weather; `summary` renders live for all seven products; residuals named when present;
+TC-EVPVD-004..005.
 
 **Automated tests**: `decode_tac` unit tests (T0); decode-tac API contract + Vitest panel
 (T0/T2); Playwright live-typing smoke (T2); live T3 sample.
@@ -2844,6 +2848,23 @@ backed by deployed backend lists only.
 
 **Pass**: Existing decode fixtures green; import path `tac_decoding` (and one-release
 `tac2iwxxm` re-export).
+
+### UJ-078: Profile / validate / decode deepen (#1221)
+
+**Feature**: F7.v residual + F36 + F9 (#724) — EV-profile-validate-decode-deepen.
+
+**Goal**: Operator uses dropdowns + five trust catalogs (no Profile Builder authoring);
+AU/NZ profiles convert with goldens; decode shows airport names when known.
+
+**Steps**:
+1. Open Conversion Profiles / workbench — authoring IDE absent; catalogs + pickers present.
+2. Select `AU_BOM` or `NZ_CAA_MET`; convert METAR/SPECI/TAF sample → IWXXM succeeds.
+3. Paste METAR with known ICAO; decode explanation/summary includes aerodrome name.
+4. Issues catalog follows Profile for national-only rows (UJ-073 residual).
+
+**Pass**: TC-EVPVD-001..006; UJ-076* still green; H4–H5 when FE catalog/cutover ships.
+
+**Out**: Exchange packaging deepen (#1222); pack engine (#1210).
 
 ### UJ-077: Pack engine behind the same decode panel
 

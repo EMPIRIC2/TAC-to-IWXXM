@@ -1,6 +1,6 @@
 # AU_BOM — Australia BoM semantic overlay (P1)
 
-> **Profile id**: `AU_BOM` · **Kind**: semantic · **Priority**: P1 · **Status**: in_progress (EV-087 / [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917))  
+> **Profile id**: `AU_BOM` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-087 / [#917](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/917); deepen [#1221](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1221))  
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 Bureau of Meteorology national semantic overlay: TAF change-group `INTER`, TAF3 service

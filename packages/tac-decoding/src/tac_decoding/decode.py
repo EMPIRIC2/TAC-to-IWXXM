@@ -246,7 +246,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         seen["station"] = 1
         place = resolve_location_name(upper)
         if place:
-            return f"ICAO station {upper} ({place})"
+            return f"ICAO station location indicator — {place}"
         return f"ICAO station location indicator ({upper})"
     if m := _TIME_Z.match(upper):
         return _fmt_time(m, label="Observation time")
@@ -305,7 +305,7 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         seen["station"] = 1
         place = resolve_location_name(upper)
         if place:
-            return f"ICAO station {upper} ({place})"
+            return f"ICAO station location indicator — {place}"
         return f"ICAO station location indicator ({upper})"
     if m := _TIME_Z.match(upper):
         return _fmt_time(m, label="Issue time")
@@ -746,7 +746,15 @@ def _sentence_from_segment(seg: DecodeSegment) -> str | None:
     if not text:
         return None
     lower = text.lower()
-    if "station location" in lower or "location indicator" in lower:
+    if "station location" in lower or (
+        "location indicator" in lower and "fir" not in lower and "watch office" not in lower
+    ):
+        for sep in (" — ", " - "):
+            if sep in text:
+                place = text.split(sep, 1)[1].strip().rstrip(".")
+                if place and not place.startswith("("):
+                    return f"station {place} ({seg.code.upper()})"
+                break
         return f"station {seg.code.upper()}"
     # Prefer the value-bearing half after an em dash when present.
     if " - " in text:

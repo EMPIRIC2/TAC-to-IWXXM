@@ -1,6 +1,6 @@
 # NZ_CAA_MET — New Zealand CAA / MetService semantic overlay (P1)
 
-> **Profile id**: `NZ_CAA_MET` · **Kind**: semantic · **Priority**: P1 · **Status**: in_progress (EV-087 / [#918](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/918))  
+> **Profile id**: `NZ_CAA_MET` · **Kind**: semantic · **Priority**: P1 · **Status**: implemented (EV-087 / [#918](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/918); deepen [#1221](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1221))  
 > **Catalog row**: [`catalog.yaml`](../catalog.yaml) · **ADR**: [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md)
 
 New Zealand national semantic overlay: **domestic vs international TAF** dialects and METAR

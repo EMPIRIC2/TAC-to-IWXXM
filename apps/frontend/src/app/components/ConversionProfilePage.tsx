@@ -1,6 +1,6 @@
 /**
- * ConversionProfile editor — catalog inspector and Libraries shell.
- * Requires sign-in.
+ * Conversion profiles — read-only catalog inspector (ADR-044).
+ * Profile Builder / library authoring UI is retired; requires sign-in.
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -21,6 +21,8 @@ import {
   PROFILES_INSPECTOR_LOADING,
   PROFILES_INSPECTOR_SELECT,
   PROFILES_INSPECTOR_UNAVAILABLE,
+  PROFILES_AUTHORING_RETIRED_NOTE,
+  PROFILES_TRUST_CATALOGS_HINT,
   PROFILES_TOOLTIP_INSPECTOR_COMPARE,
   PROFILES_TOOLTIP_INSPECTOR_PROFILE,
   PROFILES_TOOLTIP_PROFILE_BLOCKS,
@@ -28,7 +30,6 @@ import {
 import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { BetaBadge } from './BetaBadge';
-import { ProfileBuilderLibraries } from './ProfileBuilderLibraries';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 export interface ConversionProfilePageProps {
@@ -414,9 +415,13 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
         <p className="text-sm text-gray-600 dark:text-gray-400">
           {PROFILES_EDITOR_SUBTITLE}
         </p>
+        <p
+          className="mt-2 text-sm text-gray-600 dark:text-gray-400"
+          data-testid="conversion-profiles-authoring-retired"
+        >
+          {PROFILES_AUTHORING_RETIRED_NOTE} {PROFILES_TRUST_CATALOGS_HINT}
+        </p>
       </header>
-
-      <ProfileBuilderLibraries accessToken={accessToken} catalogProfile={selected} />
 
       {error && (
         <p className="text-sm text-red-600" data-testid="conversion-profiles-error">
@@ -547,10 +552,10 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
               <div className="mt-3 flex flex-wrap gap-2 text-sm">
                 <a
                   className="rounded border border-gray-300 px-3 py-1.5 text-gray-700 dark:border-gray-600 dark:text-gray-200"
-                  data-testid="conversion-profiles-block-jump-libraries"
-                  href="#profile-builder-libraries"
+                  data-testid="conversion-profiles-block-jump-catalog"
+                  href="#/"
                 >
-                  Open libraries
+                  Open rule catalogs
                 </a>
               </div>
             </div>

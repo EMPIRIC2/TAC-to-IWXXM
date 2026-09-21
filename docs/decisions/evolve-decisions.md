@@ -1,5 +1,22 @@
 # Evolve Decisions
 
+## Cycle EV-profile-validate-decode-deepen — F36 + #1120 residual + ADR-044 + #724 (#1221)
+
+**Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-profile-validate-decode-deepen`  
+**Issue:** [#1221](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1221) · **OUT gap:** [#1222](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1222)  
+**Documenting→Implementing gate:** closed  
+**Lock:** [ev-profile-validate-decode-deepen.md](ev-profile-validate-decode-deepen.md)
+
+| ID | Outcome |
+|----|---------|
+| D-EVPVD-01..08 | Requirements locked (recommended spine, AU/NZ bar, CA best-effort, docs-only preview, honest #1120 residual, ADR-044 UI cutover, #724 soft-fail names, OUT list) |
+| D-EVPVD-MANIFEST | Delta feature-list / journeys / test-plan / api confirm; no new ADR; no Config/Deploy |
+
+[Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F7] [Corpus: product §F9]
+[Corpus: product §F15] [Corpus: product §F35] [Corpus: product §F36] [Corpus: decisions]
+
+---
+
 ## Cycle EV-validation-policy-layers — Registry/Detector/Policy/Runtime (#1216 / ADR-046)
 
 **Opened:** 2026-09-20 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-validation-policy-layers`  

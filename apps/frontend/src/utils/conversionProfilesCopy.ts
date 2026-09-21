@@ -3,9 +3,13 @@
  * Plain language only — no planning vocabulary.
  */
 
-export const PROFILES_EDITOR_TITLE = 'Profile builder';
+export const PROFILES_EDITOR_TITLE = 'Conversion profiles';
 export const PROFILES_EDITOR_SUBTITLE =
-  'Assemble conversion, validation, and dissemination pieces with plain-language names. Machine codes stay hidden.';
+  'Inspect deployed profiles and compare settings. Rule catalogs are read-only; selection uses workbench dropdowns.';
+export const PROFILES_TRUST_CATALOGS_HINT =
+  'Browse TAC, IWXXM, conversion, dissemination, and decoding rules on the Validation Issues Catalog tab.';
+export const PROFILES_AUTHORING_RETIRED_NOTE =
+  'In-app profile and library authoring has been removed. Deployed packages own the rules.';
 export const PROFILES_ASSEMBLY_HEADING = 'Guided assembly';
 export const PROFILES_ASSEMBLY_HELP =
   'Work top to bottom: choose a base profile, map TAC tokens to IWXXM, then attach validation and dissemination when ready.';
@@ -116,11 +120,12 @@ export const CONVERT_PRESET_HELP =
   'Optional saved preset for this convert. Applies saved profile defaults, but does not choose destinations or credentials.';
 export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS = 'Reset to WMO defaults';
 export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP =
-  'Restore the ICAO / WMO baseline profile and matching built-in library selections. Shared with Profile builder when you reset there too.';
+  'Restore the ICAO / WMO baseline profile and matching built-in library selections on Convert.';
 export const PROFILES_INSPECTOR_ACCESS_BUILTIN = 'Built-in (read-only default)';
 export const PROFILES_INSPECTOR_STATUS_READY = 'Ready';
 export const PROFILES_INSPECTOR_STATUS_DRAFT = 'Draft saved locally';
-export const PROFILES_EDITOR_LOGIN_REQUIRED = 'Sign in to open the profile builder.';
+export const PROFILES_EDITOR_LOGIN_REQUIRED =
+  'Sign in to open the conversion profiles inspector.';
 export const PROFILES_EDITOR_SIGN_IN = 'Sign in';
 export const PROFILES_INSPECTOR_HEADING = 'Catalog inspector';
 export const PROFILES_INSPECTOR_LOADING = 'Loading catalog…';

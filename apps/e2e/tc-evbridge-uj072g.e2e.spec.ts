@@ -182,6 +182,10 @@ test.describe('EV-bridge — UJ-072g Libraries + hard cut', () => {
   test('TC-EVBRIDGE-005/006/010: Profile Libraries tabs + Mapping bridge Beta', async ({
     page,
   }) => {
+    test.skip(
+      true,
+      'Retired ADR-044 — five-library Profile Builder + Mapping bridge unmounted (TC-EVPVD-001)',
+    );
     await seedMockAuth(page);
     await stubLibraryNoise(page);
     await page.goto('/profiles');
@@ -190,30 +194,10 @@ test.describe('EV-bridge — UJ-072g Libraries + hard cut', () => {
     await expect(page.getByTestId('conversion-profiles-page')).toBeVisible({
       timeout: 30_000,
     });
-    const libraries = page.getByTestId('profile-builder-libraries');
-    await expect(libraries).toBeVisible();
-    await expect(libraries.getByTestId('beta-badge')).toBeVisible();
-    await expect(page.getByTestId('profile-library-tab-conversion')).toBeVisible();
-    await expect(page.getByTestId('profile-library-tab-tac-validation')).toBeVisible();
     await expect(
-      page.getByTestId('profile-library-tab-iwxxm-validation'),
+      page.getByTestId('conversion-profiles-authoring-retired'),
     ).toBeVisible();
-    await expect(page.getByTestId('profile-library-tab-dissemination')).toBeVisible();
-    await expect(page.getByTestId('profile-library-tab-decoding')).toBeVisible();
-
-    await page.getByTestId('profile-library-tab-dissemination').click();
-    await expect(page.getByTestId('library-assets-panel-dissemination')).toBeVisible();
-    await expect(page.getByTestId('dissemination-transforms-list')).toBeVisible();
-
-    await page.getByTestId('profile-library-tab-decoding').click();
-    await expect(page.getByTestId('library-assets-panel-decoding')).toBeVisible();
-    await expect(page.getByTestId('decoding-entries-list')).toBeVisible();
-
-    await page.getByTestId('profile-library-tab-conversion').click();
-    await expect(page.getByTestId('conversion-templates-panel')).toBeVisible();
-    await expect(page.getByTestId('mapping-bridge')).toBeVisible();
-    await expect(
-      page.getByTestId('mapping-bridge').getByTestId('beta-badge'),
-    ).toBeVisible();
+    await expect(page.getByTestId('profile-builder-libraries')).toHaveCount(0);
+    await expect(page.getByTestId('mapping-bridge')).toHaveCount(0);
   });
 });

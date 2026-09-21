@@ -126,147 +126,30 @@ describe('ConversionProfilePage', () => {
     expect(onRequestLogin).toHaveBeenCalled();
   });
 
-  it('updates inspector Kind when switching library tabs (TC-EVPYL-002)', async () => {
-    const user = userEvent.setup();
+  it('TC-EVPVD-001: Profile Builder authoring is absent; inspector summary remains', async () => {
     render(<ConversionProfilePage accessToken="tok" />);
 
     await waitFor(() => {
-      expect(
-        screen.getByTestId('conversion-profiles-inspector-detail'),
-      ).toBeInTheDocument();
+      expect(screen.getByTestId('conversion-profiles-summary')).toBeInTheDocument();
     });
 
     expect(
-      screen.getByTestId('conversion-profiles-inspector-detail'),
-    ).toHaveTextContent('Conversion');
-
-    await user.click(screen.getByTestId('profile-library-tab-tac-validation'));
-    expect(
-      screen.getByTestId('conversion-profiles-inspector-detail'),
-    ).toHaveTextContent('TAC validation');
-    expect(screen.getByTestId('conversion-profiles-inspector')).toHaveAttribute(
-      'data-library-kind',
-      'tac_validation',
-    );
-  });
-
-  it('loads inspector and five library tabs when authenticated', async () => {
-    const user = userEvent.setup();
-    render(<ConversionProfilePage accessToken="tok" />);
-
-    await waitFor(() => {
-      expect(
-        screen.getByTestId('conversion-profiles-inspector-detail'),
-      ).toBeInTheDocument();
-    });
+      screen.getByTestId('conversion-profiles-authoring-retired'),
+    ).toBeInTheDocument();
+    expect(screen.queryByTestId('profile-builder-libraries')).not.toBeInTheDocument();
     expect(screen.queryByTestId('profile-builder-assembly')).not.toBeInTheDocument();
     expect(
-      screen.queryByTestId('conversion-profiles-glossary'),
+      screen.queryByTestId('library-draft-shell-conversion'),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByTestId('conversion-profiles-workflows'),
+      screen.queryByTestId('library-workbench-conversion'),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByTestId('conversion-profiles-examples'),
+      screen.queryByTestId('profile-library-tab-conversion'),
     ).not.toBeInTheDocument();
     expect(fetchProfileCatalog).toHaveBeenCalledWith('tok');
-    const libraries = screen.getByTestId('profile-builder-libraries');
-    const inspector = screen.getByTestId('conversion-profiles-inspector');
-    expect(libraries).toContainElement(inspector);
-    expect(
-      libraries
-        .querySelector('[data-testid="profile-builder-library-tabs"]')!
-        .compareDocumentPosition(inspector) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
-    expect(libraries.querySelector('[data-testid="beta-badge"]')).toBeTruthy();
-    expect(screen.getByTestId('profile-library-tab-conversion')).toBeInTheDocument();
-    expect(screen.getByTestId('library-draft-shell-conversion')).toBeInTheDocument();
-    expect(screen.getByTestId('library-workbench-conversion')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('library-workbench-preview-iwxxm-conversion'),
-    ).not.toBeChecked();
-    expect(
-      screen.getByTestId('library-workbench-preview-issues-conversion'),
-    ).not.toBeChecked();
-    expect(screen.getByTestId('profile-library-tab-overview')).toBeInTheDocument();
-    expect(screen.queryByTestId('conversion-profiles-presets')).not.toBeInTheDocument();
-    expect(screen.queryByTestId('conversion-profiles-packs')).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId('conversion-profiles-templates'),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByTestId('conversion-profiles-overlays'),
-    ).not.toBeInTheDocument();
-
-    await user.click(screen.getByTestId('profile-library-tab-tac-validation'));
-    await waitFor(() => {
-      expect(listLibraryAssets).toHaveBeenCalledWith('tok', 'tac_validation');
-    });
-    expect(
-      screen.getByTestId('library-assets-panel-tac_validation'),
-    ).toBeInTheDocument();
-
-    await user.click(screen.getByTestId('profile-library-tab-iwxxm-validation'));
-    await waitFor(() => {
-      expect(listLibraryAssets).toHaveBeenCalledWith('tok', 'iwxxm_validation');
-    });
-    await user.click(screen.getByTestId('profile-library-tab-dissemination'));
-    await waitFor(() => {
-      expect(
-        screen.getByTestId('library-assets-panel-dissemination'),
-      ).toBeInTheDocument();
-    });
-    await user.click(screen.getByTestId('profile-library-tab-decoding'));
-    await waitFor(() => {
-      expect(screen.getByTestId('library-assets-panel-decoding')).toBeInTheDocument();
-    });
-  });
-
-  it('opens Overview stub and keeps preview toggles off by default (TC-EVWB-001)', async () => {
-    const user = userEvent.setup();
-    render(<ConversionProfilePage accessToken="tok" />);
-    await waitFor(() => {
-      expect(screen.getByTestId('profile-builder-libraries')).toBeInTheDocument();
-    });
-    expect(screen.getByTestId('library-workbench-conversion')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('library-workbench-catalog-conversion'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('library-workbench-editor-conversion'),
-    ).toBeInTheDocument();
-    const iwxxmToggle = screen.getByTestId(
-      'library-workbench-preview-iwxxm-conversion',
-    );
-    const issuesToggle = screen.getByTestId(
-      'library-workbench-preview-issues-conversion',
-    );
-    expect(iwxxmToggle).not.toBeChecked();
-    expect(issuesToggle).not.toBeChecked();
-    expect(
-      screen.queryByTestId('library-workbench-preview-iwxxm-panel-conversion'),
-    ).not.toBeInTheDocument();
-
-    await user.click(screen.getByTestId('profile-library-tab-overview'));
-    expect(screen.getByTestId('profile-overview-stub')).toBeInTheDocument();
-    expect(screen.getByTestId('profile-overview-compare-stub')).toBeInTheDocument();
-    expect(screen.getByTestId('profile-overview-enablement-stub')).toBeInTheDocument();
-  });
-
-  it('exposes tooltips on library tabs including Overview (TC-EVWB-003)', async () => {
-    render(<ConversionProfilePage accessToken="tok" />);
-    await waitFor(() => {
-      expect(screen.getByTestId('profile-library-tab-overview')).toBeInTheDocument();
-    });
-    expect(screen.getByTestId('profile-library-tab-conversion')).toBeInTheDocument();
-    expect(
-      screen.getByTestId('profile-library-tab-tac-validation'),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId('profile-library-tab-iwxxm-validation'),
-    ).toBeInTheDocument();
-    expect(screen.getByTestId('profile-library-tab-dissemination')).toBeInTheDocument();
-    expect(screen.getByTestId('profile-library-tab-decoding')).toBeInTheDocument();
+    expect(screen.getByTestId('conversion-profiles-select')).toBeInTheDocument();
+    expect(screen.getByTestId('conversion-profiles-blocks')).toBeInTheDocument();
   });
 
   it('shows empty catalog and load error', async () => {
@@ -280,7 +163,10 @@ describe('ConversionProfilePage', () => {
       'catalog boom',
     );
     expect(screen.queryByTestId('conversion-profiles-packs')).not.toBeInTheDocument();
-    expect(screen.getByTestId('profile-builder-libraries')).toBeInTheDocument();
+    expect(screen.queryByTestId('profile-builder-libraries')).not.toBeInTheDocument();
+    expect(
+      screen.getByTestId('conversion-profiles-authoring-retired'),
+    ).toBeInTheDocument();
   });
 
   it('shows the empty inspector state when catalog loads without profiles', async () => {
@@ -320,12 +206,6 @@ describe('ConversionProfilePage', () => {
       'ICAO_2025',
     );
     expect(screen.getAllByText(/IWXXM 2025-2 core/).length).toBeGreaterThan(0);
-    expect(
-      screen.getByTestId('conversion-profiles-inspector-detail'),
-    ).toHaveTextContent('ICAO / WMO baseline');
-    expect(
-      screen.getByTestId('conversion-profiles-inspector-detail'),
-    ).toHaveTextContent('ICAO / WMO');
     expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
       'Rule packs',
     );
@@ -349,9 +229,9 @@ describe('ConversionProfilePage', () => {
       screen.getByTestId('conversion-profiles-select'),
       'US_FAA_NWS',
     );
-    expect(
-      screen.getByTestId('conversion-profiles-inspector-detail'),
-    ).toHaveTextContent('US - FAA NWS');
+    expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
+      'United States (FAA/NWS)',
+    );
   });
 
   it('falls back to raw authority code when profile id has no suffix', async () => {
@@ -381,16 +261,17 @@ describe('ConversionProfilePage', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByTestId('conversion-profiles-inspector-detail'),
+        screen.getByTestId('conversion-profiles-summary-primary'),
       ).toBeInTheDocument();
     });
 
-    expect(
-      screen.getByTestId('conversion-profiles-inspector-detail'),
-    ).toHaveTextContent('ECCC');
-    expect(
-      screen.getByTestId('conversion-profiles-inspector-detail'),
-    ).toHaveTextContent('Coverage details unavailable');
+    expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
+      'ECCC',
+    );
+    expect(screen.getByTestId('conversion-profiles-summary-primary')).toHaveTextContent(
+      'Products',
+    );
+    expect(screen.getAllByText('—').length).toBeGreaterThan(0);
   });
 
   it('opens ADR-038 block detail and jump links', async () => {
@@ -410,8 +291,8 @@ describe('ConversionProfilePage', () => {
       'WMO IWXXM 2025-2',
     );
     expect(
-      screen.getByTestId('conversion-profiles-block-jump-libraries'),
-    ).toHaveAttribute('href', '#profile-builder-libraries');
+      screen.getByTestId('conversion-profiles-block-jump-catalog'),
+    ).toHaveAttribute('href', '#/');
   });
 
   it('does not flag delta notes when compared profiles share the same note list', async () => {
@@ -635,7 +516,9 @@ describe('ConversionProfilePage', () => {
     expect(screen.getByTestId('conversion-profiles-block-detail')).toHaveTextContent(
       'No exchange default is listed for this profile.',
     );
-    expect(screen.getByText('Status')).toBeInTheDocument();
+    expect(
+      screen.getByTestId('conversion-profiles-authoring-retired'),
+    ).toBeInTheDocument();
   });
 
   it('distinguishes loaded zero counts from unavailable counts', async () => {
@@ -695,7 +578,8 @@ describe('ConversionProfilePage', () => {
     expect(screen.getByTestId('conversion-profiles-summary')).toHaveTextContent(
       /Catalog unavailable/i,
     );
-    expect(screen.getByTestId('profile-builder-libraries')).toBeInTheDocument();
+    expect(screen.queryByTestId('profile-builder-libraries')).not.toBeInTheDocument();
+    expect(screen.getByTestId('conversion-profiles-blocks')).toBeInTheDocument();
     expect(
       screen.queryByText(/No catalog profiles available\./i),
     ).not.toBeInTheDocument();
@@ -706,7 +590,7 @@ describe('ConversionProfilePage', () => {
     render(<ConversionProfilePage accessToken="tok" />);
     await waitFor(() => {
       expect(
-        screen.getByTestId('conversion-profiles-inspector-detail'),
+        screen.getByTestId('conversion-profiles-summary-primary'),
       ).toBeInTheDocument();
     });
 
@@ -724,7 +608,9 @@ describe('ConversionProfilePage', () => {
     expect(
       screen.getByTestId('conversion-profiles-summary-primary'),
     ).toBeInTheDocument();
-    expect(screen.getByTestId('conversion-profiles-inspector')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('conversion-profiles-inspector'),
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('conversion-profiles-blocks')).toHaveTextContent(
       /reload failed/i,
     );

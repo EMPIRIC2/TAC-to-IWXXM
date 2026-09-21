@@ -82,6 +82,80 @@ def test_tc_ev1120_002_semantic_profile_shared_union_matching(client: TestClient
     assert "IWXXM_CA_EXTENSION" in ca_codes
 
 
+def test_tc_ev1120_006_us_faa_nws_national_only_catalog_row(client: TestClient) -> None:
+    """TC-EV1120-006 / #1122 — US TAC national-only row with provenance URL."""
+    icao = _codes(
+        client.get(
+            "/api/v1/lint-issue-catalog",
+            params={"semantic_profile": "ICAO_2025"},
+        ).json()
+    )
+    us = client.get(
+        "/api/v1/lint-issue-catalog",
+        params={"semantic_profile": "US_FAA_NWS"},
+    )
+    assert us.status_code == 200
+    us_payload = us.json()
+    us_codes = _codes(us_payload)
+    assert "US_TAF_BECMG_FORBIDDEN" not in icao
+    assert "US_TAF_BECMG_FORBIDDEN" in us_codes
+    row = next(r for r in us_payload["issues"] if r["code"] == "US_TAF_BECMG_FORBIDDEN")
+    assert "us_faa_nws" in row["semantic_profiles"]
+    assert row.get("source_url", "").startswith("https://")
+    assert "faa.gov" in row["source_url"] or "nws" in row["source_url"].lower()
+
+
+def test_tc_ev1120_007_ca_eccc_national_only_catalog_row(client: TestClient) -> None:
+    """TC-EV1120-007 / #1122 — CA TAC national-only row with provenance URL."""
+    icao = _codes(
+        client.get(
+            "/api/v1/lint-issue-catalog",
+            params={"semantic_profile": "ICAO_2025"},
+        ).json()
+    )
+    ca = client.get(
+        "/api/v1/lint-issue-catalog",
+        params={"semantic_profile": "CA_ECCC"},
+    )
+    assert ca.status_code == 200
+    ca_payload = ca.json()
+    ca_codes = _codes(ca_payload)
+    assert "CA_METAR_LWIS" not in icao
+    assert "CA_METAR_LWIS" in ca_codes
+    row = next(r for r in ca_payload["issues"] if r["code"] == "CA_METAR_LWIS")
+    assert "ca_eccc" in row["semantic_profiles"]
+    assert row.get("source_url", "").startswith("https://")
+    assert "canada.ca" in row["source_url"] or "gc.ca" in row["source_url"]
+
+
+def test_tc_ev1120_008_us_and_ca_iwxxm_national_rows(client: TestClient) -> None:
+    """TC-EV1120-008 / #1122 — IWXXM-family national rows + provenance URLs."""
+    icao = _codes(
+        client.get(
+            "/api/v1/lint-issue-catalog",
+            params={"semantic_profile": "ICAO_2025"},
+        ).json()
+    )
+    us = client.get(
+        "/api/v1/lint-issue-catalog",
+        params={"semantic_profile": "US_FAA_NWS"},
+    ).json()
+    ca = client.get(
+        "/api/v1/lint-issue-catalog",
+        params={"semantic_profile": "CA_ECCC"},
+    ).json()
+    assert "IWXXM_US_EXTENSION" not in icao
+    assert "IWXXM_CA_EXTENSION" not in icao
+    us_row = next(r for r in us["issues"] if r["code"] == "IWXXM_US_EXTENSION")
+    ca_row = next(r for r in ca["issues"] if r["code"] == "IWXXM_CA_EXTENSION")
+    assert us_row["family"] == "iwxxm"
+    assert ca_row["family"] == "iwxxm"
+    assert us_row["source_url"].startswith("https://")
+    assert ca_row["source_url"].startswith("https://")
+    assert "weather.gov" in us_row["source_url"] or "nws" in us_row["source_url"].lower()
+    assert "gc.ca" in ca_row["source_url"] or "canada.ca" in ca_row["source_url"]
+
+
 def test_tc_ev1120_003_unknown_semantic_profile_400(client: TestClient) -> None:
     response = client.get(
         "/api/v1/lint-issue-catalog",
