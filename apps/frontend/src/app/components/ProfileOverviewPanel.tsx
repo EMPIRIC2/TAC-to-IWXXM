@@ -154,13 +154,18 @@ export function ProfileOverviewPanel({
 
   const left = profiles.find((p) => p.id === leftId) ?? profiles[0] ?? null;
   const right = profiles.find((p) => p.id === rightId) ?? null;
+  const leftProfileId = left?.id ?? '';
 
-  /* eslint-disable react-hooks/set-state-in-effect -- reset enablement when left profile changes */
+  /* eslint-disable react-hooks/set-state-in-effect -- reset enablement when left profile id changes */
   useEffect(() => {
-    if (left) {
-      setEnablement(defaultEnablement(left));
+    if (!left) {
+      return;
     }
-  }, [left]);
+    setEnablement(defaultEnablement(left));
+    // Reseed only when the primary profile id changes — not when catalog array identity refreshes
+    // (Strict Mode double-fetch would otherwise wipe in-progress enablement edits).
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- left read on leftProfileId change only
+  }, [leftProfileId]);
   /* eslint-enable react-hooks/set-state-in-effect */
 
   const diffs = useMemo(() => {

@@ -63,8 +63,12 @@ describe('ProfileOverviewPanel', () => {
     render(<ProfileOverviewPanel accessToken="tok" preferredProfileId="ICAO_2025" />);
     await waitFor(() => {
       expect(screen.getByTestId('profile-overview-product-METAR')).toBeChecked();
+      expect(screen.getByTestId('profile-overview-product-TAF')).toBeChecked();
     });
     fireEvent.click(screen.getByTestId('profile-overview-product-TAF'));
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-overview-product-TAF')).not.toBeChecked();
+    });
     expect(
       screen.getByTestId('profile-overview-enablement-yaml'),
     ).not.toHaveTextContent('- TAF');
@@ -97,5 +101,226 @@ describe('ProfileOverviewPanel', () => {
     expect(screen.getByTestId('profile-overview-enablement')).toHaveTextContent(
       /fail-closed/i,
     );
+  });
+
+  it('switches primary/compare selects and flags differing ICAO delta notes', async () => {
+    catalogMock.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ICAO_2025',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR'],
+          iwxxm_line: 'IWXXM 2025-2 core',
+          rule_pack_count: 1,
+          overlay_count: 1,
+        },
+        {
+          id: 'US_FAA_NWS',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR'],
+          iwxxm_line: 'IWXXM 2025-2 core',
+          rule_pack_count: 1,
+          overlay_count: 1,
+          deltas_vs_icao: ['National RMK'],
+        },
+      ],
+    } as never);
+
+    render(<ProfileOverviewPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-overview-left-select')).toBeInTheDocument();
+    });
+
+    fireEvent.change(screen.getByTestId('profile-overview-left-select'), {
+      target: { value: 'US_FAA_NWS' },
+    });
+    fireEvent.change(screen.getByTestId('profile-overview-right-select'), {
+      target: { value: 'ICAO_2025' },
+    });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-overview-compare-diffs')).toHaveTextContent(
+        /Difference notes vs ICAO differ/i,
+      );
+    });
+    expect(screen.getByTestId('profile-overview-left-select')).toHaveValue(
+      'US_FAA_NWS',
+    );
+    expect(screen.getByTestId('profile-overview-right-select')).toHaveValue(
+      'ICAO_2025',
+    );
+  });
+
+  it('shows em-dashes for empty products, missing IWXXM line, and null counts', async () => {
+    catalogMock.mockResolvedValue({
+      profiles: [
+        {
+          id: 'EMPTY_A',
+          kind: 'semantic',
+          status: 'planned',
+          products: [],
+          // omit iwxxm_line / counts / deltas → cover ?? and ternary em-dashes
+        },
+        {
+          id: 'EMPTY_B',
+          kind: 'semantic',
+          status: 'planned',
+          products: ['SPECI', 'TAF'],
+          iwxxm_line: 'IWXXM 2023-1',
+          rule_pack_count: 3,
+          overlay_count: 2,
+          deltas_vs_icao: [],
+        },
+      ],
+    } as never);
+
+    render(<ProfileOverviewPanel accessToken="tok" preferredProfileId="EMPTY_A" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-overview-compare-diffs')).toHaveTextContent(
+        'Products:',
+      );
+    });
+    const diffs = screen.getByTestId('profile-overview-compare-diffs');
+    expect(diffs).toHaveTextContent('—');
+    expect(diffs).toHaveTextContent('IWXXM line:');
+    expect(diffs).toHaveTextContent('Rule packs:');
+    expect(diffs).toHaveTextContent('Overlays:');
+
+    // Flip compare so the empty side is on the right (right-side em-dash branches)
+    fireEvent.change(screen.getByTestId('profile-overview-left-select'), {
+      target: { value: 'EMPTY_B' },
+    });
+    fireEvent.change(screen.getByTestId('profile-overview-right-select'), {
+      target: { value: 'EMPTY_A' },
+    });
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-overview-compare-diffs')).toHaveTextContent(
+        'SPECI, TAF vs —',
+      );
+    });
+  });
+
+  it('defaults IWXXM 2025-2 enablement when primary line is blank', async () => {
+    catalogMock.mockResolvedValue({
+      profiles: [
+        {
+          id: 'BLANK_LINE',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR'],
+          iwxxm_line: '',
+          rule_pack_count: 0,
+          overlay_count: 0,
+        },
+      ],
+    } as never);
+
+    render(<ProfileOverviewPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-overview-iwxxm-2025-2')).toBeChecked();
+    });
+    expect(screen.getByTestId('profile-overview-enablement-yaml')).toHaveTextContent(
+      'profile_id: "BLANK_LINE"',
+    );
+  });
+
+  it('handles single-profile catalog, unknown preferred id, and same-side compare', async () => {
+    catalogMock.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ONLY',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR'],
+          iwxxm_line: 'IWXXM 2025-2',
+          rule_pack_count: 0,
+          overlay_count: 0,
+          deltas_vs_icao: ['Same'],
+        },
+      ],
+    } as never);
+
+    const { rerender, unmount } = render(
+      <ProfileOverviewPanel accessToken="tok" preferredProfileId="missing" />,
+    );
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-overview-left-select')).toHaveValue('ONLY');
+    });
+    expect(screen.getByTestId('profile-overview-right-select')).toHaveValue('ONLY');
+    expect(screen.getByTestId('profile-overview-compare-diffs').textContent ?? '').toBe(
+      '',
+    );
+
+    rerender(<ProfileOverviewPanel accessToken="tok" preferredProfileId="ONLY" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-overview-left-select')).toHaveValue('ONLY');
+    });
+    unmount();
+  });
+
+  it('shows identical-profile message, empty catalog, and catalog load errors', async () => {
+    catalogMock.mockResolvedValue({
+      profiles: [
+        {
+          id: 'ICAO_2025',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR'],
+          iwxxm_line: 'IWXXM 2025-2',
+          rule_pack_count: 0,
+          overlay_count: 0,
+          deltas_vs_icao: ['Same'],
+        },
+        {
+          id: 'CA_ECCC',
+          kind: 'semantic',
+          status: 'implemented',
+          products: ['METAR'],
+          iwxxm_line: 'IWXXM 2025-2',
+          rule_pack_count: 0,
+          overlay_count: 0,
+          deltas_vs_icao: ['Same'],
+        },
+      ],
+    } as never);
+
+    const { unmount } = render(<ProfileOverviewPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-overview-compare-diffs')).toHaveTextContent(
+        /No catalog differences/i,
+      );
+    });
+    unmount();
+
+    catalogMock.mockResolvedValue({ profiles: [] } as never);
+    const empty = render(
+      <ProfileOverviewPanel accessToken="tok" preferredProfileId="ICAO_2025" />,
+    );
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-overview-left-select')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('profile-overview-enablement-yaml')).toHaveTextContent(
+      'profile_id: "unknown"',
+    );
+    empty.unmount();
+
+    catalogMock.mockRejectedValueOnce(new Error('network down'));
+    const errRender = render(<ProfileOverviewPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-overview-error')).toHaveTextContent(
+        'network down',
+      );
+    });
+    errRender.unmount();
+
+    catalogMock.mockRejectedValueOnce('boom');
+    render(<ProfileOverviewPanel accessToken="tok" />);
+    await waitFor(() => {
+      expect(screen.getByTestId('profile-overview-error')).toHaveTextContent(
+        'Failed to load catalog',
+      );
+    });
   });
 });
