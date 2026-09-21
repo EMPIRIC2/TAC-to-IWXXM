@@ -105,31 +105,38 @@ def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> li
 
     # Visibility lives before RMK - do not treat PK WND dddss/tt digits as vis (R2/R5).
     # Strip WMO AHL heading lines so YYGGgg (e.g. 121200) is not INVALID_VISIBILITY (EV-040).
-    rmk_at = core.find("RMK")
-    vis_core = core[:rmk_at] if rmk_at >= 0 else core
-    vis_core = "\n".join(line for line in vis_core.splitlines() if not _AHL_HEADING_LINE.match(line.strip()))
-    bad_vis = list(_VIS_BAD.finditer(vis_core))
-    if bad_vis:
-        issues.extend(
-            _issue(
-                "INVALID_VISIBILITY",
-                f"{product} invalid visibility token {match.group(1)!r} - research R2",
-                start=start + match.start(1),
-                end=start + match.end(1),
-                location="visibility",
+    # ADR-046 M2: R2 via detector pack by default; ``TAC_VALIDATE_DETECTOR_MODE=legacy`` keeps
+    # the inline path for shadow compares in tests.
+    from tac_validate.detectors import detector_mode, run_r2_visibility_detectors
+
+    if detector_mode() != "legacy":
+        issues.extend(run_r2_visibility_detectors(tac, product))
+    else:
+        rmk_at = core.find("RMK")
+        vis_core = core[:rmk_at] if rmk_at >= 0 else core
+        vis_core = "\n".join(line for line in vis_core.splitlines() if not _AHL_HEADING_LINE.match(line.strip()))
+        bad_vis = list(_VIS_BAD.finditer(vis_core))
+        if bad_vis:
+            issues.extend(
+                _issue(
+                    "INVALID_VISIBILITY",
+                    f"{product} invalid visibility token {match.group(1)!r} - research R2",
+                    start=start + match.start(1),
+                    end=start + match.end(1),
+                    location="visibility",
+                )
+                for match in bad_vis
             )
-            for match in bad_vis
-        )
-    elif not _VIS_OK.search(vis_core):
-        issues.append(
-            _issue(
-                "MISSING_VISIBILITY",
-                f"{product} missing visibility or CAVOK - A3-2 #6",
-                start=start,
-                end=end,
-                location="visibility",
+        elif not _VIS_OK.search(vis_core):
+            issues.append(
+                _issue(
+                    "MISSING_VISIBILITY",
+                    f"{product} missing visibility or CAVOK - A3-2 #6",
+                    start=start,
+                    end=end,
+                    location="visibility",
+                )
             )
-        )
 
     for _i, wx_tok in _weather_candidate_tokens(tokens):
         span = _token_span_in_core(core, wx_tok, start)

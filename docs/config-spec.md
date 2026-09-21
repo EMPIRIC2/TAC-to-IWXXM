@@ -306,6 +306,7 @@ No new Render secrets required for convert goldens (package-side). Decode glossa
 | Pack overlay dir | Optional `TAC_DECODING_PACK_DIR` | Directory of YAML/JSON packs. Unset = built-in packs only. Not a Render secret (ADR-045 / #1210) |
 | TAC quality policy overlay | Optional `TAC_VALIDATE_POLICY_DIR` | Extra TAC quality policy YAML. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
 | TAC detector overlay | Optional `TAC_VALIDATE_DETECTOR_DIR` | Extra detector packs. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
+| TAC detector mode | Optional `TAC_VALIDATE_DETECTOR_MODE` | `detector` (default, R2 flipped) / `legacy` (inline visibility for compares). Not a Render secret (ADR-046 / #1216) |
 | IWXXM output policy overlay | Optional `IWXXM_VALIDATE_POLICY_DIR` | Extra IWXXM output policies. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
 | Convert IR source | Optional `TAC2IWXXM_CONVERT_IR_SOURCE` | `legacy` / `pack` / `auto` (default). `auto` uses pack IR for products whose default has flipped (METAR/SPECI after #1213; additional core products after #1214 when goldens pass). Not a Render secret (ADR-045 / #1212 / #1214) |
 | OpenAIP / F3 names | Existing F3 / OpenAIP config | Enrich decode when available; miss → ICAO only |

@@ -1,0 +1,37 @@
+# R2 visibility detectors for METAR/SPECI (ADR-046 / #1216 M2).
+schema_version: 1
+id: metar-speci-r2-visibility
+stage: token
+products:
+  - METAR
+  - SPECI
+rules:
+  - id: invalid_visibility
+    kind: finditer
+    preprocess:
+      before: RMK
+      exclude_ahl_lines: true
+      strip_terminator: true
+    pattern: '\b(\d+KM|\d+MILES|\d{5,})\b'
+    flags:
+      - IGNORECASE
+    on_match:
+      code: INVALID_VISIBILITY
+      location: visibility
+      message_template: "{product} invalid visibility token {capture!r} - research R2"
+      capture_group: 1
+      span: match
+  - id: missing_visibility
+    kind: require_search
+    preprocess:
+      before: RMK
+      exclude_ahl_lines: true
+      strip_terminator: true
+    skip_if_codes:
+      - INVALID_VISIBILITY
+    pattern: '\b(?:CAVOK|P?\d{1,2}SM|[MP]?\d{1,2}/\d{1,2}SM|\d{1,2}\s+[MP]?\d{1,2}/\d{1,2}SM|\d{4})\b'
+    on_fail:
+      code: MISSING_VISIBILITY
+      location: visibility
+      message_template: "{product} missing visibility or CAVOK - A3-2 #6"
+      span: body
