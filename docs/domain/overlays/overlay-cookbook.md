@@ -8,16 +8,36 @@
 
 ## Shared header
 
-Extension YAML uses:
+Extension YAML always needs `id` and `profiles`. **`extends` shape depends on the package** — do not copy one form for all four:
 
 ```yaml
-id: my-overlay
-profiles: [annex3]          # required on overlays
-extends: annex3-metar-quality  # exactly one builtin id
+# tac-decoding pack overlay (string parent pack id)
+id: metar-demo
+profiles: [annex3]
+extends: metar
+layout: token_stream
+rules: []
 ```
 
-- Missing base → **fail closed** (builtin stays in force).
+```yaml
+# tac-validate / iwxxm-validate policy overlay (exactly one parent in a list)
+id: annex3-metar-quality-demo
+profiles: [annex3]
+extends: [annex3-metar-quality]
+lifecycle: draft
+# … product / pin / select / ignore per package schema
+```
+
+```yaml
+# tac2iwxxm profile → policy binding (emit key; string or one-element list)
+id: annex3-binding-demo
+profiles: [annex3]
+extends: annex3
+```
+
+- Missing or unknown base → **fail closed** (builtin stays in force).
 - Same payload id → replace that entry; new id → add; other builtins unchanged.
+- See package trees under `packages/*/examples/overlays/` for load-tested fixtures.
 
 ## Env vars (canonical)
 
