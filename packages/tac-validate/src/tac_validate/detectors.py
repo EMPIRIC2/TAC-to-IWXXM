@@ -20,8 +20,10 @@ from typing import Any, Literal, cast
 import yaml
 
 from tac_validate.issue_registry import issue_from
+from tac_validate.match_port import match_port_spans
 from tac_validate.models import Issue
 from tac_validate.product_rules_pkg._common import _strip_research_refs
+from tac_validate.theme_checks import lint_profile
 
 DetectorStage = Literal["parse_gate", "token", "cross_field"]
 DetectorKind = Literal["finditer", "require_search", "python"]
@@ -496,14 +498,57 @@ def run_r2_visibility_detectors(tac_text: str, product: str) -> list[Issue]:
     return run_theme_pack("metar-speci-r2-visibility", tac_text, product)
 
 
+_ANNEX3_METAR_THEME_PACKS = frozenset(
+    {
+        "metar-speci-r1-identity-order",
+        "metar-speci-r2-visibility",
+        "metar-speci-r3-weather",
+        "metar-speci-r4-cloud",
+        "metar-speci-r5-remarks",
+        "metar-speci-r8-modifiers",
+    }
+)
+
+
 def run_theme_pack(pack_id: str, tac_text: str, product: str) -> list[Issue]:
     """Run one builtin/overlay detector pack by id (empty if missing or product mismatch)."""
+    spans = match_port_spans.get()
+    strict = (
+        spans is not None
+        and pack_id in _ANNEX3_METAR_THEME_PACKS
+        and product.upper() == "METAR"
+        and lint_profile.get() == "annex3"
+    )
+    if strict and not spans:
+        return [
+            issue_from(
+                "MISSING_DECODE_MATCH",
+                product=product.upper(),
+                location="match",
+                start=0,
+                end=len(tac_text),
+            )
+        ]
     catalog = load_detector_catalog()
     pack = catalog.get(pack_id)
     if pack is None:
         msg = f"detector pack {pack_id!r} not found"
         raise DetectorError(msg)
-    return run_detector_pack(pack, tac_text, product)
+    issues = run_detector_pack(pack, tac_text, product)
+    if strict and spans:
+        span = spans[0]
+        return [
+            Issue(
+                severity=issue.severity,
+                code=issue.code,
+                message=issue.message,
+                location=issue.location,
+                start=span.start,
+                end=span.end,
+            )
+            for issue in issues
+        ]
+    return issues
 
 
 def example_python_hatch(tac_text: str, product: str) -> list[Issue]:

@@ -9,11 +9,16 @@ from pathlib import Path
 
 import pytest
 from iwxxm_validate.cli import _bind_output_policy
+from iwxxm_validate.models import ValidationReport
 
 
 def test_default_profile_policy_activates() -> None:
-    assert _bind_output_policy("annex3", None) is None
-    assert _bind_output_policy("ICAO_2025", "annex3-iwxxm-output") is None
+    policy_id, error = _bind_output_policy("annex3", None)
+    assert error is None
+    assert policy_id == "annex3-iwxxm-output"
+    policy_id, error = _bind_output_policy("ICAO_2025", "annex3-iwxxm-output")
+    assert error is None
+    assert policy_id == "annex3-iwxxm-output"
 
 
 def test_cli_policy_error_exits_2(tmp_path: Path) -> None:
@@ -27,8 +32,11 @@ def test_cli_policy_error_exits_2(tmp_path: Path) -> None:
     assert code == 2
     assert "unknown IWXXM output policy" in err.getvalue()
 
-    assert _bind_output_policy("nope", None)
-    assert "unknown IWXXM output policy" in (_bind_output_policy("annex3", "missing-out") or "")
+    _id, error = _bind_output_policy("nope", None)
+    assert error
+    _id, error = _bind_output_policy("annex3", "missing-out")
+    assert error is not None
+    assert "unknown IWXXM output policy" in error
 
 
 def test_import_error_without_override(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -40,8 +48,12 @@ def test_import_error_without_override(monkeypatch: pytest.MonkeyPatch) -> None:
         return real_import(name, *args, **kwargs)
 
     monkeypatch.setattr(builtins, "__import__", _blocked)
-    assert _bind_output_policy("annex3", None) is None
-    assert "unknown IWXXM output policy" in (_bind_output_policy("annex3", "missing-out") or "")
+    policy_id, error = _bind_output_policy("annex3", None)
+    assert policy_id is None
+    assert error is None
+    _id, error = _bind_output_policy("annex3", "missing-out")
+    assert error is not None
+    assert "unknown IWXXM output policy" in error
 
 
 def test_activated_policy_with_stale_id(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -52,5 +64,23 @@ def test_activated_policy_with_stale_id(tmp_path: Path, monkeypatch: pytest.Monk
         encoding="utf-8",
     )
     monkeypatch.setenv("IWXXM_VALIDATE_POLICY_DIR", str(overlay))
-    message = _bind_output_policy("annex3", "stale-out") or ""
+    _id, message = _bind_output_policy("annex3", "stale-out")
+    assert message is not None
     assert "NOT_A_REAL_ASSERT" in message
+
+
+def test_cli_passes_policy_into_validate(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from iwxxm_validate import cli
+
+    seen: dict[str, object] = {}
+
+    def _fake(text: str, **kwargs: object) -> ValidationReport:
+        seen["text"] = text
+        seen.update(kwargs)
+        return ValidationReport(ok=True, iwxxm_version="2025-2", profile="annex3", issues=[])
+
+    monkeypatch.setattr(cli, "validate_iwxxm", _fake)
+    xml = tmp_path / "x.xml"
+    xml.write_text("<Metar/>", encoding="utf-8")
+    assert cli.main(["--policy", "annex3-iwxxm-output", str(xml)]) == 0
+    assert seen["output_policy_id"] == "annex3-iwxxm-output"

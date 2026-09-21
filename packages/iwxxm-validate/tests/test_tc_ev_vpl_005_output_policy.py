@@ -159,6 +159,107 @@ def test_overlay_catalog(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Non
     assert "extra" not in again
 
 
+def test_apply_output_policy_drops_ignored_assert_and_keeps_xsd() -> None:
+    from iwxxm_validate.models import Issue, StageResult, ValidationReport
+    from iwxxm_validate.policy import OutputPolicyDocument, apply_output_policy_to_report
+
+    catalog = load_output_policy_catalog()
+    catalog["narrow-out"] = OutputPolicyDocument(
+        schema_version=1,
+        id="narrow-out",
+        lifecycle="activated",
+        pin="2025-2",
+        extends=(),
+        select=(),
+        ignore=("AIRMET.AIRMET-1",),
+    )
+    report = ValidationReport(
+        ok=False,
+        iwxxm_version="2025-2",
+        profile="annex3",
+        issues=[
+            Issue(severity="error", code="AIRMET.AIRMET-1", message="assert", layer="schematron"),
+            Issue(severity="error", code="XML_SYNTAX_ERROR", message="syntax", layer="xsd"),
+            Issue(severity="warning", code="SCHEMATRON_SKIPPED", message="skip", layer="schematron"),
+        ],
+        stages=[
+            StageResult(
+                stage="schematron",
+                label="Schematron",
+                ok=False,
+                issues=[
+                    Issue(severity="error", code="AIRMET.AIRMET-1", message="assert", layer="schematron"),
+                ],
+            )
+        ],
+    )
+
+    def _apply(policy_id: str) -> ValidationReport:
+        from iwxxm_validate import policy as policy_mod
+
+        original = policy_mod.load_output_policy_catalog
+        policy_mod.load_output_policy_catalog = lambda: catalog  # type: ignore[method-assign]
+        try:
+            return apply_output_policy_to_report(report, policy_id)
+        finally:
+            policy_mod.load_output_policy_catalog = original  # type: ignore[method-assign]
+
+    narrowed = _apply("narrow-out")
+    assert [issue.code for issue in narrowed.issues] == ["XML_SYNTAX_ERROR", "SCHEMATRON_SKIPPED"]
+    assert narrowed.stages[0].issues == []
+    assert narrowed.stages[0].ok is True
+
+    identity = _apply("annex3-iwxxm-output")
+    assert [issue.code for issue in identity.issues] == [
+        "AIRMET.AIRMET-1",
+        "XML_SYNTAX_ERROR",
+        "SCHEMATRON_SKIPPED",
+    ]
+
+    with pytest.raises(PolicyError, match="unknown IWXXM output policy"):
+        apply_output_policy_to_report(report, "missing-out")
+
+
+def test_validate_iwxxm_applies_policy(monkeypatch: pytest.MonkeyPatch) -> None:
+    import importlib
+
+    import iwxxm_validate.policy as policy_mod
+    from iwxxm_validate.models import Issue, ValidationReport
+    from iwxxm_validate.policy import OutputPolicyDocument
+
+    validate_mod = importlib.import_module("iwxxm_validate.validate_iwxxm")
+
+    catalog = load_output_policy_catalog()
+    catalog["narrow-out"] = OutputPolicyDocument(
+        schema_version=1,
+        id="narrow-out",
+        lifecycle="activated",
+        pin="2025-2",
+        extends=(),
+        select=(),
+        ignore=("AIRMET.AIRMET-1",),
+    )
+    monkeypatch.setattr(policy_mod, "load_output_policy_catalog", lambda: catalog)
+
+    def _fake(xml_content: str, **kwargs: object) -> ValidationReport:
+        _ = (xml_content, kwargs)
+        return ValidationReport(
+            ok=False,
+            iwxxm_version="2025-2",
+            profile="annex3",
+            issues=[
+                Issue(severity="error", code="AIRMET.AIRMET-1", message="assert", layer="schematron"),
+                Issue(severity="error", code="XSD_ERROR", message="xsd", layer="xsd"),
+            ],
+        )
+
+    monkeypatch.setattr(validate_mod, "_validate_iwxxm", _fake)
+    report = validate_mod.validate_iwxxm("<x/>", iwxxm_version="2025-2", output_policy_id="narrow-out")
+    assert [issue.code for issue in report.issues] == ["XSD_ERROR"]
+    untouched = validate_mod.validate_iwxxm("<x/>", iwxxm_version="2025-2", output_policy_id="  ")
+    assert len(untouched.issues) == 2
+
+
 def _write(tmp_path: Path, name: str, body: str) -> Path:
     path = tmp_path / name
     path.write_text(body, encoding="utf-8")

@@ -137,6 +137,18 @@ No new umbrella validation package.
 3. Build: M1 policy load → M2 R2 shadow/flip → M3 remaining R1–R8 → M4 IWXXM policy → M5 profile/CLI wiring → M6 generated catalogs only.
 4. Issue + PR into `stage` per repo policy.
 
+## Remainders (2026-09-21)
+
+Session `EV-validation-policy-remainders`. M1–M6 are merged. These locks were specified and not built.
+
+| ID | Lock |
+|----|------|
+| D-VPL-R1 | `validate_iwxxm` applies the bound output policy. Schematron issue codes that are assert ids and are not enabled are omitted. |
+| D-VPL-R2 | XSD, well-formed, and `SCHEMATRON_SKIPPED` always remain. Empty `select` is every assert, so the default annex3 report is unchanged. |
+| D-VPL-R3 | Backend passes the resolved policy id. No new HTTP field. A narrower policy is proved by a unit or API test. |
+| D-VPL-R4 | MatchPort is a protocol on `tac-validate` with no `tac-decoding` import. |
+| D-VPL-R5 | Every annex3 METAR theme detector requires a match **when the caller passes a MatchPort**, and emits `MISSING_DECODE_MATCH` when that port is empty. Omitting the port, including `/lint-tac`, keeps the TAC scan. Other products scan TAC. A present match supplies the span. |
+
 ## Supersedes / relates
 
 - Does not replace ADR-028 registry home — deepens authoring + policy.

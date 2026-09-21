@@ -5998,3 +5998,23 @@ authoring deferred.
 
 [Corpus: product §F7.w] [Corpus: adr/ADR-038] [Corpus: journeys] [Corpus: tests]
 
+## Cycle EV-validation-policy-remainders — apply IWXXM policy + MatchPort
+
+**Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-validation-policy-remainders`  
+**Features:** deepen **F2** / **F15** (no new Fn) · [#1216](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1216)  
+**Prior:** EV-validation-policy-layers M1–M6 merged to `stage` (PR #1217)  
+**Branch:** `evolve/EV-validation-policy-remainders`  
+**Status:** Implementing — MatchPort is opt-in; IWXXM policy apply is in product code
+
+### Scope lock
+
+| ID | Decision |
+|----|----------|
+| D-VPL-R1 | Apply output policy inside `validate_iwxxm` by dropping disabled Schematron assert ids |
+| D-VPL-R2 | Empty select = full assert set; default annex3 report unchanged |
+| D-VPL-R3 | Backend passes the resolved id; no new HTTP field; narrower policy proved by unit or API test |
+| D-VPL-R4 | MatchPort protocol; no `tac-decoding` import |
+| D-VPL-R5 | Strict only when the caller passes a MatchPort. Empty port emits `MISSING_DECODE_MATCH` on every annex3 METAR theme detector. Omitting the port, including `/lint-tac`, keeps the TAC scan. A present match supplies the span. |
+
+[Corpus: product §F2] [Corpus: product §F15] [Corpus: adr/ADR-046] [Corpus: tests]
+

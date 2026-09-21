@@ -189,7 +189,7 @@ def _validate_core_levels(
     return _report_from_issues(merged, iwxxm_version=iwxxm_version, profile=profile)
 
 
-def validate_iwxxm(
+def _validate_iwxxm(
     xml_content: str,
     *,
     iwxxm_version: str,
@@ -312,6 +312,35 @@ def validate_iwxxm(
         profile=profile,
         selected=selected,
     )
+
+
+def validate_iwxxm(
+    xml_content: str,
+    *,
+    iwxxm_version: str,
+    profile: str = "annex3",
+    levels: Sequence[str] | None = None,
+    product: str | None = None,
+    output_policy_id: str | None = None,
+) -> ValidationReport:
+    """
+    Validate IWXXM XML, then apply an output policy when ``output_policy_id`` is set.
+
+    Empty ``select`` keeps every Schematron assert. Disabled assert ids are omitted.
+    XSD, well-formed, and skipped-Schematron issues always remain.
+    """
+    report = _validate_iwxxm(
+        xml_content,
+        iwxxm_version=iwxxm_version,
+        profile=profile,
+        levels=levels,
+        product=product,
+    )
+    if output_policy_id is None or not output_policy_id.strip():
+        return report
+    from iwxxm_validate.policy import apply_output_policy_to_report
+
+    return apply_output_policy_to_report(report, output_policy_id)
 
 
 __all__ = ["validate_iwxxm"]

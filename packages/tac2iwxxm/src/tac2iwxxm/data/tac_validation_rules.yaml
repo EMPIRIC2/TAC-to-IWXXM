@@ -515,6 +515,15 @@ rules:
   - metar
   - speci
   - taf
+- id: TAC.MISSING_DECODE_MATCH
+  code: MISSING_DECODE_MATCH
+  label: Missing Decode Match
+  severity: error
+  message_template: '{product} annex3 theme checks require a decode match'
+  product: null
+  tags:
+  - match
+  - metar
 - id: TAC.MISSING_DTG
   code: MISSING_DTG
   label: Missing Dtg

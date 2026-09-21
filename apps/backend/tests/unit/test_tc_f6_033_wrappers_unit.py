@@ -99,13 +99,23 @@ def test_validate_accepts_profile_and_calls_iwxxm_validate(client: TestClient, m
     """Thin wrapper must invoke iwxxm_validate.validate (TC-F6-033) and map package fields."""
     calls: list[dict[str, object]] = []
 
-    def fake_validate(xml: str, *, iwxxm_version: str, profile: str = "annex3", levels=None, product=None):
+    def fake_validate(
+        xml: str,
+        *,
+        iwxxm_version: str,
+        profile: str = "annex3",
+        levels=None,
+        product=None,
+        output_policy_id: str | None = None,
+    ):
         calls.append(
             {
                 "xml": xml,
                 "iwxxm_version": iwxxm_version,
                 "profile": profile,
                 "levels": levels,
+                "product": product,
+                "output_policy_id": output_policy_id,
             }
         )
         from iwxxm_validate import Issue, ValidationReport
@@ -142,6 +152,7 @@ def test_validate_accepts_profile_and_calls_iwxxm_validate(client: TestClient, m
     assert calls, "expected iwxxm_validate.validate to be called"
     assert calls[0]["profile"] == "annex3"
     assert calls[0]["iwxxm_version"]
+    assert calls[0]["output_policy_id"] == "annex3-iwxxm-output"
 
 
 def test_convert_lint_form_defaults_true() -> None:

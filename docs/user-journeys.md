@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-20 (EV-validation-policy-layers — UJ-024 deepen #1216; no operator lint-profile picker)
+> **Last updated**: 2026-09-21 (EV-validation-policy-remainders — UJ-024 default validate identity + MatchPort)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -1863,7 +1863,11 @@ SPECI shares the METAR/SPECI rule pack and `metarSpeci` IWXXM schemas — adjace
 
 **Acceptance**: F15 criteria 1–6 (METAR + SPECI); coverage-matrix METAR/SPECI **R1–R8** closed
 this cycle (HARD — E11-23/28); non–R-theme gaps only may defer with rationale + AskQuestion.
-**Tier: T0 / T2 / T3** (T3 = workbench smoke when API/FE redeployed).
+**Remainder (EV-validation-policy-remainders):** the default annex3 validate issue list stays
+the same because empty policy select means all asserts. A narrower policy is proved by a unit
+or API test, not by a new page control. `/lint-tac` omits MatchPort and keeps today's
+scan. A caller that passes an empty MatchPort on annex3 METAR shows `MISSING_DECODE_MATCH`.
+**Tier: T0 / T2 / T3** (T3 = workbench smoke when API/FE redeployed; default-page identity uses the existing validate journey).
 
 ---
 

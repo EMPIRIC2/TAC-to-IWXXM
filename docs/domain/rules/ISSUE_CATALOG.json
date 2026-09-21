@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-09-02",
+  "generated": "2026-09-21",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -650,6 +650,19 @@
       "source_id": "icao-annex-3",
       "source_url": "https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1",
       "source_attribution": "icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1"
+    },
+    {
+      "code": "MISSING_DECODE_MATCH",
+      "severity": "error",
+      "message_template": "{product} annex3 theme checks require a decode match",
+      "product": null,
+      "tags": [
+        "match",
+        "metar"
+      ],
+      "source_id": null,
+      "source_url": null,
+      "source_attribution": null
     },
     {
       "code": "MISSING_DTG",

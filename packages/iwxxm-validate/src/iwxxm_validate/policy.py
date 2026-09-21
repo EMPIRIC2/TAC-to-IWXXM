@@ -16,6 +16,7 @@ from typing import Any, Literal, cast
 import yaml
 
 from iwxxm_validate.inventory import InventoryError, load_assert_inventory
+from iwxxm_validate.models import Issue, StageResult, ValidationReport
 
 PolicyLifecycle = Literal["draft", "activated"]
 ENV_POLICY_DIR = "IWXXM_VALIDATE_POLICY_DIR"
@@ -212,6 +213,45 @@ def resolve_output_policy(
     )
 
 
+def apply_output_policy_to_report(report: ValidationReport, policy_id: str) -> ValidationReport:
+    """Drop disabled Schematron assert ids. Other issue codes stay on the report."""
+    catalog = load_output_policy_catalog()
+    doc = catalog.get(policy_id)
+    if doc is None:
+        msg = f"unknown IWXXM output policy {policy_id!r}"
+        raise PolicyError(msg)
+    resolved = resolve_output_policy(doc, policies=catalog)
+    known = load_assert_inventory(doc.pin)
+
+    def keep(issue: Issue) -> bool:
+        if issue.layer != "schematron":
+            return True
+        if issue.code not in known:
+            return True
+        return issue.code in resolved.enabled
+
+    issues = [issue for issue in report.issues if keep(issue)]
+    stages: list[StageResult] = []
+    for stage in report.stages:
+        kept = [issue for issue in stage.issues if keep(issue)]
+        stages.append(
+            StageResult(
+                stage=stage.stage,
+                label=stage.label,
+                ok=not any(issue.severity == "error" for issue in kept),
+                issues=kept,
+            )
+        )
+    ok = not any(issue.severity == "error" for issue in issues)
+    return ValidationReport(
+        ok=ok,
+        iwxxm_version=report.iwxxm_version,
+        profile=report.profile,
+        issues=issues,
+        stages=stages,
+    )
+
+
 __all__ = [
     "ENV_POLICY_DIR",
     "NON_SELECTABLE",
@@ -219,6 +259,7 @@ __all__ = [
     "PolicyActivationError",
     "PolicyError",
     "ResolvedOutputPolicy",
+    "apply_output_policy_to_report",
     "load_output_policy",
     "load_output_policy_catalog",
     "resolve_output_policy",
