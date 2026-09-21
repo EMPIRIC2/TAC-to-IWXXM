@@ -27,15 +27,20 @@ def test_tc_ev047_baseline_file_schema() -> None:
     assert data["metric"] == "convert_only_wall_p95_s"
     assert float(data["ratio_limit"]) == pytest.approx(1.20)
     assert float(data["absolute_floor_s"]) == pytest.approx(0.000200)
+    assert float(data["hard_ceiling_p95_s"]) == pytest.approx(0.001)
     for key in ("metar", "speci", "taf", "sigmet"):
         assert key in data["products"]
         assert float(data["products"][key]["baseline_p95_s"]) > 0
     baselines = load_converter_pr_baselines()
     metar = baselines.products["metar"]
     expected = ceiling_p95_s(
-        metar.baseline_p95_s, baselines.ratio_limit, baselines.absolute_floor_s
+        metar.baseline_p95_s,
+        baselines.ratio_limit,
+        baselines.absolute_floor_s,
+        baselines.hard_ceiling_p95_s,
     )
     assert metar.ceiling_p95_s == pytest.approx(expected)
+    assert metar.ceiling_p95_s == pytest.approx(0.001)
 
 
 def test_tc_ev047_convert_under_ceiling() -> None:
