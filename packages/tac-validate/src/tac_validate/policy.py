@@ -15,6 +15,7 @@ from typing import Any, Literal, cast
 import yaml
 
 from tac_validate.issue_registry import ISSUES, by_code, catalog_entries
+from tac_validate.models import Issue, LintReport
 
 PolicyLifecycle = Literal["draft", "activated"]
 
@@ -334,6 +335,45 @@ def resolve_policy(
     )
 
 
+def apply_policy_to_report(report: LintReport, policy_id: str) -> LintReport:
+    """
+    Keep issues selected by ``policy_id`` and apply severity overrides.
+
+    Parameters
+    ----------
+    report :
+        Lint report before policy filtering.
+    policy_id :
+        TAC quality policy document id.
+    """
+    catalog = load_policy_catalog()
+    doc = catalog.get(policy_id)
+    if doc is None:
+        msg = f"unknown TAC quality policy {policy_id!r}"
+        raise PolicyError(msg)
+    resolved = resolve_policy(doc, policies=catalog, activate=(doc.lifecycle == "activated"))
+    kept: list[Issue] = []
+    for issue in report.issues:
+        if issue.code not in resolved.enabled_codes:
+            continue
+        severity = resolved.severity_overrides.get(issue.code, issue.severity)
+        if severity == issue.severity:
+            kept.append(issue)
+            continue
+        kept.append(
+            Issue(
+                severity=severity,
+                code=issue.code,
+                message=issue.message,
+                location=issue.location,
+                start=issue.start,
+                end=issue.end,
+            )
+        )
+    ok = not any(item.severity == "error" for item in kept)
+    return LintReport(ok=ok, product=report.product, issues=kept, fixes=list(report.fixes))
+
+
 __all__ = [
     "ENV_POLICY_DIR",
     "MAX_EXTENDS_DEPTH",
@@ -343,6 +383,7 @@ __all__ = [
     "PolicyDocument",
     "PolicyError",
     "ResolvedPolicy",
+    "apply_policy_to_report",
     "load_policy",
     "load_policy_catalog",
     "resolve_policy",
