@@ -295,6 +295,7 @@ def _call_iwxxm_validate(
         profile=profile or "annex3",
         levels=levels,
         product=validate_product,
+        output_policy_id=output_policy_id,
     )
 
 

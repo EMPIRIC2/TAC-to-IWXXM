@@ -48,3 +48,12 @@ Design lock: [ev-validation-policy-layers-lock.md](../decisions/ev-validation-po
 - **ADR-028:** Registry remains SoT for codes; detectors and policy are additional layers (not a YAML-only registry).
 - **ADR-038:** `validation.tac` / `outputValidation` resolve to policy document ids loaded by package runtimes (loader authorized this cycle).
 - **ADR-044/045:** Catalogs remain projections; executable overlays stay file/env; MatchPort does not merge packages.
+
+## Remainder (2026-09-21, EV-validation-policy-remainders)
+
+Milestones M1–M6 loaded policy and resolved ids. They did not apply the IWXXM policy inside validation, and they did not build MatchPort.
+
+1. `validate_iwxxm` takes the resolved output policy id. Schematron issue codes that are assert ids and are not enabled are omitted. XSD, well-formed, and `SCHEMATRON_SKIPPED` always remain. Empty `select` is the full assert set, so the default annex3 report is unchanged.
+2. The backend passes that id into validation. Public HTTP stays profile-id only.
+3. MatchPort is a protocol on `tac-validate`. Strict mode applies only when the caller passes a port, including an empty one. An empty port makes every annex3 METAR theme detector emit `MISSING_DECODE_MATCH`. Omitting the port, including `/lint-tac`, keeps today's TAC scan. Other products scan TAC. A present match supplies the issue span. Decode packs still do not emit lint.
+

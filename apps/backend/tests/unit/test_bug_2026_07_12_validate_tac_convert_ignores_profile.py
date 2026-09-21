@@ -36,7 +36,15 @@ def test_validate_tac_auto_convert_forwards_profile(client: TestClient, monkeypa
             None,
         )
 
-    def fake_iwxxm_validate(xml: str, *, iwxxm_version: str, profile: str = "annex3", levels=None, product=None):
+    def fake_iwxxm_validate(
+        xml: str,
+        *,
+        iwxxm_version: str,
+        profile: str = "annex3",
+        levels=None,
+        product=None,
+        output_policy_id: str | None = None,
+    ):
         from iwxxm_validate import ValidationReport
 
         return ValidationReport(

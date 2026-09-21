@@ -99,6 +99,12 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("time", "metar", "speci"),
     ),
     _row(
+        "MISSING_DECODE_MATCH",
+        "error",
+        "{product} annex3 theme checks require a decode match",
+        tags=("match", "metar"),
+    ),
+    _row(
         "ODD_FIELD_ORDER",
         "warning",
         "{product} groups out of A3-2 order (CCCC → ddhhmmZ → wind)",

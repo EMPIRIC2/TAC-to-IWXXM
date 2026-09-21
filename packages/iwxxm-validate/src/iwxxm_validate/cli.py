@@ -66,31 +66,31 @@ def _cli_validate_product(profile: str, extensions: Sequence[str], product: str 
     return None
 
 
-def _bind_output_policy(profile: str, policy: str | None) -> str | None:
-    """Return an error string when the bound output policy cannot be activated."""
+def _bind_output_policy(profile: str, policy: str | None) -> tuple[str | None, str | None]:
+    """Return ``(policy_id, error)``. ``error`` is set when the policy cannot be activated."""
     try:
         from tac2iwxxm.profile_resolve import ProfileResolveError, resolve_validation_policies
     except ImportError:
         if not policy:
-            return None
+            return None, None
         policy_id = policy
     else:
         try:
             resolved = resolve_validation_policies(profile, iwxxm_policy=policy)
         except ProfileResolveError as exc:
-            return str(exc)
+            return None, str(exc)
         policy_id = resolved.iwxxm_output_policy_id
     from iwxxm_validate.policy import PolicyError, load_output_policy_catalog, resolve_output_policy
 
     catalog = load_output_policy_catalog()
     doc = catalog.get(policy_id)
     if doc is None:
-        return f"unknown IWXXM output policy {policy_id!r}"
+        return None, f"unknown IWXXM output policy {policy_id!r}"
     try:
         resolve_output_policy(doc, policies=catalog)
     except PolicyError as exc:
-        return str(exc)
-    return None
+        return None, str(exc)
+    return policy_id, None
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -116,7 +116,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"error: cannot read {path}: {exc}", file=sys.stderr)
         return 1
 
-    policy_error = _bind_output_policy(args.profile, args.policy)
+    policy_id, policy_error = _bind_output_policy(args.profile, args.policy)
     if policy_error:
         print(f"error: {policy_error}", file=sys.stderr)
         return 2
@@ -126,6 +126,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         iwxxm_version=args.iwxxm_version,
         profile=args.profile,
         product=_cli_validate_product(args.profile, args.extensions, args.product),
+        output_policy_id=policy_id,
     )
     if args.json:
         sys.stdout.write(json_encoder.encode(report).decode("utf-8"))

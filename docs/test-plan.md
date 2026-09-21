@@ -1667,8 +1667,8 @@ H4â€“H5 N/A (no UI / no new HTTP fields). Shadow bar: issue **code + span**. R1â
 
 - **Level**: T0
 - **Objective**: Pack-bound detectors error when MatchPort missing on annex3 METAR; fallback elsewhere
-- **Pass criteria**: Unit matrix for strict vs fallback
-- **Source**: D-VPL-10; D-VPL-B2
+- **Pass criteria**: When the caller passes an empty MatchPort, every annex3 METAR theme detector emits `MISSING_DECODE_MATCH`. Omitting the port keeps today's TAC scan. Other products and non-annex3 profiles still scan TAC. A supplied match reuses its span. `/lint-tac` wire shape unchanged.
+- **Source**: D-VPL-B1; D-VPL-B2; EV-validation-policy-remainders
 
 ### TC-EV-VPL-004: R1â€“R8 theme shadow then flip (UJ-024)
 
@@ -1681,8 +1681,8 @@ H4â€“H5 N/A (no UI / no new HTTP fields). Shadow bar: issue **code + span**. R1â
 
 - **Level**: T0 / T2
 - **Objective**: Enable/disable asserts by id; XSD/well-formed not selectable; stale id fails activate
-- **Pass criteria**: Policy unit tests; validate report unchanged wire shape
-- **Source**: D-VPL-D1..D4
+- **Pass criteria**: `validate_iwxxm` omits Schematron issues whose code is an assert id outside the enabled set. XSD, well-formed, and `SCHEMATRON_SKIPPED` always remain. Empty `select` matches the unfiltered report. A narrower policy drops one assert id in a unit or API test. OpenAPI query params unchanged.
+- **Source**: D-VPL-D1..D4; D-VPL-E1; EV-validation-policy-remainders
 
 ### TC-EV-VPL-006: Profile resolves policies; HTTP profile-only (UJ-024)
 

@@ -341,6 +341,19 @@
 - **Acceptance**: See F15 deepen EV-validation-policy-layers shared ACs + IWXXM policy TCs.
 - **Source**: #1216; ADR-046; ADR-038 amend.
 
+### F2 deepen (EV-validation-policy-remainders — #1216)
+
+- **Status note**: F2 remains **Implemented**; this cycle does **not** add a new Fn.
+  `validate_iwxxm` applies the bound output policy. Schematron assert ids outside the
+  enabled set are omitted. XSD, well-formed, and `SCHEMATRON_SKIPPED` always remain.
+  Empty `select` stays “all asserts,” so the default annex3 report is unchanged.
+- **Acceptance**:
+  1. CLI `--policy` and the backend validate call pass the resolved policy id into
+     `validate_iwxxm`. No new HTTP field.
+  2. A narrower policy drops a Schematron assert id (unit or API). The default annex3
+     page issue list matches the unfiltered report.
+- **Source**: #1216; ADR-046 remainder; session EV-validation-policy-remainders.
+
 ### F2 deepen (S045 / EV-037 — IWXXM-US Schematron N/A)
 
 - **Status note**: F2 remains **Implemented**; document official US Schematron artifact as
@@ -1149,6 +1162,19 @@
   6. CLI `--profile` / `--policy`; H4–H5 N/A
 - **Source**: #1216; [ev-validation-policy-layers-lock.md](decisions/ev-validation-policy-layers-lock.md);
   ADR-046; ADR-028 amend; ADR-038 amend.
+
+### F15 deepen (EV-validation-policy-remainders — #1216)
+
+- **Status note**: F15 remains **Done**; this cycle does **not** add a new Fn. Adds
+  MatchPort, which milestones M1–M6 specified and did not build.
+- **Acceptance**:
+  1. `tac-validate` accepts an optional MatchPort. It does not import `tac-decoding`.
+  2. When the caller passes a MatchPort, every annex3 METAR theme detector is pack-bound.
+     An empty port emits registry code `MISSING_DECODE_MATCH`. Omitting the port, including
+     `/lint-tac`, keeps today's TAC scan. Other products keep scanning TAC.
+  3. When a match is present, the lint issue reuses the decode span.
+  4. `/lint-tac` wire shape unchanged.
+- **Source**: #1216; ADR-046 remainder; TC-EV-VPL-003.
 
 ### F15 deepen (S043 / EV-035 — rule-source provenance)
 
