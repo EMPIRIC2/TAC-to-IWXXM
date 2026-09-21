@@ -11,6 +11,7 @@ from tac_validate.policy import (
     PolicyDepthError,
     PolicyError,
     load_policy,
+    load_policy_catalog,
     resolve_policy,
 )
 
@@ -380,3 +381,67 @@ def test_empty_product_string_treated_as_none(tmp_path: Path) -> None:
     )
     doc = load_policy(path)
     assert doc.product is None
+
+
+def test_extension_header_layers_select_and_ignore(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    overlay = tmp_path / "overlay"
+    overlay.mkdir()
+    (overlay / "layer.yaml").write_text(
+        "\n".join(
+            [
+                "schema_version: 1",
+                "id: annex3-extra",
+                "lifecycle: draft",
+                "extends: [annex3-metar-quality]",
+                "profiles: [annex3]",
+                "select: [INVALID_VISIBILITY]",
+                "ignore: [MISSING_VISIBILITY]",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("TAC_VALIDATE_POLICY_DIR", str(overlay))
+    bare = load_policy_catalog()
+    assert bare["annex3-metar-quality"].select == ()
+    assert bare["annex3-metar-quality"].ignore == ()
+    scoped = load_policy_catalog("annex3")
+    assert scoped["annex3-metar-quality"].select == ("INVALID_VISIBILITY",)
+    assert scoped["annex3-metar-quality"].ignore == ("MISSING_VISIBILITY",)
+    other = load_policy_catalog("iwxxm_us")
+    assert other["annex3-metar-quality"].select == ()
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: annex3-metar-quality\nlifecycle: draft\nselect: []\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(PolicyError, match="must extend one builtin"):
+        load_policy_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: brand-new\nprofiles: [annex3]\nselect: []\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(PolicyError, match="profiles require extends"):
+        load_policy_catalog()
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: orphan\nextends: [missing]\nprofiles: [annex3]\nselect: []\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(PolicyError, match="unknown builtin"):
+        load_policy_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: wide\nextends: [annex3-metar-quality, annex3-metar-quality]\n"
+        "profiles: [annex3]\nselect: []\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(PolicyError, match="must extend one builtin"):
+        load_policy_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: noprofiles\nextends: [annex3-metar-quality]\nselect: []\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(PolicyError, match="needs a profiles list"):
+        load_policy_catalog("annex3")

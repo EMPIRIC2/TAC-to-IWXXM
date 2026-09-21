@@ -44,6 +44,7 @@ class OutputPolicyDocument:
     extends: tuple[str, ...]
     select: tuple[str, ...]
     ignore: tuple[str, ...]
+    profiles: tuple[str, ...] = ()
     source_path: str | None = None
 
 
@@ -99,6 +100,7 @@ def _parse_document(data: Mapping[str, Any], *, source_path: str | None) -> Outp
         extends=_as_str_tuple(data.get("extends"), field="extends"),
         select=_as_str_tuple(data.get("select"), field="select"),
         ignore=_as_str_tuple(data.get("ignore"), field="ignore"),
+        profiles=_as_str_tuple(data.get("profiles"), field="profiles"),
         source_path=source_path,
     )
 
@@ -117,8 +119,63 @@ def load_output_policy(path: Path | str) -> OutputPolicyDocument:
     return _load_yaml_mapping(file_path.read_text(encoding="utf-8"), source_path=str(file_path))
 
 
-def load_output_policy_catalog() -> dict[str, OutputPolicyDocument]:
-    """Load builtin output policies plus optional ``IWXXM_VALIDATE_POLICY_DIR``."""
+def _layer_output_policy(
+    parent: OutputPolicyDocument,
+    child: OutputPolicyDocument,
+) -> OutputPolicyDocument:
+    """Ignore ids add. A non-empty select replaces. An empty select inherits."""
+    if child.pin != parent.pin:
+        msg = f"{child.id} pin must match {parent.id}"
+        raise PolicyError(msg)
+    select = child.select if child.select else parent.select
+    ignore = tuple(dict.fromkeys((*parent.ignore, *child.ignore)))
+    return OutputPolicyDocument(
+        schema_version=parent.schema_version,
+        id=parent.id,
+        lifecycle=parent.lifecycle,
+        pin=parent.pin,
+        extends=parent.extends,
+        select=select,
+        ignore=ignore,
+        profiles=parent.profiles,
+        source_path=parent.source_path,
+    )
+
+
+def _take_output_overlay(
+    doc: OutputPolicyDocument,
+    catalog: Mapping[str, OutputPolicyDocument],
+    *,
+    profile: str | None,
+) -> OutputPolicyDocument | None:
+    """Return a profile layer, a new policy, or None when this profile skips the file."""
+    if not doc.extends and doc.id not in catalog:
+        if doc.profiles:
+            msg = f"{doc.id} profiles require extends"
+            raise PolicyError(msg)
+        return doc
+    if len(doc.extends) != 1:
+        msg = f"{doc.id} must extend one builtin"
+        raise PolicyError(msg)
+    if not doc.profiles:
+        msg = f"{doc.id} needs a profiles list"
+        raise PolicyError(msg)
+    parent_id = doc.extends[0]
+    if parent_id not in catalog:
+        msg = f"{doc.id} extends unknown builtin {parent_id}"
+        raise PolicyError(msg)
+    if profile is None or profile not in doc.profiles:
+        return None
+    return _layer_output_policy(catalog[parent_id], doc)
+
+
+def load_output_policy_catalog(profile: str | None = None) -> dict[str, OutputPolicyDocument]:
+    """Load builtin output policies plus optional ``IWXXM_VALIDATE_POLICY_DIR``.
+
+    An overlay with ``extends`` layers onto that builtin for the profile ids in
+    its header. Omitting ``profile`` leaves those layers off. A new policy id
+    with no ``extends`` is added for every profile.
+    """
     catalog: dict[str, OutputPolicyDocument] = {}
     root = resources.files("iwxxm_validate").joinpath("data", "policies")
     for entry in root.iterdir():
@@ -133,7 +190,10 @@ def load_output_policy_catalog() -> dict[str, OutputPolicyDocument]:
         if overlay_path.is_dir():
             for path in sorted(overlay_path.glob("*.yaml")) + sorted(overlay_path.glob("*.yml")):
                 doc = load_output_policy(path)
-                catalog[doc.id] = doc
+                layered = _take_output_overlay(doc, catalog, profile=profile)
+                if layered is None:
+                    continue
+                catalog[layered.id] = layered
     return catalog
 
 
@@ -213,9 +273,14 @@ def resolve_output_policy(
     )
 
 
-def apply_output_policy_to_report(report: ValidationReport, policy_id: str) -> ValidationReport:
+def apply_output_policy_to_report(
+    report: ValidationReport,
+    policy_id: str,
+    *,
+    profile: str | None = None,
+) -> ValidationReport:
     """Drop disabled Schematron assert ids. Other issue codes stay on the report."""
-    catalog = load_output_policy_catalog()
+    catalog = load_output_policy_catalog(profile)
     doc = catalog.get(policy_id)
     if doc is None:
         msg = f"unknown IWXXM output policy {policy_id!r}"

@@ -280,8 +280,91 @@ def load_detector_pack(path: Path | str) -> DetectorPack:
     return _parse_pack(raw, source_path=str(file_path))
 
 
-def load_detector_catalog() -> dict[str, DetectorPack]:
-    """Load builtin detector packs plus optional ``TAC_VALIDATE_DETECTOR_DIR``."""
+def _header_extends(value: object, *, name: str) -> str | None:
+    if value is None or value == []:
+        return None
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+    if isinstance(value, list):
+        items = cast(list[object], value)
+        if len(items) == 1 and isinstance(items[0], str) and items[0].strip():
+            return items[0].strip()
+    msg = f"{name} must extend one builtin"
+    raise DetectorError(msg)
+
+
+def _header_profiles(value: object, *, name: str) -> tuple[str, ...]:
+    if value is None:
+        return ()
+    if not isinstance(value, list) or not value:
+        msg = f"{name} needs a profiles list"
+        raise DetectorError(msg)
+    out: list[str] = []
+    for item in cast(list[object], value):
+        if not isinstance(item, str) or not item:
+            msg = f"{name} needs a profiles list"
+            raise DetectorError(msg)
+        out.append(item)
+    return tuple(out)
+
+
+def _merge_detector_rules(
+    base: tuple[DetectorRule, ...],
+    extra: tuple[DetectorRule, ...],
+) -> tuple[DetectorRule, ...]:
+    replacement = {rule.id: rule for rule in extra}
+    seen = {rule.id for rule in base}
+    merged = [replacement.get(rule.id, rule) for rule in base]
+    merged.extend(rule for rule in extra if rule.id not in seen)
+    return tuple(merged)
+
+
+def _take_detector_overlay(
+    raw: object,
+    pack: DetectorPack,
+    catalog: Mapping[str, DetectorPack],
+    *,
+    profile: str | None,
+) -> DetectorPack | None:
+    mapping = cast(Mapping[str, Any], raw)
+    base_id = _header_extends(mapping.get("extends"), name=pack.id)
+    profiles = _header_profiles(mapping.get("profiles"), name=pack.id)
+    if base_id is None and pack.id not in catalog:
+        if profiles:
+            msg = f"{pack.id} profiles require extends"
+            raise DetectorError(msg)
+        return pack
+    if base_id is None:
+        msg = f"{pack.id} must extend one builtin"
+        raise DetectorError(msg)
+    if not profiles:
+        msg = f"{pack.id} needs a profiles list"
+        raise DetectorError(msg)
+    parent = catalog.get(base_id)
+    if parent is None:
+        msg = f"{pack.id} extends unknown builtin {base_id}"
+        raise DetectorError(msg)
+    if pack.stage != parent.stage:
+        msg = f"{pack.id} stage must match {base_id}"
+        raise DetectorError(msg)
+    if profile is None or profile not in profiles:
+        return None
+    return DetectorPack(
+        id=parent.id,
+        stage=parent.stage,
+        products=parent.products,
+        rules=_merge_detector_rules(parent.rules, pack.rules),
+        source_path=parent.source_path,
+    )
+
+
+def load_detector_catalog(profile: str | None = None) -> dict[str, DetectorPack]:
+    """Load builtin detector packs plus optional ``TAC_VALIDATE_DETECTOR_DIR``.
+
+    An overlay with ``extends`` layers rules onto that builtin for the profile
+    ids in its header. Omitting ``profile`` leaves those layers off. A new pack
+    id with no ``extends`` is added for every profile.
+    """
     catalog: dict[str, DetectorPack] = {}
     root = resources.files("tac_validate").joinpath("data", "detectors")
     for entry in root.iterdir():
@@ -295,8 +378,12 @@ def load_detector_catalog() -> dict[str, DetectorPack]:
         overlay_path = Path(overlay)
         if overlay_path.is_dir():
             for path in sorted(overlay_path.glob("*.yaml")) + sorted(overlay_path.glob("*.yml")):
-                pack = load_detector_pack(path)
-                catalog[pack.id] = pack
+                raw = yaml.safe_load(path.read_text(encoding="utf-8"))
+                pack = _parse_pack(raw, source_path=str(path))
+                layered = _take_detector_overlay(raw, pack, catalog, profile=profile)
+                if layered is None:
+                    continue
+                catalog[layered.id] = layered
     return catalog
 
 

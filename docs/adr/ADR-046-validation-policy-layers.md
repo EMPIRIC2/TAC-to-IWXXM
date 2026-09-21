@@ -57,3 +57,12 @@ Milestones M1–M6 loaded policy and resolved ids. They did not apply the IWXXM 
 2. The backend passes that id into validation. Public HTTP stays profile-id only.
 3. MatchPort is a protocol on `tac-validate`. Strict mode applies only when the caller passes a port, including an empty one. An empty port makes every annex3 METAR theme detector emit `MISSING_DECODE_MATCH`. Omitting the port, including `/lint-tac`, keeps today's TAC scan. Other products scan TAC. A present match supplies the issue span. Decode packs still do not emit lint.
 
+## Extension header (2026-09-21, EV-yaml-extension-header)
+
+Composes with the ADR-045 header. Does not add an HTTP field or turn MatchPort on for `/lint-tac`.
+
+1. IWXXM output policy and TAC quality policy use the same header (`id`, `profiles`, `extends`) as decode packs. Payloads stay package-specific.
+2. Policy lists merge as follows: overlay ignore ids are added; a non-empty select replaces the builtin select for those profiles; an empty select inherits the builtin select. Empty builtin select remains every assert.
+3. A Schematron issue `code` is the pattern id when the engine has one. XSD, well-formed, and `SCHEMATRON_SKIPPED` codes stay. A failure with no pattern id stays `SCHEMATRON_ASSERT` and is not dropped. Empty select still lists every Schematron failure; the code text on a named row is the pattern id.
+4. Convert-time validation passes the same output policy id as `POST /api/v1/validate`.
+

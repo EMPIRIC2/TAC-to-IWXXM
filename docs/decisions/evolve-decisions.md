@@ -6018,3 +6018,24 @@ authoring deferred.
 
 [Corpus: product §F2] [Corpus: product §F15] [Corpus: adr/ADR-046] [Corpus: tests]
 
+## Cycle EV-yaml-extension-header — shared YAML header
+
+**Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-extension-header`  
+**Features:** deepen **F2** / **F6** / **F9** / **F15** (no new Fn)  
+**Prior:** #1216 closed after #1218 merged to `stage`  
+**Status:** Implemented — header loaders, Schematron pattern ids, convert policy id
+
+### Scope lock
+
+| ID | Decision |
+|----|----------|
+| D-YEH-1 | Four packages stay separate. Header is `id`, `profiles`, `extends` on each package’s own YAML. |
+| D-YEH-2 | Overlay extends one builtin. Missing base fails closed. Same id replaces that entry; new ids are added. |
+| D-YEH-3 | Extension key is the conversion profile id. No new HTTP field. |
+| D-YEH-4 | Ignore ids are added. A non-empty select replaces the builtin select. Empty select inherits it. |
+| D-YEH-5 | Schematron `code` is the pattern id when known. Otherwise `SCHEMATRON_ASSERT`, and that row is not dropped. |
+| D-YEH-6 | Convert-time validation passes the same policy id as `/validate`. MatchPort stays off `/lint-tac`. |
+| D-YEH-7 | Existing issue lists only. No editor. Decode response and convert XML goldens stay. |
+
+[Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F9] [Corpus: product §F15] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: tests]
+

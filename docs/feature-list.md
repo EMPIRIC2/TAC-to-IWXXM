@@ -354,6 +354,24 @@
      page issue list matches the unfiltered report.
 - **Source**: #1216; ADR-046 remainder; session EV-validation-policy-remainders.
 
+### F2 / F6 / F9 / F15 deepen (EV-yaml-extension-header)
+
+- **Status note**: F2, F6, F9, and F15 stay as they are; this cycle does **not** add a new Fn.
+  `tac-decoding`, `tac-validate`, `iwxxm-validate`, and `tac2iwxxm` stay separate packages.
+  Each owns its YAML. A shared header is `id`, `profiles`, and `extends`. The backend
+  integrates them. There is no editor and no new HTTP field.
+- **Acceptance**:
+  1. A builtin keeps its current `id`. An overlay names one builtin and the profile ids
+     it applies to. A missing base fails closed. The same payload id replaces that entry;
+     a new id is added.
+  2. A Schematron issue code is the pattern id when the engine has one. Empty select still
+     lists every failure. A non-empty select, or an added ignore, drops that pattern id
+     in a unit or API test. Unnamed failures stay `SCHEMATRON_ASSERT`.
+  3. Convert-time validation passes the same policy id as `POST /api/v1/validate`.
+  4. The existing TAC lint list and Validate IWXXM list render those results. MatchPort
+     stays off `/lint-tac`. Decode response fields and convert XML goldens stay.
+- **Source**: ADR-045 amend; ADR-046 amend; session EV-yaml-extension-header.
+
 ### F2 deepen (S045 / EV-037 — IWXXM-US Schematron N/A)
 
 - **Status note**: F2 remains **Implemented**; document official US Schematron artifact as

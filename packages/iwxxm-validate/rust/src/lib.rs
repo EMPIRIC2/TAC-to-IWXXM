@@ -11,7 +11,9 @@ use std::sync::{Arc, Mutex, OnceLock};
 
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyList};
-use xmloxide::validation::schematron::{parse_schematron, validate_schematron, SchematronSchema};
+use xmloxide::validation::schematron::{
+    parse_schematron, validate_schematron, validate_schematron_with_phase, Phase, SchematronSchema,
+};
 use xmloxide::validation::xsd::{
     parse_xsd_with_options, validate_xsd, SchemaResolver, XsdParseOptions, XsdSchema,
 };
@@ -422,6 +424,149 @@ fn issue_dict<'py>(
     d.set_item("layer", layer)?;
     d.set_item("location", location)?;
     Ok(d)
+}
+
+/// One labeled Schematron row. Assertion codes are pattern ids when the pattern has one.
+struct LabeledSchematron {
+    severity: &'static str,
+    code: String,
+    message: String,
+}
+
+const PATTERN_PHASE: &str = "iwxxm-pattern";
+
+fn xpath_error(message: &str) -> bool {
+    message.starts_with("XPath error")
+}
+
+fn patterns_in_play(
+    schema: &SchematronSchema,
+) -> Vec<&xmloxide::validation::schematron::SchematronPattern> {
+    if let Some(phase_id) = &schema.default_phase {
+        if let Some(phase) = schema.phases.get(phase_id) {
+            return schema
+                .patterns
+                .iter()
+                .filter(|pattern| {
+                    pattern
+                        .id
+                        .as_ref()
+                        .is_some_and(|id| phase.active_patterns.iter().any(|active| active == id))
+                })
+                .collect();
+        }
+    }
+    schema.patterns.iter().collect()
+}
+
+/// Label assertion errors with the pattern id.
+///
+/// A document with no assertion errors returns after one `validate_schematron` call.
+/// Otherwise each active pattern is validated through the public phase API so the
+/// issue code can be that pattern's id. Patterns with no id stay `SCHEMATRON_ASSERT`.
+fn schematron_rows(doc: &Document, schema: &SchematronSchema) -> Vec<LabeledSchematron> {
+    let quick = validate_schematron(doc, schema);
+    let mut rows = Vec::new();
+    let has_assert = quick.errors.iter().any(|err| !xpath_error(&err.message));
+    if !has_assert {
+        push_quick_rows(&mut rows, &quick);
+        return rows;
+    }
+
+    let playing = patterns_in_play(schema);
+    let named: Vec<String> = playing
+        .iter()
+        .filter_map(|pattern| pattern.id.clone())
+        .collect();
+    let has_unnamed = playing.iter().any(|pattern| pattern.id.is_none());
+    let mut attributed: Vec<LabeledSchematron> = Vec::new();
+
+    if !named.is_empty() {
+        let mut scoped = schema.clone();
+        scoped.default_phase = None;
+        scoped.phases.insert(
+            PATTERN_PHASE.to_string(),
+            Phase {
+                id: PATTERN_PHASE.to_string(),
+                active_patterns: Vec::new(),
+            },
+        );
+        for id in &named {
+            if let Some(phase) = scoped.phases.get_mut(PATTERN_PHASE) {
+                phase.active_patterns.clear();
+                phase.active_patterns.push(id.clone());
+            }
+            let result = validate_schematron_with_phase(doc, &scoped, PATTERN_PHASE);
+            for err in result.errors {
+                if xpath_error(&err.message) {
+                    continue;
+                }
+                attributed.push(LabeledSchematron {
+                    severity: "error",
+                    code: id.clone(),
+                    message: err.message,
+                });
+            }
+        }
+    }
+
+    if has_unnamed {
+        let mut only = schema.clone();
+        only.default_phase = None;
+        only.phases.clear();
+        only.patterns.retain(|pattern| pattern.id.is_none());
+        let result = validate_schematron(doc, &only);
+        for err in result.errors {
+            if xpath_error(&err.message) {
+                continue;
+            }
+            attributed.push(LabeledSchematron {
+                severity: "error",
+                code: "SCHEMATRON_ASSERT".to_string(),
+                message: err.message,
+            });
+        }
+    }
+
+    if attributed.is_empty() {
+        for err in &quick.errors {
+            if xpath_error(&err.message) {
+                continue;
+            }
+            rows.push(LabeledSchematron {
+                severity: "error",
+                code: "SCHEMATRON_ASSERT".to_string(),
+                message: err.message.clone(),
+            });
+        }
+    } else {
+        rows.extend(attributed);
+    }
+    push_quick_rows(&mut rows, &quick);
+    rows
+}
+
+fn push_quick_rows(
+    rows: &mut Vec<LabeledSchematron>,
+    quick: &xmloxide::validation::ValidationResult,
+) {
+    for err in &quick.errors {
+        if !xpath_error(&err.message) {
+            continue;
+        }
+        rows.push(LabeledSchematron {
+            severity: "warning",
+            code: "SCHEMATRON_XPATH_UNSUPPORTED".to_string(),
+            message: err.message.clone(),
+        });
+    }
+    for warn in &quick.warnings {
+        rows.push(LabeledSchematron {
+            severity: "warning",
+            code: "SCHEMATRON_REPORT".to_string(),
+            message: warn.message.clone(),
+        });
+    }
 }
 
 fn catalog_key(catalog_roots: &[String]) -> Vec<String> {
@@ -901,29 +1046,12 @@ fn validate_document<'py>(
     if want_sch {
         match get_or_parse_schematron(sch_path) {
             Ok(schema) => {
-                let result = validate_schematron(&doc, &schema);
-                for err in &result.errors {
-                    // Residual XPath2 (index-of, document(), …) — soft so valid docs stay ok.
-                    let (severity, code) = if err.message.starts_with("XPath error") {
-                        ("warning", "SCHEMATRON_XPATH_UNSUPPORTED")
-                    } else {
-                        ("error", "SCHEMATRON_ASSERT")
-                    };
+                for row in schematron_rows(&doc, &schema) {
                     issues.append(issue_dict(
                         py,
-                        severity,
-                        code,
-                        &err.message,
-                        "schematron",
-                        None,
-                    )?)?;
-                }
-                for warn in &result.warnings {
-                    issues.append(issue_dict(
-                        py,
-                        "warning",
-                        "SCHEMATRON_REPORT",
-                        &warn.message,
+                        row.severity,
+                        &row.code,
+                        &row.message,
                         "schematron",
                         None,
                     )?)?;
@@ -958,4 +1086,71 @@ fn _rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(clear_schema_caches, m)?)?;
     m.add_function(wrap_pyfunction!(validate_document, m)?)?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::schematron_rows;
+    use xmloxide::validation::schematron::{parse_schematron, SchematronSchema};
+    use xmloxide::Document;
+
+    fn schema(body: &str) -> SchematronSchema {
+        parse_schematron(body).expect("schema")
+    }
+
+    fn errors(body: &str, xml: &str) -> Vec<String> {
+        let doc = Document::parse_str(xml).expect("xml");
+        schematron_rows(&doc, &schema(body))
+            .into_iter()
+            .filter(|row| row.severity == "error")
+            .map(|row| row.code)
+            .collect()
+    }
+
+    #[test]
+    fn named_pattern_id_labels_the_failure() {
+        let codes = errors(
+            r#"<schema xmlns="http://purl.oclc.org/dml/schematron">
+                <pattern id="P1"><rule context="/*"><assert test="false()">fail one</assert></rule></pattern>
+                <pattern id="P2"><rule context="/*"><assert test="true()">ok</assert></rule></pattern>
+            </schema>"#,
+            "<root/>",
+        );
+        assert_eq!(codes, vec!["P1".to_string()]);
+    }
+
+    #[test]
+    fn unnamed_pattern_stays_generic() {
+        let codes = errors(
+            r#"<schema xmlns="http://purl.oclc.org/dml/schematron">
+                <pattern><rule context="/*"><assert test="false()">fail</assert></rule></pattern>
+            </schema>"#,
+            "<root/>",
+        );
+        assert_eq!(codes, vec!["SCHEMATRON_ASSERT".to_string()]);
+    }
+
+    #[test]
+    fn passing_document_has_no_assertion_rows() {
+        let codes = errors(
+            r#"<schema xmlns="http://purl.oclc.org/dml/schematron">
+                <pattern id="P1"><rule context="/*"><assert test="true()">ok</assert></rule></pattern>
+            </schema>"#,
+            "<root/>",
+        );
+        assert!(codes.is_empty());
+    }
+
+    #[test]
+    fn default_phase_skips_inactive_pattern() {
+        let codes = errors(
+            r#"<schema xmlns="http://purl.oclc.org/dml/schematron" defaultPhase="quick">
+                <phase id="quick"><active pattern="pass"/></phase>
+                <pattern id="pass"><rule context="/*"><assert test="true()">ok</assert></rule></pattern>
+                <pattern id="strict"><rule context="/*"><assert test="false()">fail</assert></rule></pattern>
+            </schema>"#,
+            "<root/>",
+        );
+        assert!(codes.is_empty());
+    }
 }

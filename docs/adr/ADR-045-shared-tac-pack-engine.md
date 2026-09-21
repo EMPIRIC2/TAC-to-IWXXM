@@ -60,3 +60,13 @@ Deepen #1214. Reopens **selective** deletion only.
 5. **SWXA alternates.** Where a pin has both primary and `_alternate` vendor XML, pack-IR emit must match **both** before flip/delete for SWXA.
 6. **METAR/SPECI.** May delete `metar_speci.py` in this cycle if goldens still pass after mapper independence.
 7. **Packages stay separate.** WAFS/QVACI remain stubs. No HTTP wire change. No required Render secret.
+
+## Amend — EV-yaml-extension-header (2026-09-21)
+
+Deepen only. Does not merge packages and does not add an in-app editor.
+
+1. **Four homes.** `tac-decoding`, `tac-validate`, `iwxxm-validate`, and `tac2iwxxm` stay separate publishable packages. The backend integrates them. They do not import each other. Decode packs still do not emit lint.
+2. **Header.** Extension YAML in each package uses `id`, `profiles`, and `extends`. A builtin may omit `profiles` (every profile) and omits `extends`. An overlay must set `extends` to exactly one builtin id and must list `profiles`. A missing base fails closed and the builtin stays in force.
+3. **Merge.** An overlay layers on that builtin for those profiles. The same payload id replaces that one entry. A new id is added. Other builtin entries stay.
+4. **Key.** The conversion profile id already on the wire is the only extension key. No new HTTP field.
+5. **Trust.** Overlays stay file or environment. No in-app editor.

@@ -340,7 +340,7 @@ def validate_iwxxm(
         return report
     from iwxxm_validate.policy import apply_output_policy_to_report
 
-    return apply_output_policy_to_report(report, output_policy_id)
+    return apply_output_policy_to_report(report, output_policy_id, profile=profile)
 
 
 __all__ = ["validate_iwxxm"]
