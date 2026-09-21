@@ -14,6 +14,15 @@
 | D-EVPVD-01 | Milestone spine | ADR-044 UI cutover + #1120 residual → AU/NZ → #724 → CA mining best-effort |
 | D-EVPVD-02 | AU/NZ bar | Catalog `implemented` + METAR/SPECI/TAF golden convert fixtures; no national XSD |
 | D-EVPVD-03 | CA mining | Best-effort promote #1029/#1030; leave #1028/#1031/#1034 open if incomplete |
+
+### M5 outcome (2026-09-21)
+
+AC5 satisfied by **existing** EV-098 promotions already in-tree (e.g. `CA_METAR_LWIS`,
+`CA.METAR.VIS.SM`, `CA_TAF_NCLWS` provenance rows — see
+`docs/domain/mining/manobs-manair-ca-mining-notes.md`). Residual MANOBS/MANAIR digs stay
+open on [#1029](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1029) /
+[#1030](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1030); no new fixture promote this
+cycle beyond the documented bar.
 | D-EVPVD-04 | UI preview | Docs/repo only (no local non-deployed preview) |
 | D-EVPVD-05 | #1120 honesty | API filters (#1121) largely present — Build closes residual content (#1122), FE follow (#1123), glanceable (#1145) gaps only |
 | D-EVPVD-06 | ADR-044 residual | Remove Profile Builder / library authoring UI; keep rule-catalogs + dropdowns; UJ-076* |
