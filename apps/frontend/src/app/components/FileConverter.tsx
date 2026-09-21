@@ -57,7 +57,6 @@ import {
   type ProfileCatalogEntry,
 } from '@/utils/conversionProfilesApi';
 import { convertOverlayFields } from '@/utils/convertOverlayFields';
-import { WorkbenchMappingBridge } from './WorkbenchMappingBridge';
 import { LibraryPickersBar } from './LibraryPickersBar';
 import { libraryIdsForNationalLine } from '@/utils/libraryIds';
 import {
@@ -2894,12 +2893,6 @@ export function FileConverter({
                     Encoding and packaging rules only — not destinations, credentials,
                     or editable overlays.
                   </p>
-                  {accessToken?.trim() ? (
-                    <WorkbenchMappingBridge
-                      accessToken={accessToken.trim()}
-                      tacText={manualInput}
-                    />
-                  ) : null}
                   <details
                     key={profileGlanceEpoch}
                     className="rounded-md border border-gray-200 bg-white text-sm dark:border-gray-700 dark:bg-gray-800"

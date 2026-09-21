@@ -325,6 +325,10 @@ test.describe('UJ-074: semantic presets + dissemination templates (EV-1051)', ()
     await stubWorkbenchNoise(page);
     const captured = await stubEv1051Apis(page);
 
+    test.skip(
+      true,
+      'Retired ADR-044 — Conversion profiles / Profile Builder shell removed (TC-EVPVD-001)',
+    );
     await openProfiles(page);
     await expect(page.getByTestId('profile-builder-libraries')).toBeVisible();
     await expect(page.getByTestId('profile-library-tab-conversion')).toBeVisible();

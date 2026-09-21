@@ -338,10 +338,14 @@ function expectBearer(req: Request): void {
 
 test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => {
   test('guest: Conversion profiles prompts for sign-in', async ({ page }) => {
+    test.skip(
+      true,
+      'Retired ADR-044 — Conversion profiles shell nav removed (EV-RPC / TC-EVPVD-001)',
+    );
     await openProfiles(page);
     await expect(page.getByTestId('conversion-profiles-sign-in')).toBeVisible();
     await expect(page.getByTestId('conversion-profiles-page')).toContainText(
-      /Sign in to open the conversion profiles editor/i,
+      /Sign in to open the conversion profiles/i,
     );
     await expect(page.getByTestId('conversion-profiles-inspector')).toHaveCount(0);
   });
@@ -349,16 +353,21 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
   test('TC-EV933-006: inspect catalog, save pack + overlay, convert with Conversion library', async ({
     page,
   }) => {
+    test.skip(
+      true,
+      'Retired ADR-044 — Profile Builder authoring UI removed; convert pickers covered elsewhere',
+    );
     await seedMockAuth(page);
     await stubWorkbenchNoise(page);
     const captured = await stubProfilesApis(page);
 
     await openProfiles(page);
 
-    await expect(page.getByTestId('conversion-profiles-inspector')).toBeVisible();
+    await expect(page.getByTestId('conversion-profiles-summary')).toBeVisible();
     await expect(
-      page.getByTestId('conversion-profiles-inspector-detail'),
+      page.getByTestId('conversion-profiles-authoring-retired'),
     ).toBeVisible();
+    await expect(page.getByTestId('profile-builder-libraries')).toHaveCount(0);
     await expect(page.getByTestId('conversion-profiles-select')).toHaveValue(
       'ICAO_2025',
     );
@@ -370,12 +379,6 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
       'US_FAA_NWS',
     );
 
-    await expect(page.getByTestId('profile-builder-libraries')).toBeVisible();
-    await expect(page.getByTestId('profile-library-tab-conversion')).toBeVisible();
-    await page.getByTestId('profile-library-tab-dissemination').click();
-    await expect(page.getByTestId('profile-library-panel-dissemination')).toBeVisible();
-    await page.getByTestId('profile-library-tab-conversion').click();
-    await expect(page.getByTestId('library-assets-panel-conversion')).toBeVisible();
     await expect(page.getByTestId('conversion-profiles-presets')).toHaveCount(0);
     await expect(page.getByTestId('conversion-profiles-pack-slug')).toHaveCount(0);
     await expect(page.getByTestId('conversion-profiles-overlay-slug')).toHaveCount(0);
@@ -438,6 +441,10 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
   test('TC-EV1120-010/012/014/017: summary, compare, blocks, and starter sync', async ({
     page,
   }) => {
+    test.skip(
+      true,
+      'Retired ADR-044 — Conversion profiles page unmounted; glanceable summary lives on Convert',
+    );
     await seedMockAuth(page);
     await stubWorkbenchNoise(page);
     await stubProfilesApis(page, { rulePacks: [], overlays: [] });
@@ -458,42 +465,16 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await expect(page.getByTestId('conversion-profiles-summary')).toContainText(
       /Difference notes compared with ICAO_2025/i,
     );
-    await expect(page.getByTestId('conversion-profiles-workflows')).toContainText(
-      /Workflow references/i,
-    );
-    await expect(page.getByTestId('conversion-profiles-workflows')).toContainText(
-      /read-only in this screen/i,
-    );
-    await expect(page.getByTestId('conversion-profiles-examples')).toContainText(
-      /Examples available on Convert:\s*METAR, SPECI, TAF/i,
-    );
-    await expect(
-      page.getByTestId('conversion-profiles-workflow-definitions'),
-    ).toHaveAttribute('href', /\/workflows$/);
-    await expect(
-      page.getByTestId('conversion-profiles-workflow-runtime'),
-    ).toHaveAttribute('href', /\/packages\/workflows$/);
-    await page.getByTestId('conversion-profiles-open-examples').click();
-    await expect(page.getByTestId('examples-select')).toBeVisible();
-    await page.getByTestId('shell-nav-profiles').click();
-    await expect(page.getByTestId('conversion-profiles-summary')).toBeVisible();
-    await page.getByTestId('conversion-profiles-select').selectOption('US_FAA_NWS');
-    await expect(page.getByTestId('conversion-profiles-examples')).toContainText(
-      /reused from the ICAO \/ WMO demo set/i,
-    );
-    await page.getByTestId('conversion-profiles-select').selectOption('ICAO_2025');
 
     await page.getByTestId('conversion-profiles-block-output-validation').click();
     await expect(page.getByTestId('conversion-profiles-block-detail')).toContainText(
       /WMO IWXXM 2025-2/i,
     );
     await expect(
-      page.getByTestId('conversion-profiles-block-jump-libraries'),
-    ).toHaveAttribute('href', '#profile-builder-libraries');
+      page.getByTestId('conversion-profiles-block-jump-catalog'),
+    ).toBeVisible();
 
-    await page.getByTestId('conversion-profiles-select').selectOption('US_FAA_NWS');
-    await expect(page.getByTestId('profile-builder-libraries')).toBeVisible();
-    await expect(page.getByTestId('library-assets-select-conversion')).toBeVisible();
+    await expect(page.getByTestId('profile-builder-libraries')).toHaveCount(0);
     await expect(page.getByTestId('conversion-profiles-pack-slug')).toHaveCount(0);
     await expect(page.getByTestId('conversion-profiles-overlay-base')).toHaveCount(0);
   });
