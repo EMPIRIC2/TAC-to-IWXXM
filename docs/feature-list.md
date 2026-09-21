@@ -333,6 +333,14 @@
 - **Source**: Context: matrix-disposition-residuals (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-037; [COVERAGE_MATRIX](domain/rules/COVERAGE_MATRIX.md)
 
+### F2 deepen (EV-validation-policy-layers / ADR-046 — #1216)
+
+- **Status note**: F2 remains **Implemented**; this cycle does **not** add a new Fn. Moves
+  assert **inventory + output policy** home into `iwxxm-validate` (enable/disable asserts,
+  Schematron bundles). Vendor `.sch` remains SoT; XSD/well-formed always error.
+- **Acceptance**: See F15 deepen EV-validation-policy-layers shared ACs + IWXXM policy TCs.
+- **Source**: #1216; ADR-046; ADR-038 amend.
+
 ### F2 deepen (S045 / EV-037 — IWXXM-US Schematron N/A)
 
 - **Status note**: F2 remains **Implemented**; document official US Schematron artifact as
@@ -1125,6 +1133,22 @@
   FMS as METAR authority; closing sibling product-quality tickets unless registry sharing requires it.
 - **Source**: #732; E11-1..E11-10; context/metar-lint-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   ADR-028; `docs/domain/rules/COVERAGE_MATRIX.md`; **S043 / EV-035** ISSUE_CATALOG↔source
+
+### F15 deepen (EV-validation-policy-layers / ADR-046 — #1216)
+
+- **Status note**: F15 remains **Done**; this cycle does **not** add a new Fn. Adds
+  **Registry / Detector / Policy / Runtime** layering so METAR/SPECI R1–R8 (and later themes)
+  scale via declarative detector packs + profile-owned TAC quality policy.
+- **Acceptance**:
+  1. ADR-046 accepted; detectors emit only ADR-028 registry codes
+  2. Small DSL v1 + `python:` hatch; MatchPort optional; strict annex3 METAR pack-bound rules
+  3. Policy load draft/activate; activate fail-closed on unknown codes
+  4. R1–R8 themes flipped by theme (shadow code+span) under this evolve
+  5. No `/lint-tac` wire shape change; no lint-profile picker; catalogs generated-only
+     (`make validation-catalog-check`)
+  6. CLI `--profile` / `--policy`; H4–H5 N/A
+- **Source**: #1216; [ev-validation-policy-layers-lock.md](decisions/ev-validation-policy-layers-lock.md);
+  ADR-046; ADR-028 amend; ADR-038 amend.
 
 ### F15 deepen (S043 / EV-035 — rule-source provenance)
 

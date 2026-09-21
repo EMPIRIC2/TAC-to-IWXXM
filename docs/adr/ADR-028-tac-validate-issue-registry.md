@@ -53,3 +53,11 @@ that can grow without renaming public codes casually.
   `GET /api/v1/lint-issue-catalog` (E11-31) without changing lint-tac fields.
 - Coverage-matrix and research catalog (EV-011) cite registry codes for METAR/SPECI **R1–R8**
   themes (HARD — E11-23/28).
+
+## Amend — EV-validation-policy-layers / ADR-046 (2026-09-20)
+
+Registry remains the **sole SoT for public issue codes** and default severities. It does **not**
+become a YAML-only registry. ADR-046 adds **Detector** (declarative packs + `python:` hatch) and
+**Policy** (select/ignore/severity/preview) layers in `tac-validate`. Detectors **emit** registry
+codes; they do not invent codes. Alternative #1 from this ADR (YAML data file only) stays rejected
+for the registry itself; YAML is allowed for detectors and policy documents.

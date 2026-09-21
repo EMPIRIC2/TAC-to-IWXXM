@@ -1,0 +1,11 @@
+# R8 NIL / modifiers detectors for METAR/SPECI (ADR-046 / #1216 M3).
+schema_version: 1
+id: metar-speci-r8-modifiers
+stage: token
+products:
+  - METAR
+  - SPECI
+rules:
+  - id: r8_python
+    kind: python
+    python: python:tac_validate.theme_checks:hatch_r8

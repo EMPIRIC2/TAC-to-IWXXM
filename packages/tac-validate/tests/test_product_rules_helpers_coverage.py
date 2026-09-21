@@ -174,7 +174,7 @@ def test_metar_nil_auto_and_cor_emit_info() -> None:
 
 def test_metar_present_weather_membership_and_invalid(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
-        "tac_validate.product_rules_pkg.metar_speci._weather_in_register",
+        "tac_validate.theme_checks._weather_in_register",
         lambda _token: False,
     )
     tac = "METAR KJFK 121255Z 18008KT 10SM TSRA SCT040 22/18 A2992="
@@ -197,7 +197,7 @@ def test_metar_cloud_membership_issues(monkeypatch: pytest.MonkeyPatch) -> None:
             return False
         return real_is_member(family, token, sets=sets)
 
-    monkeypatch.setattr("tac_validate.product_rules_pkg.metar_speci.membership.is_member", fake_is_member)
+    monkeypatch.setattr("tac_validate.theme_checks.membership.is_member", fake_is_member)
     amount_tac = "METAR KJFK 121255Z 18008KT 10SM BKN020 22/18 A2992="
     amount_issues = [i for i in check_product_rules(amount_tac, "METAR") if i.code == "UNKNOWN_WMO_MEMBERSHIP"]
     assert amount_issues

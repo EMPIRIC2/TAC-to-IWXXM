@@ -45,6 +45,11 @@ def _build_parser() -> argparse.ArgumentParser:
         help="National extension tokens (e.g. IWXXM_CA enables full ca_eccc stack)",
     )
     parser.add_argument(
+        "--policy",
+        default=None,
+        help="IWXXM output policy id. Overrides the policy bound to --profile",
+    )
+    parser.add_argument(
         "--json",
         action="store_true",
         help="Emit ValidationReport as JSON on stdout",
@@ -58,6 +63,33 @@ def _cli_validate_product(profile: str, extensions: Sequence[str], product: str 
     normalized = {token.strip().upper().replace("-", "_") for token in extensions if token.strip()}
     if "IWXXM_CA" in normalized:
         return (product or "METAR").upper()
+    return None
+
+
+def _bind_output_policy(profile: str, policy: str | None) -> str | None:
+    """Return an error string when the bound output policy cannot be activated."""
+    try:
+        from tac2iwxxm.profile_resolve import ProfileResolveError, resolve_validation_policies
+    except ImportError:
+        if not policy:
+            return None
+        policy_id = policy
+    else:
+        try:
+            resolved = resolve_validation_policies(profile, iwxxm_policy=policy)
+        except ProfileResolveError as exc:
+            return str(exc)
+        policy_id = resolved.iwxxm_output_policy_id
+    from iwxxm_validate.policy import PolicyError, load_output_policy_catalog, resolve_output_policy
+
+    catalog = load_output_policy_catalog()
+    doc = catalog.get(policy_id)
+    if doc is None:
+        return f"unknown IWXXM output policy {policy_id!r}"
+    try:
+        resolve_output_policy(doc, policies=catalog)
+    except PolicyError as exc:
+        return str(exc)
     return None
 
 
@@ -83,6 +115,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     except OSError as exc:
         print(f"error: cannot read {path}: {exc}", file=sys.stderr)
         return 1
+
+    policy_error = _bind_output_policy(args.profile, args.policy)
+    if policy_error:
+        print(f"error: {policy_error}", file=sys.stderr)
+        return 2
 
     report = validate_iwxxm(
         text,

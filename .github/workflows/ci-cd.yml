@@ -147,6 +147,9 @@ jobs:
       - name: Run lint
         run: make lint
 
+      - name: Validation catalog drift
+        run: make validation-catalog-check
+
   typecheck:
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest

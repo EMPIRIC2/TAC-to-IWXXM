@@ -1,0 +1,11 @@
+# R1 identity / order detectors for METAR/SPECI (ADR-046 / #1216 M3).
+schema_version: 1
+id: metar-speci-r1-identity-order
+stage: parse_gate
+products:
+  - METAR
+  - SPECI
+rules:
+  - id: r1_python
+    kind: python
+    python: python:tac_validate.theme_checks:hatch_r1

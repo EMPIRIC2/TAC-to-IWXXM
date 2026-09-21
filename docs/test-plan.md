@@ -80,7 +80,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-DEV-005      | F12–F14                                                      | pip install packages                                                                                                                                                                                                                                       | CI                                | TC-F12-001, TC-F13-001, TC-F14-002                                                       |
 | UJ-DEV-004      | F2/F6/M5                                                     | `tac-validate` + `iwxxm-validate` package CI                                                                                                                                                                                                               | —                                 | TC-F6-032                                                                                |
 | UJ-DEV-006      | F13–F14                                                      | Rust fmt/clippy/`cargo test` + maturin both crates                                                                                                                                                                                                         | CI                                | TC-EV045-001..007                                                                        |
-| UJ-024          | F15                                                          | METAR/SPECI registry + convert→validate golden                                                                                                                                                                                                             | H4–H5 if FE                       | TC-F15-001..005                                                                          |
+| UJ-024          | F15 (+ #1216 ADR-046)                                        | METAR/SPECI registry + policy layers + convert→validate                                                                                                                                                                                                    | H4–H5 if FE; **H4–H5 N/A for #1216** | TC-F15-001..005; TC-EV-VPL-001..007                                                      |
 | UJ-025          | F7                                                           | Manual TAC Input modes (ADR-024 / #730)                                                                                                                                                                                                                    | H6′                               | TC-F7-007                                                                                |
 | UJ-027          | F16                                                          | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (+ live local suite EV-039)                                                                                                                                                                          | H6′ / live local                  | TC-F16-001..005; TC-F16-LIVE-001..004                                                    |
 | UJ-028          | F17                                                          | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts`                                                                                                                                                                                                      | H6′                               | TC-F17-001..002                                                                          |
@@ -1644,6 +1644,59 @@ Stricter in-bar peers: primary Annex examples **plus** `sigmet-A6-1b-CNL`, `sigm
 - **Objective**: `tac-decoding` still does not import `tac2iwxxm`; `/decode-tac` keys unchanged
 - **Pass criteria**: TC-EV1210-003 and TC-EV1210-004 stay green
 - **Source**: D-PFDG-06/07
+
+## EV-validation-policy-layers — Registry/Detector/Policy/Runtime (#1216 / ADR-046)
+
+H4–H5 N/A (no UI / no new HTTP fields). Shadow bar: issue **code + span**. R1–R8 flip by theme. [Corpus: tests] [Corpus: adr/ADR-046]
+
+### TC-EV-VPL-001: TAC quality policy activate fail-closed (UJ-024)
+
+- **Level**: T0
+- **Objective**: Unknown registry codes / detector ids fail activate; draft warns only
+- **Pass criteria**: Unit tests for draft vs activate; lifecycle matches library_yaml semantics
+- **Source**: D-VPL-07; D-VPL-C2
+
+### TC-EV-VPL-002: Detector DSL + python hatch emit registry codes (UJ-024)
+
+- **Level**: T0 / T2
+- **Objective**: Declarative detectors and `python:` hatch emit only ADR-028 codes
+- **Pass criteria**: Unknown emitted code fails CI; hatch registration by id works
+- **Source**: D-VPL-06; ADR-028
+
+### TC-EV-VPL-003: MatchPort strict annex3 METAR (UJ-024)
+
+- **Level**: T0
+- **Objective**: Pack-bound detectors error when MatchPort missing on annex3 METAR; fallback elsewhere
+- **Pass criteria**: Unit matrix for strict vs fallback
+- **Source**: D-VPL-10; D-VPL-B2
+
+### TC-EV-VPL-004: R1–R8 theme shadow then flip (UJ-024)
+
+- **Level**: T2
+- **Objective**: Each R1–R8 theme reaches code+span parity vs legacy Python before flip
+- **Pass criteria**: Per-theme shadow tests green; dual paths removed after flip
+- **Source**: D-VPL-12; D-VPL-G1/G2/G3
+
+### TC-EV-VPL-005: IWXXM output policy assert map (UJ-024)
+
+- **Level**: T0 / T2
+- **Objective**: Enable/disable asserts by id; XSD/well-formed not selectable; stale id fails activate
+- **Pass criteria**: Policy unit tests; validate report unchanged wire shape
+- **Source**: D-VPL-D1..D4
+
+### TC-EV-VPL-006: Profile resolves policies; HTTP profile-only (UJ-024)
+
+- **Level**: T0
+- **Objective**: Conversion profile references tac_quality + iwxxm_output ids; no new HTTP fields
+- **Pass criteria**: Resolver unit tests; OpenAPI snapshot unchanged for lint/validate query params
+- **Source**: D-VPL-E1; D-VPL-E6; ADR-038 amend
+
+### TC-EV-VPL-007: Generated catalogs drift gate (UJ-024)
+
+- **Level**: T0
+- **Objective**: Mined validation YAML matches registry/inventory generators
+- **Pass criteria**: `make validation-catalog-check` fails when mined YAML differs from the generator
+- **Source**: D-VPL-F1
 
 ### TC-F29-001: Harness recommendation written (UJ-044)
 

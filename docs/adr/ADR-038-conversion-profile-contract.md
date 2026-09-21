@@ -294,6 +294,23 @@ foundation read-only, Dissemination no-secrets, and Convert metadata sidecar rul
 Product / journeys / tests: [Corpus: product §F7.w] EVWB; UJ-072i-*; TC-EVWB-*.
 Session: `EV-profile-builder-workbench-edit`. Issue: #1203.
 
+## Amend — EV-validation-policy-layers / ADR-046 (2026-09-20)
+
+Authorizes a **runtime policy loader** for validation fields (supersedes spike-era “map only,
+no loader” for this slice):
+
+1. `validation.tac` resolves to a **TAC quality policy** document id loaded by `tac-validate`
+   (`extends` / select / ignore / severity / preview / detector pack refs).
+2. `outputValidation` resolves to an **IWXXM output policy** document id loaded by
+   `iwxxm-validate` (primary pin, assert enablement map, Schematron bundle refs).
+3. Profile **resolver** lives in `tac2iwxxm`; validators remain dumb loaders.
+4. Public HTTP still passes **profile id only** this cycle (no new override query fields).
+5. Executable overlays remain **file/env only**; operator UI catalogs stay read-only projections
+   (no executable detector editor). XSD / well-formed stay non-selectable always-errors.
+
+See [ADR-046](ADR-046-validation-policy-layers.md) and
+[ev-validation-policy-layers-lock.md](../decisions/ev-validation-policy-layers-lock.md).
+
 ## References
 
 - Context: conversion-profile-contract-924 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
@@ -301,3 +318,4 @@ Session: `EV-profile-builder-workbench-edit`. Issue: #1203.
 - [ADR-037](ADR-037-platform-logical-layers.md) Profiles layer
 - EV-924 session report `924-conversion-profile-contract.md`
 - EV-933 / #933 F7.w / UJ-072
+- [ADR-046](ADR-046-validation-policy-layers.md) validation policy layers (#1216)

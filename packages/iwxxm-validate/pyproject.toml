@@ -8,6 +8,7 @@ requires-python = ">=3.12"
 dependencies = [
   "lxml>=4.9.0",
   "msgspec>=0.19",
+  "pyyaml==6.0.3",
 ]
 
 [project.scripts]
