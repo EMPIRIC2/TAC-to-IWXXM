@@ -15,8 +15,10 @@ from tac_validate.detectors import (
     load_detector_pack,
     run_detector_pack,
     run_r2_visibility_detectors,
+    run_theme_pack,
 )
 from tac_validate.product_rules_pkg.metar_speci import _check_metar_speci
+from tac_validate.theme_checks import lint_profile
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 _MANIFEST = json.loads((FIXTURES / "manifest.json").read_text(encoding="utf-8"))
@@ -447,6 +449,18 @@ def test_extension_header_layers_detector_rules(tmp_path: Path, monkeypatch: pyt
     assert "invalid_visibility" in rules
     other = load_detector_catalog("iwxxm_us")
     assert all(rule.id != "extra_group" for rule in other["metar-speci-r2-visibility"].rules)
+    annex3 = lint_profile.set("annex3")
+    try:
+        layered = run_theme_pack("metar-speci-r2-visibility", "METAR X=", "METAR")
+    finally:
+        lint_profile.reset(annex3)
+    assert any(issue.message == "METAR overlay" for issue in layered)
+    other_profile = lint_profile.set("iwxxm_us")
+    try:
+        plain = run_theme_pack("metar-speci-r2-visibility", "METAR X=", "METAR")
+    finally:
+        lint_profile.reset(other_profile)
+    assert all(issue.message != "METAR overlay" for issue in plain)
 
     (overlay / "layer.yaml").write_text(
         "schema_version: 1\nid: metar-speci-r2-visibility\nstage: token\nproducts: [METAR]\n"

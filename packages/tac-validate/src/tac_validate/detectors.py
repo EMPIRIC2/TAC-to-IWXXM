@@ -616,7 +616,7 @@ def run_theme_pack(pack_id: str, tac_text: str, product: str) -> list[Issue]:
                 end=len(tac_text),
             )
         ]
-    catalog = load_detector_catalog()
+    catalog = load_detector_catalog(lint_profile.get())
     pack = catalog.get(pack_id)
     if pack is None:
         msg = f"detector pack {pack_id!r} not found"
