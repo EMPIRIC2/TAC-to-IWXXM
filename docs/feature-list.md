@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-17 (EV-retire-profile-dissem-ui-catalogs — requirements locked; ADR-044)
+> **Last updated**: 2026-09-21 (EV-profile-validate-decode-deepen / #1221 — requirements locked)
 
 ## Summary
 
@@ -14,9 +14,9 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
-| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); prior F7.v–F7.w history retained in section body |
+| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); **deepen EV-profile-validate-decode-deepen / #1221**: finish ADR-044 FE residual + #1120/#1145 catalog UX |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
-| F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner |
+| F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner; **deepen EV-profile-validate-decode-deepen / #1221 / #724**: ICAO station → airport name (soft-fail) |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert; **deepen** EV-beta-ux-export-auth info-only Conversion/Validation log chrome (not amber/red) |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
 | F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
@@ -43,7 +43,7 @@
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire; **deepen** EV-beta-ux-export-auth suppress operator-visible `DEPRECATED_PROFILE_ALIAS` notices; Conversion profiles UI marked **beta** (ADR-043) |
-| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived |
+| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived; **deepen EV-profile-validate-decode-deepen / #1221**: AU_BOM/NZ_CAA_MET → `implemented` + CA mining best-effort; exchange packaging deepen → **#1222** (OUT) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -925,8 +925,11 @@
   4. `tac-decoding` importable on monorepo/PyPI path; `/decode-tac` parity; one-release re-export
   5. Library authoring CRUD removed from operator surfaces; H4–H5 for new catalog/dropdown calls
   6. Must-not-break: convert, lint, soft-preview, decode-tac, dissem preflight/send + allowlist
-
-### F9: Value-Aware Live Decode + Plain-Language Summary
+- **EV-profile-validate-decode-deepen / #1221 (F7.v residual + ADR-044 FE)**: Finish hard
+  cutover where Profile Builder remains mounted; close #1120 residual (#1122/#1123/#1145);
+  journeys UJ-076* / UJ-073. Decisions:
+  [ev-profile-validate-decode-deepen.md](decisions/ev-profile-validate-decode-deepen.md).
+  **Acceptance**: D-EVPVD AC1–2, AC6–7.
 
 - **Status**: **Done** — shipped S013 / EV-009 (2026-07-17, PR #723).
 - **What it does**: Upgrades the F7 decode panel from generic group labels to **value-aware
@@ -966,6 +969,11 @@
 - **EV-pack-fill-delete-gate (F9 deepen, #1214):** Remaining core product packs gain real
   rules (token-stream + label-fields). Decode wire unchanged. Convert-slot mapping must not
   depend on deleted `products/*.py` after selective delete-gate.
+- **EV-profile-validate-decode-deepen / #1221 / #724 (F9 deepen):** METAR/SPECI station
+  token explanation and plain-language `summary` include full aerodrome name when the
+  existing airport lookup hits; miss soft-fails to ICAO designator only. No new `/decode-tac`
+  response keys. Reuse `tac_decoding.glossary` optional resolver + F3 airport data.
+  **Acceptance**: D-EVPVD AC4; TC-EVPVD-724-*.
 - **EV-conversion-profile-ux-libraries deepen (Decoding library stub):** Catalogued
   natural-language code definitions (reuse `decode_tac` / F9 explanations) as a first-class
   **Decoding library** asset, separate from Conversion / Validation / Dissemination.
@@ -2286,7 +2294,7 @@
 
 ### F36: National semantic + regional exchange profile content — EV-063 / #912
 
-- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; **EV-098** CA_ECCC deep mining [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028)–[#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031); EV-065/086/090 #921 exchange stubs + mining; **EV-087** `AU_BOM` + `NZ_CAA_MET`; **EV-089** thin/compat #920; **EV-090** exchange light picker; **EV-093** #1024 semantic picker deepen; **EV-094** thin/compat deepen [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)).
+- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; **EV-098** CA_ECCC deep mining [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028)–[#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031); EV-065/086/090 #921 exchange stubs + mining; **EV-087** `AU_BOM` + `NZ_CAA_MET`; **EV-089** thin/compat #920; **EV-090** exchange light picker; **EV-093** #1024 semantic picker deepen; **EV-094** thin/compat deepen [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); **EV-profile-validate-decode-deepen / #1221** AU/NZ → `implemented` + CA mining best-effort; exchange packaging → [#1222](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1222) OUT).
 - **What it does**: Implements profile **content** on top of F35 architecture: deepen
   `US_FAA_NWS` ([#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)), **`CA_ECCC`**
   ([#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) / EV-064), **`AU_BOM`**
@@ -2346,6 +2354,12 @@
      (#1031); MANOBS P0 TAC rules + fixtures (#1029); MANAIR TAF/AIRMET/GFA (#1030). Research via
      deep-research-domain-handoff (EV-097); promote via mine-domain-sources after gate C.
      No UI; no SIGMET national / VAA convert this cycle. **TC-EV098-***.
+  24. **EV-profile-validate-decode-deepen / #1221:** `AU_BOM` + `NZ_CAA_MET` catalog
+     `status: implemented` with METAR/SPECI/TAF convert goldens (no national XSD); CA mining
+     best-effort from #1029/#1030; regional exchange packaging deepen deferred to
+     [#1222](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1222). **TC-EVPVD-AU-*** /
+     **TC-EVPVD-NZ-***. Decisions:
+     [ev-profile-validate-decode-deepen.md](decisions/ev-profile-validate-decode-deepen.md).
 - **Milestone 4 core acceptance framing**: treat [#970](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/970)
   RuleCases / fixture coverage as a first-class F36 quality requirement rather than a
   secondary backlog item, and coordinate with operator sharing
