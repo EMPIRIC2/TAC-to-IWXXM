@@ -165,10 +165,10 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     parser.error("use --all-examples, or both --kind and --dir")
-    return 2
+    return 2  # pragma: no cover — argparse.error always raises SystemExit
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     # Ensure workspace packages importable when run via `uv run`.
     sys.path[:0] = [
         str(_REPO / "packages" / "tac-decoding" / "src"),
