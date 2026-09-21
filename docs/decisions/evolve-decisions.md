@@ -1,5 +1,24 @@
 # Evolve Decisions
 
+## Cycle EV-yaml-engine-configurability — overlay honesty + SDK usability (#1224)
+
+**Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-engine-configurability`  
+**Issue:** [#1224](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1224)  
+**Documenting→Implementing gate:** closed  
+**Lock:** [ev-yaml-engine-configurability.md](ev-yaml-engine-configurability.md)
+
+| ID | Outcome |
+|----|---------|
+| D-EVYEC-01..08 | Requirements locked (honesty matrix, cookbook/examples, preflight, no emit-YAML, no HTTP policy, H4–H5 N/A) |
+| D-EVYEC-MANIFEST | Delta feature-list / journeys / test-plan / api; no new ADR |
+| D-EVYEC-FEAS | Feasible as scoped |
+| D-EVYEC-TECH | Tech-plan + verify-tech Pass (TP-EVYEC-01..06; H4–H5 waived) |
+
+[Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F9] [Corpus: product §F12]
+[Corpus: product §F15] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: decisions]
+
+---
+
 ## Cycle EV-profile-validate-decode-deepen — F36 + #1120 residual + ADR-044 + #724 (#1221)
 
 **Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-profile-validate-decode-deepen`  

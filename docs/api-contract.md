@@ -1316,3 +1316,15 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 **Breaking changes**: None on HTTP. FE removes Profile Builder authoring surfaces (ADR-044).
 
 - EV-profile-validate-decode-deepen (2026-09-21): #1221 — no HTTP shape change. [Corpus: api] [Corpus: adr/ADR-044]
+
+## EV-yaml-engine-configurability — Endpoint review (#1224)
+
+| Endpoint | Change? | Notes |
+|----------|---------|-------|
+| Convert / validate / lint / decode | **None (wire)** | Server-resolved policies/packs via env overlays only |
+| OpenAPI body fields for pack/policy YAML | **Forbidden** | TC-EVYEC-004 |
+| FE / H4–H5 | **N/A** | Docs/SDK/deployer only |
+
+**Breaking changes**: None on HTTP.
+
+- EV-yaml-engine-configurability (2026-09-21): #1224 — no HTTP shape change. [Corpus: api] [Corpus: adr/ADR-044]
