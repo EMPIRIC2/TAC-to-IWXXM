@@ -68,6 +68,24 @@ When adding or changing a METAR/SPECI encode theme in this monorepo, also update
 quality matrices — see [`tests/quality_matrices/AUTHORING.md`](../../tests/quality_matrices/AUTHORING.md)
 (TC-F29-007).
 
+## Validation catalogs
+
+`tac_validation_rules.yaml` and `iwxxm_validation_asserts.yaml` under
+`src/tac2iwxxm/data/` are generated catalog views for library browsing. They are not
+the checks that run. TAC lint uses `tac-validate`. IWXXM checks use vendor Schematron
+inside `iwxxm-validate`.
+
+Regenerate or verify them from a git checkout:
+
+```bash
+uv run python scripts/iwxxm/mine_validation_library_catalogs.py
+make validation-catalog-check
+```
+
+`resolve_validation_policies` maps a conversion profile id to the TAC quality and
+IWXXM output policy document ids. Pass `--policy` on the `tac-validate` or
+`iwxxm-validate` CLIs to override that binding.
+
 ## Links
 
 - Source: [EMPIRIC2/TAC-to-IWXXM](https://github.com/EMPIRIC2/TAC-to-IWXXM)

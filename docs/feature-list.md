@@ -1145,6 +1145,7 @@
   3. Policy load draft/activate; activate fail-closed on unknown codes
   4. R1–R8 themes flipped by theme (shadow code+span) under this evolve
   5. No `/lint-tac` wire shape change; no lint-profile picker; catalogs generated-only
+     (`make validation-catalog-check`)
   6. CLI `--profile` / `--policy`; H4–H5 N/A
 - **Source**: #1216; [ev-validation-policy-layers-lock.md](decisions/ev-validation-policy-layers-lock.md);
   ADR-046; ADR-028 amend; ADR-038 amend.

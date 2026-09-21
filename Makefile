@@ -133,6 +133,10 @@ membership-check: membership-regen
 		|| (echo "wmo_membership.json drift — run make membership-regen and commit"; \
 		git diff --stat -- packages/tac-validate/src/tac_validate/data/wmo_membership.json; exit 1)
 
+# ADR-046 / #1216 — mined TAC + IWXXM validation YAML is generated only.
+validation-catalog-check:
+	$(UV) run python scripts/iwxxm/mine_validation_library_catalogs.py --check
+
 # EV-072 M2 / #1036 — offline CA_ECCC MSC datamart ops corpus (pin-date harvest)
 ca-ops-harvest:
 	$(UV) run python scripts/iwxxm/harvest_ca_eccc_ops.py --pin-date 2026-08-24
@@ -886,7 +890,7 @@ validate-yaml:
 	$(UV) run pre-commit run actionlint --all-files
 	$(UV) run pre-commit run yamllint --all-files
 
-validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check issue-registry-guard cursor-no-home-paths-guard pnpm-action-package-manager-guard
+validate-fast: format-check typecheck lint secrets-check validate-yaml catalog-check validation-catalog-check issue-registry-guard cursor-no-home-paths-guard pnpm-action-package-manager-guard
 
 config-guard:
 	$(UV) run pytest tests/test_config_placeholders.py tests/smoke/test_h5_runtime_config.py -v

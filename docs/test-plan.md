@@ -1695,7 +1695,7 @@ H4â€“H5 N/A (no UI / no new HTTP fields). Shadow bar: issue **code + span**. R1â
 
 - **Level**: T0
 - **Objective**: Mined validation YAML matches registry/inventory generators
-- **Pass criteria**: CI drift check fails on hand-edit drift
+- **Pass criteria**: `make validation-catalog-check` fails when mined YAML differs from the generator
 - **Source**: D-VPL-F1
 
 ### TC-F29-001: Harness recommendation written (UJ-044)
