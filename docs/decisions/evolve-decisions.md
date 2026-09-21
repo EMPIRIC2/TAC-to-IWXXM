@@ -1,5 +1,44 @@
 # Evolve Decisions
 
+## Cycle EV-validation-policy-layers — Registry/Detector/Policy/Runtime (#1216 / ADR-046)
+
+**Opened:** 2026-09-20 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-validation-policy-layers`  
+**Issue:** [#1216](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1216) · **Documenting→Implementing gate:** closed  
+**Branch:** (pending Build)  
+**Lock:** [ev-validation-policy-layers-lock.md](ev-validation-policy-layers-lock.md)
+
+| ID | Outcome |
+|----|---------|
+| D-VPL-REQ | Requirements locked from pre-evolve design lock (all D-VPL-* + A–G) |
+| D-VPL-ADR | ADR-046 accepted; ADR-028 + ADR-038 amended |
+| D-VPL-SCALE | full; H4–H5/E2E N/A (no UI); HTTP profile-only |
+| D-VPL-BUILD | M1 policy → M2 R2 → M3 R1–R8 → M4 IWXXM → M5 profile/CLI → M6 catalogs |
+
+[Corpus: product §F15] [Corpus: product §F2] [Corpus: adr/ADR-046] [Corpus: decisions]
+
+---
+
+## Pre-evolve lock — Registry / Detector / Policy / Runtime (validation policy layers)
+
+**Locked:** 2026-09-20 · **Status:** design lock only (no Build)  
+**Record:** [ev-validation-policy-layers-lock.md](ev-validation-policy-layers-lock.md)  
+**Pending:** evolve intake → ADR-046 + ADR-028/038 amends
+
+| ID | Outcome |
+|----|---------|
+| D-VPL-01..12 | Round 1 architecture locks (registry in tac-validate; detectors in tac-validate; IWXXM policy in iwxxm-validate; profile-owned; small DSL; activate fail-closed; bundles; no suppressions; strict annex3 METAR; file/env overlays; R1–R8 cycle bar) |
+| D-VPL-A1..A5 | One conversion profile UX; separate policy ids; per-product docs; per-report TAC; single resolved policy |
+| D-VPL-B1..B7 | MatchPort protocol; strict METAR / fallback else; inherit spans; membership in tac-validate; stages; separate lint budget |
+| D-VPL-C1..C6 | extends cap; empty select = defaults; `ignore` only; loosen needs rationale; preview opt-in |
+| D-VPL-D1..D5 | XSD/well-formed non-selectable; pin-aware assert activate; one primary pin |
+| D-VPL-E1..E6 | HTTP profile-only; CLI `--policy` override; resolver in tac2iwxxm; workflows use profile id |
+| D-VPL-F1..F4 | Generated catalogs; no lint-profile picker v1; draft API/CLI only |
+| D-VPL-G1..G5 | Shadow code+span; theme flips; no dual paths after flip; integer schema_version |
+
+[Corpus: product §F15] [Corpus: product §F2] [Corpus: adr/ADR-028] [Corpus: adr/ADR-038] [Corpus: decisions]
+
+---
+
 ## Cycle EV-pack-fill-delete-gate — core pack fill + selective delete (ADR-045 deepen)
 
 **Opened:** 2026-09-20 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-pack-fill-delete-gate`  

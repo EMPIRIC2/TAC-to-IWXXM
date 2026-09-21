@@ -265,6 +265,9 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Source**: feature-list F6/F12/F15/F20/F23; S011 / EV-008; S013 / EV-009; S014 / EV-010;
   S015 / EV-011; S020 / EV-015; S025 / EV-019; S030 / EV-023.
+- **EV-validation-policy-layers / ADR-046 (#1216)**: Detector packs (small DSL + `python:`
+  hatch), TAC quality policy runtime, optional MatchPort for decode spans. Registry remains
+  code SoT. Activate fail-closed; overlays file/env only.
 
 ### packages/iwxxm-validate
 
@@ -282,6 +285,9 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Source**: feature-list F2/F13; context/realtime-tac-ingest.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   context/package-publish-validation.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   evolve-decisions EV-023.
+- **EV-validation-policy-layers / ADR-046 (#1216)**: Assert inventory + IWXXM output policy
+  runtime (enable/disable by assert id; Schematron bundle refs). XSD/well-formed always error.
+  Vendor `.sch` remains SoT.
 
 ### packages/gifts — removed
 

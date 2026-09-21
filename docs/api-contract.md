@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-09-12 (EV-docs-accuracy-audit — OpenAPI parity notes; auth register skew)
+> **Last updated**: 2026-09-20 (EV-validation-policy-layers / #1216 — endpoint review: no new lint/validate query fields; profile id only)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
 > F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
 > Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)

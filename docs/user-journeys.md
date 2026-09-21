@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-20 (EV-pack-fill-delete-gate — UJ-077 deepen #1214; no operator UI change)
+> **Last updated**: 2026-09-20 (EV-validation-policy-layers — UJ-024 deepen #1216; no operator lint-profile picker)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -39,7 +39,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-021 | IWXXM preview pane + terminator quick fix | apps/frontend | F10 | T2 / **T3** |
 | UJ-022 | Operator convert/validate after msgspec HTTP | apps/frontend | F11 | T2 / **T3** / H6′ |
 | UJ-023 | PyPI release tag → install smoke | CI / maintainer | F12–F14 | CI |
-| UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12) | T0 / T2 / **T3** |
+| UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12); #1216 policy layers | T0 / T2 / **T3** |
 | UJ-025 | Manual TAC Input modes (TAC / AHL / COLLECT) | apps/frontend | F7 (ADR-024) | T2 / **T3** / H6′ |
 | UJ-026 | METAR REMARKS retain / exclusion (#667) | UI / API / package | F6 | T0 / T2 |
 | UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) + multi-select | apps/frontend | F16 | T2 / **T3** / H6′ (+ **live local** Compose); **restored EV-091 / #898** (+ #1089 exchange overlay) |
