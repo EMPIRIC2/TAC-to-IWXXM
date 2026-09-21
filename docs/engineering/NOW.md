@@ -5,12 +5,13 @@ Ticket-tuned index for agents and humans. Prefer open GitHub issues over histori
 **Live agent state:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/{id}/`  
 **Standing corpus:** [CORPUS.md](../CORPUS.md)  
 **Project board:** [project-board.md](../project-board.md) · [Project #7](https://github.com/orgs/EMPIRIC2/projects/7) (20 h/week · I01=2026-09-15)  
-**Active sessions:** EV-profile-builder-workbench-edit ([#1203](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1203) / F7.w IDE workbench); EV-080-param-conversion-templates (#1146); EV-project-board-planning; prior slim PR [#1185](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1185)
+**Active sessions:** EV-yaml-full-configurability ([#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226) full YAML + emit ADR-047); EV-profile-builder-workbench-edit ([#1203](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1203) / F7.w IDE workbench); EV-080-param-conversion-templates (#1146); EV-project-board-planning; prior slim PR [#1185](https://github.com/EMPIRIC2/TAC-to-IWXXM/pull/1185)
 
-## Open epics / high priority (snapshot 2026-09-16)
+## Open epics / high priority (snapshot 2026-09-21)
 
 | Issue | Theme |
 |-------|--------|
+| [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226) | **Active** — Full YAML configurability + convert emit (ADR-047 Proposed; M1–M5 #1227–#1231) |
 | [#1203](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1203) | **Active** — Profile Builder IDE workbench + full five-library editability (F7.w) |
 | [#1196](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1196) | YAML/DnD Profile Builder lineage (Phase A on stage via #1197; DnD superseded by #1203) |
 | [#1198](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1198) | National Conversion XSD mining (blocked on vendor pins) |

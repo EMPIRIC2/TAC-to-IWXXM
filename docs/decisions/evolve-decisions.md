@@ -1,5 +1,21 @@
 # Evolve Decisions
 
+## Cycle EV-yaml-full-configurability — full YAML + convert emit (#1226)
+
+**Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-full-configurability`  
+**Epic:** [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226) · Children [#1227](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1227)–[#1231](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1231)  
+**Documenting→Implementing gate:** closed  
+**Lock:** [ev-yaml-full-configurability.md](ev-yaml-full-configurability.md) · [ADR-047](../adr/ADR-047-convert-emit-yaml-full-matrix.md) (Proposed)
+
+| ID | Outcome |
+|----|---------|
+| D-YFC-01..08 | Full YAML end-state incl. emit; multi-milestone; pin↔SCH; no HTTP/editor/SCH-as-YAML |
+| D-YFC-ADR | ADR-047 Proposed; accept at Build gate or first emit PR |
+
+[Corpus: product] [Corpus: adr/ADR-047] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: decisions]
+
+---
+
 ## Cycle EV-yaml-engine-configurability — overlay honesty + SDK usability (#1224)
 
 **Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-engine-configurability`  
