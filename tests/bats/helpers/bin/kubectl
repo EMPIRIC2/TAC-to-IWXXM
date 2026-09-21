@@ -9,7 +9,8 @@ if [[ "$joined" == *"get deploy metar-worker"* && "$joined" == *replicas* ]]; th
 fi
 
 if [[ "$joined" == *"get secret"* && "$joined" == *INGEST_POLLER_URL* ]]; then
-  printf '%s' 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0VNUElSSUMyL1RBQy10by1JV1hYTS9tYWluL2FwcHMvd29ya2VyL3Rlc3RzL2ZpeHR1cmVzL2luZ2VzdF9mZWVkLmpzb24='
+  # Prefer echo over printf: printf+pipefail SIGPIPE when a consumer closes early.
+  echo -n 'aHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0VNUElSSUMyL1RBQy10by1JV1hYTS9tYWluL2FwcHMvd29ya2VyL3Rlc3RzL2ZpeHR1cmVzL2luZ2VzdF9mZWVkLmpzb24=' || true
   exit 0
 fi
 
