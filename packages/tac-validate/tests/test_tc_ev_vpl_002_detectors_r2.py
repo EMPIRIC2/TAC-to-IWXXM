@@ -494,6 +494,15 @@ def test_extension_header_layers_detector_rules(tmp_path: Path, monkeypatch: pyt
         load_detector_catalog("annex3")
 
     (overlay / "layer.yaml").write_text(
+        "schema_version: 1\nid: vis-extra\nextends: ''\nprofiles: [annex3]\nstage: token\n"
+        "products: [METAR]\nrules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
+        "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="must extend one builtin"):
+        load_detector_catalog("annex3")
+
+    (overlay / "layer.yaml").write_text(
         "schema_version: 1\nid: brand\nprofiles: annex3\nstage: token\nproducts: [METAR]\n"
         "rules:\n  - id: r\n    kind: require_search\n    pattern: A\n"
         "    on_fail:\n      code: MISSING_VISIBILITY\n      message_template: x\n",
