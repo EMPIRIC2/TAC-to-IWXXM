@@ -432,7 +432,7 @@ def _parse_pack_ir(
     profile: str,
 ) -> dict[str, Any]:
     """Match the product pack and map spans into convert IR slots."""
-    packs = {item.id: item for item in load_packs()}
+    packs = {item.id: item for item in load_packs(profile)}
     pack_id = pack_id_for_product(product, tac)
     pack = packs.get(pack_id)
     if pack is None:

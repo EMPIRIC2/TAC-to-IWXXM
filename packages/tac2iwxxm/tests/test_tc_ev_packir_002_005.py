@@ -127,9 +127,55 @@ def test_pack_ir_missing_pack_raises(monkeypatch: pytest.MonkeyPatch) -> None:
     from tac2iwxxm.pack_ir_map import PackIrMapError
 
     convert_mod = importlib.import_module("tac2iwxxm.convert")
-    monkeypatch.setattr(convert_mod, "load_packs", lambda: ())
+
+    def _no_packs(profile: str | None = None) -> tuple[object, ...]:
+        _ = profile
+        return ()
+
+    monkeypatch.setattr(convert_mod, "load_packs", _no_packs)
     with pytest.raises(PackIrMapError, match="no pack"):
         convert_mod._parse_pack_ir("METAR", "METAR", iwxxm_version="2025-2", profile="annex3")
+
+
+def test_pack_convert_applies_profile_overlay(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
+    import importlib
+
+    from tac_decoding.packs import Pack
+
+    (tmp_path / "overlay.yaml").write_text(
+        "\n".join(
+            (
+                "id: annex3-metar-extra",
+                "profiles: [annex3]",
+                "extends: metar",
+                "layout: token_stream",
+                "rules:",
+                "  - id: extra_group",
+                '    pattern: ["EXTRA"]',
+                '    explain: "Extra {0}"',
+            )
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("TAC_DECODING_PACK_DIR", str(tmp_path))
+    convert_mod = importlib.import_module("tac2iwxxm.convert")
+    seen_profile: list[str | None] = []
+    seen_rules: list[str] = []
+    real = convert_mod.load_packs
+
+    def _spy(profile: str | None = None) -> tuple[Pack, ...]:
+        packs = real(profile)
+        seen_profile.append(profile)
+        metar = next(pack for pack in packs if pack.id == "metar")
+        seen_rules.extend(rule.id for rule in metar.rules)
+        return packs
+
+    monkeypatch.setattr(convert_mod, "load_packs", _spy)
+    tac = "METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 Q1013="
+    result = convert(tac, product="METAR", profile="annex3", iwxxm_version="2025-2", ir_source="pack")
+    assert result.ok
+    assert seen_profile == ["annex3"]
+    assert "extra_group" in seen_rules
 
 
 def test_auto_falls_back_when_pack_incomplete() -> None:

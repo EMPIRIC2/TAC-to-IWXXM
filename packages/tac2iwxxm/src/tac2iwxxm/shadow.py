@@ -82,7 +82,7 @@ def convert_shadow(
     select_ir = legacy.ir if legacy.ok else result.ir
     if product_u in _SHADOW_PRODUCTS and result.ok:
         pack_id = _pack_id(product_u, select_ir)
-        packs = {item.id: item for item in load_packs()}
+        packs = {item.id: item for item in load_packs(result.profile)}
         matched = match_tac(
             tac,
             packs[pack_id],
