@@ -383,6 +383,11 @@ def test_detector_error_matrix(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     with pytest.raises(DetectorError, match="unsupported detector kind"):
         run_detector_pack(weird_pack, "METAR a=", "METAR")
 
+    from tac_validate.detectors import run_theme_pack
+
+    with pytest.raises(DetectorError, match="not found"):
+        run_theme_pack("no-such-pack-zzzz", "METAR X=", "METAR")
+
 
 def _write(tmp_path: Path, name: str, body: str) -> Path:
     path = tmp_path / name

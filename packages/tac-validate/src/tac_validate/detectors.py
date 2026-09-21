@@ -493,8 +493,16 @@ def compare_shadow(
 
 def run_r2_visibility_detectors(tac_text: str, product: str) -> list[Issue]:
     """Convenience: run builtin R2 visibility pack."""
+    return run_theme_pack("metar-speci-r2-visibility", tac_text, product)
+
+
+def run_theme_pack(pack_id: str, tac_text: str, product: str) -> list[Issue]:
+    """Run one builtin/overlay detector pack by id (empty if missing or product mismatch)."""
     catalog = load_detector_catalog()
-    pack = catalog["metar-speci-r2-visibility"]
+    pack = catalog.get(pack_id)
+    if pack is None:
+        msg = f"detector pack {pack_id!r} not found"
+        raise DetectorError(msg)
     return run_detector_pack(pack, tac_text, product)
 
 
@@ -535,4 +543,5 @@ __all__ = [
     "load_detector_pack",
     "run_detector_pack",
     "run_r2_visibility_detectors",
+    "run_theme_pack",
 ]
