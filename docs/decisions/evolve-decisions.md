@@ -33,7 +33,7 @@
 |----|----------|
 | D-EVDOC-LINT-01 | **Both fail-closed**: ruff D + eslint-plugin-jsdoc + Rust `missing_docs` **and** ADR-048 checkers (Examples / executable `@example` / NumPy shape) |
 | D-EVDOC-LINT-02 | Harden `check_docs_py.py`: private `_foo` requires Parameters/Returns when applicable |
-| D-EVDOC-LINT-03 | Add eslint-plugin-jsdoc + harden `check_docs_ts.mjs` for class methods + interface/type members |
+| D-EVDOC-LINT-03 | Add eslint-plugin-jsdoc + harden `check_docs_ts.mjs` for class methods + interface/type **method signatures** (Props property fields stay type-level docs only) |
 | D-EVDOC-LINT-04 | No new Fn; no coverage/security/typecheck threshold changes; no call-graph test gate; ADR-048 path exclusions unchanged |
 | D-EVDOC-LINT-05 | UI / H4–H5 N/A |
 | D-EVDOC-LINT-MANIFEST | Amend ADR-048, docstrings.md, inline-documentation-verify, test-plan TC-EVDOC-008..010, dependency-inventory |

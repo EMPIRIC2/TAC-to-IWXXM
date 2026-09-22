@@ -71,6 +71,9 @@ export class LiveAssistScheduler {
     return this.controller;
   }
 
+  /**
+   * Cancel the debounce timer and abort any in-flight run.
+   */
   private cancelPending(): void {
     if (this.timer !== null) {
       clearTimeout(this.timer);
