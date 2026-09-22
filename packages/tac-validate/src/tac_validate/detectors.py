@@ -48,6 +48,7 @@ class PreprocessSpec:
     """Text windowing before a rule runs."""
 
     before: str | None = None
+    after: str | None = None
     exclude_ahl_lines: bool = False
     strip_terminator: bool = True
 
@@ -131,9 +132,16 @@ def _parse_preprocess(raw: object) -> PreprocessSpec:
     data = cast(dict[str, object], raw)
     before = data.get("before")
     before_s = before.strip() if isinstance(before, str) and before.strip() else None
+    after = data.get("after")
+    after_s = after.strip() if isinstance(after, str) and after.strip() else None
     exclude = bool(data.get("exclude_ahl_lines", False))
     strip_term = bool(data.get("strip_terminator", True))
-    return PreprocessSpec(before=before_s, exclude_ahl_lines=exclude, strip_terminator=strip_term)
+    return PreprocessSpec(
+        before=before_s,
+        after=after_s,
+        exclude_ahl_lines=exclude,
+        strip_terminator=strip_term,
+    )
 
 
 def _parse_emit(raw: object, *, required: bool) -> EmitSpec | None:
@@ -464,6 +472,12 @@ def _prepare_window(body: str, prep: PreprocessSpec) -> tuple[str, int]:
     offset = 0
     if prep.strip_terminator and text.endswith("="):
         text = text[:-1]
+    if prep.after:
+        at = text.find(prep.after)
+        if at >= 0:
+            cut = at + len(prep.after)
+            text = text[cut:]
+            offset = cut
     if prep.before:
         at = text.find(prep.before)
         if at >= 0:
@@ -476,7 +490,9 @@ def _prepare_window(body: str, prep: PreprocessSpec) -> tuple[str, int]:
         ]
         text = "".join(kept)
         # Keep offset 0 so spans match legacy metar_speci visibility (stripped window
-        # treated as starting at body start).
+        # treated as starting at body start) — only when after was not applied.
+        if not prep.after:
+            offset = 0
     return text, offset
 
 
