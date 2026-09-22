@@ -229,6 +229,8 @@ def test_builtin_annex3_metar_policy_activates() -> None:
     resolved = resolve_policy(doc, policies=catalog, activate=True)
     assert resolved.can_activate is True
     assert resolved.id == "annex3-metar-quality"
+    assert "metar-speci-r2-visibility" in resolved.detector_ids
+    assert "metar-speci-r8-modifiers" in resolved.detector_ids
 
 
 def test_parse_errors(tmp_path: Path) -> None:

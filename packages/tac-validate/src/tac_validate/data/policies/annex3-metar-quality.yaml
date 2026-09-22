@@ -9,4 +9,10 @@ select: []
 ignore: []
 severity: {}
 preview: []
-detectors: []
+detectors:
+  - metar-speci-r1-identity-order
+  - metar-speci-r2-visibility
+  - metar-speci-r3-weather
+  - metar-speci-r4-cloud
+  - metar-speci-r5-remarks
+  - metar-speci-r8-modifiers

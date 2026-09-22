@@ -102,6 +102,43 @@ def test_python_hatch_rule(tmp_path: Path) -> None:
     assert issues == []
 
 
+def test_token_scan_and_skip_if_match(tmp_path: Path) -> None:
+    path = tmp_path / "scan.yaml"
+    path.write_text(
+        "\n".join(
+            [
+                "schema_version: 1",
+                "id: scan-demo",
+                "stage: token",
+                "products: [METAR]",
+                "rules:",
+                "  - id: bad_r",
+                "    kind: token_scan",
+                "    skip_if_match: '\\bNIL\\b'",
+                "    select: '^R\\d{2}\\S*$'",
+                "    ok: '^R\\d{2}/\\d{4}$'",
+                "    on_fail:",
+                "      code: INVALID_RVR",
+                "      message_template: '{product} bad {capture!r}'",
+                "      span: match",
+                "  - id: skipped",
+                "    kind: finditer",
+                "    skip_if_match: '\\bNIL\\b'",
+                "    pattern: '\\bNOSIG\\b'",
+                "    on_match:",
+                "      code: NOSIG_PRESENT",
+                "      message_template: '{product} nosig'",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    pack = load_detector_pack(path)
+    bad = run_detector_pack(pack, "METAR KJFK 121255Z R04/600=", "METAR")
+    assert any(i.code == "INVALID_RVR" for i in bad)
+    nil = run_detector_pack(pack, "METAR KJFK 121255Z NIL NOSIG=", "METAR")
+    assert not any(i.code in {"INVALID_RVR", "NOSIG_PRESENT"} for i in nil)
+
+
 def test_detector_parse_errors(tmp_path: Path) -> None:
     bad = tmp_path / "bad.yaml"
     bad.write_text("- list\n", encoding="utf-8")
@@ -116,6 +153,18 @@ def test_detector_parse_errors(tmp_path: Path) -> None:
         (
             "id: x\nproducts: [METAR]\nrules: [{id: r, kind: finditer, pattern: a, flags: [NOPE], on_match: {code: INVALID_VISIBILITY, message_template: x}}]\n",
             "unsupported flag",
+        ),
+        (
+            "id: x\nproducts: [METAR]\nrules: [{id: r, kind: token_scan, select: '^A$', ok: '^A$'}]\n",
+            "on_ok and/or on_fail",
+        ),
+        (
+            "id: x\nproducts: [METAR]\nrules: [{id: r, kind: token_scan, ok: '^A$', on_fail: {code: INVALID_VISIBILITY, message_template: x}}]\n",
+            "select",
+        ),
+        (
+            "id: x\nproducts: [METAR]\nrules: [{id: r, kind: finditer, pattern: a, max_emits: 0, on_match: {code: INVALID_VISIBILITY, message_template: x}}]\n",
+            "max_emits",
         ),
     ]
     for index, (body, match) in enumerate(cases):
@@ -148,6 +197,54 @@ def test_budget_exceeded(tmp_path: Path) -> None:
     pack = load_detector_pack(path)
     with pytest.raises(DetectorError, match="budget exceeded"):
         run_detector_pack(pack, "METAR KJFK 121255Z ABCDEFGHIJ=", "METAR", budget=3)
+
+
+def test_token_scan_budget_and_finditer_max_emits(tmp_path: Path) -> None:
+    scan = tmp_path / "scan_budget.yaml"
+    scan.write_text(
+        "\n".join(
+            [
+                "schema_version: 1",
+                "id: scan-budget",
+                "stage: token",
+                "products: [METAR]",
+                "rules:",
+                "  - id: toks",
+                "    kind: token_scan",
+                "    select: '^.+$'",
+                "    ok: '^NOPE$'",
+                "    on_fail:",
+                "      code: INVALID_RVR",
+                "      message_template: '{product} x'",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    with pytest.raises(DetectorError, match="budget"):
+        run_detector_pack(load_detector_pack(scan), "METAR A B C D=", "METAR", budget=2)
+
+    limited = tmp_path / "max_find.yaml"
+    limited.write_text(
+        "\n".join(
+            [
+                "schema_version: 1",
+                "id: max-find",
+                "stage: token",
+                "products: [METAR]",
+                "rules:",
+                "  - id: a",
+                "    kind: finditer",
+                "    pattern: 'A'",
+                "    max_emits: 1",
+                "    on_match:",
+                "      code: AUTO_PRESENT",
+                "      message_template: '{product} a'",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    out = run_detector_pack(load_detector_pack(limited), "METAR AA=", "METAR")
+    assert len([i for i in out if i.code == "AUTO_PRESENT"]) == 1
 
 
 def test_overlay_detector_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

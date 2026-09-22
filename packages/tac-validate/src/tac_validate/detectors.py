@@ -1,6 +1,7 @@
 """Declarative detector packs (ADR-046 / #1216 M2).
 
-Small DSL v1: ``finditer`` + ``require_search`` with preprocess (before / exclude AHL).
+Small DSL v1: ``finditer`` + ``require_search`` + ``token_scan`` with preprocess
+(before / exclude AHL). Optional ``skip_if_match`` gates rules on a window regex.
 Python hatch: ``python:module:attr`` registered callables.
 """
 
@@ -26,13 +27,14 @@ from tac_validate.product_rules_pkg._common import _strip_research_refs
 from tac_validate.theme_checks import lint_profile
 
 DetectorStage = Literal["parse_gate", "token", "cross_field"]
-DetectorKind = Literal["finditer", "require_search", "python"]
+DetectorKind = Literal["finditer", "require_search", "python", "token_scan"]
 
 ENV_DETECTOR_DIR = "TAC_VALIDATE_DETECTOR_DIR"
 ENV_DETECTOR_MODE = "TAC_VALIDATE_DETECTOR_MODE"  # legacy | shadow | detector
 DEFAULT_LINT_BUDGET = 10_000
 
 _AHL_HEADING_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{3})?\s*$")
+_TOKEN_RE = re.compile(r"\S+")
 
 PythonDetector = Callable[[str, str], list[Issue]]
 
@@ -74,6 +76,11 @@ class DetectorRule:
     on_match: EmitSpec | None
     on_fail: EmitSpec | None
     python_ref: str | None
+    skip_if_match: str | None = None
+    select_pattern: str | None = None
+    ok_pattern: str | None = None
+    on_ok: EmitSpec | None = None
+    max_emits: int | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -177,14 +184,16 @@ def _parse_rule(raw: object) -> DetectorRule:
         msg = "rule.id is required"
         raise DetectorError(msg)
     kind_raw = data.get("kind")
-    if kind_raw not in ("finditer", "require_search", "python"):
-        msg = "rule.kind must be finditer, require_search, or python"
+    if kind_raw not in ("finditer", "require_search", "python", "token_scan"):
+        msg = "rule.kind must be finditer, require_search, python, or token_scan"
         raise DetectorError(msg)
     kind: DetectorKind
     if kind_raw == "finditer":
         kind = "finditer"
     elif kind_raw == "require_search":
         kind = "require_search"
+    elif kind_raw == "token_scan":
+        kind = "token_scan"
     else:
         kind = "python"
     skip_raw: object = data.get("skip_if_codes") or []
@@ -192,6 +201,17 @@ def _parse_rule(raw: object) -> DetectorRule:
         msg = "skip_if_codes must be a list of strings"
         raise DetectorError(msg)
     skip = tuple(str(x).strip() for x in cast(list[object], skip_raw) if str(x).strip())
+    skip_match_raw = data.get("skip_if_match")
+    skip_match = skip_match_raw.strip() if isinstance(skip_match_raw, str) and skip_match_raw.strip() else None
+    max_raw = data.get("max_emits")
+    max_emits: int | None
+    if max_raw is None:
+        max_emits = None
+    elif isinstance(max_raw, int) and max_raw > 0:
+        max_emits = max_raw
+    else:
+        msg = "max_emits must be a positive int"
+        raise DetectorError(msg)
     pattern = data.get("pattern")
     pattern_s = pattern if isinstance(pattern, str) and pattern else None
     flags_raw: object = data.get("flags") or []
@@ -215,6 +235,37 @@ def _parse_rule(raw: object) -> DetectorRule:
             on_match=None,
             on_fail=None,
             python_ref=python_s,
+            skip_if_match=skip_match,
+            max_emits=max_emits,
+        )
+    if kind == "token_scan":
+        select_raw = data.get("select") or pattern
+        select_s = select_raw if isinstance(select_raw, str) and select_raw else None
+        ok_raw = data.get("ok")
+        ok_s = ok_raw if isinstance(ok_raw, str) and ok_raw else None
+        if not select_s or not ok_s:
+            msg = "token_scan requires select (or pattern) and ok"
+            raise DetectorError(msg)
+        on_ok = _parse_emit(data.get("on_ok"), required=False)
+        on_fail = _parse_emit(data.get("on_fail"), required=False)
+        if on_ok is None and on_fail is None:
+            msg = "token_scan requires on_ok and/or on_fail"
+            raise DetectorError(msg)
+        return DetectorRule(
+            id=rid.strip(),
+            kind=kind,
+            preprocess=_parse_preprocess(data.get("preprocess")),
+            pattern=None,
+            flags=_re_flags(flags_list),
+            skip_if_codes=skip,
+            on_match=None,
+            on_fail=on_fail,
+            python_ref=None,
+            skip_if_match=skip_match,
+            select_pattern=select_s,
+            ok_pattern=ok_s,
+            on_ok=on_ok,
+            max_emits=max_emits,
         )
     if not pattern_s:
         msg = f"{kind} requires pattern"
@@ -231,6 +282,8 @@ def _parse_rule(raw: object) -> DetectorRule:
         on_match=on_match,
         on_fail=on_fail,
         python_ref=None,
+        skip_if_match=skip_match,
+        max_emits=max_emits,
     )
 
 
@@ -511,6 +564,9 @@ def run_detector_pack(
     for rule in pack.rules:
         if rule.skip_if_codes and any(code in emitted_codes for code in rule.skip_if_codes):
             continue
+        window, win_off = _prepare_window(upper, rule.preprocess)
+        if rule.skip_if_match and re.search(rule.skip_if_match, window, rule.flags):
+            continue
         if rule.kind == "python":
             assert rule.python_ref is not None
             hatch_issues = _resolve_python(rule.python_ref)(tac_text, product_u)
@@ -518,14 +574,44 @@ def run_detector_pack(
             for item in hatch_issues:
                 emitted_codes.add(item.code)
             continue
+        if rule.kind == "token_scan":
+            assert rule.select_pattern is not None
+            assert rule.ok_pattern is not None
+            select_re = re.compile(rule.select_pattern, rule.flags)
+            ok_re = re.compile(rule.ok_pattern, rule.flags)
+            emitted_here = 0
+            for tok_match in _TOKEN_RE.finditer(window):
+                steps += 1
+                if steps > budget:
+                    msg = f"{product_u} lint detector budget exceeded"
+                    raise DetectorError(msg)
+                token = tok_match.group(0)
+                if select_re.fullmatch(token) is None:
+                    continue
+                emit = rule.on_ok if ok_re.fullmatch(token) is not None else rule.on_fail
+                if emit is None:
+                    continue
+                issue = _emit_issue(
+                    emit,
+                    product=product_u,
+                    body_start=body_start,
+                    body_end=body_end,
+                    window_offset=win_off,
+                    match=tok_match,
+                )
+                issues.append(issue)
+                emitted_codes.add(issue.code)
+                emitted_here += 1
+                if rule.max_emits is not None and emitted_here >= rule.max_emits:
+                    break
+            continue
         if rule.pattern is None:
             msg = f"rule {rule.id!r} missing pattern"
             raise DetectorError(msg)
-        window, win_off = _prepare_window(upper, rule.preprocess)
         compiled = re.compile(rule.pattern, rule.flags)
         if rule.kind == "finditer":
             assert rule.on_match is not None
-            for match in compiled.finditer(window):
+            for emitted_here, match in enumerate(compiled.finditer(window), start=1):
                 steps += 1
                 if steps > budget:
                     msg = f"{product_u} lint detector budget exceeded"
@@ -540,6 +626,8 @@ def run_detector_pack(
                 )
                 issues.append(issue)
                 emitted_codes.add(issue.code)
+                if rule.max_emits is not None and emitted_here >= rule.max_emits:
+                    break
         elif rule.kind == "require_search":
             assert rule.on_fail is not None
             steps += 1
