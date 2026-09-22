@@ -62,13 +62,13 @@ def _lint_profile(emit_key: str) -> str:
     return "annex3"
 
 
-def _bound_policy(profile: str, policy: str | None) -> tuple[str, str]:
+def _bound_policy(profile: str, policy: str | None, *, product: str | None = None) -> tuple[str, str]:
     try:
         from tac2iwxxm.profile_resolve import ProfileResolveError, resolve_validation_policies
     except ImportError:
         return _lint_profile(profile), policy or ""
     try:
-        resolved = resolve_validation_policies(profile, tac_policy=policy)
+        resolved = resolve_validation_policies(profile, product=product, tac_policy=policy)
     except ProfileResolveError as exc:
         raise PolicyError(str(exc)) from exc
     return _lint_profile(resolved.emit_key), resolved.tac_quality_policy_id
@@ -111,7 +111,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 1
 
     try:
-        lint_profile, policy_id = _bound_policy(args.profile, args.policy)
+        lint_profile, policy_id = _bound_policy(args.profile, args.policy, product=args.product)
     except PolicyError as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 2

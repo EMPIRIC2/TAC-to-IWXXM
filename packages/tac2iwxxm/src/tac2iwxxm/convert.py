@@ -38,16 +38,14 @@ from tac2iwxxm.profiles.annex3_products import (
     emit_airmet_annex3,
     emit_sigmet_annex3,
     emit_swxa_annex3,
-    emit_taf_annex3,
     emit_tca_annex3,
     emit_vaa_annex3,
     emit_vona_annex3,
 )
-from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION, emit_airmet_ca_eccc, emit_taf_ca_eccc
+from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION, emit_airmet_ca_eccc
 from tac2iwxxm.profiles.iwxxm_us import (
     emit_airmet_iwxxm_us,
     emit_sigmet_iwxxm_us,
-    emit_taf_iwxxm_us,
 )
 from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
 from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet, parse_sigmet
@@ -466,16 +464,9 @@ def _parse_for_convert(
 
 
 def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) -> str:
-    if product in {"METAR", "SPECI"}:
-        # ADR-047 / #1229: METAR/SPECI emit is YAML-routed (python plugins remain builders).
+    if product in {"METAR", "SPECI", "TAF"}:
+        # ADR-047: METAR/SPECI/TAF emit is YAML-routed (python plugins remain builders).
         return emit_with_map(ir, product=product, profile=profile, iwxxm_version=iwxxm_version)
-    if product == "TAF":
-        if profile == "iwxxm_us":
-            return emit_taf_iwxxm_us(ir, iwxxm_version=iwxxm_version)
-        if profile == EMIT_CA_ECCC:
-            return emit_taf_ca_eccc(ir, iwxxm_version=iwxxm_version)
-        # AU/NZ + EV-089 thin/compat / annex3 — core IWXXM only (D-EV087-xsd / D-EV089-xsd).
-        return emit_taf_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "SIGMET":
         if profile == "iwxxm_us":
             return emit_sigmet_iwxxm_us(ir, iwxxm_version=iwxxm_version)
