@@ -40,8 +40,8 @@ Program success: every in-scope cell becomes **full** with evidence (M2–M5).
 
 ## Evidence (M2–M4)
 
-| Engine | METAR/SPECI | TAF |
-|--------|-------------|-----|
+| Engine | METAR/SPECI SoT | TAF SoT |
+|--------|-----------------|---------|
 | Decode pack | `tac_decoding/data/packs/{metar,speci}.yaml` | `tac_decoding/data/packs/taf.yaml` |
 | TAC quality | `annex3-metar-quality.yaml` + detectors list | `annex3-taf-quality.yaml` + `taf-core` |
 | TAC detectors | `metar-speci-r{1,2,3,4,5,8}-*.yaml` | `taf-core.yaml` (`hatch_taf`) |
