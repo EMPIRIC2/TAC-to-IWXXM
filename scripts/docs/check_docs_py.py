@@ -206,7 +206,7 @@ def iter_in_scope(root: Path) -> list[Path]:
     files: list[Path] = []
     for pattern in IN_SCOPE_GLOBS:
         for base in root.glob(pattern):
-            if not base.exists():
+            if not base.exists():  # pragma: no cover - Path.glob never yields missing paths
                 continue
             if base.is_file() and base.suffix == ".py" and not _should_skip(base):
                 files.append(base)

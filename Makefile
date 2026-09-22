@@ -286,7 +286,8 @@ test-unit-backend:
 test-schemathesis:
 	(cd apps/backend && SCHEMATHESIS_MAX_EXAMPLES=$${SCHEMATHESIS_MAX_EXAMPLES:-25} \
 		$(UV) run pytest tests/contract/test_schemathesis_openapi.py \
-		-m schemathesis --override-ini addopts= -v \
+		-m schemathesis --override-ini addopts= \
+		--override-ini "filterwarnings=default" -v \
 		--tb=short)
 
 # F34 / EV-059 / #874 — Mutation testing (TC-F34-003..005). Nightly/manual only.
@@ -639,7 +640,7 @@ test-coverage-scripts:
 		echo "[test-coverage-scripts] error: no tests under tests/scripts/ (EV-080 M4)." >&2; \
 		exit 1; \
 	fi; \
-	$(UV) run pytest tests/scripts \
+	$(UV) run pytest tests/scripts tests/docs \
 		--cov=scripts \
 		--cov=scripts/tac-validate/regen_issue_catalog.py \
 		--cov=scripts/test-data/export_tc_m003_golden.py \

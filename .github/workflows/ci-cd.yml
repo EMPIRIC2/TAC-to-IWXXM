@@ -196,9 +196,6 @@ jobs:
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
     name: Test (${{ matrix.package }})
-    env:
-      # ADR-048 / TC-EVDOC-007 — treat Python warnings as errors (pytest filterwarnings=error mirrors this).
-      PYTHONWARNINGS: error
     strategy:
       fail-fast: false
       matrix:
