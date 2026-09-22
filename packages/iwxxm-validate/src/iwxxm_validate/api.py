@@ -6,6 +6,7 @@ from collections.abc import Sequence
 
 from iwxxm_validate.models import Issue, ValidationReport
 from iwxxm_validate.paths import ca_xsd_path, us_catalog_path
+from iwxxm_validate.pin_sch import PinSchError, assert_pin_schematron_match
 from iwxxm_validate.schematron import validate_schematron
 from iwxxm_validate.xsd import validate_xsd
 
@@ -79,6 +80,23 @@ def validate(
         )
 
     issues: list[Issue] = []
+
+    try:
+        assert_pin_schematron_match(iwxxm_version)
+    except PinSchError as exc:
+        return ValidationReport(
+            ok=False,
+            iwxxm_version=iwxxm_version,
+            profile=profile,
+            issues=[
+                Issue(
+                    severity="error",
+                    code="PIN_SCH_MISMATCH",
+                    message=str(exc),
+                    layer="schematron",
+                )
+            ],
+        )
 
     if profile == "ca_eccc":
         if ca_xsd_path() is None:

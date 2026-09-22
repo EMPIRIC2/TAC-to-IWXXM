@@ -663,6 +663,18 @@ def convert(
             "INVALID_IWXXM_VERSION",
             message,
         )
+    if not preview:
+        # TC-EVYFC-004 / D-YFC-05: fail-closed pin↔SCH (soft-preview waived).
+        try:
+            from iwxxm_validate.pin_sch import PinSchError, assert_pin_schematron_match
+        except ImportError:
+            # Optional workspace member missing in some install layouts — validate path still gates.
+            pass
+        else:
+            try:
+                assert_pin_schematron_match(effective_iwxxm_version)
+            except PinSchError as exc:
+                return _fail("PIN_SCH_MISMATCH", str(exc))
     resolved_report_variant: str | None = None
     if report_variant is not None and report_variant.strip():
         resolved_report_variant = report_variant.strip().upper()
