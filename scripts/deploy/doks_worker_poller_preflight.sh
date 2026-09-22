@@ -41,10 +41,9 @@ if ! command -v kubectl >/dev/null 2>&1; then
   exit 2
 fi
 
-URL="$(
-  kubectl -n "${NS}" get secret "${SECRET}" -o jsonpath='{.data.INGEST_POLLER_URL}' \
-    | python3 -c 'import sys,base64; print(base64.b64decode(sys.stdin.read()).decode())'
-)"
+# Capture then decode (avoid kubectl|python SIGPIPE flake under pipefail).
+B64="$(kubectl -n "${NS}" get secret "${SECRET}" -o jsonpath='{.data.INGEST_POLLER_URL}')"
+URL="$(python3 -c 'import base64,sys; print(base64.b64decode(sys.argv[1]).decode())' "${B64}")"
 
 ARGS=("${URL}")
 if [[ "${PROBE}" -eq 1 ]]; then

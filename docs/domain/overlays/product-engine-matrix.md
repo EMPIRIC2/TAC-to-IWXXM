@@ -1,12 +1,14 @@
-# Product × engine honesty matrix (draft)
+# Product × engine honesty matrix
 
-**Ticket:** [#1224](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1224)  
-**Session:** EV-yaml-engine-configurability  
-**Status:** draft (Spec band) — Build locks cells with TC-EVYEC-001
+**Ticket:** [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226) (program) · baseline [#1224](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1224)  
+**Session:** `EV-yaml-full-configurability`  
+**Status:** baseline snapshot after #1225 — **end-state target = all cells full** (ADR-047)  
+**TC lock:** TC-EVYEC-001 (presence) · TC-EVYFC-001 (all-full gate at M5)
 
-[Corpus: product §F2/F6/F9/F12/F15] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: tests]
+[Corpus: product §F2/F6/F9/F12/F15] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: adr/ADR-047] [Corpus: tests]
 
-Cells: **full** | **partial** | **stub** | **N/A**
+Cells today (honesty): **full** | **partial** | **stub** | **N/A**  
+Program success: every in-scope cell becomes **full** with evidence (M2–M5).
 
 | Product | Decode pack | TAC quality policy | TAC detector YAML | IWXXM output policy | Convert pack-IR | Convert emit |
 |---------|-------------|--------------------|-------------------|---------------------|-----------------|--------------|
@@ -29,11 +31,14 @@ Cells: **full** | **partial** | **stub** | **N/A**
 
 ## Notes
 
-- Mined catalogs under `tac2iwxxm/data/*.yaml` are **projections**, not executors — not a “full” convert column.
-- IWXXM **XSD/Schematron** remain vendor SoT; output policy only selects/ignores assert ids.
-- Airport name enrichment on decode is a **Python** resolver hook, not YAML.
+- Mined catalogs under `tac2iwxxm/data/*.yaml` are **projections**, not executors — not a “full” convert column until emit map (ADR-047) ships.
+- IWXXM **XSD/Schematron** remain vendor SoT; output policy only selects/ignores assert ids. Pin↔SCH must match (TC-EVYFC-004).
+- Airport name enrichment on decode is a **Python** resolver hook, not YAML (may remain partial even when pack rules are full — Spec must call out if enrichment blocks `full`).
 
-## Build follow-ups
+## Program follow-ups (#1226)
 
-1. Replace draft cells with evidence-backed ratings in tech-plan / Build.
-2. CI presence/schema lock (TC-EVYEC-001).
+1. M1: templates + evidence upgrade where cheap.
+2. M2: METAR+SPECI → full (except emit).
+3. M3: emit YAML pilot METAR→SPECI.
+4. M4: remaining products → full (parallel).
+5. M5: all-full CI + pin↔SCH.

@@ -1328,3 +1328,15 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 **Breaking changes**: None on HTTP.
 
 - EV-yaml-engine-configurability (2026-09-21): #1224 — no HTTP shape change. [Corpus: api] [Corpus: adr/ADR-044]
+
+## EV-yaml-full-configurability — Endpoint review (#1226)
+
+| Endpoint | Change? | Notes |
+|----------|---------|-------|
+| Convert / validate / lint / decode | **None (wire)** in Spec | Emit map + overlays are env/file; ADR-047 |
+| OpenAPI body fields for pack/policy/emit-map YAML | **Forbidden** | TC-EVYEC-004 + TC-EVYFC-005 |
+| FE / H4–H5 | **N/A** unless Build adds UI/OpenAPI | Overlays stay deployer/SDK |
+
+**Breaking changes**: None on HTTP.
+
+- EV-yaml-full-configurability (2026-09-21): #1226 / ADR-047 Proposed — no HTTP shape change in Spec. [Corpus: api] [Corpus: adr/ADR-047]

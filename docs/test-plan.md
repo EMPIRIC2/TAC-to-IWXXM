@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-21 (EV-yaml-engine-configurability / #1224 — TC-EVYEC-001..005)
+> **Last updated**: 2026-09-21 (EV-yaml-full-configurability / #1226 — TC-EVYFC-001..005)
 
 ## Scope
 
@@ -131,6 +131,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-076b         | F9 (ADR-044)                                                 | tac-decoding parity                                                                                                                                                                                                                                        | **H4–H5 when FE ships**           | TC-EVRPC-009                                                                             |
 | UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
+| UJ-DEV-011      | F2/F6/F9/F12/F14/F15 (EV-yaml-full-configurability / #1226) | Full YAML end-state incl. convert emit (ADR-047); templates; pin↔SCH                                                                                                                                                                                         | H4–H5 **N/A** unless UI/OpenAPI   | TC-EVYFC-001..005 (+ TC-EVYEC-004 retained)                                              |
 | UJ-077          | F6/F9 deepen (#1210 + EV-pack-ir-convert-wire)               | Pack shadow + METAR/SPECI pack-IR emit when goldens match                                                                                                                                                                                                  | H4–H5 N/A (no wire/UI change)     | TC-EV1210-001..004; TC-EV-PACKIR-001..005                                                 |
 | UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
 | UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
@@ -6306,3 +6307,38 @@ All must pass before merging migration PR:
 - **Objective**: Docs state glossary SoT is `tac-decoding`; legacy `TAC2IWXXM_DECODE_GLOSSARY_PATH` alias noted
 - **Pass criteria**: Cookbook or config-spec section present; shim drift note if `tac2iwxxm` still ships a copy
 - **Source**: #1224; D-EVYEC-06
+
+### TC-EVYFC-001: Matrix all-full program gate
+
+- **Level**: T0 / CI (M5)
+- **Objective**: Product × engine matrix rates every METAR–TCA × engine cell **full** with evidence citations
+- **Pass criteria**: Presence + vocabulary lock; no `partial`/`stub` remaining for in-scope cells
+- **Source**: #1226; D-YFC-01; UJ-DEV-011
+
+### TC-EVYFC-002: Convert emit YAML parity / replace
+
+- **Level**: T0 / CI (M3+)
+- **Objective**: For each product at emit-YAML: fixtures prove YAML emit matches or intentionally replaces Python plugin; `convert` API unchanged
+- **Pass criteria**: Golden or soft-diff gate green; ADR-047 Accepted for shipped products
+- **Source**: #1226; ADR-047; UJ-DEV-011
+
+### TC-EVYFC-003: Starter templates + DX smoke
+
+- **Level**: T0 / CI (M1)
+- **Objective**: Per-package starter templates load via preflight; optional `--check-overlay`; README install smoke documented
+- **Pass criteria**: `make overlay-preflight` (extended) + README grep/smoke
+- **Source**: #1226; #1227; UJ-DEV-011
+
+### TC-EVYFC-004: IWXXM pin ↔ Schematron bundle match
+
+- **Level**: T0 / T2 (M5; earlier where cheap)
+- **Objective**: Convert and validate paths assert Schematron bundle/version matches the IWXXM pin in use
+- **Pass criteria**: Unit/integration asserts; mismatch fail-closed (except Spec-waived soft-preview)
+- **Source**: #1226; ADR-047; D-YFC-05; UJ-DEV-011
+
+### TC-EVYFC-005: No HTTP emit-map YAML injection
+
+- **Level**: T0 / T2
+- **Objective**: OpenAPI exposes no client body fields for emit-map / pack / policy YAML upload
+- **Pass criteria**: Extends TC-EVYEC-004 forbidden-key set to include emit-map synonyms
+- **Source**: #1226; D-YFC-04; [Corpus: api]
