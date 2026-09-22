@@ -447,6 +447,13 @@ def hatch_taf(tac_text: str, product: str) -> list[Issue]:
     return _check_taf(tac_text, profile=lint_profile.get())
 
 
+def hatch_sigmet(tac_text: str, product: str) -> list[Issue]:
+    """Detector hatch for SIGMET A6 / F23 checklist."""
+    from tac_validate.product_rules_pkg.sigmet_airmet import _check_sigmet_airmet
+
+    return _check_sigmet_airmet(tac_text, product, profile=lint_profile.get())
+
+
 __all__ = [
     "R1_CODES",
     "R3_CODES",
@@ -461,6 +468,7 @@ __all__ = [
     "hatch_r5",
     "hatch_r5_pk_and_extension",
     "hatch_r8",
+    "hatch_sigmet",
     "hatch_taf",
     "lint_profile",
     "r1_identity_order",

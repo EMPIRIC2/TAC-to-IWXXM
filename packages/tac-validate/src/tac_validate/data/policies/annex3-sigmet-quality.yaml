@@ -1,0 +1,13 @@
+# Builtin annex3 SIGMET TAC quality policy (ADR-046 / M4 #1230).
+# Empty select = all non-preview registry codes for product sigmet.
+schema_version: 1
+id: annex3-sigmet-quality
+lifecycle: activated
+product: sigmet
+extends: []
+select: []
+ignore: []
+severity: {}
+preview: []
+detectors:
+  - sigmet-core

@@ -1,0 +1,22 @@
+# ADR-047 emit map — annex3-family SIGMET (M4 / #1230).
+# SIGMET builders take (ir, *, iwxxm_version) only — pass_product: false.
+schema_version: 1
+id: annex3-sigmet-emit
+profiles:
+  - annex3
+  - au_bom
+  - nz_caa_met
+  - uk_metoffice
+  - br_decea
+  - kr_kma
+  - jp_jma
+  - in_imd
+  - hk_hko
+products:
+  - SIGMET
+iwxxm_versions:
+  - "2023-1"
+  - "2025-2"
+kind: python_plugin
+pass_product: false
+plugin: python:tac2iwxxm.profiles.annex3_emit.sigmet:emit_sigmet_annex3
