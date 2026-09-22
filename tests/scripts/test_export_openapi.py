@@ -35,6 +35,7 @@ def test_main_module_entrypoint(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     import runpy
+    import warnings
 
     out = tmp_path / "openapi.json"
     monkeypatch.setattr(export_openapi, "_OUT", out)
@@ -46,6 +47,15 @@ def test_main_module_entrypoint(
     monkeypatch.setitem(sys.modules, "src", src_mod)
     monkeypatch.setitem(sys.modules, "src.api", api_mod)
 
-    with pytest.raises(SystemExit) as exc:
-        runpy.run_module("scripts.openapi.export_openapi", run_name="__main__")
+    sys.modules.pop("scripts.openapi.export_openapi", None)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message=r".*found in sys\.modules after import of the same name.*",
+            category=RuntimeWarning,
+        )
+        with pytest.raises(SystemExit) as exc:
+            runpy.run_module(
+                "scripts.openapi.export_openapi", run_name="__main__", alter_sys=True
+            )
     assert exc.value.code == 0

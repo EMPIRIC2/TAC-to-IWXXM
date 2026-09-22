@@ -109,7 +109,10 @@ markers = [
   "quality_matrix: F29 full pilot matrix slots (optional / make test-quality-matrices-full)",
   "ev032_smoke: EV-032 path-filtered pre-commit canary (A6-2 / VONA equality + enum; E32-T7)",
 ]
+# ADR-048 / TC-EVDOC-007: warnings are errors. Narrow third-party-only ignore for
+# passlib's crypt deprecation (stdlib path; not a product suppression).
 filterwarnings = [
+  "error",
   "ignore:'crypt' is deprecated and slated for removal in Python 3.13:DeprecationWarning:passlib.utils",
 ]
 

@@ -19,6 +19,12 @@ packages = ["src/metar_shared"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
 
 # ADR-027 — when `make lint` passes `packages/shared`, Ruff uses this pyproject as
 # project root (root extend-exclude does not apply). Keep generated trees out of lint.

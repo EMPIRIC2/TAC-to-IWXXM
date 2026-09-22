@@ -4,8102 +4,10127 @@
  */
 
 export interface paths {
-  '/api/v1/convert': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/convert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Convert
+         * @description Convert METAR/SPECI TAC text to IWXXM XML.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (convert)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     files : object
+         *         Argument ``files``.
+         *     manual_text : object
+         *         Argument ``manual_text``.
+         *     iwxxm_version : object
+         *         Argument ``iwxxm_version``.
+         *     validate_output : object
+         *         Argument ``validate_output``.
+         *     validation_level : object
+         *         Argument ``validation_level``.
+         *     stop_on_error : object
+         *         Argument ``stop_on_error``.
+         *     bulletin_id : object
+         *         Argument ``bulletin_id``.
+         *     issuing_center : object
+         *         Argument ``issuing_center``.
+         *     lint : object
+         *         Argument ``lint``.
+         *     product : object
+         *         Argument ``product``.
+         *     profile : object
+         *         Argument ``profile``.
+         *     semantic_profile : object
+         *         Argument ``semantic_profile``.
+         *     exchange_profile : object
+         *         Argument ``exchange_profile``.
+         *     report_variant : object
+         *         Argument ``report_variant``.
+         *     exchange_output : object
+         *         Argument ``exchange_output``.
+         *     extensions : object
+         *         Argument ``extensions``.
+         *     preview : object
+         *         Argument ``preview``.
+         *     include_nil_reasons : object
+         *         Argument ``include_nil_reasons``.
+         *     emit_translation_centre : object
+         *         Argument ``emit_translation_centre``.
+         *     translation_centre_designator : object
+         *         Argument ``translation_centre_designator``.
+         *     translation_centre_name : object
+         *         Argument ``translation_centre_name``.
+         *     log_level : object
+         *         Argument ``log_level``.
+         *     propagate_residuals_to_remarks : object
+         *         Argument ``propagate_residuals_to_remarks``.
+         *     overlay_id : object
+         *         Argument ``overlay_id``.
+         *     preset_id : object
+         *         Argument ``preset_id``.
+         *     conversion_template_id : object
+         *         Argument ``conversion_template_id``.
+         *     conversion_library_id : object
+         *         Argument ``conversion_library_id``.
+         *     tac_validation_library_id : object
+         *         Argument ``tac_validation_library_id``.
+         *     iwxxm_validation_library_id : object
+         *         Argument ``iwxxm_validation_library_id``.
+         *     dissemination_library_id : object
+         *         Argument ``dissemination_library_id``.
+         *     decoding_library_id : object
+         *         Argument ``decoding_library_id``.
+         *     auth_user : object
+         *         Argument ``auth_user``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["convert_api_v1_convert_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Convert
-     * @description Convert METAR/SPECI TAC text to IWXXM XML.
-     */
-    post: operations['convert_api_v1_convert_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/convert-bulletin': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/convert-bulletin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Convert Bulletin
+         * @description Split a WMO AHL bulletin and convert each TAC report.
+         *
+         *     Partial success is allowed: HTTP 200 when split succeeds even if some reports fail.
+         *     Per-report ``issues`` / ``fixes`` follow lint-style identity.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (convert_bulletin)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     product : object
+         *         Argument ``product``.
+         *     files : object
+         *         Argument ``files``.
+         *     manual_text : object
+         *         Argument ``manual_text``.
+         *     profile : object
+         *         Argument ``profile``.
+         *     semantic_profile : object
+         *         Argument ``semantic_profile``.
+         *     exchange_profile : object
+         *         Argument ``exchange_profile``.
+         *     conversion_library_id : object
+         *         Argument ``conversion_library_id``.
+         *     dissemination_library_id : object
+         *         Argument ``dissemination_library_id``.
+         *     iwxxm_version : object
+         *         Argument ``iwxxm_version``.
+         *     lint : object
+         *         Argument ``lint``.
+         *     extensions : object
+         *         Argument ``extensions``.
+         *     propagate_residuals_to_remarks : object
+         *         Argument ``propagate_residuals_to_remarks``.
+         *     auth_user : object
+         *         Argument ``auth_user``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["convert_bulletin_api_v1_convert_bulletin_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Convert Bulletin
-     * @description Split a WMO AHL bulletin and convert each TAC report.
-     *
-     *     Partial success is allowed: HTTP 200 when split succeeds even if some reports fail.
-     *     Per-report ``issues`` / ``fixes`` follow lint-style identity.
-     */
-    post: operations['convert_bulletin_api_v1_convert_bulletin_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/convert-zip': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/convert-zip": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Convert Zip
+         * @description Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (convert_zip)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     files : object
+         *         Argument ``files``.
+         *     manual_text : object
+         *         Argument ``manual_text``.
+         *     iwxxm_version : object
+         *         Argument ``iwxxm_version``.
+         *     propagate_residuals_to_remarks : object
+         *         Argument ``propagate_residuals_to_remarks``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["convert_zip_api_v1_convert_zip_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Convert Zip
-     * @description Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.
-     */
-    post: operations['convert_zip_api_v1_convert_zip_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/decode-tac': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/decode-tac": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Decode Tac Endpoint
+         * @description Decode TAC into annotated segments and a plain-language summary.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (decode_tac_endpoint)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     product : object
+         *         Argument ``product``.
+         *     manual_text : object
+         *         Argument ``manual_text``.
+         *     files : object
+         *         Argument ``files``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["decode_tac_endpoint_api_v1_decode_tac_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Decode Tac Endpoint
-     * @description Decode TAC into annotated segments and a plain-language summary.
-     */
-    post: operations['decode_tac_endpoint_api_v1_decode_tac_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/dissemination/audit': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/dissemination/audit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Audit
+         * @description List redacted delivery audit rows for the caller.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (list_audit)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     product : object
+         *         Argument ``product``.
+         *     station : object
+         *         Argument ``station``.
+         *     profile : object
+         *         Argument ``profile``.
+         *     status_filter : object
+         *         Argument ``status_filter``.
+         *     page : object
+         *         Argument ``page``.
+         *     limit : object
+         *         Argument ``limit``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["list_audit_api_v1_dissemination_audit_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List Audit
-     * @description List redacted delivery audit rows for the caller.
-     */
-    get: operations['list_audit_api_v1_dissemination_audit_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/dissemination/audit/{audit_id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/dissemination/audit/{audit_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Audit
+         * @description Fetch one audit row (owner-scoped).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_audit)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     audit_id : object
+         *         Argument ``audit_id``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_audit_api_v1_dissemination_audit__audit_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Audit
-     * @description Fetch one audit row (owner-scoped).
-     */
-    get: operations['get_audit_api_v1_dissemination_audit__audit_id__get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/dissemination/gateways/health': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/dissemination/gateways/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Gateways Health
+         * @description Connectivity-only health for known drawer gateway kinds.
+         *
+         *     AMHS, SWIM, and AFS kinds are staging-honest; others report no live probe
+         *     until registered.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (gateways_health)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     _user : object
+         *         Argument ``_user``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["gateways_health_api_v1_dissemination_gateways_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Gateways Health
-     * @description Connectivity-only health for known drawer gateway kinds.
-     *
-     *     AMHS, SWIM, and AFS kinds are staging-honest; others report no live probe
-     *     until registered.
-     */
-    get: operations['gateways_health_api_v1_dissemination_gateways_health_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/dissemination/mappings/{mapping_id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/dissemination/mappings/{mapping_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Mapping
+         * @description Fetch MappingConfig by id.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_mapping)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     mapping_id : object
+         *         Argument ``mapping_id``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_mapping_api_v1_dissemination_mappings__mapping_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch Mapping
+         * @description Update MappingConfig fields.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (patch_mapping)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     mapping_id : object
+         *         Argument ``mapping_id``.
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        patch: operations["patch_mapping_api_v1_dissemination_mappings__mapping_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Mapping
-     * @description Fetch MappingConfig by id.
-     */
-    get: operations['get_mapping_api_v1_dissemination_mappings__mapping_id__get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Patch Mapping
-     * @description Update MappingConfig fields.
-     */
-    patch: operations['patch_mapping_api_v1_dissemination_mappings__mapping_id__patch'];
-    trace?: never;
-  };
-  '/api/v1/dissemination/mappings/{name}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/dissemination/mappings/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Upsert Mapping
+         * @description Create MappingConfig by name (unique per user).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (upsert_mapping)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     name : object
+         *         Argument ``name``.
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        put: operations["upsert_mapping_api_v1_dissemination_mappings__name__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /**
-     * Upsert Mapping
-     * @description Create MappingConfig by name (unique per user).
-     */
-    put: operations['upsert_mapping_api_v1_dissemination_mappings__name__put'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/dissemination/plans/{plan_id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/dissemination/plans/{plan_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Plan
+         * @description Fetch one plan by id (owner-scoped).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_plan)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     plan_id : object
+         *         Argument ``plan_id``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_plan_api_v1_dissemination_plans__plan_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Patch Plan
+         * @description Update plan fields (no secrets).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (patch_plan)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     plan_id : object
+         *         Argument ``plan_id``.
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        patch: operations["patch_plan_api_v1_dissemination_plans__plan_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Plan
-     * @description Fetch one plan by id (owner-scoped).
-     */
-    get: operations['get_plan_api_v1_dissemination_plans__plan_id__get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /**
-     * Patch Plan
-     * @description Update plan fields (no secrets).
-     */
-    patch: operations['patch_plan_api_v1_dissemination_plans__plan_id__patch'];
-    trace?: never;
-  };
-  '/api/v1/dissemination/plans/{plan_id}/execute': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/dissemination/plans/{plan_id}/execute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Execute Plan Route
+         * @description Execute or dry-run a plan; persist redacted audit rows per receipt.
+         *
+         *     Default ``dry_run=true`` so operators can exercise audit without egress.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (execute_plan_route)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     plan_id : object
+         *         Argument ``plan_id``.
+         *     body : object
+         *         Argument ``body``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["execute_plan_route_api_v1_dissemination_plans__plan_id__execute_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Execute Plan Route
-     * @description Execute or dry-run a plan; persist redacted audit rows per receipt.
-     *
-     *     Default ``dry_run=true`` so operators can exercise audit without egress.
-     */
-    post: operations['execute_plan_route_api_v1_dissemination_plans__plan_id__execute_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/dissemination/plans/{slug}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/dissemination/plans/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Upsert Plan By Slug
+         * @description Create a plan under ``slug`` (unique per user).
+         *
+         *     Path slug wins over body.slug when they differ.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (upsert_plan_by_slug)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     slug : object
+         *         Argument ``slug``.
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        put: operations["upsert_plan_by_slug_api_v1_dissemination_plans__slug__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    /**
-     * Upsert Plan By Slug
-     * @description Create a plan under ``slug`` (unique per user).
-     *
-     *     Path slug wins over body.slug when they differ.
-     */
-    put: operations['upsert_plan_by_slug_api_v1_dissemination_plans__slug__put'];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/dissemination/preflight': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/dissemination/preflight": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Dissemination Preflight
+         * @description Run sink preflight; return schema diffs and optional memory-only handle.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (dissemination_preflight)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     auth_user : object
+         *         Argument ``auth_user``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["dissemination_preflight_api_v1_dissemination_preflight_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Dissemination Preflight
-     * @description Run sink preflight; return schema diffs and optional memory-only handle.
-     */
-    post: operations['dissemination_preflight_api_v1_dissemination_preflight_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/dissemination/send': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/dissemination/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Dissemination Send
+         * @description Send IWXXM via a green preflight handle or inline sink params.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (dissemination_send)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     auth_user : object
+         *         Argument ``auth_user``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["dissemination_send_api_v1_dissemination_send_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Dissemination Send
-     * @description Send IWXXM via a green preflight handle or inline sink params.
-     */
-    post: operations['dissemination_send_api_v1_dissemination_send_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/eval/jobs': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/eval/jobs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List User Jobs
+         * @description List all evaluation jobs for the current user.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (list_user_jobs)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     page : object
+         *         Argument ``page``.
+         *     per_page : object
+         *         Argument ``per_page``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["list_user_jobs_api_v1_eval_jobs_get"];
+        put?: never;
+        /**
+         * Create Evaluation Job
+         * @description Create a new evaluation job.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (create_evaluation_job)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     background_tasks : object
+         *         Argument ``background_tasks``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["create_evaluation_job_api_v1_eval_jobs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List User Jobs
-     * @description List all evaluation jobs for the current user.
-     */
-    get: operations['list_user_jobs_api_v1_eval_jobs_get'];
-    put?: never;
-    /**
-     * Create Evaluation Job
-     * @description Create a new evaluation job.
-     */
-    post: operations['create_evaluation_job_api_v1_eval_jobs_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/eval/jobs/{job_id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/eval/jobs/{job_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Job Status
+         * @description Get the status of an evaluation job.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_job_status)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     job_id : object
+         *         Argument ``job_id``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_job_status_api_v1_eval_jobs__job_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Job Status
-     * @description Get the status of an evaluation job.
-     */
-    get: operations['get_job_status_api_v1_eval_jobs__job_id__get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/eval/jobs/{job_id}/results': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/eval/jobs/{job_id}/results": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Job Results
+         * @description Get evaluation results for a job (paginated).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_job_results)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     job_id : object
+         *         Argument ``job_id``.
+         *     page : object
+         *         Argument ``page``.
+         *     per_page : object
+         *         Argument ``per_page``.
+         *     status_filter : object
+         *         Argument ``status_filter``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_job_results_api_v1_eval_jobs__job_id__results_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Job Results
-     * @description Get evaluation results for a job (paginated).
-     */
-    get: operations['get_job_results_api_v1_eval_jobs__job_id__results_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/ingest-collect': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/ingest-collect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Ingest Collect
+         * @description Placeholder for IWXXM COLLECT / FTBP ingest.
+         *
+         *     Accepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI
+         *     can exercise the path; returns HTTP 501 until member extraction + validate is shipped.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (ingest_collect)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     files : object
+         *         Argument ``files``.
+         *     manual_text : object
+         *         Argument ``manual_text``.
+         *     profile : object
+         *         Argument ``profile``.
+         *     iwxxm_version : object
+         *         Argument ``iwxxm_version``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["ingest_collect_api_v1_ingest_collect_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Ingest Collect
-     * @description Placeholder for IWXXM COLLECT / FTBP ingest.
-     *
-     *     Accepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI
-     *     can exercise the path; returns HTTP 501 until member extraction + validate is shipped.
-     */
-    post: operations['ingest_collect_api_v1_ingest_collect_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/ingest/mass': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/ingest/mass": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mass Ingest
+         * @description Authenticated multi-file / zip ingest with caps, sniff, and zip-bomb guards.
+         *
+         *     Parameters
+         *     ----------
+         *     request : Request
+         *         Incoming request (slowapi).
+         *     files : list[UploadFile] | None
+         *         Multipart files and/or ``.zip`` archives.
+         *     _user : dict[str, Any]
+         *         Verified JWT claims (must include ``sub``).
+         *
+         *     Returns
+         *     -------
+         *     JSONResponse
+         *         Per-file accept/reject list and summary counts.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (mass_ingest)
+         *     2
+         */
+        post: operations["mass_ingest_api_v1_ingest_mass_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Mass Ingest
-     * @description Authenticated multi-file / zip ingest with caps, sniff, and zip-bomb guards.
-     *
-     *     Parameters
-     *     ----------
-     *     request : Request
-     *         Incoming request (slowapi).
-     *     files : list[UploadFile] | None
-     *         Multipart files and/or ``.zip`` archives.
-     *     _user : dict[str, Any]
-     *         Verified JWT claims (must include ``sub``).
-     *
-     *     Returns
-     *     -------
-     *     JSONResponse
-     *         Per-file accept/reject list and summary counts.
-     */
-    post: operations['mass_ingest_api_v1_ingest_mass_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/lint-issue-catalog': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/lint-issue-catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lint Issue Catalog
+         * @description Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (lint_issue_catalog)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     product : object
+         *         Argument ``product``.
+         *     family : object
+         *         Argument ``family``.
+         *     issue_type : object
+         *         Argument ``issue_type``.
+         *     source_access : object
+         *         Argument ``source_access``.
+         *     semantic_profile : object
+         *         Argument ``semantic_profile``.
+         *     exchange_profile : object
+         *         Argument ``exchange_profile``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["lint_issue_catalog_api_v1_lint_issue_catalog_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Lint Issue Catalog
-     * @description Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.
-     */
-    get: operations['lint_issue_catalog_api_v1_lint_issue_catalog_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/lint-tac': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/lint-tac": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Lint Tac
+         * @description Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (lint_tac)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     manual_text : object
+         *         Argument ``manual_text``.
+         *     product : object
+         *         Argument ``product``.
+         *     files : object
+         *         Argument ``files``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["lint_tac_api_v1_lint_tac_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Lint Tac
-     * @description Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A).
-     */
-    post: operations['lint_tac_api_v1_lint_tac_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/profiles/catalog': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/catalog": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Catalog
+         * @description Read-only ConversionProfile catalog for the authenticated Profiles inspector.
+         *
+         *     Requires JWT so the inspector stays on the authenticated Profiles surface.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_catalog)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     _user : object
+         *         Argument ``_user``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_catalog_api_v1_profiles_catalog_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Catalog
-     * @description Read-only ConversionProfile catalog for the authenticated Profiles inspector.
-     *
-     *     Requires JWT so the inspector stays on the authenticated Profiles surface.
-     */
-    get: operations['get_catalog_api_v1_profiles_catalog_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/profiles/conversion-templates': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/conversion-templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Conversion Templates
+         * @description List first-party and custom conversion templates.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (list_conversion_templates)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["list_conversion_templates_api_v1_profiles_conversion_templates_get"];
+        put?: never;
+        /**
+         * Create Conversion Template
+         * @description Create a custom conversion template (optionally forked from first-party).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (create_conversion_template)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["create_conversion_template_api_v1_profiles_conversion_templates_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List Conversion Templates
-     * @description List first-party and custom conversion templates.
-     */
-    get: operations['list_conversion_templates_api_v1_profiles_conversion_templates_get'];
-    put?: never;
-    /**
-     * Create Conversion Template
-     * @description Create a custom conversion template (optionally forked from first-party).
-     */
-    post: operations['create_conversion_template_api_v1_profiles_conversion_templates_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/profiles/conversion-templates/preview': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/conversion-templates/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preview Conversion Template
+         * @description TAC to template to IWXXM bridge preview.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (preview_conversion_template)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["preview_conversion_template_api_v1_profiles_conversion_templates_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Preview Conversion Template
-     * @description TAC to template to IWXXM bridge preview.
-     */
-    post: operations['preview_conversion_template_api_v1_profiles_conversion_templates_preview_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/profiles/conversion-templates/{template_id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/conversion-templates/{template_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Conversion Template
+         * @description Fetch one conversion template (first-party id or custom UUID).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_conversion_template)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     template_id : object
+         *         Argument ``template_id``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_conversion_template_api_v1_profiles_conversion_templates__template_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Conversion Template
+         * @description Delete an owned custom conversion template.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (delete_conversion_template)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     template_id : object
+         *         Argument ``template_id``.
+         *     service : object
+         *         Argument ``service``.
+         */
+        delete: operations["delete_conversion_template_api_v1_profiles_conversion_templates__template_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Conversion Template
+         * @description Update an owned custom conversion template.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (patch_conversion_template)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     template_id : object
+         *         Argument ``template_id``.
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        patch: operations["patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Conversion Template
-     * @description Fetch one conversion template (first-party id or custom UUID).
-     */
-    get: operations['get_conversion_template_api_v1_profiles_conversion_templates__template_id__get'];
-    put?: never;
-    post?: never;
-    /**
-     * Delete Conversion Template
-     * @description Delete an owned custom conversion template.
-     */
-    delete: operations['delete_conversion_template_api_v1_profiles_conversion_templates__template_id__delete'];
-    options?: never;
-    head?: never;
-    /**
-     * Patch Conversion Template
-     * @description Update an owned custom conversion template.
-     */
-    patch: operations['patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch'];
-    trace?: never;
-  };
-  '/api/v1/profiles/library-assets': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/library-assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Library Assets
+         * @description List first-party and custom five-Libraries assets.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (list_library_assets)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     kind : object
+         *         Argument ``kind``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["list_library_assets_api_v1_profiles_library_assets_get"];
+        put?: never;
+        /**
+         * Create Library Asset
+         * @description Retired — library authoring is no longer available.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (create_library_asset)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["create_library_asset_api_v1_profiles_library_assets_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List Library Assets
-     * @description List first-party and custom five-Libraries assets.
-     */
-    get: operations['list_library_assets_api_v1_profiles_library_assets_get'];
-    put?: never;
-    /**
-     * Create Library Asset
-     * @description Retired — library authoring is no longer available.
-     */
-    post: operations['create_library_asset_api_v1_profiles_library_assets_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/profiles/library-assets/preview-rule': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/library-assets/preview-rule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preview Library Rule
+         * @description Retired — library authoring is no longer available.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (preview_library_rule)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["preview_library_rule_api_v1_profiles_library_assets_preview_rule_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Preview Library Rule
-     * @description Retired — library authoring is no longer available.
-     */
-    post: operations['preview_library_rule_api_v1_profiles_library_assets_preview_rule_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/profiles/library-assets/validate-yaml': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/library-assets/validate-yaml": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Validate Library Yaml
+         * @description Retired — library authoring is no longer available.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (validate_library_yaml)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Validate Library Yaml
-     * @description Retired — library authoring is no longer available.
-     */
-    post: operations['validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/profiles/library-assets/{asset_id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/library-assets/{asset_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Library Asset
+         * @description Fetch one library asset (first-party id or custom UUID).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_library_asset)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     asset_id : object
+         *         Argument ``asset_id``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_library_asset_api_v1_profiles_library_assets__asset_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Library Asset
+         * @description Retired — library authoring is no longer available.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (delete_library_asset)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     asset_id : object
+         *         Argument ``asset_id``.
+         *     service : object
+         *         Argument ``service``.
+         */
+        delete: operations["delete_library_asset_api_v1_profiles_library_assets__asset_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Update Library Asset
+         * @description Retired — library authoring is no longer available.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (update_library_asset)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     asset_id : object
+         *         Argument ``asset_id``.
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        patch: operations["update_library_asset_api_v1_profiles_library_assets__asset_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Library Asset
-     * @description Fetch one library asset (first-party id or custom UUID).
-     */
-    get: operations['get_library_asset_api_v1_profiles_library_assets__asset_id__get'];
-    put?: never;
-    post?: never;
-    /**
-     * Delete Library Asset
-     * @description Retired — library authoring is no longer available.
-     */
-    delete: operations['delete_library_asset_api_v1_profiles_library_assets__asset_id__delete'];
-    options?: never;
-    head?: never;
-    /**
-     * Update Library Asset
-     * @description Retired — library authoring is no longer available.
-     */
-    patch: operations['update_library_asset_api_v1_profiles_library_assets__asset_id__patch'];
-    trace?: never;
-  };
-  '/api/v1/profiles/overlays': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/overlays": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Overlays
+         * @description List overlays owned by the caller (and shared overlays).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (list_overlays)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["list_overlays_api_v1_profiles_overlays_get"];
+        put?: never;
+        /**
+         * Create Overlay
+         * @description Create a server-signed overlay.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (create_overlay)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["create_overlay_api_v1_profiles_overlays_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List Overlays
-     * @description List overlays owned by the caller (and shared overlays).
-     */
-    get: operations['list_overlays_api_v1_profiles_overlays_get'];
-    put?: never;
-    /**
-     * Create Overlay
-     * @description Create a server-signed overlay.
-     */
-    post: operations['create_overlay_api_v1_profiles_overlays_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/profiles/overlays/{overlay_id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/overlays/{overlay_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Overlay
+         * @description Fetch one overlay.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_overlay)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     overlay_id : object
+         *         Argument ``overlay_id``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_overlay_api_v1_profiles_overlays__overlay_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Overlay
+         * @description Delete an owned overlay.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (delete_overlay)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     overlay_id : object
+         *         Argument ``overlay_id``.
+         *     service : object
+         *         Argument ``service``.
+         */
+        delete: operations["delete_overlay_api_v1_profiles_overlays__overlay_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Overlay
+         * @description Update an owned overlay (re-signed server-side).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (patch_overlay)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     overlay_id : object
+         *         Argument ``overlay_id``.
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        patch: operations["patch_overlay_api_v1_profiles_overlays__overlay_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Overlay
-     * @description Fetch one overlay.
-     */
-    get: operations['get_overlay_api_v1_profiles_overlays__overlay_id__get'];
-    put?: never;
-    post?: never;
-    /**
-     * Delete Overlay
-     * @description Delete an owned overlay.
-     */
-    delete: operations['delete_overlay_api_v1_profiles_overlays__overlay_id__delete'];
-    options?: never;
-    head?: never;
-    /**
-     * Patch Overlay
-     * @description Update an owned overlay (re-signed server-side).
-     */
-    patch: operations['patch_overlay_api_v1_profiles_overlays__overlay_id__patch'];
-    trace?: never;
-  };
-  '/api/v1/profiles/presets': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/presets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Presets
+         * @description List semantic presets owned by the caller (and shared presets).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (list_presets)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["list_presets_api_v1_profiles_presets_get"];
+        put?: never;
+        /**
+         * Create Preset
+         * @description Create a semantic preset.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (create_preset)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["create_preset_api_v1_profiles_presets_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List Presets
-     * @description List semantic presets owned by the caller (and shared presets).
-     */
-    get: operations['list_presets_api_v1_profiles_presets_get'];
-    put?: never;
-    /**
-     * Create Preset
-     * @description Create a semantic preset.
-     */
-    post: operations['create_preset_api_v1_profiles_presets_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/profiles/presets/{preset_id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/presets/{preset_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Preset
+         * @description Fetch one semantic preset.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_preset)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     preset_id : object
+         *         Argument ``preset_id``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_preset_api_v1_profiles_presets__preset_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Preset
+         * @description Delete a semantic preset.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (delete_preset)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     preset_id : object
+         *         Argument ``preset_id``.
+         *     service : object
+         *         Argument ``service``.
+         */
+        delete: operations["delete_preset_api_v1_profiles_presets__preset_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Preset
+         * @description Update a semantic preset.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (patch_preset)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     preset_id : object
+         *         Argument ``preset_id``.
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        patch: operations["patch_preset_api_v1_profiles_presets__preset_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Preset
-     * @description Fetch one semantic preset.
-     */
-    get: operations['get_preset_api_v1_profiles_presets__preset_id__get'];
-    put?: never;
-    post?: never;
-    /**
-     * Delete Preset
-     * @description Delete a semantic preset.
-     */
-    delete: operations['delete_preset_api_v1_profiles_presets__preset_id__delete'];
-    options?: never;
-    head?: never;
-    /**
-     * Patch Preset
-     * @description Update a semantic preset.
-     */
-    patch: operations['patch_preset_api_v1_profiles_presets__preset_id__patch'];
-    trace?: never;
-  };
-  '/api/v1/profiles/rule-packs': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/rule-packs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Rule Packs
+         * @description List rule packs owned by the caller.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (list_rule_packs)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["list_rule_packs_api_v1_profiles_rule_packs_get"];
+        put?: never;
+        /**
+         * Create Rule Pack
+         * @description Create a rule pack.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (create_rule_pack)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["create_rule_pack_api_v1_profiles_rule_packs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List Rule Packs
-     * @description List rule packs owned by the caller.
-     */
-    get: operations['list_rule_packs_api_v1_profiles_rule_packs_get'];
-    put?: never;
-    /**
-     * Create Rule Pack
-     * @description Create a rule pack.
-     */
-    post: operations['create_rule_pack_api_v1_profiles_rule_packs_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/profiles/rule-packs/{pack_id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/rule-packs/{pack_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Rule Pack
+         * @description Fetch one rule pack.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_rule_pack)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     pack_id : object
+         *         Argument ``pack_id``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_rule_pack_api_v1_profiles_rule_packs__pack_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Rule Pack
+         * @description Delete a rule pack.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (delete_rule_pack)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     pack_id : object
+         *         Argument ``pack_id``.
+         *     service : object
+         *         Argument ``service``.
+         */
+        delete: operations["delete_rule_pack_api_v1_profiles_rule_packs__pack_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Rule Pack
+         * @description Update a rule pack.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (patch_rule_pack)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     pack_id : object
+         *         Argument ``pack_id``.
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        patch: operations["patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Rule Pack
-     * @description Fetch one rule pack.
-     */
-    get: operations['get_rule_pack_api_v1_profiles_rule_packs__pack_id__get'];
-    put?: never;
-    post?: never;
-    /**
-     * Delete Rule Pack
-     * @description Delete a rule pack.
-     */
-    delete: operations['delete_rule_pack_api_v1_profiles_rule_packs__pack_id__delete'];
-    options?: never;
-    head?: never;
-    /**
-     * Patch Rule Pack
-     * @description Update a rule pack.
-     */
-    patch: operations['patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch'];
-    trace?: never;
-  };
-  '/api/v1/profiles/templates': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Templates
+         * @description List dissemination templates owned by the caller (and shared templates).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (list_templates)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["list_templates_api_v1_profiles_templates_get"];
+        put?: never;
+        /**
+         * Create Template
+         * @description Create a dissemination template.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (create_template)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["create_template_api_v1_profiles_templates_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List Templates
-     * @description List dissemination templates owned by the caller (and shared templates).
-     */
-    get: operations['list_templates_api_v1_profiles_templates_get'];
-    put?: never;
-    /**
-     * Create Template
-     * @description Create a dissemination template.
-     */
-    post: operations['create_template_api_v1_profiles_templates_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/profiles/templates/{template_id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/profiles/templates/{template_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Template
+         * @description Fetch one dissemination template.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_template)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     template_id : object
+         *         Argument ``template_id``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_template_api_v1_profiles_templates__template_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Template
+         * @description Delete an owned dissemination template.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (delete_template)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     template_id : object
+         *         Argument ``template_id``.
+         *     service : object
+         *         Argument ``service``.
+         */
+        delete: operations["delete_template_api_v1_profiles_templates__template_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Template
+         * @description Update a dissemination template.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (patch_template)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     template_id : object
+         *         Argument ``template_id``.
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        patch: operations["patch_template_api_v1_profiles_templates__template_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Template
-     * @description Fetch one dissemination template.
-     */
-    get: operations['get_template_api_v1_profiles_templates__template_id__get'];
-    put?: never;
-    post?: never;
-    /**
-     * Delete Template
-     * @description Delete an owned dissemination template.
-     */
-    delete: operations['delete_template_api_v1_profiles_templates__template_id__delete'];
-    options?: never;
-    head?: never;
-    /**
-     * Patch Template
-     * @description Update a dissemination template.
-     */
-    patch: operations['patch_template_api_v1_profiles_templates__template_id__patch'];
-    trace?: never;
-  };
-  '/api/v1/quality-metrics': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/quality-metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List corpus quality metrics
+         * @description Serve product summaries and file inventory from the precomputed artifact.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (list_quality_metrics)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     product : object
+         *         Argument ``product``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["list_quality_metrics_api_v1_quality_metrics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List corpus quality metrics
-     * @description Serve product summaries and file inventory from the precomputed artifact.
-     */
-    get: operations['list_quality_metrics_api_v1_quality_metrics_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/quality-metrics/{stem}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/quality-metrics/{stem}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Corpus quality metrics for one stem
+         * @description Serve per-stem TAC / XML / match / residual / lint / validate detail.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_quality_metrics_detail)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     stem : object
+         *         Argument ``stem``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_quality_metrics_detail_api_v1_quality_metrics__stem__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Corpus quality metrics for one stem
-     * @description Serve per-stem TAC / XML / match / residual / lint / validate detail.
-     */
-    get: operations['get_quality_metrics_detail_api_v1_quality_metrics__stem__get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/rule-catalogs': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/rule-catalogs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Rule Catalogs
+         * @description Export a package-owned trust catalog by family.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_rule_catalogs)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     family : object
+         *         Argument ``family``.
+         *     product : object
+         *         Argument ``product``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_rule_catalogs_api_v1_rule_catalogs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Rule Catalogs
-     * @description Export a package-owned trust catalog by family.
-     */
-    get: operations['get_rule_catalogs_api_v1_rule_catalogs_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/schema-status': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/schema-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Schema Status
+         * @description Get comprehensive schema status including RC versions and mirroring info.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_schema_status)
+         *     2
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_schema_status_api_v1_schema_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Schema Status
-     * @description Get comprehensive schema status including RC versions and mirroring info.
-     */
-    get: operations['get_schema_status_api_v1_schema_status_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/selection-options': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/selection-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Selection Options
+         * @description List deployed registry ids for workbench / dissemination dropdowns.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_selection_options)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     kind : object
+         *         Argument ``kind``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_selection_options_api_v1_selection_options_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Selection Options
-     * @description List deployed registry ids for workbench / dissemination dropdowns.
-     */
-    get: operations['get_selection_options_api_v1_selection_options_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/translation/airport-region/{airport_code}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/translation/airport-region/{airport_code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Airport Region
+         * @description Determine ICAO region for a given airport code.
+         *
+         *     Utility endpoint for testing ICAO region mapping.
+         *     This endpoint is public and does not require authentication.
+         *
+         *     **Path Parameters**:
+         *     - **airport_code**: 4-letter ICAO airport identifier
+         *
+         *     **Returns**:
+         *     ```json
+         *     {
+         *         "airport_code": "KJFK",
+         *         "icao_region": "NAM",
+         *         "region_name": "North American"
+         *     }
+         *     ```
+         *
+         *     **Example**:
+         *     - `GET /api/v1/translation/airport-region/KJFK` → `{"icao_region": "NAM"}`
+         *     - `GET /api/v1/translation/airport-region/EGLL` → `{"icao_region": "EUR"}`
+         *     - `GET /api/v1/translation/airport-region/RJAA` → `{"icao_region": "APAC"}`
+         *
+         *     Parameters
+         *     ----------
+         *     airport_code : object
+         *         Argument ``airport_code``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_airport_region)
+         *     2
+         */
+        get: operations["get_airport_region_api_v1_translation_airport_region__airport_code__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Airport Region
-     * @description Determine ICAO region for a given airport code.
-     *
-     *     Utility endpoint for testing ICAO region mapping.
-     *     This endpoint is public and does not require authentication.
-     *
-     *     **Path Parameters**:
-     *     - **airport_code**: 4-letter ICAO airport identifier
-     *
-     *     **Returns**:
-     *     ```json
-     *     {
-     *         "airport_code": "KJFK",
-     *         "icao_region": "NAM",
-     *         "region_name": "North American"
-     *     }
-     *     ```
-     *
-     *     **Example**:
-     *     - `GET /api/v1/translation/airport-region/KJFK` → `{"icao_region": "NAM"}`
-     *     - `GET /api/v1/translation/airport-region/EGLL` → `{"icao_region": "EUR"}`
-     *     - `GET /api/v1/translation/airport-region/RJAA` → `{"icao_region": "APAC"}`
-     */
-    get: operations['get_airport_region_api_v1_translation_airport_region__airport_code__get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/translation/centre-info': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/translation/centre-info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Centre Info
+         * @description Get Translation Centre identification and capabilities.
+         *
+         *     Returns metadata about this Translation Centre as per ICAO OPMET guidelines.
+         *     This endpoint is public and does not require authentication.
+         *
+         *     **Returns**:
+         *     - Translation centre name and designator
+         *     - ICAO location indicator
+         *     - Supported IWXXM versions
+         *     - Supported aviation product types
+         *     - Service online date
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_centre_info)
+         *     2
+         */
+        get: operations["get_centre_info_api_v1_translation_centre_info_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Centre Info
-     * @description Get Translation Centre identification and capabilities.
-     *
-     *     Returns metadata about this Translation Centre as per ICAO OPMET guidelines.
-     *     This endpoint is public and does not require authentication.
-     *
-     *     **Returns**:
-     *     - Translation centre name and designator
-     *     - ICAO location indicator
-     *     - Supported IWXXM versions
-     *     - Supported aviation product types
-     *     - Service online date
-     */
-    get: operations['get_centre_info_api_v1_translation_centre_info_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/translation/health': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/translation/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Statistics Health
+         * @description Translation statistics service health check.
+         *
+         *     Returns service status and configuration.
+         *     Public endpoint (no authentication required).
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (statistics_health)
+         *     2
+         */
+        get: operations["statistics_health_api_v1_translation_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Statistics Health
-     * @description Translation statistics service health check.
-     *
-     *     Returns service status and configuration.
-     *     Public endpoint (no authentication required).
-     */
-    get: operations['statistics_health_api_v1_translation_health_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/translation/statistics': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/translation/statistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Get Translation Statistics
+         * @description Query aggregated translation statistics.
+         *
+         *     Retrieves translation centre statistics for a specified time period with optional filters.
+         *     Implements ICAO OPMET Data Exchange Guidelines Section 7 reporting requirements.
+         *
+         *     **Authentication**: Public (no login required).
+         *
+         *     **Request Parameters**:
+         *     - **start_date** (required): Statistics period start (ISO 8601)
+         *     - **end_date** (required): Statistics period end (ISO 8601)
+         *     - **icao_region** (optional): Filter by ICAO region (AFI, APAC, EUR, MID, NAM, SAM)
+         *     - **iwxxm_version** (optional): Filter by IWXXM version (2025-2, 2023-1)
+         *     - **airport_code** (optional): Filter by specific ICAO airport code
+         *     - **include_airport_breakdown** (optional): Include per-airport statistics (default: false)
+         *     - **include_error_details** (optional): Include detailed error analysis (default: false)
+         *
+         *     **Returns**:
+         *     - Aggregated translation statistics including:
+         *       - Total, successful, and failed translation counts
+         *       - Success rate percentage
+         *       - Average and median processing duration
+         *       - Breakdown by ICAO region
+         *       - Breakdown by IWXXM version
+         *       - Validation layer success rates
+         *       - Optional airport-level details
+         *       - Optional error frequency analysis
+         *
+         *     **Example**:
+         *     ```json
+         *     {
+         *         "start_date": "2026-02-01T00:00:00Z",
+         *         "end_date": "2026-02-13T23:59:59Z",
+         *         "icao_region": "NAM",
+         *         "include_airport_breakdown": true
+         *     }
+         *     ```
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_translation_statistics)
+         *     2
+         */
+        post: operations["get_translation_statistics_api_v1_translation_statistics_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Get Translation Statistics
-     * @description Query aggregated translation statistics.
-     *
-     *     Retrieves translation centre statistics for a specified time period with optional filters.
-     *     Implements ICAO OPMET Data Exchange Guidelines Section 7 reporting requirements.
-     *
-     *     **Authentication**: Public (no login required).
-     *
-     *     **Request Parameters**:
-     *     - **start_date** (required): Statistics period start (ISO 8601)
-     *     - **end_date** (required): Statistics period end (ISO 8601)
-     *     - **icao_region** (optional): Filter by ICAO region (AFI, APAC, EUR, MID, NAM, SAM)
-     *     - **iwxxm_version** (optional): Filter by IWXXM version (2025-2, 2023-1)
-     *     - **airport_code** (optional): Filter by specific ICAO airport code
-     *     - **include_airport_breakdown** (optional): Include per-airport statistics (default: false)
-     *     - **include_error_details** (optional): Include detailed error analysis (default: false)
-     *
-     *     **Returns**:
-     *     - Aggregated translation statistics including:
-     *       - Total, successful, and failed translation counts
-     *       - Success rate percentage
-     *       - Average and median processing duration
-     *       - Breakdown by ICAO region
-     *       - Breakdown by IWXXM version
-     *       - Validation layer success rates
-     *       - Optional airport-level details
-     *       - Optional error frequency analysis
-     *
-     *     **Example**:
-     *     ```json
-     *     {
-     *         "start_date": "2026-02-01T00:00:00Z",
-     *         "end_date": "2026-02-13T23:59:59Z",
-     *         "icao_region": "NAM",
-     *         "include_airport_breakdown": true
-     *     }
-     *     ```
-     */
-    post: operations['get_translation_statistics_api_v1_translation_statistics_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/translation/statistics/by-region': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/translation/statistics/by-region": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Statistics By Region
+         * @description Get translation statistics grouped by ICAO region.
+         *
+         *     Returns translation activity summary for all ICAO regions.
+         *     Useful for identifying regional distribution and capacity planning.
+         *
+         *     **Authentication**: Public (no login required).
+         *
+         *     **Query Parameters**:
+         *     - **start_date**: Statistics period start (ISO 8601)
+         *     - **end_date**: Statistics period end (ISO 8601)
+         *
+         *     **Returns**:
+         *     Dictionary mapping ICAO region codes to statistics:
+         *     ```json
+         *     {
+         *         "NAM": {"total": 1500, "success_rate": 98.5},
+         *         "EUR": {"total": 890, "success_rate": 97.2},
+         *         "APAC": {"total": 456, "success_rate": 99.1}
+         *     }
+         *     ```
+         *
+         *     Parameters
+         *     ----------
+         *     start_date : object
+         *         Argument ``start_date``.
+         *     end_date : object
+         *         Argument ``end_date``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_statistics_by_region)
+         *     2
+         */
+        get: operations["get_statistics_by_region_api_v1_translation_statistics_by_region_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Statistics By Region
-     * @description Get translation statistics grouped by ICAO region.
-     *
-     *     Returns translation activity summary for all ICAO regions.
-     *     Useful for identifying regional distribution and capacity planning.
-     *
-     *     **Authentication**: Public (no login required).
-     *
-     *     **Query Parameters**:
-     *     - **start_date**: Statistics period start (ISO 8601)
-     *     - **end_date**: Statistics period end (ISO 8601)
-     *
-     *     **Returns**:
-     *     Dictionary mapping ICAO region codes to statistics:
-     *     ```json
-     *     {
-     *         "NAM": {"total": 1500, "success_rate": 98.5},
-     *         "EUR": {"total": 890, "success_rate": 97.2},
-     *         "APAC": {"total": 456, "success_rate": 99.1}
-     *     }
-     *     ```
-     */
-    get: operations['get_statistics_by_region_api_v1_translation_statistics_by_region_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/translation/statistics/recent': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/translation/statistics/recent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Recent Statistics
+         * @description Get recent translation statistics (last N hours).
+         *
+         *     Convenience endpoint for querying recent activity without specifying exact dates.
+         *
+         *     **Authentication**: Public (no login required).
+         *
+         *     **Query Parameters**:
+         *     - **hours**: Number of hours to look back (1-168, default: 24)
+         *     - **icao_region**: Optional ICAO region filter
+         *     - **iwxxm_version**: Optional IWXXM version filter
+         *
+         *     **Returns**:
+         *     Aggregated translation statistics for the specified time window.
+         *
+         *     Parameters
+         *     ----------
+         *     hours : object
+         *         Argument ``hours``.
+         *     icao_region : object
+         *         Argument ``icao_region``.
+         *     iwxxm_version : object
+         *         Argument ``iwxxm_version``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_recent_statistics)
+         *     2
+         */
+        get: operations["get_recent_statistics_api_v1_translation_statistics_recent_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Recent Statistics
-     * @description Get recent translation statistics (last N hours).
-     *
-     *     Convenience endpoint for querying recent activity without specifying exact dates.
-     *
-     *     **Authentication**: Public (no login required).
-     *
-     *     **Query Parameters**:
-     *     - **hours**: Number of hours to look back (1-168, default: 24)
-     *     - **icao_region**: Optional ICAO region filter
-     *     - **iwxxm_version**: Optional IWXXM version filter
-     *
-     *     **Returns**:
-     *     Aggregated translation statistics for the specified time window.
-     */
-    get: operations['get_recent_statistics_api_v1_translation_statistics_recent_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/validate': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Validate Comprehensive
+         * @description Perform comprehensive 7-layer IWXXM validation.
+         *
+         *     Validates METAR TAC input through all 7 validation layers:
+         *
+         *     1. **Layer 1 (AIRPORT_ICAO)**: Validates ICAO airport code against database
+         *     2. **Layer 2 (TAC_SYNTAX)**: Validates TAC/METAR syntax basics
+         *     3. **Layer 3 (XML_WELLFORMED)**: Checks XML is well-formed
+         *     4. **Layer 4 (XML_SCHEMA)**: Validates against official IWXXM XSD schemas
+         *     5. **Layer 5 (SCHEMATRON)**: Validates business rules from official Schematron
+         *     6. **Layer 6 (GML_REFERENCES)**: Validates GML internal references
+         *     7. **Layer 7 (WMO_CODELISTS)**: Validates against official WMO RDF codelists
+         *
+         *     **Authentication**: Public (no login required)
+         *
+         *     **Request Parameters**:
+         *     - **manual_text** (required): METAR TAC text to validate
+         *     - **xml_content** (optional): Pre-converted XML to validate (if omitted, TAC will be converted)
+         *     - **iwxxm_version**: Target IWXXM version (default: "2025-2")
+         *     - **layers**: Validation layers to run (default: ["ALL"])
+         *       - "ALL": Run all 7 layers
+         *       - Or specify: ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_SCHEMA", "SCHEMATRON", ...]
+         *     - **stop_on_error**: Stop at first blocking layer failure (default: true)
+         *
+         *     **Response**:
+         *     ```json
+         *     {
+         *       "is_valid": true,
+         *       "version": "2025-2",
+         *       "layers_run": ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_WELLFORMED", "XML_SCHEMA", "SCHEMATRON", "GML_REFERENCES", "WMO_CODELISTS"],
+         *       "layers_passed": ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_WELLFORMED", "XML_SCHEMA", "SCHEMATRON", "GML_REFERENCES", "WMO_CODELISTS"],
+         *       "layers_failed": [],
+         *       "total_issues": 0,
+         *       "issues_by_layer": {},
+         *       "stopped_at_layer": null
+         *     }
+         *     ```
+         *
+         *     Parameters
+         *     ----------
+         *     request_body : object
+         *         Argument ``request_body``.
+         *     manual_text : object
+         *         Argument ``manual_text``.
+         *     xml_content : object
+         *         Argument ``xml_content``.
+         *     iwxxm_version : object
+         *         Argument ``iwxxm_version``.
+         *     layers : object
+         *         Argument ``layers``.
+         *     stop_on_error : object
+         *         Argument ``stop_on_error``.
+         *     profile : object
+         *         Argument ``profile``.
+         *     semantic_profile : object
+         *         Argument ``semantic_profile``.
+         *     exchange_profile : object
+         *         Argument ``exchange_profile``.
+         *     extensions : object
+         *         Argument ``extensions``.
+         *     product : object
+         *         Argument ``product``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (validate_comprehensive)
+         *     2
+         */
+        post: operations["validate_comprehensive_api_v1_validate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Validate Comprehensive
-     * @description Perform comprehensive 7-layer IWXXM validation.
-     *
-     *     Validates METAR TAC input through all 7 validation layers:
-     *
-     *     1. **Layer 1 (AIRPORT_ICAO)**: Validates ICAO airport code against database
-     *     2. **Layer 2 (TAC_SYNTAX)**: Validates TAC/METAR syntax basics
-     *     3. **Layer 3 (XML_WELLFORMED)**: Checks XML is well-formed
-     *     4. **Layer 4 (XML_SCHEMA)**: Validates against official IWXXM XSD schemas
-     *     5. **Layer 5 (SCHEMATRON)**: Validates business rules from official Schematron
-     *     6. **Layer 6 (GML_REFERENCES)**: Validates GML internal references
-     *     7. **Layer 7 (WMO_CODELISTS)**: Validates against official WMO RDF codelists
-     *
-     *     **Authentication**: Public (no login required)
-     *
-     *     **Request Parameters**:
-     *     - **manual_text** (required): METAR TAC text to validate
-     *     - **xml_content** (optional): Pre-converted XML to validate (if omitted, TAC will be converted)
-     *     - **iwxxm_version**: Target IWXXM version (default: "2025-2")
-     *     - **layers**: Validation layers to run (default: ["ALL"])
-     *       - "ALL": Run all 7 layers
-     *       - Or specify: ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_SCHEMA", "SCHEMATRON", ...]
-     *     - **stop_on_error**: Stop at first blocking layer failure (default: true)
-     *
-     *     **Response**:
-     *     ```json
-     *     {
-     *       "is_valid": true,
-     *       "version": "2025-2",
-     *       "layers_run": ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_WELLFORMED", "XML_SCHEMA", "SCHEMATRON", "GML_REFERENCES", "WMO_CODELISTS"],
-     *       "layers_passed": ["AIRPORT_ICAO", "TAC_SYNTAX", "XML_WELLFORMED", "XML_SCHEMA", "SCHEMATRON", "GML_REFERENCES", "WMO_CODELISTS"],
-     *       "layers_failed": [],
-     *       "total_issues": 0,
-     *       "issues_by_layer": {},
-     *       "stopped_at_layer": null
-     *     }
-     *     ```
-     */
-    post: operations['validate_comprehensive_api_v1_validate_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/validation/layers': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/validation/layers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get available validation layers
+         * @description Get information about available validation layers.
+         *
+         *     Each layer validates specific aspects of METAR TAC or IWXXM XML content.
+         *     Layers marked as blocking will stop further validation if they fail.
+         *
+         *     ## Response
+         *     Returns list of validation layers with:
+         *     - **layer**: Layer identifier
+         *     - **description**: What this layer validates
+         *     - **blocking**: Whether it blocks further layers on failure
+         *     - **supported_content_types**: Content types this layer supports ("tac" or "xml")
+         *
+         *     ## Available Layers
+         *     1. **airport_icao**: Extract and validate ICAO code against airport database
+         *     2. **tac_syntax**: Parse and validate METAR TAC syntax
+         *     3. **xml_wellformed**: Check if output XML is well-formed
+         *     4. **xml_schema**: Validate against XSD schema
+         *     5. **schematron**: SCHEMATRON rules validation
+         *     6. **gml_references**: GML reference checks
+         *     7. **wmo_codelists**: WMO code list validation
+         *
+         *     ## Example Response
+         *     ```json
+         *     {
+         *       "layers": [
+         *         {
+         *           "layer": "airport_icao",
+         *           "description": "Extract and validate ICAO code against airport database",
+         *           "blocking": true,
+         *           "supported_content_types": ["tac"]
+         *         },
+         *         {
+         *           "layer": "tac_syntax",
+         *           "description": "Parse and validate METAR TAC syntax",
+         *           "blocking": true,
+         *           "supported_content_types": ["tac"]
+         *         }
+         *       ]
+         *     }
+         *     ```
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_validation_layers)
+         *     2
+         */
+        get: operations["get_validation_layers_api_v1_validation_layers_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get available validation layers
-     * @description Get information about available validation layers.
-     *
-     *     Each layer validates specific aspects of METAR TAC or IWXXM XML content.
-     *     Layers marked as blocking will stop further validation if they fail.
-     *
-     *     ## Response
-     *     Returns list of validation layers with:
-     *     - **layer**: Layer identifier
-     *     - **description**: What this layer validates
-     *     - **blocking**: Whether it blocks further layers on failure
-     *     - **supported_content_types**: Content types this layer supports ("tac" or "xml")
-     *
-     *     ## Available Layers
-     *     1. **airport_icao**: Extract and validate ICAO code against airport database
-     *     2. **tac_syntax**: Parse and validate METAR TAC syntax
-     *     3. **xml_wellformed**: Check if output XML is well-formed
-     *     4. **xml_schema**: Validate against XSD schema
-     *     5. **schematron**: SCHEMATRON rules validation
-     *     6. **gml_references**: GML reference checks
-     *     7. **wmo_codelists**: WMO code list validation
-     *
-     *     ## Example Response
-     *     ```json
-     *     {
-     *       "layers": [
-     *         {
-     *           "layer": "airport_icao",
-     *           "description": "Extract and validate ICAO code against airport database",
-     *           "blocking": true,
-     *           "supported_content_types": ["tac"]
-     *         },
-     *         {
-     *           "layer": "tac_syntax",
-     *           "description": "Parse and validate METAR TAC syntax",
-     *           "blocking": true,
-     *           "supported_content_types": ["tac"]
-     *         }
-     *       ]
-     *     }
-     *     ```
-     */
-    get: operations['get_validation_layers_api_v1_validation_layers_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/validation/validate': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/validation/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Validate METAR TAC or IWXXM XML content
+         * @description Validate METAR TAC or IWXXM XML content through multiple validation layers.
+         *
+         *     ## Request Body
+         *     - **content** (string, required): The METAR TAC or IWXXM XML content to validate
+         *     - **content_type** (string, default="tac"): ``tac``, ``xml``, or ``iwxxm`` (alias of xml)
+         *     - **layers** (array, optional): Specific validation layers to run.
+         *       - TAC (``content_type=tac``): ``airport_icao``, ``tac_syntax`` (default both)
+         *       - XML (``content_type=xml|iwxxm``): ``xml_wellformed``, ``xml_schema``,
+         *         ``schematron``, ``gml_references``, ``wmo_codelists`` (default all XML layers)
+         *     - **iwxxm_version** (string, optional): IWXXM version for XML layers (e.g., "2025-2")
+         *
+         *     ## Response
+         *     Returns aggregated validation results with:
+         *     - **passed** (boolean): Whether all requested layers passed
+         *     - **layers_validated** (array): Layers that were run
+         *     - **total_issues** (integer): Total validation issues found
+         *     - **results** (array): Per-layer validation details
+         *     - **execution_time_ms** (float): Total execution time
+         *
+         *     ## Example Success Response
+         *     ```json
+         *     {
+         *       "passed": true,
+         *       "layers_validated": ["airport_icao", "tac_syntax"],
+         *       "total_issues": 0,
+         *       "results": [
+         *         {
+         *           "passed": true,
+         *           "layer": "airport_icao",
+         *           "issues": [],
+         *           "execution_time_ms": 5.2
+         *         }
+         *       ],
+         *       "execution_time_ms": 10.5
+         *     }
+         *     ```
+         *
+         *     ## Example Failure Response
+         *     ```json
+         *     {
+         *       "passed": false,
+         *       "layers_validated": ["airport_icao", "tac_syntax"],
+         *       "total_issues": 1,
+         *       "results": [
+         *         {
+         *           "passed": false,
+         *           "layer": "tac_syntax",
+         *           "issues": [
+         *             {
+         *               "layer": "tac_syntax",
+         *               "level": "error",
+         *               "message": "Invalid TAC format",
+         *               "code": "INVALID_TAC_FORMAT"
+         *             }
+         *           ],
+         *           "execution_time_ms": 8.3
+         *         }
+         *       ],
+         *       "execution_time_ms": 8.3
+         *     }
+         *     ```
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (validate_content)
+         *     2
+         */
+        post: operations["validate_content_api_v1_validation_validate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Validate METAR TAC or IWXXM XML content
-     * @description Validate METAR TAC or IWXXM XML content through multiple validation layers.
-     *
-     *     ## Request Body
-     *     - **content** (string, required): The METAR TAC or IWXXM XML content to validate
-     *     - **content_type** (string, default="tac"): ``tac``, ``xml``, or ``iwxxm`` (alias of xml)
-     *     - **layers** (array, optional): Specific validation layers to run.
-     *       - TAC (``content_type=tac``): ``airport_icao``, ``tac_syntax`` (default both)
-     *       - XML (``content_type=xml|iwxxm``): ``xml_wellformed``, ``xml_schema``,
-     *         ``schematron``, ``gml_references``, ``wmo_codelists`` (default all XML layers)
-     *     - **iwxxm_version** (string, optional): IWXXM version for XML layers (e.g., "2025-2")
-     *
-     *     ## Response
-     *     Returns aggregated validation results with:
-     *     - **passed** (boolean): Whether all requested layers passed
-     *     - **layers_validated** (array): Layers that were run
-     *     - **total_issues** (integer): Total validation issues found
-     *     - **results** (array): Per-layer validation details
-     *     - **execution_time_ms** (float): Total execution time
-     *
-     *     ## Example Success Response
-     *     ```json
-     *     {
-     *       "passed": true,
-     *       "layers_validated": ["airport_icao", "tac_syntax"],
-     *       "total_issues": 0,
-     *       "results": [
-     *         {
-     *           "passed": true,
-     *           "layer": "airport_icao",
-     *           "issues": [],
-     *           "execution_time_ms": 5.2
-     *         }
-     *       ],
-     *       "execution_time_ms": 10.5
-     *     }
-     *     ```
-     *
-     *     ## Example Failure Response
-     *     ```json
-     *     {
-     *       "passed": false,
-     *       "layers_validated": ["airport_icao", "tac_syntax"],
-     *       "total_issues": 1,
-     *       "results": [
-     *         {
-     *           "passed": false,
-     *           "layer": "tac_syntax",
-     *           "issues": [
-     *             {
-     *               "layer": "tac_syntax",
-     *               "level": "error",
-     *               "message": "Invalid TAC format",
-     *               "code": "INVALID_TAC_FORMAT"
-     *             }
-     *           ],
-     *           "execution_time_ms": 8.3
-     *         }
-     *       ],
-     *       "execution_time_ms": 8.3
-     *     }
-     *     ```
-     */
-    post: operations['validate_content_api_v1_validation_validate_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/validation/validate-multi': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/validation/validate-multi": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Validate multiple METAR TAC or IWXXM XML inputs
+         * @description Validate multiple METAR TAC or IWXXM XML inputs in a single request.
+         *
+         *     Useful for batch validation of multiple entries. Each item is validated
+         *     independently and can have different content types.
+         *
+         *     ## Request Body
+         *     - **items** (array, required): Array of validation requests (1-100 items)
+         *       - Each item has: content, content_type, layers (optional), iwxxm_version (optional)
+         *     - **layers** (array, optional): Default layers to apply to all items that omit layers
+         *
+         *     ## Response
+         *     Returns batch validation results with:
+         *     - **results** (array): Aggregated validation result for each item
+         *     - **total_items** (integer): Total items requested
+         *     - **passed_items** (integer): Items that passed all layers
+         *     - **failed_items** (integer): Items that failed at least one layer
+         *     - **total_execution_time_ms** (float): Total execution time for all items
+         *
+         *     ## Example Request
+         *     ```json
+         *     {
+         *       "items": [
+         *         {
+         *           "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
+         *           "content_type": "tac"
+         *         },
+         *         {
+         *           "content": "METAR EGLL 231750Z 17008KT 9999 SCT035 12/08 Q1007",
+         *           "content_type": "tac"
+         *         }
+         *       ],
+         *       "layers": ["airport_icao", "tac_syntax"]
+         *     }
+         *     ```
+         *
+         *     ## Example Response
+         *     ```json
+         *     {
+         *       "results": [
+         *         {
+         *           "passed": true,
+         *           "layers_validated": ["airport_icao", "tac_syntax"],
+         *           "total_issues": 0,
+         *           "results": [],
+         *           "execution_time_ms": 12.3
+         *         },
+         *         {
+         *           "passed": false,
+         *           "layers_validated": ["airport_icao", "tac_syntax"],
+         *           "total_issues": 1,
+         *           "results": [],
+         *           "execution_time_ms": 8.5
+         *         }
+         *       ],
+         *       "total_items": 2,
+         *       "passed_items": 1,
+         *       "failed_items": 1,
+         *       "total_execution_time_ms": 20.8
+         *     }
+         *     ```
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (validate_multiple)
+         *     2
+         */
+        post: operations["validate_multiple_api_v1_validation_validate_multi_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Validate multiple METAR TAC or IWXXM XML inputs
-     * @description Validate multiple METAR TAC or IWXXM XML inputs in a single request.
-     *
-     *     Useful for batch validation of multiple entries. Each item is validated
-     *     independently and can have different content types.
-     *
-     *     ## Request Body
-     *     - **items** (array, required): Array of validation requests (1-100 items)
-     *       - Each item has: content, content_type, layers (optional), iwxxm_version (optional)
-     *     - **layers** (array, optional): Default layers to apply to all items that omit layers
-     *
-     *     ## Response
-     *     Returns batch validation results with:
-     *     - **results** (array): Aggregated validation result for each item
-     *     - **total_items** (integer): Total items requested
-     *     - **passed_items** (integer): Items that passed all layers
-     *     - **failed_items** (integer): Items that failed at least one layer
-     *     - **total_execution_time_ms** (float): Total execution time for all items
-     *
-     *     ## Example Request
-     *     ```json
-     *     {
-     *       "items": [
-     *         {
-     *           "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
-     *           "content_type": "tac"
-     *         },
-     *         {
-     *           "content": "METAR EGLL 231750Z 17008KT 9999 SCT035 12/08 Q1007",
-     *           "content_type": "tac"
-     *         }
-     *       ],
-     *       "layers": ["airport_icao", "tac_syntax"]
-     *     }
-     *     ```
-     *
-     *     ## Example Response
-     *     ```json
-     *     {
-     *       "results": [
-     *         {
-     *           "passed": true,
-     *           "layers_validated": ["airport_icao", "tac_syntax"],
-     *           "total_issues": 0,
-     *           "results": [],
-     *           "execution_time_ms": 12.3
-     *         },
-     *         {
-     *           "passed": false,
-     *           "layers_validated": ["airport_icao", "tac_syntax"],
-     *           "total_issues": 1,
-     *           "results": [],
-     *           "execution_time_ms": 8.5
-     *         }
-     *       ],
-     *       "total_items": 2,
-     *       "passed_items": 1,
-     *       "failed_items": 1,
-     *       "total_execution_time_ms": 20.8
-     *     }
-     *     ```
-     */
-    post: operations['validate_multiple_api_v1_validation_validate_multi_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/versions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Supported Versions
+         * @description Get list of supported IWXXM versions.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_supported_versions)
+         *     2
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_supported_versions_api_v1_versions_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Get Supported Versions
-     * @description Get list of supported IWXXM versions.
-     */
-    get: operations['get_supported_versions_api_v1_versions_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/work-sessions': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/work-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Work Sessions
+         * @description List work sessions for the authenticated user with optional filters.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (list_work_sessions)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     status_filter : object
+         *         Argument ``status_filter``.
+         *     product : object
+         *         Argument ``product``.
+         *     from_dt : object
+         *         Argument ``from_dt``.
+         *     to_dt : object
+         *         Argument ``to_dt``.
+         *     include_deleted : object
+         *         Argument ``include_deleted``.
+         *     page : object
+         *         Argument ``page``.
+         *     limit : object
+         *         Argument ``limit``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["list_work_sessions_api_v1_work_sessions_get"];
+        put?: never;
+        /**
+         * Create Work Session
+         * @description Create a new work session owned by the authenticated user.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (create_work_session)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     payload : object
+         *         Argument ``payload``.
+         *     user : object
+         *         Argument ``user``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["create_work_session_api_v1_work_sessions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * List Work Sessions
-     * @description List work sessions for the authenticated user with optional filters.
-     */
-    get: operations['list_work_sessions_api_v1_work_sessions_get'];
-    put?: never;
-    /**
-     * Create Work Session
-     * @description Create a new work session owned by the authenticated user.
-     */
-    post: operations['create_work_session_api_v1_work_sessions_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/v1/work-sessions/{session_id}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/work-sessions/{session_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Work Session
+         * @description Return a single work session by id.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (get_work_session)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     session_id : object
+         *         Argument ``session_id``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["get_work_session_api_v1_work_sessions__session_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Work Session
+         * @description Soft-delete a work session (sets ``deleted_at``).
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (delete_work_session)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     session_id : object
+         *         Argument ``session_id``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        delete: operations["delete_work_session_api_v1_work_sessions__session_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Update Work Session
+         * @description Update mutable fields on an existing work session.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (update_work_session)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     session_id : object
+         *         Argument ``session_id``.
+         *     payload : object
+         *         Argument ``payload``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        patch: operations["update_work_session_api_v1_work_sessions__session_id__patch"];
+        trace?: never;
     };
-    /**
-     * Get Work Session
-     * @description Return a single work session by id.
-     */
-    get: operations['get_work_session_api_v1_work_sessions__session_id__get'];
-    put?: never;
-    post?: never;
-    /**
-     * Delete Work Session
-     * @description Soft-delete a work session (sets ``deleted_at``).
-     */
-    delete: operations['delete_work_session_api_v1_work_sessions__session_id__delete'];
-    options?: never;
-    head?: never;
-    /**
-     * Update Work Session
-     * @description Update mutable fields on an existing work session.
-     */
-    patch: operations['update_work_session_api_v1_work_sessions__session_id__patch'];
-    trace?: never;
-  };
-  '/api/v1/work-sessions/{session_id}/restore': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/v1/work-sessions/{session_id}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Restore Work Session
+         * @description Restore a previously soft-deleted work session.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (restore_work_session)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     session_id : object
+         *         Argument ``session_id``.
+         *     service : object
+         *         Argument ``service``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["restore_work_session_api_v1_work_sessions__session_id__restore_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Restore Work Session
-     * @description Restore a previously soft-deleted work session.
-     */
-    post: operations['restore_work_session_api_v1_work_sessions__session_id__restore_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/auth/confirm': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/auth/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm
+         * @description Confirm email (or related) via GoTrue token_hash verify.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (confirm)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     client : object
+         *         Argument ``client``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["confirm_auth_confirm_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Confirm
-     * @description Confirm email (or related) via GoTrue token_hash verify.
-     */
-    post: operations['confirm_auth_confirm_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/auth/login': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Login
+         * @description Authenticate via Supabase Auth password grant.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (login)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     client : object
+         *         Argument ``client``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["login_auth_login_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Login
-     * @description Authenticate via Supabase Auth password grant.
-     */
-    post: operations['login_auth_login_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/auth/logout': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Logout
+         * @description Sign out via GoTrue; optional body ``{scope}`` for local/global/others.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (logout)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     token : object
+         *         Argument ``token``.
+         *     client : object
+         *         Argument ``client``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["logout_auth_logout_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Logout
-     * @description Sign out via GoTrue; optional body ``{scope}`` for local/global/others.
-     */
-    post: operations['logout_auth_logout_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/auth/me': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Me
+         * @description Return the current user after JWKS verification.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (me)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     token : object
+         *         Argument ``token``.
+         *     client : object
+         *         Argument ``client``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["me_auth_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Me
-     * @description Return the current user after JWKS verification.
-     */
-    get: operations['me_auth_me_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/auth/register': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Register
+         * @description Create an account via Supabase Auth signup.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (register)
+         *     2
+         *
+         *     Parameters
+         *     ----------
+         *     request : object
+         *         Argument ``request``.
+         *     client : object
+         *         Argument ``client``.
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        post: operations["register_auth_register_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    /**
-     * Register
-     * @description Create an account via Supabase Auth signup.
-     */
-    post: operations['register_auth_register_post'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/health': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Health
+         * @description Check API health and conversion availability.
+         *
+         *     Examples
+         *     --------
+         *     >>> 1 + 1  # docstring smoke (health)
+         *     2
+         *
+         *     Returns
+         *     -------
+         *     object
+         *         Return value.
+         */
+        get: operations["health_health_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    /**
-     * Health
-     * @description Check API health and conversion availability.
-     */
-    get: operations['health_health_get'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    /**
-     * AggregatedValidationResult
-     * @description Combined results from multiple validation layers.
-     * @example {
-     *       "execution_time_ms": 13.5,
-     *       "layers_validated": [
-     *         "airport_icao",
-     *         "tac_syntax",
-     *         "xml_wellformed"
-     *       ],
-     *       "passed": false,
-     *       "results": [
-     *         {
-     *           "execution_time_ms": 5.2,
-     *           "issues": [],
-     *           "layer": "airport_icao",
-     *           "passed": true
-     *         },
-     *         {
-     *           "execution_time_ms": 8.3,
-     *           "issues": [
-     *             {
-     *               "code": "INVALID_TAC_FORMAT",
-     *               "layer": "tac_syntax",
-     *               "level": "error",
-     *               "location": "line 1, column 18",
-     *               "message": "Invalid TAC format: missing wind speed",
-     *               "suggestion": "Check wind speed component"
-     *             }
-     *           ],
-     *           "layer": "tac_syntax",
-     *           "passed": false
-     *         }
-     *       ],
-     *       "total_issues": 2,
-     *       "validated_at": "2026-02-10T14:30:45.123456"
-     *     }
-     */
-    AggregatedValidationResult: {
-      /**
-       * Execution Time Ms
-       * @default 0
-       */
-      execution_time_ms: number;
-      /**
-       * Layers Validated
-       * @description Layers validated
-       */
-      layers_validated: components['schemas']['src__schemas__validation__ValidationLayer'][];
-      /**
-       * Passed
-       * @description Whether all layers passed
-       */
-      passed: boolean;
-      /** Results */
-      results?: components['schemas']['ValidationResult'][];
-      /**
-       * Total Issues
-       * @description Total issues
-       * @default 0
-       */
-      total_issues: number;
-      /**
-       * Validated At
-       * Format: date-time
-       */
-      validated_at?: string;
-    };
-    /**
-     * AuditListResponse
-     * @description Paginated audit list.
-     */
-    AuditListResponse: {
-      /** Items */
-      items: components['schemas']['AuditRecordOut'][];
-      /** Limit */
-      limit: number;
-      /** Page */
-      page: number;
-      /** Total */
-      total: number;
-    };
-    /**
-     * AuditRecordOut
-     * @description Persisted audit row — never includes BYOC secrets or URIs.
-     */
-    AuditRecordOut: {
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-      /** Destinations */
-      destinations?: {
-        [key: string]: unknown;
-      };
-      /** Detail */
-      detail?: string | null;
-      /** Gateway */
-      gateway: string;
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** Iwxxm Version */
-      iwxxm_version?: string | null;
-      /** Message Id */
-      message_id?: string | null;
-      /** Product */
-      product?: string | null;
-      /** Profile */
-      profile?: string | null;
-      /** Station */
-      station?: string | null;
-      /** Status */
-      status: string;
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
-    };
-    /**
-     * AuthResponse
-     * @description Login response.
-     */
-    AuthResponse: {
-      session?: components['schemas']['SessionResponse'] | null;
-      user: components['schemas']['UserResponse'];
-    };
-    /**
-     * BatchValidationRequest
-     * @description Request to validate multiple inputs.
-     * @example {
-     *       "items": [
-     *         {
-     *           "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
-     *           "content_type": "tac"
-     *         },
-     *         {
-     *           "content": "METAR EGLL 231750Z 17008KT 9999 SCT035 12/08 Q1007",
-     *           "content_type": "tac"
-     *         }
-     *       ],
-     *       "layers": [
-     *         "airport_icao",
-     *         "tac_syntax"
-     *       ]
-     *     }
-     */
-    BatchValidationRequest: {
-      /**
-       * Items
-       * @description Items to validate
-       */
-      items: components['schemas']['ValidationRequest'][];
-      /**
-       * Layers
-       * @description Layers to apply to all items (None = all layers)
-       */
-      layers?: components['schemas']['ValidationLayer-Input'][] | null;
-    };
-    /**
-     * BatchValidationResponse
-     * @description Response from batch validation.
-     * @example {
-     *       "failed_items": 1,
-     *       "passed_items": 1,
-     *       "results": [
-     *         {
-     *           "execution_time_ms": 15.2,
-     *           "layers_validated": [
-     *             "airport_icao",
-     *             "tac_syntax"
-     *           ],
-     *           "passed": true,
-     *           "results": [],
-     *           "total_issues": 0
-     *         }
-     *       ],
-     *       "total_execution_time_ms": 30.5,
-     *       "total_items": 2
-     *     }
-     */
-    BatchValidationResponse: {
-      /**
-       * Failed Items
-       * @description Number of items that failed
-       */
-      failed_items: number;
-      /**
-       * Passed Items
-       * @description Number of items that passed
-       */
-      passed_items: number;
-      /**
-       * Results
-       * @description Validation results for each item
-       */
-      results: components['schemas']['AggregatedValidationResult'][];
-      /**
-       * Total Execution Time Ms
-       * @description Total execution time
-       */
-      total_execution_time_ms: number;
-      /**
-       * Total Items
-       * @description Total items requested
-       */
-      total_items: number;
-    };
-    /** Body_convert_api_v1_convert_post */
-    Body_convert_api_v1_convert_post: {
-      /**
-       * Bulletin Id
-       * @description Optional bulletin identifier
-       * @default
-       */
-      bulletin_id: string;
-      /**
-       * Conversion Library Id
-       * @description Conversion library asset id (resolves engine profile).
-       * @default
-       */
-      conversion_library_id: string;
-      /**
-       * Conversion Template Id
-       * @description Optional conversion template id (first-party or custom). When set for a custom template, requires Bearer JWT and ownership (or shared); unknown ids are rejected.
-       * @default
-       */
-      conversion_template_id: string;
-      /**
-       * Decoding Library Id
-       * @description Decoding library asset id.
-       * @default
-       */
-      decoding_library_id: string;
-      /**
-       * Dissemination Library Id
-       * @description Dissemination library asset id.
-       * @default
-       */
-      dissemination_library_id: string;
-      /**
-       * Emit Translation Centre
-       * @description When true, emit translationCentreDesignator/Name on successful convert (cross-State / Translation Centre mode; FAQ §14.5). Default omit for in-State.
-       * @default false
-       */
-      emit_translation_centre: boolean;
-      /**
-       * Exchange Output
-       * @description When true with semantic_profile=CA_ECCC, wrap convert output in MSC COLLECT envelope (inner product validate paths unchanged)
-       * @default false
-       */
-      exchange_output: boolean;
-      /**
-       * Exchange Profile
-       * @description Rejected — use dissemination_library_id for packaging transforms.
-       * @default
-       */
-      exchange_profile: string;
-      /**
-       * Extensions
-       * @description Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)
-       * @default []
-       */
-      extensions: string[];
-      /**
-       * Include Nil Reasons
-       * @description When false, prefer omitting nilReason attributes (engine may still emit NIL report shells)
-       * @default true
-       */
-      include_nil_reasons: boolean;
-      /**
-       * Issuing Center
-       * @description Optional issuing centre ICAO code
-       * @default
-       */
-      issuing_center: string;
-      /**
-       * Iwxxm Validation Library Id
-       * @description IWXXM validation library asset id.
-       * @default
-       */
-      iwxxm_validation_library_id: string;
-      /**
-       * Iwxxm Version
-       * @description Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)
-       * @default
-       */
-      iwxxm_version: string;
-      /**
-       * Lint
-       * @description Run tac-validate before convert (Q14=C; default on)
-       * @default true
-       */
-      lint: boolean;
-      /**
-       * Log Level
-       * @description Minimum severity for conversion/validation/lint process issues echoed to the client
-       * @default INFO
-       */
-      log_level: string;
-      /**
-       * Manual Text
-       * @description Optional manual text input (METAR TAC format)
-       * @default
-       */
-      manual_text: string;
-      /**
-       * Overlay Id
-       * @description Rejected — overlays removed from Convert; use conversion_library_id.
-       * @default
-       */
-      overlay_id: string;
-      /**
-       * Preset Id
-       * @description Rejected — presets removed from Convert; use conversion_library_id.
-       * @default
-       */
-      preset_id: string;
-      /**
-       * Preview
-       * @description Soft-preview: best-effort IWXXM with failure spans on partial convert
-       * @default false
-       */
-      preview: boolean;
-      /**
-       * Product
-       * @description TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)
-       * @default METAR
-       */
-      product: string;
-      /**
-       * Profile
-       * @description Rejected — use conversion_library_id.
-       * @default
-       */
-      profile: string;
-      /**
-       * Propagate Residuals To Remarks
-       * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
-       */
-      propagate_residuals_to_remarks?: boolean | null;
-      /**
-       * Report Variant
-       * @description Optional profile-scoped report variant within the selected product family (for example LWIS under CA_ECCC + METAR)
-       * @default
-       */
-      report_variant: string;
-      /**
-       * Semantic Profile
-       * @description Rejected — use conversion_library_id.
-       * @default
-       */
-      semantic_profile: string;
-      /**
-       * Stop On Error
-       * @description Stop processing remaining inputs after first error
-       * @default false
-       */
-      stop_on_error: boolean;
-      /**
-       * Tac Validation Library Id
-       * @description TAC validation library asset id.
-       * @default
-       */
-      tac_validation_library_id: string;
-      /**
-       * Translation Centre Designator
-       * @description Optional translationCentreDesignator when emit_translation_centre is true
-       * @default
-       */
-      translation_centre_designator: string;
-      /**
-       * Translation Centre Name
-       * @description Optional translationCentreName when emit_translation_centre is true
-       * @default
-       */
-      translation_centre_name: string;
-      /**
-       * Validate Output
-       * @description Enable full 7-layer IWXXM validation after conversion
-       * @default false
-       */
-      validate_output: boolean;
-      /**
-       * Validation Level
-       * @description Validation depth: basic, schema, schematron, icao_opmet, comprehensive
-       * @default basic
-       */
-      validation_level: string;
-    };
-    /** Body_convert_bulletin_api_v1_convert_bulletin_post */
-    Body_convert_bulletin_api_v1_convert_bulletin_post: {
-      /**
-       * Conversion Library Id
-       * @description Conversion library asset id (resolves engine profile when set)
-       * @default
-       */
-      conversion_library_id: string;
-      /**
-       * Dissemination Library Id
-       * @description Dissemination library asset id. When set, ordered transforms (envelope / topic / checksum / bulletin re-wrap) apply on this Convert & Send path only.
-       * @default
-       */
-      dissemination_library_id: string;
-      /**
-       * Exchange Profile
-       * @description Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths
-       * @default
-       */
-      exchange_profile: string;
-      /**
-       * Extensions
-       * @description Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)
-       * @default []
-       */
-      extensions: string[];
-      /** Files */
-      files?: string[] | null;
-      /**
-       * Iwxxm Version
-       * @description Target IWXXM version
-       * @default
-       */
-      iwxxm_version: string;
-      /**
-       * Lint
-       * @description Run tac-validate before each report convert
-       * @default true
-       */
-      lint: boolean;
-      /**
-       * Manual Text
-       * @description Bulletin text: abbreviated heading TTAAii CCCC YYGGgg (optional BBB), then one or more TAC reports. Empty Bulletin ID / Issuing Center uses the heading TTAAii and CCCC.
-       * @default
-       */
-      manual_text: string;
-      /**
-       * Product
-       * @description TAC product, or iwxxm for XML pass-through
-       */
-      product: string;
-      /**
-       * Profile
-       * @description Deprecated - use conversion_library_id (legacy alias: annex3 or iwxxm_us)
-       * @default
-       */
-      profile: string;
-      /**
-       * Propagate Residuals To Remarks
-       * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
-       */
-      propagate_residuals_to_remarks?: boolean | null;
-      /**
-       * Semantic Profile
-       * @description Deprecated on Convert & Send — prefer conversion_library_id. Still accepted on convert-bulletin until Dissemination library packaging lands.
-       * @default
-       */
-      semantic_profile: string;
-    };
-    /** Body_convert_zip_api_v1_convert_zip_post */
-    Body_convert_zip_api_v1_convert_zip_post: {
-      /**
-       * Iwxxm Version
-       * @description Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)
-       * @default 2025-2
-       */
-      iwxxm_version: string;
-      /**
-       * Manual Text
-       * @description Optional manual text input (METAR TAC format)
-       * @default
-       */
-      manual_text: string;
-      /**
-       * Propagate Residuals To Remarks
-       * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
-       */
-      propagate_residuals_to_remarks?: boolean | null;
-    };
-    /** Body_decode_tac_endpoint_api_v1_decode_tac_post */
-    Body_decode_tac_endpoint_api_v1_decode_tac_post: {
-      /** Files */
-      files?: string[] | null;
-      /**
-       * Manual Text
-       * @description TAC text to decode
-       * @default
-       */
-      manual_text: string;
-      /**
-       * Product
-       * @description TAC product (required)
-       */
-      product: string;
-    };
-    /** Body_ingest_collect_api_v1_ingest_collect_post */
-    Body_ingest_collect_api_v1_ingest_collect_post: {
-      /** Files */
-      files?: string[] | null;
-      /**
-       * Iwxxm Version
-       * @default 2025-2
-       */
-      iwxxm_version: string;
-      /**
-       * Manual Text
-       * @description COLLECT IWXXM XML or inflated gzip text
-       * @default
-       */
-      manual_text: string;
-      /**
-       * Profile
-       * @default annex3
-       */
-      profile: string;
-    };
-    /** Body_lint_tac_api_v1_lint_tac_post */
-    Body_lint_tac_api_v1_lint_tac_post: {
-      /** Files */
-      files?: string[] | null;
-      /**
-       * Manual Text
-       * @description TAC or IWXXM XML to lint
-       * @default
-       */
-      manual_text: string;
-      /**
-       * Product
-       * @description Product type, or iwxxm for XML lint (default METAR)
-       * @default METAR
-       */
-      product: string;
-    };
-    /** Body_mass_ingest_api_v1_ingest_mass_post */
-    Body_mass_ingest_api_v1_ingest_mass_post: {
-      /** Files */
-      files: string[];
-    };
-    /** Body_validate_comprehensive_api_v1_validate_post */
-    Body_validate_comprehensive_api_v1_validate_post: {
-      /**
-       * Exchange Profile
-       * @description Exchange packaging profile (e.g. GLOBAL_AFS); ignored on validate-only paths
-       * @default
-       */
-      exchange_profile: string;
-      /**
-       * Extensions
-       * @description Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)
-       * @default []
-       */
-      extensions: string[];
-      /**
-       * Iwxxm Version
-       * @description Target IWXXM version
-       * @default 2025-2
-       */
-      iwxxm_version: string;
-      /**
-       * Layers
-       * @description Validation layers to run (ALL, or specific: AIRPORT_ICAO, TAC_SYNTAX, XML_WELLFORMED, XML_SCHEMA, SCHEMATRON, GML_REFERENCES, WMO_CODELISTS)
-       * @default [
-       *       "ALL"
-       *     ]
-       */
-      layers: string[];
-      /**
-       * Manual Text
-       * @description METAR TAC text to validate
-       * @default
-       */
-      manual_text: string;
-      /**
-       * Product
-       * @description TAC product for Canadian extension XSD when extensions include IWXXM_CA
-       * @default METAR
-       */
-      product: string;
-      /**
-       * Profile
-       * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
-       * @default
-       */
-      profile: string;
-      request_body?: components['schemas']['ValidateRequest'] | null;
-      /**
-       * Semantic Profile
-       * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
-       * @default
-       */
-      semantic_profile: string;
-      /**
-       * Stop On Error
-       * @description Stop at first blocking layer failure
-       * @default true
-       */
-      stop_on_error: boolean;
-      /**
-       * Xml Content
-       * @description Optional XML to validate (if omitted, TAC will be converted first)
-       * @default
-       */
-      xml_content: string;
-    };
-    /**
-     * BulletinMetaModel
-     * @description HTTP DTO for WMO AHL metadata on convert-bulletin (api-contract Q6/Q7).
-     */
-    BulletinMetaModel: {
-      /** Aa */
-      aa: string;
-      /** Ahl */
-      ahl: string;
-      /** Bbb */
-      bbb?: string | null;
-      /** Cccc */
-      cccc: string;
-      /** Report Count */
-      report_count: number;
-      /** Report Status */
-      report_status?: string | null;
-      /** Tt */
-      tt: string;
-      /** Yygggg */
-      yygggg: string;
-    };
-    /**
-     * BulletinReportResultModel
-     * @description Per-report convert-bulletin result (partial success allowed).
-     */
-    BulletinReportResultModel: {
-      /** Fixes */
-      fixes?: components['schemas']['LintFixModel'][];
-      /** Issues */
-      issues?: components['schemas']['LintIssueModel'][];
-      /** Ok */
-      ok: boolean;
-      /** Report Index */
-      report_index: number;
-      /** Tac Input */
-      tac_input: string;
-      /** Xml */
-      xml?: string | null;
-    };
-    /**
-     * ComparisonDetail
-     * @description Detailed comparison result between our and reference IWXXM.
-     * @example {
-     *       "extra_elements": [],
-     *       "missing_elements": [],
-     *       "our_elements": 28,
-     *       "passed": true,
-     *       "their_elements": 28,
-     *       "value_mismatches": []
-     *     }
-     */
-    ComparisonDetail: {
-      /**
-       * Error Message
-       * @description Error message if comparison failed
-       */
-      error_message?: string | null;
-      /**
-       * Extra Elements
-       * @description Elements present in our output but not in reference
-       */
-      extra_elements?: string[];
-      /**
-       * Missing Elements
-       * @description Elements present in reference but missing from our output
-       */
-      missing_elements?: string[];
-      /**
-       * Our Elements
-       * @description Number of elements in our converted IWXXM
-       */
-      our_elements: number;
-      /**
-       * Passed
-       * @description Whether comparison passed
-       */
-      passed: boolean;
-      /**
-       * Their Elements
-       * @description Number of elements in reference IWXXM
-       */
-      their_elements: number;
-      /**
-       * Value Mismatches
-       * @description Element values that differ between our and reference outputs
-       */
-      value_mismatches?: {
-        [key: string]: string;
-      }[];
-    };
-    /**
-     * ComparisonStatus
-     * @description Comparison result status.
-     * @enum {string}
-     */
-    ComparisonStatus: 'pass' | 'fail' | 'error';
-    /**
-     * ConfirmRequest
-     * @description Email confirmation via GoTrue ``token_hash`` (Auth email link).
-     */
-    ConfirmRequest: {
-      /** Token Hash */
-      token_hash: string;
-      /**
-       * Type
-       * @default email
-       */
-      type: string;
-    };
-    /**
-     * ConversionIssue
-     * @description Structured issue for a single conversion input item.
-     */
-    ConversionIssue: {
-      /**
-       * Code
-       * @description Machine-readable issue code
-       * @example MISSING_KEYWORD
-       * @example INVALID_ICAO_FORMAT
-       */
-      code?: string | null;
-      /**
-       * End
-       * @description Optional exclusive character offset into the source TAC
-       */
-      end?: number | null;
-      /**
-       * Hint
-       * @description Concise suggested fix for the user
-       * @example Start the report with METAR or SPECI and a valid ICAO code
-       */
-      hint?: string | null;
-      /**
-       * Layer
-       * @description Validation layer associated with the issue
-       * @example airport_icao
-       * @example tac_syntax
-       */
-      layer?: string | null;
-      /**
-       * Location
-       * @description Optional location context from parser/validator
-       * @example line 1, column 12
-       */
-      location?: string | null;
-      /**
-       * Message
-       * @description Human-readable issue message
-       */
-      message: string;
-      /**
-       * @description Issue severity
-       * @default error
-       */
-      severity: components['schemas']['ConversionIssueSeverity'];
-      /**
-       * Source
-       * @description Input source identifier (e.g., 'manual_input' or filename)
-       * @example manual_input
-       * @example EGLL_231750Z.txt
-       */
-      source: string;
-      /**
-       * Start
-       * @description Optional inclusive character offset into the source TAC
-       */
-      start?: number | null;
-    };
-    /**
-     * ConversionIssueSeverity
-     * @description Severity level for conversion and validation issues.
-     * @enum {string}
-     */
-    ConversionIssueSeverity: 'error' | 'warning' | 'info';
-    /**
-     * ConversionResponse
-     * @description Response from conversion endpoint with results and errors.
-     * @example {
-     *       "errors": [],
-     *       "failed": 0,
-     *       "issues": [],
-     *       "results": [
-     *         {
-     *           "content": "<?xml version='1.0' encoding='utf-8'?>...",
-     *           "name": "manual_input.txt",
-     *           "size_bytes": 1452,
-     *           "source": "manual"
-     *         },
-     *         {
-     *           "content": "<?xml version='1.0' encoding='utf-8'?>...",
-     *           "name": "EGLL_231750Z.txt",
-     *           "size_bytes": 1389,
-     *           "source": "EGLL.txt"
-     *         }
-     *       ],
-     *       "successful": 2,
-     *       "total_processed": 2
-     *     }
-     */
-    ConversionResponse: {
-      /**
-       * Errors
-       * @description Error messages for failed conversions
-       */
-      errors?: string[];
-      /**
-       * Failed
-       * @description Number of failed conversions
-       * @example 0
-       * @example 1
-       */
-      failed: number;
-      /**
-       * Failed Spans
-       * @description Soft-preview failed character spans; empty when preview omitted/false
-       */
-      failed_spans?: components['schemas']['FailedSpan'][];
-      /**
-       * Issues
-       * @description Structured issues (errors/warnings/info) for failed or partial conversions
-       */
-      issues?: components['schemas']['ConversionIssue'][];
-      /**
-       * Metadata
-       * @description Echoed request metadata such as bulletin_id, issuing_center, and validation options
-       */
-      metadata?: {
-        [key: string]: unknown;
-      };
-      /**
-       * Ok
-       * @description Soft-preview envelope flag; set when preview=true
-       */
-      ok?: boolean | null;
-      /**
-       * Results
-       * @description Successfully converted IWXXM XML documents
-       */
-      results?: components['schemas']['ConversionResult'][];
-      /**
-       * Successful
-       * @description Number of successful conversions
-       * @example 2
-       * @example 4
-       */
-      successful: number;
-      /**
-       * Total Processed
-       * @description Total number of inputs processed (manual_text + files)
-       * @example 2
-       * @example 5
-       */
-      total_processed: number;
-    };
-    /**
-     * ConversionResult
-     * @description Individual conversion result for a single METAR input.
-     * @example {
-     *       "content": "<?xml version='1.0' encoding='utf-8'?>\n<iwxxm:METAR gml:id='METAR_KJFK_231751Z'>\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id='TP1'>\n      <gml:timePosition>2023-09-23T17:51:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n</iwxxm:METAR>",
-     *       "name": "KJFK_231751Z.txt",
-     *       "size_bytes": 1452,
-     *       "source": "file"
-     *     }
-     */
-    ConversionResult: {
-      /**
-       * Content
-       * @description Complete IWXXM XML document as UTF-8 text
-       */
-      content: string;
-      /**
-       * Name
-       * @description Output filename for this conversion
-       * @example manual_input.txt
-       * @example KJFK_231751Z.txt
-       */
-      name: string;
-      /**
-       * Size Bytes
-       * @description Output XML document size in bytes
-       * @example 1452
-       * @example 2048
-       */
-      size_bytes: number;
-      /**
-       * Source
-       * @description Source of input: 'manual' for text input, filename for uploads
-       * @example manual
-       * @example KJFK.txt
-       */
-      source: string;
-      /**
-       * Tac Input
-       * @description Original TAC input that produced this IWXXM output
-       * @example METAR FAOR 101200Z COR 33003KT CAVOK 04/M00 Q1023=
-       */
-      tac_input?: string | null;
-    };
-    /**
-     * ConversionTemplateCreate
-     * @description Create body for a custom conversion template.
-     */
-    ConversionTemplateCreate: {
-      /** Comments */
-      comments?: string | null;
-      /** Forkof */
-      forkOf?: string | null;
-      /** Iwxxmblock */
-      iwxxmBlock: string;
-      /** Name */
-      name: string;
-      /**
-       * Sample
-       * @default
-       */
-      sample: string;
-      /**
-       * Shared
-       * @default false
-       */
-      shared: boolean;
-      /** Slots */
-      slots?: components['schemas']['ConversionTemplateSlot'][];
-      /** Slug */
-      slug: string;
-    };
-    /**
-     * ConversionTemplateListResponse
-     * @description First-party + custom conversion templates visible to the caller.
-     */
-    ConversionTemplateListResponse: {
-      /** Items */
-      items: components['schemas']['ConversionTemplateOut'][];
-    };
-    /**
-     * ConversionTemplateOut
-     * @description Persisted or first-party conversion template projection.
-     */
-    ConversionTemplateOut: {
-      /** Access */
-      access: string;
-      /** Comments */
-      comments?: string | null;
-      /** Created At */
-      created_at?: string | null;
-      /** Forkof */
-      forkOf?: string | null;
-      /** Id */
-      id: string;
-      /** Iwxxmblock */
-      iwxxmBlock: string;
-      /** Name */
-      name: string;
-      /** Profiles */
-      profiles?: string[];
-      /**
-       * Sample
-       * @default
-       */
-      sample: string;
-      /**
-       * Shared
-       * @default false
-       */
-      shared: boolean;
-      /** Slots */
-      slots?: components['schemas']['ConversionTemplateSlot'][];
-      /** Slug */
-      slug: string;
-      /** Updated At */
-      updated_at?: string | null;
-      /** User Id */
-      user_id?: string | null;
-    };
-    /**
-     * ConversionTemplatePreviewRequest
-     * @description Bridge preview request.
-     */
-    ConversionTemplatePreviewRequest: {
-      /**
-       * Focusgroup
-       * @default
-       */
-      focusGroup: string;
-      /** Fulltac */
-      fullTac?: string | null;
-      /** Iwxxmblock */
-      iwxxmBlock?: string | null;
-      /** Slots */
-      slots?: components['schemas']['ConversionTemplateSlot'][] | null;
-      /** Templateid */
-      templateId: string;
-    };
-    /**
-     * ConversionTemplatePreviewResponse
-     * @description Bridge preview response.
-     */
-    ConversionTemplatePreviewResponse: {
-      /** Captures */
-      captures?: {
-        [key: string]: string;
-      }[];
-      /**
-       * Compiledpattern
-       * @default
-       */
-      compiledPattern: string;
-      /** Focusgroup */
-      focusGroup: string;
-      /** Matched */
-      matched: boolean;
-      /** Skipped */
-      skipped?: {
-        [key: string]: string;
-      }[];
-      /** Templateid */
-      templateId: string;
-      /**
-       * Xmlblock
-       * @default
-       */
-      xmlBlock: string;
-    };
-    /**
-     * ConversionTemplateSlot
-     * @description One ordered slot in a parameterizable conversion template.
-     */
-    ConversionTemplateSlot: {
-      /** Digits */
-      digits?: number | null;
-      /** Enumvalues */
-      enumValues?: string | null;
-      /**
-       * Gloss
-       * @default
-       */
-      gloss: string;
-      /** Id */
-      id: string;
-      /**
-       * Iwxxmfield
-       * @default
-       */
-      iwxxmField: string;
-      /** Label */
-      label: string;
-      /** Literal */
-      literal?: string | null;
-      /**
-       * Mode
-       * @default convert
-       */
-      mode: string;
-      /**
-       * Optional
-       * @default false
-       */
-      optional: boolean;
-      /** Type */
-      type: string;
-    };
-    /**
-     * ConversionTemplateUpdate
-     * @description Partial update for a custom conversion template.
-     */
-    ConversionTemplateUpdate: {
-      /** Comments */
-      comments?: string | null;
-      /** Iwxxmblock */
-      iwxxmBlock?: string | null;
-      /** Name */
-      name?: string | null;
-      /** Sample */
-      sample?: string | null;
-      /** Shared */
-      shared?: boolean | null;
-      /** Slots */
-      slots?: components['schemas']['ConversionTemplateSlot'][] | null;
-      /** Slug */
-      slug?: string | null;
-    };
-    /**
-     * ConvertBulletinResponse
-     * @description Response for POST /api/v1/convert-bulletin.
-     */
-    ConvertBulletinResponse: {
-      bulletin_meta: components['schemas']['BulletinMetaModel'];
-      /**
-       * Exchange Profile
-       * @description Resolved exchange packaging profile (default GLOBAL_AFS on this route)
-       */
-      exchange_profile?: string | null;
-      /** Results */
-      results?: components['schemas']['BulletinReportResultModel'][];
-    };
-    /**
-     * DecodeResidualModel
-     * @description HTTP DTO for an undecoded TAC span (explicit residuals - G4).
-     */
-    DecodeResidualModel: {
-      /** End */
-      end: number;
-      /** Start */
-      start: number;
-      /** Text */
-      text: string;
-    };
-    /**
-     * DecodeSegmentModel
-     * @description HTTP DTO for one TAC decode/annotate segment.
-     */
-    DecodeSegmentModel: {
-      /** Code */
-      code: string;
-      /** End */
-      end: number;
-      /** Explanation */
-      explanation: string;
-      /** Start */
-      start: number;
-    };
-    /**
-     * DecodeTacResponse
-     * @description Response for POST /api/v1/decode-tac.
-     */
-    DecodeTacResponse: {
-      /** Product */
-      product: string;
-      /** Residuals */
-      residuals?: components['schemas']['DecodeResidualModel'][];
-      /** Segments */
-      segments?: components['schemas']['DecodeSegmentModel'][];
-      /**
-       * Summary
-       * @description Deterministic plain-language paragraph of the report
-       * @default
-       */
-      summary: string;
-    };
-    /**
-     * DeliveryReceiptOut
-     * @description Redacted delivery receipt (API).
-     */
-    DeliveryReceiptOut: {
-      /**
-       * Attempt
-       * @default 1
-       */
-      attempt: number;
-      /** Completed At */
-      completed_at?: string | null;
-      /** Detail */
-      detail?: string | null;
-      /** Gateway */
-      gateway: string;
-      /**
-       * Status
-       * @enum {string}
-       */
-      status: 'DELIVERED' | 'FAILED' | 'SKIPPED';
-    };
-    /**
-     * DisseminationPlanCreate
-     * @description Body to create a DisseminationPlan (no secrets).
-     */
-    DisseminationPlanCreate: {
-      /** Destination Refs */
-      destination_refs?: string[];
-      /** Retry */
-      retry?: {
-        [key: string]: unknown;
-      } | null;
-      /** Slug */
-      slug: string;
-      /** Transforms */
-      transforms?: string[];
-      /**
-       * Validity Policy
-       * @default valid-only
-       * @enum {string}
-       */
-      validity_policy: 'valid-only' | 'warn-ok';
-    };
-    /**
-     * DisseminationPlanOut
-     * @description Persisted plan row.
-     */
-    DisseminationPlanOut: {
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-      /** Destination Refs */
-      destination_refs: string[];
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** Retry */
-      retry?: {
-        [key: string]: unknown;
-      } | null;
-      /** Slug */
-      slug: string;
-      /** Transforms */
-      transforms: string[];
-      /**
-       * Updated At
-       * Format: date-time
-       */
-      updated_at: string;
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
-      /** Validity Policy */
-      validity_policy: string;
-    };
-    /**
-     * DisseminationPlanUpdate
-     * @description Partial update for a DisseminationPlan.
-     */
-    DisseminationPlanUpdate: {
-      /** Destination Refs */
-      destination_refs?: string[] | null;
-      /** Retry */
-      retry?: {
-        [key: string]: unknown;
-      } | null;
-      /** Transforms */
-      transforms?: string[] | null;
-      /** Validity Policy */
-      validity_policy?: ('valid-only' | 'warn-ok') | null;
-    };
-    /**
-     * DisseminationTemplateCreate
-     * @description Create body for a saved dissemination template.
-     */
-    DisseminationTemplateCreate: {
-      /**
-       * Ddl
-       * @default false
-       */
-      ddl: boolean;
-      /** Name */
-      name: string;
-      /** Params */
-      params?: {
-        [key: string]: unknown;
-      };
-      /** Product */
-      product?: string | null;
-      /**
-       * Shared
-       * @default false
-       */
-      shared: boolean;
-      /** Sinktype */
-      sinkType: string;
-      /** Slug */
-      slug: string;
-    };
-    /**
-     * DisseminationTemplateListResponse
-     * @description List of saved dissemination templates for the caller.
-     */
-    DisseminationTemplateListResponse: {
-      /** Items */
-      items: components['schemas']['DisseminationTemplateOut'][];
-    };
-    /**
-     * DisseminationTemplateOut
-     * @description Persisted saved dissemination template.
-     */
-    DisseminationTemplateOut: {
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-      /** Ddl */
-      ddl: boolean;
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** Name */
-      name: string;
-      /** Params */
-      params?: {
-        [key: string]: unknown;
-      };
-      /** Product */
-      product?: string | null;
-      /** Shared */
-      shared: boolean;
-      /** Sinktype */
-      sinkType: string;
-      /** Slug */
-      slug: string;
-      /**
-       * Updated At
-       * Format: date-time
-       */
-      updated_at: string;
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
-    };
-    /**
-     * DisseminationTemplateUpdate
-     * @description Partial update for a saved dissemination template.
-     */
-    DisseminationTemplateUpdate: {
-      /** Ddl */
-      ddl?: boolean | null;
-      /** Name */
-      name?: string | null;
-      /** Params */
-      params?: {
-        [key: string]: unknown;
-      } | null;
-      /** Product */
-      product?: string | null;
-      /** Shared */
-      shared?: boolean | null;
-      /** Sinktype */
-      sinkType?: string | null;
-      /** Slug */
-      slug?: string | null;
-    };
-    /**
-     * EvaluationJobResponse
-     * @description Response when creating an evaluation job.
-     * @example {
-     *       "created_at": "2026-02-10T14:30:45.123456+00:00",
-     *       "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
-     *       "station_count": 50,
-     *       "status": "pending"
-     *     }
-     */
-    EvaluationJobResponse: {
-      /**
-       * Created At
-       * Format: date-time
-       * @description Job creation timestamp
-       */
-      created_at: string;
-      /**
-       * Job Id
-       * @description Unique job identifier (UUID)
-       * @example job_550e8400e29b41d4a71662f7d6e6b1c0
-       */
-      job_id: string;
-      /**
-       * Station Count
-       * @description Number of stations to evaluate
-       */
-      station_count: number;
-      /** @description Current job status: pending, running, completed, failed */
-      status: components['schemas']['JobStatus'];
-    };
-    /**
-     * EvaluationJobStatus
-     * @description Current status of an evaluation job.
-     * @example {
-     *       "created_at": "2026-02-10T14:30:45.123456+00:00",
-     *       "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
-     *       "progress": 25,
-     *       "status": "running",
-     *       "total": 50
-     *     }
-     */
-    EvaluationJobStatus: {
-      /**
-       * Completed At
-       * @description Job completion timestamp (if completed)
-       */
-      completed_at?: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Job creation timestamp
-       */
-      created_at: string;
-      /**
-       * Error Message
-       * @description Error message if job failed
-       */
-      error_message?: string | null;
-      /**
-       * Job Id
-       * @description Unique job identifier
-       */
-      job_id: string;
-      /**
-       * Progress
-       * @description Number of stations processed
-       */
-      progress: number;
-      /** @description Current status: pending, running, completed, failed */
-      status: components['schemas']['JobStatus'];
-      /** @description Summary statistics (populated when job completes) */
-      summary?: components['schemas']['JobSummaryStats'] | null;
-      /**
-       * Total
-       * @description Total stations to process
-       */
-      total: number;
-    };
-    /**
-     * EvaluationMode
-     * @description Evaluation mode.
-     * @enum {string}
-     */
-    EvaluationMode: 'single' | 'random' | 'all';
-    /**
-     * EvaluationRequest
-     * @description Request to create an evaluation job.
-     * @example {
-     *       "hours": 1.5,
-     *       "large_airports_only": true,
-     *       "mode": "random",
-     *       "sample_size": 50,
-     *       "scheduled_service_only": true
-     *     }
-     */
-    EvaluationRequest: {
-      /**
-       * Hours
-       * @description Hours back to search for METAR data
-       * @default 1.5
-       * @example 1.5
-       * @example 3
-       * @example 6
-       */
-      hours: number;
-      /**
-       * Large Airports Only
-       * @description Only evaluate large airports (IATA code available)
-       * @default true
-       */
-      large_airports_only: boolean;
-      /** @description Evaluation mode: 'single' (specific stations), 'random' (random sample), or 'all' (all airports) */
-      mode: components['schemas']['EvaluationMode'];
-      /**
-       * Sample Size
-       * @description Number of stations to sample (for 'random' mode)
-       * @default 100
-       * @example 50
-       * @example 100
-       * @example 200
-       */
-      sample_size: number | null;
-      /**
-       * Scheduled Service Only
-       * @description Only evaluate airports with scheduled service
-       * @default true
-       */
-      scheduled_service_only: boolean;
-      /**
-       * Station Ids
-       * @description Specific ICAO codes (required for 'single' mode)
-       * @example [
-       *       "KJFK",
-       *       "EGLL",
-       *       "RJTT"
-       *     ]
-       */
-      station_ids?: string[] | null;
-    };
-    /**
-     * EvaluationResultDetail
-     * @description Detailed result for a single station evaluation.
-     * @example {
-     *       "comparison": {
-     *         "our_elements": 28,
-     *         "passed": true,
-     *         "their_elements": 28
-     *       },
-     *       "comparison_status": "pass",
-     *       "errors": [],
-     *       "our_iwxxm": "<?xml version='1.0'?>...",
-     *       "station_id": "KJFK",
-     *       "tac_input": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2",
-     *       "their_iwxxm": "<?xml version='1.0'?>...",
-     *       "timestamp": "2026-02-10T14:30:45.123456+00:00"
-     *     }
-     */
-    EvaluationResultDetail: {
-      /** @description Detailed comparison information */
-      comparison?: components['schemas']['ComparisonDetail'] | null;
-      /** @description Comparison result: pass, fail, or error */
-      comparison_status: components['schemas']['ComparisonStatus'];
-      /**
-       * Errors
-       * @description Any errors during evaluation
-       */
-      errors?: string[];
-      /**
-       * Our Iwxxm
-       * @description Our converted IWXXM XML output
-       */
-      our_iwxxm?: string | null;
-      /**
-       * Station Id
-       * @description ICAO airport code
-       * @example KJFK
-       * @example EGLL
-       */
-      station_id: string;
-      /**
-       * Tac Input
-       * @description Original METAR TAC input
-       */
-      tac_input?: string | null;
-      /**
-       * Their Iwxxm
-       * @description Reference IWXXM XML for comparison
-       */
-      their_iwxxm?: string | null;
-      /**
-       * Timestamp
-       * Format: date-time
-       * @description Evaluation timestamp
-       */
-      timestamp: string;
-    };
-    /**
-     * EvaluationResultsResponse
-     * @description Response with paginated evaluation results.
-     * @example {
-     *       "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
-     *       "page": 1,
-     *       "per_page": 20,
-     *       "results": [
-     *         {
-     *           "comparison_status": "pass",
-     *           "station_id": "KJFK",
-     *           "timestamp": "2026-02-10T14:30:45.123456+00:00"
-     *         }
-     *       ],
-     *       "total_pages": 3,
-     *       "total_results": 50
-     *     }
-     */
-    EvaluationResultsResponse: {
-      /**
-       * Job Id
-       * @description Job identifier
-       */
-      job_id: string;
-      /**
-       * Page
-       * @description Current page number (1-indexed)
-       */
-      page: number;
-      /**
-       * Per Page
-       * @description Results per page
-       */
-      per_page: number;
-      /**
-       * Results
-       * @description Results for this page
-       */
-      results: components['schemas']['EvaluationResultDetail'][];
-      /**
-       * Total Pages
-       * @description Total number of pages
-       */
-      total_pages: number;
-      /**
-       * Total Results
-       * @description Total number of results
-       */
-      total_results: number;
-    };
-    /**
-     * FailedSpan
-     * @description Character span marking a soft-preview failure.
-     */
-    FailedSpan: {
-      /**
-       * Code
-       * @description Machine-readable failure code
-       */
-      code?: string | null;
-      /**
-       * End
-       * @description Exclusive character offset into source TAC
-       */
-      end: number;
-      /**
-       * Message
-       * @description Human-readable failure message
-       */
-      message?: string | null;
-      /**
-       * Start
-       * @description Inclusive character offset into source TAC
-       */
-      start: number;
-    };
-    /**
-     * GatewayHealthListResponse
-     * @description Health for registered gateway kinds.
-     */
-    GatewayHealthListResponse: {
-      /** Items */
-      items: components['schemas']['GatewayHealthOut'][];
-    };
-    /**
-     * GatewayHealthOut
-     * @description Operator-safe gateway health row.
-     */
-    GatewayHealthOut: {
-      /** Connectivity Ok */
-      connectivity_ok: boolean;
-      /** Detail */
-      detail?: string | null;
-      /** Gateway */
-      gateway: string;
-      /** Ok */
-      ok: boolean;
-    };
-    /** HTTPValidationError */
-    HTTPValidationError: {
-      /** Detail */
-      detail?: components['schemas']['ValidationError'][];
-    };
-    /**
-     * HealthResponse
-     * @description Health check response.
-     */
-    HealthResponse: {
-      /**
-       * Service
-       * @default metar-to-iwxxm
-       */
-      service: string;
-      /** Status */
-      status: string;
-      /** Tac2Iwxxm Available */
-      tac2iwxxm_available: boolean;
-      /**
-       * Timestamp
-       * Format: date-time
-       */
-      timestamp?: string;
-      /** Version */
-      version: string;
-    };
-    /**
-     * ICAORegion
-     * @description ICAO Regional Offices as per user decision 3.
-     * @enum {string}
-     */
-    ICAORegion:
-      | 'AFI'
-      | 'APAC'
-      | 'ESAF'
-      | 'EUR'
-      | 'MID'
-      | 'NAM'
-      | 'NAT'
-      | 'SAM'
-      | 'WAFR';
-    /**
-     * JobListItem
-     * @description Summary item for job list.
-     * @example {
-     *       "completed_at": "2026-02-10T15:45:30.123456+00:00",
-     *       "created_at": "2026-02-10T14:30:45.123456+00:00",
-     *       "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
-     *       "progress": 50,
-     *       "station_count": 50,
-     *       "status": "completed",
-     *       "summary": {
-     *         "errors": 2,
-     *         "failed": 3,
-     *         "pass_rate": 0.9,
-     *         "passed": 45,
-     *         "total": 50
-     *       }
-     *     }
-     */
-    JobListItem: {
-      /**
-       * Completed At
-       * @description Completion timestamp (if completed)
-       */
-      completed_at?: string | null;
-      /**
-       * Created At
-       * Format: date-time
-       * @description Creation timestamp
-       */
-      created_at: string;
-      /**
-       * Job Id
-       * @description Job identifier
-       */
-      job_id: string;
-      /**
-       * Progress
-       * @description Stations processed so far
-       */
-      progress: number;
-      /**
-       * Station Count
-       * @description Total stations in job
-       */
-      station_count: number;
-      /** @description Job status */
-      status: components['schemas']['JobStatus'];
-      /** @description Summary statistics (if completed) */
-      summary?: components['schemas']['JobSummaryStats'] | null;
-    };
-    /**
-     * JobListResponse
-     * @description Response with list of jobs.
-     * @example {
-     *       "jobs": [
-     *         {
-     *           "created_at": "2026-02-10T14:30:45.123456+00:00",
-     *           "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
-     *           "progress": 50,
-     *           "station_count": 50,
-     *           "status": "completed"
-     *         }
-     *       ],
-     *       "page": 1,
-     *       "per_page": 20,
-     *       "total": 15
-     *     }
-     */
-    JobListResponse: {
-      /**
-       * Jobs
-       * @description Jobs on this page
-       */
-      jobs: components['schemas']['JobListItem'][];
-      /**
-       * Page
-       * @description Current page number (1-indexed)
-       */
-      page: number;
-      /**
-       * Per Page
-       * @description Jobs per page
-       */
-      per_page: number;
-      /**
-       * Total
-       * @description Total number of jobs
-       */
-      total: number;
-    };
-    /**
-     * JobStatus
-     * @description Job execution status.
-     * @enum {string}
-     */
-    JobStatus: 'pending' | 'running' | 'completed' | 'failed';
-    /**
-     * JobSummaryStats
-     * @description Summary statistics for a job.
-     * @example {
-     *       "avg_elements_our": 28.5,
-     *       "avg_elements_their": 26.8,
-     *       "errors": 2,
-     *       "failed": 3,
-     *       "pass_rate": 0.9,
-     *       "passed": 45,
-     *       "total": 50
-     *     }
-     */
-    JobSummaryStats: {
-      /**
-       * Avg Elements Our
-       * @description Average number of elements in our converted IWXXM
-       */
-      avg_elements_our?: number | null;
-      /**
-       * Avg Elements Their
-       * @description Average number of elements in reference IWXXM
-       */
-      avg_elements_their?: number | null;
-      /**
-       * Errors
-       * @description Number of stations with evaluation errors
-       */
-      errors: number;
-      /**
-       * Failed
-       * @description Number of stations with failing comparison
-       */
-      failed: number;
-      /**
-       * Pass Rate
-       * @description Pass rate as decimal (0.0-1.0)
-       */
-      pass_rate: number;
-      /**
-       * Passed
-       * @description Number of stations with passing comparison
-       */
-      passed: number;
-      /**
-       * Total
-       * @description Total stations evaluated
-       */
-      total: number;
-    };
-    /**
-     * LibraryAssetCreate
-     * @description Create a custom library asset (optionally forked).
-     */
-    LibraryAssetCreate: {
-      /** Attachednationalline */
-      attachedNationalLine: string;
-      /** Body */
-      body?: {
-        [key: string]: unknown;
-      };
-      /** Engineprofileid */
-      engineProfileId: string;
-      /** Forkof */
-      forkOf?: string | null;
-      /**
-       * Kind
-       * @enum {string}
-       */
-      kind:
-        | 'conversion'
-        | 'tac_validation'
-        | 'iwxxm_validation'
-        | 'dissemination'
-        | 'decoding';
-      /** Name */
-      name: string;
-      /**
-       * Schemaversion
-       * @default 1
-       */
-      schemaVersion: number;
-      /**
-       * Shared
-       * @default false
-       */
-      shared: boolean;
-      /** Slug */
-      slug: string;
-      /**
-       * Status
-       * @default draft
-       * @enum {string}
-       */
-      status: 'draft' | 'activated';
-      /** Yamlbody */
-      yamlBody?: string | null;
-    };
-    /**
-     * LibraryAssetListResponse
-     * @description Library assets visible to the caller.
-     */
-    LibraryAssetListResponse: {
-      /** Items */
-      items: components['schemas']['LibraryAssetOut'][];
-    };
-    /**
-     * LibraryAssetOut
-     * @description First-party or custom library asset (five Libraries).
-     */
-    LibraryAssetOut: {
-      /**
-       * Access
-       * @enum {string}
-       */
-      access: 'first_party' | 'custom';
-      /** Attachednationalline */
-      attachedNationalLine: string;
-      /** Body */
-      body?: {
-        [key: string]: unknown;
-      };
-      /** Created At */
-      created_at?: string | null;
-      /** Engineprofileid */
-      engineProfileId: string;
-      /** Forkof */
-      forkOf?: string | null;
-      /** Id */
-      id: string;
-      /**
-       * Kind
-       * @enum {string}
-       */
-      kind:
-        | 'conversion'
-        | 'tac_validation'
-        | 'iwxxm_validation'
-        | 'dissemination'
-        | 'decoding';
-      /** Name */
-      name: string;
-      /**
-       * Schemaversion
-       * @default 1
-       */
-      schemaVersion: number;
-      /**
-       * Shared
-       * @default false
-       */
-      shared: boolean;
-      /** Slug */
-      slug?: string | null;
-      /**
-       * Status
-       * @default draft
-       * @enum {string}
-       */
-      status: 'draft' | 'activated';
-      /** Updated At */
-      updated_at?: string | null;
-      /** Userid */
-      userId?: string | null;
-      /** Yamlbody */
-      yamlBody?: string | null;
-    };
-    /**
-     * LibraryAssetUpdate
-     * @description Partial update for a custom library asset (or fork-on-edit first-party).
-     */
-    LibraryAssetUpdate: {
-      /** Body */
-      body?: {
-        [key: string]: unknown;
-      } | null;
-      /** Name */
-      name?: string | null;
-      /** Schemaversion */
-      schemaVersion?: number | null;
-      /** Shared */
-      shared?: boolean | null;
-      /** Slug */
-      slug?: string | null;
-      /** Status */
-      status?: ('draft' | 'activated') | null;
-      /** Yamlbody */
-      yamlBody?: string | null;
-    };
-    /**
-     * LibraryRulePreviewRequest
-     * @description AC11 rule association preview for a TAC group.
-     */
-    LibraryRulePreviewRequest: {
-      /** Focusgroup */
-      focusGroup: string;
-      /** Libraryid */
-      libraryId: string;
-    };
-    /**
-     * LibraryRulePreviewResponse
-     * @description Matched conversion rule for a TAC group.
-     */
-    LibraryRulePreviewResponse: {
-      /** Focusgroup */
-      focusGroup: string;
-      /** Libraryid */
-      libraryId: string;
-      /**
-       * Matched
-       * @default true
-       */
-      matched: boolean;
-      /** Ruleid */
-      ruleId: string;
-      /** Rulename */
-      ruleName: string;
-    };
-    /**
-     * LibraryYamlValidateRequest
-     * @description Validate library YAML without persisting.
-     */
-    LibraryYamlValidateRequest: {
-      /**
-       * Kind
-       * @enum {string}
-       */
-      kind:
-        | 'conversion'
-        | 'tac_validation'
-        | 'iwxxm_validation'
-        | 'dissemination'
-        | 'decoding';
-      /**
-       * Lifecycle
-       * @default draft
-       * @enum {string}
-       */
-      lifecycle: 'draft' | 'activated';
-      /** Yamlbody */
-      yamlBody: string;
-    };
-    /**
-     * LibraryYamlValidateResponse
-     * @description Regex + schema diagnostics for a library YAML document.
-     */
-    LibraryYamlValidateResponse: {
-      /**
-       * Can Activate
-       * @default false
-       */
-      can_activate: boolean;
-      /** Diagnostics */
-      diagnostics?: {
-        [key: string]: unknown;
-      }[];
-      /**
-       * Fail Count
-       * @default 0
-       */
-      fail_count: number;
-      /** Kind */
-      kind?:
-        | (
-            | 'conversion'
-            | 'tac_validation'
-            | 'iwxxm_validation'
-            | 'dissemination'
-            | 'decoding'
-          )
-        | null;
-      /**
-       * Lifecycle
-       * @default draft
-       * @enum {string}
-       */
-      lifecycle: 'draft' | 'activated';
-      /** Name */
-      name?: string | null;
-      /** Valid Yaml */
-      valid_yaml: boolean;
-      /**
-       * Warn Count
-       * @default 0
-       */
-      warn_count: number;
-      /** Yaml Error */
-      yaml_error?: string | null;
-    };
-    /**
-     * LintFixModel
-     * @description HTTP DTO for an optional tac-validate fix suggestion.
-     */
-    LintFixModel: {
-      /** Code */
-      code: string;
-      /** Message */
-      message: string;
-      /** Replacement */
-      replacement: string;
-    };
-    /**
-     * LintIssueCatalogEntryModel
-     * @description One registry row exported by GET /api/v1/lint-issue-catalog.
-     */
-    LintIssueCatalogEntryModel: {
-      /** Code */
-      code: string;
-      /**
-       * Exchange Profiles
-       * @description Canonical exchange profile ids for packaging-tagged rows; empty = shared
-       */
-      exchange_profiles?: string[];
-      /**
-       * Family
-       * @description lint (TAC registry) or iwxxm (validation checks)
-       */
-      family?: string | null;
-      /**
-       * Issue Type
-       * @description Closed vocabulary: presence, structure, content, consistency, iwxxm_schema, other
-       */
-      issue_type?: string | null;
-      /**
-       * Last Verified
-       * @description ISO date of last HTTP check for operator source_url
-       */
-      last_verified?: string | null;
-      /** Message Template */
-      message_template: string;
-      /** Product */
-      product?: string | null;
-      /**
-       * Replacement Url
-       * @description Verified landing when source_url is a legacy alias
-       */
-      replacement_url?: string | null;
-      /**
-       * Semantic Identifier
-       * @description Vocabulary concept path when href is a verified landing
-       */
-      semantic_identifier?: string | null;
-      /**
-       * Semantic Profiles
-       * @description Canonical semantic profile ids this row applies to; empty = shared/global
-       */
-      semantic_profiles?: string[];
-      /** Severity */
-      severity: string;
-      /**
-       * Source Access
-       * @description Operator access tier: public, paywall, login, semantic_only
-       */
-      source_access?: string | null;
-      /** Source Attribution */
-      source_attribution?: string | null;
-      /** Source Id */
-      source_id?: string | null;
-      /**
-       * Source Locator
-       * @description Section/table/page locator for the cited source
-       */
-      source_locator?: string | null;
-      /**
-       * Source Type
-       * @description tier1, tier2, or tier3 source policy
-       */
-      source_type?: string | null;
-      /** Source Url */
-      source_url?: string | null;
-      /**
-       * Status
-       * @description verified, legacy_alias, or semantic_only
-       */
-      status?: string | null;
-      /** Tags */
-      tags?: string[];
-    };
-    /**
-     * LintIssueCatalogResponse
-     * @description Response for GET /api/v1/lint-issue-catalog.
-     */
-    LintIssueCatalogResponse: {
-      /** Issues */
-      issues?: components['schemas']['LintIssueCatalogEntryModel'][];
-    };
-    /**
-     * LintIssueModel
-     * @description HTTP DTO for a tac-validate issue (msgspec → pydantic).
-     */
-    LintIssueModel: {
-      /** Code */
-      code: string;
-      /**
-       * End
-       * @description Exclusive character offset
-       */
-      end?: number | null;
-      /** Location */
-      location?: string | null;
-      /** Message */
-      message: string;
-      /** Severity */
-      severity: string;
-      /**
-       * Start
-       * @description Inclusive character offset
-       */
-      start?: number | null;
-    };
-    /**
-     * LintTacResponse
-     * @description Response for POST /api/v1/lint-tac.
-     */
-    LintTacResponse: {
-      /** Fixes */
-      fixes?: components['schemas']['LintFixModel'][];
-      /** Issues */
-      issues?: components['schemas']['LintIssueModel'][];
-      /** Ok */
-      ok: boolean;
-      /** Product */
-      product?: string | null;
-    };
-    /**
-     * LoginRequest
-     * @description Login credentials.
-     */
-    LoginRequest: {
-      /** Email */
-      email: string;
-      /** Password */
-      password: string;
-    };
-    /**
-     * LogoutRequest
-     * @description Optional scoped logout body (FileConverter / AdminDashboard).
-     */
-    LogoutRequest: {
-      /**
-       * Scope
-       * @description GoTrue logout scope: global, local, or others
-       */
-      scope?: string | null;
-    };
-    /**
-     * MappingConfigCreate
-     * @description Create a field mapping — no connection secrets.
-     */
-    MappingConfigCreate: {
-      /** Config */
-      config?: {
-        [key: string]: unknown;
-      };
-      /**
-       * Mode
-       * @enum {string}
-       */
-      mode: 'source' | 'sink';
-      /** Name */
-      name: string;
-    };
-    /**
-     * MappingConfigOut
-     * @description Persisted MappingConfig row.
-     */
-    MappingConfigOut: {
-      /** Config */
-      config: {
-        [key: string]: unknown;
-      };
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** Mode */
-      mode: string;
-      /** Name */
-      name: string;
-      /**
-       * Updated At
-       * Format: date-time
-       */
-      updated_at: string;
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
-    };
-    /**
-     * MappingConfigUpdate
-     * @description Partial MappingConfig update.
-     */
-    MappingConfigUpdate: {
-      /** Config */
-      config?: {
-        [key: string]: unknown;
-      } | null;
-      /** Mode */
-      mode?: ('source' | 'sink') | null;
-    };
-    /**
-     * Message
-     * @description Simple success message.
-     */
-    Message: {
-      /** Message */
-      message: string;
-    };
-    /**
-     * MetarFamilyVariant
-     * @description Read-only METAR-family variant row projected from the profile catalog.
-     */
-    MetarFamilyVariant: {
-      /** Api Product */
-      api_product: string;
-      /** Iwxxm Root */
-      iwxxm_root: string;
-      /** Manobs */
-      manobs?: string | null;
-      /** Minimal Observation */
-      minimal_observation?: boolean | null;
-      /** Notes */
-      notes?: string | null;
-      /** Rule Id */
-      rule_id?: string | null;
-      /** Rule Id Prefix */
-      rule_id_prefix?: string | null;
-      /** Tac Lead */
-      tac_lead: string;
-    };
-    /**
-     * OverlayCreate
-     * @description Create body for a signed overlay (server issues the signature).
-     */
-    OverlayCreate: {
-      /** Baseprofileid */
-      baseProfileId: string;
-      /** Body */
-      body?: {
-        [key: string]: unknown;
-      };
-      /**
-       * Shared
-       * @default false
-       */
-      shared: boolean;
-      /** Slug */
-      slug: string;
-    };
-    /**
-     * OverlayListResponse
-     * @description List of overlays for the caller.
-     */
-    OverlayListResponse: {
-      /** Items */
-      items: components['schemas']['OverlayOut'][];
-    };
-    /**
-     * OverlayOut
-     * @description Persisted signed overlay (owner-scoped).
-     */
-    OverlayOut: {
-      /** Baseprofileid */
-      baseProfileId: string;
-      /** Body */
-      body: {
-        [key: string]: unknown;
-      };
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** Shared */
-      shared: boolean;
-      /** Signature */
-      signature: string;
-      /** Slug */
-      slug: string;
-      /**
-       * Updated At
-       * Format: date-time
-       */
-      updated_at: string;
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
-    };
-    /**
-     * OverlayUpdate
-     * @description Partial update for an overlay (re-signed on write).
-     */
-    OverlayUpdate: {
-      /** Baseprofileid */
-      baseProfileId?: string | null;
-      /** Body */
-      body?: {
-        [key: string]: unknown;
-      } | null;
-      /** Shared */
-      shared?: boolean | null;
-      /** Slug */
-      slug?: string | null;
-    };
-    /**
-     * PackageIssueModel
-     * @description HTTP DTO for an iwxxm-validate package finding (additive on /validate).
-     */
-    PackageIssueModel: {
-      /** Code */
-      code?: string | null;
-      /**
-       * End
-       * @description Exclusive offset when known
-       */
-      end?: number | null;
-      /** Layer */
-      layer: string;
-      /** Location */
-      location?: string | null;
-      /** Message */
-      message: string;
-      /** Severity */
-      severity: string;
-      /**
-       * Start
-       * @description Inclusive offset when known
-       */
-      start?: number | null;
-    };
-    /**
-     * PackageStageModel
-     * @description Per-stage CA_ECCC validation outcome (additive on /validate).
-     */
-    PackageStageModel: {
-      /** Issues */
-      issues?: components['schemas']['PackageIssueModel'][];
-      /** Label */
-      label: string;
-      /** Ok */
-      ok: boolean;
-      /** Stage */
-      stage: string;
-    };
-    /**
-     * PendingFilePayload
-     * @description Queued file content stored inline on the session row.
-     */
-    PendingFilePayload: {
-      /**
-       * Content
-       * @default
-       */
-      content: string;
-      /** Name */
-      name: string;
-    };
-    /**
-     * PlanExecuteRequest
-     * @description Execute or dry-run a plan for a sample message.
-     */
-    PlanExecuteRequest: {
-      /**
-       * Dry Run
-       * @default true
-       */
-      dry_run: boolean;
-      /** Iwxxm Version */
-      iwxxm_version?: string | null;
-      /** Iwxxm Xml */
-      iwxxm_xml?: string | null;
-      /** Message Id */
-      message_id?: string | null;
-      /** Product */
-      product?: string | null;
-      /** Profile */
-      profile?: string | null;
-      /** Station */
-      station?: string | null;
-      /** Tac Text */
-      tac_text?: string | null;
-    };
-    /**
-     * PlanExecuteResponse
-     * @description Execute outcome with receipts.
-     */
-    PlanExecuteResponse: {
-      /**
-       * Plan Id
-       * Format: uuid
-       */
-      plan_id: string;
-      /** Receipts */
-      receipts: components['schemas']['DeliveryReceiptOut'][];
-    };
-    /**
-     * PresetCreate
-     * @description Create body for a saved semantic preset.
-     */
-    PresetCreate: {
-      /** Extensions */
-      extensions?: string[];
-      /** Iwxxmversion */
-      iwxxmVersion: string;
-      /** Name */
-      name: string;
-      /** Overlayid */
-      overlayId?: string | null;
-      /** Reportvariant */
-      reportVariant?: string | null;
-      /** Semanticprofile */
-      semanticProfile: string;
-      /**
-       * Shared
-       * @default false
-       */
-      shared: boolean;
-      /** Slug */
-      slug: string;
-    };
-    /**
-     * PresetListResponse
-     * @description List of semantic presets for the caller.
-     */
-    PresetListResponse: {
-      /** Items */
-      items: components['schemas']['PresetOut'][];
-    };
-    /**
-     * PresetOut
-     * @description Persisted saved semantic preset.
-     */
-    PresetOut: {
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-      /** Extensions */
-      extensions?: string[];
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** Iwxxmversion */
-      iwxxmVersion: string;
-      /** Name */
-      name: string;
-      /** Overlayid */
-      overlayId?: string | null;
-      /** Reportvariant */
-      reportVariant?: string | null;
-      /** Semanticprofile */
-      semanticProfile: string;
-      /** Shared */
-      shared: boolean;
-      /** Slug */
-      slug: string;
-      /**
-       * Updated At
-       * Format: date-time
-       */
-      updated_at: string;
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
-    };
-    /**
-     * PresetUpdate
-     * @description Partial update for a saved semantic preset.
-     */
-    PresetUpdate: {
-      /** Extensions */
-      extensions?: string[] | null;
-      /** Iwxxmversion */
-      iwxxmVersion?: string | null;
-      /** Name */
-      name?: string | null;
-      /** Overlayid */
-      overlayId?: string | null;
-      /** Reportvariant */
-      reportVariant?: string | null;
-      /** Semanticprofile */
-      semanticProfile?: string | null;
-      /** Shared */
-      shared?: boolean | null;
-      /** Slug */
-      slug?: string | null;
-    };
-    /**
-     * ProfileCatalogEntry
-     * @description Read-only ConversionProfile catalog entry for the inspector.
-     */
-    ProfileCatalogEntry: {
-      /** Deltas Vs Icao */
-      deltas_vs_icao?: string[];
-      /** Emit Key */
-      emit_key?: string | null;
-      /** Id */
-      id: string;
-      /** Implementation */
-      implementation?: {
-        [key: string]: unknown;
-      };
-      /** Iwxxm Line */
-      iwxxm_line?: string | null;
-      /** Kind */
-      kind: string;
-      /** Legacy Alias */
-      legacy_alias?: string | null;
-      /** Metar Family Variants */
-      metar_family_variants?: components['schemas']['MetarFamilyVariant'][];
-      /** Overlay Count */
-      overlay_count?: number | null;
-      /** Priority */
-      priority?: string | null;
-      /** Products */
-      products?: string[];
-      /** Rule Pack Count */
-      rule_pack_count?: number | null;
-      /** Status */
-      status?: string | null;
-      /** Vendor Pins */
-      vendor_pins?: {
-        [key: string]: unknown;
-      };
-    };
-    /**
-     * ProfileCatalogResponse
-     * @description Catalog list response.
-     */
-    ProfileCatalogResponse: {
-      /** Profiles */
-      profiles: components['schemas']['ProfileCatalogEntry'][];
-      /** Schema Version */
-      schema_version?: number | string | null;
-    };
-    /**
-     * QualityMetricsDetailResponse
-     * @description Response for GET /api/v1/quality-metrics/{stem}.
-     */
-    QualityMetricsDetailResponse: {
-      /**
-       * Converted Xml
-       * @default
-       */
-      converted_xml: string;
-      /** Deferral Reason */
-      deferral_reason?: string | null;
-      /**
-       * Deferred
-       * @default false
-       */
-      deferred: boolean;
-      /** Lint Issues */
-      lint_issues?: {
-        [key: string]: unknown;
-      }[];
-      /** Match Status */
-      match_status: string;
-      /**
-       * Official Xml
-       * @default
-       */
-      official_xml: string;
-      /** Product */
-      product: string;
-      /** Residuals */
-      residuals?: {
-        [key: string]: unknown;
-      }[];
-      /**
-       * Residuals Propagated To Remarks
-       * @default false
-       */
-      residuals_propagated_to_remarks: boolean;
-      /** Stem */
-      stem: string;
-      /**
-       * Tac
-       * @default
-       */
-      tac: string;
-      /** Tier */
-      tier: string;
-      /** Validate Issues */
-      validate_issues?: {
-        [key: string]: unknown;
-      }[];
-    };
-    /**
-     * QualityMetricsFileRowModel
-     * @description Slim inventory row for the corpus file list.
-     */
-    QualityMetricsFileRowModel: {
-      /**
-       * Deferred
-       * @default false
-       */
-      deferred: boolean;
-      /**
-       * Has Tac Pair
-       * @default false
-       */
-      has_tac_pair: boolean;
-      /**
-       * Lint Error Count
-       * @default 0
-       */
-      lint_error_count: number;
-      /** Match Status */
-      match_status: string;
-      /** Product */
-      product: string;
-      /**
-       * Residual Count
-       * @default 0
-       */
-      residual_count: number;
-      /** Stem */
-      stem: string;
-      /** Tier */
-      tier: string;
-      /**
-       * Validate Error Count
-       * @default 0
-       */
-      validate_error_count: number;
-    };
-    /**
-     * QualityMetricsListResponse
-     * @description Response for GET /api/v1/quality-metrics.
-     */
-    QualityMetricsListResponse: {
-      /** Files */
-      files?: components['schemas']['QualityMetricsFileRowModel'][];
-      /** Generated At */
-      generated_at: string;
-      /** Iwxxm Pin */
-      iwxxm_pin: string;
-      /** Summaries */
-      summaries?: components['schemas']['QualityMetricsSummaryModel'][];
-    };
-    /**
-     * QualityMetricsSummaryModel
-     * @description Per-product aggregate counts for the corpus browser.
-     */
-    QualityMetricsSummaryModel: {
-      /**
-       * Deferred Gaps
-       * @default 0
-       */
-      deferred_gaps: number;
-      /**
-       * Lint Fail
-       * @default 0
-       */
-      lint_fail: number;
-      /**
-       * Match Fail
-       * @default 0
-       */
-      match_fail: number;
-      /**
-       * Match Pass
-       * @default 0
-       */
-      match_pass: number;
-      /**
-       * Pair Examples
-       * @default 0
-       */
-      pair_examples: number;
-      /** Product */
-      product: string;
-      /**
-       * Residual Nonempty
-       * @default 0
-       */
-      residual_nonempty: number;
-      /**
-       * Unpaired Examples
-       * @default 0
-       */
-      unpaired_examples: number;
-      /**
-       * Validate Fail
-       * @default 0
-       */
-      validate_fail: number;
-    };
-    /**
-     * RegisterRequest
-     * @description Registration credentials (Supabase GoTrue signup).
-     */
-    RegisterRequest: {
-      /** Email */
-      email: string;
-      /** Password */
-      password: string;
-    };
-    /**
-     * RuleCatalogItem
-     * @description One package-owned trust-catalog row.
-     */
-    RuleCatalogItem: {
-      /** Id */
-      id: string;
-      /** Severity */
-      severity?: string | null;
-      /**
-       * Summary
-       * @default
-       */
-      summary: string;
-      /** Tags */
-      tags?: string[];
-      /** Title */
-      title: string;
-    };
-    /**
-     * RuleCatalogResponse
-     * @description Response for GET /rule-catalogs.
-     */
-    RuleCatalogResponse: {
-      /** Family */
-      family: string;
-      /** Items */
-      items: components['schemas']['RuleCatalogItem'][];
-    };
-    /**
-     * RulePackCreate
-     * @description Create body for a rule pack.
-     */
-    RulePackCreate: {
-      /**
-       * Message
-       * @default
-       */
-      message: string;
-      /** Product */
-      product: string;
-      /** Profile */
-      profile: string;
-      /** Severity */
-      severity: string;
-      /** Slug */
-      slug: string;
-      /** Stage */
-      stage: string;
-      /**
-       * Standardreference
-       * @default
-       */
-      standardReference: string;
-      /**
-       * When
-       * @default
-       */
-      when: string;
-    };
-    /**
-     * RulePackListResponse
-     * @description List of rule packs for the caller.
-     */
-    RulePackListResponse: {
-      /** Items */
-      items: components['schemas']['RulePackOut'][];
-    };
-    /**
-     * RulePackOut
-     * @description Persisted rule pack (owner-scoped).
-     */
-    RulePackOut: {
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** Message */
-      message: string;
-      /** Product */
-      product: string;
-      /** Profile */
-      profile: string;
-      /** Severity */
-      severity: string;
-      /** Slug */
-      slug: string;
-      /** Stage */
-      stage: string;
-      /** Standardreference */
-      standardReference: string;
-      /**
-       * Updated At
-       * Format: date-time
-       */
-      updated_at: string;
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
-      /** When */
-      when: string;
-    };
-    /**
-     * RulePackUpdate
-     * @description Partial update for a rule pack.
-     */
-    RulePackUpdate: {
-      /** Message */
-      message?: string | null;
-      /** Product */
-      product?: string | null;
-      /** Profile */
-      profile?: string | null;
-      /** Severity */
-      severity?: string | null;
-      /** Slug */
-      slug?: string | null;
-      /** Stage */
-      stage?: string | null;
-      /** Standardreference */
-      standardReference?: string | null;
-      /** When */
-      when?: string | null;
-    };
-    /**
-     * SelectionOption
-     * @description Dropdown option from a deployed registry.
-     */
-    SelectionOption: {
-      /** Id */
-      id: string;
-      /** Label */
-      label: string;
-    };
-    /**
-     * SelectionOptionsResponse
-     * @description Response for GET /selection-options.
-     */
-    SelectionOptionsResponse: {
-      /** Kind */
-      kind: string;
-      /** Options */
-      options: components['schemas']['SelectionOption'][];
-    };
-    /**
-     * SessionResponse
-     * @description Session tokens.
-     */
-    SessionResponse: {
-      /** Access Token */
-      access_token: string;
-      /** Expires At */
-      expires_at: number;
-      /** Refresh Token */
-      refresh_token: string;
-    };
-    /**
-     * TranslationCentreInfo
-     * @description Translation Centre identification metadata.
-     * @example {
-     *       "centre_designator": "NOAA-MDL",
-     *       "centre_name": "NOAA Meteorological Development Laboratory",
-     *       "icao_location_indicator": "KWBC",
-     *       "online_since": "2024-01-15T00:00:00Z",
-     *       "supported_iwxxm_versions": [
-     *         "2025-2",
-     *         "2023-1"
-     *       ],
-     *       "supported_products": [
-     *         "METAR",
-     *         "SPECI"
-     *       ]
-     *     }
-     */
-    TranslationCentreInfo: {
-      /**
-       * Centre Designator
-       * @description Short designator for translation centre
-       */
-      centre_designator?: string | null;
-      /**
-       * Centre Name
-       * @description Full name of translation centre
-       */
-      centre_name?: string | null;
-      /**
-       * Contact Email
-       * @description Technical contact email
-       */
-      contact_email?: string | null;
-      /**
-       * Icao Location Indicator
-       * @description ICAO location indicator (CCCC)
-       */
-      icao_location_indicator?: string | null;
-      /**
-       * Online Since
-       * @description Service start date (ISO 8601)
-       */
-      online_since?: string | null;
-      /**
-       * Supported Iwxxm Versions
-       * @description Supported IWXXM versions
-       */
-      supported_iwxxm_versions: string[];
-      /**
-       * Supported Products
-       * @description Supported aviation product types
-       * @default [
-       *       "METAR",
-       *       "SPECI"
-       *     ]
-       */
-      supported_products: string[];
-    };
-    /**
-     * TranslationStatistics
-     * @description Aggregated translation statistics for ICAO OPMET compliance.
-     *
-     *     Provides summary metrics for a given time period and optional filters.
-     * @example {
-     *       "average_duration_ms": 237,
-     *       "failed_translations": 24,
-     *       "period_end": "2026-02-13T23:59:59Z",
-     *       "period_start": "2026-02-13T00:00:00Z",
-     *       "success_rate": 98.45,
-     *       "successful_translations": 1523,
-     *       "total_translations": 1547,
-     *       "translations_by_region": {
-     *         "APAC": 234,
-     *         "EUR": 421,
-     *         "NAM": 892
-     *       },
-     *       "translations_by_version": {
-     *         "2023-1": 46,
-     *         "2025-2": 1501
-     *       }
-     *     }
-     */
-    TranslationStatistics: {
-      /**
-       * Average Duration Ms
-       * @description Average translation duration (milliseconds)
-       */
-      average_duration_ms: number;
-      /**
-       * Common Validation Errors
-       * @description Most frequent validation errors (optional)
-       */
-      common_validation_errors?:
-        | {
-            [key: string]: unknown;
-          }[]
-        | null;
-      /**
-       * Failed Translations
-       * @description Failed translations
-       */
-      failed_translations: number;
-      /**
-       * Median Duration Ms
-       * @description Median translation duration (milliseconds)
-       */
-      median_duration_ms?: number | null;
-      /**
-       * Partial Translations
-       * @description Translations completed with warnings
-       * @default 0
-       */
-      partial_translations: number;
-      /**
-       * Period End
-       * Format: date-time
-       * @description Statistics period end (ISO 8601)
-       */
-      period_end: string;
-      /**
-       * Period Start
-       * Format: date-time
-       * @description Statistics period start (ISO 8601)
-       */
-      period_start: string;
-      /**
-       * Success Rate
-       * @description Translation success rate (percentage)
-       */
-      success_rate: number;
-      /**
-       * Successful Translations
-       * @description Successfully completed translations
-       */
-      successful_translations: number;
-      /**
-       * Total Translations
-       * @description Total number of translations in period
-       */
-      total_translations: number;
-      /**
-       * Translations By Airport
-       * @description Top airports by translation volume (optional)
-       */
-      translations_by_airport?: {
-        [key: string]: number;
-      } | null;
-      /**
-       * Translations By Region
-       * @description Translation count by ICAO region
-       */
-      translations_by_region?: {
-        [key: string]: number;
-      };
-      /**
-       * Translations By Version
-       * @description Translation count by IWXXM version
-       */
-      translations_by_version?: {
-        [key: string]: number;
-      };
-      /**
-       * Validation Layer Success Rates
-       * @description Success rate per validation layer (percentage)
-       */
-      validation_layer_success_rates?: {
-        [key: string]: number;
-      };
-    };
-    /**
-     * TranslationStatisticsRequest
-     * @description Request parameters for translation statistics query.
-     * @example {
-     *       "end_date": "2026-02-13T23:59:59Z",
-     *       "icao_region": "NAM",
-     *       "include_airport_breakdown": true,
-     *       "iwxxm_version": "2025-2",
-     *       "start_date": "2026-02-01T00:00:00Z"
-     *     }
-     */
-    TranslationStatisticsRequest: {
-      /**
-       * Airport Code
-       * @description Filter by specific airport (optional)
-       */
-      airport_code?: string | null;
-      /**
-       * End Date
-       * Format: date-time
-       * @description Statistics period end (ISO 8601)
-       */
-      end_date: string;
-      /** @description Filter by ICAO region (optional) */
-      icao_region?: components['schemas']['ICAORegion'] | null;
-      /**
-       * Include Airport Breakdown
-       * @description Include per-airport statistics
-       * @default false
-       */
-      include_airport_breakdown: boolean;
-      /**
-       * Include Error Details
-       * @description Include detailed error analysis
-       * @default false
-       */
-      include_error_details: boolean;
-      /**
-       * Iwxxm Version
-       * @description Filter by IWXXM version (optional)
-       */
-      iwxxm_version?: string | null;
-      /**
-       * Start Date
-       * Format: date-time
-       * @description Statistics period start (ISO 8601)
-       */
-      start_date: string;
-    };
-    /**
-     * UserResponse
-     * @description Auth user projection.
-     */
-    UserResponse: {
-      /** Email */
-      email: string;
-      /** Id */
-      id: string;
-      /** Metadata */
-      metadata?: {
-        [key: string]: unknown;
-      };
-    };
-    /**
-     * ValidateIssueModel
-     * @description HTTP DTO for a validation orchestrator finding on /validate.
-     */
-    ValidateIssueModel: {
-      /** Code */
-      code?: string | null;
-      /**
-       * End
-       * @description Exclusive offset when known
-       */
-      end?: number | null;
-      /** Layer */
-      layer: string;
-      /** Level */
-      level: string;
-      /** Location */
-      location?: string | null;
-      /** Message */
-      message: string;
-      /**
-       * Start
-       * @description Inclusive offset when known
-       */
-      start?: number | null;
-    };
-    /**
-     * ValidateLayerIssueModel
-     * @description Per-layer issue entry nested under ``issues_by_layer``.
-     */
-    ValidateLayerIssueModel: {
-      /** Code */
-      code?: string | null;
-      /** Level */
-      level: string;
-      /** Location */
-      location?: string | null;
-      /** Message */
-      message: string;
-    };
-    /**
-     * ValidateRequest
-     * @description Request for IWXXM validation via JSON body.
-     * @example {
-     *       "iwxxm_xml": "<?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>",
-     *       "stop_on_error": false,
-     *       "validation_level": "comprehensive",
-     *       "version": "2025-2"
-     *     }
-     */
-    ValidateRequest: {
-      /**
-       * Exchange Profile
-       * @description Exchange packaging profile (e.g. GLOBAL_AFS)
-       * @example GLOBAL_AFS
-       */
-      exchange_profile?: string | null;
-      /**
-       * Extensions
-       * @description Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)
-       * @example [
-       *       "IWXXM_CA"
-       *     ]
-       */
-      extensions?: string[] | null;
-      /**
-       * Iwxxm Xml
-       * @description IWXXM XML content to validate
-       * @example <?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>
-       */
-      iwxxm_xml: string;
-      /**
-       * Product
-       * @description TAC product for Canadian extension XSD selection when extensions include IWXXM_CA
-       * @example METAR
-       * @example TAF
-       */
-      product?: string | null;
-      /**
-       * Profile
-       * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
-       * @default
-       * @example annex3
-       * @example iwxxm_us
-       */
-      profile: string;
-      /**
-       * Semantic Profile
-       * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE)
-       * @example ICAO_2025
-       * @example US_FAA_NWS
-       * @example CA_ECCC
-       */
-      semantic_profile?: string | null;
-      /**
-       * Stop On Error
-       * @description Stop processing on first error
-       * @default false
-       */
-      stop_on_error: boolean;
-      /**
-       * Validation Level
-       * @description Validation depth: 'basic', 'schema', 'schematron', 'icao_opmet', 'comprehensive'
-       * @default comprehensive
-       * @example basic
-       * @example comprehensive
-       */
-      validation_level: string | null;
-      /**
-       * Version
-       * @description Target IWXXM version
-       * @default 2025-2
-       * @example 2025-2
-       * @example 2023-1
-       */
-      version: string;
-    };
-    /**
-     * ValidateResponse
-     * @description Response for POST /api/v1/validate (validation layers + package_* extras).
-     */
-    ValidateResponse: {
-      /**
-       * Extensions
-       * @description Resolved national extension tokens from the request (when supplied)
-       */
-      extensions?: string[] | null;
-      /** Is Valid */
-      is_valid: boolean;
-      /** Issues */
-      issues?: components['schemas']['ValidateIssueModel'][];
-      /** Issues By Layer */
-      issues_by_layer?: {
-        [key: string]: components['schemas']['ValidateLayerIssueModel'][];
-      };
-      /** Layers Failed */
-      layers_failed?: string[];
-      /** Layers Passed */
-      layers_passed?: string[];
-      /** Layers Run */
-      layers_run?: string[];
-      /** Package Issues */
-      package_issues?: components['schemas']['PackageIssueModel'][];
-      /**
-       * Package Ok
-       * @default true
-       */
-      package_ok: boolean;
-      /**
-       * Package Stages
-       * @description Optional per-stage breakdown from iwxxm-validate when profile=ca_eccc and extensions include IWXXM_CA
-       */
-      package_stages?: components['schemas']['PackageStageModel'][] | null;
-      /**
-       * Profile
-       * @default annex3
-       */
-      profile: string;
-      /**
-       * Segments
-       * @description Optional item-by-item decode rows (code and explanation) when a readable decode exists. Omitted when there is no decode.
-       */
-      segments?: components['schemas']['DecodeSegmentModel'][] | null;
-      /** Stopped At Layer */
-      stopped_at_layer?: string | null;
-      /**
-       * Summary
-       * @description Optional plain-language paragraph of the decoded report when a readable decode exists. Omitted when there is no decode.
-       */
-      summary?: string | null;
-      /**
-       * Total Issues
-       * @default 0
-       */
-      total_issues: number;
-      /** Version */
-      version: string;
-    };
-    /** ValidationError */
-    ValidationError: {
-      /** Context */
-      ctx?: Record<string, never>;
-      /** Input */
-      input?: unknown;
-      /** Location */
-      loc: (string | number)[];
-      /** Message */
-      msg: string;
-      /** Error Type */
-      type: string;
-    };
-    /**
-     * ValidationIssue
-     * @description Single validation issue with context.
-     * @example {
-     *       "code": "INVALID_ICAO",
-     *       "layer": "airport_icao",
-     *       "level": "error",
-     *       "location": "line 1, column 12",
-     *       "message": "Unknown ICAO code: ZZZZ"
-     *     }
-     */
-    ValidationIssue: {
-      /**
-       * Code
-       * @description Machine-readable error code
-       */
-      code?: string | null;
-      /** @description Validation layer that found this issue */
-      layer: components['schemas']['src__schemas__validation__ValidationLayer'];
-      /** @description Severity level */
-      level: components['schemas']['ValidationLevel'];
-      /**
-       * Location
-       * @description Location in document
-       */
-      location?: string | null;
-      /**
-       * Message
-       * @description Human-readable error message
-       */
-      message: string;
-      /**
-       * Suggestion
-       * @description Suggested fix
-       */
-      suggestion?: string | null;
-    };
-    /**
-     * ValidationLayer
-     * @description Validation layer identifiers.
-     * @enum {string}
-     */
-    'ValidationLayer-Input':
-      | 'airport_icao'
-      | 'tac_syntax'
-      | 'xml_wellformed'
-      | 'xml_schema'
-      | 'schematron'
-      | 'gml_references'
-      | 'wmo_codelists';
-    /**
-     * ValidationLayerInfo
-     * @description Information about a validation layer.
-     * @example {
-     *       "blocking": true,
-     *       "description": "Parse and validate METAR TAC syntax",
-     *       "layer": "tac_syntax",
-     *       "supported_content_types": [
-     *         "tac"
-     *       ]
-     *     }
-     */
-    ValidationLayerInfo: {
-      /**
-       * Blocking
-       * @description Whether this layer blocks further validation if it fails
-       */
-      blocking: boolean;
-      /**
-       * Description
-       * @description Human-readable description
-       */
-      description: string;
-      /** @description Layer identifier */
-      layer: components['schemas']['src__schemas__validation__ValidationLayer'];
-      /**
-       * Supported Content Types
-       * @description Content types this layer supports (tac/xml)
-       */
-      supported_content_types?: string[];
-    };
-    /**
-     * ValidationLayersResponse
-     * @description List of available validation layers with configurations.
-     * @example {
-     *       "layers": [
-     *         {
-     *           "blocking": true,
-     *           "description": "Extract and validate ICAO code against airport database",
-     *           "layer": "airport_icao",
-     *           "supported_content_types": [
-     *             "tac"
-     *           ]
-     *         },
-     *         {
-     *           "blocking": true,
-     *           "description": "Parse and validate METAR TAC syntax",
-     *           "layer": "tac_syntax",
-     *           "supported_content_types": [
-     *             "tac"
-     *           ]
-     *         }
-     *       ]
-     *     }
-     */
-    ValidationLayersResponse: {
-      /**
-       * Layers
-       * @description Available validation layers
-       */
-      layers: components['schemas']['ValidationLayerInfo'][];
-    };
-    /**
-     * ValidationLevel
-     * @description Severity level for validation issues.
-     * @enum {string}
-     */
-    ValidationLevel: 'critical' | 'error' | 'warning' | 'info';
-    /**
-     * ValidationRequest
-     * @description Request for validation operation.
-     * @example {
-     *       "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2",
-     *       "content_type": "tac",
-     *       "iwxxm_version": "3.0.1",
-     *       "layers": [
-     *         "airport_icao",
-     *         "tac_syntax"
-     *       ]
-     *     }
-     */
-    ValidationRequest: {
-      /**
-       * Content
-       * @description Content to validate (METAR TAC or IWXXM XML)
-       * @example METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2
-       */
-      content: string;
-      /**
-       * Content Type
-       * @description Content type: 'tac' (METAR TAC), 'xml' (IWXXM XML), or 'iwxxm' (alias of xml)
-       * @default tac
-       * @example tac
-       * @example xml
-       * @example iwxxm
-       */
-      content_type: string;
-      /**
-       * Iwxxm Version
-       * @description IWXXM version for validation context
-       * @example 3.0.1
-       */
-      iwxxm_version?: string | null;
-      /**
-       * Layers
-       * @description Specific layers to validate (None = all layers)
-       */
-      layers?: components['schemas']['ValidationLayer-Input'][] | null;
-    };
-    /**
-     * ValidationResult
-     * @description Result from a validation operation.
-     * @example {
-     *       "execution_time_ms": 12.5,
-     *       "issues": [],
-     *       "layer": "airport_icao",
-     *       "passed": true
-     *     }
-     */
-    ValidationResult: {
-      /**
-       * Execution Time Ms
-       * @description Execution time in ms
-       */
-      execution_time_ms?: number | null;
-      /**
-       * Issues
-       * @description List of issues
-       */
-      issues?: components['schemas']['ValidationIssue'][];
-      /** @description Validation layer */
-      layer: components['schemas']['src__schemas__validation__ValidationLayer'];
-      /**
-       * Metadata
-       * @description Layer-specific metadata
-       */
-      metadata?: {
-        [key: string]: unknown;
-      } | null;
-      /**
-       * Passed
-       * @description Whether validation passed
-       */
-      passed: boolean;
-      /**
-       * Validated At
-       * Format: date-time
-       */
-      validated_at?: string;
-    };
-    /**
-     * WorkSession
-     * @description Persisted work session returned by the API.
-     */
-    WorkSession: {
-      /** Conversion Params */
-      conversion_params?: {
-        [key: string]: unknown;
-      };
-      /** Converted Results */
-      converted_results?: {
-        [key: string]: unknown;
-      }[];
-      /**
-       * Created At
-       * Format: date-time
-       */
-      created_at: string;
-      /** Deleted At */
-      deleted_at?: string | null;
-      /** Errors */
-      errors?: string[];
-      /**
-       * Id
-       * Format: uuid
-       */
-      id: string;
-      /** Issues */
-      issues?: {
-        [key: string]: unknown;
-      }[];
-      /** Kv Upload Key */
-      kv_upload_key?: string | null;
-      /**
-       * Manual Tac
-       * @default
-       */
-      manual_tac: string;
-      /** Pending Files */
-      pending_files?: components['schemas']['PendingFilePayload'][];
-      product: components['schemas']['WorkSessionProduct'];
-      status: components['schemas']['WorkSessionStatus'];
-      /** Title */
-      title: string;
-      /**
-       * Updated At
-       * Format: date-time
-       */
-      updated_at: string;
-      /**
-       * User Id
-       * Format: uuid
-       */
-      user_id: string;
-    };
-    /**
-     * WorkSessionCreate
-     * @description Body for POST /api/v1/work-sessions.
-     */
-    WorkSessionCreate: {
-      /** Conversion Params */
-      conversion_params?: {
-        [key: string]: unknown;
-      };
-      /** Converted Results */
-      converted_results?: {
-        [key: string]: unknown;
-      }[];
-      /** Errors */
-      errors?: string[];
-      /** Issues */
-      issues?: {
-        [key: string]: unknown;
-      }[];
-      /** Kv Upload Key */
-      kv_upload_key?: string | null;
-      /**
-       * Manual Tac
-       * @default
-       */
-      manual_tac: string;
-      /** Pending Files */
-      pending_files?: components['schemas']['PendingFilePayload'][];
-      product: components['schemas']['WorkSessionProduct'];
-      status?: components['schemas']['WorkSessionStatus'] | null;
-      /** Title */
-      title?: string | null;
-    };
-    /**
-     * WorkSessionListResponse
-     * @description Paginated list of work sessions.
-     */
-    WorkSessionListResponse: {
-      /** Items */
-      items: components['schemas']['WorkSession'][];
-      /** Limit */
-      limit: number;
-      /** Page */
-      page: number;
-      /** Total */
-      total: number;
-    };
-    /**
-     * WorkSessionProduct
-     * @description Product ids stored on ``tac_work_sessions.product`` (lowercase).
-     * @enum {string}
-     */
-    WorkSessionProduct:
-      | 'airmet'
-      | 'metar'
-      | 'sigmet'
-      | 'speci'
-      | 'taf'
-      | 'vaa'
-      | 'tca'
-      | 'swxa';
-    /**
-     * WorkSessionStatus
-     * @description Lifecycle status for a user's TAC work session.
-     * @enum {string}
-     */
-    WorkSessionStatus: 'draft' | 'wip' | 'finished' | 'failed';
-    /**
-     * WorkSessionUpdate
-     * @description Body for PATCH /api/v1/work-sessions/{id}.
-     */
-    WorkSessionUpdate: {
-      /** Conversion Params */
-      conversion_params?: {
-        [key: string]: unknown;
-      };
-      /** Converted Results */
-      converted_results?: {
-        [key: string]: unknown;
-      }[];
-      /** Errors */
-      errors?: string[];
-      /** Issues */
-      issues?: {
-        [key: string]: unknown;
-      }[];
-      /** Kv Upload Key */
-      kv_upload_key?: string | null;
-      /**
-       * Manual Tac
-       * @default
-       */
-      manual_tac: string;
-      /** Pending Files */
-      pending_files?: components['schemas']['PendingFilePayload'][];
-      product?: components['schemas']['WorkSessionProduct'] | null;
-      status?: components['schemas']['WorkSessionStatus'] | null;
-      /** Title */
-      title?: string | null;
-    };
-    /**
-     * ValidationLayer
-     * @description 7-layer IWXXM validation stages.
-     * @enum {string}
-     */
-    src__schemas__icao_opmet__ValidationLayer:
-      | 'AIRPORT_ICAO'
-      | 'TAC_SYNTAX'
-      | 'XML_WELLFORMED'
-      | 'XML_SCHEMA'
-      | 'SCHEMATRON'
-      | 'GML_REFERENCES'
-      | 'WMO_CODELISTS';
-    /**
-     * ValidationLayer
-     * @description Validation layer identifiers.
-     * @enum {string}
-     */
-    src__schemas__validation__ValidationLayer:
-      | 'airport_icao'
-      | 'tac_syntax'
-      | 'xml_wellformed'
-      | 'xml_schema'
-      | 'schematron'
-      | 'gml_references'
-      | 'wmo_codelists';
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    schemas: {
+        /**
+         * AggregatedValidationResult
+         * @description Combined results from multiple validation layers.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "execution_time_ms": 13.5,
+         *       "layers_validated": [
+         *         "airport_icao",
+         *         "tac_syntax",
+         *         "xml_wellformed"
+         *       ],
+         *       "passed": false,
+         *       "results": [
+         *         {
+         *           "execution_time_ms": 5.2,
+         *           "issues": [],
+         *           "layer": "airport_icao",
+         *           "passed": true
+         *         },
+         *         {
+         *           "execution_time_ms": 8.3,
+         *           "issues": [
+         *             {
+         *               "code": "INVALID_TAC_FORMAT",
+         *               "layer": "tac_syntax",
+         *               "level": "error",
+         *               "location": "line 1, column 18",
+         *               "message": "Invalid TAC format: missing wind speed",
+         *               "suggestion": "Check wind speed component"
+         *             }
+         *           ],
+         *           "layer": "tac_syntax",
+         *           "passed": false
+         *         }
+         *       ],
+         *       "total_issues": 2,
+         *       "validated_at": "2026-02-10T14:30:45.123456"
+         *     }
+         */
+        AggregatedValidationResult: {
+            /**
+             * Execution Time Ms
+             * @default 0
+             */
+            execution_time_ms: number;
+            /**
+             * Layers Validated
+             * @description Layers validated
+             */
+            layers_validated: components["schemas"]["src__schemas__validation__ValidationLayer"][];
+            /**
+             * Passed
+             * @description Whether all layers passed
+             */
+            passed: boolean;
+            /** Results */
+            results?: components["schemas"]["ValidationResult"][];
+            /**
+             * Total Issues
+             * @description Total issues
+             * @default 0
+             */
+            total_issues: number;
+            /**
+             * Validated At
+             * Format: date-time
+             */
+            validated_at?: string;
+        };
+        /**
+         * AuditListResponse
+         * @description Paginated audit list.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        AuditListResponse: {
+            /** Items */
+            items: components["schemas"]["AuditRecordOut"][];
+            /** Limit */
+            limit: number;
+            /** Page */
+            page: number;
+            /** Total */
+            total: number;
+        };
+        /**
+         * AuditRecordOut
+         * @description Persisted audit row — never includes BYOC secrets or URIs.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        AuditRecordOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Destinations */
+            destinations?: {
+                [key: string]: unknown;
+            };
+            /** Detail */
+            detail?: string | null;
+            /** Gateway */
+            gateway: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Iwxxm Version */
+            iwxxm_version?: string | null;
+            /** Message Id */
+            message_id?: string | null;
+            /** Product */
+            product?: string | null;
+            /** Profile */
+            profile?: string | null;
+            /** Station */
+            station?: string | null;
+            /** Status */
+            status: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
+         * AuthResponse
+         * @description Login response.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        AuthResponse: {
+            session?: components["schemas"]["SessionResponse"] | null;
+            user: components["schemas"]["UserResponse"];
+        };
+        /**
+         * BatchValidationRequest
+         * @description Request to validate multiple inputs.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "items": [
+         *         {
+         *           "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005",
+         *           "content_type": "tac"
+         *         },
+         *         {
+         *           "content": "METAR EGLL 231750Z 17008KT 9999 SCT035 12/08 Q1007",
+         *           "content_type": "tac"
+         *         }
+         *       ],
+         *       "layers": [
+         *         "airport_icao",
+         *         "tac_syntax"
+         *       ]
+         *     }
+         */
+        BatchValidationRequest: {
+            /**
+             * Items
+             * @description Items to validate
+             */
+            items: components["schemas"]["ValidationRequest"][];
+            /**
+             * Layers
+             * @description Layers to apply to all items (None = all layers)
+             */
+            layers?: components["schemas"]["ValidationLayer-Input"][] | null;
+        };
+        /**
+         * BatchValidationResponse
+         * @description Response from batch validation.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "failed_items": 1,
+         *       "passed_items": 1,
+         *       "results": [
+         *         {
+         *           "execution_time_ms": 15.2,
+         *           "layers_validated": [
+         *             "airport_icao",
+         *             "tac_syntax"
+         *           ],
+         *           "passed": true,
+         *           "results": [],
+         *           "total_issues": 0
+         *         }
+         *       ],
+         *       "total_execution_time_ms": 30.5,
+         *       "total_items": 2
+         *     }
+         */
+        BatchValidationResponse: {
+            /**
+             * Failed Items
+             * @description Number of items that failed
+             */
+            failed_items: number;
+            /**
+             * Passed Items
+             * @description Number of items that passed
+             */
+            passed_items: number;
+            /**
+             * Results
+             * @description Validation results for each item
+             */
+            results: components["schemas"]["AggregatedValidationResult"][];
+            /**
+             * Total Execution Time Ms
+             * @description Total execution time
+             */
+            total_execution_time_ms: number;
+            /**
+             * Total Items
+             * @description Total items requested
+             */
+            total_items: number;
+        };
+        /** Body_convert_api_v1_convert_post */
+        Body_convert_api_v1_convert_post: {
+            /**
+             * Bulletin Id
+             * @description Optional bulletin identifier
+             * @default
+             */
+            bulletin_id: string;
+            /**
+             * Conversion Library Id
+             * @description Conversion library asset id (resolves engine profile).
+             * @default
+             */
+            conversion_library_id: string;
+            /**
+             * Conversion Template Id
+             * @description Optional conversion template id (first-party or custom). When set for a custom template, requires Bearer JWT and ownership (or shared); unknown ids are rejected.
+             * @default
+             */
+            conversion_template_id: string;
+            /**
+             * Decoding Library Id
+             * @description Decoding library asset id.
+             * @default
+             */
+            decoding_library_id: string;
+            /**
+             * Dissemination Library Id
+             * @description Dissemination library asset id.
+             * @default
+             */
+            dissemination_library_id: string;
+            /**
+             * Emit Translation Centre
+             * @description When true, emit translationCentreDesignator/Name on successful convert (cross-State / Translation Centre mode; FAQ §14.5). Default omit for in-State.
+             * @default false
+             */
+            emit_translation_centre: boolean;
+            /**
+             * Exchange Output
+             * @description When true with semantic_profile=CA_ECCC, wrap convert output in MSC COLLECT envelope (inner product validate paths unchanged)
+             * @default false
+             */
+            exchange_output: boolean;
+            /**
+             * Exchange Profile
+             * @description Rejected — use dissemination_library_id for packaging transforms.
+             * @default
+             */
+            exchange_profile: string;
+            /**
+             * Extensions
+             * @description Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)
+             * @default []
+             */
+            extensions: string[];
+            /**
+             * Include Nil Reasons
+             * @description When false, prefer omitting nilReason attributes (engine may still emit NIL report shells)
+             * @default true
+             */
+            include_nil_reasons: boolean;
+            /**
+             * Issuing Center
+             * @description Optional issuing centre ICAO code
+             * @default
+             */
+            issuing_center: string;
+            /**
+             * Iwxxm Validation Library Id
+             * @description IWXXM validation library asset id.
+             * @default
+             */
+            iwxxm_validation_library_id: string;
+            /**
+             * Iwxxm Version
+             * @description Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)
+             * @default
+             */
+            iwxxm_version: string;
+            /**
+             * Lint
+             * @description Run tac-validate before convert (Q14=C; default on)
+             * @default true
+             */
+            lint: boolean;
+            /**
+             * Log Level
+             * @description Minimum severity for conversion/validation/lint process issues echoed to the client
+             * @default INFO
+             */
+            log_level: string;
+            /**
+             * Manual Text
+             * @description Optional manual text input (METAR TAC format)
+             * @default
+             */
+            manual_text: string;
+            /**
+             * Overlay Id
+             * @description Rejected — overlays removed from Convert; use conversion_library_id.
+             * @default
+             */
+            overlay_id: string;
+            /**
+             * Preset Id
+             * @description Rejected — presets removed from Convert; use conversion_library_id.
+             * @default
+             */
+            preset_id: string;
+            /**
+             * Preview
+             * @description Soft-preview: best-effort IWXXM with failure spans on partial convert
+             * @default false
+             */
+            preview: boolean;
+            /**
+             * Product
+             * @description TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)
+             * @default METAR
+             */
+            product: string;
+            /**
+             * Profile
+             * @description Rejected — use conversion_library_id.
+             * @default
+             */
+            profile: string;
+            /**
+             * Propagate Residuals To Remarks
+             * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
+             */
+            propagate_residuals_to_remarks?: boolean | null;
+            /**
+             * Report Variant
+             * @description Optional profile-scoped report variant within the selected product family (for example LWIS under CA_ECCC + METAR)
+             * @default
+             */
+            report_variant: string;
+            /**
+             * Semantic Profile
+             * @description Rejected — use conversion_library_id.
+             * @default
+             */
+            semantic_profile: string;
+            /**
+             * Stop On Error
+             * @description Stop processing remaining inputs after first error
+             * @default false
+             */
+            stop_on_error: boolean;
+            /**
+             * Tac Validation Library Id
+             * @description TAC validation library asset id.
+             * @default
+             */
+            tac_validation_library_id: string;
+            /**
+             * Translation Centre Designator
+             * @description Optional translationCentreDesignator when emit_translation_centre is true
+             * @default
+             */
+            translation_centre_designator: string;
+            /**
+             * Translation Centre Name
+             * @description Optional translationCentreName when emit_translation_centre is true
+             * @default
+             */
+            translation_centre_name: string;
+            /**
+             * Validate Output
+             * @description Enable full 7-layer IWXXM validation after conversion
+             * @default false
+             */
+            validate_output: boolean;
+            /**
+             * Validation Level
+             * @description Validation depth: basic, schema, schematron, icao_opmet, comprehensive
+             * @default basic
+             */
+            validation_level: string;
+        };
+        /** Body_convert_bulletin_api_v1_convert_bulletin_post */
+        Body_convert_bulletin_api_v1_convert_bulletin_post: {
+            /**
+             * Conversion Library Id
+             * @description Conversion library asset id (resolves engine profile when set)
+             * @default
+             */
+            conversion_library_id: string;
+            /**
+             * Dissemination Library Id
+             * @description Dissemination library asset id. When set, ordered transforms (envelope / topic / checksum / bulletin re-wrap) apply on this Convert & Send path only.
+             * @default
+             */
+            dissemination_library_id: string;
+            /**
+             * Exchange Profile
+             * @description Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths
+             * @default
+             */
+            exchange_profile: string;
+            /**
+             * Extensions
+             * @description Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)
+             * @default []
+             */
+            extensions: string[];
+            /** Files */
+            files?: string[] | null;
+            /**
+             * Iwxxm Version
+             * @description Target IWXXM version
+             * @default
+             */
+            iwxxm_version: string;
+            /**
+             * Lint
+             * @description Run tac-validate before each report convert
+             * @default true
+             */
+            lint: boolean;
+            /**
+             * Manual Text
+             * @description Bulletin text: abbreviated heading TTAAii CCCC YYGGgg (optional BBB), then one or more TAC reports. Empty Bulletin ID / Issuing Center uses the heading TTAAii and CCCC.
+             * @default
+             */
+            manual_text: string;
+            /**
+             * Product
+             * @description TAC product, or iwxxm for XML pass-through
+             */
+            product: string;
+            /**
+             * Profile
+             * @description Deprecated - use conversion_library_id (legacy alias: annex3 or iwxxm_us)
+             * @default
+             */
+            profile: string;
+            /**
+             * Propagate Residuals To Remarks
+             * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
+             */
+            propagate_residuals_to_remarks?: boolean | null;
+            /**
+             * Semantic Profile
+             * @description Deprecated on Convert & Send — prefer conversion_library_id. Still accepted on convert-bulletin until Dissemination library packaging lands.
+             * @default
+             */
+            semantic_profile: string;
+        };
+        /** Body_convert_zip_api_v1_convert_zip_post */
+        Body_convert_zip_api_v1_convert_zip_post: {
+            /**
+             * Iwxxm Version
+             * @description Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)
+             * @default 2025-2
+             */
+            iwxxm_version: string;
+            /**
+             * Manual Text
+             * @description Optional manual text input (METAR TAC format)
+             * @default
+             */
+            manual_text: string;
+            /**
+             * Propagate Residuals To Remarks
+             * @description When true, append decode residual token text into remarks / humanReadableText when the profile supports that path; annex3 documents no XML target. Omitted uses the profile default (annex3 / ICAO_2025 off).
+             */
+            propagate_residuals_to_remarks?: boolean | null;
+        };
+        /** Body_decode_tac_endpoint_api_v1_decode_tac_post */
+        Body_decode_tac_endpoint_api_v1_decode_tac_post: {
+            /** Files */
+            files?: string[] | null;
+            /**
+             * Manual Text
+             * @description TAC text to decode
+             * @default
+             */
+            manual_text: string;
+            /**
+             * Product
+             * @description TAC product (required)
+             */
+            product: string;
+        };
+        /** Body_ingest_collect_api_v1_ingest_collect_post */
+        Body_ingest_collect_api_v1_ingest_collect_post: {
+            /** Files */
+            files?: string[] | null;
+            /**
+             * Iwxxm Version
+             * @default 2025-2
+             */
+            iwxxm_version: string;
+            /**
+             * Manual Text
+             * @description COLLECT IWXXM XML or inflated gzip text
+             * @default
+             */
+            manual_text: string;
+            /**
+             * Profile
+             * @default annex3
+             */
+            profile: string;
+        };
+        /** Body_lint_tac_api_v1_lint_tac_post */
+        Body_lint_tac_api_v1_lint_tac_post: {
+            /** Files */
+            files?: string[] | null;
+            /**
+             * Manual Text
+             * @description TAC or IWXXM XML to lint
+             * @default
+             */
+            manual_text: string;
+            /**
+             * Product
+             * @description Product type, or iwxxm for XML lint (default METAR)
+             * @default METAR
+             */
+            product: string;
+        };
+        /** Body_mass_ingest_api_v1_ingest_mass_post */
+        Body_mass_ingest_api_v1_ingest_mass_post: {
+            /** Files */
+            files: string[];
+        };
+        /** Body_validate_comprehensive_api_v1_validate_post */
+        Body_validate_comprehensive_api_v1_validate_post: {
+            /**
+             * Exchange Profile
+             * @description Exchange packaging profile (e.g. GLOBAL_AFS); ignored on validate-only paths
+             * @default
+             */
+            exchange_profile: string;
+            /**
+             * Extensions
+             * @description Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)
+             * @default []
+             */
+            extensions: string[];
+            /**
+             * Iwxxm Version
+             * @description Target IWXXM version
+             * @default 2025-2
+             */
+            iwxxm_version: string;
+            /**
+             * Layers
+             * @description Validation layers to run (ALL, or specific: AIRPORT_ICAO, TAC_SYNTAX, XML_WELLFORMED, XML_SCHEMA, SCHEMATRON, GML_REFERENCES, WMO_CODELISTS)
+             * @default [
+             *       "ALL"
+             *     ]
+             */
+            layers: string[];
+            /**
+             * Manual Text
+             * @description METAR TAC text to validate
+             * @default
+             */
+            manual_text: string;
+            /**
+             * Product
+             * @description TAC product for Canadian extension XSD when extensions include IWXXM_CA
+             * @default METAR
+             */
+            product: string;
+            /**
+             * Profile
+             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @default
+             */
+            profile: string;
+            request_body?: components["schemas"]["ValidateRequest"] | null;
+            /**
+             * Semantic Profile
+             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
+             * @default
+             */
+            semantic_profile: string;
+            /**
+             * Stop On Error
+             * @description Stop at first blocking layer failure
+             * @default true
+             */
+            stop_on_error: boolean;
+            /**
+             * Xml Content
+             * @description Optional XML to validate (if omitted, TAC will be converted first)
+             * @default
+             */
+            xml_content: string;
+        };
+        /**
+         * BulletinMetaModel
+         * @description HTTP DTO for WMO AHL metadata on convert-bulletin (api-contract Q6/Q7).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        BulletinMetaModel: {
+            /** Aa */
+            aa: string;
+            /** Ahl */
+            ahl: string;
+            /** Bbb */
+            bbb?: string | null;
+            /** Cccc */
+            cccc: string;
+            /** Report Count */
+            report_count: number;
+            /** Report Status */
+            report_status?: string | null;
+            /** Tt */
+            tt: string;
+            /** Yygggg */
+            yygggg: string;
+        };
+        /**
+         * BulletinReportResultModel
+         * @description Per-report convert-bulletin result (partial success allowed).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        BulletinReportResultModel: {
+            /** Fixes */
+            fixes?: components["schemas"]["LintFixModel"][];
+            /** Issues */
+            issues?: components["schemas"]["LintIssueModel"][];
+            /** Ok */
+            ok: boolean;
+            /** Report Index */
+            report_index: number;
+            /** Tac Input */
+            tac_input: string;
+            /** Xml */
+            xml?: string | null;
+        };
+        /**
+         * ComparisonDetail
+         * @description Detailed comparison result between our and reference IWXXM.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "extra_elements": [],
+         *       "missing_elements": [],
+         *       "our_elements": 28,
+         *       "passed": true,
+         *       "their_elements": 28,
+         *       "value_mismatches": []
+         *     }
+         */
+        ComparisonDetail: {
+            /**
+             * Error Message
+             * @description Error message if comparison failed
+             */
+            error_message?: string | null;
+            /**
+             * Extra Elements
+             * @description Elements present in our output but not in reference
+             */
+            extra_elements?: string[];
+            /**
+             * Missing Elements
+             * @description Elements present in reference but missing from our output
+             */
+            missing_elements?: string[];
+            /**
+             * Our Elements
+             * @description Number of elements in our converted IWXXM
+             */
+            our_elements: number;
+            /**
+             * Passed
+             * @description Whether comparison passed
+             */
+            passed: boolean;
+            /**
+             * Their Elements
+             * @description Number of elements in reference IWXXM
+             */
+            their_elements: number;
+            /**
+             * Value Mismatches
+             * @description Element values that differ between our and reference outputs
+             */
+            value_mismatches?: {
+                [key: string]: string;
+            }[];
+        };
+        /**
+         * ComparisonStatus
+         * @description Comparison result status.
+         * @enum {string}
+         */
+        ComparisonStatus: "pass" | "fail" | "error";
+        /**
+         * ConfirmRequest
+         * @description Email confirmation via GoTrue ``token_hash`` (Auth email link).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ConfirmRequest: {
+            /** Token Hash */
+            token_hash: string;
+            /**
+             * Type
+             * @default email
+             */
+            type: string;
+        };
+        /**
+         * ConversionIssue
+         * @description Structured issue for a single conversion input item.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ConversionIssue: {
+            /**
+             * Code
+             * @description Machine-readable issue code
+             * @example MISSING_KEYWORD
+             * @example INVALID_ICAO_FORMAT
+             */
+            code?: string | null;
+            /**
+             * End
+             * @description Optional exclusive character offset into the source TAC
+             */
+            end?: number | null;
+            /**
+             * Hint
+             * @description Concise suggested fix for the user
+             * @example Start the report with METAR or SPECI and a valid ICAO code
+             */
+            hint?: string | null;
+            /**
+             * Layer
+             * @description Validation layer associated with the issue
+             * @example airport_icao
+             * @example tac_syntax
+             */
+            layer?: string | null;
+            /**
+             * Location
+             * @description Optional location context from parser/validator
+             * @example line 1, column 12
+             */
+            location?: string | null;
+            /**
+             * Message
+             * @description Human-readable issue message
+             */
+            message: string;
+            /**
+             * @description Issue severity
+             * @default error
+             */
+            severity: components["schemas"]["ConversionIssueSeverity"];
+            /**
+             * Source
+             * @description Input source identifier (e.g., 'manual_input' or filename)
+             * @example manual_input
+             * @example EGLL_231750Z.txt
+             */
+            source: string;
+            /**
+             * Start
+             * @description Optional inclusive character offset into the source TAC
+             */
+            start?: number | null;
+        };
+        /**
+         * ConversionIssueSeverity
+         * @description Severity level for conversion and validation issues.
+         * @enum {string}
+         */
+        ConversionIssueSeverity: "error" | "warning" | "info";
+        /**
+         * ConversionResponse
+         * @description Response from conversion endpoint with results and errors.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "errors": [],
+         *       "failed": 0,
+         *       "issues": [],
+         *       "results": [
+         *         {
+         *           "content": "<?xml version='1.0' encoding='utf-8'?>...",
+         *           "name": "manual_input.txt",
+         *           "size_bytes": 1452,
+         *           "source": "manual"
+         *         },
+         *         {
+         *           "content": "<?xml version='1.0' encoding='utf-8'?>...",
+         *           "name": "EGLL_231750Z.txt",
+         *           "size_bytes": 1389,
+         *           "source": "EGLL.txt"
+         *         }
+         *       ],
+         *       "successful": 2,
+         *       "total_processed": 2
+         *     }
+         */
+        ConversionResponse: {
+            /**
+             * Errors
+             * @description Error messages for failed conversions
+             */
+            errors?: string[];
+            /**
+             * Failed
+             * @description Number of failed conversions
+             * @example 0
+             * @example 1
+             */
+            failed: number;
+            /**
+             * Failed Spans
+             * @description Soft-preview failed character spans; empty when preview omitted/false
+             */
+            failed_spans?: components["schemas"]["FailedSpan"][];
+            /**
+             * Issues
+             * @description Structured issues (errors/warnings/info) for failed or partial conversions
+             */
+            issues?: components["schemas"]["ConversionIssue"][];
+            /**
+             * Metadata
+             * @description Echoed request metadata such as bulletin_id, issuing_center, and validation options
+             */
+            metadata?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Ok
+             * @description Soft-preview envelope flag; set when preview=true
+             */
+            ok?: boolean | null;
+            /**
+             * Results
+             * @description Successfully converted IWXXM XML documents
+             */
+            results?: components["schemas"]["ConversionResult"][];
+            /**
+             * Successful
+             * @description Number of successful conversions
+             * @example 2
+             * @example 4
+             */
+            successful: number;
+            /**
+             * Total Processed
+             * @description Total number of inputs processed (manual_text + files)
+             * @example 2
+             * @example 5
+             */
+            total_processed: number;
+        };
+        /**
+         * ConversionResult
+         * @description Individual conversion result for a single METAR input.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "content": "<?xml version='1.0' encoding='utf-8'?>\n<iwxxm:METAR gml:id='METAR_KJFK_231751Z'>\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id='TP1'>\n      <gml:timePosition>2023-09-23T17:51:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n</iwxxm:METAR>",
+         *       "name": "KJFK_231751Z.txt",
+         *       "size_bytes": 1452,
+         *       "source": "file"
+         *     }
+         */
+        ConversionResult: {
+            /**
+             * Content
+             * @description Complete IWXXM XML document as UTF-8 text
+             */
+            content: string;
+            /**
+             * Name
+             * @description Output filename for this conversion
+             * @example manual_input.txt
+             * @example KJFK_231751Z.txt
+             */
+            name: string;
+            /**
+             * Size Bytes
+             * @description Output XML document size in bytes
+             * @example 1452
+             * @example 2048
+             */
+            size_bytes: number;
+            /**
+             * Source
+             * @description Source of input: 'manual' for text input, filename for uploads
+             * @example manual
+             * @example KJFK.txt
+             */
+            source: string;
+            /**
+             * Tac Input
+             * @description Original TAC input that produced this IWXXM output
+             * @example METAR FAOR 101200Z COR 33003KT CAVOK 04/M00 Q1023=
+             */
+            tac_input?: string | null;
+        };
+        /**
+         * ConversionTemplateCreate
+         * @description Create body for a custom conversion template.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ConversionTemplateCreate: {
+            /** Comments */
+            comments?: string | null;
+            /** Forkof */
+            forkOf?: string | null;
+            /** Iwxxmblock */
+            iwxxmBlock: string;
+            /** Name */
+            name: string;
+            /**
+             * Sample
+             * @default
+             */
+            sample: string;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slots */
+            slots?: components["schemas"]["ConversionTemplateSlot"][];
+            /** Slug */
+            slug: string;
+        };
+        /**
+         * ConversionTemplateListResponse
+         * @description First-party + custom conversion templates visible to the caller.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ConversionTemplateListResponse: {
+            /** Items */
+            items: components["schemas"]["ConversionTemplateOut"][];
+        };
+        /**
+         * ConversionTemplateOut
+         * @description Persisted or first-party conversion template projection.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ConversionTemplateOut: {
+            /** Access */
+            access: string;
+            /** Comments */
+            comments?: string | null;
+            /** Created At */
+            created_at?: string | null;
+            /** Forkof */
+            forkOf?: string | null;
+            /** Id */
+            id: string;
+            /** Iwxxmblock */
+            iwxxmBlock: string;
+            /** Name */
+            name: string;
+            /** Profiles */
+            profiles?: string[];
+            /**
+             * Sample
+             * @default
+             */
+            sample: string;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slots */
+            slots?: components["schemas"]["ConversionTemplateSlot"][];
+            /** Slug */
+            slug: string;
+            /** Updated At */
+            updated_at?: string | null;
+            /** User Id */
+            user_id?: string | null;
+        };
+        /**
+         * ConversionTemplatePreviewRequest
+         * @description Bridge preview request.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ConversionTemplatePreviewRequest: {
+            /**
+             * Focusgroup
+             * @default
+             */
+            focusGroup: string;
+            /** Fulltac */
+            fullTac?: string | null;
+            /** Iwxxmblock */
+            iwxxmBlock?: string | null;
+            /** Slots */
+            slots?: components["schemas"]["ConversionTemplateSlot"][] | null;
+            /** Templateid */
+            templateId: string;
+        };
+        /**
+         * ConversionTemplatePreviewResponse
+         * @description Bridge preview response.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ConversionTemplatePreviewResponse: {
+            /** Captures */
+            captures?: {
+                [key: string]: string;
+            }[];
+            /**
+             * Compiledpattern
+             * @default
+             */
+            compiledPattern: string;
+            /** Focusgroup */
+            focusGroup: string;
+            /** Matched */
+            matched: boolean;
+            /** Skipped */
+            skipped?: {
+                [key: string]: string;
+            }[];
+            /** Templateid */
+            templateId: string;
+            /**
+             * Xmlblock
+             * @default
+             */
+            xmlBlock: string;
+        };
+        /**
+         * ConversionTemplateSlot
+         * @description One ordered slot in a parameterizable conversion template.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ConversionTemplateSlot: {
+            /** Digits */
+            digits?: number | null;
+            /** Enumvalues */
+            enumValues?: string | null;
+            /**
+             * Gloss
+             * @default
+             */
+            gloss: string;
+            /** Id */
+            id: string;
+            /**
+             * Iwxxmfield
+             * @default
+             */
+            iwxxmField: string;
+            /** Label */
+            label: string;
+            /** Literal */
+            literal?: string | null;
+            /**
+             * Mode
+             * @default convert
+             */
+            mode: string;
+            /**
+             * Optional
+             * @default false
+             */
+            optional: boolean;
+            /** Type */
+            type: string;
+        };
+        /**
+         * ConversionTemplateUpdate
+         * @description Partial update for a custom conversion template.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ConversionTemplateUpdate: {
+            /** Comments */
+            comments?: string | null;
+            /** Iwxxmblock */
+            iwxxmBlock?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Sample */
+            sample?: string | null;
+            /** Shared */
+            shared?: boolean | null;
+            /** Slots */
+            slots?: components["schemas"]["ConversionTemplateSlot"][] | null;
+            /** Slug */
+            slug?: string | null;
+        };
+        /**
+         * ConvertBulletinResponse
+         * @description Response for POST /api/v1/convert-bulletin.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ConvertBulletinResponse: {
+            bulletin_meta: components["schemas"]["BulletinMetaModel"];
+            /**
+             * Exchange Profile
+             * @description Resolved exchange packaging profile (default GLOBAL_AFS on this route)
+             */
+            exchange_profile?: string | null;
+            /** Results */
+            results?: components["schemas"]["BulletinReportResultModel"][];
+        };
+        /**
+         * DecodeResidualModel
+         * @description HTTP DTO for an undecoded TAC span (explicit residuals - G4).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        DecodeResidualModel: {
+            /** End */
+            end: number;
+            /** Start */
+            start: number;
+            /** Text */
+            text: string;
+        };
+        /**
+         * DecodeSegmentModel
+         * @description HTTP DTO for one TAC decode/annotate segment.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        DecodeSegmentModel: {
+            /** Code */
+            code: string;
+            /** End */
+            end: number;
+            /** Explanation */
+            explanation: string;
+            /** Start */
+            start: number;
+        };
+        /**
+         * DecodeTacResponse
+         * @description Response for POST /api/v1/decode-tac.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        DecodeTacResponse: {
+            /** Product */
+            product: string;
+            /** Residuals */
+            residuals?: components["schemas"]["DecodeResidualModel"][];
+            /** Segments */
+            segments?: components["schemas"]["DecodeSegmentModel"][];
+            /**
+             * Summary
+             * @description Deterministic plain-language paragraph of the report
+             * @default
+             */
+            summary: string;
+        };
+        /**
+         * DeliveryReceiptOut
+         * @description Redacted delivery receipt (API).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        DeliveryReceiptOut: {
+            /**
+             * Attempt
+             * @default 1
+             */
+            attempt: number;
+            /** Completed At */
+            completed_at?: string | null;
+            /** Detail */
+            detail?: string | null;
+            /** Gateway */
+            gateway: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "DELIVERED" | "FAILED" | "SKIPPED";
+        };
+        /**
+         * DisseminationPlanCreate
+         * @description Body to create a DisseminationPlan (no secrets).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        DisseminationPlanCreate: {
+            /** Destination Refs */
+            destination_refs?: string[];
+            /** Retry */
+            retry?: {
+                [key: string]: unknown;
+            } | null;
+            /** Slug */
+            slug: string;
+            /** Transforms */
+            transforms?: string[];
+            /**
+             * Validity Policy
+             * @default valid-only
+             * @enum {string}
+             */
+            validity_policy: "valid-only" | "warn-ok";
+        };
+        /**
+         * DisseminationPlanOut
+         * @description Persisted plan row.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        DisseminationPlanOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Destination Refs */
+            destination_refs: string[];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Retry */
+            retry?: {
+                [key: string]: unknown;
+            } | null;
+            /** Slug */
+            slug: string;
+            /** Transforms */
+            transforms: string[];
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Validity Policy */
+            validity_policy: string;
+        };
+        /**
+         * DisseminationPlanUpdate
+         * @description Partial update for a DisseminationPlan.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        DisseminationPlanUpdate: {
+            /** Destination Refs */
+            destination_refs?: string[] | null;
+            /** Retry */
+            retry?: {
+                [key: string]: unknown;
+            } | null;
+            /** Transforms */
+            transforms?: string[] | null;
+            /** Validity Policy */
+            validity_policy?: ("valid-only" | "warn-ok") | null;
+        };
+        /**
+         * DisseminationTemplateCreate
+         * @description Create body for a saved dissemination template.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        DisseminationTemplateCreate: {
+            /**
+             * Ddl
+             * @default false
+             */
+            ddl: boolean;
+            /** Name */
+            name: string;
+            /** Params */
+            params?: {
+                [key: string]: unknown;
+            };
+            /** Product */
+            product?: string | null;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Sinktype */
+            sinkType: string;
+            /** Slug */
+            slug: string;
+        };
+        /**
+         * DisseminationTemplateListResponse
+         * @description List of saved dissemination templates for the caller.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        DisseminationTemplateListResponse: {
+            /** Items */
+            items: components["schemas"]["DisseminationTemplateOut"][];
+        };
+        /**
+         * DisseminationTemplateOut
+         * @description Persisted saved dissemination template.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        DisseminationTemplateOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Ddl */
+            ddl: boolean;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Params */
+            params?: {
+                [key: string]: unknown;
+            };
+            /** Product */
+            product?: string | null;
+            /** Shared */
+            shared: boolean;
+            /** Sinktype */
+            sinkType: string;
+            /** Slug */
+            slug: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
+         * DisseminationTemplateUpdate
+         * @description Partial update for a saved dissemination template.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        DisseminationTemplateUpdate: {
+            /** Ddl */
+            ddl?: boolean | null;
+            /** Name */
+            name?: string | null;
+            /** Params */
+            params?: {
+                [key: string]: unknown;
+            } | null;
+            /** Product */
+            product?: string | null;
+            /** Shared */
+            shared?: boolean | null;
+            /** Sinktype */
+            sinkType?: string | null;
+            /** Slug */
+            slug?: string | null;
+        };
+        /**
+         * EvaluationJobResponse
+         * @description Response when creating an evaluation job.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "created_at": "2026-02-10T14:30:45.123456+00:00",
+         *       "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
+         *       "station_count": 50,
+         *       "status": "pending"
+         *     }
+         */
+        EvaluationJobResponse: {
+            /**
+             * Created At
+             * Format: date-time
+             * @description Job creation timestamp
+             */
+            created_at: string;
+            /**
+             * Job Id
+             * @description Unique job identifier (UUID)
+             * @example job_550e8400e29b41d4a71662f7d6e6b1c0
+             */
+            job_id: string;
+            /**
+             * Station Count
+             * @description Number of stations to evaluate
+             */
+            station_count: number;
+            /** @description Current job status: pending, running, completed, failed */
+            status: components["schemas"]["JobStatus"];
+        };
+        /**
+         * EvaluationJobStatus
+         * @description Current status of an evaluation job.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "created_at": "2026-02-10T14:30:45.123456+00:00",
+         *       "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
+         *       "progress": 25,
+         *       "status": "running",
+         *       "total": 50
+         *     }
+         */
+        EvaluationJobStatus: {
+            /**
+             * Completed At
+             * @description Job completion timestamp (if completed)
+             */
+            completed_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Job creation timestamp
+             */
+            created_at: string;
+            /**
+             * Error Message
+             * @description Error message if job failed
+             */
+            error_message?: string | null;
+            /**
+             * Job Id
+             * @description Unique job identifier
+             */
+            job_id: string;
+            /**
+             * Progress
+             * @description Number of stations processed
+             */
+            progress: number;
+            /** @description Current status: pending, running, completed, failed */
+            status: components["schemas"]["JobStatus"];
+            /** @description Summary statistics (populated when job completes) */
+            summary?: components["schemas"]["JobSummaryStats"] | null;
+            /**
+             * Total
+             * @description Total stations to process
+             */
+            total: number;
+        };
+        /**
+         * EvaluationMode
+         * @description Evaluation mode.
+         * @enum {string}
+         */
+        EvaluationMode: "single" | "random" | "all";
+        /**
+         * EvaluationRequest
+         * @description Request to create an evaluation job.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "hours": 1.5,
+         *       "large_airports_only": true,
+         *       "mode": "random",
+         *       "sample_size": 50,
+         *       "scheduled_service_only": true
+         *     }
+         */
+        EvaluationRequest: {
+            /**
+             * Hours
+             * @description Hours back to search for METAR data
+             * @default 1.5
+             * @example 1.5
+             * @example 3
+             * @example 6
+             */
+            hours: number;
+            /**
+             * Large Airports Only
+             * @description Only evaluate large airports (IATA code available)
+             * @default true
+             */
+            large_airports_only: boolean;
+            /** @description Evaluation mode: 'single' (specific stations), 'random' (random sample), or 'all' (all airports) */
+            mode: components["schemas"]["EvaluationMode"];
+            /**
+             * Sample Size
+             * @description Number of stations to sample (for 'random' mode)
+             * @default 100
+             * @example 50
+             * @example 100
+             * @example 200
+             */
+            sample_size: number | null;
+            /**
+             * Scheduled Service Only
+             * @description Only evaluate airports with scheduled service
+             * @default true
+             */
+            scheduled_service_only: boolean;
+            /**
+             * Station Ids
+             * @description Specific ICAO codes (required for 'single' mode)
+             * @example [
+             *       "KJFK",
+             *       "EGLL",
+             *       "RJTT"
+             *     ]
+             */
+            station_ids?: string[] | null;
+        };
+        /**
+         * EvaluationResultDetail
+         * @description Detailed result for a single station evaluation.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "comparison": {
+         *         "our_elements": 28,
+         *         "passed": true,
+         *         "their_elements": 28
+         *       },
+         *       "comparison_status": "pass",
+         *       "errors": [],
+         *       "our_iwxxm": "<?xml version='1.0'?>...",
+         *       "station_id": "KJFK",
+         *       "tac_input": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2",
+         *       "their_iwxxm": "<?xml version='1.0'?>...",
+         *       "timestamp": "2026-02-10T14:30:45.123456+00:00"
+         *     }
+         */
+        EvaluationResultDetail: {
+            /** @description Detailed comparison information */
+            comparison?: components["schemas"]["ComparisonDetail"] | null;
+            /** @description Comparison result: pass, fail, or error */
+            comparison_status: components["schemas"]["ComparisonStatus"];
+            /**
+             * Errors
+             * @description Any errors during evaluation
+             */
+            errors?: string[];
+            /**
+             * Our Iwxxm
+             * @description Our converted IWXXM XML output
+             */
+            our_iwxxm?: string | null;
+            /**
+             * Station Id
+             * @description ICAO airport code
+             * @example KJFK
+             * @example EGLL
+             */
+            station_id: string;
+            /**
+             * Tac Input
+             * @description Original METAR TAC input
+             */
+            tac_input?: string | null;
+            /**
+             * Their Iwxxm
+             * @description Reference IWXXM XML for comparison
+             */
+            their_iwxxm?: string | null;
+            /**
+             * Timestamp
+             * Format: date-time
+             * @description Evaluation timestamp
+             */
+            timestamp: string;
+        };
+        /**
+         * EvaluationResultsResponse
+         * @description Response with paginated evaluation results.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
+         *       "page": 1,
+         *       "per_page": 20,
+         *       "results": [
+         *         {
+         *           "comparison_status": "pass",
+         *           "station_id": "KJFK",
+         *           "timestamp": "2026-02-10T14:30:45.123456+00:00"
+         *         }
+         *       ],
+         *       "total_pages": 3,
+         *       "total_results": 50
+         *     }
+         */
+        EvaluationResultsResponse: {
+            /**
+             * Job Id
+             * @description Job identifier
+             */
+            job_id: string;
+            /**
+             * Page
+             * @description Current page number (1-indexed)
+             */
+            page: number;
+            /**
+             * Per Page
+             * @description Results per page
+             */
+            per_page: number;
+            /**
+             * Results
+             * @description Results for this page
+             */
+            results: components["schemas"]["EvaluationResultDetail"][];
+            /**
+             * Total Pages
+             * @description Total number of pages
+             */
+            total_pages: number;
+            /**
+             * Total Results
+             * @description Total number of results
+             */
+            total_results: number;
+        };
+        /**
+         * FailedSpan
+         * @description Character span marking a soft-preview failure.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        FailedSpan: {
+            /**
+             * Code
+             * @description Machine-readable failure code
+             */
+            code?: string | null;
+            /**
+             * End
+             * @description Exclusive character offset into source TAC
+             */
+            end: number;
+            /**
+             * Message
+             * @description Human-readable failure message
+             */
+            message?: string | null;
+            /**
+             * Start
+             * @description Inclusive character offset into source TAC
+             */
+            start: number;
+        };
+        /**
+         * GatewayHealthListResponse
+         * @description Health for registered gateway kinds.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        GatewayHealthListResponse: {
+            /** Items */
+            items: components["schemas"]["GatewayHealthOut"][];
+        };
+        /**
+         * GatewayHealthOut
+         * @description Operator-safe gateway health row.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        GatewayHealthOut: {
+            /** Connectivity Ok */
+            connectivity_ok: boolean;
+            /** Detail */
+            detail?: string | null;
+            /** Gateway */
+            gateway: string;
+            /** Ok */
+            ok: boolean;
+        };
+        /** HTTPValidationError */
+        HTTPValidationError: {
+            /** Detail */
+            detail?: components["schemas"]["ValidationError"][];
+        };
+        /**
+         * HealthResponse
+         * @description Health check response.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        HealthResponse: {
+            /**
+             * Service
+             * @default metar-to-iwxxm
+             */
+            service: string;
+            /** Status */
+            status: string;
+            /** Tac2Iwxxm Available */
+            tac2iwxxm_available: boolean;
+            /**
+             * Timestamp
+             * Format: date-time
+             */
+            timestamp?: string;
+            /** Version */
+            version: string;
+        };
+        /**
+         * ICAORegion
+         * @description ICAO Regional Offices as per user decision 3.
+         * @enum {string}
+         */
+        ICAORegion: "AFI" | "APAC" | "ESAF" | "EUR" | "MID" | "NAM" | "NAT" | "SAM" | "WAFR";
+        /**
+         * JobListItem
+         * @description Summary item for job list.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "completed_at": "2026-02-10T15:45:30.123456+00:00",
+         *       "created_at": "2026-02-10T14:30:45.123456+00:00",
+         *       "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
+         *       "progress": 50,
+         *       "station_count": 50,
+         *       "status": "completed",
+         *       "summary": {
+         *         "errors": 2,
+         *         "failed": 3,
+         *         "pass_rate": 0.9,
+         *         "passed": 45,
+         *         "total": 50
+         *       }
+         *     }
+         */
+        JobListItem: {
+            /**
+             * Completed At
+             * @description Completion timestamp (if completed)
+             */
+            completed_at?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             * @description Creation timestamp
+             */
+            created_at: string;
+            /**
+             * Job Id
+             * @description Job identifier
+             */
+            job_id: string;
+            /**
+             * Progress
+             * @description Stations processed so far
+             */
+            progress: number;
+            /**
+             * Station Count
+             * @description Total stations in job
+             */
+            station_count: number;
+            /** @description Job status */
+            status: components["schemas"]["JobStatus"];
+            /** @description Summary statistics (if completed) */
+            summary?: components["schemas"]["JobSummaryStats"] | null;
+        };
+        /**
+         * JobListResponse
+         * @description Response with list of jobs.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "jobs": [
+         *         {
+         *           "created_at": "2026-02-10T14:30:45.123456+00:00",
+         *           "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
+         *           "progress": 50,
+         *           "station_count": 50,
+         *           "status": "completed"
+         *         }
+         *       ],
+         *       "page": 1,
+         *       "per_page": 20,
+         *       "total": 15
+         *     }
+         */
+        JobListResponse: {
+            /**
+             * Jobs
+             * @description Jobs on this page
+             */
+            jobs: components["schemas"]["JobListItem"][];
+            /**
+             * Page
+             * @description Current page number (1-indexed)
+             */
+            page: number;
+            /**
+             * Per Page
+             * @description Jobs per page
+             */
+            per_page: number;
+            /**
+             * Total
+             * @description Total number of jobs
+             */
+            total: number;
+        };
+        /**
+         * JobStatus
+         * @description Job execution status.
+         * @enum {string}
+         */
+        JobStatus: "pending" | "running" | "completed" | "failed";
+        /**
+         * JobSummaryStats
+         * @description Summary statistics for a job.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "avg_elements_our": 28.5,
+         *       "avg_elements_their": 26.8,
+         *       "errors": 2,
+         *       "failed": 3,
+         *       "pass_rate": 0.9,
+         *       "passed": 45,
+         *       "total": 50
+         *     }
+         */
+        JobSummaryStats: {
+            /**
+             * Avg Elements Our
+             * @description Average number of elements in our converted IWXXM
+             */
+            avg_elements_our?: number | null;
+            /**
+             * Avg Elements Their
+             * @description Average number of elements in reference IWXXM
+             */
+            avg_elements_their?: number | null;
+            /**
+             * Errors
+             * @description Number of stations with evaluation errors
+             */
+            errors: number;
+            /**
+             * Failed
+             * @description Number of stations with failing comparison
+             */
+            failed: number;
+            /**
+             * Pass Rate
+             * @description Pass rate as decimal (0.0-1.0)
+             */
+            pass_rate: number;
+            /**
+             * Passed
+             * @description Number of stations with passing comparison
+             */
+            passed: number;
+            /**
+             * Total
+             * @description Total stations evaluated
+             */
+            total: number;
+        };
+        /**
+         * LibraryAssetCreate
+         * @description Create a custom library asset (optionally forked).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LibraryAssetCreate: {
+            /** Attachednationalline */
+            attachedNationalLine: string;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            };
+            /** Engineprofileid */
+            engineProfileId: string;
+            /** Forkof */
+            forkOf?: string | null;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "conversion" | "tac_validation" | "iwxxm_validation" | "dissemination" | "decoding";
+            /** Name */
+            name: string;
+            /**
+             * Schemaversion
+             * @default 1
+             */
+            schemaVersion: number;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slug */
+            slug: string;
+            /**
+             * Status
+             * @default draft
+             * @enum {string}
+             */
+            status: "draft" | "activated";
+            /** Yamlbody */
+            yamlBody?: string | null;
+        };
+        /**
+         * LibraryAssetListResponse
+         * @description Library assets visible to the caller.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LibraryAssetListResponse: {
+            /** Items */
+            items: components["schemas"]["LibraryAssetOut"][];
+        };
+        /**
+         * LibraryAssetOut
+         * @description First-party or custom library asset (five Libraries).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LibraryAssetOut: {
+            /**
+             * Access
+             * @enum {string}
+             */
+            access: "first_party" | "custom";
+            /** Attachednationalline */
+            attachedNationalLine: string;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            };
+            /** Created At */
+            created_at?: string | null;
+            /** Engineprofileid */
+            engineProfileId: string;
+            /** Forkof */
+            forkOf?: string | null;
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "conversion" | "tac_validation" | "iwxxm_validation" | "dissemination" | "decoding";
+            /** Name */
+            name: string;
+            /**
+             * Schemaversion
+             * @default 1
+             */
+            schemaVersion: number;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slug */
+            slug?: string | null;
+            /**
+             * Status
+             * @default draft
+             * @enum {string}
+             */
+            status: "draft" | "activated";
+            /** Updated At */
+            updated_at?: string | null;
+            /** Userid */
+            userId?: string | null;
+            /** Yamlbody */
+            yamlBody?: string | null;
+        };
+        /**
+         * LibraryAssetUpdate
+         * @description Partial update for a custom library asset (or fork-on-edit first-party).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LibraryAssetUpdate: {
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            } | null;
+            /** Name */
+            name?: string | null;
+            /** Schemaversion */
+            schemaVersion?: number | null;
+            /** Shared */
+            shared?: boolean | null;
+            /** Slug */
+            slug?: string | null;
+            /** Status */
+            status?: ("draft" | "activated") | null;
+            /** Yamlbody */
+            yamlBody?: string | null;
+        };
+        /**
+         * LibraryRulePreviewRequest
+         * @description AC11 rule association preview for a TAC group.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LibraryRulePreviewRequest: {
+            /** Focusgroup */
+            focusGroup: string;
+            /** Libraryid */
+            libraryId: string;
+        };
+        /**
+         * LibraryRulePreviewResponse
+         * @description Matched conversion rule for a TAC group.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LibraryRulePreviewResponse: {
+            /** Focusgroup */
+            focusGroup: string;
+            /** Libraryid */
+            libraryId: string;
+            /**
+             * Matched
+             * @default true
+             */
+            matched: boolean;
+            /** Ruleid */
+            ruleId: string;
+            /** Rulename */
+            ruleName: string;
+        };
+        /**
+         * LibraryYamlValidateRequest
+         * @description Validate library YAML without persisting.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LibraryYamlValidateRequest: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "conversion" | "tac_validation" | "iwxxm_validation" | "dissemination" | "decoding";
+            /**
+             * Lifecycle
+             * @default draft
+             * @enum {string}
+             */
+            lifecycle: "draft" | "activated";
+            /** Yamlbody */
+            yamlBody: string;
+        };
+        /**
+         * LibraryYamlValidateResponse
+         * @description Regex + schema diagnostics for a library YAML document.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LibraryYamlValidateResponse: {
+            /**
+             * Can Activate
+             * @default false
+             */
+            can_activate: boolean;
+            /** Diagnostics */
+            diagnostics?: {
+                [key: string]: unknown;
+            }[];
+            /**
+             * Fail Count
+             * @default 0
+             */
+            fail_count: number;
+            /** Kind */
+            kind?: ("conversion" | "tac_validation" | "iwxxm_validation" | "dissemination" | "decoding") | null;
+            /**
+             * Lifecycle
+             * @default draft
+             * @enum {string}
+             */
+            lifecycle: "draft" | "activated";
+            /** Name */
+            name?: string | null;
+            /** Valid Yaml */
+            valid_yaml: boolean;
+            /**
+             * Warn Count
+             * @default 0
+             */
+            warn_count: number;
+            /** Yaml Error */
+            yaml_error?: string | null;
+        };
+        /**
+         * LintFixModel
+         * @description HTTP DTO for an optional tac-validate fix suggestion.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LintFixModel: {
+            /** Code */
+            code: string;
+            /** Message */
+            message: string;
+            /** Replacement */
+            replacement: string;
+        };
+        /**
+         * LintIssueCatalogEntryModel
+         * @description One registry row exported by GET /api/v1/lint-issue-catalog.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LintIssueCatalogEntryModel: {
+            /** Code */
+            code: string;
+            /**
+             * Exchange Profiles
+             * @description Canonical exchange profile ids for packaging-tagged rows; empty = shared
+             */
+            exchange_profiles?: string[];
+            /**
+             * Family
+             * @description lint (TAC registry) or iwxxm (validation checks)
+             */
+            family?: string | null;
+            /**
+             * Issue Type
+             * @description Closed vocabulary: presence, structure, content, consistency, iwxxm_schema, other
+             */
+            issue_type?: string | null;
+            /**
+             * Last Verified
+             * @description ISO date of last HTTP check for operator source_url
+             */
+            last_verified?: string | null;
+            /** Message Template */
+            message_template: string;
+            /** Product */
+            product?: string | null;
+            /**
+             * Replacement Url
+             * @description Verified landing when source_url is a legacy alias
+             */
+            replacement_url?: string | null;
+            /**
+             * Semantic Identifier
+             * @description Vocabulary concept path when href is a verified landing
+             */
+            semantic_identifier?: string | null;
+            /**
+             * Semantic Profiles
+             * @description Canonical semantic profile ids this row applies to; empty = shared/global
+             */
+            semantic_profiles?: string[];
+            /** Severity */
+            severity: string;
+            /**
+             * Source Access
+             * @description Operator access tier: public, paywall, login, semantic_only
+             */
+            source_access?: string | null;
+            /** Source Attribution */
+            source_attribution?: string | null;
+            /** Source Id */
+            source_id?: string | null;
+            /**
+             * Source Locator
+             * @description Section/table/page locator for the cited source
+             */
+            source_locator?: string | null;
+            /**
+             * Source Type
+             * @description tier1, tier2, or tier3 source policy
+             */
+            source_type?: string | null;
+            /** Source Url */
+            source_url?: string | null;
+            /**
+             * Status
+             * @description verified, legacy_alias, or semantic_only
+             */
+            status?: string | null;
+            /** Tags */
+            tags?: string[];
+        };
+        /**
+         * LintIssueCatalogResponse
+         * @description Response for GET /api/v1/lint-issue-catalog.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LintIssueCatalogResponse: {
+            /** Issues */
+            issues?: components["schemas"]["LintIssueCatalogEntryModel"][];
+        };
+        /**
+         * LintIssueModel
+         * @description HTTP DTO for a tac-validate issue (msgspec → pydantic).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LintIssueModel: {
+            /** Code */
+            code: string;
+            /**
+             * End
+             * @description Exclusive character offset
+             */
+            end?: number | null;
+            /** Location */
+            location?: string | null;
+            /** Message */
+            message: string;
+            /** Severity */
+            severity: string;
+            /**
+             * Start
+             * @description Inclusive character offset
+             */
+            start?: number | null;
+        };
+        /**
+         * LintTacResponse
+         * @description Response for POST /api/v1/lint-tac.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LintTacResponse: {
+            /** Fixes */
+            fixes?: components["schemas"]["LintFixModel"][];
+            /** Issues */
+            issues?: components["schemas"]["LintIssueModel"][];
+            /** Ok */
+            ok: boolean;
+            /** Product */
+            product?: string | null;
+        };
+        /**
+         * LoginRequest
+         * @description Login credentials.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LoginRequest: {
+            /** Email */
+            email: string;
+            /** Password */
+            password: string;
+        };
+        /**
+         * LogoutRequest
+         * @description Optional scoped logout body (FileConverter / AdminDashboard).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        LogoutRequest: {
+            /**
+             * Scope
+             * @description GoTrue logout scope: global, local, or others
+             */
+            scope?: string | null;
+        };
+        /**
+         * MappingConfigCreate
+         * @description Create a field mapping — no connection secrets.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        MappingConfigCreate: {
+            /** Config */
+            config?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Mode
+             * @enum {string}
+             */
+            mode: "source" | "sink";
+            /** Name */
+            name: string;
+        };
+        /**
+         * MappingConfigOut
+         * @description Persisted MappingConfig row.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        MappingConfigOut: {
+            /** Config */
+            config: {
+                [key: string]: unknown;
+            };
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Mode */
+            mode: string;
+            /** Name */
+            name: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
+         * MappingConfigUpdate
+         * @description Partial MappingConfig update.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        MappingConfigUpdate: {
+            /** Config */
+            config?: {
+                [key: string]: unknown;
+            } | null;
+            /** Mode */
+            mode?: ("source" | "sink") | null;
+        };
+        /**
+         * Message
+         * @description Simple success message.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        Message: {
+            /** Message */
+            message: string;
+        };
+        /**
+         * MetarFamilyVariant
+         * @description Read-only METAR-family variant row projected from the profile catalog.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        MetarFamilyVariant: {
+            /** Api Product */
+            api_product: string;
+            /** Iwxxm Root */
+            iwxxm_root: string;
+            /** Manobs */
+            manobs?: string | null;
+            /** Minimal Observation */
+            minimal_observation?: boolean | null;
+            /** Notes */
+            notes?: string | null;
+            /** Rule Id */
+            rule_id?: string | null;
+            /** Rule Id Prefix */
+            rule_id_prefix?: string | null;
+            /** Tac Lead */
+            tac_lead: string;
+        };
+        /**
+         * OverlayCreate
+         * @description Create body for a signed overlay (server issues the signature).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        OverlayCreate: {
+            /** Baseprofileid */
+            baseProfileId: string;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            };
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slug */
+            slug: string;
+        };
+        /**
+         * OverlayListResponse
+         * @description List of overlays for the caller.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        OverlayListResponse: {
+            /** Items */
+            items: components["schemas"]["OverlayOut"][];
+        };
+        /**
+         * OverlayOut
+         * @description Persisted signed overlay (owner-scoped).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        OverlayOut: {
+            /** Baseprofileid */
+            baseProfileId: string;
+            /** Body */
+            body: {
+                [key: string]: unknown;
+            };
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Shared */
+            shared: boolean;
+            /** Signature */
+            signature: string;
+            /** Slug */
+            slug: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
+         * OverlayUpdate
+         * @description Partial update for an overlay (re-signed on write).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        OverlayUpdate: {
+            /** Baseprofileid */
+            baseProfileId?: string | null;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            } | null;
+            /** Shared */
+            shared?: boolean | null;
+            /** Slug */
+            slug?: string | null;
+        };
+        /**
+         * PackageIssueModel
+         * @description HTTP DTO for an iwxxm-validate package finding (additive on /validate).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        PackageIssueModel: {
+            /** Code */
+            code?: string | null;
+            /**
+             * End
+             * @description Exclusive offset when known
+             */
+            end?: number | null;
+            /** Layer */
+            layer: string;
+            /** Location */
+            location?: string | null;
+            /** Message */
+            message: string;
+            /** Severity */
+            severity: string;
+            /**
+             * Start
+             * @description Inclusive offset when known
+             */
+            start?: number | null;
+        };
+        /**
+         * PackageStageModel
+         * @description Per-stage CA_ECCC validation outcome (additive on /validate).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        PackageStageModel: {
+            /** Issues */
+            issues?: components["schemas"]["PackageIssueModel"][];
+            /** Label */
+            label: string;
+            /** Ok */
+            ok: boolean;
+            /** Stage */
+            stage: string;
+        };
+        /**
+         * PendingFilePayload
+         * @description Queued file content stored inline on the session row.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        PendingFilePayload: {
+            /**
+             * Content
+             * @default
+             */
+            content: string;
+            /** Name */
+            name: string;
+        };
+        /**
+         * PlanExecuteRequest
+         * @description Execute or dry-run a plan for a sample message.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        PlanExecuteRequest: {
+            /**
+             * Dry Run
+             * @default true
+             */
+            dry_run: boolean;
+            /** Iwxxm Version */
+            iwxxm_version?: string | null;
+            /** Iwxxm Xml */
+            iwxxm_xml?: string | null;
+            /** Message Id */
+            message_id?: string | null;
+            /** Product */
+            product?: string | null;
+            /** Profile */
+            profile?: string | null;
+            /** Station */
+            station?: string | null;
+            /** Tac Text */
+            tac_text?: string | null;
+        };
+        /**
+         * PlanExecuteResponse
+         * @description Execute outcome with receipts.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        PlanExecuteResponse: {
+            /**
+             * Plan Id
+             * Format: uuid
+             */
+            plan_id: string;
+            /** Receipts */
+            receipts: components["schemas"]["DeliveryReceiptOut"][];
+        };
+        /**
+         * PresetCreate
+         * @description Create body for a saved semantic preset.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        PresetCreate: {
+            /** Extensions */
+            extensions?: string[];
+            /** Iwxxmversion */
+            iwxxmVersion: string;
+            /** Name */
+            name: string;
+            /** Overlayid */
+            overlayId?: string | null;
+            /** Reportvariant */
+            reportVariant?: string | null;
+            /** Semanticprofile */
+            semanticProfile: string;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slug */
+            slug: string;
+        };
+        /**
+         * PresetListResponse
+         * @description List of semantic presets for the caller.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        PresetListResponse: {
+            /** Items */
+            items: components["schemas"]["PresetOut"][];
+        };
+        /**
+         * PresetOut
+         * @description Persisted saved semantic preset.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        PresetOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Extensions */
+            extensions?: string[];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Iwxxmversion */
+            iwxxmVersion: string;
+            /** Name */
+            name: string;
+            /** Overlayid */
+            overlayId?: string | null;
+            /** Reportvariant */
+            reportVariant?: string | null;
+            /** Semanticprofile */
+            semanticProfile: string;
+            /** Shared */
+            shared: boolean;
+            /** Slug */
+            slug: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
+         * PresetUpdate
+         * @description Partial update for a saved semantic preset.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        PresetUpdate: {
+            /** Extensions */
+            extensions?: string[] | null;
+            /** Iwxxmversion */
+            iwxxmVersion?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Overlayid */
+            overlayId?: string | null;
+            /** Reportvariant */
+            reportVariant?: string | null;
+            /** Semanticprofile */
+            semanticProfile?: string | null;
+            /** Shared */
+            shared?: boolean | null;
+            /** Slug */
+            slug?: string | null;
+        };
+        /**
+         * ProfileCatalogEntry
+         * @description Read-only ConversionProfile catalog entry for the inspector.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ProfileCatalogEntry: {
+            /** Deltas Vs Icao */
+            deltas_vs_icao?: string[];
+            /** Emit Key */
+            emit_key?: string | null;
+            /** Id */
+            id: string;
+            /** Implementation */
+            implementation?: {
+                [key: string]: unknown;
+            };
+            /** Iwxxm Line */
+            iwxxm_line?: string | null;
+            /** Kind */
+            kind: string;
+            /** Legacy Alias */
+            legacy_alias?: string | null;
+            /** Metar Family Variants */
+            metar_family_variants?: components["schemas"]["MetarFamilyVariant"][];
+            /** Overlay Count */
+            overlay_count?: number | null;
+            /** Priority */
+            priority?: string | null;
+            /** Products */
+            products?: string[];
+            /** Rule Pack Count */
+            rule_pack_count?: number | null;
+            /** Status */
+            status?: string | null;
+            /** Vendor Pins */
+            vendor_pins?: {
+                [key: string]: unknown;
+            };
+        };
+        /**
+         * ProfileCatalogResponse
+         * @description Catalog list response.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ProfileCatalogResponse: {
+            /** Profiles */
+            profiles: components["schemas"]["ProfileCatalogEntry"][];
+            /** Schema Version */
+            schema_version?: number | string | null;
+        };
+        /**
+         * QualityMetricsDetailResponse
+         * @description Response for GET /api/v1/quality-metrics/{stem}.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        QualityMetricsDetailResponse: {
+            /**
+             * Converted Xml
+             * @default
+             */
+            converted_xml: string;
+            /** Deferral Reason */
+            deferral_reason?: string | null;
+            /**
+             * Deferred
+             * @default false
+             */
+            deferred: boolean;
+            /** Lint Issues */
+            lint_issues?: {
+                [key: string]: unknown;
+            }[];
+            /** Match Status */
+            match_status: string;
+            /**
+             * Official Xml
+             * @default
+             */
+            official_xml: string;
+            /** Product */
+            product: string;
+            /** Residuals */
+            residuals?: {
+                [key: string]: unknown;
+            }[];
+            /**
+             * Residuals Propagated To Remarks
+             * @default false
+             */
+            residuals_propagated_to_remarks: boolean;
+            /** Stem */
+            stem: string;
+            /**
+             * Tac
+             * @default
+             */
+            tac: string;
+            /** Tier */
+            tier: string;
+            /** Validate Issues */
+            validate_issues?: {
+                [key: string]: unknown;
+            }[];
+        };
+        /**
+         * QualityMetricsFileRowModel
+         * @description Slim inventory row for the corpus file list.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        QualityMetricsFileRowModel: {
+            /**
+             * Deferred
+             * @default false
+             */
+            deferred: boolean;
+            /**
+             * Has Tac Pair
+             * @default false
+             */
+            has_tac_pair: boolean;
+            /**
+             * Lint Error Count
+             * @default 0
+             */
+            lint_error_count: number;
+            /** Match Status */
+            match_status: string;
+            /** Product */
+            product: string;
+            /**
+             * Residual Count
+             * @default 0
+             */
+            residual_count: number;
+            /** Stem */
+            stem: string;
+            /** Tier */
+            tier: string;
+            /**
+             * Validate Error Count
+             * @default 0
+             */
+            validate_error_count: number;
+        };
+        /**
+         * QualityMetricsListResponse
+         * @description Response for GET /api/v1/quality-metrics.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        QualityMetricsListResponse: {
+            /** Files */
+            files?: components["schemas"]["QualityMetricsFileRowModel"][];
+            /** Generated At */
+            generated_at: string;
+            /** Iwxxm Pin */
+            iwxxm_pin: string;
+            /** Summaries */
+            summaries?: components["schemas"]["QualityMetricsSummaryModel"][];
+        };
+        /**
+         * QualityMetricsSummaryModel
+         * @description Per-product aggregate counts for the corpus browser.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        QualityMetricsSummaryModel: {
+            /**
+             * Deferred Gaps
+             * @default 0
+             */
+            deferred_gaps: number;
+            /**
+             * Lint Fail
+             * @default 0
+             */
+            lint_fail: number;
+            /**
+             * Match Fail
+             * @default 0
+             */
+            match_fail: number;
+            /**
+             * Match Pass
+             * @default 0
+             */
+            match_pass: number;
+            /**
+             * Pair Examples
+             * @default 0
+             */
+            pair_examples: number;
+            /** Product */
+            product: string;
+            /**
+             * Residual Nonempty
+             * @default 0
+             */
+            residual_nonempty: number;
+            /**
+             * Unpaired Examples
+             * @default 0
+             */
+            unpaired_examples: number;
+            /**
+             * Validate Fail
+             * @default 0
+             */
+            validate_fail: number;
+        };
+        /**
+         * RegisterRequest
+         * @description Registration credentials (Supabase GoTrue signup).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        RegisterRequest: {
+            /** Email */
+            email: string;
+            /** Password */
+            password: string;
+        };
+        /**
+         * RuleCatalogItem
+         * @description One package-owned trust-catalog row.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        RuleCatalogItem: {
+            /** Id */
+            id: string;
+            /** Severity */
+            severity?: string | null;
+            /**
+             * Summary
+             * @default
+             */
+            summary: string;
+            /** Tags */
+            tags?: string[];
+            /** Title */
+            title: string;
+        };
+        /**
+         * RuleCatalogResponse
+         * @description Response for GET /rule-catalogs.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        RuleCatalogResponse: {
+            /** Family */
+            family: string;
+            /** Items */
+            items: components["schemas"]["RuleCatalogItem"][];
+        };
+        /**
+         * RulePackCreate
+         * @description Create body for a rule pack.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        RulePackCreate: {
+            /**
+             * Message
+             * @default
+             */
+            message: string;
+            /** Product */
+            product: string;
+            /** Profile */
+            profile: string;
+            /** Severity */
+            severity: string;
+            /** Slug */
+            slug: string;
+            /** Stage */
+            stage: string;
+            /**
+             * Standardreference
+             * @default
+             */
+            standardReference: string;
+            /**
+             * When
+             * @default
+             */
+            when: string;
+        };
+        /**
+         * RulePackListResponse
+         * @description List of rule packs for the caller.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        RulePackListResponse: {
+            /** Items */
+            items: components["schemas"]["RulePackOut"][];
+        };
+        /**
+         * RulePackOut
+         * @description Persisted rule pack (owner-scoped).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        RulePackOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Message */
+            message: string;
+            /** Product */
+            product: string;
+            /** Profile */
+            profile: string;
+            /** Severity */
+            severity: string;
+            /** Slug */
+            slug: string;
+            /** Stage */
+            stage: string;
+            /** Standardreference */
+            standardReference: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** When */
+            when: string;
+        };
+        /**
+         * RulePackUpdate
+         * @description Partial update for a rule pack.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        RulePackUpdate: {
+            /** Message */
+            message?: string | null;
+            /** Product */
+            product?: string | null;
+            /** Profile */
+            profile?: string | null;
+            /** Severity */
+            severity?: string | null;
+            /** Slug */
+            slug?: string | null;
+            /** Stage */
+            stage?: string | null;
+            /** Standardreference */
+            standardReference?: string | null;
+            /** When */
+            when?: string | null;
+        };
+        /**
+         * SelectionOption
+         * @description Dropdown option from a deployed registry.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        SelectionOption: {
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+        };
+        /**
+         * SelectionOptionsResponse
+         * @description Response for GET /selection-options.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        SelectionOptionsResponse: {
+            /** Kind */
+            kind: string;
+            /** Options */
+            options: components["schemas"]["SelectionOption"][];
+        };
+        /**
+         * SessionResponse
+         * @description Session tokens.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        SessionResponse: {
+            /** Access Token */
+            access_token: string;
+            /** Expires At */
+            expires_at: number;
+            /** Refresh Token */
+            refresh_token: string;
+        };
+        /**
+         * TranslationCentreInfo
+         * @description Translation Centre identification metadata.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "centre_designator": "NOAA-MDL",
+         *       "centre_name": "NOAA Meteorological Development Laboratory",
+         *       "icao_location_indicator": "KWBC",
+         *       "online_since": "2024-01-15T00:00:00Z",
+         *       "supported_iwxxm_versions": [
+         *         "2025-2",
+         *         "2023-1"
+         *       ],
+         *       "supported_products": [
+         *         "METAR",
+         *         "SPECI"
+         *       ]
+         *     }
+         */
+        TranslationCentreInfo: {
+            /**
+             * Centre Designator
+             * @description Short designator for translation centre
+             */
+            centre_designator?: string | null;
+            /**
+             * Centre Name
+             * @description Full name of translation centre
+             */
+            centre_name?: string | null;
+            /**
+             * Contact Email
+             * @description Technical contact email
+             */
+            contact_email?: string | null;
+            /**
+             * Icao Location Indicator
+             * @description ICAO location indicator (CCCC)
+             */
+            icao_location_indicator?: string | null;
+            /**
+             * Online Since
+             * @description Service start date (ISO 8601)
+             */
+            online_since?: string | null;
+            /**
+             * Supported Iwxxm Versions
+             * @description Supported IWXXM versions
+             */
+            supported_iwxxm_versions: string[];
+            /**
+             * Supported Products
+             * @description Supported aviation product types
+             * @default [
+             *       "METAR",
+             *       "SPECI"
+             *     ]
+             */
+            supported_products: string[];
+        };
+        /**
+         * TranslationStatistics
+         * @description Aggregated translation statistics for ICAO OPMET compliance.
+         *
+         *     Provides summary metrics for a given time period and optional filters.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "average_duration_ms": 237,
+         *       "failed_translations": 24,
+         *       "period_end": "2026-02-13T23:59:59Z",
+         *       "period_start": "2026-02-13T00:00:00Z",
+         *       "success_rate": 98.45,
+         *       "successful_translations": 1523,
+         *       "total_translations": 1547,
+         *       "translations_by_region": {
+         *         "APAC": 234,
+         *         "EUR": 421,
+         *         "NAM": 892
+         *       },
+         *       "translations_by_version": {
+         *         "2023-1": 46,
+         *         "2025-2": 1501
+         *       }
+         *     }
+         */
+        TranslationStatistics: {
+            /**
+             * Average Duration Ms
+             * @description Average translation duration (milliseconds)
+             */
+            average_duration_ms: number;
+            /**
+             * Common Validation Errors
+             * @description Most frequent validation errors (optional)
+             */
+            common_validation_errors?: {
+                [key: string]: unknown;
+            }[] | null;
+            /**
+             * Failed Translations
+             * @description Failed translations
+             */
+            failed_translations: number;
+            /**
+             * Median Duration Ms
+             * @description Median translation duration (milliseconds)
+             */
+            median_duration_ms?: number | null;
+            /**
+             * Partial Translations
+             * @description Translations completed with warnings
+             * @default 0
+             */
+            partial_translations: number;
+            /**
+             * Period End
+             * Format: date-time
+             * @description Statistics period end (ISO 8601)
+             */
+            period_end: string;
+            /**
+             * Period Start
+             * Format: date-time
+             * @description Statistics period start (ISO 8601)
+             */
+            period_start: string;
+            /**
+             * Success Rate
+             * @description Translation success rate (percentage)
+             */
+            success_rate: number;
+            /**
+             * Successful Translations
+             * @description Successfully completed translations
+             */
+            successful_translations: number;
+            /**
+             * Total Translations
+             * @description Total number of translations in period
+             */
+            total_translations: number;
+            /**
+             * Translations By Airport
+             * @description Top airports by translation volume (optional)
+             */
+            translations_by_airport?: {
+                [key: string]: number;
+            } | null;
+            /**
+             * Translations By Region
+             * @description Translation count by ICAO region
+             */
+            translations_by_region?: {
+                [key: string]: number;
+            };
+            /**
+             * Translations By Version
+             * @description Translation count by IWXXM version
+             */
+            translations_by_version?: {
+                [key: string]: number;
+            };
+            /**
+             * Validation Layer Success Rates
+             * @description Success rate per validation layer (percentage)
+             */
+            validation_layer_success_rates?: {
+                [key: string]: number;
+            };
+        };
+        /**
+         * TranslationStatisticsRequest
+         * @description Request parameters for translation statistics query.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "end_date": "2026-02-13T23:59:59Z",
+         *       "icao_region": "NAM",
+         *       "include_airport_breakdown": true,
+         *       "iwxxm_version": "2025-2",
+         *       "start_date": "2026-02-01T00:00:00Z"
+         *     }
+         */
+        TranslationStatisticsRequest: {
+            /**
+             * Airport Code
+             * @description Filter by specific airport (optional)
+             */
+            airport_code?: string | null;
+            /**
+             * End Date
+             * Format: date-time
+             * @description Statistics period end (ISO 8601)
+             */
+            end_date: string;
+            /** @description Filter by ICAO region (optional) */
+            icao_region?: components["schemas"]["ICAORegion"] | null;
+            /**
+             * Include Airport Breakdown
+             * @description Include per-airport statistics
+             * @default false
+             */
+            include_airport_breakdown: boolean;
+            /**
+             * Include Error Details
+             * @description Include detailed error analysis
+             * @default false
+             */
+            include_error_details: boolean;
+            /**
+             * Iwxxm Version
+             * @description Filter by IWXXM version (optional)
+             */
+            iwxxm_version?: string | null;
+            /**
+             * Start Date
+             * Format: date-time
+             * @description Statistics period start (ISO 8601)
+             */
+            start_date: string;
+        };
+        /**
+         * UserResponse
+         * @description Auth user projection.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        UserResponse: {
+            /** Email */
+            email: string;
+            /** Id */
+            id: string;
+            /** Metadata */
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
+        /**
+         * ValidateIssueModel
+         * @description HTTP DTO for a validation orchestrator finding on /validate.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ValidateIssueModel: {
+            /** Code */
+            code?: string | null;
+            /**
+             * End
+             * @description Exclusive offset when known
+             */
+            end?: number | null;
+            /** Layer */
+            layer: string;
+            /** Level */
+            level: string;
+            /** Location */
+            location?: string | null;
+            /** Message */
+            message: string;
+            /**
+             * Start
+             * @description Inclusive offset when known
+             */
+            start?: number | null;
+        };
+        /**
+         * ValidateLayerIssueModel
+         * @description Per-layer issue entry nested under ``issues_by_layer``.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ValidateLayerIssueModel: {
+            /** Code */
+            code?: string | null;
+            /** Level */
+            level: string;
+            /** Location */
+            location?: string | null;
+            /** Message */
+            message: string;
+        };
+        /**
+         * ValidateRequest
+         * @description Request for IWXXM validation via JSON body.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "iwxxm_xml": "<?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>",
+         *       "stop_on_error": false,
+         *       "validation_level": "comprehensive",
+         *       "version": "2025-2"
+         *     }
+         */
+        ValidateRequest: {
+            /**
+             * Exchange Profile
+             * @description Exchange packaging profile (e.g. GLOBAL_AFS)
+             * @example GLOBAL_AFS
+             */
+            exchange_profile?: string | null;
+            /**
+             * Extensions
+             * @description Optional national extension tokens (e.g. IWXXM_CA for full Canadian validate stack)
+             * @example [
+             *       "IWXXM_CA"
+             *     ]
+             */
+            extensions?: string[] | null;
+            /**
+             * Iwxxm Xml
+             * @description IWXXM XML content to validate
+             * @example <?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>
+             */
+            iwxxm_xml: string;
+            /**
+             * Product
+             * @description TAC product for Canadian extension XSD selection when extensions include IWXXM_CA
+             * @example METAR
+             * @example TAF
+             */
+            product?: string | null;
+            /**
+             * Profile
+             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @default
+             * @example annex3
+             * @example iwxxm_us
+             */
+            profile: string;
+            /**
+             * Semantic Profile
+             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE)
+             * @example ICAO_2025
+             * @example US_FAA_NWS
+             * @example CA_ECCC
+             */
+            semantic_profile?: string | null;
+            /**
+             * Stop On Error
+             * @description Stop processing on first error
+             * @default false
+             */
+            stop_on_error: boolean;
+            /**
+             * Validation Level
+             * @description Validation depth: 'basic', 'schema', 'schematron', 'icao_opmet', 'comprehensive'
+             * @default comprehensive
+             * @example basic
+             * @example comprehensive
+             */
+            validation_level: string | null;
+            /**
+             * Version
+             * @description Target IWXXM version
+             * @default 2025-2
+             * @example 2025-2
+             * @example 2023-1
+             */
+            version: string;
+        };
+        /**
+         * ValidateResponse
+         * @description Response for POST /api/v1/validate (validation layers + package_* extras).
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        ValidateResponse: {
+            /**
+             * Extensions
+             * @description Resolved national extension tokens from the request (when supplied)
+             */
+            extensions?: string[] | null;
+            /** Is Valid */
+            is_valid: boolean;
+            /** Issues */
+            issues?: components["schemas"]["ValidateIssueModel"][];
+            /** Issues By Layer */
+            issues_by_layer?: {
+                [key: string]: components["schemas"]["ValidateLayerIssueModel"][];
+            };
+            /** Layers Failed */
+            layers_failed?: string[];
+            /** Layers Passed */
+            layers_passed?: string[];
+            /** Layers Run */
+            layers_run?: string[];
+            /** Package Issues */
+            package_issues?: components["schemas"]["PackageIssueModel"][];
+            /**
+             * Package Ok
+             * @default true
+             */
+            package_ok: boolean;
+            /**
+             * Package Stages
+             * @description Optional per-stage breakdown from iwxxm-validate when profile=ca_eccc and extensions include IWXXM_CA
+             */
+            package_stages?: components["schemas"]["PackageStageModel"][] | null;
+            /**
+             * Profile
+             * @default annex3
+             */
+            profile: string;
+            /**
+             * Segments
+             * @description Optional item-by-item decode rows (code and explanation) when a readable decode exists. Omitted when there is no decode.
+             */
+            segments?: components["schemas"]["DecodeSegmentModel"][] | null;
+            /** Stopped At Layer */
+            stopped_at_layer?: string | null;
+            /**
+             * Summary
+             * @description Optional plain-language paragraph of the decoded report when a readable decode exists. Omitted when there is no decode.
+             */
+            summary?: string | null;
+            /**
+             * Total Issues
+             * @default 0
+             */
+            total_issues: number;
+            /** Version */
+            version: string;
+        };
+        /** ValidationError */
+        ValidationError: {
+            /** Context */
+            ctx?: Record<string, never>;
+            /** Input */
+            input?: unknown;
+            /** Location */
+            loc: (string | number)[];
+            /** Message */
+            msg: string;
+            /** Error Type */
+            type: string;
+        };
+        /**
+         * ValidationIssue
+         * @description Single validation issue with context.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "code": "INVALID_ICAO",
+         *       "layer": "airport_icao",
+         *       "level": "error",
+         *       "location": "line 1, column 12",
+         *       "message": "Unknown ICAO code: ZZZZ"
+         *     }
+         */
+        ValidationIssue: {
+            /**
+             * Code
+             * @description Machine-readable error code
+             */
+            code?: string | null;
+            /** @description Validation layer that found this issue */
+            layer: components["schemas"]["src__schemas__validation__ValidationLayer"];
+            /** @description Severity level */
+            level: components["schemas"]["ValidationLevel"];
+            /**
+             * Location
+             * @description Location in document
+             */
+            location?: string | null;
+            /**
+             * Message
+             * @description Human-readable error message
+             */
+            message: string;
+            /**
+             * Suggestion
+             * @description Suggested fix
+             */
+            suggestion?: string | null;
+        };
+        /**
+         * ValidationLayer
+         * @description Validation layer identifiers.
+         * @enum {string}
+         */
+        "ValidationLayer-Input": "airport_icao" | "tac_syntax" | "xml_wellformed" | "xml_schema" | "schematron" | "gml_references" | "wmo_codelists";
+        /**
+         * ValidationLayerInfo
+         * @description Information about a validation layer.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "blocking": true,
+         *       "description": "Parse and validate METAR TAC syntax",
+         *       "layer": "tac_syntax",
+         *       "supported_content_types": [
+         *         "tac"
+         *       ]
+         *     }
+         */
+        ValidationLayerInfo: {
+            /**
+             * Blocking
+             * @description Whether this layer blocks further validation if it fails
+             */
+            blocking: boolean;
+            /**
+             * Description
+             * @description Human-readable description
+             */
+            description: string;
+            /** @description Layer identifier */
+            layer: components["schemas"]["src__schemas__validation__ValidationLayer"];
+            /**
+             * Supported Content Types
+             * @description Content types this layer supports (tac/xml)
+             */
+            supported_content_types?: string[];
+        };
+        /**
+         * ValidationLayersResponse
+         * @description List of available validation layers with configurations.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "layers": [
+         *         {
+         *           "blocking": true,
+         *           "description": "Extract and validate ICAO code against airport database",
+         *           "layer": "airport_icao",
+         *           "supported_content_types": [
+         *             "tac"
+         *           ]
+         *         },
+         *         {
+         *           "blocking": true,
+         *           "description": "Parse and validate METAR TAC syntax",
+         *           "layer": "tac_syntax",
+         *           "supported_content_types": [
+         *             "tac"
+         *           ]
+         *         }
+         *       ]
+         *     }
+         */
+        ValidationLayersResponse: {
+            /**
+             * Layers
+             * @description Available validation layers
+             */
+            layers: components["schemas"]["ValidationLayerInfo"][];
+        };
+        /**
+         * ValidationLevel
+         * @description Severity level for validation issues.
+         * @enum {string}
+         */
+        ValidationLevel: "critical" | "error" | "warning" | "info";
+        /**
+         * ValidationRequest
+         * @description Request for validation operation.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2",
+         *       "content_type": "tac",
+         *       "iwxxm_version": "3.0.1",
+         *       "layers": [
+         *         "airport_icao",
+         *         "tac_syntax"
+         *       ]
+         *     }
+         */
+        ValidationRequest: {
+            /**
+             * Content
+             * @description Content to validate (METAR TAC or IWXXM XML)
+             * @example METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2
+             */
+            content: string;
+            /**
+             * Content Type
+             * @description Content type: 'tac' (METAR TAC), 'xml' (IWXXM XML), or 'iwxxm' (alias of xml)
+             * @default tac
+             * @example tac
+             * @example xml
+             * @example iwxxm
+             */
+            content_type: string;
+            /**
+             * Iwxxm Version
+             * @description IWXXM version for validation context
+             * @example 3.0.1
+             */
+            iwxxm_version?: string | null;
+            /**
+             * Layers
+             * @description Specific layers to validate (None = all layers)
+             */
+            layers?: components["schemas"]["ValidationLayer-Input"][] | null;
+        };
+        /**
+         * ValidationResult
+         * @description Result from a validation operation.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         * @example {
+         *       "execution_time_ms": 12.5,
+         *       "issues": [],
+         *       "layer": "airport_icao",
+         *       "passed": true
+         *     }
+         */
+        ValidationResult: {
+            /**
+             * Execution Time Ms
+             * @description Execution time in ms
+             */
+            execution_time_ms?: number | null;
+            /**
+             * Issues
+             * @description List of issues
+             */
+            issues?: components["schemas"]["ValidationIssue"][];
+            /** @description Validation layer */
+            layer: components["schemas"]["src__schemas__validation__ValidationLayer"];
+            /**
+             * Metadata
+             * @description Layer-specific metadata
+             */
+            metadata?: {
+                [key: string]: unknown;
+            } | null;
+            /**
+             * Passed
+             * @description Whether validation passed
+             */
+            passed: boolean;
+            /**
+             * Validated At
+             * Format: date-time
+             */
+            validated_at?: string;
+        };
+        /**
+         * WorkSession
+         * @description Persisted work session returned by the API.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        WorkSession: {
+            /** Conversion Params */
+            conversion_params?: {
+                [key: string]: unknown;
+            };
+            /** Converted Results */
+            converted_results?: {
+                [key: string]: unknown;
+            }[];
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Deleted At */
+            deleted_at?: string | null;
+            /** Errors */
+            errors?: string[];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Issues */
+            issues?: {
+                [key: string]: unknown;
+            }[];
+            /** Kv Upload Key */
+            kv_upload_key?: string | null;
+            /**
+             * Manual Tac
+             * @default
+             */
+            manual_tac: string;
+            /** Pending Files */
+            pending_files?: components["schemas"]["PendingFilePayload"][];
+            product: components["schemas"]["WorkSessionProduct"];
+            status: components["schemas"]["WorkSessionStatus"];
+            /** Title */
+            title: string;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /**
+         * WorkSessionCreate
+         * @description Body for POST /api/v1/work-sessions.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        WorkSessionCreate: {
+            /** Conversion Params */
+            conversion_params?: {
+                [key: string]: unknown;
+            };
+            /** Converted Results */
+            converted_results?: {
+                [key: string]: unknown;
+            }[];
+            /** Errors */
+            errors?: string[];
+            /** Issues */
+            issues?: {
+                [key: string]: unknown;
+            }[];
+            /** Kv Upload Key */
+            kv_upload_key?: string | null;
+            /**
+             * Manual Tac
+             * @default
+             */
+            manual_tac: string;
+            /** Pending Files */
+            pending_files?: components["schemas"]["PendingFilePayload"][];
+            product: components["schemas"]["WorkSessionProduct"];
+            status?: components["schemas"]["WorkSessionStatus"] | null;
+            /** Title */
+            title?: string | null;
+        };
+        /**
+         * WorkSessionListResponse
+         * @description Paginated list of work sessions.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        WorkSessionListResponse: {
+            /** Items */
+            items: components["schemas"]["WorkSession"][];
+            /** Limit */
+            limit: number;
+            /** Page */
+            page: number;
+            /** Total */
+            total: number;
+        };
+        /**
+         * WorkSessionProduct
+         * @description Product ids stored on ``tac_work_sessions.product`` (lowercase).
+         * @enum {string}
+         */
+        WorkSessionProduct: "airmet" | "metar" | "sigmet" | "speci" | "taf" | "vaa" | "tca" | "swxa";
+        /**
+         * WorkSessionStatus
+         * @description Lifecycle status for a user's TAC work session.
+         * @enum {string}
+         */
+        WorkSessionStatus: "draft" | "wip" | "finished" | "failed";
+        /**
+         * WorkSessionUpdate
+         * @description Body for PATCH /api/v1/work-sessions/{id}.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        WorkSessionUpdate: {
+            /** Conversion Params */
+            conversion_params?: {
+                [key: string]: unknown;
+            };
+            /** Converted Results */
+            converted_results?: {
+                [key: string]: unknown;
+            }[];
+            /** Errors */
+            errors?: string[];
+            /** Issues */
+            issues?: {
+                [key: string]: unknown;
+            }[];
+            /** Kv Upload Key */
+            kv_upload_key?: string | null;
+            /**
+             * Manual Tac
+             * @default
+             */
+            manual_tac: string;
+            /** Pending Files */
+            pending_files?: components["schemas"]["PendingFilePayload"][];
+            product?: components["schemas"]["WorkSessionProduct"] | null;
+            status?: components["schemas"]["WorkSessionStatus"] | null;
+            /** Title */
+            title?: string | null;
+        };
+        /**
+         * ValidationLayer
+         * @description 7-layer IWXXM validation stages.
+         * @enum {string}
+         */
+        src__schemas__icao_opmet__ValidationLayer: "AIRPORT_ICAO" | "TAC_SYNTAX" | "XML_WELLFORMED" | "XML_SCHEMA" | "SCHEMATRON" | "GML_REFERENCES" | "WMO_CODELISTS";
+        /**
+         * ValidationLayer
+         * @description Validation layer identifiers.
+         * @enum {string}
+         */
+        src__schemas__validation__ValidationLayer: "airport_icao" | "tac_syntax" | "xml_wellformed" | "xml_schema" | "schematron" | "gml_references" | "wmo_codelists";
+    };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-  convert_api_v1_convert_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/x-www-form-urlencoded': components['schemas']['Body_convert_api_v1_convert_post'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ConversionResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  convert_bulletin_api_v1_convert_bulletin_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'multipart/form-data': components['schemas']['Body_convert_bulletin_api_v1_convert_bulletin_post'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ConvertBulletinResponse'];
-        };
-      };
-      /** @description Empty bulletin - no TAC reports after the abbreviated heading */
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Unsupported Media Type - multipart/form-data required */
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Malformed abbreviated heading (INVALID_AHL) or missing required fields. Engine split failures may include an alias of bulletin_split_failed. */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  convert_zip_api_v1_convert_zip_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/x-www-form-urlencoded': components['schemas']['Body_convert_zip_api_v1_convert_zip_post'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  decode_tac_endpoint_api_v1_decode_tac_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'multipart/form-data': components['schemas']['Body_decode_tac_endpoint_api_v1_decode_tac_post'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DecodeTacResponse'];
-        };
-      };
-      /** @description Unsupported Media Type - multipart/form-data required */
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Missing required product field */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  list_audit_api_v1_dissemination_audit_get: {
-    parameters: {
-      query?: {
-        product?: string | null;
-        station?: string | null;
-        profile?: string | null;
-        status?: string | null;
-        page?: number;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuditListResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_audit_api_v1_dissemination_audit__audit_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        audit_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuditRecordOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  gateways_health_api_v1_dissemination_gateways_health_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['GatewayHealthListResponse'];
-        };
-      };
-    };
-  };
-  get_mapping_api_v1_dissemination_mappings__mapping_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        mapping_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MappingConfigOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  patch_mapping_api_v1_dissemination_mappings__mapping_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        mapping_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['MappingConfigUpdate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MappingConfigOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  upsert_mapping_api_v1_dissemination_mappings__name__put: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        name: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['MappingConfigCreate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['MappingConfigOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_plan_api_v1_dissemination_plans__plan_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        plan_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DisseminationPlanOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  patch_plan_api_v1_dissemination_plans__plan_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        plan_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DisseminationPlanUpdate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DisseminationPlanOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  execute_plan_route_api_v1_dissemination_plans__plan_id__execute_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        plan_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PlanExecuteRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PlanExecuteResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  upsert_plan_by_slug_api_v1_dissemination_plans__slug__put: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        slug: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DisseminationPlanCreate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DisseminationPlanOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  dissemination_preflight_api_v1_dissemination_preflight_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-    };
-  };
-  dissemination_send_api_v1_dissemination_send_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-    };
-  };
-  list_user_jobs_api_v1_eval_jobs_get: {
-    parameters: {
-      query?: {
-        page?: number;
-        per_page?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['JobListResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  create_evaluation_job_api_v1_eval_jobs_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['EvaluationRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['EvaluationJobResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_job_status_api_v1_eval_jobs__job_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        job_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['EvaluationJobStatus'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_job_results_api_v1_eval_jobs__job_id__results_get: {
-    parameters: {
-      query?: {
-        page?: number;
-        per_page?: number;
-        status_filter?: components['schemas']['ComparisonStatus'] | null;
-      };
-      header?: never;
-      path: {
-        job_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['EvaluationResultsResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  ingest_collect_api_v1_ingest_collect_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'multipart/form-data': components['schemas']['Body_ingest_collect_api_v1_ingest_collect_post'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            [key: string]: unknown;
-          };
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-      /** @description COLLECT / FTBP ingest not implemented yet (placeholder) */
-      501: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  mass_ingest_api_v1_ingest_mass_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'multipart/form-data': components['schemas']['Body_mass_ingest_api_v1_ingest_mass_post'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  lint_issue_catalog_api_v1_lint_issue_catalog_get: {
-    parameters: {
-      query?: {
-        product?: string | null;
-        family?: string | null;
-        issue_type?: string | null;
-        source_access?: string | null;
-        semantic_profile?: string | null;
-        exchange_profile?: string | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LintIssueCatalogResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  lint_tac_api_v1_lint_tac_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'multipart/form-data': components['schemas']['Body_lint_tac_api_v1_lint_tac_post'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LintTacResponse'];
-        };
-      };
-      /** @description Unsupported Media Type - multipart/form-data required */
-      415: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_catalog_api_v1_profiles_catalog_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ProfileCatalogResponse'];
-        };
-      };
-    };
-  };
-  list_conversion_templates_api_v1_profiles_conversion_templates_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ConversionTemplateListResponse'];
-        };
-      };
-    };
-  };
-  create_conversion_template_api_v1_profiles_conversion_templates_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ConversionTemplateCreate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ConversionTemplateOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  preview_conversion_template_api_v1_profiles_conversion_templates_preview_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ConversionTemplatePreviewRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ConversionTemplatePreviewResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_conversion_template_api_v1_profiles_conversion_templates__template_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        template_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ConversionTemplateOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  delete_conversion_template_api_v1_profiles_conversion_templates__template_id__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        template_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        template_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ConversionTemplateUpdate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ConversionTemplateOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  list_library_assets_api_v1_profiles_library_assets_get: {
-    parameters: {
-      query?: {
-        kind?: string | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LibraryAssetListResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  create_library_asset_api_v1_profiles_library_assets_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['LibraryAssetCreate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LibraryAssetOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  preview_library_rule_api_v1_profiles_library_assets_preview_rule_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['LibraryRulePreviewRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LibraryRulePreviewResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['LibraryYamlValidateRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LibraryYamlValidateResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_library_asset_api_v1_profiles_library_assets__asset_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        asset_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LibraryAssetOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  delete_library_asset_api_v1_profiles_library_assets__asset_id__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        asset_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  update_library_asset_api_v1_profiles_library_assets__asset_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        asset_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['LibraryAssetUpdate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['LibraryAssetOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  list_overlays_api_v1_profiles_overlays_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['OverlayListResponse'];
-        };
-      };
-    };
-  };
-  create_overlay_api_v1_profiles_overlays_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['OverlayCreate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['OverlayOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_overlay_api_v1_profiles_overlays__overlay_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        overlay_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['OverlayOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  delete_overlay_api_v1_profiles_overlays__overlay_id__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        overlay_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  patch_overlay_api_v1_profiles_overlays__overlay_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        overlay_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['OverlayUpdate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['OverlayOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  list_presets_api_v1_profiles_presets_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PresetListResponse'];
-        };
-      };
-    };
-  };
-  create_preset_api_v1_profiles_presets_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PresetCreate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PresetOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_preset_api_v1_profiles_presets__preset_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        preset_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PresetOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  delete_preset_api_v1_profiles_presets__preset_id__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        preset_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  patch_preset_api_v1_profiles_presets__preset_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        preset_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['PresetUpdate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['PresetOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  list_rule_packs_api_v1_profiles_rule_packs_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['RulePackListResponse'];
-        };
-      };
-    };
-  };
-  create_rule_pack_api_v1_profiles_rule_packs_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RulePackCreate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['RulePackOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_rule_pack_api_v1_profiles_rule_packs__pack_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        pack_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['RulePackOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  delete_rule_pack_api_v1_profiles_rule_packs__pack_id__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        pack_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        pack_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RulePackUpdate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['RulePackOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  list_templates_api_v1_profiles_templates_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DisseminationTemplateListResponse'];
-        };
-      };
-    };
-  };
-  create_template_api_v1_profiles_templates_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DisseminationTemplateCreate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DisseminationTemplateOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_template_api_v1_profiles_templates__template_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        template_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DisseminationTemplateOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  delete_template_api_v1_profiles_templates__template_id__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        template_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  patch_template_api_v1_profiles_templates__template_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        template_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['DisseminationTemplateUpdate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['DisseminationTemplateOut'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  list_quality_metrics_api_v1_quality_metrics_get: {
-    parameters: {
-      query?: {
-        /** @description Optional product filter (e.g. metar, taf, sigmet) */
-        product?: string | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['QualityMetricsListResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_quality_metrics_detail_api_v1_quality_metrics__stem__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        stem: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['QualityMetricsDetailResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_rule_catalogs_api_v1_rule_catalogs_get: {
-    parameters: {
-      query: {
-        /** @description tac | iwxxm | conversion | dissemination | decoding */
-        family: string;
-        product?: string | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['RuleCatalogResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_schema_status_api_v1_schema_status_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-    };
-  };
-  get_selection_options_api_v1_selection_options_get: {
-    parameters: {
-      query: {
-        /** @description conversion | dissemination | decoding */
-        kind: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['SelectionOptionsResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_airport_region_api_v1_translation_airport_region__airport_code__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        airport_code: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            [key: string]: unknown;
-          };
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_centre_info_api_v1_translation_centre_info_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['TranslationCentreInfo'];
-        };
-      };
-    };
-  };
-  statistics_health_api_v1_translation_health_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-    };
-  };
-  get_translation_statistics_api_v1_translation_statistics_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['TranslationStatisticsRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['TranslationStatistics'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_statistics_by_region_api_v1_translation_statistics_by_region_get: {
-    parameters: {
-      query: {
-        /** @description Statistics period start (ISO 8601) */
-        start_date: string;
-        /** @description Statistics period end (ISO 8601) */
-        end_date: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': {
-            [key: string]: unknown;
-          };
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_recent_statistics_api_v1_translation_statistics_recent_get: {
-    parameters: {
-      query?: {
-        /** @description Number of hours to query (1-168) */
-        hours?: number;
-        /** @description Filter by ICAO region */
-        icao_region?: components['schemas']['ICAORegion'] | null;
-        /** @description Filter by IWXXM version */
-        iwxxm_version?: string | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['TranslationStatistics'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  validate_comprehensive_api_v1_validate_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/x-www-form-urlencoded': components['schemas']['Body_validate_comprehensive_api_v1_validate_post'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ValidateResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_validation_layers_api_v1_validation_layers_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['ValidationLayersResponse'];
-        };
-      };
-    };
-  };
-  validate_content_api_v1_validation_validate_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ValidationRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AggregatedValidationResult'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  validate_multiple_api_v1_validation_validate_multi_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['BatchValidationRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['BatchValidationResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_supported_versions_api_v1_versions_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': unknown;
-        };
-      };
-    };
-  };
-  list_work_sessions_api_v1_work_sessions_get: {
-    parameters: {
-      query?: {
-        status?: components['schemas']['WorkSessionStatus'] | null;
-        /** @description Comma-separated product filter (e.g. metar,speci for My METARs) */
-        product?: string | null;
-        from?: string | null;
-        to?: string | null;
-        include_deleted?: boolean;
-        page?: number;
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['WorkSessionListResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  create_work_session_api_v1_work_sessions_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['WorkSessionCreate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['WorkSession'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  get_work_session_api_v1_work_sessions__session_id__get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        session_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['WorkSession'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  delete_work_session_api_v1_work_sessions__session_id__delete: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        session_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['WorkSession'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  update_work_session_api_v1_work_sessions__session_id__patch: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        session_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['WorkSessionUpdate'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['WorkSession'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  restore_work_session_api_v1_work_sessions__session_id__restore_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        session_id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['WorkSession'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  confirm_auth_confirm_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['ConfirmRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  login_auth_login_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['LoginRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  logout_auth_logout_post: {
-    parameters: {
-      query?: never;
-      header?: {
-        authorization?: string | null;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: {
-      content: {
-        'application/json': components['schemas']['LogoutRequest'] | null;
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['Message'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  me_auth_me_get: {
-    parameters: {
-      query?: never;
-      header?: {
-        authorization?: string | null;
-      };
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['UserResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  register_auth_register_post: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RegisterRequest'];
-      };
-    };
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['AuthResponse'];
-        };
-      };
-      /** @description Validation Error */
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HTTPValidationError'];
-        };
-      };
-    };
-  };
-  health_health_get: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Successful Response */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          'application/json': components['schemas']['HealthResponse'];
-        };
-      };
-    };
-  };
+    convert_api_v1_convert_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["Body_convert_api_v1_convert_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    convert_bulletin_api_v1_convert_bulletin_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_convert_bulletin_api_v1_convert_bulletin_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConvertBulletinResponse"];
+                };
+            };
+            /** @description Empty bulletin - no TAC reports after the abbreviated heading */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unsupported Media Type - multipart/form-data required */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Malformed abbreviated heading (INVALID_AHL) or missing required fields. Engine split failures may include an alias of bulletin_split_failed. */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    convert_zip_api_v1_convert_zip_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["Body_convert_zip_api_v1_convert_zip_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    decode_tac_endpoint_api_v1_decode_tac_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_decode_tac_endpoint_api_v1_decode_tac_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DecodeTacResponse"];
+                };
+            };
+            /** @description Unsupported Media Type - multipart/form-data required */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Missing required product field */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    list_audit_api_v1_dissemination_audit_get: {
+        parameters: {
+            query?: {
+                product?: string | null;
+                station?: string | null;
+                profile?: string | null;
+                status?: string | null;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_audit_api_v1_dissemination_audit__audit_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                audit_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditRecordOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    gateways_health_api_v1_dissemination_gateways_health_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GatewayHealthListResponse"];
+                };
+            };
+        };
+    };
+    get_mapping_api_v1_dissemination_mappings__mapping_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                mapping_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MappingConfigOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_mapping_api_v1_dissemination_mappings__mapping_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                mapping_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MappingConfigUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MappingConfigOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upsert_mapping_api_v1_dissemination_mappings__name__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MappingConfigCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MappingConfigOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_plan_api_v1_dissemination_plans__plan_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationPlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_plan_api_v1_dissemination_plans__plan_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisseminationPlanUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationPlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    execute_plan_route_api_v1_dissemination_plans__plan_id__execute_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanExecuteRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanExecuteResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upsert_plan_by_slug_api_v1_dissemination_plans__slug__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisseminationPlanCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationPlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dissemination_preflight_api_v1_dissemination_preflight_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    dissemination_send_api_v1_dissemination_send_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    list_user_jobs_api_v1_eval_jobs_get: {
+        parameters: {
+            query?: {
+                page?: number;
+                per_page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JobListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_evaluation_job_api_v1_eval_jobs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EvaluationRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvaluationJobResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_job_status_api_v1_eval_jobs__job_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                job_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvaluationJobStatus"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_job_results_api_v1_eval_jobs__job_id__results_get: {
+        parameters: {
+            query?: {
+                page?: number;
+                per_page?: number;
+                status_filter?: components["schemas"]["ComparisonStatus"] | null;
+            };
+            header?: never;
+            path: {
+                job_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvaluationResultsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    ingest_collect_api_v1_ingest_collect_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_ingest_collect_api_v1_ingest_collect_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+            /** @description COLLECT / FTBP ingest not implemented yet (placeholder) */
+            501: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    mass_ingest_api_v1_ingest_mass_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_mass_ingest_api_v1_ingest_mass_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    lint_issue_catalog_api_v1_lint_issue_catalog_get: {
+        parameters: {
+            query?: {
+                product?: string | null;
+                family?: string | null;
+                issue_type?: string | null;
+                source_access?: string | null;
+                semantic_profile?: string | null;
+                exchange_profile?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LintIssueCatalogResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    lint_tac_api_v1_lint_tac_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_lint_tac_api_v1_lint_tac_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LintTacResponse"];
+                };
+            };
+            /** @description Unsupported Media Type - multipart/form-data required */
+            415: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_catalog_api_v1_profiles_catalog_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileCatalogResponse"];
+                };
+            };
+        };
+    };
+    list_conversion_templates_api_v1_profiles_conversion_templates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplateListResponse"];
+                };
+            };
+        };
+    };
+    create_conversion_template_api_v1_profiles_conversion_templates_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversionTemplateCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_conversion_template_api_v1_profiles_conversion_templates_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversionTemplatePreviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplatePreviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_conversion_template_api_v1_profiles_conversion_templates__template_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_conversion_template_api_v1_profiles_conversion_templates__template_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversionTemplateUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_library_assets_api_v1_profiles_library_assets_get: {
+        parameters: {
+            query?: {
+                kind?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryAssetListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_library_asset_api_v1_profiles_library_assets_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LibraryAssetCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryAssetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_library_rule_api_v1_profiles_library_assets_preview_rule_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LibraryRulePreviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryRulePreviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LibraryYamlValidateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryYamlValidateResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_library_asset_api_v1_profiles_library_assets__asset_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryAssetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_library_asset_api_v1_profiles_library_assets__asset_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_library_asset_api_v1_profiles_library_assets__asset_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LibraryAssetUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryAssetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_overlays_api_v1_profiles_overlays_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverlayListResponse"];
+                };
+            };
+        };
+    };
+    create_overlay_api_v1_profiles_overlays_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OverlayCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverlayOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_overlay_api_v1_profiles_overlays__overlay_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                overlay_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverlayOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_overlay_api_v1_profiles_overlays__overlay_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                overlay_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_overlay_api_v1_profiles_overlays__overlay_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                overlay_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OverlayUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverlayOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_presets_api_v1_profiles_presets_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresetListResponse"];
+                };
+            };
+        };
+    };
+    create_preset_api_v1_profiles_presets_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresetCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_preset_api_v1_profiles_presets__preset_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_preset_api_v1_profiles_presets__preset_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_preset_api_v1_profiles_presets__preset_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                preset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PresetUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PresetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_rule_packs_api_v1_profiles_rule_packs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulePackListResponse"];
+                };
+            };
+        };
+    };
+    create_rule_pack_api_v1_profiles_rule_packs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RulePackCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulePackOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_rule_pack_api_v1_profiles_rule_packs__pack_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulePackOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_rule_pack_api_v1_profiles_rule_packs__pack_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RulePackUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RulePackOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_templates_api_v1_profiles_templates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationTemplateListResponse"];
+                };
+            };
+        };
+    };
+    create_template_api_v1_profiles_templates_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisseminationTemplateCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_template_api_v1_profiles_templates__template_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_template_api_v1_profiles_templates__template_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_template_api_v1_profiles_templates__template_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DisseminationTemplateUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DisseminationTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_quality_metrics_api_v1_quality_metrics_get: {
+        parameters: {
+            query?: {
+                /** @description Optional product filter (e.g. metar, taf, sigmet) */
+                product?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityMetricsListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_quality_metrics_detail_api_v1_quality_metrics__stem__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                stem: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QualityMetricsDetailResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_rule_catalogs_api_v1_rule_catalogs_get: {
+        parameters: {
+            query: {
+                /** @description tac | iwxxm | conversion | dissemination | decoding */
+                family: string;
+                product?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleCatalogResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_schema_status_api_v1_schema_status_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    get_selection_options_api_v1_selection_options_get: {
+        parameters: {
+            query: {
+                /** @description conversion | dissemination | decoding */
+                kind: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SelectionOptionsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_airport_region_api_v1_translation_airport_region__airport_code__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                airport_code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_centre_info_api_v1_translation_centre_info_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TranslationCentreInfo"];
+                };
+            };
+        };
+    };
+    statistics_health_api_v1_translation_health_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    get_translation_statistics_api_v1_translation_statistics_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TranslationStatisticsRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TranslationStatistics"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_statistics_by_region_api_v1_translation_statistics_by_region_get: {
+        parameters: {
+            query: {
+                /** @description Statistics period start (ISO 8601) */
+                start_date: string;
+                /** @description Statistics period end (ISO 8601) */
+                end_date: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_recent_statistics_api_v1_translation_statistics_recent_get: {
+        parameters: {
+            query?: {
+                /** @description Number of hours to query (1-168) */
+                hours?: number;
+                /** @description Filter by ICAO region */
+                icao_region?: components["schemas"]["ICAORegion"] | null;
+                /** @description Filter by IWXXM version */
+                iwxxm_version?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TranslationStatistics"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    validate_comprehensive_api_v1_validate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/x-www-form-urlencoded": components["schemas"]["Body_validate_comprehensive_api_v1_validate_post"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidateResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_validation_layers_api_v1_validation_layers_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationLayersResponse"];
+                };
+            };
+        };
+    };
+    validate_content_api_v1_validation_validate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ValidationRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AggregatedValidationResult"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    validate_multiple_api_v1_validation_validate_multi_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BatchValidationRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BatchValidationResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_supported_versions_api_v1_versions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    list_work_sessions_api_v1_work_sessions_get: {
+        parameters: {
+            query?: {
+                status?: components["schemas"]["WorkSessionStatus"] | null;
+                /** @description Comma-separated product filter (e.g. metar,speci for My METARs) */
+                product?: string | null;
+                from?: string | null;
+                to?: string | null;
+                include_deleted?: boolean;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkSessionListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_work_session_api_v1_work_sessions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkSessionCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_work_session_api_v1_work_sessions__session_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_work_session_api_v1_work_sessions__session_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_work_session_api_v1_work_sessions__session_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkSessionUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    restore_work_session_api_v1_work_sessions__session_id__restore_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    confirm_auth_confirm_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    login_auth_login_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    logout_auth_logout_post: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["LogoutRequest"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Message"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    me_auth_me_get: {
+        parameters: {
+            query?: never;
+            header?: {
+                authorization?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    register_auth_register_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    health_health_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthResponse"];
+                };
+            };
+        };
+    };
 }

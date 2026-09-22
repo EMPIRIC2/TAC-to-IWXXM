@@ -110,12 +110,12 @@ async def mass_ingest(
 
     if len(results) > caps.max_files:
         raise HTTPException(
-            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
             detail=f"Too many files after expansion (max {caps.max_files})",
         )
     if total_bytes > caps.max_total_bytes:
         raise HTTPException(
-            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            status_code=status.HTTP_413_CONTENT_TOO_LARGE,
             detail=f"Accepted content exceeds {caps.max_total_bytes} bytes",
         )
 

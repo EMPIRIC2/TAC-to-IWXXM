@@ -114,11 +114,11 @@ def test_parse_airports_csv_main(tmp_path: Path) -> None:
     source = (
         path.read_text(encoding="utf-8")
         .replace(
-            "frontend_output = project_root / 'frontend' / 'src' / 'data' / 'airports.json'",
+            'frontend_output = project_root / "frontend" / "src" / "data" / "airports.json"',
             f"frontend_output = Path('{frontend_out}')",
         )
         .replace(
-            "backend_output = project_root / 'backend' / 'src' / 'data' / 'airports.json'",
+            'backend_output = project_root / "backend" / "src" / "data" / "airports.json"',
             f"backend_output = Path('{backend_out}')",
         )
     )

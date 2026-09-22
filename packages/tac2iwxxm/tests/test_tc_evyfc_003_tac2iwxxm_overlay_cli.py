@@ -44,9 +44,19 @@ def test_cli_check_overlay_fails() -> None:
 
 
 def test_cli_module_main_guard(monkeypatch: pytest.MonkeyPatch) -> None:
+    """``python -m tac2iwxxm.cli`` path raises SystemExit(0) for a valid overlay."""
     import runpy
+    import warnings
 
+    # Avoid RuntimeWarning when the module is already imported in this process.
+    sys.modules.pop("tac2iwxxm.cli", None)
     monkeypatch.setattr(sys, "argv", ["tac2iwxxm", "--check-overlay", str(_STARTERS)])
-    with pytest.raises(SystemExit) as exc:
-        runpy.run_module("tac2iwxxm.cli", run_name="__main__")
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message=r".*found in sys\.modules after import of the same name.*",
+            category=RuntimeWarning,
+        )
+        with pytest.raises(SystemExit) as exc:
+            runpy.run_module("tac2iwxxm.cli", run_name="__main__", alter_sys=True)
     assert exc.value.code == 0

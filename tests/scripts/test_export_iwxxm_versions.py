@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import runpy
+import sys
 from pathlib import Path
 from typing import ClassVar
 
@@ -83,9 +84,22 @@ def test_main_writes_json_from_real_module(
 def test_main_module_entrypoint(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
+    import warnings
+
     out = tmp_path / "generated" / "iwxxm_versions.json"
     monkeypatch.setattr(export_versions, "_OUT", out)
     monkeypatch.setattr(export_versions, "_REPO_ROOT", tmp_path)
-    with pytest.raises(SystemExit) as exc:
-        runpy.run_module("scripts.iwxxm.export_iwxxm_versions", run_name="__main__")
+    sys.modules.pop("scripts.iwxxm.export_iwxxm_versions", None)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message=r".*found in sys\.modules after import of the same name.*",
+            category=RuntimeWarning,
+        )
+        with pytest.raises(SystemExit) as exc:
+            runpy.run_module(
+                "scripts.iwxxm.export_iwxxm_versions",
+                run_name="__main__",
+                alter_sys=True,
+            )
     assert exc.value.code == 0
