@@ -10,8 +10,8 @@ _MATRIX = _REPO / "docs" / "domain" / "overlays" / "product-engine-matrix.md"
 
 # product -> engine cells (decode, quality, detectors, iwxxm, pack-IR, emit)
 _M2_ROWS: dict[str, tuple[str, str, str, str, str, str]] = {
-    "METAR": ("full", "full", "partial", "full", "full", "partial"),
-    "SPECI": ("full", "full", "partial", "full", "full", "partial"),
+    "METAR": ("full", "full", "full", "full", "full", "partial"),
+    "SPECI": ("full", "full", "full", "full", "full", "partial"),
 }
 
 
@@ -48,6 +48,10 @@ def test_tc_evyfc_005_metar_speci_m2_row_lock() -> None:
         "enrichment does **not** block decode" in text
         or "enrichment does not block decode" in text.lower()
     )
+    assert (
+        "do **not** block detectors" in text or "do not block detectors" in text.lower()
+    )
+    assert "hatch_r3" in text
     for product, expected in _M2_ROWS.items():
         got = _parse_row(product, text)
         assert got == expected, f"{product}: got {got!r} expected {expected!r}"
