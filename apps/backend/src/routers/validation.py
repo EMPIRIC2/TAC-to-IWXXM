@@ -34,7 +34,19 @@ _XML_LAYERS = frozenset(
 
 
 def _normalize_content_type(raw: str | None) -> str:
-    """Return canonical content type: ``tac`` or ``xml``."""
+    """
+    Internal helper ``_normalize_content_type``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     normalized = (raw or "tac").strip().lower()
     if normalized in _XML_CONTENT_TYPES:
         return "xml"
@@ -46,7 +58,19 @@ def _normalize_content_type(raw: str | None) -> str:
 def _aggregated_from_comprehensive(
     comprehensive: ComprehensiveValidationResult,
 ) -> AggregatedValidationResult:
-    """Map orchestrator output onto the AggregatedValidationResult HTTP shape."""
+    """
+    Internal helper ``_aggregated_from_comprehensive``.
+
+    Parameters
+    ----------
+    comprehensive : object
+        Argument ``comprehensive``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     results: list[ValidationResult] = []
     for layer in comprehensive.layers_run:
         issues = list(comprehensive.issues_by_layer.get(layer, []))
@@ -77,7 +101,19 @@ def _aggregated_from_comprehensive(
 
 
 def _validate_one(item: ValidationRequest) -> AggregatedValidationResult:
-    """Validate a single item, honoring ``content_type`` and ``layers``."""
+    """
+    Internal helper ``_validate_one``.
+
+    Parameters
+    ----------
+    item : object
+        Argument ``item``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     content_type = _normalize_content_type(item.content_type)
     layers = item.layers
     version = item.iwxxm_version or "2025-2"

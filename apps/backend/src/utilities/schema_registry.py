@@ -47,7 +47,8 @@ class SchemaRegistry:
         """
         Get path to XSD schema file for a version.
 
-        Returns:
+        Returns
+        -------
             Path to the XSD file
 
         Raisesnot found
@@ -82,7 +83,8 @@ class SchemaRegistry:
         """
         Get path to Schematron (.sch) file for a version.
 
-        Returns:
+        Returns
+        -------
             Path to the Schematron file
         ron not found
             ValueError: If version i
@@ -116,7 +118,8 @@ class SchemaRegistry:
         """
         Get path to codelists directory for a version.
 
-        Returns:
+        Returns
+        -------
             Path to the codelists directry not found
             ValueError: If version invali
 
@@ -231,7 +234,8 @@ class SchemaRegistry:
         """
         List all codelist files for a version.
 
-        Returns:
+        Returns
+        -------
             List of codelist filenames (
 
         Parameters
@@ -257,7 +261,8 @@ class SchemaRegistry:
         """
         Get breaking changes for migration between versions.
 
-        Returns:
+        Returns
+        -------
             List of breaking change definitions
 
         Parameters
@@ -283,7 +288,8 @@ class SchemaRegistry:
         """
         Get list of versions filtered by channel.
 
-        Returns:
+        Returns
+        -------
             List of version strings for the channel
 
         Parameters
@@ -307,7 +313,8 @@ class SchemaRegistry:
         """
         Check if a version is a Release Candidate.
 
-        Returns:
+        Returns
+        -------
             True if version is an
 
         Parameters
@@ -331,7 +338,8 @@ class SchemaRegistry:
         """
         Get the channel for a specific version.
 
-        Returns:
+        Returns
+        -------
             Channel name ("stable"
 
         Parameters
@@ -355,7 +363,8 @@ class SchemaRegistry:
         """
         Get the discovery/release date for a version.
 
-        Returns:
+        Returns
+        -------
             ISO 8601 timestamp or
 
         Parameters
@@ -379,7 +388,8 @@ class SchemaRegistry:
         """
         Get path to OASIS XML Catalog for a version.
 
-        Returns:
+        Returns
+        -------
             Path to catalog.xml file
 
         Ra not found
@@ -413,7 +423,8 @@ class SchemaRegistry:
         """
         Verify schema integrity using manifest checksums.
 
-        Returns:
+        Returns
+        -------
             True if integrity check pass
 
         Parameters

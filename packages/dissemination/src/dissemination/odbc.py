@@ -8,7 +8,19 @@ from __future__ import annotations
 
 
 def _is_sqlserver_odbc_driver(name: str) -> bool:
-    """Internal helper ``_is_sqlserver_odbc_driver``."""
+    """
+    Internal helper ``_is_sqlserver_odbc_driver``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     lower = name.lower()
     if "freetds" in lower:
         return True

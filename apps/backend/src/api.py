@@ -201,11 +201,29 @@ class ConvertRequestLoggingMiddleware:
     """
 
     def __init__(self, app: Callable[[Scope, Receive, Send], Awaitable[None]]) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        app : object
+            Argument ``app``.
+        """
         self.app = app
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        """Internal helper ``__call__``."""
+        """
+        Internal helper ``__call__``.
+
+        Parameters
+        ----------
+        scope : object
+            Argument ``scope``.
+        receive : object
+            Argument ``receive``.
+        send : object
+            Argument ``send``.
+        """
         if scope.get("type") != "http":
             await self.app(scope, receive, send)
             return
@@ -283,7 +301,14 @@ logger.info(
 
 
 def _warn_if_dev_cors_relaxed(enabled: bool) -> None:
-    """Emit operator-facing warning when local CORS relaxation is active."""
+    """
+    Internal helper ``_warn_if_dev_cors_relaxed``.
+
+    Parameters
+    ----------
+    enabled : object
+        Argument ``enabled``.
+    """
     if enabled:
         logger.warning(
             "[CORS] ENABLE_DEV_CORS_RELAXATION is active: localhost:5173 added and preflight headers set to '*'"

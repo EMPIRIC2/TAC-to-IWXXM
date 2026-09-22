@@ -41,7 +41,19 @@ def _ensure_airport_location_resolver() -> None:
     validator = get_airport_validator()
 
     def _resolve(icao: str) -> str | None:
-        """Internal helper ``_resolve``."""
+        """
+        Internal helper ``_resolve``.
+
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         airport = validator.get_airport(icao)
         if airport is None:
             return None
@@ -72,7 +84,21 @@ class _DecodedResidual:
 
 
 def _advisory_explanation(product: str, label: str) -> str:
-    """Internal helper ``_advisory_explanation``."""
+    """
+    Internal helper ``_advisory_explanation``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    label : object
+        Argument ``label``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     common: dict[str, str] = {
         "DTG": "Issue time",
         "RMK": "Remarks",
@@ -115,7 +141,27 @@ def _enrich_advisory_decode(
     residuals: list[Any],
     summary: str | None,
 ) -> tuple[list[_DecodedRow], list[_DecodedResidual], str]:
-    """Internal helper ``_enrich_advisory_decode``."""
+    """
+    Internal helper ``_enrich_advisory_decode``.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    product : object
+        Argument ``product``.
+    segments : object
+        Argument ``segments``.
+    residuals : object
+        Argument ``residuals``.
+    summary : object
+        Argument ``summary``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if product not in {"VONA", "SWXA"}:
         return (
             [_DecodedRow(start=s.start, end=s.end, code=s.code, explanation=s.explanation) for s in segments],

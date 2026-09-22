@@ -17,7 +17,14 @@ from tac2iwxxm.overlay_check import check_profile_overlay_dir
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    """Internal helper ``_build_parser``."""
+    """
+    Internal helper ``_build_parser``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     parser = argparse.ArgumentParser(
         prog="tac2iwxxm",
         description="tac2iwxxm DX helpers (overlay check). Use the Python API for convert.",

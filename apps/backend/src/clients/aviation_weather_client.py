@@ -40,12 +40,26 @@ class AviationWeatherClient:
     RATE_LIMIT_DELAY = 0.5  # Seconds between batches
 
     def __init__(self, timeout: float = 30.0) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        timeout : object
+            Argument ``timeout``.
+        """
         self.timeout = timeout
         self._client: httpx.AsyncClient | None = None
 
     async def __aenter__(self) -> Self:
-        """Internal helper ``__aenter__``."""
+        """
+        Internal helper ``__aenter__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         self._client = httpx.AsyncClient(timeout=self.timeout)
         return self
 
@@ -55,7 +69,18 @@ class AviationWeatherClient:
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
     ) -> None:
-        """Internal helper ``__aexit__``."""
+        """
+        Internal helper ``__aexit__``.
+
+        Parameters
+        ----------
+        exc_type : object
+            Argument ``exc_type``.
+        exc_val : object
+            Argument ``exc_val``.
+        exc_tb : object
+            Argument ``exc_tb``.
+        """
         if self._client:
             await self._client.aclose()
 
@@ -67,7 +92,8 @@ class AviationWeatherClient:
         """
         Fetch METAR data for multiple stations.
 
-        Returns:
+        Returns
+        -------
             Dict mapping station_id -> (raw_tac, iwxxm_xml)
             Both values may be None if data unavail
 
@@ -120,15 +146,22 @@ class AviationWeatherClient:
         return results
 
     async def _fetch_format(self, station_ids: list[str], format_type: str, hours: float) -> dict[str, str]:
-        """Fetch data in a specific format.
+        """
+        Internal helper ``_fetch_format``.
 
-        Args:
-            station_ids: List of ICAO codes
-            format_type: 'raw' or 'iwxxm'
-            hours: Hours back
+        Parameters
+        ----------
+        station_ids : object
+            Argument ``station_ids``.
+        format_type : object
+            Argument ``format_type``.
+        hours : object
+            Argument ``hours``.
 
-        Returns:
-            Dict of station_id -> content
+        Returns
+        -------
+        object
+            Return value.
         """
         if not self._client:
             raise RuntimeError("Client not initialized")
@@ -158,15 +191,22 @@ class AviationWeatherClient:
             raise AviationWeatherAPIError(f"Request failed: {e!s}") from e
 
     def _parse_response(self, content: str, format_type: str, requested_stations: list[str]) -> dict[str, str]:
-        """Parse API response and extract per-station data.
+        """
+        Internal helper ``_parse_response``.
 
-        Args:
-            content: Response content
-            format_type: 'raw' or 'iwxxm'
-            requested_stations: List of requested station IDs
+        Parameters
+        ----------
+        content : object
+            Argument ``content``.
+        format_type : object
+            Argument ``format_type``.
+        requested_stations : object
+            Argument ``requested_stations``.
 
-        Returns:
-            Dict mapping station_id -> content
+        Returns
+        -------
+        object
+            Return value.
         """
         results: dict[str, Any] = {}
 
@@ -208,9 +248,18 @@ class AviationWeatherClient:
         return results
 
     def _extract_station_from_xml(self, xml_content: str) -> str | None:
-        """Extract ICAO station ID from IWXXM XML.
+        """
+        Internal helper ``_extract_station_from_xml``.
 
-        Look for aerodrome designator in the XML.
+        Parameters
+        ----------
+        xml_content : object
+            Argument ``xml_content``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         import re
 
@@ -232,7 +281,8 @@ class AviationWeatherClient:
         """
         Fetch all METARs in a bounding box.
 
-        Returns:
+        Returns
+        -------
             List of METAR records
 
         Parameters
@@ -298,7 +348,8 @@ class AviationWeatherClient:
         """
         Fetch random sample of METARs for testing.
 
-        Returns:
+        Returns
+        -------
             List of METAR records
 
         Parameters
@@ -375,7 +426,14 @@ class AviationWeatherClient:
         """
 
         async def _fetch() -> list[dict[str, Any]]:
-            """Internal helper ``_fetch``."""
+            """
+            Internal helper ``_fetch``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 # Create a temporary client instance for this request
                 temp_self = self.__class__(timeout=self.timeout)
@@ -411,7 +469,14 @@ class AviationWeatherClient:
         """
 
         async def _fetch() -> list[dict[str, Any]]:
-            """Internal helper ``_fetch``."""
+            """
+            Internal helper ``_fetch``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 # Create a temporary client instance for this request
                 temp_self = self.__class__(timeout=self.timeout)
@@ -432,23 +497,70 @@ class CachedAviationWeatherClient(AviationWeatherClient):
     """
 
     def __init__(self, cache_dir: Path | None = None, ttl: int = 3600, timeout: float = 30.0) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        cache_dir : object
+            Argument ``cache_dir``.
+        ttl : object
+            Argument ``ttl``.
+        timeout : object
+            Argument ``timeout``.
+        """
         super().__init__(timeout=timeout)
         self.cache_dir = cache_dir or Path("test-data/aviation-weather-cache")
         self.ttl = ttl  # Time to live in seconds
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
     def _cache_key(self, *args: object) -> str:
-        """Generate cache key from arguments."""
+        """
+        Internal helper ``_cache_key``.
+
+        Parameters
+        ----------
+        args : object
+            Argument ``args``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         key_str = "_".join(str(arg) for arg in args)
         return hashlib.md5(key_str.encode()).hexdigest()
 
     def _get_cache_path(self, key: str) -> Path:
-        """Get path to cache file."""
+        """
+        Internal helper ``_get_cache_path``.
+
+        Parameters
+        ----------
+        key : object
+            Argument ``key``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return self.cache_dir / f"{key}.json"
 
     def _is_cache_valid(self, cache_path: Path) -> bool:
-        """Check if cache is still valid."""
+        """
+        Internal helper ``_is_cache_valid``.
+
+        Parameters
+        ----------
+        cache_path : object
+            Argument ``cache_path``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not cache_path.exists():
             return False
 
@@ -488,7 +600,14 @@ class CachedAviationWeatherClient(AviationWeatherClient):
         if self._is_cache_valid(cache_path):
 
             def _read_cache() -> list[dict[str, Any]]:
-                """Internal helper ``_read_cache``."""
+                """
+                Internal helper ``_read_cache``.
+
+                Returns
+                -------
+                object
+                    Return value.
+                """
                 with open(cache_path) as f:
                     return cast(list[dict[str, Any]], json.load(f))
 
@@ -540,7 +659,14 @@ class CachedAviationWeatherClient(AviationWeatherClient):
         if self._is_cache_valid(cache_path):
 
             def _read_cache() -> list[dict[str, Any]]:
-                """Internal helper ``_read_cache``."""
+                """
+                Internal helper ``_read_cache``.
+
+                Returns
+                -------
+                object
+                    Return value.
+                """
                 with open(cache_path) as f:
                     return cast(list[dict[str, Any]], json.load(f))
 
@@ -587,7 +713,14 @@ class CachedAviationWeatherClient(AviationWeatherClient):
         """
 
         async def _fetch() -> list[dict[str, Any]]:
-            """Internal helper ``_fetch``."""
+            """
+            Internal helper ``_fetch``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 # Create a temporary cached client instance for this request
                 temp_self = CachedAviationWeatherClient(cache_dir=self.cache_dir, ttl=self.ttl, timeout=self.timeout)
@@ -623,7 +756,14 @@ class CachedAviationWeatherClient(AviationWeatherClient):
         """
 
         async def _fetch() -> list[dict[str, Any]]:
-            """Internal helper ``_fetch``."""
+            """
+            Internal helper ``_fetch``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 # Create a temporary cached client instance for this request
                 temp_self = CachedAviationWeatherClient(cache_dir=self.cache_dir, ttl=self.ttl, timeout=self.timeout)

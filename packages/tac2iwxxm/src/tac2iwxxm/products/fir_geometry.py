@@ -70,7 +70,19 @@ class RelativeGeometryPhrase:
 
 
 def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
-    """Internal helper ``_point_lat_lon``."""
+    """
+    Internal helper ``_point_lat_lon``.
+
+    Parameters
+    ----------
+    match : object
+        Argument ``match``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     lat = int(match.group("lat_deg")) + int(match.group("lat_min")) / 60.0
     lon = int(match.group("lon_deg")) + int(match.group("lon_min")) / 60.0
     if match.group("lat_hemi").upper() == "S":
@@ -81,7 +93,19 @@ def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
 
 
 def _wi_points(body: str) -> list[tuple[float, float]]:
-    """Internal helper ``_wi_points``."""
+    """
+    Internal helper ``_wi_points``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     wi = _WI_BLOCK.search(body)
     if wi is None:
         return []
@@ -120,7 +144,19 @@ def select_horizontal_geometry_kind(body: str) -> GeometryKind:
 
 
 def _constraint_from_half(match: re.Match[str]) -> RelativeConstraint:
-    """Internal helper ``_constraint_from_half``."""
+    """
+    Internal helper ``_constraint_from_half``.
+
+    Parameters
+    ----------
+    match : object
+        Argument ``match``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     side = match.group("side").upper()
     if match.group("lat") is not None:
         value = float(match.group("lat"))
@@ -176,7 +212,21 @@ def parse_relative_geometry_phrase(body: str) -> RelativeGeometryPhrase | None:
 
 
 def _inside(point: tuple[float, float], constraint: RelativeConstraint) -> bool:
-    """Internal helper ``_inside``."""
+    """
+    Internal helper ``_inside``.
+
+    Parameters
+    ----------
+    point : object
+        Argument ``point``.
+    constraint : object
+        Argument ``constraint``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     lat, lon = point
     if constraint.axis == "lat":
         if constraint.keep == "north":
@@ -192,7 +242,23 @@ def _intersect(
     b: tuple[float, float],
     constraint: RelativeConstraint,
 ) -> tuple[float, float]:
-    """Intersect segment AB with the constraint boundary line."""
+    """
+    Internal helper ``_intersect``.
+
+    Parameters
+    ----------
+    a : object
+        Argument ``a``.
+    b : object
+        Argument ``b``.
+    constraint : object
+        Argument ``constraint``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     ax, ay = a  # lat, lon
     bx, by = b
     if constraint.axis == "lat":
@@ -211,7 +277,21 @@ def _clip_ring_one(
     ring: Sequence[tuple[float, float]],
     constraint: RelativeConstraint,
 ) -> list[tuple[float, float]]:
-    """Sutherland-Hodgman clip of a closed ring against one half-plane."""
+    """
+    Internal helper ``_clip_ring_one``.
+
+    Parameters
+    ----------
+    ring : object
+        Argument ``ring``.
+    constraint : object
+        Argument ``constraint``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not ring:
         return []
     pts = list(ring)
@@ -234,7 +314,19 @@ def _clip_ring_one(
 
 
 def _ensure_closed_ring(output: list[tuple[float, float]]) -> list[tuple[float, float]]:
-    """Return ``output`` closed (first point repeated), or ``[]`` when empty."""
+    """
+    Internal helper ``_ensure_closed_ring``.
+
+    Parameters
+    ----------
+    output : object
+        Argument ``output``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not output:
         return []
     if output[0] != output[-1]:

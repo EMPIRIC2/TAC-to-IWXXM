@@ -40,7 +40,21 @@ class F19Params:
 
 
 def _redact_exc(exc: BaseException, params: F19Params) -> str:
-    """Internal helper ``_redact_exc``."""
+    """
+    Internal helper ``_redact_exc``.
+
+    Parameters
+    ----------
+    exc : object
+        Argument ``exc``.
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = redact_secrets(str(exc))
     if params.password:
         text = text.replace(params.password, "***")
@@ -50,7 +64,19 @@ def _redact_exc(exc: BaseException, params: F19Params) -> str:
 
 
 def _require_host(params: F19Params) -> str:
-    """Internal helper ``_require_host``."""
+    """
+    Internal helper ``_require_host``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     host = (params.host or "").strip()
     if not host:
         raw = f"F19 host is required; password={params.password}; username={params.username}"
@@ -59,7 +85,16 @@ def _require_host(params: F19Params) -> str:
 
 
 def _validate_f19_egress(params: F19Params, allowlist: Allowlist) -> None:
-    """Internal helper ``_validate_f19_egress``."""
+    """
+    Internal helper ``_validate_f19_egress``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    allowlist : object
+        Argument ``allowlist``.
+    """
     validate_egress_host(_require_host(params), allowlist=allowlist)
 
 
@@ -68,7 +103,16 @@ def _require_payload(
     iwxxm_xml: str | bytes | None,
     tac_text: str | None,
 ) -> None:
-    """Internal helper ``_require_payload``."""
+    """
+    Internal helper ``_require_payload``.
+
+    Parameters
+    ----------
+    iwxxm_xml : object
+        Argument ``iwxxm_xml``.
+    tac_text : object
+        Argument ``tac_text``.
+    """
     has_xml = iwxxm_xml is not None and (len(iwxxm_xml) > 0 if isinstance(iwxxm_xml, (bytes, str)) else True)
     has_tac = tac_text is not None and len(tac_text) > 0
     if not has_xml and not has_tac:
@@ -91,7 +135,14 @@ class StagingSinkAdapter:
     mode: Final[str] = "staging"
 
     def __init__(self, sink_type: F19SinkName) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        sink_type : object
+            Argument ``sink_type``.
+        """
         if sink_type not in F19_SINK_TYPES:
             raise ValueError(f"sink_type {sink_type!r} is not an F19 staging adapter")
         self._sink_type: SinkType = sink_type

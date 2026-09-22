@@ -145,9 +145,10 @@ via Supabase). **JWKS-only** (`D-S038-04-b1` Q2=2): do not use `SUPABASE_JWT_SEC
 | pnpm | **9.15.4** via `packageManager` + corepack | JS workspace (monorepo); not Homebrew |
 | macOS Homebrew | root [`Brewfile`](../Brewfile) | System toolchain: `python@3.12`, `node@22`, `uv`, `rust`, Docker Desktop, `libpq`, `unixodbc`, `gh` |
 | basedpyright | strict | Python typechecking including tac2iwxxm, tac-validate, iwxxm-validate (ADR-005) |
-| ruff | all Python packages | Lint + format including new validate packages (ADR-005) |
+| ruff | all Python packages | Lint + format including new validate packages (ADR-005); **pydocstyle (D)** on ADR-048 trees (EV-adr048-doc-linters) |
 | prettier | workspace TS | Format apps/* and packages/* TypeScript |
 | eslint | workspace TS | Lint apps/frontend, apps/e2e, packages/shared |
+| eslint-plugin-jsdoc | apps/frontend (+ e2e helpers) | TSDoc / `@example` presence (ADR-048 / EV-adr048-doc-linters; with product checkers) |
 | make | system | Orchestration |
 | pre-commit | dev group (pyproject) | Fast commit gates (invoked from husky) |
 | husky | root `package.json` devDependency (^9.1.7) | Git hooksPath — pre-commit (fast+medium) + pre-push (`make ci` units+Compose; EV-036) |

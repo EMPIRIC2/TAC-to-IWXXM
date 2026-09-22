@@ -134,7 +134,23 @@ class _Explain:
     hook: ExplanationHook
 
     def __call__(self, rule: Rule, groups: tuple[str, ...] = (), value: str | None = None) -> str:
-        """Internal helper ``__call__``."""
+        """
+        Internal helper ``__call__``.
+
+        Parameters
+        ----------
+        rule : object
+            Argument ``rule``.
+        groups : object
+            Argument ``groups``.
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         template = self.hook.template_for(rule.id, rule.explain)
         return render_template(template, groups, value=value, locale=self.locale)
 
@@ -145,12 +161,44 @@ def _result(
     residuals: list[MatchSpan],
     steps: int,
 ) -> MatchResult:
-    """Internal helper ``_result``."""
+    """
+    Internal helper ``_result``.
+
+    Parameters
+    ----------
+    ctx : object
+        Argument ``ctx``.
+    spans : object
+        Argument ``spans``.
+    residuals : object
+        Argument ``residuals``.
+    steps : object
+        Argument ``steps``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return MatchResult(tuple(spans), tuple(residuals), steps, ctx.iwxxm_version, ctx.profile)
 
 
 def _stub(tac: str, ctx: MatchContext) -> MatchResult:
-    """Internal helper ``_stub``."""
+    """
+    Internal helper ``_stub``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    ctx : object
+        Argument ``ctx``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not tac:
         return _result(ctx, [], [], 0)
     span = MatchSpan(0, len(tac), tac, "", "")
@@ -158,7 +206,21 @@ def _stub(tac: str, ctx: MatchContext) -> MatchResult:
 
 
 def _bump(steps: int, max_steps: int) -> int:
-    """Internal helper ``_bump``."""
+    """
+    Internal helper ``_bump``.
+
+    Parameters
+    ----------
+    steps : object
+        Argument ``steps``.
+    max_steps : object
+        Argument ``max_steps``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     steps += 1
     if steps > max_steps:
         msg = f"Matcher stopped after {max_steps} steps"
@@ -173,7 +235,27 @@ def _match_tokens(
     max_steps: int,
     explain: _Explain,
 ) -> MatchResult:
-    """Internal helper ``_match_tokens``."""
+    """
+    Internal helper ``_match_tokens``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    pack : object
+        Argument ``pack``.
+    ctx : object
+        Argument ``ctx``.
+    max_steps : object
+        Argument ``max_steps``.
+    explain : object
+        Argument ``explain``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     tokens = list(_TOKEN.finditer(tac))
     spans: list[MatchSpan] = []
     residuals: list[MatchSpan] = []
@@ -200,7 +282,31 @@ def _take_tokens(
     max_steps: int,
     explain: _Explain,
 ) -> tuple[MatchSpan | None, int, int]:
-    """Internal helper ``_take_tokens``."""
+    """
+    Internal helper ``_take_tokens``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    tokens : object
+        Argument ``tokens``.
+    index : object
+        Argument ``index``.
+    rules : object
+        Argument ``rules``.
+    steps : object
+        Argument ``steps``.
+    max_steps : object
+        Argument ``max_steps``.
+    explain : object
+        Argument ``explain``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for rule in rules:
         steps = _bump(steps, max_steps)
         count = len(rule.patterns)
@@ -224,7 +330,27 @@ def _match_labels(
     max_steps: int,
     explain: _Explain,
 ) -> MatchResult:
-    """Internal helper ``_match_labels``."""
+    """
+    Internal helper ``_match_labels``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    pack : object
+        Argument ``pack``.
+    ctx : object
+        Argument ``ctx``.
+    max_steps : object
+        Argument ``max_steps``.
+    explain : object
+        Argument ``explain``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     rules = tuple(sorted(pack.rules, key=lambda rule: len(rule.label), reverse=True))
     spans: list[MatchSpan] = []
     residuals: list[MatchSpan] = []
@@ -250,7 +376,29 @@ def _take_label(
     max_steps: int,
     explain: _Explain,
 ) -> tuple[MatchSpan | None, int]:
-    """Internal helper ``_take_label``."""
+    """
+    Internal helper ``_take_label``.
+
+    Parameters
+    ----------
+    content : object
+        Argument ``content``.
+    offset : object
+        Argument ``offset``.
+    rules : object
+        Argument ``rules``.
+    steps : object
+        Argument ``steps``.
+    max_steps : object
+        Argument ``max_steps``.
+    explain : object
+        Argument ``explain``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for rule in rules:
         steps = _bump(steps, max_steps)
         matched = re.match(re.escape(rule.label) + r"\s*:\s*(.*)$", content, re.IGNORECASE)

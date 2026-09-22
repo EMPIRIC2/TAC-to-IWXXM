@@ -20,11 +20,25 @@ _ALLOWED_TABLES = frozenset({RESULTS_TABLE, QUARANTINE_TABLE})
 class StoreClient(Protocol):
     """Minimal insert protocol for tests and Postgres writers."""
 
-    def insert(self, table: str, row: dict[str, Any]) -> None: ...
+    def insert(self, table: str, row: dict[str, Any]) -> None:
+        """Insert ``row`` into ``table``."""
+        ...
 
 
 def _to_psycopg_url(url: str) -> str:
-    """Normalize DATABASE_URL to SQLAlchemy psycopg v3 dialect."""
+    """
+    Internal helper ``_to_psycopg_url``.
+
+    Parameters
+    ----------
+    url : object
+        Argument ``url``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if url.startswith("postgresql+asyncpg://"):
         return "postgresql+psycopg://" + url.removeprefix("postgresql+asyncpg://")
     if url.startswith("postgresql+psycopg2://"):
@@ -49,7 +63,14 @@ class PostgresStore:
     _engine: Engine | None = field(default=None, init=False, repr=False)
 
     def _get_engine(self) -> Engine:
-        """Internal helper ``_get_engine``."""
+        """
+        Internal helper ``_get_engine``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if self._engine is None:
             self._engine = create_engine(
                 _to_psycopg_url(self.database_url),
@@ -140,7 +161,21 @@ class PostgresStore:
 
 
 def _base_row(job: IngestJob, result: PipelineResult) -> dict[str, Any]:
-    """Internal helper ``_base_row``."""
+    """
+    Internal helper ``_base_row``.
+
+    Parameters
+    ----------
+    job : object
+        Argument ``job``.
+    result : object
+        Argument ``result``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return {
         "job_id": job.job_id,
         "product": result.product,

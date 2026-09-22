@@ -88,7 +88,21 @@ class ResolvedOutputPolicy:
 
 
 def _as_str_tuple(value: object, *, field: str) -> tuple[str, ...]:
-    """Internal helper ``_as_str_tuple``."""
+    """
+    Internal helper ``_as_str_tuple``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    field : object
+        Argument ``field``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None:
         return ()
     if not isinstance(value, list):
@@ -104,7 +118,21 @@ def _as_str_tuple(value: object, *, field: str) -> tuple[str, ...]:
 
 
 def _parse_document(data: Mapping[str, Any], *, source_path: str | None) -> OutputPolicyDocument:
-    """Internal helper ``_parse_document``."""
+    """
+    Internal helper ``_parse_document``.
+
+    Parameters
+    ----------
+    data : object
+        Argument ``data``.
+    source_path : object
+        Argument ``source_path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     schema_raw = data.get("schema_version", 1)
     if not isinstance(schema_raw, int) or schema_raw < 1:
         msg = "schema_version must be a positive integer"
@@ -136,7 +164,21 @@ def _parse_document(data: Mapping[str, Any], *, source_path: str | None) -> Outp
 
 
 def _load_yaml_mapping(text: str, *, source_path: str | None) -> OutputPolicyDocument:
-    """Internal helper ``_load_yaml_mapping``."""
+    """
+    Internal helper ``_load_yaml_mapping``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+    source_path : object
+        Argument ``source_path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = yaml.safe_load(text)
     if not isinstance(raw, dict):
         msg = "policy root must be a mapping"
@@ -171,7 +213,21 @@ def _layer_output_policy(
     parent: OutputPolicyDocument,
     child: OutputPolicyDocument,
 ) -> OutputPolicyDocument:
-    """Ignore ids add. A non-empty select replaces. An empty select inherits."""
+    """
+    Internal helper ``_layer_output_policy``.
+
+    Parameters
+    ----------
+    parent : object
+        Argument ``parent``.
+    child : object
+        Argument ``child``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if child.pin != parent.pin:
         msg = f"{child.id} pin must match {parent.id}"
         raise PolicyError(msg)
@@ -196,7 +252,23 @@ def _take_output_overlay(
     *,
     profile: str | None,
 ) -> OutputPolicyDocument | None:
-    """Return a profile layer, a new policy, or None when this profile skips the file."""
+    """
+    Internal helper ``_take_output_overlay``.
+
+    Parameters
+    ----------
+    doc : object
+        Argument ``doc``.
+    catalog : object
+        Argument ``catalog``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not doc.extends and doc.id not in catalog:
         if doc.profiles:
             msg = f"{doc.id} profiles require extends"
@@ -265,7 +337,21 @@ def _merged_lists(
     doc: OutputPolicyDocument,
     policies: Mapping[str, OutputPolicyDocument],
 ) -> tuple[tuple[str, ...], tuple[str, ...]]:
-    """Internal helper ``_merged_lists``."""
+    """
+    Internal helper ``_merged_lists``.
+
+    Parameters
+    ----------
+    doc : object
+        Argument ``doc``.
+    policies : object
+        Argument ``policies``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     select: list[str] = []
     ignore: list[str] = []
     seen: set[str] = set()

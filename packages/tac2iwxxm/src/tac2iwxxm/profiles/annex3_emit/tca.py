@@ -22,11 +22,37 @@ _TCA_FORBIDDEN_ROOTS = frozenset(
 
 
 def _tca_format_pos(lat: float, lon: float) -> str:
-    """Format lat/lon for WMO A2-2-style ``gml:pos`` (up to 5 decimals; ``.00`` for wholes)."""
+    """
+    Internal helper ``_tca_format_pos``.
+
+    Parameters
+    ----------
+    lat : object
+        Argument ``lat``.
+    lon : object
+        Argument ``lon``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
 
     def _one(value: float) -> str:
-        """Internal helper ``_one``."""
+        """
+        Internal helper ``_one``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         s = f"{value:.5f}".rstrip("0")
         if s.endswith("."):
             s += "00"
@@ -291,7 +317,19 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def _assert_tca_advisory_xml(xml: str) -> str:
-    """Internal helper ``_assert_tca_advisory_xml``."""
+    """
+    Internal helper ``_assert_tca_advisory_xml``.
+
+    Parameters
+    ----------
+    xml : object
+        Argument ``xml``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if "<iwxxm:TropicalCycloneAdvisory " not in xml:
         raise ValueError("TCA emitter product/root guard: missing TropicalCycloneAdvisory root")
     if "<iwxxm:TropicalCycloneSIGMET " in xml or "iwxxm:TropicalCycloneSIGMET" in xml:

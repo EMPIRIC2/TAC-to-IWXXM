@@ -35,7 +35,19 @@ _AHL_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{1,
 
 
 def _fields(text: str) -> dict[str, str]:
-    """Collect KEY: value pairs, joining indented continuation lines."""
+    """
+    Internal helper ``_fields``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     out: dict[str, str] = {}
     current_key: str | None = None
     for raw in text.splitlines():
@@ -56,7 +68,19 @@ def _fields(text: str) -> dict[str, str]:
 
 
 def _parse_dtg(token: str) -> str | None:
-    """Internal helper ``_parse_dtg``."""
+    """
+    Internal helper ``_parse_dtg``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     token = token.strip().replace(" ", "")
     m = _DTG_SHORT.search(token)
     if m:
@@ -65,7 +89,21 @@ def _parse_dtg(token: str) -> str | None:
 
 
 def _latlon(token: str, *, ndigits: int = 2) -> tuple[float, float] | None:
-    """Internal helper ``_latlon``."""
+    """
+    Internal helper ``_latlon``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+    ndigits : object
+        Argument ``ndigits``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _PSN.search(token)
     if m is None:
         return None
@@ -87,7 +125,19 @@ def _latlon(token: str, *, ndigits: int = 2) -> tuple[float, float] | None:
 
 
 def _strip_optional_ahl(tac: str) -> str:
-    """Internal helper ``_strip_optional_ahl``."""
+    """
+    Internal helper ``_strip_optional_ahl``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     lines = tac.splitlines()
     if lines and _AHL_LINE.match(lines[0].strip()):
         return "\n".join(lines[1:])
@@ -95,7 +145,19 @@ def _strip_optional_ahl(tac: str) -> str:
 
 
 def _parse_elevation_m(token: str) -> float | None:
-    """Return elevation in metres MSL from ``1536M AMSL`` / ``15KM AMSL``."""
+    """
+    Internal helper ``_parse_elevation_m``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _ELEV.search(token.replace(",", ""))
     if m is None:
         return None
@@ -106,7 +168,19 @@ def _parse_elevation_m(token: str) -> float | None:
 
 
 def _parse_volcano(token: str) -> tuple[str, str | None]:
-    """Internal helper ``_parse_volcano``."""
+    """
+    Internal helper ``_parse_volcano``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     parts = token.strip().split()
     if not parts:
         return "", None
@@ -116,7 +190,19 @@ def _parse_volcano(token: str) -> tuple[str, str | None]:
 
 
 def _map_activity(token: str) -> str:
-    """Internal helper ``_map_activity``."""
+    """
+    Internal helper ``_map_activity``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     cleaned = re.sub(r"\s+", " ", token.strip().upper())
     if cleaned in _ACT_STATUS:
         return _ACT_STATUS[cleaned]
@@ -127,7 +213,19 @@ def _map_activity(token: str) -> str:
 
 
 def _nilish(token: str) -> bool:
-    """Internal helper ``_nilish``."""
+    """
+    Internal helper ``_nilish``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return token.strip().upper() in {"", "NIL", "NONE"}
 
 

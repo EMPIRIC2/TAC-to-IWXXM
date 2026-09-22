@@ -84,30 +84,90 @@ class CollectRead:
 
 
 def _local(tag: str) -> str:
-    """Internal helper ``_local``."""
+    """
+    Internal helper ``_local``.
+
+    Parameters
+    ----------
+    tag : object
+        Argument ``tag``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if tag.startswith("{"):
         return tag.rsplit("}", 1)[-1]
     return tag
 
 
 def _attr_local(name: str) -> str:
-    """Internal helper ``_attr_local``."""
+    """
+    Internal helper ``_attr_local``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _local(name)
 
 
 def _looks_like_xml(text: str) -> bool:
-    """Internal helper ``_looks_like_xml``."""
+    """
+    Internal helper ``_looks_like_xml``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     stripped = text.lstrip()
     return stripped.startswith("<?xml") or stripped.startswith("<")
 
 
 def _has_forbidden_dtd(text: str) -> bool:
-    """Reject DTD / custom entity declarations (billion-laughs class)."""
+    """
+    Internal helper ``_has_forbidden_dtd``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _FORBIDDEN_DTD.search(text) is not None
 
 
 def _parse_root(text: str) -> ET.Element:
-    """Internal helper ``_parse_root``."""
+    """
+    Internal helper ``_parse_root``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if _has_forbidden_dtd(text):
         msg = "COLLECT XML must not include a document type or entity declaration"
         raise CollectError(msg)
@@ -119,7 +179,19 @@ def _parse_root(text: str) -> ET.Element:
 
 
 def _is_collect_shape(root: ET.Element) -> bool:
-    """Internal helper ``_is_collect_shape``."""
+    """
+    Internal helper ``_is_collect_shape``.
+
+    Parameters
+    ----------
+    root : object
+        Argument ``root``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     local = _local(root.tag)
     if local == "MeteorologicalBulletin" or local in _IWXXM_ROOTS:
         return True
@@ -160,7 +232,19 @@ def is_collect_input(text: str) -> bool:
 
 
 def _read_from_root(root: ET.Element) -> CollectRead:
-    """Internal helper ``_read_from_root``."""
+    """
+    Internal helper ``_read_from_root``.
+
+    Parameters
+    ----------
+    root : object
+        Argument ``root``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     local = _local(root.tag)
     tac_reports: list[str] = []
     fields: list[CollectField] = []
@@ -251,7 +335,23 @@ def read_collect(xml: str) -> CollectRead:
 
 
 def _source_span(xml: str, needle: str, search_from: int) -> tuple[int, int, int]:
-    """Best-effort source offsets. Missed finds stay zero-width (entity-decoded text)."""
+    """
+    Internal helper ``_source_span``.
+
+    Parameters
+    ----------
+    xml : object
+        Argument ``xml``.
+    needle : object
+        Argument ``needle``.
+    search_from : object
+        Argument ``search_from``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not needle:
         return 0, 0, search_from
     pos = xml.find(needle, search_from)

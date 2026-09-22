@@ -74,7 +74,21 @@ class _ProfileOverlay:
 
 
 def _string_list(value: object, *, label: str) -> tuple[str, ...]:
-    """Internal helper ``_string_list``."""
+    """
+    Internal helper ``_string_list``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    label : object
+        Argument ``label``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(value, list) or not value:
         msg = label
         raise ProfileResolveError(msg)
@@ -88,7 +102,21 @@ def _string_list(value: object, *, label: str) -> tuple[str, ...]:
 
 
 def _optional_id(value: object, *, field: str) -> str | None:
-    """Internal helper ``_optional_id``."""
+    """
+    Internal helper ``_optional_id``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    field : object
+        Argument ``field``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None:
         return None
     if not isinstance(value, str) or not value.strip():
@@ -98,7 +126,14 @@ def _optional_id(value: object, *, field: str) -> str | None:
 
 
 def _load_profile_overlays() -> tuple[_ProfileOverlay, ...]:
-    """Internal helper ``_load_profile_overlays``."""
+    """
+    Internal helper ``_load_profile_overlays``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw_dir = os.environ.get(ENV_PROFILE_DIR, "").strip()
     if not raw_dir:
         return ()

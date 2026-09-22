@@ -24,6 +24,24 @@
 | D-EVDOC-VT | Verify-tech PASS (T07 one-target TS; T08 pure-Rust doctest) |
 | D-EVDOC-DOCVERIFY | Documenting verify **13/13 PASS** |
 
+## Cycle EV-adr048-doc-linters — native doc linters + checker gaps
+
+**Opened:** 2026-09-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-adr048-doc-linters`  
+**Documenting→Implementing gate:** **closed** (spec band)
+
+| ID | Decision |
+|----|----------|
+| D-EVDOC-LINT-01 | **Both fail-closed**: ruff D + eslint-plugin-jsdoc + Rust `missing_docs` **and** ADR-048 checkers (Examples / executable `@example` / NumPy shape) |
+| D-EVDOC-LINT-02 | Harden `check_docs_py.py`: private `_foo` requires Parameters/Returns when applicable |
+| D-EVDOC-LINT-03 | Add eslint-plugin-jsdoc + harden `check_docs_ts.mjs` for class methods + interface/type **method signatures** (Props property fields stay type-level docs only) |
+| D-EVDOC-LINT-04 | No new Fn; no coverage/security/typecheck threshold changes; no call-graph test gate; ADR-048 path exclusions unchanged |
+| D-EVDOC-LINT-05 | UI / H4–H5 N/A |
+| D-EVDOC-LINT-MANIFEST | Amend ADR-048, docstrings.md, inline-documentation-verify, test-plan TC-EVDOC-008..010, dependency-inventory |
+| D-EVDOC-LINT-FEAS | Feasible with risk — accepted (blast radius of D/jsdoc + private Parameters backfill) |
+| D-EVDOC-LINT-TP | Tech-plan locked: M1–M4; TP-01..10; branch → stage; both fail-closed |
+| D-EVDOC-LINT-VT | Verify-tech PASS |
+| D-EVDOC-LINT-DOCVERIFY | Documenting verify PASS (13/13) |
+
 ## Cycle EV-yaml-full-configurability — full YAML + convert emit (#1226)
 
 **Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-full-configurability`  

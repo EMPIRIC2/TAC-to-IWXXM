@@ -33,10 +33,20 @@ _LXML_LEVELS = frozenset({"xsd", "schematron"})
 
 
 def _catalog_roots(iwxxm_version: str, *, profile: str = "annex3") -> list[str]:
-    """Return directory roots for xmloxide ``SchemaResolver`` (packaged / vendor).
+    """
+    Internal helper ``_catalog_roots``.
 
-    Runtime subset (E10-34) ships ``iwxxm/externalSchema`` only - no translation
-    modelling bulk. Monorepo may still resolve translation as a last resort.
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     vdir = version_dir(iwxxm_version)
     root = vendor_iwxxm_root()
@@ -56,7 +66,19 @@ def _catalog_roots(iwxxm_version: str, *, profile: str = "annex3") -> list[str]:
 
 
 def _issues_from_rust(raw: Sequence[dict[str, Any]]) -> list[Issue]:
-    """Map Rust issue dicts to msgspec ``Issue`` structs."""
+    """
+    Internal helper ``_issues_from_rust``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return [
         Issue(
             severity=str(item.get("severity", "error")),
@@ -76,7 +98,25 @@ def _append_extended_levels(
     iwxxm_version: str,
     selected: tuple[str, ...],
 ) -> list[Issue]:
-    """Run GML / codelist layers and merge with existing issues."""
+    """
+    Internal helper ``_append_extended_levels``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    xml_content : object
+        Argument ``xml_content``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    selected : object
+        Argument ``selected``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     out = list(issues)
     try:
         cl_dir = codelists_dir(iwxxm_version)
@@ -105,7 +145,23 @@ def _report_from_issues(
     iwxxm_version: str,
     profile: str,
 ) -> ValidationReport:
-    """Internal helper ``_report_from_issues``."""
+    """
+    Internal helper ``_report_from_issues``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     ok = not any(issue.severity == "error" for issue in issues)
     return ValidationReport(
         ok=ok,
@@ -122,7 +178,25 @@ def _validate_core_levels(
     profile: str,
     selected: tuple[str, ...],
 ) -> ValidationReport:
-    """Run wellformed / XSD / Schematron via Rust or lxml fallback."""
+    """
+    Internal helper ``_validate_core_levels``.
+
+    Parameters
+    ----------
+    xml_content : object
+        Argument ``xml_content``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    profile : object
+        Argument ``profile``.
+    selected : object
+        Argument ``selected``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     rust_levels = [level for level in selected if level in _RUST_LEVELS]
     lxml_levels = [level for level in selected if level in _LXML_LEVELS]
 

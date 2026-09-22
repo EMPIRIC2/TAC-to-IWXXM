@@ -14,7 +14,8 @@ def extract_airport_code(tac_message: str) -> str | None:
     """
     Extract ICAO airport code from TAC METAR/SPECI message.
 
-    Returns:
+    Returns
+    -------
         4-letter ICAO airport code, or None if not fo 18012KT 10SM FEW250")
         'KJFK'
         >>> extract_airport_code("SPECI EGLL 111520Z 27015KT 9999 BKN025")

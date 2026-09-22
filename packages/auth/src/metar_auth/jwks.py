@@ -104,7 +104,19 @@ def clear_jwks_client_cache() -> None:
 
 
 def _fetch_jwks_document(jwks_url: str) -> dict[str, Any]:
-    """Internal helper ``_fetch_jwks_document``."""
+    """
+    Internal helper ``_fetch_jwks_document``.
+
+    Parameters
+    ----------
+    jwks_url : object
+        Argument ``jwks_url``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     now = time.monotonic()
     cached = _JWKS_CACHE.get(jwks_url)
     if cached is not None and (now - cached[0]) < _JWKS_TTL_SEC:

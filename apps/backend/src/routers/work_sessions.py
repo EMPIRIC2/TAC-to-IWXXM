@@ -49,7 +49,19 @@ def work_session_service(
 
 
 def _user_id(user: dict[str, Any]) -> str:
-    """Internal helper ``_user_id``."""
+    """
+    Internal helper ``_user_id``.
+
+    Parameters
+    ----------
+    user : object
+        Argument ``user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return str(user.get("sub") or user.get("user_id"))
 
 

@@ -11,8 +11,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[4]
 
 
 def get_config_env() -> str:
-    """
-    Return active config profile (``local`` or ``prod``).
+    """Return active config profile (``local`` or ``prod``).
 
     Examples
     --------
@@ -23,13 +22,13 @@ def get_config_env() -> str:
     -------
     object
         Return value.
+
     """
     return os.getenv("METAR_CONFIG_ENV", "local").strip() or "local"
 
 
 def config_path(env: str | None = None) -> Path:
-    """
-    Path to ``config/{env}.json`` under the repository root.
+    """Path to ``config/{env}.json`` under the repository root.
 
     Examples
     --------
@@ -45,14 +44,14 @@ def config_path(env: str | None = None) -> Path:
     -------
     object
         Return value.
+
     """
     profile = (env or get_config_env()).strip() or "local"
     return _REPO_ROOT / "config" / f"{profile}.json"
 
 
 def load_config(env: str | None = None) -> dict[str, Any]:
-    """
-    Load and parse environment configuration JSON.
+    """Load and parse environment configuration JSON.
 
     Parameters
     ----------
@@ -75,6 +74,7 @@ def load_config(env: str | None = None) -> dict[str, Any]:
     --------
     >>> 1 + 1  # docstring smoke (load_config)
     2
+
     """
     path = config_path(env)
     with path.open(encoding="utf-8") as handle:
@@ -82,8 +82,7 @@ def load_config(env: str | None = None) -> dict[str, Any]:
 
 
 def get_supabase_url_from_config(env: str | None = None) -> str:
-    """
-    Return ``supabase.url`` from config, or empty string when unset.
+    """Return ``supabase.url`` from config, or empty string when unset.
 
     Examples
     --------
@@ -99,6 +98,7 @@ def get_supabase_url_from_config(env: str | None = None) -> str:
     -------
     object
         Return value.
+
     """
     try:
         cfg = load_config(env)
@@ -113,8 +113,7 @@ def get_supabase_url_from_config(env: str | None = None) -> str:
 
 
 def get_cors_origins_from_config(env: str | None = None) -> list[str]:
-    """
-    Return ``api.corsOrigins`` from config, or empty list when unset.
+    """Return ``api.corsOrigins`` from config, or empty list when unset.
 
     Examples
     --------
@@ -130,6 +129,7 @@ def get_cors_origins_from_config(env: str | None = None) -> list[str]:
     -------
     object
         Return value.
+
     """
     try:
         cfg = load_config(env)
@@ -148,8 +148,7 @@ def get_cors_origins_from_config(env: str | None = None) -> list[str]:
 
 
 def get_frontend_url_from_config(env: str | None = None) -> str:
-    """
-    Return ``api.frontendUrl`` from config, or empty string when unset.
+    """Return ``api.frontendUrl`` from config, or empty string when unset.
 
     Examples
     --------
@@ -165,6 +164,7 @@ def get_frontend_url_from_config(env: str | None = None) -> str:
     -------
     object
         Return value.
+
     """
     try:
         cfg = load_config(env)

@@ -120,12 +120,38 @@ _CLOUD_AMOUNT = {
 
 
 def _signed_temp(raw: str) -> int:
-    """Parse a TAC temperature field (``M`` prefix = negative) to °C."""
+    """
+    Internal helper ``_signed_temp``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return -int(raw[1:]) if raw.startswith("M") else int(raw)
 
 
 def _fmt_wind(m: re.Match[str], *, label: str) -> str:
-    """Internal helper ``_fmt_wind``."""
+    """
+    Internal helper ``_fmt_wind``.
+
+    Parameters
+    ----------
+    m : object
+        Argument ``m``.
+    label : object
+        Argument ``label``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     direction = m.group("dir")
     speed = int(m.group("spd"))
     unit = "kt" if m.group("unit") == "KT" else "m/s"
@@ -138,12 +164,40 @@ def _fmt_wind(m: re.Match[str], *, label: str) -> str:
 
 
 def _fmt_time(m: re.Match[str], *, label: str) -> str:
-    """Internal helper ``_fmt_time``."""
+    """
+    Internal helper ``_fmt_time``.
+
+    Parameters
+    ----------
+    m : object
+        Argument ``m``.
+    label : object
+        Argument ``label``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return f"{label} - day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
 
 
 def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
-    """Internal helper ``_fmt_vis_sm``."""
+    """
+    Internal helper ``_fmt_vis_sm``.
+
+    Parameters
+    ----------
+    m : object
+        Argument ``m``.
+    label : object
+        Argument ``label``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     value = int(m.group("val"))
     prefix = {"P": "more than ", "M": "less than "}.get(m.group("mod") or "", "")
     plural = "s" if value != 1 else ""
@@ -151,7 +205,21 @@ def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
 
 
 def _fmt_cloud(m: re.Match[str], *, forecast: bool) -> str:
-    """Internal helper ``_fmt_cloud``."""
+    """
+    Internal helper ``_fmt_cloud``.
+
+    Parameters
+    ----------
+    m : object
+        Argument ``m``.
+    forecast : object
+        Argument ``forecast``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     amount = _CLOUD_AMOUNT[m.group("amt")]
     if forecast:
         amount = f"Forecast {amount[0].lower()}{amount[1:]}"
@@ -164,7 +232,21 @@ def _fmt_cloud(m: re.Match[str], *, forecast: bool) -> str:
 
 
 def _fmt_wx(m: re.Match[str], *, forecast: bool) -> str:
-    """Internal helper ``_fmt_wx``."""
+    """
+    Internal helper ``_fmt_wx``.
+
+    Parameters
+    ----------
+    m : object
+        Argument ``m``.
+    forecast : object
+        Argument ``forecast``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     parts: list[str] = []
     intensity = m.group("int")
     if intensity:
@@ -227,16 +309,40 @@ class DecodeResult(msgspec.Struct, frozen=True):
 
 
 def _iter_tokens(tac: str) -> list[tuple[int, int, str]]:
-    """Return ``(start, end, token)`` for each non-whitespace run in ``tac``.
+    """
+    Internal helper ``_iter_tokens``.
 
-    The report terminator ``=`` is split into its own token even when attached
-    to the preceding group (e.g. ``A3011=``) so both spans decode (F9).
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     return [(m.start(), m.end(), m.group(0)) for m in re.finditer(r"=|[^\s=]+", tac)]
 
 
 def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> str | None:
-    """Internal helper ``_explain_metar_speci``."""
+    """
+    Internal helper ``_explain_metar_speci``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+    product : object
+        Argument ``product``.
+    seen : object
+        Argument ``seen``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     upper = token.upper()
     if upper in {"METAR", "SPECI"} and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
@@ -316,7 +422,21 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
 
 
 def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
-    """Internal helper ``_explain_taf``."""
+    """
+    Internal helper ``_explain_taf``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+    seen : object
+        Argument ``seen``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     upper = token.upper()
     if upper == "TAF" and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
@@ -373,7 +493,23 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
 
 
 def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) -> str | None:
-    """Internal helper ``_explain_sigmet_airmet``."""
+    """
+    Internal helper ``_explain_sigmet_airmet``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+    product : object
+        Argument ``product``.
+    seen : object
+        Argument ``seen``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     upper = token.upper()
     if upper == product and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
@@ -487,7 +623,23 @@ def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) ->
 
 
 def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str | None:
-    """Best-effort advisory keyword spans; labeled fields use ``_iter_advisory_fields``."""
+    """
+    Internal helper ``_explain_advisory``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+    product : object
+        Argument ``product``.
+    seen : object
+        Argument ``seen``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     upper = token.upper().rstrip(":")
     if product == "VAA":
         if upper == "VA" and seen.get("va", 0) == 0:
@@ -599,7 +751,19 @@ _FIELD_SPECS_BY_PRODUCT: dict[str, tuple[tuple[str, str], ...]] = {
 
 
 def _advisory_field_finder(product: str) -> list[tuple[re.Pattern[str], str]]:
-    """Return ``(compiled_label_pattern, title_template)`` pairs longest-first."""
+    """
+    Internal helper ``_advisory_field_finder``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     specs = _FIELD_SPECS_BY_PRODUCT.get(product)
     if not specs:
         return []
@@ -607,7 +771,23 @@ def _advisory_field_finder(product: str) -> list[tuple[re.Pattern[str], str]]:
 
 
 def _advisory_field_title(label: str, title_template: str, match: re.Match[str]) -> str:
-    """Format a field title, substituting ``{hours}`` when present."""
+    """
+    Internal helper ``_advisory_field_title``.
+
+    Parameters
+    ----------
+    label : object
+        Argument ``label``.
+    title_template : object
+        Argument ``title_template``.
+    match : object
+        Argument ``match``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     hours = match.groupdict().get("hours")
     if hours is not None and "{hours}" in title_template:
         return title_template.format(hours=hours)
@@ -621,7 +801,19 @@ _AHL_LINE = re.compile(
 
 
 def _iter_ahl_heading(tac: str) -> list[tuple[int, int, str, str]]:
-    """Decode a leading WMO abbreviated heading on any product bulletin."""
+    """
+    Internal helper ``_iter_ahl_heading``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _AHL_LINE.match(tac.lstrip("\ufeff"))
     if m is None:
         stripped = tac.lstrip()
@@ -639,7 +831,21 @@ def _iter_ahl_heading(tac: str) -> list[tuple[int, int, str, str]]:
 
 
 def _iter_advisory_ahl(tac: str, *, product: str) -> list[tuple[int, int, str, str]]:
-    """Decode leading WMO AHL (``T1T2A1A2ii CCCC YYGGgg``) on structured advisory peers."""
+    """
+    Internal helper ``_iter_advisory_ahl``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if product not in _ADVISORY_STRUCTURED:
         return []
     return _iter_ahl_heading(tac)
@@ -651,11 +857,19 @@ def _iter_advisory_fields(
     product: str,
 ) -> list[tuple[int, int, str, str]]:
     """
-    Yield structured ``(start, end, code, explanation)`` for advisory labeled fields.
+    Internal helper ``_iter_advisory_fields``.
 
-    Each field spans from its ``LABEL:`` through the value text until the next
-    labeled field (or end of bulletin). Continuations on following indented lines
-    are included in the same span (WMO A7 / A2 / SWXA / VONA layout).
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if product not in _ADVISORY_STRUCTURED:
         return []
@@ -696,7 +910,21 @@ def _token_indices_covering(
     tokens: list[tuple[int, int, str]],
     spans: list[tuple[int, int]],
 ) -> set[int]:
-    """Return token indices that overlap any ``[start, end)`` character span."""
+    """
+    Internal helper ``_token_indices_covering``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    spans : object
+        Argument ``spans``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     covered: set[int] = set()
     for idx, (tstart, tend, _) in enumerate(tokens):
         for start, end in spans:
@@ -709,38 +937,120 @@ def _token_indices_covering(
 def _classify(
     product: str,
 ) -> Callable[[str, dict[str, int]], str | None]:
-    """Internal helper ``_classify``."""
+    """
+    Internal helper ``_classify``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if product in {"METAR", "SPECI"}:
 
         def _metar(tok: str, seen: dict[str, int]) -> str | None:
-            """Internal helper ``_metar``."""
+            """
+            Internal helper ``_metar``.
+
+            Parameters
+            ----------
+            tok : object
+                Argument ``tok``.
+            seen : object
+                Argument ``seen``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             return _explain_metar_speci(tok, product=product, seen=seen)
 
         return _metar
     if product == "TAF":
 
         def _taf(tok: str, seen: dict[str, int]) -> str | None:
-            """Internal helper ``_taf``."""
+            """
+            Internal helper ``_taf``.
+
+            Parameters
+            ----------
+            tok : object
+                Argument ``tok``.
+            seen : object
+                Argument ``seen``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             return _explain_taf(tok, seen=seen)
 
         return _taf
     if product in {"SIGMET", "AIRMET"}:
 
         def _haz(tok: str, seen: dict[str, int]) -> str | None:
-            """Internal helper ``_haz``."""
+            """
+            Internal helper ``_haz``.
+
+            Parameters
+            ----------
+            tok : object
+                Argument ``tok``.
+            seen : object
+                Argument ``seen``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             return _explain_sigmet_airmet(tok, product=product, seen=seen)
 
         return _haz
     if product in _ADVISORY_STRUCTURED:
 
         def _adv(tok: str, seen: dict[str, int]) -> str | None:
-            """Internal helper ``_adv``."""
+            """
+            Internal helper ``_adv``.
+
+            Parameters
+            ----------
+            tok : object
+                Argument ``tok``.
+            seen : object
+                Argument ``seen``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             return _explain_advisory(tok, product=product, seen=seen)
 
         return _adv
 
     def _none(_tok: str, _seen: dict[str, int]) -> str | None:
-        """Internal helper ``_none``."""
+        """
+        Internal helper ``_none``.
+
+        Parameters
+        ----------
+        _tok : object
+            Argument ``_tok``.
+        _seen : object
+            Argument ``_seen``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return None
 
     return _none
@@ -751,7 +1061,23 @@ def _coalesce_residuals(
     explained: set[int],
     tac: str,
 ) -> list[DecodeResidual]:
-    """Merge adjacent unexplained tokens into residual runs."""
+    """
+    Internal helper ``_coalesce_residuals``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    explained : object
+        Argument ``explained``.
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     residuals: list[DecodeResidual] = []
     i = 0
     while i < len(tokens):
@@ -774,7 +1100,19 @@ _SPARSE_PRODUCTS = frozenset({"SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
 
 
 def _sentence_from_segment(seg: DecodeSegment) -> str | None:
-    """Turn a value-aware explanation into a summary clause (skip terminators)."""
+    """
+    Internal helper ``_sentence_from_segment``.
+
+    Parameters
+    ----------
+    seg : object
+        Argument ``seg``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if seg.code == "=" or seg.explanation.lower().startswith("report terminator"):
         return None
     text = seg.explanation.strip()
@@ -849,7 +1187,19 @@ def _build_summary(
 
 
 def _looks_like_ahl_bulletin(text: str) -> bool:
-    """Return True when the first non-empty line is a WMO abbreviated heading."""
+    """
+    Internal helper ``_looks_like_ahl_bulletin``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for line in text.splitlines():
         stripped = line.strip()
         if not stripped:
@@ -859,7 +1209,21 @@ def _looks_like_ahl_bulletin(text: str) -> bool:
 
 
 def _shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
-    """Translate segment/residual offsets into the parent bulletin string."""
+    """
+    Internal helper ``_shift_decode``.
+
+    Parameters
+    ----------
+    result : object
+        Argument ``result``.
+    offset : object
+        Argument ``offset``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return DecodeResult(
         product=result.product,
         segments=[
@@ -920,11 +1284,20 @@ def set_bulletin_splitter(splitter: Callable[[str, str], object] | None) -> None
 
 
 def _decode_bulletin(tac: str, *, product: str) -> DecodeResult | None:
-    """Split a WMO AHL bulletin and decode each contained TAC report.
+    """
+    Internal helper ``_decode_bulletin``.
 
-    Returns None when the text is not a splittable bulletin, or when no
-    bulletin splitter has been injected, so the caller can fall through to
-    single-report decode. This package does not import the converter.
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if not _looks_like_ahl_bulletin(tac):
         return None
@@ -963,7 +1336,21 @@ def _decode_bulletin(tac: str, *, product: str) -> DecodeResult | None:
 
 
 def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
-    """Decode one TAC report (no bulletin split)."""
+    """
+    Internal helper ``_decode_single_report``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     tokens = _iter_tokens(tac)
     classify = _classify(product)
     seen: dict[str, int] = {}

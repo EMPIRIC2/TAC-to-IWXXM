@@ -17,7 +17,14 @@ class StationSampler:
     """
 
     def __init__(self, csv_path: pathlib.Path | None = None) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        csv_path : object
+            Argument ``csv_path``.
+        """
         if csv_path is None:
             # Auto-detect CSV path
             csv_path = self._find_airports_csv()
@@ -26,7 +33,14 @@ class StationSampler:
 
     @staticmethod
     def _find_airports_csv() -> pathlib.Path:
-        """Find the airports CSV file."""
+        """
+        Internal helper ``_find_airports_csv``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         candidates = [
             pathlib.Path("/app/data/af-airports.csv"),
             pathlib.Path("./data/af-airports.csv"),
@@ -39,7 +53,14 @@ class StationSampler:
         raise FileNotFoundError("Could not find af-airports.csv")
 
     def _load_airports(self) -> list[dict[str, Any]]:
-        """Load and cache airport data."""
+        """
+        Internal helper ``_load_airports``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if self._airports_cache is not None:
             return self._airports_cache
 
@@ -73,7 +94,8 @@ class StationSampler:
         """
         Sample random airport stations.
 
-        Returns:
+        Returns
+        -------
             List of ICAO codes
 
         Parameters
@@ -119,7 +141,8 @@ class StationSampler:
         """
         Get all major airport ICAO codes.
 
-        Returns:
+        Returns
+        -------
             List of all matching ICAO codes
 
         Parameters
@@ -153,7 +176,8 @@ class StationSampler:
         """
         Get information about a specific station.
 
-        Returns:
+        Returns
+        -------
             Airport info d
 
         Parameters

@@ -65,19 +65,28 @@ class WMOExamplesLoader:
 
     def __init__(self, schemas_base_path: Path) -> None:
         """
-        Initialize the examples loader.
+        Internal helper ``__init__``.
 
-        Args:
-            schemas_base_path: Base path for mirrored schemas (e.g., PROJECT_ROOT/schemas/iwxxm)
+        Parameters
+        ----------
+        schemas_base_path : object
+            Argument ``schemas_base_path``.
         """
         self.schemas_base_path = Path(schemas_base_path)
 
     def _examples_dir(self, version: str) -> Path:
         """
-        Resolve the examples directory for a version.
+        Internal helper ``_examples_dir``.
 
-        Prefer vendor pin layout ``{version}/IWXXM/examples``, then mirrored
-        ``{version}/examples`` (schemas.wmo.int / local mirror).
+        Parameters
+        ----------
+        version : object
+            Argument ``version``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         candidates = (
             self.schemas_base_path / version / "IWXXM" / "examples",
@@ -92,7 +101,8 @@ class WMOExamplesLoader:
         """
         Load all examples for a specific IWXXM version.
 
-        Returns:
+        Returns
+        -------
             List of WMOExample objects
 
         Parameters
@@ -159,7 +169,8 @@ class WMOExamplesLoader:
         """
         Load examples for multiple versions.
 
-        Returns:
+        Returns
+        -------
             Dictionary mapping version -> list of examples
 
         Parameters
@@ -192,7 +203,8 @@ class WMOExamplesLoader:
         """
         Get TAC↔XML pairs for testing roundtrip conversions.
 
-        Returns:
+        Returns
+        -------
             List of (tac_path, xml_path, example_id) tuples
 
         Parameters
@@ -229,7 +241,8 @@ class WMOExamplesLoader:
         """
         Load TAC-to-XML-Guidance.txt if available.
 
-        Returns:
+        Returns
+        -------
             Guidance document con
 
         Parameters
@@ -258,7 +271,8 @@ class WMOExamplesLoader:
         """
         Generate manifest of all examples for a version.
 
-        Returns:
+        Returns
+        -------
             Manifest dictionary w
 
         Parameters
@@ -308,13 +322,17 @@ class WMOExamplesLoader:
 
     def _detect_message_type(self, example_id: str) -> str:
         """
-        Detect message type from example filename.
+        Internal helper ``_detect_message_type``.
 
-        Args:
-            example_id: Example ID (filename without extension)
+        Parameters
+        ----------
+        example_id : object
+            Argument ``example_id``.
 
-        Returns:
-            Message type string
+        Returns
+        -------
+        object
+            Return value.
         """
         for msg_type, pattern in self.MESSAGE_TYPE_PATTERNS.items():
             if pattern.match(example_id):
@@ -324,13 +342,17 @@ class WMOExamplesLoader:
 
     def _extract_scenario(self, example_id: str) -> str | None:
         """
-        Extract test scenario description from example ID.
+        Internal helper ``_extract_scenario``.
 
-        Args:
-            example_id: Example ID
+        Parameters
+        ----------
+        example_id : object
+            Argument ``example_id``.
 
-        Returns:
-            Scenario description or None
+        Returns
+        -------
+        object
+            Return value.
         """
         # Remove message type prefix and extract scenario
         parts = example_id.split("-", 1)
@@ -342,7 +364,8 @@ class WMOExamplesLoader:
         """
         Auto-detect available versions from schemas directory.
 
-        Returns:
+        Returns
+        -------
             List of version strings that have examples directories
         """
         versions: list[str] = []
@@ -365,7 +388,8 @@ def load_wmo_examples(
     """
     Convenience function to load WMO examples.
 
-    Returns:
+    Returns
+    -------
         List of WMOExample objects
 
     Parameters

@@ -55,7 +55,14 @@ class UnknownVOR(KeyError):
 
 
 def _vor_table_path() -> Path:
-    """Internal helper ``_vor_table_path``."""
+    """
+    Internal helper ``_vor_table_path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return Path(__file__).resolve().parent.parent / "data" / "vor_reference_points.json"
 
 
@@ -164,7 +171,14 @@ class ReferencePointGeometryParser:
     """
 
     def __init__(self, vor_table: dict[str, dict[str, Any]] | None = None) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        vor_table : object
+            Argument ``vor_table``.
+        """
         self._vor_table = vor_table
 
     def parse_from_body(self, body: str) -> dict[str, Any] | None:

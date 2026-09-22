@@ -238,26 +238,55 @@ _CONSUMED_REMARK = re.compile(
 
 
 def _celsius(token: str) -> int:
-    """Internal helper ``_celsius``."""
+    """
+    Internal helper ``_celsius``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if token.startswith("M"):
         return -int(token[1:])
     return int(token)
 
 
 def _inhg_to_hpa(alt_token: str) -> float:
-    """Convert Axxxx (hundredths inHg) to hPa rounded to 1 decimal."""
+    """
+    Internal helper ``_inhg_to_hpa``.
+
+    Parameters
+    ----------
+    alt_token : object
+        Argument ``alt_token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     inhg = int(alt_token) / 100.0
     return round(inhg * 33.8639, 1)
 
 
 def _sm_to_m(sm: int) -> tuple[int, bool]:
     """
-    Statute miles → metres.
+    Internal helper ``_sm_to_m``.
+
+    Parameters
+    ----------
+    sm : object
+        Argument ``sm``.
 
     Returns
     -------
-    metres, above
-        ``above`` is True when SM ≥ 10 (IWXXM ABOVE operator for 10SM+).
+    object
+        Return value.
     """
     metres = round(sm * 1609.344)
     if sm >= 10:
@@ -266,24 +295,57 @@ def _sm_to_m(sm: int) -> tuple[int, bool]:
 
 
 def _slp_code_to_hpa(code: int) -> float:
-    """Decode FMH-1 SLP### (tenths hPa, leading 9/10 omitted) to hPa."""
+    """
+    Internal helper ``_slp_code_to_hpa``.
+
+    Parameters
+    ----------
+    code : object
+        Argument ``code``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if code < 500:
         return 1000.0 + code / 10.0
     return 900.0 + code / 10.0
 
 
 def _tenths_celsius(sign: str, digits: str) -> float:
-    """Decode FMH-1 additive T sign+three-digit tenths to Celsius."""
+    """
+    Internal helper ``_tenths_celsius``.
+
+    Parameters
+    ----------
+    sign : object
+        Argument ``sign``.
+    digits : object
+        Argument ``digits``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     value = int(digits) / 10.0
     return -value if sign == "1" else value
 
 
 def _split_obs_and_trends(body: str) -> tuple[str, list[re.Match[str]]]:
     """
-    Split METAR/SPECI body into observation text and trend groups.
+    Internal helper ``_split_obs_and_trends``.
 
-    Trend keywords (BECMG / TEMPO / NOSIG) and their bodies are excluded from
-    observation scanning so trend NSW/NSC/FG do not pollute present weather.
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     first = re.search(r"\b(?:BECMG|TEMPO|NOSIG)\b", body)
     if first is None:
@@ -294,7 +356,21 @@ def _split_obs_and_trends(body: str) -> tuple[str, list[re.Match[str]]]:
 
 
 def _hhmm_to_stamp(ir: dict[str, Any], hhmm: str) -> str:
-    """Map TL/AT/FM HHMM onto the observation calendar day (WMO YUDO → 2012-08)."""
+    """
+    Internal helper ``_hhmm_to_stamp``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    hhmm : object
+        Argument ``hhmm``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     hour = int(hhmm[0:2])
     minute = int(hhmm[2:4])
     day = int(ir["day"])
@@ -305,7 +381,19 @@ def _hhmm_to_stamp(ir: dict[str, Any], hhmm: str) -> str:
 
 
 def _obs_stamp(ir: dict[str, Any]) -> str:
-    """Internal helper ``_obs_stamp``."""
+    """
+    Internal helper ``_obs_stamp``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     day = int(ir["day"])
     hour = int(ir["hour"])
     minute = int(ir["minute"])
@@ -315,7 +403,23 @@ def _obs_stamp(ir: dict[str, Any]) -> str:
 
 
 def _parse_trend_group(ir: dict[str, Any], kind: str, body: str) -> dict[str, Any] | None:
-    """Parse one BECMG/TEMPO/NOSIG group into an IR trend dict."""
+    """
+    Internal helper ``_parse_trend_group``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    kind : object
+        Argument ``kind``.
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if kind == "NOSIG":
         return {"change_indicator": "NOSIG", "nil_nosig": True}
 
@@ -367,7 +471,19 @@ def _parse_trend_group(ir: dict[str, Any], kind: str, body: str) -> dict[str, An
 
 
 def _lightning_type_code(raw: str) -> str | None:
-    """Map concatenated FMH-1 LTG type letters to NWS LightningType code."""
+    """
+    Internal helper ``_lightning_type_code``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not raw:
         return None
     parts: list[str] = []
@@ -399,7 +515,19 @@ def _lightning_type_code(raw: str) -> str | None:
 
 
 def _lightning_sector(sector_tok: str | None) -> dict[str, Any] | None:
-    """Build sector IR from ALQDS or hyphenated compass list (PDF ±22.5° padding)."""
+    """
+    Internal helper ``_lightning_sector``.
+
+    Parameters
+    ----------
+    sector_tok : object
+        Argument ``sector_tok``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not sector_tok:
         return None
     if sector_tok == "ALQDS":
@@ -417,7 +545,19 @@ def _lightning_sector(sector_tok: str | None) -> dict[str, Any] | None:
 
 
 def _parse_lightning_remark(remarks: str) -> dict[str, Any] | None:
-    """Parse first FMH-1 lightning REMARKS group into ObservedLightning IR fields."""
+    """
+    Internal helper ``_parse_lightning_remark``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _LTG_REMARK.search(remarks)
     if m is None:
         return None
@@ -438,13 +578,37 @@ def _parse_lightning_remark(remarks: str) -> dict[str, Any] | None:
 
 
 def _frac_to_inches(frac: str) -> float:
-    """Parse ``n/d`` fraction to float inches."""
+    """
+    Internal helper ``_frac_to_inches``.
+
+    Parameters
+    ----------
+    frac : object
+        Argument ``frac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     num_s, den_s = frac.split("/", 1)
     return int(num_s) / float(int(den_s))
 
 
 def _parse_sm_fraction(token: str) -> float:
-    """Parse FMH-1 statute-mile token (``2``, ``3/4``, ``1 1/2``) to float SM."""
+    """
+    Internal helper ``_parse_sm_fraction``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     parts = token.split()
     if len(parts) == 2 and "/" in parts[1]:
         return float(int(parts[0])) + _frac_to_inches(parts[1])
@@ -454,17 +618,53 @@ def _parse_sm_fraction(token: str) -> float:
 
 
 def _sm_float_to_m(sm: float) -> int:
-    """Convert fractional statute miles to metres (rounded)."""
+    """
+    Internal helper ``_sm_float_to_m``.
+
+    Parameters
+    ----------
+    sm : object
+        Argument ``sm``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return round(sm * 1609.344)
 
 
 def _sm_float_to_ft(sm: float) -> int:
-    """Convert fractional statute miles to feet (rounded)."""
+    """
+    Internal helper ``_sm_float_to_ft``.
+
+    Parameters
+    ----------
+    sm : object
+        Argument ``sm``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return round(sm * 5280.0)
 
 
 def _rwy_location_description(loc: str) -> str:
-    """Map ``RWY11`` / ``RWY15R TDZ`` to PDF-style SensorLocation description."""
+    """
+    Internal helper ``_rwy_location_description``.
+
+    Parameters
+    ----------
+    loc : object
+        Argument ``loc``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = re.match(r"RWY(?P<rwy>\d{2}[LCR]?)(?:\s+(?P<tdz>TDZ))?$", loc.strip())
     if m is None:
         return loc.replace("RWY", "RUNWAY ", 1)
@@ -475,7 +675,19 @@ def _rwy_location_description(loc: str) -> str:
 
 
 def _parse_second_location_remark(remarks: str) -> dict[str, Any] | None:
-    """Parse FMH-1 CIG/VIS … RWY… into ObservedAtSecondLocation IR."""
+    """
+    Internal helper ``_parse_second_location_remark``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _SECOND_LOC.search(remarks)
     if m is None:
         return None
@@ -495,7 +707,19 @@ def _parse_second_location_remark(remarks: str) -> dict[str, Any] | None:
 
 
 def _parse_tower_visibility_remark(remarks: str) -> dict[str, Any] | None:
-    """Parse FMH-1 ``TWR VIS`` into TowerVisibility IR."""
+    """
+    Internal helper ``_parse_tower_visibility_remark``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _TWR_VIS.search(remarks)
     if m is None:
         return None
@@ -507,7 +731,19 @@ def _parse_tower_visibility_remark(remarks: str) -> dict[str, Any] | None:
 
 
 def _parse_sector_visibility_remark(remarks: str) -> dict[str, Any] | None:
-    """Parse FMH-1 sector ``VIS n DIR`` into SectorVisibility IR."""
+    """
+    Internal helper ``_parse_sector_visibility_remark``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _SECTOR_VIS.search(remarks)
     if m is None:
         return None
@@ -522,7 +758,19 @@ def _parse_sector_visibility_remark(remarks: str) -> dict[str, Any] | None:
 
 
 def _parse_obscuration_remark(remarks: str) -> dict[str, Any] | None:
-    """Parse first REMARKS obscuration layer (``FU BKN005``) into Obscurations IR."""
+    """
+    Internal helper ``_parse_obscuration_remark``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _OBSCURATION.search(remarks)
     if m is None:
         return None
@@ -534,7 +782,19 @@ def _parse_obscuration_remark(remarks: str) -> dict[str, Any] | None:
 
 
 def _parse_variable_ceiling_remark(remarks: str) -> dict[str, Any] | None:
-    """Parse FMH-1 ``CIG hhhVhhh`` into VariableCeilingHeight IR."""
+    """
+    Internal helper ``_parse_variable_ceiling_remark``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _CIG_VAR.search(remarks)
     if m is None:
         return None
@@ -545,7 +805,19 @@ def _parse_variable_ceiling_remark(remarks: str) -> dict[str, Any] | None:
 
 
 def _parse_variable_sky_remark(remarks: str) -> dict[str, Any] | None:
-    """Parse FMH-1 ``AMT V AMT`` into VariableSkyCondition IR."""
+    """
+    Internal helper ``_parse_variable_sky_remark``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _SKY_VAR.search(remarks)
     if m is None:
         return None
@@ -556,7 +828,19 @@ def _parse_variable_sky_remark(remarks: str) -> dict[str, Any] | None:
 
 
 def _parse_variable_visibility_remark(remarks: str) -> dict[str, Any] | None:
-    """Parse FMH-1 ``VIS nVn`` into VariableVisibility IR."""
+    """
+    Internal helper ``_parse_variable_visibility_remark``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _VIS_VAR.search(remarks)
     if m is None:
         return None
@@ -571,9 +855,19 @@ def _parse_variable_visibility_remark(remarks: str) -> dict[str, Any] | None:
 
 def _sky_level_field(token: str, base: int) -> dict[str, str]:
     """
-    Map one FMH-1 ``8/`` etage digit to CharacterOfTheSky IR.
+    Internal helper ``_sky_level_field``.
 
-    Digit ``0``-``9`` → BUFR ``0-20-012`` code ``base+digit``; ``/`` → notObservable.
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+    base : object
+        Argument ``base``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if token == "/":
         return {"nil_reason": _NIL_NOT_OBSERVABLE}
@@ -582,7 +876,19 @@ def _sky_level_field(token: str, base: int) -> dict[str, str]:
 
 
 def _parse_sky_types_remark(remarks: str) -> dict[str, Any] | None:
-    """Parse FMH-1 ``8/CLCMCH`` into CharacterOfTheSky IR."""
+    """
+    Internal helper ``_parse_sky_types_remark``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _SKY_TYPES.search(remarks)
     if m is None:
         return None
@@ -606,7 +912,19 @@ def _parse_sky_types_remark(remarks: str) -> dict[str, Any] | None:
 
 
 def _parse_convective_remark(remarks: str) -> dict[str, Any] | None:
-    """Parse first FMH-1 CB/TS/TCU/CBMAM location remark into ConvectiveCloudLocation IR."""
+    """
+    Internal helper ``_parse_convective_remark``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _CONVECTIVE.search(remarks)
     if m is None:
         return None
@@ -630,7 +948,19 @@ def _parse_convective_remark(remarks: str) -> dict[str, Any] | None:
 
 
 def _parse_hail_size_remark(remarks: str) -> dict[str, Any] | None:
-    """Parse FMH-1 ``GR`` hailstone size remark into HailstoneSize IR."""
+    """
+    Internal helper ``_parse_hail_size_remark``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _HAIL_SIZE.search(remarks)
     if m is None:
         return None
@@ -648,14 +978,38 @@ def _parse_hail_size_remark(remarks: str) -> dict[str, Any] | None:
 
 
 def _precip_6_period(hour: int) -> str:
-    """Map observation hour to FMH-1 6RRRR accumulation period (PT3H or PT6H)."""
+    """
+    Internal helper ``_precip_6_period``.
+
+    Parameters
+    ----------
+    hour : object
+        Argument ``hour``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if hour % 6 == 0:
         return "PT6H"
     return "PT3H"
 
 
 def _parse_max_min_temperatures(remarks: str) -> list[dict[str, Any]]:
-    """Parse FMH-1 ``1``/``2``/``4`` additive groups into MaxMinTemperatures IR rows."""
+    """
+    Internal helper ``_parse_max_min_temperatures``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     rows: list[dict[str, Any]] = []
     max_6 = _RMK_MAX_6H.search(remarks)
     min_6 = _RMK_MIN_6H.search(remarks)
@@ -679,7 +1033,21 @@ def _parse_max_min_temperatures(remarks: str) -> list[dict[str, Any]]:
 
 
 def _precip_quantity(hundredths: int, *, period: str) -> dict[str, Any]:
-    """Build one ``ProcessedProperty`` IR row for precipitation additive groups."""
+    """
+    Internal helper ``_precip_quantity``.
+
+    Parameters
+    ----------
+    hundredths : object
+        Argument ``hundredths``.
+    period : object
+        Argument ``period``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     row: dict[str, Any] = {
         "processed_weather_element_href": _PRECIP_ELEMENT_HREF,
         "value_type_href": _STAT_ACCUM_HREF,
@@ -696,7 +1064,19 @@ def _precip_quantity(hundredths: int, *, period: str) -> dict[str, Any]:
 
 
 def _parse_recent_weather_remarks(remarks: str) -> list[dict[str, Any]]:
-    """Parse FMH-1 weather begin/end remarks into RecentWeather IR rows."""
+    """
+    Internal helper ``_parse_recent_weather_remarks``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     rows: list[dict[str, Any]] = []
     for m in _RECENT_WX.finditer(remarks):
         wx = m.group("wx")
@@ -719,7 +1099,21 @@ def _parse_recent_weather_remarks(remarks: str) -> list[dict[str, Any]]:
 
 
 def _parse_processed_precip(remarks: str, hour: int) -> list[dict[str, Any]]:
-    """Parse ``P``/``6``/``7`` precip additive groups into processed_quantities."""
+    """
+    Internal helper ``_parse_processed_precip``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+    hour : object
+        Argument ``hour``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     qty: list[dict[str, Any]] = []
     precip = _RMK_P.search(remarks)
     if precip is not None:
@@ -734,7 +1128,21 @@ def _parse_processed_precip(remarks: str, hour: int) -> list[dict[str, Any]]:
 
 
 def _product_matches_rtype(product: str, rtype: str) -> bool:
-    """Return True when ``product`` is compatible with the TAC lead token."""
+    """
+    Internal helper ``_product_matches_rtype``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    rtype : object
+        Argument ``rtype``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     product_u = product.upper()
     rtype_u = rtype.upper()
     if product_u == rtype_u:
@@ -744,7 +1152,16 @@ def _product_matches_rtype(product: str, rtype: str) -> bool:
 
 
 def _parse_ca_remarks(remarks: str, ir: dict[str, Any]) -> None:
-    """Enrich IR with MANOBS Canadian REMARKS not covered by US FMH-1 path."""
+    """
+    Internal helper ``_parse_ca_remarks``.
+
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+    ir : object
+        Argument ``ir``.
+    """
     density = _CA_DENSITY_ALT.search(remarks)
     if density is not None:
         ir["density_altitude_ft"] = int(density.group("ft"))
@@ -759,11 +1176,17 @@ def _parse_ca_remarks(remarks: str, ir: dict[str, Any]) -> None:
 
 def _remarks_free_text(remarks: str) -> str:
     """
-    Return REMARKS remainder after removing structured tokens.
+    Internal helper ``_remarks_free_text``.
 
-    Hourly additive ``T…`` stays so ``iwxxm_us`` can retain it in
-    ``humanReadableText`` (#667 / UJ-026 never-drop). Max/min ``1``/``2``/``4``
-    and precip ``P``/``6``/``7`` are consumed when structured into Addendum.
+    Parameters
+    ----------
+    remarks : object
+        Argument ``remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     leftover = _CONSUMED_REMARK.sub(" ", remarks)
     leftover = re.sub(r"\s+", " ", leftover).strip(" =")
@@ -772,13 +1195,14 @@ def _remarks_free_text(remarks: str) -> str:
 
 def _parse_remarks(rest: str, ir: dict[str, Any]) -> None:
     """
-    Enrich IR with IWXXM-US REMARKS groups (AO2, SLP, PK WND, WSHFT, LTG, sky,
-    convective, hail, sector/tower VIS, obscuration, second-site, SNINCR,
-    sensor-NO, max/min, precip ``P``/``6``/``7``, T).
+    Internal helper ``_parse_remarks``.
 
-    Malformed US REMARKS tokens append to ``ir['remark_issues']`` for UJ-010 /
-    TC-F6-012 diagnostics (profile isolation: annex3 emit ignores extensions).
-    Unparsed remainder is stored in ``remarks_free_text`` for never-drop emit.
+    Parameters
+    ----------
+    rest : object
+        Argument ``rest``.
+    ir : object
+        Argument ``ir``.
     """
     rmk = _RMK.search(rest)
     if rmk is None:

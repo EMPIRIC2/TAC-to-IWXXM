@@ -78,7 +78,8 @@ def get_coordinate_decimals(version: str) -> int:
     """
     Get number of decimal places for coordinates in a version.
 
-    Returns:
+    Returns
+    -------
         Number of decimal places (2-8)
 
     Parameters
@@ -106,7 +107,8 @@ def get_elevation_rounding(version: str) -> int:
     """
     Get elevation rounding rule for a version.
 
-    Returns:
+    Returns
+    -------
         Number of decimal pla
 
     Parameters
@@ -134,7 +136,8 @@ def format_coordinates(lat: float, lon: float, version: str) -> str:
     """
     Format coordinates for a specific IWXXM version.
 
-    Returns:
+    Returns
+    -------
         Formatted coordinate string for gml:pos
 
     Parameters
@@ -164,7 +167,8 @@ def format_elevation(elevation_m: float, version: str) -> float:
     """
     Format elevation for a specific IWXXM version.
 
-    Returns:
+    Returns
+    -------
         Formatted elevation value
 
     Parameters

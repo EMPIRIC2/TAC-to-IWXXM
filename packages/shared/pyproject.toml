@@ -29,6 +29,7 @@ filterwarnings = [
 # ADR-027 — when `make lint` passes `packages/shared`, Ruff uses this pyproject as
 # project root (root extend-exclude does not apply). Keep generated trees out of lint.
 [tool.ruff]
+extend = "../../ruff.toml"
 extend-exclude = [
   "src/metar_shared/iwxxm_xsd/v*",
 ]

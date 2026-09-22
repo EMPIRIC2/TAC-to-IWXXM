@@ -147,7 +147,19 @@ class ShadowCompareResult:
 
 
 def _re_flags(names: Sequence[object]) -> int:
-    """Internal helper ``_re_flags``."""
+    """
+    Internal helper ``_re_flags``.
+
+    Parameters
+    ----------
+    names : object
+        Argument ``names``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     flags = 0
     for name in names:
         if not isinstance(name, str):
@@ -167,7 +179,19 @@ def _re_flags(names: Sequence[object]) -> int:
 
 
 def _parse_preprocess(raw: object) -> PreprocessSpec:
-    """Internal helper ``_parse_preprocess``."""
+    """
+    Internal helper ``_parse_preprocess``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if raw is None:
         return PreprocessSpec()
     if not isinstance(raw, dict):
@@ -189,7 +213,21 @@ def _parse_preprocess(raw: object) -> PreprocessSpec:
 
 
 def _parse_emit(raw: object, *, required: bool) -> EmitSpec | None:
-    """Internal helper ``_parse_emit``."""
+    """
+    Internal helper ``_parse_emit``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+    required : object
+        Argument ``required``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if raw is None:
         if required:
             msg = "emit spec required"
@@ -228,7 +266,19 @@ def _parse_emit(raw: object, *, required: bool) -> EmitSpec | None:
 
 
 def _parse_rule(raw: object) -> DetectorRule:
-    """Internal helper ``_parse_rule``."""
+    """
+    Internal helper ``_parse_rule``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(raw, dict):
         msg = "rule must be a mapping"
         raise DetectorError(msg)
@@ -342,7 +392,21 @@ def _parse_rule(raw: object) -> DetectorRule:
 
 
 def _parse_pack(data: object, *, source_path: str | None) -> DetectorPack:
-    """Internal helper ``_parse_pack``."""
+    """
+    Internal helper ``_parse_pack``.
+
+    Parameters
+    ----------
+    data : object
+        Argument ``data``.
+    source_path : object
+        Argument ``source_path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(data, dict):
         msg = "detector pack root must be a mapping"
         raise DetectorError(msg)
@@ -406,7 +470,21 @@ def load_detector_pack(path: Path | str) -> DetectorPack:
 
 
 def _header_extends(value: object, *, name: str) -> str | None:
-    """Internal helper ``_header_extends``."""
+    """
+    Internal helper ``_header_extends``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None or value == []:
         return None
     if isinstance(value, str) and value.strip():
@@ -420,7 +498,21 @@ def _header_extends(value: object, *, name: str) -> str | None:
 
 
 def _header_profiles(value: object, *, name: str) -> tuple[str, ...]:
-    """Internal helper ``_header_profiles``."""
+    """
+    Internal helper ``_header_profiles``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None:
         return ()
     if not isinstance(value, list) or not value:
@@ -439,7 +531,21 @@ def _merge_detector_rules(
     base: tuple[DetectorRule, ...],
     extra: tuple[DetectorRule, ...],
 ) -> tuple[DetectorRule, ...]:
-    """Internal helper ``_merge_detector_rules``."""
+    """
+    Internal helper ``_merge_detector_rules``.
+
+    Parameters
+    ----------
+    base : object
+        Argument ``base``.
+    extra : object
+        Argument ``extra``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     replacement = {rule.id: rule for rule in extra}
     seen = {rule.id for rule in base}
     merged = [replacement.get(rule.id, rule) for rule in base]
@@ -454,7 +560,25 @@ def _take_detector_overlay(
     *,
     profile: str | None,
 ) -> DetectorPack | None:
-    """Internal helper ``_take_detector_overlay``."""
+    """
+    Internal helper ``_take_detector_overlay``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+    pack : object
+        Argument ``pack``.
+    catalog : object
+        Argument ``catalog``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     mapping = cast(Mapping[str, Any], raw)
     base_id = _header_extends(mapping.get("extends"), name=pack.id)
     profiles = _header_profiles(mapping.get("profiles"), name=pack.id)
@@ -555,7 +679,19 @@ def detector_mode() -> Literal["legacy", "shadow", "detector"]:
 
 
 def _body_span(tac: str) -> tuple[int, int, str]:
-    """Internal helper ``_body_span``."""
+    """
+    Internal helper ``_body_span``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     stripped = tac.strip()
     if not stripped:
         return 0, len(tac), ""
@@ -564,7 +700,21 @@ def _body_span(tac: str) -> tuple[int, int, str]:
 
 
 def _prepare_window(body: str, prep: PreprocessSpec) -> tuple[str, int]:
-    """Return (window_text, offset_into_body)."""
+    """
+    Internal helper ``_prepare_window``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+    prep : object
+        Argument ``prep``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = body
     offset = 0
     if prep.strip_terminator and text.endswith("="):
@@ -594,7 +744,19 @@ def _prepare_window(body: str, prep: PreprocessSpec) -> tuple[str, int]:
 
 
 def _resolve_python(ref: str) -> PythonDetector:
-    """Internal helper ``_resolve_python``."""
+    """
+    Internal helper ``_resolve_python``.
+
+    Parameters
+    ----------
+    ref : object
+        Argument ``ref``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not ref.startswith("python:"):
         msg = f"python ref must start with python:: {ref!r}"
         raise DetectorError(msg)
@@ -623,7 +785,29 @@ def _emit_issue(
     window_offset: int,
     match: re.Match[str] | None,
 ) -> Issue:
-    """Internal helper ``_emit_issue``."""
+    """
+    Internal helper ``_emit_issue``.
+
+    Parameters
+    ----------
+    emit : object
+        Argument ``emit``.
+    product : object
+        Argument ``product``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    window_offset : object
+        Argument ``window_offset``.
+    match : object
+        Argument ``match``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     capture = ""
     start = body_start
     end = body_end

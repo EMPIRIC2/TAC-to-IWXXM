@@ -9,10 +9,17 @@ from tac_validate.products import PRODUCT_KEYWORDS, PRODUCTS
 
 def _content_bounds(tac_text: str) -> tuple[int, int, str]:
     """
-    Return inclusive start, exclusive end, and stripped body for ``tac_text``.
+    Internal helper ``_content_bounds``.
 
-    Offsets are relative to the original string so editors can highlight in-place.
-    Empty / whitespace-only input spans the entire original string.
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     stripped = tac_text.strip()
     if not stripped:
@@ -25,7 +32,21 @@ _CA_METAR_FAMILY_LEADS: tuple[str, ...] = ("METAR", "LWIS", "SAWR")
 
 
 def _parse_gate_keywords(product: str, profile: str) -> tuple[str, ...]:
-    """Internal helper ``_parse_gate_keywords``."""
+    """
+    Internal helper ``_parse_gate_keywords``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     base = PRODUCT_KEYWORDS[product]
     if profile == "ca_eccc" and product == "METAR":
         return _CA_METAR_FAMILY_LEADS

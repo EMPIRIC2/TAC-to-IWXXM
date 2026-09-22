@@ -44,7 +44,19 @@ _decoder_send = msgspec.json.Decoder(SendRequest)
 
 
 def _client_id(request: Request) -> str:
-    """Stable key for in-memory dissemination handles / package rate limiter (F21)."""
+    """
+    Internal helper ``_client_id``.
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if request.client and request.client.host:
         return request.client.host
     return "anonymous"
@@ -53,21 +65,59 @@ def _client_id(request: Request) -> str:
 def _profiles_service_for_optional_auth(
     auth_user: dict[str, Any] | None,
 ) -> ConversionProfilesService | None:
-    """Internal helper ``_profiles_service_for_optional_auth``."""
+    """
+    Internal helper ``_profiles_service_for_optional_auth``.
+
+    Parameters
+    ----------
+    auth_user : object
+        Argument ``auth_user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if auth_user is None:
         return None
     return ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
 
 def _merge_template_params(template_params: dict[str, Any], request_params: dict[str, Any]) -> dict[str, Any]:
-    """Internal helper ``_merge_template_params``."""
+    """
+    Internal helper ``_merge_template_params``.
+
+    Parameters
+    ----------
+    template_params : object
+        Argument ``template_params``.
+    request_params : object
+        Argument ``request_params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     merged = dict(template_params)
     merged.update(request_params)
     return merged
 
 
 async def _read_preflight(request: Request) -> PreflightRequest:
-    """Internal helper ``_read_preflight``."""
+    """
+    Internal helper ``_read_preflight``.
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = await request.body()
     try:
         return _decoder_preflight.decode(raw)
@@ -79,7 +129,19 @@ async def _read_preflight(request: Request) -> PreflightRequest:
 
 
 async def _read_send(request: Request) -> SendRequest:
-    """Internal helper ``_read_send``."""
+    """
+    Internal helper ``_read_send``.
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = await request.body()
     try:
         return _decoder_send.decode(raw)
@@ -317,7 +379,19 @@ async def dissemination_send(
             profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
         def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
-            """Internal helper ``_custom_dissem_body``."""
+            """
+            Internal helper ``_custom_dissem_body``.
+
+            Parameters
+            ----------
+            asset_id : object
+                Argument ``asset_id``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             if profiles_service is None:
                 return None
             try:

@@ -209,7 +209,19 @@ _RESEARCH_REF_RE = re.compile(
 
 
 def _strip_research_refs(message: str) -> str:
-    """Drop research milestone tokens (T3/S1/R8/…) from operator-facing messages."""
+    """
+    Internal helper ``_strip_research_refs``.
+
+    Parameters
+    ----------
+    message : object
+        Argument ``message``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     cleaned = _RESEARCH_REF_RE.sub("", message)
     cleaned = re.sub(r"\s{2,}", " ", cleaned)
     cleaned = re.sub(r"\s*[-" + "\u2013\u2014" + r";/]+\s*$", "", cleaned).strip()
@@ -224,7 +236,27 @@ def _issue(
     end: int,
     location: str = "body",
 ) -> Issue:
-    """Build an Issue via the registry (severity from IssueSpec; message preserved)."""
+    """
+    Internal helper ``_issue``.
+
+    Parameters
+    ----------
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    location : object
+        Argument ``location``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return issue_from(
         code,
         message=_strip_research_refs(message),
@@ -235,7 +267,19 @@ def _issue(
 
 
 def _body_span(tac: str) -> tuple[int, int, str]:
-    """Internal helper ``_body_span``."""
+    """
+    Internal helper ``_body_span``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     stripped = tac.strip()
     if not stripped:
         return 0, len(tac), ""
@@ -244,7 +288,21 @@ def _body_span(tac: str) -> tuple[int, int, str]:
 
 
 def _first_icao(tokens: list[str], skip: frozenset[str]) -> str | None:
-    """Internal helper ``_first_icao``."""
+    """
+    Internal helper ``_first_icao``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    skip : object
+        Argument ``skip``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for tok in tokens:
         if tok in skip:
             continue
@@ -254,7 +312,21 @@ def _first_icao(tokens: list[str], skip: frozenset[str]) -> str | None:
 
 
 def _token_index(tokens: list[str], matcher: re.Pattern[str]) -> int | None:
-    """Internal helper ``_token_index``."""
+    """
+    Internal helper ``_token_index``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    matcher : object
+        Argument ``matcher``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for i, tok in enumerate(tokens):
         if matcher.fullmatch(tok):
             return i
@@ -262,7 +334,21 @@ def _token_index(tokens: list[str], matcher: re.Pattern[str]) -> int | None:
 
 
 def _first_icao_index(tokens: list[str], skip: frozenset[str]) -> int | None:
-    """Internal helper ``_first_icao_index``."""
+    """
+    Internal helper ``_first_icao_index``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    skip : object
+        Argument ``skip``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for i, tok in enumerate(tokens):
         if tok in skip:
             continue
@@ -272,7 +358,19 @@ def _first_icao_index(tokens: list[str], skip: frozenset[str]) -> int | None:
 
 
 def _consume_wx_descriptors(rest: str) -> str:
-    """Internal helper ``_consume_wx_descriptors``."""
+    """
+    Internal helper ``_consume_wx_descriptors``.
+
+    Parameters
+    ----------
+    rest : object
+        Argument ``rest``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     while len(rest) >= 2:
         matched = False
         for desc in _WX_DESCRIPTORS:
@@ -286,7 +384,19 @@ def _consume_wx_descriptors(rest: str) -> str:
 
 
 def _is_valid_weather_token(token: str) -> bool:
-    """Return True when ``token`` is a valid A3-2 present weather group (4678 subset)."""
+    """
+    Internal helper ``_is_valid_weather_token``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if token in _WX_SPECIAL:
         return True
     if not _WX_TOKEN_SHAPE.fullmatch(token):
@@ -320,7 +430,19 @@ def _is_valid_weather_token(token: str) -> bool:
 
 
 def _weather_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
-    """Return (index, token) pairs for optional present-weather groups after visibility."""
+    """
+    Internal helper ``_weather_candidate_tokens``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     wind_i = _token_index(tokens, _WIND)
     if wind_i is None:
         return []
@@ -338,7 +460,23 @@ def _weather_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
 
 
 def _token_span_in_core(core: str, token: str, body_start: int) -> tuple[int, int] | None:
-    """Internal helper ``_token_span_in_core``."""
+    """
+    Internal helper ``_token_span_in_core``.
+
+    Parameters
+    ----------
+    core : object
+        Argument ``core``.
+    token : object
+        Argument ``token``.
+    body_start : object
+        Argument ``body_start``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     match = re.search(r"\b" + re.escape(token) + r"\b", core)
     if not match:
         return None
@@ -346,7 +484,19 @@ def _token_span_in_core(core: str, token: str, body_start: int) -> tuple[int, in
 
 
 def _is_valid_cloud_token(token: str) -> bool:
-    """Return True when ``token`` is a valid A3-2 cloud / VV / NSC-class group."""
+    """
+    Internal helper ``_is_valid_cloud_token``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return bool(_CLOUD_OK.fullmatch(token))
 
 
@@ -359,7 +509,29 @@ def _membership_issue(
     end: int,
     location: str,
 ) -> Issue:
-    """Build ``UNKNOWN_WMO_MEMBERSHIP`` for a token missing from a harvested family."""
+    """
+    Internal helper ``_membership_issue``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    token : object
+        Argument ``token``.
+    family : object
+        Argument ``family``.
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    location : object
+        Argument ``location``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _issue(
         "UNKNOWN_WMO_MEMBERSHIP",
         f"{product} token {token!r} not in WMO register ({family})",
@@ -370,7 +542,19 @@ def _membership_issue(
 
 
 def _weather_in_register(token: str) -> bool:
-    """Return True when present-weather ``token`` is in harvested WMO sets."""
+    """
+    Internal helper ``_weather_in_register``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if token in {"//"}:
         return True
     return membership.is_member("present_or_forecast_weather", token) or membership.is_member("weather_306_4678", token)
@@ -383,7 +567,25 @@ def _check_phenomenon_membership(
     start: int,
     end: int,
 ) -> list[Issue]:
-    """Emit membership errors for SIGMET/AIRMET phenomenon candidates (EV-050)."""
+    """
+    Internal helper ``_check_phenomenon_membership``.
+
+    Parameters
+    ----------
+    upper : object
+        Argument ``upper``.
+    product : object
+        Argument ``product``.
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     family = "airwx_phenomena" if product == "AIRMET" else "sigwx_phenomena"
     pattern = _AIRMET_PHENOM_CANDIDATE if product == "AIRMET" else _SIGMET_PHENOM_CANDIDATE
     issues: list[Issue] = []
@@ -410,7 +612,19 @@ def _check_phenomenon_membership(
 
 
 def _cloud_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
-    """Return (index, token) pairs for cloud-like groups after wind / visibility / wx."""
+    """
+    Internal helper ``_cloud_candidate_tokens``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     wind_i = _token_index(tokens, _WIND)
     if wind_i is None:
         return []
@@ -439,7 +653,26 @@ def _append_remark_issue(
     body_end: int,
     token: str,
 ) -> None:
-    """Internal helper ``_append_remark_issue``."""
+    """
+    Internal helper ``_append_remark_issue``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    token : object
+        Argument ``token``.
+    """
     span = _token_span_in_core(core, token, body_start)
     if span is None:
         start, end = body_start, body_end
@@ -457,10 +690,28 @@ def _check_us_remarks(
     body_end: int,
     profile: str = "annex3",
 ) -> list[Issue]:
-    """Lint US REMARKS after ``RMK`` (research R5 / iwxxm_us L5 overlay).
+    """
+    Internal helper ``_check_us_remarks``.
 
-    Malformed remark tokens are errors under both profiles. ``REMARK_US_EXTENSION``
-    info is emitted only under ``profile=iwxxm_us`` (EV-050 / AC8 true-error fix).
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if "RMK" not in tokens:
         return []
@@ -569,7 +820,29 @@ def _check_ca_manobs(
     body_end: int,
     profile: str = "annex3",
 ) -> list[Issue]:
-    """MANOBS overlay hints for ``profile=ca_eccc`` (EV-064 M3)."""
+    """
+    Internal helper ``_check_ca_manobs``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile != "ca_eccc":
         return []
     issues: list[Issue] = []
@@ -700,7 +973,29 @@ def _check_ca_manair(
     body_end: int,
     profile: str = "annex3",
 ) -> list[Issue]:
-    """MANAIR overlay hints for ``profile=ca_eccc`` (EV-064 M4)."""
+    """
+    Internal helper ``_check_ca_manair``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile != "ca_eccc" or product != "TAF":
         return []
     issues: list[Issue] = []
@@ -738,7 +1033,29 @@ def _check_in_imd_taf(
     body_end: int,
     profile: str = "annex3",
 ) -> list[Issue]:
-    """IN_IMD overlay: info when TAF omits TX/TN (EV-094 M5 / #1098)."""
+    """
+    Internal helper ``_check_in_imd_taf``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile != "in_imd" or product != "TAF":
         return []
     if any(_TAF_TX_TN.fullmatch(tok) for tok in tokens):
@@ -768,7 +1085,27 @@ def _check_ca_gfa_airmet(
     body_end: int,
     profile: str = "annex3",
 ) -> list[Issue]:
-    """MANAIR GFA overlay hints for ``profile=ca_eccc`` AIRMET (EV-064 M5)."""
+    """
+    Internal helper ``_check_ca_gfa_airmet``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile != "ca_eccc" or product != "AIRMET":
         return []
     issues: list[Issue] = []
@@ -807,7 +1144,26 @@ def _emit_token_info(
     body_end: int,
     token: str,
 ) -> None:
-    """Internal helper ``_emit_token_info``."""
+    """
+    Internal helper ``_emit_token_info``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    token : object
+        Argument ``token``.
+    """
     span = _token_span_in_core(core, token, body_start)
     if span is None:
         start, end = body_start, body_end
@@ -817,7 +1173,19 @@ def _emit_token_info(
 
 
 def _forecast_or_obs_segments(tokens: list[str]) -> list[list[str]]:
-    """Split tokens on TEMPO/BECMG/NOSIG/FM*/PROB* so exclusivity is per group."""
+    """
+    Internal helper ``_forecast_or_obs_segments``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     segments: list[list[str]] = []
     current: list[str] = []
     for tok in tokens:
@@ -841,7 +1209,24 @@ def _emit_nsc_layer_exclusivity(
     body_start: int,
     body_end: int,
 ) -> None:
-    """Warn when NSC co-occurs with FEW/SCT/BKN/OVC in the same obs/change group."""
+    """
+    Internal helper ``_emit_nsc_layer_exclusivity``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    product : object
+        Argument ``product``.
+    tokens : object
+        Argument ``tokens``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    """
     for segment in _forecast_or_obs_segments(tokens):
         if "NSC" not in segment:
             continue
@@ -873,7 +1258,27 @@ def _check_r8_pack(
     body_start: int,
     body_end: int,
 ) -> list[Issue]:
-    """AUTO/COR/NOSIG/TEMPO/RVR/VRB·gust info + INVALID_RVR/WIND (research R8)."""
+    """
+    Internal helper ``_check_r8_pack``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues: list[Issue] = []
     if "AUTO" in tokens:
         _emit_token_info(
@@ -975,7 +1380,25 @@ def _check_metar_speci_field_order(
     start: int,
     end: int,
 ) -> Issue | None:
-    """Warn when CCCC / ddhhmmZ / wind are present but not in A3-2 body order."""
+    """
+    Internal helper ``_check_metar_speci_field_order``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     cccc_i = _first_icao_index(tokens, _METAR_SPECI_SKIP)
     time_i = _token_index(tokens, _OBS_TIME)
     wind_i = _token_index(tokens, _WIND)
@@ -995,16 +1418,37 @@ def _check_metar_speci_field_order(
 
 
 def _report_segment_count(body: str) -> int:
-    """Count '='-delimited TAC report segments in a bulletin body."""
+    """
+    Internal helper ``_report_segment_count``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return sum(1 for part in body.split("=") if part.strip())
 
 
 def _check_c1_multi_report(tac: str, product: str) -> list[Issue]:
     """
-    Emit MULTI_REPORT_BULLETIN when the input packs multiple TAC reports.
+    Internal helper ``_check_c1_multi_report``.
 
-    Guidance common / C1: one IWXXM report object per TAC report. CRS,
-    translationFailedTAC, and COLLECT packing remain convert-only (lint N/A).
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     start, end, body = _body_span(tac)
     if _report_segment_count(body) < 2:

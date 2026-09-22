@@ -33,7 +33,25 @@ def _issue(
     message: str,
     location: str | None = None,
 ) -> Issue:
-    """Internal helper ``_issue``."""
+    """
+    Internal helper ``_issue``.
+
+    Parameters
+    ----------
+    severity : object
+        Argument ``severity``.
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+    location : object
+        Argument ``location``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return Issue(
         severity=severity,
         code=code,
@@ -44,7 +62,21 @@ def _issue(
 
 
 def _load_rdf_elements(rdf_path: Path, cache: dict[str, set[str]]) -> set[str]:
-    """Internal helper ``_load_rdf_elements``."""
+    """
+    Internal helper ``_load_rdf_elements``.
+
+    Parameters
+    ----------
+    rdf_path : object
+        Argument ``rdf_path``.
+    cache : object
+        Argument ``cache``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     key = str(rdf_path)
     if key in cache:
         return cache[key]

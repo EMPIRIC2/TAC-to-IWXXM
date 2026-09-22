@@ -11,7 +11,21 @@ from tac_validate.product_rules_pkg._common import *
 
 
 def _check_taf(tac: str, *, profile: str = "annex3") -> list[Issue]:
-    """TAF checklist - A5-1 template gates + F20 T1 NIL/CNL/AMD/COR."""
+    """
+    Internal helper ``_check_taf``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     start, end, body = _body_span(tac)
     upper = body.upper()
@@ -207,7 +221,29 @@ def _check_us_faa_nws_taf(
     body_end: int,
     profile: str = "annex3",
 ) -> list[Issue]:
-    """US_FAA_NWS TAF overlay rules for ``profile=iwxxm_us`` (#919 M13)."""
+    """
+    Internal helper ``_check_us_faa_nws_taf``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile != "iwxxm_us" or product != "TAF":
         return []
     issues: list[Issue] = []
@@ -249,7 +285,19 @@ def _check_us_faa_nws_taf(
 
 
 def _taf_first_change_index(tokens: list[str]) -> int | None:
-    """Index of first FM/BECMG/TEMPO/PROB change indicator, if any."""
+    """
+    Internal helper ``_taf_first_change_index``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for i, tok in enumerate(tokens):
         if tok in {"BECMG", "TEMPO"} or _TAF_FM.fullmatch(tok) or _TAF_PROB.fullmatch(tok):
             return i
@@ -265,7 +313,24 @@ def _check_taf_t3_elements(
     body_start: int,
     body_end: int,
 ) -> None:
-    """Emit T3 info/error codes for TX/TN and CAVOK/NSC/NSW/VV///."""
+    """
+    Internal helper ``_check_taf_t3_elements``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    """
     change_i = _taf_first_change_index(tokens)
     tx_tn_toks = [(i, t) for i, t in enumerate(tokens) if _TAF_TX_TN.fullmatch(t)]
     if tx_tn_toks:
@@ -351,7 +416,24 @@ def _check_taf_change_groups(
     body_start: int,
     body_end: int,
 ) -> None:
-    """Emit T2 info/error codes for TAF change indicators."""
+    """
+    Internal helper ``_check_taf_change_groups``.
+
+    Parameters
+    ----------
+    issues : object
+        Argument ``issues``.
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+    """
     fm_tok = next((t for t in tokens if _TAF_FM.fullmatch(t)), None)
     if fm_tok is not None:
         _emit_token_info(

@@ -35,7 +35,19 @@ _LOCATION = frozenset(
 
 
 def _fields(text: str) -> dict[str, str]:
-    """Collect KEY: value pairs, joining indented continuation lines."""
+    """
+    Internal helper ``_fields``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     out: dict[str, str] = {}
     current_key: str | None = None
     for raw in text.splitlines():
@@ -56,7 +68,19 @@ def _fields(text: str) -> dict[str, str]:
 
 
 def _parse_dtg(token: str) -> str | None:
-    """Internal helper ``_parse_dtg``."""
+    """
+    Internal helper ``_parse_dtg``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     token = token.strip().replace(" ", "")
     m = _DTG_SHORT.search(token)
     if m:
@@ -65,7 +89,21 @@ def _parse_dtg(token: str) -> str | None:
 
 
 def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
-    """Internal helper ``_day_hhmm_to_iso``."""
+    """
+    Internal helper ``_day_hhmm_to_iso``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+    issue_iso : object
+        Argument ``issue_iso``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _DAY_HHMM.search(token.replace(" ", ""))
     if m is None:
         return None
@@ -73,7 +111,19 @@ def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
 
 
 def _normalize_location(tok: str) -> str:
-    """Internal helper ``_normalize_location``."""
+    """
+    Internal helper ``_normalize_location``.
+
+    Parameters
+    ----------
+    tok : object
+        Argument ``tok``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     upper = tok.upper()
     if upper == "DAYSIDE":
         return "DAYLIGHT_SIDE"
@@ -81,7 +131,19 @@ def _normalize_location(tok: str) -> str:
 
 
 def _parse_intensity_regions(body: str) -> list[dict[str, Any]]:
-    """Parse ``SEV MNH EQN … MOD NIGHTSIDE`` into intensity groups."""
+    """
+    Internal helper ``_parse_intensity_regions``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     tokens = body.split()
     groups: list[dict[str, Any]] = []
     current_intensity: str | None = None
@@ -105,7 +167,21 @@ def _parse_intensity_regions(body: str) -> list[dict[str, Any]]:
 
 
 def _parse_obs_or_fcst(raw: str, *, issue_iso: str) -> dict[str, Any] | None:
-    """Internal helper ``_parse_obs_or_fcst``."""
+    """
+    Internal helper ``_parse_obs_or_fcst``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+    issue_iso : object
+        Argument ``issue_iso``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = raw.strip()
     if not text:
         return None

@@ -63,7 +63,19 @@ def check_and_regenerate_airports() -> bool:
 
 
 def _run_parser(script_path: Path) -> bool:
-    """Run the parse_airports_csv.py script."""
+    """
+    Internal helper ``_run_parser``.
+
+    Parameters
+    ----------
+    script_path : object
+        Argument ``script_path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         logger.info(f"Running {script_path}...")
 

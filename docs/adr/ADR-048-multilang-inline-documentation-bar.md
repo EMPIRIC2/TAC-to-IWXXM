@@ -1,8 +1,8 @@
 # ADR-048: Multi-language inline documentation bar
 
-**Status:** Accepted  
+**Status:** Accepted (amended 2026-09-22 — EV-adr048-doc-linters)  
 **Date:** 2026-09-22  
-**Session:** EV-docstring-multilang-bar  
+**Session:** EV-docstring-multilang-bar; amend EV-adr048-doc-linters  
 **Corpus:** [Corpus: docstrings] [Corpus: decisions/inline-documentation-verify] [Corpus: tests] [Corpus: tech-spec]
 
 ## Context
@@ -43,17 +43,28 @@ Examples. EV-092 made public presence (`inline-doc-check`) blocking for merges, 
    `packages/*/tests`, extending pack `inline-doc-check` where useful; CI on PR. Fail closed
    on missing docs, missing required examples, and required shape. Preferred target names
    (locked in tech-plan): `check-docs`, `test-doctest`, `check-docs-ts`, `check-docs-rust`.
+   Private Python helpers (`_foo`) require NumPy `Parameters` / `Returns` when the
+   signature has non-self args or a non-`None` return (Examples still optional).
 
-6. **Example execution:** Public PY `Examples` via doctest; every Rust `pub` `# Examples`
+6. **Native linters (both fail-closed with checkers):** Presence and toolchain-native
+   docstring/TSDoc/rustdoc rules run via **ruff pydocstyle (D)** on ADR-048 Python trees,
+   **eslint-plugin-jsdoc** on `apps/frontend/src` + `apps/e2e/helpers`, and Rust
+   `#![deny(missing_docs)]` on in-scope crates. Custom checkers remain required for
+   NumPy section shape, executable PY `Examples` / TS `@example` / Rust `# Examples`,
+   and TS class methods / interface members beyond what eslint heuristics alone cover
+   (D-EVDOC-LINT-01..03). Neither layer may be advisory-only.
+
+7. **Example execution:** Public PY `Examples` via doctest; every Rust `pub` `# Examples`
    runnable; TS `@example` via **repo-owned harness** (extract → vitest/node), fail closed
    if missing or failing.
 
-7. **Quality pass:** Lint + format + typecheck + unit for the **entire monorepo / all
+8. **Quality pass:** Lint + format + typecheck + unit for the **entire monorepo / all
    toolchains** treat **warnings and infos as failures**, delivered in **one PR** with the
    doc bar work. **No temporary suppressions** — fix or reconfigure toolchains (verify-plan
-   S12).
+   S12). Coverage / security / typecheck **thresholds** are unchanged by the
+   EV-adr048-doc-linters amend (tooling deepen only).
 
-8. **Must-not-break:** convert/validate/decode/disseminate HTTP+CLI behavior; operator
+9. **Must-not-break:** convert/validate/decode/disseminate HTTP+CLI behavior; operator
    OpenAPI copy; pack-engine wire shapes. No new Fn; no H4–H5/UI this cycle.
 
 ## Consequences
@@ -71,10 +82,13 @@ Examples. EV-092 made public presence (`inline-doc-check`) blocking for merges, 
 | Exemplar packages only | Explicitly rejected — all product `packages/` + `apps/` |
 | Presence-only TS `@example` | Rejected — executable `@example` required |
 | Warnings-as-errors on in-scope trees only | Rejected — entire monorepo zero warn/info in one PR |
+| Native linters only (retire checkers) | Rejected — Examples / NumPy shape / executable `@example` need product checkers (D-EVDOC-LINT-01) |
+| Custom checkers only (linters advisory) | Rejected — operator asked fail-closed native toolchain docs rules |
 
 ## Related
 
 - [Corpus: docstrings] · [Corpus: decisions/inline-documentation-verify]
-- Session: `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-docstring-multilang-bar/`
-- Decisions: `docs/decisions/evolve-decisions.md` (D-EVDOC-*)
-- Tests: TC-EVDOC-001..007
+- Sessions: `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-docstring-multilang-bar/`;
+  `…/EV-adr048-doc-linters/`
+- Decisions: `docs/decisions/evolve-decisions.md` (D-EVDOC-*, D-EVDOC-LINT-*)
+- Tests: TC-EVDOC-001..010

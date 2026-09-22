@@ -20,7 +20,16 @@ _seen_job_ids: set[str] = set()
 
 
 def _handle_sigterm(_signum: int, _frame: object) -> None:
-    """Internal helper ``_handle_sigterm``."""
+    """
+    Internal helper ``_handle_sigterm``.
+
+    Parameters
+    ----------
+    _signum : object
+        Argument ``_signum``.
+    _frame : object
+        Argument ``_frame``.
+    """
     global _shutdown
     _shutdown = True
     logger.info("SIGTERM received — finishing current poll then exiting")

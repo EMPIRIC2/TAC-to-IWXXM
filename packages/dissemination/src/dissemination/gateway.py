@@ -97,7 +97,19 @@ class DeliveryReceipt:
 
 
 def _from_preflight(pre: PreflightResponse) -> ValidationResult:
-    """Internal helper ``_from_preflight``."""
+    """
+    Internal helper ``_from_preflight``.
+
+    Parameters
+    ----------
+    pre : object
+        Argument ``pre``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return ValidationResult(
         ok=pre.ok,
         connectivity_ok=pre.connectivity_ok,
@@ -125,12 +137,33 @@ class DisseminationGateway:
         adapters: Mapping[str, SinkAdapter],
         health_probe: HealthProbe | None = None,
     ) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        adapters : object
+            Argument ``adapters``.
+        health_probe : object
+            Argument ``health_probe``.
+        """
         self._adapters = dict(adapters)
         self._health_probe = health_probe
 
     def _adapter(self, gateway_kind: str) -> SinkAdapter:
-        """Internal helper ``_adapter``."""
+        """
+        Internal helper ``_adapter``.
+
+        Parameters
+        ----------
+        gateway_kind : object
+            Argument ``gateway_kind``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             return self._adapters[gateway_kind]
         except KeyError as exc:

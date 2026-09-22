@@ -38,7 +38,23 @@ _SWXA_FORBIDDEN_ROOTS = frozenset(
 
 
 def _swxa_region_xml(loc: str, *, slug: str, idx: int) -> str:
-    """Internal helper ``_swxa_region_xml``."""
+    """
+    Internal helper ``_swxa_region_xml``.
+
+    Parameters
+    ----------
+    loc : object
+        Argument ``loc``.
+    slug : object
+        Argument ``slug``.
+    idx : object
+        Argument ``idx``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     code = loc.upper()
     href = f"http://codes.wmo.int/49-2/SpaceWxLocation/{code}"
     rid = f"swxa.reg.{slug}.{idx}"
@@ -105,7 +121,25 @@ def _swxa_analysis_xml(
     slug: str,
     idx: int,
 ) -> str:
-    """Internal helper ``_swxa_analysis_xml``."""
+    """
+    Internal helper ``_swxa_analysis_xml``.
+
+    Parameters
+    ----------
+    block : object
+        Argument ``block``.
+    time_indicator : object
+        Argument ``time_indicator``.
+    slug : object
+        Argument ``slug``.
+    idx : object
+        Argument ``idx``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     time_iso = block.get("time") or "9999-01-01T00:00:00Z"
     aid = f"swxa.an.{slug}.{idx}"
     if block.get("no_swx_exp"):
@@ -282,7 +316,19 @@ def emit_swxa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def _assert_swxa_advisory_xml(xml: str) -> str:
-    """Internal helper ``_assert_swxa_advisory_xml``."""
+    """
+    Internal helper ``_assert_swxa_advisory_xml``.
+
+    Parameters
+    ----------
+    xml : object
+        Argument ``xml``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if "<iwxxm:SpaceWeatherAdvisory " not in xml:
         raise ValueError("SWXA emitter product/root guard: missing SpaceWeatherAdvisory root")
     for forbidden in (

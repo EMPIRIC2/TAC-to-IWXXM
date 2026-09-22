@@ -57,13 +57,13 @@ _SHA256_HEX_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 
 @dataclass(frozen=True)
 class ManifestIntegrityResult:
-    """
-    Outcome of validating ``vendor/manifest.json`` against the checked-in tree.
+    """Outcome of validating ``vendor/manifest.json`` against the checked-in tree.
 
     Attributes
     ----------
     _ : object
         See implementation.
+
     """
 
     ok: bool
@@ -71,8 +71,7 @@ class ManifestIntegrityResult:
 
 
 def load_manifest(manifest_path: Path) -> dict[str, Any]:
-    """
-    Load and parse ``vendor/manifest.json``.
+    """Load and parse ``vendor/manifest.json``.
 
     Examples
     --------
@@ -88,6 +87,7 @@ def load_manifest(manifest_path: Path) -> dict[str, Any]:
     -------
     object
         Return value.
+
     """
     raw = manifest_path.read_text(encoding="utf-8")
     data = json.loads(raw)
@@ -98,8 +98,7 @@ def load_manifest(manifest_path: Path) -> dict[str, Any]:
 
 
 def compute_tree_sha256(root: Path) -> str:
-    """
-    Deterministic SHA-256 over sorted relative file paths and contents.
+    """Deterministic SHA-256 over sorted relative file paths and contents.
 
     Examples
     --------
@@ -115,6 +114,7 @@ def compute_tree_sha256(root: Path) -> str:
     -------
     object
         Return value.
+
     """
     if not root.is_dir():
         msg = f"tree root is not a directory: {root}"
@@ -132,14 +132,42 @@ def compute_tree_sha256(root: Path) -> str:
 
 
 def _is_sha256_hex(value: str) -> bool:
-    """Internal helper ``_is_sha256_hex``."""
+    """
+    Internal helper ``_is_sha256_hex``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return bool(_SHA256_HEX_RE.fullmatch(value))
 
 
 def _check_required_fields(
     name: str, entry_dict: dict[str, Any], required_fields: tuple[str, ...]
 ) -> list[str]:
-    """Internal helper ``_check_required_fields``."""
+    """
+    Internal helper ``_check_required_fields``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+    entry_dict : object
+        Argument ``entry_dict``.
+    required_fields : object
+        Argument ``required_fields``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     errors: list[str] = []
     for field_name in required_fields:
         value = entry_dict.get(field_name)
@@ -149,7 +177,21 @@ def _check_required_fields(
 
 
 def _validate_github_bundle_entry(name: str, entry_dict: dict[str, Any]) -> list[str]:
-    """Internal helper ``_validate_github_bundle_entry``."""
+    """
+    Internal helper ``_validate_github_bundle_entry``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+    entry_dict : object
+        Argument ``entry_dict``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     errors = _check_required_fields(name, entry_dict, GITHUB_BUNDLE_REQUIRED_FIELDS)
 
     upstream = entry_dict.get("upstream_repo")
@@ -170,7 +212,21 @@ def _validate_github_bundle_entry(name: str, entry_dict: dict[str, Any]) -> list
 def _validate_profile_line_bundle_entry(
     name: str, entry_dict: dict[str, Any]
 ) -> list[str]:
-    """Internal helper ``_validate_profile_line_bundle_entry``."""
+    """
+    Internal helper ``_validate_profile_line_bundle_entry``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+    entry_dict : object
+        Argument ``entry_dict``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     errors = _check_required_fields(
         name, entry_dict, PROFILE_LINE_BUNDLE_REQUIRED_FIELDS
     )
@@ -189,7 +245,21 @@ def _validate_profile_line_bundle_entry(
 
 
 def _validate_http_bundle_entry(name: str, entry_dict: dict[str, Any]) -> list[str]:
-    """Internal helper ``_validate_http_bundle_entry``."""
+    """
+    Internal helper ``_validate_http_bundle_entry``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+    entry_dict : object
+        Argument ``entry_dict``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     errors = _check_required_fields(name, entry_dict, HTTP_BUNDLE_REQUIRED_FIELDS)
 
     source_url = entry_dict.get("source_url")
@@ -214,7 +284,21 @@ def _validate_http_bundle_entry(name: str, entry_dict: dict[str, Any]) -> list[s
 
 
 def _validate_bundle_entry(name: str, entry: object) -> list[str]:
-    """Internal helper ``_validate_bundle_entry``."""
+    """
+    Internal helper ``_validate_bundle_entry``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+    entry : object
+        Argument ``entry``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     errors: list[str] = []
     if not isinstance(entry, dict):
         errors.append(f"bundle {name!r} must be an object")
@@ -246,8 +330,7 @@ def _validate_bundle_entry(name: str, entry: object) -> list[str]:
 
 
 def validate_manifest_schema(manifest: dict[str, Any]) -> list[str]:
-    """
-    Validate manifest structure without touching the vendor tree.
+    """Validate manifest structure without touching the vendor tree.
 
     Examples
     --------
@@ -263,6 +346,7 @@ def validate_manifest_schema(manifest: dict[str, Any]) -> list[str]:
     -------
     object
         Return value.
+
     """
     errors: list[str] = []
 
@@ -295,8 +379,7 @@ def verify_manifest_integrity(
     *,
     manifest_path: Path | None = None,
 ) -> ManifestIntegrityResult:
-    """
-    Ensure manifest pins match the checked-in vendor schema trees.
+    """Ensure manifest pins match the checked-in vendor schema trees.
 
     Examples
     --------
@@ -314,6 +397,7 @@ def verify_manifest_integrity(
     -------
     object
         Return value.
+
     """
     path = manifest_path or (repo_root / MANIFEST_RELATIVE_PATH)
     errors: list[str] = []

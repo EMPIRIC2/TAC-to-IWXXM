@@ -99,7 +99,19 @@ class LibraryAsset:
 
 
 def _kind_label(kind: LibraryKind) -> str:
-    """Internal helper ``_kind_label``."""
+    """
+    Internal helper ``_kind_label``.
+
+    Parameters
+    ----------
+    kind : object
+        Argument ``kind``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return {
         "conversion": "Conversion",
         "tac_validation": "TAC validation",
@@ -110,7 +122,21 @@ def _kind_label(kind: LibraryKind) -> str:
 
 
 def _seed_body(kind: LibraryKind, national_line: str) -> dict[str, Any]:
-    """Build a minimal first-party body for the kind."""
+    """
+    Internal helper ``_seed_body``.
+
+    Parameters
+    ----------
+    kind : object
+        Argument ``kind``.
+    national_line : object
+        Argument ``national_line``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if kind == "conversion":
         from tac2iwxxm.conversion_schema_blocks import schema_blocks_for_national_line
 

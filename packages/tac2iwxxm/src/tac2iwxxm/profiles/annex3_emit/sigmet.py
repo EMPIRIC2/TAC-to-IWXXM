@@ -17,7 +17,19 @@ _EGGX_VOLCANO_POS = "63.98 -19.67"
 
 
 def _is_wmo_sigmet_multi_location_va_yudd(ir: dict[str, Any]) -> bool:
-    """True for WMO ``sigmet-multi-location-VA`` stem (YUDD/YUSO + ≥2 VA locations)."""
+    """
+    Internal helper ``_is_wmo_sigmet_multi_location_va_yudd``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     if ir.get("product") != "SIGMET" or ir.get("phenomenon") != "VA":
         return False
@@ -31,7 +43,19 @@ def _is_wmo_sigmet_multi_location_va_yudd(ir: dict[str, Any]) -> bool:
 
 
 def _is_wmo_sigmet_va_eggx(ir: dict[str, Any]) -> bool:
-    """True for WMO ``sigmet-VA-EGGX`` stem (EGGX/EGRR + MT HEKLA + FCST cloud; ADR-032 / #856)."""
+    """
+    Internal helper ``_is_wmo_sigmet_va_eggx``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if ir.get("product") != "SIGMET" or ir.get("phenomenon") != "VA":
         return False
     if str(ir.get("fir")) != "EGGX" or str(ir.get("mwo")) != "EGRR":
@@ -59,7 +83,21 @@ def _is_wmo_sigmet_va_eggx(ir: dict[str, Any]) -> bool:
 
 
 def _hazard_stamp(ir: dict[str, Any], prefix: str) -> tuple[str, str, str]:
-    """Return issue, begin, end timestamps (year-month fixed to WMO examples)."""
+    """
+    Internal helper ``_hazard_stamp``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    prefix : object
+        Argument ``prefix``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if _is_wmo_sigmet_multi_location_va_yudd(ir) or _is_wmo_sigmet_va_eggx(ir):
         # Vendor VA-EGGX + multi-location-VA use 2018-07 (#809 / #856).
         year_month = "2018-07"
@@ -81,9 +119,17 @@ def _hazard_stamp(ir: dict[str, Any], prefix: str) -> tuple[str, str, str]:
 
 def _sigmet_root_local(ir: dict[str, Any]) -> str:
     """
-    Content-select IWXXM SIGMET family root under HTTP ``product=sigmet`` (E19-13 / F23 V2).
+    Internal helper ``_sigmet_root_local``.
 
-    VA → ``VolcanicAshSIGMET``; TC / WC AHL → ``TropicalCycloneSIGMET``; else ``SIGMET``.
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if ir.get("phenomenon") == "TC" or ir.get("iwxxm_root") == "TropicalCycloneSIGMET":
         return "TropicalCycloneSIGMET"
@@ -100,7 +146,27 @@ def _sigmet_header_units(
     issue: str,
     extra_xmlns: str = "",
 ) -> str:
-    """Internal helper ``_sigmet_header_units``."""
+    """
+    Internal helper ``_sigmet_header_units``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    ns : object
+        Argument ``ns``.
+    gml_id : object
+        Argument ``gml_id``.
+    issue : object
+        Argument ``issue``.
+    extra_xmlns : object
+        Argument ``extra_xmlns``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
     root = _sigmet_root_local(ir)
@@ -176,7 +242,19 @@ def _sigmet_header_units(
 
 
 def _wmo_multi_location_va_pos_list(pos_list: str) -> str:
-    """Reverse TAC WI winding and format coords to two decimals (vendor #809 stem)."""
+    """
+    Internal helper ``_wmo_multi_location_va_pos_list``.
+
+    Parameters
+    ----------
+    pos_list : object
+        Argument ``pos_list``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     toks = pos_list.split()
     if len(toks) < 6 or len(toks) % 2 != 0:
         return pos_list
@@ -193,13 +271,36 @@ def _wmo_multi_location_va_pos_list(pos_list: str) -> str:
 
 
 def _sigmet_tc_format_pos(lat: float, lon: float) -> str:
-    """Format TC SIGMET ``gml:pos`` for vendor A6-2-TC (#835 / ADR-032).
+    """
+    Internal helper ``_sigmet_tc_format_pos``.
 
-    Prefer two decimals when exact; otherwise trim trailing zeros (e.g. ``27.6667 -73.75``).
+    Parameters
+    ----------
+    lat : object
+        Argument ``lat``.
+    lon : object
+        Argument ``lon``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
 
     def _one(value: float) -> str:
-        """Internal helper ``_one``."""
+        """
+        Internal helper ``_one``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         two = f"{value:.2f}"
         if abs(value - float(two)) < 1e-9:
             return two
@@ -217,7 +318,29 @@ def _sigmet_geometry_xml(
     include_limits: bool = True,
     wmo_multi_location_va_ring: bool = False,
 ) -> str:
-    """Build evolving-condition geometry from IR (G1 exceptional rules / #733/#739)."""
+    """
+    Internal helper ``_sigmet_geometry_xml``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    fir : object
+        Argument ``fir``.
+    gid : object
+        Argument ``gid``.
+    geometry : object
+        Argument ``geometry``.
+    include_limits : object
+        Argument ``include_limits``.
+    wmo_multi_location_va_ring : object
+        Argument ``wmo_multi_location_va_ring``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if ir.get("no_va_exp") and geometry is None:
         return """
               <iwxxm:geometry nilReason="http://codes.wmo.int/common/nil/nothingOfOperationalSignificance"/>"""
@@ -353,7 +476,33 @@ def _sigmet_location_analysis_xml(
     wmo_multi_location_va_ring: bool = False,
     wmo_va_eggx_ring: bool = False,
 ) -> str:
-    """Emit one analysisCollection for a multi-location VA OBS(+FCST) segment (#809)."""
+    """
+    Internal helper ``_sigmet_location_analysis_xml``.
+
+    Parameters
+    ----------
+    loc : object
+        Argument ``loc``.
+    fir : object
+        Argument ``fir``.
+    index : object
+        Argument ``index``.
+    issue : object
+        Argument ``issue``.
+    begin : object
+        Argument ``begin``.
+    end : object
+        Argument ``end``.
+    wmo_multi_location_va_ring : object
+        Argument ``wmo_multi_location_va_ring``.
+    wmo_va_eggx_ring : object
+        Argument ``wmo_va_eggx_ring``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     suffix = f"{fir.lower()}.{index}"
     intensity = str(loc.get("intensity_change", "NO_CHANGE"))
     obs_ir = {
@@ -453,7 +602,19 @@ def _sigmet_location_analysis_xml(
 
 
 def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
-    """Internal helper ``_sigmet_volcano_xml``."""
+    """
+    Internal helper ``_sigmet_volcano_xml``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     volcano_raw = ir.get("volcano")
     if not isinstance(volcano_raw, dict):
         return ""
@@ -483,7 +644,19 @@ def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
 
 
 def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
-    """Internal helper ``_sigmet_motion_xml``."""
+    """
+    Internal helper ``_sigmet_motion_xml``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if ir.get("stationary"):
         return """
               <iwxxm:directionOfMotion uom="deg" xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/inapplicable"/>
@@ -496,7 +669,19 @@ def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
 
 
 def _sigmet_tropical_cyclone_xml(ir: dict[str, Any]) -> str:
-    """Emit ``iwxxm:tropicalCyclone`` / metce name for TropicalCycloneSIGMET (#738)."""
+    """
+    Internal helper ``_sigmet_tropical_cyclone_xml``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     name = ir.get("tropical_cyclone_name")
     if not isinstance(name, str) or not name.strip():
         return ""
@@ -511,7 +696,21 @@ def _sigmet_tropical_cyclone_xml(ir: dict[str, Any]) -> str:
 
 
 def _sigmet_tc_position_xml(ir: dict[str, Any], *, gid: str) -> str:
-    """Emit ``tropicalCyclonePosition`` Point when IR has a TC centre."""
+    """
+    Internal helper ``_sigmet_tc_position_xml``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    gid : object
+        Argument ``gid``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     pos = ir.get("tropical_cyclone_position")
     if not isinstance(pos, dict) or "lat" not in pos or "lon" not in pos:
         return ""
@@ -527,7 +726,23 @@ def _sigmet_tc_position_xml(ir: dict[str, Any], *, gid: str) -> str:
 
 
 def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
-    """Emit forecastPositionAnalysis for FCST AT … TC CENTRE PSN (A6-2-TC)."""
+    """
+    Internal helper ``_sigmet_tc_forecast_xml``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    fir : object
+        Argument ``fir``.
+    end : object
+        Argument ``end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     fcst = ir.get("tropical_cyclone_forecast")
     if not isinstance(fcst, dict) or "lat" not in fcst or "lon" not in fcst:
         return ""

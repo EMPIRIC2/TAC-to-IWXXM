@@ -76,7 +76,21 @@ class ProfileOutputSpec:
 
 
 def _clean_env(name: str, default: str) -> str:
-    """Internal helper ``_clean_env``."""
+    """
+    Internal helper ``_clean_env``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+    default : object
+        Argument ``default``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     value = os.getenv(name)
     if value is None:
         return default

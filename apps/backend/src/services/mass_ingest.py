@@ -66,7 +66,19 @@ class MassIngestFileResult:
 
 
 def _looks_binary(sample: bytes) -> bool:
-    """Internal helper ``_looks_binary``."""
+    """
+    Internal helper ``_looks_binary``.
+
+    Parameters
+    ----------
+    sample : object
+        Argument ``sample``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not sample:
         return False
     for magic in _BINARY_MAGIC:
@@ -76,7 +88,19 @@ def _looks_binary(sample: bytes) -> bool:
 
 
 def _allowed_name(name: str) -> bool:
-    """Internal helper ``_allowed_name``."""
+    """
+    Internal helper ``_allowed_name``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     lower = name.lower().rsplit("/", 1)[-1]
     if not lower or lower.startswith("."):
         return False

@@ -146,10 +146,36 @@ async def apply_writer_contract(
 
 
 async def _diff_on_connection(conn: AsyncConnection, *, dialect: str) -> list[SchemaDiff]:
-    """Internal helper ``_diff_on_connection``."""
+    """
+    Internal helper ``_diff_on_connection``.
+
+    Parameters
+    ----------
+    conn : object
+        Argument ``conn``.
+    dialect : object
+        Argument ``dialect``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
 
     def _inspect(sync_conn: object) -> list[SchemaDiff]:
-        """Internal helper ``_inspect``."""
+        """
+        Internal helper ``_inspect``.
+
+        Parameters
+        ----------
+        sync_conn : object
+            Argument ``sync_conn``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         insp = inspect(sync_conn)
         if not insp.has_table(CONTRACT_TABLE):
             return [
@@ -177,13 +203,32 @@ async def _diff_on_connection(conn: AsyncConnection, *, dialect: str) -> list[Sc
 
 
 def _split_statements(ddl: str) -> list[str]:
-    """Internal helper ``_split_statements``."""
+    """
+    Internal helper ``_split_statements``.
+
+    Parameters
+    ----------
+    ddl : object
+        Argument ``ddl``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     parts = [p.strip() for p in ddl.split(";")]
     return [p for p in parts if p]
 
 
 def _ddl_sqlite() -> str:
-    """Internal helper ``_ddl_sqlite``."""
+    """
+    Internal helper ``_ddl_sqlite``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return f"""
 CREATE TABLE IF NOT EXISTS {CONTRACT_TABLE} (
   id TEXT PRIMARY KEY,
@@ -200,7 +245,14 @@ CREATE TABLE IF NOT EXISTS {CONTRACT_TABLE} (
 
 
 def _ddl_postgres() -> str:
-    """Internal helper ``_ddl_postgres``."""
+    """
+    Internal helper ``_ddl_postgres``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return f"""
 CREATE TABLE IF NOT EXISTS {CONTRACT_TABLE} (
   id UUID PRIMARY KEY,
@@ -217,7 +269,14 @@ CREATE TABLE IF NOT EXISTS {CONTRACT_TABLE} (
 
 
 def _ddl_mysql() -> str:
-    """Internal helper ``_ddl_mysql``."""
+    """
+    Internal helper ``_ddl_mysql``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return f"""
 CREATE TABLE IF NOT EXISTS {CONTRACT_TABLE} (
   id CHAR(36) PRIMARY KEY,
@@ -234,7 +293,14 @@ CREATE TABLE IF NOT EXISTS {CONTRACT_TABLE} (
 
 
 def _ddl_mssql() -> str:
-    """Internal helper ``_ddl_mssql``."""
+    """
+    Internal helper ``_ddl_mssql``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return f"""
 IF OBJECT_ID(N'{CONTRACT_TABLE}', N'U') IS NULL
 CREATE TABLE {CONTRACT_TABLE} (

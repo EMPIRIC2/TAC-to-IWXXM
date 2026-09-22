@@ -26,7 +26,14 @@ class HttpxDatasetClient:
     """
 
     def __init__(self, *, timeout_s: float = 30.0) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        timeout_s : object
+            Argument ``timeout_s``.
+        """
         self._timeout = timeout_s
 
     async def ping(self, url: str) -> bool:
@@ -129,7 +136,20 @@ class AiomqttClient:
         username: str | None = None,
         password: str | None = None,
     ) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        host : object
+            Argument ``host``.
+        port : object
+            Argument ``port``.
+        username : object
+            Argument ``username``.
+        password : object
+            Argument ``password``.
+        """
         self._host = host
         self._port = port
         self._username = username
@@ -221,7 +241,14 @@ class AiomqttClient:
             raise RuntimeError("mqtt client is not connected")
 
         async def _next() -> bytes:
-            """Internal helper ``_next``."""
+            """
+            Internal helper ``_next``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             assert self._client is not None
             async for message in self._client.messages:
                 payload = message.payload
@@ -253,12 +280,26 @@ class AiomqttClient:
         await cm.__aexit__(None, None, None)  # type: ignore[union-attr]
 
     async def __aenter__(self) -> Self:
-        """Internal helper ``__aenter__``."""
+        """
+        Internal helper ``__aenter__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         await self.connect()
         return self
 
     async def __aexit__(self, *exc: object) -> None:
-        """Internal helper ``__aexit__``."""
+        """
+        Internal helper ``__aexit__``.
+
+        Parameters
+        ----------
+        exc : object
+            Argument ``exc``.
+        """
         await self.disconnect()
 
 
@@ -282,7 +323,20 @@ class AiosmtpClient:
         use_tls: bool = True,
         timeout: float = 30.0,
     ) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        hostname : object
+            Argument ``hostname``.
+        port : object
+            Argument ``port``.
+        use_tls : object
+            Argument ``use_tls``.
+        timeout : object
+            Argument ``timeout``.
+        """
         self._hostname = hostname
         self._port = port
         self._use_tls = use_tls
@@ -290,7 +344,14 @@ class AiosmtpClient:
         self._client: aiosmtplib.SMTP | None = None
 
     def _tls_kwargs(self) -> dict[str, bool]:
-        """Internal helper ``_tls_kwargs``."""
+        """
+        Internal helper ``_tls_kwargs``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not self._use_tls:
             return {"use_tls": False, "start_tls": False}
         if self._port == 465:
@@ -379,12 +440,26 @@ class AiosmtpClient:
             await client.close()
 
     async def __aenter__(self) -> Self:
-        """Internal helper ``__aenter__``."""
+        """
+        Internal helper ``__aenter__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         await self.connect()
         return self
 
     async def __aexit__(self, *exc: object) -> None:
-        """Internal helper ``__aexit__``."""
+        """
+        Internal helper ``__aexit__``.
+
+        Parameters
+        ----------
+        exc : object
+            Argument ``exc``.
+        """
         await self.quit()
 
 

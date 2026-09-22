@@ -23,6 +23,8 @@ def test_py_bad_fixture_reports_gaps() -> None:
     joined = "\n".join(issues)
     assert "bare" in joined
     assert "_no_doc" in joined
+    assert "_private_missing_shape" in joined
+    assert "Parameters" in joined or "missing Parameters" in joined
 
 
 def test_main_ok_explicit() -> None:

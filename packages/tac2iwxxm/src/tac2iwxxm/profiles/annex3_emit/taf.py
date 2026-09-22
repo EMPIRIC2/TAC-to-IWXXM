@@ -11,7 +11,19 @@ from tac2iwxxm.profiles.annex3_emit._common import *
 
 
 def _taf_time_prefix(ir: dict[str, Any]) -> str:
-    """WMO YUDO examples use 2012-08; other fixtures use 2023-06."""
+    """
+    Internal helper ``_taf_time_prefix``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     if ir.get("station") == "YUDO":
         return "2012-08"
@@ -19,13 +31,39 @@ def _taf_time_prefix(ir: dict[str, Any]) -> str:
 
 
 def _taf_issue_stamp(ir: dict[str, Any]) -> str:
-    """Internal helper ``_taf_issue_stamp``."""
+    """
+    Internal helper ``_taf_issue_stamp``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     prefix = _taf_time_prefix(ir)
     return f"{prefix}-{int(ir['issue_day']):02d}T{int(ir['issue_hour']):02d}:{int(ir['issue_minute']):02d}:00Z"
 
 
 def _taf_period(ir: dict[str, Any], *, from_key: str = "valid") -> tuple[str, str]:
-    """Internal helper ``_taf_period``."""
+    """
+    Internal helper ``_taf_period``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    from_key : object
+        Argument ``from_key``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     prefix = _taf_time_prefix(ir)
     begin = f"{prefix}-{int(ir[f'{from_key}_from_day']):02d}T{int(ir[f'{from_key}_from_hour']):02d}:00:00Z"
     end = f"{prefix}-{int(ir[f'{from_key}_to_day']):02d}T{int(ir[f'{from_key}_to_hour']):02d}:00:00Z"
@@ -33,7 +71,21 @@ def _taf_period(ir: dict[str, Any], *, from_key: str = "valid") -> tuple[str, st
 
 
 def _taf_aerodrome_block(station: str, *, include_arp: bool) -> str:
-    """Emit TAF aerodrome; YUDO WMO examples include name (+ ARP on non-cancel)."""
+    """
+    Internal helper ``_taf_aerodrome_block``.
+
+    Parameters
+    ----------
+    station : object
+        Argument ``station``.
+    include_arp : object
+        Argument ``include_arp``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     name = ""
     arp = ""
     if station == "YUDO":
@@ -63,7 +115,19 @@ def _taf_aerodrome_block(station: str, *, include_arp: bool) -> str:
 
 
 def _fmt_taf_speed(value: object) -> str:
-    """Internal helper ``_fmt_taf_speed``."""
+    """
+    Internal helper ``_fmt_taf_speed``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     fval = float(str(value))
     if fval == int(fval):
         # Vendor A5-1: base uses 5.0; TEMPO/FM use bare integers for whole m/s.
@@ -72,7 +136,19 @@ def _fmt_taf_speed(value: object) -> str:
 
 
 def _taf_wind_block(fcst: dict[str, Any]) -> str:
-    """Internal helper ``_taf_wind_block``."""
+    """
+    Internal helper ``_taf_wind_block``.
+
+    Parameters
+    ----------
+    fcst : object
+        Argument ``fcst``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if fcst.get("wind_variable"):
         return """      <iwxxm:surfaceWind>
         <iwxxm:AerodromeSurfaceWindForecast variableWindDirection="true">
@@ -105,7 +181,21 @@ def _taf_wind_block(fcst: dict[str, Any]) -> str:
 
 
 def _taf_cloud_block(fcst: dict[str, Any], *, gml_id: str) -> str:
-    """Internal helper ``_taf_cloud_block``."""
+    """
+    Internal helper ``_taf_cloud_block``.
+
+    Parameters
+    ----------
+    fcst : object
+        Argument ``fcst``.
+    gml_id : object
+        Argument ``gml_id``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     clouds_raw = fcst.get("clouds")
     layers: list[dict[str, Any]] = []
     if isinstance(clouds_raw, list) and clouds_raw:
@@ -139,7 +229,19 @@ def _taf_cloud_block(fcst: dict[str, Any], *, gml_id: str) -> str:
 
 
 def _taf_weather_block(fcst: dict[str, Any]) -> str:
-    """Internal helper ``_taf_weather_block``."""
+    """
+    Internal helper ``_taf_weather_block``.
+
+    Parameters
+    ----------
+    fcst : object
+        Argument ``fcst``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     codes = fcst.get("weather")
     if not isinstance(codes, list) or not codes:
         return ""
@@ -151,7 +253,21 @@ def _taf_weather_block(fcst: dict[str, Any]) -> str:
 
 
 def _taf_change_forecasts(ir: dict[str, Any], station: str) -> str:
-    """Internal helper ``_taf_change_forecasts``."""
+    """
+    Internal helper ``_taf_change_forecasts``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    station : object
+        Argument ``station``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     changes_raw = ir.get("change_forecasts")
     if not isinstance(changes_raw, list) or not changes_raw:
         return ""
@@ -186,7 +302,19 @@ def _taf_change_forecasts(ir: dict[str, Any], station: str) -> str:
 
 
 def _taf_visibility_block(fcst: dict[str, Any]) -> str:
-    """Render prevailing visibility for a TAF forecast group."""
+    """
+    Internal helper ``_taf_visibility_block``.
+
+    Parameters
+    ----------
+    fcst : object
+        Argument ``fcst``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     display_uom = fcst.get("visibility_display_uom")
     if isinstance(display_uom, str):
         vis = f'      <iwxxm:prevailingVisibility uom="{display_uom}">{fcst["visibility_display_value"]}</iwxxm:prevailingVisibility>\n'

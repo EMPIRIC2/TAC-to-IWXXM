@@ -53,7 +53,8 @@ class ValidationService:
 
         Extracts ICAO from TAC text and validates against airport database.
 
-        Returns:
+        Returns
+        -------
             ValidationResult with pass/fail statlid (blocking validation)
 
         Parameters
@@ -148,7 +149,8 @@ class ValidationService:
 
         Performs basic TAC format validation before attempting conversion.
 
-        Returns:
+        Returns
+        -------
             ValidationResult with syntax issues
 
         Parameters
@@ -337,7 +339,19 @@ class ValidationService:
 
     @staticmethod
     def _extract_icao_from_tac(tac_text: str) -> str | None:
-        """Extract ICAO code from METAR/SPECI TAC text."""
+        """
+        Internal helper ``_extract_icao_from_tac``.
+
+        Parameters
+        ----------
+        tac_text : object
+            Argument ``tac_text``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         icao = extract_airport_code(tac_text)
         if icao:
             return icao

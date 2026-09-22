@@ -38,7 +38,14 @@ class HandleStore:
     """
 
     def __init__(self, *, ttl_seconds: float = 300.0) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        ttl_seconds : object
+            Argument ``ttl_seconds``.
+        """
         self.ttl_seconds = ttl_seconds
         self._items: dict[str, HandleRecord] = {}
         self._lock = threading.Lock()
@@ -174,7 +181,14 @@ class HandleStore:
             self._items.clear()
 
     def _purge(self, now: float) -> None:
-        """Internal helper ``_purge``."""
+        """
+        Internal helper ``_purge``.
+
+        Parameters
+        ----------
+        now : object
+            Argument ``now``.
+        """
         expired = [k for k, v in self._items.items() if v.expires_at < now]
         for k in expired:
             del self._items[k]

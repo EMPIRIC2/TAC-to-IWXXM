@@ -49,7 +49,8 @@ class ElevationService:
         """
         Get the appropriate vertical datum for an airport.
 
-        Returns:
+        Returns
+        -------
             IWXXM-compliant vertical datum code (e.g., 'EGM_96', 'NAVD88')
 
         Parameters
@@ -90,13 +91,17 @@ class ElevationService:
 
     def _normalize_datum_code(self, datum: str) -> str:
         """
-        Normalize datum code to IWXXM format.
+        Internal helper ``_normalize_datum_code``.
 
-        Args:
-            datum: Raw datum code (e.g., 'NAVD88', 'CGVD2013')
+        Parameters
+        ----------
+        datum : object
+            Argument ``datum``.
 
-        Returns:
-            IWXXM-compliant code (e.g., 'NAVD88', 'OTHER:CGVD2013')
+        Returns
+        -------
+        object
+            Return value.
         """
         # IWXXM natively supports: EGM_96, NAVD88, AHD
         supported = {"EGM_96", "EGM96", "NAVD88", "AHD"}
@@ -128,7 +133,8 @@ class ElevationService:
         """
         Get elevation and vertical datum for an airport with version-aware formatting.
 
-        Returns:
+        Returns
+        -------
             Tuple of (elevation_meters, vertical_datum)
 
         Parameters
@@ -177,13 +183,24 @@ class ElevationService:
         country_code: str | None = None,
         use_test_overrides: bool = False,
     ) -> tuple[int | None, str]:
-        """Get raw elevation data without version-specific formatting.
+        """
+        Internal helper ``_get_raw_elevation_data``.
 
-        Args:
-            icao: ICAO airport code
-            default_elevation_ft: Default elevation in feet (from database)
-            country_code: ISO 2-letter country code
-            use_test_overrides: If True, checks test_overrides first for vertical datum
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
+        default_elevation_ft : object
+            Argument ``default_elevation_ft``.
+        country_code : object
+            Argument ``country_code``.
+        use_test_overrides : object
+            Argument ``use_test_overrides``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         # Check for test-specific override first (for WMO reference test compliance)
         if use_test_overrides:
@@ -240,7 +257,8 @@ class ElevationService:
         """
         Get high-precision coordinate overrides for an airport if available.
 
-        Returns:
+        Returns
+        -------
             Tuple of (latitude, lo
 
         Parameters
@@ -276,7 +294,8 @@ class ElevationService:
         """
         Get test-specific vertical datum override for WMO reference compliance.
 
-        Returns:
+        Returns
+        -------
             Dictionary with vertic
 
         Parameters
@@ -301,7 +320,8 @@ class ElevationService:
         """
         Get information about a vertical datum.
 
-        Returns:
+        Returns
+        -------
             Dictionary with datum information or None
 
         Parameters

@@ -102,7 +102,19 @@ def membership_artifact_path() -> Path:
 
 
 def _csv_notations(path: Path) -> frozenset[str]:
-    """Internal helper ``_csv_notations``."""
+    """
+    Internal helper ``_csv_notations``.
+
+    Parameters
+    ----------
+    path : object
+        Argument ``path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not path.is_file():
         raise FileNotFoundError(path)
     out: set[str] = set()
@@ -120,7 +132,21 @@ def _csv_notations(path: Path) -> frozenset[str]:
 
 
 def _rdf_notations(path: Path, *, register_uri: str) -> frozenset[str]:
-    """Internal helper ``_rdf_notations``."""
+    """
+    Internal helper ``_rdf_notations``.
+
+    Parameters
+    ----------
+    path : object
+        Argument ``path``.
+    register_uri : object
+        Argument ``register_uri``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not path.is_file():
         raise FileNotFoundError(path)
     text = path.read_text(encoding="utf-8")

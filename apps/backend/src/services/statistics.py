@@ -28,9 +28,18 @@ _ICAO_PATTERN = re.compile(r"^[A-Z0-9]{4}$")
 
 
 def _normalize_icao_code(icao_airport_code: str | None) -> str:
-    """Normalize ICAO airport code for persistence.
+    """
+    Internal helper ``_normalize_icao_code``.
 
-    Returns a guaranteed non-null 4-character placeholder when input is missing/invalid.
+    Parameters
+    ----------
+    icao_airport_code : object
+        Argument ``icao_airport_code``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if isinstance(icao_airport_code, str):
         candidate = icao_airport_code.strip().upper()
@@ -40,7 +49,19 @@ def _normalize_icao_code(icao_airport_code: str | None) -> str:
 
 
 def _translation_status_value(status: TranslationStatus | str) -> str:
-    """Internal helper ``_translation_status_value``."""
+    """
+    Internal helper ``_translation_status_value``.
+
+    Parameters
+    ----------
+    status : object
+        Argument ``status``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if isinstance(status, TranslationStatus):
         return status.value
     return status
@@ -74,7 +95,8 @@ class StatisticsService:
         """
         Log a translation operation to the database.
 
-        Returns:
+        Returns
+        -------
             Translation UUID if logged successfully, None otherwise
 
         Parameters
@@ -202,7 +224,8 @@ class StatisticsService:
         """
         Query aggregated translation statistics.
 
-        Returns:
+        Returns
+        -------
             Dictionary with aggregated statistics
 
         Parameters
@@ -398,7 +421,8 @@ class StatisticsService:
         """
         Get translation statistics grouped by ICAO region.
 
-        Returns:
+        Returns
+        -------
             Dictionary mapping region codes to statistics
 
         Parameters

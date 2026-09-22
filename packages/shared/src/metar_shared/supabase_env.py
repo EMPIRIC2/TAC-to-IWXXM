@@ -17,17 +17,50 @@ _DEPRECATED_SECRET = "SUPABASE_SERVICE_ROLE_KEY"
 
 
 def _is_production_env() -> bool:
-    """Internal helper ``_is_production_env``."""
+    """
+    Internal helper ``_is_production_env``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return os.getenv("METAR_CONFIG_ENV", "local").strip().lower() == "prod"
 
 
 def _is_legacy_jwt_api_key(value: str) -> bool:
-    """True for legacy Supabase anon/service_role JWT keys (disabled when legacy keys off)."""
+    """
+    Internal helper ``_is_legacy_jwt_api_key``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return value.startswith("eyJ")
 
 
 def _resolve_with_fallback(canonical: str, deprecated: str) -> str:
-    """Internal helper ``_resolve_with_fallback``."""
+    """
+    Internal helper ``_resolve_with_fallback``.
+
+    Parameters
+    ----------
+    canonical : object
+        Argument ``canonical``.
+    deprecated : object
+        Argument ``deprecated``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     value = os.getenv(canonical, "").strip()
     if value:
         return value
@@ -55,8 +88,7 @@ def _resolve_with_fallback(canonical: str, deprecated: str) -> str:
 
 
 def assert_modern_supabase_publishable_key(key: str) -> None:
-    """
-    Raise with an actionable message when publishable key is missing or legacy JWT.
+    """Raise with an actionable message when publishable key is missing or legacy JWT.
 
     Examples
     --------
@@ -67,6 +99,7 @@ def assert_modern_supabase_publishable_key(key: str) -> None:
     ----------
     key : object
         Argument ``key``.
+
     """
     if not key:
         raise ValueError(
@@ -81,8 +114,7 @@ def assert_modern_supabase_publishable_key(key: str) -> None:
 
 
 def get_supabase_publishable_key() -> str:
-    """
-    Return publishable (anon) key from env with legacy fallback.
+    """Return publishable (anon) key from env with legacy fallback.
 
     Examples
     --------
@@ -93,6 +125,7 @@ def get_supabase_publishable_key() -> str:
     -------
     object
         Return value.
+
     """
     value = _resolve_with_fallback(_CANONICAL_PUBLISHABLE, _DEPRECATED_PUBLISHABLE)
     if value and _is_legacy_jwt_api_key(value) and _is_production_env():
@@ -105,8 +138,7 @@ def get_supabase_publishable_key() -> str:
 
 
 def get_supabase_secret_key() -> str:
-    """
-    Return secret key from env with legacy service-role fallback.
+    """Return secret key from env with legacy service-role fallback.
 
     Examples
     --------
@@ -117,13 +149,13 @@ def get_supabase_secret_key() -> str:
     -------
     object
         Return value.
+
     """
     return _resolve_with_fallback(_CANONICAL_SECRET, _DEPRECATED_SECRET)
 
 
 def get_supabase_url() -> str:
-    """
-    Return Supabase project URL from env or committed config.
+    """Return Supabase project URL from env or committed config.
 
     Examples
     --------
@@ -134,6 +166,7 @@ def get_supabase_url() -> str:
     -------
     object
         Return value.
+
     """
     url = os.getenv("SUPABASE_URL", "").strip()
     if url:

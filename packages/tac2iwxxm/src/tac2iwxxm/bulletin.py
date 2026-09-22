@@ -129,7 +129,16 @@ class BulletinSplitError(ValueError):
     """
 
     def __init__(self, code: str, message: str) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        code : object
+            Argument ``code``.
+        message : object
+            Argument ``message``.
+        """
         self.code = code
         self.message = message
         super().__init__(message)

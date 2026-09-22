@@ -38,10 +38,12 @@ class GiftsLocationDBAdapter:
 
     def __init__(self, openaip_service: OpenAIPService | None = None) -> None:
         """
-        Initialize the adapter.
+        Internal helper ``__init__``.
 
-        Args:
-            openaip_service: OpenAIPService instance (created if not provided)
+        Parameters
+        ----------
+        openaip_service : object
+            Argument ``openaip_service``.
         """
         self.openaip_service = openaip_service or OpenAIPService()
         self.record_builder = AirportRecordBuilder()
@@ -58,7 +60,8 @@ class GiftsLocationDBAdapter:
         """
         Get airport data in GIFTs format.
 
-        Returns:
+        Returns
+        -------
             String in format "name|iata|designat
 
         Parameters
@@ -102,7 +105,8 @@ class GiftsLocationDBAdapter:
         """
         Check if airport exists.
 
-        Returns:
+        Returns
+        -------
             True if airport found in any
 
         Parameters

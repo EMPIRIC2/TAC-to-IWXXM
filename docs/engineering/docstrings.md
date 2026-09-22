@@ -50,7 +50,7 @@ Examples
 |---------|-------------|
 | Module | One-line or short module docstring |
 | Public function / method / class | Full NumPy + `Examples` (doctest-safe) |
-| Private helpers (`_foo`) | NumPy sections as applicable; `Examples` optional |
+| Private helpers (`_foo`) | NumPy `Parameters` / `Returns` when args / non-`None` return apply; `Examples` optional |
 | Class attributes | `Attributes` section (and/or `__init__` `Parameters`) |
 | Tests / fixtures / generated / vendor | Exempt |
 
@@ -79,16 +79,22 @@ equivalent crate lint) on in-scope crates.
 
 ## Enforcement
 
-1. Product-repo make targets + tests (`tests/`, `packages/*/tests`) fail closed on missing
-   docs, missing required examples, and required shape (extend pack `inline-doc-check`
-   where useful). Preferred: `check-docs`, `test-doctest`, `check-docs-ts`,
-   `check-docs-rust` (exact names in tech-plan).
-2. CI on PR runs the checkers (TC-EVDOC-*).
-3. Public PY `Examples` via doctest; Rust `pub` doctests all runnable; TS `@example` via
+**Both fail-closed** (D-EVDOC-LINT-01): native toolchain linters **and** product checkers.
+
+1. **Native linters (via `make lint` / crate lint):**
+   - Python: ruff **pydocstyle (D)** on ADR-048 trees (NumPy convention).
+   - TypeScript: **eslint-plugin-jsdoc** on `apps/frontend/src` and `apps/e2e/helpers`.
+   - Rust: `#![deny(missing_docs)]` on in-scope crates (`tac2iwxxm`, `iwxxm-validate`).
+2. **Product checkers** (shape + executable examples linters cannot fully express):
+   `check-docs`, `test-doctest`, `check-docs-ts`, `check-docs-rust`. Private PY
+   Parameters/Returns when applicable; TS class methods + interface/type members.
+3. CI Lint job runs both layers (TC-EVDOC-001..010).
+4. Public PY `Examples` via doctest; Rust `pub` doctests all runnable; TS `@example` via
    repo-owned harness (vitest/node), fail closed if missing or failing.
-4. Lint + format + typecheck + unit across the **entire monorepo / all toolchains** treat
-   **warnings and infos as failures** (same PR as the doc bar). **No suppressions** — fix
-   or reconfigure toolchains.
+5. Lint + format + typecheck + unit across the **entire monorepo / all toolchains** treat
+   **warnings and infos as failures**. **No suppressions** — fix or reconfigure
+   toolchains. Coverage / security / typecheck thresholds are unchanged by the
+   EV-adr048-doc-linters amend.
 
 ## Must-not-break
 

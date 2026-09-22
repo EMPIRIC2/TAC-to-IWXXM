@@ -42,7 +42,19 @@ def catalog_path() -> Path:
 
 @lru_cache(maxsize=1)
 def _load_raw(path_str: str) -> dict[str, Any]:
-    """Internal helper ``_load_raw``."""
+    """
+    Internal helper ``_load_raw``.
+
+    Parameters
+    ----------
+    path_str : object
+        Argument ``path_str``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     path = Path(path_str)
     if not path.is_file():
         raise HTTPException(
@@ -59,28 +71,76 @@ def _load_raw(path_str: str) -> dict[str, Any]:
 
 
 def _as_str(value: object) -> str | None:
-    """Internal helper ``_as_str``."""
+    """
+    Internal helper ``_as_str``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None:
         return None
     return str(value)
 
 
 def _as_str_list(value: object) -> list[str]:
-    """Internal helper ``_as_str_list``."""
+    """
+    Internal helper ``_as_str_list``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(value, list):
         return []
     return [str(item) for item in cast(list[object], value)]
 
 
 def _as_str_dict(value: object) -> dict[str, Any]:
-    """Internal helper ``_as_str_dict``."""
+    """
+    Internal helper ``_as_str_dict``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(value, dict):
         return {}
     return {str(k): v for k, v in cast(dict[object, object], value).items()}
 
 
 def _as_metar_family_variants(value: object) -> list[MetarFamilyVariant]:
-    """Internal helper ``_as_metar_family_variants``."""
+    """
+    Internal helper ``_as_metar_family_variants``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(value, list):
         return []
     variants: list[MetarFamilyVariant] = []
@@ -133,14 +193,40 @@ _DELTA_MAP: dict[str, list[str]] = {
 
 
 def _deltas_vs_icao(profile_id: str) -> list[str]:
-    """Internal helper ``_deltas_vs_icao``."""
+    """
+    Internal helper ``_deltas_vs_icao``.
+
+    Parameters
+    ----------
+    profile_id : object
+        Argument ``profile_id``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return list(
         _DELTA_MAP.get(profile_id, ["Thin pack: reuses the ICAO baseline until a profile-specific extension lands."])
     )[:3]
 
 
 def _iwxxm_line(profile_id: str, vendor_pins: dict[str, Any]) -> str | None:
-    """Internal helper ``_iwxxm_line``."""
+    """
+    Internal helper ``_iwxxm_line``.
+
+    Parameters
+    ----------
+    profile_id : object
+        Argument ``profile_id``.
+    vendor_pins : object
+        Argument ``vendor_pins``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile_id == "ICAO_2025":
         return str(vendor_pins.get("iwxxm") or "WMO IWXXM 2025-2")
     if profile_id == "US_FAA_NWS":

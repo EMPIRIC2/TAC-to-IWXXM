@@ -13,7 +13,21 @@ from tac_validate.product_rules_pkg.tca import _check_us_faa_nws_swxa_overlay
 
 
 def _check_swxa_spacewx_membership(body: str, *, start: int) -> list[Issue]:
-    """Map SWX EFFECT + OBS severity to SpaceWxPhenomena membership (EV-050)."""
+    """
+    Internal helper ``_check_swxa_spacewx_membership``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+    start : object
+        Argument ``start``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     issues: list[Issue] = []
     effect_m = _SWX_EFFECT_LINE.search(body)
@@ -61,7 +75,21 @@ def _check_swxa_spacewx_membership(body: str, *, start: int) -> list[Issue]:
 
 
 def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
-    """Internal helper ``_check_swxa``."""
+    """
+    Internal helper ``_check_swxa``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     start, end, body = _body_span(tac)
     issues: list[Issue] = []
     if not _DTG_LINE.search(body):

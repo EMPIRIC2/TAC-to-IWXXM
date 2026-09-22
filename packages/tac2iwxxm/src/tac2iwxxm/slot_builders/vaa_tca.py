@@ -57,7 +57,19 @@ _INTST_MAP = {
 
 
 def _fields(text: str) -> dict[str, str]:
-    """Collect KEY: value pairs, joining indented continuation lines."""
+    """
+    Internal helper ``_fields``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     out: dict[str, str] = {}
     current_key: str | None = None
     for raw in text.splitlines():
@@ -78,7 +90,19 @@ def _fields(text: str) -> dict[str, str]:
 
 
 def _parse_dtg(token: str) -> str | None:
-    """Return ISO-8601 Zulu stamp from advisory DTG forms."""
+    """
+    Internal helper ``_parse_dtg``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     token = token.strip()
     m = _DTG_SHORT.search(token.replace(" ", ""))
     if m:
@@ -87,7 +111,21 @@ def _parse_dtg(token: str) -> str | None:
 
 
 def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
-    """Map ``23/0100Z`` onto the issue year-month."""
+    """
+    Internal helper ``_day_hhmm_to_iso``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+    issue_iso : object
+        Argument ``issue_iso``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _DAY_HHMM.search(token.replace(" ", ""))
     if m is None:
         return None
@@ -97,7 +135,21 @@ def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
 
 
 def _latlon(token: str, *, ndigits: int | None = 2) -> tuple[float, float] | None:
-    """Internal helper ``_latlon``."""
+    """
+    Internal helper ``_latlon``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+    ndigits : object
+        Argument ``ndigits``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     m = _PSN.search(token)
     if m is None:
         m = re.search(r"(?P<ns>[NS])(?P<lat>\d{4})\s+(?P<ew>[EW])(?P<lon>\d{5})", token)
@@ -123,7 +175,25 @@ def _latlon(token: str, *, ndigits: int | None = 2) -> tuple[float, float] | Non
 
 
 def _point_to_pair(ns: str, lat: str, ew: str, lon: str) -> tuple[float, float]:
-    """Internal helper ``_point_to_pair``."""
+    """
+    Internal helper ``_point_to_pair``.
+
+    Parameters
+    ----------
+    ns : object
+        Argument ``ns``.
+    lat : object
+        Argument ``lat``.
+    ew : object
+        Argument ``ew``.
+    lon : object
+        Argument ``lon``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     lat_f = int(lat[0:2]) + int(lat[2:4]) / 60.0
     lon_f = int(lon[0:3]) + int(lon[3:5]) / 60.0
     if ns == "S":
@@ -134,7 +204,19 @@ def _point_to_pair(ns: str, lat: str, ew: str, lon: str) -> tuple[float, float]:
 
 
 def _pos_list(points: list[tuple[float, float]]) -> str:
-    """Format closed LinearRing posList (TAC order; close to first point)."""
+    """
+    Internal helper ``_pos_list``.
+
+    Parameters
+    ----------
+    points : object
+        Argument ``points``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not points:
         return ""
     ring = list(points)
@@ -144,7 +226,19 @@ def _pos_list(points: list[tuple[float, float]]) -> str:
 
 
 def _parse_ash_clouds(blob: str) -> list[dict[str, Any]]:
-    """Parse one or more FL/SFC ash-cloud polygons (+ optional MOV) from a field blob."""
+    """
+    Internal helper ``_parse_ash_clouds``.
+
+    Parameters
+    ----------
+    blob : object
+        Argument ``blob``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     upper = " ".join(blob.split())
     if re.search(r"\bNO\s+VA\s+EXP\b", upper):
         return []
@@ -179,7 +273,19 @@ def _parse_ash_clouds(blob: str) -> list[dict[str, Any]]:
 
 
 def _parse_eruption(details: str) -> tuple[str | None, str]:
-    """Split ERUPTION AT DTG from residual eruptionDetails text."""
+    """
+    Internal helper ``_parse_eruption``.
+
+    Parameters
+    ----------
+    details : object
+        Argument ``details``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = " ".join(details.split())
     m = _ERUPTION_AT.search(text)
     if not m:

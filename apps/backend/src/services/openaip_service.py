@@ -26,11 +26,14 @@ class OpenAIPService:
 
     def __init__(self, cache_file: Path | None = None, api_key: str | None = None) -> None:
         """
-        Initialize OpenAIP service.
+        Internal helper ``__init__``.
 
-        Args:
-            cache_file: Path to openaip_cache.json file
-            api_key: Optional OpenAIP API key for live fallback
+        Parameters
+        ----------
+        cache_file : object
+            Argument ``cache_file``.
+        api_key : object
+            Argument ``api_key``.
         """
         if cache_file is None:
             cache_file = Path(__file__).parent.parent / "data" / "openaip_cache.json"
@@ -43,7 +46,14 @@ class OpenAIPService:
         self._load_cache()
 
     def _load_cache(self) -> bool:
-        """Load cache from file."""
+        """
+        Internal helper ``_load_cache``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not self.cache_file.exists():
             logger.warning(f"Cache file not found: {self.cache_file}")
             return False
@@ -81,7 +91,8 @@ class OpenAIPService:
         2. In-memory cache (from live API calls)
         3. Live API (if api_key available)
 
-        Returns:
+        Returns
+        -------
             Airport data dict or None if no
 
         Parameters
@@ -125,13 +136,17 @@ class OpenAIPService:
 
     def _fetch_from_api(self, icao: str) -> dict[str, Any] | None:
         """
-        Fetch a single airport from OpenAIP API (fallback).
+        Internal helper ``_fetch_from_api``.
 
-        Args:
-            icao: 4-letter ICAO airport code
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
 
-        Returns:
-            Airport data or None
+        Returns
+        -------
+        object
+            Return value.
         """
         try:
             import requests
@@ -158,7 +173,8 @@ class OpenAIPService:
         """
         Check if airport exists in OpenAIP data.
 
-        Returns:
+        Returns
+        -------
             True if airport found,
 
         Parameters
@@ -216,7 +232,8 @@ class OpenAIPService:
         """
         Check if cache is older than max_age_days.
 
-        Returns:
+        Returns
+        -------
             True if cache is stale
 
         Parameters

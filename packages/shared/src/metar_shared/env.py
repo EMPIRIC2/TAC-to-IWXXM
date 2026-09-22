@@ -4,8 +4,7 @@ from __future__ import annotations
 
 
 def parse_comma_separated_origins(raw: str | None) -> list[str]:
-    """
-    Parse ``METAR_CORS_ORIGINS`` style comma-separated origin lists.
+    """Parse ``METAR_CORS_ORIGINS`` style comma-separated origin lists.
 
     Examples
     --------
@@ -21,6 +20,7 @@ def parse_comma_separated_origins(raw: str | None) -> list[str]:
     -------
     object
         Return value.
+
     """
     if raw is None:
         return []

@@ -62,7 +62,21 @@ def pkg_issue_to_backend(issue: Issue, *, layer: ValidationLayer | None = None) 
 
 
 def _issues_for_level(report: ValidationReport, level: str) -> list[ValidationIssue]:
-    """Internal helper ``_issues_for_level``."""
+    """
+    Internal helper ``_issues_for_level``.
+
+    Parameters
+    ----------
+    report : object
+        Argument ``report``.
+    level : object
+        Argument ``level``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     backend_layer = _LAYER_MAP.get(level, ValidationLayer.XML_SCHEMA)
     return [
         pkg_issue_to_backend(issue, layer=backend_layer)

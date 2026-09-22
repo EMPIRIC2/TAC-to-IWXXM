@@ -48,7 +48,19 @@ from tac2iwxxm.slot_builders.vona import parse_vona
 
 
 def _ir_source_is_explicit_pack(ir_source: str | None) -> bool:
-    """True when the caller or env forces pack IR (no legacy fallback)."""
+    """
+    Internal helper ``_ir_source_is_explicit_pack``.
+
+    Parameters
+    ----------
+    ir_source : object
+        Argument ``ir_source``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if ir_source is not None:
         return ir_source.strip().lower() == "pack"
     return os.environ.get(IR_SOURCE_ENV, "").strip().lower() == "pack"
@@ -172,7 +184,21 @@ def _residual_texts_to_append(
     *,
     remarks_free_text: str,
 ) -> list[str]:
-    """Return residual spans not already covered by remarks retain / free-text."""
+    """
+    Internal helper ``_residual_texts_to_append``.
+
+    Parameters
+    ----------
+    residual_texts : object
+        Argument ``residual_texts``.
+    remarks_free_text : object
+        Argument ``remarks_free_text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     existing = remarks_free_text.strip()
     existing_upper = existing.upper()
     out: list[str] = []
@@ -194,10 +220,23 @@ def _apply_propagate_residuals(
     ir: dict[str, Any],
 ) -> tuple[dict[str, Any], ConvertIssue | None]:
     """
-    Fold decode residuals into remarks/HRT when the profile supports it.
+    Internal helper ``_apply_propagate_residuals``.
 
-    annex3 has no XML remarks target — emit an info issue documenting that fact
-    without inventing free-text remarks (D-EV981-emit-target).
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+    profile_l : object
+        Argument ``profile_l``.
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     decoded = decode_tac(tac, product=product)
     residual_texts = [r.text for r in decoded.residuals if r.text and r.text.strip()]
@@ -239,7 +278,19 @@ def _apply_propagate_residuals(
 
 
 def _content_bounds(tac: str) -> tuple[int, int]:
-    """Return inclusive start / exclusive end of stripped TAC content in ``tac``."""
+    """
+    Internal helper ``_content_bounds``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     stripped = tac.strip()
     if not stripped:
         return 0, len(tac)
@@ -283,7 +334,21 @@ def _preview_stub_xml(product: str, iwxxm_version: str, reason: str) -> str:
 
 
 def _tac_looks_like_product(tac: str, product: str) -> bool:
-    """Return True when TAC appears to be the requested product (header / keyword)."""
+    """
+    Internal helper ``_tac_looks_like_product``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     pattern = _PRODUCT_LEAD.get(product)
     if pattern is None:
         return False
@@ -292,10 +357,19 @@ def _tac_looks_like_product(tac: str, product: str) -> bool:
 
 def _should_quarantine(tac: str, product: str) -> bool:
     """
-    Whether failed/unreliable TAC should emit ``translationFailedTAC`` quarantine.
+    Internal helper ``_should_quarantine``.
 
-    Explicit ``INVALID`` (official failed examples) or a product-shaped TAC that
-    cannot be translated operationally.
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if _UNRELIABLE_TAC.search(tac):
         return True
@@ -380,7 +454,21 @@ def _quarantine_xml(product: str, tac: str, iwxxm_version: str) -> str:
 
 
 def _remark_span(tac: str, message: str) -> tuple[int | None, int | None]:
-    """Best-effort character span for a US REMARKS diagnostic message."""
+    """
+    Internal helper ``_remark_span``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    message : object
+        Argument ``message``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for needle, pattern in _REMARK_SPAN_PATTERNS:
         if needle in message:
             match = pattern.search(tac)
@@ -400,12 +488,33 @@ class ConvertError(ValueError):
     """
 
     def __init__(self, message: str) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        message : object
+            Argument ``message``.
+        """
         super().__init__(message)
 
 
 def _parse(product: str, tac: str) -> dict[str, Any]:
-    """Internal helper ``_parse``."""
+    """
+    Internal helper ``_parse``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     parsers: dict[str, Callable[..., dict[str, Any]]] = {
         "METAR": parse_metar_speci,
         "SPECI": parse_metar_speci,
@@ -427,7 +536,25 @@ def _parse_pack_ir(
     iwxxm_version: str,
     profile: str,
 ) -> dict[str, Any]:
-    """Match the product pack and map spans into convert IR slots."""
+    """
+    Internal helper ``_parse_pack_ir``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    tac : object
+        Argument ``tac``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     packs = {item.id: item for item in load_packs(profile)}
     pack_id = pack_id_for_product(product, tac)
     pack = packs.get(pack_id)
@@ -451,7 +578,29 @@ def _parse_for_convert(
     profile: str,
     ir_source_explicit: bool,
 ) -> dict[str, Any]:
-    """Internal helper ``_parse_for_convert``."""
+    """
+    Internal helper ``_parse_for_convert``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    tac : object
+        Argument ``tac``.
+    ir_source : object
+        Argument ``ir_source``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    profile : object
+        Argument ``profile``.
+    ir_source_explicit : object
+        Argument ``ir_source_explicit``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if ir_source == "pack":
         try:
             return _parse_pack_ir(product, tac, iwxxm_version=iwxxm_version, profile=profile)
@@ -464,7 +613,25 @@ def _parse_for_convert(
 
 
 def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) -> str:
-    """Internal helper ``_emit``."""
+    """
+    Internal helper ``_emit``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+    ir : object
+        Argument ``ir``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if product in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}:
         # ADR-047: core F6 products emit via YAML maps (python plugins remain builders).
         return emit_with_map(ir, product=product, profile=profile, iwxxm_version=iwxxm_version)
@@ -614,7 +781,23 @@ def convert(
         *,
         span: bool = False,
     ) -> ConvertResult:
-        """Internal helper ``_fail``."""
+        """
+        Internal helper ``_fail``.
+
+        Parameters
+        ----------
+        code : object
+            Argument ``code``.
+        message : object
+            Argument ``message``.
+        span : object
+            Argument ``span``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         span_start = span_end = None
         if span:
             span_start, span_end = _content_bounds(tac)

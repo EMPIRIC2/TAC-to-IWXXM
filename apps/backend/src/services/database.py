@@ -30,12 +30,12 @@ def _clean_env(name: str) -> str:
     set, and an actionable warning is logged naming the variable.
 
     Parameters
-    ----
+    ----------
     name : str
         Environment variable name to read.
 
     Returns
-    ----
+    -------
     str
         The stripped value, or an empty string when unset/blank.
     """
@@ -62,7 +62,8 @@ def get_database_url() -> str:
     - SUPABASE_DB_URL (Supabase specific)
     - Individual components (POSTGRES_HOST, POSTGRES_DB, etc.)
 
-    Raises:
+    Raises
+    ------
         ValueError: If no valid database configuration found
 
     Returns
@@ -115,10 +116,12 @@ async def init_db_engine(
     """
     Initialize async database engine and session maker.
 
-    Returns:
+    Returns
+    -------
         AsyncEngine instance
 
-    Raises:
+    Raises
+    ------
         Exception: If connection fails
 
     Parameters
@@ -238,10 +241,12 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
         async with get_db_session() as session:
             result = await session.execute(select(SomeModel))
 
-    Yields:
+    Yields
+    ------
         AsyncSession instance
 
-    Raises:
+    Raises
+    ------
         RuntimeError: If engine not initialized
 
     Examples

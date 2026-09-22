@@ -121,14 +121,38 @@ class LibraryYamlReport:
 
 
 def _as_str(value: object) -> str | None:
-    """Internal helper ``_as_str``."""
+    """
+    Internal helper ``_as_str``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if isinstance(value, str) and value.strip():
         return value.strip()
     return None
 
 
 def _as_mapping(value: object) -> dict[str, Any]:
-    """Internal helper ``_as_mapping``."""
+    """
+    Internal helper ``_as_mapping``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(value, dict):
         return {}
     mapped: dict[str, Any] = {}
@@ -138,14 +162,40 @@ def _as_mapping(value: object) -> dict[str, Any]:
 
 
 def _as_list(value: object) -> list[object]:
-    """Internal helper ``_as_list``."""
+    """
+    Internal helper ``_as_list``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(value, list):
         return []
     return list(cast(list[object], value))
 
 
 def _extract_patterns(kind: LibraryKind, data: dict[str, Any]) -> list[tuple[str, str, str | None]]:
-    """Return (path, pattern, required_sample) tuples from a parsed document."""
+    """
+    Internal helper ``_extract_patterns``.
+
+    Parameters
+    ----------
+    kind : object
+        Argument ``kind``.
+    data : object
+        Argument ``data``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     found: list[tuple[str, str, str | None]] = []
     rows: list[object]
     key: str
@@ -192,7 +242,21 @@ def _extract_patterns(kind: LibraryKind, data: dict[str, Any]) -> list[tuple[str
 
 
 def _rule_rows_for_checks(kind: LibraryKind, data: dict[str, Any]) -> list[tuple[str, dict[str, Any]]]:
-    """Return (path_prefix, row) for TAC/IWXXM rules that may carry numeric checks."""
+    """
+    Internal helper ``_rule_rows_for_checks``.
+
+    Parameters
+    ----------
+    kind : object
+        Argument ``kind``.
+    data : object
+        Argument ``data``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     found: list[tuple[str, dict[str, Any]]] = []
     if kind == "tac_validation":
         rows = _as_list(data.get("rules"))
@@ -215,7 +279,21 @@ def _numeric_check_diagnostics(
     kind: LibraryKind,
     data: dict[str, Any],
 ) -> tuple[RegexDiagnostic, ...]:
-    """Validate numeric check shapes and sample-bound evaluations."""
+    """
+    Internal helper ``_numeric_check_diagnostics``.
+
+    Parameters
+    ----------
+    kind : object
+        Argument ``kind``.
+    data : object
+        Argument ``data``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     out: list[RegexDiagnostic] = []
     for path, row in _rule_rows_for_checks(kind, data):
         if "check" not in row:
@@ -339,7 +417,19 @@ def diagnose_regex(pattern: str, *, sample: str | None = None, path: str = "patt
 
 
 def _secret_violation(data: dict[str, Any]) -> str | None:
-    """Internal helper ``_secret_violation``."""
+    """
+    Internal helper ``_secret_violation``.
+
+    Parameters
+    ----------
+    data : object
+        Argument ``data``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     blob = yaml.safe_dump(data, sort_keys=False)
     if _URI_OR_SECRET.search(blob):
         return "Dissemination YAML must not include credentials or destination URIs"

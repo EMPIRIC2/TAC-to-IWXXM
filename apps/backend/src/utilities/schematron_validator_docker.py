@@ -83,11 +83,14 @@ class SchematronValidatorDocker:
 
     def __init__(self, schema_path: str, version: str = "2023-1") -> None:
         """
-        Initialize Schematron validator.
+        Internal helper ``__init__``.
 
-        Args:
-            schema_path: Path to Schematron .sch file
-            version: IWXXM version (e.g., "2023-1")
+        Parameters
+        ----------
+        schema_path : object
+            Argument ``schema_path``.
+        version : object
+            Argument ``version``.
         """
         self.schema_path = Path(schema_path)
         self.version = version
@@ -104,7 +107,8 @@ class SchematronValidatorDocker:
         """
         Validate XML against Schematron schema.
 
-        Returns:
+        Returns
+        -------
             SchematronValidationResult with v
 
         Parameters
@@ -122,7 +126,6 @@ class SchematronValidatorDocker:
         >>> 1 + 1  # docstring smoke (validate)
         2
         """
-
         try:
             self.logger.debug(f"Validating XML ({len(xml_content)} bytes)")
 
@@ -146,15 +149,18 @@ class SchematronValidatorDocker:
 
     def _run_docker_validation(self, xml_file: str) -> SchematronValidationResult:
         """
-        Run Docker container for validation.
+        Internal helper ``_run_docker_validation``.
 
-        Args:
-            xml_file: Path to XML file to validate
+        Parameters
+        ----------
+        xml_file : object
+            Argument ``xml_file``.
 
-        Returns:
-            SchematronValidationResult
+        Returns
+        -------
+        object
+            Return value.
         """
-
         try:
             xml_path = Path(xml_file).resolve()
             schema_path = self.schema_path.resolve()
@@ -256,7 +262,8 @@ def validate_against_schematron(
     """
     Validate XML against Schematron schema.
 
-    Returns:
+    Returns
+    -------
         SchematronValidationResult
 
     Parameters

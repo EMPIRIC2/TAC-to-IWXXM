@@ -20,13 +20,21 @@ from dissemination.redact import redact_secrets
 class SmtpClient(Protocol):
     """Minimal async SMTP client used by the EDIS sink."""
 
-    async def connect(self) -> None: ...
+    async def connect(self) -> None:
+        """Open the SMTP connection."""
+        ...
 
-    async def login(self, username: str, password: str) -> None: ...
+    async def login(self, username: str, password: str) -> None:
+        """Authenticate with ``username`` / ``password``."""
+        ...
 
-    async def send_message(self, message: EmailMessage) -> object: ...
+    async def send_message(self, message: EmailMessage) -> object:
+        """Submit ``message`` and return the transport response."""
+        ...
 
-    async def quit(self) -> None: ...
+    async def quit(self) -> None:
+        """Close the SMTP session."""
+        ...
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,7 +81,21 @@ class EdisSubmitResult:
 
 
 def _require_ascii(value: str, *, field: str) -> str:
-    """Internal helper ``_require_ascii``."""
+    """
+    Internal helper ``_require_ascii``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    field : object
+        Argument ``field``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not value.isascii():
         raise ValueError(f"EDIS {field} must be ASCII-only")
     return value
@@ -198,7 +220,21 @@ def build_edis_message(params: EdisParams, *, tac_body: str) -> str:
 
 
 def _redact_exc(exc: BaseException, params: EdisParams) -> str:
-    """Internal helper ``_redact_exc``."""
+    """
+    Internal helper ``_redact_exc``.
+
+    Parameters
+    ----------
+    exc : object
+        Argument ``exc``.
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = redact_secrets(str(exc))
     if params.password:
         text = text.replace(params.password, "REDACTED")
@@ -208,7 +244,16 @@ def _redact_exc(exc: BaseException, params: EdisParams) -> str:
 
 
 def _validate_edis_egress(params: EdisParams, allowlist: Allowlist) -> None:
-    """Internal helper ``_validate_edis_egress``."""
+    """
+    Internal helper ``_validate_edis_egress``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    allowlist : object
+        Argument ``allowlist``.
+    """
     validate_egress_host(params.smtp_host, allowlist=allowlist)
 
 

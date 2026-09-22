@@ -373,7 +373,14 @@ def preview_bridge(
 
 
 def _builtin_catalog() -> dict[str, ConversionTemplate]:
-    """Internal helper ``_builtin_catalog``."""
+    """
+    Internal helper ``_builtin_catalog``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     wind = ConversionTemplate(
         id="CV.WIND",
         name="Wind group",

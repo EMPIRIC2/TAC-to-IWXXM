@@ -54,7 +54,14 @@ _tables: dict[str, Table] = {}
 
 
 def _sync_database_url() -> str:
-    """Internal helper ``_sync_database_url``."""
+    """
+    Internal helper ``_sync_database_url``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = (os.environ.get("DATABASE_URL") or "").strip()
     if not raw:
         raise HTTPException(
@@ -75,7 +82,14 @@ def _sync_database_url() -> str:
 
 
 def _get_engine() -> Engine:
-    """Internal helper ``_get_engine``."""
+    """
+    Internal helper ``_get_engine``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _engine
     if _engine is None:
         _engine = create_engine(_sync_database_url(), pool_pre_ping=True)
@@ -83,14 +97,35 @@ def _get_engine() -> Engine:
 
 
 def _table(name: str) -> Table:
-    """Internal helper ``_table``."""
+    """
+    Internal helper ``_table``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if name not in _tables:
         _tables[name] = Table(name, _metadata, autoload_with=_get_engine())
     return _tables[name]
 
 
 def _reject_secrets(payload: dict[str, Any], *, path: str = "") -> None:
-    """Raise 422 if payload keys look like secrets or URIs."""
+    """
+    Internal helper ``_reject_secrets``.
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    path : object
+        Argument ``path``.
+    """
     for key, value in payload.items():
         full = f"{path}.{key}" if path else key
         if _SECRET_KEY.search(key):
@@ -104,7 +139,19 @@ def _reject_secrets(payload: dict[str, Any], *, path: str = "") -> None:
 
 
 def _handle_db_error(exc: Exception) -> NoReturn:
-    """Internal helper ``_handle_db_error``."""
+    """
+    Internal helper ``_handle_db_error``.
+
+    Parameters
+    ----------
+    exc : object
+        Argument ``exc``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     logger.exception("conversion profiles db error: %s", exc)
     if isinstance(exc, IntegrityError):
         raise HTTPException(
@@ -118,7 +165,19 @@ def _handle_db_error(exc: Exception) -> NoReturn:
 
 
 def _row_to_out(row: dict[str, Any]) -> RulePackOut:
-    """Internal helper ``_row_to_out``."""
+    """
+    Internal helper ``_row_to_out``.
+
+    Parameters
+    ----------
+    row : object
+        Argument ``row``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return RulePackOut(
         id=row["id"],
         user_id=row["user_id"],
@@ -136,7 +195,19 @@ def _row_to_out(row: dict[str, Any]) -> RulePackOut:
 
 
 def _preset_row_to_out(row: dict[str, Any]) -> PresetOut:
-    """Internal helper ``_preset_row_to_out``."""
+    """
+    Internal helper ``_preset_row_to_out``.
+
+    Parameters
+    ----------
+    row : object
+        Argument ``row``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw_extensions = row.get("extensions")
     extensions = [str(item) for item in cast(list[object], raw_extensions)] if isinstance(raw_extensions, list) else []
     return PresetOut(
@@ -156,7 +227,19 @@ def _preset_row_to_out(row: dict[str, Any]) -> PresetOut:
 
 
 def _template_row_to_out(row: dict[str, Any]) -> DisseminationTemplateOut:
-    """Internal helper ``_template_row_to_out``."""
+    """
+    Internal helper ``_template_row_to_out``.
+
+    Parameters
+    ----------
+    row : object
+        Argument ``row``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw_params = row.get("params")
     params: dict[str, Any] = cast(dict[str, Any], raw_params) if isinstance(raw_params, dict) else {}
     return DisseminationTemplateOut(
@@ -175,7 +258,16 @@ def _template_row_to_out(row: dict[str, Any]) -> DisseminationTemplateOut:
 
 
 def _reject_template_values(value: object, *, path: str) -> None:
-    """Internal helper ``_reject_template_values``."""
+    """
+    Internal helper ``_reject_template_values``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    path : object
+        Argument ``path``.
+    """
     if isinstance(value, dict):
         _reject_secrets(cast(dict[str, Any], value), path=path)
         for key, nested in cast(dict[str, Any], value).items():
@@ -751,7 +843,19 @@ class ConversionProfilesService:
             _handle_db_error(exc)
 
     def _overlay_to_out(self, row: dict[str, Any]) -> OverlayOut:
-        """Internal helper ``_overlay_to_out``."""
+        """
+        Internal helper ``_overlay_to_out``.
+
+        Parameters
+        ----------
+        row : object
+            Argument ``row``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         raw_body = row.get("body")
         body_dict: dict[str, Any] = cast(dict[str, Any], raw_body) if isinstance(raw_body, dict) else {}
         verify_overlay_signature(
@@ -970,7 +1074,19 @@ class ConversionProfilesService:
 
     @staticmethod
     def _first_party_template_out(template_id: str) -> ConversionTemplateOut | None:
-        """Project a code-served first-party conversion template."""
+        """
+        Internal helper ``_first_party_template_out``.
+
+        Parameters
+        ----------
+        template_id : object
+            Argument ``template_id``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             from tac2iwxxm.conversion_templates import get_first_party_template
         except ImportError:
@@ -1011,7 +1127,19 @@ class ConversionProfilesService:
         )
 
     def _conversion_template_row_to_out(self, row: dict[str, Any]) -> ConversionTemplateOut:
-        """Map a DB row to ConversionTemplateOut."""
+        """
+        Internal helper ``_conversion_template_row_to_out``.
+
+        Parameters
+        ----------
+        row : object
+            Argument ``row``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         raw_slots_any: Any = row.get("slots") or []
         slot_items: list[Any] = cast(list[Any], raw_slots_any) if isinstance(raw_slots_any, list) else []
         slots: list[ConversionTemplateSlot] = [
@@ -1266,7 +1394,19 @@ class ConversionProfilesService:
             _handle_db_error(exc)
 
     def _first_party_library_out(self, asset_id: str) -> LibraryAssetOut | None:
-        """Map a first-party LibraryAsset to API out."""
+        """
+        Internal helper ``_first_party_library_out``.
+
+        Parameters
+        ----------
+        asset_id : object
+            Argument ``asset_id``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             from tac2iwxxm.library_assets import get_first_party_library_asset
         except ImportError:
@@ -1289,7 +1429,19 @@ class ConversionProfilesService:
         )
 
     def _library_row_to_out(self, row: dict[str, Any]) -> LibraryAssetOut:
-        """Map a DB library asset row to API out."""
+        """
+        Internal helper ``_library_row_to_out``.
+
+        Parameters
+        ----------
+        row : object
+            Argument ``row``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         body_candidate: Any = row.get("body")
         body: dict[str, Any] = cast(dict[str, Any], body_candidate) if isinstance(body_candidate, dict) else {}
         status_raw = str(row.get("status") or "draft")
@@ -1453,7 +1605,23 @@ class ConversionProfilesService:
         kind: str,
         lifecycle_status: str,
     ) -> dict[str, Any]:
-        """Validate YAML when activating; Draft may include Fail diagnostics."""
+        """
+        Internal helper ``_enforce_yaml_lifecycle``.
+
+        Parameters
+        ----------
+        yaml_body : object
+            Argument ``yaml_body``.
+        kind : object
+            Argument ``kind``.
+        lifecycle_status : object
+            Argument ``lifecycle_status``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         extra: dict[str, Any] = {}
         if yaml_body is None:
             if lifecycle_status == "activated":

@@ -42,7 +42,8 @@ def normalize_recent_weather_tokens(
         ``RESH``  →  ``RESHUP``   (rule: ``recent_weather_truncated_showers``)
         ``REFZ``  →  ``REFZUP``   (rule: ``recent_weather_truncated_freezing``)
 
-    Returns:
+    Returns
+    -------
         A two-tuple ``(normalized_text, warnings)`` where ``warnings`` is
 
     Parameters

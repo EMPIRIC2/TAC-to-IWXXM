@@ -24,7 +24,21 @@ __all__ = [
 
 
 def _split_for_decode(tac: str, product: str) -> object:
-    """Internal helper ``_split_for_decode``."""
+    """
+    Internal helper ``_split_for_decode``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     from tac2iwxxm import bulletin as bulletin_mod
 
     try:

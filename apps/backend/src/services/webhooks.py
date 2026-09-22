@@ -41,7 +41,14 @@ class WebhookService:
         self.enabled = should_send_webhooks()
 
     async def __aenter__(self) -> "WebhookService":
-        """Async context manager entry."""
+        """
+        Internal helper ``__aenter__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if self.enabled:
             self.client = httpx.AsyncClient(timeout=10.0)
         return self
@@ -52,19 +59,34 @@ class WebhookService:
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
     ) -> None:
-        """Async context manager exit."""
+        """
+        Internal helper ``__aexit__``.
+
+        Parameters
+        ----------
+        exc_type : object
+            Argument ``exc_type``.
+        exc_val : object
+            Argument ``exc_val``.
+        exc_tb : object
+            Argument ``exc_tb``.
+        """
         if self.client:
             await self.client.aclose()
 
     def _generate_signature(self, payload: str) -> str:
         """
-        Generate HMAC-SHA256 signature for webhook payload.
+        Internal helper ``_generate_signature``.
 
-        Args:
-            payload: JSON payload string
+        Parameters
+        ----------
+        payload : object
+            Argument ``payload``.
 
-        Returns:
-            Hex-encoded HMAC signature
+        Returns
+        -------
+        object
+            Return value.
         """
         if not WEBHOOK_SECRET:
             return ""
@@ -82,7 +104,8 @@ class WebhookService:
         """
         Send webhook notification to all configured endpoints.
 
-        Returns:
+        Returns
+        -------
             True if all webhooks sent successfully, False otherwise
 
         Parameters
@@ -159,15 +182,21 @@ class WebhookService:
         headers: dict[str, str],
     ) -> bool:
         """
-        Send webhook to a single URL.
+        Internal helper ``_send_single_webhook``.
 
-        Args:
-            url: Webhook endpoint URL
-            payload: JSON payload string
-            headers: HTTP headers
+        Parameters
+        ----------
+        url : object
+            Argument ``url``.
+        payload : object
+            Argument ``payload``.
+        headers : object
+            Argument ``headers``.
 
-        Returns:
-            True if successful, False otherwise
+        Returns
+        -------
+        object
+            Return value.
         """
         try:
             if not self.client:

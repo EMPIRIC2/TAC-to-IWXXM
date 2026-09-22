@@ -12,7 +12,19 @@ NUMERIC_OPS: frozenset[str] = frozenset({"min", "max", "eq", "in"})
 
 
 def _as_number(value: object) -> float | None:
-    """Internal helper ``_as_number``."""
+    """
+    Internal helper ``_as_number``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if isinstance(value, bool):
         return None
     if isinstance(value, int | float):

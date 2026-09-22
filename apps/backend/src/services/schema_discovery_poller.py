@@ -63,14 +63,20 @@ class SchemaDiscoveryPoller:
         base_schema_path: Path | None = None,
     ) -> None:
         """
-        Initialize the discovery poller.
+        Internal helper ``__init__``.
 
-        Args:
-            poll_urls: List of WMO schema directory URLs to poll
-            timeout_seconds: HTTP request timeout
-            mirror_service: Optional SchemaMirrorService for auto-mirroring
-            xmi_analyzer: Optional XMIModelAnalyzer for breaking change detection
-            base_schema_path: Optional path to schemas directory
+        Parameters
+        ----------
+        poll_urls : object
+            Argument ``poll_urls``.
+        timeout_seconds : object
+            Argument ``timeout_seconds``.
+        mirror_service : object
+            Argument ``mirror_service``.
+        xmi_analyzer : object
+            Argument ``xmi_analyzer``.
+        base_schema_path : object
+            Argument ``base_schema_path``.
         """
         self.poll_urls = poll_urls or WMO_SCHEMA_DIRECTORIES
         self.timeout_seconds = timeout_seconds
@@ -134,13 +140,14 @@ class SchemaDiscoveryPoller:
 
     async def _emit_new_version_event(self, version: str, source_url: str) -> None:
         """
-        Handle discovery of a new version.
+        Internal helper ``_emit_new_version_event``.
 
-        Triggers callbacks and optionally auto-mirrors with examples + XMI.
-
-        Args:
-            version: New version discovered
-            source_url: URL where version was found
+        Parameters
+        ----------
+        version : object
+            Argument ``version``.
+        source_url : object
+            Argument ``source_url``.
         """
         # Call registered callbacks
         for callback in self.on_new_version_callbacks:
@@ -158,18 +165,14 @@ class SchemaDiscoveryPoller:
 
     async def _trigger_auto_mirror(self, version: str, source_url: str) -> None:
         """
-        Trigger automatic mirroring of a new version.
+        Internal helper ``_trigger_auto_mirror``.
 
-        Downloads complete version bundle:
-        - Schemas (XSD)
-        - Examples (~60 XML/TAC pairs)
-        - HTML documentation
-        - XMI UML models
-        - Rule directory (Schematron + RDF codelists)
-
-        Args:
-            version: Version to mirror
-            source_url: Source URL
+        Parameters
+        ----------
+        version : object
+            Argument ``version``.
+        source_url : object
+            Argument ``source_url``.
         """
         try:
             from ..config.iwxxm_versions import RC_VERSIONS, SUPPORTED_VERSIONS
@@ -214,10 +217,12 @@ class SchemaDiscoveryPoller:
 
     async def _analyze_breaking_changes(self, new_version: str) -> None:
         """
-        Analyze XMI models to detect breaking changes from previous version.
+        Internal helper ``_analyze_breaking_changes``.
 
-        Args:
-            new_version: New version to analyze
+        Parameters
+        ----------
+        new_version : object
+            Argument ``new_version``.
         """
         if not self.xmi_analyzer:
             logger.debug("XMI analyzer not available, skipping breaking change detection")
@@ -270,12 +275,16 @@ class SchemaDiscoveryPoller:
         self, new_version: str, prior_version: str, breaking_changes_report: dict[str, Any]
     ) -> None:
         """
-        Update VERSION_DISCOVERY_METADATA with breaking changes.
+        Internal helper ``_update_version_metadata``.
 
-        Args:
-            new_version: New version discovered
-            prior_version: Previous version for comparison
-            breaking_changes_report: Breaking change report from XMI analyzer
+        Parameters
+        ----------
+        new_version : object
+            Argument ``new_version``.
+        prior_version : object
+            Argument ``prior_version``.
+        breaking_changes_report : object
+            Argument ``breaking_changes_report``.
         """
         try:
             from ..config.iwxxm_versions import SUPPORTED_VERSIONS
@@ -333,13 +342,17 @@ class SchemaDiscoveryPoller:
 
     async def _poll_url(self, url: str) -> list[str]:
         """
-        Poll a single URL for IWXXM version directories.
+        Internal helper ``_poll_url``.
 
-        Args:
-            url: WMO schema directory URL
+        Parameters
+        ----------
+        url : object
+            Argument ``url``.
 
-        Returns:
-            List of detected version strings
+        Returns
+        -------
+        object
+            Return value.
         """
         async with httpx.AsyncClient(timeout=self.timeout_seconds) as client:
             try:
@@ -359,13 +372,17 @@ class SchemaDiscoveryPoller:
 
     def _extract_versions_from_html(self, html_content: str) -> list[str]:
         """
-        Extract IWXXM version strings from HTML directory listing.
+        Internal helper ``_extract_versions_from_html``.
 
-        Args:
-            html_content: HTML response body
+        Parameters
+        ----------
+        html_content : object
+            Argument ``html_content``.
 
-        Returns:
-            List of version strings found in links
+        Returns
+        -------
+        object
+            Return value.
         """
         versions: list[str] = []
 
@@ -405,13 +422,17 @@ class SchemaDiscoveryPoller:
 
     def _is_rc_version(self, version: str) -> bool:
         """
-        Check if a version string represents a Release Candidate.
+        Internal helper ``_is_rc_version``.
 
-        Args:
-            version: Version string (e.g., "2025-2RC1", "2025-2")
+        Parameters
+        ----------
+        version : object
+            Argument ``version``.
 
-        Returns:
-            True if version is an RC, False otherwise
+        Returns
+        -------
+        object
+            Return value.
         """
         return bool(RC_PATTERN.match(version))
 
@@ -419,7 +440,8 @@ class SchemaDiscoveryPoller:
         """
         Poll with automatic retry on failure.
 
-        Returns:
+        Returns
+        -------
             Discovery results dictionary, or None when max_retries is 0
 
         Parameters
@@ -459,7 +481,8 @@ class SchemaDiscoveryPoller:
         """
         Get all discovered versions, optionally filtered by channel.
 
-        Returns:
+        Returns
+        -------
             List of discovered version strings
 
         Parameters
@@ -507,7 +530,8 @@ async def discover_schemas_with_retry(max_retries: int = 3, retry_delay: int = 6
     """
     Convenience function to run discovery with retry logic.
 
-    Returns:
+    Returns
+    -------
         Discovery results
 
     Parameters
@@ -535,7 +559,8 @@ def extract_version_from_url(url: str) -> str | None:
     """
     Extract IWXXM version from a schema URL.
 
-    Returns:
+    Returns
+    -------
         Version string or None if not found
 
     Parameters

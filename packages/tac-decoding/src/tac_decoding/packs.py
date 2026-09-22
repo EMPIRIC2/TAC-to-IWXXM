@@ -131,12 +131,33 @@ def clear_pack_cache() -> None:
 
 @lru_cache(maxsize=1)
 def _load_builtins_cached() -> tuple[Pack, ...]:
-    """Internal helper ``_load_builtins_cached``."""
+    """
+    Internal helper ``_load_builtins_cached``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _merge_packs("")
 
 
 def _merge_packs(overlay: str, profile: str | None = None) -> tuple[Pack, ...]:
-    """Internal helper ``_merge_packs``."""
+    """
+    Internal helper ``_merge_packs``.
+
+    Parameters
+    ----------
+    overlay : object
+        Argument ``overlay``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     merged = {pack_id: Pack(pack_id, layout) for pack_id, layout in _BUILTINS}
     if _BUILTIN_PACK_DIR.is_dir():
         for pack in _read_overlay(_BUILTIN_PACK_DIR):
@@ -148,7 +169,18 @@ def _merge_packs(overlay: str, profile: str | None = None) -> tuple[Pack, ...]:
 
 
 def _apply_extension_dir(merged: dict[str, Pack], directory: Path, profile: str | None) -> None:
-    """Layer profile overlays onto ``merged``. A bad file raises before any write."""
+    """
+    Internal helper ``_apply_extension_dir``.
+
+    Parameters
+    ----------
+    merged : object
+        Argument ``merged``.
+    directory : object
+        Argument ``directory``.
+    profile : object
+        Argument ``profile``.
+    """
     if not directory.is_dir():
         msg = f"Pack directory is not a folder: {directory}"
         raise PackSchemaError(msg)
@@ -172,9 +204,20 @@ def _apply_extension_dir(merged: dict[str, Pack], directory: Path, profile: str 
 
 
 def _read_extension(path: Path, merged: dict[str, Pack]) -> tuple[tuple[str, ...], Pack, bool]:
-    """Return ``(profiles, pack, is_extension)``.
+    """
+    Internal helper ``_read_extension``.
 
-    ``pack.id`` is the builtin id when this file extends one.
+    Parameters
+    ----------
+    path : object
+        Argument ``path``.
+    merged : object
+        Argument ``merged``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     mapping = _load_mapping(path)
     extends = mapping.get("extends")
@@ -212,7 +255,21 @@ def _read_extension(path: Path, merged: dict[str, Pack]) -> tuple[tuple[str, ...
 
 
 def _merge_rules(base: tuple[Rule, ...], extra: tuple[Rule, ...]) -> tuple[Rule, ...]:
-    """Same rule id replaces that entry. New ids are appended."""
+    """
+    Internal helper ``_merge_rules``.
+
+    Parameters
+    ----------
+    base : object
+        Argument ``base``.
+    extra : object
+        Argument ``extra``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     replacement = {rule.id: rule for rule in extra}
     seen = {rule.id for rule in base}
     merged = [replacement.get(rule.id, rule) for rule in base]
@@ -221,7 +278,19 @@ def _merge_rules(base: tuple[Rule, ...], extra: tuple[Rule, ...]) -> tuple[Rule,
 
 
 def _load_mapping(path: Path) -> dict[str, object]:
-    """Internal helper ``_load_mapping``."""
+    """
+    Internal helper ``_load_mapping``.
+
+    Parameters
+    ----------
+    path : object
+        Argument ``path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = path.read_text(encoding="utf-8")
     try:
         if path.suffix.lower() == ".json":
@@ -243,7 +312,19 @@ def _load_mapping(path: Path) -> dict[str, object]:
 
 
 def _read_overlay(directory: Path) -> tuple[Pack, ...]:
-    """Internal helper ``_read_overlay``."""
+    """
+    Internal helper ``_read_overlay``.
+
+    Parameters
+    ----------
+    directory : object
+        Argument ``directory``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     found: list[Pack] = []
     for path in sorted(directory.iterdir()):
         if path.suffix.lower() not in _SUFFIXES:
@@ -253,7 +334,19 @@ def _read_overlay(directory: Path) -> tuple[Pack, ...]:
 
 
 def _read_file(path: Path) -> Pack:
-    """Internal helper ``_read_file``."""
+    """
+    Internal helper ``_read_file``.
+
+    Parameters
+    ----------
+    path : object
+        Argument ``path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     mapping = _load_mapping(path)
     pack_id = mapping.get("id")
     layout = mapping.get("layout")
@@ -267,7 +360,23 @@ def _read_file(path: Path) -> Pack:
 
 
 def _parse_rules(data: dict[str, object], layout: str, name: str) -> tuple[Rule, ...]:
-    """Internal helper ``_parse_rules``."""
+    """
+    Internal helper ``_parse_rules``.
+
+    Parameters
+    ----------
+    data : object
+        Argument ``data``.
+    layout : object
+        Argument ``layout``.
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = data.get("rules", [])
     if not isinstance(raw, list):
         msg = f"{name} rules must be a list"
@@ -281,7 +390,25 @@ def _parse_rules(data: dict[str, object], layout: str, name: str) -> tuple[Rule,
 
 
 def _parse_rule(item: object, layout: str, name: str, seen: set[str]) -> Rule:
-    """Internal helper ``_parse_rule``."""
+    """
+    Internal helper ``_parse_rule``.
+
+    Parameters
+    ----------
+    item : object
+        Argument ``item``.
+    layout : object
+        Argument ``layout``.
+    name : object
+        Argument ``name``.
+    seen : object
+        Argument ``seen``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(item, dict):
         msg = f"{name} rule must be a mapping"
         raise PackSchemaError(msg)
@@ -309,7 +436,25 @@ def _parse_rule(item: object, layout: str, name: str, seen: set[str]) -> Rule:
 
 
 def _token_rule(item: dict[str, object], rule_id: str, explain: str, name: str) -> Rule:
-    """Internal helper ``_token_rule``."""
+    """
+    Internal helper ``_token_rule``.
+
+    Parameters
+    ----------
+    item : object
+        Argument ``item``.
+    rule_id : object
+        Argument ``rule_id``.
+    explain : object
+        Argument ``explain``.
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if "label" in item:
         msg = f"{name} token rule cannot have a label"
         raise PackSchemaError(msg)
@@ -339,7 +484,25 @@ def _token_rule(item: dict[str, object], rule_id: str, explain: str, name: str) 
 
 
 def _label_rule(item: dict[str, object], rule_id: str, explain: str, name: str) -> Rule:
-    """Internal helper ``_label_rule``."""
+    """
+    Internal helper ``_label_rule``.
+
+    Parameters
+    ----------
+    item : object
+        Argument ``item``.
+    rule_id : object
+        Argument ``rule_id``.
+    explain : object
+        Argument ``explain``.
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if "pattern" in item:
         msg = f"{name} label rule cannot have a pattern"
         raise PackSchemaError(msg)

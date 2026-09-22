@@ -45,7 +45,27 @@ def _row(
     product: str | None = None,
     tags: tuple[str, ...] = (),
 ) -> IssueSpec:
-    """Internal helper ``_row``."""
+    """
+    Internal helper ``_row``.
+
+    Parameters
+    ----------
+    code : object
+        Argument ``code``.
+    severity : object
+        Argument ``severity``.
+    message_template : object
+        Argument ``message_template``.
+    product : object
+        Argument ``product``.
+    tags : object
+        Argument ``tags``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return IssueSpec(
         code=code,
         severity=severity,

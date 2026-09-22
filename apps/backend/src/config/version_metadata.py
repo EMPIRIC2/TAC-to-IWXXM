@@ -30,7 +30,14 @@ class VersionMetadata:
     element_order_priority: list[str] = field(default_factory=list)  # Element ordering for aerodrome
 
     def __repr__(self) -> str:
-        """Internal helper ``__repr__``."""
+        """
+        Internal helper ``__repr__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return f"VersionMetadata(version={self.version}, ns={self.namespace.split('/')[-1]})"
 
 
@@ -98,7 +105,8 @@ def get_version_metadata(version: str) -> VersionMetadata | None:
     """
     Get metadata for a specific IWXXM version.
 
-    Returns:
+    Returns
+    -------
         VersionMetadata if version exists, None
 
     Parameters
@@ -128,7 +136,8 @@ def normalize_version(version_str: str) -> str:
     - "3.0" → "2018"
     - "2.1" → "2016"
 
-    Returns:
+    Returns
+    -------
         Canonical version string
 
     Parameters

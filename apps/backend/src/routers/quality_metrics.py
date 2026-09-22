@@ -25,7 +25,14 @@ router = APIRouter(prefix="/api/v1", tags=["Quality metrics"])
 
 
 def _load_doc() -> dict[str, Any]:
-    """Internal helper ``_load_doc``."""
+    """
+    Internal helper ``_load_doc``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         return load_corpus_metrics()
     except QualityMetricsArtifactMissing as exc:

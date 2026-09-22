@@ -46,7 +46,19 @@ _UUID_VALUE = re.compile(
 
 
 def _local_name(name: str) -> str:
-    """Return the local part of a Clark-notation or prefixed attribute/tag name."""
+    """
+    Internal helper ``_local_name``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if name.startswith("{"):
         return name.rsplit("}", 1)[-1]
     if ":" in name:
@@ -55,14 +67,40 @@ def _local_name(name: str) -> str:
 
 
 def _norm_text(value: str | None) -> str:
-    """Internal helper ``_norm_text``."""
+    """
+    Internal helper ``_norm_text``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None:
         return ""
     return " ".join(value.split())
 
 
 def _is_volatile_attr(key: str, value: str) -> bool:
-    """Return True when ``key``/``value`` should be omitted from Quality-metrics compare."""
+    """
+    Internal helper ``_is_volatile_attr``.
+
+    Parameters
+    ----------
+    key : object
+        Argument ``key``.
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     local = _local_name(key)
     if local in VOLATILE_ATTRS:
         return True
@@ -80,7 +118,14 @@ def _is_volatile_attr(key: str, value: str) -> bool:
 
 
 def _strip_volatile_attributes(node: Any) -> None:
-    """Remove volatile attributes from an lxml element tree in place."""
+    """
+    Internal helper ``_strip_volatile_attributes``.
+
+    Parameters
+    ----------
+    node : object
+        Argument ``node``.
+    """
     for key in list(node.attrib):
         if _is_volatile_attr(key, node.attrib.get(key, "")):
             del node.attrib[key]
@@ -89,7 +134,14 @@ def _strip_volatile_attributes(node: Any) -> None:
 
 
 def _strip_whitespace_only_text(node: Any) -> None:
-    """Remove insignificant whitespace-only text nodes (in-place)."""
+    """
+    Internal helper ``_strip_whitespace_only_text``.
+
+    Parameters
+    ----------
+    node : object
+        Argument ``node``.
+    """
     for child in list(node):
         _strip_whitespace_only_text(child)
     # Element text / tail that is only whitespace is insignificant for IWXXM compare

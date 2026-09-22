@@ -114,7 +114,21 @@ def convert_shadow(
 
 
 def _pack_id(product: str, ir: dict[str, object] | None) -> str:
-    """Map a convert product to a pack. SIGMET stays one product id."""
+    """
+    Internal helper ``_pack_id``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if product != "SIGMET":
         return product.lower()
     root = ""

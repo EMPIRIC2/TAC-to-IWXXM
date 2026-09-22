@@ -9,7 +9,19 @@ from tac_validate.product_rules_pkg._common import *
 
 
 def _check_vona(tac: str) -> list[Issue]:
-    """F32 theme V1 - VONA template gates + ONSET/DUR NIL info (#741)."""
+    """
+    Internal helper ``_check_vona``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     start, end, body = _body_span(tac)
     issues: list[Issue] = []

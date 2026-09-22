@@ -71,7 +71,19 @@ def repo_root() -> Path:
 
 
 def _rule_dir(iwxxm_version: str) -> Path:
-    """Internal helper ``_rule_dir``."""
+    """
+    Internal helper ``_rule_dir``.
+
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     path = repo_root() / "vendor" / "schemas" / "iwxxm" / iwxxm_version / "IWXXM" / "rule"
     if not path.is_dir():
         raise FileNotFoundError(f"IWXXM rule/codelist directory not found: {path}")
@@ -79,7 +91,21 @@ def _rule_dir(iwxxm_version: str) -> Path:
 
 
 def _rdf_concept_members(path: Path, *, register_uri: str) -> frozenset[str]:
-    """Internal helper ``_rdf_concept_members``."""
+    """
+    Internal helper ``_rdf_concept_members``.
+
+    Parameters
+    ----------
+    path : object
+        Argument ``path``.
+    register_uri : object
+        Argument ``register_uri``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = path.read_text(encoding="utf-8")
     prefix = register_uri.rstrip("/") + "/"
     out: set[str] = set()
@@ -169,7 +195,19 @@ def load_nil_members(
 
 
 def _normalize_colour_token(token: str) -> str:
-    """Internal helper ``_normalize_colour_token``."""
+    """
+    Internal helper ``_normalize_colour_token``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     cleaned = " ".join(token.strip().upper().split())
     if cleaned == "NOT GIVEN":
         return "NOT_GIVEN"

@@ -22,7 +22,25 @@ def _airmet_evolving_member_xml(
     member_suffix: str,
     inner_extension: str = "",
 ) -> str:
-    """Emit one ``AIRMETEvolvingCondition`` member."""
+    """
+    Internal helper ``_airmet_evolving_member_xml``.
+
+    Parameters
+    ----------
+    area_ir : object
+        Argument ``area_ir``.
+    fir : object
+        Argument ``fir``.
+    member_suffix : object
+        Argument ``member_suffix``.
+    inner_extension : object
+        Argument ``inner_extension``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     intensity = str(area_ir.get("intensity_change", "NO_CHANGE"))
     geometry = _sigmet_geometry_xml(
@@ -46,7 +64,29 @@ def _airmet_analysis_collection_xml(
     areas: list[dict[str, Any]],
     member_extension_for: dict[str, str] | None = None,
 ) -> str:
-    """Emit one ``AIRMETEvolvingConditionCollection`` for the given area fragments."""
+    """
+    Internal helper ``_airmet_analysis_collection_xml``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    fir : object
+        Argument ``fir``.
+    collection_suffix : object
+        Argument ``collection_suffix``.
+    time_indicator : object
+        Argument ``time_indicator``.
+    areas : object
+        Argument ``areas``.
+    member_extension_for : object
+        Argument ``member_extension_for``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     member_extension_for = member_extension_for or {}
     members = "\n".join(
         _airmet_evolving_member_xml(

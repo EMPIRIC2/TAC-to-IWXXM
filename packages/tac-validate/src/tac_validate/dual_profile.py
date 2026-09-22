@@ -49,7 +49,23 @@ class ProfileLintCompare:
 
 
 def _issue_codes(tac_text: str, *, product: str, profile: str) -> frozenset[str]:
-    """Internal helper ``_issue_codes``."""
+    """
+    Internal helper ``_issue_codes``.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     report = lint(tac_text, product=product, profile=profile)
     return frozenset(i.code for i in report.issues)
 
