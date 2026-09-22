@@ -13,6 +13,7 @@ from tac_decoding.match import MatchContext, match_tac
 from tac_decoding.packs import load_packs
 
 from tac2iwxxm.decode import decode_tac
+from tac2iwxxm.emit_map import emit_with_map
 from tac2iwxxm.exchange_output import default_ca_translation_centre
 from tac2iwxxm.ir_source import IR_SOURCE_ENV, resolve_ir_source
 from tac2iwxxm.models import ConvertIssue, ConvertResult
@@ -33,7 +34,6 @@ from tac2iwxxm.profile_registry import (
     supported_iwxxm_versions_for_profile,
     supported_report_variants_for_profile,
 )
-from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
 from tac2iwxxm.profiles.annex3_products import (
     emit_airmet_annex3,
     emit_sigmet_annex3,
@@ -43,10 +43,9 @@ from tac2iwxxm.profiles.annex3_products import (
     emit_vaa_annex3,
     emit_vona_annex3,
 )
-from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION, emit_airmet_ca_eccc, emit_metar_speci_ca_eccc, emit_taf_ca_eccc
+from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION, emit_airmet_ca_eccc, emit_taf_ca_eccc
 from tac2iwxxm.profiles.iwxxm_us import (
     emit_airmet_iwxxm_us,
-    emit_metar_speci_iwxxm_us,
     emit_sigmet_iwxxm_us,
     emit_taf_iwxxm_us,
 )
@@ -468,11 +467,8 @@ def _parse_for_convert(
 
 def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) -> str:
     if product in {"METAR", "SPECI"}:
-        if profile == "iwxxm_us":
-            return emit_metar_speci_iwxxm_us(ir, product=product, iwxxm_version=iwxxm_version)
-        if profile == EMIT_CA_ECCC:
-            return emit_metar_speci_ca_eccc(ir, product=product, iwxxm_version=iwxxm_version)
-        return emit_metar_speci_annex3(ir, product=product, iwxxm_version=iwxxm_version)
+        # ADR-047 / #1229: METAR/SPECI emit is YAML-routed (python plugins remain builders).
+        return emit_with_map(ir, product=product, profile=profile, iwxxm_version=iwxxm_version)
     if product == "TAF":
         if profile == "iwxxm_us":
             return emit_taf_iwxxm_us(ir, iwxxm_version=iwxxm_version)

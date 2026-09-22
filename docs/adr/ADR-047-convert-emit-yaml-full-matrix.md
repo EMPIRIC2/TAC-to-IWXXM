@@ -1,7 +1,7 @@
 # ADR-047: Convert emit YAML + full engine matrix
 
-**Status:** Proposed  
-**Date:** 2026-09-21  
+**Status:** Accepted  
+**Date:** 2026-09-21 (Accepted 2026-09-22 on M3 emit pilot / #1229)  
 **Session:** EV-yaml-full-configurability  
 **Epic:** [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226)  
 **Corpus:** [Corpus: product §F2/F6/F9/F12/F15] [Corpus: adr/ADR-038] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: system-spec] [Corpus: tech-spec] [Corpus: tests]
@@ -32,7 +32,7 @@ Vendor IWXXM **Schematron** remains the authoritative rule source (ADR-046). App
 
 - New Spec/Build program; PyPI packages gain starter templates and clearer overlay DX early (M1).
 - Larger review surface when M4 advances products in parallel.
-- Accept this ADR at Build gate open or on the first emit PR (M3); until then status remains **Proposed**.
+- Accept this ADR at Build gate open or on the first emit PR (M3); until then status remains **Proposed**. **Accepted** with METAR/SPECI emit-map routing (#1229).
 
 ## Alternatives considered
 
