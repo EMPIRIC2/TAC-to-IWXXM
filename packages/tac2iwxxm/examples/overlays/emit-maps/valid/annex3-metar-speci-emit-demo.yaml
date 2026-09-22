@@ -1,0 +1,6 @@
+# Emit-map overlay starter (ADR-047 / #1229).
+# Extends the builtin annex3 METAR/SPECI emit map (plugin unchanged here).
+# Set TAC2IWXXM_EMIT_MAP_DIR to this directory, then:
+#   tac2iwxxm --check-overlay "$TAC2IWXXM_EMIT_MAP_DIR" --overlay-kind emit-map
+id: annex3-metar-speci-emit-demo
+extends: annex3-metar-speci-emit

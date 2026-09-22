@@ -10,8 +10,8 @@ _MATRIX = _REPO / "docs" / "domain" / "overlays" / "product-engine-matrix.md"
 
 # product -> engine cells (decode, quality, detectors, iwxxm, pack-IR, emit)
 _M2_ROWS: dict[str, tuple[str, str, str, str, str, str]] = {
-    "METAR": ("full", "full", "full", "full", "full", "partial"),
-    "SPECI": ("full", "full", "full", "full", "full", "partial"),
+    "METAR": ("full", "full", "full", "full", "full", "full"),
+    "SPECI": ("full", "full", "full", "full", "full", "full"),
 }
 
 
@@ -52,6 +52,7 @@ def test_tc_evyfc_005_metar_speci_m2_row_lock() -> None:
         "do **not** block detectors" in text or "do not block detectors" in text.lower()
     )
     assert "hatch_r3" in text
+    assert "emit_maps" in text or "emit map" in text.lower()
     for product, expected in _M2_ROWS.items():
         got = _parse_row(product, text)
         assert got == expected, f"{product}: got {got!r} expected {expected!r}"
@@ -92,6 +93,14 @@ def test_tc_evyfc_005_builtin_sots_exist() -> None:
         / "data"
         / "policies"
         / "annex3-iwxxm-output.yaml",
+        _REPO
+        / "packages"
+        / "tac2iwxxm"
+        / "src"
+        / "tac2iwxxm"
+        / "data"
+        / "emit_maps"
+        / "annex3-metar-speci.yaml",
     )
     for path in roots:
         assert path.is_file(), path

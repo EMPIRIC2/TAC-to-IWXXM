@@ -294,6 +294,8 @@ on DO Postgres while keeping public convert and abuse-control env knobs:
   Not required Render secrets.
 - EV-yaml-extension-header (2026-09-21): optional `TAC2IWXXM_PROFILE_DIR` — conversion profile
   binding overlays. Not a required Render secret (ADR-045 / ADR-046).
+- EV-yaml-full-configurability / #1229 (2026-09-22): optional `TAC2IWXXM_EMIT_MAP_DIR` — convert
+  emit-map overlays (ADR-047). Not a required Render secret.
 
 ## F24 / F25 / F9 deepen — WMO goldens + glossary (S026 / EV-020)
 
@@ -311,6 +313,7 @@ No new Render secrets required for convert goldens (package-side). Decode glossa
 | TAC detector mode | Optional `TAC_VALIDATE_DETECTOR_MODE` | `detector` (default, R2 flipped) / `legacy` (inline visibility for compares). Not a Render secret (ADR-046 / #1216) |
 | IWXXM output policy overlay | Optional `IWXXM_VALIDATE_POLICY_DIR` | Extra IWXXM output policies. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
 | Conversion profile binding overlay | Optional `TAC2IWXXM_PROFILE_DIR` | YAML that layers TAC and IWXXM policy ids onto one builtin binding for listed conversion profile ids. Unset = builtin bindings. Not a Render secret (ADR-045 / ADR-046) |
+| Convert emit map overlay | Optional `TAC2IWXXM_EMIT_MAP_DIR` | YAML emit maps that select METAR/SPECI (M3) python plugins by profile×product×pin. Unset = package builtins under `tac2iwxxm/data/emit_maps/`. Not a Render secret (ADR-047 / #1229) |
 | Convert IR source | Optional `TAC2IWXXM_CONVERT_IR_SOURCE` | `legacy` / `pack` / `auto` (default). `auto` uses pack IR for products whose default has flipped (METAR/SPECI after #1213; additional core products after #1214 when goldens pass). Not a Render secret (ADR-045 / #1212 / #1214) |
 | Overlay cookbook + honesty matrix | [domain/overlays/overlay-cookbook.md](domain/overlays/overlay-cookbook.md), [domain/overlays/product-engine-matrix.md](domain/overlays/product-engine-matrix.md) | EV-yaml-engine-configurability / #1224 — deployer/SDK how-to; not an in-app editor |
 | OpenAIP / F3 names | Existing F3 / OpenAIP config | Enrich decode when available; miss → ICAO only |

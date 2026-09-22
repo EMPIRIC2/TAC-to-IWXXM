@@ -89,6 +89,7 @@ YAML bodies — mount directories on the server.
 | `tac-validate` | `TAC_VALIDATE_DETECTOR_MODE` | `detector` / `legacy` |
 | `iwxxm-validate` | `IWXXM_VALIDATE_POLICY_DIR` | IWXXM output policy overlays |
 | `tac2iwxxm` | `TAC2IWXXM_PROFILE_DIR` | Profile → policy binding overlays |
+| `tac2iwxxm` | `TAC2IWXXM_EMIT_MAP_DIR` | Convert emit-map overlays (METAR/SPECI M3) |
 | `tac2iwxxm` | `TAC2IWXXM_CONVERT_IR_SOURCE` | `legacy` / `pack` / `auto` |
 
 See also [config-spec.md](../config-spec.md) §F24/F9 deepen.
@@ -96,7 +97,8 @@ See also [config-spec.md](../config-spec.md) §F24/F9 deepen.
 ## Honesty
 
 Read [product-engine-matrix.md](product-engine-matrix.md) before assuming a product is
-“fully YAML configured.” Convert **emit** stays Python until ADR-047 ship milestones (M3+).
+“fully YAML configured.” Convert **emit** for METAR/SPECI is YAML-routed (ADR-047 Accepted);
+other products remain Python plugins until M4.
 
 ## HTTP
 

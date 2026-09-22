@@ -405,7 +405,7 @@
 ### F2 / F6 / F9 / F12 / F14 / F15 deepen (EV-yaml-full-configurability / #1226)
 
 - **Status note**: No new Fn. Program end-state: every core product × every engine cell
-  **full**, including **convert emit YAML** (ADR-047 Proposed). Builds on #1224/#1225
+  **full**, including **convert emit YAML** (ADR-047 Accepted). Builds on #1224/#1225
   honesty overlays. Does **not** reopen ADR-044 authoring UI, HTTP pack/policy YAML, or
   Schematron-as-YAML. Vendor Schematron remains SoT; pin↔SCH version must match.
 - **Milestones** (epic [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226)):
