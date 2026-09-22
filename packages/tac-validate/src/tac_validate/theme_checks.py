@@ -454,12 +454,36 @@ def hatch_sigmet(tac_text: str, product: str) -> list[Issue]:
     return _check_sigmet_airmet(tac_text, product, profile=lint_profile.get())
 
 
+def hatch_airmet(tac_text: str, product: str) -> list[Issue]:
+    """Detector hatch for AIRMET A6 / F24 checklist."""
+    from tac_validate.product_rules_pkg.sigmet_airmet import _check_sigmet_airmet
+
+    return _check_sigmet_airmet(tac_text, product, profile=lint_profile.get())
+
+
+def hatch_vaa(tac_text: str, product: str) -> list[Issue]:
+    """Detector hatch for VAA checklist."""
+    del product
+    from tac_validate.product_rules_pkg.vaa import _check_vaa
+
+    return _check_vaa(tac_text)
+
+
+def hatch_tca(tac_text: str, product: str) -> list[Issue]:
+    """Detector hatch for TCA checklist."""
+    del product
+    from tac_validate.product_rules_pkg.tca import _check_tca
+
+    return _check_tca(tac_text, profile=lint_profile.get())
+
+
 __all__ = [
     "R1_CODES",
     "R3_CODES",
     "R4_CODES",
     "R5_CODES",
     "R8_CODES",
+    "hatch_airmet",
     "hatch_r1",
     "hatch_r1_order",
     "hatch_r3",
@@ -470,6 +494,8 @@ __all__ = [
     "hatch_r8",
     "hatch_sigmet",
     "hatch_taf",
+    "hatch_tca",
+    "hatch_vaa",
     "lint_profile",
     "r1_identity_order",
     "r3_weather",

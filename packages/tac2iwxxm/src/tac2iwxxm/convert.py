@@ -35,16 +35,10 @@ from tac2iwxxm.profile_registry import (
     supported_report_variants_for_profile,
 )
 from tac2iwxxm.profiles.annex3_products import (
-    emit_airmet_annex3,
     emit_swxa_annex3,
-    emit_tca_annex3,
-    emit_vaa_annex3,
     emit_vona_annex3,
 )
-from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION, emit_airmet_ca_eccc
-from tac2iwxxm.profiles.iwxxm_us import (
-    emit_airmet_iwxxm_us,
-)
+from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
 from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
 from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet, parse_sigmet
 from tac2iwxxm.slot_builders.swxa import parse_swxa
@@ -462,19 +456,9 @@ def _parse_for_convert(
 
 
 def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) -> str:
-    if product in {"METAR", "SPECI", "TAF", "SIGMET"}:
-        # ADR-047: METAR/SPECI/TAF/SIGMET emit is YAML-routed (python plugins remain builders).
+    if product in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}:
+        # ADR-047: core F6 products emit via YAML maps (python plugins remain builders).
         return emit_with_map(ir, product=product, profile=profile, iwxxm_version=iwxxm_version)
-    if product == "AIRMET":
-        if profile == "iwxxm_us":
-            return emit_airmet_iwxxm_us(ir, iwxxm_version=iwxxm_version)
-        if profile == EMIT_CA_ECCC:
-            return emit_airmet_ca_eccc(ir, iwxxm_version=iwxxm_version)
-        return emit_airmet_annex3(ir, iwxxm_version=iwxxm_version)
-    if product == "VAA":
-        return emit_vaa_annex3(ir, iwxxm_version=iwxxm_version)
-    if product == "TCA":
-        return emit_tca_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "SWXA":
         return emit_swxa_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "VONA":

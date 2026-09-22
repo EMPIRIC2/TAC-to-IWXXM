@@ -162,6 +162,12 @@ def resolve_validation_policies(
         tac_id = "annex3-taf-quality"
     elif product_u == "SIGMET" and tac_id == "annex3-metar-quality":
         tac_id = "annex3-sigmet-quality"
+    elif product_u == "AIRMET" and tac_id == "annex3-metar-quality":
+        tac_id = "annex3-airmet-quality"
+    elif product_u == "VAA" and tac_id == "annex3-metar-quality":
+        tac_id = "annex3-vaa-quality"
+    elif product_u == "TCA" and tac_id == "annex3-metar-quality":
+        tac_id = "annex3-tca-quality"
     keys = {resolved.emit_key, resolved.canonical, profile.strip()}
     for overlay in _load_profile_overlays():
         if keys.isdisjoint(overlay.profiles):

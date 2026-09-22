@@ -90,11 +90,38 @@ def check_product_rules(
         finally:
             lint_profile.reset(token)
     if product == "AIRMET":
-        return _check_sigmet_airmet(tac_text, product, profile=profile)
+        from tac_validate.detectors import detector_mode, run_theme_pack
+        from tac_validate.theme_checks import lint_profile
+
+        if detector_mode() == "legacy":
+            return _check_sigmet_airmet(tac_text, product, profile=profile)
+        token = lint_profile.set(profile)
+        try:
+            return run_theme_pack("airmet-core", tac_text, product)
+        finally:
+            lint_profile.reset(token)
     if product == "VAA":
-        return _check_vaa(tac_text)
+        from tac_validate.detectors import detector_mode, run_theme_pack
+        from tac_validate.theme_checks import lint_profile
+
+        if detector_mode() == "legacy":
+            return _check_vaa(tac_text)
+        token = lint_profile.set(profile)
+        try:
+            return run_theme_pack("vaa-core", tac_text, product)
+        finally:
+            lint_profile.reset(token)
     if product == "TCA":
-        return _check_tca(tac_text, profile=profile)
+        from tac_validate.detectors import detector_mode, run_theme_pack
+        from tac_validate.theme_checks import lint_profile
+
+        if detector_mode() == "legacy":
+            return _check_tca(tac_text, profile=profile)
+        token = lint_profile.set(profile)
+        try:
+            return run_theme_pack("tca-core", tac_text, product)
+        finally:
+            lint_profile.reset(token)
     if product == "SWXA":
         return _check_swxa(tac_text, profile=profile)
     if product == "VONA":

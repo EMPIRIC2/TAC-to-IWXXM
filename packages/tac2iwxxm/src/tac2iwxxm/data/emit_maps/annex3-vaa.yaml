@@ -1,0 +1,18 @@
+# ADR-047 emit map — annex3-family VAA (M4 / #1230).
+schema_version: 1
+id: annex3-vaa-emit
+profiles:
+  - annex3
+  - au_bom
+  - nz_caa_met
+  - uk_metoffice
+  - jp_jma
+  - hk_hko
+products:
+  - VAA
+iwxxm_versions:
+  - "2023-1"
+  - "2025-2"
+kind: python_plugin
+pass_product: false
+plugin: python:tac2iwxxm.profiles.annex3_emit.vaa:emit_vaa_annex3

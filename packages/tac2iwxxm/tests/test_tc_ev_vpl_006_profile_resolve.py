@@ -39,6 +39,12 @@ def test_sigmet_product_swaps_to_sigmet_quality_policy() -> None:
     assert us.tac_quality_policy_id == "annex3-sigmet-quality"
 
 
+def test_airmet_vaa_tca_product_quality_swaps() -> None:
+    assert resolve_validation_policies("annex3", product="AIRMET").tac_quality_policy_id == "annex3-airmet-quality"
+    assert resolve_validation_policies("annex3", product="VAA").tac_quality_policy_id == "annex3-vaa-quality"
+    assert resolve_validation_policies("annex3", product="TCA").tac_quality_policy_id == "annex3-tca-quality"
+
+
 def test_policy_overrides_replace_one_slot() -> None:
     resolved = resolve_validation_policies("us_faa_nws", tac_policy=" custom-tac ", iwxxm_policy="  ")
     assert resolved.emit_key == "iwxxm_us"
