@@ -35,6 +35,21 @@ Program success: every in-scope cell becomes **full** with evidence (M2–M5).
 - IWXXM **XSD/Schematron** remain vendor SoT; output policy only selects/ignores assert ids. Pin↔SCH must match (TC-EVYFC-004).
 - Airport name enrichment on decode is a **Python** resolver hook, not YAML (may remain partial even when pack rules are full — Spec must call out if enrichment blocks `full`).
 
+## Evidence (cheap citations — M1 / #1227)
+
+Ratings above stay honest (`partial` / `stub`). These citations show **what YAML already exists** without upgrading a cell to `full`:
+
+| Engine | Cheap evidence (repo paths) |
+|--------|-----------------------------|
+| Decode pack | `packages/tac-decoding/src/tac_decoding/data/packs/{metar,speci,taf,sigmet,airmet,vaa,tca,…}.yaml` + `examples/starters/` |
+| TAC quality | Builtin `packages/tac-validate/src/tac_validate/data/policies/annex3-metar-quality.yaml` (METAR/SPECI product tag); other products still thin |
+| TAC detectors | `packages/tac-validate/src/tac_validate/data/detectors/` (incomplete product coverage → stub/partial) |
+| IWXXM output policy | `packages/iwxxm-validate/src/iwxxm_validate/data/policies/annex3-iwxxm-output.yaml` + starters |
+| Convert pack-IR | Pack IR path via `TAC2IWXXM_CONVERT_IR_SOURCE`; emit still Python plugins |
+| Convert emit | Python plugins until ADR-047 emit map (M3+) |
+
+DX smoke: `make overlay-preflight` · package CLIs `--check-overlay` · TC-EVYFC-003.
+
 ## Program follow-ups (#1226)
 
 1. M1: templates + evidence upgrade where cheap.

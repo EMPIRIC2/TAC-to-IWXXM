@@ -8,6 +8,7 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from iwxxm_validate.codec import json_encoder
+from iwxxm_validate.overlay_check import check_iwxxm_policy_overlay_dir
 from iwxxm_validate.validate_iwxxm import validate_iwxxm
 
 
@@ -18,8 +19,9 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "path",
+        nargs="?",
         type=Path,
-        help="Path to an IWXXM XML file",
+        help="Path to an IWXXM XML file (required unless --check-overlay)",
     )
     parser.add_argument(
         "--version",
@@ -53,6 +55,12 @@ def _build_parser() -> argparse.ArgumentParser:
         "--json",
         action="store_true",
         help="Emit ValidationReport as JSON on stdout",
+    )
+    parser.add_argument(
+        "--check-overlay",
+        type=Path,
+        metavar="DIR",
+        help="Fail-closed load of IWXXM output policy YAML overlays in DIR (no validate)",
     )
     return parser
 
@@ -109,6 +117,19 @@ def main(argv: Sequence[str] | None = None) -> int:
     """
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)
+
+    if args.check_overlay is not None:
+        try:
+            check_iwxxm_policy_overlay_dir(args.check_overlay, profile=args.profile)
+        except Exception as exc:
+            print(f"error: IWXXM policy overlay check failed: {exc}", file=sys.stderr)
+            return 1
+        print(f"ok iwxxm-policy overlay {args.check_overlay}")
+        return 0
+
+    if args.path is None:
+        parser.error("path is required unless --check-overlay is set")
+
     path: Path = args.path
     try:
         text = path.read_text(encoding="utf-8")

@@ -1,0 +1,6 @@
+# Copy-paste starter: profile → policy binding overlay for annex3.
+# Set TAC2IWXXM_PROFILE_DIR to this directory, then:
+#   tac2iwxxm --check-overlay "$TAC2IWXXM_PROFILE_DIR"
+id: annex3-binding-starter
+extends: annex3
+profiles: [annex3]

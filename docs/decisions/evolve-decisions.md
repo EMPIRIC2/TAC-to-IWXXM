@@ -4,7 +4,7 @@
 
 **Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-full-configurability`  
 **Epic:** [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226) · Children [#1227](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1227)–[#1231](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1231)  
-**Documenting→Implementing gate:** closed  
+**Documenting→Implementing gate:** **open** (2026-09-22)  
 **Lock:** [ev-yaml-full-configurability.md](ev-yaml-full-configurability.md) · [ADR-047](../adr/ADR-047-convert-emit-yaml-full-matrix.md) (Proposed)  
 **Feasibility / tech / verify:** [feasibility](ev-yaml-full-configurability-feasibility.md) · [tech-plan](ev-yaml-full-configurability-tech-plan.md) · [verify-tech](ev-yaml-full-configurability-verify-tech.md)
 
@@ -14,6 +14,8 @@
 | D-YFC-ADR | ADR-047 Proposed; accept at Build gate or first emit PR |
 | D-YFC-FEAS | Feasible as multi-milestone program |
 | D-YFC-TECH | Tech-plan Pass (TP-YFC-01..06; H4–H5 waived) |
+| D-YFC-GATE | Spec→Build gate opened; #1233 merged to `stage` |
+| D-YFC-M1 | #1227 full scope: starters + cookbook + `--check-overlay` + README smoke + evidence section |
 
 [Corpus: product] [Corpus: adr/ADR-047] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: decisions]
 

@@ -11,6 +11,9 @@ dependencies = [
   "tac-decoding>=2026.9.17",
 ]
 
+[project.scripts]
+tac2iwxxm = "tac2iwxxm.cli:main"
+
 [project.optional-dependencies]
 # F14 / E10-20: optional TAC lint + IWXXM XSD/Schematron validators.
 validate = [
