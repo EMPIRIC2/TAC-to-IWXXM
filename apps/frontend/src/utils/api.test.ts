@@ -1412,7 +1412,7 @@ describe('API Utils', () => {
         'LIB.DISSEMINATION.ICAO_2025',
       );
       expect(init.body.get('semantic_profile')).toBeNull();
-      expect(init.body.get('exchange_profile')).toBe('EUR_RODEX');
+      expect(init.body.get('exchange_profile')).toBeNull();
       expect(init.body.get('iwxxm_version')).toBe('2023-1');
     });
 

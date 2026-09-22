@@ -369,7 +369,10 @@ export async function convertBulletin(params: {
   conversionLibraryId?: string;
   /** Dissemination library asset id (transforms on Convert & Send / bulletin). */
   disseminationLibraryId?: string;
-  /** Exchange packaging overlay (default GLOBAL_AFS on API when omitted). */
+  /**
+   * Legacy exchange overlay. Ignored on convert-bulletin after EV-bridge hard cut
+   * (use disseminationLibraryId). Kept on the params type for transitional callers.
+   */
   exchangeProfile?: string;
   iwxxmVersion?: string;
   lint?: boolean;
@@ -397,9 +400,7 @@ export async function convertBulletin(params: {
   if (params.disseminationLibraryId?.trim()) {
     formData.append('dissemination_library_id', params.disseminationLibraryId.trim());
   }
-  if (params.exchangeProfile?.trim()) {
-    formData.append('exchange_profile', params.exchangeProfile.trim());
-  }
+  // EV-bridge hard cut: omit exchange_profile (Dissemination library owns packaging).
   if (params.iwxxmVersion?.trim()) {
     formData.append('iwxxm_version', params.iwxxmVersion.trim());
   }
