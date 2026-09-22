@@ -50,6 +50,16 @@ PACKAGES: dict[str, dict[str, Path]] = {
         / "__init__.py",
         "cargo": REPO_ROOT / "packages" / "tac2iwxxm" / "rust" / "Cargo.toml",
     },
+    # ADR-044 / F9 — decode + Decoding catalog (publish workflow already lists this package).
+    "tac-decoding": {
+        "pyproject": REPO_ROOT / "packages" / "tac-decoding" / "pyproject.toml",
+        "init": REPO_ROOT
+        / "packages"
+        / "tac-decoding"
+        / "src"
+        / "tac_decoding"
+        / "__init__.py",
+    },
 }
 
 VERSION_RE = re.compile(
@@ -187,7 +197,9 @@ def main(argv: list[str] | None = None) -> int:
         action="append",
         help="Package to bump (repeatable)",
     )
-    parser.add_argument("--all", action="store_true", help="Bump all three packages")
+    parser.add_argument(
+        "--all", action="store_true", help="Bump all four publishable packages"
+    )
     parser.add_argument(
         "--date",
         help="CalVer date as YYYY.M.D or YYYY.MM.DD (default: today)",

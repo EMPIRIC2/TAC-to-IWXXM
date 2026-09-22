@@ -16,7 +16,7 @@ from tac_decoding.glossary import (
     set_location_name_resolver,
 )
 
-__version__ = "2026.9.17"
+__version__ = "2026.9.22"
 
 __all__ = [
     "DecodeResidual",

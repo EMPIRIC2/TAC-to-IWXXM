@@ -553,6 +553,7 @@ publishing** on version tags:
 | `packages/tac-validate` | `tac-validate-v*` | `tac-validate` |
 | `packages/iwxxm-validate` | `iwxxm-validate-v*` | `iwxxm-validate` |
 | `packages/tac2iwxxm` | `tac2iwxxm-v*` | `tac2iwxxm` |
+| `packages/tac-decoding` | `tac-decoding-v*` | `tac-decoding` |
 
 **Versioning (ADR-043):** **CalVer** date components as PEP 440 integers **without
 leading zeros** (e.g. `2026.9.10`; same-day `2026.9.10.1`). Example tag:

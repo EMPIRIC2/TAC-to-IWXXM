@@ -46,6 +46,17 @@ def test_set_package_version_unknown_raises() -> None:
 
 
 @pytest.mark.unit
+def test_packages_includes_tac_decoding() -> None:
+    assert set(bump.PACKAGES) == {
+        "tac-validate",
+        "iwxxm-validate",
+        "tac2iwxxm",
+        "tac-decoding",
+    }
+    assert "cargo" not in bump.PACKAGES["tac-decoding"]
+
+
+@pytest.mark.unit
 def test_set_package_version_roundtrip_tac_validate() -> None:
     py = bump.PACKAGES["tac-validate"]["pyproject"]
     init = bump.PACKAGES["tac-validate"]["init"]
