@@ -247,6 +247,36 @@ def test_token_scan_budget_and_finditer_max_emits(tmp_path: Path) -> None:
     assert len([i for i in out if i.code == "AUTO_PRESENT"]) == 1
 
 
+def test_preprocess_after_window(tmp_path: Path) -> None:
+    path = tmp_path / "after.yaml"
+    path.write_text(
+        "\n".join(
+            [
+                "schema_version: 1",
+                "id: after-demo",
+                "stage: token",
+                "products: [METAR]",
+                "rules:",
+                "  - id: in_rmk",
+                "    kind: finditer",
+                "    preprocess:",
+                "      after: RMK",
+                "      exclude_ahl_lines: true",
+                "    pattern: '\\bSLP\\d+\\b'",
+                "    on_match:",
+                "      code: INVALID_REMARK",
+                "      message_template: '{product} {capture!r}'",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    issues = run_detector_pack(load_detector_pack(path), "METAR KJFK 121255Z 10SM RMK SLP17=", "METAR")
+    assert any(i.code == "INVALID_REMARK" and "SLP17" in i.message for i in issues)
+    # Marker absent → whole body searched; still finds SLP when present without RMK? none.
+    none = run_detector_pack(load_detector_pack(path), "METAR KJFK 121255Z 10SM=", "METAR")
+    assert none == []
+
+
 def test_overlay_detector_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     overlay = tmp_path / "d"
     overlay.mkdir()

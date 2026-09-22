@@ -34,7 +34,7 @@ Program success: every in-scope cell becomes **full** with evidence (M2–M5).
 - Mined catalogs under `tac2iwxxm/data/*.yaml` are **projections**, not executors — not a “full” convert column until emit map (ADR-047) ships.
 - IWXXM **XSD/Schematron** remain vendor SoT; output policy only selects/ignores assert ids. Pin↔SCH must match (TC-EVYFC-004).
 - Airport name enrichment on decode is a **Python** resolver hook (`set_location_name_resolver`), not pack YAML. **M2 decision:** enrichment does **not** block decode `full` when the token-stream pack is YAML SoT (D-YFC / Build scope 2a).
-- TAC detectors (M2 deepen): R1 identity + R2 visibility + R8 modifiers are declarative DSL (`finditer` / `require_search` / `token_scan`); R1 field-order + R3/R4/R5 remain python hatches → cell stays **partial** until those themes convert.
+- TAC detectors (M2 deepen): R1 identity + R2 visibility + R4 cloud shape/CB + R8 modifiers are declarative DSL (`finditer` / `require_search` / `token_scan`); R1 field-order + R3 weather + R4 membership + R5 remarks remain python hatches → cell stays **partial** until those themes convert.
 
 ## Evidence (M2 / #1228)
 
@@ -42,7 +42,7 @@ Program success: every in-scope cell becomes **full** with evidence (M2–M5).
 |--------|----------------------|
 | Decode pack | `packages/tac-decoding/src/tac_decoding/data/packs/{metar,speci}.yaml` + starters/overlays; enrichment hook documented above |
 | TAC quality | `packages/tac-validate/src/tac_validate/data/policies/annex3-metar-quality.yaml` (`product: metar` covers SPECI tags) + `detectors:` pack id list |
-| TAC detectors | `packages/tac-validate/src/tac_validate/data/detectors/metar-speci-r{1,2,3,4,5,8}-*.yaml` — R3/R4/R5 still python → **partial** |
+| TAC detectors | `packages/tac-validate/src/tac_validate/data/detectors/metar-speci-r{1,2,3,4,5,8}-*.yaml` — R3/R5 + R1 order + R4 membership still python → **partial** |
 | IWXXM output policy | `packages/iwxxm-validate/src/iwxxm_validate/data/policies/annex3-iwxxm-output.yaml` + starters |
 | Convert pack-IR | `TAC2IWXXM_CONVERT_IR_SOURCE` auto → `pack` for METAR/SPECI (`tac2iwxxm.ir_source`) |
 | Convert emit | Python plugins until ADR-047 emit map (M3+) |
@@ -52,7 +52,7 @@ DX smoke: `make overlay-preflight` · package CLIs `--check-overlay` · TC-EVYFC
 ## Program follow-ups (#1226)
 
 1. M1: templates + evidence upgrade where cheap — **done** (#1227 / #1234).
-2. M2: METAR+SPECI → full (except emit) — **in progress** (detectors residual R3/R4/R5 + R1 order).
+2. M2: METAR+SPECI → full (except emit) — **in progress** (detectors residual R3/R5 + R1 order + R4 membership).
 3. M3: emit YAML pilot METAR→SPECI.
 4. M4: remaining products → full (parallel).
 5. M5: all-full CI + pin↔SCH.

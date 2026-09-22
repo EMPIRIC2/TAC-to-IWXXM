@@ -129,3 +129,23 @@ def test_theme_coverage_edges(monkeypatch: pytest.MonkeyPatch) -> None:
     assert any(i.code == "MISSING_CCCC" for i in hatch_r1("METAR 121255Z=", "METAR"))
     assert any(i.code == "NIL_REPORT" for i in hatch_r8("METAR KJFK 121255Z NIL=", "METAR"))
     assert any(i.code == "AUTO_PRESENT" for i in hatch_r8("METAR KJFK 121255Z AUTO 18008KT 10SM=", "METAR"))
+
+    from tac_validate.theme_checks import hatch_r4, hatch_r4_membership
+
+    assert any(
+        i.code == "CLOUD_CB_OR_TCU" for i in hatch_r4("METAR KJFK 121255Z 18008KT 10SM OVC015CB 22/18 A2992=", "METAR")
+    )
+    monkeypatch.setattr(
+        "tac_validate.theme_checks._token_span_in_core",
+        lambda *args, **kwargs: None,
+    )
+    assert any(
+        i.code == "INVALID_CLOUD_TOKEN"
+        for i in hatch_r4("METAR KJFK 121255Z 18008KT 10SM XYZ040 22/18 A2992=", "METAR")
+    )
+    monkeypatch.setattr(
+        "tac_validate.theme_checks.membership.is_member",
+        lambda family, token, sets=None: False,
+    )
+    memb = hatch_r4_membership("METAR KJFK 121255Z 18008KT 10SM BKN020CB 22/18 A2992=", "METAR")
+    assert any(i.code == "UNKNOWN_WMO_MEMBERSHIP" for i in memb)

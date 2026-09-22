@@ -1,4 +1,5 @@
-# R5 remarks detectors for METAR/SPECI (ADR-046 / #1216 M3).
+# R5 remarks detectors for METAR/SPECI (ADR-046 / #1228 M2).
+# US REMARKS grammar (multi-token PK WND + profile-gated extension) stays python.
 schema_version: 1
 id: metar-speci-r5-remarks
 stage: cross_field

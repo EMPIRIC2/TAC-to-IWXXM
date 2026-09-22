@@ -299,6 +299,47 @@ def hatch_r4(tac_text: str, product: str) -> list[Issue]:
     return r4_cloud(tac_text, product)
 
 
+def hatch_r4_membership(tac_text: str, product: str) -> list[Issue]:
+    """Declarative R4 residual: WMO membership only (shape/CB via YAML)."""
+    start, end, core, tokens = _tokens(tac_text)
+    issues: list[Issue] = []
+    for _i, cloud_tok in _cloud_candidate_tokens(tokens):
+        if not _is_valid_cloud_token(cloud_tok):
+            continue
+        span = _token_span_in_core(core, cloud_tok, start)
+        if span is None:
+            cloud_start, cloud_end = start, end
+        else:
+            cloud_start, cloud_end = span
+        parts = _LAYER_CLOUD_PARTS.fullmatch(cloud_tok)
+        if parts is None:
+            continue
+        amount, ctype = parts.group(1), parts.group(2)
+        if not membership.is_member("cloud_amount", amount):
+            issues.append(
+                _membership_issue(
+                    product=product,
+                    token=amount,
+                    family="cloud_amount",
+                    start=cloud_start,
+                    end=cloud_end,
+                    location="cloud",
+                )
+            )
+        if ctype is not None and not membership.is_member("cloud_type", ctype):
+            issues.append(
+                _membership_issue(
+                    product=product,
+                    token=ctype,
+                    family="cloud_type",
+                    start=cloud_start,
+                    end=cloud_end,
+                    location="cloud",
+                )
+            )
+    return issues
+
+
 def hatch_r5(tac_text: str, product: str) -> list[Issue]:
     """Detector hatch for R5 pack."""
     return r5_remarks(tac_text, product)
@@ -322,6 +363,7 @@ __all__ = [
     "hatch_r1_order",
     "hatch_r3",
     "hatch_r4",
+    "hatch_r4_membership",
     "hatch_r5",
     "hatch_r8",
     "lint_profile",
