@@ -45,10 +45,12 @@ async def validate_metar_input(
 
     Can be used as a dependency or called directly for preprocessing.
 
-    Returns:
+    Returns
+    -------
         AggregatedValidationResult with validation details
 
-    Raises:
+    Raises
+    ------
         HTTPException: If validation service fails
 
     Parameters
@@ -99,10 +101,12 @@ async def validate_iwxxm_input(
 
     Can be used as a dependency or called directly for preprocessing.
 
-    Returns:
+    Returns
+    -------
         AggregatedValidationResult with validation details
 
-    Raises:
+    Raises
+    ------
         HTTPException: If validation service fails
 
     Parameters

@@ -71,7 +71,8 @@ class TemperatureValidationRule:
         """
         Validate temperature and dewpoint relationship.
 
-        Returns:
+        Returns
+        -------
             List of validation issues (empty if valid)
 
         Parameters
@@ -152,7 +153,8 @@ class TemperatureValidationRule:
 
         Uses Magnus formula approximation.
 
-        Returns:
+        Returns
+        -------
             Relative humidity as percentage (0-100)
 
         Parameters
@@ -384,7 +386,8 @@ class CloudLayerValidationRule:
         4. Altitude strict ordering
         5. Coverage non-increasing upward
 
-        Returns:
+        Returns
+        -------
             List of validation issues (empty if valid)
 
         Parameters
@@ -654,7 +657,8 @@ class VisibilityWeatherValidationRule:
         2. Multiple phenomenon combinations
         3. Visibility-phenomenon consistency
 
-        Returns:
+        Returns
+        -------
             List of validation issues (empty if valid)
 
         Parameters
@@ -728,7 +732,8 @@ class SemanticValidationEngine:
         """
         Run comprehensive semantic validation on METAR data.
 
-        Returns:
+        Returns
+        -------
             List of all validation issues found
 
         Parameters
@@ -775,7 +780,8 @@ class SemanticValidationEngine:
         """
         Generate structured validation report.
 
-        Returns:
+        Returns
+        -------
             Dictionary with report structure
 
         Parameters

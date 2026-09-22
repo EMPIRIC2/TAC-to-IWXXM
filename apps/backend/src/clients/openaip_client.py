@@ -177,7 +177,8 @@ class OpenAIPClient:
         """
         Fetch airport metadata by ICAO code.
 
-        Returns:
+        Returns
+        -------
             Airport object or None if no
 
         Parameters
@@ -204,7 +205,8 @@ class OpenAIPClient:
         """
         Search airports with filters.
 
-        Returns:
+        Returns
+        -------
             List of matching airports
 
         Parameters

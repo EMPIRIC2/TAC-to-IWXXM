@@ -56,7 +56,8 @@ class SchemaMirrorService:
         """
         Mirror a complete schema version tree.
 
-        Returns:
+        Returns
+        -------
             Dictionary with mirroring results and manifest
 
         Parameters
@@ -384,7 +385,8 @@ class SchemaMirrorService:
         """
         Verify integrity of mirrored schema using manifest checksums.
 
-        Returns:
+        Returns
+        -------
             True if all checksums mat
 
         Parameters
@@ -445,7 +447,8 @@ async def mirror_schema_version(
     """
     Convenience function to mirror a single schema version.
 
-    Returns:
+    Returns
+    -------
         Mirror results dictionary
 
     Parameters

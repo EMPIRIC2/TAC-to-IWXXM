@@ -98,7 +98,8 @@ class XMIModelAnalyzer:
         """
         Load and parse XMI file to extract UML elements.
 
-        Returns:
+        Returns
+        -------
             Dictionary mapping elemenfile not found
             etree.XMLSyntaxError: If XMI file inval
 
@@ -176,7 +177,8 @@ class XMIModelAnalyzer:
         """
         Extract only UML class definitions from loaded elements.
 
-        Returns:
+        Returns
+        -------
             Dictionary of class elements only
 
         Parameters
@@ -200,7 +202,8 @@ class XMIModelAnalyzer:
         """
         Extract all attributes for a specific class.
 
-        Returns:
+        Returns
+        -------
             List of attribute elements owned by the class
 
         Parameters
@@ -236,7 +239,8 @@ class XMIModelAnalyzer:
         """
         Diff two UML models to detect breaking changes.
 
-        Returns:
+        Returns
+        -------
             List of detected breaking changes
 
         Parameters
@@ -310,7 +314,8 @@ class XMIModelAnalyzer:
             s1: First string
             s2: Second string
 
-        Returns:
+        Returns
+        -------
             Similarity ratio (0.0 to 1.0)
         """
         if not s1 or not s2:
@@ -325,7 +330,8 @@ class XMIModelAnalyzer:
         """
         Generate a structured breaking change report.
 
-        Returns:
+        Returns
+        -------
             Dictionary with categorized breaking chan
 
         Parameters
@@ -371,7 +377,8 @@ def analyze_xmi_versions(old_xmi_path: Path, new_xmi_path: Path, old_version: st
     """
     Convenience function to analyze breaking changes between XMI versions.
 
-    Returns:
+    Returns
+    -------
         Breaking change report
 
     Parameters

@@ -338,7 +338,8 @@ class SchemaDiscoveryPoller:
         Args:
             url: WMO schema directory URL
 
-        Returns:
+        Returns
+        -------
             List of detected version strings
         """
         async with httpx.AsyncClient(timeout=self.timeout_seconds) as client:
@@ -364,7 +365,8 @@ class SchemaDiscoveryPoller:
         Args:
             html_content: HTML response body
 
-        Returns:
+        Returns
+        -------
             List of version strings found in links
         """
         versions: list[str] = []
@@ -410,7 +412,8 @@ class SchemaDiscoveryPoller:
         Args:
             version: Version string (e.g., "2025-2RC1", "2025-2")
 
-        Returns:
+        Returns
+        -------
             True if version is an RC, False otherwise
         """
         return bool(RC_PATTERN.match(version))
@@ -419,7 +422,8 @@ class SchemaDiscoveryPoller:
         """
         Poll with automatic retry on failure.
 
-        Returns:
+        Returns
+        -------
             Discovery results dictionary, or None when max_retries is 0
 
         Parameters
@@ -459,7 +463,8 @@ class SchemaDiscoveryPoller:
         """
         Get all discovered versions, optionally filtered by channel.
 
-        Returns:
+        Returns
+        -------
             List of discovered version strings
 
         Parameters
@@ -507,7 +512,8 @@ async def discover_schemas_with_retry(max_retries: int = 3, retry_delay: int = 6
     """
     Convenience function to run discovery with retry logic.
 
-    Returns:
+    Returns
+    -------
         Discovery results
 
     Parameters
@@ -535,7 +541,8 @@ def extract_version_from_url(url: str) -> str | None:
     """
     Extract IWXXM version from a schema URL.
 
-    Returns:
+    Returns
+    -------
         Version string or None if not found
 
     Parameters

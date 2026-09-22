@@ -20,7 +20,9 @@ _ALLOWED_TABLES = frozenset({RESULTS_TABLE, QUARANTINE_TABLE})
 class StoreClient(Protocol):
     """Minimal insert protocol for tests and Postgres writers."""
 
-    def insert(self, table: str, row: dict[str, Any]) -> None: ...
+    def insert(self, table: str, row: dict[str, Any]) -> None:
+        """Insert ``row`` into ``table``."""
+        ...
 
 
 def _to_psycopg_url(url: str) -> str:

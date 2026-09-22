@@ -128,7 +128,6 @@ async def get_translation_statistics(
     >>> 1 + 1  # docstring smoke (get_translation_statistics)
     2
     """
-
     # Validate date range
     if request.end_date < request.start_date:
         raise HTTPException(status_code=400, detail="end_date must be after start_date")
@@ -200,7 +199,6 @@ async def get_recent_statistics(
     >>> 1 + 1  # docstring smoke (get_recent_statistics)
     2
     """
-
     end_date = datetime.now(UTC).replace(tzinfo=None)
     start_date = end_date - timedelta(hours=hours)
 
@@ -272,7 +270,6 @@ async def get_statistics_by_region(
     >>> 1 + 1  # docstring smoke (get_statistics_by_region)
     2
     """
-
     # Query region-grouped statistics from database
     logger.info(f"Region statistics query: {start_date} to {end_date}")
 

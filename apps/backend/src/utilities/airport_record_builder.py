@@ -76,7 +76,8 @@ class AirportRecordBuilder:
         2. openaip_data (OpenAIP API/cache)
         3. airports.json (legacy fallback)
 
-        Returns:
+        Returns
+        -------
             Complete airport record with fields:
             - name: Airport name
             - iata: 3-letter IATA code
@@ -239,7 +240,8 @@ class AirportRecordBuilder:
         Format: "name|iata|designator|latitude,longitude"
         Example: "FORNEBU AIRPORT|FBU|FBU|59.89580,10.6172"
 
-        Returns:
+        Returns
+        -------
             GIFTs format string or empty string if in
 
         Parameters

@@ -181,7 +181,8 @@ def extract_iwxxm_namespace_version(namespace_uri: str) -> str:
         "http://icao.int/iwxxm/2023-1" → "2023-1"
         "http://icao.int/iwxxm/2025-2" → "2025-2"
 
-    Returns:
+    Returns
+    -------
         Version string (e.g., "2023-1")
 
     Rais expected format
@@ -215,7 +216,8 @@ def get_namespace_version(xml_string: str) -> str:
     """
     Extract IWXXM version from XML string namespace declaration.
 
-    Returns:
+    Returns
+    -------
         Version string (e.g., "2023-1" or "3.0")
 
     Raises:orted

@@ -166,7 +166,8 @@ class CodeListParser:
         """
         Get allowed codes for a specific code list.
 
-        Returns:
+        Returns
+        -------
             Set of allowed code values
 
         Parameters
@@ -193,7 +194,8 @@ class CodeListParser:
         """
         Validate if a code value is allowed for a code list.
 
-        Returns:
+        Returns
+        -------
             True if code is valid, False otherwise
 
         Parameters
@@ -241,7 +243,8 @@ class CodeListParser:
         Args:
             xml_tree: Parsed XML element tree
 
-        Returns:
+        Returns
+        -------
             List of tuples: (href_url, codelist_name, xpath_location)
         """
         references: list[tuple[str, str, str]] = []
@@ -280,7 +283,8 @@ class CodeListParser:
         Extracts xlink:href attributes pointing to WMO code lists and validates
         that the referenced codes exist in the loaded RDF files.
 
-        Returns:
+        Returns
+        -------
             CodelistValidationResult with vali
 
         Parameters
@@ -402,7 +406,8 @@ class CodeListParser:
             code_url: Full URL to code (e.g., http://codes.wmo.int/49-2/CloudAmount/FEW)
             xpath: XPath location of the reference for error reporting
 
-        Returns:
+        Returns
+        -------
             ValidationIssue with result of online validation
         """
         if not REQUESTS_AVAILABLE:
@@ -518,7 +523,8 @@ class CodeListParser:
         Args:
             rdf_content: Raw RDF/XML content from registry
 
-        Returns:
+        Returns
+        -------
             Status string (e.g., 'valid', 'stable', 'superseded', 'deprecated')
         """
         try:
@@ -575,7 +581,8 @@ class CodeListRegistry:
         """
         Get or create a code list parser for a version.
 
-        Returns:
+        Returns
+        -------
             CodeListParser instance for the version
 
         Parameters
@@ -603,7 +610,8 @@ class CodeListRegistry:
         """
         Validate a code value for a specific version and code list.
 
-        Returns:
+        Returns
+        -------
             True if code is valid
 
         Parameters
@@ -663,7 +671,8 @@ def validate_xml_codelists(xml_content: str, version: str, codelists_dir: Path) 
     """
     Convenience function to validate XML codelists.
 
-    Returns:
+    Returns
+    -------
         CodelistValidationResult with validation outcomes
 
     Parameters

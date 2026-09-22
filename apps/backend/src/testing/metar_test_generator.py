@@ -370,7 +370,8 @@ class METARTestGenerator:
         """
         Generate diverse sample of METARs from all world regions.
 
-        Returns:
+        Returns
+        -------
             List of METARTestCase objects
 
         Parameters
@@ -444,7 +445,8 @@ class METARTestGenerator:
         """
         Generate sample from specific region.
 
-        Returns:
+        Returns
+        -------
             List of METARTestCase objects
 
         Parameters
@@ -501,7 +503,8 @@ class METARTestGenerator:
         """
         Generate test cases ensuring coverage of specific weather phenomena.
 
-        Returns:
+        Returns
+        -------
             List of METARTestCase objects with required phenomena
 
         Parameters

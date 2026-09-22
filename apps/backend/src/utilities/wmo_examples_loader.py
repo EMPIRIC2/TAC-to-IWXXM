@@ -92,7 +92,8 @@ class WMOExamplesLoader:
         """
         Load all examples for a specific IWXXM version.
 
-        Returns:
+        Returns
+        -------
             List of WMOExample objects
 
         Parameters
@@ -159,7 +160,8 @@ class WMOExamplesLoader:
         """
         Load examples for multiple versions.
 
-        Returns:
+        Returns
+        -------
             Dictionary mapping version -> list of examples
 
         Parameters
@@ -192,7 +194,8 @@ class WMOExamplesLoader:
         """
         Get TAC↔XML pairs for testing roundtrip conversions.
 
-        Returns:
+        Returns
+        -------
             List of (tac_path, xml_path, example_id) tuples
 
         Parameters
@@ -229,7 +232,8 @@ class WMOExamplesLoader:
         """
         Load TAC-to-XML-Guidance.txt if available.
 
-        Returns:
+        Returns
+        -------
             Guidance document con
 
         Parameters
@@ -258,7 +262,8 @@ class WMOExamplesLoader:
         """
         Generate manifest of all examples for a version.
 
-        Returns:
+        Returns
+        -------
             Manifest dictionary w
 
         Parameters
@@ -313,7 +318,8 @@ class WMOExamplesLoader:
         Args:
             example_id: Example ID (filename without extension)
 
-        Returns:
+        Returns
+        -------
             Message type string
         """
         for msg_type, pattern in self.MESSAGE_TYPE_PATTERNS.items():
@@ -329,7 +335,8 @@ class WMOExamplesLoader:
         Args:
             example_id: Example ID
 
-        Returns:
+        Returns
+        -------
             Scenario description or None
         """
         # Remove message type prefix and extract scenario
@@ -342,7 +349,8 @@ class WMOExamplesLoader:
         """
         Auto-detect available versions from schemas directory.
 
-        Returns:
+        Returns
+        -------
             List of version strings that have examples directories
         """
         versions: list[str] = []
@@ -365,7 +373,8 @@ def load_wmo_examples(
     """
     Convenience function to load WMO examples.
 
-    Returns:
+    Returns
+    -------
         List of WMOExample objects
 
     Parameters

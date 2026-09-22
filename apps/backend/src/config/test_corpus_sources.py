@@ -109,10 +109,12 @@ def get_corpus_source(name: str) -> dict[str, Any]:
     Args:
         name: Corpus source name (key from TEST_CORPUS_SOURCES)
 
-    Returns:
+    Returns
+    -------
         Configuration dictionary
 
-    Raises:
+    Raises
+    ------
         KeyError: If corpus source not found
     """
     if name not in TEST_CORPUS_SOURCES:
@@ -124,7 +126,8 @@ def get_enabled_corpus_sources() -> dict[str, dict[str, Any]]:
     """
     Get all enabled test corpus sources.
 
-    Returns:
+    Returns
+    -------
         Dictionary of enabled corpus sources
     """
     return {name: config for name, config in TEST_CORPUS_SOURCES.items() if config.get("enabled", False)}
@@ -137,7 +140,8 @@ def get_corpus_sources_by_type(source_type: str) -> dict[str, dict[str, Any]]:
     Args:
         source_type: Type filter ("git_submodule", "snapshot_fetch", "live_api_snapshot")
 
-    Returns:
+    Returns
+    -------
         Dictionary of corpus sources matching the type
     """
     return {name: config for name, config in TEST_CORPUS_SOURCES.items() if config.get("type") == source_type}
@@ -150,7 +154,8 @@ def get_corpus_sources_by_priority(priority: str) -> dict[str, dict[str, Any]]:
     Args:
         priority: Priority filter ("correctness", "schematron", "edge_cases", "diversity")
 
-    Returns:
+    Returns
+    -------
         Dictionary of corpus sources matching the priority
     """
     return {name: config for name, config in TEST_CORPUS_SOURCES.items() if config.get("priority") == priority}
@@ -164,10 +169,12 @@ def get_corpus_path(name: str, version: str | None = None) -> Path:
         name: Corpus source name
         version: IWXXM version (required for mirrored sources with {version} placeholder)
 
-    Returns:
+    Returns
+    -------
         Path object to corpus data directory
 
-    Raises:
+    Raises
+    ------
         KeyError: If corpus source not found
         ValueError: If corpus type doesn't have a local path or version is missing
     """

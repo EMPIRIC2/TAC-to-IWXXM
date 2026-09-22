@@ -20,21 +20,33 @@ from dissemination.redact import redact_secrets
 class MqttClient(Protocol):
     """Minimal async MQTT client used by the WIS2 sink."""
 
-    async def connect(self) -> None: ...
+    async def connect(self) -> None:
+        """Open the MQTT connection."""
+        ...
 
-    async def publish(self, topic: str, payload: bytes) -> None: ...
+    async def publish(self, topic: str, payload: bytes) -> None:
+        """Publish ``payload`` to ``topic``."""
+        ...
 
-    async def disconnect(self) -> None: ...
+    async def disconnect(self) -> None:
+        """Close the MQTT connection."""
+        ...
 
 
 class HttpDatasetClient(Protocol):
     """Minimal async HTTP client for dataset PUT/GET/ping."""
 
-    async def ping(self, url: str) -> bool: ...
+    async def ping(self, url: str) -> bool:
+        """Return True when ``url`` responds successfully."""
+        ...
 
-    async def put_dataset(self, url: str, body: bytes, content_type: str) -> int: ...
+    async def put_dataset(self, url: str, body: bytes, content_type: str) -> int:
+        """PUT ``body`` to ``url`` and return the HTTP status code."""
+        ...
 
-    async def get_dataset(self, url: str) -> bytes: ...
+    async def get_dataset(self, url: str) -> bytes:
+        """GET dataset bytes from ``url``."""
+        ...
 
 
 @dataclass(frozen=True, slots=True)

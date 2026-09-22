@@ -44,7 +44,8 @@ class CatalogGenerator:
         """
         Generate OASIS XML Catalog for a specific IWXXM version.
 
-        Returns:
+        Returns
+        -------
             Path to generated catalog.xml file
 
         Parameters
@@ -200,7 +201,8 @@ class CatalogGenerator:
         """
         Validate an OASIS XML Catalog file.
 
-        Returns:
+        Returns
+        -------
             True if catalog is valid, False other
 
         Parameters
@@ -245,7 +247,8 @@ def generate_catalog_for_version(version: str, remote_base_url: str, schemas_bas
     """
     Convenience function to generate a catalog for one version.
 
-    Returns:
+    Returns
+    -------
         Path to generated catalog.xml
 
     Parameters
@@ -275,7 +278,8 @@ def generate_all_catalogs(schemas_base_path: Path) -> list[Path]:
     """
     Convenience function to generate catalogs for all versions.
 
-    Returns:
+    Returns
+    -------
         List of paths to generated catalogs
 
     Parameters

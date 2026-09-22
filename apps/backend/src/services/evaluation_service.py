@@ -78,7 +78,8 @@ class EvaluationService:
         """
         Compare two IWXXM XML documents.
 
-        Returns:
+        Returns
+        -------
             ComparisonResult with detailed comparison
 
         Parameters

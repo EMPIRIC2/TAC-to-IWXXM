@@ -169,7 +169,7 @@ def get_mass_ingest_max_total_bytes() -> int:
 
 def public_limit_string() -> str:
     """
-    slowapi limit string for public API routes.
+    Slowapi limit string for public API routes.
 
     Examples
     --------
@@ -186,7 +186,7 @@ def public_limit_string() -> str:
 
 def dissemination_limit_string() -> str:
     """
-    slowapi limit string for dissemination routes.
+    Slowapi limit string for dissemination routes.
 
     Examples
     --------
@@ -203,7 +203,7 @@ def dissemination_limit_string() -> str:
 
 def mass_ingest_limit_string() -> str:
     """
-    slowapi limit string for mass-ingest routes.
+    Slowapi limit string for mass-ingest routes.
 
     Examples
     --------

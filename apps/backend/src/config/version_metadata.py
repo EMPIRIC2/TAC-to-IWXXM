@@ -98,7 +98,8 @@ def get_version_metadata(version: str) -> VersionMetadata | None:
     """
     Get metadata for a specific IWXXM version.
 
-    Returns:
+    Returns
+    -------
         VersionMetadata if version exists, None
 
     Parameters
@@ -128,7 +129,8 @@ def normalize_version(version_str: str) -> str:
     - "3.0" → "2018"
     - "2.1" → "2016"
 
-    Returns:
+    Returns
+    -------
         Canonical version string
 
     Parameters

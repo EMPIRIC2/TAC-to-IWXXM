@@ -288,10 +288,12 @@ def get_version_config(version: str) -> dict[str, Any]:
     """
     Get configuration for a specific IWXXM version.
 
-    Returns:
+    Returns
+    -------
         Configuration dictionary for the version
 
-    Raises:
+    Raises
+    ------
         VersionDeprecaersion is not supported or invalid
 
     Parameters
@@ -379,7 +381,8 @@ def normalize_version(version: str) -> str:
     """
     Normalize version string, applying remapping rules.
 
-    Returns:
+    Returns
+    -------
         Normalized version string
 
     Parameters
@@ -433,10 +436,12 @@ def resolve_schema_file(version: str, file_type: str = "xsd") -> Path:
     """
     Resolve file path for schema, Schematron, or codelists.
 
-    Returns:
+    Returns
+    -------
         Path to the requested file/directory
 
-    Raises:
+    Raises
+    ------
         ValueError: If version or file_type is in
 
     Parameters
@@ -495,7 +500,8 @@ def get_breaking_changes(from_version: str, to_version: str) -> list[dict[str, A
     """
     Get list of breaking changes when migrating from one version to another.
 
-    Returns:
+    Returns
+    -------
         List of breaking change definitions with XPath and action
 
     Parameters
@@ -624,7 +630,8 @@ def is_rc_version(version: str) -> bool:
     """
     Check if a version string is a Release Candidate.
 
-    Returns:
+    Returns
+    -------
         True if version is an RC, Fa
 
     Parameters
@@ -649,7 +656,8 @@ def get_version_channel(version: str) -> str:
     """
     Get the channel for a specific version.
 
-    Returns:
+    Returns
+    -------
         Channel string: "stable", "r
 
     Parameters
@@ -679,7 +687,8 @@ def get_versions_by_channel(channel: str = "all") -> list[str]:
     """
     Get list of versions filtered by channel.
 
-    Returns:
+    Returns
+    -------
         List of version strings for the specified chan
 
     Parameters
@@ -704,7 +713,8 @@ def get_version_discovery_date(version: str) -> str:
     """
     Get the discovery/release date for a version.
 
-    Returns:
+    Returns
+    -------
         ISO 8601 timestamp of discov
 
     Parameters

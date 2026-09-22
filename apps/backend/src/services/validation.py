@@ -53,7 +53,8 @@ class ValidationService:
 
         Extracts ICAO from TAC text and validates against airport database.
 
-        Returns:
+        Returns
+        -------
             ValidationResult with pass/fail statlid (blocking validation)
 
         Parameters
@@ -148,7 +149,8 @@ class ValidationService:
 
         Performs basic TAC format validation before attempting conversion.
 
-        Returns:
+        Returns
+        -------
             ValidationResult with syntax issues
 
         Parameters

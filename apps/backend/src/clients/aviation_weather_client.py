@@ -67,7 +67,8 @@ class AviationWeatherClient:
         """
         Fetch METAR data for multiple stations.
 
-        Returns:
+        Returns
+        -------
             Dict mapping station_id -> (raw_tac, iwxxm_xml)
             Both values may be None if data unavail
 
@@ -127,7 +128,8 @@ class AviationWeatherClient:
             format_type: 'raw' or 'iwxxm'
             hours: Hours back
 
-        Returns:
+        Returns
+        -------
             Dict of station_id -> content
         """
         if not self._client:
@@ -165,7 +167,8 @@ class AviationWeatherClient:
             format_type: 'raw' or 'iwxxm'
             requested_stations: List of requested station IDs
 
-        Returns:
+        Returns
+        -------
             Dict mapping station_id -> content
         """
         results: dict[str, Any] = {}
@@ -232,7 +235,8 @@ class AviationWeatherClient:
         """
         Fetch all METARs in a bounding box.
 
-        Returns:
+        Returns
+        -------
             List of METAR records
 
         Parameters
@@ -298,7 +302,8 @@ class AviationWeatherClient:
         """
         Fetch random sample of METARs for testing.
 
-        Returns:
+        Returns
+        -------
             List of METAR records
 
         Parameters

@@ -219,7 +219,8 @@ class AirportReconciliationService:
         """
         Get reconciled airport data for ICAO code.
 
-        Returns:
+        Returns
+        -------
             ReconciledAirport with best-
 
         Parameters
@@ -277,7 +278,8 @@ class AirportReconciliationService:
             icao: ICAO code
             sources_data: Data from each source
 
-        Returns:
+        Returns
+        -------
             ReconciledAirport with merged data
         """
         # Priority order
@@ -355,7 +357,8 @@ class AirportReconciliationService:
             sources_data: Data from each source
             priority_order: Source priority order
 
-        Returns:
+        Returns
+        -------
             ConflictLog if conflict found, None otherwise
         """
         # Collect values from all sources
@@ -395,7 +398,8 @@ class AirportReconciliationService:
         - Multiple sources agree
         - Data comes from high-priority source
 
-        Returns:
+        Returns
+        -------
             Confidence score (0.0-1.0)
         """
         if final_lat is None or final_lon is None:
@@ -435,7 +439,8 @@ class AirportReconciliationService:
     ) -> float:
         """Calculate confidence score for elevation.
 
-        Returns:
+        Returns
+        -------
             Confidence score (0.0-1.0)
         """
         if final_elevation is None:

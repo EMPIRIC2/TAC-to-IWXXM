@@ -63,7 +63,8 @@ class WebhookService:
         Args:
             payload: JSON payload string
 
-        Returns:
+        Returns
+        -------
             Hex-encoded HMAC signature
         """
         if not WEBHOOK_SECRET:
@@ -82,7 +83,8 @@ class WebhookService:
         """
         Send webhook notification to all configured endpoints.
 
-        Returns:
+        Returns
+        -------
             True if all webhooks sent successfully, False otherwise
 
         Parameters
@@ -166,7 +168,8 @@ class WebhookService:
             payload: JSON payload string
             headers: HTTP headers
 
-        Returns:
+        Returns
+        -------
             True if successful, False otherwise
         """
         try:

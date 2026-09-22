@@ -104,7 +104,8 @@ class SchematronValidatorDocker:
         """
         Validate XML against Schematron schema.
 
-        Returns:
+        Returns
+        -------
             SchematronValidationResult with v
 
         Parameters
@@ -122,7 +123,6 @@ class SchematronValidatorDocker:
         >>> 1 + 1  # docstring smoke (validate)
         2
         """
-
         try:
             self.logger.debug(f"Validating XML ({len(xml_content)} bytes)")
 
@@ -151,10 +151,10 @@ class SchematronValidatorDocker:
         Args:
             xml_file: Path to XML file to validate
 
-        Returns:
+        Returns
+        -------
             SchematronValidationResult
         """
-
         try:
             xml_path = Path(xml_file).resolve()
             schema_path = self.schema_path.resolve()
@@ -256,7 +256,8 @@ def validate_against_schematron(
     """
     Validate XML against Schematron schema.
 
-    Returns:
+    Returns
+    -------
         SchematronValidationResult
 
     Parameters

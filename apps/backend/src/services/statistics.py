@@ -74,7 +74,8 @@ class StatisticsService:
         """
         Log a translation operation to the database.
 
-        Returns:
+        Returns
+        -------
             Translation UUID if logged successfully, None otherwise
 
         Parameters
@@ -202,7 +203,8 @@ class StatisticsService:
         """
         Query aggregated translation statistics.
 
-        Returns:
+        Returns
+        -------
             Dictionary with aggregated statistics
 
         Parameters
@@ -398,7 +400,8 @@ class StatisticsService:
         """
         Get translation statistics grouped by ICAO region.
 
-        Returns:
+        Returns
+        -------
             Dictionary mapping region codes to statistics
 
         Parameters

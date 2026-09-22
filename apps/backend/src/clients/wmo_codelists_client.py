@@ -99,7 +99,8 @@ class WMOCodelistCache:
         """
         Get codelist values from cache if not expired.
 
-        Returns:
+        Returns
+        -------
             Set of values or None if not cache
 
         Parameters
@@ -253,7 +254,8 @@ class WMOCodelistsClient:
         """
         Validate a weather phenomenon code.
 
-        Returns:
+        Returns
+        -------
             True if code is valid
 
         Parameters
@@ -279,7 +281,8 @@ class WMOCodelistsClient:
         """
         Validate a cloud type code.
 
-        Returns:
+        Returns
+        -------
             True if code is valid
 
         Parameters
@@ -305,7 +308,8 @@ class WMOCodelistsClient:
         """
         Validate a cloud amount code.
 
-        Returns:
+        Returns
+        -------
             True if code is valid
 
         Parameters
@@ -331,7 +335,8 @@ class WMOCodelistsClient:
         """
         Validate a visibility measurement type code.
 
-        Returns:
+        Returns
+        -------
             True if code is valid
 
         Parameters
@@ -360,7 +365,8 @@ class WMOCodelistsClient:
             codelist_name: Name of the codelist
             code: Code value to validate
 
-        Returns:
+        Returns
+        -------
             True if code is valid
         """
         # Try local parser first
@@ -392,7 +398,8 @@ class WMOCodelistsClient:
         Args:
             codelist_name: Name of the codelist
 
-        Returns:
+        Returns
+        -------
             Set of codes or None if fetch failed
         """
         if not REQUESTS_AVAILABLE:
@@ -440,7 +447,8 @@ class WMOCodelistsClient:
         """
         Get information about a codelist.
 
-        Returns:
+        Returns
+        -------
             WMOCodelistInfo with metadata
 
         Parameters

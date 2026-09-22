@@ -197,7 +197,8 @@ class ValidationOrchestrator:
         """
         Perform comprehensive validation across all selected layers.
 
-        Returns:
+        Returns
+        -------
             ComprehensiveValidationResult with all validation outcomes
 
         Parameters

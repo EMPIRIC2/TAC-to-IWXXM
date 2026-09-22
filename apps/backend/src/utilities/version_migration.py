@@ -102,12 +102,14 @@ class VersionMigrator:
         """
         Migrate IWXXM XML from one version to another.
 
-        Returns:
+        Returns
+        -------
             Tuple of:
             - Migrated XML string
             - List of warning dictionaries for elements that were removed/modified
 
-        Raises:
+        Raises
+        ------
             ValueError: If migration
 
         Parameters
@@ -258,7 +260,8 @@ class VersionMigrator:
             root: Root element to search from
             tag: Tag name to match (can include prefix like 'iwxxm:runwayState')
 
-        Returns:
+        Returns
+        -------
             Number of elements removed
         """
         removed = 0
@@ -287,7 +290,8 @@ class VersionMigrator:
             full_tag: Full tag from ElementTree (e.g., '{http://icao.int/iwxxm/2023-1}runwayState')
             localname: Local name to match (e.g., 'runwayState')
 
-        Returns:
+        Returns
+        -------
             True if tag matches
         """
         # ElementTree represents namespaced tags as {namespace}localname
@@ -333,7 +337,8 @@ def migrate_xml(
 
     Convenience function wrapping the singleton migrator.
 
-    Returns:
+    Returns
+    -------
         Tuple of (migrated_xml_string, warnings_list)
 
     Parameters

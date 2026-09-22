@@ -208,7 +208,8 @@ class AirportValidator:
         """
         Check if an ICAO code is valid.
 
-        Returns:
+        Returns
+        -------
             True if valid, False otherwise
 
         Parameters
@@ -237,7 +238,8 @@ class AirportValidator:
         """
         Get airport data for an ICAO code.
 
-        Returns:
+        Returns
+        -------
             Airport object if found, None otherwise
 
         Parameters
@@ -263,7 +265,8 @@ class AirportValidator:
         """
         Search airports by ICAO code prefix.
 
-        Returns:
+        Returns
+        -------
             List of matching airports
 
         Parameters
@@ -294,7 +297,8 @@ class AirportValidator:
         """
         Search airports by name or city (case-insensitive).
 
-        Returns:
+        Returns
+        -------
             List of matching airports
 
         Parameters

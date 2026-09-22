@@ -5,6 +5,7 @@ PNPM := pnpm
 
 PY_TREES := apps packages tests
 PY_LINT := apps/backend/src apps/backend/tests \
+	apps/worker/src \
 	packages/auth/src \
 	packages/shared packages/shared/tests \
 	packages/tac2iwxxm/src packages/tac2iwxxm/tests \

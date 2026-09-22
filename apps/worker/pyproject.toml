@@ -52,6 +52,13 @@ markers = [
 branch = true
 source = ["src/metar_worker"]
 
+[tool.ruff]
+extend = "../../ruff.toml"
+
+[tool.ruff.lint.per-file-ignores]
+# Poller accepts heterogeneous JSON payloads from ingest sources.
+"src/metar_worker/poller.py" = ["ANN401"]
+
 [tool.coverage.report]
 fail_under = 100
 show_missing = true

@@ -58,7 +58,8 @@ class GiftsLocationDBAdapter:
         """
         Get airport data in GIFTs format.
 
-        Returns:
+        Returns
+        -------
             String in format "name|iata|designat
 
         Parameters
@@ -102,7 +103,8 @@ class GiftsLocationDBAdapter:
         """
         Check if airport exists.
 
-        Returns:
+        Returns
+        -------
             True if airport found in any
 
         Parameters

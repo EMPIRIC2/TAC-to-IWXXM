@@ -73,7 +73,8 @@ class StationSampler:
         """
         Sample random airport stations.
 
-        Returns:
+        Returns
+        -------
             List of ICAO codes
 
         Parameters
@@ -119,7 +120,8 @@ class StationSampler:
         """
         Get all major airport ICAO codes.
 
-        Returns:
+        Returns
+        -------
             List of all matching ICAO codes
 
         Parameters
@@ -153,7 +155,8 @@ class StationSampler:
         """
         Get information about a specific station.
 
-        Returns:
+        Returns
+        -------
             Airport info d
 
         Parameters

@@ -156,7 +156,8 @@ class VersionDetector:
         """
         Convert git tag to version string.
 
-        Returns:
+        Returns
+        -------
             Version string (e.g., '2025-2
 
         Parameters
@@ -181,7 +182,8 @@ class VersionDetector:
         """
         Convert version string to git tag.
 
-        Returns:
+        Returns
+        -------
             Git tag (e.g., 'v2025-2')
 
         Parameters
@@ -207,7 +209,8 @@ class VersionDetector:
         """
         Check if required files exist for a version.
 
-        Returns:
+        Returns
+        -------
             Dict with file existence flags
 
         Parameters
@@ -298,7 +301,8 @@ class VersionDetector:
         """
         Get versions newer than the specified version.
 
-        Returns:
+        Returns
+        -------
             List of VersionInfo for newer versions
 
         Parameters

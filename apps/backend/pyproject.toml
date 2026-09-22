@@ -122,10 +122,11 @@ extend = "../../ruff.toml"
 line-length = 120
 
 [tool.ruff.lint]
-ignore = ["E741"]
+# Append only — do not replace root ruff.toml ignore (ADR-048 D ignores).
+extend-ignore = ["E741"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["E402", "W293", "F841", "E722", "F811", "F401", "E712", "ANN"]
+"tests/**" = ["E402", "W293", "F841", "E722", "F811", "F401", "E712", "ANN", "D"]
 "src/routers/**" = ["B008"]
 "src/utilities/security.py" = ["B008"]
 "src/config/icao_opmet.py" = ["F601"]

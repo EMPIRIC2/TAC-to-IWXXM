@@ -10,10 +10,10 @@ from typing import Any
 
 
 def _clean_env(name: str) -> str | None:
-    """Read an env var, trimming surrounding whitespace (incl. stray CR from CRLF .env files).
+    r"""Read an env var, trimming surrounding whitespace (incl. stray CR from CRLF .env files).
 
     Returns ``None`` when the variable is unset or blank, so a malformed value such as
-    ``"VALUE\\r"`` (from a CRLF-encoded ``.env``) does not break downstream parsing
+    ``"VALUE\r"`` (from a CRLF-encoded ``.env``) does not break downstream parsing
     (e.g. ``datetime.fromisoformat`` or fixed-length code checks).
     """
     value = os.getenv(name)
@@ -287,7 +287,8 @@ def get_icao_region(airport_code: str) -> str:
     """
     Determine ICAO region from airport code.
 
-    Returns:
+    Returns
+    -------
         ICAO region code (AFI, APAC, EUR, MID, NAM, S
     Note:
         - Returns "NAM" for all K-prefix (USA continental)

@@ -57,13 +57,13 @@ _SHA256_HEX_RE = re.compile(r"^[0-9a-fA-F]{64}$")
 
 @dataclass(frozen=True)
 class ManifestIntegrityResult:
-    """
-    Outcome of validating ``vendor/manifest.json`` against the checked-in tree.
+    """Outcome of validating ``vendor/manifest.json`` against the checked-in tree.
 
     Attributes
     ----------
     _ : object
         See implementation.
+
     """
 
     ok: bool
@@ -71,8 +71,7 @@ class ManifestIntegrityResult:
 
 
 def load_manifest(manifest_path: Path) -> dict[str, Any]:
-    """
-    Load and parse ``vendor/manifest.json``.
+    """Load and parse ``vendor/manifest.json``.
 
     Examples
     --------
@@ -88,6 +87,7 @@ def load_manifest(manifest_path: Path) -> dict[str, Any]:
     -------
     object
         Return value.
+
     """
     raw = manifest_path.read_text(encoding="utf-8")
     data = json.loads(raw)
@@ -98,8 +98,7 @@ def load_manifest(manifest_path: Path) -> dict[str, Any]:
 
 
 def compute_tree_sha256(root: Path) -> str:
-    """
-    Deterministic SHA-256 over sorted relative file paths and contents.
+    """Deterministic SHA-256 over sorted relative file paths and contents.
 
     Examples
     --------
@@ -115,6 +114,7 @@ def compute_tree_sha256(root: Path) -> str:
     -------
     object
         Return value.
+
     """
     if not root.is_dir():
         msg = f"tree root is not a directory: {root}"
@@ -246,8 +246,7 @@ def _validate_bundle_entry(name: str, entry: object) -> list[str]:
 
 
 def validate_manifest_schema(manifest: dict[str, Any]) -> list[str]:
-    """
-    Validate manifest structure without touching the vendor tree.
+    """Validate manifest structure without touching the vendor tree.
 
     Examples
     --------
@@ -263,6 +262,7 @@ def validate_manifest_schema(manifest: dict[str, Any]) -> list[str]:
     -------
     object
         Return value.
+
     """
     errors: list[str] = []
 
@@ -295,8 +295,7 @@ def verify_manifest_integrity(
     *,
     manifest_path: Path | None = None,
 ) -> ManifestIntegrityResult:
-    """
-    Ensure manifest pins match the checked-in vendor schema trees.
+    """Ensure manifest pins match the checked-in vendor schema trees.
 
     Examples
     --------
@@ -314,6 +313,7 @@ def verify_manifest_integrity(
     -------
     object
         Return value.
+
     """
     path = manifest_path or (repo_root / MANIFEST_RELATIVE_PATH)
     errors: list[str] = []

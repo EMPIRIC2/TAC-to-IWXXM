@@ -49,7 +49,8 @@ class ElevationService:
         """
         Get the appropriate vertical datum for an airport.
 
-        Returns:
+        Returns
+        -------
             IWXXM-compliant vertical datum code (e.g., 'EGM_96', 'NAVD88')
 
         Parameters
@@ -95,7 +96,8 @@ class ElevationService:
         Args:
             datum: Raw datum code (e.g., 'NAVD88', 'CGVD2013')
 
-        Returns:
+        Returns
+        -------
             IWXXM-compliant code (e.g., 'NAVD88', 'OTHER:CGVD2013')
         """
         # IWXXM natively supports: EGM_96, NAVD88, AHD
@@ -128,7 +130,8 @@ class ElevationService:
         """
         Get elevation and vertical datum for an airport with version-aware formatting.
 
-        Returns:
+        Returns
+        -------
             Tuple of (elevation_meters, vertical_datum)
 
         Parameters
@@ -240,7 +243,8 @@ class ElevationService:
         """
         Get high-precision coordinate overrides for an airport if available.
 
-        Returns:
+        Returns
+        -------
             Tuple of (latitude, lo
 
         Parameters
@@ -276,7 +280,8 @@ class ElevationService:
         """
         Get test-specific vertical datum override for WMO reference compliance.
 
-        Returns:
+        Returns
+        -------
             Dictionary with vertic
 
         Parameters
@@ -301,7 +306,8 @@ class ElevationService:
         """
         Get information about a vertical datum.
 
-        Returns:
+        Returns
+        -------
             Dictionary with datum information or None
 
         Parameters

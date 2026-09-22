@@ -81,7 +81,8 @@ class OpenAIPService:
         2. In-memory cache (from live API calls)
         3. Live API (if api_key available)
 
-        Returns:
+        Returns
+        -------
             Airport data dict or None if no
 
         Parameters
@@ -130,7 +131,8 @@ class OpenAIPService:
         Args:
             icao: 4-letter ICAO airport code
 
-        Returns:
+        Returns
+        -------
             Airport data or None
         """
         try:
@@ -158,7 +160,8 @@ class OpenAIPService:
         """
         Check if airport exists in OpenAIP data.
 
-        Returns:
+        Returns
+        -------
             True if airport found,
 
         Parameters
@@ -216,7 +219,8 @@ class OpenAIPService:
         """
         Check if cache is older than max_age_days.
 
-        Returns:
+        Returns
+        -------
             True if cache is stale
 
         Parameters
