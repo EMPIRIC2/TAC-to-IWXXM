@@ -21,6 +21,16 @@ def test_annex3_alias_and_canonical_bind_builtin_policies() -> None:
     assert canonical.tac_quality_policy_id == alias.tac_quality_policy_id
 
 
+def test_taf_product_swaps_to_taf_quality_policy() -> None:
+    metar = resolve_validation_policies("annex3", product="METAR")
+    taf = resolve_validation_policies("annex3", product="TAF")
+    assert metar.tac_quality_policy_id == "annex3-metar-quality"
+    assert taf.tac_quality_policy_id == "annex3-taf-quality"
+    assert taf.iwxxm_output_policy_id == "annex3-iwxxm-output"
+    us_taf = resolve_validation_policies("iwxxm_us", product="TAF")
+    assert us_taf.tac_quality_policy_id == "annex3-taf-quality"
+
+
 def test_policy_overrides_replace_one_slot() -> None:
     resolved = resolve_validation_policies("us_faa_nws", tac_policy=" custom-tac ", iwxxm_policy="  ")
     assert resolved.emit_key == "iwxxm_us"

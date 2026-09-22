@@ -4,6 +4,8 @@ ADR-046 / #1216 M3: thin-wrap behind detector pack ids (D-VPL-G3). Profile for R
 is supplied via ``lint_profile`` contextvar (hatches only receive tac + product).
 """
 
+# pyright: reportPrivateUsage=false
+
 from __future__ import annotations
 
 import contextvars
@@ -437,6 +439,14 @@ def hatch_r8(tac_text: str, product: str) -> list[Issue]:
     return r8_modifiers(tac_text, product)
 
 
+def hatch_taf(tac_text: str, product: str) -> list[Issue]:
+    """Detector hatch for TAF core checklist (A5-1 + F20 gates)."""
+    del product  # pack products: [TAF]; profile via lint_profile contextvar
+    from tac_validate.product_rules_pkg.taf import _check_taf
+
+    return _check_taf(tac_text, profile=lint_profile.get())
+
+
 __all__ = [
     "R1_CODES",
     "R3_CODES",
@@ -451,6 +461,7 @@ __all__ = [
     "hatch_r5",
     "hatch_r5_pk_and_extension",
     "hatch_r8",
+    "hatch_taf",
     "lint_profile",
     "r1_identity_order",
     "r3_weather",

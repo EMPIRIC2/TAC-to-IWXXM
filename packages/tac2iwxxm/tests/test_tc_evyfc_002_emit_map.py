@@ -68,7 +68,7 @@ def test_load_catalog_has_us_and_ca() -> None:
 
 def test_emit_map_missing_raises() -> None:
     with pytest.raises(EmitMapError, match="no emit map"):
-        resolve_emit_map(profile="annex3", product="TAF", iwxxm_version="2025-2")
+        resolve_emit_map(profile="annex3", product="SIGMET", iwxxm_version="2025-2")
 
 
 def test_emit_map_overlay_extends_plugin(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -275,3 +275,39 @@ def test_new_standalone_map(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> 
     monkeypatch.setenv(ENV_EMIT_MAP_DIR, str(tmp_path))
     mapped = resolve_emit_map(profile="annex3", product="METAR", iwxxm_version="2099-1")
     assert mapped.id == "experimental-metar-emit"
+
+
+def test_tc_evyfc_002_taf_emit_map_no_product_kw() -> None:
+    mapped = resolve_emit_map(profile="annex3", product="TAF", iwxxm_version="2025-2")
+    assert mapped.id == "annex3-taf-emit"
+    assert mapped.pass_product is False
+    from tac2iwxxm.profiles.annex3_emit.taf import emit_taf_annex3
+    from tac2iwxxm.slot_builders.taf import parse_taf
+
+    tac = "TAF KJFK 231720Z 2318/2424 18012KT P6SM FEW040="
+    ir = parse_taf(tac)
+    direct = emit_taf_annex3(ir, iwxxm_version="2025-2")
+    via_map = emit_with_map(ir, product="TAF", profile="annex3", iwxxm_version="2025-2")
+    assert via_map == direct
+
+
+def test_pass_product_must_be_bool() -> None:
+    with pytest.raises(EmitMapError, match="pass_product"):
+        _parse_emit_map(
+            {
+                "id": "x",
+                "profiles": ["annex3"],
+                "products": ["TAF"],
+                "plugin": "python:tac2iwxxm.profiles.annex3_emit.taf:emit_taf_annex3",
+                "pass_product": "yes",
+            },
+            source_path="x",
+        )
+
+
+def test_plugin_cache_hit() -> None:
+    clear_emit_map_catalog_cache()
+    ref = "python:tac2iwxxm.profiles.annex3:emit_metar_speci_annex3"
+    first = _resolve_python_plugin(ref)
+    second = _resolve_python_plugin(ref)
+    assert first is second

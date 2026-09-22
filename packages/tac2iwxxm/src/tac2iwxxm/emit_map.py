@@ -39,6 +39,7 @@ class EmitMap:
     kind: str
     plugin: str
     source_path: str
+    pass_product: bool = True
 
 
 def _optional_string_list(value: object, *, label: str) -> tuple[str, ...] | None:
@@ -97,6 +98,10 @@ def _parse_emit_map(raw: object, *, source_path: str, partial: bool = False) -> 
     else:
         profiles = _require_string_list(data.get("profiles"), label="profiles")
         products = tuple(p.upper() for p in _require_string_list(data.get("products"), label="products"))
+    pass_product_raw = data.get("pass_product", True)
+    if not isinstance(pass_product_raw, bool):
+        msg = f"{source_path}: pass_product must be a boolean when set"
+        raise EmitMapError(msg)
     return EmitMap(
         id=map_id.strip(),
         profiles=profiles,
@@ -105,6 +110,7 @@ def _parse_emit_map(raw: object, *, source_path: str, partial: bool = False) -> 
         kind="python_plugin",
         plugin=plugin,
         source_path=source_path,
+        pass_product=pass_product_raw,
     )
 
 
@@ -156,6 +162,7 @@ def _layer_overlay(raw: dict[str, object], mapped: EmitMap, catalog: dict[str, E
         kind=mapped.kind,
         plugin=mapped.plugin or parent.plugin,
         source_path=mapped.source_path,
+        pass_product=mapped.pass_product if "pass_product" in raw else parent.pass_product,
     )
 
 
@@ -237,7 +244,9 @@ def emit_with_map(
         catalog=catalog,
     )
     fn = _resolve_python_plugin(mapped.plugin)
-    return fn(ir, product=product, iwxxm_version=iwxxm_version)
+    if mapped.pass_product:
+        return fn(ir, product=product, iwxxm_version=iwxxm_version)
+    return fn(ir, iwxxm_version=iwxxm_version)
 
 
 def clear_emit_map_catalog_cache() -> None:

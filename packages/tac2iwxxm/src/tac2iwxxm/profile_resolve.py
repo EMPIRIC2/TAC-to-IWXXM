@@ -129,6 +129,7 @@ def _load_profile_overlays() -> tuple[_ProfileOverlay, ...]:
 def resolve_validation_policies(
     profile: str,
     *,
+    product: str | None = None,
     tac_policy: str | None = None,
     iwxxm_policy: str | None = None,
 ) -> ResolvedValidationPolicies:
@@ -139,6 +140,9 @@ def resolve_validation_policies(
     ----------
     profile :
         Canonical conversion profile id or legacy alias (``ICAO_2025``, ``annex3``).
+    product :
+        Optional F6 product id. When ``TAF`` and the emit key still binds the
+        METAR quality document, swap to ``annex3-taf-quality`` (M4 / #1230).
     tac_policy :
         Optional override for the TAC quality policy id (CLI ``--policy``).
     iwxxm_policy :
@@ -153,6 +157,9 @@ def resolve_validation_policies(
         msg = f"no policy binding for profile {resolved.canonical!r}"
         raise ProfileResolveError(msg)
     tac_id, iwxxm_id = pair
+    product_u = (product or "").strip().upper()
+    if product_u == "TAF" and tac_id == "annex3-metar-quality":
+        tac_id = "annex3-taf-quality"
     keys = {resolved.emit_key, resolved.canonical, profile.strip()}
     for overlay in _load_profile_overlays():
         if keys.isdisjoint(overlay.profiles):

@@ -6342,3 +6342,10 @@ All must pass before merging migration PR:
 - **Objective**: OpenAPI exposes no client body fields for emit-map / pack / policy YAML upload
 - **Pass criteria**: Extends TC-EVYEC-004 forbidden-key set to include emit-map synonyms
 - **Source**: #1226; D-YFC-04; [Corpus: api]
+
+### TC-EVYFC-006: M4 TAF matrix row lock
+
+- **Level**: T0 / CI (M4)
+- **Objective**: Honesty matrix rates every TAF engine cell **full** with SoT path evidence
+- **Pass criteria**: Row lock + builtin pack/policy/detector/emit-map presence
+- **Source**: #1226; #1230; ADR-047; UJ-DEV-011
