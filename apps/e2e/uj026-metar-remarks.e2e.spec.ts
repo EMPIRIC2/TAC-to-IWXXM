@@ -21,7 +21,7 @@ test.describe('UJ-026: METAR REMARKS retain / exclusion', () => {
       multipart: {
         manual_text: TAC_RMK,
         product: 'METAR',
-        profile: 'annex3',
+        conversion_library_id: 'LIB.CONVERSION.ICAO_2025',
         iwxxm_version: '2025-2',
         lint: 'false',
       },
@@ -39,7 +39,7 @@ test.describe('UJ-026: METAR REMARKS retain / exclusion', () => {
       multipart: {
         manual_text: TAC_FREE,
         product: 'METAR',
-        profile: 'iwxxm_us',
+        conversion_library_id: 'LIB.CONVERSION.US_FAA_NWS',
         iwxxm_version: '2025-2',
         lint: 'false',
       },
