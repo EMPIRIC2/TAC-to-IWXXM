@@ -46,6 +46,11 @@ def _database_url() -> str:
     Resolve sync SQLAlchemy URL for migrations.
 
     Prefers ``DATABASE_URL`` / ``ALEMBIC_DATABASE_URL``. Rewrites asyncpg → psycopg.
+
+    Returns
+    -------
+    str
+        Sync database URL for Alembic.
     """
     raw = (
         os.environ.get("ALEMBIC_DATABASE_URL", "").strip()
