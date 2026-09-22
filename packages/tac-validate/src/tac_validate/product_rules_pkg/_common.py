@@ -533,7 +533,10 @@ def _check_us_remarks(
                 body_end=body_end,
                 token=span_tok,
             )
-            i += 2 if has_wnd else 1
+            if has_wnd:
+                i += 2
+            else:
+                i += 1
             continue
         i += 1
 

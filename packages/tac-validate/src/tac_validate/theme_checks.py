@@ -345,6 +345,90 @@ def hatch_r5(tac_text: str, product: str) -> list[Issue]:
     return r5_remarks(tac_text, product)
 
 
+def hatch_r5_pk_and_extension(tac_text: str, product: str) -> list[Issue]:
+    """Declarative R5 residual: PK WND + iwxxm_us extension (SLP/P/T shape via YAML)."""
+    start, end, core, tokens = _tokens(tac_text)
+    if "RMK" not in tokens:
+        return []
+    from tac_validate.product_rules_pkg._common import (
+        _RMK_AO,
+        _RMK_P_OK,
+        _RMK_PK_VAL,
+        _RMK_SLP_OK,
+        _RMK_T_OK,
+        _append_remark_issue,
+    )
+
+    rmk_i = tokens.index("RMK")
+    remark = tokens[rmk_i + 1 :]
+    issues: list[Issue] = []
+    saw_us = False
+    i = 0
+    while i < len(remark):
+        tok = remark[i]
+        if tok in _RMK_AO:
+            saw_us = True
+            i += 1
+            continue
+        if _RMK_SLP_OK.fullmatch(tok):
+            saw_us = True
+            i += 1
+            continue
+        if tok.startswith("SLP") and tok[3:].isdigit():
+            # Malformed SLP handled by declarative finditer.
+            i += 1
+            continue
+        if _RMK_P_OK.fullmatch(tok):
+            saw_us = True
+            i += 1
+            continue
+        if len(tok) > 1 and tok[0] == "P" and tok[1:].isdigit():
+            i += 1
+            continue
+        if _RMK_T_OK.fullmatch(tok):
+            saw_us = True
+            i += 1
+            continue
+        if len(tok) > 1 and tok[0] == "T" and tok[1:].isdigit():
+            i += 1
+            continue
+        if tok == "PK":
+            has_wnd = i + 1 < len(remark) and remark[i + 1] == "WND"
+            has_val = has_wnd and i + 2 < len(remark) and _RMK_PK_VAL.fullmatch(remark[i + 2])
+            if has_val:
+                saw_us = True
+                i += 3
+                continue
+            span_tok = "WND" if has_wnd else "PK"
+            _append_remark_issue(
+                issues,
+                code="INVALID_REMARK",
+                message=f"{product} malformed remark PK WND (need dddss/tt)",
+                core=core,
+                body_start=start,
+                body_end=end,
+                token=span_tok,
+            )
+            if has_wnd:
+                i += 2
+            else:
+                i += 1
+            continue
+        i += 1
+
+    if saw_us and lint_profile.get() == "iwxxm_us":
+        _append_remark_issue(
+            issues,
+            code="REMARK_US_EXTENSION",
+            message=(f"{product} US remarks present (AO1/AO2/SLP/P/T/PK WND) - iwxxm_us profile awareness"),
+            core=core,
+            body_start=start,
+            body_end=end,
+            token="RMK",
+        )
+    return issues
+
+
 def hatch_r8(tac_text: str, product: str) -> list[Issue]:
     """Detector hatch for R8 pack (NIL gate + modifiers)."""
     nil = r8_nil_gate(tac_text, product)
@@ -365,6 +449,7 @@ __all__ = [
     "hatch_r4",
     "hatch_r4_membership",
     "hatch_r5",
+    "hatch_r5_pk_and_extension",
     "hatch_r8",
     "lint_profile",
     "r1_identity_order",
