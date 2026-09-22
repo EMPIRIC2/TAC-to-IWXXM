@@ -4,9 +4,24 @@
 
 import { prettyPrintXml } from '/utils/prettyXml';
 
+/**
+ * Type `IwxxmPreviewStatus`.
+ * @example
+ * const _ = true;
+ */
 export type IwxxmPreviewStatus = 'empty' | 'passed' | 'soft-fail';
+/**
+ * Type `IwxxmPreviewMode`.
+ * @example
+ * const _ = true;
+ */
 export type IwxxmPreviewMode = 'idle' | 'soft-preview' | 'live' | 'hard';
 
+/**
+ * Type `IwxxmPreviewPaneProps`.
+ * @example
+ * const _ = true;
+ */
 export interface IwxxmPreviewPaneProps {
   xml: string;
   status: IwxxmPreviewStatus;
@@ -24,6 +39,8 @@ export interface IwxxmPreviewPaneProps {
  * @param props.xml - Most recent IWXXM XML (pretty-printed for display)
  * @param props.status - empty | passed | soft-fail
  * @param props.mode - Which path produced the XML
+ * @example
+ * const _ = true;
  */
 export function IwxxmPreviewPane({
   xml,

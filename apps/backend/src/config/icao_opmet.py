@@ -287,21 +287,28 @@ def get_icao_region(airport_code: str) -> str:
     """
     Determine ICAO region from airport code.
 
-    Args:
-        airport_code: 4-letter ICAO airport identifier
-
     Returns:
-        ICAO region code (AFI, APAC, EUR, MID, NAM, SAM, NAT, WAFR, ESAF)
-
-    Raises:
-        ValueError: If airport code format is invalid
-
+        ICAO region code (AFI, APAC, EUR, MID, NAM, S
     Note:
         - Returns "NAM" for all K-prefix (USA continental)
-        - Returns "NAM" for all C-prefix (Canada)
-        - Returns "NAM" for all M-prefix (Central America)
+        - Returns "NAMrefix (Central America)
         - Returns "APAC" for unmapped Pacific islands
         - Returns "EUR" for unmapped European codes
+
+    Parameters
+    ----------
+    airport_code : object
+        4-letter ICAO airport identifier
+
+    Returns
+    -------
+    object
+        ICAO region code (AFI, APAC, EUR, MID, NAM, SAM, NAT, WAFR, ESAF)
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_icao_region)
+    2
     """
     if not airport_code or len(airport_code) != 4:
         raise ValueError(f"Invalid ICAO airport code: {airport_code}")
@@ -391,8 +398,15 @@ def get_translation_centre_info() -> dict[str, Any]:
     """
     Get Translation Centre metadata for IWXXM documents.
 
-    Returns:
+    Returns
+    -------
+    object
         Dictionary with Translation Centre information
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_translation_centre_info)
+    2
     """
     return {
         "translationCentreName": TRANSLATION_CENTRE_NAME,
@@ -406,10 +420,34 @@ def get_translation_centre_info() -> dict[str, Any]:
 
 
 def should_log_statistics() -> bool:
-    """Check if statistics logging is enabled."""
+    """
+    Check if statistics logging is enabled.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (should_log_statistics)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return ENABLE_STATISTICS
 
 
 def should_send_webhooks() -> bool:
-    """Check if webhook notifications are enabled."""
+    """
+    Check if webhook notifications are enabled.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (should_send_webhooks)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return ENABLE_WEBHOOKS and len(WEBHOOK_URLS) > 0

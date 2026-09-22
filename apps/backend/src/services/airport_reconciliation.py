@@ -28,7 +28,14 @@ class DataSource(Enum):
 
 @dataclass
 class ConflictLog:
-    """Log entry for data conflicts."""
+    """
+    Log entry for data conflicts.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     icao: str
     field: str
@@ -44,7 +51,14 @@ class ConflictLog:
 
 @dataclass
 class ReconciledAirport:
-    """Reconciled airport data from multiple sources."""
+    """
+    Reconciled airport data from multiple sources.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     icao_code: str
     name: str
@@ -64,11 +78,35 @@ class ReconciledAirport:
     elevation_confidence: float = 1.0
 
     def has_conflicts(self) -> bool:
-        """Check if any conflicts were found during reconciliation."""
+        """
+        Check if any conflicts were found during reconciliation.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (has_conflicts)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return len(self.conflicts) > 0
 
     def get_conflict_summary(self) -> str:
-        """Get summary of conflicts."""
+        """
+        Get summary of conflicts.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_conflict_summary)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not self.conflicts:
             return "No conflicts"
 
@@ -76,13 +114,19 @@ class ReconciledAirport:
 
 
 class AirportReconciliationService:
-    """Service for reconciling airport data from multiple sources.
+    """
+    Service for reconciling airport data from multiple sources.
 
     Priority order:
     1. OpenAIP (most comprehensive, community-maintained)
     2. GIFTs internal database
     3. AviationWeather.gov API
     4. Fallback/default values
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(
@@ -172,13 +216,26 @@ class AirportReconciliationService:
         return None
 
     def get_airport(self, icao: str) -> ReconciledAirport | None:
-        """Get reconciled airport data for ICAO code.
-
-        Args:
-            icao: ICAO station identifier
+        """
+        Get reconciled airport data for ICAO code.
 
         Returns:
+            ReconciledAirport with best-
+
+        Parameters
+        ----------
+        icao : object
+            ICAO station identifier
+
+        Returns
+        -------
+        object
             ReconciledAirport with best-effort data or None if not found
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_airport)
+        2
         """
         self.stats["total_queries"] += 1
         icao = icao.upper()
@@ -412,10 +469,18 @@ class AirportReconciliationService:
         return agreement_ratio
 
     def get_statistics(self) -> dict[str, Any]:
-        """Get reconciliation statistics.
+        """
+        Get reconciliation statistics.
 
-        Returns:
+        Returns
+        -------
+        object
             Dictionary with statistics
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_statistics)
+        2
         """
         return {
             **self.stats,

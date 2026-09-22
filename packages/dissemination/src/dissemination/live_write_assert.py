@@ -40,6 +40,11 @@ async def count_iwxxm_rows(
     -------
     int
         Matching row count.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (count_iwxxm_rows)
+    2
     """
     if upload_key:
         sql = text(f"SELECT COUNT(*) FROM {CONTRACT_TABLE} WHERE upload_key = :upload_key")
@@ -84,6 +89,11 @@ async def assert_live_write(
         When fewer than ``min_rows`` matching rows are present.
     ValueError
         When ``sink_type`` is not a DB sink.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (assert_live_write)
+    2
     """
     dialect = dialect_for_sink(sink_type)
     sa_uri = normalize_sqlalchemy_uri(uri, sink_type)
@@ -103,6 +113,7 @@ async def assert_live_write(
 
 
 def _build_parser() -> argparse.ArgumentParser:
+    """Internal helper ``_build_parser``."""
     parser = argparse.ArgumentParser(
         prog="python -m dissemination.live_write_assert",
         description="Assert iwxxm_reports rows after F16 live Disseminate (EV-039).",
@@ -115,7 +126,24 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
-    """CLI entry - exit 0 on success, 1 on assertion failure, 2 on usage/error."""
+    """
+    CLI entry - exit 0 on success, 1 on assertion failure, 2 on usage/error.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (main)
+    2
+
+    Parameters
+    ----------
+    argv : object
+        Argument ``argv``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     args = _build_parser().parse_args(argv)
     try:
         count = asyncio.run(

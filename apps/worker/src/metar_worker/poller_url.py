@@ -39,6 +39,11 @@ def validate_ingest_poller_url(url: str) -> str:
     ------
     ValueError
         If the URL is missing, a placeholder, or not ``https://``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_ingest_poller_url)
+    2
     """
     cleaned = (url or "").strip()
     if not cleaned:

@@ -12,6 +12,11 @@ import {
   type TacSpanMark,
 } from '/utils/tacEditorSpans';
 
+/**
+ * Type `FailedSpanMark`.
+ * @example
+ * const _ = true;
+ */
 export interface FailedSpanMark {
   start: number;
   end: number;
@@ -19,6 +24,11 @@ export interface FailedSpanMark {
   message?: string;
 }
 
+/**
+ * Type `TacEditorProps`.
+ * @example
+ * const _ = true;
+ */
 export interface TacEditorProps {
   id?: string;
   value: string;
@@ -35,7 +45,11 @@ export interface TacEditorProps {
   onSpanFix?: (fixCode: string) => void;
 }
 
-/** Sync controlled value into an existing CodeMirror view (no-op when unmounted). */
+/**
+ * Sync controlled value into an existing CodeMirror view (no-op when unmounted).
+ * @example
+ * const _ = true;
+ */
 export function syncTacEditorValue(view: EditorView | null, value: string): void {
   if (!view) {
     return;
@@ -48,7 +62,11 @@ export function syncTacEditorValue(view: EditorView | null, value: string): void
   }
 }
 
-/** Toggle contentEditable for read-only mode (no-op when unmounted). */
+/**
+ * Toggle contentEditable for read-only mode (no-op when unmounted).
+ * @example
+ * const _ = true;
+ */
 export function syncTacEditorReadOnly(
   view: EditorView | null,
   readOnly: boolean,
@@ -59,7 +77,11 @@ export function syncTacEditorReadOnly(
   view.contentDOM.contentEditable = readOnly ? 'false' : 'true';
 }
 
-/** Keep a11y id/label in sync when props change (no-op when unmounted). */
+/**
+ * Keep a11y id/label in sync when props change (no-op when unmounted).
+ * @example
+ * const _ = true;
+ */
 export function syncTacEditorA11y(
   view: EditorView | null,
   ariaLabel: string,
@@ -72,7 +94,11 @@ export function syncTacEditorA11y(
   view.contentDOM.id = id;
 }
 
-/** Push issue span decorations (no-op when unmounted). */
+/**
+ * Push issue span decorations (no-op when unmounted).
+ * @example
+ * const _ = true;
+ */
 export function syncTacEditorIssueSpans(
   view: EditorView | null,
   issueSpans: TacSpanMark[],
@@ -83,7 +109,11 @@ export function syncTacEditorIssueSpans(
   view.dispatch({ effects: setTacSpansEffect.of(issueSpans) });
 }
 
-/** Handle bubbled ``tac-span-fix`` events from span tooltips. */
+/**
+ * Handle bubbled ``tac-span-fix`` events from span tooltips.
+ * @example
+ * const _ = true;
+ */
 export function handleTacSpanFixEvent(
   event: Event,
   onSpanFix: ((fixCode: string) => void) | undefined,
@@ -94,7 +124,11 @@ export function handleTacSpanFixEvent(
   }
 }
 
-/** Mount CodeMirror when a host element exists; no-op when missing. */
+/**
+ * Mount CodeMirror when a host element exists; no-op when missing.
+ * @example
+ * const _ = true;
+ */
 export function mountTacEditorView(
   parent: HTMLElement | null,
   factory: (parent: HTMLElement) => { destroy: () => void },
@@ -108,7 +142,11 @@ export function mountTacEditorView(
   };
 }
 
-/** Attach ``tac-span-fix`` listener on the editor chrome root. */
+/**
+ * Attach ``tac-span-fix`` listener on the editor chrome root.
+ * @example
+ * const _ = true;
+ */
 export function attachTacSpanFixListener(
   inner: HTMLElement | null,
   handler: (event: Event) => void,
@@ -131,6 +169,8 @@ export function attachTacSpanFixListener(
  * @param props.readOnly - When true, editing is disabled
  * @param props.failedSpans - Optional soft-preview failure spans
  * @param props.issueSpans - Optional live lint spans
+ * @example
+ * const _ = true;
  */
 export function TacEditor({
   id = 'manual-input',

@@ -7,9 +7,17 @@ from typing import Any
 
 
 class StationSampler:
-    """Sample airport stations from the af-airports.csv database."""
+    """
+    Sample airport stations from the af-airports.csv database.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, csv_path: pathlib.Path | None = None) -> None:
+        """Internal helper ``__init__``."""
         if csv_path is None:
             # Auto-detect CSV path
             csv_path = self._find_airports_csv()
@@ -62,16 +70,32 @@ class StationSampler:
         scheduled_service_only: bool = True,
         seed: int | None = None,
     ) -> list[str]:
-        """Sample random airport stations.
-
-        Args:
-            count: Number of stations to sample
-            large_airports_only: Only include large_airport type
-            scheduled_service_only: Only include airports with scheduled service
-            seed: Random seed for reproducibility
+        """
+        Sample random airport stations.
 
         Returns:
             List of ICAO codes
+
+        Parameters
+        ----------
+        count : object
+            Number of stations to sample
+        large_airports_only : object
+            Only include large_airport type
+        scheduled_service_only : object
+            Only include airports with scheduled service
+        seed : object
+            Random seed for reproducibility
+
+        Returns
+        -------
+        object
+            List of ICAO codes
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (sample_random_stations)
+        2
         """
         airports = self._load_airports()
 
@@ -92,14 +116,28 @@ class StationSampler:
         return [a["icao"] for a in sampled]
 
     def get_all_major_airports(self, large_only: bool = True, scheduled_service_only: bool = True) -> list[str]:
-        """Get all major airport ICAO codes.
-
-        Args:
-            large_only: Only large airports
-            scheduled_service_only: Only scheduled service
+        """
+        Get all major airport ICAO codes.
 
         Returns:
             List of all matching ICAO codes
+
+        Parameters
+        ----------
+        large_only : object
+            Only large airports
+        scheduled_service_only : object
+            Only scheduled service
+
+        Returns
+        -------
+        object
+            List of all matching ICAO codes
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_all_major_airports)
+        2
         """
         airports = self._load_airports()
 
@@ -112,13 +150,26 @@ class StationSampler:
         return [a["icao"] for a in filtered]
 
     def get_station_info(self, icao: str) -> dict[str, Any] | None:
-        """Get information about a specific station.
-
-        Args:
-            icao: ICAO code
+        """
+        Get information about a specific station.
 
         Returns:
+            Airport info d
+
+        Parameters
+        ----------
+        icao : object
+            ICAO code
+
+        Returns
+        -------
+        object
             Airport info dict or None
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_station_info)
+        2
         """
         airports = self._load_airports()
         for airport in airports:

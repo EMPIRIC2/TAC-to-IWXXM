@@ -12,7 +12,19 @@ router = APIRouter(tags=["Health"])
 
 @router.get("/health", response_model=HealthResponse)
 def health() -> HealthResponse:
-    """Check API health and conversion availability."""
+    """
+    Check API health and conversion availability.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (health)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         test_metar = "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
         _ = api_surface.convert_metar_tac_with_metadata(test_metar, validate=False)

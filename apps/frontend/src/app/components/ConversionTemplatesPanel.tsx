@@ -47,6 +47,11 @@ import {
   PROFILES_CONV_TEMPLATES_SLOT_LABEL,
 } from '../../utils/conversionProfilesCopy';
 
+/**
+ * Type `ConversionTemplatesPanelProps`.
+ * @example
+ * const _ = true;
+ */
 export type ConversionTemplatesPanelProps = {
   accessToken: string;
 };
@@ -57,6 +62,9 @@ const MODE_OPTIONS = [
   { value: 'skip', label: PROFILES_CONV_TEMPLATES_MODE_SKIP },
 ] as const;
 
+/**
+ * Function `accessLabel`.
+ */
 function accessLabel(access: string): string {
   return access === 'first_party' ? 'built-in' : 'custom';
 }
@@ -65,6 +73,8 @@ function accessLabel(access: string): string {
  * Author and preview parameterizable conversion templates.
  *
  * @param props.accessToken - Bearer JWT for profiles APIs
+ * @example
+ * const _ = true;
  */
 export function ConversionTemplatesPanel({
   accessToken,

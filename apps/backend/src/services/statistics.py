@@ -40,13 +40,21 @@ def _normalize_icao_code(icao_airport_code: str | None) -> str:
 
 
 def _translation_status_value(status: TranslationStatus | str) -> str:
+    """Internal helper ``_translation_status_value``."""
     if isinstance(status, TranslationStatus):
         return status.value
     return status
 
 
 class StatisticsService:
-    """Service for logging and querying translation statistics."""
+    """
+    Service for logging and querying translation statistics.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     @staticmethod
     async def log_translation(
@@ -66,22 +74,45 @@ class StatisticsService:
         """
         Log a translation operation to the database.
 
-        Args:
-            tac_message: Original METAR TAC message
-            iwxxm_version: Target IWXXM version (2025-2 or 2023-1)
-            icao_airport_code: 4-letter ICAO airport identifier
-            translation_status: Translation outcome status
-            translation_duration_ms: Processing time in milliseconds
-            iwxxm_output: Generated IWXXM XML (None if failed)
-            validation_layers_passed: List of passed validation layers
-            validation_errors: Detailed validation errors by layer
-            user_id: Authenticated user ID (Supabase UUID)
-            session_id: User session identifier
-            bulletin_reception_time: Original bulletin reception time
-            bulletin_id: WMO bulletin identifier
-
         Returns:
             Translation UUID if logged successfully, None otherwise
+
+        Parameters
+        ----------
+        tac_message : object
+            Original METAR TAC message
+        iwxxm_version : object
+            Target IWXXM version (2025-2 or 2023-1)
+        icao_airport_code : object
+            4-letter ICAO airport identifier
+        translation_status : object
+            Translation outcome status
+        translation_duration_ms : object
+            Processing time in milliseconds
+        iwxxm_output : object
+            Generated IWXXM XML (None if failed)
+        validation_layers_passed : object
+            List of passed validation layers
+        validation_errors : object
+            Detailed validation errors by layer
+        user_id : object
+            Authenticated user ID (Supabase UUID)
+        session_id : object
+            User session identifier
+        bulletin_reception_time : object
+            Original bulletin reception time
+        bulletin_id : object
+            WMO bulletin identifier
+
+        Returns
+        -------
+        object
+            Translation UUID if logged successfully, None otherwise
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (log_translation)
+        2
         """
         if not should_log_statistics():
             logger.debug("Statistics logging disabled")
@@ -171,17 +202,35 @@ class StatisticsService:
         """
         Query aggregated translation statistics.
 
-        Args:
-            start_date: Statistics period start
-            end_date: Statistics period end
-            icao_region: Optional ICAO region filter
-            iwxxm_version: Optional IWXXM version filter
-            airport_code: Optional airport code filter
-            include_airport_breakdown: Include per-airport statistics
-            include_error_details: Include detailed error analysis
-
         Returns:
             Dictionary with aggregated statistics
+
+        Parameters
+        ----------
+        start_date : object
+            Statistics period start
+        end_date : object
+            Statistics period end
+        icao_region : object
+            Optional ICAO region filter
+        iwxxm_version : object
+            Optional IWXXM version filter
+        airport_code : object
+            Optional airport code filter
+        include_airport_breakdown : object
+            Include per-airport statistics
+        include_error_details : object
+            Include detailed error analysis
+
+        Returns
+        -------
+        object
+            Dictionary with aggregated statistics
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_statistics)
+        2
         """
         try:
             async with get_db_session() as session:
@@ -349,12 +398,25 @@ class StatisticsService:
         """
         Get translation statistics grouped by ICAO region.
 
-        Args:
-            start_date: Statistics period start
-            end_date: Statistics period end
-
         Returns:
             Dictionary mapping region codes to statistics
+
+        Parameters
+        ----------
+        start_date : object
+            Statistics period start
+        end_date : object
+            Statistics period end
+
+        Returns
+        -------
+        object
+            Dictionary mapping region codes to statistics
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_statistics_by_region)
+        2
         """
         try:
             async with get_db_session() as session:

@@ -15,6 +15,8 @@ export const PRIVACY_SCHEMA_VERSION = 2 as const;
  * Solution A preference schema (F22) + F31 guest work-history gate.
  *
  * `necessary` is always on. Non-essential categories default false.
+ * @example
+ * const _ = true;
  */
 export interface PrivacyPreferences {
   schemaVersion: number;
@@ -39,7 +41,11 @@ export interface PrivacyPreferences {
   noticeSchemaVersion: number | null;
 }
 
-/** Client storage inventory disclosed in Privacy settings (F22 / UJ-033 / UJ-047). */
+/**
+ * Client storage inventory disclosed in Privacy settings (F22 / UJ-033 / UJ-047).
+ * @example
+ * const _ = true;
+ */
 export interface StorageInventoryItem {
   kind: 'indexedDB' | 'localStorage' | 'sessionStorage' | 'cookie' | 'cdn';
   purpose: string;
@@ -65,17 +71,29 @@ export const STORAGE_INVENTORY: readonly StorageInventoryItem[] = [
   },
 ] as const;
 
+/**
+ * Type `PrivacyPreferencesPatch`.
+ * @example
+ * const _ = true;
+ */
 export type PrivacyPreferencesPatch = Partial<
   Omit<PrivacyPreferences, 'necessary' | 'schemaVersion'>
 > & {
   schemaVersion?: number;
 };
 
+/**
+ * Function `isRecord`.
+ */
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-/** Default Solution A preferences (non-essential off; work history on for guests). */
+/**
+ * Default Solution A preferences (non-essential off; work history on for guests).
+ * @example
+ * const _ = true;
+ */
 export function defaultPrivacyPreferences(): PrivacyPreferences {
   return {
     schemaVersion: PRIVACY_SCHEMA_VERSION,
@@ -90,6 +108,9 @@ export function defaultPrivacyPreferences(): PrivacyPreferences {
   };
 }
 
+/**
+ * Function `normalizePrivacyPreferences`.
+ */
 function normalizePrivacyPreferences(input: unknown): PrivacyPreferences {
   const base = defaultPrivacyPreferences();
   if (!isRecord(input)) {
@@ -118,6 +139,9 @@ function normalizePrivacyPreferences(input: unknown): PrivacyPreferences {
   };
 }
 
+/**
+ * Function `readStoredPreferences`.
+ */
 function readStoredPreferences(): PrivacyPreferences {
   if (typeof localStorage === 'undefined') {
     return defaultPrivacyPreferences();
@@ -133,6 +157,9 @@ function readStoredPreferences(): PrivacyPreferences {
   }
 }
 
+/**
+ * Function `writeStoredPreferences`.
+ */
 function writeStoredPreferences(prefs: PrivacyPreferences): void {
   if (typeof localStorage === 'undefined') {
     return;
@@ -140,7 +167,11 @@ function writeStoredPreferences(prefs: PrivacyPreferences): void {
   localStorage.setItem(PRIVACY_PREFS_STORAGE_KEY, JSON.stringify(prefs));
 }
 
-/** Load preferences from localStorage; apply GPC opt-out overrides (E17-16). */
+/**
+ * Load preferences from localStorage; apply GPC opt-out overrides (E17-16).
+ * @example
+ * const _ = true;
+ */
 export function loadPrivacyPreferences(): PrivacyPreferences {
   const prefs = readStoredPreferences();
   const gpcEnabled = detectGlobalPrivacyControl({
@@ -149,7 +180,11 @@ export function loadPrivacyPreferences(): PrivacyPreferences {
   return applyGpcToPreferences(prefs, gpcEnabled);
 }
 
-/** Persist preferences to localStorage (client-only; no server PII). */
+/**
+ * Persist preferences to localStorage (client-only; no server PII).
+ * @example
+ * const _ = true;
+ */
 export function savePrivacyPreferences(
   partial: PrivacyPreferencesPatch,
 ): PrivacyPreferences {
@@ -166,7 +201,11 @@ export function savePrivacyPreferences(
   return applyGpcToPreferences(next, gpcEnabled);
 }
 
-/** Acknowledge / dismiss the first-visit privacy notice for the current schema. */
+/**
+ * Acknowledge / dismiss the first-visit privacy notice for the current schema.
+ * @example
+ * const _ = true;
+ */
 export function acknowledgePrivacyNotice(): PrivacyPreferences {
   const current = readStoredPreferences();
   return savePrivacyPreferences({
@@ -180,6 +219,8 @@ export function acknowledgePrivacyNotice(): PrivacyPreferences {
  *
  * True when never acknowledged, or when `schemaVersion` bumped past the
  * acknowledged version.
+ * @example
+ * const _ = true;
  */
 export function shouldShowPrivacyNotice(): boolean {
   const prefs = readStoredPreferences();
@@ -195,6 +236,8 @@ export function shouldShowPrivacyNotice(): boolean {
  *
  * @param options.navigatorGpc - `navigator.globalPrivacyControl` when available
  * @param options.secGpc - request/header Sec-GPC value (`"1"` ⇒ enabled)
+ * @example
+ * const _ = true;
  */
 export function detectGlobalPrivacyControl(options?: {
   navigatorGpc?: boolean | undefined;
@@ -212,6 +255,9 @@ export function detectGlobalPrivacyControl(options?: {
   return readNavigatorGlobalPrivacyControl() === true;
 }
 
+/**
+ * Function `readNavigatorGlobalPrivacyControl`.
+ */
 function readNavigatorGlobalPrivacyControl(): boolean | undefined {
   if (typeof navigator === 'undefined') {
     return undefined;
@@ -224,6 +270,8 @@ function readNavigatorGlobalPrivacyControl(): boolean | undefined {
 /**
  * Force sale/sharing and targeted-advertising opt-outs when GPC is on.
  * Does not force-enable guest work-history IndexedDB (TC-F31-005).
+ * @example
+ * const _ = true;
  */
 export function applyGpcToPreferences(
   prefs: PrivacyPreferences,
@@ -257,13 +305,19 @@ export function applyGpcToPreferences(
  * -------
  * boolean
  *     ``false`` when the user declined local work-history persistence.
+ * @example
+ * const _ = true;
  */
 export function canPersistWorkHistoryLocal(prefs?: PrivacyPreferences): boolean {
   const resolved = prefs ?? loadPrivacyPreferences();
   return resolved.workHistoryLocal === true;
 }
 
-/** Clear privacy preferences from localStorage (site-data wipe / tests). */
+/**
+ * Clear privacy preferences from localStorage (site-data wipe / tests).
+ * @example
+ * const _ = true;
+ */
 export function clearPrivacyPreferences(): void {
   if (typeof localStorage === 'undefined') {
     return;

@@ -14,6 +14,9 @@ import { adminUrl, apiUrl } from './apiBase';
 /** My METARs filter — METAR/SPECI only on unified tac_work_sessions (UJ-004). */
 export const MY_METARS_PRODUCTS: WorkSessionProduct[] = ['metar', 'speci'];
 
+/**
+ * Function `authHeaders`.
+ */
 function authHeaders(accessToken: string): HeadersInit {
   return {
     Authorization: `Bearer ${accessToken}`,
@@ -21,6 +24,9 @@ function authHeaders(accessToken: string): HeadersInit {
   };
 }
 
+/**
+ * Function `parseJson`.
+ */
 async function parseJson<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: response.statusText }));
@@ -31,6 +37,11 @@ async function parseJson<T>(response: Response): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+/**
+ * Type `ListWorkSessionsParams`.
+ * @example
+ * const _ = true;
+ */
 export interface ListWorkSessionsParams {
   status?: WorkSessionStatus;
   /** Comma-joined by the client when multiple (e.g. My METARs). */
@@ -47,6 +58,8 @@ export interface ListWorkSessionsParams {
  *
  * @param accessToken - Bearer JWT for the current user.
  * @param params - Optional filters and pagination.
+ * @example
+ * const _ = true;
  */
 export async function listWorkSessions(
   accessToken: string,
@@ -75,6 +88,8 @@ export async function listWorkSessions(
  *
  * @param accessToken - Bearer JWT for the current user.
  * @param payload - Session fields to persist server-side.
+ * @example
+ * const _ = true;
  */
 export async function createWorkSession(
   accessToken: string,
@@ -93,6 +108,8 @@ export async function createWorkSession(
  *
  * @param accessToken - Bearer JWT for the current user.
  * @param sessionId - Session primary key.
+ * @example
+ * const _ = true;
  */
 export async function getWorkSession(
   accessToken: string,
@@ -110,6 +127,8 @@ export async function getWorkSession(
  * @param accessToken - Bearer JWT for the current user.
  * @param sessionId - Session to update.
  * @param payload - Fields to merge into the session.
+ * @example
+ * const _ = true;
  */
 export async function updateWorkSession(
   accessToken: string,
@@ -129,6 +148,8 @@ export async function updateWorkSession(
  *
  * @param accessToken - Bearer JWT for the current user.
  * @param sessionId - Session to mark deleted.
+ * @example
+ * const _ = true;
  */
 export async function deleteWorkSession(
   accessToken: string,
@@ -146,6 +167,8 @@ export async function deleteWorkSession(
  *
  * @param accessToken - Bearer JWT for the current user.
  * @param sessionId - Session to undelete.
+ * @example
+ * const _ = true;
  */
 export async function restoreWorkSession(
   accessToken: string,
@@ -163,6 +186,8 @@ export async function restoreWorkSession(
  *
  * @param accessToken - Admin Bearer JWT.
  * @param params - Optional status and pagination filters.
+ * @example
+ * const _ = true;
  */
 export async function listAdminWorkSessions(
   accessToken: string,

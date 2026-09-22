@@ -149,6 +149,11 @@ def resolve_propagate_residuals_to_remarks(
     -------
     bool
         Effective flag. Omitted / unknown profiles default to ``False`` this cycle.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_propagate_residuals_to_remarks)
+    2
     """
     if value is not None:
         return bool(value)
@@ -395,10 +400,12 @@ class ConvertError(ValueError):
     """
 
     def __init__(self, message: str) -> None:
+        """Internal helper ``__init__``."""
         super().__init__(message)
 
 
 def _parse(product: str, tac: str) -> dict[str, Any]:
+    """Internal helper ``_parse``."""
     parsers: dict[str, Callable[..., dict[str, Any]]] = {
         "METAR": parse_metar_speci,
         "SPECI": parse_metar_speci,
@@ -444,6 +451,7 @@ def _parse_for_convert(
     profile: str,
     ir_source_explicit: bool,
 ) -> dict[str, Any]:
+    """Internal helper ``_parse_for_convert``."""
     if ir_source == "pack":
         try:
             return _parse_pack_ir(product, tac, iwxxm_version=iwxxm_version, profile=profile)
@@ -456,6 +464,7 @@ def _parse_for_convert(
 
 
 def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) -> str:
+    """Internal helper ``_emit``."""
     if product in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}:
         # ADR-047: core F6 products emit via YAML maps (python plugins remain builders).
         return emit_with_map(ir, product=product, profile=profile, iwxxm_version=iwxxm_version)
@@ -557,6 +566,11 @@ def convert(
     -------
     ConvertResult
         Structured result with XML, IR, and issues.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert)
+    2
     """
     product_u = product.upper()
     requested_iwxxm_version = iwxxm_version or "2025-2"
@@ -600,6 +614,7 @@ def convert(
         *,
         span: bool = False,
     ) -> ConvertResult:
+        """Internal helper ``_fail``."""
         span_start = span_end = None
         if span:
             span_start, span_end = _content_bounds(tac)

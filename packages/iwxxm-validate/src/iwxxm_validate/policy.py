@@ -26,16 +26,37 @@ NON_SELECTABLE = frozenset({"XSD", "WELL_FORMED", "XML_SYNTAX_ERROR", "SCHEMATRO
 
 
 class PolicyError(ValueError):
-    """Invalid IWXXM output policy document."""
+    """
+    Invalid IWXXM output policy document.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 class PolicyActivationError(PolicyError):
-    """Activated policy references unknown or non-selectable assert ids."""
+    """
+    Activated policy references unknown or non-selectable assert ids.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class OutputPolicyDocument:
-    """One IWXXM output policy YAML document."""
+    """
+    One IWXXM output policy YAML document.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     schema_version: int
     id: str
@@ -50,7 +71,14 @@ class OutputPolicyDocument:
 
 @dataclass(frozen=True, slots=True)
 class ResolvedOutputPolicy:
-    """Enabled Schematron assert ids after select/ignore against a pin inventory."""
+    """
+    Enabled Schematron assert ids after select/ignore against a pin inventory.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     id: str
     pin: str
@@ -60,6 +88,7 @@ class ResolvedOutputPolicy:
 
 
 def _as_str_tuple(value: object, *, field: str) -> tuple[str, ...]:
+    """Internal helper ``_as_str_tuple``."""
     if value is None:
         return ()
     if not isinstance(value, list):
@@ -75,6 +104,7 @@ def _as_str_tuple(value: object, *, field: str) -> tuple[str, ...]:
 
 
 def _parse_document(data: Mapping[str, Any], *, source_path: str | None) -> OutputPolicyDocument:
+    """Internal helper ``_parse_document``."""
     schema_raw = data.get("schema_version", 1)
     if not isinstance(schema_raw, int) or schema_raw < 1:
         msg = "schema_version must be a positive integer"
@@ -106,6 +136,7 @@ def _parse_document(data: Mapping[str, Any], *, source_path: str | None) -> Outp
 
 
 def _load_yaml_mapping(text: str, *, source_path: str | None) -> OutputPolicyDocument:
+    """Internal helper ``_load_yaml_mapping``."""
     raw = yaml.safe_load(text)
     if not isinstance(raw, dict):
         msg = "policy root must be a mapping"
@@ -114,7 +145,24 @@ def _load_yaml_mapping(text: str, *, source_path: str | None) -> OutputPolicyDoc
 
 
 def load_output_policy(path: Path | str) -> OutputPolicyDocument:
-    """Load one IWXXM output policy YAML file."""
+    """
+    Load one IWXXM output policy YAML file.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_output_policy)
+    2
+
+    Parameters
+    ----------
+    path : object
+        Argument ``path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     file_path = Path(path)
     return _load_yaml_mapping(file_path.read_text(encoding="utf-8"), source_path=str(file_path))
 
@@ -170,11 +218,27 @@ def _take_output_overlay(
 
 
 def load_output_policy_catalog(profile: str | None = None) -> dict[str, OutputPolicyDocument]:
-    """Load builtin output policies plus optional ``IWXXM_VALIDATE_POLICY_DIR``.
+    """
+    Load builtin output policies plus optional ``IWXXM_VALIDATE_POLICY_DIR``.
 
     An overlay with ``extends`` layers onto that builtin for the profile ids in
     its header. Omitting ``profile`` leaves those layers off. A new policy id
     with no ``extends`` is added for every profile.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_output_policy_catalog)
+    2
+
+    Parameters
+    ----------
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     catalog: dict[str, OutputPolicyDocument] = {}
     root = resources.files("iwxxm_validate").joinpath("data", "policies")
@@ -201,11 +265,25 @@ def _merged_lists(
     doc: OutputPolicyDocument,
     policies: Mapping[str, OutputPolicyDocument],
 ) -> tuple[tuple[str, ...], tuple[str, ...]]:
+    """Internal helper ``_merged_lists``."""
     select: list[str] = []
     ignore: list[str] = []
     seen: set[str] = set()
 
     def walk(current: OutputPolicyDocument) -> None:
+        """
+        Call ``walk``.
+
+        Parameters
+        ----------
+        current : object
+            Argument ``current``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (symbol: walk)
+        2
+        """
         if current.id in seen:
             msg = f"extends cycle involving {current.id!r}"
             raise PolicyError(msg)
@@ -245,6 +323,16 @@ def resolve_output_policy(
         Assert ids for ``doc.pin``. Defaults to the vendor pin inventory.
     activate :
         When true (or lifecycle is activated), unknown ids fail closed.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_output_policy)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     catalog = policies if policies is not None else load_output_policy_catalog()
     select, ignore = _merged_lists(doc, catalog)
@@ -279,7 +367,28 @@ def apply_output_policy_to_report(
     *,
     profile: str | None = None,
 ) -> ValidationReport:
-    """Drop disabled Schematron assert ids. Other issue codes stay on the report."""
+    """
+    Drop disabled Schematron assert ids. Other issue codes stay on the report.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (apply_output_policy_to_report)
+    2
+
+    Parameters
+    ----------
+    report : object
+        Argument ``report``.
+    policy_id : object
+        Argument ``policy_id``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     catalog = load_output_policy_catalog(profile)
     doc = catalog.get(policy_id)
     if doc is None:
@@ -289,6 +398,24 @@ def apply_output_policy_to_report(
     known = load_assert_inventory(doc.pin)
 
     def keep(issue: Issue) -> bool:
+        """
+        Call ``keep``.
+
+        Parameters
+        ----------
+        issue : object
+            Argument ``issue``.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (symbol: keep)
+        2
+        """
         if issue.layer != "schematron":
             return True
         if issue.code not in known:

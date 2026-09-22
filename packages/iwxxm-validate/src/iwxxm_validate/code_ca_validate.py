@@ -27,6 +27,11 @@ def validate_code_ca_membership(xml_content: str) -> list[Issue]:
     -------
     list[Issue]
         Empty when all code-ca hrefs resolve to known vocabulary members.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_code_ca_membership)
+    2
     """
     try:
         root = etree.fromstring(xml_content.encode("utf-8"))

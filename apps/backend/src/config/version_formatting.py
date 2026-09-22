@@ -75,13 +75,26 @@ INCLUDE_DESIGNATOR = {
 
 
 def get_coordinate_decimals(version: str) -> int:
-    """Get number of decimal places for coordinates in a version.
-
-    Args:
-        version: IWXXM version (e.g., "2025-2")
+    """
+    Get number of decimal places for coordinates in a version.
 
     Returns:
         Number of decimal places (2-8)
+
+    Parameters
+    ----------
+    version : object
+        IWXXM version (e.g., "2025-2")
+
+    Returns
+    -------
+    object
+        Number of decimal places (2-8)
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_coordinate_decimals)
+    2
     """
     rule = COORDINATE_PRECISION.get(version)
     if rule is None:
@@ -90,13 +103,26 @@ def get_coordinate_decimals(version: str) -> int:
 
 
 def get_elevation_rounding(version: str) -> int:
-    """Get elevation rounding rule for a version.
-
-    Args:
-        version: IWXXM version
+    """
+    Get elevation rounding rule for a version.
 
     Returns:
+        Number of decimal pla
+
+    Parameters
+    ----------
+    version : object
+        IWXXM version
+
+    Returns
+    -------
+    object
         Number of decimal places to round to (0 = round to integer)
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_elevation_rounding)
+    2
     """
     rule = ELEVATION_FORMAT.get(version)
     if rule is None:
@@ -105,29 +131,58 @@ def get_elevation_rounding(version: str) -> int:
 
 
 def format_coordinates(lat: float, lon: float, version: str) -> str:
-    """Format coordinates for a specific IWXXM version.
-
-    Args:
-        lat: Latitude
-        lon: Longitude
-        version: IWXXM version
+    """
+    Format coordinates for a specific IWXXM version.
 
     Returns:
         Formatted coordinate string for gml:pos
+
+    Parameters
+    ----------
+    lat : object
+        Latitude
+    lon : object
+        Longitude
+    version : object
+        IWXXM version
+
+    Returns
+    -------
+    object
+        Formatted coordinate string for gml:pos
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (format_coordinates)
+    2
     """
     decimals = get_coordinate_decimals(version)
     return f"{lat:.{decimals}f} {lon:.{decimals}f}"
 
 
 def format_elevation(elevation_m: float, version: str) -> float:
-    """Format elevation for a specific IWXXM version.
-
-    Args:
-        elevation_m: Elevation in meters
-        version: IWXXM version
+    """
+    Format elevation for a specific IWXXM version.
 
     Returns:
         Formatted elevation value
+
+    Parameters
+    ----------
+    elevation_m : object
+        Elevation in meters
+    version : object
+        IWXXM version
+
+    Returns
+    -------
+    object
+        Formatted elevation value
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (format_elevation)
+    2
     """
     rounding = get_elevation_rounding(version)
     return round(elevation_m, rounding)

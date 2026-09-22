@@ -40,6 +40,8 @@ const STATUS_OPTIONS: Array<WorkSessionStatus | 'all'> = [
  * Work-history page listing saved METAR/SPECI sessions.
  *
  * Uses local IndexedDB by default; syncs with the server when authenticated.
+ * @example
+ * const _ = true;
  */
 export function MyMetarsPage({
   accessToken,

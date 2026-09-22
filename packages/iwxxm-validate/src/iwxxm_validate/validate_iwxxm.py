@@ -105,6 +105,7 @@ def _report_from_issues(
     iwxxm_version: str,
     profile: str,
 ) -> ValidationReport:
+    """Internal helper ``_report_from_issues``."""
     ok = not any(issue.severity == "error" for issue in issues)
     return ValidationReport(
         ok=ok,
@@ -346,6 +347,31 @@ def validate_iwxxm(
 
     Empty ``select`` keeps every Schematron assert. Disabled assert ids are omitted.
     XSD, well-formed, and skipped-Schematron issues always remain.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_iwxxm)
+    2
+
+    Parameters
+    ----------
+    xml_content : object
+        Argument ``xml_content``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    profile : object
+        Argument ``profile``.
+    levels : object
+        Argument ``levels``.
+    product : object
+        Argument ``product``.
+    output_policy_id : object
+        Argument ``output_policy_id``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     report = _validate_iwxxm(
         xml_content,

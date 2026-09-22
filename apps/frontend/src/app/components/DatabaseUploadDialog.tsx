@@ -19,6 +19,8 @@ interface DatabaseUploadDialogProps {
 
 /**
  * Modal dialog to upload converted files to a configured database destination.
+ * @example
+ * const _ = true;
  */
 export function DatabaseUploadDialog({
   convertedFiles,

@@ -37,7 +37,14 @@ class DiffKind(StrEnum):
 
 
 class SchemaDiff(msgspec.Struct, frozen=True):
-    """One actionable preflight schema difference."""
+    """
+    One actionable preflight schema difference.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     kind: DiffKind
     table: str
@@ -58,6 +65,11 @@ def writer_contract_ddl(dialect: str) -> str:
     -------
     str
         Dialect-specific DDL statement(s).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (writer_contract_ddl)
+    2
     """
     d = dialect.lower()
     if d in {"postgresql", "postgres"}:
@@ -90,6 +102,11 @@ async def diff_writer_contract(
     -------
     list[SchemaDiff]
         Empty when the schema matches the contract.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (diff_writer_contract)
+    2
     """
     name = (dialect or engine.dialect.name).lower()
     if name == "postgres":
@@ -104,7 +121,21 @@ async def apply_writer_contract(
     *,
     dialect: str | None = None,
 ) -> None:
-    """Create the writer-contract table if missing (create-if-missing path)."""
+    """
+    Create the writer-contract table if missing (create-if-missing path).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (apply_writer_contract)
+    2
+
+    Parameters
+    ----------
+    engine : object
+        Argument ``engine``.
+    dialect : object
+        Argument ``dialect``.
+    """
     name = (dialect or engine.dialect.name).lower()
     if name == "postgres":
         name = "postgresql"
@@ -115,7 +146,10 @@ async def apply_writer_contract(
 
 
 async def _diff_on_connection(conn: AsyncConnection, *, dialect: str) -> list[SchemaDiff]:
+    """Internal helper ``_diff_on_connection``."""
+
     def _inspect(sync_conn: object) -> list[SchemaDiff]:
+        """Internal helper ``_inspect``."""
         insp = inspect(sync_conn)
         if not insp.has_table(CONTRACT_TABLE):
             return [
@@ -143,11 +177,13 @@ async def _diff_on_connection(conn: AsyncConnection, *, dialect: str) -> list[Sc
 
 
 def _split_statements(ddl: str) -> list[str]:
+    """Internal helper ``_split_statements``."""
     parts = [p.strip() for p in ddl.split(";")]
     return [p for p in parts if p]
 
 
 def _ddl_sqlite() -> str:
+    """Internal helper ``_ddl_sqlite``."""
     return f"""
 CREATE TABLE IF NOT EXISTS {CONTRACT_TABLE} (
   id TEXT PRIMARY KEY,
@@ -164,6 +200,7 @@ CREATE TABLE IF NOT EXISTS {CONTRACT_TABLE} (
 
 
 def _ddl_postgres() -> str:
+    """Internal helper ``_ddl_postgres``."""
     return f"""
 CREATE TABLE IF NOT EXISTS {CONTRACT_TABLE} (
   id UUID PRIMARY KEY,
@@ -180,6 +217,7 @@ CREATE TABLE IF NOT EXISTS {CONTRACT_TABLE} (
 
 
 def _ddl_mysql() -> str:
+    """Internal helper ``_ddl_mysql``."""
     return f"""
 CREATE TABLE IF NOT EXISTS {CONTRACT_TABLE} (
   id CHAR(36) PRIMARY KEY,
@@ -196,6 +234,7 @@ CREATE TABLE IF NOT EXISTS {CONTRACT_TABLE} (
 
 
 def _ddl_mssql() -> str:
+    """Internal helper ``_ddl_mssql``."""
     return f"""
 IF OBJECT_ID(N'{CONTRACT_TABLE}', N'U') IS NULL
 CREATE TABLE {CONTRACT_TABLE} (

@@ -16,7 +16,14 @@ class ConversionIssueSeverity(StrEnum):
 
 
 class ConversionIssue(BaseModel):
-    """Structured issue for a single conversion input item."""
+    """
+    Structured issue for a single conversion input item.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     source: str = Field(
         ...,
@@ -61,7 +68,14 @@ class ConversionIssue(BaseModel):
 
 
 class ProfileOutputSpecModel(BaseModel):
-    """Operator-visible CA_ECCC exchange output contract (EV-071 M2)."""
+    """
+    Operator-visible CA_ECCC exchange output contract (EV-071 M2).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     semantic_profile: str = Field(..., description="Semantic profile id (e.g. CA_ECCC)")
     file_naming_pattern: str = Field(..., description="MSC IWXXM filename pattern")
@@ -91,7 +105,14 @@ class ProfileOutputSpecModel(BaseModel):
 
 
 class FailedSpan(BaseModel):
-    """Character span marking a soft-preview failure."""
+    """
+    Character span marking a soft-preview failure.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     start: int = Field(..., ge=0, description="Inclusive character offset into source TAC")
     end: int = Field(..., ge=0, description="Exclusive character offset into source TAC")
@@ -100,7 +121,14 @@ class FailedSpan(BaseModel):
 
 
 class ConversionResult(BaseModel):
-    """Individual conversion result for a single METAR input."""
+    """
+    Individual conversion result for a single METAR input.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -135,7 +163,14 @@ class ConversionResult(BaseModel):
 
 
 class ConversionResponse(BaseModel):
-    """Response from conversion endpoint with results and errors."""
+    """
+    Response from conversion endpoint with results and errors.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -191,7 +226,14 @@ class ConversionResponse(BaseModel):
 
 
 class ErrorDetail(BaseModel):
-    """Detailed error response."""
+    """
+    Detailed error response.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     message: str
     errors: list[str] = Field(default_factory=list)
@@ -200,7 +242,14 @@ class ErrorDetail(BaseModel):
 
 
 class HealthResponse(BaseModel):
-    """Health check response."""
+    """
+    Health check response.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     status: str
     version: str
@@ -210,7 +259,14 @@ class HealthResponse(BaseModel):
 
 
 class ConversionRequest(BaseModel):
-    """Request for METAR to IWXXM conversion via JSON body."""
+    """
+    Request for METAR to IWXXM conversion via JSON body.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={

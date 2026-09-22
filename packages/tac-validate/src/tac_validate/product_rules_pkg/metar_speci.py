@@ -18,6 +18,7 @@ from tac_validate.theme_checks import (
 
 
 def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> list[Issue]:
+    """Internal helper ``_check_metar_speci``."""
     start, end, body = _body_span(tac)
     upper = body.upper()
     # Drop trailing '=' for token scans.

@@ -33,7 +33,14 @@ DRAWER_SINK_TYPES: tuple[SinkType, ...] = (
 
 
 class SchemaDiffItem(msgspec.Struct, frozen=True):
-    """One schema difference returned from dissemination preflight."""
+    """
+    One schema difference returned from dissemination preflight.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     kind: str
     table: str
@@ -42,7 +49,14 @@ class SchemaDiffItem(msgspec.Struct, frozen=True):
 
 
 class PreflightRequest(msgspec.Struct, frozen=True):
-    """Preflight a destination sink before operator send."""
+    """
+    Preflight a destination sink before operator send.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     dissemination_template_id: str | None = None
     sink_type: SinkType | None = None
@@ -54,7 +68,14 @@ class PreflightRequest(msgspec.Struct, frozen=True):
 
 
 class PreflightResponse(msgspec.Struct, frozen=True):
-    """Preflight outcome with connectivity, schema diffs, and optional handle."""
+    """
+    Preflight outcome with connectivity, schema diffs, and optional handle.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     ok: bool
     connectivity_ok: bool
@@ -64,7 +85,14 @@ class PreflightResponse(msgspec.Struct, frozen=True):
 
 
 class SendRequest(msgspec.Struct, frozen=True):
-    """Send IWXXM (and optional TAC) to a preflighted or one-shot destination."""
+    """
+    Send IWXXM (and optional TAC) to a preflighted or one-shot destination.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     dissemination_template_id: str | None = None
     dissemination_library_id: str | None = None
@@ -79,7 +107,14 @@ class SendRequest(msgspec.Struct, frozen=True):
 
 
 class SendResponse(msgspec.Struct, frozen=True):
-    """Send outcome with optional object-store upload key metadata."""
+    """
+    Send outcome with optional object-store upload key metadata.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     ok: bool
     kv_upload_key: str | None = None

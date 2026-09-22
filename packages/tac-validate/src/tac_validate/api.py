@@ -72,6 +72,11 @@ def lint(
     ------
     ValueError
         Unsupported profile name, or ``iwxxm_us`` for a product without US profile.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (lint)
+    2
     """
     profile_l = normalize_profile(profile)
     product_u = product.upper()

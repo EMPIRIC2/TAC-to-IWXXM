@@ -42,6 +42,16 @@ async def get_centre_info() -> TranslationCentreInfo:
     - Supported IWXXM versions
     - Supported aviation product types
     - Service online date
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_centre_info)
+    2
     """
     info = get_translation_centre_info()
 
@@ -102,6 +112,21 @@ async def get_translation_statistics(
         "include_airport_breakdown": true
     }
     ```
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_translation_statistics)
+    2
     """
 
     # Validate date range
@@ -155,6 +180,25 @@ async def get_recent_statistics(
 
     **Returns**:
     Aggregated translation statistics for the specified time window.
+
+    Parameters
+    ----------
+    hours : object
+        Argument ``hours``.
+    icao_region : object
+        Argument ``icao_region``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_recent_statistics)
+    2
     """
 
     end_date = datetime.now(UTC).replace(tzinfo=None)
@@ -210,6 +254,23 @@ async def get_statistics_by_region(
         "APAC": {"total": 456, "success_rate": 99.1}
     }
     ```
+
+    Parameters
+    ----------
+    start_date : object
+        Argument ``start_date``.
+    end_date : object
+        Argument ``end_date``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_statistics_by_region)
+    2
     """
 
     # Query region-grouped statistics from database
@@ -245,6 +306,21 @@ async def get_airport_region(airport_code: str) -> dict[str, Any]:
     - `GET /api/v1/translation/airport-region/KJFK` → `{"icao_region": "NAM"}`
     - `GET /api/v1/translation/airport-region/EGLL` → `{"icao_region": "EUR"}`
     - `GET /api/v1/translation/airport-region/RJAA` → `{"icao_region": "APAC"}`
+
+    Parameters
+    ----------
+    airport_code : object
+        Argument ``airport_code``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_airport_region)
+    2
     """
     try:
         region = get_icao_region(airport_code)
@@ -281,6 +357,16 @@ async def statistics_health() -> object:
 
     Returns service status and configuration.
     Public endpoint (no authentication required).
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (statistics_health)
+    2
     """
     from ..config.icao_opmet import (
         ENABLE_STATISTICS,

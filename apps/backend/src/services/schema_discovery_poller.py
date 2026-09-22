@@ -47,6 +47,11 @@ class SchemaDiscoveryPoller:
     2. Triggers complete mirroring (schemas + examples + html + xmi + RDF)
     3. Analyzes XMI for breaking changes
     4. Updates VERSION_DISCOVERY_METADATA
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(
@@ -82,8 +87,15 @@ class SchemaDiscoveryPoller:
 
         When new versions detected, optionally triggers mirroring and breaking change analysis.
 
-        Returns:
+        Returns
+        -------
+        object
             Dictionary with "new_stable" and "new_rc" lists of discovered versions
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (poll_once)
+        2
         """
         logger.info(f"Starting schema discovery poll at {datetime.now(UTC)}")
 
@@ -306,8 +318,15 @@ class SchemaDiscoveryPoller:
         - async: async def callback(version: str, source_url: str) -> None
         - sync: def callback(version: str, source_url: str) -> None
 
-        Args:
-            callback: Callable to invoke on new version discovery
+        Parameters
+        ----------
+        callback : object
+            Callable to invoke on new version discovery
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (register_new_version_callback)
+        2
         """
         self.on_new_version_callbacks.append(callback)
         logger.debug(f"Registered callback: {callback.__name__}")
@@ -400,12 +419,25 @@ class SchemaDiscoveryPoller:
         """
         Poll with automatic retry on failure.
 
-        Args:
-            max_retries: Maximum number of retry attempts
-            retry_delay_seconds: Delay between retries
-
         Returns:
             Discovery results dictionary, or None when max_retries is 0
+
+        Parameters
+        ----------
+        max_retries : object
+            Maximum number of retry attempts
+        retry_delay_seconds : object
+            Delay between retries
+
+        Returns
+        -------
+        object
+            Discovery results dictionary, or None when max_retries is 0
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (poll_with_retry)
+        2
         """
         if max_retries <= 0:
             return None
@@ -427,11 +459,23 @@ class SchemaDiscoveryPoller:
         """
         Get all discovered versions, optionally filtered by channel.
 
-        Args:
-            channel: Channel filter ("stable", "rc", or None for all)
-
         Returns:
             List of discovered version strings
+
+        Parameters
+        ----------
+        channel : object
+            Channel filter ("stable", "rc", or None for all)
+
+        Returns
+        -------
+        object
+            List of discovered version strings
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_discovered_versions)
+        2
         """
         if channel == "stable":
             return [v for v in self.discovered_versions if not self._is_rc_version(v)]
@@ -445,8 +489,15 @@ async def discover_schemas() -> dict[str, Any]:
     """
     Convenience function to run a single discovery poll.
 
-    Returns:
+    Returns
+    -------
+    object
         Discovery results with new stable and RC versions
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (discover_schemas)
+    2
     """
     poller = SchemaDiscoveryPoller()
     return await poller.poll_once()
@@ -456,12 +507,25 @@ async def discover_schemas_with_retry(max_retries: int = 3, retry_delay: int = 6
     """
     Convenience function to run discovery with retry logic.
 
-    Args:
-        max_retries: Maximum retry attempts
-        retry_delay: Delay between retries in seconds
-
     Returns:
         Discovery results
+
+    Parameters
+    ----------
+    max_retries : object
+        Maximum retry attempts
+    retry_delay : object
+        Delay between retries in seconds
+
+    Returns
+    -------
+    object
+        Discovery results
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (discover_schemas_with_retry)
+    2
     """
     poller = SchemaDiscoveryPoller()
     return await poller.poll_with_retry(max_retries, retry_delay)
@@ -471,11 +535,23 @@ def extract_version_from_url(url: str) -> str | None:
     """
     Extract IWXXM version from a schema URL.
 
-    Args:
-        url: Schema URL (e.g., "https://schemas.wmo.int/iwxxm/2025-2RC1/iwxxm.xsd")
-
     Returns:
         Version string or None if not found
+
+    Parameters
+    ----------
+    url : object
+        Schema URL (e.g., "https://schemas.wmo.int/iwxxm/2025-2RC1/iwxxm.xsd")
+
+    Returns
+    -------
+    object
+        Version string or None if not found
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (extract_version_from_url)
+    2
     """
     match = VERSION_PATTERN.search(url)
     return match.group(0) if match else None

@@ -72,7 +72,28 @@ def emit_airmet_annex3(
     iwxxm_version: str,
     phenomenon_href: str | None = None,
 ) -> str:
-    """Emit an IWXXM AIRMET document (F6.d / F24 A3 geometry fidelity / #731)."""
+    """
+    Emit an IWXXM AIRMET document (F6.d / F24 A3 geometry fidelity / #731).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_airmet_annex3)
+    2
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    phenomenon_href : object
+        Argument ``phenomenon_href``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])

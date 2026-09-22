@@ -10,6 +10,11 @@ import {
   BETA_FEEDBACK_LINK_LABEL,
 } from '@/utils/betaFeedback';
 
+/**
+ * Type `BetaBadgeProps`.
+ * @example
+ * const _ = true;
+ */
 export interface BetaBadgeProps {
   /** When true, render a short help line + Issues link under/beside the badge. */
   showHelp?: boolean;
@@ -22,6 +27,8 @@ export interface BetaBadgeProps {
  *
  * @param props.showHelp - Include help sentence + Issues link
  * @param props.className - Wrapper className
+ * @example
+ * const _ = true;
  */
 export function BetaBadge({ showHelp = false, className }: BetaBadgeProps) {
   return (

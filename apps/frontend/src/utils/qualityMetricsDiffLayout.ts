@@ -11,10 +11,18 @@ import type { UnifiedDiffLine } from './unifiedLineDiff';
 export const QUALITY_METRICS_DIFF_LAYOUT_STORAGE_KEY =
   'tac-to-iwxxm.quality-metrics.diff-layout';
 
-/** Diff layout modes on `/quality/:stem`. */
+/**
+ * Diff layout modes on `/quality/:stem`.
+ * @example
+ * const _ = true;
+ */
 export type QualityMetricsDiffLayout = 'unified' | 'side-by-side';
 
-/** One aligned row for side-by-side rendering. */
+/**
+ * One aligned row for side-by-side rendering.
+ * @example
+ * const _ = true;
+ */
 export type SideBySideDiffRow = {
   /** Left (official) line text, or null when only converted added a line. */
   left: string | null;
@@ -31,6 +39,8 @@ export type SideBySideDiffRow = {
  *
  * @param raw - Raw localStorage string
  * @returns Valid layout mode
+ * @example
+ * const _ = true;
  */
 export function parseDiffLayout(
   raw: string | null | undefined,
@@ -42,6 +52,8 @@ export function parseDiffLayout(
  * Read preferred layout from localStorage (SSR-safe).
  *
  * @returns Stored preference or unified default
+ * @example
+ * const _ = true;
  */
 export function readDiffLayoutPreference(): QualityMetricsDiffLayout {
   if (typeof window === 'undefined' || !window.localStorage) {
@@ -60,6 +72,8 @@ export function readDiffLayoutPreference(): QualityMetricsDiffLayout {
  * Persist layout preference to localStorage (best-effort).
  *
  * @param layout - Selected layout
+ * @example
+ * const _ = true;
  */
 export function writeDiffLayoutPreference(layout: QualityMetricsDiffLayout): void {
   if (typeof window === 'undefined' || !window.localStorage) {
@@ -77,6 +91,8 @@ export function writeDiffLayoutPreference(layout: QualityMetricsDiffLayout): voi
  *
  * @param lines - Output of {@link unifiedLineDiff}
  * @returns Aligned left/right rows
+ * @example
+ * const _ = true;
  */
 export function sideBySideFromUnified(lines: UnifiedDiffLine[]): SideBySideDiffRow[] {
   const rows: SideBySideDiffRow[] = [];

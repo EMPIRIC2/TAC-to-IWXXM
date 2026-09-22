@@ -25,6 +25,11 @@ def check_pack_overlay_dir(directory: Path | str, *, profile: str = "annex3") ->
     ------
     Exception
         Propagates loader failures (unknown ``extends``, bad headers, etc.).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_pack_overlay_dir)
+    2
     """
     path = Path(directory).expanduser().resolve()
     if not path.is_dir():

@@ -28,6 +28,9 @@ const PREFERRED_CATALOG_TAGS = [
   'airmet',
 ] as const;
 
+/**
+ * Function `catalogTagOptionsFromEntries`.
+ */
 function catalogTagOptionsFromEntries(entries: LintIssueCatalogEntry[]): string[] {
   const present = new Set(
     entries.flatMap((entry) => (entry.tags ?? []).map((t) => t.toLowerCase())),
@@ -44,6 +47,11 @@ function catalogTagOptionsFromEntries(entries: LintIssueCatalogEntry[]): string[
   return [...preferred, ...rest];
 }
 
+/**
+ * Type `WorkbenchConsoleProps`.
+ * @example
+ * const _ = true;
+ */
 export interface WorkbenchConsoleProps {
   lines: LiveWorkbenchConsoleLine[];
   onClear?: () => void;
@@ -58,6 +66,9 @@ export interface WorkbenchConsoleProps {
   catalogEntries?: LintIssueCatalogEntry[];
 }
 
+/**
+ * Function `messageWithCodeTooltips`.
+ */
 function messageWithCodeTooltips(
   message: string,
   catalogByCode: Map<string, LintIssueCatalogEntry> | undefined,
@@ -91,6 +102,8 @@ function messageWithCodeTooltips(
  * @param props.minLogLevel - Filter lines below this severity (client-side)
  * @param props.catalogByCode - Optional registry map for code tooltips
  * @param props.catalogEntries - Optional full catalog for the lightweight panel
+ * @example
+ * const _ = true;
  */
 export function WorkbenchConsole({
   lines,

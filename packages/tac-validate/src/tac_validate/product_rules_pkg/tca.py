@@ -66,6 +66,7 @@ def _check_us_faa_nws_swxa_overlay(body: str, *, start: int, profile: str) -> li
 
 
 def _check_tca(tac: str, *, profile: str = "annex3") -> list[Issue]:
+    """Internal helper ``_check_tca``."""
     start, end, body = _body_span(tac)
     issues: list[Issue] = []
     if not _DTG_LINE.search(body):

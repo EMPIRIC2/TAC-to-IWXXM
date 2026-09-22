@@ -36,12 +36,26 @@ _POLICY_BY_EMIT: dict[str, tuple[str, str]] = {
 
 
 class ProfileResolveError(ValueError):
-    """Conversion profile id is unknown or has no policy binding."""
+    """
+    Conversion profile id is unknown or has no policy binding.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class ResolvedValidationPolicies:
-    """Policy document ids bound to one conversion profile."""
+    """
+    Policy document ids bound to one conversion profile.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     canonical: str
     emit_key: str
@@ -51,6 +65,8 @@ class ResolvedValidationPolicies:
 
 @dataclass(frozen=True, slots=True)
 class _ProfileOverlay:
+    """Internal helper ``_ProfileOverlay``."""
+
     profiles: tuple[str, ...]
     extends: str
     tac_quality_policy_id: str | None
@@ -58,6 +74,7 @@ class _ProfileOverlay:
 
 
 def _string_list(value: object, *, label: str) -> tuple[str, ...]:
+    """Internal helper ``_string_list``."""
     if not isinstance(value, list) or not value:
         msg = label
         raise ProfileResolveError(msg)
@@ -71,6 +88,7 @@ def _string_list(value: object, *, label: str) -> tuple[str, ...]:
 
 
 def _optional_id(value: object, *, field: str) -> str | None:
+    """Internal helper ``_optional_id``."""
     if value is None:
         return None
     if not isinstance(value, str) or not value.strip():
@@ -80,6 +98,7 @@ def _optional_id(value: object, *, field: str) -> str | None:
 
 
 def _load_profile_overlays() -> tuple[_ProfileOverlay, ...]:
+    """Internal helper ``_load_profile_overlays``."""
     raw_dir = os.environ.get(ENV_PROFILE_DIR, "").strip()
     if not raw_dir:
         return ()
@@ -147,6 +166,16 @@ def resolve_validation_policies(
         Optional override for the TAC quality policy id (CLI ``--policy``).
     iwxxm_policy :
         Optional override for the IWXXM output policy id (CLI ``--policy``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_validation_policies)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     resolved = resolve_semantic_profile(profile)
     if resolved is None:

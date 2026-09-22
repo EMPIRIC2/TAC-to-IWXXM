@@ -7,6 +7,9 @@
 
 import { supabase } from '../utils/supabase/client';
 
+/**
+ * Function `testSupabaseConnection`.
+ */
 async function testSupabaseConnection() {
   console.log('\n🧪 Testing Supabase Integration...\n');
 

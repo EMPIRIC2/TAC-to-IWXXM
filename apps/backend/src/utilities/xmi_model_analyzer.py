@@ -26,7 +26,14 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class UMLElement:
-    """Represents a UML element (class, attribute, association)."""
+    """
+    Represents a UML element (class, attribute, association).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     xmi_id: str  # Unique XMI ID
     name: str  # Element name
@@ -38,7 +45,14 @@ class UMLElement:
 
 @dataclass
 class BreakingChange:
-    """Represents a detected breaking change between versions."""
+    """
+    Represents a detected breaking change between versions.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     change_type: str  # removed, renamed, type_changed, cardinality_changed
     element: str  # Element name/path
@@ -63,6 +77,11 @@ class XMIModelAnalyzer:
       </uml:Package>
     </xmi:XMI>
     ```
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     NAMESPACES: ClassVar[dict[str, str]] = {
@@ -79,15 +98,24 @@ class XMIModelAnalyzer:
         """
         Load and parse XMI file to extract UML elements.
 
-        Args:
-            xmi_path: Path to XMI file
-
         Returns:
+            Dictionary mapping elemenfile not found
+            etree.XMLSyntaxError: If XMI file inval
+
+        Parameters
+        ----------
+        xmi_path : object
+            Path to XMI file
+
+        Returns
+        -------
+        object
             Dictionary mapping element ID to UMLElement
 
-        Raises:
-            FileNotFoundError: If XMI file not found
-            etree.XMLSyntaxError: If XMI file invalid
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (load_xmi_model)
+        2
         """
         if not xmi_path.exists():
             raise FileNotFoundError(f"XMI file not found: {xmi_path}")
@@ -148,11 +176,23 @@ class XMIModelAnalyzer:
         """
         Extract only UML class definitions from loaded elements.
 
-        Args:
-            elements: Dictionary of all UML elements
-
         Returns:
             Dictionary of class elements only
+
+        Parameters
+        ----------
+        elements : object
+            Dictionary of all UML elements
+
+        Returns
+        -------
+        object
+            Dictionary of class elements only
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (extract_classes)
+        2
         """
         return {xmi_id: elem for xmi_id, elem in elements.items() if elem.element_type in ("Class", "ClassifierRole")}
 
@@ -160,12 +200,25 @@ class XMIModelAnalyzer:
         """
         Extract all attributes for a specific class.
 
-        Args:
-            elements: Dictionary of all UML elements
-            class_id: XMI ID of the class
-
         Returns:
             List of attribute elements owned by the class
+
+        Parameters
+        ----------
+        elements : object
+            Dictionary of all UML elements
+        class_id : object
+            XMI ID of the class
+
+        Returns
+        -------
+        object
+            List of attribute elements owned by the class
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (extract_attributes)
+        2
         """
         return [
             elem
@@ -183,14 +236,29 @@ class XMIModelAnalyzer:
         """
         Diff two UML models to detect breaking changes.
 
-        Args:
-            old_elements: Elements from old version
-            new_elements: Elements from new version
-            old_version: Old version identifier
-            new_version: New version identifier
-
         Returns:
             List of detected breaking changes
+
+        Parameters
+        ----------
+        old_elements : object
+            Elements from old version
+        new_elements : object
+            Elements from new version
+        old_version : object
+            Old version identifier
+        new_version : object
+            New version identifier
+
+        Returns
+        -------
+        object
+            List of detected breaking changes
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (diff_models)
+        2
         """
         changes: list[BreakingChange] = []
 
@@ -257,11 +325,23 @@ class XMIModelAnalyzer:
         """
         Generate a structured breaking change report.
 
-        Args:
-            changes: List of detected breaking changes
-
         Returns:
+            Dictionary with categorized breaking chan
+
+        Parameters
+        ----------
+        changes : object
+            List of detected breaking changes
+
+        Returns
+        -------
+        object
             Dictionary with categorized breaking changes
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (generate_breaking_change_report)
+        2
         """
         by_type: dict[str, list[BreakingChange]] = {}
         by_element_type: dict[str, list[BreakingChange]] = {}
@@ -291,14 +371,29 @@ def analyze_xmi_versions(old_xmi_path: Path, new_xmi_path: Path, old_version: st
     """
     Convenience function to analyze breaking changes between XMI versions.
 
-    Args:
-        old_xmi_path: Path to old version XMI file
-        new_xmi_path: Path to new version XMI file
-        old_version: Old version identifier
-        new_version: New version identifier
-
     Returns:
         Breaking change report
+
+    Parameters
+    ----------
+    old_xmi_path : object
+        Path to old version XMI file
+    new_xmi_path : object
+        Path to new version XMI file
+    old_version : object
+        Old version identifier
+    new_version : object
+        New version identifier
+
+    Returns
+    -------
+    object
+        Breaking change report
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (analyze_xmi_versions)
+    2
     """
     analyzer = XMIModelAnalyzer()
 

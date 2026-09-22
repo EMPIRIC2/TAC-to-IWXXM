@@ -11,7 +11,6 @@ from __future__ import annotations
 import argparse
 import ast
 import re
-import sys
 from pathlib import Path
 
 SKIP_DIR_NAMES = {
@@ -87,7 +86,9 @@ def _doc_ok_private(doc: str | None) -> bool:
     return bool(doc and doc.strip())
 
 
-def _doc_ok_public_fn(doc: str | None, *, has_args: bool, has_return: bool) -> list[str]:
+def _doc_ok_public_fn(
+    doc: str | None, *, has_args: bool, has_return: bool
+) -> list[str]:
     """Return list of public-function shape violations for ``doc``."""
     issues: list[str] = []
     if not doc or not doc.strip():
@@ -154,7 +155,9 @@ def check_file(path: Path) -> list[str]:
                 # Document the type; methods inside stubs exempt.
                 doc = ast.get_docstring(node)
                 if not doc or not doc.strip():
-                    missing.append(f"{path}:{node.lineno} class {node.name}: missing docstring")
+                    missing.append(
+                        f"{path}:{node.lineno} class {node.name}: missing docstring"
+                    )
                 self._stub_depth += 1
                 self.generic_visit(node)
                 self._stub_depth -= 1
@@ -178,7 +181,9 @@ def check_file(path: Path) -> list[str]:
             public = not node.name.startswith("_")
             if not public:
                 if not _doc_ok_private(doc):
-                    missing.append(f"{path}:{node.lineno} function {node.name}: missing docstring")
+                    missing.append(
+                        f"{path}:{node.lineno} function {node.name}: missing docstring"
+                    )
                 return
             issues = _doc_ok_public_fn(
                 doc,

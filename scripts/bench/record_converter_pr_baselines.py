@@ -43,9 +43,7 @@ def main() -> int:
     )
     args = parser.parse_args()
     baselines = load_converter_pr_baselines()
-    data = record_baselines_dict(
-        baselines, status=args.status, recorded_host=args.host
-    )
+    data = record_baselines_dict(baselines, status=args.status, recorded_host=args.host)
     data["recorded"] = date.today().isoformat()
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(

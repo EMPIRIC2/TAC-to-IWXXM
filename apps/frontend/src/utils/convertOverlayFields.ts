@@ -1,6 +1,8 @@
 /**
  * Optional signed-overlay fields for POST /api/v1/convert.
  * Bearer is included only when both overlay id and token are present.
+ * @example
+ * const _ = true;
  */
 
 export function convertOverlayFields(

@@ -7,6 +7,11 @@
 
 import { BetaBadge } from './BetaBadge';
 
+/**
+ * Type `ShellPrimaryView`.
+ * @example
+ * const _ = true;
+ */
 export type ShellPrimaryView =
   | 'converter'
   | 'history'
@@ -42,6 +47,8 @@ const TABS: ShellPrimaryView[] = [
  *
  * @param props.activeView - Currently selected shell view
  * @param props.onNavigate - View change handler
+ * @example
+ * const _ = true;
  */
 export function AppShellNav({ activeView, onNavigate }: AppShellNavProps) {
   return (

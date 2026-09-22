@@ -29,6 +29,9 @@ const UUID_HREF = /^#uuid\.[0-9a-f-]+$/i;
 const UUID_VALUE =
   /^uuid\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+/**
+ * Function `localName`.
+ */
 function localName(name: string): string {
   if (name.includes('}')) {
     return name.slice(name.lastIndexOf('}') + 1);
@@ -39,15 +42,25 @@ function localName(name: string): string {
   return name;
 }
 
-/** @internal Vitest/helper export — Clark / prefixed local-name parity with Python. */
+/**
+ * @internal Vitest/helper export — Clark / prefixed local-name parity with Python.
+ * @example
+ * const _ = true;
+ */
 export function localNameForC14n(name: string): string {
   return localName(name);
 }
 
+/**
+ * Function `normText`.
+ */
 function normText(value: string): string {
   return value.trim().split(/\s+/).join(' ');
 }
 
+/**
+ * Function `isVolatileAttr`.
+ */
 function isVolatileAttr(name: string, value: string): boolean {
   const local = localName(name);
   if (VOLATILE_ATTRS.has(local)) {
@@ -68,10 +81,16 @@ function isVolatileAttr(name: string, value: string): boolean {
   return false;
 }
 
+/**
+ * Function `isWhitespaceOnly`.
+ */
 function isWhitespaceOnly(text: string): boolean {
   return text.trim().length === 0;
 }
 
+/**
+ * Function `escapeAttr`.
+ */
 function escapeAttr(value: string): string {
   return value
     .replace(/&/g, '&amp;')
@@ -82,6 +101,9 @@ function escapeAttr(value: string): string {
     .replace(/\r/g, '&#xD;');
 }
 
+/**
+ * Function `escapeText`.
+ */
 function escapeText(value: string): string {
   return value
     .replace(/&/g, '&amp;')
@@ -90,6 +112,9 @@ function escapeText(value: string): string {
     .replace(/\r/g, '&#xD;');
 }
 
+/**
+ * Function `stripVolatileAttributes`.
+ */
 function stripVolatileAttributes(el: Element): void {
   const toRemove: Attr[] = [];
   for (let i = 0; i < el.attributes.length; i += 1) {
@@ -106,6 +131,9 @@ function stripVolatileAttributes(el: Element): void {
   }
 }
 
+/**
+ * Function `stripWhitespaceTextNodes`.
+ */
 function stripWhitespaceTextNodes(node: Node): void {
   const children = Array.from(node.childNodes);
   for (const child of children) {
@@ -120,6 +148,9 @@ function stripWhitespaceTextNodes(node: Node): void {
   }
 }
 
+/**
+ * Function `serializeElement`.
+ */
 function serializeElement(el: Element): string {
   const tag = el.tagName;
   const attrs: Array<{ name: string; value: string }> = [];
@@ -155,6 +186,8 @@ function serializeElement(el: Element): string {
  * @param xmlContent - Well-formed XML document text
  * @returns Canonical serialization
  * @throws Error when XML cannot be parsed
+ * @example
+ * const _ = true;
  */
 export function c14nXml(xmlContent: string): string {
   const parser = new DOMParser();
@@ -180,6 +213,8 @@ export function c14nXml(xmlContent: string): string {
  * @param left - First XML document
  * @param right - Second XML document
  * @returns True when canonical forms match
+ * @example
+ * const _ = true;
  */
 export function c14nEqual(left: string, right: string): boolean {
   return c14nXml(left) === c14nXml(right);

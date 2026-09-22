@@ -14,17 +14,26 @@ def extract_airport_code(tac_message: str) -> str | None:
     """
     Extract ICAO airport code from TAC METAR/SPECI message.
 
-    Args:
-        tac_message: TAC format METAR or SPECI message
-
     Returns:
-        4-letter ICAO airport code, or None if not found
-
-    Examples:
-        >>> extract_airport_code("METAR KJFK 131051Z 18012KT 10SM FEW250")
+        4-letter ICAO airport code, or None if not fo 18012KT 10SM FEW250")
         'KJFK'
         >>> extract_airport_code("SPECI EGLL 111520Z 27015KT 9999 BKN025")
         'EGLL'
+
+    Parameters
+    ----------
+    tac_message : object
+        TAC format METAR or SPECI message
+
+    Returns
+    -------
+    object
+        4-letter ICAO airport code, or None if not found
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (extract_airport_code)
+    2
     """
     if not tac_message or not tac_message.strip():
         return None

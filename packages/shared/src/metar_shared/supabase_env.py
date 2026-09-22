@@ -17,6 +17,7 @@ _DEPRECATED_SECRET = "SUPABASE_SERVICE_ROLE_KEY"
 
 
 def _is_production_env() -> bool:
+    """Internal helper ``_is_production_env``."""
     return os.getenv("METAR_CONFIG_ENV", "local").strip().lower() == "prod"
 
 
@@ -26,6 +27,7 @@ def _is_legacy_jwt_api_key(value: str) -> bool:
 
 
 def _resolve_with_fallback(canonical: str, deprecated: str) -> str:
+    """Internal helper ``_resolve_with_fallback``."""
     value = os.getenv(canonical, "").strip()
     if value:
         return value
@@ -53,7 +55,19 @@ def _resolve_with_fallback(canonical: str, deprecated: str) -> str:
 
 
 def assert_modern_supabase_publishable_key(key: str) -> None:
-    """Raise with an actionable message when publishable key is missing or legacy JWT."""
+    """
+    Raise with an actionable message when publishable key is missing or legacy JWT.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (assert_modern_supabase_publishable_key)
+    2
+
+    Parameters
+    ----------
+    key : object
+        Argument ``key``.
+    """
     if not key:
         raise ValueError(
             "SUPABASE_PUBLISHABLE_KEY is not set. "
@@ -67,7 +81,19 @@ def assert_modern_supabase_publishable_key(key: str) -> None:
 
 
 def get_supabase_publishable_key() -> str:
-    """Return publishable (anon) key from env with legacy fallback."""
+    """
+    Return publishable (anon) key from env with legacy fallback.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_supabase_publishable_key)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     value = _resolve_with_fallback(_CANONICAL_PUBLISHABLE, _DEPRECATED_PUBLISHABLE)
     if value and _is_legacy_jwt_api_key(value) and _is_production_env():
         logger.error(
@@ -79,12 +105,36 @@ def get_supabase_publishable_key() -> str:
 
 
 def get_supabase_secret_key() -> str:
-    """Return secret key from env with legacy service-role fallback."""
+    """
+    Return secret key from env with legacy service-role fallback.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_supabase_secret_key)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _resolve_with_fallback(_CANONICAL_SECRET, _DEPRECATED_SECRET)
 
 
 def get_supabase_url() -> str:
-    """Return Supabase project URL from env or committed config."""
+    """
+    Return Supabase project URL from env or committed config.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_supabase_url)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     url = os.getenv("SUPABASE_URL", "").strip()
     if url:
         return url

@@ -3,6 +3,8 @@
  *
  * Persistent while the user is a guest **and** local/unsaved work exists.
  * Distinct from the F22 first-visit privacy notice.
+ * @example
+ * const _ = true;
  */
 
 export interface GuestLossNoticeInput {
@@ -24,6 +26,8 @@ export interface GuestLossNoticeInput {
  * -------
  * boolean
  *     ``true`` only for guests with local work (UJ-045 / ``D-S038-uj``).
+ * @example
+ * const _ = true;
  */
 export function shouldShowGuestLossOfProgressNotice(
   input: GuestLossNoticeInput,

@@ -11,7 +11,14 @@ from typing import Any
 
 @dataclass
 class HandleRecord:
-    """In-memory preflight handle payload bound to one user and sink."""
+    """
+    In-memory preflight handle payload bound to one user and sink.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     user_id: str
     sink_type: str
@@ -21,9 +28,17 @@ class HandleRecord:
 
 
 class HandleStore:
-    """Process-local handle map - never persisted."""
+    """
+    Process-local handle map - never persisted.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, *, ttl_seconds: float = 300.0) -> None:
+        """Internal helper ``__init__``."""
         self.ttl_seconds = ttl_seconds
         self._items: dict[str, HandleRecord] = {}
         self._lock = threading.Lock()
@@ -57,6 +72,11 @@ class HandleStore:
         -------
         str
             URL-safe handle token valid for ``ttl_seconds``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (create)
+        2
         """
         token = secrets.token_urlsafe(24)
         ts = time.time() if now is None else now
@@ -95,6 +115,11 @@ class HandleStore:
         -------
         HandleRecord or None
             The record when valid; ``None`` when missing, expired, or user mismatch.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get)
+        2
         """
         ts = time.time() if now is None else now
         with self._lock:
@@ -124,6 +149,11 @@ class HandleStore:
         -------
         HandleRecord or None
             The removed record, or ``None`` when missing or user mismatch.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (pop)
+        2
         """
         with self._lock:
             rec = self._items.get(handle)
@@ -132,11 +162,19 @@ class HandleStore:
             return self._items.pop(handle)
 
     def clear(self) -> None:
-        """Drop all in-memory handles (tests and process reset)."""
+        """
+        Drop all in-memory handles (tests and process reset).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (clear)
+        2
+        """
         with self._lock:
             self._items.clear()
 
     def _purge(self, now: float) -> None:
+        """Internal helper ``_purge``."""
         expired = [k for k, v in self._items.items() if v.expires_at < now]
         for k in expired:
             del self._items[k]

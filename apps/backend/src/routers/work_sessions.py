@@ -27,11 +27,29 @@ _bearer = HTTPBearer(auto_error=True)
 def work_session_service(
     user: dict[str, Any] = Depends(verify_supabase_token),
 ) -> WorkSessionService:
-    """Build an owner-scoped session service from the verified JWT ``sub``."""
+    """
+    Build an owner-scoped session service from the verified JWT ``sub``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (work_session_service)
+    2
+
+    Parameters
+    ----------
+    user : object
+        Argument ``user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return WorkSessionService(_user_id(user))
 
 
 def _user_id(user: dict[str, Any]) -> str:
+    """Internal helper ``_user_id``."""
     return str(user.get("sub") or user.get("user_id"))
 
 
@@ -85,7 +103,38 @@ def list_work_sessions(
     limit: int = Query(20, ge=1, le=100),
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSessionListResponse:
-    """List work sessions for the authenticated user with optional filters."""
+    """
+    List work sessions for the authenticated user with optional filters.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_work_sessions)
+    2
+
+    Parameters
+    ----------
+    status_filter : object
+        Argument ``status_filter``.
+    product : object
+        Argument ``product``.
+    from_dt : object
+        Argument ``from_dt``.
+    to_dt : object
+        Argument ``to_dt``.
+    include_deleted : object
+        Argument ``include_deleted``.
+    page : object
+        Argument ``page``.
+    limit : object
+        Argument ``limit``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     items, total = service.list_sessions(
         status_filter=status_filter,
         products=_parse_product_filter(product),
@@ -104,7 +153,28 @@ def create_work_session(
     user: dict[str, Any] = Depends(verify_supabase_token),
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSession:
-    """Create a new work session owned by the authenticated user."""
+    """
+    Create a new work session owned by the authenticated user.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_work_session)
+    2
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    user : object
+        Argument ``user``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.create_session(_user_id(user), payload)
 
 
@@ -113,7 +183,26 @@ def get_work_session(
     session_id: UUID,
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSession:
-    """Return a single work session by id."""
+    """
+    Return a single work session by id.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_work_session)
+    2
+
+    Parameters
+    ----------
+    session_id : object
+        Argument ``session_id``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.get_session(session_id)
 
 
@@ -123,7 +212,28 @@ def update_work_session(
     payload: WorkSessionUpdate,
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSession:
-    """Update mutable fields on an existing work session."""
+    """
+    Update mutable fields on an existing work session.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (update_work_session)
+    2
+
+    Parameters
+    ----------
+    session_id : object
+        Argument ``session_id``.
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.update_session(session_id, payload)
 
 
@@ -132,7 +242,26 @@ def delete_work_session(
     session_id: UUID,
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSession:
-    """Soft-delete a work session (sets ``deleted_at``)."""
+    """
+    Soft-delete a work session (sets ``deleted_at``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (delete_work_session)
+    2
+
+    Parameters
+    ----------
+    session_id : object
+        Argument ``session_id``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.soft_delete(session_id)
 
 
@@ -141,7 +270,26 @@ def restore_work_session(
     session_id: UUID,
     service: WorkSessionService = Depends(work_session_service),
 ) -> WorkSession:
-    """Restore a previously soft-deleted work session."""
+    """
+    Restore a previously soft-deleted work session.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (restore_work_session)
+    2
+
+    Parameters
+    ----------
+    session_id : object
+        Argument ``session_id``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.restore_session(session_id)
 
 

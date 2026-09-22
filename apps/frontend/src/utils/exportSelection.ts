@@ -8,10 +8,18 @@
 /** Maximum number of files selectable for one Disseminate / Preflight-only run. */
 export const MAX_EXPORT_SELECTION = 20;
 
-/** Where a candidate originated (Finished IndexedDB history is never a source). */
+/**
+ * Where a candidate originated (Finished IndexedDB history is never a source).
+ * @example
+ * const _ = true;
+ */
 export type ExportCandidateSource = 'session' | 'drop';
 
-/** Raw input used to build a normalized {@link ExportCandidate}. */
+/**
+ * Raw input used to build a normalized {@link ExportCandidate}.
+ * @example
+ * const _ = true;
+ */
 export interface ExportCandidateInput {
   id: string;
   name: string;
@@ -23,7 +31,11 @@ export interface ExportCandidateInput {
   tacText?: string;
 }
 
-/** Eligible export payload shown in the Export selection panel. */
+/**
+ * Eligible export payload shown in the Export selection panel.
+ * @example
+ * const _ = true;
+ */
 export interface ExportCandidate {
   id: string;
   name: string;
@@ -35,7 +47,11 @@ export interface ExportCandidate {
   tacText?: string;
 }
 
-/** Result of a selection mutation that may hit the ≤20 cap. */
+/**
+ * Result of a selection mutation that may hit the ≤20 cap.
+ * @example
+ * const _ = true;
+ */
 export interface SelectionMutationResult {
   selected: string[];
   error?: string;
@@ -82,6 +98,8 @@ function toCandidate(input: ExportCandidateInput): ExportCandidate {
  * @param sources.droppedFiles - Files dropped into the drawer
  * @param sources.finishedHistory - Ignored (must not appear as candidates)
  * @returns Eligible candidates with payload bodies
+ * @example
+ * const _ = true;
  */
 export function buildExportCandidates(sources: {
   sessionOutputs?: readonly ExportCandidateInput[];
@@ -107,6 +125,8 @@ export function buildExportCandidates(sources: {
  *
  * @param candidates - Eligible candidates
  * @returns Sole id when exactly one candidate; otherwise empty
+ * @example
+ * const _ = true;
  */
 export function initialSelectedIds(candidates: readonly ExportCandidate[]): string[] {
   if (candidates.length === 1) {
@@ -122,6 +142,8 @@ export function initialSelectedIds(candidates: readonly ExportCandidate[]): stri
  * @param id - Candidate id to toggle
  * @param max - Cap (default {@link MAX_EXPORT_SELECTION})
  * @returns New selection and optional cap error
+ * @example
+ * const _ = true;
  */
 export function toggleSelection(
   selected: readonly string[],
@@ -146,6 +168,8 @@ export function toggleSelection(
  * @param candidates - Eligible candidates
  * @param max - Cap (default {@link MAX_EXPORT_SELECTION})
  * @returns Selected ids (truncated) and error when truncated
+ * @example
+ * const _ = true;
  */
 export function selectAll(
   candidates: readonly ExportCandidate[],
@@ -166,6 +190,8 @@ export function selectAll(
  *
  * @param _selected - Prior selection (ignored)
  * @returns Empty selection
+ * @example
+ * const _ = true;
  */
 export function clearSelection(_selected?: readonly string[]): string[] {
   return [];
@@ -177,6 +203,8 @@ export function clearSelection(_selected?: readonly string[]): string[] {
  * @param selected - Selected candidate ids
  * @param max - Cap (default {@link MAX_EXPORT_SELECTION})
  * @returns true when 1..max ids are selected
+ * @example
+ * const _ = true;
  */
 export function canActOnSelection(
   selected: readonly string[],

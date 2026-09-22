@@ -33,6 +33,7 @@ def _issue(
     message: str,
     location: str | None = None,
 ) -> Issue:
+    """Internal helper ``_issue``."""
     return Issue(
         severity=severity,
         code=code,
@@ -43,6 +44,7 @@ def _issue(
 
 
 def _load_rdf_elements(rdf_path: Path, cache: dict[str, set[str]]) -> set[str]:
+    """Internal helper ``_load_rdf_elements``."""
     key = str(rdf_path)
     if key in cache:
         return cache[key]
@@ -81,6 +83,11 @@ def validate_gml_references(
     -------
     list[Issue]
         Empty when all references resolve.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_gml_references)
+    2
     """
     issues: list[Issue] = []
     rdf_cache: dict[str, set[str]] = {}

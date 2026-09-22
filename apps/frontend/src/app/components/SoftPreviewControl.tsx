@@ -9,6 +9,11 @@ export const SOFT_PREVIEW_LABEL = 'Soft-preview';
 export const SOFT_PREVIEW_HELP =
   'Best-effort IWXXM when TAC is partial — not for publish.';
 
+/**
+ * Type `SoftPreviewControlProps`.
+ * @example
+ * const _ = true;
+ */
 export interface SoftPreviewControlProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
@@ -20,6 +25,8 @@ export interface SoftPreviewControlProps {
  *
  * @param props.checked - Whether soft-preview is enabled
  * @param props.onChange - Called with the next checked state
+ * @example
+ * const _ = true;
  */
 export function SoftPreviewControl({
   checked,

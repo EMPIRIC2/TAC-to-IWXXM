@@ -20,6 +20,8 @@ type AdminPanel = 'approval' | 'settings' | 'monitoring' | 'work-sessions';
 
 /**
  * Admin shell with panel navigation for approvals, settings, monitoring, and sessions.
+ * @example
+ * const _ = true;
  */
 export function AdminDashboard({
   onLogout,

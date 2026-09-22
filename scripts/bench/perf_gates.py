@@ -10,13 +10,7 @@ from typing import Any
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_BASELINES = (
-    REPO_ROOT
-    / "docs"
-    / "engineering"
-    / "perf"
-    / "perf-baselines.yaml"
-)
+DEFAULT_BASELINES = REPO_ROOT / "docs" / "engineering" / "perf" / "perf-baselines.yaml"
 
 # Env flip for publish/cutover hard-fail (T6.6). Soft benches ignore this.
 HARD_PERF_ENV = "IWXXM_VALIDATE_HARD_PERF"

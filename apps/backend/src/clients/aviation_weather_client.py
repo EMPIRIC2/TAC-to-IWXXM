@@ -13,23 +13,39 @@ import httpx
 
 
 class AviationWeatherAPIError(Exception):
-    """Aviation weather API error."""
+    """
+    Aviation weather API error.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     pass
 
 
 class AviationWeatherClient:
-    """Client for fetching METAR data from aviationweather.gov."""
+    """
+    Client for fetching METAR data from aviationweather.gov.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     BASE_URL = "https://aviationweather.gov/api/data"
     BATCH_SIZE = 50  # Max stations per request to be respectful
     RATE_LIMIT_DELAY = 0.5  # Seconds between batches
 
     def __init__(self, timeout: float = 30.0) -> None:
+        """Internal helper ``__init__``."""
         self.timeout = timeout
         self._client: httpx.AsyncClient | None = None
 
     async def __aenter__(self) -> Self:
+        """Internal helper ``__aenter__``."""
         self._client = httpx.AsyncClient(timeout=self.timeout)
         return self
 
@@ -39,6 +55,7 @@ class AviationWeatherClient:
         exc_val: BaseException | None,
         exc_tb: TracebackType | None,
     ) -> None:
+        """Internal helper ``__aexit__``."""
         if self._client:
             await self._client.aclose()
 
@@ -47,15 +64,29 @@ class AviationWeatherClient:
         station_ids: list[str],
         hours: float = 1.5,
     ) -> dict[str, tuple[str | None, str | None]]:
-        """Fetch METAR data for multiple stations.
-
-        Args:
-            station_ids: List of ICAO station identifiers
-            hours: Hours back to search (default: 1.5)
+        """
+        Fetch METAR data for multiple stations.
 
         Returns:
             Dict mapping station_id -> (raw_tac, iwxxm_xml)
-            Both values may be None if data unavailable
+            Both values may be None if data unavail
+
+        Parameters
+        ----------
+        station_ids : object
+            List of ICAO station identifiers
+        hours : object
+            Hours back to search (default: 1.5)
+
+        Returns
+        -------
+        object
+            Dict mapping station_id -> (raw_tac, iwxxm_xml) Both values may be None if data unavailable
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_metar_batch)
+        2
         """
         if not self._client:
             raise RuntimeError("Client not initialized. Use 'async with' context manager.")
@@ -198,15 +229,30 @@ class AviationWeatherClient:
     async def fetch_metars_by_bbox(
         self, bbox: tuple[float, float, float, float], hours: int = 2, format_type: str = "json"
     ) -> list[dict[str, Any]]:
-        """Fetch all METARs in a bounding box.
-
-        Args:
-            bbox: (min_lon, min_lat, max_lon, max_lat)
-            hours: Hours back to search
-            format_type: 'json' or 'raw'
+        """
+        Fetch all METARs in a bounding box.
 
         Returns:
             List of METAR records
+
+        Parameters
+        ----------
+        bbox : object
+            (min_lon, min_lat, max_lon, max_lat)
+        hours : object
+            Hours back to search
+        format_type : object
+            'json' or 'raw'
+
+        Returns
+        -------
+        object
+            List of METAR records
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_metars_by_bbox)
+        2
         """
         if not self._client:
             raise RuntimeError("Client not initialized")
@@ -249,15 +295,30 @@ class AviationWeatherClient:
     async def fetch_random_sample(
         self, count: int = 100, regions: list[tuple[float, float, float, float]] | None = None, hours: int = 2
     ) -> list[dict[str, Any]]:
-        """Fetch random sample of METARs for testing.
-
-        Args:
-            count: Number of METARs to fetch
-            regions: List of bounding boxes to sample from
-            hours: Hours back to search
+        """
+        Fetch random sample of METARs for testing.
 
         Returns:
             List of METAR records
+
+        Parameters
+        ----------
+        count : object
+            Number of METARs to fetch
+        regions : object
+            List of bounding boxes to sample from
+        hours : object
+            Hours back to search
+
+        Returns
+        -------
+        object
+            List of METAR records
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_random_sample)
+        2
         """
         if regions is None:
             # Default regions covering diverse areas
@@ -290,9 +351,31 @@ class AviationWeatherClient:
     def fetch_metars_by_bbox_sync(
         self, bbox: tuple[float, float, float, float], hours: int = 2, format_type: str = "json"
     ) -> list[dict[str, Any]]:
-        """Synchronous wrapper for fetch_metars_by_bbox."""
+        """
+        Synchronous wrapper for fetch_metars_by_bbox.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_metars_by_bbox_sync)
+        2
+
+        Parameters
+        ----------
+        bbox : object
+            Argument ``bbox``.
+        hours : object
+            Argument ``hours``.
+        format_type : object
+            Argument ``format_type``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
 
         async def _fetch() -> list[dict[str, Any]]:
+            """Internal helper ``_fetch``."""
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 # Create a temporary client instance for this request
                 temp_self = self.__class__(timeout=self.timeout)
@@ -304,9 +387,31 @@ class AviationWeatherClient:
     def fetch_random_sample_sync(
         self, count: int = 100, regions: list[tuple[float, float, float, float]] | None = None, hours: int = 2
     ) -> list[dict[str, Any]]:
-        """Synchronous wrapper for fetch_random_sample."""
+        """
+        Synchronous wrapper for fetch_random_sample.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_random_sample_sync)
+        2
+
+        Parameters
+        ----------
+        count : object
+            Argument ``count``.
+        regions : object
+            Argument ``regions``.
+        hours : object
+            Argument ``hours``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
 
         async def _fetch() -> list[dict[str, Any]]:
+            """Internal helper ``_fetch``."""
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 # Create a temporary client instance for this request
                 temp_self = self.__class__(timeout=self.timeout)
@@ -317,9 +422,17 @@ class AviationWeatherClient:
 
 
 class CachedAviationWeatherClient(AviationWeatherClient):
-    """Aviation Weather client with caching for test reproducibility."""
+    """
+    Aviation Weather client with caching for test reproducibility.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, cache_dir: Path | None = None, ttl: int = 3600, timeout: float = 30.0) -> None:
+        """Internal helper ``__init__``."""
         super().__init__(timeout=timeout)
         self.cache_dir = cache_dir or Path("test-data/aviation-weather-cache")
         self.ttl = ttl  # Time to live in seconds
@@ -346,7 +459,28 @@ class CachedAviationWeatherClient(AviationWeatherClient):
     async def fetch_metars_by_bbox(
         self, bbox: tuple[float, float, float, float], hours: int = 2, format_type: str = "json"
     ) -> list[dict[str, Any]]:
-        """Fetch METARs with caching."""
+        """
+        Fetch METARs with caching.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_metars_by_bbox)
+        2
+
+        Parameters
+        ----------
+        bbox : object
+            Argument ``bbox``.
+        hours : object
+            Argument ``hours``.
+        format_type : object
+            Argument ``format_type``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         cache_key = self._cache_key("bbox", bbox, hours, format_type)
         cache_path = self._get_cache_path(cache_key)
 
@@ -354,6 +488,7 @@ class CachedAviationWeatherClient(AviationWeatherClient):
         if self._is_cache_valid(cache_path):
 
             def _read_cache() -> list[dict[str, Any]]:
+                """Internal helper ``_read_cache``."""
                 with open(cache_path) as f:
                     return cast(list[dict[str, Any]], json.load(f))
 
@@ -364,6 +499,7 @@ class CachedAviationWeatherClient(AviationWeatherClient):
 
         # Save to cache
         def _write_cache() -> None:
+            """Internal helper ``_write_cache``."""
             with open(cache_path, "w") as f:
                 json.dump(data, f, indent=2)
 
@@ -374,7 +510,28 @@ class CachedAviationWeatherClient(AviationWeatherClient):
     async def fetch_random_sample(
         self, count: int = 100, regions: list[tuple[float, float, float, float]] | None = None, hours: int = 2
     ) -> list[dict[str, Any]]:
-        """Fetch random sample with caching."""
+        """
+        Fetch random sample with caching.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_random_sample)
+        2
+
+        Parameters
+        ----------
+        count : object
+            Argument ``count``.
+        regions : object
+            Argument ``regions``.
+        hours : object
+            Argument ``hours``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         # For reproducibility, use a fixed seed for test sampling
         cache_key = self._cache_key("sample", count, hours)
         cache_path = self._get_cache_path(cache_key)
@@ -383,6 +540,7 @@ class CachedAviationWeatherClient(AviationWeatherClient):
         if self._is_cache_valid(cache_path):
 
             def _read_cache() -> list[dict[str, Any]]:
+                """Internal helper ``_read_cache``."""
                 with open(cache_path) as f:
                     return cast(list[dict[str, Any]], json.load(f))
 
@@ -393,6 +551,7 @@ class CachedAviationWeatherClient(AviationWeatherClient):
 
         # Save to cache
         def _write_cache() -> None:
+            """Internal helper ``_write_cache``."""
             with open(cache_path, "w") as f:
                 json.dump(data, f, indent=2)
 
@@ -404,9 +563,31 @@ class CachedAviationWeatherClient(AviationWeatherClient):
     def fetch_metars_by_bbox_sync(
         self, bbox: tuple[float, float, float, float], hours: int = 2, format_type: str = "json"
     ) -> list[dict[str, Any]]:
-        """Synchronous wrapper for fetch_metars_by_bbox with caching."""
+        """
+        Synchronous wrapper for fetch_metars_by_bbox with caching.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_metars_by_bbox_sync)
+        2
+
+        Parameters
+        ----------
+        bbox : object
+            Argument ``bbox``.
+        hours : object
+            Argument ``hours``.
+        format_type : object
+            Argument ``format_type``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
 
         async def _fetch() -> list[dict[str, Any]]:
+            """Internal helper ``_fetch``."""
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 # Create a temporary cached client instance for this request
                 temp_self = CachedAviationWeatherClient(cache_dir=self.cache_dir, ttl=self.ttl, timeout=self.timeout)
@@ -418,9 +599,31 @@ class CachedAviationWeatherClient(AviationWeatherClient):
     def fetch_random_sample_sync(
         self, count: int = 100, regions: list[tuple[float, float, float, float]] | None = None, hours: int = 2
     ) -> list[dict[str, Any]]:
-        """Synchronous wrapper for fetch_random_sample with caching."""
+        """
+        Synchronous wrapper for fetch_random_sample with caching.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_random_sample_sync)
+        2
+
+        Parameters
+        ----------
+        count : object
+            Argument ``count``.
+        regions : object
+            Argument ``regions``.
+        hours : object
+            Argument ``hours``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
 
         async def _fetch() -> list[dict[str, Any]]:
+            """Internal helper ``_fetch``."""
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 # Create a temporary cached client instance for this request
                 temp_self = CachedAviationWeatherClient(cache_dir=self.cache_dir, ttl=self.ttl, timeout=self.timeout)

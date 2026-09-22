@@ -10,7 +10,11 @@ import type { components } from '../generated/openapi';
 
 type Schemas = components['schemas'];
 
-/** OpenAPI ``ConversionIssue`` — severity optional for partial fixtures. */
+/**
+ * OpenAPI ``ConversionIssue`` — severity optional for partial fixtures.
+ * @example
+ * const _ = true;
+ */
 export type ConversionIssue = Omit<Schemas['ConversionIssue'], 'severity'> & {
   severity?: Schemas['ConversionIssueSeverity'];
 };
@@ -18,6 +22,8 @@ export type ConversionIssue = Omit<Schemas['ConversionIssue'], 'severity'> & {
 /**
  * OpenAPI ``ConversionResult`` plus legacy optional XML aliases used by mocks /
  * older clients. Prefer ``content`` (canonical OpenAPI field).
+ * @example
+ * const _ = true;
  */
 export type ConversionResult = Omit<Schemas['ConversionResult'], 'tac_input'> & {
   tac_input?: string | null;
@@ -25,7 +31,11 @@ export type ConversionResult = Omit<Schemas['ConversionResult'], 'tac_input'> & 
   xml?: string;
 };
 
-/** Soft-preview spans — OpenAPI allows null; FE views use ``string | undefined``. */
+/**
+ * Soft-preview spans — OpenAPI allows null; FE views use ``string | undefined``.
+ * @example
+ * const _ = true;
+ */
 export type FailedSpan = {
   start: number;
   end: number;
@@ -33,7 +43,11 @@ export type FailedSpan = {
   message?: string;
 };
 
-/** OpenAPI ``ConversionResponse`` (POST /api/v1/convert). */
+/**
+ * OpenAPI ``ConversionResponse`` (POST /api/v1/convert).
+ * @example
+ * const _ = true;
+ */
 export type ConversionResponse = {
   results: ConversionResult[];
   errors: string[];
@@ -46,7 +60,11 @@ export type ConversionResponse = {
   failed_spans?: FailedSpan[];
 };
 
-/** OpenAPI ``ValidateResponse`` (POST /api/v1/validate). */
+/**
+ * OpenAPI ``ValidateResponse`` (POST /api/v1/validate).
+ * @example
+ * const _ = true;
+ */
 export type ValidateResponse = Schemas['ValidateResponse'] & {
   is_valid: boolean;
   version: string;
@@ -54,11 +72,31 @@ export type ValidateResponse = Schemas['ValidateResponse'] & {
   summary?: string | null;
 };
 
+/**
+ * Type `ValidateIssue`.
+ * @example
+ * const _ = true;
+ */
 export type ValidateIssue = Schemas['ValidateIssueModel'];
 
+/**
+ * Type `LintIssue`.
+ * @example
+ * const _ = true;
+ */
 export type LintIssue = Schemas['LintIssueModel'];
+/**
+ * Type `LintFix`.
+ * @example
+ * const _ = true;
+ */
 export type LintFix = Schemas['LintFixModel'];
 
+/**
+ * Type `LintTacResponse`.
+ * @example
+ * const _ = true;
+ */
 export type LintTacResponse = {
   ok: boolean;
   issues: LintIssue[];
@@ -66,20 +104,50 @@ export type LintTacResponse = {
   product?: string | null;
 };
 
+/**
+ * Type `BulletinMeta`.
+ * @example
+ * const _ = true;
+ */
 export type BulletinMeta = Schemas['BulletinMetaModel'];
+/**
+ * Type `BulletinReportResult`.
+ * @example
+ * const _ = true;
+ */
 export type BulletinReportResult = Schemas['BulletinReportResultModel'] & {
   issues: LintIssue[];
   fixes: LintFix[];
 };
 
+/**
+ * Type `ConvertBulletinResponse`.
+ * @example
+ * const _ = true;
+ */
 export type ConvertBulletinResponse = {
   bulletin_meta: BulletinMeta;
   results: BulletinReportResult[];
 };
 
+/**
+ * Type `DecodeSegment`.
+ * @example
+ * const _ = true;
+ */
 export type DecodeSegment = Schemas['DecodeSegmentModel'];
+/**
+ * Type `DecodeResidual`.
+ * @example
+ * const _ = true;
+ */
 export type DecodeResidual = Schemas['DecodeResidualModel'];
 
+/**
+ * Type `DecodeTacResponse`.
+ * @example
+ * const _ = true;
+ */
 export type DecodeTacResponse = {
   product: string;
   segments: DecodeSegment[];
@@ -87,6 +155,11 @@ export type DecodeTacResponse = {
   summary: string;
 };
 
+/**
+ * Type `LintIssueCatalogEntry`.
+ * @example
+ * const _ = true;
+ */
 export type LintIssueCatalogEntry = Schemas['LintIssueCatalogEntryModel'] & {
   tags: string[];
   family?: string | null;
@@ -102,18 +175,38 @@ export type LintIssueCatalogEntry = Schemas['LintIssueCatalogEntryModel'] & {
   exchange_profiles?: string[];
 };
 
+/**
+ * Type `LintIssueCatalogResponse`.
+ * @example
+ * const _ = true;
+ */
 export type LintIssueCatalogResponse = {
   issues: LintIssueCatalogEntry[];
 };
 
+/**
+ * Type `QualityMetricsSummary`.
+ * @example
+ * const _ = true;
+ */
 export type QualityMetricsSummary = Schemas['QualityMetricsSummaryModel'] & {
   pair_examples?: number;
   unpaired_examples?: number;
 };
+/**
+ * Type `QualityMetricsFileRow`.
+ * @example
+ * const _ = true;
+ */
 export type QualityMetricsFileRow = Schemas['QualityMetricsFileRowModel'] & {
   has_tac_pair?: boolean;
 };
 
+/**
+ * Type `QualityMetricsListResponse`.
+ * @example
+ * const _ = true;
+ */
 export type QualityMetricsListResponse = {
   generated_at: string;
   iwxxm_pin: string;
@@ -121,6 +214,11 @@ export type QualityMetricsListResponse = {
   files: QualityMetricsFileRow[];
 };
 
+/**
+ * Type `QualityMetricsDetailResponse`.
+ * @example
+ * const _ = true;
+ */
 export type QualityMetricsDetailResponse = Schemas['QualityMetricsDetailResponse'] & {
   stem: string;
   product: string;

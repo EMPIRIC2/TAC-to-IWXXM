@@ -40,6 +40,11 @@ def is_ca_collect_bulletin(xml: str) -> bool:
     -------
     bool
         True when the root element is a COLLECT bulletin.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (is_ca_collect_bulletin)
+    2
     """
     try:
         root = etree.fromstring(xml.encode("utf-8"))
@@ -68,6 +73,11 @@ def wrap_ca_eccc_collect(
     -------
     str
         COLLECT bulletin XML; unchanged when input is already COLLECT.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (wrap_ca_eccc_collect)
+    2
     """
     if is_ca_collect_bulletin(xml):
         return xml

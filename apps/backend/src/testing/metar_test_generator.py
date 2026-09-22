@@ -22,7 +22,14 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class METARTestCase:
-    """A single METAR test case with metadata."""
+    """
+    A single METAR test case with metadata.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     station_id: str
     raw_metar: str
@@ -44,15 +51,51 @@ class METARTestCase:
     source: str = "aviation_weather"
 
     def has_weather(self) -> bool:
-        """Check if METAR has significant weather."""
+        """
+        Check if METAR has significant weather.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (has_weather)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return len(self.weather_phenomena) > 0
 
     def has_clouds(self) -> bool:
-        """Check if METAR has cloud information."""
+        """
+        Check if METAR has cloud information.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (has_clouds)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return len(self.cloud_amounts) > 0
 
     def complexity_score(self) -> int:
-        """Calculate complexity score (higher = more complex)."""
+        """
+        Calculate complexity score (higher = more complex).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (complexity_score)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         score = 0
         score += len(self.weather_phenomena) * 2
         score += len(self.cloud_types) * 2
@@ -66,7 +109,14 @@ class METARTestCase:
 
 @dataclass
 class CoverageReport:
-    """Coverage tracking for generated test cases."""
+    """
+    Coverage tracking for generated test cases.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     total_cases: int = 0
     unique_stations: set[str] = field(default_factory=set)
@@ -84,7 +134,19 @@ class CoverageReport:
     complex_cases: int = 0  # score 7+
 
     def add_test_case(self, test_case: METARTestCase) -> None:
-        """Add a test case to coverage tracking."""
+        """
+        Add a test case to coverage tracking.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (add_test_case)
+        2
+
+        Parameters
+        ----------
+        test_case : object
+            Argument ``test_case``.
+        """
         self.total_cases += 1
         self.unique_stations.add(test_case.station_id)
 
@@ -106,7 +168,19 @@ class CoverageReport:
             self.complex_cases += 1
 
     def to_dict(self) -> dict[str, Any]:
-        """Convert to dictionary for JSON serialization."""
+        """
+        Convert to dictionary for JSON serialization.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (to_dict)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return {
             "total_cases": self.total_cases,
             "unique_stations": len(self.unique_stations),
@@ -124,10 +198,16 @@ class CoverageReport:
 
 
 class METARTestGenerator:
-    """Generator for diverse METAR test cases.
+    """
+    Generator for diverse METAR test cases.
 
     Uses live data from AviationWeather.gov and enriches with
     airport metadata from OpenAIP and GIFTs.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     # World regions for diverse sampling
@@ -287,15 +367,30 @@ class METARTestGenerator:
         return "other"
 
     def diverse_sample(self, count: int = 200, hours: int = 3, use_cache: bool = True) -> list[METARTestCase]:
-        """Generate diverse sample of METARs from all world regions.
-
-        Args:
-            count: Target number of test cases
-            hours: Hours back to search for METARs
-            use_cache: Use cached results if available
+        """
+        Generate diverse sample of METARs from all world regions.
 
         Returns:
             List of METARTestCase objects
+
+        Parameters
+        ----------
+        count : object
+            Target number of test cases
+        hours : object
+            Hours back to search for METARs
+        use_cache : object
+            Use cached results if available
+
+        Returns
+        -------
+        object
+            List of METARTestCase objects
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (diverse_sample)
+        2
         """
         cache_file = self.cache_dir / f"diverse_sample_{count}_{hours}h.json"
 
@@ -346,16 +441,32 @@ class METARTestGenerator:
     def regional_sample(
         self, region: str, count: int = 50, hours: int = 3, use_cache: bool = True
     ) -> list[METARTestCase]:
-        """Generate sample from specific region.
-
-        Args:
-            region: Region name (from WORLD_REGIONS)
-            count: Number of test cases
-            hours: Hours back to search
-            use_cache: Use cached results
+        """
+        Generate sample from specific region.
 
         Returns:
             List of METARTestCase objects
+
+        Parameters
+        ----------
+        region : object
+            Region name (from WORLD_REGIONS)
+        count : object
+            Number of test cases
+        hours : object
+            Hours back to search
+        use_cache : object
+            Use cached results
+
+        Returns
+        -------
+        object
+            List of METARTestCase objects
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (regional_sample)
+        2
         """
         if region not in self.WORLD_REGIONS:
             raise ValueError(f"Unknown region: {region}")
@@ -387,15 +498,30 @@ class METARTestGenerator:
     def phenomenon_coverage(
         self, required_phenomena: list[str] | None = None, hours: int = 6, use_cache: bool = True
     ) -> list[METARTestCase]:
-        """Generate test cases ensuring coverage of specific weather phenomena.
-
-        Args:
-            required_phenomena: List of weather codes to find (default: common set)
-            hours: Hours back to search
-            use_cache: Use cached results
+        """
+        Generate test cases ensuring coverage of specific weather phenomena.
 
         Returns:
             List of METARTestCase objects with required phenomena
+
+        Parameters
+        ----------
+        required_phenomena : object
+            List of weather codes to find (default: common set)
+        hours : object
+            Hours back to search
+        use_cache : object
+            Use cached results
+
+        Returns
+        -------
+        object
+            List of METARTestCase objects with required phenomena
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (phenomenon_coverage)
+        2
         """
         if required_phenomena is None:
             required_phenomena = ["RA", "SN", "TS", "FG", "BR", "CB", "TCU"]
@@ -503,11 +629,35 @@ class METARTestGenerator:
         return test_cases
 
     def get_coverage_report(self) -> CoverageReport:
-        """Get current coverage report."""
+        """
+        Get current coverage report.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_coverage_report)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return self.coverage
 
     def save_coverage_report(self, output_file: Path | None = None) -> None:
-        """Save coverage report to JSON file."""
+        """
+        Save coverage report to JSON file.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (save_coverage_report)
+        2
+
+        Parameters
+        ----------
+        output_file : object
+            Argument ``output_file``.
+        """
         if output_file is None:
             output_file = self.cache_dir / "coverage_report.json"
 

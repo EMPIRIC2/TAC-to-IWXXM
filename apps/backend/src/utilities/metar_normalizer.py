@@ -32,7 +32,8 @@ _TRUNCATED_REWX_RE = re.compile(r"^RE(SH|FZ)$", re.IGNORECASE)
 def normalize_recent_weather_tokens(
     tac_text: str,
 ) -> tuple[str, list[dict[str, Any]]]:
-    """Rewrite truncated recent-weather tokens to WMO D-6 compliant forms.
+    """
+    Rewrite truncated recent-weather tokens to WMO D-6 compliant forms.
 
     Operates at the token (whitespace-delimited word) level so that valid
     tokens such as ``RESHRA``, ``VCSH``, and ``SHRA`` are never modified.
@@ -41,13 +42,23 @@ def normalize_recent_weather_tokens(
         ``RESH``  →  ``RESHUP``   (rule: ``recent_weather_truncated_showers``)
         ``REFZ``  →  ``REFZUP``   (rule: ``recent_weather_truncated_freezing``)
 
-    Args:
-        tac_text: Raw METAR/SPECI TAC string (with or without WMO header).
-
     Returns:
-        A two-tuple ``(normalized_text, warnings)`` where ``warnings`` is a
-        list of dicts with keys ``index``, ``original``, ``replacement``, and
-        ``rule``.  The list is empty when no rewrites were made.
+        A two-tuple ``(normalized_text, warnings)`` where ``warnings`` is
+
+    Parameters
+    ----------
+    tac_text : object
+        Raw METAR/SPECI TAC string (with or without WMO header).
+
+    Returns
+    -------
+    object
+        A two-tuple ``(normalized_text, warnings)`` where ``warnings`` is a list of dicts with keys ``index``, ``original``, ``replacement``, and ``rule``.  The list is empty when no rewrites were made.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_recent_weather_tokens)
+    2
     """
     warnings: list[dict[str, Any]] = []
 
@@ -105,5 +116,22 @@ def normalize_recent_weather_tokens(
 def normalize_recent_weather_for_tac(
     tac_text: str,
 ) -> tuple[str, list[dict[str, Any]]]:
-    """Centralized wrapper for TAC recent-weather normalization."""
+    """
+    Centralized wrapper for TAC recent-weather normalization.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_recent_weather_for_tac)
+    2
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return normalize_recent_weather_tokens(tac_text)

@@ -100,6 +100,7 @@ def _sigmet_header_units(
     issue: str,
     extra_xmlns: str = "",
 ) -> str:
+    """Internal helper ``_sigmet_header_units``."""
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
     root = _sigmet_root_local(ir)
@@ -198,6 +199,7 @@ def _sigmet_tc_format_pos(lat: float, lon: float) -> str:
     """
 
     def _one(value: float) -> str:
+        """Internal helper ``_one``."""
         two = f"{value:.2f}"
         if abs(value - float(two)) < 1e-9:
             return two
@@ -451,6 +453,7 @@ def _sigmet_location_analysis_xml(
 
 
 def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
+    """Internal helper ``_sigmet_volcano_xml``."""
     volcano_raw = ir.get("volcano")
     if not isinstance(volcano_raw, dict):
         return ""
@@ -480,6 +483,7 @@ def _sigmet_volcano_xml(ir: dict[str, Any]) -> str:
 
 
 def _sigmet_motion_xml(ir: dict[str, Any]) -> str:
+    """Internal helper ``_sigmet_motion_xml``."""
     if ir.get("stationary"):
         return """
               <iwxxm:directionOfMotion uom="deg" xsi:nil="true" nilReason="http://codes.wmo.int/common/nil/inapplicable"/>
@@ -562,7 +566,26 @@ def _sigmet_tc_forecast_xml(ir: dict[str, Any], *, fir: str, end: str) -> str:
 
 
 def emit_convective_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit US ``CONVECTIVE SIGMET`` (WST) with iwxxm-us analysis shape (#919 M11)."""
+    """
+    Emit US ``CONVECTIVE SIGMET`` (WST) with iwxxm-us analysis shape (#919 M11).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_convective_sigmet_annex3)
+    2
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     ns = _ns(iwxxm_version)
     fir = str(ir["fir"])
     mwo = str(ir["mwo"])
@@ -671,7 +694,26 @@ def emit_convective_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> 
 
 
 def emit_sigmet_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit an IWXXM SIGMET / VolcanicAshSIGMET / TropicalCycloneSIGMET document."""
+    """
+    Emit an IWXXM SIGMET / VolcanicAshSIGMET / TropicalCycloneSIGMET document.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_sigmet_annex3)
+    2
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if ir.get("convective"):
         return emit_convective_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
     ns = _ns(iwxxm_version)

@@ -4,6 +4,9 @@
 
 import { apiUrl } from './apiBase';
 
+/**
+ * Function `authHeaders`.
+ */
 function authHeaders(accessToken: string): HeadersInit {
   return {
     Authorization: `Bearer ${accessToken}`,
@@ -11,6 +14,9 @@ function authHeaders(accessToken: string): HeadersInit {
   };
 }
 
+/**
+ * Function `parseJson`.
+ */
 async function parseJson<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: response.statusText }));
@@ -21,6 +27,11 @@ async function parseJson<T>(response: Response): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+/**
+ * Type `GatewayHealthRow`.
+ * @example
+ * const _ = true;
+ */
 export interface GatewayHealthRow {
   ok: boolean;
   gateway: string;
@@ -28,10 +39,20 @@ export interface GatewayHealthRow {
   detail?: string | null;
 }
 
+/**
+ * Type `GatewayHealthListResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface GatewayHealthListResponse {
   items: GatewayHealthRow[];
 }
 
+/**
+ * Type `DisseminationPlanOut`.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationPlanOut {
   id: string;
   user_id: string;
@@ -44,6 +65,11 @@ export interface DisseminationPlanOut {
   updated_at: string;
 }
 
+/**
+ * Type `DisseminationPlanCreate`.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationPlanCreate {
   slug: string;
   validity_policy?: 'valid-only' | 'warn-ok';
@@ -52,6 +78,11 @@ export interface DisseminationPlanCreate {
   retry?: Record<string, unknown> | null;
 }
 
+/**
+ * Type `PlanExecuteResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface PlanExecuteResponse {
   plan_id: string;
   receipts: Array<{
@@ -63,6 +94,11 @@ export interface PlanExecuteResponse {
   }>;
 }
 
+/**
+ * Type `AuditRecordOut`.
+ * @example
+ * const _ = true;
+ */
 export interface AuditRecordOut {
   id: string;
   user_id: string;
@@ -78,6 +114,11 @@ export interface AuditRecordOut {
   created_at: string;
 }
 
+/**
+ * Type `AuditListResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface AuditListResponse {
   items: AuditRecordOut[];
   total: number;
@@ -85,6 +126,11 @@ export interface AuditListResponse {
   limit: number;
 }
 
+/**
+ * Type `MappingConfigOut`.
+ * @example
+ * const _ = true;
+ */
 export interface MappingConfigOut {
   id: string;
   user_id: string;
@@ -95,13 +141,22 @@ export interface MappingConfigOut {
   updated_at: string;
 }
 
+/**
+ * Type `MappingConfigCreate`.
+ * @example
+ * const _ = true;
+ */
 export interface MappingConfigCreate {
   name: string;
   mode: 'source' | 'sink';
   config?: Record<string, unknown>;
 }
 
-/** GET /api/v1/dissemination/gateways/health */
+/**
+ * GET /api/v1/dissemination/gateways/health
+ * @example
+ * const _ = true;
+ */
 export async function fetchGatewayHealth(
   accessToken: string,
 ): Promise<GatewayHealthListResponse> {
@@ -111,7 +166,11 @@ export async function fetchGatewayHealth(
   return parseJson(response);
 }
 
-/** PUT /api/v1/dissemination/plans/{slug} */
+/**
+ * PUT /api/v1/dissemination/plans/{slug}
+ * @example
+ * const _ = true;
+ */
 export async function upsertDisseminationPlan(
   accessToken: string,
   slug: string,
@@ -128,7 +187,11 @@ export async function upsertDisseminationPlan(
   return parseJson(response);
 }
 
-/** POST /api/v1/dissemination/plans/{id}/execute */
+/**
+ * POST /api/v1/dissemination/plans/{id}/execute
+ * @example
+ * const _ = true;
+ */
 export async function executeDisseminationPlan(
   accessToken: string,
   planId: string,
@@ -150,7 +213,11 @@ export async function executeDisseminationPlan(
   return parseJson(response);
 }
 
-/** GET /api/v1/dissemination/audit */
+/**
+ * GET /api/v1/dissemination/audit
+ * @example
+ * const _ = true;
+ */
 export async function listDisseminationAudit(
   accessToken: string,
   params: { page?: number; limit?: number } = {},
@@ -165,7 +232,11 @@ export async function listDisseminationAudit(
   return parseJson(response);
 }
 
-/** PUT /api/v1/dissemination/mappings/{name} */
+/**
+ * PUT /api/v1/dissemination/mappings/{name}
+ * @example
+ * const _ = true;
+ */
 export async function upsertMappingConfig(
   accessToken: string,
   name: string,

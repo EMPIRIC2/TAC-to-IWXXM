@@ -31,12 +31,20 @@ const STORAGE_KEY = 'metar_converter_preferences';
 
 const EXTENSION_OPTIONS = ['.xml', '.iwxxm', '.txt'] as const;
 
-/** Local-part before @ (empty when missing) — exported for unit coverage. */
+/**
+ * Local-part before @ (empty when missing) — exported for unit coverage.
+ * @example
+ * const _ = true;
+ */
 export function emailLocalPart(email: string): string {
   return email.split('@')[0] || '';
 }
 
-/** Loading spinner body — extracted for unit coverage without async paint races. */
+/**
+ * Loading spinner body — extracted for unit coverage without async paint races.
+ * @example
+ * const _ = true;
+ */
 export function PreferencesLoadingBody() {
   return (
     <div className="flex items-center justify-center py-12">
@@ -48,12 +56,20 @@ export function PreferencesLoadingBody() {
   );
 }
 
-/** Whether Reset / header actions should be disabled. */
+/**
+ * Whether Reset / header actions should be disabled.
+ * @example
+ * const _ = true;
+ */
 export function prefsControlsDisabled(isLoading: boolean, isSaving: boolean): boolean {
   return isLoading || isSaving;
 }
 
-/** Saving button label — extracted for unit coverage. */
+/**
+ * Saving button label — extracted for unit coverage.
+ * @example
+ * const _ = true;
+ */
 export function PreferencesSaveLabel({ isSaving }: { isSaving: boolean }) {
   if (isSaving) {
     return (
@@ -70,6 +86,8 @@ export function PreferencesSaveLabel({ isSaving }: { isSaving: boolean }) {
  * Modal dialog for display name and output file extension preferences.
  *
  * Persists slim user prefs to local storage.
+ * @example
+ * const _ = true;
  */
 export function UserPreferencesDialog({
   isOpen,

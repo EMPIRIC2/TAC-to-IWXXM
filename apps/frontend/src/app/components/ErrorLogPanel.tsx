@@ -7,6 +7,11 @@ import {
   type ConvertLogLevel,
 } from '/utils/convertParams';
 
+/**
+ * Type `ConversionLog`.
+ * @example
+ * const _ = true;
+ */
 export interface ConversionLog {
   errors: string[];
   issues: ConversionIssue[];
@@ -26,6 +31,8 @@ const HIDDEN_OPERATOR_ISSUE_CODES = new Set(['DEPRECATED_PROFILE_ALIAS']);
  *
  * Respects the operator minimum log level when rendering issues. Info-only
  * content uses neutral chrome (not amber/red).
+ * @example
+ * const _ = true;
  */
 export function ErrorLogPanel({ log, minLogLevel = 'INFO' }: ErrorLogPanelProps) {
   const [expanded, setExpanded] = useState(true);

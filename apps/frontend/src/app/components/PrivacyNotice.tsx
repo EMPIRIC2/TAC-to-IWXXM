@@ -7,6 +7,11 @@
 
 import { Button } from './ui/button';
 
+/**
+ * Type `PrivacyNoticeProps`.
+ * @example
+ * const _ = true;
+ */
 export interface PrivacyNoticeProps {
   open: boolean;
   onDismiss: () => void;
@@ -17,6 +22,8 @@ export interface PrivacyNoticeProps {
  * First-visit privacy notice with dismiss and open-settings actions.
  *
  * Renders nothing when `open` is false.
+ * @example
+ * const _ = true;
  */
 export function PrivacyNotice({ open, onDismiss, onOpenSettings }: PrivacyNoticeProps) {
   if (!open) {

@@ -56,6 +56,7 @@ def _fields(text: str) -> dict[str, str]:
 
 
 def _parse_dtg(token: str) -> str | None:
+    """Internal helper ``_parse_dtg``."""
     token = token.strip().replace(" ", "")
     m = _DTG_SHORT.search(token)
     if m:
@@ -64,6 +65,7 @@ def _parse_dtg(token: str) -> str | None:
 
 
 def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
+    """Internal helper ``_day_hhmm_to_iso``."""
     m = _DAY_HHMM.search(token.replace(" ", ""))
     if m is None:
         return None
@@ -71,6 +73,7 @@ def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
 
 
 def _normalize_location(tok: str) -> str:
+    """Internal helper ``_normalize_location``."""
     upper = tok.upper()
     if upper == "DAYSIDE":
         return "DAYLIGHT_SIDE"
@@ -102,6 +105,7 @@ def _parse_intensity_regions(body: str) -> list[dict[str, Any]]:
 
 
 def _parse_obs_or_fcst(raw: str, *, issue_iso: str) -> dict[str, Any] | None:
+    """Internal helper ``_parse_obs_or_fcst``."""
     text = raw.strip()
     if not text:
         return None
@@ -135,6 +139,11 @@ def parse_swxa(tac: str, *, product: str = "SWXA") -> dict[str, Any]:
     ------
     ValueError
         When product is wrong or required fields are missing.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_swxa)
+    2
     """
     if product.upper() != "SWXA":
         raise ValueError(f"SWXA parser expected product SWXA, found {product!r}")

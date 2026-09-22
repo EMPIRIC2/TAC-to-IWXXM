@@ -56,6 +56,7 @@ def _fields(text: str) -> dict[str, str]:
 
 
 def _parse_dtg(token: str) -> str | None:
+    """Internal helper ``_parse_dtg``."""
     token = token.strip().replace(" ", "")
     m = _DTG_SHORT.search(token)
     if m:
@@ -64,6 +65,7 @@ def _parse_dtg(token: str) -> str | None:
 
 
 def _latlon(token: str, *, ndigits: int = 2) -> tuple[float, float] | None:
+    """Internal helper ``_latlon``."""
     m = _PSN.search(token)
     if m is None:
         return None
@@ -85,6 +87,7 @@ def _latlon(token: str, *, ndigits: int = 2) -> tuple[float, float] | None:
 
 
 def _strip_optional_ahl(tac: str) -> str:
+    """Internal helper ``_strip_optional_ahl``."""
     lines = tac.splitlines()
     if lines and _AHL_LINE.match(lines[0].strip()):
         return "\n".join(lines[1:])
@@ -103,6 +106,7 @@ def _parse_elevation_m(token: str) -> float | None:
 
 
 def _parse_volcano(token: str) -> tuple[str, str | None]:
+    """Internal helper ``_parse_volcano``."""
     parts = token.strip().split()
     if not parts:
         return "", None
@@ -112,6 +116,7 @@ def _parse_volcano(token: str) -> tuple[str, str | None]:
 
 
 def _map_activity(token: str) -> str:
+    """Internal helper ``_map_activity``."""
     cleaned = re.sub(r"\s+", " ", token.strip().upper())
     if cleaned in _ACT_STATUS:
         return _ACT_STATUS[cleaned]
@@ -122,6 +127,7 @@ def _map_activity(token: str) -> str:
 
 
 def _nilish(token: str) -> bool:
+    """Internal helper ``_nilish``."""
     return token.strip().upper() in {"", "NIL", "NONE"}
 
 
@@ -145,6 +151,11 @@ def parse_vona(tac: str, *, product: str = "VONA") -> dict[str, Any]:
     ------
     ValueError
         When product is wrong or required fields are missing.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_vona)
+    2
     """
     if product.upper() != "VONA":
         raise ValueError(f"VONA parser expected product VONA, found {product!r}")

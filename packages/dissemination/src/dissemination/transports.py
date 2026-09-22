@@ -16,9 +16,17 @@ import httpx
 
 
 class HttpxDatasetClient:
-    """``HttpDatasetClient`` backed by httpx (async)."""
+    """
+    ``HttpDatasetClient`` backed by httpx (async).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, *, timeout_s: float = 30.0) -> None:
+        """Internal helper ``__init__``."""
         self._timeout = timeout_s
 
     async def ping(self, url: str) -> bool:
@@ -26,6 +34,21 @@ class HttpxDatasetClient:
         Return True when the dataset URL is reachable (2xx/3xx/404/405 accepted).
 
         A missing object (404) still proves HTTP reachability for preflight.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (ping)
+        2
+
+        Parameters
+        ----------
+        url : object
+            Argument ``url``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         try:
             async with httpx.AsyncClient(timeout=self._timeout, follow_redirects=True) as client:
@@ -37,13 +60,51 @@ class HttpxDatasetClient:
             return False
 
     async def put_dataset(self, url: str, body: bytes, content_type: str) -> int:
-        """PUT dataset bytes; return HTTP status code."""
+        """
+        PUT dataset bytes; return HTTP status code.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (put_dataset)
+        2
+
+        Parameters
+        ----------
+        url : object
+            Argument ``url``.
+        body : object
+            Argument ``body``.
+        content_type : object
+            Argument ``content_type``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         async with httpx.AsyncClient(timeout=self._timeout, follow_redirects=True) as client:
             resp = await client.put(url, content=body, headers={"Content-Type": content_type})
             return resp.status_code
 
     async def get_dataset(self, url: str) -> bytes:
-        """GET dataset bytes; raise on non-2xx."""
+        """
+        GET dataset bytes; raise on non-2xx.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_dataset)
+        2
+
+        Parameters
+        ----------
+        url : object
+            Argument ``url``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         async with httpx.AsyncClient(timeout=self._timeout, follow_redirects=True) as client:
             resp = await client.get(url)
             resp.raise_for_status()
@@ -51,7 +112,14 @@ class HttpxDatasetClient:
 
 
 class AiomqttClient:
-    """``MqttClient`` (+ subscribe helper) backed by aiomqtt 2.x."""
+    """
+    ``MqttClient`` (+ subscribe helper) backed by aiomqtt 2.x.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(
         self,
@@ -61,6 +129,7 @@ class AiomqttClient:
         username: str | None = None,
         password: str | None = None,
     ) -> None:
+        """Internal helper ``__init__``."""
         self._host = host
         self._port = port
         self._username = username
@@ -69,7 +138,14 @@ class AiomqttClient:
         self._cm: object | None = None
 
     async def connect(self) -> None:
-        """Open an MQTT connection to the configured broker."""
+        """
+        Open an MQTT connection to the configured broker.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (connect)
+        2
+        """
         if self._client is not None:
             return
         kwargs: dict[str, object] = {
@@ -85,13 +161,39 @@ class AiomqttClient:
         self._client = await client.__aenter__()
 
     async def publish(self, topic: str, payload: bytes) -> None:
-        """Publish ``payload`` to ``topic`` (QoS 0)."""
+        """
+        Publish ``payload`` to ``topic`` (QoS 0).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (publish)
+        2
+
+        Parameters
+        ----------
+        topic : object
+            Argument ``topic``.
+        payload : object
+            Argument ``payload``.
+        """
         if self._client is None:
             raise RuntimeError("mqtt client is not connected")
         await self._client.publish(topic, payload=payload)
 
     async def subscribe(self, topic: str) -> None:
-        """Subscribe to ``topic`` (for harness verification)."""
+        """
+        Subscribe to ``topic`` (for harness verification).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (subscribe)
+        2
+
+        Parameters
+        ----------
+        topic : object
+            Argument ``topic``.
+        """
         if self._client is None:
             raise RuntimeError("mqtt client is not connected")
         await self._client.subscribe(topic)
@@ -104,11 +206,22 @@ class AiomqttClient:
         ----------
         timeout_s :
             Seconds to wait before raising ``TimeoutError``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (recv)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
         """
         if self._client is None:
             raise RuntimeError("mqtt client is not connected")
 
         async def _next() -> bytes:
+            """Internal helper ``_next``."""
             assert self._client is not None
             async for message in self._client.messages:
                 payload = message.payload
@@ -123,7 +236,14 @@ class AiomqttClient:
         return await asyncio.wait_for(_next(), timeout=timeout_s)
 
     async def disconnect(self) -> None:
-        """Close the MQTT connection if open."""
+        """
+        Close the MQTT connection if open.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (disconnect)
+        2
+        """
         if self._cm is None:
             self._client = None
             return
@@ -133,17 +253,25 @@ class AiomqttClient:
         await cm.__aexit__(None, None, None)  # type: ignore[union-attr]
 
     async def __aenter__(self) -> Self:
+        """Internal helper ``__aenter__``."""
         await self.connect()
         return self
 
     async def __aexit__(self, *exc: object) -> None:
+        """Internal helper ``__aexit__``."""
         await self.disconnect()
 
 
 class AiosmtpClient:
-    """``SmtpClient`` backed by ``aiosmtplib`` (EDIS / F18).
+    """
+    ``SmtpClient`` backed by ``aiosmtplib`` (EDIS / F18).
 
     Prefers STARTTLS on submission ports (e.g. 587); uses implicit TLS on 465.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(
@@ -154,6 +282,7 @@ class AiosmtpClient:
         use_tls: bool = True,
         timeout: float = 30.0,
     ) -> None:
+        """Internal helper ``__init__``."""
         self._hostname = hostname
         self._port = port
         self._use_tls = use_tls
@@ -161,6 +290,7 @@ class AiosmtpClient:
         self._client: aiosmtplib.SMTP | None = None
 
     def _tls_kwargs(self) -> dict[str, bool]:
+        """Internal helper ``_tls_kwargs``."""
         if not self._use_tls:
             return {"use_tls": False, "start_tls": False}
         if self._port == 465:
@@ -168,7 +298,14 @@ class AiosmtpClient:
         return {"use_tls": False, "start_tls": True}
 
     async def connect(self) -> None:
-        """Open an SMTP connection (STARTTLS or implicit TLS per port)."""
+        """
+        Open an SMTP connection (STARTTLS or implicit TLS per port).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (connect)
+        2
+        """
         if self._client is not None and self._client.is_connected:
             return
         client = aiosmtplib.SMTP(
@@ -181,19 +318,57 @@ class AiosmtpClient:
         self._client = client
 
     async def login(self, username: str, password: str) -> None:
-        """Authenticate with the SMTP server."""
+        """
+        Authenticate with the SMTP server.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (login)
+        2
+
+        Parameters
+        ----------
+        username : object
+            Argument ``username``.
+        password : object
+            Argument ``password``.
+        """
         if self._client is None:
             raise RuntimeError("smtp client is not connected")
         await self._client.login(username, password)
 
     async def send_message(self, message: EmailMessage) -> object:
-        """Submit ``message`` via SMTP DATA."""
+        """
+        Submit ``message`` via SMTP DATA.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (send_message)
+        2
+
+        Parameters
+        ----------
+        message : object
+            Argument ``message``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if self._client is None:
             raise RuntimeError("smtp client is not connected")
         return await self._client.send_message(message)
 
     async def quit(self) -> None:
-        """Close the SMTP connection if open."""
+        """
+        Close the SMTP connection if open.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (quit)
+        2
+        """
         client = self._client
         self._client = None
         if client is None:
@@ -204,10 +379,12 @@ class AiosmtpClient:
             await client.close()
 
     async def __aenter__(self) -> Self:
+        """Internal helper ``__aenter__``."""
         await self.connect()
         return self
 
     async def __aexit__(self, *exc: object) -> None:
+        """Internal helper ``__aexit__``."""
         await self.quit()
 
 

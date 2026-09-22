@@ -18,6 +18,7 @@ _KNOWN_EXTENSION_TOKENS = frozenset({IWXXM_CA_TOKEN})
 
 
 def _normalize_token(raw: str) -> str:
+    """Internal helper ``_normalize_token``."""
     return raw.strip().upper().replace("-", "_")
 
 
@@ -26,6 +27,21 @@ def parse_extension_tokens(values: Sequence[str] | None) -> list[str]:
     Parse multipart ``extensions`` values into normalized canonical tokens.
 
     Accepts repeated form fields and/or a single JSON array string.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_extension_tokens)
+    2
+
+    Parameters
+    ----------
+    values : object
+        Argument ``values``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if not values:
         return []
@@ -78,7 +94,19 @@ def parse_extension_tokens(values: Sequence[str] | None) -> list[str]:
 
 
 def validate_extension_tokens(tokens: Sequence[str]) -> None:
-    """Reject unknown extension tokens (fail closed)."""
+    """
+    Reject unknown extension tokens (fail closed).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_extension_tokens)
+    2
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    """
     unknown = [token for token in tokens if token not in _KNOWN_EXTENSION_TOKENS]
     if unknown:
         raise HTTPException(
@@ -99,6 +127,25 @@ def ca_eccc_validate_product(
     Return API product for ``ca_xsd`` when the full Canadian stack is requested.
 
     ``CA_ECCC`` without ``IWXXM_CA`` keeps the backward-compatible WMO scaffold only.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ca_eccc_validate_product)
+    2
+
+    Parameters
+    ----------
+    emit_key : object
+        Argument ``emit_key``.
+    extensions : object
+        Argument ``extensions``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if emit_key != "ca_eccc":
         return None

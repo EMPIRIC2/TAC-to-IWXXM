@@ -32,7 +32,7 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(raw)
 
-    def do_GET(self) -> None:  # noqa: N802
+    def do_GET(self) -> None:
         path = urlparse(self.path).path.rstrip("/") or "/"
         if path == "/health":
             with _LOCK:
@@ -46,7 +46,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         self._json(404, {"detail": "not found"})
 
-    def do_POST(self) -> None:  # noqa: N802
+    def do_POST(self) -> None:
         path = urlparse(self.path).path.rstrip("/")
         parts = [p for p in path.split("/") if p]
         if len(parts) != 1 or parts[0] not in _SINKS:

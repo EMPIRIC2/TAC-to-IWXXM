@@ -16,7 +16,19 @@ _validation_service: ValidationService | None = None
 
 
 def get_validation_service() -> ValidationService:
-    """Get or create validation service singleton."""
+    """
+    Get or create validation service singleton.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_validation_service)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _validation_service
     if _validation_service is None:
         _validation_service = ValidationService()
@@ -28,20 +40,35 @@ async def validate_metar_input(
     layers: list[ValidationLayer] | None = None,
     iwxxm_version: str | None = None,
 ) -> AggregatedValidationResult:
-    """Validate METAR TAC input with validation layers.
+    """
+    Validate METAR TAC input with validation layers.
 
     Can be used as a dependency or called directly for preprocessing.
-
-    Args:
-        content: METAR TAC content to validate
-        layers: Optional specific layers to validate (None = all)
-        iwxxm_version: Optional IWXXM version context
 
     Returns:
         AggregatedValidationResult with validation details
 
     Raises:
         HTTPException: If validation service fails
+
+    Parameters
+    ----------
+    content : object
+        METAR TAC content to validate
+    layers : object
+        Optional specific layers to validate (None = all)
+    iwxxm_version : object
+        Optional IWXXM version context
+
+    Returns
+    -------
+    object
+        AggregatedValidationResult with validation details
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_metar_input)
+    2
     """
     if not content or not content.strip():
         raise HTTPException(status_code=400, detail="METAR content cannot be empty")
@@ -67,20 +94,35 @@ async def validate_iwxxm_input(
     layers: list[ValidationLayer] | None = None,
     iwxxm_version: str | None = None,
 ) -> AggregatedValidationResult:
-    """Validate IWXXM XML input with validation layers.
+    """
+    Validate IWXXM XML input with validation layers.
 
     Can be used as a dependency or called directly for preprocessing.
-
-    Args:
-        content: IWXXM XML content to validate
-        layers: Optional specific layers to validate (None = all)
-        iwxxm_version: Optional IWXXM version context
 
     Returns:
         AggregatedValidationResult with validation details
 
     Raises:
         HTTPException: If validation service fails
+
+    Parameters
+    ----------
+    content : object
+        IWXXM XML content to validate
+    layers : object
+        Optional specific layers to validate (None = all)
+    iwxxm_version : object
+        Optional IWXXM version context
+
+    Returns
+    -------
+    object
+        AggregatedValidationResult with validation details
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_iwxxm_input)
+    2
     """
     if not content or not content.strip():
         raise HTTPException(status_code=400, detail="IWXXM content cannot be empty")

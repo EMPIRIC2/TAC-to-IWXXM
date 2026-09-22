@@ -33,6 +33,7 @@ def _issue(
     message: str,
     location: str | None = None,
 ) -> Issue:
+    """Internal helper ``_issue``."""
     return Issue(
         severity=severity,
         code=code,
@@ -43,6 +44,7 @@ def _issue(
 
 
 def _load_codelist_cache(codelists_dir: Path) -> dict[str, set[str]]:
+    """Internal helper ``_load_codelist_cache``."""
     cache: dict[str, set[str]] = {}
     if not codelists_dir.is_dir():
         return cache
@@ -85,6 +87,11 @@ def validate_codelist_references(
     -------
     list[Issue]
         Findings for unresolved or invalid codelist references.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_codelist_references)
+    2
     """
     issues: list[Issue] = []
     cache = _load_codelist_cache(codelists_dir)

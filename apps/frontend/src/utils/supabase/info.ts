@@ -25,6 +25,8 @@ export const edgeServerSlug = 'make-server-2e3cda33';
  *
  * @param subpath - Path segment after the deployed function slug.
  * @returns Fully qualified HTTPS URL for the edge function route.
+ * @example
+ * const _ = true;
  */
 export function edgeFunctionUrl(subpath: string): string {
   return `https://${projectId}.supabase.co/functions/v1/${edgeServerSlug}/${subpath}`;

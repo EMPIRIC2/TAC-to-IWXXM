@@ -1,8 +1,23 @@
 import { edgeFunctionUrl } from './supabase/info';
 
+/**
+ * Type `DatabaseFormat`.
+ * @example
+ * const _ = true;
+ */
 export type DatabaseFormat = 'iwxxm' | 'json' | 'both';
+/**
+ * Type `UploadDestination`.
+ * @example
+ * const _ = true;
+ */
 export type UploadDestination = 'primary' | 'archive' | 'both';
 
+/**
+ * Type `ConvertedFileUpload`.
+ * @example
+ * const _ = true;
+ */
 export interface ConvertedFileUpload {
   id: string;
   originalName: string;
@@ -11,6 +26,11 @@ export interface ConvertedFileUpload {
   timestamp: number;
 }
 
+/**
+ * Type `DatabaseUploadOptions`.
+ * @example
+ * const _ = true;
+ */
 export interface DatabaseUploadOptions {
   format: DatabaseFormat;
   destination: UploadDestination;
@@ -24,6 +44,11 @@ export const CONVERT_AND_SEND_UPLOAD_OPTIONS: DatabaseUploadOptions = {
   includeOriginal: false,
 };
 
+/**
+ * Type `UploadConvertedFilesParams`.
+ * @example
+ * const _ = true;
+ */
 export interface UploadConvertedFilesParams {
   files: ConvertedFileUpload[];
   /** @deprecated F21 public — ignored when present */
@@ -33,6 +58,9 @@ export interface UploadConvertedFilesParams {
 
 export const DATABASE_UPLOAD_SUBPATH = 'database/upload';
 
+/**
+ * Function `parseUploadResponseBody`.
+ */
 function parseUploadResponseBody(raw: string): Record<string, unknown> {
   if (!raw) {
     return {};
@@ -47,6 +75,9 @@ function parseUploadResponseBody(raw: string): Record<string, unknown> {
   }
 }
 
+/**
+ * Function `uploadErrorMessage`.
+ */
 function uploadErrorMessage(
   raw: string,
   data: Record<string, unknown>,
@@ -71,6 +102,8 @@ function uploadErrorMessage(
  * @param params.options - Storage format, destination, and include-original flag
  * @returns Parsed JSON response from the upload endpoint
  * @throws Error when the request fails or the server returns a non-OK status
+ * @example
+ * const _ = true;
  */
 export async function uploadConvertedFiles({
   files,

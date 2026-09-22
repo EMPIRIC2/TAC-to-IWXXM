@@ -177,13 +177,7 @@ check-docs:
 	$(UV) run python scripts/docs/check_docs_py.py .
 
 test-doctest:
-	$(UV) run python -m pytest --doctest-modules \
-		packages/tac2iwxxm/src packages/tac-validate/src packages/iwxxm-validate/src \
-		packages/tac-decoding/src packages/dissemination/src packages/workflows/src \
-		packages/auth/src packages/shared \
-		apps/backend/src apps/worker \
-		--ignore-glob='**/tests/**' --ignore-glob='**/iwxxm_xsd/**' --ignore-glob='**/generated/**' \
-		-q --tb=line
+	bash scripts/docs/run_doctest.sh
 
 check-docs-ts:
 	node scripts/docs/check_docs_ts.mjs .

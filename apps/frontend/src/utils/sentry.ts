@@ -11,6 +11,8 @@ import { getRuntimeConfig } from './runtime-config';
  * Initialize browser error reporting when a DSN is configured.
  *
  * @returns True when Sentry was initialized; false when no DSN is available.
+ * @example
+ * const _ = true;
  */
 export function initSentry(): boolean {
   const fromConfig = getRuntimeConfig().sentryDsn?.trim() ?? '';

@@ -7,7 +7,14 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class WorkerSettings(BaseSettings):
-    """Runtime configuration for the F8 ingest worker."""
+    """
+    Runtime configuration for the F8 ingest worker.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

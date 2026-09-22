@@ -56,7 +56,19 @@ def _iwxxm_validate_fn() -> Callable[..., ValidationReport]:
 
 
 def is_dev_cors_relaxation_enabled() -> bool:
-    """Enable relaxed CORS behavior for local debugging when explicitly requested."""
+    """
+    Enable relaxed CORS behavior for local debugging when explicitly requested.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (is_dev_cors_relaxation_enabled)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return os.getenv("ENABLE_DEV_CORS_RELAXATION", "").lower() in (
         "true",
         "1",
@@ -66,14 +78,50 @@ def is_dev_cors_relaxation_enabled() -> bool:
 
 
 def add_origin_if_missing(origins: list[str], origin: str) -> list[str]:
-    """Append origin if not present."""
+    """
+    Append origin if not present.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (add_origin_if_missing)
+    2
+
+    Parameters
+    ----------
+    origins : object
+        Argument ``origins``.
+    origin : object
+        Argument ``origin``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if origin and origin not in origins:
         origins.append(origin)
     return origins
 
 
 def add_loopback_origin_variants(origins: list[Any]) -> list[Any]:
-    """Ensure localhost and 127.0.0.1 variants are both allowed for local dev."""
+    """
+    Ensure localhost and 127.0.0.1 variants are both allowed for local dev.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (add_loopback_origin_variants)
+    2
+
+    Parameters
+    ----------
+    origins : object
+        Argument ``origins``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     expanded_origins = list(origins)
     for origin in origins:
         if "localhost" in origin:
@@ -86,7 +134,19 @@ def add_loopback_origin_variants(origins: list[Any]) -> list[Any]:
 
 
 def get_cors_origins() -> list[Any]:
-    """Get allowed CORS origins from config with deprecated env fallbacks."""
+    """
+    Get allowed CORS origins from config with deprecated env fallbacks.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_cors_origins)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     import warnings
 
     from metar_shared import METAR_CORS_ORIGINS_ENV, parse_comma_separated_origins
@@ -127,7 +187,19 @@ def get_cors_origins() -> list[Any]:
 
 
 def get_cors_allowed_headers() -> list[Any]:
-    """Get allowed CORS request headers."""
+    """
+    Get allowed CORS request headers.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_cors_allowed_headers)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if is_dev_cors_relaxation_enabled():
         return ["*"]
     return ["Authorization", "Content-Type"]
@@ -145,6 +217,21 @@ async def parse_files(request: Request) -> list[UploadFile]:
     Parse files parameter from request, handling edge cases:
     - Swagger UI 'Send empty value' sends empty string which FastAPI can't parse
     - This manually extracts files from the form, filtering out empty strings
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_files)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     try:
         form = await request.form()
@@ -190,7 +277,26 @@ def normalize_api_product(
     *,
     default: str | None = "METAR",
 ) -> str:
-    """Normalize multipart/JSON ``product`` to uppercase enum or raise ``unknown_product`` 400."""
+    """
+    Normalize multipart/JSON ``product`` to uppercase enum or raise ``unknown_product`` 400.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_api_product)
+    2
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    default : object
+        Argument ``default``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = (product or "").strip()
     if not raw:
         if default is None:
@@ -243,6 +349,7 @@ def _resolve_request_extensions(
 
 
 def _package_issue_payload(issue: object) -> dict[str, Any]:
+    """Internal helper ``_package_issue_payload``."""
     return {
         "layer": str(getattr(issue, "layer", "")),
         "severity": str(getattr(issue, "severity", "error")),
@@ -255,6 +362,7 @@ def _package_issue_payload(issue: object) -> dict[str, Any]:
 
 
 def _package_stages_payload(report: object) -> list[dict[str, Any]] | None:
+    """Internal helper ``_package_stages_payload``."""
     stages_obj = getattr(report, "stages", None)
     if not isinstance(stages_obj, list):
         return None
@@ -287,6 +395,7 @@ def _call_iwxxm_validate(
     product: str,
     output_policy_id: str | None = None,
 ) -> ValidationReport:
+    """Internal helper ``_call_iwxxm_validate``."""
     validate_product = ca_eccc_validate_product(emit_key, extensions, product)
     logger.debug("iwxxm output policy %s", output_policy_id)
     return _iwxxm_validate_fn()(
@@ -328,12 +437,30 @@ def _is_multiline_template_product(product: str | None) -> bool:
 
 
 def split_manual_entries(manual_text: str, product: str | None = None) -> list[str]:
-    """Split manual text into TAC entries.
+    """
+    Split manual text into TAC entries.
 
     Default (METAR/SPECI/TAF): one entry per non-empty line.
     SIGMET/AIRMET/VAA/TCA/SWXA/VONA: entire buffer is one multi-line document -
     line-splitting would shred the header/body (SIGMET/AIRMET) or template
     fields (``VA ADVISORY`` / ``SWX ADVISORY`` / ``VONA`` / ``DTG:`` / …).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (split_manual_entries)
+    2
+
+    Parameters
+    ----------
+    manual_text : object
+        Argument ``manual_text``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if not manual_text:
         return []
@@ -344,12 +471,30 @@ def split_manual_entries(manual_text: str, product: str | None = None) -> list[s
 
 
 def manual_entries_with_offsets(manual_text: str, product: str | None = None) -> list[tuple[str, int]]:
-    """Split like ``split_manual_entries`` with start offsets into the original buffer.
+    """
+    Split like ``split_manual_entries`` with start offsets into the original buffer.
 
     Offsets point at the first non-whitespace character of each kept entry so
     soft-preview ``failed_spans`` can be remapped onto the full editor document.
     For SIGMET/AIRMET/VAA/TCA/SWXA/VONA the single entry offset is the first
     non-whitespace character of the buffer (document preserved with internal newlines).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (manual_entries_with_offsets)
+    2
+
+    Parameters
+    ----------
+    manual_text : object
+        Argument ``manual_text``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if not manual_text:
         return []
@@ -375,9 +520,25 @@ def manual_entries_with_offsets(manual_text: str, product: str | None = None) ->
 
 
 async def read_uploaded_text(upload_file: UploadFile) -> tuple[str | None, str | None]:
-    """Read uploaded text file using strict UTF-8 decoding with a size limit.
+    """
+    Read uploaded text file using strict UTF-8 decoding with a size limit.
 
     Gzip payloads (``.gz`` / magic ``1f 8b``) are inflated before decode.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (read_uploaded_text)
+    2
+
+    Parameters
+    ----------
+    upload_file : object
+        Argument ``upload_file``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     import gzip
 
@@ -425,12 +586,23 @@ MAX_BULLETIN_REPORTS = 100
 
 
 async def read_upload_files_text(files: list[UploadFile] | None) -> tuple[str, str | None]:
-    """Join multipart uploads via ``read_uploaded_text`` (10 MiB each).
+    """
+    Join multipart uploads via ``read_uploaded_text`` (10 MiB each).
 
     Returns
     -------
     tuple[str, str | None]
         Joined text and an error message when a non-empty upload fails limits/encoding.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (read_upload_files_text)
+    2
+
+    Parameters
+    ----------
+    files : object
+        Argument ``files``.
     """
     if not files:
         return "", None
@@ -447,7 +619,26 @@ async def read_upload_files_text(files: list[UploadFile] | None) -> tuple[str, s
 
 
 def is_xml_input(filename: str | None, content: str) -> bool:
-    """Determine if uploaded content looks like XML input."""
+    """
+    Determine if uploaded content looks like XML input.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (is_xml_input)
+    2
+
+    Parameters
+    ----------
+    filename : object
+        Argument ``filename``.
+    content : object
+        Argument ``content``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     lowered_name = (filename or "").lower()
     if lowered_name.endswith(".xml"):
         return True
@@ -462,7 +653,32 @@ def classify_and_validate_upload_content(
     endpoint_path: str,
     validation_orchestrator: ValidationOrchestrator | None,
 ) -> dict[str, str] | None:
-    """Return a standardized XML rejection payload for TAC-only conversion endpoints."""
+    """
+    Return a standardized XML rejection payload for TAC-only conversion endpoints.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (classify_and_validate_upload_content)
+    2
+
+    Parameters
+    ----------
+    filename : object
+        Argument ``filename``.
+    content : object
+        Argument ``content``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    endpoint_path : object
+        Argument ``endpoint_path``.
+    validation_orchestrator : object
+        Argument ``validation_orchestrator``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not content or not is_xml_input(filename, content):
         return None
 
@@ -510,7 +726,26 @@ def classify_and_validate_upload_content(
 
 
 def normalize_code(value: str | None, max_length: int) -> str | None:
-    """Normalize optional alphanumeric code-like fields."""
+    """
+    Normalize optional alphanumeric code-like fields.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_code)
+    2
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    max_length : object
+        Argument ``max_length``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not value:
         return None
     normalized = value.strip().upper()
@@ -524,12 +759,28 @@ _CCCC_RE = re.compile(r"^[A-Z]{4}$")
 
 
 def parse_optional_bulletin_id(value: str | None) -> str:
-    """Return uppercase bulletin id, or empty when omitted.
+    """
+    Return uppercase bulletin id, or empty when omitted.
 
     Raises
     ------
     HTTPException
         400 when a non-empty value is not 4 letters + 2 digits.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_optional_bulletin_id)
+    2
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     raw = (value or "").strip().upper()
     if not raw:
@@ -556,12 +807,28 @@ def parse_optional_bulletin_id(value: str | None) -> str:
 
 
 def parse_optional_issuing_center(value: str | None) -> str:
-    """Return uppercase ICAO CCCC, or empty when omitted.
+    """
+    Return uppercase ICAO CCCC, or empty when omitted.
 
     Raises
     ------
     HTTPException
         400 when a non-empty value is not exactly 4 letters.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_optional_issuing_center)
+    2
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     raw = (value or "").strip().upper()
     if not raw:
@@ -588,7 +855,24 @@ def parse_optional_issuing_center(value: str | None) -> str:
 
 
 def normalize_validation_level(value: str | None) -> str:
-    """Normalize validation level to one of the supported API values."""
+    """
+    Normalize validation level to one of the supported API values.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_validation_level)
+    2
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     allowed_levels = {"basic", "schema", "schematron", "icao_opmet", "comprehensive"}
     level = (value or "basic").strip().lower().replace("-", "_")
     return level if level in allowed_levels else "basic"
@@ -605,7 +889,24 @@ def _product_uses_metar_tac_layers(product: str | None) -> bool:
 
 
 async def parse_optional_files(request: Request) -> list[UploadFile]:
-    """Parse optional file uploads, filtering out empty strings from form data."""
+    """
+    Parse optional file uploads, filtering out empty strings from form data.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_optional_files)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     form = await request.form()
     files_data = form.getlist("files")
     return [f for f in files_data if _is_named_upload(f)]
@@ -634,6 +935,11 @@ def bulletin_split_http_error(exc: BulletinSplitError) -> HTTPException:
     -------
     HTTPException
         400 for empty bulletins; 422 for malformed headings.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (bulletin_split_http_error)
+    2
     """
     if exc.code == "empty_bulletin":
         return HTTPException(

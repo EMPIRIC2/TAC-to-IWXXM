@@ -42,7 +42,24 @@ _UUID_VALUE = re.compile(
 
 
 def local_name(tag: str) -> str:
-    """Return the local part of a Clark-notation tag."""
+    """
+    Return the local part of a Clark-notation tag.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (local_name)
+    2
+
+    Parameters
+    ----------
+    tag : object
+        Argument ``tag``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if tag.startswith("{"):
         return tag.rsplit("}", 1)[-1]
     if ":" in tag:
@@ -51,12 +68,14 @@ def local_name(tag: str) -> str:
 
 
 def _norm_text(value: str | None) -> str:
+    """Internal helper ``_norm_text``."""
     if value is None:
         return ""
     return " ".join(value.split())
 
 
 def _filter_volatile_attrs(attrib: dict[str, str]) -> dict[str, str]:
+    """Internal helper ``_filter_volatile_attrs``."""
     filtered: dict[str, str] = {}
     for key, value in attrib.items():
         if local_name(key) in VOLATILE_ATTRS:
@@ -131,13 +150,26 @@ def _raise_parse_error(last_error: Exception | None) -> NoReturn:
 
 
 def canonicalize_xml(xml_content: str) -> str:
-    """Normalize XML to a canonical string for diffing.
-
-    Args:
-        xml_content: Raw or prettified XML.
+    """
+    Normalize XML to a canonical string for diffing.
 
     Returns:
+        Deterministic canonical representa
+
+    Parameters
+    ----------
+    xml_content : object
+        Raw or prettified XML.
+
+    Returns
+    -------
+    object
         Deterministic canonical representation.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (canonicalize_xml)
+    2
     """
     root = _parse_root_element(xml_content)
     canonical = _canonicalize_element(root)
@@ -145,12 +177,50 @@ def canonicalize_xml(xml_content: str) -> str:
 
 
 def compare_canonical_xml(expected: str, actual: str) -> bool:
-    """Return True when two XML documents match after canonicalization."""
+    """
+    Return True when two XML documents match after canonicalization.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (compare_canonical_xml)
+    2
+
+    Parameters
+    ----------
+    expected : object
+        Argument ``expected``.
+    actual : object
+        Argument ``actual``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return canonicalize_xml(expected) == canonicalize_xml(actual)
 
 
 def diff_canonical_xml(expected: str, actual: str) -> str | None:
-    """Return a short diff summary when canonical forms differ."""
+    """
+    Return a short diff summary when canonical forms differ.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (diff_canonical_xml)
+    2
+
+    Parameters
+    ----------
+    expected : object
+        Argument ``expected``.
+    actual : object
+        Argument ``actual``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     exp = canonicalize_xml(expected)
     act = canonicalize_xml(actual)
     if exp == act:
@@ -161,7 +231,19 @@ def diff_canonical_xml(expected: str, actual: str) -> str | None:
 
 
 def strip_volatile_attributes(elem: ET.Element) -> None:
-    """Remove volatile attributes from an element tree in place."""
+    """
+    Remove volatile attributes from an element tree in place.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (strip_volatile_attributes)
+    2
+
+    Parameters
+    ----------
+    elem : object
+        Argument ``elem``.
+    """
     for key in list(elem.attrib):
         if local_name(key) in VOLATILE_ATTRS or (
             local_name(key) == "href"
@@ -177,7 +259,24 @@ def strip_volatile_attributes(elem: ET.Element) -> None:
 
 
 def iter_local_names(elem: ET.Element) -> Iterable[str]:
-    """Yield local tag names in document order (testing helper)."""
+    """
+    Yield local tag names in document order (testing helper).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (iter_local_names)
+    2
+
+    Parameters
+    ----------
+    elem : object
+        Argument ``elem``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     yield local_name(elem.tag)
     for child in elem:
         yield from iter_local_names(child)

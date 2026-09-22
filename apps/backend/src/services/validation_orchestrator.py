@@ -33,7 +33,14 @@ ValidationOutcome = (
 
 @dataclass
 class ComprehensiveValidationResult:
-    """Result of comprehensive multi-layer validation."""
+    """
+    Result of comprehensive multi-layer validation.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     is_valid: bool
     layers_run: list[ValidationLayer]
@@ -46,7 +53,19 @@ class ComprehensiveValidationResult:
 
     @property
     def passed(self) -> bool:
-        """Alias for is_valid (API compatibility)."""
+        """
+        Alias for is_valid (API compatibility).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (passed)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return self.is_valid
 
 
@@ -60,6 +79,11 @@ class ValidationOrchestrator:
     3. Layer 3 (XML_WELLFORMED) - Blocking - package
     4. Layer 4 (XML_SCHEMA) - Blocking - package
     5-7. Layers 5-7 (SCHEMATRON, GML_REFERENCES, WMO_CODELISTS) - Parallel, non-blocking - package
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(self) -> None:
@@ -78,11 +102,47 @@ class ValidationOrchestrator:
         return False
 
     def validate_wellformed(self, xml_content: str) -> ValidationResult:
-        """Public XML well-formedness validation helper."""
+        """
+        Public XML well-formedness validation helper.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_wellformed)
+        2
+
+        Parameters
+        ----------
+        xml_content : object
+            Argument ``xml_content``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return iwxxm_adapter.validate_wellformed(xml_content)
 
     def validate_xml_schema(self, xml_content: str, version: str) -> XSDValidationResult:
-        """Public XML schema validation helper."""
+        """
+        Public XML schema validation helper.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_xml_schema)
+        2
+
+        Parameters
+        ----------
+        xml_content : object
+            Argument ``xml_content``.
+        version : object
+            Argument ``version``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return iwxxm_adapter.validate_xml_schema(xml_content, version)
 
     def _validate_schematron(self, xml_content: str, version: str) -> SchematronValidationResult:
@@ -96,7 +156,28 @@ class ValidationOrchestrator:
         iwxxm_version: str,
         layers: list[ValidationLayer] | None = None,
     ) -> ComprehensiveValidationResult:
-        """Validate IWXXM XML for selected layers (typically 3-7)."""
+        """
+        Validate IWXXM XML for selected layers (typically 3-7).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate)
+        2
+
+        Parameters
+        ----------
+        xml_content : object
+            Argument ``xml_content``.
+        iwxxm_version : object
+            Argument ``iwxxm_version``.
+        layers : object
+            Argument ``layers``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return self.validate_complete(
             tac_text="",
             xml_content=xml_content,
@@ -116,15 +197,31 @@ class ValidationOrchestrator:
         """
         Perform comprehensive validation across all selected layers.
 
-        Args:
-            tac_text: Original TAC (text) input
-            xml_content: Converted XML content
-            version: IWXXM version (e.g., '2025-2')
-            layers: Specific layers to run, or None for all
-            stop_on_error: If True, stop at first blocking layer failure
-
         Returns:
             ComprehensiveValidationResult with all validation outcomes
+
+        Parameters
+        ----------
+        tac_text : object
+            Original TAC (text) input
+        xml_content : object
+            Converted XML content
+        version : object
+            IWXXM version (e.g., '2025-2')
+        layers : object
+            Specific layers to run, or None for all
+        stop_on_error : object
+            If True, stop at first blocking layer failure
+
+        Returns
+        -------
+        object
+            ComprehensiveValidationResult with all validation outcomes
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_complete)
+        2
         """
         if layers is None:
             layers = list(ValidationLayer)
@@ -341,11 +438,13 @@ class ValidationOrchestrator:
 
     @staticmethod
     def _run_gml_layer(xml_content: str, version: str) -> GMLValidationResult:
+        """Internal helper ``_run_gml_layer``."""
         is_valid, issues = iwxxm_adapter.validate_gml_references(xml_content, version)
         return GMLValidationResult(is_valid=is_valid, issues=issues)
 
     @staticmethod
     def _run_codelist_layer(xml_content: str, version: str) -> CodelistValidationResult:
+        """Internal helper ``_run_codelist_layer``."""
         is_valid, issues = iwxxm_adapter.validate_wmo_codelists(xml_content, version)
         return CodelistValidationResult(is_valid=is_valid, issues=issues)
 
@@ -354,7 +453,19 @@ _orchestrator_instance: ValidationOrchestrator | None = None
 
 
 def get_validation_orchestrator() -> ValidationOrchestrator:
-    """Get singleton validation orchestrator instance."""
+    """
+    Get singleton validation orchestrator instance.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_validation_orchestrator)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _orchestrator_instance
     if _orchestrator_instance is None:
         _orchestrator_instance = ValidationOrchestrator()

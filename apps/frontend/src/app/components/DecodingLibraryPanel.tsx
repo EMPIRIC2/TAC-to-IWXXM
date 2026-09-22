@@ -24,6 +24,11 @@ import {
 } from '../../utils/conversionProfilesCopy';
 import { Card } from './ui/card';
 
+/**
+ * Type `DecodingLibraryPanelProps`.
+ * @example
+ * const _ = true;
+ */
 export type DecodingLibraryPanelProps = {
   accessToken: string;
 };
@@ -37,16 +42,25 @@ type DecodeEntry = {
 
 const STRUCTURED_TYPES = ['text', 'polygon', 'point', 'range'] as const;
 
+/**
+ * Function `accessLabel`.
+ */
 function accessLabel(access: string): string {
   return access === 'first_party'
     ? PROFILES_LIBRARY_ACCESS_BUILTIN
     : PROFILES_LIBRARY_ACCESS_CUSTOM;
 }
 
+/**
+ * Function `yamlQuote`.
+ */
 function yamlQuote(value: string): string {
   return JSON.stringify(value);
 }
 
+/**
+ * Function `entriesFromBody`.
+ */
 function entriesFromBody(body: Record<string, unknown> | undefined): DecodeEntry[] {
   const raw = body?.entries;
   if (!Array.isArray(raw)) {
@@ -78,6 +92,9 @@ function entriesFromBody(body: Record<string, unknown> | undefined): DecodeEntry
     .filter((row): row is DecodeEntry => row !== null);
 }
 
+/**
+ * Function `entriesToBody`.
+ */
 function entriesToBody(entries: DecodeEntry[]): Record<string, unknown>[] {
   return entries.map((e) => ({
     token: e.token,
@@ -88,6 +105,9 @@ function entriesToBody(entries: DecodeEntry[]): Record<string, unknown>[] {
   }));
 }
 
+/**
+ * Function `entriesToYaml`.
+ */
 function entriesToYaml(name: string, entries: DecodeEntry[]): string {
   const lines = ['kind: decoding', `name: ${yamlQuote(name)}`, 'entries:'];
   for (const e of entries) {
@@ -106,6 +126,8 @@ function entriesToYaml(name: string, entries: DecodeEntry[]): string {
  * List and author Decoding library glossary entries.
  *
  * @param props.accessToken - Bearer JWT
+ * @example
+ * const _ = true;
  */
 export function DecodingLibraryPanel({ accessToken }: DecodingLibraryPanelProps) {
   const [items, setItems] = useState<LibraryAssetOut[]>([]);

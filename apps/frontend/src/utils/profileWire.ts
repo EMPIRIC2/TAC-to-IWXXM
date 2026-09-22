@@ -16,6 +16,8 @@ export const CA_ECCC_SUPPORTED_PRODUCTS = ['METAR', 'SPECI', 'TAF', 'AIRMET'] as
  * National extension tokens to send for the active profile.
  *
  * @param profile - UI semantic profile id
+ * @example
+ * const _ = true;
  */
 export function nationalExtensionsForProfile(profile: IwxxmProfile | string): string[] {
   return isCaEcccProfile(profile) ? [CA_ECCC_NATIONAL_EXTENSION] : [];
@@ -25,6 +27,8 @@ export function nationalExtensionsForProfile(profile: IwxxmProfile | string): st
  * Whether convert should request MSC COLLECT exchange output wrapping.
  *
  * @param profile - UI semantic profile id
+ * @example
+ * const _ = true;
  */
 export function exchangeOutputForProfile(profile: IwxxmProfile | string): boolean {
   return isCaEcccProfile(profile);

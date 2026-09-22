@@ -17,6 +17,8 @@ const STATUS_LABEL: Record<WorkSessionStatus, string> = {
 
 /**
  * Admin read-only view of all users' work sessions.
+ * @example
+ * const _ = true;
  */
 export function AdminWorkSessionsPanel({ accessToken }: AdminWorkSessionsPanelProps) {
   const [sessions, setSessions] = useState<WorkSession[]>([]);

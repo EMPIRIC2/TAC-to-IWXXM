@@ -4,6 +4,9 @@ import * as React from 'react';
 
 import { cn } from './utils';
 
+/**
+ * Function `Table`.
+ */
 function Table({ className, ...props }: React.ComponentProps<'table'>) {
   return (
     <div data-slot="table-container" className="relative w-full overflow-x-auto">
@@ -16,6 +19,9 @@ function Table({ className, ...props }: React.ComponentProps<'table'>) {
   );
 }
 
+/**
+ * Function `TableHeader`.
+ */
 function TableHeader({ className, ...props }: React.ComponentProps<'thead'>) {
   return (
     <thead
@@ -26,6 +32,9 @@ function TableHeader({ className, ...props }: React.ComponentProps<'thead'>) {
   );
 }
 
+/**
+ * Function `TableBody`.
+ */
 function TableBody({ className, ...props }: React.ComponentProps<'tbody'>) {
   return (
     <tbody
@@ -36,6 +45,9 @@ function TableBody({ className, ...props }: React.ComponentProps<'tbody'>) {
   );
 }
 
+/**
+ * Function `TableFooter`.
+ */
 function TableFooter({ className, ...props }: React.ComponentProps<'tfoot'>) {
   return (
     <tfoot
@@ -49,6 +61,9 @@ function TableFooter({ className, ...props }: React.ComponentProps<'tfoot'>) {
   );
 }
 
+/**
+ * Function `TableRow`.
+ */
 function TableRow({ className, ...props }: React.ComponentProps<'tr'>) {
   return (
     <tr
@@ -62,6 +77,9 @@ function TableRow({ className, ...props }: React.ComponentProps<'tr'>) {
   );
 }
 
+/**
+ * Function `TableHead`.
+ */
 function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
   return (
     <th
@@ -75,6 +93,9 @@ function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
   );
 }
 
+/**
+ * Function `TableCell`.
+ */
 function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
   return (
     <td
@@ -88,6 +109,9 @@ function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
   );
 }
 
+/**
+ * Function `TableCaption`.
+ */
 function TableCaption({ className, ...props }: React.ComponentProps<'caption'>) {
   return (
     <caption

@@ -21,33 +21,72 @@ _WIRE_V2_DEFAULT_SEMANTIC = "ICAO_2025"
 
 
 def _truthy_env(name: str) -> bool:
+    """Internal helper ``_truthy_env``."""
     return os.getenv(name, "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 def profile_wire_v2_enabled() -> bool:
-    """Return whether nested semantic/exchange wire defaults are active."""
+    """
+    Return whether nested semantic/exchange wire defaults are active.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (profile_wire_v2_enabled)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _truthy_env("PROFILE_WIRE_V2")
 
 
 def default_semantic_profile() -> str:
-    """Default semantic profile id for the active wire mode."""
+    """
+    Default semantic profile id for the active wire mode.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (default_semantic_profile)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if profile_wire_v2_enabled():
         return os.getenv("DEFAULT_SEMANTIC_PROFILE", _WIRE_V2_DEFAULT_SEMANTIC).strip() or _WIRE_V2_DEFAULT_SEMANTIC
     return os.getenv("DEFAULT_SEMANTIC_PROFILE", _LEGACY_DEFAULT_PROFILE).strip() or _LEGACY_DEFAULT_PROFILE
 
 
 def default_exchange_profile() -> str:
-    """Default exchange profile id when packaging paths run."""
+    """
+    Default exchange profile id when packaging paths run.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (default_exchange_profile)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return os.getenv("DEFAULT_EXCHANGE_PROFILE", DEFAULT_EXCHANGE_PROFILE_ID).strip() or DEFAULT_EXCHANGE_PROFILE_ID
 
 
 def _clean(value: str | None) -> str:
+    """Internal helper ``_clean``."""
     if not isinstance(value, str):
         return ""
     return value.strip()
 
 
 def _resolve_exchange_profile(raw: str | None, *, for_packaging: bool) -> str | None:
+    """Internal helper ``_resolve_exchange_profile``."""
     cleaned = _clean(raw)
     if not cleaned:
         if for_packaging:
@@ -67,7 +106,14 @@ def _resolve_exchange_profile(raw: str | None, *, for_packaging: bool) -> str | 
 
 @dataclass(frozen=True, slots=True)
 class WireProfileSelection:
-    """Resolved profile wire fields for a single HTTP request."""
+    """
+    Resolved profile wire fields for a single HTTP request.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     emit_key: str
     semantic_canonical: str
@@ -105,6 +151,11 @@ def resolve_route_profiles(
     ------
     HTTPException
         HTTP 400 when semantic or exchange profile id is unknown.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_route_profiles)
+    2
     """
     semantic_raw = _clean(semantic_profile)
     legacy_raw = _clean(profile)

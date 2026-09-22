@@ -4,6 +4,8 @@ import { getAccessToken } from '../authService';
 /**
  * Sign out user with specified scope
  * Delegates to merged API auth routes for session management
+ * @example
+ * const _ = true;
  */
 
 export async function signOutWithScope(

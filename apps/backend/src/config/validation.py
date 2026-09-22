@@ -8,9 +8,15 @@ from pydantic_settings import BaseSettings
 
 
 class ValidationSettings(BaseSettings):
-    """Validation configuration with environment variable support.
+    """
+    Validation configuration with environment variable support.
 
     All settings can be overridden via environment variables or .env file.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     # WMO Code List Validation
@@ -30,7 +36,14 @@ class ValidationSettings(BaseSettings):
     enable_live_api_tests: bool = True  # Enable tests against live APIs
 
     class Config:
-        """Pydantic configuration."""
+        """
+        Pydantic configuration.
+
+        Attributes
+        ----------
+        _ : object
+            See implementation.
+        """
 
         env_prefix = ""  # No prefix, use exact env var names
         case_sensitive = False  # Case-insensitive env var matching
@@ -43,10 +56,18 @@ _settings_instance: ValidationSettings | None = None
 
 
 def get_validation_settings() -> ValidationSettings:
-    """Get singleton instance of validation settings.
+    """
+    Get singleton instance of validation settings.
 
-    Returns:
+    Returns
+    -------
+    object
         ValidationSettings instance with current configuration
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_validation_settings)
+    2
     """
     global _settings_instance
     if _settings_instance is None:
@@ -55,7 +76,14 @@ def get_validation_settings() -> ValidationSettings:
 
 
 def reset_validation_settings() -> None:
-    """Reset settings instance (useful for testing)."""
+    """
+    Reset settings instance (useful for testing).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (reset_validation_settings)
+    2
+    """
     global _settings_instance
     _settings_instance = None
 

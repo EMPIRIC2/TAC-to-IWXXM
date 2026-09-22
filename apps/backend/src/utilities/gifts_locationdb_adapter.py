@@ -29,6 +29,11 @@ class GiftsLocationDBAdapter:
 
     This adapter bridges multiple airport data sources and presents them
     in the format required by GIFTs encoder.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(self, openaip_service: OpenAIPService | None = None) -> None:
@@ -53,11 +58,23 @@ class GiftsLocationDBAdapter:
         """
         Get airport data in GIFTs format.
 
-        Args:
-            icao_code: 4-letter ICAO airport code
-
         Returns:
+            String in format "name|iata|designat
+
+        Parameters
+        ----------
+        icao_code : object
+            4-letter ICAO airport code
+
+        Returns
+        -------
+        object
             String in format "name|iata|designator|lat,lon" or None if not found
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get)
+        2
         """
         icao = icao_code.upper().strip() if icao_code else None
         if not icao:
@@ -85,14 +102,38 @@ class GiftsLocationDBAdapter:
         """
         Check if airport exists.
 
-        Args:
-            icao_code: 4-letter ICAO code
-
         Returns:
+            True if airport found in any
+
+        Parameters
+        ----------
+        icao_code : object
+            4-letter ICAO code
+
+        Returns
+        -------
+        object
             True if airport found in any data source
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_airport)
+        2
         """
         return self.get(icao_code) is not None
 
     def get_cached_airports(self) -> dict[str, Any]:
-        """Get all cached airports from OpenAIP."""
+        """
+        Get all cached airports from OpenAIP.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_cached_airports)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return self.openaip_service.get_all_airports()

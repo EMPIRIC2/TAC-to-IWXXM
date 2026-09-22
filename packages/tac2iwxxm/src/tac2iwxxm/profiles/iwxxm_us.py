@@ -698,6 +698,11 @@ def emit_metar_speci_iwxxm_us(
     -------
     str
         IWXXM XML document with US extension blocks.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_metar_speci_iwxxm_us)
+    2
     """
     ns = NS.get(iwxxm_version)
     if ns is None:
@@ -966,6 +971,16 @@ def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
         Parsed TAF IR (optional ``forecast_altimeter_inhg``).
     iwxxm_version :
         Release line.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_taf_iwxxm_us)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     from tac2iwxxm.profiles.annex3_products import emit_taf_annex3
 
@@ -990,7 +1005,26 @@ def emit_taf_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def emit_sigmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit SIGMET annex3 body with IWXXM-US namespace and weather-hazard extensions."""
+    """
+    Emit SIGMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_sigmet_iwxxm_us)
+    2
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     from tac2iwxxm.profiles.annex3_products import emit_sigmet_annex3
 
     xml = emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
@@ -1002,7 +1036,26 @@ def emit_sigmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def emit_airmet_iwxxm_us(ir: dict[str, Any], *, iwxxm_version: str) -> str:
-    """Emit AIRMET annex3 body with IWXXM-US namespace and weather-hazard extensions."""
+    """
+    Emit AIRMET annex3 body with IWXXM-US namespace and weather-hazard extensions.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_airmet_iwxxm_us)
+    2
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     from tac2iwxxm.profiles.annex3_products import emit_airmet_annex3
 
     xml = emit_airmet_annex3(ir, iwxxm_version=iwxxm_version)

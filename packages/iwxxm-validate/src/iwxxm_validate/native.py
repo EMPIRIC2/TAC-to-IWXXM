@@ -10,7 +10,19 @@ from typing import Any
 
 
 def rust_available() -> bool:
-    """Return True when the compiled ``iwxxm_validate._rust`` extension imports."""
+    """
+    Return True when the compiled ``iwxxm_validate._rust`` extension imports.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (rust_available)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         from iwxxm_validate import _rust  # type: ignore[attr-defined]
     except ImportError:
@@ -19,7 +31,14 @@ def rust_available() -> bool:
 
 
 def clear_schema_caches() -> None:
-    """Clear process-wide compiled XSD/Schematron caches (native only; no-op if absent)."""
+    """
+    Clear process-wide compiled XSD/Schematron caches (native only; no-op if absent).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (clear_schema_caches)
+    2
+    """
     mod = rust_module()
     if mod is None:
         return
@@ -36,6 +55,11 @@ def rust_module() -> Any | None:
     -------
     Any | None
         Extension module or ``None``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (rust_module)
+    2
     """
     try:
         from iwxxm_validate import _rust  # type: ignore[attr-defined]

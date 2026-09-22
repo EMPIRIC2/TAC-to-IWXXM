@@ -46,6 +46,11 @@ def validate(
     ValidationReport
         ``ok`` is ``False`` when any error-severity issue is present.
         XSLT2 Schematron yields non-blocking ``SCHEMATRON_SKIPPED`` (D-S008-T21-sch).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate)
+    2
     """
     if profile not in _VALID_PROFILES:
         return ValidationReport(

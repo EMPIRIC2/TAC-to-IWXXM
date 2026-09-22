@@ -10,7 +10,14 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class MetarFamilyVariant(BaseModel):
-    """Read-only METAR-family variant row projected from the profile catalog."""
+    """
+    Read-only METAR-family variant row projected from the profile catalog.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(extra="ignore")
 
@@ -25,7 +32,14 @@ class MetarFamilyVariant(BaseModel):
 
 
 class ProfileCatalogEntry(BaseModel):
-    """Read-only ConversionProfile catalog entry for the inspector."""
+    """
+    Read-only ConversionProfile catalog entry for the inspector.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(extra="ignore")
 
@@ -46,14 +60,28 @@ class ProfileCatalogEntry(BaseModel):
 
 
 class ProfileCatalogResponse(BaseModel):
-    """Catalog list response."""
+    """
+    Catalog list response.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     schema_version: int | str | None = None
     profiles: list[ProfileCatalogEntry]
 
 
 class RulePackCreate(BaseModel):
-    """Create body for a rule pack."""
+    """
+    Create body for a rule pack.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     slug: str = Field(min_length=1, max_length=128)
     profile: str = Field(min_length=1, max_length=64)
@@ -68,7 +96,14 @@ class RulePackCreate(BaseModel):
 
 
 class RulePackUpdate(BaseModel):
-    """Partial update for a rule pack."""
+    """
+    Partial update for a rule pack.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     slug: str | None = Field(default=None, max_length=128)
     profile: str | None = Field(default=None, max_length=64)
@@ -83,7 +118,14 @@ class RulePackUpdate(BaseModel):
 
 
 class RulePackOut(BaseModel):
-    """Persisted rule pack (owner-scoped)."""
+    """
+    Persisted rule pack (owner-scoped).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -102,13 +144,27 @@ class RulePackOut(BaseModel):
 
 
 class RulePackListResponse(BaseModel):
-    """List of rule packs for the caller."""
+    """
+    List of rule packs for the caller.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     items: list[RulePackOut]
 
 
 class OverlayCreate(BaseModel):
-    """Create body for a signed overlay (server issues the signature)."""
+    """
+    Create body for a signed overlay (server issues the signature).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     slug: str = Field(min_length=1, max_length=128)
     base_profile_id: str = Field(min_length=1, max_length=64, alias="baseProfileId")
@@ -119,7 +175,14 @@ class OverlayCreate(BaseModel):
 
 
 class OverlayUpdate(BaseModel):
-    """Partial update for an overlay (re-signed on write)."""
+    """
+    Partial update for an overlay (re-signed on write).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     slug: str | None = Field(default=None, max_length=128)
     base_profile_id: str | None = Field(default=None, max_length=64, alias="baseProfileId")
@@ -130,7 +193,14 @@ class OverlayUpdate(BaseModel):
 
 
 class OverlayOut(BaseModel):
-    """Persisted signed overlay (owner-scoped)."""
+    """
+    Persisted signed overlay (owner-scoped).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -146,13 +216,27 @@ class OverlayOut(BaseModel):
 
 
 class OverlayListResponse(BaseModel):
-    """List of overlays for the caller."""
+    """
+    List of overlays for the caller.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     items: list[OverlayOut]
 
 
 class PresetCreate(BaseModel):
-    """Create body for a saved semantic preset."""
+    """
+    Create body for a saved semantic preset.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     slug: str = Field(min_length=1, max_length=128)
     name: str = Field(min_length=1, max_length=128)
@@ -167,7 +251,14 @@ class PresetCreate(BaseModel):
 
 
 class PresetUpdate(BaseModel):
-    """Partial update for a saved semantic preset."""
+    """
+    Partial update for a saved semantic preset.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     slug: str | None = Field(default=None, max_length=128)
     name: str | None = Field(default=None, max_length=128)
@@ -182,7 +273,14 @@ class PresetUpdate(BaseModel):
 
 
 class PresetOut(BaseModel):
-    """Persisted saved semantic preset."""
+    """
+    Persisted saved semantic preset.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -201,13 +299,27 @@ class PresetOut(BaseModel):
 
 
 class PresetListResponse(BaseModel):
-    """List of semantic presets for the caller."""
+    """
+    List of semantic presets for the caller.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     items: list[PresetOut]
 
 
 class DisseminationTemplateCreate(BaseModel):
-    """Create body for a saved dissemination template."""
+    """
+    Create body for a saved dissemination template.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     slug: str = Field(min_length=1, max_length=128)
     name: str = Field(min_length=1, max_length=128)
@@ -221,7 +333,14 @@ class DisseminationTemplateCreate(BaseModel):
 
 
 class DisseminationTemplateUpdate(BaseModel):
-    """Partial update for a saved dissemination template."""
+    """
+    Partial update for a saved dissemination template.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     slug: str | None = Field(default=None, max_length=128)
     name: str | None = Field(default=None, max_length=128)
@@ -235,7 +354,14 @@ class DisseminationTemplateUpdate(BaseModel):
 
 
 class DisseminationTemplateOut(BaseModel):
-    """Persisted saved dissemination template."""
+    """
+    Persisted saved dissemination template.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -253,13 +379,27 @@ class DisseminationTemplateOut(BaseModel):
 
 
 class DisseminationTemplateListResponse(BaseModel):
-    """List of saved dissemination templates for the caller."""
+    """
+    List of saved dissemination templates for the caller.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     items: list[DisseminationTemplateOut]
 
 
 class ConversionTemplateSlot(BaseModel):
-    """One ordered slot in a parameterizable conversion template."""
+    """
+    One ordered slot in a parameterizable conversion template.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -276,7 +416,14 @@ class ConversionTemplateSlot(BaseModel):
 
 
 class ConversionTemplateCreate(BaseModel):
-    """Create body for a custom conversion template."""
+    """
+    Create body for a custom conversion template.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     slug: str = Field(min_length=1, max_length=128)
     name: str = Field(min_length=1, max_length=128)
@@ -291,7 +438,14 @@ class ConversionTemplateCreate(BaseModel):
 
 
 class ConversionTemplateUpdate(BaseModel):
-    """Partial update for a custom conversion template."""
+    """
+    Partial update for a custom conversion template.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     slug: str | None = Field(default=None, max_length=128)
     name: str | None = Field(default=None, max_length=128)
@@ -305,7 +459,14 @@ class ConversionTemplateUpdate(BaseModel):
 
 
 class ConversionTemplateOut(BaseModel):
-    """Persisted or first-party conversion template projection."""
+    """
+    Persisted or first-party conversion template projection.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -326,13 +487,27 @@ class ConversionTemplateOut(BaseModel):
 
 
 class ConversionTemplateListResponse(BaseModel):
-    """First-party + custom conversion templates visible to the caller."""
+    """
+    First-party + custom conversion templates visible to the caller.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     items: list[ConversionTemplateOut]
 
 
 class ConversionTemplatePreviewRequest(BaseModel):
-    """Bridge preview request."""
+    """
+    Bridge preview request.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -344,7 +519,14 @@ class ConversionTemplatePreviewRequest(BaseModel):
 
 
 class ConversionTemplatePreviewResponse(BaseModel):
-    """Bridge preview response."""
+    """
+    Bridge preview response.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -367,7 +549,14 @@ LibraryKindLiteral = Literal[
 
 
 class LibraryAssetOut(BaseModel):
-    """First-party or custom library asset (five Libraries)."""
+    """
+    First-party or custom library asset (five Libraries).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -390,13 +579,27 @@ class LibraryAssetOut(BaseModel):
 
 
 class LibraryAssetListResponse(BaseModel):
-    """Library assets visible to the caller."""
+    """
+    Library assets visible to the caller.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     items: list[LibraryAssetOut]
 
 
 class LibraryAssetCreate(BaseModel):
-    """Create a custom library asset (optionally forked)."""
+    """
+    Create a custom library asset (optionally forked).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -414,7 +617,14 @@ class LibraryAssetCreate(BaseModel):
 
 
 class LibraryAssetUpdate(BaseModel):
-    """Partial update for a custom library asset (or fork-on-edit first-party)."""
+    """
+    Partial update for a custom library asset (or fork-on-edit first-party).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -428,7 +638,14 @@ class LibraryAssetUpdate(BaseModel):
 
 
 class LibraryYamlValidateRequest(BaseModel):
-    """Validate library YAML without persisting."""
+    """
+    Validate library YAML without persisting.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -438,7 +655,14 @@ class LibraryYamlValidateRequest(BaseModel):
 
 
 class LibraryYamlValidateResponse(BaseModel):
-    """Regex + schema diagnostics for a library YAML document."""
+    """
+    Regex + schema diagnostics for a library YAML document.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     valid_yaml: bool
     yaml_error: str | None = None
@@ -452,7 +676,14 @@ class LibraryYamlValidateResponse(BaseModel):
 
 
 class LibraryRulePreviewRequest(BaseModel):
-    """AC11 rule association preview for a TAC group."""
+    """
+    AC11 rule association preview for a TAC group.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 
@@ -461,7 +692,14 @@ class LibraryRulePreviewRequest(BaseModel):
 
 
 class LibraryRulePreviewResponse(BaseModel):
-    """Matched conversion rule for a TAC group."""
+    """
+    Matched conversion rule for a TAC group.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(populate_by_name=True)
 

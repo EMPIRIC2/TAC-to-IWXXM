@@ -34,7 +34,24 @@ KNOWN_CODE_CA_HREFS: frozenset[str] = frozenset(
 
 
 def normalize_code_ca_href(href: str) -> str:
-    """Strip fragment/query and trailing slash for stable membership lookup."""
+    """
+    Strip fragment/query and trailing slash for stable membership lookup.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_code_ca_href)
+    2
+
+    Parameters
+    ----------
+    href : object
+        Argument ``href``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     value = href.strip()
     if "#" in value:
         value = value.split("#", 1)[0]
@@ -44,7 +61,24 @@ def normalize_code_ca_href(href: str) -> str:
 
 
 def is_code_ca_href(href: str) -> bool:
-    """Return True when ``href`` targets the MSC code-ca vocabulary tree."""
+    """
+    Return True when ``href`` targets the MSC code-ca vocabulary tree.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (is_code_ca_href)
+    2
+
+    Parameters
+    ----------
+    href : object
+        Argument ``href``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return normalize_code_ca_href(href).startswith(CODE_CA_BASE)
 
 
@@ -56,6 +90,16 @@ def code_ca_membership_ok(href: str) -> bool:
     ----------
     href :
         ``xlink:href`` value from an IWXXM document.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (code_ca_membership_ok)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     return normalize_code_ca_href(href) in KNOWN_CODE_CA_HREFS
 

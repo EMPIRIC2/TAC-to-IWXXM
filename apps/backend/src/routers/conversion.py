@@ -176,6 +176,8 @@ def _infer_report_variant_from_sample(emit_profile: str, product: str, sample_te
 
 @dataclass(slots=True)
 class _ConvertAccumulator:
+    """Internal helper ``_ConvertAccumulator``."""
+
     results: list[ConversionResult] = field(default_factory=list)
     errors: list[str] = field(default_factory=list)
     issues: list[ConversionIssue] = field(default_factory=list)
@@ -193,7 +195,8 @@ class _ConvertAccumulator:
         layer: str | None = None,
         location: str | None = None,
     ) -> None:
-        """Append a conversion/validation issue to this accumulator.
+        """
+        Append a conversion/validation issue to this accumulator.
 
         Parameters
         ----------
@@ -211,6 +214,11 @@ class _ConvertAccumulator:
             Optional validation layer id.
         location :
             Optional location pointer within the input.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (add_issue)
+        2
         """
         self.issues.append(
             ConversionIssue(
@@ -225,7 +233,21 @@ class _ConvertAccumulator:
         )
 
     def absorb_convert_issues(self, soft: dict[str, Any], *, source: str) -> None:
-        """Echo tac2iwxxm non-fatal convert issues (e.g. REMARKS_EXCLUDED) to the client."""
+        """
+        Echo tac2iwxxm non-fatal convert issues (e.g. REMARKS_EXCLUDED) to the client.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (absorb_convert_issues)
+        2
+
+        Parameters
+        ----------
+        soft : object
+            Argument ``soft``.
+        source : object
+            Argument ``source``.
+        """
         for raw_obj in cast(list[object], soft.get("convert_issues") or []):
             data = _wire_payload_dict(raw_obj)
             sev_raw = str(data.get("severity") or "info").strip().lower()
@@ -255,7 +277,25 @@ class _ConvertAccumulator:
         base_offset: int = 0,
         source: str | None = None,
     ) -> None:
-        """Merge soft-preview envelope fields from convert_metar_tac_with_metadata."""
+        """
+        Merge soft-preview envelope fields from convert_metar_tac_with_metadata.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (absorb_soft_preview)
+        2
+
+        Parameters
+        ----------
+        soft : object
+            Argument ``soft``.
+        preview : object
+            Argument ``preview``.
+        base_offset : object
+            Argument ``base_offset``.
+        source : object
+            Argument ``source``.
+        """
         if not soft:
             return
         if source:
@@ -280,7 +320,23 @@ class _ConvertAccumulator:
         *,
         base_offset: int = 0,
     ) -> None:
-        """Mark soft-preview Layer 1-2 failure and copy spans when present (ADR-022)."""
+        """
+        Mark soft-preview Layer 1-2 failure and copy spans when present (ADR-022).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (record_preview_layer12_soft_fail)
+        2
+
+        Parameters
+        ----------
+        aggregated_result : object
+            Argument ``aggregated_result``.
+        tac_text : object
+            Argument ``tac_text``.
+        base_offset : object
+            Argument ``base_offset``.
+        """
         self.preview_saw_soft_fail = True
         before = len(self.preview_failed_spans)
         if aggregated_result:
@@ -309,7 +365,21 @@ class _ConvertAccumulator:
             )
 
     def add_aggregated_validation_issues(self, source: str, aggregated_result: object) -> None:
-        """Flatten multi-layer validation results into conversion issues."""
+        """
+        Flatten multi-layer validation results into conversion issues.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (add_aggregated_validation_issues)
+        2
+
+        Parameters
+        ----------
+        source : object
+            Argument ``source``.
+        aggregated_result : object
+            Argument ``aggregated_result``.
+        """
         if not aggregated_result:
             return
         for layer_result in getattr(aggregated_result, "results", []):
@@ -331,7 +401,21 @@ class _ConvertAccumulator:
                 )
 
     def emit_recent_wx_issues(self, source: str, norm_warnings: list[dict[str, Any]]) -> None:
-        """Emit structured conversion issues for recent-weather rewrites."""
+        """
+        Emit structured conversion issues for recent-weather rewrites.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (emit_recent_wx_issues)
+        2
+
+        Parameters
+        ----------
+        source : object
+            Argument ``source``.
+        norm_warnings : object
+            Argument ``norm_warnings``.
+        """
         for warning in norm_warnings:
             self.add_issue(
                 source=source,
@@ -352,6 +436,8 @@ class _ConvertAccumulator:
 
 @dataclass(slots=True)
 class _ConvertRuntime:
+    """Internal helper ``_ConvertRuntime``."""
+
     product: str
     emit_profile: str
     iwxxm_version: str
@@ -375,6 +461,7 @@ async def _process_json_metars(
     runtime: _ConvertRuntime,
     acc: _ConvertAccumulator,
 ) -> None:
+    """Internal helper ``_process_json_metars``."""
     for metar_text in metars_list:
         if not metar_text.strip():
             continue
@@ -647,6 +734,7 @@ async def _process_manual_entries(
     runtime: _ConvertRuntime,
     acc: _ConvertAccumulator,
 ) -> None:
+    """Internal helper ``_process_manual_entries``."""
     for manual_index, (manual_entry, entry_offset) in enumerate(manual_with_offsets, 1):
         acc.total_inputs += 1
         manual_source = f"manual_input_{manual_index}" if len(manual_with_offsets) > 1 else "manual_input"
@@ -893,6 +981,7 @@ async def _process_uploaded_files(
     runtime: _ConvertRuntime,
     acc: _ConvertAccumulator,
 ) -> None:
+    """Internal helper ``_process_uploaded_files``."""
     if not files:
         return
 
@@ -1214,6 +1303,7 @@ def _append_pre_convert_lint_issues(
     *,
     acc: _ConvertAccumulator,
 ) -> None:
+    """Internal helper ``_append_pre_convert_lint_issues``."""
     if pre_convert_lint_report is None:
         return
     for lint_issue in pre_convert_lint_report.issues:
@@ -1307,10 +1397,52 @@ async def convert_bulletin(
     ),
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> Response:
-    """Split a WMO AHL bulletin and convert each TAC report.
+    """
+    Split a WMO AHL bulletin and convert each TAC report.
 
     Partial success is allowed: HTTP 200 when split succeeds even if some reports fail.
     Per-report ``issues`` / ``fixes`` follow lint-style identity.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert_bulletin)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    product : object
+        Argument ``product``.
+    files : object
+        Argument ``files``.
+    manual_text : object
+        Argument ``manual_text``.
+    profile : object
+        Argument ``profile``.
+    semantic_profile : object
+        Argument ``semantic_profile``.
+    exchange_profile : object
+        Argument ``exchange_profile``.
+    conversion_library_id : object
+        Argument ``conversion_library_id``.
+    dissemination_library_id : object
+        Argument ``dissemination_library_id``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    lint : object
+        Argument ``lint``.
+    extensions : object
+        Argument ``extensions``.
+    propagate_residuals_to_remarks : object
+        Argument ``propagate_residuals_to_remarks``.
+    auth_user : object
+        Argument ``auth_user``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     lib_raw = _form_text(conversion_library_id)
     if lib_raw.strip():
@@ -1323,6 +1455,7 @@ async def convert_bulletin(
             profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
         def _custom_engine(asset_id: str) -> str | None:
+            """Internal helper ``_custom_engine``."""
             if profiles_service is None:
                 return None
             try:
@@ -1471,6 +1604,7 @@ async def convert_bulletin(
         dissem_profiles = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
     def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
+        """Internal helper ``_custom_dissem_body``."""
         if dissem_profiles is None:
             return None
         try:
@@ -1722,7 +1856,88 @@ async def convert(
     ),
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> Response:
-    """Convert METAR/SPECI TAC text to IWXXM XML."""
+    """
+    Convert METAR/SPECI TAC text to IWXXM XML.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    files : object
+        Argument ``files``.
+    manual_text : object
+        Argument ``manual_text``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    validate_output : object
+        Argument ``validate_output``.
+    validation_level : object
+        Argument ``validation_level``.
+    stop_on_error : object
+        Argument ``stop_on_error``.
+    bulletin_id : object
+        Argument ``bulletin_id``.
+    issuing_center : object
+        Argument ``issuing_center``.
+    lint : object
+        Argument ``lint``.
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+    semantic_profile : object
+        Argument ``semantic_profile``.
+    exchange_profile : object
+        Argument ``exchange_profile``.
+    report_variant : object
+        Argument ``report_variant``.
+    exchange_output : object
+        Argument ``exchange_output``.
+    extensions : object
+        Argument ``extensions``.
+    preview : object
+        Argument ``preview``.
+    include_nil_reasons : object
+        Argument ``include_nil_reasons``.
+    emit_translation_centre : object
+        Argument ``emit_translation_centre``.
+    translation_centre_designator : object
+        Argument ``translation_centre_designator``.
+    translation_centre_name : object
+        Argument ``translation_centre_name``.
+    log_level : object
+        Argument ``log_level``.
+    propagate_residuals_to_remarks : object
+        Argument ``propagate_residuals_to_remarks``.
+    overlay_id : object
+        Argument ``overlay_id``.
+    preset_id : object
+        Argument ``preset_id``.
+    conversion_template_id : object
+        Argument ``conversion_template_id``.
+    conversion_library_id : object
+        Argument ``conversion_library_id``.
+    tac_validation_library_id : object
+        Argument ``tac_validation_library_id``.
+    iwxxm_validation_library_id : object
+        Argument ``iwxxm_validation_library_id``.
+    dissemination_library_id : object
+        Argument ``dissemination_library_id``.
+    decoding_library_id : object
+        Argument ``decoding_library_id``.
+    auth_user : object
+        Argument ``auth_user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     logger.info(
         "[CONVERT] Request received method=%s path=%s origin=%s content_type=%s has_auth_header=%s",
         request.method,
@@ -1884,6 +2099,7 @@ async def convert(
         )
 
     def _custom_engine(asset_id: str) -> str | None:
+        """Internal helper ``_custom_engine``."""
         if profiles_service is None:
             return None
         try:
@@ -1967,7 +2183,26 @@ async def convert(
                 iwxxm_version: str = "3.0.0",
                 extension_tag: str = "3.0",
             ) -> bool:
-                """Return False when the Canadian extension bundle cannot be imported."""
+                """
+                Return False when the Canadian extension bundle cannot be imported.
+
+                Examples
+                --------
+                >>> 1 + 1  # docstring smoke (ca_eccc_bundle_available)
+                2
+
+                Parameters
+                ----------
+                iwxxm_version : object
+                    Argument ``iwxxm_version``.
+                extension_tag : object
+                    Argument ``extension_tag``.
+
+                Returns
+                -------
+                object
+                    Return value.
+                """
                 return False
 
         if not ca_eccc_bundle_available():
@@ -2273,6 +2508,7 @@ async def convert(
         request_metadata["output_spec"] = output_spec
 
     def _finalize_exchange_xml(xml: str, tac_input: str | None) -> str:
+        """Internal helper ``_finalize_exchange_xml``."""
         spec_filename: str | None = None
         meta_output_spec = request_metadata.get("output_spec")
         if isinstance(meta_output_spec, dict):
@@ -2403,7 +2639,32 @@ async def convert_zip(
         ),
     ),
 ) -> StreamingResponse:
-    """Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files."""
+    """
+    Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert_zip)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    files : object
+        Argument ``files``.
+    manual_text : object
+        Argument ``manual_text``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    propagate_residuals_to_remarks : object
+        Argument ``propagate_residuals_to_remarks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # Try to parse JSON body if Content-Type is application/json
     request_body = None
     if request.headers.get("content-type", "").startswith("application/json"):

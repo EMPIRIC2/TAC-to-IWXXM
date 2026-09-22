@@ -6,36 +6,54 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 
 import { cn } from './utils';
 
+/**
+ * Function `ContextMenu`.
+ */
 function ContextMenu({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Root>) {
   return <ContextMenuPrimitive.Root data-slot="context-menu" {...props} />;
 }
 
+/**
+ * Function `ContextMenuTrigger`.
+ */
 function ContextMenuTrigger({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Trigger>) {
   return <ContextMenuPrimitive.Trigger data-slot="context-menu-trigger" {...props} />;
 }
 
+/**
+ * Function `ContextMenuGroup`.
+ */
 function ContextMenuGroup({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Group>) {
   return <ContextMenuPrimitive.Group data-slot="context-menu-group" {...props} />;
 }
 
+/**
+ * Function `ContextMenuPortal`.
+ */
 function ContextMenuPortal({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Portal>) {
   return <ContextMenuPrimitive.Portal data-slot="context-menu-portal" {...props} />;
 }
 
+/**
+ * Function `ContextMenuSub`.
+ */
 function ContextMenuSub({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.Sub>) {
   return <ContextMenuPrimitive.Sub data-slot="context-menu-sub" {...props} />;
 }
 
+/**
+ * Function `ContextMenuRadioGroup`.
+ */
 function ContextMenuRadioGroup({
   ...props
 }: React.ComponentProps<typeof ContextMenuPrimitive.RadioGroup>) {
@@ -44,6 +62,9 @@ function ContextMenuRadioGroup({
   );
 }
 
+/**
+ * Function `ContextMenuSubTrigger`.
+ */
 function ContextMenuSubTrigger({
   className,
   inset,
@@ -68,6 +89,9 @@ function ContextMenuSubTrigger({
   );
 }
 
+/**
+ * Function `ContextMenuSubContent`.
+ */
 function ContextMenuSubContent({
   className,
   ...props
@@ -84,6 +108,9 @@ function ContextMenuSubContent({
   );
 }
 
+/**
+ * Function `ContextMenuContent`.
+ */
 function ContextMenuContent({
   className,
   ...props
@@ -102,6 +129,9 @@ function ContextMenuContent({
   );
 }
 
+/**
+ * Function `ContextMenuItem`.
+ */
 function ContextMenuItem({
   className,
   inset,
@@ -125,6 +155,9 @@ function ContextMenuItem({
   );
 }
 
+/**
+ * Function `ContextMenuCheckboxItem`.
+ */
 function ContextMenuCheckboxItem({
   className,
   children,
@@ -151,6 +184,9 @@ function ContextMenuCheckboxItem({
   );
 }
 
+/**
+ * Function `ContextMenuRadioItem`.
+ */
 function ContextMenuRadioItem({
   className,
   children,
@@ -175,6 +211,9 @@ function ContextMenuRadioItem({
   );
 }
 
+/**
+ * Function `ContextMenuLabel`.
+ */
 function ContextMenuLabel({
   className,
   inset,
@@ -195,6 +234,9 @@ function ContextMenuLabel({
   );
 }
 
+/**
+ * Function `ContextMenuSeparator`.
+ */
 function ContextMenuSeparator({
   className,
   ...props
@@ -208,6 +250,9 @@ function ContextMenuSeparator({
   );
 }
 
+/**
+ * Function `ContextMenuShortcut`.
+ */
 function ContextMenuShortcut({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span

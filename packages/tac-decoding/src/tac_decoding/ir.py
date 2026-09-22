@@ -32,6 +32,11 @@ def project_ir(
     -------
     dict[str, object]
         Versioned IR projection. Callers keep legacy XML emit on the parser IR.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (project_ir)
+    2
     """
     return {
         "ir_version": 1,

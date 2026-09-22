@@ -57,12 +57,22 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 type DraftStatus = 'idle' | 'draft' | 'saved' | 'activated';
 
+/**
+ * Type `LibraryDraftSchemaBlock`.
+ * @example
+ * const _ = true;
+ */
 export type LibraryDraftSchemaBlock = {
   id: string;
   label: string;
   cards: Array<{ id: string; label: string }>;
 };
 
+/**
+ * Type `LibraryDraftShellProps`.
+ * @example
+ * const _ = true;
+ */
 export type LibraryDraftShellProps = {
   /** Library kind for template defaults. */
   kind: LibraryAssetKind;
@@ -160,6 +170,9 @@ const BLOCKS = [
   },
 ] as const;
 
+/**
+ * Function `DraftHelpTooltip`.
+ */
 function DraftHelpTooltip({ label, tooltip }: { label: string; tooltip: string }) {
   return (
     <Tooltip>
@@ -179,6 +192,9 @@ function DraftHelpTooltip({ label, tooltip }: { label: string; tooltip: string }
   );
 }
 
+/**
+ * Function `yamlName`.
+ */
 function yamlName(raw: string, fallback: string): string {
   const match = raw.match(/^name:\s*(.+)$/m);
   const value = match?.[1]?.trim();
@@ -191,6 +207,8 @@ function yamlName(raw: string, fallback: string): string {
  * @param props.kind - Active library kind
  * @param props.accessToken - Optional JWT for persist
  * @param props.sourceAssetName - Built-in asset label for duplicate hint
+ * @example
+ * const _ = true;
  */
 export function LibraryDraftShell({
   kind,

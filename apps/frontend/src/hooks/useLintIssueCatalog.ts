@@ -6,6 +6,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { fetchLintIssueCatalog, type LintIssueCatalogEntry } from '@/utils/api';
 import { indexCatalogByCode } from '@/utils/lintIssueCatalog';
 
+/**
+ * Type `UseLintIssueCatalogResult`.
+ * @example
+ * const _ = true;
+ */
 export interface UseLintIssueCatalogResult {
   entries: LintIssueCatalogEntry[];
   byCode: Map<string, LintIssueCatalogEntry>;
@@ -15,6 +20,8 @@ export interface UseLintIssueCatalogResult {
 
 /**
  * Fetch the lint issue catalog for tooltip / panel UI (F15 / E11-31).
+ * @example
+ * const _ = true;
  */
 export function useLintIssueCatalog(options: {
   product?: string;

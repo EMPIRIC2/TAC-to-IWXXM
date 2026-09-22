@@ -2,6 +2,9 @@ import * as React from 'react';
 
 import { cn } from './utils';
 
+/**
+ * Function `Card`.
+ */
 function Card({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -15,6 +18,9 @@ function Card({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `CardHeader`.
+ */
 function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -28,12 +34,18 @@ function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `CardTitle`.
+ */
 function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <h4 data-slot="card-title" className={cn('leading-none', className)} {...props} />
   );
 }
 
+/**
+ * Function `CardDescription`.
+ */
 function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <p
@@ -44,6 +56,9 @@ function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `CardAction`.
+ */
 function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -57,6 +72,9 @@ function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `CardContent`.
+ */
 function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -67,6 +85,9 @@ function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `CardFooter`.
+ */
 function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div

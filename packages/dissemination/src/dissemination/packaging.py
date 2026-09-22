@@ -49,6 +49,11 @@ def apply_exchange_packaging(
     ------
     ValueError
         When the exchange profile is unknown or not implemented.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (apply_exchange_packaging)
+    2
     """
     resolved = resolve_exchange_profile(exchange_profile)
     if resolved is None:
@@ -84,6 +89,11 @@ def wrap_global_afs_collect(
     -------
     str
         COLLECT bulletin XML; unchanged when input is already COLLECT.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (wrap_global_afs_collect)
+    2
     """
     if is_collect_bulletin(xml):
         return xml

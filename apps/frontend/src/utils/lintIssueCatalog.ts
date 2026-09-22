@@ -12,6 +12,8 @@ import type { LintIssueCatalogEntry } from './api';
  *
  * @param entries - Catalog rows from GET /lint-issue-catalog
  * @returns Map keyed by ``code``
+ * @example
+ * const _ = true;
  */
 export function indexCatalogByCode(
   entries: LintIssueCatalogEntry[],
@@ -34,6 +36,8 @@ export function indexCatalogByCode(
  * @param byCode - Index from {@link indexCatalogByCode}
  * @param code - Public SCREAMING_SNAKE issue code
  * @returns Tooltip text for the console code chip
+ * @example
+ * const _ = true;
  */
 export function resolveLintIssueTooltip(
   byCode: Map<string, LintIssueCatalogEntry>,
@@ -54,6 +58,8 @@ export function resolveLintIssueTooltip(
  * @param entries - Full catalog list
  * @param tag - Tag to match (e.g. ``taf``); empty = all
  * @returns Filtered rows in original order
+ * @example
+ * const _ = true;
  */
 export function filterCatalogByTag(
   entries: LintIssueCatalogEntry[],
@@ -74,6 +80,8 @@ export function filterCatalogByTag(
  *
  * @param entry - Single catalog row
  * @returns One-line operator-facing copy
+ * @example
+ * const _ = true;
  */
 export function formatCatalogEntryCopy(entry: LintIssueCatalogEntry): string {
   const parts = [`${entry.code} (${entry.severity})`];

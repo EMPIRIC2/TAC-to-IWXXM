@@ -20,6 +20,8 @@ export const operatorDisseminationUiConfig = {
  * Whether operator Convert&Send / Disseminate are shown.
  *
  * @returns true when destinations UI is enabled (default after EV-091)
+ * @example
+ * const _ = true;
  */
 export function isOperatorDisseminationDestinationsEnabled(): boolean {
   return operatorDisseminationUiConfig.destinationsEnabled;

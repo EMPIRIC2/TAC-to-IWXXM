@@ -55,6 +55,11 @@ import { Card } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
+/**
+ * Type `ProfileBuilderLibrariesProps`.
+ * @example
+ * const _ = true;
+ */
 export type ProfileBuilderLibrariesProps = {
   accessToken: string;
   /** Selected semantic profile from the catalog picker (conversion tab fields). */
@@ -71,6 +76,9 @@ const LIBRARY_TAB_LABELS: Record<LibraryAssetKind, string> = {
   decoding: PROFILES_LIBRARY_TAB_DECODING,
 };
 
+/**
+ * Function `profileFamily`.
+ */
 function profileFamily(profileId: string): string {
   if (profileId.startsWith('ICAO_')) {
     return PROFILES_INSPECTOR_FAMILY_ICAO;
@@ -78,6 +86,9 @@ function profileFamily(profileId: string): string {
   return PROFILES_INSPECTOR_FAMILY_NATIONAL;
 }
 
+/**
+ * Function `profileAuthority`.
+ */
 function profileAuthority(profileId: string): string {
   if (profileId.startsWith('ICAO_')) {
     return PROFILES_INSPECTOR_AUTHORITY_ICAO;
@@ -87,6 +98,9 @@ function profileAuthority(profileId: string): string {
   return suffix ? `${country} - ${suffix}` : profileId;
 }
 
+/**
+ * Function `profileCoverage`.
+ */
 function profileCoverage(profile: ProfileCatalogEntry): string {
   const kinds: string[] = [];
   if (profile.products.length > 0) {
@@ -98,6 +112,9 @@ function profileCoverage(profile: ProfileCatalogEntry): string {
   return kinds.join(' | ') || PROFILES_INSPECTOR_COVERAGE_UNAVAILABLE;
 }
 
+/**
+ * Function `LibraryTab`.
+ */
 function LibraryTab({
   value,
   testId,
@@ -128,6 +145,8 @@ function LibraryTab({
  *
  * @param props.accessToken - Bearer JWT
  * @param props.catalogProfile - Selected catalog profile for conversion inspector fields
+ * @example
+ * const _ = true;
  */
 export function ProfileBuilderLibraries({
   accessToken,

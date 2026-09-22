@@ -8,6 +8,7 @@ Scans:
 Allowlist: config/exact-pins-allowlist.txt (one path:name or glob per line; # comments).
 [Corpus: adr-037] [Corpus: deps]
 """
+
 from __future__ import annotations
 
 import json
@@ -58,7 +59,11 @@ def check_package_json(path: Path, allow: set[str], violations: list[str]) -> No
             if allowed(allow, rel, name):
                 continue
             s = str(ver).strip()
-            if s.startswith("file:") or s.startswith("workspace:") or s.startswith("link:"):
+            if (
+                s.startswith("file:")
+                or s.startswith("workspace:")
+                or s.startswith("link:")
+            ):
                 continue
             if RANGE_RE.search(s) or s.startswith(">") or s.startswith("<"):
                 # exact: "1.2.3" or "1.2.3+meta" — reject ^1.2.3
@@ -78,7 +83,10 @@ def check_pyproject(path: Path, allow: set[str], violations: list[str]) -> None:
     project = data.get("project") or {}
     deps = list(project.get("dependencies") or [])
     opt = project.get("optional-dependencies") or {}
-    for group, items in [("dependencies", deps), *[(f"optional-dependencies.{k}", v) for k, v in opt.items()]]:
+    for group, items in [
+        ("dependencies", deps),
+        *[(f"optional-dependencies.{k}", v) for k, v in opt.items()],
+    ]:
         for req in items:
             # strip markers
             base = req.split(";")[0].strip()
@@ -102,7 +110,16 @@ def check_pyproject(path: Path, allow: set[str], violations: list[str]) -> None:
 def main() -> int:
     allow = load_allowlist()
     violations: list[str] = []
-    skip_dirs = {".git", "node_modules", ".venv", "venv", ".tools", ".security-reports", "dist", "build"}
+    skip_dirs = {
+        ".git",
+        "node_modules",
+        ".venv",
+        "venv",
+        ".tools",
+        ".security-reports",
+        "dist",
+        "build",
+    }
     for path in ROOT.rglob("package.json"):
         if any(p in skip_dirs for p in path.parts):
             continue

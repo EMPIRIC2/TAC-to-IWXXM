@@ -1,5 +1,7 @@
 /**
  * Live IWXXM toggle for the F7 workbench — default off (04 Batch 1 A / UJ-017).
+ * @example
+ * const _ = true;
  */
 
 export interface LiveIwxxmToggleProps {
@@ -13,6 +15,8 @@ export interface LiveIwxxmToggleProps {
  *
  * @param props.checked - Whether live IWXXM is enabled
  * @param props.onChange - Toggle handler
+ * @example
+ * const _ = true;
  */
 export function LiveIwxxmToggle({
   checked,

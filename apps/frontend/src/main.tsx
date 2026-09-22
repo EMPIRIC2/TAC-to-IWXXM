@@ -4,6 +4,9 @@ import { initRuntimeConfig } from './utils/runtime-config';
 import { initSentry } from './utils/sentry';
 import './styles/index.css';
 
+/**
+ * Function `bootstrap`.
+ */
 async function bootstrap() {
   await initRuntimeConfig();
   initSentry();

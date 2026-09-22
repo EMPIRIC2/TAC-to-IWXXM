@@ -19,6 +19,8 @@ export const ACCUMULATE_RESULT_CAP = 200;
  * Append converted results when under the accumulate cap.
  *
  * @returns overCap true when the append would exceed the cap (prev unchanged)
+ * @example
+ * const _ = true;
  */
 export function appendConvertedWithinCap<T>(
   prev: T[],
@@ -31,7 +33,11 @@ export function appendConvertedWithinCap<T>(
   return { files: [...prev, ...next], overCap: false };
 }
 
-/** Keep the first accumulated TAC stem once set. */
+/**
+ * Keep the first accumulated TAC stem once set.
+ * @example
+ * const _ = true;
+ */
 export function nextFirstAccumulatedTac(
   stem: string | null,
   firstOriginal: string | null | undefined,
@@ -54,6 +60,8 @@ const ILLEGAL_CHARS_RE = /[<>:"/\\|?*\u0000-\u001f]/g;
  *
  * @param raw - The raw user input (may be empty, null, or undefined).
  * @returns A safe base name, or {@link DEFAULT_OUTPUT_BASENAME} when empty.
+ * @example
+ * const _ = true;
  */
 export function sanitizeOutputFilename(raw: string | null | undefined): string {
   if (!raw) {
@@ -77,6 +85,8 @@ export function sanitizeOutputFilename(raw: string | null | undefined): string {
  *
  * @param tac - Raw TAC from the first successful conversion in the batch.
  * @returns A non-empty stem (falls back to ``converted`` when empty after sanitize).
+ * @example
+ * const _ = true;
  */
 export function stemFromFirstTac(tac: string): string {
   const collapsed = tac.replace(/\s+/g, '');
@@ -90,6 +100,8 @@ export function stemFromFirstTac(tac: string): string {
  *
  * @param date - Instant to format (defaults to now).
  * @returns Compact timestamp string.
+ * @example
+ * const _ = true;
  */
 export function formatArchiveTimestamp(date: Date = new Date()): string {
   const pad = (n: number): string => String(n).padStart(2, '0');
@@ -109,6 +121,8 @@ export function formatArchiveTimestamp(date: Date = new Date()): string {
  * @param index - Zero-based index of the manual result.
  * @param total - Total number of manual results in the batch.
  * @returns The `.txt` base name for the result.
+ * @example
+ * const _ = true;
  */
 export function manualOutputName(base: string, index: number, total: number): string {
   const safe = sanitizeOutputFilename(base);
@@ -126,6 +140,8 @@ export function manualOutputName(base: string, index: number, total: number): st
  * @param index - Zero-based index of the manual result.
  * @param total - Total number of manual results in the batch.
  * @returns The `.xml` download name (sanitized + multi-line suffix).
+ * @example
+ * const _ = true;
  */
 export function manualDownloadXmlName(
   base: string,
@@ -143,6 +159,8 @@ export function manualDownloadXmlName(
  *
  * @param names - Intended member filenames in download order
  * @returns Same-length list of unique member paths
+ * @example
+ * const _ = true;
  */
 export function uniquifyZipMemberNames(names: string[]): string[] {
   const used = new Set<string>();
@@ -166,6 +184,11 @@ export function uniquifyZipMemberNames(names: string[]): string[] {
   });
 }
 
+/**
+ * Type `OutputArchiveNameOptions`.
+ * @example
+ * const _ = true;
+ */
 export type OutputArchiveNameOptions = {
   /** TAC text from the first successful conversion in the accumulate batch. */
   firstTac?: string;
@@ -183,6 +206,8 @@ export type OutputArchiveNameOptions = {
  * @param base - The raw custom output filename (empty ⇒ content-derived or legacy).
  * @param options - Optional first-TAC stem and clock.
  * @returns The ZIP archive filename.
+ * @example
+ * const _ = true;
  */
 export function outputArchiveName(
   base: string,

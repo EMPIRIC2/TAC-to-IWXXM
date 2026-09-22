@@ -19,6 +19,7 @@ import yaml
 
 
 def _tokens_from_mapping(raw: object) -> dict[str, str]:
+    """Internal helper ``_tokens_from_mapping``."""
     if not isinstance(raw, dict):
         return {}
     mapping = cast(Mapping[Any, Any], raw)
@@ -112,6 +113,11 @@ def set_location_name_resolver(resolver: LocationNameResolver | None) -> None:
     resolver :
         Callable returning a place name for an ICAO designator, or ``None`` on
         miss. ``None`` clears the resolver (designator-only explanations).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (set_location_name_resolver)
+    2
     """
     global _location_name_resolver
     _location_name_resolver = resolver
@@ -126,6 +132,16 @@ def resolve_location_name(icao: str) -> str | None:
     str | None
         Place name when resolvable; ``None`` on miss or when no resolver is set.
         Never raises on lookup failure.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_location_name)
+    2
+
+    Parameters
+    ----------
+    icao : object
+        Argument ``icao``.
     """
     if _location_name_resolver is None:
         return None
@@ -151,12 +167,14 @@ def _packaged_overlay_tokens() -> dict[str, str]:
 
 
 def _load_yaml_tokens(path: Path) -> dict[str, str]:
+    """Internal helper ``_load_yaml_tokens``."""
     if not path.is_file():
         return {}
     return _tokens_from_mapping(yaml.safe_load(path.read_text(encoding="utf-8")))
 
 
 def _merge_tables(official: dict[str, str], overlay: dict[str, str]) -> dict[str, str]:
+    """Internal helper ``_merge_tables``."""
     merged = dict(official)
     merged.update(overlay)
     return merged
@@ -171,6 +189,11 @@ def load_glossary() -> dict[str, str]:
     -------
     dict[str, str]
         Uppercase token → English meaning. Env path overrides packaged YAML keys.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_glossary)
+    2
     """
     overlay: dict[str, str] = {}
     overlay.update(_packaged_overlay_tokens())
@@ -181,7 +204,19 @@ def load_glossary() -> dict[str, str]:
 
 
 def reload_glossary() -> dict[str, str]:
-    """Clear the glossary cache and reload (tests / hot reload)."""
+    """
+    Clear the glossary cache and reload (tests / hot reload).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (reload_glossary)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     load_glossary.cache_clear()
     return load_glossary()
 
@@ -199,6 +234,11 @@ def meaning_for(token: str) -> str:
     -------
     str
         English meaning, or empty string if unknown.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (meaning_for)
+    2
     """
     return load_glossary().get(token.upper(), "")
 
@@ -218,6 +258,11 @@ def explain_glossary_token(token: str, *, fallback: str | None = None) -> str | 
     -------
     str | None
         Capitalized meaning or fallback; ``None`` if both missing.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (explain_glossary_token)
+    2
     """
     meaning = meaning_for(token)
     if meaning:

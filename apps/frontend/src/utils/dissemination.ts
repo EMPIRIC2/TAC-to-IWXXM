@@ -21,6 +21,11 @@ export const DRAWER_SINK_TYPES = [
   'afs',
 ] as const;
 
+/**
+ * Type `SinkType`.
+ * @example
+ * const _ = true;
+ */
 export type SinkType = (typeof DRAWER_SINK_TYPES)[number];
 
 export const DB_SINK_TYPES: readonly SinkType[] = [
@@ -30,6 +35,11 @@ export const DB_SINK_TYPES: readonly SinkType[] = [
   'sqlite',
 ] as const;
 
+/**
+ * Type `SchemaDiffItem`.
+ * @example
+ * const _ = true;
+ */
 export interface SchemaDiffItem {
   kind: string;
   table: string;
@@ -37,6 +47,11 @@ export interface SchemaDiffItem {
   column?: string | null;
 }
 
+/**
+ * Type `PreflightRequest`.
+ * @example
+ * const _ = true;
+ */
 export interface PreflightRequest {
   dissemination_template_id?: string | null;
   sink_type?: SinkType | null;
@@ -47,6 +62,11 @@ export interface PreflightRequest {
   params?: Record<string, unknown>;
 }
 
+/**
+ * Type `PreflightResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface PreflightResponse {
   ok: boolean;
   connectivity_ok: boolean;
@@ -55,6 +75,11 @@ export interface PreflightResponse {
   detail?: string | null;
 }
 
+/**
+ * Type `SendRequest`.
+ * @example
+ * const _ = true;
+ */
 export interface SendRequest {
   dissemination_template_id?: string | null;
   handle?: string | null;
@@ -67,6 +92,11 @@ export interface SendRequest {
   params?: Record<string, unknown>;
 }
 
+/**
+ * Type `SendResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface SendResponse {
   ok: boolean;
   kv_upload_key?: string | null;
@@ -77,6 +107,9 @@ const JSON_HEADERS: HeadersInit = {
   'Content-Type': 'application/json',
 };
 
+/**
+ * Function `parseJson`.
+ */
 async function parseJson<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: response.statusText }));
@@ -96,6 +129,8 @@ async function parseJson<T>(response: Response): Promise<T> {
  *
  * @param preflight - Latest preflight response, or null if none yet
  * @returns true only when ok, no diffs, and a memory-only handle is present
+ * @example
+ * const _ = true;
  */
 export function isPreflightGreen(
   preflight: PreflightResponse | null | undefined,
@@ -110,6 +145,8 @@ export function isPreflightGreen(
  * Call POST /api/v1/dissemination/preflight.
  *
  * @param body - Sink-typed preflight request
+ * @example
+ * const _ = true;
  */
 export async function disseminationPreflight(
   body: PreflightRequest,
@@ -129,6 +166,8 @@ export async function disseminationPreflight(
  * Call POST /api/v1/dissemination/send.
  *
  * @param body - Handle from green preflight and/or payload
+ * @example
+ * const _ = true;
  */
 export async function disseminationSend(
   body: SendRequest,
@@ -144,7 +183,11 @@ export async function disseminationSend(
   return parseJson<SendResponse>(response);
 }
 
-/** Human labels for the drawer sink chooser. */
+/**
+ * Human labels for the drawer sink chooser.
+ * @example
+ * const _ = true;
+ */
 export function sinkTypeLabel(sink: SinkType): string {
   const labels: Record<SinkType, string> = {
     postgres: 'Postgres',

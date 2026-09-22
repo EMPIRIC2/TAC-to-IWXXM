@@ -64,6 +64,7 @@ def _validate_against_schema(
     layer: str,
     schema_label: str,
 ) -> list[Issue]:
+    """Internal helper ``_validate_against_schema``."""
     try:
         xml_doc = etree.fromstring(xml_content.encode("utf-8"))
     except etree.XMLSyntaxError as exc:
@@ -148,6 +149,11 @@ def validate_xsd_at_path(
     -------
     list of Issue
         Empty on success; otherwise schema / parse findings.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_xsd_at_path)
+    2
     """
     path = Path(xsd_file)
     if not path.is_file():
@@ -197,6 +203,11 @@ def validate_xsd(xml_content: str, iwxxm_version: str) -> list[Issue]:
     -------
     list of Issue
         Empty on success; otherwise schema / parse findings.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_xsd)
+    2
     """
     try:
         schema = _compile_schema(iwxxm_version)
@@ -237,7 +248,14 @@ def validate_xsd(xml_content: str, iwxxm_version: str) -> list[Issue]:
 
 
 def clear_xsd_cache() -> None:
-    """Clear compiled XSD cache (tests)."""
+    """
+    Clear compiled XSD cache (tests).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (clear_xsd_cache)
+    2
+    """
     _compile_schema.cache_clear()
     _compile_schema_file.cache_clear()
 

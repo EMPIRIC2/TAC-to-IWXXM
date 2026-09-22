@@ -9,6 +9,11 @@ import { authUrl, getApiBaseUrl } from './apiBase';
 
 console.log('[Auth Service] Initialized with URL:', getApiBaseUrl());
 
+/**
+ * Type `AuthUser`.
+ * @example
+ * const _ = true;
+ */
 export interface AuthUser {
   id: string;
   email: string;
@@ -19,17 +24,32 @@ export interface AuthUser {
   };
 }
 
+/**
+ * Type `AuthSession`.
+ * @example
+ * const _ = true;
+ */
 export interface AuthSession {
   access_token: string;
   refresh_token: string;
   expires_at: number;
 }
 
+/**
+ * Type `AuthResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface AuthResponse {
   user: AuthUser;
   session: AuthSession | null;
 }
 
+/**
+ * Type `RegisterRequest`.
+ * @example
+ * const _ = true;
+ */
 export interface RegisterRequest {
   email: string;
   password: string;
@@ -37,6 +57,11 @@ export interface RegisterRequest {
   username?: string;
 }
 
+/**
+ * Type `LoginRequest`.
+ * @example
+ * const _ = true;
+ */
 export interface LoginRequest {
   email: string;
   password: string;
@@ -62,6 +87,8 @@ function clearTokens(): void {
 
 /**
  * Get stored access token
+ * @example
+ * const _ = true;
  */
 export function getAccessToken(): string | null {
   return localStorage.getItem('access_token');
@@ -131,6 +158,8 @@ async function refreshTokenIfNeeded(): Promise<void> {
 
 /**
  * Register a new user
+ * @example
+ * const _ = true;
  */
 export async function register(data: RegisterRequest): Promise<AuthResponse> {
   const url = authUrl('/register');
@@ -171,6 +200,8 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
 
 /**
  * Confirm email (or recovery) using the token_hash from the Auth email link.
+ * @example
+ * const _ = true;
  */
 export async function confirmEmail(data: {
   token_hash: string;
@@ -202,6 +233,8 @@ export async function confirmEmail(data: {
 
 /**
  * Login with email and password
+ * @example
+ * const _ = true;
  */
 export async function login(data: LoginRequest): Promise<AuthResponse> {
   const url = authUrl('/login');
@@ -243,6 +276,8 @@ export async function login(data: LoginRequest): Promise<AuthResponse> {
 
 /**
  * Logout the current user
+ * @example
+ * const _ = true;
  */
 export async function logout(): Promise<void> {
   const token = getAccessToken();
@@ -262,6 +297,8 @@ export async function logout(): Promise<void> {
 
 /**
  * Get current user information
+ * @example
+ * const _ = true;
  */
 export async function getCurrentUser(): Promise<AuthUser> {
   console.log('[Auth Service] Getting current user');
@@ -297,6 +334,8 @@ export async function getCurrentUser(): Promise<AuthUser> {
 
 /**
  * Request a password reset email
+ * @example
+ * const _ = true;
  */
 export async function requestPasswordReset(
   email: string,
@@ -318,6 +357,8 @@ export async function requestPasswordReset(
 /**
  * Confirm password reset with new password
  * Requires reset token from email link
+ * @example
+ * const _ = true;
  */
 export async function confirmPasswordReset(
   token: string,
@@ -342,6 +383,8 @@ export async function confirmPasswordReset(
 
 /**
  * Check if user is currently logged in
+ * @example
+ * const _ = true;
  */
 export function isLoggedIn(): boolean {
   const token = getAccessToken();

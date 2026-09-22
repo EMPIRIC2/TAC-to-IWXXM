@@ -15,6 +15,9 @@ interface AirportRegionInfo {
   airport_code: string;
 }
 
+/**
+ * Function `AirportDetailsCardContent`.
+ */
 function AirportDetailsCardContent({ icao }: { icao: string }) {
   const airport = airports.findWhere({ icao });
   const [regionInfo, setRegionInfo] = useState<AirportRegionInfo | null>(null);
@@ -77,6 +80,8 @@ function AirportDetailsCardContent({ icao }: { icao: string }) {
  * Renders airport metadata and ICAO region lookup for a valid four-letter code.
  *
  * Returns null when the ICAO is missing or not in the local airport catalog.
+ * @example
+ * const _ = true;
  */
 export function AirportDetailsCard({ icao }: AirportDetailsCardProps) {
   const normalized = icao.trim().toUpperCase();

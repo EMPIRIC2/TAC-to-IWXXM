@@ -29,6 +29,11 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
     -------
     list[dict[str, Any]]
         Rows ready to merge into the lint-issue-catalog response.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (iwxxm_validation_catalog_rows)
+    2
     """
     return [
         {

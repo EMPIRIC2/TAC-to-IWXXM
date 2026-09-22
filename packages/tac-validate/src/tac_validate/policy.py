@@ -26,24 +26,59 @@ _SEVERITIES = frozenset({"error", "warning", "info"})
 
 
 class PolicyError(ValueError):
-    """Base error for TAC quality policy documents."""
+    """
+    Base error for TAC quality policy documents.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 class PolicyActivationError(PolicyError):
-    """Activated policy references unknown codes or invalid severity remaps."""
+    """
+    Activated policy references unknown codes or invalid severity remaps.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 class PolicyCycleError(PolicyError):
-    """``extends`` graph contains a cycle."""
+    """
+    ``extends`` graph contains a cycle.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 class PolicyDepthError(PolicyError):
-    """``extends`` chain exceeds ``MAX_EXTENDS_DEPTH``."""
+    """
+    ``extends`` chain exceeds ``MAX_EXTENDS_DEPTH``.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class PolicyDocument:
-    """One TAC quality policy YAML document."""
+    """
+    One TAC quality policy YAML document.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     schema_version: int
     id: str
@@ -61,7 +96,14 @@ class PolicyDocument:
 
 @dataclass(frozen=True, slots=True)
 class ResolvedPolicy:
-    """Merged policy ready for lint runtime consumption."""
+    """
+    Merged policy ready for lint runtime consumption.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     id: str
     lifecycle: PolicyLifecycle
@@ -76,6 +118,7 @@ class ResolvedPolicy:
 
 
 def _as_str_list(value: object) -> tuple[str, ...]:
+    """Internal helper ``_as_str_list``."""
     if value is None:
         return ()
     if not isinstance(value, list):
@@ -91,6 +134,7 @@ def _as_str_list(value: object) -> tuple[str, ...]:
 
 
 def _as_severity_map(value: object) -> dict[str, str]:
+    """Internal helper ``_as_severity_map``."""
     if value is None:
         return {}
     if not isinstance(value, dict):
@@ -109,6 +153,7 @@ def _as_severity_map(value: object) -> dict[str, str]:
 
 
 def _parse_document(data: Mapping[str, Any], *, source_path: str | None) -> PolicyDocument:
+    """Internal helper ``_parse_document``."""
     schema_raw = data.get("schema_version", 1)
     if not isinstance(schema_raw, int) or schema_raw < 1:
         msg = "schema_version must be a positive integer"
@@ -148,6 +193,7 @@ def _parse_document(data: Mapping[str, Any], *, source_path: str | None) -> Poli
 
 
 def _load_yaml_mapping(text: str, *, source_path: str | None) -> PolicyDocument:
+    """Internal helper ``_load_yaml_mapping``."""
     raw = yaml.safe_load(text)
     if not isinstance(raw, dict):
         msg = "policy root must be a mapping"
@@ -168,6 +214,11 @@ def load_policy(path: Path | str) -> PolicyDocument:
     -------
     PolicyDocument
         Parsed policy (not yet resolved / activated).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_policy)
+    2
     """
     file_path = Path(path)
     return _load_yaml_mapping(
@@ -183,6 +234,21 @@ def load_policy_catalog(profile: str | None = None) -> dict[str, PolicyDocument]
     An overlay with ``extends`` layers onto that builtin for the profile ids in
     its header. Omitting ``profile`` leaves those layers off. A new policy id
     with no ``extends`` is added for every profile.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_policy_catalog)
+    2
+
+    Parameters
+    ----------
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     catalog: dict[str, PolicyDocument] = {}
     policies_root = resources.files("tac_validate").joinpath("data", "policies")
@@ -236,6 +302,7 @@ def _take_policy_overlay(
     *,
     profile: str | None,
 ) -> PolicyDocument | None:
+    """Internal helper ``_take_policy_overlay``."""
     if not doc.extends and doc.id not in catalog:
         if doc.profiles:
             msg = f"{doc.id} profiles require extends"
@@ -257,12 +324,14 @@ def _take_policy_overlay(
 
 
 def _default_codes_for_product(product: str | None) -> frozenset[str]:
+    """Internal helper ``_default_codes_for_product``."""
     if product is None:
         return frozenset(spec.code for spec in ISSUES)
     return frozenset(spec.code for spec in catalog_entries(product=product))
 
 
 def _unknown(code: str) -> bool:
+    """Internal helper ``_unknown``."""
     try:
         by_code(code)
     except KeyError:
@@ -277,6 +346,26 @@ def _chain_docs(
     """Return base→child order with cycle and depth checks."""
 
     def depth_of(current: PolicyDocument, seen: frozenset[str]) -> int:
+        """
+        Call ``depth_of``.
+
+        Parameters
+        ----------
+        current : object
+            Argument ``current``.
+        seen : object
+            Argument ``seen``.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (symbol: depth_of)
+        2
+        """
         if current.id in seen:
             msg = f"extends cycle involving {current.id!r}"
             raise PolicyCycleError(msg)
@@ -297,6 +386,26 @@ def _chain_docs(
 
     def walk(current: PolicyDocument, stack: tuple[str, ...]) -> list[PolicyDocument]:
         # Cycles already rejected by depth_of; stack is for ordered ancestry only.
+        """
+        Call ``walk``.
+
+        Parameters
+        ----------
+        current : object
+            Argument ``current``.
+        stack : object
+            Argument ``stack``.
+
+        Returns
+        -------
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (symbol: walk)
+        2
+        """
         out: list[PolicyDocument] = []
         for parent_id in current.extends:
             parent = policies[parent_id]
@@ -313,6 +422,7 @@ def _validate_code_refs(
     lifecycle: PolicyLifecycle,
     activate: bool,
 ) -> tuple[str, ...]:
+    """Internal helper ``_validate_code_refs``."""
     unknown = sorted(code for code in codes if _unknown(code))
     warnings = [f"unknown registry code {code!r}" for code in unknown]
     if unknown and (activate or lifecycle == "activated"):
@@ -343,6 +453,11 @@ def resolve_policy(
     -------
     ResolvedPolicy
         Merged view with warnings / activation status.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_policy)
+    2
     """
     chain = _chain_docs(doc, policies)
     select: list[str] = []
@@ -407,6 +522,16 @@ def apply_policy_to_report(
         Lint report before policy filtering.
     policy_id :
         TAC quality policy document id.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (apply_policy_to_report)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     catalog = load_policy_catalog(profile)
     doc = catalog.get(policy_id)

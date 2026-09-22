@@ -21,12 +21,20 @@ import {
 import { MappingBridge } from './MappingBridge';
 import { Card } from './ui/card';
 
+/**
+ * Type `WorkbenchMappingBridgeProps`.
+ * @example
+ * const _ = true;
+ */
 export type WorkbenchMappingBridgeProps = {
   accessToken: string;
   /** Optional TAC text to seed focus group (first non-empty token). */
   tacText?: string;
 };
 
+/**
+ * Function `seedFocusFromTac`.
+ */
 function seedFocusFromTac(tacText: string | undefined): string {
   if (!tacText?.trim()) {
     return '18012G20KT';
@@ -48,6 +56,8 @@ function seedFocusFromTac(tacText: string | undefined): string {
  *
  * @param props.accessToken - Bearer JWT
  * @param props.tacText - Current workbench TAC for focus seeding
+ * @example
+ * const _ = true;
  */
 export function WorkbenchMappingBridge({
   accessToken,

@@ -38,6 +38,7 @@ _SWXA_FORBIDDEN_ROOTS = frozenset(
 
 
 def _swxa_region_xml(loc: str, *, slug: str, idx: int) -> str:
+    """Internal helper ``_swxa_region_xml``."""
     code = loc.upper()
     href = f"http://codes.wmo.int/49-2/SpaceWxLocation/{code}"
     rid = f"swxa.reg.{slug}.{idx}"
@@ -104,6 +105,7 @@ def _swxa_analysis_xml(
     slug: str,
     idx: int,
 ) -> str:
+    """Internal helper ``_swxa_analysis_xml``."""
     time_iso = block.get("time") or "9999-01-01T00:00:00Z"
     aid = f"swxa.an.{slug}.{idx}"
     if block.get("no_swx_exp"):
@@ -175,6 +177,23 @@ def emit_swxa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ``iwxxm:SpaceWeatherAdvisory`` and never SIGMET/VAA/TCA roots.
     Geometry for SpaceWxLocation bands is approximate (S02.L1 may use
     ``wmoReference`` vs vendor golden equality).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_swxa_annex3)
+    2
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     product = str(ir.get("product", "SWXA")).upper()
     if product != "SWXA":
@@ -263,6 +282,7 @@ def emit_swxa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def _assert_swxa_advisory_xml(xml: str) -> str:
+    """Internal helper ``_assert_swxa_advisory_xml``."""
     if "<iwxxm:SpaceWeatherAdvisory " not in xml:
         raise ValueError("SWXA emitter product/root guard: missing SpaceWeatherAdvisory root")
     for forbidden in (

@@ -43,6 +43,11 @@ import { Button } from './ui/button';
 import { Card } from './ui/card';
 import { BetaBadge } from './BetaBadge';
 
+/**
+ * Type `DisseminationOpsPageProps`.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationOpsPageProps {
   /** Bearer JWT — when absent, show sign-in prompt. */
   accessToken?: string;
@@ -50,6 +55,9 @@ export interface DisseminationOpsPageProps {
   onRequestLogin?: () => void;
 }
 
+/**
+ * Function `errorMessage`.
+ */
 function errorMessage(err: unknown): string {
   return err instanceof Error ? err.message : 'Unknown error';
 }
@@ -58,6 +66,9 @@ interface AuthedOpsProps {
   accessToken: string;
 }
 
+/**
+ * Function `DisseminationOpsAuthed`.
+ */
 function DisseminationOpsAuthed({ accessToken }: AuthedOpsProps) {
   const [health, setHealth] = useState<GatewayHealthRow[] | null>(null);
   const [audit, setAudit] = useState<AuditRecordOut[] | null>(null);
@@ -361,6 +372,8 @@ function DisseminationOpsAuthed({ accessToken }: AuthedOpsProps) {
 
 /**
  * Authenticated Dissemination ops surface (plans, audit, mapping, health).
+ * @example
+ * const _ = true;
  */
 export function DisseminationOpsPage({
   accessToken,

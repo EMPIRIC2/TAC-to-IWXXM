@@ -7,6 +7,11 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT"
 
+# Pin PyO3 to the workspace interpreter (host 3.14+ otherwise fails pyo3-ffi build).
+if command -v uv >/dev/null 2>&1; then
+  export PYO3_PYTHON="$(uv run python -c 'import sys; print(sys.executable)')"
+fi
+
 CRATES=(
   packages/tac2iwxxm/rust
   packages/iwxxm-validate/rust
@@ -26,7 +31,7 @@ for crate in "${CRATES[@]}"; do
     echo "cargo doc failed: ${crate}" >&2
     fail=1
   fi
-  if ! (cd "${crate}" && cargo test --doc 2>&1); then
+  if ! (cd "${crate}" && cargo test --doc --no-default-features 2>&1); then
     echo "cargo test --doc failed: ${crate}" >&2
     fail=1
   fi

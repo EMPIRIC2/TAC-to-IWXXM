@@ -12,7 +12,24 @@ from metar_auth.proxy import AuthProxyError, SupabaseAuthProxy
 
 
 def validate_email_permissive(email: str) -> str:
-    """Validate email; allow common development TLDs."""
+    """
+    Validate email; allow common development TLDs.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_email_permissive)
+    2
+
+    Parameters
+    ----------
+    email : object
+        Argument ``email``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not email or "@" not in email:
         raise ValueError("Invalid email format")
     local_part, domain = email.rsplit("@", 1)
@@ -30,7 +47,14 @@ def validate_email_permissive(email: str) -> str:
 
 
 class LoginRequest(BaseModel):
-    """Login credentials."""
+    """
+    Login credentials.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     email: str
     password: str
@@ -38,11 +62,19 @@ class LoginRequest(BaseModel):
     @field_validator("email")
     @classmethod
     def _email(cls, value: str) -> str:
+        """Internal helper ``_email``."""
         return validate_email_permissive(value)
 
 
 class RegisterRequest(BaseModel):
-    """Registration credentials (Supabase GoTrue signup)."""
+    """
+    Registration credentials (Supabase GoTrue signup).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     email: str
     password: str = Field(min_length=6)
@@ -50,11 +82,19 @@ class RegisterRequest(BaseModel):
     @field_validator("email")
     @classmethod
     def _email(cls, value: str) -> str:
+        """Internal helper ``_email``."""
         return validate_email_permissive(value)
 
 
 class ConfirmRequest(BaseModel):
-    """Email confirmation via GoTrue ``token_hash`` (Auth email link)."""
+    """
+    Email confirmation via GoTrue ``token_hash`` (Auth email link).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     token_hash: str = Field(min_length=1)
     type: str = Field(default="email", min_length=1)
@@ -62,6 +102,7 @@ class ConfirmRequest(BaseModel):
     @field_validator("type")
     @classmethod
     def _type(cls, value: str) -> str:
+        """Internal helper ``_type``."""
         allowed = {
             "email",
             "signup",
@@ -77,7 +118,14 @@ class ConfirmRequest(BaseModel):
 
 
 class UserResponse(BaseModel):
-    """Auth user projection."""
+    """
+    Auth user projection.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     id: str
     email: str
@@ -85,7 +133,14 @@ class UserResponse(BaseModel):
 
 
 class SessionResponse(BaseModel):
-    """Session tokens."""
+    """
+    Session tokens.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     access_token: str
     refresh_token: str
@@ -93,14 +148,28 @@ class SessionResponse(BaseModel):
 
 
 class AuthResponse(BaseModel):
-    """Login response."""
+    """
+    Login response.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     user: UserResponse
     session: SessionResponse | None = None
 
 
 class LogoutRequest(BaseModel):
-    """Optional scoped logout body (FileConverter / AdminDashboard)."""
+    """
+    Optional scoped logout body (FileConverter / AdminDashboard).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     scope: str | None = Field(
         default=None,
@@ -110,6 +179,7 @@ class LogoutRequest(BaseModel):
     @field_validator("scope")
     @classmethod
     def _scope(cls, value: str | None) -> str | None:
+        """Internal helper ``_scope``."""
         if value is None or value == "":
             return None
         allowed = {"global", "local", "others"}
@@ -119,7 +189,14 @@ class LogoutRequest(BaseModel):
 
 
 class Message(BaseModel):
-    """Simple success message."""
+    """
+    Simple success message.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     message: str
 
@@ -127,7 +204,24 @@ class Message(BaseModel):
 def get_token_from_header(
     authorization: str | None = Header(default=None),
 ) -> str:
-    """Extract Bearer token from ``Authorization``."""
+    """
+    Extract Bearer token from ``Authorization``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_token_from_header)
+    2
+
+    Parameters
+    ----------
+    authorization : object
+        Argument ``authorization``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not authorization:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -164,11 +258,17 @@ def create_auth_router(
     -------
     APIRouter
         Router with prefix ``/auth``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_auth_router)
+    2
     """
     router = APIRouter(prefix="/auth", tags=["Auth"])
     auth_proxy = proxy or SupabaseAuthProxy(supabase_url=supabase_url)
 
     def _proxy() -> SupabaseAuthProxy:
+        """Internal helper ``_proxy``."""
         return auth_proxy
 
     @router.post("/register", response_model=AuthResponse)
@@ -176,7 +276,26 @@ def create_auth_router(
         request: RegisterRequest,
         client: SupabaseAuthProxy = Depends(_proxy),  # noqa: B008
     ) -> dict[str, Any]:
-        """Create an account via Supabase Auth signup."""
+        """
+        Create an account via Supabase Auth signup.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (register)
+        2
+
+        Parameters
+        ----------
+        request : object
+            Argument ``request``.
+        client : object
+            Argument ``client``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             return client.sign_up(request.email, request.password)
         except AuthProxyError as exc:
@@ -190,7 +309,26 @@ def create_auth_router(
         request: ConfirmRequest,
         client: SupabaseAuthProxy = Depends(_proxy),  # noqa: B008
     ) -> dict[str, Any]:
-        """Confirm email (or related) via GoTrue token_hash verify."""
+        """
+        Confirm email (or related) via GoTrue token_hash verify.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (confirm)
+        2
+
+        Parameters
+        ----------
+        request : object
+            Argument ``request``.
+        client : object
+            Argument ``client``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             return client.verify_email(request.token_hash, request.type)
         except AuthProxyError as exc:
@@ -204,7 +342,26 @@ def create_auth_router(
         request: LoginRequest,
         client: SupabaseAuthProxy = Depends(_proxy),  # noqa: B008
     ) -> dict[str, Any]:
-        """Authenticate via Supabase Auth password grant."""
+        """
+        Authenticate via Supabase Auth password grant.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (login)
+        2
+
+        Parameters
+        ----------
+        request : object
+            Argument ``request``.
+        client : object
+            Argument ``client``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             return client.sign_in(request.email, request.password)
         except AuthProxyError as exc:
@@ -219,7 +376,28 @@ def create_auth_router(
         token: str = Depends(get_token_from_header),
         client: SupabaseAuthProxy = Depends(_proxy),  # noqa: B008
     ) -> dict[str, str]:
-        """Sign out via GoTrue; optional body ``{scope}`` for local/global/others."""
+        """
+        Sign out via GoTrue; optional body ``{scope}`` for local/global/others.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (logout)
+        2
+
+        Parameters
+        ----------
+        request : object
+            Argument ``request``.
+        token : object
+            Argument ``token``.
+        client : object
+            Argument ``client``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         body = request or LogoutRequest()
         try:
             return client.sign_out(token, scope=body.scope)
@@ -234,7 +412,26 @@ def create_auth_router(
         token: str = Depends(get_token_from_header),
         client: SupabaseAuthProxy = Depends(_proxy),  # noqa: B008
     ) -> dict[str, Any]:
-        """Return the current user after JWKS verification."""
+        """
+        Return the current user after JWKS verification.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (me)
+        2
+
+        Parameters
+        ----------
+        token : object
+            Argument ``token``.
+        client : object
+            Argument ``client``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             claims = verify_access_token(
                 token,

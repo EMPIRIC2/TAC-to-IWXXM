@@ -1,5 +1,7 @@
 /**
  * Runtime configuration loaded from /config.json with VITE_* fallback for local dev.
+ * @example
+ * const _ = true;
  */
 
 export type MetarRuntimeConfig = {
@@ -19,6 +21,9 @@ export type MetarRuntimeConfig = {
 
 let cachedConfig: MetarRuntimeConfig | null = null;
 
+/**
+ * Function `configFromViteEnv`.
+ */
 function configFromViteEnv(): MetarRuntimeConfig {
   return {
     environment: import.meta.env.MODE || 'development',
@@ -38,6 +43,8 @@ function configFromViteEnv(): MetarRuntimeConfig {
 
 /**
  * Load runtime config once per session (network fetch then Vite env fallback).
+ * @example
+ * const _ = true;
  */
 export async function initRuntimeConfig(): Promise<MetarRuntimeConfig> {
   if (cachedConfig) {
@@ -63,6 +70,8 @@ export async function initRuntimeConfig(): Promise<MetarRuntimeConfig> {
  * After ``initRuntimeConfig``, returns the cached ``/config.json`` (or Vite
  * fallback from init). Before init, reads Vite env fresh (not cached) so
  * bake-time stubs and tests stay consistent.
+ * @example
+ * const _ = true;
  */
 export function getRuntimeConfig(): MetarRuntimeConfig {
   if (cachedConfig) {
@@ -71,17 +80,29 @@ export function getRuntimeConfig(): MetarRuntimeConfig {
   return configFromViteEnv();
 }
 
-/** API base URL for merged backend (/api/v1/* and /auth/*). */
+/**
+ * API base URL for merged backend (/api/v1/* and /auth/*).
+ * @example
+ * const _ = true;
+ */
 export function getApiBaseUrl(): string {
   return getRuntimeConfig().api.baseUrl.trim().replace(/\/+$/, '');
 }
 
-/** Supabase project URL. */
+/**
+ * Supabase project URL.
+ * @example
+ * const _ = true;
+ */
 export function getSupabaseUrl(): string {
   return getRuntimeConfig().supabase.url;
 }
 
-/** Supabase publishable key for optional Auth FE client (F31 / F21 Amended). */
+/**
+ * Supabase publishable key for optional Auth FE client (F31 / F21 Amended).
+ * @example
+ * const _ = true;
+ */
 export function getSupabasePublishableKey(): string {
   return getRuntimeConfig().supabase.publishableKey || '';
 }

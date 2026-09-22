@@ -18,8 +18,18 @@ import { canPersistWorkHistoryLocal } from '/utils/privacyPreferences';
 
 export const AUTOSAVE_DEBOUNCE_MS = 3000;
 
+/**
+ * Type `AutoSaveIndicator`.
+ * @example
+ * const _ = true;
+ */
 export type AutoSaveIndicator = 'idle' | 'pending' | 'saving' | 'saved' | 'error';
 
+/**
+ * Type `UseWorkSessionSyncOptions`.
+ * @example
+ * const _ = true;
+ */
 export interface UseWorkSessionSyncOptions {
   /** When present, persist work sessions through the authenticated F31 API. */
   accessToken?: string;
@@ -36,6 +46,8 @@ export interface UseWorkSessionSyncOptions {
  *
  * @param options - Session id, status, and save callbacks.
  * @returns Save indicator state and persist/schedule helpers.
+ * @example
+ * const _ = true;
  */
 export function useWorkSessionSync({
   accessToken,

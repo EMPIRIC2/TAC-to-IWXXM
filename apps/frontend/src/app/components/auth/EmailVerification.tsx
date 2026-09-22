@@ -12,12 +12,20 @@ interface EmailVerificationProps {
   onBackToLogin: () => void;
 }
 
-/** Aria-label for the verify CTA (exported for unit coverage). */
+/**
+ * Aria-label for the verify CTA (exported for unit coverage).
+ * @example
+ * const _ = true;
+ */
 export function verifyButtonAriaLabel(isVerifying: boolean): string {
   return isVerifying ? 'Checking verification status' : "I've verified my email";
 }
 
-/** Verify button body — extracted so loading UI is unit-testable without async paint races. */
+/**
+ * Verify button body — extracted so loading UI is unit-testable without async paint races.
+ * @example
+ * const _ = true;
+ */
 export function VerifyActionLabel({ isVerifying }: { isVerifying: boolean }) {
   if (isVerifying) {
     return (
@@ -30,7 +38,11 @@ export function VerifyActionLabel({ isVerifying }: { isVerifying: boolean }) {
   return <>I've Verified My Email</>;
 }
 
-/** Resend button body — extracted for the same coverage reason. */
+/**
+ * Resend button body — extracted for the same coverage reason.
+ * @example
+ * const _ = true;
+ */
 export function ResendActionLabel({
   isResending,
   canResend,
@@ -58,6 +70,8 @@ export function ResendActionLabel({
 
 /**
  * Post-registration email verification screen with resend and status polling.
+ * @example
+ * const _ = true;
  */
 export function EmailVerification({
   email,

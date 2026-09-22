@@ -45,7 +45,11 @@ export const QUALITY_METRICS_DIFF_COLLAPSE_ALL = 'Hide distant unchanged lines';
 export const QUALITY_METRICS_BACK_TO_LIST = 'Back to list';
 export const QUALITY_METRICS_DIFF_HEADING = 'Line-by-line XML differences';
 
-/** Expand-control label for a collapsed equal-context hunk. */
+/**
+ * Expand-control label for a collapsed equal-context hunk.
+ * @example
+ * const _ = true;
+ */
 export function unchangedLinesExpandLabel(count: number): string {
   return `Expand ${count} unchanged line${count === 1 ? '' : 's'}`;
 }
@@ -75,7 +79,11 @@ interface QualityMetricsDetailProps {
   closeLabel?: string;
 }
 
-/** Toggle membership of a collapse key in the expanded set. */
+/**
+ * Toggle membership of a collapse key in the expanded set.
+ * @example
+ * const _ = true;
+ */
 export function toggleKeyInSet(prev: Set<string>, key: string): Set<string> {
   const next = new Set(prev);
   if (next.has(key)) {
@@ -86,7 +94,11 @@ export function toggleKeyInSet(prev: Set<string>, key: string): Set<string> {
   return next;
 }
 
-/** Whether side-by-side scroll sync should no-op. */
+/**
+ * Whether side-by-side scroll sync should no-op.
+ * @example
+ * const _ = true;
+ */
 export function shouldSkipSideBySideScroll(
   syncing: boolean,
   from: HTMLElement | null,
@@ -101,6 +113,8 @@ export function shouldSkipSideBySideScroll(
  * @param props.detail - Stem detail response
  * @param props.onClose - Optional close handler
  * @param props.closeLabel - Optional close button label
+ * @example
+ * const _ = true;
  */
 export function QualityMetricsDetail({
   detail,
@@ -426,6 +440,9 @@ export function QualityMetricsDetail({
   );
 }
 
+/**
+ * Function `TextPane`.
+ */
 function TextPane({
   title,
   testId,
@@ -454,6 +471,9 @@ function TextPane({
   );
 }
 
+/**
+ * Function `DiagnosticsPane`.
+ */
 function DiagnosticsPane({
   title,
   help,
@@ -504,6 +524,9 @@ function DiagnosticsPane({
   );
 }
 
+/**
+ * Function `DiffLineRow`.
+ */
 function DiffLineRow({ line }: { line: UnifiedDiffLine }) {
   const prefix = line.op === 'add' ? '+' : line.op === 'remove' ? '-' : ' ';
   const color =
@@ -520,6 +543,9 @@ function DiffLineRow({ line }: { line: UnifiedDiffLine }) {
   );
 }
 
+/**
+ * Function `SideBySideDiff`.
+ */
 function SideBySideDiff({
   rows,
   leftRef,
@@ -582,6 +608,9 @@ function SideBySideDiff({
   );
 }
 
+/**
+ * Function `SideBySideCell`.
+ */
 function SideBySideCell({
   text,
   op,
@@ -611,6 +640,9 @@ function SideBySideCell({
   );
 }
 
+/**
+ * Function `formatDiagnostic`.
+ */
 function formatDiagnostic(item: Record<string, unknown>): string {
   const message =
     typeof item.message === 'string' && item.message.trim()

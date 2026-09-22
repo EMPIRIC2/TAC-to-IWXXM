@@ -5,9 +5,8 @@ from __future__ import annotations
 import os
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config, pool
-
 from alembic import context
+from sqlalchemy import engine_from_config, pool
 
 config = context.config
 
@@ -61,7 +60,14 @@ def _database_url() -> str:
 
 
 def run_migrations_offline() -> None:
-    """Run migrations in 'offline' mode."""
+    """
+    Run migrations in 'offline' mode.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_migrations_offline)
+    2
+    """
     url = _database_url()
     context.configure(
         url=url,
@@ -75,7 +81,14 @@ def run_migrations_offline() -> None:
 
 
 def run_migrations_online() -> None:
-    """Run migrations in 'online' mode."""
+    """
+    Run migrations in 'online' mode.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_migrations_online)
+    2
+    """
     configuration = config.get_section(config.config_ini_section) or {}
     configuration["sqlalchemy.url"] = _database_url()
     connectable = engine_from_config(

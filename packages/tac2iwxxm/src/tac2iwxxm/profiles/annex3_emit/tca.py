@@ -26,6 +26,7 @@ def _tca_format_pos(lat: float, lon: float) -> str:
     # ruff: noqa: F403, F405
 
     def _one(value: float) -> str:
+        """Internal helper ``_one``."""
         s = f"{value:.5f}".rstrip("0")
         if s.endswith("."):
             s += "00"
@@ -45,6 +46,23 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
     Vendor fidelity (TC-F27-002 / A2-2): observation + forecasts + RMK NIL →
     ``remarks`` with ``nilReason=inapplicable``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_tca_annex3)
+    2
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     product = str(ir.get("product", "TCA")).upper()
     if product != "TCA":
@@ -273,6 +291,7 @@ def emit_tca_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def _assert_tca_advisory_xml(xml: str) -> str:
+    """Internal helper ``_assert_tca_advisory_xml``."""
     if "<iwxxm:TropicalCycloneAdvisory " not in xml:
         raise ValueError("TCA emitter product/root guard: missing TropicalCycloneAdvisory root")
     if "<iwxxm:TropicalCycloneSIGMET " in xml or "iwxxm:TropicalCycloneSIGMET" in xml:

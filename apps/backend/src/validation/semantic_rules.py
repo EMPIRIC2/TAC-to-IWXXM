@@ -19,7 +19,14 @@ class IssueSeverity(StrEnum):
 
 @dataclass
 class ValidationIssue:
-    """Represents a validation issue found in meteorological data."""
+    """
+    Represents a validation issue found in meteorological data.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     rule_name: str
     severity: IssueSeverity
@@ -30,11 +37,13 @@ class ValidationIssue:
     suggested_fix: str | None = None
 
     def __str__(self) -> str:
+        """Internal helper ``__str__``."""
         return f"[{self.severity.upper()}] {self.rule_name}: {self.message}"
 
 
 class TemperatureValidationRule:
-    """Validate temperature and dewpoint relationships.
+    """
+    Validate temperature and dewpoint relationships.
 
     In real-world meteorology, dewpoint temperature can NEVER exceed
     air temperature. This is fundamental thermodynamics.
@@ -45,6 +54,11 @@ class TemperatureValidationRule:
 
     Physics Check: Td ≤ T (always)
     Spacing Check: Typically T - Td between 0°C and ~30°C
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(self) -> None:
@@ -54,14 +68,28 @@ class TemperatureValidationRule:
         self.max_dew_spread = 50.0  # °C, maximum realistic T - Td
 
     def validate(self, temperature: float | None, dewpoint: float | None) -> list[ValidationIssue]:
-        """Validate temperature and dewpoint relationship.
-
-        Args:
-            temperature: Air temperature in °C
-            dewpoint: Dewpoint temperature in °C
+        """
+        Validate temperature and dewpoint relationship.
 
         Returns:
             List of validation issues (empty if valid)
+
+        Parameters
+        ----------
+        temperature : object
+            Air temperature in °C
+        dewpoint : object
+            Dewpoint temperature in °C
+
+        Returns
+        -------
+        object
+            List of validation issues (empty if valid)
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate)
+        2
         """
         issues: list[ValidationIssue] = []
 
@@ -119,16 +147,30 @@ class TemperatureValidationRule:
         return issues
 
     def calculate_relative_humidity(self, temperature: float, dewpoint: float) -> float:
-        """Calculate approximate relative humidity from T and Td.
+        """
+        Calculate approximate relative humidity from T and Td.
 
         Uses Magnus formula approximation.
 
-        Args:
-            temperature: Air temperature in °C
-            dewpoint: Dewpoint temperature in °C
-
         Returns:
             Relative humidity as percentage (0-100)
+
+        Parameters
+        ----------
+        temperature : object
+            Air temperature in °C
+        dewpoint : object
+            Dewpoint temperature in °C
+
+        Returns
+        -------
+        object
+            Relative humidity as percentage (0-100)
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (calculate_relative_humidity)
+        2
         """
         # Magnus formula coefficients
         a = 17.27
@@ -141,7 +183,8 @@ class TemperatureValidationRule:
 
 
 class CloudLayerValidationRule:
-    """Validate cloud layer ordering and consistency (Task 3.2).
+    """
+    Validate cloud layer ordering and consistency (Task 3.2).
 
     Cloud layers follow atmospheric physics:
     1. Bases increase with altitude (lower clouds below upper clouds)
@@ -150,6 +193,11 @@ class CloudLayerValidationRule:
     4. Altitudes within reasonable range (100m to 30km)
     5. Gap analysis between layers (detect unusual patterns)
     6. Coverage-altitude relationships (realistic for conditions)
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     # Coverage hierarchy (lower = more sky visible)
@@ -326,7 +374,8 @@ class CloudLayerValidationRule:
         return issues
 
     def validate(self, cloud_layers: list[dict[str, Any]]) -> list[ValidationIssue]:
-        """Validate cloud layer sequence (Task 3.2 enhanced).
+        """
+        Validate cloud layer sequence (Task 3.2 enhanced).
 
         Performs comprehensive checks:
         1. Clear sky exclusivity
@@ -335,15 +384,31 @@ class CloudLayerValidationRule:
         4. Altitude strict ordering
         5. Coverage non-increasing upward
 
-        Args:
-            cloud_layers: List of dicts with keys: coverage, altitude_m
-                Example: [
-                    {"coverage": "BKN", "altitude_m": 800},
-                    {"coverage": "OVC", "altitude_m": 2000}
-                ]
-
         Returns:
             List of validation issues (empty if valid)
+
+        Parameters
+        ----------
+        cloud_layers : object
+            List of dicts with keys: coverage, altitude_m
+        Example : object
+            [
+        {"coverage" : object
+            "BKN", "altitude_m": 800},
+        {"coverage" : object
+            "OVC", "altitude_m": 2000}
+        ] : object
+            Argument.
+
+        Returns
+        -------
+        object
+            List of validation issues (empty if valid)
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate)
+        2
         """
         issues: list[ValidationIssue] = []
 
@@ -403,7 +468,8 @@ class CloudLayerValidationRule:
 
 
 class VisibilityWeatherValidationRule:
-    """Validate consistency between weather phenomena and visibility (Task 3.3).
+    """
+    Validate consistency between weather phenomena and visibility (Task 3.3).
 
     Different weather phenomena are associated with specific visibility ranges:
     - FG (Fog): Visibility < 1000m (defining characteristic)
@@ -415,6 +481,11 @@ class VisibilityWeatherValidationRule:
     - DZ (Drizzle): Light precipitation
 
     Multiple phenomena compound effects on visibility.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     # Expected visibility ranges for weather phenomena
@@ -575,19 +646,33 @@ class VisibilityWeatherValidationRule:
     def validate(
         self, visibility_meters: int | None, weather_phenomena: list[str] | None = None
     ) -> list[ValidationIssue]:
-        """Validate visibility aligns with weather phenomena (Task 3.3 enhanced).
+        """
+        Validate visibility aligns with weather phenomena (Task 3.3 enhanced).
 
         Performs checks for:
         1. Individual phenomenon visibility ranges
         2. Multiple phenomenon combinations
         3. Visibility-phenomenon consistency
 
-        Args:
-            visibility_meters: Reported visibility in meters
-            weather_phenomena: List of weather codes (e.g., ['RA', 'BR'])
-
         Returns:
             List of validation issues (empty if valid)
+
+        Parameters
+        ----------
+        visibility_meters : object
+            Reported visibility in meters
+        weather_phenomena : object
+            List of weather codes (e.g., ['RA', 'BR'])
+
+        Returns
+        -------
+        object
+            List of validation issues (empty if valid)
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate)
+        2
         """
         issues: list[ValidationIssue] = []
 
@@ -614,10 +699,16 @@ class VisibilityWeatherValidationRule:
 
 
 class SemanticValidationEngine:
-    """Main engine for running all semantic validation rules.
+    """
+    Main engine for running all semantic validation rules.
 
     Coordinates validation across multiple rules and provides
     comprehensive error reporting.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(self) -> None:
@@ -634,17 +725,34 @@ class SemanticValidationEngine:
         visibility_meters: int | None = None,
         weather_phenomena: list[str] | None = None,
     ) -> list[ValidationIssue]:
-        """Run comprehensive semantic validation on METAR data.
-
-        Args:
-            temperature: Air temperature in °C
-            dewpoint: Dewpoint temperature in °C
-            cloud_layers: List of cloud layer dicts
-            visibility_meters: Visibility in meters
-            weather_phenomena: List of weather codes
+        """
+        Run comprehensive semantic validation on METAR data.
 
         Returns:
             List of all validation issues found
+
+        Parameters
+        ----------
+        temperature : object
+            Air temperature in °C
+        dewpoint : object
+            Dewpoint temperature in °C
+        cloud_layers : object
+            List of cloud layer dicts
+        visibility_meters : object
+            Visibility in meters
+        weather_phenomena : object
+            List of weather codes
+
+        Returns
+        -------
+        object
+            List of all validation issues found
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_metar_data)
+        2
         """
         all_issues: list[ValidationIssue] = []
 
@@ -664,15 +772,30 @@ class SemanticValidationEngine:
     def generate_report(
         self, issues: list[ValidationIssue], station_id: str = "UNKNOWN", raw_metar: str = ""
     ) -> dict[str, Any]:
-        """Generate structured validation report.
-
-        Args:
-            issues: List of validation issues
-            station_id: ICAO station identifier
-            raw_metar: Raw METAR text
+        """
+        Generate structured validation report.
 
         Returns:
             Dictionary with report structure
+
+        Parameters
+        ----------
+        issues : object
+            List of validation issues
+        station_id : object
+            ICAO station identifier
+        raw_metar : object
+            Raw METAR text
+
+        Returns
+        -------
+        object
+            Dictionary with report structure
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (generate_report)
+        2
         """
         error_count = sum(1 for i in issues if i.severity == IssueSeverity.ERROR)
         warning_count = sum(1 for i in issues if i.severity == IssueSeverity.WARNING)

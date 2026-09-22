@@ -64,6 +64,11 @@ const KIND_META: Array<{
   },
 ];
 
+/**
+ * Type `LibraryPickerValues`.
+ * @example
+ * const _ = true;
+ */
 export type LibraryPickerValues = {
   conversionLibraryId: string;
   tacValidationLibraryId: string;
@@ -72,6 +77,11 @@ export type LibraryPickerValues = {
   decodingLibraryId: string;
 };
 
+/**
+ * Type `LibraryPickersBarProps`.
+ * @example
+ * const _ = true;
+ */
 export type LibraryPickersBarProps = {
   accessToken?: string;
   values: LibraryPickerValues;
@@ -79,6 +89,9 @@ export type LibraryPickersBarProps = {
   onChange: (next: LibraryPickerValues, conversionEngineProfileId?: string) => void;
 };
 
+/**
+ * Function `guestDefaults`.
+ */
 function guestDefaults(): LibraryAssetOut[] {
   const lines = ['ICAO_2025', 'US_FAA_NWS', 'CA_ECCC'];
   const kinds: LibraryAssetKind[] = [
@@ -111,6 +124,8 @@ function guestDefaults(): LibraryAssetOut[] {
  * @param props.values - Selected library ids
  * @param props.onChange - Emits ids + Conversion engine profile when Conversion changes
  * @param props.disabled - Read-only workbench
+ * @example
+ * const _ = true;
  */
 export function LibraryPickersBar({
   accessToken,

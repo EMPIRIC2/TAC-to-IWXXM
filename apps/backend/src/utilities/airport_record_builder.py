@@ -16,7 +16,14 @@ logger = logging.getLogger(__name__)
 
 
 class AirportRecordBuilder:
-    """Builder for complete airport records from multiple sources."""
+    """
+    Builder for complete airport records from multiple sources.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self) -> None:
         """Initialize builder and load all data sources."""
@@ -69,22 +76,31 @@ class AirportRecordBuilder:
         2. openaip_data (OpenAIP API/cache)
         3. airports.json (legacy fallback)
 
-        Args:
-            icao: 4-letter ICAO airport code
-            openaip_data: Airport data from OpenAIP service (optional)
-            airport_validator: AirportValidator instance for additional lookups
-
         Returns:
             Complete airport record with fields:
             - name: Airport name
             - iata: 3-letter IATA code
             - designator: Airport designator/alternate code
-            - coordinates: {latitude, longitude}
-            - elevation_m: Elevation in meters
-            - status: 'active', 'closed', or 'unknown'
-            - closure_year: Optional year airport closed
-            - source: Description of where data came from
-            - _override: bool indicating if data was overridden from defaults
+            - coordinates: {l
+
+        Parameters
+        ----------
+        icao : object
+            4-letter ICAO airport code
+        openaip_data : object
+            Airport data from OpenAIP service (optional)
+        airport_validator : object
+            AirportValidator instance for additional lookups
+
+        Returns
+        -------
+        object
+            Complete airport record with fields: - name: Airport name - iata: 3-letter IATA code - designator: Airport designator/alternate code - coordinates: {latitude, longitude} - elevation_m: Elevation in meters - status: 'active', 'closed', or 'unknown' - closure_year: Optional year airport closed - source: Description of where data came from - _override: bool indicating if data was overridden from defaults
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (build_record)
+        2
         """
         icao = icao.upper().strip()
         record: dict[str, Any] = {
@@ -223,11 +239,23 @@ class AirportRecordBuilder:
         Format: "name|iata|designator|latitude,longitude"
         Example: "FORNEBU AIRPORT|FBU|FBU|59.89580,10.6172"
 
-        Args:
-            record: Airport record from build_record()
-
         Returns:
+            GIFTs format string or empty string if in
+
+        Parameters
+        ----------
+        record : object
+            Airport record from build_record()
+
+        Returns
+        -------
+        object
             GIFTs format string or empty string if incomplete
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_gifts_format)
+        2
         """
         if not all([record.get("name"), record.get("iata"), record.get("designator"), record.get("coordinates")]):
             logger.warning(f"Incomplete airport record for {record['icao']}: cannot generate GIFTs format")

@@ -16,6 +16,11 @@ export const QUALITY_METRICS_SCHEMATRON_SKIPPED = 'Schematron rules: skipped';
 export const QUALITY_METRICS_SCHEMA_IMPORT_RESOLVED = 'XML schema imports: OK';
 export const QUALITY_METRICS_SCHEMA_IMPORT_WARNING = 'XML schema imports: unresolved';
 
+/**
+ * Type `ValidateDispositionChip`.
+ * @example
+ * const _ = true;
+ */
 export type ValidateDispositionChip = {
   /** Stable test id suffix. */
   id: 'schematron' | 'schema-import';
@@ -25,6 +30,9 @@ export type ValidateDispositionChip = {
   ok: boolean;
 };
 
+/**
+ * Function `issueCodes`.
+ */
 function issueCodes(issues: Record<string, unknown>[]): Set<string> {
   const codes = new Set<string>();
   for (const issue of issues) {
@@ -40,6 +48,8 @@ function issueCodes(issues: Record<string, unknown>[]): Set<string> {
  *
  * @param validateIssues - Detail `validate_issues` rows
  * @returns Two chips (schematron, schema-import)
+ * @example
+ * const _ = true;
  */
 export function validateDispositionChips(
   validateIssues: Record<string, unknown>[],

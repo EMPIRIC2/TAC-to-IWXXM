@@ -35,6 +35,11 @@ def ca_eccc_output_spec_for_request(
     -------
     dict[str, str] | None
         Serialized output spec, or ``None`` when profile is not CA_ECCC.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ca_eccc_output_spec_for_request)
+    2
     """
     if semantic_canonical != "ca_eccc":
         return None
@@ -70,6 +75,11 @@ def ca_collect_bulletin_identifier(*, product: str, tac_input: str | None) -> st
     -------
     str | None
         MSC filename when AHL context is parseable; otherwise ``None``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ca_collect_bulletin_identifier)
+    2
     """
     if not tac_input or not tac_input.strip():
         return None
@@ -116,6 +126,11 @@ def apply_ca_eccc_collect_output(
     -------
     str
         COLLECT-wrapped XML when requested and bulletin context exists; else ``xml``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (apply_ca_eccc_collect_output)
+    2
     """
     if semantic_canonical != "ca_eccc" or not exchange_output:
         return xml

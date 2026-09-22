@@ -25,6 +25,11 @@ import {
 } from './ui/select';
 import { Label } from './ui/label';
 
+/**
+ * Type `GoldenExamplesSelectProps`.
+ * @example
+ * const _ = true;
+ */
 export interface GoldenExamplesSelectProps {
   /** Disabled when workbench is read-only */
   disabled?: boolean;
@@ -42,6 +47,9 @@ const PROFILE_LABELS = new Map<string, string>(
   SEMANTIC_PROFILE_OPTIONS.map((option) => [option.value, option.label]),
 );
 
+/**
+ * Function `groupTacByProduct`.
+ */
 function groupTacByProduct(): Map<string, GoldenExample[]> {
   const map = new Map<string, GoldenExample[]>();
   for (const ex of EXAMPLES) {
@@ -56,6 +64,9 @@ function groupTacByProduct(): Map<string, GoldenExample[]> {
   return map;
 }
 
+/**
+ * Function `exampleLabelForProfile`.
+ */
 function exampleLabelForProfile(
   example: GoldenExample,
   semanticProfile: IwxxmProfile,
@@ -87,6 +98,8 @@ function exampleLabelForProfile(
  *
  * @param props.disabled - When true, control is inactive
  * @param props.onSelectExample - Catalog id callback
+ * @example
+ * const _ = true;
  */
 export function GoldenExamplesSelect({
   disabled = false,

@@ -15,6 +15,8 @@ interface PasswordResetProps {
 
 /**
  * Password reset flow — request email or set a new password from a token.
+ * @example
+ * const _ = true;
  */
 export function PasswordReset({ onBackToLogin, resetToken }: PasswordResetProps) {
   const [step, _setStep] = useState<'request' | 'reset'>(

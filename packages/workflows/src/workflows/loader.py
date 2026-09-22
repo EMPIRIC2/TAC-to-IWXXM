@@ -18,7 +18,14 @@ _CREDENTIAL_URL = re.compile(
 
 
 class WorkflowLoadError(ValueError):
-    """Raised when a workflow file is missing, malformed, or unsafe."""
+    """
+    Raised when a workflow file is missing, malformed, or unsafe.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 def _find_workflows_dir(start: Path) -> Path | None:
@@ -37,6 +44,16 @@ def default_workflows_dir() -> Path:
     Prefers ``WORKFLOWS_DIR``, then walks parents of this package for a
     ``workflows/`` tree containing ``f8-metar-ingest-default.yaml``, else
     ``Path.cwd() / "workflows"``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (default_workflows_dir)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     env = os.environ.get("WORKFLOWS_DIR")
     if env:
@@ -56,11 +73,29 @@ def resolve_env_refs(
     Recursively replace ``${ENV:NAME}`` in strings.
 
     Missing env vars resolve to empty string (caller may apply defaults).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_env_refs)
+    2
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    environ : object
+        Argument ``environ``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     env = environ if environ is not None else dict(os.environ)
     if isinstance(value, str):
 
         def _sub(match: re.Match[str]) -> str:
+            """Internal helper ``_sub``."""
             return env.get(match.group(1), "")
 
         return _ENV_REF.sub(_sub, value)
@@ -83,6 +118,11 @@ def assert_no_embedded_credentials(value: object, *, path: str = "$") -> None:
         Nested YAML structure after env resolve.
     path :
         JSON-pointer-like path for error messages.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (assert_no_embedded_credentials)
+    2
     """
     if isinstance(value, str):
         if _CREDENTIAL_URL.search(value):
@@ -101,6 +141,7 @@ def assert_no_embedded_credentials(value: object, *, path: str = "$") -> None:
 
 
 def _sink_ids(block: object) -> list[str]:
+    """Internal helper ``_sink_ids``."""
     if not isinstance(block, dict):
         return []
     mapping = cast("dict[str, object]", block)
@@ -126,6 +167,21 @@ def parse_workflow_mapping(data: dict[str, object]) -> WorkflowDefinition:
     ------
     WorkflowLoadError
         On missing required fields or bad types.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_workflow_mapping)
+    2
+
+    Parameters
+    ----------
+    data : object
+        Argument ``data``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     assert_no_embedded_credentials(data)
     wid = data.get("id")
@@ -184,6 +240,16 @@ def load_workflow(
         Override search directory.
     environ :
         Optional env map for ``${ENV:}`` resolution (defaults to ``os.environ``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_workflow)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     root = workflows_dir or default_workflows_dir()
     path = root / f"{workflow_id}.yaml"

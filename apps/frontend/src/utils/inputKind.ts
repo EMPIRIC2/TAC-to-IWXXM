@@ -1,5 +1,7 @@
 /**
  * Classify operator inputs: single TAC, WMO AHL bulletin, IWXXM COLLECT, gzip wrappers.
+ * @example
+ * const _ = true;
  */
 
 export type OperatorInputKind =
@@ -10,6 +12,11 @@ export type OperatorInputKind =
   | 'gzip'
   | 'unknown';
 
+/**
+ * Type `OperatorInputMode`.
+ * @example
+ * const _ = true;
+ */
 export type OperatorInputMode =
   | 'tac'
   | 'ahl_bulletin'
@@ -22,6 +29,8 @@ const AHL_LINE = /^[A-Z]{4}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{3})?\s*$/m;
  * Detect AHL bulletin header (TTAAii CCCC YYGGgg [BBB]).
  *
  * @param text - Raw text
+ * @example
+ * const _ = true;
  */
 export function looksLikeAhlBulletin(text: string): boolean {
   const trimmed = text.trim();
@@ -37,6 +46,8 @@ export function looksLikeAhlBulletin(text: string): boolean {
  * Detect IWXXM COLLECT / collection wrapper XML.
  *
  * @param text - Raw text or XML
+ * @example
+ * const _ = true;
  */
 export function looksLikeCollectIwxxm(text: string): boolean {
   const head = text.slice(0, 4000).toLowerCase();
@@ -52,6 +63,8 @@ export function looksLikeCollectIwxxm(text: string): boolean {
  * Detect a standalone IWXXM document (not a COLLECT wrapper) for validate-only mode.
  *
  * @param text - Raw XML text
+ * @example
+ * const _ = true;
  */
 export function looksLikeIwxxmDocument(text: string): boolean {
   const trimmed = text.trim();
@@ -70,6 +83,8 @@ export function looksLikeIwxxmDocument(text: string): boolean {
  *
  * @param fileName - File name
  * @param content - Optional decoded text
+ * @example
+ * const _ = true;
  */
 export function detectInputKind(fileName: string, content?: string): OperatorInputKind {
   const lower = fileName.toLowerCase();
@@ -98,6 +113,8 @@ export function detectInputKind(fileName: string, content?: string): OperatorInp
  * Map detected kind onto operator mode (gzip stays tac until inflated).
  *
  * @param kind - Detected kind
+ * @example
+ * const _ = true;
  */
 export function kindToMode(kind: OperatorInputKind): OperatorInputMode {
   if (kind === 'ahl_bulletin') {

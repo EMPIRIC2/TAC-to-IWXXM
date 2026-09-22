@@ -61,6 +61,7 @@ def _check_swxa_spacewx_membership(body: str, *, start: int) -> list[Issue]:
 
 
 def _check_swxa(tac: str, *, profile: str = "annex3") -> list[Issue]:
+    """Internal helper ``_check_swxa``."""
     start, end, body = _body_span(tac)
     issues: list[Issue] = []
     if not _DTG_LINE.search(body):

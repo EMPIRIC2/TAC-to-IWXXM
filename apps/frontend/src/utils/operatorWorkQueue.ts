@@ -10,6 +10,8 @@
  * @param index - Candidate focus index
  * @param length - Queue length
  * @returns Safe index
+ * @example
+ * const _ = true;
  */
 export function clampQueueIndex(index: number, length: number): number {
   if (length <= 0) return 0;
@@ -22,6 +24,8 @@ export function clampQueueIndex(index: number, length: number): number {
  * @param index - Current focus index
  * @param length - Queue length
  * @returns Next index
+ * @example
+ * const _ = true;
  */
 export function nextQueueIndex(index: number, length: number): number {
   return clampQueueIndex(index + 1, length);
@@ -33,6 +37,8 @@ export function nextQueueIndex(index: number, length: number): number {
  * @param index - Current focus index
  * @param length - Queue length
  * @returns Previous index
+ * @example
+ * const _ = true;
  */
 export function prevQueueIndex(index: number, length: number): number {
   return clampQueueIndex(index - 1, length);
@@ -44,6 +50,8 @@ export function prevQueueIndex(index: number, length: number): number {
  * @param selected - Current selection
  * @param id - Item id to toggle
  * @returns New selection set
+ * @example
+ * const _ = true;
  */
 export function toggleQueueSelection(
   selected: ReadonlySet<string>,

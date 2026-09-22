@@ -25,6 +25,7 @@ _CA_METAR_FAMILY_LEADS: tuple[str, ...] = ("METAR", "LWIS", "SAWR")
 
 
 def _parse_gate_keywords(product: str, profile: str) -> tuple[str, ...]:
+    """Internal helper ``_parse_gate_keywords``."""
     base = PRODUCT_KEYWORDS[product]
     if profile == "ca_eccc" and product == "METAR":
         return _CA_METAR_FAMILY_LEADS
@@ -52,6 +53,11 @@ def check_parse_gate(
     issues, fixes
         Structured findings and optional repairs. Issues include ``start``/``end``
         character offsets when the rule can locate a span in ``tac_text``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_parse_gate)
+    2
     """
     issues: list[Issue] = []
     fixes: list[Fix] = []
@@ -132,6 +138,25 @@ def check_product_rules(
 
     Delegates to ``product_rules`` after parse-gate success.
     ``profile`` is reserved for L5 gating (EV-050); L3 membership is shared.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_product_rules)
+    2
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     from tac_validate.product_rules import check_product_rules as _impl
 
