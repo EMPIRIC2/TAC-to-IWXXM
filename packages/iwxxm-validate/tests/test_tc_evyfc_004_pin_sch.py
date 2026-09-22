@@ -11,11 +11,17 @@ from iwxxm_validate.api import validate
 from iwxxm_validate.pin_sch import (
     PinSchError,
     assert_pin_schematron_match,
+    clear_pin_sch_cache,
     expected_iwxxm_namespace,
 )
 from iwxxm_validate.validate_iwxxm import validate_iwxxm
 
 _PINS = ("2023-1", "2025-2", "3.0.0")
+
+
+@pytest.fixture(autouse=True)
+def _clear_pin_sch_cache() -> None:
+    clear_pin_sch_cache()
 
 
 def _const_path(path: Path) -> Callable[[str], Path]:
@@ -36,9 +42,21 @@ def test_tc_evyfc_004_pin_sch_match_ok(pin: str) -> None:
     assert bundle.schematron.parent.name == "rule"
 
 
+def test_tc_evyfc_004_pin_sch_cache_hit() -> None:
+    first = assert_pin_schematron_match("2025-2")
+    second = assert_pin_schematron_match("2025-2")
+    assert first is second
+    clear_pin_sch_cache()
+    third = assert_pin_schematron_match("2025-2")
+    assert third is not first
+    assert third.pin == first.pin
+
+
 def test_tc_evyfc_004_unknown_pin_raises() -> None:
     with pytest.raises(PinSchError, match="unsupported IWXXM pin"):
         assert_pin_schematron_match("2099-9")
+    with pytest.raises(PinSchError, match="unsupported IWXXM pin"):
+        expected_iwxxm_namespace("2099-9")
 
 
 def test_tc_evyfc_004_validate_reports_pin_sch_mismatch(monkeypatch: pytest.MonkeyPatch) -> None:

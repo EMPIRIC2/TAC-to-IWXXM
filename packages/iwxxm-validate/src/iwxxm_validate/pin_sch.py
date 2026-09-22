@@ -35,6 +35,16 @@ class PinSchBundle:
     namespace_uri: str
 
 
+# Process-local cache — pin trees are immutable at runtime; avoids re-reading SCH
+# on every convert (converter PR gate / hot path).
+_BUNDLE_CACHE: dict[str, PinSchBundle] = {}
+
+
+def clear_pin_sch_cache() -> None:
+    """Drop cached pin↔SCH bundles (tests / path monkeypatches)."""
+    _BUNDLE_CACHE.clear()
+
+
 def expected_iwxxm_namespace(iwxxm_version: str) -> str:
     """Return the ICAO IWXXM namespace URI expected for ``iwxxm_version``."""
     fragment = _PIN_NS_FRAGMENT.get(iwxxm_version.strip())
@@ -66,6 +76,10 @@ def assert_pin_schematron_match(iwxxm_version: str) -> PinSchBundle:
         or the SCH namespace URI does not match the pin.
     """
     pin = iwxxm_version.strip()
+    cached = _BUNDLE_CACHE.get(pin)
+    if cached is not None:
+        return cached
+
     ns_uri = expected_iwxxm_namespace(pin)
     try:
         root = version_dir(pin)
@@ -93,18 +107,21 @@ def assert_pin_schematron_match(iwxxm_version: str) -> PinSchBundle:
         msg = f"Schematron for pin {pin!r} must declare iwxxm namespace {ns_uri!r} (file={sch})"
         raise PinSchError(msg)
 
-    return PinSchBundle(
+    bundle = PinSchBundle(
         pin=pin,
         version_root=root,
         xsd=xsd,
         schematron=sch,
         namespace_uri=ns_uri,
     )
+    _BUNDLE_CACHE[pin] = bundle
+    return bundle
 
 
 __all__ = [
     "PinSchBundle",
     "PinSchError",
     "assert_pin_schematron_match",
+    "clear_pin_sch_cache",
     "expected_iwxxm_namespace",
 ]
