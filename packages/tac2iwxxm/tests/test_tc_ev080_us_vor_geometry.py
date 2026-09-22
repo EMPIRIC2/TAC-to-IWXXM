@@ -17,7 +17,7 @@ from tac2iwxxm.geometry.reference_point import (
     parse_vor_reference_geometry,
     resolve_vor,
 )
-from tac2iwxxm.products.sigmet_airmet import parse_sigmet
+from tac2iwxxm.slot_builders.sigmet_airmet import parse_sigmet
 
 from metar_shared.xml_canonical import canonicalize_xml
 from tac2iwxxm import convert

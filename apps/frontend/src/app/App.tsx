@@ -4,7 +4,6 @@ import { MyMetarsPage } from './components/MyMetarsPage';
 import { QualityMetricsPage } from './components/QualityMetricsPage';
 import { LintValidationCatalogPage } from './components/LintValidationCatalogPage';
 import { DisseminationOpsPage } from './components/DisseminationOpsPage';
-import { ConversionProfilePage } from './components/ConversionProfilePage';
 import { AppShellNav, type ShellPrimaryView } from './components/AppShellNav';
 import { Login } from './components/auth/Login';
 import { Register } from './components/auth/Register';
@@ -61,8 +60,7 @@ function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
     view === 'history' ||
     view === 'quality' ||
     view === 'catalog' ||
-    view === 'dissemination-ops' ||
-    view === 'profiles'
+    view === 'dissemination-ops'
   );
 }
 
@@ -100,7 +98,10 @@ function App() {
         setQualityStem(parsed.kind === 'detail' ? parsed.stem : null);
         return;
       }
-      if (window.location.pathname.includes('/auth/callback')) {
+      if (
+        window.location.pathname.includes('/auth/callback') ||
+        window.location.pathname.includes('/auth/confirm')
+      ) {
         setCurrentView('callback');
       }
     };
@@ -153,7 +154,10 @@ function App() {
   /* eslint-enable react-hooks/set-state-in-effect */
 
   useLayoutEffect(() => {
-    if (window.location.pathname.includes('/auth/callback')) {
+    if (
+      window.location.pathname.includes('/auth/callback') ||
+      window.location.pathname.includes('/auth/confirm')
+    ) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentView('callback');
     }
@@ -380,14 +384,6 @@ function App() {
         <DisseminationOpsPage
           accessToken={isAuthenticated ? accessToken : undefined}
           onRequestLogin={handleRequestLogin}
-        />
-      )}
-
-      {currentView === 'profiles' && (
-        <ConversionProfilePage
-          accessToken={isAuthenticated ? accessToken : undefined}
-          onRequestLogin={handleRequestLogin}
-          onOpenConverterExamples={() => setCurrentView('converter')}
         />
       )}
 

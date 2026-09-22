@@ -24,6 +24,16 @@ def test_calver_string_base_and_suffixes() -> None:
 
 
 @pytest.mark.unit
+def test_pep440_to_cargo_version_maps_dev_suffix() -> None:
+    assert bump.pep440_to_cargo_version("2026.9.14") == "2026.9.14"
+    assert bump.pep440_to_cargo_version("2026.9.14.1") == "2026.9.14+1"
+    assert bump.pep440_to_cargo_version("2026.9.14.dev4") == "2026.9.14-dev.4"
+    assert bump.pep440_to_cargo_version("2026.9.14.1.dev3") == "2026.9.14-dev.3+1"
+    with pytest.raises(ValueError, match="unsupported CalVer"):
+        bump.pep440_to_cargo_version("1.0.0a1")
+
+
+@pytest.mark.unit
 def test_replace_version_missing_raises() -> None:
     with pytest.raises(ValueError, match="version field not found"):
         bump._replace_version("no version here", bump.VERSION_RE, "1.0.0")
@@ -33,6 +43,17 @@ def test_replace_version_missing_raises() -> None:
 def test_set_package_version_unknown_raises() -> None:
     with pytest.raises(KeyError):
         bump.set_package_version("not-a-package", "2099.1.1")
+
+
+@pytest.mark.unit
+def test_packages_includes_tac_decoding() -> None:
+    assert set(bump.PACKAGES) == {
+        "tac-validate",
+        "iwxxm-validate",
+        "tac2iwxxm",
+        "tac-decoding",
+    }
+    assert "cargo" not in bump.PACKAGES["tac-decoding"]
 
 
 @pytest.mark.unit
@@ -60,6 +81,24 @@ def test_set_package_version_writes_cargo() -> None:
         changed = bump.set_package_version("iwxxm-validate", "2099.2.2")
         assert paths["cargo"] in changed
         assert 'version = "2099.2.2"' in paths["cargo"].read_text(encoding="utf-8")
+    finally:
+        for key, text in originals.items():
+            paths[key].write_text(text, encoding="utf-8")
+
+
+@pytest.mark.unit
+def test_set_package_version_writes_cargo_dev_as_semver_prerelease() -> None:
+    paths = bump.PACKAGES["tac2iwxxm"]
+    originals = {k: p.read_text(encoding="utf-8") for k, p in paths.items()}
+    try:
+        changed = bump.set_package_version("tac2iwxxm", "2026.9.14.dev4")
+        assert paths["cargo"] in changed
+        cargo_text = paths["cargo"].read_text(encoding="utf-8")
+        assert 'version = "2026.9.14-dev.4"' in cargo_text
+        assert ".dev4" not in cargo_text
+        assert 'version = "2026.9.14.dev4"' in paths["pyproject"].read_text(
+            encoding="utf-8"
+        )
     finally:
         for key, text in originals.items():
             paths[key].write_text(text, encoding="utf-8")

@@ -50,6 +50,16 @@ PACKAGES: dict[str, dict[str, Path]] = {
         / "__init__.py",
         "cargo": REPO_ROOT / "packages" / "tac2iwxxm" / "rust" / "Cargo.toml",
     },
+    # ADR-044 / F9 — decode + Decoding catalog (publish workflow already lists this package).
+    "tac-decoding": {
+        "pyproject": REPO_ROOT / "packages" / "tac-decoding" / "pyproject.toml",
+        "init": REPO_ROOT
+        / "packages"
+        / "tac-decoding"
+        / "src"
+        / "tac_decoding"
+        / "__init__.py",
+    },
 }
 
 VERSION_RE = re.compile(
@@ -95,6 +105,53 @@ def calver_string(
     return base
 
 
+_PEP440_CALVER_RE = re.compile(
+    r"^(?P<y>\d+)\.(?P<m>\d+)\.(?P<d>\d+)"
+    r"(?:\.(?P<same>\d+))?"
+    r"(?:\.dev(?P<dev>\d+))?$"
+)
+
+
+def pep440_to_cargo_version(version: str) -> str:
+    """
+    Map PEP 440 CalVer (optional ``.N`` / ``.devN``) to a Cargo-legal SemVer string.
+
+    Cargo accepts only ``major.minor.patch`` plus optional pre-release / build.
+    Nightlies keep PEP 440 in Python metadata and map:
+
+    - ``YYYY.M.D.devN`` → ``YYYY.M.D-dev.N``
+    - ``YYYY.M.D.N`` → ``YYYY.M.D+N`` (same-day rebuild)
+    - ``YYYY.M.D.N.devK`` → ``YYYY.M.D-dev.K+N``
+
+    Parameters
+    ----------
+    version :
+        PEP 440 string such as ``2026.9.14``, ``2026.9.14.1``, or ``2026.9.14.dev4``.
+
+    Returns
+    -------
+    str
+        Cargo-compatible version string.
+
+    Raises
+    ------
+    ValueError
+        If ``version`` is not a recognized CalVer / ``.devN`` shape.
+    """
+    match = _PEP440_CALVER_RE.fullmatch(version.strip())
+    if match is None:
+        raise ValueError(f"unsupported CalVer for Cargo mapping: {version!r}")
+    core = f"{match.group('y')}.{match.group('m')}.{match.group('d')}"
+    same = match.group("same")
+    dev = match.group("dev")
+    out = core
+    if dev is not None:
+        out = f"{out}-dev.{dev}"
+    if same is not None:
+        out = f"{out}+{same}"
+    return out
+
+
 def _replace_version(text: str, pattern: re.Pattern[str], new: str) -> str:
     if not pattern.search(text):
         raise ValueError(f"version field not found for pattern {pattern.pattern!r}")
@@ -121,8 +178,11 @@ def set_package_version(package: str, version: str) -> list[Path]:
     changed.append(init)
     cargo = paths.get("cargo")
     if cargo is not None and cargo.is_file():
+        cargo_version = pep440_to_cargo_version(version)
         cargo.write_text(
-            _replace_version(cargo.read_text(encoding="utf-8"), VERSION_RE, version),
+            _replace_version(
+                cargo.read_text(encoding="utf-8"), VERSION_RE, cargo_version
+            ),
             encoding="utf-8",
         )
         changed.append(cargo)
@@ -137,7 +197,9 @@ def main(argv: list[str] | None = None) -> int:
         action="append",
         help="Package to bump (repeatable)",
     )
-    parser.add_argument("--all", action="store_true", help="Bump all three packages")
+    parser.add_argument(
+        "--all", action="store_true", help="Bump all four publishable packages"
+    )
     parser.add_argument(
         "--date",
         help="CalVer date as YYYY.M.D or YYYY.MM.DD (default: today)",

@@ -1,0 +1,59 @@
+# Builtin TAF token-stream pack (ADR-045 / M4 #1230).
+# Field groups for annex3 A5-1; residual catch-all token remains for free groups.
+id: taf
+layout: token_stream
+rules:
+  - id: report_type
+    pattern: ["TAF"]
+    explain: "Forecast {0}"
+  - id: amd
+    pattern: ["AMD"]
+    explain: "Amendment"
+  - id: cor
+    pattern: ["COR"]
+    explain: "Correction"
+  - id: cnl
+    pattern: ["CNL"]
+    explain: "Cancelled"
+  - id: nil
+    pattern: ["NIL"]
+    explain: "Nil forecast"
+  - id: station
+    pattern: ["[A-Z][A-Z0-9]{3}"]
+    explain: "Station {0}"
+  - id: issue_time
+    pattern: ["\\d{6}Z"]
+    explain: "Issue time {0}"
+  - id: validity
+    pattern: ["\\d{4}/\\d{4}"]
+    explain: "Validity {0}"
+  - id: wind
+    pattern: ["(?:\\d{3}|VRB)\\d{2,3}(?:G\\d{2,3})?(?:KT|MPS)"]
+    explain: "Wind {0}"
+  - id: visibility
+    pattern: ["(?:\\d{4}|P?\\d{1,2}SM|CAVOK)"]
+    explain: "Visibility {0}"
+  - id: weather
+    pattern: ["(?://|(?:\\+|-|VC)?(?:MI|PR|BC|DR|BL|SH|TS|FZ)?(?:DZ|RA|SN|SG|PL|GR|GS|UP|BR|FG|FU|VA|DU|SA|HZ|PY|PO|SQ|FC|SS|DS)+|NSW)"]
+    explain: "Weather {0}"
+  - id: cloud
+    pattern: ["(?:FEW|SCT|BKN|OVC)\\d{3}(?:CB|TCU)?|NSC|SKC|CLR"]
+    explain: "Cloud {0}"
+  - id: change_indicator
+    pattern: ["(?:TEMPO|BECMG|NOSIG)"]
+    explain: "Change indicator {0}"
+  - id: from_group
+    pattern: ["FM\\d{6}"]
+    explain: "From group {0}"
+  - id: probability
+    pattern: ["PROB\\d{2}"]
+    explain: "Probability {0}"
+  - id: temperature
+    pattern: ["T[XN]-?\\d{2}/\\d{4}Z"]
+    explain: "Temperature extreme {0}"
+  - id: equal
+    pattern: ["="]
+    explain: "Report terminator"
+  - id: token
+    pattern: [".+"]
+    explain: "Token {0}"

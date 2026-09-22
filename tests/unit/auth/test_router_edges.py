@@ -336,3 +336,73 @@ def test_create_auth_router_default_proxy() -> None:
     assert "/auth/login" in paths
     assert "/auth/logout" in paths
     assert "/auth/me" in paths
+
+
+def test_confirm_success_returns_session() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    proxy.verify_email.return_value = {
+        "user": {"id": "u1", "email": "a@example.com", "metadata": {}},
+        "session": {
+            "access_token": "at",
+            "refresh_token": "rt",
+            "expires_at": 1,
+        },
+    }
+    client = _client(
+        proxy,
+        "https://proj.supabase.co/auth/v1/.well-known/jwks.json",
+    )
+    response = client.post(
+        "/auth/confirm",
+        json={"token_hash": "hash123", "type": "email"},
+    )
+    assert response.status_code == 200
+    assert response.json()["session"]["access_token"] == "at"
+    proxy.verify_email.assert_called_once_with("hash123", "email")
+
+
+def test_confirm_maps_proxy_failure() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    proxy.verify_email.side_effect = AuthProxyError("bad hash", status_code=400)
+    client = _client(
+        proxy,
+        "https://proj.supabase.co/auth/v1/.well-known/jwks.json",
+    )
+    response = client.post(
+        "/auth/confirm",
+        json={"token_hash": "bad", "type": "signup"},
+    )
+    assert response.status_code == 400
+    assert response.json()["detail"] == "bad hash"
+
+
+def test_confirm_rejects_unsupported_type() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    client = _client(
+        proxy,
+        "https://proj.supabase.co/auth/v1/.well-known/jwks.json",
+    )
+    response = client.post(
+        "/auth/confirm",
+        json={"token_hash": "hash123", "type": "not-a-type"},
+    )
+    assert response.status_code == 422
+    proxy.verify_email.assert_not_called()
+
+
+def test_confirm_normalizes_type_case() -> None:
+    proxy = MagicMock(spec=SupabaseAuthProxy)
+    proxy.verify_email.return_value = {
+        "user": {"id": "u1", "email": "a@example.com", "metadata": {}},
+        "session": None,
+    }
+    client = _client(
+        proxy,
+        "https://proj.supabase.co/auth/v1/.well-known/jwks.json",
+    )
+    response = client.post(
+        "/auth/confirm",
+        json={"token_hash": "hash123", "type": " Email "},
+    )
+    assert response.status_code == 200
+    proxy.verify_email.assert_called_once_with("hash123", "email")

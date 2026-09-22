@@ -218,7 +218,7 @@ OIDC trusted publishing** — no long-lived PyPI API token in repo secrets when 
 | msgspec vs pydantic     | Code + ADR-026                    | Response encode msgspec; multipart Form intake unchanged |
 | OpenAPI aliases         | `apps/backend` schemas            | Thin pydantic mirrors for docs only                      |
 | PyPI trusted publishing | GitHub Environment + PyPI project | OIDC; **one** workflow + package matrix; tags `{pkg}-v*` |
-| PyPI versioning (EV-1150 / ADR-043) | Package metadata + tags | **CalVer** date ints without leading zeros (e.g. `2026.9.10`; same-day `.N`); nightlies `.devN` → **TestPyPI only** |
+| PyPI versioning (EV-1150 / ADR-043) | Package metadata + tags | **CalVer** date ints without leading zeros (e.g. `2026.9.10`; same-day `.N`); nightlies PEP 440 `.devN` → **TestPyPI only**; Cargo.toml nightlies use `YYYY.M.D-dev.N` (EV-ci-runtime-failures) |
 | PyPI project names      | Package metadata                  | `tac-validate`, `iwxxm-validate`, `tac2iwxxm`            |
 | Schema bundle size      | `iwxxm-validate` wheel build      | From `vendor/schemas/*` pins; not an env var             |
 | Render redeploy         | Existing API/static secrets       | When API contract changes; CORS unchanged                |
@@ -287,6 +287,15 @@ on DO Postgres while keeping public convert and abuse-control env knobs:
 - S027 / EV-021 (2026-07-29): F26/F27 VAA+TCA WMO goldens — **no new env vars**; see §F26/F27
 - S038 / EV-031 (2026-08-03): F30/F31 — `DATABASE_URL` required; Auth keys restored; DOKS live URLs;
   F8 off Supabase DB (ADR-033)
+- EV-configurable-tac-decode-packs / #1210 (2026-09-19): optional `TAC_DECODING_PACK_DIR`;
+  unset means built-in packs only. Not a required deploy secret (ADR-045).
+- EV-validation-policy-layers / #1216 (2026-09-20): optional `TAC_VALIDATE_POLICY_DIR`,
+  `TAC_VALIDATE_DETECTOR_DIR`, `IWXXM_VALIDATE_POLICY_DIR` — file/env overlays only (ADR-046).
+  Not required Render secrets.
+- EV-yaml-extension-header (2026-09-21): optional `TAC2IWXXM_PROFILE_DIR` — conversion profile
+  binding overlays. Not a required Render secret (ADR-045 / ADR-046).
+- EV-yaml-full-configurability / #1229 (2026-09-22): optional `TAC2IWXXM_EMIT_MAP_DIR` — convert
+  emit-map overlays (ADR-047). Not a required Render secret.
 
 ## F24 / F25 / F9 deepen — WMO goldens + glossary (S026 / EV-020)
 
@@ -297,7 +306,16 @@ No new Render secrets required for convert goldens (package-side). Decode glossa
 |---------|----------------|-------|
 | WMO golden defaults | Code defaults | `profile=annex3`, pinned default `iwxxm_version` — ADR-032 |
 | Decode glossary | Official/near-official sources + YAML **overrides** | E20-E2; ADR-032 |
-| Glossary override path | Packaged `decode_glossary.yaml` + optional `TAC2IWXXM_DECODE_GLOSSARY_PATH` | Overlay only |
+| Glossary override path | Packaged `decode_glossary.yaml` + optional `TAC_DECODING_GLOSSARY_PATH` (legacy `TAC2IWXXM_DECODE_GLOSSARY_PATH`) | Overlay only |
+| Pack overlay dir | Optional `TAC_DECODING_PACK_DIR` | Directory of YAML/JSON packs. Unset = built-in packs only. Not a Render secret (ADR-045 / #1210) |
+| TAC quality policy overlay | Optional `TAC_VALIDATE_POLICY_DIR` | Extra TAC quality policy YAML. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
+| TAC detector overlay | Optional `TAC_VALIDATE_DETECTOR_DIR` | Extra detector packs. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
+| TAC detector mode | Optional `TAC_VALIDATE_DETECTOR_MODE` | `detector` (default, R2 flipped) / `legacy` (inline visibility for compares). Not a Render secret (ADR-046 / #1216) |
+| IWXXM output policy overlay | Optional `IWXXM_VALIDATE_POLICY_DIR` | Extra IWXXM output policies. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
+| Conversion profile binding overlay | Optional `TAC2IWXXM_PROFILE_DIR` | YAML that layers TAC and IWXXM policy ids onto one builtin binding for listed conversion profile ids. Unset = builtin bindings. Not a Render secret (ADR-045 / ADR-046) |
+| Convert emit map overlay | Optional `TAC2IWXXM_EMIT_MAP_DIR` | YAML emit maps that select METAR/SPECI (M3) python plugins by profile×product×pin. Unset = package builtins under `tac2iwxxm/data/emit_maps/`. Not a Render secret (ADR-047 / #1229) |
+| Convert IR source | Optional `TAC2IWXXM_CONVERT_IR_SOURCE` | `legacy` / `pack` / `auto` (default). `auto` uses pack IR for products whose default has flipped (METAR/SPECI after #1213; additional core products after #1214 when goldens pass). Not a Render secret (ADR-045 / #1212 / #1214) |
+| Overlay cookbook + honesty matrix | [domain/overlays/overlay-cookbook.md](domain/overlays/overlay-cookbook.md), [domain/overlays/product-engine-matrix.md](domain/overlays/product-engine-matrix.md) | EV-yaml-engine-configurability / #1224 — deployer/SDK how-to; not an in-app editor |
 | OpenAIP / F3 names | Existing F3 / OpenAIP config | Enrich decode when available; miss → ICAO only |
 | FE Examples catalog | Static FE fixtures | No env; WMO-passers only |
 

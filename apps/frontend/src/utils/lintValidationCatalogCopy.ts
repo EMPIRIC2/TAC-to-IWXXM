@@ -3,11 +3,11 @@
  */
 
 /** Page title — primary shell tab. */
-export const LINT_VALIDATION_CATALOG_PAGE_TITLE = 'Validation Issues Catalog';
+export const LINT_VALIDATION_CATALOG_PAGE_TITLE = 'Rule catalogs';
 
 /** Page subtitle — plain-language purpose. */
 export const LINT_VALIDATION_CATALOG_PAGE_SUBTITLE =
-  'Browse TAC lint and IWXXM validation checks: code, type, level, applicable profiles, description, and source links.';
+  'Inspect packaged rules for TAC validation, IWXXM validation, conversion, dissemination, and decoding.';
 
 /** Empty list message. */
 export const LINT_VALIDATION_CATALOG_EMPTY = 'No catalog entries for this filter.';

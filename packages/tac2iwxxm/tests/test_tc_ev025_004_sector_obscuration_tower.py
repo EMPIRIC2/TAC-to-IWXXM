@@ -9,7 +9,7 @@ XML pins follow iwxxm-us 3.0 PDF sample shapes
 
 from __future__ import annotations
 
-from tac2iwxxm.products.metar_speci import parse_metar_speci
+from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
 
 from tac2iwxxm import convert
 

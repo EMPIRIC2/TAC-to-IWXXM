@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 dependencies = [
     "metar-shared",
     "tac2iwxxm",
+    "tac-decoding",
     "tac-validate",
     "iwxxm-validate",
     "dissemination",
@@ -129,6 +130,7 @@ ignore = ["E741"]
 
 [tool.uv.sources]
 tac2iwxxm = { workspace = true }
+tac-decoding = { workspace = true }
 metar-shared = { workspace = true }
 metar-auth = { workspace = true }
 tac-validate = { workspace = true }

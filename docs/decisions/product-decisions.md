@@ -95,3 +95,8 @@
 | 2026-08-18 | M1 | modified | D-S071-02-m1 — UJ-067 includes H4–H5 |
 | 2026-08-18 | M2–M4 | approved | D-S071-02-m2/m3/m4 — TC detail + api-contract + catalog schema → 04 |
 | 2026-08-18 | D-S071-gateA | approved | Gate A PASS → 04-tech-plan; Spec→Build closed |
+| 2026-09-19 | EV1210-H1–H12 | auto-approved | F6/F9 deepen, paired packs, one `product=sigmet`, VONA core, both bulletin kinds, byte-identical XML, no wire change, English hook, shims until all products flip, no pack editor, H4–H5 N/A |
+| 2026-09-19 | C-shim | modified | Leftover “one release” sentences in feature-list and spec now point at ADR-045 |
+| 2026-09-19 | S-pin | approved | Vendor pins: metar-A3-1, taf-A5-2, sigmet-A6-1a-TS, sigmet-A6-2-TC, sigmet-VA-EGGX, airmet-A6-1a-TS, va-advisory-A7-2, tc-advisory-A2-2, spacewx-A7-3, vona-A7-1 |
+| 2026-09-19 | EV1210-tech | approved | `TAC_DECODING_PACK_DIR`; 10,000 steps; catalog deferred; compare every pin that already has the example |
+| 2026-09-19 | EV1210-legacy | approved | Keep parsers, validation, and pin compares (`2023-1`, `2025-2`, `3.0.0`, other profile pins). Packs do not choose the pin. |

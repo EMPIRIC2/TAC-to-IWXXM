@@ -81,7 +81,7 @@ METAR KLGA 121151Z ZZZ00KT 10SM SCT040 21/13 A3010=
         files={
             "manual_text": (None, bulletin),
             "product": (None, "METAR"),
-            "profile": (None, "annex3"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "lint": (None, "true"),
         },
     )

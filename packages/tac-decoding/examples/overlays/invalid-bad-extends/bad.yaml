@@ -1,0 +1,5 @@
+id: metar-broken
+extends: not-a-real-builtin-pack
+profiles: [annex3]
+layout: token_stream
+rules: []

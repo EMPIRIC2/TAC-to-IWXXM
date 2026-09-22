@@ -1,0 +1,27 @@
+---
+description: Boundaries for the shared TAC pack engine (F6/F9 deepen, ADR-045)
+globs: ""
+alwaysApply: true
+---
+
+# Pack engine boundary
+
+[Corpus: product §F6] [Corpus: product §F9] [Corpus: adr/ADR-045] [Corpus: api]
+
+This cycle deepens F6 and F9 only. Do not add a new feature id for the pack engine.
+
+## Must
+
+- Keep public `decode_tac` response keys as they are. No nested `children` or `role`.
+- Keep HTTP `product=sigmet` as one wire value. Ordinary, VA, and TC SIGMET are separate packs, not new API enums.
+- Keep `packages/tac-decoding` free of `tac2iwxxm` imports. Bulletin split is an injected port.
+- Leave legacy parsers, validation, and pin compares in place (`2023-1`, `2025-2`, `3.0.0`, and any other pin a profile already uses). Packs do not choose the pin.
+- Leave `tac2iwxxm.decode` and `glossary` shims in place.
+
+## Must not
+
+- Add an in-app pack editor.
+- Emit TAC lint issues from the pack engine, or mutate the input TAC.
+- Fetch or commit new WMO schema copies. Goldens are existing `vendor/schemas` files plus in-repo fixtures.
+- Treat WAFS or QVACI as core packs. They are deferred stubs.
+- Add browser connectivity tasks (H4–H5) unless the operator UI or HTTP contract actually changes.

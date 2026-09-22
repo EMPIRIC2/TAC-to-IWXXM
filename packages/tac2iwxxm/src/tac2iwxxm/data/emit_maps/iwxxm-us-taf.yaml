@@ -1,0 +1,13 @@
+# ADR-047 emit map — iwxxm_us TAF (M4 / #1230).
+schema_version: 1
+id: iwxxm-us-taf-emit
+profiles:
+  - iwxxm_us
+products:
+  - TAF
+iwxxm_versions:
+  - "2023-1"
+  - "2025-2"
+kind: python_plugin
+pass_product: false
+plugin: python:tac2iwxxm.profiles.iwxxm_us:emit_taf_iwxxm_us

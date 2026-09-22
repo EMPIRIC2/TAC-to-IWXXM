@@ -67,6 +67,7 @@ class SendRequest(msgspec.Struct, frozen=True):
     """Send IWXXM (and optional TAC) to a preflighted or one-shot destination."""
 
     dissemination_template_id: str | None = None
+    dissemination_library_id: str | None = None
     handle: str | None = None
     sink_type: SinkType | None = None
     uri: str | None = None

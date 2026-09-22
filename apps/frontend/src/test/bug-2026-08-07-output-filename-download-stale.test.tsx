@@ -44,6 +44,25 @@ vi.mock('/utils/api', () => ({
     .fn()
     .mockResolvedValue({ product: 'METAR', segments: [], residuals: [] }),
   fetchAirportRegion: vi.fn(),
+  // Real download path uses downloadBlob; without it Download click is a no-op.
+  downloadBlob: (blob: Blob, filename: string) => {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  },
+}));
+
+vi.mock('@/utils/conversionProfilesApi', () => ({
+  fetchProfileCatalog: vi.fn().mockResolvedValue({ profiles: [] }),
+  listPresets: vi.fn().mockResolvedValue([]),
+  listTemplates: vi.fn().mockResolvedValue([]),
+  listOverlays: vi.fn().mockResolvedValue([]),
+  listConversionTemplates: vi.fn().mockResolvedValue([]),
+  previewConversionTemplate: vi.fn().mockResolvedValue({}),
+  listLibraryAssets: vi.fn().mockResolvedValue([]),
 }));
 
 vi.mock('@/app/components/TacEditor', () => ({

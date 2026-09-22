@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-05 (EV-1120 #1120 Phase A — UJ-072 deepen + UJ-073)
+> **Last updated**: 2026-09-21 (EV-yaml-full-configurability / #1226 — UJ-DEV-011)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -39,7 +39,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-021 | IWXXM preview pane + terminator quick fix | apps/frontend | F10 | T2 / **T3** |
 | UJ-022 | Operator convert/validate after msgspec HTTP | apps/frontend | F11 | T2 / **T3** / H6′ |
 | UJ-023 | PyPI release tag → install smoke | CI / maintainer | F12–F14 | CI |
-| UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12) | T0 / T2 / **T3** |
+| UJ-024 | METAR/SPECI lint registry + convert→validate golden | UI / API / CI | F15 (+F6/F12); #1216 policy layers | T0 / T2 / **T3** |
 | UJ-025 | Manual TAC Input modes (TAC / AHL / COLLECT) | apps/frontend | F7 (ADR-024) | T2 / **T3** / H6′ |
 | UJ-026 | METAR REMARKS retain / exclusion (#667) | UI / API / package | F6 | T0 / T2 |
 | UJ-027 | Dissemination drawer — multi-DB upload (BYOC URI) + multi-select | apps/frontend | F16 | T2 / **T3** / H6′ (+ **live local** Compose); **restored EV-091 / #898** (+ #1089 exchange overlay) |
@@ -90,9 +90,33 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-071 | Dissemination ops — plan/audit/SQL mapping/gateway health | apps/frontend / API | F16–F19 deepen (EV-936 / #936) | T2 / **T3** / H6′ (+ H4–H5 when FE deploy) |
 | UJ-072 | ConversionProfile editor — rule pack → overlay → convert | apps/frontend / API | F7.w (EV-933 / #933) | T0 / T2 / **T3** / H4–H5 |
 | UJ-072d | Glanceable Profile summary + blocks + examples | apps/frontend | F7.w (EV-1120 / #1145) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072e | Author conversion template + TAC→IWXXM bridge | apps/frontend / API | F7.w (EV-080 / #1146) | T0 / T2 / **T3** / H4–H5 |
+| UJ-072f | Profile Builder assembly + conversion token modes | apps/frontend / API | F7.w (EV-conversion-profile-ux-libraries) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072g | Five Libraries + Mapping bridge + hard cut semantic profile | apps/frontend / API | F7.w (EV-bridge-ux-canvas-align) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-conv | Author Conversion library (YAML/DnD/IWXXM blocks) | apps/frontend / API | F7.w (EV-profile-builder-yaml-libraries / #1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-tac | Author TAC validation library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-iwxxm | Author IWXXM validation library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-dissem | Author Dissemination library (no secrets) | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-decode | Author Decoding library | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-cross | YAML lock / Warn-Fail / WMO reset | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072h-export | Convert export conversion metadata sidecar | apps/frontend / API | F7.w (#1196) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-workbench | IDE workbench shell + drop Conversion DnD | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-conv | Author Conversion — slots + searchable catalog | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-tac | Author TAC validation — regex/levels/bounds | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-iwxxm | Author IWXXM validation — full editable | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-decode | Author Decoding — maps/units/structured types | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-dissem | Author Dissemination — full edit no secrets | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
+| UJ-072i-overview | Overview compare + product/version enablement | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
 | UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
+| UJ-076 | Five package-owned trust catalogs (tabbed) | apps/frontend / API | F7.v (ADR-044) | T0 / T2 / **T3** / H4–H5 |
+| UJ-076a | Dropdown profile / dissemination / decode selection | apps/frontend / API | F7.w→dropdowns / F16–F19 / F9 (ADR-044) | T0 / T2 / **T3** / H4–H5 |
+| UJ-076b | Decode via `tac-decoding` parity | apps/frontend / API | F9 (ADR-044) | T0 / T2 / H4–H5 |
+| UJ-078 | Profile/validate/decode deepen (ADR-044 residual + AU/NZ + station names) | apps/frontend / API | F7/F9/F36 (#1221) | T0 / T2 / **T3** / H4–H5 |
+| UJ-077 | Pack-engine decode and convert, same operator panel | library / API | F6/F9 (#1210 / #1214 / ADR-045) | T0 / T2; H4–H5 N/A |
 | UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
+| UJ-DEV-010 | Overlay honesty matrix + cookbook + preflight | packages + `scripts/` / docs | F2/F6/F9/F12/F15 (#1224) | T0 / CI |
+| UJ-DEV-011 | Full YAML + convert emit (ADR-047) | packages + `scripts/` / docs | F2/F6/F9/F12/F14/F15 (#1226) | T0 / CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
@@ -506,6 +530,344 @@ the light picker (#1024) or putting credentials in the profile.
 
 ---
 
+### UJ-072e: Author conversion template + TAC→IWXXM bridge (EV-080 / #1146)
+
+**Actor**: Authenticated meteorological operator (JWT)
+
+**Goal**: Open the conversion template builder, view or fork a first-party template (or
+create a custom one), map typed slots to IWXXM fields, preview the TAC → template → IWXXM
+bridge, save a custom template, and apply it on convert without mutating first-party source
+or storing dissemination credentials.
+
+**Feature**: F7.w deepen (EV-080 / #1146)
+
+**Steps**:
+
+1. Sign in (F31). Open Conversion templates (Profiles / Conversion deepen surface; **Beta**).
+2. Select a first-party template (e.g. wind group); **view** slots; optionally **fork** to
+   custom (first-party source remains immutable in v1).
+3. Edit slots (type, optional, IWXXM field/block); reorder via drag-and-drop or ↑↓.
+4. Enter or load sample TAC; focus a group; confirm highlighted span, capture table, and
+   IWXXM XML block preview; add comments under TAC as needed.
+5. Save custom template (JWT owner-scoped). Unknown / foreign ids fail closed.
+6. Return to workbench convert; select template; run convert; confirm fail-closed on
+   unknown template id.
+7. Confirm #1024 light picker and Disseminate / Convert & Send still apply dissemination
+   rules only on those actions (not Convert-only).
+
+**Acceptance**:
+1. Parameterizable templates are the default Conversion rule object; slot-builder-first;
+   no raw regex as default authoring path.
+2. Bridge UI and inline preview are present; comments under TAC supported.
+3. Trust v1: custom CRUD for owner; first-party view+fork only; no secrets in templates.
+4. ADR-038 EV-080 amend; TC-EV080-001..006; H4–H5 when FE ships; EV-048 clean operator copy.
+5. UJ-072 / UJ-072d / UJ-069 / UJ-027–030 must-not-break.
+
+**Errors**: 401/403 without JWT; 400 unknown/invalid template; ownership 403 on foreign
+custom templates.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EV080-001..006 (see test-plan)
+
+**Source**: EV-080 / #1146; ADR-038 amend (EV-080); session
+`EV-080-param-conversion-templates` (local session-store; not a CORPUS design gate)
+
+---
+
+### UJ-072f: Profile Builder assembly + conversion token modes (EV-conversion-profile-ux-libraries)
+
+**Actor**: Authenticated meteorological operator (JWT)
+
+**Goal**: Assemble a working profile set via the guided Profile Builder (Conversion /
+Validation / Dissemination independently or via a bundle preset), author or fork conversion
+tokens with Convert | Decode-only | Skip modes, preview TAC→IWXXM mapping, and keep machine
+ids out of operator-facing chrome.
+
+**Feature**: F7.w / F7.v deepen (EV-conversion-profile-ux-libraries)
+
+**Steps**:
+
+1. Sign in. Open Profile Builder / Libraries (**Beta**). Prefer human-readable names; no
+   machine ids in primary chrome.
+2. Choose a base national profile by plain name. Attach Conversion, Validation, and
+   Dissemination components independently **or** apply a bundle preset that fills all three.
+3. Open Conversion library: see first-party defaults + customs; fork or edit tokens. Set mode
+   Convert, Decode-only, or Skip (+ gloss). Reorder via DnD / keyboard.
+4. Enter sample TAC; confirm live preview (matched spans, skip chips, IWXXM block). Use
+   Advanced pattern panel only when needed.
+5. (Phase B+) Author a TAC validation issue via recipe/guided path; attach to profiles.
+6. Save custom assets (owner-scoped). Return to Convert; confirm pickers / preset apply;
+   Output filename sits next to TAC/IWXXM panes (Phase A).
+
+**Acceptance**:
+1. Guided assembly + Libraries hub; hide ids; DnD; scientifically simple language.
+2. Token modes Convert | Decode-only | Skip; parametric captures; preview hero.
+3. Independent pickers + bundle presets (Phase B for full pickers if Phase A is conversion-hero only).
+4. TC-EVCPU-001..008; H4–H5 when FE ships; EV-048 clean; UJ-072e must-not-break.
+5. No destination credentials in stored objects (ADR-021/029).
+
+**Errors**: 401/403 without JWT; fail-closed unknown asset ids; ownership 403 on foreign customs.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EVCPU-001..008 (see test-plan)
+
+**Source**: EV-conversion-profile-ux-libraries; ADR-038 amend (EVCPU); session
+`EV-conversion-profile-ux-libraries` (local session-store; not a CORPUS design gate)
+
+---
+
+### UJ-072g: Five Libraries + Mapping bridge + hard cut (EV-bridge-ux-canvas-align)
+
+**Actor**: Authenticated meteorological operator (JWT)
+
+**Goal**: Use Profile builder’s five library sub-tabs (defaults pre-loaded from former
+national semantic profiles), fork-on-edit defaults, select five libraries on Convert with
+Product + IWXXM version only, and see the TAC → template → IWXXM Mapping bridge on Convert
+and Profile — without Semantic profile / Exchange / preset / overlay / Signed overlays /
+Dissemination-template chrome.
+
+**Feature**: F7.w deepen (EV-bridge-ux-canvas-align)
+
+**Steps**:
+
+1. Sign in. Open Profile builder (**Beta**). Confirm five sub-tabs: Conversion, TAC
+   validation, IWXXM validation, Dissemination, Decoding — each pre-loaded with first-party
+   defaults for every former national semantic profile line.
+2. Edit a default Conversion (or other) asset; confirm an **auto-fork** is created for the
+   user; original default unchanged and non-deletable. Delete own fork succeeds; delete
+   default fails closed.
+3. Confirm Signed overlays, Dissemination templates, Semantic presets, and Rule pack primary
+   forms are absent.
+4. On Conversion tab: use Mapping bridge (TAC report → Template match → IWXXM block) and
+   Template block builder (DnD / ↑↓).
+5. Open Convert: Product + IWXXM version + five library pickers only (no Profile / Exchange /
+   Semantic preset / Signed overlay). Convert with selected libraries; unknown ids fail closed.
+6. Dissemination transforms (annotations + ordered steps including bulletin re-wrap) apply
+   only on Disseminate / Convert & Send; credentials memory-only.
+7. Decoding library picker selects seeded F9/`decode_tac` assets (or fork).
+8. Convert a report where every emitted IWXXM block is tied to a Conversion rule; introduce
+   an unmatched group and confirm fail-closed + bridge miss indicator.
+
+**Acceptance**:
+1. AC1–AC11 in session `reports/requirements.md` / [Corpus: product §F7.w] EV-bridge.
+2. Hard cut: convert contract no longer accepts `semantic_profile` after cutover.
+3. TC-EVBRIDGE-001..011; H4–H5 when FE ships; EV-048 clean; UJ-072e/f must-not-break paths
+   that remain valid under the new model.
+4. No destination credentials in stored objects (ADR-021/029).
+5. Every TAC→IWXXM block mapping has an associated Conversion library rule (fail-closed).
+
+**Errors**: 401/403 without JWT; 400 unknown library ids; 403 delete/mutate first-party;
+ownership 403 on foreign customs; fail-closed unmatched TAC→IWXXM without rule.
+
+**Tier**: T0 / T2 / T3 / H4–H5
+
+**Automated tests**: TC-EVBRIDGE-001..011 (see test-plan)
+
+**Source**: EV-bridge-ux-canvas-align; ADR-038 amend (EV-bridge); session
+`EV-bridge-ux-canvas-align` (local session-store; not a CORPUS design gate)
+
+---
+
+### UJ-072h-conv: Author Conversion library — YAML/DnD/IWXXM blocks (#1196)
+
+**Actor**: Authenticated meteorological operator (JWT)
+
+**Goal**: Create or customize a Conversion library asset using templates, duplicated mined
+IWXXM schema blocks, or imported YAML; arrange rule cards under WMO (and national) blocks;
+preview with the shared sample drawer; Save Draft (Activate in Phase C).
+
+**Feature**: F7.w deepen (EV-profile-builder-yaml-libraries / #1196)
+
+**Steps**:
+1. Sign in → Profile builder (**Beta**). Open Conversion tab. Confirm Catalog inspector under
+   the editor; no Guided assembly / glossary / workflow / examples prose; tooltips on controls.
+2. Create via **New from template**, **Duplicate mined block**, or **Import YAML**.
+3. DnD rule cards within IWXXM schema blocks; optionally fork a national built-in and add a
+   country extension block.
+4. Set Convert / Decode-only / Skip on a card; use sample drawer for convert preview.
+5. Save **Draft**. (Phase C: Activate when zero Fail; select asset on Convert.)
+
+**Acceptance**: Phase A shell + Draft save; Phase C Activate + runtime. TC-EVPYL-CONV-*;
+H4–H5 after stage FE; EV-048 clean.
+
+**Tier**: T0 / T2 / T3 / H4–H5 · **Tests**: TC-EVPYL-CONV-001..005
+
+**Source**: #1196; ADR-038 amend EVPYL; session `EV-profile-builder-yaml-libraries`
+
+---
+
+### UJ-072h-tac: Author TAC validation library (#1196)
+
+**Actor**: Authenticated operator (JWT)  
+**Goal**: Enable/disable mined issues, change severity, add custom regex issues, import YAML,
+see lint hits in the sample drawer; Save Draft.  
+**Steps**: Profile builder → TAC validation → edit/create → sample drawer lint → Save Draft.  
+**Acceptance / tests**: TC-EVPYL-TAC-001..004; H4–H5 after stage FE.  
+**Source**: #1196; ADR-038 EVPYL
+
+---
+
+### UJ-072h-iwxxm: Author IWXXM validation library (#1196)
+
+**Actor**: Authenticated operator (JWT)  
+**Goal**: Toggle mined Schematron asserts, author custom XPath/regex-on-XML, document/fork
+existing built-in validation profiles, validate sample IWXXM in the drawer; Save Draft.  
+**Acceptance / tests**: TC-EVPYL-IWXXM-001..004; H4–H5 after stage FE.  
+**Source**: #1196; ADR-038 EVPYL
+
+---
+
+### UJ-072h-dissem: Author Dissemination library — no secrets (#1196)
+
+**Actor**: Authenticated operator (JWT)  
+**Goal**: DnD ordered transforms (envelope, topic/filename pattern, checksum, bulletin
+re-wrap); pattern-only YAML; filename/topic preview; import YAML; never persist credentials
+or destination URIs; Save Draft.  
+**Acceptance / tests**: TC-EVPYL-DISSEM-001..004; ADR-021/029; H4–H5 after stage FE.  
+**Source**: #1196; ADR-038 EVPYL
+
+---
+
+### UJ-072h-decode: Author Decoding library (#1196)
+
+**Actor**: Authenticated operator (JWT)  
+**Goal**: Add/edit glossary entries (regex → plain-language gloss), product scope, duplicate
+mined entries, sample drawer decode preview; Save Draft.  
+**Acceptance / tests**: TC-EVPYL-DECODE-001..004; H4–H5 after stage FE.  
+**Source**: #1196; ADR-038 EVPYL
+
+---
+
+### UJ-072h-cross: YAML lock, Warn/Fail, WMO reset (#1196)
+
+**Actor**: Authenticated operator (JWT)  
+**Goal**: Break YAML → guided UI locks until fixed; Fail regex → Draft OK, Activate blocked
+(Phase C); Warn → Activate allowed with visible Warn; reset to WMO defaults.  
+**Acceptance / tests**: TC-EVPYL-CROSS-001..004; H4–H5 after stage FE.  
+**Source**: #1196; ADR-038 EVPYL
+
+---
+
+### UJ-072h-export: Convert export conversion metadata sidecar (#1196)
+
+**Actor**: Authenticated or guest Convert user (toggle available on Convert download paths)  
+**Goal**: On Convert download, ZIP, or single-result download, opt in to “Include conversion
+metadata”; receive `file.xml` + `file.meta.json`; full checklist default when on; remember
+last choice; no credentials/destination URIs/auth tokens in sidecar; operator id/email when
+that checklist item is selected and signed in.  
+**Acceptance**: Phase A; TC-EVPYL-EXPORT-001..004; Beta on toggle; H4–H5 after stage FE.  
+**Source**: #1196; ADR-038 EVPYL
+
+---
+
+### UJ-072i-workbench: IDE workbench shell + drop Conversion DnD (#1203)
+
+**Actor**: Authenticated meteorological operator (JWT)
+
+**Goal**: Open Profile Builder workbench (catalog | editor | optional previews off by default);
+confirm Conversion has **no DnD**; tooltips on tabs/controls; foundation assets read-only.
+
+**Feature**: F7.w deepen (EV-profile-builder-workbench-edit / #1203)
+
+**Steps**:
+1. Sign in → Profile builder (**Beta**). Confirm five library tabs + Overview tab.
+2. Open Conversion: catalog list + item editor; no drag handles / reorder UI.
+3. Toggle IWXXM preview and validation issues preview on an item (default off).
+4. Hover tabs/controls — tooltips present; no planning vocabulary (EV-048).
+
+**Acceptance**: P0; TC-EVWB-001..003; H4–H5 after stage FE.
+
+**Tier**: T0 / T2 / T3 / H4–H5 · **Tests**: TC-EVWB-001..003
+
+**Source**: #1203; ADR-038 amend EVWB; session `EV-profile-builder-workbench-edit`
+
+---
+
+### UJ-072i-conv: Author Conversion — renamable slots + searchable catalog (#1203)
+
+**Actor**: Authenticated operator (JWT)
+
+**Goal**: Fork foundation Conversion asset; pick rules from expanded grouped searchable
+catalog; edit renamable preset slots (direction, speed, gust, unit, …); create new
+blocks/templates; YAML round-trip; Save Draft / Activate per existing lifecycle.
+
+**Feature**: F7.w deepen (#1203)
+
+**Steps**:
+1. Fork WMO/foundation Conversion → custom Draft.
+2. Open grouped searchable Conversion rule picker; add multiple rules.
+3. Rename preset slots for a TAC group; create a new Conversion block/template.
+4. Sync UI ↔ YAML; Save Draft; (later phases) Activate and select on Convert.
+
+**Acceptance**: P1; TC-EVWB-CONV-001..005; H4–H5 after stage FE.
+
+**Source**: #1203; ADR-038 EVWB
+
+---
+
+### UJ-072i-tac: Author TAC validation — regex, levels, bounds (#1203)
+
+**Actor**: Authenticated operator (JWT)
+
+**Goal**: Create/edit TAC lint rules with clear identity, issue levels, regex, and numeric
+operators (`min`/`max`/`eq`/`in` int+float + optional unit); sample lint preview.
+
+**Acceptance / tests**: TC-EVWB-TAC-001..005; H4–H5 after stage FE.  
+**Source**: #1203; ADR-038 EVWB
+
+---
+
+### UJ-072i-iwxxm: Author IWXXM validation — full editable (#1203)
+
+**Actor**: Authenticated operator (JWT)
+
+**Goal**: Enable/disable and edit all current IWXXM validation (Schematron/XSD-oriented +
+custom overlays + shared numeric ops) via workbench; sample validate preview.
+
+**Acceptance / tests**: TC-EVWB-IWXXM-001..005; H4–H5 after stage FE.  
+**Source**: #1203; ADR-038 EVWB
+
+---
+
+### UJ-072i-decode: Author Decoding — maps, units, structured types (#1203)
+
+**Actor**: Authenticated operator (JWT)
+
+**Goal**: Add/update symbol→meaning maps, unit annotations, and structured types (e.g.
+polygon with N values + units); sample decode preview.
+
+**Acceptance / tests**: TC-EVWB-DECODE-001..004; H4–H5 after stage FE.  
+**Source**: #1203; ADR-038 EVWB
+
+---
+
+### UJ-072i-dissem: Author Dissemination — full edit, no secrets (#1203)
+
+**Actor**: Authenticated operator (JWT)
+
+**Goal**: Create/edit dissemination destination/route profiles and enable/disable existing
+F16–F19 adapters via YAML/UI; reject credentials/destination URIs on save; no new protocols;
+Dissemination drawer redesign out of scope.
+
+**Acceptance / tests**: TC-EVWB-DISSEM-001..004; ADR-021/029/030; H4–H5 after stage FE.  
+**Source**: #1203; ADR-038 EVWB
+
+---
+
+### UJ-072i-overview: Overview compare + product enablement (#1203)
+
+**Actor**: Authenticated operator (JWT)
+
+**Goal**: On Overview tab, compare two profiles (library/rule diffs) and set per-profile
+enabled products, file types, and IWXXM versions.
+
+**Acceptance / tests**: TC-EVWB-OVERVIEW-001..004; H4–H5 after stage FE.  
+**Source**: #1203; ADR-038 EVWB
+
+---
+
 ### UJ-074: Save and reuse shared semantic presets + destination templates (EV-1051 / #1051)
 
 **Actor**: Authenticated meteorological operator or admin (JWT)
@@ -840,15 +1202,18 @@ description of the whole report — updating live while typing.
 3. Each recognized token shows a **value-aware** explanation: `24/18` →
    "Temperature 24 °C, dewpoint 18 °C"; `18004KT` → "Wind from 180° at 4 kt"; `10SM` →
    "Visibility 10 statute miles"; `A3011` → "Altimeter 30.11 inHg".
-4. A **"Plain language"** block at the top of the decode panel shows one flowing paragraph
-   summarizing the report, e.g. "Routine METAR for KJFK observed on day 12 at 12:51 UTC.
-   Wind from 180° at 4 kt. …".
-5. Unrecognized content appends "Not decoded: …" naming the residual spans; sparse products
+4. Station ICAO tokens include the **full aerodrome name** when the airport lookup hits
+   (e.g. KJFK → name); miss soft-fails to the ICAO designator only (#724 / EV-profile-validate-decode-deepen).
+5. A **"Plain language"** block at the top of the decode panel shows one flowing paragraph
+   summarizing the report, e.g. "Routine METAR for KJFK (John F Kennedy International…)
+   observed on day 12 at 12:51 UTC. Wind from 180° at 4 kt. …".
+6. Unrecognized content appends "Not decoded: …" naming the residual spans; sparse products
    (SIGMET/AIRMET/VAA/TCA) show a short best-effort summary with "partial decode" wording.
 
 **Acceptance**: METAR/SPECI/TAF golden fixtures show value-aware explanations for wind,
-visibility, temperature/dewpoint, pressure, time, station, clouds, weather; `summary`
-renders live for all seven products; residuals named when present.
+visibility, temperature/dewpoint, pressure, time, station (with name when known), clouds,
+weather; `summary` renders live for all seven products; residuals named when present;
+TC-EVPVD-004..005.
 
 **Automated tests**: `decode_tac` unit tests (T0); decode-tac API contract + Vitest panel
 (T0/T2); Playwright live-typing smoke (T2); live T3 sample.
@@ -1453,6 +1818,42 @@ TC-EV090-*; **TC-EV093-***.
 
 ---
 
+### UJ-DEV-010: Overlay honesty matrix + cookbook + preflight (#1224)
+
+**Actor**: SDK embedder / deployer / maintainer
+
+**Goal**: Understand which engines are YAML-executable vs Python, apply file/env overlays safely, and preflight before deploy.
+
+**Steps**:
+
+1. Read the product × engine honesty matrix (METAR–TCA × decode/TAC policy/detector/IWXXM policy/convert pack-IR/emit).
+2. Copy an example overlay from a package `examples/overlays/` tree; set the documented env var.
+3. Run monorepo overlay preflight (and optional package CLI hook) against a valid and an invalid fixture.
+4. Confirm HTTP OpenAPI still has no client pack/policy YAML body fields.
+5. Confirm glossary SoT is `tac-decoding` in docs.
+
+**Acceptance**: feature-list EV-yaml-engine-configurability ACs; TC-EVYEC-001..005.
+**Tier: T0 / CI**. H4–H5 N/A. [Corpus: product §F2/F6/F9/F12/F15] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: tests]
+
+### UJ-DEV-011: Full YAML configurability + convert emit (#1226)
+
+**Actor**: SDK embedder / deployer / package maintainer
+
+**Goal**: Configure decode, TAC validate, IWXXM output policy, and convert (including emit) via package YAML + env overlays until every product×engine cell is **full**, with Schematron pin match and no HTTP YAML injection.
+
+**Steps**:
+
+1. Read honesty matrix and ADR-047; copy M1 starter templates; run `--check-overlay` / `make overlay-preflight`.
+2. For METAR/SPECI (M2): overlay packs/policies/detectors; confirm behavior change + goldens.
+3. For emit (M3+): enable emit-map YAML; convert METAR then SPECI; compare to prior Python plugin output.
+4. Expand remaining products (M4); run pin↔Schematron asserts (M5).
+5. Confirm OpenAPI still rejects pack/policy/emit-map YAML body fields.
+
+**Acceptance**: feature-list #1226 ACs; TC-EVYFC-001..005.
+**Tier: T0 / CI**. H4–H5 N/A unless UI/OpenAPI changes. [Corpus: product] [Corpus: adr/ADR-047] [Corpus: tests]
+
+---
+
 ### UJ-OPS-002: Prod Apex Redirects to App Host (F30 / #948)
 
 **Actor**: Ops / maintainer / anonymous visitor
@@ -1504,7 +1905,11 @@ SPECI shares the METAR/SPECI rule pack and `metarSpeci` IWXXM schemas — adjace
 
 **Acceptance**: F15 criteria 1–6 (METAR + SPECI); coverage-matrix METAR/SPECI **R1–R8** closed
 this cycle (HARD — E11-23/28); non–R-theme gaps only may defer with rationale + AskQuestion.
-**Tier: T0 / T2 / T3** (T3 = workbench smoke when API/FE redeployed).
+**Remainder (EV-validation-policy-remainders):** the default annex3 validate issue list stays
+the same because empty policy select means all asserts. A narrower policy is proved by a unit
+or API test, not by a new page control. `/lint-tac` omits MatchPort and keeps today's
+scan. A caller that passes an empty MatchPort on annex3 METAR shows `MISSING_DECODE_MATCH`.
+**Tier: T0 / T2 / T3** (T3 = workbench smoke when API/FE redeployed; default-page identity uses the existing validate journey).
 
 ---
 
@@ -2445,3 +2850,78 @@ Apply DO Postgres migrations before worker/API traffic. Signoff includes UJ-001/
 - S071 / EV-061 (2026-08-18): UJ-064 validate readable decode (#1010); UJ-065 AHL decode+convert
   (#1012); UJ-066/067 Product/Profile + param bars (#1013); UJ-068 catalog tab (#1014, links
   resolved / unblocked); UJ-DEV-009 stage→main full gate (#1015)
+
+
+### UJ-076: Five package-owned trust catalogs (ADR-044)
+
+**Goal**: Inspect packaged rules for TAC Validation, IWXXM Validation, Conversion,
+Dissemination, and Decoding in a tabbed catalog shell (trust / transparency).
+
+**Actors**: Public operator (F21).
+
+**Steps**:
+1. Open the catalogs surface (nav tab / renamed Validation Issues Catalog shell).
+2. Switch among five tabs; each lists package-exported rows with plain-language summaries.
+3. Optional filters by product/profile where applicable; no edit/create controls.
+4. Confirm no internal planning vocabulary in copy.
+
+**Pass**: T0/T2/T3 + H4–H5; `GET /api/v1/rule-catalogs?family=…` for each family.
+
+### UJ-076a: Dropdown selection (hard cutover)
+
+**Goal**: Select conversion / validation / dissemination / decoding options via dropdowns
+backed by deployed backend lists only.
+
+**Steps**:
+1. On workbench / dissemination drawer, open each selection dropdown.
+2. Options match `GET /api/v1/selection-options` (or narrowed existing list routes).
+3. Profile Builder / library authoring / Dissemination Bench authoring UI is absent.
+4. Disseminate still runs preflight/send with memory-only credentials.
+
+**Pass**: T0/T2/T3 + H4–H5; must-not-break UJ-027–030 send paths.
+
+### UJ-076b: `tac-decoding` parity
+
+**Goal**: Live decode panel / `POST /decode-tac` behavior unchanged after package extract.
+
+**Pass**: Existing decode fixtures green; import path `tac_decoding` (and one-release
+`tac2iwxxm` re-export).
+
+### UJ-078: Profile / validate / decode deepen (#1221)
+
+**Feature**: F7.v residual + F36 + F9 (#724) — EV-profile-validate-decode-deepen.
+
+**Goal**: Operator uses dropdowns + five trust catalogs (no Profile Builder authoring);
+AU/NZ profiles convert with goldens; decode shows airport names when known.
+
+**Steps**:
+1. Open Conversion Profiles / workbench — authoring IDE absent; catalogs + pickers present.
+2. Select `AU_BOM` or `NZ_CAA_MET`; convert METAR/SPECI/TAF sample → IWXXM succeeds.
+3. Paste METAR with known ICAO; decode explanation/summary includes aerodrome name.
+4. Issues catalog follows Profile for national-only rows (UJ-073 residual).
+
+**Pass**: TC-EVPVD-001..006; UJ-076* still green; H4–H5 when FE catalog/cutover ships.
+
+**Out**: Exchange packaging deepen (#1222); pack engine (#1210).
+
+### UJ-077: Pack engine behind the same decode panel
+
+**Goal**: An operator pastes TAC and still sees the same Code | Explanation panel and the same converted XML bytes. The pack engine is not a new screen.
+
+**Feature**: F6 and F9 deepen — #1210 / ADR-045.
+
+**Steps**:
+1. Paste a pinned vendor TAC peer (METAR, TAF, SIGMET, AIRMET, VAA, TCA, SWXA, or VONA).
+2. Decode. Response fields stay `product`, `summary`, `segments`, `residuals`.
+3. Convert. XML matches the existing vendor golden byte for byte once that product has flipped.
+
+**Pass**: TC-EV1210-001..004. No H4–H5 (no frontend or HTTP shape change).
+
+**EV-pack-ir-convert-wire deepen (2026-09-20):** Same journey. METAR/SPECI packs gain
+real rules; convert may default to pack-IR emit when vendor XML stays byte-identical.
+Legacy parsers stay until a later delete-gate evolve. Pass also: TC-EV-PACKIR-001..005.
+
+**EV-pack-fill-delete-gate deepen (2026-09-20, #1214):** Same journey for remaining core
+products. Stricter goldens include multi-location VA and SWXA alternates. Selective
+legacy parser delete when byte-identical (all-or-nothing per shared file). Pass also:
+TC-EV-PFDG-001..005.

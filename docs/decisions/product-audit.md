@@ -299,3 +299,23 @@ Gate A PASS (Lean) → **04-tech-plan** (`D-S032-02-phase-a`).
 Gate A PASS (Standard) → **04-tech-plan** (`D-S040-02-phase-a`).
 Session audit: `docs/sessions/S040-iwxxm-corpus-quality/reports/02-verify-plan-audit.md`
 
+## EV-configurable-tac-decode-packs (2026-09-19)
+
+Delta audit only. Historical sections above are unchanged.
+
+| Metric | Count |
+|--------|-------|
+| Documents touched | feature-list, spec, journeys, test-plan, api-contract, ADR-045 |
+| Auto-approved (high) | 12 |
+| Consistency fix | 1 (shim window: ADR-044 “one release” amended in place to ADR-045) |
+| Pending user review | vendor pin filenames (S-pin) — approved 2026-09-19 |
+
+### Consistency
+
+| Check | Result |
+|-------|--------|
+| F6/F9 ↔ spec `tac-decoding` | Pass |
+| UJ-077 ↔ TC-EV1210-001..004 | Pass |
+| API no-wire ↔ test-plan H4–H5 N/A | Pass |
+| Shim window | Fixed — leftover “one release” now cites ADR-045 |
+

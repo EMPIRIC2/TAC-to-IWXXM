@@ -34,6 +34,9 @@ jobs:
           - package: tac-validate
             path: packages/tac-validate
             native: false
+          - package: tac-decoding
+            path: packages/tac-decoding
+            native: false
           - package: iwxxm-validate
             path: packages/iwxxm-validate
             native: true
@@ -83,13 +86,20 @@ jobs:
           uv build --sdist --package "${PACKAGE}" -o dist
           find dist -maxdepth 1 -type f -printf '%p\n' | sort
 
+      - name: Set up Python 3.12 for maturin
+        if: matrix.native == true
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Build native linux wheel (maturin)
         if: matrix.native == true
         uses: PyO3/maturin-action@v1
         with:
           working-directory: ${{ matrix.path }}
           command: build
-          args: --release -o ../../dist
+          # Match pypi-publish.yml: pin interpreter inside manylinux (python3 alone fails).
+          args: --release -o ../../dist -m rust/Cargo.toml -i python3.12
           sccache: "true"
           manylinux: auto
 

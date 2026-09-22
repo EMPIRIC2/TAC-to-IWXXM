@@ -117,7 +117,7 @@ def test_tc_ev072_005_convert_metadata_includes_ca_output_spec(
         files={
             "manual_text": (None, bulletin),
             "product": (None, product),
-            "semantic_profile": (None, "CA_ECCC"),
+            "conversion_library_id": (None, "LIB.CONVERSION.CA_ECCC"),
             "iwxxm_version": (None, "3.0.0"),
             "lint": (None, "false"),
         },

@@ -68,6 +68,39 @@ When adding or changing a METAR/SPECI encode theme in this monorepo, also update
 quality matrices — see [`tests/quality_matrices/AUTHORING.md`](../../tests/quality_matrices/AUTHORING.md)
 (TC-F29-007).
 
+## Validation catalogs
+
+`tac_validation_rules.yaml` and `iwxxm_validation_asserts.yaml` under
+`src/tac2iwxxm/data/` are generated catalog views for library browsing. They are not
+the checks that run. TAC lint uses `tac-validate`. IWXXM checks use vendor Schematron
+inside `iwxxm-validate`.
+
+Regenerate or verify them from a git checkout:
+
+```bash
+uv run python scripts/iwxxm/mine_validation_library_catalogs.py
+make validation-catalog-check
+```
+
+`resolve_validation_policies` maps a conversion profile id to the TAC quality and
+IWXXM output policy document ids. Pass `--policy` on the `tac-validate` or
+`iwxxm-validate` CLIs to override that binding.
+
+## Profile binding overlays
+
+Optional directory via `TAC2IWXXM_PROFILE_DIR` layers policy ids onto a builtin emit
+binding for listed profile ids (ADR-046). See the monorepo
+[Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md),
+`examples/overlays/`, and copy-paste `examples/starters/`.
+
+```bash
+export TAC2IWXXM_PROFILE_DIR=packages/tac2iwxxm/examples/starters
+tac2iwxxm --check-overlay "$TAC2IWXXM_PROFILE_DIR"
+```
+
+Decode glossary SoT is [`tac-decoding`](https://pypi.org/project/tac-decoding/)
+(`TAC_DECODING_GLOSSARY_PATH`); this package may still ship a shim copy.
+
 ## Links
 
 - Source: [EMPIRIC2/TAC-to-IWXXM](https://github.com/EMPIRIC2/TAC-to-IWXXM)

@@ -76,7 +76,7 @@ def test_convert_succeeds_without_authorization() -> None:
         data={
             "manual_text": "METAR KJFK 121851Z 09014KT 10SM FEW250 22/14 A3015=",
             "product": "METAR",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "iwxxm_version": "2025-2",
             "validate_output": "false",
         },

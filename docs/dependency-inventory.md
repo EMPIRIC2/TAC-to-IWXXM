@@ -25,6 +25,7 @@
 | sqlalchemy | DO Postgres access for sessions / F8 (shared) | MIT | PyPI (`>=2.0,<3`) |
 | asyncpg / psycopg | Postgres drivers for `DATABASE_URL` | Apache-2.0 / LGPL | PyPI (existing + Alembic) |
 | tac2iwxxm | Conversion (F6) | MIT | workspace path |
+| tac-decoding | TAC decode / glossary / Decoding catalog (F9 / ADR-044) | MIT | workspace path → PyPI `tac-decoding` |
 | tac-validate | TAC lint / rules | MIT | workspace path |
 | iwxxm-validate | XSD + Schematron (F2) | MIT | workspace path |
 | gifts | ~~Conversion~~ | — | **Removed at F6 cutover** (ADR-014) |
@@ -82,6 +83,7 @@ Package license: **MIT**. No FastAPI/Supabase imports.
 | Package | Purpose | License | Source |
 |---------|---------|---------|--------|
 | msgspec | Structured issue / fix models | Apache-2.0 | **Required** (ADR-016); reuse `tac_validate.codec` Encoder/Decoder |
+| PyYAML | TAC quality policy YAML load (ADR-046 / #1216) | MIT | PyPI (`==6.0.3`; already used by tac2iwxxm / tac-decoding) |
 
 Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schematron.
 
@@ -91,6 +93,7 @@ Package license: **MIT**. Stdlib-first preferred; no FastAPI/Supabase. No Schema
 |---------|---------|---------|--------|
 | lxml | Transitional / parity reference (Python path) | BSD | PyPI |
 | msgspec | Issue / report Struct models (ADR-016) | Apache-2.0 | PyPI |
+| PyYAML | IWXXM output policy YAML load (ADR-046 / #1216) | MIT | PyPI (`==6.0.3`; already used by tac-validate) |
 | PyO3 / maturin / rustc | Rust XSD + Schematron core (F13 / #699) | Apache-2.0 / MIT | Required for published wheel |
 | **xmloxide** 0.4.x | Native well-formed + XSD + ISO Schematron (D-S014-T33-crates) | MIT | crates.io (`default-features = false`) |
 | Schema assets | Bundled pinned IWXXM XSD/SCH | WMO terms | Copied from `vendor/schemas/*` at build |

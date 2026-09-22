@@ -9,9 +9,11 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW = REPO_ROOT / ".github" / "workflows" / "pypi-publish.yml"
 
-EXPECTED_PACKAGES = frozenset({"tac-validate", "iwxxm-validate", "tac2iwxxm"})
+EXPECTED_PACKAGES = frozenset(
+    {"tac-validate", "iwxxm-validate", "tac2iwxxm", "tac-decoding"}
+)
 EXPECTED_TAG_PREFIXES = frozenset(
-    {"tac-validate-v*", "iwxxm-validate-v*", "tac2iwxxm-v*"}
+    {"tac-validate-v*", "iwxxm-validate-v*", "tac2iwxxm-v*", "tac-decoding-v*"}
 )
 
 

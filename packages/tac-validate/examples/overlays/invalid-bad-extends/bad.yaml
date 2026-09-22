@@ -1,0 +1,8 @@
+schema_version: 1
+id: orphan-policy
+lifecycle: draft
+product: metar
+extends: [missing-builtin-policy]
+profiles: [annex3]
+select: []
+ignore: []

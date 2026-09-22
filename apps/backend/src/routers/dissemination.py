@@ -264,6 +264,48 @@ async def dissemination_send(
             detail="iwxxm_xml is required",
         )
 
+    iwxxm_xml = req.iwxxm_xml
+    dissem_lib = (req.dissemination_library_id or "").strip()
+    if dissem_lib:
+        from dissemination.transforms import apply_dissemination_transforms
+        from metar_iwxxm_api.convert_library_hard_cut import resolve_dissemination_transforms
+
+        profiles_service: ConversionProfilesService | None = None
+        if auth_user is not None:
+            profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
+
+        def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
+            if profiles_service is None:
+                return None
+            try:
+                asset = profiles_service.get_library_asset(asset_id)
+            except ValueError:
+                raise
+            except Exception:
+                return None
+            if asset.kind != "dissemination":
+                msg = "dissemination_library_id must reference a Dissemination library"
+                raise ValueError(msg)
+            return dict(asset.body or {})
+
+        try:
+            body_transforms = resolve_dissemination_transforms(
+                dissem_lib,
+                get_custom_dissemination_body=_custom_dissem_body,
+            )
+            transformed = apply_dissemination_transforms(
+                iwxxm_xml,
+                body_transforms,
+                bulletin_identifier=str(req.params.get("bulletin_identifier") or "") or None,
+                topic=str(req.params.get("topic") or "") or None,
+            )
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(exc),
+            ) from exc
+        iwxxm_xml = transformed.xml
+
     # Re-check allowlist / contract before write.
     try:
         pre = await run_db_preflight(
@@ -310,7 +352,7 @@ async def dissemination_send(
                     "icao": None,
                     "observation_time": None,
                     "iwxxm_version": req.iwxxm_version or "2025-2",
-                    "iwxxm_xml": req.iwxxm_xml,
+                    "iwxxm_xml": iwxxm_xml,
                     "tac_text": req.tac_text,
                     "upload_key": upload_key,
                 },

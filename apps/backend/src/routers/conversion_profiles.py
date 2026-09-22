@@ -2,17 +2,31 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, NoReturn
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import HTTPBearer
 
 from ..schemas.conversion_profiles import (
+    ConversionTemplateCreate,
+    ConversionTemplateListResponse,
+    ConversionTemplateOut,
+    ConversionTemplatePreviewRequest,
+    ConversionTemplatePreviewResponse,
+    ConversionTemplateUpdate,
     DisseminationTemplateCreate,
     DisseminationTemplateListResponse,
     DisseminationTemplateOut,
     DisseminationTemplateUpdate,
+    LibraryAssetCreate,
+    LibraryAssetListResponse,
+    LibraryAssetOut,
+    LibraryAssetUpdate,
+    LibraryRulePreviewRequest,
+    LibraryRulePreviewResponse,
+    LibraryYamlValidateRequest,
+    LibraryYamlValidateResponse,
     OverlayCreate,
     OverlayListResponse,
     OverlayOut,
@@ -32,6 +46,19 @@ from ..services.profile_catalog import load_profile_catalog
 from ..utilities.security import verify_supabase_token
 
 router = APIRouter(prefix="/api/v1/profiles", tags=["Conversion Profiles"])
+
+# ADR-044: operator library YAML authoring retired (hard cutover).
+_LIBRARY_AUTHORING_GONE = {
+    "code": "library_authoring_retired",
+    "message": "Library authoring is no longer available. Use deployed package catalogs and selection dropdowns.",
+}
+
+
+def _library_authoring_gone() -> NoReturn:
+    """Raise HTTP 410 for retired library authoring routes."""
+    raise HTTPException(status_code=410, detail=_LIBRARY_AUTHORING_GONE)
+
+
 _bearer = HTTPBearer(auto_error=True)
 
 
@@ -257,3 +284,151 @@ def delete_overlay(
 ) -> None:
     """Delete an owned overlay."""
     service.delete_overlay(overlay_id)
+
+
+@router.get("/conversion-templates", response_model=ConversionTemplateListResponse)
+def list_conversion_templates(
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> ConversionTemplateListResponse:
+    """List first-party and custom conversion templates."""
+    return ConversionTemplateListResponse(items=service.list_conversion_templates())
+
+
+@router.post("/conversion-templates", response_model=ConversionTemplateOut, status_code=201)
+def create_conversion_template(
+    payload: ConversionTemplateCreate,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> ConversionTemplateOut:
+    """Create a custom conversion template (optionally forked from first-party)."""
+    return service.create_conversion_template(payload)
+
+
+@router.post(
+    "/conversion-templates/preview",
+    response_model=ConversionTemplatePreviewResponse,
+)
+def preview_conversion_template(
+    payload: ConversionTemplatePreviewRequest,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> ConversionTemplatePreviewResponse:
+    """TAC to template to IWXXM bridge preview."""
+    from tac2iwxxm.conversion_templates import (
+        ConversionTemplate,
+        preview_bridge,
+        slot_from_dict,
+        template_from_dict,
+    )
+
+    if payload.slots is not None:
+        tmpl = ConversionTemplate(
+            id=payload.template_id,
+            name=payload.template_id,
+            access="custom",
+            iwxxm_block=payload.iwxxm_block or "(omit)",
+            slots=tuple(slot_from_dict(s.model_dump(by_alias=False)) for s in payload.slots),
+        )
+    else:
+        stored = service.get_conversion_template(payload.template_id)
+        tmpl = template_from_dict(stored.model_dump(by_alias=False))
+    result = preview_bridge(tmpl, focus_group=payload.focus_group)
+    return ConversionTemplatePreviewResponse(
+        template_id=result.template_id,
+        focus_group=result.focus_group,
+        matched=result.matched,
+        captures=result.captures,
+        xml_block=result.xml_block,
+        compiled_pattern=result.compiled_pattern,
+        skipped=list(result.skipped),
+    )
+
+
+@router.get("/conversion-templates/{template_id}", response_model=ConversionTemplateOut)
+def get_conversion_template(
+    template_id: str,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> ConversionTemplateOut:
+    """Fetch one conversion template (first-party id or custom UUID)."""
+    return service.get_conversion_template(template_id)
+
+
+@router.patch("/conversion-templates/{template_id}", response_model=ConversionTemplateOut)
+def patch_conversion_template(
+    template_id: str,
+    payload: ConversionTemplateUpdate,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> ConversionTemplateOut:
+    """Update an owned custom conversion template."""
+    return service.update_conversion_template(template_id, payload)
+
+
+@router.delete("/conversion-templates/{template_id}", status_code=204)
+def delete_conversion_template(
+    template_id: str,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> None:
+    """Delete an owned custom conversion template."""
+    service.delete_conversion_template(template_id)
+
+
+@router.get("/library-assets", response_model=LibraryAssetListResponse)
+def list_library_assets(
+    kind: str | None = None,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> LibraryAssetListResponse:
+    """List first-party and custom five-Libraries assets."""
+    return LibraryAssetListResponse(items=service.list_library_assets(kind=kind))
+
+
+@router.post("/library-assets", response_model=LibraryAssetOut, status_code=201)
+def create_library_asset(
+    payload: LibraryAssetCreate,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> LibraryAssetOut:
+    """Retired — library authoring is no longer available."""
+    _library_authoring_gone()
+
+
+@router.post("/library-assets/validate-yaml", response_model=LibraryYamlValidateResponse)
+def validate_library_yaml(
+    payload: LibraryYamlValidateRequest,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> LibraryYamlValidateResponse:
+    """Retired — library authoring is no longer available."""
+    _library_authoring_gone()
+
+
+@router.post("/library-assets/preview-rule", response_model=LibraryRulePreviewResponse)
+def preview_library_rule(
+    payload: LibraryRulePreviewRequest,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> LibraryRulePreviewResponse:
+    """Retired — library authoring is no longer available."""
+    _library_authoring_gone()
+
+
+@router.get("/library-assets/{asset_id}", response_model=LibraryAssetOut)
+def get_library_asset(
+    asset_id: str,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> LibraryAssetOut:
+    """Fetch one library asset (first-party id or custom UUID)."""
+    return service.get_library_asset(asset_id)
+
+
+@router.patch("/library-assets/{asset_id}", response_model=LibraryAssetOut)
+def update_library_asset(
+    asset_id: str,
+    payload: LibraryAssetUpdate,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> LibraryAssetOut:
+    """Retired — library authoring is no longer available."""
+    _library_authoring_gone()
+
+
+@router.delete("/library-assets/{asset_id}", status_code=204)
+def delete_library_asset(
+    asset_id: str,
+    service: ConversionProfilesService = Depends(profiles_service),
+) -> None:
+    """Retired — library authoring is no longer available."""
+    _library_authoring_gone()

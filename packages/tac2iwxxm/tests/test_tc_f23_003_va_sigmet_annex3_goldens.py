@@ -96,7 +96,7 @@ def test_tc_f23_003_va_sigmet_m_golden(case_id: str) -> None:
 
 def test_tc_f23_003_va_eggx_content_signals() -> None:
     """sigmet-VA-EGGX seed: VA phenomenon + product=sigmet wire → VolcanicAshSIGMET."""
-    from tac2iwxxm.products.sigmet_airmet import parse_sigmet
+    from tac2iwxxm.slot_builders.sigmet_airmet import parse_sigmet
 
     from tac2iwxxm import convert
 
@@ -112,7 +112,7 @@ def test_tc_f23_003_va_eggx_content_signals() -> None:
 
 def test_tc_f23_003_va_eggx_ash_cloud_polygon_and_sfc_fl() -> None:
     """#739: prefer VA CLD WI polygon over volcano PSN; encode SFC/FL550."""
-    from tac2iwxxm.products.sigmet_airmet import parse_sigmet
+    from tac2iwxxm.slot_builders.sigmet_airmet import parse_sigmet
 
     from tac2iwxxm import convert
 
@@ -132,7 +132,7 @@ def test_tc_f23_003_va_eggx_ash_cloud_polygon_and_sfc_fl() -> None:
 
 def test_tc_f23_003_no_va_exp_nil_geometry() -> None:
     """#739 NO VA EXP → geometry nilReason nothingOfOperationalSignificance."""
-    from tac2iwxxm.products.sigmet_airmet import parse_sigmet
+    from tac2iwxxm.slot_builders.sigmet_airmet import parse_sigmet
 
     from tac2iwxxm import convert
 

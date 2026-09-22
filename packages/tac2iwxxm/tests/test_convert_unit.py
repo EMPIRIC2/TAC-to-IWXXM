@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import pytest
-from tac2iwxxm.products.metar_speci import parse_metar_speci
 from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
+from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
 
 from tac2iwxxm import ConvertError, convert
 

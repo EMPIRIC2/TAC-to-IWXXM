@@ -125,6 +125,11 @@ def format_markdown(
         "(ready quality-matrix slots + annex3 / `iwxxm_us` goldens; "
         "inventory `needs-fixture`/`oos` omitted from Skip).",
         "",
+        "Match here counts **ready matrix inventory slots** and **golden live "
+        "compares**. It is **not** the Quality metrics dashboard score (official "
+        "corpus match on `/quality`). Opaque sad-fixture product codes roll under "
+        "the pack parent (e.g. METAR).",
+        "",
         "| Product | Profile | Match | Soft-diff | Fail | Skip |",
         "|---------|---------|------:|----------:|-----:|-----:|",
     ]

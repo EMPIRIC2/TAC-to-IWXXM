@@ -1,5 +1,5 @@
 /**
- * TC-EV093-001..005 — Semantic Profile light picker deepen (#1024 / EV-093).
+ * TC-EV093-001..005 — Conversion library picker on Convert chrome (EV-bridge hard cut).
  *
  * Spec: docs/test-plan.md TC-EV093-*; UJ-069;
  * [Corpus: product §F7] [Corpus: product §F35] [Corpus: tests].
@@ -9,10 +9,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
-import {
-  CANONICAL_SEMANTIC_PROFILES,
-  LEGACY_SEMANTIC_ALIASES,
-} from '../utils/semanticProfile';
+import { defaultLibraryId } from '../utils/libraryIds';
 
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
   vi.fn().mockResolvedValue({
@@ -102,7 +99,13 @@ vi.mock('../app/components/IcaoAutocomplete', () => ({
 
 const TAC = 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=';
 
-describe('TC-EV093 — semantic Profile picker deepen', () => {
+const GUEST_CONVERSION_IDS = [
+  defaultLibraryId('conversion', 'ICAO_2025'),
+  defaultLibraryId('conversion', 'US_FAA_NWS'),
+  defaultLibraryId('conversion', 'CA_ECCC'),
+] as const;
+
+describe('TC-EV093 — Conversion library picker deepen', () => {
   const defaultProps = {
     onLogout: vi.fn(),
     userEmail: 'ev093@example.com',
@@ -115,24 +118,30 @@ describe('TC-EV093 — semantic Profile picker deepen', () => {
     localStorage.clear();
   });
 
-  it('TC-EV093-001 lists all canonicals + aliases; default ICAO_2025', () => {
+  it('TC-EV093-001 lists guest Conversion libraries; default ICAO_2025', () => {
     render(<FileConverter {...defaultProps} />);
-    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
-    const values = Array.from(profile.options).map((o) => o.value);
-    for (const id of CANONICAL_SEMANTIC_PROFILES) {
+    expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
+    const conversion = screen.getByTestId(
+      'conversion-library-select',
+    ) as HTMLSelectElement;
+    const values = Array.from(conversion.options).map((o) => o.value);
+    for (const id of GUEST_CONVERSION_IDS) {
       expect(values).toContain(id);
     }
-    for (const alias of LEGACY_SEMANTIC_ALIASES) {
-      expect(values).toContain(alias);
-    }
-    expect(profile.value).toBe('ICAO_2025');
-    expect(profile).toHaveAccessibleName(/^profile$/i);
+    expect(values).not.toContain(defaultLibraryId('conversion', 'AU_BOM'));
+    expect(conversion.value).toBe(defaultLibraryId('conversion', 'ICAO_2025'));
+    expect(conversion).toHaveAccessibleName(/^conversion$/i);
+    expect(screen.queryByTestId('profile-type-select')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('semantic-profile-help-icon')).not.toBeInTheDocument();
   });
 
-  it('TC-EV093-003 sends legacy annex3 alias when selected', async () => {
+  it('TC-EV093-003 sends conversionLibraryId when US_FAA_NWS selected', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'annex3');
+    await user.selectOptions(
+      screen.getByTestId('conversion-library-select'),
+      defaultLibraryId('conversion', 'US_FAA_NWS'),
+    );
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: { value: TAC },
     });
@@ -141,21 +150,26 @@ describe('TC-EV093 — semantic Profile picker deepen', () => {
       expect(mockConvertMetarToIwxxm).toHaveBeenCalledTimes(1);
     });
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
-      expect.objectContaining({ profile: 'annex3' }),
+      expect.objectContaining({
+        conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
+      }),
     );
   });
 
   it('TC-EV093-004 CA_ECCC still shows metadata and pins 3.0.0', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+    await user.selectOptions(
+      screen.getByTestId('conversion-library-select'),
+      defaultLibraryId('conversion', 'CA_ECCC'),
+    );
     expect(screen.getByTestId('ca-eccc-profile-metadata')).toBeVisible();
     await user.click(screen.getByLabelText(/expand parameters/i));
     const version = document.querySelector('#param-iwxxm-version') as HTMLSelectElement;
     expect(version.value).toBe('3.0.0');
   });
 
-  it('TC-EV093-005 shows Profile trust copy without internal doc refs', async () => {
+  it('TC-EV093-005 shows library bar trust copy without internal doc refs', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
@@ -165,8 +179,11 @@ describe('TC-EV093 — semantic Profile picker deepen', () => {
     expect(summary.textContent).toMatch(/editable overlays/i);
     expect(summary.textContent).not.toMatch(/ADR-|EV-|Corpus:|#\d{3,}/);
 
-    expect(screen.getByTestId('semantic-profile-help-icon')).toBeVisible();
-    expect(screen.getByTestId('exchange-profile-help-icon')).toBeVisible();
+    expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
+    expect(screen.getByTestId('conversion-library-select')).toBeVisible();
+    expect(screen.getByTestId('dissemination-library-select')).toBeVisible();
+    expect(screen.queryByTestId('semantic-profile-help-icon')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('exchange-profile-help-icon')).not.toBeInTheDocument();
 
     const bar = screen.getByTestId('product-profile-bar');
     expect(bar).not.toContainElement(screen.getByTestId('semantic-profile-help'));

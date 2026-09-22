@@ -403,11 +403,13 @@ BYOC.
 | Frontend | repo root | `apps/frontend/Dockerfile` |
 | Worker | repo root | `apps/worker/Dockerfile` (T6.2) |
 
-API image must include: apps/backend, packages/tac2iwxxm, packages/tac-validate,
-packages/iwxxm-validate, packages/dissemination, packages/shared, vendor/schemas.
-(**No** `packages/auth` — deleted F21 / EV-017.)
+API image must include: apps/backend, packages/tac2iwxxm, packages/tac-decoding,
+packages/tac-validate, packages/iwxxm-validate, packages/dissemination,
+packages/shared, packages/auth, vendor/schemas.
 
-Worker image must include: apps/worker, same packages as API (no frontend).
+Worker image must include: apps/worker, packages/tac2iwxxm, packages/tac-decoding,
+packages/tac-validate, packages/iwxxm-validate, packages/workflows, packages/shared,
+vendor/schemas (no frontend).
 
 Frontend image must include: apps/frontend, packages/shared (pnpm workspace dep `@metar/shared`).
 
@@ -551,6 +553,7 @@ publishing** on version tags:
 | `packages/tac-validate` | `tac-validate-v*` | `tac-validate` |
 | `packages/iwxxm-validate` | `iwxxm-validate-v*` | `iwxxm-validate` |
 | `packages/tac2iwxxm` | `tac2iwxxm-v*` | `tac2iwxxm` |
+| `packages/tac-decoding` | `tac-decoding-v*` | `tac-decoding` |
 
 **Versioning (ADR-043):** **CalVer** date components as PEP 440 integers **without
 leading zeros** (e.g. `2026.9.10`; same-day `2026.9.10.1`). Example tag:
@@ -562,8 +565,10 @@ sdist+wheel (maturin for native crates), smoke-install, then OIDC publish. Prefe
 long-lived `PYPI_API_TOKEN` when OIDC is configured.
 
 **Nightly (TestPyPI only):** `.github/workflows/pypi-nightly.yml` (schedule +
-`workflow_dispatch`) publishes `YYYY.MM.DD.devN` to TestPyPI. Never auto-publish nightlies
-to prod PyPI.
+`workflow_dispatch`) publishes PEP 440 `YYYY.M.D.devN` to TestPyPI. Native packages
+map the same bump to Cargo via `pep440_to_cargo_version` (`.devN` → `-dev.N`,
+same-day `.N` → `+N`) for maturin ([Corpus: adr/ADR-043]; [Corpus: decisions]
+`ev-ci-runtime-failures.md`). Never auto-publish nightlies to prod PyPI.
 
 **Trusted Publisher** (each PyPI / TestPyPI project → Publishing settings):
 

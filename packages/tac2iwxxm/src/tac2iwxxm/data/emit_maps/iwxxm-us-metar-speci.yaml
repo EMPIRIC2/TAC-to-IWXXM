@@ -1,0 +1,13 @@
+# ADR-047 emit map — iwxxm_us METAR/SPECI (M3 / #1229).
+schema_version: 1
+id: iwxxm-us-metar-speci-emit
+profiles:
+  - iwxxm_us
+products:
+  - METAR
+  - SPECI
+iwxxm_versions:
+  - "2023-1"
+  - "2025-2"
+kind: python_plugin
+plugin: python:tac2iwxxm.profiles.iwxxm_us:emit_metar_speci_iwxxm_us

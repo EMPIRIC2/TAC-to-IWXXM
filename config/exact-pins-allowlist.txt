@@ -44,6 +44,7 @@ packages/shared/package.json:@vitest/coverage-v8
 packages/shared/package.json:vitest
 apps/backend/pyproject.toml:metar-shared
 apps/backend/pyproject.toml:tac2iwxxm
+apps/backend/pyproject.toml:tac-decoding
 apps/backend/pyproject.toml:tac-validate
 apps/backend/pyproject.toml:iwxxm-validate
 apps/backend/pyproject.toml:dissemination
@@ -108,7 +109,10 @@ packages/iwxxm-validate/pyproject.toml:msgspec
 packages/shared/pyproject.toml:pydantic
 packages/shared/pyproject.toml:xsdata-pydantic
 packages/tac-validate/pyproject.toml:msgspec
+packages/tac-decoding/pyproject.toml:msgspec
+packages/tac-decoding/pyproject.toml:pyyaml
 packages/tac2iwxxm/pyproject.toml:msgspec
 packages/tac2iwxxm/pyproject.toml:pyyaml
+packages/tac2iwxxm/pyproject.toml:tac-decoding
 packages/tac2iwxxm/pyproject.toml:tac-validate
 packages/tac2iwxxm/pyproject.toml:iwxxm-validate

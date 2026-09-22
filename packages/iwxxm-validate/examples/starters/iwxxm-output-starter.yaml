@@ -1,0 +1,11 @@
+# Copy-paste starter: IWXXM output policy extending annex3-iwxxm-output.
+# Set IWXXM_VALIDATE_POLICY_DIR to this directory, then:
+#   iwxxm-validate --check-overlay "$IWXXM_VALIDATE_POLICY_DIR"
+schema_version: 1
+id: annex3-iwxxm-output-starter
+lifecycle: draft
+pin: "2025-2"
+extends: [annex3-iwxxm-output]
+profiles: [annex3]
+select: []
+ignore: []

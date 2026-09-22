@@ -1,0 +1,95 @@
+# R8 NIL / modifiers detectors for METAR/SPECI (ADR-046 / #1228 M2).
+# Declarative finditer + token_scan (parity with theme_checks.r8_*).
+schema_version: 1
+id: metar-speci-r8-modifiers
+stage: token
+products:
+  - METAR
+  - SPECI
+rules:
+  - id: auto_present
+    kind: finditer
+    pattern: '\bAUTO\b'
+    on_match:
+      code: AUTO_PRESENT
+      location: modifier
+      message_template: "{product} AUTO modifier present - research R8"
+      span: match
+  - id: cor_present
+    kind: finditer
+    pattern: '\bCOR\b'
+    on_match:
+      code: COR_PRESENT
+      location: modifier
+      message_template: "{product} COR modifier present - research R8"
+      span: match
+  - id: invalid_nil
+    kind: finditer
+    pattern: '\bNIL\b(?=\s+\S)'
+    on_match:
+      code: INVALID_NIL
+      location: modifier
+      message_template: "{product} NIL must not include body groups - research R8"
+      span: match
+  - id: nil_report
+    kind: finditer
+    pattern: '\bNIL\b(?!\s+\S)'
+    on_match:
+      code: NIL_REPORT
+      location: modifier
+      message_template: "{product} NIL report - research R8"
+      span: match
+  - id: nosig_present
+    kind: finditer
+    skip_if_match: '\bNIL\b'
+    pattern: '\bNOSIG\b'
+    on_match:
+      code: NOSIG_PRESENT
+      location: modifier
+      message_template: "{product} NOSIG trend present - research R8"
+      span: match
+  - id: tempo_present
+    kind: finditer
+    skip_if_match: '\bNIL\b'
+    pattern: '\bTEMPO\b'
+    on_match:
+      code: TEMPO_PRESENT
+      location: modifier
+      message_template: "{product} TEMPO trend present - research R8"
+      span: match
+  - id: rvr_scan
+    kind: token_scan
+    skip_if_match: '\bNIL\b'
+    select: '^R\d{2}\S*$'
+    ok: '^R\d{2}[LCR]?/(?:[MP]?\d{4}(?:V[MP]?\d{4})?|////)(?:FT)?[UDN]?$'
+    on_ok:
+      code: RVR_PRESENT
+      location: modifier
+      message_template: "{product} RVR group {capture!r} present - research R8"
+      span: match
+    on_fail:
+      code: INVALID_RVR
+      location: modifier
+      message_template: "{product} invalid RVR token {capture!r} - research R8"
+      span: match
+  - id: wind_scan
+    kind: token_scan
+    skip_if_match: '\bNIL\b'
+    select: '^(?:CALM|.+(?:KT|MPS))$'
+    ok: '^(?:(?:VRB|\d{3})\d{2,3}(?:G\d{2,3})?(?:KT|MPS)|CALM)$'
+    on_fail:
+      code: INVALID_WIND
+      location: modifier
+      message_template: "{product} invalid wind token {capture!r} - research R8"
+      span: match
+  - id: wind_vrb_or_gust
+    kind: token_scan
+    skip_if_match: '\bNIL\b'
+    select: '^(?:VRB\d{2,3}(?:G\d{2,3})?(?:KT|MPS)|\d{3}\d{2,3}G\d{2,3}(?:KT|MPS))$'
+    ok: '^(?:VRB\d{2,3}(?:G\d{2,3})?(?:KT|MPS)|\d{3}\d{2,3}G\d{2,3}(?:KT|MPS))$'
+    max_emits: 1
+    on_ok:
+      code: WIND_VRB_OR_GUST
+      location: modifier
+      message_template: "{product} wind {capture!r} uses VRB and/or gust - research R8"
+      span: match

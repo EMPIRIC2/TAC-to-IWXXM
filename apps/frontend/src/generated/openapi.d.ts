@@ -485,6 +485,170 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/profiles/conversion-templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Conversion Templates
+         * @description List first-party and custom conversion templates.
+         */
+        get: operations["list_conversion_templates_api_v1_profiles_conversion_templates_get"];
+        put?: never;
+        /**
+         * Create Conversion Template
+         * @description Create a custom conversion template (optionally forked from first-party).
+         */
+        post: operations["create_conversion_template_api_v1_profiles_conversion_templates_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/conversion-templates/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preview Conversion Template
+         * @description TAC to template to IWXXM bridge preview.
+         */
+        post: operations["preview_conversion_template_api_v1_profiles_conversion_templates_preview_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/conversion-templates/{template_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Conversion Template
+         * @description Fetch one conversion template (first-party id or custom UUID).
+         */
+        get: operations["get_conversion_template_api_v1_profiles_conversion_templates__template_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Conversion Template
+         * @description Delete an owned custom conversion template.
+         */
+        delete: operations["delete_conversion_template_api_v1_profiles_conversion_templates__template_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Patch Conversion Template
+         * @description Update an owned custom conversion template.
+         */
+        patch: operations["patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch"];
+        trace?: never;
+    };
+    "/api/v1/profiles/library-assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Library Assets
+         * @description List first-party and custom five-Libraries assets.
+         */
+        get: operations["list_library_assets_api_v1_profiles_library_assets_get"];
+        put?: never;
+        /**
+         * Create Library Asset
+         * @description Retired — library authoring is no longer available.
+         */
+        post: operations["create_library_asset_api_v1_profiles_library_assets_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/library-assets/preview-rule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Preview Library Rule
+         * @description Retired — library authoring is no longer available.
+         */
+        post: operations["preview_library_rule_api_v1_profiles_library_assets_preview_rule_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/library-assets/validate-yaml": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Validate Library Yaml
+         * @description Retired — library authoring is no longer available.
+         */
+        post: operations["validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/profiles/library-assets/{asset_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Library Asset
+         * @description Fetch one library asset (first-party id or custom UUID).
+         */
+        get: operations["get_library_asset_api_v1_profiles_library_assets__asset_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Library Asset
+         * @description Retired — library authoring is no longer available.
+         */
+        delete: operations["delete_library_asset_api_v1_profiles_library_assets__asset_id__delete"];
+        options?: never;
+        head?: never;
+        /**
+         * Update Library Asset
+         * @description Retired — library authoring is no longer available.
+         */
+        patch: operations["update_library_asset_api_v1_profiles_library_assets__asset_id__patch"];
+        trace?: never;
+    };
     "/api/v1/profiles/overlays": {
         parameters: {
             query?: never;
@@ -733,6 +897,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/rule-catalogs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Rule Catalogs
+         * @description Export a package-owned trust catalog by family.
+         */
+        get: operations["get_rule_catalogs_api_v1_rule_catalogs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/schema-status": {
         parameters: {
             query?: never;
@@ -745,6 +929,26 @@ export interface paths {
          * @description Get comprehensive schema status including RC versions and mirroring info.
          */
         get: operations["get_schema_status_api_v1_schema_status_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/selection-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Selection Options
+         * @description List deployed registry ids for workbench / dissemination dropdowns.
+         */
+        get: operations["get_selection_options_api_v1_selection_options_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1337,6 +1541,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Confirm
+         * @description Confirm email (or related) via GoTrue token_hash verify.
+         */
+        post: operations["confirm_auth_confirm_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/login": {
         parameters: {
             query?: never;
@@ -1662,6 +1886,30 @@ export interface components {
              */
             bulletin_id: string;
             /**
+             * Conversion Library Id
+             * @description Conversion library asset id (resolves engine profile).
+             * @default
+             */
+            conversion_library_id: string;
+            /**
+             * Conversion Template Id
+             * @description Optional conversion template id (first-party or custom). When set for a custom template, requires Bearer JWT and ownership (or shared); unknown ids are rejected.
+             * @default
+             */
+            conversion_template_id: string;
+            /**
+             * Decoding Library Id
+             * @description Decoding library asset id.
+             * @default
+             */
+            decoding_library_id: string;
+            /**
+             * Dissemination Library Id
+             * @description Dissemination library asset id.
+             * @default
+             */
+            dissemination_library_id: string;
+            /**
              * Emit Translation Centre
              * @description When true, emit translationCentreDesignator/Name on successful convert (cross-State / Translation Centre mode; FAQ §14.5). Default omit for in-State.
              * @default false
@@ -1675,7 +1923,7 @@ export interface components {
             exchange_output: boolean;
             /**
              * Exchange Profile
-             * @description Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths
+             * @description Rejected — use dissemination_library_id for packaging transforms.
              * @default
              */
             exchange_profile: string;
@@ -1697,6 +1945,12 @@ export interface components {
              * @default
              */
             issuing_center: string;
+            /**
+             * Iwxxm Validation Library Id
+             * @description IWXXM validation library asset id.
+             * @default
+             */
+            iwxxm_validation_library_id: string;
             /**
              * Iwxxm Version
              * @description Target IWXXM version: 2025-2 (latest), 2023-1 (previous), or 2025-1 (auto-remaps to 2025-2)
@@ -1723,13 +1977,13 @@ export interface components {
             manual_text: string;
             /**
              * Overlay Id
-             * @description Optional signed ConversionProfile overlay id. When set, requires Bearer JWT and ownership (or shared); unknown or unauthorized ids are rejected.
+             * @description Rejected — overlays removed from Convert; use conversion_library_id.
              * @default
              */
             overlay_id: string;
             /**
              * Preset Id
-             * @description Optional saved semantic preset id. When set, requires Bearer JWT. Explicit request fields still win when both are supplied.
+             * @description Rejected — presets removed from Convert; use conversion_library_id.
              * @default
              */
             preset_id: string;
@@ -1747,7 +2001,7 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Rejected — use conversion_library_id.
              * @default
              */
             profile: string;
@@ -1764,7 +2018,7 @@ export interface components {
             report_variant: string;
             /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
+             * @description Rejected — use conversion_library_id.
              * @default
              */
             semantic_profile: string;
@@ -1774,6 +2028,12 @@ export interface components {
              * @default false
              */
             stop_on_error: boolean;
+            /**
+             * Tac Validation Library Id
+             * @description TAC validation library asset id.
+             * @default
+             */
+            tac_validation_library_id: string;
             /**
              * Translation Centre Designator
              * @description Optional translationCentreDesignator when emit_translation_centre is true
@@ -1801,6 +2061,18 @@ export interface components {
         };
         /** Body_convert_bulletin_api_v1_convert_bulletin_post */
         Body_convert_bulletin_api_v1_convert_bulletin_post: {
+            /**
+             * Conversion Library Id
+             * @description Conversion library asset id (resolves engine profile when set)
+             * @default
+             */
+            conversion_library_id: string;
+            /**
+             * Dissemination Library Id
+             * @description Dissemination library asset id. When set, ordered transforms (envelope / topic / checksum / bulletin re-wrap) apply on this Convert & Send path only.
+             * @default
+             */
+            dissemination_library_id: string;
             /**
              * Exchange Profile
              * @description Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths
@@ -1840,7 +2112,7 @@ export interface components {
             product: string;
             /**
              * Profile
-             * @description Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)
+             * @description Deprecated - use conversion_library_id (legacy alias: annex3 or iwxxm_us)
              * @default
              */
             profile: string;
@@ -1851,7 +2123,7 @@ export interface components {
             propagate_residuals_to_remarks?: boolean | null;
             /**
              * Semantic Profile
-             * @description Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)
+             * @description Deprecated on Convert & Send — prefer conversion_library_id. Still accepted on convert-bulletin until Dissemination library packaging lands.
              * @default
              */
             semantic_profile: string;
@@ -2099,6 +2371,19 @@ export interface components {
          */
         ComparisonStatus: "pass" | "fail" | "error";
         /**
+         * ConfirmRequest
+         * @description Email confirmation via GoTrue ``token_hash`` (Auth email link).
+         */
+        ConfirmRequest: {
+            /** Token Hash */
+            token_hash: string;
+            /**
+             * Type
+             * @default email
+             */
+            type: string;
+        };
+        /**
          * ConversionIssue
          * @description Structured issue for a single conversion input item.
          */
@@ -2286,6 +2571,189 @@ export interface components {
              * @example METAR FAOR 101200Z COR 33003KT CAVOK 04/M00 Q1023=
              */
             tac_input?: string | null;
+        };
+        /**
+         * ConversionTemplateCreate
+         * @description Create body for a custom conversion template.
+         */
+        ConversionTemplateCreate: {
+            /** Comments */
+            comments?: string | null;
+            /** Forkof */
+            forkOf?: string | null;
+            /** Iwxxmblock */
+            iwxxmBlock: string;
+            /** Name */
+            name: string;
+            /**
+             * Sample
+             * @default
+             */
+            sample: string;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slots */
+            slots?: components["schemas"]["ConversionTemplateSlot"][];
+            /** Slug */
+            slug: string;
+        };
+        /**
+         * ConversionTemplateListResponse
+         * @description First-party + custom conversion templates visible to the caller.
+         */
+        ConversionTemplateListResponse: {
+            /** Items */
+            items: components["schemas"]["ConversionTemplateOut"][];
+        };
+        /**
+         * ConversionTemplateOut
+         * @description Persisted or first-party conversion template projection.
+         */
+        ConversionTemplateOut: {
+            /** Access */
+            access: string;
+            /** Comments */
+            comments?: string | null;
+            /** Created At */
+            created_at?: string | null;
+            /** Forkof */
+            forkOf?: string | null;
+            /** Id */
+            id: string;
+            /** Iwxxmblock */
+            iwxxmBlock: string;
+            /** Name */
+            name: string;
+            /** Profiles */
+            profiles?: string[];
+            /**
+             * Sample
+             * @default
+             */
+            sample: string;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slots */
+            slots?: components["schemas"]["ConversionTemplateSlot"][];
+            /** Slug */
+            slug: string;
+            /** Updated At */
+            updated_at?: string | null;
+            /** User Id */
+            user_id?: string | null;
+        };
+        /**
+         * ConversionTemplatePreviewRequest
+         * @description Bridge preview request.
+         */
+        ConversionTemplatePreviewRequest: {
+            /**
+             * Focusgroup
+             * @default
+             */
+            focusGroup: string;
+            /** Fulltac */
+            fullTac?: string | null;
+            /** Iwxxmblock */
+            iwxxmBlock?: string | null;
+            /** Slots */
+            slots?: components["schemas"]["ConversionTemplateSlot"][] | null;
+            /** Templateid */
+            templateId: string;
+        };
+        /**
+         * ConversionTemplatePreviewResponse
+         * @description Bridge preview response.
+         */
+        ConversionTemplatePreviewResponse: {
+            /** Captures */
+            captures?: {
+                [key: string]: string;
+            }[];
+            /**
+             * Compiledpattern
+             * @default
+             */
+            compiledPattern: string;
+            /** Focusgroup */
+            focusGroup: string;
+            /** Matched */
+            matched: boolean;
+            /** Skipped */
+            skipped?: {
+                [key: string]: string;
+            }[];
+            /** Templateid */
+            templateId: string;
+            /**
+             * Xmlblock
+             * @default
+             */
+            xmlBlock: string;
+        };
+        /**
+         * ConversionTemplateSlot
+         * @description One ordered slot in a parameterizable conversion template.
+         */
+        ConversionTemplateSlot: {
+            /** Digits */
+            digits?: number | null;
+            /** Enumvalues */
+            enumValues?: string | null;
+            /**
+             * Gloss
+             * @default
+             */
+            gloss: string;
+            /** Id */
+            id: string;
+            /**
+             * Iwxxmfield
+             * @default
+             */
+            iwxxmField: string;
+            /** Label */
+            label: string;
+            /** Literal */
+            literal?: string | null;
+            /**
+             * Mode
+             * @default convert
+             */
+            mode: string;
+            /**
+             * Optional
+             * @default false
+             */
+            optional: boolean;
+            /** Type */
+            type: string;
+        };
+        /**
+         * ConversionTemplateUpdate
+         * @description Partial update for a custom conversion template.
+         */
+        ConversionTemplateUpdate: {
+            /** Comments */
+            comments?: string | null;
+            /** Iwxxmblock */
+            iwxxmBlock?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Sample */
+            sample?: string | null;
+            /** Shared */
+            shared?: boolean | null;
+            /** Slots */
+            slots?: components["schemas"]["ConversionTemplateSlot"][] | null;
+            /** Slug */
+            slug?: string | null;
         };
         /**
          * ConvertBulletinResponse
@@ -3019,6 +3487,222 @@ export interface components {
             total: number;
         };
         /**
+         * LibraryAssetCreate
+         * @description Create a custom library asset (optionally forked).
+         */
+        LibraryAssetCreate: {
+            /** Attachednationalline */
+            attachedNationalLine: string;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            };
+            /** Engineprofileid */
+            engineProfileId: string;
+            /** Forkof */
+            forkOf?: string | null;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "conversion" | "tac_validation" | "iwxxm_validation" | "dissemination" | "decoding";
+            /** Name */
+            name: string;
+            /**
+             * Schemaversion
+             * @default 1
+             */
+            schemaVersion: number;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slug */
+            slug: string;
+            /**
+             * Status
+             * @default draft
+             * @enum {string}
+             */
+            status: "draft" | "activated";
+            /** Yamlbody */
+            yamlBody?: string | null;
+        };
+        /**
+         * LibraryAssetListResponse
+         * @description Library assets visible to the caller.
+         */
+        LibraryAssetListResponse: {
+            /** Items */
+            items: components["schemas"]["LibraryAssetOut"][];
+        };
+        /**
+         * LibraryAssetOut
+         * @description First-party or custom library asset (five Libraries).
+         */
+        LibraryAssetOut: {
+            /**
+             * Access
+             * @enum {string}
+             */
+            access: "first_party" | "custom";
+            /** Attachednationalline */
+            attachedNationalLine: string;
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            };
+            /** Created At */
+            created_at?: string | null;
+            /** Engineprofileid */
+            engineProfileId: string;
+            /** Forkof */
+            forkOf?: string | null;
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "conversion" | "tac_validation" | "iwxxm_validation" | "dissemination" | "decoding";
+            /** Name */
+            name: string;
+            /**
+             * Schemaversion
+             * @default 1
+             */
+            schemaVersion: number;
+            /**
+             * Shared
+             * @default false
+             */
+            shared: boolean;
+            /** Slug */
+            slug?: string | null;
+            /**
+             * Status
+             * @default draft
+             * @enum {string}
+             */
+            status: "draft" | "activated";
+            /** Updated At */
+            updated_at?: string | null;
+            /** Userid */
+            userId?: string | null;
+            /** Yamlbody */
+            yamlBody?: string | null;
+        };
+        /**
+         * LibraryAssetUpdate
+         * @description Partial update for a custom library asset (or fork-on-edit first-party).
+         */
+        LibraryAssetUpdate: {
+            /** Body */
+            body?: {
+                [key: string]: unknown;
+            } | null;
+            /** Name */
+            name?: string | null;
+            /** Schemaversion */
+            schemaVersion?: number | null;
+            /** Shared */
+            shared?: boolean | null;
+            /** Slug */
+            slug?: string | null;
+            /** Status */
+            status?: ("draft" | "activated") | null;
+            /** Yamlbody */
+            yamlBody?: string | null;
+        };
+        /**
+         * LibraryRulePreviewRequest
+         * @description AC11 rule association preview for a TAC group.
+         */
+        LibraryRulePreviewRequest: {
+            /** Focusgroup */
+            focusGroup: string;
+            /** Libraryid */
+            libraryId: string;
+        };
+        /**
+         * LibraryRulePreviewResponse
+         * @description Matched conversion rule for a TAC group.
+         */
+        LibraryRulePreviewResponse: {
+            /** Focusgroup */
+            focusGroup: string;
+            /** Libraryid */
+            libraryId: string;
+            /**
+             * Matched
+             * @default true
+             */
+            matched: boolean;
+            /** Ruleid */
+            ruleId: string;
+            /** Rulename */
+            ruleName: string;
+        };
+        /**
+         * LibraryYamlValidateRequest
+         * @description Validate library YAML without persisting.
+         */
+        LibraryYamlValidateRequest: {
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "conversion" | "tac_validation" | "iwxxm_validation" | "dissemination" | "decoding";
+            /**
+             * Lifecycle
+             * @default draft
+             * @enum {string}
+             */
+            lifecycle: "draft" | "activated";
+            /** Yamlbody */
+            yamlBody: string;
+        };
+        /**
+         * LibraryYamlValidateResponse
+         * @description Regex + schema diagnostics for a library YAML document.
+         */
+        LibraryYamlValidateResponse: {
+            /**
+             * Can Activate
+             * @default false
+             */
+            can_activate: boolean;
+            /** Diagnostics */
+            diagnostics?: {
+                [key: string]: unknown;
+            }[];
+            /**
+             * Fail Count
+             * @default 0
+             */
+            fail_count: number;
+            /** Kind */
+            kind?: ("conversion" | "tac_validation" | "iwxxm_validation" | "dissemination" | "decoding") | null;
+            /**
+             * Lifecycle
+             * @default draft
+             * @enum {string}
+             */
+            lifecycle: "draft" | "activated";
+            /** Name */
+            name?: string | null;
+            /** Valid Yaml */
+            valid_yaml: boolean;
+            /**
+             * Warn Count
+             * @default 0
+             */
+            warn_count: number;
+            /** Yaml Error */
+            yaml_error?: string | null;
+        };
+        /**
          * LintFixModel
          * @description HTTP DTO for an optional tac-validate fix suggestion.
          */
@@ -3749,6 +4433,35 @@ export interface components {
             password: string;
         };
         /**
+         * RuleCatalogItem
+         * @description One package-owned trust-catalog row.
+         */
+        RuleCatalogItem: {
+            /** Id */
+            id: string;
+            /** Severity */
+            severity?: string | null;
+            /**
+             * Summary
+             * @default
+             */
+            summary: string;
+            /** Tags */
+            tags?: string[];
+            /** Title */
+            title: string;
+        };
+        /**
+         * RuleCatalogResponse
+         * @description Response for GET /rule-catalogs.
+         */
+        RuleCatalogResponse: {
+            /** Family */
+            family: string;
+            /** Items */
+            items: components["schemas"]["RuleCatalogItem"][];
+        };
+        /**
          * RulePackCreate
          * @description Create body for a rule pack.
          */
@@ -3850,6 +4563,26 @@ export interface components {
             standardReference?: string | null;
             /** When */
             when?: string | null;
+        };
+        /**
+         * SelectionOption
+         * @description Dropdown option from a deployed registry.
+         */
+        SelectionOption: {
+            /** Id */
+            id: string;
+            /** Label */
+            label: string;
+        };
+        /**
+         * SelectionOptionsResponse
+         * @description Response for GET /selection-options.
+         */
+        SelectionOptionsResponse: {
+            /** Kind */
+            kind: string;
+            /** Options */
+            options: components["schemas"]["SelectionOption"][];
         };
         /**
          * SessionResponse
@@ -5459,6 +6192,412 @@ export interface operations {
             };
         };
     };
+    list_conversion_templates_api_v1_profiles_conversion_templates_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplateListResponse"];
+                };
+            };
+        };
+    };
+    create_conversion_template_api_v1_profiles_conversion_templates_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversionTemplateCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_conversion_template_api_v1_profiles_conversion_templates_preview_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversionTemplatePreviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplatePreviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_conversion_template_api_v1_profiles_conversion_templates__template_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_conversion_template_api_v1_profiles_conversion_templates__template_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConversionTemplateUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConversionTemplateOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_library_assets_api_v1_profiles_library_assets_get: {
+        parameters: {
+            query?: {
+                kind?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryAssetListResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_library_asset_api_v1_profiles_library_assets_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LibraryAssetCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryAssetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    preview_library_rule_api_v1_profiles_library_assets_preview_rule_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LibraryRulePreviewRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryRulePreviewResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LibraryYamlValidateRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryYamlValidateResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_library_asset_api_v1_profiles_library_assets__asset_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryAssetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_library_asset_api_v1_profiles_library_assets__asset_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_library_asset_api_v1_profiles_library_assets__asset_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LibraryAssetUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LibraryAssetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_overlays_api_v1_profiles_overlays_get: {
         parameters: {
             query?: never;
@@ -6114,6 +7253,39 @@ export interface operations {
             };
         };
     };
+    get_rule_catalogs_api_v1_rule_catalogs_get: {
+        parameters: {
+            query: {
+                /** @description tac | iwxxm | conversion | dissemination | decoding */
+                family: string;
+                product?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleCatalogResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_schema_status_api_v1_schema_status_get: {
         parameters: {
             query?: never;
@@ -6130,6 +7302,38 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    get_selection_options_api_v1_selection_options_get: {
+        parameters: {
+            query: {
+                /** @description conversion | dissemination | decoding */
+                kind: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SelectionOptionsResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -6637,6 +7841,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WorkSession"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    confirm_auth_confirm_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResponse"];
                 };
             };
             /** @description Validation Error */

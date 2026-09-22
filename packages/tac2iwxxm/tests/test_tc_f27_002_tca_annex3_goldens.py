@@ -111,7 +111,7 @@ def test_tc_f27_002_tca_m_golden(case_id: str) -> None:
 
 def test_tc_f27_002_tca_a2_2_content_signals() -> None:
     """GLORIA / YUFO seed: advisory root + cyclone identity under product=tca."""
-    from tac2iwxxm.products.vaa_tca import parse_tca
+    from tac2iwxxm.slot_builders.vaa_tca import parse_tca
 
     from tac2iwxxm import convert
 

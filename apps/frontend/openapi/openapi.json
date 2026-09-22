@@ -370,6 +370,30 @@
             "title": "Bulletin Id",
             "type": "string"
           },
+          "conversion_library_id": {
+            "default": "",
+            "description": "Conversion library asset id (resolves engine profile).",
+            "title": "Conversion Library Id",
+            "type": "string"
+          },
+          "conversion_template_id": {
+            "default": "",
+            "description": "Optional conversion template id (first-party or custom). When set for a custom template, requires Bearer JWT and ownership (or shared); unknown ids are rejected.",
+            "title": "Conversion Template Id",
+            "type": "string"
+          },
+          "decoding_library_id": {
+            "default": "",
+            "description": "Decoding library asset id.",
+            "title": "Decoding Library Id",
+            "type": "string"
+          },
+          "dissemination_library_id": {
+            "default": "",
+            "description": "Dissemination library asset id.",
+            "title": "Dissemination Library Id",
+            "type": "string"
+          },
           "emit_translation_centre": {
             "default": false,
             "description": "When true, emit translationCentreDesignator/Name on successful convert (cross-State / Translation Centre mode; FAQ \u00a714.5). Default omit for in-State.",
@@ -384,7 +408,7 @@
           },
           "exchange_profile": {
             "default": "",
-            "description": "Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
+            "description": "Rejected \u2014 use dissemination_library_id for packaging transforms.",
             "title": "Exchange Profile",
             "type": "string"
           },
@@ -407,6 +431,12 @@
             "default": "",
             "description": "Optional issuing centre ICAO code",
             "title": "Issuing Center",
+            "type": "string"
+          },
+          "iwxxm_validation_library_id": {
+            "default": "",
+            "description": "IWXXM validation library asset id.",
+            "title": "Iwxxm Validation Library Id",
             "type": "string"
           },
           "iwxxm_version": {
@@ -435,13 +465,13 @@
           },
           "overlay_id": {
             "default": "",
-            "description": "Optional signed ConversionProfile overlay id. When set, requires Bearer JWT and ownership (or shared); unknown or unauthorized ids are rejected.",
+            "description": "Rejected \u2014 overlays removed from Convert; use conversion_library_id.",
             "title": "Overlay Id",
             "type": "string"
           },
           "preset_id": {
             "default": "",
-            "description": "Optional saved semantic preset id. When set, requires Bearer JWT. Explicit request fields still win when both are supplied.",
+            "description": "Rejected \u2014 presets removed from Convert; use conversion_library_id.",
             "title": "Preset Id",
             "type": "string"
           },
@@ -459,7 +489,7 @@
           },
           "profile": {
             "default": "",
-            "description": "Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)",
+            "description": "Rejected \u2014 use conversion_library_id.",
             "title": "Profile",
             "type": "string"
           },
@@ -483,7 +513,7 @@
           },
           "semantic_profile": {
             "default": "",
-            "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",
+            "description": "Rejected \u2014 use conversion_library_id.",
             "title": "Semantic Profile",
             "type": "string"
           },
@@ -492,6 +522,12 @@
             "description": "Stop processing remaining inputs after first error",
             "title": "Stop On Error",
             "type": "boolean"
+          },
+          "tac_validation_library_id": {
+            "default": "",
+            "description": "TAC validation library asset id.",
+            "title": "Tac Validation Library Id",
+            "type": "string"
           },
           "translation_centre_designator": {
             "default": "",
@@ -523,6 +559,18 @@
       },
       "Body_convert_bulletin_api_v1_convert_bulletin_post": {
         "properties": {
+          "conversion_library_id": {
+            "default": "",
+            "description": "Conversion library asset id (resolves engine profile when set)",
+            "title": "Conversion Library Id",
+            "type": "string"
+          },
+          "dissemination_library_id": {
+            "default": "",
+            "description": "Dissemination library asset id. When set, ordered transforms (envelope / topic / checksum / bulletin re-wrap) apply on this Convert & Send path only.",
+            "title": "Dissemination Library Id",
+            "type": "string"
+          },
           "exchange_profile": {
             "default": "",
             "description": "Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
@@ -578,7 +626,7 @@
           },
           "profile": {
             "default": "",
-            "description": "Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)",
+            "description": "Deprecated - use conversion_library_id (legacy alias: annex3 or iwxxm_us)",
             "title": "Profile",
             "type": "string"
           },
@@ -596,7 +644,7 @@
           },
           "semantic_profile": {
             "default": "",
-            "description": "Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",
+            "description": "Deprecated on Convert & Send \u2014 prefer conversion_library_id. Still accepted on convert-bulletin until Dissemination library packaging lands.",
             "title": "Semantic Profile",
             "type": "string"
           }
@@ -1039,6 +1087,27 @@
         "title": "ComparisonStatus",
         "type": "string"
       },
+      "ConfirmRequest": {
+        "description": "Email confirmation via GoTrue ``token_hash`` (Auth email link).",
+        "properties": {
+          "token_hash": {
+            "minLength": 1,
+            "title": "Token Hash",
+            "type": "string"
+          },
+          "type": {
+            "default": "email",
+            "minLength": 1,
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "token_hash"
+        ],
+        "title": "ConfirmRequest",
+        "type": "object"
+      },
       "ConversionIssue": {
         "description": "Structured issue for a single conversion input item.",
         "properties": {
@@ -1347,6 +1416,507 @@
           "size_bytes"
         ],
         "title": "ConversionResult",
+        "type": "object"
+      },
+      "ConversionTemplateCreate": {
+        "description": "Create body for a custom conversion template.",
+        "properties": {
+          "comments": {
+            "anyOf": [
+              {
+                "maxLength": 4096,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comments"
+          },
+          "forkOf": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forkof"
+          },
+          "iwxxmBlock": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Iwxxmblock",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "sample": {
+            "default": "",
+            "maxLength": 512,
+            "title": "Sample",
+            "type": "string"
+          },
+          "shared": {
+            "default": false,
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/ConversionTemplateSlot"
+            },
+            "title": "Slots",
+            "type": "array"
+          },
+          "slug": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "iwxxmBlock"
+        ],
+        "title": "ConversionTemplateCreate",
+        "type": "object"
+      },
+      "ConversionTemplateListResponse": {
+        "description": "First-party + custom conversion templates visible to the caller.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ConversionTemplateOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "ConversionTemplateListResponse",
+        "type": "object"
+      },
+      "ConversionTemplateOut": {
+        "description": "Persisted or first-party conversion template projection.",
+        "properties": {
+          "access": {
+            "title": "Access",
+            "type": "string"
+          },
+          "comments": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comments"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "forkOf": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forkof"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "iwxxmBlock": {
+            "title": "Iwxxmblock",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "profiles": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Profiles",
+            "type": "array"
+          },
+          "sample": {
+            "default": "",
+            "title": "Sample",
+            "type": "string"
+          },
+          "shared": {
+            "default": false,
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/ConversionTemplateSlot"
+            },
+            "title": "Slots",
+            "type": "array"
+          },
+          "slug": {
+            "title": "Slug",
+            "type": "string"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "access",
+          "iwxxmBlock"
+        ],
+        "title": "ConversionTemplateOut",
+        "type": "object"
+      },
+      "ConversionTemplatePreviewRequest": {
+        "description": "Bridge preview request.",
+        "properties": {
+          "focusGroup": {
+            "default": "",
+            "maxLength": 256,
+            "title": "Focusgroup",
+            "type": "string"
+          },
+          "fullTac": {
+            "anyOf": [
+              {
+                "maxLength": 8192,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fulltac"
+          },
+          "iwxxmBlock": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iwxxmblock"
+          },
+          "slots": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ConversionTemplateSlot"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slots"
+          },
+          "templateId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Templateid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "templateId"
+        ],
+        "title": "ConversionTemplatePreviewRequest",
+        "type": "object"
+      },
+      "ConversionTemplatePreviewResponse": {
+        "description": "Bridge preview response.",
+        "properties": {
+          "captures": {
+            "items": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "title": "Captures",
+            "type": "array"
+          },
+          "compiledPattern": {
+            "default": "",
+            "title": "Compiledpattern",
+            "type": "string"
+          },
+          "focusGroup": {
+            "title": "Focusgroup",
+            "type": "string"
+          },
+          "matched": {
+            "title": "Matched",
+            "type": "boolean"
+          },
+          "skipped": {
+            "items": {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            "title": "Skipped",
+            "type": "array"
+          },
+          "templateId": {
+            "title": "Templateid",
+            "type": "string"
+          },
+          "xmlBlock": {
+            "default": "",
+            "title": "Xmlblock",
+            "type": "string"
+          }
+        },
+        "required": [
+          "templateId",
+          "focusGroup",
+          "matched"
+        ],
+        "title": "ConversionTemplatePreviewResponse",
+        "type": "object"
+      },
+      "ConversionTemplateSlot": {
+        "description": "One ordered slot in a parameterizable conversion template.",
+        "properties": {
+          "digits": {
+            "anyOf": [
+              {
+                "maximum": 8.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Digits"
+          },
+          "enumValues": {
+            "anyOf": [
+              {
+                "maxLength": 256,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Enumvalues"
+          },
+          "gloss": {
+            "default": "",
+            "maxLength": 512,
+            "title": "Gloss",
+            "type": "string"
+          },
+          "id": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Id",
+            "type": "string"
+          },
+          "iwxxmField": {
+            "default": "",
+            "maxLength": 256,
+            "title": "Iwxxmfield",
+            "type": "string"
+          },
+          "label": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Label",
+            "type": "string"
+          },
+          "literal": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Literal"
+          },
+          "mode": {
+            "default": "convert",
+            "maxLength": 32,
+            "title": "Mode",
+            "type": "string"
+          },
+          "optional": {
+            "default": false,
+            "title": "Optional",
+            "type": "boolean"
+          },
+          "type": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "type"
+        ],
+        "title": "ConversionTemplateSlot",
+        "type": "object"
+      },
+      "ConversionTemplateUpdate": {
+        "description": "Partial update for a custom conversion template.",
+        "properties": {
+          "comments": {
+            "anyOf": [
+              {
+                "maxLength": 4096,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Comments"
+          },
+          "iwxxmBlock": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Iwxxmblock"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "sample": {
+            "anyOf": [
+              {
+                "maxLength": 512,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sample"
+          },
+          "shared": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shared"
+          },
+          "slots": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ConversionTemplateSlot"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slots"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          }
+        },
+        "title": "ConversionTemplateUpdate",
         "type": "object"
       },
       "ConvertBulletinResponse": {
@@ -2714,6 +3284,533 @@
           "pass_rate"
         ],
         "title": "JobSummaryStats",
+        "type": "object"
+      },
+      "LibraryAssetCreate": {
+        "description": "Create a custom library asset (optionally forked).",
+        "properties": {
+          "attachedNationalLine": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Attachednationalline",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          },
+          "engineProfileId": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Engineprofileid",
+            "type": "string"
+          },
+          "forkOf": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forkof"
+          },
+          "kind": {
+            "enum": [
+              "conversion",
+              "tac_validation",
+              "iwxxm_validation",
+              "dissemination",
+              "decoding"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "schemaVersion": {
+            "default": 1,
+            "minimum": 1.0,
+            "title": "Schemaversion",
+            "type": "integer"
+          },
+          "shared": {
+            "default": false,
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "slug": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Slug",
+            "type": "string"
+          },
+          "status": {
+            "default": "draft",
+            "enum": [
+              "draft",
+              "activated"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "yamlBody": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yamlbody"
+          }
+        },
+        "required": [
+          "slug",
+          "name",
+          "kind",
+          "engineProfileId",
+          "attachedNationalLine"
+        ],
+        "title": "LibraryAssetCreate",
+        "type": "object"
+      },
+      "LibraryAssetListResponse": {
+        "description": "Library assets visible to the caller.",
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/LibraryAssetOut"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "items"
+        ],
+        "title": "LibraryAssetListResponse",
+        "type": "object"
+      },
+      "LibraryAssetOut": {
+        "description": "First-party or custom library asset (five Libraries).",
+        "properties": {
+          "access": {
+            "enum": [
+              "first_party",
+              "custom"
+            ],
+            "title": "Access",
+            "type": "string"
+          },
+          "attachedNationalLine": {
+            "title": "Attachednationalline",
+            "type": "string"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          },
+          "created_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Created At"
+          },
+          "engineProfileId": {
+            "title": "Engineprofileid",
+            "type": "string"
+          },
+          "forkOf": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Forkof"
+          },
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "conversion",
+              "tac_validation",
+              "iwxxm_validation",
+              "dissemination",
+              "decoding"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "schemaVersion": {
+            "default": 1,
+            "title": "Schemaversion",
+            "type": "integer"
+          },
+          "shared": {
+            "default": false,
+            "title": "Shared",
+            "type": "boolean"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "status": {
+            "default": "draft",
+            "enum": [
+              "draft",
+              "activated"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "updated_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Updated At"
+          },
+          "userId": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Userid"
+          },
+          "yamlBody": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yamlbody"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "name",
+          "access",
+          "engineProfileId",
+          "attachedNationalLine"
+        ],
+        "title": "LibraryAssetOut",
+        "type": "object"
+      },
+      "LibraryAssetUpdate": {
+        "description": "Partial update for a custom library asset (or fork-on-edit first-party).",
+        "properties": {
+          "body": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Body"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "maxLength": 256,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "schemaVersion": {
+            "anyOf": [
+              {
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schemaversion"
+          },
+          "shared": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shared"
+          },
+          "slug": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Slug"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "draft",
+                  "activated"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "yamlBody": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yamlbody"
+          }
+        },
+        "title": "LibraryAssetUpdate",
+        "type": "object"
+      },
+      "LibraryRulePreviewRequest": {
+        "description": "AC11 rule association preview for a TAC group.",
+        "properties": {
+          "focusGroup": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Focusgroup",
+            "type": "string"
+          },
+          "libraryId": {
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Libraryid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "libraryId",
+          "focusGroup"
+        ],
+        "title": "LibraryRulePreviewRequest",
+        "type": "object"
+      },
+      "LibraryRulePreviewResponse": {
+        "description": "Matched conversion rule for a TAC group.",
+        "properties": {
+          "focusGroup": {
+            "title": "Focusgroup",
+            "type": "string"
+          },
+          "libraryId": {
+            "title": "Libraryid",
+            "type": "string"
+          },
+          "matched": {
+            "default": true,
+            "title": "Matched",
+            "type": "boolean"
+          },
+          "ruleId": {
+            "title": "Ruleid",
+            "type": "string"
+          },
+          "ruleName": {
+            "title": "Rulename",
+            "type": "string"
+          }
+        },
+        "required": [
+          "libraryId",
+          "focusGroup",
+          "ruleId",
+          "ruleName"
+        ],
+        "title": "LibraryRulePreviewResponse",
+        "type": "object"
+      },
+      "LibraryYamlValidateRequest": {
+        "description": "Validate library YAML without persisting.",
+        "properties": {
+          "kind": {
+            "enum": [
+              "conversion",
+              "tac_validation",
+              "iwxxm_validation",
+              "dissemination",
+              "decoding"
+            ],
+            "title": "Kind",
+            "type": "string"
+          },
+          "lifecycle": {
+            "default": "draft",
+            "enum": [
+              "draft",
+              "activated"
+            ],
+            "title": "Lifecycle",
+            "type": "string"
+          },
+          "yamlBody": {
+            "minLength": 0,
+            "title": "Yamlbody",
+            "type": "string"
+          }
+        },
+        "required": [
+          "yamlBody",
+          "kind"
+        ],
+        "title": "LibraryYamlValidateRequest",
+        "type": "object"
+      },
+      "LibraryYamlValidateResponse": {
+        "description": "Regex + schema diagnostics for a library YAML document.",
+        "properties": {
+          "can_activate": {
+            "default": false,
+            "title": "Can Activate",
+            "type": "boolean"
+          },
+          "diagnostics": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Diagnostics",
+            "type": "array"
+          },
+          "fail_count": {
+            "default": 0,
+            "title": "Fail Count",
+            "type": "integer"
+          },
+          "kind": {
+            "anyOf": [
+              {
+                "enum": [
+                  "conversion",
+                  "tac_validation",
+                  "iwxxm_validation",
+                  "dissemination",
+                  "decoding"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kind"
+          },
+          "lifecycle": {
+            "default": "draft",
+            "enum": [
+              "draft",
+              "activated"
+            ],
+            "title": "Lifecycle",
+            "type": "string"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "valid_yaml": {
+            "title": "Valid Yaml",
+            "type": "boolean"
+          },
+          "warn_count": {
+            "default": 0,
+            "title": "Warn Count",
+            "type": "integer"
+          },
+          "yaml_error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Yaml Error"
+          }
+        },
+        "required": [
+          "valid_yaml"
+        ],
+        "title": "LibraryYamlValidateResponse",
         "type": "object"
       },
       "LintFixModel": {
@@ -4385,6 +5482,70 @@
         "title": "RegisterRequest",
         "type": "object"
       },
+      "RuleCatalogItem": {
+        "description": "One package-owned trust-catalog row.",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Severity"
+          },
+          "summary": {
+            "default": "",
+            "title": "Summary",
+            "type": "string"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "RuleCatalogItem",
+        "type": "object"
+      },
+      "RuleCatalogResponse": {
+        "description": "Response for GET /rule-catalogs.",
+        "properties": {
+          "family": {
+            "title": "Family",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RuleCatalogItem"
+            },
+            "title": "Items",
+            "type": "array"
+          }
+        },
+        "required": [
+          "family",
+          "items"
+        ],
+        "title": "RuleCatalogResponse",
+        "type": "object"
+      },
       "RulePackCreate": {
         "description": "Create body for a rule pack.",
         "properties": {
@@ -4638,6 +5799,47 @@
           }
         },
         "title": "RulePackUpdate",
+        "type": "object"
+      },
+      "SelectionOption": {
+        "description": "Dropdown option from a deployed registry.",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ],
+        "title": "SelectionOption",
+        "type": "object"
+      },
+      "SelectionOptionsResponse": {
+        "description": "Response for GET /selection-options.",
+        "properties": {
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "options": {
+            "items": {
+              "$ref": "#/components/schemas/SelectionOption"
+            },
+            "title": "Options",
+            "type": "array"
+          }
+        },
+        "required": [
+          "kind",
+          "options"
+        ],
+        "title": "SelectionOptionsResponse",
         "type": "object"
       },
       "SessionResponse": {
@@ -6235,6 +7437,11 @@
             "description": "Malformed abbreviated heading (INVALID_AHL) or missing required fields. Engine split failures may include an alias of bulletin_split_failed."
           }
         },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
         "summary": "Convert Bulletin",
         "tags": [
           "Conversion",
@@ -7478,6 +8685,605 @@
         ]
       }
     },
+    "/api/v1/profiles/conversion-templates": {
+      "get": {
+        "description": "List first-party and custom conversion templates.",
+        "operationId": "list_conversion_templates_api_v1_profiles_conversion_templates_get",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionTemplateListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Conversion Templates",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "post": {
+        "description": "Create a custom conversion template (optionally forked from first-party).",
+        "operationId": "create_conversion_template_api_v1_profiles_conversion_templates_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversionTemplateCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionTemplateOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Conversion Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/conversion-templates/preview": {
+      "post": {
+        "description": "TAC to template to IWXXM bridge preview.",
+        "operationId": "preview_conversion_template_api_v1_profiles_conversion_templates_preview_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversionTemplatePreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionTemplatePreviewResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Preview Conversion Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/conversion-templates/{template_id}": {
+      "delete": {
+        "description": "Delete an owned custom conversion template.",
+        "operationId": "delete_conversion_template_api_v1_profiles_conversion_templates__template_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "title": "Template Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Conversion Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "get": {
+        "description": "Fetch one conversion template (first-party id or custom UUID).",
+        "operationId": "get_conversion_template_api_v1_profiles_conversion_templates__template_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "title": "Template Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionTemplateOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Conversion Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "patch": {
+        "description": "Update an owned custom conversion template.",
+        "operationId": "patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "template_id",
+            "required": true,
+            "schema": {
+              "title": "Template Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversionTemplateUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversionTemplateOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Patch Conversion Template",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/library-assets": {
+      "get": {
+        "description": "List first-party and custom five-Libraries assets.",
+        "operationId": "list_library_assets_api_v1_profiles_library_assets_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "kind",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Kind"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryAssetListResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Library Assets",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "post": {
+        "description": "Retired \u2014 library authoring is no longer available.",
+        "operationId": "create_library_asset_api_v1_profiles_library_assets_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LibraryAssetCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryAssetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Library Asset",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/library-assets/preview-rule": {
+      "post": {
+        "description": "Retired \u2014 library authoring is no longer available.",
+        "operationId": "preview_library_rule_api_v1_profiles_library_assets_preview_rule_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LibraryRulePreviewRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryRulePreviewResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Preview Library Rule",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/library-assets/validate-yaml": {
+      "post": {
+        "description": "Retired \u2014 library authoring is no longer available.",
+        "operationId": "validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LibraryYamlValidateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryYamlValidateResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Validate Library Yaml",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
+    "/api/v1/profiles/library-assets/{asset_id}": {
+      "delete": {
+        "description": "Retired \u2014 library authoring is no longer available.",
+        "operationId": "delete_library_asset_api_v1_profiles_library_assets__asset_id__delete",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Library Asset",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "get": {
+        "description": "Fetch one library asset (first-party id or custom UUID).",
+        "operationId": "get_library_asset_api_v1_profiles_library_assets__asset_id__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryAssetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Library Asset",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      },
+      "patch": {
+        "description": "Retired \u2014 library authoring is no longer available.",
+        "operationId": "update_library_asset_api_v1_profiles_library_assets__asset_id__patch",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "asset_id",
+            "required": true,
+            "schema": {
+              "title": "Asset Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LibraryAssetUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LibraryAssetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Library Asset",
+        "tags": [
+          "Conversion Profiles"
+        ]
+      }
+    },
     "/api/v1/profiles/overlays": {
       "get": {
         "description": "List overlays owned by the caller (and shared overlays).",
@@ -8445,6 +10251,67 @@
         ]
       }
     },
+    "/api/v1/rule-catalogs": {
+      "get": {
+        "description": "Export a package-owned trust catalog by family.",
+        "operationId": "get_rule_catalogs_api_v1_rule_catalogs_get",
+        "parameters": [
+          {
+            "description": "tac | iwxxm | conversion | dissemination | decoding",
+            "in": "query",
+            "name": "family",
+            "required": true,
+            "schema": {
+              "description": "tac | iwxxm | conversion | dissemination | decoding",
+              "title": "Family",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "product",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Product"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleCatalogResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Rule Catalogs",
+        "tags": [
+          "Catalogs"
+        ]
+      }
+    },
     "/api/v1/schema-status": {
       "get": {
         "description": "Get comprehensive schema status including RC versions and mirroring info.",
@@ -8464,6 +10331,51 @@
         "summary": "Get Schema Status",
         "tags": [
           "Conversion"
+        ]
+      }
+    },
+    "/api/v1/selection-options": {
+      "get": {
+        "description": "List deployed registry ids for workbench / dissemination dropdowns.",
+        "operationId": "get_selection_options_api_v1_selection_options_get",
+        "parameters": [
+          {
+            "description": "conversion | dissemination | decoding",
+            "in": "query",
+            "name": "kind",
+            "required": true,
+            "schema": {
+              "description": "conversion | dissemination | decoding",
+              "title": "Kind",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SelectionOptionsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Get Selection Options",
+        "tags": [
+          "Catalogs"
         ]
       }
     },
@@ -9299,6 +11211,48 @@
         "summary": "Restore Work Session",
         "tags": [
           "Work Sessions"
+        ]
+      }
+    },
+    "/auth/confirm": {
+      "post": {
+        "description": "Confirm email (or related) via GoTrue token_hash verify.",
+        "operationId": "confirm_auth_confirm_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Confirm",
+        "tags": [
+          "Auth"
         ]
       }
     },

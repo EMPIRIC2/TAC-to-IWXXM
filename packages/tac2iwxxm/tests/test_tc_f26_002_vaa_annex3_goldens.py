@@ -111,7 +111,7 @@ def test_tc_f26_002_vaa_m_golden(case_id: str) -> None:
 
 def test_tc_f26_002_vaa_a7_2_content_signals() -> None:
     """Karymsky / TOKYO seed: advisory root + volcano identity under product=vaa."""
-    from tac2iwxxm.products.vaa_tca import parse_vaa
+    from tac2iwxxm.slot_builders.vaa_tca import parse_vaa
 
     from tac2iwxxm import convert
 

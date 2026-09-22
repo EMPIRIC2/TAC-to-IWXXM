@@ -13,7 +13,7 @@ from tac2iwxxm.glossary import (
     resolve_location_name,
     set_location_name_resolver,
 )
-from tac2iwxxm.products.vaa_tca import (
+from tac2iwxxm.slot_builders.vaa_tca import (
     _parse_ash_clouds,
     _parse_dtg,
     _point_to_pair,

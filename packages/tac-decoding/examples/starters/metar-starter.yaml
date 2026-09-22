@@ -1,0 +1,11 @@
+# Copy-paste starter: METAR pack overlay (extends builtin metar).
+# Set TAC_DECODING_PACK_DIR to this directory, then:
+#   tac-decoding --check-overlay "$TAC_DECODING_PACK_DIR"
+id: metar-starter
+extends: metar
+profiles: [annex3]
+layout: token_stream
+rules:
+  - id: starter_token
+    pattern: ["STARTER"]
+    explain: "Starter demo group {0}"

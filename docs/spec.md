@@ -87,11 +87,12 @@ TAC-to-IWXXM/
 
 | Component | Purpose | Location | Dependencies |
 |-----------|---------|----------|--------------|
-| Backend API | Conversion, validation, auth; **Done** F16–F19 dissemination preflight/send (BYOC, memory-only) | `apps/backend/` | tac2iwxxm, tac-validate, iwxxm-validate, dissemination, auth, shared, vendor |
-| Frontend | Operator UI (workbench, decode, F7 sessions; **Done** F16–F19 drawer; **EV-018** multi-select deepen) | `apps/frontend/` | shared (types); CodeMirror 6 |
+| Backend API | Conversion, validation, auth; **Done** F16–F19 dissemination preflight/send (BYOC, memory-only); rule-catalog aggregator (ADR-044) | `apps/backend/` | tac2iwxxm, tac-decoding, tac-validate, iwxxm-validate, dissemination, auth, shared, vendor |
+| Frontend | Operator UI (workbench, decode, F7 sessions, five trust catalogs; F16–F19 drawer; **ADR-044** Profile Builder authoring retired → dropdowns) | `apps/frontend/` | shared (types); CodeMirror 6 |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
 | Auth library | Supabase Auth JWT middleware (Auth-only) | `packages/auth/` | supabase-py / JWT verify |
-| tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles) | `packages/tac2iwxxm/` | tac-validate (optional), vendor; PyO3 required at cutover (ADR-017) |
+| tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles); decode re-export window (ADR-044) | `packages/tac2iwxxm/` | tac-validate (optional), tac-decoding (re-export), vendor; PyO3 required at cutover (ADR-017) |
+| tac-decoding | TAC → natural-language decode + glossary + Decoding catalog (F9 / ADR-044) | `packages/tac-decoding/` | — (no FastAPI/Supabase); MIT; PyPI `tac-decoding` |
 | tac-validate | TAC lint / shared rule pack | `packages/tac-validate/` | — (no FastAPI/Supabase) |
 | iwxxm-validate | XSD + Schematron (F2 engine) | `packages/iwxxm-validate/` | vendor schemas (read-only) |
 | Dissemination | Sink adapters, writer-contract DDL, SSRF helpers (F16–F19) | `packages/dissemination/` | SQLAlchemy async + dialect drivers; aiosmtplib (ADR-030) |
@@ -114,7 +115,8 @@ after contract spikes #924–#927 close — **those spikes are now closed (ADR-0
 |---------------|---------|-----------------|----------------|-------------|
 | **Core** | Shared IR types, constants, vendor helpers | `packages/shared`; IR inside `packages/tac2iwxxm` | ADR-037 Option C | Document boundaries only |
 | **Profiles** | Semantic + exchange profile contracts, content, and operator-managed profile assets | Code: `tac2iwxxm/profiles/*`, `tac_validate/profiles.py`, `dissemination/exchange_registry.py`; content: `docs/domain/profiles/` (ADR-036) | ADR-038 | Cross-version conversion framing (#908), operator sharing (#1051), and quality backlog closeout (#970) deepen on top of the existing resolver and #933 UI; destination credentials remain outside stored profile objects |
-| **Conversion** | TAC→IWXXM encode/decode | `packages/tac2iwxxm` | ADR-038 | Exchange packaging vs dissemination |
+| **Conversion** | TAC→IWXXM encode | `packages/tac2iwxxm` | ADR-038 | Exchange packaging vs dissemination |
+| **Decoding** | TAC→NL segments/summary + Decoding catalog | `packages/tac-decoding` (ADR-044; was tac2iwxxm) | ADR-032 / ADR-044 | Catalog export for F7.v five-tab shell |
 | **Validation** | Staged TAC then IWXXM | `packages/tac-validate` + `packages/iwxxm-validate` | ADR-039 PipelineResult | Unified runtime; `ca_eccc` reference |
 | **Adapters** | SQL/DB symmetric source/sink mapping | `packages/dissemination` (`db_preflight`, `writer_contract`, `sink`) | ADR-040 MappingConfig | Source poll; sink mapping runtime (#896) |
 | **Gateways / AFS** | AFTN/AMHS/EDIS/WIS2box + plan/audit | `packages/dissemination` (`edis`, `wis2`, `transports`, `packaging`) | ADR-041 DisseminationGateway | **EV-936 Planned:** façade + `health()` + plan runtime (#936) |
@@ -188,6 +190,14 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   (optional config/request gate for Translation Centre); FIR/“S OF” polygon helpers (#738
   coord); COLLECT/multi-version hooks under F16–F19 (not single-report SoT). Runtime pin
   **v2025-2**.
+- **EV-pack-ir-convert-wire / ADR-045 deepen**: Maps pack span IR → legacy convert slots and
+  can emit IWXXM from that path for METAR/SPECI. Default may flip to pack-IR emit when
+  vendor peers stay byte-identical; `products/metar_speci.py` stays until a later delete-gate
+  evolve. Does not fold `tac-decoding` into this package.
+- **EV-pack-fill-delete-gate / ADR-045 deepen (#1214)**: Extend pack fill + pack-IR emit to
+  all core products. `pack_ir_map` must map spans→slots **without** importing deleted
+  `products/*.py`. Selective delete-gate: all-or-nothing per shared parser file when
+  in-bar peers are byte-identical; keep files that fail. Does not merge packages.
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
@@ -197,6 +207,32 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   context/package-publish-validation.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   context/aerodrome-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   context/sigmet-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+
+### packages/tac-decoding
+
+- **Purpose**: Deterministic TAC → natural-language decode (`decode_tac`), extensible glossary,
+  and **Decoding** trust-catalog export (F9 / ADR-032 / ADR-044). Publishable PyPI package
+  (`tac-decoding`) so open-source consumers can extend decode without the full converter.
+- **Location**: `packages/tac-decoding/`
+- **Constraints**: No FastAPI/Supabase imports. Catalog rows are read-only trust metadata
+  (EV-048: no internal doc refs in operator-facing strings).
+- **Migration**: Logic moves from `tac2iwxxm.decode` / `glossary`; `tac2iwxxm` re-exports for
+  one release then deprecates those entry points. **ADR-045** keeps the shims, the legacy
+  parsers, and the multi-pin compares.
+- **EV-configurable-tac-decode-packs / ADR-045**: The same packs also project convert IR.
+  `tac2iwxxm` depends on `tac-decoding` for that IR. Decode must not import `tac2iwxxm`
+  (bulletin split is an injected port). Layouts are token-stream, label-fields, and
+  COLLECT (contained TAC, or an XML field walk when no TAC is present). No IWXXM encoder
+  in this package. Legacy parsers, validation, and pin compares stay (`2023-1`,
+  `2025-2`, `3.0.0`, and whatever pin a profile already requires). Packs do not
+  choose the pin; the caller passes version and profile.
+- **EV-pack-ir-convert-wire / ADR-045 deepen**: Builtin METAR/SPECI packs gain real rules.
+  `project_ir` remains span/residual IR only. Slot mapping and IWXXM emit from pack IR
+  live in `tac2iwxxm`. When METAR/SPECI vendor goldens stay byte-identical, convert may
+  default to the pack-IR emit path for those products without deleting legacy parsers.
+- **EV-pack-fill-delete-gate (#1214)**: Builtin packs for remaining core products gain real
+  rules. Span IR only in this package; mapper independence + selective parser delete live
+  in `tac2iwxxm`.
 
 ### packages/tac-validate
 
@@ -229,6 +265,9 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **SoC**: **No** FastAPI or Supabase imports.
 - **Source**: feature-list F6/F12/F15/F20/F23; S011 / EV-008; S013 / EV-009; S014 / EV-010;
   S015 / EV-011; S020 / EV-015; S025 / EV-019; S030 / EV-023.
+- **EV-validation-policy-layers / ADR-046 (#1216)**: Detector packs (small DSL + `python:`
+  hatch), TAC quality policy runtime, optional MatchPort for decode spans. Registry remains
+  code SoT. Activate fail-closed; overlays file/env only.
 
 ### packages/iwxxm-validate
 
@@ -246,6 +285,9 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Source**: feature-list F2/F13; context/realtime-tac-ingest.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   context/package-publish-validation.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   evolve-decisions EV-023.
+- **EV-validation-policy-layers / ADR-046 (#1216)**: Assert inventory + IWXXM output policy
+  runtime (enable/disable by assert id; Schematron bundle refs). XSD/well-formed always error.
+  Vendor `.sch` remains SoT.
 
 ### packages/gifts — removed
 
@@ -362,10 +404,27 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   semantic profiles get profile-aware examples, starter packs/overlays seed only when untouched,
   and profile changes refresh the summary/catalog without resetting unrelated in-progress state
   unless a profile-dependent control becomes invalid. [Corpus: product §F7.w] [Corpus: journeys]
+- **EV-080 / #1146 delta on F7.w**: parameterizable conversion templates as the default
+  Conversion rule object; slot-builder + TAC→IWXXM bridge UI (phase-1); first-party view/fork;
+  custom JWT owner CRUD; fail-closed unknown ids; ADR-038 EV-080 amend. Dissemination rules
+  remain Disseminate / Convert & Send only. [Corpus: product §F7.w] [Corpus: adr/ADR-038]
+- **EV-profile-builder-yaml-libraries / #1196 delta on F7.w**: YAML-backed Five Libraries +
+  Draft/Activate + validate-yaml + optional Convert `*.meta.json` sidecar (ADR-038 EVPYL).
+  Phase A shell on `stage` via PR #1197. [Corpus: product §F7.w] [Corpus: api]
+- **EV-profile-builder-workbench-edit / #1203 delta on F7.w**: IDE workbench (catalog | editor |
+  optional previews); **remove Conversion DnD**; renamable preset slots; full editable TAC/IWXXM
+  validation (regex, levels, shared numeric ops); Decoding maps/units/structured types;
+  Dissemination create/edit without new protocols or secrets; Overview compare + per-profile
+  product/file-type/IWXXM version enablement; YAML SoT retained (ADR-038 EVWB). Journeys
+  UJ-072i-*; tests TC-EVWB-*. [Corpus: product §F7.w] [Corpus: journeys] [Corpus: adr/ADR-038]
 - **API**: Public convert companions unchanged; session CRUD requires Auth JWT; F7.w pack/overlay
-  mutate routes require JWT (see [api-contract.md](api-contract.md) §EV-933).
-- **Source**: S011; S023 F7.h; **S038 / EV-031 F7.i**; **EV-933 F7.w**;
-  Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+  mutate routes require JWT (see [api-contract.md](api-contract.md) §EV-933); conversion
+  template routes require JWT for custom mutate (see §EV-080); library-assets YAML mutate +
+  validate-yaml require JWT (see §#1196 / §#1203).
+- **Source**: S011; S023 F7.h; **S038 / EV-031 F7.i**; **EV-933 F7.w**; **EV-080 / #1146**;
+  **#1196**; **#1203**;
+  Context: conversion-profile-editor-933 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
+  Context: [profile-builder-workbench-edit](context/profile-builder-workbench-edit.md) (scoped; not a CORPUS design gate).
 
 ### F21 — Public convert + optional Auth (Amended S038 / EV-031)
 

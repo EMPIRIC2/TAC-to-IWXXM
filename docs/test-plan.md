@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-08-25 (EV-084 — US_FAA_NWS M19 WAUS multi-section AIRMET)
+> **Last updated**: 2026-09-21 (EV-yaml-full-configurability / #1226 — TC-EVYFC-001..005)
 
 ## Scope
 
@@ -80,7 +80,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-DEV-005      | F12–F14                                                      | pip install packages                                                                                                                                                                                                                                       | CI                                | TC-F12-001, TC-F13-001, TC-F14-002                                                       |
 | UJ-DEV-004      | F2/F6/M5                                                     | `tac-validate` + `iwxxm-validate` package CI                                                                                                                                                                                                               | —                                 | TC-F6-032                                                                                |
 | UJ-DEV-006      | F13–F14                                                      | Rust fmt/clippy/`cargo test` + maturin both crates                                                                                                                                                                                                         | CI                                | TC-EV045-001..007                                                                        |
-| UJ-024          | F15                                                          | METAR/SPECI registry + convert→validate golden                                                                                                                                                                                                             | H4–H5 if FE                       | TC-F15-001..005                                                                          |
+| UJ-024          | F15 (+ #1216 ADR-046)                                        | METAR/SPECI registry + policy layers + convert→validate                                                                                                                                                                                                    | H4–H5 if FE; **H4–H5 N/A for #1216** | TC-F15-001..005; TC-EV-VPL-001..007                                                      |
 | UJ-025          | F7                                                           | Manual TAC Input modes (ADR-024 / #730)                                                                                                                                                                                                                    | H6′                               | TC-F7-007                                                                                |
 | UJ-027          | F16                                                          | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts` (+ live local suite EV-039)                                                                                                                                                                          | H6′ / live local                  | TC-F16-001..005; TC-F16-LIVE-001..004                                                    |
 | UJ-028          | F17                                                          | `apps/e2e/uj027-030-dissemination-drawer.e2e.spec.ts`                                                                                                                                                                                                      | H6′                               | TC-F17-001..002                                                                          |
@@ -126,7 +126,19 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-066 / UJ-067 | F7.u (EV-061)                                                | Product/Profile + param bars aligned (#1013)                                                                                                                                                                                                               | **H4–H5 required**                | TC-EV061-1013-001..003                                                                   |
 | UJ-068          | F7.v/F15 (EV-061; EV-062)                                    | Validation Issues Catalog (#1014; #1017 deepen)                                                                                                                                                                                                            | **H4–H5 required**                | TC-EV061-1014-001..004; TC-EV062-001..006                                                |
 | UJ-073          | F7.v/F15 (EV-1120)                                           | Profile-scoped Validation Issues Catalog (#1121–#1123)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-001..009                                                                       |
+| UJ-076          | F7.v (ADR-044)                                               | Five package-owned trust catalogs                                                                                                                                                                                                                          | **H4–H5 when FE ships**           | TC-EVRPC-001..005                                                                        |
+| UJ-076a         | F7 / F16–F19 / F9 (ADR-044)                                  | Dropdown selection hard cutover                                                                                                                                                                                                                            | **H4–H5 when FE ships**           | TC-EVRPC-006..008                                                                        |
+| UJ-076b         | F9 (ADR-044)                                                 | tac-decoding parity                                                                                                                                                                                                                                        | **H4–H5 when FE ships**           | TC-EVRPC-009                                                                             |
+| UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
+| UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
+| UJ-DEV-011      | F2/F6/F9/F12/F14/F15 (EV-yaml-full-configurability / #1226) | Full YAML end-state incl. convert emit (ADR-047); templates; pin↔SCH                                                                                                                                                                                         | H4–H5 **N/A** unless UI/OpenAPI   | TC-EVYFC-001..005 (+ TC-EVYEC-004 retained)                                              |
+| UJ-077          | F6/F9 deepen (#1210 + EV-pack-ir-convert-wire)               | Pack shadow + METAR/SPECI pack-IR emit when goldens match                                                                                                                                                                                                  | H4–H5 N/A (no wire/UI change)     | TC-EV1210-001..004; TC-EV-PACKIR-001..005                                                 |
 | UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
+| UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
+| UJ-072f         | F7.w (EV-conversion-profile-ux-libraries)                    | Profile Builder assembly + conversion token modes (Convert/Decode/Skip)                                                                                                                                                                                  | **H4–H5 when FE ships**           | TC-EVCPU-001..008                                                                        |
+| UJ-072g         | F7.w (EV-bridge-ux-canvas-align)                             | Five Libraries + Mapping bridge + hard cut semantic profile                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVBRIDGE-001..011                                                                     |
+| UJ-072h-conv … UJ-072h-export | F7.w (EV-profile-builder-yaml-libraries / #1196) | YAML/DnD Profile Builder + Convert metadata sidecar                                                                                                                                                                                                       | **H4–H5 when FE ships**           | TC-EVPYL-*                                                                               |
+| UJ-072i-workbench … UJ-072i-overview | F7.w (EV-profile-builder-workbench-edit / #1203) | IDE workbench + full five-library editability + Overview (no Conversion DnD)                                                                                                                                                                             | **H4–H5 when FE ships**           | TC-EVWB-*                                                                                |
 | UJ-069          | F35/F36 (EV-063/EV-090/EV-093; M4 deepen)                    | Semantic convert → exchange package (`GLOBAL_AFS`) with explicit profile/IWXXM-line compatibility                                                                                                                                                          | T2 / **T3**; **H4–H5** (#1024 FE) | TC-EV063-001..006; TC-EV090-_; TC-EV093-_; milestone 4 cross-version follow-ons          |
 | UJ-075          | F4 deepen (EV-908 / #908)                                    | IWXXM↔IWXXM migrate via `product=iwxxm` — supported/lossy/unsupported matrix                                                                                                                                                                               | T2 (API); H4–H5 N/A MVP           | TC-EV908-001..004                                                                        |
 | UJ-070          | F6+F9+F7.q (EV-981 / #981)                                   | Opt-in propagate decode residuals into remarks / HRT + QM indicator                                                                                                                                                                                        | **H4–H5 required**                | TC-EV981-001..005                                                                        |
@@ -1526,6 +1538,190 @@ New **TC-EV027-001..005** (`E27-TC=1`). Ties **UJ-042**; deepens UJ-039 / UJ-020
 - **Pass criteria**: Golden/soft-compare still pass; no encode churn from decode-only change
 - **Source**: #1119; D-EV099-convert
 
+## EV-configurable-tac-decode-packs — #1210 shared pack engine
+
+Pins are the vendor TAC peers already used by each product’s convert golden (for example `metar-A3-1`, `taf-A5-2`, `sigmet-A6-1a-TS`, `sigmet-A6-2-TC`, `sigmet-VA-EGGX`, `airmet-A6-1a-TS`, `va-advisory-A7-2`, `tc-advisory-A2-2`, `spacewx-A7-3`, `vona-A7-1` under `vendor/schemas/iwxxm`). Do not add new WMO copies. [Corpus: tests] [Corpus: adr/ADR-045]
+
+### TC-EV1210-001: Shadow before delete (UJ-077)
+
+- **Level**: T0 / T2
+- **Objective**: For a product still on its legacy parser, the pack engine result is compared and the legacy result is what convert emits
+- **Pass criteria**: Shadow mode does not change that product’s vendor XML bytes
+- **Source**: #1210; ADR-045 cutover
+
+### TC-EV1210-002: Shadow XML stays byte-identical on every existing pin (UJ-077)
+
+- **Level**: T2
+- **Objective**: Pack shadow does not change convert XML. Legacy parsers, validation, and pin compares stay, including pins other profiles already require (`2023-1`, `2025-2`, `3.0.0`).
+- **Pass criteria**: Golden file compare is byte-identical, not a semantic diff. Compare every vendor pin that already contains that example name (`2023-1`, `2025-2`, and `3.0.0` where the file exists; VAA, SWXA, and VONA examples are `2025-2` only). Do not fetch missing older copies. Do not delete the legacy parser or the version matrix.
+- **Source**: #1210; operator lock 2026-09-19
+
+### TC-EV1210-003: Decode does not import tac2iwxxm (UJ-077)
+
+- **Level**: T0
+- **Objective**: `packages/tac-decoding` has no import of `tac2iwxxm` (bulletin split is injected)
+- **Pass criteria**: Import scan of `tac_decoding` fails if `tac2iwxxm` is imported
+- **Source**: ADR-045
+
+### TC-EV1210-004: Decode HTTP shape unchanged (UJ-077)
+
+- **Level**: T2
+- **Objective**: `POST /api/v1/decode-tac` response keys stay `product`, `summary`, `segments`, `residuals`
+- **Pass criteria**: No new required fields; existing decode contract tests stay green
+- **Source**: #1210; [Corpus: api]
+
+## EV-pack-ir-convert-wire — pack fill + convert emit (ADR-045 deepen)
+
+Coverage bar: vendor `metar-A3-1` and `speci-A3-2` on every pin that already has the example. Out of bar: `metar-NIL-collect`, `metar-translation-failed`. H4–H5 N/A. [Corpus: tests] [Corpus: adr/ADR-045]
+
+### TC-EV-PACKIR-001: METAR/SPECI packs cover golden peers (UJ-077)
+
+- **Level**: T0 / T2
+- **Objective**: Builtin `metar` / `speci` packs match vendor TAC peers with structured spans (not empty-shell residuals-only)
+- **Pass criteria**: Span goldens for `metar-A3-1` and `speci-A3-2`; residual tokens shrink vs empty-pack baseline for groups the pack claims
+- **Source**: EV-pack-ir-convert-wire; D-PACKIR-03/04
+
+### TC-EV-PACKIR-002: Span→slot mapping stays in tac2iwxxm (UJ-077)
+
+- **Level**: T0
+- **Objective**: `tac-decoding` still exports span IR only; slot mapping / emit adapters live under `tac2iwxxm`
+- **Pass criteria**: Import scan + unit tests prove no convert-slot schema required inside `tac-decoding`; mapper tests in `tac2iwxxm`
+- **Source**: D-PACKIR-02
+
+### TC-EV-PACKIR-003: Pack-IR emit XML byte-identical before default flip (UJ-077)
+
+- **Level**: T2
+- **Objective**: Pack-IR emit path for METAR/SPECI matches legacy XML byte-for-byte on every existing pin for the coverage bar
+- **Pass criteria**: Same pin matrix discipline as TC-EV1210-002 for `metar-A3-1` / `speci-A3-2`
+- **Source**: D-PACKIR-05
+
+### TC-EV-PACKIR-004: Default flip without parser delete (UJ-077)
+
+- **Level**: T2
+- **Objective**: After equality passes, METAR/SPECI convert default uses pack-IR path; `products/metar_speci.py` still exists
+- **Pass criteria**: Default convert path asserted pack-backed; file presence / import of legacy module still succeeds; no delete of `products/*.py`
+- **Source**: D-PACKIR-05/06; ADR-045 amend 2026-09-20
+
+### TC-EV-PACKIR-005: Decode still does not import tac2iwxxm (UJ-077)
+
+- **Level**: T0
+- **Objective**: Package boundary unchanged
+- **Pass criteria**: Existing TC-EV1210-003 import scan stays green
+- **Source**: D-PACKIR-01/08
+
+## EV-pack-fill-delete-gate — core pack fill + selective delete (#1214 / ADR-045)
+
+Stricter in-bar peers: primary Annex examples **plus** `sigmet-A6-1b-CNL`, `sigmet-multi-location-VA`, and SWXA `_alternate` XML on pins where present. Out of bar: `*-NIL-collect`, `*-translation-failed*`. H4–H5 N/A. [Corpus: tests] [Corpus: adr/ADR-045]
+
+### TC-EV-PFDG-001: Remaining core packs cover in-bar peers (UJ-077)
+
+- **Level**: T0 / T2
+- **Objective**: Builtin packs for TAF, ordinary/VA/TC SIGMET, AIRMET, VAA, TCA, SWXA, VONA match in-bar vendor TAC with structured spans (not empty-shell residuals-only)
+- **Pass criteria**: Span / match goldens for each in-bar peer on every pin that already has the example
+- **Source**: #1214; D-PFDG-01/04
+
+### TC-EV-PFDG-002: pack_ir_map independence from deleted parsers (UJ-077)
+
+- **Level**: T0
+- **Objective**: After rewrite, pack-IR mapping/emit for deleted products does not import `tac2iwxxm.products.*` parsers
+- **Pass criteria**: Import/graph tests; mapper unit tests build convert IR from spans alone for products whose parsers were removed
+- **Source**: D-PFDG-03
+
+### TC-EV-PFDG-003: Pack-IR emit byte-identical before flip (UJ-077)
+
+- **Level**: T2
+- **Objective**: Pack-IR emit matches legacy XML byte-for-byte on in-bar peers for each product before default flip
+- **Pass criteria**: Same pin matrix discipline as TC-EV1210-002 for each product’s in-bar set (including CNL SIGMET, multi-location VA, and SWXA primary+`_alternate`)
+- **Source**: D-PFDG-01/09
+
+### TC-EV-PFDG-004: Selective delete-gate all-or-nothing (UJ-077)
+
+- **Level**: T2
+- **Objective**: Shared parser files deleted only when every owned product passes; failing products keep their file; METAR/SPECI may lose `metar_speci.py` if still green after mapper independence
+- **Pass criteria**: File presence assertions per module; convert still works for kept legacy products; no dangling imports
+- **Source**: D-PFDG-02/05
+
+### TC-EV-PFDG-005: Decode boundary + HTTP unchanged (UJ-077)
+
+- **Level**: T0 / T2
+- **Objective**: `tac-decoding` still does not import `tac2iwxxm`; `/decode-tac` keys unchanged
+- **Pass criteria**: TC-EV1210-003 and TC-EV1210-004 stay green
+- **Source**: D-PFDG-06/07
+
+## EV-validation-policy-layers — Registry/Detector/Policy/Runtime (#1216 / ADR-046)
+
+H4–H5 N/A (no UI / no new HTTP fields). Shadow bar: issue **code + span**. R1–R8 flip by theme. [Corpus: tests] [Corpus: adr/ADR-046]
+
+### TC-EV-VPL-001: TAC quality policy activate fail-closed (UJ-024)
+
+- **Level**: T0
+- **Objective**: Unknown registry codes / detector ids fail activate; draft warns only
+- **Pass criteria**: Unit tests for draft vs activate; lifecycle matches library_yaml semantics
+- **Source**: D-VPL-07; D-VPL-C2
+
+### TC-EV-VPL-002: Detector DSL + python hatch emit registry codes (UJ-024)
+
+- **Level**: T0 / T2
+- **Objective**: Declarative detectors and `python:` hatch emit only ADR-028 codes
+- **Pass criteria**: Unknown emitted code fails CI; hatch registration by id works
+- **Source**: D-VPL-06; ADR-028
+
+### TC-EV-VPL-003: MatchPort strict annex3 METAR (UJ-024)
+
+- **Level**: T0
+- **Objective**: Pack-bound detectors error when MatchPort missing on annex3 METAR; fallback elsewhere
+- **Pass criteria**: When the caller passes an empty MatchPort, every annex3 METAR theme detector emits `MISSING_DECODE_MATCH`. Omitting the port keeps today's TAC scan. Other products and non-annex3 profiles still scan TAC. A supplied match reuses its span. `/lint-tac` wire shape unchanged.
+- **Source**: D-VPL-B1; D-VPL-B2; EV-validation-policy-remainders
+
+### TC-EV-VPL-004: R1–R8 theme shadow then flip (UJ-024)
+
+- **Level**: T2
+- **Objective**: Each R1–R8 theme reaches code+span parity vs legacy Python before flip
+- **Pass criteria**: Per-theme shadow tests green; dual paths removed after flip
+- **Source**: D-VPL-12; D-VPL-G1/G2/G3
+
+### TC-EV-VPL-005: IWXXM output policy assert map (UJ-024)
+
+- **Level**: T0 / T2
+- **Objective**: Enable/disable asserts by id; XSD/well-formed not selectable; stale id fails activate
+- **Pass criteria**: `validate_iwxxm` omits Schematron issues whose code is an assert id outside the enabled set. XSD, well-formed, and `SCHEMATRON_SKIPPED` always remain. Empty `select` matches the unfiltered report. A narrower policy drops one assert id in a unit or API test. OpenAPI query params unchanged.
+- **Source**: D-VPL-D1..D4; D-VPL-E1; EV-validation-policy-remainders
+
+### TC-EV-VPL-006: Profile resolves policies; HTTP profile-only (UJ-024)
+
+- **Level**: T0
+- **Objective**: Conversion profile references tac_quality + iwxxm_output ids; no new HTTP fields
+- **Pass criteria**: Resolver unit tests; OpenAPI snapshot unchanged for lint/validate query params
+- **Source**: D-VPL-E1; D-VPL-E6; ADR-038 amend
+
+### TC-EV-YEH-001: Extension header merge (UJ-024)
+
+- **Level**: T0
+- **Objective**: Overlays extend one builtin for listed profile ids without replacing the rest
+- **Pass criteria**: Missing `extends` target fails closed and the builtin stays. The same payload id replaces that entry. A new id is added. Other builtin entries stay. Builtin files may omit `profiles` and `extends`.
+- **Source**: EV-yaml-extension-header; ADR-045 amend
+
+### TC-EV-YEH-002: Schematron pattern id on the issue code (UJ-024)
+
+- **Level**: T0 / T2
+- **Objective**: Named Schematron failures use the pattern id; unnamed failures stay generic
+- **Pass criteria**: When the engine has a pattern id, `Issue.code` is that id. Empty select still returns the row. A non-empty select that omits it, or an ignore that adds it, drops the row. No pattern id keeps `SCHEMATRON_ASSERT` and the row stays. XSD, well-formed, and `SCHEMATRON_SKIPPED` codes stay. OpenAPI has no new field.
+- **Source**: EV-yaml-extension-header; ADR-046 amend
+
+### TC-EV-YEH-003: Convert and validate share the policy id (UJ-024)
+
+- **Level**: T0
+- **Objective**: Convert-time validation passes the same output policy id as `POST /api/v1/validate`
+- **Pass criteria**: For one profile, both calls pass the resolved id. Decode response shape and convert XML goldens stay. `/lint-tac` still omits MatchPort.
+- **Source**: EV-yaml-extension-header; ADR-046 amend
+
+### TC-EV-VPL-007: Generated catalogs drift gate (UJ-024)
+
+- **Level**: T0
+- **Objective**: Mined validation YAML matches registry/inventory generators
+- **Pass criteria**: `make validation-catalog-check` fails when mined YAML differs from the generator
+- **Source**: D-VPL-F1
+
 ### TC-F29-001: Harness recommendation written (UJ-044)
 
 - **Level**: T0
@@ -1940,6 +2136,27 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: Formatter unit-tested; update-in-place sticky
 - **Pass criteria**: pytest for formatter; github-script finds marker and updates
 - **Source**: EV-052 AC5
+
+### TC-EV970-STICKY-001: Sticky Product allowlist (junk meta.product)
+
+- **Level**: T0
+- **Objective**: Opaque sad-fixture Product codes (`XYZ`, `???`, `BOGUS`, `UNKNOWN`,
+  `NOT_A_PRODUCT`, …) do not appear as sticky Product rows; they roll to pack parent
+  (e.g. `metar_speci` → `METAR`). Sticky footnote distinguishes inventory Match from
+  F7.q dashboard `match_pass`.
+- **Pass criteria**: Unit tests on `collect_quality_pr_stats` (and formatter label);
+  local/CI sticky sample has zero junk Product keys; docs cite
+  `docs/decisions/ev-970-s3-validate-fill.md`
+- **Source**: EV-970 S3; #970; [Corpus: product §F29] [Corpus: product §F7.q]
+
+### TC-EV970-VALIDATE-001: Validate metar_speci NF material reduction
+
+- **Level**: T0 / CI (smoke) + nightly full
+- **Objective**: Clear `validate/metar_speci` `needs-fixture` (S3); residual SCH negatives
+  as intentional `oos` with cite
+- **Pass criteria**: `test_tc_ev970_003_validate_nf_cleared.py` green; ready ≥400;
+  NF count 0; ready cases pass validate pilot runners
+- **Source**: EV-970 S3; #970; TC-F29-003/004; `docs/decisions/ev-970-s3-validate-fill.md`
 
 ### TC-EV052-006: Sentry optional init
 
@@ -2468,10 +2685,14 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 ### TC-F34-005: Nightly / manual mutation matrix
 
 - **Level**: CI (non-PR-required)
-- **Objective**: Chunked workflow covers full Python + TS matrix without blocking every PR
-- **Pass criteria**: `workflow_dispatch` and/or schedule green or flaky survivors tracked;
-  minutes bounded by per-chunk timeouts
-- **Source**: F34 AC3; `D-S069-e4`
+- **Objective**: Chunked workflow covers full Python + TS matrix without blocking every PR.
+  **EV-ci-runtime-failures:** daily schedule uses a **rotated/subset** matrix for wall-time;
+  **weekly** schedule and/or `workflow_dispatch` with `target=all` still run the **full**
+  Python + TS matrix (`D-S069-e4` coverage preserved).
+- **Pass criteria**: Daily subset completes under per-chunk timeouts; weekly/`all` covers
+  full matrix; baseline unit tests for each chunk green (mutation red for survivors only,
+  not broken unmutated suites); flaky survivors tracked
+- **Source**: F34 AC3; `D-S069-e4`; [Corpus: decisions] `ev-ci-runtime-failures.md`
 
 ### TC-F34-006: Inventory, docs, findings, epic close path
 
@@ -2920,6 +3141,403 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   pair) shows ≥1 highlighted difference (products and/or vs-ICAO deltas and/or IWXXM line)
   while the workbench twin remains compact
 - **Source**: #1145; D-R27=3
+
+### EV-bridge-ux-canvas-align / F7.w — Five Libraries + Mapping bridge + hard cut
+
+- **Mode**: deepen F7.w; five Libraries + bridge UX; hard cut `semantic_profile`
+- **Pass criteria**: AC1–AC10 in [Corpus: product §F7.w] EV-bridge; ADR-038 amend EV-bridge;
+  UJ-072g
+- **Source**: session `EV-bridge-ux-canvas-align`
+
+### TC-EVBRIDGE-001: Five Profile builder sub-tabs
+
+- **Level**: T0 / T2
+- **Objective**: Profile builder exposes Conversion / TAC validation / IWXXM validation /
+  Dissemination / Decoding sub-tabs with create/edit
+- **Pass criteria**: All five tabs render; defaults listed; EV-048 clean labels
+- **Source**: EV-bridge; AC1; UJ-072g
+
+### TC-EVBRIDGE-002: National profile split into five defaults
+
+- **Level**: T0 / T2
+- **Objective**: Each former national semantic profile has five first-party default assets
+- **Pass criteria**: Fixture set covers ICAO_2025 + ≥1 other national line across five libs
+- **Source**: EV-bridge; AC2; hard cut
+
+### TC-EVBRIDGE-003: Fork-on-edit default
+
+- **Level**: T0 / T2
+- **Objective**: Editing a first-party default creates owner fork; builtin unchanged
+- **Pass criteria**: PATCH-on-default → new custom id; GET default unchanged
+- **Source**: EV-bridge; AC3; D-TRUST-01
+
+### TC-EVBRIDGE-004: Non-deletable defaults; deletable forks
+
+- **Level**: T0 / T2
+- **Objective**: DELETE first-party fails closed; DELETE own fork succeeds
+- **Pass criteria**: 403/400 on default delete; 204/200 on own fork delete
+- **Source**: EV-bridge; AC4
+
+### TC-EVBRIDGE-005: Dropped chrome absent
+
+- **Level**: T0 / T2 / T3
+- **Objective**: Signed overlays, Dissemination templates, Semantic preset / Rule pack
+  primary forms absent from Profile builder
+- **Pass criteria**: No operator-visible headings/controls for those forms
+- **Source**: EV-bridge; AC5
+
+### TC-EVBRIDGE-006: Mapping bridge dual surface
+
+- **Level**: T0 / T2 / T3
+- **Objective**: Convert and Profile show TAC → template → IWXXM bridge; Conversion builder
+  supports DnD + ↑↓
+- **Pass criteria**: Bridge columns present; reorder works; preview non-empty for fixture
+- **Source**: EV-bridge; AC6; D-UX-02 / D-CONV-06
+
+### TC-EVBRIDGE-007: Convert bar five pickers + hard cut
+
+- **Level**: T0 / T2 / T3
+- **Objective**: Convert has Product + IWXXM version + five library pickers; no
+  semantic_profile / Exchange / preset / overlay controls; API rejects semantic_profile
+- **Pass criteria**: UI + OpenAPI match; convert with unknown library id fails closed
+- **Source**: EV-bridge; AC7 / AC10; [Corpus: api]
+
+### TC-EVBRIDGE-008: Dissemination transforms apply only on send paths
+
+- **Level**: T0 / T2
+- **Objective**: Annotations + ordered transforms (incl. bulletin re-wrap) run on
+  Disseminate / Convert & Send only — not Convert-only
+- **Pass criteria**: Convert-only skips transform pipeline; send path applies ordered steps;
+  no stored destination secrets
+- **Source**: EV-bridge; AC8; D-DISS-UX-01; ADR-021/029
+
+### TC-EVBRIDGE-009: Decoding library seed + picker
+
+- **Level**: T0 / T2
+- **Objective**: Decoding library seeded from F9/`decode_tac`; Convert picker selects it
+- **Pass criteria**: Defaults listed; fork/edit under trust; picker present on Convert
+- **Source**: EV-bridge; AC9
+
+### TC-EVBRIDGE-010: Beta + EV-048 + fail-closed
+
+- **Level**: T0 / T2
+- **Objective**: Beta badge + Issues feedback; no internal doc refs in operator copy;
+  unknown ids fail closed
+- **Pass criteria**: ADR-043 beta; EV-048 guards green; unknown library → documented error
+- **Source**: EV-bridge; AC10
+
+### TC-EVBRIDGE-011: TAC group requires associated Conversion rule
+
+- **Level**: T0 / T2
+- **Objective**: Every TAC→IWXXM block mapping has an associated Conversion library
+  rule/template; unmatched groups fail closed
+- **Pass criteria**: Fixture with unmatched group → fail-closed error; bridge preview shows
+  miss; matched group shows rule association
+- **Source**: EV-bridge; AC11; ADR-038 EV-bridge §8
+
+### EV-profile-builder-yaml-libraries / F7.w — YAML/DnD libraries + export metadata (#1196)
+
+- **Mode**: deepen F7.w; no new Fn; ADR-038 amend EVPYL
+- **Pass criteria**: [Corpus: product §F7.w] EVPYL ACs; UJ-072h-*; H4–H5 after stage FE
+- **Source**: [#1196](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1196); session
+  `EV-profile-builder-yaml-libraries`
+- **E2E**: T3 full matrix; CI smoke = happy path only
+
+#### Phase A
+
+##### TC-EVPYL-001: Prose chrome removed; tooltips present
+
+- **Level**: T0 / T2
+- **Objective**: Guided assembly / glossary / workflow / examples absent; hover help on
+  Profile Builder controls
+- **Pass criteria**: Copy constants/tests assert absence; tooltip coverage for primary
+  controls; EV-048 clean
+
+##### TC-EVPYL-002: Catalog inspector under active library editor
+
+- **Level**: T0 / T2
+- **Objective**: Inspector renders below the active library editor and follows the active tab
+- **Pass criteria**: DOM order / testids; per-tab field set changes with library kind
+
+##### TC-EVPYL-003: WMO defaults synced Builder ↔ Convert
+
+- **Level**: T0 / T2
+- **Objective**: ICAO/WMO Annex 3 defaults selected on all five pickers; Builder and Convert
+  stay in sync
+- **Pass criteria**: Default ids match; reset control restores WMO set
+
+##### TC-EVPYL-004: Draft custom shell for all five libraries
+
+- **Level**: T0 / T2
+- **Objective**: Create Draft customs via template, duplicate mined block, or import YAML for
+  each library kind; Activate not required in Phase A
+- **Pass criteria**: JWT CRUD Draft; builtins read-only; no Activate gate yet
+
+##### TC-EVPYL-005: Export metadata sidecar
+
+- **Level**: T0 / T2 / T3
+- **Objective**: Convert download/ZIP/single-result opt-in writes `*.meta.json` with full
+  checklist default; remembers choice; omits secrets
+- **Pass criteria**: Sidecar present when on; absent when off; no credentials/URIs/tokens;
+  operator identity only when checklist item selected and signed in; Beta on toggle
+
+#### Library journeys (matrix — smoke happy path; full T3)
+
+##### TC-EVPYL-CONV-001..005
+
+Conversion: template, duplicate mined IWXXM block, import YAML, fork national + extension
+block, Skip/Decode-only + sample convert preview.
+
+##### TC-EVPYL-TAC-001..004
+
+TAC validation: enable/severity, custom regex issue, sample lint, import YAML.
+
+##### TC-EVPYL-IWXXM-001..004
+
+IWXXM validation: SCH toggle, custom XPath/regex-on-XML, document/fork built-in, sample
+validate.
+
+##### TC-EVPYL-DISSEM-001..004
+
+Dissemination: DnD transforms, pattern-only (reject secrets), filename/topic preview, import
+YAML.
+
+##### TC-EVPYL-DECODE-001..004
+
+Decoding: glossary regex→gloss, product scope, sample decode, duplicate mined.
+
+##### TC-EVPYL-CROSS-001..004
+
+Invalid YAML locks UI; Fail → Draft OK / Activate blocked (Phase C); Warn → Activate with
+Warn; WMO reset.
+
+#### Phase B / C (summary)
+
+- **TC-EVPYL-MINE-001..005**: mined catalogs present for all five libraries; residual tickets
+  for gaps; SWX/thin when in vendor.
+- **TC-EVPYL-REGEX-001..003**: live compile + capture summary; Warn vs Fail (engine in
+  `tac2iwxxm.library_yaml`; Profile builder shell mirrors compile in the editor).
+- **TC-EVPYL-ACTIVATE-001..003**: Activate zero Fail; Convert pickers and Convert HTTP reject
+  draft customs until Activated.
+
+### EV-profile-builder-mine-residuals / F7.w — Phase B mining residuals (#1198+#1199)
+
+- **Mode**: deepen F7.w mining only; no UI
+- **Pass criteria**: [Corpus: product §F7.w] EVPYL residuals; TC-EVPYL-MINE-006..008
+- **Source**: [#1198](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1198),
+  [#1199](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1199); session
+  `EV-profile-builder-mine-residuals`
+
+##### TC-EVPYL-MINE-006: Foundation Schematron asserts mined
+
+- **Level**: T0
+- **Objective**: `mine_validation_library_catalogs.py` includes latest WMO foundation SCH
+  (metce/opm/saf/collect) with `authority` tags; core `iwxxm.sch` asserts remain; `--check` OK
+- **Pass criteria**: Catalog assert count ≥ core + foundation; no id collision with core;
+  check mode green after regen
+- **Source**: #1199; D-EVPYL-R-05..08
+
+##### TC-EVPYL-MINE-007: OpenGIS SCH excluded this cycle
+
+- **Level**: T0
+- **Objective**: Miner does not ingest OpenGIS om/sampling/swe SCH under `externalSchema`
+- **Pass criteria**: Unit/script assertion that OpenGIS paths are absent from sources list
+- **Source**: #1199; D-EVPYL-R-05
+
+##### TC-EVPYL-MINE-008: National Conversion mine gated on vendor pins
+
+- **Level**: T0
+- **Objective**: Conversion miner documents/discovers expected national vendor dirs for
+  AU/BR/HK/IN/JP/KR/NZ/UK without inventing XSDs; missing dirs skip with residual note
+- **Pass criteria**: Hook/docs present; `--check` still green when nationals absent; #1198
+  remains open with unblock = vendor pin present
+- **Source**: #1198; D-EVPYL-R-02 / D-EVPYL-R-09
+
+### EV-profile-builder-workbench-edit / F7.w — IDE workbench + full editability (#1203)
+
+- **Mode**: deepen F7.w; no new Fn; ADR-038 amend EVWB; supersedes Conversion DnD from #1196 UX
+- **Pass criteria**: [Corpus: product §F7.w] EVWB ACs; UJ-072i-*; H4–H5 after stage FE
+- **Source**: [#1203](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1203); session
+  `EV-profile-builder-workbench-edit`
+- **E2E**: T3 full matrix; CI smoke = happy path only
+- **Phases**: P0 workbench/DnD-off → P1 Conversion → P2 TAC/IWXXM → P3 Decoding+Dissemination →
+  P4 Overview
+
+#### P0 — Workbench shell
+
+##### TC-EVWB-001: Workbench layout + Overview tab stub
+
+- **Level**: T0 / T2
+- **Objective**: Catalog | editor | preview toggles; Overview tab present; library tabs kept
+- **Pass criteria**: testids/DOM structure; preview toggles default off
+
+##### TC-EVWB-002: Conversion DnD removed
+
+- **Level**: T0 / T2
+- **Objective**: No drag-and-drop reorder UI for Conversion rule blocks/slots
+- **Pass criteria**: DnD handles absent; keyboard reorder not required for correctness
+
+##### TC-EVWB-003: Tooltips on tabs and primary controls
+
+- **Level**: T0 / T2
+- **Objective**: Hover help on every library tab + primary workbench controls; EV-048 clean
+- **Pass criteria**: Tooltip coverage assertions; no Corpus/ADR/EV ids in operator copy
+
+#### P1 — Conversion authoring
+
+##### TC-EVWB-CONV-001..005
+
+Grouped searchable catalog (expanded mined set); renamable preset slots; create block/template;
+fork foundation; YAML↔UI round-trip.
+
+#### P2 — TAC / IWXXM validation
+
+##### TC-EVWB-TAC-001..005
+
+Rule identity; regex create/edit; issue levels; numeric ops `min`/`max`/`eq`/`in` (int+float);
+sample lint.
+
+##### TC-EVWB-IWXXM-001..005
+
+Enable/disable/edit current validation surfaces; custom overlays; shared numeric ops; sample
+validate.
+
+#### P3 — Decoding + Dissemination
+
+##### TC-EVWB-DECODE-001..004
+
+Symbol maps; units; structured types (polygon); sample decode.
+
+##### TC-EVWB-DISSEM-001..004
+
+CRUD destination/route profiles + adapter enable/disable; reject secrets/URIs; no new protocols.
+
+#### P4 — Overview
+
+##### TC-EVWB-OVERVIEW-001..004
+
+Profile compare diffs; per-profile product / file-type / IWXXM version enablement; Activate
+wiring unchanged fail-closed.
+
+### EV-080 / F7.w — Parameterizable conversion templates + TAC→IWXXM bridge (#1146)
+
+- **Mode**: deepen F7.w; phase-1 templates + bridge only (#1147 / library shells deferred)
+- **Pass criteria**: AC in [Corpus: product §F7.w] EV-080; ADR-038 amend EV-080; UJ-072e
+- **Source**: [#1146](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1146); session
+  `EV-080-param-conversion-templates`
+
+### TC-EV080-001: Custom template CRUD owner-scoped
+
+- **Level**: T0 / T2
+- **Objective**: Authenticated owner can create/read/update/delete custom conversion templates
+- **Pass criteria**: JWT required; foreign owner → 403; body has no destination credentials
+- **Source**: EV-080; UJ-072e; ADR-038 EV-080 amend
+
+### TC-EV080-002: Fail-closed unknown template id on convert
+
+- **Level**: T0 / T2
+- **Objective**: Convert rejects unknown / unauthorized template references
+- **Pass criteria**: 400 (or documented fail-closed status) for unknown id; no silent ignore
+- **Source**: EV-080; D-TRUST-01; ADR-038 fail-closed
+
+### TC-EV080-003: Slot reorder + typed capture pass-through
+
+- **Level**: T0 / T2
+- **Objective**: Slot order is persisted; digit/enum captures pass values through (not
+  one-rule-per-literal)
+- **Pass criteria**: Reorder via API/model (DnD + ↑↓ in UI); sample wind-shaped group maps
+  numeric captures to fields
+- **Source**: EV-080; D-CONV-02 / D-CONV-06
+
+### TC-EV080-004: Bridge preview mapping
+
+- **Level**: T0 / T2
+- **Objective**: Bridge UI / preview API shows TAC span, captures, and IWXXM block for a
+  fixture group
+- **Pass criteria**: Wind (or equivalent) fixture produces non-empty captures + XML block
+  preview; comments field accepted
+- **Source**: EV-080; D-UX-02 / D-UI-02/03; UJ-072e
+
+### TC-EV080-005: First-party view + fork (no mutate builtin)
+
+- **Level**: T0 / T2
+- **Objective**: First-party templates are viewable and forkable; builtin source immutable
+- **Pass criteria**: Fork creates owner-scoped custom copy; PATCH/DELETE on first-party id
+  rejected
+- **Source**: EV-080; D-CONV-05 / D-TRUST-01
+
+### TC-EV080-006: EV-048 / OpenAPI no internal doc refs + Beta surfacing
+
+- **Level**: T0 / T2
+- **Objective**: Operator-visible copy and OpenAPI strings free of planning ids; Beta badge
+  present on new authoring surface
+- **Pass criteria**: TC-EV048-style guards green for new strings; Beta + Issues feedback link
+  per ADR-043
+- **Source**: EV-080; EV-048; ADR-043
+
+### EV-conversion-profile-ux-libraries / F7.w — Profile Builder platform
+
+- **Mode**: deepen F7.w / F7.v / F9; Phase A = filename + creator simplify + conversion
+  token/skip/preview; Phase B/C Spec-locked for later Build
+- **Pass criteria**: AC in [Corpus: product §F7.w] EVCPU; ADR-038 amend EVCPU; UJ-072f
+- **Source**: session `EV-conversion-profile-ux-libraries`
+
+### TC-EVCPU-001: Output filename adjacent to TAC/IWXXM panes
+
+- **Level**: T0 / T2
+- **Objective**: Manual convert Output filename control sits near TAC / IWXXM boxes
+- **Pass criteria**: Vitest layout/testid asserts; not solely under drop zone
+- **Source**: EVCPU; D-EVCPU-filename-scope; UJ-072f
+
+### TC-EVCPU-002: Operator UI hides machine ids
+
+- **Level**: T0 / T2
+- **Objective**: Profile Builder primary chrome uses human names only
+- **Pass criteria**: No `Preset id` / `Pack id` / raw `ICAO_2025` labels in primary fields;
+  copy-id available in overflow/advanced
+- **Source**: EVCPU; D-EVCPU-hide-ids; EV-048
+
+### TC-EVCPU-003: Conversion token modes Convert | Decode-only | Skip
+
+- **Level**: T0 / T2
+- **Objective**: Token authoring supports three modes with gloss; Skip visible in preview
+- **Pass criteria**: Mode persisted; Skip chip in preview; Decode-only does not emit IWXXM map
+- **Source**: EVCPU; D-EVCPU-token-modes; UJ-072f
+
+### TC-EVCPU-004: First-party + custom visible; FP fork only
+
+- **Level**: T0 / T2
+- **Objective**: Builder lists FP defaults + customs; FP immutable except fork
+- **Pass criteria**: Same trust as EV-080; mutate FP rejected
+- **Source**: EVCPU; D-EVCPU-defaults; ADR-038
+
+### TC-EVCPU-005: Guided assembly shell present (Phase A)
+
+- **Level**: T0 / T2
+- **Objective**: Profile creator is guided assembly (not id-centric stacked forms alone)
+- **Pass criteria**: Assembly steps or equivalent; DnD/↑↓ on ordered token lists
+- **Source**: EVCPU; D-EVCPU-shell
+
+### TC-EVCPU-006: Advanced pattern panel secondary
+
+- **Level**: T0 / T2
+- **Objective**: Slot/recipe path remains default; Advanced regex optional
+- **Pass criteria**: Flags / named groups / test-against-sample behind Advanced
+- **Source**: EVCPU; D-EVCPU-regex-path
+
+### TC-EVCPU-007: EV-048 + Beta on Profile Builder surfaces
+
+- **Level**: T0 / T2
+- **Objective**: No planning ids in operator copy; Beta + Issues feedback
+- **Pass criteria**: Guards green; ADR-043
+- **Source**: EVCPU; EV-048; ADR-043
+
+### TC-EVCPU-008: Must-not-break UJ-072e bridge
+
+- **Level**: T0 / T2
+- **Objective**: Existing conversion templates bridge remains green
+- **Pass criteria**: TC-EV080-001..006 still pass
+- **Source**: EVCPU; inherit EV-080
 
 ### EV-064 / F36 — CA_ECCC profile (#916)
 
@@ -4149,7 +4767,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Mode**: delta F29 inventory — fill or intentional `oos` (not indefinite scaffolds)
 - **S1**: `convert/metar_speci` cleared (273 ready / 47 oos)
 - **S2**: `lint/metar_speci` cleared (720 ready); empty-TAC loader allowance for `EMPTY_TAC`
-- **S3**: `validate/metar_speci` deferred
+- **S3**: `validate/metar_speci` cleared (860 ready / 0 oos / 0 NF; SCH negatives via native stand-ins)
 - **Pass criteria**: TC-EV970-001..003; ready smokes; inventory gate unchanged
 - **Source**: [#970](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/970); [Corpus: product §F29]; [Corpus: tests]
 
@@ -5591,3 +6209,157 @@ All must pass before merging migration PR:
 - [ ] H4 CORS preflight + H5 bundle verification on staging
 - [ ] CI green on PR branch
 - [ ] render.yaml updated for two-service topology
+
+## EV-retire-profile-dissem-ui-catalogs / ADR-044
+
+### TC-EVRPC-001..005: Rule catalogs by family (UJ-076)
+
+- **Objective**: `GET /rule-catalogs?family=` returns non-empty packaged rows for each of
+  `tac`, `iwxxm`, `conversion`, `dissemination`, `decoding`; EV-048 clean strings.
+- **Pass criteria**: UJ-076; unit + integration; H4–H5 when FE ships.
+
+### TC-EVRPC-006..008: Dropdown selection hard cutover (UJ-076a)
+
+- **Objective**: Selection-options API lists deployed ids; Profile Builder / library authoring
+  routes/UI absent; dissem send still works.
+- **Pass criteria**: UJ-076a; must-not-break UJ-027–030.
+
+### TC-EVRPC-009: tac-decoding parity (UJ-076b)
+
+- **Objective**: Decode fixtures pass via `tac_decoding`; optional `tac2iwxxm` re-export.
+- **Pass criteria**: UJ-076b; package unit tests.
+
+## EV-profile-validate-decode-deepen / #1221 (UJ-078)
+
+### TC-EVPVD-001: Profile Builder authoring absent
+
+- **Level**: T0 / T2
+- **Objective**: Conversion Profiles page has no Profile Builder / five-library authoring
+- **Pass criteria**: Authoring components unmounted; five trust catalogs + dropdowns remain
+- **Source**: D-EVPVD-06; UJ-076 / UJ-076a; ADR-044
+
+### TC-EVPVD-002: AU_BOM catalog implemented + convert goldens
+
+- **Level**: T0 / T2
+- **Objective**: `AU_BOM` catalog `status: implemented`; METAR/SPECI/TAF convert fixtures green
+- **Pass criteria**: D-EVPVD-02; no national XSD invent
+- **Source**: #1221; F36
+
+### TC-EVPVD-003: NZ_CAA_MET catalog implemented + convert goldens
+
+- **Level**: T0 / T2
+- **Objective**: Same bar as TC-EVPVD-002 for `NZ_CAA_MET`
+- **Pass criteria**: D-EVPVD-02
+- **Source**: #1221; F36
+
+### TC-EVPVD-004: Station name on decode hit
+
+- **Level**: T0 / T2
+- **Objective**: Known ICAO (e.g. KJFK) enriches station explanation + summary with airport name
+- **Pass criteria**: Name present when lookup hits; `/decode-tac` keys unchanged
+- **Source**: #724; D-EVPVD-07; UJ-020 / UJ-078
+
+### TC-EVPVD-005: Station name soft-fail
+
+- **Level**: T0
+- **Objective**: Unknown ICAO soft-fails to designator-only explanation
+- **Pass criteria**: No 5xx; ICAO still shown
+- **Source**: #724; D-EVPVD-07
+
+### TC-EVPVD-006: #1120 residual catalog follow
+
+- **Level**: T0 / T2 / H4–H5 when FE
+- **Objective**: Workbench Issues catalog follows Profile; US/CA national-only seed rows present
+- **Pass criteria**: TC-EV1120-006..009 still green; #1122/#1123 gaps closed or waived in #1221
+- **Source**: #1120; D-EVPVD-05
+
+### TC-EVYEC-001: Product × engine honesty matrix present
+
+- **Level**: T0 / CI
+- **Objective**: Standing matrix covers METAR–TCA rows and decode / TAC policy / detector YAML / IWXXM policy / convert pack-IR / convert emit columns with full|partial|stub|N/A
+- **Pass criteria**: Matrix file cited from CORPUS/docs; schema or presence test green
+- **Source**: #1224; D-EVYEC-01; UJ-DEV-010
+
+### TC-EVYEC-002: Package READMEs document overlays
+
+- **Level**: T0 / CI
+- **Objective**: `tac-decoding`, `tac-validate`, `iwxxm-validate`, `tac2iwxxm` READMEs name overlay env vars and link the shared cookbook
+- **Pass criteria**: Smoke/grep or unit lock over README paths
+- **Source**: #1224; D-EVYEC-06; UJ-DEV-010
+
+### TC-EVYEC-003: Overlay preflight fail-closed
+
+- **Level**: T0 / CI
+- **Objective**: Monorepo preflight (+ thin package hooks) rejects bad `extends` / unknown ids and accepts a valid example overlay
+- **Pass criteria**: Fixture pair red/green under preflight entrypoint
+- **Source**: #1224; D-EVYEC-04; UJ-DEV-010
+
+### TC-EVYEC-004: No HTTP policy/pack YAML injection
+
+- **Level**: T0 / T2
+- **Objective**: OpenAPI and contract tests expose no client body fields for pack/policy YAML upload
+- **Pass criteria**: Existing profile-only resolve path unchanged; negative assertion in contract suite
+- **Source**: #1224; D-EVYEC-05; [Corpus: api]
+
+### TC-EVYEC-005: Glossary single home
+
+- **Level**: T0
+- **Objective**: Docs state glossary SoT is `tac-decoding`; legacy `TAC2IWXXM_DECODE_GLOSSARY_PATH` alias noted
+- **Pass criteria**: Cookbook or config-spec section present; shim drift note if `tac2iwxxm` still ships a copy
+- **Source**: #1224; D-EVYEC-06
+
+### TC-EVYFC-001: Matrix all-full program gate
+
+- **Level**: T0 / CI (M5)
+- **Objective**: Product × engine matrix rates every METAR–TCA × engine cell **full** with evidence citations
+- **Pass criteria**: Presence + vocabulary lock; no `partial`/`stub` remaining for in-scope cells
+- **Source**: #1226; D-YFC-01; UJ-DEV-011
+
+### TC-EVYFC-002: Convert emit YAML parity / replace
+
+- **Level**: T0 / CI (M3+)
+- **Objective**: For each product at emit-YAML: fixtures prove YAML emit matches or intentionally replaces Python plugin; `convert` API unchanged
+- **Pass criteria**: Golden or soft-diff gate green; ADR-047 Accepted for shipped products
+- **Source**: #1226; ADR-047; UJ-DEV-011
+
+### TC-EVYFC-003: Starter templates + DX smoke
+
+- **Level**: T0 / CI (M1)
+- **Objective**: Per-package starter templates load via preflight; optional `--check-overlay`; README install smoke documented
+- **Pass criteria**: `make overlay-preflight` (extended) + README grep/smoke
+- **Source**: #1226; #1227; UJ-DEV-011
+
+### TC-EVYFC-004: IWXXM pin ↔ Schematron bundle match
+
+- **Level**: T0 / T2 (M5; earlier where cheap)
+- **Objective**: Convert and validate paths assert Schematron bundle/version matches the IWXXM pin in use
+- **Pass criteria**: Unit/integration asserts; mismatch fail-closed (except Spec-waived soft-preview)
+- **Source**: #1226; ADR-047; D-YFC-05; UJ-DEV-011
+
+### TC-EVYFC-005: No HTTP emit-map YAML injection
+
+- **Level**: T0 / T2
+- **Objective**: OpenAPI exposes no client body fields for emit-map / pack / policy YAML upload
+- **Pass criteria**: Extends TC-EVYEC-004 forbidden-key set to include emit-map synonyms
+- **Source**: #1226; D-YFC-04; [Corpus: api]
+
+### TC-EVYFC-006: M4 TAF matrix row lock
+
+- **Level**: T0 / CI (M4)
+- **Objective**: Honesty matrix rates every TAF engine cell **full** with SoT path evidence
+- **Pass criteria**: Row lock + builtin pack/policy/detector/emit-map presence
+- **Source**: #1226; #1230; ADR-047; UJ-DEV-011
+
+### TC-EVYFC-007: M4 SIGMET matrix row lock
+
+- **Level**: T0 / CI (M4)
+- **Objective**: Honesty matrix rates every SIGMET engine cell **full** with SoT path evidence
+- **Pass criteria**: Row lock + builtin pack/policy/detector/emit-map presence
+- **Source**: #1226; #1230; ADR-047; UJ-DEV-011
+
+### TC-EVYFC-008: M4 AIRMET/VAA/TCA matrix row lock
+
+- **Level**: T0 / CI (M4)
+- **Objective**: Honesty matrix rates AIRMET, VAA, and TCA engine cells **full** with SoT path evidence
+- **Pass criteria**: Row locks + builtin pack/policy/detector/emit-map presence for all three
+- **Source**: #1226; #1230; ADR-047; UJ-DEV-011

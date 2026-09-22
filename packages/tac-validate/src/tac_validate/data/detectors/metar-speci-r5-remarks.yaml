@@ -1,0 +1,45 @@
+# R5 remarks detectors for METAR/SPECI (ADR-046 / #1228 M2).
+# SLP/P/T malformed tokens are declarative; PK WND + iwxxm_us extension stay python.
+schema_version: 1
+id: metar-speci-r5-remarks
+stage: cross_field
+products:
+  - METAR
+  - SPECI
+rules:
+  - id: invalid_slp
+    kind: finditer
+    preprocess:
+      after: RMK
+      strip_terminator: true
+    pattern: '\bSLP(?!\d{3}\b)\d+\b'
+    on_match:
+      code: INVALID_REMARK
+      location: remark
+      message_template: "{product} malformed remark {capture!r} (SLP needs 3 digits)"
+      span: match
+  - id: invalid_precip
+    kind: finditer
+    preprocess:
+      after: RMK
+      strip_terminator: true
+    pattern: '\bP(?!\d{4}\b)\d+\b'
+    on_match:
+      code: INVALID_REMARK
+      location: remark
+      message_template: "{product} malformed remark {capture!r} (P precip needs 4 digits)"
+      span: match
+  - id: invalid_temp_tenths
+    kind: finditer
+    preprocess:
+      after: RMK
+      strip_terminator: true
+    pattern: '\bT(?!\d{8}\b)\d+\b'
+    on_match:
+      code: INVALID_REMARK
+      location: remark
+      message_template: "{product} malformed remark {capture!r} (T tenths needs 8 digits)"
+      span: match
+  - id: r5_pk_and_extension
+    kind: python
+    python: python:tac_validate.theme_checks:hatch_r5_pk_and_extension

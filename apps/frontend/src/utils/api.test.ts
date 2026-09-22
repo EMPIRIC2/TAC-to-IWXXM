@@ -11,6 +11,8 @@ import {
   EndpointNotImplementedError,
   fetchAirportRegion,
   fetchLintIssueCatalog,
+  fetchRuleCatalog,
+  fetchSelectionOptions,
   fetchQualityMetrics,
   fetchQualityMetricsDetail,
   fetchSchemaStatus,
@@ -255,7 +257,8 @@ describe('API Utils', () => {
       const [, options] = (global.fetch as any).mock.calls[0];
       const body = options.body as FormData;
       expect(body.get('product')).toBe('TAF');
-      expect(body.get('semantic_profile')).toBe('iwxxm_us');
+      expect(body.get('conversion_library_id')).toBe('LIB.CONVERSION.US_FAA_NWS');
+      expect(body.get('semantic_profile')).toBeNull();
       expect(body.get('profile')).toBeNull();
       expect(body.get('iwxxm_version')).toBe('2025-2');
     });
@@ -292,7 +295,7 @@ describe('API Utils', () => {
       expect(body.get('propagate_residuals_to_remarks')).toBe('false');
     });
 
-    it('appends semantic_profile uppercase for canonical ids (TC-EV093-002)', async () => {
+    it('appends conversion_library_id for canonical profile ids (EV-bridge hard cut)', async () => {
       mockFetchResponse({
         results: [],
         errors: [],
@@ -310,8 +313,38 @@ describe('API Utils', () => {
 
       const [, options] = (global.fetch as any).mock.calls[0];
       const body = options.body as FormData;
-      expect(body.get('semantic_profile')).toBe('ICAO_2025');
+      expect(body.get('conversion_library_id')).toBe('LIB.CONVERSION.ICAO_2025');
+      expect(body.get('semantic_profile')).toBeNull();
       expect(body.get('profile')).toBeNull();
+    });
+
+    it('appends explicit conversion and companion library ids when provided', async () => {
+      mockFetchResponse({
+        results: [],
+        errors: [],
+        total_processed: 0,
+        successful: 0,
+        failed: 0,
+      });
+
+      await convertMetarToIwxxm({
+        manualText: 'METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=',
+        product: 'METAR',
+        conversionLibraryId: 'LIB.CONVERSION.CA_ECCC',
+        tacValidationLibraryId: 'LIB.TAC_VALIDATION.CA_ECCC',
+        iwxxmValidationLibraryId: 'LIB.IWXXM_VALIDATION.US_FAA_NWS',
+        disseminationLibraryId: 'LIB.DISSEMINATION.ICAO_2025',
+        decodingLibraryId: 'LIB.DECODING.ICAO_2025',
+      });
+
+      const body = (global.fetch as any).mock.calls[0][1].body as FormData;
+      expect(body.get('conversion_library_id')).toBe('LIB.CONVERSION.CA_ECCC');
+      expect(body.get('tac_validation_library_id')).toBe('LIB.TAC_VALIDATION.CA_ECCC');
+      expect(body.get('iwxxm_validation_library_id')).toBe(
+        'LIB.IWXXM_VALIDATION.US_FAA_NWS',
+      );
+      expect(body.get('dissemination_library_id')).toBe('LIB.DISSEMINATION.ICAO_2025');
+      expect(body.get('decoding_library_id')).toBe('LIB.DECODING.ICAO_2025');
     });
 
     it('appends validation, stop_on_error, bulletin, and issuing centre (ADR-023)', async () => {
@@ -364,7 +397,7 @@ describe('API Utils', () => {
       expect(body.get('exchange_output')).toBe('true');
     });
 
-    it('appends exchange_profile on convert when provided (EV-090)', async () => {
+    it('does not send exchange_profile on convert after hard cut (EV-bridge)', async () => {
       mockFetchResponse({
         results: [],
         errors: [],
@@ -381,7 +414,8 @@ describe('API Utils', () => {
 
       const [, options] = (global.fetch as any).mock.calls[0];
       const body = options.body as FormData;
-      expect(body.get('exchange_profile')).toBe('CAR_SAM');
+      expect(body.get('exchange_profile')).toBeNull();
+      expect(body.get('conversion_library_id')).toBe('LIB.CONVERSION.ICAO_2025');
     });
 
     it('appends report_variant on convert when provided (EV-1050)', async () => {
@@ -405,7 +439,7 @@ describe('API Utils', () => {
       expect(body.get('report_variant')).toBe('LWIS');
     });
 
-    it('appends preset_id and bearer on convert when provided (EV-1051)', async () => {
+    it('does not send preset_id on convert after hard cut (EV-bridge)', async () => {
       mockFetchResponse({
         results: [],
         errors: [],
@@ -422,7 +456,8 @@ describe('API Utils', () => {
 
       const [, options] = (global.fetch as any).mock.calls[0];
       const body = options.body as FormData;
-      expect(body.get('preset_id')).toBe('pr-123');
+      expect(body.get('preset_id')).toBeNull();
+      // Bearer may still be sent for authenticated callers; preset is unlinked.
       expect(options.headers?.Authorization).toBe('Bearer jwt');
     });
 
@@ -1260,6 +1295,58 @@ describe('API Utils', () => {
       );
     });
 
+    it('GETs rule-catalogs with optional product filter', async () => {
+      mockFetchResponse({
+        family: 'conversion',
+        items: [{ id: 'ICAO_2025', title: 'ICAO_2025', summary: 'profile' }],
+      });
+      const result = await fetchRuleCatalog({
+        family: 'conversion',
+        product: ' METAR ',
+      });
+      expect(result.family).toBe('conversion');
+      expect(result.items).toHaveLength(1);
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/rule-catalogs\?family=conversion&product=metar$/),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('throws when rule-catalogs fails', async () => {
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: vi.fn().mockResolvedValueOnce({}),
+      });
+      await expect(fetchRuleCatalog({ family: 'decoding' })).rejects.toThrow(
+        'rule-catalogs failed: 400',
+      );
+    });
+
+    it('GETs selection-options by kind', async () => {
+      mockFetchResponse({
+        kind: 'dissemination',
+        options: [{ id: 'GLOBAL_AFS', label: 'GLOBAL_AFS' }],
+      });
+      const result = await fetchSelectionOptions({ kind: 'dissemination' });
+      expect(result.options[0]!.id).toBe('GLOBAL_AFS');
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/selection-options\?kind=dissemination$/),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('throws when selection-options fails', async () => {
+      (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 503,
+        json: vi.fn().mockResolvedValueOnce({}),
+      });
+      await expect(fetchSelectionOptions({ kind: 'decoding' })).rejects.toThrow(
+        'selection-options failed: 503',
+      );
+    });
+
     it('falls back when decode-tac error body is not JSON', async () => {
       (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
         ok: false,
@@ -1308,7 +1395,8 @@ describe('API Utils', () => {
         manualText: 'SAUS31 KZNY 121200\nMETAR KJFK=',
         files: [file],
         product: 'metar',
-        profile: 'annex3',
+        conversionLibraryId: 'LIB.CONVERSION.ICAO_2025',
+        disseminationLibraryId: 'LIB.DISSEMINATION.ICAO_2025',
         exchangeProfile: 'EUR_RODEX',
         iwxxmVersion: '2023-1',
         lint: false,
@@ -1319,7 +1407,12 @@ describe('API Utils', () => {
         string,
         { body: FormData },
       ];
-      expect(init.body.get('exchange_profile')).toBe('EUR_RODEX');
+      expect(init.body.get('conversion_library_id')).toBe('LIB.CONVERSION.ICAO_2025');
+      expect(init.body.get('dissemination_library_id')).toBe(
+        'LIB.DISSEMINATION.ICAO_2025',
+      );
+      expect(init.body.get('semantic_profile')).toBeNull();
+      expect(init.body.get('exchange_profile')).toBeNull();
       expect(init.body.get('iwxxm_version')).toBe('2023-1');
     });
 
@@ -1405,11 +1498,12 @@ describe('API Utils', () => {
         },
         results: [],
       });
-      await convertBulletin({ product: 'taf' });
+      await convertBulletin({ product: 'taf', profile: 'annex3' });
       const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
       const body = options.body as FormData;
       expect(body.get('manual_text')).toBeNull();
-      expect(body.get('semantic_profile')).toBe('ICAO_2025');
+      expect(body.get('conversion_library_id')).toBe('LIB.CONVERSION.ICAO_2025');
+      expect(body.get('semantic_profile')).toBeNull();
       expect(body.get('lint')).toBe('true');
     });
 
@@ -1524,11 +1618,11 @@ describe('API Utils', () => {
       });
       expect(global.fetch).toHaveBeenCalled();
       const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
-      // accessToken alone does not authorize convert (public); Authorization only with overlay_id
-      expect(options.headers?.Authorization).toBeUndefined();
+      // Bearer is forwarded when accessToken is provided (auth optional on public Convert).
+      expect(options.headers?.Authorization).toBe('Bearer tok');
     });
 
-    it('sends overlay_id with bearer when set', async () => {
+    it('does not send overlay_id on convert after hard cut (EV-bridge)', async () => {
       mockFetchResponse({
         results: [],
         errors: [],
@@ -1543,7 +1637,7 @@ describe('API Utils', () => {
       });
       const [, options] = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.at(-1)!;
       const body = options.body as FormData;
-      expect(body.get('overlay_id')).toBe('ov-123');
+      expect(body.get('overlay_id')).toBeNull();
       expect(options.headers?.Authorization).toBe('Bearer jwt');
     });
 
@@ -1560,7 +1654,8 @@ describe('API Utils', () => {
       const body = options.body as FormData;
       expect(body.get('manual_text')).toBeNull();
       expect(body.get('product')).toBe('METAR');
-      expect(body.get('semantic_profile')).toBe('ICAO_2025');
+      expect(body.get('semantic_profile')).toBeNull();
+      expect(body.get('conversion_library_id')).toBeNull();
       expect(body.get('validate_output')).toBe('false');
       expect(body.get('include_nil_reasons')).toBe('true');
       expect(body.get('preview')).toBeNull();

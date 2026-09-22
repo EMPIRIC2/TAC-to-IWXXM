@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  confirmEmail,
   confirmPasswordReset,
   getCurrentUser,
   isLoggedIn,
@@ -48,6 +49,74 @@ describe('authService', () => {
     expect(localStorage.getItem('access_token')).toBe(mockSession.access_token);
     expect(localStorage.getItem('refresh_token')).toBe(mockSession.refresh_token);
     expect(localStorage.getItem('expires_at')).toBe(String(mockSession.expires_at));
+  });
+
+  it('confirmEmail stores session tokens on success', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({ user: mockUser, session: mockSession }),
+      status: 200,
+      statusText: 'OK',
+    } as Response);
+
+    const result = await confirmEmail({ token_hash: 'hash123', type: 'email' });
+    expect(result.user.email).toBe(mockUser.email);
+    expect(localStorage.getItem('access_token')).toBe(mockSession.access_token);
+  });
+
+  it('confirmEmail defaults type to email and skips store when session null', async () => {
+    const fetchSpy = vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: true,
+      json: async () => ({ user: mockUser, session: null }),
+      status: 200,
+      statusText: 'OK',
+    } as Response);
+
+    await confirmEmail({ token_hash: 'hash123' });
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining('/auth/confirm'),
+      expect.objectContaining({
+        body: JSON.stringify({ token_hash: 'hash123', type: 'email' }),
+      }),
+    );
+    expect(localStorage.getItem('access_token')).toBeNull();
+  });
+
+  it('confirmEmail surfaces string detail on failure', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: false,
+      json: async () => ({ detail: 'bad hash' }),
+      status: 400,
+      statusText: 'Bad Request',
+    } as Response);
+
+    await expect(confirmEmail({ token_hash: 'bad' })).rejects.toThrow('bad hash');
+  });
+
+  it('confirmEmail falls back when detail is not a string', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: false,
+      json: async () => ({ detail: [{ msg: 'x' }] }),
+      status: 400,
+      statusText: 'Bad Request',
+    } as Response);
+
+    await expect(confirmEmail({ token_hash: 'bad' })).rejects.toThrow(
+      'Email confirmation failed',
+    );
+  });
+
+  it('confirmEmail falls back when error body is invalid JSON', async () => {
+    vi.spyOn(global, 'fetch').mockResolvedValue({
+      ok: false,
+      json: async () => {
+        throw new Error('invalid json');
+      },
+      status: 500,
+      statusText: 'Error',
+    } as unknown as Response);
+
+    await expect(confirmEmail({ token_hash: 'bad' })).rejects.toThrow('Unknown error');
   });
 
   it('falls back to default register message when error body has no detail', async () => {

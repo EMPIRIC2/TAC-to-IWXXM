@@ -2,21 +2,22 @@
 
 from __future__ import annotations
 
+import os
 import re
 from collections.abc import Callable
 from datetime import UTC
 from typing import Any, cast
 from xml.sax.saxutils import escape
 
+from tac_decoding.match import MatchContext, match_tac
+from tac_decoding.packs import load_packs
+
 from tac2iwxxm.decode import decode_tac
+from tac2iwxxm.emit_map import emit_with_map
 from tac2iwxxm.exchange_output import default_ca_translation_centre
+from tac2iwxxm.ir_source import IR_SOURCE_ENV, resolve_ir_source
 from tac2iwxxm.models import ConvertIssue, ConvertResult
-from tac2iwxxm.products.metar_speci import parse_metar_speci
-from tac2iwxxm.products.sigmet_airmet import parse_airmet, parse_sigmet
-from tac2iwxxm.products.swxa import parse_swxa
-from tac2iwxxm.products.taf import parse_taf
-from tac2iwxxm.products.vaa_tca import parse_tca, parse_vaa
-from tac2iwxxm.products.vona import parse_vona
+from tac2iwxxm.pack_ir_map import PackIrMapError, map_spans_to_convert_ir, pack_id_for_product
 from tac2iwxxm.profile_registry import (
     EMIT_ANNEX3,
     EMIT_AU_BOM,
@@ -33,23 +34,25 @@ from tac2iwxxm.profile_registry import (
     supported_iwxxm_versions_for_profile,
     supported_report_variants_for_profile,
 )
-from tac2iwxxm.profiles.annex3 import emit_metar_speci_annex3
 from tac2iwxxm.profiles.annex3_products import (
-    emit_airmet_annex3,
-    emit_sigmet_annex3,
     emit_swxa_annex3,
-    emit_taf_annex3,
-    emit_tca_annex3,
-    emit_vaa_annex3,
     emit_vona_annex3,
 )
-from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION, emit_airmet_ca_eccc, emit_metar_speci_ca_eccc, emit_taf_ca_eccc
-from tac2iwxxm.profiles.iwxxm_us import (
-    emit_airmet_iwxxm_us,
-    emit_metar_speci_iwxxm_us,
-    emit_sigmet_iwxxm_us,
-    emit_taf_iwxxm_us,
-)
+from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
+from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
+from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet, parse_sigmet
+from tac2iwxxm.slot_builders.swxa import parse_swxa
+from tac2iwxxm.slot_builders.taf import parse_taf
+from tac2iwxxm.slot_builders.vaa_tca import parse_tca, parse_vaa
+from tac2iwxxm.slot_builders.vona import parse_vona
+
+
+def _ir_source_is_explicit_pack(ir_source: str | None) -> bool:
+    """True when the caller or env forces pack IR (no legacy fallback)."""
+    if ir_source is not None:
+        return ir_source.strip().lower() == "pack"
+    return os.environ.get(IR_SOURCE_ENV, "").strip().lower() == "pack"
+
 
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
 _US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
@@ -410,34 +413,52 @@ def _parse(product: str, tac: str) -> dict[str, Any]:
     return parsers[product](tac, product=product)
 
 
+def _parse_pack_ir(
+    product: str,
+    tac: str,
+    *,
+    iwxxm_version: str,
+    profile: str,
+) -> dict[str, Any]:
+    """Match the product pack and map spans into convert IR slots."""
+    packs = {item.id: item for item in load_packs(profile)}
+    pack_id = pack_id_for_product(product, tac)
+    pack = packs.get(pack_id)
+    if pack is None:
+        msg = f"no pack for product {product!r} ({pack_id})"
+        raise PackIrMapError(msg)
+    matched = match_tac(
+        tac,
+        pack,
+        context=MatchContext(iwxxm_version=iwxxm_version, profile=profile),
+    )
+    return map_spans_to_convert_ir(matched, tac=tac, product=product)
+
+
+def _parse_for_convert(
+    product: str,
+    tac: str,
+    *,
+    ir_source: str,
+    iwxxm_version: str,
+    profile: str,
+    ir_source_explicit: bool,
+) -> dict[str, Any]:
+    if ir_source == "pack":
+        try:
+            return _parse_pack_ir(product, tac, iwxxm_version=iwxxm_version, profile=profile)
+        except PackIrMapError:
+            if ir_source_explicit:
+                raise
+            # auto/default: incomplete packs fall back to the legacy parser.
+            return _parse(product, tac)
+    return _parse(product, tac)
+
+
 def _emit(product: str, profile: str, ir: dict[str, Any], iwxxm_version: str) -> str:
-    if product in {"METAR", "SPECI"}:
-        if profile == "iwxxm_us":
-            return emit_metar_speci_iwxxm_us(ir, product=product, iwxxm_version=iwxxm_version)
-        if profile == EMIT_CA_ECCC:
-            return emit_metar_speci_ca_eccc(ir, product=product, iwxxm_version=iwxxm_version)
-        return emit_metar_speci_annex3(ir, product=product, iwxxm_version=iwxxm_version)
-    if product == "TAF":
-        if profile == "iwxxm_us":
-            return emit_taf_iwxxm_us(ir, iwxxm_version=iwxxm_version)
-        if profile == EMIT_CA_ECCC:
-            return emit_taf_ca_eccc(ir, iwxxm_version=iwxxm_version)
-        # AU/NZ + EV-089 thin/compat / annex3 — core IWXXM only (D-EV087-xsd / D-EV089-xsd).
-        return emit_taf_annex3(ir, iwxxm_version=iwxxm_version)
-    if product == "SIGMET":
-        if profile == "iwxxm_us":
-            return emit_sigmet_iwxxm_us(ir, iwxxm_version=iwxxm_version)
-        return emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
-    if product == "AIRMET":
-        if profile == "iwxxm_us":
-            return emit_airmet_iwxxm_us(ir, iwxxm_version=iwxxm_version)
-        if profile == EMIT_CA_ECCC:
-            return emit_airmet_ca_eccc(ir, iwxxm_version=iwxxm_version)
-        return emit_airmet_annex3(ir, iwxxm_version=iwxxm_version)
-    if product == "VAA":
-        return emit_vaa_annex3(ir, iwxxm_version=iwxxm_version)
-    if product == "TCA":
-        return emit_tca_annex3(ir, iwxxm_version=iwxxm_version)
+    if product in {"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA"}:
+        # ADR-047: core F6 products emit via YAML maps (python plugins remain builders).
+        return emit_with_map(ir, product=product, profile=profile, iwxxm_version=iwxxm_version)
     if product == "SWXA":
         return emit_swxa_annex3(ir, iwxxm_version=iwxxm_version)
     if product == "VONA":
@@ -491,6 +512,7 @@ def convert(
     report_status: str | None = None,
     report_variant: str | None = None,
     propagate_residuals_to_remarks: bool | None = None,
+    ir_source: str | None = None,
 ) -> ConvertResult:
     """
     Convert a TAC report to IWXXM XML.
@@ -526,6 +548,10 @@ def convert(
         When ``True``, fold decode residual token text into the profile remarks /
         ``humanReadableText`` path (or document no XML target on annex3). When
         ``None``, use the semantic-profile default (annex3 / ICAO_2025 → off).
+    ir_source :
+        ``legacy``, ``pack``, or ``auto`` (default). ``auto`` uses pack IR for
+        METAR/SPECI and legacy parsers for other products. Override with
+        ``TAC2IWXXM_CONVERT_IR_SOURCE`` when omitted.
 
     Returns
     -------
@@ -637,6 +663,18 @@ def convert(
             "INVALID_IWXXM_VERSION",
             message,
         )
+    if not preview:
+        # TC-EVYFC-004 / D-YFC-05: fail-closed pin↔SCH (soft-preview waived).
+        try:
+            from iwxxm_validate.pin_sch import PinSchError, assert_pin_schematron_match
+        except ImportError:
+            # Optional workspace member missing in some install layouts — validate path still gates.
+            pass
+        else:
+            try:
+                assert_pin_schematron_match(effective_iwxxm_version)
+            except PinSchError as exc:
+                return _fail("PIN_SCH_MISMATCH", str(exc))
     resolved_report_variant: str | None = None
     if report_variant is not None and report_variant.strip():
         resolved_report_variant = report_variant.strip().upper()
@@ -668,7 +706,18 @@ def convert(
     try:
         if _UNRELIABLE_TAC.search(tac):
             raise ValueError("unreliable TAC marked INVALID - quarantine")
-        ir = _parse(product_u, tac)
+        try:
+            source = resolve_ir_source(product_u, ir_source=ir_source)
+        except ValueError as exc:
+            return _fail("INVALID_IR_SOURCE", str(exc))
+        ir = _parse_for_convert(
+            product_u,
+            tac,
+            ir_source=source,
+            iwxxm_version=effective_iwxxm_version,
+            profile=profile_l,
+            ir_source_explicit=_ir_source_is_explicit_pack(ir_source),
+        )
         if resolved_report_variant is not None and profile_l == EMIT_CA_ECCC and product_u == "METAR":
             ir = {**ir, "ca_iwxxm_root": resolved_report_variant}
         if status_override is not None:

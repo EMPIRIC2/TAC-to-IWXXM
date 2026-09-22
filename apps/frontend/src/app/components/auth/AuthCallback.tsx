@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { Card } from '../ui/card';
+import { confirmEmail } from '@/utils/authService';
 
 interface AuthCallbackProps {
   onLogin?: (email: string, needsVerification: boolean, token?: string) => void;
@@ -10,9 +11,11 @@ interface AuthCallbackProps {
 }
 
 /**
- * OAuth/email callback handler that parses tokens from the URL hash.
+ * OAuth/email callback handler.
  *
- * Routes successful auth to login, register, or verification callbacks.
+ * Supports:
+ * - Supabase token_hash query links (`/auth/confirm?token_hash=…&type=email`)
+ * - Legacy hash fragment access_token callbacks (`/auth/callback#access_token=…`)
  */
 export function AuthCallback({ onLogin, onRegister, onVerified }: AuthCallbackProps) {
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -21,17 +24,50 @@ export function AuthCallback({ onLogin, onRegister, onVerified }: AuthCallbackPr
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Extract token from URL hash (Supabase or custom auth service format)
+        const searchParams = new URLSearchParams(window.location.search);
+        const tokenHash = searchParams.get('token_hash');
+        const queryType = searchParams.get('type') || 'email';
+
+        if (tokenHash) {
+          const result = await confirmEmail({
+            token_hash: tokenHash,
+            type: queryType,
+          });
+
+          window.history.replaceState({}, '', '/');
+
+          setStatus('success');
+          setMessage('Email verified! Redirecting...');
+          toast.success('Email verified successfully!');
+
+          if (queryType === 'recovery') {
+            const access = result.session?.access_token;
+            window.location.href = access ? `/auth/reset?token=${access}` : '/';
+            return;
+          }
+
+          if (onVerified) {
+            onVerified();
+          } else if (onLogin && result.session?.access_token) {
+            onLogin(result.user.email, false, result.session.access_token);
+          } else if (onRegister) {
+            onRegister(result.user.email);
+          } else {
+            window.location.href = '/';
+          }
+          return;
+        }
+
+        // Legacy: extract token from URL hash (implicit / older templates)
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const accessToken = hashParams.get('access_token');
         const type = hashParams.get('type');
 
-        // Also check for refresh token and expires_at
         hashParams.get('refresh_token');
         hashParams.get('expires_at');
 
         if (!accessToken) {
-          console.warn('No access token found in callback');
+          console.warn('No access token or token_hash found in callback');
           setStatus('error');
           setMessage('Invalid callback URL. Please try again.');
           toast.error('Authentication failed');
@@ -42,7 +78,6 @@ export function AuthCallback({ onLogin, onRegister, onVerified }: AuthCallbackPr
           return;
         }
 
-        // Clear the hash from URL
         window.location.hash = '';
 
         console.log('Email verified successfully through auth callback');
@@ -50,25 +85,25 @@ export function AuthCallback({ onLogin, onRegister, onVerified }: AuthCallbackPr
         setMessage('Email verified! Redirecting...');
         toast.success('Email verified successfully!');
 
-        // Redirect based on callback type
-        if (type === 'signup') {
+        if (type === 'signup' || type === 'email') {
           if (onVerified) {
             onVerified();
           } else if (onRegister) {
             onRegister('');
           }
         } else if (type === 'recovery') {
-          // Password reset callback
-          // In this case, the token can be used for password reset
           window.location.href = `/auth/reset?token=${accessToken}`;
         } else {
-          // Default: redirect to home
           window.location.href = '/';
         }
       } catch (error) {
         console.error('Callback error:', error);
         setStatus('error');
-        setMessage('An error occurred. Please try again.');
+        const detail =
+          error instanceof Error && error.message
+            ? error.message
+            : 'An error occurred. Please try again.';
+        setMessage(detail);
         toast.error('Authentication failed');
         setTimeout(() => {
           window.location.hash = '';
@@ -77,7 +112,7 @@ export function AuthCallback({ onLogin, onRegister, onVerified }: AuthCallbackPr
       }
     };
 
-    handleCallback();
+    void handleCallback();
   }, [onLogin, onRegister, onVerified]);
 
   return (
@@ -112,6 +147,7 @@ export function AuthCallback({ onLogin, onRegister, onVerified }: AuthCallbackPr
               </h2>
               <p className="text-sm text-muted-foreground mb-4 font-mono">{message}</p>
               <button
+                type="button"
                 onClick={() => {
                   window.location.hash = '';
                   window.location.href = '/';

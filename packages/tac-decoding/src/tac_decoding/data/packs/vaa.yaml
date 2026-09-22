@@ -1,0 +1,59 @@
+# Builtin vaa label-fields pack (ADR-045 / M4 #1230).
+# Label SoT for A7 VAA; residual free-text values stay in label values.
+id: vaa
+layout: label_fields
+rules:
+  - id: dtg
+    label: "DTG"
+    explain: "DTG {value}"
+  - id: vaac
+    label: "VAAC"
+    explain: "VAAC {value}"
+  - id: volcano
+    label: "VOLCANO"
+    explain: "VOLCANO {value}"
+  - id: psn
+    label: "PSN"
+    explain: "PSN {value}"
+  - id: area
+    label: "AREA"
+    explain: "AREA {value}"
+  - id: source_elev
+    label: "SOURCE ELEV"
+    explain: "SOURCE ELEV {value}"
+  - id: advisory_nr
+    label: "ADVISORY NR"
+    explain: "ADVISORY NR {value}"
+  - id: info_source
+    label: "INFO SOURCE"
+    explain: "INFO SOURCE {value}"
+  - id: eruption_details
+    label: "ERUPTION DETAILS"
+    explain: "ERUPTION DETAILS {value}"
+  - id: obs_va_dtg
+    label: "OBS VA DTG"
+    explain: "OBS VA DTG {value}"
+  - id: obs_va_cld
+    label: "OBS VA CLD"
+    explain: "OBS VA CLD {value}"
+  - id: fcst_va_cld_6_hr
+    label: "FCST VA CLD +6 HR"
+    explain: "FCST VA CLD +6 HR {value}"
+  - id: fcst_va_cld_12_hr
+    label: "FCST VA CLD +12 HR"
+    explain: "FCST VA CLD +12 HR {value}"
+  - id: fcst_va_cld_18_hr
+    label: "FCST VA CLD +18 HR"
+    explain: "FCST VA CLD +18 HR {value}"
+  - id: rmk
+    label: "RMK"
+    explain: "RMK {value}"
+  - id: nxt_advisory
+    label: "NXT ADVISORY"
+    explain: "NXT ADVISORY {value}"
+  - id: summit_elev
+    label: "SUMMIT ELEV"
+    explain: "SUMMIT ELEV {value}"
+  - id: aviation_colour_code
+    label: "AVIATION COLOUR CODE"
+    explain: "AVIATION COLOUR CODE {value}"

@@ -150,7 +150,7 @@ def test_api_binds_msgspec_json_response() -> None:
             {
                 "xml_content": '<?xml version="1.0"?><root xmlns="http://icao.int/iwxxm/2023-1"/>',
                 "iwxxm_version": "2023-1",
-                "profile": "annex3",
+                "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
                 "layers": "XML_WELLFORMED",
             },
         ),
@@ -159,7 +159,7 @@ def test_api_binds_msgspec_json_response() -> None:
             {
                 "manual_text": METAR_TAC,
                 "product": "METAR",
-                "profile": "annex3",
+                "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
                 "lint": "false",
             },
         ),
@@ -168,7 +168,7 @@ def test_api_binds_msgspec_json_response() -> None:
             {
                 "manual_text": BULLETIN_TEXT,
                 "product": "METAR",
-                "profile": "annex3",
+                "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
                 "lint": "false",
             },
         ),
@@ -264,7 +264,7 @@ def test_convert_zip_returns_application_zip(client: TestClient, monkeypatch: py
         files={
             "manual_text": (None, METAR_TAC),
             "product": (None, "METAR"),
-            "profile": (None, "annex3"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "lint": (None, "false"),
         },
     )
@@ -332,7 +332,16 @@ def test_decode_tac_contract_shape(client: TestClient) -> None:
 def test_validate_contract_shape(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> None:
     from iwxxm_validate import ValidationReport
 
-    def fake_sdk(xml: str, *, iwxxm_version: str, profile: str = "annex3", levels=None, product=None):
+    def fake_sdk(
+        xml: str,
+        *,
+        iwxxm_version: str,
+        profile: str = "annex3",
+        levels=None,
+        product=None,
+        output_policy_id: str | None = None,
+    ):
+        del output_policy_id
         return ValidationReport(ok=True, iwxxm_version=iwxxm_version, profile=profile, issues=[])
 
     monkeypatch.setattr(api_module, "iwxxm_validate_fn", fake_sdk)
@@ -342,7 +351,7 @@ def test_validate_contract_shape(client: TestClient, monkeypatch: pytest.MonkeyP
         {
             "xml_content": '<?xml version="1.0"?><root xmlns="http://icao.int/iwxxm/2023-1"/>',
             "iwxxm_version": "2023-1",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "layers": "XML_WELLFORMED",
         },
     )

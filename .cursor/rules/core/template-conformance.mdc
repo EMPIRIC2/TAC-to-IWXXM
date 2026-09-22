@@ -22,6 +22,7 @@ apps/worker/             # F8 near-RT ingest poller (Background Worker)
 apps/e2e/                # Playwright cross-app tests
 packages/auth/           # Supabase middleware library (not a deployable)
 packages/tac2iwxxm/      # General TAC → IWXXM (F6); MIT; PyO3 at cutover
+packages/tac-decoding/   # TAC → NL decode + glossary + Decoding catalog (F9 / ADR-044); PyPI
 packages/tac-validate/   # TAC lint / business rules
 packages/iwxxm-validate/ # XSD + Schematron (F2 engine)
 packages/dissemination/  # F16–F19 sinks / writer-contract / SSRF helpers (ADR-030)
@@ -48,11 +49,12 @@ Do **not** create:
 ## Separation of Concerns
 
 - **packages/tac2iwxxm**: IWXXM serialization only — no FastAPI/Supabase imports
+- **packages/tac-decoding**: TAC decode / glossary / Decoding catalog — no FastAPI/Supabase
 - **packages/tac-validate** / **iwxxm-validate**: lint/validate engines — no FastAPI/Supabase
 - **packages/dissemination**: sink adapters + writer-contract + SSRF helpers — no FastAPI/Supabase
 - **packages/workflows**: MET stage orchestration + YAML load — no FastAPI/Supabase; store via injected ports
 - **packages/auth**: JWT middleware and auth routes — no conversion logic
-- **apps/backend**: HTTP routers wiring tac2iwxxm + validate + auth (+ thin dissemination)
+- **apps/backend**: HTTP routers wiring tac2iwxxm + tac-decoding + validate + auth (+ thin dissemination)
 - **apps/worker**: ingest orchestration only — calls packages; writes via service-role JWT
 - **vendor/schemas**: Consumed read-only — never edited locally
 - **packages/gifts**: transitional only until cutover deletes it

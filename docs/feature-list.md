@@ -2,27 +2,27 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-12 (EV-docs-accuracy-audit — F5/F7 status + context-link scrub)
+> **Last updated**: 2026-09-21 (EV-yaml-full-configurability / #1226 — full YAML + emit Spec)
 
 ## Summary
 
 | # | Feature | Status | Category | Source |
 |---|---------|--------|----------|--------|
 | F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
-| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038; **deepen** S071 / EV-061 readable item-by-item decode on validate (#1010) |
+| F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038; **deepen** S071 / EV-061 readable item-by-item decode on validate (#1010); **deepen EV-yaml-engine-configurability / #1224**: overlay honesty matrix + cookbook/preflight (no Schematron-as-YAML); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: every product IWXXM output-policy cell → **full**; pin↔Schematron asserts (vendor SCH SoT) |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011) |
-| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011; F7.g #780; F7.h IndexedDB; **F31** hybrid; **deepen** S063–S066 **F7.q**; **deepen** S068 / EV-058 **F7.q** side-by-side vs inline diff (#983); **deepen** S067 / EV-057 **F7.r** accumulate ZIP (#903) + **F7.s** validate-only IWXXM (#838); **deepen** S070 / EV-060 **F7.t** IWXXM product pass-through (#1003) + converter UX (#1001/#1002/#1004/#1005) + Auth UAT (#1006); **deepen** S071 / EV-061 **F7.u** Product/Profile bars (#1013) + **F7.v** lint/validation catalog tab (#1014); **deepen** EV-062 **F7.v** Validation Issues Catalog (#1017); **deepen** EV-933 **F7.w** ConversionProfile editor (#933); **deepen** EV-1051 shared semantic presets + team-safe sharing of non-secret profile assets/destination references (#1051); **deepen** EV-1120 Phase A profile-scoped catalog + glanceable Profile UX (#1120/#1145; B/C → #1146/#1147); **deepen** EV-beta-ux-export-auth collapsible Results + zip unique names + info-only log chrome + library-id-only lint copy |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011); **deepen EV-yaml-engine-configurability / #1224**: convert column honesty (emit stays Python; pack IR + profile overlays documented); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: declarative **convert emit YAML**; every product pack-IR + emit → **full** |
+| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); **deepen EV-profile-validate-decode-deepen / #1221**: finish ADR-044 FE residual + #1120/#1145 catalog UX |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
-| F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723) |
+| F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner; **deepen EV-profile-validate-decode-deepen / #1221 / #724**: ICAO station → airport name (soft-fail); **deepen EV-yaml-engine-configurability / #1224**: pack/glossary overlay cookbook + examples; **deepen EV-yaml-full-configurability / #1226**: every product decode pack cell → **full**; starter templates + PyPI smoke |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert; **deepen** EV-beta-ux-export-auth info-only Conversion/Validation log chrome (not amber/red) |
 | F11 | Validation stack perf review + msgspec HTTP + XSD codegen | Implemented | Product | S014 / EV-010; #703 |
-| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
+| F12 | Publishable TAC product validation (`tac-validate`) | Implemented | Product | S014 / EV-010; #698; **deepen** S043 / EV-035 lint↔source provenance; **deepen** S055 / EV-046 ISSUE_CATALOG; **deepen** S059 / EV-050 #959 offline membership Validated; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043); **deepen EV-yaml-engine-configurability / #1224**: policy/detector overlay docs + preflight (detector YAML deepen deferred); **deepen EV-yaml-full-configurability / #1226**: every product TAC quality + detector cells → **full** |
 | F13 | Fast IWXXM validate (Rust core + Schematron + PyPI) | Implemented | Product | S014 / EV-010; #699; **deepen** S054 / EV-045 Rust CI (#725); **deepen** S064 / EV-055 #980; **deepen** EV-1150 CalVer + nightly TestPyPI (ADR-043) |
-| F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725); **deepen** EV-1150 CalVer + promote tags + nightly TestPyPI (ADR-043) |
-| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators; **deepen** EV-beta-ux-export-auth operator messages = library codes only (no research T3/S1 tokens) |
+| F14 | Publish `tac2iwxxm` + validate extras + PyPI/release CI | Implemented | Product | S014 / EV-010; #693; **deepen** S054 / EV-045 Rust CI (#725); **deepen** EV-1150 CalVer + promote tags + nightly TestPyPI (ADR-043); **deepen EV-yaml-full-configurability / #1226**: README/install smoke for overlay + emit map templates |
+| F15 | Maintainable TAC lint issue registry + METAR/SPECI quality bar | Done | Product | S015 / EV-011; #732; **deepen** S055 / EV-046 #889 Lean; **deepen** S059 / EV-050 #959 Validated membership + RE*/cloud fixtures; **deepen** EV-062 #1017 catalog descriptions + provenance locators; **deepen** EV-beta-ux-export-auth operator messages = library codes only (no research T3/S1 tokens); **deepen EV-yaml-engine-configurability / #1224**: honesty matrix for policy vs detector YAML; **deepen EV-yaml-full-configurability / #1226**: METAR/SPECI lead then all products to **full** (M2–M4) |
 | F16 | Dissemination drawer + multi-DB upload (BYOC URI) | Done | Product | S019 / EV-014; #729; **deepen** S024 / EV-018 multi-select (#785); **deepen** S047 / EV-039 live local SQL; **deepen** S050 / EV-042 #897 UI-hide (API retained); **restore** EV-091 / #898 + #1089 exchange overlay; **deepen** EV-1150 operator **beta** badge + Issues feedback (ADR-043); **deepen** EV-beta-ux-export-auth remove Upload to Database button; Disseminate/Convert&Send remain beta |
 | F17 | WIS2 dissemination pathway | Done | Product | S019 / EV-014; #2; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
@@ -43,7 +43,7 @@
 | F33 | Secure mass file/folder ingest | Implemented | Product | S050 / EV-042; #897; auth + caps + sniff/zip-bomb; multi-file + folder/zip; 11 approved |
 | F34 | Contract + mutation quality gates | Done | Platform | S069 / EV-059; epic #841 CLOSED; #727 Schemathesis; #874 Stryker + pytest-gremlins; **deepen** S071 / EV-061 stricter stage→main required checks (#1015); promote held |
 | F35 | Semantic vs exchange profiles + canonical ID migration | Implemented | Product | EV-063 / PR #1026; #912 / #914; ADR-036 Accepted; alias cutover #1025 (2026-10-31); amends F6 wire; **deepen** EV-beta-ux-export-auth suppress operator-visible `DEPRECATED_PROFILE_ALIAS` notices; Conversion profiles UI marked **beta** (ADR-043) |
-| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived |
+| F36 | National semantic + regional exchange profile content | In progress | Product | EV-063 / #912; **#919 US closed (EV-085)**; **#916 CA_ECCC P1 closed (EV-078)**; **EV-098 CA_ECCC mining #1028–#1031**; **#1032 closed (EV-075)**; **#1061 SIGMET emit (EV-076)**; VAA TAC validate-first (EV-077); VAA exchange emit waived; **deepen EV-profile-validate-decode-deepen / #1221**: AU_BOM/NZ_CAA_MET → `implemented` + CA mining best-effort; exchange packaging deepen → **#1222** (OUT) |
 | M1 | Monorepo layout (`apps/` + `packages/` + `vendor/`) | Implemented | Platform | REQ-002–006 |
 | M2 | Vendor snapshot sync (wmo-im iwxxm-*) | Planned | Platform | REQ-002, REQ-010 |
 | M3 | GIFTs as in-repo package | Deprecated (ADR-014) | Platform | REQ-003; removed with F6 cutover |
@@ -212,6 +212,28 @@
   cycle. `/convert-zip` inherits the Form field. Does **not** flip F6 status; does **not**
   implement UJ-040 structured remark codecs. See Context: propagate-residuals-to-remarks (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   UJ-070; [evolve-decisions.md](decisions/evolve-decisions.md) §EV-981.
+- **EV-configurable-tac-decode-packs / ADR-045 (F6 deepen, not a status flip):** Convert IR
+  for each core product comes from the same `tac-decoding` pack match as natural-language
+  decode. Legacy `products/*.py` parsers, validation, and pin compares stay
+  (`2023-1`, `2025-2`, `3.0.0`, and any other pin a profile already uses). Packs
+  do not choose the pin. Ordinary, VA, and TC SIGMET
+  are separate packs; HTTP stays `product=sigmet`. TAC abbreviated-heading bulletins stay
+  in scope. COLLECT: decode contained TAC when present; otherwise walk XML fields. No new
+  wire product values. WAFS / QVACI are stub packs only.
+- **EV-pack-ir-convert-wire / ADR-045 deepen (F6, not a status flip):** Fill builtin packs
+  (METAR/SPECI first). Span IR stays in `tac-decoding`; `tac2iwxxm` maps spans→legacy
+  convert slots and may emit IWXXM from that path. When METAR/SPECI vendor golden peers
+  (`metar-A3-1`, `speci-A3-2`) stay byte-identical on every existing pin, flip METAR/SPECI
+  convert **default** to the pack-IR path — still **no** `products/*.py` delete (delete
+  gate needs a later evolve). Packages stay separate. [Corpus: adr/ADR-045]
+- **EV-pack-fill-delete-gate / ADR-045 deepen (F6, #1214):** Fill + wire remaining core packs
+  (TAF, ordinary/VA/TC SIGMET, AIRMET, VAA, TCA, SWXA, VONA). Stricter in-bar peers include
+  `sigmet-A6-1b-CNL`, `sigmet-multi-location-VA`, and SWXA `_alternate` XML. Rewrite `pack_ir_map` so pack emit
+  does not import deleted legacy parsers. **Selective delete-gate:** remove shared
+  `products/*.py` only when **every** product in that file is byte-identical on in-bar peers
+  (all-or-nothing); keep failing files (zero deletes OK). METAR/SPECI may delete `metar_speci.py` if goldens
+  still pass after mapper independence. WAFS/QVACI stay stubs. Packages stay separate.
+  [Corpus: adr/ADR-045]
 - **Limitations**: US AIRMET/SIGMET docs thinner than METAR/TAF — may gate fixture depth inside
   F6.d; F5 not extended to other products in v1; exact AHL dialect coverage TBD in fixtures.
   Full FMH-1 remark catalog beyond AO/SLP/PK/T/P free-text is still scoped deepen work.
@@ -311,6 +333,100 @@
 - **Source**: Context: matrix-disposition-residuals (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   [evolve-decisions.md](decisions/evolve-decisions.md) §EV-037; [COVERAGE_MATRIX](domain/rules/COVERAGE_MATRIX.md)
 
+### F2 deepen (EV-validation-policy-layers / ADR-046 — #1216)
+
+- **Status note**: F2 remains **Implemented**; this cycle does **not** add a new Fn. Moves
+  assert **inventory + output policy** home into `iwxxm-validate` (enable/disable asserts,
+  Schematron bundles). Vendor `.sch` remains SoT; XSD/well-formed always error.
+- **Acceptance**: See F15 deepen EV-validation-policy-layers shared ACs + IWXXM policy TCs.
+- **Source**: #1216; ADR-046; ADR-038 amend.
+
+### F2 deepen (EV-validation-policy-remainders — #1216)
+
+- **Status note**: F2 remains **Implemented**; this cycle does **not** add a new Fn.
+  `validate_iwxxm` applies the bound output policy. Schematron assert ids outside the
+  enabled set are omitted. XSD, well-formed, and `SCHEMATRON_SKIPPED` always remain.
+  Empty `select` stays “all asserts,” so the default annex3 report is unchanged.
+- **Acceptance**:
+  1. CLI `--policy` and the backend validate call pass the resolved policy id into
+     `validate_iwxxm`. No new HTTP field.
+  2. A narrower policy drops a Schematron assert id (unit or API). The default annex3
+     page issue list matches the unfiltered report.
+- **Source**: #1216; ADR-046 remainder; session EV-validation-policy-remainders.
+
+### F2 / F6 / F9 / F15 deepen (EV-yaml-extension-header)
+
+- **Status note**: F2, F6, F9, and F15 stay as they are; this cycle does **not** add a new Fn.
+  `tac-decoding`, `tac-validate`, `iwxxm-validate`, and `tac2iwxxm` stay separate packages.
+  Each owns its YAML. A shared header is `id`, `profiles`, and `extends`. The backend
+  integrates them. There is no editor and no new HTTP field.
+- **Acceptance**:
+  1. A builtin keeps its current `id`. An overlay names one builtin and the profile ids
+     it applies to. A missing base fails closed. The same payload id replaces that entry;
+     a new id is added.
+  2. A Schematron issue code is the pattern id when the engine has one. Empty select still
+     lists every failure. A non-empty select, or an added ignore, drops that pattern id
+     in a unit or API test. Unnamed failures stay `SCHEMATRON_ASSERT`.
+  3. Convert-time validation passes the same policy id as `POST /api/v1/validate`.
+  4. The existing TAC lint list and Validate IWXXM list render those results. MatchPort
+     stays off `/lint-tac`. Decode response fields and convert XML goldens stay.
+- **Source**: ADR-045 amend; ADR-046 amend; session EV-yaml-extension-header.
+
+### F2 / F6 / F9 / F12 / F15 deepen (EV-yaml-engine-configurability / #1224)
+
+- **Status note**: No new Fn. Honesty + SDK/deployer usability for YAML/file-env overlays
+  across decode, TAC validate, IWXXM validate, and convert. Does **not** reopen ADR-044
+  authoring UI, accept client policy YAML on HTTP, replace vendor Schematron with hand
+  XPath, or rewrite convert emit as YAML.
+- **Deliverables (Build, after Spec gate)**:
+  1. Product × engine matrix (rows: METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA; cells:
+     full | partial | stub | N/A) for decode pack / TAC policy / TAC detector YAML /
+     IWXXM policy / convert pack-IR / convert emit.
+  2. Shared overlay cookbook + `examples/overlays/` per package (minimal `extends` sample).
+  3. Monorepo overlay preflight script + thin package CLI hooks; fail closed on bad
+     `extends` / unknown ids.
+  4. README / PyPI / `config-spec` updates; glossary SoT = `tac-decoding`.
+- **Acceptance**:
+  1. Matrix published under standing docs (CORPUS-cited); CI or unit lock for matrix file
+     presence + schema (TC-EVYEC-001).
+  2. Each of the four package READMEs links cookbook + shows overlay env vars
+     (TC-EVYEC-002).
+  3. Preflight rejects a broken overlay fixture and accepts a valid one (TC-EVYEC-003).
+  4. OpenAPI / contract tests: no client `*_policy` / pack-YAML body fields
+     (TC-EVYEC-004).
+  5. Docs state glossary SoT + legacy env alias (TC-EVYEC-005).
+- **Out of scope**: METAR/SPECI detector YAML deepen (defer); convert-emit YAML; #1222;
+  Profile Builder; HTTP policy injection.
+- **Connectivity**: H4–H5 **N/A** (no operator UI this cycle).
+- **Source**: #1224; ADR-044/045/046; session `EV-yaml-engine-configurability`;
+  [yaml-engine-configurability.md](context/yaml-engine-configurability.md);
+  [ev-yaml-engine-configurability.md](decisions/ev-yaml-engine-configurability.md).
+
+### F2 / F6 / F9 / F12 / F14 / F15 deepen (EV-yaml-full-configurability / #1226)
+
+- **Status note**: No new Fn. Program end-state: every core product × every engine cell
+  **full**, including **convert emit YAML** (ADR-047 Accepted). Builds on #1224/#1225
+  honesty overlays. Does **not** reopen ADR-044 authoring UI, HTTP pack/policy YAML, or
+  Schematron-as-YAML. Vendor Schematron remains SoT; pin↔SCH version must match.
+- **Milestones** (epic [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226)):
+  | M | Theme | Issue |
+  |---|--------|-------|
+  | M1 | Templates, cookbook, DX smoke | [#1227](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1227) |
+  | M2 | METAR+SPECI full (minus emit) | [#1228](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1228) |
+  | M3 | Emit YAML pilot METAR→SPECI | [#1229](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1229) |
+  | M4 | Remaining products full (parallel) | [#1230](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1230) |
+  | M5 | All-full matrix + pin↔SCH | [#1231](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1231) |
+- **Acceptance (program)**:
+  1. Honesty matrix all cells **full** with CI evidence (TC-EVYFC-001).
+  2. Emit map YAML drives convert for each product at **full** (parity/replace plugins)
+     (TC-EVYFC-002).
+  3. Overlay/template starters + optional `--check-overlay` + README smoke (TC-EVYFC-003).
+  4. Convert/validate assert Schematron bundle matches IWXXM pin (TC-EVYFC-004).
+  5. No HTTP pack/policy/emit YAML bodies (TC-EVYEC-004 remains; TC-EVYFC-005 emit).
+- **Connectivity**: H4–H5 **N/A** unless OpenAPI/UI changes (overlays stay env-only).
+- **Source**: #1226; ADR-047; session `EV-yaml-full-configurability`;
+  [ev-yaml-full-configurability.md](decisions/ev-yaml-full-configurability.md).
+
 ### F2 deepen (S045 / EV-037 — IWXXM-US Schematron N/A)
 
 - **Status note**: F2 remains **Implemented**; document official US Schematron artifact as
@@ -367,7 +483,7 @@
   | F7.t | #1003 | IWXXM as **product** pass-through (lint + F2 validate; no TAC convert) (S070 / EV-060); siblings #1001 AHL noise, #1002 profile picker, #1004 log_level, #1005 bulletin fields, #1006 Auth UAT |
   | F7.u | #1013 | Product/Profile bars no-wrap (S071 / EV-061) |
   | F7.v | #1014 / #1017 | Validation Issues Catalog tab (S071 / EV-061; EV-062) |
-  | F7.w | #933 | ConversionProfile editor — rule packs + inspector + signed overlays (EV-933); UJ-072; **deepen** EV-1120 / #1145 glanceable summary + ADR-038 inspect/jump blocks + profile examples/seeds (Phase A); composable convert → #1146; workflow authoring → #1147 |
+  | F7.w | #933 | ConversionProfile editor — rule packs + inspector + signed overlays (EV-933); UJ-072; **deepen** EV-1120 / #1145 glanceable summary + ADR-038 inspect/jump blocks + profile examples/seeds (Phase A); **deepen** EV-080 / #1146 parameterizable conversion templates + TAC→IWXXM bridge (phase-1); **deepen** EV-conversion-profile-ux-libraries Profile Builder platform (guided assembly + Libraries + token Convert/Decode/Skip; UJ-072f); **deepen** EV-bridge-ux-canvas-align five Libraries (Conversion / TAC validation / IWXXM validation / Dissemination / Decoding) + Mapping bridge + hard cut `semantic_profile` (UJ-072g); workflow authoring → #1147 |
 - **Inputs**: TAC text/files (`.txt` / `.metar` / `.tac`); `product` / `profile` /
   `iwxxm_version`; optional `bulletin_id` / `issuing_center` / `stop_on_error` /
   `validate_output` / `validation_level` (ADR-023); editor cursor and character spans
@@ -441,7 +557,10 @@
   residuals, lint, and validate diagnostics via public **`GET /api/v1/quality-metrics*`**
   (`D-S063-compute=1` + `D-S063-gateA=2`). Per-file detail includes **unified XML diff** of
   official vs our conversion (`D-S063-diff=2`). Does **not** flip F7 → Implemented;
-  complements CI matrices (#815 / #831 / F29) without replacing them.
+  complements CI matrices (#815 / #831 / F29) without replacing them. EV-052 sticky PR
+  quality comments remain a **separate** CI surface (goldens + F29 inventory) — not a
+  substitute for this tab’s `corpus_metrics.json` evaluation
+  ([ev-970-s3-validate-fill.md](decisions/ev-970-s3-validate-fill.md)).
 - **Acceptance (EV-054 / #836 — F7.q)** — **approved** (`D-S063-01-ac=1`; Gate A amend
   `D-S063-gateA=2`):
   1. Quality metrics is a **separate primary tab** (shell navigation); lists official corpus
@@ -660,6 +779,143 @@
      marketplace; Learn/XP; soft-preview; #996 click-detail.
   4. Journeys UJ-072 deepen + UJ-073; TC-EV1120-*; H4–H5 when FE ships; EV-048 clean.
   **Context**: profile-scoped-catalog-1120 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
+- **EV-080 deepen (F7.w / #1146) — Parameterizable conversion templates + TAC→IWXXM bridge**
+  — **requirements locked** (`D-EV080-req=1`, 2026-09-14):
+  1. **Default Conversion rule object** is a **parameterizable template** (ordered typed
+     slots → IWXXM block/path). Slot-builder-first authoring; compiled pattern secondary.
+     Typed captures pass numbers/enums through. Model may include ns/nil/cardinality/
+     choice/uom/nesting/Schematron hooks; UI v1 may phase controls.
+  2. **Authoring UX:** same builder for first-party + custom; DnD slot reorder with
+     keyboard/↑↓; comments under TAC; inline conversion preview; clear TAC → template →
+     IWXXM bridge (span highlight, captures, XML block). No raw regex as default path.
+  3. **Trust v1:** JWT owner CRUD for custom templates; first-party **view + fork** only;
+     apply custom on convert when entitled; fail-closed unknown template/profile ids.
+     No destination credentials in stored objects (ADR-021/029).
+  4. **Phase-1 ship:** templates + bridge UI only. Out: TAC validation / dissem / decoding
+     library shells; #1147 workflows; marketplace; org-admin mutate of first-party source;
+     N converters. Dissem rules still apply only on Disseminate / Convert & Send.
+  5. ADR-038 amend (EV-080); journeys **UJ-072e**; **TC-EV080-001..006**; H4–H5 when FE
+     ships; EV-048 clean; **Beta** badge + Issues feedback (ADR-043).
+  **Session**: `EV-080-param-conversion-templates` under local session-store (not a CORPUS
+  design gate).
+- **EV-conversion-profile-ux-libraries deepen (F7.w / F7.v / F9 — Profile Builder platform)**
+  — **requirements locked** (`D-EVCPU-req=1`, 2026-09-14):
+  1. **Shell:** Guided assembly wizard + **Libraries** hub (tabs: Conversion rules, TAC
+     validation, IWXXM validation, Dissemination). Scientifically simple language; **no
+     operator-visible machine ids** (copy-id in overflow). DnD for ordered lists. All
+     first-party + custom assets in the builder; FP view/fork (EV-080 trust).
+  2. **Conversion tokens (hero):** Match → Represent (IWXXM path/block + cardinality /
+     nilReason / ns / choice / uom / nesting / Schematron hooks in model) → mode
+     **Convert | Decode-only | Skip** (+ gloss). Parametric typed captures. Live preview.
+     Advanced pattern panel secondary.
+  3. **Validation:** Hybrid authoring — recipes + guided tokens + Advanced regex; issue /
+     level / message; TAC + IWXXM library tabs with attached-profile chips.
+  4. **Dissemination:** Ordered IWXXM post-process transform steps (DnD) + non-secret sink
+     defaults; credentials memory-only at send. Discoverability journey = future-evolve notes
+     unless Phase C expands.
+  5. **Selection:** Independent Conversion / Validation / Dissemination pickers **and**
+     bundle presets spanning all three (optional decode).
+  6. **Decoding library:** F9 deepen stub / decision this cycle; catalogued NL definitions;
+     not Phase A ship.
+  7. **Phase A Build:** Output filename near TAC/IWXXM panes; Profile creator simplify;
+     conversion token/skip/preview hero. Phase B = Libraries + validation authoring +
+     pickers/presets. Phase C = dissem transforms + decode library deepen.
+  8. Journeys **UJ-072f**; **TC-EVCPU-001..008**; H4–H5 when FE ships; EV-048 clean; Beta
+     + Issues feedback (ADR-043). ADR-038 amend (EVCPU).
+  **Session**: `EV-conversion-profile-ux-libraries` under local session-store (not a CORPUS
+  design gate). Canvas: `profile-builder-platform.canvas.tsx`.
+- **EV-bridge-ux-canvas-align deepen (F7.w — five Libraries + Mapping bridge + hard cut)**
+  — **requirements locked** (`D-EVBRIDGE-req=1`, 2026-09-14):
+  1. **Five libraries:** Conversion · TAC validation · IWXXM validation · Dissemination ·
+     Decoding. Profile builder = **five sub-tabs** (create/edit). Convert bar = Product +
+     IWXXM version + **five library pickers**.
+  2. **Hard cut:** Every existing national semantic profile is **split** into five
+     first-party defaults pre-loaded in the builders. Convert/API **stop** using
+     `semantic_profile` / Exchange / preset / overlay pickers when libraries ship (no alias
+     release). Exchange packaging lives under Dissemination.
+  3. **Trust:** Edit of a first-party default **auto-forks** to a user-owned custom; defaults
+     are never mutated in place and **cannot be deleted**. User forks deletable by owner.
+     JWT custom CRUD; FP view+fork only (code-enforced).
+  4. **Drop primary UI:** Signed overlays, Dissemination templates, Semantic preset / Rule
+     pack authoring chrome (APIs may be retired in tech-plan).
+  5. **UX:** Mapping bridge on Convert **and** Profile; Conversion tab hosts Template block
+     builder (DnD + ↑↓). Dissemination library: annotations + ordered transforms (envelope,
+     topic/filename, checksum, bulletin re-wrap); apply only on Disseminate / Convert & Send;
+     no stored destination secrets. Decoding seeded from F9/`decode_tac`.
+  6. **Rule association:** Every TAC→IWXXM block mapping requires an associated Conversion
+     library rule/template; unmatched groups fail closed (bridge shows match/miss).
+  7. ADR-038 amend (EV-bridge); journeys **UJ-072g**; **TC-EVBRIDGE-001..011**; H4–H5 when FE
+     ships; EV-048 clean; **Beta** + Issues feedback (ADR-043).
+  **Session**: `EV-bridge-ux-canvas-align` under local session-store (not a CORPUS design
+  gate).
+- **EV-profile-builder-yaml-libraries deepen (F7.w / #1196 — YAML/DnD libraries + export metadata)**
+  — **requirements locked** (`D-EVPYL-73`, 2026-09-15):
+  1. **Major Profile Builder redesign:** remove Guided assembly / glossary / workflow /
+     examples prose; **hover tooltips on every control**; Catalog inspector **directly under**
+     the active library editor (per-tab).
+  2. **YAML SoT per library asset** with bidirectional live sync to guided UI; invalid YAML
+     locks UI until fixed; strict schema on save. Create via templates + duplicate mined
+     block + import YAML. Built-ins read-only; users create customs (fork nationals OK).
+  3. **DnD:** rule **blocks** = IWXXM schema blocks (WMO) + national extension blocks tied to
+     country profiles; **cards** = rules inside blocks.
+  4. **All five libraries** fully customizable (Conversion, TAC validation, IWXXM validation,
+     Dissemination, Decoding). Dissemination customs never store credentials/destination URIs.
+  5. **WMO/ICAO Annex 3 defaults** on all five pickers in Builder **and** Convert (synced).
+  6. **Phases:** A = UX shell + Draft customs + Convert export `*.meta.json` sidecar (opt-in,
+     remember choice, full checklist default incl. operator id/email when selected; no secrets);
+     Activate deferred. B = comprehensive mined catalogs all five libraries (+ SWX/thin when
+     in vendor; residual tickets for gaps). C = live regex + capture summary + Warn/Fail;
+     Activate = zero Fail; customs drive Convert engines; sample drawer previews.
+  7. **Journeys:** UJ-072h-conv / -tac / -iwxxm / -dissem / -decode / -cross / -export;
+     T3 full matrix; smoke = happy path; **H4–H5** after stage FE. Beta on Profile builder +
+     export-metadata toggle (ADR-043). ADR-038 amend (EVPYL). EV-048 clean.
+  **Session**: `EV-profile-builder-yaml-libraries` under local session-store (not a CORPUS
+  design gate). Issue: [#1196](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1196).
+- **EV-profile-builder-mine-residuals deepen (F7.w / #1198+#1199 — Phase B mining residuals)**
+  — **requirements locked** (`D-EVPYL-R-10`, 2026-09-16):
+  1. **#1199:** Extend IWXXM validation library mining beyond core `iwxxm.sch` to **latest**
+     WMO foundation Schematron only (`metce` / `opm` / `saf` / `collect` under
+     `vendor/schemas/iwxxm/externalSchema/schemas.wmo.int/.../rule/*.sch`). Additive asserts
+     with `authority` tags; existing core assert ids remain stable; `--check` drift gate kept.
+     OpenGIS / other `externalSchema` SCH out of scope this cycle.
+  2. **#1198:** National Conversion schema blocks for AU/BR/HK/IN/JP/KR/NZ/UK — **defer full
+     mine** until real vendor pins (M6 sync). Hooks landed; Stage 1 (2026-09-16) found
+     **AU-TAF** public TAF-only XSD (partial; license/scope gate) and UK Colour State
+     registry OK but canonical XSD URL **404** — see
+     `docs/domain/profiles/mining/EV-1198-national-xsd-pinability.md`.
+     **No invented national XSD trees**; keep #1198 open / blocked for mining.
+  3. **Tests:** TC-EVPYL-MINE-006..008; no UI / H4–H5. ADR-038 amend (residuals). EV-048 N/A
+     (tooling + package data only).
+  **Session**: `EV-profile-builder-mine-residuals` under local session-store (not a CORPUS
+  design gate). Issues: [#1198](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1198),
+  [#1199](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1199).
+- **EV-profile-builder-workbench-edit deepen (F7.w / #1203 — IDE workbench + full editability)**
+  — **requirements locked** (`D-EVWB-REQ-08`, 2026-09-16):
+  1. **Workbench IA:** Profiles keeps five library tabs + new **Overview** tab. Each library
+     uses IDE layout: catalog list | item editor | optional per-item IWXXM preview and
+     validation issues/warnings preview (**off by default**). Tooltips on every tab + control.
+  2. **Conversion:** **Remove DnD** (order does not matter). Renamable **preset slots** per TAC
+     group (direction, speed, gust, unit, …). Expanded mined catalog + **grouped searchable**
+     picker. Full create/edit of Conversion blocks/templates (UI + YAML). Foundation/WMO
+     read-only; customs = fork + full edit.
+  3. **TAC validation:** Create/edit regex rules; issue levels; clear rule identity; operator
+     args for numeric/bounds checks (`min` / `max` / `eq` / `in` for int+float; optional unit
+     label).
+  4. **IWXXM validation:** Make **all current** validation editable via intuitive UI
+     (enable/disable Schematron/XSD-oriented asserts + custom overlays + shared numeric ops).
+  5. **Decoding:** Symbol→meaning maps; unit annotations; structured types (e.g. polygon =
+     N values + units); add/update interpretations.
+  6. **Dissemination:** Full create/edit of destination/route profiles + enable/disable
+     existing F16–F19 adapters + YAML; **no new protocols**; never store credentials/URIs
+     (ADR-021/029/030). Drawer redesign out of scope.
+  7. **Overview:** Profile compare (diff libraries/rules) + per-profile product / file-type /
+     IWXXM version enablement.
+  8. **YAML** remains portable SoT with UI round-trip; Activate fail-closed on Fail; Beta on
+     workbench (ADR-043). EV-048 clean. Phases P0→P4 per session routing-plan.
+  9. **Journeys:** UJ-072i-*; **Tests:** TC-EVWB-*; **H4–H5** after stage FE. ADR-038 amend
+     (EVWB). Out: F8 auto-push; new sinks; Convert chrome rewrite; PyPI breaks.
+  **Session**: `EV-profile-builder-workbench-edit` under local session-store (not a CORPUS
+  design gate). Issue: [#1203](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1203).
 - **Resolved gaps (S011 Feature List Batch 2)**:
   | ID | Decision |
   |----|----------|
@@ -701,7 +957,34 @@
   (ADR-042). Ingest path does **not** auto-disseminate (F16–F19 remain operator-triggered).
   See Context: workflows-runtime-1132 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate).
 
-### F9: Value-Aware Live Decode + Plain-Language Summary
+
+- **EV-retire-profile-dissem-ui-catalogs / ADR-044 deepen (F7.v / F7.w / F9 / F16–F19)**:
+  **Hard cutover** — remove Profile Builder / five-library authoring / Dissemination Bench
+  authoring UI. Selection uses **dropdowns** fed only by **backend-deployed** registries
+  (code + deploy to extend; no browser-only add-ons; no YAML escape hatch).
+  **Five trust catalogs** (tabbed shell, read-only): TAC Validation (`tac-validate`),
+  IWXXM Validation (`iwxxm-validate`), Conversion (`tac2iwxxm`), Dissemination
+  (`dissemination`), Decoding (`tac-decoding`). HTTP: family-aware
+  `GET /api/v1/rule-catalogs?family=…` aggregating package exports; keep
+  `GET /lint-issue-catalog` as compatibility wrapper during transition; separate
+  selection-options for dropdowns. **Delete** operator library-assets YAML CRUD UI/API.
+  Dissemination **send/preflight** retained with simpler pickers (ADR-021/029/030 unchanged).
+  F7.w authoring journeys UJ-072f–UJ-072i → **Retired**; new UJ-076*.
+  F9: move decode/glossary into `packages/tac-decoding`; `tac2iwxxm` re-exports one release
+  (ADR-045: shims, legacy parsers, and multi-pin compares stay).
+  Decisions: [decisions/ev-retire-profile-dissem-ui-catalogs.md](decisions/ev-retire-profile-dissem-ui-catalogs.md).
+- **Acceptance (EV-retire-profile-dissem-ui-catalogs / ADR-044)**:
+  1. Profile Builder + Dissemination Bench authoring UI gone (hard cutover)
+  2. Five catalog tabs inspect package-exported rules (plain-language; EV-048 clean)
+  3. Dropdowns list only deployed backend options for convert/validate/dissem/decode selection
+  4. `tac-decoding` importable on monorepo/PyPI path; `/decode-tac` parity; one-release re-export
+  5. Library authoring CRUD removed from operator surfaces; H4–H5 for new catalog/dropdown calls
+  6. Must-not-break: convert, lint, soft-preview, decode-tac, dissem preflight/send + allowlist
+- **EV-profile-validate-decode-deepen / #1221 (F7.v residual + ADR-044 FE)**: Finish hard
+  cutover where Profile Builder remains mounted; close #1120 residual (#1122/#1123/#1145);
+  journeys UJ-076* / UJ-073. Decisions:
+  [ev-profile-validate-decode-deepen.md](decisions/ev-profile-validate-decode-deepen.md).
+  **Acceptance**: D-EVPVD AC1–2, AC6–7.
 
 - **Status**: **Done** — shipped S013 / EV-009 (2026-07-17, PR #723).
 - **What it does**: Upgrades the F7 decode panel from generic group labels to **value-aware
@@ -724,6 +1007,32 @@
   under F6 — not a change to `/decode-tac` response shape.
 - **Out of scope**: LLM/AI-generated text; changing segment offsets contract; Layer 1–2 or
   Schematron semantics.
+- **EV-retire-profile-dissem-ui-catalogs / ADR-044**: Decode engine + glossary + Decoding
+  catalog live in `packages/tac-decoding` (PyPI `tac-decoding`). `tac2iwxxm.decode_tac`
+  re-exports for one release then deprecates (amends ADR-032 home). **ADR-045:** shims,
+  legacy parsers, and multi-pin compares stay.
+- **EV-configurable-tac-decode-packs / ADR-045 (F9 deepen, not a status flip):** Pack YAML/JSON
+  owns token-stream rules (METAR/SPECI/TAF/SIGMET/AIRMET, including whitespace-spanning
+  groups) and label-field rules (VAA/TCA/SWXA/VONA). SWXA and VONA stay core (F28/F32).
+  English explanation templates plus a locale hook. `/decode-tac` response fields do not
+  change. `tac2iwxxm.decode` / `glossary` shims stay. Legacy parsers and the
+  multi-pin validation compares stay. No in-app pack editor. Overlays are file or
+  environment only, with regex/repeat budgets that fail closed.
+- **EV-pack-ir-convert-wire (F9 deepen):** METAR/SPECI builtin pack rules grow until match
+  covers convert-golden vendor peers; decode still emits the same `/decode-tac` fields.
+  Convert-slot mapping and XML emit stay in `tac2iwxxm` (span IR only in decode).
+- **EV-pack-fill-delete-gate (F9 deepen, #1214):** Remaining core product packs gain real
+  rules (token-stream + label-fields). Decode wire unchanged. Convert-slot mapping must not
+  depend on deleted `products/*.py` after selective delete-gate.
+- **EV-profile-validate-decode-deepen / #1221 / #724 (F9 deepen):** METAR/SPECI station
+  token explanation and plain-language `summary` include full aerodrome name when the
+  existing airport lookup hits; miss soft-fails to ICAO designator only. No new `/decode-tac`
+  response keys. Reuse `tac_decoding.glossary` optional resolver + F3 airport data.
+  **Acceptance**: D-EVPVD AC4; TC-EVPVD-724-*.
+- **EV-conversion-profile-ux-libraries deepen (Decoding library stub):** Catalogued
+  natural-language code definitions (reuse `decode_tac` / F9 explanations) as a first-class
+  **Decoding library** asset, separate from Conversion / Validation / Dissemination.
+  **Decision recorded**; not Phase A Build — Phase C deepen. [Corpus: decisions §EVCPU]
 - **Acceptance (F9 v1 done)**:
   1. METAR/SPECI/TAF golden fixtures produce value-aware explanations for wind, visibility,
      temperature/dewpoint, altimeter/QNH, time, station, clouds, weather groups
@@ -918,6 +1227,35 @@
   FMS as METAR authority; closing sibling product-quality tickets unless registry sharing requires it.
 - **Source**: #732; E11-1..E11-10; context/metar-lint-quality.md (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate);
   ADR-028; `docs/domain/rules/COVERAGE_MATRIX.md`; **S043 / EV-035** ISSUE_CATALOG↔source
+
+### F15 deepen (EV-validation-policy-layers / ADR-046 — #1216)
+
+- **Status note**: F15 remains **Done**; this cycle does **not** add a new Fn. Adds
+  **Registry / Detector / Policy / Runtime** layering so METAR/SPECI R1–R8 (and later themes)
+  scale via declarative detector packs + profile-owned TAC quality policy.
+- **Acceptance**:
+  1. ADR-046 accepted; detectors emit only ADR-028 registry codes
+  2. Small DSL v1 + `python:` hatch; MatchPort optional; strict annex3 METAR pack-bound rules
+  3. Policy load draft/activate; activate fail-closed on unknown codes
+  4. R1–R8 themes flipped by theme (shadow code+span) under this evolve
+  5. No `/lint-tac` wire shape change; no lint-profile picker; catalogs generated-only
+     (`make validation-catalog-check`)
+  6. CLI `--profile` / `--policy`; H4–H5 N/A
+- **Source**: #1216; [ev-validation-policy-layers-lock.md](decisions/ev-validation-policy-layers-lock.md);
+  ADR-046; ADR-028 amend; ADR-038 amend.
+
+### F15 deepen (EV-validation-policy-remainders — #1216)
+
+- **Status note**: F15 remains **Done**; this cycle does **not** add a new Fn. Adds
+  MatchPort, which milestones M1–M6 specified and did not build.
+- **Acceptance**:
+  1. `tac-validate` accepts an optional MatchPort. It does not import `tac-decoding`.
+  2. When the caller passes a MatchPort, every annex3 METAR theme detector is pack-bound.
+     An empty port emits registry code `MISSING_DECODE_MATCH`. Omitting the port, including
+     `/lint-tac`, keeps today's TAC scan. Other products keep scanning TAC.
+  3. When a match is present, the lint issue reuses the decode span.
+  4. `/lint-tac` wire shape unchanged.
+- **Source**: #1216; ADR-046 remainder; TC-EV-VPL-003.
 
 ### F15 deepen (S043 / EV-035 — rule-source provenance)
 
@@ -1699,6 +2037,15 @@
   cycle **TC-EV030-***
 - **Out of scope**: Claiming 100% Annex-3 coverage in first PR; duplicating entire WMO trees
   ×20; coupling matrix to live network
+- **EV-970 deepen (#970 — METAR/SPECI fixture fill + sticky Product hygiene)**: S1 convert and
+  S2 lint cleared `needs-fixture` for `metar_speci`; **S3** cleared validate/metar_speci
+  (`860` ready / `0` oos / `0` NF — see
+  [ev-970-s3-validate-fill.md](decisions/ev-970-s3-validate-fill.md)). Sticky Product rollup
+  must allowlist canonical products and map junk sad-fixture `meta.product` values to the
+  pack parent (e.g. `metar_speci` → `METAR`) so opaque codes never appear as Product rows.
+  Sticky outcomes are **not** the F7.q Quality metrics dashboard (`corpus_metrics.json`);
+  sticky Match includes ready inventory slots plus golden live compares — document that
+  distinction in the PR comment. [Corpus: decisions §ev-970-s3-validate-fill]
 - **S070 / EV-060 deepen (#1004)**: Conversion parameter `log_level` must set backend/package
   logger verbosity (not only client-echoed process-issue filter). DEBUG must not dump JWTs,
   passwords, or Authorization headers. UJ-063 / TC-EV060-1004-*.
@@ -2002,7 +2349,7 @@
 
 ### F36: National semantic + regional exchange profile content — EV-063 / #912
 
-- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; **EV-098** CA_ECCC deep mining [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028)–[#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031); EV-065/086/090 #921 exchange stubs + mining; **EV-087** `AU_BOM` + `NZ_CAA_MET`; **EV-089** thin/compat #920; **EV-090** exchange light picker; **EV-093** #1024 semantic picker deepen; **EV-094** thin/compat deepen [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098)).
+- **Status**: **In progress** (EV-064 CA_ECCC P1 merged; **EV-098** CA_ECCC deep mining [#1028](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1028)–[#1031](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1031); EV-065/086/090 #921 exchange stubs + mining; **EV-087** `AU_BOM` + `NZ_CAA_MET`; **EV-089** thin/compat #920; **EV-090** exchange light picker; **EV-093** #1024 semantic picker deepen; **EV-094** thin/compat deepen [#1098](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1098); **EV-profile-validate-decode-deepen / #1221** AU/NZ → `implemented` + CA mining best-effort; exchange packaging → [#1222](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1222) OUT).
 - **What it does**: Implements profile **content** on top of F35 architecture: deepen
   `US_FAA_NWS` ([#919](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/919)), **`CA_ECCC`**
   ([#916](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/916) / EV-064), **`AU_BOM`**
@@ -2062,6 +2409,12 @@
      (#1031); MANOBS P0 TAC rules + fixtures (#1029); MANAIR TAF/AIRMET/GFA (#1030). Research via
      deep-research-domain-handoff (EV-097); promote via mine-domain-sources after gate C.
      No UI; no SIGMET national / VAA convert this cycle. **TC-EV098-***.
+  24. **EV-profile-validate-decode-deepen / #1221:** `AU_BOM` + `NZ_CAA_MET` catalog
+     `status: implemented` with METAR/SPECI/TAF convert goldens (no national XSD); CA mining
+     best-effort from #1029/#1030; regional exchange packaging deepen deferred to
+     [#1222](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1222). **TC-EVPVD-AU-*** /
+     **TC-EVPVD-NZ-***. Decisions:
+     [ev-profile-validate-decode-deepen.md](decisions/ev-profile-validate-decode-deepen.md).
 - **Milestone 4 core acceptance framing**: treat [#970](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/970)
   RuleCases / fixture coverage as a first-class F36 quality requirement rather than a
   secondary backlog item, and coordinate with operator sharing
@@ -2234,14 +2587,20 @@
      new DOKS Redis Deployment (`D-S061-redis=1`)
   5. `openapi-typescript` FE types from committed OpenAPI snapshot (`make openapi-refresh`;
      `pnpm openapi:check` drift gate) — locked `D-S061-orval=1` (not full Orval)
+- **EV-970 amend (sticky Product hygiene / dashboard clarity)**: Collect/format must
+  **allowlist** canonical Product keys; junk sad-fixture products roll under pack parent.
+  Sticky must **not** be read as F7.q dashboard scores — footnote inventory vs golden live
+  vs `/quality` corpus metrics. See [ev-970-s3-validate-fill.md](decisions/ev-970-s3-validate-fill.md);
+  **TC-EV970-STICKY-001** (product allowlist) when Build lands.
 - **Acceptance**: AC1–AC12 in [evolve-decisions.md](decisions/evolve-decisions.md) §EV-052;
-  **TC-EV052-001..012**
-- **Out of scope**: Paid Sentry/Valkey; in-cluster Redis service; #874/#727/#836; AMS #958;
-  stage→main promote this cycle
+  **TC-EV052-001..012**; sticky Product allowlist per EV-970 S3
+- **Out of scope**: Paid Sentry/Valkey; in-cluster Redis service; #874/#727 (CI polish);
+  unifying sticky onto `corpus_metrics.json` this cycle; AMS #958; stage→main promote this
+  cycle. F7.q dashboard remains the operator corpus evaluation surface (#836 family).
 - **Journeys / UI**: N/A (codegen only; no new operator UJ)
-- **Corpus**: `[Corpus: product]` · `[Corpus: tests]` · `[Corpus: tech-spec]` ·
-  `[Corpus: deploy]` · `[Corpus: adr/ADR-007]` · `[Corpus: adr/ADR-006]` ·
-  `[Corpus: adr/ADR-031]` · `[Corpus: decisions]`
+- **Corpus**: `[Corpus: product]` · `[Corpus: product §F7.q]` · `[Corpus: tests]` ·
+  `[Corpus: tech-spec]` · `[Corpus: deploy]` · `[Corpus: adr/ADR-007]` ·
+  `[Corpus: adr/ADR-006]` · `[Corpus: adr/ADR-031]` · `[Corpus: decisions]`
 - **Infra**: `docs/sessions/S061-ci-polish-quality-pr-stats/reports/infra-free-tier.md`
 
 ### F29 / M5 deepen (S062 / EV-053 — Vitest branches ≥95 / #968)

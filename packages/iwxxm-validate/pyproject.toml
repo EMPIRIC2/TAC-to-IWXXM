@@ -1,6 +1,6 @@
 [project]
 name = "iwxxm-validate"
-version = "2026.9.13"
+version = "2026.9.22"
 description = "Validate IWXXM XML with XSD and Schematron (schemas bundled)"
 readme = "README.md"
 license = { text = "MIT" }
@@ -8,6 +8,7 @@ requires-python = ">=3.12"
 dependencies = [
   "lxml>=4.9.0",
   "msgspec>=0.19",
+  "pyyaml==6.0.3",
 ]
 
 [project.scripts]

@@ -1,0 +1,8 @@
+schema_version: 1
+id: annex3-iwxxm-output-demo
+lifecycle: draft
+pin: "2025-2"
+extends: [annex3-iwxxm-output]
+profiles: [annex3]
+select: []
+ignore: []

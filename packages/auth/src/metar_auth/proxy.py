@@ -2,10 +2,16 @@
 
 from __future__ import annotations
 
+import json
 import os
 from typing import Any, cast
 
 import httpx
+
+_OPERATOR_EMAIL_NOT_CONFIRMED = (
+    "Please confirm your email before signing in. "
+    "Check your inbox for the confirmation link."
+)
 
 
 class AuthProxyError(Exception):
@@ -95,12 +101,42 @@ class SupabaseAuthProxy:
             json={"email": email, "password": password},
         )
         if response.status_code >= 400:
-            detail = response.text
             raise AuthProxyError(
-                f"login failed: {detail}",
+                _login_error_message(response.text),
                 status_code=401 if response.status_code in {400, 401} else 502,
             )
         data = response.json()
+        return _normalize_session_payload(data)
+
+    def verify_email(self, token_hash: str, type_: str = "email") -> dict[str, Any]:
+        """
+        Confirm an email (or recovery) token hash via GoTrue verify.
+
+        Parameters
+        ----------
+        token_hash : str
+            ``token_hash`` from the Auth email link query string.
+        type_ : str
+            GoTrue verify type (``email``, ``signup``, ``recovery``, …).
+
+        Returns
+        -------
+        dict[str, Any]
+            Normalized ``user`` + ``session`` payload.
+        """
+        url = f"{self.supabase_url}/auth/v1/verify"
+        response = self._http().post(
+            url,
+            headers=self._headers(),
+            json={"token_hash": token_hash, "type": type_},
+        )
+        if response.status_code >= 400:
+            detail = response.text
+            raise AuthProxyError(
+                f"email confirmation failed: {detail}",
+                status_code=400 if response.status_code < 500 else 502,
+            )
+        data = cast(dict[str, Any], response.json())
         return _normalize_session_payload(data)
 
     def sign_up(self, email: str, password: str) -> dict[str, Any]:
@@ -196,6 +232,22 @@ class SupabaseAuthProxy:
             "email": data.get("email") or "",
             "metadata": data.get("user_metadata") or {},
         }
+
+
+def _login_error_message(raw: str) -> str:
+    """Map GoTrue login error bodies to operator-facing messages."""
+    try:
+        decoded: object = json.loads(raw)
+    except json.JSONDecodeError:
+        decoded = None
+    if isinstance(decoded, dict):
+        payload = cast(dict[str, Any], decoded)
+        error_code = str(payload.get("error_code") or "")
+        if error_code == "email_not_confirmed":
+            return _OPERATOR_EMAIL_NOT_CONFIRMED
+    if "email_not_confirmed" in raw:
+        return _OPERATOR_EMAIL_NOT_CONFIRMED
+    return f"login failed: {raw}"
 
 
 def _normalize_session_payload(data: dict[str, Any]) -> dict[str, Any]:

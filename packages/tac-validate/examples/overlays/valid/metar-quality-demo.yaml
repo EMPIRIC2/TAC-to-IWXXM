@@ -1,0 +1,11 @@
+schema_version: 1
+id: annex3-metar-quality-demo
+lifecycle: draft
+product: metar
+extends: [annex3-metar-quality]
+profiles: [annex3]
+select: []
+ignore: []
+severity: {}
+preview: []
+detectors: []

@@ -132,6 +132,10 @@ async def validate_comprehensive(
             json_exchange_profile=json_exchange,
         )
         profile = wire.emit_key
+        from tac2iwxxm.profile_resolve import resolve_validation_policies
+
+        bound = resolve_validation_policies(profile or "annex3")
+        output_policy_id = bound.iwxxm_output_policy_id
 
         resolved_extensions = api_surface._resolve_request_extensions(extensions, json_extensions)
         validate_product = api_surface.normalize_api_product(
@@ -184,6 +188,7 @@ async def validate_comprehensive(
             emit_key=profile or "annex3",
             extensions=resolved_extensions,
             product=validate_product,
+            output_policy_id=output_policy_id,
         )
 
         # Parse layer selection

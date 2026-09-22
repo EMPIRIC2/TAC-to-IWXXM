@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 from tac2iwxxm.geometry.reference_point import UnknownVOR, parse_vor_reference_geometry
-from tac2iwxxm.products.sigmet_airmet import parse_airmet
+from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet
 
 from metar_shared.xml_canonical import canonicalize_xml
 from tac2iwxxm import convert

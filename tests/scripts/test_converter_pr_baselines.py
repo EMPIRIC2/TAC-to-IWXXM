@@ -15,6 +15,9 @@ ROOT = Path(__file__).resolve().parents[2]
 
 def test_ceiling_p95_s() -> None:
     assert mod.ceiling_p95_s(0.001, 1.2, 0.0002) == pytest.approx(0.0012)
+    assert mod.ceiling_p95_s(
+        0.001, 1.2, 0.0002, hard_ceiling_p95_s=0.001
+    ) == pytest.approx(0.001)
 
 
 def test_p95_branches() -> None:

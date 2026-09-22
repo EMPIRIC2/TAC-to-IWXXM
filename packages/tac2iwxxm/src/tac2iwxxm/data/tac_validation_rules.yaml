@@ -1,0 +1,1458 @@
+schema_version: 1
+source: tac_validate.issue_registry.catalog_entries
+rules:
+- id: TAC.AMD_PRESENT
+  code: AMD_PRESENT
+  label: Amd Present
+  severity: info
+  message_template: '{product} includes the AMD (amendment) modifier, indicating an amended forecast.
+    Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex
+    3 App 5 / Table A5-1. Full normative text may require purchase.'
+  product: taf
+  tags:
+  - modifier
+  - taf
+  - t1
+  - c1
+- id: TAC.AT_PRESENT
+  code: AT_PRESENT
+  label: At Present
+  severity: info
+  message_template: '{product} includes an AT time qualifier on a change group. Informational: noted for
+    operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1.
+    Full normative text may require purchase.'
+  product: taf
+  tags:
+  - change
+  - taf
+  - t2
+  - at
+- id: TAC.AUTO_PRESENT
+  code: AUTO_PRESENT
+  label: Auto Present
+  severity: info
+  message_template: '{product} includes the AUTO modifier, meaning the observation was produced by an
+    automatic station. Informational: noted for operator awareness; does not by itself block conversion.
+    Source: ICAO Annex 3 Table A3-2 / App 3. Full normative text may require purchase.'
+  product: null
+  tags:
+  - modifier
+  - metar
+  - speci
+  - r8
+- id: TAC.BECMG_PRESENT
+  code: BECMG_PRESENT
+  label: Becmg Present
+  severity: info
+  message_template: '{product} includes a BECMG (becoming) change group describing a gradual change. Informational:
+    noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table
+    A5-1. Full normative text may require purchase.'
+  product: taf
+  tags:
+  - change
+  - taf
+  - t2
+  - becmg
+- id: TAC.CAVOK_PRESENT
+  code: CAVOK_PRESENT
+  label: Cavok Present
+  severity: info
+  message_template: '{product} includes CAVOK (ceiling and visibility OK). Informational: noted for operator
+    awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative
+    text may require purchase.'
+  product: null
+  tags:
+  - cavok
+  - metar
+  - speci
+  - taf
+  - t3
+  - s1
+- id: TAC.CA_AIRMET_GFA
+  code: CA_AIRMET_GFA
+  label: Ca Airmet Gfa
+  severity: info
+  message_template: '{product} encodes MANAIR GFA compound phenomenon - ca_eccc profile awareness'
+  product: null
+  tags:
+  - airmet
+  - ca_eccc
+  - manair
+  - gfa
+- id: TAC.CA_ALTIMETER_INHG
+  code: CA_ALTIMETER_INHG
+  label: Ca Altimeter Inhg
+  severity: info
+  message_template: '{product} uses inch-of-mercury altimeter (A####) - MANOBS Canadian overlay'
+  product: null
+  tags:
+  - pressure
+  - metar
+  - speci
+  - ca_eccc
+  - manobs
+- id: TAC.CA_ALTIMETER_NOT_OBS
+  code: CA_ALTIMETER_NOT_OBS
+  label: Ca Altimeter Not Obs
+  severity: info
+  message_template: '{product} altimeter not observable (A////) - MANOBS Canadian overlay'
+  product: null
+  tags:
+  - pressure
+  - metar
+  - speci
+  - ca_eccc
+  - manobs
+- id: TAC.CA_METAR_LWIS
+  code: CA_METAR_LWIS
+  label: Ca Metar Lwis
+  severity: info
+  message_template: '{product} Limited Weather Information System (LWIS) report - MANOBS CA overlay'
+  product: null
+  tags:
+  - metar
+  - ca_eccc
+  - manobs
+  - lwis
+- id: TAC.CA_METAR_SAWR
+  code: CA_METAR_SAWR
+  label: Ca Metar Sawr
+  severity: info
+  message_template: '{product} Surface Aviation Weather Report (SAWR) - MANOBS CA overlay'
+  product: null
+  tags:
+  - metar
+  - ca_eccc
+  - manobs
+  - sawr
+- id: TAC.CA_REMARK_MANOBS
+  code: CA_REMARK_MANOBS
+  label: Ca Remark Manobs
+  severity: info
+  message_template: '{product} Canadian REMARKS present - ca_eccc profile awareness'
+  product: null
+  tags:
+  - remark
+  - metar
+  - speci
+  - ca_eccc
+  - manobs
+- id: TAC.CA_REMARK_NOSPECI
+  code: CA_REMARK_NOSPECI
+  label: Ca Remark Nospeci
+  severity: info
+  message_template: '{product} MANOBS no-specials remark (NOSPECI) - ca_eccc profile awareness'
+  product: null
+  tags:
+  - remark
+  - metar
+  - speci
+  - ca_eccc
+  - manobs
+  - nospeci
+- id: TAC.CA_REMARK_PRESFR
+  code: CA_REMARK_PRESFR
+  label: Ca Remark Presfr
+  severity: info
+  message_template: '{product} MANOBS pressure falling rapidly (PRESFR) - ca_eccc profile awareness'
+  product: null
+  tags:
+  - remark
+  - metar
+  - speci
+  - ca_eccc
+  - manobs
+  - presfr
+- id: TAC.CA_REMARK_PRESRR
+  code: CA_REMARK_PRESRR
+  label: Ca Remark Presrr
+  severity: info
+  message_template: '{product} MANOBS pressure rising rapidly (PRESRR) - ca_eccc profile awareness'
+  product: null
+  tags:
+  - remark
+  - metar
+  - speci
+  - ca_eccc
+  - manobs
+  - presrr
+- id: TAC.CA_REMARK_SECTOR_VIS
+  code: CA_REMARK_SECTOR_VIS
+  label: Ca Remark Sector Vis
+  severity: info
+  message_template: '{product} MANOBS sector visibility remark - ca_eccc profile awareness'
+  product: null
+  tags:
+  - remark
+  - metar
+  - speci
+  - ca_eccc
+  - manobs
+  - visibility
+- id: TAC.CA_STATUTE_MILE_VIS
+  code: CA_STATUTE_MILE_VIS
+  label: Ca Statute Mile Vis
+  severity: info
+  message_template: '{product} uses statute-mile visibility - MANOBS Canadian overlay'
+  product: null
+  tags:
+  - visibility
+  - metar
+  - speci
+  - ca_eccc
+  - manobs
+- id: TAC.CA_TAF_NCLWS
+  code: CA_TAF_NCLWS
+  label: Ca Taf Nclws
+  severity: info
+  message_template: '{product} includes MANAIR non-convective low-level wind shear (WS group)'
+  product: null
+  tags:
+  - taf
+  - ca_eccc
+  - manair
+  - nclws
+- id: TAC.CLOUD_CB_OR_TCU
+  code: CLOUD_CB_OR_TCU
+  label: Cloud Cb Or Tcu
+  severity: info
+  message_template: '{product} cloud group includes convective type CB/TCU'
+  product: null
+  tags:
+  - cloud
+  - metar
+  - speci
+  - r4
+  - cb
+  - tcu
+- id: TAC.CNL_REPORT
+  code: CNL_REPORT
+  label: Cnl Report
+  severity: info
+  message_template: '{product} is a CNL (cancel) report that withdraws a previously issued forecast. Informational:
+    noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table
+    A5-1. Full normative text may require purchase.'
+  product: taf
+  tags:
+  - cnl
+  - taf
+  - t1
+- id: TAC.COR_PRESENT
+  code: COR_PRESENT
+  label: Cor Present
+  severity: info
+  message_template: '{product} includes the COR (correction) modifier, indicating a corrected report replacing
+    a prior issue. Informational: noted for operator awareness; does not by itself block conversion. Source:
+    ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.'
+  product: null
+  tags:
+  - modifier
+  - metar
+  - speci
+  - taf
+  - r8
+  - t1
+  - c1
+- id: TAC.EMPTY_TAC
+  code: EMPTY_TAC
+  label: Empty Tac
+  severity: error
+  message_template: TAC text is empty
+  product: null
+  tags:
+  - parse_gate
+  - body
+- id: TAC.FIR_OR_CTA
+  code: FIR_OR_CTA
+  label: Fir Or Cta
+  severity: info
+  message_template: 'SIGMET FIR/CTA/UIR airspace identity. Informational: noted for operator awareness;
+    does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - fir
+  - cta
+  - sigmet
+  - g2
+- id: TAC.FM_PRESENT
+  code: FM_PRESENT
+  label: Fm Present
+  severity: info
+  message_template: '{product} includes an FM (from) change group that starts a new forecast period. Informational:
+    noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table
+    A5-1. Full normative text may require purchase.'
+  product: taf
+  tags:
+  - change
+  - taf
+  - t2
+  - fm
+- id: TAC.INTENSITY_CHANGE
+  code: INTENSITY_CHANGE
+  label: Intensity Change
+  severity: info
+  message_template: 'SIGMET/AIRMET intensity change INTSF/WKN/NC. Informational: noted for operator awareness;
+    does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - intensity
+  - sigmet
+  - airmet
+  - g2
+  - a2
+- id: TAC.INVALID_AHL
+  code: INVALID_AHL
+  label: Invalid Ahl
+  severity: error
+  message_template: WMO abbreviated heading is not valid communications format
+  product: null
+  tags:
+  - bulletin
+  - ahl
+  - parse_gate
+- id: TAC.INVALID_CLOUD_TOKEN
+  code: INVALID_CLOUD_TOKEN
+  label: Invalid Cloud Token
+  severity: error
+  message_template: '{product} invalid cloud/VV token {token!r} - A3-2 #9'
+  product: null
+  tags:
+  - cloud
+  - metar
+  - speci
+  - r4
+- id: TAC.INVALID_CNL_SHAPE
+  code: INVALID_CNL_SHAPE
+  label: Invalid Cnl Shape
+  severity: error
+  message_template: 'TAF CNL must end the message - A5-1 #6'
+  product: taf
+  tags:
+  - cnl
+  - taf
+  - t1
+- id: TAC.INVALID_NIL
+  code: INVALID_NIL
+  label: Invalid Nil
+  severity: error
+  message_template: '{product} NIL report also contains body groups; NIL must stand alone without observation/forecast
+    body content. Error: the TAC does not meet a required format or product rule and should be corrected.
+    Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.'
+  product: null
+  tags:
+  - nil
+  - metar
+  - speci
+  - taf
+  - r8
+  - t1
+  - c1
+- id: TAC.INVALID_NO_VA_EXP
+  code: INVALID_NO_VA_EXP
+  label: Invalid No Va Exp
+  severity: error
+  message_template: 'VA SIGMET NO VA EXP must not include VA CLD body. Error: the TAC does not meet a
+    required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall
+    companion.'
+  product: sigmet
+  tags:
+  - va
+  - no_va_exp
+  - sigmet
+  - v1
+- id: TAC.INVALID_PROB
+  code: INVALID_PROB
+  label: Invalid Prob
+  severity: error
+  message_template: '{product} has an invalid PROB group (only PROB30/PROB40 are allowed; PROB must not
+    qualify BECMG/FM). Error: the TAC does not meet a required format or product rule and should be corrected.
+    Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.'
+  product: taf
+  tags:
+  - change
+  - taf
+  - t2
+  - prob
+- id: TAC.INVALID_REMARK
+  code: INVALID_REMARK
+  label: Invalid Remark
+  severity: error
+  message_template: '{product} malformed remark group {token!r}'
+  product: null
+  tags:
+  - remark
+  - metar
+  - speci
+  - r5
+  - iwxxm_us
+- id: TAC.INVALID_RVR
+  code: INVALID_RVR
+  label: Invalid Rvr
+  severity: error
+  message_template: '{product} has an invalid RVR token {token!r} that does not match allowed RVR syntax.
+    Error: the TAC does not meet a required format or product rule and should be corrected. Source: No
+    single RVR concept register - cite 49-2 family + grammar sources.'
+  product: null
+  tags:
+  - rvr
+  - metar
+  - speci
+  - r8
+- id: TAC.INVALID_SIGMET_CNL
+  code: INVALID_SIGMET_CNL
+  label: Invalid Sigmet Cnl
+  severity: error
+  message_template: 'SIGMET CNL must omit phenomenon/analysis body. Error: the TAC does not meet a required
+    format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - cnl
+  - sigmet
+  - g1
+- id: TAC.INVALID_SIGMET_COR
+  code: INVALID_SIGMET_COR
+  label: Invalid Sigmet Cor
+  severity: error
+  message_template: 'SIGMET must not use COR (cancel + re-issue). Error: the TAC does not meet a required
+    format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - cor
+  - sigmet
+  - g1
+  - c1
+- id: TAC.INVALID_STNR_MOVEMENT
+  code: INVALID_STNR_MOVEMENT
+  label: Invalid Stnr Movement
+  severity: error
+  message_template: 'SIGMET/AIRMET STNR conflicts with MOV. Error: the TAC does not meet a required format
+    or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - stnr
+  - movement
+  - sigmet
+  - airmet
+  - g1
+  - a2
+- id: TAC.INVALID_TX_TN
+  code: INVALID_TX_TN
+  label: Invalid Tx Tn
+  severity: error
+  message_template: '{product} places TX/TN temperature groups outside the base forecast where they are
+    not allowed. Error: the TAC does not meet a required format or product rule and should be corrected.
+    Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.'
+  product: taf
+  tags:
+  - temperature
+  - taf
+  - t3
+- id: TAC.INVALID_VALIDITY_DURATION
+  code: INVALID_VALIDITY_DURATION
+  label: Invalid Validity Duration
+  severity: error
+  message_template: 'SIGMET VALID period exceeds 4 hours (WS). Error: the TAC does not meet a required
+    format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - valid
+  - sigmet
+  - g2
+- id: TAC.INVALID_VISIBILITY
+  code: INVALID_VISIBILITY
+  label: Invalid Visibility
+  severity: error
+  message_template: '{product} invalid visibility token (use SM, meters, or CAVOK)'
+  product: null
+  tags:
+  - visibility
+  - metar
+  - speci
+  - r2
+- id: TAC.INVALID_WEATHER
+  code: INVALID_WEATHER
+  label: Invalid Weather
+  severity: error
+  message_template: '{product} invalid present weather token {token!r} - A3-2 #8'
+  product: null
+  tags:
+  - weather
+  - metar
+  - speci
+  - r3
+- id: TAC.INVALID_WIND
+  code: INVALID_WIND
+  label: Invalid Wind
+  severity: error
+  message_template: '{product} has an invalid wind token {token!r}. Error: the TAC does not meet a required
+    format or product rule and should be corrected. Source: Wind not in AerodromePresentWeather list.'
+  product: null
+  tags:
+  - wind
+  - metar
+  - speci
+  - r8
+- id: TAC.IN_TAF_TX_TN_OMITTED
+  code: IN_TAF_TX_TN_OMITTED
+  label: In Taf Tx Tn Omitted
+  severity: info
+  message_template: '{product} does not include TX/TN temperature forecast groups. Informational: India
+    Meteorological Department TAFs often omit temperature extremes; this does not by itself block conversion.'
+  product: TAF
+  tags:
+  - taf
+  - in_imd
+  - temperature
+  - tx_tn
+- id: TAC.MISSING_CCCC
+  code: MISSING_CCCC
+  label: Missing Cccc
+  severity: error
+  message_template: '{product} missing ICAO location (CCCC)'
+  product: null
+  tags:
+  - station
+  - metar
+  - speci
+  - taf
+- id: TAC.MISSING_DECODE_MATCH
+  code: MISSING_DECODE_MATCH
+  label: Missing Decode Match
+  severity: error
+  message_template: '{product} annex3 theme checks require a decode match'
+  product: null
+  tags:
+  - match
+  - metar
+- id: TAC.MISSING_DTG
+  code: MISSING_DTG
+  label: Missing Dtg
+  severity: error
+  message_template: '{product} missing DTG: template field'
+  product: null
+  tags:
+  - dtg
+  - vaa
+  - tca
+  - swxa
+  - vona
+- id: TAC.MISSING_FIR_OR_CTA
+  code: MISSING_FIR_OR_CTA
+  label: Missing Fir Or Cta
+  severity: error
+  message_template: 'SIGMET/AIRMET missing FIR/CTA/UIR airspace identity. Error: the TAC does not meet
+    a required format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall
+    companion.'
+  product: sigmet
+  tags:
+  - fir
+  - cta
+  - sigmet
+  - airmet
+  - g2
+  - a1
+- id: TAC.MISSING_ISSUE_TIME
+  code: MISSING_ISSUE_TIME
+  label: Missing Issue Time
+  severity: error
+  message_template: 'TAF missing issue time ddhhmmZ - A5-1 #3'
+  product: taf
+  tags:
+  - time
+  - taf
+- id: TAC.MISSING_MAX_WIND
+  code: MISSING_MAX_WIND
+  label: Missing Max Wind
+  severity: error
+  message_template: 'TCA missing MAX WIND: template field - A2-2'
+  product: tca
+  tags:
+  - max_wind
+  - tca
+- id: TAC.MISSING_OBS_OR_FCST
+  code: MISSING_OBS_OR_FCST
+  label: Missing Obs Or Fcst
+  severity: error
+  message_template: 'SIGMET/AIRMET missing OBS or FCST. Error: the TAC does not meet a required format
+    or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - obs
+  - fcst
+  - sigmet
+  - airmet
+  - g2
+  - a2
+- id: TAC.MISSING_OBS_TIME
+  code: MISSING_OBS_TIME
+  label: Missing Obs Time
+  severity: error
+  message_template: '{product} missing observation time ddhhmmZ - A3-2 #3'
+  product: null
+  tags:
+  - time
+  - metar
+  - speci
+- id: TAC.MISSING_PRODUCT_KEYWORD
+  code: MISSING_PRODUCT_KEYWORD
+  label: Missing Product Keyword
+  severity: error
+  message_template: '{product} TAC must contain one of {keywords}'
+  product: null
+  tags:
+  - parse_gate
+  - header
+- id: TAC.MISSING_QNH
+  code: MISSING_QNH
+  label: Missing Qnh
+  severity: error
+  message_template: '{product} missing QNH/altimeter (Qnnnn/Annnn) - A3-2 #11'
+  product: null
+  tags:
+  - pressure
+  - metar
+  - speci
+- id: TAC.MISSING_SEQUENCE
+  code: MISSING_SEQUENCE
+  label: Missing Sequence
+  severity: error
+  message_template: 'SIGMET/AIRMET missing sequence number. Error: the TAC does not meet a required format
+    or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - sequence
+  - sigmet
+  - airmet
+  - g2
+  - a1
+- id: TAC.MISSING_SVO
+  code: MISSING_SVO
+  label: Missing Svo
+  severity: error
+  message_template: 'VONA missing SVO: template field - F32 theme V1 / A7-1'
+  product: vona
+  tags:
+  - svo
+  - vona
+  - v1
+  - f32
+- id: TAC.MISSING_SWXC
+  code: MISSING_SWXC
+  label: Missing Swxc
+  severity: error
+  message_template: 'SWXA missing SWXC: template field - F28 theme SX1 / A2-3'
+  product: swxa
+  tags:
+  - swxc
+  - swxa
+  - sx1
+  - f28
+- id: TAC.MISSING_TC
+  code: MISSING_TC
+  label: Missing Tc
+  severity: error
+  message_template: 'TCA missing TC: template field - F27 theme T1 / A2-2'
+  product: tca
+  tags:
+  - tropical_cyclone
+  - tca
+  - t1
+  - f27
+- id: TAC.MISSING_TC_IDENTITY
+  code: MISSING_TC_IDENTITY
+  label: Missing Tc Identity
+  severity: error
+  message_template: 'TC SIGMET missing cyclone identity (TC … PSN). Error: the TAC does not meet a required
+    format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - tc
+  - cyclone
+  - sigmet
+  - ev030
+- id: TAC.MISSING_TEMP_DEWPOINT
+  code: MISSING_TEMP_DEWPOINT
+  label: Missing Temp Dewpoint
+  severity: error
+  message_template: '{product} missing temperature/dewpoint tt/td - A3-2 #10'
+  product: null
+  tags:
+  - temperature
+  - metar
+  - speci
+- id: TAC.MISSING_TERMINATOR
+  code: MISSING_TERMINATOR
+  label: Missing Terminator
+  severity: info
+  message_template: Reports in bulletins end with '=' - add it before publishing
+  product: null
+  tags:
+  - terminator
+  - metar
+  - speci
+  - taf
+- id: TAC.MISSING_VAAC
+  code: MISSING_VAAC
+  label: Missing Vaac
+  severity: error
+  message_template: 'VAA missing VAAC: template field - A2-1'
+  product: vaa
+  tags:
+  - vaac
+  - vaa
+- id: TAC.MISSING_VALID
+  code: MISSING_VALID
+  label: Missing Valid
+  severity: error
+  message_template: '{product} missing VALID ddhhmm/ddhhmm period - A6 identity'
+  product: null
+  tags:
+  - valid
+  - sigmet
+  - airmet
+- id: TAC.MISSING_VALIDITY
+  code: MISSING_VALIDITY
+  label: Missing Validity
+  severity: error
+  message_template: 'TAF missing validity period ddhh/ddhh - A5-1 #5'
+  product: taf
+  tags:
+  - validity
+  - taf
+- id: TAC.MISSING_VA_VOLCANO
+  code: MISSING_VA_VOLCANO
+  label: Missing Va Volcano
+  severity: error
+  message_template: 'VA SIGMET missing volcano identity (MT … PSN). Error: the TAC does not meet a required
+    format or product rule and should be corrected. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - va
+  - volcano
+  - sigmet
+  - v1
+- id: TAC.MISSING_VISIBILITY
+  code: MISSING_VISIBILITY
+  label: Missing Visibility
+  severity: error
+  message_template: '{product} missing visibility or CAVOK - A3-2 #6'
+  product: null
+  tags:
+  - visibility
+  - metar
+  - speci
+- id: TAC.MISSING_VOLCANO
+  code: MISSING_VOLCANO
+  label: Missing Volcano
+  severity: error
+  message_template: 'VAA missing VOLCANO: template field - F26 theme V1 / A2-1'
+  product: vaa
+  tags:
+  - volcano
+  - vaa
+  - v1
+  - f26
+- id: TAC.MISSING_VONA_VOLCANO
+  code: MISSING_VONA_VOLCANO
+  label: Missing Vona Volcano
+  severity: error
+  message_template: 'VONA missing VOLCANO: template field - F32 theme V1 / A7-1'
+  product: vona
+  tags:
+  - volcano
+  - vona
+  - v1
+  - f32
+- id: TAC.MISSING_WIND
+  code: MISSING_WIND
+  label: Missing Wind
+  severity: error
+  message_template: '{product} missing surface wind group - A3-2 #5'
+  product: null
+  tags:
+  - wind
+  - metar
+  - speci
+- id: TAC.MULTIPLE_PHENOMENA
+  code: MULTIPLE_PHENOMENA
+  label: Multiple Phenomena
+  severity: error
+  message_template: '{product} encodes multiple phenomenon families {hit} - A6 one-phenomenon gate'
+  product: null
+  tags:
+  - phenomenon
+  - sigmet
+  - airmet
+- id: TAC.MULTI_REPORT_BULLETIN
+  code: MULTI_REPORT_BULLETIN
+  label: Multi Report Bulletin
+  severity: info
+  message_template: '{product} bulletin has multiple TAC reports - one IWXXM report per TAC (Guidance
+    C1)'
+  product: null
+  tags:
+  - bulletin
+  - metar
+  - speci
+  - taf
+  - sigmet
+  - airmet
+  - c1
+  - one_report
+- id: TAC.NCD_PRESENT
+  code: NCD_PRESENT
+  label: Ncd Present
+  severity: info
+  message_template: '{product} includes NCD (no cloud detected), typically from AUTO stations. Informational:
+    noted for operator awareness; does not by itself block conversion. Source: NCD cloud amount notation
+    family.'
+  product: null
+  tags:
+  - cloud
+  - metar
+  - speci
+  - s1
+  - auto
+- id: TAC.NIL_REPORT
+  code: NIL_REPORT
+  label: Nil Report
+  severity: info
+  message_template: '{product} is a NIL report (no observation/forecast available for the period). Informational:
+    noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table
+    A5-1. Full normative text may require purchase.'
+  product: null
+  tags:
+  - nil
+  - metar
+  - speci
+  - taf
+  - r8
+  - t1
+  - c1
+- id: TAC.NOSIG_PRESENT
+  code: NOSIG_PRESENT
+  label: Nosig Present
+  severity: info
+  message_template: '{product} includes a NOSIG trend, meaning no significant change is expected. Informational:
+    noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2
+    / App 3. Full normative text may require purchase.'
+  product: null
+  tags:
+  - trend
+  - metar
+  - speci
+  - r8
+- id: TAC.NO_VA_EXP
+  code: NO_VA_EXP
+  label: No Va Exp
+  severity: info
+  message_template: 'VA SIGMET NO VA EXP absence token. Informational: noted for operator awareness; does
+    not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - va
+  - no_va_exp
+  - sigmet
+  - v1
+  - c1
+- id: TAC.NSC_PRESENT
+  code: NSC_PRESENT
+  label: Nsc Present
+  severity: info
+  message_template: '{product} includes NSC (no significant cloud). Informational: noted for operator
+    awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative
+    text may require purchase.'
+  product: null
+  tags:
+  - cloud
+  - metar
+  - speci
+  - taf
+  - t3
+  - s1
+  - c1
+- id: TAC.NSC_WITH_CLOUD_LAYERS
+  code: NSC_WITH_CLOUD_LAYERS
+  label: Nsc With Cloud Layers
+  severity: warning
+  message_template: '{product} combines NSC (no significant cloud) with FEW/SCT/BKN/OVC cloud layers in
+    the same group - FAQ §14.3 exclusivity. Warning: conflicting cloud amounts may confuse downstream
+    systems; review before dissemination. Source: ICAO Annex 3 FAQ §14.3. Full normative text may require
+    purchase.'
+  product: null
+  tags:
+  - cloud
+  - metar
+  - speci
+  - taf
+  - t3
+  - s1
+  - c1
+  - ev023
+- id: TAC.NSW_PRESENT
+  code: NSW_PRESENT
+  label: Nsw Present
+  severity: info
+  message_template: '{product} includes NSW (nil significant weather). Informational: noted for operator
+    awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative
+    text may require purchase.'
+  product: null
+  tags:
+  - weather
+  - metar
+  - speci
+  - taf
+  - t3
+  - s1
+- id: TAC.OBS_OR_FCST
+  code: OBS_OR_FCST
+  label: Obs Or Fcst
+  severity: info
+  message_template: 'SIGMET/AIRMET OBS or FCST analysis. Informational: noted for operator awareness;
+    does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - obs
+  - fcst
+  - sigmet
+  - airmet
+  - g2
+  - a2
+- id: TAC.ODD_FIELD_ORDER
+  code: ODD_FIELD_ORDER
+  label: Odd Field Order
+  severity: warning
+  message_template: '{product} groups out of A3-2 order (CCCC → ddhhmmZ → wind)'
+  product: null
+  tags:
+  - order
+  - station
+  - time
+  - metar
+  - speci
+  - r1
+- id: TAC.POINT_LOCATION
+  code: POINT_LOCATION
+  label: Point Location
+  severity: info
+  message_template: 'SIGMET single-point location (encode CircleByCenterPoint r=0). Informational: noted
+    for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall
+    companion.'
+  product: sigmet
+  tags:
+  - geometry
+  - point
+  - sigmet
+  - g1
+- id: TAC.POLYGON_LOCATION
+  code: POLYGON_LOCATION
+  label: Polygon Location
+  severity: info
+  message_template: 'SIGMET polygon/line WI geometry. Informational: noted for operator awareness; does
+    not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - geometry
+  - polygon
+  - sigmet
+  - g1
+- id: TAC.PROB_PRESENT
+  code: PROB_PRESENT
+  label: Prob Present
+  severity: info
+  message_template: '{product} includes a PROB30 or PROB40 probability change group. Informational: noted
+    for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1.
+    Full normative text may require purchase.'
+  product: taf
+  tags:
+  - change
+  - taf
+  - t2
+  - prob
+- id: TAC.REMARK_US_EXTENSION
+  code: REMARK_US_EXTENSION
+  label: Remark Us Extension
+  severity: info
+  message_template: '{product} US remarks present - iwxxm_us profile awareness'
+  product: null
+  tags:
+  - remark
+  - metar
+  - speci
+  - r5
+  - iwxxm_us
+- id: TAC.RVR_PRESENT
+  code: RVR_PRESENT
+  label: Rvr Present
+  severity: info
+  message_template: '{product} includes one or more runway visual range (RVR) groups. Informational: noted
+    for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App
+    3. Full normative text may require purchase.'
+  product: null
+  tags:
+  - rvr
+  - metar
+  - speci
+  - r8
+- id: TAC.SIGMET_CNL
+  code: SIGMET_CNL
+  label: Sigmet Cnl
+  severity: info
+  message_template: 'SIGMET CNL cancel report. Informational: noted for operator awareness; does not by
+    itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - cnl
+  - sigmet
+  - g1
+  - c1
+- id: TAC.SIGMET_SEQUENCE
+  code: SIGMET_SEQUENCE
+  label: Sigmet Sequence
+  severity: info
+  message_template: '{product} includes a recognized SIGMET SEQUENCE element/group in the TAC text. Informational:
+    noted for operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex
+    3 paywall companion.'
+  product: sigmet
+  tags:
+  - sequence
+  - sigmet
+  - g2
+- id: TAC.SINGLE_ALTITUDE
+  code: SINGLE_ALTITUDE
+  label: Single Altitude
+  severity: info
+  message_template: 'SIGMET single altitude (same lower/upper). Informational: noted for operator awareness;
+    does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - altitude
+  - sigmet
+  - g1
+- id: TAC.STNR_MOVEMENT
+  code: STNR_MOVEMENT
+  label: Stnr Movement
+  severity: info
+  message_template: 'SIGMET/AIRMET STNR stationary movement. Informational: noted for operator awareness;
+    does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - stnr
+  - movement
+  - sigmet
+  - airmet
+  - g1
+  - c1
+  - a2
+- id: TAC.SWXA_FCST_NO_SWX_EXP
+  code: SWXA_FCST_NO_SWX_EXP
+  label: Swxa Fcst No Swx Exp
+  severity: info
+  message_template: SWXA forecast NO SWX EXP - no space weather expected (F28 theme SX1)
+  product: swxa
+  tags:
+  - forecast
+  - no_swx_exp
+  - swxa
+  - sx1
+  - f28
+- id: TAC.SWXA_NO_FURTHER_ADVISORIES
+  code: SWXA_NO_FURTHER_ADVISORIES
+  label: Swxa No Further Advisories
+  severity: info
+  message_template: SWXA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable (F28 theme SX1)
+  product: swxa
+  tags:
+  - next_advisory
+  - swxa
+  - sx1
+  - f28
+- id: TAC.SWXA_RMK_NIL
+  code: SWXA_RMK_NIL
+  label: Swxa Rmk Nil
+  severity: info
+  message_template: SWXA RMK NIL - remarks inapplicable (F28 theme SX1)
+  product: swxa
+  tags:
+  - remarks
+  - nil
+  - swxa
+  - sx1
+  - f28
+- id: TAC.TCA_CB_NIL
+  code: TCA_CB_NIL
+  label: Tca Cb Nil
+  severity: info
+  message_template: TCA CB NIL - CB missing (F27 theme T1)
+  product: tca
+  tags:
+  - cb
+  - nil
+  - tca
+  - t1
+  - f27
+- id: TAC.TCA_CYCLONE_UNNAMED
+  code: TCA_CYCLONE_UNNAMED
+  label: Tca Cyclone Unnamed
+  severity: info
+  message_template: TCA TC UNNAMED - exceptional name allowed (F27 theme T1)
+  product: tca
+  tags:
+  - tropical_cyclone
+  - unnamed
+  - tca
+  - t1
+  - f27
+- id: TAC.TCA_NO_MSG_EXP
+  code: TCA_NO_MSG_EXP
+  label: Tca No Msg Exp
+  severity: info
+  message_template: TCA NXT MSG NO MSG EXP - next time inapplicable (F27 theme T1)
+  product: tca
+  tags:
+  - next_advisory
+  - tca
+  - t1
+  - f27
+- id: TAC.TCA_RMK_NIL
+  code: TCA_RMK_NIL
+  label: Tca Rmk Nil
+  severity: info
+  message_template: TCA RMK NIL - remarks inapplicable (F27 theme T1)
+  product: tca
+  tags:
+  - remarks
+  - nil
+  - tca
+  - t1
+  - f27
+- id: TAC.TC_CB_GEOMETRY
+  code: TC_CB_GEOMETRY
+  label: Tc Cb Geometry
+  severity: info
+  message_template: 'TC SIGMET CB geometry uses WI … OF TC CENTRE wording. Informational: noted for operator
+    awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - tc
+  - geometry
+  - sigmet
+  - ev030
+- id: TAC.TC_CYCLONE_IDENTITY
+  code: TC_CYCLONE_IDENTITY
+  label: Tc Cyclone Identity
+  severity: info
+  message_template: 'TC SIGMET includes tropical cyclone identity (TC … PSN). Informational: noted for
+    operator awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall
+    companion.'
+  product: sigmet
+  tags:
+  - tc
+  - cyclone
+  - sigmet
+  - ev030
+- id: TAC.TEMPO_PRESENT
+  code: TEMPO_PRESENT
+  label: Tempo Present
+  severity: info
+  message_template: '{product} includes a TEMPO trend/change group for temporary fluctuations. Informational:
+    noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table
+    A5-1. Full normative text may require purchase.'
+  product: null
+  tags:
+  - trend
+  - change
+  - metar
+  - speci
+  - taf
+  - r8
+  - t2
+- id: TAC.TL_PRESENT
+  code: TL_PRESENT
+  label: Tl Present
+  severity: info
+  message_template: '{product} includes a TL (until) time qualifier on a change group. Informational:
+    noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table
+    A5-1. Full normative text may require purchase.'
+  product: taf
+  tags:
+  - change
+  - taf
+  - t2
+  - tl
+- id: TAC.TOP_ABV_OR_BLW
+  code: TOP_ABV_OR_BLW
+  label: Top Abv Or Blw
+  severity: info
+  message_template: 'SIGMET/AIRMET TOP ABV/BLW level grammar. Informational: noted for operator awareness;
+    does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - altitude
+  - top
+  - sigmet
+  - airmet
+  - g1
+  - a2
+- id: TAC.TX_TN_PRESENT
+  code: TX_TN_PRESENT
+  label: Tx Tn Present
+  severity: info
+  message_template: '{product} includes TX/TN temperature forecast groups on the base forecast. Informational:
+    noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table
+    A5-1. Full normative text may require purchase.'
+  product: taf
+  tags:
+  - temperature
+  - taf
+  - t3
+- id: TAC.UNKNOWN_PRODUCT
+  code: UNKNOWN_PRODUCT
+  label: Unknown Product
+  severity: error
+  message_template: Unknown product {product!r}; expected one of {expected}
+  product: null
+  tags:
+  - parse_gate
+- id: TAC.UNKNOWN_WMO_MEMBERSHIP
+  code: UNKNOWN_WMO_MEMBERSHIP
+  label: Unknown Wmo Membership
+  severity: error
+  message_template: '{product} token {token!r} not in WMO register ({family})'
+  product: null
+  tags:
+  - membership
+  - wmo
+  - ev050
+  - weather
+  - cloud
+  - phenomenon
+- id: TAC.US_SWXA_SATCOM_NOT_ISSUED
+  code: US_SWXA_SATCOM_NOT_ISSUED
+  label: Us Swxa Satcom Not Issued
+  severity: error
+  message_template: '{product} SATCOM space weather is not issued under US_FAA_NWS'
+  product: SWXA
+  tags:
+  - swxa
+  - iwxxm_us
+  - us_faa_nws
+  - satcom
+- id: TAC.US_TAF_BECMG_FORBIDDEN
+  code: US_TAF_BECMG_FORBIDDEN
+  label: Us Taf Becmg Forbidden
+  severity: error
+  message_template: '{product} BECMG change group is forbidden under US_FAA_NWS'
+  product: TAF
+  tags:
+  - taf
+  - iwxxm_us
+  - us_faa_nws
+- id: TAC.US_TAF_TEMPO_MAX_4H
+  code: US_TAF_TEMPO_MAX_4H
+  label: Us Taf Tempo Max 4H
+  severity: error
+  message_template: '{product} TEMPO change group exceeds 4-hour US_FAA_NWS maximum'
+  product: TAF
+  tags:
+  - taf
+  - iwxxm_us
+  - us_faa_nws
+- id: TAC.US_TCA_OBSERVED_CB_NOT_PROVIDED
+  code: US_TCA_OBSERVED_CB_NOT_PROVIDED
+  label: Us Tca Observed Cb Not Provided
+  severity: error
+  message_template: '{product} observed CB must be NIL under US_FAA_NWS - observed CB not provided'
+  product: TCA
+  tags:
+  - tca
+  - iwxxm_us
+  - us_faa_nws
+  - cb
+- id: TAC.VAA_FCST_NO_VA_EXP
+  code: VAA_FCST_NO_VA_EXP
+  label: Vaa Fcst No Va Exp
+  severity: info
+  message_template: VAA forecast NO VA EXP - status NO_VOLCANIC_ASH_EXPECTED (F26 theme V1)
+  product: vaa
+  tags:
+  - forecast
+  - no_va_exp
+  - vaa
+  - v1
+  - f26
+- id: TAC.VAA_NO_FURTHER_ADVISORIES
+  code: VAA_NO_FURTHER_ADVISORIES
+  label: Vaa No Further Advisories
+  severity: info
+  message_template: VAA NXT ADVISORY NO FURTHER ADVISORIES - next time inapplicable (F26 theme V1)
+  product: vaa
+  tags:
+  - next_advisory
+  - vaa
+  - v1
+  - f26
+- id: TAC.VAA_RMK_NIL
+  code: VAA_RMK_NIL
+  label: Vaa Rmk Nil
+  severity: info
+  message_template: VAA RMK NIL - remarks inapplicable (F26 theme V1)
+  product: vaa
+  tags:
+  - remarks
+  - nil
+  - vaa
+  - v1
+  - f26
+- id: TAC.VAA_VOLCANO_UNKNOWN
+  code: VAA_VOLCANO_UNKNOWN
+  label: Vaa Volcano Unknown
+  severity: info
+  message_template: VAA VOLCANO UNKNOWN - exceptional name allowed (F26 theme V1)
+  product: vaa
+  tags:
+  - volcano
+  - unknown
+  - vaa
+  - v1
+  - f26
+- id: TAC.VAA_VOLCANO_UNNAMED
+  code: VAA_VOLCANO_UNNAMED
+  label: Vaa Volcano Unnamed
+  severity: info
+  message_template: VAA VOLCANO UNNAMED - exceptional name allowed (F26 theme V1)
+  product: vaa
+  tags:
+  - volcano
+  - unnamed
+  - vaa
+  - v1
+  - f26
+- id: TAC.VA_ASH_GEOMETRY
+  code: VA_ASH_GEOMETRY
+  label: Va Ash Geometry
+  severity: info
+  message_template: 'VA SIGMET ash cloud geometry / forecast position. Informational: noted for operator
+    awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - va
+  - geometry
+  - sigmet
+  - v1
+- id: TAC.VA_CNL_FIR_MOVED
+  code: VA_CNL_FIR_MOVED
+  label: Va Cnl Fir Moved
+  severity: info
+  message_template: 'VA SIGMET CNL identifies FIR to which ash has moved. Informational: noted for operator
+    awareness; does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - va
+  - cnl
+  - fir
+  - sigmet
+  - v1
+  - c1
+- id: TAC.VA_VOLCANO_IDENTITY
+  code: VA_VOLCANO_IDENTITY
+  label: Va Volcano Identity
+  severity: info
+  message_template: 'VA SIGMET erupting volcano identity (MT/PSN). Informational: noted for operator awareness;
+    does not by itself block conversion. Source: EUR Doc 014 public; Annex 3 paywall companion.'
+  product: sigmet
+  tags:
+  - va
+  - volcano
+  - sigmet
+  - v1
+- id: TAC.VONA_DUR_NIL
+  code: VONA_DUR_NIL
+  label: Vona Dur Nil
+  severity: info
+  message_template: VONA DUR NIL - duration omitted (F32 theme V1)
+  product: vona
+  tags:
+  - duration
+  - nil
+  - vona
+  - v1
+  - f32
+- id: TAC.VONA_ONSET_NIL
+  code: VONA_ONSET_NIL
+  label: Vona Onset Nil
+  severity: info
+  message_template: VONA ONSET NIL - onsetTime omitted (F32 theme V1)
+  product: vona
+  tags:
+  - onset
+  - nil
+  - vona
+  - v1
+  - f32
+- id: TAC.VV_NOT_OBSERVABLE
+  code: VV_NOT_OBSERVABLE
+  label: Vv Not Observable
+  severity: info
+  message_template: '{product} uses VV/// meaning vertical visibility is not observable. Informational:
+    noted for operator awareness; does not by itself block conversion. Source: Vertical visibility missingness
+    via nil.'
+  product: null
+  tags:
+  - cloud
+  - metar
+  - speci
+  - s1
+  - vv
+- id: TAC.VV_OMIT
+  code: VV_OMIT
+  label: Vv Omit
+  severity: info
+  message_template: '{product} uses VV///; vertical visibility should be omitted without a nil reason
+    in this product context. Informational: noted for operator awareness; does not by itself block conversion.
+    Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase.'
+  product: taf
+  tags:
+  - cloud
+  - taf
+  - t3
+  - vv
+- id: TAC.WIND_DIR_VARIATION
+  code: WIND_DIR_VARIATION
+  label: Wind Dir Variation
+  severity: info
+  message_template: '{product} includes wind direction variation in dddVddd form. Informational: noted
+    for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2 / App
+    3. Full normative text may require purchase.'
+  product: null
+  tags:
+  - wind
+  - metar
+  - speci
+  - s1
+- id: TAC.WIND_VRB_OR_GUST
+  code: WIND_VRB_OR_GUST
+  label: Wind Vrb Or Gust
+  severity: info
+  message_template: '{product} wind group uses variable direction (VRB) and/or a gust value. Informational:
+    noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 Table A3-2
+    / App 3. Full normative text may require purchase.'
+  product: null
+  tags:
+  - wind
+  - metar
+  - speci
+  - r8
+- id: TAC.WX_NOT_OBSERVABLE
+  code: WX_NOT_OBSERVABLE
+  label: Wx Not Observable
+  severity: info
+  message_template: '{product} present weather uses // meaning weather phenomena are not observable. Informational:
+    noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable;
+    prefer iwxxm/nil when pin policy says so.'
+  product: null
+  tags:
+  - weather
+  - metar
+  - speci
+  - s1

@@ -1,5 +1,5 @@
 /**
- * TC-EV073-006..008 — CA_ECCC profile wire: extensions, metadata, vendor pin.
+ * TC-EV073-006..008 — CA_ECCC Conversion library wire: extensions, metadata, vendor pin.
  *
  * Spec: docs/test-plan.md §TC-EV073-006..008; #1042.
  */
@@ -9,6 +9,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
 import { CA_ECCC_NATIONAL_EXTENSION } from '@/utils/profileWire';
+import { defaultLibraryId } from '../utils/libraryIds';
 
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
   vi.fn().mockResolvedValue({
@@ -103,8 +104,9 @@ vi.mock('../app/components/IcaoAutocomplete', () => ({
 }));
 
 const CA_TAC = 'METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=';
+const CA_CONVERSION = defaultLibraryId('conversion', 'CA_ECCC');
 
-describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
+describe('TC-EV073-006..008: CA_ECCC Conversion library wiring', () => {
   const defaultProps = {
     onLogout: vi.fn(),
     userEmail: 'ca@example.com',
@@ -129,7 +131,10 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+    await user.selectOptions(
+      screen.getByTestId('conversion-library-select'),
+      CA_CONVERSION,
+    );
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: { value: CA_TAC },
     });
@@ -140,7 +145,7 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
     });
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
-        profile: 'CA_ECCC',
+        conversionLibraryId: CA_CONVERSION,
         extensions: [CA_ECCC_NATIONAL_EXTENSION],
         exchangeOutput: true,
       }),
@@ -151,7 +156,10 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+    await user.selectOptions(
+      screen.getByTestId('conversion-library-select'),
+      CA_CONVERSION,
+    );
     await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
     fireEvent.change(screen.getByTestId('tac-editor'), {
       target: { value: '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/3.0"/>' },
@@ -173,7 +181,10 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+    await user.selectOptions(
+      screen.getByTestId('conversion-library-select'),
+      CA_CONVERSION,
+    );
 
     const panel = screen.getByTestId('ca-eccc-profile-metadata');
     expect(panel).toHaveTextContent('3.0.0');
@@ -200,7 +211,10 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
       expect(mockFetchSchemaStatus).toHaveBeenCalled();
     });
 
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+    await user.selectOptions(
+      screen.getByTestId('conversion-library-select'),
+      CA_CONVERSION,
+    );
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: { value: CA_TAC },
     });
@@ -222,7 +236,10 @@ describe('TC-EV073-006..008: CA_ECCC profile wiring', () => {
       expect(mockFetchSchemaStatus).toHaveBeenCalled();
     });
 
-    await user.selectOptions(screen.getByTestId('profile-type-select'), 'CA_ECCC');
+    await user.selectOptions(
+      screen.getByTestId('conversion-library-select'),
+      CA_CONVERSION,
+    );
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: { value: CA_TAC },
     });

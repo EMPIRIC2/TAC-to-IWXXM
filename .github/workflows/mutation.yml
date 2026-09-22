@@ -1,11 +1,13 @@
 # F34 / EV-059 / #874 — Mutation testing (pytest-gremlins + Stryker).
 # Nightly / workflow_dispatch only — NOT required on every PR (D-S069-ci / TC-F34-005).
+# EV-ci-runtime-failures: Mon–Sat schedule = rotated subset; Sunday schedule +
+# workflow_dispatch target=all = full Python+TS matrix (D-S069-e4 preserved).
 # Matrix covers Python packages/services + TS surfaces; excludes e2e + Rust.
 name: Mutation
 
 on:
   schedule:
-    # Daily 05:00 UTC — after load-tests window
+    # Daily 05:00 UTC — after load-tests window (subset Mon–Sat; full on Sunday)
     - cron: "0 5 * * *"
   workflow_dispatch:
     inputs:
@@ -44,25 +46,54 @@ jobs:
           set -euo pipefail
           all_py='["poc-shared-env","backend","worker","auth","shared","tac-validate","tac2iwxxm","iwxxm-validate","dissemination"]'
           all_js='["frontend","shared"]'
-          if [[ "${EVENT_NAME}" == "schedule" || "${TARGET}" == "all" ]]; then
+          # ISO weekday: 1=Mon … 7=Sun (UTC)
+          dow="$(date -u +%u)"
+
+          write_full() {
             echo "python=${all_py}" >> "$GITHUB_OUTPUT"
             echo "js=${all_js}" >> "$GITHUB_OUTPUT"
+          }
+
+          if [[ "${EVENT_NAME}" == "workflow_dispatch" && "${TARGET}" != "all" ]]; then
+            case "${TARGET}" in
+              frontend)
+                echo "python=[]" >> "$GITHUB_OUTPUT"
+                echo 'js=["frontend"]' >> "$GITHUB_OUTPUT"
+                ;;
+              shared-js)
+                echo "python=[]" >> "$GITHUB_OUTPUT"
+                echo 'js=["shared"]' >> "$GITHUB_OUTPUT"
+                ;;
+              *)
+                echo "python=[\"${TARGET}\"]" >> "$GITHUB_OUTPUT"
+                echo "js=[]" >> "$GITHUB_OUTPUT"
+                ;;
+            esac
             exit 0
           fi
-          case "${TARGET}" in
-            frontend)
-              echo "python=[]" >> "$GITHUB_OUTPUT"
-              echo 'js=["frontend"]' >> "$GITHUB_OUTPUT"
-              ;;
-            shared-js)
-              echo "python=[]" >> "$GITHUB_OUTPUT"
-              echo 'js=["shared"]' >> "$GITHUB_OUTPUT"
-              ;;
-            *)
-              echo "python=[\"${TARGET}\"]" >> "$GITHUB_OUTPUT"
-              echo "js=[]" >> "$GITHUB_OUTPUT"
-              ;;
-          esac
+
+          # Full matrix: workflow_dispatch all, or Sunday schedule
+          if [[ "${EVENT_NAME}" == "workflow_dispatch" ]] || [[ "${dow}" == "7" ]]; then
+            write_full
+            exit 0
+          fi
+
+          # Daily Mon–Sat: rotate 3 Python targets + 1 JS surface (TC-F34-005)
+          py_targets=(poc-shared-env backend worker auth shared tac-validate tac2iwxxm iwxxm-validate dissemination)
+          js_targets=(frontend shared)
+          n_py=${#py_targets[@]}
+          start=$(( (dow - 1) % n_py ))
+          picked=()
+          for i in 0 1 2; do
+            idx=$(( (start + i) % n_py ))
+            picked+=("\"${py_targets[$idx]}\"")
+          done
+          js_idx=$(( (dow - 1) % ${#js_targets[@]} ))
+          py_json="[${picked[0]},${picked[1]},${picked[2]}]"
+          js_json="[\"${js_targets[$js_idx]}\"]"
+          echo "Daily subset dow=${dow} python=${py_json} js=${js_json}"
+          echo "python=${py_json}" >> "$GITHUB_OUTPUT"
+          echo "js=${js_json}" >> "$GITHUB_OUTPUT"
 
   python-mutation:
     name: gremlins (${{ matrix.target }})

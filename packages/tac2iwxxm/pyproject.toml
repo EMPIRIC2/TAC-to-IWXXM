@@ -1,6 +1,6 @@
 [project]
 name = "tac2iwxxm"
-version = "2026.9.13"
+version = "2026.9.22"
 description = "Convert TAC aviation weather reports to IWXXM XML"
 readme = "README.md"
 license = { text = "MIT" }
@@ -8,7 +8,11 @@ requires-python = ">=3.12"
 dependencies = [
   "msgspec>=0.19",
   "pyyaml>=6.0",
+  "tac-decoding>=2026.9.22",
 ]
+
+[project.scripts]
+tac2iwxxm = "tac2iwxxm.cli:main"
 
 [project.optional-dependencies]
 # F14 / E10-20: optional TAC lint + IWXXM XSD/Schematron validators.
@@ -26,6 +30,24 @@ packages = ["src/tac2iwxxm"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "src/tac2iwxxm/data/decode_glossary.yaml" = "tac2iwxxm/data/decode_glossary.yaml"
+"src/tac2iwxxm/data/conversion_schema_blocks.yaml" = "tac2iwxxm/data/conversion_schema_blocks.yaml"
+"src/tac2iwxxm/data/tac_validation_rules.yaml" = "tac2iwxxm/data/tac_validation_rules.yaml"
+"src/tac2iwxxm/data/iwxxm_validation_asserts.yaml" = "tac2iwxxm/data/iwxxm_validation_asserts.yaml"
+"src/tac2iwxxm/data/dissemination_transforms.yaml" = "tac2iwxxm/data/dissemination_transforms.yaml"
+"src/tac2iwxxm/data/decoding_library_entries.yaml" = "tac2iwxxm/data/decoding_library_entries.yaml"
+"src/tac2iwxxm/data/emit_maps/annex3-metar-speci.yaml" = "tac2iwxxm/data/emit_maps/annex3-metar-speci.yaml"
+"src/tac2iwxxm/data/emit_maps/iwxxm-us-metar-speci.yaml" = "tac2iwxxm/data/emit_maps/iwxxm-us-metar-speci.yaml"
+"src/tac2iwxxm/data/emit_maps/ca-eccc-metar-speci.yaml" = "tac2iwxxm/data/emit_maps/ca-eccc-metar-speci.yaml"
+"src/tac2iwxxm/data/emit_maps/annex3-taf.yaml" = "tac2iwxxm/data/emit_maps/annex3-taf.yaml"
+"src/tac2iwxxm/data/emit_maps/iwxxm-us-taf.yaml" = "tac2iwxxm/data/emit_maps/iwxxm-us-taf.yaml"
+"src/tac2iwxxm/data/emit_maps/ca-eccc-taf.yaml" = "tac2iwxxm/data/emit_maps/ca-eccc-taf.yaml"
+"src/tac2iwxxm/data/emit_maps/annex3-sigmet.yaml" = "tac2iwxxm/data/emit_maps/annex3-sigmet.yaml"
+"src/tac2iwxxm/data/emit_maps/iwxxm-us-sigmet.yaml" = "tac2iwxxm/data/emit_maps/iwxxm-us-sigmet.yaml"
+"src/tac2iwxxm/data/emit_maps/annex3-airmet.yaml" = "tac2iwxxm/data/emit_maps/annex3-airmet.yaml"
+"src/tac2iwxxm/data/emit_maps/iwxxm-us-airmet.yaml" = "tac2iwxxm/data/emit_maps/iwxxm-us-airmet.yaml"
+"src/tac2iwxxm/data/emit_maps/ca-eccc-airmet.yaml" = "tac2iwxxm/data/emit_maps/ca-eccc-airmet.yaml"
+"src/tac2iwxxm/data/emit_maps/annex3-vaa.yaml" = "tac2iwxxm/data/emit_maps/annex3-vaa.yaml"
+"src/tac2iwxxm/data/emit_maps/annex3-tca.yaml" = "tac2iwxxm/data/emit_maps/annex3-tca.yaml"
 
 # Maturin builds the optional PyO3 cdylib (ADR-017 / T4.3). Pure-Python hatch wheel
 # remains the default ``uv sync`` path; CI rust job runs ``maturin develop``.

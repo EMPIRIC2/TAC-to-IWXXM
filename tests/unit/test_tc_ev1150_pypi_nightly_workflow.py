@@ -9,7 +9,9 @@ import yaml
 REPO_ROOT = Path(__file__).resolve().parents[2]
 WORKFLOW = REPO_ROOT / ".github" / "workflows" / "pypi-nightly.yml"
 
-EXPECTED_PACKAGES = frozenset({"tac-validate", "iwxxm-validate", "tac2iwxxm"})
+EXPECTED_PACKAGES = frozenset(
+    {"tac-validate", "iwxxm-validate", "tac2iwxxm", "tac-decoding"}
+)
 
 
 def _load_workflow() -> dict:
@@ -44,6 +46,9 @@ def test_pypi_nightly_workflow_schedule_and_testpypi() -> None:
     assert "bump_calver.py" in steps_blob
     assert "sync_runtime_schemas.py" in steps_blob
     assert "test.pypi.org" in steps_blob
+    assert (
+        "python3.12" in steps_blob
+    )  # manylinux interpreter pin (EV-ci-runtime-failures)
     assert "continue-on-error" in WORKFLOW.read_text(encoding="utf-8")
     # No long-lived TestPyPI password in the workflow file.
     assert "secrets.PYPI_API_TOKEN" not in WORKFLOW.read_text(encoding="utf-8")

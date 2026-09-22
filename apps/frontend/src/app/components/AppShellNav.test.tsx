@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { AppShellNav, SHELL_NAV_LABELS } from './AppShellNav';
 
 describe('AppShellNav', () => {
-  it('renders Dissemination ops and Conversion profiles tabs', async () => {
+  it('renders Dissemination ops and Rule catalogs tabs without Profile builder', async () => {
     const user = userEvent.setup();
     const onNavigate = vi.fn();
     render(<AppShellNav activeView="converter" onNavigate={onNavigate} />);
@@ -17,16 +17,17 @@ describe('AppShellNav', () => {
         .getByTestId('shell-nav-dissemination-ops')
         .querySelector('[data-testid="beta-badge"]'),
     ).toHaveTextContent('Beta');
-    expect(screen.getByTestId('shell-nav-profiles')).toHaveTextContent(
-      SHELL_NAV_LABELS.profiles,
+    expect(screen.getByTestId('shell-nav-catalog')).toHaveTextContent(
+      SHELL_NAV_LABELS.catalog,
     );
-    await user.click(screen.getByTestId('shell-nav-profiles'));
-    expect(onNavigate).toHaveBeenCalledWith('profiles');
+    expect(screen.queryByTestId('shell-nav-profiles')).not.toBeInTheDocument();
+    await user.click(screen.getByTestId('shell-nav-catalog'));
+    expect(onNavigate).toHaveBeenCalledWith('catalog');
   });
 
   it('marks the active tab as selected', () => {
-    render(<AppShellNav activeView="profiles" onNavigate={() => undefined} />);
-    expect(screen.getByTestId('shell-nav-profiles')).toHaveAttribute(
+    render(<AppShellNav activeView="catalog" onNavigate={() => undefined} />);
+    expect(screen.getByTestId('shell-nav-catalog')).toHaveAttribute(
       'aria-selected',
       'true',
     );

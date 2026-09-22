@@ -21,7 +21,7 @@ test.describe('UJ-026: METAR REMARKS retain / exclusion', () => {
       multipart: {
         manual_text: TAC_RMK,
         product: 'METAR',
-        profile: 'annex3',
+        conversion_library_id: 'LIB.CONVERSION.ICAO_2025',
         iwxxm_version: '2025-2',
         lint: 'false',
       },
@@ -39,7 +39,7 @@ test.describe('UJ-026: METAR REMARKS retain / exclusion', () => {
       multipart: {
         manual_text: TAC_FREE,
         product: 'METAR',
-        profile: 'iwxxm_us',
+        conversion_library_id: 'LIB.CONVERSION.US_FAA_NWS',
         iwxxm_version: '2025-2',
         lint: 'false',
       },
@@ -61,7 +61,10 @@ test.describe('UJ-026: METAR REMARKS retain / exclusion', () => {
         .catch(() => undefined);
     }
     await page.locator('#param-product').selectOption('METAR');
-    await page.locator('#param-profile').selectOption('annex3');
+    const conversionLib = page.getByTestId('conversion-library-select');
+    if (await conversionLib.isVisible().catch(() => false)) {
+      await conversionLib.selectOption('LIB.CONVERSION.ICAO_2025');
+    }
     await convertManualMetar(page, TAC_RMK);
     await expect(page.getByRole('region', { name: /conversion results/i })).toBeVisible(
       {

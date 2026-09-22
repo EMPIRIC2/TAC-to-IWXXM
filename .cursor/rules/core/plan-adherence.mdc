@@ -73,6 +73,7 @@ New files must map to an approved component from `[Corpus: system-spec]`
 | E2E workspace | `apps/e2e/` |
 | Auth library | `packages/auth/` |
 | tac2iwxxm | `packages/tac2iwxxm/` |
+| tac-decoding | `packages/tac-decoding/` (F9 / ADR-044) |
 | tac-validate | `packages/tac-validate/` |
 | iwxxm-validate | `packages/iwxxm-validate/` |
 | Dissemination (F16–F19) | `packages/dissemination/` |

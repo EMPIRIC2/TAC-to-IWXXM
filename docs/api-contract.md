@@ -1,7 +1,7 @@
 # API Contract
 
 > **Project**: METAR to IWXXM Converter
-> **Last updated**: 2026-09-12 (EV-docs-accuracy-audit — OpenAPI parity notes; auth register skew)
+> **Last updated**: 2026-09-20 (EV-validation-policy-layers / #1216 — endpoint review: no new lint/validate query fields; profile id only)
 > **Delta**: Monorepo M4 auth; F6 tac2iwxxm; F7 operator API; F11 msgspec HTTP (ADR-026);
 > F15 registry codes (ADR-028); F20 TAF/SPECI quality; **F21 Amended** public convert + optional
 > Auth; **F22** privacy; **F30/F31** Auth-only Supabase + DO Postgres work-sessions (ADR-033)
@@ -69,6 +69,7 @@ GET /health
 ```
 POST /auth/register   # mounted in code + staging; **prod returned 404 as of 2026-09-12** (deploy lag — last prod tag `v2026.09.10-deploy`; register shipped on `main` via #1180/#1183 — roll with next `v*-deploy` tag)
 POST /auth/login
+POST /auth/confirm    # GoTrue token_hash verify (email confirm / recovery); HF-auth-register-login
 POST /auth/logout
 GET  /auth/me
 ```
@@ -227,7 +228,7 @@ package-only routes):
 
 | Field | Required | Default | Description |
 |-------|----------|---------|-------------|
-| `semantic_profile` | no | `ICAO_2025` (or alias `annex3` during window) | Semantic profile id. **EV-093 / #1024:** workbench Profile control submits this field with **uppercase** OpenAPI ids for all registered canonicals (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, thin packs); legacy alias option values `annex3` / `iwxxm_us` remain accepted through the #1025 window. Prefer this field over deprecated `profile`. |
+| `semantic_profile` | no | `ICAO_2025` (or alias `annex3` during window) | Semantic profile id. **EV-093 / #1024:** workbench Profile control submits this field with **uppercase** OpenAPI ids for all registered canonicals (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, thin packs); legacy alias option values `annex3` / `iwxxm_us` remain accepted through the #1025 window. Prefer this field over deprecated `profile`. **EV-bridge-ux-canvas-align (hard cut):** after Libraries cutover, Convert **removes** this field; selection is five library asset ids (Conversion / TAC validation / IWXXM validation / Dissemination / Decoding). See ADR-038 amend EV-bridge. |
 | `report_variant` | no | omitted / auto-detect when profile defines variants | Optional profile-scoped report variant within the selected `product` family. **EV-1050:** for profiles such as `CA_ECCC`, this refines the IWXXM root / TAC lead without promoting national variants into the global `product` enum. Valid values come from the semantic profile catalog (`metar_family_variants`); mismatches fail closed (for example `product=SPECI` with `report_variant=LWIS`). When omitted and the profile supports variants, convert may resolve the variant from TAC lead and echo the resolved value in response metadata. |
 | `iwxxm_version` | no | SoT default | Unchanged — independent of semantic id |
 | `extensions` | no | `[]` | Optional national extension tokens (e.g. `IWXXM_US_3`, `IWXXM_CA`). **EV-068:** when `IWXXM_CA` is present with `semantic_profile=CA_ECCC`, triggers the full Canadian validation stack (layers 1–5 in [IWXXM_VALIDATION.md](domain/IWXXM_VALIDATION.md) §CA_ECCC validation stages). When omitted, `CA_ECCC` alone selects profile-pinned 3.0.0 core XSD+SCH scaffold (backward compatible). **EV-074:** for `product=SIGMET` or `VAA`, Canadian product XSD is not published — layer `ca_xsd` is skipped as not applicable (not an error); WMO 3.0.0 XSD+Schematron still run. |
@@ -424,6 +425,50 @@ Must support TC-F6-031 and TC-F7-004 span highlight.
 `ok`, `issues[]` (`severity`, `code`, `message`, `location`, optional `start`/`end`), and
 optional `fixes[]`. New/migrated METAR/SPECI lint `code` values come from the
 `tac-validate` issue registry; no new response fields on this route.
+
+
+### Rule catalogs (EV-retire-profile-dissem-ui-catalogs / ADR-044)
+
+```
+GET /api/v1/rule-catalogs
+```
+
+**Purpose**: Family-aware export of package-owned trust catalogs for the five-tab operator
+shell (TAC Validation, IWXXM Validation, Conversion, Dissemination, Decoding). Aggregates
+Python catalog APIs from owning packages. **Read-only**.
+
+**Auth**: **None** (F21 public) — same as `lint-issue-catalog`.
+
+**Query**:
+
+| Param | Required | Description |
+|-------|----------|-------------|
+| `family` | yes | `tac` | `iwxxm` | `conversion` | `dissemination` | `decoding` |
+| Product / profile filters | no | Family-specific additive filters (reuse lint-issue-catalog profile filters for `tac` / `iwxxm` where applicable) |
+
+**Response** (msgspec): `{ "family": "...", "items": [ { "id", "title", "summary", "severity?", "tags?", "source_url?", ... } ] }` — exact fields finalized in tech-plan; operator strings EV-048 clean.
+
+**Compatibility**: `GET /api/v1/lint-issue-catalog` remains during transition as a thin wrapper
+or alias for `family=tac` (+ existing IWXXM merge behavior).
+
+### Selection options (ADR-044)
+
+```
+GET /api/v1/selection-options
+```
+
+**Purpose**: Lightweight lists for workbench / dissemination **dropdowns** (deployed registries
+only). Query `kind` ∈ conversion profiles, exchange/dissemination destinations (non-secret),
+decode glossaries/profiles as applicable. Unknown `kind` → 400.
+
+**Auth**: None (public) unless a kind is explicitly JWT-gated in tech-plan (default: public
+read of non-secret deployed ids).
+
+### Library-assets authoring (ADR-044 — removed)
+
+Operator-facing `GET/POST/PATCH/DELETE /api/v1/profiles/library-assets*` authoring routes and
+YAML validate/preview-for-authoring are **removed** at hard cutover. Runtime uses packaged
+registries only. Historical contract text below is **superseded** for operator surfaces.
 
 ### Lint issue catalog (S015 / EV-011 / E11-31)
 
@@ -658,6 +703,10 @@ string content only. Optional additive fields require a follow-on api-contract a
 if proven necessary. Glossary is package data (YAML/JSON); see config-spec for optional
 override path.
 
+**EV-profile-validate-decode-deepen / #1221 / #724**: Station ICAO explanations and
+`summary` include full aerodrome name when the airport lookup hits; miss soft-fails to
+ICAO-only text. **No new response keys** (TC-EVPVD-004..005).
+
 VAA/TCA may be residual-heavy (G4). Must support TC-F7-002.
 
 ### Validation
@@ -818,6 +867,60 @@ not Supabase PostgREST product writes (F30). Auth identity from Supabase JWT.
 **Auth**: JWT required for pack/overlay mutate → 401/403. **Trust**: unsigned browser packs
 rejected. **Non-goals**: credentials / destination URIs in profile objects (ADR-021/029).
 
+### EV-080 / #1146 — Parameterizable conversion templates (JWT)
+
+Deepens F7.w composable conversion assembly. **Parameterizable templates** are the default
+Conversion rule object (ADR-038 EV-080 amend). Phase-1: template CRUD + bridge preview +
+convert apply. Slot-builder payloads are structured JSON (not raw regex-first).
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET` | `/api/v1/profiles/conversion-templates` | List first-party catalog templates + caller-visible custom templates (JWT enrich for custom) |
+| `GET` | `/api/v1/profiles/conversion-templates/{template_id}` | Read one; unknown → fail-closed |
+| `POST`/`PATCH`/`DELETE` | `/api/v1/profiles/conversion-templates[/{template_id}]` | Custom CRUD (JWT owner); reject mutate of first-party builtin ids; fork via POST with `fork_of` |
+| `POST` | `/api/v1/profiles/conversion-templates/preview` | Bridge preview: TAC (+ optional focus span) + template id → captures + IWXXM block sketch |
+| `POST` | `/api/v1/convert` (existing) | Optional `conversion_template_id` (JWT + ownership when custom); unknown → fail-closed |
+
+**Auth**: JWT required for custom mutate / custom apply. **Trust**: first-party view+fork only
+in v1; no destination credentials in template bodies (ADR-021/029). **Non-goals (phase-1):**
+TAC-validation / dissem / decoding library APIs; workflow authoring (#1147).
+
+### EV-profile-builder-yaml-libraries / #1196 — Library YAML + export metadata (JWT)
+
+Deepens F7.w Five Libraries with **YAML-backed custom assets** and optional Convert export
+sidecars (ADR-038 amend EVPYL). Extends existing library-assets routes (do not invent a second
+profiles tree).
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET`/`POST`/`PATCH`/`DELETE` | `/api/v1/profiles/library-assets[/{asset_id}]` | Existing library asset CRUD; body includes **YAML document** (strict schema on save). Builtins read-only; customs owner-scoped. Draft vs Activated status (Activate = Phase C). |
+| `POST` | `/api/v1/profiles/library-assets/preview-rule` | Existing/extended: sample TAC/IWXXM + rule → match/captures / lint / validate / decode / dissem preview as kind allows |
+| `POST` | `/api/v1/profiles/library-assets/validate-yaml` | Validate YAML against strict schema + regex compile diagnostics (Warn/Fail) without persist |
+| `POST` | `/api/v1/convert` (existing) | Optional `include_conversion_metadata=true` (multipart). When set, response/download packaging includes sibling `*.meta.json` sidecar (not embedded in IWXXM). Single-file downloads return a **ZIP of two** (`xml` + `meta.json`). Guests may omit operator-identity fields; identity fields require JWT. Checklist fields selectable; default all groups when UI toggle on. Never credentials / destination URIs / auth tokens. |
+
+**Auth**: JWT for Profile Builder mutate (signed-in required). Convert metadata toggle may be
+used by guests for non-identity fields; operator identity fields require sign-in. **Trust**:
+builtins immutable; Dissemination YAML rejects secret/URI fields. **Non-goals**: metadata on
+Disseminate path; workflow definition editing on Profiles page.
+
+### EV-profile-builder-workbench-edit / #1203 — Workbench + editable libraries (JWT)
+
+Deepens F7.w beyond #1196: IDE workbench authoring, **no Conversion DnD**, shared numeric
+constraint operators, Overview enablement (ADR-038 amend EVWB). Extends existing
+library-assets / validate-yaml routes (do not invent a second profiles tree).
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `GET`/`POST`/`PATCH`/`DELETE` | `/api/v1/profiles/library-assets[/{asset_id}]` | YAML body supports renamable Conversion slots (unordered); TAC/IWXXM rule objects with `level`, regex, and numeric ops (`min`/`max`/`eq`/`in`, int|float, optional unit); Decoding maps/units/structured types; Dissemination destination/route profiles without secrets/URIs. |
+| `POST` | `/api/v1/profiles/library-assets/validate-yaml` | Extended diagnostics for numeric ops + structured decode types + Overview product/file-type/version enablement document when present |
+| `POST` | `/api/v1/profiles/library-assets/preview-rule` | Workbench sample preview for lint/validate/decode/convert as kind allows |
+| `GET` | `/api/v1/profiles/library-catalogs/{kind}` (existing or extend) | Grouped searchable Conversion catalog (expanded mined set); other kinds as today |
+| `GET`/`PATCH` | existing conversion profile / library-assets (embed) | **Recommended (tech-plan):** store Overview enablement + compare inputs as YAML fields on the parent profile / a dedicated `overview` library-asset kind — **no new `/overview` route tree** in P0–P4 unless Build discovers a hard constraint. Compare is computed client-side from two loaded assets + optional BE helper later. |
+
+**Auth**: JWT for mutate. **Trust**: foundation/builtins read-only; Dissemination rejects
+secrets/URIs. **Non-goals**: new sink protocols; Convert chrome rewrite; F8 auto-push; PyPI
+breaks.
+
 ### EV-1051 / #1051 — Operator sharing of semantic presets + dissemination templates (JWT)
 
 `#1051` deepens the existing authenticated profile and dissemination surfaces rather than
@@ -946,6 +1049,8 @@ OpenAPI / shared TS codegen remains planned (P1); this contract is the requireme
 - EV-981 (2026-08-31): #981 — additive convert / convert-bulletin
   `propagate_residuals_to_remarks`; quality-metrics detail
   `residuals_propagated_to_remarks`; info issue `RESIDUALS_PROPAGATED_TO_REMARKS`.
+- EV-configurable-tac-decode-packs (2026-09-19): #1210 — **no HTTP contract change**
+  on `/decode-tac`, `/convert`, or `/convert-bulletin`. See endpoint review at file end.
 - S066 / EV-056 (2026-08-11): F7.q #988 — **no HTTP contract change**. FE shareable route
   `/quality/:stem` + collapsible equal-context hunks consume existing
   `GET /api/v1/quality-metrics` + `/{stem}` (pretty C14N panes from S065).
@@ -1154,3 +1259,84 @@ until then docs lead. #808 is docs/checklist only (no wire change).
 **Breaking changes**: None. Additive only (`D-EV062-api`).
 
 - EV-062 (2026-08-20): #1017 Validation Issues Catalog deepen.
+
+## EV-configurable-tac-decode-packs — Endpoint review (#1210 / ADR-045)
+
+| Endpoint | Change for #1210? | Notes |
+|----------|-------------------|-------|
+| `POST /api/v1/decode-tac` | **None (wire)** | Same `product`, `summary`, `segments`, `residuals`. Pack engine is internal. No `children` / `role` fields |
+| `POST /api/v1/convert` | **None (wire)** | IR source moves to packs per product; vendor XML bytes stay identical |
+| `POST /api/v1/convert-bulletin` | **None (wire)** | TAC abbreviated-heading split unchanged on the wire. COLLECT handling is package-side |
+| `POST /api/v1/lint-tac` | **None (wire)** | Lint issues stay in `tac-validate` |
+| `POST /api/v1/validate` | **None (wire)** | Unchanged |
+| `product=sigmet` | **None (wire)** | Still one enum. Ordinary / VA / TC SIGMET are packs, not new values |
+| FE workbench | **None** | No UI change. H4–H5 not required for this cycle |
+| Dissemination / auth / sessions | **None** | Unchanged |
+
+**Breaking changes**: None. Library import `tac2iwxxm.decode` stays. Legacy parsers, validation, and the pin compares stay (ADR-045).
+
+- EV-configurable-tac-decode-packs (2026-09-19): #1210 — no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]
+
+## EV-pack-ir-convert-wire — Endpoint review (ADR-045 deepen)
+
+| Endpoint | Change? | Notes |
+|----------|---------|-------|
+| `POST /api/v1/decode-tac` | **None (wire)** | Same fields. Richer METAR/SPECI pack rules improve spans/summary content only |
+| `POST /api/v1/convert` | **None (wire)** | Library default for METAR/SPECI may switch to pack-IR emit when goldens match; request/response shape unchanged |
+| Other convert/validate/lint | **None** | Unchanged |
+| FE / H4–H5 | **N/A** | No UI or CORS change |
+
+**Breaking changes**: None. `products/metar_speci.py` remains until a later delete-gate evolve.
+
+- EV-pack-ir-convert-wire (2026-09-20): deepen #1210 — no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]
+
+## EV-pack-fill-delete-gate — Endpoint review (#1214 / ADR-045)
+
+| Endpoint | Change? | Notes |
+|----------|---------|-------|
+| `POST /api/v1/decode-tac` | **None (wire)** | Same fields. More products get richer pack-backed spans/summary |
+| `POST /api/v1/convert` | **None (wire)** | Library defaults may expand pack-IR emit per product when goldens match; request/response shape unchanged |
+| Other convert/validate/lint | **None** | Unchanged |
+| FE / H4–H5 | **N/A** | No UI or CORS change |
+
+**Breaking changes**: None on HTTP. Library: selective removal of `products/*.py` when byte-identical (all-or-nothing per shared file); `pack_ir_map` must not import deleted parsers.
+
+- EV-pack-fill-delete-gate (2026-09-20): #1214 — no HTTP contract change. [Corpus: api] [Corpus: adr/ADR-045]
+
+## EV-profile-validate-decode-deepen — Endpoint review (#1221)
+
+| Endpoint | Change? | Notes |
+|----------|---------|-------|
+| `POST /api/v1/decode-tac` | **None (wire)** | Richer station explanation/`summary` strings when airport lookup hits (#724) |
+| `GET /api/v1/lint-issue-catalog` | **None (already EV-1120)** | Confirm residual #1122 content; filters already documented |
+| `GET /api/v1/rule-catalogs` / selection-options | **None (ADR-044)** | FE cutover consumes existing routes |
+| Convert / validate / lint | **None** | AU/NZ catalog status + fixtures only |
+| FE / H4–H5 | **Required when FE ships** | UJ-078 Profile Builder removal + catalog follow |
+
+**Breaking changes**: None on HTTP. FE removes Profile Builder authoring surfaces (ADR-044).
+
+- EV-profile-validate-decode-deepen (2026-09-21): #1221 — no HTTP shape change. [Corpus: api] [Corpus: adr/ADR-044]
+
+## EV-yaml-engine-configurability — Endpoint review (#1224)
+
+| Endpoint | Change? | Notes |
+|----------|---------|-------|
+| Convert / validate / lint / decode | **None (wire)** | Server-resolved policies/packs via env overlays only |
+| OpenAPI body fields for pack/policy YAML | **Forbidden** | TC-EVYEC-004 |
+| FE / H4–H5 | **N/A** | Docs/SDK/deployer only |
+
+**Breaking changes**: None on HTTP.
+
+- EV-yaml-engine-configurability (2026-09-21): #1224 — no HTTP shape change. [Corpus: api] [Corpus: adr/ADR-044]
+
+## EV-yaml-full-configurability — Endpoint review (#1226)
+
+| Endpoint | Change? | Notes |
+|----------|---------|-------|
+| Convert / validate / lint / decode | **None (wire)** in Spec | Emit map + overlays are env/file; ADR-047 |
+| OpenAPI body fields for pack/policy/emit-map YAML | **Forbidden** | TC-EVYEC-004 + TC-EVYFC-005 |
+| FE / H4–H5 | **N/A** unless Build adds UI/OpenAPI | Overlays stay deployer/SDK |
+
+**Breaking changes**: None on HTTP.
+
+- EV-yaml-full-configurability (2026-09-21): #1226 / ADR-047 Proposed — no HTTP shape change in Spec. [Corpus: api] [Corpus: adr/ADR-047]

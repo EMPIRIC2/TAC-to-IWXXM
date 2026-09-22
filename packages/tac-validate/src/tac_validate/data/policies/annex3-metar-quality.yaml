@@ -1,0 +1,18 @@
+# Builtin annex3 METAR/SPECI TAC quality policy (ADR-046 / #1216).
+# Empty select = all non-preview registry codes for product metar (includes speci tags).
+schema_version: 1
+id: annex3-metar-quality
+lifecycle: activated
+product: metar
+extends: []
+select: []
+ignore: []
+severity: {}
+preview: []
+detectors:
+  - metar-speci-r1-identity-order
+  - metar-speci-r2-visibility
+  - metar-speci-r3-weather
+  - metar-speci-r4-cloud
+  - metar-speci-r5-remarks
+  - metar-speci-r8-modifiers

@@ -1,0 +1,44 @@
+# Builtin va_sigmet token-stream pack (ADR-045 / M4 #1230).
+# VA A6 groups; residual catch-all for ash cloud / geometry body tokens.
+id: va_sigmet
+layout: token_stream
+rules:
+  - id: report_type
+    pattern: ["SIGMET"]
+    explain: "SIGMET {0}"
+  - id: va
+    pattern: ["VA"]
+    explain: "Volcanic ash"
+  - id: sequence
+    pattern: ["[A-Z]?\\d{1,2}"]
+    explain: "Sequence {0}"
+  - id: valid
+    pattern: ["VALID"]
+    explain: "Validity marker"
+  - id: valid_period
+    pattern: ["\\d{6}/\\d{6}"]
+    explain: "Validity period {0}"
+  - id: fir
+    pattern: ["[A-Z]{4}"]
+    explain: "FIR/location {0}"
+  - id: obs_or_fcst
+    pattern: ["(?:OBS|FCST)"]
+    explain: "Observation/forecast {0}"
+  - id: no_va
+    pattern: ["NO"]
+    explain: "No"
+  - id: va_exp
+    pattern: ["VA"]
+    explain: "VA"
+  - id: exp
+    pattern: ["EXP"]
+    explain: "Expected"
+  - id: cnl
+    pattern: ["CNL"]
+    explain: "Cancelled"
+  - id: equal
+    pattern: ["="]
+    explain: "Report terminator"
+  - id: token
+    pattern: [".+"]
+    explain: "Token {0}"

@@ -63,7 +63,7 @@ def test_uj069_semantic_convert_then_exchange_package(
         files={
             "manual_text": (None, _TAC),
             "product": (None, "METAR"),
-            "semantic_profile": (None, "US_FAA_NWS"),
+            "conversion_library_id": (None, "LIB.CONVERSION.US_FAA_NWS"),
             "lint": (None, "false"),
         },
     )
@@ -77,7 +77,7 @@ def test_uj069_semantic_convert_then_exchange_package(
         files={
             "manual_text": (None, _BULLETIN),
             "product": (None, "METAR"),
-            "semantic_profile": (None, "US_FAA_NWS"),
+            "conversion_library_id": (None, "LIB.CONVERSION.US_FAA_NWS"),
             "exchange_profile": (None, "GLOBAL_AFS"),
             "lint": (None, "false"),
         },

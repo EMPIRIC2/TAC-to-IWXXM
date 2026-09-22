@@ -188,7 +188,7 @@ def test_tc_ev061_1010_003_validate_only_and_iwxxm_pass_through_still_work() -> 
             {
                 "manual_text": GOLDEN_XML,
                 "product": "iwxxm",
-                "profile": "annex3",
+                "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
                 "lint": "false",
             },
         )

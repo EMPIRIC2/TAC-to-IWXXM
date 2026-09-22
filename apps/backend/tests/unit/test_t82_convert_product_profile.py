@@ -40,7 +40,7 @@ def test_convert_forwards_product_and_profile(client: TestClient, monkeypatch: p
                 "METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=",
             ),
             "product": (None, "METAR"),
-            "profile": (None, "iwxxm_us"),
+            "conversion_library_id": (None, "LIB.CONVERSION.US_FAA_NWS"),
             "iwxxm_version": (None, "2025-2"),
             "lint": (None, "false"),
         },
@@ -69,7 +69,7 @@ def test_convert_rejects_unknown_product(client: TestClient, monkeypatch: pytest
                 "METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012=",
             ),
             "product": (None, "NOTAPRODUCT"),
-            "profile": (None, "annex3"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "lint": (None, "false"),
         },
     )

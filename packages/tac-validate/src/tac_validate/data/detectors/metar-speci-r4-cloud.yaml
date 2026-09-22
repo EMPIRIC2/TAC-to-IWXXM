@@ -1,0 +1,37 @@
+# R4 cloud detectors for METAR/SPECI (ADR-046 / #1228 M2).
+# Declarative token_scan + finditer; membership residual stays python.
+schema_version: 1
+id: metar-speci-r4-cloud
+stage: token
+products:
+  - METAR
+  - SPECI
+rules:
+  - id: invalid_cloud_token
+    kind: token_scan
+    preprocess:
+      before: RMK
+      exclude_ahl_lines: true
+      strip_terminator: true
+    select: '^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})\S*$'
+    ok: '^(?:(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$'
+    on_fail:
+      code: INVALID_CLOUD_TOKEN
+      location: cloud
+      message_template: "{product} invalid cloud/VV token {capture!r} - A3-2 #9 / research R4"
+      span: match
+  - id: cloud_cb_or_tcu
+    kind: finditer
+    preprocess:
+      before: RMK
+      exclude_ahl_lines: true
+      strip_terminator: true
+    pattern: '\b(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)\b'
+    on_match:
+      code: CLOUD_CB_OR_TCU
+      location: cloud
+      message_template: "{product} cloud group {capture!r} includes convective type - research R4"
+      span: match
+  - id: r4_membership
+    kind: python
+    python: python:tac_validate.theme_checks:hatch_r4_membership

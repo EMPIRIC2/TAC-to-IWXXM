@@ -8,8 +8,14 @@ const mockToast = vi.hoisted(() => ({
   error: vi.fn(),
 }));
 
+const mockConfirmEmail = vi.hoisted(() => vi.fn());
+
 vi.mock('sonner', () => ({
   toast: mockToast,
+}));
+
+vi.mock('@/utils/authService', () => ({
+  confirmEmail: mockConfirmEmail,
 }));
 
 describe('AuthCallback', () => {
@@ -24,6 +30,8 @@ describe('AuthCallback', () => {
       value: {
         hash: '',
         href: 'http://localhost/',
+        search: '',
+        pathname: '/',
       },
     });
 
@@ -72,6 +80,112 @@ describe('AuthCallback', () => {
       },
       { timeout: 3000 },
     );
+  });
+
+  it('confirms email via token_hash query params', async () => {
+    const onVerified = vi.fn();
+    window.location.search = '?token_hash=hash123&type=email';
+    window.location.pathname = '/auth/confirm';
+    mockConfirmEmail.mockResolvedValue({
+      user: { id: 'u1', email: 'op@example.com', metadata: {} },
+      session: {
+        access_token: 'at',
+        refresh_token: 'rt',
+        expires_at: 99,
+      },
+    });
+
+    render(<AuthCallback onVerified={onVerified} />);
+
+    await waitFor(() => {
+      expect(mockConfirmEmail).toHaveBeenCalledWith({
+        token_hash: 'hash123',
+        type: 'email',
+      });
+      expect(mockToast.success).toHaveBeenCalledWith('Email verified successfully!');
+      expect(onVerified).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('token_hash recovery redirects to reset with access token', async () => {
+    window.location.search = '?token_hash=hash123&type=recovery';
+    window.location.pathname = '/auth/confirm';
+    mockConfirmEmail.mockResolvedValue({
+      user: { id: 'u1', email: 'op@example.com', metadata: {} },
+      session: {
+        access_token: 'reset-at',
+        refresh_token: 'rt',
+        expires_at: 99,
+      },
+    });
+
+    render(<AuthCallback />);
+
+    await waitFor(() => {
+      expect(window.location.href).toBe('/auth/reset?token=reset-at');
+    });
+  });
+
+  it('token_hash recovery without session redirects home', async () => {
+    window.location.search = '?token_hash=hash123&type=recovery';
+    mockConfirmEmail.mockResolvedValue({
+      user: { id: 'u1', email: 'op@example.com', metadata: {} },
+      session: null,
+    });
+
+    render(<AuthCallback />);
+
+    await waitFor(() => {
+      expect(window.location.href).toBe('/');
+    });
+  });
+
+  it('token_hash uses onLogin when onVerified is absent', async () => {
+    const onLogin = vi.fn();
+    window.location.search = '?token_hash=hash123&type=email';
+    mockConfirmEmail.mockResolvedValue({
+      user: { id: 'u1', email: 'op@example.com', metadata: {} },
+      session: {
+        access_token: 'at',
+        refresh_token: 'rt',
+        expires_at: 99,
+      },
+    });
+
+    render(<AuthCallback onLogin={onLogin} />);
+
+    await waitFor(() => {
+      expect(onLogin).toHaveBeenCalledWith('op@example.com', false, 'at');
+    });
+  });
+
+  it('token_hash uses onRegister when session is missing', async () => {
+    const onRegister = vi.fn();
+    window.location.search = '?token_hash=hash123&type=email';
+    mockConfirmEmail.mockResolvedValue({
+      user: { id: 'u1', email: 'op@example.com', metadata: {} },
+      session: null,
+    });
+
+    render(<AuthCallback onRegister={onRegister} />);
+
+    await waitFor(() => {
+      expect(onRegister).toHaveBeenCalledWith('op@example.com');
+    });
+  });
+
+  it('token_hash without handlers redirects home', async () => {
+    window.location.search = '?token_hash=hash123&type=email';
+    mockConfirmEmail.mockResolvedValue({
+      user: { id: 'u1', email: 'op@example.com', metadata: {} },
+      session: null,
+    });
+
+    render(<AuthCallback />);
+
+    await waitFor(() => {
+      expect(window.location.href).toBe('/');
+    });
   });
 
   it('handles signup token with onVerified callback', async () => {
@@ -139,9 +253,7 @@ describe('AuthCallback', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('heading', { name: 'Error' })).toBeInTheDocument();
-      expect(
-        screen.getByText('An error occurred. Please try again.'),
-      ).toBeInTheDocument();
+      expect(screen.getByText('handler failure')).toBeInTheDocument();
       expect(mockToast.error).toHaveBeenCalledWith('Authentication failed');
     });
 
@@ -152,6 +264,23 @@ describe('AuthCallback', () => {
       },
       { timeout: 3000 },
     );
+  });
+
+  it('uses default catch message when thrown value has no Error message', async () => {
+    const onVerified = vi.fn(() => {
+      throw new Error('');
+    });
+    window.location.hash = '#access_token=abc123&type=signup';
+
+    render(<AuthCallback onVerified={onVerified} />);
+
+    await waitFor(() => {
+      expect(screen.getByRole('heading', { name: 'Error' })).toBeInTheDocument();
+      expect(
+        screen.getByText('An error occurred. Please try again.'),
+      ).toBeInTheDocument();
+      expect(mockToast.error).toHaveBeenCalledWith('Authentication failed');
+    });
   });
 
   it('redirects home after catch block timeout using fake timers', async () => {

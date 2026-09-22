@@ -46,6 +46,7 @@ def test_validate_calls_sdk_once_without_orchestrator_xsd_schematron(
         profile: str = "annex3",
         levels=None,
         product: str | None = None,
+        output_policy_id: str | None = None,
     ) -> ValidationReport:
         sdk_calls.append(
             {
@@ -54,6 +55,7 @@ def test_validate_calls_sdk_once_without_orchestrator_xsd_schematron(
                 "profile": profile,
                 "levels": levels,
                 "product": product,
+                "output_policy_id": output_policy_id,
             }
         )
         return ValidationReport(

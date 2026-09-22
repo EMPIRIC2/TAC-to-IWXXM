@@ -41,12 +41,16 @@
 | [ADR-035](ADR-035-quality-metrics-c14n.md) | Quality metrics match/diff uses W3C C14N (not ADR-032 canonicalize) | **Accepted** |
 | [ADR-036](ADR-036-semantic-vs-exchange-profiles.md) | Semantic vs exchange profiles; canonical IDs + alias deprecation (#912) | **Accepted** (EV-063) |
 | [ADR-037](ADR-037-platform-logical-layers.md) | Platform logical layers — keep package layout (epic #922 / spike #923) | **Accepted** (EV-922) |
-| [ADR-038](ADR-038-conversion-profile-contract.md) | ConversionProfile executable contract (spike #924) | **Accepted** (EV-924) |
+| [ADR-038](ADR-038-conversion-profile-contract.md) | ConversionProfile executable contract (spike #924); **amends:** EV-933 overlays; **EV-080 / #1146** parameterizable templates | **Accepted** (EV-924; amends EV-933, EV-080) |
 | [ADR-039](ADR-039-staged-validation-pipeline.md) | Staged validation pipeline + canonical IR boundary (spike #925) | **Accepted** (EV-925) |
 | [ADR-040](ADR-040-sql-adapters-mapping-config.md) | SQL symmetric adapters + MappingConfig (spike #926) | **Accepted** (EV-926) |
 | [ADR-041](ADR-041-dissemination-gateway.md) | DisseminationGateway + DisseminationPlan (spike #927) | **Accepted** (EV-927) |
 | [ADR-042](ADR-042-workflow-definitions.md) | Workflow definitions — execute(message, workflow) (spike #931) | **Accepted** (EV-931) |
 | [ADR-043](ADR-043-beta-features-pypi-calver.md) | Beta feature surfacing + PyPI CalVer / nightly TestPyPI | **Accepted** (EV-1150) |
+| [ADR-044](ADR-044-package-owned-catalogs-tac-decoding.md) | Package-owned rule catalogs; Profile Builder UI hard cutover; `tac-decoding` PyPI | **Accepted** (EV-retire-profile-dissem-ui-catalogs) |
+| [ADR-045](ADR-045-shared-tac-pack-engine.md) | Shared TAC pack engine for decode and convert IR | **Accepted** (EV-configurable-tac-decode-packs) |
+| [ADR-046](ADR-046-validation-policy-layers.md) | Registry / Detector / Policy / Runtime for TAC lint + IWXXM output | **Accepted** (EV-validation-policy-layers / #1216) |
+| [ADR-047](ADR-047-convert-emit-yaml-full-matrix.md) | Convert emit YAML + full engine matrix | **Proposed** (EV-yaml-full-configurability / #1226) |
 
 ## Process
 

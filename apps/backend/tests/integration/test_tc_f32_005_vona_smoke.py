@@ -47,7 +47,7 @@ def test_tc_f32_005_vona_lint_convert_smoke(smoke_client: TestClient) -> None:
         {
             "manual_text": tac,
             "product": "vona",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "lint": "false",
         },
     )

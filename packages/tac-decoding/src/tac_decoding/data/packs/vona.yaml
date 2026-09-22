@@ -1,0 +1,58 @@
+# Builtin vona label-fields pack (ADR-045 / EV-pack-fill-delete-gate).
+id: vona
+layout: label_fields
+rules:
+  - id: dtg
+    label: "DTG"
+    explain: "DTG {value}"
+  - id: volcano
+    label: "VOLCANO"
+    explain: "VOLCANO {value}"
+  - id: psn
+    label: "PSN"
+    explain: "PSN {value}"
+  - id: area
+    label: "AREA"
+    explain: "AREA {value}"
+  - id: source_elev
+    label: "SOURCE ELEV"
+    explain: "SOURCE ELEV {value}"
+  - id: notice_nr
+    label: "NOTICE NR"
+    explain: "NOTICE NR {value}"
+  - id: current_colour_code
+    label: "CURRENT COLOUR CODE"
+    explain: "CURRENT COLOUR CODE {value}"
+  - id: previous_colour_code
+    label: "PREVIOUS COLOUR CODE"
+    explain: "PREVIOUS COLOUR CODE {value}"
+  - id: svo
+    label: "SVO"
+    explain: "SVO {value}"
+  - id: act_sts
+    label: "ACT STS"
+    explain: "ACT STS {value}"
+  - id: onset
+    label: "ONSET"
+    explain: "ONSET {value}"
+  - id: dur
+    label: "DUR"
+    explain: "DUR {value}"
+  - id: va_cld_hgt
+    label: "VA CLD HGT"
+    explain: "VA CLD HGT {value}"
+  - id: hgt_source
+    label: "HGT SOURCE"
+    explain: "HGT SOURCE {value}"
+  - id: mov
+    label: "MOV"
+    explain: "MOV {value}"
+  - id: ctc
+    label: "CTC"
+    explain: "CTC {value}"
+  - id: rmk
+    label: "RMK"
+    explain: "RMK {value}"
+  - id: nxt_notice
+    label: "NXT NOTICE"
+    explain: "NXT NOTICE {value}"

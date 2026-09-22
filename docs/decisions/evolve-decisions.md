@@ -1,5 +1,240 @@
 # Evolve Decisions
 
+## Cycle EV-yaml-full-configurability — full YAML + convert emit (#1226)
+
+**Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-full-configurability`  
+**Epic:** [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226) · Children [#1227](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1227)–[#1231](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1231)  
+**Documenting→Implementing gate:** **open** (2026-09-22)  
+**Lock:** [ev-yaml-full-configurability.md](ev-yaml-full-configurability.md) · [ADR-047](../adr/ADR-047-convert-emit-yaml-full-matrix.md) (Proposed)  
+**Feasibility / tech / verify:** [feasibility](ev-yaml-full-configurability-feasibility.md) · [tech-plan](ev-yaml-full-configurability-tech-plan.md) · [verify-tech](ev-yaml-full-configurability-verify-tech.md)
+
+| ID | Outcome |
+|----|---------|
+| D-YFC-01..08 | Full YAML end-state incl. emit; multi-milestone; pin↔SCH; no HTTP/editor/SCH-as-YAML |
+| D-YFC-ADR | ADR-047 Proposed; accept at Build gate or first emit PR |
+| D-YFC-FEAS | Feasible as multi-milestone program |
+| D-YFC-TECH | Tech-plan Pass (TP-YFC-01..06; H4–H5 waived) |
+| D-YFC-GATE | Spec→Build gate opened; #1233 merged to `stage` |
+| D-YFC-M1 | #1227 full scope: starters + cookbook + `--check-overlay` + README smoke + evidence section |
+
+[Corpus: product] [Corpus: adr/ADR-047] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: decisions]
+
+---
+
+## Cycle EV-yaml-engine-configurability — overlay honesty + SDK usability (#1224)
+
+**Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-engine-configurability`  
+**Issue:** [#1224](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1224)  
+**Documenting→Implementing gate:** closed  
+**Lock:** [ev-yaml-engine-configurability.md](ev-yaml-engine-configurability.md)
+
+| ID | Outcome |
+|----|---------|
+| D-EVYEC-01..08 | Requirements locked (honesty matrix, cookbook/examples, preflight, no emit-YAML, no HTTP policy, H4–H5 N/A) |
+| D-EVYEC-MANIFEST | Delta feature-list / journeys / test-plan / api; no new ADR |
+| D-EVYEC-FEAS | Feasible as scoped |
+| D-EVYEC-TECH | Tech-plan + verify-tech Pass (TP-EVYEC-01..06; H4–H5 waived) |
+
+[Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F9] [Corpus: product §F12]
+[Corpus: product §F15] [Corpus: adr/ADR-044] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: decisions]
+
+---
+
+## Cycle EV-profile-validate-decode-deepen — F36 + #1120 residual + ADR-044 + #724 (#1221)
+
+**Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-profile-validate-decode-deepen`  
+**Issue:** [#1221](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1221) · **OUT gap:** [#1222](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1222)  
+**Documenting→Implementing gate:** closed  
+**Lock:** [ev-profile-validate-decode-deepen.md](ev-profile-validate-decode-deepen.md)
+
+| ID | Outcome |
+|----|---------|
+| D-EVPVD-01..08 | Requirements locked (recommended spine, AU/NZ bar, CA best-effort, docs-only preview, honest #1120 residual, ADR-044 UI cutover, #724 soft-fail names, OUT list) |
+| D-EVPVD-MANIFEST | Delta feature-list / journeys / test-plan / api confirm; no new ADR; no Config/Deploy |
+
+[Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F7] [Corpus: product §F9]
+[Corpus: product §F15] [Corpus: product §F35] [Corpus: product §F36] [Corpus: decisions]
+
+---
+
+## Cycle EV-validation-policy-layers — Registry/Detector/Policy/Runtime (#1216 / ADR-046)
+
+**Opened:** 2026-09-20 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-validation-policy-layers`  
+**Issue:** [#1216](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1216) · **Documenting→Implementing gate:** closed  
+**Branch:** (pending Build)  
+**Lock:** [ev-validation-policy-layers-lock.md](ev-validation-policy-layers-lock.md)
+
+| ID | Outcome |
+|----|---------|
+| D-VPL-REQ | Requirements locked from pre-evolve design lock (all D-VPL-* + A–G) |
+| D-VPL-ADR | ADR-046 accepted; ADR-028 + ADR-038 amended |
+| D-VPL-SCALE | full; H4–H5/E2E N/A (no UI); HTTP profile-only |
+| D-VPL-BUILD | M1 policy → M2 R2 → M3 R1–R8 → M4 IWXXM → M5 profile/CLI → M6 catalogs |
+
+[Corpus: product §F15] [Corpus: product §F2] [Corpus: adr/ADR-046] [Corpus: decisions]
+
+---
+
+## Pre-evolve lock — Registry / Detector / Policy / Runtime (validation policy layers)
+
+**Locked:** 2026-09-20 · **Status:** design lock only (no Build)  
+**Record:** [ev-validation-policy-layers-lock.md](ev-validation-policy-layers-lock.md)  
+**Pending:** evolve intake → ADR-046 + ADR-028/038 amends
+
+| ID | Outcome |
+|----|---------|
+| D-VPL-01..12 | Round 1 architecture locks (registry in tac-validate; detectors in tac-validate; IWXXM policy in iwxxm-validate; profile-owned; small DSL; activate fail-closed; bundles; no suppressions; strict annex3 METAR; file/env overlays; R1–R8 cycle bar) |
+| D-VPL-A1..A5 | One conversion profile UX; separate policy ids; per-product docs; per-report TAC; single resolved policy |
+| D-VPL-B1..B7 | MatchPort protocol; strict METAR / fallback else; inherit spans; membership in tac-validate; stages; separate lint budget |
+| D-VPL-C1..C6 | extends cap; empty select = defaults; `ignore` only; loosen needs rationale; preview opt-in |
+| D-VPL-D1..D5 | XSD/well-formed non-selectable; pin-aware assert activate; one primary pin |
+| D-VPL-E1..E6 | HTTP profile-only; CLI `--policy` override; resolver in tac2iwxxm; workflows use profile id |
+| D-VPL-F1..F4 | Generated catalogs; no lint-profile picker v1; draft API/CLI only |
+| D-VPL-G1..G5 | Shadow code+span; theme flips; no dual paths after flip; integer schema_version |
+
+[Corpus: product §F15] [Corpus: product §F2] [Corpus: adr/ADR-028] [Corpus: adr/ADR-038] [Corpus: decisions]
+
+---
+
+## Cycle EV-pack-fill-delete-gate — core pack fill + selective delete (ADR-045 deepen)
+
+**Opened:** 2026-09-20 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-pack-fill-delete-gate`  
+**Issue:** [#1214](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1214) · **Documenting→Implementing gate:** closed  
+**Branch:** `evolve/EV-pack-fill-delete-gate`  
+**Precursor:** #1212 / PR #1213
+
+| ID | Outcome |
+|----|---------|
+| D-PFDG-01 | Stricter in-bar peers (multi-location VA + SWXA alternates) |
+| D-PFDG-02 | All-or-nothing delete per shared `products/*.py` file |
+| D-PFDG-03 | Rewrite `pack_ir_map` — no import of deleted `products/*.py` |
+| D-PFDG-04 | Token-stream first, then label-field, then delete-gate |
+| D-PFDG-05 | METAR/SPECI delete allowed if goldens pass after mapper independence |
+| D-PFDG-06..10 | Packages separate; no HTTP/UI; stubs WAFS/QVACI; byte-identical bar; full scale |
+| D-PFDG-11 | Zero shared-file deletes OK (keep-on-fail; ship packs) |
+| D-PFDG-12 | SWXA primary + `_alternate` both required for flip/delete |
+| D-PFDG-13 | `sigmet-A6-1b-CNL` in-bar |
+| D-PFDG-REQ | Requirements locked 2026-09-20 → draft-docs |
+
+[Corpus: product §F6] [Corpus: product §F9] [Corpus: adr/ADR-045] [Corpus: tests] [Corpus: decisions]
+
+---
+
+## Cycle EV-pack-ir-convert-wire — pack fill + convert emit (ADR-045 deepen)
+
+**Opened:** 2026-09-20 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-pack-ir-convert-wire`  
+**Precursor:** #1210 / PR #1211 · **Documenting→Implementing gate:** closed  
+**Branch:** `evolve/EV-pack-ir-convert-wire`
+
+| ID | Outcome |
+|----|---------|
+| D-PACKIR-01 | Packages stay separate |
+| D-PACKIR-02 | Span IR in tac-decoding; spans→slots mapper in tac2iwxxm only |
+| D-PACKIR-03/04 | METAR/SPECI first; coverage `metar-A3-1` + `speci-A3-2` |
+| D-PACKIR-05 | Flip METAR/SPECI convert default when goldens match; no parser delete |
+| D-PACKIR-06 | Delete gate closed this cycle |
+| D-PACKIR-07/08 | No HTTP shape change; decode↛tac2iwxxm |
+| D-PACKIR-09 | Comment #1210 + follow-on issue after requirements draft |
+| D-PACKIR-10 | H4–H5/E2E N/A; scale standard |
+| D-PACKIR-REQ | Requirements locked 2026-09-20 → draft-docs |
+
+[Corpus: product §F6] [Corpus: product §F9] [Corpus: adr/ADR-045] [Corpus: tests] [Corpus: decisions]
+
+---
+
+## Cycle EV-profile-builder-workbench-edit — IDE workbench + full editability (#1203)
+
+**Opened:** 2026-09-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-profile-builder-workbench-edit`  
+**Issue:** [#1203](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1203) · **Documenting→Implementing gate:** closed  
+**Precursor:** #1196 / PR #1197 Phase A on `stage`
+
+| ID | Outcome |
+|----|---------|
+| D-EVWB-01..28 | Intake D1–D28 locked (new evolve; full edit ×5; drop DnD; workbench; Overview; YAML SoT; foundation fork-only; operator-only design decisions) |
+| D-EVWB-R1 | Routing approved; issue #1203 created (proceed recommended) |
+| D-EVWB-CTX | Context completed; scoped brief `docs/context/profile-builder-workbench-edit.md`; F107 waive sparse |
+| D-EVWB-REQ-01 | Deepen F7.w under #1203 (no new Fn) |
+| D-EVWB-REQ-02 | Journeys UJ-072i-* |
+| D-EVWB-REQ-03 | Tests TC-EVWB-* + H4–H5 when FE ships |
+| D-EVWB-REQ-04 | UI preview declined — docs/staging description only |
+| D-EVWB-REQ-05 | ADR-038 amend EVWB |
+| D-EVWB-REQ-06 | Numeric ops first ship: min/max/eq/in int+float + optional unit |
+| D-EVWB-REQ-07 | Dissemination = CRUD routes/profiles + adapter enable + YAML; no drawer redesign; no new protocols |
+| D-EVWB-REQ-08 | **Requirements locked** → draft-docs (2026-09-16) |
+| D-EVWB-doc | Spec band completed: draft-docs → tech-tooling; documenting verify **13/13 PASS** |
+| D-EVWB-gate | Spec→Build **opened** (operator G1:A / proceed recommended); first slice **P0** |
+
+[Corpus: product §F7.w] [Corpus: journeys §UJ-072i-*] [Corpus: api] [Corpus: tests] [Corpus: adr/ADR-038] [Corpus: decisions]
+
+---
+
+## Cycle EV-profile-builder-mine-residuals — Phase B mining residuals (#1198+#1199)
+
+**Opened:** 2026-09-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-profile-builder-mine-residuals`  
+**Parent:** EV-profile-builder-yaml-libraries / #1196 · **Documenting→Implementing gate:** closed (await Spec band)
+
+| ID | Outcome |
+|----|---------|
+| D-EVPYL-R-01 | Scope: both #1198 + #1199 in one standard evolve |
+| D-EVPYL-R-02 | #1198: defer full national mine until vendor pins; hooks/docs only |
+| D-EVPYL-R-03 | Scale: standard |
+| D-EVPYL-R-04 | Routing approved as written (2026-09-16) |
+| D-EVPYL-R-05 | #1199: WMO foundation SCH only (metce/opm/saf/collect); OpenGIS out |
+| D-EVPYL-R-06 | Version pin: latest family only (metce 1.2, opm 1.2, saf 1.1, collect 1.2) |
+| D-EVPYL-R-07 | #1198 stays open after hooks + unblock criteria |
+| D-EVPYL-R-08 | Additive asserts + `authority` tags; core ids stable |
+| D-EVPYL-R-09 | No invented national XSD trees; vendor read-only |
+| D-EVPYL-R-10 | **Requirements locked** → draft-docs (2026-09-16) |
+| D-EVPYL-R-11 | #1198 research: no pin-ready public national XSDs this pass (degraded web) — stay blocked |
+| D-EVPYL-R-12 | No M6 national pin PR; no invented/stub XSDs |
+| D-EVPYL-R-13 | Next: Stage 1 live web re-verify ± Stage 3 outreach; report in docs/domain/profiles/mining/EV-1198-national-xsd-pinability.md |
+
+---
+
+## Cycle EV-1198-stage1-national-xsd-web-reverify — Stage 1 live pinability (#1198)
+
+**Opened:** 2026-09-16 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1198-stage1-national-xsd-web-reverify`  
+**Documenting→Implementing gate:** closed (spec-only default; AU Stage 2 needs AskQuestion)  
+**Report:** [docs/domain/profiles/mining/EV-1198-national-xsd-pinability.md](../domain/profiles/mining/EV-1198-national-xsd-pinability.md)
+
+| ID | Outcome |
+|----|---------|
+| D-EV1198-S1-01 | Stage 1 live web re-verify completed (working web channel) |
+| D-EV1198-S1-02 | AU-TAF verified: EUR DMG zip → `iwxxm-au` 1.0 TAF-only XSD (partial candidate) |
+| D-EV1198-S1-03 | UK Colour State registry entry exists; canonical XSD URL HTTP 404 — not pin-ready |
+| D-EV1198-S1-04 | BR/HK/IN/JP/KR/NZ — no public national IWXXM extension XSD found this pass |
+| D-EV1198-S1-05 | #1198 stays blocked for Conversion mining; no M6 vendor-sync PR |
+| D-EV1198-S1-06 | US/CA precedent URLs re-verified HTTP 200 |
+| D-EV1198-S1-07 | Stage 3 outreach deferred (operator cannot contact NMSs this cycle) |
+| D-EV1198-S1-08 | AU Stage 2 M6 only after AskQuestion on license + TAF-only scope + path/version |
+
+[Corpus: product §F7.w] [Corpus: tests] [Corpus: adr/ADR-038] [Corpus: decisions]
+
+---
+
+## Cycle EV-profile-builder-yaml-libraries — YAML/DnD Profile Builder + export metadata (#1196)
+
+**Opened:** 2026-09-15 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-profile-builder-yaml-libraries`  
+**Issue:** [#1196](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1196) · **Documenting→Implementing gate:** closed (await Spec band)
+
+| ID | Outcome |
+|----|---------|
+| D-EVPYL-01..24 | Intake R1 — major redesign; custom rules all 5 libs; DnD+templates; live regex; tooltips; inspector under editor; WMO defaults; full mining; Beta; phased A→B→C |
+| D-EVPYL-25..40 | Intake R2 — one YAML/asset; live UI↔YAML; strict schema; IWXXM schema blocks; all create paths; shared sample drawer; Warn/Fail; Draft/Activate; signed-in builder; no workflow links; fork nationals; IWXXM SCH+custom; no dissem secrets; Phase A shell |
+| D-EVPYL-41..47 | Intake R3 — export `*.meta.json` sidecar; Convert download toggle; opt-in+remember; full checklist; Phase A; routing approved |
+| D-EVPYL-48..53 | Context — local UI preview; `.meta.json`; all checklist defaults; operator id/email; #1196; deepen F7.w + ADR-038 + UJ-072h |
+| D-EVPYL-54..60 | Requirements R1 — Phase A ACs; Draft-only A / Activate C; expand journeys; export on ZIP+single; must-not-break; library-assets endpoints; Beta dual |
+| D-EVPYL-61..69 | Requirements R2 — separate UJs per library; full scenario matrix; T3 full + smoke happy-path; H4–H5 |
+| D-EVPYL-70..73 | Requirements R3 — journey IDs locked; Phase B/C ACs all; **requirements locked** → draft-docs |
+| D-EVPYL-74..78 | Verify-plan recommended: ZIP-of-two; guest metadata sans identity; Draft off Convert until Activate; risks accepted; Spec continue |
+| D-EVPYL-docverify | Documenting verify **13/13 PASS**; Spec→Build gate AskQuestion pending |
+| D-EVPYL-gate | Spec→Build **opened** (operator: proceed recommended); Phase A implemented |
+| D-EVPYL-phase-a | Phase A shipped: prose→tooltips; inspector under Libraries; Draft shell; export ZIP-of-two; WMO reset |
+
+[Corpus: product §F7.w] [Corpus: journeys §UJ-072h-*] [Corpus: api] [Corpus: tests] [Corpus: adr/ADR-038] [Corpus: decisions]
+
+---
+
 ## Cycle EV-verify-1177-1179 — Post-merge verify (#1177–#1179)
 
 **Opened:** 2026-09-11 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-verify-1177-1179`  
@@ -5787,4 +6022,77 @@ blocks as presentation of existing contract sections. True composable convert an
 authoring deferred.
 
 **Context**: [profile-scoped-catalog-1120](../context/profile-scoped-catalog-1120.md)
+
+## Cycle EV-conversion-profile-ux-libraries — Profile Builder platform
+
+**Opened:** 2026-09-14 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-conversion-profile-ux-libraries`  
+**Features:** deepen **F7.w** / **F7.v** / **F9** (no new Fn)  
+**Prior:** EV-080 / #1146 / PR #1193 (templates phase-1)  
+**Branch:** `evolve/EV-conversion-profile-ux-libraries`  
+**Status:** Spec band — requirements locked; documenting in progress
+
+### Scope lock
+
+| ID | Decision |
+|----|----------|
+| D-EVCPU-req | Requirements locked (recommended Q1–Q12) |
+| D-EVCPU-shell | Guided assembly + Libraries hub |
+| D-EVCPU-hide-ids | No machine ids in operator primary UI |
+| D-EVCPU-token-modes | Convert \| Decode-only \| Skip (+ gloss) |
+| D-EVCPU-val-ux | Hybrid recipes + guided + Advanced regex |
+| D-EVCPU-dissem-xform | Ordered transforms + sink defaults (Phase C) |
+| D-EVCPU-select | Independent pickers + bundle presets |
+| D-EVCPU-defaults | FP + custom in builder; FP view/fork |
+| D-EVCPU-phase-a | Filename + creator simplify + conversion hero |
+| D-EVCPU-decode | F9 deepen stub / decision; not Phase A ship |
+| D-EVCPU-dissem-notes | Discoverability = future-evolve notes |
+
+### Artifacts
+
+- Canvas: `profile-builder-platform.canvas.tsx`
+- Journeys: UJ-072f · Tests: TC-EVCPU-001..008 · ADR-038 amend EVCPU
+- Staging evidence: session `evidence/screenshots/`
+
+[Corpus: product §F7.w] [Corpus: adr/ADR-038] [Corpus: journeys] [Corpus: tests]
+
+## Cycle EV-validation-policy-remainders — apply IWXXM policy + MatchPort
+
+**Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-validation-policy-remainders`  
+**Features:** deepen **F2** / **F15** (no new Fn) · [#1216](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1216)  
+**Prior:** EV-validation-policy-layers M1–M6 merged to `stage` (PR #1217)  
+**Branch:** `evolve/EV-validation-policy-remainders`  
+**Status:** Implementing — MatchPort is opt-in; IWXXM policy apply is in product code
+
+### Scope lock
+
+| ID | Decision |
+|----|----------|
+| D-VPL-R1 | Apply output policy inside `validate_iwxxm` by dropping disabled Schematron assert ids |
+| D-VPL-R2 | Empty select = full assert set; default annex3 report unchanged |
+| D-VPL-R3 | Backend passes the resolved id; no new HTTP field; narrower policy proved by unit or API test |
+| D-VPL-R4 | MatchPort protocol; no `tac-decoding` import |
+| D-VPL-R5 | Strict only when the caller passes a MatchPort. Empty port emits `MISSING_DECODE_MATCH` on every annex3 METAR theme detector. Omitting the port, including `/lint-tac`, keeps the TAC scan. A present match supplies the span. |
+
+[Corpus: product §F2] [Corpus: product §F15] [Corpus: adr/ADR-046] [Corpus: tests]
+
+## Cycle EV-yaml-extension-header — shared YAML header
+
+**Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-extension-header`  
+**Features:** deepen **F2** / **F6** / **F9** / **F15** (no new Fn)  
+**Prior:** #1216 closed after #1218 merged to `stage`  
+**Status:** Implemented — header loaders, Schematron pattern ids, convert policy id
+
+### Scope lock
+
+| ID | Decision |
+|----|----------|
+| D-YEH-1 | Four packages stay separate. Header is `id`, `profiles`, `extends` on each package’s own YAML. |
+| D-YEH-2 | Overlay extends one builtin. Missing base fails closed. Same id replaces that entry; new ids are added. |
+| D-YEH-3 | Extension key is the conversion profile id. No new HTTP field. |
+| D-YEH-4 | Ignore ids are added. A non-empty select replaces the builtin select. Empty select inherits it. |
+| D-YEH-5 | Schematron `code` is the pattern id when known. Otherwise `SCHEMATRON_ASSERT`, and that row is not dropped. |
+| D-YEH-6 | Convert-time validation passes the same policy id as `/validate`. MatchPort stays off `/lint-tac`. |
+| D-YEH-7 | Existing issue lists only. No editor. Decode response and convert XML goldens stay. |
+
+[Corpus: product §F2] [Corpus: product §F6] [Corpus: product §F9] [Corpus: product §F15] [Corpus: adr/ADR-045] [Corpus: adr/ADR-046] [Corpus: tests]
 

@@ -1,0 +1,13 @@
+# ADR-047 emit map — iwxxm_us SIGMET (M4 / #1230).
+schema_version: 1
+id: iwxxm-us-sigmet-emit
+profiles:
+  - iwxxm_us
+products:
+  - SIGMET
+iwxxm_versions:
+  - "2023-1"
+  - "2025-2"
+kind: python_plugin
+pass_product: false
+plugin: python:tac2iwxxm.profiles.iwxxm_us:emit_sigmet_iwxxm_us

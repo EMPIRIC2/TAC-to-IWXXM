@@ -30,6 +30,7 @@ class ConverterPrBaselines:
     status: str
     ratio_limit: float
     absolute_floor_s: float
+    hard_ceiling_p95_s: float
     iwxxm_version: str
     profile: str
     warmup: int
@@ -38,8 +39,19 @@ class ConverterPrBaselines:
     raw: dict[str, Any]
 
 
-def ceiling_p95_s(baseline_p95: float, ratio_limit: float, absolute_floor_s: float) -> float:
-    """Return hard-fail ceiling: max(baseline * ratio, baseline + floor)."""
+def ceiling_p95_s(
+    baseline_p95: float,
+    ratio_limit: float,
+    absolute_floor_s: float,
+    hard_ceiling_p95_s: float | None = None,
+) -> float:
+    """Return hard-fail ceiling.
+
+    When ``hard_ceiling_p95_s`` is set (committed YAML), that absolute value is
+    the PR gate. Otherwise: max(baseline * ratio, baseline + floor).
+    """
+    if hard_ceiling_p95_s is not None:
+        return hard_ceiling_p95_s
     return max(baseline_p95 * ratio_limit, baseline_p95 + absolute_floor_s)
 
 
@@ -73,6 +85,8 @@ def load_converter_pr_baselines(path: Path | None = None) -> ConverterPrBaseline
     data = yaml.safe_load(target.read_text(encoding="utf-8"))
     ratio = float(data["ratio_limit"])
     floor = float(data["absolute_floor_s"])
+    hard = data.get("hard_ceiling_p95_s")
+    hard_ceiling = float(hard) if hard is not None else None
     products: dict[str, ProductBaseline] = {}
     for key, entry in data["products"].items():
         p95 = float(entry["baseline_p95_s"])
@@ -82,13 +96,14 @@ def load_converter_pr_baselines(path: Path | None = None) -> ConverterPrBaseline
             tac=_resolve_tac(entry, REPO_ROOT),
             baseline_p50_s=float(entry["baseline_p50_s"]),
             baseline_p95_s=p95,
-            ceiling_p95_s=ceiling_p95_s(p95, ratio, floor),
+            ceiling_p95_s=ceiling_p95_s(p95, ratio, floor, hard_ceiling),
         )
     return ConverterPrBaselines(
         version=int(data["version"]),
         status=str(data.get("status", "unknown")),
         ratio_limit=ratio,
         absolute_floor_s=floor,
+        hard_ceiling_p95_s=hard_ceiling if hard_ceiling is not None else 0.0,
         iwxxm_version=str(data["iwxxm_version"]),
         profile=str(data["profile"]),
         warmup=int(data["warmup"]),

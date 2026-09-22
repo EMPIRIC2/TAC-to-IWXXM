@@ -27,6 +27,7 @@ dev = [
   "metar-backend",
   "metar-worker",
   "tac2iwxxm",
+  "tac-decoding",
   "iwxxm-validate",
   "tac-validate",
   "dissemination",
@@ -39,10 +40,11 @@ dev = [
 
 [tool.uv.sources]
 metar-shared = { workspace = true }
-metar-backend = { workspace = true }
 metar-worker = { workspace = true }
+metar-backend = { workspace = true }
 metar-auth = { workspace = true }
 tac2iwxxm = { workspace = true }
+tac-decoding = { workspace = true }
 iwxxm-validate = { workspace = true }
 tac-validate = { workspace = true }
 dissemination = { workspace = true }
@@ -53,6 +55,7 @@ members = [
   "packages/shared",
   "packages/auth",
   "packages/tac2iwxxm",
+  "packages/tac-decoding",
   "packages/iwxxm-validate",
   "packages/tac-validate",
   "packages/dissemination",

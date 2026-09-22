@@ -83,7 +83,7 @@ def test_convert_accepts_product_vona(client: TestClient) -> None:
         {
             "manual_text": tac,
             "product": "vona",
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "lint": "false",
         },
     )
@@ -105,7 +105,7 @@ def test_convert_rejects_unknown_product_alias(client: TestClient, bad: str) -> 
         {
             "manual_text": "VONA\nDTG: 20240216/0130Z\n",
             "product": bad,
-            "profile": "annex3",
+            "conversion_library_id": "LIB.CONVERSION.ICAO_2025",
             "lint": "false",
         },
     )

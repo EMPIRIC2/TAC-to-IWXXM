@@ -1,0 +1,1644 @@
+schema_version: 1
+source: vendor/schemas/iwxxm/2025-2/IWXXM/rule/iwxxm.sch
+sources:
+- path: vendor/schemas/iwxxm/2025-2/IWXXM/rule/iwxxm.sch
+  authority: wmo-iwxxm
+- path: vendor/schemas/iwxxm/externalSchema/schemas.wmo.int/metce/1.2/rule/metce.sch
+  authority: wmo-metce
+- path: vendor/schemas/iwxxm/externalSchema/schemas.wmo.int/opm/1.2/rule/opm.sch
+  authority: wmo-opm
+- path: vendor/schemas/iwxxm/externalSchema/schemas.wmo.int/saf/1.1/rule/saf.sch
+  authority: wmo-saf
+- path: vendor/schemas/iwxxm/externalSchema/schemas.wmo.int/collect/1.2/rule/collect.sch
+  authority: wmo-collect
+iwxxm_version: 2025-2
+asserts:
+- id: AIRMET.AIRMET-1
+  pattern_id: AIRMET.AIRMET-1
+  label: 'AIRMET.AIRMET-1: An AIRMET report cannot have a reportStatus of ''AMENDMENT'' or ''CORRECTION'''
+  context: //iwxxm:AIRMET
+  test: ( @reportStatus != 'AMENDMENT' and @reportStatus != 'CORRECTION' )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMET-2
+  pattern_id: AIRMET.AIRMET-2
+  label: 'AIRMET.AIRMET-2: A non-operational report or a report that failed translation should have as
+    a minimum appropriately fil…'
+  context: //iwxxm:AIRMET
+  test: ( if( (string-length(@translationFailedTAC) gt 0) or (@permissibleUsage = 'NON-OPERATIONAL') )
+    then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:validPeriod)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMET-3
+  pattern_id: AIRMET.AIRMET-3
+  label: 'AIRMET.AIRMET-3: A ''CANCELLATION'' report should have appropriately filled elements including
+    iwxxm:issueTime, iwxxm:issu…'
+  context: //iwxxm:AIRMET
+  test: ( if( (@isCancelReport= 'true') and (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage
+    = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and
+    exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion)
+    and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and exists(iwxxm:cancelledReportSequenceNumber)
+    and exists(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:phenomenon) and empty(iwxxm:analysis)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMET-4
+  pattern_id: AIRMET.AIRMET-4
+  label: 'AIRMET.AIRMET-4: An ordinary report should have appropriately filled elements including iwxxm:issueTime,
+    iwxxm:issuingAi…'
+  context: //iwxxm:AIRMET
+  test: ( if( (empty(@isCancelReport) or @isCancelReport = 'false') and (string-length(@translationFailedTAC)
+    eq 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit)
+    and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion)
+    and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and empty(iwxxm:cancelledReportSequenceNumber)
+    and empty(iwxxm:cancelledReportValidPeriod) and exists(iwxxm:phenomenon) and exists(iwxxm:analysis)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMET-5a
+  pattern_id: AIRMET.AIRMET-5a
+  label: 'AIRMET.AIRMET-5a: iwxxm:analysis//iwxxm:phenomenonTime of an observed phenomenon must be less
+    than or equal to iwxxm:val…'
+  context: //iwxxm:AIRMET
+  test: ( if( (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage = 'OPERATIONAL') and
+    (iwxxm:analysis/iwxxm:*/@timeIndicator = 'OBSERVATION') and exists(iwxxm:analysis//iwxxm:phenomenonTime/*)
+    and exists(iwxxm:validPeriod/*) ) then( empty(index-of(for $i in iwxxm:analysis return number(translate($i//iwxxm:phenomenonTime/gml:TimeInstant/gml:timePosition,'-T:Z',''))
+    le number(translate(iwxxm:validPeriod/gml:TimePeriod/gml:beginPosition,'-T:Z','')),false())) ) else(
+    true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMET-5b
+  pattern_id: AIRMET.AIRMET-5b
+  label: 'AIRMET.AIRMET-5b: iwxxm:analysis//iwxxm:phenomenonTime of a forecast phenomenon must be greater
+    than or equal to iwxxm:v…'
+  context: //iwxxm:AIRMET
+  test: ( if( (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage = 'OPERATIONAL') and
+    (iwxxm:analysis/iwxxm:*/@timeIndicator = 'FORECAST') and exists(iwxxm:analysis//iwxxm:phenomenonTime/*)
+    and exists(iwxxm:validPeriod/*) ) then( empty(index-of(for $i in iwxxm:analysis return number(translate($i//iwxxm:phenomenonTime/gml:TimeInstant/gml:timePosition,'-T:Z',''))
+    ge number(translate(iwxxm:validPeriod/gml:TimePeriod/gml:beginPosition,'-T:Z','')),false())) ) else(
+    true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMET-6
+  pattern_id: AIRMET.AIRMET-6
+  label: 'AIRMET.AIRMET-6: If a geometry is defined for iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent
+    with the pro…'
+  context: //iwxxm:AIRMET
+  test: ( if( exists(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent) ) then( empty(index-of(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent//*[self::aixm:Surface
+    or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)),
+    false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMET.phenomenon
+  pattern_id: AIRMET.AIRMET.phenomenon
+  label: Element in iwxxm:AIRMET/iwxxm:phenomenon should be a member of code list http://codes.wmo.int/49-2/AirWxPhenomena
+  context: //iwxxm:AIRMET/iwxxm:phenomenon
+  test: '@xlink:href = document(''codes.wmo.int-49-2-AirWxPhenomena.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMETEvolvingCondition-1
+  pattern_id: AIRMET.AIRMETEvolvingCondition-1
+  label: 'AIRMET.AIRMETEvolvingCondition-1: cloudBase shall be reported in metres (m) or feet ([ft_i])'
+  context: //iwxxm:AIRMETEvolvingCondition
+  test: ( if( exists(iwxxm:cloudBase) and not(iwxxm:cloudBase/@xsi:nil = 'true') ) then( (iwxxm:cloudBase/@uom
+    = 'm') or (iwxxm:cloudBase/@uom = '[ft_i]') ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMETEvolvingCondition-2
+  pattern_id: AIRMET.AIRMETEvolvingCondition-2
+  label: 'AIRMET.AIRMETEvolvingCondition-2: cloudTop shall be reported in metres (m) or feet ([ft_i])'
+  context: //iwxxm:AIRMETEvolvingCondition
+  test: ( if( exists(iwxxm:cloudTop) and not(iwxxm:cloudTop/@xsi:nil = 'true') ) then( (iwxxm:cloudTop/@uom
+    = 'm') or (iwxxm:cloudTop/@uom = '[ft_i]') ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMETEvolvingCondition-3
+  pattern_id: AIRMET.AIRMETEvolvingCondition-3
+  label: 'AIRMET.AIRMETEvolvingCondition-3: directionOfMotion shall be reported in degrees (deg)'
+  context: //iwxxm:AIRMETEvolvingCondition
+  test: ( if( exists(iwxxm:directionOfMotion) and not(iwxxm:directionOfMotion/@xsi:nil = 'true') ) then(
+    iwxxm:directionOfMotion/@uom = 'deg' ) else true())
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMETEvolvingCondition-4
+  pattern_id: AIRMET.AIRMETEvolvingCondition-4
+  label: 'AIRMET.AIRMETEvolvingCondition-4: speedOfMotion shall be reported in kilometres per hour (km/h)
+    or knots ([kn_i])'
+  context: //iwxxm:AIRMETEvolvingCondition
+  test: ( if( exists(iwxxm:speedOfMotion) and not(iwxxm:speedOfMotion/@xsi:nil = 'true') ) then( (iwxxm:speedOfMotion/@uom
+    = 'km/h') or (iwxxm:speedOfMotion/@uom = '[kn_i]') ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMETEvolvingCondition-5
+  pattern_id: AIRMET.AIRMETEvolvingCondition-5
+  label: 'AIRMET.AIRMETEvolvingCondition-5: surfaceVisibility shall be reported in metres (m)'
+  context: //iwxxm:AIRMETEvolvingCondition
+  test: ( if( exists(iwxxm:surfaceVisibility) and not(iwxxm:surfaceVisibility/@xsi:nil = 'true') ) then(
+    iwxxm:surfaceVisibility/@uom = 'm' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMETEvolvingCondition-6
+  pattern_id: AIRMET.AIRMETEvolvingCondition-6
+  label: 'AIRMET.AIRMETEvolvingCondition-6: surfaceWindSpeed shall be reported in metres per second (m/s)
+    or knots ([kn_i])'
+  context: //iwxxm:AIRMETEvolvingCondition
+  test: ( if( exists(iwxxm:surfaceWindSpeed) and not(iwxxm:surfaceWindSpeed/@xsi:nil = 'true') ) then(
+    (iwxxm:surfaceWindSpeed/@uom = 'm/s') or (iwxxm:surfaceWindSpeed/@uom = '[kn_i]') ) else( true() )
+    )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMETEvolvingCondition-7
+  pattern_id: AIRMET.AIRMETEvolvingCondition-7
+  label: 'AIRMET.AIRMETEvolvingCondition-7: surfaceWindDirection shall be reported in the degrees unit
+    of measure (''deg'')'
+  context: //iwxxm:AIRMETEvolvingCondition
+  test: ( if( exists(iwxxm:surfaceWindDirection) and not(iwxxm:surfaceWindDirection/@xsi:nil = 'true')
+    ) then( iwxxm:surfaceWindDirection/@uom = 'deg' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMETEvolvingCondition-8
+  pattern_id: AIRMET.AIRMETEvolvingCondition-8
+  label: 'AIRMET.AIRMETEvolvingCondition-8: surfaceWindDirection and surfaceWindSpeed must be reported
+    together'
+  context: //iwxxm:AIRMETEvolvingCondition
+  test: ( if( not((exists(iwxxm:surfaceWindDirection) and exists(iwxxm:surfaceWindSpeed)) or (empty(iwxxm:surfaceWindDirection)
+    and empty(iwxxm:surfaceWindSpeed))) ) then( false() ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMETEvolvingCondition-9
+  pattern_id: AIRMET.AIRMETEvolvingCondition-9
+  label: 'AIRMET.AIRMETEvolvingCondition-9: If a geometry of iwxxm:geometry is defined with the provision
+    of attribute srsName, at…'
+  context: //iwxxm:AIRMETEvolvingCondition
+  test: ( if( exists(iwxxm:geometry//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then(
+    empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2'
+    and exists(@axisLabels)), false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AIRMETEvolvingCondition.surfaceVisibilityCause
+  pattern_id: AIRMET.AIRMETEvolvingCondition.surfaceVisibilityCause
+  label: Element in iwxxm:AIRMETEvolvingCondition/iwxxm:surfaceVisibilityCause should be a member of code
+    list http://codes.wmo.i…
+  context: //iwxxm:AIRMETEvolvingCondition/iwxxm:surfaceVisibilityCause
+  test: '@xlink:href = document(''codes.wmo.int-49-2-WeatherCausingVisibilityReduction.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.AeronauticalAreaWeatherPhenomenon
+  pattern_id: AIRMET.AeronauticalAreaWeatherPhenomenon
+  label: Element in iwxxm:AeronauticalAreaWeatherPhenomenon should be a member of code list http://codes.wmo.int/49-2/AirWxPhenom…
+  context: //iwxxm:AeronauticalAreaWeatherPhenomenon
+  test: '@xlink:href = document(''codes.wmo.int-49-2-AirWxPhenomena.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: AIRMET.WeatherCausingVisibilityReduction
+  pattern_id: AIRMET.WeatherCausingVisibilityReduction
+  label: Element in iwxxm:WeatherCausingVisibilityReduction should be a member of code list http://codes.wmo.int/49-2/WeatherCaus…
+  context: //iwxxm:WeatherCausingVisibilityReduction
+  test: '@xlink:href = document(''codes.wmo.int-49-2-WeatherCausingVisibilityReduction.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.AerodromeCloudForecast-1
+  pattern_id: Common.AerodromeCloudForecast-1
+  label: 'Common.AerodromeCloudForecast-1: If vertical visibility is reported cloud layers should be empty'
+  context: //iwxxm:AerodromeCloudForecast
+  test: (if( exists(iwxxm:verticalVisibility) ) then( empty(iwxxm:layer) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.AerodromeCloudForecast-2
+  pattern_id: Common.AerodromeCloudForecast-2
+  label: 'Common.AerodromeCloudForecast-2: If cloud layers are reported vertical visibility should be
+    empty'
+  context: //iwxxm:AerodromeCloudForecast
+  test: (if( exists(iwxxm:layer) ) then( empty(iwxxm:verticalVisibility) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.AerodromeCloudForecast-3
+  pattern_id: Common.AerodromeCloudForecast-3
+  label: 'Common.AerodromeCloudForecast-3: verticalVisibility shall be reported in metres (m) or feet
+    ([ft_i])'
+  context: //iwxxm:AerodromeCloudForecast
+  test: ( if( exists(iwxxm:verticalVisibility) and not(iwxxm:verticalVisibility/@xsi:nil = 'true') ) then(
+    (iwxxm:verticalVisibility/@uom = 'm') or (iwxxm:verticalVisibility/@uom = '[ft_i]') ) else( true()
+    ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.AerodromeForecastWeather
+  pattern_id: Common.AerodromeForecastWeather
+  label: Element in iwxxm:AerodromeForecastWeather should be a member of code list http://codes.wmo.int/49-2/AerodromePresentOrFo…
+  context: //iwxxm:AerodromeForecastWeather
+  test: '@xlink:href = document(''codes.wmo.int-49-2-AerodromePresentOrForecastWeather.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.AerodromeSurfaceWindForecast-1
+  pattern_id: Common.AerodromeSurfaceWindForecast-1
+  label: 'Common.AerodromeSurfaceWindForecast-1: Wind direction is not reported when variable winds are
+    indicated'
+  context: //iwxxm:AerodromeSurfaceWindForecast
+  test: ( if( @variableDirection = 'true' ) then( empty(iwxxm:meanWindDirection) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.AerodromeSurfaceWindTrendForecast-1
+  pattern_id: Common.AerodromeSurfaceWindTrendForecast-1
+  label: 'Common.AerodromeSurfaceWindTrendForecast-1: meanWindDirection shall be reported in degrees (deg)'
+  context: //iwxxm:AerodromeSurfaceWindTrendForecast|//iwxxm:AerodromeSurfaceWindForecast
+  test: ( if( exists(iwxxm:meanWindDirection) and not(iwxxm:meanWindDirection/@xsi:nil = 'true') ) then(
+    iwxxm:meanWindDirection/@uom = 'deg' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.AerodromeSurfaceWindTrendForecast-2
+  pattern_id: Common.AerodromeSurfaceWindTrendForecast-2
+  label: 'Common.AerodromeSurfaceWindTrendForecast-2: meanWindSpeed shall be reported in metres per second
+    (m/s) or knots ([kn_i])'
+  context: //iwxxm:AerodromeSurfaceWindTrendForecast|//iwxxm:AerodromeSurfaceWindForecast
+  test: ( if( exists(iwxxm:meanWindSpeed) and not(iwxxm:meanWindSpeed/@xsi:nil = 'true') ) then( (iwxxm:meanWindSpeed/@uom
+    = 'm/s') or (iwxxm:meanWindSpeed/@uom = '[kn_i]') ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.AerodromeSurfaceWindTrendForecast-3
+  pattern_id: Common.AerodromeSurfaceWindTrendForecast-3
+  label: 'Common.AerodromeSurfaceWindTrendForecast-3: windGustSpeed shall be reported in metres per second
+    (m/s) or knots ([kn_i])'
+  context: //iwxxm:AerodromeSurfaceWindTrendForecast|//iwxxm:AerodromeSurfaceWindForecast
+  test: ( if( exists(iwxxm:windGustSpeed) and not(iwxxm:windGustSpeed/@xsi:nil = 'true') ) then( (iwxxm:windGustSpeed/@uom
+    = 'm/s') or (iwxxm:windGustSpeed/@uom = '[kn_i]') ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.BasicReport-1
+  pattern_id: Common.BasicReport-1
+  label: 'Common.BasicReport-1: Non-operational reports must include a permissibleUsageReason'
+  context: //iwxxm:MeteorologicalFeatureCollection|//iwxxm:WAFSSignificantWeatherForecast|//iwxxm:QuantitativeVolcanicAshConcentrationInformation|//iwxxm:VolcanoObservatoryNoticeForAviation|//iwxxm:METAR|//iwxxm:SPECI|//iwxxm:TAF|//iwxxm:SIGMET|//iwxxm:VolcanicAshSIGMET|//iwxxm:TropicalCycloneSIGMET|//iwxxm:AIRMET|//iwxxm:TropicalCycloneAdvisory|//iwxxm:VolcanicAshAdvisory|//iwxxm:SpaceWeatherAdvisory
+  test: ( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true()
+    ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.BasicReport-2
+  pattern_id: Common.BasicReport-2
+  label: 'Common.BasicReport-2: Operational reports should not include a permissibleUsageReason'
+  context: //iwxxm:MeteorologicalFeatureCollection|//iwxxm:WAFSSignificantWeatherForecast|//iwxxm:QuantitativeVolcanicAshConcentrationInformation|//iwxxm:VolcanoObservatoryNoticeForAviation|//iwxxm:METAR|//iwxxm:SPECI|//iwxxm:TAF|//iwxxm:SIGMET|//iwxxm:VolcanicAshSIGMET|//iwxxm:TropicalCycloneSIGMET|//iwxxm:AIRMET|//iwxxm:TropicalCycloneAdvisory|//iwxxm:VolcanicAshAdvisory|//iwxxm:SpaceWeatherAdvisory
+  test: ( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() )
+    )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.BasicReport-3
+  pattern_id: Common.BasicReport-3
+  label: 'Common.BasicReport-3: All gml:ids in IWXXM reports must be prefixed with ''uuid.'' and must
+    be UUID version 4'
+  context: //iwxxm:MeteorologicalFeatureCollection|//iwxxm:WAFSSignificantWeatherForecast|//iwxxm:QuantitativeVolcanicAshConcentrationInformation|//iwxxm:VolcanoObservatoryNoticeForAviation|//iwxxm:METAR|//iwxxm:SPECI|//iwxxm:TAF|//iwxxm:SIGMET|//iwxxm:VolcanicAshSIGMET|//iwxxm:TropicalCycloneSIGMET|//iwxxm:AIRMET|//iwxxm:TropicalCycloneAdvisory|//iwxxm:VolcanicAshAdvisory|//iwxxm:SpaceWeatherAdvisory
+  test: ( if( //@gml:id[not(matches(.,'uuid\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))]
+    ) then( false() ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.CloudAmountReportedAtAerodrome
+  pattern_id: Common.CloudAmountReportedAtAerodrome
+  label: Element in iwxxm:CloudAmountReportedAtAerodrome should be a member of code list http://codes.wmo.int/49-2/CloudAmountRep…
+  context: //iwxxm:CloudAmountReportedAtAerodrome
+  test: '@xlink:href = document(''codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.CloudLayer-1
+  pattern_id: Common.CloudLayer-1
+  label: 'Common.CloudLayer-1: base shall be reported in metres (m) or feet ([ft_i])'
+  context: //iwxxm:CloudLayer
+  test: ( if( exists(iwxxm:base) and not(iwxxm:base/@xsi:nil = 'true') ) then( (iwxxm:base/@uom = 'm')
+    or (iwxxm:base/@uom = '[ft_i]') ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.CloudLayer.amount
+  pattern_id: Common.CloudLayer.amount
+  label: Element in iwxxm:CloudLayer/iwxxm:amount should be a member of code list http://codes.wmo.int/49-2/CloudAmountReportedAt…
+  context: //iwxxm:CloudLayer/iwxxm:amount
+  test: '@xlink:href = document(''codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.CloudLayer.cloudType
+  pattern_id: Common.CloudLayer.cloudType
+  label: Element in iwxxm:CloudLayer/iwxxm:cloudType should be a member of code list http://codes.wmo.int/49-2/SigConvectiveCloud…
+  context: //iwxxm:CloudLayer/iwxxm:cloudType
+  test: '@xlink:href = document(''codes.wmo.int-49-2-SigConvectiveCloudType.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.Report-1
+  pattern_id: Common.Report-1
+  label: 'Common.Report-1: Translated reports must include @translatedBulletinID, @translatedBulletinReceptionTime,
+    @translationCe…'
+  context: //iwxxm:METAR|//iwxxm:SPECI|//iwxxm:TAF|//iwxxm:SIGMET|//iwxxm:VolcanicAshSIGMET|//iwxxm:TropicalCycloneSIGMET|//iwxxm:AIRMET|//iwxxm:TropicalCycloneAdvisory|//iwxxm:VolcanicAshAdvisory|//iwxxm:SpaceWeatherAdvisory
+  test: ( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator)
+    or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then(
+    exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator)
+    and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.Report-2
+  pattern_id: Common.Report-2
+  label: 'Common.Report-2: Total size of extension content must not exceed 5000 characters per report'
+  context: //iwxxm:METAR|//iwxxm:SPECI|//iwxxm:TAF|//iwxxm:SIGMET|//iwxxm:VolcanicAshSIGMET|//iwxxm:TropicalCycloneSIGMET|//iwxxm:AIRMET|//iwxxm:TropicalCycloneAdvisory|//iwxxm:VolcanicAshAdvisory|//iwxxm:SpaceWeatherAdvisory
+  test: ( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/(
+    (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) +
+    3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) lt 5000
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: Common.SigConvectiveCloudType
+  pattern_id: Common.SigConvectiveCloudType
+  label: Element in iwxxm:SigConvectiveCloudType should be a member of code list http://codes.wmo.int/49-2/SigConvectiveCloudType
+  context: //iwxxm:SigConvectiveCloudType
+  test: '@xlink:href = document(''codes.wmo.int-49-2-SigConvectiveCloudType.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: IWXXM.ExtensionAlwaysLast
+  pattern_id: IWXXM.ExtensionAlwaysLast
+  label: 'IWXXM.ExtensionAlwaysLast: Extension elements should be the last elements in their parents'
+  context: //iwxxm:extension
+  test: following-sibling::*[1][self::iwxxm:extension] or not(following-sibling::*)
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: IWXXM.nilReasonCheck
+  pattern_id: IWXXM.nilReasonCheck
+  label: 'IWXXM.nilReasonCheck: nilReason attributes should be a member of http://codes.wmo.int/iwxxm/nil'
+  context: //WAFSSignificantWeatherForecast|//QuantitativeVolcanicAshConcentrationInformation|//VolcanoObservatoryNoticeForAviation|//MeteorologicalFeature|//MeteorologicalFeatureCollection
+  test: ( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-iwxxm-nil.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: IWXXM.nilReasonCheckLegacy
+  pattern_id: IWXXM.nilReasonCheckLegacy
+  label: 'IWXXM.nilReasonCheckLegacy: nilReason attributes should be a member of http://codes.wmo.int/common/nil'
+  context: //SPECI|//METAR|//TAF|//SIGMET|//AIRMET|//TropicalCycloneAdvisory|//VolcanicAshAdvisory|//SpaceWeatherAdvisory
+  test: ( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-common-nil.rdf')/rdf:RDF//skos:member/skos:Concept/@rdf:about
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeCloud-1
+  pattern_id: METAR_SPECI.AerodromeCloud-1
+  label: 'METAR_SPECI.AerodromeCloud-1: When vertical visibility is reported cloud layers should be empty'
+  context: //iwxxm:AerodromeCloud
+  test: ( if( exists(iwxxm:verticalVisibility) ) then( empty(iwxxm:layer) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeCloud-2
+  pattern_id: METAR_SPECI.AerodromeCloud-2
+  label: 'METAR_SPECI.AerodromeCloud-2: When cloud layers are reported vertical visibility should be empty'
+  context: //iwxxm:AerodromeCloud
+  test: ( if( exists(iwxxm:layer) ) then( empty(iwxxm:verticalVisibility) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeCloud-3
+  pattern_id: METAR_SPECI.AerodromeCloud-3
+  label: 'METAR_SPECI.AerodromeCloud-3: verticalVisibility shall be reported in metres (m) or feet ([ft_i])'
+  context: //iwxxm:AerodromeCloud
+  test: ( if( exists(iwxxm:verticalVisibility) and not(iwxxm:verticalVisibility/@xsi:nil = 'true') ) then(
+    (iwxxm:verticalVisibility/@uom = 'm') or (iwxxm:verticalVisibility/@uom = '[ft_i]') ) else( true()
+    ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeHorizontalVisibility-1
+  pattern_id: METAR_SPECI.AerodromeHorizontalVisibility-1
+  label: 'METAR_SPECI.AerodromeHorizontalVisibility-1: minimumVisibility shall be reported in metres (m)'
+  context: //iwxxm:AerodromeHorizontalVisibility
+  test: ( if( exists(iwxxm:minimumVisibility) and not(iwxxm:minimumVisibility/@xsi:nil = 'true') ) then(
+    iwxxm:minimumVisibility/@uom = 'm' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeHorizontalVisibility-2
+  pattern_id: METAR_SPECI.AerodromeHorizontalVisibility-2
+  label: 'METAR_SPECI.AerodromeHorizontalVisibility-2: minimumVisibilityDirection shall be reported in
+    degrees (deg)'
+  context: //iwxxm:AerodromeHorizontalVisibility
+  test: ( if( exists(iwxxm:minimumVisibilityDirection) and not(iwxxm:minimumVisibilityDirection/@xsi:nil
+    = 'true') ) then( iwxxm:minimumVisibilityDirection/@uom = 'deg') else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeHorizontalVisibility-3
+  pattern_id: METAR_SPECI.AerodromeHorizontalVisibility-3
+  label: 'METAR_SPECI.AerodromeHorizontalVisibility-3: prevailingVisibility shall be reported in metres
+    (m)'
+  context: //iwxxm:AerodromeHorizontalVisibility
+  test: ( if( exists(iwxxm:prevailingVisibility) and not(iwxxm:prevailingVisibility/@xsi:nil = 'true')
+    ) then( iwxxm:prevailingVisibility/@uom = 'm') else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromePresentWeather
+  pattern_id: METAR_SPECI.AerodromePresentWeather
+  label: Element in iwxxm:AerodromePresentWeather should be a member of code list http://codes.wmo.int/49-2/AerodromePresentOrFor…
+  context: //iwxxm:AerodromePresentWeather
+  test: '@xlink:href = document(''codes.wmo.int-49-2-AerodromePresentOrForecastWeather.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeRecentWeather
+  pattern_id: METAR_SPECI.AerodromeRecentWeather
+  label: Element in iwxxm:AerodromeRecentWeather should be a member of code list http://codes.wmo.int/49-2/AerodromeRecentWeather
+  context: //iwxxm:AerodromeRecentWeather
+  test: '@xlink:href = document(''codes.wmo.int-49-2-AerodromeRecentWeather.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeRunwayVisualRange-1
+  pattern_id: METAR_SPECI.AerodromeRunwayVisualRange-1
+  label: 'METAR_SPECI.AerodromeRunwayVisualRange-1: meanRVR shall be reported in metres (m)'
+  context: //iwxxm:AerodromeRunwayVisualRange
+  test: ( if( exists(iwxxm:meanRVR) and not(iwxxm:meanRVR/@xsi:nil = 'true') ) then( iwxxm:meanRVR/@uom
+    = 'm' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeSeaCondition.seaState
+  pattern_id: METAR_SPECI.AerodromeSeaCondition.seaState
+  label: Element in iwxxm:AerodromeSeaCondition/iwxxm:seaState should be a member of code list http://codes.wmo.int/bufr4/codefla…
+  context: //iwxxm:AerodromeSeaCondition/iwxxm:seaState
+  test: '@xlink:href = document(''codes.wmo.int-bufr4-codeflag-0-22-061.rdf'')/rdf:RDF//skos:member/skos:Concept/@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeSeaState-1
+  pattern_id: METAR_SPECI.AerodromeSeaState-1
+  label: 'METAR_SPECI.AerodromeSeaState-1: If the sea state is set, significantWaveHeight is not reported'
+  context: //iwxxm:AerodromeSeaCondition
+  test: ( if( exists(iwxxm:seaState) ) then( empty(iwxxm:significantWaveHeight) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeSeaState-2
+  pattern_id: METAR_SPECI.AerodromeSeaState-2
+  label: 'METAR_SPECI.AerodromeSeaState-2: If significantWaveHeight is reported, seaState should not be
+    set'
+  context: //iwxxm:AerodromeSeaCondition
+  test: ( if( exists(iwxxm:significantWaveHeight) ) then( empty(iwxxm:seaState) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeSeaState-3
+  pattern_id: METAR_SPECI.AerodromeSeaState-3
+  label: 'METAR_SPECI.AerodromeSeaState-3: seaSurfaceTemperature shall be reported in degrees Celsius
+    (Cel)'
+  context: //iwxxm:AerodromeSeaCondition
+  test: ( if( exists(iwxxm:seaSurfaceTemperature) and not(iwxxm:seaSurfaceTemperature/@xsi:nil = 'true')
+    ) then( iwxxm:seaSurfaceTemperature/@uom = 'Cel' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeSeaState-4
+  pattern_id: METAR_SPECI.AerodromeSeaState-4
+  label: 'METAR_SPECI.AerodromeSeaState-4: significantWaveHeight shall be reported in metres (m)'
+  context: //iwxxm:AerodromeSeaCondition
+  test: ( if( exists(iwxxm:significantWaveHeight) and not(iwxxm:significantWaveHeight/@xsi:nil = 'true')
+    ) then( iwxxm:significantWaveHeight/@uom = 'm' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeSurfaceWind-1
+  pattern_id: METAR_SPECI.AerodromeSurfaceWind-1
+  label: 'METAR_SPECI.AerodromeSurfaceWind-1: All wind UOMs must be the same'
+  context: //iwxxm:AerodromeSurfaceWind
+  test: (if( exists(iwxxm:meanWindDirection/@uom) and exists(iwxxm:extremeClockwiseWindDirection/@uom)
+    and exists(iwxxm:extremeCounterClockwiseWindDirection/@uom) ) then( (iwxxm:meanWindDirection/@uom
+    = iwxxm:extremeClockwiseWindDirection/@uom) and (iwxxm:meanWindDirection/@uom = iwxxm:extremeCounterClockwiseWindDirection/@uom)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeSurfaceWind-2
+  pattern_id: METAR_SPECI.AerodromeSurfaceWind-2
+  label: 'METAR_SPECI.AerodromeSurfaceWind-2: Wind direction is not reported when variable winds are indicated'
+  context: //iwxxm:AerodromeSurfaceWind
+  test: (if( @variableDirection = 'true' ) then( empty(iwxxm:meanWindDirection) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeSurfaceWind-3
+  pattern_id: METAR_SPECI.AerodromeSurfaceWind-3
+  label: 'METAR_SPECI.AerodromeSurfaceWind-3: extremeClockwiseWindDirection shall be reported in degrees
+    (deg)'
+  context: //iwxxm:AerodromeSurfaceWind
+  test: ( if( exists(iwxxm:extremeClockwiseWindDirection) and not(iwxxm:extremeClockwiseWindDirection/@xsi:nil
+    = 'true') ) then( iwxxm:extremeClockwiseWindDirection/@uom = 'deg') else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeSurfaceWind-4
+  pattern_id: METAR_SPECI.AerodromeSurfaceWind-4
+  label: 'METAR_SPECI.AerodromeSurfaceWind-4: extremeCounterClockwiseWindDirection shall be reported in
+    degrees (deg)'
+  context: //iwxxm:AerodromeSurfaceWind
+  test: ( if( exists(iwxxm:extremeCounterClockwiseWindDirection) and not(iwxxm:extremeCounterClockwiseWindDirection/@xsi:nil
+    = 'true') ) then( iwxxm:extremeCounterClockwiseWindDirection/@uom = 'deg' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeSurfaceWind-5
+  pattern_id: METAR_SPECI.AerodromeSurfaceWind-5
+  label: 'METAR_SPECI.AerodromeSurfaceWind-5: meanWindDirection shall be reported in degrees (deg)'
+  context: //iwxxm:AerodromeSurfaceWind
+  test: ( if( exists(iwxxm:meanWindDirection) and not(iwxxm:meanWindDirection/@xsi:nil = 'true') ) then(
+    iwxxm:meanWindDirection/@uom = 'deg' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeSurfaceWind-6
+  pattern_id: METAR_SPECI.AerodromeSurfaceWind-6
+  label: 'METAR_SPECI.AerodromeSurfaceWind-6: meanWindSpeed shall be reported in metres per second (m/s)
+    or knots ([kn_i])'
+  context: //iwxxm:AerodromeSurfaceWind
+  test: ( if( exists(iwxxm:meanWindSpeed) and not(iwxxm:meanWindSpeed/@xsi:nil = 'true') ) then( (iwxxm:meanWindSpeed/@uom
+    = 'm/s') or (iwxxm:meanWindSpeed/@uom = '[kn_i]') ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeSurfaceWind-7
+  pattern_id: METAR_SPECI.AerodromeSurfaceWind-7
+  label: 'METAR_SPECI.AerodromeSurfaceWind-7: windGustSpeed shall be reported in metres per second (m/s)
+    or knots ([kn_i])'
+  context: //iwxxm:AerodromeSurfaceWind
+  test: ( if( exists(iwxxm:windGustSpeed) and not(iwxxm:windGustSpeed/@xsi:nil = 'true') ) then( (iwxxm:windGustSpeed/@uom
+    = 'm/s') or (iwxxm:windGustSpeed/@uom = '[kn_i]') ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeWindShear-1
+  pattern_id: METAR_SPECI.AerodromeWindShear-1
+  label: 'METAR_SPECI.AerodromeWindShear-1: When all runways are affected by wind shear, no specific runways
+    should be reported'
+  context: //iwxxm:AerodromeWindShear
+  test: (if( @allRunways = 'true' ) then( empty(iwxxm:runway) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.AerodromeWindShear-2
+  pattern_id: METAR_SPECI.AerodromeWindShear-2
+  label: 'METAR_SPECI.AerodromeWindShear-2: When a single Runway is reported upon, the allRunways flag
+    should be missing or false'
+  context: //iwxxm:AerodromeWindShear
+  test: ( if( exists(iwxxm:runway) ) then( empty(@allRunways) or (@allRunways = 'false') ) else( true()
+    ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservation-1
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation-1
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservation-1: When cloudAndVisibilityOK is true, visibility,
+    rvr, presentWeather and…'
+  context: //iwxxm:MeteorologicalAerodromeObservation
+  test: ( if( @cloudAndVisibilityOK = 'true' ) then( empty(iwxxm:visibility) and empty(iwxxm:rvr) and
+    empty(iwxxm:presentWeather) and empty(iwxxm:cloud) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservation-2
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation-2
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservation-2: RVR should always be included if prevailing
+    visibility is below 1500 m…'
+  context: //iwxxm:MeteorologicalAerodromeObservation
+  test: ( if( exists(iwxxm:visibility) and (iwxxm:visibility//iwxxm:prevailingVisibility/number(text())
+    lt 1500) and (iwxxm:visibility//iwxxm:prevailingVisibility/@uom = 'm') ) then( exists(iwxxm:rvr) )
+    else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservation-3
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation-3
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservation-3: airTemperature shall be reported in degrees
+    Celsius (Cel)'
+  context: //iwxxm:MeteorologicalAerodromeObservation
+  test: ( if( exists(iwxxm:airTemperature) and not(iwxxm:airTemperature/@xsi:nil = 'true') ) then( iwxxm:airTemperature/@uom
+    = 'Cel' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservation-4
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation-4
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservation-4: dewpointTemperature shall be reported in degrees
+    Celsius (Cel)'
+  context: //iwxxm:MeteorologicalAerodromeObservation
+  test: ( if( exists(iwxxm:dewpointTemperature) and not(iwxxm:dewpointTemperature/@xsi:nil = 'true') )
+    then( iwxxm:dewpointTemperature/@uom = 'Cel' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservation-5
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation-5
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservation-5: qnh shall be reported in hectopascals (hPa)'
+  context: //iwxxm:MeteorologicalAerodromeObservation
+  test: ( if( exists(iwxxm:qnh) and not(iwxxm:qnh/@xsi:nil = 'true') ) then( iwxxm:qnh/@uom = 'hPa' )
+    else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservation.presentWeather
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation.presentWeather
+  label: Element in iwxxm:MeteorologicalAerodromeObservation/iwxxm:presentWeather should be a member of
+    code list http://codes.wm…
+  context: //iwxxm:MeteorologicalAerodromeObservation/iwxxm:presentWeather
+  test: '@xlink:href = document(''codes.wmo.int-49-2-AerodromePresentOrForecastWeather.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservation.recentWeather
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservation.recentWeather
+  label: Element in iwxxm:MeteorologicalAerodromeObservation/iwxxm:recentWeather should be a member of
+    code list http://codes.wmo…
+  context: //iwxxm:MeteorologicalAerodromeObservation/iwxxm:recentWeather
+  test: '@xlink:href = document(''codes.wmo.int-49-2-AerodromeRecentWeather.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservationReport-1
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-1
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservationReport-1: A METAR or SPECI report cannot have
+    a reportStatus of ''AMENDMENT…'
+  context: //iwxxm:METAR|//iwxxm:SPECI
+  test: ( @reportStatus != 'AMENDMENT' )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservationReport-2
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-2
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservationReport-2: A non-operational report or a report
+    that failed translation sho…'
+  context: //iwxxm:METAR|//iwxxm:SPECI
+  test: ( if( (string-length(@translationFailedTAC) gt 0) or (@permissibleUsage = 'NON-OPERATIONAL') )
+    then( exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and exists(iwxxm:observationTime) ) else(
+    true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservationReport-3
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-3
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservationReport-3: A ''Nil'' report should have appropriately
+    filled elements includi…'
+  context: //iwxxm:METAR|//iwxxm:SPECI
+  test: ( if( empty(iwxxm:observation/*) and (iwxxm:observation/@nilReason = 'http://codes.wmo.int/common/nil/missing')
+    and (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime)
+    and exists(iwxxm:aerodrome) and exists(iwxxm:observationTime) and empty(iwxxm:trendForecast) ) else(
+    true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservationReport-4
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-4
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservationReport-4: An ordinary report should have appropriately
+    filled elements inc…'
+  context: //iwxxm:METAR|//iwxxm:SPECI
+  test: ( if( (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage = 'OPERATIONAL') ) then(
+    exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and exists(iwxxm:observationTime) and exists(iwxxm:observation)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservationReport-5
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-5
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservationReport-5: When no clouds are detected by an automated
+    station, this report…'
+  context: //iwxxm:METAR|//iwxxm:SPECI
+  test: ( if( empty(iwxxm:observation//iwxxm:cloud/*) and (iwxxm:observation//iwxxm:cloud/@nilReason =
+    'http://codes.wmo.int/common/nil/notDetectedByAutoSystem') ) then( @automatedStation = 'true' ) else(
+    true() ))
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservationReport-6
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-6
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservationReport-6: When both cloud amount and base are
+    not detected by an automated…'
+  context: //iwxxm:METAR|//iwxxm:SPECI
+  test: ( if( empty(iwxxm:observation//iwxxm:cloud//iwxxm:layer/*) and (iwxxm:observation//iwxxm:cloud//iwxxm:layer/@nilReason
+    = 'http://codes.wmo.int/common/nil/notDetectedByAutoSystem') ) then( @automatedStation = 'true' )
+    else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservationReport-7
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-7
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservationReport-7: When cloud amount is not detected by
+    an automated station, this …'
+  context: //iwxxm:METAR|//iwxxm:SPECI
+  test: ( if( empty(iwxxm:observation//iwxxm:cloud//iwxxm:layer//iwxxm:amount/*) and (iwxxm:observation//iwxxm:cloud//iwxxm:layer//iwxxm:amount/@nilReason
+    = 'http://codes.wmo.int/common/nil/notDetectedByAutoSystem') ) then( @automatedStation = 'true' )
+    else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservationReport-8
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-8
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservationReport-8: When cloud base is not detected by an
+    automated station, this re…'
+  context: //iwxxm:METAR|//iwxxm:SPECI
+  test: ( if( empty(iwxxm:observation//iwxxm:cloud//iwxxm:layer//iwxxm:base/*) and (iwxxm:observation//iwxxm:cloud//iwxxm:layer//iwxxm:base/@nilReason
+    = 'http://codes.wmo.int/common/nil/notDetectedByAutoSystem') ) then( @automatedStation = 'true' )
+    else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeObservationReport-9
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeObservationReport-9
+  label: 'METAR_SPECI.MeteorologicalAerodromeObservationReport-9: If a geometry is defined for iwxxm:aerodrome//aixm:AIP
+    with the …'
+  context: //iwxxm:METAR|//iwxxm:SPECI
+  test: ( if( exists(iwxxm:aerodrome//aixm:ARP) ) then( empty(index-of(iwxxm:aerodrome//aixm:ARP//gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2'
+    and exists(@axisLabels)), false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeTrendForecast-1
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeTrendForecast-1
+  label: 'METAR_SPECI.MeteorologicalAerodromeTrendForecast-1: When cloudAndVisibilityOK is true cloud,
+    weather, prevailingVisibili…'
+  context: //iwxxm:MeteorologicalAerodromeTrendForecast
+  test: ( if( @cloudAndVisibilityOK = 'true' ) then( empty(iwxxm:cloud) and empty(iwxxm:weather) and empty(iwxxm:prevailingVisibility)
+    and empty(iwxxm:prevailingVisibilityOperator) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeTrendForecast-2
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeTrendForecast-2
+  label: 'METAR_SPECI.MeteorologicalAerodromeTrendForecast-2: prevailingVisibility shall be reported in
+    metres (m)'
+  context: //iwxxm:MeteorologicalAerodromeTrendForecast
+  test: ( if( exists(iwxxm:prevailingVisibility) and not(iwxxm:prevailingVisibility/@xsi:nil = 'true')
+    ) then( iwxxm:prevailingVisibility/@uom = 'm' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.MeteorologicalAerodromeTrendForecast.weather
+  pattern_id: METAR_SPECI.MeteorologicalAerodromeTrendForecast.weather
+  label: Element in iwxxm:MeteorologicalAerodromeTrendForecast/iwxxm:weather should be a member of code
+    list http://codes.wmo.int…
+  context: //iwxxm:MeteorologicalAerodromeTrendForecast/iwxxm:weather
+  test: '@xlink:href = document(''codes.wmo.int-49-2-AerodromePresentOrForecastWeather.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: METAR_SPECI.SeaSurfaceState
+  pattern_id: METAR_SPECI.SeaSurfaceState
+  label: Element in iwxxm:SeaSurfaceState should be a member of code list http://codes.wmo.int/bufr4/codeflag/0-22-061
+  context: //iwxxm:SeaSurfaceState
+  test: '@xlink:href = document(''codes.wmo.int-bufr4-codeflag-0-22-061.rdf'')/rdf:RDF//skos:member/skos:Concept/@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: MeteorologicalFeature.MeteorologicalFeature-1
+  pattern_id: MeteorologicalFeature.MeteorologicalFeature-1
+  label: 'MeteorologicalFeature.MeteorologicalFeature-1: gml:identifier is mandatory'
+  context: //iwxxm:MeteorologicalFeature
+  test: ( exists(gml:identifier) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: MeteorologicalFeature.MeteorologicalFeature-2
+  pattern_id: MeteorologicalFeature.MeteorologicalFeature-2
+  label: 'MeteorologicalFeature.MeteorologicalFeature-2: Mandatory elements when the parent node is not
+    iwxxm:MeteorologicalFeatur…'
+  context: //iwxxm:MeteorologicalFeature
+  test: ( if( local-name(..) != 'feature' ) then( exists(iwxxm:issueTime) and exists(iwxxm:originatingCentre)
+    and exists(iwxxm:phenomenonCategory) and exists(iwxxm:phenomenonTime) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: MeteorologicalFeature.MeteorologicalFeature.phenomenon
+  pattern_id: MeteorologicalFeature.MeteorologicalFeature.phenomenon
+  label: Element in iwxxm:MeteorologicalFeature/iwxxm:phenomenon should be a member of code list http://codes.wmo.int/iwxxm/Meteo…
+  context: //iwxxm:MeteorologicalFeature/iwxxm:phenomenon
+  test: '@xlink:href = document(''codes.wmo.int-iwxxm-MeteorologicalFeature.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: MeteorologicalFeature.MeteorologicalFeatureCollection-1
+  pattern_id: MeteorologicalFeature.MeteorologicalFeatureCollection-1
+  label: 'MeteorologicalFeature.MeteorologicalFeatureCollection-1: gml:identifier is mandatory'
+  context: //iwxxm:MeteorologicalFeatureCollection|//iwxxm:WAFSSignificantWeatherForecast|//iwxxm:QuantitativeVolcanicAshConcentrationInformation|//iwxxm:VolcanoObservatoryNoticeForAviation
+  test: ( exists(gml:identifier) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: MeteorologicalFeature.MeteorologicalFeatureCollection.phenomenaList
+  pattern_id: MeteorologicalFeature.MeteorologicalFeatureCollection.phenomenaList
+  label: Element in iwxxm:MeteorologicalFeatureCollection/iwxxm:phenomenaList, iwxxm:WAFSSignificantWeatherForecast/iwxxm:phenome…
+  context: //iwxxm:MeteorologicalFeatureCollection/iwxxm:phenomenaList|//iwxxm:WAFSSignificantWeatherForecast/iwxxm:phenomenaList|//iwxxm:QuantitativeVolcanicAshConcentrationInformation/iwxxm:phenomenaList|//iwxxm:VolcanoObservatoryNoticeForAviation/iwxxm:phenomenaList
+  test: '@xlink:href = document(''codes.wmo.int-iwxxm-MeteorologicalFeature.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: MeteorologicalFeature.MeteorologicalPhenomenon
+  pattern_id: MeteorologicalFeature.MeteorologicalPhenomenon
+  label: Element in iwxxm:MeteorologicalPhenomenon should be a member of code list http://codes.wmo.int/iwxxm/MeteorologicalFeatu…
+  context: //iwxxm:MeteorologicalPhenomenon
+  test: '@xlink:href = document(''codes.wmo.int-iwxxm-MeteorologicalFeature.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.AeronauticalSignificantWeatherPhenomenon
+  pattern_id: SIGMET.AeronauticalSignificantWeatherPhenomenon
+  label: Element in iwxxm:AeronauticalSignificantWeatherPhenomenon should be a member of code list http://codes.wmo.int/49-2/SigW…
+  context: //iwxxm:AeronauticalSignificantWeatherPhenomenon
+  test: '@xlink:href = document(''codes.wmo.int-49-2-SigWxPhenomena.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMET-1
+  pattern_id: SIGMET.SIGMET-1
+  label: 'SIGMET.SIGMET-1: A SIGMET report cannot have a reportStatus of ''AMENDMENT'' or ''CORRECTION'''
+  context: //iwxxm:SIGMET|//iwxxm:VolcanicAshSIGMET|//iwxxm:TropicalCycloneSIGMET
+  test: ( @reportStatus != 'AMENDMENT' and @reportStatus != 'CORRECTION' )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMET-12
+  pattern_id: SIGMET.SIGMET-12
+  label: 'SIGMET.SIGMET-12: If a geometry is defined for iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent
+    with the pr…'
+  context: //iwxxm:SIGMET|//iwxxm:VolcanicAshSIGMET|//iwxxm:TropicalCycloneSIGMET
+  test: ( if( exists(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent) ) then( empty(index-of(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent//*[self::aixm:Surface
+    or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)),
+    false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMET-2
+  pattern_id: SIGMET.SIGMET-2
+  label: 'SIGMET.SIGMET-2: A non-operational report or a report that failed translation should have as
+    a minimum appropriately fil…'
+  context: //iwxxm:SIGMET|//iwxxm:VolcanicAshSIGMET|//iwxxm:TropicalCycloneSIGMET
+  test: ( if( (string-length(@translationFailedTAC) gt 0) or (@permissibleUsage = 'NON-OPERATIONAL') )
+    then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:validPeriod)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMET-3
+  pattern_id: SIGMET.SIGMET-3
+  label: 'SIGMET.SIGMET-3: A ''CANCELLATION'' report should have appropriately filled elements including
+    iwxxm:issueTime, iwxxm:issu…'
+  context: //iwxxm:SIGMET|//iwxxm:VolcanicAshSIGMET|//iwxxm:TropicalCycloneSIGMET
+  test: ( if( (@isCancelReport = 'true') and (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage
+    = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and
+    exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion)
+    and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and exists(iwxxm:cancelledReportSequenceNumber)
+    and exists(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:phenomenon) and empty(iwxxm:analysisCollection)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMET-4
+  pattern_id: SIGMET.SIGMET-4
+  label: 'SIGMET.SIGMET-4: An ordinary report should have appropriately filled elements including iwxxm:issueTime,
+    iwxxm:issuingAi…'
+  context: //iwxxm:SIGMET|//iwxxm:VolcanicAshSIGMET|//iwxxm:TropicalCycloneSIGMET
+  test: ( if( (empty(@isCancelReport) or @isCancelReport = 'false') and (string-length(@translationFailedTAC)
+    eq 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit)
+    and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion)
+    and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and empty(iwxxm:cancelledReportSequenceNumber)
+    and empty(iwxxm:cancelledReportValidPeriod) and exists(iwxxm:phenomenon) and exists(iwxxm:analysisCollection)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMET-7
+  pattern_id: SIGMET.SIGMET-7
+  label: 'SIGMET.SIGMET-7: A report cannot have both iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis
+    and iwxxm:analysisCo…'
+  context: //iwxxm:SIGMET|//iwxxm:VolcanicAshSIGMET|//iwxxm:TropicalCycloneSIGMET
+  test: ( if( (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage = 'OPERATIONAL') ) then(
+    (exists(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion)
+    and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:speedOfMotion)) or (empty(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis)
+    and exists(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion)) or (empty(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis)
+    and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:speedOfMotion))
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMET.phenomenon
+  pattern_id: SIGMET.SIGMET.phenomenon
+  label: Element in iwxxm:SIGMET/iwxxm:phenomenon, iwxxm:VolcanicAshSIGMET/iwxxm:phenomenon, iwxxm:TropicalCycloneSIGMET/iwxxm:ph…
+  context: //iwxxm:SIGMET/iwxxm:phenomenon|//iwxxm:VolcanicAshSIGMET/iwxxm:phenomenon|//iwxxm:TropicalCycloneSIGMET/iwxxm:phenomenon
+  test: '@xlink:href = document(''codes.wmo.int-49-2-SigWxPhenomena.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMETEvolvingCondition-1
+  pattern_id: SIGMET.SIGMETEvolvingCondition-1
+  label: 'SIGMET.SIGMETEvolvingCondition-1: iwxxm:speedOfMotion cannot be given without having iwxxm:directionOfMotion'
+  context: //iwxxm:SIGMETEvolvingCondition
+  test: ( if( exists(iwxxm:speedOfMotion) ) then( exists(iwxxm:directionOfMotion) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMETEvolvingCondition-2
+  pattern_id: SIGMET.SIGMETEvolvingCondition-2
+  label: 'SIGMET.SIGMETEvolvingCondition-2: directionOfMotion shall be reported in degrees (deg)'
+  context: //iwxxm:SIGMETEvolvingCondition
+  test: ( if( exists(iwxxm:directionOfMotion) and not(iwxxm:directionOfMotion/@xsi:nil = 'true') ) then
+    ( iwxxm:directionOfMotion/@uom = 'deg' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMETEvolvingCondition-3
+  pattern_id: SIGMET.SIGMETEvolvingCondition-3
+  label: 'SIGMET.SIGMETEvolvingCondition-3: speedOfMotion shall be reported in kilometres per hour (km/h)
+    or knots ([kn_i])'
+  context: //iwxxm:SIGMETEvolvingCondition
+  test: ( if( exists(iwxxm:speedOfMotion) and not(iwxxm:speedOfMotion/@xsi:nil = 'true') ) then ( (iwxxm:speedOfMotion/@uom
+    = 'km/h') or (iwxxm:speedOfMotion/@uom = '[kn_i]') ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMETEvolvingCondition-4
+  pattern_id: SIGMET.SIGMETEvolvingCondition-4
+  label: 'SIGMET.SIGMETEvolvingCondition-4: If a geometry of iwxxm:geometry is defined with the provision
+    of attribute srsName, at…'
+  context: //iwxxm:SIGMETEvolvingCondition
+  test: ( if( exists(iwxxm:geometry//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then(
+    empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2'
+    and exists(@axisLabels)), false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMETEvolvingCondition-5
+  pattern_id: SIGMET.SIGMETEvolvingCondition-5
+  label: 'SIGMET.SIGMETEvolvingCondition-5: iwxxm:tropicalCyclonePosition shall only be present in iwxxm:analysisCollection
+    of iwx…'
+  context: //iwxxm:SIGMETEvolvingCondition
+  test: ( ( ( exists(//iwxxm:TropicalCycloneSIGMET) and (count(//iwxxm:TropicalCycloneSIGMET//iwxxm:analysisCollection)
+    = count(//iwxxm:TropicalCycloneSIGMET//iwxxm:analysisCollection//iwxxm:analysis//iwxxm:tropicalCyclonePosition)
+    ) ) and ( exists(//iwxxm:TropicalCycloneSIGMET) and not(exists(//iwxxm:TropicalCycloneSIGMET//iwxxm:supplementaryAnalysisCollection//iwxxm:analysis//iwxxm:tropicalCyclonePosition)
+    ) ) ) or ( not(exists(//iwxxm:TropicalCycloneSIGMET)) and (count(//iwxxm:TropicalCycloneSIGMET//iwxxm:tropicalCyclonePosition)
+    = 0) ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMETPosition-1
+  pattern_id: SIGMET.SIGMETPosition-1
+  label: 'SIGMET.SIGMETPosition-1: If a geometry of iwxxm:geometry is defined with the provision of attribute
+    srsName, attribute s…'
+  context: //iwxxm:SIGMETPosition
+  test: ( if( exists(iwxxm:geometry/*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then(
+    empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2'
+    and exists(@axisLabels)), false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SIGMET.SIGMETPosition-2
+  pattern_id: SIGMET.SIGMETPosition-2
+  label: 'SIGMET.SIGMETPosition-2: iwxxm:tropicalCyclonePosition shall only be present in iwxxm:analysisCollection
+    of iwxxm:Tropic…'
+  context: //iwxxm:SIGMETPosition
+  test: ( ( ( exists(//iwxxm:TropicalCycloneSIGMET) and (count(//iwxxm:TropicalCycloneSIGMET//iwxxm:analysisCollection)
+    = count(//iwxxm:TropicalCycloneSIGMET//iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis//iwxxm:tropicalCyclonePosition)
+    ) ) and ( exists(//iwxxm:TropicalCycloneSIGMET) and not(exists(//iwxxm:TropicalCycloneSIGMET//iwxxm:supplementaryAnalysisCollection//iwxxm:forecastPositionAnalysis//iwxxm:tropicalCyclonePosition)
+    ) ) ) or ( not(exists(//iwxxm:TropicalCycloneSIGMET)) and (count(//iwxxm:TropicalCycloneSIGMET//iwxxm:tropicalCyclonePosition)
+    = 0) ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SpaceWeatherAdvisory.SpaceWeatherAdvisory-1
+  pattern_id: SpaceWeatherAdvisory.SpaceWeatherAdvisory-1
+  label: 'SpaceWeatherAdvisory.SpaceWeatherAdvisory-1: A non-operational report or a report that failed
+    translation should have as…'
+  context: //iwxxm:SpaceWeatherAdvisory
+  test: ( if( (string-length(@translationFailedTAC) gt 0) or (@permissibleUsage = 'NON-OPERATIONAL') )
+    then( exists(iwxxm:issueTime) and exists(iwxxm:issuingSpaceWeatherCentre) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SpaceWeatherAdvisory.SpaceWeatherAdvisory-2
+  pattern_id: SpaceWeatherAdvisory.SpaceWeatherAdvisory-2
+  label: 'SpaceWeatherAdvisory.SpaceWeatherAdvisory-2: An ordinary report should have appropriately filled
+    elements including iwxx…'
+  context: //iwxxm:SpaceWeatherAdvisory
+  test: ( if( (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage = 'OPERATIONAL') ) then(
+    exists(iwxxm:issueTime) and exists(iwxxm:issuingSpaceWeatherCentre) and exists(iwxxm:advisoryNumber)
+    and exists(iwxxm:effect) and exists(iwxxm:analysis) and exists(iwxxm:remarks) and exists(iwxxm:nextAdvisoryTime)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SpaceWeatherAdvisory.SpaceWeatherLocation
+  pattern_id: SpaceWeatherAdvisory.SpaceWeatherLocation
+  label: Element in iwxxm:SpaceWeatherLocation should be a member of code list http://codes.wmo.int/49-2/SpaceWxLocation
+  context: //iwxxm:SpaceWeatherLocation
+  test: '@xlink:href = document(''codes.wmo.int-49-2-SpaceWxLocation.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SpaceWeatherAdvisory.SpaceWeatherRegion-1
+  pattern_id: SpaceWeatherAdvisory.SpaceWeatherRegion-1
+  label: 'SpaceWeatherAdvisory.SpaceWeatherRegion-1: If a geometry of iwxxm:location is defined with the
+    provision of attribute sr…'
+  context: //iwxxm:SpaceWeatherRegion
+  test: ( if( exists(iwxxm:location//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then(
+    empty(index-of(iwxxm:location//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2'
+    and exists(@axisLabels)), false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: SpaceWeatherAdvisory.SpaceWeatherRegion.locationIndicator
+  pattern_id: SpaceWeatherAdvisory.SpaceWeatherRegion.locationIndicator
+  label: Element in iwxxm:SpaceWeatherRegion/iwxxm:locationIndicator should be a member of code list http://codes.wmo.int/49-2/Sp…
+  context: //iwxxm:SpaceWeatherRegion/iwxxm:locationIndicator
+  test: '@xlink:href = document(''codes.wmo.int-49-2-SpaceWxLocation.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.AerodromeAirTemperatureForecast-1
+  pattern_id: TAF.AerodromeAirTemperatureForecast-1
+  label: 'TAF.AerodromeAirTemperatureForecast-1: maximumTemperature shall be reported in degrees Celsius
+    (Cel)'
+  context: //iwxxm:AerodromeAirTemperatureForecast
+  test: ( if( exists(iwxxm:maximumTemperature) and not(iwxxm:maximumTemperature/@xsi:nil = 'true') ) then(
+    iwxxm:maximumTemperature/@uom = 'Cel' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.AerodromeAirTemperatureForecast-2
+  pattern_id: TAF.AerodromeAirTemperatureForecast-2
+  label: 'TAF.AerodromeAirTemperatureForecast-2: minimumTemperature shall be reported in degrees Celsius
+    (Cel)'
+  context: //iwxxm:AerodromeAirTemperatureForecast
+  test: ( if( exists(iwxxm:minimumTemperature) and not(iwxxm:minimumTemperature/@xsi:nil = 'true') ) then(
+    iwxxm:minimumTemperature/@uom = 'Cel' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.MeteorologicalAerodromeForecast-1
+  pattern_id: TAF.MeteorologicalAerodromeForecast-1
+  label: 'TAF.MeteorologicalAerodromeForecast-1: When cloudAndVisibilityOK is true, prevailingVisibility,
+    rvr, weather and cloud s…'
+  context: //iwxxm:MeteorologicalAerodromeForecast
+  test: ( if( @cloudAndVisibilityOK = 'true' ) then( empty(iwxxm:prevailingVisibility) and empty(iwxxm:rvr)
+    and empty(iwxxm:weather) and empty(iwxxm:cloud) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.MeteorologicalAerodromeForecast-2
+  pattern_id: TAF.MeteorologicalAerodromeForecast-2
+  label: 'TAF.MeteorologicalAerodromeForecast-2: prevailingVisibility shall be reported in metres (m)'
+  context: //iwxxm:MeteorologicalAerodromeForecast
+  test: ( if( exists(iwxxm:prevailingVisibility) and not(iwxxm:prevailingVisibility/@xsi:nil = 'true')
+    ) then( iwxxm:prevailingVisibility/@uom = 'm' ) else true())
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.MeteorologicalAerodromeForecast.weather
+  pattern_id: TAF.MeteorologicalAerodromeForecast.weather
+  label: Element in iwxxm:MeteorologicalAerodromeForecast/iwxxm:weather should be a member of code list
+    http://codes.wmo.int/49-2…
+  context: //iwxxm:MeteorologicalAerodromeForecast/iwxxm:weather
+  test: '@xlink:href = document(''codes.wmo.int-49-2-AerodromePresentOrForecastWeather.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.TAF-1
+  pattern_id: TAF.TAF-1
+  label: 'TAF.TAF-1: Attributes isNilReport and isCancelReport cannot be true at the same time'
+  context: //iwxxm:TAF
+  test: ( not((@isNilReport = 'true') and (@isCancelReport = 'true')) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.TAF-2
+  pattern_id: TAF.TAF-2
+  label: 'TAF.TAF-2: A non-operational report or a report that failed translation should have as a minimum
+    appropriately filled el…'
+  context: //iwxxm:TAF
+  test: ( if( (string-length(@translationFailedTAC) gt 0) or (@permissibleUsage = 'NON-OPERATIONAL') )
+    then( exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and ((@isCancelReport = 'true' and exists(iwxxm:cancelledReportValidPeriod))
+    or (not(@isCancelReport = 'true') and exists(iwxxm:validPeriod))) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.TAF-3
+  pattern_id: TAF.TAF-3
+  label: 'TAF.TAF-3: A ''Nil'' report should have appropriately filled elements including iwxxm:issueTime,
+    iwxxm:aerodrome, iwxxm:va…'
+  context: //iwxxm:TAF
+  test: ( if( empty(iwxxm:baseForecast/*) and (iwxxm:baseForecast/@nilReason = 'http://codes.wmo.int/common/nil/missing')
+    and (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime)
+    and exists(iwxxm:aerodrome) and empty(iwxxm:validPeriod) and empty(iwxxm:cancelledReportValidPeriod)
+    and empty(iwxxm:changeForecast) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.TAF-4
+  pattern_id: TAF.TAF-4
+  label: 'TAF.TAF-4: A CANCELLATION report should have the appropriate elements filled including iwxxm:issueTime,
+    iwxxm:aerodrome,…'
+  context: //iwxxm:TAF
+  test: ( if( (@isCancelReport = 'true') and (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage
+    = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and empty(iwxxm:validPeriod)
+    and exists(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:baseForecast) and empty(iwxxm:changeForecast)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.TAF-5
+  pattern_id: TAF.TAF-5
+  label: 'TAF.TAF-5: An ordinary report should have appropriately filled elements including iwxxm:issueTime,
+    iwxxm:aerodrome, iwxx…'
+  context: //iwxxm:TAF
+  test: ( if( (iwxxm:baseForecast/@nilReason != 'http://codes.wmo.int/common/nil/missing' and (empty(@isCancelReport)
+    or @isCancelReport = 'false')) and (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage
+    = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and exists(iwxxm:validPeriod)
+    and empty(iwxxm:cancelledReportValidPeriod) and exists(iwxxm:baseForecast) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.TAF-6
+  pattern_id: TAF.TAF-6
+  label: 'TAF.TAF-6: A non-empty iwxxm:baseForecast should not have @changeIndicator'
+  context: //iwxxm:TAF
+  test: ( if( exists(iwxxm:baseForecast/*) ) then( empty(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/@changeIndicator)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.TAF-7
+  pattern_id: TAF.TAF-7
+  label: 'TAF.TAF-7: in a non-empty iwxxm:baseForecast wxxm:surfaceWind is mandatory'
+  context: //iwxxm:TAF
+  test: ( if( exists(iwxxm:baseForecast/*) ) then( exists(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/iwxxm:surfaceWind)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.TAF-8
+  pattern_id: TAF.TAF-8
+  label: 'TAF.TAF-8: In a non-empty iwxxm:baseForecast when @cloudAndVisibilityOK is false or empty iwxxm:prevailingVisibility
+    and…'
+  context: //iwxxm:TAF
+  test: ( if( exists(iwxxm:baseForecast/*) and not(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/@cloudAndVisibilityOK
+    = 'true') ) then( exists(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/iwxxm:prevailingVisibility)
+    and exists(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/iwxxm:cloud) ) else( true() )
+    )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TAF.TAF-9
+  pattern_id: TAF.TAF-9
+  label: 'TAF.TAF-9: If a geometry is defined for iwxxm:aerodrome//aixm:AIP with the provision of attribute
+    srsName, attribute srs…'
+  context: //iwxxm:TAF
+  test: ( if( exists(iwxxm:aerodrome//aixm:ARP) ) then( empty(index-of(iwxxm:aerodrome//aixm:ARP//gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2'
+    and exists(@axisLabels)), false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneAdvisory.TropicalCycloneAdvisory-1
+  pattern_id: TropicalCycloneAdvisory.TropicalCycloneAdvisory-1
+  label: 'TropicalCycloneAdvisory.TropicalCycloneAdvisory-1: A non-operational report or a report that
+    failed translation should h…'
+  context: //iwxxm:TropicalCycloneAdvisory
+  test: ( if( (string-length(@translationFailedTAC) gt 0) or (@permissibleUsage = 'NON-OPERATIONAL') )
+    then( exists(iwxxm:issueTime) and exists(iwxxm:issuingTropicalCycloneAdvisoryCentre) ) else( true()
+    ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneAdvisory.TropicalCycloneAdvisory-2
+  pattern_id: TropicalCycloneAdvisory.TropicalCycloneAdvisory-2
+  label: 'TropicalCycloneAdvisory.TropicalCycloneAdvisory-2: An ordinary report should have appropriately
+    filled elements includin…'
+  context: //iwxxm:TropicalCycloneAdvisory
+  test: ( if( (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage = 'OPERATIONAL') ) then(
+    exists(iwxxm:issueTime) and exists(iwxxm:issuingTropicalCycloneAdvisoryCentre) and exists(iwxxm:tropicalCycloneName)
+    and exists(iwxxm:advisoryNumber) and exists(iwxxm:observation) and exists(iwxxm:forecast) and exists(iwxxm:remarks)
+    and exists(iwxxm:nextAdvisoryTime) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneAdvisory.TropicalCycloneForecastConditions-1
+  pattern_id: TropicalCycloneAdvisory.TropicalCycloneForecastConditions-1
+  label: 'TropicalCycloneAdvisory.TropicalCycloneForecastConditions-1: maximumSurfaceWindSpeed shall be
+    reported in metres per sec…'
+  context: //iwxxm:TropicalCycloneForecastConditions
+  test: ( if( exists(iwxxm:maximumSurfaceWindSpeed) and not(iwxxm:maximumSurfaceWindSpeed/@xsi:nil = 'true')
+    ) then( (iwxxm:maximumSurfaceWindSpeed/@uom = 'm/s') or (iwxxm:maximumSurfaceWindSpeed/@uom = '[kn_i]')
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneAdvisory.TropicalCycloneForecastConditions-2
+  pattern_id: TropicalCycloneAdvisory.TropicalCycloneForecastConditions-2
+  label: 'TropicalCycloneAdvisory.TropicalCycloneForecastConditions-2: If a geometry is defined for iwxxm:tropicalCyclonePosition/…'
+  context: //iwxxm:TropicalCycloneForecastConditions
+  test: ( if( exists(iwxxm:tropicalCyclonePosition/gml:Point) ) then( empty(index-of(iwxxm:tropicalCyclonePosition/gml:Point/gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2'
+    and exists(@axisLabels)), false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-1
+  pattern_id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-1
+  label: 'TropicalCycloneAdvisory.TropicalCycloneObservedConditions-1: centralPressure shall be reported
+    in hectopascals (hPa)'
+  context: //iwxxm:TropicalCycloneObservedConditions
+  test: ( if( exists(iwxxm:centralPressure) and not(iwxxm:centralPressure/@xsi:nil = 'true') ) then( iwxxm:centralPressure/@uom
+    = 'hPa' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-2
+  pattern_id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-2
+  label: 'TropicalCycloneAdvisory.TropicalCycloneObservedConditions-2: maximumSurfaceWindSpeed shall be
+    reported in metres per sec…'
+  context: //iwxxm:TropicalCycloneObservedConditions
+  test: ( if( exists(iwxxm:maximumSurfaceWindSpeed) and not(iwxxm:maximumSurfaceWindSpeed/@xsi:nil = 'true')
+    ) then( (iwxxm:maximumSurfaceWindSpeed/@uom = 'm/s') or (iwxxm:maximumSurfaceWindSpeed/@uom = '[kn_i]')
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-3
+  pattern_id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-3
+  label: 'TropicalCycloneAdvisory.TropicalCycloneObservedConditions-3: movementDirection shall be reported
+    in degrees (deg)'
+  context: //iwxxm:TropicalCycloneObservedConditions
+  test: ( if( exists(iwxxm:movementDirection) and not(iwxxm:movementDirection/@xsi:nil = 'true') ) then(
+    iwxxm:movementDirection/@uom = 'deg' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-4
+  pattern_id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-4
+  label: 'TropicalCycloneAdvisory.TropicalCycloneObservedConditions-4: movementSpeed shall be reported
+    in kilometres per hour (km/…'
+  context: //iwxxm:TropicalCycloneObservedConditions
+  test: ( if( exists(iwxxm:movementSpeed) and not(iwxxm:movementSpeed/@xsi:nil = 'true') ) then( (iwxxm:movementSpeed/@uom
+    = 'km/h') or (iwxxm:movementSpeed/@uom = '[kn_i]') ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-5
+  pattern_id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-5
+  label: 'TropicalCycloneAdvisory.TropicalCycloneObservedConditions-5: If a geometry is defined for iwxxm:tropicalCyclonePosition/…'
+  context: //iwxxm:TropicalCycloneObservedConditions
+  test: ( if( exists(iwxxm:tropicalCyclonePosition/gml:Point) ) then( empty(index-of(iwxxm:tropicalCyclonePosition/gml:Point/gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2'
+    and exists(@axisLabels)), false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-6
+  pattern_id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-6
+  label: 'TropicalCycloneAdvisory.TropicalCycloneObservedConditions-6: If a geometry of iwxxm:cumulonimbusCloudLocation
+    is defined…'
+  context: //iwxxm:TropicalCycloneObservedConditions
+  test: ( if( exists(iwxxm:cumulonimbusCloudLocation//*[self::aixm:horizontalProjection or self::aixm:centreline])
+    ) then( empty(index-of(iwxxm:cumulonimbusCloudLocation//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2'
+    and exists(@axisLabels)), false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneSIGMET.TropicalCycloneSIGMET-1
+  pattern_id: TropicalCycloneSIGMET.TropicalCycloneSIGMET-1
+  label: 'TropicalCycloneSIGMET.TropicalCycloneSIGMET-1: In a ''CANCELLATION'' report iwxxm:TropicalCyclone
+    shall be absent'
+  context: //iwxxm:TropicalCycloneSIGMET
+  test: ( if( @isCancelReport = 'true' and string-length(@translationFailedTAC) eq 0 ) then( empty(iwxxm:tropicalCyclone)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneSIGMET.TropicalCycloneSIGMET-2
+  pattern_id: TropicalCycloneSIGMET.TropicalCycloneSIGMET-2
+  label: 'TropicalCycloneSIGMET.TropicalCycloneSIGMET-2: An ordinary report should also have iwxxm:TropicalCyclone'
+  context: //iwxxm:TropicalCycloneSIGMET
+  test: ( if( (empty(@isCancelReport) or @isCancelReport = 'false') and string-length(@translationFailedTAC)
+    eq 0 ) then( exists(iwxxm:tropicalCyclone) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: TropicalCycloneSIGMET.TropicalCycloneSIGMET-3
+  pattern_id: TropicalCycloneSIGMET.TropicalCycloneSIGMET-3
+  label: 'TropicalCycloneSIGMET.TropicalCycloneSIGMET-3: There shall only be one iwxxm:analysisCollection
+    in iwxxm:TropicalCyclone…'
+  context: //iwxxm:TropicalCycloneSIGMET
+  test: ( if( (empty(@isCancelReport) or @isCancelReport = 'false') and string-length(@translationFailedTAC)
+    eq 0 ) then( count(//iwxxm:TropicalCycloneSIGMET//iwxxm:analysisCollection) = 1 ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.VolcanicAshAdvisory-1
+  pattern_id: VolcanicAshAdvisory.VolcanicAshAdvisory-1
+  label: 'VolcanicAshAdvisory.VolcanicAshAdvisory-1: A non-operational report or a report that failed
+    translation should have as a…'
+  context: //iwxxm:VolcanicAshAdvisory
+  test: ( if( (string-length(@translationFailedTAC) gt 0) or (@permissibleUsage = 'NON-OPERATIONAL') )
+    then( exists(iwxxm:issueTime) and exists(iwxxm:issuingVolcanicAshAdvisoryCentre) ) else( true() )
+    )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.VolcanicAshAdvisory-2
+  pattern_id: VolcanicAshAdvisory.VolcanicAshAdvisory-2
+  label: 'VolcanicAshAdvisory.VolcanicAshAdvisory-2: An ordinary report should have appropriately filled
+    elements including iwxxm:…'
+  context: //iwxxm:VolcanicAshAdvisory
+  test: ( if( (string-length(@translationFailedTAC) eq 0) and (@permissibleUsage = 'OPERATIONAL') ) then(
+    exists(iwxxm:issueTime) and exists(iwxxm:issuingVolcanicAshAdvisoryCentre) and exists(iwxxm:volcano)
+    and exists(iwxxm:stateOrRegion) and exists(iwxxm:sourceElevationAMSL) and exists(iwxxm:advisoryNumber)
+    and exists(iwxxm:informationSource) and exists(iwxxm:eruptionDetails) and exists(iwxxm:observation)
+    and exists(iwxxm:forecast) and exists(iwxxm:remarks) and exists(iwxxm:nextAdvisoryTime) ) else( true()
+    ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.VolcanicAshAdvisory-3
+  pattern_id: VolcanicAshAdvisory.VolcanicAshAdvisory-3
+  label: 'VolcanicAshAdvisory.VolcanicAshAdvisory-3: If a geometry is defined for iwxxm:volcano//metce:position
+    with the provision…'
+  context: //iwxxm:VolcanicAshAdvisory
+  test: ( if( exists(iwxxm:volcano//metce:position) ) then( empty(index-of(iwxxm:volcano//metce:position//gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2'
+    and exists(@axisLabels)), false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.VolcanicAshCloud-1
+  pattern_id: VolcanicAshAdvisory.VolcanicAshCloud-1
+  label: 'VolcanicAshAdvisory.VolcanicAshCloud-1: directionOfMotion shall be reported in degrees (deg)'
+  context: //iwxxm:VolcanicAshCloudObservedOrEstimated
+  test: ( if( exists(iwxxm:directionOfMotion) and not(iwxxm:directionOfMotion/@xsi:nil = 'true') ) then(
+    iwxxm:directionOfMotion/@uom = 'deg' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.VolcanicAshCloud-2
+  pattern_id: VolcanicAshAdvisory.VolcanicAshCloud-2
+  label: 'VolcanicAshAdvisory.VolcanicAshCloud-2: speedOfMotion shall be reported in kilometres per hour
+    (km/h) or knots ([kn_i])'
+  context: //iwxxm:VolcanicAshCloudObservedOrEstimated
+  test: ( if( exists(iwxxm:speedOfMotion) and not(iwxxm:speedOfMotion/@xsi:nil = 'true') ) then( (iwxxm:speedOfMotion/@uom
+    = 'km/h') or (iwxxm:speedOfMotion/@uom = '[kn_i]') ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.VolcanicAshCloudForecast-1
+  pattern_id: VolcanicAshAdvisory.VolcanicAshCloudForecast-1
+  label: 'VolcanicAshAdvisory.VolcanicAshCloudForecast-1: If a geometry of iwxxm:ashCloudExtent is defined
+    with the provision of a…'
+  context: //iwxxm:VolcanicAshCloudForecast
+  test: ( if( exists(iwxxm:ashCloudExtent//*[self::aixm:horizontalProjection or self::aixm:centreline])
+    ) then( empty(index-of(iwxxm:ashCloudExtent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2'
+    and exists(@axisLabels)), false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.VolcanicAshCloudObservedOrEstimated-3
+  pattern_id: VolcanicAshAdvisory.VolcanicAshCloudObservedOrEstimated-3
+  label: 'VolcanicAshAdvisory.VolcanicAshCloudObservedOrEstimated-3: If a geometry of iwxxm:ashCloudExtent
+    is defined with the pro…'
+  context: //iwxxm:VolcanicAshCloudObservedOrEstimated
+  test: ( if( exists(iwxxm:ashCloudExtent//*[self::aixm:horizontalProjection or self::aixm:centreline])
+    ) then( empty(index-of(iwxxm:ashCloudExtent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2'
+    and exists(@axisLabels)), false())) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.VolcanicAshForecastConditions-1
+  pattern_id: VolcanicAshAdvisory.VolcanicAshForecastConditions-1
+  label: 'VolcanicAshAdvisory.VolcanicAshForecastConditions-1: When @status is equal to ''PROVIDED'',
+    iwxxm:ashCloud must exist'
+  context: //iwxxm:VolcanicAshForecastConditions
+  test: ( if( @status = 'PROVIDED' ) then( count(iwxxm:ashCloud) ge 1 ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.VolcanicAshForecastConditions-2
+  pattern_id: VolcanicAshAdvisory.VolcanicAshForecastConditions-2
+  label: 'VolcanicAshAdvisory.VolcanicAshForecastConditions-2: When @status is not equal to ''PROVIDED'',
+    iwxxm:ashCloud must be emp…'
+  context: //iwxxm:VolcanicAshForecastConditions
+  test: ( if( @status != 'PROVIDED' ) then(empty(iwxxm:ashCloud) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.VolcanicAshObservedOrEstimatedConditions-1
+  pattern_id: VolcanicAshAdvisory.VolcanicAshObservedOrEstimatedConditions-1
+  label: 'VolcanicAshAdvisory.VolcanicAshObservedOrEstimatedConditions-1: When @status is equal to ''IDENTIFIABLE'',
+    iwxxm:ashCloud …'
+  context: //iwxxm:VolcanicAshObservedOrEstimatedConditions
+  test: ( if( @status = 'IDENTIFIABLE' ) then( (count(iwxxm:ashCloud) ge 1) and empty(iwxxm:windConditions)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.VolcanicAshObservedOrEstimatedConditions-2
+  pattern_id: VolcanicAshAdvisory.VolcanicAshObservedOrEstimatedConditions-2
+  label: 'VolcanicAshAdvisory.VolcanicAshObservedOrEstimatedConditions-2: When @status is equal to ''NOT
+    IDENTIFIABLE'', iwxxm:ashCl…'
+  context: //iwxxm:VolcanicAshObservedOrEstimatedConditions
+  test: ( if( @status = 'NOT IDENTIFIABLE') then( empty(iwxxm:ashCloud) and exists(iwxxm:windConditions)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.WindConditions-1
+  pattern_id: VolcanicAshAdvisory.WindConditions-1
+  label: 'VolcanicAshAdvisory.WindConditions-1: windDirection shall be reported in degrees (deg)'
+  context: //iwxxm:WindObservedOrEstimated
+  test: ( if( exists(iwxxm:windDirection) and not(iwxxm:windDirection/@xsi:nil = 'true') ) then( iwxxm:windDirection/@uom
+    = 'deg' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.WindConditions-2
+  pattern_id: VolcanicAshAdvisory.WindConditions-2
+  label: 'VolcanicAshAdvisory.WindConditions-2: windSpeed shall be reported in metres per second (m/s)
+    or knots ([kn_i])'
+  context: //iwxxm:WindObservedOrEstimated
+  test: ( if( exists(iwxxm:windSpeed) and not(iwxxm:windSpeed/@xsi:nil = 'true') ) then( (iwxxm:windSpeed/@uom
+    = 'm/s') or (iwxxm:windSpeed/@uom = '[kn_i]') ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshAdvisory.WindConditions-3
+  pattern_id: VolcanicAshAdvisory.WindConditions-3
+  label: 'VolcanicAshAdvisory.WindConditions-3: When iwxxm:variableWindDirection is true, iwxxm:windDirection
+    must be empty'
+  context: //iwxxm:WindObservedOrEstimated
+  test: ( if( iwxxm:variableWindDirection = 'true' ) then( empty(iwxxm:windDirection) ) else( true() )
+    )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshSIGMET.VolcanicAshSIGMET-1
+  pattern_id: VolcanicAshSIGMET.VolcanicAshSIGMET-1
+  label: 'VolcanicAshSIGMET.VolcanicAshSIGMET-1: In a ''CANCELLATION'' report iwxxm:eruptingVolcano shall
+    be absent'
+  context: //iwxxm:VolcanicAshSIGMET
+  test: ( if( @isCancelReport = 'true' and string-length(@translationFailedTAC) eq 0 ) then( empty(iwxxm:eruptingVolcano)
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshSIGMET.VolcanicAshSIGMET-3
+  pattern_id: VolcanicAshSIGMET.VolcanicAshSIGMET-3
+  label: 'VolcanicAshSIGMET.VolcanicAshSIGMET-3: iwxxm:volcanicAshMovedToFIR can only be used in a ''CANCELLATION''
+    report'
+  context: //iwxxm:VolcanicAshSIGMET
+  test: ( if( exists(iwxxm:volcanicAshMovedToFIR) ) then( @isCancelReport = 'true' ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshSIGMET.VolcanicAshSIGMET-6
+  pattern_id: VolcanicAshSIGMET.VolcanicAshSIGMET-6
+  label: 'VolcanicAshSIGMET.VolcanicAshSIGMET-6: If a geometry is defined for iwxxm:eruptingVolcano//metce:position
+    by providing @…'
+  context: //iwxxm:VolcanicAshSIGMET
+  test: ( if( exists(iwxxm:eruptingVolcano//metce:position) ) then( empty(for $i in iwxxm:eruptingVolcano//metce:position//gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]
+    return $i[not(@srsDimension='2') or @axisLabels='']) ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanicAshSIGMET.VolcanicAshSIGMET-7
+  pattern_id: VolcanicAshSIGMET.VolcanicAshSIGMET-7
+  label: 'VolcanicAshSIGMET.VolcanicAshSIGMET-7: If a geometry is defined for iwxxm:volcanicAshMovedToFIR//aixm:geometryComponent
+    …'
+  context: //iwxxm:VolcanicAshSIGMET
+  test: ( if( exists(iwxxm:volcanicAshMovedToFIR//aixm:geometryComponent) ) then( iwxxm:volcanicAshMovedToFIR//aixm:geometryComponent//*[self::aixm:Surface
+    or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels))
+    ) else( true() ) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanoObservatoryNoticeForAviation.AviationColourCode
+  pattern_id: VolcanoObservatoryNoticeForAviation.AviationColourCode
+  label: Element in iwxxm:AviationColourCode should be a member of code list http://codes.wmo.int/iwxxm/AviationColourCode
+  context: //iwxxm:AviationColourCode
+  test: '@xlink:href = document(''codes.wmo.int-iwxxm-AviationColourCode.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanoObservatoryNoticeForAviation.VolcanoObservatoryNoticeForAviation.currentColourCode
+  pattern_id: VolcanoObservatoryNoticeForAviation.VolcanoObservatoryNoticeForAviation.currentColourCode
+  label: Element in iwxxm:VolcanoObservatoryNoticeForAviation/iwxxm:currentColourCode should be a member
+    of code list http://code…
+  context: //iwxxm:VolcanoObservatoryNoticeForAviation/iwxxm:currentColourCode
+  test: '@xlink:href = document(''codes.wmo.int-iwxxm-AviationColourCode.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: VolcanoObservatoryNoticeForAviation.VolcanoObservatoryNoticeForAviation.previousColourCode
+  pattern_id: VolcanoObservatoryNoticeForAviation.VolcanoObservatoryNoticeForAviation.previousColourCode
+  label: Element in iwxxm:VolcanoObservatoryNoticeForAviation/iwxxm:previousColourCode should be a member
+    of code list http://cod…
+  context: //iwxxm:VolcanoObservatoryNoticeForAviation/iwxxm:previousColourCode
+  test: '@xlink:href = document(''codes.wmo.int-iwxxm-AviationColourCode.rdf'')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: WAFSSignificantWeatherForecast.CloudDistribution
+  pattern_id: WAFSSignificantWeatherForecast.CloudDistribution
+  label: Element in iwxxm:CloudDistribution should be a member of code list http://codes.wmo.int/bufr4/codeflag/0-20-008
+  context: //iwxxm:CloudDistribution
+  test: '@xlink:href = document(''codes.wmo.int-bufr4-codeflag-0-20-008.rdf'')/rdf:RDF//skos:member/skos:Concept/@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: WAFSSignificantWeatherForecast.CloudType
+  pattern_id: WAFSSignificantWeatherForecast.CloudType
+  label: Element in iwxxm:CloudType should be a member of code list http://codes.wmo.int/bufr4/codeflag/0-20-012
+  context: //iwxxm:CloudType
+  test: '@xlink:href = document(''codes.wmo.int-bufr4-codeflag-0-20-012.rdf'')/rdf:RDF//skos:member/skos:Concept/@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: WAFSSignificantWeatherForecast.DegreeOfIcing
+  pattern_id: WAFSSignificantWeatherForecast.DegreeOfIcing
+  label: Element in iwxxm:DegreeOfIcing should be a member of code list http://codes.wmo.int/bufr4/codeflag/0-20-041
+  context: //iwxxm:DegreeOfIcing
+  test: '@xlink:href = document(''codes.wmo.int-bufr4-codeflag-0-20-041.rdf'')/rdf:RDF//skos:member/skos:Concept/@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: WAFSSignificantWeatherForecast.DegreeOfTurbulence
+  pattern_id: WAFSSignificantWeatherForecast.DegreeOfTurbulence
+  label: Element in iwxxm:DegreeOfTurbulence should be a member of code list http://codes.wmo.int/bufr4/codeflag/0-11-030
+  context: //iwxxm:DegreeOfTurbulence
+  test: '@xlink:href = document(''codes.wmo.int-bufr4-codeflag-0-11-030.rdf'')/rdf:RDF//skos:member/skos:Concept/@rdf:about
+    or @nilReason'
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: WAFSSignificantWeatherForecast.WAFSSignificantWeatherForecast-1
+  pattern_id: WAFSSignificantWeatherForecast.WAFSSignificantWeatherForecast-1
+  label: 'WAFSSignificantWeatherForecast.WAFSSignificantWeatherForecast-1: iwxxm:phenomenonCategory shall
+    be equal to ''weatherFore…'
+  context: //iwxxm:WAFSSignificantWeatherForecast
+  test: ( iwxxm:phenomenonCategory = 'weatherForecasts' )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: WAFSSignificantWeatherForecast.WAFSSignificantWeatherForecast-2
+  pattern_id: WAFSSignificantWeatherForecast.WAFSSignificantWeatherForecast-2
+  label: 'WAFSSignificantWeatherForecast.WAFSSignificantWeatherForecast-2: iwxxm:phenomenonBaseTime is
+    mandatory'
+  context: //iwxxm:WAFSSignificantWeatherForecast
+  test: ( exists(iwxxm:phenomenonBaseTime) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: WAFSSignificantWeatherForecast.WAFSSignificantWeatherForecast-3
+  pattern_id: WAFSSignificantWeatherForecast.WAFSSignificantWeatherForecast-3
+  label: 'WAFSSignificantWeatherForecast.WAFSSignificantWeatherForecast-3: iwxxm:originatingCentre must
+    have a child element of iw…'
+  context: //iwxxm:WAFSSignificantWeatherForecast
+  test: ( exists(iwxxm:originatingCentre/iwxxm:WorldAreaForecastCentre) )
+  enabled_default: true
+  authority: wmo-iwxxm
+- id: wmo-collect:COLLECT.MB1
+  pattern_id: COLLECT.MB1
+  label: 'COLLECT.MB1: All meteorologicalInformation instances in MeteorologicalBulletin must be of the
+    same type'
+  context: //collect:MeteorologicalBulletin
+  test: count(distinct-values(for $item in //collect:meteorologicalInformation/child::node() return(node-name($item))))eq
+    1
+  enabled_default: true
+  authority: wmo-collect
+- id: wmo-metce:METCE.MC1
+  pattern_id: METCE.MC1
+  label: 'METCE.MC1: If unitOfMeasure exists it shall be appropriate for measurand'
+  context: //metce:MeasurementContext
+  test: (true())
+  enabled_default: true
+  authority: wmo-metce
+- id: wmo-metce:METCE.MC2
+  pattern_id: METCE.MC2
+  label: 'METCE.MC2: if measuringInterval or resolutionScale or both are given then unitOfMeasure must
+    also be provided'
+  context: //metce:MeasurementContext
+  test: (if(exists(metce:measuringInterval) or exists(metce:resolutionScale)) then(exists(metce:unitOfMeasure))
+    else(true()))
+  enabled_default: true
+  authority: wmo-metce
+- id: wmo-metce:METCE.RB1
+  pattern_id: METCE.RB1
+  label: 'METCE.RB1: The extreme lower limit of the range of interval must be less than the extreme upper
+    limit'
+  context: //metce:RangeBounds
+  test: (number(metce:rangeStart/text()) lt number(metce:rangeEnd/text()))
+  enabled_default: true
+  authority: wmo-metce
+- id: wmo-opm:OPM.COP1
+  pattern_id: OPM.COP1
+  label: 'OPM.COP1: Attribute ''count'' shall specify the number of observed physical properties (specified
+    via the ''property'' assoc…'
+  context: //opm:CompositeObservableProperty
+  test: '{if(string(@count) eq string(count(opm:property)))}'
+  enabled_default: true
+  authority: wmo-opm
+- id: wmo-opm:OPM.QOP1
+  pattern_id: OPM.QOP1
+  label: 'OPM.QOP1: If unitOfMeasure exists it shall be appropriate for baseProperty'
+  context: //opm:QualifiedObservableProperty
+  test: (true())
+  enabled_default: true
+  authority: wmo-opm
+- id: wmo-opm:OPM.RB1
+  pattern_id: OPM.RB1
+  label: 'OPM.RB1: The extreme lower limit of the range of interval must be less than the extreme upper
+    limit'
+  context: //opm:RangeBounds
+  test: (number(opm:rangeStart/text()) lt number(opm:rangeEnd/text()))
+  enabled_default: true
+  authority: wmo-opm
+- id: wmo-opm:OPM.RC1
+  pattern_id: OPM.RC1
+  label: 'OPM.RC1: If unitOfMeasure exists it shall be appropriate for constraintProperty'
+  context: //opm:RangeConstraint
+  test: (true())
+  enabled_default: true
+  authority: wmo-opm
+- id: wmo-opm:OPM.SC1
+  pattern_id: OPM.SC1
+  label: 'OPM.SC1: If unitOfMeasure exists it shall be appropriate for contraintProperty'
+  context: //opm:ScalarConstraint
+  test: (true())
+  enabled_default: true
+  authority: wmo-opm
+- id: wmo-saf:Aerodrome1
+  pattern_id: Aerodrome1
+  label: 'Aerodrome: designator not match with pattern CodeAirportHeliportDesignatorType'
+  context: //saf:Aerodrome/saf:designator
+  test: matches(text(), '^([A-Z]|\d){3,6}$')
+  enabled_default: true
+  authority: wmo-saf
+- id: wmo-saf:Aerodrome2
+  pattern_id: Aerodrome2
+  label: 'Aerodrome: name not match with pattern TextNameType'
+  context: //saf:Aerodrome/saf:name
+  test: matches(text(), '^([A-Z]|[0-9]|[, !"&#\$%''\(\)\*\+\-\./:;<=>\?@\[\\\]\^_\|\{\}]){1,60}$')
+  enabled_default: true
+  authority: wmo-saf
+- id: wmo-saf:Aerodrome3
+  pattern_id: Aerodrome3
+  label: 'Aerodrome: locationIndicatorICAO not match with pattern CodeICAOType'
+  context: //saf:Aerodrome/saf:locationIndicatorICAO
+  test: matches(text(), '^[A-Z]{4}$')
+  enabled_default: true
+  authority: wmo-saf
+- id: wmo-saf:Aerodrome4
+  pattern_id: Aerodrome4
+  label: 'Aerodrome: designatorIATA not match with pattern CodeIATAType'
+  context: //saf:Aerodrome/saf:designatorIATA
+  test: matches(text(), '^[A-Z]{3}$')
+  enabled_default: true
+  authority: wmo-saf
+- id: wmo-saf:Airspace1
+  pattern_id: Airspace1
+  label: 'Airspace: designator not match with pattern CodeAirspaceDesignatorType'
+  context: //saf:Airspace/saf:designator
+  test: matches(text(), '^([A-Z]|[0-9]|[, !"&#\$%''\(\)\*\+\-\./:;<=>\?@\[\\\]\^_\|\{\}]){1,10}$')
+  enabled_default: true
+  authority: wmo-saf
+- id: wmo-saf:Airspace2
+  pattern_id: Airspace2
+  label: 'Airspace: name not match with pattern TextNameType'
+  context: //saf:Airspace/saf:name
+  test: matches(text(), '^([A-Z]|[0-9]|[, !"&#\$%''\(\)\*\+\-\./:;<=>\?@\[\\\]\^_\|\{\}]){1,60}$')
+  enabled_default: true
+  authority: wmo-saf
+- id: wmo-saf:Runway1
+  pattern_id: Runway1
+  label: 'Runway: designator not match with pattern TextDesignatorType'
+  context: //saf:Runway/saf:designator
+  test: matches(text(), '^([A-Z]|[0-9]|[, !"&#\$%''\(\)\*\+\-\./:;<=>\?@\[\\\]\^_\|\{\}]){1,16}$')
+  enabled_default: true
+  authority: wmo-saf
+- id: wmo-saf:RunwayDirection1
+  pattern_id: RunwayDirection1
+  label: 'RunwayDirection: designator not match with pattern TextDesignatorType'
+  context: //saf:RunwayDirection/saf:designator
+  test: matches(text(), '^([A-Z]|[0-9]|[, !"&#\$%''\(\)\*\+\-\./:;<=>\?@\[\\\]\^_\|\{\}]){1,16}$')
+  enabled_default: true
+  authority: wmo-saf
+- id: wmo-saf:Service1
+  pattern_id: Service1
+  label: 'Service: name not match with pattern TextNameType'
+  context: //saf:Service/saf:name
+  test: matches(text(), '^([A-Z]|[0-9]|[, !"&#\$%''\(\)\*\+\-\./:;<=>\?@\[\\\]\^_\|\{\}]){1,60}$')
+  enabled_default: true
+  authority: wmo-saf
+- id: wmo-saf:Unit1
+  pattern_id: Unit1
+  label: 'Unit: name not match with pattern TextNameType'
+  context: //saf:Unit/saf:name
+  test: matches(text(), '^([A-Z]|[0-9]|[, !"&#\$%''\(\)\*\+\-\./:;<=>\?@\[\\\]\^_\|\{\}]){1,60}$')
+  enabled_default: true
+  authority: wmo-saf
+- id: wmo-saf:Unit2
+  pattern_id: Unit2
+  label: 'Unit: designator not match with pattern CodeOrganisationDesignatorType'
+  context: //saf:Unit/saf:designator
+  test: matches(text(), '^([A-Z]|[0-9])+([ \+\-/]*([A-Z]|[0-9])+){1,12}$')
+  enabled_default: true
+  authority: wmo-saf

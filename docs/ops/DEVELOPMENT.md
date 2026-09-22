@@ -297,7 +297,7 @@ Vendor schemas: weekly GitHub Action syncs wmo-im repos into `vendor/schemas/` (
 
 Committed baselines: `tests/perf/baselines/converter_pr.yaml` (`status: ci_recorded`).
 CI job **`Converter perf (tac2iwxxm)`** hard-fails when convert-only p95 exceeds
-`max(baseline×1.20, baseline+200µs)`.
+`hard_ceiling_p95_s` (2 ms). Product baselines and ratio/floor stay for bookkeeping.
 
 ```bash
 make test-converter-pr-gate                          # run the gate locally

@@ -2,6 +2,35 @@
 
 All notable user-facing and deployable changes for TAC to IWXXM.
 
+## 2026-09-22 — Release prep (YAML full configurability)
+
+Full YAML configurability program on staging (epic #1226 / M1–M5): honesty matrix
+all-full, ADR-047 emit maps, pin↔Schematron asserts, overlay DX.
+
+### Added
+- **Convert emit YAML** (ADR-047) for METAR/SPECI/TAF/SIGMET/AIRMET/VAA/TCA.
+- **IWXXM pin↔Schematron** fail-closed checks on convert/validate (`PIN_SCH_MISMATCH`;
+  soft-preview waived).
+- **Matrix CI lock** TC-EVYFC-001 (all-full) and product row locks TC-EVYFC-005…008.
+- YAML starter templates + `--check-overlay` DX smoke (M1).
+
+### Changed
+- Honesty matrix METAR…TCA × all engines → **full**.
+- `scripts/pypi/bump_calver.py --all` includes **`tac-decoding`** (parity with publish workflows).
+
+### Packages
+- `tac2iwxxm` **2026.9.13 → 2026.9.22** (emit maps + pin↔SCH convert path)
+- `tac-validate` **2026.9.13 → 2026.9.22** (detector/policy YAML full products)
+- `iwxxm-validate` **2026.9.13 → 2026.9.22** (`pin_sch` + output policy)
+- `tac-decoding` **2026.9.17 → 2026.9.22** (full product packs; first PyPI tag planned)
+
+### Deploy
+- Release-prep on `stage` before promote; Staging smoke must be green.
+- After `stage` → `main` merge + tip CI green: tag `v2026.09.22-deploy` for prod.
+- PyPI tags (OIDC): `tac2iwxxm-v2026.9.22`, `tac-validate-v2026.9.22`,
+  `iwxxm-validate-v2026.9.22`, `tac-decoding-v2026.9.22` (requires Trusted Publisher for
+  `tac-decoding` on first publish).
+
 ## 2026-09-13 — Production release
 
 Staging-validated hardening since the 2026-09-10 cut (adv-load find/fix + beta UX verify).

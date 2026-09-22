@@ -11,6 +11,7 @@ members = [
     "metar-iwxxm-workspace",
     "metar-shared",
     "metar-worker",
+    "tac-decoding",
     "tac-validate",
     "tac2iwxxm",
     "workflows",
@@ -1115,17 +1116,19 @@ wheels = [
 
 [[package]]
 name = "iwxxm-validate"
-version = "2026.9.13"
+version = "2026.9.22"
 source = { editable = "packages/iwxxm-validate" }
 dependencies = [
     { name = "lxml" },
     { name = "msgspec" },
+    { name = "pyyaml" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "lxml", specifier = ">=4.9.0" },
     { name = "msgspec", specifier = ">=0.19" },
+    { name = "pyyaml", specifier = "==6.0.3" },
 ]
 
 [[package]]
@@ -1511,6 +1514,7 @@ dependencies = [
     { name = "skyfield" },
     { name = "slowapi" },
     { name = "sqlalchemy" },
+    { name = "tac-decoding" },
     { name = "tac-validate" },
     { name = "tac2iwxxm" },
     { name = "uvicorn" },
@@ -1554,6 +1558,7 @@ requires-dist = [
     { name = "skyfield", specifier = ">=1.45" },
     { name = "slowapi", specifier = ">=0.1.10" },
     { name = "sqlalchemy", specifier = ">=2.0.0" },
+    { name = "tac-decoding", editable = "packages/tac-decoding" },
     { name = "tac-validate", editable = "packages/tac-validate" },
     { name = "tac2iwxxm", editable = "packages/tac2iwxxm" },
     { name = "uvicorn", specifier = ">=0.23" },
@@ -1597,6 +1602,7 @@ dev = [
     { name = "respx" },
     { name = "ruff" },
     { name = "schemathesis" },
+    { name = "tac-decoding" },
     { name = "tac-validate" },
     { name = "tac2iwxxm" },
     { name = "testcontainers", extra = ["mysql"] },
@@ -1627,6 +1633,7 @@ dev = [
     { name = "respx", specifier = ">=0.21" },
     { name = "ruff", specifier = ">=0.9" },
     { name = "schemathesis", specifier = "==4.24.3" },
+    { name = "tac-decoding", editable = "packages/tac-decoding" },
     { name = "tac-validate", editable = "packages/tac-validate" },
     { name = "tac2iwxxm", editable = "packages/tac2iwxxm" },
     { name = "testcontainers", extras = ["mysql", "postgres"], specifier = ">=4.8" },
@@ -2874,23 +2881,43 @@ wheels = [
 ]
 
 [[package]]
-name = "tac-validate"
-version = "2026.9.13"
-source = { editable = "packages/tac-validate" }
+name = "tac-decoding"
+version = "2026.9.22"
+source = { editable = "packages/tac-decoding" }
 dependencies = [
     { name = "msgspec" },
+    { name = "pyyaml" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "msgspec", specifier = ">=0.19" }]
+requires-dist = [
+    { name = "msgspec", specifier = ">=0.19" },
+    { name = "pyyaml", specifier = ">=6.0" },
+]
+
+[[package]]
+name = "tac-validate"
+version = "2026.9.22"
+source = { editable = "packages/tac-validate" }
+dependencies = [
+    { name = "msgspec" },
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "msgspec", specifier = ">=0.19" },
+    { name = "pyyaml", specifier = "==6.0.3" },
+]
 
 [[package]]
 name = "tac2iwxxm"
-version = "2026.9.13"
+version = "2026.9.22"
 source = { editable = "packages/tac2iwxxm" }
 dependencies = [
     { name = "msgspec" },
     { name = "pyyaml" },
+    { name = "tac-decoding" },
 ]
 
 [package.optional-dependencies]
@@ -2904,6 +2931,7 @@ requires-dist = [
     { name = "iwxxm-validate", marker = "extra == 'validate'", editable = "packages/iwxxm-validate" },
     { name = "msgspec", specifier = ">=0.19" },
     { name = "pyyaml", specifier = ">=6.0" },
+    { name = "tac-decoding", editable = "packages/tac-decoding" },
     { name = "tac-validate", marker = "extra == 'validate'", editable = "packages/tac-validate" },
 ]
 provides-extras = ["validate"]

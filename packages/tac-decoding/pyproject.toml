@@ -1,0 +1,47 @@
+[project]
+name = "tac-decoding"
+version = "2026.9.22"
+description = "Decode TAC aviation weather products into natural-language segments and summaries"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.12"
+dependencies = [
+  "msgspec>=0.19",
+  "pyyaml>=6.0",
+]
+
+[project.scripts]
+tac-decoding = "tac_decoding.cli:main"
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/tac_decoding"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/tac_decoding/data/decode_glossary.yaml" = "tac_decoding/data/decode_glossary.yaml"
+"src/tac_decoding/data/packs/metar.yaml" = "tac_decoding/data/packs/metar.yaml"
+"src/tac_decoding/data/packs/speci.yaml" = "tac_decoding/data/packs/speci.yaml"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/tac_decoding"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+exclude_lines = [
+  "pragma: no cover",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.ruff]
+extend = "../../ruff.toml"
+line-length = 120

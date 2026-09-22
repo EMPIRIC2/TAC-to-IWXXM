@@ -16,6 +16,12 @@ from dissemination.allowlist import (
 from dissemination.gateway import DisseminationGateway, DisseminationMessage
 from dissemination.health import GatewayHealth, default_health_for_kind
 from dissemination.plan import DisseminationPlan, execute_plan
+from dissemination.transforms import (
+    TransformResult,
+    TransformStep,
+    apply_dissemination_transforms,
+    normalize_transform_steps,
+)
 from dissemination.writer_contract import (
     CONTRACT_TABLE,
     CONTRACT_VERSION,
@@ -40,12 +46,16 @@ __all__ = [
     "EgressDenied",
     "GatewayHealth",
     "SchemaDiff",
+    "TransformResult",
+    "TransformStep",
     "__version__",
+    "apply_dissemination_transforms",
     "apply_writer_contract",
     "default_health_for_kind",
     "diff_writer_contract",
     "execute_plan",
     "load_allowlist_from_env",
+    "normalize_transform_steps",
     "parse_allowlist",
     "validate_egress_host",
     "writer_contract_ddl",

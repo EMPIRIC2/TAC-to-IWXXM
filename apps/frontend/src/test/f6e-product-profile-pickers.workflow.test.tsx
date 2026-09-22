@@ -1,5 +1,5 @@
 /**
- * T8.1 / TC-F6-001 (browser unit): F6.e product + profile + version pickers.
+ * T8.1 / TC-F6-001 (browser unit): F6.e product + Conversion library + version pickers.
  *
  * Spec: docs/feature-list.md F6.e; docs/user-journeys.md UJ-005;
  * docs/test-plan.md TC-F6-001; docs/spec.md §apps/frontend F6 delta.
@@ -9,6 +9,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
+import { defaultLibraryId } from '../utils/libraryIds';
 
 const mockSignOutWithScope = vi.hoisted(() => vi.fn().mockResolvedValue(true));
 const mockConvertMetarToIwxxm = vi.hoisted(() =>
@@ -112,9 +113,13 @@ const PRODUCTS = [
   'VONA',
 ] as const;
 
-const PROFILES = ['ICAO_2025', 'US_FAA_NWS', 'CA_ECCC', 'annex3', 'iwxxm_us'] as const;
+const GUEST_CONVERSION_IDS = [
+  defaultLibraryId('conversion', 'ICAO_2025'),
+  defaultLibraryId('conversion', 'US_FAA_NWS'),
+  defaultLibraryId('conversion', 'CA_ECCC'),
+] as const;
 
-describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
+describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers', () => {
   const defaultProps = {
     onLogout: vi.fn(),
     userEmail: 'f6e@example.com',
@@ -127,7 +132,7 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
     localStorage.clear();
   });
 
-  it('renders product type next to TAC; profile and version when parameters are expanded', async () => {
+  it('renders product type next to TAC; Conversion library and version when parameters are expanded', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
 
@@ -139,23 +144,26 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
       expect(productValues).toContain(p);
     }
 
-    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
-    expect(profile).toBeVisible();
+    const conversion = screen.getByTestId(
+      'conversion-library-select',
+    ) as HTMLSelectElement;
+    expect(conversion).toBeVisible();
+    expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
     const version = screen.getByLabelText(/iwxxm version/i) as HTMLSelectElement;
 
-    expect(profile).toBeInTheDocument();
+    expect(conversion).toBeInTheDocument();
     expect(version).toBeInTheDocument();
 
-    const profileValues = Array.from(profile.options).map((o) => o.value);
-    for (const p of PROFILES) {
-      expect(profileValues).toContain(p);
+    const conversionValues = Array.from(conversion.options).map((o) => o.value);
+    for (const id of GUEST_CONVERSION_IDS) {
+      expect(conversionValues).toContain(id);
     }
 
     expect(product.value).toBe('auto');
-    expect(profile.value).toBe('ICAO_2025');
+    expect(conversion.value).toBe(defaultLibraryId('conversion', 'ICAO_2025'));
     expect(version.value).toBe('2025-2');
 
     // UJ-050 / TC-EV038-007 — Latest / Previous labels from SoT JSON roles (#854)
@@ -164,20 +172,22 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
     expect(versionLabels.some((t) => t.includes('(Previous)'))).toBe(true);
   });
 
-  it('sends selected product, profile, and version on convert (annex3 METAR)', async () => {
+  it('sends selected product, conversionLibraryId, and version on convert (ICAO METAR)', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
     const product = container.querySelector('#param-product') as HTMLSelectElement;
-    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
+    const conversion = screen.getByTestId(
+      'conversion-library-select',
+    ) as HTMLSelectElement;
     const version = container.querySelector(
       '#param-iwxxm-version',
     ) as HTMLSelectElement;
 
     await user.selectOptions(product, 'METAR');
-    await user.selectOptions(profile, 'annex3');
+    await user.selectOptions(conversion, defaultLibraryId('conversion', 'ICAO_2025'));
     await user.selectOptions(version, '2023-1');
 
     const manualInput = screen.getByLabelText(/enter metar data manually/i);
@@ -196,7 +206,7 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
         product: 'METAR',
-        profile: 'annex3',
+        conversionLibraryId: defaultLibraryId('conversion', 'ICAO_2025'),
         iwxxmVersion: '2023-1',
         // EV-1051: signed-in convert always forwards Bearer (preset_id auth).
         accessToken: 'f6e-token',
@@ -204,17 +214,19 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
     );
   });
 
-  it('sends iwxxm_us profile when selected', async () => {
+  it('sends US_FAA_NWS conversionLibraryId when selected', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
     const product = container.querySelector('#param-product') as HTMLSelectElement;
-    const profile = screen.getByTestId('profile-type-select') as HTMLSelectElement;
+    const conversion = screen.getByTestId(
+      'conversion-library-select',
+    ) as HTMLSelectElement;
 
     await user.selectOptions(product, 'TAF');
-    await user.selectOptions(profile, 'iwxxm_us');
+    await user.selectOptions(conversion, defaultLibraryId('conversion', 'US_FAA_NWS'));
 
     const manualInput = screen.getByLabelText(/enter metar data manually/i);
     fireEvent.change(manualInput, {
@@ -233,7 +245,7 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
         product: 'TAF',
-        profile: 'iwxxm_us',
+        conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
       }),
     );
   });
@@ -263,7 +275,7 @@ describe('T8.1 / TC-F6-001: F6.e product + profile + version pickers', () => {
     expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
       expect.objectContaining({
         product: 'SPECI',
-        profile: 'ICAO_2025',
+        conversionLibraryId: defaultLibraryId('conversion', 'ICAO_2025'),
       }),
     );
   });

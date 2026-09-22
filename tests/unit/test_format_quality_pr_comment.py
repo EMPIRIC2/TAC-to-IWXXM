@@ -90,6 +90,7 @@ def test_format_quality_pr_comment_tables_by_product_profile(tmp_path: Path) -> 
     assert MARKER in out
     assert MARKER != "<!-- EV-036-coverage-comment -->"
     assert "## Quality / golden outcomes" in out
+    assert "Quality metrics dashboard" in out
     assert "| Product | Profile | Match | Soft-diff | Fail | Skip |" in out
     # Aggregated METAR x annex3 = 5+1 match
     assert "| `METAR` | `annex3` | 6 | 1 | 0 | 1 |" in out

@@ -147,6 +147,9 @@ jobs:
       - name: Run lint
         run: make lint
 
+      - name: Validation catalog drift
+        run: make validation-catalog-check
+
   typecheck:
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest
@@ -196,6 +199,7 @@ jobs:
             backend,
             frontend,
             tac2iwxxm,
+            tac-decoding,
             iwxxm-validate,
             tac-validate,
             dissemination,
@@ -293,6 +297,11 @@ jobs:
             --cov-report=json:packages/tac2iwxxm/coverage.json \
             --cov-report=term-missing --cov-fail-under=100 -v
           uv run python scripts/ci/check_per_file_coverage.py packages/tac2iwxxm/coverage.json
+
+      - name: Run tac-decoding unit tests with coverage
+        if: matrix.package == 'tac-decoding'
+        run: |
+          make test-unit-tac-decoding
 
       - name: Install Rust toolchain (iwxxm-validate native)
         if: matrix.package == 'iwxxm-validate'

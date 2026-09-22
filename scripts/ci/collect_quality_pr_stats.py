@@ -23,6 +23,63 @@ from typing import Any
 
 ROOT_DEFAULT = Path(__file__).resolve().parents[2]
 
+# Canonical sticky Product keys (EV-970 S3 / TC-EV970-STICKY-001).
+# Junk sad-fixture meta.product values roll to the pack parent instead.
+CANONICAL_PRODUCTS: frozenset[str] = frozenset(
+    {
+        "METAR",
+        "SPECI",
+        "TAF",
+        "SIGMET",
+        "AIRMET",
+        "TCA",
+        "VAA",
+        "VONA",
+        "SWXA",
+        "SPACEWX",
+    }
+)
+
+# quality-matrix testdata/<engine>/<pack>/ → Product parent for unknown keys
+PACK_PARENT_PRODUCT: dict[str, str] = {
+    "metar_speci": "METAR",
+    "taf": "TAF",
+    "sigmet": "SIGMET",
+    "airmet": "AIRMET",
+    "tca": "TCA",
+    "vaa": "VAA",
+    "swxa": "SWXA",
+}
+
+
+def normalize_product(raw: str, *, pack_folder: str = "") -> str:
+    """
+    Map a raw product token to a sticky Product column key.
+
+    Parameters
+    ----------
+    raw : str
+        Product from case/file meta or path fallback.
+    pack_folder : str
+        Parent directory under ``testdata/<engine>/`` (e.g. ``metar_speci``).
+
+    Returns
+    -------
+    str
+        Canonical product, or pack parent when ``raw`` is not allowlisted.
+    """
+    product = (raw or "").strip().upper()
+    if product in {"METAR_SPECI", "METAR-SPECI"}:
+        return "METAR"
+    if product in CANONICAL_PRODUCTS:
+        return product
+    pack = (pack_folder or "").strip().lower()
+    if pack in PACK_PARENT_PRODUCT:
+        return PACK_PARENT_PRODUCT[pack]
+    if pack:
+        return pack.upper()
+    return "METAR"
+
 
 def _bump(
     agg: dict[tuple[str, str], list[int]],
@@ -207,16 +264,15 @@ def collect_quality_matrix_inventory(qm_root: Path) -> dict[tuple[str, str], lis
             if not isinstance(case, dict):
                 continue
             meta = case.get("meta") if isinstance(case.get("meta"), dict) else {}
-            product = str(
+            pack_folder = path.parts[-2] if len(path.parts) >= 2 else ""
+            raw_product = str(
                 meta.get("product")
                 or file_meta.get("product")
                 or data.get("product")
-                or path.parts[-2]
+                or pack_folder
                 or "?"
-            ).upper()
-            if product in {"METAR_SPECI", "METAR-SPECI"}:
-                # Pilot pack scopes both; attribute under METAR for rollup clarity.
-                product = "METAR"
+            )
+            product = normalize_product(raw_product, pack_folder=pack_folder)
             profile = str(
                 meta.get("profile")
                 or file_meta.get("profile")

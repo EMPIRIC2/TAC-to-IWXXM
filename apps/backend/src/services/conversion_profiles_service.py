@@ -6,7 +6,7 @@ import logging
 import os
 import re
 from datetime import UTC, datetime
-from typing import Any, NoReturn, cast
+from typing import Any, Literal, NoReturn, cast
 from uuid import UUID, uuid4
 
 from fastapi import HTTPException, status
@@ -15,9 +15,16 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from ..schemas.conversion_profiles import (
+    ConversionTemplateCreate,
+    ConversionTemplateOut,
+    ConversionTemplateSlot,
+    ConversionTemplateUpdate,
     DisseminationTemplateCreate,
     DisseminationTemplateOut,
     DisseminationTemplateUpdate,
+    LibraryAssetCreate,
+    LibraryAssetOut,
+    LibraryAssetUpdate,
     OverlayCreate,
     OverlayOut,
     OverlayUpdate,
@@ -36,6 +43,8 @@ RULE_PACKS_TABLE = "tac_profile_rule_packs"
 OVERLAYS_TABLE = "tac_profile_overlays"
 PRESETS_TABLE = "tac_profile_presets"
 TEMPLATES_TABLE = "tac_dissemination_templates"
+CONVERSION_TEMPLATES_TABLE = "tac_conversion_templates"
+LIBRARY_ASSETS_TABLE = "tac_library_assets"
 _SECRET_KEY = re.compile(r"(?i)(password|passwd|secret|token|api[_-]?key|uri|connection_string|dsn)")
 _URI_VALUE = re.compile(r"^[a-z][a-z0-9+.-]*://", re.IGNORECASE)
 
@@ -628,3 +637,527 @@ class ConversionProfilesService:
             raise
         except SQLAlchemyError as exc:
             _handle_db_error(exc)
+
+    @staticmethod
+    def _first_party_template_out(template_id: str) -> ConversionTemplateOut | None:
+        """Project a code-served first-party conversion template."""
+        try:
+            from tac2iwxxm.conversion_templates import get_first_party_template
+        except ImportError:
+            return None
+        tmpl = get_first_party_template(template_id)
+        if tmpl is None:
+            return None
+        slots = [
+            ConversionTemplateSlot.model_validate(
+                {
+                    "id": s.id,
+                    "label": s.label,
+                    "type": s.type,
+                    "optional": s.optional,
+                    "digits": s.digits,
+                    "enumValues": s.enum_values,
+                    "literal": s.literal,
+                    "iwxxmField": s.iwxxm_field,
+                }
+            )
+            for s in tmpl.slots
+        ]
+        return ConversionTemplateOut(
+            id=tmpl.id,
+            user_id=None,
+            slug=tmpl.id,
+            name=tmpl.name,
+            access="first_party",
+            iwxxm_block=tmpl.iwxxm_block,
+            slots=slots,
+            sample=tmpl.sample,
+            comments=tmpl.comments or None,
+            fork_of=None,
+            shared=True,
+            profiles=list(tmpl.profiles),
+            created_at=None,
+            updated_at=None,
+        )
+
+    def _conversion_template_row_to_out(self, row: dict[str, Any]) -> ConversionTemplateOut:
+        """Map a DB row to ConversionTemplateOut."""
+        raw_slots_any: Any = row.get("slots") or []
+        slot_items: list[Any] = cast(list[Any], raw_slots_any) if isinstance(raw_slots_any, list) else []
+        slots: list[ConversionTemplateSlot] = [
+            ConversionTemplateSlot.model_validate(cast(dict[str, Any], item))
+            for item in slot_items
+            if isinstance(item, dict)
+        ]
+        return ConversionTemplateOut(
+            id=str(row["id"]),
+            user_id=row["user_id"],
+            slug=str(row["slug"]),
+            name=str(row["name"]),
+            access="custom",
+            iwxxm_block=str(row["iwxxm_block"]),
+            slots=slots,
+            sample=str(row.get("sample") or ""),
+            comments=row.get("comments"),
+            fork_of=row.get("fork_of"),
+            shared=bool(row.get("shared")),
+            profiles=[],
+            created_at=row.get("created_at"),
+            updated_at=row.get("updated_at"),
+        )
+
+    def list_conversion_templates(self) -> list[ConversionTemplateOut]:
+        """List first-party builtins plus custom templates visible to the caller."""
+        items: list[ConversionTemplateOut] = []
+        try:
+            from tac2iwxxm.conversion_templates import list_first_party_templates
+        except ImportError:
+            list_first_party_templates = None  # type: ignore[assignment]
+        if list_first_party_templates is not None:
+            for tmpl in list_first_party_templates():
+                out = self._first_party_template_out(tmpl.id)
+                if out is not None:
+                    items.append(out)
+        t = _table(CONVERSION_TEMPLATES_TABLE)
+        try:
+            with _get_engine().connect() as conn:
+                rows = (
+                    conn.execute(
+                        select(t).where(or_(t.c.user_id == self.user_id, t.c.shared.is_(True))).order_by(t.c.slug)
+                    )
+                    .mappings()
+                    .all()
+                )
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        items.extend(self._conversion_template_row_to_out(dict(r)) for r in rows)
+        return items
+
+    def get_conversion_template(self, template_id: str, *, require_owner: bool = False) -> ConversionTemplateOut:
+        """Fetch a first-party or custom conversion template; fail-closed on unknown."""
+        first = self._first_party_template_out(template_id)
+        if first is not None:
+            if require_owner:
+                raise HTTPException(status_code=403, detail="First-party templates are read-only")
+            return first
+        try:
+            template_uuid = UUID(template_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown conversion template id") from exc
+        t = _table(CONVERSION_TEMPLATES_TABLE)
+        try:
+            with _get_engine().connect() as conn:
+                row = conn.execute(select(t).where(t.c.id == template_uuid)).mappings().first()
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        if row is None:
+            raise HTTPException(status_code=404, detail="Conversion template not found")
+        owner = row["user_id"]
+        shared = bool(row.get("shared"))
+        if require_owner and owner != self.user_id:
+            raise HTTPException(status_code=403, detail="Conversion template ownership required")
+        if owner != self.user_id and not shared:
+            raise HTTPException(status_code=403, detail="Conversion template ownership required")
+        return self._conversion_template_row_to_out(dict(row))
+
+    def create_conversion_template(self, payload: ConversionTemplateCreate) -> ConversionTemplateOut:
+        """Insert a custom conversion template (fork or new)."""
+        data = payload.model_dump(by_alias=False)
+        _reject_secrets(data)
+        for slot in payload.slots:
+            _reject_secrets(slot.model_dump(by_alias=False))
+        now = datetime.now(tz=UTC)
+        template_id = uuid4()
+        slots_json = [s.model_dump(by_alias=True) for s in payload.slots]
+        values = {
+            "id": template_id,
+            "user_id": self.user_id,
+            "slug": payload.slug,
+            "name": payload.name,
+            "iwxxm_block": payload.iwxxm_block,
+            "slots": slots_json,
+            "sample": payload.sample,
+            "comments": payload.comments,
+            "fork_of": payload.fork_of,
+            "shared": payload.shared,
+            "created_at": now,
+            "updated_at": now,
+        }
+        t = _table(CONVERSION_TEMPLATES_TABLE)
+        try:
+            with _get_engine().begin() as conn:
+                conn.execute(insert(t).values(**values))
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        return self.get_conversion_template(str(template_id), require_owner=True)
+
+    def update_conversion_template(self, template_id: str, payload: ConversionTemplateUpdate) -> ConversionTemplateOut:
+        """Patch an owned custom conversion template; reject first-party ids."""
+        if self._first_party_template_out(template_id) is not None:
+            raise HTTPException(status_code=403, detail="First-party templates cannot be modified")
+        existing = self.get_conversion_template(template_id, require_owner=True)
+        data = payload.model_dump(exclude_unset=True, by_alias=False)
+        _reject_secrets(data)
+        if "slots" in data and data["slots"] is not None:
+            for slot in cast(list[Any], data["slots"]):
+                if isinstance(slot, dict):
+                    _reject_secrets(cast(dict[str, Any], slot))
+        if not data:
+            return existing
+        try:
+            template_uuid = UUID(template_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown conversion template id") from exc
+        slots_value: Any = [s.model_dump(by_alias=True) for s in existing.slots]
+        if "slots" in data and data["slots"] is not None:
+            slots_value = [
+                s.model_dump(by_alias=True) if hasattr(s, "model_dump") else s for s in cast(list[Any], data["slots"])
+            ]
+        values = {
+            "slug": str(data.get("slug") or existing.slug),
+            "name": str(data.get("name") or existing.name),
+            "iwxxm_block": str(data.get("iwxxm_block") or existing.iwxxm_block),
+            "slots": slots_value,
+            "sample": str(data["sample"]) if "sample" in data else existing.sample,
+            "comments": data.get("comments", existing.comments),
+            "shared": bool(data["shared"]) if "shared" in data else existing.shared,
+            "updated_at": datetime.now(tz=UTC),
+        }
+        t = _table(CONVERSION_TEMPLATES_TABLE)
+        try:
+            with _get_engine().begin() as conn:
+                result = conn.execute(
+                    update(t).where(t.c.id == template_uuid, t.c.user_id == self.user_id).values(**values)
+                )
+                if result.rowcount == 0:
+                    raise HTTPException(status_code=404, detail="Conversion template not found")
+        except HTTPException:
+            raise
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        return self.get_conversion_template(template_id, require_owner=True)
+
+    def delete_conversion_template(self, template_id: str) -> None:
+        """Delete an owned custom conversion template; reject first-party."""
+        if self._first_party_template_out(template_id) is not None:
+            raise HTTPException(status_code=403, detail="First-party templates cannot be deleted")
+        try:
+            template_uuid = UUID(template_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown conversion template id") from exc
+        t = _table(CONVERSION_TEMPLATES_TABLE)
+        try:
+            with _get_engine().begin() as conn:
+                result = conn.execute(delete(t).where(t.c.id == template_uuid, t.c.user_id == self.user_id))
+                if result.rowcount == 0:
+                    raise HTTPException(status_code=404, detail="Conversion template not found")
+        except HTTPException:
+            raise
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+
+    def _first_party_library_out(self, asset_id: str) -> LibraryAssetOut | None:
+        """Map a first-party LibraryAsset to API out."""
+        try:
+            from tac2iwxxm.library_assets import get_first_party_library_asset
+        except ImportError:
+            return None
+        asset = get_first_party_library_asset(asset_id)
+        if asset is None:
+            return None
+        return LibraryAssetOut(
+            id=asset.id,
+            kind=asset.kind,
+            name=asset.name,
+            access="first_party",
+            engine_profile_id=asset.engine_profile_id,
+            attached_national_line=asset.attached_national_line,
+            body=dict(asset.body),
+            fork_of=asset.fork_of,
+            shared=True,
+            status="activated",
+            schema_version=1,
+        )
+
+    def _library_row_to_out(self, row: dict[str, Any]) -> LibraryAssetOut:
+        """Map a DB library asset row to API out."""
+        body_candidate: Any = row.get("body")
+        body: dict[str, Any] = cast(dict[str, Any], body_candidate) if isinstance(body_candidate, dict) else {}
+        status_raw = str(row.get("status") or "draft")
+        status: Literal["draft", "activated"] = "activated" if status_raw == "activated" else "draft"
+        schema_raw = row.get("schema_version")
+        schema_version = int(schema_raw) if isinstance(schema_raw, int) else 1
+        yaml_raw = row.get("yaml_body")
+        yaml_body = str(yaml_raw) if isinstance(yaml_raw, str) else None
+        return LibraryAssetOut(
+            id=str(row["id"]),
+            kind=str(row["kind"]),  # type: ignore[arg-type]
+            name=str(row["name"]),
+            access="custom",
+            engine_profile_id=str(row["engine_profile_id"]),
+            attached_national_line=str(row["attached_national_line"]),
+            body=body,
+            fork_of=row.get("fork_of"),
+            user_id=row["user_id"],
+            slug=str(row["slug"]),
+            shared=bool(row.get("shared")),
+            created_at=row.get("created_at"),
+            updated_at=row.get("updated_at"),
+            yaml_body=yaml_body,
+            status=status,
+            schema_version=schema_version,
+        )
+
+    def list_library_assets(self, *, kind: str | None = None) -> list[LibraryAssetOut]:
+        """List first-party defaults plus custom assets visible to the caller."""
+        items: list[LibraryAssetOut] = []
+        try:
+            from tac2iwxxm.library_assets import list_first_party_library_assets
+        except ImportError:
+            list_first_party_library_assets = None  # type: ignore[assignment]
+        if list_first_party_library_assets is not None:
+            for asset in list_first_party_library_assets():
+                if kind is not None and asset.kind != kind:
+                    continue
+                out = self._first_party_library_out(asset.id)
+                if out is not None:
+                    items.append(out)
+        t = _table(LIBRARY_ASSETS_TABLE)
+        try:
+            with _get_engine().connect() as conn:
+                stmt = select(t).where(or_(t.c.user_id == self.user_id, t.c.shared.is_(True)))
+                if kind is not None:
+                    stmt = stmt.where(t.c.kind == kind)
+                rows = conn.execute(stmt.order_by(t.c.slug)).mappings().all()
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        items.extend(self._library_row_to_out(dict(r)) for r in rows)
+        return items
+
+    def get_library_asset(self, asset_id: str, *, require_owner: bool = False) -> LibraryAssetOut:
+        """Fetch a first-party or custom library asset; fail-closed on unknown."""
+        first = self._first_party_library_out(asset_id)
+        if first is not None:
+            if require_owner:
+                raise HTTPException(status_code=403, detail="First-party library assets are read-only")
+            return first
+        try:
+            asset_uuid = UUID(asset_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown library asset id") from exc
+        t = _table(LIBRARY_ASSETS_TABLE)
+        try:
+            with _get_engine().connect() as conn:
+                row = conn.execute(select(t).where(t.c.id == asset_uuid)).mappings().first()
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        if row is None:
+            raise HTTPException(status_code=404, detail="Library asset not found")
+        owner = row["user_id"]
+        shared = bool(row.get("shared"))
+        if require_owner and owner != self.user_id:
+            raise HTTPException(status_code=403, detail="Library asset ownership required")
+        if owner != self.user_id and not shared:
+            raise HTTPException(status_code=403, detail="Library asset ownership required")
+        return self._library_row_to_out(dict(row))
+
+    def validate_library_yaml_document(
+        self,
+        yaml_body: str,
+        *,
+        kind: str,
+        lifecycle: str = "draft",
+    ) -> dict[str, Any]:
+        """Parse YAML and collect regex diagnostics without persisting."""
+        try:
+            from tac2iwxxm.library_yaml import LibraryKind, LibraryLifecycle, validate_library_yaml
+        except ImportError as exc:
+            raise HTTPException(status_code=503, detail="Library YAML validator unavailable") from exc
+        report = validate_library_yaml(
+            yaml_body,
+            expected_kind=cast(LibraryKind, kind),
+            lifecycle=cast(LibraryLifecycle, lifecycle),
+        )
+        return report.to_dict()
+
+    def _enforce_yaml_lifecycle(
+        self,
+        *,
+        yaml_body: str | None,
+        kind: str,
+        lifecycle_status: str,
+    ) -> dict[str, Any]:
+        """Validate YAML when activating; Draft may include Fail diagnostics."""
+        extra: dict[str, Any] = {}
+        if yaml_body is None:
+            if lifecycle_status == "activated":
+                raise HTTPException(
+                    status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                    detail="Activate requires a YAML document with zero Fail diagnostics",
+                )
+            extra["status"] = lifecycle_status
+            return extra
+        extra["yaml_body"] = yaml_body
+        extra["status"] = lifecycle_status
+        report = self.validate_library_yaml_document(
+            yaml_body,
+            kind=kind,
+            lifecycle=lifecycle_status,
+        )
+        if lifecycle_status == "activated" and not bool(report.get("can_activate")):
+            detail = str(report.get("yaml_error") or "Activate requires zero Fail diagnostics")
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                detail=detail,
+            )
+        if bool(report.get("valid_yaml")):
+            parsed_body = report.get("data")
+            if isinstance(parsed_body, dict):
+                extra["body"] = parsed_body
+            parsed_name = report.get("name")
+            if isinstance(parsed_name, str) and parsed_name.strip():
+                extra["name"] = parsed_name.strip()
+        return extra
+
+    def create_library_asset(self, payload: LibraryAssetCreate) -> LibraryAssetOut:
+        """Insert a custom library asset (fork or new)."""
+        data = payload.model_dump(by_alias=False)
+        _reject_secrets(data)
+        _reject_secrets(payload.body)
+        _reject_template_values(payload.body, path="body")
+        now = datetime.now(tz=UTC)
+        asset_id = uuid4()
+        yaml_extra = self._enforce_yaml_lifecycle(
+            yaml_body=payload.yaml_body,
+            kind=payload.kind,
+            lifecycle_status=payload.status,
+        )
+        values = {
+            "id": asset_id,
+            "user_id": self.user_id,
+            "slug": payload.slug,
+            "name": yaml_extra.get("name") or payload.name,
+            "kind": payload.kind,
+            "engine_profile_id": payload.engine_profile_id,
+            "attached_national_line": payload.attached_national_line,
+            "body": yaml_extra.get("body") if "body" in yaml_extra else payload.body,
+            "fork_of": payload.fork_of,
+            "shared": payload.shared,
+            "created_at": now,
+            "updated_at": now,
+            "yaml_body": yaml_extra.get("yaml_body"),
+            "status": yaml_extra.get("status") or payload.status,
+            "schema_version": payload.schema_version,
+        }
+        t = _table(LIBRARY_ASSETS_TABLE)
+        try:
+            with _get_engine().begin() as conn:
+                conn.execute(insert(t).values(**values))
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        return self.get_library_asset(str(asset_id), require_owner=True)
+
+    def update_library_asset(self, asset_id: str, payload: LibraryAssetUpdate) -> LibraryAssetOut:
+        """Update owned custom asset, or auto-fork first-party on edit (AC3)."""
+        first = self._first_party_library_out(asset_id)
+        if first is not None:
+            body = payload.body if payload.body is not None else dict(first.body)
+            _reject_secrets(body)
+            _reject_template_values(body, path="body")
+            create = LibraryAssetCreate.model_validate(
+                {
+                    "slug": payload.slug or f"fork-{uuid4().hex[:8]}",
+                    "name": payload.name or f"{first.name} (fork)",
+                    "kind": first.kind,
+                    "engineProfileId": first.engine_profile_id,
+                    "attachedNationalLine": first.attached_national_line,
+                    "body": body,
+                    "forkOf": first.id,
+                    "shared": bool(payload.shared) if payload.shared is not None else False,
+                    "yamlBody": payload.yaml_body,
+                    "status": payload.status or "draft",
+                    "schemaVersion": payload.schema_version or 1,
+                }
+            )
+            return self.create_library_asset(create)
+        try:
+            asset_uuid = UUID(asset_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown library asset id") from exc
+        data = payload.model_dump(by_alias=False, exclude_unset=True)
+        _reject_secrets(data)
+        if "body" in data and isinstance(data["body"], dict):
+            _reject_template_values(cast(dict[str, Any], data["body"]), path="body")
+        values: dict[str, Any] = {"updated_at": datetime.now(tz=UTC)}
+        for key in ("slug", "name", "body", "shared"):
+            if key in data:
+                values[key] = data[key]
+        if "yaml_body" in data or "status" in data:
+            existing = self.get_library_asset(asset_id, require_owner=True)
+            yaml_body = data.get("yaml_body", existing.yaml_body)
+            lifecycle_status = data.get("status", existing.status)
+            yaml_extra = self._enforce_yaml_lifecycle(
+                yaml_body=yaml_body if isinstance(yaml_body, str) else None,
+                kind=existing.kind,
+                lifecycle_status=str(lifecycle_status),
+            )
+            values.update(yaml_extra)
+        if "schema_version" in data and data["schema_version"] is not None:
+            values["schema_version"] = data["schema_version"]
+        t = _table(LIBRARY_ASSETS_TABLE)
+        try:
+            with _get_engine().begin() as conn:
+                result = conn.execute(
+                    update(t).where(t.c.id == asset_uuid, t.c.user_id == self.user_id).values(**values)
+                )
+                if result.rowcount == 0:
+                    raise HTTPException(status_code=404, detail="Library asset not found")
+        except HTTPException:
+            raise
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+        return self.get_library_asset(asset_id, require_owner=True)
+
+    def delete_library_asset(self, asset_id: str) -> None:
+        """Delete an owned custom library asset; reject first-party (AC4)."""
+        if self._first_party_library_out(asset_id) is not None:
+            raise HTTPException(status_code=403, detail="First-party library defaults cannot be deleted")
+        try:
+            asset_uuid = UUID(asset_id)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail="Unknown library asset id") from exc
+        t = _table(LIBRARY_ASSETS_TABLE)
+        try:
+            with _get_engine().begin() as conn:
+                result = conn.execute(delete(t).where(t.c.id == asset_uuid, t.c.user_id == self.user_id))
+                if result.rowcount == 0:
+                    raise HTTPException(status_code=404, detail="Library asset not found")
+        except HTTPException:
+            raise
+        except SQLAlchemyError as exc:
+            _handle_db_error(exc)
+
+    def preview_library_rule(self, library_id: str, focus_group: str) -> tuple[str, str]:
+        """Resolve AC11 rule association; return ``(rule_id, rule_name)``."""
+        asset_out = self.get_library_asset(library_id)
+        if asset_out.kind != "conversion":
+            raise HTTPException(status_code=400, detail="Rule preview requires a conversion library")
+        try:
+            from tac2iwxxm.library_assets import LibraryAsset, require_rule_for_group
+        except ImportError as exc:
+            raise HTTPException(status_code=503, detail="Library assets unavailable") from exc
+        domain = LibraryAsset(
+            id=asset_out.id,
+            kind=asset_out.kind,
+            name=asset_out.name,
+            access=asset_out.access,
+            engine_profile_id=asset_out.engine_profile_id,
+            attached_national_line=asset_out.attached_national_line,
+            body=dict(asset_out.body),
+            fork_of=asset_out.fork_of,
+        )
+        try:
+            rule = require_rule_for_group(domain, focus_group=focus_group)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        return rule.id, rule.name

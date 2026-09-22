@@ -150,7 +150,7 @@ def test_tc_ev068_004_convert_tac_forwards_extensions_on_validate_output(
         files={
             "manual_text": (None, _CA_METAR),
             "product": (None, "METAR"),
-            "semantic_profile": (None, "CA_ECCC"),
+            "conversion_library_id": (None, "LIB.CONVERSION.CA_ECCC"),
             "iwxxm_version": (None, _CA_IWXXM_VERSION),
             "validate_output": (None, "true"),
             "extensions": (None, "IWXXM_CA"),
@@ -180,7 +180,7 @@ def test_tc_ev068_004_convert_iwxxm_pass_through_forwards_extensions(
         files={
             "manual_text": (None, xml_payload),
             "product": (None, "iwxxm"),
-            "semantic_profile": (None, "ICAO_2025"),
+            "conversion_library_id": (None, "LIB.CONVERSION.ICAO_2025"),
             "iwxxm_version": (None, "2025-2"),
             "validate_output": (None, "true"),
             "extensions": (None, "IWXXM_CA"),

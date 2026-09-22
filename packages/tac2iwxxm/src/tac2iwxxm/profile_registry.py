@@ -126,6 +126,18 @@ def known_semantic_profile_ids() -> frozenset[str]:
     return _KNOWN_WIRE_IDS
 
 
+def canonical_semantic_profile_wire_ids() -> tuple[str, ...]:
+    """
+    Return sorted uppercase OpenAPI-style canonical semantic profile ids.
+
+    Returns
+    -------
+    tuple[str, ...]
+        Ids such as ``ICAO_2025`` (no legacy aliases).
+    """
+    return tuple(sorted(key.upper() for key in _CANONICAL_TO_EMIT))
+
+
 def supported_iwxxm_versions_for_profile(profile: str) -> frozenset[str]:
     """Return the supported IWXXM lines for a semantic profile id or emit key."""
     resolved = resolve_semantic_profile(profile)
@@ -166,6 +178,7 @@ __all__ = [
     "EMIT_NZ_CAA_MET",
     "EMIT_UK_METOFFICE",
     "ResolvedSemanticProfile",
+    "canonical_semantic_profile_wire_ids",
     "known_semantic_profile_ids",
     "normalize_profile_id",
     "resolve_semantic_profile",

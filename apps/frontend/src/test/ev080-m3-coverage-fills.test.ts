@@ -191,7 +191,10 @@ describe('EV-080 api.json catch fallbacks and quality metrics defaults', () => {
     const request = fetchMock.mock.calls[0]?.[1] as { body?: FormData } | undefined;
     expect(request?.body).toBeInstanceOf(FormData);
     expect((request?.body as FormData).has('iwxxm_version')).toBe(false);
-    expect((request?.body as FormData).get('semantic_profile')).toBe('CA_ECCC');
+    expect((request?.body as FormData).get('conversion_library_id')).toBe(
+      'LIB.CONVERSION.CA_ECCC',
+    );
+    expect((request?.body as FormData).get('semantic_profile')).toBeNull();
   });
 
   it('convertBulletin omits iwxxm_version when caller does not specify one', async () => {
@@ -221,7 +224,10 @@ describe('EV-080 api.json catch fallbacks and quality metrics defaults', () => {
     const request = fetchMock.mock.calls[0]?.[1] as { body?: FormData } | undefined;
     expect(request?.body).toBeInstanceOf(FormData);
     expect((request?.body as FormData).has('iwxxm_version')).toBe(false);
-    expect((request?.body as FormData).get('semantic_profile')).toBe('CA_ECCC');
+    expect((request?.body as FormData).get('conversion_library_id')).toBe(
+      'LIB.CONVERSION.CA_ECCC',
+    );
+    expect((request?.body as FormData).get('semantic_profile')).toBeNull();
   });
 });
 

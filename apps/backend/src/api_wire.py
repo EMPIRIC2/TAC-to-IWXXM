@@ -285,14 +285,17 @@ def _call_iwxxm_validate(
     emit_key: str,
     extensions: list[str],
     product: str,
+    output_policy_id: str | None = None,
 ) -> ValidationReport:
     validate_product = ca_eccc_validate_product(emit_key, extensions, product)
+    logger.debug("iwxxm output policy %s", output_policy_id)
     return _iwxxm_validate_fn()(
         xml_content,
         iwxxm_version=iwxxm_version,
         profile=profile or "annex3",
         levels=levels,
         product=validate_product,
+        output_policy_id=output_policy_id,
     )
 
 

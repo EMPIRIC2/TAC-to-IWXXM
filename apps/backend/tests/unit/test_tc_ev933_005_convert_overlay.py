@@ -1,150 +1,53 @@
-"""TC-EV933-005 — convert overlay_id fail-closed + apply metadata."""
+"""TC-EV933 / EV-bridge — overlay_id hard-cut on Convert (unlinked from Convert)."""
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
 from typing import Any
-from unittest.mock import MagicMock, patch
 from uuid import uuid4
 
 import pytest
-from fastapi import HTTPException
 from fastapi.testclient import TestClient
-from src.api import app
-from src.schemas.conversion_profiles import OverlayOut
+from src import api as api_module
 from src.utilities.security import verify_optional_supabase_token
 
-USER_ID = uuid4()
+_SAMPLE_METAR = "METAR KJFK 121151Z 18008KT 10SM FEW250 22/14 A3012="
 OVERLAY_ID = uuid4()
-NOW = datetime(2026, 9, 4, tzinfo=UTC)
 
 
 @pytest.fixture
 def convert_client() -> Any:
-    async def override_optional() -> dict[str, str]:
-        return {"sub": str(USER_ID)}
+    async def _guest():
+        return None
 
-    app.dependency_overrides[verify_optional_supabase_token] = override_optional
-    client = TestClient(app)
+    api_module.app.dependency_overrides[verify_optional_supabase_token] = _guest
+    client = TestClient(api_module.app)
     yield client
-    app.dependency_overrides.clear()
+    api_module.app.dependency_overrides.clear()
 
 
-def _overlay() -> OverlayOut:
-    return OverlayOut(
-        id=OVERLAY_ID,
-        user_id=USER_ID,
-        slug="ov",
-        base_profile_id="ICAO_2025",
-        body={},
-        signature="c" * 64,
-        shared=False,
-        created_at=NOW,
-        updated_at=NOW,
-    )
-
-
-def test_convert_overlay_requires_auth() -> None:
-    client = TestClient(app)
-    res = client.post(
+def test_convert_overlay_id_rejected(convert_client: Any) -> None:
+    res = convert_client.post(
         "/api/v1/convert",
         data={
-            "manual_text": "METAR KJFK 010000Z 18005KT 10SM SKC 20/10 A2992=",
+            "manual_text": _SAMPLE_METAR,
             "product": "METAR",
+            "overlay_id": str(OVERLAY_ID),
+            "lint": "false",
+        },
+    )
+    assert res.status_code == 422, res.text[:500]
+    assert "overlay_id" in res.text
+    assert "Legacy convert fields" in res.text
+
+
+def test_convert_json_body_overlay_id_rejected(convert_client: Any) -> None:
+    res = convert_client.post(
+        "/api/v1/convert",
+        json={
+            "metars": [_SAMPLE_METAR],
+            "version": "2025-2",
             "overlay_id": str(OVERLAY_ID),
         },
     )
-    assert res.status_code in {401, 403}
-
-
-def test_convert_overlay_unknown_id(convert_client: Any) -> None:
-    client = convert_client
-    with patch("src.routers.conversion.ConversionProfilesService") as svc_cls:
-        svc_cls.return_value.get_overlay.side_effect = HTTPException(status_code=404, detail="Overlay not found")
-        res = client.post(
-            "/api/v1/convert",
-            data={
-                "manual_text": "METAR KJFK 010000Z 18005KT 10SM SKC 20/10 A2992=",
-                "product": "METAR",
-                "overlay_id": str(OVERLAY_ID),
-            },
-            headers={"Authorization": "Bearer t"},
-        )
-    assert res.status_code == 404
-
-
-def test_convert_overlay_invalid_uuid(convert_client: Any) -> None:
-    client = convert_client
-    res = client.post(
-        "/api/v1/convert",
-        data={
-            "manual_text": "METAR KJFK 010000Z 18005KT 10SM SKC 20/10 A2992=",
-            "product": "METAR",
-            "overlay_id": "not-a-uuid",
-        },
-        headers={"Authorization": "Bearer t"},
-    )
-    assert res.status_code == 400
-    assert "Unknown overlay" in str(res.json().get("detail", ""))
-
-
-def test_convert_overlay_applies_base_when_profile_empty(convert_client: Any) -> None:
-    client = convert_client
-    with (
-        patch("src.routers.conversion.ConversionProfilesService") as svc_cls,
-        patch("src.routers.conversion.tac_lint_fn", return_value=MagicMock(ok=True, issues=[])),
-        patch(
-            "src.api.convert_metar_tac_with_metadata",
-            return_value=("<xml/>", {}),
-        ),
-    ):
-        svc_cls.return_value.get_overlay.return_value = _overlay()
-        res = client.post(
-            "/api/v1/convert",
-            data={
-                "manual_text": "METAR KJFK 010000Z 18005KT 10SM SKC 20/10 A2992=",
-                "product": "METAR",
-                "overlay_id": str(OVERLAY_ID),
-                "semantic_profile": "",
-                "profile": "",
-                "lint": "false",
-            },
-            headers={"Authorization": "Bearer t"},
-        )
-    assert res.status_code != 401
-    assert res.status_code != 403
-    assert res.status_code != 404
-    if res.status_code == 200:
-        meta = res.json().get("metadata") or {}
-        assert meta.get("overlay_id") == str(OVERLAY_ID)
-        assert meta.get("overlay_base_profile") == "ICAO_2025"
-
-
-def test_convert_overlay_keeps_explicit_profile(convert_client: Any) -> None:
-    client = convert_client
-    with (
-        patch("src.routers.conversion.ConversionProfilesService") as svc_cls,
-        patch("src.routers.conversion.tac_lint_fn", return_value=MagicMock(ok=True, issues=[])),
-        patch(
-            "src.api.convert_metar_tac_with_metadata",
-            return_value=("<xml/>", {}),
-        ),
-    ):
-        empty_base = _overlay().model_copy(update={"base_profile_id": ""})
-        svc_cls.return_value.get_overlay.return_value = empty_base
-        res = client.post(
-            "/api/v1/convert",
-            data={
-                "manual_text": "METAR KJFK 010000Z 18005KT 10SM SKC 20/10 A2992=",
-                "product": "METAR",
-                "overlay_id": str(OVERLAY_ID),
-                "semantic_profile": "US_FAA_NWS",
-                "lint": "false",
-            },
-            headers={"Authorization": "Bearer t"},
-        )
-    assert res.status_code != 401
-    if res.status_code == 200:
-        meta = res.json().get("metadata") or {}
-        assert meta.get("overlay_id") == str(OVERLAY_ID)
-        assert "overlay_base_profile" not in meta
+    assert res.status_code == 422, res.text[:500]
+    assert "overlay_id" in res.text

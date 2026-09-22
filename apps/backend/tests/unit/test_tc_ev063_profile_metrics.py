@@ -131,8 +131,7 @@ def test_tc_ev063_006_convert_increments_profile_metrics(
     response = client.post(
         "/api/v1/convert",
         files=_convert_files(
-            semantic_profile=(None, "ICAO_2025"),
-            exchange_profile=(None, "GLOBAL_AFS"),
+            conversion_library_id=(None, "LIB.CONVERSION.ICAO_2025"),
         ),
     )
     assert response.status_code == 200, response.text[:400]
@@ -150,44 +149,14 @@ def test_tc_ev063_006_convert_increments_profile_metrics(
     )
     assert semantic_after > semantic_before
 
-    exchange_before = _metric_sample(
-        before,
-        "tac_exchange_profile_requests_total",
-        {"route": "/api/v1/convert", "exchange_profile": "GLOBAL_AFS"},
-    )
-    exchange_after = _metric_sample(
-        after,
-        "tac_exchange_profile_requests_total",
-        {"route": "/api/v1/convert", "exchange_profile": "GLOBAL_AFS"},
-    )
-    assert exchange_after > exchange_before
 
-
-def test_tc_ev063_006_legacy_alias_increments_alias_counter(
+def test_tc_ev063_006_legacy_alias_rejected_on_convert(
     client: TestClient,
-    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    def fake_convert(tac: str, **kwargs):
-        return "<iwxxm:METAR xmlns:iwxxm='http://icao.int/iwxxm/2025-2'/>", None
-
-    monkeypatch.setattr(api_module, "convert_metar_tac_with_metadata", fake_convert)
-
-    before = client.get("/metrics").text
+    """Hard cut: legacy profile alias is rejected on Convert (no alias metric path)."""
     response = client.post(
         "/api/v1/convert",
         files=_convert_files(profile=(None, "annex3")),
     )
-    assert response.status_code == 200, response.text[:400]
-    after = client.get("/metrics").text
-
-    alias_before = _metric_sample(
-        before,
-        "tac_semantic_profile_alias_requests_total",
-        {"route": "/api/v1/convert", "semantic_profile": "ICAO_2025"},
-    )
-    alias_after = _metric_sample(
-        after,
-        "tac_semantic_profile_alias_requests_total",
-        {"route": "/api/v1/convert", "semantic_profile": "ICAO_2025"},
-    )
-    assert alias_after > alias_before
+    assert response.status_code == 422, response.text[:400]
+    assert "profile" in response.text

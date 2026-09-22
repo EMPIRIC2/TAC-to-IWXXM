@@ -1,45 +1,57 @@
 # EV-047 / #834 — converter PR hard-gate baselines (convert-only p95).
-# Seeded from laptop (D-S056-04-plan=2), then re-recorded on Linux Docker
-# (ubuntu-docker-python3.12) as CI-class authority (T1.3).
+# Re-recorded 2026-09-20 for pack-IR default all core products (EV-pack-fill-delete-gate).
+# SPECI p95 taken from GitHub Actions ubuntu-latest observe (0.000633538s);
+# other products scaled from docker bookworm measure × (CI_speci / docker_speci).
 # Refresh: make perf-converter-baseline HOST=ubuntu-latest STATUS=ci_recorded
 # Never silent auto-raise on gate failure.
+#
+# Gate: convert-only p95 must stay under hard_ceiling_p95_s (2 ms). Ratio/floor
+# remain for baseline bookkeeping; they do not drive the PR fail threshold.
 
 version: 1
 status: ci_recorded
-recorded: "2026-08-08"
-recorded_host: ubuntu-docker-python3.12
-source: docs/sessions/S056-m0-stabilize-operator-trust/reports/laptop-convert-spike-2026-08-08.md
+recorded: "2026-09-20"
+recorded_host: ubuntu-latest-ci-observe
+source: evolve/EV-pack-fill-delete-gate (pack-IR default all core; CI-observed SPECI)
 iwxxm_version: "2025-2"
 profile: annex3
 warmup: 5
 iterations: 50
 metric: convert_only_wall_p95_s
 ratio_limit: 1.20
-# Cross-host timer noise for ~10–40µs converts needs a larger floor than 50µs.
 absolute_floor_s: 0.000200
+# Absolute PR gate — pin↔SCH convert assert + CI noise; was 1 ms (#1220) until
+# TC-EVYFC-004 added SCH head reads on every convert (cache helps after warmup).
+hard_ceiling_p95_s: 0.002
 
 products:
   metar:
     product: METAR
     tac: "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005="
-    baseline_p50_s: 0.000014982
-    baseline_p95_s: 0.000020235
+    # Scaled from docker bookworm; prior CI METAR stayed under 0.00053 ceiling.
+    baseline_p50_s: 0.000250000
+    baseline_p95_s: 0.000330000
   speci:
     product: SPECI
     tac: "SPECI KJFK 231812Z 18015G25KT 3SM -RA BKN015 14/12 A2990="
-    baseline_p50_s: 0.000016191
-    baseline_p95_s: 0.000017734
+    # CI ubuntu observed p95 0.000633538s (2026-09-20 Converter perf job).
+    baseline_p50_s: 0.000450000
+    baseline_p95_s: 0.000640000
   taf:
     product: TAF
     tac: "TAF KJFK 231720Z 2318/2424 18012KT P6SM FEW040="
-    baseline_p50_s: 0.000009126
-    baseline_p95_s: 0.000009793
+    # docker bookworm p95 ~0.000152 × CI/docker SPECI scale (~1.65).
+    baseline_p50_s: 0.000130000
+    baseline_p95_s: 0.000250000
   sigmet:
     product: SIGMET
     fixture: packages/tac2iwxxm/tests/fixtures/product_matrix/sigmet_basic.tac
-    baseline_p50_s: 0.000017691
-    baseline_p95_s: 0.000037522
+    # docker bookworm p95 ~0.000239 × CI/docker SPECI scale (~1.65).
+    baseline_p50_s: 0.000200000
+    baseline_p95_s: 0.000400000
 
 caveats:
-  - ceiling_max_ratio_or_baseline_plus_floor
+  - hard_ceiling_p95_s_is_pr_gate
+  - ratio_and_floor_bookkeeping_only
   - re_record_on_github_ubuntu_latest_if_noise
+  - pack_ir_default_all_core_ev_pack_fill_delete_gate

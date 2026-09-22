@@ -26,6 +26,30 @@ from tac2iwxxm import decode_tac as tac2iwxxm_decode_tac
 
 router = APIRouter(prefix="/api/v1", tags=["Validation"])
 
+_location_resolver_ready = False
+
+
+def _ensure_airport_location_resolver() -> None:
+    """Install F3 AirportValidator as the decode ICAO→name lookup (#724)."""
+    global _location_resolver_ready
+    if _location_resolver_ready:
+        return
+    from tac_decoding import set_location_name_resolver
+
+    from src.schemas.airport import get_airport_validator
+
+    validator = get_airport_validator()
+
+    def _resolve(icao: str) -> str | None:
+        airport = validator.get_airport(icao)
+        if airport is None:
+            return None
+        name = (airport.name or "").strip()
+        return name or None
+
+    set_location_name_resolver(_resolve)
+    _location_resolver_ready = True
+
 
 @dataclass(frozen=True)
 class _DecodedRow:
@@ -418,6 +442,7 @@ async def decode_tac_endpoint(
             tac_text = joined
 
     product_u = api_surface.normalize_api_product(product, default=None)
+    _ensure_airport_location_resolver()
     result = tac2iwxxm_decode_tac(tac_text, product=product_u)
     segments, residuals, summary = _enrich_advisory_decode(
         tac_text,

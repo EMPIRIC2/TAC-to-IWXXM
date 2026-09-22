@@ -257,12 +257,12 @@ profiles:
   - id: AU_BOM
     kind: semantic
     priority: P1
-    status: in_progress
+    status: implemented
     emit_key: au_bom
     implementation:
       issue: "#917"
       package: packages/tac2iwxxm
-      cycle: EV-087
+      cycle: EV-087 / EV-profile-validate-decode-deepen
     products: [TAF, METAR, SPECI]
     # TAF3 is an RMK service marker under product=TAF (D-EV087-taf3) — not a separate API product enum.
     vendor_pins:
@@ -296,12 +296,12 @@ profiles:
   - id: NZ_CAA_MET
     kind: semantic
     priority: P1
-    status: in_progress
+    status: implemented
     emit_key: nz_caa_met
     implementation:
       issue: "#918"
       package: packages/tac2iwxxm
-      cycle: EV-087
+      cycle: EV-087 / EV-profile-validate-decode-deepen
     products: [TAF, METAR, SPECI]
     vendor_pins:
       iwxxm: vendor/manifest.json → active core pin (no NZ national extension published)

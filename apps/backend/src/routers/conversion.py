@@ -12,12 +12,12 @@ import zipfile
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, cast
-from uuid import UUID
 
 from dissemination.packaging import apply_exchange_packaging
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response, StreamingResponse
 from tac2iwxxm.profile_registry import supported_report_variants_for_profile
+from tac2iwxxm.profile_resolve import resolve_validation_policies
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
 from tac_validate import lint as tac_lint_fn
 from tac_validate.models import LintReport
@@ -57,7 +57,18 @@ from tac2iwxxm import BulletinSplitError, iwxxm_filename, parse_ahl
 
 logger = logging.getLogger(__name__)
 
+
+def _convert_output_policy_id(profile: str) -> str:
+    """Same IWXXM output policy id ``POST /api/v1/validate`` resolves for this profile."""
+    return resolve_validation_policies(profile or "annex3").iwxxm_output_policy_id
+
+
 router = APIRouter(prefix="/api/v1", tags=["Conversion"])
+
+
+def _form_text(value: object) -> str:
+    """Coerce FastAPI Form values (or direct-call Form defaults) to str."""
+    return value if isinstance(value, str) else ""
 
 
 def _resolve_effective_iwxxm_version(
@@ -496,6 +507,7 @@ async def _process_json_metars(
                         emit_key=runtime.emit_profile or "annex3",
                         extensions=runtime.resolved_extensions,
                         product=runtime.product,
+                        output_policy_id=_convert_output_policy_id(runtime.emit_profile or "annex3"),
                     )
                     validation_result = runtime.validation_orchestrator.validate(
                         iwxxm_content,
@@ -772,6 +784,7 @@ async def _process_manual_entries(
                         emit_key=runtime.emit_profile or "annex3",
                         extensions=runtime.resolved_extensions,
                         product=runtime.product,
+                        output_policy_id=_convert_output_policy_id(runtime.emit_profile or "annex3"),
                     )
                     orch_layers = [
                         layer
@@ -1043,6 +1056,7 @@ async def _process_uploaded_files(
                         emit_key=runtime.emit_profile or "annex3",
                         extensions=runtime.resolved_extensions,
                         product=runtime.product,
+                        output_policy_id=_convert_output_policy_id(runtime.emit_profile or "annex3"),
                     )
                     orch_layers = [
                         layer
@@ -1251,14 +1265,31 @@ async def convert_bulletin(
             "the heading TTAAii and CCCC."
         ),
     ),
-    profile: str = Form(default="", description="Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
+    profile: str = Form(
+        default="", description="Deprecated - use conversion_library_id (legacy alias: annex3 or iwxxm_us)"
+    ),
     semantic_profile: str = Form(
         default="",
-        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",
+        description=(
+            "Deprecated on Convert & Send — prefer conversion_library_id. "
+            "Still accepted on convert-bulletin until Dissemination library packaging lands."
+        ),
     ),
     exchange_profile: str = Form(
         default="",
         description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
+    ),
+    conversion_library_id: str = Form(
+        default="",
+        description="Conversion library asset id (resolves engine profile when set)",
+    ),
+    dissemination_library_id: str = Form(
+        default="",
+        description=(
+            "Dissemination library asset id. When set, ordered transforms "
+            "(envelope / topic / checksum / bulletin re-wrap) apply on this "
+            "Convert & Send path only."
+        ),
     ),
     iwxxm_version: str = Form(default="", description="Target IWXXM version"),
     lint: bool = Form(default=True, description="Run tac-validate before each report convert"),
@@ -1274,17 +1305,56 @@ async def convert_bulletin(
             "Omitted uses the profile default (annex3 / ICAO_2025 off)."
         ),
     ),
+    auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> Response:
     """Split a WMO AHL bulletin and convert each TAC report.
 
     Partial success is allowed: HTTP 200 when split succeeds even if some reports fail.
     Per-report ``issues`` / ``fixes`` follow lint-style identity.
     """
+    lib_raw = _form_text(conversion_library_id)
+    if lib_raw.strip():
+        from metar_iwxxm_api.convert_library_hard_cut import (
+            resolve_engine_profile_from_conversion_library,
+        )
+
+        profiles_service: ConversionProfilesService | None = None
+        if auth_user is not None:
+            profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
+
+        def _custom_engine(asset_id: str) -> str | None:
+            if profiles_service is None:
+                return None
+            try:
+                asset = profiles_service.get_library_asset(asset_id)
+            except ValueError:
+                raise
+            except Exception:
+                return None
+            from metar_iwxxm_api.convert_library_hard_cut import assert_library_usable_on_convert
+
+            assert_library_usable_on_convert(
+                kind=asset.kind,
+                expected_kind="conversion",
+                access=asset.access,
+                status=asset.status,
+            )
+            return asset.engine_profile_id
+
+        try:
+            _, semantic_profile = resolve_engine_profile_from_conversion_library(
+                lib_raw,
+                get_custom_engine_profile_id=_custom_engine,
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        profile = ""
+
     wire = api_surface._resolve_request_profiles(
         route="/api/v1/convert-bulletin",
-        profile=profile,
-        semantic_profile=semantic_profile,
-        exchange_profile=exchange_profile,
+        profile=_form_text(profile),
+        semantic_profile=_form_text(semantic_profile),
+        exchange_profile=_form_text(exchange_profile),
         for_packaging=True,
     )
     emit_profile: str = str(wire.emit_key)
@@ -1395,6 +1465,30 @@ async def convert_bulletin(
         bulletin_identifier = None
 
     results: list[BulletinReportResultModel] = []
+    dissem_lib = _form_text(dissemination_library_id).strip()
+    dissem_profiles: ConversionProfilesService | None = None
+    if dissem_lib and auth_user is not None:
+        dissem_profiles = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
+
+    def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
+        if dissem_profiles is None:
+            return None
+        try:
+            asset = dissem_profiles.get_library_asset(asset_id)
+        except ValueError:
+            raise
+        except Exception:
+            return None
+        from metar_iwxxm_api.convert_library_hard_cut import assert_library_usable_on_convert
+
+        assert_library_usable_on_convert(
+            kind=asset.kind,
+            expected_kind="dissemination",
+            access=asset.access,
+            status=asset.status,
+        )
+        return dict(asset.body or {})
+
     for index, tac in enumerate(split.reports):
         issues: list[LintIssueModel] = []
         fixes: list[LintFixModel] = []
@@ -1449,6 +1543,24 @@ async def convert_bulletin(
                 exchange_profile=wire.exchange_profile,
                 bulletin_identifier=bulletin_identifier,
             )
+
+        if ok and xml_out and dissem_lib:
+            from dissemination.transforms import apply_dissemination_transforms
+            from metar_iwxxm_api.convert_library_hard_cut import resolve_dissemination_transforms
+
+            try:
+                body_transforms = resolve_dissemination_transforms(
+                    dissem_lib,
+                    get_custom_dissemination_body=_custom_dissem_body,
+                )
+                transformed = apply_dissemination_transforms(
+                    xml_out,
+                    body_transforms,
+                    bulletin_identifier=bulletin_identifier,
+                )
+            except ValueError as exc:
+                raise HTTPException(status_code=400, detail=str(exc)) from exc
+            xml_out = transformed.xml
 
         results.append(
             BulletinReportResultModel(
@@ -1505,14 +1617,20 @@ async def convert(
         default="METAR",
         description=("TAC product type, or iwxxm for XML pass-through (default METAR for legacy clients)"),
     ),
-    profile: str = Form(default="", description="Deprecated - use semantic_profile (legacy alias: annex3 or iwxxm_us)"),
+    profile: str = Form(
+        default="",
+        description="Rejected — use conversion_library_id.",
+        include_in_schema=False,
+    ),
     semantic_profile: str = Form(
         default="",
-        description="Semantic profile id (e.g. ICAO_2025, US_FAA_NWS, CA_ECCC, AU_BOM, NZ_CAA_MET, UK_METOFFICE; aliases annex3 / iwxxm_us accepted)",
+        description="Rejected — use conversion_library_id.",
+        include_in_schema=False,
     ),
     exchange_profile: str = Form(
         default="",
-        description="Exchange packaging profile (e.g. GLOBAL_AFS); ignored on convert-only paths",
+        description="Rejected — use dissemination_library_id for packaging transforms.",
+        include_in_schema=False,
     ),
     report_variant: str = Form(
         default="",
@@ -1566,17 +1684,41 @@ async def convert(
     ),
     overlay_id: str = Form(
         default="",
-        description=(
-            "Optional signed ConversionProfile overlay id. When set, requires Bearer JWT "
-            "and ownership (or shared); unknown or unauthorized ids are rejected."
-        ),
+        description="Rejected — overlays removed from Convert; use conversion_library_id.",
+        include_in_schema=False,
     ),
     preset_id: str = Form(
         default="",
+        description="Rejected — presets removed from Convert; use conversion_library_id.",
+        include_in_schema=False,
+    ),
+    conversion_template_id: str = Form(
+        default="",
         description=(
-            "Optional saved semantic preset id. When set, requires Bearer JWT. "
-            "Explicit request fields still win when both are supplied."
+            "Optional conversion template id (first-party or custom). When set for a "
+            "custom template, requires Bearer JWT and ownership (or shared); unknown "
+            "ids are rejected."
         ),
+    ),
+    conversion_library_id: str = Form(
+        default="",
+        description="Conversion library asset id (resolves engine profile).",
+    ),
+    tac_validation_library_id: str = Form(
+        default="",
+        description="TAC validation library asset id.",
+    ),
+    iwxxm_validation_library_id: str = Form(
+        default="",
+        description="IWXXM validation library asset id.",
+    ),
+    dissemination_library_id: str = Form(
+        default="",
+        description="Dissemination library asset id.",
+    ),
+    decoding_library_id: str = Form(
+        default="",
+        description="Decoding library asset id.",
     ),
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> Response:
@@ -1662,6 +1804,24 @@ async def convert(
         body_preset_id = getattr(request_body, "preset_id", None)
         if body_preset_id is not None:
             preset_id = body_preset_id
+        body_overlay_id = getattr(request_body, "overlay_id", None)
+        if body_overlay_id is not None:
+            overlay_id = str(body_overlay_id)
+        body_conversion_library_id = getattr(request_body, "conversion_library_id", None)
+        if body_conversion_library_id is not None:
+            conversion_library_id = str(body_conversion_library_id)
+        body_tac = getattr(request_body, "tac_validation_library_id", None)
+        if body_tac is not None:
+            tac_validation_library_id = str(body_tac)
+        body_iwxxm_lib = getattr(request_body, "iwxxm_validation_library_id", None)
+        if body_iwxxm_lib is not None:
+            iwxxm_validation_library_id = str(body_iwxxm_lib)
+        body_dissem = getattr(request_body, "dissemination_library_id", None)
+        if body_dissem is not None:
+            dissemination_library_id = str(body_dissem)
+        body_decode = getattr(request_body, "decoding_library_id", None)
+        if body_decode is not None:
+            decoding_library_id = str(body_decode)
         manual_text = ""  # Override form input
         files = None  # Override file input
 
@@ -1684,64 +1844,106 @@ async def convert(
     if auth_user is not None:
         profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
-    applied_preset_id: str | None = None
-    preset_token = (preset_id or "").strip()
-    overlay_token = (overlay_id or "").strip()
-    has_explicit_semantic_profile = bool((semantic_profile or "").strip() or (profile or "").strip())
-    if preset_token:
-        if profiles_service is None:
-            raise HTTPException(
-                status_code=401,
-                detail="Sign in required to apply a semantic preset",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        try:
-            preset_uuid = UUID(preset_token)
-        except ValueError as exc:
-            raise HTTPException(status_code=400, detail="Unknown preset id") from exc
-        preset = profiles_service.get_preset(preset_uuid)
-        applied_preset_id = str(preset.id)
-        if not has_explicit_semantic_profile:
-            semantic_profile = preset.semantic_profile
-        if not (iwxxm_version or "").strip():
-            iwxxm_version = preset.iwxxm_version
-        if not has_explicit_semantic_profile and not (report_variant or "").strip() and preset.report_variant:
-            report_variant = preset.report_variant
-        if not extensions and preset.extensions:
-            extensions = list(preset.extensions)
-        if not has_explicit_semantic_profile and not overlay_token and preset.overlay_id is not None:
-            overlay_token = str(preset.overlay_id)
+    # Reserved for Convert bar pickers (validation/dissem/decode applied in later milestones).
+    _ = (
+        tac_validation_library_id,
+        iwxxm_validation_library_id,
+        dissemination_library_id,
+        decoding_library_id,
+    )
 
-    applied_overlay_id: str | None = None
-    overlay_base_profile: str | None = None
-    if overlay_token:
-        if profiles_service is None:
-            raise HTTPException(
-                status_code=401,
-                detail="Sign in required to apply a ConversionProfile overlay",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        try:
-            overlay_uuid = UUID(overlay_token)
-        except ValueError as exc:
-            raise HTTPException(status_code=400, detail="Unknown overlay id") from exc
-        overlay = profiles_service.get_overlay(overlay_uuid)
-        applied_overlay_id = str(overlay.id)
-        overlay_base_profile = overlay.base_profile_id
-        if not (semantic_profile or "").strip() and not (profile or "").strip():
-            semantic_profile = overlay_base_profile
+    from metar_iwxxm_api.convert_library_hard_cut import (
+        legacy_convert_fields_present,
+        legacy_convert_reject_detail,
+        resolve_engine_profile_from_conversion_library,
+    )
 
-    json_profile = getattr(request_body, "profile", None) if request_body is not None else None
-    json_semantic = getattr(request_body, "semantic_profile", None) if request_body is not None else None
-    json_exchange = getattr(request_body, "exchange_profile", None) if request_body is not None else None
+    legacy_fields = legacy_convert_fields_present(
+        semantic_profile=semantic_profile,
+        profile=profile,
+        preset_id=preset_id,
+        overlay_id=overlay_id,
+        exchange_profile=exchange_profile,
+    )
+    if request_body is not None:
+        legacy_fields.extend(
+            legacy_convert_fields_present(
+                semantic_profile=str(getattr(request_body, "semantic_profile", None) or ""),
+                profile=str(getattr(request_body, "profile", None) or ""),
+                preset_id=str(getattr(request_body, "preset_id", None) or ""),
+                overlay_id=str(getattr(request_body, "overlay_id", None) or ""),
+                exchange_profile=str(getattr(request_body, "exchange_profile", None) or ""),
+            )
+        )
+        # Dedupe while preserving order
+        legacy_fields = list(dict.fromkeys(legacy_fields))
+    if legacy_fields:
+        raise HTTPException(
+            status_code=422,
+            detail=legacy_convert_reject_detail(legacy_fields),
+        )
+
+    def _custom_engine(asset_id: str) -> str | None:
+        if profiles_service is None:
+            return None
+        try:
+            asset = profiles_service.get_library_asset(asset_id)
+        except ValueError:
+            raise
+        except Exception:
+            return None
+        from metar_iwxxm_api.convert_library_hard_cut import assert_library_usable_on_convert
+
+        assert_library_usable_on_convert(
+            kind=asset.kind,
+            expected_kind="conversion",
+            access=asset.access,
+            status=asset.status,
+        )
+        return asset.engine_profile_id
+
+    try:
+        applied_conversion_library_id, semantic_profile = resolve_engine_profile_from_conversion_library(
+            conversion_library_id,
+            get_custom_engine_profile_id=_custom_engine,
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    profile = ""
+    # Preset / overlay / exchange Form values are hard-cut above.
+    _ = applied_conversion_library_id
+
+    applied_conversion_template_id: str | None = None
+    conversion_template_token = (conversion_template_id or "").strip()
+    if conversion_template_token:
+        is_first_party = False
+        try:
+            from tac2iwxxm.conversion_templates import get_first_party_template
+
+            is_first_party = get_first_party_template(conversion_template_token) is not None
+        except ImportError:
+            is_first_party = False
+        if is_first_party:
+            applied_conversion_template_id = conversion_template_token
+        else:
+            if profiles_service is None:
+                raise HTTPException(
+                    status_code=401,
+                    detail="Sign in required to apply a custom conversion template",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+            tmpl = profiles_service.get_conversion_template(conversion_template_token)
+            applied_conversion_template_id = str(tmpl.id)
+
+    # Hard cut: do not accept JSON profile aliases either (already 422'd above).
     wire = api_surface._resolve_request_profiles(
         route="/api/v1/convert",
-        profile=profile,
+        profile="",
         semantic_profile=semantic_profile,
-        exchange_profile=exchange_profile,
-        json_profile=json_profile,
-        json_semantic_profile=json_semantic,
-        json_exchange_profile=json_exchange,
+        exchange_profile="",
+        json_profile=None,
+        json_semantic_profile=None,
+        json_exchange_profile=None,
     )
     emit_profile: str = str(wire.emit_key)
     profile = emit_profile
@@ -1910,6 +2112,7 @@ async def convert(
                     emit_key=(profile or "annex3"),
                     extensions=resolved_extensions,
                     product=product,
+                    output_policy_id=_convert_output_policy_id(profile or "annex3"),
                 )
                 if not getattr(report, "ok", True):
                     validation_issues = [
@@ -2055,14 +2258,10 @@ async def convert(
         "stop_on_error": bool(stop_on_error),
         "semantic_profile": wire.semantic_canonical,
     }
-    if applied_preset_id:
-        request_metadata["preset_id"] = applied_preset_id
     if response_report_variant:
         request_metadata["report_variant"] = response_report_variant
-    if applied_overlay_id:
-        request_metadata["overlay_id"] = applied_overlay_id
-        if overlay_base_profile:
-            request_metadata["overlay_base_profile"] = overlay_base_profile
+    if applied_conversion_template_id:
+        request_metadata["conversion_template_id"] = applied_conversion_template_id
     if exchange_output:
         request_metadata["exchange_output"] = True
     output_spec = ca_eccc_output_spec_for_request(
