@@ -1,0 +1,9 @@
+# Copy-paste starter: SPECI pack overlay (extends builtin speci).
+id: speci-starter
+extends: speci
+profiles: [annex3]
+layout: token_stream
+rules:
+  - id: starter_speci_token
+    pattern: ["STARTER"]
+    explain: "SPECI starter demo group {0}"

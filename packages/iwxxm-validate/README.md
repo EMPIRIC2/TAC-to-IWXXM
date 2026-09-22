@@ -45,8 +45,13 @@ Exit `0` when `report.ok`; `1` on validation or I/O errors.
 
 Optional IWXXM output policy YAML via `IWXXM_VALIDATE_POLICY_DIR` (ADR-046). Vendor
 XSD/Schematron remain the source of truth; policies select/ignore assert ids. See the
-monorepo [Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md)
-and `examples/overlays/`.
+monorepo [Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md),
+`examples/overlays/`, and copy-paste `examples/starters/`.
+
+```bash
+export IWXXM_VALIDATE_POLICY_DIR=packages/iwxxm-validate/examples/starters
+iwxxm-validate --check-overlay "$IWXXM_VALIDATE_POLICY_DIR"
+```
 
 ## Optional native extension
 

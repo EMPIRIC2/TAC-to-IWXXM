@@ -82,6 +82,7 @@ def test_tc_evyec_003_overlay_preflight_examples() -> None:
     )
     assert proc.returncode == 0, proc.stderr or proc.stdout
     assert "all example overlays OK" in proc.stdout
+    assert "starters" in proc.stdout
 
 
 def test_tc_evyec_004_openapi_no_policy_yaml_body_fields() -> None:

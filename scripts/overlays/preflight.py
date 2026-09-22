@@ -9,7 +9,6 @@ from __future__ import annotations
 
 import argparse
 import io
-import os
 import sys
 from collections.abc import Callable
 from contextlib import redirect_stderr
@@ -31,62 +30,48 @@ def _die(message: str) -> None:
 
 
 def _check_pack(directory: Path) -> None:
-    from tac_decoding.packs import clear_pack_cache, load_packs
+    from tac_decoding.overlay_check import check_pack_overlay_dir
 
-    os.environ["TAC_DECODING_PACK_DIR"] = str(directory)
-    clear_pack_cache()
     try:
-        load_packs(profile="annex3")
+        check_pack_overlay_dir(directory)
     except Exception as exc:
         _die(f"pack overlay failed in {directory}: {exc}")
-    finally:
-        os.environ.pop("TAC_DECODING_PACK_DIR", None)
-        clear_pack_cache()
 
 
 def _check_tac_policy(directory: Path) -> None:
-    from tac_validate.policy import PolicyError, load_policy_catalog
+    from tac_validate.overlay_check import check_tac_policy_overlay_dir
+    from tac_validate.policy import PolicyError
 
-    os.environ["TAC_VALIDATE_POLICY_DIR"] = str(directory)
     try:
-        load_policy_catalog(profile="annex3")
+        check_tac_policy_overlay_dir(directory)
     except PolicyError as exc:
         _die(f"TAC policy overlay failed in {directory}: {exc}")
     except Exception as exc:
         _die(f"TAC policy overlay failed in {directory}: {exc}")
-    finally:
-        os.environ.pop("TAC_VALIDATE_POLICY_DIR", None)
 
 
 def _check_iwxxm_policy(directory: Path) -> None:
-    from iwxxm_validate.policy import PolicyError, load_output_policy_catalog
+    from iwxxm_validate.overlay_check import check_iwxxm_policy_overlay_dir
+    from iwxxm_validate.policy import PolicyError
 
-    os.environ["IWXXM_VALIDATE_POLICY_DIR"] = str(directory)
     try:
-        load_output_policy_catalog(profile="annex3")
+        check_iwxxm_policy_overlay_dir(directory)
     except PolicyError as exc:
         _die(f"IWXXM policy overlay failed in {directory}: {exc}")
     except Exception as exc:
         _die(f"IWXXM policy overlay failed in {directory}: {exc}")
-    finally:
-        os.environ.pop("IWXXM_VALIDATE_POLICY_DIR", None)
 
 
 def _check_profile_binding(directory: Path) -> None:
-    from tac2iwxxm.profile_resolve import (
-        ProfileResolveError,
-        resolve_validation_policies,
-    )
+    from tac2iwxxm.overlay_check import check_profile_overlay_dir
+    from tac2iwxxm.profile_resolve import ProfileResolveError
 
-    os.environ["TAC2IWXXM_PROFILE_DIR"] = str(directory)
     try:
-        resolve_validation_policies("annex3")
+        check_profile_overlay_dir(directory)
     except ProfileResolveError as exc:
         _die(f"profile-binding overlay failed in {directory}: {exc}")
     except Exception as exc:
         _die(f"profile-binding overlay failed in {directory}: {exc}")
-    finally:
-        os.environ.pop("TAC2IWXXM_PROFILE_DIR", None)
 
 
 _CHECKERS: dict[str, Callable[[Path], None]] = {
@@ -115,13 +100,18 @@ def _run_examples() -> None:
     for kind, root in _EXAMPLE_ROOTS:
         valid = root / "valid"
         invalid = root / "invalid-bad-extends"
+        starters = root.parent / "starters"
         if not valid.is_dir() or not invalid.is_dir():
             _die(f"missing example dirs under {root}")
+        if not starters.is_dir():
+            _die(f"missing starter dir {starters}")
         print(f"overlay-preflight: checking {kind} valid …")
         _CHECKERS[kind](valid)
         print(f"overlay-preflight: checking {kind} invalid (expect fail) …")
         _expect_fail(kind, invalid)
-    print("overlay-preflight: all example overlays OK")
+        print(f"overlay-preflight: checking {kind} starters …")
+        _CHECKERS[kind](starters)
+    print("overlay-preflight: all example overlays OK (incl. starters)")
 
 
 def main(argv: list[str] | None = None) -> int:

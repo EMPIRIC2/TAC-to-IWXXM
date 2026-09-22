@@ -890,7 +890,7 @@ validate-yaml:
 	$(UV) run pre-commit run actionlint --all-files
 	$(UV) run pre-commit run yamllint --all-files
 
-# EV-yaml-engine-configurability / #1224 — fail-closed overlay examples (TC-EVYEC-003)
+# EV-yaml-full-configurability / #1227 — fail-closed overlay + starter examples (TC-EVYEC-003 / TC-EVYFC-003)
 overlay-preflight:
 	$(UV) run python scripts/overlays/preflight.py --all-examples
 

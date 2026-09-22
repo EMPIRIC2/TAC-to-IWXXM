@@ -40,8 +40,15 @@ Optional YAML via `TAC_DECODING_GLOSSARY_PATH` (or legacy
 ## Pack overlays
 
 Optional directory of pack YAML via `TAC_DECODING_PACK_DIR` (ADR-045). See the
-monorepo [Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md)
-and `examples/overlays/`.
+monorepo [Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md),
+`examples/overlays/`, and copy-paste `examples/starters/`.
+
+Install smoke (from a git checkout after `pip install -e packages/tac-decoding`):
+
+```bash
+export TAC_DECODING_PACK_DIR=packages/tac-decoding/examples/starters
+tac-decoding --check-overlay "$TAC_DECODING_PACK_DIR"
+```
 
 ## Links
 

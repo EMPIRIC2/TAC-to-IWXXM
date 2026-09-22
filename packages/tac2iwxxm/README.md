@@ -90,8 +90,13 @@ IWXXM output policy document ids. Pass `--policy` on the `tac-validate` or
 
 Optional directory via `TAC2IWXXM_PROFILE_DIR` layers policy ids onto a builtin emit
 binding for listed profile ids (ADR-046). See the monorepo
-[Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md)
-and `examples/overlays/`.
+[Overlay cookbook](https://github.com/EMPIRIC2/TAC-to-IWXXM/blob/stage/docs/domain/overlays/overlay-cookbook.md),
+`examples/overlays/`, and copy-paste `examples/starters/`.
+
+```bash
+export TAC2IWXXM_PROFILE_DIR=packages/tac2iwxxm/examples/starters
+tac2iwxxm --check-overlay "$TAC2IWXXM_PROFILE_DIR"
+```
 
 Decode glossary SoT is [`tac-decoding`](https://pypi.org/project/tac-decoding/)
 (`TAC_DECODING_GLOSSARY_PATH`); this package may still ship a shim copy.

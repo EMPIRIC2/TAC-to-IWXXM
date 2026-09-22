@@ -1843,7 +1843,7 @@ TC-EV090-*; **TC-EV093-***.
 
 **Steps**:
 
-1. Read honesty matrix and ADR-047; use M1 starter templates from each package.
+1. Read honesty matrix and ADR-047; copy M1 starter templates; run `--check-overlay` / `make overlay-preflight`.
 2. For METAR/SPECI (M2): overlay packs/policies/detectors; confirm behavior change + goldens.
 3. For emit (M3+): enable emit-map YAML; convert METAR then SPECI; compare to prior Python plugin output.
 4. Expand remaining products (M4); run pin↔Schematron asserts (M5).

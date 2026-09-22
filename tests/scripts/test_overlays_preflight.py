@@ -82,17 +82,25 @@ def test_expect_fail_non_one_systemexit(
     assert exc.value.code == 3
 
 
+def test_run_examples_missing_starters(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    overlays = tmp_path / "overlays"
+    (overlays / "valid").mkdir(parents=True)
+    (overlays / "invalid-bad-extends").mkdir()
+    monkeypatch.setattr(mod, "_EXAMPLE_ROOTS", (("pack", overlays),))
+    with pytest.raises(SystemExit) as exc:
+        mod._run_examples()
+    assert exc.value.code == 1
+
+
 def test_check_pack_loader_error(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
-    import tac_decoding.packs as packs
-
     monkeypatch.setattr(
-        packs,
-        "load_packs",
-        lambda **_k: (_ for _ in ()).throw(RuntimeError("boom")),
+        "tac_decoding.overlay_check.check_pack_overlay_dir",
+        lambda *_a, **_k: (_ for _ in ()).throw(RuntimeError("boom")),
     )
-    monkeypatch.setattr(packs, "clear_pack_cache", lambda: None)
     with pytest.raises(SystemExit) as exc:
         mod._check_pack(tmp_path)
     assert exc.value.code == 1
@@ -104,8 +112,8 @@ def test_check_tac_policy_policy_error(
     from tac_validate.policy import PolicyError
 
     monkeypatch.setattr(
-        "tac_validate.policy.load_policy_catalog",
-        lambda **_k: (_ for _ in ()).throw(PolicyError("bad")),
+        "tac_validate.overlay_check.check_tac_policy_overlay_dir",
+        lambda *_a, **_k: (_ for _ in ()).throw(PolicyError("bad")),
     )
     with pytest.raises(SystemExit) as exc:
         mod._check_tac_policy(tmp_path)
@@ -116,8 +124,8 @@ def test_check_tac_policy_generic_error(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     monkeypatch.setattr(
-        "tac_validate.policy.load_policy_catalog",
-        lambda **_k: (_ for _ in ()).throw(RuntimeError("x")),
+        "tac_validate.overlay_check.check_tac_policy_overlay_dir",
+        lambda *_a, **_k: (_ for _ in ()).throw(RuntimeError("x")),
     )
     with pytest.raises(SystemExit) as exc:
         mod._check_tac_policy(tmp_path)
@@ -130,8 +138,8 @@ def test_check_iwxxm_policy_policy_error(
     from iwxxm_validate.policy import PolicyError
 
     monkeypatch.setattr(
-        "iwxxm_validate.policy.load_output_policy_catalog",
-        lambda **_k: (_ for _ in ()).throw(PolicyError("bad")),
+        "iwxxm_validate.overlay_check.check_iwxxm_policy_overlay_dir",
+        lambda *_a, **_k: (_ for _ in ()).throw(PolicyError("bad")),
     )
     with pytest.raises(SystemExit) as exc:
         mod._check_iwxxm_policy(tmp_path)
@@ -142,8 +150,8 @@ def test_check_iwxxm_policy_generic_error(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     monkeypatch.setattr(
-        "iwxxm_validate.policy.load_output_policy_catalog",
-        lambda **_k: (_ for _ in ()).throw(RuntimeError("x")),
+        "iwxxm_validate.overlay_check.check_iwxxm_policy_overlay_dir",
+        lambda *_a, **_k: (_ for _ in ()).throw(RuntimeError("x")),
     )
     with pytest.raises(SystemExit) as exc:
         mod._check_iwxxm_policy(tmp_path)
@@ -156,7 +164,7 @@ def test_check_profile_binding_resolve_error(
     from tac2iwxxm.profile_resolve import ProfileResolveError
 
     monkeypatch.setattr(
-        "tac2iwxxm.profile_resolve.resolve_validation_policies",
+        "tac2iwxxm.overlay_check.check_profile_overlay_dir",
         lambda *_a, **_k: (_ for _ in ()).throw(ProfileResolveError("bad")),
     )
     with pytest.raises(SystemExit) as exc:
@@ -168,7 +176,7 @@ def test_check_profile_binding_generic_error(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     monkeypatch.setattr(
-        "tac2iwxxm.profile_resolve.resolve_validation_policies",
+        "tac2iwxxm.overlay_check.check_profile_overlay_dir",
         lambda *_a, **_k: (_ for _ in ()).throw(RuntimeError("x")),
     )
     with pytest.raises(SystemExit) as exc:

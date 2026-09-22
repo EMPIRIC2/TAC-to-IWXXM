@@ -1,0 +1,14 @@
+# Copy-paste starter: TAC quality policy extending annex3-metar-quality.
+# Set TAC_VALIDATE_POLICY_DIR to this directory, then:
+#   tac-validate --check-overlay "$TAC_VALIDATE_POLICY_DIR"
+schema_version: 1
+id: annex3-metar-quality-starter
+lifecycle: draft
+product: metar
+extends: [annex3-metar-quality]
+profiles: [annex3]
+select: []
+ignore: []
+severity: {}
+preview: []
+detectors: []
