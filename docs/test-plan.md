@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-22 (EV-docstring-multilang-bar / ADR-048 — TC-EVDOC-001..007)
+> **Last updated**: 2026-09-22 (EV-adr048-doc-linters / ADR-048 amend — TC-EVDOC-001..010)
 
 ## Scope
 
@@ -132,7 +132,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
 | UJ-DEV-011      | F2/F6/F9/F12/F14/F15 (EV-yaml-full-configurability / #1226) | Full YAML end-state incl. convert emit (ADR-047); templates; pin↔SCH                                                                                                                                                                                         | H4–H5 **N/A** unless UI/OpenAPI   | TC-EVYFC-001..005 (+ TC-EVYEC-004 retained)                                              |
-| UJ-DEV-012      | Eng quality (EV-docstring-multilang-bar / ADR-048)          | Multi-lang docstring/TSDoc/rustdoc bar + checkers + warn/info-clean                                                                                                                                                                                          | H4–H5 **N/A**                     | TC-EVDOC-001..007                                                                        |
+| UJ-DEV-012      | Eng quality (EV-docstring-multilang-bar / ADR-048; EV-adr048-doc-linters) | Multi-lang docstring/TSDoc/rustdoc bar + checkers + native linters (ruff D / eslint jsdoc / missing_docs) + warn/info-clean | H4–H5 **N/A**                     | TC-EVDOC-001..010                                                                        |
 | UJ-077          | F6/F9 deepen (#1210 + EV-pack-ir-convert-wire)               | Pack shadow + METAR/SPECI pack-IR emit when goldens match                                                                                                                                                                                                  | H4–H5 N/A (no wire/UI change)     | TC-EV1210-001..004; TC-EV-PACKIR-001..005                                                 |
 | UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
 | UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
@@ -6418,3 +6418,24 @@ Engineering quality — multi-language inline documentation bar. H4–H5 **N/A**
 - **Objective**: Lint, format, typecheck, and unit tests across the entire monorepo / all toolchains treat warnings and infos as failures
 - **Pass criteria**: Quality make/CI targets green with zero warnings and zero infos in one PR with the doc bar; **no** temporary suppressions
 - **Source**: ADR-048; D-EVDOC-05; D-EVDOC-VP S12; acceptance E; UJ-DEV-012
+
+### TC-EVDOC-008: Native Python pydocstyle (ruff D)
+
+- **Level**: T0 / CI
+- **Objective**: ADR-048 Python trees fail closed on missing/short docstrings via ruff D (alongside checkers)
+- **Pass criteria**: `make lint` (or scoped ruff D) exit 0 on in-scope trees; intentional D ignores documented
+- **Source**: ADR-048 amend; D-EVDOC-LINT-01; UJ-DEV-012
+
+### TC-EVDOC-009: eslint-plugin-jsdoc + TS method/member checker
+
+- **Level**: T0 / CI
+- **Objective**: Exported/non-exported TS symbols have TSDoc; exports require `@example`; class methods and interface/type members covered
+- **Pass criteria**: eslint jsdoc + `make check-docs-ts` exit 0; checker covers methods/members (D-EVDOC-LINT-03)
+- **Source**: ADR-048 amend; D-EVDOC-LINT-01; D-EVDOC-LINT-03; UJ-DEV-012
+
+### TC-EVDOC-010: Private Python Parameters/Returns
+
+- **Level**: T0 / CI
+- **Objective**: Private `_foo` helpers document Parameters/Returns when applicable
+- **Pass criteria**: `make check-docs` fails closed when private shape is missing (D-EVDOC-LINT-02)
+- **Source**: ADR-048 amend; D-EVDOC-LINT-02; UJ-DEV-012

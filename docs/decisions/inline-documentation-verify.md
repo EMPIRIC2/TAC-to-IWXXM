@@ -28,16 +28,24 @@ Planning IDs must not appear in operator-facing OpenAPI copy ([Corpus: product �
 
 ## Implementing twin (ADR-048)
 
-For **EV-docstring-multilang-bar** and subsequent merges after ADR-048:
+For **EV-docstring-multilang-bar**, **EV-adr048-doc-linters**, and subsequent merges after
+ADR-048:
 
 1. **Full in-scope tree** — presence + required Examples/`@example`/`# Examples` + shape
    checkers **blocking** (product make/CI; may extend pack `inline-doc-check`).
-2. **Example execution** — PY doctest; Rust doctest where present; TS `@example`
+2. **Native linters (blocking)** — ruff pydocstyle (D); eslint-plugin-jsdoc; Rust
+   `#![deny(missing_docs)]` (D-EVDOC-LINT-01). Neither native nor checker layer is
+   advisory-only.
+3. **Private PY shape** — Parameters/Returns when applicable (D-EVDOC-LINT-02).
+4. **TS methods/members** — eslint-plugin-jsdoc + hardened `check_docs_ts.mjs`
+   (D-EVDOC-LINT-03).
+5. **Example execution** — PY doctest; Rust doctest where present; TS `@example`
    executable.
-3. **Warnings/infos** — entire monorepo, all toolchains, treated as failures (one PR with
-   the fill). **No temporary suppressions** — fix or reconfigure toolchains.
-4. **TS examples** — repo-owned harness (extract `@example` → vitest/node); fail closed.
-5. Delta `VERIFY_DOC_PATHS` remains valid only for **non-fill** evolves that do not claim
+6. **Warnings/infos** — entire monorepo, all toolchains, treated as failures.
+   **No temporary suppressions** — fix or reconfigure toolchains. Coverage / security /
+   typecheck thresholds unchanged by EV-adr048-doc-linters.
+7. **TS examples** — repo-owned harness (extract `@example` → vitest/node); fail closed.
+8. Delta `VERIFY_DOC_PATHS` remains valid only for **non-fill** evolves that do not claim
    the ADR-048 bar.
 
 ```bash
@@ -78,3 +86,11 @@ python3 ~/.cursor/skills/pack/bin/inline-doc-check.py .
 | Checkers + backfill + warn/info-clean | Build band after Spec→Build gate |
 | TC-EVDOC-001..007 | [Corpus: tests] |
 | Prior hybrid D | **Superseded** for in-scope trees |
+
+## EV-adr048-doc-linters disposition
+
+| Item | Disposition |
+|------|-------------|
+| Native linters + checker gap harden | Build after Spec→Build gate (D-EVDOC-LINT-01..03) |
+| TC-EVDOC-008..010 | [Corpus: tests] |
+| Coverage/security/type thresholds | Unchanged (D-EVDOC-LINT-04) |
