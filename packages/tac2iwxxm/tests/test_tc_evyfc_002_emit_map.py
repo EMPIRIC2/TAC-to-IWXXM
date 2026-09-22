@@ -68,7 +68,7 @@ def test_load_catalog_has_us_and_ca() -> None:
 
 def test_emit_map_missing_raises() -> None:
     with pytest.raises(EmitMapError, match="no emit map"):
-        resolve_emit_map(profile="annex3", product="AIRMET", iwxxm_version="2025-2")
+        resolve_emit_map(profile="annex3", product="SWXA", iwxxm_version="2025-2")
 
 
 def test_emit_map_overlay_extends_plugin(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -305,6 +305,24 @@ def test_tc_evyfc_002_sigmet_emit_map_no_product_kw() -> None:
     direct = emit_sigmet_annex3(ir, iwxxm_version="2025-2")
     via_map = emit_with_map(ir, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
     assert via_map == direct
+
+
+def test_tc_evyfc_002_airmet_vaa_tca_emit_maps() -> None:
+    airmet = resolve_emit_map(profile="annex3", product="AIRMET", iwxxm_version="2025-2")
+    assert airmet.id == "annex3-airmet-emit"
+    assert airmet.pass_product is False
+    assert resolve_emit_map(profile="iwxxm_us", product="AIRMET", iwxxm_version="2025-2").id == "iwxxm-us-airmet-emit"
+    assert resolve_emit_map(profile="ca_eccc", product="AIRMET", iwxxm_version="3.0.0").id == "ca-eccc-airmet-emit"
+    assert resolve_emit_map(profile="annex3", product="VAA", iwxxm_version="2025-2").id == "annex3-vaa-emit"
+    assert resolve_emit_map(profile="annex3", product="TCA", iwxxm_version="2025-2").id == "annex3-tca-emit"
+    from tac2iwxxm.profiles.annex3_emit.airmet import emit_airmet_annex3
+    from tac2iwxxm.slot_builders.sigmet_airmet import parse_airmet
+
+    tac = "YUDD AIRMET 1 VALID 151520/151800 YUSO- YUDD SFC WSPD 20MPS="
+    ir = parse_airmet(tac)
+    assert emit_with_map(ir, product="AIRMET", profile="annex3", iwxxm_version="2025-2") == emit_airmet_annex3(
+        ir, iwxxm_version="2025-2"
+    )
 
 
 def test_pass_product_must_be_bool() -> None:

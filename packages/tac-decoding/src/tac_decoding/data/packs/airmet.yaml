@@ -1,7 +1,34 @@
-# Builtin airmet token-stream pack (ADR-045 / EV-pack-fill-delete-gate).
+# Builtin airmet token-stream pack (ADR-045 / M4 #1230).
 id: airmet
 layout: token_stream
 rules:
+  - id: report_type
+    pattern: ["AIRMET"]
+    explain: "AIRMET {0}"
+  - id: sequence
+    pattern: ["[A-Z]?\\d{1,2}"]
+    explain: "Sequence {0}"
+  - id: valid
+    pattern: ["VALID"]
+    explain: "Validity marker"
+  - id: valid_period
+    pattern: ["\\d{6}/\\d{6}"]
+    explain: "Validity period {0}"
+  - id: fir
+    pattern: ["[A-Z]{4}"]
+    explain: "FIR/location {0}"
+  - id: obs_or_fcst
+    pattern: ["(?:OBS|FCST)"]
+    explain: "Observation/forecast {0}"
+  - id: intensity
+    pattern: ["(?:INTSF|WKN|NC)"]
+    explain: "Intensity change {0}"
+  - id: movement
+    pattern: ["(?:STNR|MOV)"]
+    explain: "Movement {0}"
+  - id: cnl
+    pattern: ["CNL"]
+    explain: "Cancelled"
   - id: equal
     pattern: ["="]
     explain: "Report terminator"

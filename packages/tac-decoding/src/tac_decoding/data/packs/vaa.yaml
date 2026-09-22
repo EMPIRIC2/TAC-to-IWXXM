@@ -1,4 +1,5 @@
-# Builtin vaa label-fields pack (ADR-045 / EV-pack-fill-delete-gate).
+# Builtin vaa label-fields pack (ADR-045 / M4 #1230).
+# Label SoT for A7 VAA; residual free-text values stay in label values.
 id: vaa
 layout: label_fields
 rules:

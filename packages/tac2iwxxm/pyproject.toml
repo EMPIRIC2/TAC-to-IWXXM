@@ -43,6 +43,11 @@ packages = ["src/tac2iwxxm"]
 "src/tac2iwxxm/data/emit_maps/ca-eccc-taf.yaml" = "tac2iwxxm/data/emit_maps/ca-eccc-taf.yaml"
 "src/tac2iwxxm/data/emit_maps/annex3-sigmet.yaml" = "tac2iwxxm/data/emit_maps/annex3-sigmet.yaml"
 "src/tac2iwxxm/data/emit_maps/iwxxm-us-sigmet.yaml" = "tac2iwxxm/data/emit_maps/iwxxm-us-sigmet.yaml"
+"src/tac2iwxxm/data/emit_maps/annex3-airmet.yaml" = "tac2iwxxm/data/emit_maps/annex3-airmet.yaml"
+"src/tac2iwxxm/data/emit_maps/iwxxm-us-airmet.yaml" = "tac2iwxxm/data/emit_maps/iwxxm-us-airmet.yaml"
+"src/tac2iwxxm/data/emit_maps/ca-eccc-airmet.yaml" = "tac2iwxxm/data/emit_maps/ca-eccc-airmet.yaml"
+"src/tac2iwxxm/data/emit_maps/annex3-vaa.yaml" = "tac2iwxxm/data/emit_maps/annex3-vaa.yaml"
+"src/tac2iwxxm/data/emit_maps/annex3-tca.yaml" = "tac2iwxxm/data/emit_maps/annex3-tca.yaml"
 
 # Maturin builds the optional PyO3 cdylib (ADR-017 / T4.3). Pure-Python hatch wheel
 # remains the default ``uv sync`` path; CI rust job runs ``maturin develop``.

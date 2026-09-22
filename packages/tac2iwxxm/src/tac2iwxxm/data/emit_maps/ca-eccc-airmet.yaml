@@ -1,0 +1,12 @@
+# ADR-047 emit map — ca_eccc AIRMET (M4 / #1230).
+schema_version: 1
+id: ca-eccc-airmet-emit
+profiles:
+  - ca_eccc
+products:
+  - AIRMET
+iwxxm_versions:
+  - "3.0.0"
+kind: python_plugin
+pass_product: false
+plugin: python:tac2iwxxm.profiles.ca_eccc:emit_airmet_ca_eccc

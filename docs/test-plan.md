@@ -6356,3 +6356,10 @@ All must pass before merging migration PR:
 - **Objective**: Honesty matrix rates every SIGMET engine cell **full** with SoT path evidence
 - **Pass criteria**: Row lock + builtin pack/policy/detector/emit-map presence
 - **Source**: #1226; #1230; ADR-047; UJ-DEV-011
+
+### TC-EVYFC-008: M4 AIRMET/VAA/TCA matrix row lock
+
+- **Level**: T0 / CI (M4)
+- **Objective**: Honesty matrix rates AIRMET, VAA, and TCA engine cells **full** with SoT path evidence
+- **Pass criteria**: Row locks + builtin pack/policy/detector/emit-map presence for all three
+- **Source**: #1226; #1230; ADR-047; UJ-DEV-011

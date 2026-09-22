@@ -1,0 +1,10 @@
+# TCA core detectors (ADR-046 / M4 #1230).
+schema_version: 1
+id: tca-core
+stage: token
+products:
+  - TCA
+rules:
+  - id: tca_python
+    kind: python
+    python: python:tac_validate.theme_checks:hatch_tca
