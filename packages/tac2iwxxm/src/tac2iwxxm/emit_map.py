@@ -11,7 +11,6 @@ import importlib
 import os
 from collections.abc import Callable
 from dataclasses import dataclass
-from importlib import resources
 from pathlib import Path
 from typing import Any, cast
 
@@ -167,7 +166,7 @@ def load_emit_map_catalog() -> dict[str, EmitMap]:
     if cached is not None:
         return cached
     catalog: dict[str, EmitMap] = {}
-    root = resources.files("tac2iwxxm").joinpath("data", "emit_maps")
+    root = Path(__file__).resolve().parent / "data" / "emit_maps"
     for entry in root.iterdir():
         name = entry.name
         if name.endswith((".yaml", ".yml")):
