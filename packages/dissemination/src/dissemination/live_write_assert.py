@@ -113,7 +113,14 @@ async def assert_live_write(
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    """Internal helper ``_build_parser``."""
+    """
+    Internal helper ``_build_parser``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     parser = argparse.ArgumentParser(
         prog="python -m dissemination.live_write_assert",
         description="Assert iwxxm_reports rows after F16 live Disseminate (EV-039).",

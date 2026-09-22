@@ -25,7 +25,21 @@ class VersionDeprecatedError(ValueError):
 
 
 def _versioned_schema_dir(root: Path, version: str) -> Path:
-    """Return the IWXXM schema directory for a version under root."""
+    """
+    Internal helper ``_versioned_schema_dir``.
+
+    Parameters
+    ----------
+    root : object
+        Argument ``root``.
+    version : object
+        Argument ``version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     vendor_path = root / "vendor" / "schemas" / "iwxxm" / version / "IWXXM"
     if vendor_path.exists():
         return vendor_path
@@ -33,13 +47,32 @@ def _versioned_schema_dir(root: Path, version: str) -> Path:
 
 
 def _local_schema_base(version: str) -> Path:
-    """Resolve schema base for a version (vendor snapshot preferred over legacy symlink)."""
+    """
+    Internal helper ``_local_schema_base``.
+
+    Parameters
+    ----------
+    version : object
+        Argument ``version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _versioned_schema_dir(PROJECT_ROOT, version)
 
 
 # Project root path
 def _detect_project_root() -> Path:
-    """Detect project root across local/devcontainer and deployment layouts."""
+    """
+    Internal helper ``_detect_project_root``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
 
     def has_versioned_schemas(root: Path) -> bool:
         """

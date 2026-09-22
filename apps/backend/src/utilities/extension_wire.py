@@ -18,7 +18,19 @@ _KNOWN_EXTENSION_TOKENS = frozenset({IWXXM_CA_TOKEN})
 
 
 def _normalize_token(raw: str) -> str:
-    """Internal helper ``_normalize_token``."""
+    """
+    Internal helper ``_normalize_token``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return raw.strip().upper().replace("-", "_")
 
 

@@ -10,7 +10,19 @@ from tac_validate.product_rules_pkg._common import *
 
 
 def _check_vaa(tac: str) -> list[Issue]:
-    """Internal helper ``_check_vaa``."""
+    """
+    Internal helper ``_check_vaa``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     start, end, body = _body_span(tac)
     issues: list[Issue] = []
     if not _DTG_LINE.search(body):

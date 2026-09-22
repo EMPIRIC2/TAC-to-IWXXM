@@ -56,12 +56,36 @@ def obs_timestamp(ir: dict[str, Any]) -> str:
 
 
 def _fmt_cel(value: object) -> str:
-    """Format Celsius for IWXXM (WMO examples use one decimal place)."""
+    """
+    Internal helper ``_fmt_cel``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return f"{float(str(value)):.1f}"
 
 
 def _fmt_hpa(value: object) -> str:
-    """Format QNH: whole hPa without trailing .0; tenths otherwise."""
+    """
+    Internal helper ``_fmt_hpa``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     fval = float(str(value))
     if fval == int(fval):
         return str(int(fval))
@@ -69,7 +93,21 @@ def _fmt_hpa(value: object) -> str:
 
 
 def _fmt_speed(value: object, *, force_one_decimal: bool = False) -> str:
-    """Format wind speed; WMO mean speeds often use one decimal."""
+    """
+    Internal helper ``_fmt_speed``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    force_one_decimal : object
+        Argument ``force_one_decimal``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     fval = float(str(value))
     if force_one_decimal or fval != int(fval):
         return f"{fval:.1f}"
@@ -77,7 +115,21 @@ def _fmt_speed(value: object, *, force_one_decimal: bool = False) -> str:
 
 
 def _annex3_gml_id(ir: dict[str, Any], product: str) -> str:
-    """Stable gml:id for annex3 METAR/SPECI goldens (theme-aware for S3 / W1-W2)."""
+    """
+    Internal helper ``_annex3_gml_id``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     root = product.lower()
     station = str(ir["station"]).lower()
     if ir.get("nil"):
@@ -107,7 +159,21 @@ def _annex3_gml_id(ir: dict[str, Any], product: str) -> str:
 
 
 def _visibility_block(ir: dict[str, Any], *, visibility_extension: str = "") -> str:
-    """Internal helper ``_visibility_block``."""
+    """
+    Internal helper ``_visibility_block``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    visibility_extension : object
+        Argument ``visibility_extension``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if ir.get("visibility_not_observable"):
         return f'      <iwxxm:visibility xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
     vis_op = ""
@@ -133,7 +199,21 @@ def _visibility_block(ir: dict[str, Any], *, visibility_extension: str = "") -> 
 
 
 def _rvr_block(ir: dict[str, Any], *, rvr_extension: str = "") -> str:
-    """Internal helper ``_rvr_block``."""
+    """
+    Internal helper ``_rvr_block``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    rvr_extension : object
+        Argument ``rvr_extension``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     rvr_raw = ir.get("rvr")
     if not isinstance(rvr_raw, dict):
         # Guidance / Amd79 CWFD: when vis is missing/notObservable and no RVR group,
@@ -180,7 +260,19 @@ def _rvr_block(ir: dict[str, Any], *, rvr_extension: str = "") -> str:
 
 
 def _present_weather_block(ir: dict[str, Any]) -> str:
-    """Internal helper ``_present_weather_block``."""
+    """
+    Internal helper ``_present_weather_block``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if ir.get("present_weather_not_observable"):
         return f'      <iwxxm:presentWeather xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
     codes_raw = ir.get("present_weather")
@@ -195,7 +287,21 @@ def _present_weather_block(ir: dict[str, Any]) -> str:
 
 
 def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
-    """Internal helper ``_cloud_block``."""
+    """
+    Internal helper ``_cloud_block``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    cloud_layer_extension : object
+        Argument ``cloud_layer_extension``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if ir.get("nsc"):
         return f'      <iwxxm:cloud nilReason="{NIL_NSC}"/>\n'
     if ir.get("ncd"):
@@ -251,7 +357,21 @@ def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
 
 
 def _surface_wind_inner(ir: dict[str, Any], *, peak_extension: str = "") -> str:
-    """Internal helper ``_surface_wind_inner``."""
+    """
+    Internal helper ``_surface_wind_inner``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    peak_extension : object
+        Argument ``peak_extension``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     variable = bool(ir.get("wind_variable"))
     var_attr = "true" if variable else "false"
     if variable:
@@ -291,7 +411,21 @@ def _surface_wind_inner(ir: dict[str, Any], *, peak_extension: str = "") -> str:
 
 
 def _trend_phenomenon_time(trend: dict[str, Any], idx: int) -> str:
-    """Internal helper ``_trend_phenomenon_time``."""
+    """
+    Internal helper ``_trend_phenomenon_time``.
+
+    Parameters
+    ----------
+    trend : object
+        Argument ``trend``.
+    idx : object
+        Argument ``idx``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if trend.get("phenomenon_begin") and trend.get("phenomenon_end"):
         return f"""      <iwxxm:phenomenonTime>
         <gml:TimePeriod gml:id="t.trend.{idx}">
@@ -309,7 +443,19 @@ def _trend_phenomenon_time(trend: dict[str, Any], idx: int) -> str:
 
 
 def _trend_weather_block(trend: dict[str, Any]) -> str:
-    """Internal helper ``_trend_weather_block``."""
+    """
+    Internal helper ``_trend_weather_block``.
+
+    Parameters
+    ----------
+    trend : object
+        Argument ``trend``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if trend.get("weather_nsw"):
         return f'\n      <iwxxm:weather nilReason="{NIL_NSC}"/>'
     codes_raw = trend.get("weather")
@@ -323,7 +469,19 @@ def _trend_weather_block(trend: dict[str, Any]) -> str:
 
 
 def _trend_forecasts(ir: dict[str, Any]) -> str:
-    """Internal helper ``_trend_forecasts``."""
+    """
+    Internal helper ``_trend_forecasts``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     parts: list[str] = []
     forecasts_raw = ir.get("trend_forecasts")
     forecasts: list[dict[str, Any]] = []
@@ -456,7 +614,19 @@ def build_observation_and_trends(
 
 
 def _aerodrome_block(station: str) -> str:
-    """Internal helper ``_aerodrome_block``."""
+    """
+    Internal helper ``_aerodrome_block``.
+
+    Parameters
+    ----------
+    station : object
+        Argument ``station``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if station == "YUDO":
         return f"""  <iwxxm:aerodrome>
     <aixm:AirportHeliport gml:id="ad.{station.lower()}">

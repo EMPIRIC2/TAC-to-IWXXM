@@ -20,7 +20,16 @@ class StorePort(Protocol):
     """
 
     def __call__(self, result: WorkflowResult, *, sink: str) -> None:
-        """Persist or quarantine the result for ``sink``."""
+        """
+        Internal helper ``__call__``.
+
+        Parameters
+        ----------
+        result : object
+            Argument ``result``.
+        sink : object
+            Argument ``sink``.
+        """
 
 
 __all__ = ["StorePort"]

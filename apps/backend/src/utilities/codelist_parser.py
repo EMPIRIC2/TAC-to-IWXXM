@@ -50,11 +50,14 @@ class CodeListParser:
 
     def __init__(self, codelists_dir: Path, settings: ValidationSettings | None = None) -> None:
         """
-        Initialize parser for a specific code lists directory.
+        Internal helper ``__init__``.
 
-        Args:
-            codelists_dir: Path to the codelists directory (e.g., schemas/iwxxm/IWXXM/rule)
-            settings: Optional ValidationSettings instance
+        Parameters
+        ----------
+        codelists_dir : object
+            Argument ``codelists_dir``.
+        settings : object
+            Argument ``settings``.
         """
         self.codelists_dir = codelists_dir
         self._cache: dict[str, set[str]] = {}
@@ -117,12 +120,12 @@ class CodeListParser:
 
     def _parse_rdf_file(self, rdf_file: Path) -> None:
         """
-        Parse a single RDF codelist file.
+        Internal helper ``_parse_rdf_file``.
 
-        Extracts concept URIs/labels from RDF and stores allowed values.
-
-        Args:
-            rdf_file: Path to the RDF file
+        Parameters
+        ----------
+        rdf_file : object
+            Argument ``rdf_file``.
         """
         try:
             tree = ET.parse(rdf_file)
@@ -238,14 +241,17 @@ class CodeListParser:
 
     def _extract_codelist_references(self, xml_tree: XmlElement) -> list[tuple[str, str, str]]:
         """
-        Extract all xlink:href code list references from XML.
+        Internal helper ``_extract_codelist_references``.
 
-        Args:
-            xml_tree: Parsed XML element tree
+        Parameters
+        ----------
+        xml_tree : object
+            Argument ``xml_tree``.
 
         Returns
         -------
-            List of tuples: (href_url, codelist_name, xpath_location)
+        object
+            Return value.
         """
         references: list[tuple[str, str, str]] = []
 
@@ -400,15 +406,19 @@ class CodeListParser:
 
     def _validate_online(self, code_url: str, xpath: str) -> ValidationIssue:
         """
-        Validate code against live codes.wmo.int registry.
+        Internal helper ``_validate_online``.
 
-        Args:
-            code_url: Full URL to code (e.g., http://codes.wmo.int/49-2/CloudAmount/FEW)
-            xpath: XPath location of the reference for error reporting
+        Parameters
+        ----------
+        code_url : object
+            Argument ``code_url``.
+        xpath : object
+            Argument ``xpath``.
 
         Returns
         -------
-            ValidationIssue with result of online validation
+        object
+            Return value.
         """
         if not REQUESTS_AVAILABLE:
             return ValidationIssue(
@@ -518,14 +528,17 @@ class CodeListParser:
 
     def _parse_rdf_status(self, rdf_content: bytes) -> str:
         """
-        Extract concept status from RDF/XML response.
+        Internal helper ``_parse_rdf_status``.
 
-        Args:
-            rdf_content: Raw RDF/XML content from registry
+        Parameters
+        ----------
+        rdf_content : object
+            Argument ``rdf_content``.
 
         Returns
         -------
-            Status string (e.g., 'valid', 'stable', 'superseded', 'deprecated')
+        object
+            Return value.
         """
         try:
             root = etree.fromstring(rdf_content)

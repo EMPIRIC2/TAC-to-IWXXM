@@ -50,12 +50,12 @@ class VersionDetector:
 
     def __init__(self, schemas_root: Path | None = None) -> None:
         """
-        Initialize version detector.
+        Internal helper ``__init__``.
 
-        Args:
-            schemas_root: Root directory of schemas (defaults to
-                ``project_root/vendor/schemas`` and falls back to legacy
-                ``project_root/schemas`` compatibility paths)
+        Parameters
+        ----------
+        schemas_root : object
+            Argument ``schemas_root``.
         """
         if schemas_root is None:
             # Prefer the canonical vendored schema tree, but keep the legacy

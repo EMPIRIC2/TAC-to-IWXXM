@@ -23,7 +23,17 @@ logger = logging.getLogger(__name__)
 @lru_cache(maxsize=32)
 def _compile_schema_file(xsd_file: str) -> Any | None:
     """
-    Compile and cache an arbitrary XSD path (product extension schemas).
+    Internal helper ``_compile_schema_file``.
+
+    Parameters
+    ----------
+    xsd_file : object
+        Argument ``xsd_file``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     path = Path(xsd_file)
     try:
@@ -40,10 +50,17 @@ def _compile_schema_file(xsd_file: str) -> Any | None:
 @lru_cache(maxsize=16)
 def _compile_schema(iwxxm_version: str) -> Any | None:
     """
-    Compile and cache the XSD for ``iwxxm_version``.
+    Internal helper ``_compile_schema``.
 
-    Returns ``None`` when the schema has known non-blocking import gaps
-    (parity with backend F2 for 2025-x substitutionGroup issues).
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     path = xsd_path(iwxxm_version)
     try:
@@ -64,7 +81,25 @@ def _validate_against_schema(
     layer: str,
     schema_label: str,
 ) -> list[Issue]:
-    """Internal helper ``_validate_against_schema``."""
+    """
+    Internal helper ``_validate_against_schema``.
+
+    Parameters
+    ----------
+    xml_content : object
+        Argument ``xml_content``.
+    schema : object
+        Argument ``schema``.
+    layer : object
+        Argument ``layer``.
+    schema_label : object
+        Argument ``schema_label``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         xml_doc = etree.fromstring(xml_content.encode("utf-8"))
     except etree.XMLSyntaxError as exc:

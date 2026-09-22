@@ -51,7 +51,19 @@ class PendingFilePayload(BaseModel):
 
 
 def _normalize_product_value(value: object) -> object:
-    """Internal helper ``_normalize_product_value``."""
+    """
+    Internal helper ``_normalize_product_value``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if isinstance(value, str):
         return value.strip().lower()
     return value
@@ -107,7 +119,19 @@ class WorkSessionPayload(BaseModel):
     @field_validator("title", mode="before")
     @classmethod
     def _sanitize_title(cls, value: object) -> object:
-        """Internal helper ``_sanitize_title``."""
+        """
+        Internal helper ``_sanitize_title``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return sanitize_work_session_title(value)
 
 
@@ -126,7 +150,19 @@ class WorkSessionCreate(WorkSessionPayload):
     @field_validator("product", mode="before")
     @classmethod
     def _normalize_product(cls, value: object) -> object:
-        """Internal helper ``_normalize_product``."""
+        """
+        Internal helper ``_normalize_product``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return _normalize_product_value(value)
 
 
@@ -145,7 +181,19 @@ class WorkSessionUpdate(WorkSessionPayload):
     @field_validator("product", mode="before")
     @classmethod
     def _normalize_product(cls, value: object) -> object:
-        """Internal helper ``_normalize_product``."""
+        """
+        Internal helper ``_normalize_product``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return _normalize_product_value(value)
 
 
@@ -178,13 +226,37 @@ class WorkSession(BaseModel):
     @field_validator("product", mode="before")
     @classmethod
     def _normalize_product(cls, value: object) -> object:
-        """Internal helper ``_normalize_product``."""
+        """
+        Internal helper ``_normalize_product``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return _normalize_product_value(value)
 
     @field_validator("title", mode="before")
     @classmethod
     def _sanitize_title(cls, value: object) -> object:
-        """Internal helper ``_sanitize_title``."""
+        """
+        Internal helper ``_sanitize_title``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         cleaned = sanitize_work_session_title(value)
         return "" if cleaned is None else cleaned
 

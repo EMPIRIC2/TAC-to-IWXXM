@@ -43,7 +43,19 @@ class AirportRecordBuilder:
         self._airports_json = self._load_json("airports.json")
 
     def _load_json(self, filename: str) -> dict[str, Any]:
-        """Load JSON data file."""
+        """
+        Internal helper ``_load_json``.
+
+        Parameters
+        ----------
+        filename : object
+            Argument ``filename``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         file_path = self.data_dir / filename
         if not file_path.exists():
             logger.warning(f"Data file not found: {filename}")
@@ -191,7 +203,19 @@ class AirportRecordBuilder:
         return record
 
     def _extract_fields(self, data: dict[str, Any]) -> dict[str, Any]:
-        """Extract relevant fields from airport data."""
+        """
+        Internal helper ``_extract_fields``.
+
+        Parameters
+        ----------
+        data : object
+            Argument ``data``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         extracted: dict[str, Any] = {}
 
         # Name

@@ -29,7 +29,19 @@ class WorkflowLoadError(ValueError):
 
 
 def _find_workflows_dir(start: Path) -> Path | None:
-    """Walk parents of ``start`` for a repo ``workflows/`` tree."""
+    """
+    Internal helper ``_find_workflows_dir``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for parent in start.parents:
         candidate = parent / "workflows"
         if candidate.is_dir() and (candidate / "f8-metar-ingest-default.yaml").is_file():
@@ -95,7 +107,19 @@ def resolve_env_refs(
     if isinstance(value, str):
 
         def _sub(match: re.Match[str]) -> str:
-            """Internal helper ``_sub``."""
+            """
+            Internal helper ``_sub``.
+
+            Parameters
+            ----------
+            match : object
+                Argument ``match``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             return env.get(match.group(1), "")
 
         return _ENV_REF.sub(_sub, value)
@@ -141,7 +165,19 @@ def assert_no_embedded_credentials(value: object, *, path: str = "$") -> None:
 
 
 def _sink_ids(block: object) -> list[str]:
-    """Internal helper ``_sink_ids``."""
+    """
+    Internal helper ``_sink_ids``.
+
+    Parameters
+    ----------
+    block : object
+        Argument ``block``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(block, dict):
         return []
     mapping = cast("dict[str, object]", block)

@@ -17,17 +17,50 @@ _DEPRECATED_SECRET = "SUPABASE_SERVICE_ROLE_KEY"
 
 
 def _is_production_env() -> bool:
-    """Internal helper ``_is_production_env``."""
+    """
+    Internal helper ``_is_production_env``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return os.getenv("METAR_CONFIG_ENV", "local").strip().lower() == "prod"
 
 
 def _is_legacy_jwt_api_key(value: str) -> bool:
-    """True for legacy Supabase anon/service_role JWT keys (disabled when legacy keys off)."""
+    """
+    Internal helper ``_is_legacy_jwt_api_key``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return value.startswith("eyJ")
 
 
 def _resolve_with_fallback(canonical: str, deprecated: str) -> str:
-    """Internal helper ``_resolve_with_fallback``."""
+    """
+    Internal helper ``_resolve_with_fallback``.
+
+    Parameters
+    ----------
+    canonical : object
+        Argument ``canonical``.
+    deprecated : object
+        Argument ``deprecated``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     value = os.getenv(canonical, "").strip()
     if value:
         return value

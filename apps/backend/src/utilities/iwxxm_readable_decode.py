@@ -99,7 +99,19 @@ class ReadableDecode:
 
 
 def _local_name(tag: str) -> str:
-    """Internal helper ``_local_name``."""
+    """
+    Internal helper ``_local_name``.
+
+    Parameters
+    ----------
+    tag : object
+        Argument ``tag``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if "}" in tag:
         return tag.rsplit("}", 1)[-1]
     if ":" in tag:
@@ -108,7 +120,21 @@ def _local_name(tag: str) -> str:
 
 
 def _attr(elem: ET.Element, local: str) -> str | None:
-    """Internal helper ``_attr``."""
+    """
+    Internal helper ``_attr``.
+
+    Parameters
+    ----------
+    elem : object
+        Argument ``elem``.
+    local : object
+        Argument ``local``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     for key, value in elem.attrib.items():
         if _local_name(key) == local and value:
             return value
@@ -116,7 +142,19 @@ def _attr(elem: ET.Element, local: str) -> str | None:
 
 
 def _href_code(href: str) -> str:
-    """Internal helper ``_href_code``."""
+    """
+    Internal helper ``_href_code``.
+
+    Parameters
+    ----------
+    href : object
+        Argument ``href``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     trimmed = href.rstrip("/")
     if "/" in trimmed:
         return trimmed.rsplit("/", 1)[-1]
@@ -124,7 +162,21 @@ def _href_code(href: str) -> str:
 
 
 def _format_measure(text: str, uom: str | None) -> str:
-    """Internal helper ``_format_measure``."""
+    """
+    Internal helper ``_format_measure``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+    uom : object
+        Argument ``uom``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     value = text.strip()
     if not value:
         return ""
@@ -135,7 +187,21 @@ def _format_measure(text: str, uom: str | None) -> str:
 
 
 def _offsets(xml: str, needle: str) -> tuple[int, int]:
-    """Internal helper ``_offsets``."""
+    """
+    Internal helper ``_offsets``.
+
+    Parameters
+    ----------
+    xml : object
+        Argument ``xml``.
+    needle : object
+        Argument ``needle``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not needle:
         return 0, 0
     idx = xml.find(needle)
@@ -145,7 +211,21 @@ def _offsets(xml: str, needle: str) -> tuple[int, int]:
 
 
 def _parent_is(parents: tuple[ET.Element, ...], name: str) -> bool:
-    """Internal helper ``_parent_is``."""
+    """
+    Internal helper ``_parent_is``.
+
+    Parameters
+    ----------
+    parents : object
+        Argument ``parents``.
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return any(_local_name(p.tag) == name for p in parents)
 
 
@@ -298,7 +378,19 @@ def readable_decode_from_iwxxm(xml: str) -> ReadableDecode:
 
 
 def _from_tac(tac_text: str) -> ReadableDecode:
-    """Internal helper ``_from_tac``."""
+    """
+    Internal helper ``_from_tac``.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     result = tac2iwxxm_decode_tac(tac_text, product="METAR")
     return ReadableDecode(
         segments=[

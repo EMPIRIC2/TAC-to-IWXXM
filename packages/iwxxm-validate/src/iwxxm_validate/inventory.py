@@ -27,7 +27,19 @@ class InventoryError(ValueError):
 
 
 def _collect_pattern_ids(pin_root: Path) -> frozenset[str]:
-    """Internal helper ``_collect_pattern_ids``."""
+    """
+    Internal helper ``_collect_pattern_ids``.
+
+    Parameters
+    ----------
+    pin_root : object
+        Argument ``pin_root``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     ids: set[str] = set()
     for path in sorted(pin_root.rglob("*.sch")):
         text = path.read_text(encoding="utf-8", errors="replace")

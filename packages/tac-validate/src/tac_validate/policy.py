@@ -118,7 +118,19 @@ class ResolvedPolicy:
 
 
 def _as_str_list(value: object) -> tuple[str, ...]:
-    """Internal helper ``_as_str_list``."""
+    """
+    Internal helper ``_as_str_list``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None:
         return ()
     if not isinstance(value, list):
@@ -134,7 +146,19 @@ def _as_str_list(value: object) -> tuple[str, ...]:
 
 
 def _as_severity_map(value: object) -> dict[str, str]:
-    """Internal helper ``_as_severity_map``."""
+    """
+    Internal helper ``_as_severity_map``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None:
         return {}
     if not isinstance(value, dict):
@@ -153,7 +177,21 @@ def _as_severity_map(value: object) -> dict[str, str]:
 
 
 def _parse_document(data: Mapping[str, Any], *, source_path: str | None) -> PolicyDocument:
-    """Internal helper ``_parse_document``."""
+    """
+    Internal helper ``_parse_document``.
+
+    Parameters
+    ----------
+    data : object
+        Argument ``data``.
+    source_path : object
+        Argument ``source_path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     schema_raw = data.get("schema_version", 1)
     if not isinstance(schema_raw, int) or schema_raw < 1:
         msg = "schema_version must be a positive integer"
@@ -193,7 +231,21 @@ def _parse_document(data: Mapping[str, Any], *, source_path: str | None) -> Poli
 
 
 def _load_yaml_mapping(text: str, *, source_path: str | None) -> PolicyDocument:
-    """Internal helper ``_load_yaml_mapping``."""
+    """
+    Internal helper ``_load_yaml_mapping``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+    source_path : object
+        Argument ``source_path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = yaml.safe_load(text)
     if not isinstance(raw, dict):
         msg = "policy root must be a mapping"
@@ -273,7 +325,21 @@ def load_policy_catalog(profile: str | None = None) -> dict[str, PolicyDocument]
 
 
 def _layer_policy(parent: PolicyDocument, child: PolicyDocument) -> PolicyDocument:
-    """Ignore ids add. A non-empty select replaces. An empty select inherits."""
+    """
+    Internal helper ``_layer_policy``.
+
+    Parameters
+    ----------
+    parent : object
+        Argument ``parent``.
+    child : object
+        Argument ``child``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     select = child.select if child.select else parent.select
     ignore = tuple(dict.fromkeys((*parent.ignore, *child.ignore)))
     severity = dict(parent.severity)
@@ -302,7 +368,23 @@ def _take_policy_overlay(
     *,
     profile: str | None,
 ) -> PolicyDocument | None:
-    """Internal helper ``_take_policy_overlay``."""
+    """
+    Internal helper ``_take_policy_overlay``.
+
+    Parameters
+    ----------
+    doc : object
+        Argument ``doc``.
+    catalog : object
+        Argument ``catalog``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not doc.extends and doc.id not in catalog:
         if doc.profiles:
             msg = f"{doc.id} profiles require extends"
@@ -324,14 +406,38 @@ def _take_policy_overlay(
 
 
 def _default_codes_for_product(product: str | None) -> frozenset[str]:
-    """Internal helper ``_default_codes_for_product``."""
+    """
+    Internal helper ``_default_codes_for_product``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if product is None:
         return frozenset(spec.code for spec in ISSUES)
     return frozenset(spec.code for spec in catalog_entries(product=product))
 
 
 def _unknown(code: str) -> bool:
-    """Internal helper ``_unknown``."""
+    """
+    Internal helper ``_unknown``.
+
+    Parameters
+    ----------
+    code : object
+        Argument ``code``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         by_code(code)
     except KeyError:
@@ -343,7 +449,21 @@ def _chain_docs(
     doc: PolicyDocument,
     policies: Mapping[str, PolicyDocument],
 ) -> tuple[PolicyDocument, ...]:
-    """Return base→child order with cycle and depth checks."""
+    """
+    Internal helper ``_chain_docs``.
+
+    Parameters
+    ----------
+    doc : object
+        Argument ``doc``.
+    policies : object
+        Argument ``policies``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
 
     def depth_of(current: PolicyDocument, seen: frozenset[str]) -> int:
         """
@@ -422,7 +542,23 @@ def _validate_code_refs(
     lifecycle: PolicyLifecycle,
     activate: bool,
 ) -> tuple[str, ...]:
-    """Internal helper ``_validate_code_refs``."""
+    """
+    Internal helper ``_validate_code_refs``.
+
+    Parameters
+    ----------
+    codes : object
+        Argument ``codes``.
+    lifecycle : object
+        Argument ``lifecycle``.
+    activate : object
+        Argument ``activate``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     unknown = sorted(code for code in codes if _unknown(code))
     warnings = [f"unknown registry code {code!r}" for code in unknown]
     if unknown and (activate or lifecycle == "activated"):

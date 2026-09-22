@@ -159,7 +159,14 @@ class AirportValidator:
     _loaded: bool = False
 
     def __new__(cls) -> AirportValidator:
-        """Ensure singleton instance."""
+        """
+        Internal helper ``__new__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance

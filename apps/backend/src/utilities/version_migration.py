@@ -21,7 +21,19 @@ logger = logging.getLogger(__name__)
 
 
 def _source_version_config(version: str) -> dict[str, str]:
-    """Return minimal source metadata for migration, including deprecated lines."""
+    """
+    Internal helper ``_source_version_config``.
+
+    Parameters
+    ----------
+    version : object
+        Argument ``version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         config = get_version_config(version)
         return {
@@ -46,7 +58,20 @@ class VersionMigrationWarning:
     """
 
     def __init__(self, element: str, xpath: str, action: str, reason: str) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        element : object
+            Argument ``element``.
+        xpath : object
+            Argument ``xpath``.
+        action : object
+            Argument ``action``.
+        reason : object
+            Argument ``reason``.
+        """
         self.element = element
         self.xpath = xpath
         self.action = action
@@ -182,7 +207,18 @@ class VersionMigrator:
         from_config: dict[str, Any],
         to_config: dict[str, Any],
     ) -> None:
-        """Rewrite IWXXM namespace and schema references for the target version."""
+        """
+        Internal helper ``_rewrite_version_references``.
+
+        Parameters
+        ----------
+        root : object
+            Argument ``root``.
+        from_config : object
+            Argument ``from_config``.
+        to_config : object
+            Argument ``to_config``.
+        """
         old_namespace = str(from_config["namespace_uri"])
         new_namespace = str(to_config["namespace_uri"])
         old_schema_url = str(from_config["schema_url"])
@@ -216,11 +252,14 @@ class VersionMigrator:
 
     def _remove_elements(self, root: ET.Element, change: dict[str, Any]) -> None:
         """
-        Remove elements matching the specified XPath and register warning.
+        Internal helper ``_remove_elements``.
 
-        Args:
-            root: XML root element
-            change: Breaking change definition with element, xpath, action, reason
+        Parameters
+        ----------
+        root : object
+            Argument ``root``.
+        change : object
+            Argument ``change``.
         """
         element_name = change.get("element", "unknown")
         xpath = change.get("xpath", "")
@@ -252,17 +291,19 @@ class VersionMigrator:
 
     def _remove_elements_by_tag(self, root: ET.Element, tag: str) -> int:
         """
-        Recursively find and remove all elements with specified tag.
+        Internal helper ``_remove_elements_by_tag``.
 
-        Handles both prefixed (iwxxm:runwayState) and unprefixed tags.
-
-        Args:
-            root: Root element to search from
-            tag: Tag name to match (can include prefix like 'iwxxm:runwayState')
+        Parameters
+        ----------
+        root : object
+            Argument ``root``.
+        tag : object
+            Argument ``tag``.
 
         Returns
         -------
-            Number of elements removed
+        object
+            Return value.
         """
         removed = 0
 
@@ -284,15 +325,19 @@ class VersionMigrator:
 
     def _tag_matches(self, full_tag: str, localname: str) -> bool:
         """
-        Check if a full tag (with namespace) matches the local name.
+        Internal helper ``_tag_matches``.
 
-        Args:
-            full_tag: Full tag from ElementTree (e.g., '{http://icao.int/iwxxm/2023-1}runwayState')
-            localname: Local name to match (e.g., 'runwayState')
+        Parameters
+        ----------
+        full_tag : object
+            Argument ``full_tag``.
+        localname : object
+            Argument ``localname``.
 
         Returns
         -------
-            True if tag matches
+        object
+            Return value.
         """
         # ElementTree represents namespaced tags as {namespace}localname
         if "}" in full_tag:

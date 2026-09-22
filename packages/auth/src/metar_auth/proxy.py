@@ -25,7 +25,16 @@ class AuthProxyError(Exception):
     """
 
     def __init__(self, message: str, *, status_code: int = 400) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        message : object
+            Argument ``message``.
+        status_code : object
+            Argument ``status_code``.
+        """
         super().__init__(message)
         self.status_code = status_code
 
@@ -48,7 +57,18 @@ class SupabaseAuthProxy:
         client: httpx.Client | None = None,
     ) -> None:
         # Explicit ``""`` means unset (tests); ``None`` falls back to env / Vite shims.
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        supabase_url : object
+            Argument ``supabase_url``.
+        publishable_key : object
+            Argument ``publishable_key``.
+        client : object
+            Argument ``client``.
+        """
         if supabase_url is not None:
             self.supabase_url = supabase_url.rstrip("/")
         else:
@@ -72,7 +92,14 @@ class SupabaseAuthProxy:
         self._owns_client = client is None
 
     def _http(self) -> httpx.Client:
-        """Internal helper ``_http``."""
+        """
+        Internal helper ``_http``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if self._client is None:
             self._client = httpx.Client(timeout=30.0)
         return self._client
@@ -91,7 +118,14 @@ class SupabaseAuthProxy:
             self._client = None
 
     def _headers(self) -> dict[str, str]:
-        """Internal helper ``_headers``."""
+        """
+        Internal helper ``_headers``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not self.supabase_url or not self.publishable_key:
             raise AuthProxyError(
                 "SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY required for Auth",
@@ -285,7 +319,19 @@ class SupabaseAuthProxy:
 
 
 def _login_error_message(raw: str) -> str:
-    """Map GoTrue login error bodies to operator-facing messages."""
+    """
+    Internal helper ``_login_error_message``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         decoded: object = json.loads(raw)
     except json.JSONDecodeError:
@@ -301,13 +347,18 @@ def _login_error_message(raw: str) -> str:
 
 
 def _normalize_session_payload(data: dict[str, Any]) -> dict[str, Any]:
-    """Normalize GoTrue token or signup JSON into ``user`` + optional ``session``.
+    """
+    Internal helper ``_normalize_session_payload``.
 
-    Password-grant responses nest the user under ``user`` and put tokens at the
-    top level. Email-confirm signup often returns the **user object itself** at
-    the top level (``id`` / ``email`` / ``confirmation_sent_at``) with no
-    ``access_token`` — treat that shape as the user so register does not return
-    an empty ``user`` when ``session`` is null.
+    Parameters
+    ----------
+    data : object
+        Argument ``data``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     user_obj = data.get("user")
     if isinstance(user_obj, dict):

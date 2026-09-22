@@ -33,7 +33,25 @@ def _issue(
     message: str,
     location: str | None = None,
 ) -> Issue:
-    """Internal helper ``_issue``."""
+    """
+    Internal helper ``_issue``.
+
+    Parameters
+    ----------
+    severity : object
+        Argument ``severity``.
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+    location : object
+        Argument ``location``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return Issue(
         severity=severity,
         code=code,
@@ -44,7 +62,19 @@ def _issue(
 
 
 def _load_codelist_cache(codelists_dir: Path) -> dict[str, set[str]]:
-    """Internal helper ``_load_codelist_cache``."""
+    """
+    Internal helper ``_load_codelist_cache``.
+
+    Parameters
+    ----------
+    codelists_dir : object
+        Argument ``codelists_dir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     cache: dict[str, set[str]] = {}
     if not codelists_dir.is_dir():
         return cache

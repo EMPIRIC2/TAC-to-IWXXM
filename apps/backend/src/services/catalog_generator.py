@@ -33,10 +33,12 @@ class CatalogGenerator:
 
     def __init__(self, schemas_base_path: Path) -> None:
         """
-        Initialize catalog generator.
+        Internal helper ``__init__``.
 
-        Args:
-            schemas_base_path: Base path to mirrored schemas directory
+        Parameters
+        ----------
+        schemas_base_path : object
+            Argument ``schemas_base_path``.
         """
         self.schemas_base_path = Path(schemas_base_path)
 
@@ -96,12 +98,16 @@ class CatalogGenerator:
 
     def _add_rewrite_uri(self, catalog_elem: XmlElement, uri_start_string: str, rewrite_prefix: str) -> None:
         """
-        Add rewriteURI element to catalog.
+        Internal helper ``_add_rewrite_uri``.
 
-        Args:
-            catalog_elem: Catalog root element
-            uri_start_string: URL prefix to match
-            rewrite_prefix: Local file:// prefix to rewrite to
+        Parameters
+        ----------
+        catalog_elem : object
+            Argument ``catalog_elem``.
+        uri_start_string : object
+            Argument ``uri_start_string``.
+        rewrite_prefix : object
+            Argument ``rewrite_prefix``.
         """
         rewrite_uri = lxml_etree.SubElement(catalog_elem, f"{{{CATALOG_NS}}}rewriteURI")
         rewrite_uri.set("uriStartString", uri_start_string)
@@ -109,11 +115,14 @@ class CatalogGenerator:
 
     def _add_common_dependencies(self, catalog_elem: XmlElement, local_schema_dir: Path) -> None:
         """
-        Add rewrite rules for common schema dependencies.
+        Internal helper ``_add_common_dependencies``.
 
-        Args:
-            catalog_elem: Catalog root element
-            local_schema_dir: Local schema directory
+        Parameters
+        ----------
+        catalog_elem : object
+            Argument ``catalog_elem``.
+        local_schema_dir : object
+            Argument ``local_schema_dir``.
         """
 
         # Check for common dependencies and add rewrites

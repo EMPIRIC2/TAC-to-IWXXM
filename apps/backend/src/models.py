@@ -100,7 +100,14 @@ class TranslationStatisticsModel(Base):
     )
 
     def __repr__(self) -> str:
-        """Internal helper ``__repr__``."""
+        """
+        Internal helper ``__repr__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return f"<TranslationStatistics(id={self.translation_id}, airport={self.icao_airport_code}, status={self.translation_status})>"
 
 
@@ -152,5 +159,12 @@ class TranslationStatisticsSummaryModel(Base):
     )
 
     def __repr__(self) -> str:
-        """Internal helper ``__repr__``."""
+        """
+        Internal helper ``__repr__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return f"<TranslationStatisticsSummary(period={self.period_start} to {self.period_end}, total={self.total_translations})>"

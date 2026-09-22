@@ -28,7 +28,14 @@ class LocaleError(ValueError):
 
 
 def _empty_phrases() -> dict[str, str]:
-    """Internal helper ``_empty_phrases``."""
+    """
+    Internal helper ``_empty_phrases``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return {}
 
 

@@ -18,7 +18,23 @@ from tac_validate.theme_checks import (
 
 
 def _check_metar_speci(tac: str, product: str, *, profile: str = "annex3") -> list[Issue]:
-    """Internal helper ``_check_metar_speci``."""
+    """
+    Internal helper ``_check_metar_speci``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     start, end, body = _body_span(tac)
     upper = body.upper()
     # Drop trailing '=' for token scans.
@@ -158,7 +174,27 @@ def _check_s1_exceptional(
     body_start: int,
     body_end: int,
 ) -> list[Issue]:
-    """S1 exceptional METAR/SPECI tokens (Guidance + #734) - info diagnostics."""
+    """
+    Internal helper ``_check_s1_exceptional``.
+
+    Parameters
+    ----------
+    tokens : object
+        Argument ``tokens``.
+    product : object
+        Argument ``product``.
+    core : object
+        Argument ``core``.
+    body_start : object
+        Argument ``body_start``.
+    body_end : object
+        Argument ``body_end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     issues: list[Issue] = []
     if "CAVOK" in tokens:

@@ -22,9 +22,20 @@ def greet(name: str) -> str:
     return f"Hello, {name}"
 
 
-def _helper() -> None:
-    """Private helper with a one-line docstring."""
-    return None
+def _helper(name: str) -> str:
+    """Build a private greeting fragment.
+
+    Parameters
+    ----------
+    name : str
+        Person name.
+
+    Returns
+    -------
+    str
+        Fragment text.
+    """
+    return name
 
 
 class Greeter:

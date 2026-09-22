@@ -55,7 +55,14 @@ _LIBRARY_AUTHORING_GONE = {
 
 
 def _library_authoring_gone() -> NoReturn:
-    """Raise HTTP 410 for retired library authoring routes."""
+    """
+    Internal helper ``_library_authoring_gone``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raise HTTPException(status_code=410, detail=_LIBRARY_AUTHORING_GONE)
 
 

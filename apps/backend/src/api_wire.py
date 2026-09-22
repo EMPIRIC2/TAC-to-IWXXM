@@ -46,7 +46,14 @@ logger = logging.getLogger(__name__)
 
 
 def _iwxxm_validate_fn() -> Callable[..., ValidationReport]:
-    """Resolve the patchable SDK alias from ``api`` (TC-F6-033 / F11)."""
+    """
+    Internal helper ``_iwxxm_validate_fn``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         from . import api as api_mod
     except ImportError:  # pragma: no cover - Docker/local import path mirror
@@ -206,7 +213,19 @@ def get_cors_allowed_headers() -> list[Any]:
 
 
 def _is_named_upload(value: object) -> TypeGuard[UploadFile]:
-    """Return True for Starlette/FastAPI uploads and duck-typed upload objects."""
+    """
+    Internal helper ``_is_named_upload``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if isinstance(value, str) or not value:
         return False
     return bool(getattr(value, "filename", None))
@@ -324,14 +343,40 @@ def normalize_api_product(
 
 
 def _coerce_form_list(value: object) -> list[str]:
-    """Return list form field values; direct endpoint calls leave ``Form()`` defaults."""
+    """
+    Internal helper ``_coerce_form_list``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if isinstance(value, list):
         return [item for item in cast(list[object], value) if isinstance(item, str)]
     return []
 
 
 def _coerce_form_str(value: object, default: str = "") -> str:
-    """Return string form field values; direct endpoint calls leave ``Form()`` defaults."""
+    """
+    Internal helper ``_coerce_form_str``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    default : object
+        Argument ``default``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return value if isinstance(value, str) else default
 
 
@@ -339,7 +384,21 @@ def _resolve_request_extensions(
     form_extensions: list[str],
     json_extensions: list[str] | None,
 ) -> list[str]:
-    """Merge multipart and JSON extension tokens; reject unknown ids."""
+    """
+    Internal helper ``_resolve_request_extensions``.
+
+    Parameters
+    ----------
+    form_extensions : object
+        Argument ``form_extensions``.
+    json_extensions : object
+        Argument ``json_extensions``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if json_extensions is not None:
         tokens = parse_extension_tokens(json_extensions)
     else:
@@ -349,7 +408,19 @@ def _resolve_request_extensions(
 
 
 def _package_issue_payload(issue: object) -> dict[str, Any]:
-    """Internal helper ``_package_issue_payload``."""
+    """
+    Internal helper ``_package_issue_payload``.
+
+    Parameters
+    ----------
+    issue : object
+        Argument ``issue``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return {
         "layer": str(getattr(issue, "layer", "")),
         "severity": str(getattr(issue, "severity", "error")),
@@ -362,7 +433,19 @@ def _package_issue_payload(issue: object) -> dict[str, Any]:
 
 
 def _package_stages_payload(report: object) -> list[dict[str, Any]] | None:
-    """Internal helper ``_package_stages_payload``."""
+    """
+    Internal helper ``_package_stages_payload``.
+
+    Parameters
+    ----------
+    report : object
+        Argument ``report``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     stages_obj = getattr(report, "stages", None)
     if not isinstance(stages_obj, list):
         return None
@@ -395,7 +478,33 @@ def _call_iwxxm_validate(
     product: str,
     output_policy_id: str | None = None,
 ) -> ValidationReport:
-    """Internal helper ``_call_iwxxm_validate``."""
+    """
+    Internal helper ``_call_iwxxm_validate``.
+
+    Parameters
+    ----------
+    xml_content : object
+        Argument ``xml_content``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    profile : object
+        Argument ``profile``.
+    levels : object
+        Argument ``levels``.
+    emit_key : object
+        Argument ``emit_key``.
+    extensions : object
+        Argument ``extensions``.
+    product : object
+        Argument ``product``.
+    output_policy_id : object
+        Argument ``output_policy_id``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     validate_product = ca_eccc_validate_product(emit_key, extensions, product)
     logger.debug("iwxxm output policy %s", output_policy_id)
     return _iwxxm_validate_fn()(
@@ -419,7 +528,33 @@ def _resolve_request_profiles(
     json_exchange_profile: str | None = None,
     for_packaging: bool = False,
 ) -> WireProfileSelection:
-    """Merge multipart and JSON profile fields, then resolve to emit keys."""
+    """
+    Internal helper ``_resolve_request_profiles``.
+
+    Parameters
+    ----------
+    route : object
+        Argument ``route``.
+    profile : object
+        Argument ``profile``.
+    semantic_profile : object
+        Argument ``semantic_profile``.
+    exchange_profile : object
+        Argument ``exchange_profile``.
+    json_profile : object
+        Argument ``json_profile``.
+    json_semantic_profile : object
+        Argument ``json_semantic_profile``.
+    json_exchange_profile : object
+        Argument ``json_exchange_profile``.
+    for_packaging : object
+        Argument ``for_packaging``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     wire = resolve_route_profiles(
         profile=json_profile if json_profile is not None else profile,
         semantic_profile=json_semantic_profile if json_semantic_profile is not None else semantic_profile,
@@ -432,7 +567,19 @@ def _resolve_request_profiles(
 
 
 def _is_multiline_template_product(product: str | None) -> bool:
-    """Return True for products whose TAC must not be split one-entry-per-line."""
+    """
+    Internal helper ``_is_multiline_template_product``.
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return (product or "").strip().upper() in _MULTILINE_TEMPLATE_PRODUCTS
 
 
@@ -879,10 +1026,18 @@ def normalize_validation_level(value: str | None) -> str:
 
 
 def _product_uses_metar_tac_layers(product: str | None) -> bool:
-    """Return True when legacy METAR/SPECI TAC keyword layers apply.
+    """
+    Internal helper ``_product_uses_metar_tac_layers``.
 
-    F6.e non-METAR products (TAF, SIGMET, ...) must not be rejected by
-    ``ValidationService.validate_all_layers`` which requires METAR/SPECI keywords.
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     product_u = (product or "METAR").strip().upper()
     return product_u in {"METAR", "SPECI"}

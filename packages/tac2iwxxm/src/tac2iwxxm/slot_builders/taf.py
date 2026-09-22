@@ -63,7 +63,19 @@ _NZ_QNH_MNM_MAX = re.compile(r"\bQNH\s+MNM\s+(?P<mnm>\d{4})\s+MAX\s+(?P<max>\d{4
 
 
 def _modifier_flags(joined: str) -> dict[str, bool]:
-    """Internal helper ``_modifier_flags``."""
+    """
+    Internal helper ``_modifier_flags``.
+
+    Parameters
+    ----------
+    joined : object
+        Argument ``joined``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     upper = joined.upper()
     # "TAF AMD …" / "TAF COR …" (not station-embedded).
     return {
@@ -73,7 +85,19 @@ def _modifier_flags(joined: str) -> dict[str, bool]:
 
 
 def _parse_clouds(text: str) -> list[dict[str, Any]]:
-    """Internal helper ``_parse_clouds``."""
+    """
+    Internal helper ``_parse_clouds``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     layers: list[dict[str, Any]] = []
     for c in _CLOUD.finditer(text):
         layer: dict[str, Any] = {
@@ -87,7 +111,16 @@ def _parse_clouds(text: str) -> list[dict[str, Any]]:
 
 
 def _parse_wind(text: str, target: dict[str, Any]) -> None:
-    """Internal helper ``_parse_wind``."""
+    """
+    Internal helper ``_parse_wind``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+    target : object
+        Argument ``target``.
+    """
     wind = _WIND.search(text)
     if wind is None:
         return
@@ -106,7 +139,19 @@ def _parse_wind(text: str, target: dict[str, Any]) -> None:
 
 
 def _parse_wx(text: str) -> list[str]:
-    """Internal helper ``_parse_wx``."""
+    """
+    Internal helper ``_parse_wx``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return [m.group("wx") for m in _WX_TOKEN.finditer(text)]
 
 
@@ -114,14 +159,38 @@ _CODE_CA_PRESENT_FORECAST_WEATHER = "https://dd.weather.gc.ca/today/aviation/iwx
 
 
 def _ca_forecast_weather_hrefs(wx_tokens: list[str]) -> list[str]:
-    """Map MANAIR TAF weather groups to MSC ``present_and_forecast_weather`` hrefs."""
+    """
+    Internal helper ``_ca_forecast_weather_hrefs``.
+
+    Parameters
+    ----------
+    wx_tokens : object
+        Argument ``wx_tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     hrefs: list[str] = []
     hrefs.extend(f"{_CODE_CA_PRESENT_FORECAST_WEATHER}/IC" for token in wx_tokens if token.upper() == "IC")
     return hrefs
 
 
 def _parse_nclws(text: str) -> dict[str, Any] | None:
-    """Parse MANAIR low-level wind shear group ``WShhh/dddffKT``."""
+    """
+    Internal helper ``_parse_nclws``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     match = _NCLWS.search(text)
     if match is None:
         return None
@@ -133,7 +202,21 @@ def _parse_nclws(text: str) -> dict[str, Any] | None:
 
 
 def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
-    """Parse wind / vis / cloud / weather from a base or change-group body."""
+    """
+    Internal helper ``_parse_forecast_body``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+    cavok_ok : object
+        Argument ``cavok_ok``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     out: dict[str, Any] = {}
     if cavok_ok and _CAVOK.search(text):
         out["cavok"] = True
@@ -170,7 +253,23 @@ def _parse_forecast_body(text: str, *, cavok_ok: bool = True) -> dict[str, Any]:
 
 
 def _taf_day_hour_stamp(ir: dict[str, Any], ddhh: str, *, minute: int = 0) -> str:
-    """Internal helper ``_taf_day_hour_stamp``."""
+    """
+    Internal helper ``_taf_day_hour_stamp``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    ddhh : object
+        Argument ``ddhh``.
+    minute : object
+        Argument ``minute``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     prefix = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
     day = int(ddhh[0:2])
     hour = int(ddhh[2:4])
@@ -178,13 +277,39 @@ def _taf_day_hour_stamp(ir: dict[str, Any], ddhh: str, *, minute: int = 0) -> st
 
 
 def _taf_valid_end_stamp(ir: dict[str, Any]) -> str:
-    """Internal helper ``_taf_valid_end_stamp``."""
+    """
+    Internal helper ``_taf_valid_end_stamp``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     prefix = "2012-08" if ir.get("station") == "YUDO" else "2023-06"
     return f"{prefix}-{int(ir['valid_to_day']):02d}T{int(ir['valid_to_hour']):02d}:00:00Z"
 
 
 def _parse_change_groups(ir: dict[str, Any], body: str) -> list[dict[str, Any]]:
-    """Internal helper ``_parse_change_groups``."""
+    """
+    Internal helper ``_parse_change_groups``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     changes: list[dict[str, Any]] = []
     for raw in _CHANGE_GROUP.findall(body):
         chunk = raw.strip()

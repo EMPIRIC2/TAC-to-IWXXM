@@ -65,7 +65,21 @@ def safe_url_for_log(url: str) -> str:
 
 
 def _normalize_items(payload: Any, *, source_url: str) -> list[IngestJob]:
-    """Internal helper ``_normalize_items``."""
+    """
+    Internal helper ``_normalize_items``.
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    source_url : object
+        Argument ``source_url``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if isinstance(payload, dict) and "items" in payload:
         raw_items = payload["items"]
     elif isinstance(payload, list):

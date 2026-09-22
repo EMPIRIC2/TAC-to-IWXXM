@@ -7,3 +7,8 @@ def bare(name: str) -> str:
 
 def _no_doc():
     return 1
+
+
+def _private_missing_shape(name: str) -> str:
+    """Private helper without Parameters/Returns."""
+    return name

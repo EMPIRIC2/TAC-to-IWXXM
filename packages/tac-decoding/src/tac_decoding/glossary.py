@@ -19,7 +19,19 @@ import yaml
 
 
 def _tokens_from_mapping(raw: object) -> dict[str, str]:
-    """Internal helper ``_tokens_from_mapping``."""
+    """
+    Internal helper ``_tokens_from_mapping``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(raw, dict):
         return {}
     mapping = cast(Mapping[Any, Any], raw)
@@ -152,7 +164,14 @@ def resolve_location_name(icao: str) -> str | None:
 
 
 def _packaged_overlay_tokens() -> dict[str, str]:
-    """Load packaged ``decode_glossary.yaml`` tokens (empty if absent)."""
+    """
+    Internal helper ``_packaged_overlay_tokens``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         root = resources.files("tac_decoding")
         data = root.joinpath("data", "decode_glossary.yaml")
@@ -167,14 +186,40 @@ def _packaged_overlay_tokens() -> dict[str, str]:
 
 
 def _load_yaml_tokens(path: Path) -> dict[str, str]:
-    """Internal helper ``_load_yaml_tokens``."""
+    """
+    Internal helper ``_load_yaml_tokens``.
+
+    Parameters
+    ----------
+    path : object
+        Argument ``path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not path.is_file():
         return {}
     return _tokens_from_mapping(yaml.safe_load(path.read_text(encoding="utf-8")))
 
 
 def _merge_tables(official: dict[str, str], overlay: dict[str, str]) -> dict[str, str]:
-    """Internal helper ``_merge_tables``."""
+    """
+    Internal helper ``_merge_tables``.
+
+    Parameters
+    ----------
+    official : object
+        Argument ``official``.
+    overlay : object
+        Argument ``overlay``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     merged = dict(official)
     merged.update(overlay)
     return merged

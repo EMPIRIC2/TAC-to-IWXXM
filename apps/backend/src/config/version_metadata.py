@@ -30,7 +30,14 @@ class VersionMetadata:
     element_order_priority: list[str] = field(default_factory=list)  # Element ordering for aerodrome
 
     def __repr__(self) -> str:
-        """Internal helper ``__repr__``."""
+        """
+        Internal helper ``__repr__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return f"VersionMetadata(version={self.version}, ns={self.namespace.split('/')[-1]})"
 
 

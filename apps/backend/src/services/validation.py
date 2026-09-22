@@ -339,7 +339,19 @@ class ValidationService:
 
     @staticmethod
     def _extract_icao_from_tac(tac_text: str) -> str | None:
-        """Extract ICAO code from METAR/SPECI TAC text."""
+        """
+        Internal helper ``_extract_icao_from_tac``.
+
+        Parameters
+        ----------
+        tac_text : object
+            Argument ``tac_text``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         icao = extract_airport_code(tac_text)
         if icao:
             return icao

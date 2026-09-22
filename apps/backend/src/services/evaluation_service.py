@@ -37,14 +37,38 @@ class EvaluationService:
 
     @staticmethod
     def _local(tag: str) -> str:
-        """Extract local tag name from qualified name."""
+        """
+        Internal helper ``_local``.
+
+        Parameters
+        ----------
+        tag : object
+            Argument ``tag``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if tag.startswith("{"):
             return tag.split("}", 1)[1]
         return tag
 
     @staticmethod
     def _norm_text(t: str | None) -> str:
-        """Normalize text by collapsing whitespace."""
+        """
+        Internal helper ``_norm_text``.
+
+        Parameters
+        ----------
+        t : object
+            Argument ``t``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if t is None:
             return ""
         return " ".join(t.split())
@@ -148,7 +172,21 @@ class EvaluationService:
         )
 
     def _collect_element_paths(self, root: ET.Element, prefix: str = "") -> list[str]:
-        """Collect all element paths in the tree."""
+        """
+        Internal helper ``_collect_element_paths``.
+
+        Parameters
+        ----------
+        root : object
+            Argument ``root``.
+        prefix : object
+            Argument ``prefix``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         paths: list[str] = []
         local_tag = self._local(root.tag)
         current_path = f"{prefix}/{local_tag}" if prefix else local_tag
@@ -162,7 +200,23 @@ class EvaluationService:
     def _find_value_mismatches(
         self, our_tree: ET.Element, their_tree: ET.Element, path: str = ""
     ) -> list[dict[str, str]]:
-        """Find value mismatches between trees."""
+        """
+        Internal helper ``_find_value_mismatches``.
+
+        Parameters
+        ----------
+        our_tree : object
+            Argument ``our_tree``.
+        their_tree : object
+            Argument ``their_tree``.
+        path : object
+            Argument ``path``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         mismatches: list[Any] = []
 
         our_tag = self._local(our_tree.tag)

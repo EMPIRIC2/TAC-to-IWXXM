@@ -81,7 +81,21 @@ class EdisSubmitResult:
 
 
 def _require_ascii(value: str, *, field: str) -> str:
-    """Internal helper ``_require_ascii``."""
+    """
+    Internal helper ``_require_ascii``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    field : object
+        Argument ``field``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not value.isascii():
         raise ValueError(f"EDIS {field} must be ASCII-only")
     return value
@@ -206,7 +220,21 @@ def build_edis_message(params: EdisParams, *, tac_body: str) -> str:
 
 
 def _redact_exc(exc: BaseException, params: EdisParams) -> str:
-    """Internal helper ``_redact_exc``."""
+    """
+    Internal helper ``_redact_exc``.
+
+    Parameters
+    ----------
+    exc : object
+        Argument ``exc``.
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = redact_secrets(str(exc))
     if params.password:
         text = text.replace(params.password, "REDACTED")
@@ -216,7 +244,16 @@ def _redact_exc(exc: BaseException, params: EdisParams) -> str:
 
 
 def _validate_edis_egress(params: EdisParams, allowlist: Allowlist) -> None:
-    """Internal helper ``_validate_edis_egress``."""
+    """
+    Internal helper ``_validate_edis_egress``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    allowlist : object
+        Argument ``allowlist``.
+    """
     validate_egress_host(params.smtp_host, allowlist=allowlist)
 
 

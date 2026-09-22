@@ -11,7 +11,21 @@ from tac_validate.product_rules_pkg._common import *
 
 
 def _count_families(text: str, families: tuple[tuple[str, re.Pattern[str]], ...]) -> list[str]:
-    """Internal helper ``_count_families``."""
+    """
+    Internal helper ``_count_families``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+    families : object
+        Argument ``families``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     found: list[str] = []
     for name, pattern in families:
         if pattern.search(text):
@@ -20,7 +34,23 @@ def _count_families(text: str, families: tuple[tuple[str, re.Pattern[str]], ...]
 
 
 def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
-    """F23 theme G1 - CNL / COR / STNR / geometry / single-alt / TOP ABV|BLW."""
+    """
+    Internal helper ``_check_sigmet_g1``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    upper : object
+        Argument ``upper``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     # ruff: noqa: F403, F405
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
@@ -143,7 +173,21 @@ def _check_sigmet_g1(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _sigmet_validity_hours(start: str, end: str) -> float | None:
-    """Return VALID period length in hours (coarse midnight/month wrap)."""
+    """
+    Internal helper ``_sigmet_validity_hours``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if len(start) != 6 or len(end) != 6 or not start.isdigit() or not end.isdigit():
         return None
     sd, sh, sm = int(start[:2]), int(start[2:4]), int(start[4:6])
@@ -166,7 +210,27 @@ def _check_sigmet_g2(
     is_va: bool = False,
     is_tc: bool = False,
 ) -> list[Issue]:
-    """F23 theme G2 - sequence / validity duration / FIR / OBS·FCST / intensity."""
+    """
+    Internal helper ``_check_sigmet_g2``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    upper : object
+        Argument ``upper``.
+    is_va : object
+        Argument ``is_va``.
+    is_tc : object
+        Argument ``is_tc``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -275,7 +339,23 @@ def _check_sigmet_g2(
 
 
 def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
-    """F24 theme A1 - AIRMET sequence number + FIR/CTA identity."""
+    """
+    Internal helper ``_check_airmet_a1``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    upper : object
+        Argument ``upper``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -327,7 +407,23 @@ def _check_airmet_a1(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
-    """F24 theme A2 - AIRMET phenomenon modifiers (OBS/STNR/WKN/TOP ABV)."""
+    """
+    Internal helper ``_check_airmet_a2``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    upper : object
+        Argument ``upper``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -402,7 +498,23 @@ def _check_airmet_a2(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
-    """F23 theme V1 - VA volcano identity / ash geometry / NO VA EXP / CNL FIR-moved."""
+    """
+    Internal helper ``_check_sigmet_v1``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    upper : object
+        Argument ``upper``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -468,7 +580,23 @@ def _check_sigmet_v1(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
-    """EV-030 theme TC - cyclone identity / OF TC CENTRE geometry (#829)."""
+    """
+    Internal helper ``_check_sigmet_tc``.
+
+    Parameters
+    ----------
+    start : object
+        Argument ``start``.
+    end : object
+        Argument ``end``.
+    upper : object
+        Argument ``upper``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues: list[Issue] = []
     core = upper[:-1] if upper.endswith("=") else upper
 
@@ -515,7 +643,23 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> list[Issue]:
-    """Internal helper ``_check_sigmet_airmet``."""
+    """
+    Internal helper ``_check_sigmet_airmet``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     start, end, body = _body_span(tac)
     upper = body.upper()
     core = upper[:-1] if upper.endswith("=") else upper

@@ -61,11 +61,15 @@ class WMOCodelistCache:
         cache_dir: Path,
         ttl_seconds: int = 604800,  # 1 week default
     ) -> None:
-        """Initialize cache.
+        """
+        Internal helper ``__init__``.
 
-        Args:
-            cache_dir: Directory to store cached data
-            ttl_seconds: Time to live for cached entries (default 1 week)
+        Parameters
+        ----------
+        cache_dir : object
+            Argument ``cache_dir``.
+        ttl_seconds : object
+            Argument ``ttl_seconds``.
         """
         self.cache_dir = cache_dir
         self.ttl = timedelta(seconds=ttl_seconds)
@@ -233,13 +237,19 @@ class WMOCodelistsClient:
         enable_online: bool = True,
         registry_url: str = "https://codes.wmo.int",
     ) -> None:
-        """Initialize WMO codelists client.
+        """
+        Internal helper ``__init__``.
 
-        Args:
-            codelists_dir: Path to local RDF codelists directory
-            cache_dir: Path to cache directory (default: codelists_dir/cache)
-            enable_online: Enable online validation for missing codelists
-            registry_url: Base URL for WMO registry
+        Parameters
+        ----------
+        codelists_dir : object
+            Argument ``codelists_dir``.
+        cache_dir : object
+            Argument ``cache_dir``.
+        enable_online : object
+            Argument ``enable_online``.
+        registry_url : object
+            Argument ``registry_url``.
         """
         self.parser = CodeListParser(codelists_dir)
         self.registry_url = registry_url
@@ -359,15 +369,20 @@ class WMOCodelistsClient:
         return self._validate_code(codelist, code)
 
     def _validate_code(self, codelist_name: str, code: str) -> bool:
-        """Internal code validation with cache fallback.
+        """
+        Internal helper ``_validate_code``.
 
-        Args:
-            codelist_name: Name of the codelist
-            code: Code value to validate
+        Parameters
+        ----------
+        codelist_name : object
+            Argument ``codelist_name``.
+        code : object
+            Argument ``code``.
 
         Returns
         -------
-            True if code is valid
+        object
+            Return value.
         """
         # Try local parser first
         if self.parser.validate_code(codelist_name, code):
@@ -393,14 +408,18 @@ class WMOCodelistsClient:
         return False
 
     def _fetch_codelist_online(self, codelist_name: str) -> set[str] | None:
-        """Fetch codelist from online WMO registry.
+        """
+        Internal helper ``_fetch_codelist_online``.
 
-        Args:
-            codelist_name: Name of the codelist
+        Parameters
+        ----------
+        codelist_name : object
+            Argument ``codelist_name``.
 
         Returns
         -------
-            Set of codes or None if fetch failed
+        object
+            Return value.
         """
         if not REQUESTS_AVAILABLE:
             return None

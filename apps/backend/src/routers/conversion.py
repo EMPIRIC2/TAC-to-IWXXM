@@ -59,7 +59,19 @@ logger = logging.getLogger(__name__)
 
 
 def _convert_output_policy_id(profile: str) -> str:
-    """Same IWXXM output policy id ``POST /api/v1/validate`` resolves for this profile."""
+    """
+    Internal helper ``_convert_output_policy_id``.
+
+    Parameters
+    ----------
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return resolve_validation_policies(profile or "annex3").iwxxm_output_policy_id
 
 
@@ -67,7 +79,19 @@ router = APIRouter(prefix="/api/v1", tags=["Conversion"])
 
 
 def _form_text(value: object) -> str:
-    """Coerce FastAPI Form values (or direct-call Form defaults) to str."""
+    """
+    Internal helper ``_form_text``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return value if isinstance(value, str) else ""
 
 
@@ -77,7 +101,23 @@ def _resolve_effective_iwxxm_version(
     semantic_canonical: str | None,
     emit_profile: str,
 ) -> str:
-    """Resolve and validate request IWXXM version for a semantic profile."""
+    """
+    Internal helper ``_resolve_effective_iwxxm_version``.
+
+    Parameters
+    ----------
+    requested_version : object
+        Argument ``requested_version``.
+    semantic_canonical : object
+        Argument ``semantic_canonical``.
+    emit_profile : object
+        Argument ``emit_profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     requested = requested_version.strip()
     if not requested:
         requested = CA_IWXXM_VERSION if semantic_canonical == "ca_eccc" else "2025-2"
@@ -113,7 +153,19 @@ def _resolve_effective_iwxxm_version(
 
 
 def _wire_payload_dict(raw_obj: object) -> dict[str, Any]:
-    """Normalize tac2iwxxm issue/span payloads to plain dicts."""
+    """
+    Internal helper ``_wire_payload_dict``.
+
+    Parameters
+    ----------
+    raw_obj : object
+        Argument ``raw_obj``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     model_dump = getattr(raw_obj, "model_dump", None)
     if callable(model_dump):
         return cast(dict[str, Any], model_dump())
@@ -123,7 +175,23 @@ def _wire_payload_dict(raw_obj: object) -> dict[str, Any]:
 
 
 def _resolve_report_variant(emit_profile: str, product: str, requested_variant: str | None) -> str | None:
-    """Validate and normalize optional report-variant request input."""
+    """
+    Internal helper ``_resolve_report_variant``.
+
+    Parameters
+    ----------
+    emit_profile : object
+        Argument ``emit_profile``.
+    product : object
+        Argument ``product``.
+    requested_variant : object
+        Argument ``requested_variant``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = (requested_variant or "").strip()
     if not raw:
         return None
@@ -158,7 +226,23 @@ def _resolve_report_variant(emit_profile: str, product: str, requested_variant: 
 
 
 def _infer_report_variant_from_sample(emit_profile: str, product: str, sample_text: str | None) -> str | None:
-    """Infer the resolved report variant from TAC lead when the request omits it."""
+    """
+    Internal helper ``_infer_report_variant_from_sample``.
+
+    Parameters
+    ----------
+    emit_profile : object
+        Argument ``emit_profile``.
+    product : object
+        Argument ``product``.
+    sample_text : object
+        Argument ``sample_text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     supported_variants = supported_report_variants_for_profile(emit_profile, product)
     if not supported_variants:
         return None
@@ -461,7 +545,18 @@ async def _process_json_metars(
     runtime: _ConvertRuntime,
     acc: _ConvertAccumulator,
 ) -> None:
-    """Internal helper ``_process_json_metars``."""
+    """
+    Internal helper ``_process_json_metars``.
+
+    Parameters
+    ----------
+    metars_list : object
+        Argument ``metars_list``.
+    runtime : object
+        Argument ``runtime``.
+    acc : object
+        Argument ``acc``.
+    """
     for metar_text in metars_list:
         if not metar_text.strip():
             continue
@@ -734,7 +829,18 @@ async def _process_manual_entries(
     runtime: _ConvertRuntime,
     acc: _ConvertAccumulator,
 ) -> None:
-    """Internal helper ``_process_manual_entries``."""
+    """
+    Internal helper ``_process_manual_entries``.
+
+    Parameters
+    ----------
+    manual_with_offsets : object
+        Argument ``manual_with_offsets``.
+    runtime : object
+        Argument ``runtime``.
+    acc : object
+        Argument ``acc``.
+    """
     for manual_index, (manual_entry, entry_offset) in enumerate(manual_with_offsets, 1):
         acc.total_inputs += 1
         manual_source = f"manual_input_{manual_index}" if len(manual_with_offsets) > 1 else "manual_input"
@@ -981,7 +1087,18 @@ async def _process_uploaded_files(
     runtime: _ConvertRuntime,
     acc: _ConvertAccumulator,
 ) -> None:
-    """Internal helper ``_process_uploaded_files``."""
+    """
+    Internal helper ``_process_uploaded_files``.
+
+    Parameters
+    ----------
+    files : object
+        Argument ``files``.
+    runtime : object
+        Argument ``runtime``.
+    acc : object
+        Argument ``acc``.
+    """
     if not files:
         return
 
@@ -1303,7 +1420,16 @@ def _append_pre_convert_lint_issues(
     *,
     acc: _ConvertAccumulator,
 ) -> None:
-    """Internal helper ``_append_pre_convert_lint_issues``."""
+    """
+    Internal helper ``_append_pre_convert_lint_issues``.
+
+    Parameters
+    ----------
+    pre_convert_lint_report : object
+        Argument ``pre_convert_lint_report``.
+    acc : object
+        Argument ``acc``.
+    """
     if pre_convert_lint_report is None:
         return
     for lint_issue in pre_convert_lint_report.issues:
@@ -1455,7 +1581,19 @@ async def convert_bulletin(
             profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
         def _custom_engine(asset_id: str) -> str | None:
-            """Internal helper ``_custom_engine``."""
+            """
+            Internal helper ``_custom_engine``.
+
+            Parameters
+            ----------
+            asset_id : object
+                Argument ``asset_id``.
+
+            Returns
+            -------
+            object
+                Return value.
+            """
             if profiles_service is None:
                 return None
             try:
@@ -1604,7 +1742,19 @@ async def convert_bulletin(
         dissem_profiles = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
     def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
-        """Internal helper ``_custom_dissem_body``."""
+        """
+        Internal helper ``_custom_dissem_body``.
+
+        Parameters
+        ----------
+        asset_id : object
+            Argument ``asset_id``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if dissem_profiles is None:
             return None
         try:
@@ -2099,7 +2249,19 @@ async def convert(
         )
 
     def _custom_engine(asset_id: str) -> str | None:
-        """Internal helper ``_custom_engine``."""
+        """
+        Internal helper ``_custom_engine``.
+
+        Parameters
+        ----------
+        asset_id : object
+            Argument ``asset_id``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if profiles_service is None:
             return None
         try:
@@ -2508,7 +2670,21 @@ async def convert(
         request_metadata["output_spec"] = output_spec
 
     def _finalize_exchange_xml(xml: str, tac_input: str | None) -> str:
-        """Internal helper ``_finalize_exchange_xml``."""
+        """
+        Internal helper ``_finalize_exchange_xml``.
+
+        Parameters
+        ----------
+        xml : object
+            Argument ``xml``.
+        tac_input : object
+            Argument ``tac_input``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         spec_filename: str | None = None
         meta_output_spec = request_metadata.get("output_spec")
         if isinstance(meta_output_spec, dict):

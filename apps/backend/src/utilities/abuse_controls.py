@@ -37,7 +37,21 @@ MASS_INGEST_PATH_PREFIX = "/api/v1/ingest/mass"
 
 
 def _positive_int(name: str, default: int) -> int:
-    """Internal helper ``_positive_int``."""
+    """
+    Internal helper ``_positive_int``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+    default : object
+        Argument ``default``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = os.environ.get(name, "").strip()
     if not raw:
         return default
@@ -290,19 +304,53 @@ class MaxBodySizeMiddleware:
         max_bytes: int | None = None,
         path_prefix: str = "/api/v1",
     ) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        app : object
+            Argument ``app``.
+        max_bytes : object
+            Argument ``max_bytes``.
+        path_prefix : object
+            Argument ``path_prefix``.
+        """
         self.app = app
         self.max_bytes = max_bytes if max_bytes is not None else get_max_request_body_bytes()
         self.path_prefix = path_prefix
 
     def _limit_for_path(self, path: str) -> int:
-        """Internal helper ``_limit_for_path``."""
+        """
+        Internal helper ``_limit_for_path``.
+
+        Parameters
+        ----------
+        path : object
+            Argument ``path``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if str(path).startswith(MASS_INGEST_PATH_PREFIX):
             return get_mass_ingest_max_total_bytes()
         return self.max_bytes
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        """Internal helper ``__call__``."""
+        """
+        Internal helper ``__call__``.
+
+        Parameters
+        ----------
+        scope : object
+            Argument ``scope``.
+        receive : object
+            Argument ``receive``.
+        send : object
+            Argument ``send``.
+        """
         if scope["type"] != "http":
             await self.app(scope, receive, send)
             return

@@ -25,7 +25,19 @@ _WORKING_DIRS: dict[str, Path] = {}
 
 
 def _uses_xslt2(sch_path: Path) -> bool:
-    """Internal helper ``_uses_xslt2``."""
+    """
+    Internal helper ``_uses_xslt2``.
+
+    Parameters
+    ----------
+    sch_path : object
+        Argument ``sch_path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         head = sch_path.read_text(encoding="utf-8", errors="replace")[:4000]
     except OSError:
@@ -34,7 +46,19 @@ def _uses_xslt2(sch_path: Path) -> bool:
 
 
 def _setup_working_directory(iwxxm_version: str) -> Path:
-    """Internal helper ``_setup_working_directory``."""
+    """
+    Internal helper ``_setup_working_directory``.
+
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if iwxxm_version in _WORKING_DIRS:
         return _WORKING_DIRS[iwxxm_version]
 
@@ -49,7 +73,17 @@ def _setup_working_directory(iwxxm_version: str) -> Path:
 @lru_cache(maxsize=16)
 def _compile_schematron(iwxxm_version: str) -> Any | None:
     """
-    Compile Schematron or return ``None`` to signal non-blocking skip (xslt2).
+    Internal helper ``_compile_schematron``.
+
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     sch_path = schematron_path(iwxxm_version)
     if _uses_xslt2(sch_path):

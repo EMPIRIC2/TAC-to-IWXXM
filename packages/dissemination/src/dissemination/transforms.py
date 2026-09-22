@@ -180,7 +180,21 @@ def apply_dissemination_transforms(
 
 
 def _ensure_collect_then_set_bulletin_id(xml: str, bulletin_id: str) -> str:
-    """Internal helper ``_ensure_collect_then_set_bulletin_id``."""
+    """
+    Internal helper ``_ensure_collect_then_set_bulletin_id``.
+
+    Parameters
+    ----------
+    xml : object
+        Argument ``xml``.
+    bulletin_id : object
+        Argument ``bulletin_id``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     wrapped = wrap_global_afs_collect(xml, bulletin_identifier=bulletin_id)
     if _BULLETIN_ID_RE.search(wrapped):
         return _BULLETIN_ID_RE.sub(
@@ -192,7 +206,19 @@ def _ensure_collect_then_set_bulletin_id(xml: str, bulletin_id: str) -> str:
 
 
 def _apply_checksum_comment(xml: str) -> tuple[str, str]:
-    """Internal helper ``_apply_checksum_comment``."""
+    """
+    Internal helper ``_apply_checksum_comment``.
+
+    Parameters
+    ----------
+    xml : object
+        Argument ``xml``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     stripped = _CHECKSUM_COMMENT_RE.sub("", xml)
     digest = hashlib.sha256(stripped.encode("utf-8")).hexdigest()
     comment = f"<!-- dissemination-checksum:{digest} -->\n"
@@ -207,7 +233,21 @@ def _apply_checksum_comment(xml: str) -> tuple[str, str]:
 
 
 def _bulletin_rewrap(xml: str, *, bulletin_identifier: str | None) -> str:
-    """Internal helper ``_bulletin_rewrap``."""
+    """
+    Internal helper ``_bulletin_rewrap``.
+
+    Parameters
+    ----------
+    xml : object
+        Argument ``xml``.
+    bulletin_identifier : object
+        Argument ``bulletin_identifier``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not is_collect_bulletin(xml):
         return wrap_global_afs_collect(xml, bulletin_identifier=bulletin_identifier)
     # Unwrap member for a fresh COLLECT shell

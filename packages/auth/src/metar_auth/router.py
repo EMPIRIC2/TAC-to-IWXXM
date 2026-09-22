@@ -62,7 +62,19 @@ class LoginRequest(BaseModel):
     @field_validator("email")
     @classmethod
     def _email(cls, value: str) -> str:
-        """Internal helper ``_email``."""
+        """
+        Internal helper ``_email``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return validate_email_permissive(value)
 
 
@@ -82,7 +94,19 @@ class RegisterRequest(BaseModel):
     @field_validator("email")
     @classmethod
     def _email(cls, value: str) -> str:
-        """Internal helper ``_email``."""
+        """
+        Internal helper ``_email``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return validate_email_permissive(value)
 
 
@@ -102,7 +126,19 @@ class ConfirmRequest(BaseModel):
     @field_validator("type")
     @classmethod
     def _type(cls, value: str) -> str:
-        """Internal helper ``_type``."""
+        """
+        Internal helper ``_type``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         allowed = {
             "email",
             "signup",
@@ -179,7 +215,19 @@ class LogoutRequest(BaseModel):
     @field_validator("scope")
     @classmethod
     def _scope(cls, value: str | None) -> str | None:
-        """Internal helper ``_scope``."""
+        """
+        Internal helper ``_scope``.
+
+        Parameters
+        ----------
+        value : object
+            Argument ``value``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if value is None or value == "":
             return None
         allowed = {"global", "local", "others"}
@@ -268,7 +316,14 @@ def create_auth_router(
     auth_proxy = proxy or SupabaseAuthProxy(supabase_url=supabase_url)
 
     def _proxy() -> SupabaseAuthProxy:
-        """Internal helper ``_proxy``."""
+        """
+        Internal helper ``_proxy``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return auth_proxy
 
     @router.post("/register", response_model=AuthResponse)

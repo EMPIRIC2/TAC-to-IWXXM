@@ -115,7 +115,20 @@ def _dispatch_stores(
     store_valid: StorePort | None,
     store_invalid: StorePort | None,
 ) -> None:
-    """Internal helper ``_dispatch_stores``."""
+    """
+    Internal helper ``_dispatch_stores``.
+
+    Parameters
+    ----------
+    result : object
+        Argument ``result``.
+    definition : object
+        Argument ``definition``.
+    store_valid : object
+        Argument ``store_valid``.
+    store_invalid : object
+        Argument ``store_invalid``.
+    """
     if result.ok and store_valid is not None:
         for sink in definition.on_valid_store:
             store_valid(result, sink=sink)

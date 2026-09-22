@@ -107,11 +107,15 @@ class OpenAIPClient:
     """
 
     def __init__(self, data_path: Path | None = None, api_key: str | None = None) -> None:
-        """Initialize OpenAIP client.
+        """
+        Internal helper ``__init__``.
 
-        Args:
-            data_path: Path to local OpenAIP data cache
-            api_key: OpenAIP API key for live queries
+        Parameters
+        ----------
+        data_path : object
+            Argument ``data_path``.
+        api_key : object
+            Argument ``api_key``.
         """
         self.data_path = data_path or Path("data/open-aip")
         self.api_key = api_key
@@ -147,7 +151,19 @@ class OpenAIPClient:
         self._loaded = True
 
     def _parse_feature(self, feature: dict[str, Any]) -> Airport | None:
-        """Parse GeoJSON feature into Airport object."""
+        """
+        Internal helper ``_parse_feature``.
+
+        Parameters
+        ----------
+        feature : object
+            Argument ``feature``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         properties = feature.get("properties", {})
         geometry = feature.get("geometry")
 
@@ -334,7 +350,16 @@ async def download_openaip_data(
                 payload = response.json()
 
                 def _write(out: Path = output_file, data: object = payload) -> None:
-                    """Internal helper ``_write``."""
+                    """
+                    Internal helper ``_write``.
+
+                    Parameters
+                    ----------
+                    out : object
+                        Argument ``out``.
+                    data : object
+                        Argument ``data``.
+                    """
                     with open(out, "w", encoding="utf-8") as f:
                         json.dump(data, f, indent=2)
 

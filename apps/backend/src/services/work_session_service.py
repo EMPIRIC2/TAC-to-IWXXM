@@ -34,10 +34,12 @@ _sessions_table: Table | None = None
 
 def _sync_database_url() -> str:
     """
-    Normalize ``DATABASE_URL`` for sync SQLAlchemy + psycopg.
+    Internal helper ``_sync_database_url``.
 
-    Runtime DOKS pins often use ``postgresql+asyncpg://…?ssl=require`` (async API
-    pool). Sync work-sessions must use psycopg, which expects ``sslmode=require``.
+    Returns
+    -------
+    object
+        Return value.
     """
     raw = (os.environ.get("DATABASE_URL") or "").strip()
     if not raw:
@@ -60,7 +62,14 @@ def _sync_database_url() -> str:
 
 
 def _get_engine() -> Engine:
-    """Internal helper ``_get_engine``."""
+    """
+    Internal helper ``_get_engine``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _engine
     if _engine is None:
         _engine = create_engine(_sync_database_url(), pool_pre_ping=True)
@@ -68,7 +77,14 @@ def _get_engine() -> Engine:
 
 
 def _table() -> Table:
-    """Internal helper ``_table``."""
+    """
+    Internal helper ``_table``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _sessions_table
     if _sessions_table is None:
         _sessions_table = Table(TABLE, _metadata, autoload_with=_get_engine())
@@ -76,7 +92,19 @@ def _table() -> Table:
 
 
 def _parse_row(row: dict[str, Any]) -> WorkSession:
-    """Internal helper ``_parse_row``."""
+    """
+    Internal helper ``_parse_row``.
+
+    Parameters
+    ----------
+    row : object
+        Argument ``row``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return WorkSession.model_validate(row)
 
 
@@ -85,7 +113,21 @@ def _payload_dict(
     *,
     user_id: str | None = None,
 ) -> dict[str, Any]:
-    """Internal helper ``_payload_dict``."""
+    """
+    Internal helper ``_payload_dict``.
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    user_id : object
+        Argument ``user_id``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     data = payload.model_dump(exclude_unset=True, exclude_none=True)
     if user_id is not None:
         data["user_id"] = user_id
@@ -101,7 +143,19 @@ def _payload_dict(
 
 
 def _handle_db_error(exc: Exception) -> NoReturn:
-    """Internal helper ``_handle_db_error``."""
+    """
+    Internal helper ``_handle_db_error``.
+
+    Parameters
+    ----------
+    exc : object
+        Argument ``exc``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     message = str(exc)
     if WIP_CONFLICT in message or "tac_work_sessions_one_wip_per_user" in message:
         raise HTTPException(
@@ -136,7 +190,14 @@ class WorkSessionService:
     """
 
     def __init__(self, user_id: str) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        user_id : object
+            Argument ``user_id``.
+        """
         self.user_id = str(user_id)
 
     def list_sessions(
@@ -367,7 +428,21 @@ class WorkSessionService:
         return self._set_deleted(session_id, deleted=False)
 
     def _set_deleted(self, session_id: UUID, *, deleted: bool) -> WorkSession:
-        """Internal helper ``_set_deleted``."""
+        """
+        Internal helper ``_set_deleted``.
+
+        Parameters
+        ----------
+        session_id : object
+            Argument ``session_id``.
+        deleted : object
+            Argument ``deleted``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         self.get_session(session_id)
         table = _table()
         stamp = datetime.now(UTC) if deleted else None

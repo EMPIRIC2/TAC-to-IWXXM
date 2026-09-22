@@ -34,11 +34,14 @@ class SchemaMirrorService:
 
     def __init__(self, base_path: Path, timeout_seconds: int = 60) -> None:
         """
-        Initialize the mirror service.
+        Internal helper ``__init__``.
 
-        Args:
-            base_path: Root directory for mirrored schemas (e.g., PROJECT_ROOT/schemas/iwxxm)
-            timeout_seconds: HTTP request timeout
+        Parameters
+        ----------
+        base_path : object
+            Argument ``base_path``.
+        timeout_seconds : object
+            Argument ``timeout_seconds``.
         """
         self.base_path = Path(base_path)
         self.timeout_seconds = timeout_seconds
@@ -142,12 +145,16 @@ class SchemaMirrorService:
 
     async def _download_xsd_tree(self, xsd_url: str, target_dir: Path, manifest: dict[str, dict[str, Any]]) -> None:
         """
-        Recursively download XSD and all imports/includes.
+        Internal helper ``_download_xsd_tree``.
 
-        Args:
-            xsd_url: URL to XSD file
-            target_dir: Local directory for this file
-            manifest: Dictionary to populate with file metadata
+        Parameters
+        ----------
+        xsd_url : object
+            Argument ``xsd_url``.
+        target_dir : object
+            Argument ``target_dir``.
+        manifest : object
+            Argument ``manifest``.
         """
         if xsd_url in self.downloaded_files:
             return
@@ -203,13 +210,18 @@ class SchemaMirrorService:
         self, xsd_content: str, base_url: str, target_dir: Path, manifest: dict[str, Any]
     ) -> None:
         """
-        Extract and download XSD imports/includes.
+        Internal helper ``_process_xsd_imports``.
 
-        Args:
-            xsd_content: XSD file content as string
-            base_url: Base URL for resolving relative imports
-            target_dir: Target directory
-            manifest: Manifest dictionary
+        Parameters
+        ----------
+        xsd_content : object
+            Argument ``xsd_content``.
+        base_url : object
+            Argument ``base_url``.
+        target_dir : object
+            Argument ``target_dir``.
+        manifest : object
+            Argument ``manifest``.
         """
         import re
 
@@ -239,13 +251,18 @@ class SchemaMirrorService:
         self, directory_url: str, target_dir: Path, manifest: dict[str, Any], skip_on_404: bool = False
     ) -> None:
         """
-        Download all files from a directory listing (Apache-style index).
+        Internal helper ``_download_directory``.
 
-        Args:
-            directory_url: URL to directory (must end with /)
-            target_dir: Local target directory
-            manifest: Manifest dictionary to update
-            skip_on_404: If True, silently skip if directory doesn't exist
+        Parameters
+        ----------
+        directory_url : object
+            Argument ``directory_url``.
+        target_dir : object
+            Argument ``target_dir``.
+        manifest : object
+            Argument ``manifest``.
+        skip_on_404 : object
+            Argument ``skip_on_404``.
         """
         async with httpx.AsyncClient(timeout=self.timeout_seconds, follow_redirects=True) as client:
             try:
@@ -298,12 +315,16 @@ class SchemaMirrorService:
 
     async def _download_file(self, file_url: str, target_dir: Path, manifest: dict[str, Any]) -> None:
         """
-        Download a single file and add to manifest.
+        Internal helper ``_download_file``.
 
-        Args:
-            file_url: URL to file
-            target_dir: Local target directory
-            manifest: Manifest dictionary to update
+        Parameters
+        ----------
+        file_url : object
+            Argument ``file_url``.
+        target_dir : object
+            Argument ``target_dir``.
+        manifest : object
+            Argument ``manifest``.
         """
         if file_url in self.downloaded_files:
             return
@@ -348,11 +369,14 @@ class SchemaMirrorService:
 
     async def _update_lockfile(self, version: str, manifest_data: dict[str, Any]) -> None:
         """
-        Update global schemas.lock.json with new version.
+        Internal helper ``_update_lockfile``.
 
-        Args:
-            version: Version string
-            manifest_data: Manifest data for this version
+        Parameters
+        ----------
+        version : object
+            Argument ``version``.
+        manifest_data : object
+            Argument ``manifest_data``.
         """
         lockfile_path = self.base_path / "schemas.lock.json"
 

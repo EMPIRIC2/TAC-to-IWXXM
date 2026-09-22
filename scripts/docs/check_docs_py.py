@@ -81,8 +81,51 @@ def _has_args(node: ast.FunctionDef | ast.AsyncFunctionDef) -> bool:
     return bool(names or args.kwonlyargs or args.vararg or args.kwarg)
 
 
+def _doc_ok_private_fn(
+    doc: str | None, *, has_args: bool, has_return: bool
+) -> list[str]:
+    """Return private-function shape violations (Examples optional).
+
+    Parameters
+    ----------
+    doc : str | None
+        Function docstring text.
+    has_args : bool
+        True when the signature has non-self parameters.
+    has_return : bool
+        True when a non-``None`` return annotation is present.
+
+    Returns
+    -------
+    list[str]
+        Human-readable violation labels (empty when OK).
+    """
+    issues: list[str] = []
+    if not doc or not doc.strip():
+        return ["missing docstring"]
+    if has_args and not PARAMS_RE.search(doc):
+        issues.append("missing Parameters section")
+    if has_return and not RETURNS_RE.search(doc):
+        issues.append("missing Returns section")
+    return issues
+
+
 def _doc_ok_private(doc: str | None) -> bool:
-    """Private helpers need a non-empty docstring (NumPy sections optional)."""
+    """Private helpers need a non-empty docstring (NumPy sections optional).
+
+    Deprecated for functions — use :func:`_doc_ok_private_fn`. Still used for
+    private classes (presence-only).
+
+    Parameters
+    ----------
+    doc : str | None
+        Class or helper docstring.
+
+    Returns
+    -------
+    bool
+        True when ``doc`` is non-empty.
+    """
     return bool(doc and doc.strip())
 
 
@@ -180,9 +223,13 @@ def check_file(path: Path) -> list[str]:
             doc = ast.get_docstring(node)
             public = not node.name.startswith("_")
             if not public:
-                if not _doc_ok_private(doc):
+                for issue in _doc_ok_private_fn(
+                    doc,
+                    has_args=_has_args(node),
+                    has_return=_returns_annotation(node),
+                ):
                     missing.append(
-                        f"{path}:{node.lineno} function {node.name}: missing docstring"
+                        f"{path}:{node.lineno} function {node.name}: {issue}"
                     )
                 return
             issues = _doc_ok_public_fn(

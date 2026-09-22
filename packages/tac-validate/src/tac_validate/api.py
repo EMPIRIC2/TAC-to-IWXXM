@@ -23,7 +23,23 @@ def _lint_tac_report(
     product: str,
     profile: str,
 ) -> LintReport:
-    """Lint a single TAC report (no AHL split)."""
+    """
+    Internal helper ``_lint_tac_report``.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    product : object
+        Argument ``product``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     product_u = product.upper()
     issues, fixes = check_parse_gate(tac_text, product_u, profile=profile)
     if not any(i.severity == "error" for i in issues):

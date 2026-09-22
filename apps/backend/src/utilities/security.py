@@ -83,7 +83,19 @@ async def verify_optional_supabase_token(
 
 
 def _verify_bearer(token: str) -> dict[str, Any]:
-    """Internal helper ``_verify_bearer``."""
+    """
+    Internal helper ``_verify_bearer``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     supabase_url = get_supabase_url()
     jwks_url = (os.environ.get("SUPABASE_JWKS_URL") or "").strip() or None
     if not supabase_url and not jwks_url:

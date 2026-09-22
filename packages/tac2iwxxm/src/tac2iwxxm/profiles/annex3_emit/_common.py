@@ -24,7 +24,19 @@ _WMO_MULTI_VA_FCST_TIME_ID = "uuid.cce9b23a-d604-4194-8f73-2b7357ee4a9c"
 
 
 def _ns(iwxxm_version: str) -> str:
-    """Internal helper ``_ns``."""
+    """
+    Internal helper ``_ns``.
+
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     ns = _NS.get(iwxxm_version)
     if ns is None:
         raise ValueError(f"unsupported iwxxm_version for annex3 emit: {iwxxm_version}")
@@ -32,7 +44,19 @@ def _ns(iwxxm_version: str) -> str:
 
 
 def _fmt_coord(value: float) -> str:
-    """Internal helper ``_fmt_coord``."""
+    """
+    Internal helper ``_fmt_coord``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = f"{value:.2f}"
     if text.endswith(".00"):
         return text[:-3]

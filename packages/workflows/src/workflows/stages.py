@@ -36,7 +36,25 @@ class StageOutcome:
 
 
 def _issue(stage: str, severity: str, code: str, message: str) -> StageIssue:
-    """Internal helper ``_issue``."""
+    """
+    Internal helper ``_issue``.
+
+    Parameters
+    ----------
+    stage : object
+        Argument ``stage``.
+    severity : object
+        Argument ``severity``.
+    code : object
+        Argument ``code``.
+    message : object
+        Argument ``message``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return StageIssue(stage=stage, severity=severity, code=code, message=message)
 
 
@@ -122,7 +140,25 @@ def _iwxxm_stage(
     xml: str,
     definition: WorkflowDefinition,
 ) -> StageOutcome:
-    """Internal helper ``_iwxxm_stage``."""
+    """
+    Internal helper ``_iwxxm_stage``.
+
+    Parameters
+    ----------
+    stage : object
+        Argument ``stage``.
+    levels : object
+        Argument ``levels``.
+    xml : object
+        Argument ``xml``.
+    definition : object
+        Argument ``definition``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     report = iwxxm_validate_fn(
         xml,
         iwxxm_version=definition.iwxxm_version,

@@ -193,18 +193,56 @@ _CONUS_AIR_LEAD = re.compile(r"^AIRMET\s+[A-Z]+\.\.\.", re.IGNORECASE)
 
 
 def _normalize(tac: str) -> str:
-    """Internal helper ``_normalize``."""
+    """
+    Internal helper ``_normalize``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     lines = [ln.strip() for ln in tac.strip().rstrip("=").splitlines() if ln.strip()]
     return " ".join(lines)
 
 
 def _parse_valid(token: str) -> tuple[int, int, int]:
-    """Internal helper ``_parse_valid``."""
+    """
+    Internal helper ``_parse_valid``.
+
+    Parameters
+    ----------
+    token : object
+        Argument ``token``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return int(token[0:2]), int(token[2:4]), int(token[4:6])
 
 
 def _detect_phenomenon(body: str, table: tuple[tuple[str, str], ...]) -> str:
-    """Internal helper ``_detect_phenomenon``."""
+    """
+    Internal helper ``_detect_phenomenon``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+    table : object
+        Argument ``table``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     upper = body.upper()
     for needle, code in table:
         if needle in upper:
@@ -213,7 +251,19 @@ def _detect_phenomenon(body: str, table: tuple[tuple[str, str], ...]) -> str:
 
 
 def _detect_ca_gfa_phenomenon(body: str) -> str | None:
-    """Return MSC code-ca id when body encodes a MANAIR GFA compound phenomenon."""
+    """
+    Internal helper ``_detect_ca_gfa_phenomenon``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     upper = body.upper()
     for needle, code in _CA_GFA_PHENOMENA:
         if needle in upper:
@@ -222,7 +272,21 @@ def _detect_ca_gfa_phenomenon(body: str) -> str | None:
 
 
 def _parse_ca_gfa_structured(body: str, gfa_code: str) -> dict[str, Any] | None:
-    """Extract GFA structured ranges for SFC VIS compound phenomena."""
+    """
+    Internal helper ``_parse_ca_gfa_structured``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+    gfa_code : object
+        Argument ``gfa_code``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if gfa_code not in {"SFC_VIS_and_BKN_CLD", "SFC_VIS_and_OVC_CLD"}:
         return None
     structured: dict[str, Any] = {}
@@ -247,7 +311,19 @@ def _parse_ca_gfa_structured(body: str, gfa_code: str) -> dict[str, Any] | None:
 
 
 def _detect_intensity(body: str) -> str:
-    """Internal helper ``_detect_intensity``."""
+    """
+    Internal helper ``_detect_intensity``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     upper = body.upper()
     for token, code in _INTENSITY.items():
         if re.search(rf"\b{token}\b", upper):
@@ -256,7 +332,19 @@ def _detect_intensity(body: str) -> str:
 
 
 def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
-    """Internal helper ``_point_lat_lon``."""
+    """
+    Internal helper ``_point_lat_lon``.
+
+    Parameters
+    ----------
+    match : object
+        Argument ``match``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     lat = int(match.group("lat_deg")) + int(match.group("lat_min")) / 60.0
     lon = int(match.group("lon_deg")) + int(match.group("lon_min")) / 60.0
     if match.group("lon_hemi").upper() == "W":
@@ -265,7 +353,19 @@ def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
 
 
 def _polygon_from_wi_body(wi_body: str) -> dict[str, Any] | None:
-    """Build a closed polygon geometry from a WI coordinate body, or None."""
+    """
+    Internal helper ``_polygon_from_wi_body``.
+
+    Parameters
+    ----------
+    wi_body : object
+        Argument ``wi_body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     pts = [_point_lat_lon(m) for m in _POINT.finditer(wi_body)]
     if len(pts) < 3:
         return None
@@ -276,7 +376,19 @@ def _polygon_from_wi_body(wi_body: str) -> dict[str, Any] | None:
 
 
 def _parse_va_eruption(body: str) -> dict[str, Any] | None:
-    """Internal helper ``_parse_va_eruption``."""
+    """
+    Internal helper ``_parse_va_eruption``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     match = _VA_ERUPTION.search(body)
     if match is None:
         return None
@@ -285,7 +397,19 @@ def _parse_va_eruption(body: str) -> dict[str, Any] | None:
 
 
 def _parse_va_locations(body: str) -> list[dict[str, Any]]:
-    """Parse AND-joined OBS/FCST VA cloud locations (#809 multi-location)."""
+    """
+    Internal helper ``_parse_va_locations``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     locations: list[dict[str, Any]] = []
     for match in _VA_LOCATION.finditer(body):
         obs_geom = _polygon_from_wi_body(match.group("obs_wi"))
@@ -321,7 +445,16 @@ def _parse_va_locations(body: str) -> list[dict[str, Any]]:
 
 
 def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
-    """Attach exceptional-rule fields from SIGMET/AIRMET body (F23 / F24 / #733/#731)."""
+    """
+    Internal helper ``_enrich_hazard_body``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    body : object
+        Argument ``body``.
+    """
     upper = body.upper()
     cnl = _CNL.search(body)
     if cnl is not None:
@@ -494,12 +627,33 @@ def _enrich_hazard_body(ir: dict[str, Any], body: str) -> None:
 
 
 def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
-    """Backward-compatible alias for SIGMET body enrichment."""
+    """
+    Internal helper ``_enrich_sigmet_body``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    body : object
+        Argument ``body``.
+    """
     _enrich_hazard_body(ir, body)
 
 
 def _parse_until_token(until: str) -> tuple[int, int, int]:
-    """Parse ``VALID UNTIL`` token (``hhmm`` or ``ddhhmm``) into day/hour/minute."""
+    """
+    Internal helper ``_parse_until_token``.
+
+    Parameters
+    ----------
+    until : object
+        Argument ``until``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if len(until) >= 6:
         return int(until[0:2]), int(until[2:4]), int(until[4:6])
     hour = int(until[0:2])
@@ -508,7 +662,14 @@ def _parse_until_token(until: str) -> tuple[int, int, int]:
 
 
 def _attach_us_airmet_hazard(ir: dict[str, Any]) -> None:
-    """Map parsed AIRMET phenomenon to iwxxm-us ``AIRMETWeatherHazards`` when required."""
+    """
+    Internal helper ``_attach_us_airmet_hazard``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    """
     phen = ir.get("phenomenon")
     if phen == "SFC_VIS":
         ir["us_airmet_hazard"] = {
@@ -518,7 +679,19 @@ def _attach_us_airmet_hazard(ir: dict[str, Any]) -> None:
 
 
 def _split_airmet_main_and_outlook(body: str) -> tuple[str, str | None]:
-    """Split AIRMET body into active and optional ``OTLK VALID`` outlook subsection."""
+    """
+    Internal helper ``_split_airmet_main_and_outlook``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     match = re.search(r"\bOTLK\b", body, flags=re.IGNORECASE)
     if match is None:
         return body, None
@@ -526,7 +699,19 @@ def _split_airmet_main_and_outlook(body: str) -> tuple[str, str | None]:
 
 
 def _split_frzlvl_section(body: str) -> tuple[str, str | None]:
-    """Split optional standalone ``FRZLVL...`` subsection from the hazard body."""
+    """
+    Internal helper ``_split_frzlvl_section``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     match = _FRZLVL_SECTION.search(body)
     if match is None:
         return body, None
@@ -534,7 +719,19 @@ def _split_frzlvl_section(body: str) -> tuple[str, str | None]:
 
 
 def _strip_conus_airmet_lead(body: str) -> str:
-    """Remove ``AIRMET ICE...`` phenomenon lead from a CONUS product body."""
+    """
+    Internal helper ``_strip_conus_airmet_lead``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not _CONUS_AIR_LEAD.match(body):
         return body
     from_match = re.search(r"\bFROM\b", body, flags=re.IGNORECASE)
@@ -550,7 +747,19 @@ def _strip_conus_airmet_lead(body: str) -> str:
 
 
 def _phenomenon_from_conus_for_text(for_text: str) -> str:
-    """Map CONUS ``FOR …`` clause tokens to IWXXM phenomenon codes."""
+    """
+    Internal helper ``_phenomenon_from_conus_for_text``.
+
+    Parameters
+    ----------
+    for_text : object
+        Argument ``for_text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     upper = for_text.upper()
     if "ICE" in upper:
         return "MOD_ICE"
@@ -564,7 +773,19 @@ def _phenomenon_from_conus_for_text(for_text: str) -> str:
 
 
 def _parse_frzlvl_section(text: str) -> dict[str, Any]:
-    """Parse standalone ``FRZLVL...`` subsection into structured IR."""
+    """
+    Internal helper ``_parse_frzlvl_section``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     section: dict[str, Any] = {"isopleths": []}
     ranging = _FRZLVL_RANGING.search(text)
     if ranging is not None:
@@ -588,7 +809,19 @@ def _parse_frzlvl_section(text: str) -> dict[str, Any]:
 
 
 def _try_parse_conus_airmet(text: str) -> dict[str, Any] | None:
-    """Parse CONUS/Hawaii ``AIRMET <series> UPDT`` bulletin when ICAO header absent."""
+    """
+    Internal helper ``_try_parse_conus_airmet``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     match = _CONUS_AIRMET.match(text)
     if match is None:
         return None
@@ -622,13 +855,39 @@ def _try_parse_conus_airmet(text: str) -> dict[str, Any] | None:
 
 
 def _split_airmet_areas(body: str) -> list[str]:
-    """Split AND-joined multi-area AIRMET bodies (NWSI 10-811 §7.3)."""
+    """
+    Internal helper ``_split_airmet_areas``.
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     segments = [segment.strip() for segment in _AIR_AREA_BOUNDARY.split(body) if segment.strip()]
     return segments if len(segments) > 1 else [body]
 
 
 def _airmet_area_ir(segment: str, *, default_phenomenon: str | None = None) -> dict[str, Any]:
-    """Parse one geographic AIRMET subsection into a minimal IR fragment."""
+    """
+    Internal helper ``_airmet_area_ir``.
+
+    Parameters
+    ----------
+    segment : object
+        Argument ``segment``.
+    default_phenomenon : object
+        Argument ``default_phenomenon``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     area: dict[str, Any] = {
         "phenomenon": default_phenomenon or _detect_phenomenon(segment, _AIR_PHENOMENA),
     }
@@ -637,7 +896,21 @@ def _airmet_area_ir(segment: str, *, default_phenomenon: str | None = None) -> d
 
 
 def _parse_airmet_outlook(outlook_text: str, *, default_phenomenon: str) -> dict[str, Any]:
-    """Parse ``OTLK VALID`` outlook block (CONUS/Hawaii AIRMET bulletin §7.3 item 10)."""
+    """
+    Internal helper ``_parse_airmet_outlook``.
+
+    Parameters
+    ----------
+    outlook_text : object
+        Argument ``outlook_text``.
+    default_phenomenon : object
+        Argument ``default_phenomenon``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     match = _OTLK_VALID.search(outlook_text)
     if match is None:
         raise ValueError("unable to parse AIRMET outlook valid period")
@@ -655,16 +928,32 @@ def _parse_airmet_outlook(outlook_text: str, *, default_phenomenon: str) -> dict
 
 
 def _apply_airmet_area_to_ir(ir: dict[str, Any], area: dict[str, Any]) -> None:
-    """Merge parsed area fields onto the root AIRMET IR."""
+    """
+    Internal helper ``_apply_airmet_area_to_ir``.
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    area : object
+        Argument ``area``.
+    """
     ir.update(area)
 
 
 def _parse_sequence_token(raw: str) -> tuple[int, str]:
     """
-    Normalize SIGMET/AIRMET sequence tokens to (numeric, label).
+    Internal helper ``_parse_sequence_token``.
 
-    Accepts ``12``, ``03``, ``A4``, ``E6``, ``A08``, ``T03``, and phonetic
-    forms such as ``FOXTROT 20`` / ``ALFA 12`` (US oceanic).
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     token = " ".join(raw.upper().split())
     phonetic = re.fullmatch(r"([A-Z]+)\s+(\d+)", token)
@@ -680,13 +969,37 @@ def _parse_sequence_token(raw: str) -> tuple[int, str]:
 
 
 def _strip_siga0_heading(text: str) -> str:
-    """Drop NWS ``SIGA0*`` abbreviated-heading lines before SIGMET body parse."""
+    """
+    Internal helper ``_strip_siga0_heading``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     lines = [ln for ln in text.splitlines() if not _SIGA0_LINE.match(ln.strip())]
     return "\n".join(lines)
 
 
 def _parse_convective_sigmet(text: str) -> dict[str, Any] | None:
-    """Parse US ``CONVECTIVE SIGMET`` body (WST / #919 M11)."""
+    """
+    Internal helper ``_parse_convective_sigmet``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     match = _CONVECTIVE_SIGMET.match(text)
     if match is None:
         return None

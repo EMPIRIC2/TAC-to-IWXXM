@@ -88,7 +88,19 @@ class Wis2PublishResult:
 
 
 def _dataset_hostname(dataset_url: str) -> str:
-    """Internal helper ``_dataset_hostname``."""
+    """
+    Internal helper ``_dataset_hostname``.
+
+    Parameters
+    ----------
+    dataset_url : object
+        Argument ``dataset_url``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     host = urlparse(dataset_url).hostname
     if not host:
         raise ValueError("dataset_url must include a hostname")
@@ -96,13 +108,36 @@ def _dataset_hostname(dataset_url: str) -> str:
 
 
 def _validate_wis2_egress(params: Wis2Params, allowlist: Allowlist) -> None:
-    """Internal helper ``_validate_wis2_egress``."""
+    """
+    Internal helper ``_validate_wis2_egress``.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    allowlist : object
+        Argument ``allowlist``.
+    """
     validate_egress_host(params.mqtt_host, allowlist=allowlist)
     validate_egress_host(_dataset_hostname(params.dataset_url), allowlist=allowlist)
 
 
 def _redact_exc(exc: BaseException, params: Wis2Params) -> str:
-    """Internal helper ``_redact_exc``."""
+    """
+    Internal helper ``_redact_exc``.
+
+    Parameters
+    ----------
+    exc : object
+        Argument ``exc``.
+    params : object
+        Argument ``params``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     text = redact_secrets(str(exc))
     if params.mqtt_password:
         text = text.replace(params.mqtt_password, "REDACTED")

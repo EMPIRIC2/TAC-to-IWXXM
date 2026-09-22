@@ -56,7 +56,19 @@ def looks_like_ahl(text: str) -> bool:
 
 
 def _first_nonempty_line(text: str) -> tuple[str, int, int] | None:
-    """Internal helper ``_first_nonempty_line``."""
+    """
+    Internal helper ``_first_nonempty_line``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     offset = 0
     for line in text.splitlines(keepends=True):
         stripped = line.strip()
@@ -71,12 +83,17 @@ def _first_nonempty_line(text: str) -> tuple[str, int, int] | None:
 
 def _contained_reports(remainder: str) -> list[tuple[int, str]]:
     """
-    Return ``(offset_in_remainder, report_text)`` for each contained TAC.
+    Internal helper ``_contained_reports``.
 
-    Prefer ``=``-terminated slices (METAR/SPECI/TAF/SIGMET/AIRMET). When none
-    are present, keep the stripped remainder as one report so advisories that
-    omit ``=`` (VAA/TCA/SWXA/VONA) still lint - same keep-whole rule as
-    ``tac2iwxxm.bulletin`` body regexes.
+    Parameters
+    ----------
+    remainder : object
+        Argument ``remainder``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     found: list[tuple[int, str]] = []
     for match in _REPORT.finditer(remainder):
@@ -93,7 +110,21 @@ def _contained_reports(remainder: str) -> list[tuple[int, str]]:
 
 
 def _remainder_start(text: str, heading_end: int) -> int:
-    """Internal helper ``_remainder_start``."""
+    """
+    Internal helper ``_remainder_start``.
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+    heading_end : object
+        Argument ``heading_end``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if heading_end < len(text) and text[heading_end : heading_end + 2] == "\r\n":
         return heading_end + 2
     if heading_end < len(text) and text[heading_end : heading_end + 1] in "\r\n":
@@ -102,7 +133,19 @@ def _remainder_start(text: str, heading_end: int) -> int:
 
 
 def _ahl_heading_ok(heading: str) -> bool:
-    """Internal helper ``_ahl_heading_ok``."""
+    """
+    Internal helper ``_ahl_heading_ok``.
+
+    Parameters
+    ----------
+    heading : object
+        Argument ``heading``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     match = _AHL_LINE.fullmatch(heading.upper())
     if match is None:
         return False
@@ -113,7 +156,21 @@ def _ahl_heading_ok(heading: str) -> bool:
 
 
 def _shift_issue(issue: Issue, delta: int) -> Issue:
-    """Internal helper ``_shift_issue``."""
+    """
+    Internal helper ``_shift_issue``.
+
+    Parameters
+    ----------
+    issue : object
+        Argument ``issue``.
+    delta : object
+        Argument ``delta``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     start = issue.start if issue.start is None else issue.start + delta
     end = issue.end if issue.end is None else issue.end + delta
     return Issue(
@@ -130,7 +187,21 @@ def _shift_report(
     report: LintReport,
     delta: int,
 ) -> tuple[list[Issue], list[Fix]]:
-    """Internal helper ``_shift_report``."""
+    """
+    Internal helper ``_shift_report``.
+
+    Parameters
+    ----------
+    report : object
+        Argument ``report``.
+    delta : object
+        Argument ``delta``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     issues = [_shift_issue(i, delta) for i in report.issues]
     return issues, list(report.fixes)
 

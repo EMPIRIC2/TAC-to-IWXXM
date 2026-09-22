@@ -37,7 +37,14 @@ class ValidationIssue:
     suggested_fix: str | None = None
 
     def __str__(self) -> str:
-        """Internal helper ``__str__``."""
+        """
+        Internal helper ``__str__``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return f"[{self.severity.upper()}] {self.rule_name}: {self.message}"
 
 
@@ -227,9 +234,18 @@ class CloudLayerValidationRule:
         self.rule_name = "cloud_layer_consistency"
 
     def _check_altitude_validity(self, layers: list[dict[str, Any]]) -> list[ValidationIssue]:
-        """Check each layer's altitude is within valid range.
+        """
+        Internal helper ``_check_altitude_validity``.
 
-        Returns issues for out-of-range altitudes.
+        Parameters
+        ----------
+        layers : object
+            Argument ``layers``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         issues: list[ValidationIssue] = []
 
@@ -285,9 +301,18 @@ class CloudLayerValidationRule:
         return issues
 
     def _check_altitude_gaps(self, layers: list[dict[str, Any]]) -> list[ValidationIssue]:
-        """Analyze gaps between cloud layers for anomalies.
+        """
+        Internal helper ``_check_altitude_gaps``.
 
-        Returns issues for unusual gap patterns.
+        Parameters
+        ----------
+        layers : object
+            Argument ``layers``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         issues: list[ValidationIssue] = []
 
@@ -338,9 +363,18 @@ class CloudLayerValidationRule:
         return issues
 
     def _check_coverage_consistency(self, layers: list[dict[str, Any]]) -> list[ValidationIssue]:
-        """Validate coverage patterns are physically consistent.
+        """
+        Internal helper ``_check_coverage_consistency``.
 
-        Returns issues for illogical coverage sequences.
+        Parameters
+        ----------
+        layers : object
+            Argument ``layers``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         issues: list[ValidationIssue] = []
 
@@ -564,9 +598,20 @@ class VisibilityWeatherValidationRule:
         self.rule_name = "visibility_weather_consistency"
 
     def _check_single_phenomenon(self, phenomenon: str, visibility: int) -> list[ValidationIssue]:
-        """Check visibility for a single weather phenomenon.
+        """
+        Internal helper ``_check_single_phenomenon``.
 
-        Returns list of issues.
+        Parameters
+        ----------
+        phenomenon : object
+            Argument ``phenomenon``.
+        visibility : object
+            Argument ``visibility``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         issues: list[ValidationIssue] = []
 
@@ -609,9 +654,20 @@ class VisibilityWeatherValidationRule:
         return issues
 
     def _check_phenomenon_combinations(self, phenomena: list[str], visibility: int) -> list[ValidationIssue]:
-        """Check visibility against combinations of phenomena.
+        """
+        Internal helper ``_check_phenomenon_combinations``.
 
-        Multiple phenomena compound effects on visibility.
+        Parameters
+        ----------
+        phenomena : object
+            Argument ``phenomena``.
+        visibility : object
+            Argument ``visibility``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         issues: list[ValidationIssue] = []
 

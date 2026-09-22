@@ -35,7 +35,14 @@ _limiter = get_limiter()
 
 
 def _caps() -> MassIngestCaps:
-    """Internal helper ``_caps``."""
+    """
+    Internal helper ``_caps``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return MassIngestCaps(
         max_files=get_mass_ingest_max_files(),
         max_file_bytes=get_mass_ingest_max_file_bytes(),
@@ -44,7 +51,19 @@ def _caps() -> MassIngestCaps:
 
 
 def _result_payload(item: MassIngestFileResult) -> dict[str, Any]:
-    """Internal helper ``_result_payload``."""
+    """
+    Internal helper ``_result_payload``.
+
+    Parameters
+    ----------
+    item : object
+        Argument ``item``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return {
         "name": item.name,
         "accepted": item.accepted,

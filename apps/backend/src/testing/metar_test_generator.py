@@ -229,14 +229,21 @@ class METARTestGenerator:
         reconciliation_service: AirportReconciliationService | None = None,
         cache_dir: Path | None = None,
     ) -> None:
-        """Initialize test generator.
+        """
+        Internal helper ``__init__``.
 
-        Args:
-            aviation_weather_client: Client for fetching METARs
-            openaip_client: Client for airport metadata
-            wmo_client: Client for codelist validation
-            reconciliation_service: Service for reconciling airport data
-            cache_dir: Directory for caching generated tests
+        Parameters
+        ----------
+        aviation_weather_client : object
+            Argument ``aviation_weather_client``.
+        openaip_client : object
+            Argument ``openaip_client``.
+        wmo_client : object
+            Argument ``wmo_client``.
+        reconciliation_service : object
+            Argument ``reconciliation_service``.
+        cache_dir : object
+            Argument ``cache_dir``.
         """
         self.aviation_weather = aviation_weather_client or AviationWeatherClient()
 
@@ -265,9 +272,18 @@ class METARTestGenerator:
         self.coverage = CoverageReport()
 
     def _parse_metar_features(self, raw_metar: str) -> dict[str, Any]:
-        """Extract meteorological features from raw METAR.
+        """
+        Internal helper ``_parse_metar_features``.
 
-        Simple regex-based extraction for coverage tracking.
+        Parameters
+        ----------
+        raw_metar : object
+            Argument ``raw_metar``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         features: dict[str, Any] = {
             "weather_phenomena": [],
@@ -321,7 +337,19 @@ class METARTestGenerator:
         return features
 
     def _enrich_with_metadata(self, metar_data: dict[str, Any]) -> METARTestCase:
-        """Enrich METAR data with airport metadata."""
+        """
+        Internal helper ``_enrich_with_metadata``.
+
+        Parameters
+        ----------
+        metar_data : object
+            Argument ``metar_data``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         # Handle different field names from various APIs
         station_id = metar_data.get("station_id") or metar_data.get("icaoId") or metar_data.get("icao") or ""
 
@@ -356,7 +384,21 @@ class METARTestGenerator:
         )
 
     def _determine_region(self, lat: float | None, lon: float | None) -> str | None:
-        """Determine world region from coordinates."""
+        """
+        Internal helper ``_determine_region``.
+
+        Parameters
+        ----------
+        lat : object
+            Argument ``lat``.
+        lon : object
+            Argument ``lon``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if lat is None or lon is None:
             return None
 
@@ -574,7 +616,16 @@ class METARTestGenerator:
         return test_cases
 
     def _save_to_cache(self, test_cases: list[METARTestCase], cache_file: Path) -> None:
-        """Save test cases to cache file."""
+        """
+        Internal helper ``_save_to_cache``.
+
+        Parameters
+        ----------
+        test_cases : object
+            Argument ``test_cases``.
+        cache_file : object
+            Argument ``cache_file``.
+        """
         data = {
             "generated_at": datetime.now().isoformat(),
             "count": len(test_cases),
@@ -604,7 +655,19 @@ class METARTestGenerator:
         logger.info(f"Saved {len(test_cases)} test cases to {cache_file}")
 
     def _load_from_cache(self, cache_file: Path) -> list[METARTestCase]:
-        """Load test cases from cache file."""
+        """
+        Internal helper ``_load_from_cache``.
+
+        Parameters
+        ----------
+        cache_file : object
+            Argument ``cache_file``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         with open(cache_file) as f:
             raw = cast(dict[str, Any], json.load(f))
 

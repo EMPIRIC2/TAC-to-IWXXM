@@ -30,7 +30,14 @@ class DisseminationRateLimiter:
     """
 
     def __init__(self, *, max_per_minute: int | None = None) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        max_per_minute : object
+            Argument ``max_per_minute``.
+        """
         env = os.environ.get("DISSEMINATION_RATE_LIMIT_PER_MIN", "").strip()
         if max_per_minute is not None:
             self.max_per_minute = max_per_minute

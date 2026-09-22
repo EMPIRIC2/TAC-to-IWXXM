@@ -16,7 +16,14 @@ from tac_validate.profiles import SUPPORTED_PROFILES
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    """Internal helper ``_build_parser``."""
+    """
+    Internal helper ``_build_parser``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     parser = argparse.ArgumentParser(
         prog="tac-validate",
         description="Lint TAC text for F6 products (parse-gate + checklist/template gates).",
@@ -58,14 +65,42 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _lint_profile(emit_key: str) -> str:
-    """Internal helper ``_lint_profile``."""
+    """
+    Internal helper ``_lint_profile``.
+
+    Parameters
+    ----------
+    emit_key : object
+        Argument ``emit_key``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if emit_key in SUPPORTED_PROFILES:
         return emit_key
     return "annex3"
 
 
 def _bound_policy(profile: str, policy: str | None, *, product: str | None = None) -> tuple[str, str]:
-    """Internal helper ``_bound_policy``."""
+    """
+    Internal helper ``_bound_policy``.
+
+    Parameters
+    ----------
+    profile : object
+        Argument ``profile``.
+    policy : object
+        Argument ``policy``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         from tac2iwxxm.profile_resolve import ProfileResolveError, resolve_validation_policies
     except ImportError:

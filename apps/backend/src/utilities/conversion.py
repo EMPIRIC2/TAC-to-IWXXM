@@ -37,7 +37,14 @@ except ImportError:  # pragma: no cover - flat layout fallback
 
 
 def _load_service_validation_error() -> type[Exception]:
-    """Internal helper ``_load_service_validation_error``."""
+    """
+    Internal helper ``_load_service_validation_error``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         from ..services.validation import ValidationError
 
@@ -61,7 +68,19 @@ ServiceValidationError = _load_service_validation_error()
 
 
 def _normalize_issue_severity(value: object) -> str:
-    """Return ``error`` / ``warning`` / ``info`` from str or enum-like severity."""
+    """
+    Internal helper ``_normalize_issue_severity``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None:
         return "info"
     raw = getattr(value, "value", value)
@@ -87,7 +106,19 @@ class ConversionError(Exception):
 
 
 def _extract_icao_from_tac(tac_text: str) -> str | None:
-    """Extract ICAO code from METAR/SPECI TAC text."""
+    """
+    Internal helper ``_extract_icao_from_tac``.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     icao = extract_airport_code(tac_text)
     if icao:
         return icao
@@ -98,7 +129,21 @@ def _extract_icao_from_tac(tac_text: str) -> str | None:
 
 
 def _detect_product(tac_text: str, default: str = "METAR") -> str:
-    """Detect METAR vs SPECI (and map CA LWIS/SAWR to METAR API product)."""
+    """
+    Internal helper ``_detect_product``.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    default : object
+        Argument ``default``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     match = re.search(r"\b(LWIS|SAWR|METAR|SPECI)\b", tac_text.upper())
     if match:
         token = match.group(1)
@@ -159,7 +204,21 @@ def _apply_recent_weather_normalization(
     *,
     lenient: bool,
 ) -> str:
-    """Optionally normalize recent-weather tokens and log rewrites."""
+    """
+    Internal helper ``_apply_recent_weather_normalization``.
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    lenient : object
+        Argument ``lenient``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not lenient:
         return tac_text
 

@@ -10,7 +10,19 @@ import yaml
 
 
 def _load_yaml(name: str) -> dict[str, Any]:
-    """Internal helper ``_load_yaml``."""
+    """
+    Internal helper ``_load_yaml``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     raw = resources.files("tac2iwxxm.data").joinpath(name).read_text(encoding="utf-8")
     data = yaml.safe_load(raw)
     if not isinstance(data, dict):

@@ -29,7 +29,23 @@ _METRICS: dict[str, Any] = {}
 
 
 def _get_or_create_counter(name: str, documentation: str, labelnames: list[str]) -> Counter:
-    """Internal helper ``_get_or_create_counter``."""
+    """
+    Internal helper ``_get_or_create_counter``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+    documentation : object
+        Argument ``documentation``.
+    labelnames : object
+        Argument ``labelnames``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if name not in _METRICS:
         try:
             _METRICS[name] = Counter(name, documentation, labelnames)
@@ -42,7 +58,23 @@ def _get_or_create_counter(name: str, documentation: str, labelnames: list[str])
 
 
 def _get_or_create_histogram(name: str, documentation: str, labelnames: list[str]) -> Histogram:
-    """Internal helper ``_get_or_create_histogram``."""
+    """
+    Internal helper ``_get_or_create_histogram``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+    documentation : object
+        Argument ``documentation``.
+    labelnames : object
+        Argument ``labelnames``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if name not in _METRICS:
         try:
             _METRICS[name] = Histogram(name, documentation, labelnames)
@@ -150,7 +182,14 @@ class LokiHandler(logging.Handler):
     """
 
     def __init__(self, service_name: str) -> None:
-        """Internal helper ``__init__``."""
+        """
+        Internal helper ``__init__``.
+
+        Parameters
+        ----------
+        service_name : object
+            Argument ``service_name``.
+        """
         super().__init__()
         self.service_name = service_name
         self.push_url = os.getenv("LOKI_PUSH_URL", "").strip()
@@ -285,7 +324,19 @@ class LokiHandler(logging.Handler):
                 self._send_batch(batch)
 
     def _build_loki_entry(self, record: logging.LogRecord) -> dict[str, Any]:
-        """Internal helper ``_build_loki_entry``."""
+        """
+        Internal helper ``_build_loki_entry``.
+
+        Parameters
+        ----------
+        record : object
+            Argument ``record``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         ts_ns = str(int(record.created * 1_000_000_000))
         line = self.format(record)
         labels = {
@@ -297,7 +348,14 @@ class LokiHandler(logging.Handler):
         return {"timestamp": ts_ns, "line": line, "labels": labels}
 
     def _send_batch(self, batch: list[dict[str, Any]]) -> None:
-        """Internal helper ``_send_batch``."""
+        """
+        Internal helper ``_send_batch``.
+
+        Parameters
+        ----------
+        batch : object
+            Argument ``batch``.
+        """
         if not batch or self._session is None:
             return
 
@@ -364,7 +422,19 @@ def setup_logging(service_name: str) -> None:
 
 
 def _metric_profile_id(profile_id: str) -> str:
-    """Normalize a profile id for Prometheus labels (uppercase, no PII)."""
+    """
+    Internal helper ``_metric_profile_id``.
+
+    Parameters
+    ----------
+    profile_id : object
+        Argument ``profile_id``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return (profile_id or "unknown").strip().upper().replace("-", "_") or "unknown"
 
 
@@ -685,7 +755,14 @@ def set_request_log_level(request: Request, level_name: str | None) -> str:
 
 
 def _reset_request_log_level(request: Request) -> None:
-    """Internal helper ``_reset_request_log_level``."""
+    """
+    Internal helper ``_reset_request_log_level``.
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    """
     token = getattr(request.state, "convert_log_level_token", None)
     if token is not None:
         with contextlib.suppress(ValueError):

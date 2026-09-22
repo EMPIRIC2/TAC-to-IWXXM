@@ -308,15 +308,19 @@ class XMIModelAnalyzer:
 
     def _string_similarity(self, s1: str, s2: str) -> float:
         """
-        Calculate string similarity ratio using Levenshtein distance.
+        Internal helper ``_string_similarity``.
 
-        Args:
-            s1: First string
-            s2: Second string
+        Parameters
+        ----------
+        s1 : object
+            Argument ``s1``.
+        s2 : object
+            Argument ``s2``.
 
         Returns
         -------
-            Similarity ratio (0.0 to 1.0)
+        object
+            Return value.
         """
         if not s1 or not s2:
             return 0.0

@@ -248,7 +248,19 @@ def validate_egress_host(
 
 
 def _is_hostname(value: str) -> bool:
-    """Internal helper ``_is_hostname``."""
+    """
+    Internal helper ``_is_hostname``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if len(value) > 253 or " " in value or value.startswith("-"):
         return False
     labels = value.split(".")
@@ -265,7 +277,14 @@ def _is_hostname(value: str) -> bool:
 
 
 def _deny_if_blocked_ip(addr: ipaddress.IPv4Address | ipaddress.IPv6Address) -> None:
-    """Internal helper ``_deny_if_blocked_ip``."""
+    """
+    Internal helper ``_deny_if_blocked_ip``.
+
+    Parameters
+    ----------
+    addr : object
+        Argument ``addr``.
+    """
     for net in _BLOCKED_NETWORKS:
         if addr in net:
             raise EgressDenied(f"blocked metadata/link-local address: {addr}")
@@ -275,14 +294,40 @@ def _ip_on_allowlist(
     addr: ipaddress.IPv4Address | ipaddress.IPv6Address,
     allowlist: Allowlist,
 ) -> bool:
-    """Internal helper ``_ip_on_allowlist``."""
+    """
+    Internal helper ``_ip_on_allowlist``.
+
+    Parameters
+    ----------
+    addr : object
+        Argument ``addr``.
+    allowlist : object
+        Argument ``allowlist``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if str(addr) in allowlist.hostnames:
         return True
     return any(addr in net for net in allowlist.networks)
 
 
 def _resolve_ips(host: str) -> list[ipaddress.IPv4Address | ipaddress.IPv6Address]:
-    """Internal helper ``_resolve_ips``."""
+    """
+    Internal helper ``_resolve_ips``.
+
+    Parameters
+    ----------
+    host : object
+        Argument ``host``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         infos = socket.getaddrinfo(host, None)
     except OSError:

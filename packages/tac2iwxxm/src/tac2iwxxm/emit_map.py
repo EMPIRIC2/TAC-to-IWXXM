@@ -57,7 +57,21 @@ class EmitMap:
 
 
 def _optional_string_list(value: object, *, label: str) -> tuple[str, ...] | None:
-    """Internal helper ``_optional_string_list``."""
+    """
+    Internal helper ``_optional_string_list``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    label : object
+        Argument ``label``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if value is None:
         return None
     if not isinstance(value, list) or not value:
@@ -73,7 +87,21 @@ def _optional_string_list(value: object, *, label: str) -> tuple[str, ...] | Non
 
 
 def _require_string_list(value: object, *, label: str) -> tuple[str, ...]:
-    """Internal helper ``_require_string_list``."""
+    """
+    Internal helper ``_require_string_list``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+    label : object
+        Argument ``label``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     got = _optional_string_list(value, label=label)
     if got is None:
         msg = f"{label} is required"
@@ -82,7 +110,23 @@ def _require_string_list(value: object, *, label: str) -> tuple[str, ...]:
 
 
 def _parse_emit_map(raw: object, *, source_path: str, partial: bool = False) -> EmitMap:
-    """Internal helper ``_parse_emit_map``."""
+    """
+    Internal helper ``_parse_emit_map``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+    source_path : object
+        Argument ``source_path``.
+    partial : object
+        Argument ``partial``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(raw, dict):
         msg = f"{source_path}: emit map must be a mapping"
         raise EmitMapError(msg)
@@ -132,7 +176,19 @@ def _parse_emit_map(raw: object, *, source_path: str, partial: bool = False) -> 
 
 
 def _resolve_python_plugin(ref: str) -> EmitFn:
-    """Internal helper ``_resolve_python_plugin``."""
+    """
+    Internal helper ``_resolve_python_plugin``.
+
+    Parameters
+    ----------
+    ref : object
+        Argument ``ref``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     cached = _PLUGIN_CACHE.get(ref)
     if cached is not None:
         return cached
@@ -158,7 +214,23 @@ def _resolve_python_plugin(ref: str) -> EmitFn:
 
 
 def _layer_overlay(raw: dict[str, object], mapped: EmitMap, catalog: dict[str, EmitMap]) -> EmitMap:
-    """Internal helper ``_layer_overlay``."""
+    """
+    Internal helper ``_layer_overlay``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+    mapped : object
+        Argument ``mapped``.
+    catalog : object
+        Argument ``catalog``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     extends = raw.get("extends")
     if extends is None:
         if not mapped.plugin or not mapped.profiles or not mapped.products:

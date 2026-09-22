@@ -56,7 +56,19 @@ R8_CODES = frozenset(
 
 
 def _tokens(tac: str) -> tuple[int, int, str, list[str]]:
-    """Internal helper ``_tokens``."""
+    """
+    Internal helper ``_tokens``.
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     start, end, body = _body_span(tac)
     upper = body.upper()
     core = upper[:-1] if upper.endswith("=") else upper

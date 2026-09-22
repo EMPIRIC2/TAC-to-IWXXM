@@ -26,11 +26,14 @@ class OpenAIPService:
 
     def __init__(self, cache_file: Path | None = None, api_key: str | None = None) -> None:
         """
-        Initialize OpenAIP service.
+        Internal helper ``__init__``.
 
-        Args:
-            cache_file: Path to openaip_cache.json file
-            api_key: Optional OpenAIP API key for live fallback
+        Parameters
+        ----------
+        cache_file : object
+            Argument ``cache_file``.
+        api_key : object
+            Argument ``api_key``.
         """
         if cache_file is None:
             cache_file = Path(__file__).parent.parent / "data" / "openaip_cache.json"
@@ -43,7 +46,14 @@ class OpenAIPService:
         self._load_cache()
 
     def _load_cache(self) -> bool:
-        """Load cache from file."""
+        """
+        Internal helper ``_load_cache``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not self.cache_file.exists():
             logger.warning(f"Cache file not found: {self.cache_file}")
             return False
@@ -126,14 +136,17 @@ class OpenAIPService:
 
     def _fetch_from_api(self, icao: str) -> dict[str, Any] | None:
         """
-        Fetch a single airport from OpenAIP API (fallback).
+        Internal helper ``_fetch_from_api``.
 
-        Args:
-            icao: 4-letter ICAO airport code
+        Parameters
+        ----------
+        icao : object
+            Argument ``icao``.
 
         Returns
         -------
-            Airport data or None
+        object
+            Return value.
         """
         try:
             import requests

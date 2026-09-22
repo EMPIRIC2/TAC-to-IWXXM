@@ -21,7 +21,19 @@ _WIRE_V2_DEFAULT_SEMANTIC = "ICAO_2025"
 
 
 def _truthy_env(name: str) -> bool:
-    """Internal helper ``_truthy_env``."""
+    """
+    Internal helper ``_truthy_env``.
+
+    Parameters
+    ----------
+    name : object
+        Argument ``name``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return os.getenv(name, "").strip().lower() in {"1", "true", "yes", "on"}
 
 
@@ -79,14 +91,40 @@ def default_exchange_profile() -> str:
 
 
 def _clean(value: str | None) -> str:
-    """Internal helper ``_clean``."""
+    """
+    Internal helper ``_clean``.
+
+    Parameters
+    ----------
+    value : object
+        Argument ``value``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if not isinstance(value, str):
         return ""
     return value.strip()
 
 
 def _resolve_exchange_profile(raw: str | None, *, for_packaging: bool) -> str | None:
-    """Internal helper ``_resolve_exchange_profile``."""
+    """
+    Internal helper ``_resolve_exchange_profile``.
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+    for_packaging : object
+        Argument ``for_packaging``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     cleaned = _clean(raw)
     if not cleaned:
         if for_packaging:
