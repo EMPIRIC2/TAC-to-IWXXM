@@ -282,6 +282,13 @@ def hatch_r1(tac_text: str, product: str) -> list[Issue]:
     return r1_identity_order(tac_text, product)
 
 
+def hatch_r1_order(tac_text: str, product: str) -> list[Issue]:
+    """Declarative R1 residual: field-order only (CCCC / time via YAML)."""
+    start, end, _core, tokens = _tokens(tac_text)
+    order_issue = _check_metar_speci_field_order(tokens, product=product, start=start, end=end)
+    return [order_issue] if order_issue is not None else []
+
+
 def hatch_r3(tac_text: str, product: str) -> list[Issue]:
     """Detector hatch for R3 pack."""
     return r3_weather(tac_text, product)
@@ -312,6 +319,7 @@ __all__ = [
     "R5_CODES",
     "R8_CODES",
     "hatch_r1",
+    "hatch_r1_order",
     "hatch_r3",
     "hatch_r4",
     "hatch_r5",

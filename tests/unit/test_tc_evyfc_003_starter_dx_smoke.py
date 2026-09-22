@@ -108,8 +108,12 @@ def test_tc_evyfc_003_readme_install_smoke_documented() -> None:
 
 
 def test_tc_evyfc_003_matrix_evidence_section() -> None:
-    """Cheap evidence citations exist without falsely claiming all-full."""
+    """Evidence citations exist; M2 may mark some METAR/SPECI cells full."""
     text = _MATRIX.read_text(encoding="utf-8")
     assert re.search(r"## Evidence", text, re.I)
-    assert "partial" in text  # honesty: not all-full yet
+    assert (
+        "partial" in text
+    )  # honesty: not all-full yet (detectors/emit/other products)
     assert "data/packs" in text or "policies" in text
+    assert "| METAR |" in text
+    assert "| SPECI |" in text

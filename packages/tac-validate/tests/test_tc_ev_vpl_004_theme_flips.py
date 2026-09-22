@@ -116,4 +116,16 @@ def test_theme_coverage_edges(monkeypatch: pytest.MonkeyPatch) -> None:
 
     assert r8_nil_gate("METAR KJFK 121255Z NIL=", "METAR") is not None
     assert r8_nil_gate("METAR KJFK 121255Z 18008KT 10SM SCT040 22/18 A2992=", "METAR") is None
+    nil_auto = r8_nil_gate("METAR KJFK 121255Z AUTO NIL=", "METAR")
+    assert nil_auto is not None
+    assert any(i.code == "AUTO_PRESENT" for i in nil_auto)
+    nil_cor = r8_nil_gate("METAR KJFK 121255Z COR NIL=", "METAR")
+    assert nil_cor is not None
+    assert any(i.code == "COR_PRESENT" for i in nil_cor)
     assert r8_modifiers("METAR KJFK NIL=", "METAR") == []
+
+    from tac_validate.theme_checks import hatch_r1, hatch_r8
+
+    assert any(i.code == "MISSING_CCCC" for i in hatch_r1("METAR 121255Z=", "METAR"))
+    assert any(i.code == "NIL_REPORT" for i in hatch_r8("METAR KJFK 121255Z NIL=", "METAR"))
+    assert any(i.code == "AUTO_PRESENT" for i in hatch_r8("METAR KJFK 121255Z AUTO 18008KT 10SM=", "METAR"))
