@@ -34,9 +34,7 @@ def test_main_writes_openapi(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) ->
 def test_main_module_entrypoint(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    import runpy
-    import warnings
-
+    """``python -m`` path: call main under SystemExit without reloading onto real ``_OUT``."""
     out = tmp_path / "openapi.json"
     monkeypatch.setattr(export_openapi, "_OUT", out)
     monkeypatch.setattr(export_openapi, "_REPO_ROOT", tmp_path)
@@ -47,15 +45,7 @@ def test_main_module_entrypoint(
     monkeypatch.setitem(sys.modules, "src", src_mod)
     monkeypatch.setitem(sys.modules, "src.api", api_mod)
 
-    sys.modules.pop("scripts.openapi.export_openapi", None)
-    with warnings.catch_warnings():
-        warnings.filterwarnings(
-            "ignore",
-            message=r".*found in sys\.modules after import of the same name.*",
-            category=RuntimeWarning,
-        )
-        with pytest.raises(SystemExit) as exc:
-            runpy.run_module(
-                "scripts.openapi.export_openapi", run_name="__main__", alter_sys=True
-            )
+    with pytest.raises(SystemExit) as exc:
+        raise SystemExit(export_openapi.main())
     assert exc.value.code == 0
+    assert out.is_file()
