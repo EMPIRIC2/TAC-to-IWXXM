@@ -22,6 +22,7 @@ from iwxxm_validate.paths import (
     version_dir,
     xsd_path,
 )
+from iwxxm_validate.pin_sch import PinSchError, assert_pin_schematron_match
 from iwxxm_validate.wellformed import run_wellformed_lxml
 
 _DEFAULT_LEVELS: tuple[str, ...] = ("xsd", "schematron")
@@ -252,6 +253,23 @@ def _validate_iwxxm(
                     code="INVALID_LEVELS",
                     message=f"Unknown validation levels: {unknown}",
                     layer="xsd",
+                )
+            ],
+        )
+
+    try:
+        assert_pin_schematron_match(iwxxm_version)
+    except PinSchError as exc:
+        return ValidationReport(
+            ok=False,
+            iwxxm_version=iwxxm_version,
+            profile=profile,
+            issues=[
+                Issue(
+                    severity="error",
+                    code="PIN_SCH_MISMATCH",
+                    message=str(exc),
+                    layer="schematron",
                 )
             ],
         )
