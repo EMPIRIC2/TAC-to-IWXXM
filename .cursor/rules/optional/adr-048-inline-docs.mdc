@@ -1,0 +1,23 @@
+# Cursor rule — ADR-048 multi-lang documentation bar
+
+[Corpus: adr/ADR-048] [Corpus: docstrings]
+
+## Must
+
+- When editing product `packages/*/src`, `apps/backend`, `apps/worker`, `apps/frontend`,
+  shipping `apps/e2e` helpers, or `packages/*/rust/src`: keep NumPy / TSDoc / rustdoc at the
+  ADR-048 bar (public Examples / executable `@example` / runnable Rust `# Examples`).
+- Prefer make targets: `check-docs`, `test-doctest`, `check-docs-ts` (presence **and**
+  executable `@example` harness), `check-docs-rust` (pure-Rust `cargo test --doc`, no
+  Python interpreter required for examples).
+- Treat warnings and infos as failures for monorepo quality gates; do not add suppressions.
+- Cite `[Corpus: docstrings]` / `[Corpus: adr/ADR-048]` in agent/docs commits — never in
+  operator-facing OpenAPI/UI copy.
+
+## Must not
+
+- Introduce undocumented public or private product symbols in in-scope trees.
+- Use Rust `pub` exemption globs to skip `# Examples`, or require Python to run Rust doctests.
+- Change convert/validate/decode/disseminate wire behavior or pack-engine shapes to “pass”
+  documentation work.
+- Cite EV-/ADR-/TC- ids in operator-visible strings.

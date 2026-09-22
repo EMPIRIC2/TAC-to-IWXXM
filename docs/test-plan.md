@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-21 (EV-yaml-full-configurability / #1226 — TC-EVYFC-001..005)
+> **Last updated**: 2026-09-22 (EV-docstring-multilang-bar / ADR-048 — TC-EVDOC-001..007)
 
 ## Scope
 
@@ -132,6 +132,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
 | UJ-DEV-011      | F2/F6/F9/F12/F14/F15 (EV-yaml-full-configurability / #1226) | Full YAML end-state incl. convert emit (ADR-047); templates; pin↔SCH                                                                                                                                                                                         | H4–H5 **N/A** unless UI/OpenAPI   | TC-EVYFC-001..005 (+ TC-EVYEC-004 retained)                                              |
+| UJ-DEV-012      | Eng quality (EV-docstring-multilang-bar / ADR-048)          | Multi-lang docstring/TSDoc/rustdoc bar + checkers + warn/info-clean                                                                                                                                                                                          | H4–H5 **N/A**                     | TC-EVDOC-001..007                                                                        |
 | UJ-077          | F6/F9 deepen (#1210 + EV-pack-ir-convert-wire)               | Pack shadow + METAR/SPECI pack-IR emit when goldens match                                                                                                                                                                                                  | H4–H5 N/A (no wire/UI change)     | TC-EV1210-001..004; TC-EV-PACKIR-001..005                                                 |
 | UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
 | UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
@@ -6363,3 +6364,57 @@ All must pass before merging migration PR:
 - **Objective**: Honesty matrix rates AIRMET, VAA, and TCA engine cells **full** with SoT path evidence
 - **Pass criteria**: Row locks + builtin pack/policy/detector/emit-map presence for all three
 - **Source**: #1226; #1230; ADR-047; UJ-DEV-011
+
+## EV-docstring-multilang-bar (ADR-048 / UJ-DEV-012)
+
+Engineering quality — multi-language inline documentation bar. H4–H5 **N/A**.
+[Corpus: docstrings] [Corpus: adr/ADR-048] [Corpus: decisions/inline-documentation-verify]
+
+### TC-EVDOC-001: Presence gate (PY/TS/Rust)
+
+- **Level**: T0 / CI
+- **Objective**: In-scope product symbols have required docstrings/TSDoc/rustdoc
+- **Pass criteria**: Product `make check-docs` (or equiv.) exit 0; zero missing required docs outside exemptions
+- **Source**: ADR-048; D-EVDOC-02; D-EVDOC-06; UJ-DEV-012
+
+### TC-EVDOC-002: Required Examples / `@example` / `# Examples`
+
+- **Level**: T0 / CI
+- **Objective**: Public PY APIs have `Examples`; exported TS have `@example`; public Rust items have `# Examples` where runnable
+- **Pass criteria**: Checker fails closed when required example sections are absent
+- **Source**: ADR-048; D-EVDOC-02; UJ-DEV-012
+
+### TC-EVDOC-003: NumPy / TSDoc / rustdoc shape
+
+- **Level**: T0 / CI
+- **Objective**: Required section shape present (Parameters/Returns/Attributes as applicable; TSDoc tags; rustdoc structure)
+- **Pass criteria**: Shape lint/checker exit 0 on in-scope trees
+- **Source**: ADR-048; [Corpus: docstrings]; UJ-DEV-012
+
+### TC-EVDOC-004: Python doctest Examples
+
+- **Level**: T0 / CI
+- **Objective**: Public PY `Examples` execute successfully under doctest
+- **Pass criteria**: Doctest target/suite green for in-scope packages/apps
+- **Source**: ADR-048; D-EVDOC-03 (PY leg); acceptance D; UJ-DEV-012
+
+### TC-EVDOC-005: TypeScript executable `@example`
+
+- **Level**: T0 / CI
+- **Objective**: Exported TS `@example` blocks are executable (not presence-only)
+- **Pass criteria**: TS example runner / gate exit 0
+- **Source**: ADR-048; D-EVDOC-03; UJ-DEV-012
+
+### TC-EVDOC-006: Rust rustdoc + doctest
+
+- **Level**: T0 / CI
+- **Objective**: In-scope crates deny missing docs (or equiv.) and every `pub` item has runnable `# Examples`
+- **Pass criteria**: `cargo doc` / `missing_docs` + doctests green for both crates; **no** `pub` exemption globs
+- **Source**: ADR-048; D-EVDOC-VP S14; UJ-DEV-006 related; UJ-DEV-012
+
+### TC-EVDOC-007: Monorepo warn/info-clean quality pass
+
+- **Level**: T0 / CI
+- **Objective**: Lint, format, typecheck, and unit tests across the entire monorepo / all toolchains treat warnings and infos as failures
+- **Pass criteria**: Quality make/CI targets green with zero warnings and zero infos in one PR with the doc bar; **no** temporary suppressions
+- **Source**: ADR-048; D-EVDOC-05; D-EVDOC-VP S12; acceptance E; UJ-DEV-012

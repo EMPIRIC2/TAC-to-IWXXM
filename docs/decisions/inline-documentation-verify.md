@@ -1,95 +1,80 @@
-# Inline documentation verify bar (EV-025 / pack angle)
+# Inline documentation verify bar
 
-**Status:** Active for evolve / verify twins  
-**Related:** [Corpus: verifier] pack angle `inline-documentation`; `.cursor/rules/optional/api-documentation.mdc`
+**Status:** Active — **ADR-048** bar for evolve / verify twins  
+**Related:** [Corpus: docstrings] [Corpus: adr/ADR-048] [Corpus: verifier] angle
+`inline-documentation`; `.cursor/rules/optional/api-documentation.mdc`
 
-## Bar (documenting)
+## Bar (documenting) — ADR-048
 
-Public product symbols in `apps/` and `packages/` (excluding tests, fixtures, generated, vendor) must carry:
+In-scope product symbols under `packages/` and `apps/` (see [Corpus: docstrings]) must
+meet the multi-language depth bar:
 
 | Language | Requirement |
 |----------|-------------|
-| Python | Module / public class / public function NumPy-style docstrings |
-| TypeScript | TSDoc on exported functions/classes |
-| Shell | `#` comment above public functions |
+| Python | NumPy on public **and** private functions/methods; public `Examples` (doctest-safe); class `Attributes` / `__init__` `Parameters` |
+| TypeScript | TSDoc on exported **and** non-exported functions/classes/methods; exported **executable** `@example`; typed members documented |
+| Rust | rustdoc on `pub` and private items; `pub` `# Examples` where runnable |
+| Shell | `#` comment above public functions (unchanged) |
 
-Planning IDs must not appear in operator-facing OpenAPI copy ([Corpus: product §F7 / EV-048]).
+**Path exclusions:** tests, fixtures, generated, vendor, `node_modules`, `target/`,
+generated `*.d.ts`.
 
-## Implementing twin (brownfield)
+**Symbol exemptions (PY/TS):** type-only `Protocol`/`TypedDict`/`Enum` stubs (doc the type);
+generated OpenAPI/client stubs; `__getattr__` shims; listed exemption globs only if
+unavoidable. **Rust `pub`:** no exemptions — runnable `# Examples` required on every `pub`
+item.
 
-Full-tree `inline-doc-check.py` over this monorepo reports **thousands** of pre-existing gaps. Until a dedicated docstring/TSDoc fill cycle:
+Planning IDs must not appear in operator-facing OpenAPI copy ([Corpus: product §F7]).
 
-1. **Delta gate (blocking for evolve):** set `VERIFY_DOC_PATHS` to changed product source paths and require **zero** new undocumented public symbols.
-2. **Full-tree scan:** advisory / waived for merge unless the cycle’s goal is documentation fill.
-3. New public APIs introduced in a cycle must be documented in the same PR.
+## Implementing twin (ADR-048)
 
-## EV-087 disposition
+For **EV-docstring-multilang-bar** and subsequent merges after ADR-048:
 
-| Item | Disposition |
-|------|-------------|
-| Delta paths (`tac2iwxxm` convert/taf/registry + schema description edits) | PASS under `VERIFY_DOC_PATHS` |
-| Full-tree ~10k missing | **WAIVE** — brownfield baseline; not in EV-087 scope |
-| Router `conversion.py` pre-existing undocumented handlers | Out of scope (description-only edits) |
-
-## EV-088 disposition
-
-| Item | Disposition |
-|------|-------------|
-| Delta path `scripts/profiles/scaffold_national_profile.py` | Documented (module + public helpers NumPy-style) in PR #1086 |
-| Full-tree ~10k missing | **WAIVE** — brownfield baseline; same bar as EV-087; not in EV-088 scope |
-
-## How to re-check delta
+1. **Full in-scope tree** — presence + required Examples/`@example`/`# Examples` + shape
+   checkers **blocking** (product make/CI; may extend pack `inline-doc-check`).
+2. **Example execution** — PY doctest; Rust doctest where present; TS `@example`
+   executable.
+3. **Warnings/infos** — entire monorepo, all toolchains, treated as failures (one PR with
+   the fill). **No temporary suppressions** — fix or reconfigure toolchains.
+4. **TS examples** — repo-owned harness (extract `@example` → vitest/node); fail closed.
+5. Delta `VERIFY_DOC_PATHS` remains valid only for **non-fill** evolves that do not claim
+   the ADR-048 bar.
 
 ```bash
-VERIFY_DOC_PATHS="packages/tac2iwxxm/src/tac2iwxxm/convert.py,packages/tac2iwxxm/src/tac2iwxxm/products/taf.py,packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py" \
-  python3 ~/.cursor/skills/bin/inline-doc-check.py .
+# Presence (pack helper; extend in-repo for Examples/shape/TS/Rust)
+python3 ~/.cursor/skills/pack/bin/inline-doc-check.py .
+# Product targets (names locked in tech-plan / Makefile Build):
+#   make check-docs
+#   make test-doctest   # PY Examples
+#   make check-docs-ts  # TSDoc + executable @example
+#   make check-docs-rust
 ```
 
-EV-088 scaffold delta (when checker path available):
+## Historical dispositions (pre–ADR-048)
 
-```bash
-VERIFY_DOC_PATHS="scripts/profiles/scaffold_national_profile.py" \
-  python3 ~/.cursor/skills/bin/inline-doc-check.py .
-```
+### EV-087 … EV-091
 
-## EV-089 disposition
+Full-tree WAIVE / delta `VERIFY_DOC_PATHS` — **historical**. Do not reuse as merge criteria
+after ADR-048 for doc-fill cycles.
+
+### EV-092 disposition
 
 | Item | Disposition |
 |------|-------------|
-| Delta paths (`profile_registry.py`, `convert.py`) | PASS under `VERIFY_DOC_PATHS` (missing=0) |
-| OpenAPI description string edits | No new public symbols |
-| Full-tree ~10k missing | **WAIVE** — brownfield baseline; same bar as EV-087/088 |
-
-```bash
-VERIFY_DOC_PATHS="packages/tac2iwxxm/src/tac2iwxxm/profile_registry.py,packages/tac2iwxxm/src/tac2iwxxm/convert.py" \
-  python3 ~/.cursor/skills/bin/inline-doc-check.py .
-```
-
-## EV-091 disposition
-
-| Item | Disposition |
-|------|-------------|
-| Delta paths (`DisseminationDrawer.tsx`, `FileConverter.tsx`, `operatorDisseminationUi.ts`) | PASS under `VERIFY_DOC_PATHS` (missing=0) after FileConverter TSDoc |
-| Full-tree scan (default paths) | **WAIVE** for EV-091 merge — same brownfield bar as EV-087–089 (`D-EV091-inline-doc`); superseded by EV-092 for new merges |
-| Remaining ~107 true gaps (after pack checker exclusions) | Closed by [#1090](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1090) / EV-092 |
-
-```bash
-VERIFY_DOC_PATHS="apps/frontend/src/app/components/DisseminationDrawer.tsx,apps/frontend/src/app/components/FileConverter.tsx,apps/frontend/src/utils/operatorDisseminationUi.ts" \
-  python3 ~/.cursor/skills/pack/bin/inline-doc-check.py .
-```
-
-## EV-092 disposition
-
-| Item | Disposition |
-|------|-------------|
-| Pack checker harden (multi-line TSDoc; skip `iwxxm_xsd/`/`generated/`/`*.d.ts`/`docker/`/`supabase/functions/`; Protocol/TypedDict) | **Landed** — pack `main` via EV-044 / [spec-dev-knowledge-graph#92](https://github.com/joseph-c-mcguire/spec-dev-knowledge-graph/pull/92) |
-| Full-tree after harden | **scanned=541 missing=107** |
-| Product NumPy/TSDoc backfill | **missing=0** |
-| Full-tree `inline-documentation` implementing twin | **PASS** — no WAIVE; `D-EV091-inline-doc` superseded for new merges |
+| Pack checker harden | Landed (pack) |
+| Public presence `missing=0` | PASS for public-only presence |
+| Examples / private / TS `@example` exec / Rust doctest / warn-clean | **Out of EV-092** — owned by ADR-048 / EV-docstring-multilang-bar |
 
 ```bash
 python3 ~/.cursor/skills/pack/bin/inline-doc-check.py .
-# expect: missing=0
+# public presence helper only — not sufficient for ADR-048 acceptance
 ```
 
-**Implementing twin (post EV-092):** Full-tree scan is **blocking** (not advisory) when the hardened pack checker is on PATH. Delta `VERIFY_DOC_PATHS` remains valid for non-fill evolves.
+## EV-docstring-multilang-bar disposition
+
+| Item | Disposition |
+|------|-------------|
+| Standing docs + ADR-048 | Spec band (this file + [Corpus: docstrings]) |
+| Checkers + backfill + warn/info-clean | Build band after Spec→Build gate |
+| TC-EVDOC-001..007 | [Corpus: tests] |
+| Prior hybrid D | **Superseded** for in-scope trees |

@@ -1,5 +1,29 @@
 # Evolve Decisions
 
+## Cycle EV-docstring-multilang-bar — multi-lang docs + checkers (ADR-048)
+
+**Opened:** 2026-09-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-docstring-multilang-bar`
+
+| ID | Decision |
+|----|----------|
+| D-EVDOC-01 | No new Fn; deepen `[Corpus: docstrings]` + verify twin |
+| D-EVDOC-02 | Multi-lang depth (NumPy/TSDoc/rustdoc; public examples; private docs) |
+| D-EVDOC-03 | TS `@example` must be **executable** |
+| D-EVDOC-04 | Symbol exemptions **PY/TS only**: Protocol/TypedDict/Enum stubs; generated stubs; `__getattr__`; listed globs only if unavoidable. **Rust `pub`:** no exemptions (S14) |
+| D-EVDOC-05 | Warnings **and infos** as failures; **entire monorepo / all toolchains / one PR**; **no suppressions** (S12) |
+| D-EVDOC-06 | Product-repo make/tests + pack `inline-doc-check` extend; CI; ADR-048 names bar |
+| D-EVDOC-07 | UI / H4–H5 / PII N/A; waive feature-list Fn / journeys / api / deploy / config (unless checker env) |
+| D-EVDOC-08 | ADR-048 **Accepted**; hybrid D superseded for in-scope trees |
+| D-EVDOC-09 | Make names preferred `check-docs` / `test-doctest` / `check-docs-ts` / `check-docs-rust`; lock in tech-plan (S11) |
+| D-EVDOC-10 | TS `@example` via repo-owned vitest/node harness (S13) |
+| D-EVDOC-MANIFEST | Update docstrings, inline-documentation-verify, test-plan TC-EVDOC-*, ADR-048, this log |
+| D-EVDOC-CTX | Context session-only (`reports/context.md`); F107 skip |
+| D-EVDOC-FEAS | Feasible with risk — accepted |
+| D-EVDOC-VP | Verify-plan S01–S15 resolved 2026-09-22 |
+| D-EVDOC-TP | Tech-plan locked: M1–M4 one PR; `scripts/docs/`; make targets; CI; stdlib-first; branch → stage (TP-EVDOC-01..08) |
+| D-EVDOC-VT | Verify-tech PASS (T07 one-target TS; T08 pure-Rust doctest) |
+| D-EVDOC-DOCVERIFY | Documenting verify **13/13 PASS** |
+
 ## Cycle EV-yaml-full-configurability — full YAML + convert emit (#1226)
 
 **Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-full-configurability`  

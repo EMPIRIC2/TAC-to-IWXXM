@@ -55,6 +55,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	compose-mock-byoc-all-up compose-mock-byoc-all-down \
 	test-mock-byoc-smoke test-mock-byoc-compose test-mock-byoc-all-sinks \
 	format format-check typecheck typecheck-py typecheck-js \
+	check-docs test-doctest check-docs-ts check-docs-rust check-docs-all \
 	lint lint-py lint-js lint-backend lint-auth lint-frontend lint-shared \
 	lint-tac2iwxxm lint-iwxxm-validate lint-tac-validate lint-dissemination \
 	lint-fix lint-fix-py lint-fix-backend lint-fix-auth lint-fix-frontend \
@@ -170,6 +171,29 @@ format:
 format-check:
 	$(UV) run ruff format --check $(PY_TREES)
 	$(PNPM) run format:check
+
+# ADR-048 / EV-docstring-multilang-bar — multi-lang documentation bar
+check-docs:
+	$(UV) run python scripts/docs/check_docs_py.py .
+
+test-doctest:
+	$(UV) run python -m pytest --doctest-modules \
+		packages/tac2iwxxm/src packages/tac-validate/src packages/iwxxm-validate/src \
+		packages/tac-decoding/src packages/dissemination/src packages/workflows/src \
+		packages/auth/src packages/shared \
+		apps/backend/src apps/worker \
+		--ignore-glob='**/tests/**' --ignore-glob='**/iwxxm_xsd/**' --ignore-glob='**/generated/**' \
+		-q --tb=line
+
+check-docs-ts:
+	node scripts/docs/check_docs_ts.mjs .
+
+check-docs-rust:
+	bash scripts/docs/check_docs_rust.sh
+
+check-docs-all: check-docs check-docs-ts check-docs-rust test-doctest
+
+
 
 # --- Typechecking ---
 
