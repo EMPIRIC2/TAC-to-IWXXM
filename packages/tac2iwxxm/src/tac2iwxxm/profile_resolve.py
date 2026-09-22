@@ -141,8 +141,8 @@ def resolve_validation_policies(
     profile :
         Canonical conversion profile id or legacy alias (``ICAO_2025``, ``annex3``).
     product :
-        Optional F6 product id. When ``TAF`` and the emit key still binds the
-        METAR quality document, swap to ``annex3-taf-quality`` (M4 / #1230).
+        Optional F6 product id. When ``TAF`` / ``SIGMET`` and the emit key still
+        binds the METAR quality document, swap to the product quality id (M4 / #1230).
     tac_policy :
         Optional override for the TAC quality policy id (CLI ``--policy``).
     iwxxm_policy :
@@ -160,6 +160,8 @@ def resolve_validation_policies(
     product_u = (product or "").strip().upper()
     if product_u == "TAF" and tac_id == "annex3-metar-quality":
         tac_id = "annex3-taf-quality"
+    elif product_u == "SIGMET" and tac_id == "annex3-metar-quality":
+        tac_id = "annex3-sigmet-quality"
     keys = {resolved.emit_key, resolved.canonical, profile.strip()}
     for overlay in _load_profile_overlays():
         if keys.isdisjoint(overlay.profiles):

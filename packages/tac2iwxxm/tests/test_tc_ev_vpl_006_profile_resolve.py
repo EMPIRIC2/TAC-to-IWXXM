@@ -31,6 +31,14 @@ def test_taf_product_swaps_to_taf_quality_policy() -> None:
     assert us_taf.tac_quality_policy_id == "annex3-taf-quality"
 
 
+def test_sigmet_product_swaps_to_sigmet_quality_policy() -> None:
+    sigmet = resolve_validation_policies("annex3", product="SIGMET")
+    assert sigmet.tac_quality_policy_id == "annex3-sigmet-quality"
+    assert sigmet.iwxxm_output_policy_id == "annex3-iwxxm-output"
+    us = resolve_validation_policies("iwxxm_us", product="SIGMET")
+    assert us.tac_quality_policy_id == "annex3-sigmet-quality"
+
+
 def test_policy_overrides_replace_one_slot() -> None:
     resolved = resolve_validation_policies("us_faa_nws", tac_policy=" custom-tac ", iwxxm_policy="  ")
     assert resolved.emit_key == "iwxxm_us"

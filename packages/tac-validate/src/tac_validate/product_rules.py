@@ -78,7 +78,18 @@ def check_product_rules(
             return run_theme_pack("taf-core", tac_text, product)
         finally:
             lint_profile.reset(token)
-    if product in {"SIGMET", "AIRMET"}:
+    if product == "SIGMET":
+        from tac_validate.detectors import detector_mode, run_theme_pack
+        from tac_validate.theme_checks import lint_profile
+
+        if detector_mode() == "legacy":
+            return _check_sigmet_airmet(tac_text, product, profile=profile)
+        token = lint_profile.set(profile)
+        try:
+            return run_theme_pack("sigmet-core", tac_text, product)
+        finally:
+            lint_profile.reset(token)
+    if product == "AIRMET":
         return _check_sigmet_airmet(tac_text, product, profile=profile)
     if product == "VAA":
         return _check_vaa(tac_text)

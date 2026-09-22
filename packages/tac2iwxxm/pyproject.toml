@@ -41,6 +41,8 @@ packages = ["src/tac2iwxxm"]
 "src/tac2iwxxm/data/emit_maps/annex3-taf.yaml" = "tac2iwxxm/data/emit_maps/annex3-taf.yaml"
 "src/tac2iwxxm/data/emit_maps/iwxxm-us-taf.yaml" = "tac2iwxxm/data/emit_maps/iwxxm-us-taf.yaml"
 "src/tac2iwxxm/data/emit_maps/ca-eccc-taf.yaml" = "tac2iwxxm/data/emit_maps/ca-eccc-taf.yaml"
+"src/tac2iwxxm/data/emit_maps/annex3-sigmet.yaml" = "tac2iwxxm/data/emit_maps/annex3-sigmet.yaml"
+"src/tac2iwxxm/data/emit_maps/iwxxm-us-sigmet.yaml" = "tac2iwxxm/data/emit_maps/iwxxm-us-sigmet.yaml"
 
 # Maturin builds the optional PyO3 cdylib (ADR-017 / T4.3). Pure-Python hatch wheel
 # remains the default ``uv sync`` path; CI rust job runs ``maturin develop``.

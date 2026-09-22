@@ -68,7 +68,7 @@ def test_load_catalog_has_us_and_ca() -> None:
 
 def test_emit_map_missing_raises() -> None:
     with pytest.raises(EmitMapError, match="no emit map"):
-        resolve_emit_map(profile="annex3", product="SIGMET", iwxxm_version="2025-2")
+        resolve_emit_map(profile="annex3", product="AIRMET", iwxxm_version="2025-2")
 
 
 def test_emit_map_overlay_extends_plugin(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -288,6 +288,22 @@ def test_tc_evyfc_002_taf_emit_map_no_product_kw() -> None:
     ir = parse_taf(tac)
     direct = emit_taf_annex3(ir, iwxxm_version="2025-2")
     via_map = emit_with_map(ir, product="TAF", profile="annex3", iwxxm_version="2025-2")
+    assert via_map == direct
+
+
+def test_tc_evyfc_002_sigmet_emit_map_no_product_kw() -> None:
+    mapped = resolve_emit_map(profile="annex3", product="SIGMET", iwxxm_version="2025-2")
+    assert mapped.id == "annex3-sigmet-emit"
+    assert mapped.pass_product is False
+    us = resolve_emit_map(profile="iwxxm_us", product="SIGMET", iwxxm_version="2025-2")
+    assert mapped.id != us.id or "iwxxm_us" in us.plugin
+    from tac2iwxxm.profiles.annex3_emit.sigmet import emit_sigmet_annex3
+    from tac2iwxxm.slot_builders.sigmet_airmet import parse_sigmet
+
+    tac = "YUDD SIGMET 2 VALID 101200/101600 YUSO- YUDD OBSC TS FCST="
+    ir = parse_sigmet(tac)
+    direct = emit_sigmet_annex3(ir, iwxxm_version="2025-2")
+    via_map = emit_with_map(ir, product="SIGMET", profile="annex3", iwxxm_version="2025-2")
     assert via_map == direct
 
 
