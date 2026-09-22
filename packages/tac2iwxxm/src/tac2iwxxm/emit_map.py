@@ -21,6 +21,9 @@ ENV_EMIT_MAP_DIR = "TAC2IWXXM_EMIT_MAP_DIR"
 
 EmitFn = Callable[..., str]
 
+_CATALOG_CACHE: dict[str, dict[str, EmitMap]] = {}
+_PLUGIN_CACHE: dict[str, EmitFn] = {}
+
 
 class EmitMapError(ValueError):
     """Emit map document is invalid or no map matches the convert request."""
@@ -107,6 +110,9 @@ def _parse_emit_map(raw: object, *, source_path: str, partial: bool = False) -> 
 
 
 def _resolve_python_plugin(ref: str) -> EmitFn:
+    cached = _PLUGIN_CACHE.get(ref)
+    if cached is not None:
+        return cached
     if not ref.startswith("python:"):
         msg = f"plugin ref must start with python:: {ref!r}"
         raise EmitMapError(msg)
@@ -123,7 +129,9 @@ def _resolve_python_plugin(ref: str) -> EmitFn:
     if not callable(fn):
         msg = f"emit plugin not callable: {ref!r}"
         raise EmitMapError(msg)
-    return cast(EmitFn, fn)
+    resolved = cast(EmitFn, fn)
+    _PLUGIN_CACHE[ref] = resolved
+    return resolved
 
 
 def _layer_overlay(raw: dict[str, object], mapped: EmitMap, catalog: dict[str, EmitMap]) -> EmitMap:
@@ -154,6 +162,10 @@ def _layer_overlay(raw: dict[str, object], mapped: EmitMap, catalog: dict[str, E
 
 def load_emit_map_catalog() -> dict[str, EmitMap]:
     """Load builtin emit maps plus optional ``TAC2IWXXM_EMIT_MAP_DIR`` overlays."""
+    overlay_key = os.environ.get(ENV_EMIT_MAP_DIR, "").strip()
+    cached = _CATALOG_CACHE.get(overlay_key)
+    if cached is not None:
+        return cached
     catalog: dict[str, EmitMap] = {}
     root = resources.files("tac2iwxxm").joinpath("data", "emit_maps")
     for entry in root.iterdir():
@@ -162,9 +174,8 @@ def load_emit_map_catalog() -> dict[str, EmitMap]:
             text = entry.read_text(encoding="utf-8")
             mapped = _parse_emit_map(yaml.safe_load(text), source_path=f"builtin:{name}")
             catalog[mapped.id] = mapped
-    overlay = os.environ.get(ENV_EMIT_MAP_DIR, "").strip()
-    if overlay:
-        overlay_path = Path(overlay)
+    if overlay_key:
+        overlay_path = Path(overlay_key)
         if not overlay_path.is_dir():
             msg = f"Emit map directory is not a folder: {overlay_path}"
             raise EmitMapError(msg)
@@ -179,6 +190,7 @@ def load_emit_map_catalog() -> dict[str, EmitMap]:
             mapped = _parse_emit_map(raw, source_path=str(path), partial=partial)
             layered = _layer_overlay(raw, mapped, catalog)
             catalog[layered.id] = layered
+    _CATALOG_CACHE[overlay_key] = catalog
     return catalog
 
 
@@ -229,6 +241,12 @@ def emit_with_map(
     return fn(ir, product=product, iwxxm_version=iwxxm_version)
 
 
+def clear_emit_map_catalog_cache() -> None:
+    """Drop cached catalogs (tests / overlay env changes)."""
+    _CATALOG_CACHE.clear()
+    _PLUGIN_CACHE.clear()
+
+
 def check_emit_map_overlay_dir(directory: Path | str) -> None:
     """Fail-closed load of emit-map YAML overlays in ``directory``."""
     path = Path(directory)
@@ -237,6 +255,7 @@ def check_emit_map_overlay_dir(directory: Path | str) -> None:
         raise EmitMapError(msg)
     previous = os.environ.get(ENV_EMIT_MAP_DIR)
     os.environ[ENV_EMIT_MAP_DIR] = str(path)
+    clear_emit_map_catalog_cache()
     try:
         load_emit_map_catalog()
     finally:
@@ -244,6 +263,7 @@ def check_emit_map_overlay_dir(directory: Path | str) -> None:
             os.environ.pop(ENV_EMIT_MAP_DIR, None)
         else:
             os.environ[ENV_EMIT_MAP_DIR] = previous
+        clear_emit_map_catalog_cache()
 
 
 __all__ = [
@@ -251,6 +271,7 @@ __all__ = [
     "EmitMap",
     "EmitMapError",
     "check_emit_map_overlay_dir",
+    "clear_emit_map_catalog_cache",
     "emit_with_map",
     "load_emit_map_catalog",
     "resolve_emit_map",

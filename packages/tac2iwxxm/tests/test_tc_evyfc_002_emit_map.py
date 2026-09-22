@@ -14,6 +14,7 @@ from tac2iwxxm.emit_map import (
     _parse_emit_map,
     _resolve_python_plugin,
     check_emit_map_overlay_dir,
+    clear_emit_map_catalog_cache,
     emit_with_map,
     load_emit_map_catalog,
     resolve_emit_map,
@@ -24,6 +25,13 @@ from tac2iwxxm.slot_builders.metar_speci import parse_metar_speci
 _TAC = "METAR KJFK 121255Z 18008KT 10SM FEW250 22/18 A2992="
 _REPO = Path(__file__).resolve().parents[3]
 _EMIT_OVERLAY_DIR = _REPO / "packages" / "tac2iwxxm" / "examples" / "overlays" / "emit-maps" / "valid"
+
+
+@pytest.fixture(autouse=True)
+def _clear_emit_map_cache() -> None:
+    clear_emit_map_catalog_cache()
+    yield
+    clear_emit_map_catalog_cache()
 
 
 def test_tc_evyfc_002_builtin_emit_map_parity_annex3() -> None:
