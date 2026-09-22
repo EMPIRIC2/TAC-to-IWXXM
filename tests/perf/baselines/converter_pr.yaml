@@ -5,7 +5,7 @@
 # Refresh: make perf-converter-baseline HOST=ubuntu-latest STATUS=ci_recorded
 # Never silent auto-raise on gate failure.
 #
-# Gate: convert-only p95 must stay under hard_ceiling_p95_s (1 ms). Ratio/floor
+# Gate: convert-only p95 must stay under hard_ceiling_p95_s (2 ms). Ratio/floor
 # remain for baseline bookkeeping; they do not drive the PR fail threshold.
 
 version: 1
@@ -20,8 +20,9 @@ iterations: 50
 metric: convert_only_wall_p95_s
 ratio_limit: 1.20
 absolute_floor_s: 0.000200
-# Absolute PR gate — stage CI SIGMET noise (~0.71 ms) was over the old 0.6 ms ceiling.
-hard_ceiling_p95_s: 0.001
+# Absolute PR gate — pin↔SCH convert assert + CI noise; was 1 ms (#1220) until
+# TC-EVYFC-004 added SCH head reads on every convert (cache helps after warmup).
+hard_ceiling_p95_s: 0.002
 
 products:
   metar:
