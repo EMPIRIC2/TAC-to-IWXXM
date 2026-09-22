@@ -1,4 +1,6 @@
 # R3 weather detectors for METAR/SPECI (ADR-046 / #1216 M3).
+# Residual: WMO 4678 grammar + intensity-span edge cases stay in hatch_r3
+# (documented python residual; does not block detectors full — see product-engine-matrix).
 schema_version: 1
 id: metar-speci-r3-weather
 stage: token
