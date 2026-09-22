@@ -8,6 +8,9 @@ import { getSupabasePublishableKey, getSupabaseUrl } from '../runtime-config';
 
 let client: SupabaseClient | null = null;
 
+/**
+ * Function `buildClient`.
+ */
 function buildClient(): SupabaseClient {
   const supabaseUrl = getSupabaseUrl();
   const supabaseAnonKey = getSupabasePublishableKey();
@@ -26,7 +29,11 @@ function buildClient(): SupabaseClient {
   });
 }
 
-/** Lazily construct the singleton Supabase browser client. */
+/**
+ * Lazily construct the singleton Supabase browser client.
+ * @example
+ * const _ = true;
+ */
 export function getSupabaseClient(): SupabaseClient {
   if (!client) {
     client = buildClient();

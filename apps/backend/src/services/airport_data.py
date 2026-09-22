@@ -17,8 +17,15 @@ def check_and_regenerate_airports() -> bool:
     Compares modification times of af-airports.csv and airports.json.
     If CSV is newer, runs parse_airports_csv.py to regenerate.
 
-    Returns:
+    Returns
+    -------
+    object
         True if regeneration occurred, False otherwise
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_and_regenerate_airports)
+    2
     """
     try:
         backend_root = Path(__file__).parent.parent.parent

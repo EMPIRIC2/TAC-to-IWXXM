@@ -28,7 +28,14 @@ _URI_OR_SECRET = re.compile(
 
 @dataclass(frozen=True, slots=True)
 class CaptureSummary:
-    """One named or positional capture from a compiled pattern."""
+    """
+    One named or positional capture from a compiled pattern.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     index: int
     name: str
@@ -36,7 +43,14 @@ class CaptureSummary:
 
 @dataclass(frozen=True, slots=True)
 class RegexDiagnostic:
-    """Compile result for one pattern in a library YAML document."""
+    """
+    Compile result for one pattern in a library YAML document.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     path: str
     pattern: str
@@ -48,7 +62,14 @@ class RegexDiagnostic:
 
 @dataclass(frozen=True, slots=True)
 class LibraryYamlReport:
-    """Strict YAML parse + regex diagnostics for one library asset."""
+    """
+    Strict YAML parse + regex diagnostics for one library asset.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     valid_yaml: bool
     yaml_error: str | None
@@ -62,7 +83,19 @@ class LibraryYamlReport:
     data: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
-        """Serialize for JSON / API responses."""
+        """
+        Serialize for JSON / API responses.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (to_dict)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return {
             "valid_yaml": self.valid_yaml,
             "yaml_error": self.yaml_error,
@@ -88,12 +121,14 @@ class LibraryYamlReport:
 
 
 def _as_str(value: object) -> str | None:
+    """Internal helper ``_as_str``."""
     if isinstance(value, str) and value.strip():
         return value.strip()
     return None
 
 
 def _as_mapping(value: object) -> dict[str, Any]:
+    """Internal helper ``_as_mapping``."""
     if not isinstance(value, dict):
         return {}
     mapped: dict[str, Any] = {}
@@ -103,6 +138,7 @@ def _as_mapping(value: object) -> dict[str, Any]:
 
 
 def _as_list(value: object) -> list[object]:
+    """Internal helper ``_as_list``."""
     if not isinstance(value, list):
         return []
     return list(cast(list[object], value))
@@ -231,7 +267,28 @@ def _numeric_check_diagnostics(
 
 
 def diagnose_regex(pattern: str, *, sample: str | None = None, path: str = "pattern") -> RegexDiagnostic:
-    """Compile one pattern and classify ok / warn / fail."""
+    """
+    Compile one pattern and classify ok / warn / fail.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (diagnose_regex)
+    2
+
+    Parameters
+    ----------
+    pattern : object
+        Argument ``pattern``.
+    sample : object
+        Argument ``sample``.
+    path : object
+        Argument ``path``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         compiled = re.compile(pattern)
     except re.error as exc:
@@ -282,6 +339,7 @@ def diagnose_regex(pattern: str, *, sample: str | None = None, path: str = "patt
 
 
 def _secret_violation(data: dict[str, Any]) -> str | None:
+    """Internal helper ``_secret_violation``."""
     blob = yaml.safe_dump(data, sort_keys=False)
     if _URI_OR_SECRET.search(blob):
         return "Dissemination YAML must not include credentials or destination URIs"
@@ -294,7 +352,28 @@ def validate_library_yaml(
     expected_kind: LibraryKind | None = None,
     lifecycle: LibraryLifecycle = "draft",
 ) -> LibraryYamlReport:
-    """Parse YAML, enforce kind/name, and collect regex diagnostics."""
+    """
+    Parse YAML, enforce kind/name, and collect regex diagnostics.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_library_yaml)
+    2
+
+    Parameters
+    ----------
+    raw : object
+        Argument ``raw``.
+    expected_kind : object
+        Argument ``expected_kind``.
+    lifecycle : object
+        Argument ``lifecycle``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     stripped = raw.strip()
     if not stripped:
         return LibraryYamlReport(

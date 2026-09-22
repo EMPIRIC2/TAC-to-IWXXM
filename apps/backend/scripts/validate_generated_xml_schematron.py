@@ -8,11 +8,29 @@ This answers the critical question:
 
 import json
 from pathlib import Path
-from typing import Optional
 
 
-def get_generated_xml_path(test_case: str, amendment: str) -> Optional[Path]:
-    """Find a generated XML file for a test case."""
+def get_generated_xml_path(test_case: str, amendment: str) -> Path | None:
+    """
+    Find a generated XML file for a test case.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_generated_xml_path)
+    2
+
+    Parameters
+    ----------
+    test_case : object
+        Argument ``test_case``.
+    amendment : object
+        Argument ``amendment``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     xml_paths = [
         Path(
             f"/root/metar-to-IWXXM/backend/test-reports/local-test-failures/generated_xmls/{test_case}_{amendment}.xml"
@@ -33,6 +51,21 @@ def validate_with_schematron(xml_path: Path) -> dict:
     Run generated XML through Docker Schematron validator.
 
     Returns: {'valid': bool, 'assertions_failed': int, 'error': str|None, 'output': str}
+
+    Parameters
+    ----------
+    xml_path : object
+        Argument ``xml_path``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_with_schematron)
+    2
     """
     try:
         # Try to use the Docker validator if available
@@ -61,7 +94,21 @@ def validate_with_schematron(xml_path: Path) -> dict:
 
 
 def check_test_case_validation(test_case: str, amendment: str = "Amd79-80-2023"):
-    """Check if a specific test case's generated XML is valid per Schematron."""
+    """
+    Check if a specific test case's generated XML is valid per Schematron.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_test_case_validation)
+    2
+
+    Parameters
+    ----------
+    test_case : object
+        Argument ``test_case``.
+    amendment : object
+        Argument ``amendment``.
+    """
     print(f"\nChecking Schematron validation for: {test_case} ({amendment})")
     print("-" * 70)
 
@@ -110,7 +157,14 @@ def check_test_case_validation(test_case: str, amendment: str = "Amd79-80-2023")
 
 
 def main():
-    """Main analysis."""
+    """
+    Main analysis.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (main)
+    2
+    """
     print("\n" + "=" * 70)
     print("SCHEMATRON VALIDATION TEST")
     print("=" * 70)

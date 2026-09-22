@@ -7,13 +7,28 @@
 
 import iwxxmVersionsJson from '@/generated/iwxxm_versions.json';
 
+/**
+ * Type `IwxxmVersionRole`.
+ * @example
+ * const _ = true;
+ */
 export type IwxxmVersionRole = 'latest' | 'previous';
 
+/**
+ * Type `IwxxmVersionEntry`.
+ * @example
+ * const _ = true;
+ */
 export interface IwxxmVersionEntry {
   id: string;
   role: IwxxmVersionRole;
 }
 
+/**
+ * Type `IwxxmVersionsSoT`.
+ * @example
+ * const _ = true;
+ */
 export interface IwxxmVersionsSoT {
   default: string;
   versions: IwxxmVersionEntry[];
@@ -25,6 +40,11 @@ export const IWXXM_VERSIONS_SOT = iwxxmVersionsJson as IwxxmVersionsSoT;
 /** Version ids as a union-friendly string list (runtime). */
 export const IWXXM_VERSION_IDS = IWXXM_VERSIONS_SOT.versions.map((v) => v.id);
 
+/**
+ * Type `IwxxmVersionId`.
+ * @example
+ * const _ = true;
+ */
 export type IwxxmVersionId = (typeof IWXXM_VERSION_IDS)[number];
 
 /** Default IWXXM line (matches Python ``DEFAULT_VERSION``). */
@@ -38,6 +58,8 @@ export const CA_ECCC_IWXXM_VERSION = '3.0.0' as const;
  *
  * @param role - ``latest`` or ``previous`` from SoT
  * @returns Display role word
+ * @example
+ * const _ = true;
  */
 export function roleLabel(role: IwxxmVersionRole): string {
   return role === 'latest' ? 'Latest' : 'Previous';
@@ -48,6 +70,8 @@ export function roleLabel(role: IwxxmVersionRole): string {
  *
  * @param entry - SoT version row
  * @returns Select option text
+ * @example
+ * const _ = true;
  */
 export function versionOptionLabel(entry: IwxxmVersionEntry): string {
   return `${entry.id} (${roleLabel(entry.role)})`;
@@ -65,6 +89,8 @@ export const IWXXM_VERSION_OPTIONS = IWXXM_VERSIONS_SOT.versions.map((entry) => 
  *
  * @param value - Candidate version string
  * @returns Supported id or SoT default
+ * @example
+ * const _ = true;
  */
 export function coerceIwxxmVersion(value: unknown): IwxxmVersionId {
   if (typeof value === 'string' && IWXXM_VERSION_IDS.includes(value)) {
@@ -73,6 +99,9 @@ export function coerceIwxxmVersion(value: unknown): IwxxmVersionId {
   return DEFAULT_IWXXM_VERSION;
 }
 
+/**
+ * Function `normalizeProfileId`.
+ */
 function normalizeProfileId(profile: string): string {
   return profile.trim().toLowerCase().replace(/-/g, '_');
 }
@@ -82,6 +111,8 @@ function normalizeProfileId(profile: string): string {
  *
  * @param profile - UI profile emit key
  * @returns Version options (CA_ECCC pins 3.0.0 only)
+ * @example
+ * const _ = true;
  */
 export function iwxxmVersionOptionsForProfile(profile: string) {
   if (normalizeProfileId(profile) === 'ca_eccc') {
@@ -102,6 +133,8 @@ export function iwxxmVersionOptionsForProfile(profile: string) {
  * @param profile - Semantic profile id or alias
  * @param value - Candidate version string
  * @returns Scoped version for pinned profiles, otherwise a supported SoT version
+ * @example
+ * const _ = true;
  */
 export function coerceIwxxmVersionForProfile(
   profile: string,

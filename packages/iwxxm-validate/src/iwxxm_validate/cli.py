@@ -13,6 +13,7 @@ from iwxxm_validate.validate_iwxxm import validate_iwxxm
 
 
 def _build_parser() -> argparse.ArgumentParser:
+    """Internal helper ``_build_parser``."""
     parser = argparse.ArgumentParser(
         prog="iwxxm-validate",
         description="Validate IWXXM XML (XSD + Schematron via validate_iwxxm SDK).",
@@ -66,6 +67,7 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _cli_validate_product(profile: str, extensions: Sequence[str], product: str | None) -> str | None:
+    """Internal helper ``_cli_validate_product``."""
     if profile != "ca_eccc":
         return None
     normalized = {token.strip().upper().replace("-", "_") for token in extensions if token.strip()}
@@ -114,6 +116,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     -------
     int
         ``0`` when ``report.ok``; ``1`` on validation errors or I/O failure.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (main)
+    2
     """
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)

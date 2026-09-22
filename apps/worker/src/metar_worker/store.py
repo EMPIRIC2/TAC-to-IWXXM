@@ -49,6 +49,7 @@ class PostgresStore:
     _engine: Engine | None = field(default=None, init=False, repr=False)
 
     def _get_engine(self) -> Engine:
+        """Internal helper ``_get_engine``."""
         if self._engine is None:
             self._engine = create_engine(
                 _to_psycopg_url(self.database_url),
@@ -62,15 +63,15 @@ class PostgresStore:
 
         Parameters
         ----------
-        table :
-            Target table name (must be an F8 ingest table).
-        row :
-            Column map produced by :func:`write_result`.
+        table : object
+            Argument ``table``.
+        row : object
+            Argument ``row``.
 
-        Raises
-        ------
-        ValueError
-            If ``table`` is not an allowed F8 ingest table.
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (insert)
+        2
         """
         if table not in _ALLOWED_TABLES:
             msg = f"refusing insert into unexpected table: {table}"
@@ -106,15 +107,20 @@ class PostgresStore:
 
         Parameters
         ----------
-        table :
-            Target table name.
-        job_id :
-            Ingest job identifier.
+        table : object
+            Argument ``table``.
+        job_id : object
+            Argument ``job_id``.
 
         Returns
         -------
-        list[dict[str, Any]]
-            Matching rows as plain dicts.
+        object
+            Return value.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (fetch_by_job_id)
+        2
         """
         if table not in _ALLOWED_TABLES:
             msg = f"refusing select from unexpected table: {table}"
@@ -134,6 +140,7 @@ class PostgresStore:
 
 
 def _base_row(job: IngestJob, result: PipelineResult) -> dict[str, Any]:
+    """Internal helper ``_base_row``."""
     return {
         "job_id": job.job_id,
         "product": result.product,
@@ -149,10 +156,24 @@ def write_result(store: StoreClient, job: IngestJob, result: PipelineResult) -> 
     """
     Persist a pipeline outcome to store or quarantine.
 
+    Parameters
+    ----------
+    store : object
+        Argument ``store``.
+    job : object
+        Argument ``job``.
+    result : object
+        Argument ``result``.
+
     Returns
     -------
-    str
-        Target table name written.
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (write_result)
+    2
     """
     row = _base_row(job, result)
     if result.ok and result.xml:

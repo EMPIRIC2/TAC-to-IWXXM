@@ -61,6 +61,7 @@ dev = [
 testpaths = ["tests"]
 pythonpath = [".", "src"]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
 addopts = [
     "-v",
     "--cov=src",
@@ -83,8 +84,9 @@ markers = [
     "ev032_smoke: EV-032 path-filtered pre-commit canary (A6-2 / VONA; E32-T7)",
     "schemathesis: F34 Schemathesis OpenAPI property suite (EV-059 / #727)",
 ]
+# ADR-048 / TC-EVDOC-007: warnings are errors (no blanket suppressions).
 filterwarnings = [
-    "ignore::DeprecationWarning",
+    "error",
 ]
 
 [tool.coverage.run]

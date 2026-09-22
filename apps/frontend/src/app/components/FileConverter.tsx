@@ -287,6 +287,9 @@ interface FileConverterProps {
   loadedWorkSession?: WorkSession | null;
 }
 
+/**
+ * Function `isStructuredConvertError`.
+ */
 function isStructuredConvertError(
   error: unknown,
 ): error is Error & { errors: string[]; issues: ConversionLog['issues'] } {
@@ -300,6 +303,9 @@ function isStructuredConvertError(
   return Array.isArray(candidate.errors) && Array.isArray(candidate.issues);
 }
 
+/**
+ * Function `mergeVisibleConvertErrors`.
+ */
 function mergeVisibleConvertErrors(primaryMessage: string, errors: string[]): string[] {
   const merged = new Set<string>();
   const normalizedPrimary = primaryMessage.trim();
@@ -386,10 +392,16 @@ const FALLBACK_PROFILE_SUMMARIES: Partial<Record<IwxxmProfile, ProfileCatalogEnt
   },
 };
 
+/**
+ * Function `profileDisplayName`.
+ */
 function profileDisplayName(profileId: string): string {
   return PROFILE_LABELS.get(profileId) ?? profileId;
 }
 
+/**
+ * Function `fallbackProfileSummary`.
+ */
 function fallbackProfileSummary(
   profile: IwxxmProfile,
   iwxxmVersion: IWXXMVersion,
@@ -439,6 +451,9 @@ interface ConversionParams {
   logLevel: LogLevel;
 }
 
+/**
+ * Function `snapshotExportContext`.
+ */
 function snapshotExportContext(
   params: ConversionParams,
   product: string,
@@ -457,6 +472,9 @@ function snapshotExportContext(
   };
 }
 
+/**
+ * Function `initialConversionParams`.
+ */
 function initialConversionParams(): ConversionParams {
   const base: ConversionParams = {
     bulletinId: '',
@@ -525,6 +543,9 @@ function conversionParamsFromStoredPreferences(
   };
 }
 
+/**
+ * Function `activeMetarFamilyVariants`.
+ */
 function activeMetarFamilyVariants(
   entry: ProfileCatalogEntry,
   product: string,
@@ -554,6 +575,8 @@ function activeMetarFamilyVariants(
  * @param props.onActiveSessionIdChange - Reports the active F5 session id
  * @param props.activeWorkSessionId - Current F5 session id when known
  * @param props.loadedWorkSession - Hydration payload for the active session
+ * @example
+ * const _ = true;
  */
 export function FileConverter({
   accessToken,

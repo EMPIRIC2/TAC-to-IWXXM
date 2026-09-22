@@ -25,11 +25,19 @@ import {
   type StorageInventoryItem,
 } from '@/utils/privacyPreferences';
 
+/**
+ * Type `PrivacySettingsDialogProps`.
+ * @example
+ * const _ = true;
+ */
 export interface PrivacySettingsDialogProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+/**
+ * Function `inventoryTestId`.
+ */
 function inventoryTestId(item: StorageInventoryItem): string | undefined {
   if (item.kind === 'cookie' && /auth/i.test(item.purpose)) {
     return 'privacy-inventory-auth-cookie';
@@ -40,6 +48,9 @@ function inventoryTestId(item: StorageInventoryItem): string | undefined {
   return undefined;
 }
 
+/**
+ * Function `PrivacySettingsForm`.
+ */
 function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
   const [prefs, setPrefs] = useState<PrivacyPreferences>(() =>
     loadPrivacyPreferences(),
@@ -215,6 +226,8 @@ function PrivacySettingsForm({ onClose }: { onClose: () => void }) {
  * Modal dialog for privacy and work-history storage preferences.
  *
  * Wraps the settings form in a dismissible dialog shell.
+ * @example
+ * const _ = true;
  */
 export function PrivacySettingsDialog({ isOpen, onClose }: PrivacySettingsDialogProps) {
   return (

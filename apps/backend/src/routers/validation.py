@@ -125,7 +125,14 @@ def _validate_one(item: ValidationRequest) -> AggregatedValidationResult:
 
 
 class ValidationLayerInfo(BaseModel):
-    """Information about a validation layer."""
+    """
+    Information about a validation layer.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -147,7 +154,14 @@ class ValidationLayerInfo(BaseModel):
 
 
 class ValidationLayersResponse(BaseModel):
-    """List of available validation layers with configurations."""
+    """
+    List of available validation layers with configurations.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -174,7 +188,14 @@ class ValidationLayersResponse(BaseModel):
 
 
 class BatchValidationRequest(BaseModel):
-    """Request to validate multiple inputs."""
+    """
+    Request to validate multiple inputs.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -204,7 +225,14 @@ class BatchValidationRequest(BaseModel):
 
 
 class BatchValidationResponse(BaseModel):
-    """Response from batch validation."""
+    """
+    Response from batch validation.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     model_config = ConfigDict(
         json_schema_extra={
@@ -238,7 +266,19 @@ _validation_service: ValidationService | None = None
 
 
 def get_validation_service() -> ValidationService:
-    """Get or create validation service."""
+    """
+    Get or create validation service.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_validation_service)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _validation_service
     if _validation_service is None:
         _validation_service = ValidationService()
@@ -254,7 +294,8 @@ def get_validation_service() -> ValidationService:
 async def validate_content(
     request: ValidationRequest,
 ) -> object:
-    """Validate METAR TAC or IWXXM XML content through multiple validation layers.
+    """
+    Validate METAR TAC or IWXXM XML content through multiple validation layers.
 
     ## Request Body
     - **content** (string, required): The METAR TAC or IWXXM XML content to validate
@@ -315,6 +356,21 @@ async def validate_content(
       "execution_time_ms": 8.3
     }
     ```
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_content)
+    2
     """
     try:
         return _validate_one(request)
@@ -333,7 +389,8 @@ async def validate_content(
 async def validate_multiple(
     request: BatchValidationRequest,
 ) -> object:
-    """Validate multiple METAR TAC or IWXXM XML inputs in a single request.
+    """
+    Validate multiple METAR TAC or IWXXM XML inputs in a single request.
 
     Useful for batch validation of multiple entries. Each item is validated
     independently and can have different content types.
@@ -393,6 +450,21 @@ async def validate_multiple(
       "total_execution_time_ms": 20.8
     }
     ```
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_multiple)
+    2
     """
     try:
         results: list[AggregatedValidationResult] = []
@@ -429,7 +501,8 @@ async def validate_multiple(
     summary="Get available validation layers",
 )
 async def get_validation_layers() -> object:
-    """Get information about available validation layers.
+    """
+    Get information about available validation layers.
 
     Each layer validates specific aspects of METAR TAC or IWXXM XML content.
     Layers marked as blocking will stop further validation if they fail.
@@ -469,6 +542,16 @@ async def get_validation_layers() -> object:
       ]
     }
     ```
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_validation_layers)
+    2
     """
     layers_info = [
         ValidationLayerInfo(

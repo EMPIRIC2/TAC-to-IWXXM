@@ -12,6 +12,8 @@ export const QUALITY_METRICS_LIST_PATH = '/quality';
  *
  * @param stem - Corpus stem id (e.g. `metar-A3-1`)
  * @returns Path `/quality/:stem` with URI encoding
+ * @example
+ * const _ = true;
  */
 export function qualityMetricsDetailPath(stem: string): string {
   const trimmed = stem.trim();
@@ -26,6 +28,8 @@ export function qualityMetricsDetailPath(stem: string): string {
  *
  * @param pathname - `window.location.pathname`
  * @returns `list` or `detail` with decoded stem; `null` when not a quality path
+ * @example
+ * const _ = true;
  */
 export function parseQualityMetricsPath(
   pathname: string,

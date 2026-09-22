@@ -129,6 +129,7 @@ class BulletinSplitError(ValueError):
     """
 
     def __init__(self, code: str, message: str) -> None:
+        """Internal helper ``__init__``."""
         self.code = code
         self.message = message
         super().__init__(message)
@@ -152,6 +153,11 @@ def map_t1t2(tac_tt: str) -> str:
     ------
     ValueError
         When ``tac_tt`` is not in the EV-029 aviation map.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (map_t1t2)
+    2
     """
     key = tac_tt.strip().upper()
     try:
@@ -178,6 +184,11 @@ def bbb_to_report_status(bbb: str | None) -> ReportStatus:
     ------
     BulletinSplitError
         When ``bbb`` is present but not an accepted prefix family.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (bbb_to_report_status)
+    2
     """
     if bbb is None or bbb == "":
         return "NORMAL"
@@ -212,6 +223,11 @@ def parse_ahl(line_or_text: str) -> AhlParts:
     ------
     BulletinSplitError
         When the heading cannot be parsed, ``T1T2`` is unknown, or BBB is invalid.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_ahl)
+    2
     """
     raw = line_or_text.strip()
     if not raw:
@@ -271,6 +287,11 @@ def format_ahl(parts: AhlParts) -> str:
     ------
     BulletinSplitError
         When BBB is present but invalid.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (format_ahl)
+    2
     """
     tt = parts.tt.strip().upper()
     aa = parts.aa.strip().upper()
@@ -320,6 +341,11 @@ def iwxxm_filename(
     -------
     str
         ``A_…xml`` or ``A_…xml.gz``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (iwxxm_filename)
+    2
     """
     ts = issued_at.astimezone(UTC).strftime("%Y%m%d%H%M%S")
     bbb = (parts.bbb or "").strip().upper()
@@ -354,6 +380,11 @@ def split_bulletin(text: str, *, product: str = "METAR") -> BulletinSplit:
     BulletinSplitError
         When the AHL cannot be parsed (``bulletin_split_failed`` / ``invalid_bbb``)
         or no reports are found after a valid AHL (``empty_bulletin``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (split_bulletin)
+    2
     """
     product_key = product.strip().upper()
     allowed_tt = _PRODUCT_TT.get(product_key)

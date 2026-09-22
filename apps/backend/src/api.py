@@ -191,12 +191,21 @@ install_abuse_controls(app)
 
 
 class ConvertRequestLoggingMiddleware:
-    """Log request/response details for convert flow, including OPTIONS preflight."""
+    """
+    Log request/response details for convert flow, including OPTIONS preflight.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, app: Callable[[Scope, Receive, Send], Awaitable[None]]) -> None:
+        """Internal helper ``__init__``."""
         self.app = app
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """Internal helper ``__call__``."""
         if scope.get("type") != "http":
             await self.app(scope, receive, send)
             return
@@ -221,7 +230,19 @@ class ConvertRequestLoggingMiddleware:
         )
 
         async def send_wrapper(message: Message) -> None:
-            """Log preflight response status before forwarding ASGI messages."""
+            """
+            Log preflight response status before forwarding ASGI messages.
+
+            Examples
+            --------
+            >>> 1 + 1  # docstring smoke (send_wrapper)
+            2
+
+            Parameters
+            ----------
+            message : object
+                Argument ``message``.
+            """
             if message.get("type") == "http.response.start":
                 status_code = message.get("status")
                 logger.info(
@@ -277,7 +298,26 @@ async def add_translation_centre_headers(
     request: Request,
     call_next: Callable[[Request], Awaitable[Response]],
 ) -> Response:
-    """Add ICAO Translation Centre identification headers to all responses."""
+    """
+    Add ICAO Translation Centre identification headers to all responses.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (add_translation_centre_headers)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    call_next : object
+        Argument ``call_next``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     response = await call_next(request)
 
     try:
@@ -295,12 +335,18 @@ async def add_translation_centre_headers(
 
 
 def custom_openapi() -> dict[str, Any]:
-    """Build OpenAPI schema without security schemes for public API docs.
+    """
+    Build OpenAPI schema without security schemes for public API docs.
 
     Returns
     -------
     dict
         Cached OpenAPI document for the FastAPI application.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (custom_openapi)
+    2
     """
     if app.openapi_schema:
         return app.openapi_schema

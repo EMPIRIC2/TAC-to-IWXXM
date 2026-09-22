@@ -23,7 +23,19 @@ class SinkAdapter(Protocol):
 
     @property
     def sink_type(self) -> SinkType:
-        """Drawer / API sink discriminator."""
+        """
+        Drawer / API sink discriminator.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (sink_type)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
 
     async def preflight(
         self,
@@ -40,6 +52,23 @@ class SinkAdapter(Protocol):
             When destination hosts are not allowlisted.
         ValueError
             When params or transport checks fail (secrets redacted).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (preflight)
+        2
+
+        Parameters
+        ----------
+        params : object
+            Argument ``params``.
+        allowlist : object
+            Argument ``allowlist``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
 
     async def send(
@@ -59,6 +88,27 @@ class SinkAdapter(Protocol):
             When destination hosts are not allowlisted.
         ValueError
             When params, payload, or transport fail (secrets redacted).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (send)
+        2
+
+        Parameters
+        ----------
+        params : object
+            Argument ``params``.
+        allowlist : object
+            Argument ``allowlist``.
+        iwxxm_xml : object
+            Argument ``iwxxm_xml``.
+        tac_text : object
+            Argument ``tac_text``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
 
 

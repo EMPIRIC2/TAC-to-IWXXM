@@ -235,6 +235,7 @@ def _issue(
 
 
 def _body_span(tac: str) -> tuple[int, int, str]:
+    """Internal helper ``_body_span``."""
     stripped = tac.strip()
     if not stripped:
         return 0, len(tac), ""
@@ -243,6 +244,7 @@ def _body_span(tac: str) -> tuple[int, int, str]:
 
 
 def _first_icao(tokens: list[str], skip: frozenset[str]) -> str | None:
+    """Internal helper ``_first_icao``."""
     for tok in tokens:
         if tok in skip:
             continue
@@ -252,6 +254,7 @@ def _first_icao(tokens: list[str], skip: frozenset[str]) -> str | None:
 
 
 def _token_index(tokens: list[str], matcher: re.Pattern[str]) -> int | None:
+    """Internal helper ``_token_index``."""
     for i, tok in enumerate(tokens):
         if matcher.fullmatch(tok):
             return i
@@ -259,6 +262,7 @@ def _token_index(tokens: list[str], matcher: re.Pattern[str]) -> int | None:
 
 
 def _first_icao_index(tokens: list[str], skip: frozenset[str]) -> int | None:
+    """Internal helper ``_first_icao_index``."""
     for i, tok in enumerate(tokens):
         if tok in skip:
             continue
@@ -268,6 +272,7 @@ def _first_icao_index(tokens: list[str], skip: frozenset[str]) -> int | None:
 
 
 def _consume_wx_descriptors(rest: str) -> str:
+    """Internal helper ``_consume_wx_descriptors``."""
     while len(rest) >= 2:
         matched = False
         for desc in _WX_DESCRIPTORS:
@@ -333,6 +338,7 @@ def _weather_candidate_tokens(tokens: list[str]) -> list[tuple[int, str]]:
 
 
 def _token_span_in_core(core: str, token: str, body_start: int) -> tuple[int, int] | None:
+    """Internal helper ``_token_span_in_core``."""
     match = re.search(r"\b" + re.escape(token) + r"\b", core)
     if not match:
         return None
@@ -433,6 +439,7 @@ def _append_remark_issue(
     body_end: int,
     token: str,
 ) -> None:
+    """Internal helper ``_append_remark_issue``."""
     span = _token_span_in_core(core, token, body_start)
     if span is None:
         start, end = body_start, body_end
@@ -800,6 +807,7 @@ def _emit_token_info(
     body_end: int,
     token: str,
 ) -> None:
+    """Internal helper ``_emit_token_info``."""
     span = _token_span_in_core(core, token, body_start)
     if span is None:
         start, end = body_start, body_end

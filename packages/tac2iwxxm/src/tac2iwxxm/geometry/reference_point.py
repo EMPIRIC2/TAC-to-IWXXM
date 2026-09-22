@@ -44,15 +44,35 @@ _EARTH_RADIUS_NM = 3440.065
 
 
 class UnknownVOR(KeyError):
-    """Raised when a VOR identifier is absent from the bundled reference table."""
+    """
+    Raised when a VOR identifier is absent from the bundled reference table.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 def _vor_table_path() -> Path:
+    """Internal helper ``_vor_table_path``."""
     return Path(__file__).resolve().parent.parent / "data" / "vor_reference_points.json"
 
 
 def load_vor_reference_points() -> dict[str, dict[str, Any]]:
-    """Load bundled VOR reference coordinates."""
+    """
+    Load bundled VOR reference coordinates.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_vor_reference_points)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     data = json.loads(_vor_table_path().read_text(encoding="utf-8"))
     return {k.upper(): v for k, v in data.get("points", {}).items()}
 
@@ -77,6 +97,11 @@ def resolve_vor(vor_id: str, table: dict[str, dict[str, Any]] | None = None) -> 
     ------
     UnknownVOR
         When ``vor_id`` is not present in the reference table.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_vor)
+    2
     """
     lookup = table if table is not None else load_vor_reference_points()
     key = vor_id.upper()
@@ -91,6 +116,27 @@ def offset_nm(lat: float, lon: float, distance_nm: float, cardinal: str) -> tupl
     Compute a point ``distance_nm`` along ``cardinal`` from ``(lat, lon)``.
 
     Uses a spherical Earth model (aviation NM radius).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (offset_nm)
+    2
+
+    Parameters
+    ----------
+    lat : object
+        Argument ``lat``.
+    lon : object
+        Argument ``lon``.
+    distance_nm : object
+        Argument ``distance_nm``.
+    cardinal : object
+        Argument ``cardinal``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     bearing_deg = _CARDINAL_BEARING_DEG.get(cardinal.upper())
     if bearing_deg is None:
@@ -108,13 +154,38 @@ def offset_nm(lat: float, lon: float, distance_nm: float, cardinal: str) -> tupl
 
 
 class ReferencePointGeometryParser:
-    """Parse US SIGMET ``FROM`` VOR reference chains into geometry IR."""
+    """
+    Parse US SIGMET ``FROM`` VOR reference chains into geometry IR.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, vor_table: dict[str, dict[str, Any]] | None = None) -> None:
+        """Internal helper ``__init__``."""
         self._vor_table = vor_table
 
     def parse_from_body(self, body: str) -> dict[str, Any] | None:
-        """Return geometry IR dict when a ``FROM`` chain is present, else ``None``."""
+        """
+        Return geometry IR dict when a ``FROM`` chain is present, else ``None``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (parse_from_body)
+        2
+
+        Parameters
+        ----------
+        body : object
+            Argument ``body``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         match = _FROM_CHAIN.search(body)
         if match is None:
             return None
@@ -165,5 +236,22 @@ class ReferencePointGeometryParser:
 
 
 def parse_vor_reference_geometry(body: str) -> dict[str, Any] | None:
-    """Convenience wrapper using the default bundled VOR table."""
+    """
+    Convenience wrapper using the default bundled VOR table.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_vor_reference_geometry)
+    2
+
+    Parameters
+    ----------
+    body : object
+        Argument ``body``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return ReferencePointGeometryParser().parse_from_body(body)

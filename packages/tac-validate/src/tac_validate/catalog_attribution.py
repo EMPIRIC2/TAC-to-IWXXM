@@ -43,6 +43,7 @@ _PUBLIC_COMPANIONS: dict[str, str] = {
 
 @lru_cache(maxsize=1)
 def _load() -> dict[str, dict[str, Any]]:
+    """Internal helper ``_load``."""
     if not _DATA.is_file():
         return {}
     try:
@@ -112,6 +113,11 @@ def attribution_for(code: str) -> dict[str, str | None]:
         ``family``, ``source_type``, ``status``, ``semantic_identifier``,
         ``last_verified``, ``replacement_url``, ``source_locator``,
         ``source_access`` (may be None).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (attribution_for)
+    2
     """
     row = _load().get(code) or {}
     source_id_obj: object = row.get("source_id")

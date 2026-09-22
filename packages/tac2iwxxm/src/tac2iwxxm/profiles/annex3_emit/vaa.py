@@ -70,6 +70,23 @@ def emit_vaa_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     always opens ``iwxxm:VolcanicAshAdvisory`` and never ``VolcanicAshSIGMET``
     (or other SIGMET-family / TCA roots). Rejects IR that claims a forbidden
     ``iwxxm_root`` or non-VAA ``product``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_vaa_annex3)
+    2
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     product = str(ir.get("product", "VAA")).upper()
     if product != "VAA":

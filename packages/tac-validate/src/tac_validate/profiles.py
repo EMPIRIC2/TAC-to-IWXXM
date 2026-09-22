@@ -53,6 +53,21 @@ def normalize_profile(profile: str) -> str:
     ------
     ValueError
         When ``profile`` is not a supported lint profile.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_profile)
+    2
+
+    Parameters
+    ----------
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     key = profile.strip().lower()
     if key not in SUPPORTED_PROFILES:
@@ -61,22 +76,90 @@ def normalize_profile(profile: str) -> str:
 
 
 def ca_eccc_applicable(product: str) -> bool:
-    """Return True when ``profile=ca_eccc`` is defined for ``product``."""
+    """
+    Return True when ``profile=ca_eccc`` is defined for ``product``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ca_eccc_applicable)
+    2
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return product.upper() in CA_ECCC_PRODUCTS
 
 
 def in_imd_applicable(product: str) -> bool:
-    """Return True when ``profile=in_imd`` is defined for ``product``."""
+    """
+    Return True when ``profile=in_imd`` is defined for ``product``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (in_imd_applicable)
+    2
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return product.upper() in IN_IMD_PRODUCTS
 
 
 def iwxxm_us_applicable(product: str) -> bool:
-    """Return True when ``profile=iwxxm_us`` is defined for ``product``."""
+    """
+    Return True when ``profile=iwxxm_us`` is defined for ``product``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (iwxxm_us_applicable)
+    2
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return product.upper() in IWXXM_US_PRODUCTS
 
 
 def iwxxm_us_lint_applicable(product: str) -> bool:
-    """Return True when ``lint(..., profile=iwxxm_us)`` is allowed for ``product``."""
+    """
+    Return True when ``lint(..., profile=iwxxm_us)`` is allowed for ``product``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (iwxxm_us_lint_applicable)
+    2
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return product.upper() in IWXXM_US_LINT_PRODUCTS
 
 

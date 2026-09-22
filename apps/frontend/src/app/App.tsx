@@ -54,6 +54,9 @@ type AppView =
   | 'callback'
   | 'reset';
 
+/**
+ * Function `isPrimaryShellView`.
+ */
 function isPrimaryShellView(view: AppView): view is ShellPrimaryView {
   return (
     view === 'converter' ||

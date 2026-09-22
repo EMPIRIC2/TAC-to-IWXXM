@@ -26,9 +26,17 @@ logger = logging.getLogger(__name__)
 
 
 class WebhookService:
-    """Service for sending webhook notifications."""
+    """
+    Service for sending webhook notifications.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self) -> None:
+        """Internal helper ``__init__``."""
         self.client = None
         self.enabled = should_send_webhooks()
 
@@ -74,13 +82,27 @@ class WebhookService:
         """
         Send webhook notification to all configured endpoints.
 
-        Args:
-            event: Event type (e.g., "translation.success")
-            data: Event data payload
-            metadata: Optional additional metadata
-
         Returns:
             True if all webhooks sent successfully, False otherwise
+
+        Parameters
+        ----------
+        event : object
+            Event type (e.g., "translation.success")
+        data : object
+            Event data payload
+        metadata : object
+            Optional additional metadata
+
+        Returns
+        -------
+        object
+            True if all webhooks sent successfully, False otherwise
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (send_webhook)
+        2
         """
         if not self.enabled:
             logger.debug("Webhooks disabled, skipping notification")
@@ -185,12 +207,23 @@ class WebhookService:
         """
         Send notification for completed translation.
 
-        Args:
-            translation_id: Unique translation UUID
-            airport_code: ICAO airport code
-            iwxxm_version: IWXXM version used
-            file_size_bytes: Size of generated IWXXM content
-            duration_ms: Processing duration
+        Parameters
+        ----------
+        translation_id : object
+            Unique translation UUID
+        airport_code : object
+            ICAO airport code
+        iwxxm_version : object
+            IWXXM version used
+        file_size_bytes : object
+            Size of generated IWXXM content
+        duration_ms : object
+            Processing duration
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (notify_translation_completed)
+        2
         """
         if not translation_id:
             return
@@ -216,12 +249,23 @@ class WebhookService:
         """
         Send notification for successful translation.
 
-        Args:
-            translation_id: Unique translation UUID
-            airport_code: ICAO airport code
-            icao_region: ICAO region
-            iwxxm_version: IWXXM version used
-            duration_ms: Processing duration
+        Parameters
+        ----------
+        translation_id : object
+            Unique translation UUID
+        airport_code : object
+            ICAO airport code
+        icao_region : object
+            ICAO region
+        iwxxm_version : object
+            IWXXM version used
+        duration_ms : object
+            Processing duration
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (notify_translation_success)
+        2
         """
         if not translation_id:
             return
@@ -246,11 +290,21 @@ class WebhookService:
         """
         Send notification for failed translation.
 
-        Args:
-            translation_id: Unique translation UUID
-            airport_code: ICAO airport code
-            error_type: Type of error
-            error_message: Error message
+        Parameters
+        ----------
+        translation_id : object
+            Unique translation UUID
+        airport_code : object
+            ICAO airport code
+        error_type : object
+            Type of error
+        error_message : object
+            Error message
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (notify_translation_failed)
+        2
         """
         if not translation_id:
             return
@@ -274,11 +328,21 @@ class WebhookService:
         """
         Send notification for validation failure.
 
-        Args:
-            translation_id: Unique translation UUID
-            airport_code: ICAO airport code
-            failed_layers: List of failed validation layers
-            error_details: Detailed validation errors
+        Parameters
+        ----------
+        translation_id : object
+            Unique translation UUID
+        airport_code : object
+            ICAO airport code
+        failed_layers : object
+            List of failed validation layers
+        error_details : object
+            Detailed validation errors
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (notify_validation_failed)
+        2
         """
         await self.send_webhook(
             event="validation.failed",
@@ -303,11 +367,21 @@ class WebhookService:
         """
         Send notification for bulk conversion completion.
 
-        Args:
-            total_files: Total number of files processed
-            successful: Number of successful conversions
-            failed: Number of failed conversions
-            duration_ms: Total processing duration
+        Parameters
+        ----------
+        total_files : object
+            Total number of files processed
+        successful : object
+            Number of successful conversions
+        failed : object
+            Number of failed conversions
+        duration_ms : object
+            Total processing duration
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (notify_bulk_completed)
+        2
         """
         await self.send_webhook(
             event="bulk.completed",

@@ -51,7 +51,14 @@ class DisseminationMessage:
 
 @dataclass(frozen=True, slots=True)
 class ValidationResult:
-    """Gateway validate outcome mapped from ``PreflightResponse``."""
+    """
+    Gateway validate outcome mapped from ``PreflightResponse``.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     ok: bool
     connectivity_ok: bool
@@ -90,6 +97,7 @@ class DeliveryReceipt:
 
 
 def _from_preflight(pre: PreflightResponse) -> ValidationResult:
+    """Internal helper ``_from_preflight``."""
     return ValidationResult(
         ok=pre.ok,
         connectivity_ok=pre.connectivity_ok,
@@ -117,10 +125,12 @@ class DisseminationGateway:
         adapters: Mapping[str, SinkAdapter],
         health_probe: HealthProbe | None = None,
     ) -> None:
+        """Internal helper ``__init__``."""
         self._adapters = dict(adapters)
         self._health_probe = health_probe
 
     def _adapter(self, gateway_kind: str) -> SinkAdapter:
+        """Internal helper ``_adapter``."""
         try:
             return self._adapters[gateway_kind]
         except KeyError as exc:
@@ -144,6 +154,11 @@ class DisseminationGateway:
         ------
         KeyError
             When ``gateway_kind`` is not registered.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate)
+        2
         """
         adapter = self._adapter(message.gateway_kind)
         pre = await adapter.preflight(
@@ -171,6 +186,11 @@ class DisseminationGateway:
         ------
         KeyError
             When ``gateway_kind`` is not registered.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (send)
+        2
         """
         adapter = self._adapter(message.gateway_kind)
         completed = datetime.now(UTC)
@@ -210,6 +230,11 @@ class DisseminationGateway:
         -------
         list of GatewayHealth
             One row per kind.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (health)
+        2
         """
         kinds = [gateway_kind] if gateway_kind is not None else sorted(self._adapters)
         rows: list[GatewayHealth] = []

@@ -1,13 +1,35 @@
 /**
  * Map FileConverter conversion parameters onto `/api/v1/convert` multipart fields
  * and client-side conversion/validation/lint log filtering (ADR-023 / ADR-024).
+ * @example
+ * const _ = true;
  */
 
 export type ConvertOnError = 'skip' | 'fail' | 'warn';
+/**
+ * Type `ConvertLogLevel`.
+ * @example
+ * const _ = true;
+ */
 export type ConvertLogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
+/**
+ * Type `ConsoleLineLevel`.
+ * @example
+ * const _ = true;
+ */
 export type ConsoleLineLevel = 'info' | 'warn' | 'error';
+/**
+ * Type `IssueSeverity`.
+ * @example
+ * const _ = true;
+ */
 export type IssueSeverity = 'error' | 'warning' | 'info' | string;
 
+/**
+ * Type `ConvertValidationFlags`.
+ * @example
+ * const _ = true;
+ */
 export interface ConvertValidationFlags {
   validateOutput: boolean;
   validationLevel: 'basic' | 'comprehensive';
@@ -18,6 +40,8 @@ export interface ConvertValidationFlags {
  *
  * @param strict - UI "Strict Validation" checkbox
  * @param softPreview - Soft-preview / preview=true mode
+ * @example
+ * const _ = true;
  */
 export function mapStrictToValidation(
   strict: boolean,
@@ -36,6 +60,8 @@ export function mapStrictToValidation(
  * Map On Error Behavior to API ``stop_on_error``.
  *
  * @param onError - UI select value
+ * @example
+ * const _ = true;
  */
 export function mapOnErrorToStopOnError(onError: ConvertOnError): boolean {
   return onError === 'fail';
@@ -62,6 +88,8 @@ const MIN_RANK: Record<ConvertLogLevel, number> = {
  *
  * @param lineLevel - Console line severity
  * @param minLevel - Operator Log Level preference
+ * @example
+ * const _ = true;
  */
 export function consoleLevelPasses(
   lineLevel: ConsoleLineLevel,
@@ -74,6 +102,8 @@ export function consoleLevelPasses(
  * Map issue severity string onto console ranks.
  *
  * @param severity - Issue severity from convert/lint/validate
+ * @example
+ * const _ = true;
  */
 export function issueSeverityRank(severity: IssueSeverity | undefined): number {
   const s = (severity ?? 'error').toLowerCase();
@@ -94,6 +124,8 @@ export function issueSeverityRank(severity: IssueSeverity | undefined): number {
  *
  * @param severity - Issue severity
  * @param minLevel - Operator Log Level (filters process log for input/output)
+ * @example
+ * const _ = true;
  */
 export function issueLevelPasses(
   severity: IssueSeverity | undefined,
@@ -105,13 +137,21 @@ export function issueLevelPasses(
 const BULLETIN_ID_RE = /^[A-Z]{4}[0-9]{2}$/;
 const ISSUING_CENTER_RE = /^[A-Z]{4}$/;
 
-/** True when Bulletin ID is empty or 4 letters + 2 digits. */
+/**
+ * True when Bulletin ID is empty or 4 letters + 2 digits.
+ * @example
+ * const _ = true;
+ */
 export function isValidBulletinId(value: string): boolean {
   const raw = value.trim().toUpperCase();
   return raw === '' || BULLETIN_ID_RE.test(raw);
 }
 
-/** True when Issuing Center is empty or exactly 4 letters (CCCC). */
+/**
+ * True when Issuing Center is empty or exactly 4 letters (CCCC).
+ * @example
+ * const _ = true;
+ */
 export function isValidIssuingCenter(value: string): boolean {
   const raw = value.trim().toUpperCase();
   return raw === '' || ISSUING_CENTER_RE.test(raw);

@@ -255,6 +255,11 @@ import {
   PROFILES_WORKBENCH_PREVIEW_ISSUES_PLACEHOLDER,
 } from '@/utils/conversionProfilesCopy';
 
+/**
+ * Type `OperatorVisibleCopyEntry`.
+ * @example
+ * const _ = true;
+ */
 export type OperatorVisibleCopyEntry = {
   id: string;
   text: string;
@@ -264,6 +269,8 @@ export type OperatorVisibleCopyEntry = {
  * Collect agreed FE string catalogs for the internal-doc-ref guard.
  *
  * @returns Flat list of `{ id, text }` entries
+ * @example
+ * const _ = true;
  */
 export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
   const entries: OperatorVisibleCopyEntry[] = [

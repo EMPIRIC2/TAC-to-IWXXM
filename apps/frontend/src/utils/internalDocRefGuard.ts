@@ -26,6 +26,11 @@ export const INTERNAL_DOC_REF_PATTERNS: ReadonlyArray<{
 /** Empty unless a proven domain false positive is documented. */
 export const INTERNAL_DOC_REF_ALLOWLIST = new Set<string>();
 
+/**
+ * Type `InternalDocRefHit`.
+ * @example
+ * const _ = true;
+ */
 export type InternalDocRefHit = { name: string; token: string };
 
 /**
@@ -33,6 +38,8 @@ export type InternalDocRefHit = { name: string; token: string };
  *
  * @param text - Operator-visible copy
  * @returns Matching pattern name + token pairs
+ * @example
+ * const _ = true;
  */
 export function findInternalDocRefs(text: string): InternalDocRefHit[] {
   const hits: InternalDocRefHit[] = [];

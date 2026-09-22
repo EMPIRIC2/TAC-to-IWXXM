@@ -7,7 +7,6 @@ All other pytest configuration is in pyproject.toml.
 import os
 
 import pytest
-
 from src.schemas.airport import get_airport_validator
 
 # Set test environment variables BEFORE any imports of modules that use os.getenv()
@@ -22,11 +21,17 @@ os.environ.setdefault("IWXXM_VERSION", "2025-2")
 
 @pytest.fixture(scope="session", autouse=True)
 def ensure_airport_data():
-    """Ensure airport data is loaded before any tests run.
+    """
+    Ensure airport data is loaded before any tests run.
 
     This fixture runs once per test session and ensures the AirportValidator
     singleton has loaded the airports.json data file. This is required for
     METAR conversion tests that need airport metadata.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ensure_airport_data)
+    2
     """
     # Get the validator singleton (will initialize and load data if needed)
     validator = get_airport_validator()

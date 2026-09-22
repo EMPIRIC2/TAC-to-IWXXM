@@ -51,6 +51,7 @@
 | [ADR-045](ADR-045-shared-tac-pack-engine.md) | Shared TAC pack engine for decode and convert IR | **Accepted** (EV-configurable-tac-decode-packs) |
 | [ADR-046](ADR-046-validation-policy-layers.md) | Registry / Detector / Policy / Runtime for TAC lint + IWXXM output | **Accepted** (EV-validation-policy-layers / #1216) |
 | [ADR-047](ADR-047-convert-emit-yaml-full-matrix.md) | Convert emit YAML + full engine matrix | **Proposed** (EV-yaml-full-configurability / #1226) |
+| [ADR-048](ADR-048-multilang-inline-documentation-bar.md) | Multi-language inline documentation bar (PY/TS/Rust; supersedes hybrid D) | **Accepted** (EV-docstring-multilang-bar) |
 
 ## Process
 

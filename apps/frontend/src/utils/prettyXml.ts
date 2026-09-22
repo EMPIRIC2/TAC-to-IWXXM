@@ -10,6 +10,8 @@
  * @param xml - Raw XML string (may already be compact)
  * @param indent - Spaces per nesting level (default 2)
  * @returns Indented XML
+ * @example
+ * const _ = true;
  */
 export function prettyPrintXml(xml: string, indent = 2): string {
   const trimmed = xml.trim();

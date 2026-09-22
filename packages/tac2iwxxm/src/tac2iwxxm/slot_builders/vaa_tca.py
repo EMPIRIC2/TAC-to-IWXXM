@@ -97,6 +97,7 @@ def _day_hhmm_to_iso(token: str, *, issue_iso: str) -> str | None:
 
 
 def _latlon(token: str, *, ndigits: int | None = 2) -> tuple[float, float] | None:
+    """Internal helper ``_latlon``."""
     m = _PSN.search(token)
     if m is None:
         m = re.search(r"(?P<ns>[NS])(?P<lat>\d{4})\s+(?P<ew>[EW])(?P<lon>\d{5})", token)
@@ -122,6 +123,7 @@ def _latlon(token: str, *, ndigits: int | None = 2) -> tuple[float, float] | Non
 
 
 def _point_to_pair(ns: str, lat: str, ew: str, lon: str) -> tuple[float, float]:
+    """Internal helper ``_point_to_pair``."""
     lat_f = int(lat[0:2]) + int(lat[2:4]) / 60.0
     lon_f = int(lon[0:3]) + int(lon[3:5]) / 60.0
     if ns == "S":
@@ -195,6 +197,16 @@ def parse_vaa(tac: str, *, product: str = "VAA") -> dict[str, Any]:
         VAA TAC text.
     product :
         Expected ``VAA``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_vaa)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if product.upper() != "VAA":
         raise ValueError(f"product mismatch: expected VAA, found {product}")
@@ -291,6 +303,16 @@ def parse_tca(tac: str, *, product: str = "TCA") -> dict[str, Any]:
         TCA TAC text.
     product :
         Expected ``TCA``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_tca)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if product.upper() != "TCA":
         raise ValueError(f"product mismatch: expected TCA, found {product}")

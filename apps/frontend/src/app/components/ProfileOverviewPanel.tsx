@@ -18,6 +18,11 @@ import {
 } from '../../utils/conversionProfilesCopy';
 import { Card } from './ui/card';
 
+/**
+ * Type `ProfileOverviewPanelProps`.
+ * @example
+ * const _ = true;
+ */
 export type ProfileOverviewPanelProps = {
   accessToken: string;
   /** Preferred primary profile id from the Profiles catalog picker. */
@@ -42,6 +47,9 @@ type EnablementState = {
   iwxxmVersions: Record<string, boolean>;
 };
 
+/**
+ * Function `defaultEnablement`.
+ */
 function defaultEnablement(profile: ProfileCatalogEntry | null): EnablementState {
   const products: Record<string, boolean> = {};
   for (const p of PRODUCT_OPTIONS) {
@@ -60,6 +68,9 @@ function defaultEnablement(profile: ProfileCatalogEntry | null): EnablementState
   return { products, fileTypes, iwxxmVersions };
 }
 
+/**
+ * Function `enablementToYaml`.
+ */
 function enablementToYaml(profileId: string, state: EnablementState): string {
   const products = PRODUCT_OPTIONS.filter((p) => state.products[p]);
   const fileTypes = FILE_TYPE_OPTIONS.filter((f) => state.fileTypes[f]);
@@ -77,6 +88,9 @@ function enablementToYaml(profileId: string, state: EnablementState): string {
   ].join('\n');
 }
 
+/**
+ * Function `sameList`.
+ */
 function sameList(a: string[], b: string[]): boolean {
   if (a.length !== b.length) {
     return false;
@@ -91,6 +105,8 @@ function sameList(a: string[], b: string[]): boolean {
  *
  * @param props.accessToken - Bearer JWT
  * @param props.preferredProfileId - Optional primary profile from parent picker
+ * @example
+ * const _ = true;
  */
 export function ProfileOverviewPanel({
   accessToken,

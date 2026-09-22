@@ -17,7 +17,7 @@ class CustomBuildHook(BuildHookInterface):
 
     PLUGIN_NAME = "custom"
 
-    def initialize(self, version: str, build_data: dict) -> None:  # noqa: ARG002
+    def initialize(self, version: str, build_data: dict) -> None:
         """Run ``sync_runtime_schemas`` so the wheel ships XSD/SCH/catalogs."""
         if not _SYNC_SCRIPT.is_file():
             message = f"schema sync script missing: {_SYNC_SCRIPT}"

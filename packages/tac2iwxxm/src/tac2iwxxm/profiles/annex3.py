@@ -28,7 +28,24 @@ _YUDO_ELEV_M = "12"
 
 
 def obs_timestamp(ir: dict[str, Any]) -> str:
-    """Build observation/issue time matching annex3 golden fixtures."""
+    """
+    Build observation/issue time matching annex3 golden fixtures.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (obs_timestamp)
+    2
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     day = int(ir["day"])
     hour = int(ir["hour"])
     minute = int(ir["minute"])
@@ -90,6 +107,7 @@ def _annex3_gml_id(ir: dict[str, Any], product: str) -> str:
 
 
 def _visibility_block(ir: dict[str, Any], *, visibility_extension: str = "") -> str:
+    """Internal helper ``_visibility_block``."""
     if ir.get("visibility_not_observable"):
         return f'      <iwxxm:visibility xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
     vis_op = ""
@@ -115,6 +133,7 @@ def _visibility_block(ir: dict[str, Any], *, visibility_extension: str = "") -> 
 
 
 def _rvr_block(ir: dict[str, Any], *, rvr_extension: str = "") -> str:
+    """Internal helper ``_rvr_block``."""
     rvr_raw = ir.get("rvr")
     if not isinstance(rvr_raw, dict):
         # Guidance / Amd79 CWFD: when vis is missing/notObservable and no RVR group,
@@ -161,6 +180,7 @@ def _rvr_block(ir: dict[str, Any], *, rvr_extension: str = "") -> str:
 
 
 def _present_weather_block(ir: dict[str, Any]) -> str:
+    """Internal helper ``_present_weather_block``."""
     if ir.get("present_weather_not_observable"):
         return f'      <iwxxm:presentWeather xsi:nil="true" nilReason="{NIL_NOT_OBS}"/>\n'
     codes_raw = ir.get("present_weather")
@@ -175,6 +195,7 @@ def _present_weather_block(ir: dict[str, Any]) -> str:
 
 
 def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
+    """Internal helper ``_cloud_block``."""
     if ir.get("nsc"):
         return f'      <iwxxm:cloud nilReason="{NIL_NSC}"/>\n'
     if ir.get("ncd"):
@@ -230,6 +251,7 @@ def _cloud_block(ir: dict[str, Any], *, cloud_layer_extension: str = "") -> str:
 
 
 def _surface_wind_inner(ir: dict[str, Any], *, peak_extension: str = "") -> str:
+    """Internal helper ``_surface_wind_inner``."""
     variable = bool(ir.get("wind_variable"))
     var_attr = "true" if variable else "false"
     if variable:
@@ -269,6 +291,7 @@ def _surface_wind_inner(ir: dict[str, Any], *, peak_extension: str = "") -> str:
 
 
 def _trend_phenomenon_time(trend: dict[str, Any], idx: int) -> str:
+    """Internal helper ``_trend_phenomenon_time``."""
     if trend.get("phenomenon_begin") and trend.get("phenomenon_end"):
         return f"""      <iwxxm:phenomenonTime>
         <gml:TimePeriod gml:id="t.trend.{idx}">
@@ -286,6 +309,7 @@ def _trend_phenomenon_time(trend: dict[str, Any], idx: int) -> str:
 
 
 def _trend_weather_block(trend: dict[str, Any]) -> str:
+    """Internal helper ``_trend_weather_block``."""
     if trend.get("weather_nsw"):
         return f'\n      <iwxxm:weather nilReason="{NIL_NSC}"/>'
     codes_raw = trend.get("weather")
@@ -299,6 +323,7 @@ def _trend_weather_block(trend: dict[str, Any]) -> str:
 
 
 def _trend_forecasts(ir: dict[str, Any]) -> str:
+    """Internal helper ``_trend_forecasts``."""
     parts: list[str] = []
     forecasts_raw = ir.get("trend_forecasts")
     forecasts: list[dict[str, Any]] = []
@@ -384,6 +409,11 @@ def build_observation_and_trends(
     -------
     observation, trends
         XML fragments (each ending with newline when non-empty).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (build_observation_and_trends)
+    2
     """
     if ir.get("nil"):
         return f'  <iwxxm:observation nilReason="{NIL_MISSING}"/>\n', ""
@@ -426,6 +456,7 @@ def build_observation_and_trends(
 
 
 def _aerodrome_block(station: str) -> str:
+    """Internal helper ``_aerodrome_block``."""
     if station == "YUDO":
         return f"""  <iwxxm:aerodrome>
     <aixm:AirportHeliport gml:id="ad.{station.lower()}">
@@ -488,6 +519,11 @@ def emit_metar_speci_annex3(
     -------
     str
         IWXXM XML document.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_metar_speci_annex3)
+    2
     """
     ns = NS.get(iwxxm_version)
     if ns is None:

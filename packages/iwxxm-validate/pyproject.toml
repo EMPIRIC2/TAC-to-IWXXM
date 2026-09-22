@@ -36,9 +36,15 @@ python-source = "src"
 module-name = "iwxxm_validate._rust"
 
 [tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
 testpaths = ["tests"]
 pythonpath = ["src"]
 markers = [
+  "unit: fast unit tests",
   "slow: longer local/CI smokes (clean-venv wheel installs)",
 ]
 

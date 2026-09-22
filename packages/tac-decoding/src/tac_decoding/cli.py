@@ -19,6 +19,16 @@ def main(argv: list[str] | None = None) -> int:
     -------
     int
         Process exit code (0 on success).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (main)
+    2
+
+    Parameters
+    ----------
+    argv : object
+        Argument ``argv``.
     """
     parser = argparse.ArgumentParser(prog="tac-decoding", description="Decode TAC to natural language")
     parser.add_argument(

@@ -35,6 +35,10 @@ testpaths = ["tests"]
 pythonpath = ["src"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
 markers = [
   "integration: Compose/Testcontainers multi-DB + wis2box harness tests (E14-09)",
 ]

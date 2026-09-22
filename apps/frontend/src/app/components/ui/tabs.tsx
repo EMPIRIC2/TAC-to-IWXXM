@@ -5,6 +5,9 @@ import * as TabsPrimitive from '@radix-ui/react-tabs';
 
 import { cn } from './utils';
 
+/**
+ * Function `Tabs`.
+ */
 function Tabs({
   className,
   ...props
@@ -18,6 +21,9 @@ function Tabs({
   );
 }
 
+/**
+ * Function `TabsList`.
+ */
 function TabsList({
   className,
   ...props
@@ -34,6 +40,9 @@ function TabsList({
   );
 }
 
+/**
+ * Function `TabsTrigger`.
+ */
 function TabsTrigger({
   className,
   ...props
@@ -50,6 +59,9 @@ function TabsTrigger({
   );
 }
 
+/**
+ * Function `TabsContent`.
+ */
 function TabsContent({
   className,
   ...props

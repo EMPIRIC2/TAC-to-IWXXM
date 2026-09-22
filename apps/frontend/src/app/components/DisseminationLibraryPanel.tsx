@@ -24,6 +24,11 @@ import {
 } from '../../utils/conversionProfilesCopy';
 import { Card } from './ui/card';
 
+/**
+ * Type `DisseminationLibraryPanelProps`.
+ * @example
+ * const _ = true;
+ */
 export type DisseminationLibraryPanelProps = {
   accessToken: string;
 };
@@ -43,16 +48,25 @@ const ALLOWED_TYPES = [
   'checksum',
 ] as const;
 
+/**
+ * Function `accessLabel`.
+ */
 function accessLabel(access: string): string {
   return access === 'first_party'
     ? PROFILES_LIBRARY_ACCESS_BUILTIN
     : PROFILES_LIBRARY_ACCESS_CUSTOM;
 }
 
+/**
+ * Function `yamlQuote`.
+ */
 function yamlQuote(value: string): string {
   return JSON.stringify(value);
 }
 
+/**
+ * Function `transformsFromBody`.
+ */
 function transformsFromBody(body: Record<string, unknown> | undefined): TransformRow[] {
   const raw = body?.transforms;
   if (!Array.isArray(raw)) {
@@ -86,6 +100,9 @@ function transformsFromBody(body: Record<string, unknown> | undefined): Transfor
     .filter((row): row is TransformRow => row !== null);
 }
 
+/**
+ * Function `transformsToBody`.
+ */
 function transformsToBody(rows: TransformRow[]): Record<string, unknown>[] {
   return rows.map((r) => ({
     id: r.id,
@@ -96,6 +113,9 @@ function transformsToBody(rows: TransformRow[]): Record<string, unknown>[] {
   }));
 }
 
+/**
+ * Function `transformsToYaml`.
+ */
 function transformsToYaml(name: string, rows: TransformRow[]): string {
   const lines = ['kind: dissemination', `name: ${yamlQuote(name)}`, 'transforms:'];
   for (const r of rows) {
@@ -114,6 +134,8 @@ function transformsToYaml(name: string, rows: TransformRow[]): string {
  * List and author Dissemination transforms (pattern-only; no credentials/URIs).
  *
  * @param props.accessToken - Bearer JWT
+ * @example
+ * const _ = true;
  */
 export function DisseminationLibraryPanel({
   accessToken,

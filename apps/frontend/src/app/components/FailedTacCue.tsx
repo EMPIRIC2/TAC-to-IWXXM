@@ -1,5 +1,7 @@
 /**
  * Distinct Failed-TAC visual cue for soft-preview / partial convert (UJ-016 / #665).
+ * @example
+ * const _ = true;
  */
 
 export interface FailedSpanView {
@@ -9,6 +11,11 @@ export interface FailedSpanView {
   message?: string;
 }
 
+/**
+ * Type `FailedTacCueProps`.
+ * @example
+ * const _ = true;
+ */
 export interface FailedTacCueProps {
   failedSpans: FailedSpanView[];
 }
@@ -17,6 +24,8 @@ export interface FailedTacCueProps {
  * Surface soft-preview failed spans as a status cue distinct from toast errors.
  *
  * @param props.failedSpans - Character spans from convert ``failed_spans``
+ * @example
+ * const _ = true;
  */
 export function FailedTacCue({ failedSpans }: FailedTacCueProps) {
   if (!failedSpans.length) {

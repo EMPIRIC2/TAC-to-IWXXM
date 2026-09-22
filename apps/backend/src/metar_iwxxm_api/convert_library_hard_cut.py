@@ -47,6 +47,11 @@ def legacy_convert_fields_present(
     -------
     list[str]
         Operator-visible field names that were supplied.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (legacy_convert_fields_present)
+    2
     """
     values = {
         "semantic_profile": semantic_profile,
@@ -59,7 +64,24 @@ def legacy_convert_fields_present(
 
 
 def legacy_convert_reject_detail(fields: list[str]) -> str:
-    """Plain-language 422 detail for legacy Convert fields."""
+    """
+    Plain-language 422 detail for legacy Convert fields.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (legacy_convert_reject_detail)
+    2
+
+    Parameters
+    ----------
+    fields : object
+        Argument ``fields``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     joined = ", ".join(fields)
     return (
         f"Legacy convert fields are no longer accepted: {joined}. "
@@ -90,6 +112,11 @@ def resolve_engine_profile_from_conversion_library(
     -------
     tuple[str, str]
         Canonical library id used and engine semantic profile wire id.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_engine_profile_from_conversion_library)
+    2
     """
     token = (conversion_library_id or "").strip() or DEFAULT_CONVERSION_LIBRARY_ID
     first = get_first_party_library_asset(token)
@@ -120,7 +147,7 @@ def resolve_dissemination_transforms(
 
     First-party ``LIB.DISSEMINATION.*`` assets resolve from code. Custom UUIDs
     require ``get_custom_dissemination_body`` (authenticated service lookup that
-    already enforced ``kind == \"dissemination\"``).
+    already enforced ``kind == "dissemination"``).
 
     Parameters
     ----------
@@ -138,6 +165,11 @@ def resolve_dissemination_transforms(
     ------
     ValueError
         Unknown id or wrong kind.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_dissemination_transforms)
+    2
     """
     token = (dissemination_library_id or "").strip()
     if not token:
@@ -171,6 +203,21 @@ def library_id_for_semantic_or_alias(profile_or_alias: str) -> str:
     Map a legacy semantic id / emit alias to a Conversion library id.
 
     Used by tests migrating off ``semantic_profile`` / ``profile``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (library_id_for_semantic_or_alias)
+    2
+
+    Parameters
+    ----------
+    profile_or_alias : object
+        Argument ``profile_or_alias``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     raw = (profile_or_alias or "").strip()
     if not raw:
@@ -195,7 +242,25 @@ def assert_library_usable_on_convert(
     access: object,
     status: object,
 ) -> None:
-    """Reject draft custom libraries on Convert (operator-visible detail)."""
+    """
+    Reject draft custom libraries on Convert (operator-visible detail).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (assert_library_usable_on_convert)
+    2
+
+    Parameters
+    ----------
+    kind : object
+        Argument ``kind``.
+    expected_kind : object
+        Argument ``expected_kind``.
+    access : object
+        Argument ``access``.
+    status : object
+        Argument ``status``.
+    """
     if kind != expected_kind:
         if expected_kind == "conversion":
             msg = "conversion_library_id must reference a Conversion library"

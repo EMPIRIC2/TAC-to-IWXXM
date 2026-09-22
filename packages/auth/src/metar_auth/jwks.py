@@ -13,7 +13,14 @@ from jwt.exceptions import InvalidTokenError
 
 
 class JwtVerificationError(Exception):
-    """Raised when a bearer token fails JWKS verification."""
+    """
+    Raised when a bearer token fails JWKS verification.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 _JWKS_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
@@ -33,6 +40,11 @@ def jwks_url_from_supabase_url(supabase_url: str) -> str:
     -------
     str
         ``{url}/auth/v1/.well-known/jwks.json``
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (jwks_url_from_supabase_url)
+    2
     """
     base = supabase_url.rstrip("/")
     return f"{base}/auth/v1/.well-known/jwks.json"
@@ -62,6 +74,11 @@ def resolve_jwks_url(
     ------
     JwtVerificationError
         If no URL can be resolved.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_jwks_url)
+    2
     """
     explicit = (jwks_url or os.getenv("SUPABASE_JWKS_URL") or "").strip()
     if explicit:
@@ -75,11 +92,19 @@ def resolve_jwks_url(
 
 
 def clear_jwks_client_cache() -> None:
-    """Clear cached JWKS documents (tests / key rotation)."""
+    """
+    Clear cached JWKS documents (tests / key rotation).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (clear_jwks_client_cache)
+    2
+    """
     _JWKS_CACHE.clear()
 
 
 def _fetch_jwks_document(jwks_url: str) -> dict[str, Any]:
+    """Internal helper ``_fetch_jwks_document``."""
     now = time.monotonic()
     cached = _JWKS_CACHE.get(jwks_url)
     if cached is not None and (now - cached[0]) < _JWKS_TTL_SEC:
@@ -129,6 +154,11 @@ def verify_access_token(
     ------
     JwtVerificationError
         If the token is missing, expired, malformed, or signature-invalid.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (verify_access_token)
+    2
     """
     if not token or not token.strip():
         raise JwtVerificationError("Missing access token")

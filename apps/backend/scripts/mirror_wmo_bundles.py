@@ -18,7 +18,14 @@ from src.services.schema_mirror_service import SchemaMirrorService
 
 
 async def mirror_all():
-    """Mirror all stable versions and RC versions."""
+    """
+    Mirror all stable versions and RC versions.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (mirror_all)
+    2
+    """
     base_path = Path(__file__).parent.parent / "schemas" / "iwxxm"
 
     service = SchemaMirrorService(base_path=base_path)

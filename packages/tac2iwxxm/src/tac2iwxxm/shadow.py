@@ -25,7 +25,14 @@ _SIGMET_PACKS = {
 
 @dataclass(frozen=True, slots=True)
 class ShadowResult:
-    """Convert output plus an optional pack match and pack IR."""
+    """
+    Convert output plus an optional pack match and pack IR.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     ok: bool
     xml: str | None
@@ -65,6 +72,11 @@ def convert_shadow(
     ShadowResult
         ``xml`` matches default :func:`convert`. ``legacy_ir`` is from
         ``ir_source=legacy`` when that convert succeeds.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert_shadow)
+    2
     """
     result = convert(tac, product=product, profile=profile, iwxxm_version=iwxxm_version)
     legacy = convert(

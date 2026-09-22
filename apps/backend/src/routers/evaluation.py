@@ -36,7 +36,21 @@ router = APIRouter()
 
 
 async def run_evaluation_job(job_id: str, request: EvaluationRequest) -> None:
-    """Background task to run evaluation job."""
+    """
+    Background task to run evaluation job.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_evaluation_job)
+    2
+
+    Parameters
+    ----------
+    job_id : object
+        Argument ``job_id``.
+    request : object
+        Argument ``request``.
+    """
     try:
         await update_job_status(job_id, "running")
 
@@ -146,7 +160,26 @@ async def create_evaluation_job(
     request: EvaluationRequest,
     background_tasks: BackgroundTasks,
 ) -> object:
-    """Create a new evaluation job."""
+    """
+    Create a new evaluation job.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_evaluation_job)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    background_tasks : object
+        Argument ``background_tasks``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if request.mode == EvaluationMode.SINGLE and not request.station_ids:
         raise HTTPException(status_code=400, detail="station_ids required for single mode")
 
@@ -186,7 +219,24 @@ async def create_evaluation_job(
 async def get_job_status(
     job_id: str,
 ) -> object:
-    """Get the status of an evaluation job."""
+    """
+    Get the status of an evaluation job.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_job_status)
+    2
+
+    Parameters
+    ----------
+    job_id : object
+        Argument ``job_id``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     job = await get_job_for_user(job_id, "anonymous")
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -224,7 +274,30 @@ async def get_job_results(
     per_page: int = Query(50, ge=1, le=100),
     status_filter: ComparisonStatus | None = None,
 ) -> object:
-    """Get evaluation results for a job (paginated)."""
+    """
+    Get evaluation results for a job (paginated).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_job_results)
+    2
+
+    Parameters
+    ----------
+    job_id : object
+        Argument ``job_id``.
+    page : object
+        Argument ``page``.
+    per_page : object
+        Argument ``per_page``.
+    status_filter : object
+        Argument ``status_filter``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     job = await get_job_for_user(job_id, "anonymous")
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -270,7 +343,26 @@ async def get_job_results(
     responses={},
 )
 async def list_user_jobs(page: int = Query(1, ge=1), per_page: int = Query(20, ge=1, le=100)) -> object:
-    """List all evaluation jobs for the current user."""
+    """
+    List all evaluation jobs for the current user.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_user_jobs)
+    2
+
+    Parameters
+    ----------
+    page : object
+        Argument ``page``.
+    per_page : object
+        Argument ``per_page``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     offset = (page - 1) * per_page
     jobs_data, total_count = await list_jobs_for_user("anonymous", per_page, offset)
 

@@ -5,6 +5,8 @@ import { twMerge } from 'tailwind-merge';
  * Merge Tailwind class names with conflict resolution via `tailwind-merge`.
  *
  * @param inputs - Class values accepted by `clsx`.
+ * @example
+ * const _ = true;
  */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

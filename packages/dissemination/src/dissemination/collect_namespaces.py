@@ -50,6 +50,11 @@ def iwxxm_namespace_uri(version: str) -> str:
     ------
     ValueError
         If ``version`` is empty or contains path separators.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (iwxxm_namespace_uri)
+    2
     """
     v = version.strip()
     if not v or "/" in v or "\\" in v or " " in v:
@@ -70,6 +75,11 @@ def is_collect_bulletin(xml: str) -> bool:
     -------
     bool
         True when the COLLECT root and collect namespace appear.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (is_collect_bulletin)
+    2
     """
     return bool(_COLLECT_ROOT.search(xml) and _COLLECT_NS_PRESENT.search(xml))
 
@@ -87,6 +97,11 @@ def member_iwxxm_namespace_uris(xml: str) -> list[str]:
     -------
     list of str
         Unique namespace URIs in document order of first appearance.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (member_iwxxm_namespace_uris)
+    2
     """
     seen: set[str] = set()
     out: list[str] = []
@@ -114,6 +129,11 @@ def collect_namespace_issues(xml: str) -> list[str]:
         declaration uses ``http://icao.int/iwxxm/{version}``. Non-empty when
         the root is not COLLECT, COLLECT has no IWXXM member NS, or a
         declaration is malformed.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (collect_namespace_issues)
+    2
     """
     issues: list[str] = []
     if not is_collect_bulletin(xml):

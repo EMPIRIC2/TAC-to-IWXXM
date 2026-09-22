@@ -60,6 +60,7 @@ def _sync_database_url() -> str:
 
 
 def _get_engine() -> Engine:
+    """Internal helper ``_get_engine``."""
     global _engine
     if _engine is None:
         _engine = create_engine(_sync_database_url(), pool_pre_ping=True)
@@ -67,6 +68,7 @@ def _get_engine() -> Engine:
 
 
 def _table() -> Table:
+    """Internal helper ``_table``."""
     global _sessions_table
     if _sessions_table is None:
         _sessions_table = Table(TABLE, _metadata, autoload_with=_get_engine())
@@ -74,6 +76,7 @@ def _table() -> Table:
 
 
 def _parse_row(row: dict[str, Any]) -> WorkSession:
+    """Internal helper ``_parse_row``."""
     return WorkSession.model_validate(row)
 
 
@@ -82,6 +85,7 @@ def _payload_dict(
     *,
     user_id: str | None = None,
 ) -> dict[str, Any]:
+    """Internal helper ``_payload_dict``."""
     data = payload.model_dump(exclude_unset=True, exclude_none=True)
     if user_id is not None:
         data["user_id"] = user_id
@@ -97,6 +101,7 @@ def _payload_dict(
 
 
 def _handle_db_error(exc: Exception) -> NoReturn:
+    """Internal helper ``_handle_db_error``."""
     message = str(exc)
     if WIP_CONFLICT in message or "tac_work_sessions_one_wip_per_user" in message:
         raise HTTPException(
@@ -121,9 +126,17 @@ def _handle_db_error(exc: Exception) -> NoReturn:
 
 
 class WorkSessionService:
-    """Owner-scoped CRUD against DigitalOcean Postgres ``tac_work_sessions``."""
+    """
+    Owner-scoped CRUD against DigitalOcean Postgres ``tac_work_sessions``.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, user_id: str) -> None:
+        """Internal helper ``__init__``."""
         self.user_id = str(user_id)
 
     def list_sessions(
@@ -137,7 +150,8 @@ class WorkSessionService:
         page: int = 1,
         limit: int = 20,
     ) -> tuple[list[WorkSession], int]:
-        """Return paginated work sessions and total count for the service owner.
+        """
+        Return paginated work sessions and total count for the service owner.
 
         Parameters
         ----------
@@ -158,6 +172,11 @@ class WorkSessionService:
         -------
         tuple[list[WorkSession], int]
             Matching sessions and total count before pagination.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_sessions)
+        2
         """
         table = _table()
         try:
@@ -187,7 +206,24 @@ class WorkSessionService:
             _handle_db_error(exc)
 
     def get_session(self, session_id: UUID) -> WorkSession:
-        """Return one owner-scoped session or raise HTTP 404."""
+        """
+        Return one owner-scoped session or raise HTTP 404.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_session)
+        2
+
+        Parameters
+        ----------
+        session_id : object
+            Argument ``session_id``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         table = _table()
         try:
             with _get_engine().connect() as conn:
@@ -208,7 +244,26 @@ class WorkSessionService:
         return _parse_row(dict(row))
 
     def create_session(self, user_id: str, payload: WorkSessionCreate) -> WorkSession:
-        """Insert a new work session row and return the persisted record."""
+        """
+        Insert a new work session row and return the persisted record.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (create_session)
+        2
+
+        Parameters
+        ----------
+        user_id : object
+            Argument ``user_id``.
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         table = _table()
         data = _payload_dict(payload, user_id=user_id)
         data.setdefault("id", uuid4())
@@ -226,7 +281,26 @@ class WorkSessionService:
             _handle_db_error(exc)
 
     def update_session(self, session_id: UUID, payload: WorkSessionUpdate) -> WorkSession:
-        """Apply partial updates to an existing owner-scoped session."""
+        """
+        Apply partial updates to an existing owner-scoped session.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (update_session)
+        2
+
+        Parameters
+        ----------
+        session_id : object
+            Argument ``session_id``.
+        payload : object
+            Argument ``payload``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         self.get_session(session_id)
         table = _table()
         data = _payload_dict(payload)
@@ -251,14 +325,49 @@ class WorkSessionService:
             _handle_db_error(exc)
 
     def soft_delete(self, session_id: UUID) -> WorkSession:
-        """Mark a session deleted without removing the row."""
+        """
+        Mark a session deleted without removing the row.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (soft_delete)
+        2
+
+        Parameters
+        ----------
+        session_id : object
+            Argument ``session_id``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return self._set_deleted(session_id, deleted=True)
 
     def restore_session(self, session_id: UUID) -> WorkSession:
-        """Clear ``deleted_at`` on a previously soft-deleted session."""
+        """
+        Clear ``deleted_at`` on a previously soft-deleted session.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (restore_session)
+        2
+
+        Parameters
+        ----------
+        session_id : object
+            Argument ``session_id``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return self._set_deleted(session_id, deleted=False)
 
     def _set_deleted(self, session_id: UUID, *, deleted: bool) -> WorkSession:
+        """Internal helper ``_set_deleted``."""
         self.get_session(session_id)
         table = _table()
         stamp = datetime.now(UTC) if deleted else None

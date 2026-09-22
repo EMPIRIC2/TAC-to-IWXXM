@@ -11,6 +11,7 @@ from tac_validate.product_rules_pkg._common import *
 
 
 def _count_families(text: str, families: tuple[tuple[str, re.Pattern[str]], ...]) -> list[str]:
+    """Internal helper ``_count_families``."""
     found: list[str] = []
     for name, pattern in families:
         if pattern.search(text):
@@ -514,6 +515,7 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
 
 
 def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> list[Issue]:
+    """Internal helper ``_check_sigmet_airmet``."""
     start, end, body = _body_span(tac)
     upper = body.upper()
     core = upper[:-1] if upper.endswith("=") else upper

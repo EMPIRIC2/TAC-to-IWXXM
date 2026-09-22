@@ -2,10 +2,17 @@
  * Client-side unified line diff for Quality metrics XML panes (F7.q / EV-054).
  *
  * No external npm dependency — LCS over split lines (`D-S063-diff-impl`).
+ * @example
+ * const _ = true;
  */
 
 export type UnifiedDiffOp = 'equal' | 'add' | 'remove';
 
+/**
+ * Type `UnifiedDiffLine`.
+ * @example
+ * const _ = true;
+ */
 export type UnifiedDiffLine = {
   /** Diff operation for this line. */
   op: UnifiedDiffOp;
@@ -22,6 +29,8 @@ export type UnifiedDiffLine = {
  *
  * @param text - Source text
  * @returns Line array
+ * @example
+ * const _ = true;
  */
 export function splitLines(text: string): string[] {
   if (text.length === 0) {
@@ -36,6 +45,8 @@ export function splitLines(text: string): string[] {
  * @param left - Official / reference text
  * @param right - Converted / candidate text
  * @returns Ordered unified diff lines
+ * @example
+ * const _ = true;
  */
 export function unifiedLineDiff(left: string, right: string): UnifiedDiffLine[] {
   const a = splitLines(left);
@@ -125,6 +136,8 @@ export function unifiedLineDiff(left: string, right: string): UnifiedDiffLine[] 
  *
  * @param lines - Diff lines from {@link unifiedLineDiff}
  * @returns Whether left and right are line-equal
+ * @example
+ * const _ = true;
  */
 export function isUnifiedDiffEmpty(lines: UnifiedDiffLine[]): boolean {
   return lines.every((line) => line.op === 'equal');

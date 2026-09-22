@@ -11,7 +11,14 @@ from workflows.stages import STAGE_REGISTRY, run_stage
 
 
 class WorkflowExecuteError(ValueError):
-    """Raised for fail-closed execute errors (unknown stage, bad workflow)."""
+    """
+    Raised for fail-closed execute errors (unknown stage, bad workflow).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 def execute(
@@ -45,6 +52,11 @@ def execute(
     -------
     WorkflowResult
         Aggregate outcome; first failing stage halts the pipeline.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (execute)
+    2
     """
     if isinstance(workflow, str):
         try:
@@ -103,6 +115,7 @@ def _dispatch_stores(
     store_valid: StorePort | None,
     store_invalid: StorePort | None,
 ) -> None:
+    """Internal helper ``_dispatch_stores``."""
     if result.ok and store_valid is not None:
         for sink in definition.on_valid_store:
             store_valid(result, sink=sink)

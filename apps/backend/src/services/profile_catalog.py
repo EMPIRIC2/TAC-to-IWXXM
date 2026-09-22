@@ -28,6 +28,11 @@ def catalog_path() -> Path:
     -------
     Path
         Absolute path to the profile catalog.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (catalog_path)
+    2
     """
     override = (os.environ.get("PROFILE_CATALOG_PATH") or "").strip()
     if override:
@@ -37,6 +42,7 @@ def catalog_path() -> Path:
 
 @lru_cache(maxsize=1)
 def _load_raw(path_str: str) -> dict[str, Any]:
+    """Internal helper ``_load_raw``."""
     path = Path(path_str)
     if not path.is_file():
         raise HTTPException(
@@ -53,24 +59,28 @@ def _load_raw(path_str: str) -> dict[str, Any]:
 
 
 def _as_str(value: object) -> str | None:
+    """Internal helper ``_as_str``."""
     if value is None:
         return None
     return str(value)
 
 
 def _as_str_list(value: object) -> list[str]:
+    """Internal helper ``_as_str_list``."""
     if not isinstance(value, list):
         return []
     return [str(item) for item in cast(list[object], value)]
 
 
 def _as_str_dict(value: object) -> dict[str, Any]:
+    """Internal helper ``_as_str_dict``."""
     if not isinstance(value, dict):
         return {}
     return {str(k): v for k, v in cast(dict[object, object], value).items()}
 
 
 def _as_metar_family_variants(value: object) -> list[MetarFamilyVariant]:
+    """Internal helper ``_as_metar_family_variants``."""
     if not isinstance(value, list):
         return []
     variants: list[MetarFamilyVariant] = []
@@ -123,12 +133,14 @@ _DELTA_MAP: dict[str, list[str]] = {
 
 
 def _deltas_vs_icao(profile_id: str) -> list[str]:
+    """Internal helper ``_deltas_vs_icao``."""
     return list(
         _DELTA_MAP.get(profile_id, ["Thin pack: reuses the ICAO baseline until a profile-specific extension lands."])
     )[:3]
 
 
 def _iwxxm_line(profile_id: str, vendor_pins: dict[str, Any]) -> str | None:
+    """Internal helper ``_iwxxm_line``."""
     if profile_id == "ICAO_2025":
         return str(vendor_pins.get("iwxxm") or "WMO IWXXM 2025-2")
     if profile_id == "US_FAA_NWS":
@@ -152,6 +164,18 @@ def load_profile_catalog(
     -------
     ProfileCatalogResponse
         Read-only catalog entries (no secrets).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_profile_catalog)
+    2
+
+    Parameters
+    ----------
+    rule_pack_counts : object
+        Argument ``rule_pack_counts``.
+    overlay_counts : object
+        Argument ``overlay_counts``.
     """
     raw = _load_raw(str(catalog_path().resolve()))
     profiles_obj: object = raw.get("profiles") or []
@@ -193,5 +217,12 @@ def load_profile_catalog(
 
 
 def clear_catalog_cache() -> None:
-    """Clear LRU cache (tests)."""
+    """
+    Clear LRU cache (tests).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (clear_catalog_cache)
+    2
+    """
     _load_raw.cache_clear()

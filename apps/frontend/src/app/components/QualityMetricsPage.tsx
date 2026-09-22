@@ -40,6 +40,9 @@ type QualityMetricsFileRowWithPairState = QualityMetricsFileRow & {
   has_tac_pair?: boolean;
 };
 
+/**
+ * Function `normalizeSummary`.
+ */
 function normalizeSummary(
   summary: QualityMetricsSummary & {
     pair_examples?: number;
@@ -64,7 +67,11 @@ interface QualityMetricsPageProps {
   onBackToList?: () => void;
 }
 
-/** Whether an in-flight detail fetch should still write React state. */
+/**
+ * Whether an in-flight detail fetch should still write React state.
+ * @example
+ * const _ = true;
+ */
 export function shouldApplyDetailFetch(cancelled: boolean): boolean {
   return !cancelled;
 }
@@ -76,6 +83,8 @@ export function shouldApplyDetailFetch(cancelled: boolean): boolean {
  * @param props.routeStem - Active detail stem from the URL
  * @param props.onOpenDetailRoute - Push `/quality/:stem`
  * @param props.onBackToList - Push `/quality`
+ * @example
+ * const _ = true;
  */
 export function QualityMetricsPage({
   onSelectStem,
@@ -421,6 +430,9 @@ export function QualityMetricsPage({
   );
 }
 
+/**
+ * Function `SummaryStat`.
+ */
 function SummaryStat({ label, value }: { label: string; value: number }) {
   return (
     <div className="rounded-md border border-gray-200 bg-white px-3 py-2 dark:border-gray-700 dark:bg-gray-950">

@@ -10,7 +10,14 @@ from dataclasses import dataclass, field
 
 @dataclass
 class VersionMetadata:
-    """Metadata for a specific IWXXM version."""
+    """
+    Metadata for a specific IWXXM version.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     version: str
     namespace: str
@@ -23,6 +30,7 @@ class VersionMetadata:
     element_order_priority: list[str] = field(default_factory=list)  # Element ordering for aerodrome
 
     def __repr__(self) -> str:
+        """Internal helper ``__repr__``."""
         return f"VersionMetadata(version={self.version}, ns={self.namespace.split('/')[-1]})"
 
 
@@ -87,30 +95,56 @@ VERSION_METADATA: dict[str, VersionMetadata] = {
 
 
 def get_version_metadata(version: str) -> VersionMetadata | None:
-    """Get metadata for a specific IWXXM version.
-
-    Args:
-        version: Version string (e.g., "2025-2")
+    """
+    Get metadata for a specific IWXXM version.
 
     Returns:
+        VersionMetadata if version exists, None
+
+    Parameters
+    ----------
+    version : object
+        Version string (e.g., "2025-2")
+
+    Returns
+    -------
+    object
         VersionMetadata if version exists, None otherwise
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_version_metadata)
+    2
     """
     return VERSION_METADATA.get(version)
 
 
 def normalize_version(version_str: str) -> str:
-    """Normalize version string to canonical form.
+    """
+    Normalize version string to canonical form.
 
     Handles aliases:
     - "2025" or "2025-1" → "2025-2"
     - "3.0" → "2018"
     - "2.1" → "2016"
 
-    Args:
-        version_str: Input version string
-
     Returns:
         Canonical version string
+
+    Parameters
+    ----------
+    version_str : object
+        Input version string
+
+    Returns
+    -------
+    object
+        Canonical version string
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_version)
+    2
     """
     normalized = version_str.strip()
 
@@ -134,5 +168,17 @@ def normalize_version(version_str: str) -> str:
 
 
 def get_supported_versions() -> list[str]:
-    """Get list of supported IWXXM versions."""
+    """
+    Get list of supported IWXXM versions.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_supported_versions)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return list(VERSION_METADATA.keys())

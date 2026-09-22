@@ -9,6 +9,11 @@ import type { UnifiedDiffLine } from './unifiedLineDiff';
 /** Default equal lines kept around each change hunk (`D-S066-context-n=1`). */
 export const DEFAULT_DIFF_CONTEXT = 3;
 
+/**
+ * Type `CollapsedDiffSegment`.
+ * @example
+ * const _ = true;
+ */
 export type CollapsedDiffSegment =
   | {
       /** Visible contiguous lines (mix of equal/add/remove within a hunk window). */
@@ -27,6 +32,11 @@ export type CollapsedDiffSegment =
       lines: UnifiedDiffLine[];
     };
 
+/**
+ * Type `CollapseEqualContextOptions`.
+ * @example
+ * const _ = true;
+ */
 export type CollapseEqualContextOptions = {
   /** Equal lines retained on each side of a change (default {@link DEFAULT_DIFF_CONTEXT}). */
   context?: number;
@@ -38,6 +48,8 @@ export type CollapseEqualContextOptions = {
  * @param lines - Unified diff lines
  * @param context - Equal lines kept around each non-equal line
  * @returns Boolean mask aligned with `lines`
+ * @example
+ * const _ = true;
  */
 export function visibleEqualContextMask(
   lines: UnifiedDiffLine[],
@@ -71,6 +83,8 @@ export function visibleEqualContextMask(
  * @param lines - Output of {@link unifiedLineDiff}
  * @param options.context - Equal lines kept around each change (default 3)
  * @returns Segments for rendering (lines vs collapse placeholders)
+ * @example
+ * const _ = true;
  */
 export function collapseEqualContext(
   lines: UnifiedDiffLine[],

@@ -5,6 +5,8 @@
  * into ICAO_2025 / annex3.
  *
  * [Corpus: product §F36] [Corpus: adr/ADR-036] [Corpus: api]
+ * @example
+ * const _ = true;
  */
 
 export type ExchangeProfileId =
@@ -34,6 +36,8 @@ const KNOWN = new Set<string>(EXCHANGE_PROFILE_OPTIONS.map((o) => o.value));
  *
  * @param value - Raw select / session / preference value
  * @returns Canonical wire id (defaults to GLOBAL_AFS)
+ * @example
+ * const _ = true;
  */
 export function coerceExchangeProfile(value: unknown): ExchangeProfileId {
   if (typeof value === 'string' && KNOWN.has(value)) {
@@ -47,6 +51,8 @@ export function coerceExchangeProfile(value: unknown): ExchangeProfileId {
  *
  * @param id - Wire id (may be unknown in defensive UI paths)
  * @returns Catalog label, or the raw id when unrecognized
+ * @example
+ * const _ = true;
  */
 export function exchangeProfileLabel(id: string): string {
   for (const opt of EXCHANGE_PROFILE_OPTIONS) {

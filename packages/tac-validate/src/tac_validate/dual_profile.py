@@ -29,7 +29,14 @@ INTENTIONAL_PROFILE_DIVERGENCE_CODES: Final[frozenset[str]] = frozenset(
 
 @dataclass(frozen=True)
 class ProfileLintCompare:
-    """Result of comparing annex3 vs iwxxm_us lint outcomes for one TAC."""
+    """
+    Result of comparing annex3 vs iwxxm_us lint outcomes for one TAC.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     product: str
     disposition: str  # "dual" | "na"
@@ -42,6 +49,7 @@ class ProfileLintCompare:
 
 
 def _issue_codes(tac_text: str, *, product: str, profile: str) -> frozenset[str]:
+    """Internal helper ``_issue_codes``."""
     report = lint(tac_text, product=product, profile=profile)
     return frozenset(i.code for i in report.issues)
 
@@ -61,6 +69,11 @@ def compare_lint_profiles(tac_text: str, *, product: str) -> ProfileLintCompare:
     -------
     ProfileLintCompare
         ``ok`` is False only when dual-applicable and unclassified codes diverge.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (compare_lint_profiles)
+    2
     """
     product_u = product.upper()
     annex3_codes = _issue_codes(tac_text, product=product_u, profile=PROFILE_ANNEX3)

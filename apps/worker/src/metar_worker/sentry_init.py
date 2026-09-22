@@ -18,6 +18,16 @@ def init_sentry(*, dsn: str | None = None) -> bool:
     -------
     bool
         ``True`` if initialized; ``False`` when DSN unset.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (init_sentry)
+    2
+
+    Parameters
+    ----------
+    dsn : object
+        Argument ``dsn``.
     """
     resolved = (dsn if dsn is not None else os.environ.get("SENTRY_DSN", "")).strip()
     if not resolved:

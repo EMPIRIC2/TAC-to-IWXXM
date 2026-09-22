@@ -21,6 +21,11 @@ build-backend = "hatchling.build"
 packages = ["src/tac_validate"]
 
 [tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
 testpaths = ["tests"]
 pythonpath = ["src"]
 markers = [

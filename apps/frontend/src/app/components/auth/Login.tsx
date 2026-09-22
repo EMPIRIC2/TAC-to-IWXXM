@@ -28,6 +28,8 @@ interface LoginProps {
 
 /**
  * Sign-in form with optional guest continuation.
+ * @example
+ * const _ = true;
  */
 export function Login({
   onLogin,

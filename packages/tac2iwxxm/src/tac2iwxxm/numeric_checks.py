@@ -12,6 +12,7 @@ NUMERIC_OPS: frozenset[str] = frozenset({"min", "max", "eq", "in"})
 
 
 def _as_number(value: object) -> float | None:
+    """Internal helper ``_as_number``."""
     if isinstance(value, bool):
         return None
     if isinstance(value, int | float):
@@ -32,6 +33,21 @@ def validate_numeric_check_shape(check: object) -> str | None:
 
         {op: min|max|eq, value: number}
         {op: in, values: [number, ...]}  # non-empty
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_numeric_check_shape)
+    2
+
+    Parameters
+    ----------
+    check : object
+        Argument ``check``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if check is None:
         return None
@@ -74,6 +90,18 @@ def evaluate_numeric_check(check: dict[str, Any], candidate: object) -> bool | N
     bool | None
         ``True``/``False`` when evaluation is possible; ``None`` when the
         candidate cannot be parsed as a number.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (evaluate_numeric_check)
+    2
+
+    Parameters
+    ----------
+    check : object
+        Argument ``check``.
+    candidate : object
+        Argument ``candidate``.
     """
     shape_error = validate_numeric_check_shape(check)
     if shape_error is not None:

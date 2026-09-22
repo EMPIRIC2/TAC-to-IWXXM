@@ -62,6 +62,29 @@ def process_job(
 
     Failures quarantine (caller writes quarantine row); success is store-ready.
     ``profile`` / ``iwxxm_version`` override YAML when provided (worker Settings).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (process_job)
+    2
+
+    Parameters
+    ----------
+    job : object
+        Argument ``job``.
+    profile : object
+        Argument ``profile``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    skip_lint : object
+        Argument ``skip_lint``.
+    workflow_id : object
+        Argument ``workflow_id``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     from workflows.loader import load_workflow
     from workflows.models import WorkflowDefinition

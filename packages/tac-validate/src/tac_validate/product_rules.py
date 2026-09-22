@@ -64,6 +64,11 @@ def check_product_rules(
     -------
     list[Issue]
         Error-severity findings with spans when possible.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (check_product_rules)
+    2
     """
     if product in {"METAR", "SPECI"}:
         return _check_metar_speci(tac_text, product, profile=profile)

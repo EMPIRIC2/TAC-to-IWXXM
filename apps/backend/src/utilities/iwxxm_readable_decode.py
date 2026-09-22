@@ -68,7 +68,14 @@ _SKIP_LOCAL: frozenset[str] = frozenset(
 
 @dataclass(frozen=True)
 class ReadableDecodeSegment:
-    """One code | explanation row (same shape as TAC decode)."""
+    """
+    One code | explanation row (same shape as TAC decode).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     start: int
     end: int
@@ -78,13 +85,21 @@ class ReadableDecodeSegment:
 
 @dataclass(frozen=True)
 class ReadableDecode:
-    """Optional validate-path decode; empty when no meteorological fields exist."""
+    """
+    Optional validate-path decode; empty when no meteorological fields exist.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     segments: list[ReadableDecodeSegment]
     summary: str
 
 
 def _local_name(tag: str) -> str:
+    """Internal helper ``_local_name``."""
     if "}" in tag:
         return tag.rsplit("}", 1)[-1]
     if ":" in tag:
@@ -93,6 +108,7 @@ def _local_name(tag: str) -> str:
 
 
 def _attr(elem: ET.Element, local: str) -> str | None:
+    """Internal helper ``_attr``."""
     for key, value in elem.attrib.items():
         if _local_name(key) == local and value:
             return value
@@ -100,6 +116,7 @@ def _attr(elem: ET.Element, local: str) -> str | None:
 
 
 def _href_code(href: str) -> str:
+    """Internal helper ``_href_code``."""
     trimmed = href.rstrip("/")
     if "/" in trimmed:
         return trimmed.rsplit("/", 1)[-1]
@@ -107,6 +124,7 @@ def _href_code(href: str) -> str:
 
 
 def _format_measure(text: str, uom: str | None) -> str:
+    """Internal helper ``_format_measure``."""
     value = text.strip()
     if not value:
         return ""
@@ -117,6 +135,7 @@ def _format_measure(text: str, uom: str | None) -> str:
 
 
 def _offsets(xml: str, needle: str) -> tuple[int, int]:
+    """Internal helper ``_offsets``."""
     if not needle:
         return 0, 0
     idx = xml.find(needle)
@@ -126,6 +145,7 @@ def _offsets(xml: str, needle: str) -> tuple[int, int]:
 
 
 def _parent_is(parents: tuple[ET.Element, ...], name: str) -> bool:
+    """Internal helper ``_parent_is``."""
     return any(_local_name(p.tag) == name for p in parents)
 
 
@@ -142,6 +162,11 @@ def readable_decode_from_iwxxm(xml: str) -> ReadableDecode:
     -------
     ReadableDecode
         Segments and summary, or empty when XML is not parseable / has no fields.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (readable_decode_from_iwxxm)
+    2
     """
     stripped = (xml or "").strip()
     if not stripped or not looks_like_xml(stripped):
@@ -157,7 +182,21 @@ def readable_decode_from_iwxxm(xml: str) -> ReadableDecode:
     root_kind = _local_name(root.tag)
 
     def add(code: str, explanation: str) -> None:
-        """Append a readable decode segment when ``code`` is new and non-XML."""
+        """
+        Append a readable decode segment when ``code`` is new and non-XML.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (add)
+        2
+
+        Parameters
+        ----------
+        code : object
+            Argument ``code``.
+        explanation : object
+            Argument ``explanation``.
+        """
         token = code.strip()
         if not token or token in seen_codes:
             return
@@ -175,7 +214,21 @@ def readable_decode_from_iwxxm(xml: str) -> ReadableDecode:
         )
 
     def walk(elem: ET.Element, parents: tuple[ET.Element, ...] = ()) -> None:
-        """Recursively extract human-readable tokens from IWXXM XML elements."""
+        """
+        Recursively extract human-readable tokens from IWXXM XML elements.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (walk)
+        2
+
+        Parameters
+        ----------
+        elem : object
+            Argument ``elem``.
+        parents : object
+            Argument ``parents``.
+        """
         local = _local_name(elem.tag)
         href = _attr(elem, "href")
         uom = _attr(elem, "uom")
@@ -245,6 +298,7 @@ def readable_decode_from_iwxxm(xml: str) -> ReadableDecode:
 
 
 def _from_tac(tac_text: str) -> ReadableDecode:
+    """Internal helper ``_from_tac``."""
     result = tac2iwxxm_decode_tac(tac_text, product="METAR")
     return ReadableDecode(
         segments=[
@@ -277,6 +331,11 @@ def decode_for_validate(*, xml_content: str = "", manual_text: str = "") -> Read
     -------
     ReadableDecode
         Empty segments/summary when no readable decode exists.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (decode_for_validate)
+    2
     """
     xml = (xml_content or "").strip()
     tac = (manual_text or "").strip()

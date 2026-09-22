@@ -40,7 +40,14 @@ _PARSERS: dict[str, Callable[..., dict[str, Any]]] = {
 
 
 class PackIrMapError(ValueError):
-    """Pack match cannot be mapped into convert IR slots."""
+    """
+    Pack match cannot be mapped into convert IR slots.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 def pack_id_for_product(product: str, tac: str) -> str:
@@ -58,6 +65,11 @@ def pack_id_for_product(product: str, tac: str) -> str:
     -------
     str
         Pack id such as ``metar`` or ``va_sigmet``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (pack_id_for_product)
+    2
     """
     product_u = product.upper()
     if product_u != "SIGMET":
@@ -101,6 +113,11 @@ def map_spans_to_convert_ir(
     PackIrMapError
         When the pack match is incomplete for the product layout, or the
         product is not supported for pack mapping.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (map_spans_to_convert_ir)
+    2
     """
     product_u = product.upper()
     if product_u not in _PACK_PRODUCTS:

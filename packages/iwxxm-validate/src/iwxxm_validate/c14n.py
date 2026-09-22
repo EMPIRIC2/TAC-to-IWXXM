@@ -55,6 +55,7 @@ def _local_name(name: str) -> str:
 
 
 def _norm_text(value: str | None) -> str:
+    """Internal helper ``_norm_text``."""
     if value is None:
         return ""
     return " ".join(value.split())
@@ -116,6 +117,11 @@ def c14n_xml(xml_content: str) -> str:
     ------
     ValueError
         If ``xml_content`` is not well-formed XML.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (c14n_xml)
+    2
     """
     try:
         root = etree.fromstring(xml_content.encode("utf-8"))
@@ -127,7 +133,26 @@ def c14n_xml(xml_content: str) -> str:
 
 
 def c14n_equal(left: str, right: str) -> bool:
-    """Return True when C14N forms of ``left`` and ``right`` are identical."""
+    """
+    Return True when C14N forms of ``left`` and ``right`` are identical.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (c14n_equal)
+    2
+
+    Parameters
+    ----------
+    left : object
+        Argument ``left``.
+    right : object
+        Argument ``right``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return c14n_xml(left) == c14n_xml(right)
 
 

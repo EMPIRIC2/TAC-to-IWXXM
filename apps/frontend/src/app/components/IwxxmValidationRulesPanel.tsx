@@ -35,6 +35,11 @@ import {
 } from '../../utils/conversionProfilesCopy';
 import { Card } from './ui/card';
 
+/**
+ * Type `IwxxmValidationRulesPanelProps`.
+ * @example
+ * const _ = true;
+ */
 export type IwxxmValidationRulesPanelProps = {
   accessToken: string;
 };
@@ -53,10 +58,16 @@ type IwxxmRule = {
   checkValue: string;
 };
 
+/**
+ * Function `yamlQuote`.
+ */
 function yamlQuote(value: string): string {
   return JSON.stringify(value);
 }
 
+/**
+ * Function `rulesToYaml`.
+ */
 function rulesToYaml(name: string, rules: IwxxmRule[]): string {
   const mined = rules.filter((r) => !r.custom);
   const custom = rules.filter((r) => r.custom);
@@ -95,6 +106,9 @@ function rulesToYaml(name: string, rules: IwxxmRule[]): string {
   return `${lines.join('\n')}\n`;
 }
 
+/**
+ * Function `parseRules`.
+ */
 function parseRules(body: Record<string, unknown> | undefined): IwxxmRule[] {
   const out: IwxxmRule[] = [];
   /* v8 ignore start -- mined assert parse edge cases */
@@ -171,6 +185,9 @@ function parseRules(body: Record<string, unknown> | undefined): IwxxmRule[] {
   return out;
 }
 
+/**
+ * Function `rulesToBody`.
+ */
 function rulesToBody(rules: IwxxmRule[]): {
   rules: Record<string, unknown>[];
   custom_rules: Record<string, unknown>[];
@@ -208,6 +225,8 @@ function rulesToBody(rules: IwxxmRule[]): {
  * Author IWXXM validation asserts and custom overlay rules.
  *
  * @param props.accessToken - Bearer JWT
+ * @example
+ * const _ = true;
  */
 export function IwxxmValidationRulesPanel({
   accessToken,

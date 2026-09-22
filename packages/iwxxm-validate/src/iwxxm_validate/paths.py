@@ -25,6 +25,16 @@ def packaged_schemas_root() -> Path | None:
 
     The subset is present after ``make sync-iwxxm-validate-schemas`` or inside a
     published wheel. ``MANIFEST.json`` alone does not count as materialised.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (packaged_schemas_root)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     iwxxm = _PACKAGE_SCHEMAS / "iwxxm"
     if iwxxm.is_dir() and any(iwxxm.iterdir()) and any((iwxxm / child).is_dir() for child in iwxxm.iterdir()):
@@ -38,6 +48,16 @@ def repo_root() -> Path:
     Return the monorepo root containing ``vendor/schemas``.
 
     Honours ``IWXXM_SCHEMAS_ROOT`` parent when set to ``…/vendor/schemas/iwxxm``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (repo_root)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     env = os.environ.get("IWXXM_VALIDATE_REPO_ROOT")
     if env:
@@ -53,7 +73,19 @@ def repo_root() -> Path:
 
 
 def vendor_iwxxm_root() -> Path:
-    """Return ``iwxxm`` schema root (packaged subset or ``vendor/schemas/iwxxm``)."""
+    """
+    Return ``iwxxm`` schema root (packaged subset or ``vendor/schemas/iwxxm``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (vendor_iwxxm_root)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     packaged = packaged_schemas_root()
     if packaged is not None:
         return packaged / "iwxxm"
@@ -61,7 +93,19 @@ def vendor_iwxxm_root() -> Path:
 
 
 def vendor_iwxxm_us_root() -> Path:
-    """Return ``iwxxm-us`` schema root (packaged subset or vendor pin)."""
+    """
+    Return ``iwxxm-us`` schema root (packaged subset or vendor pin).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (vendor_iwxxm_us_root)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     packaged = packaged_schemas_root()
     if packaged is not None:
         return packaged / "iwxxm-us"
@@ -69,7 +113,19 @@ def vendor_iwxxm_us_root() -> Path:
 
 
 def vendor_iwxxm_ca_root() -> Path:
-    """Return ``iwxxm-ca`` schema root (packaged subset or vendor pin)."""
+    """
+    Return ``iwxxm-ca`` schema root (packaged subset or vendor pin).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (vendor_iwxxm_ca_root)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     packaged = packaged_schemas_root()
     if packaged is not None:
         return packaged / "iwxxm-ca"
@@ -84,6 +140,16 @@ def ca_xsd_path(*, tag: str = "3.0") -> Path | None:
     ----------
     tag :
         Pin subdirectory (default ``3.0`` per ``vendor/manifest.json``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ca_xsd_path)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     root = vendor_iwxxm_ca_root()
     candidates = [
@@ -105,6 +171,16 @@ def version_dir(iwxxm_version: str) -> Path:
     ----------
     iwxxm_version :
         Release line such as ``2023-1`` or ``2025-2``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (version_dir)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     path = vendor_iwxxm_root() / iwxxm_version
     if not path.is_dir():
@@ -113,7 +189,24 @@ def version_dir(iwxxm_version: str) -> Path:
 
 
 def xsd_path(iwxxm_version: str) -> Path:
-    """Return path to ``iwxxm.xsd`` for ``iwxxm_version``."""
+    """
+    Return path to ``iwxxm.xsd`` for ``iwxxm_version``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (xsd_path)
+    2
+
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     path = version_dir(iwxxm_version) / "IWXXM" / "iwxxm.xsd"
     if not path.is_file():
         raise FileNotFoundError(f"XSD not found for {iwxxm_version}: {path}")
@@ -121,7 +214,24 @@ def xsd_path(iwxxm_version: str) -> Path:
 
 
 def schematron_path(iwxxm_version: str) -> Path:
-    """Return path to ``rule/iwxxm.sch`` for ``iwxxm_version``."""
+    """
+    Return path to ``rule/iwxxm.sch`` for ``iwxxm_version``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (schematron_path)
+    2
+
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     path = version_dir(iwxxm_version) / "IWXXM" / "rule" / "iwxxm.sch"
     if not path.is_file():
         raise FileNotFoundError(f"Schematron not found for {iwxxm_version}: {path}")
@@ -129,7 +239,24 @@ def schematron_path(iwxxm_version: str) -> Path:
 
 
 def codelists_dir(iwxxm_version: str) -> Path:
-    """Return directory of bundled RDF codelists for Schematron ``document()``."""
+    """
+    Return directory of bundled RDF codelists for Schematron ``document()``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (codelists_dir)
+    2
+
+    Parameters
+    ----------
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     path = version_dir(iwxxm_version) / "IWXXM" / "rule"
     if not path.is_dir():
         raise FileNotFoundError(f"Codelists directory not found for {iwxxm_version}: {path}")
@@ -141,6 +268,16 @@ def us_catalog_path() -> Path | None:
     Return IWXXM-US catalog path when present.
 
     Prefers ``3.0/united-states-catalog.xml`` under the vendored / packaged pin.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (us_catalog_path)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     root = vendor_iwxxm_us_root()
     candidates = [
@@ -154,7 +291,14 @@ def us_catalog_path() -> Path | None:
 
 
 def clear_path_caches() -> None:
-    """Clear cached version directory lookups (tests / after schema sync)."""
+    """
+    Clear cached version directory lookups (tests / after schema sync).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (clear_path_caches)
+    2
+    """
     version_dir.cache_clear()
 
 

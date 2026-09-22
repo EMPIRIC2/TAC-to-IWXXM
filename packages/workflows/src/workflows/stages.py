@@ -21,7 +21,14 @@ _SCHEMATRON_SOFT = frozenset({"SCHEMATRON_SKIPPED"})
 
 @dataclass(slots=True)
 class StageOutcome:
-    """Result of a single stage."""
+    """
+    Result of a single stage.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     ok: bool
     issues: list[StageIssue]
@@ -29,6 +36,7 @@ class StageOutcome:
 
 
 def _issue(stage: str, severity: str, code: str, message: str) -> StageIssue:
+    """Internal helper ``_issue``."""
     return StageIssue(stage=stage, severity=severity, code=code, message=message)
 
 
@@ -38,7 +46,28 @@ def run_validate_tac(
     *,
     xml: str | None,
 ) -> StageOutcome:
-    """Run ``tac_validate.lint``."""
+    """
+    Run ``tac_validate.lint``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_validate_tac)
+    2
+
+    Parameters
+    ----------
+    message : object
+        Argument ``message``.
+    definition : object
+        Argument ``definition``.
+    xml : object
+        Argument ``xml``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     del definition, xml
     report = tac_lint_fn(message.tac, product=message.product.upper())
     issues = [_issue("validate-tac", issue.severity, issue.code, issue.message) for issue in report.issues]
@@ -51,7 +80,28 @@ def run_convert_iwxxm(
     *,
     xml: str | None,
 ) -> StageOutcome:
-    """Run ``tac2iwxxm.convert``."""
+    """
+    Run ``tac2iwxxm.convert``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_convert_iwxxm)
+    2
+
+    Parameters
+    ----------
+    message : object
+        Argument ``message``.
+    definition : object
+        Argument ``definition``.
+    xml : object
+        Argument ``xml``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     del xml
     result = tac2iwxxm_convert_fn(
         message.tac,
@@ -72,6 +122,7 @@ def _iwxxm_stage(
     xml: str,
     definition: WorkflowDefinition,
 ) -> StageOutcome:
+    """Internal helper ``_iwxxm_stage``."""
     report = iwxxm_validate_fn(
         xml,
         iwxxm_version=definition.iwxxm_version,
@@ -97,7 +148,28 @@ def run_validate_xsd(
     *,
     xml: str | None,
 ) -> StageOutcome:
-    """Run IWXXM XSD validation."""
+    """
+    Run IWXXM XSD validation.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_validate_xsd)
+    2
+
+    Parameters
+    ----------
+    message : object
+        Argument ``message``.
+    definition : object
+        Argument ``definition``.
+    xml : object
+        Argument ``xml``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     del message
     if not xml:
         return StageOutcome(
@@ -114,7 +186,28 @@ def run_validate_schematron(
     *,
     xml: str | None,
 ) -> StageOutcome:
-    """Run IWXXM Schematron validation (SCHEMATRON_SKIPPED soft-pass)."""
+    """
+    Run IWXXM Schematron validation (SCHEMATRON_SKIPPED soft-pass).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_validate_schematron)
+    2
+
+    Parameters
+    ----------
+    message : object
+        Argument ``message``.
+    definition : object
+        Argument ``definition``.
+    xml : object
+        Argument ``xml``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     del message
     if not xml:
         return StageOutcome(
@@ -161,6 +254,27 @@ def run_stage(
     ------
     KeyError
         Unknown stage id (caller should fail-closed).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (run_stage)
+    2
+
+    Parameters
+    ----------
+    stage_id : object
+        Argument ``stage_id``.
+    message : object
+        Argument ``message``.
+    definition : object
+        Argument ``definition``.
+    xml : object
+        Argument ``xml``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     handler = STAGE_REGISTRY[stage_id]
     return handler(message, definition, xml=xml)

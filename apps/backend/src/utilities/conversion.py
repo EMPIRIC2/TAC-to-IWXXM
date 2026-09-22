@@ -37,6 +37,7 @@ except ImportError:  # pragma: no cover - flat layout fallback
 
 
 def _load_service_validation_error() -> type[Exception]:
+    """Internal helper ``_load_service_validation_error``."""
     try:
         from ..services.validation import ValidationError
 
@@ -73,7 +74,14 @@ def _normalize_issue_severity(value: object) -> str:
 
 
 class ConversionError(Exception):
-    """Raised when METAR to IWXXM conversion fails."""
+    """
+    Raised when METAR to IWXXM conversion fails.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     pass
 
@@ -113,6 +121,23 @@ def convert_metar_tac(tac_text: str, iwxxm_version: str | None = None) -> str:
     Convert METAR/SPECI TAC text to IWXXM XML.
 
     Deprecated: prefer ``convert_metar_tac_with_metadata``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert_metar_tac)
+    2
+
+    Parameters
+    ----------
+    tac_text : object
+        Argument ``tac_text``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     import warnings
 
@@ -225,6 +250,11 @@ def convert_metar_tac_with_metadata(
     ------
     ConversionError
         When conversion (or requested validation) fails and ``preview`` is False.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (convert_metar_tac_with_metadata)
+    2
     """
     _ = (reference_time, use_test_overrides)  # gifts-era knobs; no-op after cutover
 

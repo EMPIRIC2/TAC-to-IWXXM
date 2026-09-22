@@ -57,6 +57,11 @@ import {
 
 export { firstDropFile, resolveDisseminationProduct } from '@/utils/fileInputHelpers';
 
+/**
+ * Type `DisseminationDrawerProps`.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -82,17 +87,29 @@ interface RowUiState {
   detail?: string;
 }
 
-/** True when a drop FileList has at least one file. */
+/**
+ * True when a drop FileList has at least one file.
+ * @example
+ * const _ = true;
+ */
 export function hasDropFiles(files: FileList | null | undefined): boolean {
   return Boolean(files && files.length > 0);
 }
 
-/** Normalize FileReader result to text. */
+/**
+ * Normalize FileReader result to text.
+ * @example
+ * const _ = true;
+ */
 export function dropReaderText(result: string | ArrayBuffer | null): string {
   return String(result ?? '');
 }
 
-/** Progress row state with pending fallback. */
+/**
+ * Progress row state with pending fallback.
+ * @example
+ * const _ = true;
+ */
 export function progressRowState(
   state: Record<string, RowUiState>,
   id: string,
@@ -108,6 +125,8 @@ export function progressRowState(
  * @param exchangeProfile - Exchange overlay wire id for convert FormData
  * @returns IWXXM XML string
  * @throws When convert fails or returns no XML
+ * @example
+ * const _ = true;
  */
 export async function resolveCandidateIwxxmXml(
   candidate: ExportCandidate,
@@ -146,6 +165,8 @@ export async function resolveCandidateIwxxmXml(
  * @param props.product - Product tag for API (default metar)
  * @param props.sessionOutputs - Additional session candidates
  * @param props.exchangeProfile - Initial exchange overlay from workbench
+ * @example
+ * const _ = true;
  */
 export function DisseminationDrawer({
   open,

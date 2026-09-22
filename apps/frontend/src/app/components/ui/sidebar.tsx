@@ -40,6 +40,9 @@ type SidebarContextProps = {
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
 
+/**
+ * Function `useSidebar`.
+ */
 function useSidebar() {
   const context = React.useContext(SidebarContext);
   if (!context) {
@@ -49,6 +52,9 @@ function useSidebar() {
   return context;
 }
 
+/**
+ * Function `SidebarProvider`.
+ */
 function SidebarProvider({
   defaultOpen = true,
   open: openProp,
@@ -144,6 +150,9 @@ function SidebarProvider({
   );
 }
 
+/**
+ * Function `Sidebar`.
+ */
 function Sidebar({
   side = 'left',
   variant = 'sidebar',
@@ -246,6 +255,9 @@ function Sidebar({
   );
 }
 
+/**
+ * Function `SidebarTrigger`.
+ */
 function SidebarTrigger({
   className,
   onClick,
@@ -272,6 +284,9 @@ function SidebarTrigger({
   );
 }
 
+/**
+ * Function `SidebarRail`.
+ */
 function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
   const { toggleSidebar } = useSidebar();
 
@@ -297,6 +312,9 @@ function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
   );
 }
 
+/**
+ * Function `SidebarInset`.
+ */
 function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
   return (
     <main
@@ -311,6 +329,9 @@ function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
   );
 }
 
+/**
+ * Function `SidebarInput`.
+ */
 function SidebarInput({ className, ...props }: React.ComponentProps<typeof Input>) {
   return (
     <Input
@@ -322,6 +343,9 @@ function SidebarInput({ className, ...props }: React.ComponentProps<typeof Input
   );
 }
 
+/**
+ * Function `SidebarHeader`.
+ */
 function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -333,6 +357,9 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `SidebarFooter`.
+ */
 function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -344,6 +371,9 @@ function SidebarFooter({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `SidebarSeparator`.
+ */
 function SidebarSeparator({
   className,
   ...props
@@ -358,6 +388,9 @@ function SidebarSeparator({
   );
 }
 
+/**
+ * Function `SidebarContent`.
+ */
 function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -372,6 +405,9 @@ function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `SidebarGroup`.
+ */
 function SidebarGroup({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -383,6 +419,9 @@ function SidebarGroup({ className, ...props }: React.ComponentProps<'div'>) {
   );
 }
 
+/**
+ * Function `SidebarGroupLabel`.
+ */
 function SidebarGroupLabel({
   className,
   asChild = false,
@@ -404,6 +443,9 @@ function SidebarGroupLabel({
   );
 }
 
+/**
+ * Function `SidebarGroupAction`.
+ */
 function SidebarGroupAction({
   className,
   asChild = false,
@@ -427,6 +469,9 @@ function SidebarGroupAction({
   );
 }
 
+/**
+ * Function `SidebarGroupContent`.
+ */
 function SidebarGroupContent({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -438,6 +483,9 @@ function SidebarGroupContent({ className, ...props }: React.ComponentProps<'div'
   );
 }
 
+/**
+ * Function `SidebarMenu`.
+ */
 function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
   return (
     <ul
@@ -449,6 +497,9 @@ function SidebarMenu({ className, ...props }: React.ComponentProps<'ul'>) {
   );
 }
 
+/**
+ * Function `SidebarMenuItem`.
+ */
 function SidebarMenuItem({ className, ...props }: React.ComponentProps<'li'>) {
   return (
     <li
@@ -482,6 +533,9 @@ const sidebarMenuButtonVariants = cva(
   },
 );
 
+/**
+ * Function `SidebarMenuButton`.
+ */
 function SidebarMenuButton({
   asChild = false,
   isActive = false,
@@ -532,6 +586,9 @@ function SidebarMenuButton({
   );
 }
 
+/**
+ * Function `SidebarMenuAction`.
+ */
 function SidebarMenuAction({
   className,
   asChild = false,
@@ -564,6 +621,9 @@ function SidebarMenuAction({
   );
 }
 
+/**
+ * Function `SidebarMenuBadge`.
+ */
 function SidebarMenuBadge({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
@@ -583,6 +643,9 @@ function SidebarMenuBadge({ className, ...props }: React.ComponentProps<'div'>) 
   );
 }
 
+/**
+ * Function `SidebarMenuSkeleton`.
+ */
 function SidebarMenuSkeleton({
   className,
   showIcon = false,
@@ -615,6 +678,9 @@ function SidebarMenuSkeleton({
   );
 }
 
+/**
+ * Function `SidebarMenuSub`.
+ */
 function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
   return (
     <ul
@@ -630,6 +696,9 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
   );
 }
 
+/**
+ * Function `SidebarMenuSubItem`.
+ */
 function SidebarMenuSubItem({ className, ...props }: React.ComponentProps<'li'>) {
   return (
     <li
@@ -641,6 +710,9 @@ function SidebarMenuSubItem({ className, ...props }: React.ComponentProps<'li'>)
   );
 }
 
+/**
+ * Function `SidebarMenuSubButton`.
+ */
 function SidebarMenuSubButton({
   asChild = false,
   size = 'md',

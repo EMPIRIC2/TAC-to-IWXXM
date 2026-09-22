@@ -18,6 +18,11 @@ import {
 } from '/utils/liveAssist';
 import type { TacSpanMark } from '/utils/tacEditorSpans';
 
+/**
+ * Type `LiveWorkbenchConsoleLine`.
+ * @example
+ * const _ = true;
+ */
 export interface LiveWorkbenchConsoleLine {
   level: 'info' | 'warn' | 'error';
   source: string;
@@ -27,6 +32,11 @@ export interface LiveWorkbenchConsoleLine {
   action?: { id: string; label: string };
 }
 
+/**
+ * Type `UseLiveWorkbenchAssistOptions`.
+ * @example
+ * const _ = true;
+ */
 export interface UseLiveWorkbenchAssistOptions {
   text: string;
   product: string;
@@ -37,6 +47,11 @@ export interface UseLiveWorkbenchAssistOptions {
   liveIwxxmRunner?: (signal: AbortSignal) => Promise<void>;
 }
 
+/**
+ * Type `UseLiveWorkbenchAssistResult`.
+ * @example
+ * const _ = true;
+ */
 export interface UseLiveWorkbenchAssistResult {
   issueSpans: TacSpanMark[];
   lintIssues: LintIssue[];
@@ -57,6 +72,8 @@ export interface UseLiveWorkbenchAssistResult {
  * @param options.text - Current TAC editor text
  * @param options.product - Resolved product id
  * @param options.liveIwxxm - Optional live IWXXM path (default off)
+ * @example
+ * const _ = true;
  */
 export function useLiveWorkbenchAssist({
   text,

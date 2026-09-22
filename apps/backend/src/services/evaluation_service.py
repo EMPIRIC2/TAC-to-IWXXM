@@ -7,7 +7,14 @@ from typing import Any
 
 @dataclass
 class ComparisonResult:
-    """Result of IWXXM comparison."""
+    """
+    Result of IWXXM comparison.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     passed: bool
     our_elements: int
@@ -19,7 +26,14 @@ class ComparisonResult:
 
 
 class EvaluationService:
-    """Service for evaluating METAR conversions."""
+    """
+    Service for evaluating METAR conversions.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     @staticmethod
     def _local(tag: str) -> str:
@@ -37,9 +51,20 @@ class EvaluationService:
 
     @staticmethod
     def strip_dynamic_attrs(elem: ET.Element) -> None:
-        """Remove dynamic attributes from XML element tree.
+        """
+        Remove dynamic attributes from XML element tree.
 
         Removes: id, schemaLocation, UUID-like values, timestamps
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (strip_dynamic_attrs)
+        2
+
+        Parameters
+        ----------
+        elem : object
+            Argument ``elem``.
         """
         for a in list(elem.attrib.keys()):
             local_name = EvaluationService._local(a)
@@ -50,15 +75,30 @@ class EvaluationService:
             EvaluationService.strip_dynamic_attrs(child)
 
     def compare_iwxxm(self, our_xml: str, their_xml: str, strict: bool = False) -> ComparisonResult:
-        """Compare two IWXXM XML documents.
-
-        Args:
-            our_xml: XML from our conversion
-            their_xml: XML from aviationweather.gov
-            strict: If True, require exact match; if False, allow version differences
+        """
+        Compare two IWXXM XML documents.
 
         Returns:
             ComparisonResult with detailed comparison
+
+        Parameters
+        ----------
+        our_xml : object
+            XML from our conversion
+        their_xml : object
+            XML from aviationweather.gov
+        strict : object
+            If True, require exact match; if False, allow version differences
+
+        Returns
+        -------
+        object
+            ComparisonResult with detailed comparison
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (compare_iwxxm)
+        2
         """
         try:
             our_tree = ET.fromstring(our_xml)

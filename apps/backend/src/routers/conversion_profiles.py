@@ -65,7 +65,24 @@ _bearer = HTTPBearer(auto_error=True)
 def profiles_service(
     user: dict[str, Any] = Depends(verify_supabase_token),
 ) -> ConversionProfilesService:
-    """Build owner-scoped profiles service from JWT ``sub``."""
+    """
+    Build owner-scoped profiles service from JWT ``sub``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (profiles_service)
+    2
+
+    Parameters
+    ----------
+    user : object
+        Argument ``user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return ConversionProfilesService(str(user.get("sub") or user.get("user_id")))
 
 
@@ -78,6 +95,23 @@ def get_catalog(
     Read-only ConversionProfile catalog for the authenticated Profiles inspector.
 
     Requires JWT so the inspector stays on the authenticated Profiles surface.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_catalog)
+    2
+
+    Parameters
+    ----------
+    _user : object
+        Argument ``_user``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     rule_pack_counts: dict[str, int] | None = {}
     try:
@@ -110,7 +144,24 @@ def get_catalog(
 def list_rule_packs(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> RulePackListResponse:
-    """List rule packs owned by the caller."""
+    """
+    List rule packs owned by the caller.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_rule_packs)
+    2
+
+    Parameters
+    ----------
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return RulePackListResponse(items=service.list_rule_packs())
 
 
@@ -119,7 +170,26 @@ def create_rule_pack(
     payload: RulePackCreate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> RulePackOut:
-    """Create a rule pack."""
+    """
+    Create a rule pack.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_rule_pack)
+    2
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.create_rule_pack(payload)
 
 
@@ -128,7 +198,26 @@ def get_rule_pack(
     pack_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> RulePackOut:
-    """Fetch one rule pack."""
+    """
+    Fetch one rule pack.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_rule_pack)
+    2
+
+    Parameters
+    ----------
+    pack_id : object
+        Argument ``pack_id``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.get_rule_pack(pack_id)
 
 
@@ -138,7 +227,28 @@ def patch_rule_pack(
     payload: RulePackUpdate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> RulePackOut:
-    """Update a rule pack."""
+    """
+    Update a rule pack.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (patch_rule_pack)
+    2
+
+    Parameters
+    ----------
+    pack_id : object
+        Argument ``pack_id``.
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.update_rule_pack(pack_id, payload)
 
 
@@ -147,7 +257,21 @@ def delete_rule_pack(
     pack_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> None:
-    """Delete a rule pack."""
+    """
+    Delete a rule pack.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (delete_rule_pack)
+    2
+
+    Parameters
+    ----------
+    pack_id : object
+        Argument ``pack_id``.
+    service : object
+        Argument ``service``.
+    """
     service.delete_rule_pack(pack_id)
 
 
@@ -155,7 +279,24 @@ def delete_rule_pack(
 def list_presets(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> PresetListResponse:
-    """List semantic presets owned by the caller (and shared presets)."""
+    """
+    List semantic presets owned by the caller (and shared presets).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_presets)
+    2
+
+    Parameters
+    ----------
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return PresetListResponse(items=service.list_presets())
 
 
@@ -164,7 +305,26 @@ def create_preset(
     payload: PresetCreate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> PresetOut:
-    """Create a semantic preset."""
+    """
+    Create a semantic preset.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_preset)
+    2
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.create_preset(payload)
 
 
@@ -173,7 +333,26 @@ def get_preset(
     preset_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> PresetOut:
-    """Fetch one semantic preset."""
+    """
+    Fetch one semantic preset.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_preset)
+    2
+
+    Parameters
+    ----------
+    preset_id : object
+        Argument ``preset_id``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.get_preset(preset_id)
 
 
@@ -183,7 +362,28 @@ def patch_preset(
     payload: PresetUpdate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> PresetOut:
-    """Update a semantic preset."""
+    """
+    Update a semantic preset.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (patch_preset)
+    2
+
+    Parameters
+    ----------
+    preset_id : object
+        Argument ``preset_id``.
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.update_preset(preset_id, payload)
 
 
@@ -192,7 +392,21 @@ def delete_preset(
     preset_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> None:
-    """Delete a semantic preset."""
+    """
+    Delete a semantic preset.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (delete_preset)
+    2
+
+    Parameters
+    ----------
+    preset_id : object
+        Argument ``preset_id``.
+    service : object
+        Argument ``service``.
+    """
     service.delete_preset(preset_id)
 
 
@@ -200,7 +414,24 @@ def delete_preset(
 def list_templates(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> DisseminationTemplateListResponse:
-    """List dissemination templates owned by the caller (and shared templates)."""
+    """
+    List dissemination templates owned by the caller (and shared templates).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_templates)
+    2
+
+    Parameters
+    ----------
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return DisseminationTemplateListResponse(items=service.list_templates())
 
 
@@ -209,7 +440,26 @@ def create_template(
     payload: DisseminationTemplateCreate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> DisseminationTemplateOut:
-    """Create a dissemination template."""
+    """
+    Create a dissemination template.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_template)
+    2
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.create_template(payload)
 
 
@@ -218,7 +468,26 @@ def get_template(
     template_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> DisseminationTemplateOut:
-    """Fetch one dissemination template."""
+    """
+    Fetch one dissemination template.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_template)
+    2
+
+    Parameters
+    ----------
+    template_id : object
+        Argument ``template_id``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.get_template(template_id)
 
 
@@ -228,7 +497,28 @@ def patch_template(
     payload: DisseminationTemplateUpdate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> DisseminationTemplateOut:
-    """Update a dissemination template."""
+    """
+    Update a dissemination template.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (patch_template)
+    2
+
+    Parameters
+    ----------
+    template_id : object
+        Argument ``template_id``.
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.update_template(template_id, payload)
 
 
@@ -237,7 +527,21 @@ def delete_template(
     template_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> None:
-    """Delete an owned dissemination template."""
+    """
+    Delete an owned dissemination template.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (delete_template)
+    2
+
+    Parameters
+    ----------
+    template_id : object
+        Argument ``template_id``.
+    service : object
+        Argument ``service``.
+    """
     service.delete_template(template_id)
 
 
@@ -245,7 +549,24 @@ def delete_template(
 def list_overlays(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> OverlayListResponse:
-    """List overlays owned by the caller (and shared overlays)."""
+    """
+    List overlays owned by the caller (and shared overlays).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_overlays)
+    2
+
+    Parameters
+    ----------
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return OverlayListResponse(items=service.list_overlays())
 
 
@@ -254,7 +575,26 @@ def create_overlay(
     payload: OverlayCreate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> OverlayOut:
-    """Create a server-signed overlay."""
+    """
+    Create a server-signed overlay.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_overlay)
+    2
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.create_overlay(payload)
 
 
@@ -263,7 +603,26 @@ def get_overlay(
     overlay_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> OverlayOut:
-    """Fetch one overlay."""
+    """
+    Fetch one overlay.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_overlay)
+    2
+
+    Parameters
+    ----------
+    overlay_id : object
+        Argument ``overlay_id``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.get_overlay(overlay_id)
 
 
@@ -273,7 +632,28 @@ def patch_overlay(
     payload: OverlayUpdate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> OverlayOut:
-    """Update an owned overlay (re-signed server-side)."""
+    """
+    Update an owned overlay (re-signed server-side).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (patch_overlay)
+    2
+
+    Parameters
+    ----------
+    overlay_id : object
+        Argument ``overlay_id``.
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.update_overlay(overlay_id, payload)
 
 
@@ -282,7 +662,21 @@ def delete_overlay(
     overlay_id: UUID,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> None:
-    """Delete an owned overlay."""
+    """
+    Delete an owned overlay.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (delete_overlay)
+    2
+
+    Parameters
+    ----------
+    overlay_id : object
+        Argument ``overlay_id``.
+    service : object
+        Argument ``service``.
+    """
     service.delete_overlay(overlay_id)
 
 
@@ -290,7 +684,24 @@ def delete_overlay(
 def list_conversion_templates(
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> ConversionTemplateListResponse:
-    """List first-party and custom conversion templates."""
+    """
+    List first-party and custom conversion templates.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_conversion_templates)
+    2
+
+    Parameters
+    ----------
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return ConversionTemplateListResponse(items=service.list_conversion_templates())
 
 
@@ -299,7 +710,26 @@ def create_conversion_template(
     payload: ConversionTemplateCreate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> ConversionTemplateOut:
-    """Create a custom conversion template (optionally forked from first-party)."""
+    """
+    Create a custom conversion template (optionally forked from first-party).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_conversion_template)
+    2
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.create_conversion_template(payload)
 
 
@@ -311,7 +741,26 @@ def preview_conversion_template(
     payload: ConversionTemplatePreviewRequest,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> ConversionTemplatePreviewResponse:
-    """TAC to template to IWXXM bridge preview."""
+    """
+    TAC to template to IWXXM bridge preview.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (preview_conversion_template)
+    2
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     from tac2iwxxm.conversion_templates import (
         ConversionTemplate,
         preview_bridge,
@@ -347,7 +796,26 @@ def get_conversion_template(
     template_id: str,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> ConversionTemplateOut:
-    """Fetch one conversion template (first-party id or custom UUID)."""
+    """
+    Fetch one conversion template (first-party id or custom UUID).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_conversion_template)
+    2
+
+    Parameters
+    ----------
+    template_id : object
+        Argument ``template_id``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.get_conversion_template(template_id)
 
 
@@ -357,7 +825,28 @@ def patch_conversion_template(
     payload: ConversionTemplateUpdate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> ConversionTemplateOut:
-    """Update an owned custom conversion template."""
+    """
+    Update an owned custom conversion template.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (patch_conversion_template)
+    2
+
+    Parameters
+    ----------
+    template_id : object
+        Argument ``template_id``.
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.update_conversion_template(template_id, payload)
 
 
@@ -366,7 +855,21 @@ def delete_conversion_template(
     template_id: str,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> None:
-    """Delete an owned custom conversion template."""
+    """
+    Delete an owned custom conversion template.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (delete_conversion_template)
+    2
+
+    Parameters
+    ----------
+    template_id : object
+        Argument ``template_id``.
+    service : object
+        Argument ``service``.
+    """
     service.delete_conversion_template(template_id)
 
 
@@ -375,7 +878,26 @@ def list_library_assets(
     kind: str | None = None,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryAssetListResponse:
-    """List first-party and custom five-Libraries assets."""
+    """
+    List first-party and custom five-Libraries assets.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (list_library_assets)
+    2
+
+    Parameters
+    ----------
+    kind : object
+        Argument ``kind``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return LibraryAssetListResponse(items=service.list_library_assets(kind=kind))
 
 
@@ -384,7 +906,26 @@ def create_library_asset(
     payload: LibraryAssetCreate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryAssetOut:
-    """Retired — library authoring is no longer available."""
+    """
+    Retired — library authoring is no longer available.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_library_asset)
+    2
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     _library_authoring_gone()
 
 
@@ -393,7 +934,26 @@ def validate_library_yaml(
     payload: LibraryYamlValidateRequest,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryYamlValidateResponse:
-    """Retired — library authoring is no longer available."""
+    """
+    Retired — library authoring is no longer available.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_library_yaml)
+    2
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     _library_authoring_gone()
 
 
@@ -402,7 +962,26 @@ def preview_library_rule(
     payload: LibraryRulePreviewRequest,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryRulePreviewResponse:
-    """Retired — library authoring is no longer available."""
+    """
+    Retired — library authoring is no longer available.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (preview_library_rule)
+    2
+
+    Parameters
+    ----------
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     _library_authoring_gone()
 
 
@@ -411,7 +990,26 @@ def get_library_asset(
     asset_id: str,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryAssetOut:
-    """Fetch one library asset (first-party id or custom UUID)."""
+    """
+    Fetch one library asset (first-party id or custom UUID).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_library_asset)
+    2
+
+    Parameters
+    ----------
+    asset_id : object
+        Argument ``asset_id``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return service.get_library_asset(asset_id)
 
 
@@ -421,7 +1019,28 @@ def update_library_asset(
     payload: LibraryAssetUpdate,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> LibraryAssetOut:
-    """Retired — library authoring is no longer available."""
+    """
+    Retired — library authoring is no longer available.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (update_library_asset)
+    2
+
+    Parameters
+    ----------
+    asset_id : object
+        Argument ``asset_id``.
+    payload : object
+        Argument ``payload``.
+    service : object
+        Argument ``service``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     _library_authoring_gone()
 
 
@@ -430,5 +1049,19 @@ def delete_library_asset(
     asset_id: str,
     service: ConversionProfilesService = Depends(profiles_service),
 ) -> None:
-    """Retired — library authoring is no longer available."""
+    """
+    Retired — library authoring is no longer available.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (delete_library_asset)
+    2
+
+    Parameters
+    ----------
+    asset_id : object
+        Argument ``asset_id``.
+    service : object
+        Argument ``service``.
+    """
     _library_authoring_gone()

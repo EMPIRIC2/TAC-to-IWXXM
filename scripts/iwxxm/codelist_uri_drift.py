@@ -177,10 +177,16 @@ def load_csv_member_uris(path: Path) -> set[str]:
         Stable concept URIs (non-empty ``id`` cells).
     """
     with path.open(encoding="utf-8", newline="") as handle:
-        return {row["id"].strip() for row in csv.DictReader(handle) if row.get("id", "").strip()}
+        return {
+            row["id"].strip()
+            for row in csv.DictReader(handle)
+            if row.get("id", "").strip()
+        }
 
 
-def diff_uri_sets(left: Iterable[str], right: Iterable[str]) -> tuple[list[str], list[str]]:
+def diff_uri_sets(
+    left: Iterable[str], right: Iterable[str]
+) -> tuple[list[str], list[str]]:
     """
     Return sorted URIs only in left, only in right.
 
@@ -199,7 +205,16 @@ def diff_uri_sets(left: Iterable[str], right: Iterable[str]) -> tuple[list[str],
 
 
 def _sch_rdf_path(repo_root: Path, iwxxm_version: str, name: str) -> Path:
-    return repo_root / "vendor" / "schemas" / "iwxxm" / iwxxm_version / "IWXXM" / "rule" / name
+    return (
+        repo_root
+        / "vendor"
+        / "schemas"
+        / "iwxxm"
+        / iwxxm_version
+        / "IWXXM"
+        / "rule"
+        / name
+    )
 
 
 def _fetch_live_rdf(register_uri: str, timeout_s: float = 30.0) -> str | None:
@@ -322,7 +337,9 @@ def summarize_drift(
                     )
                     # keep only concept-depth URIs under this register
                     prefix = spec.register_uri.rstrip("/") + "/"
-                    live_uris = {u.rstrip(".,;)") for u in live_uris if u.startswith(prefix)}
+                    live_uris = {
+                        u.rstrip(".,;)") for u in live_uris if u.startswith(prefix)
+                    }
                 only_sch_l, only_live = diff_uri_sets(sch_uris, live_uris)
                 lines.append(f"  live members: {len(live_uris)}")
                 if only_sch_l or only_live:
@@ -340,7 +357,9 @@ def summarize_drift(
                     lines.append("  live OK — matches SCH URI set")
         lines.append("")
 
-    lines.append("Disposition (D-S046-859): see RELEASE_LINE_ADOPTABILITY §codes.wmo.int drift")
+    lines.append(
+        "Disposition (D-S046-859): see RELEASE_LINE_ADOPTABILITY §codes.wmo.int drift"
+    )
     return "\n".join(lines) + "\n", ok
 
 

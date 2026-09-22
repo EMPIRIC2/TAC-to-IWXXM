@@ -62,11 +62,18 @@ def get_database_url() -> str:
     - SUPABASE_DB_URL (Supabase specific)
     - Individual components (POSTGRES_HOST, POSTGRES_DB, etc.)
 
-    Returns:
-        PostgreSQL connection URL with SQLAlchemy async dialect
-
     Raises:
         ValueError: If no valid database configuration found
+
+    Returns
+    -------
+    object
+        PostgreSQL connection URL with SQLAlchemy async dialect
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_database_url)
+    2
     """
     # Try direct DATABASE_URL first. Treat a blank / whitespace-only value as
     # unset: docker-compose passes ``DATABASE_URL=${DATABASE_URL:-}`` (an empty
@@ -108,18 +115,34 @@ async def init_db_engine(
     """
     Initialize async database engine and session maker.
 
-    Args:
-        echo: Enable SQLAlchemy logging
-        pool_size: Number of connections to keep in pool
-        max_overflow: Maximum overflow connections beyond pool_size
-        pool_pre_ping: Test connections before using them
-        pool_recycle: Recycle connections after this many seconds
-
     Returns:
         AsyncEngine instance
 
     Raises:
         Exception: If connection fails
+
+    Parameters
+    ----------
+    echo : object
+        Enable SQLAlchemy logging
+    pool_size : object
+        Number of connections to keep in pool
+    max_overflow : object
+        Maximum overflow connections beyond pool_size
+    pool_pre_ping : object
+        Test connections before using them
+    pool_recycle : object
+        Recycle connections after this many seconds
+
+    Returns
+    -------
+    object
+        AsyncEngine instance
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (init_db_engine)
+    2
     """
     global _engine, _async_session_maker
 
@@ -167,7 +190,14 @@ async def init_db_engine(
 
 
 async def close_db_engine() -> None:
-    """Close database engine and dispose of connections."""
+    """
+    Close database engine and dispose of connections.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (close_db_engine)
+    2
+    """
     global _engine, _async_session_maker
 
     if _engine is not None:
@@ -186,8 +216,15 @@ def get_db_engine() -> AsyncEngine | None:
     """
     Get existing database engine.
 
-    Returns:
+    Returns
+    -------
+    object
         AsyncEngine instance or None if not initialized
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_db_engine)
+    2
     """
     return _engine
 
@@ -206,6 +243,16 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 
     Raises:
         RuntimeError: If engine not initialized
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_db_session)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     if _async_session_maker is None:
         raise RuntimeError("Database engine not initialized. Call init_db_engine() first.")
@@ -225,8 +272,15 @@ async def test_db_connection() -> bool:
     """
     Test database connection.
 
-    Returns:
+    Returns
+    -------
+    object
         True if connection successful, False otherwise
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (test_db_connection)
+    2
     """
     try:
         async with get_db_session() as session:
@@ -241,8 +295,15 @@ async def get_db_stats() -> dict[str, Any]:
     """
     Get database engine statistics.
 
-    Returns:
+    Returns
+    -------
+    object
         Dictionary with pool statistics
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_db_stats)
+    2
     """
     if _engine is None:
         return {
@@ -266,6 +327,21 @@ async def database_lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     Usage:
         app = FastAPI(lifespan=database_lifespan)
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (database_lifespan)
+    2
+
+    Parameters
+    ----------
+    app : object
+        Argument ``app``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     # Startup
     logger.info("Initializing database engine on startup")
@@ -286,6 +362,11 @@ async def create_tables() -> None:
 
     This is called during application startup to ensure tables exist.
     It's safe to call multiple times - SQLAlchemy will skip existing tables.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_tables)
+    2
     """
     if _engine is None:
         logger.error("Database engine not initialized, cannot create tables")

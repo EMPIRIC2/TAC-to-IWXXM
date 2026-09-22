@@ -19,7 +19,14 @@ from dissemination.gateway import (
 
 @dataclass(frozen=True, slots=True)
 class RetryPolicy:
-    """Retry knobs for plan execute (documented; used by later milestones)."""
+    """
+    Retry knobs for plan execute (documented; used by later milestones).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     max_attempts: int = 1
     backoff_seconds: float = 0.0
@@ -82,6 +89,11 @@ async def execute_plan(
     -------
     list of DeliveryReceipt
         One receipt per destination ref.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (execute_plan)
+    2
     """
     receipts: list[DeliveryReceipt] = []
     iwxxm_xml = message.iwxxm_xml

@@ -5,6 +5,8 @@
 //! Compiled XSD / Schematron schemas are cached process-wide (mirrors lxml
 //! ``@lru_cache``) so hot-path calls are validate-only (T6.6 / E10-35).
 
+#![deny(missing_docs)]
+
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
@@ -19,21 +21,67 @@ use xmloxide::validation::xsd::{
 };
 use xmloxide::Document;
 
-/// Extension package version (mirrors Cargo.toml).
+/// Extension package version (mirrors `Cargo.toml`).
+///
+/// # Examples
+///
+/// ```
+/// assert!(!_rust::extension_version().is_empty());
+/// ```
 #[pyfunction]
-fn extension_version() -> &'static str {
+pub fn extension_version() -> &'static str {
     env!("CARGO_PKG_VERSION")
 }
 
 /// Health check used by CI / import smoke tests.
+///
+/// # Examples
+///
+/// ```
+/// assert_eq!(_rust::ping(), "pong");
+/// ```
 #[pyfunction]
-fn ping() -> &'static str {
+pub fn ping() -> &'static str {
     "pong"
 }
 
+/// One validation finding from [`validate_document_core`].
+///
+/// # Examples
+///
+/// ```
+/// use _rust::ValidationIssue;
+/// let row = ValidationIssue {
+///     severity: "error".into(),
+///     code: "XML_SYNTAX_ERROR".into(),
+///     message: "XML parsing failed".into(),
+///     layer: "wellformed".into(),
+///     location: None,
+/// };
+/// assert_eq!(row.code, "XML_SYNTAX_ERROR");
+/// ```
+pub struct ValidationIssue {
+    /// ``error`` or ``warning``.
+    pub severity: String,
+    /// Stable machine code (e.g. ``XML_SYNTAX_ERROR``).
+    pub code: String,
+    /// Human-readable explanation.
+    pub message: String,
+    /// ``wellformed``, ``xsd``, or ``schematron``.
+    pub layer: String,
+    /// Optional path hint when a schema file could not be loaded.
+    pub location: Option<String>,
+}
+
 /// Clear compiled-schema caches (tests / version switches).
+///
+/// # Examples
+///
+/// ```
+/// _rust::clear_schema_caches();
+/// ```
 #[pyfunction]
-fn clear_schema_caches() {
+pub fn clear_schema_caches() {
     if let Some(cache) = XSD_CACHE.get() {
         cache.lock().expect("xsd cache lock").clear();
     }
@@ -45,25 +93,35 @@ fn clear_schema_caches() {
     }
 }
 
+/// Cache key: primary XSD path plus sorted catalog root list.
 type XsdCacheKey = (String, Vec<String>);
+/// Process-wide compiled XSD schemas (success or cached parse error).
 type XsdCache = Mutex<HashMap<XsdCacheKey, Result<Arc<XsdSchema>, String>>>;
+/// Process-wide compiled Schematron schemas.
 type SchCache = Mutex<HashMap<String, Result<Arc<SchematronSchema>, String>>>;
+/// Basename index keyed by sorted catalog roots.
 type ResolverIndexCache = Mutex<HashMap<Vec<String>, HashMap<String, Vec<PathBuf>>>>;
 
+/// Lazy XSD compile cache handle.
 fn xsd_cache() -> &'static XsdCache {
     XSD_CACHE.get_or_init(|| Mutex::new(HashMap::new()))
 }
 
+/// Lazy Schematron compile cache handle.
 fn sch_cache() -> &'static SchCache {
     SCH_CACHE.get_or_init(|| Mutex::new(HashMap::new()))
 }
 
+/// Lazy vendor-tree basename index handle.
 fn resolver_index_cache() -> &'static ResolverIndexCache {
     RESOLVER_INDEX_CACHE.get_or_init(|| Mutex::new(HashMap::new()))
 }
 
+/// Global XSD schema cache (mirrors Python ``lru_cache`` semantics).
 static XSD_CACHE: OnceLock<XsdCache> = OnceLock::new();
+/// Global Schematron schema cache.
 static SCH_CACHE: OnceLock<SchCache> = OnceLock::new();
+/// Global resolver basename index cache.
 static RESOLVER_INDEX_CACHE: OnceLock<ResolverIndexCache> = OnceLock::new();
 
 /// Pre-indexed vendor-tree resolver: basename → paths (+ relative / URL-aware joins).
@@ -87,6 +145,7 @@ struct VendorResolver {
 }
 
 impl VendorResolver {
+    /// Build a resolver for the given catalog root directories.
     fn new(roots: Vec<String>) -> Self {
         let key: Vec<String> = {
             let mut k = roots.clone();
@@ -111,6 +170,7 @@ impl VendorResolver {
         }
     }
 
+    /// Candidate filesystem paths to try for a schema ``location`` (and optional ``base``).
     fn candidates(&self, location: &str, base: Option<&str>) -> Vec<PathBuf> {
         let loc = location.split('/').next_back().unwrap_or(location);
         let stripped = location
@@ -173,6 +233,7 @@ impl VendorResolver {
         out
     }
 
+    /// Infer AIXM ``5.1`` vs ``5.1.1`` from directories used in this parse session.
     fn version_hint_from_resolved_dirs(&self) -> Option<String> {
         let Ok(dirs) = self.resolved_dirs.lock() else {
             return None;
@@ -194,6 +255,7 @@ impl VendorResolver {
         None
     }
 
+    /// Track the parent directory of a successfully opened schema file.
     fn remember_resolved_path(&self, path: &Path) {
         if let Some(parent) = path.parent() {
             if let Ok(mut dirs) = self.resolved_dirs.lock() {
@@ -210,6 +272,7 @@ impl VendorResolver {
     }
 }
 
+/// Return whether ``location`` is a relative XSD include/import path (not an absolute URL).
 fn is_relative_schema_location(location: &str) -> bool {
     if location.starts_with("http://") || location.starts_with("https://") {
         return false;
@@ -227,6 +290,7 @@ fn is_relative_schema_location(location: &str) -> bool {
             })
 }
 
+/// Extract an AIXM version segment (``5.1`` / ``5.1.1``) from a URL path.
 fn version_hint_from_location(stripped: &str) -> Option<String> {
     let parts: Vec<&str> = stripped.split('/').filter(|p| !p.is_empty()).collect();
     for (i, part) in parts.iter().enumerate() {
@@ -299,6 +363,7 @@ fn best_basename_match(
     ranked.first().map(|(_, p)| (*p).clone())
 }
 
+/// Rank a filesystem candidate against URL path segments (higher is better).
 fn score_schema_candidate(path: &Path, url_parent: Option<&str>, url_segments: &[&str]) -> i32 {
     let path_str = path.to_string_lossy();
     let mut score = 0i32;
@@ -349,6 +414,7 @@ fn score_schema_candidate(path: &Path, url_parent: Option<&str>, url_segments: &
     score
 }
 
+/// Walk catalog roots and index every ``.xsd`` basename (case variants included).
 fn build_basename_index(roots: &[String]) -> HashMap<String, Vec<PathBuf>> {
     let mut index: HashMap<String, Vec<PathBuf>> = HashMap::new();
     for root in roots {
@@ -358,6 +424,7 @@ fn build_basename_index(roots: &[String]) -> HashMap<String, Vec<PathBuf>> {
     index
 }
 
+/// Depth-limited recursive helper for [`build_basename_index`].
 fn index_walk(dir: &Path, index: &mut HashMap<String, Vec<PathBuf>>, depth: usize) {
     if depth == 0 || !dir.is_dir() {
         return;
@@ -382,6 +449,7 @@ fn index_walk(dir: &Path, index: &mut HashMap<String, Vec<PathBuf>>, depth: usiz
 }
 
 impl SchemaResolver for VendorResolver {
+    /// Resolve schema text for xmloxide XSD parsing (memoized per session).
     fn resolve(&self, location: &str, base: Option<&str>) -> Option<String> {
         let cache_key = match base {
             Some(b) => format!("{b}\0{location}"),
@@ -409,6 +477,7 @@ impl SchemaResolver for VendorResolver {
     }
 }
 
+/// Build a Python issue dict matching the iwxxm-validate wire shape.
 fn issue_dict<'py>(
     py: Python<'py>,
     severity: &str,
@@ -433,12 +502,15 @@ struct LabeledSchematron {
     message: String,
 }
 
+/// Synthetic Schematron phase id used for per-pattern assertion labeling.
 const PATTERN_PHASE: &str = "iwxxm-pattern";
 
+/// Classify xmloxide XPath engine failures (surfaced as warnings, not hard asserts).
 fn xpath_error(message: &str) -> bool {
     message.starts_with("XPath error")
 }
 
+/// Active Schematron patterns for the schema default phase (or all patterns).
 fn patterns_in_play(
     schema: &SchematronSchema,
 ) -> Vec<&xmloxide::validation::schematron::SchematronPattern> {
@@ -546,6 +618,7 @@ fn schematron_rows(doc: &Document, schema: &SchematronSchema) -> Vec<LabeledSche
     rows
 }
 
+/// Append XPath-unsupported and report rows from the quick validation pass.
 fn push_quick_rows(
     rows: &mut Vec<LabeledSchematron>,
     quick: &xmloxide::validation::ValidationResult,
@@ -569,12 +642,14 @@ fn push_quick_rows(
     }
 }
 
+/// Stable sorted catalog root list used as an XSD cache key component.
 fn catalog_key(catalog_roots: &[String]) -> Vec<String> {
     let mut key = catalog_roots.to_vec();
     key.sort();
     key
 }
 
+/// Load or return a cached compiled XSD schema for ``xsd_path`` and catalog roots.
 fn get_or_parse_xsd(xsd_path: &str, catalog_roots: &[String]) -> Result<Arc<XsdSchema>, String> {
     let key = (xsd_path.to_string(), catalog_key(catalog_roots));
     {
@@ -604,6 +679,7 @@ fn get_or_parse_xsd(xsd_path: &str, catalog_roots: &[String]) -> Result<Arc<XsdS
     parsed
 }
 
+/// Load or return a cached compiled Schematron schema (with WMO/xmloxide prep).
 fn get_or_parse_schematron(sch_path: &str) -> Result<Arc<SchematronSchema>, String> {
     let key = sch_path.to_string();
     {
@@ -963,20 +1039,43 @@ fn take_paren_group(s: &str) -> Option<(&str, usize)> {
     None
 }
 
+/// Append one row to a validation issue list.
+fn push_issue(
+    out: &mut Vec<ValidationIssue>,
+    severity: &str,
+    code: &str,
+    message: impl Into<String>,
+    layer: &str,
+    location: Option<String>,
+) {
+    out.push(ValidationIssue {
+        severity: severity.to_string(),
+        code: code.to_string(),
+        message: message.into(),
+        layer: layer.to_string(),
+        location,
+    });
+}
+
 /// Validate IWXXM XML via xmloxide (well-formed + optional XSD + Schematron).
 ///
-/// Returns a list of issue dicts: ``severity``, ``code``, ``message``, ``layer``, ``location``.
-#[pyfunction]
-#[pyo3(signature = (xml, *, xsd_path, sch_path, catalog_roots, levels))]
-fn validate_document<'py>(
-    py: Python<'py>,
+/// ``levels`` may include ``xsd`` and/or ``schematron``; well-formedness is always checked.
+///
+/// # Examples
+///
+/// ```
+/// let issues = _rust::validate_document_core("<unclosed", "", "", &[], &[]);
+/// assert_eq!(issues.len(), 1);
+/// assert_eq!(issues[0].code, "XML_SYNTAX_ERROR");
+/// ```
+pub fn validate_document_core(
     xml: &str,
     xsd_path: &str,
     sch_path: &str,
-    catalog_roots: Vec<String>,
-    levels: Vec<String>,
-) -> PyResult<Bound<'py, PyList>> {
-    let issues = PyList::empty(py);
+    catalog_roots: &[String],
+    levels: &[String],
+) -> Vec<ValidationIssue> {
+    let mut issues = Vec::new();
     let want_xsd = levels.iter().any(|l| l == "xsd");
     let want_sch = levels.iter().any(|l| l == "schematron");
 
@@ -992,41 +1091,41 @@ fn validate_document<'py>(
     let doc = match Document::parse_str(xml_in) {
         Ok(d) => d,
         Err(e) => {
-            issues.append(issue_dict(
-                py,
+            push_issue(
+                &mut issues,
                 "error",
                 "XML_SYNTAX_ERROR",
-                &format!("XML parsing failed: {e}"),
+                format!("XML parsing failed: {e}"),
                 "wellformed",
                 None,
-            )?)?;
-            return Ok(issues);
+            );
+            return issues;
         }
     };
 
     if want_xsd {
-        match get_or_parse_xsd(xsd_path, &catalog_roots) {
+        match get_or_parse_xsd(xsd_path, catalog_roots) {
             Ok(schema) => {
                 let result = validate_xsd(&doc, &schema);
                 for err in &result.errors {
-                    issues.append(issue_dict(
-                        py,
+                    push_issue(
+                        &mut issues,
                         "error",
                         "XSD_VALIDATION_ERROR",
-                        &err.message,
+                        err.message.clone(),
                         "xsd",
                         None,
-                    )?)?;
+                    );
                 }
                 for warn in &result.warnings {
-                    issues.append(issue_dict(
-                        py,
+                    push_issue(
+                        &mut issues,
                         "warning",
                         "XSD_VALIDATION_WARNING",
-                        &warn.message,
+                        warn.message.clone(),
                         "xsd",
                         None,
-                    )?)?;
+                    );
                 }
             }
             Err(msg) => {
@@ -1035,9 +1134,16 @@ fn validate_document<'py>(
                 } else {
                     "SCHEMA_PARSE_ERROR"
                 };
-                issues.append(issue_dict(py, "error", code, &msg, "xsd", Some(xsd_path))?)?;
+                push_issue(
+                    &mut issues,
+                    "error",
+                    code,
+                    msg,
+                    "xsd",
+                    Some(xsd_path.to_string()),
+                );
                 if !want_sch {
-                    return Ok(issues);
+                    return issues;
                 }
             }
         }
@@ -1047,14 +1153,14 @@ fn validate_document<'py>(
         match get_or_parse_schematron(sch_path) {
             Ok(schema) => {
                 for row in schematron_rows(&doc, &schema) {
-                    issues.append(issue_dict(
-                        py,
+                    push_issue(
+                        &mut issues,
                         row.severity,
                         &row.code,
-                        &row.message,
+                        row.message,
                         "schematron",
                         None,
-                    )?)?;
+                    );
                 }
             }
             Err(msg) => {
@@ -1063,21 +1169,55 @@ fn validate_document<'py>(
                 } else {
                     "SCHEMATRON_PARSE_ERROR"
                 };
-                issues.append(issue_dict(
-                    py,
+                push_issue(
+                    &mut issues,
                     "error",
                     code,
-                    &msg,
+                    msg,
                     "schematron",
-                    Some(sch_path),
-                )?)?;
+                    Some(sch_path.to_string()),
+                );
             }
         }
     }
 
+    issues
+}
+
+/// Python binding for [`validate_document_core`] (returns issue dicts).
+///
+/// # Examples
+///
+/// ```
+/// // Operators call the PyO3 export; Rust callers use [`validate_document_core`].
+/// assert!(_rust::validate_document_core("<root/>", "", "", &[], &[]).is_empty());
+/// ```
+#[pyfunction]
+#[pyo3(signature = (xml, *, xsd_path, sch_path, catalog_roots, levels))]
+pub fn validate_document<'py>(
+    py: Python<'py>,
+    xml: &str,
+    xsd_path: &str,
+    sch_path: &str,
+    catalog_roots: Vec<String>,
+    levels: Vec<String>,
+) -> PyResult<Bound<'py, PyList>> {
+    let rows = validate_document_core(xml, xsd_path, sch_path, &catalog_roots, &levels);
+    let issues = PyList::empty(py);
+    for row in rows {
+        issues.append(issue_dict(
+            py,
+            &row.severity,
+            &row.code,
+            &row.message,
+            &row.layer,
+            row.location.as_deref(),
+        )?)?;
+    }
     Ok(issues)
 }
 
+/// Registers the compiled extension module (`iwxxm_validate._rust`).
 #[pymodule]
 fn _rust(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;

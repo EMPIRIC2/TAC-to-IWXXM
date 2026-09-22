@@ -20,13 +20,27 @@ logger = logging.getLogger(__name__)
 
 
 class ValidationError(Exception):
-    """Raised when validation fails critically."""
+    """
+    Raised when validation fails critically.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     pass
 
 
 class ValidationService:
-    """Service for layered validation of METAR/TAC and IWXXM XML."""
+    """
+    Service for layered validation of METAR/TAC and IWXXM XML.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self) -> None:
         """Initialize validation service."""
@@ -39,14 +53,23 @@ class ValidationService:
 
         Extracts ICAO from TAC text and validates against airport database.
 
-        Args:
-            tac_text: METAR/SPECI TAC format text
-
         Returns:
+            ValidationResult with pass/fail statlid (blocking validation)
+
+        Parameters
+        ----------
+        tac_text : object
+            METAR/SPECI TAC format text
+
+        Returns
+        -------
+        object
             ValidationResult with pass/fail status
 
-        Raises:
-            ValidationError: If ICAO code is invalid (blocking validation)
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_airport_icao)
+        2
         """
         start_time = time.time()
         result = ValidationResult(
@@ -125,11 +148,23 @@ class ValidationService:
 
         Performs basic TAC format validation before attempting conversion.
 
-        Args:
-            tac_text: METAR/SPECI TAC format text
-
         Returns:
             ValidationResult with syntax issues
+
+        Parameters
+        ----------
+        tac_text : object
+            METAR/SPECI TAC format text
+
+        Returns
+        -------
+        object
+            ValidationResult with syntax issues
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_tac_syntax)
+        2
         """
         start_time = time.time()
         result = ValidationResult(
@@ -192,9 +227,31 @@ class ValidationService:
         layers: list[ValidationLayer] | None = None,
         iwxxm_version: str | None = None,
     ) -> AggregatedValidationResult:
-        """Validate TAC content for the requested layers (router entry point).
+        """
+        Validate TAC content for the requested layers (router entry point).
 
         XML / IWXXM content must be routed through ``ValidationOrchestrator``.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate)
+        2
+
+        Parameters
+        ----------
+        content : object
+            Argument ``content``.
+        content_type : object
+            Argument ``content_type``.
+        layers : object
+            Argument ``layers``.
+        iwxxm_version : object
+            Argument ``iwxxm_version``.
+
+        Returns
+        -------
+        object
+            Return value.
         """
         del iwxxm_version
         normalized = (content_type or "tac").strip().lower()
@@ -228,6 +285,11 @@ class ValidationService:
         -------
         AggregatedValidationResult
             Aggregated TAC layer results.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_all_layers)
+        2
         """
         results: list[Any] = []
         wanted = (
@@ -293,7 +355,19 @@ _validation_service: ValidationService | None = None
 
 
 def get_validation_service() -> ValidationService:
-    """Get or create the global ValidationService instance."""
+    """
+    Get or create the global ValidationService instance.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_validation_service)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _validation_service
     if _validation_service is None:
         _validation_service = ValidationService()

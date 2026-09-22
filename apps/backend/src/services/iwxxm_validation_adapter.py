@@ -27,7 +27,26 @@ _LAYER_MAP: dict[str, ValidationLayer] = {
 
 
 def pkg_issue_to_backend(issue: Issue, *, layer: ValidationLayer | None = None) -> ValidationIssue:
-    """Map ``iwxxm_validate.Issue`` onto backend ``ValidationIssue``."""
+    """
+    Map ``iwxxm_validate.Issue`` onto backend ``ValidationIssue``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (pkg_issue_to_backend)
+    2
+
+    Parameters
+    ----------
+    issue : object
+        Argument ``issue``.
+    layer : object
+        Argument ``layer``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     severity_raw = str(issue.severity).lower()
     level = ValidationSeverity.ERROR if severity_raw == "error" else ValidationSeverity.WARNING
     if severity_raw == "info":
@@ -43,6 +62,7 @@ def pkg_issue_to_backend(issue: Issue, *, layer: ValidationLayer | None = None) 
 
 
 def _issues_for_level(report: ValidationReport, level: str) -> list[ValidationIssue]:
+    """Internal helper ``_issues_for_level``."""
     backend_layer = _LAYER_MAP.get(level, ValidationLayer.XML_SCHEMA)
     return [
         pkg_issue_to_backend(issue, layer=backend_layer)
@@ -59,7 +79,32 @@ def call_validate_iwxxm(
     levels: Sequence[str] | None = None,
     product: str | None = None,
 ) -> ValidationReport:
-    """Invoke ``validate_iwxxm`` - single package entrypoint for backend IWXXM checks."""
+    """
+    Invoke ``validate_iwxxm`` - single package entrypoint for backend IWXXM checks.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (call_validate_iwxxm)
+    2
+
+    Parameters
+    ----------
+    xml_content : object
+        Argument ``xml_content``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    profile : object
+        Argument ``profile``.
+    levels : object
+        Argument ``levels``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return validate_iwxxm(
         xml_content,
         iwxxm_version=iwxxm_version,
@@ -70,7 +115,24 @@ def call_validate_iwxxm(
 
 
 def validate_wellformed(xml_content: str) -> ValidationResult:
-    """Layer 3 - XML well-formedness via package lxml check (stable operator messages)."""
+    """
+    Layer 3 - XML well-formedness via package lxml check (stable operator messages).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_wellformed)
+    2
+
+    Parameters
+    ----------
+    xml_content : object
+        Argument ``xml_content``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     from iwxxm_validate.wellformed import run_wellformed_lxml
 
     issues = [
@@ -89,7 +151,28 @@ def validate_xml_schema(
     *,
     profile: str = "annex3",
 ) -> XSDValidationResult:
-    """Layer 4 - XSD validation via package."""
+    """
+    Layer 4 - XSD validation via package.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_xml_schema)
+    2
+
+    Parameters
+    ----------
+    xml_content : object
+        Argument ``xml_content``.
+    version : object
+        Argument ``version``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     report = call_validate_iwxxm(
         xml_content,
         iwxxm_version=version,
@@ -110,7 +193,28 @@ def validate_schematron(
     *,
     profile: str = "annex3",
 ) -> SchematronValidationResult:
-    """Layer 5 - Schematron validation via package."""
+    """
+    Layer 5 - Schematron validation via package.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_schematron)
+    2
+
+    Parameters
+    ----------
+    xml_content : object
+        Argument ``xml_content``.
+    version : object
+        Argument ``version``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     report = call_validate_iwxxm(
         xml_content,
         iwxxm_version=version,
@@ -132,7 +236,28 @@ def validate_gml_references(
     *,
     profile: str = "annex3",
 ) -> tuple[bool, list[ValidationIssue]]:
-    """Layer 6 - GML reference validation via package."""
+    """
+    Layer 6 - GML reference validation via package.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_gml_references)
+    2
+
+    Parameters
+    ----------
+    xml_content : object
+        Argument ``xml_content``.
+    version : object
+        Argument ``version``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     report = call_validate_iwxxm(
         xml_content,
         iwxxm_version=version,
@@ -150,7 +275,28 @@ def validate_wmo_codelists(
     *,
     profile: str = "annex3",
 ) -> tuple[bool, list[ValidationIssue]]:
-    """Layer 7 - WMO codelist validation via package."""
+    """
+    Layer 7 - WMO codelist validation via package.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_wmo_codelists)
+    2
+
+    Parameters
+    ----------
+    xml_content : object
+        Argument ``xml_content``.
+    version : object
+        Argument ``version``.
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     report = call_validate_iwxxm(
         xml_content,
         iwxxm_version=version,

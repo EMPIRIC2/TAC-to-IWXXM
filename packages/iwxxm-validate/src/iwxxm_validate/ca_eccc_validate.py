@@ -48,10 +48,12 @@ _RUST_LAYER_TO_STAGE = {
 
 
 def _has_error(issues: Sequence[Issue]) -> bool:
+    """Internal helper ``_has_error``."""
     return any(issue.severity == "error" for issue in issues)
 
 
 def _remap_issues(issues: Sequence[Issue], stage_id: str) -> list[Issue]:
+    """Internal helper ``_remap_issues``."""
     return [
         Issue(
             severity=issue.severity,
@@ -67,6 +69,7 @@ def _remap_issues(issues: Sequence[Issue], stage_id: str) -> list[Issue]:
 
 
 def _stage_result(stage_id: str, issues: list[Issue]) -> StageResult:
+    """Internal helper ``_stage_result``."""
     return StageResult(
         stage=stage_id,
         label=CA_STAGE_LABELS[stage_id],
@@ -76,6 +79,7 @@ def _stage_result(stage_id: str, issues: list[Issue]) -> StageResult:
 
 
 def _issues_from_rust(raw: Sequence[dict[str, Any]], stage_id: str) -> list[Issue]:
+    """Internal helper ``_issues_from_rust``."""
     issues: list[Issue] = []
     for item in raw:
         rust_layer = str(item.get("layer", "xsd"))
@@ -101,6 +105,7 @@ def _run_rust_stage(
     levels: list[str],
     stage_id: str,
 ) -> list[Issue]:
+    """Internal helper ``_run_rust_stage``."""
     rust = rust_module()
     assert rust is not None
     raw = rust.validate_document(
@@ -114,6 +119,7 @@ def _run_rust_stage(
 
 
 def _run_wellformed_lxml(xml_content: str) -> list[Issue]:
+    """Internal helper ``_run_wellformed_lxml``."""
     try:
         etree.fromstring(xml_content.encode("utf-8"))
         return []
@@ -130,6 +136,7 @@ def _run_wellformed_lxml(xml_content: str) -> list[Issue]:
 
 
 def _document_root_name(xml_content: str) -> tuple[str | None, str | None]:
+    """Internal helper ``_document_root_name``."""
     try:
         root = etree.fromstring(xml_content.encode("utf-8"))
     except etree.XMLSyntaxError:
@@ -139,6 +146,7 @@ def _document_root_name(xml_content: str) -> tuple[str | None, str | None]:
 
 
 def _is_ca_substitution_root(local_name: str | None, namespace: str | None) -> bool:
+    """Internal helper ``_is_ca_substitution_root``."""
     return namespace == CA_EXTENSION_NS and local_name in CA_SUBSTITUTION_ROOTS
 
 
@@ -221,6 +229,7 @@ def _validate_ca_xsd_document(
     core_sch: str,
     catalog_roots: list[str],
 ) -> list[Issue]:
+    """Internal helper ``_validate_ca_xsd_document``."""
     ca_path = str(product_xsd)
     if rust_available():
         return _run_rust_stage(
@@ -242,6 +251,7 @@ def _validate_ca_xsd_layer(
     core_sch: str,
     catalog_roots: list[str],
 ) -> list[Issue]:
+    """Internal helper ``_validate_ca_xsd_layer``."""
     local_name, namespace = _document_root_name(xml_content)
 
     if _is_ca_substitution_root(local_name, namespace):
@@ -305,6 +315,11 @@ def validate_ca_eccc_layered(
     -------
     ValidationReport
         Includes ``stages`` with operator-readable labels per EV-048.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_ca_eccc_layered)
+    2
     """
     selected = tuple(levels) if levels is not None else ("xsd", "schematron")
     run_xsd_stages = "xsd" in selected
@@ -337,7 +352,21 @@ def validate_ca_eccc_layered(
     all_issues: list[Issue] = []
 
     def append_stage(stage_id: str, issues: list[Issue]) -> None:
-        """Record one validation stage and merge its issues into the report."""
+        """
+        Record one validation stage and merge its issues into the report.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (append_stage)
+        2
+
+        Parameters
+        ----------
+        stage_id : object
+            Argument ``stage_id``.
+        issues : object
+            Argument ``issues``.
+        """
         stages.append(_stage_result(stage_id, issues))
         all_issues.extend(issues)
 

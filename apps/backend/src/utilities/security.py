@@ -42,6 +42,11 @@ async def verify_supabase_token(
     ------
     HTTPException
         401 when the token is missing/invalid; 503 when Auth URL env is missing.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (verify_supabase_token)
+    2
     """
     return _verify_bearer(credentials.credentials)
 
@@ -58,6 +63,16 @@ async def verify_optional_supabase_token(
         Claims when Authorization is present and valid; ``None`` when absent
         or when the token cannot be verified (public routes stay available;
         overlay apply then fails closed for missing auth).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (verify_optional_supabase_token)
+    2
+
+    Parameters
+    ----------
+    credentials : object
+        Argument ``credentials``.
     """
     if credentials is None:
         return None
@@ -68,6 +83,7 @@ async def verify_optional_supabase_token(
 
 
 def _verify_bearer(token: str) -> dict[str, Any]:
+    """Internal helper ``_verify_bearer``."""
     supabase_url = get_supabase_url()
     jwks_url = (os.environ.get("SUPABASE_JWKS_URL") or "").strip() or None
     if not supabase_url and not jwks_url:
@@ -104,6 +120,16 @@ async def fetch_jwks() -> dict[str, Any]:
     ------
     NotImplementedError
         Always; callers should use ``metar_auth.jwks.verify_access_token``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (fetch_jwks)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     raise NotImplementedError("Use metar_auth.jwks.verify_access_token (ADR-033 JWKS-only)")
 

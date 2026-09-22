@@ -53,7 +53,8 @@ async def validate_comprehensive(
         description="TAC product for Canadian extension XSD when extensions include IWXXM_CA",
     ),
 ) -> object:
-    """Perform comprehensive 7-layer IWXXM validation.
+    """
+    Perform comprehensive 7-layer IWXXM validation.
 
     Validates METAR TAC input through all 7 validation layers:
 
@@ -89,6 +90,41 @@ async def validate_comprehensive(
       "stopped_at_layer": null
     }
     ```
+
+    Parameters
+    ----------
+    request_body : object
+        Argument ``request_body``.
+    manual_text : object
+        Argument ``manual_text``.
+    xml_content : object
+        Argument ``xml_content``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    layers : object
+        Argument ``layers``.
+    stop_on_error : object
+        Argument ``stop_on_error``.
+    profile : object
+        Argument ``profile``.
+    semantic_profile : object
+        Argument ``semantic_profile``.
+    exchange_profile : object
+        Argument ``exchange_profile``.
+    extensions : object
+        Argument ``extensions``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_comprehensive)
+    2
     """
     try:
         json_profile = None

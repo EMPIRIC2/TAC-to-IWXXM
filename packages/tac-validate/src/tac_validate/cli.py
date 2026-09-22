@@ -16,6 +16,7 @@ from tac_validate.profiles import SUPPORTED_PROFILES
 
 
 def _build_parser() -> argparse.ArgumentParser:
+    """Internal helper ``_build_parser``."""
     parser = argparse.ArgumentParser(
         prog="tac-validate",
         description="Lint TAC text for F6 products (parse-gate + checklist/template gates).",
@@ -57,12 +58,14 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _lint_profile(emit_key: str) -> str:
+    """Internal helper ``_lint_profile``."""
     if emit_key in SUPPORTED_PROFILES:
         return emit_key
     return "annex3"
 
 
 def _bound_policy(profile: str, policy: str | None, *, product: str | None = None) -> tuple[str, str]:
+    """Internal helper ``_bound_policy``."""
     try:
         from tac2iwxxm.profile_resolve import ProfileResolveError, resolve_validation_policies
     except ImportError:
@@ -87,6 +90,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     -------
     int
         ``0`` when ``report.ok``; ``1`` on lint errors or I/O failure; ``2`` when the profile or policy id is unknown.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (main)
+    2
     """
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)

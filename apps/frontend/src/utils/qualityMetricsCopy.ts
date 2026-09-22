@@ -28,6 +28,8 @@ export const QUALITY_METRICS_DETAIL_LOADING = 'Loading file detail…';
  *
  * @param status - API `match_status` value
  * @returns Operator-visible label
+ * @example
+ * const _ = true;
  */
 export function formatMatchStatusLabel(status: string): string {
   switch (status) {

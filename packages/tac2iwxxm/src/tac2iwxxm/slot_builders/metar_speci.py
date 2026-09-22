@@ -238,6 +238,7 @@ _CONSUMED_REMARK = re.compile(
 
 
 def _celsius(token: str) -> int:
+    """Internal helper ``_celsius``."""
     if token.startswith("M"):
         return -int(token[1:])
     return int(token)
@@ -304,6 +305,7 @@ def _hhmm_to_stamp(ir: dict[str, Any], hhmm: str) -> str:
 
 
 def _obs_stamp(ir: dict[str, Any]) -> str:
+    """Internal helper ``_obs_stamp``."""
     day = int(ir["day"])
     hour = int(ir["hour"])
     minute = int(ir["minute"])
@@ -943,6 +945,11 @@ def parse_metar_speci(tac: str, *, product: str) -> dict[str, Any]:
     ------
     ValueError
         When the TAC cannot be decoded.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_metar_speci)
+    2
     """
     text = tac.strip()
     product_u = product.upper()

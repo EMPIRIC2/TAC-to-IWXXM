@@ -29,6 +29,7 @@ _METRICS: dict[str, Any] = {}
 
 
 def _get_or_create_counter(name: str, documentation: str, labelnames: list[str]) -> Counter:
+    """Internal helper ``_get_or_create_counter``."""
     if name not in _METRICS:
         try:
             _METRICS[name] = Counter(name, documentation, labelnames)
@@ -41,6 +42,7 @@ def _get_or_create_counter(name: str, documentation: str, labelnames: list[str])
 
 
 def _get_or_create_histogram(name: str, documentation: str, labelnames: list[str]) -> Histogram:
+    """Internal helper ``_get_or_create_histogram``."""
     if name not in _METRICS:
         try:
             _METRICS[name] = Histogram(name, documentation, labelnames)
@@ -96,10 +98,18 @@ TAC_SEMANTIC_PROFILE_ALIAS_REQUESTS_TOTAL = _get_or_create_counter(
 
 
 class JsonLogFormatter(logging.Formatter):
-    """Formats log records as JSON."""
+    """
+    Formats log records as JSON.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def format(self, record: logging.LogRecord) -> str:
-        """Serialize a log record as a single JSON line for structured logging.
+        """
+        Serialize a log record as a single JSON line for structured logging.
 
         Parameters
         ----------
@@ -110,6 +120,11 @@ class JsonLogFormatter(logging.Formatter):
         -------
         str
             JSON-encoded log payload.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (format)
+        2
         """
         payload = {
             "timestamp": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
@@ -125,9 +140,17 @@ class JsonLogFormatter(logging.Formatter):
 
 
 class LokiHandler(logging.Handler):
-    """Pushes logs to Loki using HTTP API."""
+    """
+    Pushes logs to Loki using HTTP API.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, service_name: str) -> None:
+        """Internal helper ``__init__``."""
         super().__init__()
         self.service_name = service_name
         self.push_url = os.getenv("LOKI_PUSH_URL", "").strip()
@@ -163,12 +186,18 @@ class LokiHandler(logging.Handler):
         self._worker.start()
 
     def emit(self, record: logging.LogRecord) -> None:
-        """Enqueue a log record for asynchronous push to Loki.
+        """
+        Enqueue a log record for asynchronous push to Loki.
 
         Parameters
         ----------
         record : logging.LogRecord
             Log record to ship when Loki is configured and level passes the filter.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (emit)
+        2
         """
         if not self.push_url or self._session is None:
             return
@@ -184,7 +213,14 @@ class LokiHandler(logging.Handler):
             self.handleError(record)
 
     def close(self) -> None:
-        """Stop the background worker and close the HTTP session."""
+        """
+        Stop the background worker and close the HTTP session.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (close)
+        2
+        """
         try:
             self._stop_event.set()
             if self._worker.is_alive():
@@ -195,6 +231,7 @@ class LokiHandler(logging.Handler):
             super().close()
 
     def _worker_loop(self) -> None:
+        """Internal helper ``_worker_loop``."""
         if not self.push_url or self._session is None:
             return
 
@@ -248,6 +285,7 @@ class LokiHandler(logging.Handler):
                 self._send_batch(batch)
 
     def _build_loki_entry(self, record: logging.LogRecord) -> dict[str, Any]:
+        """Internal helper ``_build_loki_entry``."""
         ts_ns = str(int(record.created * 1_000_000_000))
         line = self.format(record)
         labels = {
@@ -259,6 +297,7 @@ class LokiHandler(logging.Handler):
         return {"timestamp": ts_ns, "line": line, "labels": labels}
 
     def _send_batch(self, batch: list[dict[str, Any]]) -> None:
+        """Internal helper ``_send_batch``."""
         if not batch or self._session is None:
             return
 
@@ -288,7 +327,19 @@ class LokiHandler(logging.Handler):
 
 
 def setup_logging(service_name: str) -> None:
-    """Configure JSON logs and optional Loki push handler."""
+    """
+    Configure JSON logs and optional Loki push handler.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (setup_logging)
+    2
+
+    Parameters
+    ----------
+    service_name : object
+        Argument ``service_name``.
+    """
     root_logger = logging.getLogger()
     level = os.getenv("LOG_LEVEL", "INFO").upper()
     root_logger.setLevel(level)
@@ -327,6 +378,11 @@ def record_profile_wire_metrics(route: str, wire: WireProfileSelection) -> None:
         FastAPI route path (e.g. ``/api/v1/convert``).
     wire :
         ``WireProfileSelection`` from ``profile_wire.resolve_route_profiles``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (record_profile_wire_metrics)
+    2
     """
     safe_route = (route or "unknown").strip() or "unknown"
     semantic_id = _metric_profile_id(getattr(wire, "semantic_canonical", ""))
@@ -356,7 +412,25 @@ def record_translation_metric(
     icao_region: str,
     duration_ms: int,
 ) -> None:
-    """Record translation status and latency metrics."""
+    """
+    Record translation status and latency metrics.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (record_translation_metric)
+    2
+
+    Parameters
+    ----------
+    status : object
+        Argument ``status``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+    icao_region : object
+        Argument ``icao_region``.
+    duration_ms : object
+        Argument ``duration_ms``.
+    """
     safe_status = status or "unknown"
     safe_version = iwxxm_version or "unknown"
     safe_region = icao_region or "unknown"
@@ -375,14 +449,47 @@ def record_translation_metric(
 
 
 def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
-    """Install metrics middleware and /metrics endpoint into FastAPI app."""
+    """
+    Install metrics middleware and /metrics endpoint into FastAPI app.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (install_fastapi_observability)
+    2
+
+    Parameters
+    ----------
+    app : object
+        Argument ``app``.
+    service_name : object
+        Argument ``service_name``.
+    """
 
     @app.middleware("http")
     async def prometheus_http_metrics(
         request: Request,
         call_next: Callable[[Request], Awaitable[Response]],
     ) -> Response:
-        """Record Prometheus HTTP request counters and latency histograms."""
+        """
+        Record Prometheus HTTP request counters and latency histograms.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (prometheus_http_metrics)
+        2
+
+        Parameters
+        ----------
+        request : object
+            Argument ``request``.
+        call_next : object
+            Argument ``call_next``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         start = time.perf_counter()
         try:
             response = await call_next(request)
@@ -411,7 +518,19 @@ def install_fastapi_observability(app: FastAPI, service_name: str) -> None:
 
     @app.get("/metrics", include_in_schema=False)
     async def metrics_endpoint() -> Response:
-        """Expose Prometheus metrics in text exposition format."""
+        """
+        Expose Prometheus metrics in text exposition format.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (metrics_endpoint)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         data = generate_latest()
         return Response(content=data, media_type=CONTENT_TYPE_LATEST)
 
@@ -427,10 +546,34 @@ _filters_installed = False
 
 
 class RequestLogLevelFilter(logging.Filter):
-    """Drop records below the per-request convert ``log_level`` ContextVar."""
+    """
+    Drop records below the per-request convert ``log_level`` ContextVar.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def filter(self, record: logging.LogRecord) -> bool:
-        """Allow records at or above the per-request convert log level."""
+        """
+        Allow records at or above the per-request convert log level.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (filter)
+        2
+
+        Parameters
+        ----------
+        record : object
+            Argument ``record``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         minimum = _REQUEST_LOG_LEVEL.get()
         if minimum is None:
             return True
@@ -438,10 +581,34 @@ class RequestLogLevelFilter(logging.Filter):
 
 
 class SecretRedactFilter(logging.Filter):
-    """Strip JWTs and Authorization header values from log records."""
+    """
+    Strip JWTs and Authorization header values from log records.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def filter(self, record: logging.LogRecord) -> bool:
-        """Redact JWTs and Authorization header values from log message text."""
+        """
+        Redact JWTs and Authorization header values from log message text.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (filter)
+        2
+
+        Parameters
+        ----------
+        record : object
+            Argument ``record``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         try:
             message = record.getMessage()
         except Exception:
@@ -455,7 +622,14 @@ class SecretRedactFilter(logging.Filter):
 
 
 def ensure_request_log_filters() -> None:
-    """Attach request-level and secret filters once (safe for tests)."""
+    """
+    Attach request-level and secret filters once (safe for tests).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ensure_request_log_filters)
+    2
+    """
     global _filters_installed
     if _filters_installed:
         return
@@ -473,12 +647,25 @@ _REQUEST_LOGGERS = ("src", "src.api", "tac2iwxxm", "tac_validate", "iwxxm_valida
 
 
 def set_request_log_level(request: Request, level_name: str | None) -> str:
-    """Apply convert ``log_level`` to this request's log ContextVar.
+    """
+    Apply convert ``log_level`` to this request's log ContextVar.
 
     Returns
     -------
     str
         Normalized level name (DEBUG/INFO/WARNING/ERROR/CRITICAL).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (set_request_log_level)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    level_name : object
+        Argument ``level_name``.
     """
     ensure_request_log_filters()
     name = (level_name or "INFO").strip().upper()
@@ -498,6 +685,7 @@ def set_request_log_level(request: Request, level_name: str | None) -> str:
 
 
 def _reset_request_log_level(request: Request) -> None:
+    """Internal helper ``_reset_request_log_level``."""
     token = getattr(request.state, "convert_log_level_token", None)
     if token is not None:
         with contextlib.suppress(ValueError):

@@ -20,6 +20,11 @@ build-backend = "hatchling.build"
 packages = ["src/workflows"]
 
 [tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+
+filterwarnings = [
+  "error",
+]
 testpaths = ["tests"]
 markers = [
   "unit: fast unit tests",

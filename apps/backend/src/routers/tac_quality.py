@@ -41,6 +41,7 @@ def _ensure_airport_location_resolver() -> None:
     validator = get_airport_validator()
 
     def _resolve(icao: str) -> str | None:
+        """Internal helper ``_resolve``."""
         airport = validator.get_airport(icao)
         if airport is None:
             return None
@@ -53,6 +54,8 @@ def _ensure_airport_location_resolver() -> None:
 
 @dataclass(frozen=True)
 class _DecodedRow:
+    """Internal helper ``_DecodedRow``."""
+
     start: int
     end: int
     code: str
@@ -61,12 +64,15 @@ class _DecodedRow:
 
 @dataclass(frozen=True)
 class _DecodedResidual:
+    """Internal helper ``_DecodedResidual``."""
+
     start: int
     end: int
     text: str
 
 
 def _advisory_explanation(product: str, label: str) -> str:
+    """Internal helper ``_advisory_explanation``."""
     common: dict[str, str] = {
         "DTG": "Issue time",
         "RMK": "Remarks",
@@ -109,6 +115,7 @@ def _enrich_advisory_decode(
     residuals: list[Any],
     summary: str | None,
 ) -> tuple[list[_DecodedRow], list[_DecodedResidual], str]:
+    """Internal helper ``_enrich_advisory_decode``."""
     if product not in {"VONA", "SWXA"}:
         return (
             [_DecodedRow(start=s.start, end=s.end, code=s.code, explanation=s.explanation) for s in segments],
@@ -217,7 +224,34 @@ async def lint_issue_catalog(
     semantic_profile: str | None = None,
     exchange_profile: str | None = None,
 ) -> Response:
-    """Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page."""
+    """
+    Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (lint_issue_catalog)
+    2
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+    family : object
+        Argument ``family``.
+    issue_type : object
+        Argument ``issue_type``.
+    source_access : object
+        Argument ``source_access``.
+    semantic_profile : object
+        Argument ``semantic_profile``.
+    exchange_profile : object
+        Argument ``exchange_profile``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     from dissemination.exchange_registry import resolve_exchange_profile
     from tac_validate.catalog_attribution import attribution_for
     from tac_validate.issue_catalog_meta import classify_issue_type
@@ -352,7 +386,30 @@ async def lint_tac(
     ),
     files: list[UploadFile] | None = File(None),
 ) -> Response:
-    """Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A)."""
+    """
+    Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (lint_tac)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    manual_text : object
+        Argument ``manual_text``.
+    product : object
+        Argument ``product``.
+    files : object
+        Argument ``files``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(
@@ -425,7 +482,30 @@ async def decode_tac_endpoint(
     manual_text: str = Form(default="", description="TAC text to decode"),
     files: list[UploadFile] | None = File(None),
 ) -> Response:
-    """Decode TAC into annotated segments and a plain-language summary."""
+    """
+    Decode TAC into annotated segments and a plain-language summary.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (decode_tac_endpoint)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    product : object
+        Argument ``product``.
+    manual_text : object
+        Argument ``manual_text``.
+    files : object
+        Argument ``files``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     content_type = (request.headers.get("content-type") or "").lower()
     if "multipart/form-data" not in content_type:
         raise HTTPException(

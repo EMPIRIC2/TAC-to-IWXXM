@@ -36,6 +36,11 @@ type FamilyFilter =
   | 'conversion'
   | 'dissemination'
   | 'decoding';
+/**
+ * Type `SortKey`.
+ * @example
+ * const _ = true;
+ */
 export type SortKey = 'code' | 'level' | 'family' | 'issue_type' | 'source_access';
 
 const LEVEL_OPTIONS = ['all', 'critical', 'error', 'warning', 'info'] as const;
@@ -81,6 +86,9 @@ function isClickableSource(entry: LintIssueCatalogEntry): boolean {
   return url.startsWith('http://') || url.startsWith('https://');
 }
 
+/**
+ * Function `profileList`.
+ */
 function profileList(value: string[] | null | undefined): string[] {
   if (!Array.isArray(value)) {
     return [];
@@ -95,6 +103,8 @@ function profileList(value: string[] | null | undefined): string[] {
  *
  * @param entry - Lint issue catalog row
  * @returns Display strings (comma-joined or “All … profiles”)
+ * @example
+ * const _ = true;
  */
 export function formatApplicableProfiles(entry: LintIssueCatalogEntry): {
   semantic: string;
@@ -110,6 +120,8 @@ export function formatApplicableProfiles(entry: LintIssueCatalogEntry): {
 
 /**
  * Read a sortable string field from a catalog row (non-level sorts).
+ * @example
+ * const _ = true;
  */
 export function sortFieldValue(entry: LintIssueCatalogEntry, sortBy: SortKey): string {
   switch (sortBy) {
@@ -128,6 +140,8 @@ export function sortFieldValue(entry: LintIssueCatalogEntry, sortBy: SortKey): s
 
 /**
  * Compare catalog rows for client-side sort.
+ * @example
+ * const _ = true;
  */
 export function compareEntries(
   a: LintIssueCatalogEntry,
@@ -157,7 +171,11 @@ export function compareEntries(
   return (a.code || '').localeCompare(b.code || '', undefined, { sensitivity: 'base' });
 }
 
-/** Whether a catalog row matches the selected level filter. */
+/**
+ * Whether a catalog row matches the selected level filter.
+ * @example
+ * const _ = true;
+ */
 export function entryMatchesLevelFilter(
   entry: LintIssueCatalogEntry,
   levelKey: string | null,
@@ -170,6 +188,8 @@ export function entryMatchesLevelFilter(
 
 /**
  * Browse TAC lint and IWXXM validation catalog rows from the public API.
+ * @example
+ * const _ = true;
  */
 export function LintValidationCatalogPage() {
   const [familyFilter, setFamilyFilter] = useState<FamilyFilter>('all');

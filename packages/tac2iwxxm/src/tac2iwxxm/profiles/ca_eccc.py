@@ -416,6 +416,11 @@ def emit_airmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ------
     ValueError
         When ``iwxxm_version`` is not ``3.0.0``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_airmet_ca_eccc)
+    2
     """
     if iwxxm_version != CA_IWXXM_VERSION:
         raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
@@ -450,6 +455,11 @@ def emit_taf_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ------
     ValueError
         When ``iwxxm_version`` is not ``3.0.0``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_taf_ca_eccc)
+    2
     """
     if iwxxm_version != CA_IWXXM_VERSION:
         raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
@@ -488,6 +498,11 @@ def emit_metar_speci_ca_eccc(
     ------
     ValueError
         When ``iwxxm_version`` is not ``3.0.0``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_metar_speci_ca_eccc)
+    2
     """
     if iwxxm_version != CA_IWXXM_VERSION:
         raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")

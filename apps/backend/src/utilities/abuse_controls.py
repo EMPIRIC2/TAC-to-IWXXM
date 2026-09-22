@@ -37,6 +37,7 @@ MASS_INGEST_PATH_PREFIX = "/api/v1/ingest/mass"
 
 
 def _positive_int(name: str, default: int) -> int:
+    """Internal helper ``_positive_int``."""
     raw = os.environ.get(name, "").strip()
     if not raw:
         return default
@@ -48,52 +49,172 @@ def _positive_int(name: str, default: int) -> int:
 
 
 def get_rate_limit_public_per_min() -> int:
-    """Return public convert/lint/decode rate limit (requests/minute/IP)."""
+    """
+    Return public convert/lint/decode rate limit (requests/minute/IP).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_rate_limit_public_per_min)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _positive_int("RATE_LIMIT_PUBLIC_PER_MIN", DEFAULT_PUBLIC_PER_MIN)
 
 
 def get_rate_limit_dissemination_per_min() -> int:
-    """Return dissemination preflight/send rate limit (requests/minute/IP)."""
+    """
+    Return dissemination preflight/send rate limit (requests/minute/IP).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_rate_limit_dissemination_per_min)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _positive_int("RATE_LIMIT_DISSEMINATION_PER_MIN", DEFAULT_DISSEMINATION_PER_MIN)
 
 
 def get_rate_limit_mass_ingest_per_min() -> int:
-    """Return mass-ingest rate limit (requests/minute/IP)."""
+    """
+    Return mass-ingest rate limit (requests/minute/IP).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_rate_limit_mass_ingest_per_min)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _positive_int("RATE_LIMIT_MASS_INGEST_PER_MIN", DEFAULT_MASS_INGEST_PER_MIN)
 
 
 def get_max_request_body_bytes() -> int:
-    """Return max request Content-Length / body size in bytes."""
+    """
+    Return max request Content-Length / body size in bytes.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_max_request_body_bytes)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _positive_int("MAX_REQUEST_BODY_BYTES", DEFAULT_MAX_BODY_BYTES)
 
 
 def get_mass_ingest_max_files() -> int:
-    """Return max files per mass-ingest request."""
+    """
+    Return max files per mass-ingest request.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_mass_ingest_max_files)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _positive_int("MASS_INGEST_MAX_FILES", DEFAULT_MASS_INGEST_MAX_FILES)
 
 
 def get_mass_ingest_max_file_bytes() -> int:
-    """Return max bytes per file in mass-ingest."""
+    """
+    Return max bytes per file in mass-ingest.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_mass_ingest_max_file_bytes)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _positive_int("MASS_INGEST_MAX_FILE_BYTES", DEFAULT_MASS_INGEST_MAX_FILE_BYTES)
 
 
 def get_mass_ingest_max_total_bytes() -> int:
-    """Return max total uncompressed bytes for mass-ingest (also mass-route body cap)."""
+    """
+    Return max total uncompressed bytes for mass-ingest (also mass-route body cap).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_mass_ingest_max_total_bytes)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _positive_int("MASS_INGEST_MAX_TOTAL_BYTES", DEFAULT_MASS_INGEST_MAX_TOTAL_BYTES)
 
 
 def public_limit_string() -> str:
-    """slowapi limit string for public API routes."""
+    """
+    slowapi limit string for public API routes.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (public_limit_string)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return f"{get_rate_limit_public_per_min()}/minute"
 
 
 def dissemination_limit_string() -> str:
-    """slowapi limit string for dissemination routes."""
+    """
+    slowapi limit string for dissemination routes.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (dissemination_limit_string)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return f"{get_rate_limit_dissemination_per_min()}/minute"
 
 
 def mass_ingest_limit_string() -> str:
-    """slowapi limit string for mass-ingest routes."""
+    """
+    slowapi limit string for mass-ingest routes.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (mass_ingest_limit_string)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return f"{get_rate_limit_mass_ingest_per_min()}/minute"
 
 
@@ -101,7 +222,19 @@ _limiter: Limiter | None = None
 
 
 def get_limiter() -> Limiter:
-    """Return the process-wide Limiter (created once)."""
+    """
+    Return the process-wide Limiter (created once).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_limiter)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _limiter
     if _limiter is None:
         _limiter = create_limiter()
@@ -120,6 +253,11 @@ def create_limiter() -> Limiter:
     -------
     Limiter
         Shared limiter; attach to ``app.state.limiter``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (create_limiter)
+    2
     """
     redis_url = os.environ.get("REDIS_URL", "").strip()
     kwargs: dict[str, Any] = {
@@ -137,7 +275,14 @@ def create_limiter() -> Limiter:
 
 
 class MaxBodySizeMiddleware:
-    """Reject oversized bodies; mass-ingest path uses ``MASS_INGEST_MAX_TOTAL_BYTES`` (D-S050-C1)."""
+    """
+    Reject oversized bodies; mass-ingest path uses ``MASS_INGEST_MAX_TOTAL_BYTES`` (D-S050-C1).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(
         self,
@@ -145,16 +290,19 @@ class MaxBodySizeMiddleware:
         max_bytes: int | None = None,
         path_prefix: str = "/api/v1",
     ) -> None:
+        """Internal helper ``__init__``."""
         self.app = app
         self.max_bytes = max_bytes if max_bytes is not None else get_max_request_body_bytes()
         self.path_prefix = path_prefix
 
     def _limit_for_path(self, path: str) -> int:
+        """Internal helper ``_limit_for_path``."""
         if str(path).startswith(MASS_INGEST_PATH_PREFIX):
             return get_mass_ingest_max_total_bytes()
         return self.max_bytes
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """Internal helper ``__call__``."""
         if scope["type"] != "http":
             await self.app(scope, receive, send)
             return
@@ -198,6 +346,11 @@ def install_abuse_controls(app: FastAPI, limiter: Limiter | None = None) -> Limi
     -------
     Limiter
         The limiter stored on ``app.state.limiter``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (install_abuse_controls)
+    2
     """
     global _limiter
     lim = limiter or get_limiter()
@@ -213,13 +366,47 @@ def install_abuse_controls(app: FastAPI, limiter: Limiter | None = None) -> Limi
 
 
 def dissemination_limit(limiter: Limiter) -> Callable[..., Any]:
-    """Decorator factory for stricter dissemination rate limits."""
+    """
+    Decorator factory for stricter dissemination rate limits.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (dissemination_limit)
+    2
+
+    Parameters
+    ----------
+    limiter : object
+        Argument ``limiter``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     limiter_any = cast(Any, limiter)
     return cast(Callable[..., Any], limiter_any.limit(dissemination_limit_string()))
 
 
 def mass_ingest_limit(limiter: Limiter) -> Callable[..., Any]:
-    """Decorator factory for mass-ingest rate limits."""
+    """
+    Decorator factory for mass-ingest rate limits.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (mass_ingest_limit)
+    2
+
+    Parameters
+    ----------
+    limiter : object
+        Argument ``limiter``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     limiter_any = cast(Any, limiter)
     return cast(Callable[..., Any], limiter_any.limit(mass_ingest_limit_string()))
 

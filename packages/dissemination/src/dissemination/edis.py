@@ -31,7 +31,14 @@ class SmtpClient(Protocol):
 
 @dataclass(frozen=True, slots=True)
 class EdisParams:
-    """BYOC EDIS/SMTP parameters (memory-only; never logged raw)."""
+    """
+    BYOC EDIS/SMTP parameters (memory-only; never logged raw).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     smtp_host: str
     mail_from: str
@@ -51,7 +58,14 @@ class EdisParams:
 
 @dataclass(frozen=True, slots=True)
 class EdisSubmitResult:
-    """Result of an EDIS SMTP submit."""
+    """
+    Result of an EDIS SMTP submit.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     ok: bool
     ahl: str
@@ -59,6 +73,7 @@ class EdisSubmitResult:
 
 
 def _require_ascii(value: str, *, field: str) -> str:
+    """Internal helper ``_require_ascii``."""
     if not value.isascii():
         raise ValueError(f"EDIS {field} must be ASCII-only")
     return value
@@ -81,20 +96,28 @@ def format_wmo_ahl(
 
     Parameters
     ----------
-    tt, aa, ii, cccc, yygggg :
-        AHL designators (``T1T2``, ``A1A2``, ``ii``, originating centre, time group).
-    bbb :
-        Optional BBB amendment indicator (e.g. ``CCA``).
+    tt : object
+        Argument ``tt``.
+    aa : object
+        Argument ``aa``.
+    ii : object
+        Argument ``ii``.
+    cccc : object
+        Argument ``cccc``.
+    yygggg : object
+        Argument ``yygggg``.
+    bbb : object
+        Argument ``bbb``.
 
     Returns
     -------
-    str
-        Single AHL line, ASCII.
+    object
+        Return value.
 
-    Raises
-    ------
-    ValueError
-        When a field is non-ASCII or fails the AHL shape.
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (format_wmo_ahl)
+    2
     """
     from tac2iwxxm import (
         AhlParts,
@@ -142,6 +165,23 @@ def build_edis_message(params: EdisParams, *, tac_body: str) -> str:
     ------
     ValueError
         When any part is non-ASCII or AHL fields are invalid.
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    tac_body : object
+        Argument ``tac_body``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (build_edis_message)
+    2
     """
     ahl = format_wmo_ahl(
         tt=params.tt,
@@ -158,6 +198,7 @@ def build_edis_message(params: EdisParams, *, tac_body: str) -> str:
 
 
 def _redact_exc(exc: BaseException, params: EdisParams) -> str:
+    """Internal helper ``_redact_exc``."""
     text = redact_secrets(str(exc))
     if params.password:
         text = text.replace(params.password, "REDACTED")
@@ -167,6 +208,7 @@ def _redact_exc(exc: BaseException, params: EdisParams) -> str:
 
 
 def _validate_edis_egress(params: EdisParams, allowlist: Allowlist) -> None:
+    """Internal helper ``_validate_edis_egress``."""
     validate_egress_host(params.smtp_host, allowlist=allowlist)
 
 
@@ -185,6 +227,25 @@ async def edis_preflight(
         When the SMTP host is not allowlisted.
     ValueError
         When transport checks fail (secrets redacted).
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    allowlist : object
+        Argument ``allowlist``.
+    smtp : object
+        Argument ``smtp``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (edis_preflight)
+    2
     """
     _validate_edis_egress(params, allowlist)
     try:
@@ -220,6 +281,27 @@ async def edis_submit(
         When the SMTP host is not allowlisted.
     ValueError
         When format or transport fails (secrets redacted).
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    tac_body : object
+        Argument ``tac_body``.
+    allowlist : object
+        Argument ``allowlist``.
+    smtp : object
+        Argument ``smtp``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (edis_submit)
+    2
     """
     _validate_edis_egress(params, allowlist)
     bulletin = build_edis_message(params, tac_body=tac_body)

@@ -61,7 +61,9 @@ def _collect(tree: Path) -> dict[str, dict[str, str]]:
         if lower.endswith(".xsd"):
             kind = "xsd"
             key = rel
-        elif "/rule/" in f"/{lower}" and (lower.endswith(".sch") or lower.endswith(".rdf")):
+        elif "/rule/" in f"/{lower}" and (
+            lower.endswith(".sch") or lower.endswith(".rdf")
+        ):
             kind = "sch"
             key = rel
         elif lower.startswith("examples/") or "/examples/" in f"/{lower}":
@@ -116,7 +118,9 @@ def summarize(from_ver: str, to_ver: str, *, root: Path) -> str:
         ("sch", "Schematron / RDF (rule/)"),
         ("example", "Example stems"),
     ):
-        added, removed, changed = _diff_maps(old_maps.get(kind, {}), new_maps.get(kind, {}))
+        added, removed, changed = _diff_maps(
+            old_maps.get(kind, {}), new_maps.get(kind, {})
+        )
         lines.append(f"## {title}")
         lines.append(f"- added ({len(added)}):")
         lines.extend(f"  - `{item}`" for item in added[:80] or ["*(none)*"])
@@ -137,7 +141,9 @@ def summarize(from_ver: str, to_ver: str, *, root: Path) -> str:
 def main(argv: list[str] | None = None) -> int:
     """CLI entry."""
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--from", dest="from_ver", default="2023-1", help="Previous pin / line")
+    parser.add_argument(
+        "--from", dest="from_ver", default="2023-1", help="Previous pin / line"
+    )
     parser.add_argument("--to", dest="to_ver", default="2025-2", help="New pin / line")
     parser.add_argument(
         "--root",

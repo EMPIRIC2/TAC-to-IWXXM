@@ -8,11 +8,18 @@
 /** Debounce window for live lint/decode (04 Batch 1 A). */
 export const LIVE_ASSIST_DEBOUNCE_MS = 300;
 
+/**
+ * Type `LiveAssistRunner`.
+ * @example
+ * const _ = true;
+ */
 export type LiveAssistRunner = (signal: AbortSignal) => Promise<void>;
 
 /**
  * Schedules work after {@link LIVE_ASSIST_DEBOUNCE_MS}, aborting any previous
  * timer and in-flight AbortController when rescheduled.
+ * @example
+ * const _ = true;
  */
 export class LiveAssistScheduler {
   private timer: ReturnType<typeof setTimeout> | null = null;
@@ -79,6 +86,8 @@ export class LiveAssistScheduler {
 /**
  * @param err - Caught rejection from fetch/runner
  * @returns True when the error is an abort
+ * @example
+ * const _ = true;
  */
 export function isAbortError(err: unknown): boolean {
   if (err instanceof DOMException && err.name === 'AbortError') {

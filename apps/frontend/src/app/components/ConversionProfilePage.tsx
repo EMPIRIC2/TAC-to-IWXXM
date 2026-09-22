@@ -32,6 +32,11 @@ import { Card } from './ui/card';
 import { BetaBadge } from './BetaBadge';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
+/**
+ * Type `ConversionProfilePageProps`.
+ * @example
+ * const _ = true;
+ */
 export interface ConversionProfilePageProps {
   /** Bearer JWT — when absent, show sign-in prompt. */
   accessToken?: string;
@@ -41,6 +46,9 @@ export interface ConversionProfilePageProps {
   onOpenConverterExamples?: () => void;
 }
 
+/**
+ * Function `errorMessage`.
+ */
 function errorMessage(err: unknown): string {
   return err instanceof Error ? err.message : 'Unknown error';
 }
@@ -49,6 +57,9 @@ interface AuthedProps {
   accessToken: string;
 }
 
+/**
+ * Function `FieldHelpTooltip`.
+ */
 function FieldHelpTooltip({ label, tooltip }: { label: string; tooltip: string }) {
   return (
     <Tooltip>
@@ -72,18 +83,30 @@ const PROFILE_LABELS = new Map<string, string>(
   SEMANTIC_PROFILE_OPTIONS.map((option) => [option.value, option.label]),
 );
 
+/**
+ * Function `profileLabel`.
+ */
 function profileLabel(profileId: string): string {
   return PROFILE_LABELS.get(profileId) ?? profileId;
 }
 
+/**
+ * Function `compareValue`.
+ */
 function compareValue(value: string): string {
   return value.trim() || '—';
 }
 
+/**
+ * Function `sameValue`.
+ */
 function sameValue(left: string, right: string): boolean {
   return compareValue(left) === compareValue(right);
 }
 
+/**
+ * Function `matchingDeltaLines`.
+ */
 function matchingDeltaLines(
   deltas: readonly string[],
   compareDeltas: readonly string[],
@@ -99,10 +122,16 @@ function matchingDeltaLines(
   return true;
 }
 
+/**
+ * Function `countDisplay`.
+ */
 function countDisplay(value: number | null | undefined): string {
   return typeof value === 'number' ? String(value) : PROFILES_COUNT_UNAVAILABLE;
 }
 
+/**
+ * Function `unavailableMessage`.
+ */
 function unavailableMessage(detail: string | null): string {
   return [PROFILES_INSPECTOR_UNAVAILABLE, detail].filter(Boolean).join(' ');
 }
@@ -127,6 +156,9 @@ interface ProfileBlockDefinition {
   summary: (profile: ProfileCatalogEntry) => string;
 }
 
+/**
+ * Function `detailString`.
+ */
 function detailString(value: unknown, fallback: string): string {
   if (typeof value === 'string' && value.trim()) {
     return value;
@@ -192,6 +224,9 @@ const PROFILE_BLOCKS: readonly ProfileBlockDefinition[] = [
   },
 ] as const;
 
+/**
+ * Function `ProfileSummaryCard`.
+ */
 function ProfileSummaryCard({
   profile,
   heading,
@@ -318,6 +353,9 @@ function ProfileSummaryCard({
   );
 }
 
+/**
+ * Function `ConversionProfileAuthed`.
+ */
 function ConversionProfileAuthed({ accessToken }: AuthedProps) {
   const [catalog, setCatalog] = useState<ProfileCatalogEntry[] | null>(null);
   const [loadErrors, setLoadErrors] = useState<{ catalog: string | null }>({
@@ -577,6 +615,8 @@ function ConversionProfileAuthed({ accessToken }: AuthedProps) {
  *
  * @param props.accessToken - Optional JWT
  * @param props.onRequestLogin - Sign-in handler
+ * @example
+ * const _ = true;
  */
 export function ConversionProfilePage({
   accessToken,

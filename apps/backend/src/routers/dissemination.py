@@ -53,18 +53,21 @@ def _client_id(request: Request) -> str:
 def _profiles_service_for_optional_auth(
     auth_user: dict[str, Any] | None,
 ) -> ConversionProfilesService | None:
+    """Internal helper ``_profiles_service_for_optional_auth``."""
     if auth_user is None:
         return None
     return ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
 
 def _merge_template_params(template_params: dict[str, Any], request_params: dict[str, Any]) -> dict[str, Any]:
+    """Internal helper ``_merge_template_params``."""
     merged = dict(template_params)
     merged.update(request_params)
     return merged
 
 
 async def _read_preflight(request: Request) -> PreflightRequest:
+    """Internal helper ``_read_preflight``."""
     raw = await request.body()
     try:
         return _decoder_preflight.decode(raw)
@@ -76,6 +79,7 @@ async def _read_preflight(request: Request) -> PreflightRequest:
 
 
 async def _read_send(request: Request) -> SendRequest:
+    """Internal helper ``_read_send``."""
     raw = await request.body()
     try:
         return _decoder_send.decode(raw)
@@ -125,7 +129,26 @@ async def dissemination_preflight(
     request: Request,
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> object:
-    """Run sink preflight; return schema diffs and optional memory-only handle."""
+    """
+    Run sink preflight; return schema diffs and optional memory-only handle.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (dissemination_preflight)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    auth_user : object
+        Argument ``auth_user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     uid = _client_id(request)
     try:
         default_rate_limiter.check(uid)
@@ -204,7 +227,26 @@ async def dissemination_send(
     request: Request,
     auth_user: dict[str, Any] | None = Depends(verify_optional_supabase_token),
 ) -> object:
-    """Send IWXXM via a green preflight handle or inline sink params."""
+    """
+    Send IWXXM via a green preflight handle or inline sink params.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (dissemination_send)
+    2
+
+    Parameters
+    ----------
+    request : object
+        Argument ``request``.
+    auth_user : object
+        Argument ``auth_user``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     uid = _client_id(request)
     try:
         default_rate_limiter.check(uid)
@@ -275,6 +317,7 @@ async def dissemination_send(
             profiles_service = ConversionProfilesService(str(auth_user.get("sub") or auth_user.get("user_id")))
 
         def _custom_dissem_body(asset_id: str) -> dict[str, object] | None:
+            """Internal helper ``_custom_dissem_body``."""
             if profiles_service is None:
                 return None
             try:

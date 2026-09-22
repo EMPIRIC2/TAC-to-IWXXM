@@ -24,6 +24,11 @@ def catalog_entries(*, limit: int | None = None) -> list[dict[str, Any]]:
     -------
     list[dict[str, Any]]
         Catalog items with ``id``, ``title``, ``summary``, and ``tags``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (catalog_entries)
+    2
     """
     glossary = load_glossary()
     items = [

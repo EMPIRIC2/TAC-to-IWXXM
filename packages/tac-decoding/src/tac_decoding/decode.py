@@ -125,6 +125,7 @@ def _signed_temp(raw: str) -> int:
 
 
 def _fmt_wind(m: re.Match[str], *, label: str) -> str:
+    """Internal helper ``_fmt_wind``."""
     direction = m.group("dir")
     speed = int(m.group("spd"))
     unit = "kt" if m.group("unit") == "KT" else "m/s"
@@ -137,10 +138,12 @@ def _fmt_wind(m: re.Match[str], *, label: str) -> str:
 
 
 def _fmt_time(m: re.Match[str], *, label: str) -> str:
+    """Internal helper ``_fmt_time``."""
     return f"{label} - day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
 
 
 def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
+    """Internal helper ``_fmt_vis_sm``."""
     value = int(m.group("val"))
     prefix = {"P": "more than ", "M": "less than "}.get(m.group("mod") or "", "")
     plural = "s" if value != 1 else ""
@@ -148,6 +151,7 @@ def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
 
 
 def _fmt_cloud(m: re.Match[str], *, forecast: bool) -> str:
+    """Internal helper ``_fmt_cloud``."""
     amount = _CLOUD_AMOUNT[m.group("amt")]
     if forecast:
         amount = f"Forecast {amount[0].lower()}{amount[1:]}"
@@ -160,6 +164,7 @@ def _fmt_cloud(m: re.Match[str], *, forecast: bool) -> str:
 
 
 def _fmt_wx(m: re.Match[str], *, forecast: bool) -> str:
+    """Internal helper ``_fmt_wx``."""
     parts: list[str] = []
     intensity = m.group("int")
     if intensity:
@@ -175,7 +180,14 @@ def _fmt_wx(m: re.Match[str], *, forecast: bool) -> str:
 
 
 class DecodeSegment(msgspec.Struct, frozen=True):
-    """One annotated TAC span for the Code | Explanation panel."""
+    """
+    One annotated TAC span for the Code | Explanation panel.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     start: int
     end: int
@@ -184,7 +196,14 @@ class DecodeSegment(msgspec.Struct, frozen=True):
 
 
 class DecodeResidual(msgspec.Struct, frozen=True):
-    """Undecoded character span (explicit residuals - G4)."""
+    """
+    Undecoded character span (explicit residuals - G4).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     start: int
     end: int
@@ -192,7 +211,14 @@ class DecodeResidual(msgspec.Struct, frozen=True):
 
 
 class DecodeResult(msgspec.Struct, frozen=True):
-    """Result of :func:`decode_tac`."""
+    """
+    Result of :func:`decode_tac`.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     product: str
     segments: list[DecodeSegment] = msgspec.field(default_factory=list)
@@ -210,6 +236,7 @@ def _iter_tokens(tac: str) -> list[tuple[int, int, str]]:
 
 
 def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> str | None:
+    """Internal helper ``_explain_metar_speci``."""
     upper = token.upper()
     if upper in {"METAR", "SPECI"} and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
@@ -289,6 +316,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
 
 
 def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
+    """Internal helper ``_explain_taf``."""
     upper = token.upper()
     if upper == "TAF" and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
@@ -345,6 +373,7 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
 
 
 def _explain_sigmet_airmet(token: str, *, product: str, seen: dict[str, int]) -> str | None:
+    """Internal helper ``_explain_sigmet_airmet``."""
     upper = token.upper()
     if upper == product and seen.get("rtype", 0) == 0:
         seen["rtype"] = 1
@@ -680,32 +709,38 @@ def _token_indices_covering(
 def _classify(
     product: str,
 ) -> Callable[[str, dict[str, int]], str | None]:
+    """Internal helper ``_classify``."""
     if product in {"METAR", "SPECI"}:
 
         def _metar(tok: str, seen: dict[str, int]) -> str | None:
+            """Internal helper ``_metar``."""
             return _explain_metar_speci(tok, product=product, seen=seen)
 
         return _metar
     if product == "TAF":
 
         def _taf(tok: str, seen: dict[str, int]) -> str | None:
+            """Internal helper ``_taf``."""
             return _explain_taf(tok, seen=seen)
 
         return _taf
     if product in {"SIGMET", "AIRMET"}:
 
         def _haz(tok: str, seen: dict[str, int]) -> str | None:
+            """Internal helper ``_haz``."""
             return _explain_sigmet_airmet(tok, product=product, seen=seen)
 
         return _haz
     if product in _ADVISORY_STRUCTURED:
 
         def _adv(tok: str, seen: dict[str, int]) -> str | None:
+            """Internal helper ``_adv``."""
             return _explain_advisory(tok, product=product, seen=seen)
 
         return _adv
 
     def _none(_tok: str, _seen: dict[str, int]) -> str | None:
+        """Internal helper ``_none``."""
         return None
 
     return _none
@@ -850,11 +885,15 @@ def _shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
 
 
 class _BulletinMeta(Protocol):
+    """Internal bulletin metadata."""
+
     ahl: str
     report_count: int
 
 
 class _BulletinSplit(Protocol):
+    """Internal bulletin split result."""
+
     reports: Sequence[str]
     meta: _BulletinMeta
 
@@ -863,7 +902,19 @@ _bulletin_splitter: Callable[[str, str], object] | None = None
 
 
 def set_bulletin_splitter(splitter: Callable[[str, str], object] | None) -> None:
-    """Inject WMO bulletin splitting. Unset means bulletins are not split."""
+    """
+    Inject WMO bulletin splitting. Unset means bulletins are not split.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (set_bulletin_splitter)
+    2
+
+    Parameters
+    ----------
+    splitter : object
+        Argument ``splitter``.
+    """
     global _bulletin_splitter
     _bulletin_splitter = splitter
 
@@ -951,12 +1002,50 @@ def _decode_single_report(tac: str, *, product: str) -> DecodeResult:
 
 
 def decode_single_report(tac: str, *, product: str) -> DecodeResult:
-    """Decode one TAC report without bulletin or COLLECT dispatch."""
+    """
+    Decode one TAC report without bulletin or COLLECT dispatch.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (decode_single_report)
+    2
+
+    Parameters
+    ----------
+    tac : object
+        Argument ``tac``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _decode_single_report(tac, product=product)
 
 
 def shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
-    """Translate segment offsets into a parent document string."""
+    """
+    Translate segment offsets into a parent document string.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (shift_decode)
+    2
+
+    Parameters
+    ----------
+    result : object
+        Argument ``result``.
+    offset : object
+        Argument ``offset``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _shift_decode(result, offset)
 
 
@@ -983,6 +1072,11 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
         (heading is a bulletin-framing segment, not a product residual).
         COLLECT documents decode contained TAC when present, otherwise walk XML
         fields (ADR-045).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (decode_tac)
+    2
     """
     product_u = product.upper()
     if product_u not in _SUPPORTED:

@@ -68,7 +68,14 @@ class WorkflowDefinition:
 
 @dataclass(slots=True)
 class StageIssue:
-    """Structured diagnostic from one stage."""
+    """
+    Structured diagnostic from one stage.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     stage: str
     severity: str

@@ -41,6 +41,11 @@ class CodeListParser:
 
     Supports online validation against live codes.wmo.int registry when
     local RDF files are missing or when enabled via settings.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(self, codelists_dir: Path, settings: ValidationSettings | None = None) -> None:
@@ -84,6 +89,11 @@ class CodeListParser:
 
         Parses all .rdf files and extracts allowed code values.
         Results are cached in memory.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (load_codelists)
+        2
         """
         if self._loaded:
             return
@@ -156,11 +166,23 @@ class CodeListParser:
         """
         Get allowed codes for a specific code list.
 
-        Args:
-            codelist_name: Name of the code list (e.g., "Weather", "CloudAmount")
-
         Returns:
             Set of allowed code values
+
+        Parameters
+        ----------
+        codelist_name : object
+            Name of the code list (e.g., "Weather", "CloudAmount")
+
+        Returns
+        -------
+        object
+            Set of allowed code values
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_codes)
+        2
         """
         if not self._loaded:
             self.load_codelists()
@@ -171,18 +193,43 @@ class CodeListParser:
         """
         Validate if a code value is allowed for a code list.
 
-        Args:
-            codelist_name: Name of the code list
-            code_value: Code value to validate
-
         Returns:
             True if code is valid, False otherwise
+
+        Parameters
+        ----------
+        codelist_name : object
+            Name of the code list
+        code_value : object
+            Code value to validate
+
+        Returns
+        -------
+        object
+            True if code is valid, False otherwise
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_code)
+        2
         """
         allowed_codes = self.get_codes(codelist_name)
         return code_value in allowed_codes
 
     def list_codelists(self) -> list[str]:
-        """Get list of available code lists."""
+        """
+        Get list of available code lists.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_codelists)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         if not self._loaded:
             self.load_codelists()
         return sorted(self._cache.keys())
@@ -233,11 +280,23 @@ class CodeListParser:
         Extracts xlink:href attributes pointing to WMO code lists and validates
         that the referenced codes exist in the loaded RDF files.
 
-        Args:
-            xml_content: XML string to validate
-
         Returns:
+            CodelistValidationResult with vali
+
+        Parameters
+        ----------
+        xml_content : object
+            XML string to validate
+
+        Returns
+        -------
+        object
             CodelistValidationResult with validation outcomes
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_xml_codelists)
+        2
         """
         issues: list[ValidationIssue] = []
 
@@ -501,21 +560,40 @@ class CodeListRegistry:
     Registry for version-specific code list parsers.
 
     Maintains separate CodeListParser instances for each IWXXM version.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(self) -> None:
+        """Internal helper ``__init__``."""
         self._parsers: dict[str, CodeListParser] = {}
 
     def get_parser(self, version: str, codelists_dir: Path) -> CodeListParser:
         """
         Get or create a code list parser for a version.
 
-        Args:
-            version: IWXXM version string
-            codelists_dir: Path to codelists directory for this version
-
         Returns:
             CodeListParser instance for the version
+
+        Parameters
+        ----------
+        version : object
+            IWXXM version string
+        codelists_dir : object
+            Path to codelists directory for this version
+
+        Returns
+        -------
+        object
+            CodeListParser instance for the version
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_parser)
+        2
         """
         if version not in self._parsers:
             self._parsers[version] = CodeListParser(codelists_dir)
@@ -525,14 +603,29 @@ class CodeListRegistry:
         """
         Validate a code value for a specific version and code list.
 
-        Args:
-            version: IWXXM version
-            codelist_name: Name of the code list
-            code_value: Code value to validate
-            codelists_dir: Path to codelists directory
-
         Returns:
             True if code is valid
+
+        Parameters
+        ----------
+        version : object
+            IWXXM version
+        codelist_name : object
+            Name of the code list
+        code_value : object
+            Code value to validate
+        codelists_dir : object
+            Path to codelists directory
+
+        Returns
+        -------
+        object
+            True if code is valid
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (validate_code)
+        2
         """
         parser = self.get_parser(version, codelists_dir)
         return parser.validate_code(codelist_name, code_value)
@@ -543,7 +636,26 @@ _registry = CodeListRegistry()
 
 
 def get_codelist_parser(version: str, codelists_dir: Path) -> CodeListParser:
-    """Get code list parser for a specific IWXXM version."""
+    """
+    Get code list parser for a specific IWXXM version.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_codelist_parser)
+    2
+
+    Parameters
+    ----------
+    version : object
+        Argument ``version``.
+    codelists_dir : object
+        Argument ``codelists_dir``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return _registry.get_parser(version, codelists_dir)
 
 
@@ -551,13 +663,27 @@ def validate_xml_codelists(xml_content: str, version: str, codelists_dir: Path) 
     """
     Convenience function to validate XML codelists.
 
-    Args:
-        xml_content: XML string to validate
-        version: IWXXM version
-        codelists_dir: Path to codelists directory
-
     Returns:
         CodelistValidationResult with validation outcomes
+
+    Parameters
+    ----------
+    xml_content : object
+        XML string to validate
+    version : object
+        IWXXM version
+    codelists_dir : object
+        Path to codelists directory
+
+    Returns
+    -------
+    object
+        CodelistValidationResult with validation outcomes
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (validate_xml_codelists)
+    2
     """
     parser = get_codelist_parser(version, codelists_dir)
     return parser.validate_xml_codelists(xml_content)

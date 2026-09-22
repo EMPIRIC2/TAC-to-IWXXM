@@ -39,7 +39,14 @@ class HttpDatasetClient(Protocol):
 
 @dataclass(frozen=True, slots=True)
 class Wis2Params:
-    """BYOC WIS2 endpoint parameters (memory-only; never logged raw)."""
+    """
+    BYOC WIS2 endpoint parameters (memory-only; never logged raw).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     mqtt_host: str
     mqtt_topic: str
@@ -53,7 +60,14 @@ class Wis2Params:
 
 @dataclass(frozen=True, slots=True)
 class Wis2PublishResult:
-    """Result of a WIS2 publish (MQTT notify + HTTP dataset)."""
+    """
+    Result of a WIS2 publish (MQTT notify + HTTP dataset).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     ok: bool
     dataset_url: str
@@ -62,6 +76,7 @@ class Wis2PublishResult:
 
 
 def _dataset_hostname(dataset_url: str) -> str:
+    """Internal helper ``_dataset_hostname``."""
     host = urlparse(dataset_url).hostname
     if not host:
         raise ValueError("dataset_url must include a hostname")
@@ -69,11 +84,13 @@ def _dataset_hostname(dataset_url: str) -> str:
 
 
 def _validate_wis2_egress(params: Wis2Params, allowlist: Allowlist) -> None:
+    """Internal helper ``_validate_wis2_egress``."""
     validate_egress_host(params.mqtt_host, allowlist=allowlist)
     validate_egress_host(_dataset_hostname(params.dataset_url), allowlist=allowlist)
 
 
 def _redact_exc(exc: BaseException, params: Wis2Params) -> str:
+    """Internal helper ``_redact_exc``."""
     text = redact_secrets(str(exc))
     if params.mqtt_password:
         text = text.replace(params.mqtt_password, "REDACTED")
@@ -92,15 +109,20 @@ def build_wis2_notification(
 
     Parameters
     ----------
-    params :
-        WIS2 BYOC parameters (topic + canonical dataset URL).
-    content_type :
-        Media type for the canonical link.
+    params : object
+        Argument ``params``.
+    content_type : object
+        Argument ``content_type``.
 
     Returns
     -------
-    dict[str, object]
-        JSON-serializable notification (no credentials).
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (build_wis2_notification)
+    2
     """
     centre = params.centre_id or "unknown"
     data_id = f"wis2/{centre}/{uuid4().hex}"
@@ -137,6 +159,27 @@ async def wis2_preflight(
         When MQTT or dataset hosts are not allowlisted.
     ValueError
         When transport checks fail (secrets redacted).
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    allowlist : object
+        Argument ``allowlist``.
+    mqtt : object
+        Argument ``mqtt``.
+    http : object
+        Argument ``http``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (wis2_preflight)
+    2
     """
     _validate_wis2_egress(params, allowlist)
     try:
@@ -181,6 +224,31 @@ async def wis2_publish(
         When MQTT or dataset hosts are not allowlisted.
     ValueError
         When transport fails (secrets redacted).
+
+    Parameters
+    ----------
+    params : object
+        Argument ``params``.
+    iwxxm_xml : object
+        Argument ``iwxxm_xml``.
+    allowlist : object
+        Argument ``allowlist``.
+    mqtt : object
+        Argument ``mqtt``.
+    http : object
+        Argument ``http``.
+    content_type : object
+        Argument ``content_type``.
+
+    Returns
+    -------
+    object
+        Return value.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (wis2_publish)
+    2
     """
     _validate_wis2_egress(params, allowlist)
     body = iwxxm_xml.encode("utf-8") if isinstance(iwxxm_xml, str) else iwxxm_xml

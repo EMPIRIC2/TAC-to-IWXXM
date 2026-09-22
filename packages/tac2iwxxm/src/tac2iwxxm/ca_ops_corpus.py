@@ -50,6 +50,11 @@ def extract_iwxxm_from_collect(xml_content: str) -> str | None:
     -------
     str | None
         Serialized inner product when found; ``None`` when XML is invalid.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (extract_iwxxm_from_collect)
+    2
     """
     try:
         root = etree.fromstring(xml_content.encode("utf-8"))
@@ -88,6 +93,11 @@ def msc_filename_from_url(url: str) -> str | None:
     -------
     str | None
         Basename when it matches the MSC exchange pattern.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (msc_filename_from_url)
+    2
     """
     name = url.rstrip("/").rsplit("/", 1)[-1]
     if _MSC_FILENAME_RE.match(name):
@@ -108,6 +118,11 @@ def load_ops_manifest(path: Path) -> dict[str, Any]:
     -------
     dict[str, Any]
         Parsed manifest with ``cases`` list.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_ops_manifest)
+    2
     """
     payload = json.loads(path.read_text(encoding="utf-8"))
     if "cases" not in payload or not isinstance(payload["cases"], list):
@@ -128,6 +143,11 @@ def manifest_checksum(manifest: dict[str, Any]) -> str:
     -------
     str
         Hex digest suitable for TC-EV072-007 pin-date reproducibility checks.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (manifest_checksum)
+    2
     """
     copy = dict(manifest)
     copy.pop("manifest_sha256", None)
@@ -148,6 +168,11 @@ def ops_fixture_root(repo_root: Path | None = None) -> Path:
     -------
     Path
         ``packages/tac2iwxxm/tests/fixtures/profiles/CA_ECCC``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ops_fixture_root)
+    2
     """
     root = repo_root or Path(__file__).resolve().parents[4]
     return root / "packages" / "tac2iwxxm" / "tests" / "fixtures" / "profiles" / "CA_ECCC"

@@ -132,6 +132,7 @@ def test_cli_main_generic_error_exits_2(monkeypatch: pytest.MonkeyPatch, capsys:
 def test_cli_module_main_guard(monkeypatch: pytest.MonkeyPatch) -> None:
     import runpy
     import sys
+    import warnings
 
     async def _boom(**_kwargs: object) -> int:
         raise RuntimeError("cli guard")
@@ -151,6 +152,13 @@ def test_cli_module_main_guard(monkeypatch: pytest.MonkeyPatch) -> None:
             "sqlite+aiosqlite:///:memory:",
         ],
     )
-    with pytest.raises(SystemExit) as excinfo:
-        runpy.run_module("dissemination.live_write_assert", run_name="__main__")
+    sys.modules.pop("dissemination.live_write_assert", None)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message=r".*found in sys\.modules after import of the same name.*",
+            category=RuntimeWarning,
+        )
+        with pytest.raises(SystemExit) as excinfo:
+            runpy.run_module("dissemination.live_write_assert", run_name="__main__", alter_sys=True)
     assert excinfo.value.code == 2

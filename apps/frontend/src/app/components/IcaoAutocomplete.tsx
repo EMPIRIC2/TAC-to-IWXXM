@@ -29,6 +29,8 @@ interface AirportSuggestion {
  * ICAO code input with airport autocomplete suggestions.
  *
  * Validates four-letter codes and optionally accepts any CCCC format.
+ * @example
+ * const _ = true;
  */
 export function IcaoAutocomplete({
   label,
@@ -48,6 +50,9 @@ export function IcaoAutocomplete({
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    /**
+     * Function `handleClickOutside`.
+     */
     function handleClickOutside(event: MouseEvent) {
       if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
         setShowSuggestions(false);

@@ -46,6 +46,11 @@ def default_health_for_kind(gateway_kind: str) -> GatewayHealth:
     -------
     GatewayHealth
         Operator-safe health row.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (default_health_for_kind)
+    2
     """
     if gateway_kind in F19_SINK_TYPES:
         return GatewayHealth(

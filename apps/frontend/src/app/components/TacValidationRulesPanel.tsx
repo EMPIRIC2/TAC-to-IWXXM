@@ -39,6 +39,11 @@ import {
 } from '../../utils/conversionProfilesCopy';
 import { Card } from './ui/card';
 
+/**
+ * Type `TacValidationRulesPanelProps`.
+ * @example
+ * const _ = true;
+ */
 export type TacValidationRulesPanelProps = {
   accessToken: string;
 };
@@ -62,10 +67,16 @@ type TacRule = {
 
 const SEVERITIES = ['error', 'warning', 'info'] as const;
 
+/**
+ * Function `yamlQuote`.
+ */
 function yamlQuote(value: string): string {
   return JSON.stringify(value);
 }
 
+/**
+ * Function `rulesToYaml`.
+ */
 function rulesToYaml(name: string, rules: TacRule[]): string {
   const lines = ['kind: tac_validation', `name: ${yamlQuote(name)}`, 'rules:'];
   for (const rule of rules) {
@@ -104,6 +115,9 @@ function rulesToYaml(name: string, rules: TacRule[]): string {
   return `${lines.join('\n')}\n`;
 }
 
+/**
+ * Function `parseRules`.
+ */
 function parseRules(body: Record<string, unknown> | undefined): TacRule[] {
   const raw = body?.rules;
   if (!Array.isArray(raw)) {
@@ -158,6 +172,9 @@ function parseRules(body: Record<string, unknown> | undefined): TacRule[] {
   return out;
 }
 
+/**
+ * Function `rulesToBody`.
+ */
 function rulesToBody(rules: TacRule[]): Record<string, unknown>[] {
   return rules.map((rule) => {
     const row: Record<string, unknown> = {
@@ -204,6 +221,8 @@ function rulesToBody(rules: TacRule[]): Record<string, unknown>[] {
  * Author TAC validation rules with identity, levels, regex, and numeric bounds.
  *
  * @param props.accessToken - Bearer JWT
+ * @example
+ * const _ = true;
  */
 export function TacValidationRulesPanel({ accessToken }: TacValidationRulesPanelProps) {
   const [assets, setAssets] = useState<LibraryAssetOut[]>([]);

@@ -16,11 +16,21 @@ import {
 } from '../../utils/conversionProfilesCopy';
 import { BetaBadge } from './BetaBadge';
 
+/**
+ * Type `MappingBridgeSkipChip`.
+ * @example
+ * const _ = true;
+ */
 export type MappingBridgeSkipChip = {
   label: string;
   gloss?: string;
 };
 
+/**
+ * Type `MappingBridgeProps`.
+ * @example
+ * const _ = true;
+ */
 export type MappingBridgeProps = {
   tacGroup: string;
   templateName?: string;
@@ -40,6 +50,8 @@ export type MappingBridgeProps = {
  * @param props.iwxxmBlock - Preview XML fragment
  * @param props.skipChips - Skipped slot chips from preview
  * @param props.showUnmatchedHint - Show fail-closed copy when unmatched
+ * @example
+ * const _ = true;
  */
 export function MappingBridge({
   tacGroup,

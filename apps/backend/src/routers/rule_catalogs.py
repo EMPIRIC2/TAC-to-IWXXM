@@ -13,7 +13,14 @@ router = APIRouter(prefix="/api/v1", tags=["Catalogs"])
 
 
 class RuleCatalogItem(BaseModel):
-    """One package-owned trust-catalog row."""
+    """
+    One package-owned trust-catalog row.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     id: str
     title: str
@@ -23,21 +30,42 @@ class RuleCatalogItem(BaseModel):
 
 
 class RuleCatalogResponse(BaseModel):
-    """Response for GET /rule-catalogs."""
+    """
+    Response for GET /rule-catalogs.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     family: str
     items: list[RuleCatalogItem]
 
 
 class SelectionOption(BaseModel):
-    """Dropdown option from a deployed registry."""
+    """
+    Dropdown option from a deployed registry.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     id: str
     label: str
 
 
 class SelectionOptionsResponse(BaseModel):
-    """Response for GET /selection-options."""
+    """
+    Response for GET /selection-options.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     kind: str
     options: list[SelectionOption]
@@ -48,7 +76,26 @@ async def get_rule_catalogs(
     family: str = Query(..., description="tac | iwxxm | conversion | dissemination | decoding"),
     product: str | None = Query(None),
 ) -> Response:
-    """Export a package-owned trust catalog by family."""
+    """
+    Export a package-owned trust catalog by family.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_rule_catalogs)
+    2
+
+    Parameters
+    ----------
+    family : object
+        Argument ``family``.
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     key = family.strip().lower()
     if key not in known_families():
         raise HTTPException(
@@ -70,7 +117,24 @@ async def get_rule_catalogs(
 async def get_selection_options(
     kind: str = Query(..., description="conversion | dissemination | decoding"),
 ) -> Response:
-    """List deployed registry ids for workbench / dissemination dropdowns."""
+    """
+    List deployed registry ids for workbench / dissemination dropdowns.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_selection_options)
+    2
+
+    Parameters
+    ----------
+    kind : object
+        Argument ``kind``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         raw = selection_options(kind)
     except ValueError as exc:

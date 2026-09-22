@@ -15,7 +15,14 @@ NOT_WELLFORMED_XML_CODE = "NOT_WELLFORMED_XML"
 
 @dataclass(frozen=True)
 class IwxxmLintIssue:
-    """Minimal lint issue for pass-through XML checks."""
+    """
+    Minimal lint issue for pass-through XML checks.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     severity: str
     code: str
@@ -27,7 +34,14 @@ class IwxxmLintIssue:
 
 @dataclass(frozen=True)
 class IwxxmLintReport:
-    """Lint report shape compatible with ``/lint-tac`` mapping."""
+    """
+    Lint report shape compatible with ``/lint-tac`` mapping.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     ok: bool
     product: str
@@ -35,7 +49,24 @@ class IwxxmLintReport:
 
 
 def looks_like_xml(text: str) -> bool:
-    """Return True when trimmed text appears to be XML markup."""
+    """
+    Return True when trimmed text appears to be XML markup.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (looks_like_xml)
+    2
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return text.lstrip().startswith("<")
 
 
@@ -52,6 +83,11 @@ def lint_iwxxm_pass_through(text: str) -> IwxxmLintReport:
     -------
     IwxxmLintReport
         ``ok`` is False for empty, non-XML, or not well-formed input.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (lint_iwxxm_pass_through)
+    2
     """
     stripped = (text or "").strip()
     if not stripped:

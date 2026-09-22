@@ -2,7 +2,7 @@
   "components": {
     "schemas": {
       "AggregatedValidationResult": {
-        "description": "Combined results from multiple validation layers.",
+        "description": "Combined results from multiple validation layers.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "execution_time_ms": 13.5,
           "layers_validated": [
@@ -85,7 +85,7 @@
         "type": "object"
       },
       "AuditListResponse": {
-        "description": "Paginated audit list.",
+        "description": "Paginated audit list.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "items": {
             "items": {
@@ -117,7 +117,7 @@
         "type": "object"
       },
       "AuditRecordOut": {
-        "description": "Persisted audit row \u2014 never includes BYOC secrets or URIs.",
+        "description": "Persisted audit row \u2014 never includes BYOC secrets or URIs.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "created_at": {
             "format": "date-time",
@@ -225,7 +225,7 @@
         "type": "object"
       },
       "AuthResponse": {
-        "description": "Login response.",
+        "description": "Login response.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "session": {
             "anyOf": [
@@ -248,7 +248,7 @@
         "type": "object"
       },
       "BatchValidationRequest": {
-        "description": "Request to validate multiple inputs.",
+        "description": "Request to validate multiple inputs.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "items": [
             {
@@ -299,7 +299,7 @@
         "type": "object"
       },
       "BatchValidationResponse": {
-        "description": "Response from batch validation.",
+        "description": "Response from batch validation.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "failed_items": 1,
           "passed_items": 1,
@@ -892,7 +892,7 @@
         "type": "object"
       },
       "BulletinMetaModel": {
-        "description": "HTTP DTO for WMO AHL metadata on convert-bulletin (api-contract Q6/Q7).",
+        "description": "HTTP DTO for WMO AHL metadata on convert-bulletin (api-contract Q6/Q7).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "aa": {
             "title": "Aa",
@@ -953,7 +953,7 @@
         "type": "object"
       },
       "BulletinReportResultModel": {
-        "description": "Per-report convert-bulletin result (partial success allowed).",
+        "description": "Per-report convert-bulletin result (partial success allowed).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "fixes": {
             "items": {
@@ -1002,7 +1002,7 @@
         "type": "object"
       },
       "ComparisonDetail": {
-        "description": "Detailed comparison result between our and reference IWXXM.",
+        "description": "Detailed comparison result between our and reference IWXXM.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "extra_elements": [],
           "missing_elements": [],
@@ -1088,7 +1088,7 @@
         "type": "string"
       },
       "ConfirmRequest": {
-        "description": "Email confirmation via GoTrue ``token_hash`` (Auth email link).",
+        "description": "Email confirmation via GoTrue ``token_hash`` (Auth email link).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "token_hash": {
             "minLength": 1,
@@ -1109,7 +1109,7 @@
         "type": "object"
       },
       "ConversionIssue": {
-        "description": "Structured issue for a single conversion input item.",
+        "description": "Structured issue for a single conversion input item.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "code": {
             "anyOf": [
@@ -1238,7 +1238,7 @@
         "type": "string"
       },
       "ConversionResponse": {
-        "description": "Response from conversion endpoint with results and errors.",
+        "description": "Response from conversion endpoint with results and errors.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "errors": [],
           "failed": 0,
@@ -1351,7 +1351,7 @@
         "type": "object"
       },
       "ConversionResult": {
-        "description": "Individual conversion result for a single METAR input.",
+        "description": "Individual conversion result for a single METAR input.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "content": "<?xml version='1.0' encoding='utf-8'?>\n<iwxxm:METAR gml:id='METAR_KJFK_231751Z'>\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id='TP1'>\n      <gml:timePosition>2023-09-23T17:51:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n</iwxxm:METAR>",
           "name": "KJFK_231751Z.txt",
@@ -1419,7 +1419,7 @@
         "type": "object"
       },
       "ConversionTemplateCreate": {
-        "description": "Create body for a custom conversion template.",
+        "description": "Create body for a custom conversion template.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "comments": {
             "anyOf": [
@@ -1491,7 +1491,7 @@
         "type": "object"
       },
       "ConversionTemplateListResponse": {
-        "description": "First-party + custom conversion templates visible to the caller.",
+        "description": "First-party + custom conversion templates visible to the caller.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "items": {
             "items": {
@@ -1508,7 +1508,7 @@
         "type": "object"
       },
       "ConversionTemplateOut": {
-        "description": "Persisted or first-party conversion template projection.",
+        "description": "Persisted or first-party conversion template projection.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "access": {
             "title": "Access",
@@ -1624,7 +1624,7 @@
         "type": "object"
       },
       "ConversionTemplatePreviewRequest": {
-        "description": "Bridge preview request.",
+        "description": "Bridge preview request.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "focusGroup": {
             "default": "",
@@ -1684,7 +1684,7 @@
         "type": "object"
       },
       "ConversionTemplatePreviewResponse": {
-        "description": "Bridge preview response.",
+        "description": "Bridge preview response.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "captures": {
             "items": {
@@ -1738,7 +1738,7 @@
         "type": "object"
       },
       "ConversionTemplateSlot": {
-        "description": "One ordered slot in a parameterizable conversion template.",
+        "description": "One ordered slot in a parameterizable conversion template.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "digits": {
             "anyOf": [
@@ -1828,7 +1828,7 @@
         "type": "object"
       },
       "ConversionTemplateUpdate": {
-        "description": "Partial update for a custom conversion template.",
+        "description": "Partial update for a custom conversion template.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "comments": {
             "anyOf": [
@@ -1920,7 +1920,7 @@
         "type": "object"
       },
       "ConvertBulletinResponse": {
-        "description": "Response for POST /api/v1/convert-bulletin.",
+        "description": "Response for POST /api/v1/convert-bulletin.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "bulletin_meta": {
             "$ref": "#/components/schemas/BulletinMetaModel"
@@ -1952,7 +1952,7 @@
         "type": "object"
       },
       "DecodeResidualModel": {
-        "description": "HTTP DTO for an undecoded TAC span (explicit residuals - G4).",
+        "description": "HTTP DTO for an undecoded TAC span (explicit residuals - G4).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "end": {
             "title": "End",
@@ -1976,7 +1976,7 @@
         "type": "object"
       },
       "DecodeSegmentModel": {
-        "description": "HTTP DTO for one TAC decode/annotate segment.",
+        "description": "HTTP DTO for one TAC decode/annotate segment.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "code": {
             "title": "Code",
@@ -2005,7 +2005,7 @@
         "type": "object"
       },
       "DecodeTacResponse": {
-        "description": "Response for POST /api/v1/decode-tac.",
+        "description": "Response for POST /api/v1/decode-tac.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "product": {
             "title": "Product",
@@ -2039,7 +2039,7 @@
         "type": "object"
       },
       "DeliveryReceiptOut": {
-        "description": "Redacted delivery receipt (API).",
+        "description": "Redacted delivery receipt (API).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "attempt": {
             "default": 1,
@@ -2091,7 +2091,7 @@
         "type": "object"
       },
       "DisseminationPlanCreate": {
-        "description": "Body to create a DisseminationPlan (no secrets).",
+        "description": "Body to create a DisseminationPlan (no secrets).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "destination_refs": {
             "items": {
@@ -2142,7 +2142,7 @@
         "type": "object"
       },
       "DisseminationPlanOut": {
-        "description": "Persisted plan row.",
+        "description": "Persisted plan row.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "created_at": {
             "format": "date-time",
@@ -2213,7 +2213,7 @@
         "type": "object"
       },
       "DisseminationPlanUpdate": {
-        "description": "Partial update for a DisseminationPlan.",
+        "description": "Partial update for a DisseminationPlan.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "destination_refs": {
             "anyOf": [
@@ -2275,7 +2275,7 @@
         "type": "object"
       },
       "DisseminationTemplateCreate": {
-        "description": "Create body for a saved dissemination template.",
+        "description": "Create body for a saved dissemination template.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "ddl": {
             "default": false,
@@ -2332,7 +2332,7 @@
         "type": "object"
       },
       "DisseminationTemplateListResponse": {
-        "description": "List of saved dissemination templates for the caller.",
+        "description": "List of saved dissemination templates for the caller.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "items": {
             "items": {
@@ -2349,7 +2349,7 @@
         "type": "object"
       },
       "DisseminationTemplateOut": {
-        "description": "Persisted saved dissemination template.",
+        "description": "Persisted saved dissemination template.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "created_at": {
             "format": "date-time",
@@ -2423,7 +2423,7 @@
         "type": "object"
       },
       "DisseminationTemplateUpdate": {
-        "description": "Partial update for a saved dissemination template.",
+        "description": "Partial update for a saved dissemination template.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "ddl": {
             "anyOf": [
@@ -2512,7 +2512,7 @@
         "type": "object"
       },
       "EvaluationJobResponse": {
-        "description": "Response when creating an evaluation job.",
+        "description": "Response when creating an evaluation job.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "created_at": "2026-02-10T14:30:45.123456+00:00",
           "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
@@ -2555,7 +2555,7 @@
         "type": "object"
       },
       "EvaluationJobStatus": {
-        "description": "Current status of an evaluation job.",
+        "description": "Current status of an evaluation job.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "created_at": "2026-02-10T14:30:45.123456+00:00",
           "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
@@ -2649,7 +2649,7 @@
         "type": "string"
       },
       "EvaluationRequest": {
-        "description": "Request to create an evaluation job.",
+        "description": "Request to create an evaluation job.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "hours": 1.5,
           "large_airports_only": true,
@@ -2737,7 +2737,7 @@
         "type": "object"
       },
       "EvaluationResultDetail": {
-        "description": "Detailed result for a single station evaluation.",
+        "description": "Detailed result for a single station evaluation.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "comparison": {
             "our_elements": 28,
@@ -2837,7 +2837,7 @@
         "type": "object"
       },
       "EvaluationResultsResponse": {
-        "description": "Response with paginated evaluation results.",
+        "description": "Response with paginated evaluation results.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "job_id": "job_550e8400e29b41d4a71662f7d6e6b1c0",
           "page": 1,
@@ -2903,7 +2903,7 @@
         "type": "object"
       },
       "FailedSpan": {
-        "description": "Character span marking a soft-preview failure.",
+        "description": "Character span marking a soft-preview failure.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "code": {
             "anyOf": [
@@ -2950,7 +2950,7 @@
         "type": "object"
       },
       "GatewayHealthListResponse": {
-        "description": "Health for registered gateway kinds.",
+        "description": "Health for registered gateway kinds.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "items": {
             "items": {
@@ -2967,7 +2967,7 @@
         "type": "object"
       },
       "GatewayHealthOut": {
-        "description": "Operator-safe gateway health row.",
+        "description": "Operator-safe gateway health row.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "connectivity_ok": {
             "title": "Connectivity Ok",
@@ -3015,7 +3015,7 @@
         "type": "object"
       },
       "HealthResponse": {
-        "description": "Health check response.",
+        "description": "Health check response.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "service": {
             "default": "metar-to-iwxxm",
@@ -3065,7 +3065,7 @@
         "type": "string"
       },
       "JobListItem": {
-        "description": "Summary item for job list.",
+        "description": "Summary item for job list.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "completed_at": "2026-02-10T15:45:30.123456+00:00",
           "created_at": "2026-02-10T14:30:45.123456+00:00",
@@ -3145,7 +3145,7 @@
         "type": "object"
       },
       "JobListResponse": {
-        "description": "Response with list of jobs.",
+        "description": "Response with list of jobs.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "jobs": [
             {
@@ -3209,7 +3209,7 @@
         "type": "string"
       },
       "JobSummaryStats": {
-        "description": "Summary statistics for a job.",
+        "description": "Summary statistics for a job.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "avg_elements_our": 28.5,
           "avg_elements_their": 26.8,
@@ -3287,7 +3287,7 @@
         "type": "object"
       },
       "LibraryAssetCreate": {
-        "description": "Create a custom library asset (optionally forked).",
+        "description": "Create a custom library asset (optionally forked).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "attachedNationalLine": {
             "maxLength": 64,
@@ -3383,7 +3383,7 @@
         "type": "object"
       },
       "LibraryAssetListResponse": {
-        "description": "Library assets visible to the caller.",
+        "description": "Library assets visible to the caller.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "items": {
             "items": {
@@ -3400,7 +3400,7 @@
         "type": "object"
       },
       "LibraryAssetOut": {
-        "description": "First-party or custom library asset (five Libraries).",
+        "description": "First-party or custom library asset (five Libraries).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "access": {
             "enum": [
@@ -3543,7 +3543,7 @@
         "type": "object"
       },
       "LibraryAssetUpdate": {
-        "description": "Partial update for a custom library asset (or fork-on-edit first-party).",
+        "description": "Partial update for a custom library asset (or fork-on-edit first-party).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "body": {
             "anyOf": [
@@ -3635,7 +3635,7 @@
         "type": "object"
       },
       "LibraryRulePreviewRequest": {
-        "description": "AC11 rule association preview for a TAC group.",
+        "description": "AC11 rule association preview for a TAC group.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "focusGroup": {
             "maxLength": 256,
@@ -3658,7 +3658,7 @@
         "type": "object"
       },
       "LibraryRulePreviewResponse": {
-        "description": "Matched conversion rule for a TAC group.",
+        "description": "Matched conversion rule for a TAC group.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "focusGroup": {
             "title": "Focusgroup",
@@ -3692,7 +3692,7 @@
         "type": "object"
       },
       "LibraryYamlValidateRequest": {
-        "description": "Validate library YAML without persisting.",
+        "description": "Validate library YAML without persisting.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "kind": {
             "enum": [
@@ -3728,7 +3728,7 @@
         "type": "object"
       },
       "LibraryYamlValidateResponse": {
-        "description": "Regex + schema diagnostics for a library YAML document.",
+        "description": "Regex + schema diagnostics for a library YAML document.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "can_activate": {
             "default": false,
@@ -3814,7 +3814,7 @@
         "type": "object"
       },
       "LintFixModel": {
-        "description": "HTTP DTO for an optional tac-validate fix suggestion.",
+        "description": "HTTP DTO for an optional tac-validate fix suggestion.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "code": {
             "title": "Code",
@@ -3838,7 +3838,7 @@
         "type": "object"
       },
       "LintIssueCatalogEntryModel": {
-        "description": "One registry row exported by GET /api/v1/lint-issue-catalog.",
+        "description": "One registry row exported by GET /api/v1/lint-issue-catalog.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "code": {
             "title": "Code",
@@ -4037,7 +4037,7 @@
         "type": "object"
       },
       "LintIssueCatalogResponse": {
-        "description": "Response for GET /api/v1/lint-issue-catalog.",
+        "description": "Response for GET /api/v1/lint-issue-catalog.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "issues": {
             "items": {
@@ -4051,7 +4051,7 @@
         "type": "object"
       },
       "LintIssueModel": {
-        "description": "HTTP DTO for a tac-validate issue (msgspec \u2192 pydantic).",
+        "description": "HTTP DTO for a tac-validate issue (msgspec \u2192 pydantic).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "code": {
             "title": "Code",
@@ -4110,7 +4110,7 @@
         "type": "object"
       },
       "LintTacResponse": {
-        "description": "Response for POST /api/v1/lint-tac.",
+        "description": "Response for POST /api/v1/lint-tac.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "fixes": {
             "items": {
@@ -4149,7 +4149,7 @@
         "type": "object"
       },
       "LoginRequest": {
-        "description": "Login credentials.",
+        "description": "Login credentials.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "email": {
             "title": "Email",
@@ -4168,7 +4168,7 @@
         "type": "object"
       },
       "LogoutRequest": {
-        "description": "Optional scoped logout body (FileConverter / AdminDashboard).",
+        "description": "Optional scoped logout body (FileConverter / AdminDashboard).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "scope": {
             "anyOf": [
@@ -4187,7 +4187,7 @@
         "type": "object"
       },
       "MappingConfigCreate": {
-        "description": "Create a field mapping \u2014 no connection secrets.",
+        "description": "Create a field mapping \u2014 no connection secrets.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "config": {
             "additionalProperties": true,
@@ -4217,7 +4217,7 @@
         "type": "object"
       },
       "MappingConfigOut": {
-        "description": "Persisted MappingConfig row.",
+        "description": "Persisted MappingConfig row.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "config": {
             "additionalProperties": true,
@@ -4266,7 +4266,7 @@
         "type": "object"
       },
       "MappingConfigUpdate": {
-        "description": "Partial MappingConfig update.",
+        "description": "Partial MappingConfig update.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "config": {
             "anyOf": [
@@ -4300,7 +4300,7 @@
         "type": "object"
       },
       "Message": {
-        "description": "Simple success message.",
+        "description": "Simple success message.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "message": {
             "title": "Message",
@@ -4314,7 +4314,7 @@
         "type": "object"
       },
       "MetarFamilyVariant": {
-        "description": "Read-only METAR-family variant row projected from the profile catalog.",
+        "description": "Read-only METAR-family variant row projected from the profile catalog.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "api_product": {
             "title": "Api Product",
@@ -4393,7 +4393,7 @@
         "type": "object"
       },
       "OverlayCreate": {
-        "description": "Create body for a signed overlay (server issues the signature).",
+        "description": "Create body for a signed overlay (server issues the signature).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "baseProfileId": {
             "maxLength": 64,
@@ -4426,7 +4426,7 @@
         "type": "object"
       },
       "OverlayListResponse": {
-        "description": "List of overlays for the caller.",
+        "description": "List of overlays for the caller.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "items": {
             "items": {
@@ -4443,7 +4443,7 @@
         "type": "object"
       },
       "OverlayOut": {
-        "description": "Persisted signed overlay (owner-scoped).",
+        "description": "Persisted signed overlay (owner-scoped).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "baseProfileId": {
             "title": "Baseprofileid",
@@ -4502,7 +4502,7 @@
         "type": "object"
       },
       "OverlayUpdate": {
-        "description": "Partial update for an overlay (re-signed on write).",
+        "description": "Partial update for an overlay (re-signed on write).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "baseProfileId": {
             "anyOf": [
@@ -4556,7 +4556,7 @@
         "type": "object"
       },
       "PackageIssueModel": {
-        "description": "HTTP DTO for an iwxxm-validate package finding (additive on /validate).",
+        "description": "HTTP DTO for an iwxxm-validate package finding (additive on /validate).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "code": {
             "anyOf": [
@@ -4626,7 +4626,7 @@
         "type": "object"
       },
       "PackageStageModel": {
-        "description": "Per-stage CA_ECCC validation outcome (additive on /validate).",
+        "description": "Per-stage CA_ECCC validation outcome (additive on /validate).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "issues": {
             "items": {
@@ -4657,7 +4657,7 @@
         "type": "object"
       },
       "PendingFilePayload": {
-        "description": "Queued file content stored inline on the session row.",
+        "description": "Queued file content stored inline on the session row.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "content": {
             "default": "",
@@ -4677,7 +4677,7 @@
         "type": "object"
       },
       "PlanExecuteRequest": {
-        "description": "Execute or dry-run a plan for a sample message.",
+        "description": "Execute or dry-run a plan for a sample message.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "dry_run": {
             "default": true,
@@ -4766,7 +4766,7 @@
         "type": "object"
       },
       "PlanExecuteResponse": {
-        "description": "Execute outcome with receipts.",
+        "description": "Execute outcome with receipts.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "plan_id": {
             "format": "uuid",
@@ -4789,7 +4789,7 @@
         "type": "object"
       },
       "PresetCreate": {
-        "description": "Create body for a saved semantic preset.",
+        "description": "Create body for a saved semantic preset.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "extensions": {
             "items": {
@@ -4863,7 +4863,7 @@
         "type": "object"
       },
       "PresetListResponse": {
-        "description": "List of semantic presets for the caller.",
+        "description": "List of semantic presets for the caller.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "items": {
             "items": {
@@ -4880,7 +4880,7 @@
         "type": "object"
       },
       "PresetOut": {
-        "description": "Persisted saved semantic preset.",
+        "description": "Persisted saved semantic preset.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "created_at": {
             "format": "date-time",
@@ -4968,7 +4968,7 @@
         "type": "object"
       },
       "PresetUpdate": {
-        "description": "Partial update for a saved semantic preset.",
+        "description": "Partial update for a saved semantic preset.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "extensions": {
             "anyOf": [
@@ -5073,7 +5073,7 @@
         "type": "object"
       },
       "ProfileCatalogEntry": {
-        "description": "Read-only ConversionProfile catalog entry for the inspector.",
+        "description": "Read-only ConversionProfile catalog entry for the inspector.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "deltas_vs_icao": {
             "items": {
@@ -5202,7 +5202,7 @@
         "type": "object"
       },
       "ProfileCatalogResponse": {
-        "description": "Catalog list response.",
+        "description": "Catalog list response.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "profiles": {
             "items": {
@@ -5233,7 +5233,7 @@
         "type": "object"
       },
       "QualityMetricsDetailResponse": {
-        "description": "Response for GET /api/v1/quality-metrics/{stem}.",
+        "description": "Response for GET /api/v1/quality-metrics/{stem}.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "converted_xml": {
             "default": "",
@@ -5322,7 +5322,7 @@
         "type": "object"
       },
       "QualityMetricsFileRowModel": {
-        "description": "Slim inventory row for the corpus file list.",
+        "description": "Slim inventory row for the corpus file list.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "deferred": {
             "default": false,
@@ -5376,7 +5376,7 @@
         "type": "object"
       },
       "QualityMetricsListResponse": {
-        "description": "Response for GET /api/v1/quality-metrics.",
+        "description": "Response for GET /api/v1/quality-metrics.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "files": {
             "items": {
@@ -5409,7 +5409,7 @@
         "type": "object"
       },
       "QualityMetricsSummaryModel": {
-        "description": "Per-product aggregate counts for the corpus browser.",
+        "description": "Per-product aggregate counts for the corpus browser.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "deferred_gaps": {
             "default": 0,
@@ -5463,7 +5463,7 @@
         "type": "object"
       },
       "RegisterRequest": {
-        "description": "Registration credentials (Supabase GoTrue signup).",
+        "description": "Registration credentials (Supabase GoTrue signup).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "email": {
             "title": "Email",
@@ -5483,7 +5483,7 @@
         "type": "object"
       },
       "RuleCatalogItem": {
-        "description": "One package-owned trust-catalog row.",
+        "description": "One package-owned trust-catalog row.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "id": {
             "title": "Id",
@@ -5525,7 +5525,7 @@
         "type": "object"
       },
       "RuleCatalogResponse": {
-        "description": "Response for GET /rule-catalogs.",
+        "description": "Response for GET /rule-catalogs.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "family": {
             "title": "Family",
@@ -5547,7 +5547,7 @@
         "type": "object"
       },
       "RulePackCreate": {
-        "description": "Create body for a rule pack.",
+        "description": "Create body for a rule pack.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "message": {
             "default": "",
@@ -5609,7 +5609,7 @@
         "type": "object"
       },
       "RulePackListResponse": {
-        "description": "List of rule packs for the caller.",
+        "description": "List of rule packs for the caller.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "items": {
             "items": {
@@ -5626,7 +5626,7 @@
         "type": "object"
       },
       "RulePackOut": {
-        "description": "Persisted rule pack (owner-scoped).",
+        "description": "Persisted rule pack (owner-scoped).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "created_at": {
             "format": "date-time",
@@ -5699,7 +5699,7 @@
         "type": "object"
       },
       "RulePackUpdate": {
-        "description": "Partial update for a rule pack.",
+        "description": "Partial update for a rule pack.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "message": {
             "anyOf": [
@@ -5802,7 +5802,7 @@
         "type": "object"
       },
       "SelectionOption": {
-        "description": "Dropdown option from a deployed registry.",
+        "description": "Dropdown option from a deployed registry.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "id": {
             "title": "Id",
@@ -5821,7 +5821,7 @@
         "type": "object"
       },
       "SelectionOptionsResponse": {
-        "description": "Response for GET /selection-options.",
+        "description": "Response for GET /selection-options.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "kind": {
             "title": "Kind",
@@ -5843,7 +5843,7 @@
         "type": "object"
       },
       "SessionResponse": {
-        "description": "Session tokens.",
+        "description": "Session tokens.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "access_token": {
             "title": "Access Token",
@@ -5867,7 +5867,7 @@
         "type": "object"
       },
       "TranslationCentreInfo": {
-        "description": "Translation Centre identification metadata.",
+        "description": "Translation Centre identification metadata.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "centre_designator": "NOAA-MDL",
           "centre_name": "NOAA Meteorological Development Laboratory",
@@ -5974,7 +5974,7 @@
         "type": "object"
       },
       "TranslationStatistics": {
-        "description": "Aggregated translation statistics for ICAO OPMET compliance.\n\nProvides summary metrics for a given time period and optional filters.",
+        "description": "Aggregated translation statistics for ICAO OPMET compliance.\n\nProvides summary metrics for a given time period and optional filters.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "average_duration_ms": 237,
           "failed_translations": 24,
@@ -6132,7 +6132,7 @@
         "type": "object"
       },
       "TranslationStatisticsRequest": {
-        "description": "Request parameters for translation statistics query.",
+        "description": "Request parameters for translation statistics query.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "end_date": "2026-02-13T23:59:59Z",
           "icao_region": "NAM",
@@ -6211,7 +6211,7 @@
         "type": "object"
       },
       "UserResponse": {
-        "description": "Auth user projection.",
+        "description": "Auth user projection.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "email": {
             "title": "Email",
@@ -6235,7 +6235,7 @@
         "type": "object"
       },
       "ValidateIssueModel": {
-        "description": "HTTP DTO for a validation orchestrator finding on /validate.",
+        "description": "HTTP DTO for a validation orchestrator finding on /validate.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "code": {
             "anyOf": [
@@ -6305,7 +6305,7 @@
         "type": "object"
       },
       "ValidateLayerIssueModel": {
-        "description": "Per-layer issue entry nested under ``issues_by_layer``.",
+        "description": "Per-layer issue entry nested under ``issues_by_layer``.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "code": {
             "anyOf": [
@@ -6346,7 +6346,7 @@
         "type": "object"
       },
       "ValidateRequest": {
-        "description": "Request for IWXXM validation via JSON body.",
+        "description": "Request for IWXXM validation via JSON body.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "iwxxm_xml": "<?xml version='1.0'?><iwxxm:METAR>...</iwxxm:METAR>",
           "stop_on_error": false,
@@ -6483,7 +6483,7 @@
         "type": "object"
       },
       "ValidateResponse": {
-        "description": "Response for POST /api/v1/validate (validation layers + package_* extras).",
+        "description": "Response for POST /api/v1/validate (validation layers + package_* extras).\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "extensions": {
             "anyOf": [
@@ -6670,7 +6670,7 @@
         "type": "object"
       },
       "ValidationIssue": {
-        "description": "Single validation issue with context.",
+        "description": "Single validation issue with context.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "code": "INVALID_ICAO",
           "layer": "airport_icao",
@@ -6753,7 +6753,7 @@
         "type": "string"
       },
       "ValidationLayerInfo": {
-        "description": "Information about a validation layer.",
+        "description": "Information about a validation layer.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "blocking": true,
           "description": "Parse and validate METAR TAC syntax",
@@ -6795,7 +6795,7 @@
         "type": "object"
       },
       "ValidationLayersResponse": {
-        "description": "List of available validation layers with configurations.",
+        "description": "List of available validation layers with configurations.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "layers": [
             {
@@ -6844,7 +6844,7 @@
         "type": "string"
       },
       "ValidationRequest": {
-        "description": "Request for validation operation.",
+        "description": "Request for validation operation.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "content": "METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005 RMK AO2",
           "content_type": "tac",
@@ -6913,7 +6913,7 @@
         "type": "object"
       },
       "ValidationResult": {
-        "description": "Result from a validation operation.",
+        "description": "Result from a validation operation.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "example": {
           "execution_time_ms": 12.5,
           "issues": [],
@@ -6978,7 +6978,7 @@
         "type": "object"
       },
       "WorkSession": {
-        "description": "Persisted work session returned by the API.",
+        "description": "Persisted work session returned by the API.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "conversion_params": {
             "additionalProperties": true,
@@ -7087,7 +7087,7 @@
         "type": "object"
       },
       "WorkSessionCreate": {
-        "description": "Body for POST /api/v1/work-sessions.",
+        "description": "Body for POST /api/v1/work-sessions.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "conversion_params": {
             "additionalProperties": true,
@@ -7172,7 +7172,7 @@
         "type": "object"
       },
       "WorkSessionListResponse": {
-        "description": "Paginated list of work sessions.",
+        "description": "Paginated list of work sessions.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "items": {
             "items": {
@@ -7230,7 +7230,7 @@
         "type": "string"
       },
       "WorkSessionUpdate": {
-        "description": "Body for PATCH /api/v1/work-sessions/{id}.",
+        "description": "Body for PATCH /api/v1/work-sessions/{id}.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
           "conversion_params": {
             "additionalProperties": true,
@@ -7357,7 +7357,7 @@
   "paths": {
     "/api/v1/convert": {
       "post": {
-        "description": "Convert METAR/SPECI TAC text to IWXXM XML.",
+        "description": "Convert METAR/SPECI TAC text to IWXXM XML.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (convert)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\nfiles : object\n    Argument ``files``.\nmanual_text : object\n    Argument ``manual_text``.\niwxxm_version : object\n    Argument ``iwxxm_version``.\nvalidate_output : object\n    Argument ``validate_output``.\nvalidation_level : object\n    Argument ``validation_level``.\nstop_on_error : object\n    Argument ``stop_on_error``.\nbulletin_id : object\n    Argument ``bulletin_id``.\nissuing_center : object\n    Argument ``issuing_center``.\nlint : object\n    Argument ``lint``.\nproduct : object\n    Argument ``product``.\nprofile : object\n    Argument ``profile``.\nsemantic_profile : object\n    Argument ``semantic_profile``.\nexchange_profile : object\n    Argument ``exchange_profile``.\nreport_variant : object\n    Argument ``report_variant``.\nexchange_output : object\n    Argument ``exchange_output``.\nextensions : object\n    Argument ``extensions``.\npreview : object\n    Argument ``preview``.\ninclude_nil_reasons : object\n    Argument ``include_nil_reasons``.\nemit_translation_centre : object\n    Argument ``emit_translation_centre``.\ntranslation_centre_designator : object\n    Argument ``translation_centre_designator``.\ntranslation_centre_name : object\n    Argument ``translation_centre_name``.\nlog_level : object\n    Argument ``log_level``.\npropagate_residuals_to_remarks : object\n    Argument ``propagate_residuals_to_remarks``.\noverlay_id : object\n    Argument ``overlay_id``.\npreset_id : object\n    Argument ``preset_id``.\nconversion_template_id : object\n    Argument ``conversion_template_id``.\nconversion_library_id : object\n    Argument ``conversion_library_id``.\ntac_validation_library_id : object\n    Argument ``tac_validation_library_id``.\niwxxm_validation_library_id : object\n    Argument ``iwxxm_validation_library_id``.\ndissemination_library_id : object\n    Argument ``dissemination_library_id``.\ndecoding_library_id : object\n    Argument ``decoding_library_id``.\nauth_user : object\n    Argument ``auth_user``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "convert_api_v1_convert_post",
         "requestBody": {
           "content": {
@@ -7404,7 +7404,7 @@
     },
     "/api/v1/convert-bulletin": {
       "post": {
-        "description": "Split a WMO AHL bulletin and convert each TAC report.\n\nPartial success is allowed: HTTP 200 when split succeeds even if some reports fail.\nPer-report ``issues`` / ``fixes`` follow lint-style identity.",
+        "description": "Split a WMO AHL bulletin and convert each TAC report.\n\nPartial success is allowed: HTTP 200 when split succeeds even if some reports fail.\nPer-report ``issues`` / ``fixes`` follow lint-style identity.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (convert_bulletin)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\nproduct : object\n    Argument ``product``.\nfiles : object\n    Argument ``files``.\nmanual_text : object\n    Argument ``manual_text``.\nprofile : object\n    Argument ``profile``.\nsemantic_profile : object\n    Argument ``semantic_profile``.\nexchange_profile : object\n    Argument ``exchange_profile``.\nconversion_library_id : object\n    Argument ``conversion_library_id``.\ndissemination_library_id : object\n    Argument ``dissemination_library_id``.\niwxxm_version : object\n    Argument ``iwxxm_version``.\nlint : object\n    Argument ``lint``.\nextensions : object\n    Argument ``extensions``.\npropagate_residuals_to_remarks : object\n    Argument ``propagate_residuals_to_remarks``.\nauth_user : object\n    Argument ``auth_user``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "convert_bulletin_api_v1_convert_bulletin_post",
         "requestBody": {
           "content": {
@@ -7451,7 +7451,7 @@
     },
     "/api/v1/convert-zip": {
       "post": {
-        "description": "Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.",
+        "description": "Convert METAR/SPECI TAC inputs to a ZIP of IWXXM XML files.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (convert_zip)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\nfiles : object\n    Argument ``files``.\nmanual_text : object\n    Argument ``manual_text``.\niwxxm_version : object\n    Argument ``iwxxm_version``.\npropagate_residuals_to_remarks : object\n    Argument ``propagate_residuals_to_remarks``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "convert_zip_api_v1_convert_zip_post",
         "requestBody": {
           "content": {
@@ -7486,7 +7486,7 @@
     },
     "/api/v1/decode-tac": {
       "post": {
-        "description": "Decode TAC into annotated segments and a plain-language summary.",
+        "description": "Decode TAC into annotated segments and a plain-language summary.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (decode_tac_endpoint)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\nproduct : object\n    Argument ``product``.\nmanual_text : object\n    Argument ``manual_text``.\nfiles : object\n    Argument ``files``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "decode_tac_endpoint_api_v1_decode_tac_post",
         "requestBody": {
           "content": {
@@ -7525,7 +7525,7 @@
     },
     "/api/v1/dissemination/audit": {
       "get": {
-        "description": "List redacted delivery audit rows for the caller.",
+        "description": "List redacted delivery audit rows for the caller.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (list_audit)\n2\n\nParameters\n----------\nproduct : object\n    Argument ``product``.\nstation : object\n    Argument ``station``.\nprofile : object\n    Argument ``profile``.\nstatus_filter : object\n    Argument ``status_filter``.\npage : object\n    Argument ``page``.\nlimit : object\n    Argument ``limit``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "list_audit_api_v1_dissemination_audit_get",
         "parameters": [
           {
@@ -7651,7 +7651,7 @@
     },
     "/api/v1/dissemination/audit/{audit_id}": {
       "get": {
-        "description": "Fetch one audit row (owner-scoped).",
+        "description": "Fetch one audit row (owner-scoped).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_audit)\n2\n\nParameters\n----------\naudit_id : object\n    Argument ``audit_id``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_audit_api_v1_dissemination_audit__audit_id__get",
         "parameters": [
           {
@@ -7700,7 +7700,7 @@
     },
     "/api/v1/dissemination/gateways/health": {
       "get": {
-        "description": "Connectivity-only health for known drawer gateway kinds.\n\nAMHS, SWIM, and AFS kinds are staging-honest; others report no live probe\nuntil registered.",
+        "description": "Connectivity-only health for known drawer gateway kinds.\n\nAMHS, SWIM, and AFS kinds are staging-honest; others report no live probe\nuntil registered.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (gateways_health)\n2\n\nParameters\n----------\n_user : object\n    Argument ``_user``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "gateways_health_api_v1_dissemination_gateways_health_get",
         "responses": {
           "200": {
@@ -7727,7 +7727,7 @@
     },
     "/api/v1/dissemination/mappings/{mapping_id}": {
       "get": {
-        "description": "Fetch MappingConfig by id.",
+        "description": "Fetch MappingConfig by id.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_mapping)\n2\n\nParameters\n----------\nmapping_id : object\n    Argument ``mapping_id``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_mapping_api_v1_dissemination_mappings__mapping_id__get",
         "parameters": [
           {
@@ -7774,7 +7774,7 @@
         ]
       },
       "patch": {
-        "description": "Update MappingConfig fields.",
+        "description": "Update MappingConfig fields.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (patch_mapping)\n2\n\nParameters\n----------\nmapping_id : object\n    Argument ``mapping_id``.\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "patch_mapping_api_v1_dissemination_mappings__mapping_id__patch",
         "parameters": [
           {
@@ -7833,7 +7833,7 @@
     },
     "/api/v1/dissemination/mappings/{name}": {
       "put": {
-        "description": "Create MappingConfig by name (unique per user).",
+        "description": "Create MappingConfig by name (unique per user).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (upsert_mapping)\n2\n\nParameters\n----------\nname : object\n    Argument ``name``.\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "upsert_mapping_api_v1_dissemination_mappings__name__put",
         "parameters": [
           {
@@ -7891,7 +7891,7 @@
     },
     "/api/v1/dissemination/plans/{plan_id}": {
       "get": {
-        "description": "Fetch one plan by id (owner-scoped).",
+        "description": "Fetch one plan by id (owner-scoped).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_plan)\n2\n\nParameters\n----------\nplan_id : object\n    Argument ``plan_id``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_plan_api_v1_dissemination_plans__plan_id__get",
         "parameters": [
           {
@@ -7938,7 +7938,7 @@
         ]
       },
       "patch": {
-        "description": "Update plan fields (no secrets).",
+        "description": "Update plan fields (no secrets).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (patch_plan)\n2\n\nParameters\n----------\nplan_id : object\n    Argument ``plan_id``.\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "patch_plan_api_v1_dissemination_plans__plan_id__patch",
         "parameters": [
           {
@@ -7997,7 +7997,7 @@
     },
     "/api/v1/dissemination/plans/{plan_id}/execute": {
       "post": {
-        "description": "Execute or dry-run a plan; persist redacted audit rows per receipt.\n\nDefault ``dry_run=true`` so operators can exercise audit without egress.",
+        "description": "Execute or dry-run a plan; persist redacted audit rows per receipt.\n\nDefault ``dry_run=true`` so operators can exercise audit without egress.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (execute_plan_route)\n2\n\nParameters\n----------\nplan_id : object\n    Argument ``plan_id``.\nbody : object\n    Argument ``body``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "execute_plan_route_api_v1_dissemination_plans__plan_id__execute_post",
         "parameters": [
           {
@@ -8056,7 +8056,7 @@
     },
     "/api/v1/dissemination/plans/{slug}": {
       "put": {
-        "description": "Create a plan under ``slug`` (unique per user).\n\nPath slug wins over body.slug when they differ.",
+        "description": "Create a plan under ``slug`` (unique per user).\n\nPath slug wins over body.slug when they differ.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (upsert_plan_by_slug)\n2\n\nParameters\n----------\nslug : object\n    Argument ``slug``.\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "upsert_plan_by_slug_api_v1_dissemination_plans__slug__put",
         "parameters": [
           {
@@ -8114,7 +8114,7 @@
     },
     "/api/v1/dissemination/preflight": {
       "post": {
-        "description": "Run sink preflight; return schema diffs and optional memory-only handle.",
+        "description": "Run sink preflight; return schema diffs and optional memory-only handle.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (dissemination_preflight)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\nauth_user : object\n    Argument ``auth_user``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "dissemination_preflight_api_v1_dissemination_preflight_post",
         "responses": {
           "200": {
@@ -8141,7 +8141,7 @@
     },
     "/api/v1/dissemination/send": {
       "post": {
-        "description": "Send IWXXM via a green preflight handle or inline sink params.",
+        "description": "Send IWXXM via a green preflight handle or inline sink params.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (dissemination_send)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\nauth_user : object\n    Argument ``auth_user``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "dissemination_send_api_v1_dissemination_send_post",
         "responses": {
           "200": {
@@ -8168,7 +8168,7 @@
     },
     "/api/v1/eval/jobs": {
       "get": {
-        "description": "List all evaluation jobs for the current user.",
+        "description": "List all evaluation jobs for the current user.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (list_user_jobs)\n2\n\nParameters\n----------\npage : object\n    Argument ``page``.\nper_page : object\n    Argument ``per_page``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "list_user_jobs_api_v1_eval_jobs_get",
         "parameters": [
           {
@@ -8224,7 +8224,7 @@
         ]
       },
       "post": {
-        "description": "Create a new evaluation job.",
+        "description": "Create a new evaluation job.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (create_evaluation_job)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\nbackground_tasks : object\n    Argument ``background_tasks``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "create_evaluation_job_api_v1_eval_jobs_post",
         "requestBody": {
           "content": {
@@ -8267,7 +8267,7 @@
     },
     "/api/v1/eval/jobs/{job_id}": {
       "get": {
-        "description": "Get the status of an evaluation job.",
+        "description": "Get the status of an evaluation job.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_job_status)\n2\n\nParameters\n----------\njob_id : object\n    Argument ``job_id``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_job_status_api_v1_eval_jobs__job_id__get",
         "parameters": [
           {
@@ -8311,7 +8311,7 @@
     },
     "/api/v1/eval/jobs/{job_id}/results": {
       "get": {
-        "description": "Get evaluation results for a job (paginated).",
+        "description": "Get evaluation results for a job (paginated).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_job_results)\n2\n\nParameters\n----------\njob_id : object\n    Argument ``job_id``.\npage : object\n    Argument ``page``.\nper_page : object\n    Argument ``per_page``.\nstatus_filter : object\n    Argument ``status_filter``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_job_results_api_v1_eval_jobs__job_id__results_get",
         "parameters": [
           {
@@ -8394,7 +8394,7 @@
     },
     "/api/v1/ingest-collect": {
       "post": {
-        "description": "Placeholder for IWXXM COLLECT / FTBP ingest.\n\nAccepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI\ncan exercise the path; returns HTTP 501 until member extraction + validate is shipped.",
+        "description": "Placeholder for IWXXM COLLECT / FTBP ingest.\n\nAccepts uploads (including ``.gz`` via ``read_upload_files_text``) so the operator UI\ncan exercise the path; returns HTTP 501 until member extraction + validate is shipped.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (ingest_collect)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\nfiles : object\n    Argument ``files``.\nmanual_text : object\n    Argument ``manual_text``.\nprofile : object\n    Argument ``profile``.\niwxxm_version : object\n    Argument ``iwxxm_version``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "ingest_collect_api_v1_ingest_collect_post",
         "requestBody": {
           "content": {
@@ -8441,7 +8441,7 @@
     },
     "/api/v1/ingest/mass": {
       "post": {
-        "description": "Authenticated multi-file / zip ingest with caps, sniff, and zip-bomb guards.\n\nParameters\n----------\nrequest : Request\n    Incoming request (slowapi).\nfiles : list[UploadFile] | None\n    Multipart files and/or ``.zip`` archives.\n_user : dict[str, Any]\n    Verified JWT claims (must include ``sub``).\n\nReturns\n-------\nJSONResponse\n    Per-file accept/reject list and summary counts.",
+        "description": "Authenticated multi-file / zip ingest with caps, sniff, and zip-bomb guards.\n\nParameters\n----------\nrequest : Request\n    Incoming request (slowapi).\nfiles : list[UploadFile] | None\n    Multipart files and/or ``.zip`` archives.\n_user : dict[str, Any]\n    Verified JWT claims (must include ``sub``).\n\nReturns\n-------\nJSONResponse\n    Per-file accept/reject list and summary counts.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (mass_ingest)\n2",
         "operationId": "mass_ingest_api_v1_ingest_mass_post",
         "requestBody": {
           "content": {
@@ -8486,7 +8486,7 @@
     },
     "/api/v1/lint-issue-catalog": {
       "get": {
-        "description": "Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.",
+        "description": "Export TAC lint + IWXXM validation catalog for FE tooltips / catalog page.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (lint_issue_catalog)\n2\n\nParameters\n----------\nproduct : object\n    Argument ``product``.\nfamily : object\n    Argument ``family``.\nissue_type : object\n    Argument ``issue_type``.\nsource_access : object\n    Argument ``source_access``.\nsemantic_profile : object\n    Argument ``semantic_profile``.\nexchange_profile : object\n    Argument ``exchange_profile``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "lint_issue_catalog_api_v1_lint_issue_catalog_get",
         "parameters": [
           {
@@ -8616,7 +8616,7 @@
     },
     "/api/v1/lint-tac": {
       "post": {
-        "description": "Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A).",
+        "description": "Thin wrapper over ``packages/tac-validate`` (multipart/form-data only - Q8=A).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (lint_tac)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\nmanual_text : object\n    Argument ``manual_text``.\nproduct : object\n    Argument ``product``.\nfiles : object\n    Argument ``files``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "lint_tac_api_v1_lint_tac_post",
         "requestBody": {
           "content": {
@@ -8660,7 +8660,7 @@
     },
     "/api/v1/profiles/catalog": {
       "get": {
-        "description": "Read-only ConversionProfile catalog for the authenticated Profiles inspector.\n\nRequires JWT so the inspector stays on the authenticated Profiles surface.",
+        "description": "Read-only ConversionProfile catalog for the authenticated Profiles inspector.\n\nRequires JWT so the inspector stays on the authenticated Profiles surface.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_catalog)\n2\n\nParameters\n----------\n_user : object\n    Argument ``_user``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_catalog_api_v1_profiles_catalog_get",
         "responses": {
           "200": {
@@ -8687,7 +8687,7 @@
     },
     "/api/v1/profiles/conversion-templates": {
       "get": {
-        "description": "List first-party and custom conversion templates.",
+        "description": "List first-party and custom conversion templates.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (list_conversion_templates)\n2\n\nParameters\n----------\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "list_conversion_templates_api_v1_profiles_conversion_templates_get",
         "responses": {
           "200": {
@@ -8712,7 +8712,7 @@
         ]
       },
       "post": {
-        "description": "Create a custom conversion template (optionally forked from first-party).",
+        "description": "Create a custom conversion template (optionally forked from first-party).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (create_conversion_template)\n2\n\nParameters\n----------\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "create_conversion_template_api_v1_profiles_conversion_templates_post",
         "requestBody": {
           "content": {
@@ -8759,7 +8759,7 @@
     },
     "/api/v1/profiles/conversion-templates/preview": {
       "post": {
-        "description": "TAC to template to IWXXM bridge preview.",
+        "description": "TAC to template to IWXXM bridge preview.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (preview_conversion_template)\n2\n\nParameters\n----------\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "preview_conversion_template_api_v1_profiles_conversion_templates_preview_post",
         "requestBody": {
           "content": {
@@ -8806,7 +8806,7 @@
     },
     "/api/v1/profiles/conversion-templates/{template_id}": {
       "delete": {
-        "description": "Delete an owned custom conversion template.",
+        "description": "Delete an owned custom conversion template.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (delete_conversion_template)\n2\n\nParameters\n----------\ntemplate_id : object\n    Argument ``template_id``.\nservice : object\n    Argument ``service``.",
         "operationId": "delete_conversion_template_api_v1_profiles_conversion_templates__template_id__delete",
         "parameters": [
           {
@@ -8845,7 +8845,7 @@
         ]
       },
       "get": {
-        "description": "Fetch one conversion template (first-party id or custom UUID).",
+        "description": "Fetch one conversion template (first-party id or custom UUID).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_conversion_template)\n2\n\nParameters\n----------\ntemplate_id : object\n    Argument ``template_id``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_conversion_template_api_v1_profiles_conversion_templates__template_id__get",
         "parameters": [
           {
@@ -8891,7 +8891,7 @@
         ]
       },
       "patch": {
-        "description": "Update an owned custom conversion template.",
+        "description": "Update an owned custom conversion template.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (patch_conversion_template)\n2\n\nParameters\n----------\ntemplate_id : object\n    Argument ``template_id``.\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "patch_conversion_template_api_v1_profiles_conversion_templates__template_id__patch",
         "parameters": [
           {
@@ -8949,7 +8949,7 @@
     },
     "/api/v1/profiles/library-assets": {
       "get": {
-        "description": "List first-party and custom five-Libraries assets.",
+        "description": "List first-party and custom five-Libraries assets.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (list_library_assets)\n2\n\nParameters\n----------\nkind : object\n    Argument ``kind``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "list_library_assets_api_v1_profiles_library_assets_get",
         "parameters": [
           {
@@ -9002,7 +9002,7 @@
         ]
       },
       "post": {
-        "description": "Retired \u2014 library authoring is no longer available.",
+        "description": "Retired \u2014 library authoring is no longer available.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (create_library_asset)\n2\n\nParameters\n----------\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "create_library_asset_api_v1_profiles_library_assets_post",
         "requestBody": {
           "content": {
@@ -9049,7 +9049,7 @@
     },
     "/api/v1/profiles/library-assets/preview-rule": {
       "post": {
-        "description": "Retired \u2014 library authoring is no longer available.",
+        "description": "Retired \u2014 library authoring is no longer available.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (preview_library_rule)\n2\n\nParameters\n----------\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "preview_library_rule_api_v1_profiles_library_assets_preview_rule_post",
         "requestBody": {
           "content": {
@@ -9096,7 +9096,7 @@
     },
     "/api/v1/profiles/library-assets/validate-yaml": {
       "post": {
-        "description": "Retired \u2014 library authoring is no longer available.",
+        "description": "Retired \u2014 library authoring is no longer available.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (validate_library_yaml)\n2\n\nParameters\n----------\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "validate_library_yaml_api_v1_profiles_library_assets_validate_yaml_post",
         "requestBody": {
           "content": {
@@ -9143,7 +9143,7 @@
     },
     "/api/v1/profiles/library-assets/{asset_id}": {
       "delete": {
-        "description": "Retired \u2014 library authoring is no longer available.",
+        "description": "Retired \u2014 library authoring is no longer available.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (delete_library_asset)\n2\n\nParameters\n----------\nasset_id : object\n    Argument ``asset_id``.\nservice : object\n    Argument ``service``.",
         "operationId": "delete_library_asset_api_v1_profiles_library_assets__asset_id__delete",
         "parameters": [
           {
@@ -9182,7 +9182,7 @@
         ]
       },
       "get": {
-        "description": "Fetch one library asset (first-party id or custom UUID).",
+        "description": "Fetch one library asset (first-party id or custom UUID).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_library_asset)\n2\n\nParameters\n----------\nasset_id : object\n    Argument ``asset_id``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_library_asset_api_v1_profiles_library_assets__asset_id__get",
         "parameters": [
           {
@@ -9228,7 +9228,7 @@
         ]
       },
       "patch": {
-        "description": "Retired \u2014 library authoring is no longer available.",
+        "description": "Retired \u2014 library authoring is no longer available.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (update_library_asset)\n2\n\nParameters\n----------\nasset_id : object\n    Argument ``asset_id``.\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "update_library_asset_api_v1_profiles_library_assets__asset_id__patch",
         "parameters": [
           {
@@ -9286,7 +9286,7 @@
     },
     "/api/v1/profiles/overlays": {
       "get": {
-        "description": "List overlays owned by the caller (and shared overlays).",
+        "description": "List overlays owned by the caller (and shared overlays).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (list_overlays)\n2\n\nParameters\n----------\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "list_overlays_api_v1_profiles_overlays_get",
         "responses": {
           "200": {
@@ -9311,7 +9311,7 @@
         ]
       },
       "post": {
-        "description": "Create a server-signed overlay.",
+        "description": "Create a server-signed overlay.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (create_overlay)\n2\n\nParameters\n----------\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "create_overlay_api_v1_profiles_overlays_post",
         "requestBody": {
           "content": {
@@ -9358,7 +9358,7 @@
     },
     "/api/v1/profiles/overlays/{overlay_id}": {
       "delete": {
-        "description": "Delete an owned overlay.",
+        "description": "Delete an owned overlay.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (delete_overlay)\n2\n\nParameters\n----------\noverlay_id : object\n    Argument ``overlay_id``.\nservice : object\n    Argument ``service``.",
         "operationId": "delete_overlay_api_v1_profiles_overlays__overlay_id__delete",
         "parameters": [
           {
@@ -9398,7 +9398,7 @@
         ]
       },
       "get": {
-        "description": "Fetch one overlay.",
+        "description": "Fetch one overlay.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_overlay)\n2\n\nParameters\n----------\noverlay_id : object\n    Argument ``overlay_id``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_overlay_api_v1_profiles_overlays__overlay_id__get",
         "parameters": [
           {
@@ -9445,7 +9445,7 @@
         ]
       },
       "patch": {
-        "description": "Update an owned overlay (re-signed server-side).",
+        "description": "Update an owned overlay (re-signed server-side).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (patch_overlay)\n2\n\nParameters\n----------\noverlay_id : object\n    Argument ``overlay_id``.\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "patch_overlay_api_v1_profiles_overlays__overlay_id__patch",
         "parameters": [
           {
@@ -9504,7 +9504,7 @@
     },
     "/api/v1/profiles/presets": {
       "get": {
-        "description": "List semantic presets owned by the caller (and shared presets).",
+        "description": "List semantic presets owned by the caller (and shared presets).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (list_presets)\n2\n\nParameters\n----------\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "list_presets_api_v1_profiles_presets_get",
         "responses": {
           "200": {
@@ -9529,7 +9529,7 @@
         ]
       },
       "post": {
-        "description": "Create a semantic preset.",
+        "description": "Create a semantic preset.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (create_preset)\n2\n\nParameters\n----------\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "create_preset_api_v1_profiles_presets_post",
         "requestBody": {
           "content": {
@@ -9576,7 +9576,7 @@
     },
     "/api/v1/profiles/presets/{preset_id}": {
       "delete": {
-        "description": "Delete a semantic preset.",
+        "description": "Delete a semantic preset.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (delete_preset)\n2\n\nParameters\n----------\npreset_id : object\n    Argument ``preset_id``.\nservice : object\n    Argument ``service``.",
         "operationId": "delete_preset_api_v1_profiles_presets__preset_id__delete",
         "parameters": [
           {
@@ -9616,7 +9616,7 @@
         ]
       },
       "get": {
-        "description": "Fetch one semantic preset.",
+        "description": "Fetch one semantic preset.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_preset)\n2\n\nParameters\n----------\npreset_id : object\n    Argument ``preset_id``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_preset_api_v1_profiles_presets__preset_id__get",
         "parameters": [
           {
@@ -9663,7 +9663,7 @@
         ]
       },
       "patch": {
-        "description": "Update a semantic preset.",
+        "description": "Update a semantic preset.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (patch_preset)\n2\n\nParameters\n----------\npreset_id : object\n    Argument ``preset_id``.\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "patch_preset_api_v1_profiles_presets__preset_id__patch",
         "parameters": [
           {
@@ -9722,7 +9722,7 @@
     },
     "/api/v1/profiles/rule-packs": {
       "get": {
-        "description": "List rule packs owned by the caller.",
+        "description": "List rule packs owned by the caller.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (list_rule_packs)\n2\n\nParameters\n----------\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "list_rule_packs_api_v1_profiles_rule_packs_get",
         "responses": {
           "200": {
@@ -9747,7 +9747,7 @@
         ]
       },
       "post": {
-        "description": "Create a rule pack.",
+        "description": "Create a rule pack.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (create_rule_pack)\n2\n\nParameters\n----------\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "create_rule_pack_api_v1_profiles_rule_packs_post",
         "requestBody": {
           "content": {
@@ -9794,7 +9794,7 @@
     },
     "/api/v1/profiles/rule-packs/{pack_id}": {
       "delete": {
-        "description": "Delete a rule pack.",
+        "description": "Delete a rule pack.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (delete_rule_pack)\n2\n\nParameters\n----------\npack_id : object\n    Argument ``pack_id``.\nservice : object\n    Argument ``service``.",
         "operationId": "delete_rule_pack_api_v1_profiles_rule_packs__pack_id__delete",
         "parameters": [
           {
@@ -9834,7 +9834,7 @@
         ]
       },
       "get": {
-        "description": "Fetch one rule pack.",
+        "description": "Fetch one rule pack.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_rule_pack)\n2\n\nParameters\n----------\npack_id : object\n    Argument ``pack_id``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_rule_pack_api_v1_profiles_rule_packs__pack_id__get",
         "parameters": [
           {
@@ -9881,7 +9881,7 @@
         ]
       },
       "patch": {
-        "description": "Update a rule pack.",
+        "description": "Update a rule pack.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (patch_rule_pack)\n2\n\nParameters\n----------\npack_id : object\n    Argument ``pack_id``.\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "patch_rule_pack_api_v1_profiles_rule_packs__pack_id__patch",
         "parameters": [
           {
@@ -9940,7 +9940,7 @@
     },
     "/api/v1/profiles/templates": {
       "get": {
-        "description": "List dissemination templates owned by the caller (and shared templates).",
+        "description": "List dissemination templates owned by the caller (and shared templates).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (list_templates)\n2\n\nParameters\n----------\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "list_templates_api_v1_profiles_templates_get",
         "responses": {
           "200": {
@@ -9965,7 +9965,7 @@
         ]
       },
       "post": {
-        "description": "Create a dissemination template.",
+        "description": "Create a dissemination template.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (create_template)\n2\n\nParameters\n----------\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "create_template_api_v1_profiles_templates_post",
         "requestBody": {
           "content": {
@@ -10012,7 +10012,7 @@
     },
     "/api/v1/profiles/templates/{template_id}": {
       "delete": {
-        "description": "Delete an owned dissemination template.",
+        "description": "Delete an owned dissemination template.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (delete_template)\n2\n\nParameters\n----------\ntemplate_id : object\n    Argument ``template_id``.\nservice : object\n    Argument ``service``.",
         "operationId": "delete_template_api_v1_profiles_templates__template_id__delete",
         "parameters": [
           {
@@ -10052,7 +10052,7 @@
         ]
       },
       "get": {
-        "description": "Fetch one dissemination template.",
+        "description": "Fetch one dissemination template.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_template)\n2\n\nParameters\n----------\ntemplate_id : object\n    Argument ``template_id``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_template_api_v1_profiles_templates__template_id__get",
         "parameters": [
           {
@@ -10099,7 +10099,7 @@
         ]
       },
       "patch": {
-        "description": "Update a dissemination template.",
+        "description": "Update a dissemination template.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (patch_template)\n2\n\nParameters\n----------\ntemplate_id : object\n    Argument ``template_id``.\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "patch_template_api_v1_profiles_templates__template_id__patch",
         "parameters": [
           {
@@ -10158,7 +10158,7 @@
     },
     "/api/v1/quality-metrics": {
       "get": {
-        "description": "Serve product summaries and file inventory from the precomputed artifact.",
+        "description": "Serve product summaries and file inventory from the precomputed artifact.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (list_quality_metrics)\n2\n\nParameters\n----------\nproduct : object\n    Argument ``product``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "list_quality_metrics_api_v1_quality_metrics_get",
         "parameters": [
           {
@@ -10210,7 +10210,7 @@
     },
     "/api/v1/quality-metrics/{stem}": {
       "get": {
-        "description": "Serve per-stem TAC / XML / match / residual / lint / validate detail.",
+        "description": "Serve per-stem TAC / XML / match / residual / lint / validate detail.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_quality_metrics_detail)\n2\n\nParameters\n----------\nstem : object\n    Argument ``stem``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_quality_metrics_detail_api_v1_quality_metrics__stem__get",
         "parameters": [
           {
@@ -10253,7 +10253,7 @@
     },
     "/api/v1/rule-catalogs": {
       "get": {
-        "description": "Export a package-owned trust catalog by family.",
+        "description": "Export a package-owned trust catalog by family.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_rule_catalogs)\n2\n\nParameters\n----------\nfamily : object\n    Argument ``family``.\nproduct : object\n    Argument ``product``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_rule_catalogs_api_v1_rule_catalogs_get",
         "parameters": [
           {
@@ -10314,7 +10314,7 @@
     },
     "/api/v1/schema-status": {
       "get": {
-        "description": "Get comprehensive schema status including RC versions and mirroring info.",
+        "description": "Get comprehensive schema status including RC versions and mirroring info.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_schema_status)\n2\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_schema_status_api_v1_schema_status_get",
         "responses": {
           "200": {
@@ -10336,7 +10336,7 @@
     },
     "/api/v1/selection-options": {
       "get": {
-        "description": "List deployed registry ids for workbench / dissemination dropdowns.",
+        "description": "List deployed registry ids for workbench / dissemination dropdowns.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_selection_options)\n2\n\nParameters\n----------\nkind : object\n    Argument ``kind``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_selection_options_api_v1_selection_options_get",
         "parameters": [
           {
@@ -10381,7 +10381,7 @@
     },
     "/api/v1/translation/airport-region/{airport_code}": {
       "get": {
-        "description": "Determine ICAO region for a given airport code.\n\nUtility endpoint for testing ICAO region mapping.\nThis endpoint is public and does not require authentication.\n\n**Path Parameters**:\n- **airport_code**: 4-letter ICAO airport identifier\n\n**Returns**:\n```json\n{\n    \"airport_code\": \"KJFK\",\n    \"icao_region\": \"NAM\",\n    \"region_name\": \"North American\"\n}\n```\n\n**Example**:\n- `GET /api/v1/translation/airport-region/KJFK` \u2192 `{\"icao_region\": \"NAM\"}`\n- `GET /api/v1/translation/airport-region/EGLL` \u2192 `{\"icao_region\": \"EUR\"}`\n- `GET /api/v1/translation/airport-region/RJAA` \u2192 `{\"icao_region\": \"APAC\"}`",
+        "description": "Determine ICAO region for a given airport code.\n\nUtility endpoint for testing ICAO region mapping.\nThis endpoint is public and does not require authentication.\n\n**Path Parameters**:\n- **airport_code**: 4-letter ICAO airport identifier\n\n**Returns**:\n```json\n{\n    \"airport_code\": \"KJFK\",\n    \"icao_region\": \"NAM\",\n    \"region_name\": \"North American\"\n}\n```\n\n**Example**:\n- `GET /api/v1/translation/airport-region/KJFK` \u2192 `{\"icao_region\": \"NAM\"}`\n- `GET /api/v1/translation/airport-region/EGLL` \u2192 `{\"icao_region\": \"EUR\"}`\n- `GET /api/v1/translation/airport-region/RJAA` \u2192 `{\"icao_region\": \"APAC\"}`\n\nParameters\n----------\nairport_code : object\n    Argument ``airport_code``.\n\nReturns\n-------\nobject\n    Return value.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_airport_region)\n2",
         "operationId": "get_airport_region_api_v1_translation_airport_region__airport_code__get",
         "parameters": [
           {
@@ -10426,7 +10426,7 @@
     },
     "/api/v1/translation/centre-info": {
       "get": {
-        "description": "Get Translation Centre identification and capabilities.\n\nReturns metadata about this Translation Centre as per ICAO OPMET guidelines.\nThis endpoint is public and does not require authentication.\n\n**Returns**:\n- Translation centre name and designator\n- ICAO location indicator\n- Supported IWXXM versions\n- Supported aviation product types\n- Service online date",
+        "description": "Get Translation Centre identification and capabilities.\n\nReturns metadata about this Translation Centre as per ICAO OPMET guidelines.\nThis endpoint is public and does not require authentication.\n\n**Returns**:\n- Translation centre name and designator\n- ICAO location indicator\n- Supported IWXXM versions\n- Supported aviation product types\n- Service online date\n\nReturns\n-------\nobject\n    Return value.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_centre_info)\n2",
         "operationId": "get_centre_info_api_v1_translation_centre_info_get",
         "responses": {
           "200": {
@@ -10448,7 +10448,7 @@
     },
     "/api/v1/translation/health": {
       "get": {
-        "description": "Translation statistics service health check.\n\nReturns service status and configuration.\nPublic endpoint (no authentication required).",
+        "description": "Translation statistics service health check.\n\nReturns service status and configuration.\nPublic endpoint (no authentication required).\n\nReturns\n-------\nobject\n    Return value.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (statistics_health)\n2",
         "operationId": "statistics_health_api_v1_translation_health_get",
         "responses": {
           "200": {
@@ -10470,7 +10470,7 @@
     },
     "/api/v1/translation/statistics": {
       "post": {
-        "description": "Query aggregated translation statistics.\n\nRetrieves translation centre statistics for a specified time period with optional filters.\nImplements ICAO OPMET Data Exchange Guidelines Section 7 reporting requirements.\n\n**Authentication**: Public (no login required).\n\n**Request Parameters**:\n- **start_date** (required): Statistics period start (ISO 8601)\n- **end_date** (required): Statistics period end (ISO 8601)\n- **icao_region** (optional): Filter by ICAO region (AFI, APAC, EUR, MID, NAM, SAM)\n- **iwxxm_version** (optional): Filter by IWXXM version (2025-2, 2023-1)\n- **airport_code** (optional): Filter by specific ICAO airport code\n- **include_airport_breakdown** (optional): Include per-airport statistics (default: false)\n- **include_error_details** (optional): Include detailed error analysis (default: false)\n\n**Returns**:\n- Aggregated translation statistics including:\n  - Total, successful, and failed translation counts\n  - Success rate percentage\n  - Average and median processing duration\n  - Breakdown by ICAO region\n  - Breakdown by IWXXM version\n  - Validation layer success rates\n  - Optional airport-level details\n  - Optional error frequency analysis\n\n**Example**:\n```json\n{\n    \"start_date\": \"2026-02-01T00:00:00Z\",\n    \"end_date\": \"2026-02-13T23:59:59Z\",\n    \"icao_region\": \"NAM\",\n    \"include_airport_breakdown\": true\n}\n```",
+        "description": "Query aggregated translation statistics.\n\nRetrieves translation centre statistics for a specified time period with optional filters.\nImplements ICAO OPMET Data Exchange Guidelines Section 7 reporting requirements.\n\n**Authentication**: Public (no login required).\n\n**Request Parameters**:\n- **start_date** (required): Statistics period start (ISO 8601)\n- **end_date** (required): Statistics period end (ISO 8601)\n- **icao_region** (optional): Filter by ICAO region (AFI, APAC, EUR, MID, NAM, SAM)\n- **iwxxm_version** (optional): Filter by IWXXM version (2025-2, 2023-1)\n- **airport_code** (optional): Filter by specific ICAO airport code\n- **include_airport_breakdown** (optional): Include per-airport statistics (default: false)\n- **include_error_details** (optional): Include detailed error analysis (default: false)\n\n**Returns**:\n- Aggregated translation statistics including:\n  - Total, successful, and failed translation counts\n  - Success rate percentage\n  - Average and median processing duration\n  - Breakdown by ICAO region\n  - Breakdown by IWXXM version\n  - Validation layer success rates\n  - Optional airport-level details\n  - Optional error frequency analysis\n\n**Example**:\n```json\n{\n    \"start_date\": \"2026-02-01T00:00:00Z\",\n    \"end_date\": \"2026-02-13T23:59:59Z\",\n    \"icao_region\": \"NAM\",\n    \"include_airport_breakdown\": true\n}\n```\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\n\nReturns\n-------\nobject\n    Return value.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_translation_statistics)\n2",
         "operationId": "get_translation_statistics_api_v1_translation_statistics_post",
         "requestBody": {
           "content": {
@@ -10512,7 +10512,7 @@
     },
     "/api/v1/translation/statistics/by-region": {
       "get": {
-        "description": "Get translation statistics grouped by ICAO region.\n\nReturns translation activity summary for all ICAO regions.\nUseful for identifying regional distribution and capacity planning.\n\n**Authentication**: Public (no login required).\n\n**Query Parameters**:\n- **start_date**: Statistics period start (ISO 8601)\n- **end_date**: Statistics period end (ISO 8601)\n\n**Returns**:\nDictionary mapping ICAO region codes to statistics:\n```json\n{\n    \"NAM\": {\"total\": 1500, \"success_rate\": 98.5},\n    \"EUR\": {\"total\": 890, \"success_rate\": 97.2},\n    \"APAC\": {\"total\": 456, \"success_rate\": 99.1}\n}\n```",
+        "description": "Get translation statistics grouped by ICAO region.\n\nReturns translation activity summary for all ICAO regions.\nUseful for identifying regional distribution and capacity planning.\n\n**Authentication**: Public (no login required).\n\n**Query Parameters**:\n- **start_date**: Statistics period start (ISO 8601)\n- **end_date**: Statistics period end (ISO 8601)\n\n**Returns**:\nDictionary mapping ICAO region codes to statistics:\n```json\n{\n    \"NAM\": {\"total\": 1500, \"success_rate\": 98.5},\n    \"EUR\": {\"total\": 890, \"success_rate\": 97.2},\n    \"APAC\": {\"total\": 456, \"success_rate\": 99.1}\n}\n```\n\nParameters\n----------\nstart_date : object\n    Argument ``start_date``.\nend_date : object\n    Argument ``end_date``.\n\nReturns\n-------\nobject\n    Return value.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_statistics_by_region)\n2",
         "operationId": "get_statistics_by_region_api_v1_translation_statistics_by_region_get",
         "parameters": [
           {
@@ -10572,7 +10572,7 @@
     },
     "/api/v1/translation/statistics/recent": {
       "get": {
-        "description": "Get recent translation statistics (last N hours).\n\nConvenience endpoint for querying recent activity without specifying exact dates.\n\n**Authentication**: Public (no login required).\n\n**Query Parameters**:\n- **hours**: Number of hours to look back (1-168, default: 24)\n- **icao_region**: Optional ICAO region filter\n- **iwxxm_version**: Optional IWXXM version filter\n\n**Returns**:\nAggregated translation statistics for the specified time window.",
+        "description": "Get recent translation statistics (last N hours).\n\nConvenience endpoint for querying recent activity without specifying exact dates.\n\n**Authentication**: Public (no login required).\n\n**Query Parameters**:\n- **hours**: Number of hours to look back (1-168, default: 24)\n- **icao_region**: Optional ICAO region filter\n- **iwxxm_version**: Optional IWXXM version filter\n\n**Returns**:\nAggregated translation statistics for the specified time window.\n\nParameters\n----------\nhours : object\n    Argument ``hours``.\nicao_region : object\n    Argument ``icao_region``.\niwxxm_version : object\n    Argument ``iwxxm_version``.\n\nReturns\n-------\nobject\n    Return value.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_recent_statistics)\n2",
         "operationId": "get_recent_statistics_api_v1_translation_statistics_recent_get",
         "parameters": [
           {
@@ -10656,7 +10656,7 @@
     },
     "/api/v1/validate": {
       "post": {
-        "description": "Perform comprehensive 7-layer IWXXM validation.\n\nValidates METAR TAC input through all 7 validation layers:\n\n1. **Layer 1 (AIRPORT_ICAO)**: Validates ICAO airport code against database\n2. **Layer 2 (TAC_SYNTAX)**: Validates TAC/METAR syntax basics\n3. **Layer 3 (XML_WELLFORMED)**: Checks XML is well-formed\n4. **Layer 4 (XML_SCHEMA)**: Validates against official IWXXM XSD schemas\n5. **Layer 5 (SCHEMATRON)**: Validates business rules from official Schematron\n6. **Layer 6 (GML_REFERENCES)**: Validates GML internal references\n7. **Layer 7 (WMO_CODELISTS)**: Validates against official WMO RDF codelists\n\n**Authentication**: Public (no login required)\n\n**Request Parameters**:\n- **manual_text** (required): METAR TAC text to validate\n- **xml_content** (optional): Pre-converted XML to validate (if omitted, TAC will be converted)\n- **iwxxm_version**: Target IWXXM version (default: \"2025-2\")\n- **layers**: Validation layers to run (default: [\"ALL\"])\n  - \"ALL\": Run all 7 layers\n  - Or specify: [\"AIRPORT_ICAO\", \"TAC_SYNTAX\", \"XML_SCHEMA\", \"SCHEMATRON\", ...]\n- **stop_on_error**: Stop at first blocking layer failure (default: true)\n\n**Response**:\n```json\n{\n  \"is_valid\": true,\n  \"version\": \"2025-2\",\n  \"layers_run\": [\"AIRPORT_ICAO\", \"TAC_SYNTAX\", \"XML_WELLFORMED\", \"XML_SCHEMA\", \"SCHEMATRON\", \"GML_REFERENCES\", \"WMO_CODELISTS\"],\n  \"layers_passed\": [\"AIRPORT_ICAO\", \"TAC_SYNTAX\", \"XML_WELLFORMED\", \"XML_SCHEMA\", \"SCHEMATRON\", \"GML_REFERENCES\", \"WMO_CODELISTS\"],\n  \"layers_failed\": [],\n  \"total_issues\": 0,\n  \"issues_by_layer\": {},\n  \"stopped_at_layer\": null\n}\n```",
+        "description": "Perform comprehensive 7-layer IWXXM validation.\n\nValidates METAR TAC input through all 7 validation layers:\n\n1. **Layer 1 (AIRPORT_ICAO)**: Validates ICAO airport code against database\n2. **Layer 2 (TAC_SYNTAX)**: Validates TAC/METAR syntax basics\n3. **Layer 3 (XML_WELLFORMED)**: Checks XML is well-formed\n4. **Layer 4 (XML_SCHEMA)**: Validates against official IWXXM XSD schemas\n5. **Layer 5 (SCHEMATRON)**: Validates business rules from official Schematron\n6. **Layer 6 (GML_REFERENCES)**: Validates GML internal references\n7. **Layer 7 (WMO_CODELISTS)**: Validates against official WMO RDF codelists\n\n**Authentication**: Public (no login required)\n\n**Request Parameters**:\n- **manual_text** (required): METAR TAC text to validate\n- **xml_content** (optional): Pre-converted XML to validate (if omitted, TAC will be converted)\n- **iwxxm_version**: Target IWXXM version (default: \"2025-2\")\n- **layers**: Validation layers to run (default: [\"ALL\"])\n  - \"ALL\": Run all 7 layers\n  - Or specify: [\"AIRPORT_ICAO\", \"TAC_SYNTAX\", \"XML_SCHEMA\", \"SCHEMATRON\", ...]\n- **stop_on_error**: Stop at first blocking layer failure (default: true)\n\n**Response**:\n```json\n{\n  \"is_valid\": true,\n  \"version\": \"2025-2\",\n  \"layers_run\": [\"AIRPORT_ICAO\", \"TAC_SYNTAX\", \"XML_WELLFORMED\", \"XML_SCHEMA\", \"SCHEMATRON\", \"GML_REFERENCES\", \"WMO_CODELISTS\"],\n  \"layers_passed\": [\"AIRPORT_ICAO\", \"TAC_SYNTAX\", \"XML_WELLFORMED\", \"XML_SCHEMA\", \"SCHEMATRON\", \"GML_REFERENCES\", \"WMO_CODELISTS\"],\n  \"layers_failed\": [],\n  \"total_issues\": 0,\n  \"issues_by_layer\": {},\n  \"stopped_at_layer\": null\n}\n```\n\nParameters\n----------\nrequest_body : object\n    Argument ``request_body``.\nmanual_text : object\n    Argument ``manual_text``.\nxml_content : object\n    Argument ``xml_content``.\niwxxm_version : object\n    Argument ``iwxxm_version``.\nlayers : object\n    Argument ``layers``.\nstop_on_error : object\n    Argument ``stop_on_error``.\nprofile : object\n    Argument ``profile``.\nsemantic_profile : object\n    Argument ``semantic_profile``.\nexchange_profile : object\n    Argument ``exchange_profile``.\nextensions : object\n    Argument ``extensions``.\nproduct : object\n    Argument ``product``.\n\nReturns\n-------\nobject\n    Return value.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (validate_comprehensive)\n2",
         "operationId": "validate_comprehensive_api_v1_validate_post",
         "requestBody": {
           "content": {
@@ -10698,7 +10698,7 @@
     },
     "/api/v1/validation/layers": {
       "get": {
-        "description": "Get information about available validation layers.\n\nEach layer validates specific aspects of METAR TAC or IWXXM XML content.\nLayers marked as blocking will stop further validation if they fail.\n\n## Response\nReturns list of validation layers with:\n- **layer**: Layer identifier\n- **description**: What this layer validates\n- **blocking**: Whether it blocks further layers on failure\n- **supported_content_types**: Content types this layer supports (\"tac\" or \"xml\")\n\n## Available Layers\n1. **airport_icao**: Extract and validate ICAO code against airport database\n2. **tac_syntax**: Parse and validate METAR TAC syntax\n3. **xml_wellformed**: Check if output XML is well-formed\n4. **xml_schema**: Validate against XSD schema\n5. **schematron**: SCHEMATRON rules validation\n6. **gml_references**: GML reference checks\n7. **wmo_codelists**: WMO code list validation\n\n## Example Response\n```json\n{\n  \"layers\": [\n    {\n      \"layer\": \"airport_icao\",\n      \"description\": \"Extract and validate ICAO code against airport database\",\n      \"blocking\": true,\n      \"supported_content_types\": [\"tac\"]\n    },\n    {\n      \"layer\": \"tac_syntax\",\n      \"description\": \"Parse and validate METAR TAC syntax\",\n      \"blocking\": true,\n      \"supported_content_types\": [\"tac\"]\n    }\n  ]\n}\n```",
+        "description": "Get information about available validation layers.\n\nEach layer validates specific aspects of METAR TAC or IWXXM XML content.\nLayers marked as blocking will stop further validation if they fail.\n\n## Response\nReturns list of validation layers with:\n- **layer**: Layer identifier\n- **description**: What this layer validates\n- **blocking**: Whether it blocks further layers on failure\n- **supported_content_types**: Content types this layer supports (\"tac\" or \"xml\")\n\n## Available Layers\n1. **airport_icao**: Extract and validate ICAO code against airport database\n2. **tac_syntax**: Parse and validate METAR TAC syntax\n3. **xml_wellformed**: Check if output XML is well-formed\n4. **xml_schema**: Validate against XSD schema\n5. **schematron**: SCHEMATRON rules validation\n6. **gml_references**: GML reference checks\n7. **wmo_codelists**: WMO code list validation\n\n## Example Response\n```json\n{\n  \"layers\": [\n    {\n      \"layer\": \"airport_icao\",\n      \"description\": \"Extract and validate ICAO code against airport database\",\n      \"blocking\": true,\n      \"supported_content_types\": [\"tac\"]\n    },\n    {\n      \"layer\": \"tac_syntax\",\n      \"description\": \"Parse and validate METAR TAC syntax\",\n      \"blocking\": true,\n      \"supported_content_types\": [\"tac\"]\n    }\n  ]\n}\n```\n\nReturns\n-------\nobject\n    Return value.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_validation_layers)\n2",
         "operationId": "get_validation_layers_api_v1_validation_layers_get",
         "responses": {
           "200": {
@@ -10721,7 +10721,7 @@
     },
     "/api/v1/validation/validate": {
       "post": {
-        "description": "Validate METAR TAC or IWXXM XML content through multiple validation layers.\n\n## Request Body\n- **content** (string, required): The METAR TAC or IWXXM XML content to validate\n- **content_type** (string, default=\"tac\"): ``tac``, ``xml``, or ``iwxxm`` (alias of xml)\n- **layers** (array, optional): Specific validation layers to run.\n  - TAC (``content_type=tac``): ``airport_icao``, ``tac_syntax`` (default both)\n  - XML (``content_type=xml|iwxxm``): ``xml_wellformed``, ``xml_schema``,\n    ``schematron``, ``gml_references``, ``wmo_codelists`` (default all XML layers)\n- **iwxxm_version** (string, optional): IWXXM version for XML layers (e.g., \"2025-2\")\n\n## Response\nReturns aggregated validation results with:\n- **passed** (boolean): Whether all requested layers passed\n- **layers_validated** (array): Layers that were run\n- **total_issues** (integer): Total validation issues found\n- **results** (array): Per-layer validation details\n- **execution_time_ms** (float): Total execution time\n\n## Example Success Response\n```json\n{\n  \"passed\": true,\n  \"layers_validated\": [\"airport_icao\", \"tac_syntax\"],\n  \"total_issues\": 0,\n  \"results\": [\n    {\n      \"passed\": true,\n      \"layer\": \"airport_icao\",\n      \"issues\": [],\n      \"execution_time_ms\": 5.2\n    }\n  ],\n  \"execution_time_ms\": 10.5\n}\n```\n\n## Example Failure Response\n```json\n{\n  \"passed\": false,\n  \"layers_validated\": [\"airport_icao\", \"tac_syntax\"],\n  \"total_issues\": 1,\n  \"results\": [\n    {\n      \"passed\": false,\n      \"layer\": \"tac_syntax\",\n      \"issues\": [\n        {\n          \"layer\": \"tac_syntax\",\n          \"level\": \"error\",\n          \"message\": \"Invalid TAC format\",\n          \"code\": \"INVALID_TAC_FORMAT\"\n        }\n      ],\n      \"execution_time_ms\": 8.3\n    }\n  ],\n  \"execution_time_ms\": 8.3\n}\n```",
+        "description": "Validate METAR TAC or IWXXM XML content through multiple validation layers.\n\n## Request Body\n- **content** (string, required): The METAR TAC or IWXXM XML content to validate\n- **content_type** (string, default=\"tac\"): ``tac``, ``xml``, or ``iwxxm`` (alias of xml)\n- **layers** (array, optional): Specific validation layers to run.\n  - TAC (``content_type=tac``): ``airport_icao``, ``tac_syntax`` (default both)\n  - XML (``content_type=xml|iwxxm``): ``xml_wellformed``, ``xml_schema``,\n    ``schematron``, ``gml_references``, ``wmo_codelists`` (default all XML layers)\n- **iwxxm_version** (string, optional): IWXXM version for XML layers (e.g., \"2025-2\")\n\n## Response\nReturns aggregated validation results with:\n- **passed** (boolean): Whether all requested layers passed\n- **layers_validated** (array): Layers that were run\n- **total_issues** (integer): Total validation issues found\n- **results** (array): Per-layer validation details\n- **execution_time_ms** (float): Total execution time\n\n## Example Success Response\n```json\n{\n  \"passed\": true,\n  \"layers_validated\": [\"airport_icao\", \"tac_syntax\"],\n  \"total_issues\": 0,\n  \"results\": [\n    {\n      \"passed\": true,\n      \"layer\": \"airport_icao\",\n      \"issues\": [],\n      \"execution_time_ms\": 5.2\n    }\n  ],\n  \"execution_time_ms\": 10.5\n}\n```\n\n## Example Failure Response\n```json\n{\n  \"passed\": false,\n  \"layers_validated\": [\"airport_icao\", \"tac_syntax\"],\n  \"total_issues\": 1,\n  \"results\": [\n    {\n      \"passed\": false,\n      \"layer\": \"tac_syntax\",\n      \"issues\": [\n        {\n          \"layer\": \"tac_syntax\",\n          \"level\": \"error\",\n          \"message\": \"Invalid TAC format\",\n          \"code\": \"INVALID_TAC_FORMAT\"\n        }\n      ],\n      \"execution_time_ms\": 8.3\n    }\n  ],\n  \"execution_time_ms\": 8.3\n}\n```\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\n\nReturns\n-------\nobject\n    Return value.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (validate_content)\n2",
         "operationId": "validate_content_api_v1_validation_validate_post",
         "requestBody": {
           "content": {
@@ -10764,7 +10764,7 @@
     },
     "/api/v1/validation/validate-multi": {
       "post": {
-        "description": "Validate multiple METAR TAC or IWXXM XML inputs in a single request.\n\nUseful for batch validation of multiple entries. Each item is validated\nindependently and can have different content types.\n\n## Request Body\n- **items** (array, required): Array of validation requests (1-100 items)\n  - Each item has: content, content_type, layers (optional), iwxxm_version (optional)\n- **layers** (array, optional): Default layers to apply to all items that omit layers\n\n## Response\nReturns batch validation results with:\n- **results** (array): Aggregated validation result for each item\n- **total_items** (integer): Total items requested\n- **passed_items** (integer): Items that passed all layers\n- **failed_items** (integer): Items that failed at least one layer\n- **total_execution_time_ms** (float): Total execution time for all items\n\n## Example Request\n```json\n{\n  \"items\": [\n    {\n      \"content\": \"METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005\",\n      \"content_type\": \"tac\"\n    },\n    {\n      \"content\": \"METAR EGLL 231750Z 17008KT 9999 SCT035 12/08 Q1007\",\n      \"content_type\": \"tac\"\n    }\n  ],\n  \"layers\": [\"airport_icao\", \"tac_syntax\"]\n}\n```\n\n## Example Response\n```json\n{\n  \"results\": [\n    {\n      \"passed\": true,\n      \"layers_validated\": [\"airport_icao\", \"tac_syntax\"],\n      \"total_issues\": 0,\n      \"results\": [],\n      \"execution_time_ms\": 12.3\n    },\n    {\n      \"passed\": false,\n      \"layers_validated\": [\"airport_icao\", \"tac_syntax\"],\n      \"total_issues\": 1,\n      \"results\": [],\n      \"execution_time_ms\": 8.5\n    }\n  ],\n  \"total_items\": 2,\n  \"passed_items\": 1,\n  \"failed_items\": 1,\n  \"total_execution_time_ms\": 20.8\n}\n```",
+        "description": "Validate multiple METAR TAC or IWXXM XML inputs in a single request.\n\nUseful for batch validation of multiple entries. Each item is validated\nindependently and can have different content types.\n\n## Request Body\n- **items** (array, required): Array of validation requests (1-100 items)\n  - Each item has: content, content_type, layers (optional), iwxxm_version (optional)\n- **layers** (array, optional): Default layers to apply to all items that omit layers\n\n## Response\nReturns batch validation results with:\n- **results** (array): Aggregated validation result for each item\n- **total_items** (integer): Total items requested\n- **passed_items** (integer): Items that passed all layers\n- **failed_items** (integer): Items that failed at least one layer\n- **total_execution_time_ms** (float): Total execution time for all items\n\n## Example Request\n```json\n{\n  \"items\": [\n    {\n      \"content\": \"METAR KJFK 231751Z 18012KT 10SM FEW040 15/07 A3005\",\n      \"content_type\": \"tac\"\n    },\n    {\n      \"content\": \"METAR EGLL 231750Z 17008KT 9999 SCT035 12/08 Q1007\",\n      \"content_type\": \"tac\"\n    }\n  ],\n  \"layers\": [\"airport_icao\", \"tac_syntax\"]\n}\n```\n\n## Example Response\n```json\n{\n  \"results\": [\n    {\n      \"passed\": true,\n      \"layers_validated\": [\"airport_icao\", \"tac_syntax\"],\n      \"total_issues\": 0,\n      \"results\": [],\n      \"execution_time_ms\": 12.3\n    },\n    {\n      \"passed\": false,\n      \"layers_validated\": [\"airport_icao\", \"tac_syntax\"],\n      \"total_issues\": 1,\n      \"results\": [],\n      \"execution_time_ms\": 8.5\n    }\n  ],\n  \"total_items\": 2,\n  \"passed_items\": 1,\n  \"failed_items\": 1,\n  \"total_execution_time_ms\": 20.8\n}\n```\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\n\nReturns\n-------\nobject\n    Return value.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (validate_multiple)\n2",
         "operationId": "validate_multiple_api_v1_validation_validate_multi_post",
         "requestBody": {
           "content": {
@@ -10807,7 +10807,7 @@
     },
     "/api/v1/versions": {
       "get": {
-        "description": "Get list of supported IWXXM versions.",
+        "description": "Get list of supported IWXXM versions.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_supported_versions)\n2\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_supported_versions_api_v1_versions_get",
         "responses": {
           "200": {
@@ -10829,7 +10829,7 @@
     },
     "/api/v1/work-sessions": {
       "get": {
-        "description": "List work sessions for the authenticated user with optional filters.",
+        "description": "List work sessions for the authenticated user with optional filters.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (list_work_sessions)\n2\n\nParameters\n----------\nstatus_filter : object\n    Argument ``status_filter``.\nproduct : object\n    Argument ``product``.\nfrom_dt : object\n    Argument ``from_dt``.\nto_dt : object\n    Argument ``to_dt``.\ninclude_deleted : object\n    Argument ``include_deleted``.\npage : object\n    Argument ``page``.\nlimit : object\n    Argument ``limit``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "list_work_sessions_api_v1_work_sessions_get",
         "parameters": [
           {
@@ -10967,7 +10967,7 @@
         ]
       },
       "post": {
-        "description": "Create a new work session owned by the authenticated user.",
+        "description": "Create a new work session owned by the authenticated user.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (create_work_session)\n2\n\nParameters\n----------\npayload : object\n    Argument ``payload``.\nuser : object\n    Argument ``user``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "create_work_session_api_v1_work_sessions_post",
         "requestBody": {
           "content": {
@@ -11014,7 +11014,7 @@
     },
     "/api/v1/work-sessions/{session_id}": {
       "delete": {
-        "description": "Soft-delete a work session (sets ``deleted_at``).",
+        "description": "Soft-delete a work session (sets ``deleted_at``).\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (delete_work_session)\n2\n\nParameters\n----------\nsession_id : object\n    Argument ``session_id``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "delete_work_session_api_v1_work_sessions__session_id__delete",
         "parameters": [
           {
@@ -11061,7 +11061,7 @@
         ]
       },
       "get": {
-        "description": "Return a single work session by id.",
+        "description": "Return a single work session by id.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_work_session)\n2\n\nParameters\n----------\nsession_id : object\n    Argument ``session_id``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "get_work_session_api_v1_work_sessions__session_id__get",
         "parameters": [
           {
@@ -11108,7 +11108,7 @@
         ]
       },
       "patch": {
-        "description": "Update mutable fields on an existing work session.",
+        "description": "Update mutable fields on an existing work session.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (update_work_session)\n2\n\nParameters\n----------\nsession_id : object\n    Argument ``session_id``.\npayload : object\n    Argument ``payload``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "update_work_session_api_v1_work_sessions__session_id__patch",
         "parameters": [
           {
@@ -11167,7 +11167,7 @@
     },
     "/api/v1/work-sessions/{session_id}/restore": {
       "post": {
-        "description": "Restore a previously soft-deleted work session.",
+        "description": "Restore a previously soft-deleted work session.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (restore_work_session)\n2\n\nParameters\n----------\nsession_id : object\n    Argument ``session_id``.\nservice : object\n    Argument ``service``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "restore_work_session_api_v1_work_sessions__session_id__restore_post",
         "parameters": [
           {
@@ -11216,7 +11216,7 @@
     },
     "/auth/confirm": {
       "post": {
-        "description": "Confirm email (or related) via GoTrue token_hash verify.",
+        "description": "Confirm email (or related) via GoTrue token_hash verify.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (confirm)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\nclient : object\n    Argument ``client``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "confirm_auth_confirm_post",
         "requestBody": {
           "content": {
@@ -11258,7 +11258,7 @@
     },
     "/auth/login": {
       "post": {
-        "description": "Authenticate via Supabase Auth password grant.",
+        "description": "Authenticate via Supabase Auth password grant.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (login)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\nclient : object\n    Argument ``client``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "login_auth_login_post",
         "requestBody": {
           "content": {
@@ -11300,7 +11300,7 @@
     },
     "/auth/logout": {
       "post": {
-        "description": "Sign out via GoTrue; optional body ``{scope}`` for local/global/others.",
+        "description": "Sign out via GoTrue; optional body ``{scope}`` for local/global/others.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (logout)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\ntoken : object\n    Argument ``token``.\nclient : object\n    Argument ``client``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "logout_auth_logout_post",
         "parameters": [
           {
@@ -11367,7 +11367,7 @@
     },
     "/auth/me": {
       "get": {
-        "description": "Return the current user after JWKS verification.",
+        "description": "Return the current user after JWKS verification.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (me)\n2\n\nParameters\n----------\ntoken : object\n    Argument ``token``.\nclient : object\n    Argument ``client``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "me_auth_me_get",
         "parameters": [
           {
@@ -11417,7 +11417,7 @@
     },
     "/auth/register": {
       "post": {
-        "description": "Create an account via Supabase Auth signup.",
+        "description": "Create an account via Supabase Auth signup.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (register)\n2\n\nParameters\n----------\nrequest : object\n    Argument ``request``.\nclient : object\n    Argument ``client``.\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "register_auth_register_post",
         "requestBody": {
           "content": {
@@ -11459,7 +11459,7 @@
     },
     "/health": {
       "get": {
-        "description": "Check API health and conversion availability.",
+        "description": "Check API health and conversion availability.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (health)\n2\n\nReturns\n-------\nobject\n    Return value.",
         "operationId": "health_health_get",
         "responses": {
           "200": {

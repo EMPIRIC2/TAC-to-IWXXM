@@ -9,13 +9,28 @@ from collections import defaultdict, deque
 
 
 class RateLimitExceeded(PermissionError):
-    """Raised when a user exceeds the dissemination request budget."""
+    """
+    Raised when a user exceeds the dissemination request budget.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 class DisseminationRateLimiter:
-    """Sliding-window counter keyed by user id."""
+    """
+    Sliding-window counter keyed by user id.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, *, max_per_minute: int | None = None) -> None:
+        """Internal helper ``__init__``."""
         env = os.environ.get("DISSEMINATION_RATE_LIMIT_PER_MIN", "").strip()
         if max_per_minute is not None:
             self.max_per_minute = max_per_minute
@@ -41,6 +56,11 @@ class DisseminationRateLimiter:
         ------
         RateLimitExceeded
             When the sliding one-minute window is full.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (check)
+        2
         """
         ts = time.time() if now is None else now
         window_start = ts - 60.0
@@ -53,7 +73,19 @@ class DisseminationRateLimiter:
             q.append(ts)
 
     def reset(self, user_id: str | None = None) -> None:
-        """Clear counters for one user or all users (tests)."""
+        """
+        Clear counters for one user or all users (tests).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (reset)
+        2
+
+        Parameters
+        ----------
+        user_id : object
+            Argument ``user_id``.
+        """
         with self._lock:
             if user_id is None:
                 self._hits.clear()

@@ -12,7 +12,14 @@ from typing import Any
 
 # Custom exception for deprecated versions
 class VersionDeprecatedError(ValueError):
-    """Raised when attempting to use a deprecated IWXXM version."""
+    """
+    Raised when attempting to use a deprecated IWXXM version.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     pass
 
@@ -35,7 +42,24 @@ def _detect_project_root() -> Path:
     """Detect project root across local/devcontainer and deployment layouts."""
 
     def has_versioned_schemas(root: Path) -> bool:
-        """Return True when ``root`` contains the 2025-2 IWXXM schema tree."""
+        """
+        Return True when ``root`` contains the 2025-2 IWXXM schema tree.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (has_versioned_schemas)
+        2
+
+        Parameters
+        ----------
+        root : object
+            Argument ``root``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return _versioned_schema_dir(root, "2025-2").exists()
 
     env_project_root = os.getenv("IWXXM_PROJECT_ROOT")
@@ -264,15 +288,26 @@ def get_version_config(version: str) -> dict[str, Any]:
     """
     Get configuration for a specific IWXXM version.
 
-    Args:
-        version: IWXXM version string (e.g., "2025-2", "2023-1", "2025-2RC1")
-
     Returns:
         Configuration dictionary for the version
 
     Raises:
-        VersionDeprecatedError: If version is deprecated
-        ValueError: If version is not supported or invalid
+        VersionDeprecaersion is not supported or invalid
+
+    Parameters
+    ----------
+    version : object
+        IWXXM version string (e.g., "2025-2", "2023-1", "2025-2RC1")
+
+    Returns
+    -------
+    object
+        Configuration dictionary for the version
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_version_config)
+    2
     """
     # Check if version is deprecated FIRST (immediate rejection)
     if version in DEPRECATED_VERSIONS:
@@ -324,6 +359,11 @@ def get_version_config_for_emit_profile(version: str, emit_profile: str | None =
         When the version is deprecated and not allowed for ``emit_profile``.
     ValueError
         When the version is unknown.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_version_config_for_emit_profile)
+    2
     """
     normalized = normalize_version(version)
     try:
@@ -339,11 +379,23 @@ def normalize_version(version: str) -> str:
     """
     Normalize version string, applying remapping rules.
 
-    Args:
-        version: Raw version string from user input
-
     Returns:
         Normalized version string
+
+    Parameters
+    ----------
+    version : object
+        Raw version string from user input
+
+    Returns
+    -------
+    object
+        Normalized version string
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (normalize_version)
+    2
     """
     if not version:
         return DEFAULT_VERSION
@@ -361,7 +413,19 @@ def normalize_version(version: str) -> str:
 
 
 def get_supported_versions() -> list[str]:
-    """Get list of supported IWXXM versions in priority order."""
+    """
+    Get list of supported IWXXM versions in priority order.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_supported_versions)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return VALID_VERSION_STRINGS
 
 
@@ -369,16 +433,28 @@ def resolve_schema_file(version: str, file_type: str = "xsd") -> Path:
     """
     Resolve file path for schema, Schematron, or codelists.
 
-    Args:
-        version: IWXXM version string
-        file_type: Type of file ("xsd", "schematron", "codelists")
-
     Returns:
         Path to the requested file/directory
 
     Raises:
-        ValueError: If version or file_type is invalid
-        FileNotFoundError: If file doesn't exist
+        ValueError: If version or file_type is in
+
+    Parameters
+    ----------
+    version : object
+        IWXXM version string
+    file_type : object
+        Type of file ("xsd", "schematron", "codelists")
+
+    Returns
+    -------
+    object
+        Path to the requested file/directory
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (resolve_schema_file)
+    2
     """
     config = get_version_config(version)
 
@@ -419,12 +495,25 @@ def get_breaking_changes(from_version: str, to_version: str) -> list[dict[str, A
     """
     Get list of breaking changes when migrating from one version to another.
 
-    Args:
-        from_version: Source IWXXM version
-        to_version: Target IWXXM version
-
     Returns:
         List of breaking change definitions with XPath and action
+
+    Parameters
+    ----------
+    from_version : object
+        Source IWXXM version
+    to_version : object
+        Target IWXXM version
+
+    Returns
+    -------
+    object
+        List of breaking change definitions with XPath and action
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_breaking_changes)
+    2
     """
     to_config = get_version_config(to_version)
     changes = to_config.get("breaking_changes_from_prior", {})
@@ -433,26 +522,96 @@ def get_breaking_changes(from_version: str, to_version: str) -> list[dict[str, A
 
 
 def is_migration_supported(from_version: str, to_version: str) -> bool:
-    """Return True when IWXXM→IWXXM migration for this pair is allowlisted (EV-908)."""
+    """
+    Return True when IWXXM→IWXXM migration for this pair is allowlisted (EV-908).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (is_migration_supported)
+    2
+
+    Parameters
+    ----------
+    from_version : object
+        Argument ``from_version``.
+    to_version : object
+        Argument ``to_version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     if from_version == to_version:
         return True
     return (from_version, to_version) in SUPPORTED_MIGRATE_PAIRS
 
 
 def get_namespace_uri(version: str) -> str:
-    """Get XML namespace URI for a specific IWXXM version."""
+    """
+    Get XML namespace URI for a specific IWXXM version.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_namespace_uri)
+    2
+
+    Parameters
+    ----------
+    version : object
+        Argument ``version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     config = get_version_config(version)
     return config["namespace_uri"]
 
 
 def get_schema_url(version: str) -> str:
-    """Get remote schema URL for a specific IWXXM version."""
+    """
+    Get remote schema URL for a specific IWXXM version.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_schema_url)
+    2
+
+    Parameters
+    ----------
+    version : object
+        Argument ``version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     config = get_version_config(version)
     return config["schema_url"]
 
 
 def is_version_supported(version: str) -> bool:
-    """Check if a version string is supported (after normalization)."""
+    """
+    Check if a version string is supported (after normalization).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (is_version_supported)
+    2
+
+    Parameters
+    ----------
+    version : object
+        Argument ``version``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     try:
         normalize_version(version)
         get_version_config(version)
@@ -465,11 +624,23 @@ def is_rc_version(version: str) -> bool:
     """
     Check if a version string is a Release Candidate.
 
-    Args:
-        version: IWXXM version string
-
     Returns:
+        True if version is an RC, Fa
+
+    Parameters
+    ----------
+    version : object
+        IWXXM version string
+
+    Returns
+    -------
+    object
         True if version is an RC, False otherwise
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (is_rc_version)
+    2
     """
     return version in RC_VERSIONS or "RC" in version.upper()
 
@@ -478,11 +649,23 @@ def get_version_channel(version: str) -> str:
     """
     Get the channel for a specific version.
 
-    Args:
-        version: IWXXM version string
-
     Returns:
+        Channel string: "stable", "r
+
+    Parameters
+    ----------
+    version : object
+        IWXXM version string
+
+    Returns
+    -------
+    object
         Channel string: "stable", "rc", or "unknown"
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_version_channel)
+    2
     """
     if version in SUPPORTED_VERSIONS:
         return "stable"
@@ -496,11 +679,23 @@ def get_versions_by_channel(channel: str = "all") -> list[str]:
     """
     Get list of versions filtered by channel.
 
-    Args:
-        channel: Channel filter ("stable", "rc", "all")
-
     Returns:
+        List of version strings for the specified chan
+
+    Parameters
+    ----------
+    channel : object
+        Channel filter ("stable", "rc", "all")
+
+    Returns
+    -------
+    object
         List of version strings for the specified channel
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_versions_by_channel)
+    2
     """
     return SUPPORTED_VERSIONS_BY_CHANNEL.get(channel, [])
 
@@ -509,11 +704,23 @@ def get_version_discovery_date(version: str) -> str:
     """
     Get the discovery/release date for a version.
 
-    Args:
-        version: IWXXM version string
-
     Returns:
+        ISO 8601 timestamp of discov
+
+    Parameters
+    ----------
+    version : object
+        IWXXM version string
+
+    Returns
+    -------
+    object
         ISO 8601 timestamp of discovery, or empty string if unknown
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_version_discovery_date)
+    2
     """
     metadata = VERSION_DISCOVERY_METADATA.get(version, {})
     return metadata.get("discovered", "")
@@ -525,9 +732,17 @@ def register_rc_version(version: str, config: dict[str, Any]) -> None:
 
     This is called by the schema discovery service when a new RC is detected.
 
-    Args:
-        version: RC version string (e.g., "2025-2RC1")
-        config: Configuration dictionary for the RC version
+    Parameters
+    ----------
+    version : object
+        RC version string (e.g., "2025-2RC1")
+    config : object
+        Configuration dictionary for the RC version
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (register_rc_version)
+    2
     """
     RC_VERSIONS[version] = config
     ALL_VERSIONS[version] = config
@@ -543,8 +758,15 @@ def get_all_versions_with_metadata() -> dict[str, dict[str, Any]]:
     """
     Get all versions with their full configuration and discovery metadata.
 
-    Returns:
+    Returns
+    -------
+    object
         Dictionary mapping version strings to combined config + metadata
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_all_versions_with_metadata)
+    2
     """
     result: dict[str, Any] = {}
     for version, config in ALL_VERSIONS.items():

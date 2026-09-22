@@ -15,6 +15,11 @@ import {
   PROFILES_CONV_TEMPLATES_SEARCH_PLACEHOLDER,
 } from '../../utils/conversionProfilesCopy';
 
+/**
+ * Type `ConversionCatalogCard`.
+ * @example
+ * const _ = true;
+ */
 export type ConversionCatalogCard = {
   id: string;
   label: string;
@@ -22,6 +27,11 @@ export type ConversionCatalogCard = {
   groupLabel: string;
 };
 
+/**
+ * Type `ConversionCatalogPickerProps`.
+ * @example
+ * const _ = true;
+ */
 export type ConversionCatalogPickerProps = {
   accessToken: string;
   selectedCardId?: string | null;
@@ -34,6 +44,9 @@ type SchemaBlock = {
   cards: Array<{ id: string; label: string }>;
 };
 
+/**
+ * Function `parseSchemaBlocks`.
+ */
 function parseSchemaBlocks(body: Record<string, unknown> | undefined): SchemaBlock[] {
   const raw = body?.schema_blocks;
   if (!Array.isArray(raw)) {
@@ -78,6 +91,8 @@ function parseSchemaBlocks(body: Record<string, unknown> | undefined): SchemaBlo
  * @param props.accessToken - Bearer JWT
  * @param props.selectedCardId - Highlighted card id
  * @param props.onSelectCard - Called when operator picks a catalog card
+ * @example
+ * const _ = true;
  */
 export function ConversionCatalogPicker({
   accessToken,

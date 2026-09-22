@@ -30,7 +30,24 @@ LintReportFn = Callable[[str, str, str], LintReport]
 
 
 def looks_like_ahl(text: str) -> bool:
-    """Return True when the first non-empty line looks like a WMO AHL."""
+    """
+    Return True when the first non-empty line looks like a WMO AHL.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (looks_like_ahl)
+    2
+
+    Parameters
+    ----------
+    text : object
+        Argument ``text``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     line = _first_nonempty_line(text)
     if line is None:
         return False
@@ -39,6 +56,7 @@ def looks_like_ahl(text: str) -> bool:
 
 
 def _first_nonempty_line(text: str) -> tuple[str, int, int] | None:
+    """Internal helper ``_first_nonempty_line``."""
     offset = 0
     for line in text.splitlines(keepends=True):
         stripped = line.strip()
@@ -75,6 +93,7 @@ def _contained_reports(remainder: str) -> list[tuple[int, str]]:
 
 
 def _remainder_start(text: str, heading_end: int) -> int:
+    """Internal helper ``_remainder_start``."""
     if heading_end < len(text) and text[heading_end : heading_end + 2] == "\r\n":
         return heading_end + 2
     if heading_end < len(text) and text[heading_end : heading_end + 1] in "\r\n":
@@ -83,6 +102,7 @@ def _remainder_start(text: str, heading_end: int) -> int:
 
 
 def _ahl_heading_ok(heading: str) -> bool:
+    """Internal helper ``_ahl_heading_ok``."""
     match = _AHL_LINE.fullmatch(heading.upper())
     if match is None:
         return False
@@ -93,6 +113,7 @@ def _ahl_heading_ok(heading: str) -> bool:
 
 
 def _shift_issue(issue: Issue, delta: int) -> Issue:
+    """Internal helper ``_shift_issue``."""
     start = issue.start if issue.start is None else issue.start + delta
     end = issue.end if issue.end is None else issue.end + delta
     return Issue(
@@ -109,6 +130,7 @@ def _shift_report(
     report: LintReport,
     delta: int,
 ) -> tuple[list[Issue], list[Fix]]:
+    """Internal helper ``_shift_report``."""
     issues = [_shift_issue(i, delta) for i in report.issues]
     return issues, list(report.fixes)
 
@@ -138,6 +160,11 @@ def lint_ahl_bulletin(
     -------
     LintReport
         Flattened issues with offsets relative to ``text``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (lint_ahl_bulletin)
+    2
     """
     first = _first_nonempty_line(text)
     assert first is not None

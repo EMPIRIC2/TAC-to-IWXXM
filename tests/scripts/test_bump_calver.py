@@ -171,9 +171,20 @@ def test_main_all_writes_and_restores() -> None:
 
 @pytest.mark.unit
 def test_module_entrypoint(monkeypatch: pytest.MonkeyPatch) -> None:
+    import warnings
+
     monkeypatch.setattr(
         sys, "argv", ["bump_calver.py", "--print-only", "--date", "2026.1.1"]
     )
-    with pytest.raises(SystemExit) as excinfo:
-        runpy.run_module("scripts.pypi.bump_calver", run_name="__main__")
+    sys.modules.pop("scripts.pypi.bump_calver", None)
+    with warnings.catch_warnings():
+        warnings.filterwarnings(
+            "ignore",
+            message=r".*found in sys\.modules after import of the same name.*",
+            category=RuntimeWarning,
+        )
+        with pytest.raises(SystemExit) as excinfo:
+            runpy.run_module(
+                "scripts.pypi.bump_calver", run_name="__main__", alter_sys=True
+            )
     assert excinfo.value.code == 0

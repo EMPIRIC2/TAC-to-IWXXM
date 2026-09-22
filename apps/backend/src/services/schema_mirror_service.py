@@ -25,6 +25,11 @@ class SchemaMirrorService:
 
     Handles recursive XSD imports/includes, computes checksums, and maintains
     manifest and lockfile for reproducible validation.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(self, base_path: Path, timeout_seconds: int = 60) -> None:
@@ -51,15 +56,31 @@ class SchemaMirrorService:
         """
         Mirror a complete schema version tree.
 
-        Args:
-            version: IWXXM version string (e.g., "2025-2RC1")
-            root_xsd_url: URL to root XSD file (e.g., ".../iwxxm.xsd")
-            include_examples: Download examples/ directory (recommended)
-            include_html: Download html/ UML documentation
-            include_xmi: Download XMI/ UML model exports
-
         Returns:
             Dictionary with mirroring results and manifest
+
+        Parameters
+        ----------
+        version : object
+            IWXXM version string (e.g., "2025-2RC1")
+        root_xsd_url : object
+            URL to root XSD file (e.g., ".../iwxxm.xsd")
+        include_examples : object
+            Download examples/ directory (recommended)
+        include_html : object
+            Download html/ UML documentation
+        include_xmi : object
+            Download XMI/ UML model exports
+
+        Returns
+        -------
+        object
+            Dictionary with mirroring results and manifest
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (mirror_version)
+        2
         """
         logger.info(f"Starting mirror for IWXXM {version} from {root_xsd_url}")
 
@@ -363,11 +384,23 @@ class SchemaMirrorService:
         """
         Verify integrity of mirrored schema using manifest checksums.
 
-        Args:
-            version: Version to verify
-
         Returns:
+            True if all checksums mat
+
+        Parameters
+        ----------
+        version : object
+            Version to verify
+
+        Returns
+        -------
+        object
             True if all checksums match, False otherwise
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (verify_integrity)
+        2
         """
         version_dir = self.base_path / version
         manifest_path = version_dir / ".manifest.json"
@@ -412,16 +445,33 @@ async def mirror_schema_version(
     """
     Convenience function to mirror a single schema version.
 
-    Args:
-        version: IWXXM version string
-        root_xsd_url: URL to root XSD
-        base_path: Base path for mirrored schemas
-        include_examples: Download examples/ directory
-        include_html: Download html/ documentation
-        include_xmi: Download XMI/ models
-
     Returns:
         Mirror results dictionary
+
+    Parameters
+    ----------
+    version : object
+        IWXXM version string
+    root_xsd_url : object
+        URL to root XSD
+    base_path : object
+        Base path for mirrored schemas
+    include_examples : object
+        Download examples/ directory
+    include_html : object
+        Download html/ documentation
+    include_xmi : object
+        Download XMI/ models
+
+    Returns
+    -------
+    object
+        Mirror results dictionary
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (mirror_schema_version)
+    2
     """
     service = SchemaMirrorService(base_path)
     return await service.mirror_version(

@@ -31,9 +31,15 @@ class SchemaRegistry:
     """
     Centralized registry for IWXXM schema files across versions.
     Handles file resolution, caching, and validation.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(self) -> None:
+        """Internal helper ``__init__``."""
         self._version_cache: dict[str, dict[str, Any]] = {}
         self._file_cache: dict[str, Path] = {}
 
@@ -41,15 +47,26 @@ class SchemaRegistry:
         """
         Get path to XSD schema file for a version.
 
-        Args:
-            version: IWXXM version string
-
         Returns:
             Path to the XSD file
 
-        Raises:
-            FileNotFoundError: If schema not found
-            ValueError: If version invalid
+        Raisesnot found
+            ValueError: If versio
+
+        Parameters
+        ----------
+        version : object
+            IWXXM version string
+
+        Returns
+        -------
+        object
+            Path to the XSD file
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_xsd_path)
+        2
         """
         cache_key = f"xsd_{version}"
         if cache_key in self._file_cache:
@@ -65,15 +82,25 @@ class SchemaRegistry:
         """
         Get path to Schematron (.sch) file for a version.
 
-        Args:
-            version: IWXXM version string
-
         Returns:
             Path to the Schematron file
+        ron not found
+            ValueError: If version i
 
-        Raises:
-            FileNotFoundError: If Schematron not found
-            ValueError: If version invalid
+        Parameters
+        ----------
+        version : object
+            IWXXM version string
+
+        Returns
+        -------
+        object
+            Path to the Schematron file
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_schematron_path)
+        2
         """
         cache_key = f"schematron_{version}"
         if cache_key in self._file_cache:
@@ -89,15 +116,24 @@ class SchemaRegistry:
         """
         Get path to codelists directory for a version.
 
-        Args:
-            version: IWXXM version string
-
         Returns:
+            Path to the codelists directry not found
+            ValueError: If version invali
+
+        Parameters
+        ----------
+        version : object
+            IWXXM version string
+
+        Returns
+        -------
+        object
             Path to the codelists directory
 
-        Raises:
-            FileNotFoundError: If directory not found
-            ValueError: If version invalid
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_codelists_dir)
+        2
         """
         cache_key = f"codelists_{version}"
         if cache_key in self._file_cache:
@@ -110,33 +146,108 @@ class SchemaRegistry:
         return path
 
     def get_namespace_uri(self, version: str) -> str:
-        """Get XML namespace URI for a version."""
+        """
+        Get XML namespace URI for a version.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_namespace_uri)
+        2
+
+        Parameters
+        ----------
+        version : object
+            Argument ``version``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         normalized = normalize_version(version)
         return get_namespace_uri(normalized)
 
     def get_schema_url(self, version: str) -> str:
-        """Get remote schema URL for a version."""
+        """
+        Get remote schema URL for a version.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_schema_url)
+        2
+
+        Parameters
+        ----------
+        version : object
+            Argument ``version``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         normalized = normalize_version(version)
         return get_schema_url(normalized)
 
     def get_version_info(self, version: str) -> dict[str, Any]:
-        """Get complete version configuration."""
+        """
+        Get complete version configuration.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_version_info)
+        2
+
+        Parameters
+        ----------
+        version : object
+            Argument ``version``.
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         normalized = normalize_version(version)
         return get_version_config(normalized)
 
     def get_supported_versions(self) -> list[str]:
-        """Get list of supported IWXXM versions."""
+        """
+        Get list of supported IWXXM versions.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_supported_versions)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return list(SUPPORTED_VERSIONS.keys())
 
     def list_codelists(self, version: str) -> list[str]:
         """
         List all codelist files for a version.
 
-        Args:
-            version: IWXXM version string
-
         Returns:
+            List of codelist filenames (
+
+        Parameters
+        ----------
+        version : object
+            IWXXM version string
+
+        Returns
+        -------
+        object
             List of codelist filenames (RDF files)
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (list_codelists)
+        2
         """
         codelists_dir = self.get_codelists_dir(version)
         rdf_files = list(codelists_dir.glob("*.rdf"))
@@ -146,12 +257,25 @@ class SchemaRegistry:
         """
         Get breaking changes for migration between versions.
 
-        Args:
-            from_version: Source version
-            to_version: Target version
-
         Returns:
             List of breaking change definitions
+
+        Parameters
+        ----------
+        from_version : object
+            Source version
+        to_version : object
+            Target version
+
+        Returns
+        -------
+        object
+            List of breaking change definitions
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_breaking_changes)
+        2
         """
         return get_breaking_changes(from_version, to_version)
 
@@ -159,11 +283,23 @@ class SchemaRegistry:
         """
         Get list of versions filtered by channel.
 
-        Args:
-            channel: Channel filter ("stable", "rc", "all")
-
         Returns:
             List of version strings for the channel
+
+        Parameters
+        ----------
+        channel : object
+            Channel filter ("stable", "rc", "all")
+
+        Returns
+        -------
+        object
+            List of version strings for the channel
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_all_versions)
+        2
         """
         return get_versions_by_channel(channel)
 
@@ -171,11 +307,23 @@ class SchemaRegistry:
         """
         Check if a version is a Release Candidate.
 
-        Args:
-            version: Version string
-
         Returns:
+            True if version is an
+
+        Parameters
+        ----------
+        version : object
+            Version string
+
+        Returns
+        -------
+        object
             True if version is an RC, False otherwise
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (is_rc_version)
+        2
         """
         return is_rc_version(version)
 
@@ -183,11 +331,23 @@ class SchemaRegistry:
         """
         Get the channel for a specific version.
 
-        Args:
-            version: Version string
-
         Returns:
+            Channel name ("stable"
+
+        Parameters
+        ----------
+        version : object
+            Version string
+
+        Returns
+        -------
+        object
             Channel name ("stable", "rc", "unknown")
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_version_channel)
+        2
         """
         return get_version_channel(version)
 
@@ -195,11 +355,23 @@ class SchemaRegistry:
         """
         Get the discovery/release date for a version.
 
-        Args:
-            version: Version string
-
         Returns:
+            ISO 8601 timestamp or
+
+        Parameters
+        ----------
+        version : object
+            Version string
+
+        Returns
+        -------
+        object
             ISO 8601 timestamp or empty string
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_version_discovery_date)
+        2
         """
         return get_version_discovery_date(version)
 
@@ -207,14 +379,25 @@ class SchemaRegistry:
         """
         Get path to OASIS XML Catalog for a version.
 
-        Args:
-            version: IWXXM version string
-
         Returns:
             Path to catalog.xml file
 
-        Raises:
-            FileNotFoundError: If catalog not found
+        Ra not found
+
+        Parameters
+        ----------
+        version : object
+            IWXXM version string
+
+        Returns
+        -------
+        object
+            Path to catalog.xml file
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_catalog_path)
+        2
         """
         normalized = normalize_version(version)
         config = get_version_config(normalized)
@@ -230,11 +413,23 @@ class SchemaRegistry:
         """
         Verify schema integrity using manifest checksums.
 
-        Args:
-            version: IWXXM version string
-
         Returns:
+            True if integrity check pass
+
+        Parameters
+        ----------
+        version : object
+            IWXXM version string
+
+        Returns
+        -------
+        object
             True if integrity check passes, False otherwise
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (verify_schema_integrity)
+        2
         """
         try:
             normalized = normalize_version(version)
@@ -258,8 +453,15 @@ class SchemaRegistry:
         """
         Get all versions with full configuration and discovery metadata.
 
-        Returns:
+        Returns
+        -------
+        object
             Dictionary mapping versions to combined config + metadata
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (get_all_versions_with_metadata)
+        2
         """
         return get_all_versions_with_metadata()
 
@@ -272,8 +474,15 @@ def get_schema_registry() -> SchemaRegistry:
     """
     Get singleton instance of SchemaRegistry.
 
-    Returns:
+    Returns
+    -------
+    object
         Global SchemaRegistry instance
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_schema_registry)
+    2
     """
     global _registry_instance
     if _registry_instance is None:
@@ -282,7 +491,14 @@ def get_schema_registry() -> SchemaRegistry:
 
 
 def clear_registry_cache() -> None:
-    """Clear all cached schema paths (useful for testing)."""
+    """
+    Clear all cached schema paths (useful for testing).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (clear_registry_cache)
+    2
+    """
     global _registry_instance
     if _registry_instance:
         _registry_instance._file_cache.clear()

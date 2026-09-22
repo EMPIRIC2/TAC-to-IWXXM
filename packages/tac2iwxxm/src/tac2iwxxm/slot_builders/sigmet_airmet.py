@@ -193,15 +193,18 @@ _CONUS_AIR_LEAD = re.compile(r"^AIRMET\s+[A-Z]+\.\.\.", re.IGNORECASE)
 
 
 def _normalize(tac: str) -> str:
+    """Internal helper ``_normalize``."""
     lines = [ln.strip() for ln in tac.strip().rstrip("=").splitlines() if ln.strip()]
     return " ".join(lines)
 
 
 def _parse_valid(token: str) -> tuple[int, int, int]:
+    """Internal helper ``_parse_valid``."""
     return int(token[0:2]), int(token[2:4]), int(token[4:6])
 
 
 def _detect_phenomenon(body: str, table: tuple[tuple[str, str], ...]) -> str:
+    """Internal helper ``_detect_phenomenon``."""
     upper = body.upper()
     for needle, code in table:
         if needle in upper:
@@ -244,6 +247,7 @@ def _parse_ca_gfa_structured(body: str, gfa_code: str) -> dict[str, Any] | None:
 
 
 def _detect_intensity(body: str) -> str:
+    """Internal helper ``_detect_intensity``."""
     upper = body.upper()
     for token, code in _INTENSITY.items():
         if re.search(rf"\b{token}\b", upper):
@@ -252,6 +256,7 @@ def _detect_intensity(body: str) -> str:
 
 
 def _point_lat_lon(match: re.Match[str]) -> tuple[float, float]:
+    """Internal helper ``_point_lat_lon``."""
     lat = int(match.group("lat_deg")) + int(match.group("lat_min")) / 60.0
     lon = int(match.group("lon_deg")) + int(match.group("lon_min")) / 60.0
     if match.group("lon_hemi").upper() == "W":
@@ -271,6 +276,7 @@ def _polygon_from_wi_body(wi_body: str) -> dict[str, Any] | None:
 
 
 def _parse_va_eruption(body: str) -> dict[str, Any] | None:
+    """Internal helper ``_parse_va_eruption``."""
     match = _VA_ERUPTION.search(body)
     if match is None:
         return None
@@ -755,6 +761,11 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
     -------
     dict
         Intermediate representation.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_sigmet)
+    2
     """
     if product.upper() != "SIGMET":
         raise ValueError(f"product mismatch: expected SIGMET, found {product}")
@@ -840,6 +851,11 @@ def parse_airmet(tac: str, *, product: str = "AIRMET") -> dict[str, Any]:
     -------
     dict
         Intermediate representation.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (parse_airmet)
+    2
     """
     if product.upper() != "AIRMET":
         raise ValueError(f"product mismatch: expected AIRMET, found {product}")

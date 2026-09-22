@@ -22,7 +22,14 @@ depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
-    """Create tac_profile_overlays."""
+    """
+    Create tac_profile_overlays.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (upgrade)
+    2
+    """
     op.create_table(
         "tac_profile_overlays",
         sa.Column(
@@ -73,6 +80,13 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
-    """Drop tac_profile_overlays."""
+    """
+    Drop tac_profile_overlays.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (downgrade)
+    2
+    """
     op.drop_index("ix_tac_profile_overlays_user_id", table_name="tac_profile_overlays")
     op.drop_table("tac_profile_overlays")

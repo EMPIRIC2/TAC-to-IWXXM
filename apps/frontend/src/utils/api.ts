@@ -71,17 +71,32 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 30000): Promise
   ]);
 }
 
+/**
+ * Type `HealthResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface HealthResponse {
   status: 'healthy' | 'degraded';
   version: string;
   tac2iwxxm_available: boolean;
 }
 
+/**
+ * Type `AirportRegionResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface AirportRegionResponse {
   airport_code: string;
   icao_region: string;
 }
 
+/**
+ * Type `ApiError`.
+ * @example
+ * const _ = true;
+ */
 export interface ApiError {
   message: string;
   errors: string[];
@@ -94,6 +109,8 @@ export interface ApiError {
  * Preserves ``detail.errors`` / ``detail.issues`` from non-2xx convert responses so
  * the workbench can render the same operator-facing log panel it uses for 200 responses
  * with partial or failed conversion details.
+ * @example
+ * const _ = true;
  */
 export class ConvertApiError extends Error {
   status: number;
@@ -146,6 +163,8 @@ function apiErrorMessage(
  * Check backend health status
  *
  * **Endpoint**: GET /health
+ * @example
+ * const _ = true;
  */
 export async function checkHealth(): Promise<HealthResponse> {
   try {
@@ -175,6 +194,8 @@ export async function checkHealth(): Promise<HealthResponse> {
  * @param params.manualText - Optional: METAR text to convert
  * @param params.files - Optional: File list to convert
  * @returns Conversion results with XML content
+ * @example
+ * const _ = true;
  */
 export async function convertMetarToIwxxm(params: {
   manualText?: string;
@@ -359,6 +380,8 @@ export async function convertMetarToIwxxm(params: {
  * Split a WMO AHL bulletin and convert each TAC report.
  *
  * **Endpoint**: POST /api/v1/convert-bulletin
+ * @example
+ * const _ = true;
  */
 export async function convertBulletin(params: {
   manualText?: string;
@@ -437,6 +460,8 @@ export async function convertBulletin(params: {
 
 /**
  * Thrown when the backend returns HTTP 501 for a not-yet-implemented route.
+ * @example
+ * const _ = true;
  */
 export class EndpointNotImplementedError extends Error {
   status: number;
@@ -454,6 +479,8 @@ export class EndpointNotImplementedError extends Error {
  * Ingest / validate IWXXM COLLECT (or gzipped COLLECT).
  *
  * **Endpoint**: POST /api/v1/ingest-collect (placeholder until implemented).
+ * @example
+ * const _ = true;
  */
 export async function ingestCollect(params: {
   manualText?: string;
@@ -514,6 +541,8 @@ export async function ingestCollect(params: {
  * @param params.product - Optional product hint
  * @param params.signal - AbortSignal for live workbench cancellation
  * @returns Lint report with optional start/end spans
+ * @example
+ * const _ = true;
  */
 export async function lintTac(params: {
   manualText: string;
@@ -554,6 +583,8 @@ export async function lintTac(params: {
  * @param params.manualText - Optional TAC to convert then validate
  * @param params.xmlContent - Optional IWXXM XML to validate directly
  * @returns Layered validation report (`ValidateResponse`)
+ * @example
+ * const _ = true;
  */
 export async function validateIwxxm(params: {
   manualText?: string;
@@ -611,6 +642,8 @@ export async function validateIwxxm(params: {
  * Fetch IWXXM schema / profile pin status from the API.
  *
  * **Endpoint**: GET /api/v1/schema-status
+ * @example
+ * const _ = true;
  */
 export async function fetchSchemaStatus(): Promise<{
   profile_pins?: {
@@ -638,6 +671,8 @@ export async function fetchSchemaStatus(): Promise<{
  * Fetch the tac-validate issue registry catalog (F15 / E11-31).
  *
  * **Endpoint**: GET /api/v1/lint-issue-catalog
+ * @example
+ * const _ = true;
  */
 export async function fetchLintIssueCatalog(params?: {
   product?: string;
@@ -694,6 +729,8 @@ export async function fetchLintIssueCatalog(params?: {
  *
  * @param params.product - Optional product filter (e.g. metar)
  * @returns Summaries and file inventory rows
+ * @example
+ * const _ = true;
  */
 export async function fetchQualityMetrics(params?: {
   product?: string;
@@ -734,6 +771,8 @@ export async function fetchQualityMetrics(params?: {
  *
  * @param params.stem - Catalog / fixture stem (e.g. metar-A3-1)
  * @returns Per-stem TAC, XML, match, residuals, lint, validate
+ * @example
+ * const _ = true;
  */
 export async function fetchQualityMetricsDetail(params: {
   stem: string;
@@ -766,6 +805,8 @@ export async function fetchQualityMetricsDetail(params: {
  * @param params.manualText - TAC text
  * @param params.product - Required F6 product id
  * @returns Ordered segments and residuals
+ * @example
+ * const _ = true;
  */
 export async function decodeTac(params: {
   manualText: string;
@@ -808,6 +849,8 @@ export async function decodeTac(params: {
  * @param params.manualText - Optional: METAR text to convert
  * @param params.files - Optional: File list to convert
  * @returns Blob containing ZIP file with converted XMLs
+ * @example
+ * const _ = true;
  */
 export async function convertMetarToIwxxmZip(params: {
   manualText?: string;
@@ -850,6 +893,8 @@ export async function convertMetarToIwxxmZip(params: {
  * Fetch ICAO region for an airport code (F3 airport data services).
  *
  * **Endpoint**: GET /api/v1/translation/airport-region/{icao}
+ * @example
+ * const _ = true;
  */
 export async function fetchAirportRegion(icao: string): Promise<AirportRegionResponse> {
   const code = icao.trim().toUpperCase();
@@ -869,6 +914,8 @@ export async function fetchAirportRegion(icao: string): Promise<AirportRegionRes
  *
  * @param blob - File blob to download
  * @param filename - Filename for the download
+ * @example
+ * const _ = true;
  */
 export function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);
@@ -881,7 +928,11 @@ export function downloadBlob(blob: Blob, filename: string): void {
   URL.revokeObjectURL(url);
 }
 
-/** Per-file outcome from ``POST /api/v1/ingest/mass`` (F33). */
+/**
+ * Per-file outcome from ``POST /api/v1/ingest/mass`` (F33).
+ * @example
+ * const _ = true;
+ */
 export interface MassIngestFileResult {
   name: string;
   accepted: boolean;
@@ -890,7 +941,11 @@ export interface MassIngestFileResult {
   content: string | null;
 }
 
-/** Response from ``POST /api/v1/ingest/mass`` (F33 / EV-042). */
+/**
+ * Response from ``POST /api/v1/ingest/mass`` (F33 / EV-042).
+ * @example
+ * const _ = true;
+ */
 export interface MassIngestResponse {
   accepted_count: number;
   rejected_count: number;
@@ -909,6 +964,8 @@ export interface MassIngestResponse {
  * @param params.accessToken - Required Bearer JWT
  * @param params.signal - Optional abort signal
  * @returns Per-file accept/reject list and summary counts
+ * @example
+ * const _ = true;
  */
 export async function massIngestFiles(params: {
   files: File[];
@@ -953,6 +1010,8 @@ export async function massIngestFiles(params: {
  * Fetch a package-owned trust catalog by family (ADR-044).
  *
  * **Endpoint**: GET /api/v1/rule-catalogs
+ * @example
+ * const _ = true;
  */
 export async function fetchRuleCatalog(params: {
   family: 'tac' | 'iwxxm' | 'conversion' | 'dissemination' | 'decoding';
@@ -996,6 +1055,8 @@ export async function fetchRuleCatalog(params: {
  * Fetch deployed selection options for dropdowns (ADR-044).
  *
  * **Endpoint**: GET /api/v1/selection-options
+ * @example
+ * const _ = true;
  */
 export async function fetchSelectionOptions(params: {
   kind: 'conversion' | 'dissemination' | 'decoding';

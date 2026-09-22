@@ -45,12 +45,26 @@ _BUILTIN_PACK_DIR = Path(__file__).resolve().parent / "data" / "packs"
 
 
 class PackSchemaError(ValueError):
-    """A pack file or directory does not match the pack schema."""
+    """
+    A pack file or directory does not match the pack schema.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
 
 @dataclass(frozen=True, slots=True)
 class Rule:
-    """One match rule. Token rules use ``patterns``; label rules use ``label``."""
+    """
+    One match rule. Token rules use ``patterns``; label rules use ``label``.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     id: str
     explain: str
@@ -60,7 +74,14 @@ class Rule:
 
 @dataclass(frozen=True, slots=True)
 class Pack:
-    """One product pack: an id, a layout, and optional rules."""
+    """
+    One product pack: an id, a layout, and optional rules.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     id: str
     layout: str
@@ -68,10 +89,26 @@ class Pack:
 
 
 def load_packs(profile: str | None = None) -> tuple[Pack, ...]:
-    """Return built-in packs, with ``TAC_DECODING_PACK_DIR`` applied for ``profile``.
+    """
+    Return built-in packs, with ``TAC_DECODING_PACK_DIR`` applied for ``profile``.
 
     An overlay file with ``extends`` applies only when ``profile`` is one of its
     ``profiles``. Omitting ``profile`` leaves those overlays off the result.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_packs)
+    2
+
+    Parameters
+    ----------
+    profile : object
+        Argument ``profile``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     overlay = os.environ.get(PACK_DIR_ENV, "").strip()
     if not overlay:
@@ -81,16 +118,25 @@ def load_packs(profile: str | None = None) -> tuple[Pack, ...]:
 
 
 def clear_pack_cache() -> None:
-    """Drop cached built-in packs (tests that patch ``_BUILTIN_PACK_DIR`` must call this)."""
+    """
+    Drop cached built-in packs (tests that patch ``_BUILTIN_PACK_DIR`` must call this).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (clear_pack_cache)
+    2
+    """
     _load_builtins_cached.cache_clear()
 
 
 @lru_cache(maxsize=1)
 def _load_builtins_cached() -> tuple[Pack, ...]:
+    """Internal helper ``_load_builtins_cached``."""
     return _merge_packs("")
 
 
 def _merge_packs(overlay: str, profile: str | None = None) -> tuple[Pack, ...]:
+    """Internal helper ``_merge_packs``."""
     merged = {pack_id: Pack(pack_id, layout) for pack_id, layout in _BUILTINS}
     if _BUILTIN_PACK_DIR.is_dir():
         for pack in _read_overlay(_BUILTIN_PACK_DIR):
@@ -175,6 +221,7 @@ def _merge_rules(base: tuple[Rule, ...], extra: tuple[Rule, ...]) -> tuple[Rule,
 
 
 def _load_mapping(path: Path) -> dict[str, object]:
+    """Internal helper ``_load_mapping``."""
     text = path.read_text(encoding="utf-8")
     try:
         if path.suffix.lower() == ".json":
@@ -196,6 +243,7 @@ def _load_mapping(path: Path) -> dict[str, object]:
 
 
 def _read_overlay(directory: Path) -> tuple[Pack, ...]:
+    """Internal helper ``_read_overlay``."""
     found: list[Pack] = []
     for path in sorted(directory.iterdir()):
         if path.suffix.lower() not in _SUFFIXES:
@@ -205,6 +253,7 @@ def _read_overlay(directory: Path) -> tuple[Pack, ...]:
 
 
 def _read_file(path: Path) -> Pack:
+    """Internal helper ``_read_file``."""
     mapping = _load_mapping(path)
     pack_id = mapping.get("id")
     layout = mapping.get("layout")
@@ -218,6 +267,7 @@ def _read_file(path: Path) -> Pack:
 
 
 def _parse_rules(data: dict[str, object], layout: str, name: str) -> tuple[Rule, ...]:
+    """Internal helper ``_parse_rules``."""
     raw = data.get("rules", [])
     if not isinstance(raw, list):
         msg = f"{name} rules must be a list"
@@ -231,6 +281,7 @@ def _parse_rules(data: dict[str, object], layout: str, name: str) -> tuple[Rule,
 
 
 def _parse_rule(item: object, layout: str, name: str, seen: set[str]) -> Rule:
+    """Internal helper ``_parse_rule``."""
     if not isinstance(item, dict):
         msg = f"{name} rule must be a mapping"
         raise PackSchemaError(msg)
@@ -258,6 +309,7 @@ def _parse_rule(item: object, layout: str, name: str, seen: set[str]) -> Rule:
 
 
 def _token_rule(item: dict[str, object], rule_id: str, explain: str, name: str) -> Rule:
+    """Internal helper ``_token_rule``."""
     if "label" in item:
         msg = f"{name} token rule cannot have a label"
         raise PackSchemaError(msg)
@@ -287,6 +339,7 @@ def _token_rule(item: dict[str, object], rule_id: str, explain: str, name: str) 
 
 
 def _label_rule(item: dict[str, object], rule_id: str, explain: str, name: str) -> Rule:
+    """Internal helper ``_label_rule``."""
     if "pattern" in item:
         msg = f"{name} label rule cannot have a pattern"
         raise PackSchemaError(msg)

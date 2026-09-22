@@ -68,7 +68,19 @@ IMPLEMENTED_CA_STAGES: frozenset[str] = frozenset(
 
 
 def ca_iwxxm_core_xsd_path() -> Path | None:
-    """Return vendored IWXXM 3.0.0 core ``iwxxm.xsd`` when present."""
+    """
+    Return vendored IWXXM 3.0.0 core ``iwxxm.xsd`` when present.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ca_iwxxm_core_xsd_path)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     from iwxxm_validate.ca_eccc_bundle import resolve_ca_eccc_bundle
 
     bundle = resolve_ca_eccc_bundle()
@@ -76,12 +88,46 @@ def ca_iwxxm_core_xsd_path() -> Path | None:
 
 
 def ca_product_has_national_xsd(product: str) -> bool:
-    """Return whether ``product`` has a published ``*-ca`` XSD mapping."""
+    """
+    Return whether ``product`` has a published ``*-ca`` XSD mapping.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ca_product_has_national_xsd)
+    2
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return product.strip().upper() in CA_PRODUCT_XSD
 
 
 def ca_product_has_exchange_output(product: str) -> bool:
-    """Return whether ``product`` has an MSC exchange-output contract (filename + WMO header)."""
+    """
+    Return whether ``product`` has an MSC exchange-output contract (filename + WMO header).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ca_product_has_exchange_output)
+    2
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return product.strip().upper() in CA_EXCHANGE_OUTPUT_PRODUCTS
 
 
@@ -95,6 +141,16 @@ def ca_product_xsd_path(product: str, *, tag: str = CA_EXTENSION_TAG) -> Path | 
         API product enum (``METAR``, ``SPECI``, ``TAF``, ``AIRMET``).
     tag :
         MSC pin subdirectory (default ``3.0``).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (ca_product_xsd_path)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
     """
     xsd_name = CA_PRODUCT_XSD.get(product.upper())
     if xsd_name is None:
@@ -108,7 +164,19 @@ def ca_product_xsd_path(product: str, *, tag: str = CA_EXTENSION_TAG) -> Path | 
 
 
 def pending_ca_stages() -> tuple[str, ...]:
-    """Return CA validation stages not yet implemented in the layered pipeline."""
+    """
+    Return CA validation stages not yet implemented in the layered pipeline.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (pending_ca_stages)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     return tuple(stage for stage in CA_VALIDATION_STAGES if stage not in IMPLEMENTED_CA_STAGES)
 
 

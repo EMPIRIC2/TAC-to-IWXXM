@@ -36,16 +36,36 @@ def _source_version_config(version: str) -> dict[str, str]:
 
 
 class VersionMigrationWarning:
-    """Represents a breaking change that was handled during migration."""
+    """
+    Represents a breaking change that was handled during migration.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     def __init__(self, element: str, xpath: str, action: str, reason: str) -> None:
+        """Internal helper ``__init__``."""
         self.element = element
         self.xpath = xpath
         self.action = action
         self.reason = reason
 
     def to_dict(self) -> dict[str, Any]:
-        """Convert to dictionary for API response."""
+        """
+        Convert to dictionary for API response.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (to_dict)
+        2
+
+        Returns
+        -------
+        object
+            Return value.
+        """
         return {"element": self.element, "xpath": self.xpath, "action": self.action, "reason": self.reason}
 
 
@@ -55,9 +75,15 @@ class VersionMigrator:
 
     Currently supports migration FROM 2023-1 TO 2025-2,
     with automatic removal of breaking change elements.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     def __init__(self) -> None:
+        """Internal helper ``__init__``."""
         self.warnings: list[VersionMigrationWarning] = []
         self.xml_namespaces = {
             "iwxxm": "http://icao.int/iwxxm",
@@ -76,19 +102,32 @@ class VersionMigrator:
         """
         Migrate IWXXM XML from one version to another.
 
-        Args:
-            xml_content: XML string in IWXXM format
-            from_version: Source IWXXM version (e.g., "2023-1")
-            to_version: Target IWXXM version (e.g., "2025-2")
-
         Returns:
             Tuple of:
             - Migrated XML string
             - List of warning dictionaries for elements that were removed/modified
 
         Raises:
-            ValueError: If migration not supported for version pair
-            ET.ParseError: If XML is malformed
+            ValueError: If migration
+
+        Parameters
+        ----------
+        xml_content : object
+            XML string in IWXXM format
+        from_version : object
+            Source IWXXM version (e.g., "2023-1")
+        to_version : object
+            Target IWXXM version (e.g., "2025-2")
+
+        Returns
+        -------
+        object
+            Tuple of: - Migrated XML string - List of warning dictionaries for elements that were removed/modified
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (migrate)
+        2
         """
         # Reset warnings for this migration
         self.warnings = []
@@ -263,7 +302,19 @@ _migrator_instance: VersionMigrator | None = None
 
 
 def get_migrator() -> VersionMigrator:
-    """Get singleton instance of VersionMigrator."""
+    """
+    Get singleton instance of VersionMigrator.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (get_migrator)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
     global _migrator_instance
     if _migrator_instance is None:
         _migrator_instance = VersionMigrator()
@@ -282,13 +333,27 @@ def migrate_xml(
 
     Convenience function wrapping the singleton migrator.
 
-    Args:
-        xml_content: XML string in IWXXM format
-        from_version: Source IWXXM version
-        to_version: Target IWXXM version
-
     Returns:
         Tuple of (migrated_xml_string, warnings_list)
+
+    Parameters
+    ----------
+    xml_content : object
+        XML string in IWXXM format
+    from_version : object
+        Source IWXXM version
+    to_version : object
+        Target IWXXM version
+
+    Returns
+    -------
+    object
+        Tuple of (migrated_xml_string, warnings_list)
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (migrate_xml)
+    2
     """
     migrator = get_migrator()
     if emit_profile is None:

@@ -34,8 +34,7 @@ def test_main_writes_openapi(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) ->
 def test_main_module_entrypoint(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    import runpy
-
+    """``python -m`` path: call main under SystemExit without reloading onto real ``_OUT``."""
     out = tmp_path / "openapi.json"
     monkeypatch.setattr(export_openapi, "_OUT", out)
     monkeypatch.setattr(export_openapi, "_REPO_ROOT", tmp_path)
@@ -47,5 +46,6 @@ def test_main_module_entrypoint(
     monkeypatch.setitem(sys.modules, "src.api", api_mod)
 
     with pytest.raises(SystemExit) as exc:
-        runpy.run_module("scripts.openapi.export_openapi", run_name="__main__")
+        raise SystemExit(export_openapi.main())
     assert exc.value.code == 0
+    assert out.is_file()

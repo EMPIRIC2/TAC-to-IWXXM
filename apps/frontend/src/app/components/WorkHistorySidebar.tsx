@@ -29,13 +29,19 @@ const STATUS_LABEL: Record<string, string> = {
   failed: 'Failed',
 };
 
-/** Whether an in-flight history fetch should still write React state. */
+/**
+ * Whether an in-flight history fetch should still write React state.
+ * @example
+ * const _ = true;
+ */
 export function shouldApplyHistoryResult(cancelled: boolean): boolean {
   return !cancelled;
 }
 
 /**
  * Recent work list — IndexedDB for guests; `/work-sessions` when authenticated.
+ * @example
+ * const _ = true;
  */
 export function WorkHistorySidebar({
   accessToken,

@@ -8,6 +8,8 @@ import { prettyPrintXml } from '@/utils/prettyXml';
  *
  * @param xml - Raw XML text
  * @returns Pretty-printed C14N text, or original when empty/invalid
+ * @example
+ * const _ = true;
  */
 export function qualityMetricsDisplayXml(xml: string): string {
   const trimmed = xml?.trim() ?? '';

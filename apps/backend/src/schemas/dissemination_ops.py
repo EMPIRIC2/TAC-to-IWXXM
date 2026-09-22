@@ -14,7 +14,14 @@ AuditStatus = Literal["DELIVERED", "FAILED", "SKIPPED"]
 
 
 class DisseminationPlanCreate(BaseModel):
-    """Body to create a DisseminationPlan (no secrets)."""
+    """
+    Body to create a DisseminationPlan (no secrets).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     slug: str = Field(min_length=1, max_length=128)
     validity_policy: ValidityPolicy = "valid-only"
@@ -24,7 +31,14 @@ class DisseminationPlanCreate(BaseModel):
 
 
 class DisseminationPlanUpdate(BaseModel):
-    """Partial update for a DisseminationPlan."""
+    """
+    Partial update for a DisseminationPlan.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     validity_policy: ValidityPolicy | None = None
     destination_refs: list[str] | None = None
@@ -33,7 +47,14 @@ class DisseminationPlanUpdate(BaseModel):
 
 
 class DisseminationPlanOut(BaseModel):
-    """Persisted plan row."""
+    """
+    Persisted plan row.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     id: UUID
     user_id: UUID
@@ -47,7 +68,14 @@ class DisseminationPlanOut(BaseModel):
 
 
 class PlanExecuteRequest(BaseModel):
-    """Execute or dry-run a plan for a sample message."""
+    """
+    Execute or dry-run a plan for a sample message.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     dry_run: bool = True
     message_id: str | None = None
@@ -60,7 +88,14 @@ class PlanExecuteRequest(BaseModel):
 
 
 class DeliveryReceiptOut(BaseModel):
-    """Redacted delivery receipt (API)."""
+    """
+    Redacted delivery receipt (API).
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     status: AuditStatus
     gateway: str
@@ -70,14 +105,28 @@ class DeliveryReceiptOut(BaseModel):
 
 
 class PlanExecuteResponse(BaseModel):
-    """Execute outcome with receipts."""
+    """
+    Execute outcome with receipts.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     plan_id: UUID
     receipts: list[DeliveryReceiptOut]
 
 
 class AuditRecordOut(BaseModel):
-    """Persisted audit row — never includes BYOC secrets or URIs."""
+    """
+    Persisted audit row — never includes BYOC secrets or URIs.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     id: UUID
     user_id: UUID
@@ -94,7 +143,14 @@ class AuditRecordOut(BaseModel):
 
 
 class AuditListResponse(BaseModel):
-    """Paginated audit list."""
+    """
+    Paginated audit list.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     items: list[AuditRecordOut]
     total: int
@@ -103,7 +159,14 @@ class AuditListResponse(BaseModel):
 
 
 class MappingConfigCreate(BaseModel):
-    """Create a field mapping — no connection secrets."""
+    """
+    Create a field mapping — no connection secrets.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     name: str = Field(min_length=1, max_length=128)
     mode: MappingMode
@@ -111,14 +174,28 @@ class MappingConfigCreate(BaseModel):
 
 
 class MappingConfigUpdate(BaseModel):
-    """Partial MappingConfig update."""
+    """
+    Partial MappingConfig update.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     mode: MappingMode | None = None
     config: dict[str, Any] | None = None
 
 
 class MappingConfigOut(BaseModel):
-    """Persisted MappingConfig row."""
+    """
+    Persisted MappingConfig row.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     id: UUID
     user_id: UUID
@@ -130,7 +207,14 @@ class MappingConfigOut(BaseModel):
 
 
 class GatewayHealthOut(BaseModel):
-    """Operator-safe gateway health row."""
+    """
+    Operator-safe gateway health row.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     ok: bool
     gateway: str
@@ -139,6 +223,13 @@ class GatewayHealthOut(BaseModel):
 
 
 class GatewayHealthListResponse(BaseModel):
-    """Health for registered gateway kinds."""
+    """
+    Health for registered gateway kinds.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
 
     items: list[GatewayHealthOut]

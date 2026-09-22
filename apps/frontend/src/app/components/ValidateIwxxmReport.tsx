@@ -12,6 +12,8 @@ type ValidateIwxxmReportProps = {
  * Structured pass/fail panel for POST /api/v1/validate responses.
  *
  * @param props.report - ValidateResponse from the API
+ * @example
+ * const _ = true;
  */
 export function ValidateIwxxmReport({ report }: ValidateIwxxmReportProps) {
   const failed = report.layers_failed ?? [];

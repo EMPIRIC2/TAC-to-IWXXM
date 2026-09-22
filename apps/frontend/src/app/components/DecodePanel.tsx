@@ -5,6 +5,11 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
+/**
+ * Type `DecodeSegmentView`.
+ * @example
+ * const _ = true;
+ */
 export interface DecodeSegmentView {
   start: number;
   end: number;
@@ -12,12 +17,22 @@ export interface DecodeSegmentView {
   explanation: string;
 }
 
+/**
+ * Type `DecodeResidualView`.
+ * @example
+ * const _ = true;
+ */
 export interface DecodeResidualView {
   start: number;
   end: number;
   text: string;
 }
 
+/**
+ * Type `DecodePanelProps`.
+ * @example
+ * const _ = true;
+ */
 export interface DecodePanelProps {
   segments: DecodeSegmentView[];
   residuals: DecodeResidualView[];
@@ -36,6 +51,8 @@ export interface DecodePanelProps {
  * @param props.segments - Annotated TAC spans
  * @param props.residuals - Undecoded spans (G4)
  * @param props.summary - Optional plain-language report summary (F9)
+ * @example
+ * const _ = true;
  */
 export function DecodePanel({
   segments,

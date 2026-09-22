@@ -150,6 +150,13 @@ jobs:
       - name: Validation catalog drift
         run: make validation-catalog-check
 
+      - name: ADR-048 documentation bar (checkers)
+        run: |
+          make check-docs
+          make check-docs-ts
+          make check-docs-rust
+          make test-doctest
+
   typecheck:
     if: ${{ !(github.event_name == 'workflow_dispatch' && github.event.inputs.ops == 'ev933-staging') }}
     runs-on: ubuntu-latest

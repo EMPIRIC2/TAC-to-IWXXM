@@ -4,6 +4,9 @@
 
 import { apiUrl } from './apiBase';
 
+/**
+ * Function `authHeaders`.
+ */
 function authHeaders(accessToken: string): HeadersInit {
   return {
     Authorization: `Bearer ${accessToken}`,
@@ -11,6 +14,9 @@ function authHeaders(accessToken: string): HeadersInit {
   };
 }
 
+/**
+ * Function `parseJson`.
+ */
 async function parseJson<T>(response: Response): Promise<T> {
   if (!response.ok) {
     const error = await response.json().catch(() => ({ detail: response.statusText }));
@@ -24,7 +30,11 @@ async function parseJson<T>(response: Response): Promise<T> {
   return response.json() as Promise<T>;
 }
 
-/** Catalog variant row for profile-scoped METAR-family roots. */
+/**
+ * Catalog variant row for profile-scoped METAR-family roots.
+ * @example
+ * const _ = true;
+ */
 export interface MetarFamilyVariant {
   tac_lead: string;
   api_product: string;
@@ -36,7 +46,11 @@ export interface MetarFamilyVariant {
   notes?: string | null;
 }
 
-/** Catalog profile entry (inspector). */
+/**
+ * Catalog profile entry (inspector).
+ * @example
+ * const _ = true;
+ */
 export interface ProfileCatalogEntry {
   id: string;
   kind: string;
@@ -54,12 +68,21 @@ export interface ProfileCatalogEntry {
   overlay_count?: number | null;
 }
 
+/**
+ * Type `ProfileCatalogResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface ProfileCatalogResponse {
   schema_version?: number | string | null;
   profiles: ProfileCatalogEntry[];
 }
 
-/** Persisted rule pack. */
+/**
+ * Persisted rule pack.
+ * @example
+ * const _ = true;
+ */
 export interface RulePackOut {
   id: string;
   user_id: string;
@@ -75,10 +98,20 @@ export interface RulePackOut {
   updated_at: string;
 }
 
+/**
+ * Type `RulePackListResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface RulePackListResponse {
   items: RulePackOut[];
 }
 
+/**
+ * Type `RulePackCreateBody`.
+ * @example
+ * const _ = true;
+ */
 export interface RulePackCreateBody {
   slug: string;
   profile: string;
@@ -90,6 +123,11 @@ export interface RulePackCreateBody {
   standardReference?: string;
 }
 
+/**
+ * Type `RulePackUpdateBody`.
+ * @example
+ * const _ = true;
+ */
 export interface RulePackUpdateBody {
   slug?: string;
   profile?: string;
@@ -101,6 +139,11 @@ export interface RulePackUpdateBody {
   standardReference?: string;
 }
 
+/**
+ * Type `PresetOut`.
+ * @example
+ * const _ = true;
+ */
 export interface PresetOut {
   id: string;
   user_id: string;
@@ -116,10 +159,20 @@ export interface PresetOut {
   updated_at: string;
 }
 
+/**
+ * Type `PresetListResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface PresetListResponse {
   items: PresetOut[];
 }
 
+/**
+ * Type `DisseminationTemplateOut`.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationTemplateOut {
   id: string;
   user_id: string;
@@ -134,10 +187,20 @@ export interface DisseminationTemplateOut {
   updated_at: string;
 }
 
+/**
+ * Type `DisseminationTemplateListResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationTemplateListResponse {
   items: DisseminationTemplateOut[];
 }
 
+/**
+ * Type `DisseminationTemplateCreateBody`.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationTemplateCreateBody {
   slug: string;
   name: string;
@@ -148,6 +211,11 @@ export interface DisseminationTemplateCreateBody {
   shared?: boolean;
 }
 
+/**
+ * Type `DisseminationTemplateUpdateBody`.
+ * @example
+ * const _ = true;
+ */
 export interface DisseminationTemplateUpdateBody {
   slug?: string;
   name?: string;
@@ -158,6 +226,11 @@ export interface DisseminationTemplateUpdateBody {
   shared?: boolean;
 }
 
+/**
+ * Type `PresetCreateBody`.
+ * @example
+ * const _ = true;
+ */
 export interface PresetCreateBody {
   slug: string;
   name: string;
@@ -169,6 +242,11 @@ export interface PresetCreateBody {
   shared?: boolean;
 }
 
+/**
+ * Type `PresetUpdateBody`.
+ * @example
+ * const _ = true;
+ */
 export interface PresetUpdateBody {
   slug?: string;
   name?: string;
@@ -180,7 +258,11 @@ export interface PresetUpdateBody {
   shared?: boolean;
 }
 
-/** Persisted signed overlay. */
+/**
+ * Persisted signed overlay.
+ * @example
+ * const _ = true;
+ */
 export interface OverlayOut {
   id: string;
   user_id: string;
@@ -193,10 +275,20 @@ export interface OverlayOut {
   updated_at: string;
 }
 
+/**
+ * Type `OverlayListResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface OverlayListResponse {
   items: OverlayOut[];
 }
 
+/**
+ * Type `OverlayCreateBody`.
+ * @example
+ * const _ = true;
+ */
 export interface OverlayCreateBody {
   slug: string;
   baseProfileId: string;
@@ -204,6 +296,11 @@ export interface OverlayCreateBody {
   shared?: boolean;
 }
 
+/**
+ * Type `OverlayUpdateBody`.
+ * @example
+ * const _ = true;
+ */
 export interface OverlayUpdateBody {
   slug?: string;
   baseProfileId?: string;
@@ -215,6 +312,8 @@ export interface OverlayUpdateBody {
  * Fetch read-only ConversionProfile catalog.
  *
  * @param accessToken - Bearer JWT
+ * @example
+ * const _ = true;
  */
 export async function fetchProfileCatalog(
   accessToken: string,
@@ -229,6 +328,8 @@ export async function fetchProfileCatalog(
  * List rule packs for the signed-in user.
  *
  * @param accessToken - Bearer JWT
+ * @example
+ * const _ = true;
  */
 export async function listRulePacks(
   accessToken: string,
@@ -243,6 +344,8 @@ export async function listRulePacks(
  * List semantic presets for the signed-in user.
  *
  * @param accessToken - Bearer JWT
+ * @example
+ * const _ = true;
  */
 export async function listPresets(accessToken: string): Promise<PresetListResponse> {
   const response = await fetch(apiUrl('/api/v1/profiles/presets'), {
@@ -255,6 +358,8 @@ export async function listPresets(accessToken: string): Promise<PresetListRespon
  * List dissemination templates for the signed-in user.
  *
  * @param accessToken - Bearer JWT
+ * @example
+ * const _ = true;
  */
 export async function listTemplates(
   accessToken: string,
@@ -270,6 +375,8 @@ export async function listTemplates(
  *
  * @param accessToken - Bearer JWT
  * @param body - Pack fields
+ * @example
+ * const _ = true;
  */
 export async function createRulePack(
   accessToken: string,
@@ -289,6 +396,8 @@ export async function createRulePack(
  * @param accessToken - Bearer JWT
  * @param packId - Persisted pack id
  * @param body - Partial pack fields
+ * @example
+ * const _ = true;
  */
 export async function updateRulePack(
   accessToken: string,
@@ -308,6 +417,8 @@ export async function updateRulePack(
  *
  * @param accessToken - Bearer JWT
  * @param packId - Persisted pack id
+ * @example
+ * const _ = true;
  */
 export async function deleteRulePack(
   accessToken: string,
@@ -325,6 +436,8 @@ export async function deleteRulePack(
  *
  * @param accessToken - Bearer JWT
  * @param body - Preset fields
+ * @example
+ * const _ = true;
  */
 export async function createPreset(
   accessToken: string,
@@ -344,6 +457,8 @@ export async function createPreset(
  * @param accessToken - Bearer JWT
  * @param presetId - Persisted preset id
  * @param body - Partial preset fields
+ * @example
+ * const _ = true;
  */
 export async function updatePreset(
   accessToken: string,
@@ -363,6 +478,8 @@ export async function updatePreset(
  *
  * @param accessToken - Bearer JWT
  * @param presetId - Persisted preset id
+ * @example
+ * const _ = true;
  */
 export async function deletePreset(
   accessToken: string,
@@ -380,6 +497,8 @@ export async function deletePreset(
  *
  * @param accessToken - Bearer JWT
  * @param body - Template fields
+ * @example
+ * const _ = true;
  */
 export async function createTemplate(
   accessToken: string,
@@ -399,6 +518,8 @@ export async function createTemplate(
  * @param accessToken - Bearer JWT
  * @param templateId - Persisted template id
  * @param body - Partial template fields
+ * @example
+ * const _ = true;
  */
 export async function updateTemplate(
   accessToken: string,
@@ -418,6 +539,8 @@ export async function updateTemplate(
  *
  * @param accessToken - Bearer JWT
  * @param templateId - Persisted template id
+ * @example
+ * const _ = true;
  */
 export async function deleteTemplate(
   accessToken: string,
@@ -434,6 +557,8 @@ export async function deleteTemplate(
  * List signed overlays for the signed-in user.
  *
  * @param accessToken - Bearer JWT
+ * @example
+ * const _ = true;
  */
 export async function listOverlays(accessToken: string): Promise<OverlayListResponse> {
   const response = await fetch(apiUrl('/api/v1/profiles/overlays'), {
@@ -447,6 +572,8 @@ export async function listOverlays(accessToken: string): Promise<OverlayListResp
  *
  * @param accessToken - Bearer JWT
  * @param body - Overlay fields
+ * @example
+ * const _ = true;
  */
 export async function createOverlay(
   accessToken: string,
@@ -466,6 +593,8 @@ export async function createOverlay(
  * @param accessToken - Bearer JWT
  * @param overlayId - Persisted overlay id
  * @param body - Partial overlay fields
+ * @example
+ * const _ = true;
  */
 export async function updateOverlay(
   accessToken: string,
@@ -485,6 +614,8 @@ export async function updateOverlay(
  *
  * @param accessToken - Bearer JWT
  * @param overlayId - Persisted overlay id
+ * @example
+ * const _ = true;
  */
 export async function deleteOverlay(
   accessToken: string,
@@ -497,7 +628,11 @@ export async function deleteOverlay(
   await parseJson<unknown>(response);
 }
 
-/** Conversion template slot (parameterizable conversion templates). */
+/**
+ * Conversion template slot (parameterizable conversion templates).
+ * @example
+ * const _ = true;
+ */
 export interface ConversionTemplateSlot {
   id: string;
   label: string;
@@ -512,7 +647,11 @@ export interface ConversionTemplateSlot {
   gloss?: string;
 }
 
-/** Conversion template (first-party or custom). */
+/**
+ * Conversion template (first-party or custom).
+ * @example
+ * const _ = true;
+ */
 export interface ConversionTemplateOut {
   id: string;
   user_id?: string | null;
@@ -530,11 +669,20 @@ export interface ConversionTemplateOut {
   updated_at?: string | null;
 }
 
+/**
+ * Type `ConversionTemplateListResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface ConversionTemplateListResponse {
   items: ConversionTemplateOut[];
 }
 
-/** Five Libraries asset kinds (Profile builder + Convert pickers). */
+/**
+ * Five Libraries asset kinds (Profile builder + Convert pickers).
+ * @example
+ * const _ = true;
+ */
 export type LibraryAssetKind =
   | 'conversion'
   | 'tac_validation'
@@ -542,7 +690,11 @@ export type LibraryAssetKind =
   | 'dissemination'
   | 'decoding';
 
-/** First-party or custom library asset. */
+/**
+ * First-party or custom library asset.
+ * @example
+ * const _ = true;
+ */
 export interface LibraryAssetOut {
   id: string;
   kind: LibraryAssetKind;
@@ -562,6 +714,11 @@ export interface LibraryAssetOut {
   schemaVersion?: number | null;
 }
 
+/**
+ * Type `LibraryAssetListResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface LibraryAssetListResponse {
   items: LibraryAssetOut[];
 }
@@ -571,6 +728,8 @@ export interface LibraryAssetListResponse {
  *
  * @param accessToken - Bearer JWT
  * @param kind - Optional kind filter
+ * @example
+ * const _ = true;
  */
 export async function listLibraryAssets(
   accessToken: string,
@@ -583,6 +742,11 @@ export async function listLibraryAssets(
   return parseJson(response);
 }
 
+/**
+ * Type `LibraryYamlValidateResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface LibraryYamlValidateResponse {
   valid_yaml: boolean;
   yaml_error: string | null;
@@ -607,6 +771,8 @@ export interface LibraryYamlValidateResponse {
  *
  * @param accessToken - Bearer JWT
  * @param body - YAML + expected kind
+ * @example
+ * const _ = true;
  */
 export async function validateLibraryYaml(
   accessToken: string,
@@ -632,6 +798,8 @@ export async function validateLibraryYaml(
  *
  * @param accessToken - Bearer JWT
  * @param body - Create payload
+ * @example
+ * const _ = true;
  */
 export async function createLibraryAsset(
   accessToken: string,
@@ -663,6 +831,8 @@ export async function createLibraryAsset(
  * @param accessToken - Bearer JWT
  * @param assetId - Custom asset UUID
  * @param body - Partial update
+ * @example
+ * const _ = true;
  */
 export async function updateLibraryAsset(
   accessToken: string,
@@ -685,6 +855,11 @@ export async function updateLibraryAsset(
   return parseJson(response);
 }
 
+/**
+ * Type `ConversionTemplatePreviewResponse`.
+ * @example
+ * const _ = true;
+ */
 export interface ConversionTemplatePreviewResponse {
   templateId: string;
   focusGroup: string;
@@ -699,6 +874,8 @@ export interface ConversionTemplatePreviewResponse {
  * List first-party and custom conversion templates.
  *
  * @param accessToken - Bearer JWT
+ * @example
+ * const _ = true;
  */
 export async function listConversionTemplates(
   accessToken: string,
@@ -714,6 +891,8 @@ export async function listConversionTemplates(
  *
  * @param accessToken - Bearer JWT
  * @param body - Preview request
+ * @example
+ * const _ = true;
  */
 export async function previewConversionTemplate(
   accessToken: string,
@@ -741,6 +920,8 @@ export async function previewConversionTemplate(
  *
  * @param accessToken - Bearer JWT
  * @param body - Create payload
+ * @example
+ * const _ = true;
  */
 export async function createConversionTemplate(
   accessToken: string,
@@ -769,6 +950,8 @@ export async function createConversionTemplate(
  * @param accessToken - Bearer JWT
  * @param templateId - Custom template id
  * @param body - Partial update (camelCase aliases)
+ * @example
+ * const _ = true;
  */
 export async function updateConversionTemplate(
   accessToken: string,

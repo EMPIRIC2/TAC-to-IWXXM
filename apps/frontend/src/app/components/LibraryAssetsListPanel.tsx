@@ -20,12 +20,20 @@ import {
 } from '../../utils/conversionProfilesCopy';
 import { Card } from './ui/card';
 
+/**
+ * Type `LibraryAssetsListPanelProps`.
+ * @example
+ * const _ = true;
+ */
 export type LibraryAssetsListPanelProps = {
   accessToken: string;
   kind: LibraryAssetKind;
   heading: string;
 };
 
+/**
+ * Function `accessLabel`.
+ */
 function accessLabel(access: string): string {
   return access === 'first_party'
     ? PROFILES_LIBRARY_ACCESS_BUILTIN
@@ -38,6 +46,8 @@ function accessLabel(access: string): string {
  * @param props.accessToken - Bearer JWT
  * @param props.kind - Library kind filter
  * @param props.heading - Operator-visible panel title
+ * @example
+ * const _ = true;
  */
 export function LibraryAssetsListPanel({
   accessToken,

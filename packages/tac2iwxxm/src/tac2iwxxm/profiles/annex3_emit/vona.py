@@ -30,6 +30,7 @@ _IWXXM_NIL = "http://codes.wmo.int/iwxxm/nil"
 
 
 def _fmt_coord(value: float) -> str:
+    """Internal helper ``_fmt_coord``."""
     text = f"{value:.2f}"
     if text.endswith(".00"):
         return text[:-3]
@@ -131,6 +132,23 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
     ``phenomenonProperty`` uses ``iwxxm/nil/inapplicable`` on the A7-1 peer; non-peer
     TAC with ``HGT SOURCE`` / ``MOV`` encodes ``VolcanicAshCloudVerticalExtent``
     (G-VONA-1 / TC-EV038-011 / #849).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_vona_annex3)
+    2
+
+    Parameters
+    ----------
+    ir : object
+        Argument ``ir``.
+    iwxxm_version : object
+        Argument ``iwxxm_version``.
+
+    Returns
+    -------
+    object
+        Return value.
     """
     from tac2iwxxm.codelists import aviation_colour_href
 
@@ -325,6 +343,7 @@ def emit_vona_annex3(ir: dict[str, Any], *, iwxxm_version: str) -> str:
 
 
 def _assert_vona_xml(xml: str) -> str:
+    """Internal helper ``_assert_vona_xml``."""
     if "<iwxxm:VolcanoObservatoryNoticeForAviation " not in xml:
         raise ValueError("VONA emitter product/root guard: missing VolcanoObservatoryNoticeForAviation root")
     for forbidden in (

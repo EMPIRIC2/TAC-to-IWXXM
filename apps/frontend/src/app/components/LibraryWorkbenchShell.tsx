@@ -18,6 +18,11 @@ import {
 } from '../../utils/conversionProfilesCopy';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
+/**
+ * Type `LibraryWorkbenchShellProps`.
+ * @example
+ * const _ = true;
+ */
 export type LibraryWorkbenchShellProps = {
   kind: string;
   catalog: ReactNode;
@@ -32,6 +37,8 @@ export type LibraryWorkbenchShellProps = {
  * @param props.kind - Library kind slug for testids
  * @param props.catalog - Catalog / asset list column
  * @param props.editor - Item editor column
+ * @example
+ * const _ = true;
  */
 export function LibraryWorkbenchShell({
   kind,

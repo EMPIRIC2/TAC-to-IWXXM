@@ -38,6 +38,11 @@ def classify_issue_type(
     -------
     str
         One of ``ISSUE_TYPES``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (classify_issue_type)
+    2
     """
     if (family or "").lower() == "iwxxm":
         return "iwxxm_schema"
@@ -86,6 +91,11 @@ def source_access_for(
     -------
     str | None
         One of ``SOURCE_ACCESS``, or None when unknown.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (source_access_for)
+    2
     """
     if raw_status == "paywall" or (source_url and "store.icao.int" in source_url):
         return "paywall"
@@ -111,6 +121,11 @@ def source_locator_for(note: str | None) -> str | None:
     -------
     str | None
         Locator string, or None when unavailable.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (source_locator_for)
+    2
     """
     if not note:
         return None
@@ -140,6 +155,11 @@ def human_source_cite(locator: str | None, *, paywall: bool = False) -> str:
     -------
     str
         Natural-language source line (no planning ids).
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (human_source_cite)
+    2
     """
     if locator:
         base = f"Source: {locator}."

@@ -31,6 +31,11 @@ class TranslationStatisticsModel(Base):
 
     Stores translations of meteorological observations from METAR TAC format
     to IWXXM XML format with metadata and validation results.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     __tablename__ = "translation_statistics"
@@ -95,6 +100,7 @@ class TranslationStatisticsModel(Base):
     )
 
     def __repr__(self) -> str:
+        """Internal helper ``__repr__``."""
         return f"<TranslationStatistics(id={self.translation_id}, airport={self.icao_airport_code}, status={self.translation_status})>"
 
 
@@ -103,6 +109,11 @@ class TranslationStatisticsSummaryModel(Base):
     SQLAlchemy ORM model for translation_statistics_summary table.
 
     Stores pre-computed aggregations of translation statistics for faster queries.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
     """
 
     __tablename__ = "translation_statistics_summary"
@@ -141,4 +152,5 @@ class TranslationStatisticsSummaryModel(Base):
     )
 
     def __repr__(self) -> str:
+        """Internal helper ``__repr__``."""
         return f"<TranslationStatisticsSummary(period={self.period_start} to {self.period_end}, total={self.total_translations})>"

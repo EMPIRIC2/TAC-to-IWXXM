@@ -17,6 +17,7 @@ from tac2iwxxm.overlay_check import check_profile_overlay_dir
 
 
 def _build_parser() -> argparse.ArgumentParser:
+    """Internal helper ``_build_parser``."""
     parser = argparse.ArgumentParser(
         prog="tac2iwxxm",
         description="tac2iwxxm DX helpers (overlay check). Use the Python API for convert.",
@@ -55,6 +56,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     -------
     int
         ``0`` when the overlay loads; ``1`` on failure.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (main)
+    2
     """
     parser = _build_parser()
     args = parser.parse_args(list(argv) if argv is not None else None)

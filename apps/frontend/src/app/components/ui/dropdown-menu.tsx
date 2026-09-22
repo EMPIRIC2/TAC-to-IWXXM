@@ -6,24 +6,36 @@ import { CheckIcon, ChevronRightIcon, CircleIcon } from 'lucide-react';
 
 import { cn } from './utils';
 
+/**
+ * Function `DropdownMenu`.
+ */
 function DropdownMenu({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
   return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />;
 }
 
+/**
+ * Function `DropdownMenuPortal`.
+ */
 function DropdownMenuPortal({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
   return <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />;
 }
 
+/**
+ * Function `DropdownMenuTrigger`.
+ */
 function DropdownMenuTrigger({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
   return <DropdownMenuPrimitive.Trigger data-slot="dropdown-menu-trigger" {...props} />;
 }
 
+/**
+ * Function `DropdownMenuContent`.
+ */
 function DropdownMenuContent({
   className,
   sideOffset = 4,
@@ -44,12 +56,18 @@ function DropdownMenuContent({
   );
 }
 
+/**
+ * Function `DropdownMenuGroup`.
+ */
 function DropdownMenuGroup({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
   return <DropdownMenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />;
 }
 
+/**
+ * Function `DropdownMenuItem`.
+ */
 function DropdownMenuItem({
   className,
   inset,
@@ -73,6 +91,9 @@ function DropdownMenuItem({
   );
 }
 
+/**
+ * Function `DropdownMenuCheckboxItem`.
+ */
 function DropdownMenuCheckboxItem({
   className,
   children,
@@ -99,6 +120,9 @@ function DropdownMenuCheckboxItem({
   );
 }
 
+/**
+ * Function `DropdownMenuRadioGroup`.
+ */
 function DropdownMenuRadioGroup({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>) {
@@ -110,6 +134,9 @@ function DropdownMenuRadioGroup({
   );
 }
 
+/**
+ * Function `DropdownMenuRadioItem`.
+ */
 function DropdownMenuRadioItem({
   className,
   children,
@@ -134,6 +161,9 @@ function DropdownMenuRadioItem({
   );
 }
 
+/**
+ * Function `DropdownMenuLabel`.
+ */
 function DropdownMenuLabel({
   className,
   inset,
@@ -151,6 +181,9 @@ function DropdownMenuLabel({
   );
 }
 
+/**
+ * Function `DropdownMenuSeparator`.
+ */
 function DropdownMenuSeparator({
   className,
   ...props
@@ -164,6 +197,9 @@ function DropdownMenuSeparator({
   );
 }
 
+/**
+ * Function `DropdownMenuShortcut`.
+ */
 function DropdownMenuShortcut({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span
@@ -174,12 +210,18 @@ function DropdownMenuShortcut({ className, ...props }: React.ComponentProps<'spa
   );
 }
 
+/**
+ * Function `DropdownMenuSub`.
+ */
 function DropdownMenuSub({
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
   return <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />;
 }
 
+/**
+ * Function `DropdownMenuSubTrigger`.
+ */
 function DropdownMenuSubTrigger({
   className,
   inset,
@@ -204,6 +246,9 @@ function DropdownMenuSubTrigger({
   );
 }
 
+/**
+ * Function `DropdownMenuSubContent`.
+ */
 function DropdownMenuSubContent({
   className,
   ...props
