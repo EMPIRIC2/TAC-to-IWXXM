@@ -110,6 +110,7 @@ _OFFICIAL_TOKENS: dict[str, str] = {
 
 _ENV_PATH = "TAC_DECODING_GLOSSARY_PATH"
 _LEGACY_ENV_PATH = "TAC2IWXXM_DECODE_GLOSSARY_PATH"
+ENV_LOCATION_NAMES_PATH = "TAC_DECODING_LOCATION_NAMES_PATH"
 
 LocationNameResolver = Callable[[str], str | None]
 
@@ -135,15 +136,62 @@ def set_location_name_resolver(resolver: LocationNameResolver | None) -> None:
     _location_name_resolver = resolver
 
 
+def _load_location_name_table() -> dict[str, str]:
+    """
+    Load the optional ICAO→name YAML table.
+
+    The file is a mapping of designator to place name. There is no packaged
+    default. A missing path, unreadable file, or non-mapping document yields
+    an empty table. Never raises.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (_load_location_name_table)
+    2
+
+    Returns
+    -------
+    dict[str, str]
+        Uppercase designators to stripped place names.
+    """
+    raw_path = os.environ.get(ENV_LOCATION_NAMES_PATH, "").strip()
+    if not raw_path:
+        return {}
+    path = Path(raw_path)
+    try:
+        text = path.read_text(encoding="utf-8")
+        loaded = yaml.safe_load(text)
+    except (OSError, yaml.YAMLError):
+        return {}
+    if not isinstance(loaded, dict):
+        return {}
+    mapping = cast(Mapping[Any, Any], loaded)
+    names = mapping.get("names", mapping)
+    if not isinstance(names, dict):
+        return {}
+    out: dict[str, str] = {}
+    for key, value in cast(Mapping[Any, Any], names).items():
+        if not isinstance(key, str) or not isinstance(value, str):
+            continue
+        designator = key.strip().upper()
+        place = value.strip()
+        if designator and place:
+            out[designator] = place
+    return out
+
+
 def resolve_location_name(icao: str) -> str | None:
     """
-    Resolve an ICAO designator via the installed location resolver.
+    Resolve an ICAO designator via the installed hook, else the YAML name table.
+
+    An installed ``set_location_name_resolver`` wins and does not fall through
+    to the table. With no hook, ``TAC_DECODING_LOCATION_NAMES_PATH`` supplies
+    names. A miss returns ``None`` (designator-only copy). Never raises.
 
     Returns
     -------
     str | None
-        Place name when resolvable; ``None`` on miss or when no resolver is set.
-        Never raises on lookup failure.
+        Place name when resolvable; ``None`` on miss or when no source is set.
 
     Examples
     --------
@@ -155,12 +203,13 @@ def resolve_location_name(icao: str) -> str | None:
     icao : object
         Argument ``icao``.
     """
-    if _location_name_resolver is None:
-        return None
-    try:
-        return _location_name_resolver(icao.upper())
-    except Exception:
-        return None
+    designator = icao.strip().upper()
+    if _location_name_resolver is not None:
+        try:
+            return _location_name_resolver(designator)
+        except Exception:
+            return None
+    return _load_location_name_table().get(designator)
 
 
 def _packaged_overlay_tokens() -> dict[str, str]:

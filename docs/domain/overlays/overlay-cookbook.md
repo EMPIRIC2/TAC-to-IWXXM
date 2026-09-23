@@ -84,6 +84,7 @@ YAML bodies — mount directories on the server.
 |---------|-----|---------|
 | `tac-decoding` | `TAC_DECODING_PACK_DIR` | Pack overlays |
 | `tac-decoding` | `TAC_DECODING_GLOSSARY_PATH` | Glossary overlay (legacy: `TAC2IWXXM_DECODE_GLOSSARY_PATH`) |
+| `tac-decoding` | `TAC_DECODING_LOCATION_NAMES_PATH` | ICAO→name YAML table (ADR-049). No packaged default. An installed resolver hook wins |
 | `tac-validate` | `TAC_VALIDATE_POLICY_DIR` | TAC quality policy overlays |
 | `tac-validate` | `TAC_VALIDATE_DETECTOR_DIR` | Detector pack overlays |
 | `tac-validate` | `TAC_VALIDATE_DETECTOR_MODE` | `detector` / `legacy` |
