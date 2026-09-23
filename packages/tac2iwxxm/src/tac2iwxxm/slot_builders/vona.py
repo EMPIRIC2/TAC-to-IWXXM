@@ -147,7 +147,19 @@ def _strip_optional_ahl(tac: str) -> str:
 
 
 def _ahl_centre(tac: str) -> str | None:
-    """Return the WMO CCCC on a leading abbreviated heading, when present."""
+    """
+    Return the WMO CCCC on a leading abbreviated heading, when present.
+
+    Parameters
+    ----------
+    tac : str
+        VONA text, optionally starting with a WMO abbreviated heading.
+
+    Returns
+    -------
+    str | None
+        Four-letter originator, or ``None`` when the first line is not a heading.
+    """
     lines = tac.splitlines()
     if not lines:
         return None
@@ -159,10 +171,22 @@ def _ahl_centre(tac: str) -> str | None:
 
 
 def _strip_gateway_question_padding(tac: str) -> str:
-    """Drop ``?`` runs used as padding on truncated US VONA gateway files."""
+    """
+    Drop ``?`` runs used as padding on truncated US VONA gateway files.
+
+    Parameters
+    ----------
+    tac : str
+        Raw VONA text.
+
+    Returns
+    -------
+    str
+        Text with question-mark padding removed when a field colon is present.
+    """
     if "?" not in tac or ":" not in tac:
         return tac
-    return tac.replace("?", "")
+    return re.sub(r"(?<=:)\s*\?+", "", tac)
 
 
 def _parse_elevation_m(token: str) -> float | None:

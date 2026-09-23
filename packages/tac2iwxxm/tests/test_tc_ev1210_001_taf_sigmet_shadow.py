@@ -179,12 +179,13 @@ def test_ca_eccc_shadow_keeps_3_0_0_xml(product: str, relative: str) -> None:
     assert _NS["3.0.0"] in shadow.xml
 
 
-def test_ca_eccc_rejects_sigmet_the_same_way() -> None:
+def test_ca_eccc_converts_sigmet_the_same_way() -> None:
     tac = _tac("sigmet_a6_1a_ts.tac")
     legacy = convert(tac, product="SIGMET", profile="ca_eccc", iwxxm_version="3.0.0")
     shadow = convert_shadow(tac, product="SIGMET", profile="ca_eccc", iwxxm_version="3.0.0")
-    assert legacy.ok is False
-    assert shadow.ok is False
+    assert legacy.ok is True
+    assert shadow.ok is True
     assert shadow.xml == legacy.xml
-    assert shadow.match is None
-    assert any(issue.code == "UNSUPPORTED_PROFILE" for issue in legacy.issues)
+    assert shadow.match is not None
+    assert shadow.iwxxm_version == "3.0.0"
+    assert "http://icao.int/iwxxm/3.0" in (shadow.xml or "")

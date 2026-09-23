@@ -11,7 +11,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 from iwxxm_validate import validate
+from tac2iwxxm.profiles.ca_eccc import emit_sigmet_ca_eccc, emit_vaa_ca_eccc
+from tac2iwxxm.slot_builders.vona import _strip_gateway_question_padding, parse_vona
 
 from tac2iwxxm import convert
 
@@ -104,3 +107,21 @@ def test_ca_eccc_converts_gander_sigmet_and_montreal_vaa() -> None:
     assert vaa.iwxxm_version == "3.0.0"
     assert "http://icao.int/iwxxm/3.0" in vaa.xml
     assert "EDZIZA" in vaa.xml
+
+
+def test_gateway_padding_keeps_a_question_mark_in_the_remark() -> None:
+    cleaned = _strip_gateway_question_padding("RMK: ASH?\nDTG:???20260923/0952Z\n")
+    assert "ASH?" in cleaned
+    assert "DTG:20260923/0952Z" in cleaned
+
+
+def test_empty_vona_does_not_invent_a_centre() -> None:
+    with pytest.raises(ValueError, match="VONA header"):
+        parse_vona("", product="VONA")
+
+
+def test_ca_sigmet_and_vaa_emitters_require_the_msc_pin() -> None:
+    with pytest.raises(ValueError, match=r"3\.0\.0"):
+        emit_sigmet_ca_eccc({}, iwxxm_version="2025-2")
+    with pytest.raises(ValueError, match=r"3\.0\.0"):
+        emit_vaa_ca_eccc({}, iwxxm_version="2025-2")
