@@ -61,6 +61,7 @@ import { LibraryPickersBar } from './LibraryPickersBar';
 import { libraryIdsForNationalLine } from '@/utils/libraryIds';
 import {
   confirmLibraryResetForProfile,
+  libraryIdsFromSessionParams,
   isSemanticProfileLineChange,
   libraryResetForProfile,
 } from '@/utils/profileLibraryReset';
@@ -1032,6 +1033,7 @@ export function FileConverter({
         } else if (typeof params.overlayId === 'string') {
           next.overlayId = params.overlayId;
         }
+        Object.assign(next, libraryIdsFromSessionParams(params));
         return next;
       });
     }

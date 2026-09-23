@@ -7,6 +7,7 @@ import { defaultLibraryId } from './libraryIds';
 import {
   confirmLibraryResetForProfile,
   isSemanticProfileLineChange,
+  libraryIdsFromSessionParams,
   libraryResetForProfile,
 } from './profileLibraryReset';
 
@@ -32,6 +33,20 @@ describe('profileLibraryReset', () => {
     expect(libraryIds.iwxxmValidationLibraryId).toBe(
       defaultLibraryId('iwxxm_validation', 'US_FAA_NWS'),
     );
+  });
+
+  it('reads camelCase and snake_case library ids from session params', () => {
+    expect(
+      libraryIdsFromSessionParams({
+        conversionLibraryId: ' LIB.CONVERSION.US_FAA_NWS ',
+        tac_validation_library_id: 'LIB.TAC_VALIDATION.CA_ECCC',
+        decodingLibraryId: '   ',
+        iwxxmValidationLibraryId: 12,
+      }),
+    ).toEqual({
+      conversionLibraryId: 'LIB.CONVERSION.US_FAA_NWS',
+      tacValidationLibraryId: 'LIB.TAC_VALIDATION.CA_ECCC',
+    });
   });
 
   it('confirm helper uses injectable confirm', () => {

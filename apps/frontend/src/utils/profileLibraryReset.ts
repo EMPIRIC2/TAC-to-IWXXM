@@ -55,6 +55,35 @@ export function confirmLibraryResetForProfile(
   return confirmFn(CONVERT_PROFILE_LIBRARY_RESET_CONFIRM(line));
 }
 
+const SESSION_LIBRARY_KEYS = [
+  ['conversionLibraryId', 'conversion_library_id'],
+  ['tacValidationLibraryId', 'tac_validation_library_id'],
+  ['iwxxmValidationLibraryId', 'iwxxm_validation_library_id'],
+  ['disseminationLibraryId', 'dissemination_library_id'],
+  ['decodingLibraryId', 'decoding_library_id'],
+] as const;
+
+/**
+ * Read persisted Convert library ids from a work-session params blob.
+ *
+ * @param params - ``conversion_params`` (camelCase or snake_case)
+ * @returns Present library id fields only
+ * @example
+ * const _ = true;
+ */
+export function libraryIdsFromSessionParams(
+  params: Record<string, unknown>,
+): Partial<ConvertLibraryIdFields> {
+  const out: Partial<ConvertLibraryIdFields> = {};
+  for (const [camel, snake] of SESSION_LIBRARY_KEYS) {
+    const raw = params[camel] ?? params[snake];
+    if (typeof raw === 'string' && raw.trim()) {
+      out[camel] = raw.trim();
+    }
+  }
+  return out;
+}
+
 /**
  * Build Convert library id fields for a national line after a confirmed profile change.
  *

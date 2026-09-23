@@ -3599,6 +3599,33 @@ describe('FileConverter Component', () => {
       }
     });
 
+    it('restores library ids when a work session is reopened', async () => {
+      render(
+        <FileConverter
+          {...defaultProps}
+          loadedWorkSession={
+            {
+              id: 'sess-lib-restore',
+              status: 'wip',
+              conversion_params: {
+                profile: 'US_FAA_NWS',
+                conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
+                decoding_library_id: defaultLibraryId('decoding', 'CA_ECCC'),
+              },
+            } as any
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+          defaultLibraryId('conversion', 'US_FAA_NWS'),
+        );
+      });
+      expect(screen.getByTestId('decoding-library-select')).toHaveValue(
+        defaultLibraryId('decoding', 'CA_ECCC'),
+      );
+    });
+
     it('hydrate converted_results via xml and content fallbacks', async () => {
       render(
         <FileConverter
