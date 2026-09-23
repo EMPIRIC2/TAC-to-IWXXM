@@ -307,6 +307,7 @@ No new Render secrets required for convert goldens (package-side). Decode glossa
 | WMO golden defaults | Code defaults | `profile=annex3`, pinned default `iwxxm_version` — ADR-032 |
 | Decode glossary | Official/near-official sources + YAML **overrides** | E20-E2; ADR-032 |
 | Glossary override path | Packaged `decode_glossary.yaml` + optional `TAC_DECODING_GLOSSARY_PATH` (legacy `TAC2IWXXM_DECODE_GLOSSARY_PATH`) | Overlay only |
+| Airport name table | Optional `TAC_DECODING_LOCATION_NAMES_PATH` (ADR-049). No packaged names | Include. File/env only. Resolver hook wins when installed |
 | Pack overlay dir | Optional `TAC_DECODING_PACK_DIR` | Directory of YAML/JSON packs. Unset = built-in packs only. Not a Render secret (ADR-045 / #1210) |
 | TAC quality policy overlay | Optional `TAC_VALIDATE_POLICY_DIR` | Extra TAC quality policy YAML. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
 | TAC detector overlay | Optional `TAC_VALIDATE_DETECTOR_DIR` | Extra detector packs. Unset = builtins. Not a Render secret (ADR-046 / #1216) |
