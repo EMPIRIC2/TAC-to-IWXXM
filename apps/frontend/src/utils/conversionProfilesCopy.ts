@@ -134,6 +134,9 @@ export const CONVERT_LIBRARY_CATALOG_LINK = 'View rule catalog';
  * Confirm copy when changing Convert national line / semantic profile.
  *
  * @param nationalLine - Target line id (plain language in message)
+ * @returns Operator confirm dialog body
+ * @example
+ * const _ = true;
  */
 export function CONVERT_PROFILE_LIBRARY_RESET_CONFIRM(nationalLine: string): string {
   return (
