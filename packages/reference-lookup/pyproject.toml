@@ -1,0 +1,45 @@
+[project]
+name = "reference-lookup"
+version = "2026.9.23"
+description = "Look up navaid and ICAO station coordinates for TAC conversion"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.12"
+dependencies = [
+  "httpx==0.28.1",
+]
+
+[project.entry-points.pytest11]
+reference_lookup_guard = "reference_lookup.pytest_plugin"
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/reference_lookup"]
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+filterwarnings = [
+  "error",
+]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/reference_lookup"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+exclude_lines = [
+  "pragma: no cover",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.ruff]
+extend = "../../ruff.toml"
+line-length = 120

@@ -10,6 +10,7 @@ dependencies = [
   "msgspec>=0.19",
   "pyyaml>=6.0",
   "tac-decoding>=2026.9.22",
+  "reference-lookup==2026.9.23",
 ]
 
 [project.scripts]

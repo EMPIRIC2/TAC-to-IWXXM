@@ -11,6 +11,7 @@ members = [
     "metar-iwxxm-workspace",
     "metar-shared",
     "metar-worker",
+    "reference-lookup",
     "tac-decoding",
     "tac-validate",
     "tac2iwxxm",
@@ -1619,6 +1620,7 @@ dev = [
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
     { name = "pytest-gremlins" },
+    { name = "reference-lookup" },
     { name = "respx" },
     { name = "ruff" },
     { name = "schemathesis" },
@@ -1650,6 +1652,7 @@ dev = [
     { name = "pytest-asyncio", specifier = ">=0.24" },
     { name = "pytest-cov", specifier = ">=6.0" },
     { name = "pytest-gremlins", specifier = "==1.9.0" },
+    { name = "reference-lookup", editable = "packages/reference-lookup" },
     { name = "respx", specifier = ">=0.21" },
     { name = "ruff", specifier = ">=0.9" },
     { name = "schemathesis", specifier = "==4.24.3" },
@@ -2532,6 +2535,17 @@ wheels = [
 ]
 
 [[package]]
+name = "reference-lookup"
+version = "2026.9.23"
+source = { editable = "packages/reference-lookup" }
+dependencies = [
+    { name = "httpx" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "httpx", specifier = "==0.28.1" }]
+
+[[package]]
 name = "referencing"
 version = "0.37.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2951,6 +2965,7 @@ dependencies = [
     { name = "hydra-core" },
     { name = "msgspec" },
     { name = "pyyaml" },
+    { name = "reference-lookup" },
     { name = "tac-decoding" },
 ]
 
@@ -2966,6 +2981,7 @@ requires-dist = [
     { name = "iwxxm-validate", marker = "extra == 'validate'", editable = "packages/iwxxm-validate" },
     { name = "msgspec", specifier = ">=0.19" },
     { name = "pyyaml", specifier = ">=6.0" },
+    { name = "reference-lookup", editable = "packages/reference-lookup" },
     { name = "tac-decoding", editable = "packages/tac-decoding" },
     { name = "tac-validate", marker = "extra == 'validate'", editable = "packages/tac-validate" },
 ]

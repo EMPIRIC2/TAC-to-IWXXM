@@ -10,6 +10,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	packages/shared packages/shared/tests \
 	packages/tac2iwxxm/src packages/tac2iwxxm/tests \
 	packages/tac-decoding/src packages/tac-decoding/tests \
+	packages/reference-lookup/src packages/reference-lookup/tests \
 	packages/iwxxm-validate/src packages/iwxxm-validate/tests \
 	packages/tac-validate/src packages/tac-validate/tests \
 	packages/dissemination/src packages/dissemination/tests \
@@ -21,7 +22,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	iwxxm-us-compat-smoke codelist-uri-drift \
 	test-unit-workspace test-unit-workspace-py test-unit-shared-py test-unit-shared-js test-unit-workspace-js \
 	test-unit-backend test-unit-auth test-unit-frontend \
-	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
+	test-unit-tac2iwxxm test-unit-reference-lookup test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs \
 	test-schemathesis test-mutation test-mutation-poc test-mutation-python test-mutation-js \
 	build-tac2iwxxm-native build-iwxxm-validate-native convert-allowlist \
@@ -198,6 +199,7 @@ typecheck-py:
 	$(UV) run basedpyright packages/shared/src
 	$(UV) run basedpyright packages/auth/src
 	$(UV) run basedpyright packages/tac2iwxxm/src
+	$(UV) run basedpyright packages/reference-lookup/src
 	$(UV) run basedpyright packages/iwxxm-validate/src
 	$(UV) run basedpyright packages/tac-validate/src
 	cd apps/backend && $(UV) run basedpyright
@@ -354,6 +356,13 @@ test-unit-tac2iwxxm:
 		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/tac2iwxxm/coverage.json
 
+test-unit-reference-lookup:
+	$(UV) run coverage run --data-file=packages/reference-lookup/.coverage --source=reference_lookup --branch \
+		-m pytest packages/reference-lookup/tests -q --tb=short
+	$(UV) run coverage report --data-file=packages/reference-lookup/.coverage --fail-under=100 --show-missing
+	$(UV) run coverage json --data-file=packages/reference-lookup/.coverage -o packages/reference-lookup/coverage.json
+	$(UV) run python scripts/ci/check_per_file_coverage.py packages/reference-lookup/coverage.json
+
 test-unit-tac-decoding:
 	$(UV) run pytest packages/tac-decoding/tests \
 		packages/tac2iwxxm/tests/test_decode_tac.py \
@@ -423,7 +432,7 @@ test-converter-pr-gate:
 	$(UV) run pytest tests/perf/test_converter_pr_gate.py -v --no-cov
 
 # EV-047 / #833 — husky pre-push fast unit subset (shape A).
-test-unit-fast: test-unit-workspace test-unit-tac2iwxxm
+test-unit-fast: test-unit-workspace test-unit-tac2iwxxm test-unit-reference-lookup
 
 # M1 — layer cost matrix harness (T1.1–T1.3). Script lands in build; stub until then.
 bench-validation-stack:
@@ -673,7 +682,7 @@ test-bugs:
 	$(UV) run pytest tests/bugs -m "not live and not live_api" --no-cov -v
 
 test-unit: test-unit-workspace test-unit-backend test-unit-auth test-unit-frontend \
-	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
+	test-unit-tac2iwxxm test-unit-reference-lookup test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs
 
 test: test-unit
@@ -964,7 +973,7 @@ validate-ci: validate-fast validate-ci-medium
 # Unit/matrix suite without Compose (also run on remote CI test matrix).
 # Use `make ci` / `make test-integration` when Docker ports 18000/18001 are free.
 ci-prepush: format-check typecheck lint test-unit-workspace test-unit-backend \
-	test-unit-frontend test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
+	test-unit-frontend test-unit-tac2iwxxm test-unit-reference-lookup test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs badge-audit
 
 # EV-036 long local gate (husky pre-push): units + Compose integration.

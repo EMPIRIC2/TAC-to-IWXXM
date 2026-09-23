@@ -113,6 +113,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-076b | Decode via `tac-decoding` parity | apps/frontend / API | F9 (ADR-044) | T0 / T2 / H4–H5 |
 | UJ-078 | Profile/validate/decode deepen (ADR-044 residual + AU/NZ + station names) | apps/frontend / API | F7/F9/F36 (#1221) | T0 / T2 / **T3** / H4–H5 |
 | UJ-077 | Pack-engine decode and convert, same operator panel | library / API | F6/F9 (#1210 / #1214 / ADR-045) | T0 / T2; H4–H5 N/A |
+| UJ-079 | Convert a SIGMET whose VOR is not in the checked-in table | library / API | F6 (ADR-051) | T0; H4–H5 N/A |
 | UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-DEV-010 | Overlay honesty matrix + cookbook + preflight | packages + `scripts/` / docs | F2/F6/F9/F12/F15 (#1224) | T0 / CI |
@@ -2950,3 +2951,16 @@ Legacy parsers stay until a later delete-gate evolve. Pass also: TC-EV-PACKIR-00
 products. Stricter goldens include multi-location VA and SWXA alternates. Selective
 legacy parser delete when byte-identical (all-or-nothing per shared file). Pass also:
 TC-EV-PFDG-001..005.
+
+### UJ-079: Convert a SIGMET whose VOR is not in the checked-in table
+
+**Goal**: An operator converts a convective SIGMET that names a VOR such as SRQ. Convert returns XML whose reference point is the looked-up coordinate.
+
+**Feature**: F6. ADR-051.
+
+**Steps**:
+1. Submit TAC that names a VOR which is absent from the checked-in table.
+2. Convert returns XML with that reference coordinate.
+3. If the id is in neither the public source nor the table, convert fails with the existing unknown-VOR error.
+
+**Pass**: The public source is tried first. A known table point still resolves when that source errors. A latitude/longitude SIGMET still converts. No browser steps. H4–H5 N/A.
