@@ -144,6 +144,9 @@
 
 - **Status**: **Implemented** (S008 / EV-006 — ADR-019). Local/CI + T0 Playwright approved;
   live H4–H7 / full UI 7-product matrix deferred (12/13 skipped this cycle).
+- **National advisory allowlist (#1270, ADR-050)**: United States VAA, Australia SIGMET/TCA/space-weather,
+  New Zealand VAA/VONA, United Kingdom VAA/space-weather, and India TCA convert on those profiles.
+  The gate is package YAML loaded with Hydra and drift-checked against the profile catalog, not a new Python module.
 - **What it does**: Converts TAC for **AIRMET, METAR, SIGMET, SPECI, TAF, VAA, and TCA** to IWXXM
   XML via `packages/tac2iwxxm`, with Annex-3 (or product-equivalent) body encoding and optional
   IWXXM-US national extensions; exposes the same products/profiles on HTTP convert and UI pickers;

@@ -12,6 +12,7 @@ from xml.sax.saxutils import escape
 from tac_decoding.match import MatchContext, match_tac
 from tac_decoding.packs import load_packs
 
+from tac2iwxxm.convert_allowlist import products_for
 from tac2iwxxm.decode import decode_tac
 from tac2iwxxm.emit_map import emit_with_map
 from tac2iwxxm.exchange_output import default_ca_translation_centre
@@ -21,16 +22,8 @@ from tac2iwxxm.models import ConvertIssue, ConvertResult
 from tac2iwxxm.pack_ir_map import PackIrMapError, map_spans_to_convert_ir, pack_id_for_product
 from tac2iwxxm.profile_registry import (
     EMIT_ANNEX3,
-    EMIT_AU_BOM,
-    EMIT_BR_DECEA,
     EMIT_CA_ECCC,
-    EMIT_HK_HKO,
-    EMIT_IN_IMD,
     EMIT_IWXXM_US,
-    EMIT_JP_JMA,
-    EMIT_KR_KMA,
-    EMIT_NZ_CAA_MET,
-    EMIT_UK_METOFFICE,
     resolve_semantic_profile,
     supported_iwxxm_versions_for_profile,
     supported_report_variants_for_profile,
@@ -68,25 +61,6 @@ def _ir_source_is_explicit_pack(ir_source: str | None) -> bool:
 
 
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
-_US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "TCA", "SWXA", "VONA"})
-_CA_ECCC_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "AIRMET", "SIGMET", "VAA"})
-_AU_BOM_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "VAA"})
-_NZ_CAA_MET_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
-# EV-089 / #920 thin-compat packs — core IWXXM emit; GAMET never listed (D-EV089-gamet).
-_UK_METOFFICE_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
-_BR_DECEA_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
-_KR_KMA_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
-_JP_JMA_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "VAA"})
-_IN_IMD_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET"})
-_HK_HKO_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "VAA"})
-_THIN_COMPAT_PRODUCTS: dict[str, frozenset[str]] = {
-    EMIT_UK_METOFFICE: _UK_METOFFICE_PRODUCTS,
-    EMIT_BR_DECEA: _BR_DECEA_PRODUCTS,
-    EMIT_KR_KMA: _KR_KMA_PRODUCTS,
-    EMIT_JP_JMA: _JP_JMA_PRODUCTS,
-    EMIT_IN_IMD: _IN_IMD_PRODUCTS,
-    EMIT_HK_HKO: _HK_HKO_PRODUCTS,
-}
 _REPORT_STATUSES = frozenset({"NORMAL", "AMENDMENT", "CORRECTION"})
 
 # Map MALFORMED_REMARKS message needles → token regexes for editor spans (S011 T2.2).
@@ -823,28 +797,8 @@ def convert(
 
     if product_u not in _SUPPORTED_PRODUCTS:
         return _fail("UNSUPPORTED_PRODUCT", f"product {product_u!r} not supported yet")
-    if profile_l == EMIT_IWXXM_US and product_u not in _US_PRODUCTS:
-        return _fail(
-            "UNSUPPORTED_PROFILE",
-            f"profile iwxxm_us not supported yet for product {product_u!r}",
-        )
-    if profile_l == EMIT_CA_ECCC and product_u not in _CA_ECCC_PRODUCTS:
-        return _fail(
-            "UNSUPPORTED_PROFILE",
-            f"profile ca_eccc not supported yet for product {product_u!r}",
-        )
-    if profile_l == EMIT_AU_BOM and product_u not in _AU_BOM_PRODUCTS:
-        return _fail(
-            "UNSUPPORTED_PROFILE",
-            f"profile au_bom not supported yet for product {product_u!r}",
-        )
-    if profile_l == EMIT_NZ_CAA_MET and product_u not in _NZ_CAA_MET_PRODUCTS:
-        return _fail(
-            "UNSUPPORTED_PROFILE",
-            f"profile nz_caa_met not supported yet for product {product_u!r}",
-        )
-    thin_products = _THIN_COMPAT_PRODUCTS.get(profile_l)
-    if thin_products is not None and product_u not in thin_products:
+    gated = products_for(profile_l)
+    if gated is not None and product_u not in gated:
         return _fail(
             "UNSUPPORTED_PROFILE",
             f"profile {profile_l} not supported yet for product {product_u!r}",

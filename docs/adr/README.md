@@ -53,6 +53,7 @@
 | [ADR-047](ADR-047-convert-emit-yaml-full-matrix.md) | Convert emit YAML + full engine matrix | **Proposed** (EV-yaml-full-configurability / #1226) |
 | [ADR-048](ADR-048-multilang-inline-documentation-bar.md) | Multi-language inline documentation bar (PY/TS/Rust; supersedes hybrid D) | **Accepted** (EV-docstring-multilang-bar) |
 | [ADR-049](ADR-049-residual-yaml-hatches-enrichment-emit.md) | Residual YAML: declarative detector hatches, ICAO name table, emit plugin-swap goldens | **Accepted** (EV-1252-residual-yaml / #1252) |
+| [ADR-050](ADR-050-convert-allowlist-yaml.md) | Convert allowlist lives in package YAML | **Accepted** (#1270) |
 
 ## Process
 
