@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-23 (EV-1252-residual-yaml / #1252 — ADR-049 residual YAML Spec)
+> **Last updated**: 2026-09-23 (EV-1272 public-bulletin profile check / #1272; prior same-day EV-1252-residual-yaml / #1252 — ADR-049 residual YAML Spec)
 
 ## Summary
 
@@ -13,7 +13,7 @@
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011); **deepen EV-yaml-engine-configurability / #1224**: convert column honesty (emit stays Python; pack IR + profile overlays documented); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: declarative **convert emit YAML**; every product pack-IR + emit → **full**; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: emit `plugin:` overlay-swap goldens (Python builders stay) |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011); **deepen EV-yaml-engine-configurability / #1224**: convert column honesty (emit stays Python; pack IR + profile overlays documented); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: declarative **convert emit YAML**; every product pack-IR + emit → **full**; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: emit `plugin:` overlay-swap goldens (Python builders stay); **deepen EV-1272 / #1272**: public-bulletin profile check (local command, manual live tier) |
 | F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); **deepen EV-profile-validate-decode-deepen / #1221**: finish ADR-044 FE residual + #1120/#1145 catalog UX; **deepen EV-yaml-config-light-ux / #1251**: full FE hard-cut redo + Convert **four**-engine light selects + trust/help (Dissem select only in Send drawer); residual YAML epic #1252 |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner; **deepen EV-profile-validate-decode-deepen / #1221 / #724**: ICAO station → airport name (soft-fail); **deepen EV-yaml-engine-configurability / #1224**: pack/glossary overlay cookbook + examples; **deepen EV-yaml-full-configurability / #1226**: every product decode pack cell → **full**; starter templates + PyPI smoke; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: file/env YAML ICAO→name table is SoT; `set_location_name_resolver` stays an optional override |
@@ -2792,6 +2792,21 @@
 | IWXXM COLLECT ingest | — | Placeholder 501 `/ingest-collect` | Yes (placeholder UI) | — |
 | Accuracy metrics report | Yes | No (v1) | No (v1) | Gate |
 | Rust/PyO3 hotspots | **Required at cutover** | Via API image | — | Bench hard-pass |
+
+### F6 deepen (EV-1272 — public-bulletin profile check / #1272)
+
+- **Status note**: F6 remains **Implemented**. This cycle adds a maintainer command. No new feature id.
+- **Issue**: [#1272](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1272)
+- **What it does**: One local command pulls the public feeds that worked on 2026-09-23, takes one report per feed and product that feed actually carries, and runs that report under every **implemented** semantic profile that lists the product. It writes a pass/fail summary and exits non-zero when any check fails.
+- **Feeds**: Aviation Weather Center METAR, TAF, international SIGMET, and convective SIGMET; NOAA tgftp raw VAA (`FV`), TCA (`FK`), AIRMET (`WA`), VONA (`WM`, newest notice that still has an `SVO:` line), and space-weather files (`FN` names beginning `fnxx`); JMA Tokyo VAAC text.
+- **Profiles**: Implemented semantic profiles only (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO`). Exchange profiles, including implemented `GLOBAL_AFS` and the stub overlays, stay out.
+- **Checks**: convert, IWXXM schema validation, lint, and decode. A fetch that cannot be completed fails the command and appears in the summary.
+- **Fail closed**: Non-zero exit on convert failure, document schema failure (`XSD_VALIDATION_ERROR`), lint **error**, or decode failure. `SCHEMA_PARSE_ERROR` is also non-zero and is printed on its own line, separate from document errors. Lint warnings do not fail the command.
+- **Misses**: The command does not edit the lint catalog or convert allowlists. A person adds a catalog row for a stable national lint difference, and an allowlist row for a stable convert miss. No new lint module.
+- **CI**: Manual live tier, same class as `TC-LIVE-FEEDS`. Not a merge gate. A scheduled job is in scope only after the local command is stable.
+- **Fold-in**: Uncommitted national-feed helpers, the national-feed compare test, quality-matrix YAML, and the related Makefile / hook edits travel with this cycle.
+- **Out of scope**: G-AIRMET until a TAC feed exists; promoting `stage` to `main`; stub profiles; catalog edits by the command; a new feature id; browser UI; deploy.
+- **Corpus**: [Corpus: product §F6] [Corpus: tests §TC-LIVE-FEEDS] [Corpus: adr/ADR-009] [Corpus: adr/ADR-036]
 
 ## Non-Goals (Migration)
 

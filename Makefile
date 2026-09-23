@@ -63,7 +63,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	dev dev-kill dev-servers dev-servers-kill \
 	test-e2e-playwright test-e2e-playwright-smoke test-e2e-t2-product \
 	test-e2e-f16-live-sql \
-	test-live-connectivity test-live-connectivity-doks-provisional test-live-topology-doks-provisional test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live \
+	test-live-connectivity test-live-connectivity-doks-provisional test-live-topology-doks-provisional test-live-api test-live-integration test-live-e2e test-live-e2e-doks-provisional test-live-bulletin test-live-feeds test-live-profile test-live \
 	test-integration test-coverage-scripts test-bats \
 	coverage coverage-backend coverage-frontend coverage-shared \
 	coverage-dissemination coverage-modules coverage-all ci acci badge-audit audit-frontend \
@@ -814,6 +814,18 @@ test-live-e2e-doks-provisional:
 test-live-bulletin:
 	@$(load_dotenv); \
 	$(UV) run pytest tests/live/test_tc_live_f6_030_bulletin.py -m live_api -v --tb=short --no-cov
+
+# TC-LIVE-FEEDS — NOAA AWC + MET Norway, plus KNMI when KNMI_OPEN_DATA_API_KEY is in .env.
+# Manual only (ADR-009). Not part of test-live.
+test-live-feeds:
+	@$(load_dotenv); \
+	$(UV) run pytest tests/live/test_national_feeds.py -m live_api -v --tb=short --no-cov
+
+# TC-LIVE-PROFILE — public bulletin sample under each implemented semantic profile.
+# Manual only. Not part of test-live. Exit code is the check result.
+test-live-profile:
+	@$(load_dotenv); \
+	$(UV) run python tests/live/profile_check.py
 
 test-live: test-live-connectivity test-live-api test-live-integration test-live-bulletin test-live-e2e
 
