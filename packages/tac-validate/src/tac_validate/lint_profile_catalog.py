@@ -10,6 +10,7 @@ import re
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
+from typing import cast
 
 import yaml
 
@@ -71,13 +72,136 @@ class LintProfileSpec:
     recorded: tuple[str, ...]
 
 
-def _delta(raw: dict[str, object]) -> LintDelta:
+def _mapping(value: object, *, field: str) -> dict[str, object]:
+    """
+    Internal helper ``_mapping``.
+
+    Parameters
+    ----------
+    value : object
+        YAML node.
+    field : str
+        Field name used in the error.
+
+    Returns
+    -------
+    dict[str, object]
+        String-keyed mapping.
+
+    Raises
+    ------
+    ValueError
+        When ``value`` is not a mapping.
+    """
+    if not isinstance(value, dict):
+        msg = f"lint profile {field} must be a mapping"
+        raise ValueError(msg)
+    found: dict[str, object] = {}
+    typed = cast(dict[object, object], value)
+    for key, item in typed.items():
+        if not isinstance(key, str):
+            msg = f"lint profile {field} key must be a string"
+            raise ValueError(msg)
+        found[key] = item
+    return found
+
+
+def _string_list(value: object, *, field: str) -> list[str]:
+    """
+    Internal helper ``_string_list``.
+
+    Parameters
+    ----------
+    value : object
+        YAML node.
+    field : str
+        Field name used in the error.
+
+    Returns
+    -------
+    list[str]
+        String items.
+
+    Raises
+    ------
+    ValueError
+        When ``value`` is not a list of strings.
+    """
+    if not isinstance(value, list):
+        msg = f"lint profile {field} must be a list"
+        raise ValueError(msg)
+    found: list[str] = []
+    items = cast(list[object], value)
+    for item in items:
+        if not isinstance(item, str):
+            msg = f"lint profile {field} items must be strings"
+            raise ValueError(msg)
+        found.append(item)
+    return found
+
+
+def _object_list(value: object, *, field: str) -> list[object]:
+    """
+    Internal helper ``_object_list``.
+
+    Parameters
+    ----------
+    value : object
+        YAML node.
+    field : str
+        Field name used in the error.
+
+    Returns
+    -------
+    list[object]
+        List items.
+
+    Raises
+    ------
+    ValueError
+        When ``value`` is not a list.
+    """
+    if not isinstance(value, list):
+        msg = f"lint profile {field} must be a list"
+        raise ValueError(msg)
+    return list(cast(list[object], value))
+
+
+def _required_str(row: dict[str, object], key: str) -> str:
+    """
+    Internal helper ``_required_str``.
+
+    Parameters
+    ----------
+    row : dict[str, object]
+        Mapping row.
+    key : str
+        Required string field.
+
+    Returns
+    -------
+    str
+        Field value.
+
+    Raises
+    ------
+    ValueError
+        When the field is missing or not a string.
+    """
+    value = row[key]
+    if not isinstance(value, str) or not value:
+        msg = f"lint profile {key} must be a string"
+        raise ValueError(msg)
+    return value
+
+
+def _delta(raw: object) -> LintDelta:
     """
     Internal helper ``_delta``.
 
     Parameters
     ----------
-    raw : dict
+    raw : object
         One ``deltas`` row.
 
     Returns
@@ -85,12 +209,52 @@ def _delta(raw: dict[str, object]) -> LintDelta:
     LintDelta
         Parsed suppression.
     """
+    row = _mapping(raw, field="delta")
     return LintDelta(
-        rule_id=str(raw["id"]),
-        products=frozenset(str(item).upper() for item in raw["products"]),
-        suppress_codes=frozenset(str(item) for item in raw["suppress_codes"]),
-        token_pattern=re.compile(str(raw["token_pattern"])),
+        rule_id=_required_str(row, "id"),
+        products=frozenset(item.upper() for item in _string_list(row["products"], field="products")),
+        suppress_codes=frozenset(_string_list(row["suppress_codes"], field="suppress_codes")),
+        token_pattern=re.compile(_required_str(row, "token_pattern")),
     )
+
+
+def _specs_from_document(document_raw: object) -> dict[str, LintProfileSpec]:
+    """
+    Internal helper ``_specs_from_document``.
+
+    Parameters
+    ----------
+    document_raw : object
+        Parsed catalog document.
+
+    Returns
+    -------
+    dict[str, LintProfileSpec]
+        Profile rows.
+    """
+    document = _mapping(document_raw, field="catalog")
+    rows = _mapping(document["profiles"], field="profiles")
+    loaded: dict[str, LintProfileSpec] = {}
+    for profile_id, body_raw in rows.items():
+        body = _mapping(body_raw, field=profile_id)
+        deltas = tuple(_delta(item) for item in _object_list(body.get("deltas", []), field="deltas"))
+        recorded = tuple(
+            _required_str(_mapping(item, field="recorded"), "id")
+            for item in _object_list(body.get("recorded", []), field="recorded")
+        )
+        differs = body["differs"]
+        if not isinstance(differs, bool):
+            msg = f"lint profile {profile_id} differs must be a boolean"
+            raise ValueError(msg)
+        loaded[profile_id] = LintProfileSpec(
+            profile_id=profile_id,
+            engine=_required_str(body, "engine"),
+            products=frozenset(item.upper() for item in _string_list(body["products"], field="products")),
+            differs=differs,
+            deltas=deltas,
+            recorded=recorded,
+        )
+    return loaded
 
 
 @cache
@@ -108,22 +272,7 @@ def load_lint_profiles() -> dict[str, LintProfileSpec]:
     >>> 1 + 1  # docstring smoke (load_lint_profiles)
     2
     """
-    raw = yaml.safe_load(_CATALOG_PATH.read_text(encoding="utf-8"))
-    rows = raw.get("profiles") or {}
-    loaded: dict[str, LintProfileSpec] = {}
-    for profile_id, body in rows.items():
-        deltas = tuple(_delta(item) for item in body.get("deltas", []))
-        recorded = tuple(str(item["id"]) for item in body.get("recorded", []))
-        products = frozenset(str(item).upper() for item in body["products"])
-        loaded[str(profile_id)] = LintProfileSpec(
-            profile_id=str(profile_id),
-            engine=str(body["engine"]),
-            products=products,
-            differs=bool(body["differs"]),
-            deltas=deltas,
-            recorded=recorded,
-        )
-    return loaded
+    return _specs_from_document(yaml.safe_load(_CATALOG_PATH.read_text(encoding="utf-8")))
 
 
 def lint_profile_spec(profile: str) -> LintProfileSpec | None:
