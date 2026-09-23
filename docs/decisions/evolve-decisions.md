@@ -1,5 +1,26 @@
 # Evolve Decisions
 
+## Cycle EV-1252-residual-yaml — detector hatches, name table, emit plugins (#1252)
+
+**Opened:** 2026-09-23 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-1252-residual-yaml`  
+**Issue:** [#1252](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1252)  
+**Documenting→Implementing gate:** closed  
+**Scale:** full
+
+| ID | Outcome |
+|----|---------|
+| D1 | Scale standard at routing, then raised to full |
+| D2 | UI / H4–H5 / E2E N/A |
+| D3 | Implement all three residual families this cycle |
+| D4 | Manifest: feature-list, spec, UJ-DEV-013, test plan, honesty matrix, ADR-049. Skip API contract, deploy, new deps |
+| D5 | Three child issues, one PR each |
+| D6 | Detector hatches → declarative YAML; `kind: python` escape only |
+| D7 | YAML ICAO→name table is SoT; resolver hook is an optional override |
+| D8 | Emit builders stay Python; `plugin:` swap golden per product family |
+| F107 | Memory retrieve skip (no matches) |
+
+[Corpus: product §F6] [Corpus: product §F9] [Corpus: product §F15] [Corpus: adr/ADR-049] [Corpus: tests]
+
 ## Cycle EV-docstring-multilang-bar — multi-lang docs + checkers (ADR-048)
 
 **Opened:** 2026-09-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-docstring-multilang-bar`

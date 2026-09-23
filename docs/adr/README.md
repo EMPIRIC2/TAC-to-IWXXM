@@ -52,6 +52,7 @@
 | [ADR-046](ADR-046-validation-policy-layers.md) | Registry / Detector / Policy / Runtime for TAC lint + IWXXM output | **Accepted** (EV-validation-policy-layers / #1216) |
 | [ADR-047](ADR-047-convert-emit-yaml-full-matrix.md) | Convert emit YAML + full engine matrix | **Proposed** (EV-yaml-full-configurability / #1226) |
 | [ADR-048](ADR-048-multilang-inline-documentation-bar.md) | Multi-language inline documentation bar (PY/TS/Rust; supersedes hybrid D) | **Accepted** (EV-docstring-multilang-bar) |
+| [ADR-049](ADR-049-residual-yaml-hatches-enrichment-emit.md) | Residual YAML: declarative detector hatches, ICAO name table, emit plugin-swap goldens | **Accepted** (EV-1252-residual-yaml / #1252) |
 
 ## Process
 
