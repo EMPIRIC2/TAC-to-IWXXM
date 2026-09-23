@@ -6481,4 +6481,6 @@ Engineering quality — multi-language inline documentation bar. H4–H5 **N/A**
 - **Level**: T0
 - **Objective**: A SIGMET that does not name a VOR still converts
 - **Pass criteria**: Convert succeeds and the VOR parser returns no geometry
+- **HTTP**: `apps/backend/tests/unit/test_tc_1271_reference_lookup_http.py` posts SIGMET SRQ and the unknown-VOR miss
+- **Browser**: `apps/e2e/uj079-reference-lookup.e2e.spec.ts` converts SRQ in the public converter
 

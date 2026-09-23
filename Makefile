@@ -717,7 +717,8 @@ test-e2e-playwright:
 
 test-e2e-playwright-smoke:
 	cd apps/e2e && METAR_CONFIG_ENV=local $(PNPM) exec playwright test \
-		tac-file-conversion.e2e.spec.ts
+		tac-file-conversion.e2e.spec.ts \
+		uj079-reference-lookup.e2e.spec.ts
 
 test-e2e-t2-product:
 	cd apps/e2e && METAR_CONFIG_ENV=local $(PNPM) exec playwright test tac-file-conversion.e2e.spec.ts
