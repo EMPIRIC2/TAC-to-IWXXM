@@ -73,7 +73,7 @@ Package license: **MIT**. No FastAPI/Supabase imports. Backend already has `sqla
 |---------|---------|---------|--------|
 | msgspec | Versioned IR / convert issue models (ADR-016) | Apache-2.0 | PyPI (`>=0.19`) |
 | PyYAML | Decode glossary YAML overlays (F9 / ADR-032; E20-F5) | MIT | PyPI (`>=6.0`) |
-| hydra-core | Compose the national convert allowlist (ADR-050 / #1270) | MIT | PyPI (`>=1.3,<2`) |
+| hydra-core | Compose the national convert allowlist (ADR-050 / #1270) | MIT | PyPI (`==1.3.7`) |
 | lxml | XML encode/validate support (optional / transitional) | BSD | PyPI |
 | PyO3 / maturin / rustc | Native hotspots | Apache-2.0 / MIT (typical) | **Required before cutover** (ADR-017) |
 

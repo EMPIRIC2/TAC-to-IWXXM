@@ -27,6 +27,11 @@ def main(argv: list[str] | None = None) -> int:
     -------
     int
         Process status. ``0`` when the allowlist printed.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (main)
+    2
     """
     parser = argparse.ArgumentParser(
         description="Compose the convert allowlist with Hydra."

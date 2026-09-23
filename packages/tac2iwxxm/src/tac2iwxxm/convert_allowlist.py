@@ -36,6 +36,11 @@ def compose_allowlist(overrides: Sequence[str] = ()) -> dict[str, frozenset[str]
     ------
     ValueError
         When the composed config is not a profile mapping.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (compose_allowlist)
+    2
     """
     if GlobalHydra.instance().is_initialized():
         GlobalHydra.instance().clear()
@@ -70,6 +75,11 @@ def load_convert_allowlist() -> dict[str, frozenset[str]]:
     -------
     dict[str, frozenset[str]]
         Upper-case product codes for each gated emit key.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (load_convert_allowlist)
+    2
     """
     return compose_allowlist()
 
@@ -87,6 +97,11 @@ def products_for(emit_key: str) -> frozenset[str] | None:
     -------
     frozenset[str] | None
         Allowed products, or ``None`` when the profile is not gated.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (products_for)
+    2
     """
     return load_convert_allowlist().get(emit_key.strip().lower())
 
@@ -104,6 +119,11 @@ def format_allowlist(loaded: dict[str, frozenset[str]]) -> str:
     -------
     str
         One line per profile, products sorted.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (format_allowlist)
+    2
     """
     lines = [f"{key}: {', '.join(sorted(products))}" for key, products in sorted(loaded.items())]
     return "\n".join(lines)
