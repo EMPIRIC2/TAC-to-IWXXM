@@ -65,7 +65,7 @@ profiles:
       package: packages/tac2iwxxm
       module: profiles/iwxxm_us.py
       deepen_issue: "#919"
-    products: [METAR, SPECI, SIGMET, AIRMET, TCA, SWXA, VONA]
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET, TCA, SWXA, VONA, VAA]
     vendor_pins:
       iwxxm: vendor/manifest.json → iwxxm v2025-2
       iwxxm-us: vendor/manifest.json → iwxxm-us 3.0
@@ -263,7 +263,7 @@ profiles:
       issue: "#917"
       package: packages/tac2iwxxm
       cycle: EV-087 / EV-profile-validate-decode-deepen
-    products: [TAF, METAR, SPECI, VAA]
+    products: [TAF, METAR, SPECI, VAA, SIGMET, TCA, SWXA]
     # TAF3 is an RMK service marker under product=TAF (D-EV087-taf3) — not a separate API product enum.
     vendor_pins:
       iwxxm: vendor/manifest.json → active core pin (no AU national extension published)
@@ -302,7 +302,7 @@ profiles:
       issue: "#918"
       package: packages/tac2iwxxm
       cycle: EV-087 / EV-profile-validate-decode-deepen
-    products: [TAF, METAR, SPECI]
+    products: [TAF, METAR, SPECI, VAA, VONA]
     vendor_pins:
       iwxxm: vendor/manifest.json → active core pin (no NZ national extension published)
     sources:
@@ -333,7 +333,7 @@ profiles:
       package: packages/tac2iwxxm
       cycle: EV-094
       path: thin
-    products: [METAR, SPECI, TAF]
+    products: [METAR, SPECI, TAF, VAA, SWXA]
     vendor_pins:
       iwxxm: vendor/manifest.json → active core pin (no UK national extension published)
     sources:
@@ -503,7 +503,7 @@ profiles:
       package: packages/tac2iwxxm
       cycle: EV-094
       path: compat
-    products: [METAR, SPECI, TAF, SIGMET]
+    products: [METAR, SPECI, TAF, SIGMET, TCA]
     vendor_pins:
       iwxxm: vendor/manifest.json → active core pin (no IN national extension published)
     sources:

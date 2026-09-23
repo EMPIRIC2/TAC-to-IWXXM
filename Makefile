@@ -24,7 +24,7 @@ PY_LINT := apps/backend/src apps/backend/tests \
 	test-unit-tac2iwxxm test-unit-iwxxm-validate test-unit-tac-validate \
 	test-unit-dissemination test-unit-workflows test-unit-worker test-bugs \
 	test-schemathesis test-mutation test-mutation-poc test-mutation-python test-mutation-js \
-	build-tac2iwxxm-native build-iwxxm-validate-native \
+	build-tac2iwxxm-native build-iwxxm-validate-native convert-allowlist \
 	test-tac2iwxxm-native test-iwxxm-validate-native rust-check \
 	perf-converter-baseline test-converter-pr-gate test-unit-fast lint-fast \
 	db-migrate test-alembic \
@@ -374,6 +374,10 @@ test-unit-tac-decoding:
 		--cov-report=json:packages/tac-decoding/coverage.json \
 		--cov-report=term-missing --cov-fail-under=100 -v
 	$(UV) run python scripts/ci/check_per_file_coverage.py packages/tac-decoding/coverage.json
+
+# Print the Hydra-composed convert allowlist. Extra overrides: ARGS='--override ...'
+convert-allowlist:
+	$(UV) run python scripts/tac2iwxxm/compose_convert_allowlist.py $(ARGS)
 
 # Build optional PyO3 extension (requires rustc + maturin). ADR-017 / T4.3.
 build-tac2iwxxm-native:

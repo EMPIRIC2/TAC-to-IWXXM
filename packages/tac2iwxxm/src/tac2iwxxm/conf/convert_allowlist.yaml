@@ -1,0 +1,15 @@
+# Runtime convert allowlist keyed by emit key.
+# Keep in step with docs/domain/profiles/catalog.yaml products for these keys.
+# annex3 is not listed: every supported product stays allowed.
+schema_version: 1
+profiles:
+  iwxxm_us: [METAR, SPECI, TAF, SIGMET, AIRMET, TCA, SWXA, VONA, VAA]
+  ca_eccc: [METAR, SPECI, TAF, AIRMET, SIGMET, VAA]
+  au_bom: [METAR, SPECI, TAF, VAA, SIGMET, TCA, SWXA]
+  nz_caa_met: [METAR, SPECI, TAF, VAA, VONA]
+  uk_metoffice: [METAR, SPECI, TAF, VAA, SWXA]
+  br_decea: [METAR, SPECI, TAF, SIGMET, AIRMET]
+  kr_kma: [METAR, SPECI, TAF, SIGMET, AIRMET]
+  jp_jma: [METAR, SPECI, TAF, SIGMET, VAA]
+  in_imd: [METAR, SPECI, TAF, SIGMET, TCA]
+  hk_hko: [METAR, SPECI, TAF, SIGMET, VAA]

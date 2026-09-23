@@ -3,6 +3,7 @@ schema_version: 1
 id: annex3-vaa-emit
 profiles:
   - annex3
+  - iwxxm_us
   - au_bom
   - nz_caa_met
   - uk_metoffice
