@@ -48,6 +48,21 @@ def test_unset_and_bad_file_stay_empty(tmp_path: Path, monkeypatch: pytest.Monke
     assert resolve_location_name("KJFK") is None
 
 
+def test_table_skips_malformed_entries(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    table = tmp_path / "names.yaml"
+    table.write_text("names: plain\n", encoding="utf-8")
+    monkeypatch.setenv(ENV_LOCATION_NAMES_PATH, str(table))
+    assert resolve_location_name("KJFK") is None
+    table.write_text(
+        "names:\n  1: two\n  ' ': skipped\n  KJFK: '   '\n  KORD: O Hare\n",
+        encoding="utf-8",
+    )
+    assert resolve_location_name("KJFK") is None
+    assert resolve_location_name("KORD") == "O Hare"
+    table.write_text(":\n", encoding="utf-8")
+    assert resolve_location_name("KORD") is None
+
+
 def test_decode_uses_table_name(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     table = tmp_path / "names.yaml"
     table.write_text("names:\n  KJFK: Test Field\n", encoding="utf-8")
