@@ -12,7 +12,13 @@ PACKAGE_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = PACKAGE_ROOT.parents[1]
 SAMPLE_METAR = PACKAGE_ROOT / "tests" / "fixtures" / "annex3_golden" / "metar_basic.tac"
 
-_PACKAGES = ("tac-decoding", "tac2iwxxm", "tac-validate", "iwxxm-validate")
+_PACKAGES = (
+    "reference-lookup",
+    "tac-decoding",
+    "tac2iwxxm",
+    "tac-validate",
+    "iwxxm-validate",
+)
 
 
 def _uv_build(dist: Path, package: str) -> None:
@@ -41,9 +47,9 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
     """
     Convert-only wheel works; ``[validate]`` pulls ``tac-validate`` + ``iwxxm-validate``.
 
-    Builds local wheels (including ``tac-decoding`` required by convert), installs
-    convert-only into a fresh venv via ``--find-links``, then reinstalls with the
-    ``[validate]`` extra resolved via ``--find-links``.
+    Builds local wheels (including ``reference-lookup`` and ``tac-decoding`` required by
+    convert), installs convert-only into a fresh venv via ``--find-links``, then
+    reinstalls with the ``[validate]`` extra resolved via ``--find-links``.
     """
     if not SAMPLE_METAR.is_file():
         pytest.skip("sample METAR fixture missing")
@@ -54,6 +60,7 @@ def test_clean_venv_convert_and_validate_extra(tmp_path: Path) -> None:
         _uv_build(dist, package)
 
     tac2_wheel = _wheel_for(dist, "tac2iwxxm")
+    _wheel_for(dist, "reference-lookup")
     _wheel_for(dist, "tac-decoding")
     _wheel_for(dist, "tac-validate")
     _wheel_for(dist, "iwxxm-validate")
