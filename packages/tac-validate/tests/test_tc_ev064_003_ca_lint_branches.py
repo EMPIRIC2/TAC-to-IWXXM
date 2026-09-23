@@ -8,7 +8,7 @@ from tac_validate import lint
 
 def test_ca_eccc_rejects_unsupported_product() -> None:
     with pytest.raises(ValueError, match="ca_eccc is not applicable"):
-        lint("SIGMET TEST", product="SIGMET", profile="ca_eccc")
+        lint("TCA TEST", product="TCA", profile="ca_eccc")
 
 
 def test_ca_manobs_p_prefix_visibility_and_remarks() -> None:

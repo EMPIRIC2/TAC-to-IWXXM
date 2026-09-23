@@ -15,6 +15,7 @@ from tac_decoding.packs import load_packs
 from tac2iwxxm.decode import decode_tac
 from tac2iwxxm.emit_map import emit_with_map
 from tac2iwxxm.exchange_output import default_ca_translation_centre
+from tac2iwxxm.geometry.reference_point import UnknownVOR
 from tac2iwxxm.ir_source import IR_SOURCE_ENV, resolve_ir_source
 from tac2iwxxm.models import ConvertIssue, ConvertResult
 from tac2iwxxm.pack_ir_map import PackIrMapError, map_spans_to_convert_ir, pack_id_for_product
@@ -67,9 +68,9 @@ def _ir_source_is_explicit_pack(ir_source: str | None) -> bool:
 
 
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
-_US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
-_CA_ECCC_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "AIRMET"})
-_AU_BOM_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
+_US_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "TCA", "SWXA", "VONA"})
+_CA_ECCC_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "AIRMET", "SIGMET", "VAA"})
+_AU_BOM_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "VAA"})
 _NZ_CAA_MET_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
 # EV-089 / #920 thin-compat packs — core IWXXM emit; GAMET never listed (D-EV089-gamet).
 _UK_METOFFICE_PRODUCTS = frozenset({"METAR", "SPECI", "TAF"})
@@ -928,6 +929,8 @@ def convert(
                 ir=ir,
             )
         xml = _emit(product_u, profile_l, ir, effective_iwxxm_version)
+    except UnknownVOR as exc:
+        return _fail("PARSE_ERROR", f"unknown VOR reference {exc}", span=True)
     except ValueError as exc:
         message = str(exc)
         if preview:

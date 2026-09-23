@@ -10,7 +10,14 @@ import { isCaEcccProfile, type IwxxmProfile } from '@/utils/semanticProfile';
 export const CA_ECCC_NATIONAL_EXTENSION = 'IWXXM_CA';
 
 /** Products supported under CA_ECCC in the operator workbench. */
-export const CA_ECCC_SUPPORTED_PRODUCTS = ['METAR', 'SPECI', 'TAF', 'AIRMET'] as const;
+export const CA_ECCC_SUPPORTED_PRODUCTS = [
+  'METAR',
+  'SPECI',
+  'TAF',
+  'AIRMET',
+  'SIGMET',
+  'VAA',
+] as const;
 
 /**
  * National extension tokens to send for the active profile.

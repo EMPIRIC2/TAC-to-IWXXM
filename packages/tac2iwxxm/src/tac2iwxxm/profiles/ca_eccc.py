@@ -15,7 +15,12 @@ from typing import Any, cast
 from xml.sax.saxutils import escape
 
 from tac2iwxxm.profiles.annex3 import NS, aerodrome_block, build_observation_and_trends, obs_timestamp
-from tac2iwxxm.profiles.annex3_products import emit_airmet_annex3, emit_taf_annex3
+from tac2iwxxm.profiles.annex3_products import (
+    emit_airmet_annex3,
+    emit_sigmet_annex3,
+    emit_taf_annex3,
+    emit_vaa_annex3,
+)
 
 CA_IWXXM_VERSION = "3.0.0"
 CA_NS = "https://dd.meteo.gc.ca/today/aviation/iwxxm/"
@@ -684,6 +689,77 @@ def _inject_ca_airmet_gml_id(xml: str, *, gml_id: str) -> str:
         Return value.
     """
     return re.sub(r'gml:id="airmet\.[^"]+"', f'gml:id="{gml_id}"', xml, count=1)
+
+
+def _require_ca_pin(iwxxm_version: str) -> None:
+    """
+    Internal helper ``_require_ca_pin``.
+
+    Parameters
+    ----------
+    iwxxm_version : str
+        Requested IWXXM pin.
+
+    Returns
+    -------
+    None
+        Returns when the pin is the Canadian operational line.
+    """
+    if iwxxm_version != CA_IWXXM_VERSION:
+        raise ValueError(f"profile ca_eccc requires iwxxm_version {CA_IWXXM_VERSION!r}, got {iwxxm_version!r}")
+
+
+def emit_sigmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit SIGMET IWXXM for profile ``CA_ECCC``.
+
+    Canadian SIGMET uses the ICAO SIGMET body on the MSC IWXXM 3.0.0 line.
+    There is no separate iwxxm-ca SIGMET schema.
+
+    Parameters
+    ----------
+    ir :
+        Parsed intermediate representation from ``parse_sigmet``.
+    iwxxm_version :
+        Must be ``3.0.0``.
+
+    Returns
+    -------
+    str
+        IWXXM 3.0.0 SIGMET XML.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_sigmet_ca_eccc)
+    2
+    """
+    _require_ca_pin(iwxxm_version)
+    return emit_sigmet_annex3(ir, iwxxm_version=iwxxm_version)
+
+
+def emit_vaa_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:
+    """
+    Emit VAA IWXXM for profile ``CA_ECCC``.
+
+    Parameters
+    ----------
+    ir :
+        Parsed intermediate representation from ``parse_vaa``.
+    iwxxm_version :
+        Must be ``3.0.0``.
+
+    Returns
+    -------
+    str
+        IWXXM 3.0.0 volcanic ash advisory XML.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_vaa_ca_eccc)
+    2
+    """
+    _require_ca_pin(iwxxm_version)
+    return emit_vaa_annex3(ir, iwxxm_version=iwxxm_version)
 
 
 def emit_airmet_ca_eccc(ir: dict[str, Any], *, iwxxm_version: str) -> str:

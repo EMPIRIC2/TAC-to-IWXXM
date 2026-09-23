@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "description": "CONUS VOR/VORTAC reference points for US SIGMET FROM-chain geometry (EV-080 / #919 M9). Coords from FAA NASR / AirNav navaid publications.",
+  "description": "CONUS VOR/VORTAC and airport reference points for US SIGMET FROM-chain geometry. The original points are from FAA NASR / AirNav navaid publications. Points added on 2026-09-23 cover live NWS convective SIGMET FROM-chains: OurAirports navaids (public domain), plus MMB, CLE, and TRV from published navaid coordinates and MIA from the OurAirports airport list.",
   "points": {
     "BZA": {
       "lat": 32.768108,
@@ -36,6 +36,326 @@
       "lat": 42.5793,
       "lon": -99.9931,
       "name": "Ainsworth Regional"
+    },
+    "ABQ": {
+      "lat": 35.0438,
+      "lon": -106.816002,
+      "name": "Albuquerque"
+    },
+    "ABR": {
+      "lat": 45.4174,
+      "lon": -98.368698,
+      "name": "Aberdeen"
+    },
+    "AIR": {
+      "lat": 40.016998,
+      "lon": -80.817299,
+      "name": "Bellaire"
+    },
+    "APE": {
+      "lat": 40.1511,
+      "lon": -82.588303,
+      "name": "Appleton"
+    },
+    "ATL": {
+      "lat": 33.629101,
+      "lon": -84.435097,
+      "name": "Atlanta"
+    },
+    "BIL": {
+      "lat": 45.808601,
+      "lon": -108.625,
+      "name": "Billings"
+    },
+    "BIS": {
+      "lat": 46.761799,
+      "lon": -100.665001,
+      "name": "Bismarck"
+    },
+    "BKW": {
+      "lat": 37.7803,
+      "lon": -81.123497,
+      "name": "Beckley"
+    },
+    "BOY": {
+      "lat": 43.4632,
+      "lon": -108.300003,
+      "name": "Boysen Reservoir"
+    },
+    "BWG": {
+      "lat": 36.928699,
+      "lon": -86.443398,
+      "name": "Bowling Green"
+    },
+    "CDS": {
+      "lat": 34.369099,
+      "lon": -100.289001,
+      "name": "Childress"
+    },
+    "CHE": {
+      "lat": 40.5201,
+      "lon": -107.305,
+      "name": "Hayden"
+    },
+    "CME": {
+      "lat": 33.337502,
+      "lon": -104.621002,
+      "name": "Chisum"
+    },
+    "CRG": {
+      "lat": 30.3389,
+      "lon": -81.509903,
+      "name": "Craig"
+    },
+    "CTY": {
+      "lat": 29.599001,
+      "lon": -83.048698,
+      "name": "Cross City"
+    },
+    "CVG": {
+      "lat": 39.015999,
+      "lon": -84.7033,
+      "name": "Cincinnati"
+    },
+    "DIK": {
+      "lat": 46.860001,
+      "lon": -102.774002,
+      "name": "Dickinson"
+    },
+    "DMN": {
+      "lat": 32.2756,
+      "lon": -107.605003,
+      "name": "Deming"
+    },
+    "DPR": {
+      "lat": 45.078098,
+      "lon": -101.714996,
+      "name": "Dupree"
+    },
+    "ECG": {
+      "lat": 36.257599,
+      "lon": -76.175598,
+      "name": "Elizabeth City"
+    },
+    "EKN": {
+      "lat": 38.914398,
+      "lon": -80.099297,
+      "name": "Elkins"
+    },
+    "ELP": {
+      "lat": 31.815901,
+      "lon": -106.281998,
+      "name": "El Paso"
+    },
+    "EYW": {
+      "lat": 24.585899,
+      "lon": -81.800499,
+      "name": "Key West"
+    },
+    "FST": {
+      "lat": 30.952101,
+      "lon": -102.975998,
+      "name": "Fort Stockton"
+    },
+    "FTI": {
+      "lat": 35.6576,
+      "lon": -105.136002,
+      "name": "Fort Union"
+    },
+    "GCK": {
+      "lat": 37.919102,
+      "lon": -100.724998,
+      "name": "Garden City"
+    },
+    "GGW": {
+      "lat": 48.215302,
+      "lon": -106.625,
+      "name": "Glasgow"
+    },
+    "GQO": {
+      "lat": 34.9613,
+      "lon": -85.153397,
+      "name": "Choo Choo"
+    },
+    "HMV": {
+      "lat": 36.437099,
+      "lon": -82.129601,
+      "name": "Holston Mountain"
+    },
+    "ILM": {
+      "lat": 34.3517,
+      "lon": -77.874397,
+      "name": "Wilmington"
+    },
+    "ISN": {
+      "lat": 48.2533,
+      "lon": -103.750999,
+      "name": "Williston"
+    },
+    "JNC": {
+      "lat": 39.059601,
+      "lon": -108.792999,
+      "name": "Grand Junction"
+    },
+    "LAA": {
+      "lat": 38.197102,
+      "lon": -102.688004,
+      "name": "Lamar"
+    },
+    "LOZ": {
+      "lat": 37.0331,
+      "lon": -84.1101,
+      "name": "London"
+    },
+    "LWT": {
+      "lat": 47.053001,
+      "lon": -109.606003,
+      "name": "Lewistown"
+    },
+    "MOT": {
+      "lat": 48.2603,
+      "lon": -101.287003,
+      "name": "Minot"
+    },
+    "MRF": {
+      "lat": 30.298401,
+      "lon": -103.955002,
+      "name": "Marfa"
+    },
+    "MSL": {
+      "lat": 34.706902,
+      "lon": -87.491501,
+      "name": "Muscle Shoals"
+    },
+    "OMN": {
+      "lat": 29.303301,
+      "lon": -81.112701,
+      "name": "Ormond Beach"
+    },
+    "ORF": {
+      "lat": 36.891899,
+      "lon": -76.200302,
+      "name": "Norfolk"
+    },
+    "OVR": {
+      "lat": 41.167301,
+      "lon": -95.736702,
+      "name": "Omaha"
+    },
+    "PBI": {
+      "lat": 26.680099,
+      "lon": -80.086502,
+      "name": "Palm Beach"
+    },
+    "PIE": {
+      "lat": 27.907801,
+      "lon": -82.684303,
+      "name": "St Petersburg"
+    },
+    "PWE": {
+      "lat": 40.200401,
+      "lon": -96.206299,
+      "name": "Pawnee City"
+    },
+    "RAP": {
+      "lat": 43.976002,
+      "lon": -103.012001,
+      "name": "Rapid City"
+    },
+    "ROD": {
+      "lat": 40.2878,
+      "lon": -84.043098,
+      "name": "Rosewood"
+    },
+    "RWF": {
+      "lat": 44.467201,
+      "lon": -95.128304,
+      "name": "Redwood Falls"
+    },
+    "SAV": {
+      "lat": 32.146301,
+      "lon": -81.199097,
+      "name": "Savannah"
+    },
+    "SHR": {
+      "lat": 44.8423,
+      "lon": -107.060997,
+      "name": "Sheridan"
+    },
+    "SJN": {
+      "lat": 34.424099,
+      "lon": -109.143997,
+      "name": "St Johns"
+    },
+    "SPA": {
+      "lat": 35.033699,
+      "lon": -81.927101,
+      "name": "Spartanburg"
+    },
+    "SSO": {
+      "lat": 32.269199,
+      "lon": -109.263,
+      "name": "San Simon"
+    },
+    "TBC": {
+      "lat": 36.1213,
+      "lon": -111.269997,
+      "name": "Tuba City"
+    },
+    "TBE": {
+      "lat": 37.258701,
+      "lon": -103.599998,
+      "name": "Tobe"
+    },
+    "TCC": {
+      "lat": 35.182098,
+      "lon": -103.598999,
+      "name": "Tucumcari"
+    },
+    "TUS": {
+      "lat": 32.0952,
+      "lon": -110.915001,
+      "name": "Tucson"
+    },
+    "TXO": {
+      "lat": 34.495098,
+      "lon": -102.839996,
+      "name": "Texico"
+    },
+    "MMB": {
+      "lat": 36.343733,
+      "lon": -99.880122,
+      "name": "MITBEE VORTAC"
+    },
+    "CLE": {
+      "lat": 41.418956,
+      "lon": -81.850071,
+      "name": "CLEVELAND VORTAC"
+    },
+    "TRV": {
+      "lat": 27.678417,
+      "lon": -80.489722,
+      "name": "TREASURE DME"
+    },
+    "MIA": {
+      "lat": 25.796011,
+      "lon": -80.289751,
+      "name": "Miami International Airport"
+    },
+    "CHS": {
+      "lat": 32.894299,
+      "lon": -80.037804,
+      "name": "Charleston"
+    },
+    "INK": {
+      "lat": 31.8748,
+      "lon": -103.244003,
+      "name": "Wink"
+    },
+    "ODF": {
+      "lat": 34.6959,
+      "lon": -83.297699,
+      "name": "Foothills"
     }
   }
 }
