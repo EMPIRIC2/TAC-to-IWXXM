@@ -61,7 +61,7 @@ _AREA_TS_MOV = re.compile(
 )
 _CONVECTIVE_SIGMET = re.compile(
     r"^(?:(?P<unit>[A-Z]{4})\s+)?CONVECTIVE\s+SIGMET\s+(?P<tag>\S+)\s+VALID\s+UNTIL\s+"
-    r"(?P<until>\d{4,6})Z\s+(?P<states>(?:[A-Z]{2}\s*)+?)\s+FROM\s+(?P<body>.*)$",
+    r"(?P<until>\d{4,6})Z\s+(?P<states>.+?)\s+FROM\s+(?P<body>.*)$",
     re.DOTALL | re.IGNORECASE,
 )
 _NWS_HAZARD_IFR = "http://nws.weather.gov/codes/NWSI10-811/HazardTypes/IFR"

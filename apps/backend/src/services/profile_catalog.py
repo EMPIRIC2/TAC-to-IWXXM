@@ -176,7 +176,7 @@ _DELTA_MAP: dict[str, list[str]] = {
     "US_FAA_NWS": [
         "Adds FAA/NWS national differences on top of the ICAO baseline.",
         "Uses the iwxxm-us schema catalog for United States IWXXM extensions.",
-        "Current product slice is METAR, SPECI, SIGMET, and AIRMET.",
+        "Current product slice is METAR, SPECI, SIGMET, AIRMET, TCA, SWXA, and VONA.",
     ],
     "CA_ECCC": [
         "Adds Canadian MANOBS and MANAIR rules on top of the ICAO baseline.",

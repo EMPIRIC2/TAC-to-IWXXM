@@ -1,0 +1,12 @@
+# ADR-047 emit map — ca_eccc SIGMET (IWXXM 3.0.0 core body).
+schema_version: 1
+id: ca-eccc-sigmet-emit
+profiles:
+  - ca_eccc
+products:
+  - SIGMET
+iwxxm_versions:
+  - "3.0.0"
+kind: python_plugin
+pass_product: false
+plugin: python:tac2iwxxm.profiles.ca_eccc:emit_sigmet_ca_eccc
