@@ -354,6 +354,41 @@ def resolve_emit_map(
     return matches[0]
 
 
+def emit_plugin_sentinel(
+    ir: dict[str, Any],
+    *,
+    iwxxm_version: str,
+    product: str = "",
+) -> str:
+    """
+    Overlay-only emit plugin that returns a marker instead of IWXXM XML.
+
+    Used by TC-EVYRY-003 to prove a ``plugin:`` swap changes output. Not a
+    product builder.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (emit_plugin_sentinel)
+    2
+
+    Parameters
+    ----------
+    ir : dict
+        Ignored.
+    iwxxm_version : str
+        Pin copied into the marker.
+    product : str
+        Product copied into the marker when the map sets ``pass_product``.
+
+    Returns
+    -------
+    str
+        Marker text that is not an IWXXM document.
+    """
+    del ir
+    return f"sentinel:{product}:{iwxxm_version}"
+
+
 def emit_with_map(
     ir: dict[str, Any],
     *,
