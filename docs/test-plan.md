@@ -135,6 +135,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-DEV-013      | F6/F9/F15 (EV-1252-residual-yaml / #1252 / ADR-049)         | Declarative detector hatches; YAML ICAO→name table; emit `plugin:` swap goldens                                                                                                                                                                            | H4–H5 **N/A**                     | TC-EVYRY-001..003                                                                        |
 | UJ-DEV-012      | Eng quality (EV-docstring-multilang-bar / ADR-048; EV-adr048-doc-linters) | Multi-lang docstring/TSDoc/rustdoc bar + checkers + native linters (ruff D / eslint jsdoc / missing_docs) + warn/info-clean | H4–H5 **N/A**                     | TC-EVDOC-001..010                                                                        |
 | UJ-077          | F6/F9 deepen (#1210 + EV-pack-ir-convert-wire)               | Pack shadow + METAR/SPECI pack-IR emit when goldens match                                                                                                                                                                                                  | H4–H5 N/A (no wire/UI change)     | TC-EV1210-001..004; TC-EV-PACKIR-001..005                                                 |
+| UJ-079          | F6 (ADR-051)                                                 | OurAirports lookup, then the checked-in VOR table                                                                                                                                                                                                          | H4–H5 N/A                         | TC-1271-001..004                                                                          |
 | UJ-072d         | F7.w (EV-1120)                                               | Glanceable Profile summary + blocks + examples (#1145)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-010..016                                                                       |
 | UJ-072e         | F7.w (EV-080 / #1146)                                        | Parameterizable conversion templates + TAC→IWXXM bridge                                                                                                                                                                                                    | **H4–H5 when FE ships**           | TC-EV080-001..006                                                                        |
 | UJ-072f         | F7.w (EV-conversion-profile-ux-libraries)                    | Profile Builder assembly + conversion token modes (Convert/Decode/Skip)                                                                                                                                                                                  | **H4–H5 when FE ships**           | TC-EVCPU-001..008                                                                        |
@@ -6454,3 +6455,32 @@ Engineering quality — multi-language inline documentation bar. H4–H5 **N/A**
 - **Objective**: Private `_foo` helpers document Parameters/Returns when applicable
 - **Pass criteria**: `make check-docs` fails closed when private shape is missing (D-EVDOC-LINT-02)
 - **Source**: ADR-048 amend; D-EVDOC-LINT-02; UJ-DEV-012
+
+## ADR-051 reference lookup (UJ-079)
+
+### TC-1271-001: Public hit
+
+- **Level**: T0
+- **Objective**: A committed OurAirports fixture supplies SRQ, and convert XML contains that coordinate
+- **Pass criteria**: Unit test does not call the network. XML includes the fixture latitude
+
+### TC-1271-002: Table fallback
+
+- **Level**: T0
+- **Objective**: A known table point still resolves when the source errors, including an ambiguous ident
+- **Pass criteria**: `resolve_vor("EED")` returns the checked-in coordinate
+
+### TC-1271-003: Double miss
+
+- **Level**: T0
+- **Objective**: An id missing from the fixture and the table raises the existing unknown-VOR error
+- **Pass criteria**: `UnknownVOR` from `resolve_vor`, and convert returns `PARSE_ERROR`
+
+### TC-1271-004: Latitude/longitude SIGMET
+
+- **Level**: T0
+- **Objective**: A SIGMET that does not name a VOR still converts
+- **Pass criteria**: Convert succeeds and the VOR parser returns no geometry
+- **HTTP**: `apps/backend/tests/unit/test_tc_1271_reference_lookup_http.py` posts SIGMET SRQ and the unknown-VOR miss
+- **Browser**: `apps/e2e/uj079-reference-lookup.e2e.spec.ts` converts SRQ in the public converter
+

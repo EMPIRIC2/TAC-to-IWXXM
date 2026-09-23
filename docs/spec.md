@@ -62,6 +62,7 @@ TAC-to-IWXXM/
 ├── packages/
 │   ├── auth/             # Supabase Auth JWT library (not a deployable)
 │   ├── tac2iwxxm/        # General TAC→IWXXM (F6); MIT; PyO3 required at cutover
+│   ├── reference-lookup/ # Station and navaid coordinates for convert (F6 / ADR-051)
 │   ├── tac-validate/     # TAC lint + business rules
 │   ├── iwxxm-validate/   # XSD + Schematron (F2); vendor consumers
 │   ├── dissemination/    # F16–F19 sinks / writer-contract / SSRF (ADR-030)
@@ -91,7 +92,8 @@ TAC-to-IWXXM/
 | Frontend | Operator UI (workbench, decode, F7 sessions, five trust catalogs; F16–F19 drawer; **ADR-044** Profile Builder authoring retired → dropdowns) | `apps/frontend/` | shared (types); CodeMirror 6 |
 | E2E workspace | Cross-app tests | `apps/e2e/` | backend, frontend |
 | Auth library | Supabase Auth JWT middleware (Auth-only) | `packages/auth/` | supabase-py / JWT verify |
-| tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles); decode re-export window (ADR-044) | `packages/tac2iwxxm/` | tac-validate (optional), tac-decoding (re-export), vendor; PyO3 required at cutover (ADR-017) |
+| tac2iwxxm | TAC → IWXXM (7 products, bulletin split, profiles); decode re-export window (ADR-044) | `packages/tac2iwxxm/` | tac-validate (optional), tac-decoding (re-export), reference-lookup, vendor; PyO3 required at cutover (ADR-017) |
+| reference-lookup | Station and navaid coordinates for convert (F6 / ADR-051) | `packages/reference-lookup/` | OurAirports public-domain files; checked-in table remains the fallback |
 | tac-decoding | TAC → natural-language decode + glossary + Decoding catalog (F9 / ADR-044) | `packages/tac-decoding/` | — (no FastAPI/Supabase); MIT; PyPI `tac-decoding` |
 | tac-validate | TAC lint / shared rule pack | `packages/tac-validate/` | — (no FastAPI/Supabase) |
 | iwxxm-validate | XSD + Schematron (F2 engine) | `packages/iwxxm-validate/` | vendor schemas (read-only) |

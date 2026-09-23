@@ -147,6 +147,7 @@
 - **National advisory allowlist (#1270, ADR-050)**: United States VAA, Australia SIGMET/TCA/space-weather,
   New Zealand VAA/VONA, United Kingdom VAA/space-weather, and India TCA convert on those profiles.
   The gate is package YAML loaded with Hydra and drift-checked against the profile catalog, not a new Python module.
+- **Reference lookup (ADR-051)**: Convert resolves a 3-letter VOR or navaid id and a 4-letter ICAO location indicator through `packages/reference-lookup` before it uses the checked-in coordinate table. The public source is OurAirports (`navaids.csv` for 3-letter ids, `airports.csv` for 4-letter ids). It is tried first. Any error from that source, including not-found and an ident that matches more than one row, falls back to the table. The code does not pick among matching rows. If the table also misses, convert still raises the existing unknown-VOR error.
 - **What it does**: Converts TAC for **AIRMET, METAR, SIGMET, SPECI, TAF, VAA, and TCA** to IWXXM
   XML via `packages/tac2iwxxm`, with Annex-3 (or product-equivalent) body encoding and optional
   IWXXM-US national extensions; exposes the same products/profiles on HTTP convert and UI pickers;

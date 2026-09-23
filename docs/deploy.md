@@ -403,11 +403,11 @@ BYOC.
 | Frontend | repo root | `apps/frontend/Dockerfile` |
 | Worker | repo root | `apps/worker/Dockerfile` (T6.2) |
 
-API image must include: apps/backend, packages/tac2iwxxm, packages/tac-decoding,
+API image must include: apps/backend, packages/tac2iwxxm, packages/reference-lookup, packages/tac-decoding,
 packages/tac-validate, packages/iwxxm-validate, packages/dissemination,
 packages/shared, packages/auth, vendor/schemas.
 
-Worker image must include: apps/worker, packages/tac2iwxxm, packages/tac-decoding,
+Worker image must include: apps/worker, packages/tac2iwxxm, packages/reference-lookup, packages/tac-decoding,
 packages/tac-validate, packages/iwxxm-validate, packages/workflows, packages/shared,
 vendor/schemas (no frontend).
 
