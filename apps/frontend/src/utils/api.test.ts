@@ -1326,12 +1326,29 @@ describe('API Utils', () => {
     it('GETs selection-options by kind', async () => {
       mockFetchResponse({
         kind: 'dissemination',
-        options: [{ id: 'GLOBAL_AFS', label: 'GLOBAL_AFS' }],
+        options: [
+          { id: 'LIB.DISSEMINATION.ICAO_2025', label: 'Dissemination · ICAO_2025' },
+        ],
       });
       const result = await fetchSelectionOptions({ kind: 'dissemination' });
-      expect(result.options[0]!.id).toBe('GLOBAL_AFS');
+      expect(result.options[0]!.id).toBe('LIB.DISSEMINATION.ICAO_2025');
       expect(global.fetch).toHaveBeenCalledWith(
         expect.stringMatching(/\/selection-options\?kind=dissemination$/),
+        expect.objectContaining({ method: 'GET' }),
+      );
+    });
+
+    it('GETs selection-options for tac_validation (TC-EVYCL)', async () => {
+      mockFetchResponse({
+        kind: 'tac_validation',
+        options: [
+          { id: 'LIB.TAC_VALIDATION.ICAO_2025', label: 'TAC validation · ICAO_2025' },
+        ],
+      });
+      const result = await fetchSelectionOptions({ kind: 'tac_validation' });
+      expect(result.options[0]!.id).toMatch(/^LIB\.TAC_VALIDATION\./);
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.stringMatching(/\/selection-options\?kind=tac_validation$/),
         expect.objectContaining({ method: 'GET' }),
       );
     });

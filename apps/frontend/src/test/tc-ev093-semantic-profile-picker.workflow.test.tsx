@@ -40,6 +40,12 @@ vi.mock('/utils/api', () => ({
   EndpointNotImplementedError: class extends Error {},
   convertTafToIwxxm: vi.fn(),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSelectionOptions: vi
+    .fn()
+    .mockImplementation(async ({ kind }: { kind: string }) => ({
+      kind,
+      options: [],
+    })),
   fetchSchemaStatus: vi.fn().mockResolvedValue({
     profile_pins: {
       ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
@@ -116,6 +122,7 @@ describe('TC-EV093 — Conversion library picker deepen', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
   });
 
   it('TC-EV093-001 lists guest Conversion libraries; default ICAO_2025', () => {
@@ -181,7 +188,12 @@ describe('TC-EV093 — Conversion library picker deepen', () => {
 
     expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
     expect(screen.getByTestId('conversion-library-select')).toBeVisible();
-    expect(screen.getByTestId('dissemination-library-select')).toBeVisible();
+    expect(screen.getByTestId('decoding-library-select')).toBeVisible();
+    expect(screen.getByTestId('tac-validation-library-select')).toBeVisible();
+    expect(screen.getByTestId('iwxxm-validation-library-select')).toBeVisible();
+    expect(
+      screen.queryByTestId('dissemination-library-select'),
+    ).not.toBeInTheDocument();
     expect(screen.queryByTestId('semantic-profile-help-icon')).not.toBeInTheDocument();
     expect(screen.queryByTestId('exchange-profile-help-icon')).not.toBeInTheDocument();
 

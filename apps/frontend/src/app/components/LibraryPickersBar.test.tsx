@@ -1,19 +1,19 @@
 /**
- * LibraryPickersBar unit tests (TC-EVBRIDGE-007 UI).
+ * LibraryPickersBar unit tests (TC-EVYCL / #1251).
  */
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../../utils/conversionProfilesApi', () => ({
-  listLibraryAssets: vi.fn(),
+vi.mock('../../utils/api', () => ({
+  fetchSelectionOptions: vi.fn(),
 }));
 
-import { listLibraryAssets } from '../../utils/conversionProfilesApi';
+import { fetchSelectionOptions } from '../../utils/api';
 import { defaultLibraryId } from '../../utils/libraryIds';
 import { LibraryPickersBar } from './LibraryPickersBar';
 
-const listMock = vi.mocked(listLibraryAssets);
+const fetchMock = vi.mocked(fetchSelectionOptions);
 
 const guestValues = {
   conversionLibraryId: defaultLibraryId('conversion'),
@@ -23,28 +23,34 @@ const guestValues = {
   decodingLibraryId: defaultLibraryId('decoding'),
 };
 
+function mockFourKindsEmpty() {
+  fetchMock.mockImplementation(async ({ kind }) => ({
+    kind,
+    options: [],
+  }));
+}
+
 describe('LibraryPickersBar', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    listMock.mockResolvedValue({ items: [] });
+    mockFourKindsEmpty();
   });
 
-  it('renders five library selects with guest defaults', async () => {
+  it('renders four library selects with guest defaults (no Dissemination)', async () => {
     const onChange = vi.fn();
     render(<LibraryPickersBar values={guestValues} onChange={onChange} />);
     await waitFor(() => {
       expect(screen.getByTestId('library-pickers-bar')).toBeInTheDocument();
     });
-    expect(
-      screen
-        .getByTestId('library-pickers-bar')
-        .querySelector('[data-testid="beta-badge"]'),
-    ).toBeTruthy();
     expect(screen.getByTestId('conversion-library-select')).toBeInTheDocument();
     expect(screen.getByTestId('tac-validation-library-select')).toBeInTheDocument();
     expect(screen.getByTestId('iwxxm-validation-library-select')).toBeInTheDocument();
-    expect(screen.getByTestId('dissemination-library-select')).toBeInTheDocument();
     expect(screen.getByTestId('decoding-library-select')).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('dissemination-library-select'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('conversion-library-help')).toBeInTheDocument();
+    expect(screen.getByTestId('decoding-library-help')).toBeInTheDocument();
 
     fireEvent.change(screen.getByTestId('conversion-library-select'), {
       target: { value: defaultLibraryId('conversion', 'US_FAA_NWS') },
@@ -54,88 +60,50 @@ describe('LibraryPickersBar', () => {
     expect(engineId).toBe('US_FAA_NWS');
   });
 
-  it('falls back to guest defaults when signed-in list is empty or rejects', async () => {
-    listMock.mockResolvedValueOnce({ items: [] });
-    const { unmount } = render(
-      <LibraryPickersBar
-        accessToken="tok"
-        values={{
-          conversionLibraryId: '',
-          tacValidationLibraryId: '',
-          iwxxmValidationLibraryId: '',
-          disseminationLibraryId: '',
-          decodingLibraryId: '',
-        }}
-        onChange={vi.fn()}
-      />,
-    );
-    await waitFor(() => {
-      expect(listMock).toHaveBeenCalledWith('tok');
-    });
-    expect(screen.getByTestId('conversion-library-select')).toHaveValue(
-      defaultLibraryId('conversion'),
-    );
-    unmount();
-
-    listMock.mockRejectedValueOnce(new Error('boom'));
-    render(
-      <LibraryPickersBar accessToken="tok" values={guestValues} onChange={vi.fn()} />,
-    );
-    await waitFor(() => {
-      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
-        defaultLibraryId('conversion'),
-      );
-    });
-  });
-
-  it('uses API assets when present and keeps empty value when a kind has no options', async () => {
-    listMock.mockResolvedValueOnce({
-      items: [
+  it('loads selection-options and opens catalog links', async () => {
+    fetchMock.mockImplementation(async ({ kind }) => ({
+      kind,
+      options: [
         {
-          id: 'LIB.CONVERSION.CUSTOM',
-          kind: 'conversion',
-          name: 'Custom conversion',
-          access: 'custom',
-          engineProfileId: 'US_FAA_NWS',
-          attachedNationalLine: 'US_FAA_NWS',
-          status: 'activated',
-        },
-        {
-          id: 'LIB.CONVERSION.DRAFT',
-          kind: 'conversion',
-          name: 'Draft conversion',
-          access: 'custom',
-          engineProfileId: 'US_FAA_NWS',
-          attachedNationalLine: 'US_FAA_NWS',
-          status: 'draft',
+          id: defaultLibraryId(
+            kind === 'dissemination' ? 'conversion' : kind,
+            'CA_ECCC',
+          ),
+          label: `${kind} · CA_ECCC`,
         },
       ],
-    });
+    }));
+    const onOpenCatalog = vi.fn();
     render(
       <LibraryPickersBar
-        accessToken="tok"
-        values={{
-          conversionLibraryId: '',
-          tacValidationLibraryId: '',
-          iwxxmValidationLibraryId: '',
-          disseminationLibraryId: '',
-          decodingLibraryId: '',
-        }}
+        values={guestValues}
         onChange={vi.fn()}
+        onOpenCatalog={onOpenCatalog}
       />,
     );
+    await waitFor(() => {
+      expect(fetchMock).toHaveBeenCalled();
+    });
     await waitFor(() => {
       expect(
         Array.from(
           screen.getByTestId('conversion-library-select').querySelectorAll('option'),
         ).map((opt) => opt.getAttribute('value')),
-      ).toEqual(['LIB.CONVERSION.CUSTOM']);
+      ).toContain(defaultLibraryId('conversion', 'CA_ECCC'));
     });
-    const tacSelect = screen.getByTestId(
-      'tac-validation-library-select',
-    ) as HTMLSelectElement;
-    expect(tacSelect).toBeDisabled();
-    expect(tacSelect.value).toBe('');
-    expect(tacSelect.options).toHaveLength(0);
+    fireEvent.click(screen.getByTestId('conversion-library-catalog-link'));
+    expect(onOpenCatalog).toHaveBeenCalledWith('conversion');
+    fireEvent.click(screen.getByTestId('tac-validation-library-catalog-link'));
+    expect(onOpenCatalog).toHaveBeenCalledWith('lint');
+  });
+
+  it('falls back to guest defaults when selection-options rejects', async () => {
+    fetchMock.mockRejectedValue(new Error('boom'));
+    render(<LibraryPickersBar values={guestValues} onChange={vi.fn()} />);
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+        defaultLibraryId('conversion'),
+      );
+    });
   });
 });

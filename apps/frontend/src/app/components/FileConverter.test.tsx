@@ -255,6 +255,12 @@ vi.mock('/utils/api', () => ({
     .fn()
     .mockResolvedValue({ success: true, data: '<iwxxm>test</iwxxm>' }),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSelectionOptions: vi
+    .fn()
+    .mockImplementation(async ({ kind }: { kind: string }) => ({
+      kind,
+      options: [],
+    })),
   fetchSchemaStatus: vi.fn().mockResolvedValue({
     profile_pins: {
       ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
@@ -443,6 +449,7 @@ describe('FileConverter Component', () => {
   beforeEach(() => {
     cleanup();
     vi.clearAllMocks();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
     operatorDisseminationUiConfig.destinationsEnabled = false;
     // Reset queued Once/implementations so coverage runs do not leak mocks across cases.
     mockConvertMetarToIwxxm.mockReset();

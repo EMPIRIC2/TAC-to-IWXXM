@@ -1052,14 +1052,26 @@ export async function fetchRuleCatalog(params: {
 }
 
 /**
- * Fetch deployed selection options for dropdowns (ADR-044).
+ * Selection-option kinds for Convert (four) + Send drawer (dissemination).
+ * @example
+ * const _ = true;
+ */
+export type SelectionOptionKind =
+  | 'conversion'
+  | 'tac_validation'
+  | 'iwxxm_validation'
+  | 'decoding'
+  | 'dissemination';
+
+/**
+ * Fetch deployed selection options for dropdowns (ADR-044 / TP-YCL-01).
  *
  * **Endpoint**: GET /api/v1/selection-options
  * @example
  * const _ = true;
  */
 export async function fetchSelectionOptions(params: {
-  kind: 'conversion' | 'dissemination' | 'decoding';
+  kind: SelectionOptionKind;
   signal?: AbortSignal;
 }): Promise<{ kind: string; options: Array<{ id: string; label: string }> }> {
   const query = new URLSearchParams({ kind: params.kind });

@@ -23,6 +23,12 @@ vi.mock('/utils/api', () => ({
   EndpointNotImplementedError: class extends Error {},
   convertTafToIwxxm: vi.fn().mockResolvedValue({ success: true, data: '<iwxxm />' }),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSelectionOptions: vi
+    .fn()
+    .mockImplementation(async ({ kind }: { kind: string }) => ({
+      kind,
+      options: [],
+    })),
   fetchSchemaStatus: vi.fn().mockResolvedValue({
     profile_pins: {
       ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
@@ -117,7 +123,10 @@ describe('T4.1 / TC-EV061-1013: converter chrome bars', () => {
     expect(bar).toContainElement(product);
     expect(bar).toContainElement(libraries);
     expect(bar).toContainElement(conversion);
-    expect(bar).toContainElement(screen.getByTestId('dissemination-library-select'));
+    expect(bar).toContainElement(screen.getByTestId('decoding-library-select'));
+    expect(
+      screen.queryByTestId('dissemination-library-select'),
+    ).not.toBeInTheDocument();
     expect(bar).not.toContainElement(screen.getByTestId('input-mode-group'));
     expect(bar).not.toContainElement(screen.getByTestId('product-profile-bar-summary'));
     expect(bar).not.toContainElement(screen.getByTestId('semantic-profile-help'));
