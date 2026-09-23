@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from typing import Final
 
+from tac_validate.lint_profile_catalog import load_lint_profiles
+
 PROFILE_ANNEX3: Final[str] = "annex3"
 PROFILE_IWXXM_US: Final[str] = "iwxxm_us"
 PROFILE_CA_ECCC: Final[str] = "ca_eccc"
@@ -17,18 +19,7 @@ PROFILE_US_NWS_G_AIRMET: Final[str] = "us_nws_g_airmet"
 PROFILE_US_NWS_VONA: Final[str] = "us_nws_vona"
 PROFILE_CA_MSC_SIGMET: Final[str] = "ca_msc_sigmet"
 
-SUPPORTED_PROFILES: Final[frozenset[str]] = frozenset(
-    {
-        PROFILE_ANNEX3,
-        PROFILE_IWXXM_US,
-        PROFILE_CA_ECCC,
-        PROFILE_IN_IMD,
-        PROFILE_US_NWS_CONVECTIVE_SIGMET,
-        PROFILE_US_NWS_G_AIRMET,
-        PROFILE_US_NWS_VONA,
-        PROFILE_CA_MSC_SIGMET,
-    }
-)
+SUPPORTED_PROFILES: Final[frozenset[str]] = frozenset(load_lint_profiles())
 
 # Products with a defined US profile overlay (L5 REMARKS / FMH-1 / iwxxm-us encode).
 IWXXM_US_PRODUCTS: Final[frozenset[str]] = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
@@ -186,8 +177,12 @@ __all__ = [
     "IWXXM_US_THIN_LINT_PRODUCTS",
     "PROFILE_ANNEX3",
     "PROFILE_CA_ECCC",
+    "PROFILE_CA_MSC_SIGMET",
     "PROFILE_IN_IMD",
     "PROFILE_IWXXM_US",
+    "PROFILE_US_NWS_CONVECTIVE_SIGMET",
+    "PROFILE_US_NWS_G_AIRMET",
+    "PROFILE_US_NWS_VONA",
     "SUPPORTED_PROFILES",
     "ca_eccc_applicable",
     "in_imd_applicable",
