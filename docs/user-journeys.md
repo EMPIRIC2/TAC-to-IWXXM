@@ -109,7 +109,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-072i-overview | Overview compare + product/version enablement | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
 | UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
 | UJ-076 | Five package-owned trust catalogs (tabbed) | apps/frontend / API | F7.v (ADR-044) | T0 / T2 / **T3** / H4–H5 |
-| UJ-076a | Dropdown profile / dissemination / decode selection | apps/frontend / API | F7.w→dropdowns / F16–F19 / F9 (ADR-044) | T0 / T2 / **T3** / H4–H5 |
+| UJ-076a | Convert four-engine light selects + Send-drawer dissem (#1251) | apps/frontend / API | F7 / F9 / F16–F19 (ADR-044; EV-yaml-config-light-ux) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076b | Decode via `tac-decoding` parity | apps/frontend / API | F9 (ADR-044) | T0 / T2 / H4–H5 |
 | UJ-078 | Profile/validate/decode deepen (ADR-044 residual + AU/NZ + station names) | apps/frontend / API | F7/F9/F36 (#1221) | T0 / T2 / **T3** / H4–H5 |
 | UJ-077 | Pack-engine decode and convert, same operator panel | library / API | F6/F9 (#1210 / #1214 / ADR-045) | T0 / T2; H4–H5 N/A |
@@ -2867,18 +2867,25 @@ Dissemination, and Decoding in a tabbed catalog shell (trust / transparency).
 
 **Pass**: T0/T2/T3 + H4–H5; `GET /api/v1/rule-catalogs?family=…` for each family.
 
-### UJ-076a: Dropdown selection (hard cutover)
+### UJ-076a: Dropdown selection (hard cutover) — amend #1251
 
-**Goal**: Select conversion / validation / dissemination / decoding options via dropdowns
-backed by deployed backend lists only.
+**Goal**: On Convert, select **Decoding**, **TAC validation**, **IWXXM validation**, and
+**Conversion** via compact dropdowns backed only by deployed backend lists
+(`GET /api/v1/selection-options`). Dissemination selection lives on the **Send drawer**,
+not the Convert bar. Profile Builder / library authoring UI is absent (deleted).
+
+**Feature**: F7 / F9 / F16–F19 — ADR-044; deepen EV-yaml-config-light-ux / #1251.
 
 **Steps**:
-1. On workbench / dissemination drawer, open each selection dropdown.
-2. Options match `GET /api/v1/selection-options` (or narrowed existing list routes).
-3. Profile Builder / library authoring / Dissemination Bench authoring UI is absent.
-4. Disseminate still runs preflight/send with memory-only credentials.
+1. Open Convert; confirm exactly four library selects (no Dissemination on this bar).
+2. Each select lists first-party options from `/selection-options`; guests and auth match.
+3. Read per-select trust/help (what it affects) and follow the link into the matching
+   read-only Rule catalogs family tab.
+4. Change semantic profile → confirm → four selects reset to that national line’s defaults.
+5. Open Send drawer; dissemination pickers still work; preflight/send with memory-only credentials.
+6. Confirm Profile Builder / library authoring surfaces are gone (not merely hidden).
 
-**Pass**: T0/T2/T3 + H4–H5; must-not-break UJ-027–030 send paths.
+**Pass**: T0/T2/T3 + H4–H5; TC-EVRPC-006..008 + #1251 FE/E2E; must-not-break UJ-027–030.
 
 ### UJ-076b: `tac-decoding` parity
 

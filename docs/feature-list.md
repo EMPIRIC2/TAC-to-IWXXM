@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-21 (EV-yaml-full-configurability / #1226 — full YAML + emit Spec)
+> **Last updated**: 2026-09-22 (EV-yaml-config-light-ux / #1251 — Convert four-select + ADR-044 FE hard-cut redo Spec)
 
 ## Summary
 
@@ -14,7 +14,7 @@
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011); **deepen EV-yaml-engine-configurability / #1224**: convert column honesty (emit stays Python; pack IR + profile overlays documented); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: declarative **convert emit YAML**; every product pack-IR + emit → **full** |
-| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); **deepen EV-profile-validate-decode-deepen / #1221**: finish ADR-044 FE residual + #1120/#1145 catalog UX |
+| F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); **deepen EV-profile-validate-decode-deepen / #1221**: finish ADR-044 FE residual + #1120/#1145 catalog UX; **deepen EV-yaml-config-light-ux / #1251**: full FE hard-cut redo + Convert **four**-engine light selects + trust/help (Dissem select only in Send drawer); residual YAML epic #1252 |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner; **deepen EV-profile-validate-decode-deepen / #1221 / #724**: ICAO station → airport name (soft-fail); **deepen EV-yaml-engine-configurability / #1224**: pack/glossary overlay cookbook + examples; **deepen EV-yaml-full-configurability / #1226**: every product decode pack cell → **full**; starter templates + PyPI smoke |
 | F10 | Workbench preview clarity (IWXXM pane + lint UX) | Done | Product | S013 / EV-009; shipped 2026-07-17 (#723); **deepen** S048 / EV-040 full lint console lines + preserve input on convert; **deepen** EV-beta-ux-export-auth info-only Conversion/Validation log chrome (not amber/red) |
@@ -985,6 +985,18 @@
   journeys UJ-076* / UJ-073. Decisions:
   [ev-profile-validate-decode-deepen.md](decisions/ev-profile-validate-decode-deepen.md).
   **Acceptance**: D-EVPVD AC1–2, AC6–7.
+- **EV-yaml-config-light-ux / #1251 (F7 deepen — Convert light select + ADR-044 FE hard-cut redo)**:
+  Delete remaining Profile Builder / library authoring FE (not merely unmounted). Convert
+  chrome: compact **four** selects (Decoding, TAC validation, IWXXM validation, Conversion)
+  from `GET /api/v1/selection-options` only; per-select trust/help + link to Rule catalogs;
+  Dissemination select **absent** on Convert (Send drawer retains pickers). Semantic profile
+  sets national-line defaults and, on change, confirms then resets the four selects. Guests
+  and auth share first-party options (no custom assets / no YAML paste). Two PRs required:
+  (1) FE cutover + E2E must-fix; (2) cookbook/starters/README quickstarts. Follow-up residual
+  YAML epic [#1252](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1252). Journeys: amend
+  UJ-076a. Session: `EV-yaml-config-light-ux`. Decisions:
+  [evolve-decisions.md](decisions/evolve-decisions.md) §EV-yaml-config-light-ux.
+  **Acceptance**: see #1251 AC checklist (R1–R16 lock).
 
 - **Status**: **Done** — shipped S013 / EV-009 (2026-07-17, PR #723).
 - **What it does**: Upgrades the F7 decode panel from generic group labels to **value-aware
