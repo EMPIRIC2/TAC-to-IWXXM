@@ -4,7 +4,15 @@ from __future__ import annotations
 
 import pytest
 from tac_validate.api import lint
-from tac_validate.lint_profile_catalog import apply_profile_deltas, load_lint_profiles
+from tac_validate.lint_profile_catalog import (
+    _mapping,
+    _object_list,
+    _required_str,
+    _specs_from_document,
+    _string_list,
+    apply_profile_deltas,
+    load_lint_profiles,
+)
 from tac_validate.models import Issue, LintReport
 
 _NZ_AUTO = "METAR NZWN 231800Z AUTO 05003KT 9999 FEW010/// 06/02 Q1030="
@@ -92,3 +100,30 @@ def test_suppression_skips_other_products_and_codes() -> None:
     assert kept_product.issues == [cloud]
     assert kept_code.issues == [other]
     assert unknown.issues == [cloud]
+
+
+def test_catalog_rows_reject_malformed_nodes() -> None:
+    with pytest.raises(ValueError, match="mapping"):
+        _mapping(["nope"], field="catalog")
+    with pytest.raises(ValueError, match="string"):
+        _mapping({1: "x"}, field="catalog")
+    with pytest.raises(ValueError, match="list"):
+        _string_list("METAR", field="products")
+    with pytest.raises(ValueError, match="strings"):
+        _string_list(["METAR", 1], field="products")
+    with pytest.raises(ValueError, match="string"):
+        _required_str({"id": ""}, "id")
+    with pytest.raises(ValueError, match="list"):
+        _object_list("nope", field="deltas")
+    with pytest.raises(ValueError, match="boolean"):
+        _specs_from_document(
+            {
+                "profiles": {
+                    "sample": {
+                        "engine": "annex3",
+                        "differs": "yes",
+                        "products": ["METAR"],
+                    }
+                }
+            }
+        )
