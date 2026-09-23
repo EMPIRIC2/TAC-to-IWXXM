@@ -66,12 +66,15 @@ class LintReport(msgspec.Struct, frozen=True):
         Structured findings.
     fixes :
         Optional repair suggestions.
+    profile :
+        Semantic profile the findings were judged under.
     """
 
     ok: bool
     product: str
     issues: list[Issue]
     fixes: list[Fix] = msgspec.field(default_factory=list)
+    profile: str = "annex3"
 
 
 __all__ = ["Fix", "Issue", "LintReport"]

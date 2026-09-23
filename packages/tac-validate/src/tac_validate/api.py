@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 from tac_validate.ahl import lint_ahl_bulletin, looks_like_ahl
+from tac_validate.lint_profile_catalog import apply_profile_deltas, lint_profile_spec
 from tac_validate.match_port import DecodeMatch, MatchPort, match_port_spans, spans_from_port
 from tac_validate.models import LintReport
 from tac_validate.products import PRODUCTS
@@ -68,11 +69,10 @@ def lint(
     product :
         One of AIRMET, METAR, SIGMET, SPECI, TAF, VAA, TCA, SWXA, VONA.
     profile :
-        ``annex3`` (default), ``iwxxm_us``, ``ca_eccc``, or ``in_imd``. WMO L3 membership
-        is shared; national overlays apply only under the matching profile where the
-        product supports it. ``SWXA`` and ``TCA`` accept ``iwxxm_us`` for thin US national
-        lint only (#919 M22). ``in_imd`` is TAF-only (TX/TN omission awareness). Calling
-        a national profile for an unsupported product raises ``ValueError``.
+        ``annex3`` (default), ``iwxxm_us``, ``ca_eccc``, ``in_imd``, or another
+        id in the lint profile catalog. Profiles that do not differ run the
+        Annex 3 rules and keep the requested profile on the report. Calling a
+        profile for a product it does not list raises ``ValueError``.
 
     match_port :
         Optional decode spans. ``None`` keeps the TAC scan. An empty sequence
@@ -102,18 +102,24 @@ def lint(
         raise ValueError(f"profile ca_eccc is not applicable for product {product_u!r} (N/A - use annex3)")
     if profile_l == "in_imd" and not in_imd_applicable(product_u):
         raise ValueError(f"profile in_imd is not applicable for product {product_u!r} (N/A - use annex3)")
+    if profile_l not in {"annex3", "iwxxm_us", "ca_eccc", "in_imd"}:
+        spec = lint_profile_spec(profile_l)
+        if spec is None or product_u not in spec.products:
+            raise ValueError(f"profile {profile_l} is not applicable for product {product_u!r} (N/A - use annex3)")
 
     spans = spans_from_port(match_port)
     token = match_port_spans.set(spans) if spans is not None else None
     try:
         if looks_like_ahl(tac_text):
-            return lint_ahl_bulletin(
+            report = lint_ahl_bulletin(
                 tac_text,
                 product=product_u,
                 profile=profile_l,
                 lint_report=_lint_tac_report,
             )
-        return _lint_tac_report(tac_text, product_u, profile_l)
+        else:
+            report = _lint_tac_report(tac_text, product_u, profile_l)
+        return apply_profile_deltas(report, profile=profile_l, product=product_u)
     finally:
         if token is not None:
             match_port_spans.reset(token)
