@@ -125,6 +125,8 @@ after contract spikes #924–#927 close — **those spikes are now closed (ADR-0
 | **Auth** | JWT middleware | `packages/auth` | — | Out of MET platform layers |
 | **Apps** | HTTP / UI / worker / e2e | `apps/backend`, `frontend`, `worker`, `e2e` | — | Thin callers — no package move |
 
+**Residual YAML (ADR-049 / #1252):** detector hatch behavior moves into declarative detector YAML where the DSL can express it; decode airport names use a file/env YAML ICAO→name table (`set_location_name_resolver` remains an optional override); emit stays Python builders selected by emit-map `plugin:`, with a golden that an overlay swap changes output. No Schematron-as-YAML, no HTTP YAML bodies, no operator UI. Public `convert` and `decode_tac` wire stay stable.
+
 **Approved milestone sequence** (epic #922 synthesis): Core → Profiles (#912/#924) → Validation (#925) →
 Adapters (#926) → Dissemination (#927) → Workflows (#931) → Platform UIs (#933–#938).
 

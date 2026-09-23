@@ -7,7 +7,7 @@
 > S019 / EV-014 dissemination epic F16–F19; S020 / EV-015 F20 TAF+SPECI quality (#735/#734);
 > S023 / EV-017 public app + privacy (#783); S038 / EV-031 platform independence F30/F31;
 > S040 / EV-032 F32 VONA + #846 corpus
-> **Last updated**: 2026-09-21 (EV-yaml-full-configurability / #1226 — UJ-DEV-011)
+> **Last updated**: 2026-09-23 (EV-1252-residual-yaml / #1252 — UJ-DEV-013)
 
 Product-facing journeys (UJ-*) describe end-user flows. Developer journeys (UJ-DEV-*)
 describe monorepo workflows introduced by migration features M1–M6 and F6.
@@ -117,6 +117,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-DEV-010 | Overlay honesty matrix + cookbook + preflight | packages + `scripts/` / docs | F2/F6/F9/F12/F15 (#1224) | T0 / CI |
 | UJ-DEV-011 | Full YAML + convert emit (ADR-047) | packages + `scripts/` / docs | F2/F6/F9/F12/F14/F15 (#1226) | T0 / CI |
+| UJ-DEV-013 | Residual YAML hatches, name table, emit plugin swap (ADR-049) | packages + docs | F6/F9/F15 (#1252) | T0 / CI |
 | UJ-OPS-002 | Prod apex redirects to app host | DNS / ingress / ops | F30 deepen (EV-057 / #948) | T3 / ops smoke |
 | UJ-DEV-001 | Clone and run monorepo | `git clone` + `make dev` | M1, M5 | T0 |
 | UJ-DEV-002 | Sync vendor schemas | Scheduled Action / manual | M2, M6, F6 | CI |
@@ -1851,6 +1852,23 @@ TC-EV090-*; **TC-EV093-***.
 
 **Acceptance**: feature-list #1226 ACs; TC-EVYFC-001..005.
 **Tier: T0 / CI**. H4–H5 N/A unless UI/OpenAPI changes. [Corpus: product] [Corpus: adr/ADR-047] [Corpus: tests]
+
+### UJ-DEV-013: Residual YAML hatches, name table, emit plugin swap (#1252)
+
+**Actor**: SDK embedder / deployer / package maintainer
+
+**Goal**: Change detector hatch behavior, airport names on decode, and which emit builder runs, using file/env YAML only.
+
+**Steps**:
+
+1. Read ADR-049 and the honesty-matrix residual notes.
+2. Overlay a detector rule that replaces a `kind: python` hatch and confirm the lint fixture changes.
+3. Point decode at a YAML ICAO→name table and confirm the plain-language name changes; confirm an installed resolver override still wins; confirm a miss stays the designator.
+4. Overlay an emit-map `plugin:` for one product family and confirm the IWXXM golden changes. Builders stay Python.
+5. Confirm OpenAPI still has no pack, policy, or emit YAML body.
+
+**Acceptance**: feature-list #1252 / ADR-049; TC-EVYRY-001..003.
+**Tier: T0 / CI**. H4–H5 N/A. [Corpus: product §F6] [Corpus: product §F9] [Corpus: product §F15] [Corpus: adr/ADR-049] [Corpus: tests]
 
 ---
 

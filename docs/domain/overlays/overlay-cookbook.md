@@ -101,7 +101,10 @@ Read [product-engine-matrix.md](product-engine-matrix.md) before assuming a prod
 / ADR-047: every core product cell (decode, TAC quality, detectors, IWXXM output policy,
 convert pack-IR, convert emit) is rated **full**. Named Python residuals (detector hatches,
 decode location enrichment, emit-map `plugin:` builders) remain documented and do **not**
-block that rating — see residual epic [#1252](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1252).
+block that rating. [ADR-049](../../adr/ADR-049-residual-yaml-hatches-enrichment-emit.md) /
+[#1252](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1252) moves hatch behavior into
+declarative detector rules where the DSL can express it, makes a YAML ICAO→name table the
+decode name source of truth, and requires emit `plugin:` swap goldens. Builders stay Python.
 
 ## HTTP
 
