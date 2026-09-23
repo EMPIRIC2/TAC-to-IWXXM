@@ -171,12 +171,12 @@ export function LibraryPickersBar({
         }
       }),
     );
-    setByKind((prev) => ({
-      decoding: next.decoding ?? prev.decoding,
-      tac_validation: next.tac_validation ?? prev.tac_validation,
-      iwxxm_validation: next.iwxxm_validation ?? prev.iwxxm_validation,
-      conversion: next.conversion ?? prev.conversion,
-    }));
+    setByKind({
+      decoding: next.decoding as SelectOption[],
+      tac_validation: next.tac_validation as SelectOption[],
+      iwxxm_validation: next.iwxxm_validation as SelectOption[],
+      conversion: next.conversion as SelectOption[],
+    });
   }, []);
 
   /* eslint-disable react-hooks/set-state-in-effect -- load selection-options once on mount */
@@ -193,7 +193,7 @@ export function LibraryPickersBar({
       <div className="grid min-w-0 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         {KIND_META.map((meta) => {
           const options = byKind[meta.kind];
-          const value = values[meta.field] || options[0]?.id || '';
+          const value = values[meta.field] || options[0]!.id;
           return (
             <div key={meta.kind} className="flex min-w-0 flex-col gap-1">
               <Label

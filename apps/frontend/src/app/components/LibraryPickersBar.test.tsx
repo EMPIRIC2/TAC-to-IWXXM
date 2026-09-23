@@ -58,6 +58,11 @@ describe('LibraryPickersBar', () => {
     expect(onChange).toHaveBeenCalled();
     const [, engineId] = onChange.mock.calls.at(-1) ?? [];
     expect(engineId).toBe('US_FAA_NWS');
+
+    fireEvent.change(screen.getByTestId('decoding-library-select'), {
+      target: { value: defaultLibraryId('decoding', 'CA_ECCC') },
+    });
+    expect(onChange.mock.calls.at(-1)?.[1]).toBeUndefined();
   });
 
   it('loads selection-options and opens catalog links', async () => {
@@ -107,6 +112,23 @@ describe('LibraryPickersBar', () => {
       target: { value: 'custom-asset' },
     });
     expect(onChange.mock.calls.at(-1)?.[1]).toBeUndefined();
+  });
+
+  it('uses the first option when a library id is blank', async () => {
+    render(
+      <LibraryPickersBar
+        values={{
+          ...guestValues,
+          decodingLibraryId: '',
+        }}
+        onChange={vi.fn()}
+      />,
+    );
+    await waitFor(() => {
+      expect(screen.getByTestId('decoding-library-select')).toHaveValue(
+        defaultLibraryId('decoding'),
+      );
+    });
   });
 
   it('falls back to guest defaults when selection-options rejects', async () => {
