@@ -97,6 +97,18 @@ describe('LibraryPickersBar', () => {
     expect(onOpenCatalog).toHaveBeenCalledWith('lint');
   });
 
+  it('omits the engine profile when the conversion id is not a LIB id', async () => {
+    const onChange = vi.fn();
+    render(<LibraryPickersBar values={guestValues} onChange={onChange} />);
+    await waitFor(() => {
+      expect(screen.getByTestId('conversion-library-select')).toBeInTheDocument();
+    });
+    fireEvent.change(screen.getByTestId('conversion-library-select'), {
+      target: { value: 'custom-asset' },
+    });
+    expect(onChange.mock.calls.at(-1)?.[1]).toBeUndefined();
+  });
+
   it('falls back to guest defaults when selection-options rejects', async () => {
     fetchMock.mockRejectedValue(new Error('boom'));
     render(<LibraryPickersBar values={guestValues} onChange={vi.fn()} />);

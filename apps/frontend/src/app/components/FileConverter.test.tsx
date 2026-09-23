@@ -7275,7 +7275,27 @@ describe('FileConverter Component', () => {
       clickSpy.mockRestore();
     });
 
+    it('keeps the conversion library when a profile reset is declined', async () => {
+      vi.stubGlobal(
+        'confirm',
+        vi.fn(() => false),
+      );
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
+      );
+      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+        defaultLibraryId('conversion'),
+      );
+    });
+
     it('updates conversion engine profile when Conversion library changes', async () => {
+      vi.stubGlobal(
+        'confirm',
+        vi.fn(() => true),
+      );
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
       await user.selectOptions(
