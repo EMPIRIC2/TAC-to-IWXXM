@@ -63,6 +63,25 @@
 
 ---
 
+## Cycle EV-yaml-config-light-ux — Convert four-select + ADR-044 FE hard-cut redo (#1251)
+
+**Opened:** 2026-09-22 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-config-light-ux`  
+**Issue:** [#1251](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1251) · **Residual epic:** [#1252](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1252)  
+**Documenting→Implementing gate:** closed  
+**Scale:** full
+
+| ID | Outcome |
+|----|---------|
+| D1–D9 | Intake: Convert light UX four engines; Profile Builder out; UX+residual epic; select-only; cookbook DX; E2E must-fix; full; proceed |
+| R1–R8 | Full FE hard-cut redo; four selects + blurbs; `/selection-options` only; per-select help+catalog link; hide Dissem on Convert; two tickets; local preview; Vitest+H4–H5+docs Done bar |
+| R9–R16 | Delete authoring FE+tests; amend UJ-076a; same options guest/auth; profile resets four with confirm; residual=hatches/enrichment/plugins; two PRs; must-not-break list A; file issues after lock |
+| TP-YCL-01 | **Approved** 2026-09-22 — Extend `/selection-options` to conversion/tac_validation/iwxxm_validation/decoding/dissemination returning first-party `LIB.*` ids (Convert drops `listLibraryAssets` for options) |
+| D-YCL-TECH | Tech-plan + verify-tech Pass (S2 gap mitigated by TP-YCL-01; H4–H5 required; two-PR shape) |
+
+[Corpus: product §F7] [Corpus: adr/ADR-044] [Corpus: adr/ADR-047] [Corpus: tests] [Corpus: api] [Corpus: decisions]
+
+---
+
 ## Cycle EV-yaml-engine-configurability — overlay honesty + SDK usability (#1224)
 
 **Opened:** 2026-09-21 · **Session:** `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/EV-yaml-engine-configurability`  

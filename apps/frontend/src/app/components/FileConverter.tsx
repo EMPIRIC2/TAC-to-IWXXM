@@ -60,6 +60,12 @@ import { convertOverlayFields } from '@/utils/convertOverlayFields';
 import { LibraryPickersBar } from './LibraryPickersBar';
 import { libraryIdsForNationalLine } from '@/utils/libraryIds';
 import {
+  confirmLibraryResetForProfile,
+  libraryIdsFromSessionParams,
+  isSemanticProfileLineChange,
+  libraryResetForProfile,
+} from '@/utils/profileLibraryReset';
+import {
   buildConversionExportMetadata,
   CONVERSION_METADATA_CHECKLIST_CONVERT_CONTEXT,
   CONVERSION_METADATA_CHECKLIST_HEADING,
@@ -285,6 +291,8 @@ interface FileConverterProps {
   onActiveSessionIdChange?: (id: string | null) => void;
   activeWorkSessionId?: string | null;
   loadedWorkSession?: WorkSession | null;
+  /** Open Rule catalogs (optional family hint for Convert trust links). */
+  onOpenCatalog?: (family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding') => void;
 }
 
 /**
@@ -591,6 +599,7 @@ export function FileConverter({
   onActiveSessionIdChange,
   activeWorkSessionId,
   loadedWorkSession,
+  onOpenCatalog,
 }: FileConverterProps) {
   const [pendingFiles, setPendingFiles] = useState<PendingFile[]>([]);
   const [queueFocusIndex, setQueueFocusIndex] = useState(0);
@@ -1024,6 +1033,7 @@ export function FileConverter({
         } else if (typeof params.overlayId === 'string') {
           next.overlayId = params.overlayId;
         }
+        Object.assign(next, libraryIdsFromSessionParams(params));
         return next;
       });
     }
@@ -2779,7 +2789,6 @@ export function FileConverter({
                       <option value="IWXXM">IWXXM</option>
                     </select>
                     <LibraryPickersBar
-                      accessToken={accessToken}
                       disabled={isReadOnly}
                       values={{
                         conversionLibraryId: conversionParams.conversionLibraryId,
@@ -2789,10 +2798,35 @@ export function FileConverter({
                         disseminationLibraryId: conversionParams.disseminationLibraryId,
                         decodingLibraryId: conversionParams.decodingLibraryId,
                       }}
+                      onOpenCatalog={onOpenCatalog}
                       onChange={(next, conversionEngineProfileId) => {
                         setConversionParams((prev) => {
                           if (!conversionEngineProfileId) {
                             return { ...prev, ...next };
+                          }
+                          const lineChanging = isSemanticProfileLineChange(
+                            prev.profile,
+                            conversionEngineProfileId,
+                          );
+                          if (lineChanging) {
+                            if (
+                              !confirmLibraryResetForProfile(conversionEngineProfileId)
+                            ) {
+                              return prev;
+                            }
+                            const { profile, libraryIds } = libraryResetForProfile(
+                              conversionEngineProfileId,
+                            );
+                            return {
+                              ...prev,
+                              ...libraryIds,
+                              profile,
+                              reportVariant: '',
+                              iwxxmVersion: coerceIwxxmVersionForProfile(
+                                profile,
+                                prev.iwxxmVersion,
+                              ),
+                            };
                           }
                           const profile = coerceIwxxmProfile(conversionEngineProfileId);
                           return {

@@ -444,12 +444,11 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
 
     await openPublicConverter(page);
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
+    page.once('dialog', (dialog) => dialog.accept());
     await page
       .getByTestId('conversion-library-select')
       .selectOption('LIB.CONVERSION.US_FAA_NWS');
-    await page
-      .getByTestId('dissemination-library-select')
-      .selectOption('LIB.DISSEMINATION.US_FAA_NWS');
+    await expect(page.getByTestId('dissemination-library-select')).toHaveCount(0);
     await expect(page.getByTestId('conversion-library-select')).toHaveValue(
       'LIB.CONVERSION.US_FAA_NWS',
     );

@@ -55,6 +55,7 @@ vi.mock('./components/FileConverter', () => ({
     onNewMetar,
     onSessionUpdated,
     onActiveSessionIdChange,
+    onOpenCatalog,
     isGuest,
   }: {
     onOpenHistory?: () => void;
@@ -64,6 +65,7 @@ vi.mock('./components/FileConverter', () => ({
     onNewMetar?: () => void;
     onSessionUpdated?: (s: WorkSession) => void;
     onActiveSessionIdChange?: (id: string | null) => void;
+    onOpenCatalog?: () => void;
     isGuest?: boolean;
   }) => (
     <div data-testid="file-converter">
@@ -89,6 +91,13 @@ vi.mock('./components/FileConverter', () => ({
       )}
       <button type="button" data-testid="new-metar" onClick={() => onNewMetar?.()}>
         New
+      </button>
+      <button
+        type="button"
+        data-testid="open-catalog"
+        onClick={() => onOpenCatalog?.()}
+      >
+        Catalog
       </button>
       <button
         type="button"
@@ -843,7 +852,8 @@ describe('App Component (F31 optional Auth)', () => {
     await user.click(screen.getByTestId('active-session-id'));
     await user.click(screen.getByTestId('new-metar'));
     await user.click(screen.getByTestId('load-session-fc'));
-    expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+    await user.click(screen.getByTestId('open-catalog'));
+    expect(screen.getByTestId('lint-validation-catalog-page')).toBeInTheDocument();
   });
 
   it('auth callback wires login/register/verified', async () => {

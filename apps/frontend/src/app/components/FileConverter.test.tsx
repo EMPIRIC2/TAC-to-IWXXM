@@ -255,6 +255,12 @@ vi.mock('/utils/api', () => ({
     .fn()
     .mockResolvedValue({ success: true, data: '<iwxxm>test</iwxxm>' }),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSelectionOptions: vi
+    .fn()
+    .mockImplementation(async ({ kind }: { kind: string }) => ({
+      kind,
+      options: [],
+    })),
   fetchSchemaStatus: vi.fn().mockResolvedValue({
     profile_pins: {
       ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
@@ -443,6 +449,7 @@ describe('FileConverter Component', () => {
   beforeEach(() => {
     cleanup();
     vi.clearAllMocks();
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
     operatorDisseminationUiConfig.destinationsEnabled = false;
     // Reset queued Once/implementations so coverage runs do not leak mocks across cases.
     mockConvertMetarToIwxxm.mockReset();
@@ -3590,6 +3597,33 @@ describe('FileConverter Component', () => {
       } finally {
         vi.useRealTimers();
       }
+    });
+
+    it('restores library ids when a work session is reopened', async () => {
+      render(
+        <FileConverter
+          {...defaultProps}
+          loadedWorkSession={
+            {
+              id: 'sess-lib-restore',
+              status: 'wip',
+              conversion_params: {
+                profile: 'US_FAA_NWS',
+                conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
+                decoding_library_id: defaultLibraryId('decoding', 'CA_ECCC'),
+              },
+            } as any
+          }
+        />,
+      );
+      await waitFor(() => {
+        expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+          defaultLibraryId('conversion', 'US_FAA_NWS'),
+        );
+      });
+      expect(screen.getByTestId('decoding-library-select')).toHaveValue(
+        defaultLibraryId('decoding', 'CA_ECCC'),
+      );
     });
 
     it('hydrate converted_results via xml and content fallbacks', async () => {
@@ -7268,7 +7302,27 @@ describe('FileConverter Component', () => {
       clickSpy.mockRestore();
     });
 
+    it('keeps the conversion library when a profile reset is declined', async () => {
+      vi.stubGlobal(
+        'confirm',
+        vi.fn(() => false),
+      );
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter accessToken="tok" />);
+      await user.selectOptions(
+        screen.getByTestId('conversion-library-select'),
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
+      );
+      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+        defaultLibraryId('conversion'),
+      );
+    });
+
     it('updates conversion engine profile when Conversion library changes', async () => {
+      vi.stubGlobal(
+        'confirm',
+        vi.fn(() => true),
+      );
       const user = userEvent.setup({ delay: null });
       render(<FileConverter accessToken="tok" />);
       await user.selectOptions(

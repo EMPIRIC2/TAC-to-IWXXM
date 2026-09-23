@@ -115,7 +115,12 @@ async def get_rule_catalogs(
 
 @router.get("/selection-options", response_model=SelectionOptionsResponse)
 async def get_selection_options(
-    kind: str = Query(..., description="conversion | dissemination | decoding"),
+    kind: str = Query(
+        ...,
+        description=(
+            "conversion | tac_validation | iwxxm_validation | decoding | dissemination (first-party LIB.* ids)"
+        ),
+    ),
 ) -> Response:
     """
     List deployed registry ids for workbench / dissemination dropdowns.

@@ -97,8 +97,11 @@ See also [config-spec.md](../config-spec.md) §F24/F9 deepen.
 ## Honesty
 
 Read [product-engine-matrix.md](product-engine-matrix.md) before assuming a product is
-“fully YAML configured.” Convert **emit** for METAR/SPECI is YAML-routed (ADR-047 Accepted);
-other products remain Python plugins until M4.
+“fully YAML configured.” Program [#1226](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1226)
+/ ADR-047: every core product cell (decode, TAC quality, detectors, IWXXM output policy,
+convert pack-IR, convert emit) is rated **full**. Named Python residuals (detector hatches,
+decode location enrichment, emit-map `plugin:` builders) remain documented and do **not**
+block that rating — see residual epic [#1252](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1252).
 
 ## HTTP
 

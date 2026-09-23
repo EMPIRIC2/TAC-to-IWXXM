@@ -361,6 +361,7 @@ function App() {
           onActiveSessionIdChange={setActiveWorkSessionId}
           activeWorkSessionId={activeWorkSessionId}
           loadedWorkSession={loadedWorkSession}
+          onOpenCatalog={() => setCurrentView('catalog')}
         />
       )}
 

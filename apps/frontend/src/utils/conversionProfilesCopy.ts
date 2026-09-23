@@ -121,6 +121,29 @@ export const CONVERT_PRESET_HELP =
 export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS = 'Reset to WMO defaults';
 export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP =
   'Restore the ICAO / WMO baseline profile and matching built-in library selections on Convert.';
+export const CONVERT_LIBRARY_HELP_DECODING =
+  'Controls how TAC tokens are explained in the decode panel.';
+export const CONVERT_LIBRARY_HELP_TAC_VALIDATION =
+  'Controls TAC lint checks run before and with conversion.';
+export const CONVERT_LIBRARY_HELP_IWXXM_VALIDATION =
+  'Controls IWXXM output checks after conversion.';
+export const CONVERT_LIBRARY_HELP_CONVERSION =
+  'Controls how TAC is mapped into IWXXM for convert and export.';
+export const CONVERT_LIBRARY_CATALOG_LINK = 'View rule catalog';
+/**
+ * Confirm copy when changing Convert national line / semantic profile.
+ *
+ * @param nationalLine - Target line id (plain language in message)
+ * @returns Operator confirm dialog body
+ * @example
+ * const _ = true;
+ */
+export function CONVERT_PROFILE_LIBRARY_RESET_CONFIRM(nationalLine: string): string {
+  return (
+    `Change profile to ${nationalLine} and reset Decoding, TAC validation, ` +
+    `IWXXM validation, and Conversion libraries to that line's defaults?`
+  );
+}
 export const PROFILES_INSPECTOR_ACCESS_BUILTIN = 'Built-in (read-only default)';
 export const PROFILES_INSPECTOR_STATUS_READY = 'Ready';
 export const PROFILES_INSPECTOR_STATUS_DRAFT = 'Draft saved locally';

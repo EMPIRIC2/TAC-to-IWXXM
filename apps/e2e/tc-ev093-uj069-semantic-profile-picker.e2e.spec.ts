@@ -59,13 +59,12 @@ test.describe('EV-bridge — Convert library pickers (AHL)', () => {
     await expect(page.getByTestId('library-pickers-bar')).toBeVisible();
     await expect(page.getByTestId('profile-type-select')).toHaveCount(0);
     await expect(page.getByTestId('exchange-profile-select')).toHaveCount(0);
+    await expect(page.getByTestId('dissemination-library-select')).toHaveCount(0);
 
+    page.once('dialog', (dialog) => dialog.accept());
     await page
       .getByTestId('conversion-library-select')
       .selectOption('LIB.CONVERSION.US_FAA_NWS');
-    await page
-      .getByTestId('dissemination-library-select')
-      .selectOption('LIB.DISSEMINATION.US_FAA_NWS');
 
     await page.getByTestId('input-mode-ahl_bulletin').click();
     const editor = page.getByTestId('tac-editor');

@@ -98,6 +98,18 @@ export TAC2IWXXM_PROFILE_DIR=packages/tac2iwxxm/examples/starters
 tac2iwxxm --check-overlay "$TAC2IWXXM_PROFILE_DIR"
 ```
 
+### Embedder quickstart (four engines)
+
+From a monorepo checkout, run starter overlays for decode + TAC validate + IWXXM
+validate + convert bindings in one shot:
+
+```bash
+make overlay-preflight
+```
+
+Emit-map overlays use `TAC2IWXXM_EMIT_MAP_DIR`. HTTP APIs do not accept YAML bodies —
+mount directories in deploy config.
+
 Decode glossary SoT is [`tac-decoding`](https://pypi.org/project/tac-decoding/)
 (`TAC_DECODING_GLOSSARY_PATH`); this package may still ship a shim copy.
 

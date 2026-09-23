@@ -451,18 +451,21 @@ Python catalog APIs from owning packages. **Read-only**.
 **Compatibility**: `GET /api/v1/lint-issue-catalog` remains during transition as a thin wrapper
 or alias for `family=tac` (+ existing IWXXM merge behavior).
 
-### Selection options (ADR-044)
+### Selection options (ADR-044 / #1251 TP-YCL-01)
 
 ```
-GET /api/v1/selection-options
+GET /api/v1/selection-options?kind=
 ```
 
-**Purpose**: Lightweight lists for workbench / dissemination **dropdowns** (deployed registries
-only). Query `kind` ∈ conversion profiles, exchange/dissemination destinations (non-secret),
-decode glossaries/profiles as applicable. Unknown `kind` → 400.
+**Purpose**: Lightweight lists for Convert / Send **dropdowns** (deployed first-party
+libraries only). Query `kind` ∈ `conversion` | `tac_validation` | `iwxxm_validation` |
+`decoding` | `dissemination`. Each option `id` is a first-party `LIB.{KIND}.{NATIONAL}`
+asset id; `label` is the asset display name. Unknown `kind` → 400.
 
-**Auth**: None (public) unless a kind is explicitly JWT-gated in tech-plan (default: public
-read of non-secret deployed ids).
+Convert chrome uses the four engine kinds (not `dissemination`). Send drawer uses
+`dissemination`. Options are public read of non-secret deployed ids.
+
+**Auth**: None (public).
 
 ### Library-assets authoring (ADR-044 — removed)
 

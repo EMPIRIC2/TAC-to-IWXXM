@@ -50,6 +50,12 @@ vi.mock('/utils/api', () => ({
   EndpointNotImplementedError: class extends Error {},
   convertTafToIwxxm: vi.fn().mockResolvedValue({ success: true, data: '<iwxxm />' }),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSelectionOptions: vi
+    .fn()
+    .mockImplementation(async ({ kind }: { kind: string }) => ({
+      kind,
+      options: [],
+    })),
   fetchSchemaStatus: vi.fn().mockResolvedValue({
     profile_pins: {
       ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
@@ -120,6 +126,13 @@ const GUEST_CONVERSION_IDS = [
 ] as const;
 
 describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers', () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      'confirm',
+      vi.fn(() => true),
+    );
+  });
+
   const defaultProps = {
     onLogout: vi.fn(),
     userEmail: 'f6e@example.com',

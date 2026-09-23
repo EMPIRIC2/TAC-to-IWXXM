@@ -127,7 +127,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-068          | F7.v/F15 (EV-061; EV-062)                                    | Validation Issues Catalog (#1014; #1017 deepen)                                                                                                                                                                                                            | **H4–H5 required**                | TC-EV061-1014-001..004; TC-EV062-001..006                                                |
 | UJ-073          | F7.v/F15 (EV-1120)                                           | Profile-scoped Validation Issues Catalog (#1121–#1123)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-001..009                                                                       |
 | UJ-076          | F7.v (ADR-044)                                               | Five package-owned trust catalogs                                                                                                                                                                                                                          | **H4–H5 when FE ships**           | TC-EVRPC-001..005                                                                        |
-| UJ-076a         | F7 / F16–F19 / F9 (ADR-044)                                  | Dropdown selection hard cutover                                                                                                                                                                                                                            | **H4–H5 when FE ships**           | TC-EVRPC-006..008                                                                        |
+| UJ-076a         | F7 / F16–F19 / F9 (ADR-044; #1251)                           | Convert four-engine light selects + Send-drawer dissem; Profile Builder deleted                                                                                                                                                                            | **H4–H5**                         | TC-EVRPC-006..008 + TC-EVYCL-* (#1251)                                                    |
 | UJ-076b         | F9 (ADR-044)                                                 | tac-decoding parity                                                                                                                                                                                                                                        | **H4–H5 when FE ships**           | TC-EVRPC-009                                                                             |
 | UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
@@ -6224,6 +6224,20 @@ All must pass before merging migration PR:
 - **Objective**: Selection-options API lists deployed ids; Profile Builder / library authoring
   routes/UI absent; dissem send still works.
 - **Pass criteria**: UJ-076a; must-not-break UJ-027–030.
+
+### TC-EVYCL-001..006: Convert light UX + FE hard-cut redo (#1251)
+
+- **Mode**: deepen F7 under ADR-044; session `EV-yaml-config-light-ux`
+- **Source**: #1251; UJ-076a amend; R1–R16 lock
+- **Covered**:
+  - TC-EVYCL-001 — Profile Builder / library authoring components deleted; no authoring routes
+  - TC-EVYCL-002 — Convert shows four selects from `/selection-options`; Dissemination absent
+  - TC-EVYCL-003 — Per-select trust/help + catalog family link (EV-048 clean)
+  - TC-EVYCL-004 — Semantic profile change confirms and resets four national-line defaults
+  - TC-EVYCL-005 — Guest and auth option lists match (first-party only)
+  - TC-EVYCL-006 — H4–H5 / E2E library-select green (must-fix)
+- **Pass criteria**: All six green; PR2 cookbook/README tracked separately but required for
+  issue Done.
 
 ### TC-EVRPC-009: tac-decoding parity (UJ-076b)
 

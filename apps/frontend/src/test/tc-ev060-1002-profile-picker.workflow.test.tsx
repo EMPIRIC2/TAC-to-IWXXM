@@ -60,6 +60,12 @@ vi.mock('/utils/api', () => ({
   EndpointNotImplementedError: class extends Error {},
   convertTafToIwxxm: vi.fn().mockResolvedValue({ success: true, data: '<iwxxm />' }),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSelectionOptions: vi
+    .fn()
+    .mockImplementation(async ({ kind }: { kind: string }) => ({
+      kind,
+      options: [],
+    })),
   fetchSchemaStatus: vi.fn().mockResolvedValue({
     profile_pins: {
       ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
@@ -126,6 +132,10 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    vi.stubGlobal(
+      'confirm',
+      vi.fn(() => true),
+    );
   });
 
   it('shows Product + Conversion library at the converter top without expanding parameters (TC-EV060-1002-001)', () => {
