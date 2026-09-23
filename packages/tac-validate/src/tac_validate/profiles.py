@@ -8,14 +8,14 @@ from __future__ import annotations
 
 from typing import Final
 
+from tac_validate.lint_profile_catalog import load_lint_profiles
+
 PROFILE_ANNEX3: Final[str] = "annex3"
 PROFILE_IWXXM_US: Final[str] = "iwxxm_us"
 PROFILE_CA_ECCC: Final[str] = "ca_eccc"
 PROFILE_IN_IMD: Final[str] = "in_imd"
 
-SUPPORTED_PROFILES: Final[frozenset[str]] = frozenset(
-    {PROFILE_ANNEX3, PROFILE_IWXXM_US, PROFILE_CA_ECCC, PROFILE_IN_IMD}
-)
+SUPPORTED_PROFILES: Final[frozenset[str]] = frozenset(load_lint_profiles())
 
 # Products with a defined US profile overlay (L5 REMARKS / FMH-1 / iwxxm-us encode).
 IWXXM_US_PRODUCTS: Final[frozenset[str]] = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})

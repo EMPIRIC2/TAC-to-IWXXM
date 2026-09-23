@@ -694,7 +694,13 @@ def apply_policy_to_report(
             )
         )
     ok = not any(item.severity == "error" for item in kept)
-    return LintReport(ok=ok, product=report.product, issues=kept, fixes=list(report.fixes))
+    return LintReport(
+        ok=ok,
+        product=report.product,
+        issues=kept,
+        fixes=list(report.fixes),
+        profile=report.profile,
+    )
 
 
 __all__ = [

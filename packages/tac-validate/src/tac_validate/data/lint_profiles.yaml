@@ -1,0 +1,61 @@
+# Lint profile catalog. One row per semantic profile.
+# A new country does not get a new Python module. Record a difference here.
+# engine: which existing rule pack runs. annex3 means the shared rules.
+# differs: true when this profile is not the same as its engine.
+# deltas: suppress an engine code when the quoted token matches token_pattern.
+# recorded: a difference seen in live TAC that is not a suppression yet.
+
+schema_version: 1
+profiles:
+  annex3:
+    engine: annex3
+    differs: false
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET, VAA, TCA, SWXA, VONA]
+  iwxxm_us:
+    engine: iwxxm_us
+    differs: true
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET, TCA, SWXA, VONA]
+    recorded:
+      - id: US_CONVECTIVE_SIGMET_SHAPE
+        note: Convective SIGMET uses FROM and VOR lines. Annex 3 FIR and VALID checks still fire.
+  ca_eccc:
+    engine: ca_eccc
+    differs: true
+    products: [METAR, SPECI, TAF, AIRMET, SIGMET, VAA]
+  in_imd:
+    engine: in_imd
+    differs: true
+    products: [TAF]
+  au_bom:
+    engine: annex3
+    differs: false
+    products: [METAR, SPECI, TAF, VAA]
+  nz_caa_met:
+    engine: annex3
+    differs: true
+    products: [METAR, SPECI, TAF]
+    deltas:
+      - id: NZ_CLOUD_TYPE_UNOBSERVED
+        products: [METAR, SPECI]
+        suppress_codes: [INVALID_CLOUD_TOKEN]
+        token_pattern: '^(?:FEW|SCT|BKN|OVC)\d{3}///$'
+  uk_metoffice:
+    engine: annex3
+    differs: false
+    products: [METAR, SPECI, TAF]
+  br_decea:
+    engine: annex3
+    differs: false
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET]
+  kr_kma:
+    engine: annex3
+    differs: false
+    products: [METAR, SPECI, TAF, SIGMET, AIRMET]
+  jp_jma:
+    engine: annex3
+    differs: false
+    products: [METAR, SPECI, TAF, SIGMET, VAA]
+  hk_hko:
+    engine: annex3
+    differs: false
+    products: [METAR, SPECI, TAF, SIGMET, VAA]

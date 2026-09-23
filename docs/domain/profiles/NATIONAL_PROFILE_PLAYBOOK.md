@@ -195,10 +195,11 @@ After copying `_template/` into place:
 3. Add fixtures under `packages/tac2iwxxm/tests/fixtures/profiles/<ID>/`
 4. Edit `profile_registry.py` (canonical ↔ emit maps)
 5. Edit `convert.py` product allowlist / emit branch
-6. OpenAPI / Form profile enum + regenerate contract if required
-7. FE wire types / picker options if operator-visible
-8. Tests + `docs/test-plan.md` TC rows as needed
-9. Promote durable URLs into RULE_SOURCE_URLS / COVERAGE_MATRIX
+6. Record lint in `packages/tac-validate/src/tac_validate/data/lint_profiles.yaml` (one row; add a `deltas` entry only when the country differs from its engine). Do not add a Python module per country.
+7. OpenAPI / Form profile enum + regenerate contract if required
+8. FE wire types / picker options if operator-visible
+9. Tests + `docs/test-plan.md` TC rows as needed
+10. Promote durable URLs into RULE_SOURCE_URLS / COVERAGE_MATRIX
 
 ---
 
