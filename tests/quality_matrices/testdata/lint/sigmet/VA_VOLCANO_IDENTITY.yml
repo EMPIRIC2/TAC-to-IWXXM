@@ -1,0 +1,301 @@
+rule_id: VA_VOLCANO_IDENTITY
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: SEFG SIGMET 2 VALID 231116/231716 SEGU- SEFG GUAYAQUIL FIR VA ERUPTION MT SANGAY
+    PSN S0200 W07820 VA CLD OBS AT 1010Z WI S0200 W07820 - S0201 W07819 - S0209 W07832
+    - S0204 W07835 - S0200 W07820 SFC/FL200 MOV SW 15KT FCST AT 1600Z WI S0200 W07820
+    - S0201 W07819 - S0211 W07834 - S0205 W07837 - S0200 W07820=
+  expect:
+    accept: true
+    codes:
+    - VA_VOLCANO_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: SEFG SIGMET A2 VALID 231118/231718 SEGU- SEFG GUAYAQUIL FIR VA ERUPTION MT
+    REVENTADOR PSN S0004 W07739 VA CLD OBS AT 1020Z WI S0002 W07758 - S0004 W07740
+    - S0005 W07739 - S0008 W07757 - S0002 W07758 SFC/FL150 MOV W 10KT FCST AT 1630Z
+    WI S0002 W07758 - S0004 W07739 - S0005 W07739 - S0008 W07758 - S0002 W07758=
+  expect:
+    accept: true
+    codes:
+    - VA_VOLCANO_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: MHTG SIGMET 3 VALID 231435/232035 MHTG- MHCC CENTRAL AMERICAN FIR VA ERUPTION
+    MT SANTA MARIA PSN N1445 W09133 VA CLD OBS AT 1350Z SFC/FL130 N1446 W09132 - N1446
+    W09132 - N1443 W09136 - N1445 W09137 - N1446 W09132 MOV SW 5KT FCST 2000Z VA CLD
+    SFC/FL130 N1446 W09132 - N1445 W09132 - N1442 W09137 - N1445 W09138 - N1446 W09132=
+  expect:
+    accept: true
+    codes:
+    - VA_VOLCANO_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: WAAF SIGMET 08 VALID 231515/232030 WAAA- WAAF UJUNG PANDANG FIR VA ERUPTION
+    MT DUKONO PSN N0142 E12754 VA CLD OBS AT 1410Z WI N0136 E12747 - N0147 E12743
+    - N0222 E12816 - N0200 E12849 - N0125 E12835 - N0136 E12747 SFC/FL070 MOV NE 10KT
+    INTSF=
+  expect:
+    accept: true
+    codes:
+    - VA_VOLCANO_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: MHTG SIGMET A3 VALID 231605/232205 MHTG- MHCC CENTRAL AMERICAN FIR VA ERUPTION
+    MT FUEGO PSN N1428 W09052 VA CLD OBS AT 1520Z SFC/FL150 N1437 W09107 - N1429 W09052
+    - N1430 W09108 - N1437 W09107 MOV W 5KT FCST 2130Z VA CLD SFC/FL150 N1435 W09108
+    - N1429 W09052 - N1427 W09108 - N1435 W09108=
+  expect:
+    accept: true
+    codes:
+    - VA_VOLCANO_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: SEFG SIGMET 2 VALID 231116/231716 SEGU- SEFG GUAYAQUIL FIR VA ERUPTION SANGAY
+    PSN S0200 W07820 VA CLD OBS AT 1010Z WI S0200 W07820 - S0201 W07819 - S0209 W07832
+    - S0204 W07835 - S0200 W07820 SFC/FL200 MOV SW 15KT FCST AT 1600Z WI S0200 W07820
+    - S0201 W07819 - S0211 W07834 - S0205 W07837 - S0200 W07820=
+  expect:
+    accept: false
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: SEFG SIGMET A2 VALID 231118/231718 SEGU- SEFG GUAYAQUIL FIR VA ERUPTION REVENTADOR
+    PSN S0004 W07739 VA CLD OBS AT 1020Z WI S0002 W07758 - S0004 W07740 - S0005 W07739
+    - S0008 W07757 - S0002 W07758 SFC/FL150 MOV W 10KT FCST AT 1630Z WI S0002 W07758
+    - S0004 W07739 - S0005 W07739 - S0008 W07758 - S0002 W07758=
+  expect:
+    accept: false
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: MHTG SIGMET 3 VALID 231435/232035 MHTG- MHCC CENTRAL AMERICAN FIR VA SANTA
+    MARIA PSN N1445 W09133 VA CLD OBS AT 1350Z SFC/FL130 N1446 W09132 - N1446 W09132
+    - N1443 W09136 - N1445 W09137 - N1446 W09132 MOV SW 5KT FCST 2000Z VA CLD SFC/FL130
+    N1446 W09132 - N1445 W09132 - N1442 W09137 - N1445 W09138 - N1446 W09132=
+  expect:
+    accept: false
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: WAAF SIGMET 08 VALID 231515/232030 WAAA- WAAF UJUNG PANDANG FIR VA ERUPTION
+    DUKONO PSN N0142 E12754 VA CLD OBS AT 1410Z WI N0136 E12747 - N0147 E12743 - N0222
+    E12816 - N0200 E12849 - N0125 E12835 - N0136 E12747 SFC/FL070 MOV NE 10KT INTSF=
+  expect:
+    accept: false
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: MHTG SIGMET A3 VALID 231605/232205 MHTG- MHCC CENTRAL AMERICAN FIR VA FUEGO
+    PSN N1428 W09052 VA CLD OBS AT 1520Z SFC/FL150 N1437 W09107 - N1429 W09052 - N1430
+    W09108 - N1437 W09107 MOV W 5KT FCST 2130Z VA CLD SFC/FL150 N1435 W09108 - N1429
+    W09052 - N1427 W09108 - N1435 W09108=
+  expect:
+    accept: false
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: SEFG SIGMET 2 VALID 231116/231716 SEGU- SEFG GUAYAQUIL FIR VA ERUPTION MT SANGAY
+    PSN S0200 W07820 VA CLD OBS AT 1010Z WI S0200 W07820 - S0201 W07819 - S0209 W07832
+    - S0204 W07835 - S0200 W07820 SFC/FL200 MOV SW 15KT FCST AT 1600Z WI S0200 W07820
+    - S0201 W07819 - S0211 W07834 - S0205 W07837 - S0200 W07820=
+  expect:
+    accept: true
+    codes:
+    - VA_VOLCANO_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: SEFG SIGMET A2 VALID 231118/231718 SEGU- SEFG GUAYAQUIL FIR VA ERUPTION MT
+    REVENTADOR PSN S0004 W07739 VA CLD OBS AT 1020Z WI S0002 W07758 - S0004 W07740
+    - S0005 W07739 - S0008 W07757 - S0002 W07758 SFC/FL150 MOV W 10KT FCST AT 1630Z
+    WI S0002 W07758 - S0004 W07739 - S0005 W07739 - S0008 W07758 - S0002 W07758=
+  expect:
+    accept: true
+    codes:
+    - VA_VOLCANO_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: MHTG SIGMET 3 VALID 231435/232035 MHTG- MHCC CENTRAL AMERICAN FIR VA ERUPTION
+    MT SANTA MARIA PSN N1445 W09133 VA CLD OBS AT 1350Z SFC/FL130 N1446 W09132 - N1446
+    W09132 - N1443 W09136 - N1445 W09137 - N1446 W09132 MOV SW 5KT FCST 2000Z VA CLD
+    SFC/FL130 N1446 W09132 - N1445 W09132 - N1442 W09137 - N1445 W09138 - N1446 W09132=
+  expect:
+    accept: true
+    codes:
+    - VA_VOLCANO_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: WAAF SIGMET 08 VALID 231515/232030 WAAA- WAAF UJUNG PANDANG FIR VA ERUPTION
+    MT DUKONO PSN N0142 E12754 VA CLD OBS AT 1410Z WI N0136 E12747 - N0147 E12743
+    - N0222 E12816 - N0200 E12849 - N0125 E12835 - N0136 E12747 SFC/FL070 MOV NE 10KT
+    INTSF=
+  expect:
+    accept: true
+    codes:
+    - VA_VOLCANO_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: MHTG SIGMET A3 VALID 231605/232205 MHTG- MHCC CENTRAL AMERICAN FIR VA ERUPTION
+    MT FUEGO PSN N1428 W09052 VA CLD OBS AT 1520Z SFC/FL150 N1437 W09107 - N1429 W09052
+    - N1430 W09108 - N1437 W09107 MOV W 5KT FCST 2130Z VA CLD SFC/FL150 N1435 W09108
+    - N1429 W09052 - N1427 W09108 - N1435 W09108=
+  expect:
+    accept: true
+    codes:
+    - VA_VOLCANO_IDENTITY
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: SEFG SIGMET 2 VALID 231116/231716 SEGU- SEFG GUAYAQUIL FIR VA ERUPTION SANGAY
+    PSN S0200 W07820 VA CLD OBS AT 1010Z WI S0200 W07820 - S0201 W07819 - S0209 W07832
+    - S0204 W07835 - S0200 W07820 SFC/FL200 MOV SW 15KT FCST AT 1600Z WI S0200 W07820
+    - S0201 W07819 - S0211 W07834 - S0205 W07837 - S0200 W07820=
+  expect:
+    accept: false
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: SEFG SIGMET A2 VALID 231118/231718 SEGU- SEFG GUAYAQUIL FIR VA ERUPTION REVENTADOR
+    PSN S0004 W07739 VA CLD OBS AT 1020Z WI S0002 W07758 - S0004 W07740 - S0005 W07739
+    - S0008 W07757 - S0002 W07758 SFC/FL150 MOV W 10KT FCST AT 1630Z WI S0002 W07758
+    - S0004 W07739 - S0005 W07739 - S0008 W07758 - S0002 W07758=
+  expect:
+    accept: false
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: MHTG SIGMET 3 VALID 231435/232035 MHTG- MHCC CENTRAL AMERICAN FIR VA SANTA
+    MARIA PSN N1445 W09133 VA CLD OBS AT 1350Z SFC/FL130 N1446 W09132 - N1446 W09132
+    - N1443 W09136 - N1445 W09137 - N1446 W09132 MOV SW 5KT FCST 2000Z VA CLD SFC/FL130
+    N1446 W09132 - N1445 W09132 - N1442 W09137 - N1445 W09138 - N1446 W09132=
+  expect:
+    accept: false
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: WAAF SIGMET 08 VALID 231515/232030 WAAA- WAAF UJUNG PANDANG FIR VA ERUPTION
+    DUKONO PSN N0142 E12754 VA CLD OBS AT 1410Z WI N0136 E12747 - N0147 E12743 - N0222
+    E12816 - N0200 E12849 - N0125 E12835 - N0136 E12747 SFC/FL070 MOV NE 10KT INTSF=
+  expect:
+    accept: false
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: MHTG SIGMET A3 VALID 231605/232205 MHTG- MHCC CENTRAL AMERICAN FIR VA FUEGO
+    PSN N1428 W09052 VA CLD OBS AT 1520Z SFC/FL150 N1437 W09107 - N1429 W09052 - N1430
+    W09108 - N1437 W09107 MOV W 5KT FCST 2130Z VA CLD SFC/FL150 N1435 W09108 - N1429
+    W09052 - N1427 W09108 - N1435 W09108=
+  expect:
+    accept: false
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 VA_VOLCANO_IDENTITY/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'

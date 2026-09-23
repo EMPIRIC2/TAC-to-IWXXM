@@ -874,6 +874,17 @@
       "note": "CB/TCU convective type register"
     },
     {
+      "code": "CLOUD_TYPE_NOT_OBSERVABLE",
+      "status": "ok",
+      "source_id": "codes-wmo-int",
+      "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/mining/codes-wmo-int-aviation-mining-notes.md",
+      "ticket": null,
+      "source_attribution": "codes-wmo-int — https://codes.wmo.int/common/nil/notObservable · prior landing: https://codes.wmo.int/common/nil",
+      "note": "AUTO cloud group solidi /// means convective cloud type was not observed"
+    },
+    {
       "code": "CNL_REPORT",
       "status": "paywall",
       "source_id": "icao-annex-3",

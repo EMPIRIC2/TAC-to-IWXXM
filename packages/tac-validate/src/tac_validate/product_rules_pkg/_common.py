@@ -62,7 +62,7 @@ _AHL_HEADING_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+
 _WIND_TOKEN = re.compile(r"(?:KT|MPS)$|^CALM$")
 _CLOUD_START = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR)")
 # R4: FEW|SCT|BKN|OVC + 3-digit height + optional CB|TCU; VV###|VV///; NSC|NCD|SKC|CLR.
-_CLOUD_OK = re.compile(r"^(?:(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$")
+_CLOUD_OK = re.compile(r"^(?:(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU|///)?|VV(?:\d{3}|///)|NSC|NCD|SKC|CLR)$")
 _CLOUD_LIKE = re.compile(r"^(?:FEW|SCT|BKN|OVC|VV|NSC|NCD|SKC|CLR|[A-Z]{3}\d{3})")
 # Layered amounts only (NSC exclusivity / TC-EV023-001) - not VV/NSC/NCD/SKC/CLR.
 _LAYER_CLOUD_TOKEN = re.compile(r"^(?:FEW|SCT|BKN|OVC)\d{3}(?:CB|TCU)?$")

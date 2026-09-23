@@ -3,121 +3,241 @@ engine: lint
 cases:
 - bucket: happy
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 1 VALID 221400/221800 CWEG- CZUL MONTREAL FIR ISOL TS OBS N OF
+    S50 TOP ABV FL100 STNR NC=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/happy'
 - bucket: happy
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 2 VALID 221400/221800 CWEG- CZUL MONTREAL FIR ISOL TS OBS N OF
+    S50 TOP ABV FL100 STNR NC=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/happy'
 - bucket: happy
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 3 VALID 221400/221800 CWEG- CZUL MONTREAL FIR ISOL TS OBS N OF
+    S50 TOP ABV FL100 STNR NC=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/happy'
 - bucket: happy
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 4 VALID 221400/221800 CWEG- CZUL MONTREAL FIR ISOL TS OBS N OF
+    S50 TOP ABV FL100 STNR NC=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/happy'
 - bucket: happy
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 5 VALID 221400/221800 CWEG- CZUL MONTREAL FIR ISOL TS OBS N OF
+    S50 TOP ABV FL100 STNR NC=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/happy'
 - bucket: sad
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 1 VALID 221400/221800 CWEG- CZUL MONTREAL FIR SFC VIS AND BKN CLD
+    OBS N OF S50 TOP ABV FL100 STNR NC RMK GFACN32=
+  expect:
+    accept: false
+    codes:
+    - CA_AIRMET_GFA
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/sad'
 - bucket: sad
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 2 VALID 221400/221800 CWEG- CZUL MONTREAL FIR SFC VIS AND BKN CLD
+    OBS N OF S50 TOP ABV FL100 STNR NC RMK GFACN32=
+  expect:
+    accept: false
+    codes:
+    - CA_AIRMET_GFA
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/sad'
 - bucket: sad
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 3 VALID 221400/221800 CWEG- CZUL MONTREAL FIR SFC VIS AND BKN CLD
+    OBS N OF S50 TOP ABV FL100 STNR NC RMK GFACN32=
+  expect:
+    accept: false
+    codes:
+    - CA_AIRMET_GFA
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/sad'
 - bucket: sad
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 4 VALID 221400/221800 CWEG- CZUL MONTREAL FIR SFC VIS AND BKN CLD
+    OBS N OF S50 TOP ABV FL100 STNR NC RMK GFACN32=
+  expect:
+    accept: false
+    codes:
+    - CA_AIRMET_GFA
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/sad'
 - bucket: sad
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 5 VALID 221400/221800 CWEG- CZUL MONTREAL FIR SFC VIS AND BKN CLD
+    OBS N OF S50 TOP ABV FL100 STNR NC RMK GFACN32=
+  expect:
+    accept: false
+    codes:
+    - CA_AIRMET_GFA
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/sad'
 - bucket: edge_pass
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 1 VALID 221400/221800 CWEG- CZUL MONTREAL FIR ISOL TS OBS N OF
+    S50 TOP ABV FL100 STNR NC=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/edge_pass'
 - bucket: edge_pass
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 2 VALID 221400/221800 CWEG- CZUL MONTREAL FIR ISOL TS OBS N OF
+    S50 TOP ABV FL100 STNR NC=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/edge_pass'
 - bucket: edge_pass
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 3 VALID 221400/221800 CWEG- CZUL MONTREAL FIR ISOL TS OBS N OF
+    S50 TOP ABV FL100 STNR NC=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/edge_pass'
 - bucket: edge_pass
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 4 VALID 221400/221800 CWEG- CZUL MONTREAL FIR ISOL TS OBS N OF
+    S50 TOP ABV FL100 STNR NC=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/edge_pass'
 - bucket: edge_pass
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 5 VALID 221400/221800 CWEG- CZUL MONTREAL FIR ISOL TS OBS N OF
+    S50 TOP ABV FL100 STNR NC=
+  expect:
+    accept: true
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/edge_pass'
 - bucket: edge_fail
   case_id: '01'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 1 VALID 221400/221800 CWEG- CZUL MONTREAL FIR SFC VIS AND BKN CLD
+    OBS N OF S50 TOP ABV FL100 STNR NC RMK GFACN32=
+  expect:
+    accept: false
+    codes:
+    - CA_AIRMET_GFA
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/edge_fail'
 - bucket: edge_fail
   case_id: '02'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 2 VALID 221400/221800 CWEG- CZUL MONTREAL FIR SFC VIS AND BKN CLD
+    OBS N OF S50 TOP ABV FL100 STNR NC RMK GFACN32=
+  expect:
+    accept: false
+    codes:
+    - CA_AIRMET_GFA
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/edge_fail'
 - bucket: edge_fail
   case_id: '03'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 3 VALID 221400/221800 CWEG- CZUL MONTREAL FIR SFC VIS AND BKN CLD
+    OBS N OF S50 TOP ABV FL100 STNR NC RMK GFACN32=
+  expect:
+    accept: false
+    codes:
+    - CA_AIRMET_GFA
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/edge_fail'
 - bucket: edge_fail
   case_id: '04'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 4 VALID 221400/221800 CWEG- CZUL MONTREAL FIR SFC VIS AND BKN CLD
+    OBS N OF S50 TOP ABV FL100 STNR NC RMK GFACN32=
+  expect:
+    accept: false
+    codes:
+    - CA_AIRMET_GFA
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/edge_fail'
 - bucket: edge_fail
   case_id: '05'
-  status: needs-fixture
+  status: ready
+  tac: CZUL AIRMET 5 VALID 221400/221800 CWEG- CZUL MONTREAL FIR SFC VIS AND BKN CLD
+    OBS N OF S50 TOP ABV FL100 STNR NC RMK GFACN32=
+  expect:
+    accept: false
+    codes:
+    - CA_AIRMET_GFA
   meta:
-    reason: "EV-071 M1 scaffold \u2014 fill when fixture ready"
-    cite: MANOBS/MANAIR mining
+    product: AIRMET
+    profile: ca_eccc
+    cite: '#1265 profile CA_AIRMET_GFA/edge_fail'

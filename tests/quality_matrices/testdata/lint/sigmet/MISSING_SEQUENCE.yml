@@ -1,0 +1,274 @@
+rule_id: MISSING_SEQUENCE
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: WMFC SIGMET 12 VALID 231600/232000 WMKK- WMFC KUALA LUMPUR FIR EMBD TS OBS
+    NW OF LINE N0137 E10216 - N0339 E10341 AND SE OF LINE N0424 E09913 - N0548 E10100
+    TOP FL490 MOV SW NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: VABF SIGMET 02 VALID 231330/231730 VABB- VABF MUMBAI FIR EMBD TS FCST WI N2403
+    E07742 - N1938 E08057 - N2028 E07726 - N2127 E07514 - N2403 E07742 TOP FL500 STNR
+    NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: VABF SIGMET 03 VALID 231330/231730 VABB- VABF MUMBAI FIR EMBD TS FCST WI N1934
+    E07302 - N1839 E07519 - N1734 E07525 - N1729 E07236 - N1934 E07302 TOP FL460 STNR
+    NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: ZGZU SIGMET 4 VALID 231515/231915 ZGGG- ZGZU GUANGZHOU FIR EMBD TS FCST N OF
+    N2220 AND S OF N2551 AND W OF E11532 AND E OF E11024 TOP FL380 MOV W 15KMH NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: VABF SIGMET 04 VALID 231600/232000 VABB- VABF MUMBAI FIR EMBD TS FCST WI N1923
+    E07547 - N2143 E07402 - N2445 E07855 - N1855 E08149 - N1947 E07711 - N1923 E07547
+    TOP FL500 STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: WMFC SIGMET VALID 231600/232000 WMKK- WMFC KUALA LUMPUR FIR EMBD TS OBS NW
+    OF LINE N0137 E10216 - N0339 E10341 AND SE OF LINE N0424 E09913 - N0548 E10100
+    TOP FL490 MOV SW NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_SEQUENCE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: VABF SIGMET VALID 231330/231730 VABB- VABF MUMBAI FIR EMBD TS FCST WI N2403
+    E07742 - N1938 E08057 - N2028 E07726 - N2127 E07514 - N2403 E07742 TOP FL500 STNR
+    NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_SEQUENCE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: VABF SIGMET VALID 231330/231730 VABB- VABF MUMBAI FIR EMBD TS FCST WI N1934
+    E07302 - N1839 E07519 - N1734 E07525 - N1729 E07236 - N1934 E07302 TOP FL460 STNR
+    NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_SEQUENCE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: ZGZU SIGMET VALID 231515/231915 ZGGG- ZGZU GUANGZHOU FIR EMBD TS FCST N OF
+    N2220 AND S OF N2551 AND W OF E11532 AND E OF E11024 TOP FL380 MOV W 15KMH NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_SEQUENCE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: VABF SIGMET VALID 231600/232000 VABB- VABF MUMBAI FIR EMBD TS FCST WI N1923
+    E07547 - N2143 E07402 - N2445 E07855 - N1855 E08149 - N1947 E07711 - N1923 E07547
+    TOP FL500 STNR NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_SEQUENCE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: WMFC SIGMET 12 VALID 231600/232000 WMKK- WMFC KUALA LUMPUR FIR EMBD TS OBS
+    NW OF LINE N0137 E10216 - N0339 E10341 AND SE OF LINE N0424 E09913 - N0548 E10100
+    TOP FL490 MOV SW NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: VABF SIGMET 02 VALID 231330/231730 VABB- VABF MUMBAI FIR EMBD TS FCST WI N2403
+    E07742 - N1938 E08057 - N2028 E07726 - N2127 E07514 - N2403 E07742 TOP FL500 STNR
+    NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: VABF SIGMET 03 VALID 231330/231730 VABB- VABF MUMBAI FIR EMBD TS FCST WI N1934
+    E07302 - N1839 E07519 - N1734 E07525 - N1729 E07236 - N1934 E07302 TOP FL460 STNR
+    NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: ZGZU SIGMET 4 VALID 231515/231915 ZGGG- ZGZU GUANGZHOU FIR EMBD TS FCST N OF
+    N2220 AND S OF N2551 AND W OF E11532 AND E OF E11024 TOP FL380 MOV W 15KMH NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: VABF SIGMET 04 VALID 231600/232000 VABB- VABF MUMBAI FIR EMBD TS FCST WI N1923
+    E07547 - N2143 E07402 - N2445 E07855 - N1855 E08149 - N1947 E07711 - N1923 E07547
+    TOP FL500 STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: WMFC SIGMET VALID 231600/232000 WMKK- WMFC KUALA LUMPUR FIR EMBD TS OBS NW
+    OF LINE N0137 E10216 - N0339 E10341 AND SE OF LINE N0424 E09913 - N0548 E10100
+    TOP FL490 MOV SW NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_SEQUENCE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: VABF SIGMET VALID 231330/231730 VABB- VABF MUMBAI FIR EMBD TS FCST WI N2403
+    E07742 - N1938 E08057 - N2028 E07726 - N2127 E07514 - N2403 E07742 TOP FL500 STNR
+    NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_SEQUENCE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: VABF SIGMET VALID 231330/231730 VABB- VABF MUMBAI FIR EMBD TS FCST WI N1934
+    E07302 - N1839 E07519 - N1734 E07525 - N1729 E07236 - N1934 E07302 TOP FL460 STNR
+    NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_SEQUENCE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: ZGZU SIGMET VALID 231515/231915 ZGGG- ZGZU GUANGZHOU FIR EMBD TS FCST N OF
+    N2220 AND S OF N2551 AND W OF E11532 AND E OF E11024 TOP FL380 MOV W 15KMH NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_SEQUENCE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: VABF SIGMET VALID 231600/232000 VABB- VABF MUMBAI FIR EMBD TS FCST WI N1923
+    E07547 - N2143 E07402 - N2445 E07855 - N1855 E08149 - N1947 E07711 - N1923 E07547
+    TOP FL500 STNR NC=
+  expect:
+    accept: false
+    codes:
+    - MISSING_SEQUENCE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 MISSING_SEQUENCE/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'

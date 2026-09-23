@@ -1,7 +1,7 @@
 # TAC lint issue catalog
 
 > **Source**: generated from tac_validate.issue_registry + PROVENANCE_MAP  
-> **Generated**: 2026-09-21 via `make catalog-regen`  
+> **Generated**: 2026-09-23 via `make catalog-regen`  
 > **ADR**: ADR-028 / F15 / EV-011 / F20 / EV-015 / F23 / EV-019 / EV-040
 
 Public `code` values are stable. Default severities may tighten in minor releases.
@@ -28,6 +28,7 @@ Source attribution joins `PROVENANCE_MAP` (WMO / ICAO / IWXXM citations — no A
 | `CA_STATUTE_MILE_VIS` | `info` | {product} uses statute-mile visibility - MANOBS Canadian overlay | — | visibility, metar, speci, ca_eccc, manobs | manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS Canadian land-station visibility uses statute miles with SM |
 | `CA_TAF_NCLWS` | `info` | {product} includes MANAIR non-convective low-level wind shear (WS group) | — | taf, ca_eccc, manair, nclws | manair-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manair-standards-procedures-aviation-weather-forecasts-8th-ed.html - MANAIR non-convective LLWS group WShhh/dddffKT (Amendment 15) |
 | `CLOUD_CB_OR_TCU` | `info` | {product} cloud group includes convective type CB/TCU | — | cloud, metar, speci, r4, cb, tcu | codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - CB/TCU convective type register |
+| `CLOUD_TYPE_NOT_OBSERVABLE` | `info` | {product} cloud group uses /// because the convective cloud type was not observed. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable. | — | cloud, metar, speci, r4, auto | codes-wmo-int - https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt - AUTO cloud group solidi /// means convective cloud type was not observed |
 | `CNL_REPORT` | `info` | {product} is a CNL (cancel) report that withdraws a previously issued forecast. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase. | taf | cnl, taf, t1 | icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1 |
 | `COR_PRESENT` | `info` | {product} includes the COR (correction) modifier, indicating a corrected report replacing a prior issue. Informational: noted for operator awareness; does not by itself block conversion. Source: ICAO Annex 3 App 5 / Table A5-1. Full normative text may require purchase. | — | modifier, metar, speci, taf, r8, t1, c1 | icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - App 5 / Table A5-1 |
 | `EMPTY_TAC` | `error` | TAC text is empty | — | parse_gate, body | icao-annex-3 - access:paywall - https://store.icao.int/en/annex-3-meteorological-service-for-international-air-navigation-1 - Table A3-2 / App 3 |

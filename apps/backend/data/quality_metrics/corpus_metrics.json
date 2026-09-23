@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T00:19:33Z",
+  "generated_at": "2026-09-22T22:05:16Z",
   "iwxxm_pin": "2025-2",
   "summaries": [
     {
@@ -317,7 +317,7 @@
         {
           "severity": "info",
           "code": "RVR_PRESENT",
-          "message": "METAR RVR group 'R12/1000U' present - research R8",
+          "message": "METAR RVR group 'R12/1000U' present",
           "location": "modifier",
           "start": 33,
           "end": 42
@@ -325,13 +325,74 @@
         {
           "severity": "info",
           "code": "NSW_PRESENT",
-          "message": "METAR NSW present - research T3 / S1",
+          "message": "METAR NSW present",
           "location": "modifier",
           "start": 114,
           "end": 117
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:base) and not(iwxxm:base/@xsi:nil = 'true') ) then( (iwxxm:base/@uom = 'm') or (iwxxm:base/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:base) and not(iwxxm:base/@xsi:nil = 'true') ) then( (iwxxm:base/@uom = 'm') or (iwxxm:base/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-common-nil.rdf')/rdf:RDF//skos:member/skos:Concept/@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "speci-A3-2": {
       "stem": "speci-A3-2",
@@ -347,7 +408,7 @@
         {
           "severity": "info",
           "code": "CLOUD_CB_OR_TCU",
-          "message": "SPECI cloud group 'BKN005CB' includes convective type - research R4",
+          "message": "SPECI cloud group 'BKN005CB' includes convective type",
           "location": "cloud",
           "start": 48,
           "end": 56
@@ -355,7 +416,7 @@
         {
           "severity": "info",
           "code": "TEMPO_PRESENT",
-          "message": "SPECI TEMPO trend present - research R8",
+          "message": "SPECI TEMPO trend present",
           "location": "modifier",
           "start": 69,
           "end": 74
@@ -363,7 +424,7 @@
         {
           "severity": "info",
           "code": "WIND_VRB_OR_GUST",
-          "message": "SPECI wind '05025G37KT' uses VRB and/or gust - research R8",
+          "message": "SPECI wind '05025G37KT' uses VRB and/or gust",
           "location": "modifier",
           "start": 19,
           "end": 29
@@ -371,7 +432,7 @@
         {
           "severity": "info",
           "code": "NSC_PRESENT",
-          "message": "SPECI NSC present - research T3 / S1",
+          "message": "SPECI NSC present",
           "location": "modifier",
           "start": 109,
           "end": 112
@@ -379,13 +440,68 @@
         {
           "severity": "info",
           "code": "NSW_PRESENT",
-          "message": "SPECI NSW present - research T3 / S1",
+          "message": "SPECI NSW present",
           "location": "modifier",
           "start": 105,
           "end": 108
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SigConvectiveCloudType.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:base) and not(iwxxm:base/@xsi:nil = 'true') ) then( (iwxxm:base/@uom = 'm') or (iwxxm:base/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-common-nil.rdf')/rdf:RDF//skos:member/skos:Concept/@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "taf-A5-1": {
       "stem": "taf-A5-1",
@@ -401,7 +517,7 @@
         {
           "severity": "info",
           "code": "FM_PRESENT",
-          "message": "TAF FM change group present - research T2",
+          "message": "TAF FM change group present",
           "location": "modifier",
           "start": 134,
           "end": 142
@@ -409,7 +525,7 @@
         {
           "severity": "info",
           "code": "BECMG_PRESENT",
-          "message": "TAF BECMG change group present - research T2",
+          "message": "TAF BECMG change group present",
           "location": "modifier",
           "start": 48,
           "end": 53
@@ -417,13 +533,380 @@
         {
           "severity": "info",
           "code": "TEMPO_PRESENT",
-          "message": "TAF TEMPO change group present - research T2",
+          "message": "TAF TEMPO change group present",
           "location": "modifier",
           "start": 80,
           "end": 85
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @cloudAndVisibilityOK = 'true' ) then( empty(iwxxm:prevailingVisibility) and empty(iwxxm:rvr) and empty(iwxxm:weather) and empty(iwxxm:cloud) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @cloudAndVisibilityOK = 'true' ) then( empty(iwxxm:prevailingVisibility) and empty(iwxxm:rvr) and empty(iwxxm:weather) and empty(iwxxm:cloud) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @cloudAndVisibilityOK = 'true' ) then( empty(iwxxm:prevailingVisibility) and empty(iwxxm:rvr) and empty(iwxxm:weather) and empty(iwxxm:cloud) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @cloudAndVisibilityOK = 'true' ) then( empty(iwxxm:prevailingVisibility) and empty(iwxxm:rvr) and empty(iwxxm:weather) and empty(iwxxm:cloud) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:prevailingVisibility) and not(iwxxm:prevailingVisibility/@xsi:nil = 'true') ) then( iwxxm:prevailingVisibility/@uom = 'm' ) else true())': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:prevailingVisibility) and not(iwxxm:prevailingVisibility/@xsi:nil = 'true') ) then( iwxxm:prevailingVisibility/@uom = 'm' ) else true())': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:prevailingVisibility) and not(iwxxm:prevailingVisibility/@xsi:nil = 'true') ) then( iwxxm:prevailingVisibility/@uom = 'm' ) else true())': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:prevailingVisibility) and not(iwxxm:prevailingVisibility/@xsi:nil = 'true') ) then( iwxxm:prevailingVisibility/@uom = 'm' ) else true())': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:aerodrome//aixm:ARP) ) then( empty(index-of(iwxxm:aerodrome//aixm:ARP//gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:baseForecast/*) ) then( empty(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/@changeIndicator) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:baseForecast/*) ) then( exists(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/iwxxm:surfaceWind) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:baseForecast/*) and not(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/@cloudAndVisibilityOK = 'true') ) then( exists(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/iwxxm:prevailingVisibility) and exists(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/iwxxm:cloud) ) else( true() ) )': invalid XPath expression: XPath error at position 22: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (@isCancelReport = 'true') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and empty(iwxxm:validPeriod) and exists(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:baseForecast) and empty(iwxxm:changeForecast) ) else( true() ) )': invalid XPath expression: XPath error at position 27: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( empty(iwxxm:baseForecast/*) and (iwxxm:baseForecast/@nilReason = 'http://codes.wmo.int/common/nil/missing') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and empty(iwxxm:validPeriod) and empty(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:changeForecast) ) else( true() ) )': invalid XPath expression: XPath error at position 36: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) > 0) or (@permissibleUsage = 'NON-OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and ((@isCancelReport = 'true' and exists(iwxxm:cancelledReportValidPeriod)) or (not(@isCancelReport = 'true') and exists(iwxxm:validPeriod))) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (iwxxm:baseForecast/@nilReason != 'http://codes.wmo.int/common/nil/missing' and (empty(@isCancelReport) or @isCancelReport = 'false')) and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and exists(iwxxm:validPeriod) and empty(iwxxm:cancelledReportValidPeriod) and exists(iwxxm:baseForecast) ) else( true() ) )': invalid XPath expression: XPath error at position 42: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-AerodromePresentOrForecastWeather.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SigConvectiveCloudType.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SigConvectiveCloudType.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-CloudAmountReportedAtAerodrome.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:base) and not(iwxxm:base/@xsi:nil = 'true') ) then( (iwxxm:base/@uom = 'm') or (iwxxm:base/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:base) and not(iwxxm:base/@xsi:nil = 'true') ) then( (iwxxm:base/@uom = 'm') or (iwxxm:base/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:base) and not(iwxxm:base/@xsi:nil = 'true') ) then( (iwxxm:base/@uom = 'm') or (iwxxm:base/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:base) and not(iwxxm:base/@xsi:nil = 'true') ) then( (iwxxm:base/@uom = 'm') or (iwxxm:base/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:base) and not(iwxxm:base/@xsi:nil = 'true') ) then( (iwxxm:base/@uom = 'm') or (iwxxm:base/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:base) and not(iwxxm:base/@xsi:nil = 'true') ) then( (iwxxm:base/@uom = 'm') or (iwxxm:base/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '(if( exists(iwxxm:layer) ) then( empty(iwxxm:verticalVisibility) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '(if( exists(iwxxm:layer) ) then( empty(iwxxm:verticalVisibility) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '(if( exists(iwxxm:layer) ) then( empty(iwxxm:verticalVisibility) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '(if( exists(iwxxm:layer) ) then( empty(iwxxm:verticalVisibility) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '(if( exists(iwxxm:verticalVisibility) ) then( empty(iwxxm:layer) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '(if( exists(iwxxm:verticalVisibility) ) then( empty(iwxxm:layer) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '(if( exists(iwxxm:verticalVisibility) ) then( empty(iwxxm:layer) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '(if( exists(iwxxm:verticalVisibility) ) then( empty(iwxxm:layer) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:verticalVisibility) and not(iwxxm:verticalVisibility/@xsi:nil = 'true') ) then( (iwxxm:verticalVisibility/@uom = 'm') or (iwxxm:verticalVisibility/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:verticalVisibility) and not(iwxxm:verticalVisibility/@xsi:nil = 'true') ) then( (iwxxm:verticalVisibility/@uom = 'm') or (iwxxm:verticalVisibility/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:verticalVisibility) and not(iwxxm:verticalVisibility/@xsi:nil = 'true') ) then( (iwxxm:verticalVisibility/@uom = 'm') or (iwxxm:verticalVisibility/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:verticalVisibility) and not(iwxxm:verticalVisibility/@xsi:nil = 'true') ) then( (iwxxm:verticalVisibility/@uom = 'm') or (iwxxm:verticalVisibility/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @variableDirection = 'true' ) then( empty(iwxxm:meanWindDirection) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @variableDirection = 'true' ) then( empty(iwxxm:meanWindDirection) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @variableDirection = 'true' ) then( empty(iwxxm:meanWindDirection) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:meanWindDirection) and not(iwxxm:meanWindDirection/@xsi:nil = 'true') ) then( iwxxm:meanWindDirection/@uom = 'deg' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:meanWindDirection) and not(iwxxm:meanWindDirection/@xsi:nil = 'true') ) then( iwxxm:meanWindDirection/@uom = 'deg' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:meanWindDirection) and not(iwxxm:meanWindDirection/@xsi:nil = 'true') ) then( iwxxm:meanWindDirection/@uom = 'deg' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:meanWindSpeed) and not(iwxxm:meanWindSpeed/@xsi:nil = 'true') ) then( (iwxxm:meanWindSpeed/@uom = 'm/s') or (iwxxm:meanWindSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:meanWindSpeed) and not(iwxxm:meanWindSpeed/@xsi:nil = 'true') ) then( (iwxxm:meanWindSpeed/@uom = 'm/s') or (iwxxm:meanWindSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:meanWindSpeed) and not(iwxxm:meanWindSpeed/@xsi:nil = 'true') ) then( (iwxxm:meanWindSpeed/@uom = 'm/s') or (iwxxm:meanWindSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:windGustSpeed) and not(iwxxm:windGustSpeed/@xsi:nil = 'true') ) then( (iwxxm:windGustSpeed/@uom = 'm/s') or (iwxxm:windGustSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:windGustSpeed) and not(iwxxm:windGustSpeed/@xsi:nil = 'true') ) then( (iwxxm:windGustSpeed/@uom = 'm/s') or (iwxxm:windGustSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:windGustSpeed) and not(iwxxm:windGustSpeed/@xsi:nil = 'true') ) then( (iwxxm:windGustSpeed/@uom = 'm/s') or (iwxxm:windGustSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-common-nil.rdf')/rdf:RDF//skos:member/skos:Concept/@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "taf-A5-2": {
       "stem": "taf-A5-2",
@@ -439,7 +922,7 @@
         {
           "severity": "info",
           "code": "AMD_PRESENT",
-          "message": "TAF AMD modifier present - research T1",
+          "message": "TAF AMD modifier present",
           "location": "modifier",
           "start": 4,
           "end": 7
@@ -447,13 +930,98 @@
         {
           "severity": "info",
           "code": "CNL_REPORT",
-          "message": "TAF CNL cancel report - research T1",
+          "message": "TAF CNL cancel report",
           "location": "modifier",
           "start": 31,
           "end": 34
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:aerodrome//aixm:ARP) ) then( empty(index-of(iwxxm:aerodrome//aixm:ARP//gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:baseForecast/*) ) then( empty(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/@changeIndicator) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:baseForecast/*) ) then( exists(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/iwxxm:surfaceWind) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:baseForecast/*) and not(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/@cloudAndVisibilityOK = 'true') ) then( exists(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/iwxxm:prevailingVisibility) and exists(iwxxm:baseForecast/iwxxm:MeteorologicalAerodromeForecast/iwxxm:cloud) ) else( true() ) )': invalid XPath expression: XPath error at position 22: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (@isCancelReport = 'true') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and empty(iwxxm:validPeriod) and exists(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:baseForecast) and empty(iwxxm:changeForecast) ) else( true() ) )': invalid XPath expression: XPath error at position 27: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( empty(iwxxm:baseForecast/*) and (iwxxm:baseForecast/@nilReason = 'http://codes.wmo.int/common/nil/missing') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and empty(iwxxm:validPeriod) and empty(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:changeForecast) ) else( true() ) )': invalid XPath expression: XPath error at position 36: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) > 0) or (@permissibleUsage = 'NON-OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and ((@isCancelReport = 'true' and exists(iwxxm:cancelledReportValidPeriod)) or (not(@isCancelReport = 'true') and exists(iwxxm:validPeriod))) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (iwxxm:baseForecast/@nilReason != 'http://codes.wmo.int/common/nil/missing' and (empty(@isCancelReport) or @isCancelReport = 'false')) and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:aerodrome) and exists(iwxxm:validPeriod) and empty(iwxxm:cancelledReportValidPeriod) and exists(iwxxm:baseForecast) ) else( true() ) )': invalid XPath expression: XPath error at position 42: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-common-nil.rdf')/rdf:RDF//skos:member/skos:Concept/@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "sigmet-A6-1a-TS": {
       "stem": "sigmet-A6-1a-TS",
@@ -469,7 +1037,7 @@
         {
           "severity": "info",
           "code": "SINGLE_ALTITUDE",
-          "message": "SIGMET single altitude (same lower/upper) - research G1",
+          "message": "SIGMET single altitude (same lower/upper)",
           "location": "modifier",
           "start": 101,
           "end": 106
@@ -477,7 +1045,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "SIGMET sequence number present - research G2",
+          "message": "SIGMET sequence number present",
           "location": "modifier",
           "start": 12,
           "end": 13
@@ -485,7 +1053,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "SIGMET FIR/CTA/UIR airspace identity - research G2",
+          "message": "SIGMET FIR/CTA/UIR airspace identity",
           "location": "modifier",
           "start": 53,
           "end": 56
@@ -493,7 +1061,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "SIGMET OBS or FCST analysis - research G2",
+          "message": "SIGMET OBS or FCST analysis",
           "location": "modifier",
           "start": 69,
           "end": 73
@@ -501,13 +1069,110 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "SIGMET intensity change INTSF/WKN/NC - research G2",
+          "message": "SIGMET intensity change INTSF/WKN/NC",
           "location": "modifier",
           "start": 118,
           "end": 121
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent) ) then( empty(index-of(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( (exists(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:speedOfMotion)) or (empty(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and exists(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion)) or (empty(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:speedOfMotion)) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (@isCancelReport = 'true') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion) and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and exists(iwxxm:cancelledReportSequenceNumber) and exists(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:phenomenon) and empty(iwxxm:analysisCollection) ) else( true() ) )': invalid XPath expression: XPath error at position 27: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) > 0) or (@permissibleUsage = 'NON-OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:validPeriod) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (empty(@isCancelReport) or @isCancelReport = 'false') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion) and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and empty(iwxxm:cancelledReportSequenceNumber) and empty(iwxxm:cancelledReportValidPeriod) and exists(iwxxm:phenomenon) and exists(iwxxm:analysisCollection) ) else( true() ) )': invalid XPath expression: XPath error at position 33: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SigWxPhenomena.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:geometry//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:directionOfMotion) and not(iwxxm:directionOfMotion/@xsi:nil = 'true') ) then ( iwxxm:directionOfMotion/@uom = 'deg' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) ) then( exists(iwxxm:directionOfMotion) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) and not(iwxxm:speedOfMotion/@xsi:nil = 'true') ) then ( (iwxxm:speedOfMotion/@uom = 'km/h') or (iwxxm:speedOfMotion/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-common-nil.rdf')/rdf:RDF//skos:member/skos:Concept/@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "sigmet-A6-1b-CNL": {
       "stem": "sigmet-A6-1b-CNL",
@@ -523,13 +1188,80 @@
         {
           "severity": "info",
           "code": "SIGMET_CNL",
-          "message": "SIGMET CNL cancel report - research G1",
+          "message": "SIGMET CNL cancel report",
           "location": "modifier",
           "start": 61,
           "end": 64
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent) ) then( empty(index-of(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( (exists(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:speedOfMotion)) or (empty(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and exists(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion)) or (empty(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:speedOfMotion)) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (@isCancelReport = 'true') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion) and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and exists(iwxxm:cancelledReportSequenceNumber) and exists(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:phenomenon) and empty(iwxxm:analysisCollection) ) else( true() ) )': invalid XPath expression: XPath error at position 27: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) > 0) or (@permissibleUsage = 'NON-OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:validPeriod) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (empty(@isCancelReport) or @isCancelReport = 'false') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion) and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and empty(iwxxm:cancelledReportSequenceNumber) and empty(iwxxm:cancelledReportValidPeriod) and exists(iwxxm:phenomenon) and exists(iwxxm:analysisCollection) ) else( true() ) )': invalid XPath expression: XPath error at position 33: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-common-nil.rdf')/rdf:RDF//skos:member/skos:Concept/@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "sigmet-VA-EGGX": {
       "stem": "sigmet-VA-EGGX",
@@ -545,7 +1277,7 @@
         {
           "severity": "info",
           "code": "POLYGON_LOCATION",
-          "message": "SIGMET polygon/line WI geometry - research G1",
+          "message": "SIGMET polygon/line WI geometry",
           "location": "modifier",
           "start": 128,
           "end": 130
@@ -553,7 +1285,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "SIGMET sequence number present - research G2",
+          "message": "SIGMET sequence number present",
           "location": "modifier",
           "start": 12,
           "end": 13
@@ -561,7 +1293,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "SIGMET FIR/CTA/UIR airspace identity - research G2",
+          "message": "SIGMET FIR/CTA/UIR airspace identity",
           "location": "modifier",
           "start": 64,
           "end": 67
@@ -569,7 +1301,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "SIGMET OBS or FCST analysis - research G2",
+          "message": "SIGMET OBS or FCST analysis",
           "location": "modifier",
           "start": 114,
           "end": 117
@@ -577,7 +1309,7 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "SIGMET intensity change INTSF/WKN/NC - research G2",
+          "message": "SIGMET intensity change INTSF/WKN/NC",
           "location": "modifier",
           "start": 199,
           "end": 201
@@ -585,7 +1317,7 @@
         {
           "severity": "info",
           "code": "VA_VOLCANO_IDENTITY",
-          "message": "VA SIGMET erupting volcano identity (MT/PSN) - research V1",
+          "message": "VA SIGMET erupting volcano identity (MT/PSN)",
           "location": "modifier",
           "start": 80,
           "end": 82
@@ -593,13 +1325,134 @@
         {
           "severity": "info",
           "code": "VA_ASH_GEOMETRY",
-          "message": "VA SIGMET ash cloud geometry / forecast position - research V1",
+          "message": "VA SIGMET ash cloud geometry / forecast position",
           "location": "modifier",
           "start": 68,
           "end": 70
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:geometry/*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent) ) then( empty(index-of(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( (exists(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:speedOfMotion)) or (empty(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and exists(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion)) or (empty(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:speedOfMotion)) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (@isCancelReport = 'true') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion) and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and exists(iwxxm:cancelledReportSequenceNumber) and exists(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:phenomenon) and empty(iwxxm:analysisCollection) ) else( true() ) )': invalid XPath expression: XPath error at position 27: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) > 0) or (@permissibleUsage = 'NON-OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:validPeriod) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (empty(@isCancelReport) or @isCancelReport = 'false') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion) and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and empty(iwxxm:cancelledReportSequenceNumber) and empty(iwxxm:cancelledReportValidPeriod) and exists(iwxxm:phenomenon) and exists(iwxxm:analysisCollection) ) else( true() ) )': invalid XPath expression: XPath error at position 33: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SigWxPhenomena.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:geometry//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:directionOfMotion) and not(iwxxm:directionOfMotion/@xsi:nil = 'true') ) then ( iwxxm:directionOfMotion/@uom = 'deg' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) ) then( exists(iwxxm:directionOfMotion) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) and not(iwxxm:speedOfMotion/@xsi:nil = 'true') ) then ( (iwxxm:speedOfMotion/@uom = 'km/h') or (iwxxm:speedOfMotion/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:eruptingVolcano//metce:position) ) then( empty(for $i in iwxxm:eruptingVolcano//metce:position//gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()] return $i[not(@srsDimension='2') or @axisLabels='']) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:volcanicAshMovedToFIR//aixm:geometryComponent) ) then( iwxxm:volcanicAshMovedToFIR//aixm:geometryComponent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @isCancelReport = 'true' and string-length(@translationFailedTAC) = 0 ) then( empty(iwxxm:eruptingVolcano) ) else( true() ) )': invalid XPath expression: XPath error at position 16: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:volcanicAshMovedToFIR) ) then( @isCancelReport = 'true' ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "sigmet-multi-location-VA": {
       "stem": "sigmet-multi-location-VA",
@@ -615,7 +1468,7 @@
         {
           "severity": "info",
           "code": "POLYGON_LOCATION",
-          "message": "SIGMET polygon/line WI geometry - research G1",
+          "message": "SIGMET polygon/line WI geometry",
           "location": "modifier",
           "start": 135,
           "end": 137
@@ -623,7 +1476,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "SIGMET sequence number present - research G2",
+          "message": "SIGMET sequence number present",
           "location": "modifier",
           "start": 18,
           "end": 19
@@ -631,7 +1484,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "SIGMET FIR/CTA/UIR airspace identity - research G2",
+          "message": "SIGMET FIR/CTA/UIR airspace identity",
           "location": "modifier",
           "start": 65,
           "end": 68
@@ -639,7 +1492,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "SIGMET OBS or FCST analysis - research G2",
+          "message": "SIGMET OBS or FCST analysis",
           "location": "modifier",
           "start": 121,
           "end": 124
@@ -647,7 +1500,7 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "SIGMET intensity change INTSF/WKN/NC - research G2",
+          "message": "SIGMET intensity change INTSF/WKN/NC",
           "location": "modifier",
           "start": 236,
           "end": 238
@@ -655,7 +1508,7 @@
         {
           "severity": "info",
           "code": "VA_VOLCANO_IDENTITY",
-          "message": "VA SIGMET erupting volcano identity (MT/PSN) - research V1",
+          "message": "VA SIGMET erupting volcano identity (MT/PSN)",
           "location": "modifier",
           "start": 81,
           "end": 83
@@ -663,13 +1516,164 @@
         {
           "severity": "info",
           "code": "VA_ASH_GEOMETRY",
-          "message": "VA SIGMET ash cloud geometry / forecast position - research V1",
+          "message": "VA SIGMET ash cloud geometry / forecast position",
           "location": "modifier",
           "start": 69,
           "end": 71
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:geometry/*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:geometry/*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent) ) then( empty(index-of(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( (exists(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:speedOfMotion)) or (empty(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and exists(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion)) or (empty(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:speedOfMotion)) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (@isCancelReport = 'true') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion) and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and exists(iwxxm:cancelledReportSequenceNumber) and exists(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:phenomenon) and empty(iwxxm:analysisCollection) ) else( true() ) )': invalid XPath expression: XPath error at position 27: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) > 0) or (@permissibleUsage = 'NON-OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:validPeriod) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (empty(@isCancelReport) or @isCancelReport = 'false') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion) and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and empty(iwxxm:cancelledReportSequenceNumber) and empty(iwxxm:cancelledReportValidPeriod) and exists(iwxxm:phenomenon) and exists(iwxxm:analysisCollection) ) else( true() ) )': invalid XPath expression: XPath error at position 33: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SigWxPhenomena.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:geometry//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:geometry//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:directionOfMotion) and not(iwxxm:directionOfMotion/@xsi:nil = 'true') ) then ( iwxxm:directionOfMotion/@uom = 'deg' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:directionOfMotion) and not(iwxxm:directionOfMotion/@xsi:nil = 'true') ) then ( iwxxm:directionOfMotion/@uom = 'deg' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) ) then( exists(iwxxm:directionOfMotion) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) ) then( exists(iwxxm:directionOfMotion) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) and not(iwxxm:speedOfMotion/@xsi:nil = 'true') ) then ( (iwxxm:speedOfMotion/@uom = 'km/h') or (iwxxm:speedOfMotion/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) and not(iwxxm:speedOfMotion/@xsi:nil = 'true') ) then ( (iwxxm:speedOfMotion/@uom = 'km/h') or (iwxxm:speedOfMotion/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:eruptingVolcano//metce:position) ) then( empty(for $i in iwxxm:eruptingVolcano//metce:position//gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()] return $i[not(@srsDimension='2') or @axisLabels='']) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:volcanicAshMovedToFIR//aixm:geometryComponent) ) then( iwxxm:volcanicAshMovedToFIR//aixm:geometryComponent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @isCancelReport = 'true' and string-length(@translationFailedTAC) = 0 ) then( empty(iwxxm:eruptingVolcano) ) else( true() ) )': invalid XPath expression: XPath error at position 16: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:volcanicAshMovedToFIR) ) then( @isCancelReport = 'true' ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "sigmet-A6-2-TC": {
       "stem": "sigmet-A6-2-TC",
@@ -706,7 +1710,7 @@
         {
           "severity": "info",
           "code": "POLYGON_LOCATION",
-          "message": "SIGMET polygon/line WI geometry - research G1",
+          "message": "SIGMET polygon/line WI geometry",
           "location": "modifier",
           "start": 100,
           "end": 102
@@ -714,7 +1718,7 @@
         {
           "severity": "info",
           "code": "SINGLE_ALTITUDE",
-          "message": "SIGMET single altitude (same lower/upper) - research G1",
+          "message": "SIGMET single altitude (same lower/upper)",
           "location": "modifier",
           "start": 126,
           "end": 131
@@ -722,7 +1726,7 @@
         {
           "severity": "info",
           "code": "SIGMET_SEQUENCE",
-          "message": "SIGMET sequence number present - research G2",
+          "message": "SIGMET sequence number present",
           "location": "modifier",
           "start": 12,
           "end": 13
@@ -730,7 +1734,7 @@
         {
           "severity": "info",
           "code": "FIR_OR_CTA",
-          "message": "SIGMET FIR/CTA/UIR airspace identity - research G2",
+          "message": "SIGMET FIR/CTA/UIR airspace identity",
           "location": "modifier",
           "start": 53,
           "end": 56
@@ -738,7 +1742,7 @@
         {
           "severity": "info",
           "code": "OBS_OR_FCST",
-          "message": "SIGMET OBS or FCST analysis - research G2",
+          "message": "SIGMET OBS or FCST analysis",
           "location": "modifier",
           "start": 87,
           "end": 90
@@ -746,7 +1750,7 @@
         {
           "severity": "info",
           "code": "INTENSITY_CHANGE",
-          "message": "SIGMET intensity change INTSF/WKN/NC - research G2",
+          "message": "SIGMET intensity change INTSF/WKN/NC",
           "location": "modifier",
           "start": 132,
           "end": 134
@@ -768,7 +1772,122 @@
           "end": 59
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:geometry/*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent) ) then( empty(index-of(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( (exists(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:speedOfMotion)) or (empty(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and exists(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion)) or (empty(iwxxm:analysisCollection//iwxxm:forecastPositionAnalysis) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:directionOfMotion) and empty(iwxxm:analysisCollection//iwxxm:analysis//iwxxm:speedOfMotion)) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (@isCancelReport = 'true') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion) and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and exists(iwxxm:cancelledReportSequenceNumber) and exists(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:phenomenon) and empty(iwxxm:analysisCollection) ) else( true() ) )': invalid XPath expression: XPath error at position 27: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) > 0) or (@permissibleUsage = 'NON-OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:validPeriod) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (empty(@isCancelReport) or @isCancelReport = 'false') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion) and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and empty(iwxxm:cancelledReportSequenceNumber) and empty(iwxxm:cancelledReportValidPeriod) and exists(iwxxm:phenomenon) and exists(iwxxm:analysisCollection) ) else( true() ) )': invalid XPath expression: XPath error at position 33: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SigWxPhenomena.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:geometry//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:directionOfMotion) and not(iwxxm:directionOfMotion/@xsi:nil = 'true') ) then ( iwxxm:directionOfMotion/@uom = 'deg' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) ) then( exists(iwxxm:directionOfMotion) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) and not(iwxxm:speedOfMotion/@xsi:nil = 'true') ) then ( (iwxxm:speedOfMotion/@uom = 'km/h') or (iwxxm:speedOfMotion/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @isCancelReport = 'true' and string-length(@translationFailedTAC) = 0 ) then( empty(iwxxm:tropicalCyclone) ) else( true() ) )': invalid XPath expression: XPath error at position 16: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (empty(@isCancelReport) or @isCancelReport = 'false') and string-length(@translationFailedTAC) = 0 ) then( exists(iwxxm:tropicalCyclone) ) else( true() ) )': invalid XPath expression: XPath error at position 24: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (empty(@isCancelReport) or @isCancelReport = 'false') and string-length(@translationFailedTAC) = 0 ) then( count(//iwxxm:TropicalCycloneSIGMET//iwxxm:analysisCollection) = 1 ) else( true() ) )': invalid XPath expression: XPath error at position 24: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "airmet-A6-1a-TS": {
       "stem": "airmet-A6-1a-TS",
@@ -830,7 +1949,140 @@
           "end": 114
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:cloudBase) and not(iwxxm:cloudBase/@xsi:nil = 'true') ) then( (iwxxm:cloudBase/@uom = 'm') or (iwxxm:cloudBase/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:cloudTop) and not(iwxxm:cloudTop/@xsi:nil = 'true') ) then( (iwxxm:cloudTop/@uom = 'm') or (iwxxm:cloudTop/@uom = '[ft_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:geometry//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:geometry//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:directionOfMotion) and not(iwxxm:directionOfMotion/@xsi:nil = 'true') ) then( iwxxm:directionOfMotion/@uom = 'deg' ) else true())': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) and not(iwxxm:speedOfMotion/@xsi:nil = 'true') ) then( (iwxxm:speedOfMotion/@uom = 'km/h') or (iwxxm:speedOfMotion/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:surfaceVisibility) and not(iwxxm:surfaceVisibility/@xsi:nil = 'true') ) then( iwxxm:surfaceVisibility/@uom = 'm' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( not((exists(iwxxm:surfaceWindDirection) and exists(iwxxm:surfaceWindSpeed)) or (empty(iwxxm:surfaceWindDirection) and empty(iwxxm:surfaceWindSpeed))) ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 30: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:surfaceWindDirection) and not(iwxxm:surfaceWindDirection/@xsi:nil = 'true') ) then( iwxxm:surfaceWindDirection/@uom = 'deg' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:surfaceWindSpeed) and not(iwxxm:surfaceWindSpeed/@xsi:nil = 'true') ) then( (iwxxm:surfaceWindSpeed/@uom = 'm/s') or (iwxxm:surfaceWindSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-AirWxPhenomena.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') and (iwxxm:analysis/iwxxm:*/@timeIndicator = 'FORECAST') and exists(iwxxm:analysis//iwxxm:phenomenonTime/*) and exists(iwxxm:validPeriod/*) ) then( empty(index-of(for $i in iwxxm:analysis return number(translate($i//iwxxm:phenomenonTime/gml:TimeInstant/gml:timePosition,'-T:Z','')) >= number(translate(iwxxm:validPeriod/gml:TimePeriod/gml:beginPosition,'-T:Z','')),false())) ) else( true() ) )': invalid XPath expression: XPath error at position 47: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') and (iwxxm:analysis/iwxxm:*/@timeIndicator = 'OBSERVATION') and exists(iwxxm:analysis//iwxxm:phenomenonTime/*) and exists(iwxxm:validPeriod/*) ) then( empty(index-of(for $i in iwxxm:analysis return number(translate($i//iwxxm:phenomenonTime/gml:TimeInstant/gml:timePosition,'-T:Z','')) <= number(translate(iwxxm:validPeriod/gml:TimePeriod/gml:beginPosition,'-T:Z','')),false())) ) else( true() ) )': invalid XPath expression: XPath error at position 47: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent) ) then( empty(index-of(iwxxm:issuingAirTrafficServicesRegion//aixm:geometryComponent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (@isCancelReport= 'true') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion) and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and exists(iwxxm:cancelledReportSequenceNumber) and exists(iwxxm:cancelledReportValidPeriod) and empty(iwxxm:phenomenon) and empty(iwxxm:analysis) ) else( true() ) )': invalid XPath expression: XPath error at position 27: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) > 0) or (@permissibleUsage = 'NON-OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:validPeriod) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (empty(@isCancelReport) or @isCancelReport = 'false') and (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingAirTrafficServicesUnit) and exists(iwxxm:originatingMeteorologicalWatchOffice) and exists(iwxxm:issuingAirTrafficServicesRegion) and exists(iwxxm:sequenceNumber) and exists(iwxxm:validPeriod) and empty(iwxxm:cancelledReportSequenceNumber) and empty(iwxxm:cancelledReportValidPeriod) and exists(iwxxm:phenomenon) and exists(iwxxm:analysis) ) else( true() ) )': invalid XPath expression: XPath error at position 33: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-common-nil.rdf')/rdf:RDF//skos:member/skos:Concept/@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "va-advisory-A7-2": {
       "stem": "va-advisory-A7-2",
@@ -852,7 +2104,164 @@
           "end": 1099
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:ashCloudExtent//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:ashCloudExtent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:ashCloudExtent//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:ashCloudExtent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:directionOfMotion) and not(iwxxm:directionOfMotion/@xsi:nil = 'true') ) then( iwxxm:directionOfMotion/@uom = 'deg' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:directionOfMotion) and not(iwxxm:directionOfMotion/@xsi:nil = 'true') ) then( iwxxm:directionOfMotion/@uom = 'deg' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) and not(iwxxm:speedOfMotion/@xsi:nil = 'true') ) then( (iwxxm:speedOfMotion/@uom = 'km/h') or (iwxxm:speedOfMotion/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:speedOfMotion) and not(iwxxm:speedOfMotion/@xsi:nil = 'true') ) then( (iwxxm:speedOfMotion/@uom = 'km/h') or (iwxxm:speedOfMotion/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:volcano//metce:position) ) then( empty(index-of(iwxxm:volcano//metce:position//gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) > 0) or (@permissibleUsage = 'NON-OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingVolcanicAshAdvisoryCentre) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingVolcanicAshAdvisoryCentre) and exists(iwxxm:volcano) and exists(iwxxm:stateOrRegion) and exists(iwxxm:sourceElevationAMSL) and exists(iwxxm:advisoryNumber) and exists(iwxxm:informationSource) and exists(iwxxm:eruptionDetails) and exists(iwxxm:observation) and exists(iwxxm:forecast) and exists(iwxxm:remarks) and exists(iwxxm:nextAdvisoryTime) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @status != 'PROVIDED' ) then(empty(iwxxm:ashCloud) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @status != 'PROVIDED' ) then(empty(iwxxm:ashCloud) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @status != 'PROVIDED' ) then(empty(iwxxm:ashCloud) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @status = 'PROVIDED' ) then( count(iwxxm:ashCloud) >= 1 ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @status = 'PROVIDED' ) then( count(iwxxm:ashCloud) >= 1 ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @status = 'PROVIDED' ) then( count(iwxxm:ashCloud) >= 1 ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:ashCloudExtent//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:ashCloudExtent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:ashCloudExtent//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:ashCloudExtent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:ashCloudExtent//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:ashCloudExtent//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @status = 'IDENTIFIABLE' ) then( (count(iwxxm:ashCloud) >= 1) and empty(iwxxm:windConditions) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @status = 'NOT IDENTIFIABLE') then( empty(iwxxm:ashCloud) and exists(iwxxm:windConditions) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-common-nil.rdf')/rdf:RDF//skos:member/skos:Concept/@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "tc-advisory-A2-2": {
       "stem": "tc-advisory-A2-2",
@@ -874,7 +2283,140 @@
           "end": 777
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:tropicalCyclonePosition/gml:Point) ) then( empty(index-of(iwxxm:tropicalCyclonePosition/gml:Point/gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:tropicalCyclonePosition/gml:Point) ) then( empty(index-of(iwxxm:tropicalCyclonePosition/gml:Point/gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:tropicalCyclonePosition/gml:Point) ) then( empty(index-of(iwxxm:tropicalCyclonePosition/gml:Point/gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:tropicalCyclonePosition/gml:Point) ) then( empty(index-of(iwxxm:tropicalCyclonePosition/gml:Point/gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:maximumSurfaceWindSpeed) and not(iwxxm:maximumSurfaceWindSpeed/@xsi:nil = 'true') ) then( (iwxxm:maximumSurfaceWindSpeed/@uom = 'm/s') or (iwxxm:maximumSurfaceWindSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:maximumSurfaceWindSpeed) and not(iwxxm:maximumSurfaceWindSpeed/@xsi:nil = 'true') ) then( (iwxxm:maximumSurfaceWindSpeed/@uom = 'm/s') or (iwxxm:maximumSurfaceWindSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:maximumSurfaceWindSpeed) and not(iwxxm:maximumSurfaceWindSpeed/@xsi:nil = 'true') ) then( (iwxxm:maximumSurfaceWindSpeed/@uom = 'm/s') or (iwxxm:maximumSurfaceWindSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:maximumSurfaceWindSpeed) and not(iwxxm:maximumSurfaceWindSpeed/@xsi:nil = 'true') ) then( (iwxxm:maximumSurfaceWindSpeed/@uom = 'm/s') or (iwxxm:maximumSurfaceWindSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) > 0) or (@permissibleUsage = 'NON-OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingTropicalCycloneAdvisoryCentre) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingTropicalCycloneAdvisoryCentre) and exists(iwxxm:tropicalCycloneName) and exists(iwxxm:advisoryNumber) and exists(iwxxm:observation) and exists(iwxxm:forecast) and exists(iwxxm:remarks) and exists(iwxxm:nextAdvisoryTime) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:centralPressure) and not(iwxxm:centralPressure/@xsi:nil = 'true') ) then( iwxxm:centralPressure/@uom = 'hPa' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:cumulonimbusCloudLocation//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:cumulonimbusCloudLocation//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:tropicalCyclonePosition/gml:Point) ) then( empty(index-of(iwxxm:tropicalCyclonePosition/gml:Point/gml:pos/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:maximumSurfaceWindSpeed) and not(iwxxm:maximumSurfaceWindSpeed/@xsi:nil = 'true') ) then( (iwxxm:maximumSurfaceWindSpeed/@uom = 'm/s') or (iwxxm:maximumSurfaceWindSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:movementDirection) and not(iwxxm:movementDirection/@xsi:nil = 'true') ) then( iwxxm:movementDirection/@uom = 'deg' ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:movementSpeed) and not(iwxxm:movementSpeed/@xsi:nil = 'true') ) then( (iwxxm:movementSpeed/@uom = 'km/h') or (iwxxm:movementSpeed/@uom = '[kn_i]') ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-common-nil.rdf')/rdf:RDF//skos:member/skos:Concept/@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "spacewx-A7-3": {
       "stem": "spacewx-A7-3",
@@ -896,7 +2438,128 @@
           "end": 240
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SpaceWxLocation.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SpaceWxLocation.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SpaceWxLocation.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SpaceWxLocation.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SpaceWxLocation.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-49-2-SpaceWxLocation.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:location//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:location//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:location//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:location//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:location//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:location//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:location//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:location//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:location//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:location//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(iwxxm:location//*[self::aixm:horizontalProjection or self::aixm:centreline]) ) then( empty(index-of(iwxxm:location//*[self::aixm:Surface or self::aixm:Curve]/(ancestor-or-self::*[exists(@srsName)])[last()]/(@srsDimension='2' and exists(@axisLabels)), false())) ) else( true() ) )': invalid XPath expression: XPath error at position 19: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) > 0) or (@permissibleUsage = 'NON-OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingSpaceWeatherCentre) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( (string-length(@translationFailedTAC) = 0) and (@permissibleUsage = 'OPERATIONAL') ) then( exists(iwxxm:issueTime) and exists(iwxxm:issuingSpaceWeatherCentre) and exists(iwxxm:advisoryNumber) and exists(iwxxm:effect) and exists(iwxxm:analysis) and exists(iwxxm:remarks) and exists(iwxxm:nextAdvisoryTime) ) else( true() ) )': invalid XPath expression: XPath error at position 20: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(.//iwxxm:extension) ) then( sum(.//iwxxm:extension/.//text()/string-length(.) ) +sum(.//iwxxm:extension/.//element()/( (string-length( name() ) * 2 ) + 5 ) ) +sum(.//iwxxm:extension/.//@*/( 1 + string-length(name()) + 3 + string-length(.) ) ) +sum(.//iwxxm:extension/.//comment()/( string-length( . ) + 7 )) < 5000 ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@translatedBulletinID) or exists(@translatedBulletinReceptionTime) or exists(@translationCentreDesignator) or exists(@translationCentreName) or exists(@translationTime) or exists(@translationFailedTAC)) then( exists(@translatedBulletinID) and exists(@translatedBulletinReceptionTime) and exists(@translationCentreDesignator) and exists(@translationCentreName) and exists(@translationTime) ) else( true() ) )': invalid XPath expression: XPath error at position 39: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-common-nil.rdf')/rdf:RDF//skos:member/skos:Concept/@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "vona-A7-1": {
       "stem": "vona-A7-1",
@@ -926,7 +2589,92 @@
           "end": 249
         }
       ],
-      "validate_issues": []
+      "validate_issues": [
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-iwxxm-AviationColourCode.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-iwxxm-AviationColourCode.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( local-name(..) != 'feature' ) then( exists(iwxxm:issueTime) and exists(iwxxm:originatingCentre) and exists(iwxxm:phenomenonCategory) and exists(iwxxm:phenomenonTime) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( local-name(..) != 'feature' ) then( exists(iwxxm:issueTime) and exists(iwxxm:originatingCentre) and exists(iwxxm:phenomenonCategory) and exists(iwxxm:phenomenonTime) ) else( true() ) )': invalid XPath expression: XPath error at position 10: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-iwxxm-MeteorologicalFeature.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-iwxxm-MeteorologicalFeature.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-iwxxm-MeteorologicalFeature.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '@xlink:href = document('codes.wmo.int-iwxxm-MeteorologicalFeature.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about or @nilReason': undefined function: document()",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( //@gml:id[not(matches(.,'uuid\\.[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}'))] ) then( false() ) else( true() ) )': invalid XPath expression: XPath error at position 18: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage = 'NON-OPERATIONAL' ) then( exists(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( @permissibleUsage ='OPERATIONAL') then( empty(@permissibleUsageReason) ) else( true() ) )': invalid XPath expression: XPath error at position 8: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-iwxxm-nil.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-iwxxm-nil.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        },
+        {
+          "severity": "warning",
+          "code": "SCHEMATRON_XPATH_UNSUPPORTED",
+          "message": "XPath error in assert test '( if( exists(@nilReason) ) then( @nilReason = document('codes.wmo.int-iwxxm-nil.rdf')/rdf:RDF//skos:member/skos:Concept/owl:versionInfo[@rdf:resource=$iwxxmVersion]/../@rdf:about ) else( true() ) )': invalid XPath expression: XPath error at position 9: expected ')', found 'then'",
+          "layer": "schematron"
+        }
+      ]
     },
     "spacewx-A7-4": {
       "stem": "spacewx-A7-4",

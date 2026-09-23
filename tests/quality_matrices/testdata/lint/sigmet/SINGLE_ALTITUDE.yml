@@ -1,0 +1,274 @@
+rule_id: SINGLE_ALTITUDE
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: SPIM SIGMET A7 VALID 231630/231830 SPJC- SPIM LIMA FIR EMBD TS OBS AT 1410Z
+    N OF LINE S0217 W07551 - S0235 W07456 - S0119 W07403 TOP FL450 MOV SW NC=
+  expect:
+    accept: true
+    codes:
+    - SINGLE_ALTITUDE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: WMFC SIGMET 12 VALID 231600/232000 WMKK- WMFC KUALA LUMPUR FIR EMBD TS OBS
+    NW OF LINE N0137 E10216 - N0339 E10341 AND SE OF LINE N0424 E09913 - N0548 E10100
+    TOP FL490 MOV SW NC=
+  expect:
+    accept: true
+    codes:
+    - SINGLE_ALTITUDE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: SCCZ SIGMET B2 VALID 231323/231723 SCCI- SCCZ PUNTA ARENAS FIR SEV TURB FCST
+    E OF LINE S5400 W07500 - S5200 W08000 - S6000 W06900 FL320 MOV E 20KT NC=
+  expect:
+    accept: true
+    codes:
+    - SINGLE_ALTITUDE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: GOOO SIGMET B03 VALID 231325/231725 GOBD- GOOO DAKAR OCEANIC FIR/UIR EMBD TS
+    OBS AT 1315Z E OF LINE N1123 W01938 - N0708 W02642 - N0439 W02403 - N0945 W01744
+    TOP FL420 MOV W 10KT NC=
+  expect:
+    accept: true
+    codes:
+    - SINGLE_ALTITUDE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: FIMM SIGMET A04 VALID 231330/231730 FIMP- FIMM MAURITIUS FIR EMBD TS FCST N
+    OF LINE S0600 E06648 - S1142 E06348 - S0612 E06242 FL390 STNR NC=
+  expect:
+    accept: true
+    codes:
+    - SINGLE_ALTITUDE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: FAJA SIGMET E01 VALID 231413/231800 FAOR- FAJA JOHANNESBURG FIR SEV TURB FCST
+    WI S2730 E01744 - S2958 E01849 - S3017 E01803 - S2911 E01632 - S2730 E01549 -
+    S2730 E01744 FL050/080=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: FAJO SIGMET A01 VALID 231417/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S3335 E00537 - S3429 E00727 - S3510 E00731 - S3609 E00603 - S3603
+    E00416 - S3502 E00317 FL340/390=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: FAJO SIGMET F01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4852 W01000 - S4956 E00004 - S4959 E00625 - S5110 E00701 - S5151
+    W00035 - S5239 W00602 - S5230 W01000 FL140/450=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: FAJO SIGMET H01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4605 E04512 - S4749 E04959 - S4930 E05319 - S5326 E05847 - S5716
+    E05828 - S5222 E04952 - S5006 E04753 - S4706 E04244 - S4613 E04228 FL100/240=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: SAVF SIGMET 4 VALID 231334/231734 SABE- SAVF COMODORO RIVADAVIA FIR SEV TURB
+    FCST AT 1334Z WI S4513 W07122 - S4501 W06818 - S4257 W06307 - S4040 W06023 - S3921
+    W06307 - S4120 W07024 - S4146 W07058 - S4130 W07143 - S4257 W07204 - S4401 W07135
+    - S4513 W07122 FL240/340 STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: SPIM SIGMET A7 VALID 231630/231830 SPJC- SPIM LIMA FIR EMBD TS OBS AT 1410Z
+    N OF LINE S0217 W07551 - S0235 W07456 - S0119 W07403 TOP FL450 MOV SW NC=
+  expect:
+    accept: true
+    codes:
+    - SINGLE_ALTITUDE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: WMFC SIGMET 12 VALID 231600/232000 WMKK- WMFC KUALA LUMPUR FIR EMBD TS OBS
+    NW OF LINE N0137 E10216 - N0339 E10341 AND SE OF LINE N0424 E09913 - N0548 E10100
+    TOP FL490 MOV SW NC=
+  expect:
+    accept: true
+    codes:
+    - SINGLE_ALTITUDE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: SCCZ SIGMET B2 VALID 231323/231723 SCCI- SCCZ PUNTA ARENAS FIR SEV TURB FCST
+    E OF LINE S5400 W07500 - S5200 W08000 - S6000 W06900 FL320 MOV E 20KT NC=
+  expect:
+    accept: true
+    codes:
+    - SINGLE_ALTITUDE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: GOOO SIGMET B03 VALID 231325/231725 GOBD- GOOO DAKAR OCEANIC FIR/UIR EMBD TS
+    OBS AT 1315Z E OF LINE N1123 W01938 - N0708 W02642 - N0439 W02403 - N0945 W01744
+    TOP FL420 MOV W 10KT NC=
+  expect:
+    accept: true
+    codes:
+    - SINGLE_ALTITUDE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: FIMM SIGMET A04 VALID 231330/231730 FIMP- FIMM MAURITIUS FIR EMBD TS FCST N
+    OF LINE S0600 E06648 - S1142 E06348 - S0612 E06242 FL390 STNR NC=
+  expect:
+    accept: true
+    codes:
+    - SINGLE_ALTITUDE
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/edge_pass NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: FAJA SIGMET E01 VALID 231413/231800 FAOR- FAJA JOHANNESBURG FIR SEV TURB FCST
+    WI S2730 E01744 - S2958 E01849 - S3017 E01803 - S2911 E01632 - S2730 E01549 -
+    S2730 E01744 FL050/080=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: FAJO SIGMET A01 VALID 231417/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S3335 E00537 - S3429 E00727 - S3510 E00731 - S3609 E00603 - S3603
+    E00416 - S3502 E00317 FL340/390=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: FAJO SIGMET F01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4852 W01000 - S4956 E00004 - S4959 E00625 - S5110 E00701 - S5151
+    W00035 - S5239 W00602 - S5230 W01000 FL140/450=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: FAJO SIGMET H01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4605 E04512 - S4749 E04959 - S4930 E05319 - S5326 E05847 - S5716
+    E05828 - S5222 E04952 - S5006 E04753 - S4706 E04244 - S4613 E04228 FL100/240=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: SAVF SIGMET 4 VALID 231334/231734 SABE- SAVF COMODORO RIVADAVIA FIR SEV TURB
+    FCST AT 1334Z WI S4513 W07122 - S4501 W06818 - S4257 W06307 - S4040 W06023 - S3921
+    W06307 - S4120 W07024 - S4146 W07058 - S4130 W07143 - S4257 W07204 - S4401 W07135
+    - S4513 W07122 FL240/340 STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 SINGLE_ALTITUDE/edge_fail NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'

@@ -1,0 +1,279 @@
+rule_id: NO_VA_EXP
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: SEFG SIGMET 2 VALID 231116/231716 SEGU- SEFG GUAYAQUIL FIR VA ERUPTION MT SANGAY
+    PSN S0200 W07820 ASH OBS AT 1010Z WI S0200 W07820 - S0201 W07819 - S0209 W07832
+    - S0204 W07835 - S0200 W07820 SFC/FL200 MOV SW 15KT FCST AT 1600Z WI S0200 W07820
+    - S0201 W07819 - S0211 W07834 - S0205 W07837 - S0200 W07820 NO VA EXP=
+  expect:
+    accept: true
+    codes:
+    - NO_VA_EXP
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/happy NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: SEFG SIGMET A2 VALID 231118/231718 SEGU- SEFG GUAYAQUIL FIR VA ERUPTION MT
+    REVENTADOR PSN S0004 W07739 ASH OBS AT 1020Z WI S0002 W07758 - S0004 W07740 -
+    S0005 W07739 - S0008 W07757 - S0002 W07758 SFC/FL150 MOV W 10KT FCST AT 1630Z
+    WI S0002 W07758 - S0004 W07739 - S0005 W07739 - S0008 W07758 - S0002 W07758 NO
+    VA EXP=
+  expect:
+    accept: true
+    codes:
+    - NO_VA_EXP
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/happy NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: MHTG SIGMET 3 VALID 231435/232035 MHTG- MHCC CENTRAL AMERICAN FIR VA ERUPTION
+    MT SANTA MARIA PSN N1445 W09133 ASH OBS AT 1350Z SFC/FL130 N1446 W09132 - N1446
+    W09132 - N1443 W09136 - N1445 W09137 - N1446 W09132 MOV SW 5KT FCST 2000Z ASH
+    SFC/FL130 N1446 W09132 - N1445 W09132 - N1442 W09137 - N1445 W09138 - N1446 W09132
+    NO VA EXP=
+  expect:
+    accept: true
+    codes:
+    - NO_VA_EXP
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/happy NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: WAAF SIGMET 08 VALID 231515/232030 WAAA- WAAF UJUNG PANDANG FIR VA ERUPTION
+    MT DUKONO PSN N0142 E12754 ASH OBS AT 1410Z WI N0136 E12747 - N0147 E12743 - N0222
+    E12816 - N0200 E12849 - N0125 E12835 - N0136 E12747 SFC/FL070 MOV NE 10KT INTSF
+    NO VA EXP=
+  expect:
+    accept: true
+    codes:
+    - NO_VA_EXP
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/happy NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: MHTG SIGMET A3 VALID 231605/232205 MHTG- MHCC CENTRAL AMERICAN FIR VA ERUPTION
+    MT FUEGO PSN N1428 W09052 ASH OBS AT 1520Z SFC/FL150 N1437 W09107 - N1429 W09052
+    - N1430 W09108 - N1437 W09107 MOV W 5KT FCST 2130Z ASH SFC/FL150 N1435 W09108
+    - N1429 W09052 - N1427 W09108 - N1435 W09108 NO VA EXP=
+  expect:
+    accept: true
+    codes:
+    - NO_VA_EXP
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/happy NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: FAJA SIGMET E01 VALID 231413/231800 FAOR- FAJA JOHANNESBURG FIR SEV TURB FCST
+    WI S2730 E01744 - S2958 E01849 - S3017 E01803 - S2911 E01632 - S2730 E01549 -
+    S2730 E01744 FL050/080=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: FAJO SIGMET A01 VALID 231417/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S3335 E00537 - S3429 E00727 - S3510 E00731 - S3609 E00603 - S3603
+    E00416 - S3502 E00317 FL340/390=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: FAJO SIGMET F01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4852 W01000 - S4956 E00004 - S4959 E00625 - S5110 E00701 - S5151
+    W00035 - S5239 W00602 - S5230 W01000 FL140/450=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: FAJO SIGMET H01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4605 E04512 - S4749 E04959 - S4930 E05319 - S5326 E05847 - S5716
+    E05828 - S5222 E04952 - S5006 E04753 - S4706 E04244 - S4613 E04228 FL100/240=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: SAVF SIGMET 4 VALID 231334/231734 SABE- SAVF COMODORO RIVADAVIA FIR SEV TURB
+    FCST AT 1334Z WI S4513 W07122 - S4501 W06818 - S4257 W06307 - S4040 W06023 - S3921
+    W06307 - S4120 W07024 - S4146 W07058 - S4130 W07143 - S4257 W07204 - S4401 W07135
+    - S4513 W07122 FL240/340 STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/sad NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: SEFG SIGMET 2 VALID 231116/231716 SEGU- SEFG GUAYAQUIL FIR VA ERUPTION MT SANGAY
+    PSN S0200 W07820 ASH OBS AT 1010Z WI S0200 W07820 - S0201 W07819 - S0209 W07832
+    - S0204 W07835 - S0200 W07820 SFC/FL200 MOV SW 15KT FCST AT 1600Z WI S0200 W07820
+    - S0201 W07819 - S0211 W07834 - S0205 W07837 - S0200 W07820 NO VA EXP=
+  expect:
+    accept: true
+    codes:
+    - NO_VA_EXP
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/edge_pass NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: SEFG SIGMET A2 VALID 231118/231718 SEGU- SEFG GUAYAQUIL FIR VA ERUPTION MT
+    REVENTADOR PSN S0004 W07739 ASH OBS AT 1020Z WI S0002 W07758 - S0004 W07740 -
+    S0005 W07739 - S0008 W07757 - S0002 W07758 SFC/FL150 MOV W 10KT FCST AT 1630Z
+    WI S0002 W07758 - S0004 W07739 - S0005 W07739 - S0008 W07758 - S0002 W07758 NO
+    VA EXP=
+  expect:
+    accept: true
+    codes:
+    - NO_VA_EXP
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/edge_pass NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: MHTG SIGMET 3 VALID 231435/232035 MHTG- MHCC CENTRAL AMERICAN FIR VA ERUPTION
+    MT SANTA MARIA PSN N1445 W09133 ASH OBS AT 1350Z SFC/FL130 N1446 W09132 - N1446
+    W09132 - N1443 W09136 - N1445 W09137 - N1446 W09132 MOV SW 5KT FCST 2000Z ASH
+    SFC/FL130 N1446 W09132 - N1445 W09132 - N1442 W09137 - N1445 W09138 - N1446 W09132
+    NO VA EXP=
+  expect:
+    accept: true
+    codes:
+    - NO_VA_EXP
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/edge_pass NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: WAAF SIGMET 08 VALID 231515/232030 WAAA- WAAF UJUNG PANDANG FIR VA ERUPTION
+    MT DUKONO PSN N0142 E12754 ASH OBS AT 1410Z WI N0136 E12747 - N0147 E12743 - N0222
+    E12816 - N0200 E12849 - N0125 E12835 - N0136 E12747 SFC/FL070 MOV NE 10KT INTSF
+    NO VA EXP=
+  expect:
+    accept: true
+    codes:
+    - NO_VA_EXP
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/edge_pass NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: MHTG SIGMET A3 VALID 231605/232205 MHTG- MHCC CENTRAL AMERICAN FIR VA ERUPTION
+    MT FUEGO PSN N1428 W09052 ASH OBS AT 1520Z SFC/FL150 N1437 W09107 - N1429 W09052
+    - N1430 W09108 - N1437 W09107 MOV W 5KT FCST 2130Z ASH SFC/FL150 N1435 W09108
+    - N1429 W09052 - N1427 W09108 - N1435 W09108 NO VA EXP=
+  expect:
+    accept: true
+    codes:
+    - NO_VA_EXP
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/edge_pass NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: FAJA SIGMET E01 VALID 231413/231800 FAOR- FAJA JOHANNESBURG FIR SEV TURB FCST
+    WI S2730 E01744 - S2958 E01849 - S3017 E01803 - S2911 E01632 - S2730 E01549 -
+    S2730 E01744 FL050/080=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/edge_fail NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: FAJO SIGMET A01 VALID 231417/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S3335 E00537 - S3429 E00727 - S3510 E00731 - S3609 E00603 - S3603
+    E00416 - S3502 E00317 FL340/390=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/edge_fail NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: FAJO SIGMET F01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4852 W01000 - S4956 E00004 - S4959 E00625 - S5110 E00701 - S5151
+    W00035 - S5239 W00602 - S5230 W01000 FL140/450=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/edge_fail NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: FAJO SIGMET H01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4605 E04512 - S4749 E04959 - S4930 E05319 - S5326 E05847 - S5716
+    E05828 - S5222 E04952 - S5006 E04753 - S4706 E04244 - S4613 E04228 FL100/240=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/edge_fail NOAA tgftp + aviationweather.gov retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: SAVF SIGMET 4 VALID 231334/231734 SABE- SAVF COMODORO RIVADAVIA FIR SEV TURB
+    FCST AT 1334Z WI S4513 W07122 - S4501 W06818 - S4257 W06307 - S4040 W06023 - S3921
+    W06307 - S4120 W07024 - S4146 W07058 - S4130 W07143 - S4257 W07204 - S4401 W07135
+    - S4513 W07122 FL240/340 STNR NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 NO_VA_EXP/edge_fail NOAA tgftp + aviationweather.gov retrieved 2026-09-23'

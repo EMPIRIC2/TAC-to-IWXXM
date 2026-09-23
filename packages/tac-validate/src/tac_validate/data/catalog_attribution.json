@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-09-21",
+  "generated": "2026-09-23",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -128,6 +128,13 @@
       "status": "ok",
       "note": "CB/TCU convective type register",
       "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - CB/TCU convective type register"
+    },
+    "CLOUD_TYPE_NOT_OBSERVABLE": {
+      "source_id": "codes-wmo-int",
+      "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",
+      "status": "ok",
+      "note": "AUTO cloud group solidi /// means convective cloud type was not observed",
+      "source_attribution": "codes-wmo-int - https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt - AUTO cloud group solidi /// means convective cloud type was not observed"
     },
     "CNL_REPORT": {
       "source_id": "icao-annex-3",

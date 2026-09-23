@@ -1,0 +1,223 @@
+rule_id: US_TAF_BECMG_FORBIDDEN
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/happy'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/happy'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/happy'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/happy'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/happy'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040 BECMG 1606/1608 20010KT=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_BECMG_FORBIDDEN
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/sad'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040 BECMG 1606/1608 20010KT=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_BECMG_FORBIDDEN
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/sad'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040 BECMG 1606/1608 20010KT=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_BECMG_FORBIDDEN
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/sad'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040 BECMG 1606/1608 20010KT=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_BECMG_FORBIDDEN
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/sad'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040 BECMG 1606/1608 20010KT=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_BECMG_FORBIDDEN
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/sad'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/edge_pass'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/edge_pass'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/edge_pass'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/edge_pass'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/edge_pass'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: TAF KORD 151800Z 1600/1618 31008KT 9999 FEW040 BECMG 1606/1608 20010KT=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_BECMG_FORBIDDEN
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/edge_fail'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: TAF KJFK 151800Z 1600/1618 31008KT 9999 FEW040 BECMG 1606/1608 20010KT=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_BECMG_FORBIDDEN
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/edge_fail'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: TAF KLAX 151800Z 1600/1618 31008KT 9999 FEW040 BECMG 1606/1608 20010KT=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_BECMG_FORBIDDEN
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/edge_fail'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: TAF KDEN 151800Z 1600/1618 31008KT 9999 FEW040 BECMG 1606/1608 20010KT=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_BECMG_FORBIDDEN
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/edge_fail'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: TAF KATL 151800Z 1600/1618 31008KT 9999 FEW040 BECMG 1606/1608 20010KT=
+  expect:
+    accept: false
+    codes:
+    - US_TAF_BECMG_FORBIDDEN
+  meta:
+    product: TAF
+    profile: iwxxm_us
+    cite: '#1265 profile US_TAF_BECMG_FORBIDDEN/edge_fail'

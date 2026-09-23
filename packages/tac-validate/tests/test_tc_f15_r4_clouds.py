@@ -75,6 +75,16 @@ def test_r4_invalid_cloud_emits_error(case: dict[str, Any]) -> None:
         assert any(i.start is not None and i.end is not None and i.end > i.start for i in matched)
 
 
+def test_r4_cloud_type_solidi_is_info_not_error() -> None:
+    tac = "METAR NZAA 231230Z AUTO 11003KT 9999 SCT040/// 09/06 Q1027="
+    report = lint(tac, product="METAR")
+    assert report.ok is True
+    assert not any(i.code == "INVALID_CLOUD_TOKEN" for i in report.issues)
+    info = [i for i in report.issues if i.code == "CLOUD_TYPE_NOT_OBSERVABLE"]
+    assert info
+    assert by_code("CLOUD_TYPE_NOT_OBSERVABLE").severity == "info"
+
+
 @pytest.mark.parametrize("case", _CB_TCU_INFO, ids=_case_ids(_CB_TCU_INFO))
 def test_r4_cb_tcu_emits_info(case: dict[str, Any]) -> None:
     report = lint(_read_tac(case["tac"]), product=case["product"])
