@@ -71,6 +71,12 @@ vi.mock('/utils/api', () => ({
   EndpointNotImplementedError: class extends Error {},
   convertTafToIwxxm: vi.fn().mockResolvedValue({ success: true, data: '<iwxxm />' }),
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSelectionOptions: vi
+    .fn()
+    .mockImplementation(async ({ kind }: { kind: string }) => ({
+      kind,
+      options: [],
+    })),
   fetchSchemaStatus: vi.fn().mockResolvedValue({
     profile_pins: {
       ca_eccc: { extension_bundle_available: true, iwxxm_version: '3.0.0' },
@@ -111,50 +117,36 @@ vi.mock('sonner', () => ({
   toast: mockToast,
 }));
 
-const GUEST_DISSEMINATION_IDS = [
-  defaultLibraryId('dissemination', 'ICAO_2025'),
-  defaultLibraryId('dissemination', 'US_FAA_NWS'),
-  defaultLibraryId('dissemination', 'CA_ECCC'),
-] as const;
-
 describe('TC-EV090: Dissemination library picker (Convert chrome)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    vi.stubGlobal(
+      'confirm',
+      vi.fn(() => true),
+    );
   });
 
-  it('TC-EV090-002: lists guest Dissemination libraries with accessible label', () => {
+  it('TC-EV090-002: Dissemination is not on Convert chrome', () => {
     render(
       <FileConverter accessToken="tok" isGuest={false} userEmail="op@example.com" />,
     );
     expect(screen.getByTestId('library-pickers-bar')).toBeVisible();
-    const dissemination = screen.getByTestId(
-      'dissemination-library-select',
-    ) as HTMLSelectElement;
-    expect(dissemination).toBeVisible();
-    expect(dissemination).toHaveAccessibleName(/dissemination/i);
-    expect(screen.getByTestId('product-profile-bar-summary')).toHaveTextContent(
-      /not destinations/i,
-    );
-    const values = Array.from(dissemination.options).map((o) => o.value);
-    expect(values).toEqual(expect.arrayContaining([...GUEST_DISSEMINATION_IDS]));
-    expect(dissemination.value).toBe(defaultLibraryId('dissemination', 'ICAO_2025'));
+    expect(
+      screen.queryByTestId('dissemination-library-select'),
+    ).not.toBeInTheDocument();
     expect(screen.getByTestId('conversion-library-select')).toBeVisible();
     expect(screen.queryByTestId('exchange-profile-select')).not.toBeInTheDocument();
     expect(screen.queryByTestId('profile-type-select')).not.toBeInTheDocument();
   });
 
-  it('TC-EV090-003: sends disseminationLibraryId on AHL bulletin convert', async () => {
+  it('TC-EV090-003: AHL bulletin convert keeps ICAO dissemination library id', async () => {
     const user = userEvent.setup();
     render(
       <FileConverter accessToken="tok" isGuest={false} userEmail="op@example.com" />,
     );
 
     await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
-    await user.selectOptions(
-      screen.getByTestId('dissemination-library-select'),
-      defaultLibraryId('dissemination', 'US_FAA_NWS'),
-    );
     fireEvent.change(screen.getByTestId('tac-editor'), {
       target: {
         value:
@@ -168,13 +160,13 @@ describe('TC-EV090: Dissemination library picker (Convert chrome)', () => {
     });
     expect(mockConvertBulletin).toHaveBeenCalledWith(
       expect.objectContaining({
-        disseminationLibraryId: defaultLibraryId('dissemination', 'US_FAA_NWS'),
+        disseminationLibraryId: defaultLibraryId('dissemination', 'ICAO_2025'),
         conversionLibraryId: defaultLibraryId('conversion', 'ICAO_2025'),
       }),
     );
   });
 
-  it('shows Dissemination library after session hydrate (no exchange chrome)', () => {
+  it('session hydrate does not show Dissemination on Convert chrome', () => {
     render(
       <FileConverter
         accessToken="tok"
@@ -193,7 +185,9 @@ describe('TC-EV090: Dissemination library picker (Convert chrome)', () => {
         }
       />,
     );
-    expect(screen.getByTestId('dissemination-library-select')).toBeVisible();
+    expect(
+      screen.queryByTestId('dissemination-library-select'),
+    ).not.toBeInTheDocument();
     expect(screen.queryByTestId('exchange-profile-select')).not.toBeInTheDocument();
   });
 

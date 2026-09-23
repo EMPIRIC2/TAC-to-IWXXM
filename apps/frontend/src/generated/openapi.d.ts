@@ -9397,7 +9397,7 @@ export interface operations {
     get_selection_options_api_v1_selection_options_get: {
         parameters: {
             query: {
-                /** @description conversion | dissemination | decoding */
+                /** @description conversion | tac_validation | iwxxm_validation | decoding | dissemination (first-party LIB.* ids) */
                 kind: string;
             };
             header?: never;

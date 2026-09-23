@@ -55,6 +55,12 @@ vi.mock('/utils/api', () => ({
   fetchSchemaStatus: mockFetchSchemaStatus,
   EndpointNotImplementedError: class extends Error {},
   fetchLintIssueCatalog: vi.fn().mockResolvedValue({ issues: [] }),
+  fetchSelectionOptions: vi
+    .fn()
+    .mockImplementation(async ({ kind }: { kind: string }) => ({
+      kind,
+      options: [],
+    })),
   lintTac: vi.fn().mockResolvedValue({ ok: true, issues: [], fixes: [] }),
   decodeTac: vi
     .fn()
@@ -104,6 +110,13 @@ vi.mock('../app/components/IcaoAutocomplete', () => ({
 }));
 
 const CA_TAC = 'METAR CYUL 231800Z 24010KT 9999 FEW240 22/12 A3012=';
+
+beforeEach(() => {
+  vi.stubGlobal(
+    'confirm',
+    vi.fn(() => true),
+  );
+});
 const CA_CONVERSION = defaultLibraryId('conversion', 'CA_ECCC');
 
 describe('TC-EV073-006..008: CA_ECCC Conversion library wiring', () => {
