@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-24 (EV-1276 / #1276 — TC-F6-037 test and exercise usage; prior same-day EV-1277 / #1277 — TC-F6-036)
+> **Last updated**: 2026-09-24 (EV-1274 / #1274 — TC-F6-038 TAC template amendments; prior same-day EV-1276 / #1276 — TC-F6-037)
 
 ## Scope
 
@@ -6036,6 +6036,19 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Pass criteria**: The four checks pass. A failed translation stays operational.
 - **Out of scope**: An AMHS connection. Parent #1275. Promoting `stage` to `main`.
 - **Source**: F6 deepen EV-1276 / #1276
+
+### TC-F6-038: TAC template amendments
+
+- **Level**: T0. The catalog file and the playbook. No browser journey.
+- **Objective**: A TAC template change has a catalog row, and Amendment 82 is listed without changing emitters. [Corpus: product §F6] [Corpus: product §F15] [Corpus: domain-profiles] [Corpus: tests]
+- **Steps**:
+  1. `docs/domain/profiles/template-amendments.yaml` loads. Each row has a source, a product, what changed, which profiles inherit it, a status of `done`, `partial`, or `not_started`, and `tac_convertible`.
+  2. METAR/SPECI, volcanic ash advisory, and space weather advisory each have at least one Amendment 82 row.
+  3. Extra RVR groups, temperature in tenths, QVACI, and WAFS significant weather are present with `tac_convertible: false`.
+  4. The national-profile playbook says a template update is a catalog row, reviewed the same way as a country lint delta.
+- **Pass criteria**: The four checks pass. No emitter change is required for this row.
+- **Out of scope**: Implementing Amendment 82 element changes. Parent #1267. Promoting `stage` to `main`.
+- **Source**: F6 deepen EV-1274 / #1274
 
 ### TC-F4-001: Profile package pin
 
