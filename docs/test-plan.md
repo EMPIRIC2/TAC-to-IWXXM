@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-24 (EV-1273 / #1273 — TC-F4-001 profile package pin; prior same-day EV-1279 / #1279 — TC-F6-034)
+> **Last updated**: 2026-09-24 (EV-1278 / #1278 — TC-F6-035 nil-reason href lock; prior same-day EV-1273 / #1273 — TC-F4-001)
 
 ## Scope
 
@@ -5997,6 +5997,19 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Pass criteria**: The three fixture checks pass. The live sample passes when one is published.
 - **Out of scope**: US convective SIGMET. No HTTP contract change. No browser journey.
 - **Source**: F6 deepen EV-1279 / #1279
+
+### TC-F6-035: Emitted nil-reason hrefs
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: Lock the nil hrefs Annex 3 already emits. No href moves. [Corpus: product §F6] [Corpus: tests]
+- **Steps**:
+  1. A METAR nil stays on `http://codes.wmo.int/common/nil`, and the 2023-1 values match 2025-2.
+  2. Space-weather `intensityAndRegion` stays on `common/nil`. `locationIndicator` stays an `xlink:href`.
+  3. VONA on 2025-2 stays on `http://codes.wmo.int/iwxxm/nil`. The 2023-1 VONA keeps its current output, which has no nilReason.
+  4. A Canada 3.0.0 METAR does not use `iwxxm/nil`.
+- **Pass criteria**: The four checks pass. No emitter change.
+- **Out of scope**: New nil tokens. Retargeting Canada 3.0.0. Parent #1274.
+- **Source**: F6 deepen EV-1278 / #1278
 
 ### TC-F4-001: Profile package pin
 
