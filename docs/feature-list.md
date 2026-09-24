@@ -2801,7 +2801,7 @@
 
 - **Status note**: F6 remains **Implemented**. This cycle adds a maintainer command. No new feature id.
 - **Issue**: [#1272](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1272)
-- **What it does**: One local command pulls the public feeds that worked on 2026-09-23, takes one report per feed and product that feed actually carries, and runs that report under every **implemented** semantic profile that lists the product. It writes a pass/fail summary and exits non-zero when any check fails.
+- **What it does**: One local command pulls the public feeds that worked on 2026-09-23, takes one report per feed and product that feed actually carries, and runs that report under every **implemented** semantic profile that lists the product. International SIGMET skips a bulletin whose VALID period is longer than the Annex 3 maximum (4 hours, or 6 hours for VA or TC) and takes the next one. When every bulletin in that feed exceeds the maximum, the first is kept. It writes a pass/fail summary and exits non-zero when any check fails.
 - **Feeds**: Aviation Weather Center METAR, TAF, international SIGMET, and convective SIGMET; NOAA tgftp raw VAA (`FV`), TCA (`FK`), AIRMET (`WA`), VONA (`WM`, newest notice that still has an `SVO:` line), and space-weather files (`FN` names beginning `fnxx`); JMA Tokyo VAAC text.
 - **Profiles**: Implemented semantic profiles only (`ICAO_2025`, `US_FAA_NWS`, `CA_ECCC`, `AU_BOM`, `NZ_CAA_MET`, `UK_METOFFICE`, `BR_DECEA`, `KR_KMA`, `JP_JMA`, `IN_IMD`, `HK_HKO`). Exchange profiles, including implemented `GLOBAL_AFS` and the stub overlays, stay out.
 - **Checks**: convert, IWXXM schema validation, lint, and decode. A fetch that cannot be completed fails the command and appears in the summary.

@@ -244,21 +244,95 @@ def first_nonempty_line(body: str) -> str | None:
     return None
 
 
-def first_marked_report(body: str, marker: str) -> str | None:
-    """First bulletin chunk that contains ``marker``.
+_VALID_PAIR = re.compile(r"\bVALID\s+(\d{6})/(\d{6})\b", re.IGNORECASE)
+_WS_MAX_HOURS = 4.0
+_WV_WC_MAX_HOURS = 6.0
+
+
+def marked_reports(body: str, marker: str) -> list[str]:
+    """Bulletin chunks that contain ``marker``.
 
     Aviation Weather Center international and convective SIGMET feeds prefix
     each bulletin with a ``Hazard:`` or ``Type:`` line.
     """
     chunks = re.split(r"(?m)^(?:Hazard:|Type:).*$", body)
+    reports: list[str] = []
     for chunk in chunks:
         lines = [line.strip() for line in chunk.splitlines() if line.strip()]
         if not lines:
             continue
         text = "\n".join(lines)
         if marker in text:
+            reports.append(text)
+    return reports
+
+
+def first_marked_report(body: str, marker: str) -> str | None:
+    """First bulletin chunk that contains ``marker``."""
+    reports = marked_reports(body, marker)
+    return reports[0] if reports else None
+
+
+def sigmet_validity_hours(start: str, end: str) -> float | None:
+    """Hours from a ``ddhhmm/ddhhmm`` pair, or None when the tokens are invalid."""
+    if len(start) != 6 or len(end) != 6 or not start.isdigit() or not end.isdigit():
+        return None
+    start_day, start_hour, start_minute = (
+        int(start[:2]),
+        int(start[2:4]),
+        int(start[4:6]),
+    )
+    end_day, end_hour, end_minute = int(end[:2]), int(end[2:4]), int(end[4:6])
+    if not (
+        1 <= start_day <= 31
+        and 1 <= end_day <= 31
+        and start_hour < 24
+        and end_hour < 24
+        and start_minute < 60
+        and end_minute < 60
+    ):
+        return None
+    start_minutes = start_day * 24 * 60 + start_hour * 60 + start_minute
+    end_minutes = end_day * 24 * 60 + end_hour * 60 + end_minute
+    if end_minutes < start_minutes:
+        end_minutes += 31 * 24 * 60
+    return (end_minutes - start_minutes) / 60.0
+
+
+def sigmet_within_annex3_validity(text: str) -> bool:
+    """True when a VALID pair is absent or within 4 hours, or 6 for VA or TC."""
+    match = _VALID_PAIR.search(text)
+    if match is None:
+        return True
+    hours = sigmet_validity_hours(match.group(1), match.group(2))
+    if hours is None:
+        return True
+    upper = text.upper()
+    if re.search(r"\bVA\b", upper) or re.search(r"\bTC\b", upper):
+        limit = _WV_WC_MAX_HOURS
+    else:
+        limit = _WS_MAX_HOURS
+    return hours <= limit
+
+
+def first_sigmet_within_validity(body: str) -> str | None:
+    """First international SIGMET whose VALID window meets the Annex 3 maximum.
+
+    A published bulletin can run longer than 4 hours (WS) or 6 hours (VA or TC).
+    That bulletin is still a lint error. The sample is the next one that meets
+    the limit. When every bulletin exceeds it, the first is returned.
+    """
+    reports = [
+        text
+        for text in marked_reports(body, "SIGMET")
+        if "CONVECTIVE SIGMET" not in text
+    ]
+    if not reports:
+        return None
+    for text in reports:
+        if sigmet_within_annex3_validity(text):
             return text
-    return None
+    return reports[0]
 
 
 def body_has_line(body: str, line: str) -> bool:
@@ -518,8 +592,8 @@ def fetch_bulletins(client: httpx.Client) -> list[Bulletin]:
         "awc-sigmet-intl",
         "SIGMET",
         _optional(
-            lambda: first_marked_report(
-                _get_text(client, AWC_ISIGMET, {"format": "raw"}), "SIGMET"
+            lambda: first_sigmet_within_validity(
+                _get_text(client, AWC_ISIGMET, {"format": "raw"})
             )
         ),
     )

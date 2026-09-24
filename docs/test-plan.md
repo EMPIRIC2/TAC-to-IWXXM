@@ -5867,7 +5867,7 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 
 ### TC-LIVE-PROFILE: Public-bulletin profile check
 
-- **Objective**: Pull one fresh public report per feed and product, run it under every implemented semantic profile that lists that product, and fail the process when convert, schema validation, lint, or decode fails. [Corpus: product §F6] [Corpus: tests §TC-LIVE-FEEDS] [Corpus: adr/ADR-036]
+- **Objective**: Pull one fresh public report per feed and product, run it under every implemented semantic profile that lists that product, and fail the process when convert, schema validation, lint, or decode fails. International SIGMET uses the first bulletin whose VALID period is within 4 hours, or 6 hours for VA or TC. [Corpus: product §F6] [Corpus: tests §TC-LIVE-FEEDS] [Corpus: adr/ADR-036]
 - **Preconditions**: Network egress. No API key. Implemented semantic profiles only. Stub exchange profiles are not sampled.
 - **Feeds**: Aviation Weather Center METAR, TAF, international SIGMET, and convective SIGMET; NOAA tgftp raw VAA, TCA, AIRMET, VONA, and space-weather files; JMA Tokyo VAAC text.
 - **Products**: METAR, TAF, international SIGMET, convective SIGMET, AIRMET, VAA, TCA, VONA, and space weather. A missing product fails the command.

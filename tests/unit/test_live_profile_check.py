@@ -22,6 +22,7 @@ from tests.live.profile_check import (
     extract_jma_advisory,
     first_marked_report,
     first_nonempty_line,
+    first_sigmet_within_validity,
     indexed_files,
     latest_jma_text_href,
     load_semantic_profiles,
@@ -304,6 +305,37 @@ def test_sigmet_chunk_keeps_the_matching_bulletin() -> None:
     )
     assert first_marked_report(body, "CONVECTIVE SIGMET") == "CONVECTIVE SIGMET 1E"
     assert first_nonempty_line("\nMETAR KDEN 231853Z=\n") == "METAR KDEN 231853Z="
+
+
+def test_international_sigmet_skips_an_overlong_validity() -> None:
+    body = (
+        "Hazard: TS\n"
+        "WSFJ01 NFFN 231940\n"
+        "NFFF SIGMET 05 VALID 231940/242340 NFFN-\n"
+        "NFFF FIR EMBD TS\n"
+        "Hazard: TURB\n"
+        "WSCN31 ZGGG 231900\n"
+        "ZGZU SIGMET 1 VALID 231900/232300 ZGGG-\n"
+        "ZGZU FIR SEV TURB\n"
+    )
+    chosen = first_sigmet_within_validity(body)
+    assert chosen is not None
+    assert "ZGZU SIGMET" in chosen
+    assert "NFFF" not in chosen
+
+
+def test_international_sigmet_keeps_the_first_when_all_exceed_the_limit() -> None:
+    body = (
+        "Hazard: TS\n"
+        "NFFF SIGMET 05 VALID 231940/242340 NFFN-\n"
+        "NFFF FIR EMBD TS\n"
+        "Hazard: TS\n"
+        "NFFF SIGMET 06 VALID 231900/242300 NFFN-\n"
+        "NFFF FIR SEV TURB\n"
+    )
+    chosen = first_sigmet_within_validity(body)
+    assert chosen is not None
+    assert chosen.startswith("NFFF SIGMET 05")
 
 
 def test_vona_marker_is_a_whole_line() -> None:
