@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-23 (EV-1272 / #1272 — TC-LIVE-PROFILE; prior 2026-09-22 EV-adr048-doc-linters / ADR-048 amend — TC-EVDOC-001..010)
+> **Last updated**: 2026-09-24 (EV-1279 / #1279 — TC-F6-034 lettered bulletin sequence; prior 2026-09-23 EV-1272 / #1272 — TC-LIVE-PROFILE)
 
 ## Scope
 
@@ -5984,6 +5984,19 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Objective**: WMO AHL multi-report bulletin → N reports → convert each
 - **Pass criteria**: Fixture yields expected report count; per-report IWXXM or structured errors
 - **Source**: UJ-011; F6.bulletin
+
+### TC-F6-034: Lettered SIGMET and AIRMET bulletin sequence
+
+- **Level**: T0 package. Live sample is manual, same class as `TC-LIVE-FEEDS`, and is not a merge gate.
+- **Objective**: Split a SIGMET or AIRMET bulletin whose sequence is a letter plus digits or a word plus digits, then convert. Digits-only sequences keep the current split. [Corpus: product §F6] [Corpus: tests §TC-F6-030]
+- **Steps**:
+  1. A bulletin whose report line is `YMMM SIGMET A02 VALID …` splits into one report and converts.
+  2. The same shape for AIRMET splits.
+  3. `SIGMET 3` still splits.
+  4. When Aviation Weather Center is publishing an international SIGMET or AIRMET with a lettered sequence, split and convert that sample. If none is present, record that the live sample was not taken. That absence does not fail the checked-in tests.
+- **Pass criteria**: The three fixture checks pass. The live sample passes when one is published.
+- **Out of scope**: US convective SIGMET. No HTTP contract change. No browser journey.
+- **Source**: F6 deepen EV-1279 / #1279
 
 ### TC-F6-031: TAC lint failure (UJ-012)
 

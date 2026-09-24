@@ -245,6 +245,10 @@ def first_nonempty_line(body: str) -> str | None:
 
 
 _VALID_PAIR = re.compile(r"\bVALID\s+(\d{6})/(\d{6})\b", re.IGNORECASE)
+_LETTERED_HEADER = re.compile(
+    r"^[A-Z]{4}\s+(?P<kind>SIGMET|AIRMET)\s+[A-Z]\d+\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-",
+    re.IGNORECASE | re.MULTILINE,
+)
 _WS_MAX_HOURS = 4.0
 _WV_WC_MAX_HOURS = 6.0
 
@@ -333,6 +337,24 @@ def first_sigmet_within_validity(body: str) -> str | None:
         if sigmet_within_annex3_validity(text):
             return text
     return reports[0]
+
+
+def first_lettered_international_report(body: str) -> tuple[str, str] | None:
+    """First SIGMET or AIRMET whose sequence is one letter plus digits.
+
+    US convective SIGMET is skipped. ``None`` means the live sample was not taken.
+    """
+    seen: set[str] = set()
+    for marker in ("SIGMET", "AIRMET"):
+        for text in marked_reports(body, marker):
+            if text in seen or "CONVECTIVE SIGMET" in text.upper():
+                continue
+            seen.add(text)
+            match = _LETTERED_HEADER.search(text)
+            if match is None:
+                continue
+            return match.group("kind").upper(), text
+    return None
 
 
 def body_has_line(body: str, line: str) -> bool:

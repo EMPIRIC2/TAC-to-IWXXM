@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-23 (EV-1272 public-bulletin profile check / #1272; prior same-day EV-1252-residual-yaml / #1252 — ADR-049 residual YAML Spec)
+> **Last updated**: 2026-09-24 (EV-1279 lettered SIGMET/AIRMET bulletin sequence / #1279; prior 2026-09-23 EV-1272 / #1272 public-bulletin profile check)
 
 ## Summary
 
@@ -13,7 +13,7 @@
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011); **deepen EV-yaml-engine-configurability / #1224**: convert column honesty (emit stays Python; pack IR + profile overlays documented); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: declarative **convert emit YAML**; every product pack-IR + emit → **full**; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: emit `plugin:` overlay-swap goldens (Python builders stay); **deepen EV-1272 / #1272**: public-bulletin profile check (local command, manual live tier) |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011); **deepen EV-yaml-engine-configurability / #1224**: convert column honesty (emit stays Python; pack IR + profile overlays documented); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: declarative **convert emit YAML**; every product pack-IR + emit → **full**; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: emit `plugin:` overlay-swap goldens (Python builders stay); **deepen EV-1272 / #1272**: public-bulletin profile check (local command, manual live tier); **deepen EV-1279 / #1279**: letter-plus-digits SIGMET and AIRMET bulletin sequence |
 | F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); **deepen EV-profile-validate-decode-deepen / #1221**: finish ADR-044 FE residual + #1120/#1145 catalog UX; **deepen EV-yaml-config-light-ux / #1251**: full FE hard-cut redo + Convert **four**-engine light selects + trust/help (Dissem select only in Send drawer); residual YAML epic #1252 |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner; **deepen EV-profile-validate-decode-deepen / #1221 / #724**: ICAO station → airport name (soft-fail); **deepen EV-yaml-engine-configurability / #1224**: pack/glossary overlay cookbook + examples; **deepen EV-yaml-full-configurability / #1226**: every product decode pack cell → **full**; starter templates + PyPI smoke; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: file/env YAML ICAO→name table is SoT; `set_location_name_resolver` stays an optional override |
@@ -2811,6 +2811,15 @@
 - **Fold-in**: Uncommitted national-feed helpers, the national-feed compare test, quality-matrix YAML, and the related Makefile / hook edits travel with this cycle.
 - **Out of scope**: G-AIRMET until a TAC feed exists; promoting `stage` to `main`; stub profiles; catalog edits by the command; a new feature id; browser UI; deploy.
 - **Corpus**: [Corpus: product §F6] [Corpus: tests §TC-LIVE-FEEDS] [Corpus: adr/ADR-009] [Corpus: adr/ADR-036]
+
+### F6 deepen (EV-1279 — lettered SIGMET and AIRMET bulletin sequence / #1279)
+
+- **Status note**: F6 remains **Implemented**. This cycle widens bulletin split. No new feature id.
+- **Issue**: [#1279](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1279)
+- **What it does**: A SIGMET or AIRMET bulletin whose sequence is a letter plus digits (`A02`, `E01`) or a word plus digits (`ALPHA 02`) splits into reports and converts. Those are the same forms the single-report parser already accepts. A digits-only sequence such as `SIGMET 3` keeps the current split.
+- **Live sample**: When Aviation Weather Center is publishing an international SIGMET or AIRMET with that sequence, one sample is split and converted. If that hour has none, the checked-in fixtures still meet the acceptance checks and the live pass says it was not sampled.
+- **Out of scope**: US convective SIGMET ([#1267](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1267)); a new IWXXM sequence element; G-AIRMET, US VONA, and Canadian SIGMET; browser UI; deploy; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: system-spec] [Corpus: tests]
 
 ## Non-Goals (Migration)
 
