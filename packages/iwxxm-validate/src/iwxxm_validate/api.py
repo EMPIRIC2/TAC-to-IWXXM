@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
+from iwxxm_validate.declared_package import apply_declared_package
 from iwxxm_validate.models import Issue, ValidationReport
 from iwxxm_validate.paths import ca_xsd_path, us_catalog_path
 from iwxxm_validate.pin_sch import PinSchError, assert_pin_schematron_match
@@ -82,6 +83,19 @@ def validate(
                     layer="xsd",
                 )
             ],
+        )
+
+    iwxxm_version, rejection = apply_declared_package(
+        xml_content,
+        profile=profile,
+        iwxxm_version=iwxxm_version,
+    )
+    if rejection is not None:
+        return ValidationReport(
+            ok=False,
+            iwxxm_version=iwxxm_version,
+            profile=profile,
+            issues=[rejection],
         )
 
     issues: list[Issue] = []

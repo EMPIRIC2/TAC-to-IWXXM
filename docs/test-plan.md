@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-24 (EV-1279 / #1279 — TC-F6-034 lettered bulletin sequence; prior 2026-09-23 EV-1272 / #1272 — TC-LIVE-PROFILE)
+> **Last updated**: 2026-09-24 (EV-1273 / #1273 — TC-F4-001 profile package pin; prior same-day EV-1279 / #1279 — TC-F6-034)
 
 ## Scope
 
@@ -5997,6 +5997,19 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Pass criteria**: The three fixture checks pass. The live sample passes when one is published.
 - **Out of scope**: US convective SIGMET. No HTTP contract change. No browser journey.
 - **Source**: F6 deepen EV-1279 / #1279
+
+### TC-F4-001: Profile package pin
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: Validate a METAR on the pin its profile publishes, and reject a file whose declared package is not allowed for that profile. [Corpus: product §F4] [Corpus: adr/ADR-036]
+- **Steps**:
+  1. A Canada 3.0.0 METAR validates when the profile pin is 3.0.0.
+  2. A 2025-2 METAR validates on the Annex 3 pin, and that run does not select 3.0.0.
+  3. `2023-1` remains a supported global line.
+  4. A file whose declared package is not the Appendix A version for the selected profile and product is rejected with a plain-language error.
+- **Pass criteria**: The four checks pass. A 3.0.0 schema-compile failure is recorded as the existing schema-parse limit, not a new product defect.
+- **Out of scope**: A new version dropdown option. A new vendored schema tree. Australia 3.0.1. Promoting `stage` to `main`.
+- **Source**: F4 deepen EV-1273 / #1273
 
 ### TC-F6-031: TAC lint failure (UJ-012)
 

@@ -41,6 +41,26 @@ Some **semantic profiles** pin a different IWXXM year line than the app default 
 [ADR-036](../../../adr/ADR-036-semantic-vs-exchange-profiles.md). Requests with `iwxxm_version`
 other than `3.0.0` while `semantic_profile=CA_ECCC` are rejected (fail-closed).
 
+### Profile package pins (EV-1273 / #1273)
+
+One release line per catalogued semantic profile. Package versions for each product are the
+Appendix A cell for that line. Selecting one profile does not select another profile's line.
+
+| Profile | Release line | Package versions |
+|---------|--------------|------------------|
+| `CA_ECCC` | **3.0.0** only | Appendix A column **3.0** for the products that profile lists (METAR/SPECI, TAF, SIGMET, AIRMET, VAA) |
+| Every other catalogued semantic profile | Global window: **2025-2** default, **2023-1** previous | Appendix A columns **2025-2** and **2023-1** for the products that profile lists |
+
+Australia's public TAF schema maps to package **3.0.1**. That pin is not enabled.
+
+An incoming IWXXM file is validated on the selected profile's line only when the package
+version it declares is the Appendix A version for that line and product. Otherwise the
+request is rejected in plain language. The error does not offer 3.0.0 as a global default
+and does not switch the caller to another profile.
+
+A 3.0.0 schema that fails to compile (`AngleWithNilReasonType`) remains a schema-parse
+limit. It is recorded and is not treated as a new defect.
+
 Manifest truth today: `iwxxm-ca` is pinned in `vendor/manifest.json`; 3.0.0 core co-locates
 under `vendor/schemas/iwxxm/3.0.0/` (integrity test in `tests/vendor/`). EV-068 may formalize
 a separate manifest bundle entry for the 3.0.0 line (#1027).
@@ -210,6 +230,6 @@ Recovered from the WMO community IWXXM “Package compatibility” table (Waybac
 
 ---
 
-**Last Updated**: 2026-07-14  
+**Last Updated**: 2026-09-24 (profile package pins; prior 2026-07-14)  
 **Policy Version**: 2.1  
 **Next Review**: After next WMO amendment release

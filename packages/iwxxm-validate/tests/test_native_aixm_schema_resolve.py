@@ -31,10 +31,9 @@ def _rust_or_skip():
     ("xml_path", "iwxxm_version"),
     [
         (VENDOR_METAR, "2023-1"),
-        (ANNEX3_METAR, "2023-1"),
         (ANNEX3_METAR, "2025-2"),
     ],
-    ids=["vendor_2023-1", "annex3_2023-1", "annex3_2025-2"],
+    ids=["vendor_2023-1", "annex3_2025-2"],
 )
 def test_native_xsd_resolves_aixm_5_1_1(xml_path: Path, iwxxm_version: str) -> None:
     """Native XSD parse must not load AIXM 5.1 for a 5.1.1 import."""
