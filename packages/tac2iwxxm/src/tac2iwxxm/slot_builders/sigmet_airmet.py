@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from typing import Any, cast
 
-from tac2iwxxm.geometry.reference_point import UnknownVOR, parse_vor_reference_geometry
+from tac2iwxxm.geometry.reference_point import parse_vor_reference_geometry
 
 _SIGMET = re.compile(
     r"^(?P<fir>[A-Z]{4})(?:\s+(?P<fir_extra>(?:[A-Z]{4}\s+)+))?\s*SIGMET\s+"
@@ -1072,12 +1072,7 @@ def _parse_convective_sigmet(
         if fl_m is not None:  # pragma: no branch — same regex as elif guard
             ir["top_fl"] = int(fl_m.group("fl"))
             ir["top_qualifier"] = "TO"
-    try:
-        vor_geometry = parse_vor_reference_geometry(f"FROM {body.split('AREA', 1)[0]}")
-    except UnknownVOR:
-        # The bundled navaid table covers fixture points only. A live chain that
-        # names other VORs is still a convective SIGMET; geometry stays unset.
-        vor_geometry = None
+    vor_geometry = parse_vor_reference_geometry(f"FROM {body.split('AREA', 1)[0]}")
     if vor_geometry is not None:
         ir["geometry"] = vor_geometry
     return ir
