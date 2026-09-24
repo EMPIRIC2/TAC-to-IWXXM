@@ -225,6 +225,20 @@ rules:
   - r4
   - cb
   - tcu
+- id: TAC.CLOUD_TYPE_NOT_OBSERVABLE
+  code: CLOUD_TYPE_NOT_OBSERVABLE
+  label: Cloud Type Not Observable
+  severity: info
+  message_template: '{product} cloud group uses /// because the convective cloud type was not observed.
+    Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason
+    notObservable.'
+  product: null
+  tags:
+  - cloud
+  - metar
+  - speci
+  - r4
+  - auto
 - id: TAC.CNL_REPORT
   code: CNL_REPORT
   label: Cnl Report

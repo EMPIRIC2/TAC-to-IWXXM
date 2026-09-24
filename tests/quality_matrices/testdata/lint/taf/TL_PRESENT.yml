@@ -1,0 +1,223 @@
+rule_id: TL_PRESENT
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020 BECMG TL1608 20010MPS=
+  expect:
+    accept: true
+    codes:
+    - TL_PRESENT
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/happy'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: TAF EGLL 231200Z 2312/2418 31008KT 9999 FEW040 BECMG TL1608 20010MPS=
+  expect:
+    accept: true
+    codes:
+    - TL_PRESENT
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/happy'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: TAF LFPG 231100Z 2312/2418 26012KT 9999 SCT030 BECMG TL1608 20010MPS=
+  expect:
+    accept: true
+    codes:
+    - TL_PRESENT
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/happy'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: TAF EDDF 231000Z 2312/2418 20010KT 9999 BKN025 BECMG TL1608 20010MPS=
+  expect:
+    accept: true
+    codes:
+    - TL_PRESENT
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/happy'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: TAF NZAA 230500Z 2306/2406 22015KT 9999 SCT025 BECMG TL1608 20010MPS=
+  expect:
+    accept: true
+    codes:
+    - TL_PRESENT
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/happy'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/sad'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: TAF EGLL 231200Z 2312/2418 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/sad'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: TAF LFPG 231100Z 2312/2418 26012KT 9999 SCT030=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/sad'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: TAF EDDF 231000Z 2312/2418 20010KT 9999 BKN025=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/sad'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: TAF NZAA 230500Z 2306/2406 22015KT 9999 SCT025=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/sad'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020 BECMG TL1608 20010MPS=
+  expect:
+    accept: true
+    codes:
+    - TL_PRESENT
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/edge_pass'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: TAF EGLL 231200Z 2312/2418 31008KT 9999 FEW040 BECMG TL1608 20010MPS=
+  expect:
+    accept: true
+    codes:
+    - TL_PRESENT
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/edge_pass'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: TAF LFPG 231100Z 2312/2418 26012KT 9999 SCT030 BECMG TL1608 20010MPS=
+  expect:
+    accept: true
+    codes:
+    - TL_PRESENT
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/edge_pass'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: TAF EDDF 231000Z 2312/2418 20010KT 9999 BKN025 BECMG TL1608 20010MPS=
+  expect:
+    accept: true
+    codes:
+    - TL_PRESENT
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/edge_pass'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: TAF NZAA 230500Z 2306/2406 22015KT 9999 SCT025 BECMG TL1608 20010MPS=
+  expect:
+    accept: true
+    codes:
+    - TL_PRESENT
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/edge_pass'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: TAF EGLL 231200Z 2312/2418 31008KT 9999 FEW040=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/edge_fail'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: TAF LFPG 231100Z 2312/2418 26012KT 9999 SCT030=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/edge_fail'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: TAF EDDF 231000Z 2312/2418 20010KT 9999 BKN025=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/edge_fail'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: TAF NZAA 230500Z 2306/2406 22015KT 9999 SCT025=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/edge_fail'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    cite: '#1265 TL_PRESENT/edge_fail'

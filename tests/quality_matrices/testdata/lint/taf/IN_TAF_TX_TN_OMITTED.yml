@@ -1,0 +1,223 @@
+rule_id: IN_TAF_TX_TN_OMITTED
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: TAF VIDP 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100=
+  expect:
+    accept: true
+    codes:
+    - IN_TAF_TX_TN_OMITTED
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/happy'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: TAF VABB 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100=
+  expect:
+    accept: true
+    codes:
+    - IN_TAF_TX_TN_OMITTED
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/happy'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: TAF VOMM 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100=
+  expect:
+    accept: true
+    codes:
+    - IN_TAF_TX_TN_OMITTED
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/happy'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: TAF VOBL 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100=
+  expect:
+    accept: true
+    codes:
+    - IN_TAF_TX_TN_OMITTED
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/happy'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: TAF VECC 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100=
+  expect:
+    accept: true
+    codes:
+    - IN_TAF_TX_TN_OMITTED
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/happy'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: TAF VIDP 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100 TX32/3115Z TN24/3123Z=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/sad'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: TAF VABB 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100 TX32/3115Z TN24/3123Z=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/sad'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: TAF VOMM 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100 TX32/3115Z TN24/3123Z=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/sad'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: TAF VOBL 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100 TX32/3115Z TN24/3123Z=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/sad'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: TAF VECC 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100 TX32/3115Z TN24/3123Z=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/sad'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: TAF VIDP 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100=
+  expect:
+    accept: true
+    codes:
+    - IN_TAF_TX_TN_OMITTED
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/edge_pass'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: TAF VABB 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100=
+  expect:
+    accept: true
+    codes:
+    - IN_TAF_TX_TN_OMITTED
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/edge_pass'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: TAF VOMM 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100=
+  expect:
+    accept: true
+    codes:
+    - IN_TAF_TX_TN_OMITTED
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/edge_pass'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: TAF VOBL 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100=
+  expect:
+    accept: true
+    codes:
+    - IN_TAF_TX_TN_OMITTED
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/edge_pass'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: TAF VECC 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100=
+  expect:
+    accept: true
+    codes:
+    - IN_TAF_TX_TN_OMITTED
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/edge_pass'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: TAF VIDP 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100 TX32/3115Z TN24/3123Z=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/edge_fail'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: TAF VABB 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100 TX32/3115Z TN24/3123Z=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/edge_fail'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: TAF VOMM 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100 TX32/3115Z TN24/3123Z=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/edge_fail'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: TAF VOBL 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100 TX32/3115Z TN24/3123Z=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/edge_fail'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: TAF VECC 311400Z 3115/3124 27006KT 5000 HZ FEW035 SCT100 TX32/3115Z TN24/3123Z=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: in_imd
+    cite: '#1265 profile IN_TAF_TX_TN_OMITTED/edge_fail'

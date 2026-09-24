@@ -180,6 +180,12 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("cloud", "metar", "speci", "r4", "cb", "tcu"),
     ),
     _row(
+        "CLOUD_TYPE_NOT_OBSERVABLE",
+        "info",
+        "{product} cloud group uses /// because the convective cloud type was not observed. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable.",
+        tags=("cloud", "metar", "speci", "r4", "auto"),
+    ),
+    _row(
         "REMARK_US_EXTENSION",
         "info",
         "{product} US remarks present - iwxxm_us profile awareness",

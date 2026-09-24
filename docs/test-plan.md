@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-22 (EV-adr048-doc-linters / ADR-048 amend — TC-EVDOC-001..010)
+> **Last updated**: 2026-09-23 (EV-1272 / #1272 — TC-LIVE-PROFILE; prior 2026-09-22 EV-adr048-doc-linters / ADR-048 amend — TC-EVDOC-001..010)
 
 ## Scope
 
@@ -5854,6 +5854,36 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Pass criteria**: All live_api tests green; cold-start retries (3×, 30s backoff) succeed
 - **Resilience**: Exponential backoff on HTTP 429
 - **Source**: UJ-001, H3
+
+### TC-LIVE-FEEDS: National METAR/TAF feeds
+
+- **Objective**: Confirm current TAC from free public feeds still lints, converts, and XSD-validates, and that MET Norway and NOAA agree when they carry the same observation. [Corpus: product §F6] [Corpus: adr/ADR-009]
+- **Preconditions**: Network egress. No API key. Optional `KNMI_OPEN_DATA_API_KEY` for the Dutch METAR file.
+- **Steps**:
+  1. `make test-live-feeds`
+- **Pass criteria**: Each sampled METAR and TAF from MET Norway and NOAA AWC has no TAC error, `convert` ok, and IWXXM XSD ok. When both feeds share an observation time, the report text matches after dropping the product keyword, `AUTO`, and `=`. KNMI runs only when the key is set.
+- **Not a merge gate**: same manual live tier as H3. CI does not call these hosts.
+- **Source**: F6 live corpus check
+
+### TC-LIVE-PROFILE: Public-bulletin profile check
+
+- **Objective**: Pull one fresh public report per feed and product, run it under every implemented semantic profile that lists that product, and fail the process when convert, schema validation, lint, or decode fails. International SIGMET uses the first bulletin whose VALID period is within 4 hours, or 6 hours for VA or TC. [Corpus: product §F6] [Corpus: tests §TC-LIVE-FEEDS] [Corpus: adr/ADR-036]
+- **Preconditions**: Network egress. No API key. Implemented semantic profiles only. Stub exchange profiles are not sampled.
+- **Feeds**: Aviation Weather Center METAR, TAF, international SIGMET, and convective SIGMET; NOAA tgftp raw VAA, TCA, AIRMET, VONA, and space-weather files; JMA Tokyo VAAC text.
+- **Products**: METAR, TAF, international SIGMET, convective SIGMET, AIRMET, VAA, TCA, VONA, and space weather. A missing product fails the command.
+- **Steps**:
+  1. Offline unit tests, with checked-in fixtures, assert sampling, the stdout summary, the JSON summary, and a non-zero exit. `SCHEMA_PARSE_ERROR` is its own JSON field, separate from `XSD_VALIDATION_ERROR`.
+  2. `make test-live-profile`. Marked live. Not collected by the merge-gate suite. Default JSON path `artifacts/live-profile/summary.json`, overridable with a flag.
+- **Pass criteria**:
+  1. Offline tests pass without network.
+  2. Live command writes stdout and a JSON file.
+  3. Exit 0 only when every fetched sample passes convert, document schema validation, lint (errors only), and decode.
+  4. Exit non-zero when any sample fails one of those checks, when a feed cannot be fetched, or when a required product is missing.
+  5. `SCHEMA_PARSE_ERROR` is non-zero and is not counted as a document validation error.
+  6. The command does not modify the lint catalog or convert allowlists.
+- **Not a merge gate**: same manual live tier as TC-LIVE-FEEDS. A scheduled job is added only after this command is stable.
+- **Journeys**: none. H4–H5 N/A.
+- **Source**: F6 deepen EV-1272 / #1272
 
 ### TC-LIVE-002: Live Validation
 

@@ -642,6 +642,42 @@ def _check_sigmet_tc(*, start: int, end: int, upper: str) -> list[Issue]:
     return issues
 
 
+_CONVECTIVE_SIGMET_BULLETIN = re.compile(r"\bCONVECTIVE\s+SIGMET\b")
+_CONVECTIVE_VALID_UNTIL = re.compile(r"\bVALID\s+UNTIL\s+\d{4,6}Z\b")
+
+
+def _check_convective_sigmet(*, start: int, end: int, upper: str) -> list[Issue]:
+    """
+    Check a US convective SIGMET.
+
+    Parameters
+    ----------
+    start : int
+        Body start offset.
+    end : int
+        Body end offset.
+    upper : str
+        Uppercased SIGMET body.
+
+    Returns
+    -------
+    list[Issue]
+        Empty when ``VALID UNTIL`` is present. International FIR and OBS rules
+        do not apply to this form.
+    """
+    if _CONVECTIVE_VALID_UNTIL.search(upper):
+        return []
+    return [
+        _issue(
+            "MISSING_VALID",
+            "CONVECTIVE SIGMET missing VALID UNTIL time",
+            start=start,
+            end=end,
+            location="valid",
+        )
+    ]
+
+
 def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> list[Issue]:
     """
     Internal helper ``_check_sigmet_airmet``.
@@ -666,6 +702,10 @@ def _check_sigmet_airmet(tac: str, product: str, *, profile: str = "annex3") -> 
     issues: list[Issue] = []
     # F23 theme C1 - one IWXXM report per TAC report (shared with METAR/SPECI/TAF).
     issues.extend(_check_c1_multi_report(tac, product))
+
+    if product == "SIGMET" and _CONVECTIVE_SIGMET_BULLETIN.search(upper):
+        issues.extend(_check_convective_sigmet(start=start, end=end, upper=upper))
+        return issues
 
     if not _VALID_PERIOD.search(upper):
         issues.append(

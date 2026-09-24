@@ -1,0 +1,289 @@
+rule_id: INVALID_STNR_MOVEMENT
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: FAJA SIGMET E01 VALID 231413/231800 FAOR- FAJA JOHANNESBURG FIR SEV TURB FCST
+    WI S2730 E01744 - S2958 E01849 - S3017 E01803 - S2911 E01632 - S2730 E01549 -
+    S2730 E01744 FL050/080=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: FAJO SIGMET A01 VALID 231417/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S3335 E00537 - S3429 E00727 - S3510 E00731 - S3609 E00603 - S3603
+    E00416 - S3502 E00317 FL340/390=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: FAJO SIGMET F01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4852 W01000 - S4956 E00004 - S4959 E00625 - S5110 E00701 - S5151
+    W00035 - S5239 W00602 - S5230 W01000 FL140/450=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: FAJO SIGMET H01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4605 E04512 - S4749 E04959 - S4930 E05319 - S5326 E05847 - S5716
+    E05828 - S5222 E04952 - S5006 E04753 - S4706 E04244 - S4613 E04228 FL100/240=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: SAVF SIGMET 4 VALID 231334/231734 SABE- SAVF COMODORO RIVADAVIA FIR SEV TURB
+    FCST AT 1334Z WI S4513 W07122 - S4501 W06818 - S4257 W06307 - S4040 W06023 - S3921
+    W06307 - S4120 W07024 - S4146 W07058 - S4130 W07143 - S4257 W07204 - S4401 W07135
+    - S4513 W07122 FL240/340  NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/happy NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: FAJA SIGMET E01 VALID 231413/231800 FAOR- FAJA JOHANNESBURG FIR SEV TURB FCST
+    WI S2730 E01744 - S2958 E01849 - S3017 E01803 - S2911 E01632 - S2730 E01549 -
+    S2730 E01744 FL050/080 MOV E 10KT STNR=
+  expect:
+    accept: false
+    codes:
+    - INVALID_STNR_MOVEMENT
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: FAJO SIGMET A01 VALID 231417/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S3335 E00537 - S3429 E00727 - S3510 E00731 - S3609 E00603 - S3603
+    E00416 - S3502 E00317 FL340/390 MOV E 10KT STNR=
+  expect:
+    accept: false
+    codes:
+    - INVALID_STNR_MOVEMENT
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: FAJO SIGMET F01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4852 W01000 - S4956 E00004 - S4959 E00625 - S5110 E00701 - S5151
+    W00035 - S5239 W00602 - S5230 W01000 FL140/450 MOV E 10KT STNR=
+  expect:
+    accept: false
+    codes:
+    - INVALID_STNR_MOVEMENT
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: FAJO SIGMET H01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4605 E04512 - S4749 E04959 - S4930 E05319 - S5326 E05847 - S5716
+    E05828 - S5222 E04952 - S5006 E04753 - S4706 E04244 - S4613 E04228 FL100/240 MOV
+    E 10KT STNR=
+  expect:
+    accept: false
+    codes:
+    - INVALID_STNR_MOVEMENT
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: SAVF SIGMET 4 VALID 231334/231734 SABE- SAVF COMODORO RIVADAVIA FIR SEV TURB
+    FCST AT 1334Z WI S4513 W07122 - S4501 W06818 - S4257 W06307 - S4040 W06023 - S3921
+    W06307 - S4120 W07024 - S4146 W07058 - S4130 W07143 - S4257 W07204 - S4401 W07135
+    - S4513 W07122 FL240/340 STNR NC MOV E 10KT STNR=
+  expect:
+    accept: false
+    codes:
+    - INVALID_STNR_MOVEMENT
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/sad NOAA tgftp + aviationweather.gov retrieved
+      2026-09-23'
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: FAJA SIGMET E01 VALID 231413/231800 FAOR- FAJA JOHANNESBURG FIR SEV TURB FCST
+    WI S2730 E01744 - S2958 E01849 - S3017 E01803 - S2911 E01632 - S2730 E01549 -
+    S2730 E01744 FL050/080=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/edge_pass NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: FAJO SIGMET A01 VALID 231417/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S3335 E00537 - S3429 E00727 - S3510 E00731 - S3609 E00603 - S3603
+    E00416 - S3502 E00317 FL340/390=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/edge_pass NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: FAJO SIGMET F01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4852 W01000 - S4956 E00004 - S4959 E00625 - S5110 E00701 - S5151
+    W00035 - S5239 W00602 - S5230 W01000 FL140/450=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/edge_pass NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: FAJO SIGMET H01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4605 E04512 - S4749 E04959 - S4930 E05319 - S5326 E05847 - S5716
+    E05828 - S5222 E04952 - S5006 E04753 - S4706 E04244 - S4613 E04228 FL100/240=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/edge_pass NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: SAVF SIGMET 4 VALID 231334/231734 SABE- SAVF COMODORO RIVADAVIA FIR SEV TURB
+    FCST AT 1334Z WI S4513 W07122 - S4501 W06818 - S4257 W06307 - S4040 W06023 - S3921
+    W06307 - S4120 W07024 - S4146 W07058 - S4130 W07143 - S4257 W07204 - S4401 W07135
+    - S4513 W07122 FL240/340  NC=
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/edge_pass NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: FAJA SIGMET E01 VALID 231413/231800 FAOR- FAJA JOHANNESBURG FIR SEV TURB FCST
+    WI S2730 E01744 - S2958 E01849 - S3017 E01803 - S2911 E01632 - S2730 E01549 -
+    S2730 E01744 FL050/080 MOV E 10KT STNR=
+  expect:
+    accept: false
+    codes:
+    - INVALID_STNR_MOVEMENT
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/edge_fail NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: FAJO SIGMET A01 VALID 231417/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S3335 E00537 - S3429 E00727 - S3510 E00731 - S3609 E00603 - S3603
+    E00416 - S3502 E00317 FL340/390 MOV E 10KT STNR=
+  expect:
+    accept: false
+    codes:
+    - INVALID_STNR_MOVEMENT
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/edge_fail NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: FAJO SIGMET F01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4852 W01000 - S4956 E00004 - S4959 E00625 - S5110 E00701 - S5151
+    W00035 - S5239 W00602 - S5230 W01000 FL140/450 MOV E 10KT STNR=
+  expect:
+    accept: false
+    codes:
+    - INVALID_STNR_MOVEMENT
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/edge_fail NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: FAJO SIGMET H01 VALID 231420/231800 FAOR- FAJO JOHANNESBURG OCEANIC FIR SEV
+    TURB FCST WI S4605 E04512 - S4749 E04959 - S4930 E05319 - S5326 E05847 - S5716
+    E05828 - S5222 E04952 - S5006 E04753 - S4706 E04244 - S4613 E04228 FL100/240 MOV
+    E 10KT STNR=
+  expect:
+    accept: false
+    codes:
+    - INVALID_STNR_MOVEMENT
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/edge_fail NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: SAVF SIGMET 4 VALID 231334/231734 SABE- SAVF COMODORO RIVADAVIA FIR SEV TURB
+    FCST AT 1334Z WI S4513 W07122 - S4501 W06818 - S4257 W06307 - S4040 W06023 - S3921
+    W06307 - S4120 W07024 - S4146 W07058 - S4130 W07143 - S4257 W07204 - S4401 W07135
+    - S4513 W07122 FL240/340 STNR NC MOV E 10KT STNR=
+  expect:
+    accept: false
+    codes:
+    - INVALID_STNR_MOVEMENT
+  meta:
+    product: SIGMET
+    profile: annex3
+    cite: '#1265 INVALID_STNR_MOVEMENT/edge_fail NOAA tgftp + aviationweather.gov
+      retrieved 2026-09-23'

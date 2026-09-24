@@ -60,8 +60,10 @@ _AREA_TS_MOV = re.compile(
     re.IGNORECASE,
 )
 _CONVECTIVE_SIGMET = re.compile(
-    r"^(?:(?P<unit>[A-Z]{4})\s+)?CONVECTIVE\s+SIGMET\s+(?P<tag>\S+)\s+VALID\s+UNTIL\s+"
-    r"(?P<until>\d{4,6})Z\s+(?P<states>.+?)\s+FROM\s+(?P<body>.*)$",
+    r"^(?:SIG(?!MET)[A-Z0-9]*\s+)?"
+    r"(?:(?P<unit>(?!SIG)[A-Z]{4})\s+)?"
+    r"CONVECTIVE\s+SIGMET\s+(?P<tag>\S+)\s+"
+    r"VALID\s+UNTIL\s+(?P<until>\d{4,6})Z\s+(?P<states>.+?)\s+FROM\s+(?P<body>.*)$",
     re.DOTALL | re.IGNORECASE,
 )
 _NWS_HAZARD_IFR = "http://nws.weather.gov/codes/NWSI10-811/HazardTypes/IFR"
@@ -640,7 +642,7 @@ def _enrich_sigmet_body(ir: dict[str, Any], body: str) -> None:
     _enrich_hazard_body(ir, body)
 
 
-def _parse_until_token(until: str) -> tuple[int, int, int]:
+def _parse_until_token(until: str, *, issue_day: int | None = None) -> tuple[int, int, int]:
     """
     Internal helper ``_parse_until_token``.
 
@@ -648,6 +650,8 @@ def _parse_until_token(until: str) -> tuple[int, int, int]:
     ----------
     until : object
         Argument ``until``.
+    issue_day : object
+        Day of month from the bulletin heading when ``until`` is ``hhmm``.
 
     Returns
     -------
@@ -658,7 +662,7 @@ def _parse_until_token(until: str) -> tuple[int, int, int]:
         return int(until[0:2]), int(until[2:4]), int(until[4:6])
     hour = int(until[0:2])
     minute = int(until[2:4])
-    return 9, hour, minute
+    return issue_day if issue_day is not None else 9, hour, minute
 
 
 def _attach_us_airmet_hazard(ir: dict[str, Any]) -> None:
@@ -986,7 +990,12 @@ def _strip_siga0_heading(text: str) -> str:
     return "\n".join(lines)
 
 
-def _parse_convective_sigmet(text: str) -> dict[str, Any] | None:
+def _parse_convective_sigmet(
+    text: str,
+    *,
+    issue_day: int | None = None,
+    office: str | None = None,
+) -> dict[str, Any] | None:
     """
     Internal helper ``_parse_convective_sigmet``.
 
@@ -994,6 +1003,10 @@ def _parse_convective_sigmet(text: str) -> dict[str, Any] | None:
     ----------
     text : object
         Argument ``text``.
+    issue_day : object
+        Day of month used when ``VALID UNTIL`` has no day.
+    office : object
+        Issuing office from the heading when the body has no unit id.
 
     Returns
     -------
@@ -1003,10 +1016,16 @@ def _parse_convective_sigmet(text: str) -> dict[str, Any] | None:
     match = _CONVECTIVE_SIGMET.match(text)
     if match is None:
         return None
-    body = match.group("body")
+    body = re.split(
+        r"\b(?:OUTLOOK|REF\s+INTL)\b",
+        match.group("body"),
+        maxsplit=1,
+        flags=re.IGNORECASE,
+    )[0].strip()
     tag = match.group("tag").upper()
-    unit = (match.group("unit") or "MKCC").upper()
-    to_d, to_h, to_m = _parse_until_token(match.group("until"))
+    named_unit = match.group("unit")
+    unit = (named_unit or office or "MKCC").upper()
+    to_d, to_h, to_m = _parse_until_token(match.group("until"), issue_day=issue_day)
     # Active period ends at UNTIL; issue ~2h earlier (NWS convective convention).
     from_h = to_h - 2
     from_d = to_d
@@ -1093,7 +1112,9 @@ def parse_sigmet(tac: str, *, product: str = "SIGMET") -> dict[str, Any]:
 
     body_tac = _strip_siga0_heading(body_tac)
     text = _normalize(body_tac)
-    conv = _parse_convective_sigmet(text)
+    issue_day = int(ahl_match.group("yygggg")[:2]) if ahl_match is not None else None
+    office = ahl_match.group("cccc") if ahl_match is not None else None
+    conv = _parse_convective_sigmet(text, issue_day=issue_day, office=office)
     if conv is not None:
         if ahl_tt is not None:
             conv["ahl_tt"] = ahl_tt

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-09-21",
+  "generated": "2026-09-23",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -288,6 +288,22 @@
       "source_id": "codes-wmo-int",
       "source_url": "https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf",
       "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - CB/TCU convective type register"
+    },
+    {
+      "code": "CLOUD_TYPE_NOT_OBSERVABLE",
+      "severity": "info",
+      "message_template": "{product} cloud group uses /// because the convective cloud type was not observed. Informational: noted for operator awareness; does not by itself block conversion. Source: nilReason notObservable.",
+      "product": null,
+      "tags": [
+        "cloud",
+        "metar",
+        "speci",
+        "r4",
+        "auto"
+      ],
+      "source_id": "codes-wmo-int",
+      "source_url": "https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt",
+      "source_attribution": "codes-wmo-int - https://github.com/wmo-im/iwxxm/blob/master/IWXXM/ReleaseNotes-IWXXM.txt - AUTO cloud group solidi /// means convective cloud type was not observed"
     },
     {
       "code": "CNL_REPORT",
