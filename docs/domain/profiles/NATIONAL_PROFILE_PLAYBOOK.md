@@ -43,6 +43,14 @@ Human stub: `semantic/<ID>.md` from [`_template/semantic-profile.md`](_template/
 
 ---
 
+## 1a. TAC template amendments
+
+Machine list: [`template-amendments.yaml`](template-amendments.yaml).
+
+A new or changed TAC group is a row in that file (source, product, what changed, which profiles inherit it, status). Review it the same way as a country lint delta. A new Python module is not the default. When TAC cannot carry the element, set `tac_convertible: false`. That row is not missing converter work.
+
+---
+
 ## 2. Mining notes (transitory → promote)
 
 | Note | Template | Purpose |
