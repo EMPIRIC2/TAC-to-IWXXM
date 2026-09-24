@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-24 (EV-1277 heading and filename / #1277; prior same-day EV-1273 / #1273 profile pin)
+> **Last updated**: 2026-09-24 (EV-1276 test and exercise usage / #1276; prior same-day EV-1277 / #1277 heading and filename)
 
 ## Summary
 
@@ -13,7 +13,7 @@
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
 | F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855); **deepen EV-1273 / #1273**: profile package pin, Canada 3.0.0 stays profile-scoped |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
-| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011); **deepen EV-yaml-engine-configurability / #1224**: convert column honesty (emit stays Python; pack IR + profile overlays documented); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: declarative **convert emit YAML**; every product pack-IR + emit → **full**; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: emit `plugin:` overlay-swap goldens (Python builders stay); **deepen EV-1272 / #1272**: public-bulletin profile check (local command, manual live tier); **deepen EV-1279 / #1279**: letter-plus-digits SIGMET and AIRMET bulletin sequence; **deepen EV-1277 / #1277**: real heading on translation metadata and the `.xml.gz` filename |
+| F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011); **deepen EV-yaml-engine-configurability / #1224**: convert column honesty (emit stays Python; pack IR + profile overlays documented); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: declarative **convert emit YAML**; every product pack-IR + emit → **full**; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: emit `plugin:` overlay-swap goldens (Python builders stay); **deepen EV-1272 / #1272**: public-bulletin profile check (local command, manual live tier); **deepen EV-1279 / #1279**: letter-plus-digits SIGMET and AIRMET bulletin sequence; **deepen EV-1277 / #1277**: real heading on translation metadata and the `.xml.gz` filename; **deepen EV-1276 / #1276**: test and exercise bulletins are non-operational |
 | F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); **deepen EV-profile-validate-decode-deepen / #1221**: finish ADR-044 FE residual + #1120/#1145 catalog UX; **deepen EV-yaml-config-light-ux / #1251**: full FE hard-cut redo + Convert **four**-engine light selects + trust/help (Dissem select only in Send drawer); residual YAML epic #1252 |
 | F8 | Near-realtime TAC ingest → IWXXM gate | Implemented | Product | S008 ADR-018; **F30** writers → DO Postgres (not Supabase DB) |
 | F9 | Value-aware live decode + plain-language summary | Done | Product | S013 / EV-009 (#723); **deepen EV-retire-profile-dissem-ui-catalogs / ADR-044**: extract `packages/tac-decoding` (PyPI) as decode + Decoding catalog owner; **deepen EV-profile-validate-decode-deepen / #1221 / #724**: ICAO station → airport name (soft-fail); **deepen EV-yaml-engine-configurability / #1224**: pack/glossary overlay cookbook + examples; **deepen EV-yaml-full-configurability / #1226**: every product decode pack cell → **full**; starter templates + PyPI smoke; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: file/env YAML ICAO→name table is SoT; `set_location_name_resolver` stays an optional override |
@@ -2828,6 +2828,14 @@
 - **What it does**: When translation-centre emit is requested, `translationTime`, `translatedBulletinID`, and `translatedBulletinReceptionTime` come from the parsed bulletin heading and the translation clock. Ordinary in-state convert still omits those fields. A failed translation keeps the original TAC and, when a heading was parsed, uses that heading and the configured centre instead of `TTAAiiCCCYYGGgg` and `YUZZ`. Bulletin convert returns `A_…xml.gz` from the existing filename helper, using the IWXXM T1T2. The Canada MSC name stays `.xml`.
 - **Out of scope**: Gzipping the XML bytes; an AMHS connection; inventing a heading for a paste with no heading line; parent [#1275](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1275); a new operator screen; promoting `stage` to `main`.
 - **Corpus**: [Corpus: product §F6] [Corpus: api] [Corpus: tests]
+
+### F6 deepen (EV-1276 — test and exercise usage / #1276)
+
+- **Status note**: F6 remains **Implemented**. This cycle marks an explicit test or exercise bulletin as non-operational. No new feature id.
+- **Issue**: [#1276](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1276)
+- **What it does**: A `STATUS: TEST` line, a remark that says this is a test, or the word `EXERCISE` sets `permissibleUsage` to `NON-OPERATIONAL`, with reason `TEST` or `EXERCISE` and a short supplementary note. The note is the remark when the bulletin has one, otherwise `Test bulletin` or `Exercise bulletin`. An exercise marker wins when both are present. Ordinary reports stay `OPERATIONAL` with those fields omitted. The same rule applies to every product we already convert. A failed translation stays operational.
+- **Out of scope**: AMHS send; changing in-state translation-centre omission; treating `VA TEST` source text as a test bulletin; parent [#1275](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1275); a new operator screen; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F6] [Corpus: tests]
 
 ### F4 deepen (EV-1273 — older IWXXM on the publishing profile / #1273)
 
