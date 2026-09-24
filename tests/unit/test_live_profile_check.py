@@ -20,6 +20,7 @@ from tests.live.profile_check import (
     complete_vona,
     engine_check,
     extract_jma_advisory,
+    first_lettered_international_report,
     first_marked_report,
     first_nonempty_line,
     first_sigmet_within_validity,
@@ -322,6 +323,50 @@ def test_international_sigmet_skips_an_overlong_validity() -> None:
     assert chosen is not None
     assert "ZGZU SIGMET" in chosen
     assert "NFFF" not in chosen
+
+
+def test_lettered_international_report_is_absent_for_digits_only() -> None:
+    body = (
+        "Hazard: TS\n"
+        "WSFJ01 NFFN 231940\n"
+        "NFFF SIGMET 05 VALID 231940/232340 NFFN-\n"
+        "NFFF FIR EMBD TS=\n"
+    )
+    assert first_lettered_international_report(body) is None
+
+
+def test_lettered_international_report_skips_convective_and_keeps_a02() -> None:
+    body = (
+        "Type: CONV\n"
+        "CONVECTIVE SIGMET 1E\n"
+        "Hazard: TS\n"
+        "WSAU01 YMMC 121200\n"
+        "YMMM SIGMET A02 VALID 101200/101600 YUSO-\n"
+        "YMMM FIR OBSC TS=\n"
+        "Hazard: ICE\n"
+        "WAAU01 YMMC 151520\n"
+        "YMMM AIRMET E01 VALID 151520/151800 YUSO-\n"
+        "YMMM FIR ISOL TS=\n"
+    )
+    chosen = first_lettered_international_report(body)
+    assert chosen is not None
+    kind, text = chosen
+    assert kind == "SIGMET"
+    assert "YMMM SIGMET A02 " in text
+    assert "CONVECTIVE" not in text
+
+
+def test_lettered_airmet_is_selected_when_no_lettered_sigmet() -> None:
+    body = (
+        "Hazard: ICE\n"
+        "WAAU01 YMMC 151520\n"
+        "YMMM AIRMET E01 VALID 151520/151800 YUSO-\n"
+        "YMMM FIR ISOL TS=\n"
+    )
+    chosen = first_lettered_international_report(body)
+    assert chosen is not None
+    assert chosen[0] == "AIRMET"
+    assert "AIRMET E01 " in chosen[1]
 
 
 def test_international_sigmet_keeps_the_first_when_all_exceed_the_limit() -> None:

@@ -52,15 +52,19 @@ _TAC_TAF = re.compile(
     re.MULTILINE | re.DOTALL,
 )
 
+# Sequence forms already accepted by the single-report parser: a word plus
+# digits (ALPHA 02), then one optional letter plus digits (A02 or 3).
+_TAC_SEQUENCE = r"(?:[A-Z]+\s+\d+|[A-Z]?\d+)"
+
 # SIGMET body - FIR SIGMET seq VALID … MWO- … = (design-note §3.2; WS gen / WV VA)
 _TAC_SIGMET = re.compile(
-    r"^[A-Z]{4}\s+SIGMET\s+\d+\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?=",
+    r"^[A-Z]{4}\s+SIGMET\s+" + _TAC_SEQUENCE + r"\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?=",
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
 # AIRMET body - FIR AIRMET seq VALID … MWO- … = (design-note §3.2; WA → LW / EV-029 M8)
 _TAC_AIRMET = re.compile(
-    r"^[A-Z]{4}\s+AIRMET\s+\d+\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?=",
+    r"^[A-Z]{4}\s+AIRMET\s+" + _TAC_SEQUENCE + r"\s+VALID\s+\d{6}/\d{6}\s+[A-Z]{4}-\s*.+?=",
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
