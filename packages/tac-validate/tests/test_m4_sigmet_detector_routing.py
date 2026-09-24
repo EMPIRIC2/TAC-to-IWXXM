@@ -40,3 +40,13 @@ def test_convective_sigmet_does_not_use_international_identity_rules() -> None:
     assert "MISSING_VALID" not in codes
     assert "MISSING_FIR_OR_CTA" not in codes
     assert "MISSING_OBS_OR_FCST" not in codes
+
+
+def test_convective_sigmet_without_valid_until_is_missing_valid() -> None:
+    report = lint(
+        "WSUS31 KKCI 232155\nSIGE\nCONVECTIVE SIGMET 47E\nFL AND CSTL WTRS\n",
+        product="SIGMET",
+        profile="annex3",
+    )
+    errors = [issue for issue in report.issues if issue.severity == "error"]
+    assert any(issue.code == "MISSING_VALID" for issue in errors)
