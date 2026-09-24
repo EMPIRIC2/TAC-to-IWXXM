@@ -9,6 +9,7 @@ from iwxxm_validate.api import validate
 from iwxxm_validate.ca_eccc_bundle import CA_ECCC_IWXXM_VERSION, ca_eccc_catalog_roots
 from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
 from iwxxm_validate.codelists import validate_codelist_references
+from iwxxm_validate.declared_package import apply_declared_package
 from iwxxm_validate.gml import validate_gml_references
 from iwxxm_validate.models import Issue, ValidationReport
 from iwxxm_validate.native import rust_available, rust_module
@@ -330,6 +331,19 @@ def _validate_iwxxm(
                     layer="xsd",
                 )
             ],
+        )
+
+    iwxxm_version, rejection = apply_declared_package(
+        xml_content,
+        profile=profile,
+        iwxxm_version=iwxxm_version,
+    )
+    if rejection is not None:
+        return ValidationReport(
+            ok=False,
+            iwxxm_version=iwxxm_version,
+            profile=profile,
+            issues=[rejection],
         )
 
     try:

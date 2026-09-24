@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-24 (EV-1279 lettered SIGMET/AIRMET bulletin sequence / #1279; prior 2026-09-23 EV-1272 / #1272 public-bulletin profile check)
+> **Last updated**: 2026-09-24 (EV-1273 older IWXXM profile pin / #1273; prior same-day EV-1279 / #1279 lettered bulletin sequence)
 
 ## Summary
 
@@ -11,7 +11,7 @@
 | F1 | METAR → IWXXM conversion (GIFTs-era UX) | Superseded by F6 | Product | Historical; UI actions retained until F6 UI |
 | F2 | IWXXM validation | Implemented | Product | backend → `packages/iwxxm-validate`; **deepen** S064 / EV-055 #980/#979 (2025-2 Schematron/XSD); prior S046 / EV-038; **deepen** S071 / EV-061 readable item-by-item decode on validate (#1010); **deepen EV-yaml-engine-configurability / #1224**: overlay honesty matrix + cookbook/preflight (no Schematron-as-YAML); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: every product IWXXM output-policy cell → **full**; pin↔Schematron asserts (vendor SCH SoT) |
 | F3 | Airport data services | Implemented | Product | OpenAIP / reconciliation services |
-| F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855) |
+| F4 | IWXXM version handling | Implemented | Product | docs/domain/iwxxm/IWXXM_VERSION_SWITCHING.md; **deepen** S046 / EV-038 release-line SoT/UX (#851–#855); **deepen EV-1273 / #1273**: profile package pin, Canada 3.0.0 stays profile-scoped |
 | F5 | User METAR work history | Implemented | Product | S038 / EV-031 / F31 hybrid: guest IndexedDB + logged-in DO Postgres |
 | F6 | General TAC→IWXXM (`tac2iwxxm`) | Implemented | Product | S008, ADR-013/014/019; bulletin split; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 annex3 vs iwxxm_us membership compare; **deepen** S071 / EV-061 AHL decode+convert (#1012) + live multipart `files` chore (#1011); **deepen EV-yaml-engine-configurability / #1224**: convert column honesty (emit stays Python; pack IR + profile overlays documented); **deepen EV-yaml-full-configurability / #1226 / ADR-047**: declarative **convert emit YAML**; every product pack-IR + emit → **full**; **deepen EV-1252-residual-yaml / #1252 / ADR-049**: emit `plugin:` overlay-swap goldens (Python builders stay); **deepen EV-1272 / #1272**: public-bulletin profile check (local command, manual live tier); **deepen EV-1279 / #1279**: letter-plus-digits SIGMET and AIRMET bulletin sequence |
 | F7 | Multi-product TAC operator UI / sessions | Implemented | Product | S011 + prior deepens; **EV-retire-profile-dissem-ui-catalogs / ADR-044**: hard-cutover retire Profile Builder + Dissemination Bench authoring → backend dropdowns + five package-owned trust catalogs (F7.v deepen); F7.w authoring UI **Retired** (runtime profiles remain); **deepen EV-profile-validate-decode-deepen / #1221**: finish ADR-044 FE residual + #1120/#1145 catalog UX; **deepen EV-yaml-config-light-ux / #1251**: full FE hard-cut redo + Convert **four**-engine light selects + trust/help (Dissem select only in Send drawer); residual YAML epic #1252 |
@@ -2820,6 +2820,15 @@
 - **Live sample**: When Aviation Weather Center is publishing an international SIGMET or AIRMET with that sequence, one sample is split and converted. If that hour has none, the checked-in fixtures still meet the acceptance checks and the live pass says it was not sampled.
 - **Out of scope**: US convective SIGMET ([#1267](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1267)); a new IWXXM sequence element; G-AIRMET, US VONA, and Canadian SIGMET; browser UI; deploy; promoting `stage` to `main`.
 - **Corpus**: [Corpus: product §F6] [Corpus: system-spec] [Corpus: tests]
+
+### F4 deepen (EV-1273 — older IWXXM on the publishing profile / #1273)
+
+- **Status note**: F4 remains **Implemented**. This cycle records each profile's package pin and checks an incoming file against the package it declares. No new feature id.
+- **Issue**: [#1273](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1273)
+- **What it does**: Canada stays on IWXXM 3.0.0. Every other catalogued semantic profile stays on the global window, 2025-2 by default and 2023-1 as the previous line. Package versions for a product come from the compatibility table for that profile's line. A Canada 3.0.0 METAR and a 2025-2 METAR each validate on their own pin. A file whose declared package is not allowed for the selected profile is rejected in plain language.
+- **Known limit**: A 3.0.0 schema that fails to compile stays a schema-parse limit. It is not a new defect in this cycle.
+- **Out of scope**: 2021-2, 2018, and 2016 on the global dropdown; 3.0.0 as a global convert default; a new vendored schema tree; Australia 3.0.1 until that pin is confirmed; QVACI; parent epic [#1267](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1267); a new version dropdown option; promoting `stage` to `main`.
+- **Corpus**: [Corpus: product §F4] [Corpus: domain-profiles] [Corpus: adr/ADR-036]
 
 ## Non-Goals (Migration)
 
