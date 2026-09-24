@@ -11,5 +11,6 @@ still land here so they are not appended to `docs/context-brief.md`.
 | [older-iwxxm-pin.md](older-iwxxm-pin.md) | EV-1273-older-iwxxm-pin | active |
 | [nil-reason-codelist.md](nil-reason-codelist.md) | EV-1278-nil-reasons | active |
 | [heading-filename.md](heading-filename.md) | EV-1277-heading-filename | active |
+| [test-exercise-usage.md](test-exercise-usage.md) | EV-1276-test-exercise | active |
 
 Earlier sibling briefs in this directory predate this index.

@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-24 (EV-1277 / #1277 — TC-F6-036 heading and filename; prior same-day EV-1278 / #1278 — TC-F6-035)
+> **Last updated**: 2026-09-24 (EV-1276 / #1276 — TC-F6-037 test and exercise usage; prior same-day EV-1277 / #1277 — TC-F6-036)
 
 ## Scope
 
@@ -6023,6 +6023,19 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Pass criteria**: The four checks pass. The XML bytes are not gzipped.
 - **Out of scope**: An AMHS connection. Parent #1275. Promoting `stage` to `main`.
 - **Source**: F6 deepen EV-1277 / #1277
+
+### TC-F6-037: Test and exercise usage
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: Mark an explicit test or exercise bulletin non-operational, and leave ordinary reports operational. [Corpus: product §F6] [Corpus: tests]
+- **Steps**:
+  1. A space-weather advisory with `STATUS: TEST` and a remark converts with `NON-OPERATIONAL`, reason `TEST`, and that remark as the supplementary text.
+  2. An ordinary METAR stays `OPERATIONAL` and has no reason or supplementary attribute.
+  3. An exercise SIGMET, when the TAC says it is an exercise, uses reason `EXERCISE`.
+  4. Text that only contains `VA TEST` stays operational.
+- **Pass criteria**: The four checks pass. A failed translation stays operational.
+- **Out of scope**: An AMHS connection. Parent #1275. Promoting `stage` to `main`.
+- **Source**: F6 deepen EV-1276 / #1276
 
 ### TC-F4-001: Profile package pin
 

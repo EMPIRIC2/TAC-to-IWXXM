@@ -390,6 +390,102 @@ def _compact_bulletin_id(parts: AhlParts) -> str:
     return f"{parts.tt}{parts.aa}{parts.ii}{parts.cccc}{parts.yygggg}{bbb}"
 
 
+_STATUS_TEST = re.compile(r"(?im)^\s*STATUS:\s*TEST\s*$")
+_THIS_IS_A_TEST = re.compile(r"THIS IS A TEST", re.IGNORECASE)
+_EXERCISE_WORD = re.compile(r"\bEXERCISE\b", re.IGNORECASE)
+_RMK_LINE = re.compile(r"RMK\s*:\s*(.*)$", re.IGNORECASE)
+_NEXT_FIELD = re.compile(r"^[A-Z0-9 /+]{2,}:")
+
+
+def _remark_text(tac: str) -> str | None:
+    """
+    Return the RMK field with wrapped lines joined, or None when it is absent.
+
+    Parameters
+    ----------
+    tac :
+        Original TAC text.
+
+    Returns
+    -------
+    str | None
+        Remark text, or None when the bulletin has no RMK field.
+    """
+    chunks: list[str] = []
+    capturing = False
+    for raw in tac.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        remark = _RMK_LINE.match(line)
+        if remark is not None:
+            capturing = True
+            chunks.append(remark.group(1).strip())
+            continue
+        if capturing:
+            if _NEXT_FIELD.match(line):
+                break
+            chunks.append(line)
+    text = " ".join(chunks).strip()
+    return text or None
+
+
+def _permissible_usage_attrs(tac: str) -> str:
+    """
+    Return the permissible-usage attributes for an explicit test or exercise marker.
+
+    Parameters
+    ----------
+    tac :
+        Original TAC text.
+
+    Returns
+    -------
+    str
+        ``permissibleUsage="OPERATIONAL"``, or the non-operational attributes.
+    """
+    exercise = _EXERCISE_WORD.search(tac) is not None
+    status_test = _STATUS_TEST.search(tac) is not None
+    remark_test = _THIS_IS_A_TEST.search(tac) is not None
+    if not exercise and not status_test and not remark_test:
+        return 'permissibleUsage="OPERATIONAL"'
+    reason = "EXERCISE" if exercise else "TEST"
+    remark = _remark_text(tac)
+    if remark:
+        note = remark
+    elif exercise:
+        note = "Exercise bulletin"
+    else:
+        note = "Test bulletin"
+    return (
+        'permissibleUsage="NON-OPERATIONAL" '
+        f'permissibleUsageReason="{escape(reason)}" '
+        f'permissibleUsageSupplementary="{escape(note)}"'
+    )
+
+
+def _apply_permissible_usage(xml: str, tac: str) -> str:
+    """
+    Replace the operational usage attribute when the TAC has an explicit marker.
+
+    Parameters
+    ----------
+    xml :
+        Successful convert document.
+    tac :
+        Original TAC text.
+
+    Returns
+    -------
+    str
+        XML with usage attributes for a test or exercise, or the input XML.
+    """
+    attrs = _permissible_usage_attrs(tac)
+    if attrs == 'permissibleUsage="OPERATIONAL"':
+        return xml
+    return xml.replace('permissibleUsage="OPERATIONAL"', attrs, 1)
+
+
 def _quarantine_xml(
     product: str,
     tac: str,
@@ -1055,6 +1151,8 @@ def convert(
             name=translation_centre_name,
             heading=(bulletin_id, issued_text) if bulletin_id is not None else None,
         )
+
+    xml = _apply_permissible_usage(xml, tac)
 
     return ConvertResult(
         ok=True,
