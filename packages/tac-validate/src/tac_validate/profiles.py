@@ -21,12 +21,13 @@ SUPPORTED_PROFILES: Final[frozenset[str]] = frozenset(
 IWXXM_US_PRODUCTS: Final[frozenset[str]] = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET"})
 
 # Thin US national validation policy only (#919 M22) - no convert/dual-profile parity.
-IWXXM_US_THIN_LINT_PRODUCTS: Final[frozenset[str]] = frozenset({"SWXA", "TCA"})
+# VONA is Annex 3 TAC; iwxxm_us may lint it, and dual-profile compare stays N/A.
+IWXXM_US_THIN_LINT_PRODUCTS: Final[frozenset[str]] = frozenset({"SWXA", "TCA", "VONA"})
 
 IWXXM_US_LINT_PRODUCTS: Final[frozenset[str]] = IWXXM_US_PRODUCTS | IWXXM_US_THIN_LINT_PRODUCTS
 
 # Products with CA_ECCC MANOBS/MANAIR overlay (EV-064 M3/M4).
-CA_ECCC_PRODUCTS: Final[frozenset[str]] = frozenset({"METAR", "SPECI", "TAF", "AIRMET"})
+CA_ECCC_PRODUCTS: Final[frozenset[str]] = frozenset({"METAR", "SPECI", "TAF", "AIRMET", "SIGMET", "VAA"})
 
 # IN_IMD thin lint overlay — TAF TX/TN omission awareness only (EV-094 M5 / #1098).
 IN_IMD_PRODUCTS: Final[frozenset[str]] = frozenset({"TAF"})

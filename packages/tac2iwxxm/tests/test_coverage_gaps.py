@@ -170,9 +170,13 @@ def test_convert_unsupported_profile_product_and_native_scan() -> None:
     assert bad_profile.ok is False
     assert bad_profile.issues[0].code == "UNSUPPORTED_PROFILE"
 
-    bad_us = convert("VA ADVISORY\nDTG: 20040925/1900Z", product="VAA", profile="iwxxm_us")
-    assert bad_us.ok is False
-    assert bad_us.issues[0].code == "UNSUPPORTED_PROFILE"
+    bad_nz = convert(
+        "YMMM SIGMET A1 VALID 010000/010400 YMMC- YMMM MELBOURNE FIR SEV TURB=",
+        product="SIGMET",
+        profile="nz_caa_met",
+    )
+    assert bad_nz.ok is False
+    assert bad_nz.issues[0].code == "UNSUPPORTED_PROFILE"
 
     with pytest.raises(ValueError, match="no emitter"):
         _emit("NOPE", "annex3", {}, "2025-2")

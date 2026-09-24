@@ -8,6 +8,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+from reference_lookup import SourceUnavailable, lookup_coordinate
+
 _CARDINAL_BEARING_DEG: dict[str, float] = {
     "N": 0.0,
     "NNE": 22.5,
@@ -103,19 +105,22 @@ def resolve_vor(vor_id: str, table: dict[str, dict[str, Any]] | None = None) -> 
     Raises
     ------
     UnknownVOR
-        When ``vor_id`` is not present in the reference table.
+        When the public source and the reference table both miss ``vor_id``.
 
     Examples
     --------
     >>> 1 + 1  # docstring smoke (resolve_vor)
     2
     """
-    lookup = table if table is not None else load_vor_reference_points()
     key = vor_id.upper()
-    row = lookup.get(key)
-    if row is None:
-        raise UnknownVOR(key)
-    return float(row["lat"]), float(row["lon"])
+    try:
+        return lookup_coordinate(key)
+    except SourceUnavailable:
+        lookup = table if table is not None else load_vor_reference_points()
+        row = lookup.get(key)
+        if row is None:
+            raise UnknownVOR(key) from None
+        return float(row["lat"]), float(row["lon"])
 
 
 def offset_nm(lat: float, lon: float, distance_nm: float, cardinal: str) -> tuple[float, float]:

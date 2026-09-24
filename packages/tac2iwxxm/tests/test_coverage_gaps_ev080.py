@@ -90,7 +90,7 @@ def test_convert_unknown_product_lead_and_guards() -> None:
 
     bad_ca = convert(
         "METAR CYUL 010000Z NIL=",
-        product="SIGMET",
+        product="TCA",
         profile="ca_eccc",
         iwxxm_version="3.0.0",
     )

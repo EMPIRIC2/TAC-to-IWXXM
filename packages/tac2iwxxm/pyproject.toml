@@ -6,9 +6,11 @@ readme = "README.md"
 license = { text = "MIT" }
 requires-python = ">=3.12"
 dependencies = [
+  "hydra-core==1.3.7",
   "msgspec>=0.19",
   "pyyaml>=6.0",
   "tac-decoding>=2026.9.22",
+  "reference-lookup==2026.9.23",
 ]
 
 [project.scripts]
@@ -48,6 +50,7 @@ packages = ["src/tac2iwxxm"]
 "src/tac2iwxxm/data/emit_maps/ca-eccc-airmet.yaml" = "tac2iwxxm/data/emit_maps/ca-eccc-airmet.yaml"
 "src/tac2iwxxm/data/emit_maps/annex3-vaa.yaml" = "tac2iwxxm/data/emit_maps/annex3-vaa.yaml"
 "src/tac2iwxxm/data/emit_maps/annex3-tca.yaml" = "tac2iwxxm/data/emit_maps/annex3-tca.yaml"
+"src/tac2iwxxm/conf/convert_allowlist.yaml" = "tac2iwxxm/conf/convert_allowlist.yaml"
 
 # Maturin builds the optional PyO3 cdylib (ADR-017 / T4.3). Pure-Python hatch wheel
 # remains the default ``uv sync`` path; CI rust job runs ``maturin develop``.

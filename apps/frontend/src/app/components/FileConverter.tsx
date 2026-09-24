@@ -357,7 +357,7 @@ const FALLBACK_PROFILE_SUMMARIES: Partial<Record<IwxxmProfile, ProfileCatalogEnt
   US_FAA_NWS: {
     id: 'US_FAA_NWS',
     kind: 'semantic',
-    products: ['METAR', 'SPECI', 'SIGMET', 'AIRMET'],
+    products: ['METAR', 'SPECI', 'TAF', 'SIGMET', 'AIRMET', 'TCA', 'SWXA', 'VONA'],
     deltas_vs_icao: [
       'Adds FAA/NWS national differences on top of the ICAO baseline.',
       'Uses the iwxxm-us schema catalog for United States IWXXM extensions.',

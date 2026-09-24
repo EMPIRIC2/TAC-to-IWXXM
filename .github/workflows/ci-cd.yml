@@ -207,6 +207,7 @@ jobs:
             frontend,
             tac2iwxxm,
             tac-decoding,
+            reference-lookup,
             iwxxm-validate,
             tac-validate,
             dissemination,
@@ -309,6 +310,11 @@ jobs:
         if: matrix.package == 'tac-decoding'
         run: |
           make test-unit-tac-decoding
+
+      - name: Run reference-lookup unit tests with coverage
+        if: matrix.package == 'reference-lookup'
+        run: |
+          make test-unit-reference-lookup
 
       - name: Install Rust toolchain (iwxxm-validate native)
         if: matrix.package == 'iwxxm-validate'

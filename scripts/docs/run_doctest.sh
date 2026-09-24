@@ -23,6 +23,7 @@ run_one() {
 
 # Packages with unique import roots (one tree at a time)
 run_one tac-decoding packages/tac-decoding/src
+run_one reference-lookup packages/reference-lookup/src
 run_one tac-validate packages/tac-validate/src
 run_one iwxxm-validate packages/iwxxm-validate/src
 run_one dissemination packages/dissemination/src

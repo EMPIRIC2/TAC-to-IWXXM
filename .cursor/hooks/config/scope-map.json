@@ -21,6 +21,10 @@
       "label": "General TAC \u2192 IWXXM converter (F6, F14)"
     },
     {
+      "prefix": "packages/reference-lookup",
+      "label": "Station and navaid coordinates for convert (F6, ADR-051)"
+    },
+    {
       "prefix": "packages/tac-validate",
       "label": "TAC product validation / lint (F12)"
     },

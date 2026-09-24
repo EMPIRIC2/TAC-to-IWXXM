@@ -12,6 +12,8 @@ _PSN = re.compile(r"(?P<ns>[NS])(?P<lat>\d{4,5})\s+(?P<ew>[EW])(?P<lon>\d{5,6})"
 # G-VONA-2: originatingCentre AIXM designator is not in TAC - fixture/registry map.
 _SVO_DESIGNATORS: dict[str, str] = {
     "KVERT": "UHPP",
+    "PHVO": "PHVO",
+    "PAVO": "PAVO",
 }
 
 _ACT_STATUS: dict[str, str] = {
@@ -28,7 +30,7 @@ _ACT_STATUS: dict[str, str] = {
 }
 
 _ELEV = re.compile(
-    r"(?P<val>\d+(?:\.\d+)?)\s*(?P<uom>KM|M)\b",
+    r"(?P<val>\d+(?:\.\d+)?)\s*(?P<uom>KM|M|FT)\b",
     re.IGNORECASE,
 )
 _AHL_LINE = re.compile(r"^[A-Z]{2}[A-Z]{2}\d{2}\s+[A-Z]{4}\s+\d{6}(?:\s+[A-Z]{1,3})?\s*$")
@@ -144,6 +146,49 @@ def _strip_optional_ahl(tac: str) -> str:
     return tac
 
 
+def _ahl_centre(tac: str) -> str | None:
+    """
+    Return the WMO CCCC on a leading abbreviated heading, when present.
+
+    Parameters
+    ----------
+    tac : str
+        VONA text, optionally starting with a WMO abbreviated heading.
+
+    Returns
+    -------
+    str | None
+        Four-letter originator, or ``None`` when the first line is not a heading.
+    """
+    lines = tac.splitlines()
+    if not lines:
+        return None
+    match = _AHL_LINE.match(lines[0].strip())
+    if match is None:
+        return None
+    parts = lines[0].split()
+    return parts[1].upper() if len(parts) >= 2 else None
+
+
+def _strip_gateway_question_padding(tac: str) -> str:
+    """
+    Drop ``?`` runs used as padding on truncated US VONA gateway files.
+
+    Parameters
+    ----------
+    tac : str
+        Raw VONA text.
+
+    Returns
+    -------
+    str
+        Text with question-mark padding removed when a field colon is present.
+    """
+    if "?" not in tac or ":" not in tac:
+        return tac
+    return re.sub(r"(?<=:)\s*\?+", "", tac)
+
+
 def _parse_elevation_m(token: str) -> float | None:
     """
     Internal helper ``_parse_elevation_m``.
@@ -162,8 +207,11 @@ def _parse_elevation_m(token: str) -> float | None:
     if m is None:
         return None
     value = float(m.group("val"))
-    if m.group("uom").upper() == "KM":
+    uom = m.group("uom").upper()
+    if uom == "KM":
         return value * 1000.0
+    if uom == "FT":
+        return value * 0.3048
     return value
 
 
@@ -258,7 +306,9 @@ def parse_vona(tac: str, *, product: str = "VONA") -> dict[str, Any]:
     if product.upper() != "VONA":
         raise ValueError(f"VONA parser expected product VONA, found {product!r}")
 
-    text = _strip_optional_ahl(tac)
+    text = _strip_gateway_question_padding(tac)
+    centre = _ahl_centre(text)
+    text = _strip_optional_ahl(text)
     if not re.search(r"(?m)^\s*VONA\b", text):
         raise ValueError("VONA TAC missing VONA header")
 
@@ -276,7 +326,7 @@ def parse_vona(tac: str, *, product: str = "VONA") -> dict[str, Any]:
     if psn is None:
         raise ValueError("VONA missing/invalid PSN")
 
-    svo = fields.get("SVO", "").strip()
+    svo = fields.get("SVO", "").strip() or (centre or "")
     if not svo:
         raise ValueError("VONA missing SVO")
 
