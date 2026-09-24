@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-24 (EV-1278 / #1278 — TC-F6-035 nil-reason href lock; prior same-day EV-1273 / #1273 — TC-F4-001)
+> **Last updated**: 2026-09-24 (EV-1277 / #1277 — TC-F6-036 heading and filename; prior same-day EV-1278 / #1278 — TC-F6-035)
 
 ## Scope
 
@@ -6010,6 +6010,19 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Pass criteria**: The four checks pass. No emitter change.
 - **Out of scope**: New nil tokens. Retargeting Canada 3.0.0. Parent #1274.
 - **Source**: F6 deepen EV-1278 / #1278
+
+### TC-F6-036: Real heading and IWXXM filename
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: Put the parsed abbreviated heading on translation metadata and return the guideline filename. [Corpus: product §F6] [Corpus: api]
+- **Steps**:
+  1. An on-behalf METAR bulletin includes translation time and the real `TTAAiiCCCCYYGGgg` identifier.
+  2. A failed translation no longer emits `YUZZ` or `TTAAiiCCCYYGGgg` when a heading was parsed. `translationFailedTAC` stays the original TAC.
+  3. Bulletin convert returns a suggested filename ending in `.xml.gz` whose T1T2 is the IWXXM designator.
+  4. A paste with no heading line does not gain an invented heading. The Canada MSC suggested name still ends in `.xml`.
+- **Pass criteria**: The four checks pass. The XML bytes are not gzipped.
+- **Out of scope**: An AMHS connection. Parent #1275. Promoting `stage` to `main`.
+- **Source**: F6 deepen EV-1277 / #1277
 
 ### TC-F4-001: Profile package pin
 
