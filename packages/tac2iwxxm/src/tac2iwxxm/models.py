@@ -150,6 +150,9 @@ class ConvertResult(msgspec.Struct, frozen=True):
         Versioned intermediate representation (dict) for M-field checks.
     issues :
         Structured findings.
+    suggested_filename :
+        Guideline ``A_…xml.gz`` name when the input has an abbreviated heading.
+        ``None`` when there is no heading, and for the Canada datamart name.
     """
 
     ok: bool
@@ -161,6 +164,7 @@ class ConvertResult(msgspec.Struct, frozen=True):
     xml: str | None = None
     ir: dict[str, Any] | None = None
     issues: list[ConvertIssue] = msgspec.field(default_factory=list)
+    suggested_filename: str | None = None
 
 
 __all__ = [

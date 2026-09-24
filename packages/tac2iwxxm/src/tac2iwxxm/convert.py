@@ -5,20 +5,21 @@ from __future__ import annotations
 import os
 import re
 from collections.abc import Callable
-from datetime import UTC
+from datetime import UTC, datetime
 from typing import Any, cast
 from xml.sax.saxutils import escape
 
 from tac_decoding.match import MatchContext, match_tac
 from tac_decoding.packs import load_packs
 
+from tac2iwxxm.bulletin import BulletinSplitError, iwxxm_filename, parse_ahl
 from tac2iwxxm.convert_allowlist import products_for
 from tac2iwxxm.decode import decode_tac
 from tac2iwxxm.emit_map import emit_with_map
 from tac2iwxxm.exchange_output import default_ca_translation_centre
 from tac2iwxxm.geometry.reference_point import UnknownVOR
 from tac2iwxxm.ir_source import IR_SOURCE_ENV, resolve_ir_source
-from tac2iwxxm.models import ConvertIssue, ConvertResult
+from tac2iwxxm.models import AhlParts, ConvertIssue, ConvertResult
 from tac2iwxxm.pack_ir_map import PackIrMapError, map_spans_to_convert_ir, pack_id_for_product
 from tac2iwxxm.profile_registry import (
     EMIT_ANNEX3,
@@ -351,7 +352,53 @@ def _should_quarantine(tac: str, product: str) -> bool:
     return _tac_looks_like_product(tac, product)
 
 
-def _quarantine_xml(product: str, tac: str, iwxxm_version: str) -> str:
+def _heading_from_tac(tac: str) -> AhlParts | None:
+    """
+    Return parsed abbreviated-heading parts, or None when the first line is not a heading.
+
+    Parameters
+    ----------
+    tac :
+        Bulletin or single-report text.
+
+    Returns
+    -------
+    AhlParts | None
+        Parsed heading, or None when the first line is not an abbreviated heading.
+    """
+    try:
+        return parse_ahl(tac)
+    except BulletinSplitError:
+        return None
+
+
+def _compact_bulletin_id(parts: AhlParts) -> str:
+    """
+    Return ``TTAAiiCCCCYYGGgg`` plus BBB when the heading has one.
+
+    Parameters
+    ----------
+    parts :
+        Parsed abbreviated heading.
+
+    Returns
+    -------
+    str
+        Compact bulletin identifier with no spaces.
+    """
+    bbb = parts.bbb or ""
+    return f"{parts.tt}{parts.aa}{parts.ii}{parts.cccc}{parts.yygggg}{bbb}"
+
+
+def _quarantine_xml(
+    product: str,
+    tac: str,
+    iwxxm_version: str,
+    *,
+    bulletin_id: str | None = None,
+    centre_designator: str | None = None,
+    centre_name: str | None = None,
+) -> str:
     """
     Emit official-shaped quarantine shell with ``@translationFailedTAC``.
 
@@ -377,6 +424,14 @@ def _quarantine_xml(product: str, tac: str, iwxxm_version: str) -> str:
     gml_id = f"{product.lower()}.translation.failed"
     failed_tac = escape(" ".join(tac.split()))
     now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
+    if bulletin_id:
+        bulletin = bulletin_id
+        designator = centre_designator or ""
+        centre = centre_name or ""
+    else:
+        bulletin = "TTAAiiCCCYYGGgg"
+        designator = "YUZZ"
+        centre = "Fictional translation centre"
     station_m = _STATION_AFTER_PRODUCT.search(tac)
     station = station_m.group("station").upper() if station_m else "YUDO"
     aerodrome = ""
@@ -417,10 +472,10 @@ def _quarantine_xml(product: str, tac: str, iwxxm_version: str) -> str:
         f'gml:id="{gml_id}" '
         'reportStatus="NORMAL" '
         'permissibleUsage="OPERATIONAL" '
-        'translatedBulletinID="TTAAiiCCCYYGGgg" '
+        f'translatedBulletinID="{escape(bulletin)}" '
         f'translatedBulletinReceptionTime="{now}" '
-        'translationCentreDesignator="YUZZ" '
-        'translationCentreName="Fictional translation centre" '
+        f'translationCentreDesignator="{escape(designator)}" '
+        f'translationCentreName="{escape(centre)}" '
         f'translationTime="{now}" '
         f'translationFailedTAC="{failed_tac}">\n'
         f"{time_block}{aerodrome}"
@@ -625,6 +680,7 @@ def _inject_translation_centre(
     *,
     designator: str,
     name: str,
+    heading: tuple[str, str] | None = None,
 ) -> str:
     """
     Insert ``translationCentre*`` attributes on the IWXXM root element.
@@ -644,6 +700,13 @@ def _inject_translation_centre(
         XML with centre attributes on the first ``iwxxm:*`` root start tag.
     """
     extra = f'\n    translationCentreDesignator="{escape(designator)}"\n    translationCentreName="{escape(name)}"'
+    if heading is not None:
+        bulletin_id, translation_time = heading
+        extra += (
+            f'\n    translatedBulletinID="{escape(bulletin_id)}"'
+            f'\n    translatedBulletinReceptionTime="{escape(translation_time)}"'
+            f'\n    translationTime="{escape(translation_time)}"'
+        )
     match = _ROOT_OPEN.search(xml)
     if match is None:
         return xml
@@ -745,6 +808,15 @@ def convert(
     profile_l = resolved.emit_key
     semantic_profile = resolved.canonical
     deprecated_alias_used = resolved.alias_used
+    heading = _heading_from_tac(tac)
+    issued_at = datetime.now(UTC)
+    issued_text = issued_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+    bulletin_id = _compact_bulletin_id(heading) if heading is not None else None
+    suggested_filename = (
+        iwxxm_filename(heading, issued_at=issued_at, gzip=True)
+        if heading is not None and profile_l != EMIT_CA_ECCC
+        else None
+    )
     do_propagate = resolve_propagate_residuals_to_remarks(profile_l, propagate_residuals_to_remarks)
     effective_iwxxm_version = (
         CA_IWXXM_VERSION if profile_l == EMIT_CA_ECCC and iwxxm_version is None else requested_iwxxm_version
@@ -898,7 +970,15 @@ def convert(
                 iwxxm_version=effective_iwxxm_version,
                 semantic_profile=semantic_profile,
                 deprecated_alias_used=deprecated_alias_used,
-                xml=_quarantine_xml(product_u, tac.strip(), effective_iwxxm_version),
+                xml=_quarantine_xml(
+                    product_u,
+                    tac.strip(),
+                    effective_iwxxm_version,
+                    bulletin_id=bulletin_id,
+                    centre_designator=translation_centre_designator or None,
+                    centre_name=translation_centre_name or None,
+                ),
+                suggested_filename=suggested_filename,
                 issues=[
                     ConvertIssue(
                         severity="warning",
@@ -973,6 +1053,7 @@ def convert(
             xml,
             designator=translation_centre_designator,
             name=translation_centre_name,
+            heading=(bulletin_id, issued_text) if bulletin_id is not None else None,
         )
 
     return ConvertResult(
@@ -985,6 +1066,7 @@ def convert(
         xml=xml,
         ir=ir,
         issues=issues,
+        suggested_filename=suggested_filename,
     )
 
 
