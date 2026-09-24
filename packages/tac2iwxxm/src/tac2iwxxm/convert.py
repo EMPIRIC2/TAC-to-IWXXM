@@ -353,7 +353,19 @@ def _should_quarantine(tac: str, product: str) -> bool:
 
 
 def _heading_from_tac(tac: str) -> AhlParts | None:
-    """Return parsed abbreviated-heading parts, or None when the first line is not a heading."""
+    """
+    Return parsed abbreviated-heading parts, or None when the first line is not a heading.
+
+    Parameters
+    ----------
+    tac :
+        Bulletin or single-report text.
+
+    Returns
+    -------
+    AhlParts | None
+        Parsed heading, or None when the first line is not an abbreviated heading.
+    """
     try:
         return parse_ahl(tac)
     except BulletinSplitError:
@@ -361,7 +373,19 @@ def _heading_from_tac(tac: str) -> AhlParts | None:
 
 
 def _compact_bulletin_id(parts: AhlParts) -> str:
-    """Return ``TTAAiiCCCCYYGGgg`` plus BBB when the heading has one."""
+    """
+    Return ``TTAAiiCCCCYYGGgg`` plus BBB when the heading has one.
+
+    Parameters
+    ----------
+    parts :
+        Parsed abbreviated heading.
+
+    Returns
+    -------
+    str
+        Compact bulletin identifier with no spaces.
+    """
     bbb = parts.bbb or ""
     return f"{parts.tt}{parts.aa}{parts.ii}{parts.cccc}{parts.yygggg}{bbb}"
 
