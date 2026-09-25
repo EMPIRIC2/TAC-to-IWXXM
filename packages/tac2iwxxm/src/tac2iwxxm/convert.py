@@ -520,14 +520,13 @@ def _quarantine_xml(
     gml_id = f"{product.lower()}.translation.failed"
     failed_tac = escape(" ".join(tac.split()))
     now = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
-    if bulletin_id:
-        bulletin = bulletin_id
-        designator = centre_designator or ""
-        centre = centre_name or ""
+    designator = centre_designator or ""
+    centre = centre_name or ""
+    bulletin_attr = f'translatedBulletinID="{escape(bulletin_id)}" ' if bulletin_id else ""
+    if bulletin_id or designator or centre:
+        centre_attr = f'translationCentreDesignator="{escape(designator)}" translationCentreName="{escape(centre)}" '
     else:
-        bulletin = "TTAAiiCCCYYGGgg"
-        designator = "YUZZ"
-        centre = "Fictional translation centre"
+        centre_attr = ""
     station_m = _STATION_AFTER_PRODUCT.search(tac)
     station = station_m.group("station").upper() if station_m else "YUDO"
     aerodrome = ""
@@ -568,10 +567,9 @@ def _quarantine_xml(
         f'gml:id="{gml_id}" '
         'reportStatus="NORMAL" '
         'permissibleUsage="OPERATIONAL" '
-        f'translatedBulletinID="{escape(bulletin)}" '
+        f"{bulletin_attr}"
         f'translatedBulletinReceptionTime="{now}" '
-        f'translationCentreDesignator="{escape(designator)}" '
-        f'translationCentreName="{escape(centre)}" '
+        f"{centre_attr}"
         f'translationTime="{now}" '
         f'translationFailedTAC="{failed_tac}">\n'
         f"{time_block}{aerodrome}"
