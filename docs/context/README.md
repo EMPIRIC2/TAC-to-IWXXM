@@ -14,5 +14,6 @@ still land here so they are not appended to `docs/context-brief.md`.
 | [test-exercise-usage.md](test-exercise-usage.md) | EV-1276-test-exercise | active |
 | [template-amendments.md](template-amendments.md) | EV-1274-template-catalog | active |
 | [no-fictional-centre.md](no-fictional-centre.md) | EV-1290-no-fictional-centre | active |
+| [gzip-xml-bytes.md](gzip-xml-bytes.md) | EV-1291-gzip-bytes | active |
 
 Earlier sibling briefs in this directory predate this index.

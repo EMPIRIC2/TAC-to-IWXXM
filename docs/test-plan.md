@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-24 (EV-1290 / #1290 — TC-F6-039 no fictional centre; prior same-day EV-1274 / #1274 — TC-F6-038)
+> **Last updated**: 2026-09-25 (EV-1291 / #1291 — TC-F6-040 gzip XML bytes; prior EV-1290 / #1290 — TC-F6-039)
 
 ## Scope
 
@@ -6061,6 +6061,18 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Pass criteria**: Both checks pass. `translationFailedTAC` stays the original TAC. `permissibleUsage` stays operational.
 - **Out of scope**: Inventing a heading. AMHS. #1291. #1292. Promoting `stage` to `main`.
 - **Source**: F6 deepen EV-1290 / #1290
+
+### TC-F6-040: Gzip XML bytes
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: A `.xml.gz` suggested filename has gzip bytes of the IWXXM text beside that text. [Corpus: product §F6] [Corpus: tests]
+- **Steps**:
+  1. A bulletin convert whose suggested filename ends in `.xml.gz` returns gzip bytes that decompress to the IWXXM document. The XML text stays plain.
+  2. A Canada convert whose suggested name ends in `.xml` stays plain XML and has no gzip bytes.
+  3. A paste with no heading still has no filename and no gzip bytes.
+- **Pass criteria**: The three checks pass.
+- **Out of scope**: Changing the filename pattern. AMHS. #1292. Promoting `stage` to `main`.
+- **Source**: F6 deepen EV-1291 / #1291
 
 ### TC-F4-001: Profile package pin
 
