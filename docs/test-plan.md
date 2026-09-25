@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-24 (EV-1274 / #1274 — TC-F6-038 TAC template amendments; prior same-day EV-1276 / #1276 — TC-F6-037)
+> **Last updated**: 2026-09-24 (EV-1290 / #1290 — TC-F6-039 no fictional centre; prior same-day EV-1274 / #1274 — TC-F6-038)
 
 ## Scope
 
@@ -1057,7 +1057,8 @@ treat TC-EV045-006 as **docs/script met; ops deferred**. [Corpus: tests] [Corpus
 - **Objective**: Unreliable TAC → quarantine shape with original TAC on `translationFailedTAC`;
   no operational TAC-in-XML-comments; no partial translate; attr matrix vs official
   `*-translation-failed.xml`
-- **Pass criteria**: regression fixtures; deepen UJ-016 soft-fail path consistency
+- **Pass criteria**: regression fixtures; deepen UJ-016 soft-fail path consistency.
+  Convert of a failed TAC with no heading omits the placeholder centre and bulletin id (TC-F6-039).
 - **Source**: F6/F2; #800 P0; FAQ §4.1 / §8.6
 
 ### TC-EV023-004: Dual-register colour + nil encode policy (P1)
@@ -6049,6 +6050,17 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Pass criteria**: The four checks pass. No emitter change is required for this row.
 - **Out of scope**: Implementing Amendment 82 element changes. Parent #1267. Promoting `stage` to `main`.
 - **Source**: F6 deepen EV-1274 / #1274
+
+### TC-F6-039: No fictional translation centre
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: A failed translation with no heading does not invent a translation centre. [Corpus: product §F6] [Corpus: tests]
+- **Steps**:
+  1. A failed METAR with no heading line does not contain `YUZZ`, `Fictional translation centre`, or `TTAAiiCCCYYGGgg`, and omits the centre attributes.
+  2. A failed bulletin that has a heading still uses that heading and the caller's centre.
+- **Pass criteria**: Both checks pass. `translationFailedTAC` stays the original TAC. `permissibleUsage` stays operational.
+- **Out of scope**: Inventing a heading. AMHS. #1291. #1292. Promoting `stage` to `main`.
+- **Source**: F6 deepen EV-1290 / #1290
 
 ### TC-F4-001: Profile package pin
 

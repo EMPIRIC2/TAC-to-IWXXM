@@ -2,7 +2,8 @@
 
 Default in-State convert omits ``translationCentreDesignator`` /
 ``translationCentreName``. Emit only when ``emit_translation_centre`` is set
-(T4.4). Quarantine shells keep Translation Centre attrs (official model).
+(T4.4). Official failed examples keep the workshop centre. Convert of a failed
+TAC with no heading omits that placeholder (#1290).
 """
 
 from __future__ import annotations
@@ -80,7 +81,7 @@ def test_tc_ev023_006_default_convert_omits_translation_centre() -> None:
 
 
 def test_tc_ev023_006_quarantine_keeps_translation_centre_model() -> None:
-    """Official / convert quarantine shells retain Translation Centre attrs."""
+    """Official failed examples keep the centre; convert without a heading omits it."""
     from tac2iwxxm import convert
 
     official = (_VENDOR_EX / "metar-translation-failed.xml").read_text(encoding="utf-8")
@@ -97,7 +98,8 @@ def test_tc_ev023_006_quarantine_keeps_translation_centre_model() -> None:
     assert result.ok is True
     assert result.xml is not None
     for name in CENTRE_ATTRS:
-        assert _attr(result.xml, name), f"quarantine convert missing {name}"
+        assert _attr(result.xml, name) is None, f"heading-less quarantine must omit {name}"
+    assert "YUZZ" not in result.xml
 
 
 def test_tc_ev023_006_flag_emits_translation_centre() -> None:
