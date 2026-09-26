@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-25 (EV-1291 / #1291 — TC-F6-040 gzip XML bytes; prior EV-1290 / #1290 — TC-F6-039)
+> **Last updated**: 2026-09-25 (EV-1292 / #1292 — TC-F6-041 failed-shell minimum fields; prior EV-1291 / #1291 — TC-F6-040)
 
 ## Scope
 
@@ -6073,6 +6073,20 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Pass criteria**: The three checks pass.
 - **Out of scope**: Changing the filename pattern. AMHS. #1292. Promoting `stage` to `main`.
 - **Source**: F6 deepen EV-1291 / #1291
+
+### TC-F6-041: Failed-shell minimum identity fields
+
+- **Level**: T0 package. No browser journey.
+- **Objective**: A failed shell has the guidelines minimum identity fields for that product, and still carries the original TAC. [Corpus: product §F6] [Corpus: tests]
+- **Steps**:
+  1. METAR and SPECI failed shells have issue time, aerodrome, and observation time.
+  2. A TAF failed shell also has a valid period.
+  3. SIGMET and AIRMET failed shells have an issuing air traffic services unit and a valid period.
+  4. VAA, TCA, and SWXA failed shells have their issuing centre.
+  5. `translationFailedTAC` stays the original TAC, and `permissibleUsage` stays operational.
+- **Pass criteria**: The five checks pass. No weather parameter is added.
+- **Out of scope**: Test and exercise usage. AMHS. Promoting `stage` to `main`.
+- **Source**: F6 deepen EV-1292 / #1292
 
 ### TC-F4-001: Profile package pin
 
