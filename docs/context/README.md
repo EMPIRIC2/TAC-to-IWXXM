@@ -16,5 +16,6 @@ still land here so they are not appended to `docs/context-brief.md`.
 | [no-fictional-centre.md](no-fictional-centre.md) | EV-1290-no-fictional-centre | active |
 | [gzip-xml-bytes.md](gzip-xml-bytes.md) | EV-1291-gzip-bytes | active |
 | [failed-shell-minimums.md](failed-shell-minimums.md) | EV-1292-failed-shell-fields | active |
+| [exchange-header-audit.md](exchange-header-audit.md) | EV-1275-exchange-audit | active |
 
 Earlier sibling briefs in this directory predate this index.
