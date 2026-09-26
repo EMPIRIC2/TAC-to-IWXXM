@@ -487,6 +487,153 @@ def _apply_permissible_usage(xml: str, tac: str) -> str:
     return xml.replace('permissibleUsage="OPERATIONAL"', attrs, 1)
 
 
+_NIL_MISSING = "http://codes.wmo.int/common/nil/missing"
+_VALID_6 = re.compile(r"\b(\d{2})(\d{2})(\d{2})/(\d{2})(\d{2})(\d{2})\b")
+_VALID_4 = re.compile(r"\b(\d{2})(\d{2})/(\d{2})(\d{2})\b")
+_ATS_UNIT = re.compile(r"\b([A-Z]{4})\s+(?:SIGMET|AIRMET)\b")
+_ADVISORY_CENTRE = {
+    "VAAC": re.compile(r"^VAAC:\s*(\S+)", re.MULTILINE),
+    "TCAC": re.compile(r"^TCAC:\s*(\S+)", re.MULTILINE),
+    "SWXC": re.compile(r"^SWXC:\s*(\S+)", re.MULTILINE),
+}
+
+
+def _valid_period_xml(tac: str, now: str) -> str:
+    """
+    Build a valid-period element from a TAC validity group.
+
+    Parameters
+    ----------
+    tac :
+        Original TAC text.
+    now :
+        Issue timestamp ``YYYY-MM-DDTHH:MM:SSZ`` used for the year and month.
+
+    Returns
+    -------
+    str
+        A ``validPeriod`` element, nil when the TAC has no validity group.
+    """
+    six = _VALID_6.search(tac)
+    four = None if six else _VALID_4.search(tac)
+    match = six or four
+    if match is None:
+        return f'  <iwxxm:validPeriod nilReason="{_NIL_MISSING}"/>\n'
+    parts = match.groups()
+    if len(parts) == 6:
+        bday, bhour, bmin, eday, ehour, emin = parts
+    else:
+        bday, bhour, eday, ehour = parts
+        bmin = emin = "00"
+    year_month = now[:7]
+    begin = f"{year_month}-{bday}T{bhour}:{bmin}:00Z"
+    end = f"{year_month}-{eday}T{ehour}:{emin}:00Z"
+    return (
+        "  <iwxxm:validPeriod>\n"
+        '    <gml:TimePeriod gml:id="t.valid">\n'
+        f"      <gml:beginPosition>{begin}</gml:beginPosition>\n"
+        f"      <gml:endPosition>{end}</gml:endPosition>\n"
+        "    </gml:TimePeriod>\n"
+        "  </iwxxm:validPeriod>\n"
+    )
+
+
+def _unit_xml(tag: str, name: str | None, *, unit_type: str) -> str:
+    """
+    Build an issuing-unit element.
+
+    Parameters
+    ----------
+    tag :
+        IWXXM element local name.
+    name :
+        Centre or unit token recovered from the TAC, or ``None``.
+    unit_type :
+        AIXM unit type.
+
+    Returns
+    -------
+    str
+        The unit element, nil when ``name`` is absent.
+    """
+    if not name:
+        return f'  <iwxxm:{tag} nilReason="{_NIL_MISSING}"/>\n'
+    safe = escape(name)
+    designator = ""
+    if re.fullmatch(r"[A-Z0-9]{4}", name):
+        designator = f"\n        <aixm:designator>{safe}</aixm:designator>"
+    return (
+        f"  <iwxxm:{tag}>\n"
+        f'    <aixm:Unit gml:id="unit.{tag}">\n'
+        "      <aixm:timeSlice>\n"
+        f'        <aixm:UnitTimeSlice gml:id="unit.ts.{tag}">\n'
+        "          <gml:validTime/>\n"
+        "          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n"
+        f"          <aixm:name>{safe}</aixm:name>\n"
+        f"          <aixm:type>{unit_type}</aixm:type>{designator}\n"
+        "        </aixm:UnitTimeSlice>\n"
+        "      </aixm:timeSlice>\n"
+        "    </aixm:Unit>\n"
+        f"  </iwxxm:{tag}>\n"
+    )
+
+
+def _advisory_centre(tac: str, label: str) -> str | None:
+    """
+    Return the advisory-centre token for ``label``, or ``None``.
+
+    Parameters
+    ----------
+    tac :
+        Original TAC text.
+    label :
+        One of ``VAAC``, ``TCAC``, or ``SWXC``.
+
+    Returns
+    -------
+    str | None
+        Upper-case centre token.
+    """
+    match = _ADVISORY_CENTRE[label].search(tac)
+    return match.group(1).upper() if match else None
+
+
+def _quarantine_identity(product: str, tac: str, now: str) -> str:
+    """
+    Extra identity elements required on a failed shell.
+
+    Parameters
+    ----------
+    product :
+        F6 product code.
+    tac :
+        Original TAC text.
+    now :
+        Issue timestamp.
+
+    Returns
+    -------
+    str
+        Identity XML, or an empty string when the shell already has its fields.
+    """
+    if product == "TAF":
+        return _valid_period_xml(tac, now)
+    if product in {"SIGMET", "AIRMET"}:
+        unit = _ATS_UNIT.search(tac)
+        name = unit.group(1) if unit else None
+        return _unit_xml("issuingAirTrafficServicesUnit", name, unit_type="FIC") + _valid_period_xml(tac, now)
+    centres = {
+        "VAA": ("issuingVolcanicAshAdvisoryCentre", "VAAC", "OTHER:VAAC"),
+        "TCA": ("issuingTropicalCycloneAdvisoryCentre", "TCAC", "OTHER:TCAC"),
+        "SWXA": ("issuingSpaceWeatherCentre", "SWXC", "OTHER:SWXC"),
+    }
+    spec = centres.get(product)
+    if spec is None:
+        return ""
+    tag, label, unit_type = spec
+    return _unit_xml(tag, _advisory_centre(tac, label), unit_type=unit_type)
+
+
 def _quarantine_xml(
     product: str,
     tac: str,
@@ -573,7 +720,7 @@ def _quarantine_xml(
         f"{centre_attr}"
         f'translationTime="{now}" '
         f'translationFailedTAC="{failed_tac}">\n'
-        f"{time_block}{aerodrome}"
+        f"{time_block}{aerodrome}{_quarantine_identity(product, tac, now)}"
         f"</iwxxm:{root}>\n"
     )
 

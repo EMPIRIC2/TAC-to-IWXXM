@@ -15,5 +15,6 @@ still land here so they are not appended to `docs/context-brief.md`.
 | [template-amendments.md](template-amendments.md) | EV-1274-template-catalog | active |
 | [no-fictional-centre.md](no-fictional-centre.md) | EV-1290-no-fictional-centre | active |
 | [gzip-xml-bytes.md](gzip-xml-bytes.md) | EV-1291-gzip-bytes | active |
+| [failed-shell-minimums.md](failed-shell-minimums.md) | EV-1292-failed-shell-fields | active |
 
 Earlier sibling briefs in this directory predate this index.
