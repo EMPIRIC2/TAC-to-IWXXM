@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import gzip
 import os
 import re
 from collections.abc import Callable
@@ -807,6 +808,32 @@ def _inject_translation_centre(
     return xml[: match.start()] + match.group(1) + match.group(2) + extra + match.group(3) + xml[match.end() :]
 
 
+def _xml_gzip(xml: str | None, suggested_filename: str | None) -> bytes | None:
+    """
+    Gzip the IWXXM text when the suggested name ends in ``.xml.gz``.
+
+    Parameters
+    ----------
+    xml :
+        IWXXM document text.
+    suggested_filename :
+        Guideline filename, or ``None``.
+
+    Returns
+    -------
+    bytes | None
+        Compressed document, or ``None`` when there is nothing to compress.
+
+    Examples
+    --------
+    >>> _xml_gzip(None, None) is None
+    True
+    """
+    if xml and suggested_filename and suggested_filename.endswith(".xml.gz"):
+        return gzip.compress(xml.encode("utf-8"))
+    return None
+
+
 def convert(
     tac: str,
     *,
@@ -1057,6 +1084,14 @@ def convert(
             return _fail("PARSE_ERROR", message, span=True)
         if _should_quarantine(tac, product_u):
             span_start, span_end = _content_bounds(tac)
+            quarantine_xml = _quarantine_xml(
+                product_u,
+                tac.strip(),
+                effective_iwxxm_version,
+                bulletin_id=bulletin_id,
+                centre_designator=translation_centre_designator or None,
+                centre_name=translation_centre_name or None,
+            )
             return ConvertResult(
                 ok=True,
                 product=product_u,
@@ -1064,14 +1099,8 @@ def convert(
                 iwxxm_version=effective_iwxxm_version,
                 semantic_profile=semantic_profile,
                 deprecated_alias_used=deprecated_alias_used,
-                xml=_quarantine_xml(
-                    product_u,
-                    tac.strip(),
-                    effective_iwxxm_version,
-                    bulletin_id=bulletin_id,
-                    centre_designator=translation_centre_designator or None,
-                    centre_name=translation_centre_name or None,
-                ),
+                xml=quarantine_xml,
+                xml_gzip=_xml_gzip(quarantine_xml, suggested_filename),
                 suggested_filename=suggested_filename,
                 issues=[
                     ConvertIssue(
@@ -1160,6 +1189,7 @@ def convert(
         semantic_profile=semantic_profile,
         deprecated_alias_used=deprecated_alias_used,
         xml=xml,
+        xml_gzip=_xml_gzip(xml, suggested_filename),
         ir=ir,
         issues=issues,
         suggested_filename=suggested_filename,

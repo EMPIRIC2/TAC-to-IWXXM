@@ -153,6 +153,9 @@ class ConvertResult(msgspec.Struct, frozen=True):
     suggested_filename :
         Guideline ``A_…xml.gz`` name when the input has an abbreviated heading.
         ``None`` when there is no heading, and for the Canada datamart name.
+    xml_gzip :
+        Gzip of ``xml`` when ``suggested_filename`` ends in ``.xml.gz``.
+        ``None`` when the name is absent or ends in ``.xml``.
     """
 
     ok: bool
@@ -165,6 +168,7 @@ class ConvertResult(msgspec.Struct, frozen=True):
     ir: dict[str, Any] | None = None
     issues: list[ConvertIssue] = msgspec.field(default_factory=list)
     suggested_filename: str | None = None
+    xml_gzip: bytes | None = None
 
 
 __all__ = [
