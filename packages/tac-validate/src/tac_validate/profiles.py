@@ -12,9 +12,22 @@ PROFILE_ANNEX3: Final[str] = "annex3"
 PROFILE_IWXXM_US: Final[str] = "iwxxm_us"
 PROFILE_CA_ECCC: Final[str] = "ca_eccc"
 PROFILE_IN_IMD: Final[str] = "in_imd"
+PROFILE_US_NWS_CONVECTIVE_SIGMET: Final[str] = "us_nws_convective_sigmet"
+PROFILE_US_NWS_G_AIRMET: Final[str] = "us_nws_g_airmet"
+PROFILE_US_NWS_VONA: Final[str] = "us_nws_vona"
+PROFILE_CA_MSC_SIGMET: Final[str] = "ca_msc_sigmet"
 
 SUPPORTED_PROFILES: Final[frozenset[str]] = frozenset(
-    {PROFILE_ANNEX3, PROFILE_IWXXM_US, PROFILE_CA_ECCC, PROFILE_IN_IMD}
+    {
+        PROFILE_ANNEX3,
+        PROFILE_IWXXM_US,
+        PROFILE_CA_ECCC,
+        PROFILE_IN_IMD,
+        PROFILE_US_NWS_CONVECTIVE_SIGMET,
+        PROFILE_US_NWS_G_AIRMET,
+        PROFILE_US_NWS_VONA,
+        PROFILE_CA_MSC_SIGMET,
+    }
 )
 
 # Products with a defined US profile overlay (L5 REMARKS / FMH-1 / iwxxm-us encode).

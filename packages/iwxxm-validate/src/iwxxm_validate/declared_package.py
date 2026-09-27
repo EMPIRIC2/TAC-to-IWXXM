@@ -17,6 +17,7 @@ _ALLOWED_LINES: dict[str, frozenset[str]] = {
     "annex3": frozenset({"2025-2", "2023-1"}),
     "iwxxm_us": frozenset({"2025-2", "2023-1"}),
     "ca_eccc": frozenset({"3.0.0"}),
+    "ca_msc_sigmet": frozenset({"3.0.0"}),
 }
 _KNOWN_NAMESPACE = re.compile(r"http://icao\.int/iwxxm/(2025-2|2023-1|3\.0)(?![0-9A-Za-z.-])")
 _ANY_NAMESPACE = re.compile(r"http://icao\.int/iwxxm/([^\"'\s<>]+)")

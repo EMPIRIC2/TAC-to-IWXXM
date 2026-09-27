@@ -12,7 +12,7 @@ from iwxxm_validate.schematron import validate_schematron
 from iwxxm_validate.xsd import validate_xsd
 
 _DEFAULT_LEVELS: tuple[str, ...] = ("xsd", "schematron")
-_VALID_PROFILES = frozenset({"annex3", "iwxxm_us", "ca_eccc"})
+_VALID_PROFILES = frozenset({"annex3", "iwxxm_us", "ca_eccc", "ca_msc_sigmet"})
 _CA_ECCC_IWXXM_VERSION = "3.0.0"
 _VALID_LEVELS = frozenset({"xsd", "schematron"})
 
@@ -117,7 +117,7 @@ def validate(
             ],
         )
 
-    if profile == "ca_eccc":
+    if profile in {"ca_eccc", "ca_msc_sigmet"}:
         if ca_xsd_path() is None:
             issues.append(
                 Issue(
@@ -139,7 +139,7 @@ def validate(
                     severity="error",
                     code="INVALID_IWXXM_VERSION",
                     message=(
-                        f"profile=ca_eccc requires iwxxm_version {_CA_ECCC_IWXXM_VERSION!r}, got {iwxxm_version!r}"
+                        f"profile={profile} requires iwxxm_version {_CA_ECCC_IWXXM_VERSION!r}, got {iwxxm_version!r}"
                     ),
                     layer="wmo_xsd",
                 )
@@ -152,11 +152,20 @@ def validate(
             )
         from iwxxm_validate.ca_eccc_validate import validate_ca_eccc_layered
 
-        return validate_ca_eccc_layered(
+        report = validate_ca_eccc_layered(
             xml_content,
             iwxxm_version=iwxxm_version,
             product=product,
             levels=selected,
+        )
+        if profile == "ca_eccc":
+            return report
+        return ValidationReport(
+            ok=report.ok,
+            iwxxm_version=report.iwxxm_version,
+            profile=profile,
+            issues=report.issues,
+            stages=report.stages,
         )
 
     if profile == "iwxxm_us" and us_catalog_path() is None:

@@ -19,6 +19,10 @@ CANONICAL_KR_KMA = "kr_kma"
 CANONICAL_JP_JMA = "jp_jma"
 CANONICAL_IN_IMD = "in_imd"
 CANONICAL_HK_HKO = "hk_hko"
+CANONICAL_US_NWS_CONVECTIVE_SIGMET = "us_nws_convective_sigmet"
+CANONICAL_US_NWS_G_AIRMET = "us_nws_g_airmet"
+CANONICAL_US_NWS_VONA = "us_nws_vona"
+CANONICAL_CA_MSC_SIGMET = "ca_msc_sigmet"
 
 EMIT_ANNEX3 = "annex3"
 EMIT_IWXXM_US = "iwxxm_us"
@@ -31,6 +35,10 @@ EMIT_KR_KMA = "kr_kma"
 EMIT_JP_JMA = "jp_jma"
 EMIT_IN_IMD = "in_imd"
 EMIT_HK_HKO = "hk_hko"
+EMIT_US_NWS_CONVECTIVE_SIGMET = "us_nws_convective_sigmet"
+EMIT_US_NWS_G_AIRMET = "us_nws_g_airmet"
+EMIT_US_NWS_VONA = "us_nws_vona"
+EMIT_CA_MSC_SIGMET = "ca_msc_sigmet"
 
 _ALIAS_TO_CANONICAL: dict[str, str] = {
     EMIT_ANNEX3: CANONICAL_ICAO_2025,
@@ -49,12 +57,17 @@ _CANONICAL_TO_EMIT: dict[str, str] = {
     CANONICAL_JP_JMA: EMIT_JP_JMA,
     CANONICAL_IN_IMD: EMIT_IN_IMD,
     CANONICAL_HK_HKO: EMIT_HK_HKO,
+    CANONICAL_US_NWS_CONVECTIVE_SIGMET: EMIT_US_NWS_CONVECTIVE_SIGMET,
+    CANONICAL_US_NWS_G_AIRMET: EMIT_US_NWS_G_AIRMET,
+    CANONICAL_US_NWS_VONA: EMIT_US_NWS_VONA,
+    CANONICAL_CA_MSC_SIGMET: EMIT_CA_MSC_SIGMET,
 }
 
 _KNOWN_WIRE_IDS: frozenset[str] = frozenset(_ALIAS_TO_CANONICAL) | frozenset(_CANONICAL_TO_EMIT)
 _GENERAL_IWXXM_VERSIONS = frozenset({"2025-2", "2023-1"})
 _PROFILE_SCOPED_IWXXM_VERSIONS: dict[str, frozenset[str]] = {
     EMIT_CA_ECCC: frozenset({"3.0.0"}),
+    EMIT_CA_MSC_SIGMET: frozenset({"3.0.0"}),
 }
 _PROFILE_REPORT_VARIANTS: dict[str, dict[str, frozenset[str]]] = {
     EMIT_CA_ECCC: {
@@ -228,6 +241,7 @@ __all__ = [
     "CANONICAL_AU_BOM",
     "CANONICAL_BR_DECEA",
     "CANONICAL_CA_ECCC",
+    "CANONICAL_CA_MSC_SIGMET",
     "CANONICAL_HK_HKO",
     "CANONICAL_ICAO_2025",
     "CANONICAL_IN_IMD",
@@ -236,10 +250,14 @@ __all__ = [
     "CANONICAL_NZ_CAA_MET",
     "CANONICAL_UK_METOFFICE",
     "CANONICAL_US_FAA_NWS",
+    "CANONICAL_US_NWS_CONVECTIVE_SIGMET",
+    "CANONICAL_US_NWS_G_AIRMET",
+    "CANONICAL_US_NWS_VONA",
     "EMIT_ANNEX3",
     "EMIT_AU_BOM",
     "EMIT_BR_DECEA",
     "EMIT_CA_ECCC",
+    "EMIT_CA_MSC_SIGMET",
     "EMIT_HK_HKO",
     "EMIT_IN_IMD",
     "EMIT_IWXXM_US",
@@ -247,6 +265,9 @@ __all__ = [
     "EMIT_KR_KMA",
     "EMIT_NZ_CAA_MET",
     "EMIT_UK_METOFFICE",
+    "EMIT_US_NWS_CONVECTIVE_SIGMET",
+    "EMIT_US_NWS_G_AIRMET",
+    "EMIT_US_NWS_VONA",
     "ResolvedSemanticProfile",
     "canonical_semantic_profile_wire_ids",
     "known_semantic_profile_ids",

@@ -32,6 +32,10 @@ _POLICY_BY_EMIT: dict[str, tuple[str, str]] = {
     "jp_jma": _ANNEX3_POLICIES,
     "in_imd": _ANNEX3_POLICIES,
     "hk_hko": _ANNEX3_POLICIES,
+    "us_nws_convective_sigmet": _ANNEX3_POLICIES,
+    "us_nws_g_airmet": _ANNEX3_POLICIES,
+    "us_nws_vona": _ANNEX3_POLICIES,
+    "ca_msc_sigmet": _ANNEX3_POLICIES,
 }
 
 

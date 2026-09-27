@@ -25,7 +25,9 @@ from tac2iwxxm.pack_ir_map import PackIrMapError, map_spans_to_convert_ir, pack_
 from tac2iwxxm.profile_registry import (
     EMIT_ANNEX3,
     EMIT_CA_ECCC,
+    EMIT_CA_MSC_SIGMET,
     EMIT_IWXXM_US,
+    EMIT_US_NWS_CONVECTIVE_SIGMET,
     resolve_semantic_profile,
     supported_iwxxm_versions_for_profile,
     supported_report_variants_for_profile,
@@ -63,6 +65,13 @@ def _ir_source_is_explicit_pack(ir_source: str | None) -> bool:
 
 
 _SUPPORTED_PRODUCTS = frozenset({"METAR", "SPECI", "TAF", "SIGMET", "AIRMET", "VAA", "TCA", "SWXA", "VONA"})
+_SOURCE_UNAVAILABLE = {
+    "us_nws_g_airmet": ("United States G-AIRMET conversion is unavailable until a text bulletin is on file."),
+    "us_nws_vona": (
+        "United States volcano observatory notice conversion is unavailable until a complete notice is on file."
+    ),
+    "ca_msc_sigmet": ("Canadian SIGMET text conversion is unavailable until a text source is on file."),
+}
 _REPORT_STATUSES = frozenset({"NORMAL", "AMENDMENT", "CORRECTION"})
 
 # Map MALFORMED_REMARKS message needles → token regexes for editor spans (S011 T2.2).
@@ -1087,7 +1096,9 @@ def convert(
     )
     do_propagate = resolve_propagate_residuals_to_remarks(profile_l, propagate_residuals_to_remarks)
     effective_iwxxm_version = (
-        CA_IWXXM_VERSION if profile_l == EMIT_CA_ECCC and iwxxm_version is None else requested_iwxxm_version
+        CA_IWXXM_VERSION
+        if profile_l in {EMIT_CA_ECCC, EMIT_CA_MSC_SIGMET} and iwxxm_version is None
+        else requested_iwxxm_version
     )
 
     def _fail(
@@ -1156,6 +1167,8 @@ def convert(
             "INVALID_IWXXM_VERSION",
             message,
         )
+    if profile_l in _SOURCE_UNAVAILABLE:
+        return _fail("SOURCE_UNAVAILABLE", _SOURCE_UNAVAILABLE[profile_l])
     if not preview:
         # TC-EVYFC-004 / D-YFC-05: fail-closed pin↔SCH (soft-preview waived).
         try:
@@ -1222,7 +1235,15 @@ def convert(
                 profile_l=profile_l,
                 ir=ir,
             )
-        xml = _emit(product_u, profile_l, ir, effective_iwxxm_version)
+        if profile_l == EMIT_US_NWS_CONVECTIVE_SIGMET:
+            if not ir.get("convective"):
+                return _fail(
+                    "NOT_CONVECTIVE_SIGMET",
+                    "This profile converts United States convective SIGMET text, not an international SIGMET.",
+                )
+            xml = _emit(product_u, EMIT_IWXXM_US, ir, effective_iwxxm_version)
+        else:
+            xml = _emit(product_u, profile_l, ir, effective_iwxxm_version)
     except UnknownVOR as exc:
         return _fail("PARSE_ERROR", f"unknown VOR reference {exc}", span=True)
     except ValueError as exc:

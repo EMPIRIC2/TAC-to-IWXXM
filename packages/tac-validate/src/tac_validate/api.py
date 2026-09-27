@@ -6,10 +6,14 @@ from collections.abc import Sequence
 
 from tac_validate.ahl import lint_ahl_bulletin, looks_like_ahl
 from tac_validate.match_port import DecodeMatch, MatchPort, match_port_spans, spans_from_port
-from tac_validate.models import LintReport
+from tac_validate.models import Issue, LintReport
 from tac_validate.products import PRODUCTS
 from tac_validate.profiles import (
     PROFILE_ANNEX3,
+    PROFILE_CA_MSC_SIGMET,
+    PROFILE_US_NWS_CONVECTIVE_SIGMET,
+    PROFILE_US_NWS_G_AIRMET,
+    PROFILE_US_NWS_VONA,
     ca_eccc_applicable,
     in_imd_applicable,
     iwxxm_us_lint_applicable,
@@ -96,6 +100,36 @@ def lint(
     """
     profile_l = normalize_profile(profile)
     product_u = product.upper()
+    if profile_l == PROFILE_US_NWS_CONVECTIVE_SIGMET:
+        if product_u != "SIGMET":
+            raise ValueError(f"profile {profile_l} is not applicable for product {product_u!r} (N/A - use annex3)")
+        if "CONVECTIVE SIGMET" not in tac_text.upper():
+            return LintReport(
+                ok=False,
+                product=product_u,
+                issues=[
+                    Issue(
+                        severity="error",
+                        code="NOT_CONVECTIVE_SIGMET",
+                        message=(
+                            "This profile checks United States convective SIGMET text, not an international SIGMET."
+                        ),
+                    )
+                ],
+                fixes=[],
+            )
+        return LintReport(ok=True, product=product_u, issues=[], fixes=[])
+    refusal = _SOURCE_UNAVAILABLE_LINT.get(profile_l)
+    if refusal is not None:
+        allowed, message = refusal
+        if product_u not in allowed:
+            raise ValueError(f"profile {profile_l} is not applicable for product {product_u!r} (N/A - use annex3)")
+        return LintReport(
+            ok=False,
+            product=product_u,
+            issues=[Issue(severity="error", code="SOURCE_UNAVAILABLE", message=message)],
+            fixes=[],
+        )
     if profile_l == "iwxxm_us" and not iwxxm_us_lint_applicable(product_u):
         raise ValueError(f"profile iwxxm_us is not applicable for product {product_u!r} (N/A - use annex3)")
     if profile_l == "ca_eccc" and not ca_eccc_applicable(product_u):
@@ -120,3 +154,18 @@ def lint(
 
 
 __all__ = ["PRODUCTS", "lint"]
+
+_SOURCE_UNAVAILABLE_LINT: dict[str, tuple[frozenset[str], str]] = {
+    PROFILE_US_NWS_G_AIRMET: (
+        frozenset({"AIRMET"}),
+        "United States G-AIRMET checking is unavailable until a text bulletin is on file.",
+    ),
+    PROFILE_US_NWS_VONA: (
+        frozenset({"VONA"}),
+        "United States volcano observatory notice checking is unavailable until a complete notice is on file.",
+    ),
+    PROFILE_CA_MSC_SIGMET: (
+        frozenset({"SIGMET"}),
+        "Canadian SIGMET text checking is unavailable until a text source is on file.",
+    ),
+}
