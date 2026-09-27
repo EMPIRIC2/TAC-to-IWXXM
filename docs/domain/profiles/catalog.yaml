@@ -580,6 +580,54 @@ profiles:
       - AIP GEN 3.5 durable URL still gap
       - Chinese-language bulletin variants not required for v1 fixtures
 
+  - id: US_NWS_CONVECTIVE_SIGMET
+    kind: semantic
+    priority: P1
+    status: implemented
+    emit_key: us_nws_convective_sigmet
+    products: [SIGMET]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → iwxxm v2025-2
+    stub: semantic/US_FAA_NWS.md
+    gaps:
+      - Convective SIGMET uses the existing convective emitter. International SIGMET stays on ICAO_2025.
+
+  - id: US_NWS_G_AIRMET
+    kind: semantic
+    priority: P1
+    status: implemented
+    emit_key: us_nws_g_airmet
+    products: [AIRMET]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → iwxxm v2025-2
+    stub: semantic/US_FAA_NWS.md
+    gaps:
+      - Public feed is hazard polygons. Convert and lint refuse until a text bulletin exists.
+
+  - id: US_NWS_VONA
+    kind: semantic
+    priority: P1
+    status: implemented
+    emit_key: us_nws_vona
+    products: [VONA]
+    vendor_pins:
+      iwxxm: vendor/manifest.json → iwxxm v2025-2
+    stub: semantic/US_FAA_NWS.md
+    gaps:
+      - Convert and lint refuse until a clean TAC fixture is accepted. iwxxm_us keeps its current VONA path.
+
+  - id: CA_MSC_SIGMET
+    kind: semantic
+    priority: P1
+    status: implemented
+    emit_key: ca_msc_sigmet
+    products: [SIGMET]
+    vendor_pins:
+      iwxxm-ca: vendor/manifest.json → iwxxm-ca 3.0
+    stub: semantic/CA_ECCC.md
+    gaps:
+      - Validates a published IWXXM 3.0 file. Text conversion waits for a TAC source. ca_eccc keeps its SIGMET TAC path.
+
   # --- Exchange (packaging / routing — not TAC grammar) ---
 
   - id: GLOBAL_AFS

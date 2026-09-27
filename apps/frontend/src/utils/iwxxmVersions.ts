@@ -107,6 +107,19 @@ function normalizeProfileId(profile: string): string {
 }
 
 /**
+ * Canadian lines that publish IWXXM 3.0.0 only.
+ *
+ * @param profile - UI profile id or alias
+ * @returns True for Canada (ECCC) and Canadian SIGMET
+ * @example
+ * const _ = true;
+ */
+export function isMscOperationalLine(profile: string): boolean {
+  const id = normalizeProfileId(profile);
+  return id === 'ca_eccc' || id === 'ca_msc_sigmet';
+}
+
+/**
  * IWXXM version select options for the active semantic profile.
  *
  * @param profile - UI profile emit key
@@ -115,7 +128,7 @@ function normalizeProfileId(profile: string): string {
  * const _ = true;
  */
 export function iwxxmVersionOptionsForProfile(profile: string) {
-  if (normalizeProfileId(profile) === 'ca_eccc') {
+  if (isMscOperationalLine(profile)) {
     return [
       {
         value: CA_ECCC_IWXXM_VERSION,
@@ -140,7 +153,7 @@ export function coerceIwxxmVersionForProfile(
   profile: string,
   value: unknown,
 ): IwxxmVersionId | typeof CA_ECCC_IWXXM_VERSION {
-  if (normalizeProfileId(profile) === 'ca_eccc') {
+  if (isMscOperationalLine(profile)) {
     return CA_ECCC_IWXXM_VERSION;
   }
   return coerceIwxxmVersion(value);

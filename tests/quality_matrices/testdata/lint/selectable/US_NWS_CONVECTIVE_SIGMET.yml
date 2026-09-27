@@ -1,0 +1,303 @@
+rule_id: US_NWS_CONVECTIVE_SIGMET
+engine: lint
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: |
+    WSUS32 KKCI 231555
+    SIGC
+    CONVECTIVE SIGMET 75C
+    VALID UNTIL 1755Z
+    TX
+    FROM 30SW GCK-30SW GCK
+    AREA TS MOV FROM 21030KT. TOPS TO FL320.
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: |
+    WSUS32 KKCI 231555
+    SIGC
+    CONVECTIVE SIGMET 76C
+    VALID UNTIL 1755Z
+    NM
+    FROM 40SSW FTI-40SSW FTI
+    AREA TS MOV FROM 17030KT. TOPS TO FL280.
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: |
+    WSUS31 KKCI 231555
+    SIGE
+    CONVECTIVE SIGMET 04E
+    VALID UNTIL 1755Z
+    FL AND CSTL WTRS
+    FROM 70E PBI-70E PBI
+    AREA EMBD TS MOV FROM 16010KT. TOPS TO FL410.
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: |
+    WSUS32 KKCI 231555
+    SIGC
+    CONVECTIVE SIGMET 1C
+    VALID UNTIL 1755Z
+    TX
+    FROM 10N GCK-10N GCK
+    AREA TS MOV FROM 21020KT. TOPS TO FL300.
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: |
+    WSUS32 KKCI 231555
+    SIGC
+    CONVECTIVE SIGMET 2C
+    VALID UNTIL 1755Z
+    OK
+    FROM 20S MMB-20S MMB
+    AREA TS MOV FROM 18015KT. TOPS TO FL250.
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: sad
+  case_id: '01'
+  status: ready
+  tac: |
+    YUDD SIGMET 1 VALID 101200/101600 YUSO- YUDD SHANLON FIR SEV TURB OBS WI N4230 E02115 - N4230 E02115 FL250 MOV E 20KT INTSF=
+  expect:
+    accept: false
+    codes:
+    - NOT_CONVECTIVE_SIGMET
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: sad
+  case_id: '02'
+  status: ready
+  tac: |
+    YUDD SIGMET 2 VALID 101200/101600 YUSO- YUDD SHANLON FIR SEV ICE OBS WI N4230 E02115 - N4230 E02115 FL250 MOV E 20KT INTSF=
+  expect:
+    accept: false
+    codes:
+    - NOT_CONVECTIVE_SIGMET
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: sad
+  case_id: '03'
+  status: ready
+  tac: |
+    YUDD SIGMET 3 VALID 101200/101600 YUSO- YUDD SHANLON FIR SEV TURB OBS WI N4300 E02200 - N4300 E02200 FL280 STNR NC=
+  expect:
+    accept: false
+    codes:
+    - NOT_CONVECTIVE_SIGMET
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: sad
+  case_id: '04'
+  status: ready
+  tac: |
+    YUDD SIGMET 4 VALID 101200/101600 YUSO- YUDD SHANLON FIR EMBD TS OBS WI N4100 E02000 - N4100 E02000 TOP FL350 MOV W 10KT WKN=
+  expect:
+    accept: false
+    codes:
+    - NOT_CONVECTIVE_SIGMET
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: sad
+  case_id: '05'
+  status: ready
+  tac: |
+    YUDD SIGMET 5 VALID 101200/101600 YUSO- YUDD SHANLON FIR SEV TURB FCST WI N4000 E01900 - N4000 E01900 FL200 MOV N 15KT NC=
+  expect:
+    accept: false
+    codes:
+    - NOT_CONVECTIVE_SIGMET
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: |
+    WSUS32 KKCI 231555
+    SIGC
+    CONVECTIVE SIGMET 75C
+    VALID UNTIL 1755Z
+    TX
+    FROM 30SW GCK-30SW GCK
+    AREA TS MOV FROM 21030KT. TOPS TO FL320.
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: |
+    WSUS32 KKCI 231555
+    SIGC
+    CONVECTIVE SIGMET 76C
+    VALID UNTIL 1755Z
+    NM
+    FROM 40SSW FTI-40SSW FTI
+    AREA TS MOV FROM 17030KT. TOPS TO FL280.
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: |
+    WSUS31 KKCI 231555
+    SIGE
+    CONVECTIVE SIGMET 04E
+    VALID UNTIL 1755Z
+    FL AND CSTL WTRS
+    FROM 70E PBI-70E PBI
+    AREA EMBD TS MOV FROM 16010KT. TOPS TO FL410.
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: |
+    WSUS32 KKCI 231555
+    SIGC
+    CONVECTIVE SIGMET 1C
+    VALID UNTIL 1755Z
+    TX
+    FROM 10N GCK-10N GCK
+    AREA TS MOV FROM 21020KT. TOPS TO FL300.
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: |
+    WSUS32 KKCI 231555
+    SIGC
+    CONVECTIVE SIGMET 2C
+    VALID UNTIL 1755Z
+    OK
+    FROM 20S MMB-20S MMB
+    AREA TS MOV FROM 18015KT. TOPS TO FL250.
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  tac: |
+    YUDD SIGMET 1 VALID 101200/101600 YUSO- YUDD SHANLON FIR SEV TURB OBS WI N4230 E02115 - N4230 E02115 FL250 MOV E 20KT INTSF=
+  expect:
+    accept: false
+    codes:
+    - NOT_CONVECTIVE_SIGMET
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  tac: |
+    YUDD SIGMET 2 VALID 101200/101600 YUSO- YUDD SHANLON FIR SEV ICE OBS WI N4230 E02115 - N4230 E02115 FL250 MOV E 20KT INTSF=
+  expect:
+    accept: false
+    codes:
+    - NOT_CONVECTIVE_SIGMET
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  tac: |
+    YUDD SIGMET 3 VALID 101200/101600 YUSO- YUDD SHANLON FIR SEV TURB OBS WI N4300 E02200 - N4300 E02200 FL280 STNR NC=
+  expect:
+    accept: false
+    codes:
+    - NOT_CONVECTIVE_SIGMET
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  tac: |
+    YUDD SIGMET 4 VALID 101200/101600 YUSO- YUDD SHANLON FIR EMBD TS OBS WI N4100 E02000 - N4100 E02000 TOP FL350 MOV W 10KT WKN=
+  expect:
+    accept: false
+    codes:
+    - NOT_CONVECTIVE_SIGMET
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  tac: |
+    YUDD SIGMET 5 VALID 101200/101600 YUSO- YUDD SHANLON FIR SEV TURB FCST WI N4000 E01900 - N4000 E01900 FL200 MOV N 15KT NC=
+  expect:
+    accept: false
+    codes:
+    - NOT_CONVECTIVE_SIGMET
+  meta:
+    product: SIGMET
+    profile: US_NWS_CONVECTIVE_SIGMET
+

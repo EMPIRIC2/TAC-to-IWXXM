@@ -13,3 +13,7 @@ profiles:
   jp_jma: [METAR, SPECI, TAF, SIGMET, VAA]
   in_imd: [METAR, SPECI, TAF, SIGMET, TCA]
   hk_hko: [METAR, SPECI, TAF, SIGMET, VAA]
+  us_nws_convective_sigmet: [SIGMET]
+  us_nws_g_airmet: [AIRMET]
+  us_nws_vona: [VONA]
+  ca_msc_sigmet: [SIGMET]

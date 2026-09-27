@@ -6088,6 +6088,15 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Out of scope**: Test and exercise usage. AMHS. Promoting `stage` to `main`.
 - **Source**: F6 deepen EV-1292 / #1292
 
+### TC-F6-042: Selectable profiles for uncovered formats
+
+- **Level**: T0 package and frontend unit. Browser end-to-end follows later.
+- **Objective**: The Convert dropdown offers four new profiles. Convective SIGMET converts and lints. G-AIRMET and US VONA refuse until a text source exists. Canadian SIGMET validates published IWXXM 3.0 and does not convert from text. Annex 3 international SIGMET output stays on the Annex 3 profile.
+- **Pass criteria**: `test_tc_f6_042_selectable_profiles.py` and the 20-slot lint matrices pass. The profile select lists the four new ids.
+- **Out of scope**: A live map. In-app profile authoring. Pull request #1269. Promoting `stage` to `main`.
+- **Source**: F6 deepen EV-1267 / #1267
+
+
 ### TC-F4-001: Profile package pin
 
 - **Level**: T0 package. No browser journey.

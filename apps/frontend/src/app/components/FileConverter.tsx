@@ -120,6 +120,7 @@ import {
   type IwxxmVersionId,
   coerceIwxxmVersion,
   coerceIwxxmVersionForProfile,
+  isMscOperationalLine,
   iwxxmVersionOptionsForProfile,
 } from '@/utils/iwxxmVersions';
 import { signOutWithScope } from '/utils/supabase/logout';
@@ -398,6 +399,38 @@ const FALLBACK_PROFILE_SUMMARIES: Partial<Record<IwxxmProfile, ProfileCatalogEnt
       },
     ],
   },
+  US_NWS_CONVECTIVE_SIGMET: {
+    id: 'US_NWS_CONVECTIVE_SIGMET',
+    kind: 'semantic',
+    products: ['SIGMET'],
+    deltas_vs_icao: [
+      'United States convective SIGMET. Use this for convective SIGMET text, not an international SIGMET.',
+    ],
+  },
+  US_NWS_G_AIRMET: {
+    id: 'US_NWS_G_AIRMET',
+    kind: 'semantic',
+    products: ['AIRMET'],
+    deltas_vs_icao: [
+      'United States G-AIRMET. Conversion is unavailable until a text bulletin is on file.',
+    ],
+  },
+  US_NWS_VONA: {
+    id: 'US_NWS_VONA',
+    kind: 'semantic',
+    products: ['VONA'],
+    deltas_vs_icao: [
+      'United States volcano observatory notice. Conversion is unavailable until a complete notice is on file.',
+    ],
+  },
+  CA_MSC_SIGMET: {
+    id: 'CA_MSC_SIGMET',
+    kind: 'semantic',
+    products: ['SIGMET'],
+    deltas_vs_icao: [
+      'Canadian SIGMET published as IWXXM. This checks the published file. Text conversion is unavailable.',
+    ],
+  },
 };
 
 /**
@@ -419,10 +452,9 @@ function fallbackProfileSummary(
   if (fallback) {
     return {
       ...fallback,
-      iwxxm_line:
-        canonicalId === 'CA_ECCC'
-          ? `IWXXM ${CA_ECCC_IWXXM_VERSION} (MSC operational)`
-          : `IWXXM ${iwxxmVersion}`,
+      iwxxm_line: isMscOperationalLine(canonicalId)
+        ? `IWXXM ${CA_ECCC_IWXXM_VERSION} (MSC operational)`
+        : `IWXXM ${iwxxmVersion}`,
     };
   }
   return {
