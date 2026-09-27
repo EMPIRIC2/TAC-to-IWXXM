@@ -69,7 +69,7 @@ def test_waiting_profiles_refuse_convert_and_lint() -> None:
         assert any(issue.code == "SOURCE_UNAVAILABLE" for issue in report.issues)
 
 
-def test_canadian_sigmet_profile_validates_published_iwxxm() -> None:
+def test_canadian_sigmet_profile_checks_a_published_file() -> None:
     source = """\
 WSNT01 CWAO 231522
 CZQX SIGMET F2 VALID 231520/231920 CWUL-

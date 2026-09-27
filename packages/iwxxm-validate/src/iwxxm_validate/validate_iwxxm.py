@@ -27,7 +27,11 @@ from iwxxm_validate.pin_sch import PinSchError, assert_pin_schematron_match
 from iwxxm_validate.wellformed import run_wellformed_lxml
 
 _DEFAULT_LEVELS: tuple[str, ...] = ("xsd", "schematron")
-_VALID_PROFILES = frozenset({"annex3", "iwxxm_us", "ca_eccc"})
+_VALID_PROFILES = frozenset({"annex3", "iwxxm_us", "ca_eccc", "ca_msc_sigmet", "us_nws_convective_sigmet"})
+_ENGINE_PROFILE = {
+    "ca_msc_sigmet": "ca_eccc",
+    "us_nws_convective_sigmet": "iwxxm_us",
+}
 _VALID_LEVELS = frozenset({"wellformed", "xsd", "schematron", "gml", "codelists"})
 _RUST_LEVELS = frozenset({"wellformed", "xsd", "schematron"})
 _LXML_LEVELS = frozenset({"xsd", "schematron"})
@@ -61,7 +65,7 @@ def _catalog_roots(iwxxm_version: str, *, profile: str = "annex3") -> list[str]:
         # Optional monorepo-only fallback (excluded from the wheel subset).
         repo_root() / "vendor" / "schemas" / "iwxxm-translation" / "externalSchema",
     ]
-    if profile == "ca_eccc":
+    if profile in {"ca_eccc", "ca_msc_sigmet"}:
         return ca_eccc_catalog_roots(iwxxm_version)
     return [str(p) for p in candidates if p.is_dir()]
 
@@ -314,6 +318,22 @@ def _validate_iwxxm(
                     layer="xsd",
                 )
             ],
+        )
+    engine = _ENGINE_PROFILE.get(profile)
+    if engine is not None:
+        report = _validate_iwxxm(
+            xml_content,
+            iwxxm_version=iwxxm_version,
+            profile=engine,
+            levels=levels,
+            product=product,
+        )
+        return ValidationReport(
+            ok=report.ok,
+            iwxxm_version=report.iwxxm_version,
+            profile=profile,
+            issues=report.issues,
+            stages=report.stages,
         )
 
     selected = tuple(levels) if levels is not None else _DEFAULT_LEVELS
