@@ -6104,6 +6104,14 @@ Manual signoff before release — not a PR merge gate. Developer runs `make test
 - **Out of scope**: A live map. In-app profile authoring. Pull request #1269. Promoting `stage` to `main`.
 - **Source**: F6 deepen EV-1267 / #1267
 
+### TC-F6-043: Operational TAC profile coverage delta (docs)
+
+- **Level**: Docs / review. No new pytest module.
+- **Objective**: Standing docs state which operational TAC the current profiles accept (2026-09-23 pass) and which formats still lack a usable TAC source after #1267. Issue text that said “no convert profile” or “lint matrices not committed” is corrected.
+- **Pass criteria**: [`docs/context/operational-tac-delta.md`](context/operational-tac-delta.md) exists; [`docs/context/selectable-profiles.md`](context/selectable-profiles.md) matches the catalog refusals; F6 deepen EV-1266 is in `docs/feature-list.md`. Catalog ids and `_SOURCE_UNAVAILABLE` refusals stay aligned with the brief.
+- **Out of scope**: New emitters. Live feeds. Reopening #970. Promoting `stage` to `main`.
+- **Source**: F6 deepen EV-1266 / #1266
+
 
 ### TC-F4-001: Profile package pin
 

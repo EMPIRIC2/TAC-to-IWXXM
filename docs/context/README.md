@@ -19,5 +19,6 @@ still land here so they are not appended to `docs/context-brief.md`.
 | [exchange-header-audit.md](exchange-header-audit.md) | EV-1275-exchange-audit | active |
 | [selectable-profiles.md](selectable-profiles.md) | EV-1267-selectable-profiles | active |
 | [product-matrices.md](product-matrices.md) | EV-1265-product-matrices | active |
+| [operational-tac-delta.md](operational-tac-delta.md) | EV-1266-operational-tac-delta | active |
 
 Earlier sibling briefs in this directory predate this index.
