@@ -1,0 +1,303 @@
+rule_id: SIGMET.SIGMETEvolvingCondition-2
+engine: validate
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/sigmet_a6_1a_ts.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: 'YUDD SIGMET 4 VALID 111200/111600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET convert-then-validate
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 121200/121600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET convert-then-validate
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL350 MOV E 20KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET convert-then-validate
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 25KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET convert-then-validate
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN'
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET edge convert-then-validate
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: '  YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN=  '
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET edge convert-then-validate
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN ='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET edge convert-then-validate
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: 'YUDD SIGMET 5 VALID 131400/131800 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET edge convert-then-validate
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV W 20KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET edge convert-then-validate
+- bucket: sad
+  case_id: '01'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - SIGMET.SIGMETEvolvingCondition-2
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH negative SIGMET.SIGMETEvolvingCondition-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:SIGMET xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"sigmet.basic.yudd\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-10T12:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:issuingAirTrafficServicesUnit>\n    <aixm:Unit gml:id=\"unit.atsu.yudd\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.atsu.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUDD FIC</aixm:name>\n          <aixm:type>FIC</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n      \
+      \  </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:issuingAirTrafficServicesUnit>\n  <iwxxm:originatingMeteorologicalWatchOffice>\n    <aixm:Unit gml:id=\"unit.mwo.yuso\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.mwo.ts.yuso\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUSO MWO</aixm:name>\n          <aixm:type>MWO</aixm:type>\n          <aixm:designator>YUSO</aixm:designator>\n        </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:originatingMeteorologicalWatchOffice>\n  <iwxxm:issuingAirTrafficServicesRegion>\n    <aixm:Airspace gml:id=\"as.yudd\">\n      <aixm:timeSlice>\n        <aixm:AirspaceTimeSlice gml:id=\"as.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:type>OTHER:FIR_UIR</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n          <aixm:name>SHANLON\
+      \ FIR/UIR</aixm:name>\n        </aixm:AirspaceTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Airspace>\n  </iwxxm:issuingAirTrafficServicesRegion>\n  <iwxxm:sequenceNumber>2</iwxxm:sequenceNumber>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-10T12:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/49-2/SigWxPhenomena/OBSC_TS\"/>\n  <iwxxm:analysisCollection>\n    <iwxxm:analysisAndForecastPositionAnalysis gml:id=\"analysis.yudd\">\n      <iwxxm:analysis>\n        <iwxxm:SIGMETEvolvingConditionCollection gml:id=\"evolving.yudd\" timeIndicator=\"FORECAST\">\n          <iwxxm:phenomenonTime nilReason=\"http://codes.wmo.int/common/nil/missing\"/>\n          <iwxxm:member>\n            <iwxxm:SIGMETEvolvingCondition gml:id=\"cond.yudd\" intensityChange=\"WEAKEN\">\n              <iwxxm:geometry>\n\
+      \                <aixm:AirspaceVolume gml:id=\"vol.yudd\">\n              <aixm:upperLimit uom=\"FL\">390</aixm:upperLimit>\n              <aixm:upperLimitReference>STD</aixm:upperLimitReference>\n                  <aixm:horizontalProjection>\n                    <aixm:Surface gml:id=\"sfc.yudd\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                      <gml:patches>\n                        <gml:PolygonPatch>\n                          <gml:exterior>\n                            <gml:LinearRing>\n                              <gml:posList>54.0 -12.0 50.0 -12.0 50.0 -8.0 54.0 -8.0 54.0 -12.0</gml:posList>\n                            </gml:LinearRing>\n                          </gml:exterior>\n                        </gml:PolygonPatch>\n                      </gml:patches>\n                    </aixm:Surface>\n                  </aixm:horizontalProjection>\n                </aixm:AirspaceVolume>\n              </iwxxm:geometry>\n\
+      \              <iwxxm:directionOfMotion uom=\"rad\">90</iwxxm:directionOfMotion>\n              <iwxxm:speedOfMotion uom=\"[kn_i]\">20</iwxxm:speedOfMotion>\n            </iwxxm:SIGMETEvolvingCondition>\n          </iwxxm:member>\n        </iwxxm:SIGMETEvolvingConditionCollection>\n      </iwxxm:analysis>\n    </iwxxm:analysisAndForecastPositionAnalysis>\n  </iwxxm:analysisCollection></iwxxm:SIGMET>\n<!-- 0 -->"
+- bucket: sad
+  case_id: '02'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - SIGMET.SIGMETEvolvingCondition-2
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH negative SIGMET.SIGMETEvolvingCondition-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:SIGMET xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"sigmet.basic.yudd\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-10T12:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:issuingAirTrafficServicesUnit>\n    <aixm:Unit gml:id=\"unit.atsu.yudd\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.atsu.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUDD FIC</aixm:name>\n          <aixm:type>FIC</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n      \
+      \  </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:issuingAirTrafficServicesUnit>\n  <iwxxm:originatingMeteorologicalWatchOffice>\n    <aixm:Unit gml:id=\"unit.mwo.yuso\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.mwo.ts.yuso\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUSO MWO</aixm:name>\n          <aixm:type>MWO</aixm:type>\n          <aixm:designator>YUSO</aixm:designator>\n        </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:originatingMeteorologicalWatchOffice>\n  <iwxxm:issuingAirTrafficServicesRegion>\n    <aixm:Airspace gml:id=\"as.yudd\">\n      <aixm:timeSlice>\n        <aixm:AirspaceTimeSlice gml:id=\"as.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:type>OTHER:FIR_UIR</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n          <aixm:name>SHANLON\
+      \ FIR/UIR</aixm:name>\n        </aixm:AirspaceTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Airspace>\n  </iwxxm:issuingAirTrafficServicesRegion>\n  <iwxxm:sequenceNumber>2</iwxxm:sequenceNumber>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-10T12:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/49-2/SigWxPhenomena/OBSC_TS\"/>\n  <iwxxm:analysisCollection>\n    <iwxxm:analysisAndForecastPositionAnalysis gml:id=\"analysis.yudd\">\n      <iwxxm:analysis>\n        <iwxxm:SIGMETEvolvingConditionCollection gml:id=\"evolving.yudd\" timeIndicator=\"FORECAST\">\n          <iwxxm:phenomenonTime nilReason=\"http://codes.wmo.int/common/nil/missing\"/>\n          <iwxxm:member>\n            <iwxxm:SIGMETEvolvingCondition gml:id=\"cond.yudd\" intensityChange=\"WEAKEN\">\n              <iwxxm:geometry>\n\
+      \                <aixm:AirspaceVolume gml:id=\"vol.yudd\">\n              <aixm:upperLimit uom=\"FL\">390</aixm:upperLimit>\n              <aixm:upperLimitReference>STD</aixm:upperLimitReference>\n                  <aixm:horizontalProjection>\n                    <aixm:Surface gml:id=\"sfc.yudd\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                      <gml:patches>\n                        <gml:PolygonPatch>\n                          <gml:exterior>\n                            <gml:LinearRing>\n                              <gml:posList>54.0 -12.0 50.0 -12.0 50.0 -8.0 54.0 -8.0 54.0 -12.0</gml:posList>\n                            </gml:LinearRing>\n                          </gml:exterior>\n                        </gml:PolygonPatch>\n                      </gml:patches>\n                    </aixm:Surface>\n                  </aixm:horizontalProjection>\n                </aixm:AirspaceVolume>\n              </iwxxm:geometry>\n\
+      \              <iwxxm:directionOfMotion uom=\"rad\">90</iwxxm:directionOfMotion>\n              <iwxxm:speedOfMotion uom=\"[kn_i]\">20</iwxxm:speedOfMotion>\n            </iwxxm:SIGMETEvolvingCondition>\n          </iwxxm:member>\n        </iwxxm:SIGMETEvolvingConditionCollection>\n      </iwxxm:analysis>\n    </iwxxm:analysisAndForecastPositionAnalysis>\n  </iwxxm:analysisCollection></iwxxm:SIGMET>\n<!-- 1 -->"
+- bucket: sad
+  case_id: '03'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - SIGMET.SIGMETEvolvingCondition-2
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH negative SIGMET.SIGMETEvolvingCondition-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:SIGMET xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"sigmet.basic.yudd\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-10T12:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:issuingAirTrafficServicesUnit>\n    <aixm:Unit gml:id=\"unit.atsu.yudd\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.atsu.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUDD FIC</aixm:name>\n          <aixm:type>FIC</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n      \
+      \  </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:issuingAirTrafficServicesUnit>\n  <iwxxm:originatingMeteorologicalWatchOffice>\n    <aixm:Unit gml:id=\"unit.mwo.yuso\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.mwo.ts.yuso\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUSO MWO</aixm:name>\n          <aixm:type>MWO</aixm:type>\n          <aixm:designator>YUSO</aixm:designator>\n        </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:originatingMeteorologicalWatchOffice>\n  <iwxxm:issuingAirTrafficServicesRegion>\n    <aixm:Airspace gml:id=\"as.yudd\">\n      <aixm:timeSlice>\n        <aixm:AirspaceTimeSlice gml:id=\"as.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:type>OTHER:FIR_UIR</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n          <aixm:name>SHANLON\
+      \ FIR/UIR</aixm:name>\n        </aixm:AirspaceTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Airspace>\n  </iwxxm:issuingAirTrafficServicesRegion>\n  <iwxxm:sequenceNumber>2</iwxxm:sequenceNumber>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-10T12:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/49-2/SigWxPhenomena/OBSC_TS\"/>\n  <iwxxm:analysisCollection>\n    <iwxxm:analysisAndForecastPositionAnalysis gml:id=\"analysis.yudd\">\n      <iwxxm:analysis>\n        <iwxxm:SIGMETEvolvingConditionCollection gml:id=\"evolving.yudd\" timeIndicator=\"FORECAST\">\n          <iwxxm:phenomenonTime nilReason=\"http://codes.wmo.int/common/nil/missing\"/>\n          <iwxxm:member>\n            <iwxxm:SIGMETEvolvingCondition gml:id=\"cond.yudd\" intensityChange=\"WEAKEN\">\n              <iwxxm:geometry>\n\
+      \                <aixm:AirspaceVolume gml:id=\"vol.yudd\">\n              <aixm:upperLimit uom=\"FL\">390</aixm:upperLimit>\n              <aixm:upperLimitReference>STD</aixm:upperLimitReference>\n                  <aixm:horizontalProjection>\n                    <aixm:Surface gml:id=\"sfc.yudd\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                      <gml:patches>\n                        <gml:PolygonPatch>\n                          <gml:exterior>\n                            <gml:LinearRing>\n                              <gml:posList>54.0 -12.0 50.0 -12.0 50.0 -8.0 54.0 -8.0 54.0 -12.0</gml:posList>\n                            </gml:LinearRing>\n                          </gml:exterior>\n                        </gml:PolygonPatch>\n                      </gml:patches>\n                    </aixm:Surface>\n                  </aixm:horizontalProjection>\n                </aixm:AirspaceVolume>\n              </iwxxm:geometry>\n\
+      \              <iwxxm:directionOfMotion uom=\"rad\">90</iwxxm:directionOfMotion>\n              <iwxxm:speedOfMotion uom=\"[kn_i]\">20</iwxxm:speedOfMotion>\n            </iwxxm:SIGMETEvolvingCondition>\n          </iwxxm:member>\n        </iwxxm:SIGMETEvolvingConditionCollection>\n      </iwxxm:analysis>\n    </iwxxm:analysisAndForecastPositionAnalysis>\n  </iwxxm:analysisCollection></iwxxm:SIGMET>\n<!-- 2 -->"
+- bucket: sad
+  case_id: '04'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - SIGMET.SIGMETEvolvingCondition-2
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH negative SIGMET.SIGMETEvolvingCondition-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:SIGMET xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"sigmet.basic.yudd\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-10T12:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:issuingAirTrafficServicesUnit>\n    <aixm:Unit gml:id=\"unit.atsu.yudd\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.atsu.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUDD FIC</aixm:name>\n          <aixm:type>FIC</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n      \
+      \  </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:issuingAirTrafficServicesUnit>\n  <iwxxm:originatingMeteorologicalWatchOffice>\n    <aixm:Unit gml:id=\"unit.mwo.yuso\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.mwo.ts.yuso\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUSO MWO</aixm:name>\n          <aixm:type>MWO</aixm:type>\n          <aixm:designator>YUSO</aixm:designator>\n        </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:originatingMeteorologicalWatchOffice>\n  <iwxxm:issuingAirTrafficServicesRegion>\n    <aixm:Airspace gml:id=\"as.yudd\">\n      <aixm:timeSlice>\n        <aixm:AirspaceTimeSlice gml:id=\"as.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:type>OTHER:FIR_UIR</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n          <aixm:name>SHANLON\
+      \ FIR/UIR</aixm:name>\n        </aixm:AirspaceTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Airspace>\n  </iwxxm:issuingAirTrafficServicesRegion>\n  <iwxxm:sequenceNumber>2</iwxxm:sequenceNumber>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-10T12:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/49-2/SigWxPhenomena/OBSC_TS\"/>\n  <iwxxm:analysisCollection>\n    <iwxxm:analysisAndForecastPositionAnalysis gml:id=\"analysis.yudd\">\n      <iwxxm:analysis>\n        <iwxxm:SIGMETEvolvingConditionCollection gml:id=\"evolving.yudd\" timeIndicator=\"FORECAST\">\n          <iwxxm:phenomenonTime nilReason=\"http://codes.wmo.int/common/nil/missing\"/>\n          <iwxxm:member>\n            <iwxxm:SIGMETEvolvingCondition gml:id=\"cond.yudd\" intensityChange=\"WEAKEN\">\n              <iwxxm:geometry>\n\
+      \                <aixm:AirspaceVolume gml:id=\"vol.yudd\">\n              <aixm:upperLimit uom=\"FL\">390</aixm:upperLimit>\n              <aixm:upperLimitReference>STD</aixm:upperLimitReference>\n                  <aixm:horizontalProjection>\n                    <aixm:Surface gml:id=\"sfc.yudd\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                      <gml:patches>\n                        <gml:PolygonPatch>\n                          <gml:exterior>\n                            <gml:LinearRing>\n                              <gml:posList>54.0 -12.0 50.0 -12.0 50.0 -8.0 54.0 -8.0 54.0 -12.0</gml:posList>\n                            </gml:LinearRing>\n                          </gml:exterior>\n                        </gml:PolygonPatch>\n                      </gml:patches>\n                    </aixm:Surface>\n                  </aixm:horizontalProjection>\n                </aixm:AirspaceVolume>\n              </iwxxm:geometry>\n\
+      \              <iwxxm:directionOfMotion uom=\"rad\">90</iwxxm:directionOfMotion>\n              <iwxxm:speedOfMotion uom=\"[kn_i]\">20</iwxxm:speedOfMotion>\n            </iwxxm:SIGMETEvolvingCondition>\n          </iwxxm:member>\n        </iwxxm:SIGMETEvolvingConditionCollection>\n      </iwxxm:analysis>\n    </iwxxm:analysisAndForecastPositionAnalysis>\n  </iwxxm:analysisCollection></iwxxm:SIGMET>\n<!-- 3 -->"
+- bucket: sad
+  case_id: '05'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - SIGMET.SIGMETEvolvingCondition-2
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH negative SIGMET.SIGMETEvolvingCondition-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:SIGMET xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"sigmet.basic.yudd\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-10T12:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:issuingAirTrafficServicesUnit>\n    <aixm:Unit gml:id=\"unit.atsu.yudd\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.atsu.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUDD FIC</aixm:name>\n          <aixm:type>FIC</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n      \
+      \  </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:issuingAirTrafficServicesUnit>\n  <iwxxm:originatingMeteorologicalWatchOffice>\n    <aixm:Unit gml:id=\"unit.mwo.yuso\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.mwo.ts.yuso\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUSO MWO</aixm:name>\n          <aixm:type>MWO</aixm:type>\n          <aixm:designator>YUSO</aixm:designator>\n        </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:originatingMeteorologicalWatchOffice>\n  <iwxxm:issuingAirTrafficServicesRegion>\n    <aixm:Airspace gml:id=\"as.yudd\">\n      <aixm:timeSlice>\n        <aixm:AirspaceTimeSlice gml:id=\"as.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:type>OTHER:FIR_UIR</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n          <aixm:name>SHANLON\
+      \ FIR/UIR</aixm:name>\n        </aixm:AirspaceTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Airspace>\n  </iwxxm:issuingAirTrafficServicesRegion>\n  <iwxxm:sequenceNumber>2</iwxxm:sequenceNumber>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-10T12:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/49-2/SigWxPhenomena/OBSC_TS\"/>\n  <iwxxm:analysisCollection>\n    <iwxxm:analysisAndForecastPositionAnalysis gml:id=\"analysis.yudd\">\n      <iwxxm:analysis>\n        <iwxxm:SIGMETEvolvingConditionCollection gml:id=\"evolving.yudd\" timeIndicator=\"FORECAST\">\n          <iwxxm:phenomenonTime nilReason=\"http://codes.wmo.int/common/nil/missing\"/>\n          <iwxxm:member>\n            <iwxxm:SIGMETEvolvingCondition gml:id=\"cond.yudd\" intensityChange=\"WEAKEN\">\n              <iwxxm:geometry>\n\
+      \                <aixm:AirspaceVolume gml:id=\"vol.yudd\">\n              <aixm:upperLimit uom=\"FL\">390</aixm:upperLimit>\n              <aixm:upperLimitReference>STD</aixm:upperLimitReference>\n                  <aixm:horizontalProjection>\n                    <aixm:Surface gml:id=\"sfc.yudd\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                      <gml:patches>\n                        <gml:PolygonPatch>\n                          <gml:exterior>\n                            <gml:LinearRing>\n                              <gml:posList>54.0 -12.0 50.0 -12.0 50.0 -8.0 54.0 -8.0 54.0 -12.0</gml:posList>\n                            </gml:LinearRing>\n                          </gml:exterior>\n                        </gml:PolygonPatch>\n                      </gml:patches>\n                    </aixm:Surface>\n                  </aixm:horizontalProjection>\n                </aixm:AirspaceVolume>\n              </iwxxm:geometry>\n\
+      \              <iwxxm:directionOfMotion uom=\"rad\">90</iwxxm:directionOfMotion>\n              <iwxxm:speedOfMotion uom=\"[kn_i]\">20</iwxxm:speedOfMotion>\n            </iwxxm:SIGMETEvolvingCondition>\n          </iwxxm:member>\n        </iwxxm:SIGMETEvolvingConditionCollection>\n      </iwxxm:analysis>\n    </iwxxm:analysisAndForecastPositionAnalysis>\n  </iwxxm:analysisCollection></iwxxm:SIGMET>\n<!-- 4 -->"
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - SIGMET.SIGMETEvolvingCondition-2
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH edge-fail SIGMET.SIGMETEvolvingCondition-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:SIGMET xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"sigmet.basic.yudd\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-10T12:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:issuingAirTrafficServicesUnit>\n    <aixm:Unit gml:id=\"unit.atsu.yudd\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.atsu.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUDD FIC</aixm:name>\n          <aixm:type>FIC</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n      \
+      \  </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:issuingAirTrafficServicesUnit>\n  <iwxxm:originatingMeteorologicalWatchOffice>\n    <aixm:Unit gml:id=\"unit.mwo.yuso\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.mwo.ts.yuso\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUSO MWO</aixm:name>\n          <aixm:type>MWO</aixm:type>\n          <aixm:designator>YUSO</aixm:designator>\n        </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:originatingMeteorologicalWatchOffice>\n  <iwxxm:issuingAirTrafficServicesRegion>\n    <aixm:Airspace gml:id=\"as.yudd\">\n      <aixm:timeSlice>\n        <aixm:AirspaceTimeSlice gml:id=\"as.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:type>OTHER:FIR_UIR</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n          <aixm:name>SHANLON\
+      \ FIR/UIR</aixm:name>\n        </aixm:AirspaceTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Airspace>\n  </iwxxm:issuingAirTrafficServicesRegion>\n  <iwxxm:sequenceNumber>2</iwxxm:sequenceNumber>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-10T12:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/49-2/SigWxPhenomena/OBSC_TS\"/>\n  <iwxxm:analysisCollection>\n    <iwxxm:analysisAndForecastPositionAnalysis gml:id=\"analysis.yudd\">\n      <iwxxm:analysis>\n        <iwxxm:SIGMETEvolvingConditionCollection gml:id=\"evolving.yudd\" timeIndicator=\"FORECAST\">\n          <iwxxm:phenomenonTime nilReason=\"http://codes.wmo.int/common/nil/missing\"/>\n          <iwxxm:member>\n            <iwxxm:SIGMETEvolvingCondition gml:id=\"cond.yudd\" intensityChange=\"WEAKEN\">\n              <iwxxm:geometry>\n\
+      \                <aixm:AirspaceVolume gml:id=\"vol.yudd\">\n              <aixm:upperLimit uom=\"FL\">390</aixm:upperLimit>\n              <aixm:upperLimitReference>STD</aixm:upperLimitReference>\n                  <aixm:horizontalProjection>\n                    <aixm:Surface gml:id=\"sfc.yudd\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                      <gml:patches>\n                        <gml:PolygonPatch>\n                          <gml:exterior>\n                            <gml:LinearRing>\n                              <gml:posList>54.0 -12.0 50.0 -12.0 50.0 -8.0 54.0 -8.0 54.0 -12.0</gml:posList>\n                            </gml:LinearRing>\n                          </gml:exterior>\n                        </gml:PolygonPatch>\n                      </gml:patches>\n                    </aixm:Surface>\n                  </aixm:horizontalProjection>\n                </aixm:AirspaceVolume>\n              </iwxxm:geometry>\n\
+      \              <iwxxm:directionOfMotion uom=\"rad\">90</iwxxm:directionOfMotion>\n              <iwxxm:speedOfMotion uom=\"[kn_i]\">20</iwxxm:speedOfMotion>\n            </iwxxm:SIGMETEvolvingCondition>\n          </iwxxm:member>\n        </iwxxm:SIGMETEvolvingConditionCollection>\n      </iwxxm:analysis>\n    </iwxxm:analysisAndForecastPositionAnalysis>\n  </iwxxm:analysisCollection></iwxxm:SIGMET>\n<!-- 10 -->"
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - SIGMET.SIGMETEvolvingCondition-2
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH edge-fail SIGMET.SIGMETEvolvingCondition-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:SIGMET xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"sigmet.basic.yudd\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-10T12:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:issuingAirTrafficServicesUnit>\n    <aixm:Unit gml:id=\"unit.atsu.yudd\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.atsu.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUDD FIC</aixm:name>\n          <aixm:type>FIC</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n      \
+      \  </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:issuingAirTrafficServicesUnit>\n  <iwxxm:originatingMeteorologicalWatchOffice>\n    <aixm:Unit gml:id=\"unit.mwo.yuso\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.mwo.ts.yuso\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUSO MWO</aixm:name>\n          <aixm:type>MWO</aixm:type>\n          <aixm:designator>YUSO</aixm:designator>\n        </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:originatingMeteorologicalWatchOffice>\n  <iwxxm:issuingAirTrafficServicesRegion>\n    <aixm:Airspace gml:id=\"as.yudd\">\n      <aixm:timeSlice>\n        <aixm:AirspaceTimeSlice gml:id=\"as.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:type>OTHER:FIR_UIR</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n          <aixm:name>SHANLON\
+      \ FIR/UIR</aixm:name>\n        </aixm:AirspaceTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Airspace>\n  </iwxxm:issuingAirTrafficServicesRegion>\n  <iwxxm:sequenceNumber>2</iwxxm:sequenceNumber>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-10T12:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/49-2/SigWxPhenomena/OBSC_TS\"/>\n  <iwxxm:analysisCollection>\n    <iwxxm:analysisAndForecastPositionAnalysis gml:id=\"analysis.yudd\">\n      <iwxxm:analysis>\n        <iwxxm:SIGMETEvolvingConditionCollection gml:id=\"evolving.yudd\" timeIndicator=\"FORECAST\">\n          <iwxxm:phenomenonTime nilReason=\"http://codes.wmo.int/common/nil/missing\"/>\n          <iwxxm:member>\n            <iwxxm:SIGMETEvolvingCondition gml:id=\"cond.yudd\" intensityChange=\"WEAKEN\">\n              <iwxxm:geometry>\n\
+      \                <aixm:AirspaceVolume gml:id=\"vol.yudd\">\n              <aixm:upperLimit uom=\"FL\">390</aixm:upperLimit>\n              <aixm:upperLimitReference>STD</aixm:upperLimitReference>\n                  <aixm:horizontalProjection>\n                    <aixm:Surface gml:id=\"sfc.yudd\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                      <gml:patches>\n                        <gml:PolygonPatch>\n                          <gml:exterior>\n                            <gml:LinearRing>\n                              <gml:posList>54.0 -12.0 50.0 -12.0 50.0 -8.0 54.0 -8.0 54.0 -12.0</gml:posList>\n                            </gml:LinearRing>\n                          </gml:exterior>\n                        </gml:PolygonPatch>\n                      </gml:patches>\n                    </aixm:Surface>\n                  </aixm:horizontalProjection>\n                </aixm:AirspaceVolume>\n              </iwxxm:geometry>\n\
+      \              <iwxxm:directionOfMotion uom=\"rad\">90</iwxxm:directionOfMotion>\n              <iwxxm:speedOfMotion uom=\"[kn_i]\">20</iwxxm:speedOfMotion>\n            </iwxxm:SIGMETEvolvingCondition>\n          </iwxxm:member>\n        </iwxxm:SIGMETEvolvingConditionCollection>\n      </iwxxm:analysis>\n    </iwxxm:analysisAndForecastPositionAnalysis>\n  </iwxxm:analysisCollection></iwxxm:SIGMET>\n<!-- 11 -->"
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - SIGMET.SIGMETEvolvingCondition-2
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH edge-fail SIGMET.SIGMETEvolvingCondition-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:SIGMET xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"sigmet.basic.yudd\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-10T12:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:issuingAirTrafficServicesUnit>\n    <aixm:Unit gml:id=\"unit.atsu.yudd\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.atsu.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUDD FIC</aixm:name>\n          <aixm:type>FIC</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n      \
+      \  </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:issuingAirTrafficServicesUnit>\n  <iwxxm:originatingMeteorologicalWatchOffice>\n    <aixm:Unit gml:id=\"unit.mwo.yuso\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.mwo.ts.yuso\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUSO MWO</aixm:name>\n          <aixm:type>MWO</aixm:type>\n          <aixm:designator>YUSO</aixm:designator>\n        </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:originatingMeteorologicalWatchOffice>\n  <iwxxm:issuingAirTrafficServicesRegion>\n    <aixm:Airspace gml:id=\"as.yudd\">\n      <aixm:timeSlice>\n        <aixm:AirspaceTimeSlice gml:id=\"as.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:type>OTHER:FIR_UIR</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n          <aixm:name>SHANLON\
+      \ FIR/UIR</aixm:name>\n        </aixm:AirspaceTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Airspace>\n  </iwxxm:issuingAirTrafficServicesRegion>\n  <iwxxm:sequenceNumber>2</iwxxm:sequenceNumber>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-10T12:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/49-2/SigWxPhenomena/OBSC_TS\"/>\n  <iwxxm:analysisCollection>\n    <iwxxm:analysisAndForecastPositionAnalysis gml:id=\"analysis.yudd\">\n      <iwxxm:analysis>\n        <iwxxm:SIGMETEvolvingConditionCollection gml:id=\"evolving.yudd\" timeIndicator=\"FORECAST\">\n          <iwxxm:phenomenonTime nilReason=\"http://codes.wmo.int/common/nil/missing\"/>\n          <iwxxm:member>\n            <iwxxm:SIGMETEvolvingCondition gml:id=\"cond.yudd\" intensityChange=\"WEAKEN\">\n              <iwxxm:geometry>\n\
+      \                <aixm:AirspaceVolume gml:id=\"vol.yudd\">\n              <aixm:upperLimit uom=\"FL\">390</aixm:upperLimit>\n              <aixm:upperLimitReference>STD</aixm:upperLimitReference>\n                  <aixm:horizontalProjection>\n                    <aixm:Surface gml:id=\"sfc.yudd\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                      <gml:patches>\n                        <gml:PolygonPatch>\n                          <gml:exterior>\n                            <gml:LinearRing>\n                              <gml:posList>54.0 -12.0 50.0 -12.0 50.0 -8.0 54.0 -8.0 54.0 -12.0</gml:posList>\n                            </gml:LinearRing>\n                          </gml:exterior>\n                        </gml:PolygonPatch>\n                      </gml:patches>\n                    </aixm:Surface>\n                  </aixm:horizontalProjection>\n                </aixm:AirspaceVolume>\n              </iwxxm:geometry>\n\
+      \              <iwxxm:directionOfMotion uom=\"rad\">90</iwxxm:directionOfMotion>\n              <iwxxm:speedOfMotion uom=\"[kn_i]\">20</iwxxm:speedOfMotion>\n            </iwxxm:SIGMETEvolvingCondition>\n          </iwxxm:member>\n        </iwxxm:SIGMETEvolvingConditionCollection>\n      </iwxxm:analysis>\n    </iwxxm:analysisAndForecastPositionAnalysis>\n  </iwxxm:analysisCollection></iwxxm:SIGMET>\n<!-- 12 -->"
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - SIGMET.SIGMETEvolvingCondition-2
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH edge-fail SIGMET.SIGMETEvolvingCondition-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:SIGMET xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"sigmet.basic.yudd\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-10T12:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:issuingAirTrafficServicesUnit>\n    <aixm:Unit gml:id=\"unit.atsu.yudd\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.atsu.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUDD FIC</aixm:name>\n          <aixm:type>FIC</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n      \
+      \  </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:issuingAirTrafficServicesUnit>\n  <iwxxm:originatingMeteorologicalWatchOffice>\n    <aixm:Unit gml:id=\"unit.mwo.yuso\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.mwo.ts.yuso\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUSO MWO</aixm:name>\n          <aixm:type>MWO</aixm:type>\n          <aixm:designator>YUSO</aixm:designator>\n        </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:originatingMeteorologicalWatchOffice>\n  <iwxxm:issuingAirTrafficServicesRegion>\n    <aixm:Airspace gml:id=\"as.yudd\">\n      <aixm:timeSlice>\n        <aixm:AirspaceTimeSlice gml:id=\"as.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:type>OTHER:FIR_UIR</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n          <aixm:name>SHANLON\
+      \ FIR/UIR</aixm:name>\n        </aixm:AirspaceTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Airspace>\n  </iwxxm:issuingAirTrafficServicesRegion>\n  <iwxxm:sequenceNumber>2</iwxxm:sequenceNumber>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-10T12:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/49-2/SigWxPhenomena/OBSC_TS\"/>\n  <iwxxm:analysisCollection>\n    <iwxxm:analysisAndForecastPositionAnalysis gml:id=\"analysis.yudd\">\n      <iwxxm:analysis>\n        <iwxxm:SIGMETEvolvingConditionCollection gml:id=\"evolving.yudd\" timeIndicator=\"FORECAST\">\n          <iwxxm:phenomenonTime nilReason=\"http://codes.wmo.int/common/nil/missing\"/>\n          <iwxxm:member>\n            <iwxxm:SIGMETEvolvingCondition gml:id=\"cond.yudd\" intensityChange=\"WEAKEN\">\n              <iwxxm:geometry>\n\
+      \                <aixm:AirspaceVolume gml:id=\"vol.yudd\">\n              <aixm:upperLimit uom=\"FL\">390</aixm:upperLimit>\n              <aixm:upperLimitReference>STD</aixm:upperLimitReference>\n                  <aixm:horizontalProjection>\n                    <aixm:Surface gml:id=\"sfc.yudd\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                      <gml:patches>\n                        <gml:PolygonPatch>\n                          <gml:exterior>\n                            <gml:LinearRing>\n                              <gml:posList>54.0 -12.0 50.0 -12.0 50.0 -8.0 54.0 -8.0 54.0 -12.0</gml:posList>\n                            </gml:LinearRing>\n                          </gml:exterior>\n                        </gml:PolygonPatch>\n                      </gml:patches>\n                    </aixm:Surface>\n                  </aixm:horizontalProjection>\n                </aixm:AirspaceVolume>\n              </iwxxm:geometry>\n\
+      \              <iwxxm:directionOfMotion uom=\"rad\">90</iwxxm:directionOfMotion>\n              <iwxxm:speedOfMotion uom=\"[kn_i]\">20</iwxxm:speedOfMotion>\n            </iwxxm:SIGMETEvolvingCondition>\n          </iwxxm:member>\n        </iwxxm:SIGMETEvolvingConditionCollection>\n      </iwxxm:analysis>\n    </iwxxm:analysisAndForecastPositionAnalysis>\n  </iwxxm:analysisCollection></iwxxm:SIGMET>\n<!-- 13 -->"
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - SIGMET.SIGMETEvolvingCondition-2
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH edge-fail SIGMET.SIGMETEvolvingCondition-2
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:SIGMET xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"sigmet.basic.yudd\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-10T12:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:issuingAirTrafficServicesUnit>\n    <aixm:Unit gml:id=\"unit.atsu.yudd\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.atsu.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUDD FIC</aixm:name>\n          <aixm:type>FIC</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n      \
+      \  </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:issuingAirTrafficServicesUnit>\n  <iwxxm:originatingMeteorologicalWatchOffice>\n    <aixm:Unit gml:id=\"unit.mwo.yuso\">\n      <aixm:timeSlice>\n        <aixm:UnitTimeSlice gml:id=\"unit.mwo.ts.yuso\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:name>YUSO MWO</aixm:name>\n          <aixm:type>MWO</aixm:type>\n          <aixm:designator>YUSO</aixm:designator>\n        </aixm:UnitTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Unit>\n  </iwxxm:originatingMeteorologicalWatchOffice>\n  <iwxxm:issuingAirTrafficServicesRegion>\n    <aixm:Airspace gml:id=\"as.yudd\">\n      <aixm:timeSlice>\n        <aixm:AirspaceTimeSlice gml:id=\"as.ts.yudd\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:type>OTHER:FIR_UIR</aixm:type>\n          <aixm:designator>YUDD</aixm:designator>\n          <aixm:name>SHANLON\
+      \ FIR/UIR</aixm:name>\n        </aixm:AirspaceTimeSlice>\n      </aixm:timeSlice>\n    </aixm:Airspace>\n  </iwxxm:issuingAirTrafficServicesRegion>\n  <iwxxm:sequenceNumber>2</iwxxm:sequenceNumber>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-10T12:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-10T16:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:phenomenon xlink:href=\"http://codes.wmo.int/49-2/SigWxPhenomena/OBSC_TS\"/>\n  <iwxxm:analysisCollection>\n    <iwxxm:analysisAndForecastPositionAnalysis gml:id=\"analysis.yudd\">\n      <iwxxm:analysis>\n        <iwxxm:SIGMETEvolvingConditionCollection gml:id=\"evolving.yudd\" timeIndicator=\"FORECAST\">\n          <iwxxm:phenomenonTime nilReason=\"http://codes.wmo.int/common/nil/missing\"/>\n          <iwxxm:member>\n            <iwxxm:SIGMETEvolvingCondition gml:id=\"cond.yudd\" intensityChange=\"WEAKEN\">\n              <iwxxm:geometry>\n\
+      \                <aixm:AirspaceVolume gml:id=\"vol.yudd\">\n              <aixm:upperLimit uom=\"FL\">390</aixm:upperLimit>\n              <aixm:upperLimitReference>STD</aixm:upperLimitReference>\n                  <aixm:horizontalProjection>\n                    <aixm:Surface gml:id=\"sfc.yudd\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n                      <gml:patches>\n                        <gml:PolygonPatch>\n                          <gml:exterior>\n                            <gml:LinearRing>\n                              <gml:posList>54.0 -12.0 50.0 -12.0 50.0 -8.0 54.0 -8.0 54.0 -12.0</gml:posList>\n                            </gml:LinearRing>\n                          </gml:exterior>\n                        </gml:PolygonPatch>\n                      </gml:patches>\n                    </aixm:Surface>\n                  </aixm:horizontalProjection>\n                </aixm:AirspaceVolume>\n              </iwxxm:geometry>\n\
+      \              <iwxxm:directionOfMotion uom=\"rad\">90</iwxxm:directionOfMotion>\n              <iwxxm:speedOfMotion uom=\"[kn_i]\">20</iwxxm:speedOfMotion>\n            </iwxxm:SIGMETEvolvingCondition>\n          </iwxxm:member>\n        </iwxxm:SIGMETEvolvingConditionCollection>\n      </iwxxm:analysis>\n    </iwxxm:analysisAndForecastPositionAnalysis>\n  </iwxxm:analysisCollection></iwxxm:SIGMET>\n<!-- 14 -->"

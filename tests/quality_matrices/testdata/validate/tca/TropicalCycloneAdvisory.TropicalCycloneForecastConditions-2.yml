@@ -1,0 +1,629 @@
+rule_id: TropicalCycloneAdvisory.TropicalCycloneForecastConditions-2
+engine: validate
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: 'TC ADVISORY
+
+
+    DTG:                        20040925/1900Z
+
+    TCAC:                       YUFO
+
+    TC:                         GLORIA
+
+    ADVISORY NR:                2004/13
+
+    OBS PSN:                    25/1800Z N2706 W07306
+
+    CB:                         WI 250NM OF TC CENTRE TOP FL500
+
+    MOV:                        NW 20KMH
+
+    INTST CHANGE:               INTSF
+
+    C:                          965HPA
+
+    MAX WIND:                   22MPS
+
+    FCST PSN +6 HR:             25/2200Z N2748 W07350
+
+    FCST MAX WIND +6 HR:        22MPS
+
+    FCST PSN +12 HR:            26/0400Z N2830 W07430
+
+    FCST MAX WIND +12 HR:       22MPS
+
+    FCST PSN +18 HR:            26/1000Z N2852 W07500
+
+    FCST MAX WIND +18 HR:       21MPS
+
+    FCST PSN +24 HR:            26/1600Z N2912 W07530
+
+    FCST MAX WIND +24 HR:       20MPS
+
+    RMK:                        NIL
+
+    NXT MSG:                    20040925/2000Z
+
+    '
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/tca_a2_2.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: 'TC ADVISORY
+
+
+    DTG:                        20040926/1900Z
+
+    TCAC:                       YUFO
+
+    TC:                         GLORIA
+
+    ADVISORY NR:                2004/14
+
+    OBS PSN:                    26/1800Z N2706 W07306
+
+    CB:                         WI 250NM OF TC CENTRE TOP FL500
+
+    MOV:                        NW 20KMH
+
+    INTST CHANGE:               INTSF
+
+    C:                          965HPA
+
+    MAX WIND:                   22MPS
+
+    FCST PSN +6 HR:             26/2200Z N2748 W07350
+
+    FCST MAX WIND +6 HR:        22MPS
+
+    FCST PSN +12 HR:            27/0400Z N2830 W07430
+
+    FCST MAX WIND +12 HR:       22MPS
+
+    FCST PSN +18 HR:            27/1000Z N2852 W07500
+
+    FCST MAX WIND +18 HR:       21MPS
+
+    FCST PSN +24 HR:            27/1600Z N2912 W07530
+
+    FCST MAX WIND +24 HR:       20MPS
+
+    RMK:                        NIL
+
+    NXT MSG:                    20040926/2000Z
+
+    '
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TCA convert-then-validate
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: 'TC ADVISORY
+
+
+    DTG:                        20040925/1900Z
+
+    TCAC:                       YUFO
+
+    TC:                         GLORIA
+
+    ADVISORY NR:                2004/15
+
+    OBS PSN:                    25/1800Z N2706 W07306
+
+    CB:                         WI 250NM OF TC CENTRE TOP FL500
+
+    MOV:                        NW 20KMH
+
+    INTST CHANGE:               INTSF
+
+    C:                          965HPA
+
+    MAX WIND:                   22MPS
+
+    FCST PSN +6 HR:             25/2200Z N2748 W07350
+
+    FCST MAX WIND +6 HR:        22MPS
+
+    FCST PSN +12 HR:            26/0400Z N2830 W07430
+
+    FCST MAX WIND +12 HR:       22MPS
+
+    FCST PSN +18 HR:            26/1000Z N2852 W07500
+
+    FCST MAX WIND +18 HR:       21MPS
+
+    FCST PSN +24 HR:            26/1600Z N2912 W07530
+
+    FCST MAX WIND +24 HR:       20MPS
+
+    RMK:                        NIL
+
+    NXT MSG:                    20040925/2000Z
+
+    '
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TCA convert-then-validate
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: 'TC ADVISORY
+
+
+    DTG:                        20040925/1900Z
+
+    TCAC:                       YUFO
+
+    TC:                         GLORIA
+
+    ADVISORY NR:                2004/13
+
+    OBS PSN:                    25/1800Z N2706 W07306
+
+    CB:                         WI 250NM OF TC CENTRE TOP FL500
+
+    MOV:                        NW 20KMH
+
+    INTST CHANGE:               INTSF
+
+    C:                          965HPA
+
+    MAX WIND:                   23MPS
+
+    FCST PSN +6 HR:             25/2200Z N2748 W07350
+
+    FCST MAX WIND +6 HR:        23MPS
+
+    FCST PSN +12 HR:            26/0400Z N2830 W07430
+
+    FCST MAX WIND +12 HR:       23MPS
+
+    FCST PSN +18 HR:            26/1000Z N2852 W07500
+
+    FCST MAX WIND +18 HR:       21MPS
+
+    FCST PSN +24 HR:            26/1600Z N2912 W07530
+
+    FCST MAX WIND +24 HR:       20MPS
+
+    RMK:                        NIL
+
+    NXT MSG:                    20040925/2000Z
+
+    '
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TCA convert-then-validate
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: 'TC ADVISORY
+
+
+    DTG:                        20040925/1900Z
+
+    TCAC:                       YUFO
+
+    TC:                         GLORIA
+
+    ADVISORY NR:                2004/13
+
+    OBS PSN:                    25/1800Z N2706 W07306
+
+    CB:                         WI 250NM OF TC CENTRE TOP FL500
+
+    MOV:                        NW 25KMH
+
+    INTST CHANGE:               INTSF
+
+    C:                          965HPA
+
+    MAX WIND:                   22MPS
+
+    FCST PSN +6 HR:             25/2200Z N2748 W07350
+
+    FCST MAX WIND +6 HR:        22MPS
+
+    FCST PSN +12 HR:            26/0400Z N2830 W07430
+
+    FCST MAX WIND +12 HR:       22MPS
+
+    FCST PSN +18 HR:            26/1000Z N2852 W07500
+
+    FCST MAX WIND +18 HR:       21MPS
+
+    FCST PSN +24 HR:            26/1600Z N2912 W07530
+
+    FCST MAX WIND +24 HR:       20MPS
+
+    RMK:                        NIL
+
+    NXT MSG:                    20040925/2000Z
+
+    '
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TCA convert-then-validate
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: 'TC ADVISORY
+
+
+    DTG:                        20040925/1900Z
+
+    TCAC:                       YUFO
+
+    TC:                         GLORIA
+
+    ADVISORY NR:                2004/13
+
+    OBS PSN:                    25/1800Z N2706 W07306
+
+    CB:                         WI 250NM OF TC CENTRE TOP FL500
+
+    MOV:                        NW 20KMH
+
+    INTST CHANGE:               INTSF
+
+    C:                          965HPA
+
+    MAX WIND:                   22MPS
+
+    FCST PSN +6 HR:             25/2200Z N2748 W07350
+
+    FCST MAX WIND +6 HR:        22MPS
+
+    FCST PSN +12 HR:            26/0400Z N2830 W07430
+
+    FCST MAX WIND +12 HR:       22MPS
+
+    FCST PSN +18 HR:            26/1000Z N2852 W07500
+
+    FCST MAX WIND +18 HR:       21MPS
+
+    FCST PSN +24 HR:            26/1600Z N2912 W07530
+
+    FCST MAX WIND +24 HR:       20MPS
+
+    RMK:                        NIL
+
+    NXT MSG:                    20040925/2000Z'
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TCA edge convert-then-validate
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: '  TC ADVISORY
+
+
+    DTG:                        20040925/1900Z
+
+    TCAC:                       YUFO
+
+    TC:                         GLORIA
+
+    ADVISORY NR:                2004/13
+
+    OBS PSN:                    25/1800Z N2706 W07306
+
+    CB:                         WI 250NM OF TC CENTRE TOP FL500
+
+    MOV:                        NW 20KMH
+
+    INTST CHANGE:               INTSF
+
+    C:                          965HPA
+
+    MAX WIND:                   22MPS
+
+    FCST PSN +6 HR:             25/2200Z N2748 W07350
+
+    FCST MAX WIND +6 HR:        22MPS
+
+    FCST PSN +12 HR:            26/0400Z N2830 W07430
+
+    FCST MAX WIND +12 HR:       22MPS
+
+    FCST PSN +18 HR:            26/1000Z N2852 W07500
+
+    FCST MAX WIND +18 HR:       21MPS
+
+    FCST PSN +24 HR:            26/1600Z N2912 W07530
+
+    FCST MAX WIND +24 HR:       20MPS
+
+    RMK:                        NIL
+
+    NXT MSG:                    20040925/2000Z  '
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TCA edge convert-then-validate
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: 'TC ADVISORY
+
+
+    DTG:                        20040925/1900Z
+
+    TCAC:                       YUFO
+
+    TC:                         GLORIA
+
+    ADVISORY NR:                2004/16
+
+    OBS PSN:                    25/1800Z N2706 W07306
+
+    CB:                         WI 250NM OF TC CENTRE TOP FL500
+
+    MOV:                        NW 20KMH
+
+    INTST CHANGE:               INTSF
+
+    C:                          965HPA
+
+    MAX WIND:                   22MPS
+
+    FCST PSN +6 HR:             25/2200Z N2748 W07350
+
+    FCST MAX WIND +6 HR:        22MPS
+
+    FCST PSN +12 HR:            26/0400Z N2830 W07430
+
+    FCST MAX WIND +12 HR:       22MPS
+
+    FCST PSN +18 HR:            26/1000Z N2852 W07500
+
+    FCST MAX WIND +18 HR:       21MPS
+
+    FCST PSN +24 HR:            26/1600Z N2912 W07530
+
+    FCST MAX WIND +24 HR:       20MPS
+
+    RMK:                        NIL
+
+    NXT MSG:                    20040925/2000Z
+
+    '
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TCA edge convert-then-validate
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: 'TC ADVISORY
+
+
+    DTG:                        20040925/1900Z
+
+    TCAC:                       YUFO
+
+    TC:                         GLORIA
+
+    ADVISORY NR:                2004/13
+
+    OBS PSN:                    25/1800Z N2706 W07306
+
+    CB:                         WI 250NM OF TC CENTRE TOP FL500
+
+    MOV:                        NW 20KMH
+
+    INTST CHANGE:               INTSF
+
+    C:                          960HPA
+
+    MAX WIND:                   22MPS
+
+    FCST PSN +6 HR:             25/2200Z N2748 W07350
+
+    FCST MAX WIND +6 HR:        22MPS
+
+    FCST PSN +12 HR:            26/0400Z N2830 W07430
+
+    FCST MAX WIND +12 HR:       22MPS
+
+    FCST PSN +18 HR:            26/1000Z N2852 W07500
+
+    FCST MAX WIND +18 HR:       21MPS
+
+    FCST PSN +24 HR:            26/1600Z N2912 W07530
+
+    FCST MAX WIND +24 HR:       20MPS
+
+    RMK:                        NIL
+
+    NXT MSG:                    20040925/2000Z
+
+    '
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TCA edge convert-then-validate
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: 'TC ADVISORY
+
+
+    DTG:                        20040925/1900Z
+
+    TCAC:                       YUFO
+
+    TC:                         GLORIA
+
+    ADVISORY NR:                2004/13
+
+    OBS PSN:                    25/1800Z N2706 W07306
+
+    CB:                         WI 250NM OF TC CENTRE TOP FL500
+
+    MOV:                        NW 20KMH
+
+    INTST CHANGE:               WKN
+
+    C:                          965HPA
+
+    MAX WIND:                   22MPS
+
+    FCST PSN +6 HR:             25/2200Z N2748 W07350
+
+    FCST MAX WIND +6 HR:        22MPS
+
+    FCST PSN +12 HR:            26/0400Z N2830 W07430
+
+    FCST MAX WIND +12 HR:       22MPS
+
+    FCST PSN +18 HR:            26/1000Z N2852 W07500
+
+    FCST MAX WIND +18 HR:       21MPS
+
+    FCST PSN +24 HR:            26/1600Z N2912 W07530
+
+    FCST MAX WIND +24 HR:       20MPS
+
+    RMK:                        NIL
+
+    NXT MSG:                    20040925/2000Z
+
+    '
+  expect:
+    accept: true
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TCA edge convert-then-validate
+- bucket: sad
+  case_id: '01'
+  status: oos
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '02'
+  status: oos
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '03'
+  status: oos
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '04'
+  status: oos
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '05'
+  status: oos
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '01'
+  status: oos
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '02'
+  status: oos
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '03'
+  status: oos
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '04'
+  status: oos
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '05'
+  status: oos
+  meta:
+    product: TCA
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'

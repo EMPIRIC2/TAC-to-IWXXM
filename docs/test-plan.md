@@ -1775,6 +1775,14 @@ H4–H5 N/A (no UI / no new HTTP fields). Shadow bar: issue **code + span**. R1�
 - **Pass criteria**: Docs path cited from package README or CONTRIBUTING
 - **Source**: F29
 
+### TC-F29-008: Convert and validate matrices beyond METAR/SPECI
+
+- **Level**: T0. No browser journey.
+- **Objective**: TAF, SIGMET, AIRMET, VAA, TCA, SWXA, and VONA have convert and validate matrices. Each in-scope rule has 20 slots or a cited out-of-scope. Ready lint packs stay untouched. [Corpus: product §F29] [Corpus: tests]
+- **Pass criteria**: `needs-fixture` is 0 for those packs. Ready slots pass the quality-matrix smoke. The inventory gate covers the new packs.
+- **Out of scope**: Reopening METAR/SPECI. Live feeds. A claim of full Annex 3 coverage.
+- **Source**: F29 deepen EV-1265 / #1265
+
 ### EV-030 verify/deploy gate
 
 - [ ] TC-EV030-001..006 green (or deferred with child issues)

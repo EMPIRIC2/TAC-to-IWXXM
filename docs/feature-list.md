@@ -2,7 +2,7 @@
 
 > **Project**: METAR to IWXXM Converter
 > **Repository**: https://github.com/EMPIRIC2/TAC-to-IWXXM
-> **Last updated**: 2026-09-26 (EV-1267 selectable profiles / #1267; prior EV-1275 / #1275 exchange header audit)
+> **Last updated**: 2026-09-28 (EV-1265 product matrices / #1265; prior EV-1267 / #1267 selectable profiles)
 
 ## Summary
 
@@ -36,7 +36,7 @@
 | F26 | VAA quality bar (VolcanicAshAdvisory) | Done | Product | S027 / EV-021; #736; PR #794; **deepen** S055 / EV-046 #889; **deepen** EV-074 / #1043 CA ops validate-first (no TAC convert) |
 | F27 | TCA quality bar (TropicalCycloneAdvisory) | Done | Product | S027 / EV-021; #737; PR #794; **deepen** S055 / EV-046 #889 |
 | F28 | SWXA quality bar (SpaceWeatherAdvisory) | Done | Product | S036 / EV-029; #823/#740 closed; PR #828; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 SpaceWxPhenomena fixtures |
-| F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832) |
+| F29 | Parameterized lint/convert/validate rule matrices | Done | Product | S037 / EV-030; #831; shipped 2026-08-03 (#832); **deepen EV-1265 / #1265**: convert and validate matrices for TAF, SIGMET, AIRMET, VAA, TCA, SWXA, and VONA |
 | F30 | Platform independence (Auth / DO DB / DOKS) | Done | Platform | S038 / EV-031; S042 / EV-034 CD; S052 / EV-043 staging CD (#886); S053 / EV-044 dual DOKS; **deepen** S060 / EV-051 tag-driven prod Deploy; **deepen** S067 / EV-057 apex → app redirect (#948) |
 | F31 | Hybrid operator sessions (guest local + Auth long-term) | Done | Product | S038 / EV-031; amends F5/F7/F21/F22; **deepen** EV-beta-ux-export-auth restore working `/auth/register` + login verify (local + staging) |
 | F32 | VONA quality bar (VolcanoObservatoryNoticeForAviation) | Done | Product | S040 / EV-032; #741 closed; **deepen** S055 / EV-046 #889; prior S046 / EV-038; epic #846 |
@@ -2062,6 +2062,7 @@
   Sticky outcomes are **not** the F7.q Quality metrics dashboard (`corpus_metrics.json`);
   sticky Match includes ready inventory slots plus golden live compares — document that
   distinction in the PR comment. [Corpus: decisions §ev-970-s3-validate-fill]
+- **EV-1265 deepen (#1265)**: Convert and validate matrices for TAF, SIGMET, AIRMET, VAA, TCA, SWXA, and VONA. Each in-scope rule has 20 slots or a cited out-of-scope. Ready lint packs for those products and for Canada stay as they are. METAR/SPECI stays closed, including its cited convert out-of-scope slots. No new feature id. No operator UI. [Corpus: product §F29] [Corpus: tests]
 - **S070 / EV-060 deepen (#1004)**: Conversion parameter `log_level` must set backend/package
   logger verbosity (not only client-echoed process-issue filter). DEBUG must not dump JWTs,
   passwords, or Authorization headers. UJ-063 / TC-EV060-1004-*.

@@ -692,7 +692,7 @@ fn get_or_parse_schematron(sch_path: &str) -> Result<Arc<SchematronSchema>, Stri
     let sch_text = std::fs::read_to_string(sch_path)
         .map_err(|e| format!("Schematron not readable at {sch_path}: {e}"))?;
     // xmloxide 0.4.x only recognizes the typo NS `…/dml/schematron`, while WMO IWXXM
-    // uses the ISO `…/dsdl/schematron`. Remap + (2025-2) METAR_SPECI XPath1 stand-ins.
+    // uses the ISO `…/dsdl/schematron`. Remap + (2025-2) product XPath1 stand-ins.
     let prepared = prepare_schematron_for_xmloxide(&sch_text, sch_path);
     let parsed = parse_schematron(&prepared)
         .map(Arc::new)
@@ -708,8 +708,9 @@ fn get_or_parse_schematron(sch_path: &str) -> Result<Arc<SchematronSchema>, Stri
 
 /// Remap WMO Schematron for xmloxide (dsdl→dml).
 ///
-/// Aggressive METAR_SPECI XPath1 stand-ins apply only for **2025-2** schemas so older
-/// CA_ECCC (3.0.0) national uoms stay soft under residual XPath2 ``if()``.
+/// Aggressive product XPath1 stand-ins (``if/then/else``, ``document()``) apply only for
+/// **2025-2** schemas so older CA_ECCC (3.0.0) national uoms stay soft under residual
+/// XPath2 ``if()``. ``Common.*`` / ``IWXXM.*`` patterns stay unrewritten on purpose.
 fn prepare_schematron_for_xmloxide(sch_text: &str, sch_path: &str) -> String {
     let remapped = sch_text.replace(
         "http://purl.oclc.org/dsdl/schematron",
@@ -719,10 +720,10 @@ fn prepare_schematron_for_xmloxide(sch_text: &str, sch_path: &str) -> String {
     if !is_2025_2 {
         return remapped;
     }
-    let with_if = rewrite_xpath2_if_then_else_metar_speci_only(&remapped);
+    let with_if = rewrite_xpath2_if_then_else_for_products(&remapped);
     let with_cmp = rewrite_xpath2_comparisons(&with_if);
     let with_num = rewrite_number_text_paths(&with_cmp);
-    let with_doc = rewrite_document_codelist_in_metar_speci_patterns(&with_num);
+    let with_doc = rewrite_document_codelist_in_product_patterns(&with_num);
     let with_obs2 = rewrite_observation2_assert(&with_doc);
     rewrite_report9_assert(&with_obs2)
 }
@@ -761,9 +762,9 @@ fn rewrite_observation2_assert(input: &str) -> String {
     out
 }
 
-/// Stand-in for RDF ``document()`` codelist membership (METAR_SPECI patterns only).
-fn rewrite_document_codelist_in_metar_speci_patterns(input: &str) -> String {
-    map_metar_speci_pattern_blocks(input, rewrite_document_codelist_asserts)
+/// Stand-in for RDF ``document()`` codelist membership (product patterns only).
+fn rewrite_document_codelist_in_product_patterns(input: &str) -> String {
+    map_product_pattern_blocks(input, rewrite_document_codelist_asserts)
 }
 
 /// Stand-in for RDF ``document()`` codelist membership inside one SCH fragment.
@@ -791,8 +792,31 @@ fn rewrite_document_codelist_asserts(input: &str) -> String {
     out
 }
 
-/// Apply ``map`` to each ``<sch:pattern id="METAR_SPECI.…">…</sch:pattern>`` block.
-fn map_metar_speci_pattern_blocks(input: &str, map: fn(&str) -> String) -> String {
+/// Product pattern prefixes that receive XPath1 stand-ins on IWXXM 2025-2.
+///
+/// Keep ``Common.*`` / ``IWXXM.*`` / ``MeteorologicalFeature.*`` out so shared
+/// translation-metadata asserts stay soft (CA_ECCC partial emit).
+const PRODUCT_PATTERN_PREFIXES: &[&str] = &[
+    "METAR_SPECI.",
+    "TAF.",
+    "SIGMET.",
+    "VolcanicAshSIGMET.",
+    "TropicalCycloneSIGMET.",
+    "AIRMET.",
+    "VolcanicAshAdvisory.",
+    "TropicalCycloneAdvisory.",
+    "SpaceWeatherAdvisory.",
+    "VolcanoObservatoryNoticeForAviation.",
+];
+
+fn pattern_block_is_product(block: &str) -> bool {
+    PRODUCT_PATTERN_PREFIXES
+        .iter()
+        .any(|prefix| block.contains(&format!("id=\"{prefix}")))
+}
+
+/// Apply ``map`` to each product ``<sch:pattern id="…">…</sch:pattern>`` block.
+fn map_product_pattern_blocks(input: &str, map: fn(&str) -> String) -> String {
     let open = "<sch:pattern";
     let close = "</sch:pattern>";
     let mut out = String::with_capacity(input.len() + 64);
@@ -806,7 +830,7 @@ fn map_metar_speci_pattern_blocks(input: &str, map: fn(&str) -> String) -> Strin
         };
         let end = end_rel + close.len();
         let block = &from_pat[..end];
-        if block.contains("id=\"METAR_SPECI.") {
+        if pattern_block_is_product(block) {
             out.push_str(&map(block));
         } else {
             out.push_str(block);
@@ -922,12 +946,12 @@ fn rewrite_number_text_paths(input: &str) -> String {
     out
 }
 
-/// Rewrite XPath2 ``if/then/else`` only inside ``METAR_SPECI.*`` patterns.
+/// Rewrite XPath2 ``if/then/else`` inside product patterns (see ``PRODUCT_PATTERN_PREFIXES``).
 ///
 /// Leaving ``Common.*`` (e.g. Report-3 translation metadata) as XPath2 keeps them
 /// soft under xmloxide so CA_ECCC partial translationCentre* emit stays valid.
-fn rewrite_xpath2_if_then_else_metar_speci_only(input: &str) -> String {
-    map_metar_speci_pattern_blocks(input, rewrite_xpath2_if_then_else)
+fn rewrite_xpath2_if_then_else_for_products(input: &str) -> String {
+    map_product_pattern_blocks(input, rewrite_xpath2_if_then_else)
 }
 
 /// Rewrite ``if(C) then(T) else(E)`` → ``((C) and (T)) or (not(C) and (E))`` (XPath 1.0).

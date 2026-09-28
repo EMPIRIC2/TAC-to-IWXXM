@@ -1,0 +1,223 @@
+rule_id: SIGMET.SIGMETEvolvingCondition-5
+engine: validate
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/sigmet_a6_1a_ts.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: 'YUDD SIGMET 4 VALID 111200/111600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET convert-then-validate
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 121200/121600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET convert-then-validate
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL350 MOV E 20KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET convert-then-validate
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 25KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET convert-then-validate
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN'
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET edge convert-then-validate
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: '  YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN=  '
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET edge convert-then-validate
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN ='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET edge convert-then-validate
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: 'YUDD SIGMET 5 VALID 131400/131800 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV E 20KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET edge convert-then-validate
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: 'YUDD SIGMET 2 VALID 101200/101600 YUSO-
+
+    YUDD SHANLON FIR/UIR OBSC TS FCST S OF N54 AND E OF W012 TOP FL390 MOV W 20KT WKN='
+  expect:
+    accept: true
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 SIGMET edge convert-then-validate
+- bucket: sad
+  case_id: '01'
+  status: oos
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '02'
+  status: oos
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '03'
+  status: oos
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '04'
+  status: oos
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '05'
+  status: oos
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '01'
+  status: oos
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '02'
+  status: oos
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '03'
+  status: oos
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '04'
+  status: oos
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '05'
+  status: oos
+  meta:
+    product: SIGMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
