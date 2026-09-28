@@ -30,11 +30,11 @@ The Convert dropdown is driven by semantic profile ids. The four names in the ti
 
 HTTP `product=sigmet` stays one wire value. Ordinary, VA, and TC SIGMET stay separate packs. F6 stays Implemented. No new feature id.
 
-The 2026-09-23 public-bulletin pass (#1266) is the reason these four formats are still uncovered:
+The 2026-09-23 public-bulletin pass (#1266) is why these four formats needed their own selectable profiles. After #1267 they are catalog rows; remaining limits are source and grammar, not a missing dropdown. Full refresh: [operational-tac-delta.md](operational-tac-delta.md).
 
-- US convective SIGMET and G-AIRMET use a different grammar from Annex 3 SIGMET and AIRMET. There is no convert profile for that grammar. The US catalog cites an NWS convective SIGMET sample as a fixture seed only.
-- Alaska and Hawaii VONA on the NWS raw `WM` gateway had spaces replaced with `?` and a truncated body, so they are not fixtures. `iwxxm_us` does not supply a US VONA path. Annex 3 VONA already exists and must stay unchanged when the new profile is not selected.
-- Canadian SIGMET on the MSC datamart is published as IWXXM 3.0 with no TAC in the file. `ca_eccc` lint covers METAR, SPECI, TAF, and AIRMET. The catalog lists SIGMET on CA_ECCC, and the MSC file still has no TAC to convert.
+- US convective SIGMET and G-AIRMET use a different grammar from Annex 3 SIGMET and AIRMET. `US_NWS_CONVECTIVE_SIGMET` converts and lints on the convective emitter. `US_NWS_G_AIRMET` refuses until a text bulletin exists (public feed is polygons).
+- Alaska and Hawaii VONA on the NWS raw `WM` gateway had spaces replaced with `?` and a truncated body, so they are not fixtures. `US_NWS_VONA` refuses convert and lint until a clean TAC fixture is accepted. Annex 3 VONA and the current `iwxxm_us` VONA path stay unchanged when the new profile is not selected.
+- Canadian SIGMET on the MSC datamart is published as IWXXM 3.0 with no TAC in the file. `CA_MSC_SIGMET` validates that published file; text convert waits for a TAC source. `ca_eccc` keeps its SIGMET TAC path.
 
 ## Out of scope
 
