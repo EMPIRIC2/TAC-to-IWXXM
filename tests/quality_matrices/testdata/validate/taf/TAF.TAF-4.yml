@@ -1,0 +1,263 @@
+rule_id: TAF.TAF-4
+engine: validate
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/taf_basic.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: TAF YUDO 161800Z 1700/1718 13005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF convert-then-validate
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: TAF YUDD 151800Z 1600/1618 13005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF convert-then-validate
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 14005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF convert-then-validate
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 8000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF convert-then-validate
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF edge convert-then-validate
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: '  TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020=  '
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF edge convert-then-validate
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: TAF YUDO 151800Z 1600/1618 13005MPS 9000 BKN020 =
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF edge convert-then-validate
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: TAF YUDO 151200Z 1518/1618 13005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF edge convert-then-validate
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: TAF YUDO 152000Z 1606/1618 13005MPS 9000 BKN020=
+  expect:
+    accept: true
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 TAF edge convert-then-validate
+- bucket: sad
+  case_id: '01'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - TAF.TAF-4
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH negative TAF.TAF-4
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF isNilReport=\"true\" isCancelReport=\"true\" xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"taf.basic.yudo\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport gml:id=\"ad.yudo\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice gml:id=\"ad.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:designator>YUDO</aixm:designator>\n          <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n     \
+      \     <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n          <aixm:ARP>\n            <aixm:ElevatedPoint gml:id=\"arp.yudo\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n              <gml:pos>12.34 -12.34</gml:pos>\n              <aixm:elevation uom=\"M\">12</aixm:elevation>\n              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n            </aixm:ElevatedPoint>\n          </aixm:ARP>\n        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n  </iwxxm:aerodrome>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:baseForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.base.yudo\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime xlink:href=\"\
+      #uuid.00000000-0000-4000-8000-000000000001\"/>\n      <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.base.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:baseForecast>\n</iwxxm:TAF>\n<!-- taf4-neg-0 -->"
+- bucket: sad
+  case_id: '02'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - TAF.TAF-4
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH negative TAF.TAF-4
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF isNilReport=\"true\" isCancelReport=\"true\" xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"taf.basic.yudo\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport gml:id=\"ad.yudo\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice gml:id=\"ad.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:designator>YUDO</aixm:designator>\n          <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n     \
+      \     <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n          <aixm:ARP>\n            <aixm:ElevatedPoint gml:id=\"arp.yudo\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n              <gml:pos>12.34 -12.34</gml:pos>\n              <aixm:elevation uom=\"M\">12</aixm:elevation>\n              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n            </aixm:ElevatedPoint>\n          </aixm:ARP>\n        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n  </iwxxm:aerodrome>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:baseForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.base.yudo\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime xlink:href=\"\
+      #uuid.00000000-0000-4000-8000-000000000001\"/>\n      <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.base.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:baseForecast>\n</iwxxm:TAF>\n<!-- taf4-neg-1 -->"
+- bucket: sad
+  case_id: '03'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - TAF.TAF-4
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH negative TAF.TAF-4
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF isNilReport=\"true\" isCancelReport=\"true\" xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"taf.basic.yudo\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport gml:id=\"ad.yudo\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice gml:id=\"ad.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:designator>YUDO</aixm:designator>\n          <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n     \
+      \     <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n          <aixm:ARP>\n            <aixm:ElevatedPoint gml:id=\"arp.yudo\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n              <gml:pos>12.34 -12.34</gml:pos>\n              <aixm:elevation uom=\"M\">12</aixm:elevation>\n              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n            </aixm:ElevatedPoint>\n          </aixm:ARP>\n        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n  </iwxxm:aerodrome>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:baseForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.base.yudo\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime xlink:href=\"\
+      #uuid.00000000-0000-4000-8000-000000000001\"/>\n      <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.base.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:baseForecast>\n</iwxxm:TAF>\n<!-- taf4-neg-2 -->"
+- bucket: sad
+  case_id: '04'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - TAF.TAF-4
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH negative TAF.TAF-4
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF isNilReport=\"true\" isCancelReport=\"true\" xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"taf.basic.yudo\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport gml:id=\"ad.yudo\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice gml:id=\"ad.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:designator>YUDO</aixm:designator>\n          <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n     \
+      \     <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n          <aixm:ARP>\n            <aixm:ElevatedPoint gml:id=\"arp.yudo\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n              <gml:pos>12.34 -12.34</gml:pos>\n              <aixm:elevation uom=\"M\">12</aixm:elevation>\n              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n            </aixm:ElevatedPoint>\n          </aixm:ARP>\n        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n  </iwxxm:aerodrome>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:baseForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.base.yudo\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime xlink:href=\"\
+      #uuid.00000000-0000-4000-8000-000000000001\"/>\n      <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.base.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:baseForecast>\n</iwxxm:TAF>\n<!-- taf4-neg-3 -->"
+- bucket: sad
+  case_id: '05'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - TAF.TAF-4
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH negative TAF.TAF-4
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF isNilReport=\"true\" isCancelReport=\"true\" xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"taf.basic.yudo\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport gml:id=\"ad.yudo\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice gml:id=\"ad.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:designator>YUDO</aixm:designator>\n          <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n     \
+      \     <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n          <aixm:ARP>\n            <aixm:ElevatedPoint gml:id=\"arp.yudo\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n              <gml:pos>12.34 -12.34</gml:pos>\n              <aixm:elevation uom=\"M\">12</aixm:elevation>\n              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n            </aixm:ElevatedPoint>\n          </aixm:ARP>\n        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n  </iwxxm:aerodrome>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:baseForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.base.yudo\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime xlink:href=\"\
+      #uuid.00000000-0000-4000-8000-000000000001\"/>\n      <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.base.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:baseForecast>\n</iwxxm:TAF>\n<!-- taf4-neg-4 -->"
+- bucket: edge_fail
+  case_id: '01'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - TAF.TAF-4
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH edge-fail TAF.TAF-4
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF isNilReport=\"true\" isCancelReport=\"true\" xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"taf.basic.yudo\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport gml:id=\"ad.yudo\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice gml:id=\"ad.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:designator>YUDO</aixm:designator>\n          <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n     \
+      \     <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n          <aixm:ARP>\n            <aixm:ElevatedPoint gml:id=\"arp.yudo\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n              <gml:pos>12.34 -12.34</gml:pos>\n              <aixm:elevation uom=\"M\">12</aixm:elevation>\n              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n            </aixm:ElevatedPoint>\n          </aixm:ARP>\n        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n  </iwxxm:aerodrome>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:baseForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.base.yudo\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime xlink:href=\"\
+      #uuid.00000000-0000-4000-8000-000000000001\"/>\n      <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.base.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:baseForecast>\n</iwxxm:TAF>\n<!-- taf4-neg-10 -->"
+- bucket: edge_fail
+  case_id: '02'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - TAF.TAF-4
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH edge-fail TAF.TAF-4
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF isNilReport=\"true\" isCancelReport=\"true\" xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"taf.basic.yudo\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport gml:id=\"ad.yudo\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice gml:id=\"ad.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:designator>YUDO</aixm:designator>\n          <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n     \
+      \     <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n          <aixm:ARP>\n            <aixm:ElevatedPoint gml:id=\"arp.yudo\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n              <gml:pos>12.34 -12.34</gml:pos>\n              <aixm:elevation uom=\"M\">12</aixm:elevation>\n              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n            </aixm:ElevatedPoint>\n          </aixm:ARP>\n        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n  </iwxxm:aerodrome>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:baseForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.base.yudo\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime xlink:href=\"\
+      #uuid.00000000-0000-4000-8000-000000000001\"/>\n      <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.base.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:baseForecast>\n</iwxxm:TAF>\n<!-- taf4-neg-11 -->"
+- bucket: edge_fail
+  case_id: '03'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - TAF.TAF-4
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH edge-fail TAF.TAF-4
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF isNilReport=\"true\" isCancelReport=\"true\" xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"taf.basic.yudo\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport gml:id=\"ad.yudo\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice gml:id=\"ad.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:designator>YUDO</aixm:designator>\n          <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n     \
+      \     <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n          <aixm:ARP>\n            <aixm:ElevatedPoint gml:id=\"arp.yudo\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n              <gml:pos>12.34 -12.34</gml:pos>\n              <aixm:elevation uom=\"M\">12</aixm:elevation>\n              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n            </aixm:ElevatedPoint>\n          </aixm:ARP>\n        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n  </iwxxm:aerodrome>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:baseForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.base.yudo\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime xlink:href=\"\
+      #uuid.00000000-0000-4000-8000-000000000001\"/>\n      <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.base.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:baseForecast>\n</iwxxm:TAF>\n<!-- taf4-neg-12 -->"
+- bucket: edge_fail
+  case_id: '04'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - TAF.TAF-4
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH edge-fail TAF.TAF-4
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF isNilReport=\"true\" isCancelReport=\"true\" xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"taf.basic.yudo\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport gml:id=\"ad.yudo\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice gml:id=\"ad.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:designator>YUDO</aixm:designator>\n          <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n     \
+      \     <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n          <aixm:ARP>\n            <aixm:ElevatedPoint gml:id=\"arp.yudo\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n              <gml:pos>12.34 -12.34</gml:pos>\n              <aixm:elevation uom=\"M\">12</aixm:elevation>\n              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n            </aixm:ElevatedPoint>\n          </aixm:ARP>\n        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n  </iwxxm:aerodrome>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:baseForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.base.yudo\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime xlink:href=\"\
+      #uuid.00000000-0000-4000-8000-000000000001\"/>\n      <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.base.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:baseForecast>\n</iwxxm:TAF>\n<!-- taf4-neg-13 -->"
+- bucket: edge_fail
+  case_id: '05'
+  status: ready
+  expect:
+    accept: false
+    sch_ids:
+    - TAF.TAF-4
+  meta:
+    product: TAF
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 native SCH edge-fail TAF.TAF-4
+    xml: "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<iwxxm:TAF isNilReport=\"true\" isCancelReport=\"true\" xmlns:iwxxm=\"http://icao.int/iwxxm/2025-2\"\n    xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n    xmlns:gml=\"http://www.opengis.net/gml/3.2\"\n    xmlns:aixm=\"http://www.aixm.aero/schema/5.1.1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    gml:id=\"taf.basic.yudo\"\n    reportStatus=\"NORMAL\"\n    permissibleUsage=\"OPERATIONAL\">\n  <iwxxm:issueTime>\n    <gml:TimeInstant gml:id=\"t.issue\">\n      <gml:timePosition>2012-08-15T18:00:00Z</gml:timePosition>\n    </gml:TimeInstant>\n  </iwxxm:issueTime>\n  <iwxxm:aerodrome>\n    <aixm:AirportHeliport gml:id=\"ad.yudo\">\n      <aixm:timeSlice>\n        <aixm:AirportHeliportTimeSlice gml:id=\"ad.ts.yudo\">\n          <gml:validTime/>\n          <aixm:interpretation>SNAPSHOT</aixm:interpretation>\n          <aixm:designator>YUDO</aixm:designator>\n          <aixm:name>DONLON/INTERNATIONAL</aixm:name>\n     \
+      \     <aixm:locationIndicatorICAO>YUDO</aixm:locationIndicatorICAO>\n          <aixm:ARP>\n            <aixm:ElevatedPoint gml:id=\"arp.yudo\" srsDimension=\"2\" axisLabels=\"Lat Long\" srsName=\"http://www.opengis.net/def/crs/EPSG/0/4326\">\n              <gml:pos>12.34 -12.34</gml:pos>\n              <aixm:elevation uom=\"M\">12</aixm:elevation>\n              <aixm:verticalDatum>EGM_96</aixm:verticalDatum>\n            </aixm:ElevatedPoint>\n          </aixm:ARP>\n        </aixm:AirportHeliportTimeSlice>\n      </aixm:timeSlice>\n    </aixm:AirportHeliport>\n  </iwxxm:aerodrome>\n  <iwxxm:validPeriod>\n    <gml:TimePeriod gml:id=\"t.valid\">\n      <gml:beginPosition>2012-08-16T00:00:00Z</gml:beginPosition>\n      <gml:endPosition>2012-08-16T18:00:00Z</gml:endPosition>\n    </gml:TimePeriod>\n  </iwxxm:validPeriod>\n  <iwxxm:baseForecast>\n    <iwxxm:MeteorologicalAerodromeForecast gml:id=\"fcst.base.yudo\" cloudAndVisibilityOK=\"false\">\n      <iwxxm:phenomenonTime xlink:href=\"\
+      #uuid.00000000-0000-4000-8000-000000000001\"/>\n      <iwxxm:prevailingVisibility uom=\"m\">9000</iwxxm:prevailingVisibility>\n      <iwxxm:surfaceWind>\n        <iwxxm:AerodromeSurfaceWindForecast variableWindDirection=\"false\">\n          <iwxxm:meanWindDirection uom=\"deg\">130</iwxxm:meanWindDirection>\n          <iwxxm:meanWindSpeed uom=\"m/s\">5.0</iwxxm:meanWindSpeed>\n        </iwxxm:AerodromeSurfaceWindForecast>\n      </iwxxm:surfaceWind>\n      <iwxxm:cloud>\n        <iwxxm:AerodromeCloudForecast gml:id=\"cloud.base.yudo\">\n          <iwxxm:layer>\n            <iwxxm:CloudLayer>\n              <iwxxm:amount xlink:href=\"http://codes.wmo.int/49-2/CloudAmountReportedAtAerodrome/BKN\"/>\n              <iwxxm:base uom=\"[ft_i]\">2000</iwxxm:base>\n            </iwxxm:CloudLayer>\n          </iwxxm:layer>\n        </iwxxm:AerodromeCloudForecast>\n      </iwxxm:cloud>\n    </iwxxm:MeteorologicalAerodromeForecast>\n  </iwxxm:baseForecast>\n</iwxxm:TAF>\n<!-- taf4-neg-14 -->"

@@ -1,0 +1,578 @@
+version: 1
+cite: TC-F29-008 /
+matrix_roots:
+- convert/taf
+- validate/taf
+- convert/sigmet
+- validate/sigmet
+- convert/airmet
+- validate/airmet
+- convert/vaa
+- validate/vaa
+- convert/tca
+- validate/tca
+- convert/swxa
+- validate/swxa
+- convert/vona
+- validate/vona
+engines:
+  convert:
+  - id: taf_basic
+    native:
+      kind: encode_theme
+      stem: taf_basic
+    slots: &id001
+      happy: 5
+      sad: 5
+      edge_pass: 5
+      edge_fail: 5
+  - id: taf_a5_1
+    native:
+      kind: encode_theme
+      stem: taf_a5_1
+    slots: *id001
+  - id: taf_a5_2
+    native:
+      kind: encode_theme
+      stem: taf_a5_2
+    slots: *id001
+  - id: taf_amd
+    native:
+      kind: encode_theme
+      stem: taf_amd
+    slots: *id001
+  - id: taf_cavok
+    native:
+      kind: encode_theme
+      stem: taf_cavok
+    slots: *id001
+  - id: taf_cnl
+    native:
+      kind: encode_theme
+      stem: taf_cnl
+    slots: *id001
+  - id: taf_cor
+    native:
+      kind: encode_theme
+      stem: taf_cor
+    slots: *id001
+  - id: taf_nil
+    native:
+      kind: encode_theme
+      stem: taf_nil
+    slots: *id001
+  - id: sigmet_a6_1a_ts
+    native:
+      kind: encode_theme
+      stem: sigmet_a6_1a_ts
+    slots: *id001
+  - id: sigmet_a6_1b_cnl
+    native:
+      kind: encode_theme
+      stem: sigmet_a6_1b_cnl
+    slots: *id001
+  - id: sigmet_a6_2_tc
+    native:
+      kind: encode_theme
+      stem: sigmet_a6_2_tc
+    slots: *id001
+  - id: sigmet_multi_location_va
+    native:
+      kind: encode_theme
+      stem: sigmet_multi_location_va
+    slots: *id001
+  - id: sigmet_stnr
+    native:
+      kind: encode_theme
+      stem: sigmet_stnr
+    slots: *id001
+  - id: sigmet_va_eggx
+    native:
+      kind: encode_theme
+      stem: sigmet_va_eggx
+    slots: *id001
+  - id: sigmet_va_no_va_exp
+    native:
+      kind: encode_theme
+      stem: sigmet_va_no_va_exp
+    slots: *id001
+  - id: airmet_a6_1a_ts
+    native:
+      kind: encode_theme
+      stem: airmet_a6_1a_ts
+    slots: &id002
+      happy: 5
+      sad: 5
+      edge_pass: 5
+      edge_fail: 5
+  - id: vaa_a7_2
+    native:
+      kind: encode_theme
+      stem: vaa_a7_2
+    slots: *id002
+  - id: tca_a2_2
+    native:
+      kind: encode_theme
+      stem: tca_a2_2
+    slots: *id002
+  - id: swxa_a7_3
+    native:
+      kind: encode_theme
+      stem: swxa_a7_3
+    slots: *id002
+  - id: swxa_a7_4
+    native:
+      kind: encode_theme
+      stem: swxa_a7_4
+    slots: *id002
+  - id: swxa_a7_5
+    native:
+      kind: encode_theme
+      stem: swxa_a7_5
+    slots: *id002
+  - id: vona_a7_1
+    native:
+      kind: encode_theme
+      stem: vona_a7_1
+    slots: *id002
+  validate:
+  - id: TAF.MeteorologicalAerodromeForecast-1
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.MeteorologicalAerodromeForecast-1
+    slots: *id001
+  - id: TAF.MeteorologicalAerodromeForecast-2
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.MeteorologicalAerodromeForecast-2
+    slots: *id001
+  - id: TAF.AerodromeAirTemperatureForecast-1
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.AerodromeAirTemperatureForecast-1
+    slots: *id001
+  - id: TAF.AerodromeAirTemperatureForecast-2
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.AerodromeAirTemperatureForecast-2
+    slots: *id001
+  - id: TAF.TAF-9
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.TAF-9
+    slots: *id001
+  - id: TAF.TAF-6
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.TAF-6
+    slots: *id001
+  - id: TAF.TAF-7
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.TAF-7
+    slots: *id001
+  - id: TAF.TAF-8
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.TAF-8
+    slots: *id001
+  - id: TAF.TAF-4
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.TAF-4
+    slots: *id001
+  - id: TAF.TAF-3
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.TAF-3
+    slots: *id001
+  - id: TAF.TAF-2
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.TAF-2
+    slots: *id001
+  - id: TAF.TAF-5
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.TAF-5
+    slots: *id001
+  - id: TAF.TAF-1
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.TAF-1
+    slots: *id001
+  - id: TAF.MeteorologicalAerodromeForecast.weather
+    native:
+      kind: schematron_pattern
+      pattern_id: TAF.MeteorologicalAerodromeForecast.weather
+    slots: *id001
+  - id: SIGMET.SIGMETPosition-1
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMETPosition-1
+    slots: *id001
+  - id: SIGMET.SIGMETPosition-2
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMETPosition-2
+    slots: *id001
+  - id: SIGMET.SIGMET-1
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMET-1
+    slots: *id001
+  - id: SIGMET.SIGMET-12
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMET-12
+    slots: *id001
+  - id: SIGMET.SIGMET-7
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMET-7
+    slots: *id001
+  - id: SIGMET.SIGMET-3
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMET-3
+    slots: *id001
+  - id: SIGMET.SIGMET-2
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMET-2
+    slots: *id001
+  - id: SIGMET.SIGMET-4
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMET-4
+    slots: *id001
+  - id: SIGMET.AeronauticalSignificantWeatherPhenomenon
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.AeronauticalSignificantWeatherPhenomenon
+    slots: *id001
+  - id: SIGMET.SIGMET.phenomenon
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMET.phenomenon
+    slots: *id001
+  - id: SIGMET.SIGMETEvolvingCondition-4
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMETEvolvingCondition-4
+    slots: *id001
+  - id: SIGMET.SIGMETEvolvingCondition-2
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMETEvolvingCondition-2
+    slots: *id001
+  - id: SIGMET.SIGMETEvolvingCondition-1
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMETEvolvingCondition-1
+    slots: *id001
+  - id: SIGMET.SIGMETEvolvingCondition-3
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMETEvolvingCondition-3
+    slots: *id001
+  - id: SIGMET.SIGMETEvolvingCondition-5
+    native:
+      kind: schematron_pattern
+      pattern_id: SIGMET.SIGMETEvolvingCondition-5
+    slots: *id001
+  - id: VolcanicAshSIGMET.VolcanicAshSIGMET-6
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshSIGMET.VolcanicAshSIGMET-6
+    slots: *id001
+  - id: VolcanicAshSIGMET.VolcanicAshSIGMET-7
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshSIGMET.VolcanicAshSIGMET-7
+    slots: *id001
+  - id: VolcanicAshSIGMET.VolcanicAshSIGMET-1
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshSIGMET.VolcanicAshSIGMET-1
+    slots: *id001
+  - id: VolcanicAshSIGMET.VolcanicAshSIGMET-3
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshSIGMET.VolcanicAshSIGMET-3
+    slots: *id001
+  - id: TropicalCycloneSIGMET.TropicalCycloneSIGMET-1
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneSIGMET.TropicalCycloneSIGMET-1
+    slots: *id001
+  - id: TropicalCycloneSIGMET.TropicalCycloneSIGMET-2
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneSIGMET.TropicalCycloneSIGMET-2
+    slots: *id001
+  - id: TropicalCycloneSIGMET.TropicalCycloneSIGMET-3
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneSIGMET.TropicalCycloneSIGMET-3
+    slots: *id001
+  - id: AIRMET.WeatherCausingVisibilityReduction
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.WeatherCausingVisibilityReduction
+    slots: *id002
+  - id: AIRMET.AIRMETEvolvingCondition.surfaceVisibilityCause
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMETEvolvingCondition.surfaceVisibilityCause
+    slots: *id002
+  - id: AIRMET.AIRMETEvolvingCondition-1
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMETEvolvingCondition-1
+    slots: *id002
+  - id: AIRMET.AIRMETEvolvingCondition-2
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMETEvolvingCondition-2
+    slots: *id002
+  - id: AIRMET.AIRMETEvolvingCondition-9
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMETEvolvingCondition-9
+    slots: *id002
+  - id: AIRMET.AIRMETEvolvingCondition-3
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMETEvolvingCondition-3
+    slots: *id002
+  - id: AIRMET.AIRMETEvolvingCondition-4
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMETEvolvingCondition-4
+    slots: *id002
+  - id: AIRMET.AIRMETEvolvingCondition-5
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMETEvolvingCondition-5
+    slots: *id002
+  - id: AIRMET.AIRMETEvolvingCondition-8
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMETEvolvingCondition-8
+    slots: *id002
+  - id: AIRMET.AIRMETEvolvingCondition-7
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMETEvolvingCondition-7
+    slots: *id002
+  - id: AIRMET.AIRMETEvolvingCondition-6
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMETEvolvingCondition-6
+    slots: *id002
+  - id: AIRMET.AeronauticalAreaWeatherPhenomenon
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AeronauticalAreaWeatherPhenomenon
+    slots: *id002
+  - id: AIRMET.AIRMET.phenomenon
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMET.phenomenon
+    slots: *id002
+  - id: AIRMET.AIRMET-1
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMET-1
+    slots: *id002
+  - id: AIRMET.AIRMET-5b
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMET-5b
+    slots: *id002
+  - id: AIRMET.AIRMET-5a
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMET-5a
+    slots: *id002
+  - id: AIRMET.AIRMET-6
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMET-6
+    slots: *id002
+  - id: AIRMET.AIRMET-3
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMET-3
+    slots: *id002
+  - id: AIRMET.AIRMET-2
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMET-2
+    slots: *id002
+  - id: AIRMET.AIRMET-4
+    native:
+      kind: schematron_pattern
+      pattern_id: AIRMET.AIRMET-4
+    slots: *id002
+  - id: VolcanicAshAdvisory.VolcanicAshCloudObservedOrEstimated-3
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.VolcanicAshCloudObservedOrEstimated-3
+    slots: *id002
+  - id: VolcanicAshAdvisory.VolcanicAshCloud-1
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.VolcanicAshCloud-1
+    slots: *id002
+  - id: VolcanicAshAdvisory.VolcanicAshCloud-2
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.VolcanicAshCloud-2
+    slots: *id002
+  - id: VolcanicAshAdvisory.VolcanicAshAdvisory-3
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.VolcanicAshAdvisory-3
+    slots: *id002
+  - id: VolcanicAshAdvisory.VolcanicAshAdvisory-1
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.VolcanicAshAdvisory-1
+    slots: *id002
+  - id: VolcanicAshAdvisory.VolcanicAshAdvisory-2
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.VolcanicAshAdvisory-2
+    slots: *id002
+  - id: VolcanicAshAdvisory.WindConditions-3
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.WindConditions-3
+    slots: *id002
+  - id: VolcanicAshAdvisory.WindConditions-1
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.WindConditions-1
+    slots: *id002
+  - id: VolcanicAshAdvisory.WindConditions-2
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.WindConditions-2
+    slots: *id002
+  - id: VolcanicAshAdvisory.VolcanicAshForecastConditions-2
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.VolcanicAshForecastConditions-2
+    slots: *id002
+  - id: VolcanicAshAdvisory.VolcanicAshForecastConditions-1
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.VolcanicAshForecastConditions-1
+    slots: *id002
+  - id: VolcanicAshAdvisory.VolcanicAshCloudForecast-1
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.VolcanicAshCloudForecast-1
+    slots: *id002
+  - id: VolcanicAshAdvisory.VolcanicAshObservedOrEstimatedConditions-1
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.VolcanicAshObservedOrEstimatedConditions-1
+    slots: *id002
+  - id: VolcanicAshAdvisory.VolcanicAshObservedOrEstimatedConditions-2
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanicAshAdvisory.VolcanicAshObservedOrEstimatedConditions-2
+    slots: *id002
+  - id: TropicalCycloneAdvisory.TropicalCycloneForecastConditions-2
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneAdvisory.TropicalCycloneForecastConditions-2
+    slots: *id002
+  - id: TropicalCycloneAdvisory.TropicalCycloneForecastConditions-1
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneAdvisory.TropicalCycloneForecastConditions-1
+    slots: *id002
+  - id: TropicalCycloneAdvisory.TropicalCycloneAdvisory-1
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneAdvisory.TropicalCycloneAdvisory-1
+    slots: *id002
+  - id: TropicalCycloneAdvisory.TropicalCycloneAdvisory-2
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneAdvisory.TropicalCycloneAdvisory-2
+    slots: *id002
+  - id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-1
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-1
+    slots: *id002
+  - id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-6
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-6
+    slots: *id002
+  - id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-5
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-5
+    slots: *id002
+  - id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-2
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-2
+    slots: *id002
+  - id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-3
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-3
+    slots: *id002
+  - id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-4
+    native:
+      kind: schematron_pattern
+      pattern_id: TropicalCycloneAdvisory.TropicalCycloneObservedConditions-4
+    slots: *id002
+  - id: SpaceWeatherAdvisory.SpaceWeatherLocation
+    native:
+      kind: schematron_pattern
+      pattern_id: SpaceWeatherAdvisory.SpaceWeatherLocation
+    slots: *id002
+  - id: SpaceWeatherAdvisory.SpaceWeatherRegion.locationIndicator
+    native:
+      kind: schematron_pattern
+      pattern_id: SpaceWeatherAdvisory.SpaceWeatherRegion.locationIndicator
+    slots: *id002
+  - id: SpaceWeatherAdvisory.SpaceWeatherRegion-1
+    native:
+      kind: schematron_pattern
+      pattern_id: SpaceWeatherAdvisory.SpaceWeatherRegion-1
+    slots: *id002
+  - id: SpaceWeatherAdvisory.SpaceWeatherAdvisory-1
+    native:
+      kind: schematron_pattern
+      pattern_id: SpaceWeatherAdvisory.SpaceWeatherAdvisory-1
+    slots: *id002
+  - id: SpaceWeatherAdvisory.SpaceWeatherAdvisory-2
+    native:
+      kind: schematron_pattern
+      pattern_id: SpaceWeatherAdvisory.SpaceWeatherAdvisory-2
+    slots: *id002
+  - id: VolcanoObservatoryNoticeForAviation.AviationColourCode
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanoObservatoryNoticeForAviation.AviationColourCode
+    slots: *id002
+  - id: VolcanoObservatoryNoticeForAviation.VolcanoObservatoryNoticeForAviation.currentColourCode
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanoObservatoryNoticeForAviation.VolcanoObservatoryNoticeForAviation.currentColourCode
+    slots: *id002
+  - id: VolcanoObservatoryNoticeForAviation.VolcanoObservatoryNoticeForAviation.previousColourCode
+    native:
+      kind: schematron_pattern
+      pattern_id: VolcanoObservatoryNoticeForAviation.VolcanoObservatoryNoticeForAviation.previousColourCode
+    slots: *id002

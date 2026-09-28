@@ -1,0 +1,243 @@
+rule_id: AIRMET.AIRMET-1
+engine: validate
+cases:
+- bucket: happy
+  case_id: '01'
+  status: ready
+  tac: 'YUDD AIRMET 1 VALID 151520/151800 YUSO-
+
+    YUDD SHANLON FIR ISOL TS
+
+    OBS N OF S50 TOP ABV FL100 STNR WKN='
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: annex3_golden/airmet_a6_1a_ts.tac
+- bucket: happy
+  case_id: '02'
+  status: ready
+  tac: 'YUDD AIRMET 2 VALID 161520/161800 YUSO-
+
+    YUDD SHANLON FIR ISOL TS
+
+    OBS N OF S50 TOP ABV FL100 STNR WKN='
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET convert-then-validate
+- bucket: happy
+  case_id: '03'
+  status: ready
+  tac: 'YUDD AIRMET 1 VALID 171520/171800 YUSO-
+
+    YUDD SHANLON FIR ISOL TS
+
+    OBS N OF S50 TOP ABV FL100 STNR WKN='
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET convert-then-validate
+- bucket: happy
+  case_id: '04'
+  status: ready
+  tac: 'YUDD AIRMET 1 VALID 151520/151800 YUSO-
+
+    YUDD SHANLON FIR ISOL TS
+
+    OBS N OF S50 TOP ABV FL120 STNR WKN='
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET convert-then-validate
+- bucket: happy
+  case_id: '05'
+  status: ready
+  tac: 'YUDD AIRMET 3 VALID 151520/151800 YUSO-
+
+    YUDD SHANLON FIR ISOL TS
+
+    OBS N OF S50 TOP ABV FL100 STNR NC='
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET convert-then-validate
+- bucket: edge_pass
+  case_id: '01'
+  status: ready
+  tac: 'YUDD AIRMET 1 VALID 151520/151800 YUSO-
+
+    YUDD SHANLON FIR ISOL TS
+
+    OBS N OF S50 TOP ABV FL100 STNR WKN'
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET edge convert-then-validate
+- bucket: edge_pass
+  case_id: '02'
+  status: ready
+  tac: '  YUDD AIRMET 1 VALID 151520/151800 YUSO-
+
+    YUDD SHANLON FIR ISOL TS
+
+    OBS N OF S50 TOP ABV FL100 STNR WKN=  '
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET edge convert-then-validate
+- bucket: edge_pass
+  case_id: '03'
+  status: ready
+  tac: 'YUDD AIRMET 1 VALID 151520/151800 YUSO-
+
+    YUDD SHANLON FIR ISOL TS
+
+    OBS N OF S50 TOP ABV FL100 STNR WKN ='
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET edge convert-then-validate
+- bucket: edge_pass
+  case_id: '04'
+  status: ready
+  tac: 'YUDD AIRMET 4 VALID 181600/182000 YUSO-
+
+    YUDD SHANLON FIR ISOL TS
+
+    OBS N OF S50 TOP ABV FL100 STNR WKN='
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET edge convert-then-validate
+- bucket: edge_pass
+  case_id: '05'
+  status: ready
+  tac: 'YUDD AIRMET 1 VALID 151520/151800 YUSO-
+
+    YUDD SHANLON FIR ISOL TS
+
+    OBS N OF S50 TOP ABV FL100 STNR INTSF='
+  expect:
+    accept: true
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: TC-F29-008 AIRMET edge convert-then-validate
+- bucket: sad
+  case_id: '01'
+  status: oos
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '02'
+  status: oos
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '03'
+  status: oos
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '04'
+  status: oos
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: sad
+  case_id: '05'
+  status: oos
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '01'
+  status: oos
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '02'
+  status: oos
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '03'
+  status: oos
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '04'
+  status: oos
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
+- bucket: edge_fail
+  case_id: '05'
+  status: oos
+  meta:
+    product: AIRMET
+    profile: annex3
+    iwxxm_version: 2025-2
+    cite: '#1265'
+    reason: 'Native XPath1 stand-in does not yet make this pattern report its id (residual if()/document()/geometry); cite #1265'
