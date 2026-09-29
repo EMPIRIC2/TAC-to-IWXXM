@@ -79,6 +79,24 @@ def test_missing_catalog_row_is_not_applicable(monkeypatch: pytest.MonkeyPatch) 
         lint(_BASIC, product="METAR", profile="au_bom")
 
 
+def test_suppression_drops_matching_nz_cloud_token() -> None:
+    """Cover the delta match path (catalog line that returns True)."""
+    cloud = Issue(
+        severity="error",
+        code="INVALID_CLOUD_TOKEN",
+        message="METAR invalid cloud/VV token 'FEW010///'",
+    )
+    other = Issue(severity="info", code="AUTO_PRESENT", message="AUTO")
+    adjusted = apply_profile_deltas(
+        LintReport(ok=False, product="METAR", issues=[cloud, other]),
+        profile="nz_caa_met",
+        product="METAR",
+    )
+    assert [issue.code for issue in adjusted.issues] == ["AUTO_PRESENT"]
+    assert adjusted.ok is True
+    assert adjusted.profile == "nz_caa_met"
+
+
 def test_suppression_ignores_an_issue_without_a_quoted_token() -> None:
     report = LintReport(
         ok=False,
