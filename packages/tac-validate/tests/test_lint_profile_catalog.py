@@ -31,12 +31,27 @@ def test_catalog_records_every_thin_profile() -> None:
     assert rows["iwxxm_us"].recorded == ("US_CONVECTIVE_SIGMET_SHAPE",)
 
 
-def test_new_zealand_unobserved_cloud_type_is_not_an_annex3_error() -> None:
+def test_new_zealand_unobserved_cloud_type_is_accepted_under_both_profiles() -> None:
+    """Annex 3 now notes /// as CLOUD_TYPE_NOT_OBSERVABLE; NZ keeps the same token safe."""
     annex = lint(_NZ_AUTO, product="METAR", profile="annex3")
     nz = lint(_NZ_AUTO, product="METAR", profile="nz_caa_met")
-    assert any(issue.code == "INVALID_CLOUD_TOKEN" for issue in annex.issues)
+    assert not any(issue.code == "INVALID_CLOUD_TOKEN" for issue in annex.issues)
+    assert any(issue.code == "CLOUD_TYPE_NOT_OBSERVABLE" for issue in annex.issues)
     assert nz.profile == "nz_caa_met"
     assert not any(issue.code == "INVALID_CLOUD_TOKEN" for issue in nz.issues)
+    assert any(issue.code == "CLOUD_TYPE_NOT_OBSERVABLE" for issue in nz.issues)
+
+
+def test_selectable_stage_profiles_are_catalog_rows() -> None:
+    rows = load_lint_profiles()
+    for profile_id in (
+        "us_nws_convective_sigmet",
+        "us_nws_g_airmet",
+        "us_nws_vona",
+        "ca_msc_sigmet",
+    ):
+        assert profile_id in rows
+        assert rows[profile_id].differs is True
 
 
 def test_new_zealand_still_rejects_a_malformed_cloud_token() -> None:

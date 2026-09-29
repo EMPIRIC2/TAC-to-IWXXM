@@ -35,10 +35,15 @@ profiles:
     differs: true
     products: [METAR, SPECI, TAF]
     deltas:
+      # Retained if INVALID_CLOUD_TOKEN returns for ///; stage currently emits
+      # CLOUD_TYPE_NOT_OBSERVABLE (info) for the same token under annex3.
       - id: NZ_CLOUD_TYPE_UNOBSERVED
         products: [METAR, SPECI]
         suppress_codes: [INVALID_CLOUD_TOKEN]
         token_pattern: '^(?:FEW|SCT|BKN|OVC)\d{3}///$'
+    recorded:
+      - id: NZ_CLOUD_TYPE_INFO_ALIGN
+        note: FEW/SCT/BKN/OVC###/// aligns with annex3 CLOUD_TYPE_NOT_OBSERVABLE.
   uk_metoffice:
     engine: annex3
     differs: false
