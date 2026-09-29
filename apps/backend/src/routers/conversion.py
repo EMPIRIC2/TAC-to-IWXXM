@@ -825,7 +825,7 @@ async def _process_json_metars(
                         code="SOFT_PREVIEW_PARTIAL",
                     )
 
-                validation_layers_passed = [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]
+                validation_layers_passed = [ValidationLayer(layer) for layer in _initial_layers_passed(runtime.product)]
                 if runtime.validation_orchestrator:
                     pkg_out = api_surface._call_iwxxm_validate(
                         iwxxm_content,
@@ -840,11 +840,7 @@ async def _process_json_metars(
                     validation_result = runtime.validation_orchestrator.validate(
                         iwxxm_content,
                         iwxxm_version=runtime.iwxxm_version,
-                        layers=[
-                            ValidationLayer.XML_WELLFORMED,
-                            ValidationLayer.GML_REFERENCES,
-                            ValidationLayer.WMO_CODELISTS,
-                        ],
+                        layers=_output_validation_orch_layers(),
                     )
                     if pkg_out.ok and validation_result.passed:
                         validation_layers_passed.extend(
@@ -855,6 +851,14 @@ async def _process_json_metars(
                                 ValidationLayer.GML_REFERENCES,
                                 ValidationLayer.WMO_CODELISTS,
                             ]
+                        )
+                    else:
+                        # Align JSON metars[] path with manual/upload soft-warn visibility (#1159).
+                        acc.emit_output_validation_soft_warning(
+                            source=metar_name,
+                            label=metar_name,
+                            pkg_out=pkg_out,
+                            validation_result=validation_result,
                         )
 
                 result_xml = runtime.finalize_exchange_xml(iwxxm_content, metar_text.strip())

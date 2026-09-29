@@ -5724,6 +5724,44 @@ describe('FileConverter Component', () => {
         /Element METAR unexpected/i,
       );
     });
+
+    it('prefills Validate IWXXM from converted XML (#1159 TC-F7-044)', async () => {
+      const user = userEvent.setup({ delay: null });
+      const convertedXml =
+        '<?xml version="1.0"?><iwxxm:SIGMET xmlns:iwxxm="http://icao.int/iwxxm/2025-2"/>';
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        successful: 1,
+        failed: 0,
+        results: [
+          {
+            name: 'out.xml',
+            content: convertedXml,
+            tac_input: 'SIGMET DEMO',
+            source: 'manual_input',
+          },
+        ],
+        issues: [],
+        errors: [],
+      });
+
+      render(<FileConverter {...defaultProps} />);
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: {
+          value:
+            'YUDD SIGMET A1 VALID 010000/010400 YUDD-\nYUDD AMSWELL FIR TS OBS AT 0000Z=',
+        },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(
+          screen.getByRole('region', { name: /conversion results/i }),
+        ).toBeInTheDocument();
+      });
+      await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
+      await waitFor(() => {
+        expect(screen.getByTestId('tac-editor')).toHaveValue(convertedXml);
+      });
+    });
   });
 
   describe('EV-060 / #1003 IWXXM product pass-through (F7.t)', () => {
