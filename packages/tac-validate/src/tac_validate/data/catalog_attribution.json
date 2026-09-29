@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated": "2026-09-23",
+  "generated": "2026-09-29",
   "source": "PROVENANCE_MAP.json catalog_codes",
   "codes": {
     "AMD_PRESENT": {
@@ -72,6 +72,13 @@
       "status": "ok",
       "note": "Schema-backed SAWR substitution in metar-speci-ca; not a MANOBS code form",
       "source_attribution": "eccc-iwxxm-ca - https://dd.weather.gc.ca/today/aviation/iwxxm/schema/ - Schema-backed SAWR substitution in metar-speci-ca; not a MANOBS code form"
+    },
+    "CA_METAR_UP_AWOS_ONLY": {
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "status": "ok",
+      "note": "MANOBS present-weather UP (unknown precipitation) is AWOS-only",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS present-weather UP (unknown precipitation) is AWOS-only"
     },
     "CA_REMARK_MANOBS": {
       "source_id": "manobs-ca",
@@ -717,6 +724,20 @@
       "note": "Validated: tac-validate membership gate vs harvested wmo_membership.json",
       "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Validated: tac-validate membership gate vs harvested wmo_membership.json"
     },
+    "US_METAR_INHG_ALTIMETER": {
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "status": "ok",
+      "note": "US METAR/SPECI altimeter uses inches of mercury A#### (national overlay)",
+      "source_attribution": "faa-aim - https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html - US METAR/SPECI altimeter uses inches of mercury A#### (national overlay)"
+    },
+    "US_METAR_STATUTE_MILE_VIS": {
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "status": "ok",
+      "note": "US METAR/SPECI report prevailing visibility in statute miles with SM",
+      "source_attribution": "faa-aim - https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html - US METAR/SPECI report prevailing visibility in statute miles with SM"
+    },
     "US_SWXA_SATCOM_NOT_ISSUED": {
       "source_id": null,
       "source_url": null,
@@ -730,6 +751,13 @@
       "status": "ok",
       "note": "US TAF does not use BECMG change groups (FAA GEN 1.7 / national overlay)",
       "source_attribution": "fmh-1 - https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html - US TAF does not use BECMG change groups (FAA GEN 1.7 / national overlay)"
+    },
+    "US_TAF_PROB40_NOT_USED": {
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "status": "ok",
+      "note": "NWS TAFs do not use PROB40 (FAA AIM meteorology / ICAO weather formats)",
+      "source_attribution": "faa-aim - https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html - NWS TAFs do not use PROB40 (FAA AIM meteorology / ICAO weather formats)"
     },
     "US_TAF_TEMPO_MAX_4H": {
       "source_id": "fmh-1",

@@ -125,6 +125,19 @@ rules:
   - ca_eccc
   - manobs
   - sawr
+- id: TAC.CA_METAR_UP_AWOS_ONLY
+  code: CA_METAR_UP_AWOS_ONLY
+  label: Ca Metar Up Awos Only
+  severity: info
+  message_template: '{product} unknown precipitation (UP) is an AWOS-only present-weather code under CA_ECCC'
+  product: null
+  tags:
+  - metar
+  - speci
+  - ca_eccc
+  - manobs
+  - awos
+  - up
 - id: TAC.CA_REMARK_MANOBS
   code: CA_REMARK_MANOBS
   label: Ca Remark Manobs
@@ -1241,6 +1254,30 @@ rules:
   - weather
   - cloud
   - phenomenon
+- id: TAC.US_METAR_INHG_ALTIMETER
+  code: US_METAR_INHG_ALTIMETER
+  label: Us Metar Inhg Altimeter
+  severity: info
+  message_template: '{product} uses inch-of-mercury altimeter (A####) - US national METAR overlay'
+  product: null
+  tags:
+  - metar
+  - speci
+  - iwxxm_us
+  - us_faa_nws
+  - pressure
+- id: TAC.US_METAR_STATUTE_MILE_VIS
+  code: US_METAR_STATUTE_MILE_VIS
+  label: Us Metar Statute Mile Vis
+  severity: info
+  message_template: '{product} uses statute-mile visibility with SM - US national METAR overlay'
+  product: null
+  tags:
+  - metar
+  - speci
+  - iwxxm_us
+  - us_faa_nws
+  - visibility
 - id: TAC.US_SWXA_SATCOM_NOT_ISSUED
   code: US_SWXA_SATCOM_NOT_ISSUED
   label: Us Swxa Satcom Not Issued
@@ -1262,6 +1299,17 @@ rules:
   - taf
   - iwxxm_us
   - us_faa_nws
+- id: TAC.US_TAF_PROB40_NOT_USED
+  code: US_TAF_PROB40_NOT_USED
+  label: Us Taf Prob40 Not Used
+  severity: error
+  message_template: '{product} PROB40 change group is not used in NWS TAFs under US_FAA_NWS'
+  product: TAF
+  tags:
+  - taf
+  - iwxxm_us
+  - us_faa_nws
+  - prob40
 - id: TAC.US_TAF_TEMPO_MAX_4H
   code: US_TAF_TEMPO_MAX_4H
   label: Us Taf Tempo Max 4H

@@ -201,6 +201,59 @@ def iwxxm_validation_catalog_rows() -> list[dict[str, Any]]:
             "source_access": "public",
             "source_locator": "ECCC iwxxm-ca schema bundle (iwxxm-ca.xsd, metar-speci-ca.xsd, taf-ca.xsd)",
         },
+        {
+            "code": "IWXXM_US_ADDENDUM_REMARKS",
+            "severity": "warning",
+            "message_template": (
+                "United States IWXXM-US Addendum carries national METAR/SPECI remarks "
+                "and humanReadableText that are outside baseline IWXXM. Warning: "
+                "validate Addendum content against the NWS iwxxm-us extension model."
+            ),
+            "product": None,
+            "tags": ["iwxxm_us", "us_faa_nws", "iwxxm", "remarks"],
+            "family": "iwxxm",
+            "source_id": "nws-iwxxm-us",
+            "source_url": "https://nws.weather.gov/schemas/iwxxm-us/3.0/documents/METAR%20and%20SPECI.pdf",
+            "source_attribution": (
+                "nws-iwxxm-us - https://nws.weather.gov/schemas/iwxxm-us/3.0/ "
+                "- US Extensions METAR/SPECI Addendum package"
+            ),
+            "source_type": "tier2",
+            "status": "verified",
+            "semantic_identifier": None,
+            "last_verified": "2026-09-29",
+            "replacement_url": _IWXXM_US,
+            "issue_type": "iwxxm_schema",
+            "source_access": "public",
+            "source_locator": "NWS IWXXM-US METAR and SPECI extension document (Addendum)",
+        },
+        {
+            "code": "IWXXM_CA_CODE_REGISTRY",
+            "severity": "warning",
+            "message_template": (
+                "Canadian IWXXM products may reference ECCC code-ca phenomena "
+                "(present/forecast weather and AIRMET phenomena) that are outside "
+                "baseline WMO codelists. Warning: resolve those URIs against the "
+                "Canadian Code Registry and code-ca tree."
+            ),
+            "product": None,
+            "tags": ["ca_eccc", "iwxxm", "codelist"],
+            "family": "iwxxm",
+            "source_id": "eccc-iwxxm-ca",
+            "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/",
+            "source_attribution": (
+                "eccc-iwxxm-ca - https://dd.weather.gc.ca/today/aviation/iwxxm/code-ca/ "
+                "- Canadian Code Registry / code-ca phenomena landings"
+            ),
+            "source_type": "tier2",
+            "status": "verified",
+            "semantic_identifier": None,
+            "last_verified": "2026-09-29",
+            "replacement_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/schema/",
+            "issue_type": "iwxxm_schema",
+            "source_access": "public",
+            "source_locator": "ECCC aviation IWXXM code-ca directory",
+        },
     ]
 
 
