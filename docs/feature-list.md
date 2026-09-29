@@ -763,21 +763,18 @@
      restore one-shot destination credentials or URIs into the workbench.
   5. UJ-072 / UJ-074 and `TC-EV933-*` / `TC-EV1051-*` cover save, share, apply, ownership,
      and no-secret persistence paths.
-- **EV-1120 deepen (F7.v / F7.w / F15 / F35 — Phase A / #1120)** — **requirements locked**
-  (`D-EV1120-phaseA=1`):
+- **EV-1120 deepen (F7.v / F7.w / F15 / F35 — Phase A / #1120)** — **Done**
+  (epic [#1120](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1120) closed 2026-09-29;
+  children #1121–#1123/#1145 closed; residual polish [#1149](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1149)):
   1. **Catalog filters (#1121–#1123):** additive `semantic_profile` + `exchange_profile` on
      `GET /api/v1/lint-issue-catalog`; omit = current behavior; unknown → 400; workbench
      catalog follows Profile (+ Exchange when packaging); mined national-only rows for
      US_FAA_NWS + CA_ECCC (#1122) with provenance URLs only.
-  2. **Glanceable Profile UX (#1145):** one-composition summary on Conversion Profiles +
-     compact workbench twin (name/id, ≤3 vs-ICAO deltas, products, IWXXM line; guests see
-     pack/overlay count placeholders until signed in); **side-by-side compare of two semantic
-     profiles** on the Conversion Profiles summary surface (differing settings highlighted; the
-     workbench twin stays compact); ADR-038 sections as **inspect/jump blocks** (not a new
-     runtime loader); profile-aware example load for all registered semantic profiles + starter
-     seed packs/overlays (sync only if untouched); live refresh of summary + catalog without
-     resetting unrelated in-progress edits unless a profile-dependent control becomes invalid;
-     workflow = read-only links only.
+  2. **Glanceable Profile UX (#1145):** **workbench compact twin** shipped (name/id, ≤3
+     vs-ICAO deltas, products, IWXXM line; pack/overlay counts gated for guests).
+     Conversion Profiles page summary/compare/blocks **waived** after ADR-044 unmount;
+     live Profiles-page AC no longer applies. Profile-aware examples + live twin refresh
+     remain on Convert.
   3. **Out of Phase A:** composable convert assembly → [#1146](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1146);
      full workflow authoring → [#1147](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1147);
      marketplace; Learn/XP; soft-preview; #996 click-detail.

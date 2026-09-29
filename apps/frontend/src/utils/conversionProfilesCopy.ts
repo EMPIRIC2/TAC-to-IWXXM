@@ -184,6 +184,9 @@ export const PROFILES_PACK_EXPORT = 'Export share bundle';
 export const PROFILES_PACK_IMPORT = 'Import share bundle';
 export const PROFILES_ERROR_PREFIX = 'Profiles error:';
 export const PROFILES_COUNT_UNAVAILABLE = 'Unavailable';
+/** Workbench twin when profile catalog fetch fails (EV-1149 / #1149). */
+export const WORKBENCH_PROFILE_CATALOG_DEGRADED =
+  'Profile details could not be loaded. Rule pack and overlay counts may be incomplete.';
 export const PROFILES_PRESETS_HEADING = 'Semantic presets';
 export const PROFILES_PRESETS_LOADING = 'Loading semantic presets…';
 export const PROFILES_PRESETS_EMPTY = 'No semantic presets yet.';

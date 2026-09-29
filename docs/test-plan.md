@@ -3126,6 +3126,8 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: First viewport is one summary composition
 - **Pass criteria**: Shows name/id, ≤3 deltas, products, IWXXM line, counts
 - **Source**: #1145; AC-UX-1
+- **Status**: **Waived** — Conversion Profiles page unmounted (ADR-044); E2E skip in
+  `uj072-conversion-profiles.e2e.spec.ts`. Glanceable surface is the Convert workbench twin.
 
 ### TC-EV1120-011: Workbench Profile twin
 
@@ -3134,6 +3136,8 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Public twin stays compact and shows pack/overlay count placeholders;
   authenticated view reveals counts without changing the compact layout
 - **Source**: #1145; AC-UX-2
+- **Automated**: `FileConverter.test.tsx` (EV-1120 compact profile twin);
+  `uj072-conversion-profiles.e2e.spec.ts` (TC-EV1120-011/013/015)
 
 ### TC-EV1120-012: ADR-038 blocks inspect/jump
 
@@ -3141,15 +3145,16 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: Block click opens detail and jumps to existing forms
 - **Pass criteria**: No new runtime loader; EV-048 clean
 - **Source**: #1145; AC-UX-3
+- **Status**: **Waived** with TC-EV1120-010 (Profiles page unmounted)
 
 ### TC-EV1120-013: Profile-aware examples all semantic profiles
 
 - **Level**: T0 / T2
 - **Objective**: Example load for every registered semantic profile
-- **Pass criteria**: Thin packs may reuse ICAO + note; Conversion Profiles may show
-  read-only example coverage guidance plus a jump back to Convert without adding a second
-  editable picker on that page
+- **Pass criteria**: Thin packs may reuse ICAO + note; Convert workbench example picker
+  follows active Profile products
 - **Source**: #1145; AC-UX-4
+- **Automated**: covered with TC-EV1120-011 workbench path
 
 ### TC-EV1120-014: Starter seed sync non-destructive
 
@@ -3157,6 +3162,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: Seed sync skips customized packs/overlays
 - **Pass criteria**: Custom slug preserved after catalog deepen
 - **Source**: #1145; AC-UX-5
+- **Status**: **Waived** with TC-EV1120-010 (Profiles authoring unmounted)
 
 ### TC-EV1120-015: Live refresh summary + catalog
 
@@ -3166,14 +3172,15 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   unrelated in-progress editing state is preserved unless a profile-dependent control becomes
   invalid
 - **Source**: #1145; AC-UX-6
+- **Automated**: with TC-EV1120-011; catalog binding `tc-ev1120-009-workbench-catalog-binding.test.tsx`
 
 ### TC-EV1120-016: Workflow links read-only (Phase A)
 
 - **Level**: T0 / T2
 - **Objective**: Workflow affordances are status/links only
-- **Pass criteria**: No authoring UI in Phase A (#1147 deferred); links may coexist with
-  read-only example guidance and a Convert jump action
+- **Pass criteria**: No authoring UI in Phase A (#1147 deferred)
 - **Source**: #1145; D-R19/22
+- **Status**: **Waived** with Profiles page unmount; Convert trust copy remains read-only
 
 ### TC-EV1120-017: Side-by-side profile compare highlights deltas
 
@@ -3183,6 +3190,16 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   pair) shows ≥1 highlighted difference (products and/or vs-ICAO deltas and/or IWXXM line)
   while the workbench twin remains compact
 - **Source**: #1145; D-R27=3
+- **Status**: **Waived** with TC-EV1120-010 (no Profiles compare surface after ADR-044)
+
+### TC-EV1149-001: Workbench profile counts distinguish zero from unavailable
+
+- **Level**: T0 / T2
+- **Objective**: Authenticated catalog success with zero packs shows `0`; guest/unavailable
+  shows a distinct placeholder; fetch failure shows a degraded hint (not silent empty)
+- **Pass criteria**: `0` ≠ unavailable placeholder; error hint visible on catalog fetch fail
+- **Source**: #1149
+- **Automated**: `FileConverter.test.tsx` (EV-1149 profile count / error states)
 
 ### EV-bridge-ux-canvas-align / F7.w — Five Libraries + Mapping bridge + hard cut
 
