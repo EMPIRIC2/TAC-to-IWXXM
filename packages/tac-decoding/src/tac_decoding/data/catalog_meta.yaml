@@ -1,0 +1,45 @@
+# Decoding catalog additive metadata (#1308 / EV-1307).
+# Keys are uppercase TAC tokens matching the glossary.
+# Omit a field to leave it null (FE must not invent defaults).
+# Provenance: public WMO/ICAO cites only — no paywalled scrape; no planning ids (EV-048).
+
+schema_version: 1
+tokens:
+  TS:
+    issue_type: content
+    severity: info
+    source_url: https://codes.wmo.int/49-2/WeatherCausingPhenomenaOrCombinations
+    source_attribution: WMO No. 49 Volume II weather phenomena code list
+    source_access: public
+    conform_note: Common TAC thunderstorm abbreviation used in SIGMET/AIRMET/METAR groups
+  VA:
+    issue_type: content
+    severity: info
+    source_url: https://codes.wmo.int/49-2/WeatherCausingPhenomenaOrCombinations
+    source_attribution: WMO No. 49 Volume II weather phenomena code list
+    source_access: public
+    conform_note: Volcanic ash phenomenon code used in VAA and VA SIGMET
+  TC:
+    issue_type: content
+    severity: info
+    source_url: https://codes.wmo.int/49-2/WeatherCausingPhenomenaOrCombinations
+    source_attribution: WMO No. 49 Volume II weather phenomena code list
+    source_access: public
+    conform_note: Tropical cyclone phenomenon code used in TCA and TC SIGMET
+  FIR:
+    issue_type: content
+    severity: info
+    source_url: https://www.icao.int/safety/airnavigation/Pages/fir.aspx
+    source_attribution: ICAO flight information region concept
+    source_access: public
+    conform_note: Flight information region designator marker in TAC products
+  CB:
+    issue_type: content
+    severity: info
+    source_access: public
+    conform_note: Cumulonimbus cloud type abbreviation in TAC
+  EMBD:
+    issue_type: content
+    severity: info
+    source_access: public
+    conform_note: Embedded intensity qualifier for convective cloud
