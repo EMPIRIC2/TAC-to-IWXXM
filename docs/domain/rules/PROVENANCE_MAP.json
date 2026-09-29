@@ -1741,6 +1741,46 @@
       "note": "US TAF TEMPO groups limited to 4 hours (national overlay)"
     },
     {
+      "code": "US_TAF_PROB40_NOT_USED",
+      "status": "ok",
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
+      "note": "NWS TAFs do not use PROB40 (FAA AIM meteorology / ICAO weather formats)"
+    },
+    {
+      "code": "US_METAR_STATUTE_MILE_VIS",
+      "status": "ok",
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
+      "note": "US METAR/SPECI report prevailing visibility in statute miles with SM"
+    },
+    {
+      "code": "US_METAR_INHG_ALTIMETER",
+      "status": "ok",
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
+      "note": "US METAR/SPECI altimeter uses inches of mercury A#### (national overlay)"
+    },
+    {
+      "code": "CA_METAR_UP_AWOS_ONLY",
+      "status": "ok",
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "consumer": "tac-validate",
+      "dig": "docs/domain/profiles/mining/EV-1120-profile-scoped-catalog.md",
+      "ticket": "https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1122",
+      "note": "MANOBS present-weather UP (unknown precipitation) is AWOS-only"
+    },
+    {
       "code": "US_TCA_OBSERVED_CB_NOT_PROVIDED",
       "status": "gap",
       "source_id": null,

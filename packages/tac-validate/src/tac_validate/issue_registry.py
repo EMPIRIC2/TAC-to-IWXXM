@@ -291,6 +291,31 @@ ISSUES: tuple[IssueSpec, ...] = (
         tags=("taf", "iwxxm_us", "us_faa_nws"),
     ),
     _row(
+        "US_TAF_PROB40_NOT_USED",
+        "error",
+        "{product} PROB40 change group is not used in NWS TAFs under US_FAA_NWS",
+        product="TAF",
+        tags=("taf", "iwxxm_us", "us_faa_nws", "prob40"),
+    ),
+    _row(
+        "US_METAR_STATUTE_MILE_VIS",
+        "info",
+        "{product} uses statute-mile visibility with SM - US national METAR overlay",
+        tags=("metar", "speci", "iwxxm_us", "us_faa_nws", "visibility"),
+    ),
+    _row(
+        "US_METAR_INHG_ALTIMETER",
+        "info",
+        "{product} uses inch-of-mercury altimeter (A####) - US national METAR overlay",
+        tags=("metar", "speci", "iwxxm_us", "us_faa_nws", "pressure"),
+    ),
+    _row(
+        "CA_METAR_UP_AWOS_ONLY",
+        "info",
+        "{product} unknown precipitation (UP) is an AWOS-only present-weather code under CA_ECCC",
+        tags=("metar", "speci", "ca_eccc", "manobs", "awos", "up"),
+    ),
+    _row(
         "US_SWXA_SATCOM_NOT_ISSUED",
         "error",
         "{product} SATCOM space weather is not issued under US_FAA_NWS",

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source": "generated from tac_validate.issue_registry + PROVENANCE_MAP",
-  "generated": "2026-09-23",
+  "generated": "2026-09-29",
   "issues": [
     {
       "code": "AMD_PRESENT",
@@ -156,6 +156,23 @@
       "source_id": "eccc-iwxxm-ca",
       "source_url": "https://dd.weather.gc.ca/today/aviation/iwxxm/schema/",
       "source_attribution": "eccc-iwxxm-ca - https://dd.weather.gc.ca/today/aviation/iwxxm/schema/ - Schema-backed SAWR substitution in metar-speci-ca; not a MANOBS code form"
+    },
+    {
+      "code": "CA_METAR_UP_AWOS_ONLY",
+      "severity": "info",
+      "message_template": "{product} unknown precipitation (UP) is an AWOS-only present-weather code under CA_ECCC",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "ca_eccc",
+        "manobs",
+        "awos",
+        "up"
+      ],
+      "source_id": "manobs-ca",
+      "source_url": "https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html",
+      "source_attribution": "manobs-ca - https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html - MANOBS present-weather UP (unknown precipitation) is AWOS-only"
     },
     {
       "code": "CA_REMARK_MANOBS",
@@ -1572,6 +1589,38 @@
       "source_attribution": "codes-wmo-int - https://codes.wmo.int/ui/resources/WMO-Codes-Registry_user-guide-v1.0.pdf - Validated: tac-validate membership gate vs harvested wmo_membership.json"
     },
     {
+      "code": "US_METAR_INHG_ALTIMETER",
+      "severity": "info",
+      "message_template": "{product} uses inch-of-mercury altimeter (A####) - US national METAR overlay",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "iwxxm_us",
+        "us_faa_nws",
+        "pressure"
+      ],
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "source_attribution": "faa-aim - https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html - US METAR/SPECI altimeter uses inches of mercury A#### (national overlay)"
+    },
+    {
+      "code": "US_METAR_STATUTE_MILE_VIS",
+      "severity": "info",
+      "message_template": "{product} uses statute-mile visibility with SM - US national METAR overlay",
+      "product": null,
+      "tags": [
+        "metar",
+        "speci",
+        "iwxxm_us",
+        "us_faa_nws",
+        "visibility"
+      ],
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "source_attribution": "faa-aim - https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html - US METAR/SPECI report prevailing visibility in statute miles with SM"
+    },
+    {
       "code": "US_SWXA_SATCOM_NOT_ISSUED",
       "severity": "error",
       "message_template": "{product} SATCOM space weather is not issued under US_FAA_NWS",
@@ -1599,6 +1648,21 @@
       "source_id": "fmh-1",
       "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html",
       "source_attribution": "fmh-1 - https://www.faa.gov/air_traffic/publications/atpubs/aip_html/part1_gen_section_1.7.html - US TAF does not use BECMG change groups (FAA GEN 1.7 / national overlay)"
+    },
+    {
+      "code": "US_TAF_PROB40_NOT_USED",
+      "severity": "error",
+      "message_template": "{product} PROB40 change group is not used in NWS TAFs under US_FAA_NWS",
+      "product": "TAF",
+      "tags": [
+        "taf",
+        "iwxxm_us",
+        "us_faa_nws",
+        "prob40"
+      ],
+      "source_id": "faa-aim",
+      "source_url": "https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html",
+      "source_attribution": "faa-aim - https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html - NWS TAFs do not use PROB40 (FAA AIM meteorology / ICAO weather formats)"
     },
     {
       "code": "US_TAF_TEMPO_MAX_4H",

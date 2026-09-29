@@ -1,34 +1,37 @@
-# EV-1120 / #1122 — Profile-scoped catalog mining notes (Phase A)
+# EV-1120 / #1122 — Profile-scoped catalog mining notes
 
-**Status**: planned (spec band)  
-**Session**: EV-1120-epic-profile-scoped-lint-validation-issues-catal  
+**Status**: Phase A complete on stage (#1148); deepen pass 2026-09-29 (EV-1121-1122)  
+**Session**: `EV-1121-1122-catalog-profile-filters`  
 **Corpus**: [Corpus: domain-profiles] · [Corpus: product] F15/F36 · [Corpus: adr/ADR-028]
 
-## Priority this cycle
-
-| Semantic profile | Minimum catalog content |
-|------------------|-------------------------|
-| `US_FAA_NWS` | ≥1 national-only TAC lint code + ≥1 IWXXM-family validation row |
-| `CA_ECCC` | ≥1 national-only TAC lint code + ≥1 IWXXM-family validation row |
-| Thin packs (`AU_BOM`, `NZ_CAA_MET`, …) | Stub applicability tags OK; may share ICAO examples in UX |
-
-## Filter semantics (API)
+## Filter semantics (API #1121)
 
 - Omit `semantic_profile` → all rows (unchanged).
 - Set → `shared/global ∪ profile-applicable`.
 - National-only codes must **not** appear under `ICAO_2025` unless also marked shared.
+- Unknown semantic / exchange ids → HTTP 400 (`invalid_semantic_profile` / `invalid_exchange_profile`).
 - Provenance: public URLs / citations only; no planning ids in `source_attribution` (EV-048).
 
-## Sources (reuse existing packs)
+## Catalog content (#1122)
 
-Prefer durable public landings already cited under:
+| Semantic profile | TAC national-only (examples) | IWXXM-family |
+|------------------|------------------------------|--------------|
+| `US_FAA_NWS` | `US_TAF_BECMG_FORBIDDEN`, `US_TAF_TEMPO_MAX_4H`, `US_TAF_PROB40_NOT_USED`, `US_METAR_STATUTE_MILE_VIS`, `US_METAR_INHG_ALTIMETER` | `IWXXM_US_EXTENSION`, `IWXXM_US_ADDENDUM_REMARKS` |
+| `CA_ECCC` | `CA_METAR_LWIS`, `CA_METAR_UP_AWOS_ONLY`, MANOBS remark family, … | `IWXXM_CA_EXTENSION`, `IWXXM_CA_CODE_REGISTRY` |
+| Thin packs | Stub tags OK | Shared IWXXM rows |
 
-- `docs/domain/profiles/semantic/US_FAA_NWS.md`
-- `docs/domain/profiles/semantic/CA_ECCC.md`
-- Prior mining notes from #912 / #913 / EV-061 / EV-062
+## Internet mining pass (2026-09-29)
 
-Do **not** paste copyrighted Annex prose into operator `message_template`s.
+Public landings consulted (no Annex prose copied into operator templates):
 
-## Out of Phase A
+| Source | Landing | Catalog impact |
+|--------|---------|----------------|
+| FAA AIM meteorology / ICAO weather formats | https://www.faa.gov/air_traffic/publications/atpubs/aim_html/chap7_section_1.html | NWS does not use **PROB40** or **BECMG**; US METAR uses **SM** visibility and **A####** inHg altimeter → new US TAC rows |
+| NWS TAF directive (PD 10-0813 archive) | weather.gov directives PDF | Confirms TEMPO ≤ 4 h (already `US_TAF_TEMPO_MAX_4H`) |
+| NWS IWXXM-US schemas | https://nws.weather.gov/schemas/iwxxm-us/3.0/ | Addendum / METAR+SPECI extension PDF → `IWXXM_US_ADDENDUM_REMARKS` |
+| ECCC MANOBS HTML | https://www.canada.ca/en/environment-climate-change/services/weather-manuals-documentation/manobs-surface-observations.html | **UP** present weather AWOS-only → `CA_METAR_UP_AWOS_ONLY` |
+| ECCC IWXXM schema + code-ca | https://dd.weather.gc.ca/today/aviation/iwxxm/schema/ · …/code-ca/ | `IWXXM_CA_EXTENSION` (existing) + `IWXXM_CA_CODE_REGISTRY` |
 
-Full national convert/validate engines beyond catalog descriptions remain on F36 profile issues.
+## Out of this deepen
+
+Full national convert/validate detectors for every new code; UI catalog Profile filter (#1123); thin-pack national mining beyond stubs.

@@ -146,6 +146,8 @@ def test_tc_ev1120_008_us_and_ca_iwxxm_national_rows(client: TestClient) -> None
     ).json()
     assert "IWXXM_US_EXTENSION" not in icao
     assert "IWXXM_CA_EXTENSION" not in icao
+    assert "IWXXM_US_ADDENDUM_REMARKS" not in icao
+    assert "IWXXM_CA_CODE_REGISTRY" not in icao
     us_row = next(r for r in us["issues"] if r["code"] == "IWXXM_US_EXTENSION")
     ca_row = next(r for r in ca["issues"] if r["code"] == "IWXXM_CA_EXTENSION")
     assert us_row["family"] == "iwxxm"
@@ -154,6 +156,43 @@ def test_tc_ev1120_008_us_and_ca_iwxxm_national_rows(client: TestClient) -> None
     assert ca_row["source_url"].startswith("https://")
     assert "weather.gov" in us_row["source_url"] or "nws" in us_row["source_url"].lower()
     assert "gc.ca" in ca_row["source_url"] or "canada.ca" in ca_row["source_url"]
+    us_add = next(r for r in us["issues"] if r["code"] == "IWXXM_US_ADDENDUM_REMARKS")
+    ca_reg = next(r for r in ca["issues"] if r["code"] == "IWXXM_CA_CODE_REGISTRY")
+    assert us_add["family"] == "iwxxm"
+    assert ca_reg["family"] == "iwxxm"
+    assert "us_faa_nws" in us_add["semantic_profiles"] or "iwxxm_us" in [t.lower() for t in us_add["tags"]]
+    assert "ca_eccc" in ca_reg["semantic_profiles"]
+
+
+def test_tc_ev1120_009_mined_us_prob40_and_ca_up_awos(client: TestClient) -> None:
+    """TC-EV1120-009 / #1122 deepen — AIM PROB40 + MANOBS UP AWOS-only rows."""
+    icao = _codes(
+        client.get(
+            "/api/v1/lint-issue-catalog",
+            params={"semantic_profile": "ICAO_2025"},
+        ).json()
+    )
+    us = client.get(
+        "/api/v1/lint-issue-catalog",
+        params={"semantic_profile": "US_FAA_NWS"},
+    )
+    ca = client.get(
+        "/api/v1/lint-issue-catalog",
+        params={"semantic_profile": "CA_ECCC"},
+    )
+    assert us.status_code == 200
+    assert ca.status_code == 200
+    us_codes = _codes(us.json())
+    ca_codes = _codes(ca.json())
+    assert "US_TAF_PROB40_NOT_USED" not in icao
+    assert "US_TAF_PROB40_NOT_USED" in us_codes
+    assert "US_METAR_STATUTE_MILE_VIS" in us_codes
+    assert "US_METAR_INHG_ALTIMETER" in us_codes
+    assert "CA_METAR_UP_AWOS_ONLY" not in icao
+    assert "CA_METAR_UP_AWOS_ONLY" in ca_codes
+    prob = next(r for r in us.json()["issues"] if r["code"] == "US_TAF_PROB40_NOT_USED")
+    assert prob.get("source_url", "").startswith("https://")
+    assert "faa.gov" in prob["source_url"]
 
 
 def test_tc_ev1120_003_unknown_semantic_profile_400(client: TestClient) -> None:
