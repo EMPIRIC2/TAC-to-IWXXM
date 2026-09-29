@@ -6394,8 +6394,8 @@ export interface components {
          * RuleCatalogItem
          * @description One package-owned trust-catalog row.
          *
-         *     Additive optional metadata (#1308 / EV-1307): ``issue_type``, ``source_*``,
-         *     ``conform_note``. Null/omit when unknown; clients must not invent defaults.
+         *     Optional additive metadata: ``issue_type``, ``source_*``, ``conform_note``.
+         *     Null or omitted when unknown; clients must not invent defaults.
          *
          *     Attributes
          *     ----------
