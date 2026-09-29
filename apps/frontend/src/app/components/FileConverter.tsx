@@ -701,6 +701,12 @@ export function FileConverter({
   const [conversionParams, setConversionParams] = useState<ConversionParams>(
     initialConversionParams,
   );
+  const handleDisseminationOpenChange = (open: boolean) => {
+    setIsDisseminationOpen(open);
+    if (!open) {
+      setPackagingExchangeProfile(null);
+    }
+  };
   const [profileCatalogEntries, setProfileCatalogEntries] = useState<
     ProfileCatalogEntry[]
   >([]);
@@ -2317,10 +2323,7 @@ export function FileConverter({
     useLintIssueCatalog({
       product: liveAssistProduct,
       semanticProfile: conversionParams.profile,
-      exchangeProfile:
-        isDisseminationOpen && packagingExchangeProfile
-          ? packagingExchangeProfile
-          : conversionParams.exchangeProfile,
+      exchangeProfile: packagingExchangeProfile ?? conversionParams.exchangeProfile,
       enabled: !isReadOnly,
     });
 
@@ -2584,7 +2587,10 @@ export function FileConverter({
               <Button
                 type="button"
                 data-testid="open-dissemination-drawer"
-                onClick={() => setIsDisseminationOpen(true)}
+                onClick={() => {
+                  setPackagingExchangeProfile(conversionParams.exchangeProfile);
+                  handleDisseminationOpenChange(true);
+                }}
                 disabled={isBusy || isReadOnly}
                 variant="outline"
                 className="min-w-[10rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
@@ -3980,12 +3986,7 @@ export function FileConverter({
             isDisseminationOpen ? `open-${conversionParams.exchangeProfile}` : 'closed'
           }
           open={isDisseminationOpen}
-          onOpenChange={(open) => {
-            setIsDisseminationOpen(open);
-            if (!open) {
-              setPackagingExchangeProfile(null);
-            }
-          }}
+          onOpenChange={handleDisseminationOpenChange}
           iwxxmXml={convertedFiles[0]?.convertedContent}
           tacText={manualInput || undefined}
           product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
