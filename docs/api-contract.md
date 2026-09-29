@@ -446,10 +446,27 @@ Python catalog APIs from owning packages. **Read-only**.
 | `family` | yes | `tac` | `iwxxm` | `conversion` | `dissemination` | `decoding` |
 | Product / profile filters | no | Family-specific additive filters (reuse lint-issue-catalog profile filters for `tac` / `iwxxm` where applicable) |
 
-**Response** (msgspec): `{ "family": "...", "items": [ { "id", "title", "summary", "severity?", "tags?", "source_url?", ... } ] }` — exact fields finalized in tech-plan; operator strings EV-048 clean.
+**Response** (msgspec): `{ "family": "...", "items": [ … ] }` — operator strings EV-048 clean.
+Common item keys: `id`, `title`, `summary`, `tags?`. Additive optional keys (null/omit when
+unknown; clients **must not invent** defaults):
+
+| Field | Families | Notes |
+|-------|----------|--------|
+| `severity` | all (optional) | Lint levels: `critical` \| `error` \| `warning` \| `info`. Decoding: typically `info` or null |
+| `issue_type` | family-specific enums | **TAC / IWXXM / Decoding:** EV-062 set `presence` \| `structure` \| `content` \| `consistency` \| `iwxxm_schema` \| `other`. Glossary tokens that explain a TAC group/code prefer `content`. **Conversion:** `profile` \| `policy` \| `other` (semantic profiles ship as `profile`; `policy` reserved). **Dissemination:** may remain sparse until a later child |
+| `source_url` | optional | Prefer public http(s); verified landings only for clickable UI |
+| `source_attribution` | optional | Plain-language attribution (no planning ids) |
+| `source_access` | optional | `public` \| `paywall` \| `login` \| `semantic_only` |
+| `source_locator` | optional | Section/path hint when useful |
+| `conform_note` | optional | Plain-language conform statement when evidence exists |
 
 **Compatibility**: `GET /api/v1/lint-issue-catalog` remains during transition as a thin wrapper
-or alias for `family=tac` (+ existing IWXXM merge behavior).
+or alias for `family=tac` (+ existing IWXXM merge behavior). Lint-issue-catalog query filters
+and TAC/IWXXM behavior are **unchanged** by #1308 (additive `rule-catalogs` fields only).
+
+**#1308 / EV-1307**: Decoding + Conversion enrichment is additive on this route; no new query
+params required for type/level/source (FE may filter client-side per EV-1281). H4–H5 only if
+Build introduces a breaking wire change beyond additive fields.
 
 ### Selection options (ADR-044 / #1251 TP-YCL-01)
 
