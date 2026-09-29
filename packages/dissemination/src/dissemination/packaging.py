@@ -21,6 +21,10 @@ from dissemination.exchange_registry import (
 
 _XML_DECL = re.compile(r"^\s*<\?xml[^?]*\?>\s*", re.IGNORECASE)
 
+# ROBEX HB 19th Ed. §6.4.2 / App A example WMO heading ``SACI31 ZBBB …``
+# mapped to OPMET Guidelines FTBP stem ``A_TTAAiiCCCC…`` (#1222 / EV-1222).
+APAC_ROBEX_DEFAULT_BULLETIN_IDENTIFIER = "A_SACI31ZBBB.xml"
+
 
 def apply_exchange_packaging(
     xml: str,
@@ -58,14 +62,21 @@ def apply_exchange_packaging(
     resolved = resolve_exchange_profile(exchange_profile)
     if resolved is None:
         raise ValueError(f"unknown exchange profile: {exchange_profile!r}")
+    if resolved.canonical == CANONICAL_GLOBAL_AFS:
+        return wrap_global_afs_collect(xml, bulletin_identifier=bulletin_identifier)
+    if resolved.canonical == CANONICAL_APAC_ROBEX:
+        # COLLECT shell shared with GLOBAL_AFS (ROBEX HB §6.6.1 → OPMET Guidelines);
+        # default bulletin id is the APAC packaging delta (#1222).
+        return wrap_global_afs_collect(
+            xml,
+            bulletin_identifier=bulletin_identifier or APAC_ROBEX_DEFAULT_BULLETIN_IDENTIFIER,
+        )
     if resolved.canonical in (
-        CANONICAL_GLOBAL_AFS,
-        CANONICAL_APAC_ROBEX,
         CANONICAL_EUR_RODEX,
         CANONICAL_AFI,
         CANONICAL_CAR_SAM,
     ):
-        # Regional P0 stubs: same COLLECT baseline as GLOBAL_AFS; handbook rules deepen later.
+        # Still COLLECT baseline; handbook deltas not yet promoted (catalog gaps).
         return wrap_global_afs_collect(xml, bulletin_identifier=bulletin_identifier)
     raise ValueError(f"exchange profile not implemented: {exchange_profile!r}")
 
@@ -117,6 +128,7 @@ def wrap_global_afs_collect(
 
 
 __all__ = [
+    "APAC_ROBEX_DEFAULT_BULLETIN_IDENTIFIER",
     "apply_exchange_packaging",
     "wrap_global_afs_collect",
 ]
