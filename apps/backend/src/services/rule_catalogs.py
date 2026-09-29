@@ -96,17 +96,9 @@ def catalog_for_family(family: str, *, product: str | None = None) -> list[dict[
         ]
 
     if key == "conversion":
-        from tac2iwxxm.profile_registry import known_semantic_profile_ids
+        from tac2iwxxm.conversion_catalog import catalog_entries as conversion_catalog
 
-        return [
-            {
-                "id": pid,
-                "title": pid,
-                "summary": f"Semantic conversion profile {pid}",
-                "tags": ["conversion", "profile"],
-            }
-            for pid in sorted(known_semantic_profile_ids())
-        ]
+        return conversion_catalog()
 
     if key == "dissemination":
         from dissemination.exchange_registry import known_exchange_profile_ids

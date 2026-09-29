@@ -30,13 +30,13 @@ for those families as TAC/IWXXM lint.
 
 ## Acceptance
 
-- [ ] Decoding `rule-catalogs` additive metadata (null allowed; FE does not invent)
-- [ ] Conversion readable summaries + `issue_type=profile` for semantic profiles
+- [x] Decoding `rule-catalogs` additive metadata (null allowed; FE does not invent)
+- [x] Conversion readable summaries + `issue_type=profile` for semantic profiles
 - [ ] Family-aware catalog type filter UI
 - [ ] UJ-080 + TC-EV1308-001..004
-- [ ] Remaining decoding `other` count recorded
+- [x] Remaining decoding `other` count recorded
 - [ ] TAC/IWXXM lint-issue-catalog unchanged; EV-048 clean
-- [ ] PR into `stage`
+- [x] PR into `stage` (M1–M2 via #1309; M3 follows on same branch)
 
 ### Decoding `issue_type` census (Build M2, 2026-09-29)
 

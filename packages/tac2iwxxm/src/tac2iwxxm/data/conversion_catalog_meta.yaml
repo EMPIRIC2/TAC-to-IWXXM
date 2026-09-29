@@ -1,0 +1,100 @@
+# Conversion rule-catalog summaries for semantic profiles.
+# Keys are normalized lowercase ids (canonical or legacy alias).
+# Operator-facing text only — no planning ids.
+
+schema_version: 1
+profiles:
+  icao_2025:
+    summary: >-
+      ICAO / WMO Annex 3 conversion profile for standard IWXXM encoding of
+      METAR, SPECI, TAF, SIGMET, AIRMET, and advisory products on the general
+      WMO schema line.
+    source_access: public
+    conform_note: Baseline Annex 3 semantic mapping used by the converter.
+  annex3:
+    summary: >-
+      Legacy wire alias for the ICAO / WMO Annex 3 conversion profile.
+      Prefer ICAO_2025 for new work; annex3 remains accepted through the
+      deprecation window.
+    source_access: public
+    conform_note: Alias of icao_2025.
+  us_faa_nws:
+    summary: >-
+      United States FAA/NWS conversion profile for IWXXM-US national encoding
+      of METAR, SPECI, TAF, and related products under the US extension schemas.
+    source_access: public
+    conform_note: Maps TAC groups to iwxxm-us emit rules.
+  iwxxm_us:
+    summary: >-
+      Legacy wire alias for the United States FAA/NWS conversion profile.
+      Prefer US_FAA_NWS for new work; iwxxm_us remains accepted through the
+      deprecation window.
+    source_access: public
+    conform_note: Alias of us_faa_nws.
+  ca_eccc:
+    summary: >-
+      Canada ECCC conversion profile for national METAR, SPECI, TAF, and AIRMET
+      encoding on the Canadian IWXXM 3.0.0 line, including LWIS/SAWR report variants.
+    source_access: public
+    conform_note: Uses ca_eccc emit maps and report-variant constraints.
+  ca_msc_sigmet:
+    summary: >-
+      Canadian MSC SIGMET conversion profile for national SIGMET encoding on the
+      Canadian IWXXM 3.0.0 line with MSC exchange conventions.
+    source_access: public
+    conform_note: Companion to ca_eccc for SIGMET products.
+  us_nws_convective_sigmet:
+    summary: >-
+      United States NWS convective SIGMET conversion profile for US convective
+      SIGMET TAC into the corresponding national IWXXM encoding path.
+    source_access: public
+  us_nws_g_airmet:
+    summary: >-
+      United States NWS G-AIRMET conversion profile for graphical AIRMET-derived
+      TAC into the US national IWXXM encoding path.
+    source_access: public
+  us_nws_vona:
+    summary: >-
+      United States NWS volcano observatory notice conversion profile for VONA
+      TAC into the national IWXXM advisory encoding path.
+    source_access: public
+  au_bom:
+    summary: >-
+      Australia Bureau of Meteorology conversion profile for national IWXXM
+      encoding conventions applied to supported TAC products.
+    source_access: public
+  nz_caa_met:
+    summary: >-
+      New Zealand CAA MET conversion profile for national IWXXM encoding
+      conventions applied to supported TAC products.
+    source_access: public
+  uk_metoffice:
+    summary: >-
+      United Kingdom Met Office conversion profile for national IWXXM encoding
+      conventions applied to supported TAC products.
+    source_access: public
+  br_decea:
+    summary: >-
+      Brazil DECEA conversion profile for national IWXXM encoding conventions
+      applied to supported TAC products.
+    source_access: public
+  kr_kma:
+    summary: >-
+      Republic of Korea KMA conversion profile for national IWXXM encoding
+      conventions applied to supported TAC products.
+    source_access: public
+  jp_jma:
+    summary: >-
+      Japan JMA conversion profile for national IWXXM encoding conventions
+      applied to supported TAC products.
+    source_access: public
+  in_imd:
+    summary: >-
+      India IMD conversion profile for national IWXXM encoding conventions
+      applied to supported TAC products.
+    source_access: public
+  hk_hko:
+    summary: >-
+      Hong Kong Observatory conversion profile for national IWXXM encoding
+      conventions applied to supported TAC products.
+    source_access: public
