@@ -97,8 +97,11 @@ def test_resolver_import_error_falls_back(monkeypatch: pytest.MonkeyPatch) -> No
 
     monkeypatch.setattr(builtins, "__import__", _blocked)
     emit, policy_id = _bound_policy("hk_hko", None)
-    assert emit == "annex3"
+    assert emit == "hk_hko"
     assert policy_id == ""
+    fallback, fallback_policy = _bound_policy("not_a_profile", None)
+    assert fallback == "annex3"
+    assert fallback_policy == ""
     emit2, policy_id2 = _bound_policy("iwxxm_us", "annex3-metar-quality")
     assert emit2 == "iwxxm_us"
     assert policy_id2 == "annex3-metar-quality"
