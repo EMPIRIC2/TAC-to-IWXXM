@@ -680,6 +680,9 @@ export function FileConverter({
   }>({ type: 'idle' });
   const [conversionLog, setConversionLog] = useState<ConversionLog | null>(null);
   const [isDisseminationOpen, setIsDisseminationOpen] = useState(false);
+  /** Packaging-drawer Exchange for catalog filter while Disseminate is open (AC-UI Exchange). */
+  const [packagingExchangeProfile, setPackagingExchangeProfile] =
+    useState<ExchangeProfileId | null>(null);
   const [isMassIngesting, setIsMassIngesting] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
@@ -2314,7 +2317,10 @@ export function FileConverter({
     useLintIssueCatalog({
       product: liveAssistProduct,
       semanticProfile: conversionParams.profile,
-      exchangeProfile: conversionParams.exchangeProfile,
+      exchangeProfile:
+        isDisseminationOpen && packagingExchangeProfile
+          ? packagingExchangeProfile
+          : conversionParams.exchangeProfile,
       enabled: !isReadOnly,
     });
 
@@ -3974,7 +3980,12 @@ export function FileConverter({
             isDisseminationOpen ? `open-${conversionParams.exchangeProfile}` : 'closed'
           }
           open={isDisseminationOpen}
-          onOpenChange={setIsDisseminationOpen}
+          onOpenChange={(open) => {
+            setIsDisseminationOpen(open);
+            if (!open) {
+              setPackagingExchangeProfile(null);
+            }
+          }}
           iwxxmXml={convertedFiles[0]?.convertedContent}
           tacText={manualInput || undefined}
           product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
@@ -3988,6 +3999,7 @@ export function FileConverter({
             )
           }
           exchangeProfile={conversionParams.exchangeProfile}
+          onExchangeProfileChange={setPackagingExchangeProfile}
         />
       ) : null}
 

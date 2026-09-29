@@ -3114,10 +3114,11 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   Exchange filters pass the same query params
 - **Pass criteria**: UJ-073; national demo visible only under owning profile; EV-048 clean
   filter labels; Profile/Exchange selects disabled for conversion/dissemination/decoding
-  rule-catalog families
+  rule-catalog families; Disseminate drawer Exchange notifies workbench catalog while open
 - **Source**: #1123; AC-UI-1
-- **Automated**: `useLintIssueCatalog.test.ts`; `tc-ev061-1014-catalog-page.test.tsx`
-  (TC-EV1120-009 cases)
+- **Automated**: `useLintIssueCatalog.test.ts`; `tc-ev061-1014-catalog-page.test.tsx`;
+  `tc-ev1120-009-workbench-catalog-binding.test.tsx`; DisseminationDrawer
+  `onExchangeProfileChange` case
 
 ### TC-EV1120-010: Profiles page glanceable summary composition
 
