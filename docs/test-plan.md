@@ -129,6 +129,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-076          | F7.v (ADR-044)                                               | Five package-owned trust catalogs                                                                                                                                                                                                                          | **H4–H5 when FE ships**           | TC-EVRPC-001..005                                                                        |
 | UJ-076a         | F7 / F16–F19 / F9 (ADR-044; #1251)                           | Convert four-engine light selects + Send-drawer dissem; Profile Builder deleted                                                                                                                                                                            | **H4–H5**                         | TC-EVRPC-006..008 + TC-EVYCL-* (#1251)                                                    |
 | UJ-076b         | F9 (ADR-044)                                                 | tac-decoding parity                                                                                                                                                                                                                                        | **H4–H5 when FE ships**           | TC-EVRPC-009                                                                             |
+| UJ-080          | F7.v / F9 (EV-1307 / #1308)                                  | Enriched Decoding & Conversion rule-catalog rows                                                                                                                                                                                                           | T0/T2; H4–H5 if wire breaks       | TC-EV1308-001..004                                                                       |
 | UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
 | UJ-DEV-011      | F2/F6/F9/F12/F14/F15 (EV-yaml-full-configurability / #1226) | Full YAML end-state incl. convert emit (ADR-047); templates; pin↔SCH                                                                                                                                                                                         | H4–H5 **N/A** unless UI/OpenAPI   | TC-EVYFC-001..005 (+ TC-EVYEC-004 retained)                                              |
@@ -3042,6 +3043,47 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Client filter empties when no row matches; All restores; Sort by
   Code/Level uses real values with id tie-break; TAC/IWXXM lint-issue API filters unchanged
 - **Source**: #1281; F7.v; apps/frontend `tc-ev061-1014-catalog-page` TC-EV1281
+
+### EV-1307 / #1308 — Decoding + Conversion catalog enrichment (UJ-080)
+
+- **Mode**: deepen F7.v / F9; additive `rule-catalogs` fields only
+- **Pass criteria**: AC in `docs/decisions/ev-1307-catalog-enrichment.md`; EV-048 clean
+- **Source**: [#1308](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1308);
+  epic [#1307](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1307)
+
+### TC-EV1308-001: Decoding catalog additive metadata
+
+- **Level**: T0 / T2
+- **Objective**: `GET /rule-catalogs?family=decoding` may include `issue_type` (EV-062 set),
+  optional `severity`, `source_*`, `conform_note`; null/omit allowed; values never invented
+  by the FE mapper
+- **Pass criteria**: Package export + API shape tests; glossary tokens that explain TAC
+  groups prefer `issue_type=content` when classified; remaining `other` count documented
+- **Source**: #1308; UJ-080; D-REQ-02..04
+
+### TC-EV1308-002: Conversion catalog descriptions + type
+
+- **Level**: T0 / T2
+- **Objective**: `GET /rule-catalogs?family=conversion` rows have 1–3 sentence operator
+  `summary` (not bare profile-id boilerplate) and `issue_type=profile` for semantic profiles
+- **Pass criteria**: Every shipped semantic profile id has a non-boilerplate summary;
+  `policy` unused this cycle
+- **Source**: #1308; UJ-080; D-REQ-08 / D-REQ-12
+
+### TC-EV1308-003: Family-aware catalog type filter (FE)
+
+- **Level**: T0
+- **Objective**: When family is Decoding, type filter options are the EV-062 set; when
+  Conversion, options are `profile` \| `policy` \| `other`; null fields display as `—`
+- **Pass criteria**: Vitest on catalog page; no invented defaults; TAC/IWXXM filters unchanged
+- **Source**: #1308; EV-1281; D-REQ-05
+
+### TC-EV1308-004: Must-not-break lint-issue-catalog
+
+- **Level**: T0 / T2
+- **Objective**: TAC/IWXXM `GET /lint-issue-catalog` behavior and filters unchanged
+- **Pass criteria**: Existing TC-F15 / TC-EV062 / TC-EV1120 catalog tests still green
+- **Source**: #1308; D-CTX-04
 
 ### EV-1120 / F7.v+F7.w+F15+F35 — Profile-scoped catalog + Profile UX Phase A (#1120)
 

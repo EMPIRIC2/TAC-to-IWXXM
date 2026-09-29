@@ -1025,6 +1025,12 @@ export async function fetchRuleCatalog(params: {
     summary: string;
     severity?: string | null;
     tags?: string[];
+    issue_type?: string | null;
+    source_url?: string | null;
+    source_attribution?: string | null;
+    source_access?: string | null;
+    source_locator?: string | null;
+    conform_note?: string | null;
   }>;
 }> {
   const query = new URLSearchParams();
@@ -1047,6 +1053,12 @@ export async function fetchRuleCatalog(params: {
       summary: string;
       severity?: string | null;
       tags?: string[];
+      issue_type?: string | null;
+      source_url?: string | null;
+      source_attribution?: string | null;
+      source_access?: string | null;
+      source_locator?: string | null;
+      conform_note?: string | null;
     }>;
   }>;
 }

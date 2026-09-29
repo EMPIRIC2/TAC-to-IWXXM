@@ -114,6 +114,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-078 | Profile/validate/decode deepen (ADR-044 residual + AU/NZ + station names) | apps/frontend / API | F7/F9/F36 (#1221) | T0 / T2 / **T3** / H4–H5 |
 | UJ-077 | Pack-engine decode and convert, same operator panel | library / API | F6/F9 (#1210 / #1214 / ADR-045) | T0 / T2; H4–H5 N/A |
 | UJ-079 | Convert a SIGMET whose VOR is not in the checked-in table | library / API | F6 (ADR-051) | T0; H4–H5 N/A |
+| UJ-080 | Browse enriched Decoding & Conversion catalog rows | apps/frontend / API | F7.v / F9 (EV-1307 / #1308) | T0 / T2; H4–H5 only if wire breaks |
 | UJ-074 | Save and reuse shared semantic presets + destination templates | apps/frontend / API | F7.w + F16–F19 deepen (EV-1051 / #1051) | T0 / T2 / **T3** / H4–H5 |
 | UJ-DEV-009 | stage→main promote requires full CI+E2E+lint+typecheck | GitHub Actions / branch protection | F34 deepen (EV-061 / #1015) | CI |
 | UJ-DEV-010 | Overlay honesty matrix + cookbook + preflight | packages + `scripts/` / docs | F2/F6/F9/F12/F15 (#1224) | T0 / CI |
@@ -2954,3 +2955,26 @@ TC-EV-PFDG-001..005.
 3. If the id is in neither the public source nor the table, convert fails with the existing unknown-VOR error.
 
 **Pass**: The public source is tried first. A known table point still resolves when that source errors. A latitude/longitude SIGMET still converts. No browser steps. H4–H5 N/A.
+
+### UJ-080: Browse enriched Decoding & Conversion catalog rows
+
+**Goal**: An operator inspecting the Validation Issues Catalog trusts Decoding and
+Conversion rows the same way as TAC/IWXXM — type and/or level, source/conform when known,
+and readable Conversion profile descriptions (not bare profile ids).
+
+**Feature**: F7.v / F9 — EV-1307 / #1308 (extends UJ-068 / UJ-076).
+
+**Actors**: Public operator (F21).
+
+**Steps**:
+1. Open the Validation Issues Catalog (Rule catalogs shell).
+2. Select family **Decoding**; confirm rows show type and/or level and source/conform when
+   the API provides them, and `—` when fields are null (UI does not invent defaults).
+3. Filter by Type using the Decoding enum (EV-062 set).
+4. Switch family to **Conversion**; confirm each semantic profile has a readable 1–3
+   sentence description.
+5. Filter by Type using Conversion options (`profile` / `policy` / `other`).
+
+**Pass**: T0/T2 (TC-EV1308-*); H4–H5 only if Build introduces a breaking wire change beyond
+additive `rule-catalogs` fields. EV-048 clean. Must-not-break UJ-068 / UJ-076 / TAC·IWXXM
+lint-issue-catalog filters.

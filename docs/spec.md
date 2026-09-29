@@ -203,6 +203,10 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
   `products/*.py`. Selective delete-gate: all-or-nothing per shared parser file when
   in-bar peers are byte-identical; keep files that fail. Does not merge packages.
 - **SoC**: **No** FastAPI or Supabase imports.
+- **EV-1307 / #1308 Conversion catalog**: Package-owned Conversion trust-catalog rows
+  (aggregated as `GET /api/v1/rule-catalogs?family=conversion`) are one row per semantic
+  profile with a 1–3 sentence operator `summary` and `issue_type=profile` (`policy`
+  reserved). Descriptions prefer existing profile registry / ADR-036 prose (EV-048 clean).
 - **Runtime**: Pure Python v0; optional **Rust/PyO3** hotspots after benchmarks (not Cython).
 - **License**: MIT.
 - **IR**: **msgspec.Struct** (ADR-016); HTTP high-churn paths also msgspec (ADR-026).
@@ -220,6 +224,11 @@ EV-922 session `reports/923-platform-package-layout.md`; EV-922-synthesis `repor
 - **Location**: `packages/tac-decoding/`
 - **Constraints**: No FastAPI/Supabase imports. Catalog rows are read-only trust metadata
   (EV-048: no internal doc refs in operator-facing strings).
+- **EV-1307 / #1308 catalog deepen**: Decoding catalog export may include additive
+  `issue_type` (EV-062 vocabulary), optional `severity`, `source_*`, and optional
+  `conform_note`. Null/omit when unknown; FE must not invent defaults. Prefer `content`
+  for glossary tokens that explain TAC groups/codes; best-effort public sources only.
+  Aggregated via `GET /api/v1/rule-catalogs?family=decoding` (ADR-044).
 - **Migration**: Logic moves from `tac2iwxxm.decode` / `glossary`; `tac2iwxxm` re-exports for
   one release then deprecates those entry points. **ADR-045** keeps the shims, the legacy
   parsers, and the multi-pin compares.

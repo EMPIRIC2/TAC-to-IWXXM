@@ -6394,16 +6394,31 @@ export interface components {
          * RuleCatalogItem
          * @description One package-owned trust-catalog row.
          *
+         *     Optional additive metadata: ``issue_type``, ``source_*``, ``conform_note``.
+         *     Null or omitted when unknown; clients must not invent defaults.
+         *
          *     Attributes
          *     ----------
          *     _ : object
          *         See implementation.
          */
         RuleCatalogItem: {
+            /** Conform Note */
+            conform_note?: string | null;
             /** Id */
             id: string;
+            /** Issue Type */
+            issue_type?: string | null;
             /** Severity */
             severity?: string | null;
+            /** Source Access */
+            source_access?: string | null;
+            /** Source Attribution */
+            source_attribution?: string | null;
+            /** Source Locator */
+            source_locator?: string | null;
+            /** Source Url */
+            source_url?: string | null;
             /**
              * Summary
              * @default

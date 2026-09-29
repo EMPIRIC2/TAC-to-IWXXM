@@ -2,8 +2,8 @@
 # CI frontend audit gate. Treats retired npm audit API (HTTP 410) as skip, not fail.
 # brace-expansion: pin via pnpm.overrides (1.1.18 / 2.1.4 / 5.0.9); ignore listed GHSAs
 # if audit still flags transitive minimatch@3 lines.
-# undici: jsdom@28 pins undici 7.28.x; bumping to 7.29.0 breaks wrap-handler path — ignore
-# undici GHSAs until jsdom ships a compatible peer (dev/test-only surface).
+# undici: jsdom@28 pulls undici; root pnpm.overrides pin >=7.29.1 (clears current undici
+# GHSAs). Legacy undici GHSA ids remain ignored if audit still flags transitive pins.
 # stryker: @stryker-mutator/* → ajv/fast-uri + typed-rest-client/qs — mutation/dev-only;
 # ignore until upstream bumps (EV-097 push unblock 2026-09-02).
 set -euo pipefail

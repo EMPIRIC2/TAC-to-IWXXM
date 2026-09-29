@@ -10,6 +10,7 @@ generic.secrets.security.detected-generic-api-key.detected-generic-api-key	docs/
 generic.secrets.security.detected-generic-api-key.detected-generic-api-key	docs/integration/OPENAIP.md
 generic.secrets.security.detected-jwt-token.detected-jwt-token	apps/frontend/utils/supabase/info.tsx
 python.lang.compatibility.python37.python37-compatibility-importlib2	packages/iwxxm-validate/src/iwxxm_validate/policy.py
+python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac-decoding/src/tac_decoding/catalog.py
 python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac-decoding/src/tac_decoding/glossary.py
 python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac-validate/src/tac_validate/detectors.py
 python.lang.compatibility.python37.python37-compatibility-importlib2	packages/tac-validate/src/tac_validate/policy.py
