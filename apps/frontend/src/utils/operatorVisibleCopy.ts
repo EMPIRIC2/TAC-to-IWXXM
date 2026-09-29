@@ -101,6 +101,27 @@ import {
   CONVERSION_METADATA_TOGGLE_LABEL,
 } from '@/utils/conversionExportMetadata';
 import {
+  LINT_VALIDATION_CATALOG_ACCESS_LABEL,
+  LINT_VALIDATION_CATALOG_COL_CODE,
+  LINT_VALIDATION_CATALOG_COL_DESCRIPTION,
+  LINT_VALIDATION_CATALOG_COL_LEVEL,
+  LINT_VALIDATION_CATALOG_COL_PROFILES,
+  LINT_VALIDATION_CATALOG_COL_SOURCE,
+  LINT_VALIDATION_CATALOG_COL_TYPE,
+  LINT_VALIDATION_CATALOG_EMPTY,
+  LINT_VALIDATION_CATALOG_EXCHANGE_ALL,
+  LINT_VALIDATION_CATALOG_EXCHANGE_LABEL,
+  LINT_VALIDATION_CATALOG_FAMILY_LABEL,
+  LINT_VALIDATION_CATALOG_LEVEL_LABEL,
+  LINT_VALIDATION_CATALOG_LOADING,
+  LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
+  LINT_VALIDATION_CATALOG_PAGE_TITLE,
+  LINT_VALIDATION_CATALOG_PROFILE_ALL,
+  LINT_VALIDATION_CATALOG_PROFILE_LABEL,
+  LINT_VALIDATION_CATALOG_SORT_LABEL,
+  LINT_VALIDATION_CATALOG_TYPE_LABEL,
+} from '@/utils/lintValidationCatalogCopy';
+import {
   CONVERT_OVERLAY_HELP,
   CONVERT_OVERLAY_LABEL,
   CONVERT_OVERLAY_NONE,
@@ -293,6 +314,79 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     {
       id: 'shell.nav.dissemination-ops',
       text: SHELL_NAV_LABELS['dissemination-ops'],
+    },
+    {
+      id: 'lint-validation-catalog.title',
+      text: LINT_VALIDATION_CATALOG_PAGE_TITLE,
+    },
+    {
+      id: 'lint-validation-catalog.subtitle',
+      text: LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
+    },
+    { id: 'lint-validation-catalog.empty', text: LINT_VALIDATION_CATALOG_EMPTY },
+    {
+      id: 'lint-validation-catalog.loading',
+      text: LINT_VALIDATION_CATALOG_LOADING,
+    },
+    {
+      id: 'lint-validation-catalog.family',
+      text: LINT_VALIDATION_CATALOG_FAMILY_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.type',
+      text: LINT_VALIDATION_CATALOG_TYPE_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.level',
+      text: LINT_VALIDATION_CATALOG_LEVEL_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.access',
+      text: LINT_VALIDATION_CATALOG_ACCESS_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.sort',
+      text: LINT_VALIDATION_CATALOG_SORT_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.profile',
+      text: LINT_VALIDATION_CATALOG_PROFILE_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.exchange',
+      text: LINT_VALIDATION_CATALOG_EXCHANGE_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.profile-all',
+      text: LINT_VALIDATION_CATALOG_PROFILE_ALL,
+    },
+    {
+      id: 'lint-validation-catalog.exchange-all',
+      text: LINT_VALIDATION_CATALOG_EXCHANGE_ALL,
+    },
+    {
+      id: 'lint-validation-catalog.col-code',
+      text: LINT_VALIDATION_CATALOG_COL_CODE,
+    },
+    {
+      id: 'lint-validation-catalog.col-type',
+      text: LINT_VALIDATION_CATALOG_COL_TYPE,
+    },
+    {
+      id: 'lint-validation-catalog.col-level',
+      text: LINT_VALIDATION_CATALOG_COL_LEVEL,
+    },
+    {
+      id: 'lint-validation-catalog.col-profiles',
+      text: LINT_VALIDATION_CATALOG_COL_PROFILES,
+    },
+    {
+      id: 'lint-validation-catalog.col-description',
+      text: LINT_VALIDATION_CATALOG_COL_DESCRIPTION,
+    },
+    {
+      id: 'lint-validation-catalog.col-source',
+      text: LINT_VALIDATION_CATALOG_COL_SOURCE,
     },
     { id: 'profiles.title', text: PROFILES_EDITOR_TITLE },
     { id: 'profiles.subtitle', text: PROFILES_EDITOR_SUBTITLE },
