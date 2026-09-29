@@ -669,6 +669,22 @@ describe('LintValidationCatalogPage', () => {
       semantic_profile: 'US_FAA_NWS',
       exchange_profile: 'EUR_RODEX',
     });
+
+    fetchLintIssueCatalog.mockResolvedValueOnce({ issues: BASE_ISSUES });
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-profile-filter'),
+      'all',
+    );
+    expect(fetchLintIssueCatalog).toHaveBeenLastCalledWith({
+      exchange_profile: 'EUR_RODEX',
+    });
+
+    fetchLintIssueCatalog.mockResolvedValueOnce({ issues: BASE_ISSUES });
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-exchange-filter'),
+      'all',
+    );
+    expect(fetchLintIssueCatalog).toHaveBeenLastCalledWith({});
   });
 
   it('TC-EV1120-009: Profile and Exchange filters disabled for rule-catalog families', async () => {
