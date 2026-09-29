@@ -178,9 +178,12 @@ describe('LintValidationCatalogPage', () => {
       screen.getByTestId('lint-validation-catalog-family-filter'),
       'conversion',
     );
-    expect(
-      await screen.findByTestId('lint-validation-catalog-entry-BARE'),
-    ).toHaveTextContent('Bare title');
+    const bare = await screen.findByTestId('lint-validation-catalog-entry-BARE');
+    expect(bare).toHaveTextContent('Bare title');
+    // Missing severity/type/access are not invented as info/other/public.
+    expect(within(bare).getAllByRole('cell')[1]).toHaveTextContent('—');
+    expect(within(bare).getAllByRole('cell')[2]).toHaveTextContent('—');
+    expect(bare).not.toHaveTextContent('Access: public');
     expect(
       await screen.findByTestId('lint-validation-catalog-entry-TAGGED'),
     ).toHaveTextContent('Has summary');
@@ -719,4 +722,111 @@ describe('LintValidationCatalogPage', () => {
     expect(screen.getByLabelText('Filter by exchange profile')).toBeInTheDocument();
     expect(screen.queryByText(/EV-1120|TC-EV|#1123|ADR-/i)).not.toBeInTheDocument();
   });
+
+  const RULE_FAMILIES = ['conversion', 'dissemination', 'decoding'] as const;
+
+  for (const family of RULE_FAMILIES) {
+    it(`TC-EV1281: ${family} Type/Level/Access/Sort are client-only (#1281)`, async () => {
+      const user = userEvent.setup();
+      render(<LintValidationCatalogPage />);
+      await screen.findByTestId('lint-validation-catalog-list');
+
+      fetchRuleCatalog.mockResolvedValue({
+        family,
+        items: [
+          { id: 'ZULU', title: 'Zulu', summary: 'z row', severity: 'warning' },
+          { id: 'ALPHA', title: 'Alpha', summary: 'a row', severity: 'error' },
+          { id: 'MIKE', title: 'Mike', summary: 'm row' },
+        ],
+      });
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-family-filter'),
+        family,
+      );
+      const list = await screen.findByTestId('lint-validation-catalog-list');
+      expect(fetchRuleCatalog).toHaveBeenLastCalledWith({ family });
+
+      // Unsorted fixtures → Sort by Code reorders by id.
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-sort'),
+        'code',
+      );
+      let codes = within(list)
+        .getAllByRole('row')
+        .slice(1)
+        .map((row) => row.querySelector('td')?.textContent?.trim());
+      expect(codes).toEqual(['ALPHA', 'MIKE', 'ZULU']);
+
+      // Sort by Level uses real severity; missing severity is last (not invented info).
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-sort'),
+        'level',
+      );
+      codes = within(list)
+        .getAllByRole('row')
+        .slice(1)
+        .map((row) => row.querySelector('td')?.textContent?.trim());
+      expect(codes).toEqual(['ALPHA', 'ZULU', 'MIKE']);
+
+      // Type value no row has → empty; All restores.
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-type-filter'),
+        'structure',
+      );
+      expect(await screen.findByText(/No catalog entries/i)).toBeInTheDocument();
+      expect(fetchRuleCatalog).toHaveBeenLastCalledWith({ family });
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-type-filter'),
+        'all',
+      );
+      expect(
+        await screen.findByTestId('lint-validation-catalog-entry-ALPHA'),
+      ).toBeInTheDocument();
+
+      // Access value no row has → empty; All restores. Missing access ≠ public.
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-access-filter'),
+        'public',
+      );
+      expect(await screen.findByText(/No catalog entries/i)).toBeInTheDocument();
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-access-filter'),
+        'all',
+      );
+      expect(
+        await screen.findByTestId('lint-validation-catalog-entry-ZULU'),
+      ).toBeInTheDocument();
+
+      // Level=info must not match rows with missing severity.
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-level-filter'),
+        'info',
+      );
+      expect(await screen.findByText(/No catalog entries/i)).toBeInTheDocument();
+      await user.selectOptions(
+        screen.getByTestId('lint-validation-catalog-level-filter'),
+        'error',
+      );
+      expect(
+        await screen.findByTestId('lint-validation-catalog-entry-ALPHA'),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByTestId('lint-validation-catalog-entry-ZULU'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId('lint-validation-catalog-entry-MIKE'),
+      ).not.toBeInTheDocument();
+
+      // Never add type/level/access/sort query params for rule catalogs.
+      for (const call of fetchRuleCatalog.mock.calls) {
+        expect(call[0]).toEqual({ family: expect.any(String) });
+        expect(call[0]).not.toHaveProperty('issue_type');
+        expect(call[0]).not.toHaveProperty('source_access');
+        expect(call[0]).not.toHaveProperty('sort');
+      }
+      expect(fetchLintIssueCatalog).not.toHaveBeenCalledWith(
+        expect.objectContaining({ family }),
+      );
+    });
+  }
 });

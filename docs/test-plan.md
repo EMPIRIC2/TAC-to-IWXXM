@@ -124,7 +124,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-064          | F2/F9/F10 deepen (EV-061)                                    | Validate IWXXM item-by-item readable decode (#1010)                                                                                                                                                                                                        | **H4–H5 required**                | TC-EV061-1010-001..003                                                                   |
 | UJ-065          | F6/F7 deepen (EV-061)                                        | AHL decode + convert-bulletin (#1012)                                                                                                                                                                                                                      | **H4–H5 required**                | TC-EV061-1012-001..004                                                                   |
 | UJ-066 / UJ-067 | F7.u (EV-061)                                                | Product/Profile + param bars aligned (#1013)                                                                                                                                                                                                               | **H4–H5 required**                | TC-EV061-1013-001..003                                                                   |
-| UJ-068          | F7.v/F15 (EV-061; EV-062)                                    | Validation Issues Catalog (#1014; #1017 deepen)                                                                                                                                                                                                            | **H4–H5 required**                | TC-EV061-1014-001..004; TC-EV062-001..006                                                |
+| UJ-068          | F7.v/F15 (EV-061; EV-062; EV-1281)                           | Validation Issues Catalog (#1014; #1017 deepen; #1281 rule-catalog filters)                                                                                                                                                                               | **H4–H5 required**                | TC-EV061-1014-001..004; TC-EV062-001..006; TC-EV1281-001                                 |
 | UJ-073          | F7.v/F15 (EV-1120)                                           | Profile-scoped Validation Issues Catalog (#1121–#1123)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-001..009, TC-EV1120-018                                                        |
 | UJ-076          | F7.v (ADR-044)                                               | Five package-owned trust catalogs                                                                                                                                                                                                                          | **H4–H5 when FE ships**           | TC-EVRPC-001..005                                                                        |
 | UJ-076a         | F7 / F16–F19 / F9 (ADR-044; #1251)                           | Convert four-engine light selects + Send-drawer dissem; Profile Builder deleted                                                                                                                                                                            | **H4–H5**                         | TC-EVRPC-006..008 + TC-EVYCL-* (#1251)                                                    |
@@ -3031,6 +3031,17 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Objective**: Registry/catalog drift green; OpenAPI includes new optional fields
 - **Pass criteria**: TC-F15-001 family + OpenAPI internal-doc-ref guards
 - **Source**: #1017; ADR-028; NFR1–NFR4
+
+### TC-EV1281-001: Rule-catalog Type/Level/Access/Sort (conversion/dissemination/decoding)
+
+- **Level**: T0 / T2
+- **Objective**: On Rule catalogs for conversion, dissemination, and decoding, Type /
+  Level / Access / Sort change visible rows using only fields from
+  `GET /rule-catalogs` (id, title, summary, tags, optional severity). No invented
+  type=`other`, access=`public`, or severity=`info`. No new query params.
+- **Pass criteria**: Client filter empties when no row matches; All restores; Sort by
+  Code/Level uses real values with id tie-break; TAC/IWXXM lint-issue API filters unchanged
+- **Source**: #1281; F7.v; apps/frontend `tc-ev061-1014-catalog-page` TC-EV1281
 
 ### EV-1120 / F7.v+F7.w+F15+F35 — Profile-scoped catalog + Profile UX Phase A (#1120)
 
