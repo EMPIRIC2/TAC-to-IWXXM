@@ -1,7 +1,7 @@
-# Decoding catalog additive metadata (#1308 / EV-1307).
+# Decoding catalog additive metadata.
 # Keys are uppercase TAC tokens matching the glossary.
 # Omit a field to leave it null (FE must not invent defaults).
-# Provenance: public WMO/ICAO cites only — no paywalled scrape; no planning ids (EV-048).
+# Provenance: public WMO/ICAO cites only — no paywalled scrape; no planning ids.
 
 schema_version: 1
 tokens:

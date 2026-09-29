@@ -1,7 +1,7 @@
-"""Decoding catalog export with additive metadata (#1308 / EV-1307).
+"""Decoding catalog export with additive metadata.
 
 Rows are read-only operator trust metadata. Do not put internal planning ids in
-titles or summaries (EV-048).
+titles or summaries.
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ import yaml
 
 from tac_decoding.glossary import _OFFICIAL_TOKENS, load_glossary
 
-# Function words / markers that must not auto-default to ``content`` (D-TP-02 / verify-tech).
+# Function words / markers that must not auto-default to ``content``.
 _FUNCTION_WORDS: frozenset[str] = frozenset(
     {
         "AND",
