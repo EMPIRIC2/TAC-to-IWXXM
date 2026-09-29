@@ -6,8 +6,9 @@ name: Supabase Sync
 #   - Edge functions in apps/frontend/supabase/functions/ (legacy upload path;
 #     operator Auth package removed F21 / ADR-031 — retire when upload migrates)
 #
-# Applies on push to main and manual dispatch. On pull requests it runs a
+# Applies on push to main/stage and manual dispatch. On pull requests it runs a
 # read-only dry-run / diff only — it never writes to the project.
+# Edge deploy uses --use-api (no local Docker/ECR pull of edge-runtime).
 #
 # Operator docs: docs/deploy.md §Supabase CI sync, docs/env-sync-runbook.md §Step 5
 # Pattern: https://supabase.com/docs/guides/functions/examples/github-actions
@@ -147,6 +148,25 @@ jobs:
           echo "Edge functions that would be deployed:"
           ls -1 supabase/functions
 
-      - name: Deploy edge functions (main / manual)
+      # --use-api: bundle server-side so CI never pulls public.ecr.aws/supabase/edge-runtime
+      # (anonymous ECR "toomanyrequests: Data limit exceeded" / docker bundle exit 135).
+      # Retry transient API failures without reintroducing Docker.
+      - name: Deploy edge functions (main / stage / manual)
         if: steps.guard.outputs.skip != 'true' && github.event_name != 'pull_request'
-        run: supabase functions deploy --project-ref "${SUPABASE_PROJECT_REF}"
+        run: |
+          set -euo pipefail
+          attempt=1
+          max=3
+          while true; do
+            if supabase functions deploy --use-api --project-ref "${SUPABASE_PROJECT_REF}"; then
+              exit 0
+            fi
+            if [ "${attempt}" -ge "${max}" ]; then
+              echo "::error::supabase functions deploy --use-api failed after ${max} attempts"
+              exit 1
+            fi
+            sleep_s=$((attempt * 20))
+            echo "::warning::deploy attempt ${attempt} failed; retrying in ${sleep_s}s"
+            sleep "${sleep_s}"
+            attempt=$((attempt + 1))
+          done

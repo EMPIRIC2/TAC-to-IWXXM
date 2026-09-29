@@ -444,13 +444,20 @@ Operator reference: [env-sync-runbook.md](ops/env-sync-runbook.md), ADR-011, ADR
 ### Supabase CI sync
 
 `.github/workflows/supabase-sync.yml` applies schema changes and deploys legacy edge
-functions to project `ktvxijislbtgqapllmuk` on every push to `main` (and via manual
-dispatch). Pull requests against `main` run a read-only migration dry-run only.
+functions to project `ktvxijislbtgqapllmuk` on every push to `main` or `stage` (and via
+manual dispatch). Pull requests against `main`/`stage` run a read-only migration dry-run
+and list local edge functions — they never write to the project.
 
 | Job | What | Source path |
 |-----|------|-------------|
 | `migrations` | `supabase db push --linked` | `supabase/migrations/` |
-| `functions` | `supabase functions deploy` | `apps/frontend/supabase/functions/` |
+| `functions` | `supabase functions deploy --use-api` | `apps/frontend/supabase/functions/` |
+
+**Edge deploy note:** CI uses `--use-api` so the runner does **not** pull
+`public.ecr.aws/supabase/edge-runtime` via Docker. Anonymous ECR quota exhaustion
+(`toomanyrequests: Data limit exceeded`) and Docker bundle OOM/kill (`exit 135`) were
+failing `Deploy edge functions` on stage pushes; server-side bundling avoids that path.
+The deploy step retries up to three times on transient API errors.
 
 **GitHub configuration** (Settings → Secrets and variables → Actions):
 
@@ -466,6 +473,8 @@ functions remain only for the database-upload path until a follow-up retires the
 (ADR-010).
 
 Manual equivalent: `make supabase-push` (migrations) or `bash scripts/supabase/db-push.sh`.
+Local function deploy without Docker: `supabase functions deploy --use-api --project-ref …`
+from `apps/frontend` (after copying `supabase/config.toml` as CI does).
 
 ## Rollback
 
