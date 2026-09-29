@@ -680,6 +680,9 @@ export function FileConverter({
   }>({ type: 'idle' });
   const [conversionLog, setConversionLog] = useState<ConversionLog | null>(null);
   const [isDisseminationOpen, setIsDisseminationOpen] = useState(false);
+  /** Packaging-drawer Exchange for catalog filter while Disseminate is open (AC-UI Exchange). */
+  const [packagingExchangeProfile, setPackagingExchangeProfile] =
+    useState<ExchangeProfileId | null>(null);
   const [isMassIngesting, setIsMassIngesting] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
@@ -698,6 +701,12 @@ export function FileConverter({
   const [conversionParams, setConversionParams] = useState<ConversionParams>(
     initialConversionParams,
   );
+  const handleDisseminationOpenChange = (open: boolean) => {
+    setIsDisseminationOpen(open);
+    if (!open) {
+      setPackagingExchangeProfile(null);
+    }
+  };
   const [profileCatalogEntries, setProfileCatalogEntries] = useState<
     ProfileCatalogEntry[]
   >([]);
@@ -2314,7 +2323,7 @@ export function FileConverter({
     useLintIssueCatalog({
       product: liveAssistProduct,
       semanticProfile: conversionParams.profile,
-      exchangeProfile: conversionParams.exchangeProfile,
+      exchangeProfile: packagingExchangeProfile ?? conversionParams.exchangeProfile,
       enabled: !isReadOnly,
     });
 
@@ -2578,7 +2587,10 @@ export function FileConverter({
               <Button
                 type="button"
                 data-testid="open-dissemination-drawer"
-                onClick={() => setIsDisseminationOpen(true)}
+                onClick={() => {
+                  setPackagingExchangeProfile(conversionParams.exchangeProfile);
+                  handleDisseminationOpenChange(true);
+                }}
                 disabled={isBusy || isReadOnly}
                 variant="outline"
                 className="min-w-[10rem] text-base disabled:opacity-40 disabled:cursor-not-allowed"
@@ -3974,7 +3986,7 @@ export function FileConverter({
             isDisseminationOpen ? `open-${conversionParams.exchangeProfile}` : 'closed'
           }
           open={isDisseminationOpen}
-          onOpenChange={setIsDisseminationOpen}
+          onOpenChange={handleDisseminationOpenChange}
           iwxxmXml={convertedFiles[0]?.convertedContent}
           tacText={manualInput || undefined}
           product={conversionParams.product === 'SPECI' ? 'speci' : 'metar'}
@@ -3988,6 +4000,7 @@ export function FileConverter({
             )
           }
           exchangeProfile={conversionParams.exchangeProfile}
+          onExchangeProfileChange={setPackagingExchangeProfile}
         />
       ) : null}
 

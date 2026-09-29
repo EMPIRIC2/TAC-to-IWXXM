@@ -34,4 +34,9 @@ Public landings consulted (no Annex prose copied into operator templates):
 
 ## Out of this deepen
 
-Full national convert/validate detectors for every new code; UI catalog Profile filter (#1123); thin-pack national mining beyond stubs.
+Full national convert/validate detectors for every new code; thin-pack national mining beyond stubs.
+
+## UI follow (#1123)
+
+Rule catalogs page + workbench `useLintIssueCatalog` bind Profile / Exchange (TC-EV1120-009).
+Fail-closed regression locks: TC-EV1120-018.

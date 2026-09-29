@@ -21,6 +21,10 @@ export const LINT_VALIDATION_CATALOG_TYPE_LABEL = 'Type';
 export const LINT_VALIDATION_CATALOG_LEVEL_LABEL = 'Level';
 export const LINT_VALIDATION_CATALOG_ACCESS_LABEL = 'Access';
 export const LINT_VALIDATION_CATALOG_SORT_LABEL = 'Sort';
+export const LINT_VALIDATION_CATALOG_PROFILE_LABEL = 'Profile';
+export const LINT_VALIDATION_CATALOG_EXCHANGE_LABEL = 'Exchange';
+export const LINT_VALIDATION_CATALOG_PROFILE_ALL = 'All profiles';
+export const LINT_VALIDATION_CATALOG_EXCHANGE_ALL = 'All exchange profiles';
 
 /** Column headers (table / list). */
 export const LINT_VALIDATION_CATALOG_COL_CODE = 'Code';

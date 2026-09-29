@@ -983,11 +983,11 @@ codes appear only under the matching semantic profile.
 3. When packaging UI exposes Exchange, catalog also respects `exchange_profile` filter.
 4. Confirm omit-param API clients unchanged; unknown profile query → 400.
 
-**Acceptance**: AC-API-1..4, AC-UI-1; TC-EV1120-001..009; no EV-048 regressions.
+**Acceptance**: AC-API-1..4, AC-UI-1; TC-EV1120-001..009 + TC-EV1120-018; no EV-048 regressions.
 
 **Tier**: T0 / T2 / H4–H5 when live
 
-**Automated tests**: TC-EV1120-001..009
+**Automated tests**: TC-EV1120-001..009, TC-EV1120-018
 
 **Source**: EV-1120 / #1121–#1123
 

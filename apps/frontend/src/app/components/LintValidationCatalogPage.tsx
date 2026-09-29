@@ -20,14 +20,23 @@ import {
   LINT_VALIDATION_CATALOG_COL_SOURCE,
   LINT_VALIDATION_CATALOG_COL_TYPE,
   LINT_VALIDATION_CATALOG_EMPTY,
+  LINT_VALIDATION_CATALOG_EXCHANGE_ALL,
+  LINT_VALIDATION_CATALOG_EXCHANGE_LABEL,
   LINT_VALIDATION_CATALOG_FAMILY_LABEL,
   LINT_VALIDATION_CATALOG_LEVEL_LABEL,
   LINT_VALIDATION_CATALOG_LOADING,
   LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
   LINT_VALIDATION_CATALOG_PAGE_TITLE,
+  LINT_VALIDATION_CATALOG_PROFILE_ALL,
+  LINT_VALIDATION_CATALOG_PROFILE_LABEL,
   LINT_VALIDATION_CATALOG_SORT_LABEL,
   LINT_VALIDATION_CATALOG_TYPE_LABEL,
 } from '@/utils/lintValidationCatalogCopy';
+import { SEMANTIC_PROFILE_OPTIONS, type IwxxmProfile } from '@/utils/semanticProfile';
+import {
+  EXCHANGE_PROFILE_OPTIONS,
+  type ExchangeProfileId,
+} from '@/utils/exchangeProfile';
 
 type FamilyFilter =
   | 'all'
@@ -198,10 +207,19 @@ export function LintValidationCatalogPage() {
   const [levelFilter, setLevelFilter] = useState<(typeof LEVEL_OPTIONS)[number]>('all');
   const [sourceAccessFilter, setSourceAccessFilter] =
     useState<(typeof ACCESS_OPTIONS)[number]>('all');
+  const [semanticProfileFilter, setSemanticProfileFilter] = useState<
+    'all' | IwxxmProfile
+  >('all');
+  const [exchangeProfileFilter, setExchangeProfileFilter] = useState<
+    'all' | ExchangeProfileId
+  >('all');
   const [sortBy, setSortBy] = useState<SortKey>('code');
   const [entries, setEntries] = useState<LintIssueCatalogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const usesLintIssueCatalog =
+    familyFilter === 'all' || familyFilter === 'lint' || familyFilter === 'iwxxm';
 
   const loadCatalog = useCallback(async () => {
     setLoading(true);
@@ -235,11 +253,29 @@ export function LintValidationCatalogPage() {
         setEntries(mapped);
         return;
       }
-      const response = await fetchLintIssueCatalog({
-        family: familyFilter === 'all' ? undefined : familyFilter,
-        issue_type: issueTypeFilter === 'all' ? undefined : issueTypeFilter,
-        source_access: sourceAccessFilter === 'all' ? undefined : sourceAccessFilter,
-      });
+      const params: {
+        family?: string;
+        issue_type?: string;
+        source_access?: string;
+        semantic_profile?: string;
+        exchange_profile?: string;
+      } = {};
+      if (familyFilter !== 'all') {
+        params.family = familyFilter;
+      }
+      if (issueTypeFilter !== 'all') {
+        params.issue_type = issueTypeFilter;
+      }
+      if (sourceAccessFilter !== 'all') {
+        params.source_access = sourceAccessFilter;
+      }
+      if (semanticProfileFilter !== 'all') {
+        params.semantic_profile = semanticProfileFilter;
+      }
+      if (exchangeProfileFilter !== 'all') {
+        params.exchange_profile = exchangeProfileFilter;
+      }
+      const response = await fetchLintIssueCatalog(params);
       setEntries(response.issues ?? []);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load catalog');
@@ -247,7 +283,13 @@ export function LintValidationCatalogPage() {
     } finally {
       setLoading(false);
     }
-  }, [familyFilter, issueTypeFilter, sourceAccessFilter]);
+  }, [
+    familyFilter,
+    issueTypeFilter,
+    sourceAccessFilter,
+    semanticProfileFilter,
+    exchangeProfileFilter,
+  ]);
 
   /* eslint-disable react-hooks/set-state-in-effect -- refetch when filters change */
   useEffect(() => {
@@ -349,6 +391,52 @@ export function LintValidationCatalogPage() {
                 {ACCESS_OPTIONS.map((opt) => (
                   <option key={opt} value={opt}>
                     {opt === 'all' ? 'All' : opt.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="text-sm text-gray-700 dark:text-gray-300">
+              {LINT_VALIDATION_CATALOG_PROFILE_LABEL}
+              <select
+                className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
+                value={semanticProfileFilter}
+                data-testid="lint-validation-catalog-profile-filter"
+                aria-label="Filter by profile"
+                disabled={!usesLintIssueCatalog}
+                onChange={(e) =>
+                  setSemanticProfileFilter(
+                    e.target.value === 'all' ? 'all' : (e.target.value as IwxxmProfile),
+                  )
+                }
+              >
+                <option value="all">{LINT_VALIDATION_CATALOG_PROFILE_ALL}</option>
+                {SEMANTIC_PROFILE_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="text-sm text-gray-700 dark:text-gray-300">
+              {LINT_VALIDATION_CATALOG_EXCHANGE_LABEL}
+              <select
+                className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
+                value={exchangeProfileFilter}
+                data-testid="lint-validation-catalog-exchange-filter"
+                aria-label="Filter by exchange profile"
+                disabled={!usesLintIssueCatalog}
+                onChange={(e) =>
+                  setExchangeProfileFilter(
+                    e.target.value === 'all'
+                      ? 'all'
+                      : (e.target.value as ExchangeProfileId),
+                  )
+                }
+              >
+                <option value="all">{LINT_VALIDATION_CATALOG_EXCHANGE_ALL}</option>
+                {EXCHANGE_PROFILE_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
                   </option>
                 ))}
               </select>

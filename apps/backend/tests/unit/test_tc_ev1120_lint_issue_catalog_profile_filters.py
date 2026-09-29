@@ -164,8 +164,11 @@ def test_tc_ev1120_008_us_and_ca_iwxxm_national_rows(client: TestClient) -> None
     assert "ca_eccc" in ca_reg["semantic_profiles"]
 
 
-def test_tc_ev1120_009_mined_us_prob40_and_ca_up_awos(client: TestClient) -> None:
-    """TC-EV1120-009 / #1122 deepen — AIM PROB40 + MANOBS UP AWOS-only rows."""
+def test_tc_ev1120_018_mined_us_prob40_and_ca_up_awos(client: TestClient) -> None:
+    """TC-EV1120-018 / #1122 deepen — AIM PROB40 + MANOBS UP AWOS-only rows.
+
+    Renamed from TC-EV1120-009 so UI Profile/Exchange binding owns 009 (#1123).
+    """
     icao = _codes(
         client.get(
             "/api/v1/lint-issue-catalog",

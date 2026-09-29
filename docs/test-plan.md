@@ -125,7 +125,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-065          | F6/F7 deepen (EV-061)                                        | AHL decode + convert-bulletin (#1012)                                                                                                                                                                                                                      | **H4–H5 required**                | TC-EV061-1012-001..004                                                                   |
 | UJ-066 / UJ-067 | F7.u (EV-061)                                                | Product/Profile + param bars aligned (#1013)                                                                                                                                                                                                               | **H4–H5 required**                | TC-EV061-1013-001..003                                                                   |
 | UJ-068          | F7.v/F15 (EV-061; EV-062)                                    | Validation Issues Catalog (#1014; #1017 deepen)                                                                                                                                                                                                            | **H4–H5 required**                | TC-EV061-1014-001..004; TC-EV062-001..006                                                |
-| UJ-073          | F7.v/F15 (EV-1120)                                           | Profile-scoped Validation Issues Catalog (#1121–#1123)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-001..009                                                                       |
+| UJ-073          | F7.v/F15 (EV-1120)                                           | Profile-scoped Validation Issues Catalog (#1121–#1123)                                                                                                                                                                                                     | **H4–H5 when FE ships**           | TC-EV1120-001..009, TC-EV1120-018                                                        |
 | UJ-076          | F7.v (ADR-044)                                               | Five package-owned trust catalogs                                                                                                                                                                                                                          | **H4–H5 when FE ships**           | TC-EVRPC-001..005                                                                        |
 | UJ-076a         | F7 / F16–F19 / F9 (ADR-044; #1251)                           | Convert four-engine light selects + Send-drawer dissem; Profile Builder deleted                                                                                                                                                                            | **H4–H5**                         | TC-EVRPC-006..008 + TC-EVYCL-* (#1251)                                                    |
 | UJ-076b         | F9 (ADR-044)                                                 | tac-decoding parity                                                                                                                                                                                                                                        | **H4–H5 when FE ships**           | TC-EVRPC-009                                                                             |
@@ -3095,12 +3095,30 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: Filter semantics + provenance URLs present
 - **Source**: #1122; AC-CNT-2
 
-### TC-EV1120-009: Workbench catalog follows Profile
+### TC-EV1120-018: Mined deepen rows + fail-closed regression locks
+
+- **Level**: T0 / T2
+- **Objective**: AIM PROB40 / MANOBS UP AWOS / addendum / code-ca rows stay profile-scoped;
+  ICAO_2025 never surfaces US/CA national-only demo set; provenance stays https and
+  EV-048-clean; unknown profile params remain HTTP 400
+- **Pass criteria**: `test_tc_ev1120_018_*` green; omit-params still returns full catalog
+- **Source**: #1122 deepen; #1123 regression guard (criteria lock)
+- **Automated**: `test_tc_ev1120_lint_issue_catalog_profile_filters.py` (018 mined);
+  `test_tc_ev1120_018_catalog_regression_locks.py`
+
+### TC-EV1120-009: Workbench + Rule catalogs follow Profile / Exchange
 
 - **Level**: T0 / T2 / H4–H5
-- **Objective**: Changing Profile refetches/filters catalog panel
-- **Pass criteria**: UJ-073; national demo visible only under owning profile
+- **Objective**: Changing Profile (and Exchange when packaging context is active) refetches
+  the workbench catalog panel via `useLintIssueCatalog`, and the Rule catalogs page Profile /
+  Exchange filters pass the same query params
+- **Pass criteria**: UJ-073; national demo visible only under owning profile; EV-048 clean
+  filter labels; Profile/Exchange selects disabled for conversion/dissemination/decoding
+  rule-catalog families; Disseminate drawer Exchange notifies workbench catalog while open
 - **Source**: #1123; AC-UI-1
+- **Automated**: `useLintIssueCatalog.test.ts`; `tc-ev061-1014-catalog-page.test.tsx`;
+  `tc-ev1120-009-workbench-catalog-binding.test.tsx`; DisseminationDrawer
+  `onExchangeProfileChange` case
 
 ### TC-EV1120-010: Profiles page glanceable summary composition
 

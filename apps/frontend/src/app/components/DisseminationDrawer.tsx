@@ -76,10 +76,14 @@ export interface DisseminationDrawerProps {
   disseminationTemplateId?: string;
   onDisseminationTemplateChange?: (templateId: string) => void;
   /**
-   * Initial exchange overlay (workbench light picker). Drawer keeps local state
-   * after open so operators can override without mutating convert params.
+   * Initial exchange overlay (workbench). Drawer keeps local state after open so
+   * packaging can override without mutating convert params; optional callback
+   * notifies the parent (e.g. Validation Issues Catalog filter) of the active
+   * packaging Exchange.
    */
   exchangeProfile?: ExchangeProfileId | string;
+  /** Fired when the packaging Exchange control changes (and once on mount). */
+  onExchangeProfileChange?: (profile: ExchangeProfileId) => void;
 }
 
 interface RowUiState {
@@ -179,6 +183,7 @@ export function DisseminationDrawer({
   disseminationTemplateId = '',
   onDisseminationTemplateChange,
   exchangeProfile: exchangeProfileProp,
+  onExchangeProfileChange,
 }: DisseminationDrawerProps) {
   const [sinkType, setSinkType] = useState<SinkType>('postgres');
   const [uri, setUri] = useState('');
@@ -204,6 +209,12 @@ export function DisseminationDrawer({
   const [exchangeProfile, setExchangeProfile] = useState<ExchangeProfileId>(() =>
     coerceExchangeProfile(exchangeProfileProp ?? DEFAULT_EXCHANGE_PROFILE),
   );
+
+  useEffect(() => {
+    onExchangeProfileChange?.(exchangeProfile);
+    // Notify parent once with the initial packaging Exchange (catalog filter).
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only notify
+  }, []);
 
   const primarySession: ExportCandidateInput[] = useMemo(() => {
     if (!propIwxxm?.trim() && !propTac?.trim()) return [];
@@ -582,7 +593,9 @@ export function DisseminationDrawer({
             className="w-full rounded border border-gray-300 bg-white px-2 py-2 text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
             value={exchangeProfile}
             onChange={(e) => {
-              setExchangeProfile(coerceExchangeProfile(e.target.value));
+              const next = coerceExchangeProfile(e.target.value);
+              setExchangeProfile(next);
+              onExchangeProfileChange?.(next);
               setLastResults([]);
               setRowState({});
             }}
