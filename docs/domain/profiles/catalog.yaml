@@ -661,10 +661,10 @@ profiles:
   - id: APAC_ROBEX
     kind: exchange
     priority: P2
-    status: stub
+    status: in_progress
     implementation:
-      issue: "#921"
-      note: EV-065 P0 — registry + COLLECT baseline; EV-090 mining promote (OPMET Guidelines + APAC FAQs); ROBEX handbook durable file pinned from ICAO APAC edocs
+      issue: "#1222"
+      note: EV-1222 — COLLECT shell via OPMET Guidelines (ROBEX HB §6.6.1); default bulletinIdentifier A_SACI31ZBBB.xml from ROBEX HB §6.4.2 / App A SACI31 example
     sources:
       - url: https://www.icao.int/sites/default/files/METP/Documents/Guidlines-for-the-Implementation-of-OPMET-Data-Exchange-using-IWXXM_5th-Edition.pdf
         label: OPMET IWXXM Exchange Guidelines (5th Ed.)
@@ -685,9 +685,11 @@ profiles:
     mining_notes:
       - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
       - docs/domain/mining/icao-apac-iwxxm-faqs-3rd-2025-mining-notes.md
+      - docs/domain/mining/icao-apac-robex-hb-19th-2026-mining-notes.md
     stub: exchange/APAC_ROBEX.md
     gaps:
-      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
+      - Full ROBEX App A/B bulletin matrices / ROC distribution lists not encoded
+      - Dynamic TTAAii selection from aerodrome not implemented (example default only)
 
   - id: EUR_RODEX
     kind: exchange
@@ -710,7 +712,7 @@ profiles:
       - docs/domain/mining/icao-eur-doc-14-sigmet-airmet-2023-mining-notes.md
     stub: exchange/EUR_RODEX.md
     gaps:
-      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped (#1222 — EUR Doc 018 packaging delta not yet promoted)
 
   - id: AFI
     kind: exchange
@@ -732,7 +734,7 @@ profiles:
       - docs/domain/mining/OPMET-IWXXM-Exchange-Guidelines-5th-mining-notes.md
     stub: exchange/AFI.md
     gaps:
-      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped (#1222 — AFI IWXXM guideline packaging delta not yet promoted)
 
   - id: CAR_SAM
     kind: exchange
@@ -751,4 +753,4 @@ profiles:
     stub: exchange/CAR_SAM.md
     gaps:
       - Authoritative CAR/SAM-specific exchange rule source not listed in #913 initial mine
-      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped
+      - Overlay rules beyond GLOBAL_AFS COLLECT baseline not scoped (#1222 — regional handbook packaging delta not yet promoted)

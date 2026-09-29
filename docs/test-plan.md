@@ -4531,10 +4531,45 @@ wiring unchanged fail-closed.
 
 ### TC-EV090-005: EV-086 packaging regression
 
-- **Level**: T0 / T2
-- **Objective**: COLLECT baseline for all regional stubs unchanged
-- **Pass criteria**: TC-EV086-001..004 green
-- **Source**: EV-090
+- **Level**: T0
+- **Objective**: EUR_RODEX / AFI / CAR_SAM still package via COLLECT baseline without regressing GLOBAL_AFS / APAC_ROBEX
+- **Pass criteria**: Existing TC-EV086 + packaging unit suite green
+- **Source**: EV-090; #921
+
+### EV-1222 / F36 — Regional exchange overlays beyond stubs (#1222)
+
+- **Mode**: deepen F36 exchange packaging (post-convert only; ADR-036)
+- **Pass criteria**: TC-EV1222-001..004; APAC_ROBEX ≥1 cited delta vs GLOBAL_AFS; remaining overlays implemented or explicit catalog gaps; GLOBAL_AFS green
+- **Source**: [#1222](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/1222); ADR-036; session `EV-1222-regional-exchange-overlays`
+- **Context**: [regional-exchange-overlays-1222.md](context/regional-exchange-overlays-1222.md)
+
+### TC-EV1222-001: APAC_ROBEX packaging delta vs GLOBAL_AFS
+
+- **Level**: T0
+- **Objective**: Same single-report IWXXM input yields a measurable packaging difference when `exchange_profile=APAC_ROBEX` vs `GLOBAL_AFS`, and the delta is cited to a pinned ROBEX / OPMET source
+- **Pass criteria**: Unit fixture asserts inequality on bulletinIdentifier and/or wrap metadata; no invent without catalog URL
+- **Source**: #1222; D-EV1222-01
+
+### TC-EV1222-002: Remaining overlays honesty
+
+- **Level**: T0
+- **Objective**: `EUR_RODEX` / `AFI` / `CAR_SAM` either implement a cited packaging delta or keep `status: stub` with explicit `gaps:` + provenance (no silent “implemented” claim)
+- **Pass criteria**: Catalog/stub audit test; packaging tests match claimed status
+- **Source**: #1222; D-EV1222-02
+
+### TC-EV1222-003: Unknown exchange id fail-closed
+
+- **Level**: T0
+- **Objective**: Unknown wire id still raises / HTTP 400; known stubs still package
+- **Pass criteria**: Existing unknown-id tests + regional ids remain registered
+- **Source**: #1222; ADR-036
+
+### TC-EV1222-004: GLOBAL_AFS regression
+
+- **Level**: T0
+- **Objective**: GLOBAL_AFS COLLECT wrap unchanged by regional deepen
+- **Pass criteria**: TC-EV063/065 GLOBAL_AFS cases green
+- **Source**: #1222; D-EV1222-06
 
 ### EV-093 / #1024 — Semantic light picker deepen
 
