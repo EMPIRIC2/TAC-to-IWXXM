@@ -488,6 +488,8 @@ describe('FileConverter Component', () => {
           products: ['METAR', 'TAF'],
           deltas_vs_icao: ['Baseline ICAO/WMO line used for cross-profile comparison.'],
           iwxxm_line: 'IWXXM 2025-2 core',
+          rule_pack_count: 0,
+          overlay_count: 0,
         },
         {
           id: 'US_FAA_NWS',
@@ -7046,8 +7048,60 @@ describe('FileConverter Component', () => {
         expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
       });
 
-      expect(screen.getByText(/Rule packs: —/)).toBeInTheDocument();
-      expect(screen.getByText(/Overlays: —/)).toBeInTheDocument();
+      expect(screen.getByTestId('workbench-profile-rule-pack-count')).toHaveTextContent(
+        'Rule packs: Unavailable',
+      );
+      expect(screen.getByTestId('workbench-profile-overlay-count')).toHaveTextContent(
+        'Overlays: Unavailable',
+      );
+    });
+
+    it('shows zero when catalog loads with no packs or overlays configured', async () => {
+      mockFetchProfileCatalog.mockResolvedValueOnce({
+        profiles: [
+          {
+            id: 'ICAO_2025',
+            kind: 'semantic',
+            products: ['METAR', 'SPECI', 'TAF'],
+            deltas_vs_icao: [
+              'Baseline ICAO/WMO line used for cross-profile comparison.',
+            ],
+            iwxxm_line: 'IWXXM 2025-2 core',
+            rule_pack_count: 0,
+            overlay_count: 0,
+          },
+        ],
+      });
+      render(<FileConverter accessToken="tok" />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('workbench-profile-rule-pack-count'),
+        ).toHaveTextContent('Rule packs: 0');
+      });
+      expect(screen.getByTestId('workbench-profile-overlay-count')).toHaveTextContent(
+        'Overlays: 0',
+      );
+      expect(
+        screen.queryByTestId('workbench-profile-catalog-error'),
+      ).not.toBeInTheDocument();
+    });
+
+    it('shows degraded hint when profile catalog fetch fails', async () => {
+      mockFetchProfileCatalog.mockRejectedValueOnce(new Error('catalog down'));
+      render(<FileConverter accessToken="tok" />);
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId('workbench-profile-catalog-error'),
+        ).toBeInTheDocument();
+      });
+      expect(screen.getByTestId('workbench-profile-rule-pack-count')).toHaveTextContent(
+        'Rule packs: Unavailable',
+      );
+      expect(screen.getByTestId('workbench-profile-overlay-count')).toHaveTextContent(
+        'Overlays: Unavailable',
+      );
     });
 
     it('ignores profile catalog resolution after unmount', async () => {

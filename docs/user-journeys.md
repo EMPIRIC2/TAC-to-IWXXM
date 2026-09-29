@@ -927,43 +927,33 @@ template attempts to persist secret-bearing fields.
 
 ### UJ-072 deepen: Glanceable Profile summary + blocks + examples (EV-1120 / #1145)
 
-**Actor**: Operator (guest on workbench twin; authenticated on Profiles editor)
+**Actor**: Operator (guest or signed-in on Convert workbench)
 
-**Goal**: See at a glance what the selected semantic profile means; inspect ADR-038 blocks;
-load a profile-appropriate example; open starter packs without losing custom edits.
+**Goal**: See at a glance what the selected semantic profile means; load a
+profile-appropriate example; keep Validation Issues Catalog aligned with Profile.
 
-**Feature**: F7.w (EV-1120 Phase A)
+**Feature**: F7.w (EV-1120 Phase A) — **Done** (#1145 closed; Profiles-page steps waived ADR-044)
 
 **Steps**:
 
 1. Open convert workbench — Profile control shows **compact twin** (name, ≤3 vs-ICAO deltas,
-   products, IWXXM line; pack/overlay counts show "—" until signed in).
+   products, IWXXM line; pack/overlay counts show an unavailable placeholder until signed in).
 2. Change Profile — twin + Validation Issues Catalog (#1123) refresh without full reload, and
    unrelated in-progress editing state stays intact unless a profile-dependent control becomes
    invalid.
-3. Sign in; open **Conversion profiles** — first viewport is one **summary composition**
-   (not three equal form cards) showing profile-specific settings (products, IWXXM line,
-   ≤3 vs-ICAO deltas, pack/overlay counts).
-4. **Compare**: on the Conversion Profiles summary surface, select a second profile;
-   side-by-side settings highlight differences (e.g. US_FAA_NWS vs ICAO_2025). The workbench
-   twin stays compact and does not grow full compare UI in this slice.
-5. Click an ADR-038 **block** (input / TAC lint / convert / IWXXM validate / exchange) →
-   inspect detail and jump to existing rule-pack or overlay forms (no new runtime).
-6. Use **Examples** to load a sample for the selected profile (all registered semantic
-   profiles; thin packs may reuse ICAO sample with a note). The Conversion Profiles surface
-   also shows the current example coverage and can jump back to **Convert** to open the picker.
-7. First visit may seed starter packs/overlays from examples; re-open after customize does
-   **not** overwrite custom packs. All registered semantic profiles have an example path; thin
-   profiles may reuse the ICAO example with a note. Read-only workflow references may appear;
-   no workflow authoring.
+3. ~~Sign in; open Conversion profiles summary~~ — **Waived** (ADR-044 unmounted Conversion
+   Profiles page). Signed-in operators see pack/overlay counts on the workbench twin instead.
+4. ~~Compare on Conversion Profiles~~ — **Waived** (same ADR-044 unmount).
+5. Use Convert examples / trust copy as the profile-aware example surface (thin packs may reuse
+   ICAO guidance).
 
-**Acceptance**: AC-UX-1..6 from EV-1120 requirements + side-by-side compare; EV-048 clean; UJ-072 base + #1024 remain green.
+**Acceptance**: Workbench twin + catalog refresh; TC-EV1120-011/013/015; TC-EV1120-010/012/014/016/017 waived.
 
 **Tier**: T0 / T2 / T3 / H4–H5
 
-**Automated tests**: TC-EV1120-010..017
+**Automated tests**: TC-EV1120-011..015 (live); waived rows noted in test-plan
 
-**Source**: EV-1120 / #1145; Context: profile-scoped-catalog-1120 (archived — see session-store `~/.cursor/workflow/EMPIRIC2/TAC-to-IWXXM/sessions/` or orphan branch `docs-archive`; not a CORPUS design gate)
+**Source**: EV-1120 / #1145; ADR-044
 
 ---
 

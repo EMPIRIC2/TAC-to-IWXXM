@@ -150,6 +150,8 @@ import {
   PROFILES_CONV_TEMPLATES_SEARCH_PLACEHOLDER,
   PROFILES_CONV_TEMPLATES_SLOT_LABEL,
   PROFILES_ERROR_PREFIX,
+  PROFILES_COUNT_UNAVAILABLE,
+  WORKBENCH_PROFILE_CATALOG_DEGRADED,
   PROFILES_INSPECTOR_EMPTY,
   PROFILES_INSPECTOR_HEADING,
   PROFILES_INSPECTOR_LOADING,
@@ -557,6 +559,11 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     { id: 'profiles.convert-overlay-none', text: CONVERT_OVERLAY_NONE },
     { id: 'profiles.convert-overlay-help', text: CONVERT_OVERLAY_HELP },
     { id: 'profiles.error-prefix', text: PROFILES_ERROR_PREFIX },
+    { id: 'profiles.count-unavailable', text: PROFILES_COUNT_UNAVAILABLE },
+    {
+      id: 'workbench.profile-catalog-degraded',
+      text: WORKBENCH_PROFILE_CATALOG_DEGRADED,
+    },
     {
       id: 'convert.reset-wmo-library-defaults',
       text: CONVERT_RESET_WMO_LIBRARY_DEFAULTS,

@@ -90,6 +90,8 @@ import {
 import {
   CONVERT_RESET_WMO_LIBRARY_DEFAULTS,
   CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP,
+  PROFILES_COUNT_UNAVAILABLE,
+  WORKBENCH_PROFILE_CATALOG_DEGRADED,
 } from '@/utils/conversionProfilesCopy';
 import {
   readWmoLibraryDefaultsSync,
@@ -710,6 +712,10 @@ export function FileConverter({
   const [profileCatalogEntries, setProfileCatalogEntries] = useState<
     ProfileCatalogEntry[]
   >([]);
+  /** idle/guest | loading | ready | error — distinguishes 0 from unavailable (#1149). */
+  const [profileCatalogStatus, setProfileCatalogStatus] = useState<
+    'idle' | 'loading' | 'ready' | 'error'
+  >('idle');
   const [metadataPrefs, setMetadataPrefs] = useState<ConversionMetadataPrefs>(() =>
     readConversionMetadataPrefs(),
   );
@@ -790,18 +796,22 @@ export function FileConverter({
     const token = accessToken?.trim();
     if (!token) {
       setProfileCatalogEntries([]);
+      setProfileCatalogStatus('idle');
       return;
     }
     let cancelled = false;
+    setProfileCatalogStatus('loading');
     void fetchProfileCatalog(token)
       .then((res) => {
         if (!cancelled) {
           setProfileCatalogEntries(res.profiles);
+          setProfileCatalogStatus('ready');
         }
       })
       .catch(() => {
         if (!cancelled) {
           setProfileCatalogEntries([]);
+          setProfileCatalogStatus('error');
         }
       });
     return () => {
@@ -3042,19 +3052,30 @@ export function FileConverter({
                             ? activeProfileSummary.products.join(', ')
                             : 'Sign in to load profile coverage'}
                         </span>
-                        <span>
+                        <span data-testid="workbench-profile-rule-pack-count">
                           Rule packs:{' '}
-                          {activeProfileSummary.rule_pack_count != null
+                          {profileCatalogStatus === 'ready' &&
+                          activeProfileSummary.rule_pack_count != null
                             ? activeProfileSummary.rule_pack_count
-                            : '—'}
+                            : PROFILES_COUNT_UNAVAILABLE}
                         </span>
-                        <span>
+                        <span data-testid="workbench-profile-overlay-count">
                           Overlays:{' '}
-                          {activeProfileSummary.overlay_count != null
+                          {profileCatalogStatus === 'ready' &&
+                          activeProfileSummary.overlay_count != null
                             ? activeProfileSummary.overlay_count
-                            : '—'}
+                            : PROFILES_COUNT_UNAVAILABLE}
                         </span>
                       </div>
+                      {profileCatalogStatus === 'error' ? (
+                        <p
+                          className="text-xs text-amber-800 dark:text-amber-200"
+                          data-testid="workbench-profile-catalog-error"
+                          role="status"
+                        >
+                          {WORKBENCH_PROFILE_CATALOG_DEGRADED}
+                        </p>
+                      ) : null}
                     </div>
                   </details>
                   <details

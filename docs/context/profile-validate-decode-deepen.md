@@ -71,8 +71,9 @@ instead of five-library authoring. Decode still shows bare ICAO codes (#724).
 |-------|--------|
 | #1121 API filters | **Green** — `lint_catalog_profile_filter.py` + TC-EV1120-001..005 |
 | #1122 mining | **Green** — US/CA TAC + IWXXM national rows with provenance (TC-EV1120-006..008) |
-| #1123 FE filters | **Green** — `useLintIssueCatalog` + Rule catalogs Profile/Exchange filters (TC-EV1120-009); TC-EV1120-018 regression locks |
-| #1145 glanceable | **Workbench twin green**; Profiles-page hero superseded by ADR-044 unmount (TC-EV1120-010 waived) |
+| #1123 FE filters | **Closed** (#1302) — workbench + Rule catalogs Profile/Exchange filters (TC-EV1120-009); TC-EV1120-018 locks |
+| #1145 glanceable | **Closed** — workbench twin green; Profiles-page hero waived ADR-044 (TC-EV1120-010/012/014/017 E2E skip) |
+| #1120 epic | **Closed** 2026-09-29 — children #1121–#1123/#1145 done; residual polish → #1149 |
 
 ### #724 decode station names
 

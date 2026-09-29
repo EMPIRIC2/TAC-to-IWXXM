@@ -36,7 +36,9 @@ Public landings consulted (no Annex prose copied into operator templates):
 
 Full national convert/validate detectors for every new code; thin-pack national mining beyond stubs.
 
-## UI follow (#1123)
+## UI follow (#1123 / #1145)
 
-Rule catalogs page + workbench `useLintIssueCatalog` bind Profile / Exchange (TC-EV1120-009).
-Fail-closed regression locks: TC-EV1120-018.
+- #1123 closed via #1302 (Rule catalogs + workbench Profile/Exchange binding; TC-EV1120-009).
+- Fail-closed regression locks: TC-EV1120-018.
+- #1145 closed: workbench twin retained; Profiles-page AC waived (ADR-044).
+- Epic #1120 closed 2026-09-29. Residual: #1149 count/error clarity.
