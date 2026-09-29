@@ -165,5 +165,18 @@ describe('TC-EV1120-009 workbench catalog Profile/Exchange binding', () => {
         }),
       );
     });
+
+    fetchLintIssueCatalog.mockClear();
+    await user.click(screen.getByTestId('dissemination-drawer-close'));
+    await waitFor(() => {
+      expect(screen.queryByTestId('dissemination-drawer')).not.toBeInTheDocument();
+    });
+    await waitFor(() => {
+      expect(fetchLintIssueCatalog).toHaveBeenCalledWith(
+        expect.objectContaining({
+          exchange_profile: 'GLOBAL_AFS',
+        }),
+      );
+    });
   });
 });
