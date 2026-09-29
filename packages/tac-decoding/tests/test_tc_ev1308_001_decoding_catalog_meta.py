@@ -5,10 +5,16 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
+import pytest
 from tac_decoding.catalog import (
+    _tokens_meta_from_mapping,
     catalog_entries,
     count_issue_types,
     default_issue_type_for_token,
+    load_catalog_meta,
+    reload_catalog_meta,
 )
 
 
@@ -59,3 +65,97 @@ def test_count_issue_types_includes_content_and_null() -> None:
     assert "other" not in counts or counts["other"] == 0
     # Function words remain null
     assert counts.get("null", 0) >= 1
+
+
+def test_tokens_meta_from_mapping_guards() -> None:
+    assert _tokens_meta_from_mapping(None) == {}
+    assert _tokens_meta_from_mapping(["x"]) == {}
+    assert _tokens_meta_from_mapping({"tokens": "bad"}) == {}
+    assert _tokens_meta_from_mapping({"tokens": {"": {"issue_type": "content"}}}) == {}
+    assert _tokens_meta_from_mapping({"tokens": {"  ": {"issue_type": "content"}}}) == {}
+    assert _tokens_meta_from_mapping({"tokens": {"XX": "not-a-map"}}) == {}
+    assert _tokens_meta_from_mapping({"tokens": {"yy": {"issue_type": "  "}}}) == {}
+    out = _tokens_meta_from_mapping(
+        {"tokens": {"ab": {"issue_type": " content ", "severity": 1}}},
+    )
+    assert out == {"AB": {"issue_type": "content"}}
+
+
+def test_default_issue_type_unknown_token() -> None:
+    assert default_issue_type_for_token("ZZNOTAREALTOKEN") is None
+
+
+def test_reload_catalog_meta_roundtrip() -> None:
+    first = load_catalog_meta()
+    second = reload_catalog_meta()
+    assert first == second
+    assert "TS" in second
+
+
+def test_load_catalog_meta_resources_not_file(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_decoding import catalog as cat
+
+    class FakeData:
+        def is_file(self) -> bool:
+            return False
+
+        def read_text(self, encoding: str = "utf-8") -> str:
+            raise AssertionError("packaged path should fall back")
+
+    class FakeRoot:
+        def joinpath(self, *parts: str) -> FakeData:
+            return FakeData()
+
+    monkeypatch.setattr(cat.resources, "files", lambda _name: FakeRoot())
+    cat.load_catalog_meta.cache_clear()
+    meta = cat.load_catalog_meta()
+    assert "TS" in meta
+
+
+def test_load_catalog_meta_resources_boom(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_decoding import catalog as cat
+
+    class Boom:
+        def joinpath(self, *_args: object) -> object:
+            raise OSError("missing")
+
+    monkeypatch.setattr(cat.resources, "files", lambda _name: Boom())
+    cat.load_catalog_meta.cache_clear()
+    meta = cat.load_catalog_meta()
+    assert "TS" in meta
+
+
+def test_load_catalog_meta_fallback_missing(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_decoding import catalog as cat
+
+    class Boom:
+        def joinpath(self, *_args: object) -> object:
+            raise OSError("missing")
+
+    monkeypatch.setattr(cat.resources, "files", lambda _name: Boom())
+    monkeypatch.setattr(
+        cat.Path,
+        "is_file",
+        lambda self: False if self.name == "catalog_meta.yaml" else Path.is_file(self),
+    )
+    cat.load_catalog_meta.cache_clear()
+    assert cat.load_catalog_meta() == {}
+
+
+def test_load_catalog_meta_bad_yaml(monkeypatch: pytest.MonkeyPatch) -> None:
+    from tac_decoding import catalog as cat
+
+    class FakeData:
+        def is_file(self) -> bool:
+            return True
+
+        def read_text(self, encoding: str = "utf-8") -> str:
+            return ":\n  - bad: ["
+
+    class FakeRoot:
+        def joinpath(self, *parts: str) -> FakeData:
+            return FakeData()
+
+    monkeypatch.setattr(cat.resources, "files", lambda _name: FakeRoot())
+    cat.load_catalog_meta.cache_clear()
+    assert cat.load_catalog_meta() == {}

@@ -118,6 +118,11 @@ def reload_catalog_meta() -> dict[str, dict[str, str]]:
     """
     Clear the catalog-meta cache and reload (tests).
 
+    Returns
+    -------
+    dict[str, dict[str, str]]
+        Fresh meta rows keyed by uppercase token.
+
     Examples
     --------
     >>> 1 + 1  # docstring smoke (reload_catalog_meta)
