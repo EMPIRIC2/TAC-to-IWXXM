@@ -722,6 +722,10 @@
   source access/tier). Descriptions are natural-language **what / why / severity** with
   section-level citations or explicit **Source section unavailable**. Prefer public primary
   `source_url`; label paywall; expose `source_locator` + `source_access`. Distinct from #996.
+- **EV-1281 deepen (F7.v / #1281)**: Conversion / Dissemination / Decoding rule-catalog
+  families apply Type / Level / Access / Sort **client-side** from
+  `GET /rule-catalogs` fields only (no invented defaults; no new query params). TAC and
+  IWXXM validation continue to use the lint-issue catalog API filters.
 - **EV-933 deepen (F7.w / #933)**: **ConversionProfile editor** for operators and admins —
   rule-pack CRUD (absorbed #915), read-only contract inspector (ADR-038 fields), then
   **signed / operator-scoped overlays** persisted on product Postgres with JWT ownership

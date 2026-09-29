@@ -182,6 +182,7 @@ export function compareEntries(
 
 /**
  * Whether a catalog row matches the selected level filter.
+ * Missing severity is not treated as info.
  * @example
  * const _ = true;
  */
@@ -189,10 +190,89 @@ export function entryMatchesLevelFilter(
   entry: LintIssueCatalogEntry,
   levelKey: string | null,
 ): boolean {
-  if (levelKey && (entry.severity || '').toLowerCase() !== levelKey) {
-    return false;
+  if (!levelKey) {
+    return true;
   }
-  return true;
+  const severity = (entry.severity || '').toLowerCase();
+  return severity.length > 0 && severity === levelKey;
+}
+
+/**
+ * Whether a catalog row matches the selected type filter.
+ * Missing type is not treated as other.
+ * @example
+ * const _ = true;
+ */
+export function entryMatchesTypeFilter(
+  entry: LintIssueCatalogEntry,
+  typeKey: string | null,
+): boolean {
+  if (!typeKey) {
+    return true;
+  }
+  const issueType = (entry.issue_type || '').toLowerCase();
+  return issueType.length > 0 && issueType === typeKey;
+}
+
+/**
+ * Whether a catalog row matches the selected access filter.
+ * Missing access is not treated as public.
+ * @example
+ * const _ = true;
+ */
+export function entryMatchesAccessFilter(
+  entry: LintIssueCatalogEntry,
+  accessKey: string | null,
+): boolean {
+  if (!accessKey) {
+    return true;
+  }
+  const access = (entry.source_access || '').toLowerCase();
+  return access.length > 0 && access === accessKey;
+}
+
+type RuleCatalogItemLike = {
+  id: string;
+  title: string;
+  summary?: string | null;
+  severity?: string | null;
+  tags?: string[] | null;
+};
+
+/**
+ * Map a rule-catalog API row without inventing type, access, or severity.
+ *
+ * @param item - GET /rule-catalogs item
+ * @param family - Active family filter (conversion | dissemination | decoding)
+ * @returns Row shaped for the shared catalog table
+ * @example
+ * const _ = true;
+ */
+export function mapRuleCatalogItem(
+  item: RuleCatalogItemLike,
+  family: 'conversion' | 'dissemination' | 'decoding',
+): LintIssueCatalogEntry {
+  const severityRaw = typeof item.severity === 'string' ? item.severity.trim() : '';
+  return {
+    code: item.id,
+    // Empty string = severity absent (do not invent "info").
+    severity: severityRaw,
+    message_template: item.summary || item.title,
+    product: null,
+    tags: item.tags ?? [],
+    family,
+    source_id: null,
+    source_url: null,
+    source_attribution: null,
+    source_type: null,
+    status: null,
+    semantic_identifier: null,
+    last_verified: null,
+    replacement_url: null,
+    issue_type: null,
+    source_access: null,
+    source_locator: null,
+  };
 }
 
 /**
@@ -231,25 +311,9 @@ export function LintValidationCatalogPage() {
         familyFilter === 'decoding'
       ) {
         const response = await fetchRuleCatalog({ family: familyFilter });
-        const mapped: LintIssueCatalogEntry[] = (response.items ?? []).map((item) => ({
-          code: item.id,
-          severity: (item.severity as LintIssueCatalogEntry['severity']) || 'info',
-          message_template: item.summary || item.title,
-          product: null,
-          tags: item.tags ?? [],
-          family: familyFilter,
-          source_id: null,
-          source_url: null,
-          source_attribution: null,
-          source_type: null,
-          status: null,
-          semantic_identifier: null,
-          last_verified: null,
-          replacement_url: null,
-          issue_type: 'other',
-          source_access: 'public',
-          source_locator: null,
-        }));
+        const mapped = (response.items ?? []).map((item) =>
+          mapRuleCatalogItem(item, familyFilter),
+        );
         setEntries(mapped);
         return;
       }
@@ -299,11 +363,16 @@ export function LintValidationCatalogPage() {
 
   const sorted = useMemo(() => {
     const levelKey = levelFilter === 'all' ? null : levelFilter;
-    const filtered = entries.filter((entry) =>
-      entryMatchesLevelFilter(entry, levelKey),
+    const typeKey = issueTypeFilter === 'all' ? null : issueTypeFilter;
+    const accessKey = sourceAccessFilter === 'all' ? null : sourceAccessFilter;
+    const filtered = entries.filter(
+      (entry) =>
+        entryMatchesLevelFilter(entry, levelKey) &&
+        entryMatchesTypeFilter(entry, typeKey) &&
+        entryMatchesAccessFilter(entry, accessKey),
     );
     return [...filtered].sort((a, b) => compareEntries(a, b, sortBy));
-  }, [entries, levelFilter, sortBy]);
+  }, [entries, levelFilter, issueTypeFilter, sourceAccessFilter, sortBy]);
 
   return (
     <div
@@ -521,7 +590,7 @@ export function LintValidationCatalogPage() {
                             {entry.issue_type ?? '—'}
                           </td>
                           <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
-                            {entry.severity}
+                            {entry.severity || '—'}
                           </td>
                           <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300">
                             <div className="space-y-1">
