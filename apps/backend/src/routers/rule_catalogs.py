@@ -16,6 +16,9 @@ class RuleCatalogItem(BaseModel):
     """
     One package-owned trust-catalog row.
 
+    Additive optional metadata (#1308 / EV-1307): ``issue_type``, ``source_*``,
+    ``conform_note``. Null/omit when unknown; clients must not invent defaults.
+
     Attributes
     ----------
     _ : object
@@ -27,6 +30,12 @@ class RuleCatalogItem(BaseModel):
     summary: str = ""
     severity: str | None = None
     tags: list[str] = Field(default_factory=list)
+    issue_type: str | None = None
+    source_url: str | None = None
+    source_attribution: str | None = None
+    source_access: str | None = None
+    source_locator: str | None = None
+    conform_note: str | None = None
 
 
 class RuleCatalogResponse(BaseModel):

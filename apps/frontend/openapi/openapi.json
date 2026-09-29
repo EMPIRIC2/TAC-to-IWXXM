@@ -5483,11 +5483,33 @@
         "type": "object"
       },
       "RuleCatalogItem": {
-        "description": "One package-owned trust-catalog row.\n\nAttributes\n----------\n_ : object\n    See implementation.",
+        "description": "One package-owned trust-catalog row.\n\nAdditive optional metadata (#1308 / EV-1307): ``issue_type``, ``source_*``,\n``conform_note``. Null/omit when unknown; clients must not invent defaults.\n\nAttributes\n----------\n_ : object\n    See implementation.",
         "properties": {
+          "conform_note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Conform Note"
+          },
           "id": {
             "title": "Id",
             "type": "string"
+          },
+          "issue_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Issue Type"
           },
           "severity": {
             "anyOf": [
@@ -5499,6 +5521,50 @@
               }
             ],
             "title": "Severity"
+          },
+          "source_access": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Access"
+          },
+          "source_attribution": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Attribution"
+          },
+          "source_locator": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Locator"
+          },
+          "source_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Url"
           },
           "summary": {
             "default": "",
