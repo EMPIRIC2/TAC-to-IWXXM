@@ -20,5 +20,6 @@ still land here so they are not appended to `docs/context-brief.md`.
 | [selectable-profiles.md](selectable-profiles.md) | EV-1267-selectable-profiles | active |
 | [product-matrices.md](product-matrices.md) | EV-1265-product-matrices | active |
 | [operational-tac-delta.md](operational-tac-delta.md) | EV-1266-operational-tac-delta | active |
+| [sigmet-example-validate.md](sigmet-example-validate.md) | EV-1159-sigmet-example-validate | active |
 
 Earlier sibling briefs in this directory predate this index.

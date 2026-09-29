@@ -40,6 +40,9 @@ IGNORE_GHSA=(
   "GHSA-fph4-wmhf-6fwf"
   "GHSA-jqff-g426-hqxp"
   "GHSA-x5fp-wj9c-mxmx"
+  # undici via jsdom (dev/test) — EV-1159 push unblock 2026-09-29
+  "GHSA-3wwx-pv8p-q78v"
+  "GHSA-qw65-cvwx-89v3"
 )
 GHSAS=()
 while IFS= read -r id; do

@@ -75,6 +75,56 @@ def _convert_output_policy_id(profile: str) -> str:
     return resolve_validation_policies(profile or "annex3").iwxxm_output_policy_id
 
 
+def _output_validation_orch_layers() -> list[ValidationLayer]:
+    """
+    Layers for post-convert IWXXM soft validation (exclude TAC input + XSD/SCH).
+
+    AIRPORT_ICAO / TAC_SYNTAX are METAR/SPECI input checks (already gated before
+    convert). XML_SCHEMA / SCHEMATRON run via ``_call_iwxxm_validate``.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (_output_validation_orch_layers)
+    2
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    skip = {
+        ValidationLayer.AIRPORT_ICAO,
+        ValidationLayer.TAC_SYNTAX,
+        ValidationLayer.XML_SCHEMA,
+        ValidationLayer.SCHEMATRON,
+    }
+    return [layer for layer in ValidationLayer if layer not in skip]
+
+
+def _initial_layers_passed(product: str | None) -> list[str]:
+    """
+    Layers already satisfied before post-convert soft validation.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (_initial_layers_passed)
+    2
+
+    Parameters
+    ----------
+    product : object
+        Argument ``product``.
+
+    Returns
+    -------
+    object
+        Return value.
+    """
+    if api_surface._product_uses_metar_tac_layers(product):
+        return [ValidationLayer.AIRPORT_ICAO.value, ValidationLayer.TAC_SYNTAX.value]
+    return []
+
+
 router = APIRouter(prefix="/api/v1", tags=["Conversion"])
 
 
@@ -468,21 +518,117 @@ class _ConvertAccumulator:
             return
         for layer_result in getattr(aggregated_result, "results", []):
             for validation_issue in getattr(layer_result, "issues", []):
-                severity = ConversionIssueSeverity.WARNING
-                level = str(getattr(validation_issue, "level", "")).lower()
-                if level == "error" or level == "critical":
-                    severity = ConversionIssueSeverity.ERROR
-                elif level == "info":
-                    severity = ConversionIssueSeverity.INFO
-                self.add_issue(
-                    source=source,
-                    message=str(getattr(validation_issue, "message", "Validation issue")),
-                    severity=severity,
-                    hint=getattr(validation_issue, "suggestion", None),
-                    code=getattr(validation_issue, "code", None),
-                    layer=str(getattr(validation_issue, "layer", "")) or None,
-                    location=getattr(validation_issue, "location", None),
-                )
+                self._append_validation_issue(source, validation_issue)
+
+    def add_validation_issue_list(self, source: str, issues: list[object] | tuple[object, ...] | None) -> None:
+        """
+        Flatten a flat list of validation findings onto convert ``issues[]`` (#1159).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (add_validation_issue_list)
+        2
+
+        Parameters
+        ----------
+        source : object
+            Argument ``source``.
+        issues : object
+            Argument ``issues``.
+        """
+        if not issues:
+            return
+        for validation_issue in issues:
+            self._append_validation_issue(source, validation_issue)
+
+    def _append_validation_issue(self, source: str, validation_issue: object) -> None:
+        """
+        Map one orchestrator or package finding onto a ConversionIssue.
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (_append_validation_issue)
+        2
+
+        Parameters
+        ----------
+        source : object
+            Argument ``source``.
+        validation_issue : object
+            Argument ``validation_issue``.
+        """
+        severity = ConversionIssueSeverity.WARNING
+        level = str(getattr(validation_issue, "level", None) or getattr(validation_issue, "severity", "") or "").lower()
+        if "." in level:
+            level = level.rsplit(".", 1)[-1]
+        if level in {"error", "critical"}:
+            severity = ConversionIssueSeverity.ERROR
+        elif level == "info":
+            severity = ConversionIssueSeverity.INFO
+        self.add_issue(
+            source=source,
+            message=str(getattr(validation_issue, "message", "Validation issue")),
+            severity=severity,
+            hint=getattr(validation_issue, "suggestion", None) or getattr(validation_issue, "hint", None),
+            code=getattr(validation_issue, "code", None),
+            layer=str(getattr(validation_issue, "layer", "") or "") or None,
+            location=getattr(validation_issue, "location", None),
+        )
+
+    def emit_output_validation_soft_warning(
+        self,
+        *,
+        source: str,
+        label: str,
+        pkg_out: object,
+        validation_result: object,
+    ) -> dict[str, Any]:
+        """
+        Emit aggregate OUTPUT_VALIDATION_WARNING plus flattened details (#1159).
+
+        Examples
+        --------
+        >>> 1 + 1  # docstring smoke (emit_output_validation_soft_warning)
+        2
+
+        Parameters
+        ----------
+        source : object
+            Argument ``source``.
+        label : object
+            Argument ``label``.
+        pkg_out : object
+            Argument ``pkg_out``.
+        validation_result : object
+            Argument ``validation_result``.
+
+        Returns
+        -------
+        object
+            Stats dict for translation logging.
+        """
+        orch_issues = list(getattr(validation_result, "all_issues", None) or [])
+        pkg_issues = list(getattr(pkg_out, "issues", None) or [])
+        # Package ``ok`` already ignores non-blocking warnings; only surface errors.
+        pkg_errors = [
+            issue for issue in pkg_issues if str(getattr(issue, "severity", "")).lower() in {"error", "critical"}
+        ]
+        detail_count = len(orch_issues) + len(pkg_errors)
+        warning_msg = f"{label}: IWXXM validation issues found - {detail_count} issues"
+        logger.warning(warning_msg)
+        self.add_issue(
+            source=source,
+            message=warning_msg,
+            severity=ConversionIssueSeverity.WARNING,
+            hint="Output converted, but IWXXM validation reported issues.",
+            code="OUTPUT_VALIDATION_WARNING",
+            layer="iwxxm_output",
+        )
+        self.add_validation_issue_list(source, orch_issues)
+        self.add_validation_issue_list(source, pkg_errors)
+        return {
+            "validation_issues": [str(issue) for issue in (orch_issues + pkg_errors)[:10]],
+        }
 
     def emit_recent_wx_issues(self, source: str, norm_warnings: list[dict[str, Any]]) -> None:
         """
@@ -679,7 +825,7 @@ async def _process_json_metars(
                         code="SOFT_PREVIEW_PARTIAL",
                     )
 
-                validation_layers_passed = [ValidationLayer.AIRPORT_ICAO, ValidationLayer.TAC_SYNTAX]
+                validation_layers_passed = [ValidationLayer(layer) for layer in _initial_layers_passed(runtime.product)]
                 if runtime.validation_orchestrator:
                     pkg_out = api_surface._call_iwxxm_validate(
                         iwxxm_content,
@@ -694,11 +840,7 @@ async def _process_json_metars(
                     validation_result = runtime.validation_orchestrator.validate(
                         iwxxm_content,
                         iwxxm_version=runtime.iwxxm_version,
-                        layers=[
-                            ValidationLayer.XML_WELLFORMED,
-                            ValidationLayer.GML_REFERENCES,
-                            ValidationLayer.WMO_CODELISTS,
-                        ],
+                        layers=_output_validation_orch_layers(),
                     )
                     if pkg_out.ok and validation_result.passed:
                         validation_layers_passed.extend(
@@ -709,6 +851,14 @@ async def _process_json_metars(
                                 ValidationLayer.GML_REFERENCES,
                                 ValidationLayer.WMO_CODELISTS,
                             ]
+                        )
+                    else:
+                        # Align JSON metars[] path with manual/upload soft-warn visibility (#1159).
+                        acc.emit_output_validation_soft_warning(
+                            source=metar_name,
+                            label=metar_name,
+                            pkg_out=pkg_out,
+                            validation_result=validation_result,
                         )
 
                 result_xml = runtime.finalize_exchange_xml(iwxxm_content, metar_text.strip())
@@ -965,7 +1115,7 @@ async def _process_manual_entries(
                 )
 
             duration_ms = int((time.perf_counter() - start_time) * 1000)
-            layers_passed = [ValidationLayer.AIRPORT_ICAO.value, ValidationLayer.TAC_SYNTAX.value]
+            layers_passed = _initial_layers_passed(runtime.product)
             validation_errors_dict: dict[str, Any] = {}
 
             if runtime.validate_output and runtime.validation_orchestrator:
@@ -980,11 +1130,7 @@ async def _process_manual_entries(
                         product=runtime.product,
                         output_policy_id=_convert_output_policy_id(runtime.emit_profile or "annex3"),
                     )
-                    orch_layers = [
-                        layer
-                        for layer in ValidationLayer
-                        if layer not in (ValidationLayer.XML_SCHEMA, ValidationLayer.SCHEMATRON)
-                    ]
+                    orch_layers = _output_validation_orch_layers()
                     validation_result = runtime.validation_orchestrator.validate_complete(
                         tac_text=manual_entry,
                         xml_content=xml_text,
@@ -997,22 +1143,12 @@ async def _process_manual_entries(
                             if layer.value not in layers_passed:
                                 layers_passed.append(layer.value)
                     else:
-                        warning_msg = (
-                            f"{manual_source}: IWXXM validation issues found - "
-                            f"{len(validation_result.all_issues)} issues"
-                        )
-                        logger.warning(warning_msg)
-                        acc.add_issue(
+                        validation_errors_dict = acc.emit_output_validation_soft_warning(
                             source=manual_source,
-                            message=warning_msg,
-                            severity=ConversionIssueSeverity.WARNING,
-                            hint="Output converted, but IWXXM validation reported issues.",
-                            code="OUTPUT_VALIDATION_WARNING",
-                            layer="iwxxm_output",
+                            label=manual_source,
+                            pkg_out=pkg_out,
+                            validation_result=validation_result,
                         )
-                        validation_errors_dict = {
-                            "validation_issues": [str(issue) for issue in validation_result.all_issues[:10]]
-                        }
                 except Exception as ve:
                     logger.warning(f"{manual_source}: Output validation failed: {ve}")
                     acc.add_issue(
@@ -1249,7 +1385,7 @@ async def _process_uploaded_files(
                 )
 
             duration_ms = int((time.perf_counter() - start_time) * 1000)
-            layers_passed = [ValidationLayer.AIRPORT_ICAO.value, ValidationLayer.TAC_SYNTAX.value]
+            layers_passed = _initial_layers_passed(runtime.product)
             validation_errors_dict: dict[str, Any] = {}
 
             if runtime.validate_output and runtime.validation_orchestrator:
@@ -1264,11 +1400,7 @@ async def _process_uploaded_files(
                         product=runtime.product,
                         output_policy_id=_convert_output_policy_id(runtime.emit_profile or "annex3"),
                     )
-                    orch_layers = [
-                        layer
-                        for layer in ValidationLayer
-                        if layer not in (ValidationLayer.XML_SCHEMA, ValidationLayer.SCHEMATRON)
-                    ]
+                    orch_layers = _output_validation_orch_layers()
                     validation_result = runtime.validation_orchestrator.validate_complete(
                         tac_text=data.strip(),
                         xml_content=xml_text,
@@ -1277,24 +1409,16 @@ async def _process_uploaded_files(
                         stop_on_error=False,
                     )
                     if pkg_out.ok and validation_result.is_valid:
-                        layers_passed.extend(layer.value for layer in ValidationLayer)
+                        layers_passed.extend(
+                            layer.value for layer in ValidationLayer if layer.value not in layers_passed
+                        )
                     else:
-                        warning_msg = (
-                            f"{upload.filename}: IWXXM validation issues found - "
-                            f"{len(validation_result.all_issues)} issues"
-                        )
-                        logger.warning(warning_msg)
-                        acc.add_issue(
+                        validation_errors_dict = acc.emit_output_validation_soft_warning(
                             source=source_name,
-                            message=warning_msg,
-                            severity=ConversionIssueSeverity.WARNING,
-                            hint="Output converted, but IWXXM validation reported issues.",
-                            code="OUTPUT_VALIDATION_WARNING",
-                            layer="iwxxm_output",
+                            label=upload.filename or source_name,
+                            pkg_out=pkg_out,
+                            validation_result=validation_result,
                         )
-                        validation_errors_dict = {
-                            "validation_issues": [str(issue) for issue in validation_result.all_issues[:10]]
-                        }
                 except Exception as ve:
                     logger.warning(f"{upload.filename}: Output validation failed: {ve}")
                     acc.add_issue(
