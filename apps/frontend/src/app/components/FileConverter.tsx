@@ -2769,7 +2769,16 @@ export function FileConverter({
                           type="button"
                           data-testid={`input-mode-${value}`}
                           disabled={isReadOnly}
-                          onClick={() => setInputMode(value)}
+                          onClick={() => {
+                            if (value === 'validate_iwxxm') {
+                              const xml =
+                                convertedFiles[0]?.convertedContent?.trim() || '';
+                              if (xml) {
+                                setManualInput(xml);
+                              }
+                            }
+                            setInputMode(value);
+                          }}
                           className={`px-2 py-1 text-xs whitespace-nowrap ${
                             inputMode === value
                               ? 'bg-blue-600 text-white'

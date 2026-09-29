@@ -447,6 +447,18 @@ EV-059.
 - **Source**: UJ-032; [#780](https://github.com/EMPIRIC2/TAC-to-IWXXM/issues/780);
   S021 / EV-016 (E16-5..E16-9)
 
+### TC-F7-044: Soft OUTPUT_VALIDATION_WARNING visibility (UJ-032 deepen / #1159)
+
+- **Level**: T0 backend unit + T0 FE Vitest; optional T2/T3 e2e when validate handoff changes.
+- **Objective**: When convert returns soft IWXXM output validation findings, the operator sees code / message / location (or equivalent) for each finding—not only a count. SIGMET Examples either convert without soft warn or list the issues. Validate IWXXM on those examples succeeds or fails with actionable diagnostics.
+- **Pass criteria**:
+  1. Pass/fail matrix for every `EXAMPLES` row (convert + IWXXM validate) is recorded.
+  2. Soft-warning response includes flattened issues (or nested details) the FE renders.
+  3. Regression test covers soft-warning visibility (backend and/or Vitest).
+  4. Root cause recorded in the context brief.
+- **Out of scope**: Weakening Schematron/XSD; new products; dissemination; promoting `stage` to `main`.
+- **Source**: F7 deepen EV-1159 / #1159; deepen UJ-032 / TC-F7-008
+
 ### F7 UI↔API connection integration
 
 Cross-layer coverage for workbench connection points (not only isolated unit/TC modules):

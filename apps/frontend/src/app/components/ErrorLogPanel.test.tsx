@@ -143,4 +143,34 @@ describe('ErrorLogPanel', () => {
     );
     expect(container).toBeEmptyDOMElement();
   });
+
+  it('shows soft OUTPUT_VALIDATION_WARNING and flattened details (TC-F7-044)', () => {
+    render(
+      <ErrorLogPanel
+        log={{
+          errors: [],
+          issues: [
+            {
+              source: 'manual_input',
+              message: 'manual_input: IWXXM validation issues found - 1 issues',
+              severity: 'warning',
+              hint: 'Output converted, but IWXXM validation reported issues.',
+              code: 'OUTPUT_VALIDATION_WARNING',
+            },
+            {
+              source: 'manual_input',
+              message: 'Broken GML href',
+              severity: 'error',
+              hint: 'Fix the xlink:href target.',
+              code: 'GML_HREF_MISSING',
+              layer: 'gml_references',
+            },
+          ],
+        }}
+      />,
+    );
+    expect(screen.getByText(/Code: OUTPUT_VALIDATION_WARNING/)).toBeInTheDocument();
+    expect(screen.getByText(/Broken GML href/)).toBeInTheDocument();
+    expect(screen.getByText(/Code: GML_HREF_MISSING/)).toBeInTheDocument();
+  });
 });
