@@ -10,10 +10,12 @@ import {
   PRIVACY_SCHEMA_VERSION,
   STORAGE_INVENTORY,
   acknowledgePrivacyNotice,
+  acknowledgeSiteTerms,
   applyGpcToPreferences,
   clearPrivacyPreferences,
   defaultPrivacyPreferences,
   detectGlobalPrivacyControl,
+  hasAcknowledgedSiteTerms,
   loadPrivacyPreferences,
   savePrivacyPreferences,
   shouldShowPrivacyNotice,
@@ -217,6 +219,19 @@ describe('privacyPreferences (TC-F22)', () => {
       const loaded = loadPrivacyPreferences();
       expect(loaded.schemaVersion).toBe(PRIVACY_SCHEMA_VERSION);
       expect(loaded.workHistoryLocal).toBe(true);
+      expect(loaded.termsAcknowledgedAt).toBeNull();
+    });
+
+    it('persists site-terms acknowledgement and ignores blank timestamps', () => {
+      expect(hasAcknowledgedSiteTerms()).toBe(false);
+      const saved = acknowledgeSiteTerms();
+      expect(saved.termsAcknowledgedAt).toEqual(expect.any(String));
+      expect(hasAcknowledgedSiteTerms()).toBe(true);
+      localStorage.setItem(
+        PRIVACY_PREFS_STORAGE_KEY,
+        JSON.stringify({ ...saved, termsAcknowledgedAt: '   ' }),
+      );
+      expect(hasAcknowledgedSiteTerms()).toBe(false);
     });
 
     it('returns false when navigator is unavailable', () => {

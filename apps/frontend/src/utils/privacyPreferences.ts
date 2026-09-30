@@ -39,6 +39,11 @@ export interface PrivacyPreferences {
   noticeAcknowledgedAt: string | null;
   /** Schema version for which the notice was acknowledged. */
   noticeSchemaVersion: number | null;
+  /**
+   * ISO timestamp when the public quality disclaimer and site terms were
+   * acknowledged. Null until the operator continues past the gate.
+   */
+  termsAcknowledgedAt: string | null;
 }
 
 /**
@@ -105,6 +110,7 @@ export function defaultPrivacyPreferences(): PrivacyPreferences {
     targetedAdvertisingOptOut: false,
     noticeAcknowledgedAt: null,
     noticeSchemaVersion: null,
+    termsAcknowledgedAt: null,
   };
 }
 
@@ -136,6 +142,10 @@ function normalizePrivacyPreferences(input: unknown): PrivacyPreferences {
         : null,
     noticeSchemaVersion:
       typeof input.noticeSchemaVersion === 'number' ? input.noticeSchemaVersion : null,
+    termsAcknowledgedAt:
+      typeof input.termsAcknowledgedAt === 'string' && input.termsAcknowledgedAt.trim()
+        ? input.termsAcknowledgedAt
+        : null,
   };
 }
 
@@ -199,6 +209,26 @@ export function savePrivacyPreferences(
     navigatorGpc: readNavigatorGlobalPrivacyControl(),
   });
   return applyGpcToPreferences(next, gpcEnabled);
+}
+
+/**
+ * Whether the operator has acknowledged the public site terms.
+ * @example
+ * const _ = true;
+ */
+export function hasAcknowledgedSiteTerms(): boolean {
+  return readStoredPreferences().termsAcknowledgedAt != null;
+}
+
+/**
+ * Record site-terms acknowledgement in the privacy preference store.
+ * @example
+ * const _ = true;
+ */
+export function acknowledgeSiteTerms(): PrivacyPreferences {
+  return savePrivacyPreferences({
+    termsAcknowledgedAt: new Date().toISOString(),
+  });
 }
 
 /**

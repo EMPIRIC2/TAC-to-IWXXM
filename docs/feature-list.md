@@ -28,7 +28,7 @@
 | F18 | EDIS → RTH Washington dissemination | Done | Product | S019 / EV-014; #6; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
 | F19 | AMHS / SWIM / AFS adapters | Done | Product | S019 / EV-014; S050 / EV-042 hide; **restore** EV-091 / #898; **deepen** EV-1150 beta surfacing (ADR-043) |
 | F20 | TAF + SPECI quality bar (F15 sequel) | Done | Product | S020 / EV-015; #735/#734; #778; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 |
-| F21 | Public convert + optional Auth for long-term storage | Amended | Product | S023 #783; **S038 / EV-031 / F31** amend; **deepen** S057 / EV-048 #951 OpenAPI/error copy hygiene |
+| F21 | Public convert + optional Auth for long-term storage | Amended | Product | S023 #783; **S038 / EV-031 / F31** amend; **deepen** S057 / EV-048 #951 OpenAPI/error copy hygiene; **deepen EV-1315 / #1315**: quality disclaimer and site-terms gate before the public shell (UJ-084) |
 | F22 | Privacy preference center (Solution A + GPC) | Implemented | Product | S023 / EV-017; #783; **deepen** F31 storage gates |
 | F23 | SIGMET family quality bar (general + VA) | Done | Product | S025 / EV-019; #733/#739; PR #792; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 phenomena membership; **deepen** EV-074 / #1043 CA ops validate-first (no TAC convert) |
 | F24 | AIRMET quality bar | Done | Product | S026 / EV-020; #731; PR #793; **deepen** S055 / EV-046 #889; **deepen** S059 / EV-050 #959 underscore phenomena fixtures |
@@ -1584,7 +1584,11 @@
      only filled primary CTA; **Convert&Send** uses outline (or clearly muted non-fill) so it
      does not compete as a second solid CTA. Upload / Disseminate / Download stay outline;
      Clear stays ghost.
-- **Out of scope**: Forced login for convert; CMP; selling personal data
+  8. **Site terms gate (EV-1315 / #1315)**: The public shell (convert, history, quality
+     metrics, rule catalogs, dissemination ops) stays hidden until the operator checks
+     the quality disclaimer and continues. Acknowledgement is stored with privacy
+     preferences. Login, registration, and password reset stay outside that gate.
+- **Out of scope**: Forced login for convert; CMP; selling personal data; counsel-written terms
 - **S057 / EV-048 deepen (#951 — public OpenAPI / client error copy)**: Public OpenAPI
   path/operation summaries, parameter/schema `description` fields, runtime `/docs` / Redoc
   text, and client-facing `detail`/error messages must use operator-friendly language —
