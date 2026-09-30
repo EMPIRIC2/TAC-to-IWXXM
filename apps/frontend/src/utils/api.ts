@@ -401,6 +401,8 @@ export async function convertBulletin(params: {
   lint?: boolean;
   /** When true, fold decode residuals into remarks/HRT (omit for profile default). */
   propagateResidualsToRemarks?: boolean;
+  /** National extension tokens (for example IWXXM_CA). */
+  extensions?: string[];
   accessToken?: string;
   signal?: AbortSignal;
 }): Promise<ConvertBulletinResponse> {
@@ -433,10 +435,22 @@ export async function convertBulletin(params: {
   } else if (params.propagateResidualsToRemarks === false) {
     formData.append('propagate_residuals_to_remarks', 'false');
   }
+  if (params.extensions?.length) {
+    for (const token of params.extensions) {
+      if (token.trim()) {
+        formData.append('extensions', token.trim());
+      }
+    }
+  }
+  const bearer = params.accessToken?.trim();
+  const headers: HeadersInit | undefined = bearer
+    ? { Authorization: `Bearer ${bearer}` }
+    : undefined;
   const response = await withTimeout(
     fetch(apiUrl('/convert-bulletin'), {
       method: 'POST',
       body: formData,
+      headers,
       signal: params.signal,
     }),
     60000,

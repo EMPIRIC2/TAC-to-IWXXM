@@ -213,12 +213,12 @@ import {
   truncateTacSnippet,
 } from '/utils/resultTraceability';
 import {
+  convertFieldsFromParamsBar,
   isValidBulletinId,
   isValidIssuingCenter,
-  mapOnErrorToStopOnError,
-  mapStrictToValidation,
   type ConvertLogLevel,
   type ConvertOnError,
+  type ConvertParamsBar,
 } from '/utils/convertParams';
 import {
   BULLETIN_ID_FIELD_ERROR,
@@ -494,6 +494,33 @@ interface ConversionParams {
   includeNilReasons: boolean;
   onError: OnErrorBehavior;
   logLevel: LogLevel;
+}
+
+/**
+ * Function `snapshotExportContext`.
+ */
+function paramsBarFromState(
+  params: ConversionParams,
+  reportVariant: string,
+): ConvertParamsBar {
+  return {
+    bulletinId: params.bulletinId,
+    issuingCenter: params.issuingCenter,
+    reportVariant,
+    profile: params.profile,
+    exchangeProfile: params.exchangeProfile,
+    presetId: params.presetId,
+    conversionLibraryId: params.conversionLibraryId,
+    tacValidationLibraryId: params.tacValidationLibraryId,
+    iwxxmValidationLibraryId: params.iwxxmValidationLibraryId,
+    disseminationLibraryId: params.disseminationLibraryId,
+    decodingLibraryId: params.decodingLibraryId,
+    iwxxmVersion: params.iwxxmVersion,
+    strictValidation: params.strictValidation,
+    includeNilReasons: params.includeNilReasons,
+    onError: params.onError as ConvertOnError,
+    logLevel: params.logLevel as ConvertLogLevel,
+  };
 }
 
 /**
@@ -1398,6 +1425,9 @@ export function FileConverter({
           exchangeProfile: conversionParams.exchangeProfile,
           iwxxmVersion: conversionParams.iwxxmVersion,
           lint: true,
+          propagateResidualsToRemarks: propagateResiduals,
+          extensions: nationalExtensionsForProfile(conversionParams.profile),
+          ...(accessToken?.trim() ? { accessToken: accessToken.trim() } : {}),
         });
         const meta = bulletinResponse.bulletin_meta;
         setBulletinSummary(
@@ -1477,44 +1507,18 @@ export function FileConverter({
         softPreview,
       });
 
-      const { validateOutput, validationLevel } = mapStrictToValidation(
-        conversionParams.strictValidation,
-        softPreview,
+      const barFields = convertFieldsFromParamsBar(
+        paramsBarFromState(conversionParams, activeReportVariant),
+        { softPreview, propagateResidualsToRemarks: propagateResiduals },
       );
 
       const response = await callBackendConversion({
         manualText: manualText || undefined,
         files: filesToConvert.length > 0 ? filesToConvert : undefined,
         product: resolvedProduct,
-        profile: conversionParams.profile,
-        presetId: optionalFormField(conversionParams.presetId),
-        conversionLibraryId: optionalFormField(conversionParams.conversionLibraryId),
-        tacValidationLibraryId: optionalFormField(
-          conversionParams.tacValidationLibraryId,
-        ),
-        iwxxmValidationLibraryId: optionalFormField(
-          conversionParams.iwxxmValidationLibraryId,
-        ),
-        disseminationLibraryId: optionalFormField(
-          conversionParams.disseminationLibraryId,
-        ),
-        decodingLibraryId: optionalFormField(conversionParams.decodingLibraryId),
-        reportVariant: optionalFormField(activeReportVariant),
-        iwxxmVersion: conversionParams.iwxxmVersion,
-        validateOutput,
-        validationLevel,
-        stopOnError: mapOnErrorToStopOnError(
-          conversionParams.onError as ConvertOnError,
-        ),
-        bulletinId: optionalFormField(conversionParams.bulletinId),
-        issuingCenter: optionalFormField(conversionParams.issuingCenter),
-        includeNilReasons: conversionParams.includeNilReasons,
-        logLevel: conversionParams.logLevel,
-        preview: softPreview,
-        propagateResidualsToRemarks: propagateResiduals,
+        ...barFields,
         extensions: nationalExtensionsForProfile(conversionParams.profile),
         exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
-        exchangeProfile: conversionParams.exchangeProfile,
         ...(accessToken?.trim() ? { accessToken: accessToken.trim() } : {}),
         ...convertOverlayFields(conversionParams.overlayId, accessToken),
       });
@@ -2232,27 +2236,12 @@ export function FileConverter({
         const response = await callBackendConversion({
           manualText: manualInput.trim(),
           product: liveAssistProduct,
-          profile: conversionParams.profile,
-          presetId: optionalFormField(conversionParams.presetId),
-          conversionLibraryId: optionalFormField(conversionParams.conversionLibraryId),
-          tacValidationLibraryId: optionalFormField(
-            conversionParams.tacValidationLibraryId,
+          ...convertFieldsFromParamsBar(
+            paramsBarFromState(conversionParams, activeReportVariant),
+            { softPreview: true, propagateResidualsToRemarks: propagateResiduals },
           ),
-          iwxxmValidationLibraryId: optionalFormField(
-            conversionParams.iwxxmValidationLibraryId,
-          ),
-          disseminationLibraryId: optionalFormField(
-            conversionParams.disseminationLibraryId,
-          ),
-          decodingLibraryId: optionalFormField(conversionParams.decodingLibraryId),
-          reportVariant: optionalFormField(activeReportVariant),
-          iwxxmVersion: conversionParams.iwxxmVersion,
-          validateOutput: false,
-          preview: true,
-          propagateResidualsToRemarks: propagateResiduals,
           extensions: nationalExtensionsForProfile(conversionParams.profile),
           exchangeOutput: exchangeOutputForProfile(conversionParams.profile),
-          exchangeProfile: conversionParams.exchangeProfile,
           ...(accessToken?.trim() ? { accessToken: accessToken.trim() } : {}),
           ...convertOverlayFields(conversionParams.overlayId, accessToken),
           signal,
@@ -2297,17 +2286,8 @@ export function FileConverter({
     [
       manualInput,
       liveAssistProduct,
-      conversionParams.profile,
-      conversionParams.iwxxmVersion,
-      conversionParams.presetId,
-      conversionParams.conversionLibraryId,
-      conversionParams.tacValidationLibraryId,
-      conversionParams.iwxxmValidationLibraryId,
-      conversionParams.disseminationLibraryId,
-      conversionParams.decodingLibraryId,
+      conversionParams,
       activeReportVariant,
-      conversionParams.exchangeProfile,
-      conversionParams.overlayId,
       accessToken,
       propagateResiduals,
     ],

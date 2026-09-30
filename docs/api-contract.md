@@ -162,13 +162,33 @@ the same public convert path. Work history: guest → IndexedDB; logged-in → s
 - **`product=vona`**: Volcano Observatory Notice for Aviation →
   `iwxxm:VolcanoObservatoryNoticeForAviation` (F32 / #741). Canonical wire value is **`vona`**.
   Unknown aliases → `unknown_product` **400**.
-- **F7 / ADR-023**: Hard Convert from FileConverter sends `bulletin_id`, `issuing_center`,
-  `stop_on_error`, `validate_output`, and `validation_level` from Conversion Parameters.
-  Soft-preview forces `validate_output=false`. Operator **Log Level** filters conversion /
-  validation / lint process messages (Conversion log + console) and is sent as `log_level`.
-  **Include Nil Reasons** maps to `include_nil_reasons` (engine honor TBD).
-- **F7 / ADR-024**: AHL bulletin UI uses `/convert-bulletin`. COLLECT / `.gz` uses
-  `/ingest-collect` (**501** placeholder). Uploads may be gzip-compressed.
+- **F7 / ADR-023**: Hard Convert and live IWXXM preview share one params-bar mapping
+  (`convertFieldsFromParamsBar`). Both send `bulletin_id`, `issuing_center`,
+  `stop_on_error`, `validate_output`, `validation_level`, `include_nil_reasons`,
+  `log_level`, `report_variant`, library ids, and `propagate_residuals_to_remarks`.
+  Soft-preview and live preview force `validate_output=false` and `validation_level=basic`.
+  Operator **Log Level** also filters conversion / validation / lint process messages
+  (Conversion log + console). **Include Nil Reasons** maps to `include_nil_reasons`
+  (engine honor TBD).
+- **F7 / ADR-024**: AHL bulletin UI uses `/convert-bulletin` and forwards
+  `propagate_residuals_to_remarks`, `extensions`, and a bearer token when signed in.
+  COLLECT / `.gz` uses `/ingest-collect` (**501** placeholder). Uploads may be gzip-compressed.
+
+**Conversion Parameters bar → request fields** (F7):
+
+| Bar control | `POST /convert` (hard and live) | `POST /convert-bulletin` |
+| --- | --- | --- |
+| Bulletin ID | `bulletin_id` | — (AHL supplies the header) |
+| Issuing Center | `issuing_center` | — |
+| IWXXM version | `iwxxm_version` | `iwxxm_version` |
+| On Error = Fail | `stop_on_error=true` | — |
+| Log Level | `log_level` | — |
+| Strict Validation | `validate_output` + `validation_level` (off when preview) | — |
+| Include Nil Reasons | `include_nil_reasons` | — |
+| Report variant | `report_variant` | — |
+| Library selects | matching `*_library_id` | conversion + dissemination ids |
+| Residuals → remarks | `propagate_residuals_to_remarks` | `propagate_residuals_to_remarks` |
+| Profile extensions | `extensions` | `extensions` |
 
 **Soft-preview (`preview=true`)** — S011 / #666:
 
