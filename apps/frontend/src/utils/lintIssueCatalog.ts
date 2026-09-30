@@ -100,3 +100,52 @@ export function formatCatalogEntryCopy(entry: LintIssueCatalogEntry): string {
   }
   return parts.join(' ');
 }
+
+/**
+ * Map a catalog row family to Rule catalogs shell filter values.
+ *
+ * @example
+ * const _ = true;
+ */
+export function catalogShellFamilyForCode(
+  entry: Pick<LintIssueCatalogEntry, 'family'> | undefined,
+): 'lint' | 'iwxxm' | undefined {
+  const familyRaw = entry?.family;
+  return familyRaw === 'iwxxm' || familyRaw === 'lint' ? familyRaw : undefined;
+}
+
+/**
+ * Open Rule catalogs focused on a console lint/validation code.
+ *
+ * @example
+ * const _ = true;
+ */
+export function openCatalogForLintCode(
+  onOpenCatalog: (
+    family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+    code?: string,
+  ) => void,
+  catalogByCode: Map<string, LintIssueCatalogEntry>,
+  code: string,
+): void {
+  onOpenCatalog(catalogShellFamilyForCode(catalogByCode.get(code)), code);
+}
+
+/**
+ * No-op when the shell does not provide an open-catalog handler.
+ *
+ * @example
+ * const _ = true;
+ */
+export function maybeOpenCatalogForLintCode(
+  onOpenCatalog:
+    | ((family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding', code?: string) => void)
+    | undefined,
+  catalogByCode: Map<string, LintIssueCatalogEntry>,
+  code: string,
+): void {
+  if (!onOpenCatalog) {
+    return;
+  }
+  openCatalogForLintCode(onOpenCatalog, catalogByCode, code);
+}

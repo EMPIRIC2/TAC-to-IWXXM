@@ -80,6 +80,10 @@ function App() {
   const [qualityStem, setQualityStem] = useState<string | null>(() =>
     initialQuality?.kind === 'detail' ? initialQuality.stem : null,
   );
+  const [catalogFocusCode, setCatalogFocusCode] = useState<string | null>(null);
+  const [catalogFocusFamily, setCatalogFocusFamily] = useState<'lint' | 'iwxxm' | null>(
+    null,
+  );
   const [userEmail, setUserEmail] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(initiallyLoggedIn);
   const [accessToken, setAccessToken] = useState(() =>
@@ -361,7 +365,19 @@ function App() {
           onActiveSessionIdChange={setActiveWorkSessionId}
           activeWorkSessionId={activeWorkSessionId}
           loadedWorkSession={loadedWorkSession}
-          onOpenCatalog={() => setCurrentView('catalog')}
+          onOpenCatalog={(family, code) => {
+            if (code) {
+              setCatalogFocusCode(code);
+            } else {
+              setCatalogFocusCode(null);
+            }
+            if (family === 'lint' || family === 'iwxxm') {
+              setCatalogFocusFamily(family);
+            } else {
+              setCatalogFocusFamily(null);
+            }
+            setCurrentView('catalog');
+          }}
         />
       )}
 
@@ -382,7 +398,16 @@ function App() {
         />
       )}
 
-      {currentView === 'catalog' && <LintValidationCatalogPage />}
+      {currentView === 'catalog' && (
+        <LintValidationCatalogPage
+          focusCode={catalogFocusCode ?? undefined}
+          initialFamily={catalogFocusFamily ?? undefined}
+          onFocusHandled={() => {
+            setCatalogFocusCode(null);
+            setCatalogFocusFamily(null);
+          }}
+        />
+      )}
 
       {currentView === 'dissemination-ops' && (
         <DisseminationOpsPage

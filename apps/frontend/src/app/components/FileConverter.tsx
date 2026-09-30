@@ -295,7 +295,10 @@ interface FileConverterProps {
   activeWorkSessionId?: string | null;
   loadedWorkSession?: WorkSession | null;
   /** Open Rule catalogs (optional family hint for Convert trust links). */
-  onOpenCatalog?: (family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding') => void;
+  onOpenCatalog?: (
+    family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+    code?: string,
+  ) => void;
 }
 
 /**
@@ -3272,6 +3275,7 @@ export function FileConverter({
                 onLineAction={applyLintFix}
                 catalogByCode={lintCatalogByCode}
                 catalogEntries={lintCatalogEntries}
+                onOpenCatalog={onOpenCatalog}
                 onClear={() => {
                   clearConsole();
                   appendConsole({

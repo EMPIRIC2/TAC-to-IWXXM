@@ -3,11 +3,14 @@
  * T5.1 / E15-14 — TAF tag filter + list-copy helpers (green after T5.2).
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
+  catalogShellFamilyForCode,
   filterCatalogByTag,
   formatCatalogEntryCopy,
   indexCatalogByCode,
+  maybeOpenCatalogForLintCode,
+  openCatalogForLintCode,
   resolveLintIssueTooltip,
 } from './lintIssueCatalog';
 import type { LintIssueCatalogEntry } from './api';
@@ -193,5 +196,53 @@ describe('lintIssueCatalog SIGMET/VA tag helpers (T5.1 / E19-17)', () => {
     expect(copy).toContain('SIGMET_CNL');
     expect(copy).toMatch(/tags:.*sigmet/i);
     expect(copy).toMatch(/product:\s*sigmet/i);
+  });
+});
+
+describe('catalogShellFamilyForCode', () => {
+  it('maps lint and iwxxm families', () => {
+    expect(catalogShellFamilyForCode({ family: 'lint' })).toBe('lint');
+    expect(catalogShellFamilyForCode({ family: 'iwxxm' })).toBe('iwxxm');
+  });
+
+  it('returns undefined for other or missing families', () => {
+    expect(catalogShellFamilyForCode(undefined)).toBeUndefined();
+    expect(catalogShellFamilyForCode({ family: 'conversion' })).toBeUndefined();
+    expect(catalogShellFamilyForCode({ family: null })).toBeUndefined();
+  });
+});
+
+describe('openCatalogForLintCode', () => {
+  it('forwards shell family and code to onOpenCatalog', () => {
+    const onOpenCatalog = vi.fn();
+    const byCode = new Map<string, LintIssueCatalogEntry>([
+      ['XML_SCHEMA', { ...SAMPLE[0]!, code: 'XML_SCHEMA', family: 'iwxxm' }],
+    ]);
+    openCatalogForLintCode(onOpenCatalog, byCode, 'XML_SCHEMA');
+    expect(onOpenCatalog).toHaveBeenCalledWith('iwxxm', 'XML_SCHEMA');
+  });
+
+  it('forwards undefined family when the code is unknown', () => {
+    const onOpenCatalog = vi.fn();
+    openCatalogForLintCode(onOpenCatalog, new Map(), 'UNKNOWN');
+    expect(onOpenCatalog).toHaveBeenCalledWith(undefined, 'UNKNOWN');
+  });
+});
+
+describe('maybeOpenCatalogForLintCode', () => {
+  it('no-ops when onOpenCatalog is missing', () => {
+    expect(() =>
+      maybeOpenCatalogForLintCode(undefined, new Map(), 'MISSING_TERMINATOR'),
+    ).not.toThrow();
+  });
+
+  it('delegates when onOpenCatalog is provided', () => {
+    const onOpenCatalog = vi.fn();
+    maybeOpenCatalogForLintCode(
+      onOpenCatalog,
+      new Map([['MISSING_TERMINATOR', { ...SAMPLE[0]!, family: 'lint' }]]),
+      'MISSING_TERMINATOR',
+    );
+    expect(onOpenCatalog).toHaveBeenCalledWith('lint', 'MISSING_TERMINATOR');
   });
 });
