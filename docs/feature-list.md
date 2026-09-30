@@ -481,7 +481,7 @@
   | F7.g | #780 | Pre-loaded golden examples (convert + validate) — S021 / EV-016 |
   | F7.h | #783 | IndexedDB local sessions (all products); drop JWT session APIs — S023 / EV-017 |
   | F7.i | #842 / F31 | Hybrid: guest IndexedDB + logged-in DO Postgres; auto-upload on login — S038 / EV-031 |
-  | F7.q | #836 / #982 / #988 / #983 / #981 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055); dedicated detail route + collapsible diffs (S066 / EV-056); selectable side-by-side vs inline XML diff (S068 / EV-058); **EV-981** residual fold indicator (`residuals_propagated_to_remarks`) |
+  | F7.q | #836 / #982 / #988 / #983 / #981 / #1316 | Quality metrics tab — official WMO corpus; W3C C14N match/diff (S063 / EV-054; S064 / EV-055); dedicated detail route + collapsible diffs (S066 / EV-056); selectable side-by-side vs inline XML diff (S068 / EV-058); **EV-981** residual fold indicator (`residuals_propagated_to_remarks`); **EV-1316** operator subtitle without pin or generated date, wrapped diagnostic panels, deferred stems excluded from unpaired counts |
   | F7.r | #903 | Accumulate back-to-back conversions → one ZIP (S067 / EV-057) |
   | F7.s | #838 | Validate existing IWXXM (paste / single `.xml` upload; no TAC) (S067 / EV-057) |
   | F7.t | #1003 | IWXXM as **product** pass-through (lint + F2 validate; no TAC convert) (S070 / EV-060); siblings #1001 AHL noise, #1002 profile picker, #1004 log_level, #1005 bulletin fields, #1006 Auth UAT |
@@ -642,6 +642,18 @@
   2. UI residuals panel reflects the field with operator-safe copy (no planning ids).
   3. Default corpus fixtures remain `false` compatible with prior UJ-056 assertions.
   4. TC-EV981-* + UJ-070 / UJ-056 deepen; H4–H5 after Build.
+- **EV-1316 / #1316 deepen (F7.q — quality-metrics honesty and overflow)**: The Quality
+  metrics subtitle stays the purpose sentence. `generated_at` and `iwxxm_pin` remain on
+  the API. Diagnostic lists wrap and scroll so long identifiers stay inside the panel.
+  Deferred stems increment deferred gaps only; they are not unpaired examples. Empty
+  residual text is not a residual. XPath-engine errors and schema-import warnings are
+  not shown as product validation failures and are dropped the next time the corpus
+  artifact is regenerated. The default IWXXM pin is unchanged.
+- **Acceptance (EV-1316 / #1316 — F7.q)** — **approved** (proceed on #1316):
+  1. Operator subtitle has no generated date and no IWXXM pin.
+  2. Validation-issues and other diagnostic panels wrap or scroll instead of overflowing.
+  3. Deferred / mismatch / residual counting notes and tests are in the corpus.
+  4. TC-EV1316-001; H4–H5 is the existing Quality metrics tab, not a new route.
 - **S067 / EV-057 deepen (F7.r / #903 — accumulate conversions → one ZIP)**: Successful
   converts **append** to the current result set instead of wiping prior successes so operators
   can convert A→B→C and **Download all** as one ZIP. Default archive basename when custom

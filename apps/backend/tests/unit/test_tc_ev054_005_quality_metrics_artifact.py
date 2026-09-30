@@ -51,13 +51,13 @@ def test_tc_ev054_005_artifact_loads_and_summaries_match_files() -> None:
     )
     for row in doc["files"]:
         b = buckets[row["product"]]
+        if row["deferred"]:
+            b["deferred_gaps"] += 1
+            continue
         if row.get("has_tac_pair"):
             b["pair_examples"] += 1
         else:
             b["unpaired_examples"] += 1
-        if row["deferred"]:
-            b["deferred_gaps"] += 1
-            continue
         if row["match_status"] == "equal":
             b["match_pass"] += 1
         else:

@@ -95,8 +95,6 @@ export function QualityMetricsPage({
   const [productFilter, setProductFilter] = useState<string>('all');
   const [summaries, setSummaries] = useState<QualityMetricsSummaryWithPairCounts[]>([]);
   const [files, setFiles] = useState<QualityMetricsFileRowWithPairState[]>([]);
-  const [generatedAt, setGeneratedAt] = useState<string>('');
-  const [iwxxmPin, setIwxxmPin] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [localStem, setLocalStem] = useState<string | null>(null);
@@ -116,8 +114,6 @@ export function QualityMetricsPage({
       });
       setSummaries(response.summaries.map(normalizeSummary));
       setFiles(response.files);
-      setGeneratedAt(response.generated_at);
-      setIwxxmPin(response.iwxxm_pin);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load quality metrics');
       setSummaries([]);
@@ -237,7 +233,7 @@ export function QualityMetricsPage({
 
   return (
     <div
-      className="min-h-screen bg-gray-50 p-6 dark:bg-gray-900"
+      className="min-h-screen overflow-x-hidden bg-gray-50 p-6 dark:bg-gray-900"
       data-testid="quality-metrics-page"
     >
       <div className="mx-auto max-w-5xl space-y-6">
@@ -249,8 +245,6 @@ export function QualityMetricsPage({
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 {QUALITY_METRICS_PAGE_SUBTITLE}
-                {iwxxmPin ? ` · IWXXM ${iwxxmPin}` : ''}
-                {generatedAt ? ` · generated ${generatedAt}` : ''}
               </p>
             </div>
 
@@ -339,10 +333,10 @@ export function QualityMetricsPage({
                           onClick={() => handleSelectStem(row.stem)}
                         >
                           <div className="min-w-0">
-                            <div className="font-medium text-gray-900 dark:text-gray-100">
+                            <div className="break-all font-medium text-gray-900 dark:text-gray-100">
                               {row.stem}
                             </div>
-                            <div className="text-xs text-gray-500 dark:text-gray-400">
+                            <div className="break-words text-xs text-gray-500 dark:text-gray-400">
                               {row.product.toUpperCase()} · {row.tier} ·{' '}
                               {formatMatchStatusLabel(row.match_status)}
                               {row.has_tac_pair === false

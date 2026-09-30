@@ -134,6 +134,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-082          | F7.v (EV-1313 / #1313)                                       | Workbench console lint codes deep-link to Rule catalogs                                                                                                                                                                                                    | T0; H4–H5 if wire/copy needs smoke | TC-EV1313-001                                                                            |
 | UJ-083          | F7 (EV-1314 / #1314)                                         | Conversion Parameters bar values are sent on hard Convert, live preview, and bulletin convert                                                                                                                                                              | T0; same multipart fields | TC-EV1314-001                                                                            |
 | UJ-084          | F21 / F22 (EV-1315 / #1315)                                  | Quality disclaimer and site terms block the public shell until acknowledged                                                                                                                                                                                | T0; client-only | TC-EV1315-001                                                                            |
+| UJ-085          | F7.q (EV-1316 / #1316)                                       | Quality metrics subtitle, diagnostic overflow, deferred/mismatch/residual honesty                                                                                                                                                                          | T0; existing routes | TC-EV1316-001                                                                            |
 | UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
 | UJ-DEV-011      | F2/F6/F9/F12/F14/F15 (EV-yaml-full-configurability / #1226) | Full YAML end-state incl. convert emit (ADR-047); templates; pin↔SCH                                                                                                                                                                                         | H4–H5 **N/A** unless UI/OpenAPI   | TC-EVYFC-001..005 (+ TC-EVYEC-004 retained)                                              |
@@ -3220,6 +3221,19 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   operator copy has no planning ids
 - **Source**: #1315; epic #1307; F21; F22
 - **Automated**: `App.test.tsx`; `privacyPreferences.test.ts`; `site-terms-gate.e2e.spec.ts`
+
+### TC-EV1316-001: Quality metrics honesty and overflow
+
+- **Level**: T0
+- **Objective**: The Quality metrics page subtitle does not show a generated date or
+  IWXXM pin. Long diagnostic text stays inside the panel. Deferred files count as
+  deferred gaps only. XPath-engine noise is not presented as a product validation failure.
+- **Pass criteria**: UJ-085; API still returns `generated_at` and `iwxxm_pin`; the default
+  IWXXM pin is unchanged; operator copy has no planning ids
+- **Source**: #1316; epic #1307; F7.q
+- **Automated**: `QualityMetricsPage.test.tsx`; `qualityMetricsCopy.test.ts`;
+  `tests/scripts/test_generate_quality_metrics.py`;
+  `apps/backend/tests/unit/test_tc_ev054_005_quality_metrics_artifact.py`
 
 ### TC-EV1120-010: Profiles page glanceable summary composition
 

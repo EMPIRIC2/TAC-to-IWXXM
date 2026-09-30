@@ -22,7 +22,7 @@
       "validate_fail": 0,
       "deferred_gaps": 1,
       "pair_examples": 1,
-      "unpaired_examples": 1
+      "unpaired_examples": 0
     },
     {
       "product": "sigmet",
@@ -55,7 +55,7 @@
       "validate_fail": 0,
       "deferred_gaps": 2,
       "pair_examples": 1,
-      "unpaired_examples": 2
+      "unpaired_examples": 0
     },
     {
       "product": "taf",
@@ -66,7 +66,7 @@
       "validate_fail": 0,
       "deferred_gaps": 1,
       "pair_examples": 2,
-      "unpaired_examples": 1
+      "unpaired_examples": 0
     },
     {
       "product": "tca",

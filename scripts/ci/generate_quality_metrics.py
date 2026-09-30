@@ -84,9 +84,41 @@ def _serialize_lint_issues(issues: Any) -> list[dict[str, Any]]:
     return out
 
 
+def _serialize_residuals(residuals: Any) -> list[dict[str, Any]]:
+    """Keep leftover TAC spans that still have visible text."""
+    out: list[dict[str, Any]] = []
+    for residual in residuals:
+        text = str(getattr(residual, "text", "") or "")
+        if not text.strip():
+            continue
+        out.append(
+            {
+                "start": residual.start,
+                "end": residual.end,
+                "text": text,
+            }
+        )
+    return out
+
+
+def _is_spurious_validate_issue(issue: Any) -> bool:
+    """Drop engine noise that is not a product validation failure.
+
+    XPath-engine errors and unresolved schema-import warnings are not findings
+    against the converted bulletin. Real schema and Schematron errors stay.
+    """
+    code = str(getattr(issue, "code", "") or "")
+    message = str(getattr(issue, "message", "") or "").strip()
+    if code in {"SCHEMATRON_XPATH_UNSUPPORTED", "SCHEMA_IMPORT_WARNING"}:
+        return True
+    return message.startswith("XPath error")
+
+
 def _serialize_validate_issues(issues: Any) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     for issue in issues:
+        if _is_spurious_validate_issue(issue):
+            continue
         out.append(
             {
                 "severity": issue.severity,
@@ -118,13 +150,14 @@ def _build_summaries(files: list[dict[str, Any]]) -> list[dict[str, Any]]:
     for row in files:
         product = row["product"]
         b = buckets[product]
+        # Deferred stems are not scored and are not missing TAC/XML pairs.
+        if row["deferred"]:
+            b["deferred_gaps"] += 1
+            continue
         if row.get("has_tac_pair"):
             b["pair_examples"] += 1
         else:
             b["unpaired_examples"] += 1
-        if row["deferred"]:
-            b["deferred_gaps"] += 1
-            continue
         if row["match_status"] == "equal":
             b["match_pass"] += 1
         else:
@@ -230,9 +263,7 @@ def generate_corpus_metrics() -> dict[str, Any]:
             match_status = "unequal"
 
         decode = decode_tac(tac, product=product_raw)
-        residuals = [
-            {"start": r.start, "end": r.end, "text": r.text} for r in decode.residuals
-        ]
+        residuals = _serialize_residuals(decode.residuals)
 
         lint_report = lint(tac, product=product_raw, profile=_PROFILE)
         lint_issues = _serialize_lint_issues(lint_report.issues)

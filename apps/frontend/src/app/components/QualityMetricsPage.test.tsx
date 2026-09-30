@@ -10,7 +10,10 @@ import {
   QUALITY_METRICS_EMPTY_DIAGNOSTICS,
 } from './QualityMetricsDetail';
 import { QualityMetricsPage } from './QualityMetricsPage';
-import { QUALITY_METRICS_DEFERRED_LABEL } from '@/utils/qualityMetricsCopy';
+import {
+  QUALITY_METRICS_DEFERRED_LABEL,
+  QUALITY_METRICS_PAGE_SUBTITLE,
+} from '@/utils/qualityMetricsCopy';
 
 const apiMocks = vi.hoisted(() => ({
   fetchQualityMetrics: vi.fn(),
@@ -144,6 +147,9 @@ describe('QualityMetricsPage (TC-EV054-002)', () => {
     expect(within(summary).getByText('Matches')).toBeInTheDocument();
     expect(summary).toHaveTextContent('TAC/XML pairs');
     expect(summary).toHaveTextContent('2');
+    expect(screen.getByText(QUALITY_METRICS_PAGE_SUBTITLE)).toBeInTheDocument();
+    expect(screen.queryByText(/IWXXM 2025-2/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/generated 2026/)).not.toBeInTheDocument();
   });
 
   it('labels deferred gap stems (AC5)', async () => {
@@ -467,6 +473,38 @@ describe('QualityMetricsPage detail (TC-EV054-003..004)', () => {
     expect(screen.getByTestId('quality-metrics-pane-validate')).toHaveTextContent(
       'schematron hit',
     );
+    expect(screen.getByText('schematron hit').className).toMatch(/break-all/);
+  });
+
+  it('hides XPath engine noise and wraps long validation messages', async () => {
+    const user = userEvent.setup();
+    const longId = `gml:id-${'a'.repeat(180)}`;
+    apiMocks.fetchQualityMetricsDetail.mockResolvedValue({
+      ...MOCK_DETAIL_UNEQUAL,
+      validate_issues: [
+        { code: 'SCHEMATRON_XPATH_UNSUPPORTED', message: 'engine skip' },
+        { message: `XPath error ${longId}` },
+        { code: 'SCHEMA', message: `element missing ${longId}` },
+      ],
+    });
+
+    render(<QualityMetricsPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-row-taf-A5-1')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('quality-metrics-row-taf-A5-1'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('quality-metrics-pane-validate')).toBeInTheDocument();
+    });
+
+    const pane = screen.getByTestId('quality-metrics-pane-validate');
+    expect(pane).toHaveTextContent('element missing');
+    expect(pane).not.toHaveTextContent('engine skip');
+    expect(pane).not.toHaveTextContent('XPath error');
+    expect(screen.getByText(new RegExp(longId)).className).toMatch(/break-all/);
   });
 
   it('surfaces detail fetch errors', async () => {
