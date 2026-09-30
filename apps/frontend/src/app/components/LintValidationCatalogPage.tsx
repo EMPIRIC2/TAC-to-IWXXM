@@ -53,7 +53,9 @@ type FamilyFilter =
 export type SortKey = 'code' | 'level' | 'family' | 'issue_type' | 'source_access';
 
 const LEVEL_OPTIONS = ['all', 'critical', 'error', 'warning', 'info'] as const;
-const TYPE_OPTIONS = [
+
+/** EV-062 type filter set (TAC / IWXXM / Decoding). */
+export const EV062_TYPE_OPTIONS = [
   'all',
   'presence',
   'structure',
@@ -62,6 +64,45 @@ const TYPE_OPTIONS = [
   'iwxxm_schema',
   'other',
 ] as const;
+
+/** Conversion family type filter (D-REQ-05). */
+export const CONVERSION_TYPE_OPTIONS = ['all', 'profile', 'policy', 'other'] as const;
+
+/**
+ * Type options for Family=All: EV-062 ∪ {profile, policy} (D-TP-03).
+ * ``other`` already in EV-062.
+ */
+export const ALL_FAMILY_TYPE_OPTIONS = [
+  'all',
+  'presence',
+  'structure',
+  'content',
+  'consistency',
+  'iwxxm_schema',
+  'profile',
+  'policy',
+  'other',
+] as const;
+
+/**
+ * Family-aware catalog type filter options.
+ *
+ * @param family - Active family filter
+ * @returns Option values including ``all``
+ * @example
+ * const _ = true;
+ */
+export function typeOptionsForFamily(family: FamilyFilter): readonly string[] {
+  if (family === 'conversion') {
+    return CONVERSION_TYPE_OPTIONS;
+  }
+  if (family === 'all') {
+    return ALL_FAMILY_TYPE_OPTIONS;
+  }
+  // lint / iwxxm / decoding / dissemination — EV-062 (TAC/IWXXM unchanged)
+  return EV062_TYPE_OPTIONS;
+}
+
 const ACCESS_OPTIONS = ['all', 'public', 'paywall', 'login', 'semantic_only'] as const;
 const SORT_OPTIONS: { value: SortKey; label: string }[] = [
   { value: 'code', label: 'Code' },
@@ -237,6 +278,12 @@ type RuleCatalogItemLike = {
   summary?: string | null;
   severity?: string | null;
   tags?: string[] | null;
+  issue_type?: string | null;
+  source_url?: string | null;
+  source_attribution?: string | null;
+  source_access?: string | null;
+  source_locator?: string | null;
+  conform_note?: string | null;
 };
 
 /**
@@ -253,25 +300,55 @@ export function mapRuleCatalogItem(
   family: 'conversion' | 'dissemination' | 'decoding',
 ): LintIssueCatalogEntry {
   const severityRaw = typeof item.severity === 'string' ? item.severity.trim() : '';
+  const summary =
+    typeof item.summary === 'string' && item.summary.trim() ? item.summary.trim() : '';
+  const conform =
+    typeof item.conform_note === 'string' && item.conform_note.trim()
+      ? item.conform_note.trim()
+      : '';
+  const descriptionParts = [summary || item.title, conform].filter(
+    (part) => typeof part === 'string' && part.length > 0,
+  );
+  const issueType =
+    typeof item.issue_type === 'string' && item.issue_type.trim()
+      ? item.issue_type.trim()
+      : null;
+  const sourceUrl =
+    typeof item.source_url === 'string' && item.source_url.trim()
+      ? item.source_url.trim()
+      : null;
+  const sourceAttribution =
+    typeof item.source_attribution === 'string' && item.source_attribution.trim()
+      ? item.source_attribution.trim()
+      : null;
+  const sourceAccess =
+    typeof item.source_access === 'string' && item.source_access.trim()
+      ? item.source_access.trim()
+      : null;
+  const sourceLocator =
+    typeof item.source_locator === 'string' && item.source_locator.trim()
+      ? item.source_locator.trim()
+      : null;
   return {
     code: item.id,
     // Empty string = severity absent (do not invent "info").
     severity: severityRaw,
-    message_template: item.summary || item.title,
+    message_template: descriptionParts.join(' '),
     product: null,
     tags: item.tags ?? [],
     family,
     source_id: null,
-    source_url: null,
-    source_attribution: null,
+    source_url: sourceUrl,
+    source_attribution: sourceAttribution,
     source_type: null,
+    // Leave status null so TAC/IWXXM click rules stay unchanged (TC-EV1308-004).
     status: null,
     semantic_identifier: null,
     last_verified: null,
     replacement_url: null,
-    issue_type: null,
-    source_access: null,
-    source_locator: null,
+    issue_type: issueType,
+    source_access: sourceAccess,
+    source_locator: sourceLocator,
   };
 }
 
@@ -282,8 +359,7 @@ export function mapRuleCatalogItem(
  */
 export function LintValidationCatalogPage() {
   const [familyFilter, setFamilyFilter] = useState<FamilyFilter>('all');
-  const [issueTypeFilter, setIssueTypeFilter] =
-    useState<(typeof TYPE_OPTIONS)[number]>('all');
+  const [issueTypeFilter, setIssueTypeFilter] = useState<string>('all');
   const [levelFilter, setLevelFilter] = useState<(typeof LEVEL_OPTIONS)[number]>('all');
   const [sourceAccessFilter, setSourceAccessFilter] =
     useState<(typeof ACCESS_OPTIONS)[number]>('all');
@@ -297,6 +373,8 @@ export function LintValidationCatalogPage() {
   const [entries, setEntries] = useState<LintIssueCatalogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const typeOptions = useMemo(() => typeOptionsForFamily(familyFilter), [familyFilter]);
 
   const usesLintIssueCatalog =
     familyFilter === 'all' || familyFilter === 'lint' || familyFilter === 'iwxxm';
@@ -398,7 +476,14 @@ export function LintValidationCatalogPage() {
                 value={familyFilter}
                 data-testid="lint-validation-catalog-family-filter"
                 aria-label="Filter by family"
-                onChange={(e) => setFamilyFilter(e.target.value as FamilyFilter)}
+                onChange={(e) => {
+                  const next = e.target.value as FamilyFilter;
+                  setFamilyFilter(next);
+                  const nextTypes = typeOptionsForFamily(next);
+                  if (!nextTypes.includes(issueTypeFilter)) {
+                    setIssueTypeFilter('all');
+                  }
+                }}
               >
                 <option value="all">All lint / IWXXM</option>
                 <option value="lint">TAC validation</option>
@@ -415,11 +500,9 @@ export function LintValidationCatalogPage() {
                 value={issueTypeFilter}
                 data-testid="lint-validation-catalog-type-filter"
                 aria-label="Filter by type"
-                onChange={(e) =>
-                  setIssueTypeFilter(e.target.value as (typeof TYPE_OPTIONS)[number])
-                }
+                onChange={(e) => setIssueTypeFilter(e.target.value)}
               >
-                {TYPE_OPTIONS.map((opt) => (
+                {typeOptions.map((opt) => (
                   <option key={opt} value={opt}>
                     {opt === 'all' ? 'All' : opt.replace('_', ' ')}
                   </option>
