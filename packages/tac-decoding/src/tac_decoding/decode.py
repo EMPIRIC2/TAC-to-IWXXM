@@ -364,7 +364,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return "Temporary fluctuations expected during the following period"
     if upper == "BECMG":
         seen["in_trend"] = 1
-        return "Gradual change during the following period"
+        return "Becoming, a gradual change during the following period"
     if upper == "NSW":
         return "No significant weather"
     if upper == "RMK":
@@ -483,7 +483,7 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
     if upper == "TEMPO":
         return "Temporary fluctuations expected during the following period"
     if upper == "BECMG":
-        return "Gradual change during the following period"
+        return "Becoming, a gradual change during the following period"
     if m := _TAF_PROB.match(upper):
         return f"{int(m.group('pct'))}% probability of the following conditions"
     if upper.startswith(("FM", "TEMPO", "BECMG", "PROB")):
@@ -1438,7 +1438,19 @@ def shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
 
 
 def _leading_report_product(tac: str) -> str | None:
-    """Return the product keyword when the report itself starts with one."""
+    """
+    Return the product keyword when the report itself starts with one.
+
+    Parameters
+    ----------
+    tac : str
+        Raw TAC text.
+
+    Returns
+    -------
+    str | None
+        Supported product id, or None when the first word is not one.
+    """
     for line in tac.splitlines():
         stripped = line.strip()
         if not stripped:
