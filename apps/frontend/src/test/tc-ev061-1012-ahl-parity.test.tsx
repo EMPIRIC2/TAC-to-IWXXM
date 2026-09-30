@@ -138,6 +138,7 @@ describe('TC-EV061-1012 FileConverter AHL parity', () => {
   it('convert-bulletin honors product and profile on golden AHL (TC-EV061-1012-003)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
     await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
     fireEvent.change(screen.getByTestId('tac-editor'), { target: { value: GOLDEN } });
     expect(screen.getByTestId('bulletin-id-input')).toBeInTheDocument();
@@ -167,6 +168,7 @@ describe('TC-EV061-1012 FileConverter AHL parity', () => {
     );
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
     await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
     fireEvent.change(screen.getByTestId('tac-editor'), {
       target: { value: 'NOTANAHL XXXX 999999\nMETAR KJFK=\n' },

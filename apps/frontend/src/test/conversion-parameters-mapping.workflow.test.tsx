@@ -108,6 +108,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
   it('sends selected IWXXM version in conversion API payload', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
@@ -146,6 +147,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
   it('maps bulletin, issuing centre, onError fail, and soft-preview validation off', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
@@ -196,7 +198,6 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
     const logLevel = container.querySelector('#param-log-level') as HTMLSelectElement;
     await user.selectOptions(logLevel, 'WARNING');
 
-    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
     fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
       target: {
         value: 'METAR KJFK 121251Z 24016G28KT 10SM FEW250 14/11 A2990',
@@ -272,6 +273,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
 
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
     const iwxxmVersion = container.querySelector(

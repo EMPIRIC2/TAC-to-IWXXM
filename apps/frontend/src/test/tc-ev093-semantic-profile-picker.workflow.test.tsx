@@ -145,6 +145,7 @@ describe('TC-EV093 — Conversion library picker deepen', () => {
   it('TC-EV093-003 sends conversionLibraryId when US_FAA_NWS selected', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
     await user.selectOptions(
       screen.getByTestId('conversion-library-select'),
       defaultLibraryId('conversion', 'US_FAA_NWS'),

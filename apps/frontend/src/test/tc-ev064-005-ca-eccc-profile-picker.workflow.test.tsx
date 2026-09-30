@@ -132,6 +132,7 @@ describe('TC-EV064-005: CA_ECCC Conversion library picker', () => {
   it('sends CA_ECCC conversionLibraryId and 3.0.0 version on convert', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.selectOptions(
       screen.getByTestId('conversion-library-select'),
