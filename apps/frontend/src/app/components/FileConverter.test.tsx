@@ -700,6 +700,14 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('privacy-settings-dialog')).toBeInTheDocument();
       await user.click(screen.getByRole('button', { name: /^close$/i }));
       expect(screen.queryByTestId('privacy-settings-dialog')).not.toBeInTheDocument();
+
+      await user.click(screen.getByRole('button', { name: /open terms of service/i }));
+      expect(screen.getByTestId('site-terms-dialog')).toBeInTheDocument();
+      expect(
+        screen.getByText(/results can be incomplete or wrong/i),
+      ).toBeInTheDocument();
+      await user.click(screen.getByRole('button', { name: /close terms of service/i }));
+      expect(screen.queryByTestId('site-terms-dialog')).not.toBeInTheDocument();
     });
 
     it('opens privacy settings from the first-visit notice CTA', async () => {
@@ -3527,7 +3535,7 @@ describe('FileConverter Component', () => {
         );
       });
       expect(mockToast.info).toHaveBeenCalledWith(
-        'Detected AHL bulletin — switched input mode',
+        'Detected an AHL bulletin. Switched input mode.',
       );
 
       unmount();
@@ -3555,7 +3563,7 @@ describe('FileConverter Component', () => {
         );
       });
       expect(mockToast.info).toHaveBeenCalledWith(
-        'Detected IWXXM COLLECT — switched input mode',
+        'Detected an IWXXM COLLECT file. Switched input mode.',
       );
     });
 
@@ -3727,7 +3735,7 @@ describe('FileConverter Component', () => {
 
       await waitFor(() => expect(mockConvertBulletin).toHaveBeenCalled());
       expect(mockToast.info).toHaveBeenCalledWith(
-        'Detected AHL bulletin — switched input mode',
+        'Detected an AHL bulletin. Switched input mode.',
       );
       expect(screen.getByTestId('input-mode-ahl_bulletin')).toHaveClass('bg-blue-600');
     });
@@ -4383,7 +4391,7 @@ describe('FileConverter Component', () => {
         expect(screen.getByTestId('iwxxm-preview-soft-fail')).toBeInTheDocument();
       });
       expect(mockToast.warning).toHaveBeenCalledWith(
-        'Soft-preview returned Failed-TAC markers — not ready to publish',
+        'Soft preview found groups that failed. This result is not ready to publish.',
       );
     });
 
@@ -4464,7 +4472,7 @@ describe('FileConverter Component', () => {
 
       await waitFor(() => {
         expect(mockToast.warning).toHaveBeenCalledWith(
-          'Soft-preview Failed-TAC — fix markers before Convert & Send',
+          'Soft preview found failed groups. Fix them before Convert & Send.',
         );
       });
       expect(mockUploadConvertedFiles).not.toHaveBeenCalled();

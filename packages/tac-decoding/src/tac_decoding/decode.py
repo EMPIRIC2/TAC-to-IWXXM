@@ -156,7 +156,7 @@ def _fmt_wind(m: re.Match[str], *, label: str) -> str:
     speed = int(m.group("spd"))
     unit = "kt" if m.group("unit") == "KT" else "m/s"
     origin = "variable in direction" if direction == "VRB" else f"from {int(direction)}°"
-    text = f"{label} - {origin} at {speed} {unit}"
+    text = f"{label} {origin} at {speed} {unit}"
     gust = m.group("gust")
     if gust:
         text += f", gusting {int(gust)} {unit}"
@@ -179,7 +179,7 @@ def _fmt_time(m: re.Match[str], *, label: str) -> str:
     object
         Return value.
     """
-    return f"{label} - day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
+    return f"{label} on day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
 
 
 def _fmt_vis_sm(m: re.Match[str], *, label: str) -> str:
@@ -258,7 +258,9 @@ def _fmt_wx(m: re.Match[str], *, forecast: bool) -> str:
     parts.extend(_WX_PHENOMENON[phen[i : i + 2]] for i in range(0, len(phen), 2))
     phrase = " ".join(parts)
     label = "Forecast weather" if forecast else "Weather"
-    return f"{label} - {phrase[0].upper()}{phrase[1:]}" if phrase else f"{label} group"
+    if not phrase:
+        return f"{label} group"
+    return f"{label}: {phrase[0].upper()}{phrase[1:]}"
 
 
 class DecodeSegment(msgspec.Struct, frozen=True):
@@ -362,7 +364,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return "Temporary fluctuations expected during the following period"
     if upper == "BECMG":
         seen["in_trend"] = 1
-        return "Becoming - gradual change during the following period"
+        return "Becoming, a gradual change during the following period"
     if upper == "NSW":
         return "No significant weather"
     if upper == "RMK":
@@ -379,8 +381,8 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         seen["station"] = 1
         place = resolve_location_name(upper)
         if place:
-            return f"ICAO station location indicator — {place}"
-        return f"ICAO station location indicator ({upper})"
+            return f"Station {place} ({upper})"
+        return f"Station {upper}"
     if m := _TIME_Z.match(upper):
         return _fmt_time(m, label="Observation time")
     if m := _WIND.match(upper):
@@ -396,7 +398,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
         return f"{label} {int(upper)} m"
     if m := _TREND_TIME.match(upper):
         kind = m.group("kind")
-        return f"Trend time - {_TREND_TIME_LABEL[kind]} {m.group('hh')}:{m.group('mm')} UTC"
+        return f"Trend {_TREND_TIME_LABEL[kind]} {m.group('hh')}:{m.group('mm')} UTC"
     if m := _CLOUD.match(upper):
         return _fmt_cloud(m, forecast=bool(seen.get("in_trend")))
     if m := _TEMP.match(upper):
@@ -453,13 +455,13 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         seen["station"] = 1
         place = resolve_location_name(upper)
         if place:
-            return f"ICAO station location indicator — {place}"
-        return f"ICAO station location indicator ({upper})"
+            return f"Station {place} ({upper})"
+        return f"Station {upper}"
     if m := _TIME_Z.match(upper):
         return _fmt_time(m, label="Issue time")
     if m := _TAF_VALID.match(upper):
         return (
-            f"Validity - day {int(m.group('d1'))} {m.group('h1')}:00 UTC"
+            f"Valid from day {int(m.group('d1'))} {m.group('h1')}:00 UTC"
             f" to day {int(m.group('d2'))} {m.group('h2')}:00 UTC"
         )
     if m := _WIND.match(upper):
@@ -476,13 +478,12 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
         return f"QNH {int(m.group('val'))} hPa"
     if m := _TAF_FM.match(upper):
         return (
-            f"From day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC"
-            " - rapid change to new prevailing conditions"
+            f"From day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC, then the conditions change quickly"
         )
     if upper == "TEMPO":
         return "Temporary fluctuations expected during the following period"
     if upper == "BECMG":
-        return "Becoming - gradual change during the following period"
+        return "Becoming, a gradual change during the following period"
     if m := _TAF_PROB.match(upper):
         return f"{int(m.group('pct'))}% probability of the following conditions"
     if upper.startswith(("FM", "TEMPO", "BECMG", "PROB")):
@@ -670,7 +671,7 @@ def _explain_advisory(token: str, *, product: str, seen: dict[str, int]) -> str 
             return explain_glossary_token(upper, fallback="Space weather advisory abbreviation")
     if product == "VONA" and upper == "VONA":
         return explain_glossary_token(upper, fallback="Volcano Observatory Notice for Aviation")
-    return explain_glossary_token(upper, fallback=f"{product} token")
+    return explain_glossary_token(upper, fallback="Unrecognized group")
 
 
 # Longest-first advisory field labels (WMO VAA/TCA/SWXA/VONA TAC layout). Title templates use
@@ -826,7 +827,7 @@ def _iter_ahl_heading(tac: str) -> list[tuple[int, int, str, str]]:
     else:
         start, end = m.start(), m.end()
     code = tac[start:end]
-    explanation = f"WMO abbreviated heading - {m.group('ahl')} from {m.group('cccc')} at day-time {m.group('yygggg')}"
+    explanation = f"Abbreviated heading {m.group('ahl')} from {m.group('cccc')} at {m.group('yygggg')}"
     return [(start, end, code, explanation)]
 
 
@@ -901,7 +902,7 @@ def _iter_advisory_fields(
         end = value_start + trim
         value_text = " ".join(tac[value_start:end].split())
         title = _advisory_field_title(code, title_template, match)
-        explanation = f"{title} - {value_text}" if value_text else title
+        explanation = f"{title}: {value_text}" if value_text else title
         out.append((start, end, code, explanation))
     return out
 
@@ -1163,7 +1164,7 @@ def _build_summary(
     clauses: list[str] = []
     for seg in segments:
         clause = _sentence_from_segment(seg)
-        if clause:
+        if clause and (not clauses or clauses[-1] != clause):
             clauses.append(clause)
 
     if product in _SPARSE_PRODUCTS:
@@ -1436,6 +1437,31 @@ def shift_decode(result: DecodeResult, offset: int) -> DecodeResult:
     return _shift_decode(result, offset)
 
 
+def _leading_report_product(tac: str) -> str | None:
+    """
+    Return the product keyword when the report itself starts with one.
+
+    Parameters
+    ----------
+    tac : str
+        Raw TAC text.
+
+    Returns
+    -------
+    str | None
+        Supported product id, or None when the first word is not one.
+    """
+    for line in tac.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        first = stripped.split(None, 1)[0].upper().rstrip(":")
+        if first in _SUPPORTED:
+            return first
+        return None
+    return None
+
+
 def decode_tac(tac: str, *, product: str) -> DecodeResult:
     """
     Decode TAC text into ordered explanation segments and residuals.
@@ -1466,6 +1492,10 @@ def decode_tac(tac: str, *, product: str) -> DecodeResult:
     2
     """
     product_u = product.upper()
+    if product_u in _SUPPORTED:
+        leading = _leading_report_product(tac)
+        if leading is not None:
+            product_u = leading
     if product_u not in _SUPPORTED:
         # Entire body residual - unknown product still returns a well-formed shape.
         text = tac

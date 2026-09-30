@@ -28,7 +28,7 @@ describe('IwxxmPreviewPane', () => {
       />,
     );
     expect(screen.getByTestId('iwxxm-preview-badge')).toHaveTextContent(
-      /Soft preview — not for publish/i,
+      /Soft preview, not for publishing/i,
     );
     expect(screen.queryByText(/LAYER12_SOFT_FAIL/)).not.toBeInTheDocument();
     expect(screen.getByTestId('iwxxm-preview-soft-fail')).toHaveTextContent(

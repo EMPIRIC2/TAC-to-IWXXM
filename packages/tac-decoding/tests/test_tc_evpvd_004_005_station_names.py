@@ -17,7 +17,7 @@ def test_tc_evpvd_004_station_name_on_decode_hit() -> None:
         )
         station = next(s for s in result.segments if s.code.upper() == "KJFK")
         assert "John F. Kennedy International Airport" in station.explanation
-        assert "station John F. Kennedy International Airport (KJFK)" in result.summary
+        assert "Station John F. Kennedy International Airport (KJFK)" in result.summary
     finally:
         set_location_name_resolver(None)
 
@@ -32,7 +32,7 @@ def test_tc_evpvd_005_station_name_soft_fail_unknown() -> None:
         station = next(s for s in result.segments if s.code.upper() == "ZZ99")
         assert "John F." not in station.explanation
         assert "ZZ99" in station.explanation
-        assert "station ZZ99" in result.summary
+        assert "Station ZZ99" in result.summary
         assert result.summary  # soft-fail still produces summary
     finally:
         set_location_name_resolver(None)
@@ -57,6 +57,6 @@ def test_tc_evpvd_004_summary_skips_parenthetical_place_after_dash() -> None:
         )
         station = next(s for s in result.segments if s.code.upper() == "KJFK")
         assert "Test Field" in station.explanation
-        assert "station Test Field (KJFK)" in result.summary
+        assert "Station Test Field (KJFK)" in result.summary
     finally:
         set_location_name_resolver(None)

@@ -55,5 +55,5 @@ def test_tc_evpvd_005_decode_tac_unknown_icao_soft_fails(client: TestClient) -> 
     )
     station = next(s for s in body["segments"] if s["code"].upper() == "ZZ99")
     assert "ZZ99" in station["explanation"]
-    assert "station ZZ99" in body["summary"]
+    assert "Station ZZ99" in body["summary"]
     assert body["product"] == "METAR"
