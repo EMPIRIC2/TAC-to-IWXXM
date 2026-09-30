@@ -769,9 +769,11 @@ describe('LintValidationCatalogPage', () => {
       expect(codes).toEqual(['ALPHA', 'ZULU', 'MIKE']);
 
       // Type value no row has → empty; All restores.
+      // Conversion uses profile|policy|other; other families keep EV-062 (e.g. structure).
+      const emptyType = family === 'conversion' ? 'policy' : 'structure';
       await user.selectOptions(
         screen.getByTestId('lint-validation-catalog-type-filter'),
-        'structure',
+        emptyType,
       );
       expect(await screen.findByText(/No catalog entries/i)).toBeInTheDocument();
       expect(fetchRuleCatalog).toHaveBeenLastCalledWith({ family });
