@@ -101,6 +101,12 @@ import {
   CONVERSION_METADATA_TOGGLE_LABEL,
 } from '@/utils/conversionExportMetadata';
 import {
+  SITE_TERMS_BODY,
+  SITE_TERMS_CHECKBOX,
+  SITE_TERMS_CONTINUE,
+  SITE_TERMS_TITLE,
+} from '@/utils/siteTermsCopy';
+import {
   LINT_VALIDATION_CATALOG_ACCESS_LABEL,
   LINT_VALIDATION_CATALOG_COL_CODE,
   LINT_VALIDATION_CATALOG_COL_DESCRIPTION,
@@ -370,6 +376,22 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     {
       id: 'lint-validation-catalog.listed-profile-only',
       text: LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY,
+    },
+    {
+      id: 'site-terms.title',
+      text: SITE_TERMS_TITLE,
+    },
+    {
+      id: 'site-terms.body',
+      text: SITE_TERMS_BODY,
+    },
+    {
+      id: 'site-terms.checkbox',
+      text: SITE_TERMS_CHECKBOX,
+    },
+    {
+      id: 'site-terms.continue',
+      text: SITE_TERMS_CONTINUE,
     },
     {
       id: 'lint-validation-catalog.col-code',

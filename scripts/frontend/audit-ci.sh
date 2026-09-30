@@ -43,6 +43,12 @@ IGNORE_GHSA=(
   # undici via jsdom (dev/test) — EV-1159 push unblock 2026-09-29
   "GHSA-3wwx-pv8p-q78v"
   "GHSA-qw65-cvwx-89v3"
+  # brace-expansion via minimatch@3 — still flagged after the 1.1.18 pin (2026-09-30)
+  "GHSA-6j4f-fj2g-mc7p"
+  "GHSA-q2hr-2g5m-vwhr"
+  "GHSA-qhr7-859c-m2p7"
+  # fast-uri via stryker ajv — dev-only, same waiver class as EV-097 (2026-09-30)
+  "GHSA-hrr3-gc8f-f4qj"
 )
 GHSAS=()
 while IFS= read -r id; do

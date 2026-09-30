@@ -418,11 +418,13 @@ vi.mock('./components/ui/sonner', () => ({
 }));
 
 import App from './App';
+import { acknowledgeSiteTerms } from '@/utils/privacyPreferences';
 
 describe('App Component (F31 optional Auth)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    acknowledgeSiteTerms();
     window.history.replaceState({}, '', '/');
     authMocks.getAccessToken.mockReturnValue(null);
     authMocks.isLoggedIn.mockReturnValue(false);
@@ -456,6 +458,23 @@ describe('App Component (F31 optional Auth)', () => {
     expect(screen.getByTestId('file-converter')).toBeInTheDocument();
     expect(screen.queryByTestId('login-view')).not.toBeInTheDocument();
     expect(screen.getByTestId('sign-in-button')).toBeInTheDocument();
+  });
+
+  it('blocks the public shell until site terms are acknowledged', async () => {
+    localStorage.clear();
+    const user = userEvent.setup();
+    const view = render(<App />);
+    expect(screen.getByTestId('site-terms-gate')).toBeInTheDocument();
+    expect(screen.queryByTestId('file-converter')).not.toBeInTheDocument();
+    expect(screen.getByTestId('site-terms-continue')).toBeDisabled();
+    await user.click(screen.getByTestId('site-terms-ack'));
+    expect(screen.getByTestId('site-terms-continue')).toBeEnabled();
+    await user.click(screen.getByTestId('site-terms-continue'));
+    expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+    view.unmount();
+    render(<App />);
+    expect(screen.getByTestId('file-converter')).toBeInTheDocument();
+    expect(screen.queryByTestId('site-terms-gate')).not.toBeInTheDocument();
   });
 
   it('opens login UX from Sign in without blocking convert return path', async () => {

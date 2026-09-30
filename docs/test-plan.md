@@ -133,6 +133,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-081          | F7.v (EV-1312 / #1312)                                       | Optional Only rules that list this profile catalog checkbox                                                                                                                                                                                                | T0; H4–H5 if wire/copy needs smoke | TC-EV1312-001                                                                            |
 | UJ-082          | F7.v (EV-1313 / #1313)                                       | Workbench console lint codes deep-link to Rule catalogs                                                                                                                                                                                                    | T0; H4–H5 if wire/copy needs smoke | TC-EV1313-001                                                                            |
 | UJ-083          | F7 (EV-1314 / #1314)                                         | Conversion Parameters bar values are sent on hard Convert, live preview, and bulletin convert                                                                                                                                                              | T0; same multipart fields | TC-EV1314-001                                                                            |
+| UJ-084          | F21 / F22 (EV-1315 / #1315)                                  | Quality disclaimer and site terms block the public shell until acknowledged                                                                                                                                                                                | T0; client-only | TC-EV1315-001                                                                            |
 | UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
 | UJ-DEV-011      | F2/F6/F9/F12/F14/F15 (EV-yaml-full-configurability / #1226) | Full YAML end-state incl. convert emit (ADR-047); templates; pin↔SCH                                                                                                                                                                                         | H4–H5 **N/A** unless UI/OpenAPI   | TC-EVYFC-001..005 (+ TC-EVYEC-004 retained)                                              |
@@ -3208,6 +3209,17 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Source**: #1314; epic #1307; ADR-023; ADR-024
 - **Automated**: `convertParams.test.ts`; `conversion-parameters-mapping.workflow.test.tsx`;
   `api.test.ts`
+
+### TC-EV1315-001: Site terms gate
+
+- **Level**: T0
+- **Objective**: The public shell stays hidden until the operator checks the quality
+  disclaimer and continues. The acknowledgement is stored with privacy preferences and
+  still applies on the next visit. Login and registration are not behind this gate.
+- **Pass criteria**: UJ-084; Continue stays disabled until the checkbox is checked;
+  operator copy has no planning ids
+- **Source**: #1315; epic #1307; F21; F22
+- **Automated**: `App.test.tsx`; `privacyPreferences.test.ts`; `site-terms-gate.e2e.spec.ts`
 
 ### TC-EV1120-010: Profiles page glanceable summary composition
 
