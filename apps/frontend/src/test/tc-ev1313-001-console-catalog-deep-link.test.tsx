@@ -102,4 +102,30 @@ describe('TC-EV1313-001 console → catalog deep link', () => {
       expect(onFocusHandled).toHaveBeenCalled();
     });
   });
+
+  it('ignores a repeated focusCode after it was already handled', async () => {
+    const onFocusHandled = vi.fn();
+    HTMLElement.prototype.scrollIntoView = vi.fn();
+    const { rerender } = render(
+      <LintValidationCatalogPage
+        focusCode="MISSING_TERMINATOR"
+        initialFamily="lint"
+        onFocusHandled={onFocusHandled}
+      />,
+    );
+    await screen.findByTestId('lint-validation-catalog-entry-MISSING_TERMINATOR');
+    await vi.waitFor(() => {
+      expect(onFocusHandled).toHaveBeenCalledTimes(1);
+    });
+    rerender(
+      <LintValidationCatalogPage
+        focusCode="MISSING_TERMINATOR"
+        initialFamily="lint"
+        onFocusHandled={onFocusHandled}
+      />,
+    );
+    await vi.waitFor(() => {
+      expect(onFocusHandled).toHaveBeenCalledTimes(1);
+    });
+  });
 });

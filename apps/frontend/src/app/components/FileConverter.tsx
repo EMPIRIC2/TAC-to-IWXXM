@@ -24,7 +24,7 @@ import { LiveIwxxmToggle } from './LiveIwxxmToggle';
 import { StatusBanner } from './StatusBanner';
 import { WorkbenchConsole } from './WorkbenchConsole';
 import { useLintIssueCatalog } from '@/hooks/useLintIssueCatalog';
-import { catalogShellFamilyForCode } from '@/utils/lintIssueCatalog';
+import { maybeOpenCatalogForLintCode } from '@/utils/lintIssueCatalog';
 import {
   Upload,
   X,
@@ -3276,15 +3276,8 @@ export function FileConverter({
                 onLineAction={applyLintFix}
                 catalogByCode={lintCatalogByCode}
                 catalogEntries={lintCatalogEntries}
-                onOpenCatalogCode={
-                  onOpenCatalog
-                    ? (code) => {
-                        onOpenCatalog(
-                          catalogShellFamilyForCode(lintCatalogByCode.get(code)),
-                          code,
-                        );
-                      }
-                    : undefined
+                onOpenCatalogCode={(code) =>
+                  maybeOpenCatalogForLintCode(onOpenCatalog, lintCatalogByCode, code)
                 }
                 onClear={() => {
                   clearConsole();

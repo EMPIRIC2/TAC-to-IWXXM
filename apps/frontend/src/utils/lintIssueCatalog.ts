@@ -110,3 +110,33 @@ export function catalogShellFamilyForCode(
   const familyRaw = entry?.family;
   return familyRaw === 'iwxxm' || familyRaw === 'lint' ? familyRaw : undefined;
 }
+
+/**
+ * Open Rule catalogs focused on a console lint/validation code.
+ */
+export function openCatalogForLintCode(
+  onOpenCatalog: (
+    family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+    code?: string,
+  ) => void,
+  catalogByCode: Map<string, LintIssueCatalogEntry>,
+  code: string,
+): void {
+  onOpenCatalog(catalogShellFamilyForCode(catalogByCode.get(code)), code);
+}
+
+/**
+ * No-op when the shell does not provide an open-catalog handler.
+ */
+export function maybeOpenCatalogForLintCode(
+  onOpenCatalog:
+    | ((family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding', code?: string) => void)
+    | undefined,
+  catalogByCode: Map<string, LintIssueCatalogEntry>,
+  code: string,
+): void {
+  if (!onOpenCatalog) {
+    return;
+  }
+  openCatalogForLintCode(onOpenCatalog, catalogByCode, code);
+}
