@@ -757,6 +757,14 @@
   1. Dissemination rows have readable summaries and typed metadata where known.
   2. The frontend passes API fields through and does not invent defaults.
   3. TC-EV1317-001; H4–H5 is the existing catalog route, not a new wire shape.
+- **EV-1318 / #1318 (M6)**: Weekly vendor sync checks out the pinned wmo-im commit
+  in full and keeps nested profile-line trees (`iwxxm/3.0.0`) so an unchanged pin
+  still matches `tree_sha256`. No hand-edits under `vendor/schemas/`.
+- **Acceptance (EV-1318 / #1318 — M6)** — **approved** (proceed on #1318):
+  1. Root cause of the unchanged-pin checksum mismatch is recorded.
+  2. A manual or scheduled vendor-sync of the current pins can finish the schema
+     replace without a checksum error.
+  3. TC-EV1318-001; H4–H5 N/A (no operator UI or HTTP change).
 - **EV-933 deepen (F7.w / #933)**: **ConversionProfile editor** for operators and admins —
   rule-pack CRUD (absorbed #915), read-only contract inspector (ADR-038 fields), then
   **signed / operator-scoped overlays** persisted on product Postgres with JWT ownership

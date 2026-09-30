@@ -45,6 +45,7 @@ Offline L3 token membership for `tac-validate` — **no** live `codes.wmo.int` H
 | SoT (CSV `notation`) | `vendor/schemas/iwxxm-codelists/CSV/**/*_entity.csv` |
 | SoT (nil RDF) | `vendor/schemas/iwxxm/{pin}/IWXXM/rule/codes.wmo.int-{common,iwxxm}-nil.rdf` |
 | Pin / cadence | `vendor/manifest.json` → `iwxxm-codelists`; refresh on normal vendor sync PRs |
+| Snapshot fetch | `scripts/vendor/sync_iwxxm.py` checks out the pinned commit (full tree, including upstream `export-ignore` paths such as `externalSchema/`). Nested profile-line dirs (`vendor/schemas/iwxxm/3.0.0`) are kept across that replace. GitHub release archives are not the snapshot source. |
 | Artifact | `packages/tac-validate/src/tac_validate/data/wmo_membership.json` |
 | Harvest module | `packages/tac-validate/src/tac_validate/membership.py` |
 | CLI | `scripts/iwxxm/harvest_wmo_membership.py` |
