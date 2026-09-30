@@ -61,5 +61,19 @@ Two replacements happen on every sync of the pinned commit:
 - Fetch the pin with `git fetch` + `git checkout` so `export-ignore` paths stay.
 - Stash nested bundle directories (the `3.0.0` profile line) across the parent
   replace and restore them afterward.
+- Skip xsdata codegen when `vendor/manifest.json` and `vendor/schemas` are
+  unchanged. Codegen is not a no-op against the committed models, so a clean
+  pin otherwise tries to open a generated-code pull request every week.
+
+## Manual run
+
+`workflow_dispatch` on `fix/EV-1318-vendor-sync`:
+https://github.com/EMPIRIC2/TAC-to-IWXXM/actions/runs/36730712687
+
+Sync, hash refresh, and TC-M002 passed. The vendor tree did not change.
+Codegen then dirtied `packages/shared/src/metar_shared/iwxxm_xsd` (including a
+new `v3_0_0` package). Creating the pull request failed because GitHub Actions
+is not permitted to open pull requests in this repository. That permission is
+unchanged; an unchanged pin no longer reaches it.
 
 [Corpus: tech-spec] [Corpus: tests]
