@@ -22,6 +22,7 @@ import {
   LINT_VALIDATION_CATALOG_EMPTY,
   LINT_VALIDATION_CATALOG_EXCHANGE_ALL,
   LINT_VALIDATION_CATALOG_EXCHANGE_LABEL,
+  LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY,
   LINT_VALIDATION_CATALOG_FAMILY_LABEL,
   LINT_VALIDATION_CATALOG_LEVEL_LABEL,
   LINT_VALIDATION_CATALOG_LOADING,
@@ -256,6 +257,34 @@ export function entryMatchesTypeFilter(
 }
 
 /**
+ * When listed-only is on and a profile axis is selected, require a non-empty
+ * applicability list on that axis (empty = unrestricted / all profiles).
+ *
+ * @example
+ * const _ = true;
+ */
+export function entryMatchesListedProfileFilter(
+  entry: LintIssueCatalogEntry,
+  options: {
+    listedOnly: boolean;
+    semanticSelected: boolean;
+    exchangeSelected: boolean;
+  },
+): boolean {
+  const { listedOnly, semanticSelected, exchangeSelected } = options;
+  if (!listedOnly || (!semanticSelected && !exchangeSelected)) {
+    return true;
+  }
+  if (semanticSelected && profileList(entry.semantic_profiles).length === 0) {
+    return false;
+  }
+  if (exchangeSelected && profileList(entry.exchange_profiles).length === 0) {
+    return false;
+  }
+  return true;
+}
+
+/**
  * Whether a catalog row matches the selected access filter.
  * Missing access is not treated as public.
  * @example
@@ -369,6 +398,7 @@ export function LintValidationCatalogPage() {
   const [exchangeProfileFilter, setExchangeProfileFilter] = useState<
     'all' | ExchangeProfileId
   >('all');
+  const [listedProfileOnly, setListedProfileOnly] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>('code');
   const [entries, setEntries] = useState<LintIssueCatalogEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -443,14 +473,30 @@ export function LintValidationCatalogPage() {
     const levelKey = levelFilter === 'all' ? null : levelFilter;
     const typeKey = issueTypeFilter === 'all' ? null : issueTypeFilter;
     const accessKey = sourceAccessFilter === 'all' ? null : sourceAccessFilter;
+    const semanticSelected = semanticProfileFilter !== 'all';
+    const exchangeSelected = exchangeProfileFilter !== 'all';
     const filtered = entries.filter(
       (entry) =>
         entryMatchesLevelFilter(entry, levelKey) &&
         entryMatchesTypeFilter(entry, typeKey) &&
-        entryMatchesAccessFilter(entry, accessKey),
+        entryMatchesAccessFilter(entry, accessKey) &&
+        entryMatchesListedProfileFilter(entry, {
+          listedOnly: listedProfileOnly,
+          semanticSelected,
+          exchangeSelected,
+        }),
     );
     return [...filtered].sort((a, b) => compareEntries(a, b, sortBy));
-  }, [entries, levelFilter, issueTypeFilter, sourceAccessFilter, sortBy]);
+  }, [
+    entries,
+    levelFilter,
+    issueTypeFilter,
+    sourceAccessFilter,
+    listedProfileOnly,
+    semanticProfileFilter,
+    exchangeProfileFilter,
+    sortBy,
+  ]);
 
   return (
     <div
@@ -592,6 +638,18 @@ export function LintValidationCatalogPage() {
                   </option>
                 ))}
               </select>
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+              <input
+                type="checkbox"
+                className="rounded border"
+                checked={listedProfileOnly}
+                disabled={!usesLintIssueCatalog}
+                data-testid="lint-validation-catalog-listed-profile-only"
+                aria-label={LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY}
+                onChange={(e) => setListedProfileOnly(e.target.checked)}
+              />
+              {LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY}
             </label>
             <label className="text-sm text-gray-700 dark:text-gray-300">
               {LINT_VALIDATION_CATALOG_SORT_LABEL}
