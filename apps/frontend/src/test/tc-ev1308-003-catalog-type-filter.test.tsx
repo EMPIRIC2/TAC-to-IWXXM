@@ -9,6 +9,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   CONVERSION_TYPE_OPTIONS,
+  DISSEMINATION_TYPE_OPTIONS,
   EV062_TYPE_OPTIONS,
   LintValidationCatalogPage,
   ALL_FAMILY_TYPE_OPTIONS,
@@ -35,6 +36,9 @@ describe('TC-EV1308-003 family-aware type filter', () => {
   it('typeOptionsForFamily returns EV-062 for decoding and conversion set for conversion', () => {
     expect(typeOptionsForFamily('decoding')).toEqual([...EV062_TYPE_OPTIONS]);
     expect(typeOptionsForFamily('conversion')).toEqual([...CONVERSION_TYPE_OPTIONS]);
+    expect(typeOptionsForFamily('dissemination')).toEqual([
+      ...DISSEMINATION_TYPE_OPTIONS,
+    ]);
     expect(typeOptionsForFamily('lint')).toEqual([...EV062_TYPE_OPTIONS]);
     expect(typeOptionsForFamily('iwxxm')).toEqual([...EV062_TYPE_OPTIONS]);
     expect(typeOptionsForFamily('all')).toEqual([...ALL_FAMILY_TYPE_OPTIONS]);

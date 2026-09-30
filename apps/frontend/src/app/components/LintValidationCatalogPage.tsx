@@ -69,6 +69,9 @@ export const EV062_TYPE_OPTIONS = [
 /** Conversion family type filter (D-REQ-05). */
 export const CONVERSION_TYPE_OPTIONS = ['all', 'profile', 'policy', 'other'] as const;
 
+/** Dissemination family type filter. Exchange rows ship as ``profile``. */
+export const DISSEMINATION_TYPE_OPTIONS = ['all', 'profile', 'other'] as const;
+
 /**
  * Type options for Family=All: EV-062 ∪ {profile, policy} (D-TP-03).
  * ``other`` already in EV-062.
@@ -96,6 +99,9 @@ export const ALL_FAMILY_TYPE_OPTIONS = [
 export function typeOptionsForFamily(family: FamilyFilter): readonly string[] {
   if (family === 'conversion') {
     return CONVERSION_TYPE_OPTIONS;
+  }
+  if (family === 'dissemination') {
+    return DISSEMINATION_TYPE_OPTIONS;
   }
   if (family === 'all') {
     return ALL_FAMILY_TYPE_OPTIONS;
