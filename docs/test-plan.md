@@ -132,6 +132,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-080          | F7.v / F9 (EV-1307 / #1308)                                  | Enriched Decoding & Conversion rule-catalog rows                                                                                                                                                                                                           | T0/T2; H4–H5 if wire breaks       | TC-EV1308-001..004                                                                       |
 | UJ-081          | F7.v (EV-1312 / #1312)                                       | Optional Only rules that list this profile catalog checkbox                                                                                                                                                                                                | T0; H4–H5 if wire/copy needs smoke | TC-EV1312-001                                                                            |
 | UJ-082          | F7.v (EV-1313 / #1313)                                       | Workbench console lint codes deep-link to Rule catalogs                                                                                                                                                                                                    | T0; H4–H5 if wire/copy needs smoke | TC-EV1313-001                                                                            |
+| UJ-083          | F7 (EV-1314 / #1314)                                         | Conversion Parameters bar values are sent on hard Convert, live preview, and bulletin convert                                                                                                                                                              | T0; same multipart fields | TC-EV1314-001                                                                            |
 | UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
 | UJ-DEV-011      | F2/F6/F9/F12/F14/F15 (EV-yaml-full-configurability / #1226) | Full YAML end-state incl. convert emit (ADR-047); templates; pin↔SCH                                                                                                                                                                                         | H4–H5 **N/A** unless UI/OpenAPI   | TC-EVYFC-001..005 (+ TC-EVYEC-004 retained)                                              |
@@ -3195,6 +3196,18 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   from full #996 detail drawer
 - **Source**: #1313; epic #1307; related #996
 - **Automated**: `tc-ev1313-001-console-catalog-deep-link.test.tsx`
+
+### TC-EV1314-001: Conversion params bar on convert calls
+
+- **Level**: T0
+- **Objective**: Bulletin ID, log level, nil reasons, and on-error behavior from the
+  Conversion Parameters bar appear on hard Convert and live preview requests. Bulletin
+  convert forwards residuals, extensions, and a bearer token.
+- **Pass criteria**: UJ-083; soft-preview and live preview keep validation off; blank
+  identifiers are omitted; operator copy stays free of planning ids
+- **Source**: #1314; epic #1307; ADR-023; ADR-024
+- **Automated**: `convertParams.test.ts`; `conversion-parameters-mapping.workflow.test.tsx`;
+  `api.test.ts`
 
 ### TC-EV1120-010: Profiles page glanceable summary composition
 

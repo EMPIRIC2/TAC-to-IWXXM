@@ -1474,6 +1474,33 @@ describe('API Utils', () => {
       expect(body.get('propagate_residuals_to_remarks')).toBe('false');
     });
 
+    it('sends extensions and bearer on convert-bulletin', async () => {
+      mockFetchResponse({
+        bulletin_meta: {
+          ahl: 'SAUS31 KZNY 121200',
+          report_count: 0,
+          tt: 'SA',
+          aa: 'US',
+          cccc: 'KZNY',
+          yygggg: '121200',
+        },
+        results: [],
+      });
+      await convertBulletin({
+        product: 'METAR',
+        manualText: 'SAUS31',
+        extensions: ['IWXXM_CA', '  '],
+        accessToken: 'bulletin-token',
+      });
+      const call = (global.fetch as ReturnType<typeof vi.fn>).mock.calls[0]!;
+      const init = call[1] as {
+        body: FormData;
+        headers?: { Authorization?: string };
+      };
+      expect(init.body.getAll('extensions')).toEqual(['IWXXM_CA']);
+      expect(init.headers?.Authorization).toBe('Bearer bulletin-token');
+    });
+
     it('throws on convert-bulletin HTTP error with detail.message', async () => {
       mockFetchResponse({ detail: { message: 'bulletin too large' } }, false, 400);
       await expect(

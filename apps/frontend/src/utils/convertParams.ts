@@ -67,6 +67,96 @@ export function mapOnErrorToStopOnError(onError: ConvertOnError): boolean {
   return onError === 'fail';
 }
 
+/**
+ * Operator Conversion Parameters bar values that map onto convert multipart fields.
+ */
+export interface ConvertParamsBar {
+  bulletinId: string;
+  issuingCenter: string;
+  reportVariant: string;
+  profile: string;
+  exchangeProfile: string;
+  presetId: string;
+  conversionLibraryId: string;
+  tacValidationLibraryId: string;
+  iwxxmValidationLibraryId: string;
+  disseminationLibraryId: string;
+  decodingLibraryId: string;
+  iwxxmVersion: string;
+  strictValidation: boolean;
+  includeNilReasons: boolean;
+  onError: ConvertOnError;
+  logLevel: ConvertLogLevel;
+}
+
+/**
+ * Multipart-bound fields shared by hard Convert and live preview.
+ *
+ * Soft-preview forces validation off. Empty strings are omitted by the caller
+ * via {@link optionalTrim}.
+ *
+ * @example
+ * const _ = true;
+ */
+export function optionalTrim(value: string | undefined): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : undefined;
+}
+
+/**
+ * Map the Conversion Parameters bar onto `/convert` request fields.
+ *
+ * @example
+ * const _ = true;
+ */
+export function convertFieldsFromParamsBar(
+  bar: ConvertParamsBar,
+  options: { softPreview: boolean; propagateResidualsToRemarks: boolean },
+): {
+  bulletinId?: string;
+  issuingCenter?: string;
+  reportVariant?: string;
+  profile: string;
+  exchangeProfile: string;
+  presetId?: string;
+  conversionLibraryId?: string;
+  tacValidationLibraryId?: string;
+  iwxxmValidationLibraryId?: string;
+  disseminationLibraryId?: string;
+  decodingLibraryId?: string;
+  iwxxmVersion: string;
+  validateOutput: boolean;
+  validationLevel: 'basic' | 'comprehensive';
+  stopOnError: boolean;
+  includeNilReasons: boolean;
+  logLevel: ConvertLogLevel;
+  preview: boolean;
+  propagateResidualsToRemarks: boolean;
+} {
+  const validation = mapStrictToValidation(bar.strictValidation, options.softPreview);
+  return {
+    bulletinId: optionalTrim(bar.bulletinId),
+    issuingCenter: optionalTrim(bar.issuingCenter),
+    reportVariant: optionalTrim(bar.reportVariant),
+    profile: bar.profile,
+    exchangeProfile: bar.exchangeProfile,
+    presetId: optionalTrim(bar.presetId),
+    conversionLibraryId: optionalTrim(bar.conversionLibraryId),
+    tacValidationLibraryId: optionalTrim(bar.tacValidationLibraryId),
+    iwxxmValidationLibraryId: optionalTrim(bar.iwxxmValidationLibraryId),
+    disseminationLibraryId: optionalTrim(bar.disseminationLibraryId),
+    decodingLibraryId: optionalTrim(bar.decodingLibraryId),
+    iwxxmVersion: bar.iwxxmVersion,
+    validateOutput: validation.validateOutput,
+    validationLevel: validation.validationLevel,
+    stopOnError: mapOnErrorToStopOnError(bar.onError),
+    includeNilReasons: bar.includeNilReasons,
+    logLevel: bar.logLevel,
+    preview: options.softPreview,
+    propagateResidualsToRemarks: options.propagateResidualsToRemarks,
+  };
+}
+
 const LINE_RANK: Record<ConsoleLineLevel, number> = {
   info: 1,
   warn: 2,
