@@ -151,9 +151,9 @@ export function WorkbenchConsole({
   const catalogTagOptions = catalogTagOptionsFromEntries(catalogEntries);
   const openCatalogCode =
     onOpenCatalogCode ??
-    (onOpenCatalog
+    (onOpenCatalog && catalogByCode
       ? (code: string) =>
-          maybeOpenCatalogForLintCode(onOpenCatalog, catalogByCode ?? new Map(), code)
+          maybeOpenCatalogForLintCode(onOpenCatalog, catalogByCode, code)
       : undefined);
 
   return (
