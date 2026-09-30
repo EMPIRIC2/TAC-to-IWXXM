@@ -24,6 +24,23 @@ export const QUALITY_METRICS_DETAIL_LOAD_FAILED = 'Failed to load file detail';
 export const QUALITY_METRICS_DETAIL_LOADING = 'Loading file detail…';
 
 /**
+ * Engine noise that must not be shown as a product validation failure.
+ *
+ * XPath engine errors and unresolved schema-import warnings are not operator
+ * findings against the converted bulletin.
+ * @example
+ * const _ = true;
+ */
+export function isOperatorValidateNoise(issue: Record<string, unknown>): boolean {
+  const code = typeof issue.code === 'string' ? issue.code.trim() : '';
+  const message = typeof issue.message === 'string' ? issue.message.trim() : '';
+  if (code === 'SCHEMATRON_XPATH_UNSUPPORTED' || code === 'SCHEMA_IMPORT_WARNING') {
+    return true;
+  }
+  return message.startsWith('XPath error');
+}
+
+/**
  * Plain-language match status for list/detail headers.
  *
  * @param status - API `match_status` value

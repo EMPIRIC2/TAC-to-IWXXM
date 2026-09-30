@@ -30,6 +30,7 @@ import {
 import { validateDispositionChips } from '@/utils/validateDispositionChips';
 import {
   formatMatchStatusLabel,
+  isOperatorValidateNoise,
   QUALITY_METRICS_DEFERRED_LABEL,
 } from '@/utils/qualityMetricsCopy';
 import { Card } from './ui/card';
@@ -411,7 +412,7 @@ export function QualityMetricsDetail({
         )}
       </Card>
 
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid min-w-0 gap-4 md:grid-cols-3">
         <DiagnosticsPane
           title="Residuals"
           help={QUALITY_METRICS_RESIDUALS_HELP}
@@ -433,7 +434,9 @@ export function QualityMetricsDetail({
           title="Validation issues"
           help={QUALITY_METRICS_VALIDATE_HELP}
           testId="quality-metrics-pane-validate"
-          items={detail.validate_issues ?? []}
+          items={(detail.validate_issues ?? []).filter(
+            (item) => !isOperatorValidateNoise(item),
+          )}
         />
       </div>
     </section>
@@ -488,7 +491,7 @@ function DiagnosticsPane({
   foldStatus?: string;
 }) {
   return (
-    <Card className="p-3" data-testid={testId}>
+    <Card className="min-w-0 overflow-hidden p-3" data-testid={testId}>
       <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-gray-100">
         {title}
       </h3>
@@ -509,11 +512,11 @@ function DiagnosticsPane({
           {QUALITY_METRICS_EMPTY_DIAGNOSTICS}
         </p>
       ) : (
-        <ul className="space-y-2 text-xs text-gray-800 dark:text-gray-200">
+        <ul className="max-h-80 space-y-2 overflow-auto text-xs text-gray-800 dark:text-gray-200">
           {items.map((item, index) => (
             <li
               key={index}
-              className="rounded border border-gray-200 bg-gray-50 p-2 font-mono dark:border-gray-700 dark:bg-gray-950"
+              className="min-w-0 overflow-x-auto whitespace-pre-wrap break-all rounded border border-gray-200 bg-gray-50 p-2 font-mono dark:border-gray-700 dark:bg-gray-950"
             >
               {formatDiagnostic(item)}
             </li>

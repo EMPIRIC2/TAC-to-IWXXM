@@ -37,7 +37,35 @@ def test_helpers() -> None:
     assert lint[0]["location"] == "loc"
     val = mod._serialize_validate_issues([issue])
     assert val[0]["layer"] == "xsd"
+    noise = SimpleNamespace(
+        severity="error",
+        code="SCHEMATRON_XPATH_UNSUPPORTED",
+        message="XPath error: id",
+        layer="schematron",
+    )
+    xpath = SimpleNamespace(
+        severity="error",
+        code="OTHER",
+        message="XPath error: gml:id",
+        layer="schematron",
+    )
+    assert mod._serialize_validate_issues([noise, xpath, issue]) == val
+    import_warn = SimpleNamespace(
+        severity="warning",
+        code="SCHEMA_IMPORT_WARNING",
+        message="unresolved",
+        layer="xsd",
+    )
+    bare = SimpleNamespace(severity="error", layer="xsd")
+    assert mod._is_spurious_validate_issue(import_warn) is True
+    assert mod._is_spurious_validate_issue(bare) is False
     assert mod._error_count([{"severity": "error"}, {"severity": "warn"}]) == 1
+    kept = SimpleNamespace(start=1, end=4, text=" QFE ")
+    blank = SimpleNamespace(start=0, end=0, text="   ")
+    missing = SimpleNamespace(start=0, end=0)
+    assert mod._serialize_residuals([kept, blank, missing]) == [
+        {"start": 1, "end": 4, "text": " QFE "}
+    ]
 
 
 def test_build_summaries_all_branches() -> None:
@@ -79,7 +107,7 @@ def test_build_summaries_all_branches() -> None:
     assert by["metar"]["lint_fail"] == 1
     assert by["metar"]["validate_fail"] == 1
     assert by["metar"]["pair_examples"] == 1
-    assert by["metar"]["unpaired_examples"] == 2
+    assert by["metar"]["unpaired_examples"] == 1
 
 
 def test_generate_corpus_metrics_branches(
