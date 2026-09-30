@@ -106,7 +106,7 @@ export function typeOptionsForFamily(family: FamilyFilter): readonly string[] {
   if (family === 'all') {
     return ALL_FAMILY_TYPE_OPTIONS;
   }
-  // lint / iwxxm / decoding / dissemination — EV-062 (TAC/IWXXM unchanged)
+  // lint / iwxxm / decoding — TAC/IWXXM type list
   return EV062_TYPE_OPTIONS;
 }
 
