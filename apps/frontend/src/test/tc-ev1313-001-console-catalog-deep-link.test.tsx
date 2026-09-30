@@ -104,9 +104,10 @@ describe('TC-EV1313-001 console → catalog deep link', () => {
   });
 
   it('ignores a repeated focusCode after it was already handled', async () => {
+    const user = userEvent.setup();
     const onFocusHandled = vi.fn();
     HTMLElement.prototype.scrollIntoView = vi.fn();
-    const { rerender } = render(
+    render(
       <LintValidationCatalogPage
         focusCode="MISSING_TERMINATOR"
         initialFamily="lint"
@@ -117,12 +118,10 @@ describe('TC-EV1313-001 console → catalog deep link', () => {
     await vi.waitFor(() => {
       expect(onFocusHandled).toHaveBeenCalledTimes(1);
     });
-    rerender(
-      <LintValidationCatalogPage
-        focusCode="MISSING_TERMINATOR"
-        initialFamily="lint"
-        onFocusHandled={onFocusHandled}
-      />,
+    // Changing a client filter re-runs the focus effect with the same code; ref short-circuits.
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-level-filter'),
+      'error',
     );
     await vi.waitFor(() => {
       expect(onFocusHandled).toHaveBeenCalledTimes(1);

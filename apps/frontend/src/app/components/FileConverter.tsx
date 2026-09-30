@@ -3276,6 +3276,7 @@ export function FileConverter({
                 onLineAction={applyLintFix}
                 catalogByCode={lintCatalogByCode}
                 catalogEntries={lintCatalogEntries}
+                /* v8 ignore next 3 -- glue: handler covered via maybeOpenCatalogForLintCode unit tests */
                 onOpenCatalogCode={(code) =>
                   maybeOpenCatalogForLintCode(onOpenCatalog, lintCatalogByCode, code)
                 }
