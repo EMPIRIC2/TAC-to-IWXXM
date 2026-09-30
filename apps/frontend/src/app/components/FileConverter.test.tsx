@@ -1433,6 +1433,7 @@ describe('FileConverter Component', () => {
       });
 
       const { container } = render(<FileConverter {...defaultProps} />);
+      fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
       const convertBtn = screen.getByTestId('convert-button');
       expect(convertBtn).toBeDisabled();
 
@@ -3024,6 +3025,7 @@ describe('FileConverter Component', () => {
       });
 
       const { container } = render(<FileConverter {...defaultProps} />);
+      fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
       const convertAndSendBtn = screen.getByTestId('convert-and-send-button');
       expect(convertAndSendBtn).toBeDisabled();
 
@@ -3604,6 +3606,7 @@ describe('FileConverter Component', () => {
       });
 
       render(<FileConverter {...defaultProps} />);
+      fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
       await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
       await user.type(screen.getByTestId('tac-editor'), ahlSample);
       await user.click(screen.getByTestId('convert-button'));

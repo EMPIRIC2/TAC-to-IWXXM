@@ -188,6 +188,7 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   it('sends selected product, conversionLibraryId, and version on convert (ICAO METAR)', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
@@ -230,6 +231,7 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   it('sends US_FAA_NWS conversionLibraryId when selected', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
@@ -266,6 +268,7 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   it('auto product resolves to detected keyword before API call', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
@@ -296,6 +299,7 @@ describe('T8.1 / TC-F6-001: F6.e product + Conversion library + version pickers'
   it('warns when explicit product differs from auto-detect but still converts', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
