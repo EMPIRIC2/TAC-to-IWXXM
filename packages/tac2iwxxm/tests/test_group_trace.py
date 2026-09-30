@@ -43,6 +43,8 @@ def test_occurrence_shares_an_element_or_opens_a_new_one() -> None:
     assert _occurrence({}, "changeForecast", "next") == 0
     assert _occurrence({"changeForecast": 1}, "changeForecast", "next") == 1
     assert _occurrence({}, "cloud", "emit") == 0
+    assert _occurrence({}, "phenomenonProperty", "second") == 1
+    assert _occurrence({"phenomenonProperty": 2}, "phenomenonProperty", "second") == 1
     assert _emits_for("missing", "wind", "18004KT") == ()
     assert _emits_for("taf", "equal", "=") == ()
 
@@ -100,6 +102,25 @@ def test_trace_follows_other_products_into_the_preview() -> None:
     )
     for product, path in cases:
         _assert_first_elements_exist(path.read_text(), product)
+    sigmet = (_FIXTURES / "product_matrix" / "sigmet_basic.tac").read_text()
+    sigmet_rows = trace_emitted_groups(sigmet, "SIGMET")
+    office = next(row for row in sigmet_rows if row["token"] == "YUSO-")
+    assert office["element"] == "originatingMeteorologicalWatchOffice"
+    storm = next(row for row in sigmet_rows if row["token"] == "TS")
+    assert storm["element"] == "analysisCollection"
+    assert storm["occurrence"] == 0
+    latitude = next(row for row in sigmet_rows if row["token"] == "N54")
+    assert latitude["element"] == "analysisCollection"
+    airmet = (_FIXTURES / "product_matrix" / "airmet_basic.tac").read_text()
+    isolated = next(row for row in trace_emitted_groups(airmet, "AIRMET") if row["token"] == "TS")
+    assert isolated["element"] == "analysis"
+    vona = (_FIXTURES / "annex3_golden" / "vona_a7_1.tac").read_text()
+    ash = next(row for row in trace_emitted_groups(vona, "VONA") if row["token"].startswith("VA CLD HGT"))
+    assert ash["element"] == "phenomenonProperty"
+    assert ash["occurrence"] == 1
+    onset = next(row for row in trace_emitted_groups(vona, "VONA") if row["token"].startswith("ONSET"))
+    assert onset["element"] == "Volcano"
+    assert onset["occurrence"] == 0
 
 
 def test_trace_returns_empty_when_the_pack_is_missing(

@@ -146,6 +146,11 @@ _VONA_RULES: dict[str, tuple[_Emit, ...]] = {
     "previous_colour_code": (("previousColourCode", "line", "emit"),),
     "svo": (("originatingCentre", "block", "emit"),),
     "act_sts": (("activityStatus", "line", "emit"),),
+    "onset": (("Volcano", "block", "previous"),),
+    "dur": (("Volcano", "block", "previous"),),
+    "va_cld_hgt": (("phenomenonProperty", "block", "second"),),
+    "hgt_source": (("phenomenonProperty", "block", "second"),),
+    "mov": (("phenomenonProperty", "block", "second"),),
     "ctc": (("contacts", "line", "emit"),),
     "rmk": (("remarks", "line", "emit"),),
     "nxt_notice": (("nextNotice", "line", "emit"),),
@@ -172,6 +177,8 @@ _PACK_RULES: dict[str, dict[str, tuple[_Emit, ...]]] = {
 }
 
 _BARE_CLOUD = frozenset({"NSC", "SKC", "CLR"})
+_SIGMET_PACKS = frozenset({"sigmet", "va_sigmet", "tc_sigmet", "airmet"})
+_BODY_RULES = frozenset({"token", "fir", "sequence", "at_marker", "zulu_time"})
 
 
 class GroupTraceRow(TypedDict):
@@ -235,6 +242,44 @@ def _emits_for(pack_id: str, rule_id: str, token: str) -> tuple[_Emit, ...]:
     return table.get(rule_id, ())
 
 
+def _body_emits(pack_id: str, rule_id: str, token: str, *, past_header: bool) -> tuple[_Emit, ...]:
+    """
+    Mark a SIGMET or AIRMET body group on the analysis the emitter writes.
+
+    The office token ending in ``-`` is the meteorological watch office. Later
+    free tokens share one analysis block.
+
+    Parameters
+    ----------
+    pack_id :
+        Builtin pack id.
+    rule_id :
+        Pack rule that matched the group.
+    token :
+        TAC text of the group.
+    past_header :
+        True after the validity period has been matched.
+
+    Returns
+    -------
+    tuple[_Emit, ...]
+        Element rows, or empty when the group is not a body token.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (_body_emits)
+    2
+    """
+    if pack_id not in _SIGMET_PACKS:
+        return ()
+    if rule_id == "token" and token.strip().endswith("-"):
+        return (("originatingMeteorologicalWatchOffice", "block", "emit"),)
+    if past_header and rule_id in _BODY_RULES:
+        element = "analysis" if pack_id == "airmet" else "analysisCollection"
+        return ((element, "block", "next"),)
+    return ()
+
+
 def _occurrence(counts: dict[str, int], name: str, mode: str) -> int:
     """
     Number of earlier elements with this name, then record a newly opened one.
@@ -247,6 +292,7 @@ def _occurrence(counts: dict[str, int], name: str, mode: str) -> int:
         Element local name.
     mode :
         ``emit`` opens one. ``next`` and ``previous`` share an open element.
+        ``second`` marks the second element of that name.
 
     Returns
     -------
@@ -262,6 +308,9 @@ def _occurrence(counts: dict[str, int], name: str, mode: str) -> int:
         return counts.get(name, 0)
     if mode == "previous":
         return max(counts.get(name, 1) - 1, 0)
+    if mode == "second":
+        counts[name] = max(counts.get(name, 0), 2)
+        return 1
     occurrence = counts.get(name, 0)
     counts[name] = occurrence + 1
     return occurrence
@@ -307,9 +356,14 @@ def trace_emitted_groups(tac: str, product: str) -> list[GroupTraceRow]:
 
     counts: dict[str, int] = {}
     rows: list[GroupTraceRow] = []
+    past_header = False
     for span in matched.spans:
         token = tac[span.start : span.end]
-        emits = _emits_for(pack_id, span.rule_id, token)
+        if pack_id in _SIGMET_PACKS and span.rule_id == "valid_period":
+            past_header = True
+        emits = _body_emits(pack_id, span.rule_id, token, past_header=past_header)
+        if not emits:
+            emits = _emits_for(pack_id, span.rule_id, token)
         for element, scope, mode in emits:
             name = token if element == "REPORT" else element
             rows.append(
