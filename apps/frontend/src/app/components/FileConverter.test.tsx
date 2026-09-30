@@ -5799,6 +5799,7 @@ describe('FileConverter Component', () => {
         });
 
       render(<FileConverter {...defaultProps} />);
+      fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
       await user.type(screen.getByTestId('tac-editor'), tacA);
       await user.click(screen.getByTestId('convert-button'));
 
@@ -5841,6 +5842,7 @@ describe('FileConverter Component', () => {
         .mockRejectedValueOnce(new Error('network down'));
 
       render(<FileConverter {...defaultProps} />);
+      fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
       await user.type(screen.getByTestId('tac-editor'), tacA);
       await user.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
