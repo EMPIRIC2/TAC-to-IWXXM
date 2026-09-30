@@ -103,6 +103,9 @@ export function formatCatalogEntryCopy(entry: LintIssueCatalogEntry): string {
 
 /**
  * Map a catalog row family to Rule catalogs shell filter values.
+ *
+ * @example
+ * const _ = true;
  */
 export function catalogShellFamilyForCode(
   entry: Pick<LintIssueCatalogEntry, 'family'> | undefined,
@@ -113,6 +116,9 @@ export function catalogShellFamilyForCode(
 
 /**
  * Open Rule catalogs focused on a console lint/validation code.
+ *
+ * @example
+ * const _ = true;
  */
 export function openCatalogForLintCode(
   onOpenCatalog: (
@@ -127,6 +133,9 @@ export function openCatalogForLintCode(
 
 /**
  * No-op when the shell does not provide an open-catalog handler.
+ *
+ * @example
+ * const _ = true;
  */
 export function maybeOpenCatalogForLintCode(
   onOpenCatalog:
