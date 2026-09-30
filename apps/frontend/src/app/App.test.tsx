@@ -65,7 +65,10 @@ vi.mock('./components/FileConverter', () => ({
     onNewMetar?: () => void;
     onSessionUpdated?: (s: WorkSession) => void;
     onActiveSessionIdChange?: (id: string | null) => void;
-    onOpenCatalog?: () => void;
+    onOpenCatalog?: (
+      family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+      code?: string,
+    ) => void;
     isGuest?: boolean;
   }) => (
     <div data-testid="file-converter">
@@ -98,6 +101,13 @@ vi.mock('./components/FileConverter', () => ({
         onClick={() => onOpenCatalog?.()}
       >
         Catalog
+      </button>
+      <button
+        type="button"
+        data-testid="open-catalog-with-code"
+        onClick={() => onOpenCatalog?.('lint', 'MISSING_TERMINATOR')}
+      >
+        Catalog with code
       </button>
       <button
         type="button"
@@ -356,7 +366,29 @@ vi.mock('./components/QualityMetricsPage', () => ({
 }));
 
 vi.mock('./components/LintValidationCatalogPage', () => ({
-  LintValidationCatalogPage: () => <div data-testid="lint-validation-catalog-page" />,
+  LintValidationCatalogPage: ({
+    focusCode,
+    initialFamily,
+    onFocusHandled,
+  }: {
+    focusCode?: string;
+    initialFamily?: 'lint' | 'iwxxm';
+    onFocusHandled?: () => void;
+  }) => (
+    <div
+      data-testid="lint-validation-catalog-page"
+      data-focus-code={focusCode ?? ''}
+      data-focus-family={initialFamily ?? ''}
+    >
+      <button
+        type="button"
+        data-testid="catalog-focus-handled"
+        onClick={() => onFocusHandled?.()}
+      >
+        Focus handled
+      </button>
+    </div>
+  ),
 }));
 
 vi.mock('./components/DisseminationOpsPage', () => ({
@@ -854,6 +886,19 @@ describe('App Component (F31 optional Auth)', () => {
     await user.click(screen.getByTestId('load-session-fc'));
     await user.click(screen.getByTestId('open-catalog'));
     expect(screen.getByTestId('lint-validation-catalog-page')).toBeInTheDocument();
+  });
+
+  it('opens catalog with focus code from console deep link', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+    await user.click(screen.getByTestId('open-catalog-with-code'));
+    const page = screen.getByTestId('lint-validation-catalog-page');
+    expect(page).toHaveAttribute('data-focus-code', 'MISSING_TERMINATOR');
+    await user.click(screen.getByTestId('catalog-focus-handled'));
+    expect(screen.getByTestId('lint-validation-catalog-page')).toHaveAttribute(
+      'data-focus-code',
+      '',
+    );
   });
 
   it('auth callback wires login/register/verified', async () => {

@@ -100,3 +100,13 @@ export function formatCatalogEntryCopy(entry: LintIssueCatalogEntry): string {
   }
   return parts.join(' ');
 }
+
+/**
+ * Map a catalog row family to Rule catalogs shell filter values.
+ */
+export function catalogShellFamilyForCode(
+  entry: Pick<LintIssueCatalogEntry, 'family'> | undefined,
+): 'lint' | 'iwxxm' | undefined {
+  const familyRaw = entry?.family;
+  return familyRaw === 'iwxxm' || familyRaw === 'lint' ? familyRaw : undefined;
+}

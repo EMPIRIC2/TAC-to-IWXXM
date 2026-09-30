@@ -87,4 +87,19 @@ describe('TC-EV1313-001 console → catalog deep link', () => {
     expect(row.className).toMatch(/ring-sky/);
     expect(onFocusHandled).toHaveBeenCalled();
   });
+
+  it('still calls onFocusHandled when focus code is absent from the list', async () => {
+    const onFocusHandled = vi.fn();
+    fetchLintIssueCatalog.mockResolvedValue({ issues: [ENTRY] });
+    render(
+      <LintValidationCatalogPage
+        focusCode="NOT_IN_CATALOG"
+        onFocusHandled={onFocusHandled}
+      />,
+    );
+    await screen.findByTestId('lint-validation-catalog-list');
+    await vi.waitFor(() => {
+      expect(onFocusHandled).toHaveBeenCalled();
+    });
+  });
 });

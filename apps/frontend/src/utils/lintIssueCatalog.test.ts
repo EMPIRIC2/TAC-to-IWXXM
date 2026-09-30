@@ -5,6 +5,7 @@
 
 import { describe, expect, it } from 'vitest';
 import {
+  catalogShellFamilyForCode,
   filterCatalogByTag,
   formatCatalogEntryCopy,
   indexCatalogByCode,
@@ -193,5 +194,18 @@ describe('lintIssueCatalog SIGMET/VA tag helpers (T5.1 / E19-17)', () => {
     expect(copy).toContain('SIGMET_CNL');
     expect(copy).toMatch(/tags:.*sigmet/i);
     expect(copy).toMatch(/product:\s*sigmet/i);
+  });
+});
+
+describe('catalogShellFamilyForCode', () => {
+  it('maps lint and iwxxm families', () => {
+    expect(catalogShellFamilyForCode({ family: 'lint' })).toBe('lint');
+    expect(catalogShellFamilyForCode({ family: 'iwxxm' })).toBe('iwxxm');
+  });
+
+  it('returns undefined for other or missing families', () => {
+    expect(catalogShellFamilyForCode(undefined)).toBeUndefined();
+    expect(catalogShellFamilyForCode({ family: 'conversion' })).toBeUndefined();
+    expect(catalogShellFamilyForCode({ family: null })).toBeUndefined();
   });
 });
