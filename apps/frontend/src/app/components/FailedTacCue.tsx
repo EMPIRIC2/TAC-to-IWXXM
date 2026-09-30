@@ -57,7 +57,7 @@ export function FailedTacCue({ failedSpans }: FailedTacCueProps) {
         <p className="mt-0.5 text-xs opacity-90">{primary.message}</p>
       ) : null}
       <p className="mt-1 text-xs opacity-80">
-        Soft-preview only — not a Schematron-passed publish.
+        Preview only. This result is not checked for publishing.
       </p>
     </div>
   );

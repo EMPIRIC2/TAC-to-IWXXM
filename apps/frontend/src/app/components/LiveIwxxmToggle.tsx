@@ -39,7 +39,7 @@ export function LiveIwxxmToggle({
       <span>
         <span className="font-medium">Live IWXXM</span>
         <span className="ml-1 text-gray-500 dark:text-gray-400">
-          (off by default — soft-preview while typing)
+          (off by default, preview while you type)
         </span>
       </span>
     </label>

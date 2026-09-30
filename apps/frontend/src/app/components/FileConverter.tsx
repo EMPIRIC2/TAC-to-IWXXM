@@ -104,6 +104,7 @@ import { optionalFormField } from '@/utils/optionalFormField';
 import { UserPreferencesDialog } from './UserPreferencesDialog';
 import { PrivacyNotice } from './PrivacyNotice';
 import { PrivacySettingsDialog } from './PrivacySettingsDialog';
+import { SiteTermsDialog } from './SiteTermsDialog';
 import {
   acknowledgePrivacyNotice,
   shouldShowPrivacyNotice,
@@ -718,6 +719,7 @@ export function FileConverter({
   const [isMassIngesting, setIsMassIngesting] = useState(false);
   const [isPreferencesDialogOpen, setIsPreferencesDialogOpen] = useState(false);
   const [isPrivacySettingsOpen, setIsPrivacySettingsOpen] = useState(false);
+  const [isSiteTermsOpen, setIsSiteTermsOpen] = useState(false);
   const [isLogoutMenuOpen, setIsLogoutMenuOpen] = useState(false);
   const [showPrivacyNotice, setShowPrivacyNotice] = useState(() =>
     shouldShowPrivacyNotice(),
@@ -1192,9 +1194,9 @@ export function FileConverter({
       setInputMode(detectedMode);
       toast.info(
         detectedMode === 'ahl_bulletin'
-          ? 'Detected AHL bulletin — switched input mode'
+          ? 'Detected an AHL bulletin. Switched input mode.'
           : detectedMode === 'collect_iwxxm'
-            ? 'Detected IWXXM COLLECT — switched input mode'
+            ? 'Detected an IWXXM COLLECT file. Switched input mode.'
             : 'Switched to TAC report mode',
       );
     }
@@ -1350,11 +1352,11 @@ export function FileConverter({
       if (mode === 'tac' && looksLikeAhlBulletin(tacForDetect)) {
         mode = 'ahl_bulletin';
         setInputMode('ahl_bulletin');
-        toast.info('Detected AHL bulletin — switched input mode');
+        toast.info('Detected an AHL bulletin. Switched input mode.');
       } else if (mode === 'tac' && looksLikeCollectIwxxm(tacForDetect)) {
         mode = 'collect_iwxxm';
         setInputMode('collect_iwxxm');
-        toast.info('Detected IWXXM COLLECT — switched input mode');
+        toast.info('Detected an IWXXM COLLECT file. Switched input mode.');
       }
 
       const resolvedProduct = resolveConvertProduct(
@@ -1600,7 +1602,7 @@ export function FileConverter({
         if (softFail) {
           setPreviewStatus('soft-fail');
           setPreviewSoftFailDetail(
-            'Some groups could not be converted. Fix the highlighted spans in the editor, then retry Soft-preview. This output is not for publish.',
+            'Some groups could not be converted. Fix the highlighted spans in the editor, then retry the preview. This output is not for publishing.',
           );
         } else {
           setPreviewStatus('passed');
@@ -1737,7 +1739,7 @@ export function FileConverter({
       if (result) {
         if (result.softFail) {
           toast.warning(
-            'Soft-preview returned Failed-TAC markers — not ready to publish',
+            'Soft preview found groups that failed. This result is not ready to publish.',
           );
         } else {
           toast.success(`Successfully converted ${result.files.length} file(s)`);
@@ -1776,7 +1778,9 @@ export function FileConverter({
 
       if (result.hasErrors) {
         if (result.softFail) {
-          toast.warning('Soft-preview Failed-TAC — fix markers before Convert & Send');
+          toast.warning(
+            'Soft preview found failed groups. Fix them before Convert & Send.',
+          );
         }
         await persistSession(
           buildSnapshot({
@@ -2269,7 +2273,7 @@ export function FileConverter({
           );
           setPreviewStatus('soft-fail');
           setPreviewSoftFailDetail(
-            'Some groups could not be converted. Fix the highlighted spans in the editor, then retry. This Soft preview is not for publish.',
+            'Some groups could not be converted. Fix the highlighted spans in the editor, then retry. This preview is not for publishing.',
           );
         } else if (response.ok !== false) {
           setFailedSpans([]);
@@ -2993,8 +2997,8 @@ export function FileConverter({
                     className="text-xs text-gray-600 dark:text-gray-400"
                     data-testid="product-profile-bar-summary"
                   >
-                    Encoding and packaging rules only — not destinations, credentials,
-                    or editable overlays.
+                    Encoding and packaging rules only. This does not set destinations,
+                    credentials, or editable overlays.
                   </p>
                   <details
                     key={profileGlanceEpoch}
@@ -3118,8 +3122,8 @@ export function FileConverter({
               {inputMode === 'collect_iwxxm' && (
                 <p className="mb-2 text-xs text-amber-800 dark:text-amber-200">
                   IWXXM COLLECT / FTBP path uses{' '}
-                  <code>POST /api/v1/ingest-collect</code> (placeholder — returns 501
-                  until member extract ships).
+                  <code>POST /api/v1/ingest-collect</code> (not available yet; the
+                  request returns 501 until member extract ships).
                 </p>
               )}
               {inputMode === 'validate_iwxxm' && (
@@ -3127,8 +3131,8 @@ export function FileConverter({
                   className="mb-2 text-xs text-gray-600 dark:text-gray-400"
                   data-testid="validate-iwxxm-help"
                 >
-                  Paste IWXXM XML or upload one <code>.xml</code> file. Runs layered
-                  validation only — no TAC conversion.
+                  Paste IWXXM XML or upload one <code>.xml</code> file. This checks the
+                  XML only. It does not convert TAC.
                 </p>
               )}
               {conversionParams.product === 'IWXXM' &&
@@ -3965,6 +3969,16 @@ export function FileConverter({
                   Privacy settings
                 </button>
               </p>
+              <p className="mt-2">
+                <button
+                  type="button"
+                  className="underline underline-offset-2 hover:text-gray-700 dark:hover:text-gray-200"
+                  onClick={() => setIsSiteTermsOpen(true)}
+                  aria-label="Open terms of service"
+                >
+                  Terms of service
+                </button>
+              </p>
             </div>
           </div>
           {onLoadWorkSession && (
@@ -4020,6 +4034,10 @@ export function FileConverter({
       <PrivacySettingsDialog
         isOpen={isPrivacySettingsOpen}
         onClose={() => setIsPrivacySettingsOpen(false)}
+      />
+      <SiteTermsDialog
+        isOpen={isSiteTermsOpen}
+        onClose={() => setIsSiteTermsOpen(false)}
       />
     </div>
   );

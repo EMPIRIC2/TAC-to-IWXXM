@@ -243,7 +243,7 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
     expect(screen.getByTestId('quality-metrics-match-status')).toHaveTextContent(
       'Differs from official',
     );
-    expect(screen.getByText(/Deferred — not scored yet/i)).toBeInTheDocument();
+    expect(screen.getByText(/Deferred, not scored yet/i)).toBeInTheDocument();
 
     rerender(
       <QualityMetricsDetail
@@ -255,7 +255,7 @@ describe('QualityMetricsDetail C14N panes (TC-EV055-001)', () => {
       />,
     );
     expect(screen.getByTestId('quality-metrics-match-status')).toHaveTextContent(
-      'Deferred — not scored yet',
+      'Deferred, not scored yet',
     );
   });
 

@@ -5,7 +5,7 @@
  */
 
 /** Operator-visible label for deferred / unscored files (AC5). */
-export const QUALITY_METRICS_DEFERRED_LABEL = 'Deferred — not scored yet';
+export const QUALITY_METRICS_DEFERRED_LABEL = 'Deferred, not scored yet';
 
 /** Page title — primary shell tab. */
 export const QUALITY_METRICS_PAGE_TITLE = 'Quality metrics';

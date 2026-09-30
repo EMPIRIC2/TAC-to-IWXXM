@@ -77,7 +77,7 @@ export function IwxxmPreviewPane({
             data-testid="iwxxm-preview-badge"
             className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-950 dark:bg-amber-950 dark:text-amber-100"
           >
-            Soft preview — not for publish
+            Soft preview, not for publishing
           </span>
         ) : null}
         {showSoftBadge && status === 'passed' ? (
