@@ -526,8 +526,7 @@ export function LintValidationCatalogPage({
       setHighlightedCode(focusCode);
       focusHandledRef.current = focusCode;
       onFocusHandled?.();
-      const timer = window.setTimeout(() => setHighlightedCode(null), 2500);
-      return () => window.clearTimeout(timer);
+      return undefined;
     }
     focusHandledRef.current = focusCode;
     onFocusHandled?.();
