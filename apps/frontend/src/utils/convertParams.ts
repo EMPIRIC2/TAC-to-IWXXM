@@ -69,6 +69,9 @@ export function mapOnErrorToStopOnError(onError: ConvertOnError): boolean {
 
 /**
  * Operator Conversion Parameters bar values that map onto convert multipart fields.
+ *
+ * @example
+ * const _ = true;
  */
 export interface ConvertParamsBar {
   bulletinId: string;
