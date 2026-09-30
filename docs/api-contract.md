@@ -511,6 +511,12 @@ lightweight catalog panel (F15). Does **not** change `POST /lint-tac` response s
 | `semantic_profile` | no | **EV-1120 / #1121** — canonical semantic profile id (uppercase OpenAPI ids; legacy aliases accepted if already on convert wire). Omit = all rows (current behavior). When set: return **shared/global ∪ rows applicable to that profile**; national-only codes for other profiles omitted. Unknown id → **400** (`invalid_semantic_profile` style). |
 | `exchange_profile` | no | **EV-1120 / #1121** — packaging-context filter only (not F16–F19 egress). Omit = ignore exchange tagging. When set: include shared ∪ rows tagged for that exchange profile. Unknown id → **400**. |
 
+**Operator UI (EV-1312 / #1312):** The Validation Issues Catalog may optionally hide
+unrestricted (empty-applicability) rows **client-side** when the operator checks
+“Only rules that list this profile” and a profile axis is selected. That checkbox does
+**not** change this endpoint’s default shared-union query semantics or add a required
+query param.
+
 **Response** (msgspec encode; pydantic OpenAPI alias):
 
 ```json

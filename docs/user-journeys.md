@@ -108,6 +108,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-072i-dissem | Author Dissemination — full edit no secrets | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
 | UJ-072i-overview | Overview compare + product/version enablement | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
 | UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
+| UJ-081 | Listed-profile-only catalog checkbox | apps/frontend | F7.v (EV-1312 / #1312) | T0; H4–H5 if wire/copy needs smoke |
 | UJ-076 | Five package-owned trust catalogs (tabbed) | apps/frontend / API | F7.v (ADR-044) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076a | Convert four-engine light selects + Send-drawer dissem (#1251) | apps/frontend / API | F7 / F9 / F16–F19 (ADR-044; EV-yaml-config-light-ux) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076b | Decode via `tac-decoding` parity | apps/frontend / API | F9 (ADR-044) | T0 / T2 / H4–H5 |
@@ -981,6 +982,35 @@ codes appear only under the matching semantic profile.
 **Automated tests**: TC-EV1120-001..009, TC-EV1120-018
 
 **Source**: EV-1120 / #1121–#1123
+
+---
+
+### UJ-081: Only rules that list this profile (EV-1312 / #1312)
+
+**Actor**: Operator (F21 public catalog OK)
+
+**Goal**: Optionally restrict the Validation Issues Catalog to rows that explicitly list the
+selected semantic or exchange profile, hiding unrestricted / all-profiles rows.
+
+**Feature**: F7.v (EV-1312 / #1312; parent epic #1307)
+
+**Steps**:
+
+1. Open Rule catalogs; leave **Only rules that list this profile** unchecked — shared ∪
+   matching behavior when Profile/Exchange filters are set (UJ-073).
+2. Select a Profile (e.g. `US_FAA_NWS`) and check the checkbox — unrestricted (empty
+   `semantic_profiles`) rows disappear; profile-listed rows remain.
+3. Uncheck — prior shared ∪ matching returns.
+4. With both Profile and Exchange = All, checkbox has no effect.
+5. Conversion / Dissemination / Decoding families: checkbox disabled with Profile/Exchange.
+
+**Acceptance**: TC-EV1312-001; EV-048 clean label; `/lint-issue-catalog` wire unchanged.
+
+**Tier**: T0; H4–H5 only if operator-visible wire/copy needs live smoke
+
+**Automated tests**: TC-EV1312-001
+
+**Source**: #1312; epic #1307
 
 ---
 

@@ -113,6 +113,7 @@ import {
   LINT_VALIDATION_CATALOG_EXCHANGE_LABEL,
   LINT_VALIDATION_CATALOG_FAMILY_LABEL,
   LINT_VALIDATION_CATALOG_LEVEL_LABEL,
+  LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY,
   LINT_VALIDATION_CATALOG_LOADING,
   LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
   LINT_VALIDATION_CATALOG_PAGE_TITLE,
@@ -365,6 +366,10 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     {
       id: 'lint-validation-catalog.exchange-all',
       text: LINT_VALIDATION_CATALOG_EXCHANGE_ALL,
+    },
+    {
+      id: 'lint-validation-catalog.listed-profile-only',
+      text: LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY,
     },
     {
       id: 'lint-validation-catalog.col-code',

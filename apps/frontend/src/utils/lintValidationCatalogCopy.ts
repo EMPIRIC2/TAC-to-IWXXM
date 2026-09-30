@@ -25,6 +25,9 @@ export const LINT_VALIDATION_CATALOG_PROFILE_LABEL = 'Profile';
 export const LINT_VALIDATION_CATALOG_EXCHANGE_LABEL = 'Exchange';
 export const LINT_VALIDATION_CATALOG_PROFILE_ALL = 'All profiles';
 export const LINT_VALIDATION_CATALOG_EXCHANGE_ALL = 'All exchange profiles';
+/** Optional filter: hide unrestricted (all-profiles) rows when a profile is selected. */
+export const LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY =
+  'Only rules that list this profile';
 
 /** Column headers (table / list). */
 export const LINT_VALIDATION_CATALOG_COL_CODE = 'Code';
