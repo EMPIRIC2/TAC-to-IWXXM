@@ -93,6 +93,44 @@ const doksApiHost =
 const doksFeHost = process.env.DOKS_FE_HOST || 'app.doks.placeholder.metar-iwxxm.local';
 const doksResolverRules = `MAP ${doksFeHost} ${doksLbIp}, MAP ${doksApiHost} ${doksLbIp}, EXCLUDE localhost`;
 
+const e2eDir = path.dirname(fileURLToPath(import.meta.url));
+
+const siteTermsPrefs = JSON.stringify({
+  schemaVersion: 2,
+  necessary: true,
+  analytics: false,
+  marketing: false,
+  workHistoryLocal: true,
+  saleOrSharingOptOut: false,
+  targetedAdvertisingOptOut: false,
+  noticeAcknowledgedAt: null,
+  noticeSchemaVersion: null,
+  termsAcknowledgedAt: '2026-01-01T00:00:00.000Z',
+});
+
+function siteTermsStorageStatePath(): string {
+  const origins = new Set<string>(['http://localhost:18000', 'http://127.0.0.1:18000']);
+  try {
+    origins.add(new URL(configuredBaseUrl).origin);
+  } catch {
+    // Keep the local origins when the base URL is not absolute.
+  }
+  const state = {
+    cookies: [],
+    origins: [...origins].map((origin) => ({
+      origin,
+      localStorage: [{ name: 'tac_privacy_preferences', value: siteTermsPrefs }],
+    })),
+  };
+  const outDir = path.join(e2eDir, 'test-results');
+  fs.mkdirSync(outDir, { recursive: true });
+  const outPath = path.join(outDir, 'site-terms-storage.json');
+  fs.writeFileSync(outPath, JSON.stringify(state));
+  return outPath;
+}
+
+const siteTermsStorageState = siteTermsStorageStatePath();
+
 /**
  * Playwright configuration for cross-app E2E tests (apps/e2e workspace).
  *
@@ -116,6 +154,7 @@ export default defineConfig({
 
   use: {
     baseURL: configuredBaseUrl,
+    storageState: siteTermsStorageState,
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

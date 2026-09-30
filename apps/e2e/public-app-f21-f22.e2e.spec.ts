@@ -43,7 +43,21 @@ test.describe('T7.1 — Public app + privacy (F21/F22)', () => {
   }) => {
     await page.goto('/');
     await page.evaluate(() => {
-      localStorage.removeItem('tac_privacy_preferences');
+      localStorage.setItem(
+        'tac_privacy_preferences',
+        JSON.stringify({
+          schemaVersion: 2,
+          necessary: true,
+          analytics: false,
+          marketing: false,
+          workHistoryLocal: true,
+          saleOrSharingOptOut: false,
+          targetedAdvertisingOptOut: false,
+          noticeAcknowledgedAt: null,
+          noticeSchemaVersion: null,
+          termsAcknowledgedAt: '2026-01-01T00:00:00.000Z',
+        }),
+      );
     });
     await page.reload();
     await expect(

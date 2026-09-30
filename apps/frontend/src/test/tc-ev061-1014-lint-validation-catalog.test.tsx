@@ -134,11 +134,13 @@ vi.mock('sonner', () => ({
 }));
 
 import App from '../app/App';
+import { acknowledgeSiteTerms } from '@/utils/privacyPreferences';
 
 describe('T5.1 / TC-EV061-1014: Validation Issues Catalog', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    acknowledgeSiteTerms();
     vi.stubEnv('VITE_API_BASE_URL', 'https://api.example.onrender.com');
   });
 

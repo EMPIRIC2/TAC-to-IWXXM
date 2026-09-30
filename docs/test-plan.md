@@ -3219,7 +3219,7 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Pass criteria**: UJ-084; Continue stays disabled until the checkbox is checked;
   operator copy has no planning ids
 - **Source**: #1315; epic #1307; F21; F22
-- **Automated**: `App.test.tsx`; `privacyPreferences.test.ts`
+- **Automated**: `App.test.tsx`; `privacyPreferences.test.ts`; `site-terms-gate.e2e.spec.ts`
 
 ### TC-EV1120-010: Profiles page glanceable summary composition
 
