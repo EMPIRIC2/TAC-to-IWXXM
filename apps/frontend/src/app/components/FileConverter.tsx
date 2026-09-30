@@ -24,7 +24,6 @@ import { LiveIwxxmToggle } from './LiveIwxxmToggle';
 import { StatusBanner } from './StatusBanner';
 import { WorkbenchConsole } from './WorkbenchConsole';
 import { useLintIssueCatalog } from '@/hooks/useLintIssueCatalog';
-import { maybeOpenCatalogForLintCode } from '@/utils/lintIssueCatalog';
 import {
   Upload,
   X,
@@ -3276,10 +3275,7 @@ export function FileConverter({
                 onLineAction={applyLintFix}
                 catalogByCode={lintCatalogByCode}
                 catalogEntries={lintCatalogEntries}
-                /* v8 ignore next 3 -- glue: handler covered via maybeOpenCatalogForLintCode unit tests */
-                onOpenCatalogCode={(code) =>
-                  maybeOpenCatalogForLintCode(onOpenCatalog, lintCatalogByCode, code)
-                }
+                onOpenCatalog={onOpenCatalog}
                 onClear={() => {
                   clearConsole();
                   appendConsole({

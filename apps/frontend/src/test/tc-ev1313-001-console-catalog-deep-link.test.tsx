@@ -68,6 +68,29 @@ describe('TC-EV1313-001 console → catalog deep link', () => {
     expect(onOpenCatalogCode).toHaveBeenCalledWith('MISSING_TERMINATOR');
   });
 
+  it('invokes onOpenCatalog via catalogByCode when onOpenCatalogCode is omitted', async () => {
+    const user = userEvent.setup();
+    const onOpenCatalog = vi.fn();
+    const byCode = new Map([['MISSING_TERMINATOR', ENTRY]]);
+    render(
+      <WorkbenchConsole
+        defaultOpen
+        lines={[
+          {
+            at: Date.now(),
+            level: 'warn',
+            source: 'lint',
+            message: 'Fix [MISSING_TERMINATOR] before publish',
+          },
+        ]}
+        catalogByCode={byCode}
+        onOpenCatalog={onOpenCatalog}
+      />,
+    );
+    await user.click(await screen.findByTestId('lint-code-tooltip-MISSING_TERMINATOR'));
+    expect(onOpenCatalog).toHaveBeenCalledWith('lint', 'MISSING_TERMINATOR');
+  });
+
   it('focuses and highlights the matching catalog row', async () => {
     const onFocusHandled = vi.fn();
     const scrollIntoView = vi.fn();

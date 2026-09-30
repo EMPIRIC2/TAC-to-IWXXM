@@ -12,6 +12,7 @@ import type { LintIssueCatalogEntry } from '@/utils/api';
 import {
   filterCatalogByTag,
   formatCatalogEntryCopy,
+  maybeOpenCatalogForLintCode,
   resolveLintIssueTooltip,
 } from '@/utils/lintIssueCatalog';
 import { consoleLevelPasses, type ConvertLogLevel } from '/utils/convertParams';
@@ -66,6 +67,11 @@ export interface WorkbenchConsoleProps {
   catalogEntries?: LintIssueCatalogEntry[];
   /** Open Rule catalogs focused on a console lint/validation code. */
   onOpenCatalogCode?: (code: string) => void;
+  /** Shell open-catalog handler (family + optional code). */
+  onOpenCatalog?: (
+    family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+    code?: string,
+  ) => void;
 }
 
 /**
@@ -133,6 +139,7 @@ export function WorkbenchConsole({
   catalogByCode,
   catalogEntries = [],
   onOpenCatalogCode,
+  onOpenCatalog,
 }: WorkbenchConsoleProps) {
   const [open, setOpen] = useState(defaultOpen);
   const [catalogOpen, setCatalogOpen] = useState(false);
@@ -142,6 +149,12 @@ export function WorkbenchConsole({
   );
   const filteredCatalog = filterCatalogByTag(catalogEntries, tagFilter);
   const catalogTagOptions = catalogTagOptionsFromEntries(catalogEntries);
+  const openCatalogCode =
+    onOpenCatalogCode ??
+    (onOpenCatalog
+      ? (code: string) =>
+          maybeOpenCatalogForLintCode(onOpenCatalog, catalogByCode ?? new Map(), code)
+      : undefined);
 
   return (
     <section
@@ -209,11 +222,7 @@ export function WorkbenchConsole({
                 <span className="text-gray-500 dark:text-gray-400">
                   [{line.source}]
                 </span>{' '}
-                {messageWithCodeTooltips(
-                  line.message,
-                  catalogByCode,
-                  onOpenCatalogCode,
-                )}
+                {messageWithCodeTooltips(line.message, catalogByCode, openCatalogCode)}
                 {line.action && onLineAction ? (
                   <button
                     type="button"
