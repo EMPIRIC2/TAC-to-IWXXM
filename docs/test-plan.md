@@ -135,6 +135,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-083          | F7 (EV-1314 / #1314)                                         | Conversion Parameters bar values are sent on hard Convert, live preview, and bulletin convert                                                                                                                                                              | T0; same multipart fields | TC-EV1314-001                                                                            |
 | UJ-084          | F21 / F22 (EV-1315 / #1315)                                  | Quality disclaimer and site terms block the public shell until acknowledged                                                                                                                                                                                | T0; client-only | TC-EV1315-001                                                                            |
 | UJ-085          | F7.q (EV-1316 / #1316)                                       | Quality metrics subtitle, diagnostic overflow, deferred/mismatch/residual honesty                                                                                                                                                                          | T0; existing routes | TC-EV1316-001                                                                            |
+| UJ-086          | F7.v / F16–F19 (EV-1317 / #1317)                             | Dissemination catalog rows have readable summaries and public source metadata                                                                                                                                                                              | T0; existing route | TC-EV1317-001                                                                            |
 | UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
 | UJ-DEV-011      | F2/F6/F9/F12/F14/F15 (EV-yaml-full-configurability / #1226) | Full YAML end-state incl. convert emit (ADR-047); templates; pin↔SCH                                                                                                                                                                                         | H4–H5 **N/A** unless UI/OpenAPI   | TC-EVYFC-001..005 (+ TC-EVYEC-004 retained)                                              |
@@ -3234,6 +3235,19 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Automated**: `QualityMetricsPage.test.tsx`; `qualityMetricsCopy.test.ts`;
   `tests/scripts/test_generate_quality_metrics.py`;
   `apps/backend/tests/unit/test_tc_ev054_005_quality_metrics_artifact.py`
+
+### TC-EV1317-001: Dissemination catalog content
+
+- **Level**: T0
+- **Objective**: Dissemination catalog rows describe each exchange profile in plain
+  language, with type `profile` and a public source. Lowercase ids are aliases of the
+  wire id. The catalog screen does not invent missing type or source values.
+- **Pass criteria**: UJ-086; operator text has no planning ids; no new sinks or
+  credential fields
+- **Source**: #1317; epic #1307; F7.v; F16–F19; ADR-044
+- **Automated**: `packages/dissemination/tests/test_tc_ev1317_exchange_catalog.py`;
+  `apps/backend/tests/unit/test_tc_evrpc_rule_catalogs.py`;
+  `apps/frontend/src/test/tc-ev1308-003-catalog-type-filter.test.tsx`
 
 ### TC-EV1120-010: Profiles page glanceable summary composition
 

@@ -473,7 +473,7 @@ unknown; clients **must not invent** defaults):
 | Field | Families | Notes |
 |-------|----------|--------|
 | `severity` | all (optional) | Lint levels: `critical` \| `error` \| `warning` \| `info`. Decoding: typically `info` or null |
-| `issue_type` | family-specific enums | **TAC / IWXXM / Decoding:** EV-062 set `presence` \| `structure` \| `content` \| `consistency` \| `iwxxm_schema` \| `other`. Glossary tokens that explain a TAC group/code prefer `content`. **Conversion:** `profile` \| `policy` \| `other` (semantic profiles ship as `profile`; `policy` reserved). **Dissemination:** may remain sparse until a later child |
+| `issue_type` | family-specific enums | **TAC / IWXXM / Decoding:** EV-062 set `presence` \| `structure` \| `content` \| `consistency` \| `iwxxm_schema` \| `other`. Glossary tokens that explain a TAC group/code prefer `content`. **Conversion:** `profile` \| `policy` \| `other` (semantic profiles ship as `profile`; `policy` reserved). **Dissemination:** `profile` \| `other` (exchange profiles ship as `profile`) |
 | `source_url` | optional | Prefer public http(s); verified landings only for clickable UI |
 | `source_attribution` | optional | Plain-language attribution (no planning ids) |
 | `source_access` | optional | `public` \| `paywall` \| `login` \| `semantic_only` |

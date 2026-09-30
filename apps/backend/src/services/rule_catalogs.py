@@ -101,17 +101,9 @@ def catalog_for_family(family: str, *, product: str | None = None) -> list[dict[
         return conversion_catalog()
 
     if key == "dissemination":
-        from dissemination.exchange_registry import known_exchange_profile_ids
+        from dissemination.exchange_catalog import catalog_entries as dissemination_catalog
 
-        return [
-            {
-                "id": pid,
-                "title": pid,
-                "summary": f"Exchange / dissemination profile {pid}",
-                "tags": ["dissemination", "exchange"],
-            }
-            for pid in sorted(known_exchange_profile_ids())
-        ]
+        return dissemination_catalog()
 
     from tac_decoding import catalog_entries as decoding_catalog
 

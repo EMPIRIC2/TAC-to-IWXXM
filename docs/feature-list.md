@@ -748,6 +748,15 @@
   `tac2iwxxm` via BE aggregator (ADR-044). Best-effort public source research only.
   Dissemination fill, profile-only checkbox, console deep-links, ToS, quality-metrics UI,
   and vendor-sync are **sibling epic children** — not this deepen.
+- **EV-1317 / #1317 deepen (F7.v / F16–F19)**: Dissemination `rule-catalogs` rows are
+  package-owned in `packages/dissemination`. Each exchange profile has a readable
+  summary, `issue_type=profile`, and a public source. Lowercase registry ids stay as
+  aliases of the wire id. The catalog UI does not invent type or source defaults.
+  Journey **UJ-086**. No new sinks and no credential fields.
+- **Acceptance (EV-1317 / #1317 — F7.v)** — **approved** (proceed on #1317):
+  1. Dissemination rows have readable summaries and typed metadata where known.
+  2. The frontend passes API fields through and does not invent defaults.
+  3. TC-EV1317-001; H4–H5 is the existing catalog route, not a new wire shape.
 - **EV-933 deepen (F7.w / #933)**: **ConversionProfile editor** for operators and admins —
   rule-pack CRUD (absorbed #915), read-only contract inspector (ADR-038 fields), then
   **signed / operator-scoped overlays** persisted on product Postgres with JWT ownership

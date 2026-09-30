@@ -769,8 +769,14 @@ describe('LintValidationCatalogPage', () => {
       expect(codes).toEqual(['ALPHA', 'ZULU', 'MIKE']);
 
       // Type value no row has → empty; All restores.
-      // Conversion uses profile|policy|other; other families keep EV-062 (e.g. structure).
-      const emptyType = family === 'conversion' ? 'policy' : 'structure';
+      // Conversion uses profile|policy|other; dissemination uses profile|other.
+      // Decoding keeps the TAC/IWXXM type list (e.g. structure).
+      const emptyType =
+        family === 'conversion'
+          ? 'policy'
+          : family === 'dissemination'
+            ? 'profile'
+            : 'structure';
       await user.selectOptions(
         screen.getByTestId('lint-validation-catalog-type-filter'),
         emptyType,
