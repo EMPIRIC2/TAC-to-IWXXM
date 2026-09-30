@@ -2,7 +2,7 @@
 
 from datetime import UTC, datetime
 from enum import StrEnum
-from typing import Any
+from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -101,6 +101,31 @@ class ProfileOutputSpecModel(BaseModel):
     translation_centre_name: str | None = Field(
         default=None,
         description="Configured translation centre name",
+    )
+
+
+class GroupTrace(BaseModel):
+    """
+    TAC group that produced one IWXXM element in a preview.
+
+    Attributes
+    ----------
+    _ : object
+        See implementation.
+    """
+
+    start: int = Field(..., ge=0, description="Inclusive character offset into the TAC")
+    end: int = Field(..., ge=0, description="Exclusive character offset into the TAC")
+    token: str = Field(..., description="TAC text of the group")
+    element: str = Field(..., description="IWXXM element name, without a namespace prefix")
+    occurrence: int = Field(
+        ...,
+        ge=0,
+        description="How many earlier groups in this preview used the same element name",
+    )
+    scope: Literal["line", "block"] = Field(
+        ...,
+        description="line marks the opening tag; block marks through the closing tag",
     )
 
 
@@ -222,6 +247,13 @@ class ConversionResponse(BaseModel):
     failed_spans: list[FailedSpan] = Field(
         default_factory=list,
         description="Soft-preview failed character spans; empty when preview omitted/false",
+    )
+    group_trace: list[GroupTrace] = Field(
+        default_factory=list,
+        description=(
+            "Preview pairing of TAC groups to IWXXM elements. "
+            "Empty when preview is omitted or the product has no pairing."
+        ),
     )
 
 

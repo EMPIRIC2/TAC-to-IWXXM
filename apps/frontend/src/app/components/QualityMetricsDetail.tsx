@@ -22,6 +22,7 @@ import {
   type SideBySideDiffRow,
 } from '@/utils/qualityMetricsDiffLayout';
 import { qualityMetricsDisplayXml } from '@/utils/qualityMetricsDisplayXml';
+import { diffChangeLabel } from '@/utils/readableStatus';
 import {
   isUnifiedDiffEmpty,
   unifiedLineDiff,
@@ -540,6 +541,7 @@ function DiffLineRow({ line }: { line: UnifiedDiffLine }) {
         : 'text-gray-300';
   return (
     <div className={`${color} whitespace-pre-wrap break-all`}>
+      <span className="mr-2 font-sans font-semibold">{diffChangeLabel(line.op)}</span>
       {prefix}
       {line.text}
     </div>
@@ -638,6 +640,7 @@ function SideBySideCell({
       data-op={op}
       data-side={side}
     >
+      <span className="mr-2 font-sans font-semibold">{diffChangeLabel(op)}</span>
       {display}
     </div>
   );

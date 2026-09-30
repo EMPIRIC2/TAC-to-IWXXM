@@ -4090,6 +4090,11 @@ export interface components {
              */
             failed_spans?: components["schemas"]["FailedSpan"][];
             /**
+             * Group Trace
+             * @description Preview pairing of TAC groups to IWXXM elements. Empty when preview is omitted or the product has no pairing.
+             */
+            group_trace?: components["schemas"]["GroupTrace"][];
+            /**
              * Issues
              * @description Structured issues (errors/warnings/info) for failed or partial conversions
              */
@@ -5043,6 +5048,48 @@ export interface components {
             gateway: string;
             /** Ok */
             ok: boolean;
+        };
+        /**
+         * GroupTrace
+         * @description TAC group that produced one IWXXM element in a preview.
+         *
+         *     Attributes
+         *     ----------
+         *     _ : object
+         *         See implementation.
+         */
+        GroupTrace: {
+            /**
+             * Element
+             * @description IWXXM element name, without a namespace prefix
+             */
+            element: string;
+            /**
+             * End
+             * @description Exclusive character offset into the TAC
+             */
+            end: number;
+            /**
+             * Occurrence
+             * @description How many earlier groups in this preview used the same element name
+             */
+            occurrence: number;
+            /**
+             * Scope
+             * @description line marks the opening tag; block marks through the closing tag
+             * @enum {string}
+             */
+            scope: "line" | "block";
+            /**
+             * Start
+             * @description Inclusive character offset into the TAC
+             */
+            start: number;
+            /**
+             * Token
+             * @description TAC text of the group
+             */
+            token: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {

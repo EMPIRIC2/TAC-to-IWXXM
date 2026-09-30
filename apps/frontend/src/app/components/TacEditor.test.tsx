@@ -28,6 +28,9 @@ const editorMocks = vi.hoisted(() => {
     static contentAttributes = { of: () => ({}) };
     static theme = () => ({});
     static decorations = { from: () => ({}) };
+    static scrollIntoView(pos: number) {
+      return { scroll: pos };
+    }
 
     state: {
       doc: { toString: () => string; length: number };
@@ -56,10 +59,14 @@ const editorMocks = vi.hoisted(() => {
       lastView = this;
     }
 
+    lastDispatch: { selection?: { anchor: number } } | null = null;
+
     dispatch(spec?: {
       changes?: { from: number; to: number; insert: string };
       effects?: unknown;
+      selection?: { anchor: number };
     }) {
+      this.lastDispatch = spec ?? null;
       if (spec?.changes) {
         this.docText = spec.changes.insert;
         this.state = {
@@ -118,6 +125,7 @@ import {
   syncTacEditorReadOnly,
   syncTacEditorA11y,
   syncTacEditorIssueSpans,
+  scrollTacEditorTo,
   handleTacSpanFixEvent,
   mountTacEditorView,
   attachTacSpanFixListener,
@@ -303,5 +311,24 @@ describe('TacEditor', () => {
     outer.dispatchEvent(new CustomEvent('tac-span-fix', { bubbles: true }));
     expect(handler).toHaveBeenCalled();
     detach?.();
+  });
+
+  it('scrolls the caret to a chosen lint issue', () => {
+    scrollTacEditorTo(null, 1);
+    const dispatch = vi.fn();
+    const view = { state: { doc: { length: 4 } }, dispatch };
+    scrollTacEditorTo(view as never, null);
+    scrollTacEditorTo(view as never, undefined);
+    scrollTacEditorTo(view as never, -2);
+    expect(dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({ selection: { anchor: 0 } }),
+    );
+    scrollTacEditorTo(view as never, 9);
+    expect(dispatch).toHaveBeenLastCalledWith(
+      expect.objectContaining({ selection: { anchor: 4 } }),
+    );
+
+    render(<TacEditor value="METAR" onChange={() => undefined} focusOffset={2} />);
+    expect(editorMocks.getLastView().lastDispatch.selection.anchor).toBe(2);
   });
 });

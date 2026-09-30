@@ -300,12 +300,14 @@ vi.mock('./TacEditor', () => ({
     onChange,
     readOnly,
     'aria-label': ariaLabel,
+    focusOffset,
   }: {
     id?: string;
     value: string;
     onChange: (v: string) => void;
     readOnly?: boolean;
     'aria-label'?: string;
+    focusOffset?: number | null;
   }) => (
     <textarea
       id={id}
@@ -313,6 +315,7 @@ vi.mock('./TacEditor', () => ({
       readOnly={readOnly}
       aria-label={ariaLabel}
       data-testid="tac-editor"
+      data-focus-offset={focusOffset ?? ''}
       onChange={(e) => onChange(e.target.value)}
     />
   ),
@@ -945,14 +948,14 @@ describe('FileConverter Component', () => {
       }
     });
 
-    it('live workbench debounces lint/decode; live IWXXM defaults off', async () => {
+    it('live workbench debounces lint/decode; live IWXXM defaults on', async () => {
       vi.useFakeTimers();
       try {
         mockLintTac.mockClear();
         mockDecodeTac.mockClear();
         const { container } = render(<FileConverter {...defaultProps} />);
 
-        expect(screen.getByTestId('live-iwxxm-toggle')).not.toBeChecked();
+        expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
         expect(screen.getByTestId('workbench-console')).toBeInTheDocument();
 
         const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
@@ -963,7 +966,6 @@ describe('FileConverter Component', () => {
         expect(mockLintTac).toHaveBeenCalled();
         expect(mockDecodeTac).toHaveBeenCalled();
 
-        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
         expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
 
         fireEvent.click(screen.getByTestId('workbench-console-toggle'));
@@ -1003,10 +1005,7 @@ describe('FileConverter Component', () => {
         expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
 
         // Successful preview clears failed spans
-        fireEvent.click(screen.getByTestId('live-iwxxm-toggle')); // ensure on
-        if (!(screen.getByTestId('live-iwxxm-toggle') as HTMLInputElement).checked) {
-          fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
-        }
+        expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
         mockConvertMetarToIwxxm.mockResolvedValueOnce({
           results: [{ iwxxm_xml: '<ok/>' }],
           errors: [],
@@ -1021,6 +1020,114 @@ describe('FileConverter Component', () => {
           await Promise.resolve();
         });
         expect(screen.queryByTestId('failed-tac-cue')).toBeNull();
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('selects a recognised group and an undecoded group in the live panes', async () => {
+      vi.useFakeTimers();
+      try {
+        mockDecodeTac.mockResolvedValue({
+          product: 'METAR',
+          segments: [{ start: 0, end: 5, code: 'METAR', explanation: 'type' }],
+          residuals: [{ start: 6, end: 8, text: 'XX' }],
+          summary: '',
+        });
+        mockConvertMetarToIwxxm.mockResolvedValue({
+          results: [{ iwxxm_xml: '<iwxxm:METAR>METAR</iwxxm:METAR>' }],
+          ok: true,
+          failed_spans: [],
+        });
+        render(<FileConverter {...defaultProps} />);
+        fireEvent.change(screen.getByTestId('tac-editor'), {
+          target: { value: 'METAR XX' },
+        });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+        });
+        expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
+          'TAC entered',
+        );
+        expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
+          'TAC lint: failed',
+        );
+        expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
+          'XML schema: not run',
+        );
+        expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
+          'Schematron: not run',
+        );
+        const group = screen.getByRole('button', { name: 'METAR' });
+        fireEvent.click(group);
+        expect(group).toHaveAttribute('aria-pressed', 'true');
+        const unknown = screen.getByRole('button', { name: 'Error XX' });
+        fireEvent.click(unknown);
+        expect(unknown).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.getByTestId('tac-lint-summary')).toHaveTextContent(/error/i);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
+
+    it('jumps between live TAC lint issues', async () => {
+      vi.useFakeTimers();
+      try {
+        mockLintTac.mockResolvedValue({
+          ok: true,
+          issues: [
+            {
+              severity: 'error',
+              code: 'WIND',
+              message: 'Wind group is incomplete',
+              start: 0,
+              end: 5,
+            },
+            {
+              severity: 'warning',
+              code: 'UNK',
+              message: 'Unknown group',
+              start: 6,
+              end: 8,
+            },
+          ],
+          fixes: [],
+        });
+        render(<FileConverter {...defaultProps} />);
+        const tac = screen.getByRole('region', { name: 'TAC' });
+        fireEvent.keyDown(tac, { key: 'ArrowDown', altKey: true });
+        fireEvent.change(screen.getByTestId('tac-editor'), {
+          target: { value: 'METAR XX' },
+        });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+        });
+        fireEvent.keyDown(tac, { key: 'ArrowDown' });
+        fireEvent.click(screen.getByRole('button', { name: 'Next TAC issue' }));
+        expect(
+          screen.getByRole('button', { name: 'Error: Wind group is incomplete' }),
+        ).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.getByTestId('tac-editor')).toHaveAttribute(
+          'data-focus-offset',
+          '0',
+        );
+        fireEvent.keyDown(tac, { key: 'ArrowDown', altKey: true });
+        expect(
+          screen.getByRole('button', { name: 'Warning: Unknown group' }),
+        ).toHaveAttribute('aria-pressed', 'true');
+        expect(screen.getByTestId('tac-editor')).toHaveAttribute(
+          'data-focus-offset',
+          '6',
+        );
+        fireEvent.change(screen.getByTestId('tac-editor'), {
+          target: { value: 'METAR YY' },
+        });
+        expect(screen.getByTestId('tac-editor')).toHaveAttribute(
+          'data-focus-offset',
+          '',
+        );
       } finally {
         vi.useRealTimers();
       }
@@ -1384,6 +1491,132 @@ describe('FileConverter Component', () => {
       expect(screen.getAllByText(tac).length).toBeGreaterThanOrEqual(2);
       expect(screen.getByText('METAR FAOR 101200Z')).toBeInTheDocument();
       expect(screen.getByText(/Download: manual_input\.txt/)).toBeInTheDocument();
+    });
+
+    it('remembers decode density and XML wrapping for this browser', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter {...defaultProps} />);
+      const compact = screen.getByRole('button', { name: 'Compact' });
+      expect(screen.getByRole('button', { name: 'Detailed' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      await user.click(compact);
+      expect(compact).toHaveAttribute('aria-pressed', 'true');
+      await user.click(screen.getByRole('button', { name: 'Detailed' }));
+      expect(screen.getByRole('button', { name: 'Detailed' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      await user.click(screen.getByTestId('wrap-xml-lines'));
+      expect(screen.getByTestId('wrap-xml-lines')).not.toBeChecked();
+      expect(window.localStorage.getItem('tac-to-iwxxm.live-convert.layout')).toContain(
+        '"density":"detailed"',
+      );
+    });
+
+    it('nudges pane widths on a wide screen', () => {
+      const original = window.matchMedia;
+      window.matchMedia = ((query: string) => ({
+        matches: query.includes('1280'),
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => false,
+      })) as typeof window.matchMedia;
+      try {
+        render(<FileConverter {...defaultProps} />);
+        fireEvent.keyDown(
+          screen.getByRole('separator', { name: 'Resize TAC and decode panes' }),
+          { key: 'ArrowRight' },
+        );
+        expect(
+          window.localStorage.getItem('tac-to-iwxxm.live-convert.layout'),
+        ).toContain('"paneWidths":[36,25,39]');
+      } finally {
+        window.matchMedia = original;
+      }
+    });
+
+    it('keeps a version on each successful convert and diffs the latest pair', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm
+        .mockResolvedValueOnce({
+          results: [
+            { name: 'manual_input.txt', content: '<a/>', source: 'manual_input' },
+          ],
+        })
+        .mockResolvedValueOnce({
+          results: [
+            { name: 'manual_input.txt', content: '<b/>', source: 'manual_input' },
+          ],
+        });
+      const { container } = render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('live-iwxxm-toggle'));
+      const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
+      fireEvent.change(textarea, { target: { value: 'METAR TTPP 301400Z' } });
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(screen.queryByTestId('output-version-compare')).not.toBeInTheDocument();
+      });
+      await user.click(screen.getByTestId('convert-button'));
+      const compare = await screen.findByTestId('output-version-compare');
+      expect(compare).toHaveTextContent('Version 2 against version 1');
+      expect(compare).toHaveTextContent('Removed');
+      expect(compare).toHaveTextContent('<a/>');
+      expect(compare).toHaveTextContent('Added');
+      expect(compare).toHaveTextContent('<b/>');
+    });
+
+    it('restores convert versions from a session and clears them when the session closes', async () => {
+      const session = {
+        id: 'versions-1',
+        status: 'draft',
+        manual_tac: 'METAR TTPP 301400Z',
+        converted_results: [],
+        conversion_params: {
+          output_versions: [
+            {
+              at: 1,
+              tac: 'METAR',
+              xml: '<a/>',
+              conversionProfile: 'c',
+              decodingProfile: 'd',
+            },
+            {
+              at: 2,
+              tac: 'METAR',
+              xml: '<b/>',
+              conversionProfile: 'c',
+              decodingProfile: 'd',
+            },
+          ],
+        },
+      } as any;
+      const { rerender } = render(
+        <FileConverter {...defaultProps} loadedWorkSession={session} />,
+      );
+      expect(await screen.findByTestId('output-version-compare')).toHaveTextContent(
+        'Version 2 against version 1',
+      );
+
+      rerender(<FileConverter {...defaultProps} />);
+      expect(screen.queryByTestId('output-version-compare')).not.toBeInTheDocument();
+
+      rerender(
+        <FileConverter
+          {...defaultProps}
+          loadedWorkSession={{
+            ...session,
+            id: 'versions-2',
+            conversion_params: undefined,
+          }}
+        />,
+      );
+      expect(screen.queryByTestId('output-version-compare')).not.toBeInTheDocument();
     });
 
     it('shows Source TAC from manual input when API omits tac_input (#655)', async () => {
@@ -2871,9 +3104,17 @@ describe('FileConverter Component', () => {
       fireEvent.change(textarea, { target: { value: 'METAR SECOND BATCH' } });
       await user.click(screen.getByTestId('convert-button'));
       await waitFor(() => {
-        expect(screen.getByText('<iwxxm>second-batch</iwxxm>')).toBeInTheDocument();
+        expect(
+          within(screen.getByRole('region', { name: /conversion results/i })).getByText(
+            '<iwxxm>second-batch</iwxxm>',
+          ),
+        ).toBeInTheDocument();
       });
-      expect(screen.getByText('<iwxxm>first-batch</iwxxm>')).toBeInTheDocument();
+      expect(
+        within(screen.getByRole('region', { name: /conversion results/i })).getByText(
+          '<iwxxm>first-batch</iwxxm>',
+        ),
+      ).toBeInTheDocument();
       expect(screen.getByTestId('download-zip-button')).toHaveAccessibleName(
         /download all 2 converted files as zip/i,
       );
@@ -3168,6 +3409,25 @@ describe('FileConverter Component', () => {
       expect(screen.getByTestId('product-type-select')).toHaveValue('METAR');
     });
 
+    it('opens one report from a loaded multi-report bulletin', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter {...defaultProps} />);
+
+      await selectGoldenExample(/AHL METAR multi-report/i);
+      const editor = screen.getByTestId('tac-editor') as HTMLTextAreaElement;
+      const full = editor.value;
+
+      await user.click(screen.getByRole('button', { name: 'Whole bulletin' }));
+      expect(editor.value).toBe(full);
+
+      await user.click(screen.getByRole('button', { name: /Report 2 METAR KLGA/ }));
+      expect(editor.value).toBe('METAR KLGA 121151Z 19010KT 10SM SCT040 21/13 A3010=');
+      expect(screen.getByTestId('bulletin-report-list')).toBeInTheDocument();
+
+      await user.click(screen.getByTestId('input-mode-tac'));
+      expect(editor.value).toBe(full);
+    });
+
     it('loads an IWXXM example onto collect_iwxxm mode (C4)', async () => {
       render(<FileConverter {...defaultProps} />);
 
@@ -3359,6 +3619,71 @@ describe('FileConverter Component', () => {
         screen.getByRole('region', { name: /conversion results/i }),
       ).toBeInTheDocument();
       expect(screen.getByText('<iwxxm>bulletin</iwxxm>')).toBeInTheDocument();
+    });
+
+    it('converts the whole bulletin while one report is open in the panes', async () => {
+      const user = userEvent.setup({ delay: null });
+      const bulletin = [
+        'SAUS31 KZNY 121200',
+        'METAR KJFK 121251Z 18004KT=',
+        'METAR KLAX 121251Z 25008KT=',
+      ].join('\n');
+      mockConvertBulletin.mockResolvedValueOnce({
+        bulletin_meta: {
+          ahl: 'SAUS31 KZNY 121200',
+          report_count: 2,
+          tt: 'SA',
+          aa: 'US',
+          cccc: 'KZNY',
+          yygggg: '121200',
+        },
+        results: [
+          {
+            report_index: 0,
+            ok: true,
+            xml: '<iwxxm>jfk</iwxxm>',
+            tac_input: 'METAR KJFK 121251Z 18004KT=',
+            issues: [],
+          },
+          {
+            report_index: 1,
+            ok: true,
+            xml: '<iwxxm>klax</iwxxm>',
+            tac_input: 'METAR KLAX 121251Z 00000KT=',
+            issues: [],
+          },
+        ],
+      });
+
+      render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('live-iwxxm-toggle'));
+      await user.click(screen.getByTestId('input-mode-ahl_bulletin'));
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: bulletin },
+      });
+
+      await user.click(screen.getByRole('button', { name: /Report 2 METAR KLAX/ }));
+      expect(screen.getByTestId('tac-editor')).toHaveValue(
+        'METAR KLAX 121251Z 25008KT=',
+      );
+
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR KLAX 121251Z 00000KT=' },
+      });
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(mockConvertBulletin).toHaveBeenCalledWith(
+          expect.objectContaining({
+            manualText: bulletin.replace('25008KT', '00000KT'),
+          }),
+        );
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Whole bulletin' }));
+      expect(screen.getByTestId('tac-editor')).toHaveValue(
+        bulletin.replace('25008KT', '00000KT'),
+      );
     });
 
     it('AHL convert: issue severity/start/end fallbacks when omitted', async () => {
@@ -3571,7 +3896,7 @@ describe('FileConverter Component', () => {
       vi.useFakeTimers();
       try {
         const { container } = render(<FileConverter {...defaultProps} />);
-        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+        expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
         const textarea = container.querySelector('textarea') as HTMLTextAreaElement;
 
         mockConvertMetarToIwxxm.mockResolvedValueOnce({
@@ -4738,7 +5063,7 @@ describe('FileConverter Component', () => {
       vi.useFakeTimers();
       try {
         render(<FileConverter {...defaultProps} />);
-        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+        expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
 
         mockConvertMetarToIwxxm.mockResolvedValueOnce({
           results: [{ iwxxm_xml: '<live-iwxxm/>' }],
@@ -4764,7 +5089,7 @@ describe('FileConverter Component', () => {
       vi.useFakeTimers();
       try {
         render(<FileConverter {...defaultProps} />);
-        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+        expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
 
         mockConvertMetarToIwxxm.mockResolvedValueOnce({
           results: [{ xml: '<live/>' }],
@@ -4790,7 +5115,7 @@ describe('FileConverter Component', () => {
       vi.useFakeTimers();
       try {
         render(<FileConverter {...defaultProps} />);
-        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+        expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
 
         mockConvertMetarToIwxxm.mockRejectedValueOnce('live offline');
         fireEvent.change(screen.getByTestId('tac-editor'), {
@@ -5420,7 +5745,7 @@ describe('FileConverter Component', () => {
       vi.useFakeTimers();
       try {
         render(<FileConverter {...defaultProps} />);
-        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+        expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
 
         mockConvertMetarToIwxxm.mockResolvedValueOnce({
           results: [{}],
@@ -5981,7 +6306,7 @@ describe('FileConverter Component', () => {
       vi.useFakeTimers();
       try {
         render(<FileConverter {...defaultProps} />);
-        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+        expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
         const textarea = screen.getByTestId('tac-editor');
 
         let resolveFirst: ((v: unknown) => void) | undefined;
@@ -6027,7 +6352,7 @@ describe('FileConverter Component', () => {
       vi.useFakeTimers();
       try {
         render(<FileConverter {...defaultProps} />);
-        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+        expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
         const textarea = screen.getByTestId('tac-editor');
 
         mockConvertMetarToIwxxm.mockImplementationOnce(
@@ -6191,7 +6516,7 @@ describe('FileConverter Component', () => {
       vi.useFakeTimers();
       try {
         render(<FileConverter {...defaultProps} />);
-        fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+        expect(screen.getByTestId('live-iwxxm-toggle')).toBeChecked();
         mockConvertMetarToIwxxm.mockResolvedValueOnce({
           results: [{ iwxxm_xml: '<x/>' }],
           ok: false,
@@ -7005,7 +7330,6 @@ describe('FileConverter Component', () => {
       fireEvent.change(screen.getByTestId('tac-editor'), {
         target: { value: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012' },
       });
-      fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
       await waitFor(() => {
         expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
           expect.objectContaining({

@@ -33,6 +33,7 @@ import {
   LINT_VALIDATION_CATALOG_SORT_LABEL,
   LINT_VALIDATION_CATALOG_TYPE_LABEL,
 } from '@/utils/lintValidationCatalogCopy';
+import { catalogLevelLabel } from '@/utils/readableStatus';
 import { SEMANTIC_PROFILE_OPTIONS, type IwxxmProfile } from '@/utils/semanticProfile';
 import {
   EXCHANGE_PROFILE_OPTIONS,
@@ -777,7 +778,7 @@ export function LintValidationCatalogPage({
                             {entry.issue_type ?? '—'}
                           </td>
                           <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
-                            {entry.severity || '—'}
+                            {catalogLevelLabel(entry.severity)}
                           </td>
                           <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300">
                             <div className="space-y-1">
