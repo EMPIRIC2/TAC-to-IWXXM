@@ -182,7 +182,7 @@ describe('TC-EV093 — Conversion library picker deepen', () => {
 
     const summary = screen.getByTestId('product-profile-bar-summary');
     expect(summary).toBeVisible();
-    expect(summary.textContent).toMatch(/not destinations/i);
+    expect(summary.textContent).toMatch(/does not set destinations/i);
     expect(summary.textContent).toMatch(/editable overlays/i);
     expect(summary.textContent).not.toMatch(/ADR-|EV-|Corpus:|#\d{3,}/);
 
