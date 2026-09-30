@@ -131,6 +131,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-076b         | F9 (ADR-044)                                                 | tac-decoding parity                                                                                                                                                                                                                                        | **H4–H5 when FE ships**           | TC-EVRPC-009                                                                             |
 | UJ-080          | F7.v / F9 (EV-1307 / #1308)                                  | Enriched Decoding & Conversion rule-catalog rows                                                                                                                                                                                                           | T0/T2; H4–H5 if wire breaks       | TC-EV1308-001..004                                                                       |
 | UJ-081          | F7.v (EV-1312 / #1312)                                       | Optional Only rules that list this profile catalog checkbox                                                                                                                                                                                                | T0; H4–H5 if wire/copy needs smoke | TC-EV1312-001                                                                            |
+| UJ-082          | F7.v (EV-1313 / #1313)                                       | Workbench console lint codes deep-link to Rule catalogs                                                                                                                                                                                                    | T0; H4–H5 if wire/copy needs smoke | TC-EV1313-001                                                                            |
 | UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
 | UJ-DEV-011      | F2/F6/F9/F12/F14/F15 (EV-yaml-full-configurability / #1226) | Full YAML end-state incl. convert emit (ADR-047); templates; pin↔SCH                                                                                                                                                                                         | H4–H5 **N/A** unless UI/OpenAPI   | TC-EVYFC-001..005 (+ TC-EVYEC-004 retained)                                              |
@@ -3184,6 +3185,16 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
   EV-048 clean label; no `/lint-issue-catalog` query-param change
 - **Source**: #1312; epic #1307
 - **Automated**: `tc-ev1312-001-listed-profile-checkbox.test.tsx`
+
+### TC-EV1313-001: Console → catalog deep link
+
+- **Level**: T0
+- **Objective**: Activating a bracketed lint/validation code in the workbench console opens
+  Rule catalogs focused on that code (scroll + highlight); plain-language aria-label
+- **Pass criteria**: UJ-082; TAC and IWXXM codes via catalog family; EV-048 clean; distinct
+  from full #996 detail drawer
+- **Source**: #1313; epic #1307; related #996
+- **Automated**: `tc-ev1313-001-console-catalog-deep-link.test.tsx`
 
 ### TC-EV1120-010: Profiles page glanceable summary composition
 

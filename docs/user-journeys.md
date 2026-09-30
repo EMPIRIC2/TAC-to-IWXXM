@@ -109,6 +109,7 @@ describe monorepo workflows introduced by migration features M1–M6 and F6.
 | UJ-072i-overview | Overview compare + product/version enablement | apps/frontend / API | F7.w (#1203) | T0 / T2 / **T3** / H4–H5 · **Retired ADR-044**|
 | UJ-073 | Profile-scoped Validation Issues Catalog | apps/frontend / API | F7.v/F15 (EV-1120) | T0 / T2 / H4–H5 |
 | UJ-081 | Listed-profile-only catalog checkbox | apps/frontend | F7.v (EV-1312 / #1312) | T0; H4–H5 if wire/copy needs smoke |
+| UJ-082 | Console → catalog deep links | apps/frontend | F7.v (EV-1313 / #1313) | T0; H4–H5 if wire/copy needs smoke |
 | UJ-076 | Five package-owned trust catalogs (tabbed) | apps/frontend / API | F7.v (ADR-044) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076a | Convert four-engine light selects + Send-drawer dissem (#1251) | apps/frontend / API | F7 / F9 / F16–F19 (ADR-044; EV-yaml-config-light-ux) | T0 / T2 / **T3** / H4–H5 |
 | UJ-076b | Decode via `tac-decoding` parity | apps/frontend / API | F9 (ADR-044) | T0 / T2 / H4–H5 |

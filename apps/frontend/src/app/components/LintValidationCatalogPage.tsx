@@ -6,7 +6,7 @@
  * for F7.v / #1014; distinct from the workbench browse panel.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { fetchLintIssueCatalog, fetchRuleCatalog } from '@/utils/api';
 import type { LintIssueCatalogEntry } from '@/utils/openapiTypes';
@@ -386,8 +386,18 @@ export function mapRuleCatalogItem(
  * @example
  * const _ = true;
  */
-export function LintValidationCatalogPage() {
-  const [familyFilter, setFamilyFilter] = useState<FamilyFilter>('all');
+export function LintValidationCatalogPage({
+  focusCode,
+  initialFamily,
+  onFocusHandled,
+}: {
+  focusCode?: string;
+  initialFamily?: 'lint' | 'iwxxm';
+  onFocusHandled?: () => void;
+} = {}) {
+  const [familyFilter, setFamilyFilter] = useState<FamilyFilter>(
+    initialFamily ?? 'all',
+  );
   const [issueTypeFilter, setIssueTypeFilter] = useState<string>('all');
   const [levelFilter, setLevelFilter] = useState<(typeof LEVEL_OPTIONS)[number]>('all');
   const [sourceAccessFilter, setSourceAccessFilter] =
@@ -403,6 +413,8 @@ export function LintValidationCatalogPage() {
   const [entries, setEntries] = useState<LintIssueCatalogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [highlightedCode, setHighlightedCode] = useState<string | null>(null);
+  const focusHandledRef = useRef<string | null>(null);
 
   const typeOptions = useMemo(() => typeOptionsForFamily(familyFilter), [familyFilter]);
 
@@ -497,6 +509,31 @@ export function LintValidationCatalogPage() {
     exchangeProfileFilter,
     sortBy,
   ]);
+
+  /* eslint-disable react-hooks/set-state-in-effect -- scroll/highlight focus target from shell deep-link */
+  useEffect(() => {
+    if (!focusCode || loading) {
+      return;
+    }
+    if (focusHandledRef.current === focusCode) {
+      return;
+    }
+    const el = document.querySelector(
+      `[data-testid="lint-validation-catalog-entry-${focusCode}"]`,
+    );
+    if (el instanceof HTMLElement) {
+      el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      setHighlightedCode(focusCode);
+      focusHandledRef.current = focusCode;
+      onFocusHandled?.();
+      const timer = window.setTimeout(() => setHighlightedCode(null), 2500);
+      return () => window.clearTimeout(timer);
+    }
+    focusHandledRef.current = focusCode;
+    onFocusHandled?.();
+    return undefined;
+  }, [focusCode, loading, sorted, onFocusHandled]);
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return (
     <div
@@ -722,7 +759,11 @@ export function LintValidationCatalogPage() {
                         <tr
                           key={`${entry.family ?? 'lint'}-${entry.code}`}
                           data-testid={`lint-validation-catalog-entry-${entry.code}`}
-                          className="align-top"
+                          className={
+                            highlightedCode === entry.code
+                              ? 'align-top bg-sky-50 ring-2 ring-sky-400 dark:bg-sky-950/40'
+                              : 'align-top'
+                          }
                         >
                           <td className="px-2 py-2 font-mono text-xs text-gray-900 dark:text-gray-100">
                             {entry.code}

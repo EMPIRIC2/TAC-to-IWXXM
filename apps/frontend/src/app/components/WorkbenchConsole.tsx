@@ -64,6 +64,8 @@ export interface WorkbenchConsoleProps {
   catalogByCode?: Map<string, LintIssueCatalogEntry>;
   /** Full catalog rows for the lightweight panel. */
   catalogEntries?: LintIssueCatalogEntry[];
+  /** Open Rule catalogs focused on a console lint/validation code. */
+  onOpenCatalogCode?: (code: string) => void;
 }
 
 /**
@@ -72,6 +74,7 @@ export interface WorkbenchConsoleProps {
 function messageWithCodeTooltips(
   message: string,
   catalogByCode: Map<string, LintIssueCatalogEntry> | undefined,
+  onOpenCatalogCode?: (code: string) => void,
 ): ReactNode {
   if (!catalogByCode || catalogByCode.size === 0) {
     return message;
@@ -83,10 +86,26 @@ function messageWithCodeTooltips(
       return <span key={index}>{part}</span>;
     }
     const code = match[1]!;
+    const tooltip = resolveLintIssueTooltip(catalogByCode, code);
+    if (onOpenCatalogCode) {
+      return (
+        <button
+          key={index}
+          type="button"
+          title={tooltip}
+          className="cursor-pointer font-sans font-medium underline decoration-dotted underline-offset-2 hover:decoration-solid"
+          data-testid={`lint-code-tooltip-${code}`}
+          aria-label={`Open ${code} in rule catalogs`}
+          onClick={() => onOpenCatalogCode(code)}
+        >
+          {part}
+        </button>
+      );
+    }
     return (
       <span
         key={index}
-        title={resolveLintIssueTooltip(catalogByCode, code)}
+        title={tooltip}
         className="cursor-help underline decoration-dotted underline-offset-2"
         data-testid={`lint-code-tooltip-${code}`}
       >
@@ -113,6 +132,7 @@ export function WorkbenchConsole({
   minLogLevel = 'INFO',
   catalogByCode,
   catalogEntries = [],
+  onOpenCatalogCode,
 }: WorkbenchConsoleProps) {
   const [open, setOpen] = useState(defaultOpen);
   const [catalogOpen, setCatalogOpen] = useState(false);
@@ -189,7 +209,11 @@ export function WorkbenchConsole({
                 <span className="text-gray-500 dark:text-gray-400">
                   [{line.source}]
                 </span>{' '}
-                {messageWithCodeTooltips(line.message, catalogByCode)}
+                {messageWithCodeTooltips(
+                  line.message,
+                  catalogByCode,
+                  onOpenCatalogCode,
+                )}
                 {line.action && onLineAction ? (
                   <button
                     type="button"
