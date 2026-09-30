@@ -136,6 +136,7 @@ Unified manual live test harness against **DOKS** production endpoints after F30
 | UJ-084          | F21 / F22 (EV-1315 / #1315)                                  | Quality disclaimer and site terms block the public shell until acknowledged                                                                                                                                                                                | T0; client-only | TC-EV1315-001                                                                            |
 | UJ-085          | F7.q (EV-1316 / #1316)                                       | Quality metrics subtitle, diagnostic overflow, deferred/mismatch/residual honesty                                                                                                                                                                          | T0; existing routes | TC-EV1316-001                                                                            |
 | UJ-086          | F7.v / F16–F19 (EV-1317 / #1317)                             | Dissemination catalog rows have readable summaries and public source metadata                                                                                                                                                                              | T0; existing route | TC-EV1317-001                                                                            |
+| UJ-DEV-002      | M6 (EV-1318 / #1318)                                         | Vendor sync checks out the full pinned tree and keeps nested profile-line snapshots                                                                                                                                                                        | T0; H4–H5 N/A     | TC-EV1318-001                                                                            |
 | UJ-078          | F36/F9/F7 (EV-profile-validate-decode-deepen / #1221)        | ADR-044 FE residual + AU/NZ implemented + station-name decode                                                                                                                                                                                              | **H4–H5 when FE ships**           | TC-EVPVD-001..006; TC-EV1120 residual; TC-EVRPC residual                                  |
 | UJ-DEV-010      | F2/F6/F9/F12/F15 (EV-yaml-engine-configurability / #1224)    | Overlay honesty matrix + cookbook/examples + preflight (SDK/deployer)                                                                                                                                                                                      | H4–H5 **N/A**                     | TC-EVYEC-001..005                                                                        |
 | UJ-DEV-011      | F2/F6/F9/F12/F14/F15 (EV-yaml-full-configurability / #1226) | Full YAML end-state incl. convert emit (ADR-047); templates; pin↔SCH                                                                                                                                                                                         | H4–H5 **N/A** unless UI/OpenAPI   | TC-EVYFC-001..005 (+ TC-EVYEC-004 retained)                                              |
@@ -3235,6 +3236,16 @@ New **TC-EV032-001..008** and **TC-F32-001..006**. Ties **UJ-045**; deepens UJ-0
 - **Automated**: `QualityMetricsPage.test.tsx`; `qualityMetricsCopy.test.ts`;
   `tests/scripts/test_generate_quality_metrics.py`;
   `apps/backend/tests/unit/test_tc_ev054_005_quality_metrics_artifact.py`
+
+### TC-EV1318-001: Vendor sync full checkout
+
+- **Level**: T0
+- **Objective**: Syncing the pinned iwxxm commit keeps `export-ignore` paths and
+  the nested `3.0.0` profile-line tree, so `tree_sha256` still matches.
+- **Pass criteria**: UJ-DEV-002; no edits under `vendor/schemas/` outside a sync run
+- **Source**: #1318; epic #1307; M6
+- **Automated**: `tests/bugs/test_bug_2026_09_30_vendor_sync_export_ignore.py`;
+  `tests/scripts/test_sync_iwxxm.py`
 
 ### TC-EV1317-001: Dissemination catalog content
 

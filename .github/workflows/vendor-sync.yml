@@ -36,6 +36,9 @@ jobs:
 
       # Pin updates clear tree_sha256; sync must not verify until hashes refresh
       # (BUG-2026-07-20 — otherwise weekly runs fail on checksum mismatch).
+      # sync_iwxxm checks out the full git tree (GitHub archives drop
+      # export-ignore paths) and keeps nested profile-line dirs such as
+      # vendor/schemas/iwxxm/3.0.0 (BUG-2026-09-30 / #1318).
       - name: Check upstream wmo-im releases
         run: uv run python scripts/vendor/check_upstream.py --update
 

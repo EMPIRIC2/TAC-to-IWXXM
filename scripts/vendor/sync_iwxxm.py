@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import subprocess
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -37,23 +39,70 @@ def _copy_tree(source: Path, destination: Path) -> None:
 
 
 def _fetch_github_tree(repo: str, commit_sha: str, destination: Path) -> None:
-    archive_url = f"https://github.com/{repo}/archive/{commit_sha}.tar.gz"
+    """Checkout ``commit_sha`` including paths marked ``export-ignore``.
+
+    GitHub archive tarballs omit those paths (for iwxxm: ``externalSchema/``,
+    docs, and dotfiles). Vendor snapshots are full checkouts, so the tarball
+    hash does not match ``tree_sha256``.
+    """
     if destination.exists():
         shutil.rmtree(destination)
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.mkdir()
-    subprocess.run(
-        [
-            "bash",
-            "-c",
-            (
-                f"curl -fsSL '{archive_url}' | "
-                "tar -xz --strip-components=1 -C "
-                f"'{destination}'"
-            ),
-        ],
-        check=True,
-    )
+    remote = f"https://github.com/{repo}.git"
+    env = os.environ.copy()
+    env["GIT_TERMINAL_PROMPT"] = "0"
+
+    def git(*args: str) -> None:
+        subprocess.run(["git", *args], cwd=destination, check=True, env=env)
+
+    git("init")
+    git("remote", "add", "origin", remote)
+    git("fetch", "--depth", "1", "origin", commit_sha)
+    git("-c", "advice.detachedHead=false", "checkout", "FETCH_HEAD")
+    git_dir = destination / ".git"
+    if git_dir.exists():
+        shutil.rmtree(git_dir)
+
+
+def _nested_preserve_rels(parent_local: str, bundles: dict[str, Any]) -> list[str]:
+    """Bundle paths that live inside ``parent_local`` and must survive a replace."""
+    parent = Path(parent_local)
+    rels: list[str] = []
+    for entry in bundles.values():
+        if not isinstance(entry, dict):
+            continue
+        local = entry.get("local_path")
+        if not isinstance(local, str):
+            continue
+        child = Path(local)
+        if child != parent and parent in child.parents:
+            rels.append(local)
+    return rels
+
+
+def _stash_nested(repo_root: Path, rels: list[str]) -> list[tuple[Path, Path]]:
+    """Move nested bundle dirs aside so a parent replace does not delete them."""
+    stashed: list[tuple[Path, Path]] = []
+    for rel in rels:
+        src = repo_root / rel
+        if not src.is_dir():
+            continue
+        holder = Path(tempfile.mkdtemp(prefix="vendor-nested-"))
+        parked = holder / src.name
+        shutil.move(str(src), str(parked))
+        stashed.append((src, parked))
+    return stashed
+
+
+def _restore_nested(stashed: list[tuple[Path, Path]]) -> None:
+    """Put stashed nested bundle dirs back, replacing anything the fetch wrote."""
+    for target, parked in stashed:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if target.exists():
+            shutil.rmtree(target)
+        shutil.move(str(parked), str(target))
+        parked.parent.rmdir()
 
 
 def sync_bundle(
@@ -62,18 +111,23 @@ def sync_bundle(
     entry: dict[str, Any],
     *,
     prefer_legacy: bool,
+    preserve_rels: list[str] | None = None,
 ) -> None:
     local_path = entry["local_path"]
     destination = repo_root / local_path
     upstream = entry["upstream_repo"]
     commit_sha = entry["commit_sha"]
+    stashed = _stash_nested(repo_root, preserve_rels or [])
 
-    legacy_source = repo_root / LEGACY_SOURCE_PATHS.get(name, "")
-    if prefer_legacy and legacy_source.is_dir():
-        _copy_tree(legacy_source, destination)
-        return
+    try:
+        legacy_source = repo_root / LEGACY_SOURCE_PATHS.get(name, "")
+        if prefer_legacy and legacy_source.is_dir():
+            _copy_tree(legacy_source, destination)
+            return
 
-    _fetch_github_tree(upstream, commit_sha, destination)
+        _fetch_github_tree(upstream, commit_sha, destination)
+    finally:
+        _restore_nested(stashed)
 
 
 def sync_from_manifest(
@@ -94,7 +148,14 @@ def sync_from_manifest(
         if not isinstance(entry, dict):
             msg = f"missing bundle entry: {name}"
             raise ValueError(msg)
-        sync_bundle(repo_root, name, entry, prefer_legacy=prefer_legacy)
+        preserve = _nested_preserve_rels(str(entry["local_path"]), bundles)
+        sync_bundle(
+            repo_root,
+            name,
+            entry,
+            prefer_legacy=prefer_legacy,
+            preserve_rels=preserve,
+        )
 
         pinned = entry.get("tree_sha256")
         if isinstance(pinned, str):
