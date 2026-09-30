@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from './ui/dialog';
 import { SITE_TERMS_BODY } from '@/utils/siteTermsCopy';
+import { dismissSiteTerms } from './dismissSiteTerms';
 
 /**
  * Type `SiteTermsDialogProps`.
@@ -32,7 +33,7 @@ export interface SiteTermsDialogProps {
  */
 export function SiteTermsDialog({ isOpen, onClose }: SiteTermsDialogProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog open={isOpen} onOpenChange={(open) => dismissSiteTerms(open, onClose)}>
       <DialogContent className="sm:max-w-lg" data-testid="site-terms-dialog">
         <DialogHeader>
           <DialogTitle>Terms of service</DialogTitle>
