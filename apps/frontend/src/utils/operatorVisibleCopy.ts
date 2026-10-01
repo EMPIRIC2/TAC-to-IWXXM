@@ -121,6 +121,11 @@ import {
   LINT_VALIDATION_CATALOG_LEVEL_LABEL,
   LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY,
   LINT_VALIDATION_CATALOG_DETAIL,
+  LINT_VALIDATION_CATALOG_EXAMPLE_FAIL,
+  LINT_VALIDATION_CATALOG_EXAMPLE_FAIL_UNAVAILABLE,
+  LINT_VALIDATION_CATALOG_EXAMPLE_NOTE,
+  LINT_VALIDATION_CATALOG_EXAMPLE_PASS,
+  LINT_VALIDATION_CATALOG_EXAMPLE_PASS_UNAVAILABLE,
   LINT_VALIDATION_CATALOG_LOADING,
   LINT_VALIDATION_CATALOG_SEARCH,
   LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
@@ -346,6 +351,26 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     {
       id: 'lint-validation-catalog.detail',
       text: LINT_VALIDATION_CATALOG_DETAIL,
+    },
+    {
+      id: 'lint-validation-catalog.example-pass',
+      text: LINT_VALIDATION_CATALOG_EXAMPLE_PASS,
+    },
+    {
+      id: 'lint-validation-catalog.example-fail',
+      text: LINT_VALIDATION_CATALOG_EXAMPLE_FAIL,
+    },
+    {
+      id: 'lint-validation-catalog.example-pass-unavailable',
+      text: LINT_VALIDATION_CATALOG_EXAMPLE_PASS_UNAVAILABLE,
+    },
+    {
+      id: 'lint-validation-catalog.example-fail-unavailable',
+      text: LINT_VALIDATION_CATALOG_EXAMPLE_FAIL_UNAVAILABLE,
+    },
+    {
+      id: 'lint-validation-catalog.example-note',
+      text: LINT_VALIDATION_CATALOG_EXAMPLE_NOTE,
     },
     {
       id: 'lint-validation-catalog.family',
