@@ -1582,6 +1582,12 @@ describe('FileConverter Component', () => {
       expect(frame).toHaveClass('max-w-6xl');
       expect(panes).toHaveAttribute('data-fit', 'tight');
       expect(panes.className).not.toContain('min-h-');
+      await user.click(screen.getByRole('button', { name: 'Roomier' }));
+      expect(frame).toHaveClass('max-w-none');
+      expect(screen.getByRole('button', { name: 'Roomier' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
     });
 
     it('nudges pane widths on a wide screen', () => {

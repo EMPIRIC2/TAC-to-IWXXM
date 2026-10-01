@@ -25,6 +25,23 @@ describe('AppShellNav', () => {
     expect(onNavigate).toHaveBeenCalledWith('catalog');
   });
 
+  it('follows a tighter Convert layout in this browser', () => {
+    window.localStorage.setItem(
+      'tac-to-iwxxm.live-convert.layout',
+      JSON.stringify({
+        density: 'detailed',
+        wrapXml: true,
+        paneWidths: [34, 27, 39],
+        span: 'tight',
+      }),
+    );
+    render(<AppShellNav activeView="converter" onNavigate={() => undefined} />);
+    expect(screen.getByTestId('app-shell-nav').firstElementChild).toHaveClass(
+      'max-w-6xl',
+    );
+    window.localStorage.clear();
+  });
+
   it('marks the active tab as selected', () => {
     render(<AppShellNav activeView="catalog" onNavigate={() => undefined} />);
     expect(screen.getByTestId('shell-nav-catalog')).toHaveAttribute(

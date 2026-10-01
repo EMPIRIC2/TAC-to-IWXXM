@@ -26,6 +26,21 @@ describe('LiveConvertPaneGrid', () => {
     expect(screen.getByTestId('live-convert-panes').className).toContain('min-h-');
     expect(screen.getByText('TAC')).toBeInTheDocument();
     unmount();
+    render(
+      <LiveConvertPaneGrid
+        wide={false}
+        roomy={false}
+        widths={widths}
+        onWidthsChange={onWidthsChange}
+      >
+        <div>Tight</div>
+      </LiveConvertPaneGrid>,
+    );
+    expect(screen.getByTestId('live-convert-panes')).toHaveAttribute(
+      'data-fit',
+      'tight',
+    );
+    expect(screen.getByTestId('live-convert-panes').className).not.toContain('min-h-');
   });
 
   it('drags using a unit width when the pane row has no measured size', () => {
