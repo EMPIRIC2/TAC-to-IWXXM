@@ -75,6 +75,7 @@ export function LiveConvertStatusStrip({
   );
 }
 
+/** Report note: whether the text area has a report. */
 function reportItem(hasTac: boolean): StatusItem {
   if (hasTac) {
     return { label: 'Report: entered in the text area below', tone: 'ready' };
@@ -82,6 +83,7 @@ function reportItem(hasTac: boolean): StatusItem {
   return { label: 'Report: the text area below is empty', tone: 'idle' };
 }
 
+/** TAC lint note and its color. */
 function lintItem(status: LiveConvertStatusStripProps['lintStatus']): StatusItem {
   if (status === 'passed') {
     return { label: 'TAC lint: passed', tone: 'ready' };
@@ -98,6 +100,7 @@ function lintItem(status: LiveConvertStatusStripProps['lintStatus']): StatusItem
   return { label: 'TAC lint: not run yet', tone: 'idle' };
 }
 
+/** Decode note and its color. */
 function decodeItem(loading: boolean, ready: boolean): StatusItem {
   if (loading) {
     return { label: 'Decode: running', tone: 'idle' };
@@ -108,6 +111,7 @@ function decodeItem(loading: boolean, ready: boolean): StatusItem {
   return { label: 'Decode: not run yet', tone: 'idle' };
 }
 
+/** Preview note and its color. */
 function previewItem(state: LiveConvertStatusStripProps['previewState']): StatusItem {
   if (state === 'incomplete') {
     return { label: 'Preview: incomplete', tone: 'caution' };
@@ -118,6 +122,7 @@ function previewItem(state: LiveConvertStatusStripProps['previewState']): Status
   return { label: 'Preview: not run yet', tone: 'idle' };
 }
 
+/** XML schema or Schematron note and its color. */
 function checkItem(
   name: 'XML schema' | 'Schematron',
   status: 'not run' | 'passed' | 'failed',
@@ -131,6 +136,7 @@ function checkItem(
   return { label: `${name}: not run`, tone: 'idle' };
 }
 
+/** Border and fill classes for one status tone. */
 function toneClass(tone: StatusTone): string {
   if (tone === 'ready') {
     return 'border-emerald-400 bg-emerald-50 text-emerald-950 dark:border-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-100';
