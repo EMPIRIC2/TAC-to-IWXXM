@@ -7,7 +7,11 @@
 
 import examples from '@/data/ruleCatalogExamples.json';
 
-/** One packaged report, or nothing when that side was not on file. */
+/**
+ * One packaged report, or nothing when that side was not on file.
+ * @example
+ * const _ = true;
+ */
 export type RuleExampleText = string | null;
 
 /**
