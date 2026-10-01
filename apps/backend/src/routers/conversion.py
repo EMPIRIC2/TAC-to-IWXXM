@@ -16,6 +16,7 @@ from typing import Any, cast
 from dissemination.packaging import apply_exchange_packaging
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import Response, StreamingResponse
+from tac2iwxxm.group_trace import trace_entries
 from tac2iwxxm.profile_registry import supported_report_variants_for_profile
 from tac2iwxxm.profile_resolve import resolve_validation_policies
 from tac2iwxxm.profiles.ca_eccc import CA_IWXXM_VERSION
@@ -31,6 +32,7 @@ from src.schemas.conversion import (
     ConversionResult,
     ErrorDetail,
     FailedSpan,
+    GroupTrace,
 )
 from src.schemas.icao_opmet import TranslationStatus
 from src.schemas.iwxxm_validation import get_namespace_version
@@ -2901,6 +2903,10 @@ async def convert(
     if preview:
         envelope_ok = not acc.preview_saw_soft_fail and len(acc.errors) == 0
 
+    group_trace = (
+        [GroupTrace.model_validate(row) for row in trace_entries(manual_with_offsets, product)] if preview else []
+    )
+
     return api_surface.msgspec_json_response(
         ConversionResponse(
             results=acc.results,
@@ -2912,6 +2918,7 @@ async def convert(
             metadata=request_metadata,
             ok=envelope_ok,
             failed_spans=acc.preview_failed_spans if preview else [],
+            group_trace=group_trace,
         )
     )
 

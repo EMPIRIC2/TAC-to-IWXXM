@@ -76,6 +76,67 @@ describe('IwxxmPreviewPane', () => {
     expect(root?.className).toMatch(/lg:/);
   });
 
+  it('numbers lines, names the conversion profile, and marks the selected group', () => {
+    render(
+      <IwxxmPreviewPane
+        xml={'preview\n\nTTPP'}
+        status="soft-fail"
+        mode="live"
+        numbered
+        highlightToken="TTPP"
+        incomplete
+        conversionProfile="ICAO Annex 3"
+      />,
+    );
+    expect(screen.getByTestId('iwxxm-conversion-profile')).toHaveTextContent(
+      'Conversion profile: ICAO Annex 3',
+    );
+    expect(screen.getByTestId('iwxxm-preview-incomplete')).toHaveTextContent(
+      'Incomplete: fix TAC errors',
+    );
+    expect(screen.getByTestId('iwxxm-preview-line-hit')).toHaveTextContent('TTPP');
+  });
+
+  it('marks the paired cloud layer and leaves the other layer alone', () => {
+    const xml = [
+      '<iwxxm:cloud>',
+      '<iwxxm:CloudLayer>FEW</iwxxm:CloudLayer>',
+      '<iwxxm:CloudLayer>SCT</iwxxm:CloudLayer>',
+      '</iwxxm:cloud>',
+    ].join('\n');
+    render(
+      <IwxxmPreviewPane
+        xml={xml}
+        status="passed"
+        mode="live"
+        numbered
+        highlightToken="SCT"
+        highlightStart={4}
+        highlightEnd={7}
+        groupTrace={[
+          {
+            start: 4,
+            end: 7,
+            token: 'SCT',
+            element: 'CloudLayer',
+            occurrence: 1,
+            scope: 'block',
+          },
+        ]}
+      />,
+    );
+    const hits = screen.getAllByTestId('iwxxm-preview-line-hit');
+    expect(hits).toHaveLength(1);
+    expect(hits[0]).toHaveTextContent('SCT');
+  });
+
+  it('can keep each XML line on one row', () => {
+    render(
+      <IwxxmPreviewPane xml={SAMPLE_XML} status="passed" mode="live" wrapXml={false} />,
+    );
+    expect(screen.getByTestId('iwxxm-preview-xml')).toHaveClass('whitespace-pre');
+  });
+
   it('shows empty placeholder when no XML yet', () => {
     render(<IwxxmPreviewPane xml="" status="empty" mode="idle" />);
     expect(screen.getByTestId('iwxxm-preview-empty')).toBeInTheDocument();

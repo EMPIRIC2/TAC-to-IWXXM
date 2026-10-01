@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { FileConverter } from '../app/components/FileConverter';
 
@@ -108,6 +108,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
   it('sends selected IWXXM version in conversion API payload', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
@@ -146,6 +147,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
   it('maps bulletin, issuing centre, onError fail, and soft-preview validation off', async () => {
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
 
@@ -184,38 +186,42 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
   });
 
   it('sends the same bar fields on live preview convert', async () => {
-    const user = userEvent.setup();
-    const { container } = render(<FileConverter {...defaultProps} />);
+    vi.useFakeTimers();
+    try {
+      const { container } = render(<FileConverter {...defaultProps} />);
 
-    await user.click(screen.getByLabelText(/expand parameters/i));
-    const bulletinId = container.querySelector(
-      '#param-bulletin-id',
-    ) as HTMLInputElement;
-    await user.clear(bulletinId);
-    await user.type(bulletinId, 'saaa00');
-    const logLevel = container.querySelector('#param-log-level') as HTMLSelectElement;
-    await user.selectOptions(logLevel, 'WARNING');
+      fireEvent.click(screen.getByLabelText(/expand parameters/i));
+      const bulletinId = container.querySelector(
+        '#param-bulletin-id',
+      ) as HTMLInputElement;
+      fireEvent.change(bulletinId, { target: { value: 'saaa00' } });
+      const logLevel = container.querySelector('#param-log-level') as HTMLSelectElement;
+      fireEvent.change(logLevel, { target: { value: 'WARNING' } });
 
-    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
-    fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
-      target: {
-        value: 'METAR KJFK 121251Z 24016G28KT 10SM FEW250 14/11 A2990',
-      },
-    });
+      fireEvent.change(screen.getByLabelText(/enter metar data manually/i), {
+        target: {
+          value: 'METAR KJFK 121251Z 24016G28KT 10SM FEW250 14/11 A2990',
+        },
+      });
 
-    await waitFor(() => {
-      expect(mockConvertMetarToIwxxm).toHaveBeenCalled();
-    });
-    expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
-      expect.objectContaining({
-        bulletinId: 'SAAA00',
-        logLevel: 'WARNING',
-        includeNilReasons: true,
-        preview: true,
-        validateOutput: false,
-        validationLevel: 'basic',
-      }),
-    );
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(350);
+        await Promise.resolve();
+      });
+
+      expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
+        expect.objectContaining({
+          bulletinId: 'SAAA00',
+          logLevel: 'WARNING',
+          includeNilReasons: true,
+          preview: true,
+          validateOutput: false,
+          validationLevel: 'basic',
+        }),
+      );
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('maps default parameters from saved preferences before conversion', async () => {
@@ -272,6 +278,7 @@ describe('UI Workflow: Conversion Parameter Mapping', () => {
 
     const user = userEvent.setup();
     const { container } = render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.click(screen.getByLabelText(/expand parameters/i));
     const iwxxmVersion = container.querySelector(

@@ -3,6 +3,7 @@
  */
 
 import { prettyPrintXml } from '/utils/prettyXml';
+import { xmlLinesForSelection, type GroupTrace } from '/utils/liveConvertTrace';
 
 /**
  * Type `IwxxmPreviewStatus`.
@@ -31,6 +32,21 @@ export interface IwxxmPreviewPaneProps {
   failedSpanCount?: number;
   onFailedSpanFocus?: () => void;
   className?: string;
+  /** Line numbers for the live Convert pane. */
+  numbered?: boolean;
+  /** TAC group text to mark in the preview. */
+  highlightToken?: string;
+  /** Selected group offsets. Used with the convert pairing. */
+  highlightStart?: number;
+  highlightEnd?: number;
+  /** TAC group to IWXXM element pairing from the convert preview. */
+  groupTrace?: GroupTrace[];
+  /** TAC errors or undecoded groups mean the preview is not complete. */
+  incomplete?: boolean;
+  /** Conversion profile that emitted this preview. */
+  conversionProfile?: string;
+  /** Wrap long XML lines. Off keeps each line on one row. */
+  wrapXml?: boolean;
 }
 
 /**
@@ -50,9 +66,27 @@ export function IwxxmPreviewPane({
   failedSpanCount = 0,
   onFailedSpanFocus,
   className = '',
+  numbered = false,
+  highlightToken = '',
+  highlightStart,
+  highlightEnd,
+  groupTrace = [],
+  incomplete = false,
+  conversionProfile,
+  wrapXml = true,
 }: IwxxmPreviewPaneProps) {
   const pretty = xml.trim() ? prettyPrintXml(xml) : '';
   const showSoftBadge = mode === 'soft-preview' || status === 'soft-fail';
+  const highlighted = new Set(
+    xmlLinesForSelection(
+      pretty,
+      highlightToken,
+      highlightStart,
+      highlightEnd,
+      groupTrace,
+    ),
+  );
+  const lines = pretty ? pretty.split('\n') : [];
 
   return (
     <section
@@ -62,7 +96,7 @@ export function IwxxmPreviewPane({
     >
       <header className="flex flex-wrap items-center gap-2 border-b border-gray-200 px-3 py-2 dark:border-gray-700">
         <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-          IWXXM preview
+          Live IWXXM
         </h3>
         {status === 'passed' ? (
           <span
@@ -83,6 +117,14 @@ export function IwxxmPreviewPane({
         {showSoftBadge && status === 'passed' ? (
           <span className="text-xs text-gray-500 dark:text-gray-400">Soft preview</span>
         ) : null}
+        {conversionProfile ? (
+          <span
+            className="text-xs text-gray-600 dark:text-gray-300"
+            data-testid="iwxxm-conversion-profile"
+          >
+            Conversion profile: {conversionProfile}
+          </span>
+        ) : null}
         {failedSpanCount > 0 ? (
           <button
             type="button"
@@ -94,6 +136,16 @@ export function IwxxmPreviewPane({
           </button>
         ) : null}
       </header>
+
+      {incomplete ? (
+        <p
+          data-testid="iwxxm-preview-incomplete"
+          className="border-b border-gray-200 px-3 py-2 text-xs font-medium text-gray-900 dark:border-gray-700 dark:text-gray-100"
+          role="status"
+        >
+          Incomplete: fix TAC errors
+        </p>
+      ) : null}
 
       {status === 'soft-fail' && softFailDetail ? (
         <p
@@ -109,9 +161,30 @@ export function IwxxmPreviewPane({
         {pretty ? (
           <pre
             data-testid="iwxxm-preview-xml"
-            className="whitespace-pre-wrap break-all font-mono text-xs text-gray-800 dark:text-gray-100"
+            className={`${wrapXml ? 'whitespace-pre-wrap break-all' : 'whitespace-pre'} font-mono text-xs text-gray-800 dark:text-gray-100`}
           >
-            {pretty}
+            {numbered
+              ? lines.map((line, index) => {
+                  const lineNumber = index + 1;
+                  const marked = highlighted.has(lineNumber);
+                  return (
+                    <div
+                      key={`${lineNumber}-${line}`}
+                      data-testid={marked ? 'iwxxm-preview-line-hit' : undefined}
+                      className={
+                        marked
+                          ? 'bg-sky-100 text-sky-950 dark:bg-sky-950 dark:text-sky-50'
+                          : undefined
+                      }
+                    >
+                      <span className="mr-2 inline-block w-6 text-right text-gray-500">
+                        {lineNumber}
+                      </span>
+                      {line || ' '}
+                    </div>
+                  );
+                })
+              : pretty}
           </pre>
         ) : (
           <p

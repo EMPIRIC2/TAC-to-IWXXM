@@ -23,6 +23,11 @@ const guestValues = {
   decodingLibraryId: defaultLibraryId('decoding'),
 };
 
+/**
+ * Selection-options returns no rows, so the bar keeps guest defaults.
+ * @example
+ * const _ = true;
+ */
 function mockFourKindsEmpty() {
   fetchMock.mockImplementation(async ({ kind }) => ({
     kind,
@@ -51,6 +56,9 @@ describe('LibraryPickersBar', () => {
     ).not.toBeInTheDocument();
     expect(screen.getByTestId('conversion-library-help')).toBeInTheDocument();
     expect(screen.getByTestId('decoding-library-help')).toBeInTheDocument();
+    expect(screen.getByTestId('decoding-library-select-reason')).toHaveTextContent(
+      'WMO baseline',
+    );
 
     fireEvent.change(screen.getByTestId('conversion-library-select'), {
       target: { value: defaultLibraryId('conversion', 'US_FAA_NWS') },
@@ -129,6 +137,30 @@ describe('LibraryPickersBar', () => {
         defaultLibraryId('decoding'),
       );
     });
+    expect(screen.getByTestId('decoding-library-select-reason')).toHaveTextContent(
+      'WMO baseline',
+    );
+  });
+
+  it('explains a national line and a custom library', async () => {
+    render(
+      <LibraryPickersBar
+        values={{
+          ...guestValues,
+          decodingLibraryId: defaultLibraryId('decoding', 'CA_ECCC'),
+          conversionLibraryId: 'custom-asset',
+        }}
+        onChange={vi.fn()}
+      />,
+    );
+    await waitFor(() => {
+      expect(screen.getByTestId('decoding-library-select-reason')).toHaveTextContent(
+        'National line',
+      );
+    });
+    expect(screen.getByTestId('conversion-library-select-reason')).toHaveTextContent(
+      'Custom library',
+    );
   });
 
   it('falls back to guest defaults when selection-options rejects', async () => {

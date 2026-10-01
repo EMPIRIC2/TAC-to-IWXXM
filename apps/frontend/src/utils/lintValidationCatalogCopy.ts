@@ -15,6 +15,12 @@ export const LINT_VALIDATION_CATALOG_EMPTY = 'No catalog entries for this filter
 /** Loading indicator. */
 export const LINT_VALIDATION_CATALOG_LOADING = 'Loading catalog…';
 
+/** Search field label. */
+export const LINT_VALIDATION_CATALOG_SEARCH = 'Search the catalog';
+
+/** Detail pane heading for the selected rule. */
+export const LINT_VALIDATION_CATALOG_DETAIL = 'Selected rule';
+
 /** Filter labels. */
 export const LINT_VALIDATION_CATALOG_FAMILY_LABEL = 'Family';
 export const LINT_VALIDATION_CATALOG_TYPE_LABEL = 'Type';

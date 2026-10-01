@@ -39,4 +39,30 @@ describe('tacEditorSpans terminator affordance', () => {
     view.destroy();
     parent.remove();
   });
+
+  it('marks a selected group with cm-tac-selected', () => {
+    const parent = document.createElement('div');
+    document.body.appendChild(parent);
+    const view = new EditorView({
+      state: EditorState.create({
+        doc: 'METAR KJFK',
+        extensions: tacSpanExtensions(),
+      }),
+      parent,
+    });
+    view.dispatch({
+      effects: setTacSpansEffect.of([
+        {
+          start: 0,
+          end: 5,
+          code: 'METAR',
+          severity: 'selected',
+          message: 'Selected group',
+        },
+      ]),
+    });
+    expect(parent.querySelector('.cm-tac-selected')).toBeTruthy();
+    view.destroy();
+    parent.remove();
+  });
 });

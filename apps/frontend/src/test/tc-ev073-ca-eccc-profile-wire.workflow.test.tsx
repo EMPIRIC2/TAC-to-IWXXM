@@ -143,6 +143,7 @@ describe('TC-EV073-006..008: CA_ECCC Conversion library wiring', () => {
   it('TC-EV073-006 sends IWXXM_CA extension and exchange output on convert', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     await user.selectOptions(
       screen.getByTestId('conversion-library-select'),

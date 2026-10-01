@@ -178,6 +178,7 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
   it('sends selected conversionLibraryId on convert without opening Conversion Parameters (TC-EV060-1002-001)', async () => {
     const user = userEvent.setup();
     render(<FileConverter {...defaultProps} />);
+    fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
 
     const conversion = screen.getByTestId('conversion-library-select');
     await user.selectOptions(conversion, defaultLibraryId('conversion', 'US_FAA_NWS'));

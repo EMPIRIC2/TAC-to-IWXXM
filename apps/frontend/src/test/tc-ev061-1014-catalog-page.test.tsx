@@ -15,6 +15,23 @@ vi.mock('@/utils/api', () => ({
   fetchRuleCatalog: (...args: unknown[]) => fetchRuleCatalog(...args),
 }));
 
+/**
+ * Codes in the order the catalog list renders them.
+ *
+ * @param list - Catalog list region
+ * @returns Rule codes from top to bottom
+ */
+function listedCodes(list: HTMLElement): string[] {
+  return [
+    ...list.querySelectorAll('[data-testid^="lint-validation-catalog-entry-"]'),
+  ].map((row) =>
+    (row.getAttribute('data-testid') ?? '').replace(
+      'lint-validation-catalog-entry-',
+      '',
+    ),
+  );
+}
+
 const BASE_ISSUES = [
   {
     code: 'MISSING_TERMINATOR',
@@ -181,8 +198,8 @@ describe('LintValidationCatalogPage', () => {
     const bare = await screen.findByTestId('lint-validation-catalog-entry-BARE');
     expect(bare).toHaveTextContent('Bare title');
     // Missing severity/type/access are not invented as info/other/public.
-    expect(within(bare).getAllByRole('cell')[1]).toHaveTextContent('—');
-    expect(within(bare).getAllByRole('cell')[2]).toHaveTextContent('—');
+    expect(within(bare).getByTestId('catalog-entry-type')).toHaveTextContent('—');
+    expect(within(bare).getByTestId('catalog-entry-level')).toHaveTextContent('—');
     expect(bare).not.toHaveTextContent('Access: public');
     expect(
       await screen.findByTestId('lint-validation-catalog-entry-TAGGED'),
@@ -256,10 +273,7 @@ describe('LintValidationCatalogPage', () => {
       'issue_type',
     );
 
-    const rows = within(list).getAllByRole('row');
-    const codes = rows
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
+    const codes = listedCodes(list);
     expect(codes).toEqual([
       'XML_SCHEMA',
       'AMD_PRESENT',
@@ -342,20 +356,14 @@ describe('LintValidationCatalogPage', () => {
       screen.getByTestId('lint-validation-catalog-sort'),
       'level',
     );
-    let codes = within(list)
-      .getAllByRole('row')
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
-    expect(codes?.[0]).toBe('XML_SCHEMA');
+    let codes = listedCodes(list);
+    expect(codes[0]).toBe('XML_SCHEMA');
 
     await user.selectOptions(
       screen.getByTestId('lint-validation-catalog-sort'),
       'family',
     );
-    codes = within(list)
-      .getAllByRole('row')
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
+    codes = listedCodes(list);
     expect(codes).toContain('XML_SCHEMA');
     expect(codes).toContain('AMD_PRESENT');
 
@@ -363,11 +371,8 @@ describe('LintValidationCatalogPage', () => {
       screen.getByTestId('lint-validation-catalog-sort'),
       'source_access',
     );
-    codes = within(list)
-      .getAllByRole('row')
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
-    expect(codes?.length).toBe(4);
+    codes = listedCodes(list);
+    expect(codes.length).toBe(4);
   });
 
   it('renders non-clickable http when status is not verified', async () => {
@@ -407,8 +412,7 @@ describe('LintValidationCatalogPage', () => {
     });
     render(<LintValidationCatalogPage />);
     const row = await screen.findByTestId('lint-validation-catalog-entry-NO_TYPE');
-    const cells = within(row).getAllByRole('cell');
-    expect(cells[1]).toHaveTextContent('—');
+    expect(within(row).getByTestId('catalog-entry-type')).toHaveTextContent('—');
   });
 
   it('shows empty state when level filter matches nothing', async () => {
@@ -465,20 +469,14 @@ describe('LintValidationCatalogPage', () => {
       screen.getByTestId('lint-validation-catalog-sort'),
       'code',
     );
-    let codes = within(list)
-      .getAllByRole('row')
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
+    let codes = listedCodes(list);
     expect(codes).toEqual(['A_FIRST', 'M_MID', 'Z_LAST']);
 
     await user.selectOptions(
       screen.getByTestId('lint-validation-catalog-sort'),
       'level',
     );
-    codes = within(list)
-      .getAllByRole('row')
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
+    codes = listedCodes(list);
     // errors first (A before Z), then warning
     expect(codes).toEqual(['A_FIRST', 'Z_LAST', 'M_MID']);
 
@@ -522,10 +520,7 @@ describe('LintValidationCatalogPage', () => {
       screen.getByTestId('lint-validation-catalog-sort'),
       'level',
     );
-    const codes = within(list)
-      .getAllByRole('row')
-      .slice(1)
-      .map((row) => row.querySelector('td')?.textContent?.trim());
+    const codes = listedCodes(list);
     expect(codes).toEqual(['INFO_SEV', 'UNKNOWN_SEV']);
   });
 
@@ -751,10 +746,7 @@ describe('LintValidationCatalogPage', () => {
         screen.getByTestId('lint-validation-catalog-sort'),
         'code',
       );
-      let codes = within(list)
-        .getAllByRole('row')
-        .slice(1)
-        .map((row) => row.querySelector('td')?.textContent?.trim());
+      let codes = listedCodes(list);
       expect(codes).toEqual(['ALPHA', 'MIKE', 'ZULU']);
 
       // Sort by Level uses real severity; missing severity is last (not invented info).
@@ -762,10 +754,7 @@ describe('LintValidationCatalogPage', () => {
         screen.getByTestId('lint-validation-catalog-sort'),
         'level',
       );
-      codes = within(list)
-        .getAllByRole('row')
-        .slice(1)
-        .map((row) => row.querySelector('td')?.textContent?.trim());
+      codes = listedCodes(list);
       expect(codes).toEqual(['ALPHA', 'ZULU', 'MIKE']);
 
       // Type value no row has → empty; All restores.
@@ -837,4 +826,34 @@ describe('LintValidationCatalogPage', () => {
       );
     });
   }
+
+  it('searches the catalog and opens the selected rule', async () => {
+    const user = userEvent.setup();
+    render(<LintValidationCatalogPage />);
+    const detail = await screen.findByTestId('lint-validation-catalog-detail');
+    expect(detail).toHaveTextContent('AMD_PRESENT');
+
+    await user.click(
+      within(screen.getByTestId('lint-validation-catalog-entry-XML_SCHEMA')).getByRole(
+        'button',
+      ),
+    );
+    expect(screen.getByTestId('lint-validation-catalog-detail')).toHaveTextContent(
+      'XML_SCHEMA',
+    );
+    expect(screen.getByTestId('lint-validation-catalog-detail')).toHaveTextContent(
+      'IWXXM validation',
+    );
+
+    await user.type(screen.getByTestId('lint-validation-catalog-search'), 'vendor pin');
+    expect(
+      screen.getByTestId('lint-validation-catalog-entry-VENDOR_ONLY'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('lint-validation-catalog-entry-XML_SCHEMA'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('lint-validation-catalog-detail')).toHaveTextContent(
+      'VENDOR_ONLY',
+    );
+  });
 });

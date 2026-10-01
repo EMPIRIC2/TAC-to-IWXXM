@@ -37,6 +37,10 @@ const infoIssueMark = Decoration.mark({
   class: 'cm-tac-issue cm-tac-issue-info',
 });
 
+const selectedMark = Decoration.mark({
+  class: 'cm-tac-issue cm-tac-selected',
+});
+
 /**
  * Clamp and sort spans for a document length.
  *
@@ -71,7 +75,12 @@ export function normalizeTacSpans(
 export function buildSpanDecorations(spans: TacSpanMark[]): DecorationSet {
   const ranges: Range<Decoration>[] = [];
   for (const span of spans) {
-    const mark = span.severity === 'info' ? infoIssueMark : issueMark;
+    const mark =
+      span.severity === 'selected'
+        ? selectedMark
+        : span.severity === 'info'
+          ? infoIssueMark
+          : issueMark;
     ranges.push(mark.range(span.start, span.end));
   }
   return Decoration.set(ranges, true);
@@ -169,6 +178,11 @@ export function tacSpanExtensions(): Extension[] {
       '.cm-tac-issue-info': {
         backgroundColor: 'rgba(56, 189, 248, 0.28)',
         borderBottom: '2px wavy #0284c7',
+      },
+      '.cm-tac-selected': {
+        backgroundColor: 'rgba(14, 165, 233, 0.35)',
+        borderBottom: '3px solid #0f172a',
+        fontWeight: '600',
       },
       '.cm-tac-issue-tooltip': {
         padding: '4px 8px',

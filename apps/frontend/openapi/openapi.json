@@ -1287,6 +1287,14 @@
             "title": "Failed Spans",
             "type": "array"
           },
+          "group_trace": {
+            "description": "Preview pairing of TAC groups to IWXXM elements. Empty when preview is omitted or the product has no pairing.",
+            "items": {
+              "$ref": "#/components/schemas/GroupTrace"
+            },
+            "title": "Group Trace",
+            "type": "array"
+          },
           "issues": {
             "description": "Structured issues (errors/warnings/info) for failed or partial conversions",
             "items": {
@@ -2999,6 +3007,58 @@
           "connectivity_ok"
         ],
         "title": "GatewayHealthOut",
+        "type": "object"
+      },
+      "GroupTrace": {
+        "description": "TAC group that produced one IWXXM element in a preview.\n\nAttributes\n----------\n_ : object\n    See implementation.",
+        "properties": {
+          "element": {
+            "description": "IWXXM element name, without a namespace prefix",
+            "title": "Element",
+            "type": "string"
+          },
+          "end": {
+            "description": "Exclusive character offset into the TAC",
+            "minimum": 0.0,
+            "title": "End",
+            "type": "integer"
+          },
+          "occurrence": {
+            "description": "How many earlier groups in this preview used the same element name",
+            "minimum": 0.0,
+            "title": "Occurrence",
+            "type": "integer"
+          },
+          "scope": {
+            "description": "line marks the opening tag; block marks through the closing tag",
+            "enum": [
+              "line",
+              "block"
+            ],
+            "title": "Scope",
+            "type": "string"
+          },
+          "start": {
+            "description": "Inclusive character offset into the TAC",
+            "minimum": 0.0,
+            "title": "Start",
+            "type": "integer"
+          },
+          "token": {
+            "description": "TAC text of the group",
+            "title": "Token",
+            "type": "string"
+          }
+        },
+        "required": [
+          "start",
+          "end",
+          "token",
+          "element",
+          "occurrence",
+          "scope"
+        ],
+        "title": "GroupTrace",
         "type": "object"
       },
       "HTTPValidationError": {

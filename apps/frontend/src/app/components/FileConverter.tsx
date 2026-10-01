@@ -21,6 +21,11 @@ import {
 import { SoftPreviewControl } from './SoftPreviewControl';
 import { PropagateResidualsControl } from './PropagateResidualsControl';
 import { LiveIwxxmToggle } from './LiveIwxxmToggle';
+import { BulletinReportList } from './BulletinReportList';
+import { LiveConvertPaneGrid } from './LiveConvertPaneGrid';
+import { LiveConvertStatusStrip } from './LiveConvertStatusStrip';
+import { TacLintJumps } from './TacLintJumps';
+import { OutputVersionCompare } from './OutputVersionCompare';
 import { StatusBanner } from './StatusBanner';
 import { WorkbenchConsole } from './WorkbenchConsole';
 import { useLintIssueCatalog } from '@/hooks/useLintIssueCatalog';
@@ -151,6 +156,33 @@ import {
   toggleQueueSelection,
 } from '/utils/operatorWorkQueue';
 import { useLiveWorkbenchAssist } from '@/hooks/useLiveWorkbenchAssist';
+import {
+  lintSummaryLabel,
+  previewIsIncomplete,
+  readGroupTrace,
+  spansWithSelection,
+  type GroupTrace,
+  type LiveTraceTarget,
+} from '/utils/liveConvertTrace';
+import {
+  jumpableLintIssues,
+  lintIssueFromKey,
+  type JumpableLintIssue,
+} from '/utils/lintIssueJump';
+import {
+  errorLayerNames,
+  lintIssueCounts,
+  outputLayerStatus,
+  strictConvertRan,
+  tacLintLayerStatus,
+} from '/utils/checkLayers';
+import {
+  appendOutputVersion,
+  readOutputVersions,
+  type OutputVersion,
+} from '/utils/outputVersions';
+import { useLiveConvertLayout, useWideConvertPanes } from '/utils/liveConvertLayout';
+import { listBulletinReports, replaceBulletinReport } from '/utils/bulletinReportList';
 import { isAbortError } from '/utils/liveAssist';
 import {
   detectTacProduct,
@@ -681,7 +713,11 @@ export function FileConverter({
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [softPreview, setSoftPreview] = useState(false);
   const [propagateResiduals, setPropagateResiduals] = useState(false);
-  const [liveIwxxm, setLiveIwxxm] = useState(false);
+  const [liveIwxxm, setLiveIwxxm] = useState(true);
+  const [selectedTrace, setSelectedTrace] = useState<LiveTraceTarget | null>(null);
+  const [lintJump, setLintJump] = useState<number | null>(null);
+  const [lintFocusOffset, setLintFocusOffset] = useState<number | null>(null);
+  const [groupTrace, setGroupTrace] = useState<GroupTrace[]>([]);
   const [failedSpans, setFailedSpans] = useState<FailedSpan[]>([]);
   const [previewXml, setPreviewXml] = useState('');
   const [previewStatus, setPreviewStatus] = useState<IwxxmPreviewStatus>('empty');
@@ -756,6 +792,14 @@ export function FileConverter({
   const massFolderInputRef = useRef<HTMLInputElement>(null);
   const massZipInputRef = useRef<HTMLInputElement>(null);
   const hydratedWorkSessionIdRef = useRef<string | null>(null);
+  const outputVersionsRef = useRef<OutputVersion[]>([]);
+  const [outputVersions, setOutputVersions] = useState<OutputVersion[]>([]);
+  const { layout: liveLayout, updateLayout: updateLiveLayout } = useLiveConvertLayout();
+  const wideConvertPanes = useWideConvertPanes();
+  const [bulletinSource, setBulletinSource] = useState('');
+  const [focusedBulletinReport, setFocusedBulletinReport] = useState<number | null>(
+    null,
+  );
   const convertedFilesRef = useRef<ConvertedFile[]>([]);
   const conversionLogRef = useRef<ConversionLog | null>(null);
 
@@ -920,6 +964,7 @@ export function FileConverter({
     conversionParams: {
       ...(conversionParams as unknown as Record<string, unknown>),
       output_filename: outputFilename,
+      output_versions: outputVersionsRef.current,
     },
     ...overrides,
   });
@@ -998,6 +1043,10 @@ export function FileConverter({
   useLayoutEffect(() => {
     if (!loadedWorkSession) {
       hydratedWorkSessionIdRef.current = null;
+      if (outputVersionsRef.current.length > 0) {
+        outputVersionsRef.current = [];
+        setOutputVersions([]);
+      }
       return;
     }
     // Re-hydrate only when the user selects a different session — not on every
@@ -1119,6 +1168,12 @@ export function FileConverter({
         Object.assign(next, libraryIdsFromSessionParams(params));
         return next;
       });
+      const storedVersions = readOutputVersions(params);
+      outputVersionsRef.current = storedVersions;
+      setOutputVersions(storedVersions);
+    } else {
+      outputVersionsRef.current = [];
+      setOutputVersions([]);
     }
   }, [loadedWorkSession, updateConversionLog]);
   /* eslint-enable react-hooks/set-state-in-effect */
@@ -1314,7 +1369,26 @@ export function FileConverter({
   } | null> => {
     const queueFiles = opts?.pendingSubset ?? pendingFiles;
     const includeManual = opts?.includeManual !== false;
-    const manualText = includeManual ? manualInput.trim() : '';
+    const manualText = includeManual
+      ? inputMode === 'ahl_bulletin' && focusedBulletinReport !== null
+        ? bulletinSource.trim()
+        : manualInput.trim()
+      : '';
+    const rememberHardConvert = (files: ConvertedFile[]) => {
+      if (softPreview) {
+        return;
+      }
+      const next = appendOutputVersion(outputVersionsRef.current, {
+        at: Date.now(),
+        tac: manualText || files[0]?.originalContent || '',
+        xml: files.map((file) => file.convertedContent).join('\n'),
+        conversionProfile:
+          conversionParams.conversionLibraryId || conversionParams.profile,
+        decodingProfile: conversionParams.decodingLibraryId,
+      });
+      outputVersionsRef.current = next;
+      setOutputVersions(next);
+    };
 
     if (queueFiles.length === 0 && !manualText) {
       toast.error('Please add files or enter manual input');
@@ -1481,6 +1555,7 @@ export function FileConverter({
             setFirstAccumulatedTac((stem) =>
               nextFirstAccumulatedTac(stem, newConvertedFiles[0]?.originalContent),
             );
+            rememberHardConvert(newConvertedFiles);
           }
         }
         clearConvertedFromQueue();
@@ -1625,6 +1700,7 @@ export function FileConverter({
           setFirstAccumulatedTac((stem) =>
             nextFirstAccumulatedTac(stem, newConvertedFiles[0]?.originalContent),
           );
+          rememberHardConvert(newConvertedFiles);
         }
       }
       clearConvertedFromQueue();
@@ -2206,6 +2282,7 @@ export function FileConverter({
     updateConversionLog(null);
     setConversionStatus({ type: 'idle' });
     setFailedSpans([]);
+    setSelectedTrace(null);
     setPreviewXml('');
     setPreviewStatus('empty');
     setPreviewMode('idle');
@@ -2236,6 +2313,7 @@ export function FileConverter({
   const liveIwxxmRunner = useCallback(
     async (signal: AbortSignal) => {
       setDecodeError(null);
+      setGroupTrace([]);
       try {
         const response = await callBackendConversion({
           manualText: manualInput.trim(),
@@ -2258,6 +2336,7 @@ export function FileConverter({
           response.results?.[0]?.xml ||
           response.results?.[0]?.content ||
           '';
+        setGroupTrace(readGroupTrace(response));
         if (latestXml) {
           setPreviewXml(latestXml);
           setPreviewMode('live');
@@ -2299,6 +2378,7 @@ export function FileConverter({
 
   const {
     issueSpans,
+    lintIssues,
     lintFixes,
     decodeSegments,
     decodeResiduals,
@@ -2315,6 +2395,36 @@ export function FileConverter({
     liveIwxxm,
     liveIwxxmRunner,
   });
+
+  const tacLintSummary = lintSummaryLabel(lintIssues);
+  const bulletinReports =
+    inputMode === 'ahl_bulletin'
+      ? listBulletinReports(bulletinSource || manualInput)
+      : [];
+  const previewIncomplete = previewIsIncomplete(
+    lintIssues.filter((issue) => issue.severity === 'error').length,
+    decodeResiduals.length,
+    failedSpans.length,
+  );
+  const editorSpans = spansWithSelection(issueSpans, selectedTrace);
+  const jumpIssues = jumpableLintIssues(lintIssues);
+  const applyLintJump = (issue: JumpableLintIssue) => {
+    setLintJump(jumpIssues.indexOf(issue));
+    setLintFocusOffset(issue.start);
+    setSelectedTrace({
+      start: issue.start,
+      end: issue.end,
+      code: manualInput.slice(issue.start, issue.end),
+    });
+  };
+  const lintCounts = lintIssueCounts(lintIssues);
+  const strictLayersRan = strictConvertRan({
+    strict: conversionParams.strictValidation,
+    softPreview,
+    convertedCount: convertedFiles.length,
+    status: conversionStatus.type,
+  });
+  const failedLayers = errorLayerNames(conversionLog);
 
   const { entries: lintCatalogEntries, byCode: lintCatalogByCode } =
     useLintIssueCatalog({
@@ -2779,6 +2889,13 @@ export function FileConverter({
                           data-testid={`input-mode-${value}`}
                           disabled={isReadOnly}
                           onClick={() => {
+                            if (
+                              value !== 'ahl_bulletin' &&
+                              focusedBulletinReport !== null
+                            ) {
+                              setManualInput(bulletinSource);
+                              setFocusedBulletinReport(null);
+                            }
                             if (value === 'validate_iwxxm') {
                               const xml =
                                 convertedFiles[0]?.convertedContent?.trim() || '';
@@ -3164,15 +3281,128 @@ export function FileConverter({
                 </StatusBanner>
               )}
               <FailedTacCue failedSpans={failedSpans} />
-              <div className="grid grid-cols-1 gap-3 lg:grid-cols-2 lg:items-stretch">
+              {bulletinReports.length >= 2 ? (
+                <BulletinReportList
+                  reports={bulletinReports}
+                  selectedIndex={focusedBulletinReport}
+                  onShowAll={() => {
+                    setFocusedBulletinReport(null);
+                    setManualInput(bulletinSource || manualInput);
+                  }}
+                  onSelect={(index, tac) => {
+                    const source = bulletinSource || manualInput;
+                    setBulletinSource(source);
+                    setFocusedBulletinReport(index);
+                    setManualInput(tac);
+                    setSelectedTrace(null);
+                  }}
+                />
+              ) : null}
+              {inputMode !== 'validate_iwxxm' ? (
+                <LiveConvertStatusStrip
+                  hasTac={manualInput.trim().length > 0}
+                  decodeReady={decodeSegments.length > 0}
+                  decodeLoading={decodeLoading}
+                  previewState={
+                    !previewXml.trim()
+                      ? 'waiting'
+                      : previewIncomplete
+                        ? 'incomplete'
+                        : 'current'
+                  }
+                  lintStatus={tacLintLayerStatus({
+                    hasTac: manualInput.trim().length > 0,
+                    loading: decodeLoading,
+                    errorCount: lintCounts.errorCount,
+                    issueCount: lintCounts.issueCount,
+                  })}
+                  schemaStatus={outputLayerStatus(
+                    'schema',
+                    validateReport,
+                    failedLayers,
+                    strictLayersRan,
+                  )}
+                  schematronStatus={outputLayerStatus(
+                    'schematron',
+                    validateReport,
+                    failedLayers,
+                    strictLayersRan,
+                  )}
+                />
+              ) : null}
+              <div className="mb-2 flex flex-wrap items-center gap-3">
                 <div
-                  className="min-w-0"
-                  onFocusCapture={() => setRecentWorkCollapsed(true)}
+                  className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
+                  role="group"
+                  aria-label="Decode density"
                 >
+                  <button
+                    type="button"
+                    aria-pressed={liveLayout.density === 'detailed'}
+                    className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                    onClick={() => updateLiveLayout({ density: 'detailed' })}
+                  >
+                    Detailed
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={liveLayout.density === 'compact'}
+                    className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                    onClick={() => updateLiveLayout({ density: 'compact' })}
+                  >
+                    Compact
+                  </button>
+                </div>
+                <label className="flex items-center gap-2 text-xs text-gray-800 dark:text-gray-200">
+                  <input
+                    type="checkbox"
+                    data-testid="wrap-xml-lines"
+                    checked={liveLayout.wrapXml}
+                    onChange={(event) =>
+                      updateLiveLayout({ wrapXml: event.target.checked })
+                    }
+                  />
+                  Wrap XML lines
+                </label>
+              </div>
+              <LiveConvertPaneGrid
+                wide={wideConvertPanes}
+                widths={liveLayout.paneWidths}
+                onWidthsChange={(paneWidths) => updateLiveLayout({ paneWidths })}
+              >
+                <section
+                  className="min-w-0"
+                  aria-label="TAC"
+                  onFocusCapture={() => setRecentWorkCollapsed(true)}
+                  onKeyDown={(event) => {
+                    const issue = lintIssueFromKey(event, jumpIssues, lintJump);
+                    if (!issue) return;
+                    event.preventDefault();
+                    applyLintJump(issue);
+                  }}
+                >
+                  <h2 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
+                    TAC
+                  </h2>
                   <TacEditor
                     id="manual-input"
                     value={manualInput}
-                    onChange={setManualInput}
+                    onChange={(value) => {
+                      setManualInput(value);
+                      setSelectedTrace(null);
+                      setLintJump(null);
+                      setLintFocusOffset(null);
+                      if (inputMode !== 'ahl_bulletin') {
+                        return;
+                      }
+                      if (focusedBulletinReport === null) {
+                        setBulletinSource(value);
+                        return;
+                      }
+                      setBulletinSource((current) =>
+                        replaceBulletinReport(current, focusedBulletinReport, value),
+                      );
+                    }}
                     readOnly={isReadOnly}
                     placeholder="SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021"
                     aria-label={
@@ -3182,32 +3412,123 @@ export function FileConverter({
                     }
                     className="min-h-[160px] focus-within:ring-2 focus-within:ring-blue-500"
                     failedSpans={failedSpans}
-                    issueSpans={issueSpans}
+                    issueSpans={editorSpans}
                     onSpanFix={applyLintFix}
+                    focusOffset={lintFocusOffset}
                   />
-                  <DecodePanel
-                    segments={decodeSegments}
-                    residuals={decodeResiduals}
-                    summary={decodeSummary}
-                    product={decodeProduct}
-                    loading={decodeLoading}
-                    error={decodeError}
-                    defaultOpen
-                  />
-                </div>
+                  {inputMode !== 'validate_iwxxm' ? (
+                    <>
+                      <div
+                        className="mt-2 flex flex-wrap gap-1"
+                        data-testid="tac-group-chips"
+                        aria-label="Recognised groups"
+                      >
+                        {decodeSegments.map((segment) => {
+                          const selected =
+                            selectedTrace?.start === segment.start &&
+                            selectedTrace?.end === segment.end;
+                          return (
+                            <button
+                              key={`chip-${segment.start}-${segment.end}-${segment.code}`}
+                              type="button"
+                              aria-pressed={selected}
+                              className={`rounded px-2 py-0.5 font-mono text-xs ${
+                                selected
+                                  ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800 dark:bg-sky-900 dark:text-sky-50'
+                                  : 'bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
+                              }`}
+                              onClick={() =>
+                                setSelectedTrace({
+                                  start: segment.start,
+                                  end: segment.end,
+                                  code: segment.code,
+                                })
+                              }
+                            >
+                              {segment.code}
+                            </button>
+                          );
+                        })}
+                        {decodeResiduals.map((residual) => {
+                          const selected =
+                            selectedTrace?.start === residual.start &&
+                            selectedTrace?.end === residual.end;
+                          return (
+                            <button
+                              key={`chip-res-${residual.start}-${residual.end}`}
+                              type="button"
+                              aria-pressed={selected}
+                              className={`rounded px-2 py-0.5 font-mono text-xs ${
+                                selected
+                                  ? 'bg-sky-200 text-sky-950 ring-1 ring-sky-800'
+                                  : 'bg-amber-100 text-amber-950 dark:bg-amber-950 dark:text-amber-100'
+                              }`}
+                              onClick={() =>
+                                setSelectedTrace({
+                                  start: residual.start,
+                                  end: residual.end,
+                                  code: residual.text,
+                                })
+                              }
+                            >
+                              Error {residual.text}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      <p
+                        className="mt-2 text-xs text-gray-700 dark:text-gray-200"
+                        data-testid="tac-lint-summary"
+                      >
+                        {tacLintSummary}
+                      </p>
+                      <TacLintJumps
+                        issues={jumpIssues}
+                        activeIndex={lintJump}
+                        onSelect={applyLintJump}
+                      />
+                    </>
+                  ) : null}
+                </section>
+                <DecodePanel
+                  segments={decodeSegments}
+                  residuals={decodeResiduals}
+                  summary={decodeSummary}
+                  product={decodeProduct}
+                  loading={decodeLoading}
+                  error={decodeError}
+                  pinned={inputMode !== 'validate_iwxxm'}
+                  defaultOpen
+                  decodingProfile={conversionParams.decodingLibraryId || undefined}
+                  density={liveLayout.density}
+                  selectedStart={selectedTrace?.start}
+                  selectedEnd={selectedTrace?.end}
+                  onSelect={setSelectedTrace}
+                />
                 <IwxxmPreviewPane
                   xml={previewXml}
                   status={previewStatus}
                   mode={previewMode}
                   softFailDetail={previewSoftFailDetail}
                   failedSpanCount={failedSpans.length}
+                  numbered={inputMode !== 'validate_iwxxm'}
+                  highlightToken={selectedTrace?.code ?? ''}
+                  highlightStart={selectedTrace?.start}
+                  highlightEnd={selectedTrace?.end}
+                  groupTrace={groupTrace}
+                  incomplete={previewIncomplete && previewXml.trim().length > 0}
+                  conversionProfile={
+                    conversionParams.conversionLibraryId || conversionParams.profile
+                  }
+                  wrapXml={liveLayout.wrapXml}
                   onFailedSpanFocus={() => {
                     document
                       .querySelector('[data-testid="failed-tac-cue"]')
                       ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                   }}
                 />
-              </div>
+              </LiveConvertPaneGrid>
+              <OutputVersionCompare versions={outputVersions} />
               {/* Output filename beside TAC / IWXXM panes (EVCPU Phase A) */}
               <div className="mt-3" data-testid="output-filename-near-convert">
                 <Label

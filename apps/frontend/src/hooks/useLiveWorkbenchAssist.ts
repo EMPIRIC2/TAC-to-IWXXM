@@ -12,9 +12,9 @@ import {
   type LintIssue,
 } from '/utils/api';
 import {
-  LIVE_ASSIST_DEBOUNCE_MS,
   LiveAssistScheduler,
   isAbortError,
+  resolveLiveAssistDebounceMs,
 } from '/utils/liveAssist';
 import type { TacSpanMark } from '/utils/tacEditorSpans';
 
@@ -95,7 +95,7 @@ export function useLiveWorkbenchAssist({
 
   const schedulerRef = useRef<LiveAssistScheduler | null>(null);
   if (schedulerRef.current === null) {
-    schedulerRef.current = new LiveAssistScheduler(LIVE_ASSIST_DEBOUNCE_MS);
+    schedulerRef.current = new LiveAssistScheduler(resolveLiveAssistDebounceMs());
   }
 
   const liveIwxxmRunnerRef = useRef(liveIwxxmRunner);

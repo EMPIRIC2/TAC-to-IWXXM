@@ -58,6 +58,15 @@ export type ConversionResponse = {
   metadata?: Schemas['ConversionResponse']['metadata'];
   ok?: Schemas['ConversionResponse']['ok'];
   failed_spans?: FailedSpan[];
+  /** Preview pairing of TAC groups to IWXXM elements. */
+  group_trace?: {
+    start: number;
+    end: number;
+    token: string;
+    element: string;
+    occurrence: number;
+    scope: 'line' | 'block';
+  }[];
 };
 
 /**

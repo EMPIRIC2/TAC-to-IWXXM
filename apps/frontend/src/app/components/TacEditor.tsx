@@ -43,6 +43,8 @@ export interface TacEditorProps {
   issueSpans?: TacSpanMark[];
   /** Quick-fix from span tooltip (F10 — e.g. add_terminator). */
   onSpanFix?: (fixCode: string) => void;
+  /** Move the caret to this offset when a lint issue is chosen. */
+  focusOffset?: number | null;
 }
 
 /**
@@ -107,6 +109,26 @@ export function syncTacEditorIssueSpans(
     return;
   }
   view.dispatch({ effects: setTacSpansEffect.of(issueSpans) });
+}
+
+/**
+ * Scroll the editor to a lint-issue offset.
+ *
+ * @param view - Mounted CodeMirror view, or null before mount
+ * @param offset - Character offset, or null when no issue is selected
+ * @example
+ * const _ = true;
+ */
+export function scrollTacEditorTo(
+  view: EditorView | null,
+  offset: number | null | undefined,
+): void {
+  if (!view || offset == null) return;
+  const pos = Math.max(0, Math.min(offset, view.state.doc.length));
+  view.dispatch({
+    selection: { anchor: pos },
+    effects: EditorView.scrollIntoView(pos, { y: 'center' }),
+  });
 }
 
 /**
@@ -183,6 +205,7 @@ export function TacEditor({
   failedSpans = [],
   issueSpans = [],
   onSpanFix,
+  focusOffset = null,
 }: TacEditorProps) {
   const parentRef = useRef<HTMLDivElement | null>(null);
   const viewRef = useRef<EditorView | null>(null);
@@ -263,6 +286,10 @@ export function TacEditor({
   useEffect(() => {
     syncTacEditorIssueSpans(viewRef.current, issueSpans);
   }, [issueSpans]);
+
+  useEffect(() => {
+    scrollTacEditorTo(viewRef.current, focusOffset);
+  }, [focusOffset]);
 
   useEffect(() => {
     return attachTacSpanFixListener(parentRef.current, (event) => {

@@ -66,8 +66,44 @@ describe('DecodePanel', () => {
 
     expect(screen.getByTestId('decode-residuals')).toBeInTheDocument();
     expect(screen.getByText('KARYMSKY 1000-13')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /KARYMSKY 1000-13/ })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
     await user.click(screen.getByRole('button', { name: /Decode/i }));
     expect(screen.queryByTestId('decode-residuals')).not.toBeInTheDocument();
+  });
+
+  it('marks the residual that matches the selected span', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(
+      <DecodePanel
+        product="VAA"
+        defaultOpen
+        selectedStart={20}
+        selectedEnd={40}
+        onSelect={onSelect}
+        segments={[]}
+        residuals={[
+          {
+            start: 20,
+            end: 40,
+            text: 'KARYMSKY 1000-13',
+          },
+        ]}
+      />,
+    );
+
+    const selected = screen.getByRole('button', { name: /KARYMSKY 1000-13/ });
+    expect(selected).toHaveAttribute('aria-pressed', 'true');
+    expect(selected.className).toContain('bg-sky-100');
+    await user.click(selected);
+    expect(onSelect).toHaveBeenCalledWith({
+      start: 20,
+      end: 40,
+      code: 'KARYMSKY 1000-13',
+    });
   });
 
   // T3.1 / TC-F9-002 §4 — Plain language block (S013 / EV-009)
@@ -227,5 +263,50 @@ describe('DecodePanel', () => {
 
     rerender(<DecodePanel segments={[]} residuals={[]} defaultOpen />);
     expect(screen.getByText('No decode segments yet.')).toBeInTheDocument();
+  });
+
+  it('pins the reading open and selects a row', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(
+      <DecodePanel
+        pinned
+        decodingProfile="ICAO Annex 3"
+        product="METAR"
+        segments={[{ start: 0, end: 5, code: 'METAR', explanation: 'Report type' }]}
+        residuals={[{ start: 6, end: 8, text: 'XX' }]}
+        selectedStart={0}
+        selectedEnd={5}
+        onSelect={onSelect}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: /^Decode/ })).not.toBeInTheDocument();
+    expect(screen.getByTestId('decode-profile-label')).toHaveTextContent(
+      'Decoding profile: ICAO Annex 3',
+    );
+    expect(screen.getByRole('button', { name: /METAR/ })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await user.click(screen.getByRole('button', { name: /METAR/ }));
+    expect(onSelect).toHaveBeenCalledWith({ start: 0, end: 5, code: 'METAR' });
+    await user.click(screen.getByRole('button', { name: /XX/ }));
+    expect(onSelect).toHaveBeenCalledWith({ start: 6, end: 8, code: 'XX' });
+  });
+
+  it('compact density keeps the group and hides the explanation', () => {
+    render(
+      <DecodePanel
+        pinned
+        density="compact"
+        summary="Plain reading"
+        segments={[{ start: 0, end: 5, code: 'METAR', explanation: 'Report type' }]}
+        residuals={[]}
+      />,
+    );
+    expect(screen.getByText('METAR')).toBeInTheDocument();
+    expect(screen.queryByText('Report type')).not.toBeInTheDocument();
+    expect(screen.queryByText('Explanation')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('decode-plain-language')).not.toBeInTheDocument();
   });
 });

@@ -145,6 +145,18 @@ def test_convert_preview_success_ok_true(client: TestClient) -> None:
     assert spans == []
     assert payload["results"]
     assert "<" in payload["results"][0]["content"]
+    wind = [row for row in payload["group_trace"] if row["element"] == "surfaceWind"]
+    assert wind
+    assert wind[0]["scope"] == "block"
+    assert wind[0]["occurrence"] == 0
+
+
+def test_convert_without_preview_has_no_group_pairing(client: TestClient) -> None:
+    """Hard convert keeps the pairing list empty."""
+    tac = (FIXTURES / "metar_basic.tac").read_text(encoding="utf-8").strip()
+    response = _multipart_convert(client, manual_text=tac, preview=None)
+    assert response.status_code == 200, response.text[:500]
+    assert response.json()["group_trace"] == []
 
 
 def test_convert_preview_layer12_spans_copied(client: TestClient, monkeypatch) -> None:

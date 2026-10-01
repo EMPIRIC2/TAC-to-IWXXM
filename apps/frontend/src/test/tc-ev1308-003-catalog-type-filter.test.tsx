@@ -117,7 +117,9 @@ describe('TC-EV1308-003 family-aware type filter', () => {
     expect(optionValues).not.toContain('presence');
 
     const sparseRow = screen.getByTestId('lint-validation-catalog-entry-sparse');
-    expect(within(sparseRow).getAllByRole('cell')[1]?.textContent).toBe('—');
+    expect(within(sparseRow).getByTestId('catalog-entry-type').textContent).toBe(
+      'Type: —',
+    );
 
     await user.selectOptions(typeFilter, 'profile');
     expect(

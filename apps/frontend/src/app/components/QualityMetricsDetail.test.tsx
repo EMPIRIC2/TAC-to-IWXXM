@@ -357,6 +357,12 @@ describe('QualityMetricsDetail diff layout (TC-EV058)', () => {
     expect(screen.getByTestId('quality-metrics-diff-side-right')).toHaveTextContent(
       '<v>2</v>',
     );
+    expect(screen.getByTestId('quality-metrics-diff-side-left')).toHaveTextContent(
+      'Removed',
+    );
+    expect(screen.getByTestId('quality-metrics-diff-side-right')).toHaveTextContent(
+      'Added',
+    );
     expect(screen.queryByTestId('quality-metrics-diff-body')).not.toBeInTheDocument();
   });
 

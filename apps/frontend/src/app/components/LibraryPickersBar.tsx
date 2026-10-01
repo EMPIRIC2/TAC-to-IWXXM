@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { fetchSelectionOptions, type SelectionOptionKind } from '../../utils/api';
+import { libraryChoiceReason } from '../../utils/libraryChoiceReason';
 import { defaultLibraryId } from '../../utils/libraryIds';
 import {
   CONVERT_LIBRARY_CATALOG_LINK,
@@ -224,6 +225,12 @@ export function LibraryPickersBar({
                   </option>
                 ))}
               </select>
+              <p
+                className="text-xs text-gray-800 dark:text-gray-200"
+                data-testid={`${meta.testId}-reason`}
+              >
+                {libraryChoiceReason(value)}
+              </p>
               <p
                 className="text-xs text-gray-500 dark:text-gray-400"
                 data-testid={meta.helpTestId}

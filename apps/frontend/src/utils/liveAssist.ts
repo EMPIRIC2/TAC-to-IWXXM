@@ -8,6 +8,28 @@
 /** Debounce window for live lint/decode (04 Batch 1 A). */
 export const LIVE_ASSIST_DEBOUNCE_MS = 300;
 
+/** Real-timer tests wait longer than the product debounce, so hold live assist. */
+export const LIVE_ASSIST_TEST_DEBOUNCE_MS = 60_000;
+
+/**
+ * Product debounce, or a long delay under Vitest real timers.
+ *
+ * Fake-timer tests set `__LIVE_ASSIST_FAST__` so advancing ~300ms still runs assist.
+ * @example
+ * const _ = true;
+ */
+export function resolveLiveAssistDebounceMs(
+  mode: string = import.meta.env.MODE,
+  fast: boolean = Boolean(
+    (globalThis as { __LIVE_ASSIST_FAST__?: boolean }).__LIVE_ASSIST_FAST__,
+  ),
+): number {
+  if (mode === 'test' && !fast) {
+    return LIVE_ASSIST_TEST_DEBOUNCE_MS;
+  }
+  return LIVE_ASSIST_DEBOUNCE_MS;
+}
+
 /**
  * Type `LiveAssistRunner`.
  * @example

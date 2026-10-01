@@ -401,4 +401,46 @@ describe('MyMetarsPage', () => {
     await user.click(screen.getByTestId('import-sessions'));
     expect(clickSpy).toHaveBeenCalled();
   });
+
+  it('compares the last two convert versions on a history row', async () => {
+    const user = userEvent.setup();
+    mockList.mockResolvedValue({
+      items: [
+        sampleSession({
+          conversion_params: {
+            output_versions: [
+              {
+                at: 1,
+                tac: 'METAR',
+                xml: '<a/>',
+                conversionProfile: 'c',
+                decodingProfile: 'd',
+              },
+              {
+                at: 2,
+                tac: 'METAR',
+                xml: '<b/>',
+                conversionProfile: 'c',
+                decodingProfile: 'd',
+              },
+            ],
+          },
+        }),
+      ],
+      total: 1,
+      page: 1,
+      limit: 50,
+    });
+    render(<MyMetarsPage onBack={onBack} onOpenSession={onOpenSession} />);
+    const compare = await screen.findByRole('button', {
+      name: /Compare versions \(2\)/,
+    });
+    await user.click(compare);
+    expect(screen.getByTestId('output-version-compare')).toHaveTextContent('Removed');
+    expect(screen.getByText('<a/>')).toBeInTheDocument();
+    expect(screen.getByText('Added')).toBeInTheDocument();
+    expect(onOpenSession).not.toHaveBeenCalled();
+    await user.click(compare);
+    expect(screen.queryByTestId('output-version-compare')).not.toBeInTheDocument();
+  });
 });

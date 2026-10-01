@@ -120,7 +120,9 @@ import {
   LINT_VALIDATION_CATALOG_FAMILY_LABEL,
   LINT_VALIDATION_CATALOG_LEVEL_LABEL,
   LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY,
+  LINT_VALIDATION_CATALOG_DETAIL,
   LINT_VALIDATION_CATALOG_LOADING,
+  LINT_VALIDATION_CATALOG_SEARCH,
   LINT_VALIDATION_CATALOG_PAGE_SUBTITLE,
   LINT_VALIDATION_CATALOG_PAGE_TITLE,
   LINT_VALIDATION_CATALOG_PROFILE_ALL,
@@ -336,6 +338,14 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     {
       id: 'lint-validation-catalog.loading',
       text: LINT_VALIDATION_CATALOG_LOADING,
+    },
+    {
+      id: 'lint-validation-catalog.search',
+      text: LINT_VALIDATION_CATALOG_SEARCH,
+    },
+    {
+      id: 'lint-validation-catalog.detail',
+      text: LINT_VALIDATION_CATALOG_DETAIL,
     },
     {
       id: 'lint-validation-catalog.family',

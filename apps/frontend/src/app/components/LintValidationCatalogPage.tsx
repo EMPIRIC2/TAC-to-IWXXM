@@ -12,6 +12,11 @@ import { fetchLintIssueCatalog, fetchRuleCatalog } from '@/utils/api';
 import type { LintIssueCatalogEntry } from '@/utils/openapiTypes';
 import { Card } from './ui/card';
 import {
+  catalogEntryMatchesQuery,
+  catalogFamilyLabel,
+  selectedCatalogCode,
+} from '@/utils/catalogPresentation';
+import {
   LINT_VALIDATION_CATALOG_ACCESS_LABEL,
   LINT_VALIDATION_CATALOG_COL_CODE,
   LINT_VALIDATION_CATALOG_COL_DESCRIPTION,
@@ -19,6 +24,7 @@ import {
   LINT_VALIDATION_CATALOG_COL_PROFILES,
   LINT_VALIDATION_CATALOG_COL_SOURCE,
   LINT_VALIDATION_CATALOG_COL_TYPE,
+  LINT_VALIDATION_CATALOG_DETAIL,
   LINT_VALIDATION_CATALOG_EMPTY,
   LINT_VALIDATION_CATALOG_EXCHANGE_ALL,
   LINT_VALIDATION_CATALOG_EXCHANGE_LABEL,
@@ -30,9 +36,11 @@ import {
   LINT_VALIDATION_CATALOG_PAGE_TITLE,
   LINT_VALIDATION_CATALOG_PROFILE_ALL,
   LINT_VALIDATION_CATALOG_PROFILE_LABEL,
+  LINT_VALIDATION_CATALOG_SEARCH,
   LINT_VALIDATION_CATALOG_SORT_LABEL,
   LINT_VALIDATION_CATALOG_TYPE_LABEL,
 } from '@/utils/lintValidationCatalogCopy';
+import { catalogLevelLabel } from '@/utils/readableStatus';
 import { SEMANTIC_PROFILE_OPTIONS, type IwxxmProfile } from '@/utils/semanticProfile';
 import {
   EXCHANGE_PROFILE_OPTIONS,
@@ -416,6 +424,8 @@ export function LintValidationCatalogPage({
   >('all');
   const [listedProfileOnly, setListedProfileOnly] = useState(false);
   const [sortBy, setSortBy] = useState<SortKey>('code');
+  const [query, setQuery] = useState('');
+  const [selectedCode, setSelectedCode] = useState<string | null>(null);
   const [entries, setEntries] = useState<LintIssueCatalogEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -502,7 +512,8 @@ export function LintValidationCatalogPage({
           listedOnly: listedProfileOnly,
           semanticSelected,
           exchangeSelected,
-        }),
+        }) &&
+        catalogEntryMatchesQuery(entry.code, entry.message_template, query),
     );
     return [...filtered].sort((a, b) => compareEntries(a, b, sortBy));
   }, [
@@ -514,7 +525,14 @@ export function LintValidationCatalogPage({
     semanticProfileFilter,
     exchangeProfileFilter,
     sortBy,
+    query,
   ]);
+
+  const activeCode = selectedCatalogCode(
+    sorted.map((entry) => entry.code),
+    selectedCode,
+  );
+  const detail = sorted.find((entry) => entry.code === activeCode);
 
   /* eslint-disable react-hooks/set-state-in-effect -- scroll/highlight focus target from shell deep-link */
   useEffect(() => {
@@ -530,6 +548,7 @@ export function LintValidationCatalogPage({
     if (el instanceof HTMLElement) {
       el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       setHighlightedCode(focusCode);
+      setSelectedCode(focusCode);
       focusHandledRef.current = focusCode;
       onFocusHandled?.();
       return undefined;
@@ -694,6 +713,17 @@ export function LintValidationCatalogPage({
               {LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY}
             </label>
             <label className="text-sm text-gray-700 dark:text-gray-300">
+              {LINT_VALIDATION_CATALOG_SEARCH}
+              <input
+                type="search"
+                className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
+                value={query}
+                data-testid="lint-validation-catalog-search"
+                aria-label={LINT_VALIDATION_CATALOG_SEARCH}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </label>
+            <label className="text-sm text-gray-700 dark:text-gray-300">
               {LINT_VALIDATION_CATALOG_SORT_LABEL}
               <select
                 className="ml-2 rounded border px-2 py-1 text-sm dark:bg-gray-800"
@@ -728,108 +758,128 @@ export function LintValidationCatalogPage({
           )}
 
           {!loading && !error && (
-            <div className="overflow-x-auto" data-testid="lint-validation-catalog-list">
-              {sorted.length === 0 ? (
-                <p className="py-3 text-sm text-gray-500 dark:text-gray-400">
-                  {LINT_VALIDATION_CATALOG_EMPTY}
-                </p>
-              ) : (
-                <table className="w-full min-w-[48rem] border-collapse text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-gray-200 text-gray-600 dark:border-gray-700 dark:text-gray-300">
-                      <th className="px-2 py-2 font-medium">
-                        {LINT_VALIDATION_CATALOG_COL_CODE}
-                      </th>
-                      <th className="px-2 py-2 font-medium">
-                        {LINT_VALIDATION_CATALOG_COL_TYPE}
-                      </th>
-                      <th className="px-2 py-2 font-medium">
-                        {LINT_VALIDATION_CATALOG_COL_LEVEL}
-                      </th>
-                      <th className="px-2 py-2 font-medium">
-                        {LINT_VALIDATION_CATALOG_COL_PROFILES}
-                      </th>
-                      <th className="px-2 py-2 font-medium">
-                        {LINT_VALIDATION_CATALOG_COL_DESCRIPTION}
-                      </th>
-                      <th className="px-2 py-2 font-medium">
-                        {LINT_VALIDATION_CATALOG_COL_SOURCE}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
+            <div className="grid gap-4 lg:grid-cols-[minmax(16rem,0.9fr)_minmax(0,1.1fr)]">
+              <div data-testid="lint-validation-catalog-list">
+                {sorted.length === 0 ? (
+                  <p className="py-3 text-sm text-gray-500 dark:text-gray-400">
+                    {LINT_VALIDATION_CATALOG_EMPTY}
+                  </p>
+                ) : (
+                  <ul className="space-y-2">
                     {sorted.map((entry) => {
                       const profiles = formatApplicableProfiles(entry);
+                      const selected = entry.code === activeCode;
                       return (
-                        <tr
-                          key={`${entry.family ?? 'lint'}-${entry.code}`}
-                          data-testid={`lint-validation-catalog-entry-${entry.code}`}
-                          className={
-                            highlightedCode === entry.code
-                              ? 'align-top bg-sky-50 ring-2 ring-sky-400 dark:bg-sky-950/40'
-                              : 'align-top'
-                          }
-                        >
-                          <td className="px-2 py-2 font-mono text-xs text-gray-900 dark:text-gray-100">
-                            {entry.code}
-                          </td>
-                          <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
-                            {entry.issue_type ?? '—'}
-                          </td>
-                          <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
-                            {entry.severity || '—'}
-                          </td>
-                          <td className="px-2 py-2 text-xs text-gray-700 dark:text-gray-300">
-                            <div className="space-y-1">
-                              <p>
-                                <span className="font-medium">Semantic:</span>{' '}
-                                {profiles.semantic}
+                        <li key={`${entry.family ?? 'lint'}-${entry.code}`}>
+                          <article
+                            data-testid={`lint-validation-catalog-entry-${entry.code}`}
+                            className={
+                              highlightedCode === entry.code || selected
+                                ? 'rounded-md border border-sky-400 bg-sky-50 p-3 ring-2 ring-sky-400 dark:bg-sky-950/40'
+                                : 'rounded-md border border-gray-200 p-3 dark:border-gray-700'
+                            }
+                          >
+                            <button
+                              type="button"
+                              className="w-full text-left"
+                              aria-pressed={selected}
+                              onClick={() => setSelectedCode(entry.code)}
+                            >
+                              <span className="text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200">
+                                {catalogLevelLabel(entry.severity)}
+                              </span>
+                              <span className="mt-1 block text-xs text-gray-600 dark:text-gray-400">
+                                {catalogFamilyLabel(entry.family)}
+                              </span>
+                              <span className="mt-1 block font-mono text-xs text-gray-900 dark:text-gray-100">
+                                {LINT_VALIDATION_CATALOG_COL_CODE}: {entry.code}
+                              </span>
+                              <span className="mt-1 block text-sm text-gray-800 dark:text-gray-200">
+                                {entry.message_template}
+                              </span>
+                            </button>
+                            <div className="mt-2 space-y-1 text-xs text-gray-700 dark:text-gray-300">
+                              <p data-testid="catalog-entry-type">
+                                {LINT_VALIDATION_CATALOG_COL_TYPE}:{' '}
+                                {entry.issue_type ?? '—'}
+                              </p>
+                              <p data-testid="catalog-entry-level">
+                                {LINT_VALIDATION_CATALOG_COL_LEVEL}:{' '}
+                                {catalogLevelLabel(entry.severity)}
                               </p>
                               <p>
-                                <span className="font-medium">Exchange:</span>{' '}
-                                {profiles.exchange}
+                                <span className="font-medium">
+                                  {LINT_VALIDATION_CATALOG_COL_PROFILES}:
+                                </span>{' '}
+                                Semantic: {profiles.semantic}
                               </p>
-                            </div>
-                          </td>
-                          <td className="px-2 py-2 text-gray-700 dark:text-gray-300">
-                            {entry.message_template}
-                          </td>
-                          <td className="px-2 py-2">
-                            <div className="space-y-1">
-                              {entry.source_locator ? (
-                                <p className="text-xs text-gray-600 dark:text-gray-400">
-                                  {entry.source_locator}
+                              <p>Exchange: {profiles.exchange}</p>
+                              <p className="text-gray-800 dark:text-gray-200">
+                                {LINT_VALIDATION_CATALOG_COL_DESCRIPTION}:{' '}
+                                {entry.message_template}
+                              </p>
+                              <div>
+                                <p className="font-medium">
+                                  {LINT_VALIDATION_CATALOG_COL_SOURCE}
                                 </p>
-                              ) : null}
-                              {entry.source_access ? (
-                                <p className="text-xs text-gray-500 dark:text-gray-500">
-                                  Access: {entry.source_access.replace('_', ' ')}
-                                </p>
-                              ) : null}
-                              {isClickableSource(entry) ? (
-                                <a
-                                  href={entry.source_url!}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="break-all text-blue-700 underline hover:text-blue-900 dark:text-blue-400"
-                                >
-                                  {entry.source_url}
-                                </a>
-                              ) : entry.source_url ? (
-                                <span className="break-all text-gray-500 dark:text-gray-400">
-                                  {entry.source_url}
-                                </span>
-                              ) : (
-                                <span className="text-gray-400">—</span>
-                              )}
+                                {entry.source_locator ? (
+                                  <p className="text-gray-600 dark:text-gray-400">
+                                    {entry.source_locator}
+                                  </p>
+                                ) : null}
+                                {entry.source_access ? (
+                                  <p className="text-gray-500">
+                                    Access: {entry.source_access.replace('_', ' ')}
+                                  </p>
+                                ) : null}
+                                {isClickableSource(entry) ? (
+                                  <a
+                                    href={entry.source_url!}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="break-all text-blue-700 underline hover:text-blue-900 dark:text-blue-400"
+                                  >
+                                    {entry.source_url}
+                                  </a>
+                                ) : entry.source_url ? (
+                                  <span className="break-all text-gray-500 dark:text-gray-400">
+                                    {entry.source_url}
+                                  </span>
+                                ) : (
+                                  <span className="text-gray-400">—</span>
+                                )}
+                              </div>
                             </div>
-                          </td>
-                        </tr>
+                          </article>
+                        </li>
                       );
                     })}
-                  </tbody>
-                </table>
-              )}
+                  </ul>
+                )}
+              </div>
+              {detail ? (
+                <aside
+                  className="rounded-md border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-950"
+                  data-testid="lint-validation-catalog-detail"
+                  aria-label={LINT_VALIDATION_CATALOG_DETAIL}
+                >
+                  <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                    {LINT_VALIDATION_CATALOG_DETAIL}
+                  </h2>
+                  <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-gray-700 dark:text-gray-200">
+                    {catalogLevelLabel(detail.severity)}
+                  </p>
+                  <p className="mt-1 text-xs text-gray-600 dark:text-gray-400">
+                    {catalogFamilyLabel(detail.family)}
+                  </p>
+                  <p className="mt-2 font-mono text-sm text-gray-900 dark:text-gray-100">
+                    {detail.code}
+                  </p>
+                  <p className="mt-2 text-sm text-gray-800 dark:text-gray-200">
+                    {detail.message_template}
+                  </p>
+                </aside>
+              ) : null}
             </div>
           )}
         </Card>
