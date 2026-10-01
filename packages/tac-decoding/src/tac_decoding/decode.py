@@ -31,6 +31,7 @@ _CLOUD = re.compile(r"^(?P<amt>FEW|SCT|BKN|OVC|SKC|CLR|NSC|NCD)(?P<hgt>\d{3})?(?
 _TEMP = re.compile(r"^(?P<t>M?\d{2})/(?P<td>M?\d{2})$")
 _ALT = re.compile(r"^A(?P<val>\d{4})$")
 _QNH = re.compile(r"^Q(?P<val>\d{3,4})$")
+_QNH_MEANING = "the altimeter setting reduced to mean sea level"
 _TIME_Z = re.compile(r"^(?P<dd>\d{2})(?P<hh>\d{2})(?P<mm>\d{2})Z$")
 _STATION = re.compile(r"^[A-Z][A-Z0-9]{3}$")
 _TAF_VALID = re.compile(r"^(?P<d1>\d{2})(?P<h1>\d{2})/(?P<d2>\d{2})(?P<h2>\d{2})$")
@@ -134,6 +135,23 @@ def _signed_temp(raw: str) -> int:
         Return value.
     """
     return -int(raw[1:]) if raw.startswith("M") else int(raw)
+
+
+def _fmt_qnh(raw: str) -> str:
+    """
+    Explain a QNH group and keep the pressure in hectopascals.
+
+    Parameters
+    ----------
+    raw : str
+        Digits from the ``Q`` group.
+
+    Returns
+    -------
+    str
+        Operator sentence for that group.
+    """
+    return f"QNH {int(raw)} hPa, {_QNH_MEANING}"
 
 
 def _fmt_wind(m: re.Match[str], *, label: str) -> str:
@@ -406,7 +424,7 @@ def _explain_metar_speci(token: str, *, product: str, seen: dict[str, int]) -> s
     if m := _ALT.match(upper):
         return f"Altimeter {int(m.group('val')) / 100:.2f} inHg"
     if m := _QNH.match(upper):
-        return f"QNH {int(m.group('val'))} hPa"
+        return _fmt_qnh(m.group("val"))
     if m := _WX.match(upper):
         return _fmt_wx(m, forecast=bool(seen.get("in_trend")))
     if m := _RVR.match(upper):
@@ -475,7 +493,7 @@ def _explain_taf(token: str, *, seen: dict[str, int]) -> str | None:
     if m := _ALT.match(upper):
         return f"Altimeter {int(m.group('val')) / 100:.2f} inHg"
     if m := _QNH.match(upper):
-        return f"QNH {int(m.group('val'))} hPa"
+        return _fmt_qnh(m.group("val"))
     if m := _TAF_FM.match(upper):
         return (
             f"From day {int(m.group('dd'))} at {m.group('hh')}:{m.group('mm')} UTC, then the conditions change quickly"

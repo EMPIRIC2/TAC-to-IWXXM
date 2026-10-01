@@ -38,7 +38,7 @@ rules:
     explain: "Temperature and dewpoint {0}"
   - id: qnh
     pattern: ["Q\\d{3,4}"]
-    explain: "QNH {0}"
+    explain: "QNH {0}, the altimeter setting reduced to mean sea level"
   - id: altimeter
     pattern: ["A\\d{4}"]
     explain: "Altimeter {0}"
