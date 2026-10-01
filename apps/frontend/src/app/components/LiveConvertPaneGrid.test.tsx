@@ -19,18 +19,47 @@ describe('LiveConvertPaneGrid', () => {
       </LiveConvertPaneGrid>,
     );
     expect(screen.queryByRole('separator')).not.toBeInTheDocument();
+    expect(screen.getByTestId('live-convert-panes')).toHaveAttribute(
+      'data-fit',
+      'roomy',
+    );
+    expect(screen.getByTestId('live-convert-panes').className).toContain('min-h-');
     expect(screen.getByText('TAC')).toBeInTheDocument();
     unmount();
+    render(
+      <LiveConvertPaneGrid
+        wide={false}
+        roomy={false}
+        widths={widths}
+        onWidthsChange={onWidthsChange}
+      >
+        <div>Tight</div>
+      </LiveConvertPaneGrid>,
+    );
+    expect(screen.getByTestId('live-convert-panes')).toHaveAttribute(
+      'data-fit',
+      'tight',
+    );
+    expect(screen.getByTestId('live-convert-panes').className).not.toContain('min-h-');
   });
 
   it('drags using a unit width when the pane row has no measured size', () => {
     const onWidthsChange = vi.fn();
     render(
-      <LiveConvertPaneGrid wide widths={widths} onWidthsChange={onWidthsChange}>
+      <LiveConvertPaneGrid
+        wide
+        roomy={false}
+        widths={widths}
+        onWidthsChange={onWidthsChange}
+      >
         <div>TAC</div>
         <div>Decode</div>
         <div>XML</div>
       </LiveConvertPaneGrid>,
+    );
+    expect(screen.getByTestId('live-convert-panes')).toHaveAttribute(
+      'data-fit',
+      'tight',
     );
     const first = screen.getByRole('separator', {
       name: 'Resize TAC and decode panes',

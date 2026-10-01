@@ -12,6 +12,8 @@ import { resizePanePair } from '/utils/liveConvertLayout';
  */
 export interface LiveConvertPaneGridProps {
   wide: boolean;
+  /** Roomier panes use the window. Tighter panes stay content-sized. */
+  roomy?: boolean;
   widths: [number, number, number];
   onWidthsChange: (widths: [number, number, number]) => void;
   children: ReactNode;
@@ -26,6 +28,7 @@ const LABELS = [
  * Lay out TAC, decode, and IWXXM. Wide screens can drag the boundaries.
  *
  * @param props.wide - Side-by-side layout
+ * @param props.roomy - Fill the window height
  * @param props.widths - Pane shares
  * @param props.children - The three panes
  * @example
@@ -33,6 +36,7 @@ const LABELS = [
  */
 export function LiveConvertPaneGrid({
   wide,
+  roomy = true,
   widths,
   onWidthsChange,
   children,
@@ -72,11 +76,14 @@ export function LiveConvertPaneGrid({
 
   const panes = Children.toArray(children);
 
+  const fitClass = roomy ? 'min-h-[calc(100dvh-14rem)]' : '';
+
   if (!wide) {
     return (
       <div
-        className="grid grid-cols-1 gap-3 xl:grid-cols-3 xl:items-stretch"
+        className={`grid grid-cols-1 gap-3 xl:grid-cols-3 xl:items-stretch ${fitClass}`}
         data-testid="live-convert-panes"
+        data-fit={roomy ? 'roomy' : 'tight'}
       >
         {children}
       </div>
@@ -86,8 +93,9 @@ export function LiveConvertPaneGrid({
   return (
     <div
       ref={gridRef}
-      className="grid items-stretch gap-3"
+      className={`grid items-stretch gap-3 ${fitClass}`}
       data-testid="live-convert-panes"
+      data-fit={roomy ? 'roomy' : 'tight'}
       style={{
         gridTemplateColumns: `${widths[0]}fr 0.5rem ${widths[1]}fr 0.5rem ${widths[2]}fr`,
       }}

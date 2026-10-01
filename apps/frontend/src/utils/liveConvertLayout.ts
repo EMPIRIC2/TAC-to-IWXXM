@@ -7,6 +7,9 @@ import { useEffect, useState } from 'react';
 
 export const LIVE_CONVERT_LAYOUT_STORAGE_KEY = 'tac-to-iwxxm.live-convert.layout';
 
+/** Same-tab notice so the shell and the workbench share one layout choice. */
+export const LIVE_CONVERT_LAYOUT_EVENT = 'tac-live-convert-layout';
+
 const MIN_PANE = 18;
 const DEFAULT_WIDTHS: [number, number, number] = [34, 27, 39];
 
@@ -18,6 +21,13 @@ const DEFAULT_WIDTHS: [number, number, number] = [34, 27, 39];
 export type LiveConvertDensity = 'detailed' | 'compact';
 
 /**
+ * Type `LiveConvertSpan`.
+ * @example
+ * const _ = true;
+ */
+export type LiveConvertSpan = 'roomy' | 'tight';
+
+/**
  * Type `LiveConvertLayout`.
  * @example
  * const _ = true;
@@ -26,12 +36,14 @@ export interface LiveConvertLayout {
   density: LiveConvertDensity;
   wrapXml: boolean;
   paneWidths: [number, number, number];
+  span: LiveConvertSpan;
 }
 
 const DEFAULT_LAYOUT: LiveConvertLayout = {
   density: 'detailed',
   wrapXml: true,
   paneWidths: DEFAULT_WIDTHS,
+  span: 'roomy',
 };
 
 /**
@@ -109,11 +121,13 @@ export function parseLiveConvertLayout(
       density?: unknown;
       wrapXml?: unknown;
       paneWidths?: unknown;
+      span?: unknown;
     };
     return {
       density: parsed.density === 'compact' ? 'compact' : 'detailed',
       wrapXml: parsed.wrapXml === false ? false : true,
       paneWidths: normalizePaneWidths(parsed.paneWidths),
+      span: parsed.span === 'tight' ? 'tight' : 'roomy',
     };
   } catch {
     return DEFAULT_LAYOUT;
@@ -156,6 +170,7 @@ export function writeLiveConvertLayout(layout: LiveConvertLayout): void {
       LIVE_CONVERT_LAYOUT_STORAGE_KEY,
       JSON.stringify(layout),
     );
+    window.dispatchEvent(new Event(LIVE_CONVERT_LAYOUT_EVENT));
   } catch {
     // Quota or private mode: keep the choice for this visit only.
   }
@@ -173,6 +188,11 @@ export function useLiveConvertLayout(): {
   updateLayout: (patch: Partial<LiveConvertLayout>) => void;
 } {
   const [layout, setLayout] = useState<LiveConvertLayout>(readLiveConvertLayout);
+  useEffect(() => {
+    const sync = () => setLayout(readLiveConvertLayout());
+    window.addEventListener(LIVE_CONVERT_LAYOUT_EVENT, sync);
+    return () => window.removeEventListener(LIVE_CONVERT_LAYOUT_EVENT, sync);
+  }, []);
   const updateLayout = (patch: Partial<LiveConvertLayout>) => {
     setLayout((current) => {
       const next = { ...current, ...patch };

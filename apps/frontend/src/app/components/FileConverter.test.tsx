@@ -1567,6 +1567,29 @@ describe('FileConverter Component', () => {
       );
     });
 
+    it('uses the window for a roomier Convert view and can switch to tighter', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter {...defaultProps} />);
+      const frame = screen.getByTestId('workbench-frame');
+      const panes = screen.getByTestId('live-convert-panes');
+      expect(frame).toHaveClass('max-w-none');
+      expect(screen.getByRole('button', { name: 'Roomier' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      expect(panes).toHaveAttribute('data-fit', 'roomy');
+      await user.click(screen.getByRole('button', { name: 'Tighter' }));
+      expect(frame).toHaveClass('max-w-6xl');
+      expect(panes).toHaveAttribute('data-fit', 'tight');
+      expect(panes.className).not.toContain('min-h-');
+      await user.click(screen.getByRole('button', { name: 'Roomier' }));
+      expect(frame).toHaveClass('max-w-none');
+      expect(screen.getByRole('button', { name: 'Roomier' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+    });
+
     it('nudges pane widths on a wide screen', () => {
       const original = window.matchMedia;
       window.matchMedia = ((query: string) => ({
