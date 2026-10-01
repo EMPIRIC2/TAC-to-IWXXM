@@ -2462,7 +2462,11 @@ export function FileConverter({
         className="sticky top-0 z-30 w-full border-b border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-900"
         data-testid="workbench-top-bar"
       >
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
+        <div
+          className={`mx-auto flex w-full flex-wrap items-center justify-between gap-3 ${
+            liveLayout.span === 'tight' ? 'max-w-6xl' : 'max-w-none'
+          }`}
+        >
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white sm:text-3xl">
             METAR → IWXXM Converter
           </h1>
@@ -2574,7 +2578,12 @@ export function FileConverter({
           </div>
         </div>
       </header>
-      <div className="mx-auto max-w-6xl px-4 py-8">
+      <div
+        data-testid="workbench-frame"
+        className={`mx-auto w-full px-4 py-8 ${
+          liveLayout.span === 'tight' ? 'max-w-6xl' : 'max-w-none'
+        }`}
+      >
         <div className="mb-8">
           <p className="text-base text-gray-600 dark:text-gray-300">
             Enter TAC in the console below (choose product type as needed), then
@@ -3357,6 +3366,28 @@ export function FileConverter({
                     Compact
                   </button>
                 </div>
+                <div
+                  className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
+                  role="group"
+                  aria-label="Convert layout"
+                >
+                  <button
+                    type="button"
+                    aria-pressed={liveLayout.span === 'roomy'}
+                    className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                    onClick={() => updateLiveLayout({ span: 'roomy' })}
+                  >
+                    Roomier
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={liveLayout.span === 'tight'}
+                    className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                    onClick={() => updateLiveLayout({ span: 'tight' })}
+                  >
+                    Tighter
+                  </button>
+                </div>
                 <label className="flex items-center gap-2 text-xs text-gray-800 dark:text-gray-200">
                   <input
                     type="checkbox"
@@ -3371,6 +3402,7 @@ export function FileConverter({
               </div>
               <LiveConvertPaneGrid
                 wide={wideConvertPanes}
+                roomy={liveLayout.span === 'roomy'}
                 widths={liveLayout.paneWidths}
                 onWidthsChange={(paneWidths) => updateLiveLayout({ paneWidths })}
               >

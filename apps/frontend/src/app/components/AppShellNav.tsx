@@ -5,6 +5,7 @@
  * Peer tabs for F7 / F7.q / F7.v / UJ-071; not a FileConverter panel.
  */
 
+import { useLiveConvertLayout } from '/utils/liveConvertLayout';
 import { BetaBadge } from './BetaBadge';
 
 /**
@@ -51,13 +52,15 @@ const TABS: ShellPrimaryView[] = [
  * const _ = true;
  */
 export function AppShellNav({ activeView, onNavigate }: AppShellNavProps) {
+  const { layout } = useLiveConvertLayout();
+  const frame = layout.span === 'tight' ? 'max-w-6xl' : 'max-w-none';
   return (
     <nav
       className="border-b border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-950"
       aria-label="Primary"
       data-testid="app-shell-nav"
     >
-      <div className="mx-auto flex max-w-6xl flex-wrap gap-1 px-4 py-2">
+      <div className={`mx-auto flex w-full flex-wrap gap-1 px-4 py-2 ${frame}`}>
         {TABS.map((view) => {
           const selected = activeView === view;
           return (

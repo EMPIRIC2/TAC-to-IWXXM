@@ -55,11 +55,14 @@ describe('liveConvertLayout', () => {
       density: 'compact',
       wrapXml: false,
       paneWidths: [40, 30, 30],
+      span: 'roomy',
     });
+    expect(parseLiveConvertLayout('{"span":"tight"}').span).toBe('tight');
     writeLiveConvertLayout({
       density: 'compact',
       wrapXml: false,
       paneWidths: [40, 30, 30],
+      span: 'roomy',
     });
     expect(readLiveConvertLayout().density).toBe('compact');
     expect(window.localStorage.getItem(LIVE_CONVERT_LAYOUT_STORAGE_KEY)).toContain(
@@ -78,6 +81,7 @@ describe('liveConvertLayout', () => {
       density: 'compact',
       wrapXml: true,
       paneWidths: [34, 27, 39],
+      span: 'roomy',
     });
     Object.defineProperty(window, 'localStorage', {
       configurable: true,
@@ -95,6 +99,7 @@ describe('liveConvertLayout', () => {
       density: 'detailed',
       wrapXml: true,
       paneWidths: [34, 27, 39],
+      span: 'roomy',
     });
     vi.restoreAllMocks();
   });
@@ -104,6 +109,11 @@ describe('liveConvertLayout', () => {
     act(() => result.current.updateLayout({ density: 'compact' }));
     expect(result.current.layout.density).toBe('compact');
     expect(readLiveConvertLayout().density).toBe('compact');
+
+    const other = renderHook(() => useLiveConvertLayout());
+    act(() => result.current.updateLayout({ span: 'tight' }));
+    expect(other.result.current.layout.span).toBe('tight');
+    other.unmount();
 
     let matches = false;
     let listener: (() => void) | null = null;
