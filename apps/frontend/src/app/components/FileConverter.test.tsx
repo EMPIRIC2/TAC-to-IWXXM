@@ -1048,7 +1048,7 @@ describe('FileConverter Component', () => {
           await Promise.resolve();
         });
         expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
-          'TAC entered',
+          'Report: entered in the text area below',
         );
         expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
           'TAC lint: failed',
