@@ -66,8 +66,44 @@ describe('DecodePanel', () => {
 
     expect(screen.getByTestId('decode-residuals')).toBeInTheDocument();
     expect(screen.getByText('KARYMSKY 1000-13')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /KARYMSKY 1000-13/ })).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
     await user.click(screen.getByRole('button', { name: /Decode/i }));
     expect(screen.queryByTestId('decode-residuals')).not.toBeInTheDocument();
+  });
+
+  it('marks the residual that matches the selected span', async () => {
+    const user = userEvent.setup();
+    const onSelect = vi.fn();
+    render(
+      <DecodePanel
+        product="VAA"
+        defaultOpen
+        selectedStart={20}
+        selectedEnd={40}
+        onSelect={onSelect}
+        segments={[]}
+        residuals={[
+          {
+            start: 20,
+            end: 40,
+            text: 'KARYMSKY 1000-13',
+          },
+        ]}
+      />,
+    );
+
+    const selected = screen.getByRole('button', { name: /KARYMSKY 1000-13/ });
+    expect(selected).toHaveAttribute('aria-pressed', 'true');
+    expect(selected.className).toContain('bg-sky-100');
+    await user.click(selected);
+    expect(onSelect).toHaveBeenCalledWith({
+      start: 20,
+      end: 40,
+      code: 'KARYMSKY 1000-13',
+    });
   });
 
   // T3.1 / TC-F9-002 §4 — Plain language block (S013 / EV-009)

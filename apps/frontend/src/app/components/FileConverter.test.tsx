@@ -1460,6 +1460,42 @@ describe('FileConverter Component', () => {
       expect(screen.queryByText('Conversion Error')).not.toBeInTheDocument();
     });
 
+    it('stores a version when the source TAC and library ids are blank', async () => {
+      const user = userEvent.setup({ delay: null });
+      mockConvertMetarToIwxxm.mockResolvedValueOnce({
+        results: [{ iwxxm_xml: '<iwxxm>blank-source</iwxxm>' }],
+        errors: [],
+        issues: [],
+      });
+
+      const { container } = render(<FileConverter {...defaultProps} />);
+      fireEvent.click(screen.getByTestId('live-iwxxm-toggle'));
+      fireEvent.change(screen.getByTestId('conversion-library-select'), {
+        target: { value: '' },
+      });
+      fireEvent.change(screen.getByTestId('decoding-library-select'), {
+        target: { value: '' },
+      });
+
+      const fileInput = container.querySelector(
+        'input[type="file"]:not([data-testid])',
+      ) as HTMLInputElement;
+      fireEvent.change(fileInput, {
+        target: {
+          files: {
+            0: { name: 'blank.tac', text: vi.fn().mockResolvedValue('   ') },
+            length: 1,
+          },
+        },
+      });
+      await screen.findByTestId('operator-work-queue');
+      await user.click(screen.getByTestId('convert-button'));
+
+      await waitFor(() => {
+        expect(screen.getByText('<iwxxm>blank-source</iwxxm>')).toBeInTheDocument();
+      });
+    });
+
     it('displays source TAC alongside converted XML when API returns tac_input', async () => {
       const user = userEvent.setup({ delay: null });
       const tac = 'METAR FAOR 101200Z COR 12012KT 9999 FEW020 22/14 Q1018';
@@ -5149,22 +5185,25 @@ describe('FileConverter Component', () => {
         ],
         fixes: [{ code: 'add_terminator' }],
       });
-      const user = userEvent.setup({ delay: null });
-      render(<FileConverter {...defaultProps} />);
+      vi.useFakeTimers();
+      try {
+        render(<FileConverter {...defaultProps} />);
 
-      fireEvent.change(screen.getByTestId('tac-editor'), {
-        target: { value: 'METAR KJFK 121251Z' },
-      });
+        fireEvent.change(screen.getByTestId('tac-editor'), {
+          target: { value: 'METAR KJFK 121251Z' },
+        });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+        });
 
-      fireEvent.click(screen.getByTestId('workbench-console-toggle'));
-      const action = await screen.findByTestId(
-        'console-action-add_terminator',
-        {},
-        { timeout: 3000 },
-      );
-      await user.click(action);
+        fireEvent.click(screen.getByTestId('workbench-console-toggle'));
+        fireEvent.click(screen.getByTestId('console-action-add_terminator'));
 
-      expect(screen.getByTestId('tac-editor')).toHaveValue('METAR KJFK 121251Z');
+        expect(screen.getByTestId('tac-editor')).toHaveValue('METAR KJFK 121251Z');
+      } finally {
+        vi.useRealTimers();
+      }
     });
 
     it('renders work history aside when onLoadWorkSession is provided', () => {
@@ -5327,17 +5366,24 @@ describe('FileConverter Component', () => {
         ],
         fixes: [{ code: 'add_terminator', replacement: 'METAR KJFK 121251Z=' }],
       });
-      const user = userEvent.setup({ delay: null });
-      render(<FileConverter {...defaultProps} />);
+      vi.useFakeTimers();
+      try {
+        render(<FileConverter {...defaultProps} />);
 
-      fireEvent.change(screen.getByTestId('tac-editor'), {
-        target: { value: 'METAR KJFK 121251Z' },
-      });
-      fireEvent.click(screen.getByTestId('workbench-console-toggle'));
-      const action = await screen.findByTestId('console-action-add_terminator');
-      await user.click(action);
+        fireEvent.change(screen.getByTestId('tac-editor'), {
+          target: { value: 'METAR KJFK 121251Z' },
+        });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+        });
+        fireEvent.click(screen.getByTestId('workbench-console-toggle'));
+        fireEvent.click(screen.getByTestId('console-action-add_terminator'));
 
-      expect(screen.getByTestId('tac-editor')).toHaveValue('METAR KJFK 121251Z=');
+        expect(screen.getByTestId('tac-editor')).toHaveValue('METAR KJFK 121251Z=');
+      } finally {
+        vi.useRealTimers();
+      }
     });
 
     it('uses live output filename when downloading multi-line manual results', async () => {
@@ -7318,24 +7364,29 @@ describe('FileConverter Component', () => {
         successful: 1,
         failed: 0,
       });
-      render(
-        <FileConverter
-          {...defaultProps}
-          accessToken="jwt-ov"
-          loadedWorkSession={
-            {
-              id: 'sess-ov-live',
-              status: 'draft',
-              manual_tac: 'METAR KJFK 121851Z=',
-              conversion_params: { overlay_id: 'ov-live' },
-            } as never
-          }
-        />,
-      );
-      fireEvent.change(screen.getByTestId('tac-editor'), {
-        target: { value: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012' },
-      });
-      await waitFor(() => {
+      vi.useFakeTimers();
+      try {
+        render(
+          <FileConverter
+            {...defaultProps}
+            accessToken="jwt-ov"
+            loadedWorkSession={
+              {
+                id: 'sess-ov-live',
+                status: 'draft',
+                manual_tac: 'METAR KJFK 121851Z=',
+                conversion_params: { overlay_id: 'ov-live' },
+              } as never
+            }
+          />,
+        );
+        fireEvent.change(screen.getByTestId('tac-editor'), {
+          target: { value: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012' },
+        });
+        await act(async () => {
+          await vi.advanceTimersByTimeAsync(350);
+          await Promise.resolve();
+        });
         expect(mockConvertMetarToIwxxm).toHaveBeenCalledWith(
           expect.objectContaining({
             overlayId: 'ov-live',
@@ -7343,7 +7394,9 @@ describe('FileConverter Component', () => {
             preview: true,
           }),
         );
-      });
+      } finally {
+        vi.useRealTimers();
+      }
     });
   });
 
