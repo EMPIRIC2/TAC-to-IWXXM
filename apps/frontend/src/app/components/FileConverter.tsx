@@ -2457,121 +2457,125 @@ export function FileConverter({
             : null;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 transition-colors">
-      <div className="max-w-6xl mx-auto">
-        {/* Header — stack/wrap on narrow viewports (staging UX: no horizontal overflow). */}
-        <div className="mb-8">
-          <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <h1 className="text-2xl font-semibold text-gray-900 dark:text-white sm:text-3xl">
-              METAR → IWXXM Converter
-            </h1>
-            <div
-              className="flex flex-wrap items-center gap-2 sm:gap-3"
-              data-testid="workbench-header-actions"
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+      <header
+        className="sticky top-0 z-30 w-full border-b border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-700 dark:bg-gray-900"
+        data-testid="workbench-top-bar"
+      >
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3">
+          <h1 className="text-2xl font-semibold text-gray-900 dark:text-white sm:text-3xl">
+            METAR → IWXXM Converter
+          </h1>
+          <div
+            className="flex flex-wrap items-center gap-2 sm:gap-3"
+            data-testid="workbench-header-actions"
+          >
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-500"
             >
-              <Button
-                asChild
-                variant="outline"
-                size="sm"
-                className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-500"
+              <a
+                href={OPERATOR_ONE_PAGER_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open operator help one-pager"
+                data-testid="operator-help-link"
               >
-                <a
-                  href={OPERATOR_ONE_PAGER_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Open operator help one-pager"
-                  data-testid="operator-help-link"
-                >
-                  <CircleHelp className="mr-0 h-4 w-4 sm:mr-2" aria-hidden="true" />
-                  <span className="hidden sm:inline">Help</span>
-                </a>
-              </Button>
+                <CircleHelp className="mr-0 h-4 w-4 sm:mr-2" aria-hidden="true" />
+                <span className="hidden sm:inline">Help</span>
+              </a>
+            </Button>
+            <Button
+              onClick={() => setIsPreferencesDialogOpen(true)}
+              variant="outline"
+              size="sm"
+              className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-500"
+              aria-label="Open user preferences"
+            >
+              <Settings className="mr-0 h-4 w-4 sm:mr-2" aria-hidden="true" />
+              <span className="hidden sm:inline">Preferences</span>
+            </Button>
+            <div className="flex items-center gap-2">
+              <span className="hidden text-sm text-gray-600 dark:text-gray-400 sm:inline">
+                Theme
+              </span>
+              <ThemeToggle />
+            </div>
+            <div className="relative">
               <Button
-                onClick={() => setIsPreferencesDialogOpen(true)}
-                variant="outline"
-                size="sm"
-                className="dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-gray-500"
-                aria-label="Open user preferences"
-              >
-                <Settings className="mr-0 h-4 w-4 sm:mr-2" aria-hidden="true" />
-                <span className="hidden sm:inline">Preferences</span>
-              </Button>
-              <div className="flex items-center gap-2">
-                <span className="hidden text-sm text-gray-600 dark:text-gray-400 sm:inline">
-                  Theme
-                </span>
-                <ThemeToggle />
-              </div>
-              <div className="relative">
-                <Button
-                  variant={isGuest ? 'default' : 'outline'}
-                  className={
-                    isGuest
-                      ? undefined
-                      : 'border-gray-300 text-gray-800 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700'
+                variant={isGuest ? 'default' : 'outline'}
+                className={
+                  isGuest
+                    ? undefined
+                    : 'border-gray-300 text-gray-800 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-700'
+                }
+                aria-label={isGuest ? 'Sign in to save work' : 'Logout options'}
+                data-testid={isGuest ? 'sign-in-button' : 'logout-button'}
+                onClick={() => {
+                  if (isGuest) {
+                    onRequestLogin?.();
+                    return;
                   }
-                  aria-label={isGuest ? 'Sign in to save work' : 'Logout options'}
-                  data-testid={isGuest ? 'sign-in-button' : 'logout-button'}
-                  onClick={() => {
-                    if (isGuest) {
-                      onRequestLogin?.();
-                      return;
-                    }
-                    setIsLogoutMenuOpen(!isLogoutMenuOpen);
-                  }}
-                >
-                  <LogOut className="w-4 h-4 mr-2" aria-hidden="true" />
-                  {isGuest ? 'Sign in' : 'Logout'}
-                  {!isGuest && (
-                    <ChevronDown className="w-4 h-4 ml-1" aria-hidden="true" />
-                  )}
-                </Button>
-
-                {isLogoutMenuOpen && !isGuest && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10">
-                    <div className="p-3 space-y-2">
-                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-1">
-                        Sign out scope:
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => void handleLogoutWithScope('local')}
-                        className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        aria-label="Sign out from this device only"
-                      >
-                        <div className="font-medium">This Device</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Only this session
-                        </div>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => void handleLogoutWithScope('global')}
-                        className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        aria-label="Sign out from all devices"
-                      >
-                        <div className="font-medium">All Devices</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Every signed-in session
-                        </div>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => void handleLogoutWithScope('others')}
-                        className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                        aria-label="Sign out other devices"
-                      >
-                        <div className="font-medium">Other Devices</div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Keep this device signed in
-                        </div>
-                      </button>
-                    </div>
-                  </div>
+                  setIsLogoutMenuOpen(!isLogoutMenuOpen);
+                }}
+              >
+                <LogOut className="w-4 h-4 mr-2" aria-hidden="true" />
+                {isGuest ? 'Sign in' : 'Logout'}
+                {!isGuest && (
+                  <ChevronDown className="w-4 h-4 ml-1" aria-hidden="true" />
                 )}
-              </div>
+              </Button>
+
+              {isLogoutMenuOpen && !isGuest && (
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-10">
+                  <div className="p-3 space-y-2">
+                    <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 px-2 py-1">
+                      Sign out scope:
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => void handleLogoutWithScope('local')}
+                      className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      aria-label="Sign out from this device only"
+                    >
+                      <div className="font-medium">This Device</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Only this session
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void handleLogoutWithScope('global')}
+                      className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      aria-label="Sign out from all devices"
+                    >
+                      <div className="font-medium">All Devices</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Every signed-in session
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void handleLogoutWithScope('others')}
+                      className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      aria-label="Sign out other devices"
+                    >
+                      <div className="font-medium">Other Devices</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        Keep this device signed in
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
+        </div>
+      </header>
+      <div className="mx-auto max-w-6xl px-4 py-8">
+        <div className="mb-8">
           <p className="text-base text-gray-600 dark:text-gray-300">
             Enter TAC in the console below (choose product type as needed), then
             Convert. Upload files from the compact drop zone under the console when
@@ -4304,7 +4308,7 @@ export function FileConverter({
           </div>
           {onLoadWorkSession && (
             <aside
-              className="relative z-0 w-full min-w-0 lg:sticky lg:top-8 lg:mt-8 lg:w-[280px] lg:max-w-[280px] lg:shrink-0 lg:self-start"
+              className="relative z-0 w-full min-w-0 lg:sticky lg:top-20 lg:mt-8 lg:w-[280px] lg:max-w-[280px] lg:shrink-0 lg:self-start"
               data-testid="recent-work-aside"
             >
               <WorkHistorySidebar

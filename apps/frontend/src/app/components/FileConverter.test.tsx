@@ -587,6 +587,21 @@ describe('FileConverter Component', () => {
       expect(container).toBeTruthy();
     });
 
+    it('keeps Help, Preferences, Theme, and Sign in in the top bar', () => {
+      render(<FileConverter {...defaultProps} isGuest />);
+      const bar = screen.getByTestId('workbench-top-bar');
+      expect(bar).toHaveClass('sticky', 'top-0', 'w-full');
+      expect(bar).toContainElement(
+        screen.getByRole('heading', { name: 'METAR → IWXXM Converter' }),
+      );
+      expect(bar).toContainElement(screen.getByTestId('operator-help-link'));
+      expect(bar).toContainElement(
+        screen.getByRole('button', { name: 'Open user preferences' }),
+      );
+      expect(bar).toContainElement(screen.getByTestId('theme-toggle'));
+      expect(bar).toContainElement(screen.getByTestId('sign-in-button'));
+    });
+
     it('exposes Help link to the operator one-pager (UJ-054 / TC-EV047-011)', () => {
       render(<FileConverter {...defaultProps} />);
       const help = screen.getByTestId('operator-help-link');
