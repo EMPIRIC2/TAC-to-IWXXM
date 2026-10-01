@@ -6089,6 +6089,19 @@ describe('FileConverter Component', () => {
     const goodXml =
       '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><ok/></iwxxm:METAR>';
 
+    it('labels the input IWXXM while validating and restores TAC on Convert', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter {...defaultProps} />);
+      expect(screen.getByRole('region', { name: 'TAC' })).toBeInTheDocument();
+      await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
+      expect(screen.getByRole('region', { name: 'IWXXM' })).toBeInTheDocument();
+      expect(screen.queryByRole('region', { name: 'TAC' })).not.toBeInTheDocument();
+      expect(screen.queryByTestId('decode-panel-mock')).not.toBeInTheDocument();
+      await user.click(screen.getByTestId('input-mode-tac'));
+      expect(screen.getByRole('region', { name: 'TAC' })).toBeInTheDocument();
+      expect(screen.getByTestId('decode-panel-mock')).toBeInTheDocument();
+    });
+
     it('pastes XML in Validate mode and shows a pass report without convert', async () => {
       const user = userEvent.setup({ delay: null });
       mockValidateIwxxm.mockResolvedValueOnce({

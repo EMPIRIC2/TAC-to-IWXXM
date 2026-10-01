@@ -3408,7 +3408,7 @@ export function FileConverter({
               >
                 <section
                   className="min-w-0"
-                  aria-label="TAC"
+                  aria-label={inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
                   onFocusCapture={() => setRecentWorkCollapsed(true)}
                   onKeyDown={(event) => {
                     const issue = lintIssueFromKey(event, jumpIssues, lintJump);
@@ -3418,7 +3418,7 @@ export function FileConverter({
                   }}
                 >
                   <h2 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
-                    TAC
+                    {inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
                   </h2>
                   <TacEditor
                     id="manual-input"
@@ -3440,7 +3440,11 @@ export function FileConverter({
                       );
                     }}
                     readOnly={isReadOnly}
-                    placeholder="SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021"
+                    placeholder={
+                      inputMode === 'validate_iwxxm'
+                        ? '<iwxxm:METAR>...</iwxxm:METAR>'
+                        : 'SPECI BGSF 282350Z 10RMF50MT 9999 SCT110 BKN130 0RN130 NN7/N11 Q1021'
+                    }
                     aria-label={
                       inputMode === 'validate_iwxxm'
                         ? 'Enter IWXXM XML manually'
@@ -3526,21 +3530,23 @@ export function FileConverter({
                     </>
                   ) : null}
                 </section>
-                <DecodePanel
-                  segments={decodeSegments}
-                  residuals={decodeResiduals}
-                  summary={decodeSummary}
-                  product={decodeProduct}
-                  loading={decodeLoading}
-                  error={decodeError}
-                  pinned={inputMode !== 'validate_iwxxm'}
-                  defaultOpen
-                  decodingProfile={conversionParams.decodingLibraryId || undefined}
-                  density={liveLayout.density}
-                  selectedStart={selectedTrace?.start}
-                  selectedEnd={selectedTrace?.end}
-                  onSelect={setSelectedTrace}
-                />
+                {inputMode === 'validate_iwxxm' ? null : (
+                  <DecodePanel
+                    segments={decodeSegments}
+                    residuals={decodeResiduals}
+                    summary={decodeSummary}
+                    product={decodeProduct}
+                    loading={decodeLoading}
+                    error={decodeError}
+                    pinned
+                    defaultOpen
+                    decodingProfile={conversionParams.decodingLibraryId || undefined}
+                    density={liveLayout.density}
+                    selectedStart={selectedTrace?.start}
+                    selectedEnd={selectedTrace?.end}
+                    onSelect={setSelectedTrace}
+                  />
+                )}
                 <IwxxmPreviewPane
                   xml={previewXml}
                   status={previewStatus}
