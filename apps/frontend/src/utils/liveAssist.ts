@@ -15,6 +15,8 @@ export const LIVE_ASSIST_TEST_DEBOUNCE_MS = 60_000;
  * Product debounce, or a long delay under Vitest real timers.
  *
  * Fake-timer tests set `__LIVE_ASSIST_FAST__` so advancing ~300ms still runs assist.
+ * @example
+ * const _ = true;
  */
 export function resolveLiveAssistDebounceMs(
   mode: string = import.meta.env.MODE,
