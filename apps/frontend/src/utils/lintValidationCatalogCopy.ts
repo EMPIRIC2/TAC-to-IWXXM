@@ -42,3 +42,21 @@ export const LINT_VALIDATION_CATALOG_COL_LEVEL = 'Level';
 export const LINT_VALIDATION_CATALOG_COL_PROFILES = 'Profiles';
 export const LINT_VALIDATION_CATALOG_COL_DESCRIPTION = 'Description';
 export const LINT_VALIDATION_CATALOG_COL_SOURCE = 'Source';
+
+/** Heading for the packaged report that does not raise the selected rule. */
+export const LINT_VALIDATION_CATALOG_EXAMPLE_PASS = 'Passing example';
+
+/** Heading for the packaged report that raises the selected rule. */
+export const LINT_VALIDATION_CATALOG_EXAMPLE_FAIL = 'Failing example';
+
+/** Shown when no packaged passing report is on file for this rule. */
+export const LINT_VALIDATION_CATALOG_EXAMPLE_PASS_UNAVAILABLE =
+  'No passing example is available for this rule yet.';
+
+/** Shown when no packaged failing report is on file for this rule. */
+export const LINT_VALIDATION_CATALOG_EXAMPLE_FAIL_UNAVAILABLE =
+  'No failing example is available for this rule yet.';
+
+/** Note that the samples are existing reports, not ones written for the screen. */
+export const LINT_VALIDATION_CATALOG_EXAMPLE_NOTE =
+  'Only a report already on file is shown here.';

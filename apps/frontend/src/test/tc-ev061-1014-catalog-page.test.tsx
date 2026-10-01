@@ -856,4 +856,79 @@ describe('LintValidationCatalogPage', () => {
       'VENDOR_ONLY',
     );
   });
+
+  it('shows packaged pass and fail reports and says when an example is not on file', async () => {
+    const user = userEvent.setup();
+    fetchLintIssueCatalog.mockResolvedValue({
+      issues: [
+        ...BASE_ISSUES,
+        {
+          code: 'MISSING_CCCC',
+          severity: 'error',
+          message_template: 'Station identifier is missing',
+          product: 'metar',
+          tags: ['station'],
+          family: 'lint',
+          issue_type: 'presence',
+          source_access: 'paywall',
+          status: 'verified',
+          semantic_profiles: [],
+          exchange_profiles: [],
+        },
+        {
+          code: 'MISSING_DTG',
+          severity: 'error',
+          message_template: 'Advisory time is missing',
+          product: 'vaa',
+          tags: ['time'],
+          family: 'lint',
+          issue_type: 'presence',
+          source_access: 'public',
+          status: 'verified',
+          semantic_profiles: [],
+          exchange_profiles: [],
+        },
+      ],
+    });
+    render(<LintValidationCatalogPage />);
+    expect(await screen.findByTestId('catalog-rule-example-pass')).toHaveAttribute(
+      'data-tone',
+      'unavailable',
+    );
+    expect(screen.getByTestId('catalog-rule-example-fail')).toHaveAttribute(
+      'data-tone',
+      'unavailable',
+    );
+
+    await user.click(
+      within(
+        screen.getByTestId('lint-validation-catalog-entry-MISSING_CCCC'),
+      ).getByRole('button'),
+    );
+    expect(screen.getByTestId('catalog-rule-example-pass')).toHaveAttribute(
+      'data-tone',
+      'pass',
+    );
+    expect(screen.getByTestId('catalog-rule-example-pass')).toHaveTextContent('KJFK');
+    expect(screen.getByTestId('catalog-rule-example-fail')).toHaveAttribute(
+      'data-tone',
+      'fail',
+    );
+    expect(screen.getByTestId('catalog-rule-example-fail')).not.toHaveTextContent(
+      'KJFK',
+    );
+
+    await user.click(
+      within(screen.getByTestId('lint-validation-catalog-entry-MISSING_DTG')).getByRole(
+        'button',
+      ),
+    );
+    expect(screen.getByTestId('catalog-rule-example-pass')).toHaveAttribute(
+      'data-tone',
+      'unavailable',
+    );
+    expect(screen.getByTestId('catalog-rule-example-fail')).toHaveTextContent(
+      'VA ADVISORY',
+    );
+  });
 });
