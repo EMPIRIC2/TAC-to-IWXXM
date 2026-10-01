@@ -133,7 +133,10 @@ function checkItem(
   if (status === 'failed') {
     return { label: `${name}: failed`, tone: 'problem' };
   }
-  return { label: `${name}: not run`, tone: 'idle' };
+  return {
+    label: `${name}: not run yet. It runs when you validate.`,
+    tone: 'idle',
+  };
 }
 
 /** Border and fill classes for one status tone. */

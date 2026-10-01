@@ -169,13 +169,7 @@ import {
   lintIssueFromKey,
   type JumpableLintIssue,
 } from '/utils/lintIssueJump';
-import {
-  errorLayerNames,
-  lintIssueCounts,
-  outputLayerStatus,
-  strictConvertRan,
-  tacLintLayerStatus,
-} from '/utils/checkLayers';
+import { lintIssueCounts, tacLintLayerStatus } from '/utils/checkLayers';
 import {
   appendOutputVersion,
   readOutputVersions,
@@ -2418,13 +2412,6 @@ export function FileConverter({
     });
   };
   const lintCounts = lintIssueCounts(lintIssues);
-  const strictLayersRan = strictConvertRan({
-    strict: conversionParams.strictValidation,
-    softPreview,
-    convertedCount: convertedFiles.length,
-    status: conversionStatus.type,
-  });
-  const failedLayers = errorLayerNames(conversionLog);
 
   const { entries: lintCatalogEntries, byCode: lintCatalogByCode } =
     useLintIssueCatalog({
@@ -3329,18 +3316,8 @@ export function FileConverter({
                     errorCount: lintCounts.errorCount,
                     issueCount: lintCounts.issueCount,
                   })}
-                  schemaStatus={outputLayerStatus(
-                    'schema',
-                    validateReport,
-                    failedLayers,
-                    strictLayersRan,
-                  )}
-                  schematronStatus={outputLayerStatus(
-                    'schematron',
-                    validateReport,
-                    failedLayers,
-                    strictLayersRan,
-                  )}
+                  schemaStatus="not run"
+                  schematronStatus="not run"
                 />
               ) : null}
               <div className="mb-2 flex flex-wrap items-center gap-3">

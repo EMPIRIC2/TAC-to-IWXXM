@@ -1069,10 +1069,10 @@ describe('FileConverter Component', () => {
           'TAC lint: failed',
         );
         expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
-          'XML schema: not run',
+          'XML schema: not run yet. It runs when you validate.',
         );
         expect(screen.getByTestId('convert-status-strip')).toHaveTextContent(
-          'Schematron: not run',
+          'Schematron: not run yet. It runs when you validate.',
         );
         const group = screen.getByRole('button', { name: 'METAR' });
         fireEvent.click(group);
@@ -6129,6 +6129,12 @@ describe('FileConverter Component', () => {
       expect(mockConvertMetarToIwxxm).not.toHaveBeenCalled();
       expect(screen.getByTestId('validate-iwxxm-report')).toBeInTheDocument();
       expect(screen.getByTestId('validate-iwxxm-status')).toHaveTextContent(/Valid/i);
+      expect(screen.getByTestId('validate-iwxxm-schema')).toHaveTextContent(
+        'XML schema: passed',
+      );
+      expect(screen.getByTestId('validate-iwxxm-schematron')).toHaveTextContent(
+        'Schematron: passed',
+      );
     });
 
     it('shows structured fail for invalid XML validate response', async () => {
@@ -6154,6 +6160,12 @@ describe('FileConverter Component', () => {
           /Invalid/i,
         );
       });
+      expect(screen.getByTestId('validate-iwxxm-schema')).toHaveTextContent(
+        'XML schema: failed',
+      );
+      expect(screen.getByTestId('validate-iwxxm-schematron')).toHaveTextContent(
+        'Schematron: not run',
+      );
       expect(screen.getByTestId('validate-iwxxm-failed-layers')).toHaveTextContent(
         'XML_SCHEMA',
       );
