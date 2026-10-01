@@ -33,6 +33,12 @@ describe('ValidateIwxxmReport', () => {
       />,
     );
     expect(screen.getByTestId('validate-iwxxm-status')).toHaveTextContent(/Valid/);
+    expect(screen.getByTestId('validate-iwxxm-schema')).toHaveTextContent(
+      'XML schema: passed',
+    );
+    expect(screen.getByTestId('validate-iwxxm-schematron')).toHaveTextContent(
+      'Schematron: not run',
+    );
     expect(screen.getByText(/Passed: XML_SCHEMA/)).toBeInTheDocument();
     expect(screen.getByText(/No package issues reported/)).toBeInTheDocument();
   });
@@ -72,6 +78,12 @@ describe('ValidateIwxxmReport', () => {
           ],
         })}
       />,
+    );
+    expect(screen.getByTestId('validate-iwxxm-schema')).toHaveTextContent(
+      'XML schema: not run',
+    );
+    expect(screen.getByTestId('validate-iwxxm-schematron')).toHaveTextContent(
+      'Schematron: failed',
     );
     expect(screen.getByTestId('validate-iwxxm-failed-layers')).toHaveTextContent(
       /Failed: SCHEMATRON/,

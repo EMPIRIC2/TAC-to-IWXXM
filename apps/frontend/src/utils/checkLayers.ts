@@ -96,8 +96,7 @@ export function errorLayerNames(
  *
  * @param kind - Which publish check
  * @param report - Last validate result, or null
- * @param issueLayers - Error layers from the last convert
- * @param strictConvertSucceeded - Strict convert completed without an error status
+ * @param issueLayers - Error layers the engine already returned
  * @returns Layer status word
  * @example
  * const _ = true;
@@ -109,13 +108,12 @@ export function outputLayerStatus(
     layers_failed?: readonly string[] | null;
   } | null,
   issueLayers: readonly string[],
-  strictConvertSucceeded: boolean,
 ): LayerRunStatus {
   const keys = kind === 'schema' ? SCHEMA_KEYS : SCHEMATRON_KEYS;
   const hit = (values: readonly string[] | null | undefined) =>
     (values ?? []).some((value) => keys.has(layerKey(value)));
   if (hit(report?.layers_failed) || hit(issueLayers)) return 'failed';
-  if (hit(report?.layers_passed) || strictConvertSucceeded) return 'passed';
+  if (hit(report?.layers_passed)) return 'passed';
   return 'not run';
 }
 

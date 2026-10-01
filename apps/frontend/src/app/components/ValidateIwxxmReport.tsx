@@ -1,8 +1,16 @@
 /**
  * Display F2 validate results for validate-only IWXXM mode (F7.s / #838).
  */
+import { outputLayerStatus, type LayerRunStatus } from '/utils/checkLayers';
 import type { ValidateResponse } from '/utils/openapiTypes';
 import { DecodePanel } from './DecodePanel';
+
+/** Plain result for XML schema or Schematron. */
+function layerPhrase(name: string, status: LayerRunStatus): string {
+  if (status === 'passed') return `${name}: passed`;
+  if (status === 'failed') return `${name}: failed`;
+  return `${name}: not run`;
+}
 
 type ValidateIwxxmReportProps = {
   report: ValidateResponse;
@@ -18,6 +26,8 @@ type ValidateIwxxmReportProps = {
 export function ValidateIwxxmReport({ report }: ValidateIwxxmReportProps) {
   const failed = report.layers_failed ?? [];
   const passed = report.layers_passed ?? [];
+  const schema = outputLayerStatus('schema', report, []);
+  const schematron = outputLayerStatus('schematron', report, []);
   const issues = report.package_issues ?? report.issues ?? [];
   const segments = report.segments ?? [];
   const summary = report.summary ?? '';
@@ -39,6 +49,12 @@ export function ValidateIwxxmReport({ report }: ValidateIwxxmReportProps) {
       >
         {report.is_valid ? 'Valid' : 'Invalid'} — IWXXM {report.version}
       </p>
+      <ul className="mt-2 space-y-1 text-sm" aria-label="Schema and Schematron">
+        <li data-testid="validate-iwxxm-schema">{layerPhrase('XML schema', schema)}</li>
+        <li data-testid="validate-iwxxm-schematron">
+          {layerPhrase('Schematron', schematron)}
+        </li>
+      </ul>
       {passed.length > 0 && (
         <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
           Passed: {passed.join(', ')}

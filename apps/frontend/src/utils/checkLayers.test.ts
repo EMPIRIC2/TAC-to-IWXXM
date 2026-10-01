@@ -75,34 +75,28 @@ describe('checkLayers', () => {
   });
 
   it('marks schema and Schematron from validate, issues, or a strict convert', () => {
-    expect(outputLayerStatus('schema', null, [], false)).toBe('not run');
+    expect(outputLayerStatus('schema', null, [])).toBe('not run');
     expect(
-      outputLayerStatus(
-        'schematron',
-        { layers_passed: null, layers_failed: null },
-        [],
-        false,
-      ),
+      outputLayerStatus('schematron', { layers_passed: null, layers_failed: null }, []),
     ).toBe('not run');
-    expect(
-      outputLayerStatus('schema', { layers_passed: ['XML_SCHEMA'] }, [], false),
-    ).toBe('passed');
-    expect(
-      outputLayerStatus('schematron', { layers_passed: ['XML_SCHEMA'] }, [], false),
-    ).toBe('not run');
-    expect(
-      outputLayerStatus('schematron', { layers_failed: ['SCHEMATRON'] }, [], true),
-    ).toBe('failed');
+    expect(outputLayerStatus('schema', { layers_passed: ['XML_SCHEMA'] }, [])).toBe(
+      'passed',
+    );
+    expect(outputLayerStatus('schematron', { layers_passed: ['XML_SCHEMA'] }, [])).toBe(
+      'not run',
+    );
+    expect(outputLayerStatus('schematron', { layers_failed: ['SCHEMATRON'] }, [])).toBe(
+      'failed',
+    );
     expect(
       outputLayerStatus(
         'schema',
         { layers_passed: ['xml_schema'], layers_failed: [] },
         ['xml_schema'],
-        true,
       ),
     ).toBe('failed');
-    expect(outputLayerStatus('schema', null, [], true)).toBe('passed');
-    expect(outputLayerStatus('schematron', null, [], true)).toBe('passed');
+    expect(outputLayerStatus('schema', null, [])).toBe('not run');
+    expect(outputLayerStatus('schematron', null, [])).toBe('not run');
   });
 
   it('counts error issues', () => {
