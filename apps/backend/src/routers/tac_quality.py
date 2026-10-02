@@ -30,35 +30,29 @@ _location_resolver_ready = False
 
 
 def _ensure_airport_location_resolver() -> None:
-    """Install F3 AirportValidator as the decode ICAO→name lookup (#724)."""
+    """Install a per-station OpenAIP lookup for decode names (#724)."""
     global _location_resolver_ready
     if _location_resolver_ready:
         return
     from tac_decoding import set_location_name_resolver
 
-    from src.schemas.airport import get_airport_validator
-
-    validator = get_airport_validator()
-
     def _resolve(icao: str) -> str | None:
         """
-        Internal helper ``_resolve``.
+        Look up one station name.
 
         Parameters
         ----------
-        icao : object
-            Argument ``icao``.
+        icao : str
+            Station location indicator.
 
         Returns
         -------
-        object
-            Return value.
+        str | None
+            Airport name, or None when the lookup misses.
         """
-        airport = validator.get_airport(icao)
-        if airport is None:
-            return None
-        name = (airport.name or "").strip()
-        return name or None
+        from src.services.airport_name_lookup import lookup_airport_name
+
+        return lookup_airport_name(icao)
 
     set_location_name_resolver(_resolve)
     _location_resolver_ready = True

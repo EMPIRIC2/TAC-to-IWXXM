@@ -40,7 +40,8 @@ kubectl --context do-nyc1-metar-iwxxm-staging -n metar-iwxxm-staging create secr
   --from-literal=SUPABASE_URL='https://….supabase.co' \
   --from-literal=SUPABASE_JWKS_URL='' \
   --from-literal=SUPABASE_PUBLISHABLE_KEY='…' \
-  --from-literal=DISSEMINATION_EGRESS_ALLOWLIST='…'
+  --from-literal=DISSEMINATION_EGRESS_ALLOWLIST='…' \
+  --from-literal=OPENAIP_API_KEY='…'
 ```
 
 Also copy `ghcr-pull` into the staging namespace. Do **not** remount

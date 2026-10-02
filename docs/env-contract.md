@@ -99,6 +99,9 @@ After DOKS cutover, do not reuse unverified Render poller URLs.
 | Rate limits / body / allowlist | env | — | — |
 | `METAR_CONFIG_ENV=prod` | yes | copy → `public/config.json` | — |
 | F8 poller | — | — | env |
+| `OPENAIP_API_KEY` | required for station names | — | — |
+
+Staging (`metar-iwxxm-staging`) uses the same `OPENAIP_API_KEY` entry on `metar-api-secrets`.
 
 ### Render (historical — TC-F30-005 complete)
 
@@ -123,6 +126,7 @@ Do not point `LIVE_*` or `config/prod.json` at onrender.com.
 | Session / Auth tests | Fixture user or mocked JWKS/JWT (M1/M2) |
 | Postgres + Alembic | Service container `DATABASE_URL`; **`alembic upgrade head`** before schema tests (idempotent) |
 | F8 / dissemination | `DATABASE_URL` + allowlist fixtures |
+| OpenAIP station names | `OPENAIP_API_KEY` on the OpenAIP station lookup job; a missing key fails that job |
 
 ## Verification
 
