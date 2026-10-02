@@ -118,6 +118,10 @@ export const CONVERT_PRESET_LABEL = 'Semantic preset';
 export const CONVERT_PRESET_NONE = 'None';
 export const CONVERT_PRESET_HELP =
   'Optional saved preset for this convert. Applies saved profile defaults, but does not choose destinations or credentials.';
+export const COUNTRY_PRESET_LABEL = 'Country preset';
+export const COUNTRY_PRESET_CUSTOM = 'Custom';
+export const COUNTRY_PRESET_HELP =
+  'Sets TAC validation, conversion, decoding, and IWXXM validation together. You can change any one of them afterward.';
 export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS = 'Reset to WMO defaults';
 export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP =
   'Restore the ICAO / WMO baseline profile and matching built-in library selections on Convert.';

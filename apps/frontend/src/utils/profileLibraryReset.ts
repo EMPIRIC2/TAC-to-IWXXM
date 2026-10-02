@@ -102,3 +102,39 @@ export function libraryResetForProfile(nextNationalLine: string): {
     libraryIds: libraryIdsForNationalLine(wireSemanticProfile(profile)),
   };
 }
+
+/** National lines that have a matching built-in four-library set. */
+export const COUNTRY_PRESET_LINES = ['ICAO_2025', 'US_FAA_NWS', 'CA_ECCC'] as const;
+
+/**
+ * National line when TAC validation, conversion, decoding, and IWXXM validation match one preset.
+ *
+ * Dissemination is ignored. A mixed set returns an empty string.
+ *
+ * @param ids - Current Convert library ids
+ * @returns Matching preset line, or ``''`` when the four libraries do not match
+ * @example
+ * const _ = true;
+ */
+export function countryPresetLineForLibraries(
+  ids: Pick<
+    ConvertLibraryIdFields,
+    | 'conversionLibraryId'
+    | 'tacValidationLibraryId'
+    | 'iwxxmValidationLibraryId'
+    | 'decodingLibraryId'
+  >,
+): (typeof COUNTRY_PRESET_LINES)[number] | '' {
+  for (const line of COUNTRY_PRESET_LINES) {
+    const expected = libraryIdsForNationalLine(line);
+    if (
+      ids.conversionLibraryId === expected.conversionLibraryId &&
+      ids.tacValidationLibraryId === expected.tacValidationLibraryId &&
+      ids.iwxxmValidationLibraryId === expected.iwxxmValidationLibraryId &&
+      ids.decodingLibraryId === expected.decodingLibraryId
+    ) {
+      return line;
+    }
+  }
+  return '';
+}

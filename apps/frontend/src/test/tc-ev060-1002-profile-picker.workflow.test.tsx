@@ -239,8 +239,6 @@ describe('T3.1 / TC-EV060-1002: Conversion library at converter top', () => {
 
     expect(screen.getByTestId('product-type-select')).toHaveValue('TAF');
     expect(screen.getByTestId('conversion-library-select')).toBeVisible();
-    expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
-      'US_FAA_NWS',
-    );
+    expect(screen.getByTestId('country-preset-select')).toHaveValue('ICAO_2025');
   });
 });

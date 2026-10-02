@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { defaultLibraryId } from './libraryIds';
 import {
   confirmLibraryResetForProfile,
+  countryPresetLineForLibraries,
   isSemanticProfileLineChange,
   libraryIdsFromSessionParams,
   libraryResetForProfile,
@@ -47,6 +48,25 @@ describe('profileLibraryReset', () => {
       conversionLibraryId: 'LIB.CONVERSION.US_FAA_NWS',
       tacValidationLibraryId: 'LIB.TAC_VALIDATION.CA_ECCC',
     });
+  });
+
+  it('matches a country preset only when the four libraries agree', () => {
+    const unitedStates = libraryResetForProfile('US_FAA_NWS').libraryIds;
+    expect(countryPresetLineForLibraries(unitedStates)).toBe('US_FAA_NWS');
+    expect(
+      countryPresetLineForLibraries({
+        ...unitedStates,
+        tacValidationLibraryId: defaultLibraryId('tac_validation', 'CA_ECCC'),
+      }),
+    ).toBe('');
+    expect(
+      countryPresetLineForLibraries({
+        conversionLibraryId: 'LIB.CONVERSION.AU_BOM',
+        tacValidationLibraryId: 'LIB.TAC_VALIDATION.AU_BOM',
+        iwxxmValidationLibraryId: 'LIB.IWXXM_VALIDATION.AU_BOM',
+        decodingLibraryId: 'LIB.DECODING.AU_BOM',
+      }),
+    ).toBe('');
   });
 
   it('confirm helper uses injectable confirm', () => {
