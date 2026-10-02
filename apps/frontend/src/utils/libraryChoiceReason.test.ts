@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { libraryChoiceReason, libraryLine } from './libraryChoiceReason';
+import {
+  libraryChoiceReason,
+  libraryDisplayName,
+  libraryLine,
+} from './libraryChoiceReason';
 
 describe('libraryChoiceReason', () => {
   it('reads a national line from a library id', () => {
@@ -9,6 +13,23 @@ describe('libraryChoiceReason', () => {
     expect(libraryLine('LIB.DECODING.')).toBeNull();
     expect(libraryLine('LIB.DECODING')).toBeNull();
     expect(libraryLine('  ')).toBeNull();
+  });
+
+  it('uses the country name for a known library and keeps a custom label', () => {
+    expect(libraryDisplayName('LIB.DECODING.US_FAA_NWS')).toBe(
+      'United States (FAA/NWS)',
+    );
+    expect(libraryDisplayName('LIB.TAC_VALIDATION.icao_2025')).toBe(
+      'ICAO / WMO Annex 3 (2025)',
+    );
+    expect(libraryDisplayName('LIB.CONVERSION.CA_ECCC', 'ignored')).toBe(
+      'Canada (ECCC)',
+    );
+    expect(libraryDisplayName('custom-asset', ' My overlay ')).toBe('My overlay');
+    expect(libraryDisplayName('LIB.DECODING.NOT_A_LINE', '  ')).toBe(
+      'LIB.DECODING.NOT_A_LINE',
+    );
+    expect(libraryDisplayName('custom-asset')).toBe('custom-asset');
   });
 
   it('explains the WMO baseline, a national line, and a custom library', () => {

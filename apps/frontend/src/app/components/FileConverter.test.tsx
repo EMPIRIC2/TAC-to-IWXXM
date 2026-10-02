@@ -328,7 +328,9 @@ vi.mock('./TacEditor', () => ({
 }));
 
 vi.mock('./DecodePanel', () => ({
-  DecodePanel: () => <div data-testid="decode-panel-mock" />,
+  DecodePanel: ({ decodingProfile }: { decodingProfile?: string }) => (
+    <div data-testid="decode-panel-mock">{decodingProfile}</div>
+  ),
 }));
 
 vi.mock('/utils/databaseUpload', () => ({
@@ -7516,6 +7518,9 @@ describe('FileConverter Component', () => {
 
       await user.selectOptions(preset, '');
       expect(screen.getByTestId('country-preset-select')).toHaveValue('US_FAA_NWS');
+      expect(screen.getByTestId('decode-panel-mock')).toHaveTextContent(
+        'United States (FAA/NWS)',
+      );
       expect(screen.getByTestId('conversion-library-select')).toHaveValue(
         defaultLibraryId('conversion', 'US_FAA_NWS'),
       );

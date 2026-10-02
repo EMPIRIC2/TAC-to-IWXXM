@@ -63,6 +63,7 @@ import {
 } from '@/utils/conversionProfilesApi';
 import { convertOverlayFields } from '@/utils/convertOverlayFields';
 import { LibraryPickersBar } from './LibraryPickersBar';
+import { libraryDisplayName } from '@/utils/libraryChoiceReason';
 import { libraryIdsForNationalLine } from '@/utils/libraryIds';
 import {
   confirmLibraryResetForProfile,
@@ -3510,7 +3511,10 @@ export function FileConverter({
                     error={decodeError}
                     pinned
                     defaultOpen
-                    decodingProfile={conversionParams.decodingLibraryId || undefined}
+                    decodingProfile={
+                      libraryDisplayName(conversionParams.decodingLibraryId) ||
+                      undefined
+                    }
                     density={liveLayout.density}
                     selectedStart={selectedTrace?.start}
                     selectedEnd={selectedTrace?.end}

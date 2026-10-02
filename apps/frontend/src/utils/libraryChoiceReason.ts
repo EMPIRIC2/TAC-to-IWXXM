@@ -2,6 +2,8 @@
  * Plain-language reason for a Convert library selection.
  */
 
+import { SEMANTIC_PROFILE_OPTIONS } from './semanticProfile';
+
 const WMO_BASELINE = 'WMO baseline. Choose another line when the report is national.';
 const CUSTOM_LIBRARY = 'Custom library for this conversion.';
 const NATIONAL_LINE =
@@ -20,6 +22,34 @@ export function libraryLine(libraryId: string): string | null {
   if (parts[0] !== 'LIB' || parts.length < 3) return null;
   const line = parts.slice(2).join('.').trim();
   return line.length > 0 ? line : null;
+}
+
+/**
+ * Country name for a first-party library id.
+ *
+ * Unknown ids keep ``fallback`` when it is non-empty, otherwise the id itself.
+ *
+ * @param libraryId - Library id such as LIB.DECODING.US_FAA_NWS
+ * @param fallback - Label to keep for a custom library
+ * @returns Operator-facing name
+ * @example
+ * const _ = true;
+ */
+export function libraryDisplayName(libraryId: string, fallback?: string): string {
+  const line = libraryLine(libraryId);
+  if (line) {
+    const match = SEMANTIC_PROFILE_OPTIONS.find(
+      (option) => option.value.toLowerCase() === line.toLowerCase(),
+    );
+    if (match) {
+      return match.label;
+    }
+  }
+  const custom = fallback?.trim();
+  if (custom) {
+    return custom;
+  }
+  return libraryId.trim();
 }
 
 /**
