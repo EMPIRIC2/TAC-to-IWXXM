@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react';
 import { fetchAirportRegion } from '../../utils/api';
 import { airports } from '../../utils/airportsData';
+import { RegionSchematic } from './RegionSchematic';
 
 interface AirportDetailsCardProps {
   icao: string;
@@ -72,6 +73,7 @@ function AirportDetailsCardContent({ icao }: { icao: string }) {
           <span className="text-amber-700 dark:text-amber-400">{regionError}</span>
         )}
       </div>
+      <RegionSchematic icao={icao} />
     </div>
   );
 }

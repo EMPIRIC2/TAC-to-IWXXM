@@ -18,6 +18,7 @@ export type ShellPrimaryView =
   | 'history'
   | 'quality'
   | 'catalog'
+  | 'visuals'
   | 'dissemination-ops';
 
 export const SHELL_NAV_LABELS = {
@@ -25,6 +26,7 @@ export const SHELL_NAV_LABELS = {
   history: 'History',
   quality: 'Quality metrics',
   catalog: 'Rule catalogs',
+  visuals: 'Decode visuals',
   'dissemination-ops': 'Dissemination ops',
 } as const;
 
@@ -40,6 +42,7 @@ const TABS: ShellPrimaryView[] = [
   'history',
   'quality',
   'catalog',
+  'visuals',
   'dissemination-ops',
 ];
 
