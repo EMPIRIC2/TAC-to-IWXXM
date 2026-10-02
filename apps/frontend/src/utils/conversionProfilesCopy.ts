@@ -122,6 +122,11 @@ export const COUNTRY_PRESET_LABEL = 'Country preset';
 export const COUNTRY_PRESET_CUSTOM = 'Custom';
 export const COUNTRY_PRESET_HELP =
   'Sets TAC validation, conversion, decoding, and IWXXM validation together. You can change any one of them afterward.';
+export const VALIDATE_IWXXM_HEADING = 'Validate IWXXM';
+export const VALIDATE_IWXXM_INTRO = 'Paste or upload IWXXM XML, then Validate.';
+export const VALIDATE_IWXXM_EMPTY_RESULTS = 'Validation results appear after Validate.';
+export const VALIDATE_IWXXM_DROP_TITLE = 'Drop one XML file or select';
+export const VALIDATE_IWXXM_DROP_HELP = 'One .xml file';
 export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS = 'Reset to WMO defaults';
 export const CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP =
   'Restore the ICAO / WMO baseline profile and matching built-in library selections on Convert.';
