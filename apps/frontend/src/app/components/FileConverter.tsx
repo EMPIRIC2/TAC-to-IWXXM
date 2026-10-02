@@ -3430,7 +3430,7 @@ export function FileConverter({
                 onWidthsChange={(paneWidths) => updateLiveLayout({ paneWidths })}
               >
                 <section
-                  className="min-w-0"
+                  className="flex h-full min-h-0 min-w-0 flex-col overflow-auto"
                   aria-label={inputMode === 'validate_iwxxm' ? 'IWXXM' : 'TAC'}
                   onFocusCapture={() => setRecentWorkCollapsed(true)}
                   onKeyDown={(event) => {
@@ -3555,7 +3555,10 @@ export function FileConverter({
                   ) : null}
                 </section>
                 {inputMode === 'validate_iwxxm' ? null : (
-                  <>
+                  <div
+                    className="flex h-full min-h-0 min-w-0 flex-col overflow-auto"
+                    data-testid="decode-pane"
+                  >
                     {onOpenVisuals ? (
                       <button
                         type="button"
@@ -3584,7 +3587,7 @@ export function FileConverter({
                       selectedEnd={selectedTrace?.end}
                       onSelect={setSelectedTrace}
                     />
-                  </>
+                  </div>
                 )}
                 {inputMode === 'validate_iwxxm' ? (
                   <section
@@ -3611,6 +3614,7 @@ export function FileConverter({
                   </section>
                 ) : (
                   <IwxxmPreviewPane
+                    className="h-full min-h-0 min-w-0"
                     xml={previewXml}
                     status={previewStatus}
                     mode={previewMode}

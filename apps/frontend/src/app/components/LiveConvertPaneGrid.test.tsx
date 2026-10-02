@@ -23,7 +23,9 @@ describe('LiveConvertPaneGrid', () => {
       'data-fit',
       'roomy',
     );
-    expect(screen.getByTestId('live-convert-panes').className).toContain('min-h-');
+    expect(screen.getByTestId('live-convert-panes').className).toContain(
+      'min-h-[20rem]',
+    );
     expect(screen.getByText('TAC')).toBeInTheDocument();
     unmount();
     render(
@@ -40,7 +42,9 @@ describe('LiveConvertPaneGrid', () => {
       'data-fit',
       'tight',
     );
-    expect(screen.getByTestId('live-convert-panes').className).not.toContain('min-h-');
+    expect(screen.getByTestId('live-convert-panes').className).not.toContain(
+      'min-h-[20rem]',
+    );
   });
 
   it('drags using a unit width when the pane row has no measured size', () => {

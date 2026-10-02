@@ -620,6 +620,32 @@ describe('FileConverter Component', () => {
       expect(help).toHaveAttribute('target', '_blank');
     });
 
+    it('keeps decode and live IWXXM in one row on a wide window', () => {
+      const original = window.matchMedia;
+      window.matchMedia = ((query: string) => ({
+        matches: query.includes('1280'),
+        media: query,
+        onchange: null,
+        addListener: () => undefined,
+        removeListener: () => undefined,
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+        dispatchEvent: () => true,
+      })) as typeof window.matchMedia;
+      render(<FileConverter {...defaultProps} onOpenVisuals={() => undefined} />);
+      const panes = screen.getByTestId('live-convert-panes');
+      const decodePane = within(panes).getByTestId('decode-pane');
+      expect(decodePane).toContainElement(
+        within(panes).getByTestId('open-decode-visuals'),
+      );
+      expect(decodePane).toContainElement(
+        within(panes).getByTestId('decode-panel-mock'),
+      );
+      expect(within(panes).getByTestId('iwxxm-preview-pane')).toBeInTheDocument();
+      expect(within(panes).getAllByRole('separator')).toHaveLength(2);
+      window.matchMedia = original;
+    });
+
     it('opens decode visuals for the report station', async () => {
       const user = userEvent.setup({ delay: null });
       const onOpenVisuals = vi.fn();

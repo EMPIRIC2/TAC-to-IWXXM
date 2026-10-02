@@ -1,9 +1,9 @@
 /**
- * Decode visuals tab: region sketch and wind cue (F7 / F9).
+ * Decode visuals tab: station map and wind cue (F7 / F9).
  */
 
 import { useState, useSyncExternalStore } from 'react';
-import { RegionSchematic } from '@/app/components/RegionSchematic';
+import { StationMinimap } from '@/app/components/StationMinimap';
 import { WindCue } from '@/app/components/WindCue';
 import { stationDisplayName } from '@/utils/decodeVisuals';
 import {
@@ -14,8 +14,10 @@ import {
 } from '@/utils/decodeVisualsCopy';
 import { readDecodeVisuals, subscribeDecodeVisuals } from '@/utils/decodeVisualsStore';
 
+const STATION_ID = /^[A-Z][A-Z0-9]{3}$/;
+
 /**
- * Region sketch and wind cue for the station last seen on Convert, or one typed here.
+ * Map and wind cue for the station last seen on Convert, or one typed here.
  *
  * @example
  * const _ = true;
@@ -26,9 +28,10 @@ export function DecodeVisualsPage() {
     readDecodeVisuals,
     readDecodeVisuals,
   );
-  const [typed, setTyped] = useState('');
-  const station = (typed || published.station).trim().toUpperCase();
-  const heading = station ? stationDisplayName(station) : '';
+  const [draft, setDraft] = useState<string | null>(null);
+  const station = (draft ?? published.station).trim().toUpperCase();
+  const complete = STATION_ID.test(station);
+  const heading = complete ? stationDisplayName(station) : '';
 
   return (
     <section
@@ -43,13 +46,15 @@ export function DecodeVisualsPage() {
         {DECODE_VISUALS_STATION_LABEL}
         <input
           className="mt-1 w-full max-w-xs rounded border border-gray-300 bg-white px-2 py-1 font-mono text-sm dark:border-gray-600 dark:bg-gray-900"
-          value={typed || published.station}
-          onChange={(event) => setTyped(event.target.value.toUpperCase())}
+          value={draft ?? published.station}
+          onChange={(event) => setDraft(event.target.value.toUpperCase())}
           data-testid="decode-visuals-station"
           aria-label={DECODE_VISUALS_STATION_LABEL}
+          autoComplete="off"
+          spellCheck={false}
         />
       </label>
-      {station ? (
+      {complete ? (
         <>
           <p
             className="text-sm font-medium text-gray-900 dark:text-white"
@@ -57,8 +62,8 @@ export function DecodeVisualsPage() {
           >
             {heading}
           </p>
-          <RegionSchematic icao={station} showStationName />
-          <WindCue segments={typed ? [] : published.segments} />
+          <StationMinimap icao={station} />
+          <WindCue segments={draft === null ? published.segments : []} />
         </>
       ) : (
         <p

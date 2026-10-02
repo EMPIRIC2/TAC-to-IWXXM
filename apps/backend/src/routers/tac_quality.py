@@ -11,6 +11,7 @@ from tac_validate import lint as tac_lint_fn
 from tac_validate.issue_registry import catalog_entries as tac_catalog_entries
 
 from src import api as api_surface
+from src.schemas.airport import get_airport_validator
 from src.schemas.validation import (
     DecodeResidualModel,
     DecodeSegmentModel,
@@ -587,3 +588,46 @@ async def decode_tac_endpoint(
             summary=summary,
         )
     )
+
+
+@router.get("/stations/{icao}")
+def station_point(icao: str) -> dict[str, Any]:
+    """
+    Return the map point for one station ID.
+
+    The airport catalog is already loaded for ICAO checks. This reads that
+    one record. It does not call an external map service.
+
+    Parameters
+    ----------
+    icao :
+        Four-character station location indicator.
+
+    Returns
+    -------
+    dict[str, Any]
+        ICAO code, name, and decimal degrees.
+
+    Raises
+    ------
+    HTTPException
+        When the code is not a known station.
+
+    Examples
+    --------
+    >>> 1 + 1  # docstring smoke (station_point)
+    2
+    """
+    code = icao.strip().upper()
+    if len(code) != 4 or not code.isalnum() or not code[0].isalpha():
+        raise HTTPException(status_code=404, detail="Station not found")
+    airport = get_airport_validator().get_airport(code)
+    coordinates = None if airport is None else airport.coordinates
+    if airport is None or coordinates is None:
+        raise HTTPException(status_code=404, detail="Station not found")
+    return {
+        "icao": airport.icao,
+        "name": airport.name,
+        "latitude": coordinates.latitude,
+        "longitude": coordinates.longitude,
+    }
