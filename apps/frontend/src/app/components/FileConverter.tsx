@@ -101,6 +101,11 @@ import {
   COUNTRY_PRESET_CUSTOM,
   COUNTRY_PRESET_HELP,
   COUNTRY_PRESET_LABEL,
+  VALIDATE_IWXXM_DROP_HELP,
+  VALIDATE_IWXXM_DROP_TITLE,
+  VALIDATE_IWXXM_EMPTY_RESULTS,
+  VALIDATE_IWXXM_HEADING,
+  VALIDATE_IWXXM_INTRO,
 } from '@/utils/conversionProfilesCopy';
 import {
   readWmoLibraryDefaultsSync,
@@ -2458,7 +2463,9 @@ export function FileConverter({
           }`}
         >
           <h1 className="text-2xl font-semibold text-gray-900 dark:text-white sm:text-3xl">
-            METAR → IWXXM Converter
+            {inputMode === 'validate_iwxxm'
+              ? VALIDATE_IWXXM_HEADING
+              : 'METAR → IWXXM Converter'}
           </h1>
           <div
             className="flex flex-wrap items-center gap-2 sm:gap-3"
@@ -2575,10 +2582,13 @@ export function FileConverter({
         }`}
       >
         <div className="mb-8">
-          <p className="text-base text-gray-600 dark:text-gray-300">
-            Enter TAC in the console below (choose product type as needed), then
-            Convert. Upload files from the compact drop zone under the console when
-            preferred.
+          <p
+            className="text-base text-gray-600 dark:text-gray-300"
+            data-testid="workbench-intro"
+          >
+            {inputMode === 'validate_iwxxm'
+              ? VALIDATE_IWXXM_INTRO
+              : 'Enter TAC in the console below (choose product type as needed), then Convert. Upload files from the compact drop zone under the console when preferred.'}
           </p>
           {showGuestLossNotice && (
             <StatusBanner
@@ -2958,263 +2968,286 @@ export function FileConverter({
                       <option value="VONA">VONA</option>
                       <option value="IWXXM">IWXXM</option>
                     </select>
-                    <LibraryPickersBar
-                      disabled={isReadOnly}
-                      values={{
-                        conversionLibraryId: conversionParams.conversionLibraryId,
-                        tacValidationLibraryId: conversionParams.tacValidationLibraryId,
-                        iwxxmValidationLibraryId:
-                          conversionParams.iwxxmValidationLibraryId,
-                        disseminationLibraryId: conversionParams.disseminationLibraryId,
-                        decodingLibraryId: conversionParams.decodingLibraryId,
-                      }}
-                      onOpenCatalog={onOpenCatalog}
-                      onChange={(next, conversionEngineProfileId) => {
-                        setConversionParams((prev) => {
-                          if (!conversionEngineProfileId) {
-                            return { ...prev, ...next };
-                          }
-                          const lineChanging = isSemanticProfileLineChange(
-                            prev.profile,
-                            conversionEngineProfileId,
-                          );
-                          if (lineChanging) {
-                            if (
-                              !confirmLibraryResetForProfile(conversionEngineProfileId)
-                            ) {
-                              return prev;
-                            }
-                            const { profile, libraryIds } = libraryResetForProfile(
-                              conversionEngineProfileId,
-                            );
-                            return {
-                              ...prev,
-                              ...libraryIds,
-                              profile,
-                              reportVariant: '',
-                              iwxxmVersion: coerceIwxxmVersionForProfile(
+                    {inputMode !== 'validate_iwxxm' ? (
+                      <>
+                        <LibraryPickersBar
+                          disabled={isReadOnly}
+                          values={{
+                            conversionLibraryId: conversionParams.conversionLibraryId,
+                            tacValidationLibraryId:
+                              conversionParams.tacValidationLibraryId,
+                            iwxxmValidationLibraryId:
+                              conversionParams.iwxxmValidationLibraryId,
+                            disseminationLibraryId:
+                              conversionParams.disseminationLibraryId,
+                            decodingLibraryId: conversionParams.decodingLibraryId,
+                          }}
+                          onOpenCatalog={onOpenCatalog}
+                          onChange={(next, conversionEngineProfileId) => {
+                            setConversionParams((prev) => {
+                              if (!conversionEngineProfileId) {
+                                return { ...prev, ...next };
+                              }
+                              const lineChanging = isSemanticProfileLineChange(
+                                prev.profile,
+                                conversionEngineProfileId,
+                              );
+                              if (lineChanging) {
+                                if (
+                                  !confirmLibraryResetForProfile(
+                                    conversionEngineProfileId,
+                                  )
+                                ) {
+                                  return prev;
+                                }
+                                const { profile, libraryIds } = libraryResetForProfile(
+                                  conversionEngineProfileId,
+                                );
+                                return {
+                                  ...prev,
+                                  ...libraryIds,
+                                  profile,
+                                  reportVariant: '',
+                                  iwxxmVersion: coerceIwxxmVersionForProfile(
+                                    profile,
+                                    prev.iwxxmVersion,
+                                  ),
+                                };
+                              }
+                              const profile = coerceIwxxmProfile(
+                                conversionEngineProfileId,
+                              );
+                              return {
+                                ...prev,
+                                ...next,
                                 profile,
-                                prev.iwxxmVersion,
-                              ),
-                            };
-                          }
-                          const profile = coerceIwxxmProfile(conversionEngineProfileId);
-                          return {
-                            ...prev,
-                            ...next,
-                            profile,
-                            reportVariant: '',
-                            iwxxmVersion: coerceIwxxmVersionForProfile(
-                              profile,
-                              prev.iwxxmVersion,
-                            ),
-                          };
-                        });
-                      }}
-                    />
-                    <div className="flex shrink-0 items-center gap-1">
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        disabled={isReadOnly}
-                        data-testid="reset-wmo-library-defaults"
-                        className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                        onClick={() => {
-                          const sync = resetWmoLibraryDefaultsSync();
-                          applyWmoLibraryDefaultsSync(sync);
-                        }}
-                      >
-                        {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
-                      </Button>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button
+                                reportVariant: '',
+                                iwxxmVersion: coerceIwxxmVersionForProfile(
+                                  profile,
+                                  prev.iwxxmVersion,
+                                ),
+                              };
+                            });
+                          }}
+                        />
+                        <div className="flex shrink-0 items-center gap-1">
+                          <Button
                             type="button"
-                            className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                            aria-label="About reset to WMO defaults"
-                            data-testid="reset-wmo-library-defaults-help"
-                          >
-                            <CircleHelp className="h-3.5 w-3.5" aria-hidden />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" className="max-w-xs text-balance">
-                          {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-
-                    {reportVariantOptions.length > 0 &&
-                      inputMode !== 'ahl_bulletin' && (
-                        <>
-                          <div className="flex shrink-0 items-center gap-1">
-                            <Label
-                              htmlFor="param-report-variant"
-                              className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
-                            >
-                              Report variant
-                            </Label>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <button
-                                  type="button"
-                                  className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
-                                  aria-label="About Report variant"
-                                  data-testid="report-variant-help-icon"
-                                >
-                                  <CircleHelp className="h-3.5 w-3.5" aria-hidden />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent
-                                side="bottom"
-                                className="max-w-xs text-balance"
-                              >
-                                Optional profile-scoped IWXXM root inside the selected
-                                product family. Leave on Auto-detect to infer from the
-                                TAC lead.
-                              </TooltipContent>
-                            </Tooltip>
-                          </div>
-                          <select
-                            id="param-report-variant"
-                            aria-label="Report variant"
-                            data-testid="report-variant-select"
-                            value={activeReportVariant}
+                            variant="ghost"
+                            size="sm"
                             disabled={isReadOnly}
-                            onChange={(e) => {
+                            data-testid="reset-wmo-library-defaults"
+                            className="text-xs text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                            onClick={() => {
+                              const sync = resetWmoLibraryDefaultsSync();
+                              applyWmoLibraryDefaultsSync(sync);
+                            }}
+                          >
+                            {CONVERT_RESET_WMO_LIBRARY_DEFAULTS}
+                          </Button>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                aria-label="About reset to WMO defaults"
+                                data-testid="reset-wmo-library-defaults-help"
+                              >
+                                <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="bottom"
+                              className="max-w-xs text-balance"
+                            >
+                              {CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP}
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+
+                        {reportVariantOptions.length > 0 &&
+                          inputMode !== 'ahl_bulletin' && (
+                            <>
+                              <div className="flex shrink-0 items-center gap-1">
+                                <Label
+                                  htmlFor="param-report-variant"
+                                  className="shrink-0 text-sm text-gray-700 dark:text-gray-300"
+                                >
+                                  Report variant
+                                </Label>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      type="button"
+                                      className="inline-flex h-6 w-6 items-center justify-center rounded text-gray-500 hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-gray-400 dark:hover:text-gray-100"
+                                      aria-label="About Report variant"
+                                      data-testid="report-variant-help-icon"
+                                    >
+                                      <CircleHelp className="h-3.5 w-3.5" aria-hidden />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent
+                                    side="bottom"
+                                    className="max-w-xs text-balance"
+                                  >
+                                    Optional profile-scoped IWXXM root inside the
+                                    selected product family. Leave on Auto-detect to
+                                    infer from the TAC lead.
+                                  </TooltipContent>
+                                </Tooltip>
+                              </div>
+                              <select
+                                id="param-report-variant"
+                                aria-label="Report variant"
+                                data-testid="report-variant-select"
+                                value={activeReportVariant}
+                                disabled={isReadOnly}
+                                onChange={(e) => {
+                                  setConversionParams((prev) => ({
+                                    ...prev,
+                                    reportVariant: e.target.value,
+                                  }));
+                                }}
+                                className="min-w-[10rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                              >
+                                <option value="">Auto-detect from TAC</option>
+                                {reportVariantOptions.map((variant) => (
+                                  <option
+                                    key={variant.tac_lead}
+                                    value={variant.tac_lead}
+                                  >
+                                    {variant.tac_lead}
+                                    {variant.minimal_observation ? ' (minimal)' : ''}
+                                  </option>
+                                ))}
+                              </select>
+                            </>
+                          )}
+
+                        <GoldenExamplesSelect
+                          applicableProducts={activeProfileExampleProducts}
+                          disabled={isReadOnly}
+                          semanticProfile={conversionParams.profile}
+                          onSelectExample={handleLoadGoldenExample}
+                          onOpenChange={(open) => {
+                            if (open) {
+                              setRecentWorkCollapsed(true);
+                            }
+                          }}
+                        />
+                      </>
+                    ) : null}
+                  </div>
+                  {inputMode !== 'validate_iwxxm' ? (
+                    <>
+                      <p
+                        id="product-profile-bar-summary"
+                        className="text-xs text-gray-600 dark:text-gray-400"
+                        data-testid="product-profile-bar-summary"
+                      >
+                        Encoding and packaging rules only. This does not set
+                        destinations, credentials, or editable overlays.
+                      </p>
+                      <div
+                        className="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                        data-testid="country-preset"
+                      >
+                        <label
+                          className="flex flex-col gap-1"
+                          htmlFor="country-preset-select"
+                        >
+                          <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                            {COUNTRY_PRESET_LABEL}
+                          </span>
+                          <select
+                            id="country-preset-select"
+                            data-testid="country-preset-select"
+                            aria-label={COUNTRY_PRESET_LABEL}
+                            className="min-w-[10rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                            value={countryPresetLineForLibraries(conversionParams)}
+                            disabled={isReadOnly}
+                            onChange={(event) => {
+                              const line = event.target.value;
+                              if (line === '') {
+                                return;
+                              }
+                              const { profile, libraryIds } =
+                                libraryResetForProfile(line);
                               setConversionParams((prev) => ({
                                 ...prev,
-                                reportVariant: e.target.value,
+                                ...libraryIds,
+                                profile,
+                                reportVariant: '',
+                                iwxxmVersion: coerceIwxxmVersionForProfile(
+                                  profile,
+                                  prev.iwxxmVersion,
+                                ),
                               }));
                             }}
-                            className="min-w-[10rem] shrink-0 rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                           >
-                            <option value="">Auto-detect from TAC</option>
-                            {reportVariantOptions.map((variant) => (
-                              <option key={variant.tac_lead} value={variant.tac_lead}>
-                                {variant.tac_lead}
-                                {variant.minimal_observation ? ' (minimal)' : ''}
+                            <option value="">{COUNTRY_PRESET_CUSTOM}</option>
+                            {SEMANTIC_PROFILE_OPTIONS.filter((option) =>
+                              (COUNTRY_PRESET_LINES as readonly string[]).includes(
+                                option.value,
+                              ),
+                            ).map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
                               </option>
                             ))}
                           </select>
-                        </>
-                      )}
-
-                    <GoldenExamplesSelect
-                      applicableProducts={activeProfileExampleProducts}
-                      disabled={isReadOnly}
-                      semanticProfile={conversionParams.profile}
-                      onSelectExample={handleLoadGoldenExample}
-                      onOpenChange={(open) => {
-                        if (open) {
-                          setRecentWorkCollapsed(true);
-                        }
-                      }}
-                    />
-                  </div>
-                  <p
-                    id="product-profile-bar-summary"
-                    className="text-xs text-gray-600 dark:text-gray-400"
-                    data-testid="product-profile-bar-summary"
-                  >
-                    Encoding and packaging rules only. This does not set destinations,
-                    credentials, or editable overlays.
-                  </p>
-                  <div
-                    className="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
-                    data-testid="country-preset"
-                  >
-                    <label
-                      className="flex flex-col gap-1"
-                      htmlFor="country-preset-select"
-                    >
-                      <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                        {COUNTRY_PRESET_LABEL}
-                      </span>
-                      <select
-                        id="country-preset-select"
-                        data-testid="country-preset-select"
-                        aria-label={COUNTRY_PRESET_LABEL}
-                        className="min-w-[10rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                        value={countryPresetLineForLibraries(conversionParams)}
-                        disabled={isReadOnly}
-                        onChange={(event) => {
-                          const line = event.target.value;
-                          if (line === '') {
-                            return;
-                          }
-                          const { profile, libraryIds } = libraryResetForProfile(line);
-                          setConversionParams((prev) => ({
-                            ...prev,
-                            ...libraryIds,
-                            profile,
-                            reportVariant: '',
-                            iwxxmVersion: coerceIwxxmVersionForProfile(
-                              profile,
-                              prev.iwxxmVersion,
-                            ),
-                          }));
-                        }}
-                      >
-                        <option value="">{COUNTRY_PRESET_CUSTOM}</option>
-                        {SEMANTIC_PROFILE_OPTIONS.filter((option) =>
-                          (COUNTRY_PRESET_LINES as readonly string[]).includes(
-                            option.value,
-                          ),
-                        ).map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
-                    <p
-                      className="mt-1 text-xs text-gray-600 dark:text-gray-400"
-                      data-testid="country-preset-help"
-                    >
-                      {COUNTRY_PRESET_HELP}
-                    </p>
-                  </div>
-                  <details
-                    className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
-                    data-testid="product-profile-trust-details"
-                  >
-                    <summary className="cursor-pointer select-none font-medium text-gray-700 dark:text-gray-300">
-                      What&apos;s this?
-                    </summary>
-                    <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 dark:border-gray-700">
-                      <p data-testid="semantic-profile-help">
-                        Profile selects encoding rules for conversion. Does not set
-                        destinations or credentials, and does not make national overlays
-                        editable.
-                      </p>
-                      <p data-testid="exchange-profile-help">
-                        Exchange profile is used when packaging bulletins. Does not
-                        choose destinations or credentials.
-                      </p>
-                    </div>
-                  </details>
-                  {isCaEcccProfile(conversionParams.profile) && (
-                    <div
-                      className="rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
-                      data-testid="ca-eccc-profile-metadata"
-                      role="status"
-                    >
-                      <p>IWXXM {CA_ECCC_IWXXM_VERSION} (MSC operational line)</p>
-                      <p>{CA_ECCC_EXTENSION_LABEL}</p>
-                      <p>Supported products: {CA_ECCC_SUPPORTED_PRODUCTS.join(', ')}</p>
-                      {caProfileBlocked && (
-                        <p className="mt-1 font-medium text-amber-900 dark:text-amber-200">
-                          Canadian extension schemas are not available on this
-                          deployment. Conversion is blocked until the vendor bundle is
-                          installed.
+                        </label>
+                        <p
+                          className="mt-1 text-xs text-gray-600 dark:text-gray-400"
+                          data-testid="country-preset-help"
+                        >
+                          {COUNTRY_PRESET_HELP}
                         </p>
+                      </div>
+                      <details
+                        className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
+                        data-testid="product-profile-trust-details"
+                      >
+                        <summary className="cursor-pointer select-none font-medium text-gray-700 dark:text-gray-300">
+                          What&apos;s this?
+                        </summary>
+                        <div className="mt-1.5 space-y-1.5 border-t border-gray-100 pt-1.5 dark:border-gray-700">
+                          <p data-testid="semantic-profile-help">
+                            Profile selects encoding rules for conversion. Does not set
+                            destinations or credentials, and does not make national
+                            overlays editable.
+                          </p>
+                          <p data-testid="exchange-profile-help">
+                            Exchange profile is used when packaging bulletins. Does not
+                            choose destinations or credentials.
+                          </p>
+                        </div>
+                      </details>
+                      {isCaEcccProfile(conversionParams.profile) && (
+                        <div
+                          className="rounded border border-sky-200 bg-sky-50 px-2 py-1.5 text-xs text-sky-950 dark:border-sky-900 dark:bg-sky-950/40 dark:text-sky-100"
+                          data-testid="ca-eccc-profile-metadata"
+                          role="status"
+                        >
+                          <p>IWXXM {CA_ECCC_IWXXM_VERSION} (MSC operational line)</p>
+                          <p>{CA_ECCC_EXTENSION_LABEL}</p>
+                          <p>
+                            Supported products: {CA_ECCC_SUPPORTED_PRODUCTS.join(', ')}
+                          </p>
+                          {caProfileBlocked && (
+                            <p className="mt-1 font-medium text-amber-900 dark:text-amber-200">
+                              Canadian extension schemas are not available on this
+                              deployment. Conversion is blocked until the vendor bundle
+                              is installed.
+                            </p>
+                          )}
+                        </div>
                       )}
-                    </div>
-                  )}
+                    </>
+                  ) : null}
                 </div>
               </div>
-              {demoExampleLabel && (
+              {inputMode !== 'validate_iwxxm' && demoExampleLabel && (
                 <StatusBanner
                   tone="info"
                   className="mb-2 text-xs"
@@ -3273,7 +3306,9 @@ export function FileConverter({
                   {placeholderNotice}
                 </StatusBanner>
               )}
-              <FailedTacCue failedSpans={failedSpans} />
+              {inputMode !== 'validate_iwxxm' ? (
+                <FailedTacCue failedSpans={failedSpans} />
+              ) : null}
               {bulletinReports.length >= 2 ? (
                 <BulletinReportList
                   reports={bulletinReports}
@@ -3313,63 +3348,65 @@ export function FileConverter({
                   schematronStatus="not run"
                 />
               ) : null}
-              <div className="mb-2 flex flex-wrap items-center gap-3">
-                <div
-                  className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
-                  role="group"
-                  aria-label="Decode density"
-                >
-                  <button
-                    type="button"
-                    aria-pressed={liveLayout.density === 'detailed'}
-                    className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
-                    onClick={() => updateLiveLayout({ density: 'detailed' })}
+              {inputMode !== 'validate_iwxxm' ? (
+                <div className="mb-2 flex flex-wrap items-center gap-3">
+                  <div
+                    className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
+                    role="group"
+                    aria-label="Decode density"
                   >
-                    Detailed
-                  </button>
-                  <button
-                    type="button"
-                    aria-pressed={liveLayout.density === 'compact'}
-                    className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
-                    onClick={() => updateLiveLayout({ density: 'compact' })}
+                    <button
+                      type="button"
+                      aria-pressed={liveLayout.density === 'detailed'}
+                      className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                      onClick={() => updateLiveLayout({ density: 'detailed' })}
+                    >
+                      Detailed
+                    </button>
+                    <button
+                      type="button"
+                      aria-pressed={liveLayout.density === 'compact'}
+                      className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                      onClick={() => updateLiveLayout({ density: 'compact' })}
+                    >
+                      Compact
+                    </button>
+                  </div>
+                  <div
+                    className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
+                    role="group"
+                    aria-label="Convert layout"
                   >
-                    Compact
-                  </button>
+                    <button
+                      type="button"
+                      aria-pressed={liveLayout.span === 'roomy'}
+                      className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                      onClick={() => updateLiveLayout({ span: 'roomy' })}
+                    >
+                      Roomier
+                    </button>
+                    <button
+                      type="button"
+                      aria-pressed={liveLayout.span === 'tight'}
+                      className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
+                      onClick={() => updateLiveLayout({ span: 'tight' })}
+                    >
+                      Tighter
+                    </button>
+                  </div>
+                  <label className="flex items-center gap-2 text-xs text-gray-800 dark:text-gray-200">
+                    <input
+                      type="checkbox"
+                      data-testid="wrap-xml-lines"
+                      checked={liveLayout.wrapXml}
+                      onChange={(event) =>
+                        updateLiveLayout({ wrapXml: event.target.checked })
+                      }
+                    />
+                    Wrap XML lines
+                  </label>
                 </div>
-                <div
-                  className="flex rounded-md bg-gray-100 p-0.5 dark:bg-gray-800"
-                  role="group"
-                  aria-label="Convert layout"
-                >
-                  <button
-                    type="button"
-                    aria-pressed={liveLayout.span === 'roomy'}
-                    className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
-                    onClick={() => updateLiveLayout({ span: 'roomy' })}
-                  >
-                    Roomier
-                  </button>
-                  <button
-                    type="button"
-                    aria-pressed={liveLayout.span === 'tight'}
-                    className="rounded px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100"
-                    onClick={() => updateLiveLayout({ span: 'tight' })}
-                  >
-                    Tighter
-                  </button>
-                </div>
-                <label className="flex items-center gap-2 text-xs text-gray-800 dark:text-gray-200">
-                  <input
-                    type="checkbox"
-                    data-testid="wrap-xml-lines"
-                    checked={liveLayout.wrapXml}
-                    onChange={(event) =>
-                      updateLiveLayout({ wrapXml: event.target.checked })
-                    }
-                  />
-                  Wrap XML lines
-                </label>
-              </div>
+              ) : null}
               <LiveConvertPaneGrid
                 wide={wideConvertPanes}
                 roomy={liveLayout.span === 'roomy'}
@@ -3521,79 +3558,107 @@ export function FileConverter({
                     onSelect={setSelectedTrace}
                   />
                 )}
-                <IwxxmPreviewPane
-                  xml={previewXml}
-                  status={previewStatus}
-                  mode={previewMode}
-                  softFailDetail={previewSoftFailDetail}
-                  failedSpanCount={failedSpans.length}
-                  numbered={inputMode !== 'validate_iwxxm'}
-                  highlightToken={selectedTrace?.code ?? ''}
-                  highlightStart={selectedTrace?.start}
-                  highlightEnd={selectedTrace?.end}
-                  groupTrace={groupTrace}
-                  incomplete={previewIncomplete && previewXml.trim().length > 0}
-                  conversionProfile={
-                    conversionParams.conversionLibraryId || conversionParams.profile
-                  }
-                  wrapXml={liveLayout.wrapXml}
-                  onFailedSpanFocus={() => {
-                    document
-                      .querySelector('[data-testid="failed-tac-cue"]')
-                      ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                  }}
-                />
+                {inputMode === 'validate_iwxxm' ? (
+                  <section
+                    data-testid="validate-iwxxm-results"
+                    aria-label="Validation results"
+                    className="flex min-h-[12rem] flex-col rounded-md border border-gray-200 bg-white p-3 dark:border-gray-700 dark:bg-gray-900"
+                  >
+                    <h3 className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
+                      Validation results
+                    </h3>
+                    {validateReport ? (
+                      <ValidateIwxxmReport report={validateReport} />
+                    ) : (
+                      <p
+                        data-testid="validate-iwxxm-empty"
+                        className="text-sm text-gray-500 dark:text-gray-400"
+                      >
+                        {VALIDATE_IWXXM_EMPTY_RESULTS}
+                      </p>
+                    )}
+                  </section>
+                ) : (
+                  <IwxxmPreviewPane
+                    xml={previewXml}
+                    status={previewStatus}
+                    mode={previewMode}
+                    softFailDetail={previewSoftFailDetail}
+                    failedSpanCount={failedSpans.length}
+                    numbered
+                    highlightToken={selectedTrace?.code ?? ''}
+                    highlightStart={selectedTrace?.start}
+                    highlightEnd={selectedTrace?.end}
+                    groupTrace={groupTrace}
+                    incomplete={previewIncomplete && previewXml.trim().length > 0}
+                    conversionProfile={
+                      conversionParams.conversionLibraryId || conversionParams.profile
+                    }
+                    wrapXml={liveLayout.wrapXml}
+                    onFailedSpanFocus={() => {
+                      document
+                        .querySelector('[data-testid="failed-tac-cue"]')
+                        ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }}
+                  />
+                )}
               </LiveConvertPaneGrid>
-              <OutputVersionCompare versions={outputVersions} />
-              {/* Output filename beside TAC / IWXXM panes (EVCPU Phase A) */}
-              <div className="mt-3" data-testid="output-filename-near-convert">
-                <Label
-                  htmlFor="output-filename"
-                  className="mb-1 block text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Output filename (optional)
-                </Label>
-                <Input
-                  id="output-filename"
-                  data-testid="output-filename-input"
-                  value={outputFilename}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    outputFilenameOwned.current = value.trim() !== '';
-                    setOutputFilename(value);
-                  }}
-                  readOnly={isReadOnly}
-                  placeholder="manual_input"
-                  className="text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
-                  aria-label="Output filename for manually entered METAR downloads"
-                />
-                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                  Applies to manually entered downloads. The <code>.xml</code> extension
-                  is added automatically; leave blank to use <code>manual_input</code>.
-                  Saves as{' '}
-                  <code data-testid="output-filename-preview">
-                    {sanitizeOutputFilename(outputFilename)}.xml
-                  </code>
-                  .
-                </p>
-              </div>
-              <div className="mt-3 flex flex-col gap-3 rounded-md border border-gray-200 bg-gray-50/60 p-3 dark:border-gray-700 dark:bg-gray-900/30 sm:flex-row sm:items-start sm:gap-6">
-                <SoftPreviewControl
-                  checked={softPreview}
-                  onChange={setSoftPreview}
-                  disabled={isReadOnly || isBusy}
-                />
-                <PropagateResidualsControl
-                  checked={propagateResiduals}
-                  onChange={setPropagateResiduals}
-                  disabled={isReadOnly || isBusy}
-                />
-                <LiveIwxxmToggle
-                  checked={liveIwxxm}
-                  onChange={setLiveIwxxm}
-                  disabled={isReadOnly || isBusy}
-                />
-              </div>
+              {inputMode !== 'validate_iwxxm' ? (
+                <OutputVersionCompare versions={outputVersions} />
+              ) : null}
+              {inputMode !== 'validate_iwxxm' ? (
+                <>
+                  {/* Output filename beside TAC / IWXXM panes */}
+                  <div className="mt-3" data-testid="output-filename-near-convert">
+                    <Label
+                      htmlFor="output-filename"
+                      className="mb-1 block text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Output filename (optional)
+                    </Label>
+                    <Input
+                      id="output-filename"
+                      data-testid="output-filename-input"
+                      value={outputFilename}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        outputFilenameOwned.current = value.trim() !== '';
+                        setOutputFilename(value);
+                      }}
+                      readOnly={isReadOnly}
+                      placeholder="manual_input"
+                      className="text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
+                      aria-label="Output filename for manually entered METAR downloads"
+                    />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      Applies to manually entered downloads. The <code>.xml</code>{' '}
+                      extension is added automatically; leave blank to use{' '}
+                      <code>manual_input</code>. Saves as{' '}
+                      <code data-testid="output-filename-preview">
+                        {sanitizeOutputFilename(outputFilename)}.xml
+                      </code>
+                      .
+                    </p>
+                  </div>
+                  <div className="mt-3 flex flex-col gap-3 rounded-md border border-gray-200 bg-gray-50/60 p-3 dark:border-gray-700 dark:bg-gray-900/30 sm:flex-row sm:items-start sm:gap-6">
+                    <SoftPreviewControl
+                      checked={softPreview}
+                      onChange={setSoftPreview}
+                      disabled={isReadOnly || isBusy}
+                    />
+                    <PropagateResidualsControl
+                      checked={propagateResiduals}
+                      onChange={setPropagateResiduals}
+                      disabled={isReadOnly || isBusy}
+                    />
+                    <LiveIwxxmToggle
+                      checked={liveIwxxm}
+                      onChange={setLiveIwxxm}
+                      disabled={isReadOnly || isBusy}
+                    />
+                  </div>
+                </>
+              ) : null}
               <WorkbenchConsole
                 lines={consoleLines}
                 minLogLevel={conversionParams.logLevel as ConvertLogLevel}
@@ -3622,7 +3687,11 @@ export function FileConverter({
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 role="button"
-                aria-label="File drop zone - Drop files here or click to select files"
+                aria-label={
+                  inputMode === 'validate_iwxxm'
+                    ? 'XML file drop zone - Drop one XML file or click to select it'
+                    : 'File drop zone - Drop files here or click to select files'
+                }
                 tabIndex={0}
                 data-testid="compact-file-drop-zone"
                 onKeyDown={(e) => {
@@ -3640,11 +3709,14 @@ export function FileConverter({
                     />
                     <div className="min-w-0 text-left">
                       <p className="text-sm text-gray-900 dark:text-white">
-                        Drop TAC files or select
+                        {inputMode === 'validate_iwxxm'
+                          ? VALIDATE_IWXXM_DROP_TITLE
+                          : 'Drop TAC files or select'}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Multiple files · Folder/Zip mass ingest (signed in) · .txt,
-                        .metar, .tac, .xml, .gz, .zip
+                        {inputMode === 'validate_iwxxm'
+                          ? VALIDATE_IWXXM_DROP_HELP
+                          : 'Multiple files · Folder/Zip mass ingest (signed in) · .txt, .metar, .tac, .xml, .gz, .zip'}
                       </p>
                     </div>
                   </div>
@@ -3655,7 +3727,11 @@ export function FileConverter({
                     accept=".txt,.metar,.tac,.xml,.gz,text/plain,application/gzip,application/xml,text/xml"
                     className="hidden"
                     onChange={(e) => handleFileSelect(e.target.files)}
-                    aria-label="Select TAC files to upload"
+                    aria-label={
+                      inputMode === 'validate_iwxxm'
+                        ? 'Select one XML file to validate'
+                        : 'Select TAC files to upload'
+                    }
                   />
                   <Button
                     variant="outline"
@@ -3670,40 +3746,44 @@ export function FileConverter({
                   >
                     Select Files
                   </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    data-testid="mass-ingest-folder-button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      requestMassFolder();
-                    }}
-                    disabled={isBusy || isReadOnly}
-                    className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    aria-label="Mass ingest a folder of TAC files (sign-in required)"
-                    aria-busy={isMassIngesting}
-                  >
-                    <FolderOpen className="h-4 w-4" aria-hidden="true" />
-                    Folder
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    data-testid="mass-ingest-zip-button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      requestMassZip();
-                    }}
-                    disabled={isBusy || isReadOnly}
-                    className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    aria-label="Mass ingest a zip archive of TAC files (sign-in required)"
-                    aria-busy={isMassIngesting}
-                  >
-                    <Archive className="h-4 w-4" aria-hidden="true" />
-                    Zip
-                  </Button>
+                  {inputMode !== 'validate_iwxxm' ? (
+                    <>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        data-testid="mass-ingest-folder-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          requestMassFolder();
+                        }}
+                        disabled={isBusy || isReadOnly}
+                        className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        aria-label="Mass ingest a folder of TAC files (sign-in required)"
+                        aria-busy={isMassIngesting}
+                      >
+                        <FolderOpen className="h-4 w-4" aria-hidden="true" />
+                        Folder
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        data-testid="mass-ingest-zip-button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          requestMassZip();
+                        }}
+                        disabled={isBusy || isReadOnly}
+                        className="shrink-0 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                        aria-label="Mass ingest a zip archive of TAC files (sign-in required)"
+                        aria-busy={isMassIngesting}
+                      >
+                        <Archive className="h-4 w-4" aria-hidden="true" />
+                        Zip
+                      </Button>
+                    </>
+                  ) : null}
                   <input
                     ref={massFolderInputRef}
                     type="file"
@@ -3730,252 +3810,256 @@ export function FileConverter({
               </Card>
             </div>
 
-            {/* Conversion Parameters */}
-            <Card className="mb-6 p-6 bg-white dark:bg-gray-800 dark:border-gray-700">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
-                  Conversion Parameters
-                </h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsParamsExpanded(!isParamsExpanded)}
-                  className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-500"
-                  aria-label={
-                    isParamsExpanded ? 'Collapse parameters' : 'Expand parameters'
-                  }
-                >
-                  {isParamsExpanded ? (
-                    <ChevronUp
-                      className="w-4 h-4 text-gray-600 dark:text-gray-400"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    <ChevronDown
-                      className="w-4 h-4 text-gray-600 dark:text-gray-400"
-                      aria-hidden="true"
-                    />
-                  )}
-                </Button>
-              </div>
-              <div
-                className="flex flex-col gap-4 overflow-x-auto lg:flex-row lg:flex-nowrap lg:items-end"
-                data-testid="conversion-params-bar"
-              >
-                <div className="min-w-[14rem] shrink-0">
-                  <Label htmlFor="param-bulletin-id" className="dark:text-white mb-2">
-                    Bulletin ID
-                  </Label>
-                  <Input
-                    id="param-bulletin-id"
-                    data-testid="bulletin-id-input"
-                    value={conversionParams.bulletinId}
-                    onChange={(e) => {
-                      setBulletinFieldError(null);
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        bulletinId: e.target.value.toUpperCase(),
-                      }));
-                    }}
-                    placeholder="SAAA00"
-                    maxLength={6}
-                    aria-invalid={ariaInvalidFromError(bulletinFieldError)}
-                    className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
-                  />
-                  {bulletinFieldError ? (
-                    <p
-                      className="mt-1 text-xs text-red-600 dark:text-red-400"
-                      data-testid="bulletin-id-field-error"
-                      role="alert"
-                    >
-                      {bulletinFieldError}
-                    </p>
-                  ) : (
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      Format: 4 letters + 2 digits. Leave blank to discover from the
-                      AHL.
-                    </p>
-                  )}
-                </div>
-                <div className="min-w-[14rem] shrink-0">
-                  <IcaoAutocomplete
-                    label="Issuing Center (ICAO)"
-                    id="param-issuing-center"
-                    inputTestId="issuing-center-input"
-                    formatOnly
-                    value={conversionParams.issuingCenter}
-                    onChange={(value) => {
-                      setIssuingCenterFieldError(null);
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        issuingCenter: value,
-                      }));
-                    }}
-                    placeholder="KWBC"
-                    maxLength={4}
-                    helperText={
-                      issuingCenterFieldError
-                        ? undefined
-                        : '4-letter ICAO code. Leave blank to discover from the AHL.'
+            {inputMode !== 'validate_iwxxm' ? (
+              <Card className="mb-6 p-6 bg-white dark:bg-gray-800 dark:border-gray-700">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                    Conversion Parameters
+                  </h3>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsParamsExpanded(!isParamsExpanded)}
+                    className="hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-500"
+                    aria-label={
+                      isParamsExpanded ? 'Collapse parameters' : 'Expand parameters'
                     }
-                  />
-                  {issuingCenterFieldError ? (
-                    <p
-                      className="mt-1 text-xs text-red-600 dark:text-red-400"
-                      data-testid="issuing-center-field-error"
-                      role="alert"
-                    >
-                      {issuingCenterFieldError}
-                    </p>
-                  ) : null}
-                </div>
-                <div
-                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
-                >
-                  <AirportDetailsCard icao={conversionParams.issuingCenter} />
-                </div>
-
-                {/* F6.e Product + Profile — primary controls next to Manual TAC Input */}
-
-                {/* IWXXM Version */}
-                <div
-                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
-                >
-                  <Label htmlFor="param-iwxxm-version" className="dark:text-white mb-2">
-                    IWXXM Version
-                  </Label>
-                  <select
-                    id="param-iwxxm-version"
-                    value={conversionParams.iwxxmVersion}
-                    onChange={(e) =>
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        iwxxmVersion: coerceIwxxmVersion(e.target.value),
-                      }))
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
                   >
-                    {iwxxmVersionOptionsForProfile(conversionParams.profile).map(
-                      (opt) => (
-                        <option key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </option>
-                      ),
+                    {isParamsExpanded ? (
+                      <ChevronUp
+                        className="w-4 h-4 text-gray-600 dark:text-gray-400"
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <ChevronDown
+                        className="w-4 h-4 text-gray-600 dark:text-gray-400"
+                        aria-hidden="true"
+                      />
                     )}
-                  </select>
+                  </Button>
                 </div>
-
-                {/* On Error */}
                 <div
-                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
+                  className="flex flex-col gap-4 overflow-x-auto lg:flex-row lg:flex-nowrap lg:items-end"
+                  data-testid="conversion-params-bar"
                 >
-                  <Label htmlFor="param-on-error" className="dark:text-white mb-2">
-                    On Error Behavior
-                  </Label>
-                  <select
-                    id="param-on-error"
-                    value={conversionParams.onError}
-                    onChange={(e) =>
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        onError: e.target.value as OnErrorBehavior,
-                      }))
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                  <div className="min-w-[14rem] shrink-0">
+                    <Label htmlFor="param-bulletin-id" className="dark:text-white mb-2">
+                      Bulletin ID
+                    </Label>
+                    <Input
+                      id="param-bulletin-id"
+                      data-testid="bulletin-id-input"
+                      value={conversionParams.bulletinId}
+                      onChange={(e) => {
+                        setBulletinFieldError(null);
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          bulletinId: e.target.value.toUpperCase(),
+                        }));
+                      }}
+                      placeholder="SAAA00"
+                      maxLength={6}
+                      aria-invalid={ariaInvalidFromError(bulletinFieldError)}
+                      className="dark:bg-gray-700 dark:text-white dark:border-gray-600"
+                    />
+                    {bulletinFieldError ? (
+                      <p
+                        className="mt-1 text-xs text-red-600 dark:text-red-400"
+                        data-testid="bulletin-id-field-error"
+                        role="alert"
+                      >
+                        {bulletinFieldError}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                        Format: 4 letters + 2 digits. Leave blank to discover from the
+                        AHL.
+                      </p>
+                    )}
+                  </div>
+                  <div className="min-w-[14rem] shrink-0">
+                    <IcaoAutocomplete
+                      label="Issuing Center (ICAO)"
+                      id="param-issuing-center"
+                      inputTestId="issuing-center-input"
+                      formatOnly
+                      value={conversionParams.issuingCenter}
+                      onChange={(value) => {
+                        setIssuingCenterFieldError(null);
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          issuingCenter: value,
+                        }));
+                      }}
+                      placeholder="KWBC"
+                      maxLength={4}
+                      helperText={
+                        issuingCenterFieldError
+                          ? undefined
+                          : '4-letter ICAO code. Leave blank to discover from the AHL.'
+                      }
+                    />
+                    {issuingCenterFieldError ? (
+                      <p
+                        className="mt-1 text-xs text-red-600 dark:text-red-400"
+                        data-testid="issuing-center-field-error"
+                        role="alert"
+                      >
+                        {issuingCenterFieldError}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div
+                    className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
                   >
-                    <option value="skip">Skip - Continue, skip invalid</option>
-                    <option value="fail">Fail - Stop on first error</option>
-                    <option value="warn">Warn - Continue with warnings</option>
-                  </select>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Fail sets API <code>stop_on_error=true</code>; Skip/Warn leave it
-                    false.
-                  </p>
-                </div>
+                    <AirportDetailsCard icao={conversionParams.issuingCenter} />
+                  </div>
 
-                {/* Log Level */}
-                <div
-                  className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
-                >
-                  <Label htmlFor="param-log-level" className="dark:text-white mb-2">
-                    Log Level
-                  </Label>
-                  <select
-                    id="param-log-level"
-                    value={conversionParams.logLevel}
-                    onChange={(e) =>
-                      setConversionParams((prev) => ({
-                        ...prev,
-                        logLevel: e.target.value as LogLevel,
-                      }))
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                  {/* F6.e Product + Profile — primary controls next to Manual TAC Input */}
+
+                  {/* IWXXM Version */}
+                  <div
+                    className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
                   >
-                    <option value="DEBUG">DEBUG</option>
-                    <option value="INFO">INFO (Default)</option>
-                    <option value="WARNING">WARNING</option>
-                    <option value="ERROR">ERROR</option>
-                    <option value="CRITICAL">CRITICAL</option>
-                  </select>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                    Filters conversion / validation / lint process messages for input
-                    and output (Conversion log + workbench console). Sent as{' '}
-                    <code>log_level</code> on Convert. Not the server process env{' '}
-                    <code>LOG_LEVEL</code>.
-                  </p>
-                </div>
-
-                {/* Validation Options */}
-                <div
-                  className={`flex min-w-[16rem] shrink-0 flex-col gap-3 ${isParamsExpanded ? '' : 'hidden'}`}
-                >
-                  <Label className="dark:text-white">Validation Options</Label>
-                  <label className="flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={conversionParams.strictValidation}
+                    <Label
+                      htmlFor="param-iwxxm-version"
+                      className="dark:text-white mb-2"
+                    >
+                      IWXXM Version
+                    </Label>
+                    <select
+                      id="param-iwxxm-version"
+                      value={conversionParams.iwxxmVersion}
                       onChange={(e) =>
                         setConversionParams((prev) => ({
                           ...prev,
-                          strictValidation: e.target.checked,
+                          iwxxmVersion: coerceIwxxmVersion(e.target.value),
                         }))
                       }
-                      className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                      data-testid="strict-validation-checkbox"
-                    />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                      Strict Validation
-                    </span>
-                  </label>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1 ml-6">
-                    When on (and soft-preview off), Convert sets{' '}
-                    <code>validate_output=true</code> with{' '}
-                    <code>validation_level=comprehensive</code> (XSD + Schematron).
-                  </p>
-                  <label className="flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={conversionParams.includeNilReasons}
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                    >
+                      {iwxxmVersionOptionsForProfile(conversionParams.profile).map(
+                        (opt) => (
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </option>
+                        ),
+                      )}
+                    </select>
+                  </div>
+
+                  {/* On Error */}
+                  <div
+                    className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
+                  >
+                    <Label htmlFor="param-on-error" className="dark:text-white mb-2">
+                      On Error Behavior
+                    </Label>
+                    <select
+                      id="param-on-error"
+                      value={conversionParams.onError}
                       onChange={(e) =>
                         setConversionParams((prev) => ({
                           ...prev,
-                          includeNilReasons: e.target.checked,
+                          onError: e.target.value as OnErrorBehavior,
                         }))
                       }
-                      className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                      data-testid="include-nil-reasons-checkbox"
-                    />
-                    <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
-                      Include Nil Reasons
-                    </span>
-                  </label>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1 ml-6">
-                    Sent as <code>include_nil_reasons</code>. Engine may still emit
-                    nilReason on NIL TAC until full honor lands (accepted + logged).
-                  </p>
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="skip">Skip - Continue, skip invalid</option>
+                      <option value="fail">Fail - Stop on first error</option>
+                      <option value="warn">Warn - Continue with warnings</option>
+                    </select>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Fail sets API <code>stop_on_error=true</code>; Skip/Warn leave it
+                      false.
+                    </p>
+                  </div>
+
+                  {/* Log Level */}
+                  <div
+                    className={`min-w-[14rem] shrink-0 ${isParamsExpanded ? '' : 'hidden'}`}
+                  >
+                    <Label htmlFor="param-log-level" className="dark:text-white mb-2">
+                      Log Level
+                    </Label>
+                    <select
+                      id="param-log-level"
+                      value={conversionParams.logLevel}
+                      onChange={(e) =>
+                        setConversionParams((prev) => ({
+                          ...prev,
+                          logLevel: e.target.value as LogLevel,
+                        }))
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="DEBUG">DEBUG</option>
+                      <option value="INFO">INFO (Default)</option>
+                      <option value="WARNING">WARNING</option>
+                      <option value="ERROR">ERROR</option>
+                      <option value="CRITICAL">CRITICAL</option>
+                    </select>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                      Filters conversion / validation / lint process messages for input
+                      and output (Conversion log + workbench console). Sent as{' '}
+                      <code>log_level</code> on Convert. Not the server process env{' '}
+                      <code>LOG_LEVEL</code>.
+                    </p>
+                  </div>
+
+                  {/* Validation Options */}
+                  <div
+                    className={`flex min-w-[16rem] shrink-0 flex-col gap-3 ${isParamsExpanded ? '' : 'hidden'}`}
+                  >
+                    <Label className="dark:text-white">Validation Options</Label>
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={conversionParams.strictValidation}
+                        onChange={(e) =>
+                          setConversionParams((prev) => ({
+                            ...prev,
+                            strictValidation: e.target.checked,
+                          }))
+                        }
+                        className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                        data-testid="strict-validation-checkbox"
+                      />
+                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        Strict Validation
+                      </span>
+                    </label>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1 ml-6">
+                      When on (and soft-preview off), Convert sets{' '}
+                      <code>validate_output=true</code> with{' '}
+                      <code>validation_level=comprehensive</code> (XSD + Schematron).
+                    </p>
+                    <label className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={conversionParams.includeNilReasons}
+                        onChange={(e) =>
+                          setConversionParams((prev) => ({
+                            ...prev,
+                            includeNilReasons: e.target.checked,
+                          }))
+                        }
+                        className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                        data-testid="include-nil-reasons-checkbox"
+                      />
+                      <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">
+                        Include Nil Reasons
+                      </span>
+                    </label>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 -mt-1 ml-6">
+                      Sent as <code>include_nil_reasons</code>. Engine may still emit
+                      nilReason on NIL TAC until full honor lands (accepted + logged).
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </Card>
+              </Card>
+            ) : null}
 
             {conversionLog && (
               <ErrorLogPanel
@@ -3985,8 +4069,6 @@ export function FileConverter({
                 onOpenCatalog={onOpenCatalog}
               />
             )}
-
-            {validateReport && <ValidateIwxxmReport report={validateReport} />}
 
             {/* Conversion Status Display */}
             {conversionStatus.type !== 'idle' && (

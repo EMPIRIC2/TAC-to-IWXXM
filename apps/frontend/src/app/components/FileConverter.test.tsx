@@ -6114,6 +6114,44 @@ describe('FileConverter Component', () => {
     const goodXml =
       '<iwxxm:METAR xmlns:iwxxm="http://icao.int/iwxxm/2025-2"><ok/></iwxxm:METAR>';
 
+    it('reads as a check of XML and hides Convert-only controls', async () => {
+      const user = userEvent.setup({ delay: null });
+      render(<FileConverter {...defaultProps} />);
+      await user.click(screen.getByTestId('input-mode-validate_iwxxm'));
+
+      expect(
+        screen.getByRole('heading', { name: 'Validate IWXXM' }),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('workbench-intro')).toHaveTextContent(
+        'Paste or upload IWXXM XML, then Validate.',
+      );
+      expect(screen.getByTestId('validate-iwxxm-empty')).toHaveTextContent(
+        'Validation results appear after Validate.',
+      );
+      expect(screen.queryByText(/soft-preview or live iwxxm/i)).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('heading', { name: 'Live IWXXM' }),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId('library-pickers-bar')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('country-preset-select')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('examples-select')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('soft-preview-toggle')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('live-iwxxm-toggle')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('output-filename-input')).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('heading', { name: 'Conversion Parameters' }),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByText('Drop TAC files or select')).not.toBeInTheDocument();
+      expect(screen.getByText('Drop one XML file or select')).toBeInTheDocument();
+
+      await user.click(screen.getByTestId('input-mode-tac'));
+      expect(
+        screen.getByRole('heading', { name: 'METAR → IWXXM Converter' }),
+      ).toBeInTheDocument();
+      expect(screen.getByTestId('library-pickers-bar')).toBeInTheDocument();
+      expect(screen.getByTestId('soft-preview-toggle')).toBeInTheDocument();
+    });
+
     it('labels the input IWXXM while validating and restores TAC on Convert', async () => {
       const user = userEvent.setup({ delay: null });
       render(<FileConverter {...defaultProps} />);
