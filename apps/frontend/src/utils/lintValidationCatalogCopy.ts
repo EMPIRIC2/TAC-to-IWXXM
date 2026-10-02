@@ -23,6 +23,15 @@ export const LINT_VALIDATION_CATALOG_DETAIL = 'Selected rule';
 
 /** Filter labels. */
 export const LINT_VALIDATION_CATALOG_FAMILY_LABEL = 'Family';
+/** Family filter default. Covers every catalog, not only TAC and IWXXM. */
+export const LINT_VALIDATION_CATALOG_FAMILY_ALL = 'All rules';
+/** Shown when the catalog request fails. Never the raw fetch message. */
+export const LINT_VALIDATION_CATALOG_LOAD_ERROR = 'The catalog could not be loaded.';
+/** Button that runs the catalog request again. */
+export const LINT_VALIDATION_CATALOG_RETRY = 'Try again';
+/** Checkbox copy when Profile and Exchange are still All. */
+export const LINT_VALIDATION_CATALOG_LISTED_PROFILE_NEEDS_PROFILE =
+  'Choose a profile to show only rules that list it.';
 export const LINT_VALIDATION_CATALOG_TYPE_LABEL = 'Type';
 export const LINT_VALIDATION_CATALOG_LEVEL_LABEL = 'Level';
 export const LINT_VALIDATION_CATALOG_ACCESS_LABEL = 'Access';
@@ -69,3 +78,42 @@ export const LINT_VALIDATION_CATALOG_VIEW_DETAILED = 'Detailed';
 
 /** Layout that shows more rules at once. */
 export const LINT_VALIDATION_CATALOG_VIEW_COMPACT = 'Compact';
+
+/** Plain labels for type-filter values. Option values stay the API codes. */
+export const LINT_VALIDATION_CATALOG_TYPE_LABELS: Record<string, string> = {
+  all: 'All',
+  presence: 'Missing or extra',
+  structure: 'Structure',
+  content: 'Content',
+  consistency: 'Consistency',
+  iwxxm_schema: 'XML schema',
+  profile: 'Profile',
+  policy: 'Policy',
+  other: 'Other',
+};
+
+/** Plain labels for access-filter values. Option values stay the API codes. */
+export const LINT_VALIDATION_CATALOG_ACCESS_LABELS: Record<string, string> = {
+  all: 'All',
+  public: 'Public',
+  paywall: 'Paid source',
+  login: 'Sign-in required',
+  semantic_only: 'No source document',
+};
+
+/**
+ * Operator label for a type or access filter value.
+ *
+ * @param kind - Which filter the value belongs to
+ * @param value - API option value
+ * @returns Plain label, or the value with underscores as spaces
+ * @example
+ * const _ = true;
+ */
+export function catalogFilterLabel(kind: 'type' | 'access', value: string): string {
+  const table =
+    kind === 'type'
+      ? LINT_VALIDATION_CATALOG_TYPE_LABELS
+      : LINT_VALIDATION_CATALOG_ACCESS_LABELS;
+  return table[value] ?? value.replaceAll('_', ' ');
+}

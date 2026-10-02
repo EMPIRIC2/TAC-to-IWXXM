@@ -117,7 +117,13 @@ import {
   LINT_VALIDATION_CATALOG_EMPTY,
   LINT_VALIDATION_CATALOG_EXCHANGE_ALL,
   LINT_VALIDATION_CATALOG_EXCHANGE_LABEL,
+  LINT_VALIDATION_CATALOG_ACCESS_LABELS,
+  LINT_VALIDATION_CATALOG_FAMILY_ALL,
   LINT_VALIDATION_CATALOG_FAMILY_LABEL,
+  LINT_VALIDATION_CATALOG_LISTED_PROFILE_NEEDS_PROFILE,
+  LINT_VALIDATION_CATALOG_LOAD_ERROR,
+  LINT_VALIDATION_CATALOG_RETRY,
+  LINT_VALIDATION_CATALOG_TYPE_LABELS,
   LINT_VALIDATION_CATALOG_LEVEL_LABEL,
   LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY,
   LINT_VALIDATION_CATALOG_DETAIL,
@@ -399,6 +405,30 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
       id: 'lint-validation-catalog.family',
       text: LINT_VALIDATION_CATALOG_FAMILY_LABEL,
     },
+    {
+      id: 'lint-validation-catalog.family-all',
+      text: LINT_VALIDATION_CATALOG_FAMILY_ALL,
+    },
+    {
+      id: 'lint-validation-catalog.load-error',
+      text: LINT_VALIDATION_CATALOG_LOAD_ERROR,
+    },
+    {
+      id: 'lint-validation-catalog.retry',
+      text: LINT_VALIDATION_CATALOG_RETRY,
+    },
+    {
+      id: 'lint-validation-catalog.listed-profile-needs-profile',
+      text: LINT_VALIDATION_CATALOG_LISTED_PROFILE_NEEDS_PROFILE,
+    },
+    ...Object.entries(LINT_VALIDATION_CATALOG_TYPE_LABELS).map(([value, text]) => ({
+      id: `lint-validation-catalog.type.${value}`,
+      text,
+    })),
+    ...Object.entries(LINT_VALIDATION_CATALOG_ACCESS_LABELS).map(([value, text]) => ({
+      id: `lint-validation-catalog.access.${value}`,
+      text,
+    })),
     {
       id: 'lint-validation-catalog.type',
       text: LINT_VALIDATION_CATALOG_TYPE_LABEL,
