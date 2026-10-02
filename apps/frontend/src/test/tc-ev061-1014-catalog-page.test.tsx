@@ -3,9 +3,10 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LintValidationCatalogPage } from '../app/components/LintValidationCatalogPage';
+import { CATALOG_VIEW_STORAGE_KEY } from '../utils/catalogView';
 
 const fetchLintIssueCatalog = vi.hoisted(() => vi.fn());
 const fetchRuleCatalog = vi.hoisted(() => vi.fn());
@@ -98,6 +99,7 @@ const BASE_ISSUES = [
 
 describe('LintValidationCatalogPage', () => {
   beforeEach(() => {
+    sessionStorage.removeItem(CATALOG_VIEW_STORAGE_KEY);
     fetchLintIssueCatalog.mockReset();
     fetchRuleCatalog.mockReset();
     fetchLintIssueCatalog.mockResolvedValue({ issues: BASE_ISSUES });
@@ -930,5 +932,57 @@ describe('LintValidationCatalogPage', () => {
     expect(screen.getByTestId('catalog-rule-example-fail')).toHaveTextContent(
       'VA ADVISORY',
     );
+  });
+
+  it('switches between compact and detailed and keeps search and the selected rule', async () => {
+    const user = userEvent.setup();
+    render(<LintValidationCatalogPage />);
+    expect(
+      await screen.findByTestId('lint-validation-catalog-view-detailed'),
+    ).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByTestId('catalog-detail-facts')).toBeInTheDocument();
+    expect(
+      within(
+        screen.getByTestId('lint-validation-catalog-entry-AMD_PRESENT'),
+      ).getByTestId('catalog-entry-type'),
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByTestId('lint-validation-catalog-view-compact'));
+    expect(screen.getByTestId('lint-validation-catalog-view-compact')).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    expect(document.querySelector('[data-view="compact"]')).toBeTruthy();
+    expect(
+      within(
+        screen.getByTestId('lint-validation-catalog-entry-AMD_PRESENT'),
+      ).queryByTestId('catalog-entry-type'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('catalog-detail-facts')).not.toBeInTheDocument();
+    expect(screen.getByTestId('lint-validation-catalog-detail')).toHaveTextContent(
+      'AMD_PRESENT',
+    );
+
+    await user.type(screen.getByTestId('lint-validation-catalog-search'), 'vendor pin');
+    expect(
+      screen.getByTestId('lint-validation-catalog-entry-VENDOR_ONLY'),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByTestId('lint-validation-catalog-entry-AMD_PRESENT'),
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId('lint-validation-catalog-detail')).toHaveTextContent(
+      'VENDOR_ONLY',
+    );
+
+    await user.click(screen.getByTestId('lint-validation-catalog-view-detailed'));
+    expect(screen.getByTestId('catalog-detail-facts')).toHaveTextContent('structure');
+    expect(sessionStorage.getItem(CATALOG_VIEW_STORAGE_KEY)).toBe('detailed');
+
+    cleanup();
+    sessionStorage.setItem(CATALOG_VIEW_STORAGE_KEY, 'compact');
+    render(<LintValidationCatalogPage />);
+    expect(
+      await screen.findByTestId('lint-validation-catalog-view-compact'),
+    ).toHaveAttribute('aria-pressed', 'true');
   });
 });
