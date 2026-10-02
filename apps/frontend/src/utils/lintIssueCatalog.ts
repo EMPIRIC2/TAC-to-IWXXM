@@ -115,6 +115,32 @@ export function catalogShellFamilyForCode(
 }
 
 /**
+ * Catalog code that can open Rule catalogs, or null when the issue has none.
+ *
+ * A blank code, a missing catalog, or a code that is not in the loaded catalog
+ * stays a plain log line.
+ *
+ * @param code - Issue code from the conversion or validation log
+ * @param catalogByCode - Loaded catalog index
+ * @returns The trimmed code and the catalog that contains it
+ * @example
+ * const _ = true;
+ */
+export function catalogJumpTarget(
+  code: string | null | undefined,
+  catalogByCode: Map<string, LintIssueCatalogEntry> | undefined,
+): { code: string; catalogByCode: Map<string, LintIssueCatalogEntry> } | null {
+  if (typeof code !== 'string' || !catalogByCode) {
+    return null;
+  }
+  const trimmed = code.trim();
+  if (!trimmed || !catalogByCode.has(trimmed)) {
+    return null;
+  }
+  return { code: trimmed, catalogByCode };
+}
+
+/**
  * Open Rule catalogs focused on a console lint/validation code.
  *
  * @example

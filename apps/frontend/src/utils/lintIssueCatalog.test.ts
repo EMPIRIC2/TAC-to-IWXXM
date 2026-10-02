@@ -5,6 +5,7 @@
 
 import { describe, expect, it, vi } from 'vitest';
 import {
+  catalogJumpTarget,
   catalogShellFamilyForCode,
   filterCatalogByTag,
   formatCatalogEntryCopy,
@@ -209,6 +210,25 @@ describe('catalogShellFamilyForCode', () => {
     expect(catalogShellFamilyForCode(undefined)).toBeUndefined();
     expect(catalogShellFamilyForCode({ family: 'conversion' })).toBeUndefined();
     expect(catalogShellFamilyForCode({ family: null })).toBeUndefined();
+  });
+});
+
+describe('catalogJumpTarget', () => {
+  const byCode = new Map([['MISSING_TERMINATOR', SAMPLE[0]!]]);
+
+  it('returns the catalog row code when the issue code is loaded', () => {
+    expect(catalogJumpTarget(' MISSING_TERMINATOR ', byCode)).toEqual({
+      code: 'MISSING_TERMINATOR',
+      catalogByCode: byCode,
+    });
+  });
+
+  it('returns null when the issue has no catalog code', () => {
+    expect(catalogJumpTarget(null, byCode)).toBeNull();
+    expect(catalogJumpTarget(undefined, byCode)).toBeNull();
+    expect(catalogJumpTarget('   ', byCode)).toBeNull();
+    expect(catalogJumpTarget('MISSING_TERMINATOR', undefined)).toBeNull();
+    expect(catalogJumpTarget('NOT_A_RULE', byCode)).toBeNull();
   });
 });
 

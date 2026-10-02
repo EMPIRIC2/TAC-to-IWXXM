@@ -1,6 +1,11 @@
 import { useMemo, useState } from 'react';
 import { ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
 import type { ConversionIssue } from '/utils/api';
+import type { LintIssueCatalogEntry } from '@/utils/api';
+import {
+  catalogJumpTarget,
+  maybeOpenCatalogForLintCode,
+} from '@/utils/lintIssueCatalog';
 import {
   issueLevelPasses,
   issueSeverityRank,
@@ -21,10 +26,65 @@ interface ErrorLogPanelProps {
   log: ConversionLog;
   /** Operator log level — filters conversion/validation/lint issues. */
   minLogLevel?: ConvertLogLevel;
+  /** Loaded rules catalog, keyed by code. */
+  catalogByCode?: Map<string, LintIssueCatalogEntry>;
+  /** Open Rule catalogs on a code that is in the catalog. */
+  onOpenCatalog?: (
+    family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+    code?: string,
+  ) => void;
 }
 
 /** Internal codes that must not appear in the operator Conversion/Validation log. */
 const HIDDEN_OPERATOR_ISSUE_CODES = new Set(['DEPRECATED_PROFILE_ALIAS']);
+
+/**
+ * Code line for one conversion or validation issue.
+ *
+ * A code that is in the loaded catalog is a button. Any other code stays text.
+ *
+ * @param props.code - Issue code, when the log has one
+ * @param props.className - Tone classes for the line
+ * @param props.catalogByCode - Loaded catalog index
+ * @param props.onOpenCatalog - Opens Rule catalogs on that code
+ * @example
+ * const _ = true;
+ */
+function LogIssueCode({
+  code,
+  className,
+  catalogByCode,
+  onOpenCatalog,
+}: {
+  code: string | null | undefined;
+  className: string;
+  catalogByCode?: Map<string, LintIssueCatalogEntry>;
+  onOpenCatalog?: (
+    family?: 'conversion' | 'lint' | 'iwxxm' | 'decoding',
+    code?: string,
+  ) => void;
+}) {
+  const jump = catalogJumpTarget(code, catalogByCode);
+  if (!code) {
+    return null;
+  }
+  if (!jump || !onOpenCatalog) {
+    return <p className={className}>Code: {code}</p>;
+  }
+  return (
+    <button
+      type="button"
+      className={`${className} cursor-pointer text-left underline decoration-dotted underline-offset-2 hover:decoration-solid`}
+      data-testid={`log-issue-catalog-${jump.code}`}
+      aria-label={`Open ${jump.code} in the rules catalog`}
+      onClick={() =>
+        maybeOpenCatalogForLintCode(onOpenCatalog, jump.catalogByCode, jump.code)
+      }
+    >
+      Code: {jump.code}
+    </button>
+  );
+}
 
 /**
  * Collapsible panel showing conversion errors and filtered validation issues.
@@ -34,7 +94,12 @@ const HIDDEN_OPERATOR_ISSUE_CODES = new Set(['DEPRECATED_PROFILE_ALIAS']);
  * @example
  * const _ = true;
  */
-export function ErrorLogPanel({ log, minLogLevel = 'INFO' }: ErrorLogPanelProps) {
+export function ErrorLogPanel({
+  log,
+  minLogLevel = 'INFO',
+  catalogByCode,
+  onOpenCatalog,
+}: ErrorLogPanelProps) {
   const [expanded, setExpanded] = useState(true);
   const visibleErrors = log.errors;
   const suppressedByCode = log.issues.filter((issue) =>
@@ -171,7 +236,12 @@ export function ErrorLogPanel({ log, minLogLevel = 'INFO' }: ErrorLogPanelProps)
                       [{issue.severity ?? 'error'}] {issue.source}: {issue.message}
                     </p>
                     {issue.hint && <p className={hintClass}>{issue.hint}</p>}
-                    {issue.code && <p className={codeClass}>Code: {issue.code}</p>}
+                    <LogIssueCode
+                      code={issue.code}
+                      className={codeClass}
+                      catalogByCode={catalogByCode}
+                      onOpenCatalog={onOpenCatalog}
+                    />
                   </li>
                 ))}
               </ul>

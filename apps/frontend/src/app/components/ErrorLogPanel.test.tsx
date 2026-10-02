@@ -1,7 +1,17 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ErrorLogPanel } from './ErrorLogPanel';
+import type { LintIssueCatalogEntry } from '@/utils/api';
+
+const CATALOG_ENTRY: LintIssueCatalogEntry = {
+  code: 'MISSING_TERMINATOR',
+  severity: 'info',
+  message_template: "Reports in bulletins end with '='",
+  product: null,
+  tags: ['terminator'],
+  family: 'lint',
+};
 
 describe('ErrorLogPanel', () => {
   it('renders nothing when log is empty', () => {
@@ -170,7 +180,73 @@ describe('ErrorLogPanel', () => {
       />,
     );
     expect(screen.getByText(/Code: OUTPUT_VALIDATION_WARNING/)).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: /open output_validation_warning/i }),
+    ).not.toBeInTheDocument();
     expect(screen.getByText(/Broken GML href/)).toBeInTheDocument();
     expect(screen.getByText(/Code: GML_HREF_MISSING/)).toBeInTheDocument();
+  });
+
+  it('opens the rules catalog for a coded issue and keeps an unknown code as text', async () => {
+    const user = userEvent.setup();
+    const onOpenCatalog = vi.fn();
+    render(
+      <ErrorLogPanel
+        catalogByCode={new Map([['MISSING_TERMINATOR', CATALOG_ENTRY]])}
+        onOpenCatalog={onOpenCatalog}
+        log={{
+          errors: [],
+          issues: [
+            {
+              source: 'lint',
+              message: 'Add the end marker',
+              severity: 'warning',
+              code: 'MISSING_TERMINATOR',
+            },
+            {
+              source: 'parser',
+              message: 'Unexpected token',
+              severity: 'warning',
+              code: 'E001',
+            },
+          ],
+        }}
+      />,
+    );
+
+    const jump = screen.getByTestId('log-issue-catalog-MISSING_TERMINATOR');
+    expect(jump).toHaveAttribute(
+      'aria-label',
+      'Open MISSING_TERMINATOR in the rules catalog',
+    );
+    jump.focus();
+    await user.keyboard('{Enter}');
+    expect(onOpenCatalog).toHaveBeenCalledWith('lint', 'MISSING_TERMINATOR');
+    await user.click(jump);
+    expect(onOpenCatalog).toHaveBeenCalledTimes(2);
+
+    const unknown = screen.getByText(/Code: E001/);
+    expect(unknown.tagName).toBe('P');
+    expect(screen.queryByTestId('log-issue-catalog-E001')).not.toBeInTheDocument();
+  });
+
+  it('keeps a catalog code as text when the catalog cannot be opened', () => {
+    render(
+      <ErrorLogPanel
+        catalogByCode={new Map([['MISSING_TERMINATOR', CATALOG_ENTRY]])}
+        log={{
+          errors: [],
+          issues: [
+            {
+              source: 'lint',
+              message: 'Add the end marker',
+              severity: 'warning',
+              code: 'MISSING_TERMINATOR',
+            },
+          ],
+        }}
+      />,
+    );
+    expect(screen.getByText(/Code: MISSING_TERMINATOR/).tagName).toBe('P');
   });
 });
