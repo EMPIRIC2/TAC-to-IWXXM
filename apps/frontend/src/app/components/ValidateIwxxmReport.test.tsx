@@ -3,7 +3,9 @@
  */
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { ValidateIwxxmReport } from './ValidateIwxxmReport';
+import type { LintIssueCatalogEntry } from '@/utils/api';
 import type { ValidateResponse } from '/utils/openapiTypes';
 
 function report(partial: {
@@ -94,5 +96,48 @@ describe('ValidateIwxxmReport', () => {
     expect(list).toHaveTextContent('no code');
     expect(list).toHaveTextContent('EMPTY_MSG:');
     expect(list).toHaveTextContent('Issue');
+  });
+
+  it('opens a fuller description for a validation issue and closes it', async () => {
+    const user = userEvent.setup();
+    const catalog: LintIssueCatalogEntry = {
+      code: 'XSD',
+      severity: 'error',
+      message_template: 'XML schema check failed',
+      product: null,
+      tags: [],
+      source_attribution: 'IWXXM schema',
+    };
+    render(
+      <ValidateIwxxmReport
+        catalogByCode={new Map([['XSD', catalog]])}
+        report={report({
+          is_valid: false,
+          package_issues: [
+            {
+              message: 'schema boom',
+              code: 'XSD',
+              hint: 'Check the element',
+              location: 'line 2',
+              start: 1,
+              end: 4,
+              severity: 'error',
+            },
+            'bare string issue',
+          ],
+        })}
+      />,
+    );
+    await user.click(screen.getByTestId('issue-detail-open-0'));
+    expect(screen.getByTestId('issue-detail-dialog')).toHaveTextContent(
+      'XML schema check failed',
+    );
+    expect(screen.getByTestId('issue-detail-dialog')).toHaveTextContent('IWXXM schema');
+    await user.click(screen.getByTestId('issue-detail-close'));
+    expect(screen.queryByTestId('issue-detail-dialog')).not.toBeInTheDocument();
+    await user.click(screen.getByTestId('issue-detail-open-1'));
+    expect(screen.getByTestId('issue-detail-dialog')).toHaveTextContent(
+      'bare string issue',
+    );
   });
 });

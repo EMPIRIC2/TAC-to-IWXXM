@@ -29,6 +29,9 @@ import {
   type UnifiedDiffLine,
 } from '@/utils/unifiedLineDiff';
 import { validateDispositionChips } from '@/utils/validateDispositionChips';
+import { IssueDetailDialog } from '@/app/components/IssueDetailDialog';
+import { issueDetailFromUnknown, type IssueDetailModel } from '@/utils/issueDetail';
+import { ISSUE_DETAIL_OPEN } from '@/utils/issueDetailCopy';
 import {
   formatMatchStatusLabel,
   isOperatorValidateNoise,
@@ -491,6 +494,7 @@ function DiagnosticsPane({
   items: Record<string, unknown>[];
   foldStatus?: string;
 }) {
+  const [detail, setDetail] = useState<IssueDetailModel | null>(null);
   return (
     <Card className="min-w-0 overflow-hidden p-3" data-testid={testId}>
       <h3 className="mb-1 text-sm font-semibold text-gray-900 dark:text-gray-100">
@@ -517,13 +521,22 @@ function DiagnosticsPane({
           {items.map((item, index) => (
             <li
               key={index}
-              className="min-w-0 overflow-x-auto whitespace-pre-wrap break-all rounded border border-gray-200 bg-gray-50 p-2 font-mono dark:border-gray-700 dark:bg-gray-950"
+              className="min-w-0 overflow-x-auto rounded border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-950"
             >
-              {formatDiagnostic(item)}
+              <button
+                type="button"
+                className="w-full whitespace-pre-wrap break-all p-2 text-left font-mono"
+                data-testid={`${testId}-item-${index}`}
+                aria-label={ISSUE_DETAIL_OPEN}
+                onClick={() => setDetail(issueDetailFromUnknown(item))}
+              >
+                {formatDiagnostic(item)}
+              </button>
             </li>
           ))}
         </ul>
       )}
+      <IssueDetailDialog detail={detail} onClose={() => setDetail(null)} />
     </Card>
   );
 }

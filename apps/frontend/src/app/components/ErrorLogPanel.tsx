@@ -2,6 +2,9 @@ import { useMemo, useState } from 'react';
 import { ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
 import type { ConversionIssue } from '/utils/api';
 import type { LintIssueCatalogEntry } from '@/utils/api';
+import { IssueDetailDialog } from '@/app/components/IssueDetailDialog';
+import { buildIssueDetail, type IssueDetailModel } from '@/utils/issueDetail';
+import { ISSUE_DETAIL_OPEN } from '@/utils/issueDetailCopy';
 import {
   catalogJumpTarget,
   maybeOpenCatalogForLintCode,
@@ -101,6 +104,7 @@ export function ErrorLogPanel({
   onOpenCatalog,
 }: ErrorLogPanelProps) {
   const [expanded, setExpanded] = useState(true);
+  const [detail, setDetail] = useState<IssueDetailModel | null>(null);
   const visibleErrors = log.errors;
   const suppressedByCode = log.issues.filter((issue) =>
     HIDDEN_OPERATOR_ISSUE_CODES.has(String(issue.code ?? '')),
@@ -232,10 +236,31 @@ export function ErrorLogPanel({
               <ul className={`space-y-2 ${textClass}`}>
                 {filteredIssues.map((issue, index) => (
                   <li key={`issue-${index}`} className={issueCard}>
-                    <p className="font-medium">
-                      [{issue.severity ?? 'error'}] {issue.source}: {issue.message}
-                    </p>
-                    {issue.hint && <p className={hintClass}>{issue.hint}</p>}
+                    <button
+                      type="button"
+                      className="w-full text-left"
+                      data-testid={`issue-detail-open-${index}`}
+                      aria-label={ISSUE_DETAIL_OPEN}
+                      onClick={() =>
+                        setDetail(
+                          buildIssueDetail({
+                            code: issue.code,
+                            severity: issue.severity,
+                            message: issue.message,
+                            hint: issue.hint,
+                            location: issue.location,
+                            start: issue.start,
+                            end: issue.end,
+                            catalog: issue.code ? catalogByCode?.get(issue.code) : null,
+                          }),
+                        )
+                      }
+                    >
+                      <p className="font-medium">
+                        [{issue.severity ?? 'error'}] {issue.source}: {issue.message}
+                      </p>
+                      {issue.hint && <p className={hintClass}>{issue.hint}</p>}
+                    </button>
                     <LogIssueCode
                       code={issue.code}
                       className={codeClass}
@@ -249,6 +274,7 @@ export function ErrorLogPanel({
           )}
         </div>
       )}
+      <IssueDetailDialog detail={detail} onClose={() => setDetail(null)} />
     </section>
   );
 }
