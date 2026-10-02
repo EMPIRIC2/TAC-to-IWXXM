@@ -211,6 +211,44 @@ describe('TC-EV1312-001 listed-profile-only checkbox', () => {
     ).toBeInTheDocument();
   });
 
+  it('clears the checkbox when Profile returns to All profiles', async () => {
+    const user = userEvent.setup();
+    render(<LintValidationCatalogPage />);
+    await screen.findByTestId('lint-validation-catalog-list');
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-profile-filter'),
+      'US_FAA_NWS',
+    );
+    const box = screen.getByTestId('lint-validation-catalog-listed-profile-only');
+    await user.click(box);
+    expect(box).toBeChecked();
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-profile-filter'),
+      'all',
+    );
+    expect(box).not.toBeChecked();
+    expect(box).toBeDisabled();
+  });
+
+  it('clears the checkbox when Exchange returns to All exchange profiles', async () => {
+    const user = userEvent.setup();
+    render(<LintValidationCatalogPage />);
+    await screen.findByTestId('lint-validation-catalog-list');
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-exchange-filter'),
+      'EUR_RODEX',
+    );
+    const box = screen.getByTestId('lint-validation-catalog-listed-profile-only');
+    await user.click(box);
+    expect(box).toBeChecked();
+    await user.selectOptions(
+      screen.getByTestId('lint-validation-catalog-exchange-filter'),
+      'all',
+    );
+    expect(box).not.toBeChecked();
+    expect(box).toBeDisabled();
+  });
+
   it('disabled for rule-catalog families', async () => {
     const user = userEvent.setup();
     render(<LintValidationCatalogPage />);
