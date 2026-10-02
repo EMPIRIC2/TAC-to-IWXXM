@@ -33,7 +33,12 @@ import {
   LINT_VALIDATION_CATALOG_EMPTY,
   LINT_VALIDATION_CATALOG_EXCHANGE_ALL,
   LINT_VALIDATION_CATALOG_EXCHANGE_LABEL,
+  LINT_VALIDATION_CATALOG_FAMILY_ALL,
+  LINT_VALIDATION_CATALOG_LISTED_PROFILE_NEEDS_PROFILE,
   LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY,
+  LINT_VALIDATION_CATALOG_LOAD_ERROR,
+  LINT_VALIDATION_CATALOG_RETRY,
+  catalogFilterLabel,
   LINT_VALIDATION_CATALOG_FAMILY_LABEL,
   LINT_VALIDATION_CATALOG_LEVEL_LABEL,
   LINT_VALIDATION_CATALOG_LOADING,
@@ -541,6 +546,13 @@ export function LintValidationCatalogPage({
 
   const usesLintIssueCatalog =
     familyFilter === 'all' || familyFilter === 'lint' || familyFilter === 'iwxxm';
+  const listedProfileNeedsChoice =
+    usesLintIssueCatalog &&
+    semanticProfileFilter === 'all' &&
+    exchangeProfileFilter === 'all';
+  const listedProfileLabel = listedProfileNeedsChoice
+    ? LINT_VALIDATION_CATALOG_LISTED_PROFILE_NEEDS_PROFILE
+    : LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY;
 
   const loadCatalog = useCallback(async () => {
     setLoading(true);
@@ -582,8 +594,8 @@ export function LintValidationCatalogPage({
       }
       const response = await fetchLintIssueCatalog(params);
       setEntries(response.issues ?? []);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load catalog');
+    } catch {
+      setError(LINT_VALIDATION_CATALOG_LOAD_ERROR);
       setEntries([]);
     } finally {
       setLoading(false);
@@ -697,7 +709,7 @@ export function LintValidationCatalogPage({
                   }
                 }}
               >
-                <option value="all">All lint / IWXXM</option>
+                <option value="all">{LINT_VALIDATION_CATALOG_FAMILY_ALL}</option>
                 <option value="lint">TAC validation</option>
                 <option value="iwxxm">IWXXM validation</option>
                 <option value="conversion">Conversion</option>
@@ -716,7 +728,7 @@ export function LintValidationCatalogPage({
               >
                 {typeOptions.map((opt) => (
                   <option key={opt} value={opt}>
-                    {opt === 'all' ? 'All' : opt.replace('_', ' ')}
+                    {catalogFilterLabel('type', opt)}
                   </option>
                 ))}
               </select>
@@ -754,7 +766,7 @@ export function LintValidationCatalogPage({
               >
                 {ACCESS_OPTIONS.map((opt) => (
                   <option key={opt} value={opt}>
-                    {opt === 'all' ? 'All' : opt.replace('_', ' ')}
+                    {catalogFilterLabel('access', opt)}
                   </option>
                 ))}
               </select>
@@ -767,11 +779,14 @@ export function LintValidationCatalogPage({
                 data-testid="lint-validation-catalog-profile-filter"
                 aria-label="Filter by profile"
                 disabled={!usesLintIssueCatalog}
-                onChange={(e) =>
-                  setSemanticProfileFilter(
-                    e.target.value === 'all' ? 'all' : (e.target.value as IwxxmProfile),
-                  )
-                }
+                onChange={(e) => {
+                  const next =
+                    e.target.value === 'all' ? 'all' : (e.target.value as IwxxmProfile);
+                  setSemanticProfileFilter(next);
+                  if (next === 'all' && exchangeProfileFilter === 'all') {
+                    setListedProfileOnly(false);
+                  }
+                }}
               >
                 <option value="all">{LINT_VALIDATION_CATALOG_PROFILE_ALL}</option>
                 {SEMANTIC_PROFILE_OPTIONS.map((opt) => (
@@ -789,13 +804,16 @@ export function LintValidationCatalogPage({
                 data-testid="lint-validation-catalog-exchange-filter"
                 aria-label="Filter by exchange profile"
                 disabled={!usesLintIssueCatalog}
-                onChange={(e) =>
-                  setExchangeProfileFilter(
+                onChange={(e) => {
+                  const next =
                     e.target.value === 'all'
                       ? 'all'
-                      : (e.target.value as ExchangeProfileId),
-                  )
-                }
+                      : (e.target.value as ExchangeProfileId);
+                  setExchangeProfileFilter(next);
+                  if (next === 'all' && semanticProfileFilter === 'all') {
+                    setListedProfileOnly(false);
+                  }
+                }}
               >
                 <option value="all">{LINT_VALIDATION_CATALOG_EXCHANGE_ALL}</option>
                 {EXCHANGE_PROFILE_OPTIONS.map((opt) => (
@@ -810,12 +828,12 @@ export function LintValidationCatalogPage({
                 type="checkbox"
                 className="rounded border"
                 checked={listedProfileOnly}
-                disabled={!usesLintIssueCatalog}
+                disabled={!usesLintIssueCatalog || listedProfileNeedsChoice}
                 data-testid="lint-validation-catalog-listed-profile-only"
-                aria-label={LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY}
+                aria-label={listedProfileLabel}
                 onChange={(e) => setListedProfileOnly(e.target.checked)}
               />
-              {LINT_VALIDATION_CATALOG_LISTED_PROFILE_ONLY}
+              {listedProfileLabel}
             </label>
             <label className="text-sm text-gray-700 dark:text-gray-300">
               {LINT_VALIDATION_CATALOG_SEARCH}
@@ -887,9 +905,19 @@ export function LintValidationCatalogPage({
           )}
 
           {error && (
-            <p className="text-sm text-red-600 dark:text-red-400" role="alert">
-              {error}
-            </p>
+            <div className="flex flex-wrap items-center gap-3" role="alert">
+              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+              <button
+                type="button"
+                className="rounded border border-gray-300 px-2 py-1 text-sm text-gray-800 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-100 dark:hover:bg-gray-800"
+                data-testid="lint-validation-catalog-retry"
+                onClick={() => {
+                  void loadCatalog();
+                }}
+              >
+                {LINT_VALIDATION_CATALOG_RETRY}
+              </button>
+            </div>
           )}
 
           {!loading && !error && (

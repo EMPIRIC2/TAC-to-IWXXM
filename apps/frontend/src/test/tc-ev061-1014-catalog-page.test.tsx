@@ -554,21 +554,41 @@ describe('LintValidationCatalogPage', () => {
   });
 
   it('shows empty and error states', async () => {
+    const user = userEvent.setup();
     fetchLintIssueCatalog.mockResolvedValueOnce({ issues: [] });
     const { unmount } = render(<LintValidationCatalogPage />);
     expect(await screen.findByText(/No catalog entries/i)).toBeInTheDocument();
     unmount();
 
-    fetchLintIssueCatalog.mockRejectedValueOnce(new Error('catalog down'));
+    fetchLintIssueCatalog.mockRejectedValueOnce(new Error('Failed to fetch'));
     const { unmount: unmount2 } = render(<LintValidationCatalogPage />);
-    expect(await screen.findByRole('alert')).toHaveTextContent('catalog down');
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'The catalog could not be loaded.',
+    );
+    expect(screen.getByRole('alert')).not.toHaveTextContent('Failed to fetch');
+    expect(screen.getByTestId('lint-validation-catalog-retry')).toBeInTheDocument();
     unmount2();
 
     fetchLintIssueCatalog.mockRejectedValueOnce('offline');
+    fetchLintIssueCatalog.mockResolvedValueOnce({
+      issues: [
+        {
+          code: 'RETRIED',
+          severity: 'info',
+          message_template: 'Loaded after retry',
+          family: 'lint',
+          status: 'verified',
+        },
+      ],
+    });
     render(<LintValidationCatalogPage />);
     expect(await screen.findByRole('alert')).toHaveTextContent(
-      'Failed to load catalog',
+      'The catalog could not be loaded.',
     );
+    await user.click(screen.getByTestId('lint-validation-catalog-retry'));
+    expect(
+      await screen.findByTestId('lint-validation-catalog-entry-RETRIED'),
+    ).toBeInTheDocument();
   });
 
   it('shows a dash when source_url is absent', async () => {

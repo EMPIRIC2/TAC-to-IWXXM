@@ -16,6 +16,7 @@ import {
   mapRuleCatalogItem,
   typeOptionsForFamily,
 } from '../app/components/LintValidationCatalogPage';
+import { catalogFilterLabel } from '../utils/lintValidationCatalogCopy';
 
 const fetchLintIssueCatalog = vi.hoisted(() => vi.fn());
 const fetchRuleCatalog = vi.hoisted(() => vi.fn());
@@ -31,6 +32,27 @@ describe('TC-EV1308-003 family-aware type filter', () => {
     fetchRuleCatalog.mockReset();
     fetchLintIssueCatalog.mockResolvedValue({ issues: [] });
     fetchRuleCatalog.mockResolvedValue({ family: 'decoding', items: [] });
+  });
+
+  it('uses plain labels for type, access, and the family default', async () => {
+    render(<LintValidationCatalogPage />);
+    const family = await screen.findByTestId('lint-validation-catalog-family-filter');
+    expect(within(family).getByRole('option', { name: 'All rules' })).toHaveValue(
+      'all',
+    );
+    const typeFilter = screen.getByTestId('lint-validation-catalog-type-filter');
+    expect(
+      within(typeFilter).getByRole('option', { name: 'Missing or extra' }),
+    ).toHaveValue('presence');
+    expect(within(typeFilter).getByRole('option', { name: 'XML schema' })).toHaveValue(
+      'iwxxm_schema',
+    );
+    const access = screen.getByTestId('lint-validation-catalog-access-filter');
+    expect(
+      within(access).getByRole('option', { name: 'No source document' }),
+    ).toHaveValue('semantic_only');
+    expect(catalogFilterLabel('type', 'not_a_type')).toBe('not a type');
+    expect(catalogFilterLabel('access', 'public')).toBe('Public');
   });
 
   it('typeOptionsForFamily returns EV-062 for decoding and conversion set for conversion', () => {
