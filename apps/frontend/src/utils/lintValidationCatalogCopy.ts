@@ -60,3 +60,12 @@ export const LINT_VALIDATION_CATALOG_EXAMPLE_FAIL_UNAVAILABLE =
 /** Note that the samples are existing reports, not ones written for the screen. */
 export const LINT_VALIDATION_CATALOG_EXAMPLE_NOTE =
   'Only a report already on file is shown here.';
+
+/** Group label for compact and detailed catalog layout. */
+export const LINT_VALIDATION_CATALOG_VIEW_LABEL = 'Catalog view';
+
+/** Layout that shows more of each selected rule. */
+export const LINT_VALIDATION_CATALOG_VIEW_DETAILED = 'Detailed';
+
+/** Layout that shows more rules at once. */
+export const LINT_VALIDATION_CATALOG_VIEW_COMPACT = 'Compact';

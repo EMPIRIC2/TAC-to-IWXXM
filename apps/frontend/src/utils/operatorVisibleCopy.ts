@@ -134,6 +134,9 @@ import {
   LINT_VALIDATION_CATALOG_PROFILE_LABEL,
   LINT_VALIDATION_CATALOG_SORT_LABEL,
   LINT_VALIDATION_CATALOG_TYPE_LABEL,
+  LINT_VALIDATION_CATALOG_VIEW_COMPACT,
+  LINT_VALIDATION_CATALOG_VIEW_DETAILED,
+  LINT_VALIDATION_CATALOG_VIEW_LABEL,
 } from '@/utils/lintValidationCatalogCopy';
 import {
   CONVERT_OVERLAY_HELP,
@@ -371,6 +374,18 @@ export function collectOperatorVisibleCopy(): OperatorVisibleCopyEntry[] {
     {
       id: 'lint-validation-catalog.example-note',
       text: LINT_VALIDATION_CATALOG_EXAMPLE_NOTE,
+    },
+    {
+      id: 'lint-validation-catalog.view',
+      text: LINT_VALIDATION_CATALOG_VIEW_LABEL,
+    },
+    {
+      id: 'lint-validation-catalog.view-detailed',
+      text: LINT_VALIDATION_CATALOG_VIEW_DETAILED,
+    },
+    {
+      id: 'lint-validation-catalog.view-compact',
+      text: LINT_VALIDATION_CATALOG_VIEW_COMPACT,
     },
     {
       id: 'lint-validation-catalog.family',
