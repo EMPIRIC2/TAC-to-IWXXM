@@ -510,22 +510,10 @@ test.describe('UJ-072: ConversionProfile editor (EV-933 / TC-EV933-006)', () => 
     await openPublicConverter(page);
     await dismissPrivacyNoticeIfPresent(page);
 
-    await expect(page.getByTestId('workbench-profile-summary')).toBeVisible();
-    await expect(page.getByTestId('workbench-profile-summary')).toContainText(
-      /ICAO_2025/i,
-    );
-    await expect(page.getByTestId('workbench-profile-summary')).toContainText(
-      /Rule packs:\s*0/i,
-    );
-    await expect(page.getByTestId('workbench-profile-summary')).toContainText(
-      /Overlays:\s*1/i,
-    );
-
-    await page
-      .getByTestId('conversion-library-select')
-      .selectOption('LIB.CONVERSION.US_FAA_NWS');
-    await expect(page.getByTestId('workbench-profile-summary')).toContainText(
-      /US_FAA_NWS/i,
+    await expect(page.getByTestId('country-preset-select')).toHaveValue('ICAO_2025');
+    await page.getByTestId('country-preset-select').selectOption('US_FAA_NWS');
+    await expect(page.getByTestId('conversion-library-select')).toHaveValue(
+      'LIB.CONVERSION.US_FAA_NWS',
     );
     await page.getByTestId('examples-select').click();
     await expect(

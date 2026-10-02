@@ -66,6 +66,8 @@ import { LibraryPickersBar } from './LibraryPickersBar';
 import { libraryIdsForNationalLine } from '@/utils/libraryIds';
 import {
   confirmLibraryResetForProfile,
+  COUNTRY_PRESET_LINES,
+  countryPresetLineForLibraries,
   libraryIdsFromSessionParams,
   isSemanticProfileLineChange,
   libraryResetForProfile,
@@ -95,8 +97,9 @@ import {
 import {
   CONVERT_RESET_WMO_LIBRARY_DEFAULTS,
   CONVERT_RESET_WMO_LIBRARY_DEFAULTS_HELP,
-  PROFILES_COUNT_UNAVAILABLE,
-  WORKBENCH_PROFILE_CATALOG_DEGRADED,
+  COUNTRY_PRESET_CUSTOM,
+  COUNTRY_PRESET_HELP,
+  COUNTRY_PRESET_LABEL,
 } from '@/utils/conversionProfilesCopy';
 import {
   readWmoLibraryDefaultsSync,
@@ -367,10 +370,6 @@ type IWXXMVersion = IwxxmVersionId;
 type OnErrorBehavior = 'skip' | 'fail' | 'warn';
 type LogLevel = 'DEBUG' | 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 
-const PROFILE_LABELS = new Map<string, string>(
-  SEMANTIC_PROFILE_OPTIONS.map((option) => [option.value, option.label]),
-);
-
 const FALLBACK_PROFILE_SUMMARIES: Partial<Record<IwxxmProfile, ProfileCatalogEntry>> = {
   ICAO_2025: {
     id: 'ICAO_2025',
@@ -465,13 +464,6 @@ const FALLBACK_PROFILE_SUMMARIES: Partial<Record<IwxxmProfile, ProfileCatalogEnt
     ],
   },
 };
-
-/**
- * Function `profileDisplayName`.
- */
-function profileDisplayName(profileId: string): string {
-  return PROFILE_LABELS.get(profileId) ?? profileId;
-}
 
 /**
  * Function `fallbackProfileSummary`.
@@ -728,8 +720,6 @@ export function FileConverter({
   const [recentWorkCollapsed, setRecentWorkCollapsed] = useState(
     preferCollapsedWorkbenchChrome,
   );
-  /** UX-08: remount Profile glance closed when entering narrow (epoch bump). */
-  const [profileGlanceEpoch, setProfileGlanceEpoch] = useState(0);
   // Restore the guest's custom output filename from the session snapshot (R5).
   const [outputFilename, setOutputFilename] = useState(() => {
     const saved = readGuestConverterState()?.conversionParams?.output_filename;
@@ -777,10 +767,6 @@ export function FileConverter({
   const [profileCatalogEntries, setProfileCatalogEntries] = useState<
     ProfileCatalogEntry[]
   >([]);
-  /** idle/guest | loading | ready | error — distinguishes 0 from unavailable (#1149). */
-  const [profileCatalogStatus, setProfileCatalogStatus] = useState<
-    'idle' | 'loading' | 'ready' | 'error'
-  >('idle');
   const [metadataPrefs, setMetadataPrefs] = useState<ConversionMetadataPrefs>(() =>
     readConversionMetadataPrefs(),
   );
@@ -860,7 +846,6 @@ export function FileConverter({
   useEffect(() => {
     return subscribeNarrowWorkbenchChrome(() => {
       setRecentWorkCollapsed(true);
-      setProfileGlanceEpoch((epoch) => epoch + 1);
     });
   }, []);
 
@@ -869,22 +854,18 @@ export function FileConverter({
     const token = accessToken?.trim();
     if (!token) {
       setProfileCatalogEntries([]);
-      setProfileCatalogStatus('idle');
       return;
     }
     let cancelled = false;
-    setProfileCatalogStatus('loading');
     void fetchProfileCatalog(token)
       .then((res) => {
         if (!cancelled) {
           setProfileCatalogEntries(res.profiles);
-          setProfileCatalogStatus('ready');
         }
       })
       .catch(() => {
         if (!cancelled) {
           setProfileCatalogEntries([]);
-          setProfileCatalogStatus('error');
         }
       });
     return () => {
@@ -3138,71 +3119,61 @@ export function FileConverter({
                     Encoding and packaging rules only. This does not set destinations,
                     credentials, or editable overlays.
                   </p>
-                  <details
-                    key={profileGlanceEpoch}
-                    className="rounded-md border border-gray-200 bg-white text-sm dark:border-gray-700 dark:bg-gray-800"
-                    data-testid="workbench-profile-summary"
+                  <div
+                    className="rounded-md border border-gray-200 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
+                    data-testid="country-preset"
                   >
-                    <summary className="cursor-pointer select-none px-3 py-2">
+                    <label
+                      className="flex flex-col gap-1"
+                      htmlFor="country-preset-select"
+                    >
                       <span className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                        Profile at a glance
+                        {COUNTRY_PRESET_LABEL}
                       </span>
-                      <span className="mt-0.5 flex flex-wrap items-baseline justify-between gap-2">
-                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                          {profileDisplayName(activeProfileSummary.id)}
-                        </span>
-                        <span className="text-xs text-gray-600 dark:text-gray-400">
-                          {activeProfileSummary.iwxxm_line ?? 'IWXXM line unavailable'}
-                        </span>
-                      </span>
-                    </summary>
-                    <div className="space-y-2 border-t border-gray-100 px-3 py-2 dark:border-gray-700">
-                      <p className="text-xs text-gray-600 dark:text-gray-400">
-                        {activeProfileSummary.id}
-                      </p>
-                      {activeProfileSummary.deltas_vs_icao &&
-                      activeProfileSummary.deltas_vs_icao.length > 0 ? (
-                        <ul className="space-y-1 text-xs text-gray-700 dark:text-gray-300">
-                          {activeProfileSummary.deltas_vs_icao
-                            .slice(0, 3)
-                            .map((delta) => (
-                              <li key={delta}>{delta}</li>
-                            ))}
-                        </ul>
-                      ) : null}
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600 dark:text-gray-400">
-                        <span>
-                          Products:{' '}
-                          {activeProfileSummary.products.length > 0
-                            ? activeProfileSummary.products.join(', ')
-                            : 'Sign in to load profile coverage'}
-                        </span>
-                        <span data-testid="workbench-profile-rule-pack-count">
-                          Rule packs:{' '}
-                          {profileCatalogStatus === 'ready' &&
-                          activeProfileSummary.rule_pack_count != null
-                            ? activeProfileSummary.rule_pack_count
-                            : PROFILES_COUNT_UNAVAILABLE}
-                        </span>
-                        <span data-testid="workbench-profile-overlay-count">
-                          Overlays:{' '}
-                          {profileCatalogStatus === 'ready' &&
-                          activeProfileSummary.overlay_count != null
-                            ? activeProfileSummary.overlay_count
-                            : PROFILES_COUNT_UNAVAILABLE}
-                        </span>
-                      </div>
-                      {profileCatalogStatus === 'error' ? (
-                        <p
-                          className="text-xs text-amber-800 dark:text-amber-200"
-                          data-testid="workbench-profile-catalog-error"
-                          role="status"
-                        >
-                          {WORKBENCH_PROFILE_CATALOG_DEGRADED}
-                        </p>
-                      ) : null}
-                    </div>
-                  </details>
+                      <select
+                        id="country-preset-select"
+                        data-testid="country-preset-select"
+                        aria-label={COUNTRY_PRESET_LABEL}
+                        className="min-w-[10rem] rounded-md border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                        value={countryPresetLineForLibraries(conversionParams)}
+                        disabled={isReadOnly}
+                        onChange={(event) => {
+                          const line = event.target.value;
+                          if (line === '') {
+                            return;
+                          }
+                          const { profile, libraryIds } = libraryResetForProfile(line);
+                          setConversionParams((prev) => ({
+                            ...prev,
+                            ...libraryIds,
+                            profile,
+                            reportVariant: '',
+                            iwxxmVersion: coerceIwxxmVersionForProfile(
+                              profile,
+                              prev.iwxxmVersion,
+                            ),
+                          }));
+                        }}
+                      >
+                        <option value="">{COUNTRY_PRESET_CUSTOM}</option>
+                        {SEMANTIC_PROFILE_OPTIONS.filter((option) =>
+                          (COUNTRY_PRESET_LINES as readonly string[]).includes(
+                            option.value,
+                          ),
+                        ).map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <p
+                      className="mt-1 text-xs text-gray-600 dark:text-gray-400"
+                      data-testid="country-preset-help"
+                    >
+                      {COUNTRY_PRESET_HELP}
+                    </p>
+                  </div>
                   <details
                     className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs text-gray-600 open:pb-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400"
                     data-testid="product-profile-trust-details"

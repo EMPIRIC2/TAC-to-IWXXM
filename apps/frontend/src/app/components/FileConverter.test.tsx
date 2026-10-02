@@ -650,19 +650,7 @@ describe('FileConverter Component', () => {
       expect(onRequestLogin).toHaveBeenCalled();
     });
 
-    it('opens Profile glance via summary toggle', async () => {
-      const user = userEvent.setup({ delay: null });
-      render(<FileConverter {...defaultProps} />);
-      const details = screen.getByTestId(
-        'workbench-profile-summary',
-      ) as HTMLDetailsElement;
-      expect(details.open).toBe(false);
-      await user.click(details.querySelector('summary') as HTMLElement);
-      expect(details.open).toBe(true);
-    });
-
     it('collapses Recent work when viewport enters narrow via subscribed MQ', async () => {
-      const user = userEvent.setup({ delay: null });
       let matches = false;
       const listeners = new Set<() => void>();
       vi.spyOn(window, 'matchMedia').mockImplementation(
@@ -691,12 +679,6 @@ describe('FileConverter Component', () => {
         '0',
       );
 
-      const details = screen.getByTestId(
-        'workbench-profile-summary',
-      ) as HTMLDetailsElement;
-      await user.click(details.querySelector('summary') as HTMLElement);
-      expect(details.open).toBe(true);
-
       matches = true;
       act(() => {
         listeners.forEach((fn) => fn());
@@ -706,9 +688,6 @@ describe('FileConverter Component', () => {
           'data-collapsed',
           '1',
         );
-        expect(
-          (screen.getByTestId('workbench-profile-summary') as HTMLDetailsElement).open,
-        ).toBe(false);
       });
     });
 
@@ -7507,98 +7486,95 @@ describe('FileConverter Component', () => {
     });
   });
 
-  describe('EV-1120 compact profile twin', () => {
-    it('shows compact profile summary for authenticated workbench users', async () => {
+  describe('country preset', () => {
+    it('sets the four libraries together and leaves a later single change alone', async () => {
       const user = userEvent.setup({ delay: null });
+      const confirm = vi.spyOn(window, 'confirm').mockReturnValue(true);
       render(<FileConverter accessToken="tok" />);
 
-      await waitFor(() => {
-        expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
-      });
-      expect(mockFetchProfileCatalog).toHaveBeenCalledWith('tok');
-      expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
-        'ICAO_2025',
+      const preset = screen.getByTestId('country-preset-select');
+      expect(preset).toHaveValue('ICAO_2025');
+      expect(screen.getByTestId('country-preset-help')).toHaveTextContent(
+        /change any one of them afterward/i,
       );
-      expect(screen.getByText(/IWXXM 2025-2 core/)).toBeInTheDocument();
+      expect(mockFetchProfileCatalog).toHaveBeenCalledWith('tok');
 
-      await user.selectOptions(
-        screen.getByTestId('conversion-library-select'),
+      await user.selectOptions(preset, 'US_FAA_NWS');
+      expect(confirm).not.toHaveBeenCalled();
+      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
+      );
+      expect(screen.getByTestId('decoding-library-select')).toHaveValue(
+        defaultLibraryId('decoding', 'US_FAA_NWS'),
+      );
+      expect(screen.getByTestId('tac-validation-library-select')).toHaveValue(
+        defaultLibraryId('tac_validation', 'US_FAA_NWS'),
+      );
+      expect(screen.getByTestId('iwxxm-validation-library-select')).toHaveValue(
+        defaultLibraryId('iwxxm_validation', 'US_FAA_NWS'),
+      );
+
+      await user.selectOptions(preset, '');
+      expect(screen.getByTestId('country-preset-select')).toHaveValue('US_FAA_NWS');
+      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
         defaultLibraryId('conversion', 'US_FAA_NWS'),
       );
 
-      await waitFor(() => {
-        expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
-          'US_FAA_NWS',
-        );
+      await user.selectOptions(
+        screen.getByTestId('tac-validation-library-select'),
+        defaultLibraryId('tac_validation', 'CA_ECCC'),
+      );
+      expect(screen.getByTestId('country-preset-select')).toHaveValue('');
+      expect(screen.getByTestId('conversion-library-select')).toHaveValue(
+        defaultLibraryId('conversion', 'US_FAA_NWS'),
+      );
+      expect(screen.getByTestId('decoding-library-select')).toHaveValue(
+        defaultLibraryId('decoding', 'US_FAA_NWS'),
+      );
+      expect(screen.getByTestId('iwxxm-validation-library-select')).toHaveValue(
+        defaultLibraryId('iwxxm_validation', 'US_FAA_NWS'),
+      );
+
+      fireEvent.change(screen.getByTestId('tac-editor'), {
+        target: { value: 'METAR KJFK 121851Z 18004KT 10SM FEW250 18/08 A3012' },
       });
-      expect(
-        screen.getByText(/Retains selected RMK content in output\./),
-      ).toBeInTheDocument();
-      expect(screen.getByText(/Rule packs: 2/)).toBeInTheDocument();
-      expect(screen.getByText(/Overlays: 1/)).toBeInTheDocument();
+      await user.click(screen.getByTestId('convert-button'));
+      await waitFor(() => {
+        expect(mockConvertMetarToIwxxm).toHaveBeenCalled();
+      });
+      const request = mockConvertMetarToIwxxm.mock.calls.at(-1)?.[0] as Record<
+        string,
+        unknown
+      >;
+      expect(request).toEqual(
+        expect.objectContaining({
+          profile: 'US_FAA_NWS',
+          conversionLibraryId: defaultLibraryId('conversion', 'US_FAA_NWS'),
+          decodingLibraryId: defaultLibraryId('decoding', 'US_FAA_NWS'),
+          tacValidationLibraryId: defaultLibraryId('tac_validation', 'CA_ECCC'),
+          iwxxmValidationLibraryId: defaultLibraryId('iwxxm_validation', 'US_FAA_NWS'),
+        }),
+      );
+      expect(request).not.toHaveProperty('xml');
+      expect(JSON.stringify(request)).not.toMatch(/<iwxxm/i);
+      confirm.mockRestore();
     });
 
-    it('shows guest placeholders for rule pack and overlay counts', async () => {
+    it('shows the ICAO preset for a guest', () => {
       render(<FileConverter />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
-      });
-
-      expect(screen.getByTestId('workbench-profile-rule-pack-count')).toHaveTextContent(
-        'Rule packs: Unavailable',
-      );
-      expect(screen.getByTestId('workbench-profile-overlay-count')).toHaveTextContent(
-        'Overlays: Unavailable',
-      );
+      expect(screen.getByTestId('country-preset-select')).toHaveValue('ICAO_2025');
     });
 
-    it('shows zero when catalog loads with no packs or overlays configured', async () => {
-      mockFetchProfileCatalog.mockResolvedValueOnce({
-        profiles: [
-          {
-            id: 'ICAO_2025',
-            kind: 'semantic',
-            products: ['METAR', 'SPECI', 'TAF'],
-            deltas_vs_icao: [
-              'Baseline ICAO/WMO line used for cross-profile comparison.',
-            ],
-            iwxxm_line: 'IWXXM 2025-2 core',
-            rule_pack_count: 0,
-            overlay_count: 0,
-          },
-        ],
-      });
-      render(<FileConverter accessToken="tok" />);
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId('workbench-profile-rule-pack-count'),
-        ).toHaveTextContent('Rule packs: 0');
-      });
-      expect(screen.getByTestId('workbench-profile-overlay-count')).toHaveTextContent(
-        'Overlays: 0',
-      );
-      expect(
-        screen.queryByTestId('workbench-profile-catalog-error'),
-      ).not.toBeInTheDocument();
-    });
-
-    it('shows degraded hint when profile catalog fetch fails', async () => {
+    it('keeps the country preset when the profile catalog fails', async () => {
       mockFetchProfileCatalog.mockRejectedValueOnce(new Error('catalog down'));
       render(<FileConverter accessToken="tok" />);
-
       await waitFor(() => {
-        expect(
-          screen.getByTestId('workbench-profile-catalog-error'),
-        ).toBeInTheDocument();
+        expect(mockFetchProfileCatalog).toHaveBeenCalledWith('tok');
       });
-      expect(screen.getByTestId('workbench-profile-rule-pack-count')).toHaveTextContent(
-        'Rule packs: Unavailable',
-      );
-      expect(screen.getByTestId('workbench-profile-overlay-count')).toHaveTextContent(
-        'Overlays: Unavailable',
-      );
+      await act(async () => {
+        await Promise.resolve();
+      });
+      expect(screen.getByTestId('country-preset-select')).toHaveValue('ICAO_2025');
     });
 
     it('ignores profile catalog resolution after unmount', async () => {
@@ -7616,42 +7592,7 @@ describe('FileConverter Component', () => {
       resolveCatalog({ profiles: [] });
     });
 
-    it('falls back when catalog metadata is sparse', async () => {
-      const originalMapGet = Map.prototype.get;
-      const mapGetSpy = vi.spyOn(Map.prototype, 'get').mockImplementation(function (
-        this: Map<unknown, unknown>,
-        key: unknown,
-      ) {
-        if (key === 'ICAO_2025') {
-          return undefined;
-        }
-        return originalMapGet.call(this, key);
-      });
-      mockFetchProfileCatalog.mockResolvedValueOnce({
-        profiles: [
-          {
-            id: 'ICAO_2025',
-            kind: 'semantic',
-            products: ['METAR'],
-            deltas_vs_icao: [],
-          },
-        ],
-      });
-
-      render(<FileConverter accessToken="tok" />);
-
-      await waitFor(() => {
-        expect(screen.getByTestId('workbench-profile-summary')).toBeInTheDocument();
-      });
-
-      expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
-        'ICAO_2025',
-      );
-      expect(screen.getByText(/IWXXM line unavailable/)).toBeInTheDocument();
-      mapGetSpy.mockRestore();
-    });
-
-    it('falls back for guest profiles without a built-in summary map entry', async () => {
+    it('keeps the ICAO library preset when a session only stores another profile', () => {
       render(
         <FileConverter
           loadedWorkSession={
@@ -7665,13 +7606,7 @@ describe('FileConverter Component', () => {
         />,
       );
 
-      await waitFor(() => {
-        expect(screen.getByTestId('workbench-profile-summary')).toHaveTextContent(
-          'AU_BOM',
-        );
-      });
-      expect(screen.getByText(/IWXXM 2025-2/)).toBeInTheDocument();
-      expect(screen.getByText(/Sign in to load profile coverage/)).toBeInTheDocument();
+      expect(screen.getByTestId('country-preset-select')).toHaveValue('ICAO_2025');
     });
   });
 
