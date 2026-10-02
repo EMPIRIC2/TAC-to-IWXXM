@@ -8,7 +8,17 @@ from fastapi.testclient import TestClient
 from src import api as api_module
 
 
-def test_station_point_returns_coordinates_for_a_known_icao() -> None:
+def test_station_point_returns_coordinates_for_a_known_icao(monkeypatch) -> None:
+    # Other unit tests reload the shared airport catalog from a small fixture.
+    airport = SimpleNamespace(
+        icao="KJFK",
+        name="John F Kennedy International Airport",
+        coordinates=SimpleNamespace(latitude=40.64, longitude=-73.78),
+    )
+    monkeypatch.setattr(
+        "src.routers.tac_quality.get_airport_validator",
+        lambda: SimpleNamespace(get_airport=lambda _code: airport),
+    )
     client = TestClient(api_module.app)
     response = client.get("/api/v1/stations/kjfk")
     assert response.status_code == 200

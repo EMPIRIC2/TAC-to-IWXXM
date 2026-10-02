@@ -10505,6 +10505,51 @@
         ]
       }
     },
+    "/api/v1/stations/{icao}": {
+      "get": {
+        "description": "Return the map point for one station ID.\n\nThe airport catalog is already loaded for ICAO checks. This reads that\none record. It does not call an external map service.\n\nParameters\n----------\nicao :\n    Four-character station location indicator.\n\nReturns\n-------\ndict[str, Any]\n    ICAO code, name, and decimal degrees.\n\nRaises\n------\nHTTPException\n    When the code is not a known station.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (station_point)\n2",
+        "operationId": "station_point_api_v1_stations__icao__get",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "icao",
+            "required": true,
+            "schema": {
+              "title": "Icao",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "title": "Response Station Point Api V1 Stations  Icao  Get",
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "summary": "Station Point",
+        "tags": [
+          "Validation"
+        ]
+      }
+    },
     "/api/v1/translation/airport-region/{airport_code}": {
       "get": {
         "description": "Determine ICAO region for a given airport code.\n\nUtility endpoint for testing ICAO region mapping.\nThis endpoint is public and does not require authentication.\n\n**Path Parameters**:\n- **airport_code**: 4-letter ICAO airport identifier\n\n**Returns**:\n```json\n{\n    \"airport_code\": \"KJFK\",\n    \"icao_region\": \"NAM\",\n    \"region_name\": \"North American\"\n}\n```\n\n**Example**:\n- `GET /api/v1/translation/airport-region/KJFK` \u2192 `{\"icao_region\": \"NAM\"}`\n- `GET /api/v1/translation/airport-region/EGLL` \u2192 `{\"icao_region\": \"EUR\"}`\n- `GET /api/v1/translation/airport-region/RJAA` \u2192 `{\"icao_region\": \"APAC\"}`\n\nParameters\n----------\nairport_code : object\n    Argument ``airport_code``.\n\nReturns\n-------\nobject\n    Return value.\n\nExamples\n--------\n>>> 1 + 1  # docstring smoke (get_airport_region)\n2",
